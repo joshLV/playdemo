@@ -8,13 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -101,7 +95,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -401,7 +394,8 @@ public class Goods extends Model {
      * 不允许发布的电子商务网站.
      * 设置后将不允许自动发布到这些电子商务网站上
      */
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY, mappedBy = "goods")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true,
+            fetch = FetchType.LAZY, mappedBy = "goods")
     public Set<GoodsUnPublishedPlatform> unPublishedPlatforms;
 
     public static final String IMAGE_SERVER = Play.configuration.getProperty
@@ -647,6 +641,7 @@ public class Goods extends Model {
                 publishedPlatforms.add(type);
             }
         }
+        System.out.println("getPublishedPlatforms>>>" + publishedPlatforms.size());
         return publishedPlatforms;
     }
 
@@ -740,7 +735,7 @@ public class Goods extends Model {
         updateGoods.shops = goods.shops;
         updateGoods.title = goods.title;
         updateGoods.setPublishedPlatforms(goods.getPublishedPlatforms());
-
+        System.out.println("updategoodsun>>>" + updateGoods.unPublishedPlatforms.size());
         updateGoods.useBeginTime = goods.useBeginTime;
         updateGoods.useEndTime = goods.useEndTime;
         updateGoods.useWeekDay = goods.useWeekDay;
@@ -1197,10 +1192,16 @@ public class Goods extends Model {
     public void setPublishedPlatforms(List<GoodsPublishedPlatformType> publishedPlatforms) {
         if (unPublishedPlatforms == null) {
             unPublishedPlatforms = new HashSet<>();
+            System.out.println("is null");
         } else {
-            unPublishedPlatforms.clear();
+            if (unPublishedPlatforms.size() > 0) {
+                unPublishedPlatforms.clear();
+            }
+            System.out.println("inini22");
         }
 
+        System.out.println("-----goods--unPublishedPlatforms.size>>>" + unPublishedPlatforms.size());
+//        System.out.println("-----goods--unPublishedPlatforms.>>>" + unPublishedPlatforms);
         if (publishedPlatforms == null || publishedPlatforms.size() == 0) {
             for (GoodsPublishedPlatformType type : GoodsPublishedPlatformType.values()) {
                 final GoodsUnPublishedPlatform goodsUnPublishedPlatform = new GoodsUnPublishedPlatform(this, type);
@@ -1213,6 +1214,7 @@ public class Goods extends Model {
             if (!publishedPlatforms.contains(type)) {
                 final GoodsUnPublishedPlatform goodsUnPublishedPlatform = new GoodsUnPublishedPlatform(this, type);
                 unPublishedPlatforms.add(goodsUnPublishedPlatform);
+                System.out.println("goods-3---goodsUnPublishedPlatform---size" + unPublishedPlatforms.size());
             }
         }
     }
@@ -1312,9 +1314,19 @@ public class Goods extends Model {
 
     public void createHistory(String createdFrom) {
         models.sales.GoodsHistory goodsHistory = new GoodsHistory();
+
         if (goodsHistory.unPublishedPlatforms == null) {
             goodsHistory.unPublishedPlatforms = new HashSet<>();
         }
+
+        for (GoodsPublishedPlatformType type : GoodsPublishedPlatformType.values()) {
+            if (!this.unPublishedPlatforms.contains(type)) {
+                final GoodsHistoryUnPublishedPlatform goodsHistoryUnPublishedPlatform = new GoodsHistoryUnPublishedPlatform(goodsHistory, type);
+                goodsHistory.unPublishedPlatforms.add(goodsHistoryUnPublishedPlatform);
+            }
+        }
+
+
         goodsHistory.createdFrom = createdFrom;
         goodsHistory.goodsId = this.id;
         goodsHistory.name = this.name;
@@ -1345,17 +1357,41 @@ public class Goods extends Model {
         goodsHistory.couponType = this.couponType;
         goodsHistory.imagePath = this.imagePath;
         goodsHistory.supplierId = this.supplierId;
-        if (this.shops != null) {
-            goodsHistory.shops = new HashSet<>();
+        goodsHistory.shops = new HashSet<>();
+        if (this.shops != null)
             goodsHistory.shops.addAll(this.shops);
-        }
+        else
+            goodsHistory.shops = null;
         goodsHistory.title = this.title;
-        goodsHistory.unPublishedPlatforms.addAll(this.unPublishedPlatforms);
         goodsHistory.useBeginTime = this.useBeginTime;
         goodsHistory.useEndTime = this.useEndTime;
         goodsHistory.useWeekDay = this.useWeekDay;
         goodsHistory.isLottery = this.isLottery;
         goodsHistory.groupCode = this.groupCode;
         goodsHistory.save();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Goods goods = (Goods) o;
+
+        if (id != goods.id) return false;
+        if (name != null ? !name.equals(goods.name) : goods.name != null) return false;
+        if (title != null ? !title.equals(goods.title) : goods.title != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        return result;
     }
 }

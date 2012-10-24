@@ -227,7 +227,7 @@ public class GoodsHistory extends Model {
 
     @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(name = "goods_history_shops", inverseJoinColumns = @JoinColumn(name
-            = "shop_id"), joinColumns = @JoinColumn(name = "goods_id"))
+            = "shop_id"), joinColumns = @JoinColumn(name = "goods_history_id"))
     public Set<Shop> shops;
 
     /**
@@ -281,12 +281,9 @@ public class GoodsHistory extends Model {
     /**
      * 不允许发布的电子商务网站.
      * 设置后将不允许自动发布到这些电子商务网站上
-     * 
-     * 先不保存这一历史
      */
-    //@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY, mappedBy = "goods")
-    @Transient
-    public Set<GoodsUnPublishedPlatform> unPublishedPlatforms;
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY, mappedBy = "goodshistory")
+    public Set<GoodsHistoryUnPublishedPlatform> unPublishedPlatforms;
 
     /**
      * 大规格图片路径
@@ -347,29 +344,6 @@ public class GoodsHistory extends Model {
         this.details = Jsoup.clean(details, HTML_WHITE_TAGS);
     }
 
-    public void setPublishedPlatforms(List<GoodsPublishedPlatformType> publishedPlatforms, Goods goods) {
-        if (unPublishedPlatforms == null) {
-            unPublishedPlatforms = new HashSet<>();
-        } else {
-            unPublishedPlatforms.clear();
-        }
-
-        if (publishedPlatforms == null || publishedPlatforms.size() == 0) {
-            for (GoodsPublishedPlatformType type : GoodsPublishedPlatformType.values()) {
-                final GoodsUnPublishedPlatform goodsUnPublishedPlatform = new GoodsUnPublishedPlatform(goods, type);
-                unPublishedPlatforms.add(goodsUnPublishedPlatform);
-            }
-            return;
-        }
-
-        for (GoodsPublishedPlatformType type : GoodsPublishedPlatformType.values()) {
-            if (!publishedPlatforms.contains(type)) {
-                final GoodsUnPublishedPlatform goodsUnPublishedPlatform = new GoodsUnPublishedPlatform(goods, type);
-                unPublishedPlatforms.add(goodsUnPublishedPlatform);
-            }
-        }
-    }
-
     public Collection<Shop> getShopList() {
         if (isAllShop) {
             return CacheHelper.getCache(CacheHelper.getCacheKey(Shop.CACHEKEY_SUPPLIERID + this.supplierId, "GOODS_SHOP_LIST"), new CacheCallBack<List<Shop>>() {
@@ -420,5 +394,27 @@ public class GoodsHistory extends Model {
         return status;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
+        Goods goods = (Goods) o;
+
+        if (id != goods.id) return false;
+        if (name != null ? !name.equals(goods.name) : goods.name != null) return false;
+        if (title != null ? !title.equals(goods.title) : goods.title != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        return result;
+    }
 }
