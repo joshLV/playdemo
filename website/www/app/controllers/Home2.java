@@ -5,8 +5,11 @@ import cache.CacheHelper;
 import com.uhuila.common.constants.PlatformType;
 import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
-import models.cms.*;
-import models.order.Order;
+import models.cms.Block;
+import models.cms.BlockType;
+import models.cms.FriendsLink;
+import models.cms.Topic;
+import models.cms.TopicType;
 import models.sales.Area;
 import models.sales.Category;
 import play.Logger;
@@ -29,94 +32,73 @@ import java.util.List;
 public class Home2 extends Controller {
 
     public static void index(final long categoryId) {
-        CacheHelper.preRead(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_TOPS12"),
-                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECENTS"),
-                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECOMMENDS2"),
+        CacheHelper.preRead(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_TOPS4"),
+                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_NEW4"),
+                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECOMMENDS4"),
+                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_HOT_SALE4"),
                 CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_DISTRICTS"),
                 CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SAILY_SPEC"),
                 CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SLIDES"),
                 CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_RIGHT_SLIDES"),
                 CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_NEWS1"),
                 CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_TOPICS"),
-                CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_TOPCATEGORIES"),
                 CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_AREAS"),
-                CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_NEW"),
+                CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_FLOOR_CATEGORIES"),
+                CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_NEW4"),
                 CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_SUPPLIER")
         );
 
-        //精选商品        
-        List<models.sales.Goods> goodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_TOPS12"), new CacheCallBack<List<models.sales.Goods>>() {
+        //推荐商品，精选商品
+        List<models.sales.Goods> goodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_TOPS4"), new CacheCallBack<List<models.sales.Goods>>() {
             @Override
             public List<models.sales.Goods> loadData() {
-                return getTopGoods(categoryId);
+                return models.sales.Goods.findTop(4);
             }
         });
 
-        //近日成交商品
-        List<models.sales.Goods> recentGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(new String[]{models.sales.Goods.CACHEKEY, Order.CACHEKEY}, "WWW_RECENTS"), new CacheCallBack<List<models.sales.Goods>>() {
+        //最新上架，新品推荐
+        List<models.sales.Goods> newGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_NEW4"), new CacheCallBack<List<models.sales.Goods>>() {
             @Override
             public List<models.sales.Goods> loadData() {
-                return models.sales.Goods.findTradeRecently(5);
+                return models.sales.Goods.findNewGoods(4);
             }
         });
 
-        //新品推荐
-        List<models.sales.Goods> newGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_NEW1"), new CacheCallBack<List<models.sales.Goods>>() {
+        //猜你喜欢，网友推荐商品
+        List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECOMMENDS4"), new CacheCallBack<List<models.sales.Goods>>() {
             @Override
             public List<models.sales.Goods> loadData() {
-                return models.sales.Goods.findNewGoods(8);
+                return models.sales.Goods.findTopRecommend(4);
             }
         });
 
-        //网友推荐商品
-        List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECOMMENDS2"), new CacheCallBack<List<models.sales.Goods>>() {
+        //热卖商品，销量最多的商品
+        List<models.sales.Goods> hotSaleGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_HOT_SALE4"), new CacheCallBack<List<models.sales.Goods>>() {
             @Override
             public List<models.sales.Goods> loadData() {
-                return models.sales.Goods.findTopRecommend(5);
+                return models.sales.Goods.findTopHotSale(4);
             }
         });
 
-        //前n个区域
-        List<Area> districts = CacheHelper.getCache(CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_DISTRICTS"), new CacheCallBack<List<Area>>() {
-            @Override
-            public List<Area> loadData() {
-                return Area.findTopDistricts(Goods.SHANGHAI, 12);
-            }
-        });
-        //前n个商圈
-        List<Area> areas = CacheHelper.getCache(CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_AREAS"), new CacheCallBack<List<Area>>() {
-            @Override
-            public List<Area> loadData() {
-                return Area.findTopAreas(13);
-            }
-        });
-
-        List<Category> categories = CacheHelper.getCache(CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_TOPCATEGORIES"), new CacheCallBack<List<Category>>() {
+        //楼层顶级分类
+        List<Category> floorCategories = CacheHelper.getCache(CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_FLOOR_CATEGORIES"), new CacheCallBack<List<Category>>() {
             @Override
             public List<Category> loadData() {
-                return Category.findTop(8);
+                return Category.findFloorTop(5);
             }
         });
 
         renderArgs.put("categoryId", categoryId);
         final Date currentDate = new Date();
 
-        //最新动态
-        List<Topic> newTopics = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_NEWS"), new CacheCallBack<List<Topic>>() {
-            @Override
-            public List<Topic> loadData() {
-                return Topic.findByType(PlatformType.UHUILA, TopicType.NEWS, currentDate, 5);
-            }
-        });
-
         //公告
         List<Topic> topics = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_TOPICS"), new CacheCallBack<List<Topic>>() {
             @Override
             public List<Topic> loadData() {
-                return Topic.findByType(PlatformType.UHUILA, TopicType.TOPIC, currentDate, 10);
+                return Topic.findByType(PlatformType.UHUILA, TopicType.TOPIC, currentDate, 4);
             }
         });
-        //右侧图片展示
+        //首屏小图图片展示
         List<Block> rightSlides = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_RIGHT_SLIDES"), new CacheCallBack<List<Block>>() {
             @Override
             public List<Block> loadData() {
@@ -139,13 +121,6 @@ public class Home2 extends Controller {
             }
         });
 
-        //合作商家信息
-        List<Block> suppliers = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SUPPLIER"), new CacheCallBack<List<Block>>() {
-            @Override
-            public List<Block> loadData() {
-                return Block.findByType(BlockType.WEBSITE_SUPPLIER, currentDate);
-            }
-        });
         //友情链接
         List<FriendsLink> friendsLinks = CacheHelper.getCache(CacheHelper.getCacheKey(FriendsLink.CACHEKEY, "FRIENDS_LINK"), new CacheCallBack<List<FriendsLink>>() {
             @Override
@@ -180,12 +155,10 @@ public class Home2 extends Controller {
             }
         }
         renderArgs.put("slides", slides);
-        renderArgs.put("newTopics", newTopics);
         renderArgs.put("dailySpecial", dailySpecial);
         renderArgs.put("dailySpecialGoods", dailySpecialGoods);
         renderArgs.put("rightSlides", rightSlides);
-        renderArgs.put("suppliers", suppliers);
-        render(goodsList, recentGoodsList, newGoodsList, recommendGoodsList, categories, districts, areas, topics);
+        render(goodsList, newGoodsList, recommendGoodsList, hotSaleGoodsList, floorCategories, topics);
     }
 
     @After

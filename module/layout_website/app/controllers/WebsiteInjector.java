@@ -7,9 +7,14 @@ import models.accounts.AccountType;
 import models.consumer.User;
 import models.consumer.UserWebIdentification;
 import models.order.Cart;
+import models.order.ECoupon;
+import models.order.ECouponStatus;
 import models.order.Order;
+import models.order.OrderItems;
+import models.order.OrderStatus;
+import models.sales.Area;
+import models.sales.Category;
 import org.apache.commons.lang.StringUtils;
-
 import play.Play;
 import play.cache.Cache;
 import play.mvc.After;
@@ -18,6 +23,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Http.Header;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -60,9 +66,50 @@ public class WebsiteInjector extends Controller {
         for (Cart cart : carts) {
             count += cart.number;
         }
-
+        //购物车
         renderArgs.put("carts", carts);
+        //购物车商品数量
         renderArgs.put("count", count);
+
+        //顶级分类
+        List<Category> categories = CacheHelper.getCache(CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_TOPCATEGORIES"), new CacheCallBack<List<Category>>() {
+            @Override
+            public List<Category> loadData() {
+                return Category.findTop(7);
+            }
+        });
+        renderArgs.put("categories", categories);
+
+        //左边顶级分类
+        List<Category> leftCategories = CacheHelper.getCache(CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_TOPCATEGORIES"), new CacheCallBack<List<Category>>() {
+            @Override
+            public List<Category> loadData() {
+                return Category.findLeftTop(7);
+            }
+        });
+        renderArgs.put("leftCategories", leftCategories);
+
+        //左边顶级分类中显示的子分类
+
+        //前n个商圈
+        List<Area> areas = CacheHelper.getCache(CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_AREAS"), new CacheCallBack<List<Area>>() {
+            @Override
+            public List<Area> loadData() {
+                return Area.findTopAreas(6);
+            }
+        });
+        renderArgs.put("areas", areas);
+
+        //待消费
+        int unconsumedCount = ECoupon.count(user, ECouponStatus.UNCONSUMED);
+        //待付款
+        int unpaidCount = Order.count(user, OrderStatus.UNPAID);
+        //已节省
+        BigDecimal savedMoney = OrderItems.getSavedMoney(user);
+        
+        renderArgs.put("unconsumedCount", unconsumedCount);
+        renderArgs.put("unpaidCount", unpaidCount);
+        renderArgs.put("savedMoney", savedMoney);
     }
 
     private static void injectPromoterCookier(User user) {
@@ -130,19 +177,19 @@ public class WebsiteInjector extends Controller {
         UserWebIdentification uwi = UserWebIdentification.findOne(identificationValue);
 
         if (uwi == null) {
-        	// 为避免大量爬虫产生的记录，这里：
+            // 为避免大量爬虫产生的记录，这里：
             // 如果没有保存过，尝试从Cache找一下，如果找到，让mq可以进行保存操作。        	
-        	uwi = (UserWebIdentification) Cache.get(UserWebIdentification.MQ_KEY + identificationValue);
-        	if (uwi != null) {
-        		uwi.notifyMQSave();
-        	}
+            uwi = (UserWebIdentification) Cache.get(UserWebIdentification.MQ_KEY + identificationValue);
+            if (uwi != null) {
+                uwi.notifyMQSave();
+            }
         } else {
             uwi.user = user;
             uwi.save();
         }
-        
+
         if (uwi == null) {
-        	// 第一次产生标识对象
+            // 第一次产生标识对象
             uwi = createUserWebIdentification(user, identificationValue);
             uwi.sendToCacheOrSave();
             return null; //避免缓存

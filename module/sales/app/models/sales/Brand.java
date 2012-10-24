@@ -1,5 +1,6 @@
 package models.sales;
 
+import cache.CacheCallBack;
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.PathUtil;
@@ -68,6 +69,11 @@ public class Brand extends Model {
     @MaxSize(4000)
     @SolrField
     public String introduce;     //特色产品介绍
+
+    @MaxSize(20)
+    @SolrField
+    public String description;     //描述
+
     @Enumerated(EnumType.ORDINAL)
     @SolrField
     public DeletedStatus deleted;
@@ -224,5 +230,14 @@ public class Brand extends Model {
         page.setPageNumber(pageNumber);
         page.setPageSize(pageSize);
         return page;
+    }
+
+    public static Brand findBrandById(final Long id) {
+        return CacheHelper.getCache(CacheHelper.getCacheKey(Brand.CACHEKEY + id, "BRAND_BY_ID"), new CacheCallBack<Brand>() {
+            @Override
+            public Brand loadData() {
+                return Area.findById(id);
+            }
+        });
     }
 }

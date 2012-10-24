@@ -50,6 +50,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 import play.Play;
@@ -95,8 +97,10 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -475,6 +479,13 @@ public class Goods extends Model {
     //            .getProperty("image.root", "/p");
     public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
 
+    /**
+     * solr服务中获取到的商圈.
+     */
+    @Transient
+    private Collection<Object> areaNames;
+
+
     static {
         //增加可信标签到白名单
         HTML_WHITE_TAGS.addTags("embed", "object", "param", "span", "div", "table", "tbody", "tr", "td",
@@ -722,6 +733,9 @@ public class Goods extends Model {
         return this.cumulativeStocks - getRealSaleCount();
     }
 
+    /**
+     * 界面上显示的销量，实际销量+虚拟销量基数
+     */
     @Transient
     private Long virtualSaleCount;
 
@@ -731,7 +745,7 @@ public class Goods extends Model {
         if (virtualSaleCount != null && virtualSaleCount > 0) {
             return virtualSaleCount;
         }
-        virtualSaleCount = getRealSaleCount() + virtualBaseSaleCount;
+        virtualSaleCount = (getRealSaleCount() == null ? 0 : getRealSaleCount()) + (virtualBaseSaleCount == null ? 0 : virtualBaseSaleCount);
         return virtualSaleCount;
     }
 
@@ -815,6 +829,17 @@ public class Goods extends Model {
         return expireAt != null && expireAt.before(new Date());
     }
 
+    @Transient
+    @SolrField
+    public String getAreaNames() {
+        Collection<Shop> shopList = getShopList();
+        Map<String, Object> areaMap = new HashMap<>();
+        for (Shop shop : shopList) {
+            Area area = Area.findAreaById(shop.areaId);
+            areaMap.put(area.id, area.name);
+        }
+        return StringUtils.join(areaMap.values(), " ");
+    }
 
     //=================================================== 数据库操作 ====================================================
 
@@ -951,7 +976,6 @@ public class Goods extends Model {
         return q.getResultList();
     }
 
-
     public static List<Goods> findInIdList(List<Long> goodsIds) {
         if (goodsIds == null || goodsIds.size() == 0) {
             return new ArrayList<>();
@@ -995,12 +1019,18 @@ public class Goods extends Model {
 
 
     public static List<Brand> findBrandByCondition(GoodsCondition condition) {
+        return findBrandByCondition(condition, -1);
+    }
+
+    public static List<Brand> findBrandByCondition(GoodsCondition condition, int limit) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select distinct g.brand from Goods g where " + condition.getFilter() + " and g.status='ONSALE' order by g.brand.displayOrder desc");
         for (String key : condition.getParamMap().keySet()) {
             q.setParameter(key, condition.getParamMap().get(key));
         }
-
+        if (limit > 0) {
+            q.setMaxResults(limit);
+        }
         return q.getResultList();
     }
 
@@ -1541,6 +1571,12 @@ public class Goods extends Model {
     }
 
     //------------------------------------------- 使用solr服务进行搜索的方法 (Begin) --------------------------------------
+    private static final String SOLR_ID = "id";
+    private static final String SOLR_GOODS_NAME = "goods.name_s";
+    private static final String SOLR_GOODS_SALEPRICE = "goods.salePrice_c";
+    private static final String SOLR_GOODS_ORIGINALPRICE = "goods.originalPrice_c";
+    private static final String SOLR_GOODS_VIRTUALSALECOUNT = "goods.virtualSaleCount_l";
+    private static final String SOLR_GOODS_AREAS = "goods.areaNames_s";
 
     /**
      * 搜索
@@ -1569,9 +1605,9 @@ public class Goods extends Model {
     }
 
     /**
-     * 前端按条件搜索.
+     * 前端按条件的全文搜索.
      *
-     * @param keywords
+     * @param keywords         关键字
      * @param parentCategoryId
      * @param categoryId
      * @param districtId
@@ -1582,32 +1618,79 @@ public class Goods extends Model {
      * @param pageSize
      * @return
      */
-    public static QueryResponse search(String keywords, Long parentCategoryId, Long categoryId, Long districtId,
+    public static QueryResponse searchFullText(String keywords, Long parentCategoryId, Long categoryId, Long districtId,
+                                               Long areaId, String orderBy, boolean isAsc, int pageNumber, int pageSize) {
+        return search("text:" + keywords, parentCategoryId, categoryId, districtId, areaId, orderBy, isAsc, pageNumber, pageSize);
+    }
+
+    /**
+     * 前端按条件搜索.
+     *
+     * @param q                Solr的q查询字符串
+     * @param parentCategoryId
+     * @param categoryId
+     * @param districtId
+     * @param areaId
+     * @param orderBy
+     * @param isAsc
+     * @param pageNumber
+     * @param pageSize
+     * @return
+     */
+    public static QueryResponse search(String q, Long parentCategoryId, Long categoryId, Long districtId,
                                        Long areaId, String orderBy, boolean isAsc, int pageNumber, int pageSize) {
-        StringBuilder q = new StringBuilder("goods.deleted_s:\"com.uhuila.common.constants.DeletedStatus:UN_DELETED\" AND goods.expired_b:false");
-        if (StringUtils.isNotBlank(keywords)) {
-            q.append(" AND text:" + keywords);
+        StringBuilder queryStr = new StringBuilder("goods.deleted_s:\"com.uhuila.common.constants.DeletedStatus:UN_DELETED\" AND goods.expired_b:false");
+        if (StringUtils.isNotBlank(q)) {
+            queryStr.append(" AND " + q);
         }
         if (categoryId != null) {
-            q.append(" AND categoryId_l:" + categoryId);
+            queryStr.append(" AND categoryId_l:" + categoryId);
         }
         if (districtId != null) {
-            q.append(" AND districtId_l:" + categoryId);
+            queryStr.append(" AND districtId_l:" + categoryId);
         }
         if (parentCategoryId != null) {
-            q.append(" AND parentCategoryId_l:" + parentCategoryId);
+            queryStr.append(" AND parentCategoryId_l:" + parentCategoryId);
         }
         if (areaId != null) {
-            q.append(" AND areaId_l:" + areaId);
+            queryStr.append(" AND areaId_l:" + areaId);
         }
-        SolrQuery query = new SolrQuery(q.toString());
-        query.setFields("id", "goods.name_s", "goods.salePrice_c", "goods.originalPrice_c", "goods.virtualSaleCount_l");
+        SolrQuery query = new SolrQuery(queryStr.toString());
+        query.setFields(SOLR_ID, SOLR_GOODS_NAME, SOLR_GOODS_SALEPRICE, SOLR_GOODS_ORIGINALPRICE, SOLR_GOODS_VIRTUALSALECOUNT, SOLR_GOODS_AREAS);
         query.setSortField(orderBy, isAsc ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
         query.setFacet(true).addFacetField("category.id_s", "category.parentCategory_s", "brand.id_s", "shop.districtId_s", "shop.areaId_s");
         query.setHighlight(true);
         query.setStart(pageNumber * pageSize - pageSize);
-        query.setTermsLimit(pageSize);
+        query.setRows(pageSize);
         return Solr.query(query);
+    }
+
+    /**
+     * 获取最热卖商品.
+     *
+     * @param limit
+     * @return
+     */
+    public static List<Goods> findTopHotSale(int limit) {
+        QueryResponse response = search(null, null, null, null, null, "virtualSaleCount", false, 1, limit);
+        List<Goods> goodsList = new ArrayList<>();
+        if (response == null) {
+            return goodsList;
+        }
+        SolrDocumentList documentList = response.getResults();
+
+        for (SolrDocument doc : documentList) {
+            Goods goods = new Goods();
+            final String docId = (String) doc.getFieldValue("id");
+            goods.id = Long.parseLong(docId.substring(6, docId.length()));
+            goods.name = (String) doc.getFieldValue(SOLR_GOODS_NAME);
+            final String originalPrice = (String) doc.getFieldValue(SOLR_GOODS_ORIGINALPRICE);
+            goods.originalPrice = new BigDecimal(originalPrice.substring(0, originalPrice.length() - 4));
+            final String salePrice = (String) doc.getFieldValue(SOLR_GOODS_SALEPRICE);
+            goods.salePrice = new BigDecimal(salePrice.substring(0, salePrice.length() - 4));
+            goods.areaNames = doc.getFieldValues(SOLR_GOODS_AREAS);
+        }
+        return goodsList;
     }
 
     public void setVirtualSaleCount(Long count) {
@@ -1615,4 +1698,10 @@ public class Goods extends Model {
     }
     //------------------------------------------- 使用solr服务进行搜索的方法 (End) ----------------------------------------
 
+    //------------------------------------------- 商品搜索时生成url的方法(Begin) ------------------------------------------
+    public static String getUrl(String keywords) {
+        //todo
+        return "";
+    }
+    //------------------------------------------- 商品搜索时生成url的方法(End) ------------------------------------------
 }

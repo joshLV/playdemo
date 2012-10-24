@@ -44,7 +44,7 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.shops.add(FactoryBoy.lastOrCreate(Shop.class));
         return goods;
     }
-    
+
     @Factory(name = "noInventory")
     public void defineWithNoInventory(Goods goods) {
         goods = new Goods();

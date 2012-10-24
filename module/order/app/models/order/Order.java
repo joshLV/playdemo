@@ -1323,4 +1323,16 @@ public class Order extends Model {
         User user = this.getUser();
         return user;
     }
+
+    /**
+     * 计算指定用户的特定状态的订单数量.
+     *
+     * @param user   用户对象
+     * @param status 订单状态
+     * @return 券数量
+     */
+    public static int count(User user, OrderStatus status) {
+        //todo
+        return 0;
+    }
 }

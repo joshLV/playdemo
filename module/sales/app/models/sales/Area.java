@@ -1,7 +1,10 @@
 package models.sales;
 
-import java.util.ArrayList;
-import java.util.List;
+import cache.CacheCallBack;
+import cache.CacheHelper;
+import org.apache.commons.lang.StringUtils;
+import play.db.jpa.GenericModel;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,9 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import org.apache.commons.lang.StringUtils;
-import cache.CacheHelper;
-import play.db.jpa.GenericModel;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 商圈区域.
@@ -26,7 +28,7 @@ import play.db.jpa.GenericModel;
 public class Area extends GenericModel {
 
     private static final long serialVersionUID = 706109123113062L;
-    
+
     @Id
     public String id;
 
@@ -59,31 +61,31 @@ public class Area extends GenericModel {
         this.id = id;
     }
 
-    public static boolean isArea(String areaId){
+    public static boolean isArea(String areaId) {
         return (StringUtils.isNotBlank(areaId) && areaId.length() == 8);
     }
-    
-    public static boolean isDistrict(String district){
+
+    public static boolean isDistrict(String district) {
         return (StringUtils.isNotBlank(district) && district.length() == 5);
     }
-    
+
     public static final String CACHEKEY = "AREA";
-        
+
     @Override
     public void _save() {
         CacheHelper.delete(CACHEKEY);
         CacheHelper.delete(CACHEKEY + this.id);
         super._save();
     }
-    
+
     @Override
     public void _delete() {
         CacheHelper.delete(CACHEKEY);
-        CacheHelper.delete(CACHEKEY + this.id);        
+        CacheHelper.delete(CACHEKEY + this.id);
         super._delete();
     }
 
-    
+
     /**
      * 获取前n个城市，主要用于主页上的显示.
      *
@@ -219,5 +221,14 @@ public class Area extends GenericModel {
     public static Area findParent(String areaId) {
         Area area = findById(areaId);
         return area.parent;
+    }
+
+    public static Area findAreaById(final String id) {
+        return CacheHelper.getCache(CacheHelper.getCacheKey(Area.CACHEKEY + id, "AREA_BY_ID"), new CacheCallBack<Area>() {
+            @Override
+            public Area loadData() {
+                return Area.findById(id);
+            }
+        });
     }
 }
