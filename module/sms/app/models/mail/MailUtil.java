@@ -11,50 +11,59 @@ public class MailUtil {
     public static final String GOODS_OFF_SALES_NOTIFY = Play.mode.isProd() ? "goods_off_sales_notify" : "goods_off_sales_dev";
     public static final String FINANCE_NOTIFICATION = Play.mode.isProd() ? "finance_notification" : "finance_notification_dev";
     public static final String TUAN_CATEGORY_NOTIFY = Play.mode.isProd() ? "tuan_notification" : "tuan_notification_dev";
+    public static final String CUSTOMER_REMARK_NOTIFY = Play.mode.isProd() ? "customer_remark_notification" : "customer_remark_notification_dev";
 
     private MailUtil() {
     }
 
     public static void sendCouponMail(MailMessage message) {
         if (!Play.runingInTestMode()) {
-        RabbitMQPublisher.publish(COUPON_MAIL_QUEUE_NAME, message);
+            RabbitMQPublisher.publish(COUPON_MAIL_QUEUE_NAME, message);
         }
     }
 
     public static void sendFindPasswordMail(MailMessage message) {
         if (!Play.runingInTestMode()) {
-        RabbitMQPublisher.publish(FIND_PWD_MAIL_QUEUE_NAME, message);
+            RabbitMQPublisher.publish(FIND_PWD_MAIL_QUEUE_NAME, message);
         }
     }
 
     public static void sendOperatorNotificationMail(MailMessage message) {
         if (!Play.runingInTestMode()) {
-        RabbitMQPublisher.publish(OPERATOR_NOTIFICATION, message);
+            RabbitMQPublisher.publish(OPERATOR_NOTIFICATION, message);
         }
     }
 
     public static void sendGoodsOffSalesMail(MailMessage message) {
         if (!Play.runingInTestMode()) {
-        RabbitMQPublisher.publish(GOODS_OFF_SALES_NOTIFY, message);
+            RabbitMQPublisher.publish(GOODS_OFF_SALES_NOTIFY, message);
         }
     }
 
     public static void sendFinanceNotificationMail(MailMessage message) {
         if (!Play.runingInTestMode()) {
-        RabbitMQPublisher.publish(FINANCE_NOTIFICATION, message);
+            RabbitMQPublisher.publish(FINANCE_NOTIFICATION, message);
         }
     }
 
     public static void sendMail(MailMessage message) {
         if (!Play.runingInTestMode()) {
-        RabbitMQPublisher.publish(GOODS_OFF_SALES_NOTIFY, message);
+            RabbitMQPublisher.publish(GOODS_OFF_SALES_NOTIFY, message);
         }
     }
 
     public static void sendTuanCategoryMail(MailMessage message) {
         if (!Play.runingInTestMode()) {
-        RabbitMQPublisher.publish(TUAN_CATEGORY_NOTIFY, message);
+            RabbitMQPublisher.publish(TUAN_CATEGORY_NOTIFY, message);
         }
     }
+
+    public static void sendCustomerRemarkMail(MailMessage message) {
+        if (!Play.runingInTestMode()) {
+            RabbitMQPublisher.publish(CUSTOMER_REMARK_NOTIFY, message);
+        }
+    }
+
+
 
 }
