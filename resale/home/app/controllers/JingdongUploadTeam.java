@@ -168,6 +168,7 @@ public class JingdongUploadTeam extends Controller{
         }
         params.put("shops", shops);
         params.put("areaMap", areaMap);
+        params.put("summary2", goods.getSafePrompt() + goods.getSafeDetails());
         String data = template.render(params);
         Logger.info("request, %s", data);
         String restRequest = JDGroupBuyUtil.makeRequestRest(data);

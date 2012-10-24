@@ -63,7 +63,7 @@
     *{ 特别提示 富文本数据，为保证验证通过，请讲内容放到<![CDATA[]]> [必填]  }*
     <Notice> <![CDATA[ ${notice.raw()} ]]> </Notice>
     *{ 团购简介 富文本数据，为保证验证通过，请讲内容放到<![CDATA[]]>  [必填]  }*
-    <Summary><![CDATA[ ${summary.raw()} ]]></Summary>
+    <Summary><![CDATA[ ${summary2.raw()} ]]></Summary>
     *{ 团购详情 富文本数据，为保证验证通过，请讲内容放到<![CDATA[]]>  [必填] }*
     <TeamDetail> <![CDATA[ ${teamDetail.raw()} ]]> </TeamDetail>
     *{ 团购所在的商家信息，支持多商家，至少填写一个商家信息 }*
