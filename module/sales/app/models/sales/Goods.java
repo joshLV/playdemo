@@ -626,12 +626,12 @@ public class Goods extends Model {
     
     @Transient
     public String getSafePrompt() {
-    	return prompt;
+    	return prompt.replaceAll("&nbsp;", " ");
     }
     
     @Transient
     public String getSafeDetails() {
-    	return details;
+    	return details.replaceAll("&nbsp;", " ");
     }
 
     /**
