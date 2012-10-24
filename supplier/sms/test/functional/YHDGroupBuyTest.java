@@ -37,7 +37,7 @@ public class YHDGroupBuyTest extends FunctionalTest{
         Resaler resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
             @Override
             public void build(Resaler target) {
-                target.loginName = "yihaodian";
+                target.loginName = Resaler.YHD_LOGIN_NAME;
                 target.creditable = ResalerCreditable.YES;
             }
         });

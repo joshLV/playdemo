@@ -29,7 +29,6 @@ import java.util.SortedMap;
  * Time: 下午3:59
  */
 public class DDOrderAPI extends Controller {
-    public static final String DD_LOGIN_NAME = Play.configuration.getProperty("dangdang.resaler_login_name", "dangdang");
     public static final String DATE_FORMAT = "yyy-MM-dd HH:mm:ss";
 
     public static void order() {
@@ -69,7 +68,7 @@ public class DDOrderAPI extends Controller {
         }
 
         //定位请求者
-        Resaler resaler = Resaler.find("loginName=? and status=?", DD_LOGIN_NAME, ResalerStatus.APPROVED).first();
+        Resaler resaler = Resaler.find("loginName=? and status=?", Resaler.DD_LOGIN_NAME, ResalerStatus.APPROVED).first();
         Long resalerId = null;
         if (resaler == null) {
             errorInfo.errorCode = ErrorCode.USER_NOT_EXITED;

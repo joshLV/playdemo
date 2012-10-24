@@ -3,6 +3,7 @@ package models.job.dangdang.listener;
 import com.uhuila.common.constants.DeletedStatus;
 import models.dangdang.DDAPIInvokeException;
 import models.dangdang.DDAPIUtil;
+import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.sales.GoodsStatus;
 import models.sales.MaterialType;
@@ -23,13 +24,12 @@ import java.util.List;
  */
 @Every("3h")
 public class DDSyncSellGoodsCountJob extends Job {
-    public static String DD_LOGIN_NAME = Play.configuration.getProperty("dangdang.resaler_login_name", "dangdang");
 
     @Override
     public void doJob() {
         Logger.info("\n--------------Start syncSellCount job----");
         //定位请求者
-        models.resale.Resaler resaler = models.resale.Resaler.find("loginName=? and status='APPROVED'", DD_LOGIN_NAME).first();
+        models.resale.Resaler resaler = models.resale.Resaler.find("loginName=? and status='APPROVED'", Resaler.DD_LOGIN_NAME).first();
         if (resaler == null) {
             Logger.info("dangdang resaler is not existed!");
             return;

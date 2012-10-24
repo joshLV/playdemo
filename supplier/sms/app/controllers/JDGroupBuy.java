@@ -197,9 +197,9 @@ public class JDGroupBuy extends Controller{
         SendOrderRefundRequest sendOrderRefundRequest = sendOrderJDRest.data;
 
         //以京东分销商的身份申请退款
-        Resaler resaler = Resaler.findOneByLoginName(JDGroupBuyUtil.JD_LOGIN_NAME);
+        Resaler resaler = Resaler.findOneByLoginName(Resaler.JD_LOGIN_NAME);
         if (resaler == null){
-            Logger.error("can not find the resaler by login name: %s", JDGroupBuyUtil.JD_LOGIN_NAME);
+            Logger.error("can not find the resaler by login name: %s", Resaler.JD_LOGIN_NAME);
             finish(202, "can not find the jingdong resaler");return;
         }
 
@@ -280,10 +280,10 @@ public class JDGroupBuy extends Controller{
 
     // 创建一百券订单
     private static Order createYbqOrder(SendOrderRequest sendOrderRequest) {
-        Resaler resaler = Resaler.findOneByLoginName(JDGroupBuyUtil.JD_LOGIN_NAME);
+        Resaler resaler = Resaler.findOneByLoginName(Resaler.JD_LOGIN_NAME);
         Logger.error("create ybq order");
         if (resaler == null){
-            Logger.error("can not find the resaler by login name: %s", JDGroupBuyUtil.JD_LOGIN_NAME);
+            Logger.error("can not find the resaler by login name: %s", Resaler.JD_LOGIN_NAME);
             finish(203, "can not find the jingdong resaler");return null;
         }
         Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);

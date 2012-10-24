@@ -702,6 +702,9 @@ public class Order extends Model {
                     new CouponHistory(eCoupon, AccountType.RESALER.equals(orderItem.order.userType) ? "分销商：" + orderItem.order.getResaler().loginName : "消费者:" + orderItem.order.getUser().getShowName(), "产生券号", ECouponStatus.UNCONSUMED, ECouponStatus.UNCONSUMED, null).save();
 
                     if (!Play.runingInTestMode() && (goods.isLottery == null || !goods.isLottery)) {
+                        // 如果是京东的订单 不要发短信，京东自己调我们的发短信接口
+                        if(!AccountType.RESALER.equals(orderItem.order.userType)
+                                || !orderItem.order.getResaler().loginName.equals(Resaler.JD_LOGIN_NAME)){
                         SMSUtil.send("【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name +
                                 "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
                                 "截止" + dateFormat.format(eCoupon.expireAt) + "客服4006262166",
@@ -739,6 +742,7 @@ public class Order extends Model {
 
                         }
 
+                        }
                     }
                     couponCodes.add(eCoupon.getMaskedEcouponSn());
                 }

@@ -29,8 +29,11 @@ import java.util.List;
 @Table(name = "resaler")
 public class Resaler extends Model {
 
-
     private static final long serialVersionUID = 16323229113062L;
+
+    public static final String JD_LOGIN_NAME = "jingdong";
+    public static final String DD_LOGIN_NAME = "dangdang";
+    public static final String YHD_LOGIN_NAME = "yihaodian";
 
     /**
      * 分销商账户类型

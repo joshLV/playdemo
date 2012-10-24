@@ -28,7 +28,7 @@ import java.util.Map;
  */
 @OnApplicationStart(async = true)
 public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
-    public static String YHD_LOGIN_NAME = Play.configuration.getProperty("yihaodian.resaler_login_name", "yihaodian");
+    public static String YHD_LOGIN_NAME = Resaler.YHD_LOGIN_NAME;
     public static String DELIVERY_SUPPLIER = Play.configuration.getProperty("yihaodian.delivery_supplier");
 
     @Override

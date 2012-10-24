@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  *         Date: 12-9-12
  */
 public class YHDGroupBuy extends Controller{
-    public static String YHD_LOGIN_NAME = Play.configuration.getProperty("yihaodian.resaler_login_name", "yihaodian");
+    public static String YHD_LOGIN_NAME = Resaler.YHD_LOGIN_NAME;
     public static String DATE_FORMAT = "yyy-MM-dd HH:mm:ss";
 
     public static String PHONE_REGEX = "^1[3,5,8]\\d{9}$";

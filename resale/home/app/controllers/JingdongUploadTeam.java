@@ -25,12 +25,11 @@ import java.util.*;
  */
 @With(SecureCAS.class)
 public class JingdongUploadTeam extends Controller{
-    private static String JD_LOGIN_NAME = "jingdong";
     public static final String CACHE_KEY = "JINGDGONG_API";
 
     public static void prepare(Long goodsId){
         Resaler resaler = SecureCAS.getResaler();
-        if(!JD_LOGIN_NAME.equals(resaler.loginName)){
+        if(!Resaler.JD_LOGIN_NAME.equals(resaler.loginName)){
             error("there is nothing you can do");
         }
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
@@ -134,7 +133,7 @@ public class JingdongUploadTeam extends Controller{
 
     public static void upload(Long venderTeamId, List<String> areas){
         Resaler resaler = SecureCAS.getResaler();
-        if(!JD_LOGIN_NAME.equals(resaler.loginName)){
+        if(!Resaler.JD_LOGIN_NAME.equals(resaler.loginName)){
             error("there is nothing you can do");
         }
         Map<String, List<String>> areaMap = new HashMap<>();

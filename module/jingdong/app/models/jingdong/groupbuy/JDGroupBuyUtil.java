@@ -28,8 +28,6 @@ public class JDGroupBuyUtil {
     public static final String CODE_TRANSFORMATION = "AES/ECB/PKCS5Padding";
     public static final String CODE_CHARSET = "utf-8";
 
-    public static String JD_LOGIN_NAME = Play.configuration.getProperty("jingdong.resaler_login_name", "jingdong");
-
     public static String GATEWAY_URL = Play.configuration.getProperty("jingdong.gateway.url", "http://gw.tuan.360buy.net");
 
     /**
