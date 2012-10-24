@@ -12,9 +12,9 @@
     <Encrypt>${encrypt}</Encrypt>
     *{ 提交数据 }*
     #{if encrypt == 'true'}
-        <Data>${models.jingdong.groupbuy.JDGroupBuyUtil.encryptMessage(data).raw()}</Data>
+        <Data>${models.jingdong.groupbuy.JDGroupBuyUtil.encryptMessage(data)}</Data>
     #{/if}
     #{else}
-        <Data>${data.raw()}</Data>
+        <Data>${data}</Data>
     #{/else}
 </Request>

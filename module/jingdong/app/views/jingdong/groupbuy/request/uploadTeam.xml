@@ -61,25 +61,25 @@
     *{ 单人购买上限 仅数字，0表示无上限，最大支持9999 [必填] }*
     <PerNumber>${perNumber}</PerNumber>
     *{ 特别提示 富文本数据，为保证验证通过，请讲内容放到<![CDATA[]]> [必填]  }*
-    <Notice> <![CDATA[ ${notice.raw()} ]]> </Notice>
+    <Notice> <![CDATA[ ${notice} ]]> </Notice>
     *{ 团购简介 富文本数据，为保证验证通过，请讲内容放到<![CDATA[]]>  [必填]  }*
-    <Summary><![CDATA[ ${summary2.raw()} ]]></Summary>
+    <Summary><![CDATA[ ${summary} ]]></Summary>
     *{ 团购详情 富文本数据，为保证验证通过，请讲内容放到<![CDATA[]]>  [必填] }*
-    <TeamDetail> <![CDATA[ ${teamDetail.raw()} ]]> </TeamDetail>
+    <TeamDetail> <![CDATA[ ${teamDetail} ]]> </TeamDetail>
     *{ 团购所在的商家信息，支持多商家，至少填写一个商家信息 }*
     <Partners>
     #{list items:shops, as:'shop'}
     <Partner>
         *{ 商家名称 最长40个字符 [必填] }*
-        <Name>${shop.name.raw()}</Name>
+        <Name>${shop.name}</Name>
         *{ 商家地址 最长80个字符 [必填] }*
-        <Address>${shop.address.raw()}</Address>
+        <Address>${shop.address}</Address>
         *{ 地图连接，填写地图的URL，必须以http开头。此字段可以为空。若链接过长超过100个字符请使用加密过的url短链接 此字段可以为空。 }*
         <Map/>
         *{ 商家联系人 最长30个字符 此字段可以为空。 }*
         <Contact/>
         *{ 商家电话。最长40个字符 [必填] }*
-        <Tel>${shop.phone.raw()}</Tel>
+        <Tel>${shop.phone}</Tel>
         *{ 商家手机信息。最长12个字符，只能是数字。此字段可以为空。 }*
         <Mobile/>
         *{ 交通信息，位置信息。最长400个字符。此字段可以为空。 }*

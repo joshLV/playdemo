@@ -85,12 +85,9 @@
     <p>特别提示 富文本数据<b>[必填]</b>  </p>
     <textarea rows="5" cols="200" name="notice"></textarea>
     <p>团购简介 富文本数据<b>[必填]</b>  </p>
-    <textarea rows="5" cols="200" name="summary">${goods.title.raw()}</textarea>
-    <!-- 
+    <textarea rows="5" cols="200" name="summary">${goods.title}</textarea>
     <p>团购详情 富文本数据<b>[必填]</b> </p>
-    <textarea rows="5" cols="200" name="teamDetail">${goods.safePrompt.raw()}
-${goods.safeDetails.raw()} </textarea>
-    -->
+    <textarea rows="5" cols="200" name="teamDetail">${goods.safePrompt} ${goods.safeDetails}</textarea>
     <b>
     #{list items:shops, as:'shop'}
         #{if !shop.phone}
