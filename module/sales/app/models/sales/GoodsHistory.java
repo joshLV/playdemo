@@ -227,7 +227,7 @@ public class GoodsHistory extends Model {
 
     @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(name = "goods_history_shops", inverseJoinColumns = @JoinColumn(name
-            = "shop_id"), joinColumns = @JoinColumn(name = "goods_id"))
+            = "shop_id"), joinColumns = @JoinColumn(name = "goods_history_id"))
     public Set<Shop> shops;
 
     /**
