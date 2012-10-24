@@ -149,6 +149,11 @@
             (修改前)<br/><img src="${imageLargePath}"/>
             <input type="hidden" name="imageLargePath" value="${imageLargePath}"></div>
     </div>
+    %{
+    imageUrl ="/goods_images?goodsId="+id;
+    }%
+        #{layout_operate.multiFileField name:'multiImage',note:'图片尺寸：(234*178像素)', required:true,goodsId:goods?.id, uploadImgUrl:imageUrl,value:goods?.goodsImagesList/}
+
     #{/else}
     #{layout_operate.htmlField name:'goods.exhibition', value:goods?.exhibition, uploadImgUrl:'/goods/images'/}
     #{layout_operate.htmlField name:'goods.prompt', value:goods?.prompt, uploadImgUrl:'/goods/images'/}

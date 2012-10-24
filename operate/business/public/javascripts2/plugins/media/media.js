@@ -7,13 +7,15 @@
 * @licence http://www.kindsoft.net/license.php
 *******************************************************************************/
 
-KindEditor.plugin('flash', function(K) {
-	var self = this, name = 'flash', lang = self.lang(name + '.'),
-		allowFlashUpload = K.undef(self.allowFlashUpload, true),
+KindEditor.plugin('media', function(K) {
+	var self = this, name = 'media', lang = self.lang(name + '.'),
+		allowMediaUpload = K.undef(self.allowMediaUpload, true),
 		allowFileManager = K.undef(self.allowFileManager, false),
 		formatUploadUrl = K.undef(self.formatUploadUrl, true),
+		extraParams = K.undef(self.extraFileUploadParams, {}),
+		filePostName = K.undef(self.filePostName, 'imgFile'),
 		uploadJson = K.undef(self.uploadJson, self.basePath + 'php/upload_json.php');
-	self.plugin.flash = {
+	self.plugin.media = {
 		edit : function() {
 			var html = [
 				'<div style="padding:20px;">',
@@ -29,18 +31,24 @@ KindEditor.plugin('flash', function(K) {
 				//width
 				'<div class="ke-dialog-row">',
 				'<label for="keWidth" style="width:60px;">' + lang.width + '</label>',
-				'<input type="text" id="keWidth" class="ke-input-text ke-input-number" name="width" value="550" maxlength="4" /> ',
+				'<input type="text" id="keWidth" class="ke-input-text ke-input-number" name="width" value="550" maxlength="4" />',
 				'</div>',
 				//height
 				'<div class="ke-dialog-row">',
 				'<label for="keHeight" style="width:60px;">' + lang.height + '</label>',
-				'<input type="text" id="keHeight" class="ke-input-text ke-input-number" name="height" value="400" maxlength="4" /> ',
+				'<input type="text" id="keHeight" class="ke-input-text ke-input-number" name="height" value="400" maxlength="4" />',
+				'</div>',
+				//autostart
+				'<div class="ke-dialog-row">',
+				'<label for="keAutostart">' + lang.autostart + '</label>',
+				'<input type="checkbox" id="keAutostart" name="autostart" value="" /> ',
 				'</div>',
 				'</div>'
 			].join('');
 			var dialog = self.createDialog({
 				name : name,
 				width : 450,
+				height : 230,
 				title : self.lang(name),
 				body : html,
 				yesBtn : {
@@ -66,10 +74,11 @@ KindEditor.plugin('flash', function(K) {
 						}
 						var html = K.mediaImg(self.themesPath + 'common/blank.gif', {
 								src : url,
-								type : K.mediaType('.swf'),
+								type : K.mediaType(url),
 								width : width,
 								height : height,
-								quality : 'high'
+								autostart : autostartBox[0].checked ? 'true' : 'false',
+								loop : 'true'
 							});
 						self.insertHtml(html).hideDialog().focus();
 					}
@@ -79,14 +88,16 @@ KindEditor.plugin('flash', function(K) {
 			urlBox = K('[name="url"]', div),
 			viewServerBtn = K('[name="viewServer"]', div),
 			widthBox = K('[name="width"]', div),
-			heightBox = K('[name="height"]', div);
+			heightBox = K('[name="height"]', div),
+			autostartBox = K('[name="autostart"]', div);
 			urlBox.val('http://');
 
-			if (allowFlashUpload) {
+			if (allowMediaUpload) {
 				var uploadbutton = K.uploadbutton({
 					button : K('.ke-upload-button', div)[0],
-					fieldName : 'imgFile',
-					url : K.addParam(uploadJson, 'dir=flash'),
+					fieldName : filePostName,
+					extraParams : extraParams,
+					url : K.addParam(uploadJson, 'dir=media'),
 					afterUpload : function(data) {
 						dialog.hideLoading();
 						if (data.error === 0) {
@@ -96,7 +107,7 @@ KindEditor.plugin('flash', function(K) {
 							}
 							urlBox.val(url);
 							if (self.afterUpload) {
-								self.afterUpload.call(self, url);
+								self.afterUpload.call(self, url, data, name);
 							}
 							alert(self.lang('uploadSuccess'));
 						} else {
@@ -121,10 +132,13 @@ KindEditor.plugin('flash', function(K) {
 					self.loadPlugin('filemanager', function() {
 						self.plugin.filemanagerDialog({
 							viewType : 'LIST',
-							dirName : 'flash',
+							dirName : 'media',
 							clickFn : function(url, title) {
 								if (self.dialogs.length > 1) {
 									K('[name="url"]', div).val(url);
+									if (self.afterSelectFile) {
+										self.afterSelectFile.call(self, url);
+									}
 									self.hideDialog();
 								}
 							}
@@ -135,19 +149,20 @@ KindEditor.plugin('flash', function(K) {
 				viewServerBtn.hide();
 			}
 
-			var img = self.plugin.getSelectedFlash();
+			var img = self.plugin.getSelectedMedia();
 			if (img) {
 				var attrs = K.mediaAttrs(img.attr('data-ke-tag'));
 				urlBox.val(attrs.src);
 				widthBox.val(K.removeUnit(img.css('width')) || attrs.width || 0);
 				heightBox.val(K.removeUnit(img.css('height')) || attrs.height || 0);
+				autostartBox[0].checked = (attrs.autostart === 'true');
 			}
 			urlBox[0].focus();
 			urlBox[0].select();
 		},
 		'delete' : function() {
-			self.plugin.getSelectedFlash().remove();
+			self.plugin.getSelectedMedia().remove();
 		}
 	};
-	self.clickToolbar(name, self.plugin.flash.edit);
+	self.clickToolbar(name, self.plugin.media.edit);
 });
