@@ -249,7 +249,7 @@ public class Orders extends Controller {
 
         //记录来源跟踪ID
         if (WebsiteInjector.getUserWebIdentification() != null) {
-            order.webIdentificationId = WebsiteInjector.getUserWebIdentification().id;
+            order.webIdentificationId = WebsiteInjector.getUserWebIdentification().getSavedId();
         }
 
         if (defaultAddress != null) {

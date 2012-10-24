@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import models.sms.MockSMSProvider;
 import models.sms.SMSMessage;
@@ -88,6 +89,14 @@ public class UserWebIdentification extends Model {
      */
     public static UserWebIdentification findOne(String cookieValue) {
         return UserWebIdentification.find("cookieId=?", cookieValue).first();
+    }
+    
+    @Transient
+    public Long getSavedId() {
+    	if (this.id == null) {
+    		this.save();
+    	}
+    	return this.id;
     }
     
     /**
