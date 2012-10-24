@@ -135,10 +135,7 @@ public class GoodsCondition implements Serializable {
                     " g.id in (select g.id from g.shops s where s.areaId like :areaId)))");
             paramMap.put("areaId", searchAreaId + "%");
         }
-        if (!isHideOnsale) {
-            condBuilder.append(" and g.isHideOnsale = :isHideOnsale");
-            paramMap.put("isHideOnsale", isHideOnsale);
-        }
+
         if (supplierId != 0) {
             condBuilder.append(" and g.supplierId = :supplierId");
             paramMap.put("supplierId", supplierId);
@@ -243,7 +240,10 @@ public class GoodsCondition implements Serializable {
             condBuilder.append(" and g.isLottery=:isLottery");
             paramMap.put("isLottery", isLottery);
         }
-
+         if (isHideOnsale) {
+            condBuilder.append(" and g.isHideOnsale=:isHideOnsale");
+            paramMap.put("isHideOnsale",isHideOnsale);
+        }
         return condBuilder.toString();
     }
 

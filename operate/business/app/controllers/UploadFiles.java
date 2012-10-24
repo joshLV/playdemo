@@ -71,7 +71,6 @@ public class UploadFiles extends Controller {
                 getError("上传失败，服务器忙，请稍后再试。");
             }
             path = PathUtil.signImgPath(path);
-
             map.put("url", "http://" + Goods.IMAGE_SERVER + "/p" + path);
             renderJSON(map);
         } catch (Exception e) {
@@ -111,25 +110,20 @@ public class UploadFiles extends Controller {
         if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
             getError("上传文件扩展名仅限于：" + StringUtils.join(fileTypes) + "。");
         }
-            System.out.println(imgFile.getName()+"----------------");
         //上传文件
         try {
-            String targetFilePath = FileUploadUtil.storeImage(imgFile,goodsId, ROOT_PATH);
+            String targetFilePath = FileUploadUtil.storeImage(imgFile, goodsId, ROOT_PATH);
 
             Map<String, Object> map = new HashMap<>();
             map.put("error", 0);
-
-
             String path = targetFilePath.substring(ROOT_PATH.length(), targetFilePath.length());
-            System.out.println(path+"----------------");
             if (path == null) {
                 getError("上传失败，服务器忙，请稍后再试。");
             }
-//            path = PathUtil.signImgPath(path);
-            map.put("url", "http://" + Goods.IMAGE_SERVER + "/p" + path);
             Goods goods = Goods.findById(goodsId);
-
             new GoodsImages(goods, path).save();
+            path = PathUtil.signImgPath(path);
+            map.put("url", "http://" + Goods.IMAGE_SERVER + "/p" + path);
             renderJSON(map);
         } catch (Exception e) {
             getError("上传失败，服务器忙，请稍候再试。");

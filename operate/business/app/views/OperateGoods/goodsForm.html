@@ -35,7 +35,8 @@
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;隐藏上架&nbsp;&nbsp;
         <input type="checkbox" name="goods.isHideOnsale" id="isHideOnsale" class="input-medium"
                value="${goods?.isHideOnsale}" ${goods?.isHideOnsale?'checked':''}/>
-    </div> <span id="err-isLottery" ></span>
+    </div>
+    <span id="err-isLottery"></span>
 </div>
 <div class="control-group">
     <label class="control-label"><span style="color: red; ">*</span>商品分类</label>
@@ -138,21 +139,8 @@
         </label>
     </div>
 </div>
-*{#{if "add".equals(action)}}*
-*{#{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)', required:true/}}*
-*{#{/if}}*
-*{#{else}}*
-*{#{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)'/}}*
-*{<div class="control-group">}*
-*{<label for='levelPrices_${level}' class="control-label"> </label>}*
-
-*{<div class="controls">(修改前)<br/><img src="${imageLargePath}"/>}*
-*{<input type="hidden" name="imageLargePath" value="${imageLargePath}"></div>}*
-*{</div>}*
-*{#{/else}}*
-
     #{if "add".equals(action)}
-        #{layout_operate.multiFileField name:'imagePath',note:'图片尺寸：(340*260像素)', required:true, uploadImgUrl:'/goods_images'/}
+        #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)'/}
     #{/if}
     #{else}
         #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)'/}
@@ -162,22 +150,11 @@
             <input type="hidden" name="imageLargePath" value="${imageLargePath}"></div>
     </div>
     %{
-    //imageUrl ="/goods_images?goodsId="+id;
-    imageUrl ="/goods/images";
+    imageUrl ="/goods_images?goodsId="+id;
     }%
-    #{layout_operate.multiFileField name:'multiImage',note:'图片尺寸：(340*260像素)', required:true, uploadImgUrl:imageUrl/}
-    *{<div class="controls">}*
-        *{<ul class="image-view" id="J_imageView">}*
-            *{#{list goods?.goodsImagesList,as:'image'}}*
-                *{<li>}*
-                    *{<div class="action"><a class="set-main btn" href="">首页展示</a><a class="close btn" href="#">X</a></div>}*
-                    *{<img src="${image?.imageMiddlePath}"/>}*
-                *{</li>}*
-            *{#{/list}}*
-        *{</ul>}*
-    *{</div>}*
-    #{/else}
+        #{layout_operate.multiFileField name:'multiImage',note:'图片尺寸：(234*178像素)', required:true,goodsId:goods?.id, uploadImgUrl:imageUrl,value:goods?.goodsImagesList/}
 
+    #{/else}
     #{layout_operate.htmlField name:'goods.exhibition', value:goods?.exhibition, uploadImgUrl:'/goods/images'/}
     #{layout_operate.htmlField name:'goods.prompt', value:goods?.prompt, uploadImgUrl:'/goods/images'/}
     #{layout_operate.htmlField name:'goods.details', value:goods?.details, uploadImgUrl:'/goods/images', required:true/}
@@ -206,27 +183,7 @@
     #{/if}
     <input type="hidden" id="status" name="goods.status" value="${goods?.getStatus()?:'OFFSALE'}"/>
 </div>
-<style>
-    .image-view li {
-        list-style: none;
-        float: left;
-        width: 234px;
-        margin-right: 3px;
-        boder: 1px solid #ccc;
-    }
 
-    .image-view .action {
-        padding: 5px 0;
-    }
-
-    .image-view .set-main {
-        float: left;
-    }
-
-    .image-view .close {
-        float: right;
-    }
-</style>
 <script type="text/javascript">
     $("input[name='goods.isAllShop']:checked").val() == 'false' ? $("#shop").show() : $("#shop").hide();
     if ($("#selectWeekDayAll").attr("checked")) {

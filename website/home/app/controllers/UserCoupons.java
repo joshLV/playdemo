@@ -14,8 +14,6 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 @With({SecureCAS.class, WebsiteInjector.class})
 public class UserCoupons extends Controller {
@@ -46,8 +44,6 @@ public class UserCoupons extends Controller {
             couponItem = ECoupon.findById(id);
             shops = couponItem.orderItems.goods.getShopList();
         }
-        System.out.println("couponItem>>>" + couponItem);
-        System.out.println("shop>>>" + shops);
         render(shops);
     }
 
@@ -81,10 +77,5 @@ public class UserCoupons extends Controller {
         boolean sendFalg = ECoupon.sendUserMessageInfo(id,couponshopsId);
         new CouponHistory(eCoupon, user.getShowName(), "重发短信", eCoupon.status, eCoupon.status, null).save();
         renderJSON(sendFalg ? "0" : "1");
-    }
-
-    public static void showGoodsShops(Long supplierId) {
-        List<Shop> shopList = Shop.findShopBySupplier(supplierId);
-        render(shopList);
     }
 }

@@ -34,9 +34,8 @@ public class GoodsImages extends Model {
     @Column(name = "image_path")
     public String imagePath;
 
-    @Column(name = "display_site")
-    @Enumerated(EnumType.STRING)
-    public DisplaySite displaySite;
+    @Column(name = "is_display_site")
+    public Boolean isDisplaySite;
 
     @Column(name = "created_at")
     public Date createdAt;
@@ -82,6 +81,8 @@ public class GoodsImages extends Model {
     public GoodsImages(Goods goods, String imagePath) {
         this.goods = goods;
         this.imagePath = imagePath;
+        this.isDisplaySite = false;
+        this.createdAt = new Date();
     }
 
 

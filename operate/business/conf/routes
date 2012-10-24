@@ -18,7 +18,10 @@ PUT     /goods/{id}/reject                      OperateGoods.reject
 PUT     /goods/{id}/priority                    OperateGoods.priority
 DELETE  /goods/{id}                             OperateGoods.delete
 POST    /goods/images                           UploadFiles.uploadJson
+POST    /goods_images/{id}                      OperateGoods.setDisplay
 POST    /goods_images                           UploadFiles.uploadImages
+DELETE  /goods_images/{id}                       OperateGoods.deleteImage
+
 POST    /goods/filemanager                      UploadFiles.fileManagerJson
 GET     /goods_brands/{id}                      OperateBrands.goodsBrands
 GET     /category/sub/{id}                      Categories.showSubs

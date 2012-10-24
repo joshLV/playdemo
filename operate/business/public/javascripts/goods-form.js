@@ -101,6 +101,29 @@ $(
                 $("#goods_useWeekDay").val(week.join(","));
             }
         )
-    }
-);
+
+        $(".close").click(function (ev) {
+            ev.preventDefault();
+            var imageId = $(this).attr("imageId");
+            $.ajax({
+                type:'DELETE',
+                url:'/goods_images/' + imageId,
+                success:function () {
+//                    $("#li_" + imageId).remove();
+                    window.location.reload();
+                }});
+        })
+
+        $(".set-main").click(function (ev) {
+            ev.preventDefault();
+            var imageId = $(this).attr("imageId");
+            var goodsId = $(this).attr("goodsId");
+            $.ajax({
+                type:'POST',
+                url:'/goods_images/' + imageId + "?goodsId=" + goodsId,
+                success:function () {
+                    window.location.reload();
+                }});
+        })
+    });
 

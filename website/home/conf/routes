@@ -17,7 +17,6 @@ GET     /payment/{orderNumber}                        UserOrders.pay
 POST    /coupons/refund/{id}                          UserCoupons.applyRefund
 POST    /orders/batch-refund                          UserOrders.batchRefund
 GET     /coupons-message/{id}/send                    UserCoupons.sendMessage
-GET     /shops/{supplierId}/showGoodsShops            UserCoupons.showGoodsShops
 #购物车
 GET     /carts/tops                                   UserCarts.tops
 DELETE  /carts/{goodsIds}                             UserCarts.delete

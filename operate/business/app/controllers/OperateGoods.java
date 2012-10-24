@@ -400,6 +400,7 @@ public class OperateGoods extends Controller {
 
     /**
      * GET /goods/{goods_id}/histories
+     *
      * @param id
      */
     public static void showHistory(Long id) {
@@ -617,5 +618,34 @@ public class OperateGoods extends Controller {
         return true;
     }
 
+    /**
+     * 删除商品相册一个图片
+     *
+     * @param id
+     */
+    public static void deleteImage(Long id) {
+        GoodsImages images = GoodsImages.findById(id);
+        images.delete();
+        renderJSON("");
+    }
 
+    /**
+     * 设为首页展示图片，一个商品只能有一个在首页展示
+     */
+    public static void setDisplay(Long id) {
+        String goodsId1 = request.params.get("goodsId");
+        Long goodsId = StringUtils.isEmpty(goodsId1) ? 0 : Long.valueOf(goodsId1);
+        Goods goods = Goods.findById(goodsId);
+        List<GoodsImages> imagesList = GoodsImages.find("goods=?", goods).fetch();
+        for (GoodsImages image : imagesList) {
+            //把指定的作为首页展示
+            if (image.id == id) {
+                image.isDisplaySite = true;
+            } else {
+                image.isDisplaySite = false;
+            }
+            image.save();
+        }
+        renderJSON("");
+    }
 }

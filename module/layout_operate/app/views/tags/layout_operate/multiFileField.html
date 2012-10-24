@@ -6,17 +6,31 @@
     #{layout_operate.labelText name:_name, required:_required/}
 
     <div class="controls">
-         <input type="button" id="J_selectImage" value="批量上传"/>
+        <input type="button" id="J_selectImage" value="批量上传"/>
         <span style="color: red" id="note_${_id?:field.id}">${_note}</span>
     </div>
+    <div class="controls">
+        <ul class="image-view" id="J_imageView">
+            #{list _value,as:'image'}
+                <li id="li_${image?.id}">
+                    <div class="action">
+                        #{if !image?.isDisplaySite}
+                            <a class="set-main btn" goodsId="${_goodsId}" imageId="${image.id}" href="#">设为首页展示</a>
+                        #{/if}
+                        <a class="close btn" imageId="${image.id}" href="#">X</a>
+                    </div>
+                    <img src="${image?.imageMiddlePath}"/>
+                </li>
+            #{/list}
+        </ul>
+    </div>
     #{ifError field.name}
-    <div class="controls"><span class="error">${field.error.raw()}</span></div>
+        <div class="controls"><span class="error">${field.error.raw()}</span></div>
     #{/ifError}
-    <div class="controls"><div class="image-view" id="J_imageView"></div></div>
 </div>
- <script type="text/javascript">
+<script type="text/javascript">
     $(function () {
-       KindEditor.ready(function (K) {
+        KindEditor.ready(function (K) {
             var editor = K.editor({
                 allowFileManager:true,
                 uploadJson:'${_uploadImgUrl}'
@@ -28,7 +42,8 @@
                             var div = K('#J_imageView');
 //                            div.html('');
                             K.each(urlList, function (i, data) {
-                                div.append('<img src="' + data.url + '">');
+                                 window.location.reload();
+                                *{div.append('<li><div class="action"><a class="set-main btn" goodsId="${_goodsId}" imageId="${data?.imageId}" href="">设为首页展示</a><a class="close btn" href="#">X</a></div><img src="' + data.url + '"></li>');}*
                             });
                             editor.hideDialog();
                         }
@@ -45,15 +60,18 @@
         list-style: none;
         float: left;
         width: 234px;
-        margin-right: 10px;
+        margin-right: 3px;
         boder: 1px solid #ccc;
     }
+
     .image-view .action {
         padding: 5px 0;
     }
+
     .image-view .set-main {
         float: left;
     }
+
     .image-view .close {
         float: right;
     }
