@@ -13,6 +13,8 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -82,10 +84,14 @@ public class Shop extends Model {
     @Column(name = "display_order")
     public String displayOrder;
 
-    @ManyToMany(cascade = CascadeType.REFRESH, mappedBy = "shops", fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @JoinTable(name = "goods_shops", inverseJoinColumns = @JoinColumn(name
+            = "goods_id"), joinColumns = @JoinColumn(name = "shop_id"))
     public Set<Goods> goods = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.REFRESH, mappedBy = "shops", fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @JoinTable(name = "goods_history_shops", inverseJoinColumns = @JoinColumn(name
+            = "goods_history_id"), joinColumns = @JoinColumn(name = "shop_id"))
     public Set<GoodsHistory> goodsHistory = new HashSet<>();
 
 
