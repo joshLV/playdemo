@@ -85,7 +85,11 @@ public class Register extends Controller {
 
 
         if (WebsiteInjector.getUserWebIdentification() != null) {
-            UserWebIdentification uwi = UserWebIdentification.findById(WebsiteInjector.getUserWebIdentification().id);
+            UserWebIdentification uwi = UserWebIdentification.findOne(WebsiteInjector.getUserWebIdentification().cookieId);
+            if (uwi == null) {
+            	uwi = WebsiteInjector.getUserWebIdentification();
+            	uwi.save();
+            }
             if (uwi.registerCount == null) {
                 uwi.registerCount = 0;
             }

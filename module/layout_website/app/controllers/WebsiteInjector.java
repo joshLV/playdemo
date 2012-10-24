@@ -102,6 +102,10 @@ public class WebsiteInjector extends Controller {
                 return findUserWebIdentification(user, identificationValue);
             }
         });
+        if (identification == null) {
+        	// 第一次请求时，也设置一下个这对象
+        	identification = createUserWebIdentification(user, identificationValue);
+        }
         _userWebIdentification.set(identification);
     }
 
@@ -139,29 +143,36 @@ public class WebsiteInjector extends Controller {
         
         if (uwi == null) {
         	// 第一次产生标识对象
-            uwi = new UserWebIdentification();
-            uwi.cookieId = identificationValue;
-            uwi.user = user;
-            uwi.firstPage = request.host + request.url;
-            uwi.createdAt = new Date();
-            uwi.ip = request.remoteAddress;
-            uwi.referCode = request.params.get("tj");  //使用tj参数得到推荐码.
-            Header header = request.headers.get("referer");
-            if (header != null) {
-                uwi.referer = header.value();
-                if (uwi.referer != null) {
-                    uwi.refererHost = matchTheHostName(uwi.referer);
-                }
-            }
-            Header headerAgent = request.headers.get("user-agent");
-            if (headerAgent != null) {
-                uwi.userAgent = headerAgent.value();
-            }
+            uwi = createUserWebIdentification(user, identificationValue);
             uwi.sendToCacheOrSave();
             return null; //避免缓存
         }
         return uwi;
     }
+
+	private static UserWebIdentification createUserWebIdentification(
+			final User user, final String identificationValue) {
+		UserWebIdentification uwi;
+		uwi = new UserWebIdentification();
+		uwi.cookieId = identificationValue;
+		uwi.user = user;
+		uwi.firstPage = request.host + request.url;
+		uwi.createdAt = new Date();
+		uwi.ip = request.remoteAddress;
+		uwi.referCode = request.params.get("tj");  //使用tj参数得到推荐码.
+		Header header = request.headers.get("referer");
+		if (header != null) {
+		    uwi.referer = header.value();
+		    if (uwi.referer != null) {
+		        uwi.refererHost = matchTheHostName(uwi.referer);
+		    }
+		}
+		Header headerAgent = request.headers.get("user-agent");
+		if (headerAgent != null) {
+		    uwi.userAgent = headerAgent.value();
+		}
+		return uwi;
+	}
 
     /**
      * 从URL中匹配出主机名.

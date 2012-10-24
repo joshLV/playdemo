@@ -106,7 +106,11 @@ public class Carts extends Controller {
         }
 
         if (increment > 0 && WebsiteInjector.getUserWebIdentification() != null) {
-            UserWebIdentification uwi = UserWebIdentification.findById(WebsiteInjector.getUserWebIdentification().id);
+            UserWebIdentification uwi = UserWebIdentification.findOne(WebsiteInjector.getUserWebIdentification().cookieId);
+            if (uwi == null) {
+            	uwi = WebsiteInjector.getUserWebIdentification();
+            	uwi.save();
+            }
             if (uwi.cartCount == null) {
                 uwi.cartCount = 0;
             }
