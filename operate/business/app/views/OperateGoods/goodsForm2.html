@@ -35,6 +35,9 @@
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;隐藏上架&nbsp;&nbsp;
         <input type="checkbox" name="goods.isHideOnsale" id="isHideOnsale" class="input-medium"
                value="${goods?.isHideOnsale}" ${goods?.isHideOnsale?'checked':''}/>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;预约商品&nbsp;&nbsp;
+        <input type="checkbox" name="goods.isOrder" id="isOrder" class="input-medium"
+               value="${goods?.isOrder}" ${goods?.isOrder?'checked':''}/><span id="err-isOrder"></span>
     </div>
     <span id="err-isLottery"></span>
 </div>
@@ -114,15 +117,6 @@
 </div>
     #{layout_operate.timeScopeField name:'goods.useTime', begin:'goods.useBeginTime',end:'goods.useEndTime',
     beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
-
-<div class="control-group">
-    <label class="control-label">是否预约商品</label>
-
-    <div class="controls">
-        <input type="checkbox" name="goods.isOrder" id="isOrder" class="input-medium"
-               value="${goods?.isOrder}" ${goods?.isOrder?'checked':''}/><span id="err-isOrder"></span>
-    </div>
-</div>
 <div class="control-group">
     <label class="control-label">券类型
     </label>

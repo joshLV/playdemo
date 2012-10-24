@@ -1,15 +1,8 @@
 package models.sales;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
+import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.PathUtil;
 import models.supplier.Supplier;
 import play.Play;
 import play.data.validation.MaxSize;
@@ -17,9 +10,11 @@ import play.data.validation.Min;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
-import cache.CacheHelper;
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.PathUtil;
+import org.apache.commons.lang.StringUtils;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "brands")
@@ -39,6 +34,14 @@ public class Brand extends Model {
     @MaxSize(20)
     public String name;
     public String logo;
+
+    @Column(name = "site_display_image")
+    public String siteDisplayImage;
+
+    @Required
+    @MaxSize(20)
+    public String description;     //品牌描述
+
     @ManyToOne
     public Supplier supplier;
     @Required
@@ -51,11 +54,10 @@ public class Brand extends Model {
 //    public String closeAt;     //营业时间下班时间
     @MaxSize(4000)
     public String introduce;     //特色产品介绍
-
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
-    
-    @Column(name="is_hot")
+
+    @Column(name = "is_hot")
     public Boolean isHot;
 
     public static final String CACHEKEY = "BRAND";
@@ -80,6 +82,11 @@ public class Brand extends Model {
     @Transient
     public String getShowLogo() {
         return PathUtil.getImageUrl(IMAGE_SERVER, logo, IMAGE_LOGO);
+    }
+
+    @Transient
+    public String getSiteDisplayMiddleImage() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, siteDisplayImage, IMAGE_MIDDLE);
     }
 
     @Transient
@@ -140,8 +147,12 @@ public class Brand extends Model {
         oldBrand.displayOrder = brand.displayOrder;
         oldBrand.introduce = brand.introduce;
         oldBrand.isHot = (brand.isHot == null) ? Boolean.FALSE : brand.isHot;
-        if (brand.logo != null) {
+        oldBrand.description = brand.description;
+        if (!StringUtils.isEmpty(brand.logo)) {
             oldBrand.logo = brand.logo;
+        }
+        if (!StringUtils.isEmpty(brand.siteDisplayImage)) {
+            oldBrand.siteDisplayImage = brand.siteDisplayImage;
         }
         oldBrand.save();
     }

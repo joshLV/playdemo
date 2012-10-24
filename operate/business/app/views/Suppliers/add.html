@@ -8,6 +8,7 @@
 <div class="body">
 #{form @Suppliers.create() , id:'creationForm',enctype:'multipart/form-data',class:"form-horizontal" }
     <legend>添加商户</legend>
+    #{set action:"add"/}
     #{include '/Suppliers/supplierForm.html'/}
 #{/form}
 </div>

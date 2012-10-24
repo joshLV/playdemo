@@ -313,9 +313,10 @@ brand.isHot=是否热点品牌
 brand.isHot_1=是
 brand.isHot_2=否
 logoImage=Logo
+brand.description=品牌描述
 brand.supplier.id=商户
 brand.supplier=商户
-
+siteDisplayImage=首页展示图
 order.CONSUMER=个人
 order.RESALER=分销商
 order.deliveryCompany=物流公司

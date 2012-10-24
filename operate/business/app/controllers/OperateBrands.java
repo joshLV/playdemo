@@ -58,8 +58,9 @@ public class OperateBrands extends Controller {
     }
 
     @ActiveNavigation("brands_add")
-    public static void create(@Valid Brand brand, @Required File logoImage) {
+    public static void create(@Valid Brand brand, @Required File logoImage, @Required File siteDisplayImage) {
         checkImageFile(logoImage);
+        checkImageFile(siteDisplayImage);
         if (Validation.hasErrors()) {
             List<Supplier> supplierList = Supplier.findUnDeleted();
             for (String key : validation.errorsMap().keySet()) {
@@ -69,6 +70,7 @@ public class OperateBrands extends Controller {
         }
         try {
             brand.logo = uploadFile(logoImage, null);
+            brand.siteDisplayImage = uploadFile(siteDisplayImage, null);
         } catch (IOException e) {
             e.printStackTrace();
             error(500, "brand.image_upload_failed");
@@ -130,11 +132,11 @@ public class OperateBrands extends Controller {
         Brand brand = Brand.findById(id);
         List<Supplier> supplierList = Supplier.findUnDeleted();
         renderArgs.put("imageLogoPath", brand.getShowLogo());
-
+        renderArgs.put("siteDisplayMiddleImage", brand.getSiteDisplayMiddleImage());
         render(brand, supplierList, id);
     }
 
-    public static void update(Long id, File logoImage, @Valid Brand brand) {
+    public static void update(Long id, File siteDisplayImage, File logoImage, @Valid Brand brand) {
         //TODO 仅仅在测试环境中会产生一个validation.invalid的错误，以下这段是为了让测试用例通过增加的代码
         if (Play.runingInTestMode() && validation.errorsMap().containsKey("logoImage")) {
             for (String key : validation.errorsMap().keySet()) {
@@ -144,11 +146,12 @@ public class OperateBrands extends Controller {
         }
 
         checkImageFile(logoImage);
+        checkImageFile(siteDisplayImage);
         if (Validation.hasErrors()) {
             List<Supplier> supplierList = Supplier.findUnDeleted();
             renderArgs.put("imageLogoPath", brand.getShowLogo());
             for (String key : validation.errorsMap().keySet()) {
-                warn("update:     validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
+                warn("update: validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
             }
             render("OperateBrands/edit.html", supplierList);
         }
@@ -159,6 +162,13 @@ public class OperateBrands extends Controller {
             String image = uploadFile(logoImage, oldImagePath);
             if (StringUtils.isNotEmpty(image)) {
                 brand.logo = image;
+            }
+
+            String oldSitePath = oldBrand == null ? null : oldBrand.siteDisplayImage;
+            String nowImage = uploadFile(siteDisplayImage, oldSitePath);
+
+            if (StringUtils.isNotEmpty(nowImage)) {
+                brand.siteDisplayImage = nowImage;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -172,7 +182,7 @@ public class OperateBrands extends Controller {
     public static void delete(Long id) {
         Brand brand = Brand.findById(id);
         if (brand != null) {
-            brand.deleted= DeletedStatus.DELETED;
+            brand.deleted = DeletedStatus.DELETED;
             brand.save();
         }
         index(null);
