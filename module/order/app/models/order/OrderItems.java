@@ -9,7 +9,17 @@ import models.sales.SecKillGoods;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -248,5 +258,10 @@ public class OrderItems extends Model {
 //        System.out.println("dddd?????"+ (limitNumber > 0 && (number > limitNumber || limitNumber <= boughtNumber)));
         //超过限购数量,则表示已经购买过该商品
         return (limitNumber > 0 && (number > limitNumber || limitNumber <= boughtNumber));
+    }
+
+    public static BigDecimal getSavedMoney(User user) {
+        //todo
+        return BigDecimal.TEN;
     }
 }

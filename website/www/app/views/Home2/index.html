@@ -4,9 +4,9 @@
 <meta name="Description" content="一百券-致力于本地生活消费的互联网电子商务网站，将线下本地生活服务与线上互联网结合在一起，让互联网成为线下本地生活服务交易的前台">
 <meta name="Keywords" content="优惠券网,代金券，优惠券">
 #{/set}
-#{set 'moreStyles'}
-    #{asset.css src:['/y/home/index.css'] /}
-#{/set}
+*{#{set 'moreStyles'}}*
+*{#{asset.css src:['/y/home/index.css'] /}}*
+*{#{/set}}*
 #{set 'moreScripts'}
     #{asset.js src:['/u/slides.min.js'] /}
 <script>
@@ -43,1219 +43,274 @@
         slideX.init();
 
     });
-
 </script>
 #{/set}
-<!-- #header -->
-<div id="navbar">
-    <div class="inner">
-        <div id="cate">
-            <h2>全部商品<s></s></h2>
-
-            <div class="menu">
-                <dl class="item">
-                    <dt><a href="">餐饮美食</a></dt>
-                    <dd class="line"></dd>
-                    <dd class="some"><a href="">川菜</a> <a href="">自助餐</a> <a href="">茶餐厅</a> <a href="">日本料理</a> <a
-                            href="">西餐</a> <a href="">火锅</a></dd>
-                    <dd class="more">
-                        <ul class="clearfix">
-                            <li><a href="">全部（95）</a></li>
-                            <li><a href="">川菜（5） </a></li>
-                            <li><a href="">湘菜（5） </a></li>
-                            <li><a href="">鲁菜（5）</a></li>
-                            <li><a href="">粤菜（5） </a></li>
-                            <li><a href="">西餐（5）</a></li>
-                            <li><a href="">本帮江（5）</a></li>
-                            <li><a href="">北京菜（5）</a></li>
-                            <li><a href="">西北菜（5）</a></li>
-                            <li><a href="">台湾菜（5）</a></li>
-                            <li><a href="">自助餐（5）</a></li>
-                            <li><a href="">日韩料理（5）</a></li>
-                            <li><a href="">东南亚菜（5）</a></li>
-                            <li><a href="">火锅（5）</a></li>
-                            <li><a href="">烧烤（5）</a></li>
-                            <li><a href="">面包蛋糕（5）</a></li>
-                            <li><a href="">甜点饮料（5）</a></li>
-                            <li><a href="">小吃快餐（5）</a></li>
-                            <li><a href="">其他美食（5）</a></li>
-                        </ul>
-                        <p>全场餐饮类，发微博晒单，赢取500元现金券！<br>
-                            购买厚味VIP卡，哈根达斯免费送！</p>
-                    </dd>
-                </dl>
-                <dl class="item">
-                    <dt><a href="">休闲娱乐</a></dt>
-                    <dd class="line"></dd>
-                    <dd class="some"><a href="">电影票</a> <a href="">KTV</a> <a href="">游艺</a> <a href="">桌游</a> <a
-                            href="">按摩</a> <a href="">健身</a></dd>
-                    <dd class="more">
-                        <ul class="clearfix">
-                            <li><a href="">全部（95）</a></li>
-                            <li><a href="">川菜（5） </a></li>
-                            <li><a href="">湘菜（5） </a></li>
-                            <li><a href="">鲁菜（5）</a></li>
-                            <li><a href="">粤菜（5） </a></li>
-                            <li><a href="">西餐（5）</a></li>
-                            <li><a href="">本帮江（5）</a></li>
-                            <li><a href="">北京菜（5）</a></li>
-                            <li><a href="">西北菜（5）</a></li>
-                            <li><a href="">台湾菜（5）</a></li>
-                            <li><a href="">自助餐（5）</a></li>
-                            <li><a href="">日韩料理（5）</a></li>
-                            <li><a href="">东南亚菜（5）</a></li>
-                            <li><a href="">火锅（5）</a></li>
-                            <li><a href="">烧烤（5）</a></li>
-                            <li><a href="">面包蛋糕（5）</a></li>
-                            <li><a href="">甜点饮料（5）</a></li>
-                            <li><a href="">小吃快餐（5）</a></li>
-                            <li><a href="">其他美食（5）</a></li>
-                        </ul>
-                        <p>全场餐饮类，发微博晒单，赢取500元现金券！<br>
-                            购买厚味VIP卡，哈根达斯免费送！</p>
-                    </dd>
-                </dl>
-                <dl class="item">
-                    <dt><a href="">丽人写真</a></dt>
-                    <dd class="line"></dd>
-                    <dd class="some"><a href="">美发</a> <a href="">美甲</a> <a href="">美容</a> <a href="">美体</a></dd>
-                    <dd class="more">
-                        <ul class="clearfix">
-                            <li><a href="">全部（95）</a></li>
-                            <li><a href="">川菜（5） </a></li>
-                            <li><a href="">湘菜（5） </a></li>
-                            <li><a href="">鲁菜（5）</a></li>
-                            <li><a href="">粤菜（5） </a></li>
-                            <li><a href="">西餐（5）</a></li>
-                            <li><a href="">本帮江（5）</a></li>
-                            <li><a href="">北京菜（5）</a></li>
-                            <li><a href="">西北菜（5）</a></li>
-                            <li><a href="">台湾菜（5）</a></li>
-                            <li><a href="">自助餐（5）</a></li>
-                            <li><a href="">日韩料理（5）</a></li>
-                            <li><a href="">东南亚菜（5）</a></li>
-                            <li><a href="">火锅（5）</a></li>
-                            <li><a href="">烧烤（5）</a></li>
-                            <li><a href="">面包蛋糕（5）</a></li>
-                            <li><a href="">甜点饮料（5）</a></li>
-                            <li><a href="">小吃快餐（5）</a></li>
-                            <li><a href="">其他美食（5）</a></li>
-                        </ul>
-                        <p>全场餐饮类，发微博晒单，赢取500元现金券！<br>
-                            购买厚味VIP卡，哈根达斯免费送！</p>
-                    </dd>
-                </dl>
-                <dl class="item">
-                    <dt><a href="">生活服务</a></dt>
-                    <dd class="line"></dd>
-                    <dd class="some"><a href="">家居</a> <a href="">建材</a> <a href="">培训</a> <a href="">汽车保养</a> <a
-                            href="">体验</a> <a href="">成衣制定</a></dd>
-                    <dd class="more">
-                        <ul class="clearfix">
-                            <li><a href="">全部（95）</a></li>
-                            <li><a href="">川菜（5） </a></li>
-                            <li><a href="">湘菜（5） </a></li>
-                            <li><a href="">鲁菜（5）</a></li>
-                            <li><a href="">粤菜（5） </a></li>
-                            <li><a href="">西餐（5）</a></li>
-                            <li><a href="">本帮江（5）</a></li>
-                            <li><a href="">北京菜（5）</a></li>
-                            <li><a href="">西北菜（5）</a></li>
-                            <li><a href="">台湾菜（5）</a></li>
-                            <li><a href="">自助餐（5）</a></li>
-                            <li><a href="">日韩料理（5）</a></li>
-                            <li><a href="">东南亚菜（5）</a></li>
-                            <li><a href="">火锅（5）</a></li>
-                            <li><a href="">烧烤（5）</a></li>
-                            <li><a href="">面包蛋糕（5）</a></li>
-                            <li><a href="">甜点饮料（5）</a></li>
-                            <li><a href="">小吃快餐（5）</a></li>
-                            <li><a href="">其他美食（5）</a></li>
-                        </ul>
-                        <p>全场餐饮类，发微博晒单，赢取500元现金券！<br>
-                            购买厚味VIP卡，哈根达斯免费送！</p>
-                    </dd>
-                </dl>
-                <dl class="item">
-                    <dt><a href="">酒店旅游</a></dt>
-                    <dd class="line"></dd>
-                    <dd class="some"><a href="">青年酒店</a> <a href="">四星酒店</a></dd>
-                    <dd class="more">
-                        <ul class="clearfix">
-                            <li><a href="">全部（95）</a></li>
-                            <li><a href="">川菜（5） </a></li>
-                            <li><a href="">湘菜（5） </a></li>
-                            <li><a href="">鲁菜（5）</a></li>
-                            <li><a href="">粤菜（5） </a></li>
-                            <li><a href="">西餐（5）</a></li>
-                            <li><a href="">本帮江（5）</a></li>
-                            <li><a href="">北京菜（5）</a></li>
-                            <li><a href="">西北菜（5）</a></li>
-                            <li><a href="">台湾菜（5）</a></li>
-                            <li><a href="">自助餐（5）</a></li>
-                            <li><a href="">日韩料理（5）</a></li>
-                            <li><a href="">东南亚菜（5）</a></li>
-                            <li><a href="">火锅（5）</a></li>
-                            <li><a href="">烧烤（5）</a></li>
-                            <li><a href="">面包蛋糕（5）</a></li>
-                            <li><a href="">甜点饮料（5）</a></li>
-                            <li><a href="">小吃快餐（5）</a></li>
-                            <li><a href="">其他美食（5）</a></li>
-                        </ul>
-                        <p>全场餐饮类，发微博晒单，赢取500元现金券！<br>
-                            购买厚味VIP卡，哈根达斯免费送！</p>
-                    </dd>
-                </dl>
-                <dl class="area">
-                    <dt><a href="">热门商圈</a></dt>
-                    <dd class="some"><a href="">黄浦</a> <a href="">卢湾</a> <a href="">徐汇</a> <a href="">浦东</a> <a href="">杨浦</a>
-                        <a href="">静安</a> <a href="">普陀</a> <a href="">卢湾</a> <a href="">虹口</a></dd>
-                </dl>
-            </div>
-        </div>
-        <div id="nav">
-            <a class="curr" href="">首页<i class="right"></i></a>
-            <a href=""><i class="left"></i>餐饮美食<i class="right"></i></a>
-            <a href=""><i class="left"></i>休闲娱乐<i class="right"></i></a>
-            <a href=""><i class="left"></i>丽人写真<i class="right"></i></a>
-            <a href=""><i class="left"></i>生活服务<i class="right"></i></a>
-            <a href=""><i class="left"></i>酒店旅游<i class="right"></i></a>
-        </div>
-    </div>
-</div><!-- #navbar -->
 <link rel="stylesheet" href="http://192.168.18.242/yome/home/src/home.css"/>
 <div class="wrapper">
 <div id="content">
 <div id="main" class="clearfix">
     <div id="slides">
         <div class="slides_container">
-            <a href="" target="_blank"><img src="http://192.168.18.242/yome/home/img/banner.png" width="540"
-                                            height="265"/></a>
-            <a href="" target="_blank"><img src="http://img0.uhcdn.com/o/406/276/695/2012062106583253225.jpg"
-                                            width="540" height="265"/></a>
-            <a href="" target="_blank"><img src="http://192.168.18.242/yome/home/img/banner.png" width="540"
-                                            height="265"/></a>
+        #{list slides, as:'slide'}
+            <a href="${slide.link}" target="_blank" title="${slide.title}"><img src="${slide.getShowImageUrl()}"
+                                                                                alt="${slide.title}"
+                                                                                width="540" height="265"/></a>
+        #{/list}
         </div>
     </div>
     <div class="side"><!-- 这里的style是多余的，开发时请很移除 -->
-        <!-- 未登录 -->
-        <div class="status" style="display:none">
-            <a href="" class="login">登录</a>
-            <a href="" class="register">注册</a>
-        </div>
+    #{if cas?.isLogin}
         <!-- 已登录 -->
         <div class="status signed" style="display:block">
             <div class="inner">
-                <a href="">待消费(<em>17</em>)</a>
-                <a href=""> 已节省<em>￥30.00</em></a>
-                <a href="">待付款(<em>3</em>)</a>
-                <a href=""> 查看更多</a>
+                <a href="${helper.Domain.getHomeHost(request)}/coupons?condition.status=UNCONSUMED">待消费(<em>${unconsumedCount}</em>)</a>
+                <a href="${helper.Domain.getHomeHost(request)}/orders"> 已节省<em>${savedMoney}</em></a>
+                <a href="${helper.Domain.getHomeHost(request)}/orders?condition.status=UNPAID">待付款(<em>${unpaidCount}</em>)</a>
+                <a href="${helper.Domain.getHomeHost(request)}/orders"> 查看更多</a>
             </div>
         </div>
-
-        <div class="promise"></div>
+    #{/if}
+    #{else}
+        <!-- 未登录 -->
+        <div class="status" style="display:block">
+            <a href="${helper.Domain.getWWWHost(request)}/login" class="login">登录</a>
+            <a href="${helper.Domain.getWWWHost(request)}/register" class="register">注册</a>
+        </div>
+    #{/else}
+        <div class="promise"><a href="/service" target="_blank"><img src="http://192.168.18.242/yome/home/ico/prom.png"
+                                                                     alt=""/></a></div>
         <div class="notice">
-            <h3><s></s>公告 <a href="" target="_blank">更多>></a></h3>
+            <h3>公告 <a href="/topic" target="_blank">更多>></a></h3>
             <ul>
-                <li class="first"><i class="dot">•</i><a href="" target="_blank">一百券招聘返利推广员</a></li>
-                <li><i class="dot">•</i><a href="" target="_blank">微博晒单赢取50元现金</a></li>
-                <li><i class="dot">•</i><a href="" target="_blank">一百券招聘返利推广员</a></li>
-                <li><i class="dot">•</i><a href="" target="_blank">微博晒单赢取50元现金</a></li>
+            #{set i:0/}
+            #{list topics, as:'topic'}
+                <li #{if i == 0}class="first"#{/if}><i class="dot">•</i><a href="/topic/${topic.id}"
+                                                                           target="_blank">${topic.title}</a></li>
+                #{set i:i+1/}
+            #{/list}
             </ul>
         </div>
     </div>
 
     <div class="promo">
-        <a href="" target="_blank" class="first"><img src="http://192.168.18.242/yome/home/promo.png" alt=""/></a>
-        <a href="" target="_blank"><img src="http://192.168.18.242/yome/home/promo2.png" alt=""/></a>
-        <a href="" target="_blank"><img src="http://192.168.18.242/yome/home/promo3.png" alt=""/></a>
+    #{set i:0/}
+    #{list rightSlides, as:'rightSlides'}
+        <a  #{if i == 0}class="first"#{/if} href="${rightSlides.link}" target="_blank"><img
+                src="${rightSlides.getShowImageUrl()}"
+                alt="${rightSlides?.title}" width="243" height="130"/></a>
+        #{set i:i+1/}
+    #{/list}
     </div>
 </div>
 
 <div id="tabbar">
-<ul class="tab-hd clearfix">
-    <li class="first"><a class="active" href="">猜你喜欢</a></li>
-    <li><a href="">推荐商品</a></li>
-    <li><a href="">热卖商品</a></li>
-    <li class="last"><a href="">最新上架</a></li>
-</ul>
-<div class="tab-bd clearfix">
-<ul class="goods">
-    <li class="first">
-        <div class="image">
-            <a href="" target="_blank"><img
-                    src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                    height="152"/></a>
-            <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-        </div>
-        <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-        <div class="price">
-            <div class="left">&yen;135.00</div>
-            <div class="right">
-                <del>原价：150.00</del>
-                <div><em>1345</em>人已购买</div>
-            </div>
-        </div>
-    </li>
-    <li>
-        <div class="image">
-            <a href="" target="_blank"><img
-                    src="http://img0.uhcdn.com/p/0/0/295/88e5131d_2012092812571058785_234x178.jpg" width="199"
-                    height="152"/></a>
-            <a class="region" href="" target="_blank"><span>商圈：</span>源深体育中心、南京东路、火车站、闸北公园、凉城/江湾镇、黄兴公园、七宝、吴淞、淮海路、万体馆、四川北路</a>
-        </div>
-        <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-        <div class="price">
-            <div class="left">&yen;135.00</div>
-            <div class="right">
-                <del>原价：150.00</del>
-                <div><em>1345</em>人已购买</div>
-            </div>
-        </div>
-    </li>
-    <li>
-        <div class="image">
-            <a href="" target="_blank"><img
-                    src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                    height="152"/></a>
-            <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-        </div>
-        <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-        <div class="price">
-            <div class="left">&yen;135.00</div>
-            <div class="right">
-                <del>原价：150.00</del>
-                <div><em>1345</em>人已购买</div>
-            </div>
-        </div>
-    </li>
-    <li>
-        <div class="image">
-            <a href="" target="_blank"><img
-                    src="http://img0.uhcdn.com/p/0/0/295/88e5131d_2012092812571058785_234x178.jpg" width="199"
-                    height="152"/></a>
-            <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-        </div>
-        <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-        <div class="price">
-            <div class="left">&yen;135.00</div>
-            <div class="right">
-                <del>原价：150.00</del>
-                <div><em>1345</em>人已购买</div>
-            </div>
-        </div>
-    </li>
-</ul>
-<ul class="goods" style="display:none">
-    <li class="first">
-        <div class="image">
-            <a href="" target="_blank"><img
-                    src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                    height="152"/></a>
-            <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-        </div>
-        <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-        <div class="price">
-            <div class="left">&yen;135.00</div>
-            <div class="right">
-                <del>原价：150.00</del>
-                <div><em>1345</em>人已购买</div>
-            </div>
-        </div>
-    </li>
-    <li>
-        <div class="image">
-            <a href="" target="_blank"><img
-                    src="http://img0.uhcdn.com/p/0/0/295/88e5131d_2012092812571058785_234x178.jpg" width="199"
-                    height="152"/></a>
-            <a class="region" href="" target="_blank"><span>商圈：</span>源深体育中心、南京东路、火车站、闸北公园、凉城/江湾镇、黄兴公园、七宝、吴淞、淮海路、万体馆、四川北路</a>
-        </div>
-        <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-        <div class="price">
-            <div class="left">&yen;135.00</div>
-            <div class="right">
-                <del>原价：150.00</del>
-                <div><em>1345</em>人已购买</div>
-            </div>
-        </div>
-    </li>
-    <li>
-        <div class="image">
-            <a href="" target="_blank"><img
-                    src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                    height="152"/></a>
-            <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-        </div>
-        <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-        <div class="price">
-            <div class="left">&yen;135.00</div>
-            <div class="right">
-                <del>原价：150.00</del>
-                <div><em>1345</em>人已购买</div>
-            </div>
-        </div>
-    </li>
-    <li>
-        <div class="image">
-            <a href="" target="_blank"><img
-                    src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                    height="152"/></a>
-            <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-        </div>
-        <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-        <div class="price">
-            <div class="left">&yen;135.00</div>
-            <div class="right">
-                <del>原价：150.00</del>
-                <div><em>1345</em>人已购买</div>
-            </div>
-        </div>
-    </li>
-</ul>
-<ul class="goods" style="display:none">
-    <li class="first">
-        <div class="image">
-            <a href="" target="_blank"><img
-                    src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                    height="152"/></a>
-            <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-        </div>
-        <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-        <div class="price">
-            <div class="left">&yen;135.00</div>
-            <div class="right">
-                <del>原价：150.00</del>
-                <div><em>1345</em>人已购买</div>
-            </div>
-        </div>
-    </li>
-    <li>
-        <div class="image">
-            <a href="" target="_blank"><img
-                    src="http://img0.uhcdn.com/p/0/0/295/88e5131d_2012092812571058785_234x178.jpg" width="199"
-                    height="152"/></a>
-            <a class="region" href="" target="_blank"><span>商圈：</span>源深体育中心、南京东路、火车站、闸北公园、凉城/江湾镇、黄兴公园、七宝、吴淞、淮海路、万体馆、四川北路</a>
-        </div>
-        <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-        <div class="price">
-            <div class="left">&yen;135.00</div>
-            <div class="right">
-                <del>原价：150.00</del>
-                <div><em>1345</em>人已购买</div>
-            </div>
-        </div>
-    </li>
-    <li>
-        <div class="image">
-            <a href="" target="_blank"><img
-                    src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                    height="152"/></a>
-            <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-        </div>
-        <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-        <div class="price">
-            <div class="left">&yen;135.00</div>
-            <div class="right">
-                <del>原价：150.00</del>
-                <div><em>1345</em>人已购买</div>
-            </div>
-        </div>
-    </li>
-    <li>
-        <div class="image">
-            <a href="" target="_blank"><img
-                    src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                    height="152"/></a>
-            <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-        </div>
-        <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-        <div class="price">
-            <div class="left">&yen;135.00</div>
-            <div class="right">
-                <del>原价：150.00</del>
-                <div><em>1345</em>人已购买</div>
-            </div>
-        </div>
-    </li>
-</ul>
-<ul class="goods" style="display:none">
-    <li class="first">
-        <div class="image">
-            <a href="" target="_blank"><img
-                    src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                    height="152"/></a>
-            <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-        </div>
-        <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-        <div class="price">
-            <div class="left">&yen;135.00</div>
-            <div class="right">
-                <del>原价：150.00</del>
-                <div><em>1345</em>人已购买</div>
-            </div>
-        </div>
-    </li>
-    <li>
-        <div class="image">
-            <a href="" target="_blank"><img
-                    src="http://img0.uhcdn.com/p/0/0/295/88e5131d_2012092812571058785_234x178.jpg" width="199"
-                    height="152"/></a>
-            <a class="region" href="" target="_blank"><span>商圈：</span>源深体育中心、南京东路、火车站、闸北公园、凉城/江湾镇、黄兴公园、七宝、吴淞、淮海路、万体馆、四川北路</a>
-        </div>
-        <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-        <div class="price">
-            <div class="left">&yen;135.00</div>
-            <div class="right">
-                <del>原价：150.00</del>
-                <div><em>1345</em>人已购买</div>
-            </div>
-        </div>
-    </li>
-    <li>
-        <div class="image">
-            <a href="" target="_blank"><img
-                    src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                    height="152"/></a>
-            <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-        </div>
-        <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-        <div class="price">
-            <div class="left">&yen;135.00</div>
-            <div class="right">
-                <del>原价：150.00</del>
-                <div><em>1345</em>人已购买</div>
-            </div>
-        </div>
-    </li>
-    <li>
-        <div class="image">
-            <a href="" target="_blank"><img
-                    src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                    height="152"/></a>
-            <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-        </div>
-        <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-        <div class="price">
-            <div class="left">&yen;135.00</div>
-            <div class="right">
-                <del>原价：150.00</del>
-                <div><em>1345</em>人已购买</div>
-            </div>
-        </div>
-    </li>
-</ul>
-</div>
-</div>
-
-<div class="floor">
-    <div class="hd"><h2><b class="f1"></b>餐饮美食</h2></div>
-    <div class="ft">
-        <a href="" target="_blank">川菜</a>
-        <a href="" target="_blank">本帮菜</a>
-        <a href="" target="_blank">火锅</a>
-        <a href="" target="_blank">自助餐</a>
-        <a href="" target="_blank">茶餐厅</a>
-        <a href="" target="_blank">西餐</a>
-        <a href="" target="_blank">日韩料理</a>
-        <a href="" target="_blank">烧烤</a>
-        <a href="" target="_blank">更多>></a>
-    </div>
-    <div class="bd clearfix">
-        <div class="side">
-            <dl class="accordion">
-                <dt class="n1" style="display:none">秋的气季</dt>
-                <dd>
-                    <i class="n1"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201209/02/2/2a6d0717-87b8-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>秋的气季</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n2">定型摩丝</dt>
-                <dd style="display:none">
-                    <i class="n2"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201210/09/6/6435dce4-8351-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>定型摩丝</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n3">时都能满</dt>
-                <dd style="display:none">
-                    <i class="n3"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201209/29/5/5547a265-24fc-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>时都能满</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n4">精品发饰</dt>
-                <dd style="display:none">
-                    <i class="n4"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201209/29/5/5547a265-24fc-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>精品发饰</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n5">定型摩丝</dt>
-                <dd style="display:none">
-                    <i class="n5"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201210/09/6/6435dce4-8351-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>定型摩丝</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n6">时都能满</dt>
-                <dd style="display:none">
-                    <i class="n6"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201209/29/5/5547a265-24fc-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>时都能满</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n7">精品发饰</dt>
-                <dd style="display:none">
-                    <i class="n7"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201209/29/5/5547a265-24fc-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>精品发饰</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n8">有家川菜</dt>
-                <dd style="display:none">
-                    <i class="n8"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201210/09/6/6435dce4-8351-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>有家川菜</b> 85元抢购100元代金券</p>
-                </dd>
-            </dl>
-            <a class="advert" href="" target="_blank"><img src="http://192.168.18.242/yome/home/ban.png" alt=""/></a>
-        </div>
-        <ul class="goods first">
-            <li>
-                <div class="image">
-                    <a href="" target="_blank"><img
-                            src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                            height="152"/></a>
-                    <a class="region" href="" target="_blank"><span>商圈：</span>源深体育中心、南京东路、火车站、闸北公园、凉城/江湾镇、黄兴公园、七宝、吴淞、淮海路、万体馆、四川北路</a>
-                </div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-                <div class="price">
-                    <div class="left">&yen;135.00</div>
-                    <div class="right">
-                        <del>原价：150.00</del>
-                        <div><em>1345</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="image">
-                    <a href="" target="_blank"><img
-                            src="http://img0.uhcdn.com/p/0/0/295/88e5131d_2012092812571058785_234x178.jpg" width="199"
-                            height="152"/></a>
-                    <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-                </div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-                <div class="price">
-                    <div class="left">&yen;135.00</div>
-                    <div class="right">
-                        <del>原价：150.00</del>
-                        <div><em>1345</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="image">
-                    <a href="" target="_blank"><img
-                            src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                            height="152"/></a>
-                    <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-                </div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-                <div class="price">
-                    <div class="left">&yen;135.00</div>
-                    <div class="right">
-                        <del>原价：150.00</del>
-                        <div><em>1345</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
-        </ul>
+    <ul class="tab-hd clearfix">
+        <li class="first"><a class="active" href="">猜你喜欢</a></li>
+        <li><a href="">推荐商品</a></li>
+        <li><a href="">热卖商品</a></li>
+        <li class="last"><a href="">最新上架</a></li>
+    </ul>
+    <div class="tab-bd clearfix">
         <ul class="goods">
-            <li>
+        #{set i:0/}
+        #{list recommendGoodsList, as:'aGoods'}
+            <li #{if i == 0}class="first"#{/if}>
+
                 <div class="image">
                     <a href="" target="_blank"><img
-                            src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
+                            src="${aGoods.imageSmallPath}"
+                            width="199"
                             height="152"/></a>
-                    <a class="region" href="" target="_blank"><span>商圈：</span>源深体育中心、南京东路、火车站、闸北公园、凉城/江湾镇、黄兴公园、七宝、吴淞、淮海路、万体馆、四川北路</a>
+                    #{if aGoods.areaNames?.size()>0}<a class="region" href=""
+                                                       target="_blank"><span>商圈：</span>${aGoods.areaNames}
+                    </a>
+                    #{/if}
                 </div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
+
+                <div class="title"><a href="" target="_blank">${aGoods.name}</a></div>
                 <div class="price">
-                    <div class="left">&yen;135.00</div>
+                    <div class="left">&yen;${aGoods.salePrice}</div>
                     <div class="right">
-                        <del>原价：150.00</del>
-                        <div><em>1345</em>人已购买</div>
+                        <del>原价：${aGoods.faceValue}</del>
+                        <div><em>${aGoods?.virtualSaleCount}</em>人已购买</div>
                     </div>
                 </div>
             </li>
-            <li>
-                <div class="image">
-                    <a href="" target="_blank"><img
-                            src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                            height="152"/></a>
-                    <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-                </div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-                <div class="price">
-                    <div class="left">&yen;135.00</div>
-                    <div class="right">
-                        <del>原价：150.00</del>
-                        <div><em>1345</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="image">
-                    <a href="" target="_blank"><img
-                            src="http://img0.uhcdn.com/p/0/0/295/88e5131d_2012092812571058785_234x178.jpg" width="199"
-                            height="152"/></a>
-                    <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-                </div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-                <div class="price">
-                    <div class="left">&yen;135.00</div>
-                    <div class="right">
-                        <del>原价：150.00</del>
-                        <div><em>1345</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
+            #{set i:i+1/}
+        #{/list}
         </ul>
+        <ul class="goods" style="display:none">
+        #{set i:0/}
+        #{list goodsList, as:'aGoods'}
+            <li #{if i == 0}class="first"#{/if}>
+
+                <div class="image">
+                    <a href="" target="_blank"><img
+                            src="${aGoods.imageSmallPath}"
+                            width="199"
+                            height="152"/></a>
+                    #{if aGoods.areaNames?.size()>0}<a class="region" href=""
+                                                       target="_blank"><span>商圈：</span>${aGoods.areaNames}
+                    </a>
+                    #{/if}
+                </div>
+
+                <div class="title"><a href="" target="_blank">${aGoods.name}</a></div>
+                <div class="price">
+                    <div class="left">&yen;${aGoods.salePrice}</div>
+                    <div class="right">
+                        <del>原价：${aGoods.faceValue}</del>
+                        <div><em>${aGoods?.virtualSaleCount}</em>人已购买</div>
+                    </div>
+                </div>
+            </li>
+            #{set i:i+1/}
+        #{/list}
+        </ul>
+        <ul class="goods" style="display:none">
+        #{set i:0/}
+        #{list hotSaleGoodsList, as:'aGoods'}
+            <li #{if i == 0}class="first"#{/if}>
+
+                <div class="image">
+                    <a href="" target="_blank"><img
+                            src="${aGoods.imageSmallPath}"
+                            width="199"
+                            height="152"/></a>
+                    #{if aGoods.areaNames?.size()>0}<a class="region" href=""
+                                                       target="_blank"><span>商圈：</span>${aGoods.areaNames}
+                    </a>
+                    #{/if}
+                </div>
+
+                <div class="title"><a href="" target="_blank">${aGoods.name}</a></div>
+                <div class="price">
+                    <div class="left">&yen;${aGoods.salePrice}</div>
+                    <div class="right">
+                        <del>原价：${aGoods.faceValue}</del>
+                        <div><em>${aGoods?.virtualSaleCount}</em>人已购买</div>
+                    </div>
+                </div>
+            </li>
+            #{set i:i+1/}
+        #{/list}
+        </ul>
+        <ul class="goods" style="display:none">
+        #{set i:0/}
+        #{list newGoodsList, as:'aGoods'}
+            <li #{if i == 0}class="first"#{/if}>
+
+                <div class="image">
+                    <a href="" target="_blank"><img
+                            src="${aGoods.imageSmallPath}"
+                            width="199"
+                            height="152"/></a>
+                    #{if aGoods.areaNames?.size()>0}<a class="region" href=""
+                                                       target="_blank"><span>商圈：</span>${aGoods.areaNames}
+                    </a>
+                    #{/if}
+                </div>
+
+                <div class="title"><a href="" target="_blank">${aGoods.name}</a></div>
+                <div class="price">
+                    <div class="left">&yen;${aGoods.salePrice}</div>
+                    <div class="right">
+                        <del>原价：${aGoods.faceValue}</del>
+                        <div><em>${aGoods.virtualSaleCount}</em>人已购买</div>
+                    </div>
+                </div>
+            </li>
+            #{set i:i+1/}
+        #{/list}
+        </ul>
+
     </div>
 </div>
-
+#{set i:0/}
+#{set showOneLine:true/}
+#{list floorCategories,as:'category'}
+    #{set i:i+1/}
+    #{if i> 2}
+        #{set showOneLine:false/}
+    #{/if}
 <div class="floor">
-    <div class="hd"><h2><b class="f2"></b>休闲娱乐</h2></div>
+    <div class="hd"><h2><b class="f${i}"></b>${category.name}</h2></div>
     <div class="ft">
-        <a href="" target="_blank">川菜</a>
-        <a href="" target="_blank">本帮菜</a>
-        <a href="" target="_blank">火锅</a>
-        <a href="" target="_blank">自助餐</a>
-        <a href="" target="_blank">茶餐厅</a>
-        <a href="" target="_blank">西餐</a>
-        <a href="" target="_blank">日韩料理</a>
-        <a href="" target="_blank">烧烤</a>
-        <a href="" target="_blank">更多>></a>
+        #{list category.showKeywordsList,as:'keywords'}
+            <a href="${models.sales.Goods.getUrl(keywords)}" target="_blank">${keywords}</a>
+        #{/list}
+        <a href="/s/${category.id}" target="_blank">更多&gt;&gt;</a>
     </div>
     <div class="bd clearfix">
         <div class="side">
+            #{if showOneLine}#{set brandCount:8/}#{/if}#{else}#{set brandCount:4/}#{/else}
             <dl class="accordion">
-                <dt class="n1" style="display:none">秋的气季</dt>
-                <dd>
-                    <i class="n1"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201209/02/2/2a6d0717-87b8-4.jpg" width="200"
-                            height="125"></a>
+                #{set j:0/}
+                #{list category.getTopBrands(brandCount),as:'brand'}
+                    #{set j:j+1/}
+                    <dt class="n${j}"
+                        #{if j>1}style="display:block"#{/if}#{else}style="display:none"#{/else}>${brand.name}</dt>
+                    <dd #{if j>1}style="display:none"#{/if}>
+                        <i class="n${j}"></i>
+                        <a href="" target="_blank"><img
+                                src="${brand.showLogo}" width="200"
+                                height="125"></a>
 
-                    <p><b>秋的气季</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n2">定型摩丝</dt>
-                <dd style="display:none">
-                    <i class="n2"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201210/09/6/6435dce4-8351-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>定型摩丝</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n3">时都能满</dt>
-                <dd style="display:none">
-                    <i class="n3"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201209/29/5/5547a265-24fc-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>时都能满</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n4">精品发饰</dt>
-                <dd style="display:none">
-                    <i class="n4"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201209/29/5/5547a265-24fc-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>精品发饰</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n5">定型摩丝</dt>
-                <dd style="display:none">
-                    <i class="n5"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201210/09/6/6435dce4-8351-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>定型摩丝</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n6">时都能满</dt>
-                <dd style="display:none">
-                    <i class="n6"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201209/29/5/5547a265-24fc-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>时都能满</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n7">精品发饰</dt>
-                <dd style="display:none">
-                    <i class="n7"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201209/29/5/5547a265-24fc-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>精品发饰</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n8">有家川菜</dt>
-                <dd style="display:none">
-                    <i class="n8"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201210/09/6/6435dce4-8351-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>有家川菜</b> 85元抢购100元代金券</p>
-                </dd>
+                        <p><b>${brand.name}</b> ${brand.description}</p>
+                    </dd>
+                #{/list}
             </dl>
-            <a class="advert" href="" target="_blank"><img src="http://192.168.18.242/yome/home/ban.png" alt=""/></a>
+            #{if showOneLine}<a class="advert" href="" target="_blank"><img
+                    src="http://192.168.18.242/yome/home/ban.png" alt=""/></a>#{/if}
         </div>
-        <ul class="goods first">
-            <li>
+
+        #{if showOneLine}#{set goodsCount:6/}#{/if}#{else}#{set goodsCount:3/}#{/else}
+    <ul class="goods first">
+        #{set j:0/}
+        #{list category.getTopByCategory(goodsCount),as:'aGoods'}
+            #{set j:j+1/}
+            <li #{if i == 0}class="first"#{/if}>
+
                 <div class="image">
                     <a href="" target="_blank"><img
-                            src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
+                            src="${aGoods.imageSmallPath}"
+                            width="199"
                             height="152"/></a>
-                    <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
+                    #{if aGoods.areaNames?.size()>0}<a class="region" href=""
+                                                       target="_blank"><span>商圈：</span>${aGoods.areaNames}
+                    </a>
+                    #{/if}
                 </div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
+
+                <div class="title"><a href="" target="_blank">${aGoods.name}</a></div>
                 <div class="price">
-                    <div class="left">&yen;135.00</div>
+                    <div class="left">&yen;${aGoods.salePrice}</div>
                     <div class="right">
-                        <del>原价：150.00</del>
-                        <div><em>1345</em>人已购买</div>
+                        <del>原价：${aGoods.faceValue}</del>
+                        <div><em>${aGoods.virtualSaleCount}</em>人已购买</div>
                     </div>
                 </div>
             </li>
-            <li>
-                <div class="image">
-                    <a href="" target="_blank"><img
-                            src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                            height="152"/></a>
-                    <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-                </div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-                <div class="price">
-                    <div class="left">&yen;135.00</div>
-                    <div class="right">
-                        <del>原价：150.00</del>
-                        <div><em>1345</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="image">
-                    <a href="" target="_blank"><img
-                            src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                            height="152"/></a>
-                    <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-                </div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-                <div class="price">
-                    <div class="left">&yen;135.00</div>
-                    <div class="right">
-                        <del>原价：150.00</del>
-                        <div><em>1345</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
-        </ul>
-        <ul class="goods">
-            <li>
-                <div class="image">
-                    <a href="" target="_blank"><img
-                            src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                            height="152"/></a>
-                    <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-                </div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-                <div class="price">
-                    <div class="left">&yen;135.00</div>
-                    <div class="right">
-                        <del>原价：150.00</del>
-                        <div><em>1345</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="image">
-                    <a href="" target="_blank"><img
-                            src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                            height="152"/></a>
-                    <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-                </div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-                <div class="price">
-                    <div class="left">&yen;135.00</div>
-                    <div class="right">
-                        <del>原价：150.00</del>
-                        <div><em>1345</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="image">
-                    <a href="" target="_blank"><img
-                            src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                            height="152"/></a>
-                    <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-                </div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-                <div class="price">
-                    <div class="left">&yen;135.00</div>
-                    <div class="right">
-                        <del>原价：150.00</del>
-                        <div><em>1345</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
-        </ul>
-    </div>
-    <div class="ft">
+            #{if j==3}
+            </ul>
+            <ul class="goods">
+            #{/if}
+        #{/list}
+    </ul>
     </div>
 </div>
+#{/list}
+</div>
 
-<div class="floor">
-    <div class="hd"><h2><b class="f3"></b>丽人写真</h2></div>
-    <div class="ft">
-        <a href="" target="_blank">川菜</a>
-        <a href="" target="_blank">本帮菜</a>
-        <a href="" target="_blank">火锅</a>
-        <a href="" target="_blank">自助餐</a>
-        <a href="" target="_blank">茶餐厅</a>
-        <a href="" target="_blank">西餐</a>
-        <a href="" target="_blank">日韩料理</a>
-        <a href="" target="_blank">烧烤</a>
-        <a href="" target="_blank">更多>></a>
-    </div>
-    <div class="bd clearfix">
-        <div class="side">
-            <dl class="accordion">
-                <dt class="n1" style="display:none">秋的气季</dt>
-                <dd>
-                    <i class="n1"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201209/02/2/2a6d0717-87b8-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>秋的气季</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n2">定型摩丝</dt>
-                <dd style="display:none">
-                    <i class="n2"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201210/09/6/6435dce4-8351-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>定型摩丝</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n3">时都能满</dt>
-                <dd style="display:none">
-                    <i class="n3"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201209/29/5/5547a265-24fc-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>时都能满</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n4">精品发饰</dt>
-                <dd style="display:none">
-                    <i class="n4"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201209/29/5/5547a265-24fc-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>精品发饰</b> 85元抢购100元代金券</p>
-                </dd>
-            </dl>
-        </div>
-        <ul class="goods first">
-            <li>
-                <div class="image">
-                    <a href="" target="_blank"><img
-                            src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                            height="152"/></a>
-                    <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-                </div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-                <div class="price">
-                    <div class="left">&yen;135.00</div>
-                    <div class="right">
-                        <del>原价：150.00</del>
-                        <div><em>1345</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="image">
-                    <a href="" target="_blank"><img
-                            src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                            height="152"/></a>
-                    <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-                </div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-                <div class="price">
-                    <div class="left">&yen;135.00</div>
-                    <div class="right">
-                        <del>原价：150.00</del>
-                        <div><em>1345</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="image">
-                    <a href="" target="_blank"><img
-                            src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                            height="152"/></a>
-                    <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-                </div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-                <div class="price">
-                    <div class="left">&yen;135.00</div>
-                    <div class="right">
-                        <del>原价：150.00</del>
-                        <div><em>1345</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
+<div id="partner-links">
+    <div class="inner">
+        <ul class="clearfix">
+            <li class="first">合作链接：</li>
+        #{list friendsLinks, as:'friendsLinks'}
+            <li><a href="${friendsLinks?.link}" target="_blank">${friendsLinks?.linkName}</a></li>
+        #{/list}
         </ul>
     </div>
 </div>
 
-<div class="floor">
-    <div class="hd"><h2><b class="f4"></b>生活服务</h2></div>
-    <div class="ft">
-        <a href="" target="_blank">川菜</a>
-        <a href="" target="_blank">本帮菜</a>
-        <a href="" target="_blank">火锅</a>
-        <a href="" target="_blank">自助餐</a>
-        <a href="" target="_blank">茶餐厅</a>
-        <a href="" target="_blank">西餐</a>
-        <a href="" target="_blank">日韩料理</a>
-        <a href="" target="_blank">烧烤</a>
-        <a href="" target="_blank">更多>></a>
-    </div>
-    <div class="bd clearfix">
-        <div class="side">
-            <dl class="accordion">
-                <dt class="n1" style="display:none">秋的气季</dt>
-                <dd>
-                    <i class="n1"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201209/02/2/2a6d0717-87b8-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>秋的气季</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n2">定型摩丝</dt>
-                <dd style="display:none">
-                    <i class="n2"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201210/09/6/6435dce4-8351-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>定型摩丝</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n3">时都能满</dt>
-                <dd style="display:none">
-                    <i class="n3"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201209/29/5/5547a265-24fc-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>时都能满</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n4">精品发饰</dt>
-                <dd style="display:none">
-                    <i class="n4"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201209/29/5/5547a265-24fc-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>精品发饰</b> 85元抢购100元代金券</p>
-                </dd>
-            </dl>
-        </div>
-        <ul class="goods first">
-            <li>
-                <div class="image">
-                    <a href="" target="_blank"><img
-                            src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                            height="152"/></a>
-                    <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-                </div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-                <div class="price">
-                    <div class="left">&yen;135.00</div>
-                    <div class="right">
-                        <del>原价：150.00</del>
-                        <div><em>1345</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="image">
-                    <a href="" target="_blank"><img
-                            src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                            height="152"/></a>
-                    <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-                </div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-                <div class="price">
-                    <div class="left">&yen;135.00</div>
-                    <div class="right">
-                        <del>原价：150.00</del>
-                        <div><em>1345</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="image">
-                    <a href="" target="_blank"><img
-                            src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                            height="152"/></a>
-                    <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-                </div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-                <div class="price">
-                    <div class="left">&yen;135.00</div>
-                    <div class="right">
-                        <del>原价：150.00</del>
-                        <div><em>1345</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
-        </ul>
-    </div>
-</div>
-
-<div class="floor">
-    <div class="hd"><h2><b class="f5"></b>酒店旅游</h2></div>
-    <div class="ft">
-        <a href="" target="_blank">川菜</a>
-        <a href="" target="_blank">本帮菜</a>
-        <a href="" target="_blank">火锅</a>
-        <a href="" target="_blank">自助餐</a>
-        <a href="" target="_blank">茶餐厅</a>
-        <a href="" target="_blank">西餐</a>
-        <a href="" target="_blank">日韩料理</a>
-        <a href="" target="_blank">烧烤</a>
-        <a href="" target="_blank">更多>></a>
-    </div>
-    <div class="bd clearfix">
-        <div class="side">
-            <dl class="accordion">
-                <dt class="n1" style="display:none">秋的气季</dt>
-                <dd>
-                    <i class="n1"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201209/02/2/2a6d0717-87b8-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>秋的气季</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n2">定型摩丝</dt>
-                <dd style="display:none">
-                    <i class="n2"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201210/09/6/6435dce4-8351-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>定型摩丝</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n3">时都能满</dt>
-                <dd style="display:none">
-                    <i class="n3"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201209/29/5/5547a265-24fc-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>时都能满</b> 85元抢购100元代金券</p>
-                </dd>
-                <dt class="n4">精品发饰</dt>
-                <dd style="display:none">
-                    <i class="n4"></i>
-                    <a href="" target="_blank"><img
-                            src="http://mimg.127.net/h/u/quan/caImg/201209/29/5/5547a265-24fc-4.jpg" width="200"
-                            height="125"></a>
-
-                    <p><b>精品发饰</b> 85元抢购100元代金券</p>
-                </dd>
-            </dl>
-        </div>
-        <ul class="goods first">
-            <li>
-                <div class="image">
-                    <a href="" target="_blank"><img
-                            src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                            height="152"/></a>
-                    <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-                </div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-                <div class="price">
-                    <div class="left">&yen;135.00</div>
-                    <div class="right">
-                        <del>原价：150.00</del>
-                        <div><em>1345</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="image">
-                    <a href="" target="_blank"><img
-                            src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                            height="152"/></a>
-                    <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-                </div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-                <div class="price">
-                    <div class="left">&yen;135.00</div>
-                    <div class="right">
-                        <del>原价：150.00</del>
-                        <div><em>1345</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="image">
-                    <a href="" target="_blank"><img
-                            src="http://img0.uhcdn.com/p/0/0/322/6568bd9c_2012101802575675420_172x132.jpg" width="199"
-                            height="152"/></a>
-                    <a class="region" href="" target="_blank"><span>商圈：</span>静安寺、南京西路、淮海路、万体馆、四川北路</a>
-                </div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]有家川菜面值以第三元现金券免预约不限时</a></div>
-                <div class="price">
-                    <div class="left">&yen;135.00</div>
-                    <div class="right">
-                        <del>原价：150.00</del>
-                        <div><em>1345</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
-        </ul>
-    </div>
-</div>
-</div>
 </div>
