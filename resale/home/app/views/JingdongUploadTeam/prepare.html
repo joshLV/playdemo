@@ -87,7 +87,8 @@
     <p>团购简介 富文本数据<b>[必填]</b>  </p>
     <textarea rows="5" cols="200" name="summary">${goods.title.raw()}</textarea>
     <p>团购详情 富文本数据<b>[必填]</b> </p>
-    <textarea rows="5" cols="200" name="teamDetail">${goods.details.raw()} ${goods.prompt.raw()} </textarea>
+    <textarea rows="5" cols="200" name="teamDetail">${goods.prompt.raw().replaceAll(" ", "")}
+${goods.details.raw().replaceAll(" ", "")} </textarea>
 
     <b>
     #{list items:shops, as:'shop'}

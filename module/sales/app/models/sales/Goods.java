@@ -606,6 +606,17 @@ public class Goods extends Model {
     public void setPrompt(String prompt) {
         this.prompt = Jsoup.clean(prompt, HTML_WHITE_TAGS);
     }
+    
+    
+    @Transient
+    public String getSafePrompt() {
+    	return prompt.replaceAll(" ", "");
+    }
+    
+    @Transient
+    public String getSafeDetails() {
+    	return details.replaceAll(" ", "");
+    }
 
     /**
      * 获取商品允许发布的电子商务平T台.

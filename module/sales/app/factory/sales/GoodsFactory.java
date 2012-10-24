@@ -32,13 +32,14 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.salePrice = new BigDecimal("8.5");
         goods.expireAt = afterDays(new Date(), 30);
         goods.faceValue = new BigDecimal("10.00");
-        goods.materialType = MaterialType.REAL;
+        goods.materialType = MaterialType.ELECTRONIC;
         goods.baseSale = 100L;
         goods.saleCount = 10;
         goods.useWeekDay = "1,2,3,4,5,6,7";
         goods.originalPrice = new BigDecimal("5");
         goods.categories = new HashSet<>();
         goods.shops = new HashSet<>();
+        goods.isLottery = Boolean.FALSE;
         goods.categories.add(FactoryBoy.lastOrCreate(Category.class));
         goods.shops.add(FactoryBoy.lastOrCreate(Shop.class));
         return goods;
@@ -65,4 +66,11 @@ public class GoodsFactory extends ModelFactory<Goods> {
     public void defineWithElectronic(Goods goods) {
         goods.materialType = MaterialType.ELECTRONIC;
     }
+    
+
+    @Factory(name = "Real")
+    public void defineWithReal(Goods goods) {
+        goods.materialType = MaterialType.REAL;
+    }
+    
 }

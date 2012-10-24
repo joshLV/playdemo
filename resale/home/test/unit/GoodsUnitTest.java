@@ -1,23 +1,19 @@
 package unit;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 import models.resale.Resaler;
-import models.sales.Area;
-import models.sales.Brand;
-import models.sales.Category;
 import models.sales.Goods;
 import models.sales.GoodsCondition;
-import models.sales.GoodsLevelPrice;
-import models.sales.Shop;
+import models.sales.MaterialType;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import play.modules.paginate.JPAExtPaginator;
-import play.test.Fixtures;
 import play.test.UnitTest;
+import factory.FactoryBoy;
+import factory.callback.SequenceCallback;
 
 /**
  * 商品Model的单元测试.
@@ -27,22 +23,12 @@ import play.test.UnitTest;
  * Time: 5:59 PM
  */
 public class GoodsUnitTest extends UnitTest {
+	Resaler resaler;
+	
     @Before
     public void setup() {
-        Fixtures.delete(Shop.class);
-        Fixtures.delete(Goods.class);
-        Fixtures.delete(Category.class);
-        Fixtures.delete(Brand.class);
-        Fixtures.delete(Area.class);
-        Fixtures.delete(Resaler.class);
-        Fixtures.delete(GoodsLevelPrice.class);
-        Fixtures.loadModels("fixture/areas_unit.yml");
-        Fixtures.loadModels("fixture/categories_unit.yml");
-        Fixtures.loadModels("fixture/brands_unit.yml");
-        Fixtures.loadModels("fixture/shops_unit.yml");
-        Fixtures.loadModels("fixture/goods_unit.yml");
-        Fixtures.loadModels("fixture/level_price.yml");
-        Fixtures.loadModels("fixture/resaler.yml");
+    	FactoryBoy.deleteAll();
+    	resaler = FactoryBoy.create(Resaler.class);
     }
 
     /**
@@ -50,12 +36,31 @@ public class GoodsUnitTest extends UnitTest {
      */
     @Test
     public void testFindByResaleCondition() {
+    	FactoryBoy.batchCreate(14, Goods.class, new SequenceCallback<Goods>() {
+			@Override
+			public void sequence(Goods g, int seq) {
+				g.materialType = MaterialType.ELECTRONIC;
+			}
+		});
+    	System.out.println("goods.count=" + Goods.count());
+    	List<Goods> all = Goods.all().fetch();
+    	Goods g1 = all.get(3);
+    	System.out.println("status=" + g1.status + ", deleted=" + g1.deleted + ", isLottory=" + g1.isLottery + ", type=" + g1.materialType);
+    	
         String condition = "0-0-0-0-1-0-0";
         GoodsCondition goodsCond = new GoodsCondition(true,condition);
-        Long resalerId = (Long) Fixtures.idCache.get("models.resale.Resaler-Resaler_1");
-        Resaler resaler =Resaler.findById(resalerId);
+        System.out.println(goodsCond.materialType);
         JPAExtPaginator<Goods> goodsPage = models.sales.Goods.findByResaleCondition
                 (resaler,goodsCond, 1, 50);
         assertEquals(14, goodsPage.size());
+    }
+    
+    
+    @Test
+    public void testSavePromptAndSafeDetails() {
+    	Goods g = FactoryBoy.create(Goods.class);
+        g.title = "更加婀娜。 </span> </p> ";
+    	g.setPrompt("更加婀娜。 </span> </p> ");
+    	assertEquals("更加婀娜。</span> </p> ", g.title.replaceAll(" ", ""));
     }
 }

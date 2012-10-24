@@ -76,7 +76,6 @@ public class JingdongUploadTeam extends Controller{
         //查询一级分类
         List<IdNameResponse> categories = cacheCategories(0L);
 
-
         render(goods, supplier, city, categories, areaNames, shops);
     }
 
