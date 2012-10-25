@@ -37,7 +37,7 @@ public class Topic extends Model {
     private static final long serialVersionUID = 70632320609113062L;
     
     @Required
-    @MinSize(10)
+//    @MinSize(10)
     @MaxSize(60)
     public String title;
 

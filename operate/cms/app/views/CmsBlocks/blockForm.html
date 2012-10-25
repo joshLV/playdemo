@@ -4,6 +4,8 @@ class:'span2'}
     #{option models.cms.BlockType.DAILY_SPECIAL}&{'block.DAILY_SPECIAL'}#{/option}
     #{option models.cms.BlockType.WEBSITE_RIGHT_SLIDE}&{'block.WEBSITE_RIGHT_SLIDE'}#{/option}
     #{option models.cms.BlockType.WEBSITE_SUPPLIER}&{'block.WEBSITE_SUPPLIER'}#{/option}
+    #{option models.cms.BlockType.WEBSITE_1F}&{'block.WEBSITE_1F'}#{/option}
+    #{option models.cms.BlockType.WEBSITE_2F}&{'block.WEBSITE_2F'}#{/option}
 #{/layout_operate.selectField}
 #{layout_operate.textField name:'block.title', value:block?.title, required:true/}
 #{layout_operate.textField name:'block.link', value:block?.link /}
@@ -16,7 +18,7 @@ class:'span2'}
     <label for='levelPrices_${level}' class="control-label"> </label>
 
     <div class="controls">(修改前)<br/><img src="${imagePath}"/>
-    <input type="hidden" name="imagePath" value="${imagePath}"></div>
+        <input type="hidden" name="imagePath" value="${imagePath}"></div>
 </div>
 #{/else}
 #{layout_operate.textField name:'block.displayOrder', value:block?.displayOrder, required:true/}
@@ -28,4 +30,4 @@ beginValue:block?.effectiveAt?.format(), endValue:block?.expireAt?.format(), req
 #{if "edit".equals(action)}
     #{vx.cancelButton url:'/blocks', class:'btn btn-primary'/}
 #{/if}
-</div>
+
