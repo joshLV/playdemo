@@ -236,12 +236,13 @@
 <div class="floor">
     <div class="hd"><h2><b class="f${i}"></b>${category.name}</h2></div>
     <div class="ft">
-        #{list category.showKeywordsList,as:'keywords'}
+        #{list category.getShowKeywordsList(10),as:'keywords'}
             <a href="${models.sales.Goods.getUrl(keywords)}" target="_blank">${keywords}</a>
         #{/list}
         <a href="/s/${category.id}" target="_blank">更多&gt;&gt;</a>
     </div>
     <div class="bd clearfix">
+
         <div class="side">
             #{if showOneLine}#{set brandCount:8/}#{/if}#{else}#{set brandCount:4/}#{/else}
             <dl class="accordion">
