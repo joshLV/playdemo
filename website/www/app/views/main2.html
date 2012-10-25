@@ -32,7 +32,7 @@
         #{else}
             <li class="first"><a class="login" id="login" href="${helper.Domain.getWWWHost(request)}/login">登录</a></li>
             <li><a class="signup" href="${helper.Domain.getWWWHost(request)}/register">注册</a></li>
-            *{<li><a class="quick" href="" target="_blank">快捷登录</a></li>}*
+        *{<li><a class="quick" href="" target="_blank">快捷登录</a></li>}*
         #{/else}
             <li><a id="favorite" class="favorite" href="">收藏一百券</a></li>
             <li class="last">
@@ -98,12 +98,16 @@
             <h2>全部商品<s></s></h2>
 
             <div class="menu">
+            #{set i:0/}
             #{list leftCategories,as:'category'}
+                #{set i:i+1/}
                 <dl class="item">
                     <dt><a href="">${category.name}</a></dt>
                     <dd class="line"></dd>
-                    <dd class="some"><div>#{list category.getTopShowKeywords(10)}#{/list}<a href="">川菜</a> <a href="">自助餐</a> <a href="">茶餐厅</a> <a href="">日本料理</a> <a
-                            href="">西餐</a> <a href="">火锅</a></div></dd>
+                    <dd class="some #{if i==3 || i==5}one#{/if}">
+                        <div>#{list category.getShowKeywordsList(10),as:'keywords'}<a href="">${keywords}</a> #{/list}
+                        </div>
+                    </dd>
                     <dd class="more">
                         <ul class="clearfix">
                             <li><a href="">全部（95）</a></li>
@@ -130,129 +134,8 @@
                             购买厚味VIP卡，哈根达斯免费送！</p>
                     </dd>
                 </dl>
-                    #{/list}
-                <dl class="item">
-                    <dt><a href="">休闲娱乐</a></dt>
-                    <dd class="line"></dd>
-                    <dd class="some"><a href="">电影票</a> <a href="">KTV</a> <a href="">游艺</a> <a href="">桌游</a> <a
-                            href="">按摩</a> <a href="">健身</a></dd>
-                    <dd class="more">
-                        <ul class="clearfix">
-                            <li><a href="">全部（95）</a></li>
-                            <li><a href="">川菜（5） </a></li>
-                            <li><a href="">湘菜（5） </a></li>
-                            <li><a href="">鲁菜（5）</a></li>
-                            <li><a href="">粤菜（5） </a></li>
-                            <li><a href="">西餐（5）</a></li>
-                            <li><a href="">本帮江（5）</a></li>
-                            <li><a href="">北京菜（5）</a></li>
-                            <li><a href="">西北菜（5）</a></li>
-                            <li><a href="">台湾菜（5）</a></li>
-                            <li><a href="">自助餐（5）</a></li>
-                            <li><a href="">日韩料理（5）</a></li>
-                            <li><a href="">东南亚菜（5）</a></li>
-                            <li><a href="">火锅（5）</a></li>
-                            <li><a href="">烧烤（5）</a></li>
-                            <li><a href="">面包蛋糕（5）</a></li>
-                            <li><a href="">甜点饮料（5）</a></li>
-                            <li><a href="">小吃快餐（5）</a></li>
-                            <li><a href="">其他美食（5）</a></li>
-                        </ul>
-                        <p>全场餐饮类，发微博晒单，赢取500元现金券！<br>
-                            购买厚味VIP卡，哈根达斯免费送！</p>
-                    </dd>
-                </dl>
-                <dl class="item">
-                    <dt><a href="">丽人写真</a></dt>
-                    <dd class="line"></dd>
-                    <dd class="some one"><div><a href="">美发</a> <a href="">美甲</a> <a href="">美容</a> <a href="">美体</a></div></dd>
-                    <dd class="more">
-                        <ul class="clearfix">
-                            <li><a href="">全部（95）</a></li>
-                            <li><a href="">川菜（5） </a></li>
-                            <li><a href="">湘菜（5） </a></li>
-                            <li><a href="">鲁菜（5）</a></li>
-                            <li><a href="">粤菜（5） </a></li>
-                            <li><a href="">西餐（5）</a></li>
-                            <li><a href="">本帮江（5）</a></li>
-                            <li><a href="">北京菜（5）</a></li>
-                            <li><a href="">西北菜（5）</a></li>
-                            <li><a href="">台湾菜（5）</a></li>
-                            <li><a href="">自助餐（5）</a></li>
-                            <li><a href="">日韩料理（5）</a></li>
-                            <li><a href="">东南亚菜（5）</a></li>
-                            <li><a href="">火锅（5）</a></li>
-                            <li><a href="">烧烤（5）</a></li>
-                            <li><a href="">面包蛋糕（5）</a></li>
-                            <li><a href="">甜点饮料（5）</a></li>
-                            <li><a href="">小吃快餐（5）</a></li>
-                            <li><a href="">其他美食（5）</a></li>
-                        </ul>
-                        <p>全场餐饮类，发微博晒单，赢取500元现金券！<br>
-                            购买厚味VIP卡，哈根达斯免费送！</p>
-                    </dd>
-                </dl>
-                <dl class="item">
-                    <dt><a href="">生活服务</a></dt>
-                    <dd class="line"></dd>
-                    <dd class="some"><a href="">家居</a> <a href="">建材</a> <a href="">培训</a> <a href="">汽车保养</a> <a
-                            href="">体验</a> <a href="">成衣制定</a></dd>
-                    <dd class="more">
-                        <ul class="clearfix">
-                            <li><a href="">全部（95）</a></li>
-                            <li><a href="">川菜（5） </a></li>
-                            <li><a href="">湘菜（5） </a></li>
-                            <li><a href="">鲁菜（5）</a></li>
-                            <li><a href="">粤菜（5） </a></li>
-                            <li><a href="">西餐（5）</a></li>
-                            <li><a href="">本帮江（5）</a></li>
-                            <li><a href="">北京菜（5）</a></li>
-                            <li><a href="">西北菜（5）</a></li>
-                            <li><a href="">台湾菜（5）</a></li>
-                            <li><a href="">自助餐（5）</a></li>
-                            <li><a href="">日韩料理（5）</a></li>
-                            <li><a href="">东南亚菜（5）</a></li>
-                            <li><a href="">火锅（5）</a></li>
-                            <li><a href="">烧烤（5）</a></li>
-                            <li><a href="">面包蛋糕（5）</a></li>
-                            <li><a href="">甜点饮料（5）</a></li>
-                            <li><a href="">小吃快餐（5）</a></li>
-                            <li><a href="">其他美食（5）</a></li>
-                        </ul>
-                        <p>全场餐饮类，发微博晒单，赢取500元现金券！<br>
-                            购买厚味VIP卡，哈根达斯免费送！</p>
-                    </dd>
-                </dl>
-                <dl class="item">
-                    <dt><a href="">酒店旅游</a></dt>
-                    <dd class="line"></dd>
-                    <dd class="some"><a href="">青年酒店</a> <a href="">四星酒店</a></dd>
-                    <dd class="more">
-                        <ul class="clearfix">
-                            <li><a href="">全部（95）</a></li>
-                            <li><a href="">川菜（5） </a></li>
-                            <li><a href="">湘菜（5） </a></li>
-                            <li><a href="">鲁菜（5）</a></li>
-                            <li><a href="">粤菜（5） </a></li>
-                            <li><a href="">西餐（5）</a></li>
-                            <li><a href="">本帮江（5）</a></li>
-                            <li><a href="">北京菜（5）</a></li>
-                            <li><a href="">西北菜（5）</a></li>
-                            <li><a href="">台湾菜（5）</a></li>
-                            <li><a href="">自助餐（5）</a></li>
-                            <li><a href="">日韩料理（5）</a></li>
-                            <li><a href="">东南亚菜（5）</a></li>
-                            <li><a href="">火锅（5）</a></li>
-                            <li><a href="">烧烤（5）</a></li>
-                            <li><a href="">面包蛋糕（5）</a></li>
-                            <li><a href="">甜点饮料（5）</a></li>
-                            <li><a href="">小吃快餐（5）</a></li>
-                            <li><a href="">其他美食（5）</a></li>
-                        </ul>
-                        <p>全场餐饮类，发微博晒单，赢取500元现金券！<br>
-                            购买厚味VIP卡，哈根达斯免费送！</p>
-                    </dd>
-                </dl>
+            #{/list}
+
                 <dl class="area">
                     <dt><a href="">热门商圈</a></dt>
                     <dd class="some">#{list areas, as:'area'}
@@ -297,7 +180,7 @@
 
 *{#{get 'moreScripts' /}}*
 <div style="display:none">
-    <script type="text/javascript" id="bdshare_js" data="type=tools&uid=763119" ></script>
+    <script type="text/javascript" id="bdshare_js" data="type=tools&uid=763119"></script>
     <script type="text/javascript" id="bdshell_js"></script>
     <script type="text/javascript">document.getElementById("bdshell_js").src = "http://share.baidu.com/static/js/shell_v2.js?cdnversion=" + new Date().getHours();</script>
 
@@ -308,10 +191,13 @@
         _gaq.push(['_setDomainName', '${play.Play.configuration.getProperty("application.baseDomain")}']);
         _gaq.push(['_setAllowLinker', true]);
         _gaq.push(['_trackPageview']);
-        (function() {
-            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
             ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
         })();
     </script>
 </div>
