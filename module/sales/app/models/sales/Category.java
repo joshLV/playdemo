@@ -100,7 +100,6 @@ public class Category extends Model {
     @SolrEmbedded
     public Set<CategoryProperty> properties = new HashSet<>();
 
-    @Transient
     public Object[] getShowKeywordsList(int limit) {
         if (StringUtils.isNotBlank(showKeywords)) {
             System.out.println("showKeywords:" + showKeywords);
@@ -108,6 +107,13 @@ public class Category extends Model {
         }
         return new Object[0];
     }
+
+    /**
+     * 该分类包含的商品数量.
+     * 用于在首页和商品列表页显示
+     */
+    @Transient
+    public int goodsCount;
 
     public Category() {
     }
@@ -191,11 +197,20 @@ public class Category extends Model {
     public static List<Category> findByParent(int limit, long categoryId, Boolean display) {
         Category category = categoryId == 0 ? null : new Category(categoryId);
         JPAQuery query;
-        if (display != null) {
-            query = find("parentCategory = ? and display = ? order by displayOrder", category, display);
+        if (category == null) {
+            if (display != null) {
+                query = find("parentCategory = null and display = ? order by displayOrder", display);
+            } else {
+                query = find("parentCategory = null order by displayOrder");
+            }
         } else {
-            query = find("parentCategory = ? order by displayOrder", category);
+            if (display != null) {
+                query = find("parentCategory = ? and display = ? order by displayOrder", category, display);
+            } else {
+                query = find("parentCategory = ? order by displayOrder", category);
+            }
         }
+
         if (limit > 0) {
             return query.fetch(limit);
         } else {
@@ -236,6 +251,25 @@ public class Category extends Model {
             @Override
             public List<Goods> loadData() {
                 return Goods.findTopByCategory(id, limit, true);
+            }
+        });
+    }
+
+    /**
+     * 获取指定分类的所有子分类，分类中需要标明商品数量.
+     *
+     * @param categoryId
+     * @return
+     */
+    public static List<Category> getCategoriesBy(final long categoryId) {
+        return CacheHelper.getCache(CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_SUB_CATEGORIES" + categoryId), new CacheCallBack<List<Category>>() {
+            @Override
+            public List<Category> loadData() {
+                List<Category> categoryList = Category.findByParent(categoryId);
+                for (Category category : categoryList) {
+//                    category.goodsCount =
+                }
+                return categoryList;
             }
         });
     }

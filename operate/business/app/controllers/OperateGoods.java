@@ -11,8 +11,15 @@ import com.uhuila.common.util.FileUploadUtil;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.resale.ResalerLevel;
-import models.sales.*;
+import models.sales.Brand;
+import models.sales.Category;
 import models.sales.Goods;
+import models.sales.GoodsCondition;
+import models.sales.GoodsHistory;
+import models.sales.GoodsStatus;
+import models.sales.GoodsUnPublishedPlatform;
+import models.sales.MaterialType;
+import models.sales.Shop;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -164,6 +171,7 @@ public class OperateGoods extends Controller {
         }
 
         List<Category> categoryList = Category.findByParent(0);//获取顶层分类
+        System.out.println("categoryList.size():" + categoryList.size());
         List<Category> subCategoryList = new ArrayList<>();
         Long categoryId = 0L;
         if (categoryList.size() > 0) {
