@@ -64,7 +64,7 @@
         <div class="status signed" style="display:block">
             <div class="inner">
                 <a href="${helper.Domain.getHomeHost(request)}/coupons?condition.status=UNCONSUMED">待消费(<em>${unconsumedCount}</em>)</a>
-                <a href="${helper.Domain.getHomeHost(request)}/orders"> 已节省<em>${savedMoney}</em></a>
+                <a href="${helper.Domain.getHomeHost(request)}/orders"> 已节省<em>&yen;${savedMoney}</em></a>
                 <a href="${helper.Domain.getHomeHost(request)}/orders?condition.status=UNPAID">待付款(<em>${unpaidCount}</em>)</a>
                 <a href="${helper.Domain.getHomeHost(request)}/orders"> 查看更多</a>
             </div>
