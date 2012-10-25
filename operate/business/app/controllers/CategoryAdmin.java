@@ -15,7 +15,9 @@ import play.mvc.With;
 @ActiveNavigation("category_admin_index")
 public class CategoryAdmin extends Controller {
     public static void index() {
+
         render();
     }
+
 
 }
