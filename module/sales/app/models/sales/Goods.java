@@ -964,9 +964,20 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findTopByCategory(long categoryId, int limit) {
+        return findTopByCategory(categoryId, limit, false);
+    }
+
+    /**
+     * 根据商品分类和数量取出指定数量的商品.
+     *
+     * @param limit
+     * @return
+     */
+    public static List<Goods> findTopByCategory(long categoryId, int limit, boolean isRootCategory) {
         EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted and isHideOnsale=false " +
-                "and g.baseSale >= 1 and g.expireAt > :now and g.id in (select g.id from g.categories c where c.id = :categoryId) " +
+        String categoryQueryCond = isRootCategory ? "c.parentCategory.id" : "c.id";
+        Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
+                "and g.baseSale >= 1 and g.expireAt > :now and g.id in (select g.id from g.categories c where " + categoryQueryCond + " = :categoryId) " +
                 "order by priority DESC,createdAt DESC");
         q.setParameter("status", GoodsStatus.ONSALE);
         q.setParameter("deleted", DeletedStatus.UN_DELETED);

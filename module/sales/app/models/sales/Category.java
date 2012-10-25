@@ -208,11 +208,11 @@ public class Category extends Model {
 
     }
 
-    public List<Goods> getTopByCategory(final int limit) {
+    public List<Goods> getTopGoods(final int limit) {
         return CacheHelper.getCache(CacheHelper.getCacheKey(Goods.CACHEKEY, "WWW_TOP_GOODS_BY_CATEGORY" + id + "_" + limit), new CacheCallBack<List<Goods>>() {
             @Override
             public List<Goods> loadData() {
-                return Goods.findTopByCategory(id, limit);
+                return Goods.findTopByCategory(id, limit, true);
             }
         });
     }

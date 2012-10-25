@@ -267,7 +267,7 @@
         #{if showOneLine}#{set goodsCount:6/}#{/if}#{else}#{set goodsCount:3/}#{/else}
     <ul class="goods first">
         #{set j:0/}
-        #{list category.getTopByCategory(goodsCount),as:'aGoods'}
+        #{list category.getTopGoods(goodsCount),as:'aGoods'}
             #{set j:j+1/}
             <li #{if i == 0}class="first"#{/if}>
 
