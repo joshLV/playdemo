@@ -61,8 +61,17 @@ public class Category extends Model {
     @Column(name = "show_keywords")
     public String showKeywords;
 
-    @SolrField
-    public String tuan800name;
+    /**
+     * 是否在WWW首页左上角显示
+     */
+    @Column(name = "is_in_www_left")
+    public Boolean isInWWWLeft;
+
+    /**
+     * 是否在WWW首页楼层显示
+     */
+    @Column(name = "is_in_www_floor")
+    public Boolean isInWWWFloor;
 
     /**
      * 所属分类Id
@@ -132,8 +141,7 @@ public class Category extends Model {
      * @return 前n个分类
      */
     public static List<Category> findLeftTop(int limit) {
-        //todo
-        return find("parentCategory = null order by displayOrder").fetch(limit);
+        return find("parentCategory = null and isInWWWLeft = true order by displayOrder").fetch(limit);
     }
 
     /**
@@ -143,8 +151,7 @@ public class Category extends Model {
      * @return 前n个分类
      */
     public static List<Category> findFloorTop(int limit) {
-        //todo
-        return find("parentCategory = null order by displayOrder").fetch(limit);
+        return find("parentCategory = null and isInWWWFloor = true order by displayOrder").fetch(limit);
     }
 
     public static List<Category> findTop(int limit, long categoryId) {
@@ -194,6 +201,7 @@ public class Category extends Model {
 
     /**
      * 查询商品分类的前n个品牌.
+     * WWW首页显示分类楼层中的品牌时调用
      *
      * @param limit
      * @return
@@ -208,6 +216,12 @@ public class Category extends Model {
 
     }
 
+    /**
+     * 获取分类中的前n个商品.
+     * WWW首页显示分类楼层中的商品时调用
+     * @param limit
+     * @return
+     */
     public List<Goods> getTopGoods(final int limit) {
         return CacheHelper.getCache(CacheHelper.getCacheKey(Goods.CACHEKEY, "WWW_TOP_GOODS_BY_CATEGORY" + id + "_" + limit), new CacheCallBack<List<Goods>>() {
             @Override
