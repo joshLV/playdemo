@@ -4,6 +4,7 @@ import cache.CacheCallBack;
 import cache.CacheHelper;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.solr.SolrEmbedded;
 import play.modules.solr.SolrField;
@@ -42,11 +43,13 @@ public class Category extends Model {
     /**
      * 类目名称
      */
+    @Required
     @SolrField
     public String name;
     /**
      * 推荐度,显示顺序
      */
+    @Required
     @Column(name = "display_order")
     public int displayOrder;
 
@@ -59,24 +62,28 @@ public class Category extends Model {
     /**
      * 网站上显示的关键字.
      */
+    @Required
     @Column(name = "show_keywords")
     public String showKeywords;
 
     /**
      * 是否在WWW首页左上角显示
      */
+    @Required
     @Column(name = "is_in_www_left")
     public Boolean isInWWWLeft;
 
     /**
      * 是否在WWW首页楼层显示
      */
+    @Required
     @Column(name = "is_in_www_floor")
     public Boolean isInWWWFloor;
 
     /**
      * 是否显示.
      */
+    @Required
     public Boolean display;
 
     /**

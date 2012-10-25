@@ -23,7 +23,8 @@ GET     /goods_brands/{id}                      OperateBrands.goodsBrands
 GET     /category/sub/{id}                      Categories.showSubs
 
 GET     /category-admin/index                   CategoryAdmin.index
-
+GET     /category-admin/new                     CategoryAdmin.add
+POST    /goods                                  CategoryAdmin.create
 
 # 发送优惠券
 GET     /send_sms                                       SendSMS.index
