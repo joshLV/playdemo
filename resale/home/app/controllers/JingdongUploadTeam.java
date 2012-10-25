@@ -158,7 +158,7 @@ public class JingdongUploadTeam extends Controller{
         if(goods == null){
             error("goods not found: " + venderTeamId);return;
         }
-        List<Shop> shops = Shop.find("bySupplierId", goods.supplierId).fetch();
+        Collection<Shop> shops = goods.getShopList();
 
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/uploadTeam.action";
         Template template = TemplateLoader.load("jingdong/groupbuy/request/uploadTeam.xml");
