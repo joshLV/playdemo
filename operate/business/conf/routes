@@ -22,6 +22,8 @@ POST    /goods/filemanager                      UploadFiles.fileManagerJson
 GET     /goods_brands/{id}                      OperateBrands.goodsBrands
 GET     /category/sub/{id}                      Categories.showSubs
 
+GET     /category-admin/index                   CategoryAdmin.index
+
 
 # 发送优惠券
 GET     /send_sms                                       SendSMS.index
