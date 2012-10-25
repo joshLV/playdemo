@@ -73,13 +73,13 @@ public class WebsiteInjector extends Controller {
 
         //顶级分类
         List<Category> categories = CacheHelper.getCache(
-                CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_TOPCATEGORIES"), new CacheCallBack<List<Category>>() {
+                CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_TOP_CATEGORIES7"), new CacheCallBack<List<Category>>() {
             @Override
             public List<Category> loadData() {
                 return Category.findTop(7);
             }
         });
-        renderArgs.put("categories", categories);
+        renderArgs.put("topCategories", categories);
 
         //左边顶级分类
         List<Category> leftCategories = CacheHelper.getCache(

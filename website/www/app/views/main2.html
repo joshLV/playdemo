@@ -110,25 +110,9 @@
                     </dd>
                     <dd class="more">
                         <ul class="clearfix">
-                            <li><a href="">全部（95）</a></li>
-                            <li><a href="">川菜（5） </a></li>
-                            <li><a href="">湘菜（5） </a></li>
-                            <li><a href="">鲁菜（5）</a></li>
-                            <li><a href="">粤菜（5） </a></li>
-                            <li><a href="">西餐（5）</a></li>
-                            <li><a href="">本帮江（5）</a></li>
-                            <li><a href="">北京菜（5）</a></li>
-                            <li><a href="">西北菜（5）</a></li>
-                            <li><a href="">台湾菜（5）</a></li>
-                            <li><a href="">自助餐（5）</a></li>
-                            <li><a href="">日韩料理（5）</a></li>
-                            <li><a href="">东南亚菜（5）</a></li>
-                            <li><a href="">火锅（5）</a></li>
-                            <li><a href="">烧烤（5）</a></li>
-                            <li><a href="">面包蛋糕（5）</a></li>
-                            <li><a href="">甜点饮料（5）</a></li>
-                            <li><a href="">小吃快餐（5）</a></li>
-                            <li><a href="">其他美食（5）</a></li>
+                            #{list category.getByParent(),as:'subCategory'}
+                                <li><a href="">${subCategory.name}（${subCategory.goodsCount}）</a></li>
+                            #{/list}
                         </ul>
                         <p>全场餐饮类，发微博晒单，赢取500元现金券！<br>
                             购买厚味VIP卡，哈根达斯免费送！</p>
@@ -148,7 +132,7 @@
 
             <a href="${helper.Domain.getWWWHost(request)}"
                #{if categoryId == 0}class="curr"#{/if}>首页<i class="right"></i></a>
-        #{list categories, as: 'category'}
+        #{list topCategories, as: 'category'}
             <a href="${helper.Domain.getWWWHost(request)}/s/${category.id}"
                #{if categoryId == category.id}class="curr"#{/if}>${category.name}<i class="right"></i></a>
         #{/list}
