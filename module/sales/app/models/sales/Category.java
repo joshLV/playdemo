@@ -87,7 +87,6 @@ public class Category extends Model {
     public Category parentCategory;
 
 
-
     /**
      * 商品标识.
      */
@@ -98,7 +97,7 @@ public class Category extends Model {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @SolrEmbedded
-    public Set<CategoryProperty> properties = new HashSet<CategoryProperty>();
+    public Set<CategoryProperty> properties = new HashSet<>();
 
     @Transient
     public String[] getShowKeywordsList() {
@@ -138,7 +137,7 @@ public class Category extends Model {
      * @return 前n个分类
      */
     public static List<Category> findTop(int limit) {
-        return find("parentCategory = null order by displayOrder").fetch(limit);
+        return find("parentCategory = null and display = true order by displayOrder").fetch(limit);
     }
 
     /**
@@ -148,7 +147,7 @@ public class Category extends Model {
      * @return 前n个分类
      */
     public static List<Category> findLeftTop(int limit) {
-        return find("parentCategory = null and isInWWWLeft = true order by displayOrder").fetch(limit);
+        return find("parentCategory = null and isInWWWLeft = true and display = true  order by displayOrder").fetch(limit);
     }
 
     /**
@@ -158,14 +157,14 @@ public class Category extends Model {
      * @return 前n个分类
      */
     public static List<Category> findFloorTop(int limit) {
-        return find("parentCategory = null and isInWWWFloor = true order by displayOrder").fetch(limit);
+        return find("parentCategory = null and isInWWWFloor = true and display = true  order by displayOrder").fetch(limit);
     }
 
     public static List<Category> findTop(int limit, long categoryId) {
         if (categoryId == 0) {
             return findTop(limit);
         }
-        List<Category> categories = findByParent(limit, categoryId);
+        List<Category> categories = findByParent(limit, categoryId, true);
         boolean containsCategory = false;
         for (Category category : categories) {
             if (category.id == categoryId) {
@@ -185,25 +184,23 @@ public class Category extends Model {
         return categories;
     }
 
-    public static List<Category> findByParent(int limit, long categoryId) {
+    public static List<Category> findByParent(int limit, long categoryId, Boolean display) {
         Category category = categoryId == 0 ? null : new Category(categoryId);
-        if (limit > 0) {
-            if (category != null) {
-                return find("parentCategory = ? order by displayOrder", category).fetch(limit);
-            } else {
-                return find("parentCategory = null order by displayOrder").fetch(limit);
-            }
+        JPAQuery query;
+        if (display != null) {
+            query = find("parentCategory = ? and display = ? order by displayOrder", category, display);
         } else {
-            if (category != null) {
-                return find("parentCategory = ? order by displayOrder", category).fetch();
-            } else {
-                return find("parentCategory = null order by displayOrder").fetch();
-            }
+            query = find("parentCategory = ? order by displayOrder", category);
+        }
+        if (limit > 0) {
+            return query.fetch(limit);
+        } else {
+            return query.fetch();
         }
     }
 
     public static List<Category> findByParent(long categoryId) {
-        return findByParent(0, categoryId);
+        return findByParent(0, categoryId, null);
     }
 
     /**
@@ -226,6 +223,7 @@ public class Category extends Model {
     /**
      * 获取分类中的前n个商品.
      * WWW首页显示分类楼层中的商品时调用
+     *
      * @param limit
      * @return
      */
