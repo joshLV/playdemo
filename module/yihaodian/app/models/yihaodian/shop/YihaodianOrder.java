@@ -19,6 +19,9 @@ import java.util.List;
 @Entity
 @Table(name = "yihaodian_order")
 public class YihaodianOrder extends Model{
+    @Column(name = "ybq_order_id", unique = true)
+    public Long ybqOrderId;             //一百券订单ID
+
     @Column(name = "order_id", unique = true)
     public Long orderId;                //订单编号
 

@@ -73,8 +73,10 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
                 YihaodianOrder refreshOrder = refreshYihaodianOrder(yihaodianOrder);
                 if(refreshOrder != null){
                     if (refreshOrder.orderStatus != OrderStatus.ORDER_CANCEL) {
-                        if( buildUhuilaOrder(yihaodianOrder)){
+                        models.order.Order ybqOrder = buildYibaiquanOrder(yihaodianOrder);
+                        if( ybqOrder != null){
                             yihaodianOrder.jobFlag = JobFlag.SEND_DONE;
+                            yihaodianOrder.ybqOrderId = ybqOrder.getId();
                             yihaodianOrder.save();
                             YihaodianJobMessage syncMessage = new YihaodianJobMessage(yihaodianOrder.orderId);
                             YihaodianQueueUtil.addJob(syncMessage);
@@ -176,12 +178,12 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
         return false;
     }
 
-    private boolean buildUhuilaOrder(YihaodianOrder order) {
+    private models.order.Order buildYibaiquanOrder(YihaodianOrder order) {
         Logger.info("build uhuila order");
         Resaler resaler = Resaler.findOneByLoginName(YHD_LOGIN_NAME);
         if (resaler == null){
             Logger.error("can not find the resaler by login name: %s", YHD_LOGIN_NAME);
-            return false;
+            return null;
         }
         models.order.Order uhuilaOrder = models.order.Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
         uhuilaOrder.save();
@@ -192,7 +194,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
                 Goods goods = Goods.find("byId", orderItem.outerId).first();
                 if(goods == null){
                     Logger.info("goods not found: %s", orderItem.outerId );
-                    return false;
+                    return null;
                 }
 
                 OrderItems uhuilaOrderItem  = uhuilaOrder.addOrderItem(
@@ -211,7 +213,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
             }
         } catch (NotEnoughInventoryException e) {
             Logger.info("enventory not enough");
-            return false;
+            return null;
         }
         if (containsElectronic) {
             uhuilaOrder.deliveryType = DeliveryType.SMS;
@@ -225,7 +227,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
         uhuilaOrder.payMethod = PaymentSource.getBalanceSource().code;
         uhuilaOrder.payAndSendECoupon();
         uhuilaOrder.save();
-        return true;
+        return uhuilaOrder;
     }
 
     @Override
