@@ -16,6 +16,7 @@ import models.sales.SecKillGoods;
 import models.sales.SecKillGoodsItem;
 import org.junit.Before;
 import org.junit.Test;
+import play.data.validation.Validation;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 
@@ -149,9 +150,9 @@ public class SecKillOrdersTest extends FunctionalTest {
         params.put("mobile", "15026666875");
         params.put("remark", "good");
         Http.Response response = POST("/seckill-orders/new", params);
-        assertStatus(200, response);
+        assertStatus(302, response);
 
-//        assertTrue(renderArgs(Validation.hasErrors()));
+//        assertTrue(renderArgs(Validation.errors()));
 //        Validation v = Validation.current();
 //        v.valid(response);
 //        assertEquals(false, v.hasErrors());

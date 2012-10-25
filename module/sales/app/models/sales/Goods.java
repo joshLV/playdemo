@@ -735,7 +735,6 @@ public class Goods extends Model {
         updateGoods.shops = goods.shops;
         updateGoods.title = goods.title;
         updateGoods.setPublishedPlatforms(goods.getPublishedPlatforms());
-        System.out.println("updategoodsun>>>" + updateGoods.unPublishedPlatforms.size());
         updateGoods.useBeginTime = goods.useBeginTime;
         updateGoods.useEndTime = goods.useEndTime;
         updateGoods.useWeekDay = goods.useWeekDay;
@@ -1203,8 +1202,6 @@ public class Goods extends Model {
             System.out.println("inini22");
         }
 
-        System.out.println("-----goods--unPublishedPlatforms.size>>>" + unPublishedPlatforms.size());
-//        System.out.println("-----goods--unPublishedPlatforms.>>>" + unPublishedPlatforms);
         if (publishedPlatforms == null || publishedPlatforms.size() == 0) {
             for (GoodsPublishedPlatformType type : GoodsPublishedPlatformType.values()) {
                 final GoodsUnPublishedPlatform goodsUnPublishedPlatform = new GoodsUnPublishedPlatform(this, type);
@@ -1217,7 +1214,6 @@ public class Goods extends Model {
             if (!publishedPlatforms.contains(type)) {
                 final GoodsUnPublishedPlatform goodsUnPublishedPlatform = new GoodsUnPublishedPlatform(this, type);
                 unPublishedPlatforms.add(goodsUnPublishedPlatform);
-                System.out.println("goods-3---goodsUnPublishedPlatform---size" + unPublishedPlatforms.size());
             }
         }
     }

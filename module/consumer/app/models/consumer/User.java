@@ -330,7 +330,6 @@ public class User extends Model {
 
     @Transient
     public String getShowName() {
-        System.out.println(loginName+"---------------");
         if (StringUtils.isBlank(loginName)) {
             return getOpenIdExpress().length() > SHOW_NAME_LIMIT ? getOpenIdExpress().substring(0, SHOW_NAME_LIMIT) + "..." : getOpenIdExpress();
         }

@@ -135,7 +135,6 @@ public class OperateGoods extends Controller {
             goods = new models.sales.Goods();
             BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
             Arrays.fill(levelPrices, null);
-//            goods.setLevelPrices(levelPrices);
             goods.materialType = MaterialType.ELECTRONIC;
             goods.unPublishedPlatforms = new HashSet<>();
             if (supplierList != null && supplierList.size() > 0) {
@@ -193,7 +192,6 @@ public class OperateGoods extends Controller {
 
         renderArgs.put("shopIds", shopIds);
         renderArgs.put("isAllShop", goods.isAllShop);
-        System.out.println("goods.un>>>"+goods.unPublishedPlatforms.size());
         renderArgs.put("goods", goods);
     }
 
@@ -359,7 +357,6 @@ public class OperateGoods extends Controller {
 
         checkShops(goods.supplierId);
         renderInit(goods);
-        System.out.println("goods>?>>>>"+goods.unPublishedPlatforms.size());
         renderArgs.put("imageLargePath", goods.getImageLargePath());
         render(id);
 
@@ -481,7 +478,6 @@ public class OperateGoods extends Controller {
         models.sales.Goods.update(id, goods, false);
         Goods goodsItem = models.sales.Goods.findById(id);
         String createdFrom = "Op";
-//        System.out.println("goodsItemunPublishedPlatforms>>>"+goodsItem.unPublishedPlatforms);
         goodsItem.createHistory(createdFrom);
         index(null, "");
     }

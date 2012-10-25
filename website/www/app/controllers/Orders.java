@@ -52,7 +52,6 @@ public class Orders extends Controller {
      *
      */
     public static void index(List<Long> gid) {
-
         if (gid == null || gid.size() == 0) {
             error("未选择商品!");
             return;
@@ -80,7 +79,6 @@ public class Orders extends Controller {
     }
 
     protected static DiscountCode getDiscountCode() {
-
         // 折扣券
         String discountSN = request.params.get("discountSN");
 
@@ -111,6 +109,7 @@ public class Orders extends Controller {
     }
 
     private static void showOrder(String items, DiscountCode discountCode) {
+
         //解析提交的商品及数量
         List<Long> goodsIds = new ArrayList<>();
         Map<Long, Integer> itemsMap = new HashMap<>();
@@ -122,25 +121,18 @@ public class Orders extends Controller {
         List<Cart> rCartList = new ArrayList<>();
         BigDecimal rCartAmount = BigDecimal.ZERO;
         List<models.sales.Goods> goods = models.sales.Goods.findInIdList(goodsIds);
-        System.out.println("goods.size():" + goods.size());
         for (models.sales.Goods g : goods) {
 
             Integer number = itemsMap.get(g.getId());
-
+            Http.Cookie cookie = request.cookies.get(PROMOTER_COOKIE);
             Cart cart = new Cart(g, number);
             //这里用于判断是否是通过推荐过来的用户
             String discountSN = request.params.get("discountSN");
-            boolean isUsePromote = false;
             User user = SecureCAS.getUser();
-            User promoteUser = null;
-            if (discountSN != null)
-                promoteUser = User.getUserByPromoterCode(discountSN);
-            //推荐人不能是自己
-            if (user != promoteUser && promoteUser != null) {
-                isUsePromote = true;
-            }
-            Http.Cookie cookie = request.cookies.get(PROMOTER_COOKIE);
-            if (cookie != null && isUsePromote) {
+            //判断是不是推荐返利的情况
+            boolean isPromoteFlag = isByPromoteUser(user, discountSN, cookie);
+
+            if (isPromoteFlag) {
                 cart.rebateValue = Order.getPromoteRebateOfGoodsAmount(g, number);
             } else {
                 cart.rebateValue = Order.getDiscountValueOfGoodsAmount(g, number, discountCode);
@@ -264,16 +256,10 @@ public class Orders extends Controller {
             BigDecimal rCartAmount = BigDecimal.ZERO;
             //取得cookie中的推荐码
             Http.Cookie tj_cookie = request.cookies.get(PROMOTER_COOKIE);
-            String tj_cookieValue = tj_cookie == null ? "" : tj_cookie.value;
             String discountSN = request.params.get("discountSN");
-            Boolean isInputCode = false;
-            User promoteUser = null;
-            if (discountSN != null) promoteUser = User.getUserByPromoterCode(discountSN);
-            //推荐人不能是自己
-            if (user != promoteUser && promoteUser != null) isInputCode = true;
-            //推荐标志【有推荐cookie或者手动输入推荐码】
-            boolean isPromoteFlag = false;
-            if (!"".equals(tj_cookieValue) && isInputCode) isPromoteFlag = true;
+
+            //判断是不是推荐返利的情况
+            boolean isPromoteFlag = isByPromoteUser(user, discountSN, tj_cookie);
 
             for (models.sales.Goods goodsItem : goodsList) {
                 Integer number = itemsMap.get(goodsItem.getId());
@@ -336,6 +322,7 @@ public class Orders extends Controller {
             }
             //判断cookie中的推荐码是否存在;
             if (isPromoteFlag) {
+                String tj_cookieValue = tj_cookie == null ? "" : tj_cookie.value;
                 if ("".equals(tj_cookieValue)) tj_cookieValue = discountSN;
                 User promoterUser = User.getUserByPromoterCode(tj_cookieValue);
                 if (promoterUser != null && promoterUser != user) {
@@ -375,6 +362,22 @@ public class Orders extends Controller {
         redirect("/payment_info/" + order.orderNumber);
     }
 
+    private static boolean isByPromoteUser(User user, String discountSN, Http.Cookie cookie) {
+
+        boolean isPromoteFlag = false;
+        User promoteUser = null;
+        //手动输入tj码XXXX的方式
+        if (StringUtils.isNotBlank(discountSN)) {
+            promoteUser = User.getUserByPromoterCode(discountSN);
+        } else if (cookie != null) {
+            //接地址用tj=XXXX的方式请求
+            promoteUser = User.getUserByPromoterCode(cookie.value);
+        }
+        //推荐人不能是自己
+        if (user != promoteUser && promoteUser != null) isPromoteFlag = true;
+        return isPromoteFlag;
+    }
+
     private static boolean containsMaterialType(List<Goods> goods, MaterialType type) {
         boolean containsMaterialType = false;
         for (Goods good : goods) {
@@ -396,7 +399,6 @@ public class Orders extends Controller {
                 Integer number = Integer.parseInt(goodsItem[1]);
                 if (number > 0) {
                     Long goodsId = Long.parseLong(goodsItem[0]);
-                    System.out.println("goodsId:" + goodsId);
                     Long boughtNumber = OrderItems.itemsNumber(user, goodsId);
                     boolean isBuyFlag = Order.checkLimitNumber(user, goodsId, boughtNumber, number);
                     if (isBuyFlag) {
@@ -429,7 +431,6 @@ public class Orders extends Controller {
         User user = SecureCAS.getUser();
         String[] itemSplits = items.split(",");
         for (String split : itemSplits) {
-            System.out.println("split:" + split);
             String[] goodsItem = split.split("-");
             if (goodsItem.length == 2) {
                 Integer number = Integer.parseInt(goodsItem[1]);
