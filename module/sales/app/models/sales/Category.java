@@ -74,12 +74,19 @@ public class Category extends Model {
     public Boolean isInWWWFloor;
 
     /**
+     * 是否显示.
+     */
+    public Boolean display;
+
+    /**
      * 所属分类Id
      */
     @ManyToOne
     @JoinColumn(name = "parent_id")
     @SolrField
     public Category parentCategory;
+
+
 
     /**
      * 商品标识.

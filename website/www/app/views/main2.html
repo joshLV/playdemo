@@ -98,10 +98,11 @@
             <h2>全部商品<s></s></h2>
 
             <div class="menu">
+            #{list leftCategories,as:'category'}
                 <dl class="item">
-                    <dt><a href="">餐饮美食</a></dt>
+                    <dt><a href="">${category.name}</a></dt>
                     <dd class="line"></dd>
-                    <dd class="some"><div><a href="">川菜</a> <a href="">自助餐</a> <a href="">茶餐厅</a> <a href="">日本料理</a> <a
+                    <dd class="some"><div>#{list category.getTopShowKeywords(10)}#{/list}<a href="">川菜</a> <a href="">自助餐</a> <a href="">茶餐厅</a> <a href="">日本料理</a> <a
                             href="">西餐</a> <a href="">火锅</a></div></dd>
                     <dd class="more">
                         <ul class="clearfix">
@@ -129,6 +130,7 @@
                             购买厚味VIP卡，哈根达斯免费送！</p>
                     </dd>
                 </dl>
+                    #{/list}
                 <dl class="item">
                     <dt><a href="">休闲娱乐</a></dt>
                     <dd class="line"></dd>
