@@ -1569,7 +1569,7 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findTopHotSale(int limit) {
-        QueryResponse response = search(null, null, null, null, null, "virtualSaleCount", false, 1, limit);
+        QueryResponse response = search(null, null, null, null, null, "goods.virtualSaleCount_l", false, 1, limit);
         List<Goods> goodsList = new ArrayList<>();
         if (response == null) {
             return goodsList;
