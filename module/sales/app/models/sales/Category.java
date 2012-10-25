@@ -103,6 +103,7 @@ public class Category extends Model {
     @Transient
     public Object[] getShowKeywordsList(int limit) {
         if (StringUtils.isNotBlank(showKeywords)) {
+            System.out.println("showKeywords:" + showKeywords);
             return ArrayUtils.subarray(StringUtils.split(showKeywords, ","), 0, limit);
         }
         return new Object[0];
@@ -150,7 +151,7 @@ public class Category extends Model {
      * @return 前n个分类
      */
     public static List<Category> findLeftTop(int limit) {
-        return find("parentCategory = null and isInWWWLeft = true and display = true  order by displayOrder").fetch(limit);
+        return find("parentCategory = null and isInWWWLeft = true and display = true order by displayOrder").fetch(limit);
     }
 
     /**

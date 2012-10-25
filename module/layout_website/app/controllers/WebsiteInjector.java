@@ -72,7 +72,8 @@ public class WebsiteInjector extends Controller {
         renderArgs.put("count", count);
 
         //顶级分类
-        List<Category> categories = CacheHelper.getCache(CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_TOPCATEGORIES"), new CacheCallBack<List<Category>>() {
+        List<Category> categories = CacheHelper.getCache(
+                CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_TOPCATEGORIES"), new CacheCallBack<List<Category>>() {
             @Override
             public List<Category> loadData() {
                 return Category.findTop(7);
@@ -81,7 +82,8 @@ public class WebsiteInjector extends Controller {
         renderArgs.put("categories", categories);
 
         //左边顶级分类
-        List<Category> leftCategories = CacheHelper.getCache(CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_TOPCATEGORIES"), new CacheCallBack<List<Category>>() {
+        List<Category> leftCategories = CacheHelper.getCache(
+                CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_TOP_LEFT_CATEGORIES"), new CacheCallBack<List<Category>>() {
             @Override
             public List<Category> loadData() {
                 return Category.findLeftTop(7);
