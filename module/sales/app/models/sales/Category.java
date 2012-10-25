@@ -102,7 +102,6 @@ public class Category extends Model {
 
     public Object[] getShowKeywordsList(int limit) {
         if (StringUtils.isNotBlank(showKeywords)) {
-            System.out.println("showKeywords:" + showKeywords);
             return ArrayUtils.subarray(StringUtils.split(showKeywords, ","), 0, limit);
         }
         return new Object[0];
@@ -258,18 +257,25 @@ public class Category extends Model {
     /**
      * 获取指定分类的所有子分类，分类中需要标明商品数量.
      *
-     * @param categoryId
      * @return
      */
-    public static List<Category> getCategoriesBy(final long categoryId) {
-        return CacheHelper.getCache(CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_SUB_CATEGORIES" + categoryId), new CacheCallBack<List<Category>>() {
+    public List<Category> getByParent() {
+        return CacheHelper.getCache(CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_SUB_CATEGORIES" + id), new CacheCallBack<List<Category>>() {
             @Override
             public List<Category> loadData() {
-                List<Category> categoryList = Category.findByParent(categoryId);
-                for (Category category : categoryList) {
-//                    category.goodsCount =
+                List<Category> categories = Category.findByParent(id);
+                int count = 0;
+                for (Category category : categories) {
+                    count += category.goodsSet.size();
+                    category.goodsCount = category.goodsSet.size();
                 }
-                return categoryList;
+
+                Category topCategory = new Category();
+                topCategory.id = 0l;
+                topCategory.name = "全部";
+                topCategory.goodsCount = count;
+                categories.add(0, topCategory);
+                return categories;
             }
         });
     }
