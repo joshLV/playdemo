@@ -69,6 +69,7 @@
     *{ 团购所在的商家信息，支持多商家，至少填写一个商家信息 }*
     <Partners>
     #{list items:shops, as:'shop'}
+    #if{shop.deleted != com.uhuila.common.constants.DeletedStatus.DELETED}
     <Partner>
         *{ 商家名称 最长40个字符 [必填] }*
         <Name>${shop.name.raw()}</Name>
@@ -85,6 +86,7 @@
         *{ 交通信息，位置信息。最长400个字符。此字段可以为空。 }*
         <Location/>
     </Partner>
+    #{/if}
     #{/list}
     </Partners>
 </Message>
