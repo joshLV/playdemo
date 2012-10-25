@@ -2,6 +2,7 @@ package models.sales;
 
 import cache.CacheCallBack;
 import cache.CacheHelper;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import play.db.jpa.Model;
 import play.modules.solr.SolrEmbedded;
@@ -100,11 +101,11 @@ public class Category extends Model {
     public Set<CategoryProperty> properties = new HashSet<>();
 
     @Transient
-    public String[] getShowKeywordsList() {
+    public Object[] getShowKeywordsList(int limit) {
         if (StringUtils.isNotBlank(showKeywords)) {
-            return StringUtils.split(showKeywords, ",");
+            return ArrayUtils.subarray(StringUtils.split(showKeywords, ","), 0, limit);
         }
-        return null;
+        return new Object[0];
     }
 
     public Category() {
@@ -129,6 +130,8 @@ public class Category extends Model {
         CacheHelper.delete(CACHEKEY + this.id);
         super._delete();
     }
+
+    //-------------------------------------- 数据库操作 ------------------------------------
 
     /**
      * 获取顶层的前n个分类.
