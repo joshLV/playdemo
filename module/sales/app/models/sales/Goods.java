@@ -1002,10 +1002,13 @@ public class Goods extends Model {
             @Override
             public Set<Shop> loadData() {
                 Goods goods1 = Goods.findById(goodsId);
-                if (goods1.shops.size() == 0) {
-                    return new HashSet<Shop>();
+                Set<Shop> shopSet = new HashSet<>();
+                for (Shop shop : goods1.shops) {
+                	if (shop.deleted == DeletedStatus.UN_DELETED) {
+                		shopSet.add(shop);
+                	}
                 }
-                return goods1.shops;
+                return shopSet;
             }
         });
     }
