@@ -91,9 +91,16 @@ public class CategoryAdmin extends Controller {
 
     public static void displaySubcategory(Long parentId) {
         List<Category> categoryList = null;
-        Category parentCategory = Category.findById(parentId);
+        Category parentCategory = null;
+
+        if (parentId != null) {
+            parentCategory = Category.findById(parentId);
+        }
         if (parentCategory != null) {
             categoryList = Category.find("parentCategory.id=? and deleted = ?", parentCategory.id, DeletedStatus.UN_DELETED).fetch();
+        }
+        if (parentId == null) {
+            index(categoryList);
         }
         render(categoryList, parentId, parentCategory);
     }
