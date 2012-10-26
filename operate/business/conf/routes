@@ -26,6 +26,7 @@ GET     /category/sub/{id}                      Categories.showSubs
 GET     /category-admin/index                   CategoryAdmin.index
 GET     /category-admin/new                     CategoryAdmin.add
 POST    /category-admin                         CategoryAdmin.create
+GET     /category-admin/{id}/edit/{parentId}    CategoryAdmin.edit
 PUT     /category-admin/{id}                    CategoryAdmin.update
 GET     /category-admin/subcategory             CategoryAdmin.displaySubcategory
 

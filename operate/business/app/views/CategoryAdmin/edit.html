@@ -22,6 +22,7 @@ class:"form-horizontal", method:'PUT' }
     </legend>
     #{set action:"edit"/}
     #{include '/CategoryAdmin/categoryForm.html'/}
+    <input type="hidden" id="parentId" name="parentId" value="${parentId}">
 #{/form}
 </div>
 

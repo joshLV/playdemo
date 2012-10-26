@@ -121,15 +121,6 @@ public class Category extends Model {
     @Transient
     public int goodsCount;
 
-    @Transient
-    public Long tempId;
-
-    @Transient
-    public Long parentId;
-
-    @Transient
-    public String parentName;
-
     public Category() {
     }
 
@@ -289,7 +280,7 @@ public class Category extends Model {
         });
     }
 
-    public static void update(Long id, Category category) {
+    public static void update(Long id, Category category, Long parentId) {
         models.sales.Category updateCategory = models.sales.Category.findById(id);
         if (updateCategory == null) {
             return;
@@ -301,11 +292,11 @@ public class Category extends Model {
         updateCategory.isInWWWLeft = category.isInWWWLeft;
         updateCategory.isInWWWFloor = category.isInWWWFloor;
         updateCategory.display = category.display;
-        Category tempCategory = null;
-        if (category != null && category.tempId != null && category.tempId != 0) {
-            tempCategory = Category.findById(category.tempId);
+        Category parentCategory = null;
+        if (category != null && parentId != null && parentId != 0) {
+            parentCategory = Category.findById(parentId);
         }
-        updateCategory.parentCategory = tempCategory;
+        updateCategory.parentCategory = parentCategory;
         updateCategory.save();
 
     }

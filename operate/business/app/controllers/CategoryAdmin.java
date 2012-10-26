@@ -41,7 +41,6 @@ public class CategoryAdmin extends Controller {
 
     /**
      * 添加类别
-     * .
      */
     @ActiveNavigation("goods_add")
     public static void create(@Valid Category category, Long parentId) {
@@ -62,21 +61,21 @@ public class CategoryAdmin extends Controller {
     /**
      * 取得指定总类别信息
      */
-    public static void edit(Long id) {
+    public static void edit(Long id, Long parentId) {
         models.sales.Category category = models.sales.Category.findById(id);
         renderInit(category);
-        render(id);
+        render(id, parentId);
     }
 
     /**
      * 更新指定总类别信息
      */
-    public static void update(Long id, @Valid final models.sales.Category category) {
+    public static void update(Long id, @Valid final models.sales.Category category, Long parentId) {
         if (Validation.hasErrors()) {
             renderInit(category);
-            render("CategoryAdmin/add.html", category, id);
+            render("CategoryAdmin/edit.html", category, id, parentId);
         }
-        models.sales.Category.update(id, category);
+        models.sales.Category.update(id, category, parentId);
         index(null);
     }
 
@@ -95,13 +94,6 @@ public class CategoryAdmin extends Controller {
      * 添加和修改页面共用
      */
     private static void renderInit(Category category) {
-        if (category != null && category.parentCategory != null) {
-            renderArgs.put("category.parentId", category.parentCategory.id);
-            renderArgs.put("category.parentName", category.parentCategory.name);
-        } else {
-            renderArgs.put("category.parentId", null);
-            renderArgs.put("category.parentName", "无");
-        }
         if (category != null) {
             renderArgs.put("category.name", category.name);
             renderArgs.put("category.displayOrder", category.displayOrder);

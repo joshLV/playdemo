@@ -35,7 +35,7 @@
             <td>${category?.isInWWWFloor?.yesno("是","否")} </td>
             <td>${category?.display?.yesno("是","否")} </td>
             <td>
-                <a href="@{CategoryAdmin.edit(category.id)}">修改</a>
+                <a href="@{CategoryAdmin.edit(category.id,parentId)}">修改</a>
                 / <a href="@{CategoryAdmin.displaySubcategory(category.id)}">子分类</a>
             </td>
         </tr>
