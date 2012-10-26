@@ -1,5 +1,6 @@
 package controllers;
 
+import com.uhuila.common.constants.DeletedStatus;
 import models.sales.Category;
 import operate.rbac.annotations.ActiveNavigation;
 import play.data.validation.Valid;
@@ -53,13 +54,14 @@ public class CategoryAdmin extends Controller {
             parentCategory = Category.findById(parentId);
         }
         category.parentCategory = parentCategory;
+        category.deleted = DeletedStatus.UN_DELETED;
         category.create();
         category.save();
         index(null);
     }
 
     /**
-     * 取得指定总类别信息
+     * 取得指定类别信息
      */
     public static void edit(Long id, Long parentId) {
         models.sales.Category category = models.sales.Category.findById(id);
@@ -68,7 +70,7 @@ public class CategoryAdmin extends Controller {
     }
 
     /**
-     * 更新指定总类别信息
+     * 更新指定类别信息
      */
     public static void update(Long id, @Valid final models.sales.Category category, Long parentId) {
         if (Validation.hasErrors()) {
@@ -83,11 +85,19 @@ public class CategoryAdmin extends Controller {
         List<Category> categoryList = null;
         Category parentCategory = Category.findById(parentId);
         if (parentCategory != null) {
-            categoryList = Category.find("parentCategory.id=?", parentCategory.id).fetch();
+            categoryList = Category.find("parentCategory.id=? and deleted = ?", parentCategory.id, DeletedStatus.UN_DELETED).fetch();
         }
-        render(categoryList, parentId);
+        render(categoryList, parentId, parentCategory);
     }
 
+    /**
+     * 删除指定类别
+     */
+    public static void delete(Long id) {
+        models.sales.Category category = models.sales.Category.findById(id);
+        models.sales.Category.delete(id);
+        index(null);
+    }
 
     /**
      * 初始化form界面.

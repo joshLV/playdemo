@@ -4,17 +4,25 @@
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/goods.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
-<legend>${title} &nbsp;&nbsp; <a href="@{CategoryAdmin.add(parentId)}" class="btn btn-primary">添加</a>
+<legend>${title}
+    上级分类:
+#{if  parentCategory!=null}
+${ parentCategory?.name}
+#{/if}
+#{else}
+    无
+#{/else}
+
+    &nbsp;&nbsp; <a href="@{CategoryAdmin.add(parentId)}" class="btn btn-primary">添加</a>
 </legend>
 
 <div class="body">
     <table class="table table-striped table-bordered table-condensed">
         <thead>
         <tr>
-
-            <th>总分类的名称</th>
+            <th>类别的名称</th>
             <th>推荐度</th>
-            <th>网站上显示的关键字</th>
+            <th>网站上显示的搜索关键字</th>
             <th>SEO关键字</th>
             <th>WWW首页左上角显示</th>
             <th>WWW首页楼层显示</th>
@@ -37,9 +45,22 @@
             <td>
                 <a href="@{CategoryAdmin.edit(category.id,parentId)}">修改</a>
                 / <a href="@{CategoryAdmin.displaySubcategory(category.id)}">子分类</a>
+            *{/ <a id="deletebtn" >删除</a>}*
+                / #{vx.deleteLink id:category?.id, name:category?.id, action:"/category-admin"/}
             </td>
         </tr>
         #{/list}
         </tbody>
     </table>
 </div>
+<script type="text/javascript">
+    $("#deletebtn").click(function () {
+        if (confirm("您确定要删除吗？")) {
+            var url = "/category-admin/";
+            $("#deletefrm").attr("method", "DELETE");
+            $("#deletefrm").attr("action", url);
+            $("#deletefrm").submit();
+        }
+    });
+
+</script>

@@ -2,6 +2,7 @@ package models.sales;
 
 import cache.CacheCallBack;
 import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Required;
@@ -11,17 +12,7 @@ import play.modules.solr.SolrEmbedded;
 import play.modules.solr.SolrField;
 import play.modules.solr.SolrSearchable;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -92,6 +83,12 @@ public class Category extends Model {
     @JoinColumn(name = "parent_id")
     @SolrField
     public Category parentCategory;
+
+    /**
+     * 逻辑删除,0:未删除，1:已删除
+     */
+    @Enumerated(EnumType.ORDINAL)
+    public DeletedStatus deleted;
 
 
     /**
@@ -205,15 +202,15 @@ public class Category extends Model {
         JPAQuery query;
         if (category == null) {
             if (display != null) {
-                query = find("parentCategory = null and display = ? order by displayOrder", display);
+                query = find("parentCategory = null and display = ? and deleted = ? order by displayOrder", display, DeletedStatus.UN_DELETED);
             } else {
-                query = find("parentCategory = null order by displayOrder");
+                query = find("parentCategory = null and deleted = ? order by displayOrder", DeletedStatus.UN_DELETED);
             }
         } else {
             if (display != null) {
-                query = find("parentCategory = ? and display = ? order by displayOrder", category, display);
+                query = find("parentCategory = ? and display = ? and deleted = ? order by displayOrder", category, display, DeletedStatus.UN_DELETED);
             } else {
-                query = find("parentCategory = ? order by displayOrder", category);
+                query = find("parentCategory = ? and deleted = ? order by displayOrder", category, DeletedStatus.UN_DELETED);
             }
         }
 
@@ -298,6 +295,16 @@ public class Category extends Model {
         }
         updateCategory.parentCategory = parentCategory;
         updateCategory.save();
+    }
 
+    public static void delete(Long id) {
+        models.sales.Category category = models.sales.Category.findById(id);
+        if (category != null) {
+            category.deleted = DeletedStatus.DELETED;
+            category.save();
+        }
     }
 }
+
+
+

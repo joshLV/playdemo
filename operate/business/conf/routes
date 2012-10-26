@@ -29,6 +29,7 @@ POST    /category-admin                         CategoryAdmin.create
 GET     /category-admin/{id}/edit/{parentId}    CategoryAdmin.edit
 PUT     /category-admin/{id}                    CategoryAdmin.update
 GET     /category-admin/subcategory             CategoryAdmin.displaySubcategory
+DELETE  /category-admin/{id}                    CategoryAdmin.delete
 
 # 发送优惠券
 GET     /send_sms                                       SendSMS.index
