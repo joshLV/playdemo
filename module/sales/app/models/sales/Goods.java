@@ -1209,16 +1209,16 @@ public class Goods extends Model {
         List<Goods> newGoodsList = new ArrayList<>();
         List<Goods> doGoodsList = new ArrayList<>();
         int goodsCount = goodsList.size();
-        if (goodsCount < 5) {
-            otherGoodsList = findTopRecommendByCategory(5 - goodsCount, goods);
+        if (goodsCount < limit) {
+            otherGoodsList = findTopRecommendByCategory(limit - goodsCount, goods);
             for (Goods goods1 : otherGoodsList) {
                 goodsList.add(goods1);
             }
         }
 
         goodsCount = goodsList.size();
-        if (goodsCount < 5) {
-            newGoodsList = findNewGoodsOfOthers(goods.id, 5 - goodsCount);
+        if (goodsCount < limit) {
+            newGoodsList = findNewGoodsOfOthers(goods.id, limit - goodsCount);
             for (Goods goods1 : newGoodsList) {
                 goodsList.add(goods1);
             }
@@ -1300,6 +1300,17 @@ public class Goods extends Model {
     public static List<Goods> findNewGoodsOfOthers(Long id, int limit) {
         return Goods.find(" id <> ? and status = ? and deleted = ? and baseSale >= 1 and expireAt > ? order by createdAt DESC",
                 id, GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit);
+    }
+
+    /**
+     * 取得销量前3的商品
+     *
+     * @param limit
+     * @return
+     */
+    public static List<Goods> findPopGoods(int limit) {
+        return Goods.find(" status = ? and deleted = ? and baseSale >= 1 and expireAt > ? order by virtualBaseSaleCount DESC",
+                GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit);
     }
 
     public void setPublishedPlatforms(List<GoodsPublishedPlatformType> publishedPlatforms) {

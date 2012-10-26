@@ -114,8 +114,13 @@
                                 <li><a href="">${subCategory.name}（${subCategory.goodsCount}）</a></li>
                             #{/list}
                         </ul>
-                        <p>全场餐饮类，发微博晒单，赢取500元现金券！<br>
-                            购买厚味VIP卡，哈根达斯免费送！</p>
+                        <div class="ads">
+                            #{if i==1}${categoryTopic1?.content?.raw()}#{/if}
+                            #{if i==2}${categoryTopic2?.content?.raw()}#{/if}
+                            #{if i==3}${categoryTopic3?.content?.raw()}#{/if}
+                            #{if i==4}${categoryTopic4?.content?.raw()}#{/if}
+                            #{if i==5}${categoryTopic5?.content?.raw()}#{/if}
+                        </div>
                     </dd>
                 </dl>
             #{/list}

@@ -242,8 +242,23 @@ public class Goods2 extends Controller {
                         return getGoodsBreadCrumbs(goods.id);
                     }
                 });
+        final Date currentDate = new Date();
+        //右上侧图片展示
+        List<Block> rightSlides = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "RIGHT_SLIDES"), new CacheCallBack<List<Block>>() {
+            @Override
+            public List<Block> loadData() {
+                return Block.findByType(BlockType.WEBSITE_RIGHT_SLIDE, currentDate);
+            }
+        });
 
-        // 网友推荐商品
+        //热卖商品，销量最多的商品
+        List<models.sales.Goods> hotSaleGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_HOT_SALE4"), new CacheCallBack<List<models.sales.Goods>>() {
+            @Override
+            public List<models.sales.Goods> loadData() {
+                return models.sales.Goods.findTopHotSale(4);
+            }
+        });
+        //感兴趣的商品
         List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(
                 CacheHelper.getCacheKey(new String[]{models.sales.Goods.CACHEKEY,
                         models.sales.Goods.CACHEKEY_BASEID + goods.id},
@@ -264,14 +279,39 @@ public class Goods2 extends Controller {
             tjUrl += "?tj=gshare";
         }
 
-        renderArgs.put("tjUrl", tjUrl);
+        ValuePaginator<Shop> shops = new ValuePaginator<>(
+                goods.getShopList());
+        shops.setPageNumber(1);
+        shops.setPageSize(5);
 
+
+        renderArgs.put("tjUrl", tjUrl);
+        renderArgs.put("hotSaleGoodsList", hotSaleGoodsList);
+        renderArgs.put("rightSlides", rightSlides);
         renderArgs.put("goods", goods);
-        renderArgs.put("shops", goods.getShopList());
+        renderArgs.put("shops", shops);
         renderArgs.put("breadcrumbs", breadcrumbs);
         renderArgs.put("recommendGoodsList", recommendGoodsList);
     }
 
+    public static void shops(Long id) {
+        String page = params.get("currPage");
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+        final Long goodsId = id;
+        final models.sales.Goods goods = CacheHelper.getCache(CacheHelper
+                .getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id,
+                        "UNDELETED"), new CacheCallBack<models.sales.Goods>() {
+            @Override
+            public models.sales.Goods loadData() {
+                return models.sales.Goods.findUnDeletedById(goodsId);
+            }
+        });
+        ValuePaginator<Shop> shops = new ValuePaginator<>(
+                goods.getShopList());
+        shops.setPageNumber(pageNumber);
+        shops.setPageSize(5);
+        render("Goods2/shops.json", shops);
+    }
 
     private static void showGoodsHistory(final GoodsHistory goodsHistory) {
         if (goodsHistory == null) {

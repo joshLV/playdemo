@@ -1,0 +1,19 @@
+
+#{if  shops?.size() >0}
+    #{set i:0/}
+    #{paginate.list items:shops, as:'shop'}
+        #{set i:i+1/}
+        <li>
+            <h5 #{if i==1}class="outlet-name outlet-show"#{/if}#{else}class="outlet-name"#{/else} data-latlng="${shop?.latitude},${shop?.longitude}">
+            ${shop.name}</h5>
+
+            <div class="outlet-attr">
+                <p>${shop.address}</p>
+
+                <p><span>${shop.phone}</span>
+                    <a class="view-map" href="#">查看地图»</a> <a class="search-path" href="#">公交/驾车»</a>
+                </p>
+            </div>
+        </li>
+    #{/paginate.list}
+#{/if}
