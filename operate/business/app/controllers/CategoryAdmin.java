@@ -45,19 +45,19 @@ public class CategoryAdmin extends Controller {
      */
     @ActiveNavigation("goods_add")
     public static void create(@Valid Category category, Long parentId) {
-        if (Validation.hasErrors()) {
-            renderInit(category);
-            render("CategoryAdmin/add.html");
-        }
         Category parentCategory = null;
         if (category != null && parentId != null && parentId != 0) {
             parentCategory = Category.findById(parentId);
+        }
+        if (Validation.hasErrors()) {
+            renderInit(category);
+            render("CategoryAdmin/add.html", parentId, parentCategory);
         }
         category.parentCategory = parentCategory;
         category.deleted = DeletedStatus.UN_DELETED;
         category.create();
         category.save();
-        index(null);
+        displaySubcategory(parentId);
     }
 
     /**
@@ -65,20 +65,28 @@ public class CategoryAdmin extends Controller {
      */
     public static void edit(Long id, Long parentId) {
         models.sales.Category category = models.sales.Category.findById(id);
+        Category parentCategory = null;
+        if (parentId != null) {
+            parentCategory = Category.findById(parentId);
+        }
         renderInit(category);
-        render(id, parentId);
+        render(id, parentId, parentCategory);
     }
 
     /**
      * 更新指定类别信息
      */
     public static void update(Long id, @Valid final models.sales.Category category, Long parentId) {
+        Category parentCategory = null;
+        if (category != null && parentId != null && parentId != 0) {
+            parentCategory = Category.findById(parentId);
+        }
         if (Validation.hasErrors()) {
             renderInit(category);
-            render("CategoryAdmin/edit.html", category, id, parentId);
+            render("CategoryAdmin/edit.html", category, id, parentId, parentCategory);
         }
         models.sales.Category.update(id, category, parentId);
-        index(null);
+        displaySubcategory(parentId);
     }
 
     public static void displaySubcategory(Long parentId) {
@@ -93,10 +101,16 @@ public class CategoryAdmin extends Controller {
     /**
      * 删除指定类别
      */
-    public static void delete(Long id) {
+    public static void delete(Long id, Long parentId) {
         models.sales.Category category = models.sales.Category.findById(id);
-        models.sales.Category.delete(id);
-        index(null);
+        List<Category> childCategoryList = Category.find("parentCategory=?", category).fetch();
+        if (childCategoryList.size() > 0) {
+            System.out.println("parentId>>>" + parentId);
+            render(parentId);
+        } else {
+            models.sales.Category.delete(id);
+            displaySubcategory(parentId);
+        }
     }
 
     /**

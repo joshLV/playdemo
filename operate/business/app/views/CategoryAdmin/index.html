@@ -46,7 +46,8 @@ ${ parentCategory?.name}
                 <a href="@{CategoryAdmin.edit(category.id,parentId)}">修改</a>
                 / <a href="@{CategoryAdmin.displaySubcategory(category.id)}">子分类</a>
             *{/ <a id="deletebtn" >删除</a>}*
-                / #{vx.deleteLink id:category?.id, name:category?.id, action:"/category-admin"/}
+                /
+            #{vx.deleteLink id:category?.id, name:category?.id, action:"/category-admin/${parentId}"/}
             </td>
         </tr>
         #{/list}

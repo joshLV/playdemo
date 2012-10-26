@@ -1,5 +1,5 @@
 #{extends 'layout_operate/layout.html' /}
-#{set title:'修改总类别' /}
+#{set title:'修改类别' /}
 #{get 'moreScripts'}
 <script src="@{'/public/javascripts/kindeditor-min.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/lang/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
@@ -12,8 +12,8 @@ class:"form-horizontal", method:'PUT' }
     <legend>${title}
         <span style="font-size: medium;"> &nbsp;&nbsp;
             上级分类:
-            #{if category?.parentCategory!=null}
-            ${category?.parentCategory?.name}
+            #{if parentCategory!=null}
+            ${parentCategory?.name}
             #{/if}
             #{else}
                 无
