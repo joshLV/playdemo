@@ -485,7 +485,6 @@ public class Goods extends Model {
      */
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true,
             fetch = FetchType.LAZY, mappedBy = "goods")
-    @SolrEmbedded
     public Set<GoodsUnPublishedPlatform> unPublishedPlatforms;
 
     public static final String IMAGE_SERVER = Play.configuration.getProperty

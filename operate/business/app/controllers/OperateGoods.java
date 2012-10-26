@@ -16,6 +16,7 @@ import models.sales.Category;
 import models.sales.Goods;
 import models.sales.GoodsCondition;
 import models.sales.GoodsHistory;
+import models.sales.GoodsImages;
 import models.sales.GoodsStatus;
 import models.sales.GoodsUnPublishedPlatform;
 import models.sales.MaterialType;
