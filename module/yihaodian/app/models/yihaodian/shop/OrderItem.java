@@ -1,5 +1,6 @@
 package models.yihaodian.shop;
 
+import models.yihaodian.YHDParser;
 import org.dom4j.Element;
 import play.db.jpa.Model;
 
@@ -66,7 +67,7 @@ public class OrderItem extends Model {
     @Column(name = "outer_id")
     public Long outerId;
 
-    public static Parser<OrderItem> parser = new Parser<OrderItem>() {
+    public static YHDParser<OrderItem> parser = new YHDParser<OrderItem>() {
         @Override
         public OrderItem parse(Element node) {
             OrderItem orderItem = new OrderItem();

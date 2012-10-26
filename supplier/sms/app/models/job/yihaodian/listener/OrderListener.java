@@ -2,7 +2,7 @@ package models.job.yihaodian.listener;
 
 import models.yihaodian.*;
 import models.yihaodian.shop.*;
-import models.yihaodian.shop.YHDShopUtil;
+import models.yihaodian.YHDUtil;
 import play.Logger;
 import play.Play;
 import play.jobs.Every;
@@ -86,11 +86,11 @@ public class OrderListener extends Job{
         Logger.info("yhd.orders.get startTime %s", params.get("startTime"));
         Logger.info("yhd.orders.get endTime %s", params.get("endTime"));
 
-        String responseXml = YHDShopUtil.sendRequest(params, "yhd.orders.get");
+        String responseXml = YHDUtil.sendRequest(params, "yhd.orders.get");
 
         Logger.info("yhd.orders.get response %s", responseXml);
         if(responseXml != null) {
-            Response<YihaodianOrder> res = new Response<>();
+            YHDResponse<YihaodianOrder> res = new YHDResponse<>();
             res.parseXml(responseXml, "orderList", true, YihaodianOrder.parser);
             if(res.getErrorCount() == 0){
                 return res.getVs();
@@ -111,10 +111,10 @@ public class OrderListener extends Job{
         params.put("orderCodeList", orderCodes);
         Logger.info("yhd.orders.detail.get orderCodeList %s", params.get("orderCodeList"));
 
-        String responseXml = YHDShopUtil.sendRequest(params, "yhd.orders.detail.get");
+        String responseXml = YHDUtil.sendRequest(params, "yhd.orders.detail.get");
         Logger.info("yhd.orders.detail.get response %s", responseXml);
         if (responseXml != null) {
-            Response<YihaodianOrder> res = new Response<>();
+            YHDResponse<YihaodianOrder> res = new YHDResponse<>();
             res.parseXml(responseXml, "orderInfoList", true, YihaodianOrder.fullParser);
             if(res.getErrorCount() == 0){
                 return res.getVs();

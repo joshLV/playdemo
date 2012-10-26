@@ -1,4 +1,4 @@
-package models.yihaodian.shop;
+package models.yihaodian;
 
 import com.yhd.openapi.client.PostClient;
 import play.Logger;
@@ -11,7 +11,7 @@ import java.util.Map;
  * @author likang
  *         Date: 12-8-31
  */
-public class YHDShopUtil {
+public class YHDUtil {
     public static String GATEWAY_URL = Play.configuration.getProperty("yihaodian.gateway_url");
     public static String CHECK_CODE = Play.configuration.getProperty("yihaodian.check_code");
     public static String MERCHANT_ID = Play.configuration.getProperty("yihaodian.merchant_id");

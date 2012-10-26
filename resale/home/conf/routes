@@ -71,6 +71,10 @@ POST    /jd-test                                JingdongUploadTeam.test
 GET     /jd-test                                JingdongUploadTeam.showTest
 GET     /jd-add/{goodsId}                       JingdongUploadTeam.prepare
 
+
+GET     /yhd-add/{goodsId}                      YHDProduct.prepare
+POST    /yhd-add                                YHDProduct.upload
+
 GET     /ecoupons                               Coupons.index
 GET     /ecoupons/refund/{id}                   Coupons.refund
 

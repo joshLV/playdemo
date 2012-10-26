@@ -1,5 +1,6 @@
 package models.yihaodian.shop;
 
+import models.yihaodian.YHDParser;
 import org.dom4j.Element;
 import play.Logger;
 import play.db.jpa.Model;
@@ -131,7 +132,7 @@ public class YihaodianOrder extends Model{
     public Float recompensPoints;
 
     // 订单摘要解析器
-    public static Parser<YihaodianOrder> parser = new Parser<YihaodianOrder>() {
+    public static YHDParser<YihaodianOrder> parser = new YHDParser<YihaodianOrder>() {
         @Override
         public YihaodianOrder parse(Element node) {
             YihaodianOrder order = new YihaodianOrder();
@@ -151,7 +152,7 @@ public class YihaodianOrder extends Model{
     };
 
     // 订单详细信息解析器
-    public static Parser<YihaodianOrder> fullParser = new Parser<YihaodianOrder>() {
+    public static YHDParser<YihaodianOrder> fullParser = new YHDParser<YihaodianOrder>() {
         @Override
         public YihaodianOrder parse(Element node) {
             //解析订单基本信息

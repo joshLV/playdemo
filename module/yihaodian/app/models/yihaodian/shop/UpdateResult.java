@@ -1,5 +1,6 @@
 package models.yihaodian.shop;
 
+import models.yihaodian.YHDParser;
 import org.dom4j.Element;
 
 /**
@@ -9,7 +10,7 @@ import org.dom4j.Element;
 public class UpdateResult {
     public Integer updateCount;
 
-    public static Parser<UpdateResult> parser = new Parser<UpdateResult>() {
+    public static YHDParser<UpdateResult> parser = new YHDParser<UpdateResult>() {
         @Override
         public UpdateResult parse(Element node) {
             UpdateResult result = new UpdateResult();

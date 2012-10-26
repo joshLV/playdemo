@@ -1,0 +1,33 @@
+#{extends 'main.html' /}
+#{set title:'100券 - 一号店上传' /}
+#{set 'moreStyles'}
+    #{asset.css src:['/r/base.css', '/r/goods.css', '/r/play-pagination.css'] /}
+        <style type="text/css">
+            b{ color:red }
+        </style>
+#{/set}
+#{set 'moreScripts'}
+<script src="@@{'/public/javascripts/goods-index.js'}"></script>
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+
+#{set 'navMenu'}
+    <li><a href="/">首　页</a></li>
+    <li><a class="current" href="/goods">商品库</a></li>
+    <li><a href="/library">我的分销库</a></li>
+    <li><a href="/charge">账户充值</a></li>
+    <li><a href="/withdraw">账户提现</a></li>
+#{/set}
+
+<form action="/yhd-add" method="POST">
+<div id="content">
+    <p>产品类型：
+        <input type="radio" name="productType" value="0" checked> 普通产品
+        <input type="radio" name="productType" value="1"> 图书
+    </p>
+    <p>产品类别
+
+    </p>
+    <input type="submit" value="提交">
+</div>
+</form>

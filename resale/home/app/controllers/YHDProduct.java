@@ -7,7 +7,7 @@ import play.mvc.Controller;
  *         Date: 12-10-19
  */
 public class YHDProduct extends Controller{
-    public static void add(){
+    public static void prepare(){
 
     }
 }

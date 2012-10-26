@@ -1,7 +1,7 @@
 package models.yihaodian.groupbuy;
 
-import models.yihaodian.shop.YHDShopUtil;
-import models.yihaodian.groupbuy.response.YHDErrorInfo;
+import models.yihaodian.YHDUtil;
+import models.yihaodian.YHDErrorInfo;
 import org.jsoup.helper.StringUtil;
 
 import java.security.MessageDigest;
@@ -94,7 +94,7 @@ public class YHDGroupBuyUtil {
 
         String sign = params.remove("sign");
         //检查参数签名
-        String mySign = YHDGroupBuyUtil.md5Signature(params, YHDShopUtil.SECRET_KEY);
+        String mySign = YHDGroupBuyUtil.md5Signature(params, YHDUtil.SECRET_KEY);
         if(!mySign.equals(sign)){
             errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "sign不匹配", null));
         }

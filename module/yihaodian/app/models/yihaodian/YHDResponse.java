@@ -1,4 +1,4 @@
-package models.yihaodian.shop;
+package models.yihaodian;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -12,14 +12,14 @@ import java.util.List;
  * @author likang
  *         Date: 12-8-30
  */
-public class Response<V> {
+public class YHDResponse<V> {
     private List<V> vs;
     private int totalCount;
 
     private int errorCount;
-    private List<ErrorInfo> errors;
+    private List<YHDErrorInfo> errors;
 
-    public Response(){
+    public YHDResponse(){
         totalCount = 0;
         errorCount = 0;
         errors = new ArrayList<>();
@@ -30,14 +30,14 @@ public class Response<V> {
      * 解析一号店返回的XML
      * @param xml   一号店的返回内容
      */
-    public void parseXml(String xml, String contentNodeName, boolean isList, Parser<V> parser){
+    public void parseXml(String xml, String contentNodeName, boolean isList, YHDParser<V> parser){
         Document document = null;
 
         try{
             document = DocumentHelper.parseText(xml);
         }catch (DocumentException e){
             errorCount = 1;
-            ErrorInfo errorInfo = new ErrorInfo();
+            YHDErrorInfo errorInfo = new YHDErrorInfo();
             errorInfo.errorCode = "0";
             errorInfo.errorDes = "parse xml error";
             errorInfo.pkInfo = "";
@@ -61,7 +61,7 @@ public class Response<V> {
         }
     }
 
-    private void parseContent(Element root, String contentNodeName, boolean isList, Parser<V> parser) {
+    private void parseContent(Element root, String contentNodeName, boolean isList, YHDParser<V> parser) {
         Element node = root.element(contentNodeName);
         if(node == null){
             return;
@@ -76,7 +76,7 @@ public class Response<V> {
         }
     }
 
-    private void parseOneContent(Element e, Parser<V> parser){
+    private void parseOneContent(Element e, YHDParser<V> parser){
         V v = parser.parse(e);
         if(v != null){
             vs.add(v);
@@ -87,7 +87,7 @@ public class Response<V> {
         Element errorInfoElement = root.element("errInfoList");
         for (Object o : errorInfoElement.elements()) {
             Element e = (Element) o;
-            ErrorInfo errorInfo = new ErrorInfo();
+            YHDErrorInfo errorInfo = new YHDErrorInfo();
             errorInfo.errorCode = e.elementText("errorCode");
             errorInfo.errorDes = e.elementText("errorDes");
             errorInfo.pkInfo = e.elementText("pkInfo");
@@ -128,11 +128,11 @@ public class Response<V> {
         this.errorCount = errorCount;
     }
 
-    public List<ErrorInfo> getErrors() {
+    public List<YHDErrorInfo> getErrors() {
         return errors;
     }
 
-    public void setErrors(List<ErrorInfo> errors) {
+    public void setErrors(List<YHDErrorInfo> errors) {
         this.errors = errors;
     }
 
