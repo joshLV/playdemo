@@ -85,7 +85,6 @@ public class Category extends Model {
      */
     @ManyToOne
     @JoinColumn(name = "parent_id")
-    @SolrEmbedded
     public Category parentCategory;
 
 

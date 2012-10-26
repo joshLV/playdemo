@@ -13,6 +13,8 @@ import models.cms.TopicType;
 import models.sales.Area;
 import models.sales.Category;
 import play.Logger;
+import models.cms.*;
+import models.sales.Category;
 import play.mvc.After;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -32,29 +34,23 @@ import java.util.List;
 public class Home2 extends Controller {
 
     public static void index(final long categoryId) {
-        CacheHelper.preRead(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_TOPS4"),
-                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_NEW4"),
+
+        CacheHelper.preRead(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_NEW4"),
                 CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECOMMENDS4"),
                 CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_HOT_SALE4"),
-                CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_DISTRICTS"),
-                CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SAILY_SPEC"),
-                CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SLIDES"),
-                CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_RIGHT_SLIDES"),
-                CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_NEWS1"),
+                CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_FLOOR_CATEGORIES"),
                 CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_TOPICS"),
-                CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_AREAS"),
-                CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_FLOOR_CATEGORIES"),
-                CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_NEW4"),
-                CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_SUPPLIER")
+                CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_RIGHT_SLIDES"),
+                CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SLIDES"),
+                CacheHelper.getCacheKey(FriendsLink.CACHEKEY, "FRIENDS_LINK"),
+                CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_1F"),
+                CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_2F"),
+                CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY1_TOPICS"),
+                CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY2_TOPICS"),
+                CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY3_TOPICS"),
+                CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY4_TOPICS"),
+                CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY5_TOPICS")
         );
-
-        //推荐商品，精选商品
-        List<models.sales.Goods> goodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_TOPS4"), new CacheCallBack<List<models.sales.Goods>>() {
-            @Override
-            public List<models.sales.Goods> loadData() {
-                return models.sales.Goods.findTop(4);
-            }
-        });
 
         //最新上架，新品推荐
         List<models.sales.Goods> newGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_NEW4"), new CacheCallBack<List<models.sales.Goods>>() {
@@ -89,6 +85,7 @@ public class Home2 extends Controller {
         });
 
         renderArgs.put("categoryId", categoryId);
+
         final Date currentDate = new Date();
 
         //公告
@@ -129,36 +126,68 @@ public class Home2 extends Controller {
             }
         });
         renderArgs.put("friendsLinks", friendsLinks);
-        models.sales.Goods dailySpecialGoods = null;
-        Block dailySpecial = null;
-        if (dailySpecials.size() >= 1) {
-            dailySpecial = dailySpecials.get(0);
-            try {
-                final Long goodsId = Long.parseLong(dailySpecial.title);
-                dailySpecialGoods = CacheHelper.getCache(models.sales.Goods.CACHEKEY + goodsId, new CacheCallBack<models.sales.Goods>() {
-                    @Override
-                    public models.sales.Goods loadData() {
-                        return models.sales.Goods.findById(goodsId);
-                    }
-                });
-            } catch (Exception e) {
-                Logger.warn("每日特卖异常", e);
+        //首页楼层banner
+        Block webOneFloor = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_1F"), new CacheCallBack<Block>() {
+            @Override
+            public Block loadData() {
+                return Block.findByType(BlockType.WEBSITE_1F, currentDate).get(0);
             }
-            if (dailySpecialGoods == null) {
-                Logger.info("设置每日特卖商品失败，找不到" + dailySpecial.title + "对应的商品，使用推荐商品");
+        });
+        //首页楼层banner
+        Block webTwoFloor = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_2F"), new CacheCallBack<Block>() {
+            @Override
+            public Block loadData() {
+                return Block.findByType(BlockType.WEBSITE_2F, currentDate).get(0);
             }
-        }
-        if (dailySpecialGoods == null) {
-            Logger.info("没有设置每日特卖商品，使用推荐商品");
-            if (recommendGoodsList.size() > 0) {
-                dailySpecialGoods = recommendGoodsList.get(0);
+        });
+        //首页分类的公告1
+        Topic categoryTopic1 = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY1_TOPICS"), new CacheCallBack<Topic>() {
+            @Override
+            public Topic loadData() {
+                return Topic.findByType(PlatformType.UHUILA, TopicType.WEB_CATEGORY1, currentDate, 1).get(0);
             }
-        }
+        });
+        //首页分类的公告2
+        Topic categoryTopic2 = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY2_TOPICS"), new CacheCallBack<Topic>() {
+            @Override
+            public Topic loadData() {
+                return Topic.findByType(PlatformType.UHUILA, TopicType.WEB_CATEGORY2, currentDate, 1).get(0);
+            }
+        });
+        //首页分类的公告3
+        Topic categoryTopic3 = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY3_TOPICS"), new CacheCallBack<Topic>() {
+            @Override
+            public Topic loadData() {
+                return Topic.findByType(PlatformType.UHUILA, TopicType.WEB_CATEGORY3, currentDate, 1).get(0);
+            }
+        });
+        //首页分类的公告1
+        Topic categoryTopic4 = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY4_TOPICS"), new CacheCallBack<Topic>() {
+            @Override
+            public Topic loadData() {
+                return Topic.findByType(PlatformType.UHUILA, TopicType.WEB_CATEGORY4, currentDate, 1).get(0);
+            }
+        });
+        //首页分类的公告5
+        Topic categoryTopic5 = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY5_TOPICS"), new CacheCallBack<Topic>() {
+            @Override
+            public Topic loadData() {
+                return Topic.findByType(PlatformType.UHUILA, TopicType.WEB_CATEGORY5, currentDate, 1).get(0);
+            }
+        });
+
+        renderArgs.put("categoryTopic1", categoryTopic1);
+        renderArgs.put("categoryTopic2", categoryTopic2);
+        renderArgs.put("categoryTopic3", categoryTopic3);
+        renderArgs.put("categoryTopic4", categoryTopic4);
+        renderArgs.put("categoryTopic5", categoryTopic5);
+        renderArgs.put("webOneFloor", webOneFloor);
+        renderArgs.put("webTwoFloor", webTwoFloor);
+        renderArgs.put("categoryId", categoryId);
+        renderArgs.put("friendsLinks", friendsLinks);
         renderArgs.put("slides", slides);
-        renderArgs.put("dailySpecial", dailySpecial);
-        renderArgs.put("dailySpecialGoods", dailySpecialGoods);
         renderArgs.put("rightSlides", rightSlides);
-        render(goodsList, newGoodsList, recommendGoodsList, hotSaleGoodsList, floorCategories, topics);
+        render(newGoodsList, recommendGoodsList, hotSaleGoodsList, floorCategories, topics);
     }
 
     @After

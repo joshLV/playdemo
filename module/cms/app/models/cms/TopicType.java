@@ -8,5 +8,5 @@ package models.cms;
  * Time: 11:08 AM
  */
 public enum TopicType {
-    NOTICE, NEWS,TOPIC
+    NOTICE, NEWS, TOPIC, WEB_CATEGORY1, WEB_CATEGORY2, WEB_CATEGORY3, WEB_CATEGORY4, WEB_CATEGORY5
 }
