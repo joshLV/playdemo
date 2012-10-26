@@ -98,7 +98,7 @@ public class Goods extends Controller {
 
             final GoodsCondition goodsCond = new GoodsCondition(condition);
             goodsCond.status = GoodsStatus.ONSALE;
-            goodsCond.isHideOnsale = false;
+            goodsCond.isHideOnsale = true;
             goodsCond.baseSaleBegin = 1;
             goodsCond.expireAtBegin = new Date();
 
