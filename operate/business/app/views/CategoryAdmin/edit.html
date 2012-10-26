@@ -1,27 +1,28 @@
 #{extends 'layout_operate/layout.html' /}
-#{set title:'添加类别' /}
-#{set 'moreScripts'}
+#{set title:'修改总类别' /}
+#{get 'moreScripts'}
 <script src="@{'/public/javascripts/kindeditor-min.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/lang/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
-#{/set}
+#{/get}
 #{include '/share/nav.html' /}
 <div class="body">
-#{form @CategoryAdmin.create() , id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
+#{form @CategoryAdmin.update(id), id:'form',enctype:'multipart/form-data',
+class:"form-horizontal", method:'PUT' }
     <legend>${title}
-
         <span style="font-size: medium;"> &nbsp;&nbsp;
             上级分类:
-            #{if parentCategory!=null}
-            ${parentCategory?.name}
+            #{if category?.parentCategory!=null}
+            ${category?.parentCategory?.name}
             #{/if}
             #{else}
                 无
             #{/else}
        </span>
     </legend>
-    #{set action:"add"/}
-    #{include '/CategoryAdmin/categoryForm.html'/}  '
-    <input type="hidden" id="parentId" name="parentId" value="${parentId}">
+    #{set action:"edit"/}
+    #{include '/CategoryAdmin/categoryForm.html'/}
 #{/form}
 </div>
+
+

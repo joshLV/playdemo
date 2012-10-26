@@ -1,8 +1,41 @@
 <div class="control-group">
-    <label class="control-label"><span style="color: red; ">*</span>上级分类</label>
+
+
+</div>
+#{layout_operate.textField name:'category.name', value:category?.name, required:true/}
+#{layout_operate.textField name:'category.displayOrder', value:category?.displayOrder?:"0", required:true/}
+#{layout_operate.textFieldForCategoryAdmin name:'category.keywords', value:category?.keywords/}
+#{layout_operate.textFieldForCategoryAdmin name:'category.showKeywords', value:category?.showKeywords/}
+<div class="control-group">
+    <label class="control-label">WWW首页左上角显示
+    </label>
 
     <div class="controls">
-    #{layout_operate.selectList name:'categoryId', value:categoryId, list:categoryList/}
-
+        <input type="checkbox" name="goods.isInWWWLeft" id="isInWWWLeft" class="input-medium"
+               value="${category?.isInWWWLeft}" ${category?.isInWWWLeft?'checked':''}/><span
+            id="err-isInWWWLeft"></span>
     </div>
+</div>
+<div class="control-group">
+    <label class="control-label">WWW首页楼层显示
+    </label>
+
+    <div class="controls">
+        <input type="checkbox" name="goods.isInWWWFloor" id="isInWWWFloor" class="input-medium"
+               value="${category?.isInWWWFloor}" ${category?.isInWWWFloor?'checked':''}/><span
+            id="err-isInWWWFloor"></span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">显示在WWW首页
+    </label>
+
+    <div class="controls">
+        <input type="checkbox" name="goods.display" id="display" class="input-medium"
+               value="${category?.display}" ${category?.display?'checked':''}/><span id="err-display"></span>
+    </div>
+</div>
+
+<div class="form-actions">
+    <input class="btn btn-primary" id="save" type="submit" value="保存"/>
 </div>

@@ -5,6 +5,7 @@ import cache.CacheHelper;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Required;
+import play.data.validation.Unique;
 import play.db.jpa.Model;
 import play.modules.solr.SolrEmbedded;
 import play.modules.solr.SolrField;
@@ -43,9 +44,11 @@ public class Category extends Model {
     /**
      * 类目名称
      */
+    @Unique
     @Required
     @SolrField
     public String name;
+
     /**
      * 推荐度,显示顺序
      */
@@ -62,29 +65,25 @@ public class Category extends Model {
     /**
      * 网站上显示的关键字.
      */
-    @Required
     @Column(name = "show_keywords")
     public String showKeywords;
 
     /**
      * 是否在WWW首页左上角显示
      */
-    @Required
     @Column(name = "is_in_www_left")
-    public Boolean isInWWWLeft;
+    public Boolean isInWWWLeft = false;
 
     /**
      * 是否在WWW首页楼层显示
      */
-    @Required
     @Column(name = "is_in_www_floor")
-    public Boolean isInWWWFloor;
+    public Boolean isInWWWFloor = false;
 
     /**
-     * 是否显示.
+     * 是否显示在WWW首页.
      */
-    @Required
-    public Boolean display;
+    public Boolean display = false;
 
     /**
      * 所属分类Id
@@ -121,6 +120,15 @@ public class Category extends Model {
      */
     @Transient
     public int goodsCount;
+
+    @Transient
+    public Long tempId;
+
+    @Transient
+    public Long parentId;
+
+    @Transient
+    public String parentName;
 
     public Category() {
     }
@@ -279,5 +287,26 @@ public class Category extends Model {
                 return categoryList;
             }
         });
+    }
+
+    public static void update(Long id, Category category) {
+        models.sales.Category updateCategory = models.sales.Category.findById(id);
+        if (updateCategory == null) {
+            return;
+        }
+        updateCategory.name = category.name;
+        updateCategory.displayOrder = category.displayOrder;
+        updateCategory.keywords = category.keywords;
+        updateCategory.showKeywords = category.showKeywords;
+        updateCategory.isInWWWLeft = category.isInWWWLeft;
+        updateCategory.isInWWWFloor = category.isInWWWFloor;
+        updateCategory.display = category.display;
+        Category tempCategory = null;
+        if (category != null && category.tempId != null && category.tempId != 0) {
+            tempCategory = Category.findById(category.tempId);
+        }
+        updateCategory.parentCategory = tempCategory;
+        updateCategory.save();
+
     }
 }
