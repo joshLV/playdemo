@@ -9,7 +9,7 @@ import models.resale.Resaler;
 import models.sales.MaterialType;
 import models.sales.Goods;
 import models.yihaodian.YHDErrorInfo;
-import models.yihaodian.groupbuy.YHDGroupBuyUtil;
+import models.yihaodian.YHDUtil;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.mvc.Controller;
@@ -41,8 +41,8 @@ public class YHDGroupBuy extends Controller{
     public static void orderInform(String orderCode, Long productId, Integer productNum, BigDecimal orderAmount,
                                    Date createTime, Date paidTime, String userPhone, BigDecimal productPrize,
                                    Long groupId, String outerGroupId) {
-        TreeMap<String, String> params = YHDGroupBuyUtil.filterPlayParams(request.params.allSimple());
-        List<YHDErrorInfo> errorInfoList = YHDGroupBuyUtil.checkParam(params, "sign", "orderCode", "productId", "productNum",
+        TreeMap<String, String> params = YHDUtil.filterPlayParams(request.params.allSimple());
+        List<YHDErrorInfo> errorInfoList = YHDUtil.checkParam(params, "sign", "orderCode", "productId", "productNum",
                 "orderAmount", "createTime", "paidTime", "userPhone", "productPrize", "groupId", "outerGroupId");
         int totalCount = 0;
         if(errorInfoList.size() > 0){
@@ -129,8 +129,8 @@ public class YHDGroupBuy extends Controller{
      * 处理一号店的查询消费券请求
      */
     public static void vouchersGet() {
-        TreeMap<String, String> params = YHDGroupBuyUtil.filterPlayParams(request.params.allSimple());
-        List<YHDErrorInfo> errorInfoList = YHDGroupBuyUtil.checkParam(params, "sign", "orderCode", "partnerOrderCode");
+        TreeMap<String, String> params = YHDUtil.filterPlayParams(request.params.allSimple());
+        List<YHDErrorInfo> errorInfoList = YHDUtil.checkParam(params, "sign", "orderCode", "partnerOrderCode");
         int totalCount = 0;
         if(errorInfoList.size() > 0){
             finish(errorInfoList, totalCount);
@@ -161,8 +161,8 @@ public class YHDGroupBuy extends Controller{
      * 消费券重新发送
      */
     public static void voucherResend() {
-        TreeMap<String, String> params = YHDGroupBuyUtil.filterPlayParams(request.params.allSimple());
-        List<YHDErrorInfo> errorInfoList = YHDGroupBuyUtil.checkParam(params, "sign", "orderCode", "partnerOrderCode",
+        TreeMap<String, String> params = YHDUtil.filterPlayParams(request.params.allSimple());
+        List<YHDErrorInfo> errorInfoList = YHDUtil.checkParam(params, "sign", "orderCode", "partnerOrderCode",
                 "voucherCode", "receiveMobile", "requestTime");
         int totalCount = 0;
         if(errorInfoList.size() > 0){
@@ -226,8 +226,8 @@ public class YHDGroupBuy extends Controller{
      * 消费券退款
      */
     private static void voucherRefund() {
-        TreeMap<String, String> params = YHDGroupBuyUtil.filterPlayParams(request.params.allSimple());
-        List<YHDErrorInfo> errorInfoList = YHDGroupBuyUtil.checkParam(params, "sign", "orderCode", "partnerOrderCode",
+        TreeMap<String, String> params = YHDUtil.filterPlayParams(request.params.allSimple());
+        List<YHDErrorInfo> errorInfoList = YHDUtil.checkParam(params, "sign", "orderCode", "partnerOrderCode",
                 "voucherCode", "receiveMobile", "requestTime");
     }
 
