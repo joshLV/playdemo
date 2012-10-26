@@ -5,15 +5,13 @@ import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.PathUtil;
 import models.supplier.Supplier;
+import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.data.validation.MaxSize;
 import play.data.validation.Min;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
-import org.apache.commons.lang.StringUtils;
-
-import javax.persistence.*;
 import play.modules.solr.SolrField;
 import play.modules.solr.SolrSearchable;
 
@@ -54,6 +52,7 @@ public class Brand extends Model {
 
     @Required
     @MaxSize(20)
+    @SolrField
     public String description;     //品牌描述
 
     @ManyToOne
@@ -69,10 +68,6 @@ public class Brand extends Model {
     @MaxSize(4000)
     @SolrField
     public String introduce;     //特色产品介绍
-
-    @MaxSize(20)
-    @SolrField
-    public String description;     //描述
 
     @Enumerated(EnumType.ORDINAL)
     @SolrField

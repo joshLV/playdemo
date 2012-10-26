@@ -790,55 +790,6 @@ public class Goods extends Model {
     }
 
     /**
-     * 得到实际的库存数量.
-     */
-    @Transient
-    public Long getRealStocks() {
-        return this.cumulativeStocks - getRealSaleCount();
-    }
-
-    /**
-     * 界面上显示的销量，实际销量+虚拟销量基数
-     */
-    @Transient
-    private Long virtualSaleCount;
-
-    @Transient
-    @SolrField
-    public Long getVirtualSaleCount() {
-        if (virtualSaleCount != null && virtualSaleCount > 0) {
-            return virtualSaleCount;
-        }
-        virtualSaleCount = (getRealSaleCount() == null ? 0 : getRealSaleCount()) + (virtualBaseSaleCount == null ? 0 : virtualBaseSaleCount);
-        return virtualSaleCount;
-    }
-
-    /**
-     * 得到当前实际的销售数量.
-     */
-    @Transient
-    public Long getRealSaleCount() {
-        return CacheHelper.getCache(Goods.CACHEKEY_SALECOUNT + this.id, new CacheCallBack<Long>() {
-            @Override
-            public Long loadData() {
-                // 先找出OrderItems中的已销售数量
-                long orderItemsBuyCount = OrderItems.count("goods.id=? and order.status != ?", id, OrderStatus.CANCELED);
-                // 减去已退款的数量
-                long ecouponRefundCount = ECoupon.count("goods.id=? and status=?", id, ECouponStatus.REFUND);
-
-                return orderItemsBuyCount - ecouponRefundCount;
-            }
-        });
-    }
-
-    /**
-     * 删除旧缓存以更新显示销售数量.
-     */
-    public void refreshSaleCount() {
-        CacheHelper.delete(Goods.CACHEKEY_SALECOUNT + this.id);
-    }
-
-    /**
      * 获取商品允许发布的电子商务平T台.
      *
      * @return

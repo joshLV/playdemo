@@ -24,10 +24,6 @@ import models.sales.GoodsStatus;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
-import models.sales.*;
-import models.sales.Goods;
-import org.apache.commons.lang.StringUtils;
-import play.Logger;
 import play.modules.breadcrumbs.Breadcrumb;
 import play.modules.breadcrumbs.BreadcrumbList;
 import play.modules.paginate.JPAExtPaginator;
@@ -107,6 +103,11 @@ public class Goods2 extends Controller {
     public static void search(String keywords) {
         QueryResponse queryResponse = models.sales.Goods.search(keywords, 1, 27);
         SolrDocumentList docList = queryResponse.getResults();
+        // 默认取出5页产品
+        List<models.sales.Goods> goodsList = models.sales.Goods
+                .findTop(PAGE_SIZE * 5);
+        ValuePaginator<Goods> goodsPage = new ValuePaginator<>(
+                goodsList);
         render(goodsPage);
     }
 
@@ -271,23 +272,6 @@ public class Goods2 extends Controller {
                 });
 
         // 网友推荐商品
-        final Date currentDate = new Date();
-        //右上侧图片展示
-        List<Block> rightSlides = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "RIGHT_SLIDES"), new CacheCallBack<List<Block>>() {
-            @Override
-            public List<Block> loadData() {
-                return Block.findByType(BlockType.WEBSITE_RIGHT_SLIDE, currentDate);
-            }
-        });
-
-        //热卖商品，销量最多的商品
-        List<models.sales.Goods> hotSaleGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_HOT_SALE4"), new CacheCallBack<List<models.sales.Goods>>() {
-            @Override
-            public List<models.sales.Goods> loadData() {
-                return models.sales.Goods.findTopHotSale(4);
-            }
-        });
-        //感兴趣的商品
         List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(
                 CacheHelper.getCacheKey(new String[]{models.sales.Goods.CACHEKEY,
                         models.sales.Goods.CACHEKEY_BASEID + goods.id},
@@ -308,39 +292,14 @@ public class Goods2 extends Controller {
             tjUrl += "?tj=gshare";
         }
 
-        ValuePaginator<Shop> shops = new ValuePaginator<>(
-                goods.getShopList());
-        shops.setPageNumber(1);
-        shops.setPageSize(5);
-
-
         renderArgs.put("tjUrl", tjUrl);
-        renderArgs.put("hotSaleGoodsList", hotSaleGoodsList);
-        renderArgs.put("rightSlides", rightSlides);
+
         renderArgs.put("goods", goods);
-        renderArgs.put("shops", shops);
+        renderArgs.put("shops", goods.getShopList());
         renderArgs.put("breadcrumbs", breadcrumbs);
         renderArgs.put("recommendGoodsList", recommendGoodsList);
     }
 
-    public static void shops(Long id) {
-        String page = params.get("currPage");
-        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        final Long goodsId = id;
-        final models.sales.Goods goods = CacheHelper.getCache(CacheHelper
-                .getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id,
-                        "UNDELETED"), new CacheCallBack<models.sales.Goods>() {
-            @Override
-            public models.sales.Goods loadData() {
-                return models.sales.Goods.findUnDeletedById(goodsId);
-            }
-        });
-        ValuePaginator<Shop> shops = new ValuePaginator<>(
-                goods.getShopList());
-        shops.setPageNumber(pageNumber);
-        shops.setPageSize(5);
-        render("Goods2/shops.json", shops);
-    }
 
     private static void showGoodsHistory(final GoodsHistory goodsHistory) {
         if (goodsHistory == null) {
@@ -560,7 +519,6 @@ public class Goods2 extends Controller {
     }
 
     private static void renderGoodsCond(GoodsCondition goodsCond) {
-        Logger.info("goodsCond.categoryId=" + goodsCond.categoryId);
         renderArgs.put("categoryId", goodsCond.categoryId);
         renderArgs.put("cityId", goodsCond.cityId);
         renderArgs.put("districtId", goodsCond.districtId);
