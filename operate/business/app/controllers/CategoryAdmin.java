@@ -105,6 +105,29 @@ public class CategoryAdmin extends Controller {
         render(categoryList, parentId, parentCategory);
     }
 
+    public static void displayParentCategory(Long parentId) {
+        Category category = null;
+        if (parentId != null) {
+            category = Category.findById(parentId);
+        }
+        Category parentCategory = null;
+        if (category != null && category.id != null) {
+            parentCategory = Category.findById(category.id);
+        } else {
+            parentCategory = new Category();
+            parentCategory.id = null;
+        }
+        List<Category> categoryList = null;
+        if (parentCategory != null && parentCategory.id != null) {
+            categoryList = Category.find("parentCategory.id=? and deleted = ?", parentCategory.id, DeletedStatus.UN_DELETED).fetch();
+        }
+        if (categoryList == null) {
+            categoryList = Category.findByParent(0);//获取顶层分类
+        }
+        render("CategoryAdmin/displaySubcategory.html", categoryList, parentCategory.id, parentCategory);
+    }
+
+
     /**
      * 删除指定类别
      */
