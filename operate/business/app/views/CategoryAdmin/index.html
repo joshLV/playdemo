@@ -14,9 +14,7 @@ ${ parentCategory?.name}
 #{/else}
     &nbsp;&nbsp; <a href="@{CategoryAdmin.add(parentId)}" class="btn btn-primary">添加</a>
     &nbsp;&nbsp;
-#{if parentId!=null}
-    <a onClick="Back()" class="btn btn-primary">返回上一级分类</a>
-#{/i
+
 </legend>
 
 <div class="body">
@@ -66,8 +64,6 @@ ${ parentCategory?.name}
             $("#deletefrm").submit();
         }
     });
-    function Back() {
-        history.go(-1);
-    }
+
 
 </script>

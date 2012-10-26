@@ -35,7 +35,7 @@ public class Category extends Model {
     /**
      * 类目名称
      */
-    @Unique
+//    @Unique
     @Required
     @SolrField
     public String name;

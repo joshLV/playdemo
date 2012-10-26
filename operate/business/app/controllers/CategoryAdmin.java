@@ -35,7 +35,7 @@ public class CategoryAdmin extends Controller {
         renderInit(null);
         Category parentCategory = null;
         if (parentId != null) {
-            parentCategory = Category.findById(parentId);
+            parentCategory = Category.find("id=? and deleted=?", parentId, DeletedStatus.UN_DELETED).first();
         }
         render(parentCategory, parentId);
     }
@@ -47,7 +47,7 @@ public class CategoryAdmin extends Controller {
     public static void create(@Valid Category category, Long parentId) {
         Category parentCategory = null;
         if (category != null && parentId != null && parentId != 0) {
-            parentCategory = Category.findById(parentId);
+            parentCategory = Category.find("id=? and deleted=?", parentId, DeletedStatus.UN_DELETED).first();
         }
         if (Validation.hasErrors()) {
             renderInit(category);
@@ -64,10 +64,10 @@ public class CategoryAdmin extends Controller {
      * 取得指定类别信息
      */
     public static void edit(Long id, Long parentId) {
-        models.sales.Category category = models.sales.Category.findById(id);
+        models.sales.Category category = models.sales.Category.find("id=? and deleted=?", id, DeletedStatus.UN_DELETED).first();
         Category parentCategory = null;
         if (parentId != null) {
-            parentCategory = Category.findById(parentId);
+            parentCategory = Category.find("id=? and deleted=?", parentId, DeletedStatus.UN_DELETED).first();
         }
         renderInit(category);
         render(id, parentId, parentCategory);
@@ -79,7 +79,7 @@ public class CategoryAdmin extends Controller {
     public static void update(Long id, @Valid final models.sales.Category category, Long parentId) {
         Category parentCategory = null;
         if (category != null && parentId != null && parentId != 0) {
-            parentCategory = Category.findById(parentId);
+            parentCategory = Category.find("id=? and deleted=?", parentId, DeletedStatus.UN_DELETED).first();
         }
         if (Validation.hasErrors()) {
             renderInit(category);
@@ -94,7 +94,7 @@ public class CategoryAdmin extends Controller {
         Category parentCategory = null;
 
         if (parentId != null) {
-            parentCategory = Category.findById(parentId);
+            parentCategory = Category.find("id=? and deleted=?", parentId, DeletedStatus.UN_DELETED).first();
         }
         if (parentCategory != null) {
             categoryList = Category.find("parentCategory.id=? and deleted = ?", parentCategory.id, DeletedStatus.UN_DELETED).fetch();
@@ -105,37 +105,14 @@ public class CategoryAdmin extends Controller {
         render(categoryList, parentId, parentCategory);
     }
 
-    public static void displayParentCategory(Long parentId) {
-        Category category = null;
-        if (parentId != null) {
-            category = Category.findById(parentId);
-        }
-        Category parentCategory = null;
-        if (category != null && category.id != null) {
-            parentCategory = Category.findById(category.id);
-        } else {
-            parentCategory = new Category();
-            parentCategory.id = null;
-        }
-        List<Category> categoryList = null;
-        if (parentCategory != null && parentCategory.id != null) {
-            categoryList = Category.find("parentCategory.id=? and deleted = ?", parentCategory.id, DeletedStatus.UN_DELETED).fetch();
-        }
-        if (categoryList == null) {
-            categoryList = Category.findByParent(0);//获取顶层分类
-        }
-        render("CategoryAdmin/displaySubcategory.html", categoryList, parentCategory.id, parentCategory);
-    }
-
 
     /**
      * 删除指定类别
      */
     public static void delete(Long id, Long parentId) {
-        models.sales.Category category = models.sales.Category.findById(id);
-        List<Category> childCategoryList = Category.find("parentCategory=?", category).fetch();
+        models.sales.Category category = models.sales.Category.find("id=? and deleted=?", id, DeletedStatus.UN_DELETED).first();
+        List<Category> childCategoryList = Category.find("parentCategory=? and deleted = ?", category, DeletedStatus.UN_DELETED).fetch();
         if (childCategoryList.size() > 0) {
-            System.out.println("parentId>>>" + parentId);
             render(parentId);
         } else {
             models.sales.Category.delete(id);
