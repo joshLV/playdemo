@@ -77,6 +77,7 @@ public class Category extends Model {
     /**
      * 是否显示.
      */
+    @SolrField
     public Boolean display;
 
     /**
@@ -84,7 +85,7 @@ public class Category extends Model {
      */
     @ManyToOne
     @JoinColumn(name = "parent_id")
-    @SolrField
+    @SolrEmbedded
     public Category parentCategory;
 
 
@@ -97,7 +98,6 @@ public class Category extends Model {
     public Set<Goods> goodsSet;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @SolrEmbedded
     public Set<CategoryProperty> properties = new HashSet<>();
 
     public Object[] getShowKeywordsList(int limit) {
@@ -112,7 +112,7 @@ public class Category extends Model {
      * 用于在首页和商品列表页显示
      */
     @Transient
-    public int goodsCount;
+    public Long goodsCount;
 
     public Category() {
     }
@@ -137,6 +137,12 @@ public class Category extends Model {
         super._delete();
     }
 
+    @SolrField
+    @Override
+    public Long getId(){
+        return id;
+    }
+
     //-------------------------------------- 数据库操作 ------------------------------------
 
     /**
@@ -146,7 +152,18 @@ public class Category extends Model {
      * @return 前n个分类
      */
     public static List<Category> findTop(int limit) {
-        return find("parentCategory = null and display = true order by displayOrder").fetch(limit);
+        List<Category> categories = find("parentCategory = null and display = true order by displayOrder").fetch(limit);
+        if (categories == null) {
+            return new ArrayList<>();
+        }
+        List<Category> topCategories = new ArrayList<>();
+        for (Category category : categories) {
+            category.goodsCount = models.sales.Goods.countOnSaleByTopCategory(category.id);
+            if (category.goodsCount>0){
+                topCategories.add(category);
+            }
+        }
+        return topCategories;
     }
 
     /**
@@ -256,6 +273,8 @@ public class Category extends Model {
 
     /**
      * 获取指定分类的所有子分类，分类中需要标明商品数量.
+     * <p/>
+     * 直接被WWW首页调用,没有商品的分类不显示.
      *
      * @return
      */
@@ -264,18 +283,23 @@ public class Category extends Model {
             @Override
             public List<Category> loadData() {
                 List<Category> categories = Category.findByParent(id);
+                List<Category> topAllCategories = new ArrayList<>();
                 int count = 0;
-                for (Category category : categories) {
+                for (int i = 0; i < categories.size(); i++) {
+                    Category category = categories.get(i);
                     count += category.goodsSet.size();
-                    category.goodsCount = category.goodsSet.size();
+                    category.goodsCount = (long) category.goodsSet.size();
+                    if (category.goodsCount > 0) {
+                        topAllCategories.add(category);
+                    }
                 }
 
                 Category topCategory = new Category();
                 topCategory.id = 0l;
                 topCategory.name = "全部";
-                topCategory.goodsCount = count;
-                categories.add(0, topCategory);
-                return categories;
+                topCategory.goodsCount = (long) count;
+                topAllCategories.add(0, topCategory);
+                return topAllCategories;
             }
         });
     }

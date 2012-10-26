@@ -32,15 +32,20 @@ public class CacheHelper {
 
     /**
      * 根据二级key，生成最终存储的key
+     * @param baseKey
+     * @param subKey
+     * @return
+     */
+    public static String getCacheKey(String baseKey, String subKey) {
+        return getCacheKey(new String[]{baseKey}, subKey, defaultBaseKeyExpireSeconds);
+    }
+
+    /**
+     * 根据二级key，生成最终存储的key
      * @param baseKeys
      * @param subKey
      * @return
      */
-
-    public static String getCacheKey(String baseKey, String subKey) {
-        return getCacheKey(new String[]{baseKey}, subKey, defaultBaseKeyExpireSeconds);
-    }
-    
     public static String getCacheKey(String[] baseKeys, String subKey) {
         return getCacheKey(baseKeys, subKey, defaultBaseKeyExpireSeconds);
     }
@@ -203,7 +208,7 @@ public class CacheHelper {
                 }
             }
         } catch (Exception e) {
-            Logger.warn("When get cache[key:" + key + "] found exception.", e);
+            Logger.warn("When get cache[key:" + key + "] found exception:"+e.getMessage(), e);
             delete(key);
         }
         return null;

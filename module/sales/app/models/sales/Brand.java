@@ -97,6 +97,12 @@ public class Brand extends Model {
         CacheHelper.delete(CACHEKEY + this.id);
         super._delete();
     }
+    
+    @Override
+    @SolrField
+    public Long getId(){
+        return id;
+    }
 
     private static final String IMAGE_SERVER = Play.configuration.getProperty
             ("image.server", "img0.dev.uhcdn.com");

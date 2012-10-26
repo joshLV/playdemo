@@ -239,6 +239,21 @@ public class Goods extends Model {
     @SolrEmbedded
     public Set<Category> categories;
 
+    @Transient
+    @SolrField
+    public String getCategoryIds() {
+        List<Long> ids = new ArrayList<>();
+        if (categories != null) {
+            for (Category category : categories) {
+                ids.add(category.id);
+
+                System.out.println("-----------------id:" + id);
+            }
+        }
+
+        return StringUtils.join(ids, " ");
+    }
+
     /**
      * 原始图片路径
      */
@@ -956,6 +971,33 @@ public class Goods extends Model {
                 new Date()).fetch(limit);
     }
 
+    /**
+     * 获取已上架的全部商品数量.
+     *
+     * @return
+     */
+    public static long countOnSale() {
+        return count("status=? and deleted=? and baseSale >=1 and expireAt > ?", GoodsStatus.ONSALE,
+                DeletedStatus.UN_DELETED, new Date());
+    }
+
+
+    /**
+     * 根据分类获取已上架的全部商品数量.
+     *
+     * @param categoryId
+     * @return
+     */
+    public static long countOnSaleByTopCategory(long categoryId) {
+        EntityManager entityManager = JPA.em();
+        Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
+                "and g.baseSale >= 1 and g.expireAt > :now and g.id in (select g.id from g.categories c where c.parentCategory.id = :categoryId) ");
+        q.setParameter("status", GoodsStatus.ONSALE);
+        q.setParameter("deleted", DeletedStatus.UN_DELETED);
+        q.setParameter("now", new Date());
+        q.setParameter("categoryId", categoryId);
+        return q.getResultList().size();
+    }
 
     /**
      * 根据商品分类和数量取出指定数量的商品.
@@ -1585,7 +1627,7 @@ public class Goods extends Model {
     private static final String SOLR_ID = "id";
     private static final String SOLR_GOODS_NAME = "goods.name_s";
     private static final String SOLR_GOODS_SALEPRICE = "goods.salePrice_c";
-    private static final String SOLR_GOODS_ORIGINALPRICE = "goods.originalPrice_c";
+    private static final String SOLR_GOODS_ORIGINALPRICE = "goods.faceVaule_c";
     private static final String SOLR_GOODS_VIRTUALSALECOUNT = "goods.virtualSaleCount_l";
     private static final String SOLR_GOODS_AREAS = "goods.areaNames_s";
 

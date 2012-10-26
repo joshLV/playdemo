@@ -18,7 +18,7 @@
     <script src="http://192.168.18.242/yome/base/src/base.js"></script>
 
 </head>
-<body class="home">
+<body #{if request.url.equals("/")}class="home"#{/if}>
 <div id="topbar">
     <div id="topbar-bd">
         <ul class="site-nav">

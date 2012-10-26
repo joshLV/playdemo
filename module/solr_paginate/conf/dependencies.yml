@@ -1,0 +1,4 @@
+self: play -> solr_paginate 0.1
+
+require:
+    - play

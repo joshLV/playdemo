@@ -12,10 +12,18 @@ import models.consumer.User;
 import models.order.Cart;
 import models.order.Order;
 import models.order.OrderItems;
-import models.sales.*;
+import models.sales.Area;
+import models.sales.Brand;
+import models.sales.Category;
 import models.sales.Goods;
+import models.sales.GoodsCondition;
+import models.sales.GoodsHistory;
+import models.sales.GoodsStatistics;
+import models.sales.GoodsStatisticsType;
+import models.sales.GoodsStatus;
 import org.apache.commons.lang.StringUtils;
-import play.Logger;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocumentList;
 import play.modules.breadcrumbs.Breadcrumb;
 import play.modules.breadcrumbs.BreadcrumbList;
 import play.modules.paginate.JPAExtPaginator;
@@ -88,6 +96,17 @@ public class Goods2 extends Controller {
     }
 
     /**
+     * 搜索框中的商品搜索.
+     *
+     * @param keywords 关键字
+     */
+    public static void search(String keywords) {
+        QueryResponse queryResponse = models.sales.Goods.search(keywords, 1, 27);
+        SolrDocumentList docList = queryResponse.getResults();
+        render(goodsPage);
+    }
+
+    /**
      * 商品列表按条件查询页.
      *
      * @param condition 查询条件
@@ -100,6 +119,7 @@ public class Goods2 extends Controller {
         try {
 
             final GoodsCondition goodsCond = new GoodsCondition(condition);
+
             goodsCond.status = GoodsStatus.ONSALE;
             goodsCond.baseSaleBegin = 1;
             goodsCond.expireAtBegin = new Date();
@@ -152,16 +172,19 @@ public class Goods2 extends Controller {
                                     AREA_LIMIT, goodsCond.areaId);
                         }
                     });
-            List<Category> categories = CacheHelper.getCache(CacheHelper
-                    .getCacheKey(Category.CACHEKEY, "LIST_CATEGORIES"
-                            + goodsCond.categoryId + "_" + LIMIT),
-                    new CacheCallBack<List<Category>>() {
+
+            //全部商品数量
+            Long onSaleGoodsCount = CacheHelper.getCache(CacheHelper.getCacheKey(Goods.CACHEKEY, "LIST_ALL_GOODS_COUNT"),
+                    new CacheCallBack<Long>() {
                         @Override
-                        public List<Category> loadData() {
-                            return Category
-                                    .findTop(LIMIT, goodsCond.categoryId);
+                        public Long loadData() {
+                            return models.sales.Goods.countOnSale();
                         }
                     });
+
+            //分类中的指定分类的子分类列表显示
+            Category currentCategory = Category.findById(goodsCond.categoryId);
+            List<Category> subCategories = goodsCond.categoryId >= 0 ? currentCategory.getByParent() : null;
             final GoodsCondition brandCond = new GoodsCondition(condition);
             brandCond.brandId = 0;
             List<Brand> brands = CacheHelper.getCache(
@@ -187,8 +210,8 @@ public class Goods2 extends Controller {
 
             renderGoodsCond(goodsCond);
             renderGoodsListTitle(goodsCond);
-            render("/Goods2/index.html", goodsPage, recommendGoodsList, areas,
-                    districts, categories, brands, breadcrumbs, suppliers);
+            render("/Goods2/index.html", onSaleGoodsCount, goodsPage, recommendGoodsList, areas,
+                    districts, subCategories, brands, breadcrumbs, suppliers);
         } catch (Exception e) {
             e.printStackTrace();
             index();
@@ -491,7 +514,6 @@ public class Goods2 extends Controller {
     }
 
     private static void renderGoodsCond(GoodsCondition goodsCond) {
-        Logger.info("goodsCond.categoryId=" + goodsCond.categoryId);
         renderArgs.put("categoryId", goodsCond.categoryId);
         renderArgs.put("cityId", goodsCond.cityId);
         renderArgs.put("districtId", goodsCond.districtId);
