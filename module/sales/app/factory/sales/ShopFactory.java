@@ -1,16 +1,15 @@
 package factory.sales;
 
+import models.sales.Area;
+import models.sales.Shop;
+import models.supplier.Supplier;
+import util.DateHelper;
+
 import com.uhuila.common.constants.DeletedStatus;
+
 import factory.FactoryBoy;
 import factory.ModelFactory;
 import factory.annotation.Factory;
-import models.sales.Shop;
-import models.supplier.Supplier;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
-import util.DateHelper;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,7 +31,8 @@ public class ShopFactory extends ModelFactory<Shop> {
         shop.longitude = "31.12888";
         shop.createdAt = DateHelper.beforeDays(20);
         shop.updatedAt = DateHelper.beforeDays(15);
-        shop.areaId = "021";
+        Area area = FactoryBoy.create(Area.class);
+		shop.areaId = area.id;
         shop.name = "测试店";
         shop.deleted = DeletedStatus.UN_DELETED;
         shop.lockVersion = 0;

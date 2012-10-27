@@ -1,12 +1,16 @@
 package functional;
 
-import models.sales.*;
+import models.sales.Goods;
+import models.sales.MaterialType;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import play.Play;
 import play.mvc.Http;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 
 /**
  * 商品控制器的测试.
@@ -16,27 +20,16 @@ import play.test.FunctionalTest;
  * Time: 5:22 PM
  */
 public class GoodsTest extends FunctionalTest {
-    @Before
-    @SuppressWarnings("unchecked")
-    public void setup() {
-        Fixtures.delete(Shop.class);
-        Fixtures.delete(Goods.class);
-        Fixtures.delete(Category.class);
-        Fixtures.delete(Brand.class);
-        Fixtures.delete(Area.class);
-        Fixtures.loadModels("fixture/areas_unit.yml");
-        Fixtures.loadModels("fixture/categories_unit.yml");
-        Fixtures.loadModels("fixture/supplier_unit.yml");
-        Fixtures.loadModels("fixture/brands_unit.yml");
-        Fixtures.loadModels("fixture/shops_unit.yml");
-        Fixtures.loadModels("fixture/goods_unit.yml");
+    Goods goods;
+	@Before
+    public void setUp() {
+    	FactoryBoy.deleteAll();
+    	goods = FactoryBoy.create(Goods.class);
     }
 
     @Test
     public void testShow() {
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-
-        Http.Response response = GET("/goods/" + goodsId);
+        Http.Response response = GET("/g/" + goods.id);
         assertIsOk(response);
         assertContentType("text/html", response);
         assertCharset(Play.defaultWebEncoding, response);
@@ -45,7 +38,13 @@ public class GoodsTest extends FunctionalTest {
 
     @Test
     public void testList() {
-        Http.Response response = GET("/goods/list/0-021-0-0-0-0-0-0-1?page=1");
+    	FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+			@Override
+			public void build(Goods g) {
+				g.materialType = MaterialType.REAL;
+			}
+		});
+        Http.Response response = GET("/s/0-021-0-0-0-0-0-0-1?page=1");
         assertIsOk(response);
         assertContentType("text/html", response);
         assertCharset(Play.defaultWebEncoding, response);
