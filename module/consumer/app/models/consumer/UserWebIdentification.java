@@ -1,8 +1,8 @@
 package models.consumer;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,8 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import models.sms.MockSMSProvider;
-import models.sms.SMSMessage;
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import play.Play;
 import play.cache.Cache;
 import play.db.jpa.Model;
@@ -92,6 +92,7 @@ public class UserWebIdentification extends Model {
     }
     
     @Transient
+    @JsonIgnore
     public Long getSavedId() {
     	if (this.id == null) {
     		UserWebIdentification uwi = UserWebIdentification.findOne(this.cookieId);
