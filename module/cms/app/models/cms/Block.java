@@ -80,6 +80,8 @@ public class Block extends Model {
     @Lob
     private String content;
 
+    @Column(name="jumped_count")
+    public Integer jumpedCount;
 
     @Enumerated(EnumType.STRING)
     public BlockType type;
@@ -171,6 +173,14 @@ public class Block extends Model {
         oldBlock.imageUrl = block.imageUrl;
         oldBlock.type = block.type;
         oldBlock.save();
+    }
+    
+    public void doJump() {
+    	if (this.jumpedCount == null) {
+    		this.jumpedCount = 0;
+    	}
+    	this.jumpedCount ++;
+    	this.save();
     }
     
     /**

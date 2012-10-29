@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+     <title>优惠券网,代金券，优惠券,一百券网-推荐商品</title>
+    <meta name="Description" content="一百券-致力于本地生活消费的互联网电子商务网站，将线下本地生活服务与线上互联网结合在一起，让互联网成为线下本地生活服务交易的前台">
+    <meta name="Keywords" content="优惠券网,代金券，优惠券">    
+</head>
+<body>
+<style>
+body, div, ul, li, p, dd { margin: 0; padding: 0; }
+img { border: 0; }
+li { list-style: none; }
+body { background: #9ac82b url(@{'/public/images/jump-pages/x_0.jpg'}) repeat 0 0; }
+#head { width: 192px; height: 145px; padding: 15px 204px 0; margin-left: auto; margin-right: auto; background: url(@{'/public/images/jump-pages/x_1.png'}) no-repeat 0 0; }
+#head a { display: block; } 
+#main { width: 522px; padding-top: 83px; margin-top: -40px; margin-left: auto; margin-right: auto; background: #fff url(@{'/public/images/jump-pages/x_4.png'}) no-repeat 0 0; }
+#main ul { padding: 0 20px; margin-top: -45px; border-left: 1px solid #85ad25; border-right: 1px solid #85ad25; }
+#main li { padding: 0 25px 20px; margin-bottom: 20px; border-bottom: 1px dotted #c2c2c2; }
+#main .title { height: 52px; overflow: hidden; margin-bottom: 10px; }
+#main .title a { color: #323232; font: 700 18px 'Microsoft Yahei', '黑体', '宋体'; line-height: 26px; text-decoration: none; }
+#main .title a:hover { text-decoration: none; }
+#main .price { font: 700 14px 'Microsoft Yahei', '黑体', '宋体'; padding: 10px 0 25px; }
+#main .price span { margin-right: 20px; }
+#main .price em { color: #c72101; font: 700 30px 'Microsoft Yahei', '黑体', '宋体'; font-style: normal; }
+#main .buy a { display: block; width: 257px; height: 52px; background: url(@{'/public/images/jump-pages/x_3.png'}) no-repeat 0 0; }
+#main .buy span { color: #999; font-size: 12px; padding: 5px 15px; display: block; position: relative; }
+#main .buy i { position: absolute; top: 7px; top: 7px\9; *top: 5px;left: 4px; _left: -10px; width: 0; height: 0; font-size: 0; line-height: 0; border-top: 5px dashed transparent; border-bottom: 5px dashed transparent; border-left: 5px solid #A5A5A5; }
+#main .ft { width: 522px; height: 11px; margin-top: -21px; overflow: hidden; background: url(@{'/public/images/jump-pages/x_5.jpg'}) no-repeat 0 0; }
+#foot { width: 522px; margin: 0 auto; padding: 20px 0 35px; text-align: center;}
+#foot .ft-nav { color: #577b00; text-align: center; }
+#foot .ft-nav a, .ft-nav span { color: #577b00; font-size: 12px; margin: 0 5px; text-decoration: none; }
+#foot .ft-nav a:hover { color: #577b00; text-decoration: none; }
+#foot .copyright { color: #577b00; line-height: 26px; font-size: 12px; }
+#foot .copyright span { margin: 0 10px; }
+</style>
+<div id="head"><a href="http://yibaiquan.com/"><img src="@{'/public/images/jump-pages/x_2.png'}" width="192" height="87" alt="一百券"></a></div>
+<div id="main">
+    <ul>
+#{list blocks, as:'block'}
+%{
+models.sales.Goods goods = goodsMap.get(block.id)
+if (goods != null) {
+}%
+        <li>
+            <div class="title"><a href="http://www.yibaiquan.com/g/${goods.id}" target="_blank">${block.content.raw()}</a></div>
+            <a class="image" href="http://www.yibaiquan.com/g/${goods.id}" target="_blank"><img src="${block.getShowImageUrl()}" width="429" height="260" /></a>
+            <div class="price">
+               <span>原价：${goods.faceValue}</span> 
+               #{if goods.discountExpress1 !=""}<span>折扣：<em>${goods.discountExpress1}</em>折</span>#{/if}
+               <span>现价：<em>${goods.salePrice}</em>元</span></div>
+            <div class="buy"><a href="@{JumpPages.doJump(block.id)}" target="_blank"></a><span><i></i>去京东购买</span></div>
+        </li>
+%{
+}
+}%        
+#{/list}
+    </ul>
+    <div class="ft"></div>
+</div>
+<div id="foot">
+    <div class="ft-nav">
+        <a href="http://www.yibaiquan.com/about" target="_blank">关于我们</a> |
+        <a href="http://www.yibaiquan.com/contact" target="_blank">联系我们</a> |
+        <a href="http://www.yibaiquan.com/help" target="_blank">常见问题</a> |
+        <span class="">客服热线：400-6262-166</span>
+    </div>
+    <div class="copyright">
+        Copyright © 2012 一百券YiBaiQuan.COM 版权所有 <span> 沪ICP备08114451号-4</span>
+    </div>
+</div>
+</body>
+</html>

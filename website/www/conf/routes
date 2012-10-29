@@ -106,6 +106,10 @@ GET     /feed/tuan360                           TuanFeeds.tuan360(format:'xml')
 GET     /feed/tuanbaidu                         TuanFeeds.tuanBaidu(format:'xml')
 GET     /feed/tuanling                          TuanFeeds.tuanLing(format:'xml')
 
+# 外部跳转页面
+GET     /jump/360buy                            JumpPages.jump360buy
+GET     /jump/360buy/{id}                       JumpPages.jump360buy
+GET     /jump/to/{id}                           JumpPages.doJump
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
