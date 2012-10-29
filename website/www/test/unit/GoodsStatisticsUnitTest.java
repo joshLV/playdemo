@@ -8,6 +8,11 @@ import org.junit.Test;
 import play.test.Fixtures;
 import play.test.UnitTest;
 
+import factory.FactoryBoy;
+import factory.callback.SequenceCallback;
+
+import java.util.List;
+
 /**
  * <p/>
  * User: yanjy
@@ -16,42 +21,48 @@ import play.test.UnitTest;
  */
 @Ignore
 public class GoodsStatisticsUnitTest extends UnitTest {
+    List<Goods> goodsList;
 
     @Before
     public void setup() {
-        Fixtures.delete(Goods.class);
-        Fixtures.loadModels("fixture/goods.yml");
+        FactoryBoy.deleteAll();
+        goodsList = FactoryBoy.batchCreate(2, Goods.class,
+                new SequenceCallback<Goods>() {
+                    @Override
+                    public void sequence(Goods target, int seq) {
+                        target.name = "Test#" + seq;
+                    }
+                });
     }
 
     @Test
     public void testStatistics() {
-        Long id = (Long) Fixtures.idCache.get("models.sales.Goods-goods1");
-        Goods goods = Goods.findById(id);
-        GoodsStatistics.addCartCount(id);
-        GoodsStatistics statistics = GoodsStatistics.find("goodsId", id).first();
+        GoodsStatistics.addCartCount(goodsList.get(0).id);
+        GoodsStatistics statistics = GoodsStatistics.find("goodsId", goodsList.get(0).id).first();
         assertEquals(1, statistics.likeCount.intValue());
         assertEquals(1, statistics.cartCount.intValue());
 
-        GoodsStatistics.addCartCount(id);
-        statistics = GoodsStatistics.find("goodsId", id).first();
+        GoodsStatistics.addCartCount(goodsList.get(0).id);
+        statistics = GoodsStatistics.find("goodsId", goodsList.get(0).id).first();
         assertEquals(2, statistics.likeCount.intValue());
         assertEquals(2, statistics.cartCount.intValue());
 
 
-        GoodsStatistics.addLikeCount(id);
-        statistics = GoodsStatistics.find("goodsId", id).first();
+        GoodsStatistics.addLikeCount(goodsList.get(0).id);
+        statistics = GoodsStatistics.find("goodsId", goodsList.get(0).id).first();
         assertEquals(3, statistics.likeCount.intValue());
         assertEquals(2, statistics.cartCount.intValue());
 
-        GoodsStatistics.addBuyCount(id);
-        statistics = GoodsStatistics.find("goodsId", id).first();
+        GoodsStatistics.addBuyCount(goodsList.get(0).id);
+        statistics = GoodsStatistics.find("goodsId", goodsList.get(0).id).first();
         assertEquals(1, statistics.buyCount.intValue());
 
-        GoodsStatistics.addVisitorCount(id);
-        statistics = GoodsStatistics.find("goodsId", id).first();
+        GoodsStatistics.addVisitorCount(goodsList.get(0).id);
+        statistics = GoodsStatistics.find("goodsId", goodsList.get(0).id).first();
         assertEquals(1, statistics.visitorCount.intValue());
 
-        statistics = GoodsStatistics.find("goodsId", id).first();;
+        statistics = GoodsStatistics.find("goodsId", goodsList.get(0).id).first();
+        ;
 
         assertEquals(37, statistics.summaryCount.intValue());
 
