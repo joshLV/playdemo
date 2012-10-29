@@ -5,6 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 import play.test.Fixtures;
 import play.test.UnitTest;
+import factory.FactoryBoy;
+import factory.callback.SequenceCallback;
 
 import java.util.List;
 
@@ -16,30 +18,38 @@ import java.util.List;
  * Time: 4:49 PM
  */
 public class CategoryUnitTest extends UnitTest {
+    Category category;
+    List<Category> categories;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        Fixtures.delete(Category.class);
-        Fixtures.loadModels("fixture/categories.yml");
+        FactoryBoy.deleteAll();
+        category = FactoryBoy.create(Category.class);
+        categories = FactoryBoy.batchCreate(2, Category.class,
+                new SequenceCallback<Category>() {
+                    @Override
+                    public void sequence(Category target, int seq) {
+                        target.name = "Test#" + seq;
+                        target.parentCategory = category;
+                    }
+                });
+
     }
 
     @Test
     public void testFindTopByBrand() {
         int limit = 1;
-        long categoryId = (Long) Fixtures.idCache.get("models.sales.Category-models_sales_Category_1");
-
-        List<Category> categoryList = Category.findTop(limit, categoryId);
-
+        List<Category> categoryList = Category.findTop(limit, categories.get(0).id);
         assertEquals(1, categoryList.size());
     }
 
     @Test
     public void testFindByParent() {
-        long categoryId = (Long) Fixtures.idCache.get("models.sales.Category-models_sales_Category_1");
-        List<Category> categoryList = Category.findByParent(categoryId);
+        List<Category> categoryList = Category.findByParent(category.id);
         assertEquals(2, categoryList.size());
 
-        categoryList = Category.findByParent(1, categoryId);
+        categoryList = Category.findByParent(1, category.id);
         assertEquals(1, categoryList.size());
     }
 

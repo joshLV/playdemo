@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import play.test.Fixtures;
 import play.test.UnitTest;
-
+import factory.FactoryBoy;
 import java.util.List;
 
 /**
@@ -19,6 +19,7 @@ public class AreaUnitTest extends UnitTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
+        FactoryBoy.deleteAll();
         Fixtures.delete(Area.class);
         Fixtures.loadModels("fixture/areas.yml");
     }

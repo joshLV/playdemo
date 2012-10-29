@@ -27,7 +27,6 @@ public class AddressUnitTest extends UnitTest {
     public void setup() {
         FactoryBoy.deleteAll();
         user = FactoryBoy.create(User.class);
-
         addresses = FactoryBoy.batchCreate(2, Address.class,
                 new SequenceCallback<Address>() {
                     @Override
