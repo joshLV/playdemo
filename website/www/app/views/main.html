@@ -24,7 +24,7 @@
             #{/else}
                  <li><a id="favorite" class="favorite" href="">收藏一百券</a></li>
                  <li class="last">
-                    <iframe width="63" height="24" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0" scrolling="no" border="0" src="http://widget.weibo.com/relationship/followbutton.php?language=zh_cn&width=63&height=24&uid=2131727074&style=1&btn=red&dpc=1"></iframe>
+                    #{if !play.Play.runingInTestMode()}<iframe width="63" height="24" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0" scrolling="no" border="0" src="http://widget.weibo.com/relationship/followbutton.php?language=zh_cn&width=63&height=24&uid=2131727074&style=1&btn=red&dpc=1"></iframe>#{/if}
                  </li>
         </ul>
         <div class="share">
@@ -94,6 +94,7 @@
 
 #{get 'moreScripts' /}
 <div style="display:none">
+#{if !play.Play.runingInTestMode()}
 <script type="text/javascript" id="bdshare_js" data="type=tools&uid=763119" ></script>
 <script type="text/javascript" id="bdshell_js"></script>
 <script type="text/javascript">document.getElementById("bdshell_js").src = "http://share.baidu.com/static/js/shell_v2.js?cdnversion=" + new Date().getHours();</script>
@@ -111,6 +112,7 @@
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
 </script>
+#{/if}
 </div>
 </body>
 </html>
