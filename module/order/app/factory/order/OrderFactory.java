@@ -19,6 +19,7 @@ public class OrderFactory extends ModelFactory<Order> {
 
     /**
      * 未支付状态的订单
+     *
      * @return
      */
     @Override
@@ -39,10 +40,26 @@ public class OrderFactory extends ModelFactory<Order> {
         return order;
     }
 
-    @Factory(name="charge")
+    @Factory(name = "charge")
     public void defineChargeOrder(Order order) {
         order.accountPay = BigDecimal.ZERO;
         order.needPay = new BigDecimal("100");
-        order.orderType= OrderType.CHARGE;
+        order.orderType = OrderType.CHARGE;
     }
+
+    @Factory(name = "orderForCommissionsTest")
+    public Order defineCommissionsOrder(Order order) {
+        order.status = OrderStatus.UNPAID;
+        order.amount = BigDecimal.valueOf(46);
+        order.accountPay = BigDecimal.valueOf(10);
+        order.discountPay = BigDecimal.valueOf(36);
+        order.promotionBalancePay = BigDecimal.valueOf(0);
+        order.needPay = BigDecimal.valueOf(46);
+        order.freight = BigDecimal.valueOf(6);
+        order.payMethod = "alipay";
+        order.orderType = OrderType.CONSUME;
+        return order;
+    }
+
+
 }

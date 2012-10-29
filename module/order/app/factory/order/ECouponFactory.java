@@ -38,4 +38,16 @@ public class ECouponFactory extends ModelFactory<ECoupon> {
         eCoupon.orderItems = FactoryBoy.lastOrCreate(OrderItems.class);
         return eCoupon;
     }
+
+    @Factory(name = "couponForCommissionsTest")
+    public ECoupon defineCouponForCommissionsTest(ECoupon eCoupon) {
+        eCoupon.eCouponSn = "1234566001";
+        eCoupon.faceValue = BigDecimal.valueOf(15);
+        eCoupon.originalPrice = BigDecimal.valueOf(5);
+        eCoupon.resalerPrice = BigDecimal.valueOf(8);
+        eCoupon.salePrice = BigDecimal.valueOf(10);
+        return eCoupon;
+    }
+
+
 }

@@ -45,7 +45,7 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.shops.add(FactoryBoy.lastOrCreate(Shop.class));
         return goods;
     }
-    
+
     @Factory(name = "noInventory")
     public void defineWithNoInventory(Goods goods) {
         goods = new Goods();
@@ -64,14 +64,26 @@ public class GoodsFactory extends ModelFactory<Goods> {
     }
 
     @Factory(name = "Electronic")
-    public void defineWithElectronic(Goods goods) {
+    public Goods defineWithElectronic(Goods goods) {
         goods.materialType = MaterialType.ELECTRONIC;
+        goods.name = "测试电子商品";
+        goods.faceValue = BigDecimal.valueOf(15);
+        goods.originalPrice = BigDecimal.valueOf(5);
+        goods.salePrice = BigDecimal.valueOf(10);
+        goods.supplierId = 1l;
+        return goods;
     }
-    
+
 
     @Factory(name = "Real")
-    public void defineWithReal(Goods goods) {
+    public Goods defineWithReal(Goods goods) {
         goods.materialType = MaterialType.REAL;
+        goods.name = "测试实物商品";
+        goods.faceValue = BigDecimal.valueOf(20);
+        goods.originalPrice = BigDecimal.valueOf(8);
+        goods.salePrice = BigDecimal.valueOf(15);
+        goods.supplierId = 1l;
+        return goods;
     }
-    
+
 }

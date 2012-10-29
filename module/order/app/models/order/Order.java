@@ -703,44 +703,44 @@ public class Order extends Model {
 
                     if (!Play.runingInTestMode() && (goods.isLottery == null || !goods.isLottery)) {
                         // 如果是京东的订单 不要发短信，京东自己调我们的发短信接口
-                        if(!AccountType.RESALER.equals(orderItem.order.userType)
-                                || !orderItem.order.getResaler().loginName.equals(Resaler.JD_LOGIN_NAME)){
-                        SMSUtil.send("【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name +
-                                "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
-                                "截止" + dateFormat.format(eCoupon.expireAt) + "客服4006262166",
-                                orderItem.phone, eCoupon.replyCode);
-                        BigDecimal compareValue = BigDecimal.valueOf(300.0);
-                        if (StringUtils.isNotBlank(remark) && amount.compareTo(compareValue) == 1) {
-                            String goodsName = "";
-                            if (realGoods.size() > 0 && realGoods != null) {
-                                for (Goods g : realGoods) {
-                                    goodsName += g.name + " ";
+                        if (!AccountType.RESALER.equals(orderItem.order.userType)
+                                || !orderItem.order.getResaler().loginName.equals(Resaler.JD_LOGIN_NAME)) {
+                            SMSUtil.send("【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name +
+                                    "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
+                                    "截止" + dateFormat.format(eCoupon.expireAt) + "客服4006262166",
+                                    orderItem.phone, eCoupon.replyCode);
+                            BigDecimal compareValue = BigDecimal.valueOf(300.0);
+                            if (StringUtils.isNotBlank(remark) && amount.compareTo(compareValue) == 1) {
+                                String goodsName = "";
+                                if (realGoods.size() > 0 && realGoods != null) {
+                                    for (Goods g : realGoods) {
+                                        goodsName += g.name + " ";
+                                    }
                                 }
-                            }
-                            if (electronicGoods.size() > 0 && electronicGoods != null) {
-                                for (Goods g : electronicGoods) {
-                                    goodsName += g.name + " ";
+                                if (electronicGoods.size() > 0 && electronicGoods != null) {
+                                    for (Goods g : electronicGoods) {
+                                        goodsName += g.name + " ";
+                                    }
                                 }
+
+                                //发送提醒邮件
+                                MailMessage mailMessage = new MailMessage();
+                                mailMessage.addRecipient("op@uhuila.com");
+                                mailMessage.setSubject(Play.mode.isProd() ? "客户留言" : "客户留言【测试】");
+                                mailMessage.putParam("orderNumber", orderNumber);
+                                mailMessage.putParam("remark", remark);
+                                mailMessage.putParam("goodsName", goodsName);
+                                mailMessage.putParam("phone", buyerMobile);
+                                mailMessage.putParam("orderId", id);
+                                mailMessage.putParam("addr", play.Play.configuration.getProperty("application.baseUrl"));
+                                MailUtil.sendCustomerRemarkMail(mailMessage);
+
+                                //发送短信
+                                String content = "订单号" + orderNumber + "(金额" + amount + "),商品名：" + goodsName + ",客户手机号:" + buyerMobile + ",客户留言：" + remark;
+                                String phone = "15026580827";
+                                SMSUtil.send(content, phone);
+
                             }
-
-                            //发送提醒邮件
-                            MailMessage mailMessage = new MailMessage();
-                            mailMessage.addRecipient("op@uhuila.com");
-                            mailMessage.setSubject(Play.mode.isProd() ? "客户留言" : "客户留言【测试】");
-                            mailMessage.putParam("orderNumber", orderNumber);
-                            mailMessage.putParam("remark", remark);
-                            mailMessage.putParam("goodsName", goodsName);
-                            mailMessage.putParam("phone", buyerMobile);
-                            mailMessage.putParam("orderId", id);
-                            mailMessage.putParam("addr", play.Play.configuration.getProperty("application.baseUrl"));
-                            MailUtil.sendCustomerRemarkMail(mailMessage);
-
-                            //发送短信
-                            String content = "订单号" + orderNumber + "(金额" + amount + "),商品名：" + goodsName + ",客户手机号:" + buyerMobile + ",客户留言：" + remark;
-                            String phone = "15026580827";
-                            SMSUtil.send(content, phone);
-
-                        }
 
                         }
                     }
