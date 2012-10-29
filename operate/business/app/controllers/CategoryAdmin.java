@@ -62,11 +62,6 @@ public class CategoryAdmin extends Controller {
             renderInit(category);
             render("CategoryAdmin/add.html", parentCategory);
         }
-        Integer num = 0;
-        System.out.println("category.displayOrder>>>" + category.displayOrder);
-        if (category.displayOrder == null) {
-            category.displayOrder = num;
-        }
         category.parentCategory = parentCategory;
         category.deleted = DeletedStatus.UN_DELETED;
         category.create();
@@ -108,9 +103,6 @@ public class CategoryAdmin extends Controller {
             renderInit(category);
             render("CategoryAdmin/edit.html", category, id, parentCategory);
         }
-        if (category.displayOrder == null) {
-            category.displayOrder = 0;
-        }
         models.sales.Category.update(id, category, parentId);
         index(parentId);
     }
@@ -128,7 +120,7 @@ public class CategoryAdmin extends Controller {
         List<Category> childCategoryList = Category.find("parentCategory=? and deleted = ?", category, DeletedStatus.UN_DELETED).fetch();
         Category parentCategory = category.parentCategory;
         if (childCategoryList.size() > 0) {
-            render(category);
+            render(parentCategory);
         } else {
             models.sales.Category.delete(id);
             index(parentId);
