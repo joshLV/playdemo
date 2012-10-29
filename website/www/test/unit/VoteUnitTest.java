@@ -10,6 +10,9 @@ import play.test.UnitTest;
 import java.util.Date;
 import java.util.List;
 
+import factory.FactoryBoy;
+import factory.callback.SequenceCallback;
+
 /**
  * TODO.
  * <p/>
@@ -18,20 +21,20 @@ import java.util.List;
  * Time: 上午11:18
  */
 public class VoteUnitTest extends UnitTest {
+    VoteQuestion vote;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        Fixtures.delete(VoteQuestion.class);
-        Fixtures.loadModels("fixture/votes.yml");
+        FactoryBoy.deleteAll();
+        vote = FactoryBoy.create(VoteQuestion.class);
     }
 
     @Test
     public void testGetPage() {
-
-        long id = (Long) Fixtures.idCache.get("models.cms.VoteQuestion-vote2");
-        VoteQuestion vote = VoteQuestion.findById(id);
         vote.expireAt = new Date();
         vote.effectiveAt = new Date();
+        vote.type = VoteType.QUIZ;
         vote.save();
         List<VoteQuestion> votesList = VoteQuestion.getPage(VoteType.QUIZ);
         assertEquals(1, votesList.size());
