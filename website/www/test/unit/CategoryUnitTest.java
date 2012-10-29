@@ -5,10 +5,11 @@ import org.junit.Before;
 import org.junit.Test;
 import play.test.Fixtures;
 import play.test.UnitTest;
-import factory.FactoryBoy;
-import factory.callback.SequenceCallback;
 
 import java.util.List;
+
+import factory.FactoryBoy;
+import factory.callback.SequenceCallback;
 
 /**
  * 分类的单元测试.
@@ -26,7 +27,7 @@ public class CategoryUnitTest extends UnitTest {
     public void setup() {
         FactoryBoy.deleteAll();
         category = FactoryBoy.create(Category.class);
-        categories = FactoryBoy.batchCreate(2, Category.class,
+        categories = FactoryBoy.batchCreate(8, Category.class,
                 new SequenceCallback<Category>() {
                     @Override
                     public void sequence(Category target, int seq) {
@@ -34,23 +35,24 @@ public class CategoryUnitTest extends UnitTest {
                         target.parentCategory = category;
                     }
                 });
-
     }
 
     @Test
     public void testFindTopByBrand() {
         int limit = 1;
-        List<Category> categoryList = Category.findTop(limit, categories.get(0).id);
+        List<Category> categoryList = Category.findTop(limit, category.id);
+        System.out.println("size??" + Category.count());
         assertEquals(1, categoryList.size());
     }
 
     @Test
     public void testFindByParent() {
         List<Category> categoryList = Category.findByParent(category.id);
-        assertEquals(2, categoryList.size());
+        assertEquals(Category.count() - 1, categoryList.size());
 
         categoryList = Category.findByParent(1, category.id);
         assertEquals(1, categoryList.size());
     }
+
 
 }
