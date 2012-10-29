@@ -6,6 +6,8 @@ import org.junit.Before;
 import org.junit.Test;
 import play.test.Fixtures;
 import play.test.UnitTest;
+import factory.FactoryBoy;
+import factory.callback.SequenceCallback;
 
 import java.util.List;
 
@@ -17,89 +19,84 @@ import java.util.List;
  * Time: 3:38 PM
  */
 public class AddressUnitTest extends UnitTest {
+    User user;
+    List<Address> addresses;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        Fixtures.delete(Address.class);
-        Fixtures.delete(User.class);
-        Fixtures.loadModels("fixture/user.yml");
-        Fixtures.loadModels("fixture/users.yml");
-        Fixtures.loadModels("fixture/addresses.yml");
+        FactoryBoy.deleteAll();
+        user = FactoryBoy.create(User.class);
+
+        addresses = FactoryBoy.batchCreate(2, Address.class,
+                new SequenceCallback<Address>() {
+                    @Override
+                    public void sequence(Address target, int seq) {
+                        target.address = "Test#" + seq;
+                    }
+                });
     }
 
     @Test
     public void testGetFullAddress() {
-        Address address = new Address();
-        address.province = "上海";
-        address.city = "上海";
-        address.district = "浦东新区";
-        address.address = "凌兆路";
-        String fullAddress = address.getFullAddress();
+        addresses.get(0).province = "上海";
+        addresses.get(0).city = "上海";
+        addresses.get(0).district = "浦东新区";
+        addresses.get(0).address = "凌兆路";
+        String fullAddress = addresses.get(0).getFullAddress();
         assertEquals("上海 上海 浦东新区 凌兆路", fullAddress);
     }
 
     @Test
     public void testFindDefault() {
-        User user = new User();
-        user.id = (Long) Fixtures.idCache.get("models.consumer.User-User1");
-        Address address = Address.findDefault(user);
-        assertEquals("test2", address.address);
+        Address testAddress = Address.findDefault(user);
+        assertEquals(addresses.get(0).address, testAddress.address);
     }
 
     @Test
     public void testFindByOrder() {
-        User user = new User();
-        user.id = (Long) Fixtures.idCache.get("models.consumer.User-User1");
         List<Address> addressList = Address.findByOrder(user);
         assertEquals(2, addressList.size());
-        assertEquals("test2", addressList.get(0).address);
-        assertEquals("test1", addressList.get(1).address);
+        assertEquals(addresses.get(0).address, addressList.get(0).address);
+        assertEquals(addresses.get(1).address, addressList.get(1).address);
     }
-
 
     @Test
     public void testUpdateToUnDefault() {
-        User user = new User();
-        user.id = (Long) Fixtures.idCache.get("models.consumer.User-User1");
         Address.updateToUnDefault(user);
-
-        Address address = Address.findDefault(user);
-        assertNull(address);
+        Address testAddress = Address.findDefault(user);
+        assertNull(testAddress);
     }
 
     @Test
     public void testGetPhone() {
-        Address address = new Address();
-        address.areaCode = "021";
-        address.phoneNumber = "1234567";
-        address.phoneExtNumber = "123";
-        address.mobile = "13412341234";
-        assertEquals("021-1234567-123", address.getPhone());
+        Address testAddress = new Address();
+        testAddress.areaCode = "021";
+        testAddress.phoneNumber = "1234567";
+        testAddress.phoneExtNumber = "123";
+        testAddress.mobile = "13412341234";
+        assertEquals("021-1234567-123", testAddress.getPhone());
     }
 
     @Test
     public void testUpdateDefault() {
-        Long id = (Long) Fixtures.idCache.get("models.consumer.Address-test1");
-        Address address = Address.findById(id);
-        assertEquals(false, address.isDefault);
-        User user = new User();
-        user.id = (Long) Fixtures.idCache.get("models.consumer.User-User1");
-        Address.updateDefault(id, user);
-        address = Address.findById(id);
-        assertEquals(true, address.isDefault);
+        addresses.get(0).isDefault = false;
+        addresses.get(0).save();
+        addresses.get(0).refresh();
+        assertEquals(false, addresses.get(0).isDefault);
+        Address.updateDefault(addresses.get(0).id, user);
+        Address testAddress = Address.findById(addresses.get(0).id);
+        assertEquals(true, testAddress.isDefault);
     }
+
 
     @Test
     public void testDelete() {
-        long id = (Long) Fixtures.idCache.get("models.consumer.Address-test2");
-        User user = new User();
-        user.id = (Long) Fixtures.idCache.get("models.consumer.User-User1");
-        Address.delete(id, user);
-        Address address = Address.findById(id);
-        assertNull(address);
-        Long defaultId = (Long) Fixtures.idCache.get("models.consumer.Address-test1");
-        address = Address.findById(defaultId);
-        assertEquals(true, address.isDefault);
+        Address.delete(addresses.get(1).id, user);
+        Address testAddress = Address.findById(addresses.get(1).id);
+        assertNull(testAddress);
+        testAddress = Address.findById(addresses.get(0).id);
+        assertEquals(true, testAddress.isDefault);
     }
 
 

@@ -20,38 +20,39 @@ import static util.DateHelper.afterDays;
  * Time: 下午5:37
  * To change this template use File | Settings | File Templates.
  */
-public class AddressFactory  extends ModelFactory<Address> {
+public class AddressFactory extends ModelFactory<Address> {
     @Override
     public Address define() {
         Address address = new Address();
 //        User user = FactoryBoy.create(User.class);
 //        address.user=user;
-        address.province="上海市";
-        address.district="市辖区";
-        address.city="黄浦区";
-        address.postcode="123456";
-        address.mobile="13764081569";
-        address.address="test3";
-        address.isDefault=true;
-        address.name="add1";
+        address.province = "上海市";
+        address.district = "市辖区";
+        address.city = "黄浦区";
+        address.postcode = "123456";
+        address.mobile = "13764081569";
+        address.address = "test3";
+        address.isDefault = true;
+        address.name = "add1";
+        address.user = FactoryBoy.lastOrCreate(User.class);
 //        System.out.println("useru11111<<<>>>>"+user);
         return address;
     }
 
 
     @Factory(name = "notDefault")
-    public Address defineWithNotDefault(Address address){
+    public Address defineWithNotDefault(Address address) {
         address = new Address();
-        address.province="上海市";
-        address.district="市辖区";
-        address.city="黄浦区";
-        address.postcode="123456";
-        address.mobile="13764081569";
-        address.address="test3";
-        address.isDefault=false;
-        address.name="add1";
-
+        address.province = "上海市";
+        address.district = "市辖区";
+        address.city = "黄浦区";
+        address.postcode = "123456";
+        address.mobile = "13764081569";
+        address.address = "test3";
+        address.isDefault = false;
+        address.name = "add1";
         return address;
-
     }
+
+
 }
