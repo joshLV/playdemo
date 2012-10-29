@@ -5,10 +5,14 @@ import models.consumer.User;
 import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Goods;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import play.test.Fixtures;
 import play.test.UnitTest;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 
 /**
  * TODO.
@@ -19,37 +23,36 @@ import play.test.UnitTest;
  */
 public class OrdersTest extends UnitTest {
 
-    @Before
+    private User user;
+	private Goods goods;
+
+	@Before
     public void setup() {
-        Fixtures.delete(OrderItems.class);
-        Fixtures.delete(Order.class);
-        Fixtures.delete(Goods.class);
-        Fixtures.delete(User.class);
-        Fixtures.loadModels("fixture/user.yml");
-        Fixtures.loadModels("fixture/goods.yml");
+    	FactoryBoy.deleteAll();
+    	user = FactoryBoy.create(User.class);
+		goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+			@Override
+			public void build(Goods g) {
+				g.limitNumber = 1;
+			}
+		});		
+
     }
 
     @Test
     public void testCheckLimitNumber() {
-        Long id = (Long) Fixtures.idCache.get("models.consumer.User-user");
-        User user = User.findById(id);
-
-        Long orderId = (Long) Fixtures.idCache.get("models.order.Order-order10");
-        Order order = Order.findById(orderId);
-        order.userType = AccountType.CONSUMER;
-        order.userId = id;
-        order.save();
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-goods5");
-        Long boughtNumber = OrderItems.itemsNumber(user, goodsId);
-        boolean isBuy = Order.checkLimitNumber(user, goodsId, boughtNumber, 1);
+        // 已经购物
+    	FactoryBoy.create(OrderItems.class);
+        long boughtNumber = OrderItems.itemsNumber(user, goods.id);
+        assertEquals(1l, boughtNumber);
+        boolean isBuy = Order.checkLimitNumber(user, goods.id, boughtNumber, 1);
         assertTrue(isBuy);
 
-        goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-goods4");
-        boughtNumber = OrderItems.itemsNumber(user, goodsId);
-        isBuy = Order.checkLimitNumber(user, goodsId, boughtNumber, 1);
+        Goods goods2 = FactoryBoy.create(Goods.class);
+        boughtNumber = OrderItems.itemsNumber(user, goods2.id);
+        assertEquals(0l, boughtNumber);
+        isBuy = Order.checkLimitNumber(user, goods2.id, boughtNumber, 1);
         assertFalse(isBuy);
-
-
     }
 
 
