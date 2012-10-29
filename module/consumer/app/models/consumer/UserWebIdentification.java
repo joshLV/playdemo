@@ -94,6 +94,10 @@ public class UserWebIdentification extends Model {
     @Transient
     public Long getSavedId() {
     	if (this.id == null) {
+    		UserWebIdentification uwi = UserWebIdentification.findOne(this.cookieId);
+    		if (uwi != null) {
+    			return uwi.id;
+    		}
     		this.save();
     	}
     	return this.id;
