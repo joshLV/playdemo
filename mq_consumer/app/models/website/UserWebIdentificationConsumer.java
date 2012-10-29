@@ -12,30 +12,23 @@ import play.jobs.OnApplicationStart;
 import play.modules.rabbitmq.consumer.RabbitMQConsumer;
 
 @OnApplicationStart(async = true)
-public class UserWebIdentificationConsumer extends RabbitMQConsumer<String> {
+public class UserWebIdentificationConsumer extends RabbitMQConsumer<UserWebIdentification> {
 
 	@Override
-	protected void consume(String cookieValue) {
+	protected void consume(UserWebIdentification uwiMsg) {
 		  //开启事务管理
         JPAPlugin.startTx(false);
 
-		UserWebIdentification wui = UserWebIdentification.findOne(cookieValue);
+		UserWebIdentification wui = UserWebIdentification.findOne(uwiMsg.cookieId);
 		if (wui == null) {
-			Logger.info("尝试保存UserWebIdentification（cookie:" + cookieValue + ")");
-			wui = (UserWebIdentification) Cache.get(UserWebIdentification.MQ_KEY + cookieValue);
-			if (wui != null) {
-				wui.save(); //考虑做一下如果有ID，调用更新操作，否则调用新增操作.
-				Cache.delete(UserWebIdentification.MQ_KEY + cookieValue);
-			} else {
-				Logger.error("UserWebIdentification cookvalue:" + cookieValue + " 没有在缓存中找到，请检查。");
-			}
+			Logger.info("尝试保存UserWebIdentification（cookie:" + uwiMsg.cookieId + ")");
+			uwiMsg.save(); //考虑做一下如果有ID，调用更新操作，否则调用新增操作.
 		} else {
-			Logger.info("UserWebIdentification（cookie:" + cookieValue + ")已经被其它对象保存");
+			Logger.info("msg83841341:UserWebIdentification（cookie:" + uwiMsg.cookieId + ")已经被其它进程保存");
 		}
 
         boolean rollBack = false;
         try {
-        	System.out.println("commit....");
             JPA.em().flush();
         } catch (RuntimeException e) {
             rollBack = true;
@@ -48,7 +41,7 @@ public class UserWebIdentificationConsumer extends RabbitMQConsumer<String> {
 
 	@Override
 	protected Class getMessageType() {
-		return String.class;
+		return UserWebIdentification.class;
 	}
 
 	@Override
