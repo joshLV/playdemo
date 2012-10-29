@@ -44,8 +44,8 @@ public class Category extends Model {
      * 推荐度,显示顺序
      */
     @Required
-    @Column(name = "display_order")
-    public int displayOrder;
+    @OrderColumn(name = "display_order")
+    public Integer displayOrder;
 
     /**
      * SEO关键字.
@@ -83,6 +83,10 @@ public class Category extends Model {
     @JoinColumn(name = "parent_id")
     @SolrField
     public Category parentCategory;
+
+    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, targetEntity = Category.class)
+    @OrderBy("displayOrder")
+    public List<Category> children;
 
     /**
      * 逻辑删除,0:未删除，1:已删除

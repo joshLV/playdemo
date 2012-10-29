@@ -25,7 +25,8 @@ public class CategoryAdmin extends Controller {
         if (categoryList == null || categoryList.size() < 0) {
             categoryList = Category.findByParent(0);//获取顶层分类
         }
-        render(categoryList);
+        Long parentId = null;
+        render(categoryList, parentId);
     }
 
     /**
