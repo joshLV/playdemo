@@ -85,8 +85,8 @@ public class VoteQuestion extends Model {
     }
 
     public static List<VoteQuestion> getPage(VoteType type) {
-        List<VoteQuestion> votesList = VoteQuestion.find("deleted = ? and type=? and effectiveAt >= ?" +
-                " and expireAt <=? order by expireAt desc", DeletedStatus.UN_DELETED,type, DateUtil.getBeginOfDay(),
+        List<VoteQuestion> votesList = VoteQuestion.find("deleted = ? and type=? and effectiveAt <= ?" +
+                " and expireAt >=? order by expireAt desc", DeletedStatus.UN_DELETED,type, DateUtil.getBeginOfDay(),
                 DateUtil.getEndOfDay(new Date())).fetch();
         return votesList;
     }
@@ -98,7 +98,6 @@ public class VoteQuestion extends Model {
      * @param vote 问卷调查内容
      */
     public static void update(Long id, VoteQuestion vote) {
-
         VoteQuestion newVote = VoteQuestion.findById(id);
         newVote.answer1 = vote.answer1;
         newVote.answer2 = vote.answer2;
@@ -110,8 +109,6 @@ public class VoteQuestion extends Model {
         newVote.type = vote.type;
         newVote.correctAnswer = vote.correctAnswer;
         newVote.save();
-        
-
     }
 
     public static void delete(Long id) {

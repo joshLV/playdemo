@@ -1,15 +1,19 @@
 package factory.order;
 
-import com.uhuila.common.constants.DeletedStatus;
-import factory.FactoryBoy;
-import factory.ModelFactory;
+import java.math.BigDecimal;
+import java.util.Date;
+
 import models.accounts.AccountType;
 import models.consumer.User;
 import models.order.Order;
 import models.order.OrderStatus;
+import models.order.OrderType;
 
-import java.math.BigDecimal;
-import java.util.Date;
+import com.uhuila.common.constants.DeletedStatus;
+
+import factory.FactoryBoy;
+import factory.ModelFactory;
+import factory.annotation.Factory;
 
 public class OrderFactory extends ModelFactory<Order> {
 
@@ -35,4 +39,10 @@ public class OrderFactory extends ModelFactory<Order> {
         return order;
     }
 
+    @Factory(name="charge")
+    public void defineChargeOrder(Order order) {
+        order.accountPay = BigDecimal.ZERO;
+        order.needPay = new BigDecimal("100");
+        order.orderType= OrderType.CHARGE;
+    }
 }

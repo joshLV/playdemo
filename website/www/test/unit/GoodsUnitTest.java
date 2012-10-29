@@ -1,25 +1,40 @@
 package unit;
 
-import com.uhuila.common.constants.DeletedStatus;
-import models.order.Order;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
 import models.order.OrderItems;
 import models.resale.Resaler;
 import models.resale.ResalerLevel;
-import models.sales.*;
+import models.sales.Category;
+import models.sales.Goods;
+import models.sales.GoodsCondition;
+import models.sales.GoodsPublishedPlatformType;
+import models.sales.GoodsStatus;
+import models.sales.GoodsUnPublishedPlatform;
+import models.sales.MaterialType;
 import models.supplier.Supplier;
+
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+
 import play.cache.Cache;
 import play.modules.paginate.JPAExtPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
+
+import factory.FactoryBoy;
+import factory.asserts.Callback;
+import factory.asserts.ModelAssert;
+import factory.callback.BuildCallback;
+import factory.callback.SequenceCallback;
 
 /**
  * 商品Model的单元测试.
@@ -29,42 +44,37 @@ import java.util.Set;
  * Time: 5:59 PM
  */
 public class GoodsUnitTest extends UnitTest {
-    @Before
-    @SuppressWarnings("unchecked")
-    public void setup() {
-        Fixtures.delete(OrderItems.class);
-        Fixtures.delete(Order.class);
-        Fixtures.delete(Shop.class);
-        Fixtures.delete(Goods.class);
-        Fixtures.delete(Category.class);
-        Fixtures.delete(Brand.class);
-        Fixtures.delete(Area.class);
-        Fixtures.delete(Supplier.class);
-        Fixtures.loadModels("fixture/supplier_unit.yml");
-        Fixtures.loadModels("fixture/areas_unit.yml");
-        Fixtures.loadModels("fixture/categories_unit.yml");
-        Fixtures.loadModels("fixture/brands_unit.yml");
-        Fixtures.loadModels("fixture/shops_unit.yml");
-        Fixtures.loadModels("fixture/goods_unit.yml");
-        Fixtures.loadModels("fixture/orders.yml");
+    Goods goods;
+    Category category;
+    
+	@Before
+    public void setUp() {
+    	FactoryBoy.deleteAll();
+    	category = FactoryBoy.create(Category.class);
+    	goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+			@Override
+			public void build(Goods g) {
+				g.title = "哈根达斯100元抵用券";
+				g.name = "哈根达斯100元抵用券";
+			}
+		});
     }
 
     @Test
-    @Ignore
     public void testGetImageBySizeType() {
         models.sales.Goods goods = new Goods();
         goods.imagePath = "/1/1/1/3.jpg";
         String path = goods.getImageLargePath();
-        assertEquals("http://img0.dev.uhcdn.com/p/1/1/1/3_large.jpg", path);
+        assertEquals("http://img0.dev.uhcdn.com/p/1/1/1/e11a9fe9_3_340x260.jpg", path);
 
         path = goods.getImageTinyPath();
-        assertEquals("http://img0.dev.uhcdn.com/p/1/1/1/3_tiny.jpg", path);
+        assertEquals("http://img0.dev.uhcdn.com/p/1/1/1/8e3e76ba_3_60x46_nw.jpg", path);
 
         path = goods.getImageMiddlePath();
-        assertEquals("http://img0.dev.uhcdn.com/p/1/1/1/3_middle.jpg", path);
+        assertEquals("http://img0.dev.uhcdn.com/p/1/1/1/11df989a_3_234x178.jpg", path);
 
         path = goods.getImageSmallPath();
-        assertEquals("http://img0.dev.uhcdn.com/p/1/1/1/3_small.jpg", path);
+        assertEquals("http://img0.dev.uhcdn.com/p/1/1/1/69310e25_3_172x132.jpg", path);
     }
 
     @Test
@@ -153,78 +163,85 @@ public class GoodsUnitTest extends UnitTest {
      */
     @Test
     public void testFindByCondition() {
+    	FactoryBoy.batchCreate(20, Goods.class, new SequenceCallback<Goods>() {
+			@Override
+			public void sequence(Goods g, int seq) {
+				g.name = "G_" + seq;
+				g.materialType = MaterialType.REAL;
+			}
+		});
         String condition = "0-021-0-0-0-0-1";
         GoodsCondition goodsCond = new GoodsCondition(condition);
 
         JPAExtPaginator<Goods> goodsPage = models.sales.Goods.findByCondition
                 (goodsCond, 1, 50);
-        assertEquals(17, goodsPage.size());
-        models.sales.Goods goods = goodsPage.get(0);
-        goods.getDiscountExpress();
+        assertEquals(21, goodsPage.size());
     }
 
     @Test
     public void testUpdateStatus() {
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-        models.sales.Goods goods = Goods.findById(goodsId);
         goods.status = GoodsStatus.ONSALE;
-        Goods.updateStatus(GoodsStatus.OFFSALE, goodsId);
+        Goods.updateStatus(GoodsStatus.OFFSALE, goods.id);
         assertEquals(GoodsStatus.OFFSALE, goods.status);
     }
 
     @Test
     public void testDelete() {
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-        Goods.delete(goodsId);
-        models.sales.Goods goods = Goods.findById(goodsId);
-        assertEquals(DeletedStatus.DELETED, goods.deleted);
+        Goods.delete(goods.id);
+        models.sales.Goods g = Goods.findById(goods.id);
+        assertEquals(DeletedStatus.DELETED, g.deleted);
 
         Long errGoodsId = -1L;
         Goods.delete(errGoodsId);
-        goods = Goods.findById(errGoodsId);
-        assertNull(goods);
+        g = Goods.findById(errGoodsId);
+        assertNull(g);
     }
 
     @Test
     public void testFindTopByCategory() {
-        Long categoryId = (Long) Fixtures.idCache.get("models.sales.Category-Category_1");
-        List<Goods> goodsList = Goods.findTopByCategory(categoryId, 1);
+        List<Goods> goodsList = Goods.findTopByCategory(category.id, 1);
         assertEquals(1, goodsList.size());
         Set<Category> categories = goodsList.get(0).categories;
-        assertEquals(categoryId, categories.iterator().next().id);
+        assertEquals(category.id, categories.iterator().next().id);
     }
 
     @Test
     public void testGetSupplierId() {
-        Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
-        models.sales.Goods goods = new Goods();
-        goods.supplierId = supplierId;
-        Supplier supplier = goods.getSupplier();
-        assertEquals("来一份", supplier.fullName);
+        Supplier supplier = FactoryBoy.create(Supplier.class, new BuildCallback<Supplier>() {
+			@Override
+			public void build(Supplier s) {
+				s.fullName = "上海一百食品";
+			}
+        });
+        goods.supplierId = supplier.id;
+        goods.save();
+        assertEquals(supplier.fullName, goods.getSupplier().fullName);
     }
 
     @Test
-    public void testCreate() {
-        models.sales.Goods goods = new Goods();
-        goods.no = "11";
-        goods.name = "test111";
-        goods.faceValue = new BigDecimal(200);
-        goods.salePrice=BigDecimal.TEN;
-        goods.originalPrice=BigDecimal.ONE;
-        goods.create();
+    public void testCreate() throws Exception {
+    	ModelAssert.assertDifference(Goods.class, 1, new Callback() {
+			@Override
+			public void run() {
+		        Goods g = FactoryBoy.build(Goods.class);
+		        g.no = "11";
+		        g.expireAt = new Date();
+		        g.create();
+		        assertEquals(DateUtil.getEndOfDay(new Date()), g.expireAt);
+			}
+    		
+    	});
     }
 
     @Test
     public void testUpdate() {
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-        Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier2");
-        models.sales.Goods goods = Goods.findById(goodsId);
-        goods.supplierId = supplierId;
-        goods.no = "11";
-        goods.name = "test111";
-        goods.faceValue = new BigDecimal(200);
-        goods.updatedBy = "sujie";
-        goods.update(goodsId, goods);
+        models.sales.Goods form = FactoryBoy.build(Goods.class);
+        form.no = "11";
+        form.name = "test111";
+        form.faceValue = new BigDecimal(200);
+        form.updatedBy = "sujie";
+        form.update(goods.id, form);
+        goods.refresh();
         assertEquals("sujie", goods.updatedBy);
     }
 
@@ -234,7 +251,7 @@ public class GoodsUnitTest extends UnitTest {
         resaler.level = ResalerLevel.NORMAL;
         GoodsCondition condition = new GoodsCondition("0-0-0");
         JPAExtPaginator<Goods> goodsList = models.sales.Goods.findByResaleCondition(resaler, condition, 1, 10);
-        assertEquals(17, goodsList.size());
+        assertEquals(1, goodsList.size());
     }
 
     @Test
@@ -248,12 +265,10 @@ public class GoodsUnitTest extends UnitTest {
 
     @Test
     public void testPreview() throws IOException {
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
-        Goods goods = Goods.findById(goodsId);
         goods.name = "abcd";
         goods.imagePath = "abc.jpg";
         goods.salePrice = new BigDecimal(99);
-        String uuid = Goods.preview(goodsId, goods, null, "/nfs/images/o");
+        String uuid = Goods.preview(goods.id, goods, null, "/nfs/images/o");
         Goods cacheGoods = Goods.findById(Long.parseLong(Cache.get(uuid.toString()).toString()));
         assertEquals(goods.imagePath, cacheGoods.imagePath);
         assertEquals("abcd", cacheGoods.name);
@@ -262,6 +277,11 @@ public class GoodsUnitTest extends UnitTest {
 
     @Test
     public void testFindTradeGoodsRecently() {
+    	// 默认没有成交商品
+    	assertEquals(0, Goods.findTradeRecently(3).size());
+    	
+    	// 测试最近成交商品
+    	FactoryBoy.create(OrderItems.class);
         List<Goods> goodsList = Goods.findTradeRecently(3);
         assertEquals(1, goodsList.size());
         assertEquals("哈根达斯100元抵用券", goodsList.get(0).name);
@@ -269,8 +289,6 @@ public class GoodsUnitTest extends UnitTest {
 
     @Test
     public void testAddRecommend() {
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
-        models.sales.Goods goods = Goods.findById(goodsId);
         Goods.addRecommend(goods, true);
         assertEquals(100, goods.recommend.intValue());
 
@@ -280,28 +298,26 @@ public class GoodsUnitTest extends UnitTest {
 
     @Test
     public void testSetPublishedPlatform() {
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-        models.sales.Goods goods = Goods.findById(goodsId);
         assertEquals(0, goods.unPublishedPlatforms.size());
 
         List<GoodsPublishedPlatformType> platforms = new ArrayList<>();
         platforms.add(GoodsPublishedPlatformType.DANGDANG);
         goods.setPublishedPlatforms(platforms);
-        Goods.update(goodsId, goods);
+        Goods.update(goods.id, goods);
 
         List<GoodsUnPublishedPlatform> unPublishedPlatforms = GoodsUnPublishedPlatform.find("goods.id is null").fetch();
         assertEquals(0, unPublishedPlatforms.size());
 
-        models.sales.Goods goods2 = Goods.findById(goodsId);
+        models.sales.Goods goods2 = Goods.findById(goods.id);
         assertEquals(2, goods2.unPublishedPlatforms.size());
 
         platforms = new ArrayList<>();
         platforms.add(GoodsPublishedPlatformType.TAOBAO);
         platforms.add(GoodsPublishedPlatformType.YIHAODIAN);
         goods2.setPublishedPlatforms(platforms);
-        Goods.update(goodsId, goods);
+        Goods.update(goods.id, goods);
 
-        goods2 = Goods.findById(goodsId);
+        goods2 = Goods.findById(goods.id);
         assertEquals(1, goods2.unPublishedPlatforms.size());
 
         unPublishedPlatforms = GoodsUnPublishedPlatform.find("goods.id is null")

@@ -30,7 +30,7 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.isAllShop = false;
         goods.supplierId = supplier.id;
         goods.salePrice = new BigDecimal("8.5");
-        goods.expireAt = afterDays(new Date(), 30);
+        goods.expireAt = afterDays(30);
         goods.faceValue = new BigDecimal("10.00");
         goods.materialType = MaterialType.ELECTRONIC;
         goods.baseSale = 100L;
@@ -40,6 +40,7 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.categories = new HashSet<>();
         goods.shops = new HashSet<>();
         goods.isLottery = Boolean.FALSE;
+        goods.unPublishedPlatforms = new HashSet<>();
         goods.categories.add(FactoryBoy.lastOrCreate(Category.class));
         goods.shops.add(FactoryBoy.lastOrCreate(Shop.class));
         return goods;
