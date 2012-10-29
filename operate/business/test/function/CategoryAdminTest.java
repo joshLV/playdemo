@@ -43,7 +43,7 @@ public class CategoryAdminTest extends FunctionalTest {
 
     @Test
     public void testIndex() {
-        Http.Response response = GET("/category-admin/index");
+        Http.Response response = GET("/category");
         assertStatus(200, response);
         List<Category> categoryList = (List<Category>) renderArgs("categoryList");
         assertEquals(1, categoryList.size());
@@ -52,7 +52,7 @@ public class CategoryAdminTest extends FunctionalTest {
 
     @Test
     public void testEdit() {
-        Http.Response response = GET("/category-admin/" + category.id + "/edit");
+        Http.Response response = GET("/category/" + category.id + "/edit");
         assertStatus(200, response);
         assertEquals(category.name, renderArgs("category.name"));
     }
@@ -61,7 +61,7 @@ public class CategoryAdminTest extends FunctionalTest {
     public void testUpdate() {
         String name = "美食";
         String params = "category.name=" + name;
-        Http.Response response = PUT("/category-admin/" + category.id, "application/x-www-form-urlencoded", params);
+        Http.Response response = PUT("/category/" + category.id, "application/x-www-form-urlencoded", params);
         assertStatus(200, response);
         assertEquals(name, renderArgs("category.name"));
     }
@@ -70,9 +70,9 @@ public class CategoryAdminTest extends FunctionalTest {
     public void testAdd() {
         Http.Response response;
         if (category.parentCategory == null) {
-            response = GET("/category-admin/new?parentId=" + null);
+            response = GET("/category/new?parentId=" + null);
         } else {
-            response = GET("/category-admin/new?parentId=" + category.parentCategory.id);
+            response = GET("/category/new?parentId=" + category.parentCategory.id);
         }
         assertStatus(200, response);
         if (category.parentCategory == null) {
@@ -92,7 +92,7 @@ public class CategoryAdminTest extends FunctionalTest {
         itemParams.put("category.isInWWWLeft", category.isInWWWLeft.toString());
         itemParams.put("category.isInWWWFloor", category.isInWWWFloor.toString());
         itemParams.put("category.display", category.display.toString());
-        Http.Response response = POST("/category-admin", itemParams);
+        Http.Response response = POST("/category", itemParams);
         assertStatus(302, response);
         assertEquals(2, Category.count());
     }
@@ -101,7 +101,7 @@ public class CategoryAdminTest extends FunctionalTest {
     public void testDelete() {
         List<Category> categoryList = Category.find("deleted=?", DeletedStatus.UN_DELETED).fetch();
         assertEquals(1, categoryList.size());
-        Http.Response response = DELETE("/category-admin/" + null + "/" + category.id);
+        Http.Response response = DELETE("/category/" + category.id);
         assertStatus(302, response);
         categoryList = Category.find("deleted=?", DeletedStatus.UN_DELETED).fetch();
         assertEquals(0, categoryList.size());

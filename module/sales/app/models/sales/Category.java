@@ -44,7 +44,8 @@ public class Category extends Model {
      * 推荐度,显示顺序
      */
     @Required
-    @OrderColumn(name = "display_order")
+    @OrderColumn
+    @Column(name="display_order")
     public Integer displayOrder;
 
     /**

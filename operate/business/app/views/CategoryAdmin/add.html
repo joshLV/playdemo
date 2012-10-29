@@ -21,6 +21,6 @@
     </legend>
     #{set action:"add"/}
     #{include '/CategoryAdmin/categoryForm.html'/}  '
-    <input type="hidden" id="parentId" name="parentId" value="${parentId}">
+    <input type="hidden" id="parentId" name="parentId" value="${parentCategory?.id}">
 #{/form}
 </div>

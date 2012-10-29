@@ -12,7 +12,7 @@ ${ parentCategory?.name}-子分类
 #{else}
     顶级分类
 #{/else}
-    &nbsp;&nbsp; <a href="@{CategoryAdmin.add(parentId)}" class="btn btn-primary">添加</a>
+    &nbsp;&nbsp; <a href="/category/new?parentId=${parentCategory?.id}" class="btn btn-primary">添加</a>
     &nbsp;&nbsp;
 
 </legend>
@@ -44,26 +44,12 @@ ${ parentCategory?.name}-子分类
             <td>${category?.isInWWWFloor?.yesno("是","否")} </td>
             <td>${category?.display?.yesno("是","否")} </td>
             <td>
-                <a href="@{CategoryAdmin.edit(category.id,parentId)}">修改</a>
-                / <a href="@{CategoryAdmin.displaySubcategory(category.id)}">子类别(${category?.children?.size()})</a>
-            *{/ <a id="deletebtn" >删除</a>}*
-                /
-            #{vx.deleteLink id:category?.id, name:category?.name, action:"/category-admin/${parentId}"/}
+                <a href="/category/${category?.id}/edit">修改</a>
+                / <a href="/category?parentId=${category?.id}">子类别(${category?.children?.size()})</a>
+                / #{vx.deleteLink id:category?.id, name:category?.name, action:"/category"/}
             </td>
         </tr>
         #{/list}
         </tbody>
     </table>
 </div>
-<script type="text/javascript">
-    $("#deletebtn").click(function () {
-        if (confirm("您确定要删除吗？")) {
-            var url = "/category-admin/";
-            $("#deletefrm").attr("method", "DELETE");
-            $("#deletefrm").attr("action", url);
-            $("#deletefrm").submit();
-        }
-    });
-
-
-</script>

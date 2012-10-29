@@ -1,5 +1,6 @@
 package controllers;
 
+import com.sun.org.apache.bcel.internal.generic.LNEG;
 import com.uhuila.common.constants.DeletedStatus;
 import models.sales.Category;
 import operate.rbac.annotations.ActiveNavigation;
@@ -21,12 +22,16 @@ import java.util.List;
 @With(OperateRbac.class)
 @ActiveNavigation("category_admin_index")
 public class CategoryAdmin extends Controller {
-    public static void index(List<Category> categoryList) {
-        if (categoryList == null || categoryList.size() < 0) {
+    public static void index(Long parentId) {
+        Category parentCategory = null;
+        List<Category> categoryList;
+        if (parentId != null) {
+            parentCategory = Category.find("deleted=? and id=?", DeletedStatus.UN_DELETED, parentId).first();
+            categoryList = Category.find("deleted=? and parentCategory.id=?", DeletedStatus.UN_DELETED, parentId).fetch();
+        } else {
             categoryList = Category.findByParent(0);//获取顶层分类
         }
-        Long parentId = null;
-        render(categoryList, parentId);
+        render(categoryList, parentCategory);
     }
 
     /**
@@ -47,77 +52,86 @@ public class CategoryAdmin extends Controller {
     @ActiveNavigation("goods_add")
     public static void create(@Valid Category category, Long parentId) {
         Category parentCategory = null;
-        if (category != null && parentId != null && parentId != 0) {
+        if (category.parentCategory != null) {
+            parentId = category.parentCategory.id;
+        }
+        if (parentId != null) {
             parentCategory = Category.find("id=? and deleted=?", parentId, DeletedStatus.UN_DELETED).first();
         }
         if (Validation.hasErrors()) {
             renderInit(category);
-            render("CategoryAdmin/add.html", parentId, parentCategory);
+            render("CategoryAdmin/add.html", parentCategory);
+        }
+        Integer num = 0;
+        System.out.println("category.displayOrder>>>" + category.displayOrder);
+        if (category.displayOrder == null) {
+            category.displayOrder = num;
         }
         category.parentCategory = parentCategory;
         category.deleted = DeletedStatus.UN_DELETED;
         category.create();
         category.save();
-        displaySubcategory(parentId);
+        index(parentId);
     }
 
     /**
      * 取得指定类别信息
      */
-    public static void edit(Long id, Long parentId) {
+    public static void edit(Long id) {
         models.sales.Category category = models.sales.Category.find("id=? and deleted=?", id, DeletedStatus.UN_DELETED).first();
         Category parentCategory = null;
+        Long parentId = null;
+        if (category.parentCategory != null) {
+            parentId = category.parentCategory.id;
+        }
         if (parentId != null) {
             parentCategory = Category.find("id=? and deleted=?", parentId, DeletedStatus.UN_DELETED).first();
         }
         renderInit(category);
-        render(id, parentId, parentCategory);
+        render(id, parentCategory);
     }
 
     /**
      * 更新指定类别信息
      */
-    public static void update(Long id, @Valid final models.sales.Category category, Long parentId) {
+    public static void update(Long id, @Valid final models.sales.Category category) {
         Category parentCategory = null;
-        if (category != null && parentId != null && parentId != 0) {
+        Category currentCategory = Category.findById(id);
+        Long parentId = null;
+        if (currentCategory.parentCategory != null) {
+            parentId = currentCategory.parentCategory.id;
+        }
+        if (parentId != null) {
             parentCategory = Category.find("id=? and deleted=?", parentId, DeletedStatus.UN_DELETED).first();
         }
         if (Validation.hasErrors()) {
             renderInit(category);
-            render("CategoryAdmin/edit.html", category, id, parentId, parentCategory);
+            render("CategoryAdmin/edit.html", category, id, parentCategory);
+        }
+        if (category.displayOrder == null) {
+            category.displayOrder = 0;
         }
         models.sales.Category.update(id, category, parentId);
-        displaySubcategory(parentId);
-    }
-
-    public static void displaySubcategory(Long parentId) {
-        List<Category> categoryList = null;
-        Category parentCategory = null;
-
-        if (parentId != null) {
-            parentCategory = Category.find("id=? and deleted=?", parentId, DeletedStatus.UN_DELETED).first();
-        }
-        if (parentCategory != null) {
-            categoryList = Category.find("parentCategory.id=? and deleted = ?", parentCategory.id, DeletedStatus.UN_DELETED).fetch();
-        }
-        if (parentId == null) {
-            index(categoryList);
-        }
-        render(categoryList, parentId, parentCategory);
+        index(parentId);
     }
 
 
     /**
      * 删除指定类别
      */
-    public static void delete(Long id, Long parentId) {
+    public static void delete(Long id) {
         models.sales.Category category = models.sales.Category.find("id=? and deleted=?", id, DeletedStatus.UN_DELETED).first();
+        Long parentId = null;
+        if (category.parentCategory != null) {
+            parentId = category.parentCategory.id;
+        }
         List<Category> childCategoryList = Category.find("parentCategory=? and deleted = ?", category, DeletedStatus.UN_DELETED).fetch();
+        Category parentCategory = category.parentCategory;
         if (childCategoryList.size() > 0) {
-            render(parentId);
+            render(category);
         } else {
             models.sales.Category.delete(id);
-            displaySubcategory(parentId);
+            index(parentId);
         }
     }
 
