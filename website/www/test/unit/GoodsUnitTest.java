@@ -177,6 +177,26 @@ public class GoodsUnitTest extends UnitTest {
                 (goodsCond, 1, 50);
         assertEquals(21, goodsPage.size());
     }
+    
+
+    @Test
+    public void 测试过滤掉隐藏上架的商品() {
+    	FactoryBoy.batchCreate(20, Goods.class, new SequenceCallback<Goods>() {
+			@Override
+			public void sequence(Goods g, int seq) {
+				g.name = "G_" + seq;
+				g.materialType = MaterialType.REAL;
+				g.isHideOnsale = true;
+			}
+		});
+        String condition = "0-021-0-0-0-0-0";
+        GoodsCondition goodsCond = new GoodsCondition(condition);
+        goodsCond.isHideOnsale = true;
+
+        JPAExtPaginator<Goods> goodsPage = models.sales.Goods.findByCondition
+                (goodsCond, 1, 50);
+        assertEquals(1, goodsPage.size());
+    }
 
     @Test
     public void testUpdateStatus() {

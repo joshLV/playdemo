@@ -242,7 +242,7 @@ public class GoodsCondition implements Serializable {
         }
          if (isHideOnsale) {
             condBuilder.append(" and g.isHideOnsale=:isHideOnsale");
-            paramMap.put("isHideOnsale",isHideOnsale);
+            paramMap.put("isHideOnsale",Boolean.FALSE);
         }
         return condBuilder.toString();
     }
