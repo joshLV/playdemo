@@ -117,7 +117,7 @@
             <li #{if i == 0}class="first"#{/if}>
 
                 <div class="image">
-                    <a href="/goods/${aGoods.id}" target="_blank"><img
+                    <a href="/p/${aGoods.id}" target="_blank"><img
                             src="${aGoods.imageSmallPath}"
                             width="199"
                             height="152"/></a>
@@ -127,7 +127,7 @@
                     #{/if}
                 </div>
 
-                <div class="title"><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
+                <div class="title"><a href="/p/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
                 <div class="price">
                     <div class="left">&yen;${aGoods.salePrice}</div>
                     <div class="right">
@@ -145,7 +145,7 @@
             <li #{if i == 0}class="first"#{/if}>
 
                 <div class="image">
-                    <a href="/goods/${aGoods.id}" target="_blank"><img
+                    <a href="/p/${aGoods.id}" target="_blank"><img
                             src="${aGoods.imageSmallPath}"
                             width="199"
                             height="152"/></a>
@@ -155,7 +155,7 @@
                     #{/if}
                 </div>
 
-                <div class="title"><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
+                <div class="title"><a href="/p/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
                 <div class="price">
                     <div class="left">&yen;${aGoods.salePrice}</div>
                     <div class="right">
@@ -173,7 +173,7 @@
             <li #{if i == 0}class="first"#{/if}>
 
                 <div class="image">
-                    <a href="/goods/${aGoods.id}" target="_blank"><img
+                    <a href="/p/${aGoods.id}" target="_blank"><img
                             src="${aGoods.imageSmallPath}"
                             width="199"
                             height="152"/></a>
@@ -183,7 +183,7 @@
                     #{/if}
                 </div>
 
-                <div class="title"><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
+                <div class="title"><a href="/p/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
                 <div class="price">
                     <div class="left">&yen;${aGoods.salePrice}</div>
                     <div class="right">
@@ -201,7 +201,7 @@
             <li #{if i == 0}class="first"#{/if}>
 
                 <div class="image">
-                    <a href="/goods/${aGoods.id}" target="_blank"><img
+                    <a href="/p/${aGoods.id}" target="_blank"><img
                             src="${aGoods.imageSmallPath}"
                             width="199"
                             height="152"/></a>
@@ -211,7 +211,7 @@
                     #{/if}
                 </div>
 
-                <div class="title"><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
+                <div class="title"><a href="/p/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
                 <div class="price">
                     <div class="left">&yen;${aGoods.salePrice}</div>
                     <div class="right">
@@ -237,9 +237,9 @@
     <div class="hd"><h2><b class="f${i}"></b>${category.name}</h2></div>
     <div class="ft">
     #{list category.getShowKeywordsList(10),as:'keywords'}
-        <a href="/s/${category.id}?s=${keywords}" target="_blank">${keywords}</a>
+        <a href="/q/${category.id}?s=${keywords}" target="_blank">${keywords}</a>
     #{/list}
-        <a href="/s/${category.id}" target="_blank">更多&gt;&gt;</a>
+        <a href="/q/${category.id}" target="_blank">更多&gt;&gt;</a>
     </div>
     <div class="bd clearfix">
 
@@ -277,7 +277,7 @@
         <li #{if i == 0}class="first"#{/if}>
 
             <div class="image">
-                <a href="/goods/${aGoods.id}" target="_blank"><img
+                <a href="/p/${aGoods.id}" target="_blank"><img
                         src="${aGoods.imageSmallPath}"
                         width="199"
                         height="152"/></a>
@@ -287,7 +287,7 @@
                 #{/if}
             </div>
 
-            <div class="title"><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
+            <div class="title"><a href="/p/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
             <div class="price">
                 <div class="left">&yen;${aGoods.salePrice}</div>
                 <div class="right">

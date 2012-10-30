@@ -180,7 +180,7 @@
 
             <div class="inner">
                 <label for="share-url">复制链接分享给站外好友：</label><input type="text" id="share-url" class="input"
-                                                                  value="http://www.yibaiquan.com/g/33?tj=gshare"
+                                                                  value="http://www.yibaiquan.com/p/33?tj=gshare"
                                                                   readonly/>
             </div>
         </div>
@@ -259,9 +259,9 @@
         <ul class="bd clearfix">
         #{list hotSaleGoodsList, as:'aGoods'}
             <li>
-                <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}"
+                <div class="image"><a href="/p/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}"
                                                                                   alt="${goodsAlt}"/></a></div>
-                <div class="title"><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}
+                <div class="title"><a href="/p/${aGoods.id}" target="_blank">${aGoods.name}
                     aaa${aGoods.virtualBaseSaleCount}</a></div>
                 <div class="attri">
                     <del>原价：${aGoods.faceValue}</del>
@@ -277,9 +277,9 @@
         #{list recommendGoodsList, as:'aGoods'}
             #{set goodsAlt:helper.Title.getDetailTitle(aGoods) /}
             <li>
-                <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}"
+                <div class="image"><a href="/p/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}"
                                                                                   alt="${goodsAlt}"/></a></div>
-                <div class="title"><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
+                <div class="title"><a href="/p/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
                 <div class="attri">
                     <del>原价：${aGoods.faceValue}</del>
                 </div>
@@ -293,10 +293,10 @@
         <ul class="bd clearfix">
         #{list browsedGoodsList, as:'aGoods'}
             <li>
-                <div class="image"><a href="/g/${aGoods?.goods?.id}" target="_blank"><img
+                <div class="image"><a href="/p/${aGoods?.goods?.id}" target="_blank"><img
                         src="${aGoods?.goods?.imageSmallPath}"
                         /></a></div>
-                <div class="title"><a href="/g/${aGoods?.goods?.id}" target="_blank">${aGoods?.goods?.name}</a></div>
+                <div class="title"><a href="/p/${aGoods?.goods?.id}" target="_blank">${aGoods?.goods?.name}</a></div>
                 <div class="attri">
                     <del>原价：${aGoods?.goods?.faceValue}</del>
                 </div>
