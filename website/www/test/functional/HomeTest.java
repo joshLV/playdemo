@@ -8,15 +8,16 @@ import org.junit.Test;
 import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 
 public class HomeTest extends FunctionalTest {
+    Goods goods;
 
     @Before
     public void setup() {
-        Fixtures.delete(OrderItems.class);
-        Fixtures.delete(Order.class);
-        Fixtures.delete(Goods.class);
-        Fixtures.loadModels("fixture/goods.yml");
+        FactoryBoy.deleteAll();
+        goods = FactoryBoy.create(Goods.class);
     }
 
     @Test

@@ -26,7 +26,6 @@ public class Votes extends Controller {
     public static void index() {
         List<VoteQuestion> votes = VoteQuestion.getPage(VoteType.QUIZ);
         User user = SecureCAS.getUser();
-
         for (VoteQuestion vote : votes) {
             if (UserVote.isVoted(user, vote)) {
                 viewAnswer();

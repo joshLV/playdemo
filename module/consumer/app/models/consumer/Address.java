@@ -67,9 +67,9 @@ public class Address extends Model {
         }
         return fullAddress;
     }
-    
+
     @Transient
-    public String getArea(){
+    public String getArea() {
         String area = "";
         if (!"ALL".equals(province) && !"".equals(province)) {
             area += province;
@@ -171,6 +171,6 @@ public class Address extends Model {
     }
 
 
-    }
+}
 
 

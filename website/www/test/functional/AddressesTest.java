@@ -1,12 +1,16 @@
 /**
- * 
+ *
  */
 package functional;
 
 import models.cms.VoteQuestion;
 import models.consumer.Address;
 import models.consumer.User;
+import models.consumer.UserInfo;
 import models.consumer.UserVote;
+
+import factory.FactoryBoy;
+import factory.callback.SequenceCallback;
 
 import org.junit.After;
 import org.junit.Before;
@@ -21,113 +25,95 @@ import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
 
+import java.util.List;
+
 /**
  * @author wangjia
- * @date 2012-7-30 上午9:10:40 
+ * @date 2012-7-30 上午9:10:40
  */
 public class AddressesTest extends FunctionalTest {
+    UserInfo userInfo;
+    User user;
+    Address address;
 
-	
-	
-	  @Before
-	    @SuppressWarnings("unchecked")
-	    public void setup() {
-	        Fixtures.delete(Address.class);
-	        Fixtures.delete(User.class);
-	        Fixtures.loadModels("fixture/user.yml");
-	        Fixtures.loadModels("fixture/users.yml");
-	        Fixtures.loadModels("fixture/addresses.yml");
-	        
-	        
-	        Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
-			User user = User.findById(userId);
+    @Before
+    @SuppressWarnings("unchecked")
+    public void setup() {
+        FactoryBoy.deleteAll();
+        userInfo = FactoryBoy.create(UserInfo.class);
+        user = FactoryBoy.create(User.class);
+        // 设置测试登录的用户名
+        Security.setLoginUserForTest(user.loginName);
+        address = FactoryBoy.create(Address.class);
 
-			// 设置测试登录的用户名
-			Security.setLoginUserForTest(user.loginName);
-	    }
-	  
-	  @After
-		public void tearDown() {
-			// 清除登录Mock
-			Security.cleanLoginUserForTest();
-		}
-	  
-	  @Test
-	    public void testIndex() {
-	        Http.Response response = GET("/orders/addresses");
-	        assertStatus(200, response); 
-	    	assertContentMatch("收货地址", response);
-	    }
-	  
-	  @Test
-	    public void testList() {
-	        Http.Response response = GET("/orders/addresses/list");
-	        assertStatus(200, response); 
-	    	assertContentMatch("编辑", response);
-	    }
-	  
-	  @Test
-	    public void testShow() {
-		  	Long addressId = (Long) Fixtures.idCache.get("models.consumer.Address-test3");
-	        Http.Response response = GET("/orders/addresses/{"+addressId+"}");
-	        assertStatus(200, response); 
-	    	assertContentMatch("收货地址", response);
-	    }
-	  
-	  @Test
-	    public void testShowDefault(){
-	        Http.Response response = GET("/orders/addresses/default");
-	        assertStatus(200, response); 
-	    	assertContentMatch("收货地址", response);
-	    }
-	  
-	  
-	  @Test
-	    public void testUpdateDefault(){
-		  	Long addressId = (Long) Fixtures.idCache.get("models.consumer.Address-test3");	 
-		  	Address address=Address.findById(addressId);
-		  	address.city="徐汇区";
-		  	
-//		  	/friendsLinks/{id}  	    	
+    }
+
+    @After
+    public void tearDown() {
+        // 清除登录Mock
+        Security.cleanLoginUserForTest();
+    }
+
+    @Test
+    public void testIndex() {
+        Http.Response response = GET("/orders/addresses");
+        assertStatus(200, response);
+        assertContentMatch("收货地址", response);
+        List<Address> testAddress = (List<Address>) renderArgs("addressList");
+        assertEquals(address.id, testAddress.get(0).id);
+    }
+
+    @Test
+    public void testList() {
+        Http.Response response = GET("/orders/addresses/list");
+        assertStatus(200, response);
+        assertContentMatch("编辑", response);
+        List<Address> testAddress = (List<Address>) renderArgs("addressList");
+        assertEquals(address.id, testAddress.get(0).id);
+    }
+
+    @Test
+    public void testShow() {
+        Http.Response response = GET("/orders/addresses/" + address.id);
+        assertStatus(200, response);
+        assertContentMatch("收货地址", response);
+        Address testAddress = (Address) renderArgs("address");
+        assertEquals(address.id, testAddress.id);
+    }
+
+    @Test
+    public void testShowDefault() {
+        Http.Response response = GET("/orders/addresses/default");
+        assertStatus(200, response);
+        assertContentMatch("收货地址", response);
+        Address testAddress = (Address) renderArgs("address");
+        assertEquals(address.id, testAddress.id);
+    }
+
+    @Test
+    public void testUpdateDefault() {
+        String updatedName = "徐汇区";
+        address.city = updatedName;
+//		  	/friendsLinks/{id}
 //	        long id = (Long) Fixtures.idCache.get("models.cms.FriendsLink-Link1");
 //	        String params = "friendsLinks.linkName=changed&friendsLinks.link=www.changed.com";
 //	        Http.Response response =  PUT("/friendsLinks/"+id,"application/x-www-form-urlencoded",params);
-		        
-	        Http.Response response = PUT("/orders/addresses/{"+addressId+"}/default","application/x-www-form-urlencoded",address.city);
-	        assertStatus(200, response); 
-	        addressId = (Long) Fixtures.idCache.get("models.consumer.Address-test3");	 
-		  	address=Address.findById(addressId);
-		  	assertEquals("徐汇区",address.city);	        
-	    }
-	  
-	  @Test
-	    public void testDelete(){		  
-		  Long addressId = (Long) Fixtures.idCache.get("models.consumer.Address-test3");		  
-		  Response response = DELETE("/orders/addresses/" + addressId);
-		  assertStatus(200, response);	
-		  Address addressDeleted = Address.findById(addressId);
-		  assertNull(addressDeleted);
-	  }
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
+        Http.Response response = PUT("/orders/addresses/" + address.id + "/default", "application/x-www-form-urlencoded", address.city);
+        assertStatus(200, response);
+        address = Address.findById(address.id);
+        assertEquals(updatedName, address.city);
+    }
+
+    @Test
+    public void testDelete() {
+        Address addressDeleted1 = Address.find("id=?", address.id).first();
+        assertNotNull(addressDeleted1);
+        assertEquals(1, Address.count());
+        Response response = DELETE("/orders/addresses/" + address.id);
+        assertStatus(200, response);
+        assertEquals(0, Address.count());
+        Address addressDeleted = Address.find("id=?", address.id).first();
+        assertNull(addressDeleted);
+    }
+
 }

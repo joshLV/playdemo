@@ -1,11 +1,12 @@
 /**
- * 
+ *
  */
 package functional;
 
 import controllers.modules.website.cas.Security;
 import models.accounts.Account;
 import models.consumer.User;
+import models.consumer.UserInfo;
 import models.order.Cart;
 import models.order.ECoupon;
 import models.order.Order;
@@ -24,127 +25,106 @@ import play.test.FunctionalTest;
 import java.util.HashMap;
 import java.util.Map;
 
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
+import factory.callback.SequenceCallback;
+
 /**
  * @author wangjia
- * @date 2012-7-31 上午10:42:21 
+ * @date 2012-7-31 上午10:42:21
  */
-public class CartsTest  extends FunctionalTest {
+public class CartsTest extends FunctionalTest {
+    UserInfo userInfo;
+    User user;
+    Goods goods;
+    Cart cart;
 
-	@Before
-	@SuppressWarnings("unchecked")
-	public void setup() {
-		Fixtures.delete(Cart.class);
+    @Before
+    @SuppressWarnings("unchecked")
+    public void setup() {
+        FactoryBoy.deleteAll();
+        userInfo = FactoryBoy.create(UserInfo.class);
+        user = FactoryBoy.create(User.class);
+        goods = FactoryBoy.create(Goods.class);
+        cart = FactoryBoy.create(Cart.class);
+    }
 
-        Fixtures.delete(ECoupon.class);
-		Fixtures.delete(OrderItems.class);
-		Fixtures.delete(Order.class);
-        Fixtures.delete(Goods.class);
-        Fixtures.delete(Category.class);
-        Fixtures.delete(Shop.class);
-        Fixtures.delete(Brand.class);
-		Fixtures.delete(Account.class);
-        Fixtures.delete(User.class);
+    @After
+    public void tearDown() {
+        // 清除登录Mock
+        Security.cleanLoginUserForTest();
+    }
 
-		Fixtures.loadModels("fixture/user.yml");
-		Fixtures.loadModels("fixture/categories_unit.yml");
-		Fixtures.loadModels("fixture/shops_unit.yml");
-		Fixtures.loadModels("fixture/brands_unit.yml");
-		Fixtures.loadModels("fixture/goods.yml");
-		Fixtures.loadModels("fixture/goods_unit.yml");
-		Fixtures.loadModels("fixture/orders.yml");
-		Fixtures.loadModels("fixture/orderItems.yml");
-		Fixtures.loadModels("fixture/cart.yml");
-		
-		
-		
+    @Test
+    public void testIndexIsBuyFlag() {
+        auth();
+        Response response = GET("/carts");
+        assertStatus(200, response);
+        assertContentMatch("一百券 - 购物车", response);
+        assertEquals(user, renderArgs("user"));
+    }
 
-		
-	}
+    @Test
+    public void testOrderGoodsNull() {
+        auth();
+        Map<String, String> orderParams = new HashMap<>();
+        orderParams.put("goodsId", String.valueOf(999));
+        orderParams.put("increment", "1");
+        Response response = POST("/carts", orderParams);
+        assertStatus(500, response);
+        assertContentMatch("no such goods", response);
 
-	@After
-	public void tearDown() {
-		// 清除登录Mock
-		Security.cleanLoginUserForTest();
-	}
-	
-	
-	@Test
-	public void testIndexIsBuyFlag() {
-		auth();
-		Response response = GET("/carts");
-		//System.out.println("aaa>>>"+response.out.toString());
-		assertStatus(200, response); 
-		assertContentMatch("一百券 - 购物车", response);
-	}
-	
-	@Test
-	public void testOrderGoodsNull() {
-		auth();
-		Map<String, String> orderParams = new HashMap<>();	
-		long goodsId = (long) Fixtures.idCache.get("models.sales.Goods-goods2");
-		long cartId = (long) Fixtures.idCache.get("models.order.Cart-cart1");
-		Cart cart=Cart.findById(cartId);
-		orderParams.put("goodsId",String.valueOf(999));
-		orderParams.put("increment", "1");		
-		Response response = POST("/carts", orderParams);
-		assertContentMatch("no such goods", response);
-		
-	}
-	
-	@Test
-	public void testOrderUserNull() {
-		Map<String, String> orderParams = new HashMap<>();	
-		long goodsId = (long) Fixtures.idCache.get("models.sales.Goods-Goods_002");	
-		
-		long cartId = (long) Fixtures.idCache.get("models.order.Cart-cart1");
-		Cart cart=Cart.findById(cartId);
-	    cart.number=2;
-	    cart.save();    
-		orderParams.put("goodsId",String.valueOf(goodsId));
-		orderParams.put("increment", "1");		
-		Response response = POST("/carts", orderParams);
-		assertContentMatch("can not identity current user", response);
-		
-		
-	}
-	
+    }
 
-	
-	@Test
-	public void testTopsCartListSizeMoreThanFive() {
-		auth();	
-		Response response = GET("/carts/tops");
-		assertStatus(200, response);
-		 
-	}
-	
-	
-	@Test
-	public void testDeleteUserNull() {
-		long goodsId = (long) Fixtures.idCache.get("models.sales.Goods-Goods_002");	
-		Response response = DELETE("/carts/" + goodsId);
-		assertStatus(500, response);
-		assertContentMatch("can not identity current user", response);
-	}
-	
-	@Test
-	public void testDeleteGoodsIdValid() {
-		auth();
-		String goodsId=null;
-		Response response = DELETE("/carts/"+goodsId) ;
-		assertStatus(500, response);
-		assertContentMatch("no goods specified", response);
-		
-	}
-	
-	private long auth() {
-		
-		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
-		User user = User.findById(userId);
-		// 设置测试登录的用户名
-		Security.setLoginUserForTest(user.loginName);
-		return userId;
-	}
-	
-	
+    @Test
+    public void testOrderUserNull() {
+        Map<String, String> orderParams = new HashMap<>();
+        cart.number = 2;
+        cart.save();
+        orderParams.put("goodsId", String.valueOf(goods.id));
+        orderParams.put("increment", "1");
+        Response response = POST("/carts", orderParams);
+        assertStatus(500, response);
+        assertContentMatch("can not identity current user", response);
+    }
+
+    @Test
+    public void testDeleteUserNull() {
+        Response response = DELETE("/carts/" + goods.id);
+        assertStatus(500, response);
+        assertContentMatch("can not identity current user", response);
+    }
+
+    @Test
+    public void testDeleteGoodsIdValid() {
+        auth();
+        String goodsId = null;
+        Response response = DELETE("/carts/" + goodsId);
+        assertStatus(500, response);
+        assertContentMatch("no goods specified", response);
+    }
+
+    @Test
+    public void testDeleteGoods() {
+        auth();
+        Cart testCart;
+        testCart = Cart.find("id=?", cart.id).first();
+        assertNotNull(testCart);
+        assertEquals(1, Cart.count());
+
+        Response response = DELETE("/carts/" + goods.id);
+        assertStatus(200, response);
+        testCart = Cart.find("id=?", cart.id).first();
+        assertNull(testCart);
+        assertEquals(0, Cart.count());
+
+    }
+
+    private void auth() {
+        // 设置测试登录的用户名
+        Security.setLoginUserForTest(user.loginName);
+
+    }
+
+
 }

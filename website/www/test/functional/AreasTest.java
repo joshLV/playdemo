@@ -2,6 +2,8 @@ package functional;
 
 import models.consumer.Address;
 
+import models.sales.Area;
+import models.sales.AreaType;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -9,6 +11,11 @@ import org.junit.Test;
 import play.mvc.Http;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
+import factory.callback.SequenceCallback;
+
+import java.util.List;
 
 /**
  * 商圈区域控制器的测试.
@@ -18,12 +25,62 @@ import play.test.FunctionalTest;
  * Time: 2:39 PM
  */
 public class AreasTest extends FunctionalTest {
+    List<Area> cityAreas;
+    List<Area> distrcitAreas;
+    List<Area> areaAreas;
+    Area area10;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        Fixtures.delete(Address.class);
-        Fixtures.loadModels("fixture/areas.yml");
+        FactoryBoy.deleteAll();
+        cityAreas = FactoryBoy.batchCreate(7, Area.class,
+                new SequenceCallback<Area>() {
+                    @Override
+                    public void sequence(Area target, int seq) {
+                        target.id = "CITY" + seq;
+                        target.name = "City#" + seq;
+                        target.displayOrder = seq;
+                        target.areaType = AreaType.CITY;
+                    }
+                });
+
+        distrcitAreas = FactoryBoy.batchCreate(7, Area.class,
+                new SequenceCallback<Area>() {
+                    @Override
+                    public void sequence(Area target, int seq) {
+                        target.parent = cityAreas.get(0);
+                        target.id = target.parent.id + seq;
+                        target.name = "District#" + seq;
+                        target.displayOrder = seq;
+                        target.areaType = AreaType.DISTRICT;
+                    }
+                });
+
+        areaAreas = FactoryBoy.batchCreate(3, Area.class,
+                new SequenceCallback<Area>() {
+                    @Override
+                    public void sequence(Area target, int seq) {
+                        target.name = "Area#" + seq;
+                        target.displayOrder = seq;
+                        target.areaType = AreaType.AREA;
+                        target.parent = distrcitAreas.get(0);
+                        target.id = target.parent.id + seq;
+                    }
+                });
+
+        area10 = FactoryBoy.create(Area.class,
+                new BuildCallback<Area>() {
+                    @Override
+                    public void build(Area target) {
+                        target.name = "area10";
+                        target.displayOrder = -1;
+                        target.areaType = AreaType.AREA;
+                        target.parent = distrcitAreas.get(1);
+                        target.id = target.parent.id + FactoryBoy.sequence(Area.class);
+                    }
+                });
+
     }
 
     @Test
@@ -31,6 +88,7 @@ public class AreasTest extends FunctionalTest {
         Http.Response response = GET("/areas/cities/top/6");
         assertIsOk(response);
         assertContentType("application/json", response);
+        assertContentMatch(cityAreas.get(0).name, response);
     }
 
     @Test
@@ -45,6 +103,7 @@ public class AreasTest extends FunctionalTest {
         Http.Response response = GET("/areas/areas/top/6");
         assertIsOk(response);
         assertContentType("application/json", response);
+        assertContentMatch(areaAreas.get(0).name, response);
     }
 
     @Test
@@ -60,15 +119,14 @@ public class AreasTest extends FunctionalTest {
         assertIsOk(response);
         assertContentType("application/json", response);
     }
-    
-    
+
+
     @Test
-    public void testShowArea() {   	
-    	String areaId = (String) Fixtures.idCache.get("models.sales.Area-city1");
-        Http.Response response = GET("/areas/areas/"+areaId);
+    public void testShowArea() {
+        String areaId = (String) Fixtures.idCache.get("models.sales.Area-city1");
+        Http.Response response = GET("/areas/areas/" + areaAreas.get(0).id);
         assertIsOk(response);
         assertContentType("application/json", response);
-        assertEquals("{\"id\":\"1\",\"name\":\"city1\",\"displayOrder\":100,\"areaType\":\"CITY\"}",response.out.toString());
-        //output:  {"id":"1","name":"city1","displayOrder":100,"areaType":"CITY"}      
+        assertContentMatch(areaAreas.get(0).id, response);
     }
 }

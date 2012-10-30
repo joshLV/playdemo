@@ -55,11 +55,11 @@ public class Carts extends Controller {
         if (user != null) {
             //该用户曾经购买该商品的数量
             Long boughtNumber = 0l;
-           
+
             for (Cart cart : carts) {
                 boughtNumber = OrderItems.itemsNumber(user, cart.goods.id);
                 boolean isBuyFlag = Order.checkLimitNumber(user, cart.goods.id, boughtNumber, (int) cart.number);
-               
+
                 if (isBuyFlag) {
                     renderArgs.put("limit_goodsId", cart.goods.id);
                 }
@@ -81,17 +81,18 @@ public class Carts extends Controller {
         User user = SecureCAS.getUser();
         Http.Cookie cookie = request.cookies.get("identity");
         String cookieValue = cookie == null ? null : cookie.value;
+        System.out.println("cookie>>>" + cookieValue);
 
+        System.out.println("user>>>" + user);
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
         if (goods == null) {
             error(500, "no such goods: " + goodsId);
             return;
         }
-       
+
         if (user == null && cookie == null) {
-        	 
             error(500, "can not identity current user");
-           
+
             return;
         }
 
@@ -108,8 +109,8 @@ public class Carts extends Controller {
         if (increment > 0 && WebsiteInjector.getUserWebIdentification() != null) {
             UserWebIdentification uwi = UserWebIdentification.findOne(WebsiteInjector.getUserWebIdentification().cookieId);
             if (uwi == null) {
-            	uwi = WebsiteInjector.getUserWebIdentification();
-            	uwi.save();
+                uwi = WebsiteInjector.getUserWebIdentification();
+                uwi.save();
             }
             if (uwi.cartCount == null) {
                 uwi.cartCount = 0;
@@ -134,24 +135,23 @@ public class Carts extends Controller {
                 return Cart.findAll(user, cookieValue);
             }
         }); */
-        
-        
-        
+
+
         int count = 0;
         for (Cart cart : cartList) {
             count += cart.number;
         }
-      
-        
+
+
         if (cartList.size() <= 5) {
             renderArgs.put("carts", cartList);
         } else {
-        	
+
             ValuePaginator<Cart> carts = new ValuePaginator<>(cartList);
             carts.setPageNumber(1);
             carts.setPageSize(TOP_LIMIT);
-        
-           
+
+
             renderArgs.put("carts", carts);
         }
 
@@ -171,12 +171,10 @@ public class Carts extends Controller {
 
         if (user == null && cookie == null) {
             error(500, "can not identity current user");
-            return;
         }
 
         if (goodsIds == null || goodsIds.size() == 0) {
             error(500, "no goods specified");
-            return;
         }
 
         Cart.delete(user, cookieValue, goodsIds);
