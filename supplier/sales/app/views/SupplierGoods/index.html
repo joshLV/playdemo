@@ -61,8 +61,6 @@
                 <th width="300px">&{'goods.name'}</th>
                 <th width="50px">&{'goods.faceValue'}</th>
                 <th width="50px">&{'goods.originalPrice'}</th>
-                <th width="50px">&{'goods.baseSale'}(件)</th>
-                <th width="50px">&{'goods.saleCount'}(件)</th>
                 <th width="200px">&{'goods.createdAt'}</th>
                 <th width="100px">&{'goods.status'}</th>
                 <th width="100px">操 作</th>
@@ -88,8 +86,6 @@
                 </td>
                 <td class="amount">${goods?.faceValue?.formatCurrency('CNY').raw()}</td>
                 <td class="amount">${goods?.originalPrice?.formatCurrency('CNY').raw()}</td>
-                <td class="amount">${goods?.baseSale}</td>
-                <td class="amount">${goods?.saleCount}</td>
                 <td>${goods.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>&{'goods.'+goods?.getStatus()}
                     #{if models.sales.GoodsStatus.OFFSALE.equals(goods?.status)}<br/>

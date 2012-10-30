@@ -72,6 +72,26 @@ GET     /jump/to/{id}                           JumpPages.doJump
         assertEquals(1, blocks.size());
         assertContentMatch("品味浪漫意式美食，85元抢购巴贝拉100元代金券", response);
 	}
+
+	@Test
+	public void 测试列出指定多个产品的跳转页面() {
+		Block block2 = FactoryBoy.create(Block.class, new BuildCallback<Block>() {
+			@Override
+			public void build(Block b) {
+				b.type = BlockType.JUMP_TO_OUTER;
+				b.title = goods.id.toString();
+				b.setContent("品味浪漫意式美食，85元抢购巴贝拉100元代金券2");
+			}
+		});
+		Response response = GET("/jump/360buy/" + block.id + "-" + block2.id);
+        assertIsOk(response);
+        assertContentType("text/html", response);
+        
+        List<Block> blocks = (List<Block>)renderArgs("blocks");
+        assertNotNull(blocks);
+        assertEquals(2, blocks.size());
+        assertContentMatch("品味浪漫意式美食，85元抢购巴贝拉100元代金券", response);
+	}
 	
 	@Test
 	public void 测试非法目标Block时返回404() throws Exception {

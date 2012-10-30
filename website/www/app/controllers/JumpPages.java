@@ -19,17 +19,25 @@ import controllers.modules.website.cas.annotations.SkipCAS;
 @SkipCAS
 public class JumpPages extends Controller {
 
-	public static void jump360buy(Long id) {
+	/**
+	 * 跳转到360buy的跳转页.
+	 */
+	public static void jump360buy(String id) {
 		List<Block> blocks = null;
 		if (id == null) {
 			blocks = Block.findByType(BlockType.JUMP_TO_OUTER, new Date());
 		} else {
+			String[] ids = id.split("-");
 			blocks = new ArrayList<>();
-			Block block = Block.findById(id);
-			if (block == null) {
+			for (String sId : ids) {
+				Block block = Block.findById(Long.parseLong(sId));
+				if (block != null) {
+					blocks.add(block);
+				}
+			}
+			if (blocks.size() == 0) {
 				notFound();
 			}
-			blocks.add(block);
 		}
 		Map<Long, models.sales.Goods> goodsMap = new HashMap<>();
 		for (Block block : blocks) {
@@ -45,6 +53,10 @@ public class JumpPages extends Controller {
 		render(blocks, goodsMap);
 	}
 	
+	/**
+	 * 执行对CMS Block对应url的跳转，同时记录点击数。
+	 * @param id
+	 */
 	public static void doJump(Long id) {
 		Block block = Block.findById(id);
 		if (block == null) {
