@@ -1,30 +1,29 @@
 #{extends 'main2.html' /}
-#{set title:'一百券-公告:' +topic.title /}
+#{set title:'一百券-公告' /}
 #{set 'metaContent'}
 <meta name="Description" content="一百券,消费券,代金券,优惠券,美食券,电子券,提货券">
 <meta name="Keywords" content="上海优惠券,一百券,消费券,代金券,优惠券,美食券,电子券,优惠上海,提货券">
 #{/set}
 #{set 'moreStyles'}
-*{#{asset.css src:['/u/about.css'] /}}*
+
 #{/set}
 <link rel="stylesheet" href="http://192.168.18.242/yome/home/src/notice.css"/>
 <div class="wrapper">
     <div id="content">
-        <div class="crumbs">您现在的位置：<a href="/">首页</a> > <a href="/topics">公告</a> > 正文</div>
+        <div class="crumbs">您现在的位置：<a href="/">首页</a> > 公告</div>
         <div id="notice">
             <h3 class="hd">公告</h3>
 
             <div class="bd">
-                <div class="article">
-                    <div class="title">${topic.title}</div>
-                    <div class="meta">一百券 发布时间：${topic?.effectiveAt?.format()}</div>
-                    <div class="text">
-                    ${topic.getContent()?.raw()}
-                    </div>
-                </div>
+                <ul class="list">
+                #{paginate.list items:topicList, as:'topic'}
+                    <li><a href="/topic/${topic.id}">${topic?.title}</a><span
+                            class="date">${topic?.effectiveAt?.format()}</span>
+                    </li>
+                #{/paginate.list}
+                </ul>
+            #{paginate.controls items:topicList /}
             </div>
         </div>
-    </div>
     <!-- #content -->
 </div>
-

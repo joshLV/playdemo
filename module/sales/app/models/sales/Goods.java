@@ -565,8 +565,7 @@ public class Goods extends Model {
     @JoinColumn(name = "goods_id")
     public List<ResalerFav> resalerFavs;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "goods_id")
+    @OneToMany(mappedBy = "goods")
     public List<GoodsImages> goodsImagesList;
 
     /**
@@ -728,15 +727,15 @@ public class Goods extends Model {
     public void setPrompt(String prompt) {
         this.prompt = Jsoup.clean(prompt, HTML_WHITE_TAGS);
     }
-    
+
     @Transient
     public String getSafePrompt() {
-    	return prompt.replaceAll("&nbsp;", " ");
+        return prompt.replaceAll("&nbsp;", " ");
     }
-    
+
     @Transient
     public String getSafeDetails() {
-    	return details.replaceAll("&nbsp;", " ");
+        return details.replaceAll("&nbsp;", " ");
     }
 
     /**
@@ -1212,6 +1211,7 @@ public class Goods extends Model {
         return isExist;
     }
 
+    @Transient
     @SolrField
     public Collection<Shop> getShopList() {
         if (isAllShop) {
@@ -1230,11 +1230,27 @@ public class Goods extends Model {
                 Goods goods1 = Goods.findById(goodsId);
                 Set<Shop> shopSet = new HashSet<>();
                 for (Shop shop : goods1.shops) {
-                	if (shop.deleted == DeletedStatus.UN_DELETED) {
-                		shopSet.add(shop);
-                	}
+                    if (shop.deleted == DeletedStatus.UN_DELETED) {
+                        shopSet.add(shop);
+                    }
                 }
                 return shopSet;
+            }
+        });
+    }
+
+    @Transient
+    public List<GoodsImages> getCachedGoodsImagesList() {
+        final long goodsId = this.id;
+        return CacheHelper.getCache(CacheHelper.getCacheKey(GoodsImages.CACHEKEY_GOODSID + goodsId, "GOODS_IMAGES"), new CacheCallBack<List<GoodsImages>>() {
+            @Override
+            public List<GoodsImages> loadData() {
+                Goods goods1 = Goods.findById(goodsId);
+                List<GoodsImages> imagesList = new ArrayList<>();
+                for (GoodsImages images : goods1.goodsImagesList) {
+                    imagesList.add(images);
+                }
+                return imagesList;
             }
         });
     }

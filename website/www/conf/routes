@@ -27,9 +27,10 @@ GET     /contact                                WEBApplication.contact
 GET     /help                                   WEBApplication.help
 GET     /service                                WEBApplication.service
 GET     /topic/{id}                             WEBApplication.topic
+GET     /topics                                 WEBApplication.list
 GET     /rebate_help                            WEBApplication.rebate
 
-GET     /s                                      Goods2.index
+GET     /s                                      Goods.index
 
 GET     /s/{condition}                          Goods2.list
 GET     /g/{id}                                 Goods2.show
@@ -41,6 +42,7 @@ GET     /goods/list/{condition}                 Goods2.list
 GET     /goods/{id}                             Goods2.show
 
 GET     /goods/{id}/shops                       Goods2.shops(format:'json')
+GET     /goods/{id}/questions                       Goods2.questions(format:'json')
 
 GET     /goods/{uuid}/preview                   Goods2.preview
 POST    /goods/statistics                       Goods2.statistics
