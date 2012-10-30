@@ -1,28 +1,26 @@
 package models.website;
 
 import models.consumer.UserWebIdentification;
-import models.order.OuterOrder;
-import models.order.OuterOrderPartner;
-import models.order.OuterOrderStatus;
+import models.consumer.UserWebIdentificationData;
 import play.Logger;
-import play.cache.Cache;
 import play.db.jpa.JPA;
 import play.db.jpa.JPAPlugin;
 import play.jobs.OnApplicationStart;
 import play.modules.rabbitmq.consumer.RabbitMQConsumer;
 
 @OnApplicationStart(async = true)
-public class UserWebIdentificationConsumer extends RabbitMQConsumer<UserWebIdentification> {
+public class UserWebIdentificationConsumer extends RabbitMQConsumer<UserWebIdentificationData> {
 
 	@Override
-	protected void consume(UserWebIdentification uwiMsg) {
-		  //开启事务管理
+	protected void consume(UserWebIdentificationData uwiMsg) {
+		//开启事务管理
         JPAPlugin.startTx(false);
 
 		UserWebIdentification wui = UserWebIdentification.findOne(uwiMsg.cookieId);
 		if (wui == null) {
+			wui = uwiMsg.toUserWebIdentification();
 			Logger.info("尝试保存UserWebIdentification（cookie:" + uwiMsg.cookieId + ")");
-			uwiMsg.save(); //考虑做一下如果有ID，调用更新操作，否则调用新增操作.
+			wui.save(); //考虑做一下如果有ID，调用更新操作，否则调用新增操作.
 		} else {
 			Logger.info("msg83841341:UserWebIdentification（cookie:" + uwiMsg.cookieId + ")已经被其它进程保存");
 		}
@@ -41,7 +39,7 @@ public class UserWebIdentificationConsumer extends RabbitMQConsumer<UserWebIdent
 
 	@Override
 	protected Class getMessageType() {
-		return UserWebIdentification.class;
+		return UserWebIdentificationData.class;
 	}
 
 	@Override

@@ -24,7 +24,7 @@ public class UserWebIdentification extends Model {
 
     private static final long serialVersionUID = 18232060911893921L;
     
-    public static final String MQ_KEY = "WUI2NEW-";
+    public static final String MQ_KEY = "WUI2DATA-";
 
     @Column(name="cookie_id", unique=true)
     public String cookieId;
@@ -121,7 +121,8 @@ public class UserWebIdentification extends Model {
 	
 	public void notifyMQSave() {
 		if (!Play.runingInTestMode()) {
-			RabbitMQPublisher.publish(MQ_KEY, this);
+			UserWebIdentificationData data = UserWebIdentificationData.from(this);
+			RabbitMQPublisher.publish(MQ_KEY, data);
 		}
 	}
 }
