@@ -41,11 +41,9 @@ GET     /goods/{id}                             Goods.show
 
 # v2 (2012-10-30)
 GET     /q                                      Goods2.index
-GET     /q/{condition}                          Goods2.search
+GET     /q/{conditionStr}                       Goods2.search
 GET     /p/{id}                                 Goods2.show
 GET     /p/{id}                                 Goods2.showHistory
-GET     /pl/{condition}                         Goods2.list
-
 
 GET     /goods/{id}/shops                       Goods2.shops(format:'json')
 GET     /goods/{id}/questions                       Goods2.questions(format:'json')

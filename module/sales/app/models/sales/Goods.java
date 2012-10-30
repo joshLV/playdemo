@@ -859,11 +859,17 @@ public class Goods extends Model {
             String[] wordArray = words.split(" |,|;|，");
             if (wordArray != null) {
                 for (String word : wordArray) {
-                    highLight = name.replaceAll(word, "<em>" + word + "</em>");
+                    System.out.println("word:" + word);
+                    highLight = highLight.replaceAll(word, "<em>" + word + "</em>");
                 }
             }
         }
         return highLight;
+    }
+
+    @Transient
+    public String getWwwUrl() {
+        return "/p/" + id;
     }
     //=================================================== 数据库操作 ====================================================
 
@@ -1343,7 +1349,7 @@ public class Goods extends Model {
      * @param limit
      * @return
      */
-    public static List<Goods> findSupplierTopRecommend(int limit, Goods goods) {
+    public static List<Goods> findTopRecommendByGoods(int limit, Goods goods) {
         String sql = "select g from Goods g,GoodsStatistics s  where g.id =s.goodsId " +
                 " and g.status =:status and g.supplierId=:supplierId and g.deleted =:deleted and " +
                 " g.id <> :goodsId and g.expireAt >:expireAt and g.baseSale>=1 and g.isLottery is false order by s.summaryCount desc";
@@ -1717,7 +1723,7 @@ public class Goods extends Model {
      */
     public static QueryResponse searchFullText(String keywords, long parentCategoryId, long categoryId, String districtId,
                                                String areaId, String orderBy, boolean isAsc, int pageNumber, int pageSize) {
-        String q = StringUtils.isNotBlank(keywords) ? "text:" + keywords : null;
+        String q = StringUtils.isNotBlank(keywords) ? "text:\"" + keywords + "\"" : null;
         return search(q, parentCategoryId, categoryId, districtId, areaId, orderBy, isAsc, pageNumber, pageSize);
     }
 
@@ -1745,7 +1751,7 @@ public class Goods extends Model {
             queryStr.append(" AND goods.categoryIds_s:" + categoryId);
         }
         if (StringUtils.isNotBlank(districtId) && !districtId.equals("0")) {
-            queryStr.append(" AND shop.areaId_s:" + districtId+"*");
+            queryStr.append(" AND shop.areaId_s:" + districtId + "*");
         }
         if (parentCategoryId > 0) {
             queryStr.append(" AND goods.parentCategoryIds_s:" + parentCategoryId);
@@ -1789,7 +1795,9 @@ public class Goods extends Model {
             goods.id = Long.parseLong(docId.substring(6, docId.length()));
             goods.name = (String) doc.getFieldValue(SOLR_GOODS_NAME);
             final String faceValue = (String) doc.getFieldValue(SOLR_GOODS_FACEVALUE);
-            goods.faceValue = new BigDecimal(faceValue.substring(0, faceValue.length() - 4));
+            if (faceValue != null) {
+                goods.faceValue = new BigDecimal(faceValue.substring(0, faceValue.length() - 4));
+            }
             final String salePrice = (String) doc.getFieldValue(SOLR_GOODS_SALEPRICE);
             goods.salePrice = new BigDecimal(salePrice.substring(0, salePrice.length() - 4));
             goods.areaNames = (String) doc.getFieldValue(SOLR_GOODS_AREAS);

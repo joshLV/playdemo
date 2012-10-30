@@ -1,4 +1,6 @@
 <div class="crumbs">您现在的位置：<a href="/">首页</a>
+    #{set z:0/}
 #{list _arg, as:'breadcrumb'}
-    > <a href="${breadcrumb.url}">${breadcrumb.desc}</a>
+    #{set z:z+1/}
+    > #{if z != _arg?.size()}<a href="${breadcrumb.url}">#{/if}${breadcrumb.desc}#{if z != _arg?.size()}</a>#{/if}
 #{/list}</div>
