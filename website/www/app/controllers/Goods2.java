@@ -396,7 +396,7 @@ public class Goods2 extends Controller {
         shops.setPageNumber(pageNumber);
         shops.setPageSize(pageSize);
 
-        render("Goods2/shops.json", shops, pageSize);
+        render("Goods2/shops.json", shops, pageNumber, pageSize);
     }
 
     private static void showGoodsHistory(final GoodsHistory goodsHistory) {
@@ -516,11 +516,12 @@ public class Goods2 extends Controller {
                                 goodsId, GoodsType.NORMALGOODS, 0, 999);
                     }
                 });
+        System.out.println(questions.size());
         ValuePaginator<CmsQuestion> cmsQuestions = new ValuePaginator<>(questions);
         cmsQuestions.setPageNumber(pageNumber);
         cmsQuestions.setPageSize(pageSize);
 
-        render("Goods2/questions.json", cmsQuestions, pageSize);
+        render("Goods2/questions.json", cmsQuestions, pageNumber, pageSize);
     }
 
     /**
