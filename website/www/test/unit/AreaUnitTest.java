@@ -71,10 +71,10 @@ public class AreaUnitTest extends UnitTest {
                     @Override
                     public void build(Area target) {
                         target.name = "area10";
-                        target.displayOrder = 400;
+                        target.displayOrder = -1;
                         target.areaType = AreaType.AREA;
                         target.parent = distrcitAreas.get(1);
-                        target.id = target.parent.id + 11;
+                        target.id = target.parent.id + FactoryBoy.sequence(Area.class);
                     }
                 });
 
