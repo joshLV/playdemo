@@ -5,6 +5,10 @@ import factory.ModelFactory;
 import factory.annotation.Factory;
 import models.consumer.User;
 import models.consumer.UserInfo;
+import models.consumer.UserStatus;
+import util.DateHelper;
+
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -40,7 +44,33 @@ public class UserFactory extends ModelFactory<User> {
         user.loginName = "11@qq.com";
         user.promoterCode = "wr211a";
         user.password = "11@qq.com";
-         user.mobile = "15026682168";
+        user.mobile = "15026682168";
+        return user;
+    }
+
+    @Factory(name = "user_test1")
+    public User defineUserTest1(User user) {
+        user.loginName = "selenium1@uhuila.com";
+        user.password = "63dc778349e8f64e7c1c3b9370848ba1";
+        user.passwordSalt = "gXP0W9";
+        user.lastLoginAt = DateHelper.t("2012-02-24 15:40:07");
+        user.status = UserStatus.NORMAL;
+        user.mobile = "15618096151";
+        user.passwordToken = "63dc778349e8f64e7c1c3b9370848ba2";
+        user.sendMailAt = new Date();
+        return user;
+    }
+
+    @Factory(name = "user_test2")
+    public User defineUserTest2(User user) {
+        user.loginName = "selenium2@uhuila.com";
+        user.password = "63dc778349e8f64e7c1c3b9370848ba1";
+        user.passwordSalt = "gXP0W9";
+        user.lastLoginAt = DateHelper.t("2012-02-24 15:40:07");
+        user.status = UserStatus.NORMAL;
+        user.mobile = "15618096151";
+        user.passwordToken = "63dc778349e8f64e7c1c3b9370848ba1";
+        user.sendMailAt = DateHelper.t("2012-04-24T15:40:07");
         return user;
     }
 

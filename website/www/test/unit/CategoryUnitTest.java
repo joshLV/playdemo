@@ -41,7 +41,6 @@ public class CategoryUnitTest extends UnitTest {
     public void testFindTopByBrand() {
         int limit = 1;
         List<Category> categoryList = Category.findTop(limit, category.id);
-        System.out.println("size??" + Category.count());
         assertEquals(1, categoryList.size());
     }
 

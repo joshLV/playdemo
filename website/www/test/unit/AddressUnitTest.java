@@ -4,7 +4,6 @@ import models.consumer.Address;
 import models.consumer.User;
 import org.junit.Before;
 import org.junit.Test;
-import play.test.Fixtures;
 import play.test.UnitTest;
 import factory.FactoryBoy;
 import factory.callback.SequenceCallback;

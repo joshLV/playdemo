@@ -22,7 +22,7 @@ import static util.DateHelper.afterDays;
 public class AreaFactory extends ModelFactory<Area> {
     @Override
     public Area define() {
-        return createOrFindArea(AreaType.AREA, "0210201", "徐家汇", getXihuiDist());
+        return buildOrFindArea(AreaType.AREA, "0210201", "徐家汇", getXihuiDist());
     }
 
     /**
@@ -55,18 +55,23 @@ public class AreaFactory extends ModelFactory<Area> {
 
 
 	public Area createOrFindArea(AreaType areaType, String id, String name, Area parent) {
-    	Area area = Area.findById(id);
-    	if (area != null) {
-    		return area;
-    	}
-
-    	area = new Area();
-    	area.id = id;
-    	area.name = name;
-    	area.displayOrder = FactoryBoy.sequence(Area.class);
-    	area.areaType = areaType;
-    	area.parent = parent;
+    	Area area = buildOrFindArea(areaType, id, name, parent);
     	area.save();
     	return area;
+    }
+
+    public Area buildOrFindArea(AreaType areaType, String id, String name, Area parent) {
+        Area area = Area.findById(id);
+        if (area != null) {
+            return area;
+        }
+
+        area = new Area();
+        area.id = id;
+        area.name = name;
+        area.displayOrder = FactoryBoy.sequence(Area.class);
+        area.areaType = areaType;
+        area.parent = parent;
+        return area;
     }
 }
