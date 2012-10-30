@@ -1,0 +1,27 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'修改类别' /}
+#{get 'moreScripts'}
+<script src="@{'/public/javascripts/kindeditor-min.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/lang/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/get}
+#{include '/share/nav.html' /}
+<div class="body">
+#{form @CategoryAdmin.update(category?.id), id:'form',enctype:'multipart/form-data',
+class:"form-horizontal", method:'PUT' }
+    <legend>${title}
+        <span style="font-size: medium;"> &nbsp;&nbsp;
+            #{if parentCategory!=null}
+            ${ parentCategory?.name}-子分类
+            #{/if}
+            #{else}
+                顶级分类
+            #{/else}
+       </span>
+    </legend>
+    #{set action:"edit"/}
+    #{include '/CategoryAdmin/categoryForm.html'/}
+#{/form}
+</div>
+
+

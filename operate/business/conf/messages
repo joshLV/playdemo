@@ -18,6 +18,7 @@ goods.TAOBAO=淘宝网
 goods.YIHAODIAN=一号店
 goods.DANGDANG=当当网
 
+validation.unique=此类别名称已存在
 validation.required=请输入%s!
 validation.match=无效的%s!
 validation.future=%s必须填写未来的时间!
@@ -475,3 +476,9 @@ discountCode.dateTimeScope=折扣使用时间
 discountCode.description=备注
 
 # END
+
+#类别管理
+category.name=类别名称
+category.displayOrder=类别推荐度
+category.showKeywords=网站上显示的搜索关键字
+category.keywords=SEO关键字

@@ -27,6 +27,14 @@ POST    /goods/filemanager                      UploadFiles.fileManagerJson
 GET     /goods_brands/{id}                      OperateBrands.goodsBrands
 GET     /category/sub/{id}                      Categories.showSubs
 
+#类别管理
+GET     /category                               CategoryAdmin.index
+GET     /category/new                           CategoryAdmin.add
+POST    /category                               CategoryAdmin.create
+GET     /category/{id}/edit                     CategoryAdmin.edit
+PUT     /category/{id}                          CategoryAdmin.update
+DELETE  /category/{id}                          CategoryAdmin.delete
+
 # 发送优惠券
 GET     /send_sms                                       SendSMS.index
 GET     /send_sms/new                                   SendSMS.add

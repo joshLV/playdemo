@@ -1,5 +1,6 @@
 package factory.sales;
 
+import com.uhuila.common.constants.DeletedStatus;
 import factory.FactoryBoy;
 import factory.ModelFactory;
 import models.sales.Area;
@@ -24,10 +25,9 @@ public class CategoryFactory extends ModelFactory<Category> {
     public Category define() {
         Category category = new Category();
 
-        category.name="饮食";
-        category.displayOrder=100;
+        category.name = "饮食";
+        category.displayOrder = 100;
+        category.deleted = DeletedStatus.UN_DELETED;
         return category;
-
-
     }
 }

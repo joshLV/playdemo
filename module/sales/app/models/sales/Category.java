@@ -2,24 +2,17 @@ package models.sales;
 
 import cache.CacheCallBack;
 import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import play.data.validation.Required;
+import play.data.validation.Unique;
 import play.db.jpa.Model;
 import play.modules.solr.SolrEmbedded;
 import play.modules.solr.SolrField;
 import play.modules.solr.SolrSearchable;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,13 +35,18 @@ public class Category extends Model {
     /**
      * 类目名称
      */
+//    @Unique
+    @Required
     @SolrField
     public String name;
+
     /**
      * 推荐度,显示顺序
      */
-    @Column(name = "display_order")
-    public int displayOrder;
+    @Required
+    @OrderColumn
+    @Column(name="display_order")
+    public Integer displayOrder;
 
     /**
      * SEO关键字.
@@ -66,18 +64,18 @@ public class Category extends Model {
      * 是否在WWW首页左上角显示
      */
     @Column(name = "is_in_www_left")
-    public Boolean isInWWWLeft;
+    public Boolean isInWWWLeft = false;
 
     /**
      * 是否在WWW首页楼层显示
      */
     @Column(name = "is_in_www_floor")
-    public Boolean isInWWWFloor;
+    public Boolean isInWWWFloor = false;
 
     /**
-     * 是否显示.
+     * 是否显示在WWW首页.
      */
-    public Boolean display;
+    public Boolean display = false;
 
     /**
      * 所属分类Id
@@ -86,6 +84,16 @@ public class Category extends Model {
     @JoinColumn(name = "parent_id")
     @SolrEmbedded
     public Category parentCategory;
+
+    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, targetEntity = Category.class)
+    @OrderBy("displayOrder")
+    public List<Category> children;
+
+    /**
+     * 逻辑删除,0:未删除，1:已删除
+     */
+    @Enumerated(EnumType.ORDINAL)
+    public DeletedStatus deleted;
 
 
     /**
@@ -219,15 +227,15 @@ public class Category extends Model {
         JPAQuery query;
         if (category == null) {
             if (display != null) {
-                query = find("parentCategory = null and display = ? order by displayOrder", display);
+                query = find("parentCategory = null and display = ? and deleted = ? order by displayOrder", display, DeletedStatus.UN_DELETED);
             } else {
-                query = find("parentCategory = null order by displayOrder");
+                query = find("parentCategory = null and deleted = ? order by displayOrder", DeletedStatus.UN_DELETED);
             }
         } else {
             if (display != null) {
-                query = find("parentCategory = ? and display = ? order by displayOrder", category, display);
+                query = find("parentCategory = ? and display = ? and deleted = ? order by displayOrder", category, display, DeletedStatus.UN_DELETED);
             } else {
-                query = find("parentCategory = ? order by displayOrder", category);
+                query = find("parentCategory = ? and deleted = ? order by displayOrder", category, DeletedStatus.UN_DELETED);
             }
         }
 
@@ -307,4 +315,35 @@ public class Category extends Model {
             }
         });
     }
+
+    public static void update(Long id, Category category, Long parentId) {
+        models.sales.Category updateCategory = models.sales.Category.findById(id);
+        if (updateCategory == null) {
+            return;
+        }
+        updateCategory.name = category.name;
+        updateCategory.displayOrder = category.displayOrder;
+        updateCategory.keywords = category.keywords;
+        updateCategory.showKeywords = category.showKeywords;
+        updateCategory.isInWWWLeft = category.isInWWWLeft;
+        updateCategory.isInWWWFloor = category.isInWWWFloor;
+        updateCategory.display = category.display;
+        Category parentCategory = null;
+        if (category != null && parentId != null && parentId != 0) {
+            parentCategory = Category.findById(parentId);
+        }
+        updateCategory.parentCategory = parentCategory;
+        updateCategory.save();
+    }
+
+    public static void delete(Long id) {
+        models.sales.Category category = models.sales.Category.findById(id);
+        if (category != null) {
+            category.deleted = DeletedStatus.DELETED;
+            category.save();
+        }
+    }
 }
+
+
+
