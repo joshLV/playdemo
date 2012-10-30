@@ -1,0 +1,11 @@
+[
+#{list items:shops, as:'shop'}
+#{if shop_index > 1},#{/if}
+{
+"name":"${shop.name}",
+"addr":"${shop.address}",
+"tel":"${shop.phone}",
+"latlng":"${shop?.latitude},${shop?.longitude}"
+}
+#{/list}
+]

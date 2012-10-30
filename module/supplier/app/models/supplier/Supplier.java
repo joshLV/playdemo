@@ -10,6 +10,8 @@ import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.data.validation.*;
 import play.db.jpa.Model;
+import play.modules.solr.SolrField;
+import play.modules.solr.SolrSearchable;
 import play.modules.view_ext.annotation.Mobile;
 
 import javax.persistence.*;
@@ -25,6 +27,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "suppliers")
+@SolrSearchable
 public class Supplier extends Model {
 
     private static final long serialVersionUID = 7122320609113062L;
@@ -45,6 +48,7 @@ public class Supplier extends Model {
     @MaxSize(100)
     @Match("^[a-zA-Z0-9\\-]{3,20}$")
     @Column(name = "domain_name")
+    @SolrField
     public String domainName;
     /**
      * 公司名称
@@ -52,6 +56,7 @@ public class Supplier extends Model {
     @Required
     @MaxSize(50)
     @Column(name = "full_name")
+    @SolrField
     public String fullName;
 
     /**
@@ -60,6 +65,7 @@ public class Supplier extends Model {
     @Required
     @MaxSize(50)
     @Column(name = "other_name")
+    @SolrField
     public String otherName;
 
     /**
@@ -112,6 +118,7 @@ public class Supplier extends Model {
     /**
      * 描述
      */
+    @SolrField
     public String remark;
     @Email
     public String email;

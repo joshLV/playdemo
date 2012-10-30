@@ -1,5 +1,7 @@
 package factory.order;
 
+import factory.FactoryBoy;
+import factory.ModelFactory;
 import models.consumer.User;
 import models.order.Order;
 import models.order.OrderItems;

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>#{get 'title' /}</title>
+#{get 'metaContent'/}
+    <link rel="stylesheet" href="http://192.168.18.242/yome/base/src/base.css"/>
+    <link rel="stylesheet" href="http://192.168.18.242/yome/base/src/sprite.css"/>
+
+
+*{#{asset.css src:['/y/base/base.css', '/y/base/sprite.css'] /}}*
+    <link rel="shortcut icon" href="#{asset.url href:'/images/y/favicon.ico'/}" type="image/x-icon"/>
+#{get 'moreStyles' /}
+*{#{asset.js src:['/u/jquery-1.7.2.min.js', '/y/base/base.js'] /}}*
+#{asset.js src:['/u/jquery-1.7.2.min.js'] /}
+    <script src="http://a.uhcdn.com/js/u/slides.min.js"></script>
+    <script src="http://192.168.18.242/yome/home/src/home.js"></script>
+    <script src="http://192.168.18.242/yome/base/src/base.js"></script>
+
+</head>
+<body #{if request.url.equals("/")}class="home"#{/if}>
+<div id="topbar">
+    <div id="topbar-bd">
+        <ul class="site-nav">
+        #{if cas?.isLogin}
+            <li><a class="login" target="_blank"
+                   href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}"
+                   id="login_name">${cas.loginName}</a></li>
+            <li><a href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}">我的一百券</a></li>
+            <li><a href="/logout">退出</a></li>
+        #{/if}
+        #{else}
+            <li class="first"><a class="login" id="login" href="${helper.Domain.getWWWHost(request)}/login">登录</a></li>
+            <li><a class="signup" href="${helper.Domain.getWWWHost(request)}/register">注册</a></li>
+        *{<li><a class="quick" href="" target="_blank">快捷登录</a></li>}*
+        #{/else}
+            <li><a id="favorite" class="favorite" href="">收藏一百券</a></li>
+            <li class="last">
+                <iframe width="63" height="24" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0"
+                        scrolling="no" border="0"
+                        src="http://widget.weibo.com/relationship/followbutton.php?language=zh_cn&width=63&height=24&uid=1642909335&style=1&btn=red&dpc=1"></iframe>
+            </li>
+        </ul>
+        <div class="hot-line">客服热线：<span>400-6262-166</span></div>
+    </div>
+</div>
+<!-- #topbar -->
+
+<div id="header" class="clearfix">
+    <div id="logo"><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/"><img
+            src="http://img.uhcdn.com/images/y/logo.png" width="180" height="96"/></a></div>
+    <div id="search">
+        <form action="/s" method="get" target="_self">
+            <div class="text"><input type="text" name="s" accesskey="s" autofocus="true" autocomplete="off"
+                                     x-webkit-speech="" x-webkit-grammar="builtin:translate" value="${s}"></div>
+            <button type="submit"> 搜 索</button>
+        </form>
+        <div class="hotword"><a href="/s?s=火锅">火锅</a> <a href="/s?s=川菜">川菜</a> <a href="/s?s=美容">美容</a> <a href="/s?s=小吃">小吃</a> <a href="/s?s=西餐">西餐</a>
+        </div>
+    </div>
+    <div id="cart">
+        <div class="cart-box">
+            <div class="cart-box-hd clearfix">
+                <span class="cart-icon">购物车</span>
+                <span class="cart-num">有(<em>${count}</em>)件商品</span>
+                <b class="arrow"></b>
+            </div>
+            <div class="cart-box-bd">
+                <ul>
+                    <li class="carts-item clearfix">
+                        <a class="goods-img" href=""><img src="//img0.uhcdn.com/p/0/0/33/2012061404233949588_tiny.jpg"
+                                                          width="48"/></a>
+                        <a class="goods-name" href="">购厚味150元VIP卡,即送50元哈根达斯券</a>
+                        <span class="goods-price">120.00</span>
+                        <span class="goods-del" title="删除"></span>
+                    </li>
+                    <li class="carts-item clearfix">
+                        <a class="goods-img" href=""><img src="//img0.uhcdn.com/p/0/0/33/2012061404233949588_tiny.jpg"
+                                                          width="48"/></a>
+                        <a class="goods-name" href="">购厚味150元VIP卡,即送50元哈根达斯券</a>
+                        <span class="goods-price">120.00</span>
+                        <span class="goods-del" title="删除"></span>
+                    </li>
+                </ul>
+                <div class="emptycart">你的购物车里没有任何商品。</div>
+                <div class="totalcart">共<em>0</em>件商品，共计<em>0.00</em>元 <a href="">购买</a></div>
+            </div>
+        </div>
+        <a class="cart-btn" href="" target="_blank">去结算</a>
+    </div>
+</div>
+<!-- #header -->
+
+<!-- #header -->
+<div id="navbar">
+    <div class="inner">
+        <div id="cate">
+            <h2>全部商品<s></s></h2>
+
+            <div class="menu">
+            #{set i:0/}
+            #{list leftCategories,as:'category'}
+                #{set i:i+1/}
+                <dl class="item">
+                    <dt><a href="">${category.name}</a></dt>
+                    <dd class="line"></dd>
+                    <dd class="some #{if i==3 || i==5}one#{/if}">
+                        <div>#{list category.getShowKeywordsList(10),as:'keywords'}<a href="">${keywords}</a> #{/list}
+                        </div>
+                    </dd>
+                    <dd class="more">
+                        <ul class="clearfix">
+                            #{list category.getByParent(),as:'subCategory'}
+                                <li><a href="">${subCategory.name}（${subCategory.goodsCount}）</a></li>
+                            #{/list}
+                        </ul>
+                        <div class="ads">
+                            #{if i==1}${categoryTopic1?.content?.raw()}#{/if}
+                            #{if i==2}${categoryTopic2?.content?.raw()}#{/if}
+                            #{if i==3}${categoryTopic3?.content?.raw()}#{/if}
+                            #{if i==4}${categoryTopic4?.content?.raw()}#{/if}
+                            #{if i==5}${categoryTopic5?.content?.raw()}#{/if}
+                        </div>
+                    </dd>
+                </dl>
+            #{/list}
+
+                <dl class="area">
+                    <dt><a href="">热门商圈</a></dt>
+                    <dd class="some">#{list areas, as:'area'}
+                        <a href="/s/0-${area.id}">${area.name}</a>
+                    #{/list}</dd>
+                </dl>
+            </div>
+        </div>
+        <div id="nav">
+
+            <a href="${helper.Domain.getWWWHost(request)}"
+               #{if categoryId == 0}class="curr"#{/if}>首页<i class="right"></i></a>
+        #{list topCategories, as: 'category'}
+            <a href="${helper.Domain.getWWWHost(request)}/s/${category.id}"
+               #{if categoryId == category.id}class="curr"#{/if}>${category.name}<i class="right"></i></a>
+        #{/list}
+
+        </div>
+
+    </div>
+</div>
+<!-- #navbar -->
+
+#{doLayout /}
+<div id="footer">
+    <div class="ft-nav">
+        <a href="${helper.Domain.getWWWHost(request)}/about"
+           target="_blank">关于我们</a> |
+        <a href="${helper.Domain.getWWWHost(request)}/contact" target="_blank">联系我们</a>
+        |
+        <!--<a href="http://quanmx.com/" target="_blank">商户入驻</a> |-->
+        <a href="${helper.Domain.getWWWHost(request)}/help"
+           target="_blank">常见问题</a> |
+        <span class="">客服热线：400-6262-166</span>
+
+    </div>
+    <div class="copyright">
+        Copyright © 2012 一百券YiBaiQuan.COM 版权所有 <span> 沪ICP备08114451号-4</span>
+    </div>
+</div>
+<!-- #footer -->
+
+*{#{get 'moreScripts' /}}*
+<div style="display:none">
+    <script type="text/javascript" id="bdshare_js" data="type=tools&uid=763119"></script>
+    <script type="text/javascript" id="bdshell_js"></script>
+    <script type="text/javascript">document.getElementById("bdshell_js").src = "http://share.baidu.com/static/js/shell_v2.js?cdnversion=" + new Date().getHours();</script>
+
+    <script src="http://s84.cnzz.com/stat.php?id=4205049&web_id=4205049" language="JavaScript"></script>
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', '${play.Play.configuration.getProperty("google.analytics.account")}']);
+        _gaq.push(['_setDomainName', '${play.Play.configuration.getProperty("application.baseDomain")}']);
+        _gaq.push(['_setAllowLinker', true]);
+        _gaq.push(['_trackPageview']);
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+</div>
+
+</body>
+</html>

@@ -4,7 +4,14 @@ import controllers.modules.website.cas.SecureCAS;
 import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
-import models.order.*;
+import models.order.Cart;
+import models.order.DeliveryType;
+import models.order.DiscountCode;
+import models.order.NotEnoughInventoryException;
+import models.order.Order;
+import models.order.OrderDiscount;
+import models.order.OrderItems;
+import models.order.PromoteRebate;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import org.apache.commons.lang.StringUtils;
@@ -16,7 +23,10 @@ import play.mvc.Http;
 import play.mvc.With;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static play.Logger.warn;
 
@@ -137,13 +147,14 @@ public class Orders extends Controller {
             } else {
                 cart.rebateValue = Order.getDiscountValueOfGoodsAmount(g, number, discountCode);
             }
-
-            if (g.materialType == models.sales.MaterialType.REAL) {
-                rCartList.add(cart);
-                rCartAmount = rCartAmount.add(cart.getLineValue());
-            } else if (g.materialType == models.sales.MaterialType.ELECTRONIC) {
-                eCartList.add(cart);
-                eCartAmount = eCartAmount.add(cart.getLineValue());
+            if (g.materialType != null) {
+                if (g.materialType == models.sales.MaterialType.REAL) {
+                    rCartList.add(cart);
+                    rCartAmount = rCartAmount.add(cart.getLineValue());
+                } else if (g.materialType == models.sales.MaterialType.ELECTRONIC) {
+                    eCartList.add(cart);
+                    eCartAmount = eCartAmount.add(cart.getLineValue());
+                }
             }
         }
 

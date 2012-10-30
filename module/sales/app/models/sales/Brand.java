@@ -1,23 +1,33 @@
 package models.sales;
 
+import cache.CacheCallBack;
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.PathUtil;
 import models.supplier.Supplier;
+import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.data.validation.MaxSize;
 import play.data.validation.Min;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
-import org.apache.commons.lang.StringUtils;
+import play.modules.solr.SolrField;
+import play.modules.solr.SolrSearchable;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "brands")
+@SolrSearchable
 public class Brand extends Model {
 
     private static final long serialVersionUID = 7063232060911301L;
@@ -32,7 +42,9 @@ public class Brand extends Model {
 
     @Required
     @MaxSize(20)
+    @SolrField
     public String name;
+
     public String logo;
 
     @Column(name = "site_display_image")
@@ -40,6 +52,7 @@ public class Brand extends Model {
 
     @Required
     @MaxSize(20)
+    @SolrField
     public String description;     //品牌描述
 
     @ManyToOne
@@ -53,11 +66,15 @@ public class Brand extends Model {
 //    @Time
 //    public String closeAt;     //营业时间下班时间
     @MaxSize(4000)
+    @SolrField
     public String introduce;     //特色产品介绍
+
     @Enumerated(EnumType.ORDINAL)
+    @SolrField
     public DeletedStatus deleted;
 
     @Column(name = "is_hot")
+    @SolrField
     public Boolean isHot;
 
     public static final String CACHEKEY = "BRAND";
@@ -74,6 +91,12 @@ public class Brand extends Model {
         CacheHelper.delete(CACHEKEY);
         CacheHelper.delete(CACHEKEY + this.id);
         super._delete();
+    }
+    
+    @Override
+    @SolrField
+    public Long getId(){
+        return id;
     }
 
     private static final String IMAGE_SERVER = Play.configuration.getProperty
@@ -208,5 +231,14 @@ public class Brand extends Model {
         page.setPageNumber(pageNumber);
         page.setPageSize(pageSize);
         return page;
+    }
+
+    public static Brand findBrandById(final Long id) {
+        return CacheHelper.getCache(CacheHelper.getCacheKey(Brand.CACHEKEY + id, "BRAND_BY_ID"), new CacheCallBack<Brand>() {
+            @Override
+            public Brand loadData() {
+                return Area.findById(id);
+            }
+        });
     }
 }

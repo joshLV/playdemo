@@ -6,6 +6,8 @@ import org.apache.commons.lang.StringUtils;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
+import play.modules.solr.SolrField;
+import play.modules.solr.SolrSearchable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -26,6 +28,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "shops")
+@SolrSearchable
 public class Shop extends Model {
 
     private static final long serialVersionUID = 36632320609113062L;
@@ -34,18 +37,23 @@ public class Shop extends Model {
     public long supplierId;
 
     @Column(name = "area_id")
+    @SolrField
     public String areaId;
 
     public String no;
 
     @Required
+    @SolrField
     public String name;
 
     @Required
+    @SolrField
     public String address;
 
+    @SolrField
     public String phone;
 
+    @SolrField
     public String traffic;
 
     @Column(name = "is_close")
@@ -99,11 +107,28 @@ public class Shop extends Model {
     public String supplierName;
 
     @Transient
+    @SolrField
     public String cityId;
 
-    @Transient
-    public String districtId;
+    private String districtId;
 
+    @Transient
+//    @SolrField
+    public String getDistrictId() {
+        if (districtId != null) {
+            return districtId;
+        }
+        if (StringUtils.isBlank(areaId) || areaId.length() < 5) {
+            return null;
+        }
+
+        districtId = areaId.substring(0, 5);
+        return districtId;
+    }
+
+    public void setDistrictId(String districtId) {
+        this.districtId = districtId;
+    }
 
     public static final String CACHEKEY = "SHOP";
 
@@ -187,6 +212,8 @@ public class Shop extends Model {
         return false;
     }
 
+    @Transient
+    @SolrField
     public String getAreaName() {
         String areaName;
         Area area = Area.findById(areaId);

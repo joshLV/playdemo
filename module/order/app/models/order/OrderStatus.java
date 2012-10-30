@@ -5,8 +5,10 @@ package models.order;
  */
 public enum OrderStatus{
     UNPAID,//未付款
-    PAID,//已付款未发货
+    PAID,//已付款未发货,电子券最终状态为PAID
+    
     CANCELED,//交易关闭
+    
     //订单明细的状态
     SENT//已发送或已发货
     

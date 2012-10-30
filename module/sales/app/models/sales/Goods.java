@@ -4,49 +4,31 @@
  */
 package models.sales;
 
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.util.*;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-
 import cache.CacheCallBack;
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.FileUploadUtil;
+import com.uhuila.common.util.HtmlUtil;
 import com.uhuila.common.util.PathUtil;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
+import models.order.ECoupon;
+import models.order.ECouponStatus;
+import models.order.OrderItems;
+import models.order.OrderStatus;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.supplier.Supplier;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
-
 import play.Play;
 import play.data.validation.InFuture;
 import play.data.validation.Max;
@@ -58,18 +40,13 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.i18n.Messages;
 import play.modules.paginate.JPAExtPaginator;
+import play.modules.paginate.SimplePaginator;
+import play.modules.solr.Solr;
+import play.modules.solr.SolrEmbedded;
+import play.modules.solr.SolrField;
+import play.modules.solr.SolrSearchable;
 import play.modules.view_ext.annotation.Money;
-import cache.CacheCallBack;
-import cache.CacheHelper;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-import com.uhuila.common.util.FileUploadUtil;
-import com.uhuila.common.util.PathUtil;
-//import models.resale.ResalerLevel;
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -83,7 +60,6 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -97,13 +73,18 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+//import models.resale.ResalerLevel;
+
 @Entity
 @Table(name = "goods")
+@SolrSearchable
 public class Goods extends Model {
     private static final long serialVersionUID = 7063232063912330652L;
 
@@ -127,6 +108,7 @@ public class Goods extends Model {
     @Max(999999)
     @Money
     @Column(name = "face_value")
+    @SolrField
     public BigDecimal faceValue;
 
     /**
@@ -137,6 +119,7 @@ public class Goods extends Model {
     @Max(999999)
     @Money
     @Column(name = "original_price")
+    @SolrField
     public BigDecimal originalPrice;
 
 
@@ -147,6 +130,7 @@ public class Goods extends Model {
     @Max(999999)
     @Money
     @Column(name = "sale_price")
+    @SolrField
     public BigDecimal salePrice;
 
     /**
@@ -161,6 +145,7 @@ public class Goods extends Model {
     @Min(0)
     @Max(5)
     @Money
+    @SolrField
     public BigDecimal promoterPrice;
     /**
      * 给受邀者的返利金额
@@ -169,20 +154,40 @@ public class Goods extends Model {
     @Min(0)
     @Max(5)
     @Money
+    @SolrField
     public BigDecimal invitedUserPrice;
 
     //  ======  价格列表结束 ==========
 
     /**
+     * 累积进货量
+     * <p/>
+     * 通过管理界面增加进货量后得到累计进货量，只会越来越大，因为是累计的
+     */
+    public Long cumulativeStocks;
+
+    /**
+     * 虚拟销量基数
+     * <p/>
+     * 通过管理界面设置
+     * 用户前端网站显示的销量是virtualBaseSaleCount+realSaleCount
+     */
+    @Column(name = "virtual_base_sale_count")
+    public Long virtualBaseSaleCount;
+
+
+    /**
      * 商品编号
      */
     @MaxSize(30)
+    @SolrField
     public String no;
     /**
      * 商品名称
      */
     @Required
     @MaxSize(60)
+    @SolrField
     public String name;
 
     /**
@@ -190,6 +195,7 @@ public class Goods extends Model {
      */
     @Required
     @MaxSize(60)
+    @SolrField
     public String title;
     /**
      * 所属商户ID
@@ -206,7 +212,38 @@ public class Goods extends Model {
     @JoinTable(name = "goods_categories", inverseJoinColumns = @JoinColumn(name
             = "category_id"), joinColumns = @JoinColumn(name = "goods_id"))
     @Required
+    @SolrEmbedded
     public Set<Category> categories;
+
+    @Transient
+    private String imageSmallPath;
+
+    @Transient
+    @SolrField
+    public String getCategoryIds() {
+        List<Long> ids = new ArrayList<>();
+        if (categories != null) {
+            for (Category category : categories) {
+                ids.add(category.id);
+            }
+        }
+
+        return StringUtils.join(ids, " ");
+    }
+
+
+    @Transient
+    @SolrField
+    public String getParentCategoryIds() {
+        List<Long> ids = new ArrayList<>();
+        if (categories != null) {
+            for (Category category : categories) {
+                ids.add(category.parentCategory.id);
+            }
+        }
+
+        return StringUtils.join(ids, " ");
+    }
 
     /**
      * 原始图片路径
@@ -218,13 +255,38 @@ public class Goods extends Model {
      * 进货量
      */
     @Column(name = "income_goods_count")
+    @SolrField
     public Long incomeGoodsCount;
+
+    //=======================================  时间字段 ==================================
+
+    /**
+     * 最早上架时间
+     */
+    @Column(name = "first_onsale_at")
+    @SolrField
+    public Date firstOnSaleAt;
+    /**
+     * 创建时间
+     */
+    @Column(name = "created_at")
+    @SolrField
+    public Date createdAt;
+
+    /**
+     * 修改时间
+     */
+    @Column(name = "updated_at")
+    @SolrField
+    public Date updatedAt;
+
     /**
      * 券有效开始日
      */
     @Required
     @Column(name = "effective_at")
     @Temporal(TemporalType.TIMESTAMP)
+    @SolrField
     public Date effectiveAt;
     /**
      * 券有效结束日
@@ -233,22 +295,23 @@ public class Goods extends Model {
     @InFuture
     @Column(name = "expire_at")
     @Temporal(TemporalType.TIMESTAMP)
+    @SolrField
     public Date expireAt;
 
     @Column(name = "use_begin_time")
+    @SolrField
     public String useBeginTime;
 
     @Column(name = "use_end_time")
+    @SolrField
     public String useEndTime;
 
     @Column(name = "use_week_day")
+    @SolrField
     public String useWeekDay;
     @Transient
     public String useWeekDayAll;
-    /**
-     * 商品标题
-     */
-    //    public String title;
+
 
     private BigDecimal discount;
 
@@ -273,12 +336,20 @@ public class Goods extends Model {
     private String exhibition;
     /**
      * 售出数量
+     * <p/>
+     * 已作废
      */
+    @Deprecated
     @Column(name = "sale_count")
+    @SolrField
     public int saleCount;
+
     /**
-     * 售出基数
+     * 剩余商品数量，需要去掉.
+     * <p/>
+     * 已作废
      */
+    @Deprecated
     @Required
     @Min(0)
     @Max(999999)
@@ -293,38 +364,25 @@ public class Goods extends Model {
      * 创建来源
      */
     @Column(name = "created_from")
+    @SolrField
     public String createdFrom;
-    /**
-     * 创建时间
-     */
-    @Column(name = "created_at")
-    public Date createdAt;
     /**
      * 创建人
      */
     @Column(name = "created_by")
+    @SolrField
     public String createdBy;
-
-    /**
-     * 最早上架时间
-     */
-    @Column(name = "first_onsale_at")
-    public Date firstOnSaleAt;
-
-    /**
-     * 修改时间
-     */
-    @Column(name = "updated_at")
-    public Date updatedAt;
     /**
      * 修改人
      */
     @Column(name = "updated_by")
+    @SolrField
     public String updatedBy;
     /**
      * 逻辑删除,0:未删除，1:已删除
      */
     @Enumerated(EnumType.ORDINAL)
+    @SolrField
     public DeletedStatus deleted;
     /**
      * 乐观锁
@@ -338,39 +396,58 @@ public class Goods extends Model {
      * 用于多个商品组合成一个商品组，同一系列的发送收货短信时，使用相同的replyCode.
      */
     @Column(name = "group_code", length = 32)
+    @SolrField
     public String groupCode;
 
     /**
      * 手工排序
      */
     @Column(name = "display_order")
+    @SolrField
     public String displayOrder;
 
     @Required
     @ManyToOne
     @JoinColumn(name = "brand_id")
+    @SolrEmbedded
     public Brand brand;
 
     /**
      * 限购数量
      */
     @Column(name = "limit_number")
+    @SolrField
     public Integer limitNumber = 0;
 
     /**
      * 推荐指数.
      */
+    @SolrField
     public Integer recommend = 0;
 
     /**
      * 优先指数.
      */
+    @SolrField
     public Integer priority = 0;
     /**
      * 收藏指数.
      */
+    @SolrField
     public Integer favorite = 0;
+
+    // 以下定义用于查询条件
     @Transient
+    public String salePriceBegin;
+    @Transient
+    public String salePriceEnd;
+    @Transient
+    public int saleCountBegin = -1;
+    @Transient
+    public int saleCountEnd = -1;
+
+    @Transient
+    @SolrEmbedded
     public GoodsStatistics statistics;
 
     /**
@@ -378,16 +455,19 @@ public class Goods extends Model {
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "material_type")
+    @SolrField
     public MaterialType materialType;
 
     /**
      * SEO关键字.
      */
     @Column(name = "keywords")
+    @SolrField
     public String keywords;
 
     @Column(name = "coupon_type")
     @Enumerated(EnumType.STRING)
+    @SolrField
     public GoodsCouponType couponType;
 
     /**
@@ -403,6 +483,13 @@ public class Goods extends Model {
     //    private static final String IMAGE_ROOT_GENERATED = Play.configuration
     //            .getProperty("image.root", "/p");
     public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
+
+    /**
+     * solr服务中获取到的商圈.
+     */
+    @Transient
+    private String areaNames;
+
 
     static {
         //增加可信标签到白名单
@@ -425,6 +512,7 @@ public class Goods extends Model {
      * @return
      */
     @Transient
+    @SolrEmbedded
     public Supplier getSupplier() {
         if (supplierId == null) {
             return null;
@@ -447,6 +535,7 @@ public class Goods extends Model {
      * 是否抽奖商品
      */
     @Column(name = "is_lottery")
+    @SolrField
     public Boolean isLottery = Boolean.FALSE;
     /**
      * 是否预约商品
@@ -477,6 +566,7 @@ public class Goods extends Model {
      * @return
      */
     @Transient
+    @SolrField
     public BigDecimal getSavePrice() {
         return originalPrice.remainder(salePrice);
     }
@@ -491,6 +581,12 @@ public class Goods extends Model {
             return "";
         }
         return Jsoup.clean(details, HTML_WHITE_TAGS);
+    }
+
+    @Transient
+    @SolrField
+    public String getDetailContent() {
+        return HtmlUtil.html2text(getDetails());
     }
 
     public void setDetails(String details) {
@@ -508,6 +604,7 @@ public class Goods extends Model {
     }
 
     @Column(name = "discount")
+    @SolrField
     public BigDecimal getDiscount() {
         if (discount != null && discount.compareTo(BigDecimal.ZERO) > 0) {
             return discount;
@@ -569,10 +666,13 @@ public class Goods extends Model {
      * 小规格图片路径
      */
     @Transient
+    @SolrField
     public String getImageSmallPath() {
+        if (StringUtils.isNotBlank(imageSmallPath)) {
+            return imageSmallPath;
+        }
         return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_SMALL);
     }
-
 
     /**
      * 中等规格图片路径
@@ -613,19 +713,73 @@ public class Goods extends Model {
         return Jsoup.clean(prompt, HTML_WHITE_TAGS);
     }
 
+    @Transient
+    @SolrField
+    public String getPromptContent() {
+        return HtmlUtil.html2text(getPrompt());
+    }
+
     public void setPrompt(String prompt) {
         this.prompt = Jsoup.clean(prompt, HTML_WHITE_TAGS);
     }
-    
-    
+
     @Transient
     public String getSafePrompt() {
-    	return prompt.replaceAll("&nbsp;", " ");
+        return prompt.replaceAll("&nbsp;", " ");
     }
-    
+
     @Transient
     public String getSafeDetails() {
-    	return details.replaceAll("&nbsp;", " ");
+        return details.replaceAll("&nbsp;", " ");
+    }
+
+    /**
+     * 得到实际的库存数量.
+     */
+    @Transient
+    public Long getRealStocks() {
+        return this.cumulativeStocks - getRealSaleCount();
+    }
+
+    /**
+     * 界面上显示的销量，实际销量+虚拟销量基数
+     */
+    @Transient
+    private Long virtualSaleCount;
+
+    @Transient
+    @SolrField
+    public Long getVirtualSaleCount() {
+        if (virtualSaleCount != null && virtualSaleCount > 0) {
+            return virtualSaleCount;
+        }
+        virtualSaleCount = (getRealSaleCount() == null ? 0 : getRealSaleCount()) + (virtualBaseSaleCount == null ? 0 : virtualBaseSaleCount);
+        return virtualSaleCount;
+    }
+
+    /**
+     * 得到当前实际的销售数量.
+     */
+    @Transient
+    public Long getRealSaleCount() {
+        return CacheHelper.getCache(Goods.CACHEKEY_SALECOUNT + this.id, new CacheCallBack<Long>() {
+            @Override
+            public Long loadData() {
+                // 先找出OrderItems中的已销售数量
+                long orderItemsBuyCount = OrderItems.count("goods.id=? and order.status != ?", id, OrderStatus.CANCELED);
+                // 减去已退款的数量
+                long ecouponRefundCount = ECoupon.count("goods.id=? and status=?", id, ECouponStatus.REFUND);
+
+                return orderItemsBuyCount - ecouponRefundCount;
+            }
+        });
+    }
+
+    /**
+     * 删除旧缓存以更新显示销售数量.
+     */
+    public void refreshSaleCount() {
+        CacheHelper.delete(Goods.CACHEKEY_SALECOUNT + this.id);
     }
 
     /**
@@ -645,6 +799,13 @@ public class Goods extends Model {
         return publishedPlatforms;
     }
 
+    @Transient
+    @SolrField
+    public String getPublishedPlatformList() {
+        List<GoodsPublishedPlatformType> platformTypeList = getPublishedPlatforms();
+        return StringUtils.join(platformTypeList, " ");
+    }
+
     public boolean containsUnPublishedPlatform(GoodsPublishedPlatformType type) {
         if (unPublishedPlatforms == null) {
             return true;
@@ -658,6 +819,7 @@ public class Goods extends Model {
         return false;
     }
 
+    @SolrField
     public GoodsStatus getStatus() {
         if (status != null && GoodsStatus.ONSALE.equals(status) &&
                 (expireAt != null && expireAt.before(new Date())) || (baseSale != null && baseSale <= 0)) {
@@ -670,17 +832,44 @@ public class Goods extends Model {
      * @return
      */
     @Transient
+    @SolrField
     public boolean isExpired() {
         return expireAt != null && expireAt.before(new Date());
     }
 
+    @Transient
+    @SolrField
+    public String getAreaNames() {
+        if (StringUtils.isNotBlank(areaNames)) {
+            return areaNames;
+        }
+        Collection<Shop> shopList = getShopList();
+        Map<String, Object> areaMap = new HashMap<>();
+        for (Shop shop : shopList) {
+            Area area = Area.findAreaById(shop.areaId);
+            areaMap.put(area.id, area.name);
+        }
+        areaNames = StringUtils.join(areaMap.values(), " ");
+        return areaNames;
+    }
 
+    public String getHighLightName(String words) {
+        String highLight = name;
+        if (words != null) {
+            String[] wordArray = words.split(" |,|;|，");
+            if (wordArray != null) {
+                for (String word : wordArray) {
+                    highLight = name.replaceAll(word, "<em>" + word + "</em>");
+                }
+            }
+        }
+        return highLight;
+    }
     //=================================================== 数据库操作 ====================================================
 
     @Override
     public boolean create() {
         deleted = DeletedStatus.UN_DELETED;
-        saleCount = 0;
         incomeGoodsCount = 0L;
         createdAt = new Date();
         if (isAllShop) {
@@ -752,11 +941,14 @@ public class Goods extends Model {
 
     public static final String CACHEKEY_BASEID = "SALES_GOODS_ID";
 
+    public static final String CACHEKEY_SALECOUNT = "SALES_GOODS_COUNT";
+
     @Override
     public void _save() {
         if (!this.skipUpdateCache) {
             CacheHelper.delete(CACHEKEY);
             CacheHelper.delete(CACHEKEY + this.id);
+            CacheHelper.delete(CACHEKEY_SALECOUNT + this.id);
             CacheHelper.delete(CACHEKEY_BASEID + this.id);
         }
         super._save();
@@ -767,6 +959,7 @@ public class Goods extends Model {
         CacheHelper.delete(CACHEKEY);
         CacheHelper.delete(CACHEKEY + this.id);
         CacheHelper.delete(CACHEKEY_BASEID + this.id);
+        CacheHelper.delete(CACHEKEY_SALECOUNT + this.id);
         super._delete();
     }
 
@@ -787,6 +980,33 @@ public class Goods extends Model {
                 new Date()).fetch(limit);
     }
 
+    /**
+     * 获取已上架的全部商品数量.
+     *
+     * @return
+     */
+    public static long countOnSale() {
+        return count("status=? and deleted=? and baseSale >=1 and expireAt > ?", GoodsStatus.ONSALE,
+                DeletedStatus.UN_DELETED, new Date());
+    }
+
+
+    /**
+     * 根据分类获取已上架的全部商品数量.
+     *
+     * @param categoryId
+     * @return
+     */
+    public static long countOnSaleByTopCategory(long categoryId) {
+        EntityManager entityManager = JPA.em();
+        Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
+                "and g.baseSale >= 1 and g.expireAt > :now and g.id in (select g.id from g.categories c where c.parentCategory.id = :categoryId) ");
+        q.setParameter("status", GoodsStatus.ONSALE);
+        q.setParameter("deleted", DeletedStatus.UN_DELETED);
+        q.setParameter("now", new Date());
+        q.setParameter("categoryId", categoryId);
+        return q.getResultList().size();
+    }
 
     /**
      * 根据商品分类和数量取出指定数量的商品.
@@ -795,9 +1015,20 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findTopByCategory(long categoryId, int limit) {
+        return findTopByCategory(categoryId, limit, false);
+    }
+
+    /**
+     * 根据商品分类和数量取出指定数量的商品.
+     *
+     * @param limit
+     * @return
+     */
+    public static List<Goods> findTopByCategory(long categoryId, int limit, boolean isRootCategory) {
         EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted and isHideOnsale=false " +
-                "and g.baseSale >= 1 and g.expireAt > :now and g.id in (select g.id from g.categories c where c.id = :categoryId) " +
+        String categoryQueryCond = isRootCategory ? "c.parentCategory.id" : "c.id";
+        Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
+                "and g.baseSale >= 1 and g.expireAt > :now and g.id in (select g.id from g.categories c where " + categoryQueryCond + " = :categoryId) " +
                 "order by priority DESC,createdAt DESC");
         q.setParameter("status", GoodsStatus.ONSALE);
         q.setParameter("deleted", DeletedStatus.UN_DELETED);
@@ -806,7 +1037,6 @@ public class Goods extends Model {
         q.setMaxResults(limit);
         return q.getResultList();
     }
-
 
     public static List<Goods> findInIdList(List<Long> goodsIds) {
         if (goodsIds == null || goodsIds.size() == 0) {
@@ -851,12 +1081,26 @@ public class Goods extends Model {
 
 
     public static List<Brand> findBrandByCondition(GoodsCondition condition) {
+        return findBrandByCondition(condition, -1);
+    }
+
+    /**
+     * www首页根据商品条件查询品牌.
+     * 品牌按显示优先级倒序、按商户的创建时间倒序
+     *
+     * @param condition
+     * @param limit
+     * @return
+     */
+    public static List<Brand> findBrandByCondition(GoodsCondition condition, int limit) {
         EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("select distinct g.brand from Goods g where " + condition.getFilter() + " and g.status='ONSALE' order by g.brand.displayOrder desc");
+        Query q = entityManager.createQuery("select distinct g.brand from Goods g where " + condition.getFilter() + " and g.status='ONSALE' order by g.brand.displayOrder desc,g.brand.supplier.createdAt desc");
         for (String key : condition.getParamMap().keySet()) {
             q.setParameter(key, condition.getParamMap().get(key));
         }
-
+        if (limit > 0) {
+            q.setMaxResults(limit);
+        }
         return q.getResultList();
     }
 
@@ -986,6 +1230,7 @@ public class Goods extends Model {
         return isExist;
     }
 
+    @SolrField
     public Collection<Shop> getShopList() {
         if (isAllShop) {
             return CacheHelper.getCache(CacheHelper.getCacheKey(Shop.CACHEKEY_SUPPLIERID + this.supplierId, "GOODS_SHOP_LIST"), new CacheCallBack<List<Shop>>() {
@@ -1003,9 +1248,9 @@ public class Goods extends Model {
                 Goods goods1 = Goods.findById(goodsId);
                 Set<Shop> shopSet = new HashSet<>();
                 for (Shop shop : goods1.shops) {
-                	if (shop.deleted == DeletedStatus.UN_DELETED) {
-                		shopSet.add(shop);
-                	}
+                    if (shop.deleted == DeletedStatus.UN_DELETED) {
+                        shopSet.add(shop);
+                    }
                 }
                 return shopSet;
             }
@@ -1098,16 +1343,16 @@ public class Goods extends Model {
         List<Goods> newGoodsList = new ArrayList<>();
         List<Goods> doGoodsList = new ArrayList<>();
         int goodsCount = goodsList.size();
-        if (goodsCount < 5) {
-            otherGoodsList = findTopRecommendByCategory(5 - goodsCount, goods);
+        if (goodsCount < limit) {
+            otherGoodsList = findTopRecommendByCategory(limit - goodsCount, goods);
             for (Goods goods1 : otherGoodsList) {
                 goodsList.add(goods1);
             }
         }
 
         goodsCount = goodsList.size();
-        if (goodsCount < 5) {
-            newGoodsList = findNewGoodsOfOthers(goods.id, 5 - goodsCount);
+        if (goodsCount < limit) {
+            newGoodsList = findNewGoodsOfOthers(goods.id, limit - goodsCount);
             for (Goods goods1 : newGoodsList) {
                 goodsList.add(goods1);
             }
@@ -1191,15 +1436,24 @@ public class Goods extends Model {
                 id, GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit);
     }
 
+    /**
+     * 取得销量前3的商品
+     *
+     * @param limit
+     * @return
+     */
+    public static List<Goods> findPopGoods(int limit) {
+        return Goods.find(" status = ? and deleted = ? and baseSale >= 1 and expireAt > ? order by virtualBaseSaleCount DESC",
+                GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit);
+    }
+
     public void setPublishedPlatforms(List<GoodsPublishedPlatformType> publishedPlatforms) {
         if (unPublishedPlatforms == null) {
             unPublishedPlatforms = new HashSet<>();
-            System.out.println("is null");
         } else {
             if (unPublishedPlatforms.size() > 0) {
                 unPublishedPlatforms.clear();
             }
-            System.out.println("inini22");
         }
 
         if (publishedPlatforms == null || publishedPlatforms.size() == 0) {
@@ -1262,9 +1516,9 @@ public class Goods extends Model {
 
 
     public static List<models.sales.Goods> getTopGoods(final long categoryId, final String tuanCategory, final String tuanNane, int limit) {
-        List<models.sales.Goods> allGoods = null;
+        List<models.sales.Goods> allGoods;
 
-        List<models.sales.Goods> goodsList = new ArrayList<>();
+        List<models.sales.Goods> goodsList;
         if (categoryId == 0) {
             allGoods = models.sales.Goods.findTop(limit * 5);
             goodsList = filterTopGoods(allGoods, tuanCategory, tuanNane, limit);
@@ -1295,7 +1549,7 @@ public class Goods extends Model {
                 }
             }
         }
-        if (noMessage.size() > 0 && noMessage != null) {
+        if (noMessage.size() > 0) {
             //发送提醒邮件
             MailMessage mailMessage = new MailMessage();
             mailMessage.addRecipient("dev@uhuila.com");
@@ -1356,11 +1610,12 @@ public class Goods extends Model {
         goodsHistory.couponType = this.couponType;
         goodsHistory.imagePath = this.imagePath;
         goodsHistory.supplierId = this.supplierId;
-        goodsHistory.shops = new HashSet<>();
-        if (this.shops != null)
+        if (this.shops != null) {
+            goodsHistory.shops = new HashSet<>();
             goodsHistory.shops.addAll(this.shops);
-        else
+        } else {
             goodsHistory.shops = null;
+        }
         goodsHistory.title = this.title;
         goodsHistory.useBeginTime = this.useBeginTime;
         goodsHistory.useEndTime = this.useEndTime;
@@ -1393,4 +1648,234 @@ public class Goods extends Model {
         result = 31 * result + (id != null ? id.hashCode() : 0);
         return result;
     }
+
+    //------------------------------------------- 使用solr服务进行搜索的方法 (Begin) --------------------------------------
+    private static final String SOLR_ID = "id";
+    private static final String SOLR_GOODS_NAME = "goods.name_s";
+    private static final String SOLR_GOODS_SALEPRICE = "goods.salePrice_c";
+    private static final String SOLR_GOODS_FACEVALUE = "goods.faceValue_c";
+    private static final String SOLR_GOODS_VIRTUALSALECOUNT = "goods.virtualSaleCount_l";
+    private static final String SOLR_GOODS_AREAS = "goods.areaNames_s";
+    private static final String SOLR_GOODS_IMAGESMALLPATH = "goods.imageSmallPath_s";
+
+    /**
+     * 搜索
+     * 按关键词直接搜索时调用
+     *
+     * @param keywords   查询条件
+     * @param pageNumber 页数
+     * @param pageSize   记录数
+     * @return
+     */
+    public static QueryResponse search(String keywords, int pageNumber, int pageSize) {
+        return searchFullText(keywords, 0, 0, null, null, "goods.firstOnSaleAt_d", false, pageNumber, pageSize);
+    }
+
+    /**
+     * 搜索.
+     * 按关键词搜索时按指定字段排序时调用
+     *
+     * @param keywords   查询条件
+     * @param pageNumber 页数
+     * @param pageSize   记录数
+     * @return
+     */
+    public static QueryResponse search(String keywords, String orderBy, boolean isAsc, int pageNumber, int pageSize) {
+        return searchFullText(keywords, 0, 0, null, null, orderBy, isAsc, pageNumber, pageSize);
+    }
+
+    /**
+     * 前端按条件的全文搜索.
+     *
+     * @param keywords         关键字
+     * @param parentCategoryId
+     * @param categoryId
+     * @param districtId
+     * @param areaId
+     * @param orderBy
+     * @param isAsc
+     * @param pageNumber
+     * @param pageSize
+     * @return
+     */
+    public static QueryResponse searchFullText(String keywords, long parentCategoryId, long categoryId, String districtId,
+                                               String areaId, String orderBy, boolean isAsc, int pageNumber, int pageSize) {
+        String q = StringUtils.isNotBlank(keywords) ? "text:" + keywords : null;
+        return search(q, parentCategoryId, categoryId, districtId, areaId, orderBy, isAsc, pageNumber, pageSize);
+    }
+
+    /**
+     * 前端按条件搜索.
+     *
+     * @param q                Solr的q查询字符串, 可以根据solr的查询语法自行组装查询字符串.
+     * @param parentCategoryId
+     * @param categoryId
+     * @param districtId
+     * @param areaId
+     * @param orderBy
+     * @param isAsc
+     * @param pageNumber
+     * @param pageSize
+     * @return
+     */
+    public static QueryResponse search(String q, long parentCategoryId, long categoryId, String districtId,
+                                       String areaId, String orderBy, boolean isAsc, int pageNumber, int pageSize) {
+        StringBuilder queryStr = new StringBuilder("goods.deleted_s:\"com.uhuila.common.constants.DeletedStatus:UN_DELETED\" AND goods.expired_b:false");
+        if (StringUtils.isNotBlank(q)) {
+            queryStr.append(" AND " + q);
+        }
+        if (categoryId > 0) {
+            queryStr.append(" AND goods.categoryIds_s:" + categoryId);
+        }
+        if (StringUtils.isNotBlank(districtId) && !districtId.equals("0")) {
+            queryStr.append(" AND shop.areaId_s:" + districtId+"*");
+        }
+        if (parentCategoryId > 0) {
+            queryStr.append(" AND goods.parentCategoryIds_s:" + parentCategoryId);
+        }
+        if (StringUtils.isNotBlank(areaId) && !areaId.equals("0")) {
+            queryStr.append(" AND shop.areaId_s:" + areaId);
+        }
+        System.out.println("==> queryStr:" + queryStr);
+
+        SolrQuery query = new SolrQuery(queryStr.toString());
+        query.setFields(SOLR_ID, SOLR_GOODS_NAME, SOLR_GOODS_SALEPRICE, SOLR_GOODS_FACEVALUE, SOLR_GOODS_VIRTUALSALECOUNT, SOLR_GOODS_AREAS, SOLR_GOODS_IMAGESMALLPATH);
+        query.setSortField(orderBy, isAsc ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
+        query.setFacet(true).addFacetField("goods.categoryIds_s", "goods.parentCategoryIds_s", "goods.districtId_l", "shop.areaId_s");
+        query.setHighlight(true);
+        query.setStart(pageNumber * pageSize - pageSize);
+        query.setRows(pageSize);
+        return Solr.query(query);
+    }
+
+    /**
+     * 获取最热卖商品.
+     *
+     * @param limit
+     * @return
+     */
+    public static List<Goods> findTopHotSale(int limit) {
+        QueryResponse response = search(null, 0, 0, null, null, "goods.virtualSaleCount_l", false, 1, limit);
+        return getResultList(response);
+    }
+
+    public static List<Goods> getResultList(QueryResponse response) {
+        List<Goods> goodsList = new ArrayList<>();
+        if (response == null) {
+            return goodsList;
+        }
+        SolrDocumentList documentList = response.getResults();
+
+        for (SolrDocument doc : documentList) {
+            Goods goods = new Goods();
+            final String docId = (String) doc.getFieldValue("id");
+            goods.id = Long.parseLong(docId.substring(6, docId.length()));
+            goods.name = (String) doc.getFieldValue(SOLR_GOODS_NAME);
+            final String faceValue = (String) doc.getFieldValue(SOLR_GOODS_FACEVALUE);
+            goods.faceValue = new BigDecimal(faceValue.substring(0, faceValue.length() - 4));
+            final String salePrice = (String) doc.getFieldValue(SOLR_GOODS_SALEPRICE);
+            goods.salePrice = new BigDecimal(salePrice.substring(0, salePrice.length() - 4));
+            goods.areaNames = (String) doc.getFieldValue(SOLR_GOODS_AREAS);
+            goods.imageSmallPath = (String) doc.getFieldValue(SOLR_GOODS_IMAGESMALLPATH);
+            System.out.println("goods.name:" + goods.name);
+            goodsList.add(goods);
+        }
+        return goodsList;
+    }
+
+    public static SimplePaginator<Goods> getResultPage(QueryResponse response, int pageNumber, int pageSize) {
+        final List<Goods> goodsList = getResultList(response);
+
+        SimplePaginator<Goods> page = new SimplePaginator<>(goodsList);
+        page.setPageNumber(pageNumber);
+        page.setPageSize(pageSize);
+        page.setRowCount((int) response.getResults().getNumFound());
+        return page;
+    }
+
+    /**
+     * 从solr的返回结果中获取分类统计的结果.
+     *
+     * @param response
+     * @return
+     */
+    public static List<Category> getStatisticCategories(QueryResponse response, boolean isParent) {
+        List<Category> categoryList = new ArrayList<>();
+        if (response == null) {
+            return categoryList;
+        }
+        FacetField facetField = isParent ? response.getFacetField("goods.parentCategoryIds_s") : response.getFacetField("goods.categoryIds_s");
+        if (facetField != null) {
+            List<FacetField.Count> countList = facetField.getValues();
+
+            for (FacetField.Count count : countList) {
+                if (count.getCount() > 0) {
+                    Category category = Category.findById(Long.parseLong((StringUtils.isBlank(count.getName())) ? "0" : count.getName()));
+                    if (category != null) {
+                        category.goodsCount = count.getCount();
+                        categoryList.add(category);
+                        System.out.println("==>" + category.name + ":" + category.goodsCount);
+                    }
+                }
+            }
+        }
+        return categoryList;
+    }
+
+    /**
+     * 从solr的返回结果中获取地区的统计结果.
+     *
+     * @param response
+     * @return
+     */
+    public static List<Area> getStatisticAreas(QueryResponse response, boolean isDistrict) {
+        List<Area> areaList = new ArrayList<>();
+        Map<String, Long> districtCountMap = new HashMap<>();
+        if (response == null) {
+            return areaList;
+        }
+        FacetField facetField = response.getFacetField("shop.areaId_s");
+        if (facetField != null) {
+
+            List<FacetField.Count> countList = facetField.getValues();
+
+            for (FacetField.Count count : countList) {
+                if (count.getCount() > 0) {
+                    if (isDistrict && count.getName().length() >= 5) {
+                        final String districtId = count.getName().substring(0, 5);
+                        Long districtCount = districtCountMap.get(districtId);
+                        districtCountMap.put(districtId, districtCount == null ? count.getCount() : districtCount + count.getCount());
+
+                    } else {
+                        System.out.println("===>count.getName():" + count.getName());
+                        Area area = Area.findAreaById(count.getName());
+
+
+                        area.goodsCount = count.getCount();
+                        areaList.add(area);
+                    }
+                }
+            }
+            if (isDistrict && districtCountMap.size() > 0) {
+                for (String districtId : districtCountMap.keySet()) {
+                    Area area = Area.findAreaById(districtId);
+                    area.goodsCount = districtCountMap.get(districtId);
+                    areaList.add(area);
+                }
+            }
+        }
+        return areaList;
+    }
+
+    public void setVirtualSaleCount(Long count) {
+        this.virtualSaleCount = count;
+    }
+    //------------------------------------------- 使用solr服务进行搜索的方法 (End) ----------------------------------------
+
+    //------------------------------------------- 商品搜索时生成url的方法(Begin) ------------------------------------------
+    public static String getUrl(String keywords) {
+        //todo
+        return "";
+    }
+    //------------------------------------------- 商品搜索时生成url的方法(End) ------------------------------------------
 }

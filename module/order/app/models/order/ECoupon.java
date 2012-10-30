@@ -11,8 +11,8 @@ import models.admin.SupplierUser;
 import models.consumer.User;
 import models.dangdang.DDAPIInvokeException;
 import models.dangdang.DDAPIUtil;
-import models.resale.Resaler;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
+import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.Shop;
 import models.sms.SMSUtil;
@@ -25,10 +25,28 @@ import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "e_coupon")
@@ -236,6 +254,29 @@ public class ECoupon extends Model {
         }
     }
 
+
+    /**
+     * 券修改时更新库存。
+     */
+    @Override
+    public void _save() {
+        this.goods.refreshSaleCount();
+        super._save();
+    }
+
+
+    private BigDecimal getLineRebateValue() {
+        BigDecimal amount = BigDecimal.ZERO;
+        BigDecimal invitedRebatePrice;
+        for (OrderItems item : order.orderItems) {
+            //如果商品没设置返利,默认给推荐人1%
+            invitedRebatePrice = item.goods.invitedUserPrice == null || item.goods.invitedUserPrice.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ONE : item.goods.invitedUserPrice;
+            amount = amount.add(item.goods.salePrice.multiply(invitedRebatePrice).multiply(new BigDecimal(0.01)));
+        }
+
+        return amount;
+    }
+
     private BigDecimal getLinePromoterRebateValue() {
         //如果商品没设置返利,默认给推荐人2%
         BigDecimal promoterPrice = this.goods.promoterPrice == null ? new BigDecimal(2) : this.goods.promoterPrice;
@@ -387,8 +428,8 @@ public class ECoupon extends Model {
             return false;
         }
 
-        if(this.partner == ECouponPartner.JD){
-            if(!JDGroupBuyUtil.verifyOnJingdong(this)){
+        if (this.partner == ECouponPartner.JD) {
+            if (!JDGroupBuyUtil.verifyOnJingdong(this)) {
                 Logger.info("verify on jingdong failed");
                 return false;
             }
@@ -678,16 +719,15 @@ public class ECoupon extends Model {
         //记录券历史信息
         new CouponHistory(eCoupon, userName, "券退款", eCoupon.status, ECouponStatus.REFUND, null).save();
 
-        // 更改库存
-        eCoupon.goods.baseSale += 1;
-        eCoupon.goods.saleCount -= 1;
-        eCoupon.goods.save();
 
         // 更改订单状态
         eCoupon.status = ECouponStatus.REFUND;
         eCoupon.refundAt = new Date();
         eCoupon.refundPrice = cashAmount;
         eCoupon.save();
+
+        // 更改搜索服务中的库存
+        eCoupon.goods.save();
 
         return returnFlg;
     }
@@ -1119,5 +1159,17 @@ public class ECoupon extends Model {
         q.setParameter("p_status", RebateStatus.ALREADY_REBATE);
         Object result = q.getSingleResult();
         return result == null ? BigDecimal.ZERO : (BigDecimal) result;
+    }
+
+    /**
+     * 计算指定用户的特定状态的券数量.
+     *
+     * @param user   用户对象
+     * @param status 订单状态
+     * @return 券数量
+     */
+    public static int count(User user, ECouponStatus status) {
+        //todo
+        return 0;
     }
 }

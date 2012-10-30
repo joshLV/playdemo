@@ -8,7 +8,13 @@ import models.dangdang.DDAPIUtil;
 import models.dangdang.DDOrderItem;
 import models.dangdang.ErrorCode;
 import models.dangdang.ErrorInfo;
-import models.order.*;
+import models.order.ECoupon;
+import models.order.NotEnoughInventoryException;
+import models.order.Order;
+import models.order.OrderItems;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
+import models.order.OuterOrderStatus;
 import models.resale.Resaler;
 import models.resale.ResalerStatus;
 import models.sales.Goods;
@@ -82,12 +88,12 @@ public class DDOrderAPI extends Controller {
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
                 OuterOrderPartner.DD, kx_order_id).first();
         //outerOrder是否存在的标志
-        Boolean isExited = true;
+        Boolean isExisted = true;
         Order order;
 
         //如果找不到该orderCode的订单，说明还没有新建，则新建一个
         if (outerOrder == null) {
-            isExited = false;
+            isExisted = false;
             outerOrder = new OuterOrder();
             outerOrder.orderNumber = kx_order_id;
             outerOrder.partner = OuterOrderPartner.DD;
@@ -98,12 +104,12 @@ public class DDOrderAPI extends Controller {
                 JPA.em().flush();
             } catch (Exception e) {
                 // 如果写入失败，说明 已经存在一个相同的orderCode 的订单，一百券订单产生了则，直接返回，否则，继续创建一百券订单
-                if (outerOrder.ybqOrder == null) isExited = false;
+                isExisted= (outerOrder.ybqOrder != null);
             }
         }
 
         //如果已经存在订单，则不处理，直接返回xml
-        if (isExited) {
+        if (isExisted) {
             order = Order.findOneByUser(outerOrder.ybqOrder.orderNumber, resalerId, AccountType.RESALER);
             if (order != null) {
                 System.out.println("[DDOrderAPI] order has existed,and render xml");

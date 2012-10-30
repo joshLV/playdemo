@@ -227,6 +227,14 @@ public class Order extends Model {
         CacheHelper.delete(CACHEKEY);
         CacheHelper.delete(CACHEKEY + this.id);
         CacheHelper.delete(CACHEKEY_BASEUSERID + this.userId);
+        
+        // 更新对应商品库存
+        if (this.orderItems != null) {
+        	for (OrderItems item : this.orderItems) {
+        		item.goods.refreshSaleCount();
+        	}
+        }
+        
         super._save();
     }
 
@@ -517,11 +525,12 @@ public class Order extends Model {
         this.status = OrderStatus.CANCELED;
         this.updatedAt = new Date();
         for (OrderItems orderItem : this.orderItems) {
-            orderItem.goods.baseSale += orderItem.buyNumber;
-            orderItem.goods.saleCount -= orderItem.buyNumber;
+
             orderItem.status = OrderStatus.CANCELED;
-            orderItem.goods.save();
             orderItem.save();
+            //触发一下goods的save,使得goods的销量在搜索服务器中得以更新
+            orderItem.goods.save();
+
             //如果是秒杀商品，做回库处理
             cancelSecKillOrder(orderItem);
         }
@@ -552,10 +561,16 @@ public class Order extends Model {
         for (OrderItems orderItem : orderItems) {
             // fix: org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: models.sales.GoodsLevelPrice
             // Goods goods = Goods.findById(orderItem.goods.id);
+        	/*
             orderItem.goods.baseSale -= orderItem.buyNumber;
             orderItem.goods.saleCount += orderItem.buyNumber;
             orderItem.goods.save();
+            */
             orderItem.save();
+
+            //更新搜索服务器中的商品库存
+            orderItem.goods.save();
+
             if (orderItem.goods.materialType == MaterialType.REAL) {
                 haveFreight = true;
             }
@@ -1307,5 +1322,17 @@ public class Order extends Model {
     public User getUserInfo() {
         User user = this.getUser();
         return user;
+    }
+
+    /**
+     * 计算指定用户的特定状态的订单数量.
+     *
+     * @param user   用户对象
+     * @param status 订单状态
+     * @return 券数量
+     */
+    public static int count(User user, OrderStatus status) {
+        //todo
+        return 0;
     }
 }

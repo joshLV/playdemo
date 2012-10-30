@@ -83,7 +83,7 @@ public class OperateShops extends Controller {
         List<Supplier> supplierList = Supplier.findUnDeleted();
         if (StringUtils.isNotEmpty(shop.areaId)) {
             Area district = Area.findParent(shop.areaId);
-            shop.districtId = district.id;
+            shop.setDistrictId(district.id);
             Area city = Area.findParent(district.id);
             shop.cityId = city.id;
         }
@@ -93,7 +93,7 @@ public class OperateShops extends Controller {
         String cityId = StringUtils.isEmpty(shop.cityId) ? cities.get(0).getId() : shop.cityId;
         List<Area> districts = Area.findAllSubAreas(cityId);
         //商圈列表
-        String districtId = StringUtils.isEmpty(shop.districtId) ? districts.get(0).getId() : shop.districtId;
+        String districtId = StringUtils.isEmpty(shop.getDistrictId()) ? districts.get(0).getId() : shop.getDistrictId();
         List<Area> areas = Area.findAllSubAreas(districtId);
         if (shop.areaId == null && areas != null && areas.get(0) != null) {
             shop.areaId = areas.get(0).id;

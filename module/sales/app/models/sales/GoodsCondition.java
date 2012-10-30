@@ -26,6 +26,7 @@ public class GoodsCondition implements Serializable {
     public static final String SHANGHAI = "021";
 
     public long supplierId = 0;
+    public long parentCategoryId = 0;
     public long categoryId = 0;
     public String cityId = SHANGHAI;
     public String districtId = "0";
@@ -35,6 +36,7 @@ public class GoodsCondition implements Serializable {
     public BigDecimal priceFrom = new BigDecimal(0);
     public BigDecimal priceTo = new BigDecimal(0);
     public String orderBy = getOrderBy(0);
+    public String solrOrderBy = getSolrOrderBy(0);
     public String orderByType = "DESC";
     public int orderByNum = 9;
     public int orderByTypeNum = 0;
@@ -80,12 +82,10 @@ public class GoodsCondition implements Serializable {
             throw new IllegalArgumentException("GoodsCondition is illegal!");
         }
 
-        Logger.info("categoryId=" + categoryId + ", args[0]=" + args[0]);
         if (args.length > 0) {
             categoryId = StringUtils.isBlank(args[0]) ? 0 : Long
                     .parseLong(args[0]);
         }
-        Logger.info("categoryId=" + categoryId);
         if (args.length > 1) {
             searchAreaId = StringUtils.isBlank(args[1]) ? SHANGHAI : args[1];
             if (searchAreaId.length() == 8) {
@@ -112,6 +112,8 @@ public class GoodsCondition implements Serializable {
             orderByNum = StringUtils.isBlank(args[5]) ? 0 : Integer.parseInt(args[5]);
             orderBy = StringUtils.isBlank(args[5]) ? getOrderBy(0)
                     : getOrderBy(Integer.parseInt(args[5]));
+            solrOrderBy = StringUtils.isBlank(args[5]) ? getSolrOrderBy(0)
+                    : getSolrOrderBy(Integer.parseInt(args[5]));
         }
         if (args.length > 6) {
             orderByTypeNum = StringUtils.isBlank(args[6]) ? 1 : Integer.parseInt
@@ -240,7 +242,7 @@ public class GoodsCondition implements Serializable {
             condBuilder.append(" and g.isLottery=:isLottery");
             paramMap.put("isLottery", isLottery);
         }
-         if (isHideOnsale) {
+        if (isHideOnsale) {
             condBuilder.append(" and g.isHideOnsale=:isHideOnsale");
             paramMap.put("isHideOnsale",Boolean.FALSE);
         }
@@ -274,6 +276,29 @@ public class GoodsCondition implements Serializable {
                 break;
             default:
                 orderBy = "g.materialType, g.recommend"; //电子券优化显示
+                break;
+        }
+        return orderBy;
+    }
+
+
+    private static String getSolrOrderBy(int orderById) {
+        String orderBy;
+        switch (orderById) {
+            case 1:
+                orderBy = "goods.saleCount_l";
+                break;
+            case 2:
+                orderBy = "goods.salePrice_l";
+                break;
+            case 3:
+                orderBy = "goods.discount_l";
+                break;
+            case 4:
+                orderBy = "goods.materialType_s, goods.createdAt_dt"; //电子券优化显示
+                break;
+            default:
+                orderBy = "goods.recommend_i"; //电子券优化显示
                 break;
         }
         return orderBy;
@@ -448,7 +473,6 @@ public class GoodsCondition implements Serializable {
             paramMap.put("materialType", materialType);
         }
 
-//        System.out.println("aaaa>>>><<<<"+expireAt.before(new Date()));
 //
 //
 //        if (expireAt!=null&& !expireAt.before(new Date())) {
@@ -459,7 +483,6 @@ public class GoodsCondition implements Serializable {
 
         return sql.toString();
     }
-
 
     @Override
     public String toString() {
