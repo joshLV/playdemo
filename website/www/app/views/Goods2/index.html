@@ -76,7 +76,7 @@
                     <ul class="more clearfix">
                         #{list subCategories,as:'subCategory'}
                         <li><a href="${condition.buildUrl('categoryId', subCategory.id).getUrl()}"
-                            #{if (subCategory.id == categoryId)
+                            #{if (subCategory.id == condition.categoryId)
                             || (subCategory.id == 0 && category?.isRoot())
                             }class="curr"#{/if}>${subCategory.name}<em>(${subCategory.goodsCount})</em></a>
                         </li>
@@ -145,7 +145,7 @@
                 #{if j%3 == 1}class="first"#{/if}>
                 <div class="inner">
                     <div class="image">
-                        <a href="" target="_blank"><img src="${aGoods.imageSmallPath}" width="199"
+                        <a href="${aGoods?.wwwUrl}" target="_blank"><img src="${aGoods.imageSmallPath}" width="199"
                                                         height="152"/></a>
                         #{if aGoods.areaNames?.size()>0}<a class="region" href="${aGoods?.wwwUrl}"
                                                            target="_blank"><span>商圈：</span>${aGoods.areaNames}
