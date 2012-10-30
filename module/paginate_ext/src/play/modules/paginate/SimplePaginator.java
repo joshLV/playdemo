@@ -1,10 +1,10 @@
 package play.modules.paginate;
 
 import play.db.jpa.GenericModel;
-import play.modules.paginate.strategy.RecordLocatorStrategy;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * TODO.
@@ -14,21 +14,49 @@ import java.util.List;
  * Time: 11:23 AM
  */
 public class SimplePaginator<T extends GenericModel> extends Paginator<Long, T> implements Serializable {
-    private static final long serialVersionUID = -789234923454257567L;
-    private static final String DEFAULT_PAGE_PARAM = "page";
+    private static final long serialVersionUID = -7892349233994257567L;
 
-    private int pageSize;
     private List<T> currentPage;
 
-    private int pageNumber;
     private Integer rowCount;
-    private String paramName;
 
-    private static final int DEFAULT_PAGE_SIZE = 20;
-
-    protected SimplePaginator(RecordLocatorStrategy recordLocatorStrategy) {
-        super(recordLocatorStrategy);
+    public SimplePaginator(List<T> currentPage) {
+        super(null);
+        this.currentPage = currentPage;
     }
 
+    @Override
+    public int size() {
+        return this.rowCount;
+    }
+
+    public void setRowCount(int rowCount){
+        this.rowCount = rowCount;
+    }
+
+    @Override
+    public List<T> getCurrentPage() {
+        return currentPage;
+    }
+
+    @Override
+    public int indexOf(Object o) {
+        return currentPage.indexOf(o);
+    }
+
+    @Override
+    public int lastIndexOf(Object o) {
+        return currentPage.lastIndexOf(o);
+    }
+
+    @Override
+    public ListIterator<T> listIterator() {
+        return currentPage.listIterator();
+    }
+
+    @Override
+    public ListIterator<T> listIterator(int index) {
+        return currentPage.listIterator(index);
+    }
 
 }

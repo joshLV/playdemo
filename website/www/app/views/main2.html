@@ -50,9 +50,9 @@
     <div id="logo"><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/"><img
             src="http://img.uhcdn.com/images/y/logo.png" width="180" height="96"/></a></div>
     <div id="search">
-        <form action="" method="get" target="_self">
+        <form action="/s" method="get" target="_self">
             <div class="text"><input type="text" name="s" accesskey="s" autofocus="true" autocomplete="off"
-                                     x-webkit-speech="" x-webkit-grammar="builtin:translate"></div>
+                                     x-webkit-speech="" x-webkit-grammar="builtin:translate" value="${s}"></div>
             <button type="submit"> 搜 索</button>
         </form>
         <div class="hotword"><a href="">火锅</a> <a href="">川菜</a> <a href="">美容</a> <a href="">小吃</a> <a href="">西餐</a>

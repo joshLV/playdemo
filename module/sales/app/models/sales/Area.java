@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +55,9 @@ public class Area extends GenericModel {
     @Column(name = "area_type")
     public AreaType areaType;
 
+    @Transient
+    public long goodsCount;
+
     public Area() {
     }
 
@@ -68,7 +72,6 @@ public class Area extends GenericModel {
     public static boolean isDistrict(String district) {
         return (StringUtils.isNotBlank(district) && district.length() == 5);
     }
-
     public static final String CACHEKEY = "AREA";
 
     @Override

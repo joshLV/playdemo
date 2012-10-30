@@ -4,32 +4,6 @@
  */
 package models.sales;
 
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.util.*;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-
 import cache.CacheCallBack;
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
@@ -49,6 +23,7 @@ import models.supplier.Supplier;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -65,6 +40,7 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.i18n.Messages;
 import play.modules.paginate.JPAExtPaginator;
+import play.modules.paginate.SimplePaginator;
 import play.modules.solr.Solr;
 import play.modules.solr.SolrEmbedded;
 import play.modules.solr.SolrField;
@@ -240,14 +216,29 @@ public class Goods extends Model {
     public Set<Category> categories;
 
     @Transient
+    private String imageSmallPath;
+
+    @Transient
     @SolrField
     public String getCategoryIds() {
         List<Long> ids = new ArrayList<>();
         if (categories != null) {
             for (Category category : categories) {
                 ids.add(category.id);
+            }
+        }
 
-                System.out.println("-----------------id:" + id);
+        return StringUtils.join(ids, " ");
+    }
+
+
+    @Transient
+    @SolrField
+    public String getParentCategoryIds() {
+        List<Long> ids = new ArrayList<>();
+        if (categories != null) {
+            for (Category category : categories) {
+                ids.add(category.parentCategory.id);
             }
         }
 
@@ -497,7 +488,7 @@ public class Goods extends Model {
      * solr服务中获取到的商圈.
      */
     @Transient
-    private Collection<Object> areaNames;
+    private String areaNames;
 
 
     static {
@@ -675,10 +666,13 @@ public class Goods extends Model {
      * 小规格图片路径
      */
     @Transient
+    @SolrField
     public String getImageSmallPath() {
+        if (StringUtils.isNotBlank(imageSmallPath)) {
+            return imageSmallPath;
+        }
         return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_SMALL);
     }
-
 
     /**
      * 中等规格图片路径
@@ -728,15 +722,15 @@ public class Goods extends Model {
     public void setPrompt(String prompt) {
         this.prompt = Jsoup.clean(prompt, HTML_WHITE_TAGS);
     }
-    
+
     @Transient
     public String getSafePrompt() {
-    	return prompt.replaceAll("&nbsp;", " ");
+        return prompt.replaceAll("&nbsp;", " ");
     }
-    
+
     @Transient
     public String getSafeDetails() {
-    	return details.replaceAll("&nbsp;", " ");
+        return details.replaceAll("&nbsp;", " ");
     }
 
     /**
@@ -846,15 +840,27 @@ public class Goods extends Model {
     @Transient
     @SolrField
     public String getAreaNames() {
+        if (StringUtils.isNotBlank(areaNames)) {
+            return areaNames;
+        }
         Collection<Shop> shopList = getShopList();
         Map<String, Object> areaMap = new HashMap<>();
         for (Shop shop : shopList) {
             Area area = Area.findAreaById(shop.areaId);
             areaMap.put(area.id, area.name);
         }
-        return StringUtils.join(areaMap.values(), " ");
+        areaNames = StringUtils.join(areaMap.values(), " ");
+        return areaNames;
     }
 
+    public String getHighLightName(String words) {
+        String highLight = name;
+        String[] wordArray = words.split(" |,|;|，");
+        for (String word : wordArray) {
+            highLight = name.replaceAll(word, "<em>" + word + "</em>");
+        }
+        return highLight;
+    }
     //=================================================== 数据库操作 ====================================================
 
     @Override
@@ -1074,9 +1080,17 @@ public class Goods extends Model {
         return findBrandByCondition(condition, -1);
     }
 
+    /**
+     * www首页根据商品条件查询品牌.
+     * 品牌按显示优先级倒序、按商户的创建时间倒序
+     *
+     * @param condition
+     * @param limit
+     * @return
+     */
     public static List<Brand> findBrandByCondition(GoodsCondition condition, int limit) {
         EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("select distinct g.brand from Goods g where " + condition.getFilter() + " and g.status='ONSALE' order by g.brand.displayOrder desc");
+        Query q = entityManager.createQuery("select distinct g.brand from Goods g where " + condition.getFilter() + " and g.status='ONSALE' order by g.brand.displayOrder desc,g.brand.supplier.createdAt desc");
         for (String key : condition.getParamMap().keySet()) {
             q.setParameter(key, condition.getParamMap().get(key));
         }
@@ -1230,9 +1244,9 @@ public class Goods extends Model {
                 Goods goods1 = Goods.findById(goodsId);
                 Set<Shop> shopSet = new HashSet<>();
                 for (Shop shop : goods1.shops) {
-                	if (shop.deleted == DeletedStatus.UN_DELETED) {
-                		shopSet.add(shop);
-                	}
+                    if (shop.deleted == DeletedStatus.UN_DELETED) {
+                        shopSet.add(shop);
+                    }
                 }
                 return shopSet;
             }
@@ -1432,12 +1446,10 @@ public class Goods extends Model {
     public void setPublishedPlatforms(List<GoodsPublishedPlatformType> publishedPlatforms) {
         if (unPublishedPlatforms == null) {
             unPublishedPlatforms = new HashSet<>();
-            System.out.println("is null");
         } else {
             if (unPublishedPlatforms.size() > 0) {
                 unPublishedPlatforms.clear();
             }
-            System.out.println("inini22");
         }
 
         if (publishedPlatforms == null || publishedPlatforms.size() == 0) {
@@ -1500,9 +1512,9 @@ public class Goods extends Model {
 
 
     public static List<models.sales.Goods> getTopGoods(final long categoryId, final String tuanCategory, final String tuanNane, int limit) {
-        List<models.sales.Goods> allGoods = null;
+        List<models.sales.Goods> allGoods;
 
-        List<models.sales.Goods> goodsList = new ArrayList<>();
+        List<models.sales.Goods> goodsList;
         if (categoryId == 0) {
             allGoods = models.sales.Goods.findTop(limit * 5);
             goodsList = filterTopGoods(allGoods, tuanCategory, tuanNane, limit);
@@ -1533,7 +1545,7 @@ public class Goods extends Model {
                 }
             }
         }
-        if (noMessage.size() > 0 && noMessage != null) {
+        if (noMessage.size() > 0) {
             //发送提醒邮件
             MailMessage mailMessage = new MailMessage();
             mailMessage.addRecipient("dev@uhuila.com");
@@ -1637,9 +1649,10 @@ public class Goods extends Model {
     private static final String SOLR_ID = "id";
     private static final String SOLR_GOODS_NAME = "goods.name_s";
     private static final String SOLR_GOODS_SALEPRICE = "goods.salePrice_c";
-    private static final String SOLR_GOODS_ORIGINALPRICE = "goods.originalPrice_c";
+    private static final String SOLR_GOODS_FACEVALUE = "goods.faceValue_c";
     private static final String SOLR_GOODS_VIRTUALSALECOUNT = "goods.virtualSaleCount_l";
     private static final String SOLR_GOODS_AREAS = "goods.areaNames_s";
+    private static final String SOLR_GOODS_IMAGESMALLPATH = "goods.imageSmallPath_s";
 
     /**
      * 搜索
@@ -1651,7 +1664,7 @@ public class Goods extends Model {
      * @return
      */
     public static QueryResponse search(String keywords, int pageNumber, int pageSize) {
-        return search(keywords, null, null, null, null, "goods.firstOnSaleAt_d", false, pageNumber, pageSize);
+        return searchFullText(keywords, 0, 0, null, null, "goods.firstOnSaleAt_d", false, pageNumber, pageSize);
     }
 
     /**
@@ -1664,7 +1677,7 @@ public class Goods extends Model {
      * @return
      */
     public static QueryResponse search(String keywords, String orderBy, boolean isAsc, int pageNumber, int pageSize) {
-        return search(keywords, null, null, null, null, orderBy, isAsc, pageNumber, pageSize);
+        return searchFullText(keywords, 0, 0, null, null, orderBy, isAsc, pageNumber, pageSize);
     }
 
     /**
@@ -1681,15 +1694,16 @@ public class Goods extends Model {
      * @param pageSize
      * @return
      */
-    public static QueryResponse searchFullText(String keywords, Long parentCategoryId, Long categoryId, Long districtId,
-                                               Long areaId, String orderBy, boolean isAsc, int pageNumber, int pageSize) {
-        return search("text:" + keywords, parentCategoryId, categoryId, districtId, areaId, orderBy, isAsc, pageNumber, pageSize);
+    public static QueryResponse searchFullText(String keywords, long parentCategoryId, long categoryId, String districtId,
+                                               String areaId, String orderBy, boolean isAsc, int pageNumber, int pageSize) {
+        String q = StringUtils.isNotBlank(keywords) ? "text:" + keywords : null;
+        return search(q, parentCategoryId, categoryId, districtId, areaId, orderBy, isAsc, pageNumber, pageSize);
     }
 
     /**
      * 前端按条件搜索.
      *
-     * @param q                Solr的q查询字符串
+     * @param q                Solr的q查询字符串, 可以根据solr的查询语法自行组装查询字符串.
      * @param parentCategoryId
      * @param categoryId
      * @param districtId
@@ -1700,28 +1714,30 @@ public class Goods extends Model {
      * @param pageSize
      * @return
      */
-    public static QueryResponse search(String q, Long parentCategoryId, Long categoryId, Long districtId,
-                                       Long areaId, String orderBy, boolean isAsc, int pageNumber, int pageSize) {
+    public static QueryResponse search(String q, long parentCategoryId, long categoryId, String districtId,
+                                       String areaId, String orderBy, boolean isAsc, int pageNumber, int pageSize) {
         StringBuilder queryStr = new StringBuilder("goods.deleted_s:\"com.uhuila.common.constants.DeletedStatus:UN_DELETED\" AND goods.expired_b:false");
         if (StringUtils.isNotBlank(q)) {
             queryStr.append(" AND " + q);
         }
-        if (categoryId != null) {
-            queryStr.append(" AND categoryId_l:" + categoryId);
+        if (categoryId > 0) {
+            queryStr.append(" AND goods.categoryIds_s:" + categoryId);
         }
-        if (districtId != null) {
-            queryStr.append(" AND districtId_l:" + categoryId);
+        if (StringUtils.isNotBlank(districtId) && !districtId.equals("0")) {
+            queryStr.append(" AND goods.districtId_l:" + categoryId);
         }
-        if (parentCategoryId != null) {
-            queryStr.append(" AND parentCategoryId_l:" + parentCategoryId);
+        if (parentCategoryId > 0) {
+            queryStr.append(" AND goods.parentCategoryIds_s:" + parentCategoryId);
         }
-        if (areaId != null) {
-            queryStr.append(" AND areaId_l:" + areaId);
+        if (StringUtils.isNotBlank(areaId) && !areaId.equals("0")) {
+            queryStr.append(" AND shop.areaId_s:" + areaId);
         }
+        System.out.println("==> queryStr:" + queryStr);
+
         SolrQuery query = new SolrQuery(queryStr.toString());
-        query.setFields(SOLR_ID, SOLR_GOODS_NAME, SOLR_GOODS_SALEPRICE, SOLR_GOODS_ORIGINALPRICE, SOLR_GOODS_VIRTUALSALECOUNT, SOLR_GOODS_AREAS);
+        query.setFields(SOLR_ID, SOLR_GOODS_NAME, SOLR_GOODS_SALEPRICE, SOLR_GOODS_FACEVALUE, SOLR_GOODS_VIRTUALSALECOUNT, SOLR_GOODS_AREAS, SOLR_GOODS_IMAGESMALLPATH);
         query.setSortField(orderBy, isAsc ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
-        query.setFacet(true).addFacetField("category.id_s", "category.parentCategory_s", "brand.id_s", "shop.districtId_s", "shop.areaId_s");
+        query.setFacet(true).addFacetField("goods.categoryIds_s", "goods.parentCategoryIds_s", "goods.districtId_l", "shop.areaId_s");
         query.setHighlight(true);
         query.setStart(pageNumber * pageSize - pageSize);
         query.setRows(pageSize);
@@ -1735,7 +1751,11 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findTopHotSale(int limit) {
-        QueryResponse response = search(null, null, null, null, null, "goods.virtualSaleCount_l", false, 1, limit);
+        QueryResponse response = search(null, 0, 0, null, null, "goods.virtualSaleCount_l", false, 1, limit);
+        return getResultList(response);
+    }
+
+    public static List<Goods> getResultList(QueryResponse response) {
         List<Goods> goodsList = new ArrayList<>();
         if (response == null) {
             return goodsList;
@@ -1747,13 +1767,98 @@ public class Goods extends Model {
             final String docId = (String) doc.getFieldValue("id");
             goods.id = Long.parseLong(docId.substring(6, docId.length()));
             goods.name = (String) doc.getFieldValue(SOLR_GOODS_NAME);
-            final String originalPrice = (String) doc.getFieldValue(SOLR_GOODS_ORIGINALPRICE);
-            goods.originalPrice = new BigDecimal(originalPrice.substring(0, originalPrice.length() - 4));
+            final String faceValue = (String) doc.getFieldValue(SOLR_GOODS_FACEVALUE);
+            goods.faceValue = new BigDecimal(faceValue.substring(0, faceValue.length() - 4));
             final String salePrice = (String) doc.getFieldValue(SOLR_GOODS_SALEPRICE);
             goods.salePrice = new BigDecimal(salePrice.substring(0, salePrice.length() - 4));
-            goods.areaNames = doc.getFieldValues(SOLR_GOODS_AREAS);
+            goods.areaNames = (String) doc.getFieldValue(SOLR_GOODS_AREAS);
+            goods.imageSmallPath = (String) doc.getFieldValue(SOLR_GOODS_IMAGESMALLPATH);
+            System.out.println("goods.name:" + goods.name);
+            goodsList.add(goods);
         }
         return goodsList;
+    }
+
+    public static SimplePaginator<Goods> getResultPage(QueryResponse response, int pageNumber, int pageSize) {
+        final List<Goods> goodsList = getResultList(response);
+
+        SimplePaginator<Goods> page = new SimplePaginator<>(goodsList);
+        page.setPageNumber(pageNumber);
+        page.setPageSize(pageSize);
+        page.setRowCount((int) response.getResults().getNumFound());
+        return page;
+    }
+
+    /**
+     * 从solr的返回结果中获取分类统计的结果.
+     *
+     * @param response
+     * @return
+     */
+    public static List<Category> getStatisticCategories(QueryResponse response, boolean isParent) {
+        List<Category> categoryList = new ArrayList<>();
+        if (response == null) {
+            return categoryList;
+        }
+        FacetField facetField = isParent ? response.getFacetField("goods.parentCategoryIds_s") : response.getFacetField("goods.categoryIds_s");
+        if (facetField != null) {
+            List<FacetField.Count> countList = facetField.getValues();
+
+            for (FacetField.Count count : countList) {
+                if (count.getCount() > 0) {
+                    Category category = Category.findById(Long.parseLong(count.getName()));
+                    category.goodsCount = count.getCount();
+                    categoryList.add(category);
+                    System.out.println("==>" + category.name + ":" + category.goodsCount);
+                }
+            }
+        }
+        return categoryList;
+    }
+
+    /**
+     * 从solr的返回结果中获取地区的统计结果.
+     *
+     * @param response
+     * @return
+     */
+    public static List<Area> getStatisticAreas(QueryResponse response, boolean isDistrict) {
+        List<Area> areaList = new ArrayList<>();
+        Map<String, Long> districtCountMap = new HashMap<>();
+        if (response == null) {
+            return areaList;
+        }
+        FacetField facetField = response.getFacetField("shop.areaId_s");
+        if (facetField != null) {
+
+            List<FacetField.Count> countList = facetField.getValues();
+
+            for (FacetField.Count count : countList) {
+                if (count.getCount() > 0) {
+                    if (isDistrict && count.getName().length() >= 5) {
+                        final String districtId = count.getName().substring(0, 5);
+                        Long districtCount = districtCountMap.get(districtId);
+                        districtCountMap.put(districtId, districtCount == null ? count.getCount() : districtCount + count.getCount());
+
+                    } else {
+                        System.out.println("===>count.getName():" + count.getName());
+                        Area area = Area.findAreaById(count.getName());
+
+
+                        area.goodsCount = count.getCount();
+                        areaList.add(area);
+                    }
+                }
+            }
+            if (isDistrict && districtCountMap.size() > 0) {
+                for (String districtId : districtCountMap.keySet()) {
+                    Area area = Area.findAreaById(districtId);
+                    area.goodsCount = districtCountMap.get(districtId);
+                    areaList.add(area);
+                }
+            }
+        }
+        return areaList;
     }
 
     public void setVirtualSaleCount(Long count) {

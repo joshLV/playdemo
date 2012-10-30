@@ -77,7 +77,6 @@ public class Category extends Model {
     /**
      * 是否显示.
      */
-    @SolrField
     public Boolean display;
 
     /**
@@ -85,6 +84,7 @@ public class Category extends Model {
      */
     @ManyToOne
     @JoinColumn(name = "parent_id")
+    @SolrEmbedded
     public Category parentCategory;
 
 
@@ -138,8 +138,13 @@ public class Category extends Model {
 
     @SolrField
     @Override
-    public Long getId(){
+    public Long getId() {
         return id;
+    }
+
+    @Transient
+    public boolean isRoot(){
+        return parentCategory == null;
     }
 
     //-------------------------------------- 数据库操作 ------------------------------------
@@ -158,7 +163,7 @@ public class Category extends Model {
         List<Category> topCategories = new ArrayList<>();
         for (Category category : categories) {
             category.goodsCount = models.sales.Goods.countOnSaleByTopCategory(category.id);
-            if (category.goodsCount>0){
+            if (category.goodsCount > 0) {
                 topCategories.add(category);
             }
         }

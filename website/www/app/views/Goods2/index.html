@@ -10,218 +10,220 @@
 *{#{/set}}*
 <link rel="stylesheet" href="http://192.168.18.242/yome/home/src/list.css"/>
 <div class="wrapper">
-<div id="content" class="clearfix">
-<div class="crumbs">您现在的位置：<a href="">首页</a> > <a href="">餐饮美食</a> > 厢里厢邻</div>
-<div id="section">
-    <div id="filter">
-        <dl class="cate clearfix">
-            <dt>分类：</dt>
-            <dd>
-                <ul class="some clearfix">
-                    <li><a href="" #{if categoryId == null || categoryId == 0l}class="curr"#{/if}>全部(${onSaleGoodsCount})</a></li>
-                #{list topCategories, as:'topCategory'}
-                    <li><a href="" #{if topCategory.id == categoryId}class="curr"#{/if}>${topCategory.name}
-                        <em>(${topCategory.goodsCount})</em></a></li>
-                #{/list}
-                </ul>
-            #{if subCategories!= null}
-                <div class="outer">
-                    <ul class="more clearfix">
-                        #{list subCategories,as:'subCategory'}
-                            <li><a href="" class="curr">${subCategory.name}<em>(${subCategory.goodsCount})</em></a></li>
+    <div id="content" class="clearfix">
+        <div class="crumbs">您现在的位置：<a href="">首页</a> > <a href="">餐饮美食</a> > 厢里厢邻</div>
+        <div id="section">
+            <div id="filter">
+                <dl class="cate clearfix">
+                    <dt>分类：</dt>
+                    <dd>
+                        <ul class="some clearfix">
+                            <li><a href="" #{if categoryId == null || categoryId == 0l}class="curr"#{/if}>全部(${onSaleGoodsCount})</a></li>
+                        #{list searchCategories, as:'category'}
+                            <li><a href="/s/${category.id}" #{if category.id == categoryId}class="curr"#{/if}>${category.name}
+                                <em>(${category.goodsCount})</em></a></li>
                         #{/list}
-                    </ul>
-                </div>
-            #{/if}
-            </dd>
-        </dl>
-        <dl class="area clearfix">
-            <dt>区域：</dt>
-            <dd>
-                <ul class="some clearfix">
-                    <li><a href="">全部(23456)</a></li>
-                    <li><a href="">卢湾区(254)</a></li>
-                    <li><a class="curr" href="">徐汇区(122)</a></li>
-                    <li><a href="">静安区(23)</a></li>
-                    <li><a href="">长宁区(35)</a></li>
-                    <li><a href="">闵行区(90)</a></li>
-                    <li><a href="">浦东区(90)</a></li>
-                    <li><a href="">黄浦区(23)</a></li>
-                    <li><a href="">普陀区(35)</a></li>
-                    <li><a href="">闸北区(90)</a></li>
-                    <li><a href="">虹口区(90)</a></li>
-                    <li><a href="">杨浦区(23)</a></li>
-                    <li><a href="">宝山区(35)</a></li>
-                    <li><a href="">奉贤区(90)</a></li>
-                    <li><a href="">金山区(90)</a></li>
-                    <li><a href="">嘉定区(23)</a></li>
-                    <li><a href="">南汇区(35)</a></li>
-                    <li><a href="">松江区(90)</a></li>
-                    <li><a href="">青浦区(90)</a></li>
-                </ul>
-                <div class="outer">
-                    <ul class="more clearfix">
-                        <li><a class="curr" href="">淮海路<em>(423)</em></a></li>
-                        <li><a href="">新天地<em>(423)</em></a></li>
-                        <li><a href="">瑞金宾馆区<em>(53)</em></a></li>
-                        <li><a href="">打浦桥<em>(243)</em></a></li>
-                    </ul>
-                </div>
-            </dd>
-        </dl>
-    </div>
-
-    <div id="result">
-        <div class="hd clearfix">
-            <s></s>
-
-            <div class="sort">
-                <a class="curr" href="">全部商品</a>
-                <a href="">最新上架</a>
-                <a class="desc" href="">销量最多</a>
-                <a class="asc" href="">价格最低</a>
-            </div>
-            <div class="sift">
-                <input id="qb" type="checkbox" value=""/><label for="qb">无须预约</label>
-                <input id="dz" type="checkbox" value=""/><label for="dz">电子券</label>
-                <input id="st" type="checkbox" value=""/><label for="st">实体券</label>
-            </div>
-        </div>
-        <div class="bd">
-            <ul class="goods clearfix">
-            #{set j:0/}
-            #{paginate.list goodsPage,as:'aGoods'}
-                #{set j:j+1/}
-                <li #{if j%3 == 1}class="first"#{/if}>
-                    <div class="inner">
-                        <div class="image">
-                            <a href="" target="_blank"><img src="${aGoods.imageSmallPath}" width="199"
-                                                            height="152"/></a>
-                            #{if aGoods.areaNames?.size()>0}<a class="region" href=""
-                                                               target="_blank"><span>商圈：</span>${aGoods.areaNames}
-                            </a>#{/if}
+                        </ul>
+                    #{if subCategories!= null}
+                        <div class="outer">
+                            <ul class="more clearfix">
+                                #{list subCategories,as:'subCategory'}
+                                    <li><a href="/s/${subCategory.id}"
+                                        #{if (subCategory.id == categoryId)
+                                        || (subCategory.id == 0 && category?.isRoot())
+                                        }class="curr"#{/if}>${subCategory.name}<em>(${subCategory.goodsCount})</em></a>
+                                    </li>
+                                #{/list}
+                            </ul>
                         </div>
-                        <div class="title"><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
-                        <div class="attribute">
-                            <div class="left">
-                                <div class="price">&yen;${aGoods.salePrice}</div>
-                                <del>原价：${aGoods.faceValue}</del>
-                                <div class="count"><em>${aGoods?.virtualSaleCount}</em>人已购买</div>
-                            </div>
-                            <div class="addCart"><a href="#">加入购物车</a></div>
+                    #{/if}
+                    </dd>
+                </dl>
+                <dl class="area clearfix">
+                    <dt>区域：</dt>
+                    <dd>
+                        <ul class="some clearfix">
+                            <li><a href="" #{if searchAreaId == null}class="curr"#{/if}>全部(${onSaleGoodsCount})</a></li>
+                        #{list districts,as:'area'}
+                            <li><a href="" #{if area.id.equals(searchAreaId)}class="curr"#{/if}>${area.name}
+                                <em>(${area.goodsCount})</em></a></li>
+                        #{/list}
+                        </ul>
+                    #{if searchAreas!= null}
+                        <div class="outer">
+                            <ul class="more clearfix">
+                            #{list searchAreas,as:'area'}
+                                <li><a href="" #{if area.id.equals(searchAreaId)}class="curr"#{/if}>${area.name}
+                                    <em>(${area.goodsCount})</em></a></li>
+                            #{/list}
+                            </ul>
                         </div>
+                    #{/if}
+                    </dd>
+                </dl>
+            </div>
+
+            <div id="result">
+                <div class="hd clearfix">
+                    <s></s>
+
+                    <div class="sort">
+                        <a class="curr" href="">全部商品</a>
+                        <a href="">最新上架</a>
+                        <a class="desc" href="">销量最多</a>
+                        <a class="asc" href="">价格最低</a>
                     </div>
-                </li>
-            #{/paginate.list}
-            </ul>
-        #{paginate.controls items:goodsPage /}
+                    <div class="sift">
+                        <input id="qb" type="checkbox" value=""/><label for="qb">无须预约</label>
+                        <input id="dz" type="checkbox" value=""/><label for="dz">电子券</label>
+                        <input id="st" type="checkbox" value=""/><label for="st">实体券</label>
+                    </div>
+                </div>
+                <div class="bd">
+                    <ul class="goods clearfix">
+                    #{set j:0/}
+                    #{paginate.list items:goodsPage,as:'aGoods'}
+                        #{set j:j+1/}
+                        <li #{if j%3 == 1}class="first"#{/if}>
+                            <div class="inner">
+                                <div class="image">
+                                    <a href="" target="_blank"><img src="${aGoods.imageSmallPath}" width="199"
+                                                                    height="152"/></a>
+                                    #{if aGoods.areaNames?.size()>0}<a class="region" href=""
+                                                                       target="_blank"><span>商圈：</span>${aGoods.areaNames}
+                                    </a>#{/if}
+                                </div>
+                                <div class="title"><a href="/goods/${aGoods.id}" target="_blank">${aGoods.getHighLightName(s).raw()}</a>
+                                </div>
+                                <div class="attribute">
+                                    <div class="left">
+                                        <div class="price">&yen;${aGoods.salePrice}</div>
+                                        <del>原价：${aGoods.faceValue}</del>
+                                        <div class="count"><em>${aGoods?.virtualSaleCount}</em>人已购买</div>
+                                    </div>
+                                    <div class="addCart"><a href="#">加入购物车</a></div>
+                                </div>
+                            </div>
+                        </li>
+                    #{/paginate.list}
+                    </ul>
+                #{paginate.controls items:goodsPage /}
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-<!-- #section -->
+        <!-- #section -->
 
-<div id="sidebar">
-    <div class="sidewrap">
-        <div class="hd">热销商品</div>
-        <ul class="bd">
-            <li>
-                <div class="image"><a href="" target="_blank"><img src="http://dummyimage.com/172x132" width="172"
-                                                                   height="132"/></a></div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]<br/>有家川菜现金券-免预约不限时</a></div>
-                <div class="attri">
-                    <del>原价：50.00</del>
-                </div>
-                <div class="price">现价：<b>&yen;40.00</b></div>
-            </li>
-            <li>
-                <div class="image"><a href="" target="_blank"><img src="http://dummyimage.com/172x132" width="172"
-                                                                   height="132"/></a></div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]<br/>有家川菜现金券-免预约不限时</a></div>
-                <div class="attri">
-                    <del>原价：50.00</del>
-                </div>
-                <div class="price">现价：<b>&yen;40.00</b></div>
-            </li>
-            <li>
-                <div class="image"><a href="" target="_blank"><img src="http://dummyimage.com/172x132" width="172"
-                                                                   height="132"/></a></div>
-                <div class="title"><a href="" target="_blank">限时促-[多商区]<br/>有家川菜现金券-免预约不限时</a></div>
-                <div class="attri">
-                    <del>原价：50.00</del>
-                </div>
-                <div class="price">现价：<b>&yen;40.00</b></div>
-            </li>
-        </ul>
-        <div class="ft"><a href="" target="_blank">更多 >> </a></div>
+        <div id="sidebar">
+            <div class="sidewrap">
+                <div class="hd">热销商品</div>
+                <ul class="bd">
+                    <li>
+                        <div class="image"><a href="" target="_blank"><img src="http://dummyimage.com/172x132"
+                                                                           width="172"
+                                                                           height="132"/></a></div>
+                        <div class="title"><a href="" target="_blank">限时促-[多商区]<br/>有家川菜现金券-免预约不限时</a></div>
+                        <div class="attri">
+                            <del>原价：50.00</del>
+                        </div>
+                        <div class="price">现价：<b>&yen;40.00</b></div>
+                    </li>
+                    <li>
+                        <div class="image"><a href="" target="_blank"><img src="http://dummyimage.com/172x132"
+                                                                           width="172"
+                                                                           height="132"/></a></div>
+                        <div class="title"><a href="" target="_blank">限时促-[多商区]<br/>有家川菜现金券-免预约不限时</a></div>
+                        <div class="attri">
+                            <del>原价：50.00</del>
+                        </div>
+                        <div class="price">现价：<b>&yen;40.00</b></div>
+                    </li>
+                    <li>
+                        <div class="image"><a href="" target="_blank"><img src="http://dummyimage.com/172x132"
+                                                                           width="172"
+                                                                           height="132"/></a></div>
+                        <div class="title"><a href="" target="_blank">限时促-[多商区]<br/>有家川菜现金券-免预约不限时</a></div>
+                        <div class="attri">
+                            <del>原价：50.00</del>
+                        </div>
+                        <div class="price">现价：<b>&yen;40.00</b></div>
+                    </li>
+                </ul>
+                <div class="ft"><a href="" target="_blank">更多 >> </a></div>
+            </div>
+            <div class="sidewrap">
+                <div class="hd">您可能感兴趣的商品</div>
+                <ul class="bd clearfix">
+                    <li>
+                        <div class="image"><a href="" target="_blank"><img src="http://dummyimage.com/172x132"
+                                                                           width="172"
+                                                                           height="132"/></a></div>
+                        <div class="title"><a href="" target="_blank">限时促多商区限时促多商区限时促多商区限时促多商区限时促多</a></div>
+                        <div class="attri">
+                            <del>原价：50.00</del>
+                        </div>
+                        <div class="price">现价：<b>&yen;40.00</b></div>
+                    </li>
+                    <li>
+                        <div class="image"><a href="" target="_blank"><img src="http://dummyimage.com/172x132"
+                                                                           width="172"
+                                                                           height="132"/></a></div>
+                        <div class="title"><a href="" target="_blank">限时促多商区限时促多商区限时促多商区限时促多商区限时促多</a></div>
+                        <div class="attri">
+                            <del>原价：50.00</del>
+                        </div>
+                        <div class="price">现价：<b>&yen;40.00</b></div>
+                    </li>
+                    <li>
+                        <div class="image"><a href="" target="_blank"><img src="http://dummyimage.com/172x132"
+                                                                           width="172"
+                                                                           height="132"/></a></div>
+                        <div class="title"><a href="" target="_blank">限时促多商区限时促多商区限时促多商区限时促多商区限时促多</a></div>
+                        <div class="attri">
+                            <del>原价：50.00</del>
+                        </div>
+                        <div class="price">现价：<b>&yen;40.00</b></div>
+                    </li>
+                </ul>
+                <div class="ft"><a href="" target="_blank">更多 >> </a></div>
+            </div>
+            <div class="sidewrap">
+                <div class="hd">您浏览过的商品</div>
+                <ul class="bd clearfix">
+                    <li>
+                        <div class="image"><a href="" target="_blank"><img src="http://dummyimage.com/172x132"
+                                                                           width="172"
+                                                                           height="132"/></a></div>
+                        <div class="title"><a href="" target="_blank">限时促多商区限时促多商区限时促多商区限时促多商区限时促多</a></div>
+                        <div class="attri">
+                            <del>原价：50.00</del>
+                        </div>
+                        <div class="price">现价：<b>&yen;40.00</b></div>
+                    </li>
+                    <li>
+                        <div class="image"><a href="" target="_blank"><img src="http://dummyimage.com/172x132"
+                                                                           width="172"
+                                                                           height="132"/></a></div>
+                        <div class="title"><a href="" target="_blank">限时促多商区限时促多商区限时促多商区限时促多商区限时促多</a></div>
+                        <div class="attri">
+                            <del>原价：50.00</del>
+                        </div>
+                        <div class="price">现价：<b>&yen;40.00</b></div>
+                    </li>
+                    <li>
+                        <div class="image"><a href="" target="_blank"><img src="http://dummyimage.com/172x132"
+                                                                           width="172"
+                                                                           height="132"/></a></div>
+                        <div class="title"><a href="" target="_blank">限时促多商区限时促多商区限时促多商区限时促多商区限时促多</a></div>
+                        <div class="attri">
+                            <del>原价：50.00</del>
+                        </div>
+                        <div class="price">现价：<b>&yen;40.00</b></div>
+                    </li>
+                </ul>
+            </div>
+            <img src="http://dummyimage.com/200x120" alt=""/>
+        </div>
+        <!-- #sidebar -->
     </div>
-    <div class="sidewrap">
-        <div class="hd">您可能感兴趣的商品</div>
-        <ul class="bd clearfix">
-            <li>
-                <div class="image"><a href="" target="_blank"><img src="http://dummyimage.com/172x132" width="172"
-                                                                   height="132"/></a></div>
-                <div class="title"><a href="" target="_blank">限时促多商区限时促多商区限时促多商区限时促多商区限时促多</a></div>
-                <div class="attri">
-                    <del>原价：50.00</del>
-                </div>
-                <div class="price">现价：<b>&yen;40.00</b></div>
-            </li>
-            <li>
-                <div class="image"><a href="" target="_blank"><img src="http://dummyimage.com/172x132" width="172"
-                                                                   height="132"/></a></div>
-                <div class="title"><a href="" target="_blank">限时促多商区限时促多商区限时促多商区限时促多商区限时促多</a></div>
-                <div class="attri">
-                    <del>原价：50.00</del>
-                </div>
-                <div class="price">现价：<b>&yen;40.00</b></div>
-            </li>
-            <li>
-                <div class="image"><a href="" target="_blank"><img src="http://dummyimage.com/172x132" width="172"
-                                                                   height="132"/></a></div>
-                <div class="title"><a href="" target="_blank">限时促多商区限时促多商区限时促多商区限时促多商区限时促多</a></div>
-                <div class="attri">
-                    <del>原价：50.00</del>
-                </div>
-                <div class="price">现价：<b>&yen;40.00</b></div>
-            </li>
-        </ul>
-        <div class="ft"><a href="" target="_blank">更多 >> </a></div>
-    </div>
-    <div class="sidewrap">
-        <div class="hd">您浏览过的商品</div>
-        <ul class="bd clearfix">
-            <li>
-                <div class="image"><a href="" target="_blank"><img src="http://dummyimage.com/172x132" width="172"
-                                                                   height="132"/></a></div>
-                <div class="title"><a href="" target="_blank">限时促多商区限时促多商区限时促多商区限时促多商区限时促多</a></div>
-                <div class="attri">
-                    <del>原价：50.00</del>
-                </div>
-                <div class="price">现价：<b>&yen;40.00</b></div>
-            </li>
-            <li>
-                <div class="image"><a href="" target="_blank"><img src="http://dummyimage.com/172x132" width="172"
-                                                                   height="132"/></a></div>
-                <div class="title"><a href="" target="_blank">限时促多商区限时促多商区限时促多商区限时促多商区限时促多</a></div>
-                <div class="attri">
-                    <del>原价：50.00</del>
-                </div>
-                <div class="price">现价：<b>&yen;40.00</b></div>
-            </li>
-            <li>
-                <div class="image"><a href="" target="_blank"><img src="http://dummyimage.com/172x132" width="172"
-                                                                   height="132"/></a></div>
-                <div class="title"><a href="" target="_blank">限时促多商区限时促多商区限时促多商区限时促多商区限时促多</a></div>
-                <div class="attri">
-                    <del>原价：50.00</del>
-                </div>
-                <div class="price">现价：<b>&yen;40.00</b></div>
-            </li>
-        </ul>
-    </div>
-    <img src="http://dummyimage.com/200x120" alt=""/>
-</div>
-<!-- #sidebar -->
-</div>
-<!-- #content -->
+    <!-- #content -->
 </div>

@@ -110,10 +110,25 @@ public class Shop extends Model {
     @SolrField
     public String cityId;
 
-    @Transient
-    @SolrField
-    public String districtId;
+    private String districtId;
 
+    @Transient
+//    @SolrField
+    public String getDistrictId() {
+        if (districtId != null) {
+            return districtId;
+        }
+        if (StringUtils.isBlank(areaId) || areaId.length() < 5) {
+            return null;
+        }
+
+        districtId = areaId.substring(0, 5);
+        return districtId;
+    }
+
+    public void setDistrictId(String districtId) {
+        this.districtId = districtId;
+    }
 
     public static final String CACHEKEY = "SHOP";
 
