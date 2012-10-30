@@ -556,8 +556,7 @@ public class Goods extends Model {
     @JoinColumn(name = "goods_id")
     public List<ResalerFav> resalerFavs;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "goods_id")
+    @OneToMany(mappedBy = "goods")
     public List<GoodsImages> goodsImagesList;
 
     /**
@@ -1230,6 +1229,7 @@ public class Goods extends Model {
         return isExist;
     }
 
+    @Transient
     @SolrField
     public Collection<Shop> getShopList() {
         if (isAllShop) {
@@ -1253,6 +1253,22 @@ public class Goods extends Model {
                     }
                 }
                 return shopSet;
+            }
+        });
+    }
+
+    @Transient
+    public List<GoodsImages> getCachedGoodsImagesList() {
+        final long goodsId = this.id;
+        return CacheHelper.getCache(CacheHelper.getCacheKey(GoodsImages.CACHEKEY_GOODSID + goodsId, "GOODS_IMAGES"), new CacheCallBack<List<GoodsImages>>() {
+            @Override
+            public List<GoodsImages> loadData() {
+                Goods goods1 = Goods.findById(goodsId);
+                List<GoodsImages> imagesList = new ArrayList<>();
+                for (GoodsImages images : goods1.goodsImagesList) {
+                    imagesList.add(images);
+                }
+                return imagesList;
             }
         });
     }

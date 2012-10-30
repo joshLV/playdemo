@@ -12,12 +12,15 @@ import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Area;
 import models.sales.Brand;
+import models.sales.BrowsedGoods;
 import models.sales.Category;
 import models.sales.Goods;
 import models.sales.GoodsCondition;
 import models.sales.GoodsHistory;
 import models.sales.GoodsStatistics;
 import models.sales.GoodsStatisticsType;
+import models.sales.GoodsStatus;
+import models.sales.Shop;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import play.modules.breadcrumbs.Breadcrumb;
@@ -30,6 +33,8 @@ import play.mvc.With;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -170,6 +175,39 @@ public class Goods2 extends Controller {
         }
     }
 
+    /**
+     * 商品详情.
+     *
+     * @param id 商品
+     */
+    public static void show(final long id) {
+        final Long userId = SecureCAS.getUser() == null ? null : SecureCAS
+                .getUser().getId();
+        CacheHelper.preRead(CacheHelper.getCacheKey(
+                models.sales.Goods.CACHEKEY_BASEID + id, "UNDELETED"),
+                CacheHelper.getCacheKey(
+                        models.sales.Goods.CACHEKEY_BASEID + id, "KEYWORDMAP"),
+                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id,
+                        "BREADCRUMBS"), CacheHelper.getCacheKey(
+                new String[]{Order.CACHEKEY_BASEUSERID + userId,
+                        models.sales.Goods.CACHEKEY_BASEID + id},
+                "LIMITNUMBER"));
+        final models.sales.Goods goods = CacheHelper.getCache(CacheHelper
+                .getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id,
+                        "UNDELETED"), new CacheCallBack<models.sales.Goods>() {
+            @Override
+            public models.sales.Goods loadData() {
+                return models.sales.Goods.findUnDeletedById(id);
+            }
+        });
+
+        if (goods == null) {
+            error(404, "没有找到该商品！");
+        }
+        showGoods(goods);
+        render();
+    }
+
     public static void preview(String uuid, boolean isSupplier) {
         models.sales.Goods goods = models.sales.Goods.getPreviewGoods(uuid);
         if (goods == null) {
@@ -217,8 +255,23 @@ public class Goods2 extends Controller {
                         return getGoodsBreadCrumbs(goods.id);
                     }
                 });
+        final Date currentDate = new Date();
+        //右上侧图片展示
+        List<Block> rightSlides = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "RIGHT_SLIDES"), new CacheCallBack<List<Block>>() {
+            @Override
+            public List<Block> loadData() {
+                return Block.findByType(BlockType.WEBSITE_RIGHT_SLIDE, currentDate);
+            }
+        });
 
-        // 网友推荐商品
+        //热卖商品，销量最多的商品
+        List<models.sales.Goods> hotSaleGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_HOT_SALE4"), new CacheCallBack<List<models.sales.Goods>>() {
+            @Override
+            public List<models.sales.Goods> loadData() {
+                return models.sales.Goods.findTopHotSale(4);
+            }
+        });
+        //感兴趣的商品
         List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(
                 CacheHelper.getCacheKey(new String[]{models.sales.Goods.CACHEKEY,
                         models.sales.Goods.CACHEKEY_BASEID + goods.id},
@@ -229,7 +282,25 @@ public class Goods2 extends Controller {
                         return models.sales.Goods.findSupplierTopRecommend(5, goods);
                     }
                 });
+        //统计浏览的数量
         GoodsStatistics.addVisitorCount(goods.id);
+
+        //记录用户浏览过的商品
+        Http.Cookie idCookie = request.cookies.get("identity");
+        final String cookieValue = idCookie == null ? null : idCookie.value;
+        BrowsedGoods.addVisitorCount(user, cookieValue, goods);
+
+        //查询浏览过的商品
+        List<BrowsedGoods> browsedGoodsList = CacheHelper.getCache(
+                CacheHelper.getCacheKey(new String[]{models.sales.Goods.CACHEKEY,
+                        models.sales.Goods.CACHEKEY_BASEID + goods.id},
+                        "BROWSED_GOODS"),
+                new CacheCallBack<List<BrowsedGoods>>() {
+                    @Override
+                    public List<BrowsedGoods> loadData() {
+                        return BrowsedGoods.find(user, cookieValue, 5);
+                    }
+                });
 
         String tjUrl = "http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/g/" + goods.id;
         if (user != null) {
@@ -240,13 +311,42 @@ public class Goods2 extends Controller {
         }
 
         renderArgs.put("tjUrl", tjUrl);
-
+        renderArgs.put("hotSaleGoodsList", hotSaleGoodsList);
+        renderArgs.put("browsedGoodsList", browsedGoodsList);
+        renderArgs.put("rightSlides", rightSlides);
         renderArgs.put("goods", goods);
-        renderArgs.put("shops", goods.getShopList());
+        renderArgs.put("imagesList", goods.getCachedGoodsImagesList());
         renderArgs.put("breadcrumbs", breadcrumbs);
         renderArgs.put("recommendGoodsList", recommendGoodsList);
     }
 
+    /**
+     * 获取商户的门店信息
+     *
+     * @param id
+     */
+    public static void shops(Long id) {
+        String currPage = params.get("currPage");
+        int pageNumber = StringUtils.isEmpty(currPage) ? 1 : Integer.parseInt(currPage);
+        String pageSize1 = params.get("pageSize");
+        int pageSize = StringUtils.isEmpty(pageSize1) ? 1 : Integer.parseInt(pageSize1);
+        final Long goodsId = id;
+        final models.sales.Goods goods = CacheHelper.getCache(CacheHelper
+                .getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id,
+                        "UNDELETED"), new CacheCallBack<models.sales.Goods>() {
+            @Override
+            public models.sales.Goods loadData() {
+                return models.sales.Goods.findUnDeletedById(goodsId);
+            }
+        });
+
+        ValuePaginator<Shop> shops = new ValuePaginator<>(
+                goods.getShopList());
+        shops.setPageNumber(pageNumber);
+        shops.setPageSize(pageSize);
+
+        render("Goods2/shops.json", shops, pageNumber, pageSize);
+    }
 
     private static void showGoodsHistory(final GoodsHistory goodsHistory) {
         if (goodsHistory == null) {
@@ -336,59 +436,25 @@ public class Goods2 extends Controller {
     }
 
     /**
-     * 商品详情.
+     * 获取用户的咨询信息
      *
-     * @param id 商品
+     * @param id
      */
-    public static void show(final long id) {
-        Http.Cookie idCookie = request.cookies.get("identity");
-        final String cookieValue = idCookie == null ? null : idCookie.value;
+    public static void questions(Long id) {
+
         final Long userId = SecureCAS.getUser() == null ? null : SecureCAS
                 .getUser().getId();
+        Http.Cookie idCookie = request.cookies.get("identity");
+        final String cookieValue = idCookie == null ? null : idCookie.value;
 
         CacheHelper.preRead(CacheHelper.getCacheKey(
-                models.sales.Goods.CACHEKEY_BASEID + id, "UNDELETED"),
-                CacheHelper.getCacheKey(
-                        models.sales.Goods.CACHEKEY_BASEID + id, "KEYWORDMAP"),
-                CacheHelper.getCacheKey(
-                        models.sales.Goods.CACHEKEY_BASEID + id, "QUESTION_u"
-                        + userId + "_c" + cookieValue), CacheHelper
-                .getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id,
-                        "BREADCRUMBS"), CacheHelper.getCacheKey(
-                new String[]{Order.CACHEKEY_BASEUSERID + userId,
-                        models.sales.Goods.CACHEKEY_BASEID + id},
-                "LIMITNUMBER"));
-        final models.sales.Goods goods = CacheHelper.getCache(CacheHelper
-                .getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id,
-                        "UNDELETED"), new CacheCallBack<models.sales.Goods>() {
-            @Override
-            public models.sales.Goods loadData() {
-                return models.sales.Goods.findUnDeletedById(id);
-            }
-        });
-
-        if (goods == null) {
-            error(404, "没有找到该商品！");
-        }
-
-        // 记录用户浏览过的商品
-        Http.Cookie cookie = request.cookies.get("saw_goods_ids");
-        String sawGoodsIds = ",";
-        if (cookie != null) {
-            if (!cookie.value.contains("," + id + ",")) {
-                sawGoodsIds = "," + id + cookie.value;
-                if (sawGoodsIds.length() > 100) {
-                    sawGoodsIds = sawGoodsIds.substring(0, 100);
-                }
-            } else {
-                sawGoodsIds = cookie.value;
-            }
-        }
-
-        response.setCookie("saw_goods_ids", sawGoodsIds);
-
-        showGoods(goods);
-
+                models.sales.Goods.CACHEKEY_BASEID + id, "QUESTION_u"
+                + userId + "_c" + cookieValue));
+        String currPage = params.get("currPage");
+        int pageNumber = StringUtils.isEmpty(currPage) ? 1 : Integer.parseInt(currPage);
+        String pageSize1 = params.get("pageSize");
+        int pageSize = StringUtils.isEmpty(pageSize1) ? 1 : Integer.parseInt(pageSize1);
+        final Long goodsId = id;
         List<CmsQuestion> questions = CacheHelper.getCache(CacheHelper
                 .getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id,
                         "QUESTION_u" + userId + "_c" + cookieValue),
@@ -396,12 +462,15 @@ public class Goods2 extends Controller {
                     @Override
                     public List<CmsQuestion> loadData() {
                         return CmsQuestion.findOnGoodsShow(userId, cookieValue,
-                                id, GoodsType.NORMALGOODS, 0, 10);
+                                goodsId, GoodsType.NORMALGOODS, 0, 999);
                     }
                 });
-        renderArgs.put("questions", questions);
+        System.out.println(questions.size());
+        ValuePaginator<CmsQuestion> cmsQuestions = new ValuePaginator<>(questions);
+        cmsQuestions.setPageNumber(pageNumber);
+        cmsQuestions.setPageSize(pageSize);
 
-        render();
+        render("Goods2/questions.json", cmsQuestions, pageNumber, pageSize);
     }
 
     /**

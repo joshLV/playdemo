@@ -1,10 +1,14 @@
 package controllers;
 
+import com.uhuila.common.constants.PlatformType;
 import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
 import models.cms.Topic;
+import models.cms.TopicType;
 import play.mvc.Controller;
 import play.mvc.With;
+
+import java.util.List;
 
 /**
  * .
@@ -47,5 +51,10 @@ public class WEBApplication extends Controller {
             error(404, "没有找到该商品！");
         }
         render(topic);
+    }
+
+    public static void list() {
+        List<Topic> topicList = Topic.findByCondition(PlatformType.UHUILA, TopicType.TOPIC);
+        render(topicList);
     }
 }

@@ -1,10 +1,15 @@
 package models.sales;
 
+import cache.CacheHelper;
 import com.uhuila.common.util.PathUtil;
 import play.Play;
 import play.db.jpa.Model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
 
 /**
@@ -16,8 +21,10 @@ import java.util.Date;
 @Table(name = "goods_images")
 @Entity
 public class GoodsImages extends Model {
+    private static final long serialVersionUID = 4063131063912510682L;
     @ManyToOne
     public Goods goods;
+
     public static final String IMAGE_TINY = "60x46_nw";
     public static final String IMAGE_SMALL = "172x132";
     public static final String IMAGE_MIDDLE = "234x178";
@@ -76,6 +83,25 @@ public class GoodsImages extends Model {
     @Transient
     public String getImageOriginalPath() {
         return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_ORIGINAL);
+    }
+   public static final String CACHEKEY = "IMAGE";
+
+    public static final String CACHEKEY_GOODSID = "GOODS_ID";
+
+    @Override
+    public void _save() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);
+        CacheHelper.delete(CACHEKEY_GOODSID + this.goods.id);
+        super._save();
+    }
+
+    @Override
+    public void _delete() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);
+        CacheHelper.delete(CACHEKEY_GOODSID + this.goods.id);
+        super._delete();
     }
 
     public GoodsImages(Goods goods, String imagePath) {

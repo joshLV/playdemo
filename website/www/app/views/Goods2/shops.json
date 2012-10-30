@@ -1,11 +1,14 @@
-[
-#{list items:shops, as:'shop'}
-#{if shop_index > 1},#{/if}
+%{count=shops?.size();
+page= (pageNumber-1) * pageSize;
+}%
 {
-"name":"${shop.name}",
-"addr":"${shop.address}",
-"tel":"${shop.phone}",
-"latlng":"${shop?.latitude},${shop?.longitude}"
+    "status": #{if count>0}0#{/if}#{else}-1#{/else},
+    "totalOutlet": ${count},
+    "outletList":
+    [#{paginate.list1 items:shops, as:'shop'}#{if shop_index > 1 && (page+1)% shop_index  !=0},#{/if}{
+        "name": "${shop.name}",
+        "addr": "${shop.address}",
+        "tel": "${shop.phone}",
+        "latlng": "${shop?.latitude},${shop?.longitude}"}
+    #{/paginate.list1}]
 }
-#{/list}
-]

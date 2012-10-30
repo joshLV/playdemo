@@ -10,6 +10,7 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
@@ -33,9 +34,9 @@ import com.uhuila.common.constants.PlatformType;
 @Entity
 @Table(name = "cms_topic")
 public class Topic extends Model {
-    
+
     private static final long serialVersionUID = 70632320609113062L;
-    
+
     @Required
 //    @MinSize(10)
     @MaxSize(60)
@@ -64,6 +65,7 @@ public class Topic extends Model {
     private String content;
 
     public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
+
     static {
         //增加可信标签到白名单
         HTML_WHITE_TAGS.addTags("embed", "object", "param", "span", "div", "table", "tbody", "tr", "td",
@@ -71,7 +73,7 @@ public class Topic extends Model {
         //增加可信属性
         HTML_WHITE_TAGS.addAttributes(":all", "style", "class", "id", "name");
         HTML_WHITE_TAGS.addAttributes("table", "style", "cellpadding", "cellspacing", "border", "bordercolor", "align");
-        HTML_WHITE_TAGS.addAttributes("span", "style","border","align");
+        HTML_WHITE_TAGS.addAttributes("span", "style", "border", "align");
         HTML_WHITE_TAGS.addAttributes("object", "width", "height", "classid", "codebase");
         HTML_WHITE_TAGS.addAttributes("param", "name", "value");
         HTML_WHITE_TAGS.addAttributes("embed", "src", "quality", "width", "height", "allowFullScreen",
@@ -82,21 +84,21 @@ public class Topic extends Model {
     public DeletedStatus deleted;
 
     public static final String CACHEKEY = "TOPIC";
-    
+
     @Override
     public void _save() {
         CacheHelper.delete(CACHEKEY);
         CacheHelper.delete(CACHEKEY + this.id);
         super._save();
     }
-    
+
     @Override
     public void _delete() {
         CacheHelper.delete(CACHEKEY);
-        CacheHelper.delete(CACHEKEY + this.id);        
+        CacheHelper.delete(CACHEKEY + this.id);
         super._delete();
     }
-    
+
     /**
      * 公告内容
      *
@@ -156,7 +158,7 @@ public class Topic extends Model {
         oldTopic.save();
     }
 
-    public static List<Topic> findByType(PlatformType platformType, TopicType type, Date currentDate,int limit) {
+    public static List<Topic> findByType(PlatformType platformType, TopicType type, Date currentDate, int limit) {
         final String orderBy = "displayOrder, effectiveAt desc, expireAt";
 
         List<Topic> topics = Topic.find("deleted = ? and  platformType= ? and type = ? and effectiveAt <= ? and expireAt >= ? order by " + orderBy,
@@ -166,6 +168,15 @@ public class Topic extends Model {
             topics = Topic.find("deleted = ?  and platformType = ? and type = ? order by " + orderBy,
                     DeletedStatus.UN_DELETED, platformType, type).fetch(limit);
         }
+
+        return topics;
+    }
+
+    public static List<Topic> findByCondition(PlatformType platformType, TopicType type) {
+        final String orderBy = "displayOrder, effectiveAt desc";
+
+        List<Topic> topics = Topic.find("deleted = ? and  platformType= ? and type = ?  order by " + orderBy,
+                DeletedStatus.UN_DELETED, platformType, type).fetch();
 
         return topics;
     }

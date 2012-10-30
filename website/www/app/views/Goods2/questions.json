@@ -1,0 +1,13 @@
+%{count=cmsQuestions?.size();
+page= (pageNumber-1) * pageSize;
+}%
+{
+    "status": #{if count>0}0#{/if}#{else}-1#{/else},
+    "total": ${count},
+    "list":
+        [#{paginate.list1 items:cmsQuestions, as:'question'}#{if question_index > 1 && (page+1)% question_index  !=0},#{/if}{
+        "question": "${question?.content?.raw()}",
+        "qdate": "${question?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}",
+        "answer": "${question?.reply?.raw()}",
+        "adate": "${question?.repliedAt?.format('yyyy-MM-dd HH:mm:ss')}"}#{/paginate.list1}]
+}
