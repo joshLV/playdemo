@@ -1,9 +1,12 @@
 package controllers;
 
-import cache.CacheCallBack;
-import cache.CacheHelper;
-import controllers.modules.website.cas.SecureCAS;
-import controllers.modules.website.cas.annotations.SkipCAS;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import models.cms.Block;
+import models.cms.BlockType;
 import models.cms.CmsQuestion;
 import models.cms.GoodsType;
 import models.consumer.User;
@@ -19,23 +22,23 @@ import models.sales.GoodsCondition;
 import models.sales.GoodsHistory;
 import models.sales.GoodsStatistics;
 import models.sales.GoodsStatisticsType;
-import models.sales.GoodsStatus;
 import models.sales.Shop;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.response.QueryResponse;
+
 import play.modules.breadcrumbs.Breadcrumb;
 import play.modules.breadcrumbs.BreadcrumbList;
 import play.modules.paginate.SimplePaginator;
+import play.modules.paginate.ValuePaginator;
 import play.mvc.After;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import cache.CacheCallBack;
+import cache.CacheHelper;
+import controllers.modules.website.cas.SecureCAS;
+import controllers.modules.website.cas.annotations.SkipCAS;
 
 /**
  * 商品控制器.
