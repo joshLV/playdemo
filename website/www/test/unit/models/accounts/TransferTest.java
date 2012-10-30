@@ -13,22 +13,23 @@ import play.test.UnitTest;
 
 import java.math.BigDecimal;
 
+import factory.FactoryBoy;
+
 /**
  * @author likang
  */
-public class TransferTest extends UnitTest{
-    private Account getAccount(){
+public class TransferTest extends UnitTest {
+    private Account getAccount() {
         return AccountUtil.getCreditableAccount(999L, AccountType.CONSUMER);
     }
+
     @Before
-    public void setup(){
-        Fixtures.delete(Account.class);
-        Fixtures.delete(AccountSequence.class);
-        Fixtures.delete(TradeBill.class);
+    public void setup() {
+        FactoryBoy.deleteAll();
     }
 
     @Test
-    public void transferTest(){
+    public void transferTest() {
         BigDecimal amount = new BigDecimal("10");
         BigDecimal uncashAmount = new BigDecimal("20");
 
@@ -42,7 +43,7 @@ public class TransferTest extends UnitTest{
                 uncashAmount);
         TradeUtil.success(tradeBill, "测试转账");
 
-        assertEquals(0,  amount.compareTo(getAccount().amount));
+        assertEquals(0, amount.compareTo(getAccount().amount));
         assertEquals(0, uncashAmount.compareTo(getAccount().uncashAmount));
 
         assertEquals(0, amount.negate().compareTo(AccountUtil.getFinancingIncomingAccount().amount));

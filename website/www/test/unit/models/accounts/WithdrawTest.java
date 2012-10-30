@@ -12,22 +12,21 @@ import play.test.UnitTest;
 
 import java.math.BigDecimal;
 
+import factory.FactoryBoy;
+
 /**
  * @author likang
  */
-public class WithdrawTest extends UnitTest{
+public class WithdrawTest extends UnitTest {
     BigDecimal balance = new BigDecimal("1000");
 
-    private Account getConsumerAccount(){
+    private Account getConsumerAccount() {
         return AccountUtil.getConsumerAccount(999L);
     }
 
     @Before
-    public void setup(){
-        Fixtures.delete(Account.class);
-        Fixtures.delete(AccountSequence.class);
-        Fixtures.delete(TradeBill.class);
-        Fixtures.delete(WithdrawBill.class);
+    public void setup() {
+        FactoryBoy.deleteAll();
 
         Account account = getConsumerAccount();
         account.amount = balance;
@@ -35,7 +34,7 @@ public class WithdrawTest extends UnitTest{
     }
 
     @Test
-    public void testRefund(){
+    public void testRefund() {
 
         assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPlatformWithdrawAccount().amount));
         assertEquals(0, balance.compareTo(getConsumerAccount().amount));

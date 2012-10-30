@@ -1,9 +1,6 @@
 package unit.models.accounts;
 
-import models.accounts.Account;
-import models.accounts.AccountSequence;
-import models.accounts.AccountType;
-import models.accounts.TradeBill;
+import models.accounts.*;
 import models.accounts.util.AccountUtil;
 import models.order.ECoupon;
 import models.order.Order;
@@ -16,34 +13,41 @@ import play.test.UnitTest;
 
 import java.math.BigDecimal;
 
+import factory.FactoryBoy;
+import factory.callback.SequenceCallback;
+
 /**
  * @author : likang
  */
-public class OrderConsumeTest extends UnitTest{
+public class OrderConsumeTest extends UnitTest {
+    Goods realGoods;
+    Goods eGoods;
+    Order order;
+    OrderItems orderItemElectric;
+    OrderItems orderItemReal;
+    ECoupon coupon;
+    Account account;
+    PaymentSource paymentSource;
+
     private static final BigDecimal BALANCE = new BigDecimal("100");
 
-    private Account getAccount(){
+    private Account getAccount() {
         return AccountUtil.getAccount(999L, AccountType.CONSUMER);
     }
 
-    private Order getOrder(){
-        Long orderId = (Long)Fixtures.idCache.get("models.order.Order-simple_order");
-        return Order.findById(orderId);
-    }
-
     @Before
-    public void setup(){
-        Fixtures.delete(OrderItems.class);
-        Fixtures.delete(Order.class);
-        Fixtures.delete(Goods.class);
-        Fixtures.delete(Account.class);
-        Fixtures.delete(AccountSequence.class);
-        Fixtures.delete(TradeBill.class);
-        Fixtures.delete(ECoupon.class);
-        Fixtures.loadModels("fixture/payment_source.yml", "fixture/account_test_order.yml");
-        Account account = getAccount();
+    public void setup() {
+        FactoryBoy.deleteAll();
+        realGoods = FactoryBoy.create(Goods.class, "Real");
+        order = FactoryBoy.create(Order.class, "orderForAccountsTest");
+        orderItemReal = FactoryBoy.create(OrderItems.class, "orderItemReal");
+        eGoods = FactoryBoy.create(Goods.class, "Electronic");
+        orderItemElectric = FactoryBoy.create(OrderItems.class, "orderItemElectric");
+        coupon = FactoryBoy.create(ECoupon.class, "couponForCommissionsTest");
+        paymentSource = FactoryBoy.create(PaymentSource.class);
+
+        account = getAccount();
         account.amount = BALANCE;
-        Order order = getOrder();
         order.setUser(account.uid, account.accountType);
         order.save();
     }
@@ -52,9 +56,8 @@ public class OrderConsumeTest extends UnitTest{
      * 测试余额+银行卡支付
      */
     @Test
-    public void testConsume(){
+    public void testConsume() {
         assertEquals(0, getAccount().amount.compareTo(BALANCE));
-        Order order = getOrder();
         order.paid();
         assertEquals(0, BALANCE.subtract(order.accountPay).compareTo(getAccount().amount));//余额减少
         assertEquals(0, order.discountPay.negate().compareTo(AccountUtil.getPaymentPartnerAccount("alipay").amount));//支付宝虚拟账户
@@ -71,13 +74,12 @@ public class OrderConsumeTest extends UnitTest{
     /**
      * 测试纯余额支付
      */
-    public void testAllPayByBalance(){
-        assertEquals(BALANCE ,getAccount().amount);
-        Order order = getOrder();
+    public void testAllPayByBalance() {
+        assertEquals(BALANCE, getAccount().amount);
         order.discountPay = BigDecimal.ZERO;
         order.save();
 
-        getOrder().paid();
+        order.paid();
         assertEquals(0, BALANCE.subtract(order.accountPay).compareTo(getAccount().amount));//余额减少
         assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPaymentPartnerAccount("alipay").amount));//支付宝虚拟账户无变化
         assertEquals(0, order.accountPay.add(order.discountPay).compareTo(AccountUtil.getPlatformIncomingAccount().amount));

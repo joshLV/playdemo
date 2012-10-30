@@ -12,24 +12,24 @@ import play.test.UnitTest;
 
 import java.math.BigDecimal;
 
+import factory.FactoryBoy;
+
 /**
  * @author likang
  */
-public class RefundTest extends UnitTest{
+public class RefundTest extends UnitTest {
 
-    private Account getConsumerAccount(){
+    private Account getConsumerAccount() {
         return AccountUtil.getConsumerAccount(999L);
     }
 
     @Before
-    public void setup(){
-        Fixtures.delete(Account.class);
-        Fixtures.delete(AccountSequence.class);
-        Fixtures.delete(TradeBill.class);
+    public void setup() {
+        FactoryBoy.deleteAll();
     }
 
     @Test
-    public void testRefund(){
+    public void testRefund() {
         BigDecimal balance = new BigDecimal("1000");
         BigDecimal refundAmount = new BigDecimal("10");
 

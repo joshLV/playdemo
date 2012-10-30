@@ -261,7 +261,6 @@ public class User extends Model {
         user.password = DigestUtils.md5Hex(password + newPasswordSalt);
         user.save();
 
-
     }
 
     /**

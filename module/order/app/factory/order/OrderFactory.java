@@ -47,9 +47,8 @@ public class OrderFactory extends ModelFactory<Order> {
         order.orderType = OrderType.CHARGE;
     }
 
-    @Factory(name = "orderForCommissionsTest")
+    @Factory(name = "orderForAccountsTest")
     public Order defineCommissionsOrder(Order order) {
-        order.status = OrderStatus.UNPAID;
         order.amount = BigDecimal.valueOf(46);
         order.accountPay = BigDecimal.valueOf(10);
         order.discountPay = BigDecimal.valueOf(36);

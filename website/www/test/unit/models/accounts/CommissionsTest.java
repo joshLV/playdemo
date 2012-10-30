@@ -46,7 +46,7 @@ public class CommissionsTest extends UnitTest {
     public void setup() {
         FactoryBoy.deleteAll();
         realGoods = FactoryBoy.create(Goods.class, "Real");
-        order = FactoryBoy.create(Order.class, "orderForCommissionsTest");
+        order = FactoryBoy.create(Order.class, "orderForAccountsTest");
         orderItemReal = FactoryBoy.create(OrderItems.class, "orderItemReal");
         eGoods = FactoryBoy.create(Goods.class, "Electronic");
         orderItemElectric = FactoryBoy.create(OrderItems.class, "orderItemElectric");
