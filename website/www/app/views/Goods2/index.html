@@ -20,7 +20,7 @@
                         <ul class="some clearfix">
                             <li><a href="" #{if categoryId == null || categoryId == 0l}class="curr"#{/if}>全部(${onSaleGoodsCount})</a></li>
                         #{list searchCategories, as:'category'}
-                            <li><a href="/s/${category.id}" #{if category.id == categoryId}class="curr"#{/if}>${category.name}
+                            <li><a href="/q/${category.id}" #{if category.id == categoryId}class="curr"#{/if}>${category.name}
                                 <em>(${category.goodsCount})</em></a></li>
                         #{/list}
                         </ul>
@@ -28,7 +28,7 @@
                         <div class="outer">
                             <ul class="more clearfix">
                                 #{list subCategories,as:'subCategory'}
-                                    <li><a href="/s/${subCategory.id}"
+                                    <li><a href="/q/${subCategory.id}"
                                         #{if (subCategory.id == categoryId)
                                         || (subCategory.id == 0 && category?.isRoot())
                                         }class="curr"#{/if}>${subCategory.name}<em>(${subCategory.goodsCount})</em></a>
