@@ -855,9 +855,13 @@ public class Goods extends Model {
 
     public String getHighLightName(String words) {
         String highLight = name;
-        String[] wordArray = words.split(" |,|;|，");
-        for (String word : wordArray) {
-            highLight = name.replaceAll(word, "<em>" + word + "</em>");
+        if (words != null) {
+            String[] wordArray = words.split(" |,|;|，");
+            if (wordArray != null) {
+                for (String word : wordArray) {
+                    highLight = name.replaceAll(word, "<em>" + word + "</em>");
+                }
+            }
         }
         return highLight;
     }
@@ -1724,7 +1728,7 @@ public class Goods extends Model {
             queryStr.append(" AND goods.categoryIds_s:" + categoryId);
         }
         if (StringUtils.isNotBlank(districtId) && !districtId.equals("0")) {
-            queryStr.append(" AND goods.districtId_l:" + categoryId);
+            queryStr.append(" AND shop.areaId_s:" + districtId+"*");
         }
         if (parentCategoryId > 0) {
             queryStr.append(" AND goods.parentCategoryIds_s:" + parentCategoryId);
@@ -1806,10 +1810,12 @@ public class Goods extends Model {
 
             for (FacetField.Count count : countList) {
                 if (count.getCount() > 0) {
-                    Category category = Category.findById(Long.parseLong(count.getName()));
-                    category.goodsCount = count.getCount();
-                    categoryList.add(category);
-                    System.out.println("==>" + category.name + ":" + category.goodsCount);
+                    Category category = Category.findById(Long.parseLong((StringUtils.isBlank(count.getName())) ? "0" : count.getName()));
+                    if (category != null) {
+                        category.goodsCount = count.getCount();
+                        categoryList.add(category);
+                        System.out.println("==>" + category.name + ":" + category.goodsCount);
+                    }
                 }
             }
         }

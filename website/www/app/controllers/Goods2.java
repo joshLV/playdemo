@@ -73,11 +73,15 @@ public class Goods2 extends Controller {
         //搜索结果的分类
         List<Category> searchCategories = Goods.getStatisticCategories(queryResponse, true);
 
-//        BreadcrumbList breadcrumbs = createBreadcrumbs(goodsCond);
+        BreadcrumbList breadcrumbs = new BreadcrumbList("所有分类", "/s");
+        if (StringUtils.isNotBlank(keywords)) {
+            breadcrumbs.append(onSaleGoodsCount + "件商品", "/s?s=" + keywords);
+        }
 
-        render(recommendGoodsList, onSaleGoodsCount, goodsPage, districts,
+        render(breadcrumbs, recommendGoodsList, onSaleGoodsCount, goodsPage, districts,
                 searchCategories);
     }
+
 
     /**
      * 商品列表按条件查询页.
@@ -127,12 +131,16 @@ public class Goods2 extends Controller {
                     goodsCond.solrOrderBy, false, pageNumber, PAGE_SIZE);
             SimplePaginator<Goods> goodsPage = models.sales.Goods.getResultPage(queryResponse, pageNumber, PAGE_SIZE);
             goodsPage.setBoundaryControlsEnabled(false);
-            final List<Category> searchCategories = models.sales.Goods.getStatisticCategories(queryResponse, true);
-//            final List<Category> subCategories = models .sales.Goods.getStatisticCategories(queryResponse, false);
-            List<Area> searchAreas = models.sales.Goods.getStatisticAreas(queryResponse, false);
 
-            // 默认取出前n个上海的区
+            //搜索结果的全部商品数量
+            Long onSaleGoodsCount = queryResponse.getResults().getNumFound();
+
+            List<Category> searchCategories = models.sales.Goods.getStatisticCategories(queryResponse, true);
+            List<Category> subCategories = currentCategory == null ? null : Goods.getStatisticCategories(queryResponse, false);
+
+            //搜索结果的区
             List<Area> districts = Goods.getStatisticAreas(queryResponse, true);
+            List<Area> searchAreas = models.sales.Goods.getStatisticAreas(queryResponse, false);
 
             /*List<Area> areas = CacheHelper.getCache(
                     CacheHelper.getCacheKey(Area.CACHEKEY, "LIST_AREAS"
@@ -146,15 +154,11 @@ public class Goods2 extends Controller {
                         }
                     });*/
 
-            //搜索结果的全部商品数量
-            Long onSaleGoodsCount = queryResponse.getResults().getNumFound();
 
-
-            List<Category> subCategories = currentCategory == null ? null : currentCategory.getByParent();
             final GoodsCondition brandCond = new GoodsCondition(condition);
             brandCond.brandId = 0;
 
-            BreadcrumbList breadcrumbs = createBreadcrumbs(goodsCond);
+            BreadcrumbList breadcrumbs = createBreadcrumbs(goodsCond, keywords);
 
             renderGoodsCond(goodsCond);
             renderGoodsListTitle(goodsCond);
@@ -513,9 +517,9 @@ public class Goods2 extends Controller {
 
     private static final String LIST_URL_HEAD = "/s/";
 
-    private static BreadcrumbList createBreadcrumbs(GoodsCondition goodsCond) {
+    private static BreadcrumbList createBreadcrumbs(GoodsCondition goodsCond, String keywords) {
         BreadcrumbList breadcrumbs = new BreadcrumbList();
-        if (goodsCond.isDefault()) {
+        if (goodsCond == null || goodsCond.isDefault() && StringUtils.isBlank(keywords)) {
             return breadcrumbs;
         }
         if (goodsCond.priceFrom.compareTo(BigDecimal.ZERO) > 0

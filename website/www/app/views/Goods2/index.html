@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="http://192.168.18.242/yome/home/src/list.css"/>
 <div class="wrapper">
     <div id="content" class="clearfix">
-        <div class="crumbs">您现在的位置：<a href="">首页</a> > <a href="">餐饮美食</a> > 厢里厢邻</div>
+        <div class="crumbs">#{breadcrumbs/breadcrumb breadcrumbs/}</div>
         <div id="section">
             <div id="filter">
                 <dl class="cate clearfix">
@@ -24,7 +24,7 @@
                                 <em>(${category.goodsCount})</em></a></li>
                         #{/list}
                         </ul>
-                    #{if subCategories!= null}
+                    #{if subCategories!= null && subCategories.size() != 0}
                         <div class="outer">
                             <ul class="more clearfix">
                                 #{list subCategories,as:'subCategory'}
@@ -40,16 +40,16 @@
                     </dd>
                 </dl>
                 <dl class="area clearfix">
-                    <dt>区域：</dt>
+                    <dt>区域：${searchAreaId}</dt>
                     <dd>
                         <ul class="some clearfix">
-                            <li><a href="" #{if searchAreaId == null}class="curr"#{/if}>全部(${onSaleGoodsCount})</a></li>
+                            <li><a href="${searchAreaId}" #{if searchAreaId == null || searchAreaId.equals("0")}class="curr"#{/if}}>全部(${onSaleGoodsCount})</a></li>
                         #{list districts,as:'area'}
-                            <li><a href="" #{if area.id.equals(searchAreaId)}class="curr"#{/if}>${area.name}
+                            <li><a href="${area.id}" #{if area.id.equals(searchAreaId)}class="curr"#{/if}>${area.name}
                                 <em>(${area.goodsCount})</em></a></li>
                         #{/list}
                         </ul>
-                    #{if searchAreas!= null}
+                    #{if searchAreas != null && searchAreas.size() != 0}
                         <div class="outer">
                             <ul class="more clearfix">
                             #{list searchAreas,as:'area'}
