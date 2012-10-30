@@ -46,7 +46,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
             }
             yihaodianOrder = YihaodianOrder.find("byOrderId", message.getOrderId()).first();
             if (yihaodianOrder == null) {
-                Logger.error("order not found: %s", message.getOrderId());
+                Logger.info("order not found: %s, maybe processed by other MQ.", message.getOrderId());
                 JPAPlugin.closeTx(true);
                 return;
             }

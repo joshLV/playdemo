@@ -281,7 +281,7 @@ public class JDGroupBuy extends Controller{
     // 创建一百券订单
     private static Order createYbqOrder(SendOrderRequest sendOrderRequest) {
         Resaler resaler = Resaler.findOneByLoginName(Resaler.JD_LOGIN_NAME);
-        Logger.error("create ybq order");
+        Logger.info("create ybq order");
         if (resaler == null){
             Logger.error("can not find the resaler by login name: %s", Resaler.JD_LOGIN_NAME);
             finish(203, "can not find the jingdong resaler");return null;

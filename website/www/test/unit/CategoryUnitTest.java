@@ -49,7 +49,7 @@ public class CategoryUnitTest extends UnitTest {
         List<Category> categoryList = Category.findByParent(category.id);
         assertEquals(Category.count() - 1, categoryList.size());
 
-        categoryList = Category.findByParent(1, category.id);
+        categoryList = Category.findByParent(1, category.id, false);
         assertEquals(1, categoryList.size());
     }
 
