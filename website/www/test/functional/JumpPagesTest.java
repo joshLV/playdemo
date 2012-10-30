@@ -96,12 +96,14 @@ GET     /jump/to/{id}                           JumpPages.doJump
 	
 	@Test 
 	public void 测试执行跳转时记录跳转数() {
-		assertNull(block.jumpedCount);
+		assertEquals(0, block.totalClickedCount());
+		assertEquals(0, block.todayClickedCount());
 		Response response = GET("/jump/to/" + block.id);
         assertStatus(302, response);
 
         Block b = Block.findById(block.id);
-        assertEquals(new Integer(1), b.jumpedCount);
+		assertEquals(1, b.totalClickedCount());
+		assertEquals(1, b.todayClickedCount());
 	}
 	
 }

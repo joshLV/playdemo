@@ -84,14 +84,9 @@ public class WebsiteInjector extends Controller {
     }
 
     protected static void injectWebIdentification(final User user) {
-        Http.Cookie cookie = request.cookies.get(WEB_TRACK_COOKIE);
         String cookieValue = null;
-        if (cookie == null) {
-            cookieValue = UUID.randomUUID().toString();
-            response.setCookie(WEB_TRACK_COOKIE, cookieValue, (Play.mode == Play.Mode.DEV) ? request.domain : baseDomain, "/", -1, false);
-        } else {
-            cookieValue = cookie.value;
-        }
+        
+        cookieValue = getWebIdentificationCookieId();
 
         final String identificationValue = cookieValue;
         final Long userId = user != null ? user.getId() : 0l;
@@ -108,6 +103,19 @@ public class WebsiteInjector extends Controller {
         }
         _userWebIdentification.set(identification);
     }
+
+	public static String getWebIdentificationCookieId() {
+		String cookieValue;
+		Http.Cookie cookie = request.cookies.get(WEB_TRACK_COOKIE);
+
+        if (cookie == null) {
+            cookieValue = UUID.randomUUID().toString();
+            response.setCookie(WEB_TRACK_COOKIE, cookieValue, (Play.mode == Play.Mode.DEV) ? request.domain : baseDomain, "/", -1, false);
+        } else {
+            cookieValue = cookie.value;
+        }
+		return cookieValue;
+	}
 
     public static UserWebIdentification getUserWebIdentification() {
         return _userWebIdentification.get();
@@ -145,6 +153,9 @@ public class WebsiteInjector extends Controller {
         	// 第一次产生标识对象
             uwi = createUserWebIdentification(user, identificationValue);
             uwi.sendToCacheOrSave();
+            if (!StringUtils.isEmpty(uwi.referer)) {
+            	uwi.notifyMQSave();
+            } 
             return null; //避免缓存
         }
         return uwi;

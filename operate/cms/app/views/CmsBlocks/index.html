@@ -35,7 +35,7 @@
                 <th>&{'block.type'}</th>
                 <th>&{'block.effectiveAt'}</th>
                 <th>&{'block.expireAt'}</th>
-                <th>链接点击数</th>
+                <th>当天/总计链接点击数</th>
                 <th>操 作</th>
             </tr>
             </thead>
@@ -49,7 +49,7 @@
                 <td>&{'block.'+block?.type}</td>
                 <td>${block?.effectiveAt?.format('yyyy-MM-dd')}</td>
                 <td>${block?.expireAt?.format('yyyy-MM-dd')}</td>
-                <td>${block?.jumpedCount}</td>
+                <td>${block?.todayClickedCount()}/${block?.totalClickedCount()}</td>
                 <td><a href="@{CmsBlocks.edit(block.id)}">修改</a>
                     / #{vx.deleteLink action:"blocks", id:block.id, name:block.title/}
             </tr>

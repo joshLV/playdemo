@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import models.cms.Block;
+import models.cms.BlockClickTrack;
 import models.cms.BlockType;
 import play.Logger;
 import play.mvc.Controller;
@@ -49,7 +50,15 @@ public class JumpPages extends Controller {
 		if (block == null) {
 			notFound();
 		}
-		block.doJump();
+		BlockClickTrack click = new BlockClickTrack();
+		click.block = block;
+		click.cookieId = WebsiteInjector.getWebIdentificationCookieId();
+		click.ip = request.remoteAddress;
+		if (SecureCAS.getUser() != null) {
+			click.user_id = SecureCAS.getUser().id;
+		}
+		click.createdAt = new Date();
+		click.save();
 		redirect(block.link);
 	}
 }

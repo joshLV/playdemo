@@ -91,6 +91,10 @@ public class UserWebIdentification extends Model {
         return UserWebIdentification.find("cookieId=?", cookieValue).first();
     }
     
+    public void setPersistent(boolean b) {
+    	// do nothing. just for jackson unmashell.
+    }
+    
     @Transient
     @JsonIgnore
     public Long getSavedId() {

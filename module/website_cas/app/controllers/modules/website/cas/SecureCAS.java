@@ -292,9 +292,7 @@ public class SecureCAS extends Controller {
 
         // if user is authenticated, the username is in session !
         // Single Sign Out: 如果Cache.get(SESSION_USER_KEY + session.get(SESSION_USER_KEY))为空，则已经被其它应用注销.
-        if (!session.contains(SESSION_USER_KEY)
-                || (session.contains(SESSION_USER_KEY) && Cache.get(SESSION_USER_KEY + session.get(SESSION_USER_KEY)) == null)
-                ) {
+        if (getUser() == null) {
             Logger.debug("[SecureCAS]: user is not authenticated");
             // we put into cache the url we come from
             Cache.add("url_" + session.getId(), request.method.equals("GET") ? request.url : "/", "10min");

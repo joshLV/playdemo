@@ -51,14 +51,14 @@
     <div id="slides">
         <div class="slides_container">
         #{list slides, as:'slide'}
-            <a href="${slide.link}" target="_blank" title="${slide.title}"><img src="${slide.getShowImageUrl()}" alt="${slide.title}"
+            <a href="${slide.link}" target="_blank" title="@{JumpPages.doJump(slide.id)}"><img src="${slide.getShowImageUrl()}" alt="${slide.title}"
                                                                                 width="748" height="324"/></a>
         #{/list}
         </div>
     </div>
     <div id="promos">
-    #{list rightSlides, as:'rightSlides'}
-        <a href="${rightSlides.link}" target="_blank"><img src="${rightSlides.getShowImageUrl()}" alt="${rightSlides?.title}" width="200"/></a>
+    #{list rightSlides, as:'rightSlide'}
+        <a href="@{JumpPages.doJump(rightSlide.id)}" target="_blank"><img src="${rightSlide.getShowImageUrl()}" alt="${rightSlide?.title}" width="200"/></a>
     #{/list}
     </div>
 </div><!-- #banner -->

@@ -23,6 +23,7 @@ import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.PathUtil;
 
 /**
@@ -79,9 +80,6 @@ public class Block extends Model {
 
     @Lob
     private String content;
-
-    @Column(name="jumped_count")
-    public Integer jumpedCount;
 
     @Enumerated(EnumType.STRING)
     public BlockType type;
@@ -143,7 +141,7 @@ public class Block extends Model {
 
     public static ModelPaginator getPage(int pageNumber, int pageSize, BlockType type) {
         ModelPaginator<Block> blockPage;
-        final String orderBy = "displayOrder, type, effectiveAt desc, expireAt";
+        final String orderBy = "type, expireAt desc, effectiveAt desc, displayOrder";
         if (type == null) {
             blockPage = new ModelPaginator<Block>(Block.class, "deleted = ?",
                     DeletedStatus.UN_DELETED).orderBy(orderBy);
@@ -175,14 +173,6 @@ public class Block extends Model {
         oldBlock.save();
     }
     
-    public void doJump() {
-    	if (this.jumpedCount == null) {
-    		this.jumpedCount = 0;
-    	}
-    	this.jumpedCount ++;
-    	this.save();
-    }
-    
     /**
      * 按BlockType和时间查询可用的Block，如果找不到任何记录，则按BlockType查询.
      * @param type
@@ -206,4 +196,12 @@ public class Block extends Model {
     public static List<Block> findLastByType(BlockType websiteSlide, int i) {
         return null;
     }
+
+	public long totalClickedCount() {
+		return BlockClickTrack.count("block=?", this);
+	}
+
+	public long todayClickedCount() {
+		return BlockClickTrack.count("block=? and createdAt >= ?", this, DateUtil.getBeginOfDay(new Date()));
+	}
 }
