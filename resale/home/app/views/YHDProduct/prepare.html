@@ -25,9 +25,83 @@
         <input type="radio" name="productType" value="0" checked> 普通产品
         <input type="radio" name="productType" value="1"> 图书
     </p>
-    <p>产品类别
-
+    <p>是否电子凭证
+        <input type="radio" name="electronicCerticate" value="是" checked>是
+        <input type="radio" name="electronicCerticate" value="否" >否
     </p>
+    <div>
+        <p>产品类别</p>
+        <div style="padding:0px 20px">
+            #{list items:categories, as:'category'}
+            #{if category.isLeaf}
+                <input type="radio" name="category" value="${category.id}">${category.name}
+            #{/if}
+            #{/list}<br/>
+            #{list items:categories, as:'category'}
+            #{if !category.isLeaf}
+                &nbsp;&nbsp;${category.name}
+                <div style="padding:0px 20px">
+
+                    #{list items:models.yihaodian.api.YHDCategoryAPI.productCategoriesCache(category.id), as:'category2'}
+                    #{if category2.isLeaf}
+                    <input type="radio" name="category" value="${category2.id}">${category2.name}
+                    #{/if}
+                    #{/list}<br/>
+                    #{list items:models.yihaodian.api.YHDCategoryAPI.productCategoriesCache(category.id), as:'category2'}
+                    #{if !category2.isLeaf}
+                    &nbsp;&nbsp;${category2.name}
+                    <div style="padding:0px 20px">
+
+                        #{list items:models.yihaodian.api.YHDCategoryAPI.productCategoriesCache(category2.id), as:'category3'}
+                        #{if category3.isLeaf}
+                        <input type="radio" name="category" value="${category3.id}">${category3.name}
+                        #{/if}
+                        #{/list}<br/>
+                        #{list items:models.yihaodian.api.YHDCategoryAPI.productCategoriesCache(category2.id), as:'category3'}
+                        #{if !category3.isLeaf}
+                        &nbsp;&nbsp;${category3.name}
+                        <div style="padding:0px 20px">
+
+                            #{list items:models.yihaodian.api.YHDCategoryAPI.productCategoriesCache(category3.id), as:'category4'}
+                            #{if category4.isLeaf}
+                            <input type="radio" name="category" value="${category4.id}">${category4.name}
+                            #{/if}
+                            #{/list}
+                        </div>
+                        #{/if}
+                        #{/list}
+                    </div>
+                    #{/if}
+                    #{/list}
+
+                </div>
+            #{/if}
+            #{/list}
+        </div>
+    </div>
+    <p>商家产品类别列表
+        #{list items:merchantCategories, as:'category'}
+        <input type="checkbox" name="merchantCategory" value="${category.id}">${category.searchName}
+        #{/list}
+    </p>
+    <p>品牌
+        #{list items:brands, as:'brand'}
+        <input type="radio" name="brand" value="${brand.id}" #{if brand_index == 1} checked#{/if} >${brand.name}
+        #{/list}
+    </p>
+    <p>产品名称：<input type="text" name="productCname" value="${goods.name}" size="100"/>(不超过100个字符)</p>
+    <p>产品名称副标题<input type="text" name="productSubTitle" size="100">(不超过100个字符)</p>
+    <p>产品名称前缀<input type="text" name="productNamePrefix" size="100">(不超过10个字符)</p>
+    <p>市场价<input type="text" name="productMarketPrice" value="${goods.faceValue}">(最多两位小数)</p>
+    <p>销售价<input type="text" name="productSalePrice" value="${goods.salePrice}">(不能大于市场价,最多两位小数)</p>
+    <p>重量<input type="text" name="weight" value="0.00"></p>
+    <p>库存<input type="text" name="virtualStockNum" value="${goods.baseSale}">(大于或等于0)</p>
+    <p> 产品描述
+        <textarea rows="5" cols="200" name="productDescription"></textarea>
+    </p>
+
+    <input type="hidden" name="canSale" value="1"><!-- 可否销售 -->
+    <input type="hidden" name="outerId" value="${goods.id}" >
     <input type="submit" value="提交">
 </div>
 </form>

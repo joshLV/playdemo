@@ -121,6 +121,9 @@
                         #{if resaler.loginName == 'jingdong'}
                             <a href="/jd-add/${favItem.goods.id}" >发布到京东</a>
                         #{/if}
+                        #{if reslaer.loginName == 'yihaodian'}
+                            <a href="/yhd-add/${favItem.goods.id}" >发布到一号店</a>
+                        #{/if}
                     </td>
                 </tr>
                 </tbody>

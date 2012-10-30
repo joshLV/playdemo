@@ -3,11 +3,15 @@ package models.jingdong.groupbuy.response;
 import models.jingdong.groupbuy.JDMessage;
 import org.dom4j.Element;
 
+import java.io.Serializable;
+
 /**
  * @author likang
  *         Date: 12-10-16
  */
-public class UploadTeamResponse implements JDMessage{
+public class UploadTeamResponse implements JDMessage, Serializable {
+    private static final long serialVersionUID = 7069212063940330652L;
+
     public Long jdTeamId;
 
 

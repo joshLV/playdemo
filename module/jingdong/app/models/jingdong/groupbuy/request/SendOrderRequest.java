@@ -3,6 +3,7 @@ package models.jingdong.groupbuy.request;
 import models.jingdong.groupbuy.JDMessage;
 import org.dom4j.Element;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,7 +13,9 @@ import java.util.List;
  * @author likang
  *         Date: 12-10-7
  */
-public class SendOrderRequest implements JDMessage {
+public class SendOrderRequest implements JDMessage,Serializable {
+    private static final long serialVersionUID = 7063232067910330652L;
+
     public Long jdTeamId;       //京东团购ID
     public Long venderTeamId;   //合作伙伴团购ID
     public String mobile;       //手机

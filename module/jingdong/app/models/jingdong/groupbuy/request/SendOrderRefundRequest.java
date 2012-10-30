@@ -3,13 +3,16 @@ package models.jingdong.groupbuy.request;
 import models.jingdong.groupbuy.JDMessage;
 import org.dom4j.Element;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * @author likang
  *         Date: 12-10-11
  */
-public class SendOrderRefundRequest implements JDMessage{
+public class SendOrderRefundRequest implements JDMessage, Serializable {
+    private static final long serialVersionUID = 7033292063910330652L;
+
     public Long jdOrderId;
     public String venderOrderId;
     public List<CouponRequest> coupons;
