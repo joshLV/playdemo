@@ -1914,16 +1914,13 @@ public class Goods extends Model {
 
             for (FacetField.Count count : countList) {
                 if (count.getCount() > 0) {
-                    if (isDistrict && count.getName().length() >= 5) {
-                        final String districtId = count.getName().substring(0, 5);
-                        Long districtCount = districtCountMap.get(districtId);
-                        districtCountMap.put(districtId, districtCount == null ? count.getCount() : districtCount + count.getCount());
+					Area area = Area.findAreaById(count.getName());
+					if ((area != null && districtId != null && area.parent != null && area.parent.id.equals(districtId))
+							|| (area != null && districtId == null)) {
+						area.goodsCount = count.getCount();
+						areaList.add(area);
+						System.out.println(area.name + ":          " + area.goodsCount);
 
-                    } else {
-                        Area area = Area.findAreaById(count.getName());
-                        area.goodsCount = count.getCount();
-                        areaList.add(area);
-                        System.out.println(area.name + ":          " + area.goodsCount);
                     }
                 }
             }
