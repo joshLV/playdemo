@@ -220,7 +220,6 @@ public class Goods extends Model {
     private String imageSmallPath;
 
     @Transient
-    @SolrField
     public String getCategoryIds() {
         List<Long> ids = new ArrayList<>();
         if (categories != null) {
@@ -234,7 +233,6 @@ public class Goods extends Model {
 
 
     @Transient
-    @SolrField
     public String getParentCategoryIds() {
         List<Long> ids = new ArrayList<>();
         if (categories != null) {

@@ -1,17 +1,30 @@
 package unit;
-import com.uhuila.common.constants.DeletedStatus;
-import models.sales.Goods;
-import models.sales.GoodsStatus;
-import org.junit.Test;
-import play.test.UnitTest;
-
 import java.math.BigDecimal;
 import java.util.Date;
 
+import models.sales.Goods;
+import models.sales.GoodsStatus;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import play.test.UnitTest;
+
+import com.uhuila.common.constants.DeletedStatus;
+
+import factory.FactoryBoy;
+
 
 public class GoodsUnitTest extends UnitTest {
+	
+	@Before
+	public void setUp() {
+		FactoryBoy.deleteAll();
+	}
+	
 	@Test
 	public void add() {
+		assertEquals(0l, Goods.count());
 		Goods goods = new Goods();
 		//默认商品下架状态
 		goods.status = GoodsStatus.OFFSALE;
@@ -25,7 +38,10 @@ public class GoodsUnitTest extends UnitTest {
 		goods.createdBy = "yanjy";
 		goods.originalPrice = new BigDecimal(100);
 		goods.salePrice = new BigDecimal(0.01);
+		
+		
 		goods.save();
+		assertEquals(1, Goods.count());
 		Goods result = Goods.findById(goods.id);
 
 		assertNotNull(result);
