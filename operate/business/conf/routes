@@ -241,6 +241,7 @@ GET     /reports/platform                       OperateReports.showPlatformRepor
 GET     /reports/incoming                       OperateReports.showIncomingReport
 GET     /reports/withdraw                       OperateReports.showWithdrawReport
 GET     /reports/financing_incoming             OperateReports.showFinancingIncomingReport
+GET     /reports/promotion                      OperateReports.showPromotionReport
 
 GET     /financing_incoming_add                 FinancingIncomingNote.add
 

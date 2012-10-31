@@ -145,6 +145,8 @@
                         permission="WITHDRAW_REPORT"/>
             <navigation key="websites_account_reports" action="OperateReports.showWebsiteReport" text="一百券佣金账户资金明细"
                         permission="WEBSITES_REPORT"/>
+            <navigation key="promotion_account_reports" action="OperateReports.showPromotionReport" text="活动金账户资金明细"
+                        permission="WEBSITES_REPORT"/>
             <navigation key="platforms_account_reports" action="OperateReports.showPlatformReport" text="券平台佣金账户资金明细"
                         permission="PLATFORMS_REPORT"/>
             <navigation key="financing_incoming_reports" action="OperateReports.showFinancingIncomingReport"

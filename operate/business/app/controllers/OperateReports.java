@@ -154,6 +154,28 @@ public class OperateReports extends Controller {
     }
 
     /**
+     * 查询活动金账户资金明细
+     */
+    @ActiveNavigation("promotion_account_reports")
+    public static void showPromotionReport(AccountSequenceCondition condition){
+        int pageNumber = getPageNumber();
+        if(condition == null){
+            condition = new AccountSequenceCondition();
+        }
+        condition.account = AccountUtil.getPromotionAccount();
+
+        JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
+                pageNumber, PAGE_SIZE);
+        for (AccountSequence accountSequence : accountSequencePage) {
+            setOrderInfo(accountSequence);
+        }
+
+        AccountSequenceSummary summary = AccountSequence.findSummaryByCondition(condition);
+
+        render(accountSequencePage, summary, condition);
+    }
+
+    /**
      * 查询一百券佣金账户资金明细.
      */
     @ActiveNavigation("websites_account_reports")
