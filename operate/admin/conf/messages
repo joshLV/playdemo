@@ -13,6 +13,7 @@ operateUser.confirmPassword=确认密码
 operateUser.email=邮箱
 operateUser.jobNumber=工号
 operateUser.roles=角色
+operateUser.userName=姓名
 
 operateUser.oldPassword=原密码
 operateUser.newPassword=新密码

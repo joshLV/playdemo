@@ -66,7 +66,9 @@ public class OperateUser extends Model {
     @Column(name = "updated_at")
     public Date updatedAt;
 
+
     @Column(name = "user_name")
+    @Required
     public String userName;
 
     @Required
@@ -91,7 +93,7 @@ public class OperateUser extends Model {
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
 
-    @Required
+
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(name = "operate_users_roles",
             inverseJoinColumns = @JoinColumn(name = "role_id"),
