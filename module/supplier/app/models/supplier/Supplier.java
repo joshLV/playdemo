@@ -231,8 +231,8 @@ public class Supplier extends Model {
         List params = new ArrayList();
         params.add(DeletedStatus.UN_DELETED);
         if (StringUtils.isNotBlank(otherName)) {
-            sql.append(" and otherName=?");
-            params.add(otherName);
+            sql.append(" and otherName like ?");
+            params.add("%" + otherName + "%");
         }
         sql.append(" order by createdAt DESC");
         return find(sql.toString(), params.toArray()).fetch();
