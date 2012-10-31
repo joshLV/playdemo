@@ -70,8 +70,10 @@ public class OperateUsers extends Controller {
      */
     @ActiveNavigation("user_add")
     public static void create(@Valid OperateUser operateUser) {
+        if (operateUser.roles == null) {
+            Validation.addError("operateUser.roles", "validation.selected");
+        }
         if (Validation.hasErrors()) {
-            System.out.println("operateUser>>" + operateUser);
             List rolesList = OperateRole.findAll();
             String roleIds = "";
             if (operateUser.roles != null && !operateUser.roles.isEmpty()) {
@@ -133,10 +135,14 @@ public class OperateUsers extends Controller {
      * @param operateUser 用户信息
      */
     public static void update(Long id, @Valid OperateUser operateUser) {
+        if (operateUser.roles == null) {
+            Validation.addError("operateUser.roles", "validation.selected");
+        }
+
         if (Validation.hasErrors()) {
             List rolesList = OperateRole.findAll();
             String roleIds = "";
-            if (!operateUser.roles.isEmpty()) {
+            if (operateUser.roles != null && !operateUser.roles.isEmpty()) {
                 for (OperateRole role : operateUser.roles) {
                     roleIds += role.id + ",";
                 }

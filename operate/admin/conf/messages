@@ -6,11 +6,14 @@ play-paginate.prev=&lsaquo;&nbsp;上一页
 play-paginate.next=下一页&nbsp;&rsaquo;
 play-paginate.last=尾页&nbsp;&raquo;
 validation.minSize=%s的长度至少%d位!
+validation.selected=请选择%s!
 validation.required=请输入%s!
 operateUser.encryptedPassword=密码
 operateUser.confirmPassword=确认密码
 operateUser.email=邮箱
 operateUser.jobNumber=工号
+operateUser.roles=角色
+
 operateUser.oldPassword=原密码
 operateUser.newPassword=新密码
 operateUser.newConfirmPassword=确认新密码

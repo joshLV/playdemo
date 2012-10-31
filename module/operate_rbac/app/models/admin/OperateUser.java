@@ -74,7 +74,7 @@ public class OperateUser extends Model {
     public String email;
 
     @Required
-    @Match(value = "^[0-9]*$", message = "工号格式不对!(纯数字)")
+    @Match(value = "^[0-9]*$", message = "工号格式不对!(需纯数字)")
     @Column(name = "job_number")
     public String jobNumber;
 
@@ -91,6 +91,7 @@ public class OperateUser extends Model {
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
 
+    @Required
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(name = "operate_users_roles",
             inverseJoinColumns = @JoinColumn(name = "role_id"),
