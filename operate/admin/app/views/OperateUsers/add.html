@@ -14,7 +14,7 @@
 #{form @OperateUsers.create() , id:'operForm',class:"form-horizontal" }
  <legend>操作员添加</legend>
   <div class="control-group">
-  <label for="input01" class="control-label">角色</label>
+  <label for="input01" class="control-label"><span style="color: red; ">*</span>角色</label>
   <div class="controls">
   #{list items:rolesList, as:'role'}
    <label class="checkbox inline">
@@ -66,7 +66,7 @@
 <div class="control-group">
     <label for="input01" class="control-label"><span style="color: red; ">*</span>工号</label>
     <div class="controls">
-        <input type="text" name="operateUser.email" class="input-large" id="jobNumber" maxlength="30" value="${operateUser?.jobNumber}"/>
+        <input type="text" name="operateUser.jobNumber" class="input-large" id="jobNumber" maxlength="30" value="${operateUser?.jobNumber}"/>
         <span class="error" id="checkJobNumber">#{error 'operateUser.jobNumber' /}</span>
     </div>
 </div>
