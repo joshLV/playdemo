@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static play.Logger.warn;
 
@@ -47,7 +48,7 @@ public class Suppliers extends Controller {
 
     @ActiveNavigation("suppliers_add")
     public static void add() {
-        List<OperateUser> operateUserList = getOperateUser();
+        Set<OperateUser> operateUserList = getOperateUser();
         renderArgs.put("baseDomain", BASE_DOMAIN);
         render(operateUserList);
     }
@@ -74,7 +75,7 @@ public class Suppliers extends Controller {
         Validation.match("validation.jobNumber", admin.jobNumber, "^[0-9]*");
 
         if (Validation.hasErrors()) {
-            List<OperateUser> operateUserList = getOperateUser();
+            Set<OperateUser> operateUserList = getOperateUser();
             renderArgs.put("baseDomain", BASE_DOMAIN);
             render("Suppliers/add.html", supplier, operateUserList);
         }
@@ -173,7 +174,7 @@ public class Suppliers extends Controller {
         SupplierUser admin = SupplierUser.findAdmin(id, supplier.loginName);
         List<WithdrawAccount> withdrawAccounts =
                 WithdrawAccount.find("byUserIdAndAccountType", supplier.getId(), AccountType.SUPPLIER).fetch();
-        List<OperateUser> operateUserList = getOperateUser();
+        Set<OperateUser> operateUserList = getOperateUser();
         renderArgs.put("baseDomain", BASE_DOMAIN);
         render(supplier, admin, id, withdrawAccounts, operateUserList);
     }
@@ -212,7 +213,7 @@ public class Suppliers extends Controller {
             for (String key : validation.errorsMap().keySet()) {
                 warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
             }
-            List<OperateUser> operateUserList = getOperateUser();
+            Set<OperateUser> operateUserList = getOperateUser();
             renderArgs.put("baseDomain", BASE_DOMAIN);
             render("Suppliers/edit.html", supplier, id, admin, operateUserList);
         }
@@ -251,17 +252,8 @@ public class Suppliers extends Controller {
         render(supplierUsersPage, supplierDomainName, supplierUsers);
     }
 
-    public static List<OperateUser> getOperateUser() {
-        List<OperateUser> operateUserList = new ArrayList<>();
-        List<OperateUser> tempOperateUserList = OperateUser.find("deleted=?", DeletedStatus.UN_DELETED).fetch();
-        for (OperateUser ou : tempOperateUserList) {
-            for (int i = 0; i < ou.roles.size(); i++) {
-                if (ou.roles.get(i).key.equals("sales")) {
-                    operateUserList.add(ou);
-                    break;
-                }
-            }
-        }
-        return operateUserList;
+    public static Set<OperateUser> getOperateUser() {
+        OperateRole role = OperateRole.find("byKey", "sales").first();
+        return role.users;
     }
 }
