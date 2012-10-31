@@ -48,7 +48,6 @@ import java.util.List;
 @SkipCAS
 public class Goods2 extends Controller {
 
-    public static String SHANGHAI = "021";
     public static int PAGE_SIZE = 27;
 
     /**
@@ -60,10 +59,14 @@ public class Goods2 extends Controller {
         String keywords = params.get("s");
         renderArgs.put("s", keywords);
 
+        String brandIdStr = params.get("b");
+        renderArgs.put("b", brandIdStr);
+        long brandId = StringUtils.isBlank(brandIdStr) ? 0 : Long.parseLong(brandIdStr);
+
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
         //只按关键字搜索
-        QueryResponse queryResponse = models.sales.Goods.search(keywords, pageNumber, PAGE_SIZE);
+        QueryResponse queryResponse = models.sales.Goods.search(keywords, brandId,pageNumber, PAGE_SIZE);
 
         //搜索结果的全部商品数量
         Long onSaleGoodsCount = queryResponse.getResults().getNumFound();
@@ -74,24 +77,14 @@ public class Goods2 extends Controller {
             renderArgs.put("goodsPage", goodsPage);
 
             //搜索结果的区域
-            List<Area> districts = Goods.getStatisticAreas(queryResponse, true);
+            List<Area> districts = Goods.getStatisticDistricts(queryResponse);
             renderArgs.put("districts", districts);
             //搜索结果的分类
-            List<Category> searchCategories = Goods.getStatisticCategories(queryResponse, true);
+            List<Category> searchCategories = Goods.getStatisticTopCategories(queryResponse);
             renderArgs.put("searchCategories", searchCategories);
         } else {
             // 网友推荐商品
-            List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(
-                    CacheHelper.getCacheKey(new String[]{models.sales.Goods.CACHEKEY,
-                            models.sales.Goods.CACHEKEY_BASEID},
-                            "SHOW_TOP5RECOMMEND"),
-                    new CacheCallBack<List<models.sales.Goods>>() {
-                        @Override
-                        public List<models.sales.Goods> loadData() {
-                            return models.sales.Goods.findTopRecommend(PAGE_SIZE);
-                        }
-                    });
-            renderArgs.put("recommendGoodsList", recommendGoodsList);
+            renderRecommendGoods(PAGE_SIZE);
         }
         //面包屑导航
         BreadcrumbList breadcrumbs = new BreadcrumbList();
@@ -102,7 +95,8 @@ public class Goods2 extends Controller {
         //输出右侧展示条数据
         renderRightBar(null);
 
-        final GoodsWebsiteCondition condition = new GoodsWebsiteCondition("", keywords);
+        final GoodsWebsiteCondition condition = new GoodsWebsiteCondition("", keywords, brandId);
+
         render(breadcrumbs, onSaleGoodsCount, condition);
     }
 
@@ -116,80 +110,94 @@ public class Goods2 extends Controller {
         String page = params.get("page");
         String keywords = params.get("s");
         renderArgs.put("s", keywords);
+        String brandIdStr = params.get("b");
+        renderArgs.put("b", brandIdStr);
+        long brandId = StringUtils.isBlank(brandIdStr) ? 0 : Long.parseLong(brandIdStr);
 
         final int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer
                 .parseInt(page);
 
         try {
+            final GoodsWebsiteCondition condition = new GoodsWebsiteCondition(conditionStr, keywords, brandId);
 
-            final GoodsWebsiteCondition condition = new GoodsWebsiteCondition(conditionStr, keywords);
-
-//            condition.status = GoodsStatus.ONSALE;
-//            condition.baseSaleBegin = 1;
-//            condition.expireAtBegin = new Date();
             //获取要显示的子分类列表
-
             Category currentCategory = null;
             if (condition.categoryId > 0) {
                 currentCategory = Category.findById(condition.categoryId);
+                if (currentCategory != null && currentCategory.isRoot()) { //如果指定为顶级分类
+                    condition.parentCategoryId = condition.categoryId;
+                    condition.categoryId = 0;
+                }
             }
-            if (currentCategory != null && currentCategory.isRoot()) {
-                condition.parentCategoryId = condition.categoryId;
-                condition.categoryId = 0;
-            }
-
-            // 网友推荐商品
-            List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(
-                    CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY,
-                            "LIST_TOPRECOMMEND"),
-                    new CacheCallBack<List<Goods>>() {
-                        @Override
-                        public List<models.sales.Goods> loadData() {
-                            return models.sales.Goods.findTopRecommend(3);
-                        }
-                    });
 
             //获取搜索到的商品
-            QueryResponse queryResponse = models.sales.Goods.searchFullText(keywords,
-                    condition.parentCategoryId, condition.categoryId, condition.districtId, condition.areaId,
-                    condition.solrOrderBy, false, pageNumber, PAGE_SIZE);
+            QueryResponse queryResponse = models.sales.Goods.searchFullText(condition, pageNumber, PAGE_SIZE);
             SimplePaginator<Goods> goodsPage = models.sales.Goods.getResultPage(queryResponse, pageNumber, PAGE_SIZE);
             goodsPage.setBoundaryControlsEnabled(false);
 
             //搜索结果的全部商品数量
             Long onSaleGoodsCount = queryResponse.getResults().getNumFound();
 
-            List<Category> searchCategories = models.sales.Goods.getStatisticCategories(queryResponse, true);
-            List<Category> subCategories = currentCategory == null ? null : Goods.getStatisticCategories(queryResponse, false);
+            if (onSaleGoodsCount != null && onSaleGoodsCount > 0) {
+                //搜索结果的分类统计
+                List<Category> searchCategories = models.sales.Goods.getStatisticTopCategories(queryResponse);
+                renderArgs.put("searchCategories", searchCategories);
 
-            //搜索结果的区
-            List<Area> districts = Goods.getStatisticAreas(queryResponse, true);
-            List<Area> searchAreas = models.sales.Goods.getStatisticAreas(queryResponse, false);
+                System.out.println("condition.parentCategoryId:" + condition.parentCategoryId);
+                if (condition.parentCategoryId > 0) { //如果指定了顶级分类，则统计子分类
+                    List<Category> subCategories = Goods.getStatisticSubCategories(queryResponse, condition.parentCategoryId);
+                    System.out.println("subCategories.size():" + subCategories.size());
+                    renderArgs.put("subCategories", subCategories);
+                } else if (condition.categoryId > 0) {
+                    List<Category> subCategories = Goods.getStatisticSubCategories(queryResponse, currentCategory.parentCategory.id);
+                    renderArgs.put("subCategories", subCategories);
+                }
 
-            /*List<Area> areas = CacheHelper.getCache(
-                    CacheHelper.getCacheKey(Area.CACHEKEY, "LIST_AREAS"
-                            + condition.districtId + "_" + condition.areaId
-                            + "_" + AREA_LIMIT),
-                    new CacheCallBack<List<Area>>() {
-                        @Override
-                        public List<Area> loadData() {
-                            return Area.findTopAreas(condition.districtId,
-                                    AREA_LIMIT, condition.areaId);
-                        }
-                    });*/
+                //搜索结果的地区统计
+                List<Area> districts = Goods.getStatisticDistricts(queryResponse);
+                renderArgs.put("districts", districts);
+                System.out.println("districts.size():" + districts.size());
+
+                if (!"0".equals(condition.districtId)) {
+                    List<Area> searchAreas = models.sales.Goods.getStatisticAreas(queryResponse, condition.districtId);
+                    renderArgs.put("searchAreas", searchAreas);
+                } else if (!"0".equals(condition.searchAreaId)) {
+                    List<Area> searchAreas = models.sales.Goods.getStatisticAreas(queryResponse, Area.findAreaById(condition.searchAreaId).parent.id);
+                    renderArgs.put("searchAreas", searchAreas);
+                }
+            } else {
+                renderRecommendGoods(PAGE_SIZE);
+
+            }
 
             BreadcrumbList breadcrumbs = createBreadcrumbs(condition);
 
-
             renderArgs.put("categoryId", (condition.parentCategoryId != 0) ? condition.parentCategoryId : condition.categoryId);
 
+            //输出右侧展示条数据
+            renderRightBar(null);
+
             renderGoodsListTitle(condition);
-            render("/Goods2/index.html", onSaleGoodsCount, goodsPage, searchAreas,
-                    districts, searchCategories, subCategories, breadcrumbs, condition);
+            render("/Goods2/index.html", onSaleGoodsCount, goodsPage, breadcrumbs, condition);
         } catch (Exception e) {
             e.printStackTrace();
             index();
         }
+    }
+
+    private static void renderRecommendGoods(final int count) {
+        // 网友推荐商品
+        List<Goods> recommendGoodsList = CacheHelper.getCache(
+                CacheHelper.getCacheKey(new String[]{Goods.CACHEKEY,
+                        Goods.CACHEKEY_BASEID},
+                        "SHOW_TOP" + count + "RECOMMEND"),
+                new CacheCallBack<List<Goods>>() {
+                    @Override
+                    public List<Goods> loadData() {
+                        return Goods.findTopRecommend(count);
+                    }
+                });
+        renderArgs.put("recommendGoodsList", recommendGoodsList);
     }
 
     /**
@@ -314,7 +322,7 @@ public class Goods2 extends Controller {
         final Date currentDate = new Date();
 
         //右上侧图片展示
-        List<Block> rightSlides = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "RIGHT_SLIDES"), new CacheCallBack<List<Block>>() {
+        List<Block> rightSlides = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_RIGHT_SLIDES"), new CacheCallBack<List<Block>>() {
             @Override
             public List<Block> loadData() {
                 return Block.findByType(BlockType.WEBSITE_RIGHT_SLIDE, currentDate);
@@ -330,35 +338,31 @@ public class Goods2 extends Controller {
             }
         });
         renderArgs.put("hotSaleGoodsList", hotSaleGoodsList);
-        List<Goods> recommendGoodsList;
         if (goods != null) {
-            //感兴趣的商品
-            recommendGoodsList = CacheHelper.getCache(
-                    CacheHelper.getCacheKey(new String[]{Goods.CACHEKEY,
-                            Goods.CACHEKEY_BASEID + goods.id},
-                            "SHOW_TOP5RECOMMEND"),
-                    new CacheCallBack<List<Goods>>() {
-                        @Override
-                        public List<Goods> loadData() {
-                            return Goods.findTopRecommendByGoods(5, goods);
-                        }
-                    });
+            renderRecommendGoods(goods);
+
+
         } else {
             //感兴趣的商品
-            recommendGoodsList = CacheHelper.getCache(
-                    CacheHelper.getCacheKey(new String[]{Goods.CACHEKEY,
-                            Goods.CACHEKEY_BASEID},
-                            "SHOW_TOP5RECOMMEND"),
-                    new CacheCallBack<List<Goods>>() {
-                        @Override
-                        public List<Goods> loadData() {
-                            return Goods.findTopRecommend(5);
-                        }
-                    });
+            renderRecommendGoods(5);
         }
-        renderArgs.put("recommendGoodsList", recommendGoodsList);
 
         return rightSlides;
+    }
+
+    private static void renderRecommendGoods(final Goods goods) {
+        //感兴趣的商品
+        List<Goods> recommendGoodsList = CacheHelper.getCache(
+                CacheHelper.getCacheKey(new String[]{Goods.CACHEKEY,
+                        Goods.CACHEKEY_BASEID + goods.id},
+                        "SHOW_TOP5RECOMMEND"),
+                new CacheCallBack<List<Goods>>() {
+                    @Override
+                    public List<Goods> loadData() {
+                        return Goods.findTopRecommendByGoods(5, goods);
+                    }
+                });
+        renderArgs.put("recommendGoodsList", recommendGoodsList);
     }
 
     /**
@@ -433,17 +437,7 @@ public class Goods2 extends Controller {
                 });
 
         // 网友推荐商品
-        List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(
-                CacheHelper.getCacheKey(new String[]{models.sales.Goods.CACHEKEY,
-                        models.sales.Goods.CACHEKEY_BASEID + goods.id},
-                        "SHOW_TOP5RECOMMEND"),
-                new CacheCallBack<List<models.sales.Goods>>() {
-                    @Override
-                    public List<models.sales.Goods> loadData() {
-                        return models.sales.Goods.findTopRecommendByGoods(5, goods);
-                    }
-                });
-
+        renderRecommendGoods(goods);
         String tjUrl = "http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/gh/" + goodsHistory.id;
         if (user != null) {
             user.generatePromoterCode();
@@ -456,7 +450,6 @@ public class Goods2 extends Controller {
         renderArgs.put("goods", goodsHistory);
         renderArgs.put("shops", goodsHistory.getShopList());
         renderArgs.put("breadcrumbs", breadcrumbs);
-        renderArgs.put("recommendGoodsList", recommendGoodsList);
     }
 
 
@@ -506,7 +499,6 @@ public class Goods2 extends Controller {
                                 goodsId, GoodsType.NORMALGOODS, 0, 999);
                     }
                 });
-        System.out.println(questions.size());
         ValuePaginator<CmsQuestion> cmsQuestions = new ValuePaginator<>(questions);
         cmsQuestions.setPageNumber(pageNumber);
         cmsQuestions.setPageSize(pageSize);
@@ -615,16 +607,33 @@ public class Goods2 extends Controller {
             return breadcrumbs;
         }
         if (GoodsWebsiteCondition.isValidAreaId(goodsCond.areaId)) {
+            breadcrumbs.add(createTopCategoryCrumb(goodsCond));
             breadcrumbs.add(createCategoryCrumb(goodsCond));
             breadcrumbs.add(createDistrictCrumb(goodsCond));
             breadcrumbs.add(createAreaCrumb(goodsCond));
         } else if (GoodsWebsiteCondition.isValidAreaId(goodsCond.districtId)) {
+            breadcrumbs.add(createTopCategoryCrumb(goodsCond));
             breadcrumbs.add(createCategoryCrumb(goodsCond));
             breadcrumbs.add(createDistrictCrumb(goodsCond));
         } else if (goodsCond.categoryId > 0) {
+            breadcrumbs.add(createTopCategoryCrumb(goodsCond));
             breadcrumbs.add(createCategoryCrumb(goodsCond));
+        } else if (goodsCond.parentCategoryId > 0) {
+            breadcrumbs.add(createTopCategoryCrumb(goodsCond));
         }
         return breadcrumbs;
+    }
+
+    private static Breadcrumb createTopCategoryCrumb(GoodsWebsiteCondition goodsCond) {
+        String url = LIST_URL_HEAD + goodsCond.categoryId;
+        String desc;
+        if (goodsCond.parentCategoryId > 0) {
+            Category category = Category.findById(goodsCond.parentCategoryId);
+            desc = category.name;
+        } else {
+            desc = "全部分类";
+        }
+        return new Breadcrumb(desc, url);
     }
 
     private static Breadcrumb createCategoryCrumb(GoodsWebsiteCondition goodsCond) {
@@ -634,13 +643,13 @@ public class Goods2 extends Controller {
             Category category = Category.findById(goodsCond.categoryId);
             desc = category.name;
         } else {
-            desc = "全部分类";
+            desc = "全部子分类";
         }
         return new Breadcrumb(desc, url);
     }
 
     private static Breadcrumb createAreaCrumb(GoodsWebsiteCondition goodsCond) {
-        String url = LIST_URL_HEAD + goodsCond.categoryId + '-' + SHANGHAI
+        String url = LIST_URL_HEAD + goodsCond.categoryId + '-' + Area.SHANGHAI
                 + '-' + goodsCond.districtId + '-' + goodsCond.areaId;
         String desc;
         if (GoodsWebsiteCondition.isValidAreaId(goodsCond.areaId)) {
@@ -653,7 +662,7 @@ public class Goods2 extends Controller {
     }
 
     private static Breadcrumb createDistrictCrumb(GoodsWebsiteCondition goodsCond) {
-        String url = LIST_URL_HEAD + goodsCond.categoryId + '-' + SHANGHAI
+        String url = LIST_URL_HEAD + goodsCond.categoryId + '-' + Area.SHANGHAI
                 + '-' + goodsCond.districtId;
         String desc;
         if (GoodsWebsiteCondition.isValidAreaId(goodsCond.districtId)) {

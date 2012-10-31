@@ -8,39 +8,39 @@
 *{#{asset.css src:['/y/home/index.css'] /}}*
 *{#{/set}}*
 #{set 'moreScripts'}
-    #{asset.js src:['/u/slides.min.js'] /}
+#{asset.js src:['/u/slides.min.js'] /}
 <script>
     $(function ($) {
-        $('#slides').slides({
-            play:5000,
-            pause:2500,
-            slideSpeed:500,
-            hoverPause:true
-        });
-        var slideX = {
-            thisUl:$('#notice ul'),
-            thisLi:$('#notice li'),
-            widthLi:$.browser.msie == 6 ? 280 : 300,
-            init:function () {
-                slideX.thisUl.width(slideX.thisLi.length * slideX.widthLi);
-                slideX.slideAuto();
-                slideX.thisUl.hover(slideX.slideStop, slideX.slideAuto);
-            },
-            slideLeft:function () {
-                $('#notice li:first').animate({'marginLeft':'-300px'}, 1500, function () {
-                    $('#notice li:first').appendTo('#notice ul');
-                    $('#notice li:first').siblings().css('marginLeft', 0);
-                });
-                return false;
-            },
-            slideAuto:function () {
-                slideX.intervalId = window.setInterval(slideX.slideLeft, 3000);
-            },
-            slideStop:function () {
-                window.clearInterval(slideX.intervalId);
-            }
-        };
-        slideX.init();
+    $('#slides').slides({
+    play:5000,
+    pause:2500,
+    slideSpeed:500,
+    hoverPause:true
+    });
+    var slideX = {
+    thisUl:$('#notice ul'),
+    thisLi:$('#notice li'),
+    widthLi:$.browser.msie == 6 ? 280 : 300,
+    init:function () {
+    slideX.thisUl.width(slideX.thisLi.length * slideX.widthLi);
+    slideX.slideAuto();
+    slideX.thisUl.hover(slideX.slideStop, slideX.slideAuto);
+    },
+    slideLeft:function () {
+    $('#notice li:first').animate({'marginLeft':'-300px'}, 1500, function () {
+    $('#notice li:first').appendTo('#notice ul');
+    $('#notice li:first').siblings().css('marginLeft', 0);
+    });
+    return false;
+    },
+    slideAuto:function () {
+    slideX.intervalId = window.setInterval(slideX.slideLeft, 3000);
+    },
+    slideStop:function () {
+    window.clearInterval(slideX.intervalId);
+    }
+    };
+    slideX.init();
 
     });
 </script>
@@ -51,15 +51,15 @@
 <div id="main" class="clearfix">
     <div id="slides">
         <div class="slides_container">
-        #{list slides, as:'slide'}
+            #{list slides, as:'slide'}
             <a href="${slide.link}" target="_blank" title="${slide.title}"><img src="${slide.getShowImageUrl()}"
                                                                                 alt="${slide.title}"
                                                                                 width="540" height="265"/></a>
-        #{/list}
+            #{/list}
         </div>
     </div>
     <div class="side"><!-- 这里的style是多余的，开发时请很移除 -->
-    #{if cas?.isLogin}
+        #{if cas?.isLogin}
         <!-- 已登录 -->
         <div class="status signed" style="display:block">
             <div class="inner">
@@ -69,37 +69,38 @@
                 <a href="${helper.Domain.getHomeHost(request)}/orders"> 查看更多</a>
             </div>
         </div>
-    #{/if}
-    #{else}
+        #{/if}
+        #{else}
         <!-- 未登录 -->
         <div class="status" style="display:block">
             <a href="${helper.Domain.getWWWHost(request)}/login" class="login">登录</a>
             <a href="${helper.Domain.getWWWHost(request)}/register" class="register">注册</a>
         </div>
-    #{/else}
+        #{/else}
         <div class="promise"><a href="/service" target="_blank"><img src="http://192.168.18.242/yome/home/ico/prom.png"
                                                                      alt=""/></a></div>
         <div class="notice">
             <h3>公告 <a href="/topics" target="_blank">更多>></a></h3>
             <ul>
-            #{set i:0/}
-            #{list topics, as:'topic'}
-                <li #{if i == 0}class="first"#{/if}><i class="dot">•</i><a href="/topic/${topic.id}"
-                                                                           target="_blank">${topic.title}</a></li>
+                #{set i:0/}
+                #{list topics, as:'topic'}
+                <li
+                #{if i == 0}class="first"#{/if}><i class="dot">•</i><a href="/topic/${topic.id}"
+                                                                       target="_blank">${topic.title}</a></li>
                 #{set i:i+1/}
-            #{/list}
+                #{/list}
             </ul>
         </div>
     </div>
 
     <div class="promo">
-    #{set i:0/}
-    #{list rightSlides, as:'rightSlides'}
-        <a  #{if i == 0}class="first"#{/if} href="${rightSlides.link}" target="_blank"><img
-                src="${rightSlides.getShowImageUrl()}"
-                alt="${rightSlides?.title}" width="243" height="130"/></a>
+        #{set i:0/}
+        #{list rightSlides, as:'rightSlides'}
+        <a #{if i == 0}class="first"#{/if} href="${rightSlides.link}" target="_blank"><img
+            src="${rightSlides.getShowImageUrl()}"
+            alt="${rightSlides?.title}" width="243" height="130"/></a>
         #{set i:i+1/}
-    #{/list}
+        #{/list}
     </div>
 </div>
 
@@ -112,169 +113,10 @@
     </ul>
     <div class="tab-bd clearfix">
         <ul class="goods">
-        #{set i:0/}
-        #{list recommendGoodsList, as:'aGoods'}
-            <li #{if i == 0}class="first"#{/if}>
-
-                <div class="image">
-                    <a href="${aGoods.wwwUrl}" target="_blank"><img
-                            src="${aGoods.imageSmallPath}"
-                            width="199"
-                            height="152"/></a>
-                    #{if aGoods.areaNames?.size()>0}<a class="region" href="${aGoods?.wwwUrl}"
-                                                       target="_blank"><span>商圈：</ppan>${aGoods.areaNames}
-                    </a>
-                    #{/if}
-                </div>
-
-                <div class="title"><a href="${aGoods.wwwUrl}" target="_blank">${aGoods.name}</a></div>
-                <div class="price">
-                    <div class="left">&yen;${aGoods.salePrice}</div>
-                    <div class="right">
-                        <del>原价：${aGoods.faceValue}</del>
-                        <div><em>${aGoods?.virtualSaleCount}</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
-            #{set i:i+1/}
-        #{/list}
-        </ul>
-        <ul class="goods" style="display:none">
-        #{set i:0/}
-        #{list goodsList, as:'aGoods'}
-            <li #{if i == 0}class="first"#{/if}>
-
-                <div class="image">
-                    <a href="${aGoods.wwwUrl}" target="_blank"><img
-                            src="${aGoods.imageSmallPath}"
-                            width="199"
-                            height="152"/></a>
-                    #{if aGoods.areaNames?.size()>0}<a class="region" href="${aGoods?.wwwUrl}"
-                                                       target="_blank"><span>商圈：</span>${aGoods.areaNames}
-                    </a>
-                    #{/if}
-                </div>
-
-                <div class="title"><a href="${aGoods.wwwUrl}" target="_blank">${aGoods.name}</a></div>
-                <div class="price">
-                    <div class="left">&yen;${aGoods.salePrice}</div>
-                    <div class="right">
-                        <del>原价：${aGoods.faceValue}</del>
-                        <div><em>${aGoods?.virtualSaleCount}</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
-            #{set i:i+1/}
-        #{/list}
-        </ul>
-        <ul class="goods" style="display:none">
-        #{set i:0/}
-        #{list hotSaleGoodsList, as:'aGoods'}
-            <li #{if i == 0}class="first"#{/if}>
-
-                <div class="image">
-                    <a href="${aGoods.wwwUrl}" target="_blank"><img
-                            src="${aGoods.imageSmallPath}"
-                            width="199"
-                            height="152"/></a>
-                    #{if aGoods.areaNames?.size()>0}<a class="region" href="${aGoods?.wwwUrl}"
-                                                       target="_blank"><span>商圈：</span>${aGoods.areaNames}
-                    </a>
-                    #{/if}
-                </div>
-
-                <div class="title"><a href="${aGoods.wwwUrl}" target="_blank">${aGoods.name}</a></div>
-                <div class="price">
-                    <div class="left">&yen;${aGoods.salePrice}</div>
-                    <div class="right">
-                        <del>原价：${aGoods.faceValue}</del>
-                        <div><em>${aGoods?.virtualSaleCount}</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
-            #{set i:i+1/}
-        #{/list}
-        </ul>
-        <ul class="goods" style="display:none">
-        #{set i:0/}
-        #{list newGoodsList, as:'aGoods'}
-            <li #{if i == 0}class="first"#{/if}>
-
-                <div class="image">
-                    <a href="${aGoods.wwwUrl}" target="_blank"><img
-                            src="${aGoods.imageSmallPath}"
-                            width="199"
-                            height="152"/></a>
-                    #{if aGoods.areaNames?.size()>0}<a class="region" href="${aGoods?.wwwUrl}"
-                                                       target="_blank"><span>商圈：</span>${aGoods.areaNames}
-                    </a>
-                    #{/if}
-                </div>
-
-                <div class="title"><a href="${aGoods.wwwUrl}" target="_blank">${aGoods.name}</a></div>
-                <div class="price">
-                    <div class="left">&yen;${aGoods.salePrice}</div>
-                    <div class="right">
-                        <del>原价：${aGoods.faceValue}</del>
-                        <div><em>${aGoods.virtualSaleCount}</em>人已购买</div>
-                    </div>
-                </div>
-            </li>
-            #{set i:i+1/}
-        #{/list}
-        </ul>
-
-    </div>
-</div>
-#{set i:0/}
-#{set showTwoLine:true/}
-#{list floorCategories,as:'category'}
-#{set i:i+1/}
-#{if i> 2}
-    #{set showTwoLine:false/}
-#{/if}
-<div class="floor">
-    <div class="hd"><h2><b class="f${i}"></b>${category.name}</h2></div>
-    <div class="ft">
-    #{list category.getShowKeywordsList(10),as:'keywords'}
-        <a href="/q/${category.id}?s=${keywords}" target="_blank">${keywords}</a>
-    #{/list}
-        <a href="/q/${category.id}" target="_blank">更多&gt;&gt;</a>
-    </div>
-    <div class="bd clearfix">
-
-        <div class="side">
-        #{if showTwoLine}#{set brandCount:8/}#{/if}#{else}#{set brandCount:4/}#{/else}
-            <dl class="accordion">
-            #{set j:0/}
-            #{list category.getTopBrands(brandCount),as:'brand'}
-                #{set j:j+1/}
-                <dt class="n${j}"
-                    #{if j>1}style="display:block"#{/if}#{else}style="display:none"#{/else}>${brand.name}</dt>
-                <dd #{if j>1}style="display:none"#{/if}>
-                    <i class="n${j}"></i>
-                    <a href="" target="_blank"><img
-                            src="${brand.showLogo}" width="200"
-                            height="125"></a>
-
-                    <p><b>${brand.name}</b> ${brand.description}</p>
-                </dd>
-            #{/list}
-            </dl>
-        #{if showTwoLine}
-        <a class="advert" href="" target="_blank">
-        #{if i==1}<img src="${webOneFloor?.showImageUrl}" alt=""/>#{/if}
-        #{if i==2}<img src="${webTwoFloor?.showImageUrl}" alt=""/>#{/if}
-        </a>
-        #{/if}
-        </div>
-
-    #{if showTwoLine}#{set goodsCount:6/}#{/if}#{else}#{set goodsCount:3/}#{/else}
-    <ul class="goods first">
-    #{set j:0/}
-    #{list category.getTopGoods(goodsCount),as:'aGoods'}
-        #{set j:j+1/}
-        <li #{if i == 0}class="first"#{/if}>
+            #{set i:0/}
+            #{list recommendGoodsList, as:'aGoods'}
+            <li
+            #{if i == 0}class="first"#{/if}>
 
             <div class="image">
                 <a href="${aGoods.wwwUrl}" target="_blank"><img
@@ -283,7 +125,94 @@
                         height="152"/></a>
                 #{if aGoods.areaNames?.size()>0}<a class="region" href="${aGoods?.wwwUrl}"
                                                    target="_blank"><span>商圈：</span>${aGoods.areaNames}
-                </a>
+            </a>
+                #{/if}
+            </div>
+
+            <div class="title"><a href="${aGoods.wwwUrl}" target="_blank">${aGoods.name}</a></div>
+            <div class="price">
+                <div class="left">&yen;${aGoods.salePrice}</div>
+                <div class="right">
+                    <del>原价：${aGoods.faceValue}</del>
+                    <div><em>${aGoods?.virtualSaleCount}</em>人已购买</div>
+                </div>
+            </div>
+            </li>
+            #{set i:i+1/}
+            #{/list}
+        </ul>
+        <ul class="goods" style="display:none">
+            #{set i:0/}
+            #{list goodsList, as:'aGoods'}
+            <li
+            #{if i == 0}class="first"#{/if}>
+
+            <div class="image">
+                <a href="${aGoods.wwwUrl}" target="_blank"><img
+                        src="${aGoods.imageSmallPath}"
+                        width="199"
+                        height="152"/></a>
+                #{if aGoods.areaNames?.size()>0}<a class="region" href="${aGoods?.wwwUrl}"
+                                                   target="_blank"><span>商圈：</span>${aGoods.areaNames}
+            </a>
+                #{/if}
+            </div>
+
+            <div class="title"><a href="${aGoods.wwwUrl}" target="_blank">${aGoods.name}</a></div>
+            <div class="price">
+                <div class="left">&yen;${aGoods.salePrice}</div>
+                <div class="right">
+                    <del>原价：${aGoods.faceValue}</del>
+                    <div><em>${aGoods?.virtualSaleCount}</em>人已购买</div>
+                </div>
+            </div>
+            </li>
+            #{set i:i+1/}
+            #{/list}
+        </ul>
+        <ul class="goods" style="display:none">
+            #{set i:0/}
+            #{list hotSaleGoodsList, as:'aGoods'}
+            <li
+            #{if i == 0}class="first"#{/if}>
+
+            <div class="image">
+                <a href="${aGoods.wwwUrl}" target="_blank"><img
+                        src="${aGoods.imageSmallPath}"
+                        width="199"
+                        height="152"/></a>
+                #{if aGoods.areaNames?.size()>0}<a class="region" href="${aGoods?.wwwUrl}"
+                                                   target="_blank"><span>商圈：</span>${aGoods.areaNames}
+            </a>
+                #{/if}
+            </div>
+
+            <div class="title"><a href="${aGoods.wwwUrl}" target="_blank">${aGoods.name}</a></div>
+            <div class="price">
+                <div class="left">&yen;${aGoods.salePrice}</div>
+                <div class="right">
+                    <del>原价：${aGoods.faceValue}</del>
+                    <div><em>${aGoods?.virtualSaleCount}</em>人已购买</div>
+                </div>
+            </div>
+            </li>
+            #{set i:i+1/}
+            #{/list}
+        </ul>
+        <ul class="goods" style="display:none">
+            #{set i:0/}
+            #{list newGoodsList, as:'aGoods'}
+            <li
+            #{if i == 0}class="first"#{/if}>
+
+            <div class="image">
+                <a href="${aGoods.wwwUrl}" target="_blank"><img
+                        src="${aGoods.imageSmallPath}"
+                        width="199"
+                        height="152"/></a>
+                #{if aGoods.areaNames?.size()>0}<a class="region" href="${aGoods?.wwwUrl}"
+                                                   target="_blank"><span>商圈：</span>${aGoods.areaNames}
+            </a>
                 #{/if}
             </div>
 
@@ -295,13 +224,92 @@
                     <div><em>${aGoods.virtualSaleCount}</em>人已购买</div>
                 </div>
             </div>
-        </li>
-        #{if j==3}
+            </li>
+            #{set i:i+1/}
+            #{/list}
+        </ul>
+
+    </div>
+</div>
+#{set i:0/}
+#{set showTwoLine:true/}
+#{list floorCategories,as:'category'}
+#{set i:i+1/}
+#{if i> 2}
+#{set showTwoLine:false/}
+#{/if}
+<div class="floor">
+    <div class="hd"><h2><b class="f${i}"></b>${category.name}</h2></div>
+    <div class="ft">
+        #{list category.getShowKeywordsList(10),as:'keywords'}
+        <a href="/q/${category.id}?s=${keywords}">${keywords}</a>
+        #{/list}
+        <a href="/q/${category.id}">更多&gt;&gt;</a>
+    </div>
+    <div class="bd clearfix">
+
+        <div class="side">
+            #{if showTwoLine}#{set brandCount:8/}#{/if}#{else}#{set brandCount:4/}#{/else}
+            <dl class="accordion">
+                #{set j:0/}
+                #{list category.getTopBrands(brandCount),as:'brand'}
+                #{set j:j+1/}
+                <dt class="n${j}"
+                #{if j>1}style="display:block"#{/if}#{else}style="display:none"#{/else}>${brand.name}</dt>
+                <dd
+                #{if j>1}style="display:none"#{/if}>
+                <i class="n${j}"></i>
+                <a href="${new models.sales.GoodsWebsiteCondition().buildUrl('brandId',brand.id).getUrl()}"
+                   target="_blank"><img
+                        src="${brand.showLogo}" width="200"
+                        height="125"></a>
+
+                <p><b>${brand.name}</b> ${brand.description}</p>
+                </dd>
+                #{/list}
+            </dl>
+            #{if showTwoLine}
+            <a class="advert" href="" target="_blank">
+                #{if i==1}<img src="${webOneFloor?.showImageUrl}" alt=""/>#{/if}
+                #{if i==2}<img src="${webTwoFloor?.showImageUrl}" alt=""/>#{/if}
+            </a>
+            #{/if}
+        </div>
+
+        #{if showTwoLine}#{set goodsCount:6/}#{/if}#{else}#{set goodsCount:3/}#{/else}
+        <ul class="goods first">
+            #{set j:0/}
+            #{list category.getTopGoods(goodsCount),as:'aGoods'}
+            #{set j:j+1/}
+            <li
+            #{if i == 0}class="first"#{/if}>
+
+            <div class="image">
+                <a href="${aGoods.wwwUrl}" target="_blank"><img
+                        src="${aGoods.imageSmallPath}"
+                        width="199"
+                        height="152"/></a>
+                #{if aGoods.areaNames?.size()>0}<a class="region" href="${aGoods?.wwwUrl}"
+                                                   target="_blank"><span>商圈：</span>${aGoods.areaNames}
+            </a>
+                #{/if}
+            </div>
+
+            <div class="title"><a href="${aGoods.wwwUrl}" target="_blank">${aGoods.name}</a></div>
+            <div class="price">
+                <div class="left">&yen;${aGoods.salePrice}</div>
+                <div class="right">
+                    <del>原价：${aGoods.faceValue}</del>
+                    <div><em>${aGoods.virtualSaleCount}</em>人已购买</div>
+                </div>
+            </div>
+            </li>
+            #{if j==3}
         </ul>
         <ul class="goods">
-        #{/if}
-    #{/list}
-    </ul>
+            #{/if}
+            #{/list}
+        </ul>
     </div>
 </div>
 #{/list}
@@ -311,9 +319,9 @@
     <div class="inner">
         <ul class="clearfix">
             <li class="first">合作链接：</li>
-        #{list friendsLinks, as:'friendsLinks'}
+            #{list friendsLinks, as:'friendsLinks'}
             <li><a href="${friendsLinks?.link}" target="_blank">${friendsLinks?.linkName}</a></li>
-        #{/list}
+            #{/list}
         </ul>
     </div>
 </div>

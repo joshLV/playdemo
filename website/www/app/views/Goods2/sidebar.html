@@ -1,0 +1,80 @@
+<!-- #sidebar -->
+<div id="sidebar">
+    <div id="switch">
+        <div class="slides_container">
+            #{list rightSlides, as:'rightSlides'}
+            <a href="${rightSlides.link}" target="_blank"><img src="${rightSlides.getShowImageUrl()}" width="200"/></a>
+            #{/list}
+        </div>
+    </div>
+    <div id="wpaqq">
+        <div class="inner">
+            <div class="qq">
+                <a class="wpa" target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=2281971081&site=qq&menu=yes"><img
+                        border="0" src="http://wpa.qq.com/pa?p=2:470060958:41" alt="点击这里给我发消息" title="点击这里给我发消息"></a>
+                <a class="faq" href="">常见问题</a>
+            </div>
+            工作时间：周一到周五 9:00-18:00
+        </div>
+    </div>
+
+    #{if hotSaleGoodsList != null && hotSaleGoodsList.size() > 0}
+    <div class="sidewrap">
+        <div class="hd">热销商品</div>
+        <ul class="bd clearfix">
+            #{list hotSaleGoodsList, as:'aGoods'}
+            <li>
+                <div class="image"><a href="${aGoods?.wwwUrl}" target="_blank"><img src="${aGoods.imageSmallPath}"
+                                                                                    alt="${goodsAlt}"/></a></div>
+                <div class="title"><a href="${aGoods?.wwwUrl}" target="_blank">${aGoods.name}
+                    aaa${aGoods.virtualBaseSaleCount}</a></div>
+                <div class="attri">
+                    <del>原价：${aGoods.faceValue}</del>
+                </div>
+                <div class="price">现价：<b>&yen;${aGoods.salePrice}</b></div>
+            </li>
+            #{/list}
+        </ul>
+    </div>
+    #{/if}
+    #{if recommendGoodsList != null && recommendGoodsList.size() > 0 && (onSaleGoodsCount == null || onSaleGoodsCount > 0)}
+    <div class="sidewrap">
+        <div class="hd">您可能感兴趣的商品</div>
+        <ul class="bd clearfix">
+            #{list recommendGoodsList, as:'aGoods'}
+            #{set goodsAlt:helper.Title.getDetailTitle(aGoods) /}
+            <li>
+                <div class="image"><a href="${aGoods?.wwwUrl}" target="_blank"><img src="${aGoods.imageSmallPath}"
+                                                                                    alt="${goodsAlt}"/></a></div>
+                <div class="title"><a href="${aGoods?.wwwUrl}" target="_blank">${aGoods.name}</a></div>
+                <div class="attri">
+                    <del>原价：${aGoods.faceValue}</del>
+                </div>
+                <div class="price">现价：<b>&yen;${aGoods.salePrice}</b></div>
+            </li>
+            #{/list}
+        </ul>
+    </div>
+    #{/if}
+
+    #{if browsedGoodsList != null && browsedGoodsList.size() > 0}
+    <div class="sidewrap">
+        <div class="hd">您浏览过的商品</div>
+        <ul class="bd clearfix">
+            #{list browsedGoodsList, as:'aGoods'}
+            <li>
+                <div class="image"><a href="${aGoods?.goods?.wwwUrl}" target="_blank"><img
+                        src="${aGoods?.goods?.imageSmallPath}"
+                        /></a></div>
+                <div class="title"><a href="${aGoods?.goods?.wwwUrl}" target="_blank">${aGoods?.goods?.name}</a></div>
+                <div class="attri">
+                    <del>原价：${aGoods?.goods?.faceValue}</del>
+                </div>
+                <div class="price">现价：<b>&yen;${aGoods?.goods?.salePrice}</b></div>
+            </li>
+            #{/list}
+        </ul>
+    </div>
+    #{/if}
+</div>
+<!-- #sidebar -->

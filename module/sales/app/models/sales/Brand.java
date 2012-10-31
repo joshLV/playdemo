@@ -237,7 +237,7 @@ public class Brand extends Model {
         return CacheHelper.getCache(CacheHelper.getCacheKey(Brand.CACHEKEY + id, "BRAND_BY_ID"), new CacheCallBack<Brand>() {
             @Override
             public Brand loadData() {
-                return Area.findById(id);
+                return Brand.findById(id);
             }
         });
     }

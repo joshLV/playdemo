@@ -29,17 +29,22 @@ public class GoodsWebsiteCondition implements Serializable {
     public String districtId = "0";
     public String areaId = "0";
     public String searchAreaId = "0";
+    public long brandId = 0;
+    public String brandName = "";
+
     public String orderBy = getOrderBy(0);
     public String solrOrderBy = getSolrOrderBy(0);
     public String orderByType = "desc";
     public int orderByNum = 9;
     public int orderByTypeNum = 0;
+
     public int type = 0;
     public String name;
     public String no;
 
-
-    public MaterialType materialType;
+    public MaterialType materialType = null;
+    public Boolean isOrder = null;
+    public int isOrderNum = 0;
     public GoodsStatus status;
     public int priority;
     public Date expireAt;
@@ -48,8 +53,8 @@ public class GoodsWebsiteCondition implements Serializable {
     public String keywords;
 
     public GoodsWebsiteCondition() {
-
     }
+
     /**
      * 拼接hql的查询条件.
      *
@@ -84,13 +89,17 @@ public class GoodsWebsiteCondition implements Serializable {
             orderByType = "1".equals(args[3]) ? "desc" : "asc";
         }
         if (args.length > 4) {
-            materialType = StringUtils.isBlank(args[4]) ? MaterialType.ELECTRONIC :
-                    MaterialType.values()[Integer.parseInt(args[4])];
+            isOrderNum = StringUtils.isBlank(args[4]) ? 0 : Integer.parseInt
+                    (args[4]);
+            isOrder = isOrderNum == 1 ? false : null;
+        }
+        if (args.length > 5) {
+            materialType = StringUtils.isBlank(args[5]) ? null :
+                    MaterialType.values()[Integer.parseInt(args[5])];
         }
     }
 
     private void setAreaBySearchId() {
-        System.out.println("searchAreaId:" + searchAreaId);
         if (searchAreaId.length() == 8) {
             districtId = searchAreaId.substring(0, 5);
             areaId = searchAreaId;
@@ -100,9 +109,16 @@ public class GoodsWebsiteCondition implements Serializable {
         }
     }
 
-    public GoodsWebsiteCondition(String condition, String keywords) {
+    public GoodsWebsiteCondition(String condition, String keywords, long brandId) {
         this(condition);
         this.keywords = keywords;
+        this.brandId = brandId;
+        if (brandId > 0) {
+            Brand brand = Brand.findBrandById(brandId);
+            if (brand != null) {
+                brandName = brand.name;
+            }
+        }
     }
 
     public String getFilter() {
@@ -158,22 +174,6 @@ public class GoodsWebsiteCondition implements Serializable {
         return paramMap;
     }
 
-    public String getOrderByTypeExpress() {
-        if (orderBy.equals("g.firstOnSaleAt") || solrOrderBy.equals("goods.firstOnSaleAt_dt")) {
-            if (orderByType.equals("asc")) {
-                return "从早到晚";
-            } else {
-                return "从晚到早";
-            }
-        } else {
-            if (orderByType.equals("asc")) {
-                return "从低到高";
-            } else {
-                return "从高到低";
-            }
-        }
-    }
-
     private static String getOrderBy(int orderById) {
         String orderBy;
         switch (orderById) {
@@ -201,10 +201,10 @@ public class GoodsWebsiteCondition implements Serializable {
         String orderBy;
         switch (orderById) {
             case 1:
-                orderBy = "goods.saleCount_l";
+                orderBy = "goods.virtualSaleCount_l";
                 break;
             case 2:
-                orderBy = "goods.salePrice_l";
+                orderBy = "goods.salePrice_c";
                 break;
             case 3:
                 orderBy = "goods.firstOnSaleAt_dt";
@@ -227,14 +227,23 @@ public class GoodsWebsiteCondition implements Serializable {
     }
 
     public String getUrl() {
-        String url = "/q/" + categoryId + '-' + searchAreaId + '-' + orderByNum + '-' + orderByTypeNum;
+        long currentCategoryId = categoryId == 0 ? parentCategoryId : categoryId;
+        String url = "/q/" + currentCategoryId + '-' + searchAreaId + '-' + orderByNum + '-' + orderByTypeNum + "-" + isOrderNum;
         if (materialType != null) {
-            url += '-' + materialType.getIntValue();
+            url += "-" + materialType.getIntValue();
         }
         if (keywords != null) {
             keywords.replace(" ", "+");
             url += "?s=" + keywords;
+            if (brandId != 0) {
+                url += "&b=" + brandId;
+            }
+        } else {
+            if (brandId != 0) {
+                url += "?b=" + brandId;
+            }
         }
+
         return url;
     }
 
@@ -243,6 +252,7 @@ public class GoodsWebsiteCondition implements Serializable {
     }
 
     public GoodsWebsiteCondition buildUrl(String queryProperty, Object value) {
+
         try {
             GoodsWebsiteCondition condition = (GoodsWebsiteCondition) this.clone();
             if (StringUtils.isBlank(queryProperty)) {
@@ -250,8 +260,7 @@ public class GoodsWebsiteCondition implements Serializable {
             }
             if (queryProperty.equals("categoryId")) {
                 condition.categoryId = (Long) value;
-                condition.searchAreaId = "0";
-                setAreaBySearchId();
+                condition.parentCategoryId = 0l;
             }
             if (queryProperty.equals("searchAreaId")) {
                 condition.searchAreaId = (String) value;
@@ -263,12 +272,19 @@ public class GoodsWebsiteCondition implements Serializable {
             if (queryProperty.equals("orderByTypeNum")) {
                 condition.orderByTypeNum = (Integer) value;
             }
+            if (queryProperty.equals("isOrderNum")) {
+                condition.isOrderNum = (Integer) value;
+            }
+            if (queryProperty.equals("brandId")) {
+                condition.brandId = (Long) value;
+            }
             if (queryProperty.equals("materialType")) {
                 condition.materialType = (MaterialType) value;
             }
+
             return condition;
         } catch (CloneNotSupportedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
 
         return this;
@@ -364,6 +380,8 @@ public class GoodsWebsiteCondition implements Serializable {
         cond.status = this.status;
         cond.priority = this.priority;
         cond.expireAt = this.expireAt;
+        cond.isOrder = this.isOrder;
+        cond.isOrderNum = this.isOrderNum;
         cond.paramMap = new HashMap<>();
         cond.paramMap.putAll(this.paramMap);
         return cond;

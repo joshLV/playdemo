@@ -108,18 +108,18 @@ public class Shop extends Model {
 
     @Transient
     @SolrField
-    public String cityId;
+    public String cityId = Area.SHANGHAI;
 
     private String districtId;
 
     @Transient
-//    @SolrField
+    @SolrField
     public String getDistrictId() {
         if (districtId != null) {
             return districtId;
         }
         if (StringUtils.isBlank(areaId) || areaId.length() < 5) {
-            return null;
+            return "123";
         }
 
         districtId = areaId.substring(0, 5);

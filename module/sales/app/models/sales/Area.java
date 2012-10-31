@@ -27,6 +27,7 @@ import java.util.List;
 @Entity
 @Table(name = "areas")
 public class Area extends GenericModel {
+    public static String SHANGHAI = "021";
 
     private static final long serialVersionUID = 706109123113062L;
 

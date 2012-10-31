@@ -6,13 +6,25 @@ import com.uhuila.common.constants.DeletedStatus;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Required;
-import play.data.validation.Unique;
 import play.db.jpa.Model;
-import play.modules.solr.SolrEmbedded;
 import play.modules.solr.SolrField;
 import play.modules.solr.SolrSearchable;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -82,7 +94,6 @@ public class Category extends Model {
      */
     @ManyToOne
     @JoinColumn(name = "parent_id")
-    @SolrEmbedded
     public Category parentCategory;
 
     @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, targetEntity = Category.class)
