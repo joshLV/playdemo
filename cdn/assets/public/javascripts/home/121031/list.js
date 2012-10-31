@@ -1,0 +1,1 @@
+jQuery(function(a){a("#switch").slides({play:4000,pause:2000,slideSpeed:300,hoverPause:true});a(".goods").delegate("li","mouseover",function(){a(this).find(".region").addClass("hover")}).delegate("li","mouseout",function(){a(this).find(".region").removeClass("hover")})});
