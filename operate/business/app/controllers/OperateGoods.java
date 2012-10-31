@@ -8,6 +8,7 @@ package controllers;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.FileUploadUtil;
+import models.admin.OperateUser;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.resale.ResalerLevel;
@@ -370,6 +371,7 @@ public class OperateGoods extends Controller {
         render(id);
 
     }
+
     /**
      * 取得指定商品信息
      */
@@ -567,7 +569,14 @@ public class OperateGoods extends Controller {
                 models.sales.Goods goods = models.sales.Goods.findById(id);
                 Supplier supplier = Supplier.findById(goods.supplierId);
                 if (supplier != null) {
-                    String email = supplier.salesEmail;
+//                    String email = supplier.salesEmail;
+                    String email = "";
+                    if (supplier.operateUserId != null) {
+                        OperateUser operateUser = OperateUser.findById(supplier.operateUserId);
+                        email = operateUser.email;
+                    } else if (StringUtils.isNotBlank(supplier.salesEmail)) {
+                        email = supplier.salesEmail;
+                    }
                     if (StringUtils.isBlank(email)) email = "bd@seewi.com.cn";
                     //发送提醒邮件
                     MailMessage mailMessage = new MailMessage();

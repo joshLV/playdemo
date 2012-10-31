@@ -10,14 +10,21 @@ note:'.quanmx.com (只能是字母、数字、下划线，且长度限定在3-20
 *{#{layout_operate.textField name:'supplier.salesEmail', value:supplier?.salesEmail/}}*
 
 
-#{layout_operate.selectField name:'supplier.operateUserId', class:'span2', value:supplier?.operateUser?.id,
+#{layout_operate.selectField name:'supplier.operateUserId', class:'span2', value:supplier?.operateUserId,
 error:'supplier.operateUserId'}
-    #{list items:supplierList, as:'supplier' }
-        #{option supplier.id}${supplier?.operateUser?.}#{/option}
+    #{list items:operateUserList, as:'operateUser' }
+        #{option operateUser.id}
+            #{if operateUser?.userName!=null}
+            ${operateUser?.userName}
+            #{/if}
+            #{else}
+            ${operateUser?.loginName}
+            #{/else}
+        #{/option}
     #{/list}
 #{/layout_operate.selectField}
 
-
+<input type="hidden" id="supplier_operateUserId" name="supplier.operateUserId" value="${supplier?.operateUserId}">
 
 #{layout_operate.textField name:'supplier.mobile', value:supplier?.mobile,note:'(负责人手机和电话至少填写一项)'/}
 #{layout_operate.textField name:'supplier.phone', value:supplier?.phone/}

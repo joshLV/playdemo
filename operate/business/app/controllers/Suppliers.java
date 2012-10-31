@@ -1,12 +1,11 @@
 package controllers;
 
+import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.FileUploadUtil;
 import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.AccountType;
 import models.accounts.WithdrawAccount;
-import models.admin.SupplierRole;
-import models.admin.SupplierUser;
-import models.admin.SupplierUserType;
+import models.admin.*;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
@@ -43,13 +42,14 @@ public class Suppliers extends Controller {
     public static void index() {
         String otherName = request.params.get("otherName");
         List<Supplier> suppliers = Supplier.findByCondition(otherName);
-        render(suppliers,otherName);
+        render(suppliers, otherName);
     }
 
     @ActiveNavigation("suppliers_add")
     public static void add() {
+        List<OperateUser> operateUserList = getOperateUser();
         renderArgs.put("baseDomain", BASE_DOMAIN);
-        render();
+        render(operateUserList);
     }
 
     /**
@@ -74,8 +74,9 @@ public class Suppliers extends Controller {
         Validation.match("validation.jobNumber", admin.jobNumber, "^[0-9]*");
 
         if (Validation.hasErrors()) {
+            List<OperateUser> operateUserList = getOperateUser();
             renderArgs.put("baseDomain", BASE_DOMAIN);
-            render("Suppliers/add.html");
+            render("Suppliers/add.html", supplier, operateUserList);
         }
         supplier.loginName = admin.loginName;
         supplier.create();
@@ -172,8 +173,9 @@ public class Suppliers extends Controller {
         SupplierUser admin = SupplierUser.findAdmin(id, supplier.loginName);
         List<WithdrawAccount> withdrawAccounts =
                 WithdrawAccount.find("byUserIdAndAccountType", supplier.getId(), AccountType.SUPPLIER).fetch();
+        List<OperateUser> operateUserList = getOperateUser();
         renderArgs.put("baseDomain", BASE_DOMAIN);
-        render(supplier, admin, id, withdrawAccounts);
+        render(supplier, admin, id, withdrawAccounts, operateUserList);
     }
 
     public static void withdrawAccountCreateAndUpdate(@Valid WithdrawAccount withdrawAccount, Long supplierId) {
@@ -210,8 +212,9 @@ public class Suppliers extends Controller {
             for (String key : validation.errorsMap().keySet()) {
                 warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
             }
+            List<OperateUser> operateUserList = getOperateUser();
             renderArgs.put("baseDomain", BASE_DOMAIN);
-            render("Suppliers/edit.html", id, admin);
+            render("Suppliers/edit.html", supplier, id, admin, operateUserList);
         }
 
         Supplier.update(id, supplier);
@@ -248,5 +251,17 @@ public class Suppliers extends Controller {
         render(supplierUsersPage, supplierDomainName, supplierUsers);
     }
 
-
+    public static List<OperateUser> getOperateUser() {
+        List<OperateUser> operateUserList = new ArrayList<>();
+        List<OperateUser> tempOperateUserList = OperateUser.find("deleted=?", DeletedStatus.UN_DELETED).fetch();
+        for (OperateUser ou : tempOperateUserList) {
+            for (int i = 0; i < ou.roles.size(); i++) {
+                if (ou.roles.get(i).key.equals("sales")) {
+                    operateUserList.add(ou);
+                    break;
+                }
+            }
+        }
+        return operateUserList;
+    }
 }

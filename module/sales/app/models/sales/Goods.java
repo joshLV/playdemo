@@ -197,6 +197,7 @@ public class Goods extends Model {
     @MaxSize(60)
     @SolrField
     public String title;
+
     /**
      * 所属商户ID
      */

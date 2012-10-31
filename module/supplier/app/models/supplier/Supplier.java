@@ -4,6 +4,7 @@ import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.PathUtil;
+import models.admin.OperateUser;
 import models.admin.SupplierUser;
 import models.sales.Brand;
 import org.apache.commons.lang.StringUtils;
@@ -125,6 +126,13 @@ public class Supplier extends Model {
     @Email
     @Column(name = "sales_email")
     public String salesEmail;
+
+    /**
+     * 所属操作员ID
+     */
+    @Column(name = "operate_user_id")
+    public Long operateUserId;
+
     /**
      * 删除状态
      */
@@ -204,7 +212,8 @@ public class Supplier extends Model {
         sp.position = supplier.position;
         sp.userName = supplier.userName;
         sp.email = supplier.email;
-        sp.salesEmail = supplier.salesEmail;
+//        sp.salesEmail = supplier.salesEmail;
+        sp.operateUserId = supplier.operateUserId;
         sp.shopEndHour = supplier.shopEndHour;
         sp.updatedAt = new Date();
         sp.save();
