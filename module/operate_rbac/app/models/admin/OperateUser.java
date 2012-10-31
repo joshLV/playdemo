@@ -34,7 +34,7 @@ import java.util.Set;
 public class OperateUser extends Model {
 
     private static final long serialVersionUID = 21943311362L;
-    
+
     @Column(name = "login_name")
     @Required
     public String loginName;
@@ -45,7 +45,7 @@ public class OperateUser extends Model {
 
     @Column(name = "encrypted_password")
     @Required
-    @MinSize(value=6)
+    @MinSize(value = 6)
     public String encryptedPassword;
 
     @Column(name = "password_salt")
@@ -68,6 +68,16 @@ public class OperateUser extends Model {
 
     @Column(name = "user_name")
     public String userName;
+
+    @Required
+    @Match(value = "\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*", message = "邮箱格式不对！")
+    public String email;
+
+    @Required
+    @Match(value = "^[0-9]*$", message = "工号格式不对!(纯数字)")
+    @Column(name = "job_number")
+    public String jobNumber;
+
 
     @Transient
     public String confirmPassword;
@@ -147,6 +157,8 @@ public class OperateUser extends Model {
         updatedUser.loginName = user.loginName;
         updatedUser.userName = user.userName;
         updatedUser.mobile = user.mobile;
+        updatedUser.email = user.email;
+        updatedUser.jobNumber = user.jobNumber;
         updatedUser.updatedAt = new Date();
         updatedUser.roles = user.roles;
 

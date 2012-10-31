@@ -9,7 +9,8 @@ validation.minSize=%s的长度至少%d位!
 validation.required=请输入%s!
 operateUser.encryptedPassword=密码
 operateUser.confirmPassword=确认密码
-
+operateUser.email=邮箱
+operateUser.jobNumber=工号
 operateUser.oldPassword=原密码
 operateUser.newPassword=新密码
 operateUser.newConfirmPassword=确认新密码

@@ -51,7 +51,7 @@ public class OperateUsers extends Controller {
                 loginName, pageNumber, PAGE_SIZE);
 
         render(operateUserPage, loginName);
-        
+
     }
 
     /**
@@ -71,6 +71,7 @@ public class OperateUsers extends Controller {
     @ActiveNavigation("user_add")
     public static void create(@Valid OperateUser operateUser) {
         if (Validation.hasErrors()) {
+            System.out.println("operateUser>>" + operateUser);
             List rolesList = OperateRole.findAll();
             String roleIds = "";
             if (operateUser.roles != null && !operateUser.roles.isEmpty()) {
@@ -111,7 +112,7 @@ public class OperateUsers extends Controller {
      * 操作员编辑页面
      */
     public static void edit(Long id) {
-        OperateUser operateUser  = OperateUser.findById(id);
+        OperateUser operateUser = OperateUser.findById(id);
         String roleIds = "";
         if (operateUser.roles != null && !operateUser.roles.isEmpty()) {
             for (OperateRole role : operateUser.roles) {
@@ -128,7 +129,7 @@ public class OperateUsers extends Controller {
     /**
      * 操作员信息修改
      *
-     * @param id           ID
+     * @param id          ID
      * @param operateUser 用户信息
      */
     public static void update(Long id, @Valid OperateUser operateUser) {
@@ -140,7 +141,7 @@ public class OperateUsers extends Controller {
                     roleIds += role.id + ",";
                 }
             }
-            operateUser.id=id;
+            operateUser.id = id;
             render("OperateUsers/edit.html", operateUser, roleIds, rolesList);
         }
         // 更新用户信息

@@ -52,6 +52,24 @@
     <span class="error">#{error 'operateUser.encryptedPassword' /}</span>
   </div>
  </div>
+
+<div class="control-group">
+    <label for="input01" class="control-label"><span style="color: red; ">*</span>邮箱</label>
+    <div class="controls">
+        <input type="text" name="operateUser.email" class="input-large" id="email" maxlength="50" value="${operateUser?.email}"/>
+        <span class="error" id="checkEmail">#{error 'operateUser.email' /}</span>
+    </div>
+</div>
+
+
+<div class="control-group">
+    <label for="input01" class="control-label"><span style="color: red; ">*</span>工号</label>
+    <div class="controls">
+        <input type="text" name="operateUser.jobNumber" class="input-large" id="jobNumber" maxlength="30" value="${operateUser?.jobNumber}"/>
+        <span class="error" id="checkJobNumber">#{error 'operateUser.jobNumber' /}</span>
+    </div>
+</div>
+
  <div class="form-actions">
   <button class="btn btn-primary" id="save" type="button">保 存</button>
  </div>
