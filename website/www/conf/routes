@@ -46,7 +46,7 @@ GET     /p/{id}                                 Goods2.show
 GET     /p/{id}                                 Goods2.showHistory
 
 GET     /goods/{id}/shops                       Goods2.shops(format:'json')
-GET     /goods/{id}/questions                       Goods2.questions(format:'json')
+GET     /goods/{id}/questions                   Goods2.questions(format:'json')
 
 GET     /goods/{uuid}/preview                   Goods2.preview
 POST    /goods/statistics                       Goods2.statistics

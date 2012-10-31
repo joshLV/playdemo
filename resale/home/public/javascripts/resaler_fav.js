@@ -174,7 +174,7 @@ $(
                 type:'GET',
                 url:'/dangdang-batch-add?goodsIds=' + checked,
                 success:function (data) {
-                    console.log(data.error=='false');
+                    console.log(data.error == 'false');
                     if (data.error == 'false') {
                         $("#error-info").html(data.info + "的商品发布失败或当当已存在该商品！");
                     } else {
@@ -193,9 +193,9 @@ $(
                 url:'/dangdang-batch-add?goodsIds=' + goodsId,
                 success:function (data) {
                     if (data.error == 'false') {
-                        $("#error-info").html(data.info + "的商品发布失败或当当已存在该商品！");
+                        $("#list_err_" + goodsId).html( "当当已存在该商品或"+data.info +"的商品发布失败！");
                     } else {
-                        $("#error-info").html("商品ID=" + goodsId + ",发布成功！");
+                        $("#list_err_" + goodsId).html("商品ID=" + goodsId + ",发布成功！");
                     }
 
                 }

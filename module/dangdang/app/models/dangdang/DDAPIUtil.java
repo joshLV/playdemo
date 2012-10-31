@@ -251,9 +251,7 @@ public class DDAPIUtil {
      */
     public static Response access(String url, String request, String apiName) throws DDAPIInvokeException {
 
-        Logger.info("\nURL==============================" + url);
-        Logger.info("\nRequest====" + request);
-
+        Logger.info("\n request URL=================" + url);
         //构造HttpClient的实例
         //创建GET方法的实例
         PostMethod postMethod = new PostMethod(url);
@@ -268,19 +266,12 @@ public class DDAPIUtil {
         String sign = getSign(request, time, apiName);
         postMethod.addParameter("sign", sign);
         postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET, "utf-8");
-//        try {
-//            postMethod.setRequestEntity(new StringRequestEntity(XML, "text/xml", "utf-8"));
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//        }
         return proxy.accessHttp(postMethod);
     }
 
     public static String getSign(String data, String time, String apiName) {
         final String unsignedData = SPID + apiName + VER + data + SECRET_KEY + time;
-        System.out.println("\nunsignedData   ====              [" + unsignedData + "]");
         final String signed = DigestUtils.md5Hex(unsignedData);
-        System.out.println("\nsigned   ====            [" + signed + "]");
         return signed;
     }
 
@@ -301,7 +292,6 @@ public class DDAPIUtil {
         }
 
         signStr.append("sn=").append(SECRET_KEY);
-        System.out.println(">>>>>>>>>." + DigestUtils.md5Hex(signStr.toString()));
         return DigestUtils.md5Hex(signStr.toString()).equals(sign);
 
     }

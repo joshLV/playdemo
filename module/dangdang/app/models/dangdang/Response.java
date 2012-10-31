@@ -58,7 +58,6 @@ public class Response implements Serializable {
             Element root = document.getRootElement();
             ver = root.elementText("ver");
             spid = root.elementText("spid");
-            Logger.info("\nerror_code====" + root.elementTextTrim("error_code"));
             errorCode = ErrorCode.getErrorCode(Integer.parseInt(root.elementTextTrim("error_code")));
             desc = root.elementText("desc");
             data = root.element("data");

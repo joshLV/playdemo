@@ -303,7 +303,7 @@ public class Goods2 extends Controller {
                     }
                 });
 
-        String tjUrl = "http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/g/" + goods.id;
+        String tjUrl = "http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" + goods.id;
         if (user != null) {
             user.generatePromoterCode();
             tjUrl += "?tj=" + user.promoterCode;
