@@ -13,7 +13,6 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 分销商订单列表控制器
@@ -41,11 +40,7 @@ public class ResalerOrders extends Controller {
         BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders");
         renderGoodsCond(condition);
 
-        //取得本月和上月订单笔数,总金额
-        Order.getThisMonthTotal(resaler);
-        Map totalMap = Order.getTotalMap();
-
-        render(orderList, breadcrumbs, totalMap, resaler);
+        render(orderList, breadcrumbs,resaler);
     }
 
     /**

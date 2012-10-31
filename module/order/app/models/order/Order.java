@@ -16,7 +16,6 @@ import models.consumer.UserWebIdentification;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.resale.Resaler;
-import models.resale.util.ResaleUtil;
 import models.sales.Goods;
 import models.sales.GoodsCouponType;
 import models.sales.GoodsStatistics;
@@ -51,7 +50,6 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -868,99 +866,6 @@ public class Order extends Model {
         orderPage.setPageSize(pageSize);
         return orderPage;
     }
-
-    @Transient
-    static Map totalMap = new HashMap();
-
-    public static Map getTotalMap() {
-        return totalMap;
-    }
-
-    /**
-     * 本月订单总数（成功的和进行中的）
-     *
-     * @param resaler 分销商
-     */
-    public static void getThisMonthTotal(Resaler resaler) {
-
-        EntityManager entityManager = JPA.em();
-        Map thisMonthMap = ResaleUtil.findThisMonth();
-
-        //本月成功订单笔数
-        String condition = getCondition(resaler, thisMonthMap, OrderStatus.PAID);
-        Query query = entityManager.createQuery("SELECT o FROM Order o" + condition);
-        List<Order> orderlist = query.getResultList();
-        totalMap.put("thisPaidTotal", orderlist.size());
-        BigDecimal amount = new BigDecimal(0);
-        for (Order order : orderlist) {
-            amount = amount.add(order.amount);
-        }
-        //本月已支付订单金额
-        totalMap.put("thisMonthPaidAmount", amount);
-
-        //本月未支付订单笔数
-        condition = getCondition(resaler, thisMonthMap, OrderStatus.UNPAID);
-        query = entityManager.createQuery("SELECT o FROM Order o" + condition);
-        orderlist = query.getResultList();
-        totalMap.put("thisUnPaidTotal", orderlist.size());
-        //本月未支付订单金额
-        amount = new BigDecimal(0);
-        for (Order order : orderlist) {
-            amount = amount.add(order.amount);
-        }
-        totalMap.put("thisMonthUnPaidAmount", amount);
-
-        //上月成功订单笔数
-        Map lastMonthMap = ResaleUtil.findLastMonth();
-        condition = getCondition(resaler, lastMonthMap, OrderStatus.PAID);
-
-        query = entityManager.createQuery("SELECT o FROM Order o" + condition);
-        orderlist = query.getResultList();
-        totalMap.put("lastPaidTotal", orderlist.size());
-        //上月已支付订单金额
-        amount = new BigDecimal(0);
-        for (Order order : orderlist) {
-            amount = amount.add(order.amount);
-        }
-        totalMap.put("lastMonthPaidAmount", amount);
-
-        //上月未支付订单笔数
-        condition = getCondition(resaler, lastMonthMap, OrderStatus.UNPAID);
-        query = entityManager.createQuery("SELECT o FROM Order o" + condition);
-        orderlist = query.getResultList();
-        totalMap.put("lastUnPaidTotal", orderlist.size());
-        //上月未支付订单金额
-        amount = new BigDecimal(0);
-        for (Order order : orderlist) {
-            amount = amount.add(order.amount);
-        }
-        totalMap.put("lastMonthUnPaidAmount", amount);
-
-        //本月总订单笔数
-        condition = getCondition(resaler, thisMonthMap, null);
-        query = entityManager.createQuery("SELECT o FROM Order o" + condition);
-        orderlist = query.getResultList();
-        totalMap.put("thisMonthTotal", orderlist.size());
-        //本月总订单金额
-        amount = new BigDecimal(0);
-        for (Order order : orderlist) {
-            amount = amount.add(order.amount);
-        }
-        totalMap.put("thisMonthTotalAmount", amount);
-
-        //上月总订单笔数
-        condition = getCondition(resaler, lastMonthMap, null);
-        query = entityManager.createQuery("SELECT o FROM Order o" + condition);
-        orderlist = query.getResultList();
-        totalMap.put("lastMonthTotal", orderlist.size());
-        //上月总订单金额
-        amount = new BigDecimal(0);
-        for (Order order : orderlist) {
-            amount = amount.add(order.amount);
-        }
-        totalMap.put("lastMonthTotalAmount", amount);
-    }
-
 
     @Transient
     public OrderStatus getRealGoodsStatus() {

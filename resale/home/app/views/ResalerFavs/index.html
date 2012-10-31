@@ -116,13 +116,14 @@
                         #{/if}
                         #{if resaler.loginName=='dangdang'}
                             <a href="#" goodsId="${favItem.goods.id}" class="push_dd">发布到当当</a>
-                            #{if favItem.partner==models.order.OuterOrderPartner.DD}<span style="display:block;color: #ff0000;">(已发布在当当)</span> #{/if}
+                            #{if favItem.partner==models.order.OuterOrderPartner.DD}<span
+                                    style="display:block;color: #ff0000;">(已发布在当当)</span> #{/if}
                         #{/if}
                         #{if resaler.loginName == 'jingdong'}
-                            <a href="/jd-add/${favItem.goods.id}" >发布到京东</a>
+                            <a href="/jd-add/${favItem.goods.id}">发布到京东</a>
                         #{/if}
-                        #{if reslaer.loginName == 'yihaodian'}
-                            <a href="/yhd-add/${favItem.goods.id}" >发布到一号店</a>
+                        #{if resaler.loginName == 'yihaodian'}
+                            <a href="/yhd-add/${favItem.goods.id}">发布到一号店</a>
                         #{/if}
                     </td>
                 </tr>

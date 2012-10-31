@@ -98,14 +98,4 @@ public class OrderUnitTest extends UnitTest {
 
 	}
 
-	@Test
-	public void testGetThisMonthTotal() {
-		Long resalerId = (Long) Fixtures.idCache.get("models.resale.Resaler-Resaler_1");
-		Resaler resaler =Resaler.findById(resalerId);
-		Order.getThisMonthTotal(resaler);
-		Map totalMap = Order.getTotalMap();
-		assertNotNull(totalMap);
-
-	}
-
 }

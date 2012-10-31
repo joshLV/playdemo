@@ -64,20 +64,6 @@ if(confirm("确定取消此订单吗？")){
             models.order.OrderStatus.CANCELED],name:'order',
             select:'condition_status',
             value:status,form:'orderForm'/}
-
-            <div id="stats" class="clearfix">
-                <div class="this-month">
-                    本月订单： 共${totalMap.thisMonthTotal}笔， 共${totalMap.thisMonthTotalAmount}元
-                    （交易成功${totalMap.thisPaidTotal}笔/${totalMap.thisMonthPaidAmount}元，
-                    进行中${totalMap.thisUnPaidTotal}笔/${totalMap.thisMonthUnPaidAmount}元）
-                </div>
-                <div class="last-month">
-                    上月订单： 共${totalMap.lastMonthTotal}笔， 共${totalMap.lastMonthTotalAmount}元
-                    （交易成功${totalMap.lastPaidTotal}笔/${totalMap.lastMonthPaidAmount}元，
-                    进行中${totalMap.lastUnPaidTotal}笔/${totalMap.lastMonthUnPaidAmount}元）
-                </div>
-            </div>
-
             <table class="order-tab" cellpadding="0" cellspacing="0">
                 <thead>
                 <tr class="col-name">
