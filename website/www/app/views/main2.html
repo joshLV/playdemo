@@ -5,7 +5,7 @@
     <title>#{get 'title' /}</title>
 #{get 'metaContent'/}
     <link rel="stylesheet" href="http://192.168.18.242/yome/base/src/base.css"/>
-    *{<link rel="stylesheet" href="http://192.168.18.242/yome/base/src/sprite.css"/>}*
+*{<link rel="stylesheet" href="http://192.168.18.242/yome/base/src/sprite.css"/>}*
 
 
 *{#{asset.css src:['/y/base/base.css', '/y/base/sprite.css'] /}}*
@@ -32,7 +32,7 @@
         #{/if}
         #{else}
             <li class="first"><a class="login" id="login" href="${helper.Domain.getWWWHost(request)}/login">登录</a></li>
-            <li><a class="signup" href="${helper.Domain.getWWWHost(request)}/register">注册</a></li>
+            <li><a class="signup" href="${helper.Domain.getWWWHost(request)}/register" target="_blank">注册</a></li>
         *{<li><a class="quick" href="" target="_blank">快捷登录</a></li>}*
         #{/else}
             <li><a id="favorite" class="favorite" href="">收藏一百券</a></li>
@@ -56,38 +56,22 @@
                                      x-webkit-speech="" x-webkit-grammar="builtin:translate" value="${s}"></div>
             <button type="submit"> 搜 索</button>
         </form>
-        <div class="hotword"><a href="/q?s=火锅">火锅</a> <a href="/q?s=川菜">川菜</a> <a href="/q?s=美容">美容</a> <a href="/q?s=小吃">小吃</a> <a href="/q?s=西餐">西餐</a>
+        <div class="hotword"><a href="/q?s=火锅">火锅</a> <a href="/q?s=川菜">川菜</a> <a href="/q?s=美容">美容</a> <a
+                href="/q?s=小吃">小吃</a> <a href="/q?s=西餐">西餐</a>
         </div>
     </div>
     <div id="cart">
         <div class="cart-box">
             <div class="cart-box-hd clearfix">
                 <span class="cart-icon">购物车</span>
-                <span class="cart-num">有(<em>${count}</em>)件商品</span>
+                <span class="cart-num">有(<em id="cart-js">${count}</em>)件商品</span>
                 <b class="arrow"></b>
+                <input type="hidden" id="reload" value="true"/>
             </div>
             <div class="cart-box-bd">
-                <ul>
-                    <li class="carts-item clearfix">
-                        <a class="goods-img" href=""><img src="//img0.uhcdn.com/p/0/0/33/2012061404233949588_tiny.jpg"
-                                                          width="48"/></a>
-                        <a class="goods-name" href="">购厚味150元VIP卡,即送50元哈根达斯券</a>
-                        <span class="goods-price">120.00</span>
-                        <span class="goods-del" title="删除"></span>
-                    </li>
-                    <li class="carts-item clearfix">
-                        <a class="goods-img" href=""><img src="//img0.uhcdn.com/p/0/0/33/2012061404233949588_tiny.jpg"
-                                                          width="48"/></a>
-                        <a class="goods-name" href="">购厚味150元VIP卡,即送50元哈根达斯券</a>
-                        <span class="goods-price">120.00</span>
-                        <span class="goods-del" title="删除"></span>
-                    </li>
-                </ul>
-                <div class="emptycart">你的购物车里没有任何商品。</div>
-                <div class="totalcart">共<em>0</em>件商品，共计<em>0.00</em>元 <a href="">购买</a></div>
             </div>
         </div>
-        <a class="cart-btn" href="" target="_blank">去结算</a>
+        <a class="cart-btn" href="/carts">去结算</a>
     </div>
 </div>
 <!-- #header -->
@@ -116,11 +100,11 @@
                             #{/list}
                         </ul>
                         <div class="ads">
-                            #{if i==1}${categoryTopic1?.content?.raw()}#{/if}
-                            #{if i==2}${categoryTopic2?.content?.raw()}#{/if}
-                            #{if i==3}${categoryTopic3?.content?.raw()}#{/if}
-                            #{if i==4}${categoryTopic4?.content?.raw()}#{/if}
-                            #{if i==5}${categoryTopic5?.content?.raw()}#{/if}
+                            <a href="/topic/${categoryTopic1?.id}" target="_blank">#{if i==1}${categoryTopic1?.content?.raw()}#{/if}</a>
+                            <a href="/topic/${categoryTopic2?.id}" target="_blank">#{if i==2}${categoryTopic2?.content?.raw()}#{/if}</a>
+                            <a href="/topic/${categoryTopic3?.id}" target="_blank">#{if i==3}${categoryTopic3?.content?.raw()}#{/if}</a>
+                            <a href="/topic/${categoryTopic4?.id}" target="_blank">#{if i==4}${categoryTopic4?.content?.raw()}#{/if}</a>
+                            <a href="/topic/${categoryTopic5?.id}" target="_blank">#{if i==5}${categoryTopic5?.content?.raw()}#{/if}</a>
                         </div>
                     </dd>
                 </dl>

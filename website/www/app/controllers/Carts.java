@@ -1,7 +1,5 @@
 package controllers;
 
-import cache.CacheCallBack;
-import cache.CacheHelper;
 import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
 import models.consumer.User;
@@ -15,7 +13,6 @@ import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
-import play.test.Fixtures;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -81,9 +78,6 @@ public class Carts extends Controller {
         User user = SecureCAS.getUser();
         Http.Cookie cookie = request.cookies.get("identity");
         String cookieValue = cookie == null ? null : cookie.value;
-        System.out.println("cookie>>>" + cookieValue);
-
-        System.out.println("user>>>" + user);
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
         if (goods == null) {
             error(500, "no such goods: " + goodsId);

@@ -51,7 +51,7 @@ GET     /goods/{id}/questions                       Goods2.questions(format:'jso
 GET     /goods/{uuid}/preview                   Goods2.preview
 POST    /goods/statistics                       Goods2.statistics
 
-POST    /user-question                          UserQuestions.add
+GET     /user-question                          UserQuestions.add
 GET     /more-questions                         UserQuestions.moreQuestions
 
 

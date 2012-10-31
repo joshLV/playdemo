@@ -94,13 +94,13 @@
     </div>
 
     <div class="promo">
-        #{set i:0/}
-        #{list rightSlides, as:'rightSlides'}
-        <a #{if i == 0}class="first"#{/if} href="${rightSlides.link}" target="_blank"><img
-            src="${rightSlides.getShowImageUrl()}"
-            alt="${rightSlides?.title}" width="243" height="130"/></a>
+    #{set i:0/}
+    #{list rightSlides, as:'rightSlides'}
+        <a  #{if i == 0}class="first"#{/if} href="@{JumpPages.doJump(rightSlides?.id)}" target="_blank"><img
+                src="${rightSlides.getShowImageUrl()}"
+                alt="${rightSlides?.title}" width="243" height="130"/></a>
         #{set i:i+1/}
-        #{/list}
+    #{/list}
     </div>
 </div>
 

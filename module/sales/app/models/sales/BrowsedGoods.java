@@ -133,7 +133,7 @@ public class BrowsedGoods extends Model {
         }
         sql.append(") ");
 
-        sql.append(" group by b.goods order by b.visitorCount desc,updatedAt desc");
+        sql.append(" group by b.goods order by updatedAt desc,b.visitorCount desc");
 
         Query query = JPA.em().createQuery(sql.toString());
         for (Map.Entry<String, Object> entry : params.entrySet()) {

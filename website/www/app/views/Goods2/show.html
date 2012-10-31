@@ -12,7 +12,6 @@
 <script src="http://a.uhcdn.com/js/u/slides.min.js"></script>
 <script src="http://maps.googleapis.com/maps/api/js?e&language=zh-CN&region=GB&key=AIzaSyCbnBNu40y5eXnL8jOey4lbS3P1vQ_HR5E&sensor=false"></script>
 <script src="http://192.168.18.242/yome/home/src/detail.js" type="text/javascript" charset="UTF-8"></script>
-<script src="@{'/public/javascripts/goods-show.js'}" type="text/javascript" charset="UTF-8"></script>
 #{set 'moreScripts'}
 <script type="text/javascript">
     //直接在文本框里输入购买数量
@@ -70,7 +69,7 @@
 <div id="section">
     <div id="summary" class="clearfix">
         <div id="title">
-            <h1>${goods?.name}</h1>
+            <h1>${goods?.brand?.name}</h1>
 
             <p class="desc">${goods?.name}</p>
         </div>
@@ -108,7 +107,7 @@
                         <input type="hidden" value="1" id="last_num_${goods.id}"/>
                         <input type="hidden" value="${goods.baseSale}" id="stock_${goods.id}">
                         <input type="hidden" value="${goods.limitNumber}" id="limit_${goods.id}">
-                    </span> 件(已出售<em class="selled">1370</em>件)
+                    </span> 件(已出售<em class="selled">${goods?.virtualSaleCount?:'0'}</em>件)
                     <span id="stock_hit" style="display:none;color:#f50">库存${goods.baseSale}件</span>
                     #{if goods.limitNumber > 0}
                         <span id="limitNumber" style="color:#f50">限购${goods.limitNumber}件</span>
@@ -124,8 +123,6 @@
                 </li>
             </ul>
             <input type="hidden" id="goodsId" name="gid" value="${goods.id}">
-
-
             <div id="btnBox">
                 #{if goods.onSale()}
                     #{if !bought}
@@ -176,8 +173,6 @@
                target="_blank"></a>
         </div>
         <div id="share-im">
-
-
             <div class="inner">
                 <label for="share-url">复制链接分享给站外好友：</label><input type="text" id="share-url" class="input"
                                                                   value="${goods.wwwUrl}?tj=gshare"
@@ -218,18 +213,22 @@
         <div class="bd">${goods?.details?.raw()}
         </div>
     </div>
+
     <div id="consult">
         <div class="hd">购买咨询</div>
         <div class="bd">
             <ul class="consult-list"></ul>
             <div class="pagination"></div>
-            <form id="consult-form">
+            <div id="consult-form">
+                <div class="error"></div>
                 <label>发表咨询：</label>
-                <textarea class="con" cols="80" rows="5" id="question"></textarea>
+                <textarea cols="80" rows="5" id="question"></textarea>
+            #{if !cas?.isLogin}
                 <label>手机号码：</label>
                 <input type="text" id="mobile" name="mobile" maxlength="11"/> 输入手机号，方便我们给您反馈信息。
-                <button class="submit" type="submit"> 提 交</button>
-            </form>
+            #{/if}
+                <a class="submit" id="submit" href="javascript:void(0)"> 提 交 </a>
+            </div>
         </div>
     </div>
     <!-- #consult -->

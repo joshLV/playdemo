@@ -57,7 +57,7 @@ public class GoodsRelatedToTuanTest extends UnitTest {
                     }
                 });
 
-        FactoryBoy.batchCreate(1, Goods.class,
+        FactoryBoy.batchCreate(2, Goods.class,
                 new SequenceCallback<Goods>() {
                     @Override
                     public void sequence(Goods target, int seq) {

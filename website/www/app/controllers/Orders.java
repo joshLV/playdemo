@@ -45,7 +45,7 @@ public class Orders extends Controller {
     private static String getQueryStringWithoutDiscountSN() {
         List<String> kvs = new ArrayList<>();
         for (String key : request.params.all().keySet()) {
-            if (!"discountSN".equals(key) && !"body".equals(key)) {
+            if (!"discountSN".equals(key) && !"body".equals(key) && !"mobile".equals(key)) {
                 String[] values = request.params.getAll(key);
                 for (String value : values) {
                     kvs.add(key + "=" + value);
@@ -84,14 +84,18 @@ public class Orders extends Controller {
         User user = SecureCAS.getUser();
         List<String> orderItems_mobiles = OrderItems.getMobiles(user);
         renderArgs.put("querystring", getQueryStringWithoutDiscountSN());
+
+        String mobile = request.params.get("mobile");
+        if (StringUtils.isBlank(mobile)) {
+            mobile = user.mobile;
+        }
         //用于重新刷新整个页面
-        render(user, orderItems_mobiles);
+        render(mobile, orderItems_mobiles);
     }
 
     protected static DiscountCode getDiscountCode() {
         // 折扣券
         String discountSN = request.params.get("discountSN");
-
         if (discountSN == null) {
             renderArgs.put("discountErrorInfo", "");
         } else {

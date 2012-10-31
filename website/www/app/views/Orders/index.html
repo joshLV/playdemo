@@ -10,7 +10,7 @@ $(function(){
     function reloadDiscount() {
         var val = $.trim($('#discount_sn').val());
         if (val) {
-            window.location.href = '/orders?${querystring.raw()}&discountSN='+ val;
+            window.location.href = '/orders?${querystring.raw()}&discountSN='+ val+'&mobile='+$("#ecart_mobile").val();
         } else {
             $('.discount-error').html('优惠码为空，请输入优惠码');
         }
@@ -87,7 +87,7 @@ $(function(){
         <div class="mobi">
             <div class="mobi-hd">电子凭证-收货手机</div>
             <div class="mobi-bd">
-                <div class="receive-mobi"><em>*</em>接收手机：<input type="text" class="mobi-num" name="mobile" maxlength="11" value="${user?.mobile}" id="ecart_mobile" />
+                <div class="receive-mobi"><em>*</em>接收手机：<input type="text" class="mobi-num" name="mobile" maxlength="11" value="${mobile}" id="ecart_mobile" />
                  <span style="display: inline;color: #ff0000;" id="limit">#{error 'mobile'/}</span></div>
                 #{if orderItems_mobiles?.size()>0}
                 <dl><dt>历史手机：</dt>

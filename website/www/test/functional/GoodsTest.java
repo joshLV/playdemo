@@ -1,16 +1,12 @@
 package functional;
 
-import java.util.List;
-
-import models.sales.Goods;
-import models.sales.MaterialType;
-
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Test;
 import play.Play;
 import play.mvc.Http;
 import play.test.FunctionalTest;
@@ -32,21 +28,22 @@ public class GoodsTest extends FunctionalTest {
         goods = FactoryBoy.create(Goods.class);
     }
 
-    //    @Test
+   @Test
     public void testShow() {
         Http.Response response = GET("/g/" + goods.id);
         assertIsOk(response);
         assertContentType("text/html", response);
         assertCharset(Play.defaultWebEncoding, response);
+       assertContentMatch("sds",response);
     }
 
 
-    //    @Test
+    @Test
     public void testList() {
     	FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
 			@Override
 			public void build(Goods g) {
-				g.materialType = MaterialType.REAL;
+				g.materialType = MaterialType.ELECTRONIC;
 			}
 		});
         Http.Response response = GET("/s/0-021-0-0-0-0-0-0-1?page=1");

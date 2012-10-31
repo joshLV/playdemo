@@ -460,10 +460,10 @@ public class Goods2 extends Controller {
         if (goods.categories != null && goods.categories.size() > 0) {
             Category category = goods.categories.iterator().next();
             categoryId = category.id;
-            breadcrumbs.append(category.name, "/s/" + category.id);
+            breadcrumbs.append(category.name, "/q/" + category.id);
         }
         if (goods.brand != null) {
-            breadcrumbs.append(goods.brand.name, "/s/" + categoryId + "-021-"
+            breadcrumbs.append(goods.brand.name, "/q/" + categoryId + "-021-"
                     + goods.brand.id);
         }
         return breadcrumbs;

@@ -327,6 +327,7 @@ public class Goods extends Model {
      */
     @MaxSize(65000)
     @Lob
+    @Required
     private String prompt;
 
     /**
@@ -334,6 +335,7 @@ public class Goods extends Model {
      */
     @MaxSize(65000)
     @Lob
+    @Required
     private String exhibition;
     /**
      * 售出数量
@@ -1815,7 +1817,6 @@ public class Goods extends Model {
             goods.salePrice = new BigDecimal(salePrice.substring(0, salePrice.length() - 4));
             goods.areaNames = (String) doc.getFieldValue(SOLR_GOODS_AREAS);
             goods.imageSmallPath = (String) doc.getFieldValue(SOLR_GOODS_IMAGESMALLPATH);
-            System.out.println("goods.name:" + goods.name);
             goodsList.add(goods);
         }
         return goodsList;
@@ -1913,9 +1914,13 @@ public class Goods extends Model {
 
             for (FacetField.Count count : countList) {
                 if (count.getCount() > 0) {
-                    Area area = Area.findAreaById(count.getName());
-                    if ((area != null && districtId != null && area.parent != null && area.parent.id.equals(districtId)) ||
-                            (area != null && districtId == null)) {
+                    if (isDistrict && count.getName().length() >= 5) {
+                        final String districtId = count.getName().substring(0, 5);
+                        Long districtCount = districtCountMap.get(districtId);
+                        districtCountMap.put(districtId, districtCount == null ? count.getCount() : districtCount + count.getCount());
+
+                    } else {
+                        Area area = Area.findAreaById(count.getName());
                         area.goodsCount = count.getCount();
                         areaList.add(area);
                         System.out.println(area.name + ":          " + area.goodsCount);
