@@ -4,7 +4,6 @@ import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.PathUtil;
-import models.admin.OperateUser;
 import models.admin.SupplierUser;
 import models.sales.Brand;
 import org.apache.commons.lang.StringUtils;
