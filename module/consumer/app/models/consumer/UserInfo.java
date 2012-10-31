@@ -3,6 +3,9 @@ package models.consumer;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import java.util.Date;
 import java.util.List;
 
@@ -12,6 +15,7 @@ public class UserInfo extends Model {
     
     private static final long serialVersionUID = 812220609113062L;
     
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     public User user;
