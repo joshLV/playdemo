@@ -84,7 +84,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "goods")
-@SolrSearchable
+//@SolrSearchable
 public class Goods extends Model {
     private static final long serialVersionUID = 7063232063912330652L;
 
