@@ -96,6 +96,7 @@ public class OrderFuncTest extends FunctionalTest {
 
         String querystring = (String) renderArgs("querystring");
         User resultUser = (User) renderArgs("user");
+        assertNotNull(resultUser);
         assertTrue(querystring.contains("gid=" + goodsId1));
         assertTrue(querystring.contains("gid=" + goodsId2));
         assertTrue(querystring.contains("g" + goodsId1 + "=1"));

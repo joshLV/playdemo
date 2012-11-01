@@ -605,7 +605,7 @@ public class Goods extends Model {
     }
 
     @Column(name = "discount")
-    @SolrField
+    //@SolrField
     public BigDecimal getDiscount() {
         if (discount != null && discount.compareTo(BigDecimal.ZERO) > 0) {
             return discount;
@@ -667,7 +667,7 @@ public class Goods extends Model {
      * 小规格图片路径
      */
     @Transient
-    @SolrField
+    //@SolrField
     public String getImageSmallPath() {
         if (StringUtils.isNotBlank(imageSmallPath)) {
             return imageSmallPath;
@@ -715,7 +715,7 @@ public class Goods extends Model {
     }
 
     @Transient
-    @SolrField
+    //@SolrField
     public String getPromptContent() {
         return HtmlUtil.html2text(getPrompt());
     }
@@ -749,7 +749,7 @@ public class Goods extends Model {
     private Long virtualSaleCount;
 
     @Transient
-    @SolrField
+    //@SolrField
     public Long getVirtualSaleCount() {
         if (virtualSaleCount != null && virtualSaleCount > 0) {
             return virtualSaleCount;
@@ -800,7 +800,7 @@ public class Goods extends Model {
     }
 
     @Transient
-    @SolrField
+    //@SolrField
     public String getPublishedPlatformList() {
         List<GoodsPublishedPlatformType> platformTypeList = getPublishedPlatforms();
         return StringUtils.join(platformTypeList, " ");
@@ -819,7 +819,7 @@ public class Goods extends Model {
         return false;
     }
 
-    @SolrField
+    //@SolrField
     public GoodsStatus getStatus() {
         if (status != null && GoodsStatus.ONSALE.equals(status) &&
                 (expireAt != null && expireAt.before(new Date())) || (baseSale != null && baseSale <= 0)) {
@@ -832,13 +832,13 @@ public class Goods extends Model {
      * @return
      */
     @Transient
-    @SolrField
+    //@SolrField
     public boolean isExpired() {
         return expireAt != null && expireAt.before(new Date());
     }
 
     @Transient
-    @SolrField
+    // @SolrField
     public String getAreaNames() {
         if (StringUtils.isNotBlank(areaNames)) {
             return areaNames;
@@ -1237,7 +1237,7 @@ public class Goods extends Model {
     }
 
     @Transient
-    @SolrField
+    //@SolrField
     public Collection<Shop> getShopList() {
         if (isAllShop) {
             return CacheHelper.getCache(CacheHelper.getCacheKey(Shop.CACHEKEY_SUPPLIERID + this.supplierId, "GOODS_SHOP_LIST"), new CacheCallBack<List<Shop>>() {
