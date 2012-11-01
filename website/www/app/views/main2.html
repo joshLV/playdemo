@@ -4,19 +4,9 @@
     <meta charset="UTF-8">
     <title>#{get 'title' /}</title>
 #{get 'metaContent'/}
-    <link rel="stylesheet" href="http://192.168.18.242/yome/base/src/base.css"/>
-*{<link rel="stylesheet" href="http://192.168.18.242/yome/base/src/sprite.css"/>}*
-
-
-*{#{asset.css src:['/y/base/base.css', '/y/base/sprite.css'] /}}*
+#{asset.css src:['/base/121031/base.css']/}
     <link rel="shortcut icon" href="#{asset.url href:'/images/y/favicon.ico'/}" type="image/x-icon"/>
 #{get 'moreStyles' /}
-*{#{asset.js src:['/u/jquery-1.7.2.min.js', '/y/base/base.js'] /}}*
-#{asset.js src:['/u/jquery-1.7.2.min.js'] /}
-    <script src="http://a.uhcdn.com/js/u/slides.min.js"></script>
-    <script src="http://192.168.18.242/yome/home/src/home.js"></script>
-    <script src="http://192.168.18.242/yome/base/src/base.js"></script>
-
 </head>
 <body #{if request.url.equals("/")}class="home"#{/if}>
 %{baseDomain = play.Play.configuration.getProperty("application.baseDomain")}%
@@ -100,11 +90,16 @@
                             #{/list}
                         </ul>
                         <div class="ads">
-                            <a href="/topic/${categoryTopic1?.id}" target="_blank">#{if i==1}${categoryTopic1?.content?.raw()}#{/if}</a>
-                            <a href="/topic/${categoryTopic2?.id}" target="_blank">#{if i==2}${categoryTopic2?.content?.raw()}#{/if}</a>
-                            <a href="/topic/${categoryTopic3?.id}" target="_blank">#{if i==3}${categoryTopic3?.content?.raw()}#{/if}</a>
-                            <a href="/topic/${categoryTopic4?.id}" target="_blank">#{if i==4}${categoryTopic4?.content?.raw()}#{/if}</a>
-                            <a href="/topic/${categoryTopic5?.id}" target="_blank">#{if i==5}${categoryTopic5?.content?.raw()}#{/if}</a>
+                            <a href="/topic/${categoryTopic1?.id}"
+                               target="_blank">#{if i==1}${categoryTopic1?.content?.raw()}#{/if}</a>
+                            <a href="/topic/${categoryTopic2?.id}"
+                               target="_blank">#{if i==2}${categoryTopic2?.content?.raw()}#{/if}</a>
+                            <a href="/topic/${categoryTopic3?.id}"
+                               target="_blank">#{if i==3}${categoryTopic3?.content?.raw()}#{/if}</a>
+                            <a href="/topic/${categoryTopic4?.id}"
+                               target="_blank">#{if i==4}${categoryTopic4?.content?.raw()}#{/if}</a>
+                            <a href="/topic/${categoryTopic5?.id}"
+                               target="_blank">#{if i==5}${categoryTopic5?.content?.raw()}#{/if}</a>
                         </div>
                     </dd>
                 </dl>
@@ -151,7 +146,7 @@
     </div>
 </div>
 <!-- #footer -->
-
+#{asset.js src:['/u/jquery-1.7.2.min.js','/base/121031/base.js'] /}
 #{get 'moreScripts' /}
 <div style="display:none">
     <script type="text/javascript" id="bdshare_js" data="type=tools&uid=763119"></script>

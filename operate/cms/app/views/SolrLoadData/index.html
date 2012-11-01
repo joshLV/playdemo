@@ -1,0 +1,24 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'添加内容块' /}
+#{include '/share/nav.html' /}
+<div class="body">
+    <button class="btn btn-primary" id="solr">solr数据加载</button>
+    <span id="solr_err" style="color: #ff0000;"></span>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("#solr").click(function () {
+            $.ajax({
+                type:'GET',
+                url:"/solr-init",
+                success:function (msg) {
+                    if (msg == "ok") {
+                        $("#solr_err").html("加载成功！");
+                    } else {
+                        $("#solr_err").html("加载失败！");
+                    }
+                }
+            });
+        });
+    })
+</script>

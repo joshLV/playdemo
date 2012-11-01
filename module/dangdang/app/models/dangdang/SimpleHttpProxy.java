@@ -27,7 +27,6 @@ public class SimpleHttpProxy implements HttpProxy {
             HttpClient httpClient = new HttpClient();
             //执行postMethod
             int statusCode = httpClient.executeMethod(postMethod); // HttpClient对于要求接受后继服务的请求，象POST和PUT等不能自动处理转发
-            Logger.info("http response code    =============================" + statusCode);
             // 200
             if (statusCode == HttpStatus.SC_OK) {
                 //从头中取出转向的地址

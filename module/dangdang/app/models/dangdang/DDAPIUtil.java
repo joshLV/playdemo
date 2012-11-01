@@ -250,8 +250,8 @@ public class DDAPIUtil {
      * @return
      */
     public static Response access(String url, String request, String apiName) throws DDAPIInvokeException {
-
         Logger.info("\n request URL=================" + url);
+
         //构造HttpClient的实例
         //创建GET方法的实例
         PostMethod postMethod = new PostMethod(url);

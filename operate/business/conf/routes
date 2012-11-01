@@ -43,8 +43,9 @@ GET     /send_sms/send                                  SendSMS.send
 GET     /send_sms/suc_send                              SendSMS.sucSend
 GET     /send_sms/{id}                                  SendSMS.details
 
-
-
+#solr
+GET     /solr-init                              SolrLoadData.initSolr
+GET     /index                                  SolrLoadData.index
 
  #秒杀商品
 GET     /seckill_goods/{seckillId}/item        SecKillGoodsItems.index

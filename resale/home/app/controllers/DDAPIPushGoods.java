@@ -33,7 +33,7 @@ public class DDAPIPushGoods extends Controller {
      * @param goodsIds
      */
     public static void batchAdd(@As(",") List<Long> goodsIds) {
-
+        Logger.info("DDAPIPushGoods API begin!");
         Resaler user = SecureCAS.getResaler();
         if (!Resaler.DD_LOGIN_NAME.equals(user.loginName)) {
             error("user is not dangdang resaler");
@@ -71,16 +71,16 @@ public class DDAPIPushGoods extends Controller {
                 pushFlag = DDAPIUtil.pushGoods(goodsId, requestParams);
             } catch (DDAPIInvokeException e) {
                 pushFlag = false;
-                Logger.info("[DangDang API] invoke push goods fail! goodsId=" + goodsId);
+                Logger.info("[DDAPIPushGoods API] invoke push goods fail! goodsId=" + goodsId);
             }
             if (!pushFlag) failGoods += "商品ID=" + goodsId + ",";
             if (pushFlag) {
                 resalerFav.partner = OuterOrderPartner.DD;
                 resalerFav.save();
+                Logger.info("[DDAPIPushGoods API] invoke push goods success!");
             }
-
         }
-        Logger.info("[DangDang API] invoke push goods success!");
+
         renderJSON("{\"error\":\"" + pushFlag + "\",\"info\":\"" + failGoods + "\"}");
     }
 }

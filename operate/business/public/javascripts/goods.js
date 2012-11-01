@@ -4,7 +4,7 @@
  * Date: 3/15/12
  * Time: 5:41 PM
  */
-function changeList(status){
+function changeList(status) {
     $("#condition_status").val(status);
     $("#frmlist").submit();
 }
@@ -31,9 +31,9 @@ $(function () {
             alert("请至少选择一条数据！");
         } else {
             if (confirm("您确定要删除吗？")) {
-                var url = "/goods/"+checkedGoods.join(",")+"?x-http-method-override=DELETE";
-                $("#deletefrm").attr("method","POST") ;
-                $("#deletefrm").attr("action",url) ;
+                var url = "/goods/" + checkedGoods.join(",") + "?x-http-method-override=DELETE";
+                $("#deletefrm").attr("method", "POST");
+                $("#deletefrm").attr("action", url);
                 $("#deletefrm").submit();
             }
         }
@@ -50,13 +50,25 @@ $(function () {
         if (checkedcnt == 0) {
             alert("请至少选择一条记录！");
         } else {
-            var url = "/goods/"+checkedGoods.join(",")+"/onSale?x-http-method-override=PUT";
-            $("#deletefrm").attr("method","POST") ;
-            $("#deletefrm").attr("action",url) ;
+            var url = "/goods/" + checkedGoods.join(",") + "/onSale?x-http-method-override=PUT";
+            $("#deletefrm").attr("method", "POST");
+            $("#deletefrm").attr("action", url);
             $("#deletefrm").submit();
         }
     });
+    $("#solr").click(function () {
+        $.ajax({
+            type:'GET',
+            url:"/solr-init",
+            success:function (msg) {
+                if (msg == "ok") {
+                    $("#solr-err").html("初始化成功！");
+                } else {
+                    $("#solr-err").html("初始化失败！");
+                }
 
+            }});
+    })
     /**
      * 批量下架
      */
@@ -71,13 +83,11 @@ $(function () {
         if (checkedcnt == 0) {
             alert("请至少选择一条记录！");
         } else {
-            var url = "/goods/"+checkedGoods.join(",")+"/offSale?x-http-method-override=PUT";
-            $("#deletefrm").attr("method","POST") ;
-            $("#deletefrm").attr("action",url) ;
+            var url = "/goods/" + checkedGoods.join(",") + "/offSale?x-http-method-override=PUT";
+            $("#deletefrm").attr("method", "POST");
+            $("#deletefrm").attr("action", url);
             $("#deletefrm").submit();
         }
     });
-    $("#brandId").click(function(){
-        $("#frmlist").submit();
-    })
+
 });

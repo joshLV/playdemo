@@ -5,14 +5,12 @@
 <meta name="Description" content="一百券-${goods.brand?.name} ${goods.name},${detailKeywords}消费券,代金券,优惠券,美食券,电子券,提货券">
 <meta name="Keywords" content="${detailKeywords}">
 #{/set}
-*{#{set 'moreStyles'}}*
-*{#{asset.css src:['/y/home/detail.css']/}}*
-*{#{/set}}*
-<link rel="stylesheet" href="http://192.168.18.242/yome/home/src/detail.css"/>
-<script src="http://a.uhcdn.com/js/u/slides.min.js"></script>
+#{set 'moreStyles'}
+    #{asset.css src:['/home/121031/detail.css']/}
+#{/set}
 <script src="http://maps.googleapis.com/maps/api/js?e&language=zh-CN&region=GB&key=AIzaSyCbnBNu40y5eXnL8jOey4lbS3P1vQ_HR5E&sensor=false"></script>
-<script src="http://192.168.18.242/yome/home/src/detail.js" type="text/javascript" charset="UTF-8"></script>
 #{set 'moreScripts'}
+    #{asset.js src:['/u/slides.min.js','/home/121031/detail.js']/}
 <script type="text/javascript">
     //直接在文本框里输入购买数量
     $("#number").blur(function () {
@@ -64,42 +62,42 @@
 </script>
 #{/set}
 <div class="wrapper">
-<div id="content">
-<div class="crumbs">#{breadcrumbs/breadcrumb breadcrumbs/}</div>
-<div id="section">
-    <div id="summary" class="clearfix">
-        <div id="title">
-            <h1>${goods?.brand?.name}</h1>
+    <div id="content">
+        <div class="crumbs">#{breadcrumbs/breadcrumb breadcrumbs/}</div>
+        <div id="section">
+            <div id="summary" class="clearfix">
+                <div id="title">
+                    <h1>${goods?.brand?.name}</h1>
 
-            <p class="desc">${goods?.name}</p>
-        </div>
-        <div id="gallery">
-            <div class="slides_container">
-                <img src="${goods?.imageLargePath}" width="340" height="260"/>
-            #{if imagesList?.size()>0}
-                #{list items:imagesList ,as :'image'}
-                    <img src="${image?.imageLargePath}" width="340" height="260"/>
-                #{/list}
-            #{/if}
-            </div>
-            <a class="prev btn" href="#"><i></i></a>
-            <a class="next btn" href="#"><i></i></a>
-        </div>
-        <div id="property">
-        #{form @Orders.index(), id:'order_create_form' }
-            <ul id="metaBox">
-                #{if params['isSupplier']== null || !params['isSupplier']}
-                    <li>现价：<span class="price">&yen;${goods.salePrice}</span></li>
-                #{/if}
-                #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
-                    <li>原价：
-                        <del>&yen;${goods.faceValue}</del>
-                    </li>
-                #{/if}
-                #{if params['isSupplier']== null || !params['isSupplier']}
-                    <li>折扣：<em class="discount">${goods.discountExpress}</em></li>
-                #{/if}
-                <li class="amount">购买数量:
+                    <p class="desc">${goods?.name}</p>
+                </div>
+                <div id="gallery">
+                    <div class="slides_container">
+                        <img src="${goods?.imageLargePath}" width="340" height="260"/>
+                    #{if imagesList?.size()>0}
+                        #{list items:imagesList ,as :'image'}
+                            <img src="${image?.imageLargePath}" width="340" height="260"/>
+                        #{/list}
+                    #{/if}
+                    </div>
+                    <a class="prev btn" href="#"><i></i></a>
+                    <a class="next btn" href="#"><i></i></a>
+                </div>
+                <div id="property">
+                #{form @Orders.index(), id:'order_create_form' }
+                    <ul id="metaBox">
+                        #{if params['isSupplier']== null || !params['isSupplier']}
+                            <li>现价：<span class="price">&yen;${goods.salePrice}</span></li>
+                        #{/if}
+                        #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
+                            <li>原价：
+                                <del>&yen;${goods.faceValue}</del>
+                            </li>
+                        #{/if}
+                        #{if params['isSupplier']== null || !params['isSupplier']}
+                            <li>折扣：<em class="discount">${goods.discountExpress}</em></li>
+                        #{/if}
+                        <li class="amount">购买数量:
                     <span id="amount">
                     <input class="amount-ipt" id="number" name="g${goods.id}" type="text" value="1"/>
                             <span class="increase-btn" id="increase-btn" name="${goods.id}"></span>
@@ -108,133 +106,134 @@
                         <input type="hidden" value="${goods.baseSale}" id="stock_${goods.id}">
                         <input type="hidden" value="${goods.limitNumber}" id="limit_${goods.id}">
                     </span> 件(已出售<em class="selled">${goods?.virtualSaleCount?:'0'}</em>件)
-                    <span id="stock_hit" style="display:none;color:#f50">库存${goods.baseSale}件</span>
-                    #{if goods.limitNumber > 0}
-                        <span id="limitNumber" style="color:#f50">限购${goods.limitNumber}件</span>
-                        #{if goods.limitNumber-boughtNumber > 0}
-                            <span class="buy_info">#{if user !=null}您还可以购买${goods.limitNumber-boughtNumber}
-                                件#{/if}</span>
-                        #{/if}
-                    #{/if}
-                    <span class="error">#{error 'number' /}</span>
-                    <input type="hidden" id="stock" value="${goods.baseSale}">
-                    <input type="hidden" id="boughtNumber" value="${boughtNumber}">
-                    <input type="hidden" id="addCartNumber" value="${addCartNumber}">
-                </li>
-            </ul>
-            <input type="hidden" id="goodsId" name="gid" value="${goods.id}">
-            <div id="btnBox">
-                #{if goods.onSale()}
-                    #{if !bought}
-                        <a href="#" id="link_buy_now" class="nowBuy">立即购买<b></b></a>
-                        #{if !goods?.isLottery}
-                            <a id="link_add_cart" href="#" class="addCart">加入购物车<b></b></a>
-                        #{/if}
-                    #{/if}
-                    #{else}
-                        <strong style="color: red">您已经购买过此商品！</strong>
-                    #{/else}
+                            <span id="stock_hit" style="display:none;color:#f50">库存${goods.baseSale}件</span>
+                            #{if goods.limitNumber > 0}
+                                <span id="limitNumber" style="color:#f50">限购${goods.limitNumber}件</span>
+                                #{if goods.limitNumber-boughtNumber > 0}
+                                    <span class="buy_info">#{if user !=null}您还可以购买${goods.limitNumber-boughtNumber}
+                                        件#{/if}</span>
+                                #{/if}
+                            #{/if}
+                            <span class="error">#{error 'number' /}</span>
+                            <input type="hidden" id="stock" value="${goods.baseSale}">
+                            <input type="hidden" id="boughtNumber" value="${boughtNumber}">
+                            <input type="hidden" id="addCartNumber" value="${addCartNumber}">
+                        </li>
+                    </ul>
+                    <input type="hidden" id="goodsId" name="gid" value="${goods.id}">
 
-                    <div id="add_cart_result" class="addCart-tips" style="display: none;">
-                        <span class="addCart-icon"></span>
-                        <h4>已成功添加到购物车</h4>
+                    <div id="btnBox">
+                        #{if goods.onSale()}
+                            #{if !bought}
+                                <a href="#" id="link_buy_now" class="nowBuy">立即购买<b></b></a>
+                                #{if !goods?.isLottery}
+                                    <a id="link_add_cart" href="#" class="addCart">加入购物车<b></b></a>
+                                #{/if}
+                            #{/if}
+                            #{else}
+                                <strong style="color: red">您已经购买过此商品！</strong>
+                            #{/else}
 
-                        <p>购物车共有<em id="result-count"></em>件，总计<strong id="result-amount"></strong>元</p>
-                        <a class="view-carts" href="/carts">查看购物车<b></b></a>
-                        <a class="close-tips" id="J_closeTips" href="#">关闭</a>
+                            <div id="add_cart_result" class="addCart-tips" style="display: none;">
+                                <span class="addCart-icon"></span>
+                                <h4>已成功添加到购物车</h4>
+
+                                <p>购物车共有<em id="result-count"></em>件，总计<strong id="result-amount"></strong>元</p>
+                                <a class="view-carts" href="/carts">查看购物车<b></b></a>
+                                <a class="close-tips" id="J_closeTips" href="#">关闭</a>
+                            </div>
+                        #{/if}
+                        #{elseif params['isSupplier']== null || !params['isSupplier']}
+                            <span>已下架</span>
+                        #{/elseif}
                     </div>
-                #{/if}
-                #{elseif params['isSupplier']== null || !params['isSupplier']}
-                    <span>已下架</span>
-                #{/elseif}
-            </div>
-            <ul id="promise">
-                <li class="quality">品质保证</li>
-                <li class="refund">一键退款</li>
-                <li class="return">随时退货</li>
-            </ul>
-        #{/form}
-        </div>
-        <!-- property-->
-        <div id="share" class="clearfix">
-            <span>分享到：</span>
-            <a class="qq" id="qq" href=""></a>
-            <a class="weibo"
-               href="http://service.weibo.com/share/share.php?url=http%3A%2F%2Fwww.yibaiquan.com%2Fg%2F33%3Ftj%3Dgshare&amp;appkey=&amp;title=我刚刚在@一百券网 上看到这个商品：有家川菜现金券100元面值，免预约， 价格真实惠，分享给大家看看！地址: &amp;pic=&amp;ralateUid=&amp;language="
-               target="_blank"></a>
-            <a class="qzone"
-               href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?title=【多商圈】 有家川菜8.5折现金券【含酒水 海鲜】免预约&desc=我刚刚在一百券网上看到这个商品：有家川菜现金券100元面值，免预约， 价格真实惠，分享给大家看看！&url=http%3A%2F%2Fwww.yibaiquan.com%2Fg%2F33%3Ftj%3Dgshare"
-               target="_blank"></a>
-            <a class="tqq"
-               href="http://share.v.t.qq.com/index.php?c=share&a=index&url=http%3A%2F%2Fwww.yibaiquan.com%2Fg%2F33%3Ftj%3Dgshare&title=我刚刚在一百券网上看到这个商品：有家川菜现金券100元面值，免预约， 价格真实惠，分享给大家看看！地址:&appkey=801cf76d3cfc44ada52ec13114e84a96"
-               target="_blank"></a>
-            <a class="renren"
-               href="http://widget.renren.com/dialog/share?url=http%3A%2F%2Fwww.yibaiquan.com%2Fg%2F33%3Ftj%3Dgshare&title=【多商圈】 有家川菜8.5折现金券【含酒水 海鲜】免预约&description=我刚刚在一百券网上看到这个商品：有家川菜现金券100元面值，免预约， 价格真实惠，分享给大家看看！地址: http%3A%2F%2Fwww.yibaiquan.com%2Fg%2F33%3Ftj%3Dgshare"
-               target="_blank"></a>
-        </div>
-        <div id="share-im">
-            <div class="inner">
-                <label for="share-url">复制链接分享给站外好友：</label><input type="text" id="share-url" class="input"
-                                                                  value="${goods.wwwUrl}?tj=gshare"
-                                                                  readonly/>
-            </div>
-        </div>
-    </div>
-    <!-- #summary -->
-
-    <div id="details">
-        <div class="hd">商品详情</div>
-        <div class="bd">${goods?.exhibition?.raw()}</div>
-    </div>
-
-    <div id="warmtips">
-        <div class="hd">温馨提示</div>
-        <div class="bd"> ${goods?.prompt?.raw()}</div>
-    </div>
-
-    <div id="outlet">
-        <div class="hd">适用门店</div>
-        <div class="bd clearfix">
-            <div class="outlet-list">
-                <ul></ul>
-                <div class="outlet-more">
-                    <span class="outlet-total">共<em id="outlet-total-num"></em>家分店</span>
-                    <span id="outlet-page"></span>
+                    <ul id="promise">
+                        <li class="quality">品质保证</li>
+                        <li class="refund">一键退款</li>
+                        <li class="return">随时退货</li>
+                    </ul>
+                #{/form}
+                </div>
+                <!-- property-->
+                <div id="share" class="clearfix">
+                    <span>分享到：</span>
+                    <a class="qq" id="qq" href=""></a>
+                    <a class="weibo"
+                       href="http://service.weibo.com/share/share.php?url=http%3A%2F%2Fwww.yibaiquan.com%2Fg%2F33%3Ftj%3Dgshare&amp;appkey=&amp;title=我刚刚在@一百券网 上看到这个商品：有家川菜现金券100元面值，免预约， 价格真实惠，分享给大家看看！地址: &amp;pic=&amp;ralateUid=&amp;language="
+                       target="_blank"></a>
+                    <a class="qzone"
+                       href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?title=【多商圈】 有家川菜8.5折现金券【含酒水 海鲜】免预约&desc=我刚刚在一百券网上看到这个商品：有家川菜现金券100元面值，免预约， 价格真实惠，分享给大家看看！&url=http%3A%2F%2Fwww.yibaiquan.com%2Fg%2F33%3Ftj%3Dgshare"
+                       target="_blank"></a>
+                    <a class="tqq"
+                       href="http://share.v.t.qq.com/index.php?c=share&a=index&url=http%3A%2F%2Fwww.yibaiquan.com%2Fg%2F33%3Ftj%3Dgshare&title=我刚刚在一百券网上看到这个商品：有家川菜现金券100元面值，免预约， 价格真实惠，分享给大家看看！地址:&appkey=801cf76d3cfc44ada52ec13114e84a96"
+                       target="_blank"></a>
+                    <a class="renren"
+                       href="http://widget.renren.com/dialog/share?url=http%3A%2F%2Fwww.yibaiquan.com%2Fg%2F33%3Ftj%3Dgshare&title=【多商圈】 有家川菜8.5折现金券【含酒水 海鲜】免预约&description=我刚刚在一百券网上看到这个商品：有家川菜现金券100元面值，免预约， 价格真实惠，分享给大家看看！地址: http%3A%2F%2Fwww.yibaiquan.com%2Fg%2F33%3Ftj%3Dgshare"
+                       target="_blank"></a>
+                </div>
+                <div id="share-im">
+                    <div class="inner">
+                        <label for="share-url">复制链接分享给站外好友：</label><input type="text" id="share-url" class="input"
+                                                                          value="${goods.wwwUrl}?tj=gshare"
+                                                                          readonly/>
+                    </div>
                 </div>
             </div>
-            <div class="outlet-gmap">
-                <div id="min_gmap" style="width: 330px; height: 225px"></div>
-            </div>
-        </div>
-    </div>
+            <!-- #summary -->
 
-    <div id="show">
-        <div class="hd">商品展示</div>
-        <div class="bd">${goods?.details?.raw()}
-        </div>
-    </div>
-
-    <div id="consult">
-        <div class="hd">购买咨询</div>
-        <div class="bd">
-            <ul class="consult-list"></ul>
-            <div class="pagination"></div>
-            <div id="consult-form">
-                <div class="error"></div>
-                <label>发表咨询：</label>
-                <textarea cols="80" rows="5" id="question"></textarea>
-            #{if !cas?.isLogin}
-                <label>手机号码：</label>
-                <input type="text" id="mobile" name="mobile" maxlength="11"/> 输入手机号，方便我们给您反馈信息。
-            #{/if}
-                <a class="submit" id="submit" href="javascript:void(0)"> 提 交 </a>
+            <div id="details">
+                <div class="hd">商品详情</div>
+                <div class="bd">${goods?.exhibition?.raw()}</div>
             </div>
+
+            <div id="warmtips">
+                <div class="hd">温馨提示</div>
+                <div class="bd"> ${goods?.prompt?.raw()}</div>
+            </div>
+
+            <div id="outlet">
+                <div class="hd">适用门店</div>
+                <div class="bd clearfix">
+                    <div class="outlet-list">
+                        <ul></ul>
+                        <div class="outlet-more">
+                            <span class="outlet-total">共<em id="outlet-total-num"></em>家分店</span>
+                            <span id="outlet-page"></span>
+                        </div>
+                    </div>
+                    <div class="outlet-gmap">
+                        <div id="min_gmap" style="width: 330px; height: 225px"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="show">
+                <div class="hd">商品展示</div>
+                <div class="bd">${goods?.details?.raw()}
+                </div>
+            </div>
+
+            <div id="consult">
+                <div class="hd">购买咨询</div>
+                <div class="bd">
+                    <ul class="consult-list"></ul>
+                    <div class="pagination"></div>
+                    <div id="consult-form">
+                        <div class="error"></div>
+                        <label>发表咨询：</label>
+                        <textarea cols="80" rows="5" id="question"></textarea>
+                    #{if !cas?.isLogin}
+                        <label>手机号码：</label>
+                        <input type="text" id="mobile" name="mobile" maxlength="11"/> 输入手机号，方便我们给您反馈信息。
+                    #{/if}
+                        <a class="submit" id="submit" href="javascript:void(0)"> 提 交 </a>
+                    </div>
+                </div>
+            </div>
+            <!-- #consult -->
         </div>
-    </div>
-    <!-- #consult -->
-</div>
-<!-- #section -->
+        <!-- #section -->
     #{include '/Goods2/sidebar.html' /}
-</div>
-<!-- #content -->
+    </div>
+    <!-- #content -->
 </div>
