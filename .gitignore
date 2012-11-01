@@ -21,6 +21,7 @@ version.conf
 
 .idea/
 module/dangdang/documentation/
+module/sales/conf/test/solr/goods/collection1/data/
 .DS_Store
 */*/core
 */*/target
