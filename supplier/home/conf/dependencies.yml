@@ -9,7 +9,7 @@ require:
     - play1 -> rabbitmq 0.3
     - play1 -> app-version 0.1
     - play1 -> factory-boy 1.0
-    - play1 -> play-solr 0.2.26
+    - play1 -> play-solr 0.2.27
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - paginate_ext -> paginate_ext
     - layout_trader -> layout_trader
