@@ -26,15 +26,15 @@ open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods5")}')
 verifyTitle('【一百券】测试商品5-优惠券,优惠券网,代金券')
 verifyTextPresent('限购1件')
 %{
-     id = play.test.Fixtures.idCache.get("models.consumer.User-user");
-    user = models.consumer.User.findById(id);
+id = play.test.Fixtures.idCache.get("models.consumer.User-user");
+user = models.consumer.User.findById(id);
 
-    id = play.test.Fixtures.idCache.get("models.order.Order-order10");
-    order = models.order.Order.findById(id);
-    order.setUser(user.getId(), models.accounts.AccountType.CONSUMER);
+id = play.test.Fixtures.idCache.get("models.order.Order-order10");
+order = models.order.Order.findById(id);
+order.setUser(user.getId(), models.accounts.AccountType.CONSUMER);
 
 }%
- #{include 'test/selenium/step/login.selenium' /}
+    #{include 'test/selenium/step/login.selenium' /}
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods5")}')
 verifyTitle('【一百券】测试商品5-优惠券,优惠券网,代金券')
 verifyTextPresent('您已经购买过此商品！')

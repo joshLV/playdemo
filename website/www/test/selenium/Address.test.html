@@ -1,8 +1,10 @@
-#{fixture delete:'all', load:['fixture/user.yml','fixture/goods.yml'] /}
+#{factory delete:'all'/}
+#{factory var:'user', type:'consumer.User',name:'selenium'/}
+#{factory var:'goods', type:'sales.Goods',name:'goods6'/}
 #{selenium 'Test Address/index.html'}
-#{include 'test/selenium/step/login.selenium' /}
-open('/g/${play.test.Fixtures.idCache.get("models.sales.Goods-goods6")}')
-verifyTitle('【一百券】测试商品6-优惠券,优惠券网,代金券')
+    #{include 'test/selenium/step/login.selenium' /}
+open('/g/${goods.id}')
+verifyTitle('【一百券】${goods.name}-优惠券,优惠券网,代金券')
 clickAndWait('id=link_buy_now')
 verifyTextPresent('收货地址')
 *{click('id=J_modifyAddr')}*

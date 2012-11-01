@@ -1,16 +1,16 @@
-#{fixture delete:'all', load:['fixture/user.yml','fixture/users.yml','fixture/goods.yml','fixture/addresses.yml'] /}
-
-
+#{factory delete:'all'/}
+#{factory var:'user', type:'consumer.User',name:'selenium'/}
+#{factory var:'address', type:'consumer.Address'/}
+#{factory var:'goods', type:'sales.Goods',name:'goods6'/}
 #{selenium 'Test Address 新加地址'}
     #{include 'test/selenium/step/login.selenium' /}
-
-open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods6")}')
-verifyTitle('【一百券】测试商品6-优惠券,优惠券网,代金券')
+open('/goods/${goods.id}')
+verifyTitle('【一百券】${goods.name}-优惠券,优惠券网,代金券')
 clickAndWait('id=link_buy_now')
 *{verifyTextPresent('收货地址')}*
 *{waitForElementPresent('id=J_addrCurrent')}*
 verifyTextPresent('收货地址 [修改]');
-verifyTextPresent('sujie1 上海市 黄浦区 市辖区 test3 13764081569')
+verifyTextPresent('${address.name} ${address.province} ${address.city} ${address.district} ${address.address} ${address.mobile}')
 click('id=J_modifyAddr')
 waitForElementPresent('id=addrId_new')
 click('id=addrId_new')
@@ -24,4 +24,5 @@ click('id=J_saveNewAddr')
 waitForText('id=J_modifyAddr','[修改]')
 waitForElementPresent(
 verifyTextPresent('13764081568')
+15026682165
 #{/selenium}

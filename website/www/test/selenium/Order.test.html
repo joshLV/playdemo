@@ -1,18 +1,36 @@
-#{fixture delete:'all', load:['fixture/user.yml','fixture/goods.yml'] /}
+#{factory delete:'all'/}
+#{factory var:'user', type:'consumer.User',name:'selenium'/}
+#{factory var:'goods', type:'sales.Goods'/}
+#{factory var:'goods6', type:'sales.Goods',name:'goods6'/}
+#{factory var:'order', type:'order.Order',name:'paid'/}
 #{selenium 'Test Goods/show.html Normal'}
-%{
-id = play.test.Fixtures.idCache.get("models.consumer.User-user");
-user = models.consumer.User.findById(id);
 
-id = play.test.Fixtures.idCache.get("models.order.Order-order10");
-order = models.order.Order.findById(id);
-order.setUser(user.getId(), models.accounts.AccountType.CONSUMER);
-
-}%
     #{include 'test/selenium/step/login.selenium' /}
-open('/orders_number?items=${play.test.Fixtures.idCache.get("models.sales.Goods-goods5")}-1,')
-verifyTextPresent('1')
-
-open('/orders_number?items=${play.test.Fixtures.idCache.get("models.sales.Goods-goods4")}-1,')
+*{open('/orders_number?items=${goods6.id}-1,')}*
+*{verifyTextPresent('1')}*
+open('/orders_number?items=${goods.id}-1,')
 verifyTextPresent('0')
+
+
 #{/selenium}
+
+
+*{#{fixture delete:'all', load:['fixture/user.yml','fixture/goods.yml'] /}}*
+*{#{selenium 'Test Goods/show.html Normal'}}*
+*{%{}*
+*{id = play.test.Fixtures.idCache.get("models.consumer.User-user");}*
+*{user = models.consumer.User.findById(id);}*
+
+*{id = play.test.Fixtures.idCache.get("models.order.Order-order10");}*
+*{order = models.order.Order.findById(id);}*
+*{order.setUser(user.getId(), models.accounts.AccountType.CONSUMER);}*
+
+*{}%}*
+*{#{include 'test/selenium/step/login.selenium' /}}*
+*{open('/orders_number?items=${play.test.Fixtures.idCache.get("models.sales.Goods-goods5")}-1,')}*
+*{verifyTextPresent('1')}*
+
+*{open('/orders_number?items=${play.test.Fixtures.idCache.get("models.sales.Goods-goods4")}-1,')}*
+*{verifyTextPresent('0')}*
+*{#{/selenium}}*
+

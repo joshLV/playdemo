@@ -2,6 +2,7 @@ package factory.cms;
 
 import java.util.Date;
 
+import factory.annotation.Factory;
 import models.cms.VoteQuestion;
 import models.cms.VoteType;
 import util.DateHelper;
@@ -27,6 +28,15 @@ public class VoteQuestionFactory extends ModelFactory<VoteQuestion> {
         vq.answer4 = "D";
         vq.correctAnswer = "A";
         return vq;
+    }
+
+
+    @Factory(name = "now")
+    public VoteQuestion defineWithNow(VoteQuestion vote) {
+        vote.expireAt = new Date();
+        vote.effectiveAt = new Date();
+        vote.type = VoteType.QUIZ;
+        return vote;
     }
 
 }

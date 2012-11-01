@@ -1,7 +1,0 @@
-#{fixture delete:'all', load:'fixture/goods.yml' /}
-#{selenium 'Test Home/index.html'}
-    open('/')
-    verifyTitle('首页')
-    verifyTextPresent('测试商品1')
-    verifyTextPresent('测试商品4')
-#{/selenium}

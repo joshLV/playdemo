@@ -39,6 +39,17 @@ public class UserFactory extends ModelFactory<User> {
         user.password = "TestName" + FactoryBoy.sequence(User.class);
     }
 
+    @Factory(name = "selenium")
+    public User defineTomUser(User user) {
+        user.loginName = "selenium@uhuila.com";
+        user.password = "63dc778349e8f64e7c1c3b9370848ba1";
+        user.passwordSalt = "gXP0W9";
+        user.lastLoginAt = DateHelper.t("2012-02-24 15:40:07");
+        user.status = UserStatus.NORMAL;
+        user.mobile = "15618096151";
+        return user;
+    }
+
     @Factory(name = "loginName")
     public User defineLoginNameUser(User user) {
         user.loginName = "11@qq.com";

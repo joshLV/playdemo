@@ -14,6 +14,7 @@ import com.uhuila.common.constants.DeletedStatus;
 import factory.FactoryBoy;
 import factory.ModelFactory;
 import factory.annotation.Factory;
+import util.DateHelper;
 
 public class OrderFactory extends ModelFactory<Order> {
 
@@ -27,7 +28,7 @@ public class OrderFactory extends ModelFactory<Order> {
         Order order = new Order();
         order.userId = FactoryBoy.lastOrCreate(User.class).id;
         order.userType = AccountType.CONSUMER;
-        order.orderNumber = "abc";
+        order.orderNumber = "abc"+FactoryBoy.sequence(Order.class);
         order.accountEmail = "test@test.com";
         order.accountPay = BigDecimal.ZERO;
         order.amount = BigDecimal.ZERO;
@@ -58,6 +59,28 @@ public class OrderFactory extends ModelFactory<Order> {
         order.payMethod = "alipay";
         order.orderType = OrderType.CONSUME;
         return order;
+    }
+
+    @Factory(name = "paid")
+    public Order defineOrderPaid(Order order) {
+        order.orderNumber = "201202220324134991598"+FactoryBoy.sequence(Order.class);
+        order.status = OrderStatus.PAID;
+        order.amount = BigDecimal.valueOf(0);
+        order.accountPay = BigDecimal.valueOf(0);
+        order.discountPay = BigDecimal.valueOf(0);
+        order.needPay = BigDecimal.valueOf(0);
+        order.createdAt = DateHelper.t("2012-03-15 16:40:28");
+        order.updatedAt = DateHelper.t("2012-03-15 16:40:28");
+        order.receiverPhone = "13512341234";
+        order.receiverAddress = "内蒙古 呼和浩特市 玉泉区 凌兆路";
+        order.receiverName = "苏杰1";
+        order.postcode = "200120";
+        order.lockVersion = 0;
+        order.payRequestId = 0l;
+        order.orderType = OrderType.CONSUME;
+
+        return order;
+
     }
 
 

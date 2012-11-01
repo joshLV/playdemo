@@ -1,13 +1,14 @@
-#{fixture delete:'all', load:['fixture/user.yml'] /}
+#{factory delete:'all'/}
+#{factory var:'user', type:'consumer.User',name:'selenium'/}
 #{selenium 'Test FindPassword/findByEmail.html'}
     open('/find-password?from=email')
     verifyTitle('一百券 - 通过邮箱找回密码')
     type('id=email','qweqwr')
     click('id=next')
     verifyTextPresent('邮箱地址不合法')
-    
-    type('id=email','selenium1@uhuila.com')
+
+    type('id=email','selenium@uhuila.com')
     clickAndWait('id=next')
     verifyTitle('找回密码-邮件发送成功')
-    
+
 #{/selenium}

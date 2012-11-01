@@ -35,7 +35,7 @@
 				<!-- 商品现价［必填］ -->
 				<rebate>${goods.discountExpress1}</rebate>
 				<!-- 商品折扣 [必填] -->
-                <bought>${goods.saleCount + goods.baseSale}</bought>
+                <bought>${goods.getVirtualSaleCount()}</bought>
 				<!-- 已购买人数［必填］ -->
 
 				<minQuota>1</minQuota>

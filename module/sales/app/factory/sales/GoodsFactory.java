@@ -10,6 +10,7 @@ import models.sales.GoodsStatus;
 import models.sales.MaterialType;
 import models.sales.Shop;
 import models.supplier.Supplier;
+import util.DateHelper;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -85,5 +86,29 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.supplierId = 1l;
         return goods;
     }
+
+
+
+    @Factory(name = "goods6")
+    public Goods defineWithGoods6(Goods goods) {
+        goods.name = "测试商品6";
+        goods.originalPrice = BigDecimal.valueOf(100);
+        goods.salePrice = BigDecimal.valueOf(80);
+        goods.baseSale = 1000l;
+        goods.createdAt = DateHelper.t("2012-02-27");
+        goods.status = GoodsStatus.ONSALE;
+        goods.deleted = DeletedStatus.UN_DELETED;
+        goods.supplierId = 1l;
+        goods.materialType = MaterialType.REAL;
+        goods.effectiveAt = DateHelper.t("2012-02-01");
+        goods.expireAt = DateHelper.t("2092-02-02");
+        goods.limitNumber = 1;
+        goods.imagePath = "/0/0/133/origin.jpg";
+        return goods;
+
+    }
+
+
+
 
 }

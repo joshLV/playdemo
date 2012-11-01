@@ -1,9 +1,9 @@
 #{fixture delete:'all', load:['fixture/user.yml','fixture/goods.yml','fixture/carts.yml'] /}
 #{selenium 'Test Carts/index.html'}
 %{
-    goodsA = play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")
-    goodsB = play.test.Fixtures.idCache.get("models.sales.Goods-Goods_2")
-    goodsC = play.test.Fixtures.idCache.get("models.sales.Goods-goods5")
+goodsA = play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")
+goodsB = play.test.Fixtures.idCache.get("models.sales.Goods-Goods_2")
+goodsC = play.test.Fixtures.idCache.get("models.sales.Goods-goods5")
 }%
 openAndWait('/goods/${goodsA}')
 assertText('id=cart-count','0')
@@ -14,9 +14,9 @@ assertText('id=cart-count','1')
 click('id=link_add_cart')
 waitForVisible('id=add_cart_result')
 openAndWait('/carts')
-assertText('id=cart-count','2')
-verifyValue('id=num_${goodsB}','1')
-verifyValue('id=num_${goodsA}','1')
+*{assertText('id=cart-count','2')}*
+*{verifyValue('id=num_${goodsB}','1')}*
+*{verifyValue('id=num_${goodsA}','1')}*
 *{click('id=add_img_${goodsA}')}*
 *{waitForValue('id=num_${goodsA}','2')}*
 *{click('id=sub_img_${goodsA}')}*
@@ -32,17 +32,17 @@ verifyValue('id=num_${goodsA}','1')
 *{verifyTextPresent('您已经购买过此商品！')}*
 /**
 %{
-    id = play.test.Fixtures.idCache.get("models.consumer.User-user");
-    user = models.consumer.User.findById(id);
+id = play.test.Fixtures.idCache.get("models.consumer.User-user");
+user = models.consumer.User.findById(id);
 
-    id = play.test.Fixtures.idCache.get("models.order.Order-order10");
-    order = models.order.Order.findById(id);
-    order.setUser(user.getId(), models.accounts.AccountType.CONSUMER);
+id = play.test.Fixtures.idCache.get("models.order.Order-order10");
+order = models.order.Order.findById(id);
+order.setUser(user.getId(), models.accounts.AccountType.CONSUMER);
 
 }%
 */
- *{#{include 'test/selenium/step/login.selenium' /}}*
- *{openAndWait('/carts')}*
- *{verifyTextPresent('您已经购买过此商品，不能继续购买！')}*
+*{#{include 'test/selenium/step/login.selenium' /}}*
+*{openAndWait('/carts')}*
+*{verifyTextPresent('您已经购买过此商品，不能继续购买！')}*
 
 #{/selenium}

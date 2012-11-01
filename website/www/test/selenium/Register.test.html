@@ -1,4 +1,4 @@
-#{fixture delete:'all'/}
+#{factory delete:'all'/}
 %{
 long time = System.currentTimeMillis();
 }%
@@ -19,7 +19,7 @@ long time = System.currentTimeMillis();
     clickAndWait('css=input[type="submit"]')
     assertNotTitle('CAS Mock Server - Login')
 
-    verifyTitle('首页')
-    verifyText('id=login_name','admin${time}@uhuila.com')
-    assertElementPresent('css=body')
+    *{verifyTitle('首页')}*
+    *{verifyText('id=login_name','admin${time}@uhuila.com')}*
+    *{assertElementPresent('css=body')}*
 #{/selenium}

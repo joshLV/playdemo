@@ -1,22 +1,16 @@
-#{fixture delete:'all',load:['fixture/user.yml','fixture/votes.yml'] /}
+#{factory delete:'all'/}
+#{factory var:'user', type:'consumer.User',name:'selenium'/}
+#{factory var:'vote', type:'cms.VoteQuestion',name:'now'/}
 
-%{
-models.consumer.UserVote.deleteAll();
-id = play.test.Fixtures.idCache.get("models.cms.VoteQuestion-vote2");
-models.cms.VoteQuestion vote = models.cms.VoteQuestion.findById(id);
-vote.expireAt = new Date();
-vote.effectiveAt = new Date();
-vote.save();
-}%
 #{selenium '一百券 - 有奖问答'}
     #{include 'test/selenium/step/login.selenium' /}
 open('/votes')
 verifyTitle('一百券 - 有奖问答')
-assertTextPresent('优惠啦网站改版了，改成什么名字？')
+assertTextPresent('${vote.content}')
 
 open('/votes/view')
 verifyTitle('参与成功页面')
-assertTextPresent('D.一百券')
+assertTextPresent('${vote.answer1}')
 #{/selenium}
 
 
