@@ -2,6 +2,7 @@ package functional;
 
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
+<<<<<<< Updated upstream
 import models.cms.CmsQuestion;
 import models.sales.Brand;
 import models.sales.Goods;
@@ -24,6 +25,15 @@ import org.junit.Ignore;
 import play.Play;
 import play.mvc.Http;
 import play.test.FunctionalTest;
+=======
+import models.sales.Goods;
+import models.sales.MaterialType;
+import org.junit.Before;
+import org.junit.Ignore;
+import play.Play;
+import play.mvc.Http;
+import play.test.FunctionalTest;
+>>>>>>> Stashed changes
 
 /**
  * 商品控制器的测试.

@@ -13,14 +13,14 @@
 <div id="topbar">
     <div id="topbar-bd">
         <ul class="site-nav">
-        #{if cas?.isLogin}
+            #{if cas?.isLogin}
             <li><a class="login" target="_blank"
                    href="${helper.Domain.getHomeHost(request)}"
                    id="login_name">${cas.loginName}</a></li>
             <li><a href="${helper.Domain.getHomeHost(request)}">我的一百券</a></li>
             <li><a href="/logout">退出</a></li>
-        #{/if}
-        #{else}
+            #{/if}
+            #{else}
             <li class="first"><a class="login" id="login" href="${helper.Domain.getWWWHost(request)}/login">登录</a></li>
             <li><a class="signup" href="${helper.Domain.getWWWHost(request)}/register" target="_blank">注册</a></li>
         *{<li><a class="quick" href="" target="_blank">快捷登录</a></li>}*
