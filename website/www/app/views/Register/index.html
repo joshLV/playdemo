@@ -301,6 +301,7 @@ function checkLoginNameAndMobile(){
     </div>
 </div>
 <div style="display:none">
+#{if !play.Play.runingInTestMode()}
 <script src="http://s84.cnzz.com/stat.php?id=4205049&web_id=4205049" language="JavaScript"></script>
 <script type="text/javascript">
   var _gaq = _gaq || [];
@@ -314,6 +315,7 @@ function checkLoginNameAndMobile(){
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
 </script>
+#{/if}
 </div>
 </body>
 </html>
