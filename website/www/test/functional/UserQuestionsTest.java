@@ -4,23 +4,18 @@
 package functional;
 
 import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
 import models.cms.CmsQuestion;
 import models.consumer.User;
-import models.consumer.UserInfo;
-import models.order.ECoupon;
-import models.order.Order;
 import models.sales.Goods;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Http.Response;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import factory.FactoryBoy;
 
 
 /**
@@ -110,7 +105,7 @@ public class UserQuestionsTest extends FunctionalTest {
         assertIsOk(response); // this is OK
         assertContentType("application/json", response); // this is OK
         assertCharset("utf-8", response); // this is OK
-        assertEquals("{\"questions\":[{\"content\":\"aaa\",\"date\":\"2012-07-26\",\"user\":\"selenium@uhuila.com\"}]}", response.out.toString()); // 浏览器相应
+        assertEquals("{\"error\":\"\",\"questions\":[{\"content\":\"aaa\",\"date\":\"2012-07-26\",\"user\":\"selenium@uhuila.com\"}]}", response.out.toString()); // 浏览器相应
 
     }
 
@@ -128,7 +123,7 @@ public class UserQuestionsTest extends FunctionalTest {
         assertIsOk(response); // this is OK
         assertContentType("application/json", response); // this is OK
         assertCharset("utf-8", response); // this is OK
-        assertEquals("{\"questions\":[{\"content\":\"aaa\",\"date\":\"2012-07-26\",\"user\":\"游客\"}]}", response.out.toString()); // 浏览器相应
+        assertEquals("{\"error\":\"\",\"questions\":[{\"content\":\"aaa\",\"date\":\"2012-07-26\",\"user\":\"游客\"}]}", response.out.toString()); // 浏览器相应
     }
 
     @Test
