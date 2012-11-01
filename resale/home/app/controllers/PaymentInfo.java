@@ -7,6 +7,7 @@ import models.accounts.PaymentSource;
 import models.accounts.util.AccountUtil;
 import models.order.Order;
 import models.order.OrderItems;
+import models.order.OrderStatus;
 import models.payment.PaymentJournal;
 import models.payment.PaymentUtil;
 import models.payment.PaymentFlow;
@@ -52,6 +53,9 @@ public class PaymentInfo extends Controller {
         if (order == null){
             error(500,"no such order");
         }
+        if(order.status != OrderStatus.UNPAID){
+            error("wrong order status");
+        }
         Account account = AccountUtil.getResalerAccount(resaler.getId());
 
         if(Order.confirmPaymentInfo(order, account, useBalance, paymentSourceCode)){
@@ -77,6 +81,9 @@ public class PaymentInfo extends Controller {
         if (order == null || paymentSource == null){
             error(500,"no such order or payment source is invalid");
             return;
+        }
+        if(order.status != OrderStatus.UNPAID){
+            error("wrong order status");
         }
 
         PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow(paymentSource.paymentCode);

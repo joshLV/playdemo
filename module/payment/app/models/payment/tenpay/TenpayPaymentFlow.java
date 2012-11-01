@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.util.*;
 
 import models.payment.PaymentFlow;
+import models.payment.PaymentUtil;
 import thirdpart.tenpay.client.ClientResponseHandler;
 import thirdpart.tenpay.client.TenpayHttpClient;
 import thirdpart.tenpay.util.TenpayUtil;
@@ -106,6 +107,7 @@ public class TenpayPaymentFlow extends PaymentFlow {
         Map<String, String> result = new HashMap<>();
         Map<String, String> params = parseRequestParams(requestParams);
         result.put(VERIFY_RESULT, VERIFY_RESULT_ERROR);
+        result.put(PAYMENT_CODE, PaymentUtil.PARTNER_CODE_TENPAY);
 
         if (TenpayUtil.isTenpaySign(new TreeMap<>(params))){
             //通知id
@@ -179,6 +181,7 @@ public class TenpayPaymentFlow extends PaymentFlow {
         Map<String, String> result = new HashMap<>();
         Map<String, String> params = parseRequestParams(requestParams);
         result.put(VERIFY_RESULT, VERIFY_RESULT_ERROR);
+        result.put(PAYMENT_CODE, PaymentUtil.PARTNER_CODE_TENPAY);
 
         //判断签名
         if(TenpayUtil.isTenpaySign(new TreeMap<>(params))) {

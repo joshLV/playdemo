@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import models.payment.PaymentFlow;
+import models.payment.PaymentUtil;
 import play.Logger;
 import thirdpart.alipay.services.AlipayService;
 import thirdpart.alipay.util.AlipayNotify;
@@ -127,6 +128,7 @@ public class AliPaymentFlow extends PaymentFlow {
     public Map<String, String> notify(Map<String, String[]> requestParams){
         Map<String, String> result = new HashMap<>();
         Map<String, String> params = parseRequestParams(requestParams);
+        result.put(PAYMENT_CODE, PaymentUtil.PARTNER_CODE_ALIPAY);
 
         if(AlipayNotify.verify(params)){
             Logger.info("alipay: verify success");

@@ -36,7 +36,7 @@ public class OrderResult extends Controller {
         if(PaymentFlow.VERIFY_RESULT_OK.equals(result.get(PaymentFlow.VERIFY_RESULT))){
             boolean processOrderResult = false;
             try {
-                processOrderResult = Order.verifyAndPay(orderNumber, fee);
+                processOrderResult = Order.verifyAndPay(orderNumber, fee, result.get(PaymentFlow.PAYMENT_CODE));
             }catch (OptimisticLockException e) {
                 //乐观锁异常，通常是因为第三方支付已在后台回调了支付成功的接口
                 Order order = Order.find("byOrderNumber", orderNumber).first();

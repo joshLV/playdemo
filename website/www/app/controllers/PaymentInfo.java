@@ -8,6 +8,7 @@ import models.accounts.util.AccountUtil;
 import models.consumer.User;
 import models.order.Order;
 import models.order.OrderItems;
+import models.order.OrderStatus;
 import models.payment.PaymentFlow;
 import models.payment.PaymentJournal;
 import models.payment.PaymentUtil;
@@ -49,6 +50,12 @@ public class PaymentInfo extends Controller {
     public static void confirm(String orderNumber, boolean useBalance, String paymentSourceCode) {
         User user = SecureCAS.getUser();
         Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.CONSUMER);
+        if (order == null) {
+            error(500, "no such order");
+        }
+        if(order.status != OrderStatus.UNPAID){
+            error("wrong order status");
+        }
 
         for (OrderItems orderItem : order.orderItems) {
             if (orderItem.secKillGoods != null) {
@@ -57,9 +64,6 @@ public class PaymentInfo extends Controller {
                     redirect("/seckill-goods");
                 }
             }
-        }
-        if (order == null) {
-            error(500, "no such order");
         }
         Account account = AccountUtil.getConsumerAccount(user.getId());
 
@@ -87,6 +91,9 @@ public class PaymentInfo extends Controller {
         if (order == null || paymentSource == null) {
             error(500, "no such order or payment source is invalid");
             return;
+        }
+        if(order.status != OrderStatus.UNPAID){
+            error("wrong order status");
         }
 
         PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow(paymentSource.paymentCode);

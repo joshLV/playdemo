@@ -18,16 +18,21 @@ public class PaymentUtil {
     private static PaymentFlow kuaiqianPaymentFlow = new KuaiqianPaymentFlow();
     private static PaymentFlow testPaymentFlow = new TestPaymentFlow();
 
+    public static final String PARTNER_CODE_ALIPAY  = "alipay";
+    public static final String PARTNER_CODE_TENPAY  = "tenpay";
+    public static final String PARTNER_CODE_99BILL  = "99bill";
+    public static final String PARTNER_CODE_TESTPAY = "testpay";
+
     public static PaymentFlow getPaymentFlow(String partner){
         //partner必须是payment_source表中的payment_code字段中的数据
         switch (partner){
-            case "alipay":
+            case PARTNER_CODE_ALIPAY:
                 return alipayPaymentFlow;
-            case "tenpay":
+            case PARTNER_CODE_TENPAY:
                 return tenpayPaymentFlow;
-            case "99bill":
+            case PARTNER_CODE_99BILL:
                 return kuaiqianPaymentFlow;
-            case "testpay":
+            case PARTNER_CODE_TESTPAY:
                 if(TestPaymentFlow.ON) { return testPaymentFlow; }
                 else { return null; }
             default:

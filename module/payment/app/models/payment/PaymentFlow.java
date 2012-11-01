@@ -16,6 +16,7 @@ public abstract class PaymentFlow {
     public static final String ORDER_NUMBER         = "order_number";
     public static final String TOTAL_FEE            = "total_fee";
     public static final String SUCCESS_INFO         = "success_info";
+    public static final String PAYMENT_CODE         = "payment_code";
 
 
     /**
@@ -37,6 +38,7 @@ public abstract class PaymentFlow {
      *   VERIFY_RESULT   是否验证成功, true/false
      *   ORDER_NUMBER    订单号
      *   TOTAL_FEE       支付金额
+     *   PAYMENT_CODE    支付方式的代码，对应payment_source表的code字段
      *   SUCCESS_INFO    告知第三方支付服务器的返回内容
      *
      * @param requestParams 请求 参数
@@ -50,6 +52,7 @@ public abstract class PaymentFlow {
      *   VERIFY_RESULT   是否验证成功, true/false
      *   ORDER_NUMBER    订单号
      *   TOTAL_FEE       支付金额
+     *   PAYMENT_CODE    支付方式的代码，对应payment_source表的code字段
      *
      * @param requestParams 请求 参数
      * @return 支付返回参数是否合法等信息

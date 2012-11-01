@@ -1064,7 +1064,7 @@ public class Order extends Model {
         return Order.find("byOrderNumberAndUserIdAndUserType", orderNumber, userId, accountType).first();
     }
 
-    public static boolean verifyAndPay(String orderNumber, String fee) {
+    public static boolean verifyAndPay(String orderNumber, String fee, String paymentCode) {
         Order order = Order.find("byOrderNumber", orderNumber).first();
         if (order == null) {
             Logger.error("payment_notify:找不到订单:" + orderNumber);
@@ -1078,6 +1078,13 @@ public class Order extends Model {
             Logger.error("payment_notify:支付金额非法:订单:" + orderNumber + ";支付金额:" + fee);
             return false;
         }
+        PaymentSource paymentSource = PaymentSource.findByCode(paymentCode);
+        if (paymentSource == null) {
+            Logger.error("payment_notify:找不到支付方式: %s", paymentCode);
+            return false;
+        }
+        //重新设置支付方式，这才是最终的支付方式
+        order.payMethod = paymentSource.code;
 
         order.payAndSendECoupon();
         return true;

@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import models.payment.PaymentFlow;
+import models.payment.PaymentUtil;
 import play.Logger;
 
 public class KuaiqianPaymentFlow extends PaymentFlow {
@@ -128,8 +129,12 @@ public class KuaiqianPaymentFlow extends PaymentFlow {
             switch (Integer.parseInt(params.get("payResult"))){
                 case 10:
                     rtnOK = 1;
-                    rtnUrl += String.format("?%s=%s&%s=%s&%s=%s", VERIFY_RESULT, VERIFY_RESULT_OK,
-                            ORDER_NUMBER, params.get("orderId"), TOTAL_FEE, payAmount.toString());
+                    result.put(PAYMENT_CODE, PaymentUtil.PARTNER_CODE_99BILL + "_" + params.get("bankId").toUpperCase());
+                    rtnUrl += String.format("?%s=%s&%s=%s&%s=%s&%s=%s",
+                            VERIFY_RESULT, VERIFY_RESULT_OK,
+                            ORDER_NUMBER, params.get("orderId"),
+                            TOTAL_FEE, payAmount.toString(),
+                            PAYMENT_CODE, result.get(PAYMENT_CODE));
                     result.put(VERIFY_RESULT, VERIFY_RESULT_OK);
                     break;
                 default:

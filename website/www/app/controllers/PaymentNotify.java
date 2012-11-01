@@ -23,7 +23,7 @@ public class PaymentNotify extends Controller {
         String fee         = result.get(PaymentFlow.TOTAL_FEE);
         
         if(PaymentFlow.VERIFY_RESULT_OK.equals(result.get(PaymentFlow.VERIFY_RESULT))){
-            success = Order.verifyAndPay(orderNumber, fee);
+            success = Order.verifyAndPay(orderNumber, fee, result.get(PaymentFlow.PAYMENT_CODE));
         }
 
         PaymentJournal.saveNotifyJournal(orderNumber, params.all(), result, success);

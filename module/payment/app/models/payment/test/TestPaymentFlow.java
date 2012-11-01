@@ -1,6 +1,7 @@
 package models.payment.test;
 
 import models.payment.PaymentFlow;
+import models.payment.PaymentUtil;
 import play.Play;
 
 import java.math.BigDecimal;
@@ -54,6 +55,7 @@ public class TestPaymentFlow extends PaymentFlow{
         result.put(VERIFY_RESULT, VERIFY_RESULT_OK);
         result.put(ORDER_NUMBER, params.get("order_no"));
         result.put(TOTAL_FEE, params.get("fee"));
+        result.put(PAYMENT_CODE, PaymentUtil.PARTNER_CODE_TESTPAY);
         return result;
     }
 }
