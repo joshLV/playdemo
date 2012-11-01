@@ -8,30 +8,25 @@ import org.junit.Before;
 import org.junit.Test;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
+import factory.FactoryBoy;
 
 public class AliPaymentFlowTest extends FunctionalTest{
-	
+	Order order;
 	@Before
     public void setup(){
-        Fixtures.delete(models.order.Order.class);
-        Fixtures.delete(models.sales.Category.class);
-        Fixtures.delete(models.sales.Area.class);
-        Fixtures.delete(models.sales.Shop.class);
-        Fixtures.delete(models.sales.Goods.class);
-        Fixtures.delete(models.order.OrderItems.class);
-        Fixtures.delete(models.order.ECoupon.class);
-        Fixtures.delete(models.accounts.Account.class);
+        FactoryBoy.deleteAll();
 
-        Fixtures.loadModels("fixture/categories_unit.yml");
-        Fixtures.loadModels("fixture/areas_unit.yml");
-        Fixtures.loadModels("fixture/brands_unit.yml");
-        Fixtures.loadModels("fixture/user.yml");
-        Fixtures.loadModels("fixture/shops_unit.yml");
-        Fixtures.loadModels("fixture/goods_unit.yml");
-        Fixtures.loadModels("fixture/orders.yml");
-        Fixtures.loadModels("fixture/accounts.yml");
-        Fixtures.loadModels("fixture/account_uhuila.yml");
-        Fixtures.loadModels("fixture/payment_source.yml");
+
+//        Fixtures.loadModels("fixture/categories_unit.yml");
+//        Fixtures.loadModels("fixture/areas_unit.yml");
+//        Fixtures.loadModels("fixture/brands_unit.yml");
+//        Fixtures.loadModels("fixture/user.yml");
+//        Fixtures.loadModels("fixture/shops_unit.yml");
+//        Fixtures.loadModels("fixture/goods_unit.yml");
+//        Fixtures.loadModels("fixture/orders.yml");
+//        Fixtures.loadModels("fixture/accounts.yml");
+//        Fixtures.loadModels("fixture/account_uhuila.yml");
+//        Fixtures.loadModels("fixture/payment_source.yml");
     }
 
     @Test

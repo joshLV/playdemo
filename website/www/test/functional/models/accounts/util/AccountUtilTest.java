@@ -9,56 +9,56 @@ import play.test.FunctionalTest;
 
 import java.math.BigDecimal;
 
+import factory.FactoryBoy;
+
+
 /**
  * @author likang
- * Date: 12-3-7
+ *         Date: 12-3-7
  */
-public class AccountUtilTest extends FunctionalTest{
+public class AccountUtilTest extends FunctionalTest {
+    Account account;
 
     @Before
-    public void setup(){
-        Fixtures.delete(Account.class);
-        Fixtures.delete(AccountSequence.class);
-        Fixtures.loadModels("fixture/accounts.yml");
-        Fixtures.loadModels("fixture/account_uhuila.yml");
+    public void setup() {
+        FactoryBoy.deleteAll();
+        account = FactoryBoy.create(Account.class);
     }
 
     @Test
-    public void testGetUhuilaAccount(){
+    public void testGetUhuilaAccount() {
         Account account = AccountUtil.getUhuilaAccount();
         assertNotNull(account);
     }
 
     @Test
-    public void testAddCash(){
-        Long id  = (Long)Fixtures.idCache.get("models.accounts.Account-account_1");
-        Account account = Account.findById(id);
+    public void testAddCash() {
         assertNotNull(account);
 
         Boolean exception = false;
-        try{
-            AccountUtil.addBalanceAndSaveSequence(null, null, null,null, null, TradeType.REFUND, AccountSequenceFlag.VOSTRO, "test note", null);
-        }catch (RuntimeException e){
+        try {
+            AccountUtil.addBalanceAndSaveSequence(null, null, null, null, null, TradeType.REFUND, AccountSequenceFlag.VOSTRO, "test note", null);
+        } catch (RuntimeException e) {
             exception = true;
         } catch (BalanceNotEnoughException e) {
             exception = true;
         } catch (AccountNotFoundException e) {
             exception = true;
         }
-        if(!exception){
+        if (!exception) {
             fail();
         }
         exception = false;
-        try{
-            AccountUtil.addBalanceAndSaveSequence(null, null, null,null, new Long(1), null, null, "test note", null);
-        }catch (RuntimeException e){
+        try {
+            AccountUtil.addBalanceAndSaveSequence(null, null, null, null, new Long(1), null, null, "test note", null);
+        } catch (RuntimeException e) {
             exception = true;
         } catch (BalanceNotEnoughException e) {
             exception = true;
         } catch (AccountNotFoundException e) {
             exception = true;
         }
-        if(!exception){
+        if (!exception) {
             fail();
         }
         BigDecimal originAmount = account.amount;
