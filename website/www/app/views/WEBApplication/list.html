@@ -5,9 +5,8 @@
 <meta name="Keywords" content="上海优惠券,一百券,消费券,代金券,优惠券,美食券,电子券,优惠上海,提货券">
 #{/set}
 #{set 'moreStyles'}
-
+    #{asset.css src:['/home/121031/notice.css'] /}
 #{/set}
-<link rel="stylesheet" href="http://192.168.18.242/yome/home/src/notice.css"/>
 <div class="wrapper">
     <div id="content">
         <div class="crumbs">您现在的位置：<a href="/">首页</a> > 公告</div>
@@ -25,5 +24,6 @@
             #{paginate.controls items:topicList /}
             </div>
         </div>
-    <!-- #content -->
+        <!-- #content -->
+    </div>
 </div>
