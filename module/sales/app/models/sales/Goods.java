@@ -70,6 +70,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -79,8 +80,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
-//import models.resale.ResalerLevel;
 
 @Entity
 @Table(name = "goods")
@@ -609,7 +608,7 @@ public class Goods extends Model {
     }
 
     @Column(name = "discount")
-    //@SolrField
+    @SolrField
     public BigDecimal getDiscount() {
         if (discount != null && discount.compareTo(BigDecimal.ZERO) > 0) {
             return discount;
@@ -671,7 +670,6 @@ public class Goods extends Model {
      * 小规格图片路径
      */
     @Transient
-    //@SolrField
     public String getImageSmallPath() {
         if (StringUtils.isNotBlank(imageSmallPath)) {
             return imageSmallPath;
@@ -700,6 +698,12 @@ public class Goods extends Model {
         return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_ORIGINAL);
     }
 
+    @Transient
+    @SolrField
+    public String getExhibitionContent() {
+        return HtmlUtil.html2text(getExhibition());
+    }
+
     public String getExhibition() {
         if (StringUtils.isBlank(exhibition)) {
             return "";
@@ -719,7 +723,7 @@ public class Goods extends Model {
     }
 
     @Transient
-    //@SolrField
+    @SolrField
     public String getPromptContent() {
         return HtmlUtil.html2text(getPrompt());
     }
@@ -753,7 +757,7 @@ public class Goods extends Model {
     private Long virtualSaleCount;
 
     @Transient
-    //@SolrField
+    @SolrField
     public Long getVirtualSaleCount() {
         if (virtualSaleCount != null && virtualSaleCount > 0) {
             return virtualSaleCount;
@@ -804,7 +808,7 @@ public class Goods extends Model {
     }
 
     @Transient
-    //@SolrField
+    @SolrField
     public String getPublishedPlatformList() {
         List<GoodsPublishedPlatformType> platformTypeList = getPublishedPlatforms();
         return StringUtils.join(platformTypeList, " ");
@@ -823,7 +827,7 @@ public class Goods extends Model {
         return false;
     }
 
-    //@SolrField
+    @SolrField
     public GoodsStatus getStatus() {
         if (status != null && GoodsStatus.ONSALE.equals(status) &&
                 (expireAt != null && expireAt.before(new Date())) || (baseSale != null && baseSale <= 0)) {
@@ -836,13 +840,13 @@ public class Goods extends Model {
      * @return
      */
     @Transient
-    //@SolrField
+    @SolrField
     public boolean isExpired() {
         return expireAt != null && expireAt.before(new Date());
     }
 
     @Transient
-    // @SolrField
+    @SolrField
     public String getAreaNames() {
         if (StringUtils.isNotBlank(areaNames)) {
             return areaNames;
@@ -985,22 +989,11 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findTop(int limit) {
-        return find("status=? and deleted=? and baseSale >=1 and isHideOnsale is false and expireAt > ? order by priority DESC,createdAt DESC",
+        return find("status=? and deleted=? and baseSale >= 1 and isHideOnsale = false and expireAt > ? order by priority DESC,createdAt DESC",
                 GoodsStatus.ONSALE,
                 DeletedStatus.UN_DELETED,
                 new Date()).fetch(limit);
     }
-
-    /**
-     * 获取已上架的全部商品数量.
-     *
-     * @return
-     */
-    public static long countOnSale() {
-        return count("status=? and deleted=? and baseSale >=1 and expireAt > ?", GoodsStatus.ONSALE,
-                DeletedStatus.UN_DELETED, new Date());
-    }
-
 
     /**
      * 根据分类获取已上架的全部商品数量.
@@ -1011,7 +1004,7 @@ public class Goods extends Model {
     public static long countOnSaleByTopCategory(long categoryId) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
-                "and g.baseSale >= 1 and g.expireAt > :now and g.id in (select g.id from g.categories c where c.parentCategory.id = :categoryId) ");
+                "and g.baseSale >= 1 and g.isHideOnsale = false and g.expireAt > :now and g.id in (select g.id from g.categories c where c.parentCategory.id = :categoryId) ");
         q.setParameter("status", GoodsStatus.ONSALE);
         q.setParameter("deleted", DeletedStatus.UN_DELETED);
         q.setParameter("now", new Date());
@@ -1039,7 +1032,7 @@ public class Goods extends Model {
         EntityManager entityManager = JPA.em();
         String categoryQueryCond = isRootCategory ? "c.parentCategory.id" : "c.id";
         Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
-                "and g.baseSale >= 1 and g.expireAt > :now and g.id in (select g.id from g.categories c where " + categoryQueryCond + " = :categoryId) " +
+                "and g.baseSale >= 1 and g.isHideOnsale = false and g.expireAt > :now and g.id in (select g.id from g.categories c where " + categoryQueryCond + " = :categoryId) " +
                 "order by priority DESC,createdAt DESC");
         q.setParameter("status", GoodsStatus.ONSALE);
         q.setParameter("deleted", DeletedStatus.UN_DELETED);
@@ -1067,7 +1060,7 @@ public class Goods extends Model {
     }
 
     public static Goods findOnSale(long id) {
-        return find("id=? and deleted=? and status=? and baseSale >= 1 and expireAt > ?", id,
+        return find("id=? and deleted=? and status=? and baseSale >= 1 and isHideOnsale = false and expireAt > ?", id,
                 DeletedStatus.UN_DELETED, GoodsStatus.ONSALE, new Date()).first();
     }
 
@@ -1295,7 +1288,7 @@ public class Goods extends Model {
     public static List<Goods> findTradeRecently(int limit) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select i.goods from OrderItems i where i.goods.status = :status " +
-                "and i.goods.deleted = :deleted and i.goods.baseSale >= 1 and i.goods.expireAt > :expireAt " +
+                "and i.goods.deleted = :deleted and i.goods.baseSale >= 1 and i.goods.isHideOnsale = false and i.goods.expireAt > :expireAt " +
                 "group by i.goods order by i.createdAt DESC");
         q.setParameter("status", GoodsStatus.ONSALE);
         q.setParameter("deleted", DeletedStatus.UN_DELETED);
@@ -1438,7 +1431,7 @@ public class Goods extends Model {
      */
     public static List<Goods> findNewGoods(int limit) {
         // 找出5倍需要的商品，然后手工过滤
-        List<Goods> allGoods = Goods.find("status = ? and deleted = ? and baseSale >= 1 and isHideOnsale=false and expireAt > ? order by createdAt DESC",
+        List<Goods> allGoods = Goods.find("status = ? and deleted = ? and baseSale >= 1 and isHideOnsale = false and expireAt > ? order by createdAt DESC",
                 GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit * 5);
         Set<Long> supplierSet = new HashSet<>();
         List<Goods> goods = new ArrayList<>();
@@ -1461,7 +1454,7 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findNewGoodsOfOthers(Long id, int limit) {
-        return Goods.find(" id <> ? and status = ? and deleted = ? and baseSale >= 1 and expireAt > ? order by createdAt DESC",
+        return Goods.find(" id <> ? and status = ? and deleted = ? and baseSale >= 1 and isHideOnsale = false and expireAt > ? order by createdAt DESC",
                 id, GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit);
     }
 
@@ -1472,7 +1465,7 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findPopGoods(int limit) {
-        return Goods.find(" status = ? and deleted = ? and baseSale >= 1 and expireAt > ? order by virtualBaseSaleCount DESC",
+        return Goods.find(" status = ? and deleted = ? and baseSale >= 1 and isHideOnsale = false and expireAt > ? order by virtualBaseSaleCount DESC",
                 GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit);
     }
 
@@ -1753,7 +1746,13 @@ public class Goods extends Model {
     public static QueryResponse search(String q, long parentCategoryId, long categoryId, String districtId,
                                        String areaId, Boolean isOrder, MaterialType materialType, long brandId,
                                        String orderBy, boolean isAsc, int pageNumber, int pageSize) {
-        StringBuilder queryStr = new StringBuilder("goods.deleted_s:\"com.uhuila.common.constants.DeletedStatus:UN_DELETED\" AND goods.expired_b:false");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ssZ");
+        StringBuilder queryStr = new StringBuilder(
+                "goods.deleted_s:\"com.uhuila.common.constants.DeletedStatus:UN_DELETED\"" +
+                " AND goods.isHideOnsale_b:false" +
+                " AND goods.status_s:models.sales.GoodsStatus:ONSALE" +
+                " AND goods.virtualSaleCount_l:[1 TO " + Integer.MAX_VALUE + "]" +
+                " AND goods.expireAt_dt:[" + dateFormat.format(new Date()) + " TO 2512-05-24T05:55:36Z]");
         if (StringUtils.isNotBlank(q)) {
             queryStr.append(" AND " + q);
         }

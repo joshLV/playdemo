@@ -66,7 +66,7 @@ public class Goods2 extends Controller {
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
         //只按关键字搜索
-        QueryResponse queryResponse = models.sales.Goods.search(keywords, brandId,pageNumber, PAGE_SIZE);
+        QueryResponse queryResponse = models.sales.Goods.search(keywords, brandId, pageNumber, PAGE_SIZE);
 
         //搜索结果的全部商品数量
         Long onSaleGoodsCount = queryResponse.getResults().getNumFound();
@@ -599,25 +599,30 @@ public class Goods2 extends Controller {
         }
     }
 
-    private static final String LIST_URL_HEAD = "/s/";
-
     private static BreadcrumbList createBreadcrumbs(GoodsWebsiteCondition goodsCond) {
         BreadcrumbList breadcrumbs = new BreadcrumbList();
         if (goodsCond == null || goodsCond.isDefault() && StringUtils.isBlank(goodsCond.keywords)) {
             return breadcrumbs;
         }
+        final Breadcrumb categoryCrumb = createCategoryCrumb(goodsCond);
         if (GoodsWebsiteCondition.isValidAreaId(goodsCond.areaId)) {
             breadcrumbs.add(createTopCategoryCrumb(goodsCond));
-            breadcrumbs.add(createCategoryCrumb(goodsCond));
+            if (categoryCrumb != null) {
+                breadcrumbs.add(categoryCrumb);
+            }
             breadcrumbs.add(createDistrictCrumb(goodsCond));
             breadcrumbs.add(createAreaCrumb(goodsCond));
         } else if (GoodsWebsiteCondition.isValidAreaId(goodsCond.districtId)) {
             breadcrumbs.add(createTopCategoryCrumb(goodsCond));
-            breadcrumbs.add(createCategoryCrumb(goodsCond));
+            if (categoryCrumb != null) {
+                breadcrumbs.add(categoryCrumb);
+            }
             breadcrumbs.add(createDistrictCrumb(goodsCond));
         } else if (goodsCond.categoryId > 0) {
             breadcrumbs.add(createTopCategoryCrumb(goodsCond));
-            breadcrumbs.add(createCategoryCrumb(goodsCond));
+            if (categoryCrumb != null) {
+                breadcrumbs.add(categoryCrumb);
+            }
         } else if (goodsCond.parentCategoryId > 0) {
             breadcrumbs.add(createTopCategoryCrumb(goodsCond));
         }
@@ -625,7 +630,7 @@ public class Goods2 extends Controller {
     }
 
     private static Breadcrumb createTopCategoryCrumb(GoodsWebsiteCondition goodsCond) {
-        String url = LIST_URL_HEAD + goodsCond.categoryId;
+        String url = goodsCond.buildUrl("parentCategoryId", goodsCond.parentCategoryId).getUrl();
         String desc;
         if (goodsCond.parentCategoryId > 0) {
             Category category = Category.findById(goodsCond.parentCategoryId);
@@ -637,20 +642,18 @@ public class Goods2 extends Controller {
     }
 
     private static Breadcrumb createCategoryCrumb(GoodsWebsiteCondition goodsCond) {
-        String url = LIST_URL_HEAD + goodsCond.categoryId;
+        String url = goodsCond.buildUrl("categoryId", goodsCond.categoryId).getUrl();
         String desc;
         if (goodsCond.categoryId > 0) {
             Category category = Category.findById(goodsCond.categoryId);
             desc = category.name;
-        } else {
-            desc = "全部子分类";
+            return new Breadcrumb(desc, url);
         }
-        return new Breadcrumb(desc, url);
+        return null;
     }
 
     private static Breadcrumb createAreaCrumb(GoodsWebsiteCondition goodsCond) {
-        String url = LIST_URL_HEAD + goodsCond.categoryId + '-' + Area.SHANGHAI
-                + '-' + goodsCond.districtId + '-' + goodsCond.areaId;
+        String url = goodsCond.buildUrl("areaId", goodsCond.areaId).getUrl();
         String desc;
         if (GoodsWebsiteCondition.isValidAreaId(goodsCond.areaId)) {
             Area area = Area.findById(goodsCond.areaId);
@@ -662,8 +665,7 @@ public class Goods2 extends Controller {
     }
 
     private static Breadcrumb createDistrictCrumb(GoodsWebsiteCondition goodsCond) {
-        String url = LIST_URL_HEAD + goodsCond.categoryId + '-' + Area.SHANGHAI
-                + '-' + goodsCond.districtId;
+        String url = goodsCond.buildUrl("districtId", goodsCond.districtId).getUrl();
         String desc;
         if (GoodsWebsiteCondition.isValidAreaId(goodsCond.districtId)) {
             Area district = Area.findById(goodsCond.districtId);
