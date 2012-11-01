@@ -23,10 +23,8 @@ load:['fixture/user.yml','fixture/goods_base.yml','fixture/goods.yml','fixture/o
     #{include 'test/selenium/step/login.selenium' /}
     openAndWait('/orders')
     assertTitle('一百券 - 我的订单')
-    verifyTextPresent('您的位置：首页 > 我的订单')
     openAndWait('/coupons')
     assertTitle('一百券 - 我的券')
-    verifyTextPresent('您的位置：首页 > 我的券')
 #{/selenium}
 
 #{selenium '查看订单详细信息'}
@@ -38,7 +36,6 @@ load:['fixture/user.yml','fixture/goods_base.yml','fixture/goods.yml','fixture/o
 #{selenium '申请退款'}
     open('/orders/refund/${order1.orderNumber}')
     assertTitle('申请退款')
-    verifyTextPresent('您的位置：首页 > 我的订单 > 申请退款')
-     verifyTextPresent('未消费')
+    verifyTextPresent('未消费')
 #{/selenium}
 
