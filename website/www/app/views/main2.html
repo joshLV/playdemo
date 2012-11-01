@@ -25,9 +25,9 @@
         <ul class="site-nav">
         #{if cas?.isLogin}
             <li><a class="login" target="_blank"
-                   href="http://home.${baseDomain}"
+                   href="${helper.Domain.getHomeHost(request)}"
                    id="login_name">${cas.loginName}</a></li>
-            <li><a href="http://home.${baseDomain}">我的一百券</a></li>
+            <li><a href="${helper.Domain.getHomeHost(request)}">我的一百券</a></li>
             <li><a href="/logout">退出</a></li>
         #{/if}
         #{else}

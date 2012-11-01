@@ -17,6 +17,13 @@ import play.test.FunctionalTest;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
+import models.sales.Goods;
+import models.sales.MaterialType;
+import org.junit.Before;
+import org.junit.Ignore;
+import play.Play;
+import play.mvc.Http;
+import play.test.FunctionalTest;
 
 /**
  * 商品控制器的测试.
@@ -109,6 +116,4 @@ public class GoodsTest extends FunctionalTest {
         assertContentType("text/html", response);
         assertCharset(Play.defaultWebEncoding, response);
     }
-
-
 }
