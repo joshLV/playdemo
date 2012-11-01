@@ -126,15 +126,15 @@
     *margin-top: -26px;
 }
 #main .notice ul {
-    padding: 0 10px 0;
+    padding: 4px 10px;
     border: 1px solid #dcdcdc;
     border-top: 0;
     background-color: #fff;
 }
 #main .notice ul li {
     overflow: hidden;
-    height: 26px;
-    line-height: 26px;
+    height: 24px;
+    line-height: 24px;
     border-top: 1px solid #f4f4f4;
 }
 #main .notice ul li a:hover {
@@ -245,7 +245,7 @@
 .goods .title {
     height: 36px;
     overflow: hidden;
-    padding-bottom: 5px;
+    padding: 7px 0;
     margin-bottom: 5px;
     border-bottom: 1px dashed #d9d9d9;
 }
@@ -337,7 +337,6 @@
 .accordion dt {
     color: #8c8c8c;
     font-size: 14px;
-    font-weight: 700;
     text-indent: 45px;
     line-height: 40px;
     border-bottom: 1px solid #fff;

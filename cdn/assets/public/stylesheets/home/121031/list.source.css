@@ -221,7 +221,7 @@
 .goods .title {
     height: 36px;
     overflow: hidden;
-    padding-bottom: 5px;
+    padding: 7px 0;
     margin-bottom: 5px;
     border-bottom: 1px dashed #d9d9d9;
 }
@@ -353,7 +353,7 @@
     border-top: 3px solid #f97311;
 }
 #interest .bd {
-    height: 899px;
+    height: 926px;
     padding: 0 5px;
     overflow: hidden;
     margin-bottom: 20px;

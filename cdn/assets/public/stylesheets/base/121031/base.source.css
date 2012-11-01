@@ -54,7 +54,6 @@ mark { background: #ff0; }
     height: 25px;
     overflow: hidden;
     line-height: 24px;
-    /* background: #efefef url(../ico/base.png) repeat-x 0 0; */
     background: #efefef url(//img.uhcdn.com/base/base.png) repeat-x 0 0;
 }
 #topbar-bd {
@@ -63,7 +62,6 @@ mark { background: #ff0; }
 }
 #topbar-bd .site-nav li {
     float: left;
-    /* background: url(../ico/base.png) no-repeat -469px -103px; */
     background: url(//img.uhcdn.com/base/base.png) no-repeat -469px -103px;
 }
 #topbar-bd .site-nav li a {
@@ -79,7 +77,6 @@ mark { background: #ff0; }
 }
 #topbar-bd .site-nav .favorite {
     padding-left: 26px;
-    /* background: url(../ico/base.png) no-repeat 7px -108px; */
     background: url(//img.uhcdn.com/base/base.png) no-repeat 7px -108px;
 }
 #topbar-bd .site-nav .first {
@@ -124,7 +121,6 @@ mark { background: #ff0; }
     width: 395px;
     height: 33px;
     padding: 1px;
-    /* background: url(../ico/base.png) no-repeat 0 -26px; */
     background: url(//img.uhcdn.com/base/base.png) no-repeat 0 -26px;
     _background-position: 0 -25px;
     _margin-top: -1px;
@@ -144,7 +140,6 @@ mark { background: #ff0; }
     border: 0;
     font-size: 0;
     text-indent: -999px;
-    /* background: url(../ico/base.png) no-repeat right -26px; */
     background: url(//img.uhcdn.com/base/base.png) no-repeat right -26px;
     cursor: pointer;
 }
@@ -183,7 +178,6 @@ mark { background: #ff0; }
     display: inline-block;
     padding: 3px 5px 0 22px;
     color: #fc7410;
-    /* background: url(../ico/base.png) no-repeat -108px -102px; */
     background: url(//img.uhcdn.com/base/base.png) no-repeat -108px -102px;
 }
 #cart .cart-box-hd .cart-num {
@@ -260,7 +254,6 @@ mark { background: #ff0; }
     width: 9px;
     height: 9px;
     cursor: pointer;
-    /* background: url(../ico/base.png) no-repeat -193px -111px; */
     background: url(//img.uhcdn.com/base/base.png) no-repeat -193px -111px;
 }
 #cart .cart-box-bd .emptycart {
@@ -286,7 +279,6 @@ mark { background: #ff0; }
     color: #fff;
     padding: 0px 0 4px;
     text-align: center;
-    /* background: url(../ico/base.png) no-repeat -356px -106px; */
     background: url(//img.uhcdn.com/base/base.png) no-repeat -356px -106px;
 }
 #cart .cart-box-bd .totalcart a:hover {
@@ -298,7 +290,6 @@ mark { background: #ff0; }
     padding: 1px 10px 6px;
     margin-left: 2px;
     color: #fff;
-    /* background: url(../ico/base.png) no-repeat -404px -105px; */
     background: url(//img.uhcdn.com/base/base.png) no-repeat -404px -105px;
 }
 #cart .cart-btn:hover {
@@ -310,7 +301,6 @@ mark { background: #ff0; }
     position: relative;
     z-index: 49;
     height: 37px;
-    /* background: #f60 url(../ico/base.png) repeat-x 0 -62px */
     background: #f60 url(//img.uhcdn.com/base/base.png) repeat-x 0 -62px
 }
 #navbar .inner {
@@ -419,7 +409,6 @@ mark { background: #ff0; }
     border-bottom: 0;
 }
 #cate .area dt a {
-    /* background: url(../ico/base.png) no-repeat -218px -108px; */
     background: url(//img.uhcdn.com/base/base.png) no-repeat -218px -108px;
 }
 #cate .line {
@@ -442,7 +431,6 @@ mark { background: #ff0; }
     padding: 0 3px;
     font-weight: 700;
     text-align: center;
-    /* background: url(../ico/base.png) no-repeat -287px -108px; */
     background: url(//img.uhcdn.com/base/base.png) no-repeat -287px -108px;
 }
 #cate dt a:hover {

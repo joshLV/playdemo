@@ -167,8 +167,8 @@ jQuery(function($) {
         outletPaging = $('#outlet-page');
 
     if (location.host == "127.0.0.1" || location.host == '192.168.18.242') {
-        outletUrl = '/yome/home/outletList.php';
-        consultUrl = '/yome/home/consult.php';
+        outletUrl = '/yome/home/template/outletList.php';
+        consultUrl = '/yome/home/template/consult.php';
     } else {
         outletUrl = '/goods/'+ goodsId +'/shops'; 
         consultUrl = '/goods/'+ goodsId +'/questions'; 
