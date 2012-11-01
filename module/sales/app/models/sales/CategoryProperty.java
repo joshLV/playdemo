@@ -4,7 +4,11 @@ import play.db.jpa.Model;
 import play.modules.solr.SolrField;
 import play.modules.solr.SolrSearchable;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * 商品分类的属性.
@@ -17,9 +21,9 @@ import javax.persistence.*;
 @Table(name = "category_properties")
 @SolrSearchable
 public class CategoryProperty extends Model {
-    
+
     private static final long serialVersionUID = 7063981609113062L;
-    
+
     /**
      * 属性名.
      */

@@ -21,7 +21,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -57,7 +56,7 @@ public class Category extends Model {
      */
     @Required
     @OrderColumn
-    @Column(name="display_order")
+    @Column(name = "display_order")
     public Integer displayOrder;
 
     /**
@@ -96,9 +95,10 @@ public class Category extends Model {
     @JoinColumn(name = "parent_id")
     public Category parentCategory;
 
-    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, targetEntity = Category.class)
-    @OrderBy("displayOrder")
-    public List<Category> children;
+//    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, targetEntity = Category.class)
+//    @OrderBy("displayOrder")
+//    @JsonIgnore
+//    public List<Category> children;
 
     /**
      * 逻辑删除,0:未删除，1:已删除
@@ -110,12 +110,12 @@ public class Category extends Model {
     /**
      * 商品标识.
      */
-    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(name = "goods_categories", inverseJoinColumns = @JoinColumn(name
             = "goods_id"), joinColumns = @JoinColumn(name = "category_id"))
     public Set<Goods> goodsSet;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
     public Set<CategoryProperty> properties = new HashSet<>();
 
     public Object[] getShowKeywordsList(int limit) {
@@ -162,7 +162,7 @@ public class Category extends Model {
     }
 
     @Transient
-    public boolean isRoot(){
+    public boolean isRoot() {
         return parentCategory == null;
     }
 
@@ -310,6 +310,7 @@ public class Category extends Model {
                 int count = 0;
                 for (int i = 0; i < categories.size(); i++) {
                     Category category = categories.get(i);
+
                     count += category.goodsSet.size();
                     category.goodsCount = (long) category.goodsSet.size();
                     if (category.goodsCount > 0) {

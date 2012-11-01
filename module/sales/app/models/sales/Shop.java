@@ -102,7 +102,6 @@ public class Shop extends Model {
             = "goods_history_id"), joinColumns = @JoinColumn(name = "shop_id"))
     public Set<GoodsHistory> goodsHistory = new HashSet<>();
 
-
     @Transient
     public String supplierName;
 

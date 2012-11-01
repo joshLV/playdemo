@@ -2,21 +2,42 @@ package models.sales;
 
 import cache.CacheCallBack;
 import cache.CacheHelper;
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.PathUtil;
-import org.apache.commons.lang.StringUtils;
-import play.Play;
-import play.data.validation.*;
-import play.db.jpa.Model;
-import play.modules.view_ext.annotation.Money;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
+import play.Play;
+import play.data.validation.InFuture;
+import play.data.validation.Max;
+import play.data.validation.MaxSize;
+import play.data.validation.Min;
+import play.data.validation.MinSize;
+import play.data.validation.Required;
+import play.db.jpa.Model;
+import play.modules.view_ext.annotation.Money;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -152,7 +173,7 @@ public class GoodsHistory extends Model {
 
     @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinTable(name = "goods_history_categories", inverseJoinColumns = @JoinColumn(name
-            = "category_id"), joinColumns = @JoinColumn(name = "goods_id"))
+            = "category_id"), joinColumns = @JoinColumn(name = "goods_history_id"))
     @Required
     public Set<Category> categories;
 

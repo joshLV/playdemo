@@ -220,6 +220,7 @@ public class Goods extends Model {
     private String imageSmallPath;
 
     @Transient
+    @SolrField
     public String getCategoryIds() {
         List<Long> ids = new ArrayList<>();
         if (categories != null) {
@@ -233,11 +234,14 @@ public class Goods extends Model {
 
 
     @Transient
+    @SolrField
     public String getParentCategoryIds() {
         List<Long> ids = new ArrayList<>();
         if (categories != null) {
             for (Category category : categories) {
-                ids.add(category.parentCategory.id);
+                if (category != null && category.parentCategory != null) {
+                    ids.add(category.parentCategory.id);
+                }
             }
         }
 
@@ -847,7 +851,9 @@ public class Goods extends Model {
         Map<String, Object> areaMap = new HashMap<>();
         for (Shop shop : shopList) {
             Area area = Area.findAreaById(shop.areaId);
-            areaMap.put(area.id, area.name);
+            if (area != null) {
+                areaMap.put(area.id, area.name);
+            }
         }
         areaNames = StringUtils.join(areaMap.values(), " ");
         return areaNames;
@@ -1912,12 +1918,12 @@ public class Goods extends Model {
 
             for (FacetField.Count count : countList) {
                 if (count.getCount() > 0) {
-					Area area = Area.findAreaById(count.getName());
-					if ((area != null && districtId != null && area.parent != null && area.parent.id.equals(districtId))
-							|| (area != null && districtId == null)) {
-						area.goodsCount = count.getCount();
-						areaList.add(area);
-						System.out.println(area.name + ":          " + area.goodsCount);
+                    Area area = Area.findAreaById(count.getName());
+                    if ((area != null && districtId != null && area.parent != null && area.parent.id.equals(districtId))
+                            || (area != null && districtId == null)) {
+                        area.goodsCount = count.getCount();
+                        areaList.add(area);
+                        System.out.println(area.name + ":          " + area.goodsCount);
 
                     }
                 }
