@@ -39,7 +39,7 @@ type('id=goods_useBeginTime','09:00')
 type('id=goods_useEndTime','')
 type('id=goods_originalPrice','55')
 type('id=goods_salePrice','55')
-type('id=goods_baseSale','55')
+type('id=goods_cumulativeStocks','55')
 *{type('id=goods_resaleAddPrice','5')}*
 type('id=goods_title','并欺凌55元')
 *{focus('id=imagePath')}*
@@ -81,7 +81,7 @@ type('id=goods_effectiveAt','2012-03-19')
 type('id=goods_expireAt','2015-03-19')
 type('id=goods_originalPrice','55')
 type('id=goods_salePrice','55')
-type('id=goods_baseSale','55')
+type('id=goods_cumulativeStocks','55')
 *{type('id=goods_resaleAddPrice','5')}*
 *{focus('id=imagePath')}*
 *{click('id=imagePath')}*
@@ -118,7 +118,7 @@ type('id=goods_faceValue','55')
 type('id=goods_originalPrice','555')
 type('id=goods_salePrice','55')
 *{type('id=goods_resaleAddPrice','5')}*
-type('id=goods_baseSale','55')
+type('id=goods_cumulativeStocks','55')
 
 runScript('var element= window.document.getElementsByTagName("iframe")[1];')
 runScript('idocument = element.contentDocument;')
@@ -127,6 +127,7 @@ runScript('element.innerHTML  = "this is a test thread";')
 type('id=goods_salePrice','15')
 type('id=goods_promoterPrice','4')
 type('id=goods_invitedUserPrice','5')
+type('id=goods_cumulativeStocks','55')
 clickAndWait('id=save')
 verifyTitle('添加商品')
 verifyTextPresent('到期时间不能早于有效期开始时间!')
