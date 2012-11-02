@@ -298,6 +298,40 @@ public class Category extends Model {
         });
     }
 
+    /**
+     * 获取指定分类的所有子分类，分类中需要标明商品数量.
+     * <p/>
+     * 直接被WWW首页调用,没有商品的分类不显示.
+     *
+     * @return
+     */
+    public List<Category> getByParent() {
+        return CacheHelper.getCache(CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_SUB_CATEGORIES" + id), new CacheCallBack<List<Category>>() {
+            @Override
+            public List<Category> loadData() {
+                List<Category> categories = Category.findByParent(id);
+                List<Category> topAllCategories = new ArrayList<>();
+                int count = 0;
+                for (int i = 0; i < categories.size(); i++) {
+                    Category category = categories.get(i);
+
+                    count += category.goodsSet.size();
+                    category.goodsCount = (long) category.goodsSet.size();
+                    if (category.goodsCount > 0) {
+                        topAllCategories.add(category);
+                    }
+                }
+
+                Category topCategory = new Category();
+                topCategory.id = 0l;
+                topCategory.name = "全部";
+                topCategory.goodsCount = (long) count;
+                topAllCategories.add(0, topCategory);
+                return topAllCategories;
+            }
+        });
+    }
+
     public static void update(Long id, Category category, Long parentId) {
         models.sales.Category updateCategory = models.sales.Category.findById(id);
         if (updateCategory == null) {

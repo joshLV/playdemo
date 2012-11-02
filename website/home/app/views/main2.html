@@ -4,19 +4,9 @@
     <meta charset="UTF-8">
     <title>#{get 'title' /}</title>
 #{get 'metaContent'/}
-    <link rel="stylesheet" href="http://192.168.18.242/yome/base/src/base.css"/>
-    *{<link rel="stylesheet" href="http://192.168.18.242/yome/base/src/sprite.css"/>}*
-
-
-*{#{asset.css src:['/y/base/base.css', '/y/base/sprite.css'] /}}*
+#{asset.css src:['/base/121031/base.css']/}
     <link rel="shortcut icon" href="#{asset.url href:'/images/y/favicon.ico'/}" type="image/x-icon"/>
 #{get 'moreStyles' /}
-*{#{asset.js src:['/u/jquery-1.7.2.min.js', '/y/base/base.js'] /}}*
-#{asset.js src:['/u/jquery-1.7.2.min.js'] /}
-    <script src="http://a.uhcdn.com/js/u/slides.min.js"></script>
-    <script src="http://192.168.18.242/yome/home/src/home.js"></script>
-    <script src="http://192.168.18.242/yome/base/src/base.js"></script>
-
 </head>
 <body>
 %{baseDomain = play.Play.configuration.getProperty("application.baseDomain")}%
@@ -61,35 +51,18 @@
         <div class="hotword"><a href="/q?s=火锅">火锅</a> <a href="/q?s=川菜">川菜</a> <a href="/q?s=美容">美容</a> <a href="/q?s=小吃">小吃</a> <a href="/q?s=西餐">西餐</a>
         </div>
     </div>
-    <div id="cart">
+     <div id="cart">
         <div class="cart-box">
             <div class="cart-box-hd clearfix">
                 <span class="cart-icon">购物车</span>
-                <span class="cart-num">有(<em>${count}</em>)件商品</span>
+                <span class="cart-num">有(<em id="cart-js">${count}</em>)件商品</span>
                 <b class="arrow"></b>
+                <input type="hidden" id="reload" value="true"/>
             </div>
             <div class="cart-box-bd">
-                <ul>
-                    <li class="carts-item clearfix">
-                        <a class="goods-img" href=""><img src="//img0.uhcdn.com/p/0/0/33/2012061404233949588_tiny.jpg"
-                                                          width="48"/></a>
-                        <a class="goods-name" href="">购厚味150元VIP卡,即送50元哈根达斯券</a>
-                        <span class="goods-price">120.00</span>
-                        <span class="goods-del" title="删除"></span>
-                    </li>
-                    <li class="carts-item clearfix">
-                        <a class="goods-img" href=""><img src="//img0.uhcdn.com/p/0/0/33/2012061404233949588_tiny.jpg"
-                                                          width="48"/></a>
-                        <a class="goods-name" href="">购厚味150元VIP卡,即送50元哈根达斯券</a>
-                        <span class="goods-price">120.00</span>
-                        <span class="goods-del" title="删除"></span>
-                    </li>
-                </ul>
-                <div class="emptycart">你的购物车里没有任何商品。</div>
-                <div class="totalcart">共<em>0</em>件商品，共计<em>0.00</em>元 <a href="">购买</a></div>
             </div>
         </div>
-        <a class="cart-btn" href="" target="_blank">去结算</a>
+        <a class="cart-btn" href="/carts">去结算</a>
     </div>
 </div>
 <!-- #header -->
@@ -170,6 +143,7 @@
 </div>
 <!-- #footer -->
 
+#{asset.js src:['/u/jquery-1.7.2.min.js','/base/121031/base.js'] /}
 #{get 'moreScripts' /}
 <div style="display:none">
     <script type="text/javascript" id="bdshare_js" data="type=tools&uid=763119"></script>

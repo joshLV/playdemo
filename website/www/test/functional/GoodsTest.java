@@ -50,7 +50,7 @@ public class GoodsTest extends FunctionalTest {
         assertEquals(new BigDecimal("8.50"), goods.salePrice);
         assertEquals("来一份", goods.brand.name);
         assertEquals("8.5折", goods.getDiscountExpress());
-        assertEquals(Long.valueOf("0"), goods.getVirtualSaleCount());
+        assertEquals(Long.valueOf("10"), goods.getVirtualSaleCount());
         Collection<Shop> shops = goods.getShopList();
         assertEquals(1, shops.size());
         assertEquals("测试店", shops.iterator().next().name);

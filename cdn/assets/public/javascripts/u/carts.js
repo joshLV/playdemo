@@ -44,7 +44,7 @@ function reorder(goods_id, increment) {
         element.val(last_num);
         return;
     }
-
+console.log("------------")
     $.post('/carts',
         {goodsId:goods_id, increment:increment},
         function (data) {
@@ -54,6 +54,7 @@ function reorder(goods_id, increment) {
             refreshAmount();
             var cartBoxBd = $('#cart .cart-box-bd');
             cartBoxBd.load("/carts/tops", function (data) {
+
             });
         });
 }
@@ -77,13 +78,9 @@ function refreshAmount() {
         amount = amount.add($("#subtotal_" + goods_id).text());
 
     });
-
-    //var number = 0;
-    //$("input.num_input").each(function(){number += Number($(this).val())});
+    $("#cart-js").html(number);
     $("#total_num").text(number);
     $("#cart-count").text(number);
-    //var amount = new BigNumber("0");
-    //$("span[id^=subtotal_]").each(function(){amount = amount.add($(this).text())});;
     $("#carts_amount").text(amount.toString());
 }
 
