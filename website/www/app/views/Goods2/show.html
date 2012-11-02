@@ -109,10 +109,6 @@
                             <span id="stock_hit" style="display:none;color:#f50">库存${goods.baseSale}件</span>
                             #{if goods.limitNumber > 0}
                                 <span id="limitNumber" style="color:#f50">限购${goods.limitNumber}件</span>
-                                #{if goods.limitNumber-boughtNumber > 0}
-                                    <span class="buy_info">#{if user !=null}您还可以购买${goods.limitNumber-boughtNumber}
-                                        件#{/if}</span>
-                                #{/if}
                             #{/if}
                             <span class="error">#{error 'number' /}</span>
                             <input type="hidden" id="stock" value="${goods.baseSale}">
@@ -180,12 +176,12 @@
                 </div>
             </div>
             <!-- #summary -->
-
+        #{if goods?.exhibition}
             <div id="details">
                 <div class="hd">商品详情</div>
                 <div class="bd">${goods?.exhibition?.raw()}</div>
             </div>
-
+        #{/if}
             <div id="warmtips">
                 <div class="hd">温馨提示</div>
                 <div class="bd"> ${goods?.prompt?.raw()}</div>

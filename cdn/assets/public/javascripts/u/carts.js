@@ -44,7 +44,6 @@ function reorder(goods_id, increment) {
         element.val(last_num);
         return;
     }
-console.log("------------")
     $.post('/carts',
         {goodsId:goods_id, increment:increment},
         function (data) {

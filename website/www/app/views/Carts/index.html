@@ -35,7 +35,7 @@
         #{set boughtNumber:0/}
         #{list items:carts, as:'cartItem'}
 
-        #{if user !=null} %{boughtNumber = cartItem.itemsNumber(user,cartItem.goods.id)}%#{/if}
+        #{if user !=null} %{boughtNumber = models.order.OrderItems.itemsNumber(user,cartItem.goods.id)}%#{/if}
         <input type="hidden" id="boughtNumber_${cartItem.goods.id}" value="${boughtNumber}"/>
         <tr id="row_${cartItem.goods.id}">
             <td class="select">
@@ -69,7 +69,7 @@
                       <input class="num-ipt" type="text" name="g${cartItem.goods.id}" value="${cartItem.goods.limitNumber-boughtNumber}" id="num_${cartItem.goods.id}"/>
                      #{/elseif}
                      #{else}
-                      <input class="num-ipt" type="text" name="g${cartItem.goods.id}" value="0" id="num_${cartItem.goods.id}"/>
+                      <input class="num-ipt" type="text" name="g${cartItem.goods.id}" value="${cartItem.number}" id="num_${cartItem.goods.id}"/>
                      #{/else}
                 #{else}
                       <input class="num-ipt" type="text" name="g${cartItem.goods.id}" value="${cartItem.number}" id="num_${cartItem.goods.id}"/>

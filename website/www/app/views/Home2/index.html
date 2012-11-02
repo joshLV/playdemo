@@ -9,41 +9,6 @@
 #{/set}
 #{set 'moreScripts'}
     #{asset.js src:['/u/slides.min.js','/home/121031/home.js'] /}
-<script>
-    $(function ($) {
-        $('#slides').slides({
-            play:5000,
-            pause:2500,
-            slideSpeed:500,
-            hoverPause:true
-        });
-        var slideX = {
-            thisUl:$('#notice ul'),
-            thisLi:$('#notice li'),
-            widthLi:$.browser.msie == 6 ? 280 : 300,
-            init:function () {
-                slideX.thisUl.width(slideX.thisLi.length * slideX.widthLi);
-                slideX.slideAuto();
-                slideX.thisUl.hover(slideX.slideStop, slideX.slideAuto);
-            },
-            slideLeft:function () {
-                $('#notice li:first').animate({'marginLeft':'-300px'}, 1500, function () {
-                    $('#notice li:first').appendTo('#notice ul');
-                    $('#notice li:first').siblings().css('marginLeft', 0);
-                });
-                return false;
-            },
-            slideAuto:function () {
-                slideX.intervalId = window.setInterval(slideX.slideLeft, 3000);
-            },
-            slideStop:function () {
-                window.clearInterval(slideX.intervalId);
-            }
-        };
-        slideX.init();
-
-    });
-</script>
 #{/set}
 <div class="wrapper">
 <div id="content">
