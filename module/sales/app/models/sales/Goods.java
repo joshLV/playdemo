@@ -162,6 +162,7 @@ public class Goods extends Model {
      * <p/>
      * 通过管理界面增加进货量后得到累计进货量，只会越来越大，因为是累计的
      */
+    @Column(name = "cumulative_stocks")
     public Long cumulativeStocks;
 
     /**
@@ -994,7 +995,7 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findTop(int limit) {
-        return find("status=? and deleted=? and realStocks >= 1 and isHideOnsale = false and expireAt > ? order by priority DESC,createdAt DESC",
+        return find("status=? and deleted=? and isHideOnsale = false and expireAt > ? order by priority DESC,createdAt DESC",
                 GoodsStatus.ONSALE,
                 DeletedStatus.UN_DELETED,
                 new Date()).fetch(limit);
@@ -1009,7 +1010,7 @@ public class Goods extends Model {
     public static long countOnSaleByTopCategory(long categoryId) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
-                "and g.realStocks >= 1 and g.isHideOnsale = false and g.expireAt > :now and g.id in (select g.id from g.categories c where c.parentCategory.id = :categoryId) ");
+                "and g.isHideOnsale = false and g.expireAt > :now and g.id in (select g.id from g.categories c where c.parentCategory.id = :categoryId) ");
         q.setParameter("status", GoodsStatus.ONSALE);
         q.setParameter("deleted", DeletedStatus.UN_DELETED);
         q.setParameter("now", new Date());
@@ -1037,7 +1038,7 @@ public class Goods extends Model {
         EntityManager entityManager = JPA.em();
         String categoryQueryCond = isRootCategory ? "c.parentCategory.id" : "c.id";
         Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
-                "and g.realStocks >= 1 and g.isHideOnsale = false and g.expireAt > :now and g.id in (select g.id from g.categories c where " + categoryQueryCond + " = :categoryId) " +
+                "and g.isHideOnsale = false and g.expireAt > :now and g.id in (select g.id from g.categories c where " + categoryQueryCond + " = :categoryId) " +
                 "order by priority DESC,createdAt DESC");
         q.setParameter("status", GoodsStatus.ONSALE);
         q.setParameter("deleted", DeletedStatus.UN_DELETED);
@@ -1065,7 +1066,7 @@ public class Goods extends Model {
     }
 
     public static Goods findOnSale(long id) {
-        return find("id=? and deleted=? and status=? and realStocks >= 1 and isHideOnsale = false and expireAt > ?", id,
+        return find("id=? and deleted=? and status=? and isHideOnsale = false and expireAt > ?", id,
                 DeletedStatus.UN_DELETED, GoodsStatus.ONSALE, new Date()).first();
     }
 
@@ -1293,7 +1294,7 @@ public class Goods extends Model {
     public static List<Goods> findTradeRecently(int limit) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select i.goods from OrderItems i where i.goods.status = :status " +
-                "and i.goods.deleted = :deleted and i.goods.realStocks >= 1 and i.goods.isHideOnsale = false and i.goods.expireAt > :expireAt " +
+                "and i.goods.deleted = :deleted and i.goods.isHideOnsale = false and i.goods.expireAt > :expireAt " +
                 "group by i.goods order by i.createdAt DESC");
         q.setParameter("status", GoodsStatus.ONSALE);
         q.setParameter("deleted", DeletedStatus.UN_DELETED);
@@ -1335,13 +1336,12 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findTopRecommend(int limit) {
-        String sql = "select g from Goods g  where g.realStocks>=1";
-//        String sql = "select g from Goods g,GoodsStatistics s  where g.id =s.goodsId " +
-//                " and g.status =:status and g.deleted =:deleted and g.expireAt >:expireAt and g.realStocks>=1 and g.isHideOnsale is false and g.isLottery is false order by s.summaryCount desc";
+        String sql = "select g from Goods g,GoodsStatistics s  where g.id =s.goodsId " +
+                " and g.status =:status and g.deleted =:deleted and g.expireAt >:expireAt and g.isHideOnsale is false and g.isLottery is false order by s.summaryCount desc";
         Query query = Goods.em().createQuery(sql);
-//        query.setParameter("status", GoodsStatus.ONSALE);
-//        query.setParameter("deleted", DeletedStatus.UN_DELETED);
-//        query.setParameter("expireAt", new Date());
+        query.setParameter("status", GoodsStatus.ONSALE);
+        query.setParameter("deleted", DeletedStatus.UN_DELETED);
+        query.setParameter("expireAt", new Date());
         query.setMaxResults(limit);
         return query.getResultList();
     }
@@ -1355,7 +1355,7 @@ public class Goods extends Model {
     public static List<Goods> findTopRecommendByGoods(int limit, Goods goods) {
         String sql = "select g from Goods g,GoodsStatistics s  where g.id =s.goodsId " +
                 " and g.status =:status and g.supplierId=:supplierId and g.deleted =:deleted and " +
-                " g.id <> :goodsId and g.expireAt >:expireAt and g.realStocks>=1 and g.isLottery is false order by s.summaryCount desc";
+                " g.id <> :goodsId and g.expireAt >:expireAt and g.isLottery is false order by s.summaryCount desc";
         Query query = Goods.em().createQuery(sql);
         query.setParameter("status", GoodsStatus.ONSALE);
         query.setParameter("supplierId", goods.supplierId);
@@ -1413,7 +1413,7 @@ public class Goods extends Model {
         String sql = "select g from Goods g,GoodsStatistics s  where g.id =s.goodsId " +
                 " and g.status =:status and g.deleted =:deleted and " +
                 " g.id in (select g.id from g.categories c where c.id = :categoryId or (c.parentCategory is not null and c.parentCategory.id=:categoryId))" +
-                "and g.id <> :goodsId and g.supplierId <> :supplierId and g.expireAt >:expireAt and g.realStocks>=1 and g.isLottery is false order by s.summaryCount desc";
+                "and g.id <> :goodsId and g.supplierId <> :supplierId and g.expireAt >:expireAt and g.isLottery is false order by s.summaryCount desc";
         Query query = Goods.em().createQuery(sql);
         query.setParameter("status", GoodsStatus.ONSALE);
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
@@ -1435,7 +1435,7 @@ public class Goods extends Model {
      */
     public static List<Goods> findNewGoods(int limit) {
         // 找出5倍需要的商品，然后手工过滤
-        List<Goods> allGoods = Goods.find("status = ? and deleted = ? and realStocks >= 1 and isHideOnsale = false and expireAt > ? order by createdAt DESC",
+        List<Goods> allGoods = Goods.find("status = ? and deleted = ? and isHideOnsale = false and expireAt > ? order by createdAt DESC",
                 GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit * 5);
         Set<Long> supplierSet = new HashSet<>();
         List<Goods> goods = new ArrayList<>();
@@ -1458,7 +1458,7 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findNewGoodsOfOthers(Long id, int limit) {
-        return Goods.find(" id <> ? and status = ? and deleted = ? and realStocks >= 1 and isHideOnsale = false and expireAt > ? order by createdAt DESC",
+        return Goods.find(" id <> ? and status = ? and deleted = ? and isHideOnsale = false and expireAt > ? order by createdAt DESC",
                 id, GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit);
     }
 
@@ -1469,7 +1469,7 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findPopGoods(int limit) {
-        return Goods.find(" status = ? and deleted = ? and realStocks >= 1 and isHideOnsale = false and expireAt > ? order by virtualBaseSaleCount DESC",
+        return Goods.find(" status = ? and deleted = ? and isHideOnsale = false and expireAt > ? order by virtualBaseSaleCount DESC",
                 GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit);
     }
 
