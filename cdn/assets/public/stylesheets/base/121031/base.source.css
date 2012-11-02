@@ -139,7 +139,7 @@ mark { background: #ff0; }
     height: 35px;
     border: 0;
     font-size: 0;
-    text-indent: -999px;
+    text-indent: -9999px;
     background: url(//img.uhcdn.com/base/base.png) no-repeat right -26px;
     cursor: pointer;
 }

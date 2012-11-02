@@ -272,7 +272,7 @@
     height: 26px;
     background: url(//img.uhcdn.com/home/list.png) no-repeat 0 -33px;
     font-size: 0;
-    text-indent: -999px;
+    text-indent: -9999px;
 }
 .pagination-container {
     text-align: center;
