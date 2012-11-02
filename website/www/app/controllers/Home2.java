@@ -191,11 +191,10 @@ public class Home2 extends Controller {
     private static List<models.sales.Goods> getTopGoods(long categoryId) {
         List<models.sales.Goods> goodsList;
         if (categoryId == 0) {
-            goodsList = models.sales.Goods.findTop(12);
+            goodsList = models.sales.Goods.findTop(4);
         } else {
-            goodsList = models.sales.Goods.findTopByCategory(categoryId, 12);
+            goodsList = models.sales.Goods.findTopByCategory(categoryId, 4);
         }
-        System.out.println(goodsList.size()+"----------");
         return goodsList;
     }
 

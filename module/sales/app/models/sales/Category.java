@@ -1,9 +1,5 @@
 package models.sales;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import cache.CacheCallBack;
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
@@ -30,19 +26,10 @@ import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.annotate.JsonIgnore;
-
-import play.data.validation.Required;
-import play.db.jpa.Model;
-import play.modules.solr.SolrField;
-import play.modules.solr.SolrSearchable;
-import cache.CacheCallBack;
-import cache.CacheHelper;
-
-import com.uhuila.common.constants.DeletedStatus;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 商品分类.
@@ -114,7 +101,7 @@ public class Category extends Model {
     @JsonIgnore
     public List<Category> children;
 
-    public List<Category> undeletedChildren(){
+    public List<Category> undeletedChildren() {
         return Category.find("parentCategory = ? and  ( deleted = ? or deleted is null)",
                 this, DeletedStatus.UN_DELETED).fetch();
     }
@@ -322,30 +309,32 @@ public class Category extends Model {
      * @return
      */
     public List<Category> getByParent() {
-        return CacheHelper.getCache(CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_SUB_CATEGORIES" + id), new CacheCallBack<List<Category>>() {
-            @Override
-            public List<Category> loadData() {
-                List<Category> categories = Category.findByParent(id);
-                List<Category> topAllCategories = new ArrayList<>();
-                int count = 0;
-                for (int i = 0; i < categories.size(); i++) {
-                    Category category = categories.get(i);
+//        return CacheHelper.getCache(CacheHelper.getCacheKey(new String[]{Goods.CACHEKEY, Category.CACHEKEY}, "WWW_SUB_CATEGORIES" + id), new CacheCallBack<List<Category>>() {
+//            @Override
+//            public List<Category> loadData() {
+        List<Category> categories = Category.findByParent(id);
+        List<Category> hasGoodsCategories = new ArrayList<>();
 
-                    count += category.goodsSet.size();
-                    category.goodsCount = (long) category.goodsSet.size();
-                    if (category.goodsCount > 0) {
-                        topAllCategories.add(category);
-                    }
-                }
+//                int count = 0;
+        for (int i = 0; i < categories.size(); i++) {
+            Category category = categories.get(i);
 
-                Category topCategory = new Category();
-                topCategory.id = 0l;
-                topCategory.name = "全部";
-                topCategory.goodsCount = (long) count;
-                topAllCategories.add(0, topCategory);
-                return topAllCategories;
+            long count = Goods.countOnSaleByCategory(category.id);
+            System.out.println(">>>...." + category.name + "-" + category.id + ":" + count);
+            if (count > 0) {
+                category.goodsCount = count;
+                hasGoodsCategories.add(category);
             }
-        });
+        }
+
+//                Category topCategory = new Category();
+//                topCategory.id = 0l;
+//                topCategory.name = "全部";
+//                topCategory.goodsCount = (long) count;
+//                topAllCategories.add(0, topCategory);
+        return hasGoodsCategories;
+//            }
+//        });
     }
 
     public static void update(Long id, Category category, Long parentId) {

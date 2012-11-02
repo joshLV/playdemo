@@ -555,6 +555,7 @@ public class Goods extends Model {
      * 是否隐藏上架
      */
     @Column(name = "is_hide_onsale")
+    @SolrField
     public Boolean isHideOnsale = Boolean.FALSE;
 
     @Transient
@@ -676,6 +677,7 @@ public class Goods extends Model {
      * 小规格图片路径
      */
     @Transient
+    @SolrField
     public String getImageSmallPath() {
         if (StringUtils.isNotBlank(imageSmallPath)) {
             return imageSmallPath;
@@ -752,6 +754,7 @@ public class Goods extends Model {
      * 得到实际的库存数量.
      */
     @Transient
+    @SolrField
     public Long getRealStocks() {
         return this.cumulativeStocks - getRealSaleCount();
     }
@@ -1011,6 +1014,23 @@ public class Goods extends Model {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
                 "and g.isHideOnsale = false and g.expireAt > :now and g.id in (select g.id from g.categories c where c.parentCategory.id = :categoryId) ");
+        q.setParameter("status", GoodsStatus.ONSALE);
+        q.setParameter("deleted", DeletedStatus.UN_DELETED);
+        q.setParameter("now", new Date());
+        q.setParameter("categoryId", categoryId);
+        return q.getResultList().size();
+    }
+
+    /**
+     * 根据分类获取已上架的全部商品数量.
+     *
+     * @param categoryId
+     * @return
+     */
+    public static long countOnSaleByCategory(long categoryId) {
+        EntityManager entityManager = JPA.em();
+        Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
+                "and g.isHideOnsale = false and g.expireAt > :now and g.id in (select g.id from g.categories c where c.id = :categoryId) ");
         q.setParameter("status", GoodsStatus.ONSALE);
         q.setParameter("deleted", DeletedStatus.UN_DELETED);
         q.setParameter("now", new Date());
@@ -1503,8 +1523,8 @@ public class Goods extends Model {
     }
 
     public boolean onSale() {
-        return (GoodsStatus.ONSALE.equals(status) && expireAt.after(new Date()) &&
-                getRealSaleCount() > 0 && DeletedStatus.UN_DELETED.equals(deleted));
+        return (GoodsStatus.ONSALE.equals(status) && expireAt.after(new Date())
+                && getRealStocks() > 0 && DeletedStatus.UN_DELETED.equals(deleted));
     }
 
     public Long summaryCount() {
@@ -1756,7 +1776,7 @@ public class Goods extends Model {
                 "goods.deleted_s:\"com.uhuila.common.constants.DeletedStatus:UN_DELETED\"" +
                         " AND goods.isHideOnsale_b:false" +
                         " AND goods.status_s:\"models.sales.GoodsStatus:ONSALE\"" +
-                        " AND goods.virtualSaleCount_l:[1 TO " + Integer.MAX_VALUE + "]" +
+                        " AND goods.realStocks_l:[1 TO " + Integer.MAX_VALUE + "]" +
                         " AND goods.expireAt_dt:[" + dateFormat.format(new Date()) + "T" + timeFormat.format(new Date()) + "Z TO 2512-05-24T05:55:36Z]");
         if (StringUtils.isNotBlank(q)) {
             queryStr.append(" AND " + q);
