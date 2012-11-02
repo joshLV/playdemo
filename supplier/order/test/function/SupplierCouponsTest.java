@@ -58,7 +58,7 @@ public class SupplierCouponsTest extends FunctionalTest {
         coupon = FactoryBoy.create(ECoupon.class);
         shop = FactoryBoy.last(Shop.class);
         goods = FactoryBoy.last(Goods.class);
-        Account account = FactoryBoy.create(Account.class, "balanceAccount");
+        FactoryBoy.create(Account.class, "balanceAccount");
     }
 
     protected static void assertSMSContentLength(String content) {
@@ -118,7 +118,7 @@ public class SupplierCouponsTest extends FunctionalTest {
         params.put("eCouponSn", coupon.eCouponSn);
         params.put("shopName", shop.name);
         Http.Response response = POST("/coupons/update", params);
-        //renderJSON("0");
+
         assertContentMatch("0", response);
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
         assertSMSContentMatch("【一百券】您尾号" + coupon.getLastCode(4)

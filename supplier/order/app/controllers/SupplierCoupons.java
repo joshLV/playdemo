@@ -78,6 +78,11 @@ public class SupplierCoupons extends Controller {
         }
 
         Long supplierId = SupplierRbac.currentUser().supplier.id;
+        
+        Shop shop = Shop.findById(shopId);
+        if (shop == null) {
+        	renderJSON("1");
+        }
         ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
         //根据页面录入券号查询对应信息,并产生消费交易记录
         if (eCoupon == null) {
@@ -107,7 +112,7 @@ public class SupplierCoupons extends Controller {
 
             // 发给消费者
             SMSUtil.send("【一百券】您尾号" + coupon + "的券号于" + dateTime
-                    + "已成功消费，使用门店：" + shopName + "。如有疑问请致电：400-6262-166", eCoupon.orderItems.phone, eCoupon.replyCode);
+                    + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：400-6262-166", eCoupon.orderItems.phone, eCoupon.replyCode);
         } else {
             renderJSON(eCoupon.status);
         }
