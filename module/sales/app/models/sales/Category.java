@@ -4,6 +4,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import cache.CacheCallBack;
+import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import play.data.validation.Required;
+import play.db.jpa.Model;
+import play.modules.solr.SolrField;
+import play.modules.solr.SolrSearchable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -110,7 +120,6 @@ public class Category extends Model {
     }
 
 
-
     /**
      * 逻辑删除,0:未删除，1:已删除
      */
@@ -186,7 +195,7 @@ public class Category extends Model {
      * @return 前n个分类
      */
     public static List<Category> findTop(int limit) {
-        List<Category> categories = find("parentCategory = null and display = true order by displayOrder").fetch(limit);
+        List<Category> categories = find("parentCategory = null and display = true and deleted = ? order by displayOrder", DeletedStatus.UN_DELETED).fetch(limit);
         if (categories == null) {
             return new ArrayList<>();
         }
@@ -207,7 +216,7 @@ public class Category extends Model {
      * @return 前n个分类
      */
     public static List<Category> findLeftTop(int limit) {
-        return find("parentCategory = null and isInWWWLeft = true and display = true order by displayOrder").fetch(limit);
+        return find("parentCategory = null and isInWWWLeft = true and display = true and deleted = ? order by displayOrder", DeletedStatus.UN_DELETED).fetch(limit);
     }
 
     /**
@@ -217,7 +226,7 @@ public class Category extends Model {
      * @return 前n个分类
      */
     public static List<Category> findFloorTop(int limit) {
-        return find("parentCategory = null and isInWWWFloor = true and display = true  order by displayOrder").fetch(limit);
+        return find("parentCategory = null and isInWWWFloor = true and display = true and deleted = ? order by displayOrder", DeletedStatus.UN_DELETED).fetch(limit);
     }
 
     public static List<Category> findTop(int limit, long categoryId) {
