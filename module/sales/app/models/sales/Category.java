@@ -1,14 +1,9 @@
 package models.sales;
 
-import cache.CacheCallBack;
-import cache.CacheHelper;
-import com.uhuila.common.constants.DeletedStatus;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import play.data.validation.Required;
-import play.db.jpa.Model;
-import play.modules.solr.SolrField;
-import play.modules.solr.SolrSearchable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,13 +16,23 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.annotate.JsonIgnore;
+
+import play.data.validation.Required;
+import play.db.jpa.Model;
+import play.modules.solr.SolrField;
+import play.modules.solr.SolrSearchable;
+import cache.CacheCallBack;
+import cache.CacheHelper;
+
+import com.uhuila.common.constants.DeletedStatus;
 
 /**
  * 商品分类.
@@ -56,7 +61,6 @@ public class Category extends Model {
      */
     @Required
     @OrderColumn
-    @Column(name = "display_order")
     public Integer displayOrder;
 
     /**
@@ -95,10 +99,10 @@ public class Category extends Model {
     @JoinColumn(name = "parent_id")
     public Category parentCategory;
 
-//    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, targetEntity = Category.class)
-//    @OrderBy("displayOrder")
-//    @JsonIgnore
-//    public List<Category> children;
+    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, targetEntity = Category.class)
+    @OrderBy("displayOrder")
+    @JsonIgnore
+    public List<Category> children;
 
     /**
      * 逻辑删除,0:未删除，1:已删除
