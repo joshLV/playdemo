@@ -40,7 +40,7 @@
 <!-- #topbar -->
 
 <div id="header" class="clearfix">
-    <div id="logo"><a href="http://www.${baseDomain}/"><img
+    <div id="logo"><a href="helper.Domain.getWWWHost(request)}"><img
             src="http://img.uhcdn.com/images/y/logo.png" width="180" height="96"/></a></div>
     <div id="search">
         <form action="/q" method="get" target="_self">
@@ -82,26 +82,26 @@
                     <dt><a href="">${category.name}</a></dt>
                     <dd class="line"></dd>
                     <dd class="some #{if i==3 || i==5}one#{/if}">
-                        <div>#{list category.getShowKeywordsList(10),as:'keywords'}<a href="">${keywords}</a> #{/list}
+                        <div>#{list category.getShowKeywordsList(10),as:'keywords'}<a href="/q?s=${keywords}">${keywords}</a> #{/list}
                         </div>
                     </dd>
                     <dd class="more">
                         <ul class="clearfix">
                             #{list category.getByParent(),as:'subCategory'}
-                                <li><a href="">${subCategory.name}（${subCategory.goodsCount}）</a></li>
+                                <li><a href="${new models.sales.GoodsWebsiteCondition().buildUrl('categoryId',subCategory.id).getUrl()}">${subCategory.name}（${subCategory.goodsCount}）</a></li>
                             #{/list}
                         </ul>
                         <div class="ads">
                             <a href="/topic/${categoryTopic1?.id}"
-                               target="_blank">#{if i==1}${categoryTopic1?.content?.raw()}#{/if}</a>
+                               target="_blank">#{if i==1}${categoryTopic1?.title}#{/if}</a>
                             <a href="/topic/${categoryTopic2?.id}"
-                               target="_blank">#{if i==2}${categoryTopic2?.content?.raw()}#{/if}</a>
+                               target="_blank">#{if i==2}${categoryTopic2?.title}#{/if}</a>
                             <a href="/topic/${categoryTopic3?.id}"
-                               target="_blank">#{if i==3}${categoryTopic3?.content?.raw()}#{/if}</a>
+                               target="_blank">#{if i==3}${categoryTopic3?.title}#{/if}</a>
                             <a href="/topic/${categoryTopic4?.id}"
-                               target="_blank">#{if i==4}${categoryTopic4?.content?.raw()}#{/if}</a>
+                               target="_blank">#{if i==4}${categoryTopic4?.title}#{/if}</a>
                             <a href="/topic/${categoryTopic5?.id}"
-                               target="_blank">#{if i==5}${categoryTopic5?.content?.raw()}#{/if}</a>
+                               target="_blank">#{if i==5}${categoryTopic5?.title}#{/if}</a>
                         </div>
                     </dd>
                 </dl>
@@ -110,7 +110,7 @@
                 <dl class="area">
                     <dt><a href="">热门商圈</a></dt>
                     <dd class="some">#{list areas, as:'area'}
-                        <a href="/q/0-${area.id}">${area.name}</a>
+                        <a href="${new models.sales.GoodsWebsiteCondition().buildUrl('areaId',area.id).getUrl()}">${area.name}</a>
                     #{/list}</dd>
                 </dl>
             </div>

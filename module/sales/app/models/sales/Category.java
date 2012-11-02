@@ -5,6 +5,7 @@ import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.solr.SolrField;
@@ -21,6 +22,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -95,10 +97,10 @@ public class Category extends Model {
     @JoinColumn(name = "parent_id")
     public Category parentCategory;
 
-//    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, targetEntity = Category.class)
-//    @OrderBy("displayOrder")
-//    @JsonIgnore
-//    public List<Category> children;
+    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, targetEntity = Category.class)
+    @OrderBy("displayOrder")
+    @JsonIgnore
+    public List<Category> children;
 
     /**
      * 逻辑删除,0:未删除，1:已删除
@@ -175,7 +177,7 @@ public class Category extends Model {
      * @return 前n个分类
      */
     public static List<Category> findTop(int limit) {
-        List<Category> categories = find("parentCategory = null and display = true order by displayOrder").fetch(limit);
+        List<Category> categories = find("parentCategory = null and display = true and deleted = ? order by displayOrder", DeletedStatus.UN_DELETED).fetch(limit);
         if (categories == null) {
             return new ArrayList<>();
         }
@@ -196,7 +198,7 @@ public class Category extends Model {
      * @return 前n个分类
      */
     public static List<Category> findLeftTop(int limit) {
-        return find("parentCategory = null and isInWWWLeft = true and display = true order by displayOrder").fetch(limit);
+        return find("parentCategory = null and isInWWWLeft = true and display = true and deleted = ? order by displayOrder", DeletedStatus.UN_DELETED).fetch(limit);
     }
 
     /**
@@ -206,7 +208,7 @@ public class Category extends Model {
      * @return 前n个分类
      */
     public static List<Category> findFloorTop(int limit) {
-        return find("parentCategory = null and isInWWWFloor = true and display = true  order by displayOrder").fetch(limit);
+        return find("parentCategory = null and isInWWWFloor = true and display = true and deleted = ? order by displayOrder", DeletedStatus.UN_DELETED).fetch(limit);
     }
 
     public static List<Category> findTop(int limit, long categoryId) {
@@ -290,6 +292,40 @@ public class Category extends Model {
             @Override
             public List<Goods> loadData() {
                 return Goods.findTopByCategory(id, limit, true);
+            }
+        });
+    }
+
+    /**
+     * 获取指定分类的所有子分类，分类中需要标明商品数量.
+     * <p/>
+     * 直接被WWW首页调用,没有商品的分类不显示.
+     *
+     * @return
+     */
+    public List<Category> getByParent() {
+        return CacheHelper.getCache(CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_SUB_CATEGORIES" + id), new CacheCallBack<List<Category>>() {
+            @Override
+            public List<Category> loadData() {
+                List<Category> categories = Category.findByParent(id);
+                List<Category> topAllCategories = new ArrayList<>();
+                int count = 0;
+                for (int i = 0; i < categories.size(); i++) {
+                    Category category = categories.get(i);
+
+                    count += category.goodsSet.size();
+                    category.goodsCount = (long) category.goodsSet.size();
+                    if (category.goodsCount > 0) {
+                        topAllCategories.add(category);
+                    }
+                }
+
+                Category topCategory = new Category();
+                topCategory.id = 0l;
+                topCategory.name = "全部";
+                topCategory.goodsCount = (long) count;
+                topAllCategories.add(0, topCategory);
+                return topAllCategories;
             }
         });
     }

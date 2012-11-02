@@ -83,10 +83,10 @@ public class WebsiteInjector extends Controller {
 
         //左边顶级分类
         List<Category> leftCategories = CacheHelper.getCache(
-                CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_TOP_LEFT_CATEGORIES"), new CacheCallBack<List<Category>>() {
+                CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_TOP_LEFT_CATEGORIES5"), new CacheCallBack<List<Category>>() {
             @Override
             public List<Category> loadData() {
-                return Category.findLeftTop(7);
+                return Category.findLeftTop(5);
             }
         });
         renderArgs.put("leftCategories", leftCategories);

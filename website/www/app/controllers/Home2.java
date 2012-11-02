@@ -57,7 +57,7 @@ public class Home2 extends Controller {
         });
 
         //猜你喜欢，网友推荐商品
-        List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECOMMENDS4"), new CacheCallBack<List<models.sales.Goods>>() {
+        List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECOMMENDS"), new CacheCallBack<List<models.sales.Goods>>() {
             @Override
             public List<models.sales.Goods> loadData() {
                 return models.sales.Goods.findTopRecommend(4);
