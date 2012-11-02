@@ -35,7 +35,9 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.faceValue = new BigDecimal("10.00");
         goods.materialType = MaterialType.ELECTRONIC;
         goods.baseSale = 100L;
+        goods.cumulativeStocks = 100L;
         goods.saleCount = 10;
+        goods.virtualBaseSaleCount = 10l;
         goods.useWeekDay = "1,2,3,4,5,6,7";
         goods.originalPrice = new BigDecimal("5");
         goods.categories = new HashSet<>();

@@ -25,11 +25,12 @@ public class GoodsSaleCountTest extends UnitTest {
 	public void 当订单修改时会影响已销售数据() {
 		OrderItems orderItems = FactoryBoy.create(OrderItems.class);
 		Goods goods = orderItems.goods;
-		goods.baseSale = 20l;
+		goods.cumulativeStocks = 20l;
 		goods.save();
 		Order order = orderItems.order;
 		order.status = OrderStatus.PAID;
 		order.save();
+		order.refresh();
 		
 		assertEquals(new Long(1), goods.getRealSaleCount());
 		assertEquals(new Long(19), goods.getRealStocks());
@@ -52,7 +53,7 @@ public class GoodsSaleCountTest extends UnitTest {
 			}
 		});
 		Goods goods = ecoupon.goods;
-		goods.baseSale = 20l;
+		goods.cumulativeStocks = 20l;
 		goods.save();
 		Order order = ecoupon.order;
 		order.status = OrderStatus.PAID;

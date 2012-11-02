@@ -40,7 +40,6 @@ public class CartsTest extends FunctionalTest {
     Cart cart;
 
     @Before
-    @SuppressWarnings("unchecked")
     public void setup() {
         FactoryBoy.deleteAll();
         userInfo = FactoryBoy.create(UserInfo.class);
