@@ -1,9 +1,12 @@
 package controllers;
 
 import java.util.List;
+
+import com.uhuila.common.constants.DeletedStatus;
 import models.PurchaseECouponReport;
 import models.PurchaseECouponReportCondition;
 import models.supplier.Supplier;
+import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
@@ -35,14 +38,25 @@ public class PurchaseTaxReports extends Controller {
         if (condition == null) {
             condition = new PurchaseECouponReportCondition();
         }
+        List<Supplier> supplierList;
+        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        if (right) {
+            supplierList = Supplier.findUnDeleted();
+        } else {
+            supplierList = Supplier.find(
+                    "deleted=? and salesId=? order by createdAt DESC",
+                    DeletedStatus.UN_DELETED,
+                    OperateRbac.currentUser().id).fetch();
+        }
 
-        List<PurchaseECouponReport> resultList = PurchaseECouponReport.query(condition);
-        
+        Long id = OperateRbac.currentUser().id;
+        List<PurchaseECouponReport> resultList = PurchaseECouponReport.query(condition,id,right);
+
         ValuePaginator<PurchaseECouponReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
 
         PurchaseECouponReport summary = PurchaseECouponReport.summary(resultList);
-        
-        List<Supplier> supplierList = Supplier.findUnDeleted();
+
+//        List<Supplier> supplierList = Supplier.findUnDeleted();
 
         render(reportPage, summary, condition, supplierList);
     }

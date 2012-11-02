@@ -8,7 +8,13 @@ import play.Logger;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import models.supplier.Supplier;
+import org.apache.commons.lang.StringUtils;
+import play.Logger;
+import com.uhuila.common.util.DateUtil;
 
 /**
  * 报表查询条件.
@@ -31,7 +37,7 @@ public class PurchaseECouponReportCondition implements Serializable {
 
     private Map<String, Object> paramMap = new HashMap<>();
 
-    public String getFilter() {
+    public String getFilter(Long id, Boolean right) {
         StringBuilder condBuilder = new StringBuilder("r.status='CONSUMED'"); //只统计已经消费的
         if (createdAtBegin != null) {
             condBuilder.append(" and r.consumedAt >= :consumedAtBegin");
@@ -46,6 +52,16 @@ public class PurchaseECouponReportCondition implements Serializable {
             condBuilder.append(" and r.shop.supplierId = :supplier");
             paramMap.put("supplier", supplier.id);
             Logger.debug("supplier.id:" + supplier.id);
+        }
+
+        if (supplier != null && supplier.id == 0 && !right) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", id).fetch();
+            if (suppliers != null && suppliers.size() > 0) {
+                for (Supplier supplier : suppliers) {
+                    condBuilder.append(" and r.goods.supplierId = :salesId");
+                    paramMap.put("salesId", supplier.id);
+                }
+            }
         }
 
         if (StringUtils.isNotBlank(goodsLike)) {
