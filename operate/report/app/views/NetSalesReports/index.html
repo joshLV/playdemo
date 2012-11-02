@@ -130,7 +130,8 @@
 </div>
 <table class="table table-striped table-bordered table-condensed">
     <thead>
-    <th width="10px">序号</th>
+    *{<th width="10px">序号</th>}*
+    <th width="10px">工号</th>
     <th width="80px">商户</th>
     <th width="50px">销售总金额</th>
     <th width="50px">退款总金额</th>
@@ -140,7 +141,12 @@
 #{paginate.list items:reportPage, as:'report'}
     <tr>
         #{set i:i+1/}
-        <td>${(reportPage.pageNumber-1)*reportPage.pageSize+i}</td>
+    *{<td>${(reportPage.pageNumber-1)*reportPage.pageSize+i}</td>}*
+    %{
+        if(report?.supplier?.salesId!=null){
+        ou=models.admin.OperateUser.findById(report?.supplier?.salesId); }
+        }%
+        <td>${ou?.jobNumber}</td>
         <td>${report?.supplier?.fullName}</td>
         <td>
             <a href="/reports/sales?condition.createdAtBegin=${condition?.createdAtBegin?.format()}&condition.createdAtEnd=${condition?.createdAtEnd?.format()}&condition.supplier.id=${report?.supplier?.id}"

@@ -7,14 +7,14 @@
     <role key="manager" text="商务经理"/>
 
 
-    <permission key="PURCHASE_TAX_REPORT" text="采购税务表" roles="account"/>
-    <permission key="SALES_TAX_REPORT" text="销售税务表" roles="account"/>
+    <permission key="PURCHASE_TAX_REPORT" text="采购税务表" roles="account,sales"/>
+    <permission key="SALES_TAX_REPORT" text="销售税务表" roles="account,sales"/>
     <permission key="PAYMENT_REPORT" text="支付渠道报表" roles="account"/>
     <permission key="WITHDRAW_REPORT" text="提现报表" roles="account"/>
     <permission key="BALANCE_REPORT" text="余额报表" roles="account"/>
-    <permission key="SALES_REPORT" text="销售表" roles="account"/>
+    <permission key="SALES_REPORT" text="销售表" roles="account,sales"/>
     <permission key="WEB_TRACKS_REPORT" text="网站跟踪报表" roles="webop"/>
-    <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager" />
+    <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager,account" />
 
     <navigation key="reports_app" text="报表" action="OperateReportApplication.index" display-order="80">
         <navigation key="account_report_app" text="财务报表">
@@ -49,7 +49,7 @@
             <navigation key="consumer_refund_reports" action="ConsumerRefundReports.index" text="消费者退款报表"
                         permissions="SALES_REPORT"/>
             <navigation key="net_sales_reports" action="NetSalesReports.index" text="净销售报表"
-                        permissions="SALES_REPORT,SEE_ALL_SUPPLIER"/>
+                        permissions="SALES_REPORT"/>
         </navigation>
     </navigation>
 </application>

@@ -1,6 +1,7 @@
 package models;
 
 import com.uhuila.common.util.DateUtil;
+import controllers.OperateRbac;
 import models.order.ECouponStatus;
 import models.sales.MaterialType;
 import models.supplier.Supplier;
@@ -73,8 +74,9 @@ public class SalesOrderItemReportCondition implements Serializable {
         return condBuilder.toString();
     }
 
-    public String getNetSalesFilter() {
+    public String getNetSalesFilter(Long id, Boolean right) {
         StringBuilder condBuilder = new StringBuilder("(r.order.status='PAID' or r.order.status='SENT') and s.id=r.goods.supplierId and r.goods.isLottery=false");
+
         if (createdAtBegin != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", createdAtBegin);
@@ -83,10 +85,17 @@ public class SalesOrderItemReportCondition implements Serializable {
             condBuilder.append(" and r.order.paidAt < :createdAtEnd");
             paramMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
         }
+
         if (supplier != null && supplier.id != 0) {
             condBuilder.append(" and s = :supplier");
             paramMap.put("supplier", supplier);
         }
+
+        if (supplier != null && supplier.id == 0 && !right) {
+            condBuilder.append(" and s.salesId = :salesId");
+            paramMap.put("salesId", id);
+        }
+
 
         if (materialType != null) {
             condBuilder.append(" and r.goods.materialType = :materialType");
@@ -107,7 +116,8 @@ public class SalesOrderItemReportCondition implements Serializable {
             paramMap.put("supplierLike", "%" + supplierLike + "%");
         }
 
-        System.out.println("condBuilder.toString():" + condBuilder.toString());
+//        System.out.println("condBuilder.toString():" + condBuilder.toString());
+//        System.out.println("condBuilder>>>>>>>>>>>>>>>>>>>>>>>>>>." + condBuilder.toString());
         return condBuilder.toString();
     }
 

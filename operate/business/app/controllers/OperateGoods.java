@@ -629,8 +629,8 @@ public class OperateGoods extends Controller {
                 if (supplier != null) {
 //                    String email = supplier.salesEmail;
                     String email = "";
-                    if (supplier.operateUserId != null) {
-                        OperateUser operateUser = OperateUser.findById(supplier.operateUserId);
+                    if (supplier.salesId != null) {
+                        OperateUser operateUser = OperateUser.findById(supplier.salesId);
                         email = operateUser.email;
                     } else if (StringUtils.isNotBlank(supplier.salesEmail)) {
                         email = supplier.salesEmail;

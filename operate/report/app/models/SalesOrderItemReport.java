@@ -9,10 +9,7 @@ import play.db.jpa.Model;
 import javax.persistence.Query;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 销售税表.
@@ -207,16 +204,17 @@ public class SalesOrderItemReport extends Model {
      * @param condition
      * @return
      */
-    public static List<SalesOrderItemReport> getNetSales(SalesOrderItemReportCondition condition) {
+    public static List<SalesOrderItemReport> getNetSales(SalesOrderItemReportCondition condition, Long id, Boolean right) {
         Query query = JPA.em()
                 .createQuery(
                         "select new models.SalesOrderItemReport(r.goods, sum(r.salePrice*r.buyNumber-r.rebateValue))"
                                 + " from OrderItems r,Supplier s where "
-                                + condition.getNetSalesFilter() + " group by r.goods.supplierId order by r.goods"
+                                + condition.getNetSalesFilter(id, right) + " group by r.goods.supplierId order by r.goods"
                 );
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
+
         List<SalesOrderItemReport> salesList = query.getResultList();
 
         //取得退款的数据
@@ -238,6 +236,7 @@ public class SalesOrderItemReport extends Model {
                     sales.refundAmount = refund.salesAmount == null ? BigDecimal.ZERO : refund.salesAmount;
                     sales.netSalesAmount = sales.salesAmount.subtract(refund.salesAmount == null ? BigDecimal.ZERO :
                             refund.salesAmount);
+//                    System.out.println("sales.netSalesAmount>>>" + sales.netSalesAmount);
                 }
             }
         }

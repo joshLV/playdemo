@@ -129,8 +129,8 @@ public class Supplier extends Model {
     /**
      * 所属操作员ID
      */
-    @Column(name = "operate_user_id")
-    public Long operateUserId;
+    @Column(name = "sales_id")
+    public Long salesId;
 
     /**
      * 删除状态
@@ -212,7 +212,7 @@ public class Supplier extends Model {
         sp.userName = supplier.userName;
         sp.email = supplier.email;
 //        sp.salesEmail = supplier.salesEmail;
-        sp.operateUserId = supplier.operateUserId;
+        sp.salesId = supplier.salesId;
         sp.shopEndHour = supplier.shopEndHour;
         sp.updatedAt = new Date();
         sp.save();
@@ -242,6 +242,12 @@ public class Supplier extends Model {
             sql.append(" and otherName like ?");
             params.add("%" + otherName + "%");
         }
+
+        if (StringUtils.isNotBlank(otherName)) {
+            sql.append("or fullName like ?");
+            params.add("%" + otherName + "%");
+        }
+
         sql.append(" order by createdAt DESC");
         return find(sql.toString(), params.toArray()).fetch();
     }

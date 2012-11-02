@@ -1,5 +1,6 @@
 package controllers;
 
+import com.uhuila.common.constants.DeletedStatus;
 import models.SalesOrderItemReport;
 import models.SalesOrderItemReportCondition;
 import models.supplier.Supplier;
@@ -36,24 +37,31 @@ public class NetSalesReports extends Controller {
         if (condition == null) {
             condition = new SalesOrderItemReportCondition();
         }
+        List<Supplier> supplierList;
 
-        boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
-        System.out.println("right>>" + right);
+        Boolean right=ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
         if (right) {
-            // 查询出所有结果
-            List<SalesOrderItemReport> resultList = SalesOrderItemReport.getNetSales(condition);
-            // 分页
-            ValuePaginator<SalesOrderItemReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
-
-            // 汇总
-            SalesOrderItemReport summary = SalesOrderItemReport.getNetSummary(resultList);
-
-            List<Supplier> supplierList = Supplier.findUnDeleted();
-            render(reportPage, summary, condition, supplierList);
+            supplierList = Supplier.findUnDeleted();
         } else {
-            String message = "没有权限访问！";
-            renderTemplate("Defaults/index.html", message);
+            supplierList = Supplier.find(
+                    "deleted=? and salesId=? order by createdAt DESC",
+                    DeletedStatus.UN_DELETED,
+                    OperateRbac.currentUser().id).fetch();
         }
+
+        Long id = OperateRbac.currentUser().id;
+        // 查询出所有结果
+        List<SalesOrderItemReport> resultList = SalesOrderItemReport.getNetSales(condition, id,right);
+
+        // 分页
+        ValuePaginator<SalesOrderItemReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
+
+        // 汇总
+        SalesOrderItemReport summary = SalesOrderItemReport.getNetSummary(resultList);
+
+        render(reportPage, summary, condition, supplierList);
+
+
     }
 
     private static int getPageNumber() {
