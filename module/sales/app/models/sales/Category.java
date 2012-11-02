@@ -245,9 +245,9 @@ public class Category extends Model {
         JPAQuery query;
         if (category == null) {
             if (display != null) {
-                query = find("parentCategory = null and display = ? and deleted = ? order by displayOrder", display, DeletedStatus.UN_DELETED);
+                query = find("parentCategory is null and display = ? and deleted = ? order by displayOrder", display, DeletedStatus.UN_DELETED);
             } else {
-                query = find("parentCategory = null and deleted = ? order by displayOrder", DeletedStatus.UN_DELETED);
+                query = find("parentCategory is null and deleted = ? order by displayOrder", DeletedStatus.UN_DELETED);
             }
         } else {
             if (display != null) {

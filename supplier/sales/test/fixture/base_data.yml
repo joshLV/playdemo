@@ -1,17 +1,25 @@
 sales.Category(Category_1):
  "name": "饮食"
  "displayOrder": "100"
+ "display": "true"
+ "deleted": UN_DELETED
 sales.Category(Category_2):
  "name": "旅游"
  "displayOrder": "200"
+ "display": "true"
+ "deleted": UN_DELETED
 sales.Category(Category_21):
  "name": "上海"
  "displayOrder": "210"
  "parentCategory": Category_2
+ "display": "true"
+ "deleted": UN_DELETED
 sales.Category(Category_22):
  "name": "香港"
  "displayOrder": "220"
  "parentCategory": Category_2
+ "display": "true"
+ "deleted": UN_DELETED
 
 sales.Brand(Brand_1):
  "name": "来一份"
