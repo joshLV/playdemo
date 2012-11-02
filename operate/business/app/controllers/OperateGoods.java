@@ -492,7 +492,59 @@ public class OperateGoods extends Controller {
         goodsItem.createHistory(createdFrom);
         index(null, "");
     }
+     /**
+     * 更新指定商品信息
+     */
+    public static void update2(Long id, @Valid final models.sales.Goods goods, File imagePath, String imageLargePath) {
+        if (goods.isAllShop && goods.shops != null) {
+            goods.shops = null;
+        }
 
+        checkImageFile(imagePath);
+        checkExpireAt(goods);
+        checkSalePrice(goods);
+        checkShops(goods.supplierId);
+        checkUseWeekDay(goods);
+        if (Validation.hasErrors()) {
+            renderArgs.put("imageLargePath", imageLargePath);
+            renderInit(goods);
+
+            render("OperateGoods/edit2.html", goods, id);
+        }
+
+        //添加商品处理
+        if (goods.unPublishedPlatforms != null) {
+            for (GoodsUnPublishedPlatform unPublishedPlatform : goods.unPublishedPlatforms) {
+                if (unPublishedPlatform == null) {
+                    goods.unPublishedPlatforms.remove(unPublishedPlatform);
+                }
+            }
+        }
+        //预览的情况
+        if (GoodsStatus.UNCREATED.equals(goods.status)) {
+            preview(id, goods, imagePath);
+        }
+
+        String supplierUser = OperateRbac.currentUser().loginName;
+
+        try {
+            models.sales.Goods oldGoods = models.sales.Goods.findById(id);
+            String oldImagePath = oldGoods == null ? null : oldGoods.imagePath;
+            String image = uploadImagePath(imagePath, id, oldImagePath);
+            if (StringUtils.isNotEmpty(image)) {
+                goods.imagePath = image;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            error(e);
+        }
+        goods.updatedBy = supplierUser;
+        models.sales.Goods.update(id, goods, false);
+        Goods goodsItem = models.sales.Goods.findById(id);
+        String createdFrom = "Op";
+        goodsItem.createHistory(createdFrom);
+        index(null, "");
+    }
     /**
      * 上架商品.
      * shopIds

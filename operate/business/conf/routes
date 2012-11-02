@@ -9,10 +9,11 @@ GET     /goods/new                              OperateGoods.add
 POST    /goods                                  OperateGoods.create
 GET     /goods/{id}/histories                   OperateGoods.showHistory
 GET     /goods/{id}/edit                        OperateGoods.edit
-GET     /goods/{id}/edit2                        OperateGoods.edit2
+GET     /goods/{id}/edit2                       OperateGoods.edit2
 GET     /goods/{id}/copy                        OperateGoods.copy
 GET     /goods/{id}                             OperateGoods.show
 PUT     /goods/{id}                             OperateGoods.update
+PUT     /goods2/{id}                            OperateGoods.update2
 PUT     /goods/{id}/onSale                      OperateGoods.onSale
 PUT     /goods/{id}/offSale                     OperateGoods.offSale
 PUT     /goods/{id}/reject                      OperateGoods.reject

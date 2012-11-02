@@ -143,7 +143,6 @@
             <input type="hidden" name="imageLargePath" value="${imageLargePath}"></div>
     </div>
     #{/else}
-    #{layout_operate.htmlField name:'goods.exhibition', value:goods?.exhibition, uploadImgUrl:'/goods/images'/}
     #{layout_operate.htmlField name:'goods.prompt', value:goods?.prompt, uploadImgUrl:'/goods/images'/}
     #{layout_operate.htmlField name:'goods.details', value:goods?.details, uploadImgUrl:'/goods/images', required:true/}
     #{layout_operate.radioField name:'goods.isAllShop', value:isAllShop?:false, required:true/}

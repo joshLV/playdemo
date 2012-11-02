@@ -29,7 +29,6 @@ public class SolrLoadData extends Controller {
         } catch (Exception e) {
             renderText("err");
         }
-        System.out.println("---------------------");
         renderText("ok");
     }
 }

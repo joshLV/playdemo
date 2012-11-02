@@ -455,23 +455,6 @@ public class Goods2 extends Controller {
         renderArgs.put("breadcrumbs", breadcrumbs);
     }
 
-
-    private static BreadcrumbList getGoodsBreadCrumbs(long id) {
-        models.sales.Goods goods = models.sales.Goods.findById(id);
-        BreadcrumbList breadcrumbs = new BreadcrumbList();
-        long categoryId = 0;
-        if (goods.categories != null && goods.categories.size() > 0) {
-            Category category = goods.categories.iterator().next();
-            categoryId = category.id;
-            breadcrumbs.append(category.name, "/q/" + category.id);
-        }
-        if (goods.brand != null) {
-            breadcrumbs.append(goods.brand.name, "/q/" + categoryId + "-021-"
-                    + goods.brand.id);
-        }
-        return breadcrumbs;
-    }
-
     /**
      * 获取用户的咨询信息
      *
@@ -602,6 +585,39 @@ public class Goods2 extends Controller {
         }
     }
 
+    /**
+     * 详情页的面包导航
+     *
+     * @param id
+     * @return
+     */
+    private static BreadcrumbList getGoodsBreadCrumbs(long id) {
+        models.sales.Goods goods = models.sales.Goods.findById(id);
+        BreadcrumbList breadcrumbs = new BreadcrumbList();
+        GoodsWebsiteCondition goodsCond = new GoodsWebsiteCondition();
+
+
+        if (goods.categories != null && goods.categories.size() > 0) {
+            Category category = goods.categories.iterator().next();
+            goodsCond.parentCategoryId = category.parentCategory.id;
+            Breadcrumb categoryCrumb = createTopCategoryCrumb(goodsCond);
+            breadcrumbs.add(categoryCrumb);
+            goodsCond.categoryId = category.id;
+            categoryCrumb = createCategoryCrumb(goodsCond);
+            breadcrumbs.add(categoryCrumb);
+        }
+        if (goods.brand != null) {
+            breadcrumbs.append(goods.brand.name, "");
+        }
+        return breadcrumbs;
+    }
+
+    /**
+     * 列表页的面包导航
+     *
+     * @param goodsCond
+     * @return
+     */
     private static BreadcrumbList createBreadcrumbs(GoodsWebsiteCondition goodsCond) {
         BreadcrumbList breadcrumbs = new BreadcrumbList();
         if (goodsCond == null || goodsCond.isDefault() && StringUtils.isBlank(goodsCond.keywords)) {

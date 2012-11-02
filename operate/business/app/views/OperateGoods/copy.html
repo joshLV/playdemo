@@ -119,11 +119,10 @@
             </div>
         </div>
         #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)', required:true/}
-        #{layout_operate.htmlField name:'goods.exhibition', value:goods?.exhibition, uploadImgUrl:'/goods/images'/}
+        #{layout_operate.htmlField name:'goods.exhibition', value:goods?.exhibition, uploadImgUrl:'/goods/images', required:true/}
         #{layout_operate.htmlField name:'goods.prompt', value:goods?.prompt, uploadImgUrl:'/goods/images'/}
-        #{layout_operate.htmlField name:'goods.details', value:goods?.details, uploadImgUrl:'/goods/images', required:true/}
+        #{layout_operate.htmlField name:'goods.details', value:goods?.details, uploadImgUrl:'/goods/images'/}
         #{layout_operate.radioField name:'goods.isAllShop', value:isAllShop?:false, required:true/}
-
         #{layout_operate.textField name:'goods.keywords', value:goods?.keywords /}
 
         <div class="control-group">

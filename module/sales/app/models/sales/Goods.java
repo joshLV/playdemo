@@ -316,6 +316,9 @@ public class Goods extends Model {
 
     private BigDecimal discount;
 
+    /**
+     * 商品展示（原来的商品详情）
+     */
     @Required
     @MinSize(7)
     @MaxSize(65000)
@@ -331,7 +334,7 @@ public class Goods extends Model {
     private String prompt;
 
     /**
-     * 商品展示
+     * 商品详情
      */
     @MaxSize(65000)
     @Lob
