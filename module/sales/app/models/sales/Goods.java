@@ -1750,13 +1750,14 @@ public class Goods extends Model {
     public static QueryResponse search(String q, long parentCategoryId, long categoryId, String districtId,
                                        String areaId, Boolean isOrder, MaterialType materialType, long brandId,
                                        String orderBy, boolean isAsc, int pageNumber, int pageSize) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ssZ");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
         StringBuilder queryStr = new StringBuilder(
                 "goods.deleted_s:\"com.uhuila.common.constants.DeletedStatus:UN_DELETED\"" +
-                " AND goods.isHideOnsale_b:false" +
-                " AND goods.status_s:models.sales.GoodsStatus:ONSALE" +
-                " AND goods.virtualSaleCount_l:[1 TO " + Integer.MAX_VALUE + "]" +
-                " AND goods.expireAt_dt:[" + dateFormat.format(new Date()) + " TO 2512-05-24T05:55:36Z]");
+                        " AND goods.isHideOnsale_b:false" +
+                        " AND goods.status_s:\"models.sales.GoodsStatus:ONSALE\"" +
+                        " AND goods.virtualSaleCount_l:[1 TO " + Integer.MAX_VALUE + "]" +
+                        " AND goods.expireAt_dt:[" + dateFormat.format(new Date()) + "T" + timeFormat.format(new Date()) + "Z TO 2512-05-24T05:55:36Z]");
         if (StringUtils.isNotBlank(q)) {
             queryStr.append(" AND " + q);
         }
@@ -1770,7 +1771,7 @@ public class Goods extends Model {
             queryStr.append(" AND goods.parentCategoryIds_s:" + parentCategoryId);
         }
         if (StringUtils.isNotBlank(areaId) && !areaId.equals("0")) {
-            queryStr.append(" AND shop.areaId_s:" + areaId);
+            queryStr.append(" AND shop.areaId_s:\"" + areaId + "\"");
         }
         if (isOrder != null) {
             queryStr.append(" AND goods.isOrder_b:" + isOrder);
@@ -1821,7 +1822,9 @@ public class Goods extends Model {
                 goods.faceValue = new BigDecimal(faceValue.substring(0, faceValue.length() - 4));
             }
             final String salePrice = (String) doc.getFieldValue(SOLR_GOODS_SALEPRICE);
-            goods.salePrice = new BigDecimal(salePrice.substring(0, salePrice.length() - 4));
+            if (salePrice != null) {
+                goods.salePrice = new BigDecimal(salePrice.substring(0, salePrice.length() - 4));
+            }
             goods.areaNames = (String) doc.getFieldValue(SOLR_GOODS_AREAS);
             goods.imageSmallPath = (String) doc.getFieldValue(SOLR_GOODS_IMAGESMALLPATH);
             goodsList.add(goods);
@@ -1836,6 +1839,8 @@ public class Goods extends Model {
         page.setPageNumber(pageNumber);
         page.setPageSize(pageSize);
         page.setRowCount((int) response.getResults().getNumFound());
+        page.setBoundaryControlsEnabled(false);
+
         return page;
     }
 
@@ -1880,7 +1885,7 @@ public class Goods extends Model {
 
             for (FacetField.Count count : countList) {
                 if (count.getCount() > 0) {
-                    Category category = Category.findById(Long.parseLong((StringUtils.isBlank(count.getName())) ? "0" : count.getName()));
+                    Category category = Category.findCategoryById(Long.parseLong((StringUtils.isBlank(count.getName())) ? "0" : count.getName()));
 
                     if ((category != null && parentCategoryId != null && category.parentCategory != null && category.parentCategory.id.equals(parentCategoryId)) ||
                             (category != null && parentCategoryId == null)) {
@@ -1926,8 +1931,6 @@ public class Goods extends Model {
                             || (area != null && districtId == null)) {
                         area.goodsCount = count.getCount();
                         areaList.add(area);
-                        System.out.println(area.name + ":          " + area.goodsCount);
-
                     }
                 }
             }
