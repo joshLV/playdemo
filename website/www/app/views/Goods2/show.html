@@ -103,7 +103,7 @@
                             <span class="increase-btn" id="increase-btn" name="${goods.id}"></span>
                             <span class="decrease-btn" id="decrease-btn" name="${goods.id}"></span>
                         <input type="hidden" value="1" id="last_num_${goods.id}"/>
-                        <input type="hidden" value="${goods.baseSale}" id="stock_${goods.id}">
+                        <input type="hidden" value="${goods.cumulativeStocks}" id="stock_${goods.id}">
                         <input type="hidden" value="${goods.limitNumber}" id="limit_${goods.id}">
                     </span> 件(已出售<em class="selled">${goods?.virtualSaleCount?:'0'}</em>件)
                             <span id="stock_hit" style="display:none;color:#f50">库存${goods.baseSale}件</span>
@@ -111,7 +111,7 @@
                                 <span id="limitNumber" style="color:#f50">限购${goods.limitNumber}件</span>
                             #{/if}
                             <span class="error">#{error 'number' /}</span>
-                            <input type="hidden" id="stock" value="${goods.baseSale}">
+                            <input type="hidden" id="stock" value="${goods.cumulativeStocks}">
                             <input type="hidden" id="boughtNumber" value="${boughtNumber}">
                             <input type="hidden" id="addCartNumber" value="${addCartNumber}">
                         </li>

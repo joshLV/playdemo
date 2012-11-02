@@ -92,7 +92,8 @@
                 <span class="error">#{error 'goods.invitedUserPrice'/}</span>
             </div>
         </div>
-        #{layout_operate.textField name:'goods.baseSale', value:"0", note:'件', required:true/}
+        #{layout_operate.textField name:'goods.cumulativeStocks', value:goods?.cumulativeStocks, note:'件', required:true/}
+        #{layout_operate.textField name:'goods.virtualBaseSaleCount', value:goods?.virtualBaseSaleCount, note:'件'/}
 
         #{layout_operate.textField name:'goods.limitNumber', value:'0', note:'个'/}
         <div class="control-group">

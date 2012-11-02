@@ -163,6 +163,7 @@ public class Goods extends Model {
      * 通过管理界面增加进货量后得到累计进货量，只会越来越大，因为是累计的
      */
     @Column(name = "cumulative_stocks")
+    @Required
     public Long cumulativeStocks;
 
     /**
@@ -357,7 +358,7 @@ public class Goods extends Model {
      * 已作废
      */
     @Deprecated
-    @Required
+//    @Required
     @Min(0)
     @Max(999999)
     @Column(name = "base_sale")
@@ -926,6 +927,7 @@ public class Goods extends Model {
         updateGoods.setDiscount(goods.getDiscount());
         updateGoods.salePrice = goods.salePrice;
         updateGoods.cumulativeStocks = goods.cumulativeStocks;
+        updateGoods.virtualBaseSaleCount = goods.virtualBaseSaleCount;
         updateGoods.promoterPrice = goods.promoterPrice;
         updateGoods.invitedUserPrice = goods.invitedUserPrice;
         updateGoods.materialType = goods.materialType;

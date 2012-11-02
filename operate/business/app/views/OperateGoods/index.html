@@ -177,23 +177,23 @@ select:'condition_status',value:condition?.status/}
         </th>#{/else}
 
     #{if desc.equals("00000010000") }
-        <th width="50px" class="rank rank-asc"><a class="fn-rank" data-rank="00000020000">&{'goods.baseSale'}</a>
+        <th width="50px" class="rank rank-asc"><a class="fn-rank" data-rank="00000020000">&{'goods.cumulativeStocks'}</a>
         </th>#{/if}
     #{elseif desc.equals("00000020000")}
-        <th width="50px" class="rank rank-desc"><a class="fn-rank" data-rank="00000010000">&{'goods.baseSale'}</a>
+        <th width="50px" class="rank rank-desc"><a class="fn-rank" data-rank="00000010000">&{'goods.cumulativeStocks'}</a>
         </th>#{/elseif}
     #{else}
-        <th width="30px" class="rank"><a class="fn-rank" data-rank="00000020000">&{'goods.baseSale'}</a>
+        <th width="30px" class="rank"><a class="fn-rank" data-rank="00000020000">&{'goods.cumulativeStocks'}</a>
         </th>#{/else}
 
     #{if desc.equals("00000001000") }
-        <th width="60px" class="rank rank-asc"><a class="fn-rank" data-rank="00000002000">&{'goods.saleCount'}</a>
+        <th width="60px" class="rank rank-asc"><a class="fn-rank" data-rank="00000002000">&{'goods.virtualBaseSaleCount'}</a>
         </th>#{/if}
     #{elseif desc.equals("00000002000")}
-        <th width="60px" class="rank rank-desc"><a class="fn-rank" data-rank="00000001000">&{'goods.saleCount'}</a>
+        <th width="60px" class="rank rank-desc"><a class="fn-rank" data-rank="00000001000">&{'goods.virtualBaseSaleCount'}</a>
         </th>#{/elseif}
     #{else}
-        <th width="50px" class="rank"><a class="fn-rank" data-rank="00000002000">&{'goods.saleCount'}</a>
+        <th width="50px" class="rank"><a class="fn-rank" data-rank="00000002000">&{'goods.virtualBaseSaleCount'}</a>
         </th>#{/else}
 
     #{if desc.equals("00000000100") }
@@ -263,8 +263,8 @@ select:'condition_status',value:condition?.status/}
         <td class="amount">${goods?.faceValue?.formatCurrency('CNY')}</td>
         <td class="amount">${goods?.originalPrice?.formatCurrency('CNY')}</td>
         <td class="amount">${goods?.salePrice?.formatCurrency('CNY')}</td>
-        <td class="amount">${goods?.baseSale}</td>
-        <td class="amount">${goods?.saleCount}</td>
+        <td class="amount">${goods?.cumulativeStocks}</td>
+        <td class="amount">${goods?.virtualBaseSaleCount}</td>
         <td>${goods?.firstOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
         <td>${goods?.updatedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
         <td>&{'goods.'+goods?.materialType}</td>
