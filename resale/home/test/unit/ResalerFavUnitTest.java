@@ -55,6 +55,8 @@ public class ResalerFavUnitTest extends UnitTest {
 
 	@Test
 	public void testFindAll() {
+
+
 		Long resalerId = (Long) Fixtures.idCache.get("models.resale.Resaler-Resaler_1");
 		Resaler resaler =Resaler.findById(resalerId);
 		List<ResalerFav> favList = ResalerFav.findAll(resaler);
@@ -80,7 +82,7 @@ public class ResalerFavUnitTest extends UnitTest {
 
 		List<ResalerFav> favList = ResalerFav.findFavs(resaler,createdAtBegin,createdAtEnd,goodsName);
 
-		assertEquals(3, favList.size());
+		assertEquals(4, favList.size());
 	}
 
 	@Test

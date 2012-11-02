@@ -5,7 +5,7 @@ sales.Goods(Goods_001):
  "brand": "Brand_2"
  "imagePath": "/0/0/133/origin.jpg"
  "effectiveAt": "2012-03-01T00:00:00"
- "expireAt": "2012-03-30T00:00:00"
+ "expireAt": "2912-03-30T00:00:00"
  "originalPrice": "50"
  "salePrice": "50"
  "faceValue": "50"
@@ -24,6 +24,7 @@ sales.Goods(Goods_001):
  "shops": [Shop_4, Shop_5]
  "categories": [Category_2]
  "isAllShop": false
+ cumulativeStocks: 10
 
 sales.Goods(Goods_002):
  "no": "002"
@@ -50,7 +51,8 @@ sales.Goods(Goods_002):
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
  "isAllShop": false
- 
+ cumulativeStocks: 10
+
 sales.Goods(Goods_003):
  "no": "003"
  "name": "一号店抵用券"
@@ -76,7 +78,8 @@ sales.Goods(Goods_003):
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
  "isAllShop": false
- 
+ cumulativeStocks: 10
+
 sales.Goods(Goods_004):
  "no": "004"
  "name": "京东商城50元京券"
@@ -102,7 +105,8 @@ sales.Goods(Goods_004):
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
  "isAllShop": false
- 
+ cumulativeStocks: 10
+
 sales.Goods(Goods_005):
  "no": "005"
  "name": "京东商城100元京券"
@@ -128,7 +132,8 @@ sales.Goods(Goods_005):
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
  "isAllShop": false
- 
+ cumulativeStocks: 10
+
 sales.Goods(Goods_006):
  "no": "006"
  "name": "京东商城200元京券"
@@ -154,7 +159,8 @@ sales.Goods(Goods_006):
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
  "isAllShop": false
- 
+ cumulativeStocks: 10
+
 sales.Goods(Goods_007):
  "no": "007"
  "name": "京东商城300元京券"
@@ -180,7 +186,7 @@ sales.Goods(Goods_007):
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
  "isAllShop": false
- 
+ cumulativeStocks: 10
 sales.Goods(Goods_008):
  "no": "008"
  "name": "京东商城400元京券"
@@ -206,7 +212,7 @@ sales.Goods(Goods_008):
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
  "isAllShop": false
- 
+ cumulativeStocks: 10
 sales.Goods(Goods_009):
  "no": "009"
  "name": "京东商城500元京券"
@@ -232,7 +238,7 @@ sales.Goods(Goods_009):
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
  "isAllShop": false
- 
+ cumulativeStocks: 10
 sales.Goods(Goods_010):
  "no": "010"
  "name": "京东商城550元京券"
@@ -258,7 +264,8 @@ sales.Goods(Goods_010):
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
  "isAllShop": false
- 
+ cumulativeStocks: 10
+
 sales.Goods(Goods_011):
  "no": "011"
  "name": "京东商城600元京券"
@@ -284,7 +291,8 @@ sales.Goods(Goods_011):
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
  "isAllShop": false
- 
+ cumulativeStocks: 10
+
 sales.Goods(Goods_012):
  "no": "012"
  "name": "京东商城650元京券"
@@ -310,7 +318,8 @@ sales.Goods(Goods_012):
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
  "isAllShop": false
- 
+ cumulativeStocks: 10
+
 sales.Goods(Goods_013):
  "no": "013"
  "name": "京东商城700元京券"
@@ -336,7 +345,8 @@ sales.Goods(Goods_013):
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
  "isAllShop": false
- 
+ cumulativeStocks: 10
+
 sales.Goods(Goods_014):
  "no": "014"
  "name": "京东商城800元京券"
@@ -362,7 +372,8 @@ sales.Goods(Goods_014):
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
  "isAllShop": false
- 
+ cumulativeStocks: 10
+
 sales.Goods(Goods_015):
  "no": "015"
  "name": "京东商城900元京券"
@@ -389,7 +400,8 @@ sales.Goods(Goods_015):
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
  "isAllShop": false
- 
+ cumulativeStocks: 10
+
 sales.Goods(Goods_016):
  "no": "016"
  "name": "京东商城1000元京券"
@@ -415,6 +427,7 @@ sales.Goods(Goods_016):
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
  "isAllShop": false
+ cumulativeStocks: 10
 
 sales.Goods(Goods_017):
  "no": "017"
@@ -442,3 +455,5 @@ sales.Goods(Goods_017):
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
  "isAllShop": false
+ cumulativeStocks: 10
+

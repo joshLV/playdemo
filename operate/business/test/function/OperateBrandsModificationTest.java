@@ -131,6 +131,7 @@ public class OperateBrandsModificationTest extends FunctionalTest {
         goodsParams.put("goods.useWeekDay", "1,2,3,4,5,6,7");
         goodsParams.put("goods.promoterPrice", "2");
         goodsParams.put("goods.invitedUserPrice", "1");
+        goodsParams.put("goods.cumulativeStocks", "10");
 //        goodsParams.put("goods.imagePath", "/opt/3.jpg");
         goodsParams.put("goods.deleted", DeletedStatus.DELETED.toString());
         goodsParams.put("goods.createdBy", "yanjy");

@@ -756,7 +756,11 @@ public class Goods extends Model {
     @Transient
     @SolrField
     public Long getRealStocks() {
-        return this.cumulativeStocks - getRealSaleCount();
+        if (cumulativeStocks != null) {
+            return cumulativeStocks - getRealSaleCount();
+        }
+        return getRealSaleCount();
+
     }
 
     /**

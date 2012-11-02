@@ -38,7 +38,7 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.cumulativeStocks = 100L;  //库存
         goods.saleCount = 10;
         goods.virtualBaseSaleCount = 10l; //虚拟销量
-        
+        goods.cumulativeStocks=10l;
         goods.useWeekDay = "1,2,3,4,5,6,7";
         goods.originalPrice = new BigDecimal("5");
         goods.categories = new HashSet<>();
@@ -62,7 +62,7 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.materialType = MaterialType.REAL;
         goods.baseSale = -9L;
     }
-
+transient
     @Factory(name = "SupplierId")
     public void defineWithSupplierId(Goods goods) {
     }

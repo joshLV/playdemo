@@ -225,7 +225,7 @@
                         <i class="n${j}"></i>
                         <a href="${new models.sales.GoodsWebsiteCondition().buildUrl('brandId',brand.id).getUrl()}"
                            target="_blank"><img
-                                src="${brand.showLogo}" width="200"
+                                src="${brand?.siteDisplayMiddleImage?:brand.showLogo}" width="200"
                                 height="125"></a>
 
                         <p><b>${brand.name}</b> ${brand.description}</p>
@@ -233,7 +233,7 @@
                 #{/list}
             </dl>
             #{if showTwoLine}
-                <a class="advert" href="" target="_blank">
+                <a class="advert" href="${webOneFloor?.link}" target="_blank">
                     #{if i==1}<img src="${webOneFloor?.showImageUrl}" alt=""/>#{/if}
                     #{if i==2}<img src="${webTwoFloor?.showImageUrl}" alt=""/>#{/if}
                 </a>
