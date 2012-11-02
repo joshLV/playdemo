@@ -164,11 +164,14 @@ jQuery(function($) {
         pageSize = 5,
         totalPage,
         outletUrl,
-        outletPaging = $('#outlet-page');
+        consultUrl,
+        outletPaging = $('#outlet-page'),
+        geocoder = new google.maps.Geocoder();
+
 
     if (location.host == "127.0.0.1" || location.host == '192.168.18.242') {
-        outletUrl = '/yome/home/template/outletList.php';
-        consultUrl = '/yome/home/template/consult.php';
+        outletUrl = '/zome/home/template/outletList.php';
+        consultUrl = '/zome/home/template/consult.php';
     } else {
         outletUrl = '/goods/'+ goodsId +'/shops'; 
         consultUrl = '/goods/'+ goodsId +'/questions'; 
@@ -218,19 +221,14 @@ jQuery(function($) {
             marker: marker
         };
     }
-    // 切换店面地址
-    $('.outlet-name').live('click', function(){
-        $('.outlet-name').removeClass('outlet-show');
-        $(this).addClass('outlet-show');
-        $('.outlet-attr:visible').slideUp(100);
-        $(this).siblings().slideToggle(100);
-
-        var str = $(this).attr('data-latlng'),
-            arr = str.split(',');
-
+    function chgMinGmap(str, arr, tit) {
         mapOpts.latlngStr = str;
         mapOpts.latlng = new google.maps.LatLng(arr[0], arr[1]);
-        mapOpts.title = $(this).text();
+        mapOpts.title = tit;
+
+        if (minGmap === undefined) {
+            minGmap = createMap('min_gmap', 13, mapOpts.latlng, mapOpts.title);
+        }
 
         minGmap.map.setCenter(mapOpts.latlng);
         minGmap.marker.setMap(null);
@@ -240,7 +238,68 @@ jQuery(function($) {
             animation: google.maps.Animation.DROP,
             title: mapOpts.title
         });
+    }
+    // 切换店面地址
+    $('.outlet-name').live('click', function(){
+        var $this = $(this);
+        $('.outlet-name').removeClass('outlet-show');
+        $this.addClass('outlet-show');
+        $('.outlet-attr:visible').slideUp(100);
+        $this.siblings().slideToggle(100);
+
+        var str = $this.attr('data-latlng');
+        if (str != '') {
+            arr = str.split(',');
+            chgMinGmap(str, arr, $this.text());
+        } else {
+            geocoder.geocode({'address': $this.attr('data-addr')}, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    var location = results[0].geometry.location;
+                    str = location.lat() +','+ location.lng();
+                    arr = str.split(',');
+                    $this.attr('data-latlng', str);
+                    chgMinGmap(str, arr, $this.text());
+                }
+            });
+        }
+
     });
+    function callback(data) {
+        function doHtml() {
+            var html = '';
+            for (i in data) {
+                html += '<li>'
+                    +'<h5 class="outlet-name" data-addr="'+ data[i].addr +'" data-latlng="'+ data[i].latlng +'">'+ data[i].name +'</h5>'
+                    +'<div class="outlet-attr">'
+                    +'    <p>'+ data[i].addr +'</p>'
+                    +'    <p><span>'+ data[i].tel +'</span> <a class="view-map" href="#">查看地图»</a> <a class="search-path" href="#">公交/驾车»</a></p>'
+                    +'</div>'
+                    +'</li>';
+            }
+            $('.outlet-list ul').html(html);
+            $('.outlet-attr:first').show();
+            $('.outlet-name:first').addClass('outlet-show');
+        }
+
+        var str, arr;
+        if (data[0]['latlng'] != '') {
+            str = data[0]['latlng'];
+            arr = str.split(',');
+            doHtml();
+            chgMinGmap(str, arr, data[0]['name']);
+        } else {
+            geocoder.geocode({'address': data[0]['addr']}, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    var location = results[0].geometry.location;
+                    str = location.lat() +','+ location.lng();
+                    arr = str.split(',');
+                    data[0]['latlng'] = str;
+                    doHtml();
+                    chgMinGmap(str, arr, data[0]['name']);
+                }
+            });
+        }
+    }
     // 查看地图
     $('.view-map').live('click', function(e){
         e.preventDefault();
@@ -249,7 +308,7 @@ jQuery(function($) {
             $('body').append('<div id="map_mask"></div>');
 
             $('#map_mask').css({
-                'width': $(window).width(), 
+                'width': $(window).width(),
                 'height':  $('body').height()
             });
         } else {
@@ -257,12 +316,12 @@ jQuery(function($) {
         }
         if ($('#map_box').length == 0) {
             $('body').append(
-                 '<div id="map_box">'
-                +    '<a class="close" href="javascript:void(0)" hidefocus="true"></a>'
-                +    '<h3>' + mapOpts.title + '</h3>'
-                +    '<div id="big_gmap" style="width:800px;height:500px;"></div>'
-                +    '<p>提醒：地图标注位置仅供参考，具体情况以实际道路标识信息为准</p>'
-                + '</div>');
+                '<div id="map_box">'
+                    +    '<a class="close" href="javascript:void(0)" hidefocus="true"></a>'
+                    +    '<h3>' + mapOpts.title + '</h3>'
+                    +    '<div id="big_gmap" style="width:800px;height:500px;"></div>'
+                    +    '<p>提醒：地图标注位置仅供参考，具体情况以实际道路标识信息为准</p>'
+                    + '</div>');
             $('#map_box .close').click(function(){
                 $('#map_box').hide();
                 $('#map_mask').hide();
@@ -295,7 +354,7 @@ jQuery(function($) {
             $('body').append('<div id="map_mask"></div>');
 
             $('#map_mask').css({
-                'width': $(window).width(), 
+                'width': $(window).width(),
                 'height':  $('body').height()
             });
         } else {
@@ -304,17 +363,17 @@ jQuery(function($) {
         if ($('#map_search').length == 0) {
             $('body').append(
                 '<div id="map_search">'
-                +   '<a class="close" href="javascript:void(0)" hidefocus="true"></a>'
-                +   '<h3>查询路线</h3>'
-                +   '<form action="http://ditu.google.cn/maps" method="get" target="_blank">'
-                +      '<ul>'
-                +          '<li><span class="text">目的地</span> <span id="daddr-txt">'+ mapOpts.title +'</span><input type="hidden" id="daddr-val" name="daddr" value="'+ mapOpts.latlngStr +'"></li>'
-                +          '<li><span class="text">出行方式</span> <input type="radio" name="dirflg" checked value="r">公交 <input type="radio" name="dirflg" value="d">驾车</li>'
-                +          '<li><span class="text">出发地</span> <input type="text" name="saddr" class="saddr"></li>'
-                +          '<li><button type="submit" class="btn">查询</button></li>'
-                +      '</ul>'
-                +   '</form>'
-                +'</div>');
+                    +   '<a class="close" href="javascript:void(0)" hidefocus="true"></a>'
+                    +   '<h3>查询路线</h3>'
+                    +   '<form action="http://ditu.google.cn/maps" method="get" target="_blank">'
+                    +      '<ul>'
+                    +          '<li><span class="text">目的地</span> <span id="daddr-txt">'+ mapOpts.title +'</span><input type="hidden" id="daddr-val" name="daddr" value="'+ mapOpts.latlngStr +'"></li>'
+                    +          '<li><span class="text">出行方式</span> <input type="radio" name="dirflg" checked value="r">公交 <input type="radio" name="dirflg" value="d">驾车</li>'
+                    +          '<li><span class="text">出发地</span> <input type="text" name="saddr" class="saddr"></li>'
+                    +          '<li><button type="submit" class="btn">查询</button></li>'
+                    +      '</ul>'
+                    +   '</form>'
+                    +'</div>');
             $('#map_search .close').click(function(){
                 $('#map_mask').hide();
                 $('#map_search').hide();
@@ -329,41 +388,6 @@ jQuery(function($) {
             'left': $(window).width()/2 - 183 +'px'
         });
     });
-    function callback(data) {
-        var html = '';
-        for (i in data) {
-            html += '<li>'
-                +'<h5 class="outlet-name" data-latlng="'+ data[i].latlng +'">'+ data[i].name +'</h5>'
-                +'<div class="outlet-attr">'
-                +'    <p>'+ data[i].addr +'</p>'
-                +'    <p><span>'+ data[i].tel +'</span> <a class="view-map" href="#">查看地图»</a> <a class="search-path" href="#">公交/驾车»</a></p>'
-                +'</div>'
-            +'</li>';
-        }
-        $('.outlet-list ul').html(html);
-
-        $('.outlet-attr:first').show();
-        $('.outlet-name:first').addClass('outlet-show');
-
-        var str = data[0]['latlng'],
-            arr = str.split(',');
-        mapOpts.latlngStr = str;
-        mapOpts.latlng = new google.maps.LatLng(arr[0], arr[1]);
-        mapOpts.title = data[0]['name'];
-
-        if (minGmap === undefined) {
-            minGmap = createMap('min_gmap', 13, mapOpts.latlng, mapOpts.title);
-        }
-
-        minGmap.map.setCenter(mapOpts.latlng);
-        minGmap.marker.setMap(null);
-        minGmap.marker = new google.maps.Marker({
-            position: mapOpts.latlng,
-            map: minGmap.map,
-            animation: google.maps.Animation.DROP,
-            title: mapOpts.title
-        });
-    }
     // 门店分页
     $('#outlet-page').delegate('a','click', function(e){
         e.preventDefault();
