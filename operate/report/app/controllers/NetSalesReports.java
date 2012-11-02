@@ -3,6 +3,7 @@ package controllers;
 import models.SalesOrderItemReport;
 import models.SalesOrderItemReportCondition;
 import models.supplier.Supplier;
+import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.ValuePaginator;
@@ -36,16 +37,23 @@ public class NetSalesReports extends Controller {
             condition = new SalesOrderItemReportCondition();
         }
 
-        // 查询出所有结果
-        List<SalesOrderItemReport> resultList = SalesOrderItemReport.getNetSales(condition);
-        // 分页
-        ValuePaginator<SalesOrderItemReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
+        boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        System.out.println("right>>" + right);
+        if (right) {
+            // 查询出所有结果
+            List<SalesOrderItemReport> resultList = SalesOrderItemReport.getNetSales(condition);
+            // 分页
+            ValuePaginator<SalesOrderItemReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
 
-        // 汇总
-        SalesOrderItemReport summary = SalesOrderItemReport.getNetSummary(resultList);
+            // 汇总
+            SalesOrderItemReport summary = SalesOrderItemReport.getNetSummary(resultList);
 
-        List<Supplier> supplierList = Supplier.findUnDeleted();
-        render(reportPage, summary, condition, supplierList);
+            List<Supplier> supplierList = Supplier.findUnDeleted();
+            render(reportPage, summary, condition, supplierList);
+        } else {
+            String message = "没有权限访问！";
+            renderTemplate("Defaults/index.html", message);
+        }
     }
 
     private static int getPageNumber() {
