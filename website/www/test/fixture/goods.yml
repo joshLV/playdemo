@@ -10,6 +10,7 @@ sales.Goods(goods1):
   effectiveAt: 2012-02-01
   expireAt: 2092-02-02
   "imagePath": "/0/0/133/origin.jpg"
+  cumulativeStocks: 10
 sales.Goods(goods2):
   name: "测试商品2"
   originalPrice: 100
@@ -22,6 +23,7 @@ sales.Goods(goods2):
   effectiveAt: 2012-02-01
   expireAt: 2092-02-02
   "imagePath": "/0/0/133/origin.jpg"
+  cumulativeStocks: 10
 sales.Goods(goods3):
   name: "测试商品3"
   originalPrice: 100
@@ -32,6 +34,7 @@ sales.Goods(goods3):
   deleted: UN_DELETED
   supplierId: 1
   "imagePath": "/0/0/133/origin.jpg"
+  cumulativeStocks: 10
 sales.Goods(goods4):
   name: "测试商品4"
   originalPrice: 100
@@ -45,6 +48,7 @@ sales.Goods(goods4):
   effectiveAt: 2012-02-01
   expireAt: 2092-02-02
   "imagePath": "/0/0/133/origin.jpg"
+  cumulativeStocks: 10
 sales.Goods(goods5):
   name: "测试商品5"
   originalPrice: 100
@@ -59,6 +63,7 @@ sales.Goods(goods5):
   expireAt: 2092-02-02
   limitNumber: 1
   "imagePath": "/0/0/133/origin.jpg"
+  cumulativeStocks: 10
 sales.Goods(goods6):
   name: "测试商品6"
   originalPrice: 100
@@ -73,6 +78,7 @@ sales.Goods(goods6):
   expireAt: 2092-02-02
   limitNumber: 1
   "imagePath": "/0/0/133/origin.jpg"
+  cumulativeStocks: 10
 
 order.Order(order10):
   "user": "user"
