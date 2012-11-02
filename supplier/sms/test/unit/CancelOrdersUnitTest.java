@@ -8,8 +8,12 @@ import models.order.OrderItems;
 import models.sales.Goods;
 import org.junit.Before;
 import org.junit.Test;
+
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import play.test.Fixtures;
 import play.test.UnitTest;
+import util.DateHelper;
 
 import java.text.ParseException;
 import java.util.Calendar;
@@ -24,55 +28,45 @@ import java.util.List;
 public class CancelOrdersUnitTest extends UnitTest {
     @Before
     public void setup() {
-        Fixtures.delete(OrderItems.class);
-        Fixtures.delete(Order.class);
-        Fixtures.delete(Goods.class);
-        Fixtures.delete(User.class);
-        Fixtures.delete(CancelUnpaidOrders.class);
-        Fixtures.loadModels("fixture/user.yml");
-        Fixtures.loadModels("fixture/goods_cancel_order.yml");
-        Fixtures.loadModels("fixture/test_cancel_orders.yml");
+        FactoryBoy.lazyDelete();
     }
 
     @Test
     public void testJob() throws ParseException {
-        List<Order> orderList = Order.findAll();
-        for (Order order : orderList) {
-            if ("2012034997599".equals(order.orderNumber)) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 11);
-                order.createdAt = calendar.getTime();
-                order.save();
-            } else {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 10);
-                order.createdAt = calendar.getTime();
-                order.save();
-            }
-        }
-
-        Long id = (Long) Fixtures.idCache.get("models.sales.Goods-goods1");
-        Goods goods = Goods.findById(id);
-        assertEquals(new Long(1000), goods.getRealStocks());
-        assertEquals(new Long(100l), goods.getRealSaleCount());
-        int count = CancelUnpaidOrders.findAll().size();
-        assertEquals(0, count);
+        final User user = FactoryBoy.create(User.class);
+        Goods goods = FactoryBoy.create(Goods.class);
+        Order order = FactoryBoy.create(Order.class, new BuildCallback<Order>() {
+			@Override
+			public void build(Order o) {
+				o.createdAt = DateHelper.beforeDays(12); //12天以前的订单
+				o.userId = user.id;
+			}
+		});
+        OrderItems orderItems = FactoryBoy.create(OrderItems.class);
+        orderItems.phone = user.mobile;
+        orderItems.save();
+        
+        order.refresh();
+     
+        long realStocks = goods.getRealStocks();
+        long realSaleCount = goods.getRealSaleCount();
+        
+        assertEquals(0, CancelUnpaidOrders.count());
 
         CancelUnPaidOrderJob job = new CancelUnPaidOrderJob();
         job.doJob();
 
-        count = CancelUnpaidOrders.findAll().size();
-        assertEquals(3, count);
-        goods = Goods.findById(id);
-        assertEquals(new Long(1004), goods.getRealStocks());
-        assertEquals(new Long(96), goods.getRealSaleCount());
+        assertEquals(1, CancelUnpaidOrders.count());
+        assertEquals(new Long(realStocks + 1), goods.getRealStocks());
+        assertEquals(new Long(realSaleCount - 1), goods.getRealSaleCount());
 
-
+        // 再次执行job，应该没有变化 
         job.doJob();
-        count = CancelUnpaidOrders.findAll().size();
-        assertEquals(3, count);
-        assertEquals(new Long(1004), goods.getRealStocks());
-        assertEquals(new Long(96), goods.getRealSaleCount());
+
+        assertEquals(1, CancelUnpaidOrders.count());
+        assertEquals(new Long(realStocks + 1), goods.getRealStocks());
+        assertEquals(new Long(realSaleCount - 1), goods.getRealSaleCount());
+
     }
 }
 
