@@ -34,6 +34,7 @@ public class Home2 extends Controller {
         CacheHelper.preRead(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_NEW4"),
                 CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECOMMENDS4"),
                 CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_HOT_SALE4"),
+                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_GOODS"),
                 CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_FLOOR_CATEGORIES"),
                 CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_TOPICS"),
                 CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_RIGHT_SLIDES"),
@@ -56,7 +57,7 @@ public class Home2 extends Controller {
             }
         });
 
-        //猜你喜欢，网友推荐商品
+        //猜你喜欢
         List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECOMMENDS"), new CacheCallBack<List<models.sales.Goods>>() {
             @Override
             public List<models.sales.Goods> loadData() {
@@ -64,6 +65,13 @@ public class Home2 extends Controller {
             }
         });
 
+        //推荐商品
+        List<models.sales.Goods> goodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_GOODS"), new CacheCallBack<List<models.sales.Goods>>() {
+            @Override
+            public List<models.sales.Goods> loadData() {
+                return getTopGoods(categoryId);
+            }
+        });
         //热卖商品，销量最多的商品
         List<models.sales.Goods> hotSaleGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_HOT_SALE4"), new CacheCallBack<List<models.sales.Goods>>() {
             @Override
@@ -177,7 +185,18 @@ public class Home2 extends Controller {
         renderArgs.put("friendsLinks", friendsLinks);
         renderArgs.put("slides", slides);
         renderArgs.put("rightSlides", rightSlides);
-        render(newGoodsList, recommendGoodsList, hotSaleGoodsList, floorCategories, topics);
+        render(goodsList, newGoodsList, recommendGoodsList, hotSaleGoodsList, floorCategories, topics);
+    }
+
+    private static List<models.sales.Goods> getTopGoods(long categoryId) {
+        List<models.sales.Goods> goodsList;
+        if (categoryId == 0) {
+            goodsList = models.sales.Goods.findTop(12);
+        } else {
+            goodsList = models.sales.Goods.findTopByCategory(categoryId, 12);
+        }
+        System.out.println(goodsList.size()+"----------");
+        return goodsList;
     }
 
     @After
