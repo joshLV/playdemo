@@ -506,7 +506,7 @@ public class Goods extends Controller {
     private static void renderGoodsListTitle(GoodsCondition goodsCond) {
         List<String> titleList = new ArrayList<>();
         if (goodsCond.categoryId > 0) {
-            Category c = Category.findById(goodsCond.categoryId);
+            Category c = Category.findCategoryById(goodsCond.categoryId);
             titleList.add(c.name);
             if (StringUtils.isNotBlank(c.keywords)) {
                 titleList.add(c.keywords);
@@ -590,7 +590,7 @@ public class Goods extends Controller {
         String url = LIST_URL_HEAD + goodsCond.categoryId;
         String desc;
         if (goodsCond.categoryId > 0) {
-            Category category = Category.findById(goodsCond.categoryId);
+            Category category = Category.findCategoryById(goodsCond.categoryId);
             desc = category.name;
         } else {
             desc = "全部分类";

@@ -10,10 +10,6 @@ import models.cms.BlockType;
 import models.cms.FriendsLink;
 import models.cms.Topic;
 import models.cms.TopicType;
-import models.sales.Area;
-import models.sales.Category;
-import play.Logger;
-import models.cms.*;
 import models.sales.Category;
 import play.mvc.After;
 import play.mvc.Controller;
@@ -111,13 +107,6 @@ public class Home2 extends Controller {
             }
         });
 
-        List<Block> dailySpecials = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SAILY_SPEC"), new CacheCallBack<List<Block>>() {
-            @Override
-            public List<Block> loadData() {
-                return Block.findByType(BlockType.DAILY_SPECIAL, currentDate);
-            }
-        });
-
         //友情链接
         List<FriendsLink> friendsLinks = CacheHelper.getCache(CacheHelper.getCacheKey(FriendsLink.CACHEKEY, "FRIENDS_LINK"), new CacheCallBack<List<FriendsLink>>() {
             @Override
@@ -126,6 +115,7 @@ public class Home2 extends Controller {
             }
         });
         renderArgs.put("friendsLinks", friendsLinks);
+
         //首页楼层banner
         Block webOneFloor = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_1F"), new CacheCallBack<Block>() {
             @Override
@@ -193,15 +183,5 @@ public class Home2 extends Controller {
     @After
     public static void clearCache() {
         CacheHelper.cleanPreRead();
-    }
-
-    private static List<models.sales.Goods> getTopGoods(long categoryId) {
-        List<models.sales.Goods> goodsList;
-        if (categoryId == 0) {
-            goodsList = models.sales.Goods.findTop(12);
-        } else {
-            goodsList = models.sales.Goods.findTopByCategory(categoryId, 12);
-        }
-        return goodsList;
     }
 }

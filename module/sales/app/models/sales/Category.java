@@ -269,7 +269,7 @@ public class Category extends Model {
      * @return
      */
     public List<Brand> getTopBrands(final int limit) {
-        return CacheHelper.getCache(CacheHelper.getCacheKey(Brand.CACHEKEY, "WWW_TOP_BRANDS" + id + "_" + limit), new CacheCallBack<List<Brand>>() {
+        return CacheHelper.getCache(CacheHelper.getCacheKey(new String[]{Goods.CACHEKEY, Brand.CACHEKEY}, "WWW_TOP_BRANDS" + id + "_" + limit), new CacheCallBack<List<Brand>>() {
             @Override
             public List<Brand> loadData() {
                 return Goods.findBrandByCondition(new GoodsCondition(String.valueOf(id)), limit);
@@ -286,44 +286,10 @@ public class Category extends Model {
      * @return
      */
     public List<Goods> getTopGoods(final int limit) {
-        return CacheHelper.getCache(CacheHelper.getCacheKey(Goods.CACHEKEY, "WWW_TOP_GOODS_BY_CATEGORY" + id + "_" + limit), new CacheCallBack<List<Goods>>() {
+        return CacheHelper.getCache(CacheHelper.getCacheKey(new String[]{Goods.CACHEKEY, Category.CACHEKEY}, "WWW_TOP_GOODS_BY_CATEGORY" + id + "_" + limit), new CacheCallBack<List<Goods>>() {
             @Override
             public List<Goods> loadData() {
                 return Goods.findTopByCategory(id, limit, true);
-            }
-        });
-    }
-
-    /**
-     * 获取指定分类的所有子分类，分类中需要标明商品数量.
-     * <p/>
-     * 直接被WWW首页调用,没有商品的分类不显示.
-     *
-     * @return
-     */
-    public List<Category> getByParent() {
-        return CacheHelper.getCache(CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_SUB_CATEGORIES" + id), new CacheCallBack<List<Category>>() {
-            @Override
-            public List<Category> loadData() {
-                List<Category> categories = Category.findByParent(id);
-                List<Category> topAllCategories = new ArrayList<>();
-                int count = 0;
-                for (int i = 0; i < categories.size(); i++) {
-                    Category category = categories.get(i);
-
-                    count += category.goodsSet.size();
-                    category.goodsCount = (long) category.goodsSet.size();
-                    if (category.goodsCount > 0) {
-                        topAllCategories.add(category);
-                    }
-                }
-
-                Category topCategory = new Category();
-                topCategory.id = 0l;
-                topCategory.name = "全部";
-                topCategory.goodsCount = (long) count;
-                topAllCategories.add(0, topCategory);
-                return topAllCategories;
             }
         });
     }
@@ -354,6 +320,15 @@ public class Category extends Model {
             category.deleted = DeletedStatus.DELETED;
             category.save();
         }
+    }
+
+    public static Category findCategoryById(final long id) {
+        return CacheHelper.getCache(CacheHelper.getCacheKey(Category.CACHEKEY, "CATEGORY_BY_ID" + id), new CacheCallBack<Category>() {
+            @Override
+            public Category loadData() {
+                return Category.findById(id);
+            }
+        });
     }
 }
 
