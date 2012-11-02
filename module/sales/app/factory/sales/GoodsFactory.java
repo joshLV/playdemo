@@ -62,7 +62,7 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.materialType = MaterialType.REAL;
         goods.baseSale = -9L;
     }
-transient
+
     @Factory(name = "SupplierId")
     public void defineWithSupplierId(Goods goods) {
     }
