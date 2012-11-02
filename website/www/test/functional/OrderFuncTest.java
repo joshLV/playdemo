@@ -1,5 +1,6 @@
 package functional;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,19 +8,13 @@ import java.util.Map;
 import models.consumer.User;
 import models.order.Order;
 import models.order.OrderItems;
-import models.sales.Area;
-import models.sales.Brand;
-import models.sales.Category;
 import models.sales.Goods;
-import models.sales.Shop;
-import models.supplier.Supplier;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import play.mvc.Http;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import controllers.modules.website.cas.Security;
 import factory.FactoryBoy;
@@ -33,39 +28,14 @@ import factory.FactoryBoy;
  */
 public class OrderFuncTest extends FunctionalTest {
 
-    User user;
-
     @Before
     public void setup() {
         FactoryBoy.lazyDelete();
-        Fixtures.delete(Order.class);
-        Fixtures.delete(User.class);
-        Fixtures.delete(Goods.class);
-        Fixtures.delete(OrderItems.class);
-        Fixtures.delete(Order.class);
-        Fixtures.delete(Shop.class);
-        Fixtures.delete(Goods.class);
-        Fixtures.delete(Category.class);
-        Fixtures.delete(Brand.class);
-        Fixtures.delete(Area.class);
-        Fixtures.delete(Supplier.class);
-
-        Fixtures.loadModels("fixture/user.yml");
-        Fixtures.loadModels("fixture/supplier_unit.yml");
-        Fixtures.loadModels("fixture/areas_unit.yml");
-        Fixtures.loadModels("fixture/categories_unit.yml");
-        Fixtures.loadModels("fixture/brands_unit.yml");
-        Fixtures.loadModels("fixture/shops_unit.yml");
-        Fixtures.loadModels("fixture/goods_unit.yml");
-        Fixtures.loadModels("fixture/orders.yml");
+        FactoryBoy.create(Goods.class);
 
         //设置虚拟登陆
-        Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
-        user = User.findById(userId);
-
-
-        user = FactoryBoy.create(User.class);
         // 设置测试登录的用户名
+        User user = FactoryBoy.create(User.class);
         Security.setLoginUserForTest(user.loginName);
     }
 
@@ -75,91 +45,78 @@ public class OrderFuncTest extends FunctionalTest {
         assertStatus(500, response);
     }
 
-    // FIXME
-    @Ignore
     @Test
     public void testIndex_有参数() {
-//        Goods goodsA = FactoryBoy.create(Goods.class);
-//        OrderItems orderItem = FactoryBoy.create(OrderItems.class);
-//        orderItem.order.userId = user.id;
-//        orderItem.order.save();
-//        Goods goodsB = FactoryBoy.create(Goods.class);
-//        orderItem = FactoryBoy.create(OrderItems.class);
-//        orderItem.order.userId = user.id;
-//        orderItem.save();
-
-        Long goodsId1 = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-        Long goodsId2 = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
-        Long orderId = (Long) Fixtures.idCache.get("models.order.Order-order_unpaid");
-        Order order = Order.findById(orderId);
+        User user = FactoryBoy.last(User.class);
+        Goods goodsA = FactoryBoy.last(Goods.class);
+        Goods goodsB = FactoryBoy.create(Goods.class);
+        Order order = FactoryBoy.create(Order.class);
+        OrderItems orderItems = FactoryBoy.create(OrderItems.class);
         order.userId = user.id;
         order.save();
+        orderItems.phone = user.mobile;
+        orderItems.save();
 
-        Http.Response response = GET("/orders?gid=" + goodsId1 + "&g" + goodsId1 + "=1&gid=" + goodsId2 + "&g" + goodsId2 + "=1");
-//        Http.Response response = GET("/orders?gid=" + goodsA.id + "&g" + goodsA.id + "=1&gid=" + goodsB.id + "&g" + goodsB.id + "=1");
+        String[] args = new String[]{
+                String.format("gid=%s", goodsA.id),
+                String.format("g%s=1", goodsA.id),
+                String.format("gid=%s", goodsB.id),
+                String.format("g%s=1", goodsB.id),
+        };
+        //购买两个商品，一件各一个
+        Http.Response response = GET("/orders?" + StringUtils.join(args, "&"));
         assertStatus(200, response);
+        //测试renderArgs
+        String queryStringInArgs = (String)renderArgs("querystring");
+        for(String arg: args){
+            assertTrue("test arg:" + arg, queryStringInArgs.contains(arg));
+        }
+        assertNotNull(renderArgs("mobile"));
+        assertEquals(1, ((List)renderArgs("orderItems_mobiles")).size());
 
-        String querystring = (String) renderArgs("querystring");
-        User resultUser = (User) renderArgs("user");
-        assertNotNull(resultUser);
-        assertTrue(querystring.contains("gid=" + goodsId1));
-        assertTrue(querystring.contains("gid=" + goodsId2));
-        assertTrue(querystring.contains("g" + goodsId1 + "=1"));
-        assertTrue(querystring.contains("g" + goodsId2 + "=1"));
-        assertEquals(user.id, resultUser.id);
+        assertEquals(0,
+                goodsA.salePrice .multiply(new BigDecimal("1.00"))
+                .add( goodsB.salePrice.multiply(new BigDecimal("1.00")) )
+                .compareTo((BigDecimal)renderArgs("goodsAmount")));
 
-        List<String> orderItems_mobiles = (List<String>) renderArgs("orderItems_mobiles");
-        assertEquals(1, orderItems_mobiles.size());
-        assertEquals("15312345674", orderItems_mobiles.get(0));
+        assertEquals(renderArgs("goodsAmount"), renderArgs("totalAmount"));
+        assertEquals(renderArgs("goodsAmount"), renderArgs("needPay"));
+        assertEquals(String.format("%s-1,%s-1,", goodsA.id, goodsB.id), renderArgs("items"));
     }
 
 
     @Test
     public void testCreate() {
         Map<String, String> params = new HashMap<>();
-        Long goodsId1 = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-        Long goodsId2 = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
-        String gids = goodsId1.toString() + "-3," + goodsId2.toString() + "-2,";
+        Goods goodsA = FactoryBoy.last(Goods.class);
+        Goods goodsB = FactoryBoy.create(Goods.class);
+        String items = String.format("%s-3,%s-2", goodsA.id, goodsB.id);
 
-        int orderCount = Order.findAll().size();
-        params.put("items", gids);
+        long orderCountBefore = Order.count();
+        params.put("items", items);
         params.put("mobile", "13800001111");
         params.put("remark", "hehe");
-        //Please fix me
 
-//        Http.Response response = POST("/orders/new", params);
-//        assertStatus(302, response);
+        Http.Response response = POST("/orders/new", params);
+        assertStatus(302, response);
 
-//        int resultOrderCount = Order.findAll().size();
-//        assertEquals(orderCount + 1, resultOrderCount);
-    }
-
-    @Test
-    public void testCheckLimitNumber_商品未限制购买数() {
-        Long goodsId1 = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-        Long goodsId2 = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
-        String gids = goodsId1.toString() + "-3," + goodsId2.toString() + "-2";
-
-        Http.Response response = GET("/orders_number?items=" + gids);
-        assertStatus(200, response);
-
-        assertEquals("0", response.out.toString());
+        long orderCountAfter = Order.count();
+        assertEquals(orderCountBefore + 1, orderCountAfter);
     }
 
     @Test
     public void testCheckLimitNumber_商品限制购买数() {
-        Long goodsId1 = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-        Long goodsId2 = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
-        String gids = goodsId1.toString() + "-3," + goodsId2.toString() + "-2";
+        Goods goodsA = FactoryBoy.last(Goods.class);
+        Goods goodsB = FactoryBoy.create(Goods.class);
+        String items = String.format("%s-3,%s-2", goodsA.id, goodsB.id);
 
-        Goods goods1 = Goods.findById(goodsId1);
-        goods1.limitNumber = 1;
-        goods1.save();
+        goodsA.limitNumber = 1;
+        goodsA.save();
 
-        Http.Response response = GET("/orders_number?items=" + gids);
+        Http.Response response = GET("/orders_number?items=" + items);
         assertStatus(200, response);
 
-        assertEquals("1", response.out.toString());
+        assertContentEquals("1", response);
     }
 
 }

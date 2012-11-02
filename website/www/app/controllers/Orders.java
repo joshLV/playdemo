@@ -452,8 +452,8 @@ public class Orders extends Controller {
                 if (number > 0) {
                     Long goodsId = Long.parseLong(goodsItem[0]);
                     Long boughtNumber = OrderItems.itemsNumber(user, goodsId);
-                    boolean isCanBuyFlag = Order.checkLimitNumber(user, goodsId, boughtNumber, number);
-                    if (isCanBuyFlag) {
+                    boolean canNotBuy = Order.checkLimitNumber(user, goodsId, boughtNumber, number);
+                    if (canNotBuy) {
                         renderJSON("1");
                     }
                 }

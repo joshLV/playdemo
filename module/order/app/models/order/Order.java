@@ -451,7 +451,7 @@ public class Order extends Model {
      * @param user    会员ID
      * @param goodsId 商品ID
      * @param number  购买数量
-     * @return
+     * @return true 表示已经超过限购数量， false 表示未超过
      */
     public static Boolean checkLimitNumber(User user, Long goodsId, Long boughtNumber, int number) {
 
