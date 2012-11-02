@@ -65,6 +65,11 @@ public class Goods2 extends Controller {
 
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
+        CacheHelper.preRead(CacheHelper.getCacheKey(new String[]{Goods.CACHEKEY, Goods.CACHEKEY_BASEID, GoodsStatistics.CACHEKEY},
+                "SHOW_TOP" + PAGE_SIZE + "RECOMMEND"),
+                CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_RIGHT_SLIDES"),
+                CacheHelper.getCacheKey(Goods.CACHEKEY, "WWW_HOT_SALE4"));
+
         //只按关键字搜索
         QueryResponse queryResponse = models.sales.Goods.search(keywords, brandId, pageNumber, PAGE_SIZE);
 
@@ -73,7 +78,6 @@ public class Goods2 extends Controller {
         if (onSaleGoodsCount != null && onSaleGoodsCount > 0) {
             //搜索结果的商品页
             SimplePaginator<Goods> goodsPage = Goods.getResultPage(queryResponse, pageNumber, PAGE_SIZE);
-            goodsPage.setBoundaryControlsEnabled(false);
             renderArgs.put("goodsPage", goodsPage);
 
             //搜索结果的区域
@@ -117,13 +121,18 @@ public class Goods2 extends Controller {
         final int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer
                 .parseInt(page);
 
+        CacheHelper.preRead(CacheHelper.getCacheKey(new String[]{Goods.CACHEKEY, Goods.CACHEKEY_BASEID, GoodsStatistics.CACHEKEY},
+                "SHOW_TOP" + PAGE_SIZE + "RECOMMEND"),
+                CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_RIGHT_SLIDES"),
+                CacheHelper.getCacheKey(Goods.CACHEKEY, "WWW_HOT_SALE4"));
+
         try {
             final GoodsWebsiteCondition condition = new GoodsWebsiteCondition(conditionStr, keywords, brandId);
 
             //获取要显示的子分类列表
             Category currentCategory = null;
             if (condition.categoryId > 0) {
-                currentCategory = Category.findById(condition.categoryId);
+                currentCategory = Category.findCategoryById(condition.categoryId);
                 if (currentCategory != null && currentCategory.isRoot()) { //如果指定为顶级分类
                     condition.parentCategoryId = condition.categoryId;
                     condition.categoryId = 0;
@@ -133,7 +142,6 @@ public class Goods2 extends Controller {
             //获取搜索到的商品
             QueryResponse queryResponse = models.sales.Goods.searchFullText(condition, pageNumber, PAGE_SIZE);
             SimplePaginator<Goods> goodsPage = models.sales.Goods.getResultPage(queryResponse, pageNumber, PAGE_SIZE);
-            goodsPage.setBoundaryControlsEnabled(false);
 
             //搜索结果的全部商品数量
             Long onSaleGoodsCount = queryResponse.getResults().getNumFound();
@@ -143,10 +151,8 @@ public class Goods2 extends Controller {
                 List<Category> searchCategories = models.sales.Goods.getStatisticTopCategories(queryResponse);
                 renderArgs.put("searchCategories", searchCategories);
 
-                System.out.println("condition.parentCategoryId:" + condition.parentCategoryId);
                 if (condition.parentCategoryId > 0) { //如果指定了顶级分类，则统计子分类
                     List<Category> subCategories = Goods.getStatisticSubCategories(queryResponse, condition.parentCategoryId);
-                    System.out.println("subCategories.size():" + subCategories.size());
                     renderArgs.put("subCategories", subCategories);
                 } else if (condition.categoryId > 0) {
                     List<Category> subCategories = Goods.getStatisticSubCategories(queryResponse, currentCategory.parentCategory.id);
@@ -156,7 +162,6 @@ public class Goods2 extends Controller {
                 //搜索结果的地区统计
                 List<Area> districts = Goods.getStatisticDistricts(queryResponse);
                 renderArgs.put("districts", districts);
-                System.out.println("districts.size():" + districts.size());
 
                 if (!"0".equals(condition.districtId)) {
                     List<Area> searchAreas = models.sales.Goods.getStatisticAreas(queryResponse, condition.districtId);
@@ -188,8 +193,7 @@ public class Goods2 extends Controller {
     private static void renderRecommendGoods(final int count) {
         // 网友推荐商品
         List<Goods> recommendGoodsList = CacheHelper.getCache(
-                CacheHelper.getCacheKey(new String[]{Goods.CACHEKEY,
-                        Goods.CACHEKEY_BASEID},
+                CacheHelper.getCacheKey(new String[]{Goods.CACHEKEY, Goods.CACHEKEY_BASEID, GoodsStatistics.CACHEKEY},
                         "SHOW_TOP" + count + "RECOMMEND"),
                 new CacheCallBack<List<Goods>>() {
                     @Override
@@ -213,10 +217,9 @@ public class Goods2 extends Controller {
                 CacheHelper.getCacheKey(
                         models.sales.Goods.CACHEKEY_BASEID + id, "KEYWORDMAP"),
                 CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id,
-                        "BREADCRUMBS"), CacheHelper.getCacheKey(
-                new String[]{Order.CACHEKEY_BASEUSERID + userId,
-                        models.sales.Goods.CACHEKEY_BASEID + id},
-                "LIMITNUMBER"));
+                        "BREADCRUMBS"),
+                CacheHelper.getCacheKey(new String[]{Order.CACHEKEY_BASEUSERID + userId,
+                        models.sales.Goods.CACHEKEY_BASEID + id}, "LIMITNUMBER"));
         final models.sales.Goods goods = CacheHelper.getCache(CacheHelper
                 .getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id,
                         "UNDELETED"), new CacheCallBack<models.sales.Goods>() {
@@ -570,7 +573,7 @@ public class Goods2 extends Controller {
     private static void renderGoodsListTitle(GoodsWebsiteCondition goodsCond) {
         List<String> titleList = new ArrayList<>();
         if (goodsCond.categoryId > 0) {
-            Category c = Category.findById(goodsCond.categoryId);
+            Category c = Category.findCategoryById(goodsCond.categoryId);
             titleList.add(c.name);
             if (StringUtils.isNotBlank(c.keywords)) {
                 titleList.add(c.keywords);
@@ -633,7 +636,7 @@ public class Goods2 extends Controller {
         String url = goodsCond.buildUrl("parentCategoryId", goodsCond.parentCategoryId).getUrl();
         String desc;
         if (goodsCond.parentCategoryId > 0) {
-            Category category = Category.findById(goodsCond.parentCategoryId);
+            Category category = Category.findCategoryById(goodsCond.parentCategoryId);
             desc = category.name;
         } else {
             desc = "全部分类";
@@ -645,7 +648,7 @@ public class Goods2 extends Controller {
         String url = goodsCond.buildUrl("categoryId", goodsCond.categoryId).getUrl();
         String desc;
         if (goodsCond.categoryId > 0) {
-            Category category = Category.findById(goodsCond.categoryId);
+            Category category = Category.findCategoryById(goodsCond.categoryId);
             desc = category.name;
             return new Breadcrumb(desc, url);
         }

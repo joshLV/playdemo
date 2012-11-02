@@ -228,7 +228,7 @@ public class Area extends GenericModel {
     }
 
     public static Area findAreaById(final String id) {
-        return CacheHelper.getCache(CacheHelper.getCacheKey(Area.CACHEKEY + id, "AREA_BY_ID"), new CacheCallBack<Area>() {
+        return CacheHelper.getCache(CacheHelper.getCacheKey(Area.CACHEKEY, "AREA_BY_ID" + id), new CacheCallBack<Area>() {
             @Override
             public Area loadData() {
                 return Area.findById(id);
