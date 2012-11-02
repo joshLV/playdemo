@@ -104,6 +104,13 @@ public class Category extends Model {
     @JsonIgnore
     public List<Category> children;
 
+    public List<Category> undeletedChildren(){
+        return Category.find("parentCategory = ? and  ( deleted = ? or deleted is null)",
+                this, DeletedStatus.UN_DELETED).fetch();
+    }
+
+
+
     /**
      * 逻辑删除,0:未删除，1:已删除
      */
