@@ -27,6 +27,7 @@ public class SolrLoadData extends Controller {
         try {
             Solr.indexAll();
         } catch (Exception e) {
+            System.out.println(e.fillInStackTrace());
             renderText("err");
         }
         renderText("ok");

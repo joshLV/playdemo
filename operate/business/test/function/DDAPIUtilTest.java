@@ -1,7 +1,6 @@
 package function;
 
 import factory.FactoryBoy;
-import factory.sales.GoodsHistoryFactory;
 import models.dangdang.DDAPIInvokeException;
 import models.dangdang.DDAPIUtil;
 import models.dangdang.DDFailureLog;
@@ -13,8 +12,9 @@ import models.order.ECoupon;
 import models.sales.Goods;
 import models.sales.GoodsHistory;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import play.mvc.Before;
 import play.test.FunctionalTest;
 
 import java.io.ByteArrayInputStream;
@@ -39,8 +39,6 @@ public class DDAPIUtilTest extends FunctionalTest {
 
     @Test
     public void tesSyncSellCount() {
-        Goods goods = FactoryBoy.create(Goods.class);
-
         try {
             DDAPIUtil.proxy = new HttpProxy() {
                 @Override
@@ -55,7 +53,6 @@ public class DDAPIUtilTest extends FunctionalTest {
             fail();
         }
     }
-
     @Test
     public void 测试未退款的券验证券状态的当当接口() throws Exception {
         ECoupon ecoupon = FactoryBoy.create(ECoupon.class);

@@ -95,7 +95,7 @@ public class OperateShops extends Controller {
         //商圈列表
         String districtId = StringUtils.isEmpty(shop.getDistrictId()) ? districts.get(0).getId() : shop.getDistrictId();
         List<Area> areas = Area.findAllSubAreas(districtId);
-        if (shop.areaId == null && areas != null && areas.get(0) != null) {
+        if (shop.areaId == null && areas != null && areas.size() > 0 && areas.get(0) != null) {
             shop.areaId = areas.get(0).id;
         }
 
@@ -182,8 +182,9 @@ public class OperateShops extends Controller {
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
         render(shopList);
     }
+
     @ActiveNavigation("supplierUsers_add")
-     public static void showSupplierShops(Long supplierId) {
+    public static void showSupplierShops(Long supplierId) {
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
         render(shopList);
     }

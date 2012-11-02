@@ -9,6 +9,6 @@ page= (pageNumber-1) * pageSize;
         "name": "${shop.name}",
         "addr": "${shop.address}",
         "tel": "${shop.phone}",
-        "latlng": "${shop?.latitude},${shop?.longitude}"}
+        "latlng": "#{if shop?.latitude && shop?.longitude}${shop?.latitude},${shop?.longitude}#{/if}"}
     #{/paginate.list1}]
 }
