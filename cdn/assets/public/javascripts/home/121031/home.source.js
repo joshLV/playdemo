@@ -28,4 +28,14 @@ $(function($) {
     .delegate('li', 'mouseout', function(){
         $(this).find('.region').removeClass('hover');
     });
+
+    (new GoTop()).init({
+        pageWidth           :960,
+        nodeId              :'go-top',
+        nodeWidth           :24,
+        distanceToBottom    :100,
+        distanceToPage      :10,
+        hideRegionHeight    :130,
+        text                :''
+    });
 });

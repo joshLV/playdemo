@@ -513,3 +513,9 @@ mark { background: #ff0; }
     margin: 0 10px;
 }
 /* }}} */
+#go-top {
+    background: #E6E6E6;
+    width: 24px;
+    height: 82px;
+    background: url(//img.uhcdn.com/base/go-top.png) no-repeat 0 0;
+}
