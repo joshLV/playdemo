@@ -39,7 +39,7 @@ public class NetSalesReports extends Controller {
         }
         List<Supplier> supplierList;
 
-        Boolean right=ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
         if (right) {
             supplierList = Supplier.findUnDeleted();
         } else {
@@ -51,7 +51,7 @@ public class NetSalesReports extends Controller {
 
         Long id = OperateRbac.currentUser().id;
         // 查询出所有结果
-        List<SalesOrderItemReport> resultList = SalesOrderItemReport.getNetSales(condition, id,right);
+        List<SalesOrderItemReport> resultList = SalesOrderItemReport.getNetSales(condition, id, right);
 
         // 分页
         ValuePaginator<SalesOrderItemReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);

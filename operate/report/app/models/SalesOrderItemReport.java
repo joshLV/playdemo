@@ -231,13 +231,17 @@ public class SalesOrderItemReport extends Model {
         List<SalesOrderItemReport> refundList = query.getResultList();
 
         for (SalesOrderItemReport sales : salesList) {
+            Boolean flag = false;
             for (SalesOrderItemReport refund : refundList) {
                 if (sales.supplier.id == refund.supplier.id) {
+                    flag = true;
                     sales.refundAmount = refund.salesAmount == null ? BigDecimal.ZERO : refund.salesAmount;
                     sales.netSalesAmount = sales.salesAmount.subtract(refund.salesAmount == null ? BigDecimal.ZERO :
                             refund.salesAmount);
-//                    System.out.println("sales.netSalesAmount>>>" + sales.netSalesAmount);
                 }
+            }
+            if (!flag) {
+                sales.netSalesAmount = sales.salesAmount;
             }
         }
 
