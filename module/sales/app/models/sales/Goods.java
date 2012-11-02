@@ -42,8 +42,8 @@ import play.i18n.Messages;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.SimplePaginator;
 import play.modules.solr.Solr;
-import play.modules.solr.SolrEmbedded;
 import play.modules.solr.SolrField;
+import play.modules.solr.SolrSearchable;
 import play.modules.view_ext.annotation.Money;
 
 import javax.persistence.CascadeType;
@@ -82,7 +82,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "goods")
-//@SolrSearchable
+@SolrSearchable
 public class Goods extends Model {
     private static final long serialVersionUID = 7063232063912330652L;
 
@@ -211,7 +211,7 @@ public class Goods extends Model {
     @JoinTable(name = "goods_categories", inverseJoinColumns = @JoinColumn(name
             = "category_id"), joinColumns = @JoinColumn(name = "goods_id"))
     @Required
-    @SolrEmbedded
+//    @SolrEmbedded
     public Set<Category> categories;
 
     @Transient
@@ -415,7 +415,7 @@ public class Goods extends Model {
     @Required
     @ManyToOne
     @JoinColumn(name = "brand_id")
-    @SolrEmbedded
+//    @SolrEmbedded
     public Brand brand;
 
     /**
@@ -453,7 +453,7 @@ public class Goods extends Model {
     public int saleCountEnd = -1;
 
     @Transient
-    @SolrEmbedded
+//    @SolrEmbedded
     public GoodsStatistics statistics;
 
     /**
@@ -518,7 +518,7 @@ public class Goods extends Model {
      * @return
      */
     @Transient
-    @SolrEmbedded
+//    @SolrEmbedded
     public Supplier getSupplier() {
         if (supplierId == null) {
             return null;
@@ -574,7 +574,10 @@ public class Goods extends Model {
     @Transient
     @SolrField
     public BigDecimal getSavePrice() {
-        return originalPrice.remainder(salePrice);
+        if (salePrice != null && salePrice.compareTo(BigDecimal.ZERO) > 0) {
+            return originalPrice.remainder(salePrice);
+        }
+        return originalPrice;
     }
 
     /**
