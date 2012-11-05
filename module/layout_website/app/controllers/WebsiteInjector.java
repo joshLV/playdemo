@@ -102,16 +102,6 @@ public class WebsiteInjector extends Controller {
         });
         renderArgs.put("areas", areas);
 
-        //待消费
-        int unconsumedCount = ECoupon.count(user, ECouponStatus.UNCONSUMED);
-        //待付款
-        int unpaidCount = Order.count(user, OrderStatus.UNPAID);
-        //已节省
-        BigDecimal savedMoney = OrderItems.getSavedMoney(user);
-        
-        renderArgs.put("unconsumedCount", unconsumedCount);
-        renderArgs.put("unpaidCount", unpaidCount);
-        renderArgs.put("savedMoney", savedMoney);
     }
 
     private static void injectPromoterCookier(User user) {

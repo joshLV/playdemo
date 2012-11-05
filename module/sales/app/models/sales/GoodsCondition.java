@@ -76,7 +76,6 @@ public class GoodsCondition implements Serializable {
      * @param condStr hql的查询条件
      */
     public GoodsCondition(String condStr) {
-        Logger.info("查询条件：%s", condStr);
         String[] args = condStr.split("-");
         if (args == null || args.length < 1) {
             throw new IllegalArgumentException("GoodsCondition is illegal!");

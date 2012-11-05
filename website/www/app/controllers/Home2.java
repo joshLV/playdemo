@@ -5,16 +5,20 @@ import cache.CacheHelper;
 import com.uhuila.common.constants.PlatformType;
 import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
+import models.accounts.AccountType;
 import models.cms.Block;
 import models.cms.BlockType;
 import models.cms.FriendsLink;
 import models.cms.Topic;
 import models.cms.TopicType;
+import models.consumer.User;
+import models.order.*;
 import models.sales.Category;
 import play.mvc.After;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +34,7 @@ import java.util.List;
 public class Home2 extends Controller {
 
     public static void index(final long categoryId) {
+        User user = SecureCAS.getUser();
 
         CacheHelper.preRead(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_NEW4"),
                 CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECOMMENDS4"),
@@ -173,6 +178,19 @@ public class Home2 extends Controller {
                 return Topic.findByType(PlatformType.UHUILA, TopicType.WEB_CATEGORY5, currentDate, 1).get(0);
             }
         });
+
+        //待消费
+        long unconsumedCount = ECoupon.count("e.order.userId = ? and e.order.userType = ? and status = ?",
+                user.getId(), AccountType.CONSUMER, ECouponStatus.UNCONSUMED);
+        //待付款
+        long unpaidCount = Order.count("byUserIdAndUserTypeAndStatus",
+                user.getId(), AccountType.CONSUMER, OrderStatus.UNPAID);
+        //已节省
+        BigDecimal savedMoney = ECoupon.savedMoney(user.getId(), AccountType.CONSUMER);
+
+        renderArgs.put("unconsumedCount", unconsumedCount);
+        renderArgs.put("unpaidCount", unpaidCount);
+        renderArgs.put("savedMoney", savedMoney);
 
         renderArgs.put("categoryTopic1", categoryTopic1);
         renderArgs.put("categoryTopic2", categoryTopic2);

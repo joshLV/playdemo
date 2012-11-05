@@ -260,8 +260,4 @@ public class OrderItems extends Model {
         return (limitNumber > 0 && (number > limitNumber || limitNumber <= boughtNumber));
     }
 
-    public static BigDecimal getSavedMoney(User user) {
-        //todo
-        return BigDecimal.TEN;
-    }
 }

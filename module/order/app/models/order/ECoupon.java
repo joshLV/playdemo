@@ -1161,15 +1161,14 @@ public class ECoupon extends Model {
         return result == null ? BigDecimal.ZERO : (BigDecimal) result;
     }
 
-    /**
-     * 计算指定用户的特定状态的券数量.
-     *
-     * @param user   用户对象
-     * @param status 订单状态
-     * @return 券数量
-     */
-    public static int count(User user, ECouponStatus status) {
-        //todo
-        return 0;
+    public static BigDecimal savedMoney(Long userId, AccountType userType) {
+        Query q = JPA.em().createQuery("select sum(e.faceValue - e.salePrice) from ECoupon e " +
+                "where e.order.userId = :userId and e.order.userType = :userType " +
+                "and (e.status = :unconsumed or e.status = :consumed)");
+        q.setParameter("userId", userId);
+        q.setParameter("userType", userType);
+        q.setParameter("unconsumed", ECouponStatus.UNCONSUMED);
+        q.setParameter("consumed", ECouponStatus.CONSUMED);
+        return (BigDecimal)q.getSingleResult();
     }
 }

@@ -105,7 +105,7 @@
                         <input type="hidden" value="1" id="last_num_${goods.id}"/>
                         <input type="hidden" value="${goods.cumulativeStocks}" id="stock_${goods.id}">
                         <input type="hidden" value="${goods.limitNumber}" id="limit_${goods.id}">
-                    </span> 件(已出售<em class="selled">${goods?.virtualSaleCount?:'0'}</em>件)
+                    </span> 件(已售出<em class="selled">${goods?.virtualSaleCount?:'0'}</em>件)
                             <span id="stock_hit" style="display:none;color:#f50">库存${goods.baseSale}件</span>
                             #{if goods.limitNumber > 0}
                                 <span id="limitNumber" style="color:#f50">限购${goods.limitNumber}件</span>
@@ -144,9 +144,9 @@
                         #{/elseif}
                     </div>
                     <ul id="promise">
-                        <li class="quality">品质保证</li>
-                        <li class="refund">一键退款</li>
-                        <li class="return">随时退货</li>
+                        <li class="quality"><a href="/service" target="_blank">品质保证</a></li>
+                        <li class="refund"><a href="/service" target="_blank">一键退款</a></li>
+                        <li class="return"><a href="/service" target="_blank">随时退货</a></li>
                     </ul>
                 #{/form}
                 </div>
