@@ -52,15 +52,7 @@ public class NetSalesReports extends Controller {
 
         Long id = OperateRbac.currentUser().id;
         // 查询出所有结果
-        List<SalesOrderItemReport> ResultList = SalesOrderItemReport.getNetSales(condition, id, right);
-
-//        List<SalesOrderItemReport> resultList = new ArrayList<>();
-//
-//        for (SalesOrderItemReport sr : tempResultList) {
-//            if (sr.supplier != null && sr.supplier.salesId == id) {
-//                resultList.add(sr);
-//            }
-//        }
+        List<SalesOrderItemReport> resultList = SalesOrderItemReport.getNetSales(condition, id, right);
 
         // 分页
         ValuePaginator<SalesOrderItemReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);

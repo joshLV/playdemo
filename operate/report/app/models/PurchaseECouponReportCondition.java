@@ -34,7 +34,7 @@ public class PurchaseECouponReportCondition implements Serializable {
 
     private Map<String, Object> paramMap = new HashMap<>();
 
-    public String getFilter(Long id, Boolean right) {
+    public String getFilter() {
         StringBuilder condBuilder = new StringBuilder("r.status='CONSUMED'"); //只统计已经消费的
         if (createdAtBegin != null) {
             condBuilder.append(" and r.consumedAt >= :consumedAtBegin");
@@ -51,45 +51,8 @@ public class PurchaseECouponReportCondition implements Serializable {
             Logger.debug("supplier.id:" + supplier.id);
         }
 
-//        if (supplier != null && supplier.id == 0 && !right) {
-//            List<Supplier> suppliers = Supplier.find("salesId=?", id).fetch();
-//            String a = "";
-//            for (Supplier s : suppliers) {
-//                a += s.id.toString() + ",";
-//            }
-//            a = a.substring(0, a.length() - 1);
-//            String b = "(" + a + ")";
-//            condBuilder.append(" and r.goods.supplierId in :supplierId");
-//            paramMap.put("supplierId", Long.parseLong(b));
-//        }
 
 
-//        if (supplier != null && supplier.id == 0 && !right) {
-//            List<Supplier> suppliers = Supplier.find("salesId=?", id).fetch();
-//            System.out.println("suppliers>>"+suppliers);
-//            Boolean flag = false;
-//            if (suppliers != null && suppliers.size() > 0) {
-//                for (Supplier supplier : suppliers) {
-//                    if (!flag) {
-//                        condBuilder.append(" and r.goods.supplierId = :supplierId");
-//                        paramMap.put("supplierId", supplier.id);
-//                        flag = true;
-//                    } else {
-//                        condBuilder.append(" or r.goods.supplierId = :supplierId");
-//                        paramMap.put("supplierId", supplier.id);
-//                    }
-//
-//
-//                }
-//            }
-
-//            if (supplier != null && supplier.id == 0 && !right) {
-//                Supplier supplier = Supplier.find("salesId=?", id).first();
-//                condBuilder.append(" and r.goods.supplierId = :supplierId");
-//                paramMap.put("supplierId", supplier.id);
-//
-//            }
-//        }
 
         if (StringUtils.isNotBlank(goodsLike)) {
             condBuilder.append(" and r.goods.shortName like :goodsLike");

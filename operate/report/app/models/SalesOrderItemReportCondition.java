@@ -96,10 +96,10 @@ public class SalesOrderItemReportCondition implements Serializable {
             paramMap.put("salesId", id);
         }
 
-//        if (supplier == null && !right) {
-//            condBuilder.append(" and s.salesId = :salesId");
-//            paramMap.put("salesId", id);
-//        }
+        if (supplier == null && !right) {
+            condBuilder.append(" and s.salesId = :salesId");
+            paramMap.put("salesId", id);
+        }
 
 
         if (materialType != null) {

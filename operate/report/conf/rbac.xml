@@ -7,8 +7,8 @@
     <role key="manager" text="商务经理"/>
 
 
-    <permission key="PURCHASE_TAX_REPORT" text="采购税务表" roles="account,sales"/>
-    <permission key="SALES_TAX_REPORT" text="销售税务表" roles="account,sales"/>
+    <permission key="PURCHASE_TAX_REPORT" text="采购税务表" roles="sales,account"/>
+    <permission key="SALES_TAX_REPORT" text="销售税务表" roles="sales,account"/>
     <permission key="PAYMENT_REPORT" text="支付渠道报表" roles="account"/>
     <permission key="WITHDRAW_REPORT" text="提现报表" roles="account"/>
     <permission key="BALANCE_REPORT" text="余额报表" roles="account"/>
