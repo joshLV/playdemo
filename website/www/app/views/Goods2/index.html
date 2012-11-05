@@ -40,13 +40,13 @@
 
 <div class="wrapper">
     <div id="content" class="clearfix">
-        <div class="crumbs">#{breadcrumbs/breadcrumb breadcrumbs/}</div>
-        <div id="section">
+        <div class="crumbs">#{breadcrumbs/breadcrumb breadcrumbs/}
         #{if onSaleGoodsCount != null && onSaleGoodsCount > 0}
-            <div id="stats">找到<span class="keyword">${s?:condition.brandName}</span>相关宝贝<span
+            找到<span class="keyword">${s?:condition.brandName}</span>相关宝贝<span
                     class="count">${onSaleGoodsCount}</span>件
-            </div>
         #{/if}
+        </div>
+        <div id="section">
         #{if onSaleGoodsCount == null || onSaleGoodsCount == 0}
             <div id="sorry">
                 <div class="inner">很抱歉！ 没有找到<span class="keyword">${s}</span>相关的商品。</div>
@@ -100,8 +100,7 @@
                             #{list searchCategories, as:'category'}
                                 <li><a href="${condition.buildUrl('categoryId',category.id).getUrl()}"
                                        #{if category.id ==
-                                       categoryId}class="curr"#{/if}>${category.name}
-                                    <em>(${category.goodsCount})</em></a></li>
+                                       categoryId}class="curr"#{/if}>${category.name}<em>(${category.goodsCount})</em></a></li>
                             #{/list}
                         </ul>
                         #{if subCategories!= null && subCategories.size() > 0}
@@ -132,8 +131,7 @@
                             #{list districts,as:'area'}
                                 <li><a href="${condition.buildUrl('searchAreaId', area.id).getUrl()}" #{if
                                 condition.searchAreaId.length() >= 5 &&
-                                condition.searchAreaId.startsWith(area.id)}class="curr"#{/if}>${area.name}
-                                    <em>(${area.goodsCount})</em></a></li>
+                                condition.searchAreaId.startsWith(area.id)}class="curr"#{/if}>${area.name}<em>(${area.goodsCount})</em></a></li>
                             #{/list}
                         </ul>
                         #{if searchAreas != null && searchAreas.size() != 0}
@@ -141,8 +139,7 @@
                                 <ul class="more clearfix">
                                     #{list searchAreas,as:'area'}
                                         <li><a href="${condition.buildUrl('searchAreaId', area.id).getUrl()}" #{if
-                                        area.id.equals(condition.searchAreaId)}class="curr"#{/if}>${area.name}
-                                            <em>(${area.goodsCount})</em></a></li>
+                                        area.id.equals(condition.searchAreaId)}class="curr"#{/if}>${area.name}<em>(${area.goodsCount})</em></a></li>
                                     #{/list}
                                 </ul>
                             </div>
