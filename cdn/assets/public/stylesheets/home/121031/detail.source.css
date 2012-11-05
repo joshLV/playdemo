@@ -437,6 +437,10 @@
 #show .bd p {
     margin: 5px 0;
 }
+#show .bd img {
+    max-width: 708px;
+    _width: expression(this.width > 708 ? 704: true);
+}
 #consult {
     margin-bottom: 10px;
 }
