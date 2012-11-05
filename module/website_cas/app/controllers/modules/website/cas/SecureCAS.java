@@ -31,6 +31,7 @@ import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Router;
+import play.mvc.Http.Header;
 
 import java.util.Date;
 
@@ -145,6 +146,12 @@ public class SecureCAS extends Controller {
         if (!Router.route(request).action.equals("modules.website.cas.SecureCAS.login")) {
             // we put into cache the url we come from
             Cache.add("url_" + session.getId(), request.method == "GET" ? request.url : "/", "10min");
+        } else {
+            Header header = request.headers.get("referer");
+            if (header != null) {
+                String referer = header.value();
+                Cache.add("url_" + session.getId(), request.method == "GET" ? referer : "/", "10min");
+            }
         }
 
         // we redirect the user to the cas login page
