@@ -41,7 +41,7 @@ public class OperateCoupons extends Controller {
                 coupon.operateUserName = operateUser.userName;
             }
         }
-        List<Brand> brandList = Brand.findByOrder(null);
+        List<Brand> brandList = Brand.findByOrder(null, id, right);
         renderArgs.put("brandList", brandList);
         BigDecimal amountSummary = ECoupon.summary(couponPage);
         //判断角色是否有解冻券号的权限

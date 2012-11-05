@@ -71,7 +71,8 @@ public class OperateOrders extends Controller {
         JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE,id,right);
 
         BigDecimal amountSummary = Order.summary(orderList);
-        List<Brand> brandList = Brand.findByOrder(null);
+
+        List<Brand> brandList = Brand.findByOrder(null,id,right);
         renderArgs.put("brandList", brandList);
         render(orderList, condition, amountSummary, desc);
 

@@ -92,10 +92,10 @@ public class Brand extends Model {
         CacheHelper.delete(CACHEKEY + this.id);
         super._delete();
     }
-    
+
     @Override
     @SolrField
-    public Long getId(){
+    public Long getId() {
         return id;
     }
 
@@ -184,7 +184,7 @@ public class Brand extends Model {
         return find("deleted= ? order by displayOrder", DeletedStatus.UN_DELETED).fetch(limit);
     }
 
-    public static List<Brand> findByOrder(Supplier supplier) {
+    public static List<Brand> findByOrder(Supplier supplier, Long id, Boolean right) {
         StringBuilder sq = new StringBuilder("deleted = ?");
         List params = new ArrayList();
         params.add(DeletedStatus.UN_DELETED);
@@ -192,6 +192,11 @@ public class Brand extends Model {
         if (supplier != null) {
             sq.append(" and supplier = ?");
             params.add(supplier);
+        }
+
+        if ((supplier != null && !right) || (!right)) {
+            sq.append(" and supplier.salesId = ?");
+            params.add(id);
         }
 
         return find(sq.toString(), params.toArray()).fetch();
