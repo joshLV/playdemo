@@ -6,11 +6,10 @@ import models.accounts.AccountType;
 import models.consumer.User;
 import models.resale.Resaler;
 import models.sales.Brand;
+import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class OrdersCondition {
     public Map<String, Object> paramsMap = new HashMap<>();
@@ -39,7 +38,7 @@ public class OrdersCondition {
      * @param supplierId 商户ID
      * @return sql 查询条件
      */
-    public String getFilter(Long supplierId) {
+    public String getFilter(Long supplierId, Long id, Boolean right) {
         StringBuilder sql = new StringBuilder();
         sql.append(" o.deleted = :deleted");
         paramsMap.put("deleted", DeletedStatus.UN_DELETED);
@@ -48,6 +47,18 @@ public class OrdersCondition {
             sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.supplierId = :supplierId)");
             paramsMap.put("supplierId", supplierId);
         }
+
+        if ((supplierId != null && !right) || (supplierId == null && !right)) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", id).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.supplierId in (:supplierIds))");
+            paramsMap.put("supplierIds", supplierIds);
+        }
+
+
         if (userType != null) {
             sql.append(" and o.userType=:userType");
             paramsMap.put("userType", userType);

@@ -505,9 +505,9 @@ public class Order extends Model {
      * @param pageSize   每页记录
      * @return ordersPage 订单信息
      */
-    public static JPAExtPaginator<Order> query(OrdersCondition condition, Long supplierId, int pageNumber, int pageSize) {
+    public static JPAExtPaginator<Order> query(OrdersCondition condition, Long supplierId, int pageNumber, int pageSize,Long id,Boolean right) {
         JPAExtPaginator<Order> orderPage = new JPAExtPaginator<>
-                ("Order o", "o", Order.class, condition.getFilter(supplierId),
+                ("Order o", "o", Order.class, condition.getFilter(supplierId,id,right),
                         condition.paramsMap)
                 .orderBy(condition.getOrderByExpress());
         orderPage.setPageNumber(pageNumber);

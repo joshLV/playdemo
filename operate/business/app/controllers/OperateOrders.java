@@ -5,6 +5,7 @@ import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrdersCondition;
 import models.sales.Brand;
+import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
@@ -25,54 +26,54 @@ public class OperateOrders extends Controller {
      *
      * @param condition 页面条件信息
      */
-    public static void index(OrdersCondition condition,String desc) {
+    public static void index(OrdersCondition condition, String desc) {
         if (condition == null) {
             condition = new OrdersCondition();
         }
         // DESC 的值表示升降序，含7位，代表7个排序字段（不含订单编号,商品名称）， 1 为升序， 2 为降序， 0 为不排序
         // 当无排序参数时，初始化 -1
-        if (desc == null){
+        if (desc == null) {
             desc = "-1";
         }
         // 获取最新的desc值
         String[] descs = desc.split(",");
-        desc = descs[descs.length-1].trim();
+        desc = descs[descs.length - 1].trim();
 
-        if (isValidDesc(desc)){
+        if (isValidDesc(desc)) {
             //排序合法且没有优先指数，添加到condition 中
             int index = 0;
             // 定位排序属性
-            for (int i = 0 ; i < desc.length(); i++){
-               if (desc.charAt(i) != '0'){
+            for (int i = 0; i < desc.length(); i++) {
+                if (desc.charAt(i) != '0') {
                     index = i;
                     break;
-               }
+                }
             }
-            String[] orderBy = {"o.status","o.userId","o.userType","o.amount","o.createdAt","o.paidAt","o.refundAt"};
+            String[] orderBy = {"o.status", "o.userId", "o.userType", "o.amount", "o.createdAt", "o.paidAt", "o.refundAt"};
             // 添加排序属性
             condition.orderBy = orderBy[index];
             // 添加升降序方式
-            if (desc.charAt(index) == '1'){
+            if (desc.charAt(index) == '1') {
                 condition.orderByType = "asc";
-            }
-            else{
+            } else {
                 condition.orderByType = "desc";
             }
 
-        }
-        else{
+        } else {
             // 一般排序，按创建时间
             condition.orderBy = "o.createdAt";
         }
 
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE);
+        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        Long id = OperateRbac.currentUser().id;
+        JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE,id,right);
 
         BigDecimal amountSummary = Order.summary(orderList);
         List<Brand> brandList = Brand.findByOrder(null);
         renderArgs.put("brandList", brandList);
-        render(orderList, condition, amountSummary,desc);
+        render(orderList, condition, amountSummary, desc);
 
     }
 
@@ -85,7 +86,7 @@ public class OperateOrders extends Controller {
             error(500, "can not find the order:" + id);
         }
         Order.sendRealGoodsAndPayCommissions(id, order.deliveryCompany, order.deliveryNo);
-        index(null,"");
+        index(null, "");
     }
 
     /**
@@ -109,8 +110,10 @@ public class OperateOrders extends Controller {
         }
         String page = request.params.get("page");
         request.format = "xls";
-        renderArgs.put("__FILE_NAME__","订单_" + System.currentTimeMillis() + ".xls" );
-        JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, null, 1, PAGE_SIZE);
+        renderArgs.put("__FILE_NAME__", "订单_" + System.currentTimeMillis() + ".xls");
+        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        Long id = OperateRbac.currentUser().id;
+        JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, null, 1, PAGE_SIZE,id,right);
         for (Order order : orderList) {
             if (order.userType == AccountType.CONSUMER) {
                 order.accountEmail = order.getUser().loginName;
@@ -124,24 +127,25 @@ public class OperateOrders extends Controller {
 
     /**
      * 判断排序字符串的合法性
+     *
      * @param desc 排序字符串
      * @return
      */
-    public static boolean isValidDesc(String desc){
-        if (desc.length() != 7){
+    public static boolean isValidDesc(String desc) {
+        if (desc.length() != 7) {
             return false;
         }
         int countZero = 0;
-        for (int i = 0; i < desc.length(); i++){
-            if (desc.charAt(i) == '0'){
+        for (int i = 0; i < desc.length(); i++) {
+            if (desc.charAt(i) == '0') {
                 countZero++;
             }
         }
-        if (countZero != 6){
+        if (countZero != 6) {
             return false;
         }
-        for (int i = 0; i < desc.length(); i++){
-            if (desc.charAt(i) != '0' && desc.charAt(i) != '1' && desc.charAt(i) != '2'){
+        for (int i = 0; i < desc.length(); i++) {
+            if (desc.charAt(i) != '0' && desc.charAt(i) != '1' && desc.charAt(i) != '2') {
                 return false;
             }
         }
