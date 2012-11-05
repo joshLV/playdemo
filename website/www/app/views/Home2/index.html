@@ -206,7 +206,7 @@
     <div class="hd"><h2><b class="f${i}"></b>${category.name}</h2></div>
     <div class="ft">
         #{list category.getShowKeywordsList(10),as:'keywords'}
-            <a href="/q/${category.id}?s=${keywords}">${keywords}</a>
+            <a href="${new models.sales.GoodsWebsiteCondition().buildUrl('categoryId', category.id).buildUrl('keywords', keywords).getUrl()}">${keywords}</a>
         #{/list}
         <a href="/q/${category.id}">更多&gt;&gt;</a>
     </div>

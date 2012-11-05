@@ -32,6 +32,8 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -57,6 +59,13 @@ public class Goods2 extends Controller {
     public static void index() {
         String page = params.get("page");
         String keywords = params.get("s");
+        if (StringUtils.isNotBlank(keywords)) {
+            try {
+                keywords = URLDecoder.decode(keywords, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
         renderArgs.put("s", keywords);
 
         String brandIdStr = params.get("b");
@@ -100,7 +109,7 @@ public class Goods2 extends Controller {
         renderRightBar(null);
 
         final GoodsWebsiteCondition condition = new GoodsWebsiteCondition("", keywords, brandId);
-
+        renderGoodsListTitle(condition);
         render(breadcrumbs, onSaleGoodsCount, condition);
     }
 
@@ -113,6 +122,13 @@ public class Goods2 extends Controller {
     public static void search(String conditionStr) {
         String page = params.get("page");
         String keywords = params.get("s");
+        if (StringUtils.isNotBlank(keywords)) {
+            try {
+                keywords = URLDecoder.decode(keywords, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
         renderArgs.put("s", keywords);
         String brandIdStr = params.get("b");
         renderArgs.put("b", brandIdStr);
@@ -129,7 +145,7 @@ public class Goods2 extends Controller {
         try {
             final GoodsWebsiteCondition condition = new GoodsWebsiteCondition(conditionStr, keywords, brandId);
 
-            //获取要显示的子分类列表
+            //根据分类id判断是顶层分类还是子分类
             Category currentCategory = null;
             if (condition.categoryId > 0) {
                 currentCategory = Category.findCategoryById(condition.categoryId);
@@ -148,7 +164,13 @@ public class Goods2 extends Controller {
 
             if (onSaleGoodsCount != null && onSaleGoodsCount > 0) {
                 //搜索结果的分类统计
-                List<Category> searchCategories = models.sales.Goods.getStatisticTopCategories(queryResponse);
+                List<Category> searchCategories;
+                if (StringUtils.isNotBlank(condition.keywords)) {
+                    searchCategories = models.sales.Goods.getStatisticTopCategories(queryResponse);
+                } else {
+                    searchCategories = Category.findTop(50);
+                }
+
                 renderArgs.put("searchCategories", searchCategories);
 
                 if (condition.parentCategoryId > 0) { //如果指定了顶级分类，则统计子分类
@@ -160,19 +182,27 @@ public class Goods2 extends Controller {
                 }
 
                 //搜索结果的地区统计
-                List<Area> districts = Goods.getStatisticDistricts(queryResponse);
+                List<Area> districts;
+                if (StringUtils.isBlank(condition.keywords)) {
+                    //关键字无时，统计地区就不限制地区条件了。
+                    districts = Goods.statisticDistricts(condition, pageNumber, PAGE_SIZE);
+                } else {
+                    districts = Goods.getStatisticDistricts(queryResponse);
+                }
+
                 renderArgs.put("districts", districts);
 
+                List<Area> searchAreas;
                 if (!"0".equals(condition.districtId)) {
-                    List<Area> searchAreas = models.sales.Goods.getStatisticAreas(queryResponse, condition.districtId);
+                    searchAreas = models.sales.Goods.getStatisticAreas(queryResponse, condition.districtId);
                     renderArgs.put("searchAreas", searchAreas);
                 } else if (!"0".equals(condition.searchAreaId)) {
-                    List<Area> searchAreas = models.sales.Goods.getStatisticAreas(queryResponse, Area.findAreaById(condition.searchAreaId).parent.id);
+//                    searchAreas = models.sales.Goods.getStatisticAreas(queryResponse, Area.findAreaById(condition.searchAreaId).parent.id);
+                    searchAreas = models.sales.Goods.statisticAreas(condition, pageNumber, PAGE_SIZE);
                     renderArgs.put("searchAreas", searchAreas);
                 }
             } else {
                 renderRecommendGoods(PAGE_SIZE);
-
             }
 
             BreadcrumbList breadcrumbs = createBreadcrumbs(condition);
@@ -555,15 +585,27 @@ public class Goods2 extends Controller {
 
     private static void renderGoodsListTitle(GoodsWebsiteCondition goodsCond) {
         List<String> titleList = new ArrayList<>();
+        if (goodsCond.parentCategoryId > 0) {
+            Category c = Category.findCategoryById(goodsCond.parentCategoryId);
+            if (c != null) {
+                titleList.add(c.name);
+            }
+        }
         if (goodsCond.categoryId > 0) {
             Category c = Category.findCategoryById(goodsCond.categoryId);
-            titleList.add(c.name);
-            if (StringUtils.isNotBlank(c.keywords)) {
-                titleList.add(c.keywords);
+            if (c != null) {
+                titleList.add(c.parentCategory.name);
+                titleList.add(c.name);
+                if (StringUtils.isNotBlank(c.keywords)) {
+                    titleList.add(c.keywords);
+                }
+                if (c.parentCategory != null) {
+                    renderArgs.put("categoryId", c.parentCategory.id);
+                }
             }
-            if (c.parentCategory != null) {
-                renderArgs.put("categoryId", c.parentCategory.id);
-            }
+        }
+        if (StringUtils.isNotBlank(goodsCond.keywords)) {
+            titleList.add(goodsCond.keywords);
         }
         if (!"0".equals(goodsCond.cityId)) {
             Area city = Area.findById(goodsCond.cityId);
@@ -620,7 +662,7 @@ public class Goods2 extends Controller {
      */
     private static BreadcrumbList createBreadcrumbs(GoodsWebsiteCondition goodsCond) {
         BreadcrumbList breadcrumbs = new BreadcrumbList();
-        if (goodsCond == null || goodsCond.isDefault() && StringUtils.isBlank(goodsCond.keywords)) {
+        if (goodsCond.isDefault() && StringUtils.isBlank(goodsCond.keywords) && goodsCond.parentCategoryId == 0) {
             return breadcrumbs;
         }
         final Breadcrumb categoryCrumb = createCategoryCrumb(goodsCond);
@@ -654,6 +696,9 @@ public class Goods2 extends Controller {
         if (goodsCond.parentCategoryId > 0) {
             Category category = Category.findCategoryById(goodsCond.parentCategoryId);
             desc = category.name;
+        } else if (goodsCond.categoryId > 0) {
+            Category category = Category.findCategoryById(goodsCond.categoryId);
+            desc = category.parentCategory.name;
         } else {
             desc = "全部分类";
         }

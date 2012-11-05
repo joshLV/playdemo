@@ -5,6 +5,8 @@ import org.apache.commons.lang.StringUtils;
 import play.Logger;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -234,7 +236,11 @@ public class GoodsWebsiteCondition implements Serializable {
         }
         if (keywords != null) {
             keywords.replace(" ", "+");
-            url += "?s=" + keywords;
+            try {
+                url += "?s=" + URLEncoder.encode(keywords, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                url += "?s=" + keywords;
+            }
             if (brandId != 0) {
                 url += "&b=" + brandId;
             }
@@ -244,7 +250,11 @@ public class GoodsWebsiteCondition implements Serializable {
             }
         }
 
+        /*try {
+            return URLEncoder.encode(url, "UTF-8");
+        } catch (UnsupportedEncodingException e) {*/
         return url;
+//        }
     }
 
     public boolean isDefault() {
@@ -257,6 +267,9 @@ public class GoodsWebsiteCondition implements Serializable {
             GoodsWebsiteCondition condition = (GoodsWebsiteCondition) this.clone();
             if (StringUtils.isBlank(queryProperty)) {
                 return this;
+            }
+            if (queryProperty.equals("keywords")){
+                condition.keywords = (String)value;
             }
             if (queryProperty.equals("categoryId")) {
                 condition.categoryId = (Long) value;

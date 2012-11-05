@@ -252,10 +252,7 @@ public class OrderItems extends Model {
         if (goods.personLimitNumber != null) {
             limitNumber = goods.personLimitNumber;
         }
-//        System.out.println("limit<<<<<<<"+limitNumber);
-//        System.out.println("number<<<<<<<"+number);
-//        System.out.println(" boughtNumber<<<<<<<"+ boughtNumber);
-//        System.out.println("dddd?????"+ (limitNumber > 0 && (number > limitNumber || limitNumber <= boughtNumber)));
+
         //超过限购数量,则表示已经购买过该商品
         return (limitNumber > 0 && (number > limitNumber || limitNumber <= boughtNumber));
     }

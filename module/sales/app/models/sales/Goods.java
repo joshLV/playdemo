@@ -767,7 +767,6 @@ public class Goods extends Model {
             return cumulativeStocks - getRealSaleCount();
         }
         return getRealSaleCount();
-
     }
 
     /**
@@ -1279,7 +1278,7 @@ public class Goods extends Model {
     }
 
     @Transient
-    //@SolrField
+    @SolrField
     public Collection<Shop> getShopList() {
         if (isAllShop) {
             return CacheHelper.getCache(CacheHelper.getCacheKey(Shop.CACHEKEY_SUPPLIERID + this.supplierId, "GOODS_SHOP_LIST"), new CacheCallBack<List<Shop>>() {
@@ -1769,7 +1768,39 @@ public class Goods extends Model {
         String q = StringUtils.isNotBlank(condition.keywords) ? "text:\"" + condition.keywords + "\"" : null;
         return search(q, condition.parentCategoryId, condition.categoryId, condition.districtId, condition.areaId,
                 condition.isOrder, condition.materialType, condition.brandId,
-                condition.solrOrderBy, "asc".equals(condition.orderByType), pageNumber, pageSize);
+                condition.solrOrderBy, "asc".equals(condition.orderByType), pageNumber, pageSize, false,
+                new String[]{"goods.categoryIds_s", "goods.parentCategoryIds_s", "shop.districtId_s", "shop.areaId_s"});
+    }
+
+    /**
+     * 前端按条件的全文搜索.
+     *
+     * @param pageNumber
+     * @param pageSize
+     * @return
+     */
+    public static List<Area> statisticDistricts(GoodsWebsiteCondition condition, int pageNumber, int pageSize) {
+        String q = StringUtils.isNotBlank(condition.keywords) ? "text:\"" + condition.keywords + "\"" : null;
+        QueryResponse response = search(q, condition.parentCategoryId, condition.categoryId, null, null,
+                condition.isOrder, condition.materialType, condition.brandId,
+                condition.solrOrderBy, "asc".equals(condition.orderByType), pageNumber, pageSize, true,
+                new String[]{"shop.districtId_s"});
+        return getStatisticDistricts(response);
+    }
+
+    public static List<Category> statisticCategory(long parentCategoryId) {
+        QueryResponse response = search(null, 0, 0, null, null, null, null, 0, null, false, 0, 0, true,
+                new String[]{"goods.categoryIds_s"});
+        return getStatisticSubCategories(response, parentCategoryId);
+    }
+
+    public static List<Area> statisticAreas(GoodsWebsiteCondition condition, int pageNumber, int pageSize) {
+        String q = StringUtils.isNotBlank(condition.keywords) ? "text:\"" + condition.keywords + "\"" : null;
+        QueryResponse response = search(q, condition.parentCategoryId, condition.categoryId, condition.districtId, null,
+                condition.isOrder, condition.materialType, condition.brandId,
+                condition.solrOrderBy, "asc".equals(condition.orderByType), pageNumber, pageSize, true,
+                new String[]{"shop.areaId_s"});
+        return getStatisticAreas(response, condition.districtId);
     }
 
     /**
@@ -1786,9 +1817,9 @@ public class Goods extends Model {
      * @param pageSize
      * @return
      */
-    public static QueryResponse search(String q, long parentCategoryId, long categoryId, String districtId,
-                                       String areaId, Boolean isOrder, MaterialType materialType, long brandId,
-                                       String orderBy, boolean isAsc, int pageNumber, int pageSize) {
+    private static QueryResponse search(String q, long parentCategoryId, long categoryId, String districtId,
+                                        String areaId, Boolean isOrder, MaterialType materialType, long brandId,
+                                        String orderBy, boolean isAsc, int pageNumber, int pageSize, boolean onlyStatistic, String[] facetFields) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
         StringBuilder queryStr = new StringBuilder(
@@ -1824,12 +1855,16 @@ public class Goods extends Model {
         System.out.println("==> queryStr:" + queryStr);
 
         SolrQuery query = new SolrQuery(queryStr.toString());
-        query.setFields(SOLR_ID, SOLR_GOODS_NAME, SOLR_GOODS_SALEPRICE, SOLR_GOODS_FACEVALUE, SOLR_GOODS_VIRTUALSALECOUNT, SOLR_GOODS_AREAS, SOLR_GOODS_IMAGESMALLPATH);
-        query.setSortField(orderBy, isAsc ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
-        query.setFacet(true).addFacetField("goods.categoryIds_s", "goods.parentCategoryIds_s", "shop.districtId_s", "shop.areaId_s");
-        query.setHighlight(true);
-        query.setStart(pageNumber * pageSize - pageSize);
-        query.setRows(pageSize);
+        if (onlyStatistic) {
+            query.setRows(0);
+        } else {
+            query.setRows(pageSize);
+            query.setFields(SOLR_ID, SOLR_GOODS_NAME, SOLR_GOODS_SALEPRICE, SOLR_GOODS_FACEVALUE, SOLR_GOODS_VIRTUALSALECOUNT, SOLR_GOODS_AREAS, SOLR_GOODS_IMAGESMALLPATH);
+            query.setSortField(orderBy, isAsc ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
+            query.setStart(pageNumber * pageSize - pageSize);
+        }
+        query.setFacet(true).addFacetField(facetFields);
+        query.setHighlight(true).addHighlightField(SOLR_GOODS_NAME);
         return Solr.query(query);
     }
 
@@ -1960,7 +1995,6 @@ public class Goods extends Model {
         }
         FacetField facetField = districtId == null ? response.getFacetField("shop.districtId_s") : response.getFacetField("shop.areaId_s");
         if (facetField != null) {
-
             List<FacetField.Count> countList = facetField.getValues();
 
             for (FacetField.Count count : countList) {

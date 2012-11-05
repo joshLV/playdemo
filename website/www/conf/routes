@@ -38,14 +38,14 @@ GET     /gh/{id}                                Goods.showHistory
 GET     /goods                                  Goods.index
 GET     /goods/list/{condition}                 Goods.list
 GET     /goods/{id}                             Goods.show
-POST     /user-question                          UserQuestions.add
+POST    /user-question                          UserQuestions.add
 GET     /more-questions                         UserQuestions.moreQuestions
 
 # v2 (2012-10-30)
 GET     /q                                      Goods2.index
 GET     /q/{conditionStr}                       Goods2.search
 GET     /p/{id}                                 Goods2.show
-GET     /p/{id}                                 Goods2.showHistory
+GET     /ph/{id}                                Goods2.showHistory
 GET     /goods/{id}/shops                       Goods2.shops(format:'json')
 GET     /goods/{id}/questions                   Goods2.questions(format:'json')
 GET     /user-question                          UserQuestions.add
