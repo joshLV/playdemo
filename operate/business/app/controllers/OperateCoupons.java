@@ -32,8 +32,9 @@ public class OperateCoupons extends Controller {
         }
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-
-        JPAExtPaginator<ECoupon> couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE);
+        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        Long id = OperateRbac.currentUser().id;
+        JPAExtPaginator<ECoupon> couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE, id, right);
         for (ECoupon coupon : couponPage) {
             if (coupon.operateUserId != null) {
                 OperateUser operateUser = OperateUser.findById(coupon.operateUserId);
@@ -43,7 +44,6 @@ public class OperateCoupons extends Controller {
         List<Brand> brandList = Brand.findByOrder(null);
         renderArgs.put("brandList", brandList);
         BigDecimal amountSummary = ECoupon.summary(couponPage);
-
         //判断角色是否有解冻券号的权限
         boolean hasRight = ContextedPermission.hasPermission("COUPON_UNFREEZE");
         render(couponPage, condition, amountSummary, hasRight);
@@ -96,12 +96,15 @@ public class OperateCoupons extends Controller {
     }
 
     public static void couponExcelOut(CouponsCondition condition) {
+
         if (condition == null) {
             condition = new CouponsCondition();
         }
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "券列表_" + System.currentTimeMillis() + ".xls");
-        JPAExtPaginator<ECoupon> couponsList = ECoupon.query(condition, 1, PAGE_SIZE);
+        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        Long id = OperateRbac.currentUser().id;
+        JPAExtPaginator<ECoupon> couponsList = ECoupon.query(condition, 1, PAGE_SIZE, id, right);
         for (ECoupon coupon : couponsList) {
             coupon.shopName = coupon.getConsumedShop();
 
@@ -140,7 +143,6 @@ public class OperateCoupons extends Controller {
         render(couponsList);
 
     }
-
 
 
 }

@@ -2,6 +2,7 @@ package models.order;
 
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.RandomNumberUtil;
+import controllers.OperateRbac;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.TradeBill;
@@ -16,6 +17,7 @@ import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.Shop;
 import models.sms.SMSUtil;
+import operate.rbac.ContextedPermission;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
@@ -601,10 +603,10 @@ public class ECoupon extends Model {
      * @return couponsPage 券记录
      */
     public static JPAExtPaginator<ECoupon> query(CouponsCondition condition,
-                                                 int pageNumber, int pageSize) {
+                                                 int pageNumber, int pageSize, Long id, Boolean right) {
         JPAExtPaginator<ECoupon> couponsPage = new JPAExtPaginator<>
                 ("ECoupon e", "e", ECoupon.class,
-                        condition.getFilter(),
+                        condition.getFilter(id, right),
                         condition.getParamMap())
                 .orderBy("e.consumedAt desc,e.createdAt desc");
 
@@ -623,9 +625,11 @@ public class ECoupon extends Model {
      */
     public static JPAExtPaginator<ECoupon> getUserCoupons(
             CouponsCondition condition, int pageNumber, int pageSize) {
+        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        Long id = OperateRbac.currentUser().id;
         JPAExtPaginator<ECoupon> couponsPage = new JPAExtPaginator<>
                 ("ECoupon e", "e", ECoupon.class,
-                        condition.getFilter(),
+                        condition.getFilter(id, right),
                         condition.getParamMap())
                 .orderBy("e.createdAt desc");
 
@@ -1041,9 +1045,11 @@ public class ECoupon extends Model {
      * @return
      */
     public static BigDecimal sum(CouponsCondition condition) {
+        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        Long id = OperateRbac.currentUser().id;
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select sum(e.originalPrice) " +
-                "from ECoupon e where " + condition.getFilter());
+                "from ECoupon e where " + condition.getFilter(id, right));
         for (String key : condition.getParamMap().keySet()) {
             q.setParameter(key, condition.getParamMap().get(key));
         }
