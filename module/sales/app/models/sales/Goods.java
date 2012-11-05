@@ -1663,14 +1663,7 @@ public class Goods extends Model {
         goodsHistory.couponType = this.couponType;
         goodsHistory.imagePath = this.imagePath;
         goodsHistory.supplierId = this.supplierId;
-        if (this.shops != null) {
-            this.refresh();
-            goodsHistory.shops = new HashSet<>();
-            goodsHistory.shops.addAll(this.shops);
-        } else {
-            goodsHistory.shops = null;
-            goodsHistory.shops = null;
-        }
+
         goodsHistory.title = this.title;
         goodsHistory.useBeginTime = this.useBeginTime;
         goodsHistory.useEndTime = this.useEndTime;

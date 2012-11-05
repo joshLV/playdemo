@@ -92,16 +92,6 @@ public class Shop extends Model {
     @Column(name = "display_order")
     public String displayOrder;
 
-    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    @JoinTable(name = "goods_shops", inverseJoinColumns = @JoinColumn(name
-            = "goods_id"), joinColumns = @JoinColumn(name = "shop_id"))
-    public Set<Goods> goods = new HashSet<>();
-
-    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    @JoinTable(name = "goods_history_shops", inverseJoinColumns = @JoinColumn(name
-            = "goods_history_id"), joinColumns = @JoinColumn(name = "shop_id"))
-    public Set<GoodsHistory> goodsHistory = new HashSet<>();
-
     @Transient
     public String supplierName;
 

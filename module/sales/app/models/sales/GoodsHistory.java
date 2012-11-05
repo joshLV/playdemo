@@ -246,10 +246,6 @@ public class GoodsHistory extends Model {
     @Column(name = "supplier_id")
     public Long supplierId;
 
-    @ManyToMany(cascade = CascadeType.REFRESH)
-    @JoinTable(name = "goods_history_shops", inverseJoinColumns = @JoinColumn(name
-            = "shop_id"), joinColumns = @JoinColumn(name = "goods_history_id"))
-    public Set<Shop> shops;
 
     /**
      * 商品标题（短信发送用）
