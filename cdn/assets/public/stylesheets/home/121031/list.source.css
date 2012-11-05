@@ -8,7 +8,7 @@
 }
 .crumbs {
     color: #757575;
-    padding: 8px 0 10px;
+    padding: 10px 0 15px;
 }
 .crumbs a {
     color: #f96c0f;
@@ -16,19 +16,47 @@
 #section {
     width: 750px;
     float: left;
+    position: relative;
 }
 #sidebar {
     width: 200px;
     float: right;
 }
 #stats {
-    color: #707070;
-    font-size: 14px;
+    position: absolute;
+    top: -35px;
+    left: 178px;
+    height: 21px;
+}
+#stats i.left {
+    float: left;
+    width: 11px;
+    height: 21px;
+    background: url(//img.uhcdn.com/home/list.png) no-repeat 0 -130px;
+}
+#stats i.right {
+    float: left;
+    width: 11px;
+    height: 21px;
+    background: url(//img.uhcdn.com/home/list.png) no-repeat -12px -130px;
+}
+#stats .center {
+    float: left;
+    width: auto;
+    padding: 1px 0;
+    font-size: 12px;
     font-weight: 700;
-    padding: 20px 25px;
-    margin-bottom: 10px;
     background-color: #fff;
-    border: 1px solid #e8e8e8;
+    border-top: 1px solid #ffd99b;
+    border-bottom: 1px solid #ffd99b;
+}
+#stats .inner {
+    float: left;
+    height: 17px;
+    color: #707070;
+    padding: 0 20px 0 8px;
+    line-height: 17px;
+    background-color: #fff3d5;
 }
 #stats span,
 #sorry span {
@@ -134,27 +162,48 @@
 #result .hd .sort {
     float: left;
 }
+#result .hd .sort li {
+    float: left;
+}
 #result .hd .sort a {
+    float: left;
     color: #707070;
+    padding: 5px 10px 5px 0;
+    height: 22px;
+    line-height: 22px;
+    display: inline-block;
+}
+#result .hd .sort a span {
+    display: block;
     padding-right: 10px;
-    margin-right: 10px;
 }
 #result .hd .sort a:hover {
     color: #f97310;
+    text-decoration: none;
 }
 #result .hd .sort .curr {
     color: #f97310;
     font-weight: 700;
 }
-#result .hd .sort .asc {
-    background: url(//img.uhcdn.com/home/list.png) no-repeat right -131px;
-    *background-position: right -133px;
-    _background-position: right -131px;
+#result .hd .sort .down {
+    background: url(//img.uhcdn.com/home/list.png) no-repeat right -205px;
+    *background-position: right -207px;
+    _background-position: right -205px;
 }
-#result .hd .sort .desc {
-    background: url(//img.uhcdn.com/home/list.png) no-repeat right -148px;
-    *background-position: right -150px;
-    _background-position: right -148px;
+#result .hd .sort .up {
+    background: url(//img.uhcdn.com/home/list.png) no-repeat right -188px;
+    *background-position: right -190px;
+    _background-position: right -188px;
+}
+#result .hd .sort .curr .down {
+    background-position: right -170px;
+    *background-position: right -172px;
+    _background-position: right -170px;
+}
+#result .hd .sort .curr .up {
+    background-position: right -152px;
+    *background-position: right -154px;
+    _background-position: right -152px;
 }
 #result .hd .sift {
     float: right;
@@ -222,8 +271,11 @@
     height: 36px;
     overflow: hidden;
     padding: 7px 0;
-    margin-bottom: 5px;
-    border-bottom: 1px dashed #d9d9d9;
+    margin-bottom: 15px;
+    border-bottom: 1px dotted #d9d9d9;
+}
+.goods .title a {
+    color: #767676;
 }
 .goods .title em {
     color: #FF751A;
@@ -255,24 +307,18 @@
 .goods .attribute .count em {
     color: #ff9600;
 }
-.goods .attribute .addCart {
+.goods .attribute .right {
     float: right;
-    padding-top: 24px;
-    color: #8a8a8a;
+    width: 72px;
+    padding-top: 17px;
 }
-.goods .attribute .addCart .view {
-    color: #FC7410;
-}
-.goods .attribute .addCart .view:hover {
-    text-decoration: none;
-}
-.goods .attribute .addCart .btn {
+.goods .attribute .right .view {
     display: block;
-    width: 82px;
-    height: 26px;
-    background: url(//img.uhcdn.com/home/list.png) no-repeat 0 -33px;
-    font-size: 0;
+    width: 72px;
+    height: 30px;
+    overflow: hidden;
     text-indent: -9999px;
+    background: url(//img.uhcdn.com/home/list.png) no-repeat 0 -33px;
 }
 .pagination-container {
     text-align: center;
@@ -353,7 +399,7 @@
     border-top: 3px solid #f97311;
 }
 #interest .bd {
-    height: 926px;
+    height: 956px;
     padding: 0 5px;
     overflow: hidden;
     margin-bottom: 20px;
@@ -465,10 +511,10 @@
     overflow: hidden;
     width: 174px;
     height: 36px;
-    margin-bottom: 5px;
+    margin: 10px 0;
 }
 .sidewrap .title a {
-    color: #707070;
+    color: #767676;
     line-height: 18px;
 }
 .sidewrap .title a:hover {

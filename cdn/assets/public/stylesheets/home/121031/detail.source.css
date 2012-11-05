@@ -8,7 +8,7 @@
 }
 .crumbs {
     color: #757575;
-    padding: 8px 0 10px;
+    padding: 10px 0 15px;
 }
 .crumbs a {
     color: #f96c0f;
@@ -277,6 +277,13 @@
 #promise li {
     float: left;
     height: 26px;
+}
+#promise li a {
+    color: #7D7D7D;
+    font: 700 14px/2.3 'Microsoft Yahei',arial;
+}
+#promise li a:hover {
+    text-decoration: none;
 }
 #promise li.quality {
     width: 72px;
@@ -688,10 +695,10 @@
     overflow: hidden;
     width: 174px;
     height: 36px;
-    margin-bottom: 5px;
+    margin: 10px 0;
 }
 .sidewrap .title a {
-    color: #707070;
+    color: #767676;
     line-height: 18px;
 }
 .sidewrap .title a:hover {
