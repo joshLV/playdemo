@@ -834,7 +834,6 @@ public class Goods extends Model {
                 long orderItemsBuyCount = OrderItems.count("goods.id=? and order.status != ?", id, OrderStatus.CANCELED);
                 // 减去已退款的数量
                 long ecouponRefundCount = ECoupon.count("goods.id=? and status=?", id, ECouponStatus.REFUND);
-
                 return orderItemsBuyCount - ecouponRefundCount;
             }
         });

@@ -7,6 +7,7 @@ import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import operate.rbac.annotations.Right;
 import org.apache.commons.lang.StringUtils;
+import play.Play;
 import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
@@ -34,7 +35,12 @@ public class OperateCoupons extends Controller {
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
         Long id = OperateRbac.currentUser().id;
-        JPAExtPaginator<ECoupon> couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE, id, right);
+        JPAExtPaginator<ECoupon> couponPage;
+        if (!Play.runingInTestMode()) {
+            couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE, id, right);
+        } else {
+            couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE, null, true);
+        }
         for (ECoupon coupon : couponPage) {
             if (coupon.operateUserId != null) {
                 OperateUser operateUser = OperateUser.findById(coupon.operateUserId);
@@ -104,7 +110,12 @@ public class OperateCoupons extends Controller {
         renderArgs.put("__FILE_NAME__", "券列表_" + System.currentTimeMillis() + ".xls");
         Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
         Long id = OperateRbac.currentUser().id;
-        JPAExtPaginator<ECoupon> couponsList = ECoupon.query(condition, 1, PAGE_SIZE, id, right);
+        JPAExtPaginator<ECoupon> couponsList;
+        if (!Play.runingInTestMode()) {
+            couponsList = ECoupon.query(condition, 1, PAGE_SIZE, id, right);
+        } else {
+            couponsList = ECoupon.query(condition, 1, PAGE_SIZE, null, true);
+        }
         for (ECoupon coupon : couponsList) {
             coupon.shopName = coupon.getConsumedShop();
 

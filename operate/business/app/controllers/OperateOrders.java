@@ -8,6 +8,7 @@ import models.sales.Brand;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.Play;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -30,6 +31,7 @@ public class OperateOrders extends Controller {
         if (condition == null) {
             condition = new OrdersCondition();
         }
+
         // DESC 的值表示升降序，含7位，代表7个排序字段（不含订单编号,商品名称）， 1 为升序， 2 为降序， 0 为不排序
         // 当无排序参数时，初始化 -1
         if (desc == null) {
@@ -68,11 +70,15 @@ public class OperateOrders extends Controller {
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
         Long id = OperateRbac.currentUser().id;
-        JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE,id,right);
-
+        JPAExtPaginator<models.order.Order> orderList;
+        if (!Play.runingInTestMode()) {
+            orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE, id, right);
+        } else {
+            orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE, null, true);
+        }
         BigDecimal amountSummary = Order.summary(orderList);
 
-        List<Brand> brandList = Brand.findByOrder(null,id,right);
+        List<Brand> brandList = Brand.findByOrder(null, id, right);
         renderArgs.put("brandList", brandList);
         render(orderList, condition, amountSummary, desc);
 
@@ -114,7 +120,12 @@ public class OperateOrders extends Controller {
         renderArgs.put("__FILE_NAME__", "订单_" + System.currentTimeMillis() + ".xls");
         Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
         Long id = OperateRbac.currentUser().id;
-        JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, null, 1, PAGE_SIZE,id,right);
+        JPAExtPaginator<models.order.Order> orderList;
+        if (!Play.runingInTestMode()) {
+            orderList = models.order.Order.query(condition, null, 1, PAGE_SIZE, id, right);
+        } else {
+            orderList = models.order.Order.query(condition, null, 1, PAGE_SIZE, null, true);
+        }
         for (Order order : orderList) {
             if (order.userType == AccountType.CONSUMER) {
                 order.accountEmail = order.getUser().loginName;

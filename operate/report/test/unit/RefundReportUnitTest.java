@@ -95,7 +95,7 @@ public class RefundReportUnitTest extends UnitTest {
 
     public void testGoodsRefund() {
         RefundReportCondition condition = new RefundReportCondition();
-        List<RefundReport> list = RefundReport.query(condition);
+        List<RefundReport> list = RefundReport.query(condition,null,true);
         System.out.println(list.get(0).reportDate);
         assertEquals(2, list.size());
 

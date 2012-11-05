@@ -4,6 +4,7 @@ import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.FileUploadUtil;
 import models.sales.Brand;
 import models.supplier.Supplier;
+import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
@@ -192,7 +193,9 @@ public class OperateBrands extends Controller {
     public static void goodsBrands(Long id) {
         //品牌列表
         Supplier supplier = Supplier.findById(id);
-        List<Brand> brandList = Brand.findByOrder(supplier);
+        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        Long loginUserId = OperateRbac.currentUser().id;
+        List<Brand> brandList = Brand.findByOrder(supplier, loginUserId, right);
         render(brandList);
     }
 

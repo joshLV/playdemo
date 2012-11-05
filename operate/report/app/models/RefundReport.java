@@ -5,6 +5,7 @@ import models.sales.Goods;
 import models.supplier.Supplier;
 import operate.rbac.ContextedPermission;
 import org.apache.commons.lang.StringUtils;
+import play.Play;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 
@@ -27,7 +28,7 @@ public class RefundReport extends Model {
     public BigDecimal totalAmount;
     public String reportDate;
 
-    public RefundReport(Goods goods, BigDecimal salePrice, Long buyNumber,BigDecimal amount) {
+    public RefundReport(Goods goods, BigDecimal salePrice, Long buyNumber, BigDecimal amount) {
         this.goods = goods;
         if (goods != null) {
             Supplier supplier = Supplier.findById(goods.supplierId);
@@ -35,7 +36,7 @@ public class RefundReport extends Model {
         }
         this.salePrice = salePrice;
         this.buyNumber = buyNumber;
-        this.amount=amount;
+        this.amount = amount;
     }
 
     public RefundReport(long buyCount, BigDecimal amount, BigDecimal totAmount) {
@@ -56,13 +57,13 @@ public class RefundReport extends Model {
      * @param condition
      * @return
      */
-    public static List<RefundReport> query(RefundReportCondition condition,Long id,Boolean right) {
+    public static List<RefundReport> query(RefundReportCondition condition, Long id, Boolean right) {
 
         String sql = "select new models.RefundReport(e.orderItems.goods,e.salePrice,count(e.orderItems.buyNumber),sum(e.refundPrice)) from ECoupon e ";
         String groupBy = " group by e.orderItems.goods";
 
         Query query = JPA.em()
-                .createQuery(sql + condition.getFilter(id,right) + groupBy + " order by sum(e.salePrice) desc");
+                .createQuery(sql + condition.getFilter(id, right) + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
@@ -83,10 +84,17 @@ public class RefundReport extends Model {
         String refundAt = "str(year(e.refundAt))||'-'|| str(month(e.refundAt))||'-'|| str(day(e.refundAt)) ";
         String sql = "select new models.RefundReport( " + refundAt + ",sum(e.refundPrice),count(e.id)) from ECoupon e ";
         String groupBy = " group by " + refundAt;
-        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
-        Long id = OperateRbac.currentUser().id;
+        Boolean right;
+        Long id;
+        if (!Play.runingInTestMode()) {
+            right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+            id = OperateRbac.currentUser().id;
+        } else {
+            right = true;
+            id = null;
+        }
         Query query = JPA.em()
-                .createQuery(sql + condition.getFilter(id,right) + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilter(id, right) + groupBy + " order by sum(e.refundPrice) desc");
 
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
