@@ -144,8 +144,8 @@
         #{set i:i+1/}
         <td>${(reportPage.pageNumber-1)*reportPage.pageSize+i}</td>
         <td>${report?.supplier?.fullName}</td>
-        <td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${report?.goods?.id}"
-               target="_blank"><img src="${report?.goods?.imageTinyPath}"/>${report?.goods?.name}</a></td>
+        <td><a href="http://${play.Play.configuration.getProperty("www.url")}/p/${report?.goods?.id}"
+               target="_blank"><img src="${report?.goods?.imageTinyPath}"/>${report?.goods?.shortName}</a></td>
         <td>&{'goods.'+report?.goods?.materialType}</td>
         <td>${report?.faceValue?.formatCurrency('CNY')}</td>
         <td>${report?.salePrice?.formatCurrency('CNY')}</td>

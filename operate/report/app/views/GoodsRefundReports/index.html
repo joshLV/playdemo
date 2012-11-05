@@ -151,14 +151,14 @@
         #{set i:i+1/}
         <td>${(reportPage.pageNumber-1)*reportPage.pageSize+i}</td>
         <td>${report.supplierName}</td>
-        <td><a href="http://${wwwUrl}/goods/${report?.goods?.id}"
-               target="_blank"><img src="${report?.goods?.imageTinyPath}"/>${report?.goods?.name}</a></td>
+        <td><a href="http://${wwwUrl}/p/${report?.goods?.id}"
+               target="_blank"><img src="${report?.goods?.imageTinyPath}"/>${report?.goods?.shortName}</a></td>
         <td>&{'goods.'+report?.goods?.materialType}</td>
         <td>${report?.salePrice?.formatCurrency('CNY')}</td>
         <td>${report?.buyNumber}</td>
         <td>
             <a href="#"
-               onclick="aForm('${baseUrl}','${report?.goods?.name}','${refundAtBegin}','${refundAtEnd}')">${report?.amount?.formatCurrency('CNY')}</a>
+               onclick="aForm('${baseUrl}','${report?.goods?.shortName}','${refundAtBegin}','${refundAtEnd}')">${report?.amount?.formatCurrency('CNY')}</a>
         </td>
     </tr>
 #{/paginate.list}

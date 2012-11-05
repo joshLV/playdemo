@@ -100,7 +100,7 @@
                                target="_blank"><img src="${rowItem.goods.imageTinyPath}"/></a>
                             <a class="goods-name"
                                href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${rowItem.goods.id}"
-                               target="_blank">${rowItem.goods.name}</a>
+                               target="_blank">${rowItem.goods.shortName}</a>
                         </td>
                         <td align="center">${rowItem.salePrice?.formatCurrency('CNY').raw()}</td>
                         <td align="center">${rowItem.buyNumber}</td>

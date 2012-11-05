@@ -67,15 +67,18 @@
     }
 
     function checkName(nameField) {
-        var remainLen = parseInt((${_length?_length*2:80} -getByteLen($(nameField).val())) / 2);
+        var len=$(nameField).attr("maxlength");
+        var remainLen = parseInt((len -getByteLen($(nameField).val())) / 2);
+        console.log(len+"-----"+remainLen)
         var id= $(nameField).attr("id");
         $("#tip_head_"+id).html("还可以输入");
         if (remainLen <= 0) {
             $("#tip_"+id).html("0");
-            var maxStr = getMaxStr($(nameField).val(),${_length?_length*2:80});
+            var maxStr = getMaxStr($(nameField).val(),len);
             $(nameField).val(maxStr);
         }else{
             $("#tip_"+id).html(remainLen);
         }
+        return false;
     }
 </script>

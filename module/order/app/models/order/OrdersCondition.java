@@ -101,7 +101,7 @@ public class OrdersCondition {
         }
         //按照商品名称检索
         if (QueryType.GOODS_NAME.toString().equals(searchKey)) {
-            sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.name like :name)");
+            sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.shortName like :name)");
             paramsMap.put("name", "%" + searchItems.trim() + "%");
         }
         //按照商品订单检索
@@ -196,7 +196,7 @@ public class OrdersCondition {
         }
         //按照商品名称检索
         if (StringUtils.isNotBlank(goodsName)) {
-            sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.name like :goodsName)");
+            sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.shortName like :goodsName)");
             paramsMap.put("goodsName", "%" + goodsName + "%");
         }
 

@@ -98,7 +98,6 @@ public class UploadFiles extends Controller {
         if (!uploadDir.canWrite()) {
             getError("上传目录没有写权限。");
         }
-
         //检查文件大小
         if (imgFile.length() > MAX_SIZE) {
             getError("上传文件大小超过限制。");
@@ -113,7 +112,6 @@ public class UploadFiles extends Controller {
         //上传文件
         try {
             String targetFilePath = FileUploadUtil.storeImage(imgFile, goodsId, ROOT_PATH);
-
             Map<String, Object> map = new HashMap<>();
             map.put("error", 0);
             String path = targetFilePath.substring(ROOT_PATH.length(), targetFilePath.length());
@@ -126,6 +124,7 @@ public class UploadFiles extends Controller {
             map.put("url", "http://" + Goods.IMAGE_SERVER + "/p" + path);
             renderJSON(map);
         } catch (Exception e) {
+            System.out.print(e.fillInStackTrace());
             getError("上传失败，服务器忙，请稍候再试。");
         }
     }

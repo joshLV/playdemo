@@ -4,6 +4,7 @@
 sales.Goods(Goods1):
  no: 001
  name: 测试商品1
+ shortName: 测试商品1
  supplierId: 1
  imagePath: /0/0/114/origin.jpg
  expiredBeginOn: 2012-02-28
@@ -26,6 +27,7 @@ sales.Goods(Goods1):
 sales.Goods(Goods2):
  no: 002
  name: 测试商品2
+ shortName: 测试商品2
  supplierId: 1
  imagePath: /0/0/112/origin.jpg
  expiredBeginOn: 2012-02-28
@@ -48,6 +50,7 @@ sales.Goods(Goods2):
 sales.Goods(Goods3):
  no: 003
  name: 测试商品3
+ shortName: 测试商品3
  supplierId: 1
  imagePath: /0/0/114/origin.jpg
  expiredBeginOn: 2012-02-28

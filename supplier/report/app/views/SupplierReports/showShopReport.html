@@ -127,8 +127,8 @@
         <tr>
             <td>${report?.shop?.name}</td>
             #{if tabIndex == 1}
-                <td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${report?.goods?.id}"><img
-                        src="${report?.goods?.imageTinyPath}"/>${report?.goods?.name}</a></td> #{/if}
+                <td><a href="http://${play.Play.configuration.getProperty("www.url")}/p/${report?.goods?.id}"><img
+                        src="${report?.goods?.imageTinyPath}"/>${report?.goods?.shortName}</a></td> #{/if}
             <td>${report?.buyCount}</td>
             <td>${report?.orderCount}</td>
             <td>${report?.originalAmount?.formatCurrency('CNY')}</td>
@@ -156,7 +156,7 @@
     <tr>
         <td>${report?.getMaskedEcouponSn()}</td>
         <td>${report?.order.orderNumber}</td>
-        <td><img src="${report?.goods?.imageTinyPath}"/>${report?.goods?.name}</td>
+        <td><img src="${report?.goods?.imageTinyPath}"/>${report?.goods?.shortName}</td>
         <td>${report?.originalPrice}</td>
         <td>${report?.goods.effectiveAt ?.format()} - ${report?.expireAt?.format()}</td>
         <td>${report?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>

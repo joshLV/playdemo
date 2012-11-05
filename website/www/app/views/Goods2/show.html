@@ -11,55 +11,6 @@
 <script src="http://maps.googleapis.com/maps/api/js?e&language=zh-CN&region=GB&key=AIzaSyCbnBNu40y5eXnL8jOey4lbS3P1vQ_HR5E&sensor=false"></script>
 #{set 'moreScripts'}
     #{asset.js src:['/u/slides.min.js','/home/121031/detail.js']/}
-<script type="text/javascript">
-    //直接在文本框里输入购买数量
-    $("#number").blur(function () {
-        try {
-            var goods_id = $("#goodsId").val();
-            var limitNumber = '${goods.limitNumber}';
-            var boughtNumber = '${boughtNumber}';
-            var number = Number($(this).val())
-            var stock = Number($("#stock").val())
-            if (number <= 0) {
-                $(this).val(1);
-                return false;
-            }
-            if (number > 999) {
-                $(this).val(999);
-                return false;
-            }
-
-            if (limitNumber > 0 && number > limitNumber) {
-                $(this).val(limitNumber - boughtNumber);
-                $("#last_num_" + goods_id).val(limitNumber - boughtNumber);
-                return false;
-            }
-            if (limitNumber > 0 && (limitNumber > boughtNumber) && number > (limitNumber - boughtNumber)) {
-                $(this).val(limitNumber - boughtNumber);
-                $("#last_num_" + goods_id).val(limitNumber - boughtNumber);
-                return false;
-            }
-            if (number > stock) {
-                $(this).val(stock)
-                $("#stock_hit").css("display", "inline")
-            }
-            $("#last_num_" + goods_id).val($(this).val())
-            ;
-        } catch (e) {
-            $(this).val(1);
-        }
-    });
-
-    $('#qq').click(function (e) {
-        e.preventDefault();
-        $('#share-im').slideToggle(100);
-    });
-
-    $('#share-url').click(function () {
-        $(this).select();
-    });
-
-</script>
 #{/set}
 <div class="wrapper">
     <div id="content">
@@ -150,28 +101,27 @@
                     </ul>
                 #{/form}
                 </div>
+
                 <!-- property-->
                 <div id="share" class="clearfix">
                     <span>分享到：</span>
                     <a class="qq" id="qq" href=""></a>
                     <a class="weibo"
-                       href="http://service.weibo.com/share/share.php?url=http%3A%2F%2Fwww.yibaiquan.com%2Fg%2F33%3Ftj%3Dgshare&amp;appkey=&amp;title=我刚刚在@一百券网 上看到这个商品：有家川菜现金券100元面值，免预约， 价格真实惠，分享给大家看看！地址: &amp;pic=&amp;ralateUid=&amp;language="
+                       href="http://service.weibo.com/share/share.php?url=${tjUrl.urlEncode()}&amp;appkey=&amp;title=我刚刚在@一百券网 上看到这个商品：${goods.title} 价格真实惠，#{if cas?.isLogin}现在注册购买还能折上再减1％，#{/if}分享给大家看看！地址: &amp;pic=&amp;ralateUid=&amp;language="
                        target="_blank"></a>
                     <a class="qzone"
-                       href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?title=【多商圈】 有家川菜8.5折现金券【含酒水 海鲜】免预约&desc=我刚刚在一百券网上看到这个商品：有家川菜现金券100元面值，免预约， 价格真实惠，分享给大家看看！&url=http%3A%2F%2Fwww.yibaiquan.com%2Fg%2F33%3Ftj%3Dgshare"
+                       href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?title=${goods.name}&desc=我刚刚在一百券网上看到这个商品：${goods.title} 价格真实惠，#{if cas?.isLogin}现在注册购买还能折上再减1％，#{/if}分享给大家看看！&url=${tjUrl.urlEncode()}"
                        target="_blank"></a>
                     <a class="tqq"
-                       href="http://share.v.t.qq.com/index.php?c=share&a=index&url=http%3A%2F%2Fwww.yibaiquan.com%2Fg%2F33%3Ftj%3Dgshare&title=我刚刚在一百券网上看到这个商品：有家川菜现金券100元面值，免预约， 价格真实惠，分享给大家看看！地址:&appkey=801cf76d3cfc44ada52ec13114e84a96"
+                       href="http://share.v.t.qq.com/index.php?c=share&a=index&url=${tjUrl.urlEncode()}&title=我刚刚在一百券网上看到这个商品：${goods.title} 价格真实惠，#{if cas?.isLogin}现在注册购买还能折上再减1％，#{/if}分享给大家看看！地址:&appkey=801cf76d3cfc44ada52ec13114e84a96"
                        target="_blank"></a>
                     <a class="renren"
-                       href="http://widget.renren.com/dialog/share?url=http%3A%2F%2Fwww.yibaiquan.com%2Fg%2F33%3Ftj%3Dgshare&title=【多商圈】 有家川菜8.5折现金券【含酒水 海鲜】免预约&description=我刚刚在一百券网上看到这个商品：有家川菜现金券100元面值，免预约， 价格真实惠，分享给大家看看！地址: http%3A%2F%2Fwww.yibaiquan.com%2Fg%2F33%3Ftj%3Dgshare"
+                       href="http://widget.renren.com/dialog/share?url=${tjUrl.urlEncode()}&title=${goods.name}&description=我刚刚在一百券网上看到这个商品：${goods.title} 价格真实惠，#{if cas?.isLogin}现在注册购买还能折上再减1％，#{/if}分享给大家看看！地址: ${tjUrl.urlEncode()}"
                        target="_blank"></a>
                 </div>
                 <div id="share-im">
                     <div class="inner">
-                        <label for="share-url">复制链接分享给站外好友：</label><input type="text" id="share-url" class="input"
-                                                                          value="${goods.wwwUrl}?tj=gshare"
-                                                                          readonly/>
+                        <label for="share-url">复制链接分享给站外好友：</label><input type="text" id="share-url" class="input" value="${tjUrl}" readonly/>
                     </div>
                 </div>
             </div>

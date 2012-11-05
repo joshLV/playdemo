@@ -240,10 +240,10 @@ select:'condition_status',value:condition?.status/}
         #{if order.realGoods?.size()>0}
             <td>
                 #{if models.sales.MaterialType.ELECTRONIC.equals(order.realGoods?.get(0)?.materialType)}
-                    <img src="${order.realGoods?.get(0)?.imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}"><a href="http://www.yibaiquan.com/g/${order.realGoods?.get(0)?.id}" target="_blank">${order.realGoods?.get(0)?.name}</a>
+                    <img src="${order.realGoods?.get(0)?.imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}"><a href="http://www.yibaiquan.com/g/${order.realGoods?.get(0)?.id}" target="_blank">${order.realGoods?.get(0)?.shortName}</a>
                 #{/if}
                 #{else}
-                    <img src="${order.realGoods?.get(0)?.imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}"><a href="http://www.yibaiquan.com/g/${order.realGoods?.get(0)?.id}" target="_blank" >${order.realGoods?.get(0)?.name}</a>
+                    <img src="${order.realGoods?.get(0)?.imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}"><a href="http://www.yibaiquan.com/g/${order.realGoods?.get(0)?.id}" target="_blank" >${order.realGoods?.get(0)?.shortName}</a>
                 #{/else}
             </td>
             <td rowspan="${order.realGoods?.size()}">
@@ -267,7 +267,7 @@ select:'condition_status',value:condition?.status/}
         #{else}
         *{有电子券时}*
             #{if order.electronicGoods?.size()>0}
-                <td><img src="${order.electronicGoods.get(0).imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}"><a href="http://www.yibaiquan.com/g/${order.electronicGoods.get(0).id}" target="_blank">${order.electronicGoods.get(0).name}&nbsp;</a>
+                <td><img src="${order.electronicGoods.get(0).imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}"><a href="http://www.yibaiquan.com/g/${order.electronicGoods.get(0).id}" target="_blank">${order.electronicGoods.get(0).shortName}&nbsp;</a>
                 </td>
                 <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
             #{/if}
@@ -296,7 +296,7 @@ select:'condition_status',value:condition?.status/}
             #{list items:order.realGoods, as:'aRealGoods'}
                 #{if i>0}
                 <tr test="i=${i}">
-                    <td><img src="${aRealGoods?.imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}"><a href="http://www.yibaiquan.com/g/${aRealGoods?.id}" target="_blank" >${aRealGoods?.name}</a></td>
+                    <td><img src="${aRealGoods?.imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}"><a href="http://www.yibaiquan.com/g/${aRealGoods?.id}" target="_blank" >${aRealGoods?.shortName}</a></td>
                 </tr>
                 #{/if}
                 #{set i:i+1/}
@@ -308,7 +308,7 @@ select:'condition_status',value:condition?.status/}
         #{list items:order.electronicGoods, as:'aElectronicGoods'}
             #{if (order.realGoods?.size()==0 && j>0) ||(order.realGoods?.size()>0) }
             <tr>
-                <td><img src="${aElectronicGoods.imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}"><a href="http://www.yibaiquan.com/g/${aElectronicGoods?.id}" target="_blank" >${aElectronicGoods?.name}</a></td>
+                <td><img src="${aElectronicGoods.imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}"><a href="http://www.yibaiquan.com/g/${aElectronicGoods?.id}" target="_blank" >${aElectronicGoods?.shortName}</a></td>
                 #{if showElectronicStatus && order.realGoods?.size()>0}
                     <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
                     #{set showElectronicStatus:false/}

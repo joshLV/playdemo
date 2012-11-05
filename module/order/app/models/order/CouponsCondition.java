@@ -105,8 +105,8 @@ public class CouponsCondition implements Serializable {
         }
         if (QueryType.GOODS_NAME.toString().equals(searchKey) && StringUtils.isNotBlank(searchItems)) {
 
-            sql.append(" and e.goods.name like :name");
-            paramMap.put("name", "%" + searchItems + "%");
+            sql.append(" and e.goods.shortName like :name");
+            paramMap.put("name", "%" + searchItems.trim() + "%");
         }
 
         if (QueryType.CLERK_JOB_NUMBER.toString().equals(searchKey) && StringUtils.isNotBlank(searchItems)) {
@@ -126,13 +126,13 @@ public class CouponsCondition implements Serializable {
 
         if (QueryType.COUPON.toString().equals(searchKey) && StringUtils.isNotBlank(searchItems)) {
             sql.append(" and e.eCouponSn like :eCouponSn");
-            paramMap.put("eCouponSn", "%" + searchItems + "%");
+            paramMap.put("eCouponSn", "%" + searchItems.trim() + "%");
         }
 
 
         if (QueryType.MOBILE.toString().equals(searchKey) && StringUtils.isNotBlank(searchItems)) {
             sql.append(" and e.orderItems.phone like :phone");
-            paramMap.put("phone", "%" + searchItems + "%");
+            paramMap.put("phone", "%" + searchItems.trim() + "%");
         }
 
         if (QueryType.UID.toString().equals(searchKey) && StringUtils.isNotBlank(searchItems)) {
@@ -181,8 +181,8 @@ public class CouponsCondition implements Serializable {
             paramMap.put("brand", brand);
         }
         if (StringUtils.isNotBlank(goodsName)) {
-            sql.append(" and e.goods.name like :name");
-            paramMap.put("name", "%" + goodsName + "%");
+            sql.append(" and e.goods.shortName like :name");
+            paramMap.put("name", "%" + goodsName.trim() + "%");
         }
         if (status != null) {
             sql.append(" and e.status = :status");

@@ -41,7 +41,7 @@
             #{list items:orderItems, as:'orderItem' }
             <tr>
                 <td>${orderItem.goods.no}</td>
-                <td>${orderItem.goodsName}</td>
+                <td>${orderItem?.goods?.shortName}</td>
                 <td>&{'goods.'+orderItem.goods.materialType}</td>
                 <td>${orderItem.salePrice?.formatCurrency('CNY')}</td>
                 <td>${orderItem.buyNumber}</td>

@@ -4,7 +4,6 @@ import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import models.resale.Resaler;
 import org.apache.commons.lang.StringUtils;
-import play.Logger;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -42,6 +41,7 @@ public class GoodsCondition implements Serializable {
     public int orderByTypeNum = 0;
     public int type = 0;
     public String name;
+    public String shortName;
     public String no;
 
 
@@ -166,7 +166,10 @@ public class GoodsCondition implements Serializable {
             condBuilder.append(" and g.name like :name");
             paramMap.put("name", "%" + name.trim() + "%");
         }
-
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and g.shortName like :shortName");
+            paramMap.put("shortName", "%" + shortName.trim() + "%");
+        }
         if (StringUtils.isNotBlank(no)) {
             condBuilder.append(" and g.no like :no ");
             paramMap.put("no", "%" + no.trim() + "%");
@@ -243,7 +246,7 @@ public class GoodsCondition implements Serializable {
         }
         if (isHideOnsale) {
             condBuilder.append(" and g.isHideOnsale=:isHideOnsale");
-            paramMap.put("isHideOnsale",Boolean.FALSE);
+            paramMap.put("isHideOnsale", Boolean.FALSE);
         }
         return condBuilder.toString();
     }

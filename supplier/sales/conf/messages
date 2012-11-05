@@ -30,7 +30,8 @@ validation.beforeThanUseTime=%s要大于开始时间!
 validation.allRequiredUseTime=请把可用时段输入完整!
 
 goods.no=编号
-goods.name=名称
+goods.name=网站标题
+goods.shortNmae=商品名称
 goods.category=分类
 goods.brand=品牌
 goods.brand.id=品牌

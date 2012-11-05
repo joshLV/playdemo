@@ -100,7 +100,7 @@
             <td><a href="@{SupplierOrders.details(coupon?.order?.orderNumber)}">${coupon?.order?.orderNumber}</a></abbr>
             </td>
             <td>${coupon?.getMaskedEcouponSn()}</td>
-            <td>${coupon?.goods?.name}</td>
+            <td>${coupon?.goods?.shortName}</td>
             <td>${coupon?.salePrice?.formatCurrency('CNY')}</td>
             <td>${coupon?.getConsumedShop()}</td>
             <td>&{'coupon.'+coupon?.verifyType}</td>

@@ -54,8 +54,8 @@
                 #{/list}
             #{/select}</td>
 
-            <td width="30%">商品名称：<input type="text" name="condition.name" class="input-medium"
-                                        value="${condition?.name}"/></td>
+            <td width="30%">商品名称：<input type="text" name="condition.shortName" class="input-medium"
+                                        value="${condition?.shortName}"/></td>
             <td width="30%">商品编号：<input type="text" name="condition.no" class="input-medium"
                                         value="${condition?.no}"/></td>
             <td></td>
@@ -139,11 +139,11 @@ select:'condition_status',value:condition?.status/}
         <th width="30px" class="rank"><a class="fn-rank" data-rank="02000000000">&{'goods.no'}</a></th>#{/else}
 
     #{if desc.equals("00100000000") }
-        <th width="220px" class="rank rank-asc"><a class="fn-rank" data-rank="00200000000">&{'goods.name'}</a></th>#{/if}
+        <th width="220px" class="rank rank-asc"><a class="fn-rank" data-rank="00200000000">&{'goods.shortName'}</a></th>#{/if}
     #{elseif desc.equals("00200000000")}
-        <th width="220px" class="rank rank-desc"><a class="fn-rank" data-rank="00100000000">&{'goods.name'}</a></th>#{/elseif}
+        <th width="220px" class="rank rank-desc"><a class="fn-rank" data-rank="00100000000">&{'goods.shortName'}</a></th>#{/elseif}
     #{else}
-        <th width="220px" class="rank"><a class="fn-rank" data-rank="00200000000">&{'goods.name'}</a></th>#{/else}
+        <th width="220px" class="rank"><a class="fn-rank" data-rank="00200000000">&{'goods.shortName'}</a></th>#{/else}
 
     #{if desc.equals("00010000000") }
         <th width="50px" class="rank rank-asc"><a class="fn-rank" data-rank="00020000000">&{'goods.faceValue'}</a>
@@ -238,7 +238,7 @@ select:'condition_status',value:condition?.status/}
     #{paginate.list items:goodsPage, as:'goods'}
     <tr class="#{if goods.isExpired() || goods.baseSale?.intValue() == 0}tr-offsale#{/if} transparent">
         <td style="text-align:center"><input type="checkbox" id="checkoption" value="${goods.id}" name="id"/></td>
-        <td>${goods?.getSupplier()?.fullName}</td>
+        <td>${goods?.getSupplier()?.otherName}</td>
         <td>${goods?.no}</td>
         <td>
             <table>
@@ -248,7 +248,7 @@ select:'condition_status',value:condition?.status/}
                         <a href="http://${play.Play.configuration.getProperty("www.url")}/g/${goods.id}?preview=true"><img
                                 src="${goods?.imageTinyPath}"/></a></td>
                     <td>
-                        <a href="http://${play.Play.configuration.getProperty("www.url")}/g/${goods.id}?preview=true">${goods?.name}
+                        <a href="http://${play.Play.configuration.getProperty("www.url")}/g/${goods.id}?preview=true">${goods?.shortName}
                         </a>
                         #{if goods.priority != null && goods.priority >0}
                             &nbsp;<span style="color: #ff0000;">&{'goods.priority'}:${goods.priority}</span>#{/if}
@@ -290,7 +290,7 @@ select:'condition_status',value:condition?.status/}
             #{/if}
             #{if !models.sales.GoodsStatus.ONSALE.equals(goods.status) && !models.sales.GoodsStatus.APPLY
             .equals(goods.status)}
-                / #{vx.deleteLink action:"goods", id:goods.id, name:goods.name/}
+                / #{vx.deleteLink action:"goods", id:goods.id, name:goods.shortName/}
             #{/if}
             #{if models.sales.GoodsStatus.ONSALE.equals(goods.status) }
                 /<a href="#" id="linkSend_${goods.id}"

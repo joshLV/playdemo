@@ -25,6 +25,7 @@ public class GoodsFactory extends ModelFactory<Goods> {
         Goods goods = new Goods();
         Supplier supplier = FactoryBoy.lastOrCreate(Supplier.class);
         goods.name = "Product Name " + FactoryBoy.sequence(Goods.class);
+        goods.shortName = "Product Name " + FactoryBoy.sequence(Goods.class);
         goods.title = "Product Title" + FactoryBoy.sequence(Goods.class);
         goods.status = GoodsStatus.ONSALE;
         goods.deleted = DeletedStatus.UN_DELETED;
@@ -55,6 +56,7 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods = new Goods();
         Supplier supplier = FactoryBoy.lastOrCreate(Supplier.class);
         goods.name = "Product Name " + FactoryBoy.sequence(Goods.class);
+        goods.shortName = "Product Name " + FactoryBoy.sequence(Goods.class);
         goods.supplierId = supplier.id;
         goods.salePrice = BigDecimal.TEN;
         goods.expireAt = afterDays(new Date(), 30);

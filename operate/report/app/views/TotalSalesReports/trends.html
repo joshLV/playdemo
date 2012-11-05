@@ -154,7 +154,7 @@ $(document).ready(function() {
     #{select 'condition.supplierId', id:"supplierId", class:'select', value:condition?.supplierId}
         #{option ""}请选择商户#{/option}
         #{list items:suppliers, as:'supplier'}
-            #{option supplier?.id}${supplier?.fullName}#{/option}
+            #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
         #{/list}
     #{/select}
     #{if shops != null && condition?.type != 0 && condition?.type == 1 }

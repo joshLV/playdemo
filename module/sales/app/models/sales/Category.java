@@ -96,6 +96,7 @@ public class Category extends Model {
     @JoinColumn(name = "parent_id")
     public Category parentCategory;
 
+    @Transient
     @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, targetEntity = Category.class)
     @OrderBy("displayOrder")
     @JsonIgnore

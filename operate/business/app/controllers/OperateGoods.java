@@ -213,13 +213,14 @@ public class OperateGoods extends Controller {
         String cacheId = "0";
         try {
             cacheId = models.sales.Goods.preview(goodsId, goods, imagePath, UploadFiles.ROOT_PATH);
+
         } catch (IOException e) {
             e.printStackTrace();
             error(500, "goods.image_upload_failed");
         }
         cacheId = play.cache.Cache.get(cacheId.toString()).toString();
 
-        redirect("http://" + WWW_URL + "/g/" + cacheId + "?preview=true");
+        redirect("http://" + WWW_URL + "/p/" + cacheId + "?preview=true");
     }
 
     /**
@@ -468,6 +469,7 @@ public class OperateGoods extends Controller {
         }
         //预览的情况
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
+            goods.id = id;
             preview(id, goods, imagePath);
         }
 
@@ -522,6 +524,7 @@ public class OperateGoods extends Controller {
         }
         //预览的情况
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
+            goods.id=id;
             preview(id, goods, imagePath);
         }
 

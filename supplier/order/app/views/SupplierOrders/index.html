@@ -87,7 +87,7 @@ couponPage#{extends 'layout_trader/layout.html' /}
                 #{list items:order.orderItems, as:'item'  }
                     <table>
                         <tr>
-                            <td>${item.goodsName}</td>
+                            <td>${item?.goods?.shortName}</td>
                         </tr>
                     </table>
                 #{/list}

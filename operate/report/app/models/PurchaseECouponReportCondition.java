@@ -1,13 +1,14 @@
 package models;
 
+import com.uhuila.common.util.DateUtil;
+import models.supplier.Supplier;
+import org.apache.commons.lang.StringUtils;
+import play.Logger;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import models.supplier.Supplier;
-import org.apache.commons.lang.StringUtils;
-import play.Logger;
-import com.uhuila.common.util.DateUtil;
 
 /**
  * 报表查询条件.
@@ -48,7 +49,7 @@ public class PurchaseECouponReportCondition implements Serializable {
         }
 
         if (StringUtils.isNotBlank(goodsLike)) {
-            condBuilder.append(" and r.goods.name like :goodsLike");
+            condBuilder.append(" and r.goods.shortName like :goodsLike");
             paramMap.put("goodsLike", "%" + goodsLike + "%");
         }
 

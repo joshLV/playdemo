@@ -183,13 +183,19 @@ public class Goods extends Model {
     @SolrField
     public String no;
     /**
-     * 商品名称
+     * 商品短名称
      */
     @Required
     @MaxSize(60)
+    @Column(name = "short_name")
+    public String shortName;
+    /**
+     * (网站标题)原来叫商品名称
+     */
+    @Required
+    @MaxSize(1000)
     @SolrField
     public String name;
-
     /**
      * 商品标题（短信发送用）
      */
@@ -904,6 +910,9 @@ public class Goods extends Model {
         if (isAllShop) {
             shops = null;
         }
+        shortName = StringUtils.trimToEmpty(shortName);
+        name = StringUtils.trimToEmpty(name);
+        title = StringUtils.trimToEmpty(title);
         expireAt = DateUtil.getEndOfDay(expireAt);
         if (unPublishedPlatforms == null) {
             unPublishedPlatforms = new HashSet<>();
@@ -917,7 +926,9 @@ public class Goods extends Model {
         if (updateGoods == null) {
             return;
         }
-        updateGoods.name = goods.name;
+        updateGoods.shortName = StringUtils.trimToEmpty(goods.shortName);
+        updateGoods.name = StringUtils.trimToEmpty(goods.name);
+        updateGoods.title = StringUtils.trimToEmpty(goods.title);
         updateGoods.no = goods.no;
         updateGoods.effectiveAt = goods.effectiveAt;
         updateGoods.expireAt = DateUtil.getEndOfDay(goods.expireAt);
@@ -952,7 +963,6 @@ public class Goods extends Model {
             updateGoods.supplierId = goods.supplierId;
         }
         updateGoods.shops = goods.shops;
-        updateGoods.title = goods.title;
         updateGoods.setPublishedPlatforms(goods.getPublishedPlatforms());
         updateGoods.useBeginTime = goods.useBeginTime;
         updateGoods.useEndTime = goods.useEndTime;
@@ -1635,7 +1645,8 @@ public class Goods extends Model {
 
         goodsHistory.createdFrom = createdFrom;
         goodsHistory.goodsId = this.id;
-        goodsHistory.name = this.name;
+        goodsHistory.name = StringUtils.trimToEmpty(this.name);
+        goodsHistory.shortName = StringUtils.trimToEmpty(this.shortName);
         goodsHistory.no = this.no;
         goodsHistory.effectiveAt = this.effectiveAt;
         goodsHistory.expireAt = this.expireAt;
@@ -1664,7 +1675,13 @@ public class Goods extends Model {
         goodsHistory.imagePath = this.imagePath;
         goodsHistory.supplierId = this.supplierId;
 
-        goodsHistory.title = this.title;
+        if (this.shops != null) {
+            goodsHistory.shops = new HashSet<>();
+            goodsHistory.shops.addAll(this.shops);
+        } else {
+            goodsHistory.shops = null;
+        }
+        goodsHistory.title = StringUtils.trimToEmpty(this.title);
         goodsHistory.useBeginTime = this.useBeginTime;
         goodsHistory.useEndTime = this.useEndTime;
         goodsHistory.useWeekDay = this.useWeekDay;

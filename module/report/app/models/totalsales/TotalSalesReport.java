@@ -200,7 +200,6 @@ public class TotalSalesReport {
     
     public static List<String> generateDateList(TotalSalesCondition condition) {
         Date date = condition.beginAt;
-        System.out.println(date+"-----------");
         SimpleDateFormat df = new SimpleDateFormat("yyyy-M-dd");
         List<String> dateList = new ArrayList<>();
         long oneDay = 1000L * 60 * 60 * 24;

@@ -29,7 +29,6 @@ public class OperateOrders extends Controller {
         if (condition == null) {
             condition = new OrdersCondition();
         }
-        System.out.println(">>>>>>>>>>>>>>>>>"+desc);
         // DESC 的值表示升降序，含7位，代表7个排序字段（不含订单编号,商品名称）， 1 为升序， 2 为降序， 0 为不排序
         // 当无排序参数时，初始化 -1
         if (desc == null){

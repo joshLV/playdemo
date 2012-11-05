@@ -10,8 +10,8 @@
     <form class="form-horizontal" name="frmlist" id="frmlist" action="@{SupplierGoods.index()}" method="GET">
         <table width="100%">
             <tr>
-                <td width="30%">商品名称：<input type="text" name="condition.name" class="input-medium"
-                                            value="${condition?.name}"/></td>
+                <td width="30%">商品名称：<input type="text" name="condition.shortName" class="input-medium"
+                                            value="${condition?.shortName}"/></td>
                 <td width="30%">商品编号：<input type="text" name="condition.no" class="input-medium"
                                             value="${condition?.no}"/></td>
                 <td width="30%">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：
@@ -58,7 +58,7 @@
             <tr>
                 <th width="50px"><input type="checkbox" id="selectall" name="selectall">全选</th>
                 <th width="100px">&{'goods.no'}</th>
-                <th width="300px">&{'goods.name'}</th>
+                <th width="300px">&{'goods.shortName'}</th>
                 <th width="50px">&{'goods.faceValue'}</th>
                 <th width="50px">&{'goods.originalPrice'}</th>
                 <th width="200px">&{'goods.createdAt'}</th>

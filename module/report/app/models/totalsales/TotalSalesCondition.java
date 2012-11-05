@@ -65,13 +65,11 @@ public class TotalSalesCondition {
         if (beginAt != null) {
             Date beginDate = Supplier.getShopHour(beginAt, shopEndHour, false);
             condBuilder.append(" and e.consumedAt > :beginAt");
-            System.out.println(beginDate + "----------");
             paramMap.put("beginAt", beginDate);
         }
 
         if (endAt != null) {
             Date endDate = Supplier.getShopHour(endAt, shopEndHour, true);
-            System.out.println(endDate + "----------");
             condBuilder.append(" and e.consumedAt <= :endAt");
             paramMap.put("endAt", endDate);
         }
@@ -112,7 +110,7 @@ public class TotalSalesCondition {
             case BY_SHOP:
                 return "e.shop.name";
             case BY_GOODS:
-                return "e.goods.name";
+                return "e.goods.shortName";
             case BY_VERIFY_TYPE:
                 return "e.verifyType";
         }
@@ -141,7 +139,7 @@ public class TotalSalesCondition {
             case BY_SHOP:
                 return "e.shop.name";
             case BY_GOODS:
-                return "e.goods.name";
+                return "e.goods.shortName";
             case BY_VERIFY_TYPE:
                 return "e.verifyType";
         }

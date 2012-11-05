@@ -160,7 +160,7 @@
         #{select 'condition.goodsId', id:"goodsId", class:'select', value:condition?.goodsId}
             #{option "0"}请选择商品#{/option}
             #{list items:allGoods, as:'goods'}
-                #{option goods?.id}${goods?.name}#{/option}
+                #{option goods?.id}${goods?.shortName}#{/option}
             #{/list}
         #{/select}
     #{/if}

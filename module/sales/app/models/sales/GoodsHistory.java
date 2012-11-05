@@ -72,12 +72,17 @@ public class GoodsHistory extends Model {
     public Long goodsId;
 
     /**
-     * 商品名称
+     * 商品短名称
      */
     @Required
     @MaxSize(60)
+    public String shortName;
+    /**
+     * (网站标题)原来叫商品名称
+     */
+    @Required
+    @MaxSize(1000)
     public String name;
-
     /**
      * 商品编号
      */

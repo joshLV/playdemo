@@ -179,7 +179,7 @@ public class Home2 extends Controller {
             }
         });
 
-        if(user != null){
+        if (user != null) {
             //待消费
             long unconsumedCount = ECoupon.count("e.order.userId = ? and e.order.userType = ? and status = ?",
                     user.getId(), AccountType.CONSUMER, ECouponStatus.UNCONSUMED);
