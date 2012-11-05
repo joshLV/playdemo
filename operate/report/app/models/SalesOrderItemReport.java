@@ -98,13 +98,13 @@ public class SalesOrderItemReport extends Model {
     }
 
     public static List<SalesOrderItemReport> query(
-            SalesOrderItemReportCondition condition,Long id,Boolean right) {
+            SalesOrderItemReportCondition condition, Long id, Boolean right) {
         Query query = JPA.em()
                 .createQuery(
                         "select new models.SalesOrderItemReport(r.goods, r.salePrice-r.rebateValue/r.buyNumber,r.faceValue, sum(r.buyNumber), "
                                 + "sum(r.salePrice*r.buyNumber-r.rebateValue))"
                                 + " from OrderItems r, Supplier s where "
-                                + condition.getFilter(id,right) + " group by r.goods, r.salePrice-r.rebateValue/r.buyNumber order by r.goods"
+                                + condition.getFilter(id, right) + " group by r.goods, r.salePrice-r.rebateValue/r.buyNumber order by r.goods"
                 );
 
         for (String param : condition.getParamMap().keySet()) {
@@ -118,7 +118,7 @@ public class SalesOrderItemReport extends Model {
                         "select new models.SalesOrderItemReport(r.goods, r.salePrice-r.rebateValue/r.buyNumber, r.faceValue, count(e), "
                                 + "sum(e.salePrice-e.rebateValue))"
                                 + " from OrderItems r, Supplier s, ECoupon e where e.orderItems=r and "
-                                + condition.getFilter(id,right) + " and e.status='REFUND' group by r.goods, r.salePrice-r.rebateValue/r.buyNumber order by r.goods"
+                                + condition.getFilter(id, right) + " and e.status='REFUND' group by r.goods, r.salePrice-r.rebateValue/r.buyNumber order by r.goods"
                 );
 
         for (String param : condition.getParamMap().keySet()) {

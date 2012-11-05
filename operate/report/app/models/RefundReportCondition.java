@@ -2,11 +2,10 @@ package models;
 
 import com.uhuila.common.util.DateUtil;
 import models.order.ECouponStatus;
+import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p/>
@@ -22,7 +21,7 @@ public class RefundReportCondition {
     public String supplierName;
     private Map<String, Object> paramMap = new HashMap<>();
 
-    public String getFilter() {
+    public String getFilter(Long id, Boolean right) {
         StringBuilder condBuilder = new StringBuilder(" where e.status=:status and e.goods.isLottery=false");
         paramMap.put("status", ECouponStatus.REFUND);
         if (refundAtBegin != null) {
@@ -41,6 +40,16 @@ public class RefundReportCondition {
         if (StringUtils.isNotBlank(supplierName)) {
             condBuilder.append(" and e.orderItems.goods.supplierId = :supplierId");
             paramMap.put("supplierId", Long.parseLong(supplierName));
+        }
+
+        if ((StringUtils.isNotBlank(supplierName) && !right) || (StringUtils.isBlank(supplierName) && !right)) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", id).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            condBuilder.append(" and e.goods.supplierId in (:supplierIds)");
+            paramMap.put("supplierIds", supplierIds);
         }
         return condBuilder.toString();
     }

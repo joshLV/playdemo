@@ -51,7 +51,7 @@ public class PurchaseECouponReportCondition implements Serializable {
             Logger.debug("supplier.id:" + supplier.id);
         }
 
-        if (supplier != null && supplier.id == 0 && !right) {
+        if ((supplier != null && supplier.id == 0 && !right) || (supplier == null && !right)) {
             List<Supplier> suppliers = Supplier.find("salesId=?", id).fetch();
             List<Long> supplierIds = new ArrayList<>();
             for (Supplier s : suppliers) {
@@ -60,17 +60,6 @@ public class PurchaseECouponReportCondition implements Serializable {
             condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
             paramMap.put("supplierIds", supplierIds);
         }
-
-        if (supplier == null && !right) {
-            List<Supplier> suppliers = Supplier.find("salesId=?", id).fetch();
-            List<Long> supplierIds = new ArrayList<>();
-            for (Supplier s : suppliers) {
-                supplierIds.add(s.id);
-            }
-            condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
-            paramMap.put("supplierIds", supplierIds);
-        }
-
 
         if (StringUtils.isNotBlank(goodsLike)) {
             condBuilder.append(" and r.goods.shortName like :goodsLike");

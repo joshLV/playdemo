@@ -1,8 +1,10 @@
 package controllers;
 
+import com.uhuila.common.constants.DeletedStatus;
 import models.RefundReport;
 import models.RefundReportCondition;
 import models.supplier.Supplier;
+import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.ValuePaginator;
@@ -29,10 +31,23 @@ public class GoodsRefundReports extends Controller {
         if (condition == null) {
             condition = new RefundReportCondition();
         }
-        List<RefundReport> resultList = RefundReport.query(condition);
+
+        List<Supplier> supplierList;
+
+        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        if (right) {
+            supplierList = Supplier.findUnDeleted();
+        } else {
+            supplierList = Supplier.find(
+                    "deleted=? and salesId=? order by createdAt DESC",
+                    DeletedStatus.UN_DELETED,
+                    OperateRbac.currentUser().id).fetch();
+        }
+        Long id = OperateRbac.currentUser().id;
+        List<RefundReport> resultList = RefundReport.query(condition,id,right);
         // 分页
         ValuePaginator<RefundReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
-        List<Supplier> supplierList = Supplier.findUnDeleted();
+//        List<Supplier> supplierList = Supplier.findUnDeleted();
         RefundReport summary = RefundReport.summary(resultList);
         render(reportPage, condition, supplierList, summary);
     }
