@@ -297,6 +297,10 @@ public class GoodsHistory extends Model {
     @Column(name = "is_all_shop")
     public Boolean isAllShop = true;
 
+    @ManyToMany(cascade = CascadeType.REFRESH)
+    @JoinTable(name = "goods_history_shops", inverseJoinColumns = @JoinColumn(name
+            = "shop_id"), joinColumns = @JoinColumn(name = "goods_history_id"))
+    public Set<Shop> shops;
 
     public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
 

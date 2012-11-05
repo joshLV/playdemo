@@ -39,7 +39,9 @@ public class GoodsHistoryFactory extends ModelFactory<GoodsHistory> {
         goodsHistory.useWeekDay = "1,2,3,4,5,6,7";
         goodsHistory.originalPrice = new BigDecimal("5");
         goodsHistory.categories = new HashSet<>();
+        goodsHistory.shops = new HashSet<>();
         goodsHistory.categories.add(FactoryBoy.lastOrCreate(Category.class));
+        goodsHistory.shops.add(FactoryBoy.lastOrCreate(Shop.class));
         return goodsHistory;
     }
 }
