@@ -23,8 +23,9 @@
             #{else}
             <li class="first"><a class="login" id="login" href="${helper.Domain.getWWWHost(request)}/login">登录</a></li>
             <li><a class="signup" href="${helper.Domain.getWWWHost(request)}/register">注册</a></li>
-        *{<li><a class="quick" href="" target="_blank">快捷登录</a></li>}*
-        #{/else}
+            <li><a href="${helper.Domain.getHomeHost(request)}">我的一百券</a></li>
+            *{<li><a class="quick" href="" target="_blank">快捷登录</a></li>}*
+            #{/else}
             <li><a id="favorite" class="favorite" href="">收藏一百券</a></li>
             <li class="last">
             #{if !play.Play.runingInTestMode()}
