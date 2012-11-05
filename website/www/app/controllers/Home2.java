@@ -179,18 +179,20 @@ public class Home2 extends Controller {
             }
         });
 
-        //待消费
-        long unconsumedCount = ECoupon.count("e.order.userId = ? and e.order.userType = ? and status = ?",
-                user.getId(), AccountType.CONSUMER, ECouponStatus.UNCONSUMED);
-        //待付款
-        long unpaidCount = Order.count("byUserIdAndUserTypeAndStatus",
-                user.getId(), AccountType.CONSUMER, OrderStatus.UNPAID);
-        //已节省
-        BigDecimal savedMoney = ECoupon.savedMoney(user.getId(), AccountType.CONSUMER);
+        if(user != null){
+            //待消费
+            long unconsumedCount = ECoupon.count("e.order.userId = ? and e.order.userType = ? and status = ?",
+                    user.getId(), AccountType.CONSUMER, ECouponStatus.UNCONSUMED);
+            //待付款
+            long unpaidCount = Order.count("byUserIdAndUserTypeAndStatus",
+                    user.getId(), AccountType.CONSUMER, OrderStatus.UNPAID);
+            //已节省
+            BigDecimal savedMoney = ECoupon.savedMoney(user.getId(), AccountType.CONSUMER);
 
-        renderArgs.put("unconsumedCount", unconsumedCount);
-        renderArgs.put("unpaidCount", unpaidCount);
-        renderArgs.put("savedMoney", savedMoney);
+            renderArgs.put("unconsumedCount", unconsumedCount);
+            renderArgs.put("unpaidCount", unpaidCount);
+            renderArgs.put("savedMoney", savedMoney);
+        }
 
         renderArgs.put("categoryTopic1", categoryTopic1);
         renderArgs.put("categoryTopic2", categoryTopic2);
