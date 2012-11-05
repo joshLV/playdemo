@@ -195,12 +195,14 @@
     *background-position: right -190px;
     _background-position: right -188px;
 }
-#result .hd .sort .curr .down {
-    background-position: right -170px;
-    *background-position: right -172px;
-    _background-position: right -170px;
+#result .hd .sort .curr .down,
+#result .hd .sort a:hover .down {
+    background-position: right -169px;
+    *background-position: right -171px;
+    _background-position: right -169px;
 }
-#result .hd .sort .curr .up {
+#result .hd .sort .curr .up,
+#result .hd .sort a:hover .up {
     background-position: right -152px;
     *background-position: right -154px;
     _background-position: right -152px;
