@@ -42,7 +42,7 @@
     <permission key="FINANCING_ACCOUNT_REPORT" text="券平台财务收款账户资金明细" roles="account"/>
     <permission key="BRANDS_NEW" text="品牌添加" roles="editor"/>
     <permission key="BRANDS" text="品牌管理" roles="editor"/>
-    <permission key="CONSUMERS" text="用户管理" roles="customservice,sales"/>
+    <permission key="CONSUMERS" text="用户管理" roles="customservice"/>
     <permission key="PROMOTION_LIST" text="活动管理" roles="customservice,editor"/>
     <permission key="send_sms" text="发送优惠券" roles="customservice,editor"/>
     <permission key="CASH_COUPON" text="系统" roles="admin"/>
@@ -85,14 +85,16 @@
             <navigation key="goods_index" action="OperateGoods.index" text="商品管理" permissions="GOODS"/>
             <navigation key="category_admin_index" action="CategoryAdmin.index" text="类别管理" permissions="GOODS"/>
         </navigation>
-        <navigation key="seckill_goods" text="秒杀活动">
-            <navigation key="seckill_goods_add" action="SecKillGoods.add" text="秒杀活动添加"
-                        permissions="SECKILL_GOODS_NEW"/>
-            <navigation key="seckill_goods_index" action="SecKillGoods.index" text="秒杀活动管理"
-                        permissions="SECKILL_GOODS"/>
-        </navigation>
         <navigation key="solr" text="solr加载数据" permission="SOLR">
             <navigation key="solr_load" action="SolrLoadData.index" text="solr加载数据" permission="SOLR"/>
+        </navigation>
+        <navigation key="point_goods" text="积分商品">
+            <navigation key="point_goods_add" action="OperatePointGoods.add" text="积分商品添加"
+                        permissions="Point_GOODS_NEW"/>
+            <navigation key="point_goods_index" action="OperatePointGoods.index" text="积分商品管理"
+                        permissions="Point_GOODS"/>
+            <navigation key="point_goods_order" action="OperatePointGoodsOrders.index" text="积分商品订单管理"
+                        permissions="Point_GOODS_ORDER"/>
         </navigation>
     </navigation>
 
@@ -113,12 +115,6 @@
             <navigation key="verify_index" action="OperateVerifyCoupons.index" text=" 验证消费券" permissions="COUPONS"/>
             <navigation key="pre_coupons" action="ImportCoupons.index" text="预购券管理" permissions="COUPONS"/>
             <navigation key="freeze_coupons" action="BatchFreezeCoupons.index" text="批量冻结券号" permissions="COUPONS"/>
-        </navigation>
-        <navigation key="cash_coupon" text="现金券">
-            <navigation key="cash_coupon_index" action="OperatorCashCoupons.index" text="现金券管理"
-                        permissions="CASH_COUPON"/>
-            <navigation key="cash_coupon_generator" action="OperatorCashCoupons.generator" text="现金券生成"
-                        permissions="CASH_COUPON"/>
         </navigation>
         <navigation key="yihaodian_api" text="一号店">
             <navigation key="yihaodian_api_index" action="YihaodianAPI.index" text="API" permissions="ORDERS"/>
@@ -173,6 +169,18 @@
             <navigation key="discountcode_index" action="OperateDiscountCodes.index" text="折扣券管理"
                         permissions="DISCOUNT_CODE"/>
         </navigation>
+        <navigation key="cash_coupon" text="现金券">
+            <navigation key="cash_coupon_index" action="OperatorCashCoupons.index" text="现金券管理"
+                        permissions="CASH_COUPON"/>
+            <navigation key="cash_coupon_generator" action="OperatorCashCoupons.generator" text="现金券生成"
+                        permissions="CASH_COUPON"/>
+        </navigation>
+        <navigation key="seckill_goods" text="秒杀活动">
+            <navigation key="seckill_goods_add" action="SecKillGoods.add" text="秒杀活动添加"
+                        permissions="SECKILL_GOODS_NEW"/>
+            <navigation key="seckill_goods_index" action="SecKillGoods.index" text="秒杀活动管理"
+                        permissions="SECKILL_GOODS"/>
+        </navigation>
     </navigation>
 
     <navigation key="question_manage" text="咨询管理" action="OperateQuestions.index" display-order="110">
@@ -185,20 +193,6 @@
             <navigation key="crm_search_consumers" action="OperateConsult.index" text="咨询查询" permissions="CONSUMERS"/>
         </navigation>
 
-
     </navigation>
-
-
-    <navigation key="point_goods_app" text="积分商城" action="OperatePointGoods.index" display-order="100">
-        <navigation key="point_goods" text="积分商品">
-            <navigation key="point_goods_add" action="OperatePointGoods.add" text="积分商品添加"
-                        permissions="Point_GOODS_NEW"/>
-            <navigation key="point_goods_index" action="OperatePointGoods.index" text="积分商品管理"
-                        permissions="Point_GOODS"/>
-            <navigation key="point_goods_order" action="OperatePointGoodsOrders.index" text="积分商品订单管理"
-                        permissions="Point_GOODS_ORDER"/>
-        </navigation>
-    </navigation>
-
 
 </application>
