@@ -6,10 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import play.Logger;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
@@ -54,15 +51,45 @@ public class PurchaseECouponReportCondition implements Serializable {
             Logger.debug("supplier.id:" + supplier.id);
         }
 
-        if (supplier != null && supplier.id == 0 && !right) {
-            List<Supplier> suppliers = Supplier.find("salesId=?", id).fetch();
-            if (suppliers != null && suppliers.size() > 0) {
-                for (Supplier supplier : suppliers) {
-                    condBuilder.append(" and r.goods.supplierId = :salesId");
-                    paramMap.put("salesId", supplier.id);
-                }
-            }
-        }
+//        if (supplier != null && supplier.id == 0 && !right) {
+//            List<Supplier> suppliers = Supplier.find("salesId=?", id).fetch();
+//            String a = "";
+//            for (Supplier s : suppliers) {
+//                a += s.id.toString() + ",";
+//            }
+//            a = a.substring(0, a.length() - 1);
+//            String b = "(" + a + ")";
+//            condBuilder.append(" and r.goods.supplierId in :supplierId");
+//            paramMap.put("supplierId", Long.parseLong(b));
+//        }
+
+
+//        if (supplier != null && supplier.id == 0 && !right) {
+//            List<Supplier> suppliers = Supplier.find("salesId=?", id).fetch();
+//            System.out.println("suppliers>>"+suppliers);
+//            Boolean flag = false;
+//            if (suppliers != null && suppliers.size() > 0) {
+//                for (Supplier supplier : suppliers) {
+//                    if (!flag) {
+//                        condBuilder.append(" and r.goods.supplierId = :supplierId");
+//                        paramMap.put("supplierId", supplier.id);
+//                        flag = true;
+//                    } else {
+//                        condBuilder.append(" or r.goods.supplierId = :supplierId");
+//                        paramMap.put("supplierId", supplier.id);
+//                    }
+//
+//
+//                }
+//            }
+
+//            if (supplier != null && supplier.id == 0 && !right) {
+//                Supplier supplier = Supplier.find("salesId=?", id).first();
+//                condBuilder.append(" and r.goods.supplierId = :supplierId");
+//                paramMap.put("supplierId", supplier.id);
+//
+//            }
+//        }
 
         if (StringUtils.isNotBlank(goodsLike)) {
             condBuilder.append(" and r.goods.shortName like :goodsLike");

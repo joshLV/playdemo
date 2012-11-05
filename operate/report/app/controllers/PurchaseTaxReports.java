@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.uhuila.common.constants.DeletedStatus;
@@ -50,7 +51,16 @@ public class PurchaseTaxReports extends Controller {
         }
 
         Long id = OperateRbac.currentUser().id;
-        List<PurchaseECouponReport> resultList = PurchaseECouponReport.query(condition,id,right);
+        List<PurchaseECouponReport> tempResultList = PurchaseECouponReport.query(condition, id, right);
+
+        List<PurchaseECouponReport> resultList = new ArrayList<>();
+
+        for (PurchaseECouponReport pr : tempResultList) {
+            if (pr.supplier != null && pr.supplier.salesId == id) {
+                resultList.add(pr);
+            }
+        }
+
 
         ValuePaginator<PurchaseECouponReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
 

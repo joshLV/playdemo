@@ -96,6 +96,11 @@ public class SalesOrderItemReportCondition implements Serializable {
             paramMap.put("salesId", id);
         }
 
+//        if (supplier == null && !right) {
+//            condBuilder.append(" and s.salesId = :salesId");
+//            paramMap.put("salesId", id);
+//        }
+
 
         if (materialType != null) {
             condBuilder.append(" and r.goods.materialType = :materialType");
@@ -116,7 +121,7 @@ public class SalesOrderItemReportCondition implements Serializable {
             paramMap.put("supplierLike", "%" + supplierLike + "%");
         }
 
-//        System.out.println("condBuilder.toString():" + condBuilder.toString());
+        System.out.println("condBuilder.toString():" + condBuilder.toString());
 //        System.out.println("condBuilder>>>>>>>>>>>>>>>>>>>>>>>>>>." + condBuilder.toString());
         return condBuilder.toString();
     }
