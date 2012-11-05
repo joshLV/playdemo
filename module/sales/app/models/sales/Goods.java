@@ -1154,6 +1154,7 @@ public class Goods extends Model {
     public static void updateStatus(GoodsStatus status, Long... ids) {
         for (Long id : ids) {
             models.sales.Goods goods = models.sales.Goods.findById(id);
+            goods.refresh();
             goods.status = status;
 
             if (status == GoodsStatus.ONSALE && goods.firstOnSaleAt == null) {
@@ -1663,9 +1664,11 @@ public class Goods extends Model {
         goodsHistory.imagePath = this.imagePath;
         goodsHistory.supplierId = this.supplierId;
         if (this.shops != null) {
+            this.refresh();
             goodsHistory.shops = new HashSet<>();
             goodsHistory.shops.addAll(this.shops);
         } else {
+            goodsHistory.shops = null;
             goodsHistory.shops = null;
         }
         goodsHistory.title = this.title;

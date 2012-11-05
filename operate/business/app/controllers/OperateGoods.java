@@ -161,9 +161,9 @@ public class OperateGoods extends Controller {
             for (Shop shop : goods.shops) {
                 shopIds += shop.id + ",";
             }
-
             goods.isAllShop = false;
         } else {
+            goods.shops = null;
             goods.isAllShop = true;
         }
 
@@ -173,7 +173,6 @@ public class OperateGoods extends Controller {
         }
 
         List<Category> categoryList = Category.findByParent(0);//获取顶层分类
-        System.out.println("categoryList.size():" + categoryList.size());
         List<Category> subCategoryList = new ArrayList<>();
         Long categoryId = 0L;
         if (categoryList.size() > 0) {
@@ -492,7 +491,8 @@ public class OperateGoods extends Controller {
         goodsItem.createHistory(createdFrom);
         index(null, "");
     }
-     /**
+
+    /**
      * 更新指定商品信息
      */
     public static void update2(Long id, @Valid final models.sales.Goods goods, File imagePath, String imageLargePath) {
@@ -541,10 +541,12 @@ public class OperateGoods extends Controller {
         goods.updatedBy = supplierUser;
         models.sales.Goods.update(id, goods, false);
         Goods goodsItem = models.sales.Goods.findById(id);
+        goodsItem.refresh();
         String createdFrom = "Op";
         goodsItem.createHistory(createdFrom);
         index(null, "");
     }
+
     /**
      * 上架商品.
      * shopIds
@@ -619,6 +621,7 @@ public class OperateGoods extends Controller {
         if (status == GoodsStatus.OFFSALE) {
             for (Long id : ids) {
                 models.sales.Goods goods = models.sales.Goods.findById(id);
+                goods.refresh();
                 Supplier supplier = Supplier.findById(goods.supplierId);
                 if (supplier != null) {
 //                    String email = supplier.salesEmail;
@@ -646,6 +649,7 @@ public class OperateGoods extends Controller {
 
         for (int i = 0; i < ids.length; i++) {
             Goods goodsItem = models.sales.Goods.findById(ids[i]);
+            goodsItem.refresh();
             String createdFrom = "Op";
             goodsItem.createHistory(createdFrom);
         }
