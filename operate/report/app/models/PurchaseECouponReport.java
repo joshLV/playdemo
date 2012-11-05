@@ -69,32 +69,14 @@ public class PurchaseECouponReport extends Model {
     }
 
     public static List<PurchaseECouponReport> query(PurchaseECouponReportCondition condition, Long id, Boolean right) {
-        Query query;
-        if (!right) {
-            query = JPA.em()
-                    .createQuery(
-                            "select new PurchaseECouponReport(r.goods, count(r.id),r.faceValue, r.originalPrice, sum(r.originalPrice)) "
-                                    + " from ECoupon r where "
-                                    + condition.getFilter() + " and r.goods.supplierId in (:supplierIds)" + " group by r.goods order by r.goods.supplierId");
-        } else {
-            query = JPA.em()
-                    .createQuery(
-                            "select new PurchaseECouponReport(r.goods, count(r.id),r.faceValue, r.originalPrice, sum(r.originalPrice)) "
-                                    + " from ECoupon r where "
-                                    + condition.getFilter() + " group by r.goods order by r.goods.supplierId");
+        Query query = JPA.em()
+                .createQuery(
+                        "select new PurchaseECouponReport(r.goods, count(r.id),r.faceValue, r.originalPrice, sum(r.originalPrice)) "
+                                + " from ECoupon r where "
+                                + condition.getFilter(id, right) + " group by r.goods order by r.goods.supplierId");
 
-        }
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
-            if (!right) {
-                List<Supplier> suppliers = Supplier.find("salesId=?", id).fetch();
-                List<Long> supplierIds = new ArrayList<>();
-                for (Supplier s : suppliers) {
-                    supplierIds.add(s.id);
-                }
-
-                query.setParameter("supplierIds", supplierIds);
-            }
         }
 
         return query.getResultList();
