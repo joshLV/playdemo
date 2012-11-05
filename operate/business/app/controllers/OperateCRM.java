@@ -10,6 +10,7 @@ import models.order.Order;
 import models.sales.*;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.mvc.Controller;
@@ -208,6 +209,7 @@ public class OperateCRM extends Controller {
         consult.city = city;
         consult.save();
         consultId = consult.id;
+        phone = callNo;
         index(phone, condition, userId, consultId, null);
     }
 
@@ -257,6 +259,10 @@ public class OperateCRM extends Controller {
     }
 
     public static void callCenter(String phone) {
+        for (String key : params.all().keySet()) {
+            Logger.info("callCenter key(" + key + "):" + params.get(key));
+        }
+
         if (phone == null) {
             phone = params.get("callNo");
         }
