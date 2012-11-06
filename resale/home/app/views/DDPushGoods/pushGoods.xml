@@ -38,9 +38,9 @@
     <end_date><![CDATA[${goods?.expireAt?.format('yyyy-MM-dd HH:mm:ss')}]]></end_date>
     <original_price><![CDATA[${goods?.originalPrice}]]></original_price>
     <sale_price><![CDATA[${goods?.salePrice}]]></sale_price>
-    <team_max_num><![CDATA[${goods?.baseSale}]]></team_max_num>
+    <team_max_num><![CDATA[${goods?.getRealStocks()}]]></team_max_num>
     <team_min_num><![CDATA[1]]></team_min_num>
-    <source_sale_num><![CDATA[${goods?.saleCount}]]></source_sale_num>
+    <source_sale_num><![CDATA[${goods?.getRealSaleCount()}]]></source_sale_num>
     <virtual_num><![CDATA[]]></virtual_num>
     <limit_max_num><![CDATA[${(goods?.limitNumber == null || goods.limitNumber == 0) ? "9999" : goods?.limitNumber}]]></limit_max_num>
     <limit_once_min><![CDATA[1]]></limit_once_min>
