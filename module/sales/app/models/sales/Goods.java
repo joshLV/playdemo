@@ -349,6 +349,7 @@ public class Goods extends Model {
     @MinSize(7)
     @MaxSize(65000)
     @Lob
+    @Column(name = "supplier_des")
     private String supplierDes;
     /**
      * 商品详情
@@ -535,7 +536,7 @@ public class Goods extends Model {
      * @return
      */
     @Transient
-//    @SolrEmbedded
+    @SolrEmbedded
     public Supplier getSupplier() {
         if (supplierId == null) {
             return null;
