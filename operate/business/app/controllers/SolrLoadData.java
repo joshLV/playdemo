@@ -4,6 +4,7 @@ import operate.rbac.annotations.ActiveNavigation;
 import play.modules.solr.Solr;
 import play.mvc.Controller;
 import play.mvc.With;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * <p/>
@@ -24,8 +25,12 @@ public class SolrLoadData extends Controller {
      * 初始化solr
      */
     public static void initSolr() {
+        String deleteFlag = request.params.get("delete");
         try {
-            Solr.deleteAll();
+            //是否增量加载的标志
+            if (StringUtils.isBlank(deleteFlag)) {
+                Solr.deleteAll();
+            }
             Solr.indexAll();
         } catch (Exception e) {
             System.out.println(e.fillInStackTrace());

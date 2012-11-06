@@ -6,8 +6,8 @@ page= (pageNumber-1) * pageSize;
     "total": ${count},
     "list":
         [#{paginate.list1 items:cmsQuestions, as:'question'}#{if question_index > 1 && (page+1)% question_index  !=0},#{/if}{
-        "question": "${question?.content?.raw()}",
+        "question": "${question?.content?.escapeJavaScript()}",
         "qdate": "${question?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}",
-        "answer": "${question?.reply?.raw()}",
+        "answer": "${question?.reply?.escapeJavaScript()}",
         "adate": "${question?.repliedAt?.format('yyyy-MM-dd HH:mm:ss')}"}#{/paginate.list1}]
 }

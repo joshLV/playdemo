@@ -152,6 +152,7 @@ multiImage=多图片上传
 goods.image_upload_failed=图片上传失败
 goods.prompt=温馨提示
 goods.details=商品展示
+goods.supplierDes=商家介绍
 goods.isAllShop=选择门店
 goods.shops=门店
 goods.saleCount=销售量

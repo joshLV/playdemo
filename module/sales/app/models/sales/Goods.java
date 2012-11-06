@@ -325,7 +325,7 @@ public class Goods extends Model {
     private BigDecimal discount;
 
     /**
-     * 商品展示（）
+     * 商品展示
      */
     @Required
     @MinSize(7)
@@ -341,6 +341,14 @@ public class Goods extends Model {
     @Required
     private String prompt;
 
+    /**
+     * 商家介绍
+     */
+    @Required
+    @MinSize(7)
+    @MaxSize(65000)
+    @Lob
+    private String supplierDes;
     /**
      * 商品详情
      */
@@ -730,6 +738,23 @@ public class Goods extends Model {
         this.exhibition = Jsoup.clean(exhibition, HTML_WHITE_TAGS);
     }
 
+    public String getSupplierDes() {
+        if (StringUtils.isBlank(supplierDes)) {
+            return "";
+        }
+        return Jsoup.clean(supplierDes, HTML_WHITE_TAGS);
+    }
+
+    @Transient
+    @SolrField
+    public String getSupplierDesContent() {
+        return HtmlUtil.html2text(getSupplierDes());
+    }
+
+    public void setSupplierDes(String supplierDes) {
+        this.supplierDes = Jsoup.clean(supplierDes, HTML_WHITE_TAGS);
+    }
+
     public String getPrompt() {
         if (StringUtils.isBlank(prompt)) {
             return "";
@@ -755,6 +780,16 @@ public class Goods extends Model {
     @Transient
     public String getSafeDetails() {
         return details.replaceAll("&nbsp;", " ");
+    }
+
+    @Transient
+    public String getSafeExhibition() {
+        return exhibition.replaceAll("&nbsp;", " ");
+    }
+
+    @Transient
+    public String getSafeSupplierDes() {
+        return supplierDes.replaceAll("&nbsp;", " ");
     }
 
     /**
@@ -947,6 +982,7 @@ public class Goods extends Model {
         updateGoods.setPrompt(goods.getPrompt());
         updateGoods.setDetails(goods.getDetails());
         updateGoods.setExhibition(goods.getExhibition());
+        updateGoods.supplierDes= StringUtils.trimToEmpty(goods.getSupplierDes());
         updateGoods.updatedAt = new Date();
         updateGoods.updatedBy = goods.updatedBy;
         updateGoods.brand = goods.brand;
