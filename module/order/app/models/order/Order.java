@@ -831,7 +831,6 @@ public class Order extends Model {
                 .orderBy(condition.getUserOrderByExpress());
         orderPage.setPageNumber(pageNumber);
         orderPage.setPageSize(pageSize);
-        System.out.println("orderPage.size():" + orderPage.size());
         return orderPage;
     }
 

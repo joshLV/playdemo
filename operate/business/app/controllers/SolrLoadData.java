@@ -25,10 +25,11 @@ public class SolrLoadData extends Controller {
      */
     public static void initSolr() {
         try {
+            Solr.deleteAll();
             Solr.indexAll();
         } catch (Exception e) {
             System.out.println(e.fillInStackTrace());
-            renderText("err");
+            renderText(e.fillInStackTrace());
         }
         renderText("ok");
     }

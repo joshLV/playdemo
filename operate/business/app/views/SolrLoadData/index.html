@@ -4,10 +4,12 @@
 <div class="body">
     <button class="btn btn-primary" id="solr">solr数据加载</button>
     <span id="solr_err" style="color: #ff0000;"></span>
+
 </div>
 <script type="text/javascript">
     $(function () {
         $("#solr").click(function () {
+             $("#solr_err").html("请等待。。。。");
             $.ajax({
                 type:'GET',
                 url:"/solr-init",
@@ -15,7 +17,7 @@
                     if (msg == "ok") {
                         $("#solr_err").html("加载成功！");
                     } else {
-                        $("#solr_err").html("加载失败！");
+                        $("#solr_err").html("加载失败！<br>"+msg);
                     }
                 }
             });

@@ -62,9 +62,12 @@ public class OperateShops extends Controller {
             Validation.keep();
             add(shop);
         }
-
+        shop.name = StringUtils.trimToEmpty(shop.name);
+        shop.address = StringUtils.trimToEmpty(shop.address);
+        shop.phone = StringUtils.trimToEmpty(shop.phone);
         shop.deleted = DeletedStatus.UN_DELETED;
         shop.createdAt = new Date();
+        shop.lockVersion = 0;
         shop.create();
         index(null);
 
@@ -129,9 +132,9 @@ public class OperateShops extends Controller {
             edit(id, shop);
         }
         sp.areaId = shop.areaId;
-        sp.name = shop.name;
-        sp.address = shop.address;
-        sp.phone = shop.phone;
+        sp.name = StringUtils.trimToEmpty(shop.name);
+        sp.address = StringUtils.trimToEmpty(shop.address);
+        sp.phone = StringUtils.trimToEmpty(shop.phone);
         sp.managerMobiles = shop.managerMobiles;
         sp.updatedAt = new Date();
         sp.longitude = shop.longitude;
