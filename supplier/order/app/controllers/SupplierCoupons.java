@@ -78,10 +78,10 @@ public class SupplierCoupons extends Controller {
         }
 
         Long supplierId = SupplierRbac.currentUser().supplier.id;
-        
+
         Shop shop = Shop.findById(shopId);
         if (shop == null) {
-        	renderJSON("1");
+            renderJSON("1");
         }
         ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
         //根据页面录入券号查询对应信息,并产生消费交易记录
@@ -134,7 +134,7 @@ public class SupplierCoupons extends Controller {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
-        JPAExtPaginator<ECoupon> couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE);
+        JPAExtPaginator<ECoupon> couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE, null, true);
         render(couponPage, condition);
     }
 
@@ -147,7 +147,7 @@ public class SupplierCoupons extends Controller {
         condition.supplier = SupplierRbac.currentUser().supplier;
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "券内容列表_" + System.currentTimeMillis() + ".xls");
-        JPAExtPaginator<ECoupon> couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE);
+        JPAExtPaginator<ECoupon> couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE, null, true);
         for (ECoupon coupon : couponPage) {
             String staff = "";
             coupon.verifyTypeInfo = Messages.get("coupon." + coupon.verifyType);

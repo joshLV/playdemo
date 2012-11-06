@@ -52,7 +52,7 @@ public class OperateGoodsTest extends FunctionalTest {
         Fixtures.loadModels("fixture/shops_unit.yml");
         Fixtures.loadModels("fixture/goods_unit.yml");
 
-        // 重新加载配置文件
+        // f重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
 

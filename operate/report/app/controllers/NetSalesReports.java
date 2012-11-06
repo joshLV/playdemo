@@ -26,7 +26,7 @@ public class NetSalesReports extends Controller {
 
     private static final int PAGE_SIZE = 30;
 
-    /**
+    /**                   `
      * 查询净销售报表信息.
      *
      * @param condition

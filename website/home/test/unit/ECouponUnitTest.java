@@ -87,7 +87,7 @@ public class ECouponUnitTest extends UnitTest {
         condition.accountType = AccountType.CONSUMER;
         int pageNumber = 1;
         int pageSize = 15;
-        JPAExtPaginator<ECoupon> list = ECoupon.query(condition, pageNumber, pageSize);
+        JPAExtPaginator<ECoupon> list = ECoupon.query(condition, pageNumber, pageSize, null, true);
         assertEquals(2, list.size());
 
         list = ECoupon.getUserCoupons(condition, pageNumber, pageSize);

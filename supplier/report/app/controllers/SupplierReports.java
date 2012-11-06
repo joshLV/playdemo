@@ -60,7 +60,7 @@ public class SupplierReports extends Controller {
                 ecouponCondition.goodsName = condition.goodsLike;
                 ecouponCondition.status = ECouponStatus.CONSUMED;
 
-                reportPage = ECoupon.query(ecouponCondition, pageNumber, PAGE_SIZE);
+                reportPage = ECoupon.query(ecouponCondition, pageNumber, PAGE_SIZE, null, true);
                 summary = new ReportSummary();
                 summary.goodsCount = reportPage.getRowCount();
                 summary.originalAmount = ECoupon.sum(ecouponCondition);
@@ -80,7 +80,6 @@ public class SupplierReports extends Controller {
             condition = new ReportCondition();
         }
         condition.supplier = SupplierRbac.currentUser().supplier;
-
 
 
         JPAExtPaginator<GoodsDailyReport> reportPage = GoodsDailyReport.query(condition, pageNumber, PAGE_SIZE);
