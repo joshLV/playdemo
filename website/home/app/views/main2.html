@@ -3,35 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <title>#{get 'title' /}</title>
-#{get 'metaContent'/}
-#{asset.css src:['/base/121031/base.css']/}
+    #{get 'metaContent'/}
+    #{asset.css src:['/base/121031/base.css']/}
     <link rel="shortcut icon" href="#{asset.url href:'/images/y/favicon.ico'/}" type="image/x-icon"/>
-#{get 'moreStyles' /}
+    #{get 'moreStyles' /}
 </head>
 <body>
 %{baseDomain = play.Play.configuration.getProperty("application.baseDomain")}%
 <div id="topbar">
     <div id="topbar-bd">
         <ul class="site-nav">
-        #{if cas?.isLogin}
+            #{if cas?.isLogin}
             <li><a class="login" target="_blank"
-                   href="http://home.${baseDomain}"
+                   href="${helper.Domain.getHomeHost(request)}"
                    id="login_name">${cas.loginName}</a></li>
-            <li><a href="http://home.${baseDomain}">我的一百券</a></li>
+            <li><a href="${helper.Domain.getHomeHost(request)}">我的一百券</a></li>
             <li><a href="/logout">退出</a></li>
-        #{/if}
-        #{else}
+            #{/if}
+            #{else}
             <li class="first"><a class="login" id="login" href="${helper.Domain.getWWWHost(request)}/login">登录</a></li>
             <li><a class="signup" href="${helper.Domain.getWWWHost(request)}/register">注册</a></li>
-        *{<li><a class="quick" href="" target="_blank">快捷登录</a></li>}*
-        #{/else}
+            <li><a href="${helper.Domain.getHomeHost(request)}">我的一百券</a></li>
+            *{<li><a class="quick" href="" target="_blank">快捷登录</a></li>}*
+            #{/else}
             <li><a id="favorite" class="favorite" href="">收藏一百券</a></li>
             <li class="last">
-            #{if !play.Play.runingInTestMode()}
+                #{if !play.Play.runingInTestMode()}
                 <iframe width="63" height="24" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0"
                         scrolling="no" border="0"
                         src="http://widget.weibo.com/relationship/followbutton.php?language=zh_cn&width=63&height=24&uid=1642909335&style=1&btn=red&dpc=1"></iframe>
- 	    #{/if}
+                #{/if}
             </li>
         </ul>
         <div class="hot-line">客服热线：<span>400-6262-166</span></div>
@@ -40,18 +41,22 @@
 <!-- #topbar -->
 
 <div id="header" class="clearfix">
-    <div id="logo"><a href="http://www.${baseDomain}/"><img
+    <div id="logo"><a href="${helper.Domain.getWWWHost(request)}"><img
             src="http://img.uhcdn.com/images/y/logo.png" width="180" height="96"/></a></div>
     <div id="search">
-        <form action="/q" method="get" target="_self">
+        <form action="${helper.Domain.getWWWHost(request)}/q" method="get" target="_self">
             <div class="text"><input type="text" name="s" accesskey="s" autofocus="true" autocomplete="off"
                                      x-webkit-speech="" x-webkit-grammar="builtin:translate" value="${s}"></div>
             <button type="submit"> 搜 索</button>
         </form>
-        <div class="hotword"><a href="/q?s=火锅">火锅</a> <a href="/q?s=川菜">川菜</a> <a href="/q?s=美容">美容</a> <a href="/q?s=小吃">小吃</a> <a href="/q?s=西餐">西餐</a>
+        <div class="hotword"><a href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','火锅').getUrl()}">火锅</a>
+            <a href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','川菜').getUrl()}">川菜</a> <a
+                    href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','美容').getUrl()}">美容</a> <a
+                href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','小吃').getUrl()}">小吃</a> <a
+                    href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','西餐').getUrl()}">西餐</a>
         </div>
     </div>
-     <div id="cart">
+    <div id="cart">
         <div class="cart-box">
             <div class="cart-box-hd clearfix">
                 <span class="cart-icon">购物车</span>
@@ -74,49 +79,57 @@
             <h2>全部商品<s></s></h2>
 
             <div class="menu">
-            #{set i:0/}
-            #{list leftCategories,as:'category'}
-                #{set i:i+1/}
+                #{list leftCategories,as:'category'}
                 <dl class="item">
                     <dt><a href="">${category.name}</a></dt>
                     <dd class="line"></dd>
-                    <dd class="some #{if i==3 || i==5}one#{/if}">
-                        <div>#{list category.getShowKeywordsList(10),as:'keywords'}<a href="">${keywords}</a> #{/list}
+                    <dd class="some #{if category_index==3 || category_index==5}one#{/if}">
+                        <div>#{list category.getShowKeywordsList(10),as:'keywords'}<a
+                                href="${new models.sales.GoodsWebsiteCondition().buildUrl('keywords', keywords).getUrl()}">${keywords}</a>
+                            #{/list}
                         </div>
                     </dd>
                     <dd class="more">
                         <ul class="clearfix">
                             #{list category.getByParent(),as:'subCategory'}
-                                <li><a href="">${subCategory.name}（${subCategory.goodsCount}）</a></li>
+                            <li>
+                                <a href="${new models.sales.GoodsWebsiteCondition().buildUrl('categoryId',subCategory.id).getUrl()}">${subCategory.name}（${subCategory.goodsCount}）</a>
+                            </li>
                             #{/list}
                         </ul>
                         <div class="ads">
-                            #{if i==1}${categoryTopic1?.content?.raw()}#{/if}
-                            #{if i==2}${categoryTopic2?.content?.raw()}#{/if}
-                            #{if i==3}${categoryTopic3?.content?.raw()}#{/if}
-                            #{if i==4}${categoryTopic4?.content?.raw()}#{/if}
-                            #{if i==5}${categoryTopic5?.content?.raw()}#{/if}
+                            <a href="/topic/${categoryTopic1?.id}"
+                               target="_blank">#{if category_index==0}${categoryTopic1?.title}#{/if}</a>
+                            <a href="/topic/${categoryTopic2?.id}"
+                               target="_blank">#{if category_index==1}${categoryTopic2?.title}#{/if}</a>
+                            <a href="/topic/${categoryTopic3?.id}"
+                               target="_blank">#{if category_index==2}${categoryTopic3?.title}#{/if}</a>
+                            <a href="/topic/${categoryTopic4?.id}"
+                               target="_blank">#{if category_index==3}${categoryTopic4?.title}#{/if}</a>
+                            <a href="/topic/${categoryTopic5?.id}"
+                               target="_blank">#{if category_index==4}${categoryTopic5?.title}#{/if}</a>
                         </div>
                     </dd>
                 </dl>
-            #{/list}
+                #{/list}
 
                 <dl class="area">
                     <dt><a href="">热门商圈</a></dt>
                     <dd class="some">#{list areas, as:'area'}
-                        <a href="/q/0-${area.id}">${area.name}</a>
-                    #{/list}</dd>
+                        <a href="${new models.sales.GoodsWebsiteCondition().buildUrl('areaId',area.id).getUrl()}">${area.name}</a>
+                        #{/list}
+                    </dd>
                 </dl>
             </div>
         </div>
         <div id="nav">
 
             <a href="${helper.Domain.getWWWHost(request)}"
-               #{if categoryId == 0}class="curr"#{/if}>首页<i class="right"></i></a>
-        #{list topCategories, as: 'category'}
+            #{if categoryId == 0}class="curr"#{/if}>首页<i class="right"></i></a>
+            #{list topCategories, as: 'category'}
             <a href="${helper.Domain.getWWWHost(request)}/q/${category.id}"
-               #{if categoryId == category.id}class="curr"#{/if}>${category.name}<i class="right"></i></a>
-        #{/list}
+            #{if categoryId == category.id}class="curr"#{/if}>${category.name}<i class="right"></i></a>
+            #{/list}
 
         </div>
 
@@ -142,13 +155,15 @@
     </div>
 </div>
 <!-- #footer -->
-
 #{asset.js src:['/u/jquery-1.7.2.min.js','/base/121031/base.js'] /}
 #{get 'moreScripts' /}
 <div style="display:none">
+    #{if !play.Play.runingInTestMode()}
     <script type="text/javascript" id="bdshare_js" data="type=tools&uid=763119"></script>
     <script type="text/javascript" id="bdshell_js"></script>
-    <script type="text/javascript">document.getElementById("bdshell_js").src = "http://share.baidu.com/static/js/shell_v2.js?cdnversion=" + new Date().getHours();</script>
+    <script type="text/javascript">document.getElementById("bdshell_js").src =
+        "http://share.baidu.com/static/js/shell_v2.js?cdnversion=" + new Date().getHours();
+    </script>
 
     <script src="http://s84.cnzz.com/stat.php?id=4205049&web_id=4205049" language="JavaScript"></script>
     <script type="text/javascript">
@@ -158,14 +173,16 @@
         _gaq.push(['_setAllowLinker', true]);
         _gaq.push(['_trackPageview']);
         (function () {
-            var ga = document.createElement('script');
-            ga.type = 'text/javascript';
-            ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(ga, s);
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript';
+        ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') +
+        '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
         })();
     </script>
+    #{/if}
 </div>
 
 </body>
