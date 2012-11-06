@@ -61,7 +61,6 @@ public class OrderUnitTest extends UnitTest {
         int pageNumber = 1;
         int pageSize = 15;
         JPAExtPaginator<Order> list = Order.query(order, supplierId, pageNumber, pageSize, null, true);
-        JPAExtPaginator<Order> list = Order.query(order, supplierId, pageNumber, pageSize, null, true);
         assertEquals(0, list.size());
 
         order = new OrdersCondition();
