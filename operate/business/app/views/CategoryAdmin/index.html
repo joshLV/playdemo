@@ -28,6 +28,7 @@ ${ parentCategory?.name}-子分类
             <th>WWW首页左上角显示</th>
             <th>WWW首页楼层显示</th>
             <th>显示在WWW首页</th>
+            <th>所属商品数</th>
             <th>操作</th>
         </tr>
         </thead>
@@ -43,6 +44,11 @@ ${ parentCategory?.name}-子分类
             <td>${category?.isInWWWLeft?.yesno("是","否")} </td>
             <td>${category?.isInWWWFloor?.yesno("是","否")} </td>
             <td>${category?.display?.yesno("是","否")} </td>
+            <td>
+               #{if category?.goodsSet?.size() > 0}
+                  <a href="/goods?condition.categoryId=${category?.id}">${category?.goodsSet?.size()}</a>
+               #{/if}
+            </td>
             <td>
                 <a href="/category/${category?.id}/edit">修改</a>
                 / <a href="/category?parentId=${category?.id}">子类别(${category?.undeletedChildren().size()})</a>
