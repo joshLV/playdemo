@@ -48,7 +48,7 @@ public class BrandUnitTest extends UnitTest {
     public void testFindByOrder() {
         long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
         Supplier supplier = Supplier.findById(supplierId);
-        List<Brand> brands = Brand.findByOrder(supplier, null, true);
+        List<Brand> brands = Brand.findByOrder(supplier);
 
         assertEquals(3, brands.size());
     }

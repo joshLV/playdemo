@@ -116,9 +116,7 @@ public class OperateGoods extends Controller {
                 PAGE_SIZE);
         goodsPage.setBoundaryControlsEnabled(true);
         List<Supplier> supplierList = Supplier.findUnDeleted();
-        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
-        Long id = OperateRbac.currentUser().id;
-        List<Brand> brandList = Brand.findByOrder(null, id, right);
+        List<Brand> brandList = Brand.findByOrder(null);
         renderArgs.put("brandList", brandList);
 
         render(goodsPage, supplierList, condition, desc);

@@ -18,70 +18,71 @@ import java.util.List;
  */
 public class SupplierOrders extends Controller {
 
-	public static int PAGE_SIZE = 15;
+    public static int PAGE_SIZE = 15;
 
-	/**
-	 * 商户订单信息一览
-	 *
-	 * @param condition 查询条件
-	 */
-	public static void index(OrdersCondition condition) {
-		if (condition == null) {
-			condition = new OrdersCondition();
-		}
-		//该商户ID
-		Long supplierId = SupplierRbac.currentUser().supplier.id;
-		String page = request.params.get("page");
-		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-		JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, supplierId, pageNumber, PAGE_SIZE);
-		renderGoodsCond(condition);
-		render(orderList);
-
-	}
-
-	/**
-	 * 商户订单详细
-	 *
-	 * @param orderNumber 订单编号
-	 */
-	public static void details(String orderNumber) {
+    /**
+     * 商户订单信息一览
+     *
+     * @param condition 查询条件
+     */
+    public static void index(OrdersCondition condition) {
+        if (condition == null) {
+            condition = new OrdersCondition();
+        }
+        //该商户ID
         Long supplierId = SupplierRbac.currentUser().supplier.id;
-		models.order.Order orders = models.order.Order.find("byOrderNumber", orderNumber).first();
-        if(orders == null || orders.orderItems == null){
+        String page = request.params.get("page");
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+
+        JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, supplierId, pageNumber, PAGE_SIZE, null, true);
+        renderGoodsCond(condition);
+        render(orderList);
+
+    }
+
+    /**
+     * 商户订单详细
+     *
+     * @param orderNumber 订单编号
+     */
+    public static void details(String orderNumber) {
+        Long supplierId = SupplierRbac.currentUser().supplier.id;
+        models.order.Order orders = models.order.Order.find("byOrderNumber", orderNumber).first();
+        if (orders == null || orders.orderItems == null) {
             error("order can not find:" + orderNumber);
         }
 
-		List<OrderItems> orderItems = new ArrayList<>();
-        for (OrderItems orderItem : orders.orderItems){
-            if(orderItem.goods.supplierId.equals(supplierId)){
+        List<OrderItems> orderItems = new ArrayList<>();
+        for (OrderItems orderItem : orders.orderItems) {
+            if (orderItem.goods.supplierId.equals(supplierId)) {
                 orderItems.add(orderItem);
             }
         }
-        if(orderItems.size() == 0){
+        if (orderItems.size() == 0) {
             error(404, "该订单不存在！");
         }
-		//收货信息
-		render(orders, orderItems);
-	}
+        //收货信息
+        render(orders, orderItems);
+    }
 
-	/**
-	 * 向页面设置选择信息
-	 * 
-	 * @param goodsCond 页面设置选择信息
-	 */
-	private static void renderGoodsCond(OrdersCondition goodsCond) {
-		
-		renderArgs.put("createdAtBegin", goodsCond.createdAtBegin);
-		renderArgs.put("createdAtEnd", goodsCond.createdAtEnd);
-		renderArgs.put("status", goodsCond.status);
-		renderArgs.put("goodsName", goodsCond.goodsName);
-		renderArgs.put("refundAtBegin", goodsCond.refundAtBegin);
-		renderArgs.put("refundAtEnd", goodsCond.refundAtEnd);
-		renderArgs.put("status", goodsCond.status);
-		renderArgs.put("deliveryType", goodsCond.deliveryType);
-		renderArgs.put("payMethod", goodsCond.payMethod);
-		renderArgs.put("searchKey", goodsCond.searchKey);
-		renderArgs.put("searchItems", goodsCond.searchItems);
-	}
+    /**
+     * 向页面设置选择信息
+     *
+     * @param goodsCond 页面设置选择信息
+     */
+    private static void renderGoodsCond(OrdersCondition goodsCond) {
+
+        renderArgs.put("createdAtBegin", goodsCond.createdAtBegin);
+        renderArgs.put("createdAtEnd", goodsCond.createdAtEnd);
+        renderArgs.put("status", goodsCond.status);
+        renderArgs.put("goodsName", goodsCond.goodsName);
+        renderArgs.put("refundAtBegin", goodsCond.refundAtBegin);
+        renderArgs.put("refundAtEnd", goodsCond.refundAtEnd);
+        renderArgs.put("status", goodsCond.status);
+        renderArgs.put("deliveryType", goodsCond.deliveryType);
+        renderArgs.put("payMethod", goodsCond.payMethod);
+        renderArgs.put("searchKey", goodsCond.searchKey);
+        renderArgs.put("searchItems", goodsCond.searchItems);
+    }
 
 }

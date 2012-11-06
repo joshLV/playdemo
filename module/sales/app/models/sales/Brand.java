@@ -184,6 +184,10 @@ public class Brand extends Model {
         return find("deleted= ? order by displayOrder", DeletedStatus.UN_DELETED).fetch(limit);
     }
 
+    public static List<Brand> findByOrder(Supplier supplier) {
+        return findByOrder(supplier, null, true);
+    }
+
     public static List<Brand> findByOrder(Supplier supplier, Long operatorId, Boolean hasSeeAllSupplierPermission) {
         StringBuilder sq = new StringBuilder("deleted = ?");
         List params = new ArrayList();
@@ -195,8 +199,10 @@ public class Brand extends Model {
         }
 
         if ((supplier != null && !hasSeeAllSupplierPermission) || (!hasSeeAllSupplierPermission)) {
-            sq.append(" and supplier.salesId = ?");
-            params.add(operatorId);
+            if (operatorId != null) {
+                sq.append(" and supplier.salesId = ?");
+                params.add(operatorId);
+            }
         }
 
         return find(sq.toString(), params.toArray()).fetch();

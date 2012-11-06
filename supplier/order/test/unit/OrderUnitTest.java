@@ -76,13 +76,13 @@ public class OrderUnitTest extends UnitTest {
         order.payMethod = "alipay";
         order.searchKey = "2";
         order.searchItems = "2012";
-        list = Order.query(order, supplierId, pageNumber, pageSize);
+        list = Order.query(order, supplierId, pageNumber, pageSize, null, true);
         assertEquals(1, list.size());
 
         order = new OrdersCondition();
         order.searchKey = "1";
         order.searchItems = "哈根达斯200";
-        list = Order.query(order, supplierId, pageNumber, pageSize);
+        list = Order.query(order, supplierId, pageNumber, pageSize, null, true);
         assertEquals(2, list.size());
 
         order = new OrdersCondition();
@@ -93,7 +93,7 @@ public class OrderUnitTest extends UnitTest {
             e.printStackTrace();
         }
 
-        list = Order.query(order, supplierId, pageNumber, pageSize);
+        list = Order.query(order, supplierId, pageNumber, pageSize, null, true);
         assertEquals(0, list.size());
     }
 
@@ -116,7 +116,7 @@ public class OrderUnitTest extends UnitTest {
         oldGoods.cumulativeStocks = 100l;
         oldGoods.save();
         oldGoods.refresh();
-        
+
         long baseSale = oldGoods.getRealStocks();
         long saleCount = oldGoods.getRealSaleCount();
         Order order = Order.createConsumeOrder(userId, AccountType.CONSUMER);
