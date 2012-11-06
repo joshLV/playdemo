@@ -1,5 +1,7 @@
 package models.jingdong.groupbuy;
 
+import cache.CacheCallBack;
+import cache.CacheHelper;
 import models.jingdong.groupbuy.response.*;
 import models.order.ECoupon;
 import models.order.OuterOrder;
@@ -29,6 +31,8 @@ public class JDGroupBuyUtil {
     public static final String CODE_CHARSET = "utf-8";
 
     public static String GATEWAY_URL = Play.configuration.getProperty("jingdong.gateway.url", "http://gw.tuan.360buy.net");
+
+    public static final String CACHE_KEY = "JINGDGONG_API";
 
     /**
      * 解密REST信息
@@ -110,9 +114,7 @@ public class JDGroupBuyUtil {
 
         //解析请求
         JDRest<VerifyCouponResponse> sendOrderJDRest = new JDRest<>();
-        if(!sendOrderJDRest.parse(response.getString(), new VerifyCouponResponse())){
-            return false;
-        }
+        sendOrderJDRest.parse(response.getString(), new VerifyCouponResponse());
         VerifyCouponResponse verifyCouponResponse = sendOrderJDRest.data;
         return verifyCouponResponse.verifyResult == 200;
     }
@@ -130,10 +132,19 @@ public class JDGroupBuyUtil {
         WS.HttpResponse response = WS.url(url).body(restRequest).post();
 
         JDRest<QueryIdNameResponse> queryCityRest = new JDRest<>();
-        if(!queryCityRest.parse(response.getString(), new QueryIdNameResponse("Cities"))){
-            return null;
-        }
+        queryCityRest.parse(response.getString(), new QueryIdNameResponse("Cities"));
         return queryCityRest.data.idNameList;
+    }
+
+    public static List<IdNameResponse> cacheCities() {
+        return CacheHelper.getCache(
+                CacheHelper.getCacheKey(CACHE_KEY, "CITIES"),
+                new CacheCallBack<List<IdNameResponse>>() {
+                    @Override
+                    public List<IdNameResponse> loadData() {
+                        return JDGroupBuyUtil.queryCity();
+                    }
+                });
     }
 
     /**
@@ -151,12 +162,23 @@ public class JDGroupBuyUtil {
         WS.HttpResponse response = WS.url(url).body(restRequest).post();
 
         JDRest<QueryIdNameResponse> queryCategoryRest = new JDRest<>();
-        if(!queryCategoryRest.parse(response.getString(), new QueryIdNameResponse("Categories"))){
-            return null;
-        }
+        queryCategoryRest.parse(response.getString(), new QueryIdNameResponse("Categories"));
 
         return queryCategoryRest.data.idNameList;
     }
+
+    public static List<IdNameResponse> cacheCategories(final Long categoryId) {
+        return CacheHelper.getCache(
+                CacheHelper.getCacheKey(CACHE_KEY, "CATEGORIES_" + categoryId),
+                new CacheCallBack<List<IdNameResponse>>() {
+                    @Override
+                    public List<IdNameResponse> loadData() {
+                        return queryCategory(categoryId);
+                    }
+                }
+        );
+    }
+
 
     /**
      * 查询城市区域
@@ -174,12 +196,22 @@ public class JDGroupBuyUtil {
         WS.HttpResponse response = WS.url(url).body(restRequest).post();
 
         JDRest<QueryIdNameResponse> queryDistrictRest = new JDRest<>();
-        if(!queryDistrictRest.parse(response.getString(), new QueryIdNameResponse("Districts"))){
-            return null;
-        }
-
+        queryDistrictRest.parse(response.getString(), new QueryIdNameResponse("Districts"));
         return queryDistrictRest.data.idNameList;
     }
+
+    public static List<IdNameResponse> cacheDistricts(final Long cityId) {
+        return CacheHelper.getCache(
+                CacheHelper.getCacheKey(CACHE_KEY, "CITY_" + cityId + "_DISTRICTS"),
+                new CacheCallBack<List<IdNameResponse>>() {
+                    @Override
+                    public List<IdNameResponse> loadData() {
+                        return JDGroupBuyUtil.queryDistrict(cityId);
+                    }
+                }
+        );
+    }
+
 
     /**
      * 查询商圈
@@ -196,12 +228,28 @@ public class JDGroupBuyUtil {
         WS.HttpResponse response = WS.url(url).body(restRequest).post();
 
         JDRest<QueryIdNameResponse> queryDistrictRest = new JDRest<>();
-        if(!queryDistrictRest.parse(response.getString(), new QueryIdNameResponse("Areas"))){
-            return null;
-        }
-
+        queryDistrictRest.parse(response.getString(), new QueryIdNameResponse("Areas"));
         return queryDistrictRest.data.idNameList;
     }
+
+    public static Map<Long, List<IdNameResponse>> cacheAreas(Long cityId) {
+        final List<IdNameResponse> districts = cacheDistricts(cityId);
+        return CacheHelper.getCache(
+                CacheHelper.getCacheKey(CACHE_KEY, "CITY_" + cityId + "_AREAS"),
+                new CacheCallBack<Map<Long, List<IdNameResponse>>>() {
+                    @Override
+                    public Map<Long, List<IdNameResponse>> loadData() {
+                        Map<Long, List<IdNameResponse>> areaMap = new HashMap<>();
+                        for (IdNameResponse district : districts) {
+                            List<IdNameResponse> areas = JDGroupBuyUtil.queryArea(district.id);
+                            areaMap.put(district.id, areas);
+                        }
+                        return areaMap;
+                    }
+                }
+        );
+    }
+
 
     /**
      * 添加基本的请求参数，渲染完整REST请求内容

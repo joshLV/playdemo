@@ -25,13 +25,11 @@
     *{ 团购所属一级分类ID [必填] }*
     <GroupId>${groupId}</GroupId>
     *{ 团购所属二级分类ID列表 二级分类最多填写3个 所有二级分类ID需同属一个一级分类 非必填 }*
-    #{if 1== 0}
     <Group2List>
-        <GroupId>333</GroupId>
-        <GroupId>444</GroupId>
-        <GroupId>555</GroupId>
+        #{list items:group2List, as:'group'}
+        <GroupId>${group}</GroupId>
+        #{/list}
     </Group2List>
-    #{/if}
     *{ 团购产品名称 最长12个字符[必填] }*
     <Title>${title.raw()}</Title>
     *{ 团购主图  此为图片链接地址http开头，图片尺寸为440*280，图片大小在100kb以内 [必填] }*

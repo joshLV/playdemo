@@ -25,7 +25,6 @@ import java.util.*;
  */
 @With(SecureCAS.class)
 public class JingdongUploadTeam extends Controller{
-    public static final String CACHE_KEY = "JINGDGONG_API";
 
     public static void prepare(Long goodsId){
         Resaler resaler = SecureCAS.getResaler();
@@ -36,7 +35,7 @@ public class JingdongUploadTeam extends Controller{
         List<Shop> shops = Arrays.asList(goods.getShopList().toArray(new Shop[]{}));
         Supplier supplier = Supplier.findById(goods.supplierId);
         //查询城市
-        List<IdNameResponse> cities = cacheCities();
+        List<IdNameResponse> cities = JDGroupBuyUtil.cacheCities();
         //只使用默认城市:上海
         IdNameResponse city = null;
         for(IdNameResponse c : cities){
@@ -51,10 +50,10 @@ public class JingdongUploadTeam extends Controller{
 
         //查询区域
         if(city != null){
-            List<IdNameResponse> districts = cacheDistricts(city.id);
+            List<IdNameResponse> districts = JDGroupBuyUtil.cacheDistricts(city.id);
             renderArgs.put("districts", districts);
             //查询商圈
-            Map<Long, List<IdNameResponse>> areas = cacheAreas(city.id);
+            Map<Long, List<IdNameResponse>> areas = JDGroupBuyUtil.cacheAreas(city.id);
             renderArgs.put("ares", areas);
 
             List<String> unknownAreas = new ArrayList<>();
@@ -73,65 +72,19 @@ public class JingdongUploadTeam extends Controller{
         }
 
         //查询一级分类
-        List<IdNameResponse> categories = cacheCategories(0L);
+        List<IdNameResponse> categories = JDGroupBuyUtil.cacheCategories(0L);
+        Map<Long, List<IdNameResponse>> subCategories = new HashMap<>();
+        for(IdNameResponse category : categories) {
+            System.out.println("=======>" + category.id);
+            List<IdNameResponse> subCategory = JDGroupBuyUtil.cacheCategories(category.id);
+            subCategories.put(category.id, subCategory);
+        }
 
-        render(goods, supplier, city, categories, areaNames, shops);
+        render(goods, supplier, city, categories, subCategories, areaNames, shops);
     }
 
-    private static List<IdNameResponse> cacheCategories(final Long categoryId) {
-        return CacheHelper.getCache(
-                CacheHelper.getCacheKey(CACHE_KEY, "CATEGORIES_" + categoryId),
-                new CacheCallBack<List<IdNameResponse>>() {
-                    @Override
-                    public List<IdNameResponse> loadData() {
-                        return JDGroupBuyUtil.queryCategory(categoryId);
-                    }
-                }
-        );
-    }
 
-    private static Map<Long, List<IdNameResponse>> cacheAreas(Long cityId) {
-        final List<IdNameResponse> districts = cacheDistricts(cityId);
-        return CacheHelper.getCache(
-                CacheHelper.getCacheKey(CACHE_KEY, "CITY_" + cityId + "_AREAS"),
-                new CacheCallBack<Map<Long, List<IdNameResponse>>>() {
-                    @Override
-                    public Map<Long, List<IdNameResponse>> loadData() {
-                        Map<Long, List<IdNameResponse>> areaMap = new HashMap<>();
-                        for (IdNameResponse district : districts) {
-                            List<IdNameResponse> areas = JDGroupBuyUtil.queryArea(district.id);
-                            areaMap.put(district.id, areas);
-                        }
-                        return areaMap;
-                    }
-                }
-        );
-    }
-
-    private static List<IdNameResponse> cacheDistricts(final Long cityId) {
-        return CacheHelper.getCache(
-                CacheHelper.getCacheKey(CACHE_KEY, "CITY_" + cityId + "_DISTRICTS"),
-                new CacheCallBack<List<IdNameResponse>>() {
-                    @Override
-                    public List<IdNameResponse> loadData() {
-                        return JDGroupBuyUtil.queryDistrict(cityId);
-                    }
-                }
-        );
-    }
-
-    private static List<IdNameResponse> cacheCities() {
-        return CacheHelper.getCache(
-                CacheHelper.getCacheKey(CACHE_KEY, "CITIES"),
-                new CacheCallBack<List<IdNameResponse>>() {
-                    @Override
-                    public List<IdNameResponse> loadData() {
-                        return JDGroupBuyUtil.queryCity();
-                    }
-                });
-    }
-
-    public static void upload(Long venderTeamId, List<String> areas){
+    public static void upload(Long venderTeamId, List<String> areas, List<String> subGroupIds){
         Resaler resaler = SecureCAS.getResaler();
         if(!Resaler.JD_LOGIN_NAME.equals(resaler.loginName)){
             error("there is nothing you can do");
@@ -153,6 +106,18 @@ public class JingdongUploadTeam extends Controller{
                 areaMap.get(districtId).add(areaId);
             }
         }
+        Long groupId = null;
+        List<Long> group2List = new ArrayList<>();
+        for(String subGroupId : subGroupIds){
+            String[] ids = subGroupId.split("-");
+            if(ids.length == 1){
+                groupId = Long.parseLong(ids[0]);
+                break;
+            }else if(ids.length == 2){
+                groupId = Long.parseLong(ids[0]);
+                group2List.add(Long.parseLong(ids[1]));
+            }
+        }
 
         models.sales.Goods goods = models.sales.Goods.findById(venderTeamId);
         if(goods == null){
@@ -168,6 +133,8 @@ public class JingdongUploadTeam extends Controller{
         }
         params.put("shops", shops);
         params.put("areaMap", areaMap);
+        params.put("groupId", groupId);
+        params.put("group2List", group2List);
         String data = template.render(params);
         Logger.info("request, %s", data);
         String restRequest = JDGroupBuyUtil.makeRequestRest(data);

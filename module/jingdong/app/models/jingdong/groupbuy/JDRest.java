@@ -21,6 +21,7 @@ public class JDRest<T extends JDMessage> {
     public T        data;
 
     public boolean parse(String xml, T d){
+        data = d;
         Logger.info("jingdong request:" + xml);
         Document document = null;
         try{
@@ -64,7 +65,6 @@ public class JDRest<T extends JDMessage> {
                 messageElement = dataElement.element("Message");
             }
         }
-        data = d;
         return messageElement != null && data.parse(messageElement);
     }
 }
