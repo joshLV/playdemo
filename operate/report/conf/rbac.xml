@@ -15,7 +15,7 @@
     <permission key="SALES_REPORT" text="销售表" roles="account,sales,manager"/>
     <permission key="WEB_TRACKS_REPORT" text="网站跟踪报表" roles="webop"/>
     <permission key="CONSUMER_REPORT" text="消费报表" roles="manager,account" />
-    <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager" />
+    <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager,account" />
 
     <navigation key="reports_app" text="报表" action="OperateReportApplication.index" display-order="80">
         <navigation key="account_report_app" text="财务报表">

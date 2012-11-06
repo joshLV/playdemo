@@ -29,7 +29,8 @@
     <permission key="SHOPS" text="门店管理" roles="editor,customservice"/>
     <permission key="RESALERS" text="分销商管理" roles="customservice"/>
     <permission key="ORDERS" text="运营订单管理" roles="customservice,account,sales,manager"/>
-    <permission key="COUPONS" text="券管理" roles="sales,customservice,account,manager"/>
+    <permission key="COUPONS" text="券查询" roles="sales,customservice,account,manager"/>
+    <permission key="COUPONS_MANAGE" text="券管理" roles="customservice,account,manager"/>
     <permission key="CONSUMERS_REPORT" text="消费者资金明细" roles="account"/>
     <permission key="RESALES_REPORT" text="分销商资金明细" roles="account"/>
     <permission key="SUPPLIERS_REPORT" text="商户资金明细" roles="account"/>
@@ -112,9 +113,11 @@
         </navigation>
         <navigation key="coupon_app" text="消费券">
             <navigation key="coupons_index" action="OperateCoupons.index" text="消费券管理" permissions="COUPONS"/>
-            <navigation key="verify_index" action="OperateVerifyCoupons.index" text=" 验证消费券" permissions="COUPONS"/>
-            <navigation key="pre_coupons" action="ImportCoupons.index" text="预购券管理" permissions="COUPONS"/>
-            <navigation key="freeze_coupons" action="BatchFreezeCoupons.index" text="批量冻结券号" permissions="COUPONS"/>
+            <navigation key="verify_index" action="OperateVerifyCoupons.index" text="验证消费券"
+                        permissions="COUPONS_MANAGE"/>
+            <navigation key="pre_coupons" action="ImportCoupons.index" text="预购券管理" permissions="COUPONS_MANAGE"/>
+            <navigation key="freeze_coupons" action="BatchFreezeCoupons.index" text="批量冻结券号"
+                        permissions="COUPONS_MANAGE"/>
         </navigation>
         <navigation key="yihaodian_api" text="一号店">
             <navigation key="yihaodian_api_index" action="YihaodianAPI.index" text="API" permissions="ORDERS"/>
