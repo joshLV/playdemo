@@ -949,7 +949,7 @@ public class ECoupon extends Model {
                 content += "[" + s.name + "]" + s.address + " " + s.phone + ";";
             }
         }
-        System.out.println("content>>>>" + content);
+//        System.out.println("content>>>>" + content);
         if (StringUtils.isBlank(phone)) {
             phone = eCoupon.orderItems.phone;
         }

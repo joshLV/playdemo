@@ -212,7 +212,7 @@ public class SecureCAS extends Controller {
             if (casUser != null) {
                 isAuthenticated = Boolean.TRUE;
 
-                System.out.println("====   casUser.getUsername():" + casUser.getUsername());
+//                System.out.println("====   casUser.getUsername():" + casUser.getUsername());
                 session.put(SESSION_USER_KEY, casUser.getUsername());
                 Cache.add(SESSION_USER_KEY + casUser.getUsername(), Boolean.TRUE);
                 // we invoke the implementation of onAuthenticate

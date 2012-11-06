@@ -334,9 +334,10 @@ public class PointGoodsOrder extends Model {
             this.applyAt = new Date();
             this.updatedAt = new Date();
             this.save();
-        } else {
-            System.out.println("not afford");
         }
+//        else {
+//            System.out.println("not afford");
+//        }
 
     }
 

@@ -64,6 +64,6 @@ public class ContentSafeFilter {
                 "<script>alert(1);</script>" +
                 "</p>";
         String safe = ContentSafeFilter.filter(unsafe);
-        System.out.println("safe: " + safe);
+//        System.out.println("safe: " + safe);
     }
 }

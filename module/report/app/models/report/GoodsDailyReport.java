@@ -108,8 +108,8 @@ order by  date_format(i.created_at, '%Y-%m-%d') desc;
      */
     @Transient
     public BigDecimal getPrice() {
-        System.out.println("originalAmount:" + originalAmount);
-        System.out.println("buyCount:" + buyCount);
+//        System.out.println("originalAmount:" + originalAmount);
+//        System.out.println("buyCount:" + buyCount);
         if (buyCount <= 0) {
             return null;
         }

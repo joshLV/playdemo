@@ -46,7 +46,7 @@ public class ReportCondition implements Serializable {
         if (supplier != null && supplier.id != 0) {
             condBuilder.append(" and r.supplier = :supplier");
             paramMap.put("supplier", supplier);
-            System.out.println("supplier.id:" + supplier.id);
+//            System.out.println("supplier.id:" + supplier.id);
         }
 
         if (StringUtils.isNotBlank(goodsLike)) {
@@ -85,7 +85,7 @@ public class ReportCondition implements Serializable {
             paramMap.put("supplierLike", "%" + supplierLike + "%");
         }
 
-        System.out.println("condBuilder.toString():" + condBuilder.toString());
+//        System.out.println("condBuilder.toString():" + condBuilder.toString());
         return condBuilder.toString();
     }
 

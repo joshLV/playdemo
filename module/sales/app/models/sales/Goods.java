@@ -1733,7 +1733,7 @@ public class Goods extends Model {
      */
     public static QueryResponse search(String keywords, long brandId, int pageNumber, int pageSize) {
 
-        System.out.println("))))))))))   Enter method Goods.search");
+//        System.out.println("))))))))))   Enter method Goods.search");
         GoodsWebsiteCondition condition = new GoodsWebsiteCondition();
         condition.keywords = keywords;
         condition.solrOrderBy = "goods.firstOnSaleAt_d";
@@ -1857,7 +1857,7 @@ public class Goods extends Model {
         if (brandId > 0) {
             queryStr.append(" AND brand.id_l:" + brandId);
         }
-        System.out.println("==> queryStr:" + queryStr);
+//        System.out.println("==> queryStr:" + queryStr);
         SolrQuery query = new SolrQuery(queryStr.toString());
         if (onlyStatistic) {
             query.setRows(0);
