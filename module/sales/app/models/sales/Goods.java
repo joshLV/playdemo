@@ -1732,6 +1732,8 @@ public class Goods extends Model {
      * @return
      */
     public static QueryResponse search(String keywords, long brandId, int pageNumber, int pageSize) {
+
+        System.out.println("))))))))))   Enter method Goods.search");
         GoodsWebsiteCondition condition = new GoodsWebsiteCondition();
         condition.keywords = keywords;
         condition.solrOrderBy = "goods.firstOnSaleAt_d";
@@ -1811,6 +1813,7 @@ public class Goods extends Model {
      * @param categoryId
      * @param districtId
      * @param areaId
+     * @param isOrder          是否预约
      * @param orderBy
      * @param isAsc
      * @param pageNumber
@@ -1822,15 +1825,17 @@ public class Goods extends Model {
                                         String orderBy, boolean isAsc, int pageNumber, int pageSize, boolean onlyStatistic, String[] facetFields) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-        StringBuilder queryStr = new StringBuilder(
-                "goods.deleted_s:\"com.uhuila.common.constants.DeletedStatus:UN_DELETED\"" +
-                        " AND goods.isHideOnsale_b:false" +
-                        " AND goods.status_s:\"models.sales.GoodsStatus:ONSALE\"" +
-                        " AND goods.realStocks_l:[1 TO " + Integer.MAX_VALUE + "]" +
-                        " AND goods.expireAt_dt:[" + dateFormat.format(new Date()) + "T" + timeFormat.format(new Date()) + "Z TO 2512-05-24T05:55:36Z]");
+        final String statusCond = "goods.deleted_s:\"com.uhuila.common.constants.DeletedStatus:UN_DELETED\"" +
+                " AND goods.isHideOnsale_b:false" +
+                " AND goods.status_s:\"models.sales.GoodsStatus:ONSALE\"" +
+                " AND goods.realStocks_l:[1 TO " + Integer.MAX_VALUE + "]" +
+                " AND goods.expireAt_dt:[" + dateFormat.format(new Date()) + "T" + timeFormat.format(new Date()) + "Z TO 2512-05-24T05:55:36Z]";
+        StringBuilder queryStr = new StringBuilder();
         if (StringUtils.isNotBlank(q)) {
-            queryStr.append(" AND " + q);
+            queryStr.append(q + " AND ");
         }
+        queryStr.append(statusCond);
+
         if (categoryId > 0) {
             queryStr.append(" AND goods.categoryIds_s:" + categoryId);
         }
@@ -1853,14 +1858,19 @@ public class Goods extends Model {
             queryStr.append(" AND brand.id_l:" + brandId);
         }
         System.out.println("==> queryStr:" + queryStr);
-
         SolrQuery query = new SolrQuery(queryStr.toString());
         if (onlyStatistic) {
             query.setRows(0);
         } else {
             query.setRows(pageSize);
             query.setFields(SOLR_ID, SOLR_GOODS_NAME, SOLR_GOODS_SALEPRICE, SOLR_GOODS_FACEVALUE, SOLR_GOODS_VIRTUALSALECOUNT, SOLR_GOODS_AREAS, SOLR_GOODS_IMAGESMALLPATH);
-            query.setSortField(orderBy, isAsc ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
+//            System.out.println("GoodsWebsiteCondition.getSolrOrderBy(0):" + GoodsWebsiteCondition.getSolrOrderBy(0));
+//            System.out.println("==> orderBy:" + orderBy + " " + (isAsc ? "asc" : "desc"));
+            if ((StringUtils.isNotBlank(q) && !GoodsWebsiteCondition.getSolrOrderBy(0).equals(orderBy)) ||
+                    (StringUtils.isBlank(q))) {
+                query.setSortField(orderBy, isAsc ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
+//                System.out.println("==>set Sort Field");
+            }
             query.setStart(pageNumber * pageSize - pageSize);
         }
         query.setFacet(true).addFacetField(facetFields);
@@ -1901,6 +1911,7 @@ public class Goods extends Model {
             }
             goods.areaNames = (String) doc.getFieldValue(SOLR_GOODS_AREAS);
             goods.imageSmallPath = (String) doc.getFieldValue(SOLR_GOODS_IMAGESMALLPATH);
+            goods.virtualSaleCount = (Long)doc.getFieldValue(SOLR_GOODS_VIRTUALSALECOUNT);
             goodsList.add(goods);
         }
         return goodsList;

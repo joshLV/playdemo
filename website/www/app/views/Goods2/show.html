@@ -1,20 +1,22 @@
 #{extends 'main2.html' /}
 #{set title: helper.Title.getDetailTitle(goods) /}
 #{set 'metaContent'}
-    #{set detailKeywords: helper.Title.getDetailKeyWords(goods) /}
+#{set detailKeywords: helper.Title.getDetailKeyWords(goods) /}
 <meta name="Description" content="一百券-${goods.brand?.name} ${goods.name},${detailKeywords}消费券,代金券,优惠券,美食券,电子券,提货券">
 <meta name="Keywords" content="${detailKeywords}">
 #{/set}
 #{set 'moreStyles'}
-    #{asset.css src:['/home/121031/detail.css']/}
+#{asset.css src:['/home/121031/detail.css']/}
 #{/set}
 <script src="http://maps.googleapis.com/maps/api/js?e&language=zh-CN&region=GB&key=AIzaSyCbnBNu40y5eXnL8jOey4lbS3P1vQ_HR5E&sensor=false"></script>
 #{set 'moreScripts'}
-    #{asset.js src:['/u/slides.min.js','/home/121031/detail.js']/}
+#{asset.js src:['/u/slides.min.js','/home/121031/detail.js']/}
 #{/set}
 <div class="wrapper">
     <div id="content">
-        <div class="crumbs">#{breadcrumbs/breadcrumb breadcrumbs/}</div>
+        <div id="crumbs-panel">
+            #{breadcrumbs/breadcrumb breadcrumbs/}
+        </div>
         <div id="section">
             <div id="summary" class="clearfix">
                 <div id="title">
@@ -25,28 +27,28 @@
                 <div id="gallery">
                     <div class="slides_container">
                         <img src="${goods?.imageLargePath}" width="340" height="260"/>
-                    #{if imagesList?.size()>0}
+                        #{if imagesList?.size()>0}
                         #{list items:imagesList ,as :'image'}
-                            <img src="${image?.imageLargePath}" width="340" height="260"/>
+                        <img src="${image?.imageLargePath}" width="340" height="260"/>
                         #{/list}
-                    #{/if}
+                        #{/if}
                     </div>
                     <a class="prev btn" href="#"><i></i></a>
                     <a class="next btn" href="#"><i></i></a>
                 </div>
                 <div id="property">
-                #{form @Orders.index(), id:'order_create_form' }
+                    #{form @Orders.index(), id:'order_create_form' }
                     <ul id="metaBox">
                         #{if params['isSupplier']== null || !params['isSupplier']}
-                            <li>现价：<span class="price">&yen;${goods.salePrice}</span></li>
+                        <li>现价：<span class="price">&yen;${goods.salePrice}</span></li>
                         #{/if}
                         #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
-                            <li>原价：
-                                <del>&yen;${goods.faceValue}</del>
-                            </li>
+                        <li>原价：
+                            <del>&yen;${goods.faceValue}</del>
+                        </li>
                         #{/if}
                         #{if params['isSupplier']== null || !params['isSupplier']}
-                            <li>折扣：<em class="discount">${goods.discountExpress}</em></li>
+                        <li>折扣：<em class="discount">${goods.discountExpress}</em></li>
                         #{/if}
                         <li class="amount">购买数量:
                     <span id="amount">
@@ -59,7 +61,7 @@
                     </span> 件(已售出<em class="selled">${goods?.virtualSaleCount?:'0'}</em>件)
                             <span id="stock_hit" style="display:none;color:#f50">库存${goods.baseSale}件</span>
                             #{if goods.limitNumber > 0}
-                                <span id="limitNumber" style="color:#f50">限购${goods.limitNumber}件</span>
+                            <span id="limitNumber" style="color:#f50">限购${goods.limitNumber}件</span>
                             #{/if}
                             <span class="error">#{error 'number' /}</span>
                             <input type="hidden" id="stock" value="${goods.cumulativeStocks}">
@@ -71,27 +73,27 @@
 
                     <div id="btnBox">
                         #{if goods.onSale()}
-                            #{if !bought}
-                                <a href="#" id="link_buy_now" class="nowBuy">立即购买<b></b></a>
-                                #{if !goods?.isLottery}
-                                    <a id="link_add_cart" href="#" class="addCart">加入购物车<b></b></a>
-                                #{/if}
-                            #{/if}
-                            #{else}
-                                <strong style="color: red">您已经购买过此商品！</strong>
-                            #{/else}
+                        #{if !bought}
+                        <a href="#" id="link_buy_now" class="nowBuy">立即购买<b></b></a>
+                        #{if !goods?.isLottery}
+                        <a id="link_add_cart" href="#" class="addCart">加入购物车<b></b></a>
+                        #{/if}
+                        #{/if}
+                        #{else}
+                        <strong style="color: red">您已经购买过此商品！</strong>
+                        #{/else}
 
-                            <div id="add_cart_result" class="addCart-tips" style="display: none;">
-                                <span class="addCart-icon"></span>
-                                <h4>已成功添加到购物车</h4>
+                        <div id="add_cart_result" class="addCart-tips" style="display: none;">
+                            <span class="addCart-icon"></span>
+                            <h4>已成功添加到购物车</h4>
 
-                                <p>购物车共有<em id="result-count"></em>件，总计<strong id="result-amount"></strong>元</p>
-                                <a class="view-carts" href="/carts">查看购物车<b></b></a>
-                                <a class="close-tips" id="J_closeTips" href="#">关闭</a>
-                            </div>
+                            <p>购物车共有<em id="result-count"></em>件，总计<strong id="result-amount"></strong>元</p>
+                            <a class="view-carts" href="/carts">查看购物车<b></b></a>
+                            <a class="close-tips" id="J_closeTips" href="#">关闭</a>
+                        </div>
                         #{/if}
                         #{elseif params['isSupplier']== null || !params['isSupplier']}
-                            <span>已下架</span>
+                        <span>已下架</span>
                         #{/elseif}
                     </div>
                     <ul id="promise">
@@ -99,7 +101,7 @@
                         <li class="refund"><a href="/service" target="_blank">一键退款</a></li>
                         <li class="return"><a href="/service" target="_blank">随时退货</a></li>
                     </ul>
-                #{/form}
+                    #{/form}
                 </div>
 
                 <!-- property-->
@@ -121,17 +123,18 @@
                 </div>
                 <div id="share-im">
                     <div class="inner">
-                        <label for="share-url">复制链接分享给站外好友：</label><input type="text" id="share-url" class="input" value="${tjUrl}" readonly/>
+                        <label for="share-url">复制链接分享给站外好友：</label><input type="text" id="share-url" class="input"
+                                                                          value="${tjUrl}" readonly/>
                     </div>
                 </div>
             </div>
             <!-- #summary -->
-        #{if goods?.exhibition}
+            #{if goods?.exhibition}
             <div id="details">
                 <div class="hd">商品详情</div>
                 <div class="bd">${goods?.exhibition?.raw()}</div>
             </div>
-        #{/if}
+            #{/if}
             <div id="warmtips">
                 <div class="hd">温馨提示</div>
                 <div class="bd"> ${goods?.prompt?.raw()}</div>
@@ -168,10 +171,10 @@
                         <div class="error"></div>
                         <label>发表咨询：</label>
                         <textarea cols="80" rows="5" id="question"></textarea>
-                    #{if !cas?.isLogin}
+                        #{if !cas?.isLogin}
                         <label>手机号码：</label>
                         <input type="text" id="mobile" name="mobile" maxlength="11"/> 输入手机号，方便我们给您反馈信息。
-                    #{/if}
+                        #{/if}
                         <a class="submit" id="submit" href="javascript:void(0)"> 提 交 </a>
                     </div>
                 </div>
@@ -179,7 +182,7 @@
             <!-- #consult -->
         </div>
         <!-- #section -->
-    #{include '/Goods2/sidebar.html' /}
+        #{include '/Goods2/sidebar.html' /}
     </div>
     <!-- #content -->
 </div>

@@ -35,69 +35,32 @@
     }
     });
 
-
-    /**
-    *点击加入购物车按钮
-    */
-    $("#link_add_cart").click(function () {
-    var id = $("#goodsId").val();
-    var element = $("#number").val();
-    var boughtNumber = Number($("#boughtNumber").val());
-    var addCartNumber = Number($("#addCartNumber").val()) + element * 1;
-    var limitNumber = Number($("#limit_" + id).val());
-    if (limitNumber > 0 && limitNumber - boughtNumber > 0 && addCartNumber > (limitNumber - boughtNumber)) {
-    $(".error").html("<strong style='display: block;'>已经超过限购数量，不能继续加入购物车！</strong>").css('color', '#F55');
-    return false;
-    }
-
-    if (limitNumber > 0 && element > (limitNumber - boughtNumber)) {
-    element.val(limitNumber - boughtNumber);
-    return false;
-    }
-
-    $.post(
-    "/carts",
-    {'goodsId':id, 'increment':$("#number").val()},
-    function (data) {
-    $("#addCartNumber").val(addCartNumber);
-    $('#add_cart_result').show();
-    //5秒后自动消失
-    setTimeout("$('#add_cart_result').css('display','none')", 5000);
-    //显示最新的购物车信息
-    $("#result-count").text(data.count);
-    $("#result-amount").text(data.amount);
-
-    //修改顶部购物车商品数量
-    $("#cart-count").html(data.count);
-    $("#reload").val("true");
-    $("#order_confirm").hide();
-    }
-    );
-    });
-
     });
 </script>
 #{/set}
 
 <div class="wrapper">
     <div id="content" class="clearfix">
-        #{breadcrumbs/breadcrumb breadcrumbs/}
-        <div id="section">
-
+        <div id="crumbs-panel">
+            #{breadcrumbs/breadcrumb breadcrumbs/}
             #{if onSaleGoodsCount != null && onSaleGoodsCount > 0 && org.apache.commons.lang.StringUtils.isNotBlank(s)}
 
             <div id="stats">
                 <i class="left"></i>
 
                 <div class="center">
-                    <div class="inner">找到<span class="keyword">${s?:condition.brandName}</span>相关宝贝<span
-                            class="count">${onSaleGoodsCount}</span>件 ${s}
+                    <div class="inner">找到<span class="keyword">${s?:condition.brandName}</span>相关商品<span
+                            class="count">${onSaleGoodsCount}</span>件
                     </div>
                 </div>
                 <i class="right"></i>
             </div>
-
             #{/if}
+        </div>
+
+        <div id="section">
+
+
             #{if onSaleGoodsCount == null || onSaleGoodsCount == 0}
             <div id="sorry">
                 <div class="inner">很抱歉！ 没有找到<span class="keyword">${s}</span>相关的商品。</div>
@@ -108,7 +71,7 @@
                     <ul class="goods clearfix">
                         #{list recommendGoodsList,as:'aGoods'}
                         <li
-                        #{if aGoods_index%3 == 0}class="first"#{/if}>
+                        #{if aGoods_index%3 == 1}class="first"#{/if}>
                         <div class="inner">
                             <div class="image">
                                 <a href="${aGoods.wwwUrl}" target="_blank"><img src="${aGoods.imageSmallPath}"
@@ -125,9 +88,9 @@
                                 <div class="left">
                                     <div class="price">&yen;${aGoods.salePrice}</div>
                                     <del>原价：${aGoods.faceValue}</del>
-                                    <div class="count"><em>${aGoods?.virtualSaleCount}</em>人已购买</div>
+                                    <div class="count">已售出<em>${aGoods?.virtualSaleCount}</em>件</div>
                                 </div>
-                                <div class="view"><a href="${aGoods.wwwUrl}">去看看</a></div>
+                                <div class="right"><a class="view" href="${aGoods.wwwUrl}">去看看</a></div>
                             </div>
                         </div>
                         </li>
@@ -147,13 +110,9 @@
                                 #{if categoryId == null || categoryId
                                 == 0l}class="curr"#{/if}>全部</a></li>
                             #{list searchCategories, as:'category'}
-                                <li><a href="${condition.buildUrl('categoryId',category.id).getUrl()}"
-                                       #{if category.id ==
-                                       categoryId}class="curr"#{/if}>${category.name}<em>(${category.goodsCount})</em></a></li>
                             <li><a href="${condition.buildUrl('categoryId',category.id).getUrl()}"
                                 #{if category.id ==
-                                categoryId}class="curr"#{/if}>${category.name}<em>(${category.
-                                       goodsCount})</em></a></li>
+                                categoryId}class="curr"#{/if}>${category.name}<em>(${category.goodsCount})</em></a></li>
                             #{/list}
                         </ul>
                         #{if subCategories!= null && subCategories.size() > 0}
@@ -209,22 +168,19 @@
                     <div class="sort">
                         <a #{if
                         condition.solrOrderBy.equals(models.sales.GoodsWebsiteCondition.getSolrOrderBy(0))}class="curr"#{/if}
-                        href="${condition.buildUrl('orderByNum', 0).getUrl()}">默认</a>
+                        href="${condition.buildUrl('orderByNum', 0).buildUrl('orderByTypeNum',1).getUrl()}">默认</a>
                         <a #{if
                         condition.solrOrderBy.equals(models.sales.GoodsWebsiteCondition.getSolrOrderBy(1))}class="curr"#{/if}
-                        href="${condition.buildUrl('orderByNum', 1)
-                        .buildUrl('orderByTypeNum', condition.orderByTypeNum == 1?0:1).getUrl()}""><span
-                            class="${'desc'.equals(condition.orderByType)?down:up}">销量</span></a>
+                        href="${condition.getOrderUrl(1)}"><span
+                            class="${condition.getOrderStyle(1)}">销量</span></a>
                         <a #{if
                         condition.solrOrderBy.equals(models.sales.GoodsWebsiteCondition.getSolrOrderBy(2))}class="curr"#{/if}
-                        href="${condition.buildUrl('orderByNum', 2)
-                        .buildUrl('orderByTypeNum', condition.orderByTypeNum == 1?0:1).getUrl()}"><span
-                            class="${'desc'.equals(condition.orderByType)?down:up}">价格</span></a>
+                        href="${condition.getOrderUrl(2)}"><span
+                            class="${condition.getOrderStyle(2)}">价格</span></a>
                         <a #{if
                         condition.solrOrderBy.equals(models.sales.GoodsWebsiteCondition.getSolrOrderBy(3))}class="curr"#{/if}
-                        href="${condition.buildUrl('orderByNum', 3)
-                        .buildUrl('orderByTypeNum', condition.orderByTypeNum == 1?0:1).getUrl()}"><span
-                            class="${'desc'.equals(condition.orderByType)?down:up}">发布时间</span></a>
+                        href="${condition.getOrderUrl(3)}"><span
+                            class="${condition.getOrderStyle(3)}">发布时间</span></a>
                     </div>
                     <div class="sift">
                         <input id="yy" type="checkbox" #{if condition.isOrder != null}checked #{/if}/><label
@@ -236,7 +192,7 @@
                     <ul class="goods clearfix">
                         #{paginate.list items:goodsPage,as:'aGoods'}
                         <li
-                        #{if aGoods_index%3 == 0}class="first"#{/if}>
+                        #{if aGoods_index%3 == 1}class="first"#{/if}>
                         <div class="inner">
                             <div class="image">
                                 <a href="${aGoods?.wwwUrl}" target="_blank"><img src="${aGoods.imageSmallPath}"
@@ -253,9 +209,9 @@
                                 <div class="left">
                                     <div class="price">&yen;${aGoods.salePrice}</div>
                                     <del>原价：${aGoods.faceValue}</del>
-                                    <div class="count"><em>${aGoods?.virtualSaleCount}</em>人已购买</div>
+                                    <div class="count">已售出<em>${aGoods?.virtualSaleCount}</em>件</div>
                                 </div>
-                                <div class="view"><a href="${aGoods.wwwUrl}">去看看</a></div>
+                                <div class="right"><a class="view" href="${aGoods.wwwUrl}">去看看</a></div>
                             </div>
                         </div>
                         </li>

@@ -63,7 +63,7 @@ public class GoodsWebsiteCondition implements Serializable {
      * @param condStr hql的查询条件
      */
     public GoodsWebsiteCondition(String condStr) {
-        Logger.info("查询条件：%s", condStr);
+        Logger.debug("查询条件：%s", condStr);
         String[] args = condStr.split("-");
         if (args == null || args.length < 1) {
             throw new IllegalArgumentException("GoodsWebsiteCondition is illegal!");
@@ -228,6 +228,11 @@ public class GoodsWebsiteCondition implements Serializable {
         return !"0".equals(id);
     }
 
+    /**
+     * 获取查询url.
+     *
+     * @return
+     */
     public String getUrl() {
         long currentCategoryId = categoryId == 0 ? parentCategoryId : categoryId;
         String url = "/q/" + currentCategoryId + '-' + searchAreaId + '-' + orderByNum + '-' + orderByTypeNum + "-" + isOrderNum;
@@ -250,17 +255,20 @@ public class GoodsWebsiteCondition implements Serializable {
             }
         }
 
-        /*try {
-            return URLEncoder.encode(url, "UTF-8");
-        } catch (UnsupportedEncodingException e) {*/
         return url;
-//        }
     }
 
     public boolean isDefault() {
         return categoryId == 0 && !isValidAreaId(areaId);
     }
 
+    /**
+     * 创建查询url.
+     *
+     * @param queryProperty
+     * @param value
+     * @return
+     */
     public GoodsWebsiteCondition buildUrl(String queryProperty, Object value) {
 
         try {
@@ -268,8 +276,8 @@ public class GoodsWebsiteCondition implements Serializable {
             if (StringUtils.isBlank(queryProperty)) {
                 return this;
             }
-            if (queryProperty.equals("keywords")){
-                condition.keywords = (String)value;
+            if (queryProperty.equals("keywords")) {
+                condition.keywords = (String) value;
             }
             if (queryProperty.equals("categoryId")) {
                 condition.categoryId = (Long) value;
@@ -302,6 +310,38 @@ public class GoodsWebsiteCondition implements Serializable {
 
         return this;
     }
+
+    /**
+     * 根据给定排序字段给出排序的css样式的class
+     * www前端专用方法
+     *
+     * @param orderById
+     * @return
+     */
+    public String getOrderStyle(int orderById) {
+        if (orderByNum == orderById) {
+            return "desc".equals(orderByType) ? "down" : "up";
+        } else {
+            return "down";
+        }
+    }
+
+    /**
+     * 根据给定排序字段给出排序的Url
+     * www前端专用方法
+     *
+     * @param orderById
+     * @return
+     */
+    public String getOrderUrl(int orderById) {
+        GoodsWebsiteCondition cond = buildUrl("orderByNum", orderById);
+        if (orderByNum == orderById) {
+            return "desc".equals(orderByType) ? cond.buildUrl("orderByTypeNum", 0).getUrl() : cond.buildUrl("orderByTypeNum", 1).getUrl();
+        } else {
+            return cond.buildUrl("orderByTypeNum", 1).getUrl();
+        }
+    }
+
 
     @Override
     public String toString() {

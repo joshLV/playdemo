@@ -321,7 +321,7 @@ public class Category extends Model {
             Category category = categories.get(i);
 
             long count = Goods.countOnSaleByCategory(category.id);
-            System.out.println(">>>...." + category.name + "-" + category.id + ":" + count);
+//            System.out.println(">>>...." + category.name + "-" + category.id + ":" + count);
             if (count > 0) {
                 category.goodsCount = count;
                 hasGoodsCategories.add(category);

@@ -9,7 +9,10 @@
 #{/set}
 <div class="wrapper">
     <div id="content">
-        <div class="crumbs">您现在的位置：<a href="/">首页</a> > <a href="/topics">公告</a> > 正文</div>
+        <div id="crumbs-panel">
+            <div class="crumbs">您现在的位置：<a href="/">首页</a> > <a href="/topics">公告</a> > 正文</div>
+        </div>
+
         <div id="notice">
             <h3 class="hd">公告</h3>
 
@@ -18,7 +21,7 @@
                     <div class="title">${topic.title}</div>
                     <div class="meta">一百券 发布时间：${topic?.effectiveAt?.format()}</div>
                     <div class="text">
-                    ${topic.getContent()?.raw()}
+                        ${topic.getContent()?.raw()}
                     </div>
                 </div>
             </div>

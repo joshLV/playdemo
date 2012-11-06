@@ -24,7 +24,6 @@
             #{else}
             <li class="first"><a class="login" id="login" href="${helper.Domain.getWWWHost(request)}/login">登录</a></li>
             <li><a class="signup" href="${helper.Domain.getWWWHost(request)}/register">注册</a></li>
-            <li><a href="${helper.Domain.getHomeHost(request)}">我的一百券</a></li>
             *{<li><a class="quick" href="" target="_blank">快捷登录</a></li>}*
             #{/else}
             <li><a id="favorite" class="favorite" href="">收藏一百券</a></li>
@@ -84,7 +83,7 @@
                 <dl class="item">
                     <dt><a href="">${category.name}</a></dt>
                     <dd class="line"></dd>
-                    <dd class="some #{if i==3 || i==5}one#{/if}">
+                    <dd class="some #{if category_index==3 || category_index==5}one#{/if}">
                         <div>#{list category.getShowKeywordsList(10),as:'keywords'}<a
                                 href="${new models.sales.GoodsWebsiteCondition().buildUrl('keywords', keywords).getUrl()}">${keywords}</a>
                             #{/list}

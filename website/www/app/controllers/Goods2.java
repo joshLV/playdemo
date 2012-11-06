@@ -50,7 +50,7 @@ import java.util.List;
 @SkipCAS
 public class Goods2 extends Controller {
 
-    public static int PAGE_SIZE = 27;
+    public static int PAGE_SIZE = 24;
 
     /**
      * 商品列表初始页
@@ -99,16 +99,14 @@ public class Goods2 extends Controller {
             // 网友推荐商品
             renderRecommendGoods(PAGE_SIZE);
         }
-        //面包屑导航
-        BreadcrumbList breadcrumbs = new BreadcrumbList();
-        if (StringUtils.isNotBlank(keywords)) {
-            breadcrumbs.append("搜索结果", "");
-        }
 
         //输出右侧展示条数据
         renderRightBar(null);
 
         final GoodsWebsiteCondition condition = new GoodsWebsiteCondition("", keywords, brandId);
+        //面包屑导航
+        BreadcrumbList breadcrumbs = createBreadcrumbs(condition);
+        //组装网页标题
         renderGoodsListTitle(condition);
         render(breadcrumbs, onSaleGoodsCount, condition);
     }
@@ -166,7 +164,7 @@ public class Goods2 extends Controller {
                 //搜索结果的分类统计
                 List<Category> searchCategories;
                 if (StringUtils.isNotBlank(condition.keywords)) {
-                    searchCategories = models.sales.Goods.getStatisticTopCategories(queryResponse);
+                    searchCategories = Goods.getStatisticTopCategories(queryResponse);
                 } else {
                     searchCategories = Category.findTop(50);
                 }
@@ -686,6 +684,9 @@ public class Goods2 extends Controller {
             }
         } else if (goodsCond.parentCategoryId > 0) {
             breadcrumbs.add(createTopCategoryCrumb(goodsCond));
+        }
+        if (StringUtils.isNotBlank(goodsCond.keywords)) {
+            breadcrumbs.append("搜索结果", "");
         }
         return breadcrumbs;
     }
