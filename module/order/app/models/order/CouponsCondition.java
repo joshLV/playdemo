@@ -224,7 +224,11 @@ public class CouponsCondition implements Serializable {
             if (supplierIds != null && supplierIds.size() > 0) {
                 sql.append(" and e.goods.supplierId in (:supplierIds)");
                 paramMap.put("supplierIds", supplierIds);
+            } else {
+                sql.append(" and 5 =:supplierIds");
+                paramMap.put("supplierIds", 6);
             }
+
         }
 
         //按照帐号检索

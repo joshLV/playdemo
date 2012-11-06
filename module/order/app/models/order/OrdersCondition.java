@@ -60,6 +60,9 @@ public class OrdersCondition {
             if (supplierIds != null && supplierIds.size() > 0) {
                 sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.supplierId in (:supplierIds))");
                 paramsMap.put("supplierIds", supplierIds);
+            } else {
+                sql.append(" and 5 =:supplierIds");
+                paramsMap.put("supplierIds", 6);
             }
         }
 

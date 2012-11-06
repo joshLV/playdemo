@@ -62,6 +62,9 @@ public class PurchaseECouponReportCondition implements Serializable {
             if (supplierIds != null && supplierIds.size() > 0) {
                 condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
                 paramMap.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap.put("supplierIds", 6);
             }
         }
 

@@ -53,6 +53,9 @@ public class RefundReportCondition {
             if (supplierIds != null && supplierIds.size() > 0) {
                 condBuilder.append(" and e.goods.supplierId in (:supplierIds)");
                 paramMap.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap.put("supplierIds", 6);
             }
         }
         return condBuilder.toString();
