@@ -8,6 +8,7 @@ import models.order.Cart;
 import models.order.Order;
 import models.order.OrderItems;
 import org.apache.commons.lang.StringUtils;
+import play.Play;
 import play.data.binding.As;
 import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
@@ -100,7 +101,7 @@ public class Carts extends Controller {
             count += cart.number;
         }
 
-        if (increment > 0 && WebsiteInjector.getUserWebIdentification() != null) {
+        if (Play.mode != Play.Mode.DEV && increment > 0 && WebsiteInjector.getUserWebIdentification() != null) {
             UserWebIdentification uwi = UserWebIdentification.findOne(WebsiteInjector.getUserWebIdentification().cookieId);
             if (uwi == null) {
                 uwi = WebsiteInjector.getUserWebIdentification();

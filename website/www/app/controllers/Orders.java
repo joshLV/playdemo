@@ -96,19 +96,25 @@ public class Orders extends Controller {
     protected static DiscountCode getDiscountCode() {
         // 折扣券
         String discountSN = request.params.get("discountSN");
-        if (discountSN == null) {
+        //这里用于判断是否是通过推荐过来的用户，是则取得推荐码
+        Http.Cookie cookie = request.cookies.get(PROMOTER_COOKIE);
+        User promoteUser = null;
+        if (StringUtils.isBlank(discountSN)) {
+            if (cookie != null) {
+                discountSN = cookie.value;
+            }
             renderArgs.put("discountErrorInfo", "");
-        } else {
-            if (User.getUserByPromoterCode(discountSN) == null) {
+        }
+
+        if (StringUtils.isNotBlank(discountSN)) {
+            promoteUser = User.getUserByPromoterCode(discountSN);
+            if (promoteUser == null) {
                 renderArgs.put("discountErrorInfo", "无效的优惠码，请重新输入");
+            } else {
+                renderArgs.put("userPromoterCode", discountSN);
             }
         }
 
-        //这里用于判断是否是通过推荐过来的用户，是则取得推荐码
-        Http.Cookie cookie = request.cookies.get(PROMOTER_COOKIE);
-        if (cookie != null) {
-            renderArgs.put("userPromoterCode", cookie.value);
-        }
         if (StringUtils.isEmpty(discountSN) && WebsiteInjector.getUserWebIdentification() != null) {
             // 访问使用的推荐码尝试作为折扣券号
             discountSN = WebsiteInjector.getUserWebIdentification().referCode;
@@ -255,7 +261,7 @@ public class Orders extends Controller {
         }
 
         //记录来源跟踪ID
-        if (WebsiteInjector.getUserWebIdentification() != null) {
+        if (Play.mode != Play.Mode.DEV && WebsiteInjector.getUserWebIdentification() != null) {
             order.webIdentificationId = WebsiteInjector.getUserWebIdentification().getSavedId();
         }
 
