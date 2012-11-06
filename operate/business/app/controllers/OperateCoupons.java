@@ -106,8 +106,8 @@ public class OperateCoupons extends Controller {
         }
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "券列表_" + System.currentTimeMillis() + ".xls");
-        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
-        Long id = OperateRbac.currentUser().id;
+        condition.hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        condition.operatorId = OperateRbac.currentUser().id;
         JPAExtPaginator<ECoupon> couponsList;
 
         couponsList = ECoupon.query(condition, 1, PAGE_SIZE);
