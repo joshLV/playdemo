@@ -34,7 +34,7 @@ public class PurchaseECouponReportCondition implements Serializable {
 
     private Map<String, Object> paramMap = new HashMap<>();
 
-    public String getFilter(Long id, Boolean right) {
+    public String getFilter(Long operatorId, Boolean hasSeeAllSupplierPermission) {
         StringBuilder condBuilder = new StringBuilder("r.status='CONSUMED'"); //只统计已经消费的
         if (createdAtBegin != null) {
             condBuilder.append(" and r.consumedAt >= :consumedAtBegin");
@@ -51,14 +51,16 @@ public class PurchaseECouponReportCondition implements Serializable {
             Logger.debug("supplier.id:" + supplier.id);
         }
 
-        if ((supplier != null && supplier.id == 0 && !right) || (supplier == null && !right)) {
-            List<Supplier> suppliers = Supplier.find("salesId=?", id).fetch();
+        if ((supplier != null && supplier.id == 0 && !hasSeeAllSupplierPermission) || (supplier == null && !hasSeeAllSupplierPermission)) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
             List<Long> supplierIds = new ArrayList<>();
             for (Supplier s : suppliers) {
                 supplierIds.add(s.id);
             }
-            condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
-            paramMap.put("supplierIds", supplierIds);
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
+                paramMap.put("supplierIds", supplierIds);
+            }
         }
 
         if (StringUtils.isNotBlank(goodsLike)) {

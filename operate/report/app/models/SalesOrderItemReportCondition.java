@@ -34,7 +34,7 @@ public class SalesOrderItemReportCondition implements Serializable {
     private Map<String, Object> paramMap = new HashMap<>();
     private Map<String, Object> paramMap1 = new HashMap<>();
 
-    public String getFilter(Long id, Boolean right) {
+    public String getFilter(Long operatorId, Boolean hasSeeAllSupplierPermission) {
         StringBuilder condBuilder = new StringBuilder("(r.order.status='PAID' or r.order.status='SENT') and s.id=r.goods.supplierId and r.goods.isLottery=false");
         //condBuilder.append(" and ");
         if (createdAtBegin != null) {
@@ -51,9 +51,9 @@ public class SalesOrderItemReportCondition implements Serializable {
             paramMap.put("supplier", supplier);
         }
 
-        if ((supplier != null && supplier.id == 0 && !right) || (supplier == null && !right)) {
+        if ((supplier != null && supplier.id == 0 && !hasSeeAllSupplierPermission) || (supplier == null && !hasSeeAllSupplierPermission)) {
             condBuilder.append(" and s.salesId = :salesId");
-            paramMap.put("salesId", id);
+            paramMap.put("salesId", operatorId);
         }
 
 
@@ -80,7 +80,7 @@ public class SalesOrderItemReportCondition implements Serializable {
         return condBuilder.toString();
     }
 
-    public String getNetSalesFilter(Long id, Boolean right) {
+    public String getNetSalesFilter(Long operatorId, Boolean hasSeeAllSupplierPermission) {
         StringBuilder condBuilder = new StringBuilder("(r.order.status='PAID' or r.order.status='SENT') and s.id=r.goods.supplierId and r.goods.isLottery=false");
 
         if (createdAtBegin != null) {
@@ -97,9 +97,9 @@ public class SalesOrderItemReportCondition implements Serializable {
             paramMap.put("supplier", supplier);
         }
 
-        if ((supplier != null && supplier.id == 0 && !right) || (supplier == null && !right)) {
+        if ((supplier != null && supplier.id == 0 && !hasSeeAllSupplierPermission) || (supplier == null && !hasSeeAllSupplierPermission)) {
             condBuilder.append(" and s.salesId = :salesId");
-            paramMap.put("salesId", id);
+            paramMap.put("salesId", operatorId);
         }
 
 

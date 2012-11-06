@@ -21,7 +21,7 @@ public class RefundReportCondition {
     public String supplierName;
     private Map<String, Object> paramMap = new HashMap<>();
 
-    public String getFilter(Long id, Boolean right) {
+    public String getFilter(Long operatorId, Boolean hasSeeAllSupplierPermission) {
         StringBuilder condBuilder = new StringBuilder(" where e.status=:status and e.goods.isLottery=false");
         paramMap.put("status", ECouponStatus.REFUND);
         if (refundAtBegin != null) {
@@ -42,14 +42,16 @@ public class RefundReportCondition {
             paramMap.put("supplierId", Long.parseLong(supplierName));
         }
 
-        if ((StringUtils.isNotBlank(supplierName) && !right) || (StringUtils.isBlank(supplierName) && !right)) {
-            List<Supplier> suppliers = Supplier.find("salesId=?", id).fetch();
+        if ((StringUtils.isNotBlank(supplierName) && !hasSeeAllSupplierPermission) || (StringUtils.isBlank(supplierName) && !hasSeeAllSupplierPermission)) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
             List<Long> supplierIds = new ArrayList<>();
             for (Supplier s : suppliers) {
                 supplierIds.add(s.id);
             }
-            condBuilder.append(" and e.goods.supplierId in (:supplierIds)");
-            paramMap.put("supplierIds", supplierIds);
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and e.goods.supplierId in (:supplierIds)");
+                paramMap.put("supplierIds", supplierIds);
+            }
         }
         return condBuilder.toString();
     }
