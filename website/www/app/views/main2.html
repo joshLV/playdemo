@@ -120,7 +120,7 @@
                 <dl class="area">
                     <dt><a href="">热门商圈</a></dt>
                     <dd class="some">#{list areas, as:'area'}
-                        <a href="${new models.sales.GoodsWebsiteCondition().buildUrl('areaId',area.id).getUrl()}">${area.name}</a>
+                        <a href="${new models.sales.GoodsWebsiteCondition().buildUrl('searchAreaId',area.id).getUrl()}">${area.name}</a>
                         #{/list}
                     </dd>
                 </dl>
