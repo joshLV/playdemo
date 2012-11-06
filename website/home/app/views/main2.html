@@ -8,7 +8,8 @@
     <link rel="shortcut icon" href="#{asset.url href:'/images/y/favicon.ico'/}" type="image/x-icon"/>
     #{get 'moreStyles' /}
 </head>
-<body>
+<body
+#{if request.url.equals("/")}class="home"#{/if}>
 %{baseDomain = play.Play.configuration.getProperty("application.baseDomain")}%
 <div id="topbar">
     <div id="topbar-bd">
@@ -52,8 +53,11 @@
         <div class="hotword"><a href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','火锅').getUrl()}">火锅</a>
             <a href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','川菜').getUrl()}">川菜</a> <a
                     href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','美容').getUrl()}">美容</a> <a
-                href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','小吃').getUrl()}">小吃</a> <a
-                    href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','西餐').getUrl()}">西餐</a>
+                    href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','KTV').getUrl()}">KTV</a> <a
+                    href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','瑜伽').getUrl()}">瑜伽</a> <a
+                    href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','SPA').getUrl()}">SPA</a> <a
+                    href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','墙纸').getUrl()}">墙纸</a> <a
+                    href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','洗车').getUrl()}">洗车</a>
         </div>
     </div>
     <div id="cart">
@@ -99,15 +103,15 @@
                         </ul>
                         <div class="ads">
                             <a href="/topic/${categoryTopic1?.id}"
-                               target="_blank">#{if category_index==0}${categoryTopic1?.title}#{/if}</a>
+                               target="_blank">#{if category_index==1}${categoryTopic1?.title}#{/if}</a>
                             <a href="/topic/${categoryTopic2?.id}"
-                               target="_blank">#{if category_index==1}${categoryTopic2?.title}#{/if}</a>
+                               target="_blank">#{if category_index==2}${categoryTopic2?.title}#{/if}</a>
                             <a href="/topic/${categoryTopic3?.id}"
-                               target="_blank">#{if category_index==2}${categoryTopic3?.title}#{/if}</a>
+                               target="_blank">#{if category_index==3}${categoryTopic3?.title}#{/if}</a>
                             <a href="/topic/${categoryTopic4?.id}"
-                               target="_blank">#{if category_index==3}${categoryTopic4?.title}#{/if}</a>
+                               target="_blank">#{if category_index==4}${categoryTopic4?.title}#{/if}</a>
                             <a href="/topic/${categoryTopic5?.id}"
-                               target="_blank">#{if category_index==4}${categoryTopic5?.title}#{/if}</a>
+                               target="_blank">#{if category_index==5}${categoryTopic5?.title}#{/if}</a>
                         </div>
                     </dd>
                 </dl>

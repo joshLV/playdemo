@@ -144,7 +144,7 @@ public class Goods2 extends Controller {
             final GoodsWebsiteCondition condition = new GoodsWebsiteCondition(conditionStr, keywords, brandId);
 
             //根据分类id判断是顶层分类还是子分类
-            Category currentCategory = null;
+            Category currentCategory;
             if (condition.categoryId > 0) {
                 currentCategory = Category.findCategoryById(condition.categoryId);
                 if (currentCategory != null && currentCategory.isRoot()) { //如果指定为顶级分类
@@ -205,6 +205,7 @@ public class Goods2 extends Controller {
                 renderRecommendGoods(PAGE_SIZE);
             }
 
+            System.out.println("condition.brandId:" + condition.brandId);
             BreadcrumbList breadcrumbs = createBreadcrumbs(condition);
 
             renderArgs.put("categoryId", (condition.parentCategoryId != 0) ? condition.parentCategoryId : condition.categoryId);
@@ -662,7 +663,7 @@ public class Goods2 extends Controller {
      */
     private static BreadcrumbList createBreadcrumbs(GoodsWebsiteCondition goodsCond) {
         BreadcrumbList breadcrumbs = new BreadcrumbList();
-        if (goodsCond.isDefault() && StringUtils.isBlank(goodsCond.keywords) && goodsCond.parentCategoryId == 0) {
+        if (goodsCond.isDefault() && StringUtils.isBlank(goodsCond.keywords) && goodsCond.parentCategoryId == 0 && goodsCond.brandId == 0) {
             return breadcrumbs;
         }
         final Breadcrumb categoryCrumb = createCategoryCrumb(goodsCond);
@@ -687,7 +688,8 @@ public class Goods2 extends Controller {
         } else if (goodsCond.parentCategoryId > 0) {
             breadcrumbs.add(createTopCategoryCrumb(goodsCond));
         }
-        if (StringUtils.isNotBlank(goodsCond.keywords)) {
+
+        if (StringUtils.isNotBlank(goodsCond.keywords) || goodsCond.brandId > 0) {
             breadcrumbs.append("搜索结果", "");
         }
         return breadcrumbs;

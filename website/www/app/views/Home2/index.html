@@ -190,7 +190,7 @@
         #{set showTwoLine:false/}
     #{/if}
 <div class="floor">
-    <div class="hd"><h2><b class="f${i}"></b>${category.name}</h2></div>
+    <div class="hd"><h2><b class="f${category_index}"></b>${category.name}</h2></div>
     <div class="ft">
         #{list category.getShowKeywordsList(10),as:'keywords'}
             <a href="${new models.sales.GoodsWebsiteCondition().buildUrl('categoryId', category.id).buildUrl('keywords', keywords).getUrl()}">${keywords}</a>
@@ -226,10 +226,9 @@
         </div>
 
         #{if showTwoLine}#{set goodsCount:6/}#{/if}#{else}#{set goodsCount:3/}#{/else}
-    <ul class="goods first">
+    <ul class="goods #{if category_index == 1}first#{/if}">
         #{list category.getTopGoods(goodsCount),as:'aGoods'}
-            <li
-                #{if category_index == 1}class="first"#{/if}>
+            <li>
 
                 <div class="image">
                     <a href="${aGoods.wwwUrl}" target="_blank"><img

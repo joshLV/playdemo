@@ -43,7 +43,7 @@
     <div id="content" class="clearfix">
         <div id="crumbs-panel">
             #{breadcrumbs/breadcrumb breadcrumbs/}
-            #{if onSaleGoodsCount != null && onSaleGoodsCount > 0 && org.apache.commons.lang.StringUtils.isNotBlank(s)}
+            #{if onSaleGoodsCount != null && onSaleGoodsCount > 0 && (org.apache.commons.lang.StringUtils.isNotBlank(s)||org.apache.commons.lang.StringUtils.isNotBlank(b))}
 
             <div class="stats">
                 <i class="left"></i>
@@ -59,7 +59,6 @@
         </div>
 
         <div id="section">
-
 
             #{if onSaleGoodsCount == null || onSaleGoodsCount == 0}
             <div id="sorry">

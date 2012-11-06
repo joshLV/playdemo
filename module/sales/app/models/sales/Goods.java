@@ -42,6 +42,7 @@ import play.i18n.Messages;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.SimplePaginator;
 import play.modules.solr.Solr;
+import play.modules.solr.SolrEmbedded;
 import play.modules.solr.SolrField;
 import play.modules.solr.SolrSearchable;
 import play.modules.view_ext.annotation.Money;
@@ -431,7 +432,7 @@ public class Goods extends Model {
     @Required
     @ManyToOne
     @JoinColumn(name = "brand_id")
-//    @SolrEmbedded
+    @SolrEmbedded
     public Brand brand;
 
     /**
@@ -1176,7 +1177,7 @@ public class Goods extends Model {
     public static List<Brand> findBrandByCondition(GoodsCondition condition, int limit) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select distinct g.brand from Goods g where " +
-                condition.getFilter() + " and g.status='ONSALE' order by g.brand.displayOrder desc,g.brand.supplier.createdAt desc");
+                condition.getFilter() + " and g.status='ONSALE' and g.brand.name!='一百券' order by g.brand.displayOrder desc,g.brand.supplier.createdAt desc");
         for (String key : condition.getParamMap().keySet()) {
             q.setParameter(key, condition.getParamMap().get(key));
         }
