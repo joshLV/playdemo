@@ -84,7 +84,7 @@ public class SupplierCouponsTest extends FunctionalTest {
     public void indexTest() {
         Http.Response response = GET("/coupons");
         assertStatus(200, response);
-        assertContentMatch(goods.name, response);
+        assertContentMatch(goods.shortName, response);
         assertNotNull(renderArgs("couponPage"));
         JPAExtPaginator<ECoupon> couponList = (JPAExtPaginator<ECoupon>) renderArgs("couponPage");
         assertEquals(1, couponList.size());
