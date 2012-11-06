@@ -68,17 +68,17 @@ public class OperateOrders extends Controller {
 
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
-        Long id = OperateRbac.currentUser().id;
+        Boolean hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        Long operatorId = OperateRbac.currentUser().id;
         JPAExtPaginator<models.order.Order> orderList;
         if (!Play.runingInTestMode()) {
-            orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE, id, right);
+            orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE, operatorId, hasSeeAllSupplierPermission);
         } else {
             orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE, null, true);
         }
         BigDecimal amountSummary = Order.summary(orderList);
 
-        List<Brand> brandList = Brand.findByOrder(null, id, right);
+        List<Brand> brandList = Brand.findByOrder(null, operatorId, hasSeeAllSupplierPermission);
         renderArgs.put("brandList", brandList);
         render(orderList, condition, amountSummary, desc);
 

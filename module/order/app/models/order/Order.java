@@ -225,14 +225,14 @@ public class Order extends Model {
         CacheHelper.delete(CACHEKEY);
         CacheHelper.delete(CACHEKEY + this.id);
         CacheHelper.delete(CACHEKEY_BASEUSERID + this.userId);
-        
+
         // 更新对应商品库存
         if (this.orderItems != null) {
-        	for (OrderItems item : this.orderItems) {
-        		item.goods.refreshSaleCount();
-        	}
+            for (OrderItems item : this.orderItems) {
+                item.goods.refreshSaleCount();
+            }
         }
-        
+
         super._save();
     }
 
@@ -505,9 +505,9 @@ public class Order extends Model {
      * @param pageSize   每页记录
      * @return ordersPage 订单信息
      */
-    public static JPAExtPaginator<Order> query(OrdersCondition condition, Long supplierId, int pageNumber, int pageSize,Long id,Boolean right) {
+    public static JPAExtPaginator<Order> query(OrdersCondition condition, Long supplierId, int pageNumber, int pageSize, Long operatorId, Boolean hasSeeAllSupplierPermission) {
         JPAExtPaginator<Order> orderPage = new JPAExtPaginator<>
-                ("Order o", "o", Order.class, condition.getFilter(supplierId,id,right),
+                ("Order o", "o", Order.class, condition.getFilter(supplierId, operatorId, hasSeeAllSupplierPermission),
                         condition.paramsMap)
                 .orderBy(condition.getOrderByExpress());
         orderPage.setPageNumber(pageNumber);
@@ -559,7 +559,7 @@ public class Order extends Model {
         for (OrderItems orderItem : orderItems) {
             // fix: org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: models.sales.GoodsLevelPrice
             // Goods goods = Goods.findById(orderItem.goods.id);
-        	/*
+            /*
             orderItem.goods.baseSale -= orderItem.buyNumber;
             orderItem.goods.saleCount += orderItem.buyNumber;
             orderItem.goods.save();

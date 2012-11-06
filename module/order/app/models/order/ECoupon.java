@@ -603,10 +603,10 @@ public class ECoupon extends Model {
      * @return couponsPage 券记录
      */
     public static JPAExtPaginator<ECoupon> query(CouponsCondition condition,
-                                                 int pageNumber, int pageSize, Long id, Boolean right) {
+                                                 int pageNumber, int pageSize, Long operatorId, Boolean hasSeeAllSupplierPermission) {
         JPAExtPaginator<ECoupon> couponsPage = new JPAExtPaginator<>
                 ("ECoupon e", "e", ECoupon.class,
-                        condition.getFilter(id, right),
+                        condition.getFilter(operatorId, hasSeeAllSupplierPermission),
                         condition.getParamMap())
                 .orderBy("e.consumedAt desc,e.createdAt desc");
 

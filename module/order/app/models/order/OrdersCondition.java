@@ -38,7 +38,7 @@ public class OrdersCondition {
      * @param supplierId 商户ID
      * @return sql 查询条件
      */
-    public String getFilter(Long supplierId, Long id, Boolean right) {
+    public String getFilter(Long supplierId, Long operatorId, Boolean hasSeeAllSupplierPermission) {
         StringBuilder sql = new StringBuilder();
         sql.append(" o.deleted = :deleted");
         paramsMap.put("deleted", DeletedStatus.UN_DELETED);
@@ -48,14 +48,16 @@ public class OrdersCondition {
             paramsMap.put("supplierId", supplierId);
         }
 
-        if ((supplierId != null && !right) || (supplierId == null && !right)) {
-            List<Supplier> suppliers = Supplier.find("salesId=?", id).fetch();
+        if ((supplierId != null && !hasSeeAllSupplierPermission) || (supplierId == null && !hasSeeAllSupplierPermission)) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
             List<Long> supplierIds = new ArrayList<>();
             for (Supplier s : suppliers) {
                 supplierIds.add(s.id);
             }
-            sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.supplierId in (:supplierIds))");
-            paramsMap.put("supplierIds", supplierIds);
+            if (supplierIds != null && supplierIds.size() > 0) {
+                sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.supplierId in (:supplierIds))");
+                paramsMap.put("supplierIds", supplierIds);
+            }
         }
 
 

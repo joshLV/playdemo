@@ -54,7 +54,7 @@ public class CouponsCondition implements Serializable {
      *
      * @return sql 查询条件
      */
-    public String getFilter(Long id, Boolean right) {
+    public String getFilter(Long operatorId, Boolean hasSeeAllSupplierPermission) {
         StringBuilder sql = new StringBuilder();
         sql.append(" 1=1 ");
         if (userId != null && accountType != null) {
@@ -213,14 +213,16 @@ public class CouponsCondition implements Serializable {
             paramMap.put("supplierId", supplier.id);
         }
 
-        if ((supplier != null && supplier.id == 0 && !right) || (supplier == null && !right)) {
-            List<Supplier> suppliers = Supplier.find("salesId=?", id).fetch();
+        if ((supplier != null && supplier.id == 0 && !hasSeeAllSupplierPermission) || (supplier == null && !hasSeeAllSupplierPermission)) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
             List<Long> supplierIds = new ArrayList<>();
             for (Supplier s : suppliers) {
                 supplierIds.add(s.id);
             }
-            sql.append(" and e.goods.supplierId in (:supplierIds)");
-            paramMap.put("supplierIds", supplierIds);
+            if (supplierIds != null && supplierIds.size() > 0) {
+                sql.append(" and e.goods.supplierId in (:supplierIds)");
+                paramMap.put("supplierIds", supplierIds);
+            }
         }
 
         //按照帐号检索
