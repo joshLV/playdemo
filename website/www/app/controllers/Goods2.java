@@ -166,7 +166,7 @@ public class Goods2 extends Controller {
                 if (StringUtils.isNotBlank(condition.keywords)) {
                     searchCategories = Goods.getStatisticTopCategories(queryResponse);
                 } else {
-                    searchCategories = Category.findTop(50);
+                    searchCategories = Goods.statisticTopCategories(condition);
                 }
 
                 renderArgs.put("searchCategories", searchCategories);
@@ -175,7 +175,9 @@ public class Goods2 extends Controller {
                     List<Category> subCategories = Goods.getStatisticSubCategories(queryResponse, condition.parentCategoryId);
                     renderArgs.put("subCategories", subCategories);
                 } else if (condition.categoryId > 0) {
-                    List<Category> subCategories = Goods.getStatisticSubCategories(queryResponse, currentCategory.parentCategory.id);
+//                    List<Category> subCategories = Goods.getStatisticSubCategories(queryResponse, condition.parentCategoryId);
+
+                    List<Category> subCategories = Goods.statisticSubCategories(condition);
                     renderArgs.put("subCategories", subCategories);
                 }
 
@@ -183,7 +185,7 @@ public class Goods2 extends Controller {
                 List<Area> districts;
                 if (StringUtils.isBlank(condition.keywords)) {
                     //关键字无时，统计地区就不限制地区条件了。
-                    districts = Goods.statisticDistricts(condition, pageNumber, PAGE_SIZE);
+                    districts = Goods.statisticDistricts(condition);
                 } else {
                     districts = Goods.getStatisticDistricts(queryResponse);
                 }
@@ -194,9 +196,9 @@ public class Goods2 extends Controller {
                 if (!"0".equals(condition.districtId)) {
                     searchAreas = models.sales.Goods.getStatisticAreas(queryResponse, condition.districtId);
                     renderArgs.put("searchAreas", searchAreas);
-                } else if (!"0".equals(condition.searchAreaId)) {
-//                    searchAreas = models.sales.Goods.getStatisticAreas(queryResponse, Area.findAreaById(condition.searchAreaId).parent.id);
-                    searchAreas = models.sales.Goods.statisticAreas(condition, pageNumber, PAGE_SIZE);
+                }
+                if (!"0".equals(condition.searchAreaId)) {
+                    searchAreas = models.sales.Goods.statisticAreas(condition);
                     renderArgs.put("searchAreas", searchAreas);
                 }
             } else {

@@ -1774,33 +1774,51 @@ public class Goods extends Model {
                 new String[]{"goods.categoryIds_s", "goods.parentCategoryIds_s", "shop.districtId_s", "shop.areaId_s"});
     }
 
-    /**
-     * 前端按条件的全文搜索.
-     *
-     * @param pageNumber
-     * @param pageSize
-     * @return
-     */
-    public static List<Area> statisticDistricts(GoodsWebsiteCondition condition, int pageNumber, int pageSize) {
-        String q = StringUtils.isNotBlank(condition.keywords) ? "text:\"" + condition.keywords + "\"" : null;
-        QueryResponse response = search(q, condition.parentCategoryId, condition.categoryId, null, null,
-                condition.isOrder, condition.materialType, condition.brandId,
-                condition.solrOrderBy, "asc".equals(condition.orderByType), pageNumber, pageSize, true,
-                new String[]{"shop.districtId_s"});
-        return getStatisticDistricts(response);
-    }
-
     public static List<Category> statisticCategory(long parentCategoryId) {
         QueryResponse response = search(null, 0, 0, null, null, null, null, 0, null, false, 0, 0, true,
                 new String[]{"goods.categoryIds_s"});
         return getStatisticSubCategories(response, parentCategoryId);
     }
 
-    public static List<Area> statisticAreas(GoodsWebsiteCondition condition, int pageNumber, int pageSize) {
+
+    public static List<Category> statisticTopCategories(GoodsWebsiteCondition condition) {
+        String q = StringUtils.isNotBlank(condition.keywords) ? "text:\"" + condition.keywords + "\"" : null;
+        QueryResponse response = search(q, 0, 0, condition.districtId, condition.areaId,
+                condition.isOrder, condition.materialType, condition.brandId,
+                condition.solrOrderBy, "asc".equals(condition.orderByType), 0, 0, true,
+                new String[]{"goods.parentCategoryIds_s"});
+        return getStatisticTopCategories(response);
+    }
+
+    public static List<Category> statisticSubCategories(GoodsWebsiteCondition condition) {
+        String q = StringUtils.isNotBlank(condition.keywords) ? "text:\"" + condition.keywords + "\"" : null;
+        QueryResponse response = search(q, condition.parentCategoryId, 0, condition.districtId, condition.areaId,
+                condition.isOrder, condition.materialType, condition.brandId,
+                condition.solrOrderBy, "asc".equals(condition.orderByType), 0, 0, true,
+                new String[]{"goods.categoryIds_s"});
+        Category category = Category.findCategoryById(condition.categoryId);
+        return getStatisticSubCategories(response, category.parentCategory.id);
+    }
+
+    /**
+     * 前端按条件的全文搜索.
+     *
+     * @return
+     */
+    public static List<Area> statisticDistricts(GoodsWebsiteCondition condition) {
+        String q = StringUtils.isNotBlank(condition.keywords) ? "text:\"" + condition.keywords + "\"" : null;
+        QueryResponse response = search(q, condition.parentCategoryId, condition.categoryId, null, null,
+                condition.isOrder, condition.materialType, condition.brandId,
+                condition.solrOrderBy, "asc".equals(condition.orderByType), 0, 0, true,
+                new String[]{"shop.districtId_s"});
+        return getStatisticDistricts(response);
+    }
+
+    public static List<Area> statisticAreas(GoodsWebsiteCondition condition) {
         String q = StringUtils.isNotBlank(condition.keywords) ? "text:\"" + condition.keywords + "\"" : null;
         QueryResponse response = search(q, condition.parentCategoryId, condition.categoryId, condition.districtId, null,
                 condition.isOrder, condition.materialType, condition.brandId,
-                condition.solrOrderBy, "asc".equals(condition.orderByType), pageNumber, pageSize, true,
+                condition.solrOrderBy, "asc".equals(condition.orderByType), 0, 0, true,
                 new String[]{"shop.areaId_s"});
         return getStatisticAreas(response, condition.districtId);
     }
@@ -1911,7 +1929,7 @@ public class Goods extends Model {
             }
             goods.areaNames = (String) doc.getFieldValue(SOLR_GOODS_AREAS);
             goods.imageSmallPath = (String) doc.getFieldValue(SOLR_GOODS_IMAGESMALLPATH);
-            goods.virtualSaleCount = (Long)doc.getFieldValue(SOLR_GOODS_VIRTUALSALECOUNT);
+            goods.virtualSaleCount = (Long) doc.getFieldValue(SOLR_GOODS_VIRTUALSALECOUNT);
             goodsList.add(goods);
         }
         return goodsList;
@@ -2027,4 +2045,5 @@ public class Goods extends Model {
         this.virtualSaleCount = count;
     }
     //------------------------------------------- 使用solr服务进行搜索的方法 (End) ----------------------------------------
+
 }

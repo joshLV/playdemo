@@ -203,11 +203,11 @@
             #{if showTwoLine}#{set brandCount:8/}#{/if}#{else}#{set brandCount:4/}#{/else}
             <dl class="accordion">
                 #{list category.getTopBrands(brandCount),as:'brand'}
-                    <dt class="n${j}"
+                    <dt class="n${brand_index}"
                         #{if brand_index>1}style="display:block"#{/if}#{else}style="display:none"#{/else}>${brand.name}</dt>
                     <dd
                         #{if brand_index>1}style="display:none"#{/if}>
-                        <i class="n${j}"></i>
+                        <i class="n${brand_index}"></i>
                         <a href="${new models.sales.GoodsWebsiteCondition().buildUrl('brandId',brand.id).getUrl()}"
                            target="_blank"><img
                                 src="${brand?.siteDisplayMiddleImage?:brand.showLogo}" width="200"
