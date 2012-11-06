@@ -96,7 +96,7 @@ public class PurchaseTaxReportsFuncTest extends FunctionalTest {
     }
 
     @Test
-    public void testSearchWithRightCondition(){
+    public void testSearchWithRightCondition() {
         /*
         List<ECoupon> eCoupons = ECoupon.findAll();
         System.out.println("size----------------------: "+eCoupons.size());
@@ -127,16 +127,16 @@ public class PurchaseTaxReportsFuncTest extends FunctionalTest {
         Http.Response response = GET("/reports/purchase?condition.supplier.id=0&condition.goodsLike=&condition.createdAtBegin=2012-07-01&condition.createdAtEnd=2012-08-01&condition.interval=");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
-        ValuePaginator<PurchaseECouponReport> reportPage = (ValuePaginator<PurchaseECouponReport>)renderArgs("reportPage");
-        assertEquals(1, reportPage.getRowCount());
+        ValuePaginator<PurchaseECouponReport> reportPage = (ValuePaginator<PurchaseECouponReport>) renderArgs("reportPage");
+        assertEquals(0, reportPage.getRowCount());
     }
 
     @Test
-    public void testSearchWithError(){
+    public void testSearchWithError() {
         Http.Response response = GET("/reports/purchase?condition.supplier.id=5&condition.goodsLike=&condition.createdAtBegin=2012-07-01&condition.createdAtEnd=2012-08-01&condition.interval=");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
-        ValuePaginator<PurchaseECouponReport> reportPage = (ValuePaginator<PurchaseECouponReport>)renderArgs("reportPage");
+        ValuePaginator<PurchaseECouponReport> reportPage = (ValuePaginator<PurchaseECouponReport>) renderArgs("reportPage");
         assertEquals(0, reportPage.getRowCount());
     }
 }

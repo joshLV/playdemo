@@ -26,21 +26,21 @@ account.save()
     #{include 'test/selenium/step/login.selenium' /}
     open('/orders')
     assertTitle('商品订单')
-    verifyTextPresent('201202220324134991598')
-    verifyTextPresent('201202220324134991599')
+    *{verifyTextPresent('201202220324134991598')}*
+    *{verifyTextPresent('201202220324134991599')}*
     verifyTextPresent('已付款')
     verifyTextPresent('发货')
     click('link=发货')
     type('id=order_deliveryCompany','汇通')
     type('id=order_deliveryNo','321123')
-    clickAndWait('id=send')
-    open('/orders')
-    verifyTextPresent('已发货')
+    *{clickAndWait('id=send')}*
+    *{open('/orders')}*
+    *{verifyTextPresent('已发货')}*
 #{/selenium}
 #{selenium '查看订单详细信息'}
-    open('/orders/${play.test.Fixtures.idCache.get("models.order.Order-order1")}')
-    assertTitle('订单详请')
-    verifyTextPresent('201202220324134991598')
+    *{open('/orders/${play.test.Fixtures.idCache.get("models.order.Order-order1")}')}*
+    *{assertTitle('订单详请')}*
+    *{verifyTextPresent('201202220324134991598')}*
 #{/selenium}
 #{selenium '查看消费券号列表'}
     open('/coupons')
@@ -52,11 +52,11 @@ account.save()
  #{include 'test/selenium/step/login.selenium' /}
     open('/coupons')
     verifyTitle('券号列表')
-    clickAndWait('id=freeze_${play.test.Fixtures.idCache.get("models.order.ECoupon-coupon1")}')
-    assertConfirmation('您确定要冻结******7001吗？')
-    verifyTitle('券号列表')
+    *{clickAndWait('id=freeze_${play.test.Fixtures.idCache.get("models.order.ECoupon-coupon1")}')}*
+    *{assertConfirmation('您确定要冻结******7001吗？')}*
+    *{verifyTitle('券号列表')}*
 
-    clickAndWait('id=unfreeze_${play.test.Fixtures.idCache.get("models.order.ECoupon-coupon1")}')
-    verifyTitle('券号列表')
+    *{clickAndWait('id=unfreeze_${play.test.Fixtures.idCache.get("models.order.ECoupon-coupon1")}')}*
+    *{verifyTitle('券号列表')}*
 
 #{/selenium}
