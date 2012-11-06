@@ -75,7 +75,6 @@ public class JingdongUploadTeam extends Controller{
         List<IdNameResponse> categories = JDGroupBuyUtil.cacheCategories(0L);
         Map<Long, List<IdNameResponse>> subCategories = new HashMap<>();
         for(IdNameResponse category : categories) {
-            System.out.println("=======>" + category.id);
             List<IdNameResponse> subCategory = JDGroupBuyUtil.cacheCategories(category.id);
             subCategories.put(category.id, subCategory);
         }
