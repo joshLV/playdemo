@@ -88,12 +88,14 @@
 <form class="well form-inline" action="@{PurchaseTaxReports.index()}" method="GET" id="search_form"
       name="search_form">
     商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
-    #{select 'condition.supplier.id', id:supplierId, class:'select', value:condition?.supplier?.id}
+#{select 'condition.supplier.id', id:supplierId, class:'select', value:condition?.supplier?.id}
+    #{if supplierList.size()>0}
         #{option "0"}不限#{/option}
-        #{list items:supplierList, as:'supplier'}
-            #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
-        #{/list}
-    #{/select}
+    #{/if}
+    #{list items:supplierList, as:'supplier'}
+        #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
+    #{/list}
+#{/select}
     商品名称：<input type="text" name="condition.goodsLike" class="input-medium"
                 value="${condition?.goodsLike}"/>
     起止日期
@@ -152,7 +154,7 @@
 #{if reportPage.getPageCount() > 1}
 <div class="pagination">
     <ul>
-    #{paginate.controls items:reportPage /}
+        #{paginate.controls items:reportPage /}
     </ul>
 </div>
 #{/if}

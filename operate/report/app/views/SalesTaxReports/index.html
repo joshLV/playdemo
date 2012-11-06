@@ -89,7 +89,9 @@
       name="search_form">
     商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
 #{select 'condition.supplier.id', id:supplierId, class:'select', value:condition?.supplier?.id}
-    #{option "0"}不限#{/option}
+    #{if supplierList.size()>0}
+        #{option "0"}不限#{/option}
+    #{/if}
     #{list items:supplierList, as:'supplier'}
         #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
     #{/list}

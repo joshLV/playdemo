@@ -77,7 +77,9 @@
                 <td>
                     &nbsp;&nbsp;品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌&nbsp;&nbsp;
                 #{select 'condition.brandId', id:'brandId', class:'input-medium', value:condition?.brandId}
-                    #{option "0"}不限#{/option}
+                    #{if brandList.size()>0}
+                        #{option "0"}不限#{/option}
+                    #{/if}
                     #{list items:brandList, as:'brand'}
                         #{option brand?.id}${brand?.name}#{/option}
                     #{/list}
@@ -174,8 +176,8 @@
         <tr>
             <td><a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a></abbr></td>
             <td>${coupon?.orderItems?.phone}</td>
-        <td>${n}${coupon?.getMaskedEcouponSn()}</td>
-            *{<td>${coupon?.eCouponSn}</td>}*
+            <td>${n}${coupon?.getMaskedEcouponSn()}</td>
+        *{<td>${coupon?.eCouponSn}</td>}*
         *{<td>${coupon?.orderItems?.phone}</td>}*
             <td>${coupon?.goods?.shortName}</td>
             <td>${coupon?.salePrice?.formatCurrency('CNY')}</td>

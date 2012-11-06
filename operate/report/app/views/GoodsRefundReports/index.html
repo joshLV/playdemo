@@ -101,7 +101,9 @@
 <form class="well form-inline" action="@{GoodsRefundReports.index()}" method="GET" id="form"
       name="form">
     商户：#{select 'condition.supplierName', class:'input-larger', value:condition?.supplierName}
-    #{option ""}不限#{/option}
+    #{if supplierList.size()>0}
+        #{option ""}不限#{/option}
+    #{/if}
     #{list items:supplierList, as:'supplier'}
         #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
     #{/list}
