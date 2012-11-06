@@ -111,13 +111,14 @@ public class Cart extends Model {
             cart = Cart.find("byCookieIdentityAndGoods", cookie, goods).first();
         }
 
+        Long realStocks = goods.getRealStocks();
         //如果记录已存在，则更新记录，否则新建购物车记录
         if (cart != null) {
             // 不允许一次购买超过999
             if (cart.number + increment > 0) {
                 cart.number += increment;
                 cart.number = cart.number > 999 ? 999 : cart.number;
-                cart.number = cart.number > goods.baseSale ? goods.baseSale : cart.number;
+                cart.number = cart.number > realStocks ? realStocks : cart.number;
                 cart.save();
                 clearCache(user, cookie);
                 return cart;
@@ -132,7 +133,7 @@ public class Cart extends Model {
                 return null;
             }
             increment = increment > 999 ? 999 : increment;
-            increment = increment > goods.baseSale.intValue() ? goods.baseSale.intValue() : increment;
+            increment = increment > realStocks.intValue() ? realStocks.intValue() : increment;
             if (user != null) {
                 clearCache(user, cookie);
                 return new Cart(user, null, goods, increment).save();
