@@ -29,7 +29,7 @@
     <permission key="SHOPS" text="门店管理" roles="editor,customservice"/>
     <permission key="RESALERS" text="分销商管理" roles="customservice"/>
     <permission key="ORDERS" text="运营订单管理" roles="customservice,account,sales"/>
-    <permission key="COUPONS" text="券管理" roles="customservice,account"/>
+    <permission key="COUPONS" text="券管理" roles="sales,customservice,account"/>
     <permission key="CONSUMERS_REPORT" text="消费者资金明细" roles="account"/>
     <permission key="RESALES_REPORT" text="分销商资金明细" roles="account"/>
     <permission key="SUPPLIERS_REPORT" text="商户资金明细" roles="account"/>
