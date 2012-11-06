@@ -98,7 +98,7 @@ public class SalesOrderItemReportCondition implements Serializable {
             condBuilder.append(" and s = :supplier");
             paramMap.put("supplier", supplier);
         }
-
+        System.out.println("hasSeeAllSupplierPermission>>" + hasSeeAllSupplierPermission);
         if ((hasSeeAllSupplierPermission != null && supplier != null && supplier.id == 0 && !hasSeeAllSupplierPermission) || (hasSeeAllSupplierPermission != null && supplier == null && !hasSeeAllSupplierPermission)) {
             condBuilder.append(" and s.salesId = :salesId");
             paramMap.put("salesId", operatorId);
