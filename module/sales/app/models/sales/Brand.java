@@ -198,7 +198,7 @@ public class Brand extends Model {
             params.add(supplier);
         }
 
-        if ((supplier != null && !hasSeeAllSupplierPermission) || (!hasSeeAllSupplierPermission)) {
+        if ((hasSeeAllSupplierPermission != null && supplier != null && !hasSeeAllSupplierPermission) || (hasSeeAllSupplierPermission != null && !hasSeeAllSupplierPermission)) {
             if (operatorId != null) {
                 sq.append(" and supplier.salesId = ?");
                 params.add(operatorId);

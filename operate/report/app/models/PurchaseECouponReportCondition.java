@@ -53,7 +53,7 @@ public class PurchaseECouponReportCondition implements Serializable {
             Logger.debug("supplier.id:" + supplier.id);
         }
 
-        if ((supplier != null && supplier.id == 0 && !hasSeeAllSupplierPermission) || (supplier == null && !hasSeeAllSupplierPermission)) {
+        if ((hasSeeAllSupplierPermission != null && supplier != null && supplier.id == 0 && !hasSeeAllSupplierPermission) || (hasSeeAllSupplierPermission != null && supplier == null && !hasSeeAllSupplierPermission)) {
             List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
             List<Long> supplierIds = new ArrayList<>();
             for (Supplier s : suppliers) {

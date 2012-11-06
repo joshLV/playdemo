@@ -44,7 +44,7 @@ public class RefundReportCondition {
             paramMap.put("supplierId", Long.parseLong(supplierName));
         }
 
-        if ((StringUtils.isNotBlank(supplierName) && !hasSeeAllSupplierPermission) || (StringUtils.isBlank(supplierName) && !hasSeeAllSupplierPermission)) {
+        if ((hasSeeAllSupplierPermission != null && StringUtils.isNotBlank(supplierName) && !hasSeeAllSupplierPermission) || (hasSeeAllSupplierPermission != null && StringUtils.isBlank(supplierName) && !hasSeeAllSupplierPermission)) {
             List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
             List<Long> supplierIds = new ArrayList<>();
             for (Supplier s : suppliers) {

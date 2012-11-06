@@ -50,7 +50,8 @@ public class OrdersCondition {
             paramsMap.put("supplierId", supplierId);
         }
 
-        if ((supplierId != null && !hasSeeAllSupplierPermission) || (supplierId == null && !hasSeeAllSupplierPermission)) {
+
+        if ((hasSeeAllSupplierPermission != null && hasSeeAllSupplierPermission != null && supplierId != null && !hasSeeAllSupplierPermission) || (hasSeeAllSupplierPermission != null && hasSeeAllSupplierPermission != null && supplierId == null && !hasSeeAllSupplierPermission)) {
             List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
             List<Long> supplierIds = new ArrayList<>();
             for (Supplier s : suppliers) {

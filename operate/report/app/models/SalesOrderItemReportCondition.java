@@ -53,7 +53,7 @@ public class SalesOrderItemReportCondition implements Serializable {
             paramMap.put("supplier", supplier);
         }
 
-        if ((supplier != null && supplier.id == 0 && !hasSeeAllSupplierPermission) || (supplier == null && !hasSeeAllSupplierPermission)) {
+        if ((hasSeeAllSupplierPermission != null && supplier != null && supplier.id == 0 && !hasSeeAllSupplierPermission) || (hasSeeAllSupplierPermission != null && supplier == null && !hasSeeAllSupplierPermission)) {
             condBuilder.append(" and s.salesId = :salesId");
             paramMap.put("salesId", operatorId);
         }
@@ -99,7 +99,7 @@ public class SalesOrderItemReportCondition implements Serializable {
             paramMap.put("supplier", supplier);
         }
 
-        if ((supplier != null && supplier.id == 0 && !hasSeeAllSupplierPermission) || (supplier == null && !hasSeeAllSupplierPermission)) {
+        if ((hasSeeAllSupplierPermission != null && supplier != null && supplier.id == 0 && !hasSeeAllSupplierPermission) || (hasSeeAllSupplierPermission != null && supplier == null && !hasSeeAllSupplierPermission)) {
             condBuilder.append(" and s.salesId = :salesId");
             paramMap.put("salesId", operatorId);
         }
