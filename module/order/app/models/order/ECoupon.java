@@ -1169,6 +1169,10 @@ public class ECoupon extends Model {
         q.setParameter("userType", userType);
         q.setParameter("unconsumed", ECouponStatus.UNCONSUMED);
         q.setParameter("consumed", ECouponStatus.CONSUMED);
-        return (BigDecimal)q.getSingleResult();
+        BigDecimal savedMoney = (BigDecimal)q.getSingleResult();
+        if(savedMoney == null){
+            return BigDecimal.ZERO;
+        }
+        return savedMoney;
     }
 }
