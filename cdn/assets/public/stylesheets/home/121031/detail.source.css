@@ -445,12 +445,16 @@
 #show .bd {
     overflow: hidden;
 }
+#show .bd .template {
+    width: 600px;
+    overflow: hidden;
+}
 #show .bd p {
     margin: 5px 0;
 }
 #show .bd img {
-    max-width: 708px;
-    _width: expression(this.width > 708 ? 704: true);
+    max-width: 600px;
+    _width: expression(this.width > 600 ? 600: true);
 }
 #consult {
     margin-bottom: 10px;
