@@ -6,11 +6,15 @@
     margin-left: auto;
     margin-right: auto;
 }
-.crumbs {
+#crumbs-panel {
+    height: 43px;
+    overflow: hidden;
+}
+#crumbs-panel .crumbs {
     color: #757575;
     padding: 8px 0 10px;
 }
-.crumbs a {
+#crumbs-panel .crumbs a {
     color: #f96c0f;
 }
 .hd {

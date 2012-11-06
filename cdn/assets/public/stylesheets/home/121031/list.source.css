@@ -6,41 +6,38 @@
     margin-left: auto;
     margin-right: auto;
 }
-.crumbs {
+#crumbs-panel {
+    height: 43px;
+    overflow: hidden;
+}
+#crumbs-panel .crumbs {
+}
+#crumbs-panel .crumbs {
+    float: left;
     color: #757575;
     padding: 10px 0 15px;
 }
-.crumbs a {
+#crumbs-panel .crumbs a {
     color: #f96c0f;
 }
-#section {
-    width: 750px;
+#crumbs-panel .stats {
     float: left;
-    position: relative;
-}
-#sidebar {
-    width: 200px;
-    float: right;
-}
-#stats {
-    position: absolute;
-    top: -35px;
-    left: 178px;
     height: 21px;
+    margin: 8px 0 0 5px;
 }
-#stats i.left {
+#crumbs-panel .stats i.left {
     float: left;
     width: 11px;
     height: 21px;
-    background: url(//img.uhcdn.com/home/list.png) no-repeat 0 -130px;
+    background: url(//img.uhcdn.com/home/list-2.png) no-repeat 0 -130px;
 }
-#stats i.right {
+#crumbs-panel .stats i.right {
     float: left;
     width: 11px;
     height: 21px;
-    background: url(//img.uhcdn.com/home/list.png) no-repeat -12px -130px;
+    background: url(//img.uhcdn.com/home/list-2.png) no-repeat -12px -130px;
 }
-#stats .center {
+#crumbs-panel .stats .center {
     float: left;
     width: auto;
     padding: 1px 0;
@@ -50,7 +47,7 @@
     border-top: 1px solid #ffd99b;
     border-bottom: 1px solid #ffd99b;
 }
-#stats .inner {
+#crumbs-panel .stats .inner {
     float: left;
     height: 17px;
     color: #707070;
@@ -58,9 +55,16 @@
     line-height: 17px;
     background-color: #fff3d5;
 }
-#stats span,
-#sorry span {
+#crumbs-panel .stats span {
     color: #ff751a;
+}
+#section {
+    width: 750px;
+    float: left;
+}
+#sidebar {
+    width: 200px;
+    float: right;
 }
 #sorry {
     color: #707070;
@@ -74,7 +78,10 @@
 }
 #sorry .inner {
     padding-left: 75px;
-    background: #fff url(//img.uhcdn.com/home/list.png) no-repeat 0 -63px;
+    background: #fff url(//img.uhcdn.com/home/list-2.png) no-repeat 0 -63px;
+}
+#sorry span {
+    color: #ff751a;
 }
 #filter {
     padding: 12px 10px 0;
@@ -186,12 +193,12 @@
     font-weight: 700;
 }
 #result .hd .sort .down {
-    background: url(//img.uhcdn.com/home/list.png) no-repeat right -205px;
+    background: url(//img.uhcdn.com/home/list-2.png) no-repeat right -205px;
     *background-position: right -207px;
     _background-position: right -205px;
 }
 #result .hd .sort .up {
-    background: url(//img.uhcdn.com/home/list.png) no-repeat right -188px;
+    background: url(//img.uhcdn.com/home/list-2.png) no-repeat right -188px;
     *background-position: right -190px;
     _background-position: right -188px;
 }
@@ -322,7 +329,7 @@
     height: 30px;
     overflow: hidden;
     text-indent: -9999px;
-    background: url(//img.uhcdn.com/home/list.png) no-repeat 0 -33px;
+    background: url(//img.uhcdn.com/home/list-2.png) no-repeat 0 -33px;
 }
 .pagination-container {
     text-align: center;
@@ -397,7 +404,7 @@
     font-weight: 700;
     border: 1px solid #e8e8e8;
     border-top: 0;
-    background: url(//img.uhcdn.com/home/list.png) repeat-x 0 0;
+    background: url(//img.uhcdn.com/home/list-2.png) repeat-x 0 0;
 }
 #interest {
     border-top: 3px solid #f97311;
