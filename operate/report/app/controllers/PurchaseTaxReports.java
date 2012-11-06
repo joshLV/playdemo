@@ -40,8 +40,8 @@ public class PurchaseTaxReports extends Controller {
             condition = new PurchaseECouponReportCondition();
         }
         List<Supplier> supplierList;
-        Boolean hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
-        if (hasSeeAllSupplierPermission) {
+        condition.hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        if (condition.hasSeeAllSupplierPermission) {
             supplierList = Supplier.findUnDeleted();
         } else {
             supplierList = Supplier.find(
@@ -50,10 +50,8 @@ public class PurchaseTaxReports extends Controller {
                     OperateRbac.currentUser().id).fetch();
         }
 
-        Long operatorId = OperateRbac.currentUser().id;
-        List<PurchaseECouponReport> resultList = PurchaseECouponReport.query(condition, operatorId, hasSeeAllSupplierPermission);
-
-
+        condition.operatorId = OperateRbac.currentUser().id;
+        List<PurchaseECouponReport> resultList = PurchaseECouponReport.query(condition);
 
 
         ValuePaginator<PurchaseECouponReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);

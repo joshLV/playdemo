@@ -57,13 +57,13 @@ public class RefundReport extends Model {
      * @param condition
      * @return
      */
-    public static List<RefundReport> query(RefundReportCondition condition, Long operatorId, Boolean hasSeeAllSupplierPermission) {
+    public static List<RefundReport> query(RefundReportCondition condition) {
 
         String sql = "select new models.RefundReport(e.orderItems.goods,e.salePrice,count(e.orderItems.buyNumber),sum(e.refundPrice)) from ECoupon e ";
         String groupBy = " group by e.orderItems.goods";
 
         Query query = JPA.em()
-                .createQuery(sql + condition.getFilter(operatorId, hasSeeAllSupplierPermission) + groupBy + " order by sum(e.salePrice) desc");
+                .createQuery(sql + condition.getFilter() + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));

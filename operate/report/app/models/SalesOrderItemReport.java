@@ -98,13 +98,13 @@ public class SalesOrderItemReport extends Model {
     }
 
     public static List<SalesOrderItemReport> query(
-            SalesOrderItemReportCondition condition, Long operatorId, Boolean hasSeeAllSupplierPermission) {
+            SalesOrderItemReportCondition condition) {
         Query query = JPA.em()
                 .createQuery(
                         "select new models.SalesOrderItemReport(r.goods, r.salePrice-r.rebateValue/r.buyNumber,r.faceValue, sum(r.buyNumber), "
                                 + "sum(r.salePrice*r.buyNumber-r.rebateValue))"
                                 + " from OrderItems r, Supplier s where "
-                                + condition.getFilter(operatorId, hasSeeAllSupplierPermission) + " group by r.goods, r.salePrice-r.rebateValue/r.buyNumber order by r.goods"
+                                + condition.getFilter() + " group by r.goods, r.salePrice-r.rebateValue/r.buyNumber order by r.goods"
                 );
 
         for (String param : condition.getParamMap().keySet()) {
@@ -118,7 +118,7 @@ public class SalesOrderItemReport extends Model {
                         "select new models.SalesOrderItemReport(r.goods, r.salePrice-r.rebateValue/r.buyNumber, r.faceValue, count(e), "
                                 + "sum(e.salePrice-e.rebateValue))"
                                 + " from OrderItems r, Supplier s, ECoupon e where e.orderItems=r and "
-                                + condition.getFilter(operatorId, hasSeeAllSupplierPermission) + " and e.status='REFUND' group by r.goods, r.salePrice-r.rebateValue/r.buyNumber order by r.goods"
+                                + condition.getFilter() + " and e.status='REFUND' group by r.goods, r.salePrice-r.rebateValue/r.buyNumber order by r.goods"
                 );
 
         for (String param : condition.getParamMap().keySet()) {
@@ -204,12 +204,12 @@ public class SalesOrderItemReport extends Model {
      * @param condition
      * @return
      */
-    public static List<SalesOrderItemReport> getNetSales(SalesOrderItemReportCondition condition, Long operatorId, Boolean hasSeeAllSupplierPermission) {
+    public static List<SalesOrderItemReport> getNetSales(SalesOrderItemReportCondition condition) {
         Query query = JPA.em()
                 .createQuery(
                         "select new models.SalesOrderItemReport(r.goods, sum(r.salePrice*r.buyNumber-r.rebateValue))"
                                 + " from OrderItems r,Supplier s where "
-                                + condition.getNetSalesFilter(operatorId, hasSeeAllSupplierPermission) + " group by r.goods.supplierId order by r.goods"
+                                + condition.getNetSalesFilter() + " group by r.goods.supplierId order by r.goods"
                 );
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));

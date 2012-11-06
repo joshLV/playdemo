@@ -68,12 +68,12 @@ public class PurchaseECouponReport extends Model {
         this.noTaxAmount = BigDecimal.ZERO;
     }
 
-    public static List<PurchaseECouponReport> query(PurchaseECouponReportCondition condition, Long operatorId, Boolean hasSeeAllSupplierPermission) {
+    public static List<PurchaseECouponReport> query(PurchaseECouponReportCondition condition) {
         Query query = JPA.em()
                 .createQuery(
                         "select new PurchaseECouponReport(r.goods, count(r.id),r.faceValue, r.originalPrice, sum(r.originalPrice)) "
                                 + " from ECoupon r where "
-                                + condition.getFilter(operatorId, hasSeeAllSupplierPermission) + " group by r.goods order by r.goods.supplierId");
+                                + condition.getFilter() + " group by r.goods order by r.goods.supplierId");
 
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));

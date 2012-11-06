@@ -20,8 +20,10 @@ public class RefundReportCondition {
     public String goodsName;
     public String supplierName;
     private Map<String, Object> paramMap = new HashMap<>();
+    public Long operatorId;
+    public Boolean hasSeeAllSupplierPermission;
 
-    public String getFilter(Long operatorId, Boolean hasSeeAllSupplierPermission) {
+    public String getFilter() {
         StringBuilder condBuilder = new StringBuilder(" where e.status=:status and e.goods.isLottery=false");
         paramMap.put("status", ECouponStatus.REFUND);
         if (refundAtBegin != null) {

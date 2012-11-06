@@ -26,7 +26,8 @@ public class NetSalesReports extends Controller {
 
     private static final int PAGE_SIZE = 30;
 
-    /**                   `
+    /**
+     * `
      * 查询净销售报表信息.
      *
      * @param condition
@@ -40,8 +41,8 @@ public class NetSalesReports extends Controller {
         }
         List<Supplier> supplierList;
 
-        Boolean hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
-        if (hasSeeAllSupplierPermission) {
+        condition.hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        if (condition.hasSeeAllSupplierPermission) {
             supplierList = Supplier.findUnDeleted();
         } else {
             supplierList = Supplier.find(
@@ -50,9 +51,9 @@ public class NetSalesReports extends Controller {
                     OperateRbac.currentUser().id).fetch();
         }
 
-        Long operatorId = OperateRbac.currentUser().id;
+        condition.operatorId = OperateRbac.currentUser().id;
         // 查询出所有结果
-        List<SalesOrderItemReport> resultList = SalesOrderItemReport.getNetSales(condition, operatorId, hasSeeAllSupplierPermission);
+        List<SalesOrderItemReport> resultList = SalesOrderItemReport.getNetSales(condition);
 
         // 分页
         ValuePaginator<SalesOrderItemReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);

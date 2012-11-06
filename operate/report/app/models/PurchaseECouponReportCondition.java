@@ -33,8 +33,10 @@ public class PurchaseECouponReportCondition implements Serializable {
     public String interval = "0d";
 
     private Map<String, Object> paramMap = new HashMap<>();
+    public Long operatorId;
+    public Boolean hasSeeAllSupplierPermission;
 
-    public String getFilter(Long operatorId, Boolean hasSeeAllSupplierPermission) {
+    public String getFilter() {
         StringBuilder condBuilder = new StringBuilder("r.status='CONSUMED'"); //只统计已经消费的
         if (createdAtBegin != null) {
             condBuilder.append(" and r.consumedAt >= :consumedAtBegin");

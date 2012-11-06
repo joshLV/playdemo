@@ -68,14 +68,14 @@ public class OperateOrders extends Controller {
 
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        Boolean hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        condition.hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        condition.operatorId = OperateRbac.currentUser().id;
         Long operatorId = OperateRbac.currentUser().id;
+        Boolean hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
         JPAExtPaginator<models.order.Order> orderList;
-        if (!Play.runingInTestMode()) {
-            orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE, operatorId, hasSeeAllSupplierPermission);
-        } else {
-            orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE, null, true);
-        }
+
+        orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE);
+
         BigDecimal amountSummary = Order.summary(orderList);
 
         List<Brand> brandList = Brand.findByOrder(null, operatorId, hasSeeAllSupplierPermission);
@@ -118,14 +118,12 @@ public class OperateOrders extends Controller {
         String page = request.params.get("page");
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "订单_" + System.currentTimeMillis() + ".xls");
-        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
-        Long id = OperateRbac.currentUser().id;
+        condition.hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        condition.operatorId = OperateRbac.currentUser().id;
         JPAExtPaginator<models.order.Order> orderList;
-        if (!Play.runingInTestMode()) {
-            orderList = models.order.Order.query(condition, null, 1, PAGE_SIZE, id, right);
-        } else {
-            orderList = models.order.Order.query(condition, null, 1, PAGE_SIZE, null, true);
-        }
+
+        orderList = models.order.Order.query(condition, null, 1, PAGE_SIZE);
+
         for (Order order : orderList) {
             if (order.userType == AccountType.CONSUMER) {
                 order.accountEmail = order.getUser().loginName;

@@ -31,6 +31,8 @@ public class OrdersCondition {
     public boolean isLottery;
     public AccountType userType;
     public long brandId = 0;
+    public Long operatorId;
+    public Boolean hasSeeAllSupplierPermission;
 
     /**
      * 查询条件hql.
@@ -38,7 +40,7 @@ public class OrdersCondition {
      * @param supplierId 商户ID
      * @return sql 查询条件
      */
-    public String getFilter(Long supplierId, Long operatorId, Boolean hasSeeAllSupplierPermission) {
+    public String getFilter(Long supplierId) {
         StringBuilder sql = new StringBuilder();
         sql.append(" o.deleted = :deleted");
         paramsMap.put("deleted", DeletedStatus.UN_DELETED);

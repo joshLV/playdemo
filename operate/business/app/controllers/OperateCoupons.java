@@ -33,21 +33,19 @@ public class OperateCoupons extends Controller {
         }
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        Boolean hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
-        Long operatorId = OperateRbac.currentUser().id;
+        condition.hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        condition.operatorId = OperateRbac.currentUser().id;
         JPAExtPaginator<ECoupon> couponPage;
-        if (!Play.runingInTestMode()) {
-            couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE, operatorId, hasSeeAllSupplierPermission);
-        } else {
-            couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE, null, true);
-        }
+
+        couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE);
+
         for (ECoupon coupon : couponPage) {
             if (coupon.operateUserId != null) {
                 OperateUser operateUser = OperateUser.findById(coupon.operateUserId);
                 coupon.operateUserName = operateUser.userName;
             }
         }
-        List<Brand> brandList = Brand.findByOrder(null, operatorId, hasSeeAllSupplierPermission);
+        List<Brand> brandList = Brand.findByOrder(null);
         renderArgs.put("brandList", brandList);
         BigDecimal amountSummary = ECoupon.summary(couponPage);
         //判断角色是否有解冻券号的权限

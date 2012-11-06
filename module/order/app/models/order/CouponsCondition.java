@@ -44,6 +44,8 @@ public class CouponsCondition implements Serializable {
     public Date paidAtEnd;
     public String userName;
 
+    public Long operatorId;
+    public Boolean hasSeeAllSupplierPermission;
 
     public String getOrderByExpress() {
         return "e.createdAt desc";
@@ -54,7 +56,7 @@ public class CouponsCondition implements Serializable {
      *
      * @return sql 查询条件
      */
-    public String getFilter(Long operatorId, Boolean hasSeeAllSupplierPermission) {
+    public String getFilter() {
         StringBuilder sql = new StringBuilder();
         sql.append(" 1=1 ");
         if (userId != null && accountType != null) {

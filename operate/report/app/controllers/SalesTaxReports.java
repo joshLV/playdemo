@@ -32,8 +32,8 @@ public class SalesTaxReports extends Controller {
             condition = new SalesOrderItemReportCondition();
         }
         List<Supplier> supplierList;
-        Boolean hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
-        if (hasSeeAllSupplierPermission) {
+        condition.hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        if (condition.hasSeeAllSupplierPermission) {
             supplierList = Supplier.findUnDeleted();
         } else {
             supplierList = Supplier.find(
@@ -41,10 +41,10 @@ public class SalesTaxReports extends Controller {
                     DeletedStatus.UN_DELETED,
                     OperateRbac.currentUser().id).fetch();
         }
-        Long operatorId = OperateRbac.currentUser().id;
+        condition.operatorId = OperateRbac.currentUser().id;
 
         // 查询出所有结果
-        List<SalesOrderItemReport> resultList = SalesOrderItemReport.query(condition,operatorId,hasSeeAllSupplierPermission);
+        List<SalesOrderItemReport> resultList = SalesOrderItemReport.query(condition);
         // 分页
         ValuePaginator<SalesOrderItemReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
 

@@ -34,8 +34,8 @@ public class GoodsRefundReports extends Controller {
 
         List<Supplier> supplierList;
 
-        Boolean hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
-        if (hasSeeAllSupplierPermission) {
+        condition.hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        if (condition.hasSeeAllSupplierPermission) {
             supplierList = Supplier.findUnDeleted();
         } else {
             supplierList = Supplier.find(
@@ -43,8 +43,8 @@ public class GoodsRefundReports extends Controller {
                     DeletedStatus.UN_DELETED,
                     OperateRbac.currentUser().id).fetch();
         }
-        Long operatorId = OperateRbac.currentUser().id;
-        List<RefundReport> resultList = RefundReport.query(condition, operatorId, hasSeeAllSupplierPermission);
+        condition.operatorId = OperateRbac.currentUser().id;
+        List<RefundReport> resultList = RefundReport.query(condition);
         // 分页
         ValuePaginator<RefundReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
 //        List<Supplier> supplierList = Supplier.findUnDeleted();

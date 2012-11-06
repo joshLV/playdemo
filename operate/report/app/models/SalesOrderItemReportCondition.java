@@ -30,11 +30,13 @@ public class SalesOrderItemReportCondition implements Serializable {
     public String orderBy = "r.createdAt";
     public String orderByType = "DESC";
     public String interval = "-1d";
+    public Long operatorId;
+    public Boolean hasSeeAllSupplierPermission;
 
     private Map<String, Object> paramMap = new HashMap<>();
     private Map<String, Object> paramMap1 = new HashMap<>();
 
-    public String getFilter(Long operatorId, Boolean hasSeeAllSupplierPermission) {
+    public String getFilter() {
         StringBuilder condBuilder = new StringBuilder("(r.order.status='PAID' or r.order.status='SENT') and s.id=r.goods.supplierId and r.goods.isLottery=false");
         //condBuilder.append(" and ");
         if (createdAtBegin != null) {
@@ -80,7 +82,7 @@ public class SalesOrderItemReportCondition implements Serializable {
         return condBuilder.toString();
     }
 
-    public String getNetSalesFilter(Long operatorId, Boolean hasSeeAllSupplierPermission) {
+    public String getNetSalesFilter() {
         StringBuilder condBuilder = new StringBuilder("(r.order.status='PAID' or r.order.status='SENT') and s.id=r.goods.supplierId and r.goods.isLottery=false");
 
         if (createdAtBegin != null) {
