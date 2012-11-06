@@ -1,4 +1,5 @@
 package models.order;
+
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.Account;
@@ -23,6 +24,7 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -623,7 +625,7 @@ public class ECoupon extends Model {
             CouponsCondition condition, int pageNumber, int pageSize) {
         JPAExtPaginator<ECoupon> couponsPage = new JPAExtPaginator<>
                 ("ECoupon e", "e", ECoupon.class,
-                        condition.getFilter(null, true),
+                        condition.getFilter(),
                         condition.getParamMap())
                 .orderBy("e.createdAt desc");
 
@@ -1041,7 +1043,7 @@ public class ECoupon extends Model {
     public static BigDecimal sum(CouponsCondition condition) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select sum(e.originalPrice) " +
-                "from ECoupon e where " + condition.getFilter(null, true));
+                "from ECoupon e where " + condition.getFilter());
         for (String key : condition.getParamMap().keySet()) {
             q.setParameter(key, condition.getParamMap().get(key));
         }

@@ -120,7 +120,7 @@ public class NetSalesReportsUnitTest extends UnitTest {
         SalesOrderItemReportCondition condition = new SalesOrderItemReportCondition();
         Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
         condition.supplier = Supplier.findById(supplierId);
-        List<SalesOrderItemReport> reports = SalesOrderItemReport.getNetSales(condition, null, true);
+        List<SalesOrderItemReport> reports = SalesOrderItemReport.getNetSales(condition);
         assertEquals(1, reports.size());
         assertEquals("肯德基", reports.get(0).supplier.fullName);
         SalesOrderItemReport summary = SalesOrderItemReport.getNetSummary(reports);

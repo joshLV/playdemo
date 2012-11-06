@@ -72,7 +72,7 @@ public class CouponsUnitTest extends UnitTest {
         condition.accountType = AccountType.CONSUMER;
         int pageNumber = 1;
         int pageSize = 15;
-        JPAExtPaginator<ECoupon> list = ECoupon.query(condition, pageNumber, pageSize, null, true);
+        JPAExtPaginator<ECoupon> list = ECoupon.query(condition, pageNumber, pageSize);
         assertEquals(0, list.size());
     }
 
@@ -125,13 +125,13 @@ public class CouponsUnitTest extends UnitTest {
         boolean sendFlag = ECoupon.sendMessage(id);
         assertTrue(sendFlag);
 
-        String phone="A3905623568";
-        ECoupon.sendUserMessage(id,phone);
+        String phone = "A3905623568";
+        ECoupon.sendUserMessage(id, phone);
         ECoupon eCoupon = ECoupon.findById(id);
         assertEquals(2, eCoupon.downloadTimes.intValue());
-        ECoupon.sendUserMessage(id,phone);
+        ECoupon.sendUserMessage(id, phone);
         assertEquals(1, eCoupon.downloadTimes.intValue());
-        ECoupon.sendUserMessage(id,phone);
+        ECoupon.sendUserMessage(id, phone);
         assertEquals(0, eCoupon.downloadTimes.intValue());
 
     }

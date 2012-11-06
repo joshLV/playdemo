@@ -60,7 +60,7 @@ public class SupplierReports extends Controller {
                 ecouponCondition.goodsName = condition.goodsLike;
                 ecouponCondition.status = ECouponStatus.CONSUMED;
 
-                reportPage = ECoupon.query(ecouponCondition, pageNumber, PAGE_SIZE, null, true);
+                reportPage = ECoupon.query(ecouponCondition, pageNumber, PAGE_SIZE);
                 summary = new ReportSummary();
                 summary.goodsCount = reportPage.getRowCount();
                 summary.originalAmount = ECoupon.sum(ecouponCondition);

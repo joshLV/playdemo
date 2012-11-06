@@ -109,11 +109,9 @@ public class OperateCoupons extends Controller {
         Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
         Long id = OperateRbac.currentUser().id;
         JPAExtPaginator<ECoupon> couponsList;
-        if (!Play.runingInTestMode()) {
-            couponsList = ECoupon.query(condition, 1, PAGE_SIZE, id, right);
-        } else {
-            couponsList = ECoupon.query(condition, 1, PAGE_SIZE, null, true);
-        }
+
+        couponsList = ECoupon.query(condition, 1, PAGE_SIZE);
+
         for (ECoupon coupon : couponsList) {
             coupon.shopName = coupon.getConsumedShop();
 

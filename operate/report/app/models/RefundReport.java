@@ -86,15 +86,9 @@ public class RefundReport extends Model {
         String groupBy = " group by " + refundAt;
         Boolean right;
         Long id;
-        if (!Play.runingInTestMode()) {
-            right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
-            id = OperateRbac.currentUser().id;
-        } else {
-            right = true;
-            id = null;
-        }
+
         Query query = JPA.em()
-                .createQuery(sql + condition.getFilter(id, right) + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilter() + groupBy + " order by sum(e.refundPrice) desc");
 
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));

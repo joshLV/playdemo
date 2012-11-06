@@ -134,7 +134,7 @@ public class SupplierCoupons extends Controller {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
-        JPAExtPaginator<ECoupon> couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE, null, true);
+        JPAExtPaginator<ECoupon> couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE);
         render(couponPage, condition);
     }
 
@@ -147,7 +147,7 @@ public class SupplierCoupons extends Controller {
         condition.supplier = SupplierRbac.currentUser().supplier;
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "券内容列表_" + System.currentTimeMillis() + ".xls");
-        JPAExtPaginator<ECoupon> couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE, null, true);
+        JPAExtPaginator<ECoupon> couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE);
         for (ECoupon coupon : couponPage) {
             String staff = "";
             coupon.verifyTypeInfo = Messages.get("coupon." + coupon.verifyType);
