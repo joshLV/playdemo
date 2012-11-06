@@ -74,7 +74,7 @@
 }
 #sorry .inner {
     padding-left: 75px;
-    background: #fff url(//img.uhcdn.com/home/list.png) no-repeat 0 -59px;
+    background: #fff url(//img.uhcdn.com/home/list.png) no-repeat 0 -63px;
 }
 #filter {
     padding: 12px 10px 0;
@@ -272,9 +272,7 @@
 .goods .title {
     height: 36px;
     overflow: hidden;
-    padding: 7px 0;
-    margin-bottom: 15px;
-    border-bottom: 1px dotted #d9d9d9;
+    margin: 7px 0;
 }
 .goods .title a {
     color: #767676;
@@ -284,6 +282,10 @@
 }
 .goods .title a:hover {
     color: #f97310;
+}
+.goods .attribute {
+    padding-top: 15px;
+    border-top: 1px dotted #d9d9d9;
 }
 .goods .attribute {
     overflow: hidden;

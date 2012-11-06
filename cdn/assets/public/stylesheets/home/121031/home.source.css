@@ -245,15 +245,17 @@
 .goods .title {
     height: 36px;
     overflow: hidden;
-    padding: 7px 0;
-    margin-bottom: 15px;
-    border-bottom: 1px dotted #d9d9d9;
+    margin: 7px 0;
 }
 .goods .title a {
     color: #767676;
 }
 .goods .title a:hover {
     color: #f97310;
+}
+.goods .price {
+    padding-top: 15px;
+    border-top: 1px dotted #d9d9d9;
 }
 .goods .price .left {
     float: left;
