@@ -236,7 +236,7 @@ select:'condition_status',value:condition?.status/}
     <tbody>
 
     #{paginate.list items:goodsPage, as:'goods'}
-    <tr class="#{if goods.isExpired() || goods.baseSale?.intValue() == 0}tr-offsale#{/if} transparent">
+    <tr class="#{if goods.isExpired() || goods.getRealStocks() == 0}tr-offsale#{/if} transparent">
         <td style="text-align:center"><input type="checkbox" id="checkoption" value="${goods.id}" name="id"/></td>
         <td>${goods?.getSupplier()?.otherName}</td>
         <td>${goods?.no}</td>
@@ -269,7 +269,7 @@ select:'condition_status',value:condition?.status/}
         <td>${goods?.updatedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
         <td>&{'goods.'+goods?.materialType}</td>
         <td> #{if goods.isExpired()}<span class="expired">已过期</span><br/>#{/if}
-            #{if goods.baseSale?.intValue() == 0}<span class="zeroBaseSale">零库存</span><br/>#{/if}
+            #{if goods?.getRealStocks() == 0}<span class="zeroBaseSale">零库存</span><br/>#{/if}
         &{'goods.'+goods?.getStatus()}
             #{if models.sales.GoodsStatus.APPLY.equals(goods.status)}
                 <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale",method:"PUT"/}
