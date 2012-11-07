@@ -27,7 +27,7 @@
     <div>
         <input type="radio" value="${city.id}" name="cityId" checked>${city.name}
     </div>
-    <p>选择分类<b>[必填]不能跨主分类</b></p>
+    <p>选择分类<b>[必填]不能跨主分类,最多同时选三个</b></p>
     <div>
         <table border="0">
         #{list items:categories, as:'category'}
@@ -74,7 +74,7 @@
     <p><input type="text" name="grouponBImg" size="200" value="${goods.imageOriginalPath}"></p>
 
     <p>团购产品标题，最长<b>[12]</b>个字符<b>[必填]</b></p>
-    <p><input type="text" name="title" value="${goods.title}" size="30"></p>
+    <p><input type="text" name="title" value="${goods.shortName}" size="30"></p>
 
     <p>团购原价<b>[必填]</b></p>
     <p><input type="text" name="marketPrice" value="${goods.faceValue}"></p>
@@ -102,7 +102,21 @@
     <p>团购简介 富文本数据<b>[必填]</b>  </p>
     <textarea rows="5" cols="200" name="summary">${goods.title}</textarea>
     <p>团购详情 富文本数据<b>[必填]</b> </p>
-    <textarea rows="5" cols="200" name="teamDetail">${goods.safePrompt} ${goods.safeDetails}</textarea>
+    <textarea rows="5" cols="200" name="teamDetail">
+        ${goods.exhibition}
+        <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+            <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
+        </p>
+        ${goods.prompt}
+        <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+            <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
+        </p>
+        ${goods.details}
+        <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+            <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
+        </p>
+        ${goods.supplierDes}
+    </textarea>
     <b>
     #{list items:shops, as:'shop'}
         #{if !shop.phone}
