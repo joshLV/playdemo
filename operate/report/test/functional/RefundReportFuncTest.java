@@ -111,7 +111,7 @@ public class RefundReportFuncTest extends FunctionalTest {
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
         ValuePaginator<RefundReport> reportPage = (ValuePaginator<RefundReport>) renderArgs("reportPage");
-        assertEquals(0, reportPage.getRowCount());
+        assertEquals(2, reportPage.getRowCount());
     }
 
 

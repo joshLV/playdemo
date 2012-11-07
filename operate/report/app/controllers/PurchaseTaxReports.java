@@ -10,6 +10,7 @@ import models.supplier.Supplier;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.Play;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
@@ -40,7 +41,9 @@ public class PurchaseTaxReports extends Controller {
             condition = new PurchaseECouponReportCondition();
         }
         List<Supplier> supplierList;
+
         condition.hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+
         if (condition.hasSeeAllSupplierPermission) {
             supplierList = Supplier.findUnDeleted();
         } else {
@@ -51,6 +54,7 @@ public class PurchaseTaxReports extends Controller {
         }
 
         condition.operatorId = OperateRbac.currentUser().id;
+
         List<PurchaseECouponReport> resultList = PurchaseECouponReport.query(condition);
 
 

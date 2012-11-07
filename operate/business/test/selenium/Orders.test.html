@@ -31,6 +31,7 @@ account.save()
     verifyTextPresent('已付款')
     verifyTextPresent('发货')
     click('link=发货')
+    waitForElementPresent('sendModal')
     type('id=order_deliveryCompany','汇通')
     type('id=order_deliveryNo','321123')
     *{clickAndWait('id=send')}*

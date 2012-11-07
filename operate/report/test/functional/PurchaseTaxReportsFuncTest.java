@@ -60,6 +60,8 @@ public class PurchaseTaxReportsFuncTest extends FunctionalTest {
         Fixtures.delete(SupplierUser.class);
         Fixtures.delete(UserWebIdentification.class);
         Fixtures.delete(ECoupon.class);
+        Fixtures.delete(PurchaseECouponReport.class);
+        Fixtures.delete(PurchaseECouponReport.class);
         Fixtures.loadModels("fixture/suppliers_unit.yml");
         Fixtures.loadModels("fixture/categories_unit.yml");
         Fixtures.loadModels("fixture/brands_unit.yml");
@@ -128,7 +130,7 @@ public class PurchaseTaxReportsFuncTest extends FunctionalTest {
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
         ValuePaginator<PurchaseECouponReport> reportPage = (ValuePaginator<PurchaseECouponReport>) renderArgs("reportPage");
-        assertEquals(0, reportPage.getRowCount());
+        assertEquals(1, reportPage.getRowCount());
     }
 
     @Test
