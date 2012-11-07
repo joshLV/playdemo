@@ -1701,7 +1701,11 @@ public class Goods extends Model {
         goodsHistory.prompt = this.prompt;
         goodsHistory.details = this.details;
         goodsHistory.createdAt = new Date();
-        goodsHistory.createdBy = this.createdBy;
+        if (StringUtils.isNotBlank(this.updatedBy)) {
+            goodsHistory.createdBy = this.updatedBy;
+        } else {
+            goodsHistory.createdBy = this.createdBy;
+        }
         goodsHistory.brand = this.brand;
         goodsHistory.isAllShop = this.isAllShop;
         goodsHistory.status = this.status;
@@ -1710,7 +1714,7 @@ public class Goods extends Model {
         goodsHistory.virtualBaseSaleCount = this.virtualBaseSaleCount;
         goodsHistory.virtualSaleCount = this.virtualSaleCount;
         goodsHistory.exhibition = this.exhibition;
-        goodsHistory.supplierDes=this.supplierDes;
+        goodsHistory.supplierDes = this.supplierDes;
 
         goodsHistory.limitNumber = this.limitNumber;
         goodsHistory.couponType = this.couponType;

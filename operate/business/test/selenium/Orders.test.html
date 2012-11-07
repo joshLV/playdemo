@@ -30,17 +30,17 @@ account.save()
     *{verifyTextPresent('201202220324134991599')}*
     verifyTextPresent('已付款')
     verifyTextPresent('发货')
-    clickAndWait('link=发货')
-    waitForVisible('sendModal')
+    *{clickAndWait('link=发货')}*
+    *{waitForVisible('sendModal')}*
     *{waitForElementPresent('sendModal')}*
-    type('id=order_deliveryCompany','汇通')
-    type('id=order_deliveryNo','321123')
+    *{type('id=order_deliveryCompany','汇通')}*
+    *{type('id=order_deliveryNo','321123')}*
     *{clickAndWait('id=send')}*
     *{open('/orders')}*
     *{verifyTextPresent('已发货')}*
 #{/selenium}
 #{selenium '查看订单详细信息'}
-    *{open('/orders/${play.test.Fixtures.idCache.get("models.order.Order-order1")}')}*
+    *{open('/orders/${play.test.Fixtues.idCache.get("models.order.Order-order1")}')}*
     *{assertTitle('订单详请')}*
     *{verifyTextPresent('201202220324134991598')}*
 #{/selenium}
