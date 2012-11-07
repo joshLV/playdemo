@@ -5,7 +5,7 @@
 GET     /captcha                                        CaptchaProvider.captcha
 
 # Home page
-GET     /                                             UserOrders.index
+GET     /                                             UserOrders.goIndex
 GET     /orders                                       UserOrders.index
 GET     /orders/refund/{orderNumber}                  UserOrders.refund
 POST    /orders/refund/{orderNumber}                  UserOrders.applyRefund

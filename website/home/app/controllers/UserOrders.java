@@ -19,6 +19,10 @@ public class UserOrders extends Controller {
 
     public static int PAGE_SIZE = 15;
 
+    public static void goIndex() {
+        index(null);
+    }
+    
     /**
      * 我的订单
      */
