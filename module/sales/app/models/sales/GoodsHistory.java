@@ -164,6 +164,49 @@ public class GoodsHistory extends Model {
     @Money
     public BigDecimal invitedUserPrice;
 
+    //  ======  价格列表结束 ==========
+
+    /**
+     * 累积进货量
+     * <p/>
+     * 通过管理界面增加进货量后得到累计进货量，只会越来越大，因为是累计的
+     */
+    @Column(name = "cumulative_stocks")
+    @Required
+    public Long cumulativeStocks;
+
+    /**
+     * 虚拟销量基数
+     * <p/>
+     * 通过管理界面设置
+     * 用户前端网站显示的销量是virtualBaseSaleCount+realSaleCount
+     */
+    @Column(name = "virtual_base_sale_count")
+    public Long virtualBaseSaleCount;
+
+    /**
+     * 界面上显示的销量，实际销量+虚拟销量基数
+     */
+    @Transient
+    public Long virtualSaleCount;
+
+    /**
+     * 商家介绍
+     */
+    @Required
+    @MinSize(7)
+    @MaxSize(65000)
+    @Lob
+    @Column(name = "supplier_des")
+    public String supplierDes;
+
+    /**
+     * 商品详情
+     */
+    @MaxSize(65000)
+    @Lob
+    @Required
+    public String exhibition;
 
     /**
      * 商品类型

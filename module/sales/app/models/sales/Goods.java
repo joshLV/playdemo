@@ -983,7 +983,7 @@ public class Goods extends Model {
         updateGoods.setPrompt(goods.getPrompt());
         updateGoods.setDetails(goods.getDetails());
         updateGoods.setExhibition(goods.getExhibition());
-        updateGoods.supplierDes= StringUtils.trimToEmpty(goods.getSupplierDes());
+        updateGoods.supplierDes = StringUtils.trimToEmpty(goods.getSupplierDes());
         updateGoods.updatedAt = new Date();
         updateGoods.updatedBy = goods.updatedBy;
         updateGoods.brand = goods.brand;
@@ -1706,6 +1706,12 @@ public class Goods extends Model {
         goodsHistory.isAllShop = this.isAllShop;
         goodsHistory.status = this.status;
         goodsHistory.keywords = this.keywords;
+        goodsHistory.cumulativeStocks = this.cumulativeStocks;
+        goodsHistory.virtualBaseSaleCount = this.virtualBaseSaleCount;
+        goodsHistory.virtualSaleCount = this.virtualSaleCount;
+        goodsHistory.exhibition = this.exhibition;
+        goodsHistory.supplierDes=this.supplierDes;
+
         goodsHistory.limitNumber = this.limitNumber;
         goodsHistory.couponType = this.couponType;
         goodsHistory.imagePath = this.imagePath;

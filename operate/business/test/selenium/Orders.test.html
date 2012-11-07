@@ -30,8 +30,9 @@ account.save()
     *{verifyTextPresent('201202220324134991599')}*
     verifyTextPresent('已付款')
     verifyTextPresent('发货')
-    click('link=发货')
-    waitForElementPresent('sendModal')
+    clickAndWait('link=发货')
+    waitForVisible('sendModal')
+    *{waitForElementPresent('sendModal')}*
     type('id=order_deliveryCompany','汇通')
     type('id=order_deliveryNo','321123')
     *{clickAndWait('id=send')}*
