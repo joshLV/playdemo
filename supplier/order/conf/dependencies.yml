@@ -27,6 +27,7 @@ require:
     - cms -> cms
     - dangdang -> dangdang
     - jingdong -> jingdong
+    - third_tuan -> third_tuan
     - emaillogs -> emaillogs
     - view_ext -> view_ext
     - cache_helper -> cache_helper
@@ -65,6 +66,7 @@ repositories:
             - cms -> *
             - dangdang -> *
             - jingdong -> *
+            - third_tuan -> *
             - emaillogs -> *
             - asset_package -> *
             - view_ext -> *
