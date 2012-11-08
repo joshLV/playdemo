@@ -145,6 +145,7 @@ goods.salePrice=一百券销售价
 goods.resaleAddPrice=分销渠道加价
 goods.promoterPrice=推荐者返利
 goods.invitedUserPrice=受邀者返利
+goods.baseSale=库存
 goods.cumulativeStocks=库存
 goods.virtualBaseSaleCount=虚拟销量
 goods.imagePath=图片

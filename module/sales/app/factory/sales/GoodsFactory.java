@@ -35,7 +35,6 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.expireAt = afterDays(30);
         goods.faceValue = new BigDecimal("10.00");
         goods.materialType = MaterialType.ELECTRONIC;
-        goods.baseSale = 100L;
         goods.cumulativeStocks = 100L;  //库存
         goods.saleCount = 10;
         goods.virtualBaseSaleCount = 10l; //虚拟销量
@@ -48,6 +47,10 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.unPublishedPlatforms = new HashSet<>();
         goods.categories.add(FactoryBoy.lastOrCreate(Category.class));
         goods.shops.add(FactoryBoy.lastOrCreate(Shop.class));
+        goods.setPrompt("prompt");
+        goods.setDetails("detail");
+        goods.setExhibition("exhib");
+        goods.setSupplierDes("des");
         return goods;
     }
 
@@ -62,7 +65,7 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.expireAt = afterDays(new Date(), 30);
         goods.faceValue = BigDecimal.TEN;
         goods.materialType = MaterialType.REAL;
-        goods.baseSale = -9L;
+        goods.cumulativeStocks= -9L;
     }
 
     @Factory(name = "SupplierId")
@@ -99,7 +102,6 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.name = "测试商品6";
         goods.originalPrice = BigDecimal.valueOf(100);
         goods.salePrice = BigDecimal.valueOf(80);
-        goods.baseSale = 1000l;
         goods.createdAt = DateHelper.t("2012-02-27");
         goods.status = GoodsStatus.ONSALE;
         goods.deleted = DeletedStatus.UN_DELETED;

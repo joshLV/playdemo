@@ -187,14 +187,14 @@ public class Goods extends Model {
      * 商品短名称
      */
     @Required
-    @MaxSize(60)
+    @MaxSize(24)
     @Column(name = "short_name")
     public String shortName;
     /**
      * (网站标题)原来叫商品名称
      */
     @Required
-    @MaxSize(1000)
+    @MaxSize(280)
     @SolrField
     public String name;
     /**
@@ -1690,7 +1690,7 @@ public class Goods extends Model {
         goodsHistory.originalPrice = this.originalPrice;
         goodsHistory.discount = this.discount;
         goodsHistory.salePrice = this.salePrice;
-        goodsHistory.baseSale = this.baseSale;
+        goodsHistory.cumulativeStocks = this.cumulativeStocks;
         goodsHistory.promoterPrice = this.promoterPrice;
         goodsHistory.invitedUserPrice = this.invitedUserPrice;
         goodsHistory.materialType = this.materialType;

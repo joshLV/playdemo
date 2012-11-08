@@ -118,7 +118,7 @@ public class TaobaoAPIClient extends Controller{
             price = price.add(new BigDecimal(pricemakup));
         }
         System.out.print("####price :" + price);
-        ItemAddResponse response = addItem(taobaoClient, token.accessToken, goods.baseSale, 
+        ItemAddResponse response = addItem(taobaoClient, token.accessToken, goods.getRealStocks(),
                 price.setScale(2,BigDecimal.ROUND_UP).toString(), goods.name, goods.getDetails());
         
         if(response != null && response.getErrorCode() == null){

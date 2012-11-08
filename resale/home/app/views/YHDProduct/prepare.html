@@ -95,7 +95,7 @@
     <p>市场价<input type="text" name="productMarketPrice" value="${goods.faceValue}">(最多两位小数)</p>
     <p>销售价<input type="text" name="productSalePrice" value="${goods.salePrice}">(不能大于市场价,最多两位小数)</p>
     <p>重量<input type="text" name="weight" value="0.00"></p>
-    <p>库存<input type="text" name="virtualStockNum" value="${goods.baseSale}">(大于或等于0)</p>
+    <p>库存<input type="text" name="virtualStockNum" value="${goods.getRealStocks()}">(大于或等于0)</p>
     <p> 产品描述
         <textarea rows="5" cols="200" name="productDescription"></textarea>
     </p>

@@ -1,65 +1,57 @@
 package function;
 
-import java.io.File;
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
-
-import models.admin.OperateRole;
+import com.uhuila.common.constants.DeletedStatus;
+import controllers.operate.cas.Security;
+import factory.FactoryBoy;
 import models.admin.OperateUser;
-import models.sales.Area;
 import models.sales.Brand;
 import models.sales.Category;
 import models.sales.Goods;
-import models.sales.GoodsCondition;
+import models.sales.GoodsHistory;
+import models.sales.GoodsImages;
 import models.sales.GoodsStatus;
 import models.sales.Shop;
+import models.supplier.Supplier;
 import operate.rbac.RbacLoader;
-
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
-
 import play.Play;
 import play.mvc.Http;
 import play.mvc.Http.Response;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
-import com.uhuila.common.constants.DeletedStatus;
-
-import controllers.operate.cas.Security;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class OperateGoodsTest extends FunctionalTest {
+    Goods goods;
+    Shop shop;
+    Supplier supplier;
+    Brand brand;
 
     @org.junit.Before
     public void setup() {
-        Fixtures.delete(Shop.class);
-        Fixtures.delete(Goods.class);
-        Fixtures.delete(Category.class);
-        Fixtures.delete(Brand.class);
-        Fixtures.delete(Area.class);
-
-        Fixtures.delete(OperateUser.class);
-        Fixtures.delete(OperateRole.class);
-        Fixtures.loadModels("fixture/roles.yml");
-        Fixtures.loadModels("fixture/supplierusers.yml");
-
-        Fixtures.loadModels("fixture/areas_unit.yml");
-        Fixtures.loadModels("fixture/categories_unit.yml");
-        Fixtures.loadModels("fixture/brands_unit.yml");
-        Fixtures.loadModels("fixture/shops_unit.yml");
-        Fixtures.loadModels("fixture/goods_unit.yml");
-
+        FactoryBoy.deleteAll();
         // f重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
-
-        Long id = (Long) Fixtures.idCache.get("models.admin.OperateUser-user3");
-        OperateUser user = OperateUser.findById(id);
+        OperateUser user = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
+        goods = FactoryBoy.create(Goods.class);
+        shop = FactoryBoy.create(Shop.class);
+        supplier = FactoryBoy.create(Supplier.class);
+        brand = FactoryBoy.create(Brand.class);
+        goods.supplierId = supplier.id;
+        goods.brand = brand;
+
+        goods.save();
+        shop.supplierId = supplier.id;
+        shop.save();
     }
 
     @After
@@ -71,14 +63,13 @@ public class OperateGoodsTest extends FunctionalTest {
     /**
      * 查看商品信息
      */
-    @Ignore
     @Test
     public void testDetails() {
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-
-        Response response = GET("/goods/" + goodsId);
+        Response response = GET("/goods/" + goods.id);
         assertIsOk(response);
         assertContentType("text/html", response);
+        Goods goods = (Goods) renderArgs("goods");
+        assertTrue(goods.name.contains("Product Name "));
     }
 
     /**
@@ -98,181 +89,257 @@ public class OperateGoodsTest extends FunctionalTest {
     @Test
     @Ignore
     public void testDelete() {
-        long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_003");
 
-        Response response = DELETE("/goods/" + goodsId);
-        assertStatus(302, response);
-
-        //修改商品状态为下架状态
-        response = PUT("/goods/" + goodsId + "/offSale", "text/html", "");
-
-        Goods goods0 = Goods.findById(goodsId);
-        goods0.refresh();
-        assertEquals(GoodsStatus.OFFSALE, goods0.status);
-        
-        
-        //再次删除
-        response = DELETE("/goods/" + goodsId);
+        goods.status = GoodsStatus.OFFSALE;
+        goods.save();
+        Response response = DELETE("/goods/" + goods.id);
         assertStatus(302, response);
 
         //验证状态改为已删除状态
-        Goods goods1 = Goods.findById(goodsId);
-        goods1.refresh();
-        assertEquals(DeletedStatus.DELETED, goods1.deleted);
+        goods.refresh();
+        assertEquals(DeletedStatus.DELETED, goods.deleted);
     }
 
     /**
-     * 修改商品上下架
+     * 修改商品上架
      */
     @Test
-    @Ignore
-    public void testOffSale() {
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_004");
-        Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
-        Goods goods = Goods.findById(goodsId);
-        goods.supplierId = supplierId;
+    public void testONSale() {
+        List<GoodsHistory> history1 = GoodsHistory.find("goodsId=?", goods.id).fetch();
+        int cnt = history1.size();
+        assertEquals(0, cnt);
+        goods.status = GoodsStatus.OFFSALE;
         goods.save();
-
-        Response response = PUT("/goods/" + goodsId + "/onSale", "text/html", "");
-        assertStatus(200, response);
-        goods = Goods.findById(goodsId);
+        assertEquals(GoodsStatus.OFFSALE, goods.status);
+        Response response = PUT("/goods/" + goods.id + "/onSale", "text/html", "");
+        assertStatus(302, response);
         goods.refresh();
         assertEquals(GoodsStatus.ONSALE, goods.status);
-        
-        response = PUT("/goods/" + goodsId + "/offSale", "text/html", "");
+        List<GoodsHistory> history = GoodsHistory.find("goodsId=?", goods.id).fetch();
+        assertEquals(cnt + 1, history.size());
+    }
+
+    /**
+     * 商品操作历史
+     */
+    @Test
+    public void testGoodsHistory() {
+        GoodsHistory history = FactoryBoy.create(GoodsHistory.class);
+        history.goodsId = goods.id;
+        history.save();
+        Response response = GET("/goods/" + goods.id + "/histories");
+        assertStatus(200, response);
+        String goodsName = (String) renderArgs("goodsName");
+        String goodsNo = (String) renderArgs("goodsNo");
+        assertEquals(goods.name, goodsName);
+        assertEquals(goods.no, goodsNo);
+    }
+
+    /**
+     * 修改商品下架
+     */
+    @Test
+    public void testOFFSale() {
+        List<GoodsHistory> history1 = GoodsHistory.find("goodsId=?", goods.id).fetch();
+        int cnt = history1.size();
+        assertEquals(0, cnt);
+        goods.status = GoodsStatus.ONSALE;
+        goods.save();
+        assertEquals(GoodsStatus.ONSALE, goods.status);
+        Response response = PUT("/goods/" + goods.id + "/offSale", "text/html", "");
         assertStatus(302, response);
-        goods = Goods.findById(goodsId);
         goods.refresh();
         assertEquals(GoodsStatus.OFFSALE, goods.status);
+        List<GoodsHistory> history = GoodsHistory.find("goodsId=?", goods.id).fetch();
+        assertEquals(cnt + 1, history.size());
+    }
+
+    /**
+     * 测试拒绝上架
+     */
+    @Test
+    public void testReject() {
+        List<GoodsHistory> history1 = GoodsHistory.find("goodsId=?", goods.id).fetch();
+        int cnt = history1.size();
+        assertEquals(0, cnt);
+        goods.status = GoodsStatus.ONSALE;
+        goods.save();
+        assertEquals(GoodsStatus.ONSALE, goods.status);
+        Response response = PUT("/goods/" + goods.id + "/reject", "text/html", "");
+        assertStatus(302, response);
+        goods.refresh();
+        assertEquals(GoodsStatus.REJECT, goods.status);
+        List<GoodsHistory> history = GoodsHistory.find("goodsId=?", goods.id).fetch();
+        assertEquals(cnt + 1, history.size());
+    }
+
+    /**
+     * 设置精选
+     */
+    @Test
+    public void testpriority() {
+        List<GoodsHistory> history1 = GoodsHistory.find("goodsId=?", goods.id).fetch();
+        int cnt = history1.size();
+        assertEquals(0, cnt);
+        Response response = PUT("/goods/" + goods.id + "/priority", "text/html", "");
+        assertStatus(302, response);
+
+        Goods goods1 = Goods.findById(goods.id);
+        goods1.refresh();
+        assertEquals(goods.keywords, goods1.keywords);
+        assertEquals(goods.priority, goods1.priority);
+        List<GoodsHistory> history = GoodsHistory.find("goodsId=?", goods.id).fetch();
+        assertEquals(cnt + 1, history.size());
+    }
+
+    @Test
+    public void testEdit() {
+        Response response = GET("/goods/" + goods.id + "/edit");
+        assertIsOk(response);
+        assertContentType("text/html", response);
+        assertCharset(Play.defaultWebEncoding, response);
+        assertTrue(goods.name.contains("Product Name "));
+    }
+
+    @Test
+    public void testEdit2() {
+        Response response = GET("/goods/" + goods.id + "/edit");
+        assertIsOk(response);
+        assertContentType("text/html", response);
+        assertCharset(Play.defaultWebEncoding, response);
+        assertTrue(goods.name.contains("Product Name "));
+        assertEquals("prompt", goods.getPrompt());
+        assertEquals("detail", goods.getDetails());
+        assertEquals("des", goods.getSupplierDes());
+        assertEquals("exhib", goods.getExhibition());
+    }
+
+    @Test
+    public void testCopy() {
+        Response response = GET("/goods/" + goods.id + "/copy");
+        assertIsOk(response);
+        assertContentType("text/html", response);
+        assertCharset(Play.defaultWebEncoding, response);
+        assertTrue(goods.name.contains("Product Name "));
+        assertEquals("prompt", goods.getPrompt());
+        assertEquals("detail", goods.getDetails());
+        assertEquals("des", goods.getSupplierDes());
+        assertEquals("exhib", goods.getExhibition());
     }
 
     /**
      * 修改商品信息
      */
     @Test
-    @Ignore
-    public void testEdit() {
-        /*
-        Long brandId = (Long) Fixtures.idCache.get("models.sales.Brand-Brand_1");
-        Long categoryId = (Long) Fixtures.idCache.get("models.sales.Category-Category_1");
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-        Goods goods = Goods.findById(goodsId);
-        Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
-        goods.supplierId = supplierId;
-        goods.save();
-        Long shopId = (Long) Fixtures.idCache.get("models.sales.Shop-Shop_5");
-        Shop shop = Shop.findById(shopId);
-        shop.supplierId = supplierId;
-        shop.save();
-
-        Response response = GET("/goods/" + goodsId + "/edit");
-        assertIsOk(response);
-        assertContentType("text/html", response);
-        assertCharset(Play.defaultWebEncoding, response);
-
-        String params = "goods.supplierId=" + supplierId + "&goods.name=test123&goods.title=test123&goods.faceValue=120&goods" +
-                ".originalPrice=120&goods.details=abcdefgh&goods.salePrice=123&goods.categories.id=" +
-                categoryId + "&goods.expireAt=2015-12-12&goods.effectiveAt=2012-03-12&goods.baseSale=1000" +
-                "&levelPrices=1&goods.brand.id=" + brandId;
-        response = PUT("/goods/" + goodsId, "application/x-www-form-urlencoded", params);
-        assertStatus(302, response);
-        Goods updateGoods = Goods.findById(goodsId);
-        assertEquals("test123", updateGoods.name);
-        */
-
-        // 将要更新成的目标ID
-        Long targetId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_003");
-        Goods targetGood = Goods.findById(targetId);
-        // 需要更新的原始ID
-        Long baseId = (Long) Fixtures.idCache.get("models.sales" +
-                ".Goods-Goods_001");
+    public void testUpdate() {
         // 获取categories的ID
-        Long cateId = (Long) Fixtures.idCache.get("models.sales.Category-Category_1");
-        Long cateId2 = (Long) Fixtures.idCache.get("models.sales.Category-Category_2");
-        System.out.println("Cate ID ===================  " + cateId.toString());
-        System.out.println("Cate ID 2 ===================  " + cateId2.toString());
-        // 连接到原始商品更新页面
-        Http.Response response = GET("/goods/" + baseId + "/edit");
-        assertIsOk(response);
-        assertContentType("text/html", response);
-        assertCharset(Play.defaultWebEncoding, response);
-
-
+        Category category = FactoryBoy.create(Category.class);
+        Long cateId = category.id;
         // 生产更新参数
         String params = "goods.name=testName&goods.no=001" +
-                "&goods.supplierId=" + targetGood.supplierId +
+                "&goods.supplierId=" + goods.supplierId +
                 "&goods.originalPrice=100" +
                 "&goods.salePrice=200" +
-                "&goods.title=" + targetGood.title +
-                "&levelPrices=4" +
-                "&levelPrices=3" +
-                "&levelPrices=2" +
-                "&levelPrices=1" +
+                "&goods.shortName=test1" +
+                "&goods.details=test2222222222" +
+                "&goods.title=title" +
+                "&goods.exhibition=test311111111" +
+                "&goods.supplierDes=des111111111" +
+                "&goods.prompt=prompt111111" +
+                "&goods.useWeekDay=1" +
                 "&goods.categories[].id=" + cateId +
-                "&goods.categories[].id=" + cateId2 +
                 "&goods.effectiveAt=2012-02-28T14:41:33" +
                 "&goods.expireAt=2015-02-28T14:41:33" +
-                "&goods.baseSale=" + targetGood.baseSale +
-                "&goods.details= AAAAAAAAAAAAA" +
+                "&goods.cumulativeStocks=100" +
                 "&goods.faceValue=1000" +
-                "&goods.brand.id=" + targetGood.brand.id.toString();
-        response = PUT("/goods/" + baseId, "application/x-www-form-urlencoded", params);
+                "&goods.brand.id=" + goods.brand.id.toString();
+        Response response = PUT("/goods/" + goods.id, "application/x-www-form-urlencoded", params);
         // 更新响应正确
         assertStatus(302, response);
-        // 获取更新后的商品信息
-        Goods updatedGoods = Goods.findById(baseId);
+
+        goods.refresh();
         // 测试更新信息是否正确
-        assertEquals("testName", updatedGoods.name);
-        assertEquals("001", updatedGoods.no);
-        assertEquals(targetGood.supplierId, updatedGoods.supplierId);
-        assertEquals(0, updatedGoods.originalPrice.compareTo(new BigDecimal("100")));
-        assertEquals(0, new BigDecimal("200").compareTo(updatedGoods.salePrice));
-        assertEquals(targetGood.baseSale, updatedGoods.baseSale);
-        assertEquals(targetGood.brand.id, updatedGoods.brand.id);
-
-    }
-    
-    
-    @Test
-    public void testIndexConditionPriorityNotOne() {
-    	GoodsCondition condition = new GoodsCondition();
-    	condition.priority=2;
-    	
-    	Response response = GET("/");
-		assertStatus(200, response); 
-		//System.out.println("aaa>>>>>"+condition.orderBy);
-		//assertEquals("g.createdAt", response.headers.get("condition.createdAt") );
-
-        // condition.priority == 1
-    }
-    
-    @Ignore
-    @Test
-    public void testAddRenderInitTopCategoryIdNotExist() {
-    	Response response = GET("/goods/new");	 
-    	
-    }
-    
-    @Test
-    public void testCreatePreview() {
-	Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_101");
-		Goods goods = Goods.findById(goodsId);
-		Map<String, Object> Params = new HashMap<>();
-        File imagePath = Play.getFile("/cat.jpg");
-		Params.put("goods",goods);
-		Params.put("imagePath",imagePath);
+        assertEquals("testName", goods.name);
+        assertEquals("title", goods.title);
+        assertEquals("test2222222222", goods.getDetails());
+        assertEquals("001", goods.no);
+        assertEquals(goods.supplierId, goods.supplierId);
+        assertEquals(0, goods.originalPrice.compareTo(new BigDecimal("100")));
+        assertEquals(0, new BigDecimal("200").compareTo(goods.salePrice));
+        assertEquals(Long.valueOf("100"), goods.cumulativeStocks);
     }
 
+    /**
+     * 修改商品信息
+     */
     @Test
-    public void testIndexOrderBy(){
+    public void testUpdate2() {
+        // 获取categories的ID
+        Category category = FactoryBoy.create(Category.class);
+        Long cateId = category.id;
+        // 生产更新参数
+        String params = "goods.name=testName&goods.no=001" +
+                "&goods.supplierId=" + goods.supplierId +
+                "&goods.originalPrice=100" +
+                "&goods.salePrice=200" +
+                "&goods.shortName=test1" +
+                "&goods.details=test2222222222" +
+                "&goods.title=title" +
+                "&goods.exhibition=test311111111" +
+                "&goods.supplierDes=des111111111" +
+                "&goods.prompt=prompt111111" +
+                "&goods.useWeekDay=1" +
+                "&goods.categories[].id=" + cateId +
+                "&goods.effectiveAt=2012-02-28T14:41:33" +
+                "&goods.expireAt=2015-02-28T14:41:33" +
+                "&goods.cumulativeStocks=100" +
+                "&goods.faceValue=1000" +
+                "&goods.brand.id=" + goods.brand.id.toString();
+        Response response = PUT("/goods/" + goods.id, "application/x-www-form-urlencoded", params);
+        // 更新响应正确
+        assertStatus(302, response);
 
+        goods.refresh();
+        // 测试更新信息是否正确
+        assertEquals("testName", goods.name);
+        assertEquals("title", goods.title);
+        assertEquals("test2222222222", goods.getDetails());
+        assertEquals("001", goods.no);
+        assertEquals("test311111111", goods.getExhibition());
+        assertEquals("des111111111", goods.getSupplierDes());
+        assertEquals(0, goods.originalPrice.compareTo(new BigDecimal("100")));
+        assertEquals(0, new BigDecimal("200").compareTo(goods.salePrice));
+        assertEquals(Long.valueOf("100"), goods.cumulativeStocks);
+
+    }
+
+    @Test
+    public void testIndexOrderBy() {
         Http.Response response = GET("/?condition.supplierId=0&condition.name=&condition.no=&condition.brandId=0&condition.status=ONSALE&c" +
                 "ondition.salePriceBegin=&condition.salePriceEnd=&condition.saleCountBegin=&condition.saleCountEnd=&desc=10000000000");
         assertIsOk(response);
         assertNotNull(renderArgs("goodsPage"));
         assertNotNull(renderArgs("desc"));
     }
-    
-    
-    
+
+    /**
+     * 设为首页展示
+     */
+    @Test
+    public void testSetImages() {
+        GoodsImages images = FactoryBoy.create(GoodsImages.class);
+        images.isDisplaySite = false;
+        images.goods = goods;
+        images.save();
+        assertFalse(images.isDisplaySite);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("id", images.id.toString());
+        Http.Response response = POST("/goods_images/" + images.id + "?goodsId=" + goods.id);
+        images.refresh();
+        assertEquals("", response.out.toString());
+        assertTrue(images.isDisplaySite);
+
+    }
+
 }

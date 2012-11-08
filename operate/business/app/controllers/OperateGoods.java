@@ -43,7 +43,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import static play.Logger.isDebugEnabled;
 import static play.Logger.warn;
 
 /**
@@ -568,10 +567,9 @@ public class OperateGoods extends Controller {
 
             if (Validation.hasErrors() && id.length > 0) {
                 renderSupplierList(goods);
-
                 renderInit(goods);
                 renderArgs.put("id", goodsId);
-                render("OperateGoods/edit.html", goods);
+                render("OperateGoods/edit2.html", goods);
             }
         }
         updateStatus(GoodsStatus.ONSALE, id);
@@ -619,7 +617,6 @@ public class OperateGoods extends Controller {
      * @param ids    商品ID
      */
     private static void updateStatus(GoodsStatus status, Long... ids) {
-        //System.out.println(status + "");
         models.sales.Goods.updateStatus(status, ids);
         if (status == GoodsStatus.OFFSALE) {
             for (Long id : ids) {
@@ -627,7 +624,6 @@ public class OperateGoods extends Controller {
                 goods.refresh();
                 Supplier supplier = Supplier.findById(goods.supplierId);
                 if (supplier != null) {
-//                    String email = supplier.salesEmail;
                     String email = "";
                     if (supplier.salesId != null) {
                         OperateUser operateUser = OperateUser.findById(supplier.salesId);
@@ -668,7 +664,6 @@ public class OperateGoods extends Controller {
     public static void delete(@As(",") Long... id) {
         for (Long goodsId : id) {        //已上架的商品不可以删除
             models.sales.Goods goods = models.sales.Goods.findById(goodsId);
-            warn("goods.status:" + goods.status);
             if (GoodsStatus.ONSALE.equals(goods.status)) {
                 index(null, "");
             }

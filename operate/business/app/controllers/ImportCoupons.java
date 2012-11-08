@@ -1,15 +1,21 @@
 package controllers;
 
-import models.sales.*;
+import models.sales.GoodsCouponType;
+import models.sales.ImportedCoupon;
+import models.sales.ImportedCouponStatus;
+import models.sales.ImportedCouponTemp;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.db.jpa.JPA;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import javax.persistence.PersistenceException;
 import javax.persistence.Query;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +47,7 @@ public class ImportCoupons extends Controller{
             return;
         }
         if("overwrite".equals(action)){
-            goods.baseSale -= ImportedCoupon.delete("status = ?", ImportedCouponStatus.UNUSED);
+            goods.cumulativeStocks-= ImportedCoupon.delete("status = ?", ImportedCouponStatus.UNUSED);
         }
 
         // 将所有非空数据trim后插入到临时表里
@@ -106,7 +112,7 @@ public class ImportCoupons extends Controller{
         }
         ImportedCouponTemp.deleteAll();
 
-        goods.baseSale += insertCount;
+        goods.cumulativeStocks += insertCount;
         goods.save();
         index("无", StringUtils.join(duplicateCouponsInTemp,","),StringUtils.join(duplicateCouponsWithIC, ","));
     }

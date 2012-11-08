@@ -14,6 +14,7 @@ import play.data.validation.MinSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.view_ext.annotation.Money;
+import org.apache.commons.lang.StringUtils;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -327,6 +328,7 @@ public class GoodsHistory extends Model {
     /**
      * 温馨提示
      */
+    @Required
     @MaxSize(65000)
     @Lob
     public String prompt;
@@ -403,6 +405,13 @@ public class GoodsHistory extends Model {
         } else if (discount != null && discount.compareTo(BigDecimal.TEN) > 0) {
             this.discount = BigDecimal.TEN;
         }
+    }
+
+    public String getPrompt() {
+        if (StringUtils.isBlank(prompt)) {
+            return "";
+        }
+        return Jsoup.clean(prompt, HTML_WHITE_TAGS);
     }
 
     public void setPrompt(String prompt) {

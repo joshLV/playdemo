@@ -52,8 +52,8 @@
 </div>
 <div id="brand">#{include '/OperateBrands/goodsBrands.html'/}</div>
     #{layout_operate.textField name:'goods.no', value:goods?.no/}
-    #{layout_operate.nameField name:'goods.shortName', value:goods?.shortName, required:true, length:30/}
-    #{layout_operate.nameField name:'goods.name', value:goods?.name, required:true, length:500/}
+    #{layout_operate.nameField name:'goods.shortName', value:goods?.shortName, required:true, length:12/}
+    #{layout_operate.nameField name:'goods.name', value:goods?.name, required:true, length:140/}
     #{layout_operate.nameField name:'goods.title', value:goods?.title,note:'(包含商家名称和面值)', required:true, length:30/}
     #{layout_operate.dateScopeField name:'goods.effective', begin:'goods.effectiveAt',end:'goods.expireAt',
     beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), required:true/}
@@ -62,6 +62,7 @@
     #{layout_operate.textField name:'goods.salePrice', value:goods?.salePrice?:"0", note:'元', required:true/}
 <div class="control-group">
     <label class="control-label"><span style="color: red; ">*</span>&{'goods.promoterPrice'}</label>
+
     <div class="controls">
         <input type="text" id='goods_promoterPrice' name="goods.promoterPrice" class="input-xlarge"
                value="${goods?.promoterPrice}" onfocus="showAddedRebate();limitMoneyFormat(this,this.value)"
@@ -90,7 +91,7 @@
     </div>
 </div>
     #{layout_operate.textField name:'goods.cumulativeStocks', value:goods?.cumulativeStocks, note:'件', required:true/}
-    #{layout_operate.textField name:'goods.virtualBaseSaleCount', value:goods?.virtualBaseSaleCount, note:'件'/}
+    #{layout_operate.textField name:'goods.virtualBaseSaleCount', value:goods?.virtualBaseSaleCount?:'0', note:'件'/}
     #{layout_operate.textField name:'goods.limitNumber', value:goods?.limitNumber, note:'个'/}
 
 <div class="control-group">
@@ -147,7 +148,7 @@
     %{
     imageUrl ="/goods_images?goodsId="+id;
     }%
-        #{layout_operate.multiFileField name:'multiImage',note:'图片尺寸：(234*178像素)', required:true,goodsId:goods?.id, uploadImgUrl:imageUrl,value:goods?.goodsImagesList/}
+        #{layout_operate.multiFileField name:'multiImage',note:'图片尺寸：(340*260像素)', required:true,goodsId:goods?.id, uploadImgUrl:imageUrl,value:goods?.goodsImagesList/}
 
     #{/else}
     #{layout_operate.htmlField name:'goods.exhibition', value:goods?.exhibition, uploadImgUrl:'/goods/images', required:true/}
@@ -155,8 +156,6 @@
     #{layout_operate.htmlField name:'goods.details', value:goods?.details, uploadImgUrl:'/goods/images', required:true/}
     #{layout_operate.htmlField name:'goods.supplierDes', value:goods?.supplierDes, uploadImgUrl:'/goods/images', required:true/}
     #{layout_operate.radioField name:'goods.isAllShop', value:isAllShop?:false, required:true/}
-    #{layout_operate.textField name:'goods.keywords', value:goods?.keywords /}
-
 <div class="control-group">
     <label class="control-label"></label>
 
@@ -166,6 +165,7 @@
         </table>
     </div>
 </div>
+    #{layout_operate.textField name:'goods.keywords', value:goods?.keywords /}
 <div class="form-actions">
     <input class="btn btn-primary" id="save" type="submit" value="保存"
            #{if "edit".equals(action) && goods?.status == models.sales.GoodsStatus.ONSALE}disabled #{/if}/>

@@ -2,50 +2,53 @@
 <h1>${noShopTip.raw()}</h1>
 #{/if}
 #{else}
-#{set 'moreScripts'}
-    #{get 'moreScripts'/}
-<script src="@{'/public/javascripts/goods-form.js'}" type="text/javascript" charset="UTF-8"></script>
-#{/set}
+    #{set 'moreScripts'}
+        #{get 'moreScripts'/}
+    <script src="@{'/public/javascripts/goods-form.js'}" type="text/javascript" charset="UTF-8"></script>
+    #{/set}
 <div class="control-group">
     <label class="control-label"><span style="color: red; ">*</span>商品分类</label>
 
     <div class="controls">
-    #{layout_trader.selectList name:'goods.topCategoryId', value:goods?.topCategoryId, list:categoryList/}
-    #{layout_trader.selectList name:'goods.categories.id', value:categoryId, list:subCategoryList/}
+        #{layout_trader.selectList name:'goods.topCategoryId', value:goods?.topCategoryId, list:categoryList/}
+        #{layout_trader.selectList name:'goods.categories.id', value:categoryId, list:subCategoryList/}
         <span class="error">#{error 'goods.category'/}</span>
     </div>
 </div>
-#{layout_trader.selectField name:'goods.brand.id', value:goods?.brand?.id, error:'goods.brand'}
-    #{list items:brandList, as:'brand' }
-        #{option brand?.id}${brand?.name}#{/option}
-    #{/list}
-#{/layout_trader.selectField}
-#{layout_trader.textField name:'goods.no', value:goods?.no/}
-#{layout_trader.nameField name:'goods.shortName', value:goods?.shortName, required:true, length:30/}
-#{layout_trader.dateScopeField name:'goods.effective', begin:'goods.effectiveAt',end:'goods.expireAt',
-beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), required:true/}
-#{layout_trader.textField name:'goods.faceValue', value:goods?.faceValue?:"0", note:'元', required:true/}
-#{layout_trader.textField name:'goods.originalPrice', value:goods?.originalPrice?:"0" ,note:'元', required:true/}
-#{layout_trader.textField name:'goods.baseSale', value:goods?.baseSale, note:'件', required:true/}
+    #{layout_trader.selectField name:'goods.brand.id', value:goods?.brand?.id, error:'goods.brand'}
+        #{list items:brandList, as:'brand' }
+            #{option brand?.id}${brand?.name}#{/option}
+        #{/list}
+    #{/layout_trader.selectField}
+    #{layout_trader.textField name:'goods.no', value:goods?.no/}
+    #{layout_trader.nameField name:'goods.shortName', value:goods?.shortName, required:true, length:24/}
+    #{layout_trader.nameField name:'goods.name', value:goods?.name, required:true, length:140/}
+    #{layout_trader.dateScopeField name:'goods.effective', begin:'goods.effectiveAt',end:'goods.expireAt',
+    beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), required:true/}
+    #{layout_trader.textField name:'goods.faceValue', value:goods?.faceValue?:"0", note:'元', required:true/}
+    #{layout_trader.textField name:'goods.originalPrice', value:goods?.originalPrice?:"0" ,note:'元', required:true/}
+    #{layout_trader.textField name:'goods.cumulativeStocks', value:goods?.cumulativeStocks, note:'件', required:true/}
 
-#{layout_trader.timeScopeField name:'goods.useTime', begin:'goods.useBeginTime',end:'goods.useEndTime',
-beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
+    #{layout_trader.timeScopeField name:'goods.useTime', begin:'goods.useBeginTime',end:'goods.useEndTime',
+    beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
 
-#{if "add".equals(action)}
-    #{layout_trader.fileField name:'imagePath', required:true/}
-#{/if}
-#{else}
-    #{layout_trader.fileField name:'imagePath'/}
+    #{if "add".equals(action)}
+        #{layout_trader.fileField name:'imagePath', required:true/}
+    #{/if}
+    #{else}
+        #{layout_trader.fileField name:'imagePath'/}
     <div class="control-group">
         <label for='levelPrices_${level}' class="control-label"> </label>
 
         <div class="controls">(修改前)<br/><img src="${imageLargePath}"/>
             <input type="hidden" name="imageLargePath" value="${imageLargePath}"></div>
     </div>
-#{/else}
-#{layout_trader.htmlField name:'goods.prompt', value:goods?.prompt, uploadImgUrl:'/goods/images'/}
-#{layout_trader.htmlField name:'goods.details', value:goods?.details, uploadImgUrl:'/goods/images', required:true/}
-#{layout_trader.radioField name:'goods.isAllShop', value:goods?.isAllShop, required:true/}
+    #{/else}
+    #{layout_trader.htmlField name:'goods.exhibition', value:goods?.exhibition, uploadImgUrl:'/goods/images', required:true/}
+    #{layout_trader.htmlField name:'goods.prompt', value:goods?.prompt, uploadImgUrl:'/goods/images', required:true/}
+    #{layout_trader.htmlField name:'goods.details', value:goods?.details, uploadImgUrl:'/goods/images', required:true/}
+    #{layout_trader.htmlField name:'goods.supplierDes', value:goods?.supplierDes, uploadImgUrl:'/goods/images', required:true/}
+    #{layout_trader.radioField name:'goods.isAllShop', value:goods?.isAllShop, required:true/}
 <div class="control-group">
     <label class="control-label"></label>
 
@@ -61,14 +64,15 @@ beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
                 #{/else}</td>
                 <td colspan="2"></td>
             </tr>
-            #{list items:shopList, as:'shop' }
-            <tr>
-                <td><input type="checkbox" id="shops" value="${shop?.id}" name="goods.shops.id"
-                           #{if shopIds?.contains(java.lang.String.valueOf(shop?.id))}checked#{/if}/> ${shop.name}</td>
-                <td>${shop.address}</td>
-                <td>${shop.phone}</td>
-            </tr>
-            #{/list}
+                #{list items:shopList, as:'shop' }
+                <tr>
+                    <td><input type="checkbox" id="shops" value="${shop?.id}" name="goods.shops.id"
+                               #{if shopIds?.contains(java.lang.String.valueOf(shop?.id))}checked#{/if}/> ${shop.name}
+                    </td>
+                    <td>${shop.address}</td>
+                    <td>${shop.phone}</td>
+                </tr>
+                #{/list}
             </tbody>
         </table>
     </div>
@@ -77,9 +81,9 @@ beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
     <input class="btn btn-primary" id="save" type="submit" value="保存"/>
     <input class="btn btn-primary" id="onsale" type="submit" value="保存并申请上架"/>
     <input class="btn btn-primary" id="preview" type="submit" value="预览"/>
-#{if "edit".equals(action)}
-    #{vx.cancelButton url:'/goods', class:'btn btn-primary'/}
-#{/if}
+    #{if "edit".equals(action)}
+        #{vx.cancelButton url:'/goods', class:'btn btn-primary'/}
+    #{/if}
     <input type="hidden" id="status" name="goods.status" value="${goods?.status?:'OFFSALE'}"/>
     <input type="hidden" name="goods.title" value="${goods?.title?:'未设置'}"/>
     <input type="hidden" name="goods.resaleAddPrice" value="${goods?.resaleAddPrice}"/>
@@ -90,9 +94,9 @@ beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
     $(function () {
         $("#goods_isAllShop_2").click(function () {
             $("#shop").show();//显示门店列表
-        #{if "edit".equals(action)}
-            $("#selectAll").click();
-        #{/if}
+            #{if "edit".equals(action)}
+                $("#selectAll").click();
+            #{/if}
         });
     });
 </script>

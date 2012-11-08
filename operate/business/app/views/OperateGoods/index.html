@@ -284,10 +284,7 @@ select:'condition_status',value:condition?.status/}
         <td>
 
             <a href="@{OperateGoods.show(goods.id)}">查看</a>
-
-            #{if !models.sales.GoodsStatus.APPLY.equals(goods.status)}
                 /<a href="@{OperateGoods.edit2(goods.id)}">修改2</a>
-            #{/if}
             #{if !models.sales.GoodsStatus.ONSALE.equals(goods.status) && !models.sales.GoodsStatus.APPLY
             .equals(goods.status)}
                 / #{vx.deleteLink action:"goods", id:goods.id, name:goods.shortName/}

@@ -1,9 +1,13 @@
 package factory.sales;
 
-import com.uhuila.common.constants.DeletedStatus;
 import factory.FactoryBoy;
 import factory.ModelFactory;
-import models.sales.*;
+import models.sales.Category;
+import models.sales.Goods;
+import models.sales.GoodsHistory;
+import models.sales.GoodsStatus;
+import models.sales.MaterialType;
+import models.sales.Shop;
 import models.supplier.Supplier;
 
 import java.math.BigDecimal;

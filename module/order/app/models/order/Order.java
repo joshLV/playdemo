@@ -491,7 +491,7 @@ public class Order extends Model {
     }
 
     public void checkInventory(Goods goods, long number) throws NotEnoughInventoryException {
-        if (goods.baseSale < number) {
+        if (goods.getRealStocks() < number) {
             throw new NotEnoughInventoryException();
         }
     }
@@ -572,7 +572,8 @@ public class Order extends Model {
             if (orderItem.goods.materialType == MaterialType.REAL) {
                 haveFreight = true;
             }
-            if (orderItem.goods.baseSale == 10 || orderItem.goods.baseSale == 0) {
+            Long baseSale = orderItem.goods.getRealStocks();
+            if (baseSale == 10 || baseSale == 0) {
                 //发送提醒邮件
                 MailMessage mailMessage = new MailMessage();
                 mailMessage.addRecipient(EMAIL_RECEIVER);
@@ -581,7 +582,7 @@ public class Order extends Model {
                 mailMessage.putParam("supplierName", supplier.fullName);
                 mailMessage.putParam("goodsName", orderItem.goods.name);
                 mailMessage.putParam("faceValue", orderItem.goods.faceValue);
-                mailMessage.putParam("baseSales", orderItem.goods.baseSale);
+                mailMessage.putParam("baseSales", baseSale);
                 mailMessage.putParam("offSalesFlag", "noInventory");
                 MailUtil.sendGoodsOffSalesMail(mailMessage);
             }

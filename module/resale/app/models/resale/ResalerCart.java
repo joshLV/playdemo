@@ -50,13 +50,13 @@ public class ResalerCart extends Model {
     }
 
     public static List<String> batchOrder(Resaler resaler, Goods goods, List<String> phones) {
-        if (resaler == null || goods == null || phones == null){
+        if (resaler == null || goods == null || phones == null) {
             return null;
         }
         List<String> invalidPhones = new ArrayList<>();
-        for(String phone : phones){
+        for (String phone : phones) {
             ResalerCart resalerCart = reorder(resaler, goods, phone, 1);
-            if(resalerCart == null ) {
+            if (resalerCart == null) {
                 invalidPhones.add(phone);
             }
         }
@@ -66,7 +66,7 @@ public class ResalerCart extends Model {
     /**
      * 加入或修改购物车列表
      *
-     * @param resaler      用户
+     * @param resaler   用户
      * @param phone     手机号
      * @param goods     商品
      * @param increment 购物车中商品数增量，
@@ -78,7 +78,8 @@ public class ResalerCart extends Model {
         if (resaler == null || goods == null || phone == null || !phonePattern.matcher(phone).matches()) {
             return null;
         }
-        if (goods.baseSale <= 0 || !goods.onSale()){
+        Long baseSale = goods.getRealStocks();
+        if (baseSale <= 0 || !goods.onSale()) {
             return null;
         }
 
@@ -86,16 +87,16 @@ public class ResalerCart extends Model {
 
         //如果记录已存在，则更新记录，否则新建购物车记录
         if (cart != null) {
-            int newCount = (int)cart.number + increment;
-            if (newCount <=  0){
+            int newCount = (int) cart.number + increment;
+            if (newCount <= 0) {
                 cart.delete();
                 return null;
             }
-            if (newCount > 999){
+            if (newCount > 999) {
                 newCount = 999;
             }
-            if (newCount > goods.baseSale){
-                newCount = goods.baseSale.intValue();
+            if (newCount > baseSale) {
+                newCount = baseSale.intValue();
             }
 
             cart.number = newCount;
@@ -114,8 +115,8 @@ public class ResalerCart extends Model {
     /**
      * 从购物车中删除指定商品，所有该商品所对应的条目均被删除
      *
-     * @param resaler     用户
-     * @param goods       商品
+     * @param resaler 用户
+     * @param goods   商品
      * @return 成功删除的数量
      */
     public static int delete(Resaler resaler, Goods goods) {
@@ -129,15 +130,15 @@ public class ResalerCart extends Model {
     /**
      * 从购物车中删除指定商品列表
      *
-     * @param resaler     用户
-     * @param goods       商品列表，若未指定，则删除该用户所有的购物车条目
-     * @param phone       手机号
+     * @param resaler 用户
+     * @param goods   商品列表，若未指定，则删除该用户所有的购物车条目
+     * @param phone   手机号
      * @return 成功删除的购物车条目
      */
     public static ResalerCart delete(Resaler resaler, Goods goods, String phone) {
 
         ResalerCart cart = ResalerCart.find("byResalerAndGoodsAndPhone", resaler, goods, phone).first();
-        if (cart == null ){
+        if (cart == null) {
             return null;
         }
         cart.delete();
@@ -147,11 +148,11 @@ public class ResalerCart extends Model {
     /**
      * 列出所有符合条件的购物车条目，合并数量后输出
      *
-     * @param resaler   用户
+     * @param resaler 用户
      * @return 合并数量后的购物车条目列表
      */
     public static List<List<ResalerCart>> groupFindAll(Resaler resaler) {
-        if (resaler == null ) {
+        if (resaler == null) {
             return new ArrayList<List<ResalerCart>>();
         }
         List<ResalerCart> carts = ResalerCart.find(
@@ -160,13 +161,13 @@ public class ResalerCart extends Model {
         for (ResalerCart cart : carts) {
             boolean found = false;
             for (List<ResalerCart> rcl : result) {
-                if(rcl.get(0).goods.id == cart.goods.id){
+                if (rcl.get(0).goods.id == cart.goods.id) {
                     rcl.add(cart);
                     found = true;
                     break;
                 }
             }
-            if (!found){
+            if (!found) {
                 List<ResalerCart> rcl = new ArrayList<ResalerCart>();
                 rcl.add(cart);
                 result.add(rcl);
@@ -175,15 +176,14 @@ public class ResalerCart extends Model {
         }
         return result;
     }
-    
+
     public static List<ResalerCart> findAll(Resaler resaler) {
-        if (resaler == null){
+        if (resaler == null) {
             return new ArrayList<ResalerCart>();
         }
         return ResalerCart.find("byResaler", resaler).fetch();
     }
 
-    
 
     /**
      * 清除用户购物车中所有条目

@@ -63,7 +63,7 @@
                     <del>&yen;${goods.faceValue}</del>
                 </li>
                 <li class="discount">折　　扣：<span>${goods.discountExpress}</span></li>
-                <li class="inventory">库　　存：<span id="inventory">${goods.baseSale}</span></li>
+                <li class="inventory">库　　存：<span id="inventory">${goods.getRealStocks()}</span></li>
                 <li class="deadline">有效期：<span>${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</span></li>
                 <li class="amount">购买数量：
                     <span ><input class="num_input_bg" id="number" name="number" type="text" value="1"/> 件</span>
@@ -233,7 +233,7 @@
                                 class="right_shangpin_two">${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</span>
                         </div>
                         <div class="right_shangpin_two">库存：<span
-                                class="right_shangpin_two">${goods.baseSale}</span>&nbsp;件
+                                class="right_shangpin_two">${goods.getRealStocks()}</span>&nbsp;件
                         </div>
                         <div class="right_shangpin_four">购买数量:&nbsp;<input
                                 class="num_input_bg" id="number1"

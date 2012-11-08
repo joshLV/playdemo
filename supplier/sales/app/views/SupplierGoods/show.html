@@ -50,7 +50,7 @@
         <div class="control-group">
             <label class="control-label">库&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存</label>
 
-            <div class="controls">${goods?.baseSale}件
+            <div class="controls">${goods?.getRealStocks()}件
             </div>
         </div>
       #{if goods?.useBeginTime != "" && goods?.useBeginTime != null}

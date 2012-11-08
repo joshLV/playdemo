@@ -10,7 +10,7 @@ validation.future=%s必须填写未来的时间!
 #Block
 block.WEBSITE_SLIDE=首页展示
 block.DAILY_SPECIAL=每日特卖
-block.WEBSITE_RIGHT_SLIDE=首页右侧展示
+block.WEBSITE_RIGHT_SLIDE=焦点图下方显示
 block.WEBSITE_SUPPLIER=合作商家
 block.JUMP_TO_OUTER=外链商品展示
 block.WEBSITE_1F=首页1F展示

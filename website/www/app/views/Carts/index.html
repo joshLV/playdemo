@@ -79,7 +79,7 @@
                     <input class="num-ipt" name="g${cartItem.goods.id}" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}"/>
                 #{/else}
                 <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}"/>
-                <input type="hidden" value="${cartItem.goods.baseSale}" id="stock_${cartItem.goods.id}">
+                <input type="hidden" value="${cartItem.goods?.getRealStocks()}" id="stock_${cartItem.goods.id}">
                 <input type="hidden" value="${cartItem.goods.limitNumber}" id="limit_${cartItem.goods.id}">
                 <a href="#" class="add-btn" name="${cartItem.goods.id}" id="add_img_${cartItem.goods.id}" hidefocus="true">+</a>
             </td>

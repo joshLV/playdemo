@@ -59,7 +59,7 @@
                         <input type="hidden" value="${goods.cumulativeStocks}" id="stock_${goods.id}">
                         <input type="hidden" value="${goods.limitNumber}" id="limit_${goods.id}">
                     </span> 件(已售出<em class="selled">${goods?.virtualSaleCount?:'0'}</em>件)
-                            <span id="stock_hit" style="display:none;color:#f50">库存${goods.baseSale}件</span>
+                            <span id="stock_hit" style="display:none;color:#f50">库存${goods.getRealStocks()}件</span>
                             #{if goods.limitNumber > 0}
                                 <span id="limitNumber" style="color:#f50">限购${goods.limitNumber}件</span>
                             #{/if}

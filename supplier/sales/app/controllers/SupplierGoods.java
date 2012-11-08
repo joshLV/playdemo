@@ -185,6 +185,7 @@ public class SupplierGoods extends Controller {
         }
 
 
+        goods.salePrice = BigDecimal.ZERO;
         goods.create();
         try {
             goods.imagePath = uploadImagePath(imagePath, goods.id, null);
