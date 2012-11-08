@@ -215,7 +215,7 @@ public class CouponsCondition implements Serializable {
             paramMap.put("supplierId", supplier.id);
         }
 
-        if ((hasSeeAllSupplierPermission != null && supplier != null && supplier.id == 0 && !hasSeeAllSupplierPermission) || (hasSeeAllSupplierPermission != null && supplier == null && !hasSeeAllSupplierPermission)) {
+        if (hasSeeAllSupplierPermission != null && !hasSeeAllSupplierPermission) {
             List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
             List<Long> supplierIds = new ArrayList<>();
             for (Supplier s : suppliers) {
