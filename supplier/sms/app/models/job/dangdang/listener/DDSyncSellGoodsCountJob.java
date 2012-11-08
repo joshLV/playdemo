@@ -27,6 +27,9 @@ public class DDSyncSellGoodsCountJob extends Job {
 
     @Override
     public void doJob() {
+        if(Play.runingInTestMode()){
+            return;
+        }
         Logger.info("\n--------------Start syncSellCount job----");
         //定位请求者
         models.resale.Resaler resaler = models.resale.Resaler.find("loginName=? and status='APPROVED'", Resaler.DD_LOGIN_NAME).first();

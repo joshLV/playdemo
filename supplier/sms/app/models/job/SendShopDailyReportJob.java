@@ -6,6 +6,7 @@ import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
 import play.Logger;
+import play.Play;
 import play.db.DB;
 import play.jobs.Job;
 import play.jobs.On;
@@ -24,6 +25,9 @@ public class SendShopDailyReportJob extends Job{
     private static final String MOBILE_PATTERN = "^1\\d{10}$";
     @Override
     public void doJob(){
+        if(Play.runingInTestMode()){
+            return;
+        }
         String sql = "select shop_id, count(*), sum(face_value) " +
                 "from e_coupon where shop_id is not null and consumed_at is not null " +
                 "and consumed_at >= CURRENT_DATE-INTERVAL 1 DAY " +

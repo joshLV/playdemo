@@ -44,6 +44,11 @@ public class SupplierFactory extends ModelFactory<Supplier> {
     public void defineKFC(Supplier supplier) {
     	supplier.fullName = "肯德基";
     }
+
+    @Factory(name = "qingtuan")
+    public void defineQT(Supplier supplier) {
+        supplier.domainName = "tsingtuan";
+    }
 }
 
 

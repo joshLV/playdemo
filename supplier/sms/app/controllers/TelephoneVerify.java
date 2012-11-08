@@ -55,7 +55,7 @@ public class TelephoneVerify extends Controller {
 
         //5分钟的浮动
         if (requestTimeout(timestamp, 300)) {
-            Logger.error("telephone verify failed: request timeout %s; caller: %s; coupon: %s; timestamp: %s; sign: %s", caller, coupon, timestamp, sign);
+            Logger.error("telephone verify failed: request timeout; caller: %s; coupon: %s; timestamp: %s; sign: %s", caller, coupon, timestamp, sign);
             renderText("5");//请求超时
         }
         //验证密码

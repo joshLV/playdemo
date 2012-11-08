@@ -6,6 +6,7 @@ import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.SentCouponMessage;
 import models.sms.SMSUtil;
+import play.Play;
 import play.jobs.Job;
 import play.jobs.On;
 
@@ -25,6 +26,9 @@ public class ExpiredCouponNotice extends Job {
 
     @Override
     public void doJob() throws ParseException {
+        if(Play.runingInTestMode()){
+            return;
+        }
         String sql = "select e from ECoupon e where e.eCouponSn not in (select m.couponNumber from SentCouponMessage " +
                 "m ) and e.isFreeze=0 and e.goods.isLottery=false and status =:status and (e.expireAt > :expireBeginAt and e.expireAt <= " +
                 ":expireEndAt) order by e.id";

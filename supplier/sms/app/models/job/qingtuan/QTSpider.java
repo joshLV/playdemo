@@ -1,0 +1,192 @@
+package models.job.qingtuan;
+
+import com.uhuila.common.constants.DeletedStatus;
+import models.sales.*;
+import models.supplier.Supplier;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import play.Logger;
+import play.i18n.Messages;
+import play.jobs.Job;
+import play.jobs.On;
+import play.libs.WS;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+
+/**
+ * @author likang
+ * 定时抓取青团的商品API
+ * 每天凌晨三点执行
+ * Date: 12-11-8
+ */
+@On("0 0 3 * * ?")
+public class QTSpider extends Job{
+    private static final String GATEWAY = "http://www.tsingtuan.com/api/team.php";
+    private static final int PAGE_SIZE = 200;
+    public static final String RESULT_TC = "TC";    //总数
+    public static final String RESULT_PC = "PC";    //已处理的数量
+    public static final String RESULT_LT = "LT";    //最后一个team_id
+
+    private static Supplier supplier = null;
+    private static Brand brand = null;
+
+    @Override
+    public void doJob(){
+
+        int offset = 0;
+        while (true){
+            WS.HttpResponse response = WS.url(GATEWAY
+                    + "?size=" + PAGE_SIZE
+                    + "&offset=" + offset
+                    + "&iscoupon=Y").get();//只倒入电子券
+
+            offset += PAGE_SIZE;
+            int totalCount = parseQtXml(response.getString());
+            if(totalCount != PAGE_SIZE){
+                break;
+            }
+        }
+    }
+
+    /**
+     * 解析青团返回的xml数据
+     * @param xmlString 青团xml数据
+     * @return xml中包含的子条目数
+     */
+    public static int parseQtXml(String xmlString) {
+        supplier= Supplier.find("byDomainName", "tsingtuan").first();
+        brand = Brand.find("bySupplier", supplier).first();
+        if(supplier == null || brand == null){
+            Logger.error("qingtuan spider error: no supplier(tsingtuan) or brand found");
+            return 0;
+        }
+
+        Document document = null;
+        try{
+            document = DocumentHelper.parseText(xmlString);
+        }catch (DocumentException e){
+            Logger.error("failed to parse QingTuan request");
+            return 0;
+        }
+
+        Element root = document.getRootElement();
+        List<Element> urlElements = (List<Element>) root.elements();
+        for(Element urlElement : urlElements){
+            Element teamElement = urlElement.element("team");
+            if(teamElement == null){
+                continue;
+            }
+            Long teamId = Long.parseLong(teamElement.elementTextTrim("team_id"));
+            Goods goods = Goods.find("bySupplierGoodsId", teamId).first();
+            if(goods != null){
+                continue;
+            }
+            createGoods(teamElement);
+        }
+
+        return urlElements.size();
+    }
+
+    /**
+     * 创建一百券商品
+     * @param element 清团的team element
+     */
+    private static void createGoods(Element element) {
+        Goods goods = new Goods();
+
+        Shop shop = createShop(element);
+        if(shop == null){
+            Logger.error("qingtuan create goods failed: can not find the area: %s", element.elementTextTrim("citys"));
+            return;
+        }
+        goods.shops = new HashSet<Shop>();
+        goods.shops.add(shop);
+
+        Category category = getCategory(element);
+        if(category == null){
+            Logger.error("qingtuan find category failed: %s - %s",
+                    element.elementTextTrim("group"), element.elementTextTrim("promotion"));
+            return;
+        }
+        goods.categories = new HashSet<>();
+        goods.categories.add(category);
+
+
+        //餐饮类 6% 其他 8%
+        goods.createdAt = new Date();
+        goods.createdBy = supplier.fullName;
+        goods.deleted = DeletedStatus.UN_DELETED;
+        goods.setDetails(element.elementText("detail"));
+        goods.effectiveAt = new Date(Long.parseLong(element.elementTextTrim("begin_time")));
+        goods.expireAt = new Date(Long.parseLong(element.elementTextTrim("expire_time")));
+        goods.faceValue = new BigDecimal(element.elementTextTrim("market_price"));
+        goods.salePrice = new BigDecimal(element.elementTextTrim("team_price"));
+
+        //如果是餐饮的
+        if(goods.getParentCategoryIds().equals("1")){
+            goods.originalPrice = goods.salePrice.multiply(new BigDecimal("0.94")).setScale(2, RoundingMode.FLOOR);
+        }else {
+            goods.originalPrice = goods.salePrice.multiply(new BigDecimal("0.92")).setScale(2, RoundingMode.FLOOR);
+        }
+
+        goods.setDiscount(goods.salePrice.multiply(BigDecimal.TEN).divide(goods.faceValue, RoundingMode.FLOOR).setScale(2, RoundingMode.FLOOR));
+        goods.resaleAddPrice = BigDecimal.ZERO;
+        goods.materialType = MaterialType.ELECTRONIC;
+        goods.virtualBaseSaleCount = Long.parseLong(element.elementTextTrim("pre_number"));
+
+        goods.name = element.elementTextTrim("title");
+        goods.shortName = element.elementTextTrim("product");
+        goods.title = goods.shortName;
+        goods.setExhibition(element.elementText("summary"));
+        goods.setDetails(element.elementText("detail"));
+        goods.setPrompt(element.elementText("notice"));
+
+        goods.supplierGoodsId = Long.parseLong(element.elementTextTrim("team_id"));
+        goods.supplierId = supplier.id;
+
+        goods.brand = brand;
+
+        goods.save();
+    }
+
+    private static Shop createShop(Element element) {
+        String areaName = element.elementTextTrim("citys");
+        Area area = Area.find("byName", areaName).first();
+        if(area == null){
+            return null;
+        }
+        Shop shop = new Shop();
+        shop.supplierId = supplier.id;
+        shop.areaId = area.id;
+        shop.cityId = area.id;
+        shop.name =  area.name;
+        shop.address = element.elementTextTrim("address");
+        shop.phone = element.elementTextTrim("partner_phone");
+        return shop.save();
+    }
+
+    private static Category getCategory(Element element) {
+        String categoryKey = "qingtuan." + element.elementTextTrim("group");
+        String cgIdStr =  Messages.get(categoryKey);
+        if(cgIdStr.equals(categoryKey)){
+            Logger.error("can not found our id of qingtuan category: %s", categoryKey);
+            return null;
+        }
+
+        String subCategoryKey = "qingtuan." + cgIdStr+ "." + element.elementTextTrim("promotion");
+        String scgIdStr = Messages.get(subCategoryKey);
+        if(scgIdStr.equals(subCategoryKey)){
+            Logger.error("can not found our id of qingtuan subcategory: %s", subCategoryKey);
+            return null;
+        }
+
+        return Category.findById(Long.parseLong(scgIdStr));
+    }
+
+}

@@ -211,6 +211,12 @@ public class Goods extends Model {
     @Column(name = "supplier_id")
     public Long supplierId;
 
+    /**
+     * 供应商的GoodsId
+     */
+    @Column(name = "supplier_goods_id")
+    public Long supplierGoodsId;
+
     @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(name = "goods_shops", inverseJoinColumns = @JoinColumn(name
             = "shop_id"), joinColumns = @JoinColumn(name = "goods_id"))

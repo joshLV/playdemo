@@ -25,7 +25,7 @@ public class OrderListener extends Job{
 
     @Override
     public void doJob(){
-        if (!ON){
+        if (!ON || Play.runingInTestMode()){
             return;
         }
         Logger.info("start yihaodian job");

@@ -4,6 +4,7 @@ import models.order.OuterOrder;
 import models.order.OuterOrderStatus;
 import models.yihaodian.YHDGroupBuyMessage;
 import models.yihaodian.YihaodianQueueUtil;
+import play.Play;
 import play.jobs.Every;
 import play.jobs.Job;
 
@@ -17,6 +18,9 @@ import java.util.List;
 public class OrderScanner extends Job{
     @Override
     public void doJob() {
+        if(Play.runingInTestMode()){
+            return;
+        }
         List<OuterOrder> orders = OuterOrder.find("status = ? or status = ?",
                 OuterOrderStatus.ORDER_DONE,
                 OuterOrderStatus.REFUND_DONE).fetch();
