@@ -1,57 +1,56 @@
 package function;
 
-import models.admin.OperateRole;
+import java.util.List;
+
 import models.admin.OperateUser;
-import models.order.ECoupon;
+import models.consumer.User;
 import models.order.Order;
 import models.order.OrderItems;
-import models.sales.*;
-import models.supplier.Supplier;
+import models.sales.Goods;
+
 import operate.rbac.RbacLoader;
 
 import org.junit.After;
 import org.junit.Test;
 
 import play.mvc.Http.Response;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 import controllers.operate.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 
 public class OperateOrdersTest extends FunctionalTest {
 
+    Order order;
+    
     @org.junit.Before
     public void setup() {
-        Fixtures.delete(ECoupon.class);
-        Fixtures.delete(OrderItems.class);
-        Fixtures.delete(Order.class);
-        Fixtures.delete(Goods.class);
-        Fixtures.delete(Shop.class);
-        Fixtures.delete(Category.class);
-        Fixtures.delete(Brand.class);
-        Fixtures.delete(Area.class);
-        Fixtures.delete(Supplier.class);
-        Fixtures.delete(OperateUser.class);
-        Fixtures.delete(OperateRole.class);
-        Fixtures.delete(GoodsHistory.class);
-        Fixtures.loadModels("fixture/roles.yml");
-        Fixtures.loadModels("fixture/supplierusers.yml");
-        Fixtures.loadModels("fixture/areas_unit.yml");
-        Fixtures.loadModels("fixture/categories_unit.yml");
-        Fixtures.loadModels("fixture/brands_unit.yml");
-        Fixtures.loadModels("fixture/shops_unit.yml");
-        Fixtures.loadModels("fixture/goods_unit.yml");
-        Fixtures.loadModels("fixture/orders.yml");
-        Fixtures.loadModels("fixture/orderItems.yml");
+        FactoryBoy.deleteAll();
 
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
+        
+        FactoryBoy.create(Goods.class);
+        final User user = FactoryBoy.create(User.class);
+        order = FactoryBoy.create(Order.class, new BuildCallback<Order>() {
+            @Override
+            public void build(Order o) {
+                o.userId = user.id;
+                o.description = "testorder";
+            }
+        });
+        FactoryBoy.create(OrderItems.class, new BuildCallback<OrderItems>() {
+            @Override
+            public void build(OrderItems oi) {
+                oi.phone = user.mobile;
+            }
+        });
 
-        Long id = (Long) Fixtures.idCache.get("models.admin.OperateUser-user3");
-        OperateUser user = OperateUser.findById(id);
+        OperateUser operateUser = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名
-        Security.setLoginUserForTest(user.loginName);
+        Security.setLoginUserForTest(operateUser.loginName);        
     }
 
     @After
@@ -64,6 +63,8 @@ public class OperateOrdersTest extends FunctionalTest {
   	public void testIndex() {
 		Response response = GET("/orders");
 		assertStatus(200, response);
+		List<Order> orders = (List<Order>)renderArgs("orderList");
+		assertEquals(1, orders.size());
 	}
 
     @Test
@@ -74,15 +75,21 @@ public class OperateOrdersTest extends FunctionalTest {
 
     @Test
     public void testDetails() {
-        Long id = (Long) Fixtures.idCache.get("models.order.Order-order1");
-        Response response = GET("/orders/" + id);
+        Response response = GET("/orders/" + order.id);
         assertStatus(200, response);
+        Order o = (Order)renderArgs("orders");
+        List<OrderItems> orderItems = (List<OrderItems>) renderArgs("orderItems");
+        assertNotNull(o);
+        assertEquals(order.id, o.id);
+        assertEquals(1, orderItems.size());
     }
 
     @Test
     public void testIndexWithCondition() {
-        Response response = GET("/orders?condition.createdAtBegin=&condition.createdAtEnd=&condition.paidAtBegin=&condition.paidAtEnd=&condition.brandId=0&condition.refundAtBegin=&condition.refundAtEnd=&condition.payMethod=&condition.userType=&condition.searchKey=&condition.searchItems=&condition.status=&condition.deliveryType=&desc=1000000");
+        Response response = GET("/orders?condition.createdAtBegin=&condition.createdAtEnd=&condition.paidAtBegin=&condition.paidAtEnd=&condition.brandId=0&condition.refundAtBegin=&condition.refundAtEnd=&condition.payMethod=&condition.userType=&condition.searchKey=&condition.searchItems=&condition.status=&condition.deliveryType=&desc=testorder");
         assertIsOk(response);
+        List<Order> orders = (List<Order>)renderArgs("orderList");
+        assertEquals(1, orders.size());
         assertNotNull(renderArgs("desc"));
     }
 }

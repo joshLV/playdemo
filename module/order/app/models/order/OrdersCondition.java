@@ -51,7 +51,7 @@ public class OrdersCondition {
         }
 
 
-        if ((hasSeeAllSupplierPermission != null && hasSeeAllSupplierPermission != null && supplierId != null && !hasSeeAllSupplierPermission) || (hasSeeAllSupplierPermission != null && hasSeeAllSupplierPermission != null && supplierId == null && !hasSeeAllSupplierPermission)) {
+        if (hasSeeAllSupplierPermission != null && !hasSeeAllSupplierPermission) {
             List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
             List<Long> supplierIds = new ArrayList<>();
             for (Supplier s : suppliers) {
@@ -61,8 +61,7 @@ public class OrdersCondition {
                 sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.supplierId in (:supplierIds))");
                 paramsMap.put("supplierIds", supplierIds);
             } else {
-                sql.append(" and 5 =:supplierIds");
-                paramsMap.put("supplierIds", 6);
+                sql.append(" and 1=2");
             }
         }
 
