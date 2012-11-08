@@ -210,6 +210,9 @@ public class Goods extends Model {
      */
     @Column(name = "supplier_id")
     public Long supplierId;
+    
+    public Long supplierGoodsId;
+
 
     /**
      * 供应商的GoodsId

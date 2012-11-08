@@ -25,6 +25,7 @@ require:
     - view_ext -> view_ext
     - supplier -> supplier
     - dangdang -> dangdang
+    - third_tuan -> third_tuan
     - org.jsoup -> jsoup 1.6.1
     - cache_helper -> cache_helper
     - emaillogs -> emaillogs
@@ -66,6 +67,7 @@ repositories:
             - yihaodian -> *
             - dangdang -> *
             - jingdong -> *
+            - third_tuan -> *
 
     - play1ContributedModules:
         type: http

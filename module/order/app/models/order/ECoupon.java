@@ -84,13 +84,26 @@ public class ECoupon extends Model {
     @Column(name = "e_coupon_sn", unique = true)
     public String eCouponSn;
 
+    
+    /**
+     * 部分第三方团购可能使用密码，而券市场的券不需要。
+     * 记录一下
+     */
+    public String password;
+    
+    /**
+     * 已同步标记。
+     * 如果为true，则已经同步到第三方网站
+     */
+    public Boolean synced;
+    
     // ==== 价格列表 ====
     @Column(name = "face_value")
     public BigDecimal faceValue; // 商品面值、市场价
 
     @Column(name = "original_price")
     public BigDecimal originalPrice; // 供应商进货价
-
+    
     @Column(name = "resaler_price")
     public BigDecimal resalerPrice; // 用户在哪个分销商平台购买的价格，用于计算分销平台的佣金
 

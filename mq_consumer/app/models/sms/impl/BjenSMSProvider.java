@@ -1,8 +1,14 @@
 package models.sms.impl;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
 import models.sms.SMSException;
 import models.sms.SMSMessage;
 import models.sms.SMSProvider;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
@@ -13,6 +19,8 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.ivy.util.url.HttpClientHandler.HttpClientHelper;
+
 import play.Logger;
 import play.Play;
 
@@ -30,7 +38,7 @@ public class BjenSMSProvider implements SMSProvider {
 
     private final String SEND_URL = Play.configuration.getProperty("ensms.http.send_url");
     private final String USERNAME = Play.configuration.getProperty("ensms.http.username");
-    private final String PASSWORD = Play.configuration.getProperty("ensms.http.password");
+    private final String PASSWORD = Play.configuration.getProperty("ensms.http.password");    
 
     @Override
     public int send(SMSMessage message) {

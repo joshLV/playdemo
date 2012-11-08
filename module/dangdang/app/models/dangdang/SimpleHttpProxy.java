@@ -3,7 +3,6 @@ package models.dangdang;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
-import play.Logger;
 
 /**
  * 简单的http访问代理.
@@ -22,9 +21,11 @@ public class SimpleHttpProxy implements HttpProxy {
      * @throws DDAPIInvokeException
      */
     public Response accessHttp(PostMethod postMethod) throws DDAPIInvokeException {
+        
+        HttpClient httpClient = null;
         try {
             //构造HttpClient的实例
-            HttpClient httpClient = new HttpClient();
+            httpClient = new HttpClient();
             //执行postMethod
             int statusCode = httpClient.executeMethod(postMethod); // HttpClient对于要求接受后继服务的请求，象POST和PUT等不能自动处理转发
             // 200

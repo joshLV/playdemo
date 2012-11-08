@@ -34,6 +34,7 @@ require:
     - emaillogs -> emaillogs
     - dangdang -> dangdang
     - jingdong -> jingdong
+    - third_tuan -> third_tuan
     - yihaodian -> yihaodian
     - com.yihaodian -> yhdclient 1.0
 
@@ -81,3 +82,4 @@ repositories:
             - dangdang -> *
             - jingdong -> *
             - yihaodian -> *
+            - third_tuan -> *

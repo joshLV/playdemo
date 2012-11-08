@@ -25,6 +25,7 @@ require:
     - order -> order
     - accounts -> accounts
     - report -> report
+    - third_tuan -> third_tuan
     - sms -> sms
     - cms -> cms
     - asset_package -> asset_package
@@ -72,3 +73,4 @@ repositories:
             - emaillogs -> *
             - dangdang -> *
             - jingdong -> *
+            - third_tuan -> *

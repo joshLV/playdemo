@@ -31,6 +31,7 @@ require:
     - emaillogs -> emaillogs
     - dangdang -> dangdang
     - jingdong -> jingdong
+    - third_tuan -> third_tuan
     - commons-httpclient -> commons-httpclient 3.1
 
 repositories:
@@ -71,3 +72,4 @@ repositories:
             - emaillogs -> *
             - dangdang -> *
             - jingdong -> *
+            - third_tuan -> *
