@@ -17,7 +17,7 @@
     <permission key="Point_GOODS" text="积分商品管理" roles="editor,customservice"/>
 
     <permission key=" Point_GOODS_ORDER" text="积分商品订单管理" roles="customservice,account"/>
-
+    <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager,account" />
 
     <permission key="SUPPLIERS_NEW" text="商户添加" roles="editor"/>
     <permission key="SUPPLIERS" text="商户管理" roles="editor,customservice"/>
