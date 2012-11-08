@@ -43,6 +43,7 @@
     <permission key="FINANCING_ACCOUNT_REPORT" text="券平台财务收款账户资金明细" roles="account"/>
     <permission key="BRANDS_NEW" text="品牌添加" roles="editor"/>
     <permission key="BRANDS" text="品牌管理" roles="editor"/>
+    <permission key="AREAS" text="区域管理" roles="editor"/>
     <permission key="CONSUMERS" text="用户管理" roles="customservice"/>
     <permission key="PROMOTION_LIST" text="活动管理" roles="customservice,editor"/>
     <permission key="send_sms" text="发送优惠券" roles="customservice,editor"/>
@@ -78,6 +79,10 @@
             <navigation key="brands_add" action="OperateBrands.add" text="品牌添加" permissions="BRANDS_NEW"/>
             <navigation key="brands_index" action="OperateBrands.index" text="品牌管理" permissions="BRANDS"/>
         </navigation>
+        <navigation key="areas" text="区域" permissions="AREAS">
+            <navigation key="areas_index" action="AreasAdmin.add" text="区域管理" permissions="AREAS"/>
+        </navigation>
+
     </navigation>
 
     <navigation key="goods_app" text="商品管理" action="OperateGoods.index" display-order="30">
