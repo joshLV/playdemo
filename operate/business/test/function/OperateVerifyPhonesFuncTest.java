@@ -6,6 +6,7 @@ import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
 import models.admin.OperateUser;
 import models.admin.SupplierUser;
+import models.resale.Resaler;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import operate.rbac.RbacLoader;
@@ -31,7 +32,7 @@ public class OperateVerifyPhonesFuncTest extends FunctionalTest {
     @Before
     public void setUp() {
 
-        FactoryBoy.lazyDelete();
+        FactoryBoy.deleteAll();
 
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");

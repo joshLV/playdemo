@@ -11,7 +11,7 @@ import java.math.BigDecimal;
  * Date: 5/16/12
  * Time: 6:02 PM
  */
-public class ReportSummary extends Model {
+public class ReportSummary {
     public long goodsCount;
     public long kindCount;
     public long orderCount;
