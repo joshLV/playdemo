@@ -30,7 +30,7 @@
                 <value>${goods.faceValue}</value>
                 <price>${goods.salePrice}</price>
                 <rebate>${goods.discountExpress1}</rebate>
-                <bought>${goods.saleCount + goods.baseSale}</bought>
+                <bought>${goods.virtualSaleCount}</bought>
                 <name>${goods.title}</name>
                 <seller>${goods.getSupplierName()}${goods.getShopList().iterator().next().name}</seller>
                 <phone>${goods.getShopList().iterator().next().phone}</phone>

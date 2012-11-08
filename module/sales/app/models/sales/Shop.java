@@ -107,11 +107,9 @@ public class Shop extends Model {
         if (districtId != null) {
             return districtId;
         }
-        if (StringUtils.isBlank(areaId) || areaId.length() < 5) {
-            return "123";
+        if (StringUtils.isNotBlank(areaId) && areaId.length() < 5) {
+            districtId = areaId.substring(0, 5);
         }
-
-        districtId = areaId.substring(0, 5);
         return districtId;
     }
 

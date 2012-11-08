@@ -127,6 +127,7 @@ GET     /shops/{id}/edit                        OperateShops.edit
 POST    /shops/{id}                             OperateShops.update
 DELETE  /shops/{id}                             OperateShops.delete
 GET     /shops/area                             OperateShops.showAreas
+GET     /shops/district                         OperateShops.showDistrict
 GET     /shops/{supplierId}/showGoodsShops      OperateShops.showGoodsShops
 GET     /shops/{supplierId}/showSupplierShops   OperateShops.showSupplierShops
 

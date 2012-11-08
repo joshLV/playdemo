@@ -43,7 +43,7 @@
             <sale_rate>${goods.discountExpress1}</sale_rate>
             <!-- 折扣，浮点型，单位：元，[必填]-->
 
-            <sales_num>${goods.saleCount + goods.baseSale}</sales_num>
+            <sales_num>${goods.virtualSaleCount}</sales_num>
             <!-- 购买人数，[必填]-->
 
             <start_time>

@@ -94,6 +94,7 @@ public class OperateShops extends Controller {
         List<Area> cities = Area.findAllSubAreas(null);
         //区域列表
         String cityId = StringUtils.isEmpty(shop.cityId) ? cities.get(0).getId() : shop.cityId;
+
         List<Area> districts = Area.findAllSubAreas(cityId);
         //商圈列表
         String districtId = StringUtils.isEmpty(shop.getDistrictId()) ? districts.get(0).getId() : shop.getDistrictId();
@@ -101,11 +102,20 @@ public class OperateShops extends Controller {
         if (shop.areaId == null && areas != null && areas.size() > 0 && areas.get(0) != null) {
             shop.areaId = areas.get(0).id;
         }
-
         renderArgs.put("districts", districts);
         renderArgs.put("areas", areas);
         renderArgs.put("cities", cities);
         renderArgs.put("supplierList", supplierList);
+    }
+
+    /**
+     * 城市区域的联动
+     *
+     * @param cityId
+     */
+    public static void showDistrict(String cityId) {
+        //区域列表
+        renderJSON(Area.findAllSubDistrict(cityId));
     }
 
     /**

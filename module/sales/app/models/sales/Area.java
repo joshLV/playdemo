@@ -73,6 +73,7 @@ public class Area extends GenericModel {
     public static boolean isDistrict(String district) {
         return (StringUtils.isNotBlank(district) && district.length() == 5);
     }
+
     public static final String CACHEKEY = "AREA";
 
     @Override
@@ -138,6 +139,15 @@ public class Area extends GenericModel {
         }
         return find("parent=? order by displayOrder",
                 new Area(areaId)).fetch();
+    }
+
+    public static List<Area> findAllSubDistrict(String cityId) {
+        if (cityId == null || "".equals(cityId)) {
+            return find("areaType=? order by displayOrder",
+                    AreaType.DISTRICT).fetch();
+        }
+        return find(" parent =? order by displayOrder",
+                new Area(cityId)).fetch();
     }
 
     /**

@@ -30,7 +30,7 @@
                 <!-- 商品原价 ［必填］-->
                 <price>${goods.salePrice}</price>
                 <!-- 商品现价 ［必填］-->
-                <bought>${goods.saleCount + goods.baseSale}</bought>
+                <bought>${goods.virtualSaleCount}</bought>
                 <!-- 已购买人数 ［必填］-->
                 <soldOut>no</soldOut>
                 <!-- yes/no 是否已卖光 [选填］ -->
