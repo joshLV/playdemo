@@ -9,7 +9,7 @@
     #{get 'moreStyles' /}
 </head>
 <body
-#{if request.url.equals("/")}class="home"#{/if}>
+#{if isHome?.booleanValue() }class="home"#{/if}>
 %{baseDomain = play.Play.configuration.getProperty("application.baseDomain")}%
 <div id="topbar">
     <div id="topbar-bd">

@@ -205,6 +205,7 @@ public class Home2 extends Controller {
         renderArgs.put("friendsLinks", friendsLinks);
         renderArgs.put("slides", slides);
         renderArgs.put("rightSlides", rightSlides);
+        renderArgs.put("isHome", Boolean.TRUE);
         render(goodsList, newGoodsList, recommendGoodsList, hotSaleGoodsList, floorCategories, topics);
     }
 
