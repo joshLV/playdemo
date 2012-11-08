@@ -731,6 +731,9 @@ public class Order extends Model {
                             if (tsingTuanOrder != null) {
                                 // 清团券发送
                                 String password = RandomNumberUtil.generateSerialNumber(6);
+                                eCoupon.password = password;
+                                eCoupon.save();
+                                tsingTuanOrder.password = password;
                                 SMSUtil.send("【清团】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name +
                                         "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "" +
                                         "密码" + password + ",截止" + dateFormat.format(eCoupon.expireAt) + "客服4006013975",

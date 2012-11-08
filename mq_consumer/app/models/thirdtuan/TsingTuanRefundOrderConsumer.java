@@ -32,7 +32,7 @@ public class TsingTuanRefundOrderConsumer extends RabbitMQConsumer<TsingTuanOrde
         return TsingTuanSendOrder.REFUND_ORDER;
     }
 
-    public static final String SEND_URL = "http://www.tsingtuan.com/outer/shihui/order.php?";
+    public static final String SEND_URL = "http://www.tsingtuan.com/outer/shihui/refund.php?";
 
     private HttpClientHelper httpClientHelper;
 
@@ -53,19 +53,6 @@ public class TsingTuanRefundOrderConsumer extends RabbitMQConsumer<TsingTuanOrde
 
         qparams.add(new BasicNameValuePair("order_id", order.orderId.toString()));
         qparams.add(new BasicNameValuePair("team_id", order.teamId.toString()));
-        qparams.add(new BasicNameValuePair("state", order.state));
-        qparams.add(new BasicNameValuePair("fare", order.fare.toString()));
-        qparams.add(new BasicNameValuePair("money", order.money.toString()));
-        qparams.add(new BasicNameValuePair("origin", order.origin.toString()));
-        qparams.add(new BasicNameValuePair("address", order.address));
-        qparams.add(new BasicNameValuePair("zipcode", order.zipcode));
-        qparams.add(new BasicNameValuePair("realname", order.realname));
-        qparams.add(new BasicNameValuePair("mobile", order.mobile));
-        qparams.add(new BasicNameValuePair("quantity", order.quantity.toString()));
-        qparams.add(new BasicNameValuePair("remark", order.remark));
-        qparams.add(new BasicNameValuePair("condbuy", order.condbuy));
-        qparams.add(new BasicNameValuePair("create_time", order.create_time.toString()));
-        qparams.add(new BasicNameValuePair("pay_time", order.pay_time.toString()));
         qparams.add(new BasicNameValuePair("coupons", order.coupons));
         qparams.add(new BasicNameValuePair("sign", order.getRefundSign()));
         

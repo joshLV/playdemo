@@ -42,6 +42,9 @@ GET     /ztsms                                  ZtSmsReceivers.getsms
 
 # 青团爬虫启动
 GET     /launch-qt                              QingtuanLauncher.index
+# 清团接口
+*      /api/v1/tsingtuan/coupons                TsingTuans.coupons
+*      /api/v1/tsingtuan/check                  TsingTuans.check
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

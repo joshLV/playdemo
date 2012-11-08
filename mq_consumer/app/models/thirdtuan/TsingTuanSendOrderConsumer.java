@@ -48,8 +48,6 @@ public class TsingTuanSendOrderConsumer extends RabbitMQConsumer<TsingTuanOrder>
     }
     
     public void sendOrder(TsingTuanOrder order) {
-
-        int resultCode = 0;
         //准备url
         List<NameValuePair> qparams = new ArrayList<NameValuePair>();
 
@@ -68,7 +66,7 @@ public class TsingTuanSendOrderConsumer extends RabbitMQConsumer<TsingTuanOrder>
         qparams.add(new BasicNameValuePair("condbuy", order.condbuy));
         qparams.add(new BasicNameValuePair("create_time", order.create_time.toString()));
         qparams.add(new BasicNameValuePair("pay_time", order.pay_time.toString()));
-        qparams.add(new BasicNameValuePair("coupons", order.coupons));
+        qparams.add(new BasicNameValuePair("coupons", order.coupons + "," + order.password));
         qparams.add(new BasicNameValuePair("sign", order.getSign()));
         
         String url = SEND_URL + URLEncodedUtils.format(qparams, "UTF-8");

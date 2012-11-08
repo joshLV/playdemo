@@ -103,8 +103,18 @@ public class TsingTuanOrder implements Serializable {
         return sign;
     }
 
+    private String refundSign;
+    
     public String getRefundSign() {
-        // TODO Auto-generated method stub
-        return null;
+        if (refundSign != null) {
+            return refundSign;
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.orderId).append("|")
+              .append(this.teamId).append("|")
+              .append(SECRET);
+        refundSign = DigestUtils.md5Hex(sb.toString());
+        System.out.println("refundSign=" + refundSign);
+        return refundSign;
     }
 }
