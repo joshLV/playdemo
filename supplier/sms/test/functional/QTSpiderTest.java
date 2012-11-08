@@ -19,6 +19,7 @@ import play.vfs.VirtualFile;
 public class QTSpiderTest extends FunctionalTest{
     @Before
     public void setUP(){
+        FactoryBoy.deleteAll();
         FactoryBoy.create(Area.class);
         new AreaFactory().createOrFindArea(AreaType.CITY, "000", "全国", null);
         FactoryBoy.create(Supplier.class, "qingtuan");
