@@ -167,10 +167,8 @@ public class OperateGoods extends Controller {
             goods.shops = null;
             goods.isAllShop = true;
         }
-        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
-        Long id = OperateRbac.currentUser().id;
         if (goods.supplierId != null) {
-            List<Brand> brandList = Brand.findByOrder(new Supplier(goods.supplierId), id, right);
+            List<Brand> brandList = Brand.findByOrder(new Supplier(goods.supplierId));
             renderArgs.put("brandList", brandList);
         }
 
