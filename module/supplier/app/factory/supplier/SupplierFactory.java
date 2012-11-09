@@ -7,17 +7,14 @@ package factory.supplier;
  * Time: 下午4:46
  */
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
+import com.uhuila.common.constants.DeletedStatus;
+import factory.ModelFactory;
+import factory.annotation.Factory;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
 import util.DateHelper;
 
-import com.uhuila.common.constants.DeletedStatus;
-
-import factory.ModelFactory;
-import factory.annotation.Factory;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,12 +34,13 @@ public class SupplierFactory extends ModelFactory<Supplier> {
         supplier.status = SupplierStatus.NORMAL;
         supplier.otherName = "supplier";
         supplier.createdAt = DateHelper.beforeDays(new Date(), 30);
+        supplier.logo = "/0/0/0/logo.jpg";
         return supplier;
     }
 
-    @Factory(name="KFC")
+    @Factory(name = "KFC")
     public void defineKFC(Supplier supplier) {
-    	supplier.fullName = "肯德基";
+        supplier.fullName = "肯德基";
     }
 
     @Factory(name = "qingtuan")

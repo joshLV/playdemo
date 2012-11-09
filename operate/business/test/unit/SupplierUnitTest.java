@@ -3,12 +3,12 @@ package unit;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.PathUtil;
+import factory.FactoryBoy;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
 import org.junit.Before;
 import org.junit.Test;
 import play.Play;
-import play.test.Fixtures;
 import play.test.UnitTest;
 
 import java.text.SimpleDateFormat;
@@ -30,24 +30,25 @@ import java.util.List;
  */
 
 public class SupplierUnitTest extends UnitTest {
+    Supplier supplier;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        Fixtures.delete(Supplier.class);
-        Fixtures.loadModels("fixture/supplier_unit.yml");
+        FactoryBoy.deleteAll();
+        supplier = FactoryBoy.create(Supplier.class);
+
     }
 
     @Test
     public void testFindUnDeleted() {
         List<Supplier> suppliers = Supplier.findUnDeleted();
-        assertEquals(2, suppliers.size());
+        assertEquals(1, suppliers.size());
         assertEquals("localhost", suppliers.get(0).domainName);
     }
 
     @Test
     public void testGetSmallLogo() {
-        Long id = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
-        Supplier supplier = Supplier.findById(id);
         String imageSever = "http://" + Play.configuration.getProperty
                 ("image.server", "img0.uhcdn.com");
         String imageURL = PathUtil.getImageUrl(imageSever, "/0/0/0/logo.jpg", "172x132");
@@ -56,25 +57,25 @@ public class SupplierUnitTest extends UnitTest {
 
     @Test
     public void testFreeze() {
-        Long id = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
-        Supplier.freeze(id);
-        Supplier supplier = Supplier.findById(id);
+        assertEquals(SupplierStatus.NORMAL, supplier.status);
+        Supplier.freeze(supplier.id);
+        supplier.refresh();
         assertEquals(SupplierStatus.FREEZE, supplier.status);
     }
 
     @Test
     public void testUnfreeze() {
-        Long id = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
-        Supplier.unfreeze(id);
-        Supplier supplier = Supplier.findById(id);
+        supplier.status = SupplierStatus.FREEZE;
+        supplier.save();
+        assertEquals(SupplierStatus.FREEZE, supplier.status);
+        Supplier.unfreeze(supplier.id);
+        supplier.refresh();
         assertEquals(SupplierStatus.NORMAL, supplier.status);
     }
 
     @Test
     // Check updateAt() 方法不可行，因为update的时候没有改变, 比较supplier.Date()没有意义
     public void testUpdateWithNull() {
-        Long id = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
-        Supplier supplier = Supplier.findById(id);
         // generate an empty id
         Long emptyId = 123456789L;
         Supplier.update(emptyId, supplier);
@@ -85,13 +86,10 @@ public class SupplierUnitTest extends UnitTest {
 
     @Test
     public void testUpdate() {
-        Long id = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
-        Supplier supplier = new Supplier(id);
-        supplier.id = id;
         supplier.domainName = "updated.localhost";
-        Supplier.update(id, supplier);
-        Supplier updatedSupplier = Supplier.findById(id);
-        assertEquals("updated.localhost", updatedSupplier.domainName);
+        Supplier.update(supplier.id, supplier);
+        supplier.refresh();
+        assertEquals("updated.localhost", supplier.domainName);
     }
 
     @Test
@@ -111,15 +109,15 @@ public class SupplierUnitTest extends UnitTest {
 
     @Test
     public void testDelete() {
-        Long id = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
-        Supplier.delete(id);
-        Supplier supplier = Supplier.findById(id);
+        assertEquals(DeletedStatus.UN_DELETED, supplier.deleted);
+        Supplier.delete(supplier.id);
+        supplier.refresh();
         assertEquals(DeletedStatus.DELETED, supplier.deleted);
     }
 
     @Test
     public void testFindListByFullName() {
-        List<Supplier> suppliers = Supplier.findListByFullName("本地");
+        List<Supplier> suppliers = Supplier.findListByFullName("Supplier");
         assertEquals(1, suppliers.size());
     }
 

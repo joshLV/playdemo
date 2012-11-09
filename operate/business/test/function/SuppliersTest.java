@@ -2,6 +2,7 @@ package function;
 
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
+import models.accounts.WithdrawAccount;
 import models.admin.OperateUser;
 import models.admin.SupplierUser;
 import models.supplier.Supplier;
@@ -13,6 +14,7 @@ import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,6 +27,8 @@ public class SuppliersTest extends FunctionalTest {
     Supplier supplier;
     SupplierUser supplierUser;
     SupplierUser supplierUser2;
+    WithdrawAccount withdrawAccount;
+
     @org.junit.Before
     public void setUp() {
         FactoryBoy.deleteAll();
@@ -35,10 +39,22 @@ public class SuppliersTest extends FunctionalTest {
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
         supplier = FactoryBoy.create(Supplier.class);
+        supplier.loginName = "tom";
+        supplier.save();
+
         supplierUser = FactoryBoy.create(SupplierUser.class);
-        supplierUser2= FactoryBoy.create(SupplierUser.class);
-        supplierUser2.supplierUserType =null;
+        supplierUser.loginName = "tom";
+        supplierUser.supplier = supplier;
+        supplierUser.save();
+
+        supplierUser2 = FactoryBoy.create(SupplierUser.class);
+        supplierUser2.supplierUserType = null;
         supplierUser2.save();
+
+        withdrawAccount = FactoryBoy.create(WithdrawAccount.class);
+        withdrawAccount.userId = supplier.id;
+        withdrawAccount.userName = supplier.userName;
+        withdrawAccount.save();
     }
 
     @Test
@@ -52,6 +68,27 @@ public class SuppliersTest extends FunctionalTest {
     }
 
     @Test
+    public void testEdit() {
+        Http.Response response = GET("/suppliers/" + supplier.id + "/edit");
+        assertStatus(200, response);
+        Supplier supplier = (Supplier) renderArgs("supplier");
+        Set<OperateUser> operateUserList = (Set<OperateUser>) renderArgs("operateUserList");
+        List<WithdrawAccount> withdrawAccounts = (List<WithdrawAccount>) renderArgs("withdrawAccounts");
+        SupplierUser supplierUser = (SupplierUser) renderArgs("admin");
+        String baseDomain = (String) renderArgs("baseDomain");
+        assertNotNull(supplier);
+        assertNotNull(supplierUser);
+        assertNotNull(operateUserList);
+        assertNotNull(withdrawAccounts);
+        assertEquals(1, operateUserList.size());
+        assertEquals("Supplier0", supplier.fullName);
+        assertEquals("uhuila.net", baseDomain);
+        assertEquals("tom", supplierUser.loginName);
+        assertEquals(1, withdrawAccounts.size());
+        assertEquals(supplier.id, withdrawAccounts.get(0).userId);
+    }
+
+    @Test
     public void testIndexByCondition() {
         Http.Response response = GET("/suppliers?otherName=supplier");
         assertStatus(200, response);
@@ -60,6 +97,7 @@ public class SuppliersTest extends FunctionalTest {
         assertEquals(1, supplierList.size());
         assertEquals("supplier", supplierList.get(0).otherName);
     }
+
     @Test
     public void testExportMaterial() {
         Http.Response response = GET("/suppliers/export-material?supplierId=" + supplier.id + "&supplierDomainName=" + supplier.domainName);
