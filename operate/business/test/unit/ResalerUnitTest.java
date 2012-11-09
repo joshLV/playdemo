@@ -1,27 +1,34 @@
 package unit;
 
+import models.resale.Resaler;
+import models.resale.ResalerCondition;
 import models.resale.ResalerCreditable;
-import models.resale.*;
+import models.resale.ResalerLevel;
+import models.resale.ResalerStatus;
 
 import org.junit.Test;
 
 import play.modules.paginate.JPAExtPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
+import factory.FactoryBoy;
 
 public class ResalerUnitTest extends UnitTest {
 
+    Resaler resaler;
+    
 	@org.junit.Before
 	public void setup() {
-		Fixtures.delete(Resaler.class);
-		Fixtures.loadModels("fixture/resaler.yml");
+	    FactoryBoy.deleteAll();
+
+	    resaler = FactoryBoy.create(Resaler.class);
 	}
 
 	@Test
 	public void testIndex() {
 		ResalerCondition condition = new ResalerCondition();
-		condition.loginName="y";
-		condition.status=ResalerStatus.UNAPPROVED;
+		condition.loginName="ang";  // need match 'dangdang'
+		condition.status=ResalerStatus.APPROVED;
 		int pageNumber=1;
 		int pageSize=10;
 		JPAExtPaginator<Resaler> list =  Resaler.findByCondition(condition, pageNumber, pageSize);
@@ -29,6 +36,16 @@ public class ResalerUnitTest extends UnitTest {
 	}
 
 
+    @Test
+    public void testIndexUnApproved() {
+        ResalerCondition condition = new ResalerCondition();
+        condition.loginName="ang";  // need match 'dangdang'
+        condition.status=ResalerStatus.UNAPPROVED;
+        int pageNumber=1;
+        int pageSize=10;
+        JPAExtPaginator<Resaler> list =  Resaler.findByCondition(condition, pageNumber, pageSize);
+        assertEquals(0,list.size());
+    }
 
 	@Test
 	public void testCondition() {
@@ -45,33 +62,30 @@ public class ResalerUnitTest extends UnitTest {
 	 */
 	@Test
 	public void updateStatus() {
-		Long id = (Long) Fixtures.idCache.get("models.resale.Resaler-resaler_2");
 		String remark ="";
-		Resaler.update(id, ResalerStatus.APPROVED,ResalerLevel.NORMAL, remark, ResalerCreditable.NO);
-		Resaler resaler = Resaler.findById(id);
-		assertEquals(ResalerStatus.APPROVED,resaler.status );
-		assertEquals(ResalerLevel.NORMAL,resaler.level );
+		Resaler.update(resaler.id, ResalerStatus.APPROVED,ResalerLevel.NORMAL, remark, ResalerCreditable.NO);
+		Resaler r = Resaler.findById(resaler.id);
+		assertEquals(ResalerStatus.APPROVED, r.status );
+		assertEquals(ResalerLevel.NORMAL, r.level );
 
 		remark ="该分销商信用不够！";
-		Resaler.update(id, ResalerStatus.UNAPPROVED,ResalerLevel.NORMAL, remark, ResalerCreditable.NO);
-		resaler = Resaler.findById(id);
-		assertEquals(ResalerStatus.UNAPPROVED,resaler.status );
-		assertEquals(remark,resaler.remark );
+		Resaler.update(resaler.id, ResalerStatus.UNAPPROVED,ResalerLevel.NORMAL, remark, ResalerCreditable.NO);
+		r = Resaler.findById(resaler.id);
+		assertEquals(ResalerStatus.UNAPPROVED, r.status );
+		assertEquals(remark, r.remark );
 	}
 
 	@Test
 	public void testFreeze() {
-		Long id = (Long) Fixtures.idCache.get("models.resale.Resaler-resaler_2");
-		Resaler.freeze(id);
-		Resaler resaler = Resaler.findById(id);
-		assertEquals(ResalerStatus.FREEZE, resaler.status);
+		Resaler.freeze(resaler.id);
+		Resaler r = Resaler.findById(resaler.id);
+		assertEquals(ResalerStatus.FREEZE, r.status);
 	}
 
 	@Test
 	public void testUnfreeze() {
-		Long id = (Long) Fixtures.idCache.get("models.resale.Resaler-resaler_3");
-		Resaler.unfreeze(id);
-		Resaler resaler = Resaler.findById(id);
-		assertEquals(ResalerStatus.APPROVED, resaler.status);
+		Resaler.unfreeze(resaler.id);
+		Resaler r = Resaler.findById(resaler.id);
+		assertEquals(ResalerStatus.APPROVED, r.status);
 	}
 }

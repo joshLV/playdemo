@@ -84,14 +84,12 @@ public class OperateGoodsTest extends FunctionalTest {
     @Ignore
     public void testCreate() {
         // TODO
-
     }
 
     /**
      * 删除商品信息
      */
     @Test
-    @Ignore
     public void testDelete() {
 
         goods.status = GoodsStatus.OFFSALE;
