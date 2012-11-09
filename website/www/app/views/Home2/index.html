@@ -226,7 +226,7 @@
         </div>
 
         #{if showTwoLine}#{set goodsCount:6/}#{/if}#{else}#{set goodsCount:3/}#{/else}
-    <ul class="goods #{if category_index == 1}first#{/if}">
+    <ul class="goods first">
         #{list category.getTopGoods(goodsCount),as:'aGoods'}
             <li>
 

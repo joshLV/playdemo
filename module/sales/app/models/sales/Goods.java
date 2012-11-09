@@ -1820,18 +1820,21 @@ public class Goods extends Model {
      * @return
      */
     public static QueryResponse searchFullText(GoodsWebsiteCondition condition, int pageNumber, int pageSize) {
-        StringBuilder q = null;
-        if (StringUtils.isNotBlank(condition.keywords) ){
-                           q = new StringBuilder("text:");
+        StringBuilder qBuilder = null;
+        String q = null;
+        if (StringUtils.isNotBlank(condition.keywords)) {
+            qBuilder = new StringBuilder("text:");
             String[] keywordsArray = condition.keywords.split(" ");
             for (int i = 0; i < keywordsArray.length; i++) {
-                if (i == 1){
-                    q.append(" AND ");
+                if (i == 1) {
+                    qBuilder.append(" AND ");
                 }
-                q.append("\"").append(keywordsArray[i]).append("\"").append("~0.8");
+                qBuilder.append("\"").append(keywordsArray[i]).append("\"").append("~0.8");
             }
+            q = qBuilder.toString();
         }
-        return search(q.toString(), condition.parentCategoryId, condition.categoryId, condition.districtId, condition.areaId,
+
+        return search(q, condition.parentCategoryId, condition.categoryId, condition.districtId, condition.areaId,
                 condition.isOrder, condition.materialType, condition.brandId,
                 condition.solrOrderBy, "asc".equals(condition.orderByType), pageNumber, pageSize, false,
                 new String[]{"goods.categoryIds_s", "goods.parentCategoryIds_s", "shop.districtId_s", "shop.areaId_s"});

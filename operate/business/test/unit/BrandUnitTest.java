@@ -1,13 +1,13 @@
 package unit;
 
 import com.uhuila.common.util.PathUtil;
+import factory.FactoryBoy;
 import models.sales.Brand;
 import models.supplier.Supplier;
 import org.junit.Before;
 import org.junit.Test;
 import play.Play;
 import play.modules.paginate.ModelPaginator;
-import play.test.Fixtures;
 import play.test.UnitTest;
 
 import java.util.List;
@@ -20,48 +20,43 @@ import java.util.List;
  * Time: 4:14 PM
  */
 public class BrandUnitTest extends UnitTest {
+    Brand brand;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        Fixtures.delete(Brand.class);
-        Fixtures.delete(Supplier.class);
+        FactoryBoy.deleteAll();
 
-        Fixtures.loadModels("fixture/supplier_unit.yml");
-        Fixtures.loadModels("fixture/brands.yml");
+        brand = FactoryBoy.create(Brand.class);
     }
 
     @Test
     public void testFindTopByBrand() {
         int limit = 4;
-        long brandId = (Long) Fixtures.idCache.get("models.sales.Brand-Brand_6");
 
-        List<Brand> brands = Brand.findTop(limit, brandId);
+        List<Brand> brands = Brand.findTop(limit, brand.id);
 
-        assertEquals(4, brands.size());
+        assertEquals(1, brands.size());
     }
 
     @Test
     public void testFindByOrder() {
-        long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
-        Supplier supplier = Supplier.findById(supplierId);
+        Supplier supplier = Supplier.findById(brand.supplier.id);
         List<Brand> brands = Brand.findByOrder(supplier);
 
-        assertEquals(3, brands.size());
+        assertEquals(1, brands.size());
     }
 
     @Test
     public void testGetBrandPage() {
-        long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
-        ModelPaginator brandPage = Brand.getBrandPage(1, 15, supplierId);
-        assertEquals(3, brandPage.size());
+        ModelPaginator brandPage = Brand.getBrandPage(1, 15, brand.supplier.id);
+        assertEquals(1, brandPage.size());
         Brand firstBrand = (Brand) brandPage.get(0);
         assertEquals("来一份", firstBrand.name);
     }
 
     @Test
     public void testGetOriginalLogo() {
-        long brandId = (Long) Fixtures.idCache.get("models.sales.Brand-Brand_1");
-        Brand brand = Brand.findById(brandId);
         String imageServer = Play.configuration.getProperty
                 ("image.server", "img0.dev.uhcdn.com");
 //        System.out.println("Image Server:  " + imageServer);
@@ -73,8 +68,6 @@ public class BrandUnitTest extends UnitTest {
     @Test
     // TODO need to be improved
     public void testUpdateNullBrand() {
-        long brandId = (Long) Fixtures.idCache.get("models.sales.Brand-Brand_1");
-        Brand brand = Brand.findById(brandId);
         long emptyId = 123L;
         Brand.update(emptyId, brand);
         Brand updatedBrand = Brand.findById(emptyId);

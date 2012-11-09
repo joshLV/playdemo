@@ -9,22 +9,15 @@ import play.modules.paginate.ModelPaginator;
 import play.modules.solr.SolrField;
 import play.modules.solr.SolrSearchable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "shops")
@@ -114,7 +107,7 @@ public class Shop extends Model {
         if (districtId != null) {
             return districtId;
         }
-        if (StringUtils.isNotBlank(areaId) && areaId.length() < 5) {
+        if (StringUtils.isNotBlank(areaId) && areaId.length() >= 5) {
             districtId = areaId.substring(0, 5);
         }
         return districtId;

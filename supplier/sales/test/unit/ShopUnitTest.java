@@ -12,9 +12,10 @@ import java.util.List;
 
 public class ShopUnitTest extends UnitTest {
     Shop shop;
+
     @Before
     public void setup() {
-        FactoryBoy.lazyDelete();
+        FactoryBoy.deleteAll();
         shop = FactoryBoy.create(Shop.class);
 
     }
@@ -52,6 +53,11 @@ public class ShopUnitTest extends UnitTest {
         assertEquals(DeletedStatus.DELETED, shop.deleted);
     }
 
+    @Test
+    public void testGetDistrictIds() {
+        String districtId = shop.getDistrictId();
+        assertEquals("02102", districtId);
+    }
 
     @Test
     public void testHasMap() {
@@ -60,7 +66,7 @@ public class ShopUnitTest extends UnitTest {
 
     @Test
     public void testHasMap_经度为零() {
-        shop.longitude="0";
+        shop.longitude = "0";
         assertFalse(shop.hasMap());
     }
 
