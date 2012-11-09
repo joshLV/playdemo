@@ -40,6 +40,9 @@ GET     /ztsms                                  ZtSmsReceivers.getsms
 *       /tel-verify/face-value                  TelephoneVerify.faceValue
 *       /tel-verify/consumed-at                 TelephoneVerify.consumedAt
 
+# 青团爬虫启动
+GET     /launch-qt                              QingtuanLauncher.index
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

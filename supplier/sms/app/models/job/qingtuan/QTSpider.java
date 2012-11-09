@@ -123,10 +123,17 @@ public class QTSpider extends Job{
         goods.createdBy = supplier.fullName;
         goods.deleted = DeletedStatus.UN_DELETED;
         goods.setDetails(element.elementText("detail"));
-        goods.effectiveAt = new Date(Long.parseLong(element.elementTextTrim("begin_time")));
-        goods.expireAt = new Date(Long.parseLong(element.elementTextTrim("expire_time")));
+        goods.effectiveAt = new Date(Long.parseLong(element.elementTextTrim("begin_time")) * 1000);
+        goods.expireAt = new Date(Long.parseLong(element.elementTextTrim("expire_time")) * 1000);
         goods.faceValue = new BigDecimal(element.elementTextTrim("market_price"));
         goods.salePrice = new BigDecimal(element.elementTextTrim("team_price"));
+        goods.status = GoodsStatus.APPLY;
+        goods.cumulativeStocks = 9999L;
+        goods.useWeekDay = "1,2,3,4,5,6,7";
+        goods.updatedAt = new Date();
+        goods.couponType = GoodsCouponType.GENERATE;
+        goods.promoterPrice = BigDecimal.ZERO;
+        goods.isAllShop = false;
 
         //如果是餐饮的
         if(goods.getParentCategoryIds().equals("1")){
@@ -179,7 +186,7 @@ public class QTSpider extends Job{
             return null;
         }
 
-        String subCategoryKey = "qingtuan." + cgIdStr+ "." + element.elementTextTrim("promotion");
+        String subCategoryKey = "qingtuan." + categoryKey + "." + element.elementTextTrim("promotion");
         String scgIdStr = Messages.get(subCategoryKey);
         if(scgIdStr.equals(subCategoryKey)){
             Logger.error("can not found our id of qingtuan subcategory: %s", subCategoryKey);

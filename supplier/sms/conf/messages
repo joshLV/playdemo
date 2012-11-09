@@ -1,6 +1,17 @@
 # You can specialize this file for each language.
 # For example, for French create a messages.fr file
 #
-
+qingtuan.餐饮美食=1
+qingtuan.休闲娱乐=7
+qingtuan.生活服务=7
+qingtuan.网上购物=1
 qingtuan.旅游住宿=12
-qingtuan.12.旅游=1036
+qingtuan.丽人=1002
+
+qingtuan.旅游住宿.旅游=1036
+
+qingtuan.丽人.美发=1023
+qingtuan.丽人.美容美体=1025
+qingtuan.丽人.美甲=1024
+# 下面这个 todo
+qingtuan.丽人.其他=1026
