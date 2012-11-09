@@ -2,8 +2,13 @@ package functional;
 
 import controllers.UserCarts;
 import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
 import models.consumer.User;
 import models.order.Cart;
+import models.sales.Category;
+import models.sales.Goods;
+import models.sales.Shop;
+import models.supplier.Supplier;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,31 +19,21 @@ import play.test.FunctionalTest;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Juno
+ * User: hejun
  * Date: 12-7-27
- * Time: 下午1:49
- * To change this template use File | Settings | File Templates.
  */
 public class UserCartsFunctionalTest extends FunctionalTest {
 
     @Before
     public void setup() {
-        Fixtures.delete(User.class);
+        FactoryBoy.deleteAll();
 
-        //Fixtures.loadModels("fixture/user.yml", "fixture/userInfo.yml");
-        Fixtures.loadModels("fixture/user.yml");
-        Fixtures.loadModels("fixture/userInfo.yml");
-        Fixtures.loadModels("fixture/supplier_unit.yml");
-        Fixtures.loadModels("fixture/brands.yml");
-        Fixtures.loadModels("fixture/categories_unit.yml");
-        Fixtures.loadModels("fixture/shops.yml");
-        Fixtures.loadModels("fixture/goods.yml");
-        Fixtures.loadModels("fixture/carts.yml");
-
-
-        Long userId= (Long) Fixtures.idCache.get("models.consumer.User-selenium");
-        User user = User.findById(userId);
+        User user = FactoryBoy.create(User.class);
+        FactoryBoy.create(Supplier.class);
+        FactoryBoy.create(Category.class);
+        FactoryBoy.create(Shop.class);
+        FactoryBoy.create(Goods.class);
+        FactoryBoy.create(Cart.class);
 
         //设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
@@ -52,33 +47,28 @@ public class UserCartsFunctionalTest extends FunctionalTest {
 
     @Test
     public void testTops(){
-
+        Goods goods = FactoryBoy.last(Goods.class);
         Http.Response response = GET("/carts/tops");
         assertIsOk(response);
-        assertContentMatch("哈根达斯", response);
-
+        int count = (Integer)renderArgs("count");
+        assertEquals(1, count);
+        assertEquals(1, ((List<Cart>)renderArgs("carts")).size());
     }
 
     @Test
     public void testDelete(){
-
-        long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-        Long userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
-        User user = User.findById(userId);
+        User user = FactoryBoy.last(User.class);
+        Goods goods = FactoryBoy.last(Goods.class);
         String cookieValue = "";
         List<Cart> cartList = Cart.findAll(user, cookieValue);
         int oldSize = cartList.size();
 
-        Http.Response response = DELETE("/carts/"+goodsId);
+        Http.Response response = DELETE("/carts/" + goods.id);
         cartList = Cart.findAll(user,cookieValue);
         int newSize = cartList.size();
         assertIsOk(response);
         //删除成功， 购物车中商品数减一。
         assertEquals(oldSize-1,newSize);
-
-    }
-
-    public void testDeleteNull(){
 
     }
 }
