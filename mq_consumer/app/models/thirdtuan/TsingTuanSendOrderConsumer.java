@@ -71,6 +71,8 @@ public class TsingTuanSendOrderConsumer extends RabbitMQConsumer<TsingTuanOrder>
         
         String url = SEND_URL + URLEncodedUtils.format(qparams, "UTF-8");
         
+        System.out.println("tsingtuan url=" + url);
+        
         getHttpClientHelper().processGetUrl(url, new HttpCallback() {
             @Override
             public void process(int statusCode, String returnContent) {

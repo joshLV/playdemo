@@ -17,11 +17,9 @@ public class DefaultHttpClientHelper implements HttpClientHelper {
     
     @Override
     public void processGetUrl(String url, HttpCallback callback) {
-
+        System.out.println("url=" + url);
         play.libs.WS.HttpResponse response = WS.url(url).get();
-        
         callback.process(response.getStatus(), response.getString());
-
     }
 
 }
