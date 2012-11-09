@@ -1,6 +1,7 @@
 package models.job.qingtuan;
 
 import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.FileUploadUtil;
 import models.sales.*;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
@@ -9,11 +10,17 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import play.Logger;
+import play.Play;
 import play.i18n.Messages;
 import play.jobs.Job;
 import play.jobs.On;
+import play.libs.IO;
 import play.libs.WS;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
@@ -30,12 +37,11 @@ import java.util.List;
 public class QTSpider extends Job{
     private static final String GATEWAY = "http://www.tsingtuan.com/api/team.php";
     private static final int PAGE_SIZE = 200;
-    public static final String RESULT_TC = "TC";    //总数
-    public static final String RESULT_PC = "PC";    //已处理的数量
-    public static final String RESULT_LT = "LT";    //最后一个team_id
 
     private static Supplier supplier = null;
     private static Brand brand = null;
+
+    public static String ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
 
     @Override
     public void doJob(){
@@ -159,7 +165,14 @@ public class QTSpider extends Job{
         goods.supplierId = supplier.id;
 
         goods.brand = brand;
-
+        InputStream is =  WS.url(element.elementTextTrim("image")).get().getStream();
+        try {
+            File file = File.createTempFile("qingtuan", null);
+            IO.write(is, file);
+            goods.imagePath = uploadFile(file);
+        } catch (IOException e) {
+            // do nothing
+        }
         goods.save();
     }
 
@@ -199,4 +212,14 @@ public class QTSpider extends Job{
         return Category.findById(Long.parseLong(scgIdStr));
     }
 
+
+    private static String uploadFile(File file) {
+        String targetFilePath = null;
+        try {
+            targetFilePath = FileUploadUtil.storeImage(file, ROOT_PATH);
+        } catch (IOException e) {
+            return null;
+        }
+        return targetFilePath.substring(ROOT_PATH.length(), targetFilePath.length());
+    }
 }
