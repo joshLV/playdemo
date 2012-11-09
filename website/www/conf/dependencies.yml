@@ -39,6 +39,7 @@ require:
     - cache_helper -> cache_helper
     - dangdang -> dangdang
     - jingdong -> jingdong
+    - supports -> supports
     - third_tuan -> third_tuan
     - commons-httpclient -> commons-httpclient 3.1
 
@@ -83,4 +84,5 @@ repositories:
             - cache_helper -> *
             - dangdang -> *
             - jingdong -> *
+            - supports -> *
             - third_tuan -> *

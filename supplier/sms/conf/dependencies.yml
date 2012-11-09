@@ -30,6 +30,7 @@ require:
     - yihaodian -> yihaodian
     - dangdang -> dangdang
     - jingdong -> jingdong
+    - supports -> supports
     - third_tuan -> third_tuan
     - com.yihaodian -> yhdclient 1.0
     - commons-lang -> commons-lang 2.6
@@ -74,4 +75,5 @@ repositories:
             - yihaodian -> *
             - dangdang -> *
             - jingdong -> *
+            - supports -> *
             - third_tuan -> *

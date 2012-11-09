@@ -32,6 +32,7 @@ require:
     - cache_helper -> cache_helper
     - dangdang -> dangdang
     - jingdong -> jingdong
+    - supports -> supports
     - third_tuan -> third_tuan
 
 repositories:
@@ -73,4 +74,5 @@ repositories:
             - emaillogs -> *
             - dangdang -> *
             - jingdong -> *
+            - supports -> *
             - third_tuan -> *

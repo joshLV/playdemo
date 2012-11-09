@@ -33,6 +33,7 @@ require:
     - emaillogs -> emaillogs
     - dangdang -> dangdang
     - jingdong -> jingdong
+    - supports -> supports
 
 repositories:
     - mavenRepository:
@@ -73,4 +74,5 @@ repositories:
             - emaillogs -> *
             - dangdang -> *
             - jingdong -> *
+            - supports -> *
             - third_tuan -> *

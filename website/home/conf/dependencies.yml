@@ -32,6 +32,7 @@ require:
     - commons-httpclient -> commons-httpclient 3.1
     - dangdang -> dangdang
     - jingdong -> jingdong
+    - supports -> supports
     - third_tuan -> third_tuan
 
 repositories:
@@ -76,3 +77,4 @@ repositories:
             - dangdang -> *
             - jingdong -> *
             - third_tuan -> *
+            - supports -> *

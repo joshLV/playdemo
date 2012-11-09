@@ -33,6 +33,7 @@ require:
     - cache_helper -> cache_helper
     - dangdang -> dangdang
     - jingdong -> jingdong
+    - supports -> supports
 
 repositories:
 
@@ -74,3 +75,4 @@ repositories:
             - cache_helper -> *
             - dangdang -> *
             - jingdong -> *
+            - supports -> *

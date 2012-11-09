@@ -12,7 +12,6 @@ require:
     - paginate_ext -> paginate_ext
     - view_ext -> view_ext
     - operate_rbac -> operate_rbac
-    - base_rbac -> base_rbac
     - cms -> cms
     - org.jsoup -> jsoup 1.6.1
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
@@ -42,10 +41,8 @@ repositories:
             - layout_operate -> *
             - paginate_ext -> *
             - operate_rbac -> *
-            - base_rbac -> *
             - asset_package -> *
             - cms -> *
             - view_ext -> *
             - cache_helper -> *
             - emaillogs -> *
-
