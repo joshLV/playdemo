@@ -3,6 +3,7 @@ package models.job.qingtuan;
 import com.uhuila.common.constants.DeletedStatus;
 import models.sales.*;
 import models.supplier.Supplier;
+import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -175,6 +176,16 @@ public class QTSpider extends Job{
         shop.name =  area.name;
         shop.address = element.elementTextTrim("address");
         shop.phone = element.elementTextTrim("partner_phone");
+        String longLat = element.elementTextTrim("longlat");
+        if(StringUtils.isNotBlank(longLat)){
+            String tmp[] = longLat.split(",");
+            if(tmp.length > 0) {
+                shop.longitude = tmp[0];
+            }
+            if(tmp.length > 1) {
+                shop.latitude = tmp[1];
+            }
+        }
         return shop.save();
     }
 
