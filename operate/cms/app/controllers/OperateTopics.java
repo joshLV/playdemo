@@ -66,6 +66,7 @@ public class OperateTopics extends Controller {
             for (String key : validation.errorsMap().keySet()) {
                 warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
             }
+            topic.id = id;
             render("OperateTopics/edit.html", topic);
         }
 

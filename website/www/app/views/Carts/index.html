@@ -99,7 +99,7 @@
         </tbody>
         </table>
     </div><!-- .cartlist -->
-
+   #{if carts.size() > 0}
     <div class="cart-action">
         <input type="checkbox" name="select_all_checkbox"/>全选
         <a href="#" id="batch_delete">批量删除</a>
@@ -109,6 +109,7 @@
         商品共<span id="total_num">0</span>件，总合计（不含运费）：<b class="cart-amount" id="carts_amount"></b>元
         <button class="confirm-order" type="submit">确认订单</button>
     </div>
+    #{/if}
     #{/form}
     #{if sawGoodsList?.size()>0}
     <div class="recent">

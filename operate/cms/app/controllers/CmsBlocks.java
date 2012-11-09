@@ -72,7 +72,7 @@ public class CmsBlocks extends Controller {
         block.create();
         index(null);
     }
-    
+
 
     private static void checkExpireAt(Block block) {
         if (block.effectiveAt != null && block.expireAt != null && block.expireAt.before(block.effectiveAt)) {
@@ -134,7 +134,7 @@ public class CmsBlocks extends Controller {
         render(block);
     }
 
-    public static void update(Long id,@Valid Block block, File image) {
+    public static void update(Long id, @Valid Block block, File image) {
         //TODO 仅仅在测试环境中会产生一个validation.invalid的错误，以下这段是为了让测试用例通过增加的代码
         if (Play.runingInTestMode() && validation.errorsMap().containsKey("image")) {
             for (String key : validation.errorsMap().keySet()) {
@@ -149,6 +149,7 @@ public class CmsBlocks extends Controller {
             for (String key : validation.errorsMap().keySet()) {
                 Logger.warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
             }
+            block.id = id;
             render("CmsBlocks/edit.html", block);
         }
 
@@ -161,7 +162,7 @@ public class CmsBlocks extends Controller {
                     block.imageUrl = imageUrl;
                 }
             } else {
-               block.imageUrl =oldImagePath ;
+                block.imageUrl = oldImagePath;
             }
 
         } catch (IOException e) {
