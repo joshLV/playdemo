@@ -26,9 +26,6 @@ public class ExpiredCouponNotice extends Job {
 
     @Override
     public void doJob() throws ParseException {
-        if(Play.runingInTestMode()){
-            return;
-        }
         String sql = "select e from ECoupon e where e.eCouponSn not in (select m.couponNumber from SentCouponMessage " +
                 "m ) and e.isFreeze=0 and e.goods.isLottery=false and status =:status and (e.expireAt > :expireBeginAt and e.expireAt <= " +
                 ":expireEndAt) order by e.id";

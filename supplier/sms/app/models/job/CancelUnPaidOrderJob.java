@@ -24,10 +24,6 @@ public class CancelUnPaidOrderJob extends Job {
 
     @Override
     public void doJob() throws ParseException {
-        if(Play.runingInTestMode()){
-            return;
-        }
-
         String sql = "select o from Order o where o.orderNumber not in (select c.orderNumber from CancelUnpaidOrders " +
                 "c ) and o.status =:status and o.createdAt <=:createdAtEnd order by o.id";
         Query query = Order.em().createQuery(sql);
