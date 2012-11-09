@@ -6,7 +6,7 @@
 #{/set}
 <legend>${title}
 &{areaType}
-    &nbsp;&nbsp; <a href="/area/new?parentId=${parentId}" class="btn btn-primary">添加</a>
+    &nbsp;&nbsp; <a href="/areas/new?parentId=${parentId}" class="btn btn-primary">添加</a>
 
 </legend>
 <div class="body">
@@ -16,7 +16,9 @@
             <th>区域Id</th>
             <th>推荐度</th>
             <th>名称</th>
+        #{if areaType==models.sales.AreaType.AREA}
             <th>热门商圈</th>
+        #{/if}
             <th>操作</th>
         </tr>
         </thead>
@@ -26,13 +28,19 @@
             <td>${area?.id}</td>
             <td>${area?.displayOrder}</td>
             <td>${area?.name}</td>
-            <td>${area?.popularArea?.yesno("是","否")}</td>
+            #{if areaType==models.sales.AreaType.AREA}
+                <td>${area?.popularArea?.yesno("是","否")}</td>
+            #{/if}
             <td>
-                <a href="/area/${area?.id}/edit">修改</a>
-                #{if area?.areaType!=models.sales.AreaType.AREA}
-                    / <a href="/area?parentId=${area?.id}">子区域</a>
+                <a href="/areas/${area?.id}/edit">修改</a>
+                #{if area?.areaType==models.sales.AreaType.CITY}
+                    / <a href="/areas?parentId=${area?.id}">区(${area?.undeletedChildren().size()})</a>
                 #{/if}
-                / #{vx.deleteLink id:area?.id, name:area?.name, action:"/area"/}
+                #{if area?.areaType==models.sales.AreaType.DISTRICT}
+                    / <a href="/areas?parentId=${area?.id}">商圈(${area?.undeletedChildren().size()})</a>
+                #{/if}
+
+                / #{vx.deleteLink id:area?.id, name:area?.name, action:"/areas"/}
             </td>
         </tr>
         #{/list}

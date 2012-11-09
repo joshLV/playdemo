@@ -87,8 +87,9 @@ public class AreasAdmin extends Controller {
      */
     public static void edit(String id) {
         models.sales.Area area = models.sales.Area.find("id=? and deleted=?", id, DeletedStatus.UN_DELETED).first();
+        AreaType areaType = area.areaType;
         renderInit(area);
-        render(id, area);
+        render(id, area, areaType);
     }
 
     /**

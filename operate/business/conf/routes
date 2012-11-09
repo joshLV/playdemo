@@ -37,12 +37,12 @@ PUT     /category/{id}                          CategoryAdmin.update
 DELETE  /category/{id}                          CategoryAdmin.delete
 
 #区域管理
-GET     /area                               AreasAdmin.index
-GET     /area/new                           AreasAdmin.add
-POST    /area                               AreasAdmin.create
-GET     /area/{id}/edit                     AreasAdmin.edit
-PUT     /area/{id}                          AreasAdmin.update
-DELETE  /area/{id}                          AreasAdmin.delete
+GET     /areas                               AreasAdmin.index
+GET     /areas/new                           AreasAdmin.add
+POST    /areas                               AreasAdmin.create
+GET     /areas/{id}/edit                     AreasAdmin.edit
+PUT     /areas/{id}                          AreasAdmin.update
+DELETE  /areas/{id}                          AreasAdmin.delete
 
 # 发送优惠券
 GET     /send_sms                                       SendSMS.index

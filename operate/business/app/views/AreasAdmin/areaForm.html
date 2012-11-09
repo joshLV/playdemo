@@ -12,6 +12,7 @@
 #{/else}
 #{layout_operate.textField name:'area.name', value:area?.name, required:true/}
 #{layout_operate.textField name:'area.displayOrder', value:area?.displayOrder?:"0", required:true/}
+#{if areaType==models.sales.AreaType.AREA}
 <div class="control-group">
     <label class="control-label">热门商圈
     </label>
@@ -22,8 +23,7 @@
         <span id="err-popularArea"></span>
     </div>
 </div>
-
-
+#{/if}
 <div class="form-actions">
     <input class="btn btn-primary" id="save" type="submit" value="保存"/>
 </div>

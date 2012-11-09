@@ -273,4 +273,9 @@ public class Area extends GenericModel {
             area.save();
         }
     }
+
+    public List<Area> undeletedChildren() {
+        return Area.find("parent = ? and  ( deleted = ? or deleted is null)",
+                this, DeletedStatus.UN_DELETED).fetch();
+    }
 }

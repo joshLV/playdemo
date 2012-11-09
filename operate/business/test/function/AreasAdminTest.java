@@ -50,7 +50,7 @@ public class AreasAdminTest extends FunctionalTest {
 
     @Test
     public void testIndex() {
-        Http.Response response = GET("/area?parentId=" + area.parent.id);
+        Http.Response response = GET("/areas?parentId=" + area.parent.id);
         assertStatus(200, response);
         List<Area> areaList = (List<Area>) renderArgs("areaList");
         assertEquals(1, areaList.size());
@@ -59,7 +59,7 @@ public class AreasAdminTest extends FunctionalTest {
 
     @Test
     public void testEdit() {
-        Http.Response response = GET("/area/" + area.id + "/edit?parentId=" + area.parent.id);
+        Http.Response response = GET("/areas/" + area.id + "/edit?parentId=" + area.parent.id);
         assertStatus(200, response);
         assertEquals(area.name, renderArgs("area.name"));
     }
@@ -69,7 +69,7 @@ public class AreasAdminTest extends FunctionalTest {
     public void testUpdate() {
         String name = "新区域";
         String params = "area.name=" + name;
-        Http.Response response = PUT("/area/" + area.id, "application/x-www-form-urlencoded", params);
+        Http.Response response = PUT("/areas/" + area.id, "application/x-www-form-urlencoded", params);
         assertStatus(302, response);
         area.refresh();
         assertEquals(name, area.name);
@@ -94,7 +94,7 @@ public class AreasAdminTest extends FunctionalTest {
         itemParams.put("area.displayOrder", String.valueOf(area.displayOrder));
         itemParams.put("area.areaType", area.areaType.toString());
         itemParams.put("area.parent", area.parent.toString());
-        Http.Response response = POST("/area", itemParams);
+        Http.Response response = POST("/areas", itemParams);
         assertStatus(302, response);
         assertEquals(4, Area.count());
     }
@@ -103,7 +103,7 @@ public class AreasAdminTest extends FunctionalTest {
     public void testDelete() {
         List<Area> areaList = Area.find("deleted=?", DeletedStatus.UN_DELETED).fetch();
         assertEquals(3, areaList.size());
-        Http.Response response = DELETE("/area/" + area.id);
+        Http.Response response = DELETE("/areas/" + area.id);
         assertStatus(302, response);
         areaList = Category.find("deleted=?", DeletedStatus.UN_DELETED).fetch();
         assertEquals(0, areaList.size());
