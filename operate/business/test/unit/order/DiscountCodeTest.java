@@ -1,26 +1,22 @@
 package unit.order;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-
+import com.uhuila.common.constants.DeletedStatus;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
+import factory.callback.SequenceCallback;
 import models.order.DiscountCode;
 import models.order.Order;
 import models.order.OrderDiscount;
 import models.order.OrderStatus;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.modules.paginate.ModelPaginator;
 import play.test.UnitTest;
 import util.DateHelper;
 
-import com.uhuila.common.constants.DeletedStatus;
-
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
-import factory.callback.SequenceCallback;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 public class DiscountCodeTest extends UnitTest {
 
@@ -66,8 +62,6 @@ public class DiscountCodeTest extends UnitTest {
     public void 列出所有可用折扣券() {
         DiscountCode discountCode = FactoryBoy.create(DiscountCode.class);
         assertEquals(1l, DiscountCode.count());
-        System.out.println("discountCode=" + discountCode + ", sn="
-                        + discountCode.discountSn);
         FactoryBoy.batchCreate(5, DiscountCode.class,
                         new SequenceCallback<DiscountCode>() {
                             @Override
@@ -76,11 +70,10 @@ public class DiscountCodeTest extends UnitTest {
                             }
                         });
         List<DiscountCode> list = DiscountCode.findAll();
-        System.out.println("list.size=" + list.size());
-        for (DiscountCode discountCode2 : list) {
+        /*for (DiscountCode discountCode2 : list) {
             System.out.println(discountCode2.id + ". name="
                             + discountCode2.discountSn);
-        }
+        }*/
         assertEquals(6l, DiscountCode.count());
 
         ModelPaginator discountCodePage = DiscountCode.getDiscountCodePage(0,

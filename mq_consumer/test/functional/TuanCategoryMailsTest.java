@@ -5,7 +5,6 @@ import factory.callback.SequenceCallback;
 import models.mail.MailMessage;
 import models.sales.Category;
 import notifiers.TuanCategoryMails;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.libs.Mail;
 import play.test.FunctionalTest;
@@ -47,7 +46,7 @@ public class TuanCategoryMailsTest extends FunctionalTest {
         TuanCategoryMails.notify(message);
 
         String mailBody = Mail.Mock.getLastMessageReceivedBy(email);
-        System.out.println(mailBody);
+//        System.out.println(mailBody);
         assertTrue(tuanName, mailBody.indexOf(tuanName) > 0);
     }
 
@@ -77,7 +76,7 @@ public class TuanCategoryMailsTest extends FunctionalTest {
         Thread.sleep(500);
 
         String mailBody = Mail.Mock.getLastMessageReceivedBy(email);
-        System.out.println(mailBody);
+//        System.out.println(mailBody);
         assertTrue(tuanName, mailBody.indexOf(tuanName) > 0);
     }
 

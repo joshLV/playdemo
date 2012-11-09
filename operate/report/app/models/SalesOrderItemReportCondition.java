@@ -1,7 +1,6 @@
 package models;
 
 import com.uhuila.common.util.DateUtil;
-import controllers.OperateRbac;
 import models.order.ECouponStatus;
 import models.sales.MaterialType;
 import models.supplier.Supplier;
@@ -78,7 +77,7 @@ public class SalesOrderItemReportCondition implements Serializable {
             paramMap.put("supplierLike", "%" + supplierLike + "%");
         }
 
-        System.out.println("condBuilder.toString():" + condBuilder.toString());
+//        System.out.println("condBuilder.toString():" + condBuilder.toString());
         return condBuilder.toString();
     }
 
@@ -124,7 +123,7 @@ public class SalesOrderItemReportCondition implements Serializable {
             paramMap.put("supplierLike", "%" + supplierLike + "%");
         }
 
-        System.out.println("condBuilder.toString():" + condBuilder.toString());
+//        System.out.println("condBuilder.toString():" + condBuilder.toString());
 //        System.out.println("condBuilder>>>>>>>>>>>>>>>>>>>>>>>>>>." + condBuilder.toString());
         return condBuilder.toString();
     }

@@ -57,10 +57,10 @@ public abstract class AbstractOAuth20Provider extends BaseOAuth20Provider {
     @Override
     public OAuthCredential extractCredentialFromParameters(UserSession session, Map<String, String[]> parameters) {
         String[] state = parameters.get("state");
-        for (String key : parameters.keySet()) {
+        /*for (String key : parameters.keySet()) {
             System.out.println("??????????    " + key + ":" + parameters.get(key)[0]);
         }
-        System.out.println("????service=" + service);
+        System.out.println("????service=" + service);*/
         if (state == null) {
             state = parameters.get("service");
         }

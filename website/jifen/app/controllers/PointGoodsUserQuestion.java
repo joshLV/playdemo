@@ -1,26 +1,22 @@
 package controllers;
 
+import controllers.modules.website.cas.SecureCAS;
+import models.cms.CmsQuestion;
+import models.cms.GoodsType;
+import models.consumer.User;
+import models.mail.MailMessage;
+import models.mail.MailUtil;
+import play.Play;
+import play.cache.Cache;
+import play.mvc.Controller;
+import play.mvc.Http;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import models.cms.CmsQuestion;
-import models.cms.GoodsType;
-import models.consumer.User;
-import models.consumer.UserVote;
-import models.mail.MailMessage;
-import models.mail.MailUtil;
-import models.sales.*;
-import play.Play;
-import play.cache.Cache;
-import play.mvc.Controller;
-import play.mvc.Http;
-import play.mvc.With;
-import play.test.Fixtures;
-import controllers.modules.website.cas.SecureCAS;
-import controllers.modules.website.cas.annotations.SkipCAS;
 
 
 /**
@@ -140,7 +136,7 @@ public class PointGoodsUserQuestion extends Controller {
                 mappedQuestion.put("date", dateFormat.format(dateFormat.parse("2012-07-26")));
             }
 
-            System.out.println(question.userName);
+//            System.out.println(question.userName);
 
             if(question.userName != null){
                 mappedQuestion.put("user", question.userName);

@@ -1,10 +1,6 @@
 package models.sms.impl;
 
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import models.sms.SMSException;
 import models.sms.SMSMessage;
 import models.sms.SMSProvider;
@@ -20,6 +16,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import play.Logger;
 import play.Play;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * C123
@@ -52,7 +53,6 @@ public class C123HttpSMSProvider implements SMSProvider {
         HttpGet httpget = new HttpGet(url);
         HttpResponse response = null;
 
-        System.out.println("url=" + url + "++++++++++++++++");
         Logger.debug("************ Sms2SendConsumer: request url:"  + url + "*************");
 
         try {

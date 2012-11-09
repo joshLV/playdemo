@@ -1,16 +1,15 @@
 
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import play.mvc.Http.Request;
+import play.mvc.Http.Response;
+import play.test.Fixtures;
+import play.test.FunctionalTest;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-
-import models.*;
-
-import org.junit.*;
-import org.junit.Before;
-
-import play.mvc.*;
-import play.mvc.Http.*;
-import play.test.*;
 
 public class ApplicationTest extends FunctionalTest {
 
@@ -24,7 +23,6 @@ public class ApplicationTest extends FunctionalTest {
     @Ignore
     @Test
     public void testThatIndexPageWorks() {
-        System.out.println("hello");
         //clearCookies();
 
         loginForTest("selenium@uhuila.com");
@@ -39,15 +37,14 @@ public class ApplicationTest extends FunctionalTest {
         Request request = newRequest();
         makeRequest(request, response0);
 
-        System.out.println("user2=" + user);
         Map<String, String> params = new HashMap<String, String>();
         params.put("login", user);
         params.put("password", user);
 
         Response response = POST(request, "/@cas/authenticate", params, new HashMap<String, File>());
-        for(String name : response.cookies.keySet()) {
+        /*for(String name : response.cookies.keySet()) {
             System.out.println("name=" + name + ", value=" + response.cookies.get(name).value);
-        }
+        }*/
         //assertIsOk(response);
 
         Request request0 = newRequest();

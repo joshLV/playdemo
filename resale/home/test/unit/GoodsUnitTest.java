@@ -42,14 +42,14 @@ public class GoodsUnitTest extends UnitTest {
 				g.materialType = MaterialType.ELECTRONIC;
 			}
 		});
-    	System.out.println("goods.count=" + Goods.count());
+//    	System.out.println("goods.count=" + Goods.count());
     	List<Goods> all = Goods.all().fetch();
     	Goods g1 = all.get(3);
-    	System.out.println("status=" + g1.status + ", deleted=" + g1.deleted + ", isLottory=" + g1.isLottery + ", type=" + g1.materialType);
+//    	System.out.println("status=" + g1.status + ", deleted=" + g1.deleted + ", isLottory=" + g1.isLottery + ", type=" + g1.materialType);
     	
         String condition = "0-0-0-0-1-0-0";
         GoodsCondition goodsCond = new GoodsCondition(true,condition);
-        System.out.println(goodsCond.materialType);
+//        System.out.println(goodsCond.materialType);
         JPAExtPaginator<Goods> goodsPage = models.sales.Goods.findByResaleCondition
                 (resaler,goodsCond, 1, 50);
         assertEquals(14, goodsPage.size());

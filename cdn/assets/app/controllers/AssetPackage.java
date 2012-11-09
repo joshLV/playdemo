@@ -1,5 +1,9 @@
 package controllers;
 
+import ext.AssetTag;
+import play.Play;
+import play.mvc.Controller;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,9 +12,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import play.Play;
-import play.mvc.Controller;
-import ext.AssetTag;
 
 public class AssetPackage extends Controller {
 
@@ -24,7 +25,7 @@ public class AssetPackage extends Controller {
         String file_ext = "js";
         String contentType = "application/javascript";
         
-        System.out.println(path);
+//        System.out.println(path);
         
         mergeRequestPathFile(path, JS_ROOT, file_ext, contentType);
     }
@@ -34,7 +35,7 @@ public class AssetPackage extends Controller {
         String file_ext = "css";
         String contentType = "text/css";
         
-        System.out.println(path);
+//        System.out.println(path);
         
         mergeRequestPathFile(path, CSS_ROOT, file_ext, contentType);
     }    
@@ -47,7 +48,7 @@ public class AssetPackage extends Controller {
         
         String pathName = path.replace('/', '_');
         String targetName = path.substring(path.lastIndexOf('/') + 1);
-        System.out.println("targetName=" + targetName);
+//        System.out.println("targetName=" + targetName);
         File targetFile= null;
         
         if (assetPath.length > 1) {    
@@ -61,7 +62,7 @@ public class AssetPackage extends Controller {
                     
                     for (String assetName : assetPath) {
                         File sourceFile = new File(Play.applicationPath, fileRoot + assetName + file_ext);
-                        System.out.println("js=" + sourceFile.getPath());
+//                        System.out.println("js=" + sourceFile.getPath());
                         if (sourceFile.exists()) {
                             BufferedReader breader = new BufferedReader(new FileReader(sourceFile));
                             int c;

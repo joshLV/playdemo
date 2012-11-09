@@ -1,8 +1,10 @@
 package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
-import models.sales.*;
-import models.sms.SMSUtil;
+import models.sales.SendSMSInfo;
+import models.sales.SendSMSInfoCondition;
+import models.sales.SendSMSTask;
+import models.sales.SendSMSTaskCondition;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Validation;
@@ -12,7 +14,8 @@ import play.mvc.With;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -127,14 +130,14 @@ public class SendSMS extends Controller {
 
     public static void sucSend(final String taskTempNo, String scheduledTime, String timer) throws ParseException {
         SendSMSTask smsTask = SendSMSTask.find("deleted=? and taskNo=? ", DeletedStatus.UN_DELETED, taskTempNo).first();
-        System.out.println("taskTempNo>>>>"+taskTempNo);
-        System.out.println("smsTask"+smsTask);
+//        System.out.println("taskTempNo>>>>"+taskTempNo);
+//        System.out.println("smsTask"+smsTask);
         //timer equals "0"
         if (timer.indexOf("0") != -1) {
-            System.out.println("instantly");
+//            System.out.println("instantly");
             Date now = new Date();
             smsTask.scheduledTime = new Date(now.getTime() + 1000);
-            System.out.println("dfasdfasdfasdf"+  smsTask.scheduledTime);
+//            System.out.println("dfasdfasdfasdf"+  smsTask.scheduledTime);
             smsTask.save();
         }
         if (timer.indexOf("1") != -1) {

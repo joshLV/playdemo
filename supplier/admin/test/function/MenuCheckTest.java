@@ -53,7 +53,7 @@ public class MenuCheckTest extends FunctionalTest {
 		Long id = (Long) Fixtures.idCache.get("models.admin.SupplierUser-user3");
 		SupplierUser user = SupplierUser.findById(id);
 		
-		System.out.println("++++++++++++++++   user.id:" + user.id + ", name:" + user.loginName + ", supplier:" + user.supplier);
+//		System.out.println("++++++++++++++++   user.id:" + user.id + ", name:" + user.loginName + ", supplier:" + user.supplier);
 		
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);

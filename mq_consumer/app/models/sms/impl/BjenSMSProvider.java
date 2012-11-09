@@ -1,10 +1,5 @@
 package models.sms.impl;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import models.sms.SMSException;
 import models.sms.SMSMessage;
 import models.sms.SMSProvider;
@@ -20,6 +15,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import play.Logger;
 import play.Play;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 北京奥软短信接口实现
@@ -53,7 +53,6 @@ public class BjenSMSProvider implements SMSProvider {
         HttpGet httpget = new HttpGet(url);
         HttpResponse response = null;
 
-        System.out.println("url=" + url + "++++++++++++++++");
         Logger.debug("************ SmsSendConsumer: request url:"  + url + "*************");
 
         try {

@@ -131,8 +131,6 @@ public class UserQuestions extends Controller {
                 mappedQuestion.put("date", dateFormat.format(dateFormat.parse("2012-07-26")));
             }
 
-            System.out.println(question.userName);
-
             if (question.userName != null) {
                 mappedQuestion.put("user", question.userName);
             } else {

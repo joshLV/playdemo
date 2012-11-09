@@ -1,11 +1,5 @@
 package models.sms.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import models.sms.SMSException;
 import models.sms.SMSMessage;
 import models.sms.SMSProvider;
@@ -20,6 +14,13 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import play.Logger;
 import play.Play;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Tui3SMSProvider implements SMSProvider {
 
@@ -47,7 +48,6 @@ public class Tui3SMSProvider implements SMSProvider {
         HttpGet httpget = new HttpGet(url);
         HttpResponse response = null;
 
-        System.out.println("url=" + url + "++++++++++++++++");
         Logger.info("************ Tui3SMS: request url:"  + url + "*************");
 
         try {

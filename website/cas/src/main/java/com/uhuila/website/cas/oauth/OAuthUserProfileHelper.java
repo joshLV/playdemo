@@ -17,7 +17,7 @@ public class OAuthUserProfileHelper {
 
     public static void addIdentifier(UserProfile userProfile, JsonNode userJson, String propertyName, String source) {
         final String identifier = userJson.get(propertyName).getTextValue();
-        System.out.println(">>>> OAuth Identifier:" + identifier);
+//        System.out.println(">>>> OAuth Identifier:" + identifier);
 
         userProfile.setId(source + ":" + identifier);
         addAttribute(userProfile, "source", source);

@@ -1,14 +1,15 @@
 package unit;
 
-import models.order.*;
 import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;
-import models.sales.PointGoods;
+import models.order.NotEnoughInventoryException;
+import models.order.PointGoodsOrder;
+import models.order.PointGoodsOrderSentStatus;
 import models.order.PointGoodsOrderStatus;
+import models.sales.PointGoods;
 import org.junit.Before;
 import org.junit.Test;
-import play.modules.paginate.JPAExtPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
 

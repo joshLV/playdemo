@@ -4,12 +4,15 @@ import controllers.modules.website.cas.SecureCAS;
 import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
-import models.order.*;
+import models.order.Cart;
+import models.order.DeliveryType;
+import models.order.NotEnoughInventoryException;
+import models.order.Order;
+import models.order.OrderItems;
 import models.sales.MaterialType;
 import models.sales.SecKillGoodsItem;
 import play.Logger;
-import play.data.validation.*;
-import play.data.validation.Error;
+import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
@@ -107,10 +110,10 @@ public class SecKillOrders extends Controller {
         }
 
 
-        for (Error error : Validation.errors()) {
+        /*for (Error error : Validation.errors()) {
 
             System.out.println(error.message());
-        }
+        }*/
 
 
         if (Validation.hasErrors()) {

@@ -205,7 +205,6 @@ public class Goods2 extends Controller {
                 renderRecommendGoods(PAGE_SIZE);
             }
 
-            System.out.println("condition.brandId:" + condition.brandId);
             BreadcrumbList breadcrumbs = createBreadcrumbs(condition);
 
             renderArgs.put("categoryId", (condition.parentCategoryId != 0) ? condition.parentCategoryId : condition.categoryId);

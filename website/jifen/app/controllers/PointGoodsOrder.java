@@ -3,23 +3,14 @@ package controllers;
 import controllers.modules.website.cas.SecureCAS;
 import models.consumer.Address;
 import models.consumer.User;
-import models.order.DeliveryType;
-import models.order.NotEnoughInventoryException;
 import models.order.OrderItems;
-import models.sales.MaterialType;
-import play.Logger;
-import play.data.validation.Validation;
-import play.mvc.Controller;
 import models.sales.PointGoods;
-import play.mvc.Http;
+import play.mvc.Controller;
 import play.mvc.With;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static play.Logger.warn;
 
 /**
  * Created with IntelliJ IDEA.
@@ -42,7 +33,7 @@ public class PointGoodsOrder extends Controller {
 
         // 查询商品
         PointGoods pointGoods = PointGoods.findById(gid);
-        System.out.println("商品名称 --------- " + pointGoods.name);
+//        System.out.println("商品名称 --------- " + pointGoods.name);
 
 
         // 解析商品数量
@@ -52,7 +43,7 @@ public class PointGoodsOrder extends Controller {
         if (numberStr != null && numberStr.length > 0) {
             number = Integer.parseInt(numberStr[0]);
         }
-        System.out.println("购买数量 -------- "+number);
+//        System.out.println("购买数量 -------- "+number);
 
         // 传递商品数量
         renderArgs.put("number",number);

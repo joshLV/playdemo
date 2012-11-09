@@ -1,30 +1,25 @@
 package models.sms.impl;
 
+import models.sms.SMSException;
+import models.sms.SMSMessage;
+import models.sms.SMSProvider;
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import play.Logger;
+import play.Play;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import models.sms.SMSException;
-import models.sms.SMSMessage;
-import models.sms.SMSProvider;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.params.HttpClientParams;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.impl.client.AbstractHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.HttpParams;
-
-import play.Logger;
-import play.Play;
 
 /**
  * 上海领时网络接口.
@@ -67,7 +62,6 @@ public class LingshiSMSProvider implements SMSProvider {
         HttpGet httpget = new HttpGet(url);
         HttpResponse response = null;
 
-        System.out.println("url=" + url + "++++++++++++++++");
         Logger.info("************ LingshiSMS: request url:"  + url + "*************");
 
         try {

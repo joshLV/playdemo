@@ -8,17 +8,18 @@ import models.consumer.UserPoint;
 import models.order.DeliveryType;
 import models.order.NotEnoughInventoryException;
 import models.order.OrderItems;
+import models.order.PointGoodsOrder;
 import models.sales.MaterialType;
+import models.sales.PointGoods;
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
-import models.order.PointGoodsOrder;
-import static play.Logger.warn;
-import models.sales.PointGoods;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static play.Logger.warn;
 
 /**
  * Created with IntelliJ IDEA.
@@ -138,12 +139,12 @@ public class PointGoodsPaymentInfo extends Controller {
             pointGoodsOrder.remark = remark;
             // 创建订单，减少库存，增加销量，扣除积分
             pointGoodsOrder.createAndUpdateInventory();
-            System.out.println("执行 创建订单");
+//            System.out.println("执行 创建订单");
 
             // 添加用户积分使用记录
             UserPoint userPoint = new UserPoint();
             userPoint.addRecord(user,"127","0",pointGoodsOrder.amount,pointGoodsOrder.totalPoint);
-            System.out.println("添加 用户积分使用记录");
+//            System.out.println("添加 用户积分使用记录");
 
             // 跳转兑换明细
             redirect("/payment_info/" + pointGoodsOrder.orderNumber);

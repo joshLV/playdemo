@@ -5,7 +5,6 @@ import play.Logger;
 import play.Play;
 import play.db.DB;
 import play.jobs.Job;
-import play.jobs.On;
 
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
@@ -73,7 +72,7 @@ public class ReportGenerateJob extends Job {
                         pm.setObject(i, rs.getObject(i));
                     }
                     int result = pm.executeUpdate();
-                    System.out.println("insert result:" + result);
+//                    System.out.println("insert result:" + result);
                 }
             }
             DB.close();

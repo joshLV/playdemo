@@ -1,23 +1,21 @@
 package unit;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
+import factory.callback.SequenceCallback;
 import models.sales.Goods;
 import models.sales.SecKillGoods;
 import models.sales.SecKillGoodsCondition;
 import models.sales.SecKillGoodsItem;
 import models.sales.SecKillGoodsStatus;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.modules.paginate.JPAExtPaginator;
 import play.test.UnitTest;
 import util.DateHelper;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
-import factory.callback.SequenceCallback;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * <p/>
@@ -36,13 +34,13 @@ public class SecKillGoodsItemUnitTest extends UnitTest {
     @Test
     public void 取得所有的秒杀活动信息() {
         secKillGoodsItem = FactoryBoy.create(SecKillGoodsItem.class);
-        System.out.println("secKillGoodsItem0=" + secKillGoodsItem.isPersistent());
+//        System.out.println("secKillGoodsItem0=" + secKillGoodsItem.isPersistent());
         final SecKillGoods secKillGoods = FactoryBoy.create(SecKillGoods.class);
-        System.out.println("secKillGoodsItem01=" + secKillGoodsItem.isPersistent());
+//        System.out.println("secKillGoodsItem01=" + secKillGoodsItem.isPersistent());
         final Goods goods = FactoryBoy.create(Goods.class);
         secKillGoods.goods = goods;
         
-        System.out.println("secKillGoodsItem=" + secKillGoodsItem.isPersistent());
+//        System.out.println("secKillGoodsItem=" + secKillGoodsItem.isPersistent());
         FactoryBoy.batchCreate(5, SecKillGoodsItem.class,
                         new SequenceCallback<SecKillGoodsItem>() {
                             @Override
@@ -61,7 +59,7 @@ public class SecKillGoodsItemUnitTest extends UnitTest {
                             }
                         });
 
-        System.out.println("secKillGoodsItem2=" + secKillGoodsItem.isPersistent());
+//        System.out.println("secKillGoodsItem2=" + secKillGoodsItem.isPersistent());
         //secKillGoodsItem = SecKillGoodsItem.findById(secKillGoodsItem.id);
         secKillGoodsItem.status = SecKillGoodsStatus.ONSALE;
         secKillGoodsItem.save();

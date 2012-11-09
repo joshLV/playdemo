@@ -4,7 +4,6 @@ import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.FileUploadUtil;
 import models.sales.Brand;
 import models.supplier.Supplier;
-import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
@@ -172,7 +171,6 @@ public class OperateBrands extends Controller {
                 brand.siteDisplayImage = nowImage;
             }
         } catch (IOException e) {
-            e.printStackTrace();
             error(e);
         }
         Brand.update(id, brand);

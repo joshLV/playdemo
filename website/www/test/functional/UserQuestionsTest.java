@@ -140,7 +140,7 @@ public class UserQuestionsTest extends FunctionalTest {
         cmsQuestion.save();
         Response response = GET("/more-questions?goodsId=" + goods.id + "&firstResult=0" + "&size=5");// ?goodsId="+goodsId        +"&size=1"
         assertStatus(200, response);
-        System.out.println("Result:" + response.out.toString());
+//        System.out.println("Result:" + response.out.toString());
         assertEquals("{\"questions\":[{\"content\":\"满百送电影票活动，是不是拍一张这个面值一百的就可以了？还是这个只算80块？\",\"date\":\"2012-07-26\",\"user\":\"游客\"}]}", response.out.toString()); // 浏览器相应
 
     }

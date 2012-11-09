@@ -48,10 +48,10 @@ public class QQOAuth20ServiceImpl implements OAuthService {
         request.addQuerystringParameter(OAuthConstants.REDIRECT_URI, config.getCallback());
         if (config.hasScope()) request.addQuerystringParameter(OAuthConstants.SCOPE, config.getScope());
 
-        System.out.println("!!!!!!!!!!!!!          request:" + request);
+//        System.out.println("!!!!!!!!!!!!!          request:" + request);
         Response response = request.send();
 
-        System.out.println("!!!!!!!!!!!!!          response:" + response.getBody());
+//        System.out.println("!!!!!!!!!!!!!          response:" + response.getBody());
         return api.getAccessTokenExtractor().extract(response.getBody());
     }
 

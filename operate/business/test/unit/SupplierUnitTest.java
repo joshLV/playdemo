@@ -50,9 +50,7 @@ public class SupplierUnitTest extends UnitTest {
         Supplier supplier = Supplier.findById(id);
         String imageSever = "http://" + Play.configuration.getProperty
                 ("image.server", "img0.uhcdn.com");
-        System.out.println("image server is " + imageSever);
         String imageURL = PathUtil.getImageUrl(imageSever, "/0/0/0/logo.jpg", "172x132");
-        System.out.println("image URL is " + imageURL);
         assertEquals(imageURL, supplier.getSmallLogo());
     }
 

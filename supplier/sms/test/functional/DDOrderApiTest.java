@@ -1,13 +1,6 @@
 package functional;
 
-import java.math.BigDecimal;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
+import factory.FactoryBoy;
 import models.accounts.Account;
 import models.accounts.AccountCreditable;
 import models.accounts.AccountType;
@@ -22,14 +15,19 @@ import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.GoodsLevelPrice;
 import models.sales.MaterialType;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.mvc.Http;
 import play.test.FunctionalTest;
-import factory.FactoryBoy;
+
+import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * <p/>
@@ -44,7 +42,7 @@ public class DDOrderApiTest extends FunctionalTest {
     public void setup() {
         FactoryBoy.deleteAll();
 
-        System.out.println(goods + "*******");
+//        System.out.println(goods + "*******");
         UserInfo userInfo = FactoryBoy.create(UserInfo.class);
     }
 
@@ -145,7 +143,7 @@ public class DDOrderApiTest extends FunctionalTest {
         assertNotNull(order);
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
                 OuterOrderPartner.DD, kx_order_id).first();
-        System.out.println(outerOrder + "outerOrder");
+//        System.out.println(outerOrder + "outerOrder");
         assertEquals(order.orderNumber, outerOrder.ybqOrder.orderNumber);
         List<ECoupon> eCouponList = ECoupon.findByOrder(order);
         assertEquals(1, eCouponList.size());

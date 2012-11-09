@@ -1820,8 +1820,18 @@ public class Goods extends Model {
      * @return
      */
     public static QueryResponse searchFullText(GoodsWebsiteCondition condition, int pageNumber, int pageSize) {
-        String q = StringUtils.isNotBlank(condition.keywords) ? "text:\"" + condition.keywords + "\"" : null;
-        return search(q, condition.parentCategoryId, condition.categoryId, condition.districtId, condition.areaId,
+        StringBuilder q = null;
+        if (StringUtils.isNotBlank(condition.keywords) ){
+                           q = new StringBuilder("text:");
+            String[] keywordsArray = condition.keywords.split(" ");
+            for (int i = 0; i < keywordsArray.length; i++) {
+                if (i == 1){
+                    q.append(" AND ");
+                }
+                q.append("\"").append(keywordsArray[i]).append("\"").append("~0.8");
+            }
+        }
+        return search(q.toString(), condition.parentCategoryId, condition.categoryId, condition.districtId, condition.areaId,
                 condition.isOrder, condition.materialType, condition.brandId,
                 condition.solrOrderBy, "asc".equals(condition.orderByType), pageNumber, pageSize, false,
                 new String[]{"goods.categoryIds_s", "goods.parentCategoryIds_s", "shop.districtId_s", "shop.areaId_s"});
@@ -1946,6 +1956,7 @@ public class Goods extends Model {
         }
         query.setFacet(true).addFacetField(facetFields);
         query.setHighlight(true).addHighlightField(SOLR_GOODS_NAME);
+
         return Solr.query(query);
     }
 

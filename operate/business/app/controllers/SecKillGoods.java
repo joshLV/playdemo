@@ -66,7 +66,7 @@ public class SecKillGoods extends Controller {
         //TODO 仅仅在测试环境中会产生一个validation.invalid的错误，以下这段是为了让测试用例通过增加的代码
         if (Play.runingInTestMode() && validation.errorsMap().containsKey("imagePath")) {
             for (String key : validation.errorsMap().keySet()) {
-                System.out.println("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
+//                System.out.println("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
                 Logger.warn("remove:     validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
             }
             Validation.clear();

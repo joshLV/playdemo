@@ -60,7 +60,6 @@ public class ReportGenerateJobTest extends UnitTest {
         assertEquals(1, Supplier.findAll().size());
         //先设置商品的supplierId
         Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
-        System.out.println("supplierId:" + supplierId);
         List<Brand> brands = Brand.findAll();
         for (Brand brand : brands) {
             brand.supplier = new Supplier(supplierId);

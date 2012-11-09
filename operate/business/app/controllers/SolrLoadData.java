@@ -33,7 +33,6 @@ public class SolrLoadData extends Controller {
             }
             Solr.indexAll();
         } catch (Exception e) {
-            System.out.println(e.fillInStackTrace());
             renderText(e.fillInStackTrace());
         }
         renderText("ok");

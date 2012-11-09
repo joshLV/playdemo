@@ -23,7 +23,7 @@ public class SmartPropertyPlaceholderConfigurer extends
         String strReconfigDir = System.getProperty("reconfig.dir",  "/etc/reeb/cas"); 
         
         File reconfigDir = new File(strReconfigDir);
-        System.out.println("strConfigDir=" + strReconfigDir);
+//        System.out.println("strConfigDir=" + strReconfigDir);
         if (reconfigDir.exists() && reconfigDir.isDirectory()) {
             File reconfigFile = new File(reconfigDir, fileName);
             if (reconfigFile.exists()) {

@@ -1,11 +1,11 @@
 package models;
 
+import com.uhuila.common.util.DateUtil;
+import models.accounts.AccountType;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import models.accounts.AccountType;
-import com.uhuila.common.util.DateUtil;
 
 /**
  * <p/>
@@ -36,7 +36,7 @@ public class ResaleSalesReportCondition {
         }
 
 
-        System.out.println("condBuilder.toString():" + condBuilder.toString());
+//        System.out.println("condBuilder.toString():" + condBuilder.toString());
         return condBuilder.toString();
     }
 

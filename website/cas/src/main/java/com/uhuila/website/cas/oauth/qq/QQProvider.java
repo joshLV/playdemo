@@ -123,7 +123,7 @@ public class QQProvider extends AbstractOAuth20Provider {
         UserProfile userProfile = new UserProfile();
         int idIndex = body.indexOf("\"openid\":\"") + 10;
         String id = body.substring(idIndex, body.lastIndexOf("\"}"));
-        System.out.println("id:" + id);
+//        System.out.println("id:" + id);
         OAuthUserProfileHelper.addIdentifier(userProfile, id, getOpenIdSource());
         OAuthUserProfileHelper.addAttribute(userProfile, "uid", id);
 

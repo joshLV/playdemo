@@ -1,20 +1,16 @@
 package unit;
 
-import java.util.List;
-
 import com.uhuila.common.util.PathUtil;
-import controllers.OperateRbac;
 import models.sales.Brand;
 import models.supplier.Supplier;
-
-import operate.rbac.ContextedPermission;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.Play;
 import play.modules.paginate.ModelPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
+
+import java.util.List;
 
 /**
  * 品牌的单元测试.
@@ -68,9 +64,9 @@ public class BrandUnitTest extends UnitTest {
         Brand brand = Brand.findById(brandId);
         String imageServer = Play.configuration.getProperty
                 ("image.server", "img0.dev.uhcdn.com");
-        System.out.println("Image Server:  " + imageServer);
+//        System.out.println("Image Server:  " + imageServer);
         String imageURL = PathUtil.getImageUrl(imageServer, "/0/0/0/logo.jpg", "nw");
-        System.out.println("Image URL: " + imageURL);
+//        System.out.println("Image URL: " + imageURL);
         assertEquals(imageURL, brand.getOriginalLogo());
     }
 

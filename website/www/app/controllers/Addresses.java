@@ -85,7 +85,6 @@ public class Addresses extends Controller {
      * @param id
      */
     public static void delete(long id) {
-        System.out.println("1111");
         Address.delete(id, SecureCAS.getUser());
         ok();
        

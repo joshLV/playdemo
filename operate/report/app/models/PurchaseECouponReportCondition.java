@@ -6,12 +6,11 @@ import org.apache.commons.lang.StringUtils;
 import play.Logger;
 
 import java.io.Serializable;
-import java.util.*;
-
-import models.supplier.Supplier;
-import org.apache.commons.lang.StringUtils;
-import play.Logger;
-import com.uhuila.common.util.DateUtil;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 报表查询条件.
@@ -82,7 +81,7 @@ public class PurchaseECouponReportCondition implements Serializable {
             paramMap.put("supplierLike", "%" + supplierLike + "%");
         }
 
-        System.out.println("condBuilder.toString():" + condBuilder.toString());
+//        System.out.println("condBuilder.toString():" + condBuilder.toString());
         return condBuilder.toString();
     }
 

@@ -31,8 +31,8 @@ public class Images extends Controller {
 
     public static void showOriginalImage(String path1, String path2, String path3, String path4) {
         String targetImagePath = joinPath(ROOT_PATH, path1, path2, path3, path4);
-        System.out.println("path:" + targetImagePath);
-        System.out.println("ROOT_PATH:" + ROOT_PATH);
+//        System.out.println("path:" + targetImagePath);
+//        System.out.println("ROOT_PATH:" + ROOT_PATH);
 
         File targetImage = new File(targetImagePath);
         if (!targetImage.exists()) {

@@ -3,6 +3,7 @@ package function;
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
+import models.admin.OperateRole;
 import models.admin.OperateUser;
 import models.sales.Brand;
 import models.sales.Category;
@@ -25,6 +26,9 @@ import play.vfs.VirtualFile;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
+import java.io.File;
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 
 public class OperateGoodsTest extends FunctionalTest {
