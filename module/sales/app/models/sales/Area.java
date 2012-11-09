@@ -2,6 +2,7 @@ package models.sales;
 
 import cache.CacheCallBack;
 import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
 import org.apache.commons.lang.StringUtils;
 import play.db.jpa.GenericModel;
 
@@ -51,6 +52,18 @@ public class Area extends GenericModel {
 
     @Column(name = "display_order")
     public int displayOrder;
+
+    /**
+     * 是否是热门商圈
+     */
+    @Column(name = "popular_area")
+    public Boolean popularArea = Boolean.FALSE;
+
+    /**
+     * 逻辑删除,0:未删除，1:已删除
+     */
+    @Enumerated(EnumType.ORDINAL)
+    public DeletedStatus deleted;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "area_type")
@@ -122,8 +135,8 @@ public class Area extends GenericModel {
     }
 
     private static List<Area> findTopByAreaType(int limit, AreaType type) {
-        return find("areaType=? order by displayOrder",
-                type).fetch(limit);
+        return find("deleted=? and areaType=? order by displayOrder",
+                DeletedStatus.UN_DELETED, type).fetch(limit);
     }
 
     /**
@@ -134,11 +147,11 @@ public class Area extends GenericModel {
      */
     public static List<Area> findAllSubAreas(String areaId) {
         if (areaId == null || "".equals(areaId)) {
-            return find("areaType=? order by displayOrder",
-                    AreaType.CITY).fetch();
+            return find("deleted=? and areaType=? order by displayOrder",
+                    DeletedStatus.UN_DELETED, AreaType.CITY).fetch();
         }
-        return find("parent=? order by displayOrder",
-                new Area(areaId)).fetch();
+        return find("deleted=? and parent=? order by displayOrder",
+                DeletedStatus.UN_DELETED, new Area(areaId)).fetch();
     }
 
     /**
@@ -147,8 +160,8 @@ public class Area extends GenericModel {
      * @param limit 获取的条数限制
      */
     public static List<Area> findTopAreas(String areaId, int limit) {
-        return find("parent=? order by displayOrder",
-                new Area(areaId)).fetch(limit);
+        return find("deleted=? and parent=? order by displayOrder",
+                DeletedStatus.UN_DELETED, new Area(areaId)).fetch(limit);
     }
 
     /**
@@ -235,5 +248,29 @@ public class Area extends GenericModel {
                 return Area.findById(id);
             }
         });
+    }
+
+    public static void update(String id, Area area, String parentId) {
+        models.sales.Area updateArea = models.sales.Area.findById(id);
+        if (updateArea == null) {
+            return;
+        }
+        if (parentId != null) {
+            Area parentArea = Area.find("deleted=? and id=? ", DeletedStatus.UN_DELETED, parentId).first();
+            updateArea.parent = parentArea;
+        }
+        updateArea.areaType = area.areaType;
+        updateArea.displayOrder = area.displayOrder;
+        updateArea.name = area.name;
+        updateArea.popularArea = area.popularArea;
+        updateArea.save();
+    }
+
+    public static void delete(String id) {
+        models.sales.Area area = models.sales.Area.find("deleted=? and id=?", DeletedStatus.UN_DELETED, id).first();
+        if (area != null) {
+            area.deleted = DeletedStatus.DELETED;
+            area.save();
+        }
     }
 }

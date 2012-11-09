@@ -49,7 +49,7 @@ public class CategoryAdmin extends Controller {
     /**
      * 添加类别
      */
-    @ActiveNavigation("goods_add")
+
     public static void create(@Valid Category category, Long parentId) {
         Category parentCategory = null;
         if (category.parentCategory != null) {

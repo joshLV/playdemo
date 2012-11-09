@@ -1,5 +1,6 @@
 package factory.sales;
 
+import com.uhuila.common.constants.DeletedStatus;
 import factory.FactoryBoy;
 import models.sales.Area;
 import factory.ModelFactory;
@@ -27,37 +28,40 @@ public class AreaFactory extends ModelFactory<Area> {
 
     /**
      * 建立上海市.
+     *
      * @return
      */
     public Area getShanghaiCity() {
-    	return createOrFindArea(AreaType.CITY, "021", "上海市");
+        return createOrFindArea(AreaType.CITY, "021", "上海市");
     }
-    
+
     /**
      * 建立徐汇区
+     *
      * @return
      */
     public Area getXihuiDist() {
-    	return createOrFindArea(AreaType.DISTRICT, "02102", "徐汇区", getShanghaiCity());
+        return createOrFindArea(AreaType.DISTRICT, "02102", "徐汇区", getShanghaiCity());
     }
 
     /**
      * 建立浦东新区
+     *
      * @return
      */
     public Area getPudongDist() {
-    	return createOrFindArea(AreaType.DISTRICT, "02103", "浦东新区", getShanghaiCity());
+        return createOrFindArea(AreaType.DISTRICT, "02103", "浦东新区", getShanghaiCity());
     }
-    
+
     private Area createOrFindArea(AreaType areaType, String id, String name) {
-		return createOrFindArea(areaType, id, name, null);
-	}
+        return createOrFindArea(areaType, id, name, null);
+    }
 
 
-	public Area createOrFindArea(AreaType areaType, String id, String name, Area parent) {
-    	Area area = buildOrFindArea(areaType, id, name, parent);
-    	area.save();
-    	return area;
+    public Area createOrFindArea(AreaType areaType, String id, String name, Area parent) {
+        Area area = buildOrFindArea(areaType, id, name, parent);
+        area.save();
+        return area;
     }
 
     public Area buildOrFindArea(AreaType areaType, String id, String name, Area parent) {
@@ -72,6 +76,7 @@ public class AreaFactory extends ModelFactory<Area> {
         area.displayOrder = FactoryBoy.sequence(Area.class);
         area.areaType = areaType;
         area.parent = parent;
+        area.deleted = DeletedStatus.UN_DELETED;
         return area;
     }
 }

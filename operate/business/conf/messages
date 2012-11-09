@@ -488,3 +488,12 @@ category.name=类别名称
 category.displayOrder=类别推荐度
 category.showKeywords=网站上显示的搜索关键字
 category.keywords=SEO关键字
+
+#区域管理
+area.id=区域Id
+area.name=名称
+area.displayOrder= 推荐度
+
+CITY=城市
+DISTRICT=区域
+AREA=商圈
