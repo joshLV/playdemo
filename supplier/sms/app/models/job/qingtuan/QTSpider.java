@@ -179,18 +179,10 @@ public class QTSpider extends Job{
     }
 
     private static Category getCategory(Element element) {
-        String categoryKey = "qingtuan." + element.elementTextTrim("group");
-        String cgIdStr =  Messages.get(categoryKey);
-        if(cgIdStr.equals(categoryKey)){
-            Logger.error("can not found our id of qingtuan category: %s", categoryKey);
-            return null;
-        }
-
-        String subCategoryKey = "qingtuan." + categoryKey + "." + element.elementTextTrim("promotion");
+        String subCategoryKey = "qingtuan." + element.elementTextTrim("group") + "." + element.elementTextTrim("promotion");
         String scgIdStr = Messages.get(subCategoryKey);
         if(scgIdStr.equals(subCategoryKey)){
-            Logger.error("can not found our id of qingtuan subcategory: %s", subCategoryKey);
-            return null;
+            scgIdStr = "1032";//未找到分类的就放在 生活服务->其他
         }
 
         return Category.findById(Long.parseLong(scgIdStr));

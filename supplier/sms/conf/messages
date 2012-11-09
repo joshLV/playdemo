@@ -1,17 +1,31 @@
 # You can specialize this file for each language.
 # For example, for French create a messages.fr file
 #
-qingtuan.餐饮美食=1
-qingtuan.休闲娱乐=7
-qingtuan.生活服务=7
-qingtuan.网上购物=1
-qingtuan.旅游住宿=12
-qingtuan.丽人=1002
 
-qingtuan.旅游住宿.旅游=1036
+qingtuan.餐饮美食.自助=1014
+qingtuan.餐饮美食.火锅=1015
+qingtuan.餐饮美食.西餐=1013
+qingtuan.餐饮美食.蛋糕=1017
+qingtuan.餐饮美食.烧烤=1016
+qingtuan.餐饮美食.日韩料理=1011
+
+qingtuan.休闲娱乐.电影=1020
+qingtuan.休闲娱乐.KTV=1021
+qingtuan.休闲娱乐.运动健身=1022
+qingtuan.休闲娱乐.足疗按摩=8
+qingtuan.休闲娱乐.游乐电玩=18
+
+qingtuan.生活服务.教育培训=1028
+qingtuan.生活服务.汽车养护=1030
+qingtuan.生活服务.体检=1031
+qingtuan.生活服务.其他=1032
 
 qingtuan.丽人.美发=1023
 qingtuan.丽人.美容美体=1025
 qingtuan.丽人.美甲=1024
-# 下面这个 todo
-qingtuan.丽人.其他=1026
+
+
+qingtuan.旅游住宿.旅游=12
+qingtuan.旅游住宿.景点门票=1036
+qingtuan.旅游住宿.酒店=15
+

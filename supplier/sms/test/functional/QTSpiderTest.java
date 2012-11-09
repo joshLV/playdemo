@@ -33,8 +33,7 @@ public class QTSpiderTest extends FunctionalTest{
             }
         });
 
-        Messages.defaults.put("qingtuan.旅游住宿", category.id.toString());
-        Messages.defaults.put("qingtuan." + category.id + ".旅游", subCategory.id.toString());
+        Messages.defaults.put("qingtuan.旅游住宿.旅游", subCategory.id.toString());
 
     }
     @Test
