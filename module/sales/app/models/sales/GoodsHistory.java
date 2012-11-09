@@ -3,6 +3,10 @@ package models.sales;
 import cache.CacheCallBack;
 import cache.CacheHelper;
 import com.uhuila.common.util.PathUtil;
+import models.order.ECoupon;
+import models.order.ECouponStatus;
+import models.order.OrderItems;
+import models.order.OrderStatus;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 import play.Play;
@@ -470,6 +474,34 @@ public class GoodsHistory extends Model {
             status = GoodsStatus.OFFSALE;
         }
         return status;
+    }
+
+    /**
+     * 得到实际的库存数量.
+     */
+    @Transient
+    public Long getRealStocks() {
+        if (cumulativeStocks != null) {
+            return cumulativeStocks - getRealSaleCount();
+        }
+        return getRealSaleCount();
+    }
+
+    /**
+     * 得到当前实际的销售数量.
+     */
+    @Transient
+    public Long getRealSaleCount() {
+        return CacheHelper.getCache(Goods.CACHEKEY_SALECOUNT + goodsId, new CacheCallBack<Long>() {
+            @Override
+            public Long loadData() {
+                // 先找出OrderItems中的已销售数量
+                long orderItemsBuyCount = OrderItems.count("goods.id=? and order.status != ?", goodsId, OrderStatus.CANCELED);
+                // 减去已退款的数量
+                long ecouponRefundCount = ECoupon.count("goods.id=? and status=?", goodsId, ECouponStatus.REFUND);
+                return orderItemsBuyCount - ecouponRefundCount;
+            }
+        });
     }
 
     @Override
