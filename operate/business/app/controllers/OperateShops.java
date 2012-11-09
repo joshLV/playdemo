@@ -109,16 +109,6 @@ public class OperateShops extends Controller {
     }
 
     /**
-     * 城市区域的联动
-     *
-     * @param cityId
-     */
-    public static void showDistrict(String cityId) {
-        //区域列表
-        renderJSON(Area.findAllSubDistrict(cityId));
-    }
-
-    /**
      * 区域商圈的联动
      *
      * @param areaId

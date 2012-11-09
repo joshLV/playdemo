@@ -141,15 +141,6 @@ public class Area extends GenericModel {
                 new Area(areaId)).fetch();
     }
 
-    public static List<Area> findAllSubDistrict(String cityId) {
-        if (cityId == null || "".equals(cityId)) {
-            return find("areaType=? order by displayOrder",
-                    AreaType.DISTRICT).fetch();
-        }
-        return find(" parent =? order by displayOrder",
-                new Area(cityId)).fetch();
-    }
-
     /**
      * 根据区域获取前n个商圈,或根据城市获取前n个区域.
      *

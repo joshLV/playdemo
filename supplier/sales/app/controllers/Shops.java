@@ -1,8 +1,6 @@
 package controllers;
 
-import java.util.Date;
-import java.util.List;
-
+import com.uhuila.common.constants.DeletedStatus;
 import models.sales.Area;
 import models.sales.Shop;
 import navigation.annotations.ActiveNavigation;
@@ -12,7 +10,9 @@ import play.data.validation.Validation;
 import play.modules.paginate.ModelPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-import com.uhuila.common.constants.DeletedStatus;
+
+import java.util.Date;
+import java.util.List;
 
 @With(SupplierRbac.class)
 @ActiveNavigation("shops_index")
@@ -28,12 +28,12 @@ public class Shops extends Controller {
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
         Long supplierId = SupplierRbac.currentUser().supplier.id;
-        if (shopCondition == null){
+        if (shopCondition == null) {
             shopCondition = new Shop();
         }
         shopCondition.supplierId = supplierId;
         ModelPaginator<Shop> shopPage = Shop.query(shopCondition, pageNumber, PAGE_SIZE);
-        render(shopPage,shopCondition);
+        render(shopPage, shopCondition);
     }
 
     /**
@@ -47,7 +47,6 @@ public class Shops extends Controller {
             Validation.keep();
             add(shop);
         }
-
         shop.supplierId = SupplierRbac.currentUser().supplier.id;
         shop.deleted = DeletedStatus.UN_DELETED;
         shop.createdAt = new Date();
@@ -61,13 +60,32 @@ public class Shops extends Controller {
      */
     @ActiveNavigation("shops_add")
     public static void add(Shop shop) {
+        renderParams(shop);
+        render(shop);
+    }
+
+    private static void renderParams(Shop shop) {
+        if (StringUtils.isNotEmpty(shop.areaId)) {
+            Area district = Area.findParent(shop.areaId);
+            shop.setDistrictId(district.id);
+            Area city = Area.findParent(district.id);
+            shop.cityId = city.id;
+        }
         //城市列表
         List<Area> cities = Area.findAllSubAreas(null);
         //区域列表
-        List<Area> districts = Area.findAllSubAreas(cities.get(0).getId());
+        String cityId = StringUtils.isEmpty(shop.cityId) ? cities.get(0).getId() : shop.cityId;
+
+        List<Area> districts = Area.findAllSubAreas(cityId);
         //商圈列表
-        List<Area> areas = Area.findAllSubAreas(districts.get(0).getId());
-        render(cities, districts, areas, shop);
+        String districtId = StringUtils.isEmpty(shop.getDistrictId()) ? districts.get(0).getId() : shop.getDistrictId();
+        List<Area> areas = Area.findAllSubAreas(districtId);
+        if (shop.areaId == null && areas != null && areas.size() > 0 && areas.get(0) != null) {
+            shop.areaId = areas.get(0).id;
+        }
+        renderArgs.put("districts", districts);
+        renderArgs.put("areas", areas);
+        renderArgs.put("cities", cities);
     }
 
     /**
@@ -111,15 +129,9 @@ public class Shops extends Controller {
         if (originalShop.areaId == null) {
             originalShop = Shop.findById(id);
         }
-
-        //城市列表
-        List<Area> cities = Area.findAllSubAreas(null);
-        //区域列表
-        List<Area> districts = Area.findAllSubAreas(cities.get(0).getId());
-        //商圈列表
-        List<Area> areas = Area.findAllSubAreas(districts.get(0).getId());
+        renderParams(originalShop);
         renderArgs.put("shop", originalShop);
-        render(cities, districts, areas);
+        render();
     }
 
     /**

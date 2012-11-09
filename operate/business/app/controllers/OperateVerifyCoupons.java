@@ -71,7 +71,7 @@ public class OperateVerifyCoupons extends Controller {
      * @param eCouponSn 券号
      */
     @ActiveNavigation("coupons_verify")
-    public static void update(Long shopId, Long supplierId, String eCouponSn, String shopName) {
+    public static void update(Long shopId, Long supplierId, String eCouponSn) {
         List shopList = Shop.findShopBySupplier(supplierId);
         if (Validation.hasErrors()) {
             render("/OperateVerifyCoupons/index.html", shopList, eCouponSn, supplierId);
@@ -81,6 +81,11 @@ public class OperateVerifyCoupons extends Controller {
         //根据页面录入券号查询对应信息,并产生消费交易记录
         if (eCoupon == null) {
             renderJSON("err");
+        }
+
+        Shop shop = Shop.findById(shopId);
+        if (shop == null) {
+            renderJSON("1");
         }
 
         if (eCoupon.status == ECouponStatus.UNCONSUMED) {
@@ -108,7 +113,7 @@ public class OperateVerifyCoupons extends Controller {
             String dateTime = DateUtil.getNowTime();
             String coupon = eCoupon.getLastCode(4);
             SMSUtil.send("【一百券】您尾号" + coupon + "券于" + dateTime
-                    + "成功消费，门店：" + shopName + "。客服4006262166", eCoupon.orderItems.phone, eCoupon.replyCode);
+                    + "成功消费，门店：" + shop.name + "。客服4006262166", eCoupon.orderItems.phone, eCoupon.replyCode);
         } else {
 
             renderJSON(eCoupon.status);

@@ -217,12 +217,12 @@ public class GoodsCondition implements Serializable {
         }
 
         if (baseSaleBegin >= 0) {
-            condBuilder.append(" and g.baseSale >= :baseSaleBegin");
+            condBuilder.append(" and g.cumulativeStocks >= :baseSaleBegin");
             paramMap.put("baseSaleBegin", baseSaleBegin);
         }
 
         if (baseSaleEnd >= 0) {
-            condBuilder.append(" and g.baseSale <= :baseSaleEnd");
+            condBuilder.append(" and g.cumulativeStocks<= :baseSaleEnd");
             paramMap.put("baseSaleEnd", baseSaleEnd);
         }
 

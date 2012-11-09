@@ -4,30 +4,31 @@
  * Date: 3/16/12
  * Time: 6:07 PM
  */
-function loadArea(areaId) {
-    var url = "/shops/area";
-    $.ajax({
-        url:url,
-        data:"areaId=" + areaId,
-        type:'GET',
-        dataType:'JSON',
-        error:function () {
-            alert('地区读取失败!');
-        },
-        success:function (msg) {
-            $("#area").empty();
-            $.each(eval(msg), function (i, item) {
-                $("<option value='" + item.id + "'>" + item.name + "</option>").appendTo($("#area"));
-            });
-        }
+function districtChange(areaId) {
+    $.getJSON("/shops/area?areaId=" + areaId, {}, function (msg) {
+        $("#shop_areaId").empty();
+        $.each(eval(msg), function (i, item) {
+            $("<option value='" + item.id + "'>" + item.name + "</option>").appendTo($("#shop_areaId"));
+        });
     });
-    $("#area").change();
 }
 
-$(document).ready(function () {
-    $("#district").change(function () {
-        loadArea($("#district").val());
+function cityChange(cityId) {
+    $("#shop_districtId").empty();
+    var url="/shops/area?areaId=" + cityId;
+    $.getJSON(url, {}, function (msg) {
+        $.each(eval(msg), function (i, item) {
+            $("<option value='" + item.id + "'>" + item.name + "</option>").appendTo($("#shop_districtId"));
+        });
+        districtChange($("#shop_districtId").val());
     });
+}
 
-
+$(function () {
+    $("#shop_cityId").change(function () {
+        cityChange($("#shop_cityId").val());
+    });
+    $("#shop_districtId").change(function () {
+        districtChange($("#shop_districtId").val());
+    });
 });

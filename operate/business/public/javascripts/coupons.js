@@ -14,11 +14,6 @@ $(function () {
             $("#checksn").html("<font color=red>请输入券号!</font>");
             return false;
         }
-        var shopName = $("#shopName").val();
-        if (shopName == undefined) {
-            shopName = $("#shopId option:selected").text();
-        }
-
         $("#showinfo").load("/coupons/verify?supplierId=" + supplierId + "&shopId=" + shopId + "&eCouponSn=" + eCouponSn, function (data) {
         });
 
@@ -27,10 +22,6 @@ $(function () {
 
     $("#sure").click(function () {
         var eCouponSn = $("#eCouponSn").val();
-        var shopName = $("#shopName").val();
-        if (shopName == undefined) {
-            shopName = $("#shopId option:selected").text();
-        }
         var shopId = $("#supplierUser_shop_id").val();
         var supplierId = $("#supplierId").val();
 
@@ -41,7 +32,7 @@ $(function () {
         }
         $.ajax({
             url:"/coupons/update",
-            data:"supplierId=" + supplierId + "&shopId=" + shopId + "&eCouponSn=" + eCouponSn + "&shopName=" + shopName,
+            data:"supplierId=" + supplierId + "&shopId=" + shopId + "&eCouponSn=" + eCouponSn ,
             type:'POST',
             error:function () {
                 alert('消费失败!');

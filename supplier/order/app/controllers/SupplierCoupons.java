@@ -72,7 +72,7 @@ public class SupplierCoupons extends Controller {
      * @param eCouponSn 券号
      */
     @ActiveNavigation("coupons_verify")
-    public static void update(Long shopId, String eCouponSn, String shopName) {
+    public static void update(Long shopId, String eCouponSn) {
         if (Validation.hasErrors()) {
             render("../views/SupplierCoupons/index.html", eCouponSn);
         }
@@ -99,7 +99,7 @@ public class SupplierCoupons extends Controller {
             if (eCoupon.isExpired()) {
                 renderJSON("4");
             }
-            //不再验证时间范围内
+            //不在验证时间范围内
             if (!eCoupon.checkVerifyTimeRegion(new Date())) {
                 String info = eCoupon.getCheckInfo();
                 renderJSON("{\"error\":\"2\",\"info\":\"" + info + "\"}");

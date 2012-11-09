@@ -26,18 +26,19 @@
         #{layout_operate.textField name:'goods.supplier', value:goods?.supplier?.fullName, disabled:true/}
     #{/else}
 <div class="control-group">
-    <label class="control-label">抽奖商品 </label>
+    <label class="control-label">筛选条件</label>
 
     <div class="controls">
         <input type="checkbox" name="goods.isLottery" id="isLottery" class="input-medium"
                value="${goods?.isLottery}" ${goods?.isLottery?'checked':''}/>
+        抽奖商品&nbsp;&nbsp;
 
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;隐藏上架&nbsp;&nbsp;
         <input type="checkbox" name="goods.isHideOnsale" id="isHideOnsale" class="input-medium"
                value="${goods?.isHideOnsale}" ${goods?.isHideOnsale?'checked':''}/>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;预约商品&nbsp;&nbsp;
+        隐藏上架&nbsp;&nbsp;
         <input type="checkbox" name="goods.isOrder" id="isOrder" class="input-medium"
                value="${goods?.isOrder}" ${goods?.isOrder?'checked':''}/><span id="err-isOrder"></span>
+        预约商品&nbsp;&nbsp;
     </div>
     <span id="err-isLottery"></span>
 </div>

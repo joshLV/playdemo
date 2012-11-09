@@ -65,4 +65,6 @@ goods.useTime=可用时段
 imagePath=图片
 shop.name=门店名称
 shop.address=门店地址
-
+shop.districtId=区域
+shop.cityId=城市
+shop.areaId=商圈

@@ -1,7 +1,7 @@
 #{layout_operate.selectField name:'supplierUser.shop.id', value:supplierUser?.shop?.id, error:'supplierUser.shop', required:true}
  #{option ""}全部#{/option}
 #{list items:shopList, as:'shop'}
- #{option shop?.id}${shop?.name}#{/option}
+ #{option shop?.id}${shop?.name}-${shop?.address}#{/option}
 #{/list}
 #{/layout_operate.selectField}
  <SCRIPT type=text/javascript>
