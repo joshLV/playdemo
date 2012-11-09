@@ -42,7 +42,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
 
     @Before
     public void setUp() {
-        FactoryBoy.lazyDelete();
+        FactoryBoy.deleteAll();
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);

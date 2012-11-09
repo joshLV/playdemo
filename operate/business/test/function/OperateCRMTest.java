@@ -24,10 +24,11 @@ import java.util.Map;
  */
 public class OperateCRMTest extends FunctionalTest {
     User user1;
+
     @Before
     public void setUp() {
 
-        FactoryBoy.lazyDelete();
+        FactoryBoy.deleteAll();
 
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
