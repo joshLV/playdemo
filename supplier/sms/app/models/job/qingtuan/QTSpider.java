@@ -167,11 +167,12 @@ public class QTSpider extends Job{
         goods.brand = brand;
         InputStream is =  WS.url(element.elementTextTrim("image")).get().getStream();
         try {
-            File file = File.createTempFile("qingtuan", null);
+            File file = File.createTempFile("qingtuan", "jpg");
             IO.write(is, file);
             goods.imagePath = uploadFile(file);
         } catch (IOException e) {
             // do nothing
+            Logger.error("upload file error:", e);
         }
         goods.save();
     }
