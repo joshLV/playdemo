@@ -4,6 +4,7 @@ import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.FileUploadUtil;
 import models.sales.*;
 import models.supplier.Supplier;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -165,14 +166,17 @@ public class QTSpider extends Job{
         goods.supplierId = supplier.id;
 
         goods.brand = brand;
-        InputStream is =  WS.url(element.elementTextTrim("image")).get().getStream();
-        try {
-            File file = File.createTempFile("qingtuan", "jpg");
-            IO.write(is, file);
-            goods.imagePath = uploadFile(file);
-        } catch (IOException e) {
-            // do nothing
-            Logger.error("upload file error:", e);
+        String imageUrl = element.elementTextTrim("image");
+        if(!StringUtils.isBlank(imageUrl)){
+            InputStream is =  WS.url(imageUrl).get().getStream();
+            try {
+                File file = File.createTempFile("qingtuan", "." + FilenameUtils.getExtension(imageUrl));
+                IO.write(is, file);
+                goods.imagePath = uploadFile(file);
+            } catch (IOException e) {
+                // do nothing
+                Logger.error("upload file error:", e);
+            }
         }
         goods.save();
     }
