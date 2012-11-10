@@ -31,17 +31,19 @@ public class FindPasswordTest extends FunctionalTest {
     User user;
 
     @Before
-    @SuppressWarnings("unchecked")
     public void setup() {
         FactoryBoy.deleteAll();
         userInfo = FactoryBoy.create(UserInfo.class);
         user = FactoryBoy.create(User.class);
         user.mobile = "15618096151";
         user.save();
+
+        Cache.clear();
+    }
+    
+    protected void login() {
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
-
-        Cache.delete("mobile_");
     }
 
     @After
@@ -69,7 +71,7 @@ public class FindPasswordTest extends FunctionalTest {
         assertIsOk(response); // this is OK 200
         assertContentType("application/json", response); // this is OK
         assertCharset("utf-8", response); // this is OK
-        assertEquals("3", response.out.toString()); // 浏览器相应
+        assertEquals("3", getContent(response)); // 浏览器相应
     }
 
 

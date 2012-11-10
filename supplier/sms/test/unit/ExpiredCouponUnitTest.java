@@ -18,6 +18,7 @@ import models.sales.Goods;
 import models.sales.Shop;
 import models.sms.MockSMSProvider;
 import models.sms.SMSMessage;
+import models.sms.SMSUtil;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -25,6 +26,7 @@ import org.junit.Test;
 
 import play.test.Fixtures;
 import play.test.UnitTest;
+import util.mq.MockMQ;
 
 /**
  * TODO.
@@ -90,21 +92,17 @@ public class ExpiredCouponUnitTest extends UnitTest {
         assertEquals(5, sentList.size());
 
 
-        SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertNotNull("【一百券】您的测试商品5，将要过期，请注意消费截止日期。", msg);
+        SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
         assertEquals("【一百券】您的测试商品5，将要过期，请注意消费截止日期。", msg.getContent());
 
-        msg = MockSMSProvider.getLastSMSMessage();
-        assertNotNull("【一百券】您的测试商品4，将要过期，请注意消费截止日期。", msg);
+        msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
         assertEquals("【一百券】您的测试商品4，将要过期，请注意消费截止日期。", msg.getContent());
 
 
-        msg = MockSMSProvider.getLastSMSMessage();
-        assertNotNull("【一百券】您的测试商品2，将要过期，请注意消费截止日期。", msg);
+        msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
         assertEquals("【一百券】您的测试商品2，将要过期，请注意消费截止日期。", msg.getContent());
 
-        msg = MockSMSProvider.getLastSMSMessage();
-        assertNotNull("【一百券】您的测试商品1，将要过期，请注意消费截止日期。", msg);
+        msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
         assertEquals("【一百券】您的测试商品1，将要过期，请注意消费截止日期。", msg.getContent());
 
         job.doJob();

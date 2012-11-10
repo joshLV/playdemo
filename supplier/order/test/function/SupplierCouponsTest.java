@@ -1,34 +1,35 @@
 package function;
 
-import com.uhuila.common.util.DateUtil;
-import controllers.supplier.cas.Security;
-import factory.FactoryBoy;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 import models.accounts.Account;
 import models.admin.SupplierUser;
-
 import models.order.ECoupon;
 import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Category;
-import models.sales.ConsultRecord;
 import models.sales.Goods;
 import models.sales.Shop;
-import models.sms.MockSMSProvider;
 import models.sms.SMSMessage;
+import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import navigation.RbacLoader;
+
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
+import util.mq.MockMQ;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
+import com.uhuila.common.util.DateUtil;
+
+import controllers.supplier.cas.Security;
+import factory.FactoryBoy;
 
 /**
  * Created with IntelliJ IDEA.
@@ -120,7 +121,7 @@ public class SupplierCouponsTest extends FunctionalTest {
         Http.Response response = POST("/coupons/update", params);
 
         assertContentMatch("0", response);
-        SMSMessage msg = MockSMSProvider.getLastSMSMessage();
+        SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
         assertSMSContentMatch("【一百券】您尾号" + coupon.getLastCode(4)
                 + "的券号于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：400-6262-166",
                 msg.getContent());

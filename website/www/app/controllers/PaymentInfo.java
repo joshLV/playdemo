@@ -57,6 +57,7 @@ public class PaymentInfo extends Controller {
             error("wrong order status");
         }
 
+        // 秒杀商品检查
         for (OrderItems orderItem : order.orderItems) {
             if (orderItem.secKillGoods != null) {
                 boolean exceedLimit = OrderItems.checkLimitNumber(user, orderItem.goods.id, orderItem.secKillGoods.id, 1);
@@ -65,8 +66,8 @@ public class PaymentInfo extends Controller {
                 }
             }
         }
+        
         Account account = AccountUtil.getConsumerAccount(user.getId());
-
 
         if (Order.confirmPaymentInfo(order, account, useBalance, paymentSourceCode)) {
             PaymentSource paymentSource = PaymentSource.findByCode(order.payMethod);

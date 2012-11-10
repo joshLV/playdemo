@@ -8,17 +8,18 @@ import java.util.Map;
 
 import models.consumer.User;
 import models.consumer.UserInfo;
-import models.sms.MockSMSProvider;
 import models.sms.SMSMessage;
+import models.sms.SMSUtil;
 
 import org.junit.After;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 
 import play.cache.Cache;
 import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
+import util.mq.MockMQ;
 import controllers.modules.website.cas.Security;
 
 /**
@@ -26,7 +27,8 @@ import controllers.modules.website.cas.Security;
  * @date 2012-7-24 下午2:10:09
  */
 public class UserInfosTest extends FunctionalTest {
-    @org.junit.Before
+    
+    @Before
     public void setup() {
         Fixtures.delete(User.class);
         Fixtures.delete(UserInfo.class);
@@ -99,23 +101,15 @@ public class UserInfosTest extends FunctionalTest {
         assertContentType("application/json", response); // this is OK
         assertCharset("utf-8", response); // this is OK
         assertEquals("1", response.out.toString()); // 浏览器相应
-    }
 
-    // 不应依赖于测试的先后顺序
-    @Ignore
-    @Test
-    public void testSendValidCodeCache() {
         //测试cache
         Object objCode = Cache.get("validCode_");
         Object objMobile = Cache.get("mobile_");
         assertEquals("123456", objCode.toString());
         assertEquals("15026666505", objMobile.toString());
-    }
 
-    @Test
-    public void testSendValidCode() {
         //验证手机发送的验证码
-        SMSMessage msg = MockSMSProvider.getLastSMSMessage();
+        SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
         assertNotNull("【一百券】您的验证码是123456, 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码", msg);
         assertEquals("【一百券】您的验证码是123456, 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码", msg.getContent());
 
