@@ -17,7 +17,6 @@ import models.order.OrderItems;
 import models.sales.Brand;
 import models.sales.Goods;
 import models.sales.Shop;
-import models.sms.MockSMSProvider;
 import models.sms.SMSMessage;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
@@ -121,6 +120,8 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         Account account = AccountUtil.getPlatformIncomingAccount();
         account.amount = new BigDecimal("10000");
         account.save();
+        
+        MockMQ.clear();
     }
 
     /**

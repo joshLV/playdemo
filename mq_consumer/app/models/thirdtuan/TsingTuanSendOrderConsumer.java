@@ -11,9 +11,9 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
 import play.modules.rabbitmq.consumer.RabbitMQConsumer;
-import util.http.DefaultHttpClientHelper;
-import util.http.HttpCallback;
-import util.http.HttpClientHelper;
+import util.ws.WebServiceCallback;
+import util.ws.WebServiceClientFactory;
+import util.ws.WebServiceClientHelper;
 
 public class TsingTuanSendOrderConsumer extends RabbitMQConsumer<TsingTuanOrder> {
 
@@ -34,18 +34,6 @@ public class TsingTuanSendOrderConsumer extends RabbitMQConsumer<TsingTuanOrder>
 
     public static final String SEND_URL = "http://www.tsingtuan.com/outer/shihui/order.php?";
 
-    private HttpClientHelper httpClientHelper;
-
-    public HttpClientHelper getHttpClientHelper() {
-        if (httpClientHelper != null) {
-            return httpClientHelper;
-        }
-        return DefaultHttpClientHelper.getInstance();
-    }
-
-    public void setHttpClientHelper(HttpClientHelper httpClientHelper) {
-        this.httpClientHelper = httpClientHelper;
-    }
     
     public void sendOrder(TsingTuanOrder order) {
         //准备url
@@ -73,7 +61,8 @@ public class TsingTuanSendOrderConsumer extends RabbitMQConsumer<TsingTuanOrder>
         
         System.out.println("tsingtuan url=" + url);
         
-        getHttpClientHelper().processGetUrl(url, new HttpCallback() {
+        WebServiceClientHelper client = WebServiceClientFactory.getClientHelper();
+        client.get("TsingTuanSendOrder", url, order.orderId.toString(), order.teamId.toString(), new WebServiceCallback() {
             @Override
             public void process(int statusCode, String returnContent) {
                 System.out.println("statusCode=" + statusCode);

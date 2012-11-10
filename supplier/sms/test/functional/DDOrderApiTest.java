@@ -42,8 +42,7 @@ public class DDOrderApiTest extends FunctionalTest {
     public void setup() {
         FactoryBoy.deleteAll();
 
-//        System.out.println(goods + "*******");
-        UserInfo userInfo = FactoryBoy.create(UserInfo.class);
+        FactoryBoy.create(UserInfo.class);
     }
 
     @Test
