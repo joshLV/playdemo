@@ -7,6 +7,7 @@ require:
     - play1 -> cobertura 2.4p3
     - play1 -> paginate head
     - play1 -> app-version 0.1
+    - play1 -> rabbitmq 0.3
     - play1 -> factory-boy 1.0
     - layout_operate -> layout_operate
     - paginate_ext -> paginate_ext
@@ -14,6 +15,7 @@ require:
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - asset_package -> asset_package
     - cache_helper -> cache_helper
+    - supports -> supports
     - emaillogs -> emaillogs
 
 repositories:
@@ -40,3 +42,4 @@ repositories:
             - asset_package -> *
             - cache_helper -> *
             - emaillogs -> *
+            - supports -> *

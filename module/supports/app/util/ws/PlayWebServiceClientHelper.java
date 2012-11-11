@@ -24,4 +24,8 @@ public class PlayWebServiceClientHelper extends WebServiceClientHelper {
         callback.process(response.getStatus(), response.getString());
     }
 
+    public void doPost(WebServiceCallLog log, WebServiceCallback callback) {
+        
+        WS.url("").post();
+    }
 }

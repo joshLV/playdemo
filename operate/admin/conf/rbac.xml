@@ -7,11 +7,16 @@
         <permission key="USER_ADD" text="新增视惠员工" roles="admin" />
         <permission key="USER_EDIT" text="修改视惠员工" roles="admin" />
     </permission>
+    <permission key="APPLICATION_LOGS" text="系统日志" roles="admin" />
 
     <navigation key="main" text="系统管理" action="OperateUsers.index" permissions="SYSTEM_HOME" display-order="1000">
         <navigation key="user" text="操作员" permissions="USER">
           <navigation key="user_add" text="新增操作员" action="OperateUsers.add" permissions="USER"/>
           <navigation key="user_search" text="操作员管理" action="OperateUsers.index" permissions="USER"/>
+        </navigation>
+        <navigation key="application_logs_view" text="系统日志">
+          <navigation key="ws_call_logs" text="Web服务调用日志" 
+             action="WebServiceCallLogs.index" permissions="APPLICATION_LOGS"/>
         </navigation>
     </navigation>
 </application>

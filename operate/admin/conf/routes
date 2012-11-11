@@ -18,6 +18,8 @@ GET     /edit-password                          OperateUsersPassword.index
 POST    /edit-password                          OperateUsersPassword.update
 
 
+GET     /ws-logs                                WebServiceCallLogs.index
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

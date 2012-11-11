@@ -27,7 +27,10 @@ public abstract class WebServiceClientHelper {
                         keyword1, keyword2, keyword3);
         
         try {
+            long startTime = System.currentTimeMillis();
             doGet(log, callback);
+            long endTime = System.currentTimeMillis();
+            log.duration = endTime - startTime; // 记录耗时
             log.save();
         } catch (Exception e) {
             log.success = Boolean.FALSE;
