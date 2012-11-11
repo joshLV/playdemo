@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import play.test.UnitTest;
-import util.ws.MockWebServiceClientHelper;
+import util.ws.MockWebServiceClient;
 import factory.FactoryBoy;
 
 public class BjenSMSProviderTest extends UnitTest {
@@ -20,7 +20,7 @@ public class BjenSMSProviderTest extends UnitTest {
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
-        MockWebServiceClientHelper.clear();
+        MockWebServiceClient.clear();
     }
     
     @Test
@@ -31,12 +31,12 @@ public class BjenSMSProviderTest extends UnitTest {
 
     @Test
     public void testSendMessageSuccess() {
-        MockWebServiceClientHelper.pushMockHttpRequest(200, "0");
+        MockWebServiceClient.pushMockHttpRequest(200, "0");
         SMSMessage msg = new SMSMessage("Hello,world!", "15026682165");
         provider.send(msg);
         assertEquals(1, WebServiceCallType.count());
         assertEquals(1, WebServiceCallLog.count());
-        WebServiceCallLog log = WebServiceCallLog.find("order by id desc").first();
+        WebServiceCallLog log = MockWebServiceClient.getLastWebServiceCallLog();
         assertEquals("ENSMS", log.callType);
         assertTrue(log.success);
         WebServiceCallType type = WebServiceCallType.find("order by id desc").first();
@@ -46,7 +46,7 @@ public class BjenSMSProviderTest extends UnitTest {
 
     @Test
     public void testSendMessageFail() {
-        MockWebServiceClientHelper.pushMockHttpRequest(200, "1");
+        MockWebServiceClient.pushMockHttpRequest(200, "1");
         SMSMessage msg = new SMSMessage("Hello,world!", "15026682165");
         SMSException smsException = null;
         try {
@@ -56,7 +56,7 @@ public class BjenSMSProviderTest extends UnitTest {
         }
         assertNotNull(smsException);
         assertEquals(1, WebServiceCallLog.count());
-        WebServiceCallLog log = WebServiceCallLog.find("order by id desc").first();
+        WebServiceCallLog log = MockWebServiceClient.getLastWebServiceCallLog();
         assertEquals("ENSMS", log.callType);
         assertTrue(log.success);
         WebServiceCallType type = WebServiceCallType.find("order by id desc").first();

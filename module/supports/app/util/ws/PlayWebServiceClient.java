@@ -6,18 +6,18 @@ import models.journal.WebServiceCallLog;
 import play.libs.WS;
 import play.libs.WS.HttpResponse;
 
-public class PlayWebServiceClientHelper extends WebServiceClientHelper {
+public class PlayWebServiceClient extends WebServiceClient {
 
-    private static PlayWebServiceClientHelper _instance;
+    private static PlayWebServiceClient _instance;
     
-    public static PlayWebServiceClientHelper getInstance() {
+    public static PlayWebServiceClient getInstance() {
         if (_instance == null) {
-            _instance = new PlayWebServiceClientHelper();
+            _instance = new PlayWebServiceClient();
         }
         return _instance;
     }
     
-    private PlayWebServiceClientHelper() {}
+    private PlayWebServiceClient() {}
     
     @Override
     public HttpResponse doGet(WebServiceCallLog log, WebServiceCallback callback) {

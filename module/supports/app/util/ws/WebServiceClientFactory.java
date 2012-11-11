@@ -4,10 +4,10 @@ import play.Play;
 
 public class WebServiceClientFactory {
 
-    public static WebServiceClientHelper getClientHelper() {
+    public static WebServiceClient getClientHelper() {
         if (Play.runingInTestMode()) {
-            return MockWebServiceClientHelper.getInstance();
+            return MockWebServiceClient.getInstance();
         }
-        return PlayWebServiceClientHelper.getInstance();
+        return PlayWebServiceClient.getInstance();
     }
 }

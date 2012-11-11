@@ -17,7 +17,7 @@ import org.apache.http.message.BasicNameValuePair;
 import play.Logger;
 import play.Play;
 import util.ws.WebServiceClientFactory;
-import util.ws.WebServiceClientHelper;
+import util.ws.WebServiceClient;
 
 public class Tui3SMSProvider implements SMSProvider {
 
@@ -44,7 +44,7 @@ public class Tui3SMSProvider implements SMSProvider {
         String url = SEND_URL.replace(":sms_info",
                         URLEncodedUtils.format(qparams, "UTF-8"));
 
-        WebServiceClientHelper client = WebServiceClientFactory
+        WebServiceClient client = WebServiceClientFactory
                         .getClientHelper();
 
         String result = client.getString("Tui3SMS", url, phoneArgs);

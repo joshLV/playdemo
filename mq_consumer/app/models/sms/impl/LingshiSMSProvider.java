@@ -19,7 +19,7 @@ import org.apache.http.message.BasicNameValuePair;
 import play.Logger;
 import play.Play;
 import util.ws.WebServiceClientFactory;
-import util.ws.WebServiceClientHelper;
+import util.ws.WebServiceClient;
 
 /**
  * 上海领时网络接口.
@@ -61,7 +61,7 @@ public class LingshiSMSProvider implements SMSProvider {
         String url = SEND_URL.replace(":sms_info",
                         URLEncodedUtils.format(qparams, "GBK"));
 
-        WebServiceClientHelper client = WebServiceClientFactory
+        WebServiceClient client = WebServiceClientFactory
                         .getClientHelper();
 
         String result = client.getString("LingshiSMS", url, phoneArgs);

@@ -13,17 +13,17 @@ import org.apache.commons.io.input.ReaderInputStream;
 import play.libs.WS.HttpResponse;
 import play.mvc.Http.Header;
 
-public class MockWebServiceClientHelper extends WebServiceClientHelper {
+public class MockWebServiceClient extends WebServiceClient {
 
-    static MockWebServiceClientHelper _instance;
+    static MockWebServiceClient _instance;
     
-    private MockWebServiceClientHelper() {
+    private MockWebServiceClient() {
         // 单例
     }
     
-    public static MockWebServiceClientHelper getInstance() {
+    public static MockWebServiceClient getInstance() {
         if (_instance == null) {
-            _instance = new MockWebServiceClientHelper();
+            _instance = new MockWebServiceClient();
         }
         return _instance;
     }

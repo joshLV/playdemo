@@ -24,7 +24,7 @@ import play.Logger;
 import play.Play;
 import util.ws.WebServiceCallback;
 import util.ws.WebServiceClientFactory;
-import util.ws.WebServiceClientHelper;
+import util.ws.WebServiceClient;
 
 /**
  * 北京奥软短信接口实现
@@ -58,7 +58,7 @@ public class BjenSMSProvider implements SMSProvider {
         String url = SEND_URL.replace(":sms_info",
                         URLEncodedUtils.format(qparams, "UTF-8"));
 
-        WebServiceClientHelper client = WebServiceClientFactory
+        WebServiceClient client = WebServiceClientFactory
                         .getClientHelper();
 
         String line = client.getString("ENSMS", url, phoneArgs);

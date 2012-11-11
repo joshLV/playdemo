@@ -13,7 +13,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import play.Play;
 import util.ws.WebServiceClientFactory;
-import util.ws.WebServiceClientHelper;
+import util.ws.WebServiceClient;
 
 public class HaduoHttpSMSProvider implements SMSProvider {
 
@@ -31,7 +31,7 @@ public class HaduoHttpSMSProvider implements SMSProvider {
         qparams.add(new BasicNameValuePair("phonestr", phonesBuffer.toString()));
         String url = SEND_URL.replace(":sms_info", URLEncodedUtils.format(qparams, "UTF-8"));
         
-        WebServiceClientHelper client = WebServiceClientFactory
+        WebServiceClient client = WebServiceClientFactory
                         .getClientHelper();
 
         String line = client.getString("HaduoSMS", url, phonesBuffer.toString());

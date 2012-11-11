@@ -14,7 +14,7 @@ import org.junit.Test;
 import factory.FactoryBoy;
 
 import play.test.UnitTest;
-import util.ws.MockWebServiceClientHelper;
+import util.ws.MockWebServiceClient;
 
 public class ZtSMSProviderTest extends UnitTest {
 	
@@ -23,17 +23,17 @@ public class ZtSMSProviderTest extends UnitTest {
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
-        MockWebServiceClientHelper.clear();
+        MockWebServiceClient.clear();
     }
     
     @Test
     public void testSendMessageSuccess() {
-        MockWebServiceClientHelper.pushMockHttpRequest(200, "1,发送成功");
+        MockWebServiceClient.pushMockHttpRequest(200, "1,发送成功");
         SMSMessage msg = new SMSMessage("Hello,world!", "15026682165");
         provider.send(msg);
         assertEquals(1, WebServiceCallType.count());
         assertEquals(1, WebServiceCallLog.count());
-        WebServiceCallLog log = WebServiceCallLog.find("order by id desc").first();
+        WebServiceCallLog log = MockWebServiceClient.getLastWebServiceCallLog();
         assertEquals("ZTSMS", log.callType);
         assertTrue(log.success);
         WebServiceCallType type = WebServiceCallType.find("order by id desc").first();
@@ -43,7 +43,7 @@ public class ZtSMSProviderTest extends UnitTest {
 
     @Test
     public void testSendMessageFail() {
-        MockWebServiceClientHelper.pushMockHttpRequest(200, "3,发送失败");
+        MockWebServiceClient.pushMockHttpRequest(200, "3,发送失败");
         SMSMessage msg = new SMSMessage("Hello,world!", "15026682165");
         SMSException smsException = null;
         try {
@@ -53,7 +53,7 @@ public class ZtSMSProviderTest extends UnitTest {
         }
         assertNotNull(smsException);
         assertEquals(1, WebServiceCallLog.count());
-        WebServiceCallLog log = WebServiceCallLog.find("order by id desc").first();
+        WebServiceCallLog log = MockWebServiceClient.getLastWebServiceCallLog();
         assertEquals("ZTSMS", log.callType);
         assertTrue(log.success);
         WebServiceCallType type = WebServiceCallType.find("order by id desc").first();

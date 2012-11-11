@@ -16,7 +16,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import play.Play;
 import util.ws.WebServiceClientFactory;
-import util.ws.WebServiceClientHelper;
+import util.ws.WebServiceClient;
 
 /**
  * C123
@@ -44,7 +44,7 @@ public class C123HttpSMSProvider implements SMSProvider {
         String url = SEND_URL.replace(":sms_info", URLEncodedUtils.format(qparams, "UTF-8"));
 
 
-        WebServiceClientHelper client = WebServiceClientFactory
+        WebServiceClient client = WebServiceClientFactory
                         .getClientHelper();
 
         String line = client.getString("C123SMS", url, phoneArgs);

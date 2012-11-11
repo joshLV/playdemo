@@ -16,7 +16,7 @@ import play.libs.WS.HttpResponse;
 
 import com.google.gson.JsonElement;
 
-public abstract class WebServiceClientHelper {
+public abstract class WebServiceClient {
 
     public String getString(String callType, String url, String keyword, WebServiceCallback callback) {
         return getString(callType, url, keyword, null, null, callback);

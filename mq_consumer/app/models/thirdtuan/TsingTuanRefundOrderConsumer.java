@@ -13,7 +13,7 @@ import org.apache.http.message.BasicNameValuePair;
 import play.modules.rabbitmq.consumer.RabbitMQConsumer;
 import util.ws.WebServiceCallback;
 import util.ws.WebServiceClientFactory;
-import util.ws.WebServiceClientHelper;
+import util.ws.WebServiceClient;
 
 public class TsingTuanRefundOrderConsumer extends RabbitMQConsumer<TsingTuanOrder> {
 
@@ -45,7 +45,7 @@ public class TsingTuanRefundOrderConsumer extends RabbitMQConsumer<TsingTuanOrde
         
         String url = SEND_URL + URLEncodedUtils.format(qparams, "UTF-8");
 
-        WebServiceClientHelper client = WebServiceClientFactory.getClientHelper();
+        WebServiceClient client = WebServiceClientFactory.getClientHelper();
         client.getString("TsingTuanRefundOrder", url, order.orderId.toString(), order.teamId.toString(), new WebServiceCallback() {
             @Override
             public void process(int statusCode, String returnContent) {
