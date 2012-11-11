@@ -25,35 +25,16 @@ public class SmsSendConsumer extends RabbitMQConsumer<SMSMessage> {
         return smsProvider;
     }
 
-    /**
-     * 保存发送记录
-     *
-     * @param message 消息
-     * @param status  状态
-     * @param serial  成功序列号
-     */
-    private void saveJournal(SMSMessage message, int status, String serial) {
-        JPAPlugin.startTx(false);
-        for (String phone : message.getPhoneNumbers()) {
-            new MQJournal(SMSUtil.SMS_QUEUE, message.getContent() + " | " + phone + " | " + status + " | " + serial).save();
-        }
-        JPAPlugin.closeTx(false);
-    }
-
     @Override
     protected void consume(SMSMessage message) {
         if (SMS_TYPE == null) {
-            saveJournal(message, -101, null);
-            Logger.error("SmsSendConsumer: can not get the SMS_TYPE in application.conf");
             return;
         }
         
         try {
-            int resultCode = getSMSProvider(SMS_TYPE).send(message);
-            saveJournal(message, resultCode, null);        
+            getSMSProvider(SMS_TYPE).send(message);
         } catch (SMSException e) {
-            Logger.error("SmsSenderConsumer: send message" + message + " failed:" + e.getResultCode());
-            saveJournal(message, e.getResultCode(), e.getMessage());        
+            Logger.error("SmsSenderConsumer: send message" + message + " failed:" + e.getMessage());
             throw e;
         }
     }
@@ -67,6 +48,9 @@ public class SmsSendConsumer extends RabbitMQConsumer<SMSMessage> {
         return this.queue();
     }
 
+    /**
+     * 重试次数.
+     */
     protected int retries() {
         // This is the default value defined by "rabbitmq.retries” on
         // application.conf (please override if you need a new value)

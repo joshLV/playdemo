@@ -46,7 +46,7 @@ public class TsingTuanRefundOrderConsumer extends RabbitMQConsumer<TsingTuanOrde
         String url = SEND_URL + URLEncodedUtils.format(qparams, "UTF-8");
 
         WebServiceClientHelper client = WebServiceClientFactory.getClientHelper();
-        client.get("TsingTuanRefundOrder", url, order.orderId.toString(), order.teamId.toString(), new WebServiceCallback() {
+        client.getString("TsingTuanRefundOrder", url, order.orderId.toString(), order.teamId.toString(), new WebServiceCallback() {
             @Override
             public void process(int statusCode, String returnContent) {
                 System.out.println("statusCode=" + statusCode);

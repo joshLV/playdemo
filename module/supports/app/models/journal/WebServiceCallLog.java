@@ -65,6 +65,11 @@ public class WebServiceCallLog extends Model {
     @Lob
     @Column(name = "response_text", length = 4000)
     public String responseText;
+    
+    @Lob
+    @Column(name = "exception_text", length = 4000)
+    public String exceptionText;
+    
 
     @Column(name = "created_at")
     public Date createdAt = new Date();

@@ -19,6 +19,18 @@ public class SMSException extends RuntimeException {
         _resultCode = resultCode;
     }
 
+    public SMSException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public SMSException(String message) {
+        super(message);
+    }
+
+    public SMSException(Throwable cause) {
+        super(cause);
+    }
+
     public int getResultCode() {
         return _resultCode;
     }

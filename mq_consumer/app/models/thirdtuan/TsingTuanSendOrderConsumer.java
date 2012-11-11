@@ -62,7 +62,7 @@ public class TsingTuanSendOrderConsumer extends RabbitMQConsumer<TsingTuanOrder>
         System.out.println("tsingtuan url=" + url);
         
         WebServiceClientHelper client = WebServiceClientFactory.getClientHelper();
-        client.get("TsingTuanSendOrder", url, order.orderId.toString(), order.teamId.toString(), new WebServiceCallback() {
+        client.getString("TsingTuanSendOrder", url, order.orderId.toString(), order.teamId.toString(), new WebServiceCallback() {
             @Override
             public void process(int statusCode, String returnContent) {
                 System.out.println("statusCode=" + statusCode);

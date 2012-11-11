@@ -86,7 +86,12 @@
         <td>${row.callTypeName}</td>
         <td>${row.key1Name}${row.key2Name}${row.key3Name}</td>
         <td>${row.url}</td>
-        <td>${row.responseText}</td>
+        <td>
+          ${row.responseText}
+          #{if row.exceptionText != null}
+            <br/>异常：${row.exceptionText}
+          #{/if}
+        </td>
     </tr>
 #{/paginate.list}
 </table>

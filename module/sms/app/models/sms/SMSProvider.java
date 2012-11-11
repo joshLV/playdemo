@@ -1,7 +1,7 @@
 package models.sms;
 
 public interface SMSProvider {
-    public int send(SMSMessage message);
+    public void send(SMSMessage message);
     
     public String getProviderName();
 }

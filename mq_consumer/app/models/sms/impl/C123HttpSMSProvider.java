@@ -1,26 +1,22 @@
 package models.sms.impl;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import models.sms.SMSException;
 import models.sms.SMSMessage;
 import models.sms.SMSProvider;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.impl.client.AbstractHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import play.Logger;
-import play.Play;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import play.Play;
+import util.ws.WebServiceClientFactory;
+import util.ws.WebServiceClientHelper;
 
 /**
  * C123
@@ -34,8 +30,7 @@ public class C123HttpSMSProvider implements SMSProvider {
     private final String PASSWORD = Play.configuration.getProperty("c123.http.password");
 
     @Override
-    public int send(SMSMessage message) {
-        int resultCode = 0;
+    public void send(SMSMessage message) {
         //准备url
         String phoneArgs = StringUtils.join(message.getPhoneNumbers(), ",");
 
@@ -48,43 +43,16 @@ public class C123HttpSMSProvider implements SMSProvider {
         qparams.add(new BasicNameValuePair("mobile", phoneArgs));
         String url = SEND_URL.replace(":sms_info", URLEncodedUtils.format(qparams, "UTF-8"));
 
-        //准备http请求
-        AbstractHttpClient httpclient = new DefaultHttpClient();
-        HttpGet httpget = new HttpGet(url);
-        HttpResponse response = null;
 
-        Logger.debug("************ Sms2SendConsumer: request url:"  + url + "*************");
+        WebServiceClientHelper client = WebServiceClientFactory
+                        .getClientHelper();
 
-        try {
-            response = httpclient.execute(httpget);
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                //读取响应
-                BufferedReader bufferedReader = new BufferedReader(
-                        new InputStreamReader(entity.getContent()));
-                String line = bufferedReader.readLine();
-                if (line.equals("0")) {
-                    //发送成功
-                    line = bufferedReader.readLine();
-                    resultCode = 0;
-                    httpget.abort();
-                } else {
-                    //发送失败
-                    resultCode = Integer.parseInt(line.trim());
-                    httpget.abort();
-                    throw new SMSException(resultCode, "发送失败");
-                }
-            } else {
-                //无响应
-                throw new SMSException(-102, "无响应");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            //http请求失败
-            throw new SMSException(-105, e);
+        String line = client.getString("C123SMS", url, phoneArgs);
+        if (!line.equals("0")) {
+            // 发送失败
+            throw new SMSException("发送失败");
         }
-        return resultCode;
+
     }
 
     @Override

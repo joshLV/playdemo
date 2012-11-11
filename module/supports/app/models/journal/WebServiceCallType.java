@@ -13,7 +13,7 @@ import play.db.jpa.Model;
 @Entity
 @Table(name="ws_call_type")
 public class WebServiceCallType extends Model {
-    @Column(name="call_type")
+    @Column(name="call_type", unique=true)
     public String callType;
     
     /**
@@ -29,4 +29,14 @@ public class WebServiceCallType extends Model {
     
     @Column(name="key3_name")
     public String key3Name;
+
+    public static void checkOrCreate(String callType2) {
+        long existsCount = WebServiceCallType.count("callType=?", callType2);
+        System.out.println("callcount=" + existsCount);
+        if (existsCount == 0) {
+            WebServiceCallType type = new WebServiceCallType();
+            type.callType = callType2;
+            type.save();
+        }
+    }
 }
