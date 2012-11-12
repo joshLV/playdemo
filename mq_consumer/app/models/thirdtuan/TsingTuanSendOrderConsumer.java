@@ -2,16 +2,14 @@ package models.thirdtuan;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import models.RabbitMQConsumerWithTx;
 import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
-
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
-
+import play.Logger;
 import play.jobs.OnApplicationStart;
-import util.ws.WebServiceCallback;
 import util.ws.WebServiceClient;
 import util.ws.WebServiceClientFactory;
 
@@ -33,8 +31,19 @@ public class TsingTuanSendOrderConsumer extends RabbitMQConsumerWithTx<TsingTuan
         return TsingTuanSendOrder.SEND_ORDER;
     }
 
+    @Override
+    protected int retries() {
+        return 10;
+    }
+
+    @Override
+    protected String routingKey() {
+        return this.queue();
+    }
+    
     public static final String SEND_URL = "http://www.tsingtuan.com/outer/shihui/order.php";
 
+    private final Pattern RESULTCODE_PATTERN = Pattern.compile("^0\\|");
     
     public void sendOrder(TsingTuanOrder order) {
         //准备url
@@ -59,13 +68,13 @@ public class TsingTuanSendOrderConsumer extends RabbitMQConsumerWithTx<TsingTuan
         params.put("sign", order.getSign());
         
         WebServiceClient client = WebServiceClientFactory.getClientHelper();
-        client.postString("TsingTuanSendOrder", SEND_URL, params, order.orderId.toString(), order.teamId.toString(), new WebServiceCallback() {
-            @Override
-            public void process(int statusCode, String returnContent) {
-                System.out.println("statusCode=" + statusCode);
-                System.out.println("returnContent=" + returnContent);
-            }
-        });
-
+        String result = client.postString("TsingTuanSendOrder", SEND_URL, params, order.orderId.toString(), order.teamId.toString());
+        Logger.info("返回消息：" + result);
+        result = result.trim();
+        Matcher m = RESULTCODE_PATTERN.matcher(result);
+        if (!m.find()) {
+            // 发送失败
+            throw new RuntimeException("清团订单同步不成功:" + result);
+        }
     }
 }
