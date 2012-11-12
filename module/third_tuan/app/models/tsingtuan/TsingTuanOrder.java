@@ -78,6 +78,7 @@ public class TsingTuanOrder implements Serializable {
         order.teamId = goods.supplierGoodsId;
         order.money = ecoupon.salePrice;
         order.origin = ecoupon.salePrice;
+        order.coupons = ecoupon.eCouponSn;
         order.mobile = ecoupon.orderItems.phone;
         order.quantity = 1;
         order.remark = ecoupon.order.remark;
