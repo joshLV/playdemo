@@ -90,26 +90,26 @@ public class ECoupon extends Model {
     @Column(name = "e_coupon_sn", unique = true)
     public String eCouponSn;
 
-    
+
     /**
      * 部分第三方团购可能使用密码，而券市场的券不需要。
      * 记录一下
      */
     public String password;
-    
+
     /**
      * 已同步标记。
      * 如果为true，则已经同步到第三方网站
      */
     public Boolean synced;
-    
+
     // ==== 价格列表 ====
     @Column(name = "face_value")
     public BigDecimal faceValue; // 商品面值、市场价
 
     @Column(name = "original_price")
     public BigDecimal originalPrice; // 供应商进货价
-    
+
     @Column(name = "resaler_price")
     public BigDecimal resalerPrice; // 用户在哪个分销商平台购买的价格，用于计算分销平台的佣金
 
@@ -729,11 +729,11 @@ public class ECoupon extends Model {
         String userName = "";
         if (AccountType.RESALER == accountType) {
             Resaler resaler = Resaler.findById(userId);
-            userName = "分销商:" + resaler != null ? resaler.loginName : "";
+            userName = "分销商:" + (resaler != null ? resaler.loginName : "");
         }
         if (AccountType.CONSUMER == accountType) {
             User user = User.findById(userId);
-            userName = "消费者" + user.getShowName();
+            userName = "消费者:" + user.getShowName();
         }
         //记录券历史信息
         new CouponHistory(eCoupon, userName, "券退款", eCoupon.status, ECouponStatus.REFUND, null).save();
@@ -744,7 +744,7 @@ public class ECoupon extends Model {
         eCoupon.refundAt = new Date();
         eCoupon.refundPrice = cashAmount;
         eCoupon.save();
-        
+
         TsingTuanOrder tsingTuanOrder = TsingTuanOrder.from(eCoupon);
         // 是清团券
         if (tsingTuanOrder != null) {
@@ -943,10 +943,7 @@ public class ECoupon extends Model {
         }
         SMSUtil.send("【一百券】"
                 + (StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title
-                : (eCoupon.goods.name
-                +
-                "["
-                + eCoupon.goods.faceValue + "元]"))
+                : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]"))
                 + "券号" + eCoupon.eCouponSn + "," +
                 "截止" + dateFormat.format(eCoupon.expireAt)
                 + ",客服：4006262166",
@@ -974,19 +971,16 @@ public class ECoupon extends Model {
                 content += "[" + s.name + "]" + s.address + " " + s.phone + ";";
             }
         }
-//        System.out.println("content>>>>" + content);
         if (StringUtils.isBlank(phone)) {
             phone = eCoupon.orderItems.phone;
         }
+        send(eCoupon,phone);
         SMSUtil.send("【一百券】"
                 + (StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title
-                : (eCoupon.goods.name
-                +
-                "["
-                + eCoupon.goods.faceValue + "元]"))
+                : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]"))
                 + "券号" + eCoupon.eCouponSn + "," +
                 "截止" + dateFormat.format(eCoupon.expireAt) + content
-                + ",客服：4006262166",
+                + "客服：4006262166",
                 phone, eCoupon.replyCode);
     }
 
@@ -1165,7 +1159,7 @@ public class ECoupon extends Model {
         if (this.checkUseBeginTimeAndUseEndTime(new Date())) {
             info += "次日";
         }
-        info += this.goods.useEndTime + "时间内使用该券 ! ";
+        info += this.goods.useEndTime + "时间内使用该券! ";
         return info;
     }
 

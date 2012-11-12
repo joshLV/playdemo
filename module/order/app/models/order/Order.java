@@ -550,8 +550,8 @@ public class Order extends Model {
     private void cancelSecKillOrder(OrderItems orderItem) {
         if (orderItem.secKillGoodsItemId != null) {
             SecKillGoodsItem goodsItem = SecKillGoodsItem.findById(orderItem.secKillGoodsItemId);
-            goodsItem.baseSale += orderItem.buyNumber;
-            goodsItem.saleCount -= orderItem.buyNumber;
+//            goodsItem.baseSale += orderItem.buyNumber;
+//            goodsItem.saleCount -= orderItem.buyNumber;
             goodsItem.virtualInventory += orderItem.buyNumber;
             goodsItem.virtualSale -= orderItem.buyNumber;
             goodsItem.save();
@@ -856,19 +856,6 @@ public class Order extends Model {
         orderPage.setPageSize(pageSize);
         return orderPage;
     }
-
-    public static List<Order> findUserListOrders(User user) {
-        if (user == null) {
-            user = new User();
-        }
-        List<Order> orderList = null;
-        Order order = null;
-        if (order.getUser() == user)
-            return orderList;
-        else
-            return null;
-    }
-
 
     /**
      * 分销商订单查询
