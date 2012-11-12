@@ -4,6 +4,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+
 import models.journal.WebServiceCallLog;
 import models.journal.WebServiceCallType;
 
@@ -141,9 +143,12 @@ public abstract class WebServiceClient {
     public HttpResponse getHttpResponse(String callType, String url, String keyword1, String keyword2, String keyword3, WebServiceCallback callback) {
         // 考虑到在MQ调用时没有打开数据库连接，这里重新开一下
         boolean jpaBeenDisabled = false;
-        if (!JPA.isEnabled()) {
-            JPAPlugin.startTx(false);
-            jpaBeenDisabled = true;
+        if (JPA.isEnabled()) {
+            EntityManager manager = JPA.entityManagerFactory.createEntityManager();
+            if (!manager.isOpen()) {
+                JPAPlugin.startTx(false);
+                jpaBeenDisabled = true;
+            }
         }
         Logger.info("call " + callType + "'s get(" + url + ")...");
         WebServiceCallLog log = createWebServiceCallLog(callType, "GET", url,
