@@ -49,9 +49,6 @@ public class Shop extends Model {
     @SolrField
     public String transport;
 
-    @SolrField
-    public String traffic;
-
     @Column(name = "is_close")
     public String isClose;
 

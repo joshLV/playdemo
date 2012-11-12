@@ -41,7 +41,7 @@ public class Brand extends Model {
     public static final String IMAGE_DEFAULT = "";
 
     @Required
-    @MaxSize(20)
+    @MaxSize(10)
     @SolrField
     public String name;
 

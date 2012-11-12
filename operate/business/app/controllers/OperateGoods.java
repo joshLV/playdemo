@@ -415,7 +415,8 @@ public class OperateGoods extends Controller {
      */
     public static void show(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
-        renderTemplate("OperateGoods/show.html", goods);
+        List<Shop> shopList = Shop.findShopBySupplier(goods.supplierId);
+        renderTemplate("OperateGoods/show.html", goods, shopList);
     }
 
     /**
@@ -523,7 +524,7 @@ public class OperateGoods extends Controller {
         }
         //预览的情况
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
-            goods.id=id;
+            goods.id = id;
             preview(id, goods, imagePath);
         }
 
