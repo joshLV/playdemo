@@ -93,13 +93,20 @@
                 </tr>
                     #{set m=0/}
                     #{list row.orderItems, as:'rowItem'}
+                %{
+                if (rowItem.goodsHistoryId != null) {
+                    goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/ph/" + rowItem.goodsHistoryId;
+                } else {
+                    goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" + rowItem.goods.id;
+                }
+                }%
                     <tr class="order-bd">
                         <td align="left">
                             <a class="goods-image"
-                               href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${rowItem.goods.id}"
+                               href="${goodsUrl}"
                                target="_blank"><img src="${rowItem.goods.imageTinyPath}"/></a>
                             <a class="goods-name"
-                               href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${rowItem.goods.id}"
+                               href="${goodsUrl}"
                                target="_blank">${rowItem.goods.shortName}</a>
                         </td>
                         <td align="center">${rowItem.salePrice?.formatCurrency('CNY').raw()}</td>

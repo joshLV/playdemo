@@ -161,6 +161,13 @@
                 </tr>
                 </thead>
             #{paginate.list items:couponsList, as:'coupon'}
+                %{
+                if (coupon.orderItems.goodsHistoryId != null) {
+                    goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/ph/" + coupon.orderItems.goodsHistoryId;
+                } else {
+                    goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" + coupon.orderItems.goods.id;
+                }
+                }%            
                 <tbody>
                 <tr class="sep-row">
                     <td colspan="7"></td>
@@ -171,9 +178,9 @@
                     </td>
                     <td>
                         <a class="goods-image"
-                           href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${coupon.goods.id}"
+                           href="${goodsUrl}"
                            target="_blank"><img src="${coupon?.goods?.imageTinyPath}"/></a>
-                        <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${coupon.goods.id}"
+                        <a href="${goodsUrl}"
                            target="_blank">${coupon?.goods?.shortName}</a>
                     </td>
                     <td align="center">${coupon.order.orderNumber}</td>

@@ -30,39 +30,46 @@
         </thead>
         <tbody>
         #{set m=0/}
-        #{list items:orderItems, as:'row' }
+        #{list items:orderItems, as:'orderItem' }
+            %{
+                if (orderItem.goodsHistoryId != null) {
+                    goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/ph/" + orderItem.goodsHistoryId;
+                } else {
+                    goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" + orderItem.goods.id;
+                }
+            }%        
             <tr class="order-bd">
-                <td align="left" valign="middle">
-                #{if row?.goodsHistoryId != null}
-                    <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/gh/${row.goodsHistoryId}" target="_blank"><img style="float:left;margin-right:5px" src="${row.goods.imageTinyPath}"/>${row.goods.name}</a>
-                #{/if}
-                #{else}
-                    <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${row.goods?.id}" target="_blank"><img style="float:left;margin-right:5px" src="${row.goods.imageTinyPath}"/>${row.goods.name}</a>
-                #{/else}
+                <td align="left">
+                    <a class="goods-image"
+                       href="${goodsUrl}"
+                       target="_blank"><img src="${orderItem.goods.imageTinyPath}"/></a>
+                    <a class="goods-name"
+                       href="${goodsUrl}"
+                       target="_blank">${orderItem.goods.shortName}</a>
                 </td>
-                <td align="center" valign="middle">&{'goods.'+row.goods.materialType}</td>
-                <td align="center" valign="middle">${row.salePrice?.formatCurrency('CNY').raw()}</td>
-                <td align="center" valign="middle">${row.buyNumber}</td>
-                <td align="center" valign="middle">${row?.getWebEcouponSn()}
-                <div style="color: #ff0000">#{if row?.goods?.isLottery}该券只限抽奖,不可消费#{/if}</div></td>
-                <td align="center" valign="middle">${row.phone}</td>
-                <td align="center" valign="middle" style="color: #ff0000">${row?.rebateValue?.formatCurrency("CNY")}</td>
+                <td align="center" valign="middle">&{'goods.'+orderItem.goods.materialType}</td>
+                <td align="center" valign="middle">${orderItem.salePrice?.formatCurrency('CNY').raw()}</td>
+                <td align="center" valign="middle">${orderItem.buyNumber}</td>
+                <td align="center" valign="middle">${orderItem?.getWebEcouponSn()}
+                <div style="color: #ff0000">#{if orderItem?.goods?.isLottery}该券只限抽奖,不可消费#{/if}</div></td>
+                <td align="center" valign="middle">${orderItem.phone}</td>
+                <td align="center" valign="middle" style="color: #ff0000">${orderItem?.rebateValue?.formatCurrency("CNY")}</td>
                 <td align="center" valign="middle">
-                    #{if (models.order.OrderStatus.SENT.equals(row?.status) && models.sales.MaterialType.REAL.equals(row?.goods?.materialType))}
+                    #{if (models.order.OrderStatus.SENT.equals(orderItem?.status) && models.sales.MaterialType.REAL.equals(orderItem?.goods?.materialType))}
                         已发货#{/if}
-                    #{elseif (models.order.OrderStatus.PAID.equals(row?.status) && models.sales.MaterialType.ELECTRONIC.equals(row?.goods?.materialType)) }
+                    #{elseif (models.order.OrderStatus.PAID.equals(orderItem?.status) && models.sales.MaterialType.ELECTRONIC.equals(orderItem?.goods?.materialType)) }
                         已发送#{/elseif}
 
-                    #{if (models.order.OrderStatus.PAID.equals(row?.status) && models.sales.MaterialType.REAL.equals(row?.goods?.materialType))}
+                    #{if (models.order.OrderStatus.PAID.equals(orderItem?.status) && models.sales.MaterialType.REAL.equals(orderItem?.goods?.materialType))}
                         未发货#{/if}
-                    #{elseif (models.order.OrderStatus.UNPAID==row?.status && models.sales.MaterialType.ELECTRONIC==row?.goods?.materialType) }
+                    #{elseif (models.order.OrderStatus.UNPAID==orderItem?.status && models.sales.MaterialType.ELECTRONIC==orderItem?.goods?.materialType) }
                         未发送#{/elseif}
                 </td>
                 #{if (++m == 1) }
                 <td align="center" valign="middle" rowspan="${orderItems?.size()}">${order?.amount?.formatCurrency('CNY').raw()}<br/> (含运费)</td>
                 <td align="center" valign="middle" rowspan="${orderItems?.size()}">
-                    #{if (row.status == models.order.OrderStatus.SENT)}交易成功#{/if}
-                    #{else}&{'order.'+row.status}#{/else}
+                    #{if (orderItem.status == models.order.OrderStatus.SENT)}交易成功#{/if}
+                    #{else}&{'order.'+orderItem.status}#{/else}
                 </td>
                 #{/if}
             </tr>

@@ -1,24 +1,12 @@
 package models.sales;
 
-import cache.CacheCallBack;
-import cache.CacheHelper;
-import com.uhuila.common.util.PathUtil;
-import models.order.ECoupon;
-import models.order.ECouponStatus;
-import models.order.OrderItems;
-import models.order.OrderStatus;
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
-import play.Play;
-import play.data.validation.InFuture;
-import play.data.validation.Max;
-import play.data.validation.MaxSize;
-import play.data.validation.Min;
-import play.data.validation.MinSize;
-import play.data.validation.Required;
-import play.db.jpa.Model;
-import play.modules.view_ext.annotation.Money;
-import org.apache.commons.lang.StringUtils;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -36,13 +24,29 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import models.order.ECoupon;
+import models.order.ECouponStatus;
+import models.order.OrderItems;
+import models.order.OrderStatus;
+
+import org.apache.commons.lang.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
+
+import play.Play;
+import play.data.validation.InFuture;
+import play.data.validation.Max;
+import play.data.validation.MaxSize;
+import play.data.validation.Min;
+import play.data.validation.MinSize;
+import play.data.validation.Required;
+import play.db.jpa.Model;
+import play.modules.view_ext.annotation.Money;
+import cache.CacheCallBack;
+import cache.CacheHelper;
+
+import com.uhuila.common.util.PathUtil;
 
 /**
  * Created with IntelliJ IDEA.
@@ -450,30 +454,25 @@ public class GoodsHistory extends Model {
     }
 
     public Long summaryCount() {
-        final Long goodsId = this.id;
-        GoodsStatistics statistics = CacheHelper.getCache(CacheHelper.getCacheKey(GoodsStatistics.CACHEKEY_GOODSID + goodsId, "GOODSSTATS"), new CacheCallBack<GoodsStatistics>() {
-            @Override
-            public GoodsStatistics loadData() {
-                return GoodsStatistics.find("goodsId", goodsId).first();
-            }
-        });
-        if (statistics == null) {
-            return 0l;
-        }
-        return statistics.summaryCount;
+        return theGoods().summaryCount();
     }
 
     public boolean onSale() {
-        return (GoodsStatus.ONSALE.equals(status) && expireAt.after(new Date()) &&
-                baseSale > 0);
+        return theGoods().onSale();
+    }
+    
+    @Transient
+    private Goods goods;
+    
+    public Goods theGoods() {
+        if (goods == null) { 
+            goods = Goods.findById(goodsId);
+        }
+        return goods;
     }
 
     public GoodsStatus getStatus() {
-        if (status != null && GoodsStatus.ONSALE.equals(status) &&
-                (expireAt != null && expireAt.before(new Date())) || (baseSale != null && baseSale <= 0)) {
-            status = GoodsStatus.OFFSALE;
-        }
-        return status;
+        return theGoods().getStatus();
     }
 
     /**
@@ -481,10 +480,7 @@ public class GoodsHistory extends Model {
      */
     @Transient
     public Long getRealStocks() {
-        if (cumulativeStocks != null) {
-            return cumulativeStocks - getRealSaleCount();
-        }
-        return getRealSaleCount();
+        return theGoods().getRealSaleCount();
     }
 
     /**
@@ -492,16 +488,7 @@ public class GoodsHistory extends Model {
      */
     @Transient
     public Long getRealSaleCount() {
-        return CacheHelper.getCache(Goods.CACHEKEY_SALECOUNT + goodsId, new CacheCallBack<Long>() {
-            @Override
-            public Long loadData() {
-                // 先找出OrderItems中的已销售数量
-                long orderItemsBuyCount = OrderItems.count("goods.id=? and order.status != ?", goodsId, OrderStatus.CANCELED);
-                // 减去已退款的数量
-                long ecouponRefundCount = ECoupon.count("goods.id=? and status=?", goodsId, ECouponStatus.REFUND);
-                return orderItemsBuyCount - ecouponRefundCount;
-            }
-        });
+        return theGoods().getRealSaleCount();
     }
 
     @Override

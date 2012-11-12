@@ -20,8 +20,9 @@
         <div id="section">
             <div id="summary" class="clearfix">
                 <div id="title">
+                #{if goods?.brand?.display}
                     <h1>${goods?.brand?.name}</h1>
-
+                #{/if}
                     <p class="desc">${goods?.name}</p>
                 </div>
                 <div id="gallery">
