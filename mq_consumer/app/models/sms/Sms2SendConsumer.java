@@ -1,19 +1,17 @@
 package models.sms;
 
-import models.journal.MQJournal;
+import models.RabbitMQConsumerWithTx;
 import play.Logger;
 import play.Play;
-import play.db.jpa.JPAPlugin;
 import play.jobs.OnApplicationStart;
 import play.modules.rabbitmq.RabbitMQPlugin;
-import play.modules.rabbitmq.consumer.RabbitMQConsumer;
 
 
 /**
  * User: likang
  */
 @OnApplicationStart(async = true)
-public class Sms2SendConsumer extends RabbitMQConsumer<SMSMessage> {
+public class Sms2SendConsumer extends RabbitMQConsumerWithTx<SMSMessage> {
     private final String SMS_TYPE    = Play.configuration
                                              .getProperty("sms2.type");
 
@@ -27,7 +25,7 @@ public class Sms2SendConsumer extends RabbitMQConsumer<SMSMessage> {
     }
 
     @Override
-    protected void consume(SMSMessage message) {
+    public void consumeWithTx(SMSMessage message) {
         if (SMS_TYPE == null) {
             Logger.error("Sms2SendConsumer: can not get the SMS_TYPE in application.conf");
             return;

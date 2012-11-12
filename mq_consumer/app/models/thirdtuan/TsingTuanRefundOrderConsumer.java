@@ -3,6 +3,7 @@ package models.thirdtuan;
 import java.util.ArrayList;
 import java.util.List;
 
+import models.RabbitMQConsumerWithTx;
 import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
 
@@ -10,16 +11,15 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
-import play.modules.rabbitmq.consumer.RabbitMQConsumer;
 import util.ws.WebServiceCallback;
-import util.ws.WebServiceClientFactory;
 import util.ws.WebServiceClient;
+import util.ws.WebServiceClientFactory;
 
-public class TsingTuanRefundOrderConsumer extends RabbitMQConsumer<TsingTuanOrder> {
+public class TsingTuanRefundOrderConsumer extends RabbitMQConsumerWithTx<TsingTuanOrder> {
 
     @Override
-    protected void consume(TsingTuanOrder arg0) {
-        
+    public void consumeWithTx(TsingTuanOrder order) {
+        sendOrder(order);
     }
 
     @Override

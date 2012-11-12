@@ -1,13 +1,11 @@
 package models.mail;
 
+import models.RabbitMQConsumerWithTx;
 import models.journal.MQJournal;
-import notifiers.GoodsOffSalesMails;
 import notifiers.TuanCategoryMails;
 import play.Logger;
-import play.db.jpa.JPAPlugin;
 import play.exceptions.MailException;
 import play.jobs.OnApplicationStart;
-import play.modules.rabbitmq.consumer.RabbitMQConsumer;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,15 +15,13 @@ import play.modules.rabbitmq.consumer.RabbitMQConsumer;
  * To change this template use File | Settings | File Templates.
  */
 @OnApplicationStart(async = true)
-public class TuanCategoryMailConsumer extends RabbitMQConsumer<MailMessage> {
+public class TuanCategoryMailConsumer extends RabbitMQConsumerWithTx<MailMessage> {
     private void saveJournal(String content) {
-        JPAPlugin.startTx(false);
         new MQJournal(queue(), content).save();
-        JPAPlugin.closeTx(false);
     }
 
     @Override
-    protected void consume(MailMessage message) {
+    public void consumeWithTx(MailMessage message) {
         try {
             TuanCategoryMails.notify(message);
             saveJournal(message.getContent() + " -- 发送成功");

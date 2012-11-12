@@ -142,14 +142,6 @@ public abstract class WebServiceClient {
 
     public HttpResponse getHttpResponse(String callType, String url, String keyword1, String keyword2, String keyword3, WebServiceCallback callback) {
         // 考虑到在MQ调用时没有打开数据库连接，这里重新开一下
-        boolean jpaBeenDisabled = false;
-        if (JPA.isEnabled()) {
-            EntityManager manager = JPA.entityManagerFactory.createEntityManager();
-            if (!manager.isOpen()) {
-                JPAPlugin.startTx(false);
-                jpaBeenDisabled = true;
-            }
-        }
         Logger.info("call " + callType + "'s get(" + url + ")...");
         WebServiceCallLog log = createWebServiceCallLog(callType, "GET", url,
                         keyword1, keyword2, keyword3);
@@ -172,11 +164,6 @@ public abstract class WebServiceClient {
             log.exceptionText = stringWriter.toString();
             log.save();
             throw e;
-        } finally {
-            if (jpaBeenDisabled) {
-                // FIXME: 如何保证在其它事务先打开的情况下，也记录日志？考虑把记录日志的功能做成内部web服务，这样总是会保存
-                JPAPlugin.closeTx(false);
-            }
         }
         
     }
