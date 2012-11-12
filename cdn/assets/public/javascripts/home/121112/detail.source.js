@@ -252,51 +252,59 @@ jQuery(function($) {
             arr = str.split(',');
             chgMinGmap(str, arr, $this.text());
         } else {
+            // 根据当前地址查找经纬度
             geocoder.geocode({'address': $this.attr('data-addr')}, function (results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
                     var location = results[0].geometry.location;
                     str = location.lat() +','+ location.lng();
                     arr = str.split(',');
-                    $this.attr('data-latlng', str);
-                    chgMinGmap(str, arr, $this.text());
+                } else {
+                    str = '31.001197278248362,122.25685396265624'; // google 找不到当前地址时，默认显示到太平洋 
+                    arr = [31.001197278248362, 122.25685396265624];
                 }
+                $this.attr('data-latlng', str);
+                chgMinGmap(str, arr, $this.text());
             });
         }
 
     });
-    function callback(data) {
-        function doHtml() {
-            var html = '';
-            for (i in data) {
-                html += '<li>'
-                    +'<h5 class="outlet-name" data-addr="'+ data[i].addr +'" data-latlng="'+ data[i].latlng +'">'+ data[i].name +'</h5>'
-                    +'<div class="outlet-attr">'
-                    +'    <p>'+ data[i].addr +'</p>'
-                    +'    <p><span>'+ data[i].tel +'</span> <a class="view-map" href="#">查看地图»</a> <a class="search-path" href="#">公交/驾车»</a></p>'
-                    +'</div>'
-                    +'</li>';
-            }
-            $('.outlet-list ul').html(html);
-            $('.outlet-attr:first').show();
-            $('.outlet-name:first').addClass('outlet-show');
+    function doHtml(data) {
+        var html = '';
+        for (i in data) {
+            html += '<li>'
+                +'<h5 class="outlet-name" data-addr="'+ data[i].addr +'" data-latlng="'+ data[i].latlng +'">'+ data[i].name +'</h5>'
+                +'<div class="outlet-attr">'
+                +'    <p>'+ data[i].addr +'</p>'
+                +'    <p><span>'+ data[i].tel +'</span> <a class="view-map" href="#">查看地图»</a> <a class="search-path" href="#">公交/驾车»</a></p>'
+                +'</div>'
+                +'</li>';
         }
+        $('.outlet-list ul').html(html);
+        $('.outlet-attr:first').show();
+        $('.outlet-name:first').addClass('outlet-show');
+    }
 
+    function callback(data) {
         var str, arr;
         if (data[0]['latlng'] != '') {
             str = data[0]['latlng'];
             arr = str.split(',');
-            doHtml();
+            doHtml(data);
             chgMinGmap(str, arr, data[0]['name']);
         } else {
+            // 根据当前地址查找经纬度
             geocoder.geocode({'address': data[0]['addr']}, function (results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
                     var location = results[0].geometry.location;
                     str = location.lat() +','+ location.lng();
                     arr = str.split(',');
-                    data[0]['latlng'] = str;
-                    doHtml();
-                    chgMinGmap(str, arr, data[0]['name']);
+                } else {
+                    str = '31.001197278248362,122.25685396265624'; // google 找不到当前地址时，默认显示到太平洋 
+                    arr = [31.001197278248362, 122.25685396265624];
                 }
+                data[0]['latlng'] = str;
+                doHtml(data);
+                chgMinGmap(str, arr, data[0]['name']);
             });
         }
     }
