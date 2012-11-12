@@ -323,6 +323,11 @@ public class ECoupon extends Model {
     private String generateAvailableEcouponSn() {
         String randomNumber;
         do {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                // do nothing.
+            }
             randomNumber = RandomNumberUtil.generateSerialNumber(10);
         } while (isNotUniqueEcouponSn(randomNumber));
         return randomNumber;

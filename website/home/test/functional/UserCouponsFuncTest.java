@@ -1,24 +1,29 @@
 package functional;
 
-import controllers.modules.website.cas.Security;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+
 import models.accounts.Account;
-import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderItems;
+import models.sales.Goods;
+import models.sales.Shop;
+import models.supplier.Supplier;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import play.mvc.Http;
-import play.test.Fixtures;
-import play.test.FunctionalTest;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
+import play.mvc.Http;
+import play.test.FunctionalTest;
+import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,35 +34,41 @@ import java.util.Map;
  */
 public class UserCouponsFuncTest extends FunctionalTest {
 
+    User user;
+    Goods goods;
+    Order order;
+    OrderItems orderItems;
+    ECoupon ecoupon;
+    
     @Before
-    public void setup() {
-        Fixtures.delete(User.class);
-        Fixtures.delete(Order.class);
-        Fixtures.delete(OrderItems.class);
+    public void setUp() {
+        FactoryBoy.deleteAll();
 
-        Fixtures.delete(ECoupon.class);
-
-        //Fixtures.loadModels("fixture/user.yml", "fixture/userInfo.yml");
-        Fixtures.loadModels("fixture/user.yml");
-        Fixtures.loadModels("fixture/userInfo.yml");
-        Fixtures.loadModels("fixture/supplier_unit.yml");
-        Fixtures.loadModels("fixture/brands.yml");
-        Fixtures.loadModels("fixture/categories_unit.yml");
-        Fixtures.loadModels("fixture/shops.yml");
-        Fixtures.loadModels("fixture/goods.yml");
-        Fixtures.loadModels("fixture/carts.yml");
-        //Fixtures.loadModels("fixture/goods_base.yml");
-        Fixtures.loadModels("fixture/orders.yml");
-        Fixtures.loadModels("fixture/orderItems.yml");
-        Fixtures.loadModels("fixture/ecoupon.yml");
-
-        Long userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
-        User user = User.findById(userId);
-
-        //设置测试登录的用户名
+        //设置虚拟登陆
+        // 设置测试登录的用户名
+        user = FactoryBoy.create(User.class);
         Security.setLoginUserForTest(user.loginName);
+        
+        FactoryBoy.create(Supplier.class);
+        FactoryBoy.create(Shop.class);
+        
+        goods = FactoryBoy.create(Goods.class);
+        order = FactoryBoy.create(Order.class, new BuildCallback<Order>() {
+            @Override
+            public void build(Order o) {
+                o.userId = user.id;
+            }
+        });
+        orderItems = FactoryBoy.create(OrderItems.class, new BuildCallback<OrderItems>() {
+            @Override
+            public void build(OrderItems oi) {
+                oi.phone = user.mobile;
+                oi.buyNumber = 3l;
+            }
+        });
+        ecoupon = FactoryBoy.create(ECoupon.class);
     }
-
+    
     @After
     public void tearDown() {
         // 清除登录Mock
@@ -71,30 +82,19 @@ public class UserCouponsFuncTest extends FunctionalTest {
         account.amount = new BigDecimal("100000000");
         account.save();
 
-        long id = (Long) Fixtures.idCache.get("models.order.ECoupon-ecoupon_001");
-        assertNotNull(id);
-        // 设置 userId, 因为在applyRefund 方法中有比较
-        ECoupon eCoupon = ECoupon.findById(id);
-        eCoupon.order.userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
-        eCoupon.order.userType = AccountType.CONSUMER;
-        // 保存修改
-        eCoupon.order.save();
-
 
         Map<String, String> params = new HashMap<>();
         params.put("applyNote", "我要退款");
 
-        Http.Response response = POST("/coupons/refund/" + id, params);
+        Http.Response response = POST("/coupons/refund/" + ecoupon.id, params);
         assertIsOk(response);
-        eCoupon = ECoupon.findById(id);
-        eCoupon.refresh();
-        assertEquals(ECouponStatus.REFUND, eCoupon.status);
+        ecoupon.refresh();
+        assertEquals(ECouponStatus.REFUND, ecoupon.status);
     }
 
     @Test
     public void testSendMessage() {
-        long id = (Long) Fixtures.idCache.get("models.order.ECoupon-ecoupon_001");
-        Http.Response response = GET("/coupons-message/" + id + "/send");
+        Http.Response response = GET("/coupons-message/" + ecoupon.id + "/send");
         assertIsOk(response);
     }
 

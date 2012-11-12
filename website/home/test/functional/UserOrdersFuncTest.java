@@ -8,7 +8,6 @@ import java.util.Map;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
-import models.consumer.UserInfo;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;
@@ -25,7 +24,6 @@ import org.junit.Test;
 
 import play.modules.breadcrumbs.BreadcrumbList;
 import play.mvc.Http;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import controllers.modules.website.cas.Security;
 import factory.FactoryBoy;
@@ -75,8 +73,8 @@ public class UserOrdersFuncTest extends FunctionalTest {
         });
         List<ECoupon> ecoupons = FactoryBoy.batchCreate(3, ECoupon.class, new SequenceCallback<ECoupon>() {
             @Override
-            public void sequence(ECoupon ecoupon, int arg1) {
-                 // do nothing.        
+            public void sequence(ECoupon ecoupon, int seq) {
+                 // do nothing.   
             }
         });
         ecoupon = ecoupons.get(0);
