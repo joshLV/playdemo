@@ -237,6 +237,9 @@ public class Area extends GenericModel {
     }
 
     public static Area findParent(String areaId) {
+        if (StringUtils.isEmpty(areaId)) {
+            return null;
+        }
         Area area = findById(areaId);
         if (area==null){
 
