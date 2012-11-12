@@ -21,6 +21,7 @@ import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.supplier.Supplier;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.FacetField;
@@ -29,6 +30,7 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
+import play.Logger;
 import play.Play;
 import play.data.validation.InFuture;
 import play.data.validation.Max;
@@ -39,6 +41,8 @@ import play.data.validation.Required;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.i18n.Messages;
+import play.libs.IO;
+import play.libs.WS;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.SimplePaginator;
 import play.modules.solr.Solr;
@@ -68,6 +72,7 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -80,6 +85,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Entity
 @Table(name = "goods")
@@ -510,6 +517,7 @@ public class Goods extends Model {
 
     public static final String IMAGE_SERVER = Play.configuration.getProperty
             ("image.server", "img0.uhcdn.com");
+    public static String ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
     //    private static final String IMAGE_ROOT_GENERATED = Play.configuration
     //            .getProperty("image.root", "/p");
     public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
@@ -2106,6 +2114,33 @@ public class Goods extends Model {
         }
 
         return areaList;
+    }
+
+    private static Pattern imagePattern = Pattern.compile("(?x)(src|SRC|background|BACKGROUND)=('|\")(http://([\\w-]+\\.)+[\\w-]+(:[0-9]+)*(/[\\w-]+)*(/[\\w-]+\\.(jpg|JPG|png|PNG|gif|GIF)))('|\")");
+    public static String replaceWithOurImage(String html) {
+        Matcher matcher = imagePattern.matcher(html);
+        Set<String> urls = new HashSet<>();
+        while (matcher.find()){
+            urls.add(matcher.group(3));
+        }
+        for(String url : urls){
+            InputStream is =  WS.url(url).get().getStream();
+            try {
+                File file = File.createTempFile("image_replace", "." + FilenameUtils.getExtension(url));
+                IO.write(is, file);
+                String targetFilePath = FileUploadUtil.storeImage(file, ROOT_PATH);
+                String path = targetFilePath.substring(ROOT_PATH.length(), targetFilePath.length());
+                //不加水印
+                path = PathUtil.addImgPathMark(path, "nw");
+                path = PathUtil.signImgPath(path);
+                String ourUrl =  "http://" + IMAGE_SERVER + "/p" + path;
+                html = html.replaceAll(url, ourUrl);
+            } catch (IOException e) {
+                Logger.error("download file("+url+") error:", e);
+            }
+        }
+
+        return html;
     }
 
     public void setVirtualSaleCount(Long count) {

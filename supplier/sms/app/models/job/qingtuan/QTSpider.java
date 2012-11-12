@@ -158,9 +158,9 @@ public class QTSpider extends Job{
         goods.name = element.elementTextTrim("title");
         goods.shortName = element.elementTextTrim("product");
         goods.title = goods.shortName;
-        goods.setExhibition(element.elementText("summary"));
-        goods.setDetails(element.elementText("detail"));
-        goods.setPrompt(element.elementText("notice"));
+        goods.setExhibition(Goods.replaceWithOurImage(element.elementText("summary")));
+        goods.setDetails(Goods.replaceWithOurImage(element.elementText("detail")));
+        goods.setPrompt(Goods.replaceWithOurImage(element.elementText("notice")));
 
         goods.supplierGoodsId = Long.parseLong(element.elementTextTrim("team_id"));
         goods.supplierId = supplier.id;
@@ -174,7 +174,6 @@ public class QTSpider extends Job{
                 IO.write(is, file);
                 goods.imagePath = uploadFile(file);
             } catch (IOException e) {
-                // do nothing
                 Logger.error("upload file error:", e);
             }
         }
