@@ -36,7 +36,6 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.faceValue = new BigDecimal("10.00");
         goods.materialType = MaterialType.ELECTRONIC;
         goods.cumulativeStocks = 100L;  //库存
-        goods.saleCount = 10;
         goods.virtualBaseSaleCount = 10l; //虚拟销量
         goods.cumulativeStocks=10l;
         goods.useWeekDay = "1,2,3,4,5,6,7";

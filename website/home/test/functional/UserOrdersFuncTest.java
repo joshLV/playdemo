@@ -1,8 +1,11 @@
 package functional;
 
-import controllers.modules.website.cas.Security;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import models.accounts.Account;
-import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
 import models.consumer.UserInfo;
@@ -12,18 +15,22 @@ import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrderStatus;
 import models.order.OrdersCondition;
+import models.sales.Goods;
+import models.sales.Shop;
+import models.supplier.Supplier;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import play.modules.breadcrumbs.BreadcrumbList;
 import play.mvc.Http;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
-
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
+import factory.callback.SequenceCallback;
 
 /**
  * 用户订单功能测试.
@@ -35,31 +42,46 @@ import java.util.Map;
 public class UserOrdersFuncTest extends FunctionalTest {
 
     User user;
-
+    Goods goods;
+    Order order;
+    OrderItems orderItems;
+    ECoupon ecoupon;
+    
     @Before
-    public void setup() {
-        Fixtures.delete(User.class);
-        Fixtures.delete(UserInfo.class);
-        Fixtures.delete(Order.class);
-        Fixtures.delete(OrderItems.class);
-        Fixtures.delete(ECoupon.class);
-        Fixtures.loadModels("fixture/user.yml");
-        Fixtures.loadModels("fixture/userInfo.yml");
-        Fixtures.loadModels("fixture/supplier_unit.yml");
-        Fixtures.loadModels("fixture/shops.yml");
-        Fixtures.loadModels("fixture/brands.yml");
-        Fixtures.loadModels("fixture/categories_unit.yml");
-        Fixtures.loadModels("fixture/goods.yml");
-        Fixtures.loadModels("fixture/orders.yml");
-        Fixtures.loadModels("fixture/orderItems.yml");
+    public void setUp() {
+        FactoryBoy.deleteAll();
 
-        Long userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
-        user = User.findById(userId);
-
-        //设置测试登录的用户名
+        //设置虚拟登陆
+        // 设置测试登录的用户名
+        user = FactoryBoy.create(User.class);
         Security.setLoginUserForTest(user.loginName);
+        
+        FactoryBoy.create(Supplier.class);
+        FactoryBoy.create(Shop.class);
+        
+        goods = FactoryBoy.create(Goods.class);
+        order = FactoryBoy.create(Order.class, new BuildCallback<Order>() {
+            @Override
+            public void build(Order o) {
+                o.userId = user.id;
+            }
+        });
+        orderItems = FactoryBoy.create(OrderItems.class, new BuildCallback<OrderItems>() {
+            @Override
+            public void build(OrderItems oi) {
+                oi.phone = user.mobile;
+                oi.buyNumber = 3l;
+            }
+        });
+        List<ECoupon> ecoupons = FactoryBoy.batchCreate(3, ECoupon.class, new SequenceCallback<ECoupon>() {
+            @Override
+            public void sequence(ECoupon ecoupon, int arg1) {
+                 // do nothing.        
+            }
+        });
+        ecoupon = ecoupons.get(0);
     }
-
+    
     @After
     public void tearDown() {
         // 清除登录Mock
@@ -68,20 +90,13 @@ public class UserOrdersFuncTest extends FunctionalTest {
 
     @Test
     public void testIndex() {
-        List<Order> orders = Order.findAll();
-        for (Order order : orders) {
-            order.userId = user.id;
-            order.userType = AccountType.CONSUMER;
-            order.save();
-        }
-
         Http.Response response = GET("/orders");
         assertStatus(200, response);
 
         List<Order> orderList = (List<Order>) renderArgs("orderList");
         final BreadcrumbList breadcrumbs = (BreadcrumbList) renderArgs("breadcrumbs");
         final OrdersCondition condition = (OrdersCondition) renderArgs("condition");
-        assertEquals(3, orderList.size());
+        assertEquals(1, orderList.size());
         assertEquals(user.id, ((User) renderArgs("user")).id);
         assertEquals(1, breadcrumbs.size());
         assertEquals("我的订单", breadcrumbs.get(0).desc);
@@ -92,8 +107,6 @@ public class UserOrdersFuncTest extends FunctionalTest {
 
     @Test
     public void testPay() {
-        long id = (Long) Fixtures.idCache.get("models.order.Order-order1");
-        Order order = Order.findById(id);
         Http.Response response = GET("/payment/" + order.orderNumber);
         assertStatus(302, response);
     }
@@ -107,11 +120,8 @@ public class UserOrdersFuncTest extends FunctionalTest {
         account.amount = new BigDecimal("10000");
         account.save();
 
-        long id = (Long) Fixtures.idCache.get("models.order.Order-order1");
-        Order order = Order.findById(id);
         assertEquals(OrderStatus.UNPAID, order.status);
-        order.userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
-        order.save();
+
         Http.Response response = GET("/orders/refund/" + order.orderNumber);
         assertStatus(200, response);
 
@@ -128,42 +138,36 @@ public class UserOrdersFuncTest extends FunctionalTest {
      */
     @Test
     public void testBatchRefund() {
-        long id = (Long) Fixtures.idCache.get("models.order.Order-order1");
-        Order order = Order.findById(id);
         assertEquals(OrderStatus.UNPAID, order.status);
-        order.userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
-        order.save();
 
-        long couponId = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon1");
-        String couponIds = String.valueOf(couponId);
         Map<String, String> args = new HashMap<>();
         args.put("orderNumber", order.orderNumber);
-        args.put("couponIds", couponIds);
+        args.put("couponIds", ecoupon.id.toString());
 
         Account account = AccountUtil.getPlatformIncomingAccount();
-        account.amount = new BigDecimal("10000");
+        BigDecimal originAmount = new BigDecimal("10000");
+        account.amount = originAmount;
         account.save();
+        
         Http.Response response = POST("/orders/batch-refund", args);
         assertStatus(302, response);
 
-        ECoupon eCoupon = ECoupon.findById(couponId);
-        assertEquals(ECouponStatus.REFUND, eCoupon.status);
-        assertNotNull(eCoupon.refundAt);
-        assertEquals(0, eCoupon.refundPrice.compareTo(eCoupon.salePrice));
+        ECoupon resultECoupon = ECoupon.findById(ecoupon.id);
+        resultECoupon.refresh();
+        assertEquals(ECouponStatus.REFUND, resultECoupon.status);
+        assertNotNull(resultECoupon.refundAt);
+        assertEquals(0, resultECoupon.refundPrice.compareTo(resultECoupon.salePrice));
+        account.refresh();
+        assertEquals(originAmount.subtract(goods.salePrice).setScale(02), account.amount.setScale(2));
     }
 
     @Test
     public void testCancelOrder() {
-
-        long id = (Long) Fixtures.idCache.get("models.order.Order-order1");
-        Order order = Order.findById(id);
         assertEquals(OrderStatus.UNPAID, order.status);
-        order.userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
-        order.save();
 
         Http.Response response = PUT("/orders/" + order.orderNumber + "/cancel", "text/html", "");
         assertStatus(200, response);
-        Order updatedOrder = Order.findById(id);
+        Order updatedOrder = Order.findById(order.id);
         updatedOrder.refresh();
         assertEquals(OrderStatus.CANCELED, updatedOrder.status);
     }
