@@ -56,7 +56,7 @@ public class SmsReceiverUtil {
                     }
                     if (!ecoupon.checkVerifyTimeRegion(new Date())) {
                         String info = ecoupon.getCheckInfo();
-                        sendSmsToClerk("【一百券】" + info + ",如有疑问请致电：4006262166", mobile, code);
+                        sendSmsToClerk("【一百券】" + info + "如有疑问请致电：4006262166", mobile, code);
                         return ("【一百券】" + info);
                     }
                     Long supplierId = ecoupon.goods.supplierId;
@@ -168,7 +168,7 @@ public class SmsReceiverUtil {
         }
         if (!ecoupon.checkVerifyTimeRegion(new Date())) {
             String info = ecoupon.getCheckInfo();
-            sendSmsToClerk("【一百券】" + info + ",如有疑问请致电：4006262166", mobile, code);
+            sendSmsToClerk("【一百券】" + info + "如有疑问请致电：4006262166", mobile, code);
             return ("【一百券】" + info);
         }
 

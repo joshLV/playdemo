@@ -1164,7 +1164,7 @@ public class ECoupon extends Model {
         if (this.checkUseBeginTimeAndUseEndTime(new Date())) {
             info += "次日";
         }
-        info += this.goods.useEndTime + "时间内使用该券! ";
+        info += this.goods.useEndTime + "时间内使用该券！";
         return info;
     }
 
