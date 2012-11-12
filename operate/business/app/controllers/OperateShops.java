@@ -84,12 +84,20 @@ public class OperateShops extends Controller {
 
     private static void renderParams(Shop shop) {
         List<Supplier> supplierList = Supplier.findUnDeleted();
-        if (StringUtils.isNotEmpty(shop.areaId)) {
-            Area district = Area.findParent(shop.areaId);
+        Area district = Area.findParent(shop.areaId);
+        if (StringUtils.isEmpty(shop.areaId) || district == null) {
+            //城市列表
+            List<Area> cities = Area.findAllSubAreas(null);
+            shop.cityId = shop.areaId;
+            renderArgs.put("cities", cities);
+            renderArgs.put("supplierList", supplierList);
+            return;
+        } else {
             shop.setDistrictId(district.id);
             Area city = Area.findParent(district.id);
             shop.cityId = city.id;
         }
+
         //城市列表
         List<Area> cities = Area.findAllSubAreas(null);
         //区域列表
@@ -131,7 +139,11 @@ public class OperateShops extends Controller {
             Validation.keep();
             edit(id, shop);
         }
-        sp.areaId = shop.areaId;
+        if (shop.areaId == null) {
+            sp.areaId = shop.cityId;
+        } else {
+            sp.areaId = shop.areaId;
+        }
         sp.name = StringUtils.trimToEmpty(shop.name);
         sp.address = StringUtils.trimToEmpty(shop.address);
         sp.phone = StringUtils.trimToEmpty(shop.phone);
