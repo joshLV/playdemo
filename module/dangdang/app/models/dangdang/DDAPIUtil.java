@@ -126,7 +126,7 @@ public class DDAPIUtil {
      * 记录当当接口调用失败日志.
      */
     private static void logFailure(DDFailureLog log) {
-//        System.out.println("!!!!!!!log Failure:log.eCouponId:" + log.eCouponId);
+//        Logger.info("!!!!!!!log Failure:log.eCouponId:" + log.eCouponId);
         log.save();
     }
 
@@ -137,7 +137,7 @@ public class DDAPIUtil {
      * @param data xml格式
      */
     public static Response sendSMS(String data) {
-//        System.out.println("[DDAPIUtil.sendSMS] sendMsg begin]" + data);
+        Logger.info("[DDAPIUtil.sendSMS] sendMsg begin]" + data);
         Response response = new Response();
         Request request = new Request();
         response.ver = VER;
@@ -145,7 +145,6 @@ public class DDAPIUtil {
         try {
             request.parse(data);
         } catch (Exception e) {
-//            System.out.println("[DDAPIUtil.sendSMS]" + e.getMessage());
             response = new Response();
             response.spid = SPID;
             response.ver = VER;
@@ -161,7 +160,6 @@ public class DDAPIUtil {
         String userCode = dataMap.get("user_code");
         String receiveMobile = dataMap.get("receiver_mobile_tel");
         String consumeId = dataMap.get("consume_id");
-        Logger.info("\n  orderId=" + orderId + "&ddgid=" + ddgid + "&spgid=" + spgid + "&userCode=" + userCode + "&=receiveMobile" + receiveMobile + "&=consumeId" + consumeId);
 
         //根据当当订单编号，查询订单是否存在
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
@@ -169,7 +167,7 @@ public class DDAPIUtil {
         if (outerOrder == null || outerOrder.ybqOrder == null) {
             response.errorCode = ErrorCode.ORDER_NOT_EXITED;
             response.desc = "没找到对应的当当订单!";
-//            System.out.println("[DDAPIUtil.sendSMS]" + response.desc);
+            Logger.info("[DDAPIUtil.sendSMS]" + response.desc);
             return response;
         }
         Resaler resaler = Resaler.find("loginName=? and status=?", Resaler.DD_LOGIN_NAME, ResalerStatus.APPROVED).first();
@@ -177,7 +175,7 @@ public class DDAPIUtil {
         if (resaler == null) {
             response.errorCode = ErrorCode.USER_NOT_EXITED;
             response.desc = "当当用户不存在！";
-//            System.out.println("[DDAPIUtil.sendSMS]" + response.desc);
+            Logger.info("[DDAPIUtil.sendSMS]" + response.desc);
             return response;
         }
 
@@ -186,7 +184,7 @@ public class DDAPIUtil {
         if (ybqOrder == null) {
             response.errorCode = ErrorCode.ORDER_NOT_EXITED;
             response.desc = "没找到对应的订单!";
-//            System.out.println("[DDAPIUtil.sendSMS]" + response.desc);
+            Logger.info("[DDAPIUtil.sendSMS]" + response.desc);
             return response;
         }
 
@@ -195,35 +193,35 @@ public class DDAPIUtil {
         if (coupon == null) {
             response.errorCode = ErrorCode.COUPON_SN_NOT_EXISTED;
             response.desc = "没找到对应的券号!";
-//            System.out.println("[DDAPIUtil.sendSMS]" + response.desc);
+            Logger.info("[DDAPIUtil.sendSMS]" + response.desc);
             return response;
         }
         //券已消费
         if (coupon.status == ECouponStatus.CONSUMED) {
             response.errorCode = ErrorCode.COUPON_CONSUMED;
             response.desc = "对不起该券已消费，不能重发短信！";
-//            System.out.println("[DDAPIUtil.sendSMS]" + response.desc);
+            Logger.info("[DDAPIUtil.sendSMS]" + response.desc);
             return response;
         }
         //券已退款
         if (coupon.status == ECouponStatus.REFUND) {
             response.errorCode = ErrorCode.COUPON_REFUND;
             response.desc = "对不起该券已退款，不能重发短信！";
-//            System.out.println("[DDAPIUtil.sendSMS]" + response.desc);
+            Logger.info("[DDAPIUtil.sendSMS]" + response.desc);
             return response;
         }
         //券已过期
         if (coupon.expireAt.before(new Date())) {
             response.errorCode = ErrorCode.COUPON_EXPIRED;
             response.desc = "对不起该券已过期，不能重发短信！";
-//            System.out.println("[DDAPIUtil.sendSMS]" + response.desc);
+            Logger.info("[DDAPIUtil.sendSMS]" + response.desc);
             return response;
         }
         //最多发送三次短信
         if (coupon.downloadTimes == 0) {
             response.errorCode = ErrorCode.MESSAGE_SEND_FAILED;
             response.desc = "重发短信超过三次！";
-//            System.out.println("[DDAPIUtil.sendSMS]" + response.desc);
+            Logger.info("[DDAPIUtil.sendSMS]" + response.desc);
             return response;
         }
 
