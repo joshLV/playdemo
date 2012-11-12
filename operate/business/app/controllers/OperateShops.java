@@ -85,7 +85,7 @@ public class OperateShops extends Controller {
     private static void renderParams(Shop shop) {
         List<Supplier> supplierList = Supplier.findUnDeleted();
         System.out.println(shop.areaId);
-        if (shop.areaId.length() < 5) {
+        if (shop.areaId != null && shop.areaId.length() < 5) {
             //城市列表
             List<Area> cities = Area.findAllSubAreas(null);
 
@@ -141,6 +141,7 @@ public class OperateShops extends Controller {
             Validation.keep();
             edit(id, shop);
         }
+        sp.transport = shop.transport;
         sp.areaId = shop.areaId;
         sp.name = StringUtils.trimToEmpty(shop.name);
         sp.address = StringUtils.trimToEmpty(shop.address);

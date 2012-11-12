@@ -47,6 +47,9 @@ public class Shop extends Model {
     public String phone;
 
     @SolrField
+    public String transport;
+
+    @SolrField
     public String traffic;
 
     @Column(name = "is_close")
@@ -94,7 +97,7 @@ public class Shop extends Model {
 
     private String districtId;
 
-    public Shop(){
+    public Shop() {
         this.createdAt = new Date();
         this.deleted = DeletedStatus.UN_DELETED;
         this.lockVersion = 0;
