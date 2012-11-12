@@ -1,20 +1,21 @@
 package models.thirdtuan;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import models.RabbitMQConsumerWithTx;
 import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
 
-import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
+import play.jobs.OnApplicationStart;
 import util.ws.WebServiceCallback;
 import util.ws.WebServiceClient;
 import util.ws.WebServiceClientFactory;
 
+@OnApplicationStart(async = true)
 public class TsingTuanSendOrderConsumer extends RabbitMQConsumerWithTx<TsingTuanOrder> {
 
     @Override
@@ -32,37 +33,33 @@ public class TsingTuanSendOrderConsumer extends RabbitMQConsumerWithTx<TsingTuan
         return TsingTuanSendOrder.SEND_ORDER;
     }
 
-    public static final String SEND_URL = "http://www.tsingtuan.com/outer/shihui/order.php?";
+    public static final String SEND_URL = "http://www.tsingtuan.com/outer/shihui/order.php";
 
     
     public void sendOrder(TsingTuanOrder order) {
         //准备url
-        List<NameValuePair> qparams = new ArrayList<NameValuePair>();
+        Map<String, Object> params = new HashMap<>();
 
-        qparams.add(new BasicNameValuePair("order_id", order.orderId.toString()));
-        qparams.add(new BasicNameValuePair("team_id", order.teamId.toString()));
-        qparams.add(new BasicNameValuePair("state", order.state));
-        qparams.add(new BasicNameValuePair("fare", order.fare.toString()));
-        qparams.add(new BasicNameValuePair("money", order.money.toString()));
-        qparams.add(new BasicNameValuePair("origin", order.origin.toString()));
-        qparams.add(new BasicNameValuePair("address", order.address));
-        qparams.add(new BasicNameValuePair("zipcode", order.zipcode));
-        qparams.add(new BasicNameValuePair("realname", order.realname));
-        qparams.add(new BasicNameValuePair("mobile", order.mobile));
-        qparams.add(new BasicNameValuePair("quantity", order.quantity.toString()));
-        qparams.add(new BasicNameValuePair("remark", order.remark));
-        qparams.add(new BasicNameValuePair("condbuy", order.condbuy));
-        qparams.add(new BasicNameValuePair("create_time", order.create_time.toString()));
-        qparams.add(new BasicNameValuePair("pay_time", order.pay_time.toString()));
-        qparams.add(new BasicNameValuePair("coupons", order.coupons + "," + order.password));
-        qparams.add(new BasicNameValuePair("sign", order.getSign()));
-        
-        String url = SEND_URL + URLEncodedUtils.format(qparams, "UTF-8");
-        
-        System.out.println("tsingtuan url=" + url);
+        params.put("order_id", order.orderId.toString());
+        params.put("team_id", order.teamId.toString());
+        params.put("state", order.state);
+        params.put("fare", order.fare.toString());
+        params.put("money", order.money.toString());
+        params.put("origin", order.origin.toString());
+        params.put("address", order.address);
+        params.put("zipcode", order.zipcode);
+        params.put("realname", order.realname);
+        params.put("mobile", order.mobile);
+        params.put("quantity", order.quantity.toString());
+        params.put("remark", order.remark);
+        params.put("condbuy", order.condbuy);
+        params.put("create_time", order.create_time.toString());
+        params.put("pay_time", order.pay_time.toString());
+        params.put("coupons", order.coupons + "," + order.password);
+        params.put("sign", order.getSign());
         
         WebServiceClient client = WebServiceClientFactory.getClientHelper();
-        client.getString("TsingTuanSendOrder", url, order.orderId.toString(), order.teamId.toString(), new WebServiceCallback() {
+        client.postString("TsingTuanSendOrder", SEND_URL, params, order.orderId.toString(), order.teamId.toString(), new WebServiceCallback() {
             @Override
             public void process(int statusCode, String returnContent) {
                 System.out.println("statusCode=" + statusCode);

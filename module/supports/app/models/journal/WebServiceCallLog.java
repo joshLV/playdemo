@@ -127,7 +127,9 @@ public class WebServiceCallLog extends Model {
         return logPages;
     }
 
+    @Transient
     private WebServiceCallType webServiceCallType;
+    
     @Transient
     public WebServiceCallType getWebServiceCallType() {
         if (webServiceCallType == null) {

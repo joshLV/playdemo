@@ -1,20 +1,17 @@
 package models.thirdtuan;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import models.RabbitMQConsumerWithTx;
 import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
-
+import play.jobs.OnApplicationStart;
 import util.ws.WebServiceCallback;
 import util.ws.WebServiceClient;
 import util.ws.WebServiceClientFactory;
 
+@OnApplicationStart(async = true)
 public class TsingTuanRefundOrderConsumer extends RabbitMQConsumerWithTx<TsingTuanOrder> {
 
     @Override
@@ -36,21 +33,20 @@ public class TsingTuanRefundOrderConsumer extends RabbitMQConsumerWithTx<TsingTu
     
     public void sendOrder(TsingTuanOrder order) {
         //准备url
-        List<NameValuePair> qparams = new ArrayList<NameValuePair>();
+        Map<String, Object> params = new HashMap<>();
 
-        qparams.add(new BasicNameValuePair("order_id", order.orderId.toString()));
-        qparams.add(new BasicNameValuePair("team_id", order.teamId.toString()));
-        qparams.add(new BasicNameValuePair("coupons", order.coupons));
-        qparams.add(new BasicNameValuePair("sign", order.getRefundSign()));
+        params.put("order_id", order.orderId.toString());
+        params.put("team_id", order.teamId.toString());
+        params.put("refund_time", order.refund_time.toString());
+        params.put("coupons", order.coupons);
+        params.put("sign", order.getRefundSign());
         
-        String url = SEND_URL + URLEncodedUtils.format(qparams, "UTF-8");
-
         WebServiceClient client = WebServiceClientFactory.getClientHelper();
-        client.getString("TsingTuanRefundOrder", url, order.orderId.toString(), order.teamId.toString(), new WebServiceCallback() {
+        client.postString("TsingTuanRefundOrder", SEND_URL, params, order.orderId.toString(), order.teamId.toString(), new WebServiceCallback() {
             @Override
             public void process(int statusCode, String returnContent) {
-                System.out.println("statusCode=" + statusCode);
-                System.out.println("returnContent=" + returnContent);
+                System.out.println("refund.statusCode=" + statusCode);
+                System.out.println("refund.returnContent=" + returnContent);
             }
         });
 

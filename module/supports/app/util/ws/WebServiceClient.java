@@ -4,18 +4,15 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
 
-import javax.persistence.EntityManager;
-
 import models.journal.WebServiceCallLog;
 import models.journal.WebServiceCallType;
 
 import org.w3c.dom.Document;
 
 import play.Logger;
-import play.db.jpa.JPA;
-import play.db.jpa.JPAPlugin;
 import play.libs.WS.HttpResponse;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
 public abstract class WebServiceClient {
@@ -170,12 +167,6 @@ public abstract class WebServiceClient {
 
     public HttpResponse postHttpResponse(String callType, String url, Map<String, Object> params,
                     String keyword1, String keyword2, String keyword3, WebServiceCallback callback) {
-        // 考虑到在MQ调用时没有打开数据库连接，这里重新开一下
-        boolean jpaBeenDisabled = false;
-        if (!JPA.isEnabled()) {
-            JPAPlugin.startTx(false);
-            jpaBeenDisabled = true;
-        }
         Logger.info("call " + callType + "'s get(" + url + ")...");
         WebServiceCallLog log = createWebServiceCallLog(callType, "GET", url,
                         keyword1, keyword2, keyword3);
@@ -186,6 +177,9 @@ public abstract class WebServiceClient {
             long endTime = System.currentTimeMillis();
             log.duration = endTime - startTime; // 记录耗时
             log.responseText = response.getString();
+            if (params != null) {
+                log.postParams = new Gson().toJson(params);
+            }
             log.statusCode = response.getStatus();
             log.success = Boolean.TRUE;
             log.save();
@@ -198,11 +192,6 @@ public abstract class WebServiceClient {
             log.responseText = stringWriter.toString();
             log.save();
             throw e;
-        } finally {
-            if (jpaBeenDisabled) {
-                // FIXME: 如何保证在其它事务先打开的情况下，也记录日志？考虑把记录日志的功能做成内部web服务，这样总是会保存
-                JPAPlugin.closeTx(false);
-            }
         }
         
     }

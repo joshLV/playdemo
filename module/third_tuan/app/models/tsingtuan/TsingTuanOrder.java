@@ -2,11 +2,13 @@ package models.tsingtuan;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 import models.order.ECoupon;
 import models.sales.Goods;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 public class TsingTuanOrder implements Serializable {
     
@@ -79,8 +81,11 @@ public class TsingTuanOrder implements Serializable {
         order.mobile = ecoupon.orderItems.phone;
         order.quantity = 1;
         order.remark = ecoupon.order.remark;
-        order.create_time = ecoupon.order.createdAt.getTime();
-        order.pay_time = ecoupon.order.paidAt.getTime();
+        order.create_time = ecoupon.order.createdAt.getTime() / 1000l;
+        order.pay_time = ecoupon.order.paidAt.getTime() / 1000l;
+        
+        // 如果是退款，则使用这个时间
+        order.refund_time = new Date().getTime() / 1000l;
         
         return order;
     }
@@ -88,6 +93,7 @@ public class TsingTuanOrder implements Serializable {
     /**
      * 生成小写的密码串。
      */
+    @JsonIgnore
     public String getSign() {
         if (sign != null) {
             return sign;
@@ -104,14 +110,17 @@ public class TsingTuanOrder implements Serializable {
     }
 
     private String refundSign;
+
+    public Long refund_time;
     
+    @JsonIgnore
     public String getRefundSign() {
         if (refundSign != null) {
             return refundSign;
         }
         StringBuilder sb = new StringBuilder();
         sb.append(this.orderId).append("|")
-              .append(this.teamId).append("|")
+              .append(this.refund_time).append("|")
               .append(SECRET);
         refundSign = DigestUtils.md5Hex(sb.toString());
         System.out.println("refundSign=" + refundSign);

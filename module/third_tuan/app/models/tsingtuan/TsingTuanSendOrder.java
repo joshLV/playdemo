@@ -2,6 +2,7 @@ package models.tsingtuan;
 
 import play.Play;
 import play.modules.rabbitmq.producer.RabbitMQPublisher;
+import util.mq.MQPublisher;
 
 public class TsingTuanSendOrder {
     
@@ -13,9 +14,7 @@ public class TsingTuanSendOrder {
      * @param order
      */
     public static void send(TsingTuanOrder order) {
-        if (!Play.runingInTestMode()) {
-            RabbitMQPublisher.publish(SEND_ORDER, order);
-        }
+        MQPublisher.publish(SEND_ORDER, order);
     }
 
     /**
@@ -23,8 +22,6 @@ public class TsingTuanSendOrder {
      * @param order
      */
     public static void refund(TsingTuanOrder order) {
-        if (!Play.runingInTestMode()) {
-            RabbitMQPublisher.publish(REFUND_ORDER, order);
-        }
+        RabbitMQPublisher.publish(REFUND_ORDER, order);
     }
 }
