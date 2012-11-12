@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
@@ -15,6 +17,11 @@ import models.sales.Goods;
 import models.sales.Shop;
 import models.supplier.Supplier;
 
+import models.order.*;
+import models.sales.Category;
+import models.sales.Goods;
+import models.sales.Shop;
+import models.supplier.Supplier;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,11 +33,8 @@ import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Juno
+ * User: hejun
  * Date: 12-7-30
- * Time: 下午2:12
- * To change this template use File | Settings | File Templates.
  */
 public class UserCouponsFuncTest extends FunctionalTest {
 
@@ -78,8 +82,9 @@ public class UserCouponsFuncTest extends FunctionalTest {
     @Test
     public void testApplyRefund() {
         // 设置总账户中的余额
+        BigDecimal amount = new BigDecimal("10000");
         Account account = AccountUtil.getPlatformIncomingAccount();
-        account.amount = new BigDecimal("100000000");
+        account.amount = amount;
         account.save();
 
 
