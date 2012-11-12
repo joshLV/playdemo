@@ -58,7 +58,7 @@
       name="form">
     调用类型：#{select 'log.callType', class:'input-small', value:log?.callType}
 		    #{option ""}所有#{/option}
-		    #{list items:wsCallTyps, as:'ctype'}
+		    #{list items:wsCallTypes, as:'ctype'}
 		      #{option ctype.callType}${ctype.description == null ? ctype.callType : ctype.description}#{/option}
 		    #{/list}
        #{/select}
@@ -74,19 +74,28 @@
 
 <table class="table table-striped table-bordered table-condensed">
     <thead>
-      <th width="10px">发生时间/时长(ms)</th>
-      <th width="20px">类型</th>
-      <th width="50px">关键字</th>
-      <th width="78px">URL</th>
-      <th width="50px">返回内容</th>
+      <th width="10%">发生时间/时长(ms)</th>
+      <th width="10%">类型</th>
+      <th width="10%">关键字</th>
+      <th width="20%">URL</th>
+      <th width="20%">POST参数</th>
+      <th width="30%">返回内容</th>
     </thead>
 #{paginate.list items:logPage, as:'row'}
     <tr>
-        <td>${row.createdAt ?.format("yyyy-MM-dd HH:mm:ss")}(${row.duration})</td>
-        <td>${row.callTypeName}</td>
-        <td>${row.key1Name}${row.key2Name}${row.key3Name}</td>
-        <td>${row.url}</td>
         <td>
+            ${row.createdAt ?.format("yyyy-MM-dd HH:mm:ss")}
+            <br/>耗时${row.duration}ms
+        </td>
+        <td>${row.callTypeName}</td>
+        <td>
+           ${row.key1Name}
+           ${row.key2Name}
+           ${row.key3Name}
+        </td>
+        <td style="word-break: break-all;">${row.url}</td>
+        <td style="word-break: break-all;">${row.postParams}</td>
+        <td style="word-break: break-all;">
           ${row.responseText}
           #{if row.exceptionText != null}
             <br/>异常：${row.exceptionText}

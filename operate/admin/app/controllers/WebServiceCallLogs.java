@@ -1,7 +1,9 @@
 package controllers;
 
-import models.journal.WebServiceCallLog;
+import java.util.List;
 
+import models.journal.WebServiceCallLog;
+import models.journal.WebServiceCallType;
 import operate.rbac.annotations.ActiveNavigation;
 
 import org.apache.commons.lang.StringUtils;
@@ -26,6 +28,8 @@ public class WebServiceCallLogs extends Controller {
         JPAExtPaginator<WebServiceCallLog> logPage = WebServiceCallLog.query(log,
                         pageNumber, 30);
 
-        render(log, logPage);
+        List<WebServiceCallType> wsCallTypes = WebServiceCallType.findAll();
+        
+        render(log, logPage, wsCallTypes);
     }
 }

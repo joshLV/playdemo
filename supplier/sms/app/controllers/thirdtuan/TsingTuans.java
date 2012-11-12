@@ -24,27 +24,31 @@ public class TsingTuans extends Controller {
 
     /**
      * 
-券接收成功回调
-http://api.quanfx.com/api/v1/tsingtuan/coupons
-参数名 类型 描述 备注
-coupon 优惠券 10位数字
-team_id Int 为清团项目编号
-sign 签名 为了保证此接口不被恶意使用，需要提供加密保护，生成规则为：md5(coupon| team_id|secret);
-其中secret 为密钥，为我们约定的一样
-
-返回格式： <return_code>|<Message>
-包括：
-0|成功
-1|此券不存在
+        券接收成功回调
+        http://api.quanfx.com/api/v1/tsingtuan/coupons
+        参数名 类型 描述 备注
+        coupon 优惠券 10位数字
+        team_id Int 为清团项目编号
+        sign 签名 为了保证此接口不被恶意使用，需要提供加密保护，生成规则为：md5(coupon| team_id|secret);
+        其中secret 为密钥，为我们约定的一样
+        
+        返回格式： <return_code>|<Message>
+        包括：
+        0|成功
+        1|此券不存在
      * @param team_id
      */
-    public static void coupons(String coupon, String team_id, String sign) {
+    public static void coupons(String coupon, String team_id, String check_time, String sign) {
+        
+        System.out.println("coupon=" + coupon + ",team_id=" + team_id 
+                        + ", check_time=" + check_time + ", sign=" + sign);
 
         if (StringUtils.isBlank(coupon) || StringUtils.isBlank(team_id) || StringUtils.isBlank(sign)) {
             renderText("9|参数非法");
         }
-        
-        if (!sign.equals(md5sum(coupon, team_id, TsingTuanOrder.SECRET))) {
+
+        System.out.println("md5=" + md5sum(coupon, team_id, check_time, TsingTuanOrder.SECRET));
+        if (!sign.equals(md5sum(coupon, team_id, check_time, TsingTuanOrder.SECRET))) {
             renderText("8|参数MD5校验失败");
         }
         
@@ -65,23 +69,27 @@ sign 签名 为了保证此接口不被恶意使用，需要提供加密保护�
     
     /**
      * http://api.quanfx.com/api/v1/tsingtuan/check
-参数名 类型 描述 备注
-coupon 优惠券 10位数字
-team_id Int 为清团项目编号
-check_time Int 验证时间
-sign 签名 为了保证此接口不被恶意使用，需要提供加密保护，生成规则为：md5(coupon| team_id| check_time|secret);
-其中secret 为密钥，为我们约定的一样
-
-返回格式： <return_code>|<Message>
-包括：
-1|已退款不能消费
-2|已验证不能重复验证
-3|已过有效期
+            参数名 类型 描述 备注
+            coupon 优惠券 10位数字
+            team_id Int 为清团项目编号
+            check_time Int 验证时间
+            sign 签名 为了保证此接口不被恶意使用，需要提供加密保护，生成规则为：md5(coupon| team_id| check_time|secret);
+            其中secret 为密钥，为我们约定的一样
+            
+            返回格式： <return_code>|<Message>
+            包括：
+            1|已退款不能消费
+            2|已验证不能重复验证
+            3|已过有效期
      */
     public static void check(String coupon, String team_id, String check_time, String sign) {
+        System.out.println("check. coupon=" + coupon + ",team_id=" + team_id 
+                        + ", check_time=" + check_time + ", sign=" + sign);
+
         if (StringUtils.isBlank(coupon) || StringUtils.isBlank(team_id) || StringUtils.isBlank(check_time) || StringUtils.isBlank(sign)) {
             renderText("9|参数非法");
         }
+        System.out.println("md5=" + md5sum(coupon, team_id, check_time, TsingTuanOrder.SECRET));
         if (!sign.equals(md5sum(coupon, team_id, check_time, TsingTuanOrder.SECRET))) {
             renderText("8|参数MD5校验失败");
         }

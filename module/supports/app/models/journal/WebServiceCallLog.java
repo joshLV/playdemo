@@ -150,21 +150,21 @@ public class WebServiceCallLog extends Model {
         if (getWebServiceCallType() == null || StringUtils.isBlank(getWebServiceCallType().key1Name)) {
             return key1;
         }
-        return getWebServiceCallType().key1Name;
+        return getWebServiceCallType().key1Name + ":" + key1;
     }
     @Transient
     public String getKey2Name() {
         if (getWebServiceCallType() == null || StringUtils.isBlank(getWebServiceCallType().key2Name)) {
             return key2;
         }
-        return getWebServiceCallType().key2Name;
+        return getWebServiceCallType().key2Name + ":" + key2;
     }
     @Transient
     public String getKey3Name() {
         if (getWebServiceCallType() == null || StringUtils.isBlank(getWebServiceCallType().key3Name)) {
             return key3;
         }
-        return getWebServiceCallType().key3Name;
+        return getWebServiceCallType().key3Name + ":" + key3;
     }
     
 }
