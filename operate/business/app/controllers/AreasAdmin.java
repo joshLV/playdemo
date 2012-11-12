@@ -35,8 +35,8 @@ public class AreasAdmin extends Controller {
         if (parentId != null) {
             areaList = Area.find("deleted=? and areaType=? and parent.id=? order by displayOrder", DeletedStatus.UN_DELETED, areaType, parentId).fetch();
         } else {
-//          areaList = Area.find("deleted=? and areaType=? and parent.id=? order by displayOrder", DeletedStatus.UN_DELETED, areaType, parentId).fetch();
-            areaList = Area.find("deleted=? and areaType=? order by displayOrder", DeletedStatus.UN_DELETED, areaType).fetch();
+          areaList = Area.find("deleted=? and areaType=? and parent is null order by displayOrder", DeletedStatus.UN_DELETED, areaType).fetch();
+//            areaList = Area.find("deleted=? and areaType=? order by displayOrder", DeletedStatus.UN_DELETED, areaType).fetch();
         }
         render(areaList, parentId, areaType);
 

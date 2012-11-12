@@ -84,6 +84,16 @@ public class OperateShops extends Controller {
 
     private static void renderParams(Shop shop) {
         List<Supplier> supplierList = Supplier.findUnDeleted();
+        System.out.println(shop.areaId);
+        if (shop.areaId.length() < 5) {
+            //城市列表
+            List<Area> cities = Area.findAllSubAreas(null);
+
+            shop.cityId = shop.areaId;
+            renderArgs.put("cities", cities);
+            renderArgs.put("supplierList", supplierList);
+            return;
+        }
         if (StringUtils.isNotEmpty(shop.areaId)) {
             Area district = Area.findParent(shop.areaId);
             shop.setDistrictId(district.id);
