@@ -1,8 +1,11 @@
 package controllers;
 
+import cache.CacheCallBack;
+import cache.CacheHelper;
 import com.uhuila.common.constants.PlatformType;
 import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
+import models.cms.FriendsLink;
 import models.cms.Topic;
 import models.cms.TopicType;
 import play.mvc.Controller;
@@ -42,6 +45,23 @@ public class WEBApplication extends Controller {
     }
 
     public static void service() {
+        render();
+    }
+
+    public static void rule() {
+        render();
+    }
+
+    public static void link() {
+        //友情链接
+        List<FriendsLink> friendsLinks = CacheHelper.getCache(CacheHelper.getCacheKey(FriendsLink.CACHEKEY, "FRIENDS_LINK"), new CacheCallBack<List<FriendsLink>>() {
+            @Override
+            public List<FriendsLink> loadData() {
+                return FriendsLink.findAllByDeleted();
+            }
+        });
+        renderArgs.put("friendsLinks", friendsLinks);
+
         render();
     }
 

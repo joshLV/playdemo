@@ -1,6 +1,5 @@
 package factory.accounts;
 
-import factory.FactoryBoy;
 import factory.ModelFactory;
 import factory.annotation.Factory;
 import models.accounts.Account;
@@ -12,11 +11,11 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * Created with IntelliJ IDEA.
+ * 帐号的测试对象.
+ *
  * User: hejun
  * Date: 12-8-24
  * Time: 下午1:44
- * To change this template use File | Settings | File Templates.
  */
 public class AccountFactory extends ModelFactory<Account> {
 
@@ -24,8 +23,8 @@ public class AccountFactory extends ModelFactory<Account> {
     public Account define() {
         Account account = new Account();
         account.accountType = AccountType.CONSUMER;
-        account.amount = new BigDecimal(0);
-        account.uncashAmount = new BigDecimal(0);
+        account.amount = BigDecimal.ZERO;
+        account.uncashAmount = BigDecimal.ZERO;
         account.status = AccountStatus.NORMAL;
         account.createdAt = new Date();
         account.creditable = AccountCreditable.NO;

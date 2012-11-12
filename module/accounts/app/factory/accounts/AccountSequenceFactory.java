@@ -26,8 +26,8 @@ public class AccountSequenceFactory extends ModelFactory<AccountSequence> {
 //        account.uid = user.id;
 
         AccountSequence accountSequence = new AccountSequence(account, AccountSequenceFlag.VOSTRO, TradeType.PAY,
-                new BigDecimal(100), new BigDecimal(0),
-                new BigDecimal(100), new BigDecimal(0), new BigDecimal(0), 10l);
+                new BigDecimal(100), BigDecimal.ZERO,
+                new BigDecimal(100), BigDecimal.ZERO, BigDecimal.ZERO, 10l);
         return accountSequence;
 
     }

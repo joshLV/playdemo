@@ -143,12 +143,12 @@ public class ResaleSalesReport extends Model {
                 for (ECoupon coupon : order.eCoupons) {
                     if (coupon.status == ECouponStatus.CONSUMED) {
                         consumedCount++;
-                        consumedPrice = consumedPrice.add(coupon.salePrice == null ? new BigDecimal(0) : coupon.salePrice);
+                        consumedPrice = consumedPrice.add(coupon.salePrice == null ? BigDecimal.ZERO : coupon.salePrice);
                     }
 
                     if (coupon.status == ECouponStatus.REFUND) {
                         refundCount++;
-                        refundPrice = refundPrice.add(coupon.refundPrice == null ? new BigDecimal(0) : coupon.refundPrice);
+                        refundPrice = refundPrice.add(coupon.refundPrice == null ? BigDecimal.ZERO : coupon.refundPrice);
                     }
                 }
             }
@@ -182,8 +182,8 @@ public class ResaleSalesReport extends Model {
         BigDecimal haveGetPrice = BigDecimal.ZERO;
         for (ResaleSalesReport item : resultList) {
             buyCount += item.buyNumber;
-            amount = amount.add(item.salePrice == null ? new BigDecimal(0) : item.salePrice);
-            totRefundPrice = item.refundPrice == null ? new BigDecimal(0) : item.refundPrice;
+            amount = amount.add(item.salePrice == null ? BigDecimal.ZERO : item.salePrice);
+            totRefundPrice = item.refundPrice == null ? BigDecimal.ZERO : item.refundPrice;
             refundPrice = refundPrice.add(totRefundPrice);
             refundCount += item.refundNumber;
             consumedCount += item.consumedNumber;
@@ -224,10 +224,10 @@ public class ResaleSalesReport extends Model {
             for (ECoupon coupon : item.order.eCoupons) {
                 if (coupon.status == ECouponStatus.REFUND) {
                     refundCount++;
-                    refundPrice = refundPrice.add(coupon.refundPrice == null ? new BigDecimal(0) : coupon.refundPrice);
+                    refundPrice = refundPrice.add(coupon.refundPrice == null ? BigDecimal.ZERO : coupon.refundPrice);
                 } else if (coupon.status == ECouponStatus.CONSUMED) {
                     consumedCount++;
-                    consumedPrice = consumedPrice.add(coupon.salePrice == null ? new BigDecimal(0) : coupon.salePrice);
+                    consumedPrice = consumedPrice.add(coupon.salePrice == null ? BigDecimal.ZERO : coupon.salePrice);
                 }
             }
 

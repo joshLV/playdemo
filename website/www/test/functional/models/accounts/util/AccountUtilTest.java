@@ -1,15 +1,18 @@
 package functional.models.accounts.util;
 
-import models.accounts.*;
+import factory.FactoryBoy;
+import models.accounts.Account;
+import models.accounts.AccountNotFoundException;
+import models.accounts.AccountSequence;
+import models.accounts.AccountSequenceFlag;
+import models.accounts.BalanceNotEnoughException;
+import models.accounts.TradeType;
 import models.accounts.util.AccountUtil;
 import org.junit.Before;
 import org.junit.Test;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 
 import java.math.BigDecimal;
-
-import factory.FactoryBoy;
 
 
 /**
@@ -63,7 +66,7 @@ public class AccountUtilTest extends FunctionalTest {
         }
         BigDecimal originAmount = account.amount;
 
-        BigDecimal augend = new BigDecimal(1);
+        BigDecimal augend = BigDecimal.ONE;
         try {
             AccountUtil.addBalanceAndSaveSequence(account.getId(), augend, BigDecimal.ZERO, BigDecimal.ZERO, new Long(1),
                     TradeType.CHARGE, AccountSequenceFlag.VOSTRO, "test note", null);

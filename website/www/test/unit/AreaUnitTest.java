@@ -1,17 +1,15 @@
 package unit;
 
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
+import factory.callback.SequenceCallback;
 import models.sales.Area;
 import models.sales.AreaType;
 import org.junit.Before;
 import org.junit.Test;
-import play.test.Fixtures;
 import play.test.UnitTest;
-import factory.FactoryBoy;
 
 import java.util.List;
-
-import factory.callback.BuildCallback;
-import factory.callback.SequenceCallback;
 
 
 /**
@@ -23,7 +21,7 @@ import factory.callback.SequenceCallback;
  */
 public class AreaUnitTest extends UnitTest {
     List<Area> cityAreas;
-    List<Area> distrcitAreas;
+    List<Area> districtAreas;
     List<Area> areaAreas;
     Area area10;
 
@@ -42,7 +40,7 @@ public class AreaUnitTest extends UnitTest {
                     }
                 });
 
-        distrcitAreas = FactoryBoy.batchCreate(7, Area.class,
+        districtAreas = FactoryBoy.batchCreate(7, Area.class,
                 new SequenceCallback<Area>() {
                     @Override
                     public void sequence(Area target, int seq) {
@@ -61,7 +59,7 @@ public class AreaUnitTest extends UnitTest {
                         target.name = "Area#" + seq;
                         target.displayOrder = seq;
                         target.areaType = AreaType.AREA;
-                        target.parent = distrcitAreas.get(0);
+                        target.parent = districtAreas.get(0);
                         target.id = target.parent.id + seq;
                     }
                 });
@@ -73,7 +71,7 @@ public class AreaUnitTest extends UnitTest {
                         target.name = "area10";
                         target.displayOrder = -1;
                         target.areaType = AreaType.AREA;
-                        target.parent = distrcitAreas.get(1);
+                        target.parent = districtAreas.get(1);
                         target.id = target.parent.id + FactoryBoy.sequence(Area.class);
                     }
                 });
@@ -89,6 +87,13 @@ public class AreaUnitTest extends UnitTest {
     }
 
     @Test
+    public void testFindTopAreasOfCity() {
+        List<Area> areaList = Area.findTopAreas(2,"CIT");
+        assertEquals(2, areaList.size());
+        assertEquals(AreaType.AREA, areaList.get(0).areaType);
+    }
+
+    @Test
     public void testFindTopCities() {
         List<Area> areaList = Area.findTopCities(6);
         assertEquals(6, areaList.size());
@@ -99,22 +104,22 @@ public class AreaUnitTest extends UnitTest {
     public void testFindTopDistricts() {
         List<Area> areaList = Area.findTopDistricts(cityAreas.get(0).id, 6);
         assertEquals(6, areaList.size());
-        assertEquals(distrcitAreas.get(0).name, areaList.get(0).name);
+        assertEquals(districtAreas.get(0).name, areaList.get(0).name);
     }
 
     @Test
     public void testFindAllSubAreas() {
         List<Area> areaList = Area.findAllSubAreas(cityAreas.get(0).id);
         assertEquals(7, areaList.size());
-        assertEquals(distrcitAreas.get(0).name, areaList.get(0).name);
+        assertEquals(districtAreas.get(0).name, areaList.get(0).name);
     }
 
     @Test
     public void testFindTopAreasByDistrict() {
         int limit = 8;
-        List<Area> areaList = Area.findTopAreas(distrcitAreas.get(0).id, limit, areaAreas.get(0).id);
+        List<Area> areaList = Area.findTopAreas(districtAreas.get(0).id, limit, areaAreas.get(0).id);
         assertEquals(3, areaList.size());
-        areaList = Area.findTopAreas(distrcitAreas.get(0).id, limit, area10.id);
+        areaList = Area.findTopAreas(districtAreas.get(0).id, limit, area10.id);
         assertEquals(4, areaList.size());
     }
 

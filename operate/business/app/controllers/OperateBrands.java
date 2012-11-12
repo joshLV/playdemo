@@ -148,12 +148,11 @@ public class OperateBrands extends Controller {
         checkImageFile(logoImage);
         checkImageFile(siteDisplayImage);
         if (Validation.hasErrors()) {
-            List<Supplier> supplierList = Supplier.findUnDeleted();
             renderArgs.put("imageLogoPath", brand.getShowLogo());
             for (String key : validation.errorsMap().keySet()) {
                 warn("update: validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
             }
-            render("OperateBrands/edit.html", supplierList);
+            render("OperateBrands/edit.html", brand, id);
         }
 
         try {

@@ -12,13 +12,19 @@ import models.cms.FriendsLink;
 import models.cms.Topic;
 import models.cms.TopicType;
 import models.consumer.User;
-import models.order.*;
+import models.order.ECoupon;
+import models.order.ECouponStatus;
+import models.order.Order;
+import models.order.OrderStatus;
+import models.sales.BrowsedGoods;
 import models.sales.Category;
+import org.apache.commons.collections.CollectionUtils;
 import play.mvc.After;
 import play.mvc.Controller;
 import play.mvc.With;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -66,7 +72,14 @@ public class Home2 extends Controller {
         List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECOMMENDS"), new CacheCallBack<List<models.sales.Goods>>() {
             @Override
             public List<models.sales.Goods> loadData() {
-                return models.sales.Goods.findTopRecommend(4);
+                List<BrowsedGoods> browsedGoodsList = BrowsedGoods.findTop(4, 2);
+                List<models.sales.Goods> goodsList = new ArrayList<>();
+                if (CollectionUtils.isNotEmpty(browsedGoodsList)) {
+                    for (BrowsedGoods browsedGoods : browsedGoodsList) {
+                        goodsList.add(browsedGoods.goods);
+                    }
+                }
+                return goodsList;
             }
         });
 

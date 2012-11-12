@@ -2,7 +2,6 @@ package models.consumer;
 
 import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.Account;
-import models.accounts.AccountType;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -26,7 +25,6 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -108,6 +106,8 @@ public class User extends Model {
     @Column(name = "promote_user_id", nullable = true)
     public Long promoteUserId;
 
+    @Transient
+    private Account account;
 
     /**
      * 判断用户名是否唯一
@@ -151,7 +151,7 @@ public class User extends Model {
      * @param openId       第三方应用的ID
      * @return 第三方登录帐号是否存在
      */
-    public static boolean checkOpenId(String openIdSource, String openId) {
+    public static boolean checkOpenId(OpenIdSource openIdSource, String openId) {
         return User.count("byOpenIdSourceAndOpenId", openIdSource, openId) > 0;
     }
 
@@ -204,7 +204,6 @@ public class User extends Model {
         String newPassword = user.password;
         newUser.password = DigestUtils.md5Hex(newPassword + newPasswordSalt);
         newUser.save();
-
     }
 
     /**
@@ -260,7 +259,6 @@ public class User extends Model {
         user.passwordSalt = newPasswordSalt;
         user.password = DigestUtils.md5Hex(password + newPasswordSalt);
         user.save();
-
     }
 
     /**
@@ -308,21 +306,6 @@ public class User extends Model {
         }
         user.status = status;
         user.save();
-    }
-
-    /**
-     * 取得账户余额
-     *
-     * @return 余额
-     */
-    public BigDecimal AccountMoney() {
-
-        Account account = Account.find("byUidAndAccountType", this.id, AccountType.CONSUMER).first();
-
-        if (account == null) {
-            return new BigDecimal(0);
-        }
-        return account.amount;
     }
 
     public static final int SHOW_NAME_LIMIT = 10;
@@ -376,16 +359,18 @@ public class User extends Model {
 
     }
 
-    //不可提现余额
-    public BigDecimal promotionAmountMoney() {
-        Account account = Account.find("byUidAndAccountType", this.id, AccountType.CONSUMER).first();
-
-        if (account == null) {
-            return new BigDecimal(0);
+    /**
+     * 访问account表获取
+     *
+     * @return
+     */
+    @Transient
+    public Account getAccount() {
+        if (account != null) {
+            return account;
         }
-        BigDecimal promotionAmount = account.promotionAmount;
-        return promotionAmount;
-
+        account = Account.getConsumer(id);
+        return account;
     }
 
     /**

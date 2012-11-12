@@ -75,7 +75,9 @@ public class Brand extends Model {
 
     @Column(name = "is_hot")
     @SolrField
-    public Boolean isHot;
+    public Boolean isHot;       //是否热点品牌
+
+    public Boolean display;     //是否显示
 
     public static final String CACHEKEY = "BRAND";
 
@@ -170,6 +172,9 @@ public class Brand extends Model {
         oldBrand.displayOrder = brand.displayOrder;
         oldBrand.introduce = brand.introduce;
         oldBrand.isHot = (brand.isHot == null) ? Boolean.FALSE : brand.isHot;
+        oldBrand.display = (brand.display == null) ? Boolean.TRUE : brand.display;
+
+        System.out.println("oldBrand.display:" + oldBrand.display);
         oldBrand.description = brand.description;
         if (!StringUtils.isEmpty(brand.logo)) {
             oldBrand.logo = brand.logo;

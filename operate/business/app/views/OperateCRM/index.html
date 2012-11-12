@@ -127,8 +127,8 @@
             #{else}
             #{/else}
             </td>
-            <td>${searchUser?.AccountMoney()?.formatCurrency('CNY')}</td>
-            <td>${searchUser?.promotionAmountMoney()?.formatCurrency('CNY')}</td>
+            <td>${searchUser?.account?.amount?.formatCurrency('CNY')}</td>
+            <td>${searchUser?.account?.promotionAmount?.formatCurrency('CNY')}</td>
             <td>${searchUser?.userInfo?.totalPoints}</td>
             <td>
 
@@ -509,8 +509,8 @@
                 </td>
             </tr>
             <tr>
-                <td width="20%"> 可提现： ${user?.AccountMoney()?.formatCurrency('CNY')}</td>
-                <td width="20%"> 不可提现： ${user?.promotionAmountMoney()?.formatCurrency('CNY')}</td>
+                <td width="20%"> 可提现： ${user?.account?.accountMoney?.formatCurrency('CNY')}</td>
+                <td width="20%"> 不可提现： ${user?.account?.promotionAmountMoney?.formatCurrency('CNY')}</td>
                 <td width="20%">积分： ${user?.userInfo?.totalPoints}</td>
                 <td width="20%">地址： ${address?.address}</td>
             </tr>

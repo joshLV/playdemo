@@ -134,6 +134,17 @@ public class Area extends GenericModel {
         return findTopByAreaType(limit, AreaType.AREA);
     }
 
+    /**
+     * 获取指定城市的前n个商圈，主要用于主页上的显示
+     *
+     * @param limit 获取的条数限制
+     * @return 前n个商圈
+     */
+    public static List<Area> findTopAreas(int limit, String cityId) {
+        return find("deleted=? and areaType=? and substr(id,0,3)=? order by displayOrder",
+                DeletedStatus.UN_DELETED, AreaType.AREA, cityId).fetch(limit);
+    }
+
     private static List<Area> findTopByAreaType(int limit, AreaType type) {
         return find("deleted=? and areaType=? order by displayOrder",
                 DeletedStatus.UN_DELETED, type).fetch(limit);

@@ -251,7 +251,7 @@ public class ECoupon extends Model {
         this.expireAt = goods.expireAt;
         this.consumedAt = null;
         this.refundAt = null;
-        this.refundPrice = new BigDecimal(0);
+        this.refundPrice = BigDecimal.ZERO;
         this.status = ECouponStatus.UNCONSUMED;
         if (couponSn == null) {
             this.eCouponSn = generateAvailableEcouponSn();
@@ -1077,7 +1077,7 @@ public class ECoupon extends Model {
                 return e2.faceValue.compareTo(e1.faceValue);
             }
         });
-        BigDecimal totalValue = new BigDecimal(0);
+        BigDecimal totalValue = BigDecimal.ZERO;
         List<ECoupon> selectECoupons = new ArrayList<>();
 
         for (ECoupon ecoupon : ecoupons) {

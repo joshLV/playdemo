@@ -7,10 +7,12 @@ import play.db.jpa.Model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +39,7 @@ public class BrowsedGoods extends Model {
      * 浏览指数
      */
     @Column(name = "visitor_count")
-    public Integer visitorCount;
+    public Integer visitorCount = 0;
 
     @Column(name = "updated_at")
     public Date updatedAt;
@@ -66,12 +68,22 @@ public class BrowsedGoods extends Model {
         super._delete();
     }
 
+    public BrowsedGoods(Goods goods, long visitorCount) {
+        this.goods = goods;
+        this.visitorCount = (int)visitorCount;
+        this.updatedAt = new Date();
+    }
 
     public BrowsedGoods(User user, String cookieIdentity, Goods goods) {
+        this(user, cookieIdentity, goods, 1);
+    }
+
+    public BrowsedGoods(User user, String cookieIdentity, Goods goods, Integer visitorCount) {
+
         this.user = user;
         this.cookieIdentity = cookieIdentity;
         this.goods = goods;
-        this.visitorCount = 1;
+        this.visitorCount = visitorCount;
         this.updatedAt = new Date();
     }
 
@@ -143,6 +155,22 @@ public class BrowsedGoods extends Model {
         query.setMaxResults(limit);
         return query.getResultList();
 
+    }
+
+    /**
+     * 首页”猜你喜欢“改为显示：最近n天所有用户浏览量最多的n个商品
+     *
+     * @param limit
+     * @return
+     */
+    public static List<BrowsedGoods> findTop(int limit, int days) {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, 0 - days);
+        EntityManager entityManager = JPA.em();
+        Query q = entityManager.createQuery("select new models.sales.BrowsedGoods(b.goods,sum(b.visitorCount) ) from BrowsedGoods b where b.updatedAt >= :dateLimit group by b.goods order by sum(b.visitorCount) desc");
+        q.setParameter("dateLimit", cal.getTime());
+        q.setMaxResults(limit);
+        return q.getResultList();
     }
 }
 

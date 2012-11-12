@@ -1,58 +1,127 @@
 package unit;
 
+import factory.FactoryBoy;
 import models.accounts.Account;
 import models.consumer.OpenIdSource;
 import models.consumer.User;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Before;
 import org.junit.Test;
-import play.test.Fixtures;
 import play.test.UnitTest;
 
-import java.math.BigDecimal;
+import java.util.Date;
 
 public class UserUnitTest extends UnitTest {
+    User user;
+    Account account;
+
     @Before
     public void setup() {
-        Fixtures.delete(User.class);
-        Fixtures.delete(Account.class);
-        Fixtures.loadModels("fixture/user.yml");
-        Fixtures.loadModels("fixture/accounts.yml");
+        FactoryBoy.deleteAll();
+        user = FactoryBoy.create(User.class);
+        account = FactoryBoy.create(Account.class);
     }
 
     @Test
-    public void passwordTest() {
-
-        Long userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
-        User user = new User();
+    public void testUpdatePassword() {
         user.password = "654321";
-        User newUser = User.findById(userId);
+        User newUser = User.findById(user.id);
         String password = newUser.password;
 
         user.updatePassword(newUser, user);
-        User upduser = User.findById(userId);
-        assertNotSame(password, upduser.password);
-        assertEquals(DigestUtils.md5Hex("654321" + upduser.passwordSalt), upduser.password);
+
+        User updatedUser = User.findById(user.id);
+        assertNotSame(password, updatedUser.password);
+        assertEquals(DigestUtils.md5Hex("654321" + updatedUser.passwordSalt), updatedUser.password);
     }
 
     @Test
-    public void AmountTest() {
+    public void testCheckLoginName() {
+        assertTrue(User.checkLoginName("selenium@uhuila.com"));
+        assertFalse(User.checkLoginName("selenium"));
+    }
 
-        Long userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
-        Long id = (Long) Fixtures.idCache.get("models.accounts.Account-Account_2");
-        Account account = Account.findById(id);
-        account.uid = userId;
+    @Test
+    public void testCheckMobile() {
+        assertTrue(User.checkMobile("15026682165"));
+        assertFalse(User.checkMobile("15026682000"));
+    }
+
+    @Test
+    public void testGetUserByPromoterCode() {
+        assertNotNull(User.getUserByPromoterCode("qweu2a"));
+        assertNotNull(User.getUserByPromoterCode("QWEU2A"));
+
+        assertNull(User.getUserByPromoterCode("qWeu2b"));
+    }
+
+    @Test
+    public void testCheckOpenId() {
+        assertFalse(User.checkOpenId(OpenIdSource.QQ, "12345678"));
+
+        user.openIdSource = OpenIdSource.QQ;
+        user.openId = "12345678";
+        user.save();
+
+        assertTrue(User.checkOpenId(OpenIdSource.QQ, "12345678"));
+    }
+
+    @Test
+    public void testCheckAndSendEmail() {
+        assertTrue(User.checkAndSendEmail("selenium@uhuila.com"));
+    }
+
+    @Test
+    public void testFindByLoginName() {
+        User foundUser = User.findByLoginName("selenium@uhuila.com");
+        assertEquals(foundUser.id, user.id);
+    }
+
+    @Test
+    public void testFindByLoginName_第三方帐号() {
+        user.openIdSource = OpenIdSource.QQ;
+        user.openId = "123456";
+        user.save();
+
+        User foundUser = User.findByLoginName(User.SOURCE_QQ + user.openId);
+        assertEquals(user.id, foundUser.id);
+    }
+
+    @Test
+    public void testCreate() {
+        User user = new User();
+        user.loginName = "selenium_create@uhuila.com";
+        user.password = "selenium_create@uhuila.com";
+        user.confirmPassword = "selenium_create@uhuila.com";
+        user.captcha = "aa";
+        user.mobile = "15026682166";
+        user.promoterCode = "qweu2a";
+
+        user.create();
+
+        assertNotNull(User.findByLoginName("selenium_create@uhuila.com"));
+    }
+
+    @Test
+    public void testUpdateMobile() throws InterruptedException {
+        Date now = new Date();
+        Thread.sleep(1000);
+        assertNull(user.userInfo.bindMobileAt);
+
+        user.updateMobile("13012341234");
+
+        User updatedUser = User.findById(user.id);
+        assertEquals(user.mobile, updatedUser.mobile);
+        assertTrue(user.userInfo.bindMobileAt.after(now));
+    }
+
+    @Test
+    public void testGetAccount() {
+        account.uid = user.id;
         account.save();
 
-
-        User updatedUser = User.findById(userId);
-        BigDecimal amount = updatedUser.AccountMoney();
-        assertEquals(String.valueOf(1000.02), amount.toString());
-
-        userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium1");
-        updatedUser = User.findById(userId);
-        amount = updatedUser.AccountMoney();
-        assertEquals(new BigDecimal(0), amount);
+        Account userAccount = user.getAccount();
+        assertEquals(account.id, userAccount.id);
     }
 
     @Test

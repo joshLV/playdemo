@@ -1183,7 +1183,7 @@ public class Goods extends Model {
     public static List<Brand> findBrandByCondition(GoodsCondition condition, int limit) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select distinct g.brand from Goods g where " +
-                condition.getFilter() + " and g.status='ONSALE' and g.brand.name!='一百券' order by g.brand.displayOrder desc,g.brand.supplier.createdAt desc");
+                condition.getFilter() + " and g.status='ONSALE' and g.brand.display=true order by g.brand.displayOrder desc,g.brand.supplier.createdAt desc");
         for (String key : condition.getParamMap().keySet()) {
             q.setParameter(key, condition.getParamMap().get(key));
         }

@@ -28,9 +28,10 @@
             <thead>
             <tr>
                 <th width="75">&{'brand.displayOrder'}</th>
-                <th>&{'brand.name'}</th>
-                <th>&{'brand.supplier'}</th>
-                <th width="400">&{'brand.introduce'}</th>
+                <th width="200">&{'brand.name'}</th>
+                <th width="300">&{'brand.supplier'}</th>
+                <th>&{'brand.introduce'}</th>
+                <th width="100">&{'brand.display'}</th>
                 <th width="80">操 作</th>
             </tr>
             </thead>
@@ -49,6 +50,7 @@
                    ${brand?.supplier?.fullName}
                 </td>
                 <td>${brand?.introduce}</td>
+                <td>${brand?.display?.yesno('显示', '<font color="red">不显示</font>')?.raw()}</td>
                 <td><a href="@{OperateBrands.edit(brand.id)}">修改</a>
                         / #{vx.deleteLink action:"brands", id:brand.id, name:brand.name/}
             </tr>

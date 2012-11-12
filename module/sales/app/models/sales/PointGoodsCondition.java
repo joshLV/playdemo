@@ -38,8 +38,8 @@ public class PointGoodsCondition implements Serializable {
     public String areaId = "0";
     public String searchAreaId = "0";
     public long brandId = 0;
-    public BigDecimal priceFrom = new BigDecimal(0);
-    public BigDecimal priceTo = new BigDecimal(0);
+    public BigDecimal priceFrom = BigDecimal.ZERO;
+    public BigDecimal priceTo = BigDecimal.ZERO;
     public String orderBy = getOrderBy(0);
     public String orderByType = "DESC";
     public int orderByNum = 9;
@@ -396,13 +396,13 @@ public class PointGoodsCondition implements Serializable {
             paramMap.put("brand", brand);
         }
 
-        if (priceFrom.compareTo(new BigDecimal(0)) > 0) {
+        if (priceFrom.compareTo(BigDecimal.ZERO) > 0) {
             sql.append(" and g.id in (select g.id from g.levelPrices l where l.level=:level and g.originalPrice+l.price >=:priceFrom)");
             paramMap.put("level", resaler.level);
             paramMap.put("priceFrom", priceFrom);
         }
 
-        if (priceTo.compareTo(new BigDecimal(0)) > 0) {
+        if (priceTo.compareTo(BigDecimal.ZERO) > 0) {
             sql.append(" and g.id in (select g.id from g.levelPrices l where l.level=:level and g.originalPrice+l.price <=:priceTo)");
             paramMap.put("level", resaler.level);
             paramMap.put("priceTo", priceTo);

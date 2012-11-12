@@ -1,11 +1,8 @@
 package models;
 
-import controllers.OperateRbac;
 import models.sales.Goods;
 import models.supplier.Supplier;
-import operate.rbac.ContextedPermission;
 import org.apache.commons.lang.StringUtils;
-import play.Play;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 
@@ -115,8 +112,8 @@ public class RefundReport extends Model {
         BigDecimal totAmount = BigDecimal.ZERO;
         for (RefundReport item : resultList) {
             buyCount += item.buyNumber;
-            amount = amount.add(item.salePrice == null ? new BigDecimal(0) : item.salePrice);
-            totAmount = totAmount.add(item.amount == null ? new BigDecimal(0) : item.amount);
+            amount = amount.add(item.salePrice == null ? BigDecimal.ZERO : item.salePrice);
+            totAmount = totAmount.add(item.amount == null ? BigDecimal.ZERO : item.amount);
 
         }
         return new RefundReport(buyCount, amount, totAmount);
@@ -138,7 +135,7 @@ public class RefundReport extends Model {
         BigDecimal totAmount = BigDecimal.ZERO;
         for (RefundReport item : resultList) {
             buyCount += item.buyNumber;
-            totAmount = totAmount.add(item.amount == null ? new BigDecimal(0) : item.amount);
+            totAmount = totAmount.add(item.amount == null ? BigDecimal.ZERO : item.amount);
 
         }
         return new RefundReport(buyCount, BigDecimal.ZERO, totAmount);

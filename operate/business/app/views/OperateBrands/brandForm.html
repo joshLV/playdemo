@@ -14,6 +14,7 @@
 #{layout_operate.textField name:'brand.displayOrder', value:brand?.displayOrder, required:true/}
 
 #{layout_operate.radioField name:'brand.isHot', value:brand?.isHot?:false, required:true/}
+#{layout_operate.radioField name:'brand.display', value:(brand?.display==null)?true:brand?.display, required:true/}
 #{layout_operate.nameField name:'brand.description', value:brand?.description,required:true, length:10,note:'(10个字以内)'/}
 #{layout_operate.textareaField name:'brand.introduce', value:brand?.introduce/}
 #{if "add".equals(action)}
@@ -22,8 +23,6 @@
 #{else}
     #{layout_operate.fileField name:'logoImage',note:'图片尺寸：(300*180像素)',/}
 <div class="control-group">
-    <label for='levelPrices_${level}' class="control-label"> </label>
-
     <div class="controls">(修改前)<br/><img src="${imageLogoPath}"/>
         <input type="hidden" name="imageLogoPath" value="${imageLogoPath}"></div>
 </div>

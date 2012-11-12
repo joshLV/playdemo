@@ -162,7 +162,7 @@
                 <td>${user?.loginIp}</td>
                 <td>${user?.createdAt}</td>
                 <td>&{'user.status.'+user?.status}</td>
-                <td>${user?.AccountMoney()?.formatCurrency('CNY')}</td>
+                <td>${user?.account?.amount?.formatCurrency('CNY')}</td>
                 <td><a href="@{OperateConsumers.show(user?.id)}">详细信息</a>
                     #{if models.consumer.UserStatus.NORMAL.equals(user?.status)}
                         / #{vx.operateLink text:"冻结", name:'freeze_'+user.id,url:"/consumers/"+user.id+"/freeze",

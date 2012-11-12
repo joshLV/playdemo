@@ -26,6 +26,8 @@ GET     /about                                  WEBApplication.about
 GET     /contact                                WEBApplication.contact
 GET     /help                                   WEBApplication.help
 GET     /service                                WEBApplication.service
+GET     /rule                                   WEBApplication.rule
+GET     /link                                   WEBApplication.link
 GET     /topic/{id}                             WEBApplication.topic
 GET     /topics                                 WEBApplication.list
 GET     /rebate_help                            WEBApplication.rebate

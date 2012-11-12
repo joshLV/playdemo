@@ -1,0 +1,17 @@
+#{extends 'main2.html' /}
+#{set title:'一百券 - 友情链接' /}
+#{asset.css src:['/help/121112/help.css'] /}
+<div class="wrapper">
+    <div id="content" class="clearfix">
+        #{include '/WEBApplication/sidebar.html'/}
+        <div id="section">
+            <h3 class="hd">友情链接</h3>
+
+            <div class="bd links">
+                #{list friendsLinks, as:'friendsLink'}
+                <a href="${friendsLink?.link}" target="_blank">${friendsLink?.linkName}</a>
+                #{/list}
+            </div>
+        </div>
+    </div>
+</div>

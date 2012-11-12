@@ -32,8 +32,8 @@ public class GoodsCondition implements Serializable {
     public String areaId = "0";
     public String searchAreaId = "0";
     public long brandId = 0;
-    public BigDecimal priceFrom = new BigDecimal(0);
-    public BigDecimal priceTo = new BigDecimal(0);
+    public BigDecimal priceFrom = BigDecimal.ZERO;
+    public BigDecimal priceTo = BigDecimal.ZERO;
     public String orderBy = getOrderBy(0);
     public String solrOrderBy = getSolrOrderBy(0);
     public String orderByType = "DESC";
@@ -153,11 +153,11 @@ public class GoodsCondition implements Serializable {
             brand.id = brandId;
             paramMap.put("brand", brand);
         }
-        if (priceFrom.compareTo(new BigDecimal(0)) > 0) {
+        if (priceFrom.compareTo(BigDecimal.ZERO) > 0) {
             condBuilder.append(" and g.salePrice >= :priceFrom");
             paramMap.put("priceFrom", priceFrom);
         }
-        if (priceTo.compareTo(new BigDecimal(0)) > 0) {
+        if (priceTo.compareTo(BigDecimal.ZERO) > 0) {
             condBuilder.append(" and g.salePrice <= :priceTo");
             paramMap.put("priceTo", priceTo);
         }
@@ -412,12 +412,12 @@ public class GoodsCondition implements Serializable {
             paramMap.put("brand", brand);
         }
 
-        if (priceFrom.compareTo(new BigDecimal(0)) > 0) {
+        if (priceFrom.compareTo(BigDecimal.ZERO) > 0) {
             sql.append(" and (g.originalPrice + g.resaleAddPrice) >=:priceFrom");
             paramMap.put("priceFrom", priceFrom);
         }
 
-        if (priceTo.compareTo(new BigDecimal(0)) > 0) {
+        if (priceTo.compareTo(BigDecimal.ZERO) > 0) {
             sql.append(" and (g.originalPrice+g.resaleAddPrice) <=:priceTo");
             paramMap.put("priceTo", priceTo);
         }
@@ -460,12 +460,12 @@ public class GoodsCondition implements Serializable {
             paramMap.put("brand", brand);
         }
 
-        if (priceFrom.compareTo(new BigDecimal(0)) > 0) {
+        if (priceFrom.compareTo(BigDecimal.ZERO) > 0) {
             sql.append(" and (g.originalPrice+g.resaleAddPrice) <=:priceFrom");
             paramMap.put("priceFrom", priceFrom);
         }
 
-        if (priceTo.compareTo(new BigDecimal(0)) > 0) {
+        if (priceTo.compareTo(BigDecimal.ZERO) > 0) {
             sql.append(" and (g.originalPrice+g.resaleAddPrice) <=:priceTo");
             paramMap.put("priceTo", priceTo);
         }

@@ -7,11 +7,7 @@ import models.accounts.AccountType;
 import models.consumer.User;
 import models.consumer.UserWebIdentification;
 import models.order.Cart;
-import models.order.ECoupon;
-import models.order.ECouponStatus;
 import models.order.Order;
-import models.order.OrderItems;
-import models.order.OrderStatus;
 import models.sales.Area;
 import models.sales.Category;
 import org.apache.commons.lang.StringUtils;
@@ -23,7 +19,6 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Http.Header;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -97,7 +92,7 @@ public class WebsiteInjector extends Controller {
         List<Area> areas = CacheHelper.getCache(CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_AREAS6"), new CacheCallBack<List<Area>>() {
             @Override
             public List<Area> loadData() {
-                return Area.findTopAreas(6);
+                return Area.findTopAreas(6, Area.SHANGHAI);
             }
         });
         renderArgs.put("areas", areas);
@@ -124,7 +119,7 @@ public class WebsiteInjector extends Controller {
 
     protected static void injectWebIdentification(final User user) {
         String cookieValue = null;
-        
+
         cookieValue = getWebIdentificationCookieId();
 
         final String identificationValue = cookieValue;
@@ -137,15 +132,15 @@ public class WebsiteInjector extends Controller {
             }
         });
         if (identification == null) {
-        	// 第一次请求时，也设置一下个这对象
-        	identification = createUserWebIdentification(user, identificationValue);
+            // 第一次请求时，也设置一下个这对象
+            identification = createUserWebIdentification(user, identificationValue);
         }
         _userWebIdentification.set(identification);
     }
 
-	public static String getWebIdentificationCookieId() {
-		String cookieValue;
-		Http.Cookie cookie = request.cookies.get(WEB_TRACK_COOKIE);
+    public static String getWebIdentificationCookieId() {
+        String cookieValue;
+        Http.Cookie cookie = request.cookies.get(WEB_TRACK_COOKIE);
 
         if (cookie == null) {
             cookieValue = UUID.randomUUID().toString();
@@ -153,8 +148,8 @@ public class WebsiteInjector extends Controller {
         } else {
             cookieValue = cookie.value;
         }
-		return cookieValue;
-	}
+        return cookieValue;
+    }
 
     public static UserWebIdentification getUserWebIdentification() {
         return _userWebIdentification.get();
@@ -193,36 +188,36 @@ public class WebsiteInjector extends Controller {
             uwi = createUserWebIdentification(user, identificationValue);
             uwi.sendToCacheOrSave();
             if (!StringUtils.isEmpty(uwi.referer)) {
-            	uwi.notifyMQSave();
-            } 
+                uwi.notifyMQSave();
+            }
             return null; //避免缓存
         }
         return uwi;
     }
 
-	private static UserWebIdentification createUserWebIdentification(
-			final User user, final String identificationValue) {
-		UserWebIdentification uwi;
-		uwi = new UserWebIdentification();
-		uwi.cookieId = identificationValue;
-		uwi.user = user;
-		uwi.firstPage = request.host + request.url;
-		uwi.createdAt = new Date();
-		uwi.ip = request.remoteAddress;
-		uwi.referCode = request.params.get("tj");  //使用tj参数得到推荐码.
-		Header header = request.headers.get("referer");
-		if (header != null) {
-		    uwi.referer = header.value();
-		    if (uwi.referer != null) {
-		        uwi.refererHost = matchTheHostName(uwi.referer);
-		    }
-		}
-		Header headerAgent = request.headers.get("user-agent");
-		if (headerAgent != null) {
-		    uwi.userAgent = headerAgent.value();
-		}
-		return uwi;
-	}
+    private static UserWebIdentification createUserWebIdentification(
+            final User user, final String identificationValue) {
+        UserWebIdentification uwi;
+        uwi = new UserWebIdentification();
+        uwi.cookieId = identificationValue;
+        uwi.user = user;
+        uwi.firstPage = request.host + request.url;
+        uwi.createdAt = new Date();
+        uwi.ip = request.remoteAddress;
+        uwi.referCode = request.params.get("tj");  //使用tj参数得到推荐码.
+        Header header = request.headers.get("referer");
+        if (header != null) {
+            uwi.referer = header.value();
+            if (uwi.referer != null) {
+                uwi.refererHost = matchTheHostName(uwi.referer);
+            }
+        }
+        Header headerAgent = request.headers.get("user-agent");
+        if (headerAgent != null) {
+            uwi.userAgent = headerAgent.value();
+        }
+        return uwi;
+    }
 
     /**
      * 从URL中匹配出主机名.
