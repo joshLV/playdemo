@@ -18,8 +18,10 @@ package controllers.modules.resale.cas;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+
 import play.Logger;
 import play.Play;
+import play.cache.Cache;
 import play.modules.resale.cas.models.CASUser;
 import play.mvc.Scope;
 import play.mvc.results.Forbidden;
@@ -34,6 +36,42 @@ import play.utils.Java;
  */
 public class Security {
 
+    private static String _loginNameForTest = null;
+    
+    /**
+     * 设置当前线程为已经登录。只在DEV模式下有效。
+     * 注意: 只应用于FunctionTest!
+     * @param logined
+     */
+    public static void setLoginUserForTest(String login) {
+        if (Play.mode == Play.Mode.DEV) {
+            _loginNameForTest = login;
+            Cache.add(SecureCAS.SESSION_USER_KEY + login, Boolean.TRUE);
+        }
+    }
+    
+    /**
+     * 在@After方法中要调用一下这个，以避免影响selenium.
+     */
+    public static void cleanLoginUserForTest() {
+        Cache.delete(SecureCAS.SESSION_USER_KEY + _loginNameForTest);
+        _loginNameForTest = null;
+    }
+      
+    public static String getLoginUserForTest() {
+        if (Play.mode == Play.Mode.DEV) {
+            return _loginNameForTest;
+        }
+        return null;
+    }
+    
+    public static boolean isTestLogined() {
+        if (Play.mode != Play.Mode.DEV) {
+            return false;
+        }
+        return _loginNameForTest != null;
+    }
+    
     /**
      * Method to check user's profile.
      *

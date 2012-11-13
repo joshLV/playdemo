@@ -29,6 +29,7 @@ import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Router;
 import controllers.modules.resale.cas.annotations.SkipCAS;
+import controllers.modules.website.cas.Security;
 
 /**
  * This class is a part of the play module secure-cas. It add the ability to check if the user have access to the
@@ -192,6 +193,14 @@ public class SecureCAS extends Controller {
      */
     @Before(unless = { "login", "logout", "fail", "authenticate", "pgtCallBack" })
     public static void filter() throws Throwable {
+        Logger.debug("[SecureCAS]: CAS Filter for URL -> " + request.url + ", test=" + Security.isTestLogined());
+
+        // 测试用，见 @Security.setLoginUserForTest说明
+        if (Security.isTestLogined()) {
+            Logger.debug("set test user %s", Security.getLoginUserForTest());
+            session.put(SESSION_USER_KEY, Security.getLoginUserForTest());
+        }
+        
         Logger.debug("[SecureCAS]: CAS Filter for URL -> " + request.url);
 
         if (skipCAS()) {
