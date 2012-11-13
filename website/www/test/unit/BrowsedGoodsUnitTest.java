@@ -1,5 +1,6 @@
 package unit;
 
+import com.uhuila.common.constants.DeletedStatus;
 import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
 import models.sales.BrowsedGoods;
@@ -38,9 +39,6 @@ public class BrowsedGoodsUnitTest extends UnitTest {
                         target.visitorCount = 2;
                     }
                 });
-        for (BrowsedGoods goods : goodsList) {
-            System.out.println("goods.visitorCount:" + goods.visitorCount);
-        }
         List<BrowsedGoods> browsedGoodsList = BrowsedGoods.findTop(4, 2);
         assertEquals(1, browsedGoodsList.size());
 
@@ -48,4 +46,21 @@ public class BrowsedGoodsUnitTest extends UnitTest {
         assertEquals(20 + browsedGoods.visitorCount, distinctBrowsedGoods.visitorCount.intValue());
     }
 
+    @Test
+    public void testFindTop_已删除商品不应该显示() {
+        browsedGoods.goods.deleted = DeletedStatus.DELETED;
+        browsedGoods.goods.save();
+
+        List<BrowsedGoods> goodsList = FactoryBoy.batchCreate(10, BrowsedGoods.class,
+                new SequenceCallback<BrowsedGoods>() {
+                    @Override
+                    public void sequence(BrowsedGoods target, int seq) {
+                        target.goods = browsedGoods.goods;
+                        target.goods.deleted = DeletedStatus.DELETED;
+                        target.visitorCount = 2;
+                    }
+                });
+        List<BrowsedGoods> browsedGoodsList = BrowsedGoods.findTop(4, 2);
+        assertEquals(0, browsedGoodsList.size());
+    }
 }

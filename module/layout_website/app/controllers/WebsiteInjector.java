@@ -86,10 +86,8 @@ public class WebsiteInjector extends Controller {
         });
         renderArgs.put("leftCategories", leftCategories);
 
-        //左边顶级分类中显示的子分类
-
         //前n个商圈
-        List<Area> areas = CacheHelper.getCache(CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_AREAS6"), new CacheCallBack<List<Area>>() {
+        List<Area> areas = CacheHelper.getCache(CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_AREAS6_" + Area.SHANGHAI), new CacheCallBack<List<Area>>() {
             @Override
             public List<Area> loadData() {
                 return Area.findTopAreas(6, Area.SHANGHAI);

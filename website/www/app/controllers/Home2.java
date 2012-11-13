@@ -13,9 +13,7 @@ import models.cms.Topic;
 import models.cms.TopicType;
 import models.consumer.User;
 import models.order.ECoupon;
-import models.order.ECouponStatus;
-import models.order.Order;
-import models.order.OrderStatus;
+import models.order.OrderItems;
 import models.sales.BrowsedGoods;
 import models.sales.Category;
 import org.apache.commons.collections.CollectionUtils;
@@ -194,17 +192,15 @@ public class Home2 extends Controller {
 
         if (user != null) {
             //待消费
-            long unconsumedCount = ECoupon.count("e.order.userId = ? and e.order.userType = ? and status = ?",
-                    user.getId(), AccountType.CONSUMER, ECouponStatus.UNCONSUMED);
+            long unconsumedCount = ECoupon.getUnConsumedCount(user.getId(), AccountType.CONSUMER);
             //待付款
-            long unpaidCount = Order.count("byUserIdAndUserTypeAndStatus",
-                    user.getId(), AccountType.CONSUMER, OrderStatus.UNPAID);
+            long unpaidCount = OrderItems.getUnpaidOrderCount(user.getId(), AccountType.CONSUMER);
             //已节省
-            BigDecimal savedMoney = ECoupon.savedMoney(user.getId(), AccountType.CONSUMER);
+            BigDecimal savedMoney = ECoupon.getSavedMoney(user.getId(), AccountType.CONSUMER);
 
             renderArgs.put("unconsumedCount", unconsumedCount);
             renderArgs.put("unpaidCount", unpaidCount);
-            renderArgs.put("savedMoney", savedMoney);
+            renderArgs.put("getSavedMoney", savedMoney);
         }
 
         renderArgs.put("categoryTopic1", categoryTopic1);

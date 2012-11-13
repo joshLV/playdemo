@@ -1,27 +1,8 @@
 package models.order;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-
+import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
@@ -47,19 +28,34 @@ import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Index;
-
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
-import cache.CacheHelper;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.RandomNumberUtil;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 
 @Entity
@@ -726,7 +722,7 @@ public class Order extends Model {
                         // 如果是京东的订单 不要发短信，京东自己调我们的发短信接口
                         if (!AccountType.RESALER.equals(orderItem.order.userType)
                                 || !orderItem.order.getResaler().loginName.equals(Resaler.JD_LOGIN_NAME)) {
-                            
+
                             TsingTuanOrder tsingTuanOrder = TsingTuanOrder.from(eCoupon);
                             if (tsingTuanOrder != null) {
                                 // 清团券发送
@@ -738,7 +734,7 @@ public class Order extends Model {
                                         "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "" +
                                         "密码" + password + ",截止" + dateFormat.format(eCoupon.expireAt) + "客服4006013975",
                                         orderItem.phone, eCoupon.replyCode);
-                                TsingTuanSendOrder.send(tsingTuanOrder);                                
+                                TsingTuanSendOrder.send(tsingTuanOrder);
                             } else {
                                 SMSUtil.send("【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name +
                                         "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
