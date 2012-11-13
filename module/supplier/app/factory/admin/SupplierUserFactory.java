@@ -27,7 +27,7 @@ public class SupplierUserFactory extends ModelFactory<SupplierUser> {
 
         supplierUser.supplier = FactoryBoy.lastOrCreate(Supplier.class);
         supplierUser.shop = FactoryBoy.lastOrCreate(Shop.class);
-        
+
         supplierUser.deleted = DeletedStatus.UN_DELETED;
         supplierUser.mobile = "13700001111";
         supplierUser.loginName = "02188888888";
@@ -38,6 +38,8 @@ public class SupplierUserFactory extends ModelFactory<SupplierUser> {
         supplierUser.roles = new ArrayList<SupplierRole>();
         supplierUser.roles.add(role("sales"));
         supplierUser.roles.add(role("clerk"));
+        supplierUser.roles.add(role("editor"));
+        supplierUser.roles.add(role("account"));
         return supplierUser;
     }
 
@@ -56,5 +58,5 @@ public class SupplierUserFactory extends ModelFactory<SupplierUser> {
         supplierUser.jobNumber = "001";
         return supplierUser;
     }
-    
+
 }

@@ -201,7 +201,7 @@ public class Goods extends Model {
      * (网站标题)原来叫商品名称
      */
     @Required
-    @MaxSize(280)
+    @MaxSize(600)
     @SolrField
     public String name;
     /**

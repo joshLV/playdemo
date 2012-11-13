@@ -43,9 +43,8 @@ public class Shops extends Controller {
      */
     public static void create(@Valid Shop shop) {
         if (Validation.hasErrors()) {
-            params.flash();
-            Validation.keep();
-            add(shop);
+            renderParams(shop);
+            render("Shops/add.html", shop);
         }
         shop.supplierId = SupplierRbac.currentUser().supplier.id;
         shop.deleted = DeletedStatus.UN_DELETED;
@@ -114,9 +113,8 @@ public class Shops extends Controller {
     public static void update(long id, @Valid Shop shop) {
         Shop sp = Shop.findById(id);
         if (Validation.hasErrors()) {
-            params.flash();
-            Validation.keep();
-            edit(id, shop);
+            shop.id = id;
+            render("/Shops/edit.html", shop, id);
         }
         if (shop.areaId == null) {
             sp.areaId = shop.cityId;
@@ -136,15 +134,10 @@ public class Shops extends Controller {
      *
      * @param id 门店标识
      */
-    public static void edit(long id, Shop shop) {
-        Shop originalShop = shop;
-        originalShop.id = id;
-        if (originalShop.areaId == null) {
-            originalShop = Shop.findById(id);
-        }
-        renderParams(originalShop);
-        renderArgs.put("shop", originalShop);
-        render();
+    public static void edit(long id) {
+        Shop shop = Shop.findById(id);
+        renderParams(shop);
+        render(shop);
     }
 
     /**
