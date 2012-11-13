@@ -5,6 +5,7 @@
 *.jar
 *.pyc
 eclipse
+nbproject
 .settings
 .project
 .classpath
