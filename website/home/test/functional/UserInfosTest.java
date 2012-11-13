@@ -8,6 +8,7 @@ import java.util.Map;
 
 import models.consumer.User;
 import models.consumer.UserInfo;
+import models.sms.MockSMSProvider;
 import models.sms.SMSMessage;
 import models.sms.SMSUtil;
 
@@ -21,27 +22,28 @@ import play.test.Fixtures;
 import play.test.FunctionalTest;
 import util.mq.MockMQ;
 import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
 
 /**
  * @author wangjia
  * @date 2012-7-24 下午2:10:09
  */
 public class UserInfosTest extends FunctionalTest {
-    
+    User user;
+    UserInfo userInfo;
+
     @Before
     public void setup() {
-        Fixtures.delete(User.class);
-        Fixtures.delete(UserInfo.class);
-
-        //Fixtures.loadModels("fixture/user.yml", "fixture/userInfo.yml");
-        Fixtures.loadModels("fixture/user.yml");
-        Fixtures.loadModels("fixture/userInfo.yml");
-
-        Long userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
-        User user = User.findById(userId);
-
-        //设置测试登录的用户名
+        MockMQ.clear();
+        FactoryBoy.deleteAll();
+        userInfo = FactoryBoy.create(UserInfo.class);
+        user = FactoryBoy.create(User.class);
+        user.mobile = "15026666506";
+        user.save();
+        userInfo.user = user;
+        userInfo.save();
         Security.setLoginUserForTest(user.loginName);
+
     }
 
     @After
@@ -73,8 +75,6 @@ public class UserInfosTest extends FunctionalTest {
     public void testSendValidCodeNewOldphoneExist() {
         //新手机号存在 旧手机号存在
         Map<String, String> mobileParams = new HashMap<>();
-        Long userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
-        User user = User.findById(userId);
         mobileParams.put("mobile", "15026666506");
         mobileParams.put("oldMobile", "15026666506");
         Response response = POST("/user-info/send", mobileParams);
@@ -103,13 +103,21 @@ public class UserInfosTest extends FunctionalTest {
         assertEquals("1", response.out.toString()); // 浏览器相应
 
         //测试cache
+        String validCode = "123456";
+
+        //更新手机信息
+        String mobile = "15026666503";
+        Cache.set("mobile_", mobile, "10mn");
+        Cache.set("validCode_", validCode, "10mn");    //
+
         Object objCode = Cache.get("validCode_");
         Object objMobile = Cache.get("mobile_");
         assertEquals("123456", objCode.toString());
-        assertEquals("15026666505", objMobile.toString());
+        assertEquals("15026666503", objMobile.toString());
 
         //验证手机发送的验证码
-        SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
+
+        SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
         assertNotNull("【一百券】您的验证码是123456, 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码", msg);
         assertEquals("【一百券】您的验证码是123456, 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码", msg.getContent());
 
@@ -200,21 +208,17 @@ public class UserInfosTest extends FunctionalTest {
     @Test
     public void testUpdate() {
         //存在则修改
-        Long userId = (Long) Fixtures.idCache.get("models.consumer.UserInfo-userInfo1");
-        UserInfo user = UserInfo.findById(userId);
-        System.out.print(userId);
+        Long prevUserInfoId = userInfo.id;
         Map<String, String> mobileParams = new HashMap<>();
         mobileParams.put("userInfo.fullName", "xxx");
-        mobileParams.put("id", userId.toString());
+        mobileParams.put("id", userInfo.id.toString());
         mobileParams.put("interest", "yyy");
         Response response = POST("/user-info", mobileParams);
         assertStatus(302, response);
-        Long userId1 = (Long) Fixtures.idCache.get("models.consumer.UserInfo-userInfo1");
-        UserInfo user1 = UserInfo.findById(userId1);
-        user1.refresh();
-        assertEquals(userId, user1.id);
-        assertEquals("xxx", user1.fullName);
-        assertEquals("yyy", user1.interest);
+        userInfo.refresh();
+        assertEquals(prevUserInfoId, userInfo.id);
+        assertEquals("xxx", userInfo.fullName);
+        assertEquals("yyy", userInfo.interest);
 
     }
 
