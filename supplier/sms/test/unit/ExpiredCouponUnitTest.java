@@ -2,31 +2,23 @@ package unit;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 
-import models.accounts.AccountType;
 import models.job.ExpiredCouponNotice;
 import models.order.ECoupon;
-import models.order.Order;
-import models.order.OrderItems;
 import models.order.SentCouponMessage;
-import models.sales.Area;
-import models.sales.Brand;
-import models.sales.Category;
 import models.sales.Goods;
-import models.sales.Shop;
-import models.sms.MockSMSProvider;
 import models.sms.SMSMessage;
 import models.sms.SMSUtil;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import play.test.Fixtures;
 import play.test.UnitTest;
+import util.DateHelper;
 import util.mq.MockMQ;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 
 /**
  * TODO.
@@ -36,79 +28,82 @@ import util.mq.MockMQ;
  * Time: 下午3:09
  */
 public class ExpiredCouponUnitTest extends UnitTest {
-    public static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    
     @Before
     public void setup() {
-        Fixtures.delete(SentCouponMessage.class);
-        Fixtures.delete(OrderItems.class);
-        Fixtures.delete(Order.class);
-        Fixtures.delete(Shop.class);
-        Fixtures.delete(Goods.class);
-        Fixtures.delete(Category.class);
-        Fixtures.delete(Brand.class);
-        Fixtures.delete(Area.class);
-        Fixtures.delete(ECoupon.class);
-        Fixtures.loadModels("fixture/areas_unit.yml");
-        Fixtures.loadModels("fixture/categories_unit.yml");
-        Fixtures.loadModels("fixture/brands_unit.yml");
-        Fixtures.loadModels("fixture/shops_unit.yml");
-        Fixtures.loadModels("fixture/goods_unit.yml");
-        Fixtures.loadModels("fixture/goods_expired.yml");
-        Fixtures.loadModels("fixture/orders_expired.yml");
-        Fixtures.loadModels("fixture/orderItems_expired.yml");
-        Fixtures.loadModels("fixture/sent_coupon_message.yml");
-        List<Order> orderList = Order.findAll();
-        for (Order order : orderList) {
-            order.userType = AccountType.CONSUMER;
-            order.save();
-        }
-
-
+        FactoryBoy.deleteAll();
     }
 
     @Test
     public void testJob() throws ParseException {
-
-        List<ECoupon> couponList = ECoupon.findAll();
-        for (ECoupon coupon : couponList) {
-            if (!"12345670025".equals(coupon.eCouponSn) && !"1234567003".equals(coupon.eCouponSn)) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 7);
-                coupon.expireAt = calendar.getTime();
-                coupon.save();
+        Goods goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+            @Override
+            public void build(Goods g) {
+                g.expireAt = DateHelper.afterDays(7);
             }
-        }
-
-        Long id = (Long) Fixtures.idCache.get("models.order.SentCouponMessage-message1");
-        List<SentCouponMessage> sentList = SentCouponMessage.findAll();
-        assertEquals("1600915935", sentList.get(0).couponNumber);
-        assertEquals(1, sentList.size());
-
+            
+        });
+        FactoryBoy.create(ECoupon.class);
+  
         ExpiredCouponNotice job = new ExpiredCouponNotice();
         job.doJob();
 
-        sentList = SentCouponMessage.findAll();
-        assertEquals(5, sentList.size());
-
+        List<SentCouponMessage> sentList = SentCouponMessage.findAll();
+        assertEquals(1, sentList.size());
 
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
-        assertEquals("【一百券】您的测试商品5，将要过期，请注意消费截止日期。", msg.getContent());
-
-        msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
-        assertEquals("【一百券】您的测试商品4，将要过期，请注意消费截止日期。", msg.getContent());
-
-
-        msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
-        assertEquals("【一百券】您的测试商品2，将要过期，请注意消费截止日期。", msg.getContent());
-
-        msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
-        assertEquals("【一百券】您的测试商品1，将要过期，请注意消费截止日期。", msg.getContent());
+        assertEquals("【一百券】您的" + goods.name + "，将要过期，请注意消费截止日期为" + sdf.format(goods.expireAt) + "。", msg.getContent());
 
         job.doJob();
 
+        // 不会再发短信.
+        assertEquals(0, MockMQ.size(SMSUtil.SMS_QUEUE));
         sentList = SentCouponMessage.findAll();
-        assertEquals(5, sentList.size());
+        assertEquals(1, sentList.size());
 
+    }
+
+    @Test
+    public void testJobWhenNoNeedSendCouponIn8() throws ParseException {
+        FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+            @Override
+            public void build(Goods g) {
+                g.expireAt = DateHelper.afterDays(8);
+            }
+            
+        });
+        FactoryBoy.create(ECoupon.class);
+  
+        ExpiredCouponNotice job = new ExpiredCouponNotice();
+        job.doJob();
+
+        List<SentCouponMessage> sentList = SentCouponMessage.findAll();
+        assertEquals(0, sentList.size());
+
+        // 不会再发短信.
+        assertEquals(0, MockMQ.size(SMSUtil.SMS_QUEUE));
+    }
+    
+    @Test
+    public void testJobWhenNoNeedSendCouponIn6() throws ParseException {
+        FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+            @Override
+            public void build(Goods g) {
+                g.expireAt = DateHelper.afterDays(6);
+            }
+            
+        });
+        FactoryBoy.create(ECoupon.class);
+  
+        ExpiredCouponNotice job = new ExpiredCouponNotice();
+        job.doJob();
+
+        List<SentCouponMessage> sentList = SentCouponMessage.findAll();
+        assertEquals(0, sentList.size());
+
+        // 不会再发短信.
+        assertEquals(0, MockMQ.size(SMSUtil.SMS_QUEUE));
     }
 }

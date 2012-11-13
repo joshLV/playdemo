@@ -12,6 +12,7 @@ import play.jobs.On;
 
 import javax.persistence.Query;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
 
@@ -43,13 +44,14 @@ public class ExpiredCouponNotice extends Job {
         String pre_goodsName = "";
         String mobile = "";
         String goodsName = "";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         while (it.hasNext()) {
             coupon = it.next();
             if (coupon.order.userType == AccountType.CONSUMER) {
                 mobile = coupon.orderItems.phone;
                 goodsName = coupon.goods.name;
                 if (!pre_phone.equals(mobile) || !pre_goodsName.equals(goodsName)) {
-                    SMSUtil.send("【一百券】您的" + goodsName + "，将要过期，请注意消费截止日期。",
+                    SMSUtil.send("【一百券】您的" + goodsName + "，将要过期，请注意消费截止日期为" + sdf.format(coupon.expireAt) + "。",
                             mobile,
                             coupon.replyCode);
                     pre_goodsName = goodsName;

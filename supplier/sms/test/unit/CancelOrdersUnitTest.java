@@ -28,7 +28,7 @@ import java.util.List;
 public class CancelOrdersUnitTest extends UnitTest {
     @Before
     public void setup() {
-        FactoryBoy.lazyDelete();
+        FactoryBoy.deleteAll();
     }
 
     @Test
