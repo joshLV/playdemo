@@ -145,7 +145,7 @@ public class Home2 extends Controller {
 
             renderArgs.put("unconsumedCount", unconsumedCount);
             renderArgs.put("unpaidCount", unpaidCount);
-            renderArgs.put("getSavedMoney", savedMoney);
+            renderArgs.put("savedMoney", savedMoney);
         }
 
 
