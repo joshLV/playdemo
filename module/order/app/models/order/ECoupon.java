@@ -1,29 +1,7 @@
 package models.order;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-
+import com.uhuila.common.util.DateUtil;
+import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.TradeBill;
@@ -40,9 +18,7 @@ import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
-
 import org.apache.commons.lang.StringUtils;
-
 import play.Logger;
 import play.Play;
 import play.data.validation.Required;
@@ -51,8 +27,28 @@ import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
 
-import com.uhuila.common.util.DateUtil;
-import com.uhuila.common.util.RandomNumberUtil;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "e_coupon")
@@ -974,7 +970,7 @@ public class ECoupon extends Model {
         if (StringUtils.isBlank(phone)) {
             phone = eCoupon.orderItems.phone;
         }
-        send(eCoupon,phone);
+        send(eCoupon, phone);
         SMSUtil.send("【一百券】"
                 + (StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title
                 : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]"))
@@ -1180,18 +1176,38 @@ public class ECoupon extends Model {
         return result == null ? BigDecimal.ZERO : (BigDecimal) result;
     }
 
-    public static BigDecimal savedMoney(Long userId, AccountType userType) {
+    /**
+     * 用户已节省的总金额.
+     *
+     * @param userId
+     * @param userType
+     * @return
+     */
+    public static BigDecimal getSavedMoney(Long userId, AccountType userType) {
         Query q = JPA.em().createQuery("select sum(e.faceValue - e.salePrice) from ECoupon e " +
-                "where e.order.userId = :userId and e.order.userType = :userType " +
+                "where e.order.userId = :userId and e.order.userType = :userType and e.goods.isLottery = :isLottery " +
                 "and (e.status = :unconsumed or e.status = :consumed)");
+        q.setParameter("isLottery", false);
         q.setParameter("userId", userId);
         q.setParameter("userType", userType);
         q.setParameter("unconsumed", ECouponStatus.UNCONSUMED);
         q.setParameter("consumed", ECouponStatus.CONSUMED);
-        BigDecimal savedMoney = (BigDecimal)q.getSingleResult();
-        if(savedMoney == null){
+        BigDecimal savedMoney = (BigDecimal) q.getSingleResult();
+        if (savedMoney == null) {
             return BigDecimal.ZERO;
         }
         return savedMoney;
+    }
+
+    /**
+     * 获取待消费笔数.
+     *
+     * @param userId
+     * @param userType
+     * @return
+     */
+    public static long getUnConsumedCount(Long userId, AccountType userType) {
+        return ECoupon.count("order.userId = ? and order.userType = ? and status = ? and goods.isLottery=?",
+                userId, userType, ECouponStatus.UNCONSUMED, false);
     }
 }

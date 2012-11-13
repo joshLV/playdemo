@@ -25,7 +25,7 @@
     <div class="side"><!-- 这里的style是多余的，开发时请很移除 -->
         #{if cas?.isLogin}
         <!-- 已登录 -->
-        <div class="status signed" style="display:block">
+        <div class="status signed">
             <div class="inner">
                 <a href="${helper.Domain.getHomeHost(request)}/coupons?condition.status=UNCONSUMED">待消费(<em>${unconsumedCount}</em>)</a>
                 <a href="${helper.Domain.getHomeHost(request)}/coupons"> 已节省<em>&yen;${savedMoney}</em></a>
@@ -261,7 +261,7 @@
 </div>
 #{/list}
 </div>
-
+</div>
 
 <div class="links-outer">
     <div class="links-inner">
@@ -269,18 +269,17 @@
             <h4>友情链接：</h4>
             <ul id="j_links">
                 <li>
-                #{list friendsLinks, as:'friendsLink'}
+                    #{list friendsLinks, as:'friendsLink'}
                     <a href="${friendsLink?.link}" target="_blank">${friendsLink?.linkName}</a>
-                    #{if friendsLink_index%10==0}
+                    #{if friendsLink_index%10==0 && !friendsLink_isLast}
                 </li>
                 <li>
                     #{/if}
-                #{/list}
-                <li>
+                    #{/list}
+                </li>
             </ul>
             <div class="more"><a href="/link" target="_blank">更多>></a></div>
         </div>
     </div>
 </div>
 
-</div>

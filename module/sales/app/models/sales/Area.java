@@ -141,8 +141,8 @@ public class Area extends GenericModel {
      * @return 前n个商圈
      */
     public static List<Area> findTopAreas(int limit, String cityId) {
-        return find("deleted=? and areaType=? and substr(id,0,3)=? order by displayOrder",
-                DeletedStatus.UN_DELETED, AreaType.AREA, cityId).fetch(limit);
+        return find("deleted=? and areaType=? and popularArea=? and substring(id,1,3)=? order by displayOrder",
+                DeletedStatus.UN_DELETED, AreaType.AREA, true, cityId).fetch(limit);
     }
 
     private static List<Area> findTopByAreaType(int limit, AreaType type) {

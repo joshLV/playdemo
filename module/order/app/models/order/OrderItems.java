@@ -6,6 +6,7 @@ import models.sales.Goods;
 import models.sales.GoodsHistory;
 import models.sales.MaterialType;
 import models.sales.SecKillGoods;
+import org.apache.commons.collections.CollectionUtils;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 
@@ -255,6 +256,22 @@ public class OrderItems extends Model {
 
         //超过限购数量,则表示已经购买过该商品
         return (limitNumber > 0 && (number > limitNumber || limitNumber <= boughtNumber));
+    }
+
+    /**
+     * 获取未付款笔数
+     */
+    public static long getUnpaidOrderCount(Long userId, AccountType userType) {
+        EntityManager entityManager = JPA.em();
+//        return count("order.userId=? " +
+//                "and order.userType=? and status=? and goods.isLottery=? group by 'order'",userId, userType, OrderStatus.UNPAID, false);
+        Query q = entityManager.createQuery("select count(*) from OrderItems o where o.order.userId=:userId " +
+                "and o.order.userType=:userType and o.status=:status and o.goods.isLottery=:isLottery group by o.order");
+        q.setParameter("userId", userId);
+        q.setParameter("userType", userType);
+        q.setParameter("status", OrderStatus.UNPAID);
+        q.setParameter("isLottery", false);
+        return CollectionUtils.isEmpty(q.getResultList()) ? 0l : (Long) q.getSingleResult();
     }
 
 }

@@ -207,8 +207,8 @@ public class ECouponUnitTest extends UnitTest {
     }
 
     @Test
-    public void savedMoney() {
-        BigDecimal savedMoney = ECoupon.savedMoney(user.id, AccountType.CONSUMER);
+    public void testGetSavedMoney() {
+        BigDecimal savedMoney = ECoupon.getSavedMoney(user.id, AccountType.CONSUMER);
         assertEquals(new BigDecimal("1.50"), savedMoney);
     }
 }
