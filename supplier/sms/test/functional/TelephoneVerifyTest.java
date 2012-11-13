@@ -2,6 +2,7 @@ package functional;
 
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.TelephoneVerify;
+import factory.FactoryBoy;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.admin.SupplierRole;
@@ -32,60 +33,9 @@ import java.util.Date;
 public class TelephoneVerifyTest extends FunctionalTest{
     @Before
     public void setup(){
-        Fixtures.delete(Category.class);
-        Fixtures.delete(Brand.class);
-        Fixtures.delete(Area.class);
-        Fixtures.delete(Order.class);
-        Fixtures.delete(OrderItems.class);
-        Fixtures.delete(Goods.class);
-        Fixtures.delete(User.class);
-        Fixtures.delete(ECoupon.class);
-        Fixtures.delete(SupplierRole.class);
-        Fixtures.delete(Supplier.class);
-        Fixtures.delete(SupplierUser.class);
-        Fixtures.loadModels("fixture/roles.yml", "fixture/shop.yml",
-                "fixture/supplierusers.yml", "fixture/goods_base.yml",
-                "fixture/user.yml", "fixture/accounts.yml",
-                "fixture/goods.yml",
-                "fixture/orders.yml",
-                "fixture/orderItems.yml");
-
-        Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc");
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
-
-
-        Goods goods = Goods.findById(goodsId);
-        goods.supplierId = supplierId;
-        goods.save();
-
-        supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc1");
-        goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-        goods = Goods.findById(goodsId);
-        goods.supplierId = supplierId;
-        goods.save();
-
-        Long shopId = (Long) Fixtures.idCache.get("models.sales.Shop-Shop_5");
-        Shop shop = Shop.findById(shopId);
-
-        Long supplierUserId = (Long) Fixtures.idCache.get("models.admin.SupplierUser-user1");
-        SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
-        supplierUser.supplier = Supplier.findById(supplierId);
-        supplierUser.shop = shop;
-        supplierUser.save();
-
-        supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc2");
-        goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_003");
-        goods = Goods.findById(goodsId);
-        goods.supplierId = supplierId;
-        goods.save();
-
-        supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc3");
-        goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_004");
-        goods = Goods.findById(goodsId);
-        goods.supplierId = supplierId;
-        goods.save();
-
-
+        FactoryBoy.deleteAll();
+        FactoryBoy.create(ECoupon.class);
+        FactoryBoy.create(SupplierUser.class);
 
         Account account = AccountUtil.getPlatformIncomingAccount();
         account.amount = new BigDecimal("99999");
@@ -94,8 +44,8 @@ public class TelephoneVerifyTest extends FunctionalTest{
 
     @Test
     public void testParams(){
-        String caller = "1";
-        String coupon = "1253678001";
+        String caller = FactoryBoy.last(SupplierUser.class).loginName;
+        String coupon = FactoryBoy.last(ECoupon.class).eCouponSn;
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
@@ -123,11 +73,11 @@ public class TelephoneVerifyTest extends FunctionalTest{
 
     @Test
     public void testNoSuchCoupon(){
-        long couponId = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon1");
-        ECoupon eCoupon = ECoupon.findById(couponId);
+        ECoupon eCoupon = FactoryBoy.last(ECoupon.class);
+        assertNotNull(eCoupon);
         eCoupon.delete();
 
-        String caller = "1";
+        String caller = FactoryBoy.last(SupplierUser.class).loginName;
         String coupon = eCoupon.eCouponSn;
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
@@ -138,13 +88,12 @@ public class TelephoneVerifyTest extends FunctionalTest{
 
     @Test
     public void testInvalidSupplier(){
-        long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc1");
-        Supplier supplier = Supplier.findById(supplierId);
+        Supplier supplier = FactoryBoy.last(Supplier.class);
         supplier.deleted = DeletedStatus.DELETED;
         supplier.save();
 
-        String caller = "1";
-        String coupon = "1253678001";
+        String caller = FactoryBoy.last(SupplierUser.class).loginName;
+        String coupon = FactoryBoy.last(ECoupon.class).eCouponSn;
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
@@ -172,8 +121,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
         eCoupon.goods.supplierId = originSupplierId;
         eCoupon.goods.save();
 
-        Long supplierUserId = (Long) Fixtures.idCache.get("models.admin.SupplierUser-user1");
-        SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
+        SupplierUser supplierUser = FactoryBoy.last(SupplierUser.class);
         supplierUser.delete();
         supplier.delete();
         response = GET("/tel-verify?caller=" + caller + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
@@ -182,17 +130,12 @@ public class TelephoneVerifyTest extends FunctionalTest{
 
     @Test
     public void testCouponStatus(){
-        long couponId = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon1");
-        ECoupon eCoupon = ECoupon.findById(couponId);
+        ECoupon eCoupon = FactoryBoy.last(ECoupon.class);
 
-        String caller = "1";
-        String coupon = "1253678001";
+        String caller = FactoryBoy.last(SupplierUser.class).loginName;
+        String coupon = eCoupon.eCouponSn;
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
-
-
-        Long supplierUserId = (Long) Fixtures.idCache.get("models.admin.SupplierUser-user1");
-        SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
 
         eCoupon.status = ECouponStatus.CONSUMED;
         eCoupon.save();
@@ -215,7 +158,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
 
     @Test
     public void testFaceValueParams(){
-        String coupon = "1253678001";
+        String coupon = FactoryBoy.last(ECoupon.class).eCouponSn;
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
@@ -240,10 +183,9 @@ public class TelephoneVerifyTest extends FunctionalTest{
 
     @Test
     public void testFacevalue(){
-        long couponId = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon1");
-        ECoupon eCoupon = ECoupon.findById(couponId);
+        ECoupon eCoupon = FactoryBoy.last(ECoupon.class);
 
-        String coupon = "1253678001";
+        String coupon = eCoupon.eCouponSn;
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
@@ -253,7 +195,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
 
     @Test
     public void testConsumedAtParams(){
-        String coupon = "1253678001";
+        String coupon = FactoryBoy.last(ECoupon.class).eCouponSn;
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
@@ -278,10 +220,8 @@ public class TelephoneVerifyTest extends FunctionalTest{
 
     @Test
     public void testConsumedAt(){
-        long couponId = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon1");
-        ECoupon eCoupon = ECoupon.findById(couponId);
+        ECoupon eCoupon = FactoryBoy.last(ECoupon.class);
 
-        String coupon = "1253678001";
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
@@ -290,8 +230,9 @@ public class TelephoneVerifyTest extends FunctionalTest{
         eCoupon.consumedAt = consumedAt;
         eCoupon.save();
 
-        Http.Response response = GET("/tel-verify/consumed-at?coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
-        assertContentEquals(new SimpleDateFormat("M月d日H点m分").format(consumedAt), response);//;该券无法重复消费。消费时间为" + new SimpleDateFormat("yyyy年MM月dd日hh点mm分").format(eCoupon.consumedAt)
+        Http.Response response = GET("/tel-verify/consumed-at?coupon=" + eCoupon.eCouponSn + "&timestamp=" + timestamp + "&sign=" + sign);
+        assertContentEquals(new SimpleDateFormat("M月d日H点m分").format(consumedAt) + ",消费门店 " + eCoupon.shop.name,
+                response);//;该券无法重复消费。消费时间为" + new SimpleDateFormat("yyyy年MM月dd日hh点mm分").format(eCoupon.consumedAt)
     }
     private String getSign(long timestamp){
         return DigestUtils.md5Hex(TelephoneVerify.APP_KEY + timestamp);
