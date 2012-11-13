@@ -1,12 +1,13 @@
 package models.sms;
 
-import play.Logger;
 import models.sms.impl.BjenSMSProvider;
 import models.sms.impl.C123HttpSMSProvider;
 import models.sms.impl.HaduoHttpSMSProvider;
 import models.sms.impl.LingshiSMSProvider;
 import models.sms.impl.Tui3SMSProvider;
+import models.sms.impl.VxSMSProvider;
 import models.sms.impl.ZtSMSProvider;
+import play.Logger;
 
 /**
  * 短信提供商工厂类.
@@ -30,9 +31,11 @@ public class SMSFactory {
             smsProvider = new HaduoHttpSMSProvider();
         } else if ("lingshi".endsWith(smsType)) {
             smsProvider = new LingshiSMSProvider();
+        } else if ("vxsms".endsWith(smsType)) {
+            smsProvider = new VxSMSProvider();
         } else {
             Logger.error("NOT set SMSType");
-            //smsProvider = new MockSMSProvider();
+            smsProvider = new VxSMSProvider();
         }
 
         return smsProvider;
