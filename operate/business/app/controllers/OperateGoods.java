@@ -122,7 +122,7 @@ public class OperateGoods extends Controller {
     private static String getQueryString() {
         List<String> kvs = new ArrayList<>();
         for (String key : request.params.all().keySet()) {
-            if (!"body".equals(key) && !"queryString".equals(key) && !"page".equals(key) && !"id".equals(key)&& !"selectall".equals(key)) {
+            if (!"body".equals(key) && !"queryString".equals(key) && !"page".equals(key) && !"id".equals(key) && !"selectall".equals(key)) {
                 String[] values = request.params.getAll(key);
                 for (String value : values) {
                     kvs.add(key + "=" + value);
@@ -569,10 +569,14 @@ public class OperateGoods extends Controller {
     }
 
     private static void redirectUrl(int page, String condition) {
-        if (StringUtils.isNotEmpty(condition) && (condition.contains("?x-http-method-override=PUT") ||condition.contains("x-http-method-override=PUT"))) {
-            condition = condition.replace("x-http-method-override=PUT", "").replace("?","");
+        if (StringUtils.isNotEmpty(condition) && (condition.contains("?x-http-method-override=PUT") || condition.contains("x-http-method-override=PUT"))) {
+            condition = condition.replace("x-http-method-override=PUT", "").replace("?", "");
         }
-        redirect(BASE_URL + "?page=" + page + "&" + condition);
+        if (Play.mode.isDev()) {
+            redirect("http://localhost:9303/?page=" + page + "&" + condition);
+        } else {
+            redirect(BASE_URL + "?page=" + page + "&" + condition);
+        }
     }
 
     /**

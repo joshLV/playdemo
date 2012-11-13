@@ -9,6 +9,7 @@
     <legend>修改商户</legend>
     #{set action:"edit"/}
     #{include '/Suppliers/supplierForm.html'/}
+    <input type="hidden" name="page" value="${page}">
 #{/form}
 
     <legend>新建提现账户</legend>

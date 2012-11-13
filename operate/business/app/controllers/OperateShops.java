@@ -6,6 +6,7 @@ import models.sales.Shop;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.Play;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.modules.paginate.ModelPaginator;
@@ -25,16 +26,14 @@ import java.util.List;
 @With(OperateRbac.class)
 @ActiveNavigation("shops_index")
 public class OperateShops extends Controller {
-
+    public static final String BASE_URL = Play.configuration.getProperty("application.baseUrl", "");
     private static final int PAGE_SIZE = 20;
 
     /**
      * 门店一览信息
      */
     public static void index(Shop shopCondition) {
-        String page = params.get("page");
-        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-
+        int pageNumber = getPage();
         if (shopCondition == null) {
             shopCondition = new Shop();
         }
@@ -133,6 +132,7 @@ public class OperateShops extends Controller {
      * @param shop 修改后的门店
      */
     public static void update(long id, @Valid Shop shop) {
+        int page = getPage();
         Shop sp = Shop.findById(id);
         if (Validation.hasErrors()) {
             params.flash();
@@ -153,7 +153,7 @@ public class OperateShops extends Controller {
         sp.longitude = shop.longitude;
         sp.latitude = shop.latitude;
         sp.save();
-        index(null);
+        redirectUrl(page);
     }
 
     /**
@@ -180,6 +180,7 @@ public class OperateShops extends Controller {
         renderParams(originalShop);
 
         renderArgs.put("shop", originalShop);
+        renderArgs.put("page", getPage());
         render();
     }
 
@@ -203,5 +204,22 @@ public class OperateShops extends Controller {
     public static void showSupplierShops(Long supplierId) {
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
         render(shopList);
+    }
+
+    private static int getPage() {
+        String page = request.params.get("page");
+        if (StringUtils.isNotEmpty(page) && (page.contains("?x-http-method-override=PUT") || page.contains("x-http-method-override=PUT"))) {
+            page = page.replace("x-http-method-override=PUT", "").replace("?", "");
+        }
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+        return pageNumber;
+    }
+
+    private static void redirectUrl(int page) {
+        if (Play.mode.isDev()) {
+            redirect("http://localhost:9303/" + "shops?page=" + page);
+        } else {
+            redirect(BASE_URL + "suppliers?page=" + page);
+        }
     }
 }

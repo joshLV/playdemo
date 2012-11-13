@@ -1,11 +1,14 @@
 package controllers;
 
-import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.FileUploadUtil;
 import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.AccountType;
 import models.accounts.WithdrawAccount;
-import models.admin.*;
+import models.admin.OperateRole;
+import models.admin.OperateUser;
+import models.admin.SupplierRole;
+import models.admin.SupplierUser;
+import models.admin.SupplierUserType;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
@@ -39,11 +42,14 @@ public class Suppliers extends Controller {
     private static final String ADMIN_ROLE = "admin";
     private static final String SALES_ROLE = "sales";
     public static final String BASE_DOMAIN = Play.configuration.getProperty("application.baseDomain");
+    public static final String BASE_URL = Play.configuration.getProperty("application.baseUrl", "");
 
     public static void index() {
+        int page = getPage();
+
         String otherName = request.params.get("otherName");
         List<Supplier> suppliers = Supplier.findByCondition(otherName);
-        render(suppliers, otherName);
+        render(suppliers, otherName, page);
     }
 
     @ActiveNavigation("suppliers_add")
@@ -51,6 +57,15 @@ public class Suppliers extends Controller {
         Set<OperateUser> operateUserList = getOperateUser();
         renderArgs.put("baseDomain", BASE_DOMAIN);
         render(operateUserList);
+    }
+
+    private static int getPage() {
+        String page = request.params.get("page");
+        if (StringUtils.isNotEmpty(page) && (page.contains("?x-http-method-override=PUT") || page.contains("x-http-method-override=PUT"))) {
+            page = page.replace("x-http-method-override=PUT", "").replace("?", "");
+        }
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+        return pageNumber;
     }
 
     /**
@@ -94,8 +109,15 @@ public class Suppliers extends Controller {
         comment = comment.replace("username", admin.loginName);
         comment = comment.replace("password", password);
         SMSUtil.send(comment, admin.mobile, "0000");
-
         index();
+    }
+
+    private static void redirectUrl(int page) {
+        if (Play.mode.isDev()) {
+            redirect("http://localhost:9303/" + "shops?page=" + page);
+        } else {
+            redirect(BASE_URL + "suppliers?page=" + page);
+        }
     }
 
     /**
@@ -170,13 +192,14 @@ public class Suppliers extends Controller {
      * @param id 门店标识
      */
     public static void edit(long id) {
+        int page = getPage();
         Supplier supplier = Supplier.findById(id);
         SupplierUser admin = SupplierUser.findAdmin(id, supplier.loginName);
         List<WithdrawAccount> withdrawAccounts =
                 WithdrawAccount.find("byUserIdAndAccountType", supplier.getId(), AccountType.SUPPLIER).fetch();
         Set<OperateUser> operateUserList = getOperateUser();
         renderArgs.put("baseDomain", BASE_DOMAIN);
-        render(supplier, admin, id, withdrawAccounts, operateUserList);
+        render(supplier, admin, id, withdrawAccounts, operateUserList, page);
     }
 
     public static void withdrawAccountCreateAndUpdate(@Valid WithdrawAccount withdrawAccount, Long supplierId) {
@@ -202,6 +225,7 @@ public class Suppliers extends Controller {
     }
 
     public static void update(Long id, @Valid Supplier supplier, File image, @Valid SupplierUser admin, Long adminId) {
+        int page = getPage();
         Supplier oldSupplier = Supplier.findById(id);
         if (StringUtils.isNotBlank(supplier.domainName) && !oldSupplier.domainName.equals(supplier.domainName)) {
             checkItems(supplier);
@@ -213,26 +237,27 @@ public class Suppliers extends Controller {
             for (String key : validation.errorsMap().keySet()) {
                 warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
             }
+            admin.id = adminId;
             Set<OperateUser> operateUserList = getOperateUser();
             renderArgs.put("baseDomain", BASE_DOMAIN);
-            render("Suppliers/edit.html", supplier, id, admin, operateUserList);
+            render("/Suppliers/edit.html", supplier, id, admin, operateUserList, page);
         }
-
         Supplier.update(id, supplier);
         if (adminId == null) {
             admin.create(id);
         }
-        index();
+
+        redirectUrl(page);
     }
 
     public static void freeze(long id) {
         Supplier.freeze(id);
-        index();
+        redirectUrl(getPage());
     }
 
     public static void unfreeze(long id) {
         Supplier.unfreeze(id);
-        index();
+        redirectUrl(getPage());
     }
 
     public static void delete(long id) {

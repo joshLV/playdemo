@@ -287,7 +287,6 @@ public class SupplierUser extends Model {
         if (supplier == null) {
             return null;
         }
-//        System.out.println(supplier+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         return SupplierUser.find("bySupplierAndLoginNameAndDeleted", supplier, loginName,DeletedStatus.UN_DELETED).first();
     }
 
