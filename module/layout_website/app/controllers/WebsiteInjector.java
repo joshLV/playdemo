@@ -2,8 +2,11 @@ package controllers;
 
 import cache.CacheCallBack;
 import cache.CacheHelper;
+import com.uhuila.common.constants.PlatformType;
 import controllers.modules.website.cas.SecureCAS;
 import models.accounts.AccountType;
+import models.cms.Topic;
+import models.cms.TopicType;
 import models.consumer.User;
 import models.consumer.UserWebIdentification;
 import models.order.Cart;
@@ -39,6 +42,16 @@ public class WebsiteInjector extends Controller {
 
     @Before
     public static void injectCarts() {
+        CacheHelper.preRead(CacheHelper.getCacheKey(models.sales.Category.CACHEKEY, "WWW_TOP_CATEGORIES7"),
+                CacheHelper.getCacheKey(models.sales.Category.CACHEKEY, "WWW_TOP_LEFT_CATEGORIES5"),
+                CacheHelper.getCacheKey(models.sales.Area.CACHEKEY, "WWW_AREAS6_" + Area.SHANGHAI),
+                CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY1_TOPICS"),
+                CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY2_TOPICS"),
+                CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY3_TOPICS"),
+                CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY4_TOPICS"),
+                CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY5_TOPICS")
+        );
+
         final User user = SecureCAS.getUser();
         injectWebIdentification(user);
         //推荐时记录cookie
@@ -95,6 +108,47 @@ public class WebsiteInjector extends Controller {
         });
         renderArgs.put("areas", areas);
 
+        final Date currentDate = new Date();
+        //首页分类的公告1
+        Topic categoryTopic1 = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY1_TOPICS"), new CacheCallBack<Topic>() {
+            @Override
+            public Topic loadData() {
+                return Topic.findByType(PlatformType.UHUILA, TopicType.WEB_CATEGORY1, currentDate, 1).get(0);
+            }
+        });
+        //首页分类的公告2
+        Topic categoryTopic2 = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY2_TOPICS"), new CacheCallBack<Topic>() {
+            @Override
+            public Topic loadData() {
+                return Topic.findByType(PlatformType.UHUILA, TopicType.WEB_CATEGORY2, currentDate, 1).get(0);
+            }
+        });
+        //首页分类的公告3
+        Topic categoryTopic3 = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY3_TOPICS"), new CacheCallBack<Topic>() {
+            @Override
+            public Topic loadData() {
+                return Topic.findByType(PlatformType.UHUILA, TopicType.WEB_CATEGORY3, currentDate, 1).get(0);
+            }
+        });
+        //首页分类的公告1
+        Topic categoryTopic4 = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY4_TOPICS"), new CacheCallBack<Topic>() {
+            @Override
+            public Topic loadData() {
+                return Topic.findByType(PlatformType.UHUILA, TopicType.WEB_CATEGORY4, currentDate, 1).get(0);
+            }
+        });
+        //首页分类的公告5
+        Topic categoryTopic5 = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY5_TOPICS"), new CacheCallBack<Topic>() {
+            @Override
+            public Topic loadData() {
+                return Topic.findByType(PlatformType.UHUILA, TopicType.WEB_CATEGORY5, currentDate, 1).get(0);
+            }
+        });
+        renderArgs.put("categoryTopic1", categoryTopic1);
+        renderArgs.put("categoryTopic2", categoryTopic2);
+        renderArgs.put("categoryTopic3", categoryTopic3);
+        renderArgs.put("categoryTopic4", categoryTopic4);
+        renderArgs.put("categoryTopic5", categoryTopic5);
     }
 
     private static void injectPromoterCookier(User user) {

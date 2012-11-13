@@ -252,8 +252,8 @@ public class Area extends GenericModel {
             return null;
         }
         Area area = findById(areaId);
-        if (area==null){
-
+        if (area == null) {
+            return null;
         }
         return area.parent;
     }
@@ -273,8 +273,7 @@ public class Area extends GenericModel {
             return;
         }
         if (parentId != null) {
-            Area parentArea = Area.find("deleted=? and id=? ", DeletedStatus.UN_DELETED, parentId).first();
-            updateArea.parent = parentArea;
+            updateArea.parent = Area.find("deleted=? and id=? ", DeletedStatus.UN_DELETED, parentId).first();
         }
         updateArea.areaType = area.areaType;
         updateArea.displayOrder = area.displayOrder;

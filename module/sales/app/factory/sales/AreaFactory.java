@@ -2,23 +2,16 @@ package factory.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
 import factory.FactoryBoy;
-import models.sales.Area;
 import factory.ModelFactory;
+import models.sales.Area;
 import models.sales.AreaType;
-import models.sales.Goods;
-import models.supplier.Supplier;
-
-import java.math.BigDecimal;
-import java.util.Date;
-
-import static util.DateHelper.afterDays;
 
 /**
- * Created with IntelliJ IDEA.
+ * 地区测试对象.
+ *
  * User: wangjia
  * Date: 12-8-23
  * Time: 上午11:52
- * To change this template use File | Settings | File Templates.
  */
 public class AreaFactory extends ModelFactory<Area> {
     @Override

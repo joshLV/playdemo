@@ -49,6 +49,7 @@ public class AreaUnitTest extends UnitTest {
                         target.name = "District#" + seq;
                         target.displayOrder = seq;
                         target.areaType = AreaType.DISTRICT;
+
                     }
                 });
 
@@ -61,6 +62,8 @@ public class AreaUnitTest extends UnitTest {
                         target.areaType = AreaType.AREA;
                         target.parent = districtAreas.get(0);
                         target.id = target.parent.id + seq;
+                        target.popularArea = true;
+
                     }
                 });
 
@@ -73,6 +76,7 @@ public class AreaUnitTest extends UnitTest {
                         target.areaType = AreaType.AREA;
                         target.parent = districtAreas.get(1);
                         target.id = target.parent.id + FactoryBoy.sequence(Area.class);
+                        target.popularArea = true;
                     }
                 });
 
@@ -88,9 +92,12 @@ public class AreaUnitTest extends UnitTest {
 
     @Test
     public void testFindTopAreasOfCity() {
-        List<Area> areaList = Area.findTopAreas(2,"CIT");
+        List<Area> areaList = Area.findTopAreas(2, "CIT");
         assertEquals(2, areaList.size());
         assertEquals(AreaType.AREA, areaList.get(0).areaType);
+
+        areaList = Area.findTopAreas(5, "CIT");
+        assertEquals(4, areaList.size());
     }
 
     @Test

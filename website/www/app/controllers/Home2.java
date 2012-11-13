@@ -50,12 +50,7 @@ public class Home2 extends Controller {
                 CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SLIDES"),
                 CacheHelper.getCacheKey(FriendsLink.CACHEKEY, "FRIENDS_LINK"),
                 CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_1F"),
-                CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_2F"),
-                CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY1_TOPICS"),
-                CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY2_TOPICS"),
-                CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY3_TOPICS"),
-                CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY4_TOPICS"),
-                CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY5_TOPICS")
+                CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_2F")
         );
 
         //最新上架，新品推荐
@@ -140,6 +135,20 @@ public class Home2 extends Controller {
         });
         renderArgs.put("friendsLinks", friendsLinks);
 
+        if (user != null) {
+            //待消费
+            long unconsumedCount = ECoupon.getUnConsumedCount(user.getId(), AccountType.CONSUMER);
+            //待付款
+            long unpaidCount = OrderItems.getUnpaidOrderCount(user.getId(), AccountType.CONSUMER);
+            //已节省
+            BigDecimal savedMoney = ECoupon.getSavedMoney(user.getId(), AccountType.CONSUMER);
+
+            renderArgs.put("unconsumedCount", unconsumedCount);
+            renderArgs.put("unpaidCount", unpaidCount);
+            renderArgs.put("getSavedMoney", savedMoney);
+        }
+
+
         //首页楼层banner
         Block webOneFloor = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_1F"), new CacheCallBack<Block>() {
             @Override
@@ -154,62 +163,9 @@ public class Home2 extends Controller {
                 return Block.findByType(BlockType.WEBSITE_2F, currentDate).get(0);
             }
         });
-        //首页分类的公告1
-        Topic categoryTopic1 = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY1_TOPICS"), new CacheCallBack<Topic>() {
-            @Override
-            public Topic loadData() {
-                return Topic.findByType(PlatformType.UHUILA, TopicType.WEB_CATEGORY1, currentDate, 1).get(0);
-            }
-        });
-        //首页分类的公告2
-        Topic categoryTopic2 = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY2_TOPICS"), new CacheCallBack<Topic>() {
-            @Override
-            public Topic loadData() {
-                return Topic.findByType(PlatformType.UHUILA, TopicType.WEB_CATEGORY2, currentDate, 1).get(0);
-            }
-        });
-        //首页分类的公告3
-        Topic categoryTopic3 = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY3_TOPICS"), new CacheCallBack<Topic>() {
-            @Override
-            public Topic loadData() {
-                return Topic.findByType(PlatformType.UHUILA, TopicType.WEB_CATEGORY3, currentDate, 1).get(0);
-            }
-        });
-        //首页分类的公告1
-        Topic categoryTopic4 = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY4_TOPICS"), new CacheCallBack<Topic>() {
-            @Override
-            public Topic loadData() {
-                return Topic.findByType(PlatformType.UHUILA, TopicType.WEB_CATEGORY4, currentDate, 1).get(0);
-            }
-        });
-        //首页分类的公告5
-        Topic categoryTopic5 = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY5_TOPICS"), new CacheCallBack<Topic>() {
-            @Override
-            public Topic loadData() {
-                return Topic.findByType(PlatformType.UHUILA, TopicType.WEB_CATEGORY5, currentDate, 1).get(0);
-            }
-        });
-
-        if (user != null) {
-            //待消费
-            long unconsumedCount = ECoupon.getUnConsumedCount(user.getId(), AccountType.CONSUMER);
-            //待付款
-            long unpaidCount = OrderItems.getUnpaidOrderCount(user.getId(), AccountType.CONSUMER);
-            //已节省
-            BigDecimal savedMoney = ECoupon.getSavedMoney(user.getId(), AccountType.CONSUMER);
-
-            renderArgs.put("unconsumedCount", unconsumedCount);
-            renderArgs.put("unpaidCount", unpaidCount);
-            renderArgs.put("getSavedMoney", savedMoney);
-        }
-
-        renderArgs.put("categoryTopic1", categoryTopic1);
-        renderArgs.put("categoryTopic2", categoryTopic2);
-        renderArgs.put("categoryTopic3", categoryTopic3);
-        renderArgs.put("categoryTopic4", categoryTopic4);
-        renderArgs.put("categoryTopic5", categoryTopic5);
         renderArgs.put("webOneFloor", webOneFloor);
         renderArgs.put("webTwoFloor", webTwoFloor);
+
         renderArgs.put("categoryId", categoryId);
         renderArgs.put("friendsLinks", friendsLinks);
         renderArgs.put("slides", slides);
