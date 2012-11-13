@@ -170,15 +170,15 @@
                         href="${condition.buildUrl('orderByNum', 0).buildUrl('orderByTypeNum',1).getUrl()}">默认</a>
                         <a #{if
                         condition.solrOrderBy.equals(models.sales.GoodsWebsiteCondition.getSolrOrderBy(1))}class="curr"#{/if}
-                        href="${condition.getOrderUrl(1)}"><span
+                        href="${condition.getOrderUrl(1)}" title="${condition.getOrderTitle(1)}"><span
                             class="${condition.getOrderStyle(1)}">销量</span></a>
                         <a #{if
                         condition.solrOrderBy.equals(models.sales.GoodsWebsiteCondition.getSolrOrderBy(2))}class="curr"#{/if}
-                        href="${condition.getOrderUrl(2)}"><span
+                        href="${condition.getOrderUrl(2)}" title="${condition.getOrderTitle(2)}"><span
                             class="${condition.getOrderStyle(2)}">价格</span></a>
                         <a #{if
                         condition.solrOrderBy.equals(models.sales.GoodsWebsiteCondition.getSolrOrderBy(3))}class="curr"#{/if}
-                        href="${condition.getOrderUrl(3)}"><span
+                        href="${condition.getOrderUrl(3)}" title="${condition.getOrderTitle(3)}"><span
                             class="${condition.getOrderStyle(3)}">发布时间</span></a>
                     </div>
                     <div class="sift">
