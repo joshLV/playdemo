@@ -1,7 +1,29 @@
 package models.order;
 
-import com.uhuila.common.util.DateUtil;
-import com.uhuila.common.util.RandomNumberUtil;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
+
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.TradeBill;
@@ -18,7 +40,9 @@ import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
+
 import org.apache.commons.lang.StringUtils;
+
 import play.Logger;
 import play.Play;
 import play.data.validation.Required;
@@ -27,28 +51,8 @@ import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.uhuila.common.util.DateUtil;
+import com.uhuila.common.util.RandomNumberUtil;
 
 @Entity
 @Table(name = "e_coupon")
@@ -1214,5 +1218,28 @@ public class ECoupon extends Model {
     public static long getUnConsumedCount(Long userId, AccountType userType) {
         return ECoupon.count("order.userId = ? and order.userType = ? and status = ? and goods.isLottery=?",
                 userId, userType, ECouponStatus.UNCONSUMED, false);
+    }
+
+    /**
+     * 查询同一组商品的券.
+     * 先按groupCode查，如果没groupCode，则查同一个goodsId的券.
+     * @param eCoupon
+     * @return
+     */
+    public static List<ECoupon> queryUnconsumedCouponsWithSameGoodsGroups(ECoupon ecoupon) {
+        if (ecoupon == null) {
+            return null;
+        }
+        Goods goods = ecoupon.goods;
+        if (StringUtils.isBlank(goods.groupCode)) {
+            return ECoupon.find("order.userId = ? and order.userType = ? and status = ? and goods.isLottery=? and goods.groupCode=? and goods.supplierId=?",
+                            ecoupon.order.userId, ecoupon.order.userType, 
+                            ECouponStatus.UNCONSUMED, false,
+                            goods.groupCode, goods.supplierId).fetch();
+        }
+        return ECoupon.find("order.userId = ? and order.userType = ? and status = ? and goods.isLottery=? and goods.id=? and goods.supplierId=?",
+                        ecoupon.order.userId, ecoupon.order.userType, 
+                        ECouponStatus.UNCONSUMED, false,
+                        goods.id, goods.supplierId).fetch();
     }
 }
