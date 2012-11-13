@@ -12,7 +12,7 @@ import org.junit.Test;
 import play.test.UnitTest;
 
 /**
- * TODO.
+ * OrderItems单元测试.
  * <p/>
  * User: sujie
  * Date: 2/14/12

@@ -315,12 +315,14 @@ public class GoodsWebsiteCondition implements Serializable {
      * 根据给定排序字段给出排序的css样式的class
      * www前端专用方法
      *
-     * @param orderById
+     * @param orderByNum
      * @return
      */
-    public String getOrderStyle(int orderById) {
-        if (orderByNum == orderById) {
+    public String getOrderStyle(int orderByNum) {
+        if (this.orderByNum == orderByNum) {
             return "desc".equals(orderByType) ? "down" : "up";
+        } else if (orderByNum == 2) {
+            return "up";
         } else {
             return "down";
         }
@@ -330,16 +332,34 @@ public class GoodsWebsiteCondition implements Serializable {
      * 根据给定排序字段给出排序的Url
      * www前端专用方法
      *
-     * @param orderById
+     * @param orderByNum
      * @return
      */
-    public String getOrderUrl(int orderById) {
-        GoodsWebsiteCondition cond = buildUrl("orderByNum", orderById);
-        if (orderByNum == orderById) {
+    public String getOrderUrl(int orderByNum) {
+        GoodsWebsiteCondition cond = buildUrl("orderByNum", orderByNum);
+        if (this.orderByNum == orderByNum) {
             return "desc".equals(orderByType) ? cond.buildUrl("orderByTypeNum", 0).getUrl() : cond.buildUrl("orderByTypeNum", 1).getUrl();
+        } else if (orderByNum == 2) {
+            return cond.buildUrl("orderByTypeNum", 0).getUrl();
         } else {
             return cond.buildUrl("orderByTypeNum", 1).getUrl();
         }
+    }
+
+    public String getOrderTitle(int orderByNum){
+        String title = "";
+        switch (orderByNum){
+            case 1:
+                title = "down".equals(getOrderStyle(orderByNum))?"销量从高到低":"销量从低到高";
+                break;
+            case 2:
+                title = "down".equals(getOrderStyle(orderByNum))?"价格从高到低":"价格从低到高";
+                break;
+            case 3:
+                title = "down".equals(getOrderStyle(orderByNum))?"最新发布":"最早发布";
+                break;
+        }
+        return title;
     }
 
 

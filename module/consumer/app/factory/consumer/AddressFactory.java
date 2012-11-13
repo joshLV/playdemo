@@ -5,20 +5,12 @@ import factory.ModelFactory;
 import factory.annotation.Factory;
 import models.consumer.Address;
 import models.consumer.User;
-import models.sales.Goods;
-import models.sales.SecKillGoods;
-
-import java.math.BigDecimal;
-import java.util.Date;
-
-import static util.DateHelper.afterDays;
 
 /**
- * Created with IntelliJ IDEA.
+ * 地址测试对象.
  * User: wangjia
  * Date: 12-8-23
  * Time: 下午5:37
- * To change this template use File | Settings | File Templates.
  */
 public class AddressFactory extends ModelFactory<Address> {
     @Override
@@ -38,7 +30,6 @@ public class AddressFactory extends ModelFactory<Address> {
 //        System.out.println("useru11111<<<>>>>"+user);
         return address;
     }
-
 
     @Factory(name = "notDefault")
     public Address defineWithNotDefault(Address address) {

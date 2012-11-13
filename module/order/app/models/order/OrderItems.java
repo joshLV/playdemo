@@ -266,11 +266,10 @@ public class OrderItems extends Model {
 //        return count("order.userId=? " +
 //                "and order.userType=? and status=? and goods.isLottery=? group by 'order'",userId, userType, OrderStatus.UNPAID, false);
         Query q = entityManager.createQuery("select count(*) from OrderItems o where o.order.userId=:userId " +
-                "and o.order.userType=:userType and o.status=:status and o.goods.isLottery=:isLottery group by o.order");
+                "and o.order.userType=:userType and o.status=:status group by o.order");
         q.setParameter("userId", userId);
         q.setParameter("userType", userType);
         q.setParameter("status", OrderStatus.UNPAID);
-        q.setParameter("isLottery", false);
         return CollectionUtils.isEmpty(q.getResultList()) ? 0l : (Long) q.getSingleResult();
     }
 
