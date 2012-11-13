@@ -54,11 +54,13 @@ public class SupplierCouponsTest extends FunctionalTest {
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
         SupplierUser supplierUser = FactoryBoy.create(SupplierUser.class);
+        shop = FactoryBoy.create(Shop.class);
+        goods = FactoryBoy.create(Goods.class);
+        
         // 设置测试登录的用户名
         Security.setLoginUserForTest(supplierUser.loginName);
         coupon = FactoryBoy.create(ECoupon.class);
-        shop = FactoryBoy.last(Shop.class);
-        goods = FactoryBoy.last(Goods.class);
+
         FactoryBoy.create(Account.class, "balanceAccount");
     }
 
@@ -89,7 +91,7 @@ public class SupplierCouponsTest extends FunctionalTest {
         assertNotNull(renderArgs("couponPage"));
         JPAExtPaginator<ECoupon> couponList = (JPAExtPaginator<ECoupon>) renderArgs("couponPage");
         assertEquals(1, couponList.size());
-        assertEquals(shop.name, couponList.get(0).shop.name);
+        assertEquals(goods.id, couponList.get(0).goods.id);
     }
 
     @Test
@@ -134,7 +136,7 @@ public class SupplierCouponsTest extends FunctionalTest {
         JPAExtPaginator<ECoupon> couponList = (JPAExtPaginator<ECoupon>) renderArgs("couponPage");
         assertNotNull(couponList);
         assertEquals(1, couponList.size());
-        assertEquals(shop.name, couponList.get(0).shop.name);
+        assertEquals(goods.id, couponList.get(0).goods.id);
 
     }
 
