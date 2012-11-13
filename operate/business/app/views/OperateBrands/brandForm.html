@@ -10,7 +10,7 @@
 <input type="hidden" name="brand.supplier.id" value="${brand?.supplier?.id}">
     #{layout_operate.textField name:'brand.supplier', value:brand?.supplier?.fullName, disabled:true/}
 #{/else}
-#{layout_operate.textField name:'brand.name', value:brand?.name, required:true/}
+#{layout_operate.nameField name:'brand.name', value:brand?.name, required:true,length:10,note:'(10个字以内)'/}
 #{layout_operate.textField name:'brand.displayOrder', value:brand?.displayOrder, required:true/}
 
 #{layout_operate.radioField name:'brand.isHot', value:brand?.isHot?:false, required:true/}
