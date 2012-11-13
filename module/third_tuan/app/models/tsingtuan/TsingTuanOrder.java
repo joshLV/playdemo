@@ -10,11 +10,13 @@ import models.sales.Goods;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import play.Play;
+
 public class TsingTuanOrder implements Serializable {
     
     private static final long serialVersionUID = 7063112063912831L;
     
-    public static final String SECRET = "oe3aLPcnN1spQw4eoua9Hf6Lkg8IhBI60KXfFERoKKbwIrYjSPVQBvJysndZHiL3";
+    public static final String SECRET = Play.configuration.getProperty("tsingtuan.secret"); 
     
     // 券市场订单ID
     public Long orderId;
