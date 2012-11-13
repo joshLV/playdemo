@@ -572,7 +572,7 @@ public class OperateGoods extends Controller {
         if (StringUtils.isNotEmpty(condition) && (condition.contains("?x-http-method-override=PUT") ||condition.contains("x-http-method-override=PUT"))) {
             condition = condition.replace("x-http-method-override=PUT", "").replace("?","");
         }
-        redirect("http://" + BASE_URL + "?page=" + page + "&" + condition);
+        redirect(BASE_URL + "?page=" + page + "&" + condition);
     }
 
     /**
