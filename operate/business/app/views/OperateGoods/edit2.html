@@ -12,6 +12,8 @@ class:"form-horizontal", method:'PUT' }
     <legend>${title}</legend>
     #{set action:"edit"/}
     #{include '/OperateGoods/goodsForm2.html'/}
+    <input type="hidden" name="page" value="${page}">
+    <input type="hidden" name="queryString" value="${queryString}"/>
 #{/form}
 </div>
 

@@ -1,5 +1,6 @@
 package unit;
 
+import com.uhuila.common.util.DateUtil;
 import factory.FactoryBoy;
 import models.accounts.Account;
 import models.accounts.AccountType;
@@ -18,7 +19,6 @@ import models.resale.Resaler;
 import models.sms.SMSMessage;
 import models.sms.SMSUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.modules.paginate.JPAExtPaginator;
 import play.test.UnitTest;
@@ -108,14 +108,15 @@ public class ECouponUnitTest extends UnitTest {
     public void testSendUserMessage_不包含门店的信息发送() {
         assertTrue(ECoupon.sendUserMessage(eCoupon.id, "13712345678"));
         SMSMessage checkMsg = (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
-        assertEquals("【一百券】" + eCoupon.goods.title + "券号" + eCoupon.eCouponSn + ",截止2012-12-12,客服：4006262166", checkMsg.getContent());
+        System.out.println(DateUtil.dateToString(eCoupon.goods.expireAt,0));
+        assertEquals("【一百券】" + eCoupon.goods.title + "券号" + eCoupon.eCouponSn + ",截止"+ DateUtil.dateToString(eCoupon.goods.expireAt,0)+",客服：4006262166", checkMsg.getContent());
     }
 
     @Test
     public void testSendUserMessageInfoWithoutCheck_包含门店的信息发送() {
         ECoupon.sendUserMessageInfoWithoutCheck("13712345678", eCoupon, eCoupon.shop.id.toString());
         SMSMessage checkMsg = (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
-        assertEquals("【一百券】" + eCoupon.goods.title + "券号" + eCoupon.eCouponSn + ",截止2012-12-12,[" +
+        assertEquals("【一百券】" + eCoupon.goods.title + "券号" + eCoupon.eCouponSn + ",截止"+DateUtil.dateToString(eCoupon.goods.expireAt,0)+",[" +
                 eCoupon.shop.name + "]" + eCoupon.shop.address + " " + eCoupon.shop.phone + ";客服：4006262166", checkMsg.getContent());
     }
 
@@ -123,7 +124,7 @@ public class ECouponUnitTest extends UnitTest {
     public void testSendMessage_运营后台重发短信() {
         assertTrue(ECoupon.sendMessage(eCoupon.id));
         SMSMessage checkMsg = (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
-        assertEquals("【一百券】" + eCoupon.goods.title + "券号" + eCoupon.eCouponSn + ",截止2012-12-12,客服：4006262166", checkMsg.getContent());
+        assertEquals("【一百券】" + eCoupon.goods.title + "券号" + eCoupon.eCouponSn + ",截止"+DateUtil.dateToString(eCoupon.goods.expireAt,0)+",客服：4006262166", checkMsg.getContent());
 
     }
 
@@ -131,7 +132,6 @@ public class ECouponUnitTest extends UnitTest {
      * 测试退款
      */
     @Test
-    @Ignore
     public void applyRefund() {
         String ret = ECoupon.applyRefund(null, user.id, AccountType.CONSUMER);
         assertEquals("{\"error\":\"no such eCoupon\"}", ret);

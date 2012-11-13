@@ -23,7 +23,6 @@ import models.sales.GoodsUnPublishedPlatform;
 import models.sales.MaterialType;
 import models.sales.Shop;
 import models.supplier.Supplier;
-import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
@@ -57,15 +56,14 @@ public class OperateGoods extends Controller {
 
     public static int PAGE_SIZE = 15;
     public static String WWW_URL = Play.configuration.getProperty("www.url", "");
+    public static String BASE_URL = Play.configuration.getProperty("application.baseUrl", "");
 
     /**
      * 展示商品一览页面
      */
     @ActiveNavigation("goods_index")
     public static void index(models.sales.GoodsCondition condition, String desc) {
-        String page = request.params.get("page");
-        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-
+        int pageNumber = getPage();
         if (condition == null) {
             condition = new GoodsCondition();
             condition.status = GoodsStatus.ONSALE;
@@ -117,8 +115,27 @@ public class OperateGoods extends Controller {
         List<Supplier> supplierList = Supplier.findUnDeleted();
         List<Brand> brandList = Brand.findByOrder(null);
         renderArgs.put("brandList", brandList);
+        String queryString = StringUtils.trimToEmpty(getQueryString());
+        render(goodsPage, supplierList, condition, desc, queryString);
+    }
 
-        render(goodsPage, supplierList, condition, desc);
+    private static String getQueryString() {
+        List<String> kvs = new ArrayList<>();
+        for (String key : request.params.all().keySet()) {
+            if (!"body".equals(key) && !"queryString".equals(key) && !"page".equals(key) && !"id".equals(key)&& !"selectall".equals(key)) {
+                String[] values = request.params.getAll(key);
+                for (String value : values) {
+                    kvs.add(key + "=" + value);
+                }
+            }
+        }
+        return StringUtils.join(kvs, "&");
+    }
+
+    private static int getPage() {
+        String page = request.params.get("page");
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+        return pageNumber;
     }
 
     /**
@@ -127,7 +144,6 @@ public class OperateGoods extends Controller {
     @ActiveNavigation("goods_add")
     public static void add() {
         renderInit(null);
-
         render();
     }
 
@@ -266,6 +282,7 @@ public class OperateGoods extends Controller {
         goods.save();
         String createdFrom = "Op";
         goods.createHistory(createdFrom);
+
         index(null, "");
     }
 
@@ -361,12 +378,15 @@ public class OperateGoods extends Controller {
     /**
      * 取得指定商品信息
      */
-    public static void edit2(Long id) {
+    public static void edit2(Long id, int page) {
+        String queryString = StringUtils.trimToEmpty(getQueryString());
         models.sales.Goods goods = models.sales.Goods.findById(id);
 
         checkShops(goods.supplierId);
         renderInit(goods);
         renderArgs.put("imageLargePath", goods.getImageLargePath());
+        renderArgs.put("page", page);
+        renderArgs.put("queryString", queryString);
         render(id);
 
     }
@@ -497,11 +517,10 @@ public class OperateGoods extends Controller {
     /**
      * 更新指定商品信息
      */
-    public static void update2(Long id, @Valid final models.sales.Goods goods, File imagePath, String imageLargePath) {
+    public static void update2(Long id, @Valid final models.sales.Goods goods, File imagePath, String imageLargePath, String queryString, int page) {
         if (goods.isAllShop && goods.shops != null) {
             goods.shops = null;
         }
-
         checkImageFile(imagePath);
         checkExpireAt(goods);
         checkSalePrice(goods);
@@ -510,8 +529,7 @@ public class OperateGoods extends Controller {
         if (Validation.hasErrors()) {
             renderArgs.put("imageLargePath", imageLargePath);
             renderInit(goods);
-
-            render("OperateGoods/edit2.html", goods, id);
+            render("OperateGoods/edit2.html", goods, id, page, queryString);
         }
 
         //添加商品处理
@@ -547,7 +565,14 @@ public class OperateGoods extends Controller {
         goodsItem.refresh();
         String createdFrom = "Op";
         goodsItem.createHistory(createdFrom);
-        index(null, "");
+        redirectUrl(page, queryString);
+    }
+
+    private static void redirectUrl(int page, String condition) {
+        if (StringUtils.isNotEmpty(condition) && (condition.contains("?x-http-method-override=PUT") ||condition.contains("x-http-method-override=PUT"))) {
+            condition = condition.replace("x-http-method-override=PUT", "").replace("?","");
+        }
+        redirect("http://" + BASE_URL + "?page=" + page + "&" + condition);
     }
 
     /**
@@ -653,7 +678,9 @@ public class OperateGoods extends Controller {
             String createdFrom = "Op";
             goodsItem.createHistory(createdFrom);
         }
-        index(null, "");
+        int page = getPage();
+        String queryString = StringUtils.trimToEmpty(getQueryString());
+        redirectUrl(page, queryString);
     }
 
 
