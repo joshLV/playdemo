@@ -2118,6 +2118,9 @@ public class Goods extends Model {
 
     private static Pattern imagePattern = Pattern.compile("(?x)(src|SRC|background|BACKGROUND)=('|\")(http://([\\w-]+\\.)+[\\w-]+(:[0-9]+)*(/[\\w-]+)*(/[\\w-]+\\.(jpg|JPG|png|PNG|gif|GIF)))('|\")");
     public static String replaceWithOurImage(String html) {
+        if (Play.runingInTestMode()) {
+            return html;
+        }
         Matcher matcher = imagePattern.matcher(html);
         Set<String> urls = new HashSet<>();
         while (matcher.find()){

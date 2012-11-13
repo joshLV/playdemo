@@ -15,6 +15,7 @@ import navigation.RbacLoader;
 import org.junit.Before;
 import org.junit.Test;
 
+import play.mvc.Http;
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
@@ -25,7 +26,7 @@ import factory.FactoryBoy;
  * 门店验证测试
  * @author tanglq
  */
-public class SupplierCouponVerifyTest extends FunctionalTest {
+public class SupplierCouponQueryTest extends FunctionalTest {
     Supplier supplier;
     Shop shop;
     Goods goods;
@@ -53,38 +54,19 @@ public class SupplierCouponVerifyTest extends FunctionalTest {
     }
 
     @Test
-    public void 门店店号验证页面只出现一个Shop() throws Exception {
-        Response response = GET("/coupons/verify");
-        assertIsOk(response);
-        assertNull(renderArgs("shopList"));
-        Shop myShop = (Shop)renderArgs("shop");
-        assertEquals(shop.id, myShop.id);
+    public void 正常券() {
+        Http.Response response = GET("/coupons/query?shopId=" + shop.id + "&eCouponSn=" + coupon.eCouponSn);
+        assertStatus(200, response);
+        assertContentMatch("券状态:未消费", response);
+        assertContentMatch("券编号: " + coupon.eCouponSn, response);
+        ECoupon getCoupon = (ECoupon) renderArgs("ecoupon");
+        assertEquals(coupon.eCouponSn, getCoupon.eCouponSn);
     }
 
     @Test
-    public void 超级用户验证页面出现ShopList() throws Exception {
-        supplierUser.shop = null;
-        supplierUser.save();
-        Response response = GET("/coupons/verify");
-        assertIsOk(response);
-        assertNull(renderArgs("shop"));
-        List<Shop> myShops = (List<Shop>)renderArgs("shopList");
-        assertEquals(1, myShops.size());
+    public void 非法参数() {
+        Http.Response response = GET("/coupons/query?shopId=" + shop.id + "&eCouponSn=11aa");
+        assertStatus(200, response);
+        assertNull(renderArgs("ecoupon"));
     }
-
-    @Test
-    public void 商户没有录入门店时不能使用验证() throws Exception {
-        // 使此商户无门店.
-        supplierUser.shop = null;
-        supplierUser.save();
-        goods.shops.clear();
-        goods.save();
-        shop.delete();
-        
-        // 测试.
-        Response response = GET("/coupons/verify");
-        assertStatus(500, response);
-    }
-    
-    
 }

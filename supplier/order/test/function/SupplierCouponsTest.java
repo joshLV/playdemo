@@ -95,16 +95,6 @@ public class SupplierCouponsTest extends FunctionalTest {
     }
 
     @Test
-    public void verifyTest() {
-        Http.Response response = GET("/coupons/verify");
-        assertStatus(200, response);
-        assertContentMatch("商户验证消费券", response);
-        assertNotNull(renderArgs("shop"));
-        Shop getShop = (Shop) renderArgs("shop");
-        assertEquals(shop.name, getShop.name);
-    }
-
-    @Test
     public void queryTest() {
         Http.Response response = GET("/coupons/query?shopId=" + shop.id + "&eCouponSn=" + coupon.eCouponSn);
         assertStatus(200, response);

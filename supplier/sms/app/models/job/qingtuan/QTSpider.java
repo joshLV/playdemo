@@ -167,7 +167,7 @@ public class QTSpider extends Job{
 
         goods.brand = brand;
         String imageUrl = element.elementTextTrim("image");
-        if(!StringUtils.isBlank(imageUrl)){
+        if(!StringUtils.isBlank(imageUrl) && !Play.runingInTestMode()){
             InputStream is =  WS.url(imageUrl).get().getStream();
             try {
                 File file = File.createTempFile("qingtuan", "." + FilenameUtils.getExtension(imageUrl));

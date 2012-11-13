@@ -1,39 +1,41 @@
 package functional;
 
-import com.uhuila.common.constants.DeletedStatus;
-import controllers.TelephoneVerify;
-import factory.FactoryBoy;
-import models.accounts.Account;
-import models.accounts.util.AccountUtil;
-import models.admin.SupplierRole;
-import models.admin.SupplierUser;
-import models.consumer.User;
-import models.order.ECoupon;
-import models.order.ECouponStatus;
-import models.order.Order;
-import models.order.OrderItems;
-import models.sales.*;
-import models.supplier.Supplier;
-import models.supplier.SupplierStatus;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.junit.Before;
-import org.junit.Test;
-import play.Logger;
-import play.mvc.Http;
-import play.test.Fixtures;
-import play.test.FunctionalTest;
-
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import models.accounts.Account;
+import models.accounts.util.AccountUtil;
+import models.admin.SupplierUser;
+import models.order.ECoupon;
+import models.order.ECouponStatus;
+import models.sales.Shop;
+import models.supplier.Supplier;
+import models.supplier.SupplierStatus;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.junit.Before;
+import org.junit.Test;
+
+import play.mvc.Http;
+import play.test.FunctionalTest;
+
+import com.uhuila.common.constants.DeletedStatus;
+
+import controllers.TelephoneVerify;
+import factory.FactoryBoy;
 
 /**
  * @author likang
  */
 public class TelephoneVerifyTest extends FunctionalTest{
+    
+    Shop shop;
+    
     @Before
     public void setup(){
         FactoryBoy.deleteAll();
+        shop = FactoryBoy.create(Shop.class);
         FactoryBoy.create(ECoupon.class);
         FactoryBoy.create(SupplierUser.class);
 
@@ -228,10 +230,11 @@ public class TelephoneVerifyTest extends FunctionalTest{
         Date consumedAt = new Date();
         eCoupon.status = ECouponStatus.CONSUMED;
         eCoupon.consumedAt = consumedAt;
+        eCoupon.shop = shop;
         eCoupon.save();
 
         Http.Response response = GET("/tel-verify/consumed-at?coupon=" + eCoupon.eCouponSn + "&timestamp=" + timestamp + "&sign=" + sign);
-        assertContentEquals(new SimpleDateFormat("M月d日H点m分").format(consumedAt) + ",消费门店 " + eCoupon.shop.name,
+        assertContentEquals(new SimpleDateFormat("M月d日H点m分").format(consumedAt) + ",消费门店 " + shop.name,
                 response);//;该券无法重复消费。消费时间为" + new SimpleDateFormat("yyyy年MM月dd日hh点mm分").format(eCoupon.consumedAt)
     }
     private String getSign(long timestamp){
