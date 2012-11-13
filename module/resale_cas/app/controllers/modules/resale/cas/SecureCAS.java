@@ -17,6 +17,7 @@
 package controllers.modules.resale.cas;
 
 import java.util.Date;
+
 import models.resale.Resaler;
 import models.resale.ResalerLoginHistory;
 import play.Logger;
@@ -29,7 +30,6 @@ import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Router;
 import controllers.modules.resale.cas.annotations.SkipCAS;
-import controllers.modules.website.cas.Security;
 
 /**
  * This class is a part of the play module secure-cas. It add the ability to check if the user have access to the
