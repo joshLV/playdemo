@@ -81,6 +81,12 @@ public class Supplier extends Model {
     public String mobile;
 
     /**
+     * 财务负责人手机号
+     */
+    @Mobile
+    public String accountLeaderMobile;
+
+    /**
      * 负责人联系电话
      */
     @Phone
@@ -211,6 +217,7 @@ public class Supplier extends Model {
         sp.position = supplier.position;
         sp.userName = supplier.userName;
         sp.email = supplier.email;
+        sp.accountLeaderMobile = supplier.accountLeaderMobile;
 //        sp.salesEmail = supplier.salesEmail;
         sp.salesId = supplier.salesId;
         sp.shopEndHour = supplier.shopEndHour;

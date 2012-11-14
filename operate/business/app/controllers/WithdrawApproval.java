@@ -1,8 +1,11 @@
 package controllers;
 
 import models.accounts.*;
+import models.admin.SupplierUser;
 import models.consumer.User;
+import models.consumer.UserInfo;
 import models.resale.Resaler;
+import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -61,6 +64,41 @@ public class WithdrawApproval extends Controller {
 
     public static void approve(Long id, String action, BigDecimal fee, String comment) {
         WithdrawBill bill = WithdrawBill.findById(id);
+        Supplier supplier = null;
+        SupplierUser supplierUser = null;
+        User user = null;
+        Resaler resaler = null;
+        String[] arrayName = bill.applier.split("-");
+        String title = "";
+        String mobile = "";
+        if (bill.account.accountType == AccountType.SUPPLIER) {
+            supplier = Supplier.findById(bill.account.uid);
+            supplierUser = SupplierUser.findById(bill.account.uid);
+            if (supplierUser != null) {
+                mobile = supplierUser.mobile;
+                title = arrayName[0];
+            }
+        } else if (bill.account.accountType == AccountType.CONSUMER) {
+            user = User.findById(bill.account.uid);
+            UserInfo userInfo = UserInfo.find("user=?", user).first();
+            if (user != null) {
+                mobile = user.mobile;
+            }
+            if (userInfo != null) {
+                if (StringUtils.isNotBlank(userInfo.fullName)) {
+                    title = userInfo.fullName;
+                } else if (StringUtils.isNotBlank(user.loginName)) {
+                    title = user.loginName;
+                }
+            }
+        } else if (bill.account.accountType == AccountType.RESALER) {
+            resaler = Resaler.findById(bill.account.uid);
+            if (resaler != null) {
+                title = bill.applier;
+                mobile = resaler.mobile;
+            }
+        }
+        String sendContent = title + " 申请提现:" + bill.amount;
         if (bill == null || bill.status != WithdrawBillStatus.APPLIED) {
             error("cannot find the withdraw bill or the bill is processed");
             return;
@@ -71,8 +109,19 @@ public class WithdrawApproval extends Controller {
                 return;
             }
             bill.agree(fee, comment);
+            sendContent += " 已结款. ";
         } else if (action.equals("reject")) {
             bill.reject(comment);
+            sendContent += " 未通过. ";
+        }
+        if (StringUtils.isNotBlank(comment)) {
+            sendContent += "备注:" + comment;
+        }
+        if (StringUtils.isNotBlank(mobile) && StringUtils.isNotBlank(title)) {
+            SMSUtil.send(sendContent, mobile);
+        }
+        if (supplier != null && StringUtils.isNotBlank(supplier.accountLeaderMobile) && supplierUser != null && !supplier.accountLeaderMobile.equals(supplierUser.mobile)) {
+            SMSUtil.send(sendContent, supplier.accountLeaderMobile);
         }
         index(null);
     }

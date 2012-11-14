@@ -224,14 +224,14 @@ public class Suppliers extends Controller {
         edit(supplierId);
     }
 
-    public static void update(Long id, @Valid Supplier supplier, File image, @Valid SupplierUser admin, Long adminId) {
+    public static void update(Long id, @Valid Supplier supplier, File image, SupplierUser admin, Long adminId) {
         int page = getPage();
         Supplier oldSupplier = Supplier.findById(id);
         if (StringUtils.isNotBlank(supplier.domainName) && !oldSupplier.domainName.equals(supplier.domainName)) {
             checkItems(supplier);
         }
 
-        Validation.match("validation.jobNumber", admin.jobNumber, "^[0-9]*");
+        //Validation.match("validation.jobNumber", admin.jobNumber, "^[0-9]*");
 
         if (Validation.hasErrors()) {
             for (String key : validation.errorsMap().keySet()) {

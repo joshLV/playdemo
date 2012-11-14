@@ -25,7 +25,7 @@ error:'supplier.salesId'}
 #{/layout_operate.selectField}
 
 <input type="hidden" id="supplier_salesId" name="supplier.salesId" value="${supplier?.salesId}">
-
+#{layout_operate.textField name:'supplier.accountLeaderMobile', value:supplier?.accountLeaderMobile/}
 #{layout_operate.textField name:'supplier.mobile', value:supplier?.mobile,note:'(负责人手机和电话至少填写一项)'/}
 #{layout_operate.textField name:'supplier.phone', value:supplier?.phone/}
 #{if !"edit".equals(action)}

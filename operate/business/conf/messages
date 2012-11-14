@@ -192,6 +192,7 @@ shop.map=地图
 shop.managerMobiles=经理手机
 shop.transport=交通
 
+supplier.accountLeaderMobile=财务负责人手机
 supplier.NORMAL=正常
 supplier.FREEZE=冻结
 supplier.fullName=公司名称
