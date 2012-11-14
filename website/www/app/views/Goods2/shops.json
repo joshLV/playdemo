@@ -9,6 +9,6 @@ page= (pageNumber-1) * pageSize;
         "name": "${shop.name.escapeJavaScript()}",
         "addr": "${shop.address.escapeJavaScript()}",
         "tel": "${shop.phone.escapeJavaScript()}",
-        "latlng": "#{if shop?.latitude && shop?.longitude}${shop?.latitude},${shop?.longitude}#{/if}"}
+        "latlng": "#{if shop?.latitude && shop?.longitude && shop?.latitude!='0' && shop?.longitude!='0'}${shop?.latitude},${shop?.longitude}#{/if}"}
     #{/paginate.list1}]
 }
