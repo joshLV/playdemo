@@ -219,7 +219,7 @@ public class OperateShops extends Controller {
         if (Play.mode.isDev()) {
             redirect("http://localhost:9303/" + "shops?page=" + page);
         } else {
-            redirect(BASE_URL + "suppliers?page=" + page);
+            redirect(BASE_URL + "/shops?page=" + page);
         }
     }
 }
