@@ -2,7 +2,8 @@ $(function () {
     $("#eCouponSn").focus(function () {
         $("#checksn").html("");
         $("#showinfo").html("");
-        $("#statusw").html("");
+        $("#statusw").html("")
+        $("#verify_amount_group").hide();
     });
 
     $("#query").click(function () {
@@ -22,46 +23,53 @@ $(function () {
     $("#sure").click(function () {
         var eCouponSn = $("#eCouponSn").val();
         var shopId = $("#shopId").val();
+        var verifyAmount = $('#verifyAmount').val();
         if (eCouponSn == "") {
             $("#checksn").html("<font color=red>请输入券号!</font>");
             return false;
         }
         $.ajax({
             url:"/coupons/update",
-            data:"shopId=" + shopId + "&eCouponSn=" + eCouponSn ,
+            data:"shopId=" + shopId + "&eCouponSn=" + eCouponSn + "&verifyAmount=" + verifyAmount,
             type:'POST',
             error:function () {
                 alert('消费失败!');
             },
             success:function (data) {
-                if (data == '0') {
+            	var code = data.code;
+            	var message = data.info;
+                if (code == '0') {
                     $("#checksn").html("<font color=red>该券消费成功！</font>");
                     $("#statusw").html('券状态:已消费');
                     $("#sure").attr("disabled", false);
-                } else if (data == '1') {
+                } else if (code == '1') {
                     $("#statusw").html('<font color=red>对不起，该券不能在此门店使用!</font>');
-                } else if (data.error == '2') {
-                    $("#statusw").html('<font color=red>' + data.info + '</font>');
-                } else if (data == '3') {
+                } else if (code == '2') {
+                    $("#statusw").html('<font color=red>' + message + '</font>');
+                } else if (code == '3') {
                     $("#statusw").html('<font color=red>对不起，该券已冻结！</font>');
-                } else if (data == '4') {
+                } else if (code == '4') {
                     $("#statusw").html('<font color=red>对不起，该券已过期！</font>');
-                } else if (data == '5') {
+                } else if (code == '5') {
                     $("#statusw").html('<font color=red>对不起，该券在当当网上为失效状态，可能已过期、已使用或已退款！</font>');
-                } else if (data == 'err') {
+                } else if (code == '6') {
+                    $("#statusw").html('<font color=red>请输入合法的验证金额！</font>');
+                } else if (code == '7') {
+                    $("#statusw").html('<font color=red>' + message + '</font>');
+                } else if (code == 'err') {
                     alert("消费失败！");
                 } else {
-                    if (data == 'CONSUMED') {
-                        data = "消费";
-                    } else if (data == 'REFUND') {
-                        data = "退款";
-                    } else if (data == 'EXPIRED') {
-                        data = "过期";
+                    if (code == 'CONSUMED') {
+                        info = "消费";
+                    } else if (code == 'REFUND') {
+                        info = "退款";
+                    } else if (code == 'EXPIRED') {
+                        info = "过期";
                     } else {
-                        data = "处理中";
+                        info = "处理中";
                     }
                     $("#sure").attr("disabled", false);
-                    $("#checksn").html("<font color=red>该券已" + data + "！</font>");
+                    $("#checksn").html("<font color=red>该券已" + info + "！</font>");
                 }
 
             }

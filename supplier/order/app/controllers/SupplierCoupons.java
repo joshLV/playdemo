@@ -1,7 +1,11 @@
 package controllers;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import models.admin.SupplierUser;
 import models.order.CouponsCondition;
@@ -65,15 +69,26 @@ public class SupplierCoupons extends Controller {
 
         //根据页面录入券号查询对应信息
         ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
+        
+        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
+        
+        System.out.println("ecoupon sn=" + eCouponSn);
 
         List<ECoupon> ecoupons = ECoupon.queryUnconsumedCouponsWithSameGoodsGroups(ecoupon);
         
-        if (ecoupon == null || ecoupons.size() == 1) {
-            render("/SupplierCoupons/consume.html", shopId, ecoupon);
-        } else {
-            render("/SupplierCoupons/multi-consume.html", shopId, ecoupons);
-        }
+        BigDecimal amount = summaryECouponsAmount(ecoupons);
+
+        render("/SupplierCoupons/consume.html", ecoupon, ecoupons, amount, ecouponStatusDescription);
     }
+
+    private static BigDecimal summaryECouponsAmount(List<ECoupon> ecoupons) {
+        BigDecimal amount = BigDecimal.ZERO;
+        for (ECoupon ecoupon : ecoupons) {
+            amount = amount.add(ecoupon.faceValue);
+        }
+        return amount;
+    }
+
 
     /**
      * 修改券状态,并产生消费交易记录
@@ -81,7 +96,7 @@ public class SupplierCoupons extends Controller {
      * @param eCouponSn 券号
      */
     @ActiveNavigation("coupons_verify")
-    public static void update(Long shopId, String eCouponSn) {
+    public static void update(Long shopId, String eCouponSn, BigDecimal verifyAmount) {
         if (Validation.hasErrors()) {
             render("../views/SupplierCoupons/index.html", eCouponSn);
         }
@@ -90,45 +105,130 @@ public class SupplierCoupons extends Controller {
 
         Shop shop = Shop.findById(shopId);
         if (shop == null) {
-            renderJSON("1");
+            renderJSON("{\"code\":\"1\"");
         }
         ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
         //根据页面录入券号查询对应信息,并产生消费交易记录
         if (eCoupon == null) {
-            renderJSON("err");
+            renderJSON("{\"code\":\"err\"");
         }
         
-        if (eCoupon.status == ECouponStatus.UNCONSUMED) {
+        if (eCoupon.status == ECouponStatus.UNCONSUMED) {            
             //冻结的券
             if (eCoupon.isFreeze == 1) {
-                renderJSON("3");
+                renderJSON("{\"code\":\"3\"}");
             }
             if (!eCoupon.isBelongShop(shopId)) {
-                renderJSON("1");
+                renderJSON("{\"code\":\"1\"}");
             }
             if (eCoupon.isExpired()) {
-                renderJSON("4");
+                renderJSON("{\"code\":\"4\"}");
             }
             //不在验证时间范围内
             if (!eCoupon.checkVerifyTimeRegion(new Date())) {
                 String info = eCoupon.getCheckInfo();
-                renderJSON("{\"error\":\"2\",\"info\":\"" + info + "\"}");
+                renderJSON("{\"code\":\"2\",\"info\":\"" + info + "\"}");
             }
-            if (!eCoupon.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
-                renderJSON("5");
-            }
+            
             String dateTime = DateUtil.getNowTime();
-            String coupon = eCoupon.getLastCode(4);
+            String ecouponSNLast4Code = eCoupon.getLastCode(4);
 
-            // 发给消费者
-            SMSUtil.send("【一百券】您尾号" + coupon + "的券号于" + dateTime
-                    + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：400-6262-166", eCoupon.orderItems.phone, eCoupon.replyCode);
+            List<ECoupon> ecoupons = ECoupon.queryUnconsumedCouponsWithSameGoodsGroups(eCoupon);
+            renderArgs.put("ecoupons", ecoupons);
+            
+            // 如果只有一张券.
+            if (ecoupons.size() == 1) {
+                if (!eCoupon.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
+                    renderJSON("{\"code\":\"5\"}");
+                }
+                // 发给消费者
+                SMSUtil.send2("【一百券】您尾号" + ecouponSNLast4Code + "的券号于" + dateTime
+                        + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：400-6262-166", eCoupon.orderItems.phone, eCoupon.replyCode);
+            } else {
+                // 多张券验证
+                System.out.println("verifyAmount=" + verifyAmount + ", comp=" + verifyAmount.compareTo(BigDecimal.ZERO));
+                if (verifyAmount == null || verifyAmount.compareTo(BigDecimal.ZERO) < 0) {
+                    renderJSON("{\"code\":\"6\"}");
+                }
+                System.out.println("verifyAmount=" + verifyAmount);
+                List<ECoupon> checkECoupons = ECoupon.selectCheckECoupons(verifyAmount, ecoupons);
+
+                BigDecimal consumedAmount = BigDecimal.ZERO;
+                
+                int checkedCount = 0;
+                List<ECoupon> realCheckECoupon = new ArrayList<>();  //可能验证失败，所以要有一个实际真正验证成功的ecouponse
+                for (ECoupon e : checkECoupons) {
+                    System.out.println(e.eCouponSn + " e.faceValue=" + e.faceValue);
+                    if (e.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
+                        checkedCount += 1;
+                        consumedAmount = consumedAmount.add(e.faceValue);
+                        realCheckECoupon.add(e);
+                    }
+                    System.out.println("    ... had consumedAmount=" + consumedAmount);
+                }
+                renderArgs.put("consumedAmount", consumedAmount);
+
+                List<ECoupon> availableECoupons = substractECouponList(ecoupons, realCheckECoupon);
+                BigDecimal availableAmount = summaryECouponsAmount(availableECoupons);
+                List<String> availableECouponSNs = new ArrayList<>();
+                for (ECoupon ae : availableECoupons) {
+                    availableECouponSNs.add(ae.eCouponSn);
+                }
+                
+                
+                if (consumedAmount.compareTo(BigDecimal.ZERO) == 0) {
+                    // 没有验证到券
+                    renderJSON("{\"code\":\"7\",\"info\":\"没有验证任何券，可能是输入金额小于最小面值的券\"}");
+                }
+                
+                if (availableECoupons.size() > 0) {
+                    SMSUtil.send2("【一百券】您尾号" + ecouponSNLast4Code
+                                    + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(0) + "元)于" 
+                                    + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。您还有" + availableECouponSNs.size() + "张券（"
+                                    + StringUtils.join(availableECouponSNs, "/") 
+                                    + "总面值" + availableAmount.setScale(0) + "元）未消费。如有疑问请致电：4006262166",
+                                    eCoupon.orderItems.phone, eCoupon.replyCode);
+                } else {
+                    SMSUtil.send2("【一百券】您尾号" + ecouponSNLast4Code
+                                    + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(0) + "元)于" 
+                                    + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
+                                    eCoupon.orderItems.phone, eCoupon.replyCode);
+                }
+                
+                if (verifyAmount.compareTo(consumedAmount) == 0) {
+                    renderJSON("{\"code\":\"7\",\"info\":\"成功验证" + consumedAmount + "元\"}");
+                } else {
+                    renderJSON("{\"code\":\"7\",\"info\":\"成功验证" + consumedAmount + "元，顾客还需要现金支付" + verifyAmount.subtract(consumedAmount) + "\"}");
+                }
+            }
         } else {
             renderJSON(eCoupon.status);
         }
 
-        renderJSON("0");
+        renderJSON("{\"code\":\"0\"}");
     }
+
+    /**
+     * 得到sourceECoupons - checkECoupons的数组.
+     * @param sourceECoupons
+     * @param checkECoupons
+     * @return
+     */
+    private static List<ECoupon> substractECouponList(List<ECoupon> sourceECoupons,
+                    List<ECoupon> checkECoupons) {
+        Set<Long> checkECouponIdSet = new HashSet<>();
+        for (ECoupon e :checkECoupons) {
+            checkECouponIdSet.add(e.id);
+        }
+        List<ECoupon> results = new ArrayList<>();
+        for (ECoupon e : sourceECoupons) {
+            if (!checkECouponIdSet.contains(e.id)) {
+                results.add(e);
+            }
+        }
+        return results;
+    }
+
 
     /**
      * 券号列表

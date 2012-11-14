@@ -463,6 +463,7 @@ public class ECoupon extends Model {
 
         //===================券消费处理开始=====================================
         if (consumed(shopId, operateUserId, supplierUser, type)) {
+            System.out.println(" ======= payed!!!");
             payCommission();
         }
         //===================券消费处理完毕=====================================
@@ -480,9 +481,11 @@ public class ECoupon extends Model {
      */
     private boolean consumed(Long shopId, Long operateUserId,
                              SupplierUser supplierUser, VerifyCouponType type) {
+        System.out.println("a1 status=" + this.status);
         if (this.status != ECouponStatus.UNCONSUMED) {
             return false;
         }
+        System.out.println("a2");
         if (shopId != null) {
             this.shop = Shop.findById(shopId);
         }
@@ -497,9 +500,11 @@ public class ECoupon extends Model {
             this.operateUserId = operateUserId;
             operator = "操作员ID:" + operateUserId.toString();
         }
+        System.out.println("a5");
         this.verifyType = type;
         this.save();
         if (this.order != null && this.order.promoteUserId != null) {
+            System.out.println("a6");
             User invitedUser = User.findById(this.order.userId);
             PromoteRebate promoteRebate = PromoteRebate.find("invitedUser=? and order =?", invitedUser, this.order).first();
             //消费的时候更新返利表已经返利的金额字段
@@ -1075,6 +1080,12 @@ public class ECoupon extends Model {
         return (BigDecimal) q.getSingleResult();
     }
 
+    /**
+     * 从一组券中返回符合指定金额条件的券。
+     * @param payValue
+     * @param ecoupons
+     * @return
+     */
     public static List<ECoupon> selectCheckECoupons(BigDecimal payValue,
                                                     List<ECoupon> ecoupons) {
         Collections.sort(ecoupons, new Comparator<ECoupon>() {
@@ -1229,18 +1240,49 @@ public class ECoupon extends Model {
      */
     public static List<ECoupon> queryUnconsumedCouponsWithSameGoodsGroups(ECoupon ecoupon) {
         if (ecoupon == null) {
-            return null;
+            return new ArrayList<ECoupon>();
         }
         Goods goods = ecoupon.goods;
-        if (StringUtils.isBlank(goods.groupCode)) {
-            return ECoupon.find("order.userId = ? and order.userType = ? and status = ? and goods.isLottery=? and goods.groupCode=? and goods.supplierId=?",
-                            ecoupon.order.userId, ecoupon.order.userType, 
+        
+        if (!StringUtils.isBlank(goods.groupCode)) {
+            return ECoupon.find("order=? and status = ? and goods.isLottery=? and goods.groupCode=? and goods.supplierId=? order by id",
+                            ecoupon.order,
                             ECouponStatus.UNCONSUMED, false,
                             goods.groupCode, goods.supplierId).fetch();
         }
-        return ECoupon.find("order.userId = ? and order.userType = ? and status = ? and goods.isLottery=? and goods.id=? and goods.supplierId=?",
-                        ecoupon.order.userId, ecoupon.order.userType, 
+        return ECoupon.find("order=? and status=? and goods.isLottery=? and goods.id=? and goods.supplierId=? order by id",
+                        ecoupon.order, 
                         ECouponStatus.UNCONSUMED, false,
                         goods.id, goods.supplierId).fetch();
+    }
+    
+    /**
+     * 得到券的可验证状态信息，如果为null，则可验证，否则不允许验证
+     * @param ecoupon
+     * @return
+     */
+    public static String getECouponStatusDescription(ECoupon ecoupon, Long targetShopId) {
+        if (ecoupon == null) {
+            return null;
+        }
+        String result = null;
+        if (ecoupon.isFreeze == 1) {
+           result = "此券已被冻结不能使用!";
+        } else if (ecoupon.status == models.order.ECouponStatus.CONSUMED) {
+            result = "此券已消费!";
+        } else if (ecoupon.status == models.order.ECouponStatus.REFUND) {
+            result = "此券已经退款，无法再使用该券号进行消费!";
+        } else if (ecoupon.expireAt.before(new java.util.Date())) {
+            result = "此券已过期!";
+        } else if (!ecoupon.checkVerifyTimeRegion(new Date())) {
+            // TODO: 现在已经不在检查时间范围，所以先不处理
+            Logger.error("券ID" + ecoupon.id + "(goodsId:" + ecoupon.goods.id + ")出现了时间段检查，但现在不建议使用时间段配置，请联系运营编辑。");
+            result = ecoupon.getCheckInfo();
+        } else if (!ecoupon.isBelongShop(targetShopId)) {
+            result = "对不起，该券不能在此门店使用!";
+        } else {
+            return null;
+        }
+        return result;
     }
 }

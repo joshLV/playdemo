@@ -33,13 +33,17 @@
 	     <span class="control-group" id="checksn"></span>
 	   </div>
    </div>
+  <div class="control-group" id="verify_amount_group" style="display:none">
+      <div class="controls">验证金额:
+          <input type="text" name="verifyAmount" id="verifyAmount" class="input-large" />
+       </div>
+   </div>
      <div class="control-group" style="display: none">#{include 'SupplierCoupons/consume.html' /}</div>
      <div class="control-group" id="showinfo"></div>
-      <div class="control-group" id="statusw" ></div>
-
+     <div class="control-group" id="statusw" ></div>
 
    <div class="form-actions">
-  <button class="btn btn-primary" id="query" >查询</button>
-    <button class="btn btn-primary" id="sure" disabled>验证</button>
+   <button class="btn btn-primary" id="query" >查询</button>
+   <button class="btn btn-primary" id="sure" disabled>验证</button>
  </div>
  

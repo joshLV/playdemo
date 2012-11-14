@@ -34,7 +34,7 @@ public class AccountFactory extends ModelFactory<Account> {
     @Factory(name = "balanceAccount")
     public void defineWithBalanceAccount(Account account) {
         account.accountType = AccountType.PLATFORM;
-        account.uid=Account.PLATFORM_INCOMING;
+        account.uid = Account.PLATFORM_INCOMING;
         account.amount=BigDecimal.TEN;
     }
 

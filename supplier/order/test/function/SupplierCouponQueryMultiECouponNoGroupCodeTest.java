@@ -49,7 +49,7 @@ public class SupplierCouponQueryMultiECouponNoGroupCodeTest extends FunctionalTe
         goods100 = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
             @Override
             public void build(Goods g) {
-                g.salePrice = new BigDecimal("100");
+                g.faceValue = new BigDecimal("100");
             }
             
         });
@@ -59,7 +59,7 @@ public class SupplierCouponQueryMultiECouponNoGroupCodeTest extends FunctionalTe
         goods50 = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
             @Override
             public void build(Goods g) {
-                g.salePrice = new BigDecimal("50");
+                g.faceValue = new BigDecimal("50");
             }
             
         });
@@ -76,9 +76,9 @@ public class SupplierCouponQueryMultiECouponNoGroupCodeTest extends FunctionalTe
         Http.Response response = GET("/coupons/query?shopId=" + shop.id + "&eCouponSn=" + coupon2.eCouponSn);
         assertStatus(200, response);
         assertContentMatch("券状态:未消费", response);
-        assertContentMatch("券编号: " + coupon1.eCouponSn, response);
+        assertContentMatch("券编号: " + coupon2.eCouponSn, response);
         List<ECoupon> ecoupons = (List<ECoupon>) renderArgs("ecoupons");
-        assertEquals(5, ecoupons.size());
+        assertEquals(2, ecoupons.size());
         BigDecimal amount = (BigDecimal) renderArgs("amount");
         assertNotNull(amount);
         assertEquals(new BigDecimal("200").setScale(2), amount.setScale(2));

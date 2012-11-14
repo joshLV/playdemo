@@ -33,10 +33,10 @@ import controllers.supplier.cas.Security;
 import factory.FactoryBoy;
 
 /**
- * 门店验证测试
+ * 门店验证测试：验证只有一张券的情况。
  * @author tanglq
  */
-public class SupplierCouponVerifyUpdateTest extends FunctionalTest {
+public class SupplierCouponVerifyUpdateSingleECuponTest extends FunctionalTest {
     Supplier supplier;
     Shop shop;
     Goods goods;
@@ -49,6 +49,8 @@ public class SupplierCouponVerifyUpdateTest extends FunctionalTest {
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
+        MockMQ.clear();
+        
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
@@ -72,7 +74,7 @@ public class SupplierCouponVerifyUpdateTest extends FunctionalTest {
         Http.Response response = POST("/coupons/update", params);
 
         assertContentMatch("0", response);
-        SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
+        SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
         assertSMSContentMatch("【一百券】您尾号" + coupon.getLastCode(4)
                 + "的券号于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：400-6262-166",
                 msg.getContent());
@@ -97,31 +99,6 @@ public class SupplierCouponVerifyUpdateTest extends FunctionalTest {
         Http.Response response = POST("/coupons/update", params);
 
         assertContentMatch("err", response);
-    }
-
-    @Test
-    public void 消费275元时验证多张券返回250元已消费券() {
-        Map<String, String> params = new HashMap<>();
-        params.put("shopId", shop.id.toString());
-        params.put("eCouponSn", coupon.eCouponSn);
-        params.put("amount", "275");
-        Http.Response response = POST("/coupons/update", params);
-        assertIsOk(response);
-        
-        BigDecimal consumedAmount = (BigDecimal)renderArgs("consumedAmount");
-        assertNotNull(consumedAmount);
-        assertEquals(new BigDecimal("250.00").setScale(2), consumedAmount.setScale(2));
-
-        List<ECoupon> ecoupons = (List<ECoupon>)renderArgs("ecoupons");
-        assertNotNull(ecoupons);
-        assertEquals(3, ecoupons.size());
-        
-        
-        SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
-        assertSMSContentMatch("【一百券】您尾号" + coupon.getLastCode(4)
-                + "共3张券(总面值250元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：400-6262-166",
-                msg.getContent());
-
     }
 
     /**

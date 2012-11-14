@@ -68,7 +68,7 @@ public class DDAPIUtil {
     public static boolean isRefund(ECoupon eCoupon) throws DDAPIInvokeException {
         DDOrderItem ddOrderOrderItem = DDOrderItem.findByOrder(eCoupon.orderItems);
         if (ddOrderOrderItem == null) {
-            Logger.info("[DangDang isRefund API] order item not found (eCouponSn:" + eCoupon.eCouponSn + ")!");
+            // Logger.info("[DangDang isRefund API] order item not found (eCouponSn:" + eCoupon.eCouponSn + ")!");
             return false;
         }
         String data = String.format("<data><row><ddgid><![CDATA[%s]]></ddgid><type><![CDATA[%s]]></type><code><![CDATA[%s]]></code></row></data>",
