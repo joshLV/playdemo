@@ -3,6 +3,8 @@ package functional;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
+import factory.FactoryBoy;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
 import models.cms.Block;
@@ -19,34 +21,24 @@ import com.uhuila.common.constants.DeletedStatus;
 import controllers.operate.cas.Security;
 
 /**
- * Created with IntelliJ IDEA.
  * User: Juno
- * Date: 12-7-27
- * Time: 上午10:08
- * To change this template use File | Settings | File Templates.
  */
 public class CmsBlocksFunctionalTest extends FunctionalTest{
 
     @Before
     public void setup() {
-        Fixtures.delete(Block.class);
-
-        Fixtures.delete(OperateUser.class);
-        Fixtures.delete(OperateRole.class);        
-        Fixtures.loadModels("fixture/blocks.yml");
-
-        Fixtures.loadModels("fixture/roles.yml");
-        Fixtures.loadModels("fixture/users.yml");
-
-
+        FactoryBoy.deleteAll();
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
 
-        Long id = (Long) Fixtures.idCache.get("models.admin.OperateUser-user3");
-        OperateUser user = OperateUser.findById(id);
+        FactoryBoy.create(Block.class);
+        OperateUser operateUser = FactoryBoy.create(OperateUser.class);
+
+
+
         // 设置测试登录的用户名
-        Security.setLoginUserForTest(user.loginName);
+        Security.setLoginUserForTest(operateUser.loginName);
     }
 
     @After
@@ -76,8 +68,8 @@ public class CmsBlocksFunctionalTest extends FunctionalTest{
         Map<String,String> params = new HashMap<>();
         params.put("block.title","TestTitle");
         params.put("block.displayOrder","1");
-        params.put("block.effectiveAt","2012-3-21T00:00:00");
-        params.put("block.expireAt","2013-3-21T00:00:00");
+        params.put("block.effectiveAt","2012-3-21 00:00:00");
+        params.put("block.expireAt","2013-3-21 00:00:00");
         params.put("content","TestContent");
 
         //配置 图片 参数
@@ -95,45 +87,48 @@ public class CmsBlocksFunctionalTest extends FunctionalTest{
 
     @Test
     public void testEdit(){
-        long id = (Long) Fixtures.idCache.get("models.cms.Block-Test");
-        assertNotNull(id);
+        Block block = FactoryBoy.last(Block.class);
+        assertNotNull(block);
 
-        Http.Response response = GET("/blocks/" + id + "/edit");
+        Http.Response response = GET("/blocks/" + block.id + "/edit");
         assertIsOk(response);
         assertContentMatch("修改内容块",response);
     }
 
     @Test
     public void testUpdate(){
-        long id = (Long) Fixtures.idCache.get("models.cms.Block-Test");
+        Block block = FactoryBoy.last(Block.class);
+        assertNotNull(block);
         String params = "block.title=TestTitle" +
                         "&block.displayOrder=1" +
                         "&block.effectiveAt=2012-3-21" +
                         "&block.expireAt=2013-3-21" +
                         "&content=Test Content";
-        Http.Response response =  PUT("/blocks/"+id,"application/x-www-form-urlencoded",params);
+        Http.Response response =  PUT("/blocks/" + block.id,"application/x-www-form-urlencoded",params);
         assertStatus(302,response);
-        Block block = Block.findById(id);
+        block.refresh();
         assertTrue((block.title).equals("TestTitle"));
     }
 
     @Test
     public void testUpdateWithError(){
-        long id = (Long) Fixtures.idCache.get("models.cms.Block-Test");
+        Block block = FactoryBoy.last(Block.class);
+        assertNotNull(block);
         String params = "block.title=TestTitle";
         // 传一个空的参数给UPDATE，更新不成功
-        Http.Response response =  PUT("/blocks/"+id,"application/x-www-form-urlencoded",params);
+        Http.Response response =  PUT("/blocks/"+block.id,"application/x-www-form-urlencoded",params);
         assertStatus(200,response);
-        Block block = Block.findById(id);
+        block.refresh();
         assertFalse((block.title).equals("TestTitle"));
     }
 
     @Test
     public void testDelete(){
-        long id = (Long) Fixtures.idCache.get("models.cms.Block-Test");
-        Http.Response response = DELETE("/blocks/"+id);
+        Block block = FactoryBoy.last(Block.class);
+        assertNotNull(block);
+        Http.Response response = DELETE("/blocks/"+block.id);
         assertStatus(302,response);
-        Block block = Block.findById(id);
+        block.refresh();
         assertEquals(DeletedStatus.DELETED,block.deleted);
     }
 
