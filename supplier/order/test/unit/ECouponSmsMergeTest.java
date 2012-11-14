@@ -1,25 +1,26 @@
 package unit;
 
+import java.math.BigDecimal;
 import java.util.List;
-import models.accounts.Account;
+
 import models.accounts.AccountType;
-import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.consumer.User;
 import models.order.ECoupon;
 import models.order.Order;
 import models.order.OrderItems;
-import models.sales.Area;
-import models.sales.Brand;
 import models.sales.Category;
 import models.sales.Goods;
+import models.sales.Shop;
 import models.supplier.Supplier;
+
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+
 import play.Play;
-import play.test.Fixtures;
 import play.test.UnitTest;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 
 /**
  * 用于优惠券合并产生相同replayCode的测试
@@ -27,7 +28,6 @@ import play.test.UnitTest;
  * @author 唐力群
  * 
  */
-@Ignore
 public class ECouponSmsMergeTest extends UnitTest {
     /**
      * 有分组代码的商品.
@@ -44,63 +44,65 @@ public class ECouponSmsMergeTest extends UnitTest {
     /**
      * 测试用消费者.
      */
-    User user = null;
+    User user;
 
+    Supplier supplier;
+    Shop shop;
+    Order order;
+    OrderItems orderItem;
+    Category category;
+    ECoupon coupon1, coupon2, coupon3, coupon4, coupon5;
+    SupplierUser supplierUser;
+    
     @Before
-    public void setup() {
+    public void setUp() {
         Play.configuration.setProperty(
-                        ECoupon.KEY_USE_PRODUCT_SERIAL_REPLYCODE, "true");
-        Fixtures.delete(Account.class);
-        Fixtures.delete(Category.class);
-        Fixtures.delete(Brand.class);
-        Fixtures.delete(Area.class);
-        Fixtures.delete(Order.class);
-        Fixtures.delete(OrderItems.class);
-        Fixtures.delete(Goods.class);
-        Fixtures.delete(User.class);
-        Fixtures.delete(ECoupon.class);
-        Fixtures.delete(Account.class);
-        Fixtures.delete(SupplierRole.class);
-        Fixtures.delete(Supplier.class);
-        Fixtures.delete(SupplierUser.class);
-        Fixtures.loadModels("fixture/goods_base.yml", "fixture/roles.yml",
-                        "fixture/supplierusers.yml",
-                        "fixture/user.yml",
-                        "fixture/goods.yml", "fixture/accounts.yml",
-                        "fixture/orders.yml",
-                        "fixture/orderItems.yml");
+             ECoupon.KEY_USE_PRODUCT_SERIAL_REPLYCODE, "true");
+        ECoupon.USE_PRODUCT_SERIAL_REPLYCODE = true;
 
-        Long supplierId = (Long) Fixtures.idCache
-                        .get("models.supplier.Supplier-kfc");
-        Long goodsId = (Long) Fixtures.idCache
-                        .get("models.sales.Goods-Goods_002");
-        groupedGoods1 = Goods.findById(goodsId);
-        groupedGoods1.supplierId = supplierId;
-        groupedGoods1.groupCode = "group1";
-        groupedGoods1.save();
+        FactoryBoy.deleteAll();
 
-        goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_003");
-        groupedGoods2 = Goods.findById(goodsId);
-        groupedGoods2.supplierId = supplierId;
-        groupedGoods2.groupCode = "group1";
-        groupedGoods2.save();
-
-        goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_004");
-        otherGroupedGoods = Goods.findById(goodsId);
-        otherGroupedGoods.supplierId = supplierId;
-        otherGroupedGoods.groupCode = "group2";
-        otherGroupedGoods.save();
-
-        goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-        singleGoods = Goods.findById(goodsId);
-        singleGoods.supplierId = supplierId;
-        singleGoods.groupCode = null;
-        singleGoods.save();
-
-        Long userId = (Long) Fixtures.idCache
-                        .get("models.consumer.User-user_test2");
-        user = User.findById(userId);
-
+        supplier = FactoryBoy.create(Supplier.class);
+        shop = FactoryBoy.create(Shop.class);
+        groupedGoods1 = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+            @Override
+            public void build(Goods g) {
+                g.salePrice = new BigDecimal("100");
+                g.groupCode = "GROUP1";
+            }
+            
+        });
+        supplierUser = FactoryBoy.create(SupplierUser.class);
+        coupon1 = FactoryBoy.create(ECoupon.class);
+        coupon2 = FactoryBoy.create(ECoupon.class);
+        groupedGoods2 = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+            @Override
+            public void build(Goods g) {
+                g.salePrice = new BigDecimal("50");
+                g.groupCode = "GROUP1";
+            }
+            
+        });
+        coupon3 = FactoryBoy.create(ECoupon.class);
+        coupon4 = FactoryBoy.create(ECoupon.class);
+        coupon5 = FactoryBoy.create(ECoupon.class);
+        user = FactoryBoy.create(User.class);
+        
+        otherGroupedGoods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+            @Override
+            public void build(Goods g) {
+                g.salePrice = new BigDecimal("50");
+                g.groupCode = "GROUP2";
+            }
+            
+        }); 
+        singleGoods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+            @Override
+            public void build(Goods g) {
+                g.salePrice = new BigDecimal("50");
+            }
+            
+        });
     }
 
     @Test

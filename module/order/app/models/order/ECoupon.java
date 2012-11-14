@@ -68,7 +68,7 @@ public class ECoupon extends Model {
     @JoinColumn(name = "order_id", nullable = true)
     public Order order;
 
-    public static final boolean USE_PRODUCT_SERIAL_REPLYCODE;
+    public static boolean USE_PRODUCT_SERIAL_REPLYCODE;
     public static final String ECOUPON_REFUND_OK = "{\"error\":\"ok\"}";
 
     static {
@@ -264,6 +264,7 @@ public class ECoupon extends Model {
         this.downloadTimes = 3;
         this.isFreeze = 0;
         this.lockVersion = 0;
+
         if (USE_PRODUCT_SERIAL_REPLYCODE) {
             this.replyCode = generateAvailableReplayCode(order.userId,
                     order.userType, goods);
