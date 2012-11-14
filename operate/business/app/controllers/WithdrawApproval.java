@@ -118,10 +118,10 @@ public class WithdrawApproval extends Controller {
         }
 
         if (StringUtils.isNotBlank(mobile) && StringUtils.isNotBlank(title)) {
-            SMSUtil.send(sendContent, mobile);
+//            SMSUtil.send(sendContent, mobile);
         }
         if (supplier != null && StringUtils.isNotBlank(supplier.accountLeaderMobile) && supplierUser != null && !supplier.accountLeaderMobile.equals(supplierUser.mobile)) {
-            SMSUtil.send(sendContent, supplier.accountLeaderMobile);
+//            SMSUtil.send(sendContent, supplier.accountLeaderMobile);
         }
         index(null);
     }
