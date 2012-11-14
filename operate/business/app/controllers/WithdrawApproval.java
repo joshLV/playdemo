@@ -73,14 +73,14 @@ public class WithdrawApproval extends Controller {
         String mobile = "";
         if (bill.account.accountType == AccountType.SUPPLIER) {
             supplier = Supplier.findById(bill.account.uid);
-            supplierUser = SupplierUser.find("loginName=?", arrayName[1]).first();
+            supplierUser = SupplierUser.findById(bill.account.uid);
             if (supplierUser != null) {
                 mobile = supplierUser.mobile;
                 title = arrayName[0];
             }
         }
         if (bill.account.accountType == AccountType.CONSUMER) {
-            user = User.find("loginName=?", bill.applier).first();
+            user = User.findById(bill.account.uid);
             UserInfo userInfo = UserInfo.find("user=?", user).first();
             if (user != null) {
                 mobile = user.mobile;
@@ -90,7 +90,7 @@ public class WithdrawApproval extends Controller {
             }
         }
         if (bill.account.accountType == AccountType.RESALER) {
-            resaler = Resaler.find("loginName=?", bill.applier).first();
+            resaler = Resaler.findById(bill.account.uid);
             if (resaler != null) {
                 title = bill.applier;
                 mobile = resaler.mobile;
