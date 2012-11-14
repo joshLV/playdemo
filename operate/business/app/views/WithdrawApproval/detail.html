@@ -32,7 +32,7 @@
         <div class="control-group">
             <label class="control-label">申 请 者</label>
             <label class="control-value">${bill?.applier}
-            &nbsp;&nbsp; (&nbsp;uid:${uid}&nbsp;) &nbsp;&nbsp;
+                &nbsp;&nbsp; (&nbsp;uid:${uid}&nbsp;) &nbsp;&nbsp;
             #{if  bill.account.accountType==models.accounts.AccountType.CONSUMER }
                 <a href="/coupons?condition.searchKey=UID&condition.searchItems=${uid}&condition.status=REFUND"
                    target="_blank">查看相关券</a>
@@ -130,14 +130,15 @@
         <h3>拒绝提现申请</h3>
     </div>
 
-#{form @WithdrawApproval.approve(), class:'form-horizontal'}
+#{form @WithdrawApproval.approve(), class:'form-horizontal',id:'form',onsubmit:'return check()'}
     <div class="modal-body">
         <fieldset>
             <div class="control-group">
-                <label class="control-label" for="reject-comment">拒绝理由</label>
+                <label class="control-label" for="reject_comment">拒绝理由</label>
 
                 <div class="controls">
-                    <textarea rows="3" class="input-xlarge" id="reject-comment" name="comment">请输入拒绝理由</textarea>
+                    <textarea rows="3" class="input-xlarge" id="reject_comment" name="comment"
+                            ></textarea>
                 </div>
             </div>
         </fieldset>
@@ -150,3 +151,14 @@
     </div>
 #{/form}
 </div>
+<script>
+    function check() {
+//        var strText = document.getElementById('reject_comment').value;
+        var strText = form.reject_comment.value;
+        if (strText == null || strText == "") {
+            alert("请输入拒绝理由！");
+            form.reject_comment.focus();
+            return false;
+        }
+    }
+</script>

@@ -78,18 +78,20 @@ public class WithdrawApproval extends Controller {
                 mobile = supplierUser.mobile;
                 title = arrayName[0];
             }
-        }
-        if (bill.account.accountType == AccountType.CONSUMER) {
+        } else if (bill.account.accountType == AccountType.CONSUMER) {
             user = User.findById(bill.account.uid);
             UserInfo userInfo = UserInfo.find("user=?", user).first();
             if (user != null) {
                 mobile = user.mobile;
             }
             if (userInfo != null) {
-                title = userInfo.fullName;
+                if (StringUtils.isNotBlank(userInfo.fullName)) {
+                    title = userInfo.fullName;
+                } else if (StringUtils.isNotBlank(user.loginName)) {
+                    title = user.loginName;
+                }
             }
-        }
-        if (bill.account.accountType == AccountType.RESALER) {
+        } else if (bill.account.accountType == AccountType.RESALER) {
             resaler = Resaler.findById(bill.account.uid);
             if (resaler != null) {
                 title = bill.applier;
@@ -97,7 +99,6 @@ public class WithdrawApproval extends Controller {
             }
         }
         String sendContent = title + " 申请提现:" + bill.amount;
-
         if (bill == null || bill.status != WithdrawBillStatus.APPLIED) {
             error("cannot find the withdraw bill or the bill is processed");
             return;
@@ -116,12 +117,11 @@ public class WithdrawApproval extends Controller {
         if (StringUtils.isNotBlank(comment)) {
             sendContent += "备注:" + comment;
         }
-
         if (StringUtils.isNotBlank(mobile) && StringUtils.isNotBlank(title)) {
-//            SMSUtil.send(sendContent, mobile);
+            SMSUtil.send(sendContent, mobile);
         }
         if (supplier != null && StringUtils.isNotBlank(supplier.accountLeaderMobile) && supplierUser != null && !supplier.accountLeaderMobile.equals(supplierUser.mobile)) {
-//            SMSUtil.send(sendContent, supplier.accountLeaderMobile);
+            SMSUtil.send(sendContent, supplier.accountLeaderMobile);
         }
         index(null);
     }
