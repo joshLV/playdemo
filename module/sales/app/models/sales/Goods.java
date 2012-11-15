@@ -32,6 +32,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 import play.Logger;
 import play.Play;
+import play.data.binding.As;
 import play.data.validation.InFuture;
 import play.data.validation.Max;
 import play.data.validation.MaxSize;
@@ -217,7 +218,7 @@ public class Goods extends Model {
      */
     @Column(name = "supplier_id")
     public Long supplierId;
-    
+
     /**
      * 供应商的GoodsId
      */
@@ -282,6 +283,14 @@ public class Goods extends Model {
     public Long incomeGoodsCount;
 
     //=======================================  时间字段 ==================================
+
+    /**
+     * 开始上架时间
+     */
+    @Column(name = "beigin_onsale_at")
+    @SolrField
+    @As(lang = {"*"}, value = {"yyyy-MM-dd HH:mm:ss"})
+    public Date beginOnSaleAt;
 
     /**
      * 最早上架时间
@@ -970,7 +979,7 @@ public class Goods extends Model {
         return super.create();
     }
 
-    public static void update(Long id, Goods goods, boolean noLevelPrices) {
+    public static void update(Long id, Goods goods) {
         models.sales.Goods updateGoods = models.sales.Goods.findById(id);
         if (updateGoods == null) {
             return;
@@ -979,6 +988,7 @@ public class Goods extends Model {
         updateGoods.name = StringUtils.trimToEmpty(goods.name);
         updateGoods.title = StringUtils.trimToEmpty(goods.title);
         updateGoods.no = goods.no;
+        updateGoods.beginOnSaleAt = goods.beginOnSaleAt;
         updateGoods.effectiveAt = goods.effectiveAt;
         updateGoods.expireAt = DateUtil.getEndOfDay(goods.expireAt);
         updateGoods.faceValue = goods.faceValue;
@@ -1053,10 +1063,6 @@ public class Goods extends Model {
         super._delete();
     }
 
-    public static void update(Long id, Goods goods) {
-        update(id, goods, false);
-    }
-
     /**
      * 根据商品分类和数量取出指定数量的商品.
      *
@@ -1064,10 +1070,11 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findTop(int limit) {
-        return find("status=? and deleted=? and isHideOnsale = false and expireAt > ? order by priority DESC,createdAt DESC",
+        Date nowDate = new Date();
+        return find("status=? and deleted=? and isHideOnsale = false and beginOnSaleAt <=? and expireAt > ? order by priority DESC,createdAt DESC",
                 GoodsStatus.ONSALE,
                 DeletedStatus.UN_DELETED,
-                new Date()).fetch(limit);
+                nowDate, nowDate).fetch(limit);
     }
 
     /**
@@ -1077,12 +1084,14 @@ public class Goods extends Model {
      * @return
      */
     public static long countOnSaleByTopCategory(long categoryId) {
+        Date nowDate = new Date();
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
-                "and g.isHideOnsale = false and g.expireAt > :now and g.id in (select g.id from g.categories c where c.parentCategory.id = :categoryId) ");
+                "and g.isHideOnsale = false and g.beginOnSaleAt <= :beginOnSaleAt and g.expireAt > :expireAt and g.id in (select g.id from g.categories c where c.parentCategory.id = :categoryId) ");
         q.setParameter("status", GoodsStatus.ONSALE);
         q.setParameter("deleted", DeletedStatus.UN_DELETED);
-        q.setParameter("now", new Date());
+        q.setParameter("beginOnSaleAt", nowDate);
+        q.setParameter("expireAt", nowDate);
         q.setParameter("categoryId", categoryId);
         return q.getResultList().size();
     }
@@ -1094,12 +1103,14 @@ public class Goods extends Model {
      * @return
      */
     public static long countOnSaleByCategory(long categoryId) {
+        Date nowDate = new Date();
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
-                "and g.isHideOnsale = false and g.expireAt > :now and g.id in (select g.id from g.categories c where c.id = :categoryId) ");
+                "and g.isHideOnsale = false and g.beginOnSaleAt <= :beginOnSaleAt and g.expireAt > :expireAt and g.id in (select g.id from g.categories c where c.id = :categoryId) ");
         q.setParameter("status", GoodsStatus.ONSALE);
         q.setParameter("deleted", DeletedStatus.UN_DELETED);
-        q.setParameter("now", new Date());
+        q.setParameter("beginOnSaleAt", nowDate);
+        q.setParameter("expireAt", nowDate);
         q.setParameter("categoryId", categoryId);
         return q.getResultList().size();
     }
@@ -1121,14 +1132,16 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findTopByCategory(long categoryId, int limit, boolean isRootCategory) {
+        Date nowDate = new Date();
         EntityManager entityManager = JPA.em();
         String categoryQueryCond = isRootCategory ? "c.parentCategory.id" : "c.id";
         Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
-                "and g.isHideOnsale = false and g.expireAt > :now and g.id in (select g.id from g.categories c where " + categoryQueryCond + " = :categoryId) " +
+                "and g.isHideOnsale = false and g.beginOnSaleAt <= :beginOnSaleAt and g.expireAt > :expireAt and g.id in (select g.id from g.categories c where " + categoryQueryCond + " = :categoryId) " +
                 "order by priority DESC,createdAt DESC");
         q.setParameter("status", GoodsStatus.ONSALE);
         q.setParameter("deleted", DeletedStatus.UN_DELETED);
-        q.setParameter("now", new Date());
+        q.setParameter("beginOnSaleAt", nowDate);
+        q.setParameter("expireAt", nowDate);
         q.setParameter("categoryId", categoryId);
         q.setMaxResults(limit);
         return q.getResultList();
@@ -1217,8 +1230,11 @@ public class Goods extends Model {
             goods.refresh();
             goods.status = status;
 
-            if (status == GoodsStatus.ONSALE && goods.firstOnSaleAt == null) {
-                goods.firstOnSaleAt = new Date();
+            Date onSaleDate = new Date();
+
+            if (status == GoodsStatus.ONSALE) {
+                if (goods.firstOnSaleAt == null) goods.firstOnSaleAt = onSaleDate;
+                if (goods.beginOnSaleAt == null) goods.beginOnSaleAt = onSaleDate;
             }
 
             goods.save();
@@ -1423,12 +1439,14 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findTopRecommend(int limit) {
+        Date nowDate = new Date();
         String sql = "select g from Goods g,GoodsStatistics s  where g.id =s.goodsId " +
-                " and g.status =:status and g.deleted =:deleted and g.expireAt >:expireAt and g.isHideOnsale is false and g.isLottery is false order by s.summaryCount desc";
+                " and g.status =:status and g.deleted =:deleted and g.beginOnSaleAt<= :beginOnSaleAt and g.expireAt >:expireAt and g.isHideOnsale is false and g.isLottery is false order by s.summaryCount desc";
         Query query = Goods.em().createQuery(sql);
         query.setParameter("status", GoodsStatus.ONSALE);
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
-        query.setParameter("expireAt", new Date());
+        query.setParameter("beginOnSaleAt", nowDate);
+        query.setParameter("expireAt", nowDate);
         query.setMaxResults(limit);
         return query.getResultList();
     }
@@ -1440,16 +1458,17 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findTopRecommendByGoods(int limit, Goods goods) {
+        Date nowDate = new Date();
         String sql = "select g from Goods g,GoodsStatistics s  where g.id =s.goodsId " +
                 " and g.status =:status and g.supplierId=:supplierId and g.deleted =:deleted and " +
-                " g.id <> :goodsId and g.expireAt >:expireAt and g.isLottery is false order by s.summaryCount desc";
+                " g.id <> :goodsId and g.beginOnSaleAt<= :beginOnSaleAt and g.expireAt >:expireAt and g.isLottery is false order by s.summaryCount desc";
         Query query = Goods.em().createQuery(sql);
         query.setParameter("status", GoodsStatus.ONSALE);
         query.setParameter("supplierId", goods.supplierId);
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
-
         query.setParameter("goodsId", goods.id);
-        query.setParameter("expireAt", new Date());
+        query.setParameter("beginOnSaleAt", nowDate);
+        query.setParameter("expireAt", nowDate);
         query.setMaxResults(limit);
         List<Goods> goodsList = query.getResultList();
         List<Goods> otherGoodsList = new ArrayList<>();
@@ -1521,9 +1540,10 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findNewGoods(int limit) {
+        Date nowDate = new Date();
         // 找出5倍需要的商品，然后手工过滤
-        List<Goods> allGoods = Goods.find("status = ? and deleted = ? and isHideOnsale = false and expireAt > ? order by createdAt DESC",
-                GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit * 5);
+        List<Goods> allGoods = Goods.find("status = ? and deleted = ? and isHideOnsale = false and beginOnSaleAt<=? and expireAt > ? order by createdAt DESC",
+                GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, nowDate, nowDate).fetch(limit * 5);
         Set<Long> supplierSet = new HashSet<>();
         List<Goods> goods = new ArrayList<>();
         for (Goods g : allGoods) {
@@ -1729,7 +1749,7 @@ public class Goods extends Model {
         goodsHistory.virtualSaleCount = this.virtualSaleCount;
         goodsHistory.exhibition = this.exhibition;
         goodsHistory.supplierDes = this.supplierDes;
-
+        goodsHistory.beginOnSaleAt = this.beginOnSaleAt;
         goodsHistory.limitNumber = this.limitNumber;
         goodsHistory.couponType = this.couponType;
         goodsHistory.imagePath = this.imagePath;
@@ -1917,11 +1937,13 @@ public class Goods extends Model {
                                         String orderBy, boolean isAsc, int pageNumber, int pageSize, boolean onlyStatistic, String[] facetFields) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        Date nowDate = new Date();
         final String statusCond = "goods.deleted_s:\"com.uhuila.common.constants.DeletedStatus:UN_DELETED\"" +
                 " AND goods.isHideOnsale_b:false" +
                 " AND goods.status_s:\"models.sales.GoodsStatus:ONSALE\"" +
                 " AND goods.realStocks_l:[1 TO " + Integer.MAX_VALUE + "]" +
-                " AND goods.expireAt_dt:[" + dateFormat.format(new Date()) + "T" + timeFormat.format(new Date()) + "Z TO 2512-05-24T05:55:36Z]";
+                " AND goods.expireAt_dt:[" + dateFormat.format(nowDate) + "T" + timeFormat.format(nowDate) + "Z TO 2512-05-24T05:55:36Z]" +
+                " AND goods.beginOnSaleAt_dt:[2011-05-24T05:55:36Z TO " + dateFormat.format(nowDate) + "T" + timeFormat.format(nowDate) + "Z]";
         StringBuilder queryStr = new StringBuilder();
         if (StringUtils.isNotBlank(q)) {
             queryStr.append(q + " AND ");
@@ -2117,17 +2139,18 @@ public class Goods extends Model {
     }
 
     private static Pattern imagePattern = Pattern.compile("(?x)(src|SRC|background|BACKGROUND)=('|\")(http://([\\w-]+\\.)+[\\w-]+(:[0-9]+)*(/[\\w-]+)*(/[\\w-]+\\.(jpg|JPG|png|PNG|gif|GIF)))('|\")");
+
     public static String replaceWithOurImage(String html) {
         if (Play.runingInTestMode()) {
             return html;
         }
         Matcher matcher = imagePattern.matcher(html);
         Set<String> urls = new HashSet<>();
-        while (matcher.find()){
+        while (matcher.find()) {
             urls.add(matcher.group(3));
         }
-        for(String url : urls){
-            InputStream is =  WS.url(url).get().getStream();
+        for (String url : urls) {
+            InputStream is = WS.url(url).get().getStream();
             try {
                 File file = File.createTempFile("image_replace", "." + FilenameUtils.getExtension(url));
                 IO.write(is, file);
@@ -2136,10 +2159,10 @@ public class Goods extends Model {
                 //不加水印
                 path = PathUtil.addImgPathMark(path, "nw");
                 path = PathUtil.signImgPath(path);
-                String ourUrl =  "http://" + IMAGE_SERVER + "/p" + path;
+                String ourUrl = "http://" + IMAGE_SERVER + "/p" + path;
                 html = html.replaceAll(url, ourUrl);
             } catch (IOException e) {
-                Logger.error("download file("+url+") error:", e);
+                Logger.error("download file(" + url + ") error:", e);
             }
         }
 

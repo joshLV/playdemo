@@ -58,6 +58,7 @@
     #{layout_operate.nameField name:'goods.title', value:goods?.title,note:'(包含商家名称和面值)', required:true, length:30/}
     #{layout_operate.dateScopeField name:'goods.effective', begin:'goods.effectiveAt',end:'goods.expireAt',
     beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), required:true/}
+    #{layout_operate.dateTimeField name:'goods.beginOnSaleAt',value:goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')/}
     #{layout_operate.textField name:'goods.faceValue', value:goods?.faceValue?:"0", note:'元', required:true/}
     #{layout_operate.textField name:'goods.originalPrice', value:goods?.originalPrice?:"0",note:'元', required:true/}
     #{layout_operate.textField name:'goods.salePrice', value:goods?.salePrice?:"0", note:'元', required:true/}
@@ -175,7 +176,7 @@
         <input class="btn btn-primary" id="preview" type="submit" value="预览"/>
     #{/if}
     #{if "edit".equals(action)}
-        #{vx.cancelButton url:'/goods', class:'btn btn-primary'/}
+        #{vx.cancelButton url:"/goods?page="+(page?:1), class:'btn btn-primary'/}
     #{/if}
     <input type="hidden" id="status" name="goods.status" value="${goods?.getStatus()?:'OFFSALE'}"/>
 </div>

@@ -148,7 +148,6 @@ public class SupplierGoods extends Controller {
      */
     @ActiveNavigation("goods_add")
     public static void create(@Valid models.sales.Goods goods, @Required File imagePath, BigDecimal[] levelPrices) {
-        System.out.println("goods------");
         //TODO 仅仅在测试环境中会产生一个validation.invalid的错误，以下这段是为了让测试用例通过增加的代码
         if (Play.runingInTestMode() && validation.errorsMap().containsKey("imagePath")) {
             for (String key : validation.errorsMap().keySet()) {
@@ -160,9 +159,6 @@ public class SupplierGoods extends Controller {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
 
         checkImageFile(imagePath);
-
-//        goods.setLevelPrices(levelPrices);
-
         checkExpireAt(goods);
         checkOriginalPrice(goods);
         for (String key : validation.errorsMap().keySet()) {
@@ -171,7 +167,6 @@ public class SupplierGoods extends Controller {
         if (Validation.hasErrors()) {
             renderInit(goods);
             boolean selectAll = false;
-
             render("SupplierGoods/add.html", selectAll);
         }
         //添加商品处理
@@ -184,7 +179,6 @@ public class SupplierGoods extends Controller {
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
             preview(null, goods, imagePath);
         }
-
 
         goods.salePrice = BigDecimal.ZERO;
         goods.create();
@@ -295,12 +289,9 @@ public class SupplierGoods extends Controller {
             goods.shops = null;
         }
         checkImageFile(imagePath);
-
         checkExpireAt(goods);
         checkOriginalPrice(goods);
-        for (String key : validation.errorsMap().keySet()) {
-            warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
-        }
+
         if (Validation.hasErrors()) {
             renderInit(goods);
             renderArgs.put("imageLargePath", imageLargePath);
@@ -328,7 +319,7 @@ public class SupplierGoods extends Controller {
         }
 
         goods.updatedBy = supplierUser;
-        Goods.update(id, goods, true);
+        Goods.update(id, goods);
         Goods goodsItem = models.sales.Goods.findById(id);
         String createdFrom = "Sp";
         goodsItem.createHistory(createdFrom);

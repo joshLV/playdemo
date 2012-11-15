@@ -9,8 +9,6 @@ import org.junit.Test;
 import play.test.UnitTest;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -66,7 +64,7 @@ public class GoodsUnPublishedPlatformTest extends UnitTest {
         publishedPlatforms.add(GoodsPublishedPlatformType.TAOBAO);
         goods.setPublishedPlatforms(publishedPlatforms);
 
-        Goods.update(goods.id, goods, false);
+        Goods.update(goods.id, goods);
 
         Goods target = Goods.findById(goods.id);
         assertEquals(2, target.getPublishedPlatforms().size());
