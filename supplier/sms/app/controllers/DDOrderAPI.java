@@ -17,6 +17,7 @@ import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
 import models.resale.Resaler;
 import models.resale.ResalerStatus;
+import models.sales.*;
 import models.sales.Goods;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
@@ -37,7 +38,7 @@ public class DDOrderAPI extends Controller {
     public static final String DATE_FORMAT = "yyy-MM-dd HH:mm:ss";
 
     public static void order() {
-//        System.out.println("[DDOrderAPI] begin ");
+        Logger.info("[DDOrderAPI] begin ");
         //取得参数信息 必填信息
         SortedMap<String, String> params = DDAPIUtil.filterPlayParameter(request.params.all());
         String id = StringUtils.trimToEmpty(params.get("id")); // 一百券的商品ID
@@ -49,7 +50,7 @@ public class DDOrderAPI extends Controller {
         String kx_order_id = StringUtils.trimToEmpty(params.get("kx_order_id"));
         BigDecimal amount = BigDecimal.ZERO;
         if (StringUtils.isNotBlank(params.get("amount"))) {
-           amount = new BigDecimal(StringUtils.trimToEmpty(params.get("amount")));
+            amount = new BigDecimal(StringUtils.trimToEmpty(params.get("amount")));
         }
         String sign = StringUtils.trimToEmpty(params.get("sign")).toLowerCase();
         ErrorInfo errorInfo = new ErrorInfo();
@@ -103,7 +104,7 @@ public class DDOrderAPI extends Controller {
                 JPA.em().flush();
             } catch (Exception e) {
                 // 如果写入失败，说明 已经存在一个相同的orderCode 的订单，一百券订单产生了则，直接返回，否则，继续创建一百券订单
-                isExisted= (outerOrder.ybqOrder != null);
+                isExisted = (outerOrder.ybqOrder != null);
             }
         }
 
@@ -111,7 +112,7 @@ public class DDOrderAPI extends Controller {
         if (isExisted) {
             order = Order.findOneByUser(outerOrder.ybqOrder.orderNumber, resalerId, AccountType.RESALER);
             if (order != null) {
-//                System.out.println("[DDOrderAPI] order has existed,and render xml");
+                Logger.info("[DDOrderAPI] order has existed,and render xml");
                 List<ECoupon> eCouponList = ECoupon.findByOrder(order);
                 render(order, id, kx_order_id, eCouponList);
             }
@@ -127,18 +128,17 @@ public class DDOrderAPI extends Controller {
         for (String goodsItem : arrGoods) {
             arrGoodsItem = goodsItem.split(":");
             if (arrGoodsItem != null) {
-                Goods goods = Goods.findById(Long.parseLong(arrGoodsItem[0]));
+                Goods goods = GoodsDeployRelation.getGoods(OuterOrderPartner.DD, Long.parseLong(arrGoodsItem[0]));
                 BigDecimal resalerPrice = goods.getResalePrice();
                 ybqPrice = ybqPrice.add(resalerPrice.multiply(new BigDecimal(arrGoodsItem[1])));
                 if (ybqPrice.compareTo(amount) != 0) {
                     resalerPrice = amount;
-                    Logger.error("当当订单金额不一致！当当amount="+amount+",ybqPrice="+ybqPrice);
+                    Logger.error("当当订单金额不一致！当当amount=" + amount + ",ybqPrice=" + ybqPrice);
                 }
                 try {
                     //创建一百券订单Items
                     order.addOrderItem(goods, Integer.parseInt(arrGoodsItem[1]), user_mobile, resalerPrice, resalerPrice);
                 } catch (NotEnoughInventoryException e) {
-//                    System.out.println("inventory not enough");
                     errorInfo.errorCode = ErrorCode.INVENTORY_NOT_ENOUGH;
                     errorInfo.errorDes = "库存不足！";
                     render(errorInfo);
@@ -163,7 +163,7 @@ public class DDOrderAPI extends Controller {
         outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
         outerOrder.save();
         List<ECoupon> eCouponList = ECoupon.findByOrder(order);
-//        System.out.println("\n [DDOrderAPI] end ");
+        Logger.info("\n [DDOrderAPI] end ");
         render(order, id, kx_order_id, eCouponList);
     }
 }

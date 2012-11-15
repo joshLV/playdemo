@@ -4,7 +4,6 @@ import factory.FactoryBoy;
 import models.accounts.Account;
 import models.accounts.AccountCreditable;
 import models.accounts.AccountType;
-import models.consumer.UserInfo;
 import models.dangdang.ErrorCode;
 import models.dangdang.ErrorInfo;
 import models.order.ECoupon;
@@ -12,8 +11,7 @@ import models.order.Order;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
-import models.sales.Goods;
-import models.sales.GoodsLevelPrice;
+import models.sales.GoodsDeployRelation;
 import models.sales.MaterialType;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Before;
@@ -36,13 +34,13 @@ import java.util.TreeMap;
  * Time: 下午2:23
  */
 public class DDOrderApiTest extends FunctionalTest {
-    Goods goods;
+    GoodsDeployRelation deployRelation;
+
 
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
-
-        FactoryBoy.create(UserInfo.class);
+        deployRelation = FactoryBoy.create(GoodsDeployRelation.class);
     }
 
     @Test
@@ -74,7 +72,7 @@ public class DDOrderApiTest extends FunctionalTest {
     @Test
     public void 测试创建当当订单_验证失败() {
         Map<String, String> params = new HashMap<>();
-        goods = FactoryBoy.create(Goods.class);
+        Goods goods = deployRelation.goods;
         params.put("id", "abcde");
         params.put("deal_type_name", "code_mine");
         params.put("user_id", "asdf");
@@ -100,13 +98,11 @@ public class DDOrderApiTest extends FunctionalTest {
 
     @Test
     public void 测试创建订单() {
-        goods = FactoryBoy.create(Goods.class);
+        Goods goods = deployRelation.goods;
         goods.materialType = MaterialType.ELECTRONIC;
         goods.save();
         Resaler resaler = FactoryBoy.create(Resaler.class);
-        GoodsLevelPrice goodsLevelPrice = FactoryBoy.create(GoodsLevelPrice.class);
-        goodsLevelPrice.goods = goods;
-        goodsLevelPrice.save();
+
         Account account = FactoryBoy.create(Account.class);
         account.uid = resaler.id;
         account.accountType = AccountType.RESALER;
@@ -120,14 +116,14 @@ public class DDOrderApiTest extends FunctionalTest {
         params.put("commission_used", "0");
         params.put("kx_order_id", "12345678");
         params.put("format", "xml");
-        params.put("all_amount", "10.0");
+        params.put("all_amount", "5.0");
         params.put("deal_type_name", "code_mine");
         params.put("ctime", "1284863557");
         params.put("id", "abcde");
-        params.put("amount", "10.0");
+        params.put("amount", "5.0");
         params.put("user_mobile", "13764081569");
         params.put("user_id", resaler.id.toString());
-        params.put("options", goods.id + ":" + "1");
+        params.put("options", deployRelation.linkId + ":" + "1");
         String sign = getSign(params);
 
         params.put("sign", sign);
@@ -142,7 +138,6 @@ public class DDOrderApiTest extends FunctionalTest {
         assertNotNull(order);
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
                 OuterOrderPartner.DD, kx_order_id).first();
-//        System.out.println(outerOrder + "outerOrder");
         assertEquals(order.orderNumber, outerOrder.ybqOrder.orderNumber);
         List<ECoupon> eCouponList = ECoupon.findByOrder(order);
         assertEquals(1, eCouponList.size());

@@ -1,6 +1,6 @@
 <data>
-    <spgid><![CDATA[${goods?.id}]]></spgid>
-    <source_product_ids><![CDATA[${goods?.id}]]></source_product_ids>
+    <spgid><![CDATA[${goodsMappingId}]]></spgid>
+    <source_product_ids><![CDATA[${goodsMappingId}]]></source_product_ids>
     <team_title><![CDATA[${goods?.title?.raw()}]]></team_title>
     <team_summary><![CDATA[${goods?.name?.raw()}]]></team_summary>
     <team_type><![CDATA[1]]></team_type>
@@ -20,9 +20,9 @@
                 <vendor_info>
                     <vendor_branch_name><![CDATA[${shop?.name?.raw()}]]></vendor_branch_name>
                     <address><![CDATA[${shop?.address?.raw()}]]></address>
-                    <city><![CDATA[${shop?.getAreaName(shop?.areaId,2)?.raw()}]]></city>
-                    <town><![CDATA[${shop?.getAreaName(shop?.areaId,1)?.raw()}]]></town>
-                    <zone><![CDATA[${shop?.getAreaName(shop?.areaId,0)?.raw()}]]></zone>
+                    <city><![CDATA[${shop?.getAreaName(2)?.raw()}]]></city>
+                    <town><![CDATA[${shop?.getAreaName(1)?.raw()}]]></town>
+                    <zone><![CDATA[${shop?.getAreaName(0)?.raw()}]]></zone>
                     <map_url>
                         <![CDATA[]]></map_url>
                     <tel><![CDATA[${shop?.phone}]]></tel>
@@ -59,11 +59,4 @@
         <![CDATA[${goods?.prompt?.raw()}${goods?.details?.raw()}]]></detail>
     <display_status><![CDATA[0]]></display_status>
     <sort_order><![CDATA[]]></sort_order>
-    <sms_help><![CDATA[${goods?.title?.raw()}]]></sms_help>
-    %{ title= "【" + (goods.brand == null ? "一百券" : goods.brand.name) + "】" + goods.name + "-优惠券,优惠券网,代金券" +
-    (goods.keywords == null ? "" : ("【" + goods.keywords + "】"))}%
-    <seo_title><![CDATA[${title?.raw()}]]></seo_title>
-    <seo_keyword><![CDATA[${goods?.keywords?.raw()}]]></seo_keyword>
-    <seo_description><![CDATA[${title?.raw()}]]></seo_description>
-    <special_tips><![CDATA[]]></special_tips>
 </data>

@@ -161,24 +161,26 @@ public class BrowsedGoods extends Model {
 
     /**
      * 首页”猜你喜欢“改为显示：最近n天所有用户浏览量最多的n个商品
-     *
+     * <p/>
      * todo 库存没有做判断，因为数据库中没有实际库存字段了
      *
      * @param limit
      * @return
      */
     public static List<BrowsedGoods> findTop(int limit, int days) {
+        Date nowDate = new Date();
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 0 - days);
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select new models.sales.BrowsedGoods(b.goods,sum(b.visitorCount) ) from BrowsedGoods b where b.updatedAt >= :dateLimit " +
-                "and b.goods.deleted=:deleted and b.goods.isHideOnsale=:isHideOnsale and b.goods.status=:status and b.goods.expireAt>=:expireAt " +
+                "and b.goods.deleted=:deleted and b.goods.isHideOnsale=:isHideOnsale and b.goods.status=:status and b.goods.expireAt>=:expireAt and b.goods.beginOnSaleAt<= :beginOnSaleAt " +
                 "group by b.goods order by sum(b.visitorCount) desc");
         q.setParameter("dateLimit", cal.getTime());
         q.setParameter("deleted", DeletedStatus.UN_DELETED);
         q.setParameter("isHideOnsale", Boolean.FALSE);
         q.setParameter("status", GoodsStatus.ONSALE);
         q.setParameter("expireAt", DateUtil.getBeginOfDay());
+        q.setParameter("beginOnSaleAt", nowDate);
         q.setMaxResults(limit);
         return q.getResultList();
     }
