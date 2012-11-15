@@ -9,11 +9,10 @@ import models.dangdang.ErrorCode;
 import models.dangdang.HttpProxy;
 import models.dangdang.Response;
 import models.order.ECoupon;
-import models.sales.Goods;
+import models.sales.GoodsDeployRelation;
 import models.sales.GoodsHistory;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.test.FunctionalTest;
 
@@ -29,11 +28,13 @@ import java.io.ByteArrayInputStream;
 public class DDAPIUtilTest extends FunctionalTest {
     GoodsHistory goodsHistory;
     Goods goods;
+    GoodsDeployRelation deployRelation;
 
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
-        goods = FactoryBoy.create(Goods.class);
+        deployRelation = FactoryBoy.create(GoodsDeployRelation.class);
+        goods = deployRelation.goods;
         goodsHistory = FactoryBoy.create(GoodsHistory.class);
     }
 
@@ -53,6 +54,7 @@ public class DDAPIUtilTest extends FunctionalTest {
             fail();
         }
     }
+
     @Test
     public void 测试未退款的券验证券状态的当当接口() throws Exception {
         ECoupon ecoupon = FactoryBoy.create(ECoupon.class);

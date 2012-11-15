@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.HashSet;
 
 import static util.DateHelper.afterDays;
+import static util.DateHelper.beforeDays;
 
 public class GoodsFactory extends ModelFactory<Goods> {
 
@@ -32,6 +33,8 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.isAllShop = false;
         goods.supplierId = supplier.id;
         goods.salePrice = new BigDecimal("8.5");
+        goods.beginOnSaleAt= beforeDays(30);
+        goods.effectiveAt= beforeDays(30);
         goods.expireAt = afterDays(30);
         goods.faceValue = new BigDecimal("10.00");
         goods.materialType = MaterialType.ELECTRONIC;

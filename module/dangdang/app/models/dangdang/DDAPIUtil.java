@@ -2,18 +2,23 @@ package models.dangdang;
 
 
 import models.accounts.AccountType;
-import models.order.*;
+import models.order.ECoupon;
+import models.order.ECouponStatus;
+import models.order.Order;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.resale.ResalerStatus;
 import models.sales.Goods;
+import models.sales.GoodsDeployRelation;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.dom4j.Element;
 import play.Logger;
 import play.Play;
+import play.libs.WS;
 
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -48,11 +53,13 @@ public class DDAPIUtil {
      * @return
      */
     public static void syncSellCount(Goods goods) throws DDAPIInvokeException {
+        //根据商品对应的GoodsDeployRelation的linkId
+        GoodsDeployRelation deployRelation = GoodsDeployRelation.getDeployRelationGoods(OuterOrderPartner.DD, goods);
         String request = String.format("<data><row><spgid><![CDATA[%s]]></spgid><sellcount><![CDATA[%s]]></sellcount" +
-                "></row></data>", goods.id, goods.getRealSaleCount());
+                "></row></data>", deployRelation.linkId, goods.getRealSaleCount());
         Response response = DDAPIUtil.access(SYNC_URL, request, "push_team_stock");
         if (!response.success()) {
-            throw new DDAPIInvokeException("\ninvoke syncSellCount error(goodsId:" + goods.id + "):" +
+            throw new DDAPIInvokeException("\ninvoke syncSellCount error(goodsId:" + deployRelation.linkId + "):" +
                     "error_code:" + response.errorCode.getValue() + ",desc:" + response.desc);
         }
         Logger.info("[DangDang API] invoke syncSellCount success!");
@@ -68,7 +75,7 @@ public class DDAPIUtil {
     public static boolean isRefund(ECoupon eCoupon) throws DDAPIInvokeException {
         DDOrderItem ddOrderOrderItem = DDOrderItem.findByOrder(eCoupon.orderItems);
         if (ddOrderOrderItem == null) {
-            // Logger.info("[DangDang isRefund API] order item not found (eCouponSn:" + eCoupon.eCouponSn + ")!");
+            Logger.info("[DangDang isRefund API] order item not found (eCouponSn:" + eCoupon.eCouponSn + ")!");
             return false;
         }
         String data = String.format("<data><row><ddgid><![CDATA[%s]]></ddgid><type><![CDATA[%s]]></type><code><![CDATA[%s]]></code></row></data>",
@@ -155,9 +162,7 @@ public class DDAPIUtil {
         //取得data节点中的数据信息
         Map<String, String> dataMap = request.params;
         String orderId = dataMap.get("order_id");
-        Long ddgid = Long.parseLong(dataMap.get("ddgid"));
         Long spgid = Long.parseLong(dataMap.get("spgid"));
-        String userCode = dataMap.get("user_code");
         String receiveMobile = dataMap.get("receiver_mobile_tel");
         String consumeId = dataMap.get("consume_id");
 
@@ -188,7 +193,8 @@ public class DDAPIUtil {
             return response;
         }
 
-        Goods goods = Goods.findById(spgid);
+        //从对应商品关系表中取得商品
+        Goods goods = GoodsDeployRelation.getGoods(OuterOrderPartner.DD, spgid);
         ECoupon coupon = ECoupon.find("order=? and eCouponSn=? and goods=?", ybqOrder, consumeId, goods).first();
         if (coupon == null) {
             response.errorCode = ErrorCode.COUPON_SN_NOT_EXISTED;
@@ -286,7 +292,7 @@ public class DDAPIUtil {
             if ("body".equals(entry.getKey()) || "sign".equals(entry.getKey())) {
                 continue;
             }
-            signStr.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue())).append("&");
+            signStr.append(entry.getKey()).append("=").append(WS.encode(entry.getValue())).append("&");
         }
 
         signStr.append("sn=").append(SECRET_KEY);
@@ -318,16 +324,16 @@ public class DDAPIUtil {
     /**
      * 发布商品
      *
-     * @param goodsId      商品ID
+     * @param linkId      商品对应的ID
      * @param requestItems
      * @throws DDAPIInvokeException
      */
-    public static boolean pushGoods(Long goodsId, String requestItems) throws DDAPIInvokeException {
+    public static boolean pushGoods(Long linkId, String requestItems) throws DDAPIInvokeException {
         Response response = DDAPIUtil.access(PUSH_PARTNER_TEAMS, requestItems, "push_partner_teams");
         if (!response.success()) {
-            throw new DDAPIInvokeException("\n invoke push goods error(goodsId:" + goodsId + "):" +
+            throw new DDAPIInvokeException("\n invoke push goods error(linkId:" + linkId + "):" +
                     "error_code:" + response.errorCode.getValue() + ",desc:" + response.desc);
         }
-        return response.errorCode == ErrorCode.SUCCESS;
+        return response.errorCode != ErrorCode.SUCCESS;
     }
 }

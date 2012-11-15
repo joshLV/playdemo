@@ -8,6 +8,7 @@ import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.sales.Category;
 import models.sales.Goods;
+import models.sales.GoodsDeployRelation;
 import play.Logger;
 import play.data.binding.As;
 import play.mvc.Controller;
@@ -39,7 +40,7 @@ public class DDAPIPushGoods extends Controller {
             error("user is not dangdang resaler");
         }
         String failGoods = "";
-        boolean pushFlag = false;
+        boolean pushFlag = true;
         for (Long goodsId : goodsIds) {
             Goods goods = Goods.findOnSale(goodsId);
             ResalerFav resalerFav = ResalerFav.find("byGoodsAndResaler", goods, user).first();
@@ -65,16 +66,20 @@ public class DDAPIPushGoods extends Controller {
             }
             goodsArgs.put("categoryId", categoryId);
             goodsArgs.put("goods", goods);
+
+            GoodsDeployRelation goodsMapping = GoodsDeployRelation.generate(goods, OuterOrderPartner.DD);
+
+            goodsArgs.put("goodsMappingId", goodsMapping.linkId);
             Template template = TemplateLoader.load("DDPushGoods/pushGoods.xml");
+
             String requestParams = template.render(goodsArgs);
             try {
-                pushFlag = DDAPIUtil.pushGoods(goodsId, requestParams);
+                pushFlag = DDAPIUtil.pushGoods(goodsMapping.linkId, requestParams);
             } catch (DDAPIInvokeException e) {
-                pushFlag = false;
                 Logger.info("[DDAPIPushGoods API] invoke push goods fail! goodsId=" + goodsId);
             }
-            if (!pushFlag) failGoods += "商品ID=" + goodsId + ",";
-            if (pushFlag) {
+            if (pushFlag) failGoods += "商品ID=" + goodsId + ",";
+            if (!pushFlag) {
                 resalerFav.partner = OuterOrderPartner.DD;
                 resalerFav.save();
                 Logger.info("[DDAPIPushGoods API] invoke push goods success!");

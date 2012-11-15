@@ -205,7 +205,7 @@ select:'condition_status',value:condition?.status/}
         #{else}
             <th width="50px" class="rank"><a class="fn-rank" data-rank="00000002000">&{'goods.virtualBaseSaleCount'}</a>
             </th>#{/else}
-
+         <th width="80px" >&{'goods.beginOnSaleAt'}</th>
         #{if desc.equals("00000000100") }
             <th width="80px" class="rank rank-asc"><a class="fn-rank"
                                                       data-rank="00000000200">&{'goods.firstOnSaleAt'}</a></th>#{/if}
@@ -275,6 +275,7 @@ select:'condition_status',value:condition?.status/}
             <td class="amount">${goods?.salePrice?.formatCurrency('CNY')}</td>
             <td class="amount">${goods?.cumulativeStocks}</td>
             <td class="amount">${goods?.virtualBaseSaleCount}</td>
+            <td>${goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
             <td>${goods?.firstOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
             <td>${goods?.updatedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
             <td>&{'goods.'+goods?.materialType}</td>

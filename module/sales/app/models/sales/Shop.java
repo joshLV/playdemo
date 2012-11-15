@@ -214,12 +214,17 @@ public class Shop extends Model {
         return areaName;
     }
 
-    public String getAreaName(String areaId, int flag) {
+    public String getAreaName(int flag) {
         String areaName = "";
-        Area area = Area.find("id=?", areaId).first();
-        Area townArea = Area.find("id=?", area.parent.id).first();
-        Area cityArea = Area.find("id=?", townArea.parent.id).first();
-        if (area == null) return areaName;
+        if (StringUtils.isEmpty(areaId)) {
+            return "";
+        }
+        Area area = Area.findById(areaId);
+        if (area == null || area.parent == null) return "";
+        Area townArea = Area.findById(area.parent.id);
+        if (townArea == null || townArea.parent == null) return "";
+        Area cityArea = Area.findById(townArea.parent.id);
+        if (cityArea == null || cityArea.parent == null) return "";
         switch (flag) {
             //商圈名称
             case 0:

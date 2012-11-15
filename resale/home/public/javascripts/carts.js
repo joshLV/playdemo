@@ -88,7 +88,6 @@ $(
         $("a.delete_gift").click(function(){  
             var goods_id = $(this).attr("name");
             var phone = $("phone_" + goods_id).val();
-            alert(phone);
             $.ajax({
                 type:'DELETE',
                 url:'/carts/' + goods_id + "-" + phone,

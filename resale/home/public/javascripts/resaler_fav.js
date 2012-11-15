@@ -160,7 +160,8 @@ $(
             return false;
         });
 
-        $("#batch_add_dd").click(function () {
+        $("#batch_add_dd").click(function (ev) {
+            ev.preventDefault();
             $("#error-info").html("");
             var checked = "";
             $("input[id^=check_goods_]").each(function () {
@@ -175,25 +176,26 @@ $(
                 url:'/dangdang-batch-add?goodsIds=' + checked,
                 success:function (data) {
                     console.log(data.error == 'false');
-                    if (data.error == 'false') {
+                    if (data.error == 'true') {
                         $("#error-info").html(data.info + "的商品发布失败或当当已存在该商品！");
                     } else {
-                        $("#error-info").html("商品ID=" + goodsId + ",发布成功！");
+                        $("#error-info").html("商品ID=" + checked + "等,发布成功！");
                     }
 
                 }});
             return false;
         });
 
-        $("a.push_dd").click(function () {
+        $("a.push_dd").click(function (ev) {
+            ev.preventDefault();
             $("#error-info").html("");
             var goodsId = $(this).attr("goodsId");
             $.ajax({
                 type:'GET',
                 url:'/dangdang-batch-add?goodsIds=' + goodsId,
                 success:function (data) {
-                    if (data.error == 'false') {
-                        $("#list_err_" + goodsId).html( "当当已存在该商品或"+data.info +"的商品发布失败！");
+                    if (data.error == 'true') {
+                        $("#list_err_" + goodsId).html("当当已存在该商品或" + data.info + "的商品发布失败！");
                     } else {
                         $("#list_err_" + goodsId).html("商品ID=" + goodsId + ",发布成功！");
                     }

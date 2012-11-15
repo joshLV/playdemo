@@ -60,7 +60,6 @@ GET     /account_seq                            ResalerAccounts.index
 
 GET     /top-oauth-callback                     TaobaoOauthCallback.index
 
-GET     /dangdang-add                           DDAPIPushGoods.add
 GET     /dangdang-batch-add                     DDAPIPushGoods.batchAdd
 
 GET     /top-add                                TaobaoAPIClient.add
