@@ -9,6 +9,7 @@ import org.junit.Test;
 import play.modules.paginate.ModelPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
+import factory.FactoryBoy;
 
 /**
  * 公告单元测试.
@@ -18,11 +19,14 @@ import play.test.UnitTest;
  * Time: 3:48 PM
  */
 public class TopicUnitTest extends UnitTest {
+    Topic t;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        Fixtures.delete(Topic.class);
-        Fixtures.loadModels("fixture/topics.yml");
+        FactoryBoy.deleteAll();
+        t = FactoryBoy.create(Topic.class);
+
     }
 
     @Test
@@ -30,7 +34,6 @@ public class TopicUnitTest extends UnitTest {
         Topic topic = new Topic();
         topic.setContent("  ");
         assertEquals("", topic.getContent());
-
         topic.setContent("<br />");
         assertEquals("", topic.getContent());
     }
@@ -47,12 +50,8 @@ public class TopicUnitTest extends UnitTest {
 
     @Test
     public void testDelete() {
-        long id = (Long) Fixtures.idCache.get("models.cms.Topic-Test");
-
-        Topic.delete(id);
-
-        Topic deletedTopic = Topic.findById(id);
-
+        Topic.delete(t.id);
+        Topic deletedTopic = Topic.findById(t.id);
         assertNotNull(deletedTopic);
         assertEquals(DeletedStatus.DELETED, deletedTopic.deleted);
     }
