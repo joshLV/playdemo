@@ -10,8 +10,6 @@ import play.modules.paginate.ModelPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import java.util.List;
-
 /**
  * <p/>
  * User: yanjy

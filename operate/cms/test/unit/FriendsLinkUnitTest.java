@@ -1,13 +1,13 @@
 package unit;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.constants.PlatformType;
-import play.test.Fixtures;
-import play.test.UnitTest;
+import factory.FactoryBoy;
+import factory.callback.SequenceCallback;
+import models.cms.FriendsLink;
+import models.cms.LinkStatus;
 import org.junit.Before;
 import org.junit.Test;
-import models.cms.FriendsLink;
 import play.modules.paginate.ModelPaginator;
+import play.test.UnitTest;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,45 +17,66 @@ import play.modules.paginate.ModelPaginator;
  * To change this template use File | Settings | File Templates.
  */
 public class FriendsLinkUnitTest extends UnitTest {
+    FriendsLink friendsLink;
 
     @Before
-    public void setup(){
-        Fixtures.delete(FriendsLink.class);
-        Fixtures.loadModels("fixture/FriendsLink.yml");
+    public void setup() {
+        FactoryBoy.deleteAll();
+        friendsLink = FactoryBoy.create(FriendsLink.class);
     }
 
     @Test
-    public void testGetPage(){
+    public void testGetPage() {
+        FactoryBoy.batchCreate(5, FriendsLink.class,
+                new SequenceCallback<FriendsLink>() {
+                    @Override
+                    public void sequence(FriendsLink target, int seq) {
+                        target.content = "conten_" + seq;
+
+                    }
+
+                });
         ModelPaginator page = FriendsLink.getPage(1, 15);
-        assertEquals(3, page.size());
+        assertEquals(6, page.size());
     }
 
     @Test
-    public void testUpdate(){
-        long id1 = (Long) Fixtures.idCache.get("models.cms.FriendsLink-Link1");
-        long id2 = (Long) Fixtures.idCache.get("models.cms.FriendsLink-Link2");
-        FriendsLink link2 = FriendsLink.findById(id2);
-        // 将Link2 的内容更新到 link1
-        FriendsLink.update(id1,link2);
+    public void testUpdate() {
+        assertEquals(LinkStatus.OPEN, friendsLink.status);
 
-        FriendsLink updatedLink1 = FriendsLink.findById(id1);
-        assertEquals("link02",updatedLink1.linkName);
-        assertEquals("www.yibaiquan.com",updatedLink1.link);
-        assertEquals("Jim",updatedLink1.userName);
-        assertEquals("This is yibaiquan link",updatedLink1.content);
+        friendsLink.linkName = "link01";
+        friendsLink.link = "www.uhuila.com";
+        friendsLink.content = "This is uhuila link";
+        friendsLink.userName = "uhuila";
+        friendsLink.status = LinkStatus.FORBID;
+        friendsLink.save();
+        //内容更新
+        FriendsLink.update(friendsLink.id, friendsLink);
+        friendsLink.refresh();
+        friendsLink.status = LinkStatus.FORBID;
+        assertEquals("link01", friendsLink.linkName);
+        assertEquals("www.uhuila.com", friendsLink.link);
+        assertEquals("uhuila", friendsLink.userName);
+        assertEquals("This is uhuila link", friendsLink.content);
     }
 
     @Test
-    public void testIsExist(){
-
-        long id1 = (Long) Fixtures.idCache.get("models.cms.FriendsLink-Link1");
-        long id3 = (Long) Fixtures.idCache.get("models.cms.FriendsLink-Link3");
+    public void testIsExist() {
         String validLink = "baidu";
-        assertEquals("", FriendsLink.isExisted(id1,validLink));
-        String existLink = "www.baidu.com";
-        assertEquals("注意该URL已经存在！",FriendsLink.isExisted(id3,existLink));
-        String forbidLink = "www.uhuila.com";
-        assertEquals("注意该URL已经禁止！",FriendsLink.isExisted(id1,forbidLink));
+        assertEquals("", FriendsLink.isExisted(friendsLink.id, validLink));
+
+        friendsLink.link = "www.baidu.com";
+        friendsLink.save();
+
+        final FriendsLink f1 = FactoryBoy.create(FriendsLink.class, "SAVE");
+        assertEquals("注意该URL已经存在！", FriendsLink.isExisted(f1.id, f1.link));
+
+        friendsLink.link = "www.uhuila.com";
+        friendsLink.status = LinkStatus.FORBID;
+        friendsLink.save();
+        final FriendsLink f2 = FactoryBoy.create(FriendsLink.class, "FORBID");
+
+        assertEquals("注意该URL已经禁止！", FriendsLink.isExisted(f2.id, f2.link));
 
     }
 }

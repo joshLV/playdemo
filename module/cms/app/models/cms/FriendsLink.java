@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO.
  * <p/>
  * User: yanjy
  * Date: 12-7-13
@@ -50,7 +49,9 @@ public class FriendsLink extends Model {
     @Match(value = "[1-9][0-9]{4,}")
     public String qq;
 
+    @Enumerated(EnumType.STRING)
     public LinkStatus status;
+
     @Enumerated(EnumType.STRING)
     public DeletedStatus deleted;
 
