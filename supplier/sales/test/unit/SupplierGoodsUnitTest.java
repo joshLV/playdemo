@@ -1,21 +1,17 @@
 package unit;
+import com.uhuila.common.constants.DeletedStatus;
+import factory.FactoryBoy;
+import models.sales.Goods;
+import models.sales.GoodsStatus;
+import org.junit.Before;
+import org.junit.Test;
+import play.test.UnitTest;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
-import models.sales.Goods;
-import models.sales.GoodsStatus;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import play.test.UnitTest;
-
-import com.uhuila.common.constants.DeletedStatus;
-
-import factory.FactoryBoy;
-
-
-public class GoodsUnitTest extends UnitTest {
+public class SupplierGoodsUnitTest extends UnitTest {
 	
 	@Before
 	public void setUp() {
