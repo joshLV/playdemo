@@ -205,6 +205,7 @@ public class Goods extends Model {
     @MaxSize(600)
     @SolrField
     public String name;
+
     /**
      * 商品标题（短信发送用）
      */

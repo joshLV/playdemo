@@ -1,9 +1,11 @@
 package factory.order;
 
 import com.uhuila.common.constants.DeletedStatus;
+import factory.FactoryBoy;
 import factory.ModelFactory;
 import factory.annotation.Factory;
 import models.order.DiscountCode;
+import models.sales.Goods;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -19,7 +21,8 @@ public class DiscountCodeFactory extends ModelFactory<DiscountCode> {
     @Override
     public DiscountCode define() {
         DiscountCode discountCode = new DiscountCode();
-        discountCode.discountSn = "DIST1";
+        discountCode.title = "Test" + FactoryBoy.sequence(DiscountCode.class);
+        discountCode.discountSn = "DIST" + FactoryBoy.sequence(DiscountCode.class);
         discountCode.discountAmount = BigDecimal.TEN;
         discountCode.beginAt = beforeDays(new Date(), 1);
         discountCode.endAt = afterDays(new Date(), 1);
