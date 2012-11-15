@@ -47,6 +47,7 @@ $(
             $("#form").attr("target", "_self");
         });
         $("#onsale").click(function () {
+            console.log($("#goods_beginOnSaleAt").val())
             $("#status").val("ONSALE");
             $("#form").attr("target", "_self");
         });

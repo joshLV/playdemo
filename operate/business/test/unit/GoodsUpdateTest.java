@@ -45,7 +45,7 @@ public class GoodsUpdateTest extends UnitTest {
         goods.faceValue = faceValue;
         Shop testShop = FactoryBoy.create(Shop.class, "SupplierId");
         goods.shops.add(testShop);
-        Goods.update(goods.id, goods, false);
+        Goods.update(goods.id, goods);
         assertEquals(1, goods.shops.size());
         assertEquals(testShop.name, goods.shops.iterator().next().name);
         assertEquals(faceValue, goods.faceValue);

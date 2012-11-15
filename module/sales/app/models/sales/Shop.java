@@ -203,6 +203,9 @@ public class Shop extends Model {
     @SolrField
     public String getAreaName() {
         String areaName;
+        if (StringUtils.isEmpty(areaId)) {
+            return "";
+        }
         Area area = Area.findById(areaId);
         if (area == null)
             return "";

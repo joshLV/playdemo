@@ -507,7 +507,7 @@ public class OperateGoods extends Controller {
             error(e);
         }
         goods.updatedBy = supplierUser;
-        models.sales.Goods.update(id, goods, false);
+        models.sales.Goods.update(id, goods);
         Goods goodsItem = models.sales.Goods.findById(id);
         String createdFrom = "Op";
         goodsItem.createHistory(createdFrom);
@@ -560,7 +560,7 @@ public class OperateGoods extends Controller {
             error(e);
         }
         goods.updatedBy = supplierUser;
-        models.sales.Goods.update(id, goods, false);
+        models.sales.Goods.update(id, goods);
         Goods goodsItem = models.sales.Goods.findById(id);
         goodsItem.refresh();
         String createdFrom = "Op";
