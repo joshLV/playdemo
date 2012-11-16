@@ -9,6 +9,7 @@ import models.dangdang.ErrorCode;
 import models.dangdang.HttpProxy;
 import models.dangdang.Response;
 import models.order.ECoupon;
+import models.sales.Goods;
 import models.sales.GoodsDeployRelation;
 import models.sales.GoodsHistory;
 import org.apache.commons.httpclient.methods.PostMethod;

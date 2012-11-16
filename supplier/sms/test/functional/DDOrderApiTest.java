@@ -11,6 +11,7 @@ import models.order.Order;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
+import models.sales.Goods;
 import models.sales.GoodsDeployRelation;
 import models.sales.MaterialType;
 import org.apache.commons.codec.digest.DigestUtils;
