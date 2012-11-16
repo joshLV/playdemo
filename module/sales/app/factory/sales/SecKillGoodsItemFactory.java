@@ -23,9 +23,6 @@ public class SecKillGoodsItemFactory extends ModelFactory<SecKillGoodsItem> {
 
     @Override
     public SecKillGoodsItem define() {
-        Date date = DateHelper.beforeMinuts(new Date(), 100);
-        Date dateAfter=DateHelper.afterMinuts(new Date(), 10);
-
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         SecKillGoodsItem secKillGoodsItem = new SecKillGoodsItem();
@@ -33,30 +30,17 @@ public class SecKillGoodsItemFactory extends ModelFactory<SecKillGoodsItem> {
         secKillGoodsItem.goodsTitle = "第一波秒杀";
         secKillGoodsItem.saleCount = 0;
         secKillGoodsItem.salePrice = new BigDecimal(10);
-        try {
-            secKillGoodsItem.secKillBeginAt = dateFormat.parse(dateFormat.format(date));
-        } catch (ParseException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+
+        secKillGoodsItem.secKillBeginAt = DateHelper.beforeMinuts(new Date(), 100);
+        secKillGoodsItem.secKillEndAt = DateHelper.afterMinuts(new Date(), 10);
 
 
-        try {
-            secKillGoodsItem.secKillEndAt = dateFormat.parse(dateFormat.format(dateAfter));
+        SecKillGoods goods = FactoryBoy.create(SecKillGoods.class);
+        secKillGoodsItem.secKillGoods = goods;
 
 
-        } catch (ParseException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-
-        SecKillGoods goods= FactoryBoy.create(SecKillGoods.class);
-        secKillGoodsItem.secKillGoods=goods;
-
-
-        secKillGoodsItem.baseSale =100l;
-        secKillGoodsItem.status= SecKillGoodsStatus.ONSALE;
-
-
+        secKillGoodsItem.baseSale = 100l;
+        secKillGoodsItem.status = SecKillGoodsStatus.ONSALE;
 
 
         return secKillGoodsItem;
@@ -66,7 +50,7 @@ public class SecKillGoodsItemFactory extends ModelFactory<SecKillGoodsItem> {
 
     @Factory(name = "expired")
     public void defineExpiredGoods(SecKillGoodsItem secKillGoodsItem) {
-        secKillGoodsItem.goodsTitle="TTTTT";
+        secKillGoodsItem.goodsTitle = "TTTTT";
         secKillGoodsItem.secKillBeginAt = DateHelper.beforeDays(new Date(), 3);
         secKillGoodsItem.secKillEndAt = DateHelper.beforeDays(new Date(), 1);
     }
@@ -79,14 +63,12 @@ public class SecKillGoodsItemFactory extends ModelFactory<SecKillGoodsItem> {
         secKillGoodsItem.salePrice = new BigDecimal(10);
         secKillGoodsItem.secKillBeginAt = new Date();
         secKillGoodsItem.secKillEndAt = DateHelper.afterMinuts(new Date(), 10);
-        SecKillGoods goods= FactoryBoy.create(SecKillGoods.class);
-        secKillGoodsItem.secKillGoods=goods;
-        secKillGoodsItem.baseSale =1000l;
-        secKillGoodsItem.status= SecKillGoodsStatus.ONSALE;
+        SecKillGoods goods = FactoryBoy.create(SecKillGoods.class);
+        secKillGoodsItem.secKillGoods = goods;
+        secKillGoodsItem.baseSale = 1000l;
+        secKillGoodsItem.status = SecKillGoodsStatus.ONSALE;
         return secKillGoodsItem;
     }
-
-
 
 
     @Factory(name = "noInventory")
@@ -97,10 +79,10 @@ public class SecKillGoodsItemFactory extends ModelFactory<SecKillGoodsItem> {
         secKillGoodsItem.salePrice = new BigDecimal(10);
         secKillGoodsItem.secKillBeginAt = new Date();
         secKillGoodsItem.secKillEndAt = DateHelper.afterMinuts(new Date(), 10);
-        SecKillGoods goods= FactoryBoy.create(SecKillGoods.class);
-        secKillGoodsItem.secKillGoods=goods;
-        secKillGoodsItem.baseSale =-90l;
-        secKillGoodsItem.status= SecKillGoodsStatus.ONSALE;
+        SecKillGoods goods = FactoryBoy.create(SecKillGoods.class);
+        secKillGoodsItem.secKillGoods = goods;
+        secKillGoodsItem.baseSale = -90l;
+        secKillGoodsItem.status = SecKillGoodsStatus.ONSALE;
         return secKillGoodsItem;
     }
 
