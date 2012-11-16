@@ -1245,13 +1245,13 @@ public class ECoupon extends Model {
         Goods goods = ecoupon.goods;
         
         if (!StringUtils.isBlank(goods.groupCode)) {
-            return ECoupon.find("order=? and status = ? and goods.isLottery=? and goods.groupCode=? and goods.supplierId=? order by id",
-                            ecoupon.order,
+            return ECoupon.find("order=? and orderItems.phone=? and status = ? and goods.isLottery=? and goods.groupCode=? and goods.supplierId=? order by id",
+                            ecoupon.order, ecoupon.orderItems.phone,
                             ECouponStatus.UNCONSUMED, false,
                             goods.groupCode, goods.supplierId).fetch();
         }
-        return ECoupon.find("order=? and status=? and goods.isLottery=? and goods.id=? and goods.supplierId=? order by id",
-                        ecoupon.order, 
+        return ECoupon.find("order=? and orderItems.phone=? and status=? and goods.isLottery=? and goods.id=? and goods.supplierId=? order by id",
+                        ecoupon.order, ecoupon.orderItems.phone,
                         ECouponStatus.UNCONSUMED, false,
                         goods.id, goods.supplierId).fetch();
     }
