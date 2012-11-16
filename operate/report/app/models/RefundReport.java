@@ -1,14 +1,16 @@
 package models;
 
-import models.sales.Goods;
-import models.supplier.Supplier;
-import org.apache.commons.lang.StringUtils;
-import play.db.jpa.JPA;
-import play.db.jpa.Model;
-
-import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.util.List;
+
+import javax.persistence.Query;
+
+import models.sales.Goods;
+import models.supplier.Supplier;
+
+import org.apache.commons.lang.StringUtils;
+
+import play.db.jpa.JPA;
 
 /**
  * <p/>
@@ -16,7 +18,7 @@ import java.util.List;
  * Date: 12-8-7
  * Time: 下午4:05
  */
-public class RefundReport extends Model {
+public class RefundReport {
     public String supplierName;
     public Goods goods;
     public BigDecimal salePrice;

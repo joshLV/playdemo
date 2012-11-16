@@ -18,7 +18,7 @@ import java.util.*;
  * Date: 5/31/12
  * Time: 10:44 AM
  */
-public class SalesOrderItemReport extends Model {
+public class SalesOrderItemReport {
     public Supplier supplier;
 
     public Date createdAt;

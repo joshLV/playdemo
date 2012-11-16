@@ -1,7 +1,7 @@
 package factory.order;
 
-import factory.FactoryBoy;
-import factory.ModelFactory;
+import java.math.BigDecimal;
+
 import models.consumer.User;
 import models.order.Order;
 import models.order.OrderItems;
@@ -10,8 +10,6 @@ import factory.FactoryBoy;
 import factory.ModelFactory;
 import factory.annotation.Factory;
 
-import java.math.BigDecimal;
-
 public class OrderItemsFactory extends ModelFactory<OrderItems> {
 
     @Override
@@ -19,7 +17,9 @@ public class OrderItemsFactory extends ModelFactory<OrderItems> {
         Goods goods = FactoryBoy.lastOrCreate(Goods.class);
         User user = FactoryBoy.lastOrCreate(User.class);  //购买用户
         Order order = FactoryBoy.lastOrCreate(Order.class);
-        return new OrderItems(order, goods, 1l, user.mobile, goods.salePrice, goods.salePrice);
+        OrderItems orderItems = new OrderItems(order, goods, 1l, user.mobile, goods.salePrice, goods.salePrice);
+        orderItems.rebateValue = BigDecimal.ZERO;
+        return orderItems;
     }
 
     @Factory(name = "orderItemReal")
