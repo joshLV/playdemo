@@ -59,4 +59,11 @@
         <![CDATA[${goods?.prompt?.raw()}${goods?.details?.raw()}]]></detail>
     <display_status><![CDATA[0]]></display_status>
     <sort_order><![CDATA[]]></sort_order>
+    <sms_help><![CDATA[${goods?.title?.raw()}]]></sms_help>
+    %{ title= "【" + (goods.brand == null ? "一百券" : goods.brand.name) + "】" + goods.name + "-优惠券,优惠券网,代金券" +
+    (goods.keywords == null ? "" : ("【" + goods.keywords + "】"))}%
+    <seo_title><![CDATA[${title?.raw()}]]></seo_title>
+    <seo_keyword><![CDATA[${goods?.keywords?.raw()}]]></seo_keyword>
+    <seo_description><![CDATA[${title?.raw()}]]></seo_description>
+    <special_tips><![CDATA[]]></special_tips>
 </data>
