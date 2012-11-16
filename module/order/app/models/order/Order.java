@@ -399,22 +399,15 @@ public class Order extends Model {
      * @return
      */
     public static BigDecimal getDiscountValueOfTotalECartAmount(BigDecimal amount, DiscountCode discountCode) {
-        System.out.println("4>>>>>>");
         if (discountCode == null || discountCode.goods != null) {
-            System.out.println("1>>>>>>");
             return BigDecimal.ZERO;
         }
         if (discountCode.discountAmount != null && discountCode.discountAmount.compareTo(BigDecimal.ZERO) > 0) {
-            System.out.println("2>>>>>>");
             return discountCode.discountAmount;
         }
         if (discountCode.discountPercent != null && discountCode.discountPercent.compareTo(BigDecimal.ZERO) > 0 && discountCode.discountPercent.compareTo(BigDecimal.ONE) < 0) {
-            System.out.println("3>>>>>>");
-            System.out.println("amount>>>" + amount);
-            System.out.println("per>>>" + discountCode.discountPercent);
             return discountCode.discountPercent.multiply(amount);
         }
-        System.out.println("5>>>>>>");
         return BigDecimal.ZERO;
     }
 
