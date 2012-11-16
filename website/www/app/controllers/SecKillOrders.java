@@ -11,6 +11,7 @@ import models.order.Order;
 import models.order.OrderItems;
 import models.sales.MaterialType;
 import models.sales.SecKillGoodsItem;
+import models.sales.SecKillGoodsStatus;
 import play.Logger;
 import play.data.validation.Validation;
 import play.mvc.Controller;
@@ -19,6 +20,7 @@ import play.mvc.With;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static play.Logger.warn;
@@ -39,7 +41,12 @@ public class SecKillOrders extends Controller {
 
         Long secKillGoodsItemId = Long.parseLong(request.params.get("secKillGoodsItemId") == null ? "0" : request.params.get("secKillGoodsItemId"));
 
-        SecKillGoodsItem secKillGoodsItem = SecKillGoodsItem.findById(secKillGoodsItemId);
+//        SecKillGoodsItem secKillGoodsItem = SecKillGoodsItem.findById(secKillGoodsItemId);
+        SecKillGoodsItem secKillGoodsItem = SecKillGoodsItem.find("id=? and secKillEndAt>=? and secKillBeginAt<=? and status=?", secKillGoodsItemId, new Date(), new Date(), SecKillGoodsStatus.ONSALE).first();
+        if (secKillGoodsItem == null) {
+            error("no secKillGoods specified");
+            return;
+        }
         //检查库存
         try {
 
@@ -68,8 +75,8 @@ public class SecKillOrders extends Controller {
         User user = SecureCAS.getUser();
 
         //解析提交的商品及数量
-        SecKillGoodsItem secKillGoodsItem = SecKillGoodsItem.findById(secKillGoodsItemId);
-
+//        SecKillGoodsItem secKillGoodsItem = SecKillGoodsItem.findById(secKillGoodsItemId);
+        SecKillGoodsItem secKillGoodsItem = SecKillGoodsItem.find("id=? and secKillEndAt>=? and secKillBeginAt<=? and status=?", secKillGoodsItemId, new Date(), new Date(), SecKillGoodsStatus.ONSALE).first();
         if (secKillGoodsItem == null) {
             error("no secKillGoods specified");
             return;
@@ -78,13 +85,11 @@ public class SecKillOrders extends Controller {
         //判断帐号限购
         boolean exceedLimit = OrderItems.checkLimitNumber(user, secKillGoodsItem.secKillGoods.goods.id, secKillGoodsId, count);
 
-
         if (exceedLimit) {
             //todo 页面实现限购提示
 
             redirect("/seckill-goods?exceedLimit=" + exceedLimit);
         }
-
         boolean isElectronic = secKillGoodsItem.secKillGoods.goods.materialType.equals(MaterialType.ELECTRONIC);
         boolean isReal = secKillGoodsItem.secKillGoods.goods.materialType.equals(MaterialType.REAL);
 
@@ -101,7 +106,6 @@ public class SecKillOrders extends Controller {
         if (isReal) {
 
             defaultAddress = Address.findDefault(user);
-
             if (defaultAddress == null) {
                 Validation.addError("address", "validation.required");
             } else {
@@ -219,7 +223,9 @@ public class SecKillOrders extends Controller {
             return;
         }
         //判断帐号限购
+
         boolean exceedLimit = OrderItems.checkLimitNumber(user, goodsItem.secKillGoods.goods.id, goodsItem.secKillGoods.id, 1);
+
         if (exceedLimit) {
             renderArgs.put("exceedLimit", exceedLimit);
         }
