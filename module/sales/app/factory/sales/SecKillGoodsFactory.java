@@ -22,14 +22,14 @@ public class SecKillGoodsFactory extends ModelFactory<SecKillGoods> {
 
     @Override
     public SecKillGoods define() {
-        Goods goods = FactoryBoy.create(Goods.class);
+        Goods goods = FactoryBoy.lastOrCreate(Goods.class);
         SecKillGoods secKillGoods = new SecKillGoods();
-        secKillGoods.personLimitNumber= 1;
+        secKillGoods.personLimitNumber = 1;
         secKillGoods.setPrompt("wowuroqwl");
         secKillGoods.goods = goods;
         secKillGoods.imagePath = "/a.jpg";
-        secKillGoods.createdAt= afterDays(new Date(), 30);
-        secKillGoods.goods.faceValue=new BigDecimal(10);
+        secKillGoods.createdAt = afterDays(new Date(), 30);
+        secKillGoods.goods.faceValue = new BigDecimal(10);
 
 
         return secKillGoods;
@@ -37,15 +37,15 @@ public class SecKillGoodsFactory extends ModelFactory<SecKillGoods> {
 
 
     @Factory(name = "exceedLimit")
-    public SecKillGoods defineWithExceedLimit(SecKillGoods secKillGoods){
-        Goods goods = FactoryBoy.create(Goods.class);
+    public SecKillGoods defineWithExceedLimit(SecKillGoods secKillGoods) {
+        Goods goods = FactoryBoy.lastOrCreate(Goods.class);
         secKillGoods = new SecKillGoods();
-        secKillGoods.personLimitNumber= 1;
+        secKillGoods.personLimitNumber = 1;
         secKillGoods.setPrompt("wowuroqwl");
         secKillGoods.goods = goods;
         secKillGoods.imagePath = "/a.jpg";
-        secKillGoods.createdAt= afterDays(new Date(), 30);
-        secKillGoods.goods.faceValue=new BigDecimal(10);
+        secKillGoods.createdAt = afterDays(new Date(), 30);
+        secKillGoods.goods.faceValue = new BigDecimal(10);
 
         return secKillGoods;
 
