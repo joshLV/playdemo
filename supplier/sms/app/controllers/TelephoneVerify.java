@@ -7,14 +7,17 @@ import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.VerifyCouponType;
 import models.sms.SMSUtil;
+import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
 import play.mvc.Controller;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 
 /**
  * @author likang
@@ -34,7 +37,7 @@ public class TelephoneVerify extends Controller {
      * @param timestamp 时间戳，UTC时间1970年1月1日零点至今的秒数，允许5分钟的上下浮动
      * @param sign      请求签名，由 分配的app_key+timestamp 拼接后进行MD5编码组成
      */
-    public static void verify(String caller, String coupon, Long timestamp, String sign) {
+    public static void verify(String caller, String coupon, Long timestamp, String sign, BigDecimal value) {
         Logger.info("telephone verify; caller: %s; coupon: %s; timestamp: %s; sign: %s", caller, coupon, timestamp, sign);
         if (caller == null || caller.trim().equals("")) {
             Logger.info("telephone verify failed: invalid caller");
@@ -105,15 +108,72 @@ public class TelephoneVerify extends Controller {
             renderText("12");//对不起，该券已过期
         } else if (ecoupon.effectiveAt != null && ecoupon.effectiveAt.after(new Date())) {
             Logger.info("telephone verify failed: coupon not been activated. effectiveAt: %s", new SimpleDateFormat(COUPON_DATE).format(ecoupon.effectiveAt));
-            renderText("11");//对不起，该券无法消费  todo 对不起，该券未到生效时间
+            renderText("11");//对不起，该券无法消费
         } else if (!ecoupon.checkVerifyTimeRegion(new Date())) {
             Logger.info("telephone verify failed: coupon not been activated. effectiveAt: %s", new SimpleDateFormat(COUPON_DATE).format(ecoupon.effectiveAt));
-            renderText("11");//对不起，该券无法消费  todo 对不起，该券在该时段无法消费
+            renderText("11");//对不起，该券无法消费
         } else {
-
             if (!ecoupon.consumeAndPayCommission(supplierUser.shop.id, null, supplierUser, VerifyCouponType.CLERK_MESSAGE)){
                 Logger.info("telephone verify failed: coupon has been refunded");
                 renderText("11");//对不起，该券已退款
+                return;
+            }
+
+            //批量验证
+            if(value != null && value.compareTo(BigDecimal.ZERO) > 0){
+                List<ECoupon> eCoupons = ECoupon.queryUnconsumedCouponsWithSameGoodsGroups(ecoupon);
+                List<ECoupon> checkECoupons = ECoupon.selectCheckECoupons(value, eCoupons);
+
+                BigDecimal consumedAmount = BigDecimal.ZERO;
+
+                int checkedCount = 0;
+                List<ECoupon> realCheckECoupon = new ArrayList<>();  //可能验证失败，所以要有一个实际真正验证成功的ecouponse
+                for (ECoupon e : checkECoupons) {
+                    if (e.consumeAndPayCommission(supplierUser.shop.id, null, SupplierRbac.currentUser(),
+                            VerifyCouponType.SHOP, ecoupon.eCouponSn)) {
+                        checkedCount += 1;
+                        consumedAmount = consumedAmount.add(e.faceValue);
+                        realCheckECoupon.add(e);
+                    }
+                }
+
+                List<ECoupon> availableECoupons = substractECouponList(eCoupons, realCheckECoupon);
+                BigDecimal availableAmount = summaryECouponsAmount(availableECoupons);
+                List<String> availableECouponSNs = new ArrayList<>();
+                for (ECoupon ae : availableECoupons) {
+                    availableECouponSNs.add(ae.eCouponSn);
+                }
+                if (consumedAmount.compareTo(BigDecimal.ZERO) == 0) {
+                    Logger.info("telephone verify failed: coupon not found");
+                    renderText("7");//对不起，未找到此券
+                    return;
+                }
+                if (availableECoupons.size() > 0) {
+                    SMSUtil.send2("【一百券】您尾号" + ecoupon.getLastCode(4)
+                            + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(0) + "元)于"
+                            + DateUtil.getNowTime() + "已成功消费，使用门店：" + supplierUser.shop.name + "。您还有" + availableECouponSNs.size() + "张券（"
+                            + StringUtils.join(availableECouponSNs, "/")
+                            + "总面值" + availableAmount.setScale(0) + "元）未消费。如有疑问请致电：4006262166",
+                            ecoupon.orderItems.phone, ecoupon.replyCode);
+                } else {
+                    SMSUtil.send2("【一百券】您尾号" + ecoupon.getLastCode(4)
+                            + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(0) + "元)于"
+                            + DateUtil.getNowTime() + "已成功消费，使用门店：" + supplierUser.shop.name + "。如有疑问请致电：4006262166",
+                            ecoupon.orderItems.phone, ecoupon.replyCode);
+                }
+                renderText(supplierUser.supplier.otherName + "|" + realCheckECoupon.size()+"|"+ consumedAmount);
+                renderText("0");
+                return;//验证完成 结束了
+
+            }else {
+                //如果没有指明金额
+                List<ECoupon> eCoupons = ECoupon.queryUnconsumedCouponsWithSameGoodsGroups(ecoupon);
+                if(eCoupons.size() > 1){
+                    //有多张券问用户是否选择批量验证
+                    Logger.info("telephone verify: batch coupon");
+                    renderText("100");
+                    return;
+                }
             }
 
 
@@ -176,9 +236,16 @@ public class TelephoneVerify extends Controller {
             Logger.error("query face value failed: wrong sign; coupon: %s; timestamp: %s; sign: %s", coupon, timestamp, sign);
             renderText("签名错误");
         }
-
+        List<ECoupon> batchCoupons = ECoupon.find("byTriggerCouponSn", ecoupon.eCouponSn).fetch();
+        if(batchCoupons.size() == 0){
+            renderText("此券未被消费");return;
+        }
+        BigDecimal faceValue = BigDecimal.ZERO;
+        for(ECoupon c : batchCoupons) {
+            faceValue = faceValue.add(c.faceValue);
+        }
         //只返回整数
-        renderText("" + ecoupon.faceValue.intValue());
+        renderText("" + faceValue.intValue());
     }
 
     /**
@@ -236,6 +303,65 @@ public class TelephoneVerify extends Controller {
         renderText(new SimpleDateFormat("M月d日H点m分").format(ecoupon.consumedAt) + shopName);
     }
 
+    /**
+     * 查询消费时间
+     *
+     * @param coupon    券号
+     * @param timestamp 时间戳，UTC时间1970年1月1日零点至今的秒数，允许5分钟的上下浮动
+     * @param sign      请求签名，由 分配的app_key+timestamp 拼接后进行MD5编码组成
+     */
+    public static void batchInfo(String coupon, Long timestamp, String sign) {
+        Logger.info("query consumed at; coupon: %s; timestamp: %s; sign: %s", coupon, timestamp, sign);
+
+        if (coupon == null || coupon.trim().equals("")) {
+            Logger.info("query face value failed: invalid coupon");
+            renderText("券号无效");//券号无效
+        }
+
+        //开始验证
+        ECoupon ecoupon = ECoupon.query(coupon, null);
+
+        if (ecoupon == null) {
+            Logger.info("query face value failed: coupon not found");
+            renderText("券号无效");
+        }
+        if (timestamp == null) {
+            Logger.error("query face value failed: invalid timestamp; coupon: %s; timestamp: %s; sign: %s", coupon, timestamp, sign);
+            renderText("时间戳无效");//时间戳无效
+        }
+        if (sign == null || sign.trim().equals("")) {
+            Logger.error("query face value failed: invalid sign; coupon: %s; timestamp: %s; sign: %s", coupon, timestamp, sign);
+            renderText("签名无效");//签名无效
+        }
+
+        //5分钟的浮动
+        if (requestTimeout(timestamp, 300)) {
+            Logger.error("query face value failed; coupon: %s; timestamp: %s; sign: %s", coupon, timestamp, sign);
+            renderText("请求超时");//请求超时
+        }
+        //验证密码
+        if (!validSign(timestamp, sign)) {
+            Logger.error("query face value failed: wrong sign; coupon: %s; timestamp: %s; sign: %s", coupon, timestamp, sign);
+            renderText("签名错误");
+        }
+
+        List<ECoupon> eCoupons = ECoupon.queryUnconsumedCouponsWithSameGoodsGroups(ecoupon);
+        if(eCoupons.size() == 0){
+            renderText("该券无法重复消费");return;
+        }
+        ECoupon firstCoupon = eCoupons.get(0);
+        Supplier supplier = Supplier.findById(firstCoupon.shop.supplierId);
+        if(supplier == null){
+            Logger.warn("telephone verify batchInfo: supplier not found");
+            renderText("券不存在");return;
+        }
+        BigDecimal faceValue = BigDecimal.ZERO;
+        for(ECoupon c : eCoupons) {
+            faceValue = faceValue.add(c.faceValue);
+        }
+        renderText(supplier.otherName+"|"+eCoupons.size() + "|" + faceValue.intValue());
+    }
+
     private static boolean requestTimeout(Long timestamp, int seconds) {
         long t = System.currentTimeMillis() / 1000;
         return Math.abs(timestamp - t) > seconds;
@@ -243,5 +369,34 @@ public class TelephoneVerify extends Controller {
 
     private static boolean validSign(Long timestamp, String sign) {
         return DigestUtils.md5Hex(APP_KEY + timestamp).equals(sign);
+    }
+
+    /**
+     * 得到sourceECoupons - checkECoupons的数组.
+     * @param sourceECoupons
+     * @param checkECoupons
+     * @return
+     */
+    private static List<ECoupon> substractECouponList(List<ECoupon> sourceECoupons,
+                                                      List<ECoupon> checkECoupons) {
+        Set<Long> checkECouponIdSet = new HashSet<>();
+        for (ECoupon e :checkECoupons) {
+            checkECouponIdSet.add(e.id);
+        }
+        List<ECoupon> results = new ArrayList<>();
+        for (ECoupon e : sourceECoupons) {
+            if (!checkECouponIdSet.contains(e.id)) {
+                results.add(e);
+            }
+        }
+        return results;
+    }
+
+    private static BigDecimal summaryECouponsAmount(List<ECoupon> ecoupons) {
+        BigDecimal amount = BigDecimal.ZERO;
+        for (ECoupon ecoupon : ecoupons) {
+            amount = amount.add(ecoupon.faceValue);
+        }
+        return amount;
     }
 }

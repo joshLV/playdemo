@@ -161,11 +161,13 @@ public class ECoupon extends Model {
     /** 1：冻结 0：解冻*/
     public int isFreeze;
 
+    @Column(name = "trigger_coupon_sn")
+    public String triggerCouponSn;
+
     @Column(name = "download_times")
     public Integer downloadTimes;
     @Enumerated(EnumType.STRING)
     public VerifyCouponType verifyType;
-
 
     @Enumerated(EnumType.STRING)
     public ECouponPartner partner;
@@ -441,6 +443,11 @@ public class ECoupon extends Model {
 
     public boolean consumeAndPayCommission(Long shopId, Long operateUserId,
                                            SupplierUser supplierUser, VerifyCouponType type) {
+        return consumeAndPayCommission(shopId, operateUserId, supplierUser, type, this.eCouponSn);
+    }
+
+    public boolean consumeAndPayCommission(Long shopId, Long operateUserId, SupplierUser supplierUser,
+                                           VerifyCouponType type, String triggerCouponSn) {
 
         //===================判断是否当当订单产生的券=============================
         try {
@@ -463,8 +470,9 @@ public class ECoupon extends Model {
 
         //===================券消费处理开始=====================================
         if (consumed(shopId, operateUserId, supplierUser, type)) {
-            System.out.println(" ======= payed!!!");
             payCommission();
+            this.triggerCouponSn = triggerCouponSn;
+            this.save();
         }
         //===================券消费处理完毕=====================================
 
@@ -481,11 +489,9 @@ public class ECoupon extends Model {
      */
     private boolean consumed(Long shopId, Long operateUserId,
                              SupplierUser supplierUser, VerifyCouponType type) {
-        System.out.println("a1 status=" + this.status);
         if (this.status != ECouponStatus.UNCONSUMED) {
             return false;
         }
-        System.out.println("a2");
         if (shopId != null) {
             this.shop = Shop.findById(shopId);
         }
@@ -500,11 +506,9 @@ public class ECoupon extends Model {
             this.operateUserId = operateUserId;
             operator = "操作员ID:" + operateUserId.toString();
         }
-        System.out.println("a5");
         this.verifyType = type;
         this.save();
         if (this.order != null && this.order.promoteUserId != null) {
-            System.out.println("a6");
             User invitedUser = User.findById(this.order.userId);
             PromoteRebate promoteRebate = PromoteRebate.find("invitedUser=? and order =?", invitedUser, this.order).first();
             //消费的时候更新返利表已经返利的金额字段
@@ -1098,11 +1102,12 @@ public class ECoupon extends Model {
         List<ECoupon> selectECoupons = new ArrayList<>();
 
         for (ECoupon ecoupon : ecoupons) {
-            if (totalValue.add(ecoupon.faceValue).compareTo(payValue) > 0) {
-                continue;
-            } else {
+            int res = totalValue.add(ecoupon.faceValue).compareTo(payValue);
+            if (res < 0) {
                 totalValue = totalValue.add(ecoupon.faceValue);
                 selectECoupons.add(ecoupon);
+            }else if(res == 0) {
+                break;
             }
         }
 

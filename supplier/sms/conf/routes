@@ -39,6 +39,7 @@ GET     /ztsms                                  ZtSmsReceivers.getsms
 *       /tel-verify                             TelephoneVerify.verify
 *       /tel-verify/face-value                  TelephoneVerify.faceValue
 *       /tel-verify/consumed-at                 TelephoneVerify.consumedAt
+*       /tel-verify/batch-info                  TelephoneVerify.batchInfo
 
 # 青团爬虫启动
 GET     /launch-qt                              QingtuanLauncher.index
