@@ -222,9 +222,9 @@ public class Shop extends Model {
         Area area = Area.findById(areaId);
         if (area == null || area.parent == null) return "";
         Area townArea = Area.findById(area.parent.id);
-        if (townArea == null || townArea.parent == null) return "";
+        if (townArea == null) return "";
         Area cityArea = Area.findById(townArea.parent.id);
-        if (cityArea == null || cityArea.parent == null) return "";
+        if (cityArea == null) return "";
         switch (flag) {
             //商圈名称
             case 0:
@@ -241,6 +241,7 @@ public class Shop extends Model {
             default:
                 areaName = area.name;
         }
+        System.out.println(areaName);
         return areaName;
     }
 

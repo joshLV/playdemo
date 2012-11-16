@@ -83,8 +83,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -990,6 +992,7 @@ public class Goods extends Model {
         updateGoods.title = StringUtils.trimToEmpty(goods.title);
         updateGoods.no = goods.no;
         updateGoods.beginOnSaleAt = goods.beginOnSaleAt;
+        System.out.println(goods.beginOnSaleAt + "=======");
         updateGoods.effectiveAt = goods.effectiveAt;
         updateGoods.expireAt = DateUtil.getEndOfDay(goods.expireAt);
         updateGoods.faceValue = goods.faceValue;
@@ -1936,15 +1939,16 @@ public class Goods extends Model {
     private static QueryResponse search(String q, long parentCategoryId, long categoryId, String districtId,
                                         String areaId, Boolean isOrder, MaterialType materialType, long brandId,
                                         String orderBy, boolean isAsc, int pageNumber, int pageSize, boolean onlyStatistic, String[] facetFields) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        TimeZone UTC = TimeZone.getTimeZone("UTC");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.CHINA);
+        dateFormat.setTimeZone(UTC);
         Date nowDate = new Date();
         final String statusCond = "goods.deleted_s:\"com.uhuila.common.constants.DeletedStatus:UN_DELETED\"" +
                 " AND goods.isHideOnsale_b:false" +
                 " AND goods.status_s:\"models.sales.GoodsStatus:ONSALE\"" +
                 " AND goods.realStocks_l:[1 TO " + Integer.MAX_VALUE + "]" +
-                " AND goods.expireAt_dt:[" + dateFormat.format(nowDate) + "T" + timeFormat.format(nowDate) + "Z TO 2512-05-24T05:55:36Z]" +
-                " AND goods.beginOnSaleAt_dt:[2011-05-24T05:55:36Z TO " + dateFormat.format(nowDate) + "T" + timeFormat.format(nowDate) + "Z]";
+                " AND goods.expireAt_dt:[" + dateFormat.format(nowDate) + " TO 2512-05-24T05:55:36Z]" +
+                " AND goods.beginOnSaleAt_dt:[2011-05-24T05:55:36Z TO " + dateFormat.format(nowDate) + "]";
         StringBuilder queryStr = new StringBuilder();
         if (StringUtils.isNotBlank(q)) {
             queryStr.append(q + " AND ");
