@@ -4,6 +4,7 @@ import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.constants.PlatformType;
 import factory.ModelFactory;
 import models.cms.Topic;
+import models.cms.TopicType;
 
 import java.util.Date;
 
