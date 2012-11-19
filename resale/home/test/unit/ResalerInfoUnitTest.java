@@ -1,43 +1,41 @@
 package unit;
 
-import java.util.Date;
-import java.util.List;
-
-import models.consumer.User;
-import models.resale.AccountType;
+import factory.FactoryBoy;
 import models.resale.Resaler;
-import models.resale.ResalerStatus;
-
 import org.apache.commons.codec.digest.DigestUtils;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import play.libs.Images;
-import play.test.Fixtures;
 import play.test.UnitTest;
-public class ResalerInfoUnitTest extends UnitTest {
-	@Before
-	public void setup() {
-		Fixtures.delete(Resaler.class);
-		Fixtures.loadModels("fixture/resaler.yml");
-	}
 
-	//测试是否存在用户名和手机
-	@Test
-	public void testUpdateInfo(){
-		
-		Long resalerId = (Long) Fixtures.idCache.get("models.resale.Resaler-Resaler_2");
-		Resaler resaler =new Resaler();
-		resaler.address ="徐家汇";
-		resaler.mobile = "139555555555";
-		resaler.userName = "xiao";
-		Resaler.updateInfo(resalerId, resaler);
-		Resaler updresaler =Resaler.findById(resalerId);
-		assertEquals("徐家汇", updresaler.address);  
-		assertEquals("139555555555", updresaler.mobile);  
-		assertEquals("xiao", updresaler.userName);  
-	}
-	
+public class ResalerInfoUnitTest extends UnitTest {
+    Resaler resaler;
+
+    @Before
+    public void setup() {
+        FactoryBoy.deleteAll();
+        resaler = FactoryBoy.create(Resaler.class);
+    }
+
+    //测试是否存在用户名和手机
+    @Test
+    public void testUpdateInfo() {
+        resaler.address = "徐家汇";
+        resaler.mobile = "139555555555";
+        resaler.userName = "xiao";
+        Resaler.updateInfo(resaler.id, resaler);
+        resaler.refresh();
+        assertEquals("徐家汇", resaler.address);
+        assertEquals("139555555555", resaler.mobile);
+        assertEquals("xiao", resaler.userName);
+    }
+
+    @Test
+    public void passwordTest() {
+        resaler.password = "123456";
+        Resaler newresaler = Resaler.findById(resaler.id);
+        resaler.updatePassword(newresaler, resaler);
+        resaler.refresh();
+        assertEquals(DigestUtils.md5Hex("123456" + resaler.passwordSalt), resaler.password);
+    }
+
 }
