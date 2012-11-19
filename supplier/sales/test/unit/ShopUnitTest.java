@@ -44,6 +44,13 @@ public class ShopUnitTest extends UnitTest {
     }
 
     @Test
+    public void testGetAreaName() {
+        assertEquals("上海市", shop.getAreaName(2));
+        assertEquals("徐汇区", shop.getAreaName(1));
+        assertEquals("徐家汇", shop.getAreaName(0));
+    }
+
+    @Test
     public void testDelete() {
         Long shopId = shop.id;
         boolean result = Shop.delete(shopId);
