@@ -111,7 +111,7 @@ public class Suppliers extends Controller {
 
     private static void redirectUrl(int page) {
         if (Play.mode.isDev()) {
-            redirect("http://localhost:9303/" + "shops?page=" + page);
+            redirect("http://localhost:9303/" + "suppliers?page=" + page);
         } else {
             redirect(BASE_URL + "/suppliers?page=" + page);
         }
