@@ -33,11 +33,11 @@ public class ContextedPermission {
      * 初始化用户的权限数据.
      * @param userName
      */
-    public static void init(SupplierUser user) {        
+    public static void init(SupplierUser user) {
         if (user == null) {
             return;
         }
-        
+
         for (SupplierPermission perm : user.permissions) {
             addAllowPermission(perm.key);
         }

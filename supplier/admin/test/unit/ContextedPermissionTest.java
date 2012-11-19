@@ -1,35 +1,35 @@
 package unit;
 
-import models.admin.SupplierRole;
+import factory.FactoryBoy;
 import models.admin.SupplierUser;
 import navigation.ContextedPermission;
 import navigation.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import play.test.Fixtures;
 import play.test.UnitTest;
 import play.vfs.VirtualFile;
 
 public class ContextedPermissionTest extends UnitTest {
 
+    SupplierUser supplierUser;
 	@Before
 	public void setup() {
-		Fixtures.delete(SupplierUser.class);
-		Fixtures.delete(SupplierRole.class);
-		Fixtures.loadModels("fixture/roles.yml");
-		Fixtures.loadModels("fixture/supplier_users.yml");
-		
+        FactoryBoy.deleteAll();
+
         // 加载test/rbac.xml配置文件
         VirtualFile file = VirtualFile.open("test/rbac.xml");
-        RbacLoader.init(file);		
-	}
+        RbacLoader.init(file);
+
+        supplierUser = FactoryBoy.create(SupplierUser.class);
+        supplierUser.refresh();
+    }
 
 	@After
 	public void tearDown() {
 	    ContextedPermission.clean();
         // 重新加载配置文件
-        VirtualFile file = VirtualFile.open("conf/rbac.xml");
+        VirtualFile file = VirtualFile.open("test/rbac.xml");
         RbacLoader.init(file); 
 	}
 	
@@ -41,21 +41,17 @@ public class ContextedPermissionTest extends UnitTest {
 	
 	@Test
 	public void testAdminUserHasNotPermission() {
-		Long id = (Long) Fixtures.idCache.get("models.admin.SupplierUser-user3");
-		SupplierUser user = SupplierUser.findById(id);
-		ContextedPermission.init(user);
+		ContextedPermission.init(supplierUser);
 		
-		assertFalse(ContextedPermission.hasPermission("PERM_TEST"));
+		assertFalse(ContextedPermission.hasPermission("USER"));
 	}
 	
 	
 	@Test
 	public void testTestUserHasPermission() {
-		Long id = (Long) Fixtures.idCache.get("models.admin.SupplierUser-user2");
-		SupplierUser user = SupplierUser.findById(id);
-		ContextedPermission.init(user);
+		ContextedPermission.init(supplierUser);
 		
-		assertEquals(1, ContextedPermission.getAllowPermissions().size());
+		assertEquals(3, ContextedPermission.getAllowPermissions().size());
 		
 		assertTrue(ContextedPermission.hasPermission("PERM_TEST"));
 	}
