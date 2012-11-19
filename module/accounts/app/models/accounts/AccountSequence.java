@@ -175,7 +175,7 @@ public class AccountSequence extends Model {
     }
 
     public static BigDecimal getIncomeAmount(Account account, Date lastDate) {
-        AccountSequence accountSequence = (AccountSequence) find("account=? and createdAt<? order by created_at DESC", account, lastDate).first();
+        AccountSequence accountSequence = (AccountSequence) find("account=? and createdAt<? order by createdAt DESC", account, lastDate).first();
 
         return (accountSequence != null &&
                 accountSequence.settlementStatus == SettlementStatus.UNCLEARED) ?
