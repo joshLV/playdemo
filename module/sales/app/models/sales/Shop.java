@@ -215,34 +215,34 @@ public class Shop extends Model {
     }
 
     public String getAreaName(int flag) {
-        String areaName = "";
+
         if (StringUtils.isEmpty(areaId)) {
             return "";
         }
-        Area area = Area.findById(areaId);
-        if (area == null || area.parent == null) return "";
-        Area townArea = Area.findById(area.parent.id);
-        if (townArea == null) return "";
-        Area cityArea = Area.findById(townArea.parent.id);
-        if (cityArea == null) return "";
-        switch (flag) {
-            //商圈名称
-            case 0:
-                areaName = area.name;
-                break;
-            //区域名称
-            case 1:
-                areaName = townArea.name;
-                break;
-            //城市名称
-            case 2:
-                areaName = cityArea.name;
-                break;
-            default:
-                areaName = area.name;
+        Area district = Area.findParent(areaId);
+        if (district == null) {
+            Area city = Area.findById(areaId);
+            if (city != null && flag == 2) {
+                return city.name;
+            }
+            return "";
         }
-        System.out.println(areaName);
-        return areaName;
+        //区域名称
+        if (flag == 1) {
+            return district.name;
+        }
+
+        Area area = Area.findById(areaId);
+        // 商圈名称
+        if (area != null && flag == 0) {
+            return area.name;
+        }
+
+        Area city = Area.findParent(district.id);
+        if (city != null && flag == 2) {
+            return city.name;
+        }
+        return "";
     }
 
     @Override
