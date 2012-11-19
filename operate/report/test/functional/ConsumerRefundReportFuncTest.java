@@ -1,25 +1,18 @@
 package functional;
 
 import controllers.operate.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.RefundReport;
-import models.admin.OperateRole;
 import models.admin.OperateUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
-import models.order.Order;
-import models.order.OrderItems;
-import models.sales.Brand;
-import models.sales.Category;
-import models.sales.Goods;
-import models.sales.Shop;
-import models.supplier.Supplier;
 import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import play.modules.paginate.ValuePaginator;
 import play.mvc.Http;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
@@ -34,7 +27,18 @@ import java.util.Date;
 public class ConsumerRefundReportFuncTest extends FunctionalTest {
     @Before
     public void setup() {
+        FactoryBoy.deleteAll();
+        FactoryBoy.batchCreate(2,ECoupon.class, new BuildCallback<ECoupon>() {
+            @Override
+            public void build(ECoupon target) {
+                target.refundAt = new Date();
+                target.status = ECouponStatus.REFUND;
+            }
+        });
 
+        OperateUser operateUser = FactoryBoy.create(OperateUser.class);
+
+        /*
         Fixtures.delete(OperateUser.class);
         Fixtures.delete(OperateRole.class);
         Fixtures.delete(OrderItems.class);
@@ -54,13 +58,14 @@ public class ConsumerRefundReportFuncTest extends FunctionalTest {
         Fixtures.loadModels("fixture/ecoupon.yml");
         Fixtures.loadModels("fixture/user.yml");
         Fixtures.loadModels("fixture/resaler.yml");
+        */
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
 
-        Long id = (Long) Fixtures.idCache.get("models.admin.OperateUser-user1");
-        OperateUser user = OperateUser.findById(id);
         // 设置测试登录的用户名
-        Security.setLoginUserForTest(user.loginName);
+        Security.setLoginUserForTest(operateUser.loginName);
+
+        /*
         id = (Long) Fixtures.idCache.get("models.order.ECoupon-ecoupon_001");
         ECoupon coupon = ECoupon.findById(id);
         coupon.refundAt = new Date();
@@ -73,6 +78,7 @@ public class ConsumerRefundReportFuncTest extends FunctionalTest {
         coupon.status = ECouponStatus.REFUND;
         coupon.save();
         coupon.refresh();
+        */
     }
 
     @After
