@@ -41,8 +41,8 @@
     <div class="form-horizontal">
         #{layout_operate.selectField name:'supplierId', value:supplierId, error:'supplierId',
         class:'span2'}
-        #{list items:supplierList, as:'supplier' }
-        #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
+        #{list items:supplierList, as:'aSupplier' }
+        #{option aSupplier?.id}${aSupplier?.otherName==null?aSupplier?.fullName:aSupplier?.otherName}#{/option}
         #{/list}
         #{/layout_operate.selectField}
         #{layout_operate.dateField name:'withdrawDate',
@@ -56,7 +56,7 @@
     #{/form}
 
     #{if amount!=null}
-    #{form @WithdrawApproval.settle(), class:'form-horizontal', id:'settleForm',enctype:'multipart/form-data'}
+    #{form @WithdrawApproval.settle(), class:'form-horizontal', id:'settleForm'}
     <input type="hidden" id="supplierAccount.id" name="supplierAccount.id" value="${supplierAccount.id}">
     <input type="hidden" id="amount" name="amount" value="${amount}">
     <input type="hidden" id="withdrawAccountId" name="withdrawAccountId" value="1">

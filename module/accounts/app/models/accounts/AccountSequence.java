@@ -175,20 +175,19 @@ public class AccountSequence extends Model {
     }
 
     public static BigDecimal getIncomeAmount(Account account, Date lastDate) {
-        EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("select b.balance from AccountSequence b where b.account=:account and b.createdAt<:lastDate order by created_at DESC");
-        q.setParameter("sequenceFlag", account);
-        q.setParameter("account", account);
-        q.setParameter("lastDate", lastDate);
-        q.setMaxResults(1);
-        return (BigDecimal) q.getSingleResult();
+        AccountSequence accountSequence = (AccountSequence) find("account=? and createdAt<? order by created_at DESC", account, lastDate).first();
+
+        return (accountSequence != null &&
+                accountSequence.settlementStatus == SettlementStatus.UNCLEARED) ?
+                accountSequence.balance : BigDecimal.ZERO;
     }
 
     /**
      * 把指定商户的所有指定日期之前的收入金额结算掉,返回update 的记录数
      *
-     * @param supplierId    商户id
-     * @param withdrawDate  结算截止时间
+     * @param supplierAccount 商户的账户
+     * @param withdrawDate    结算截止时间
+     * @param withdrawBill    结算账单
      * @return
      */
     public static int withdraw(Account supplierAccount, Date withdrawDate, WithdrawBill withdrawBill) {

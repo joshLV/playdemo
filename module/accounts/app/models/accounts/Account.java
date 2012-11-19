@@ -68,7 +68,8 @@ public class Account extends Model {
         if (uncashAmount == null) {
             return incomeAmount == null ? BigDecimal.ZERO : incomeAmount;
         }
-        return incomeAmount.remainder(uncashAmount);
+
+        return incomeAmount.subtract(uncashAmount);
     }
 
     public Account() {

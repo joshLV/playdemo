@@ -1,11 +1,5 @@
 package controllers;
 
-import models.accounts.*;
-import models.admin.SupplierUser;
-import models.consumer.User;
-import models.consumer.UserInfo;
-import models.resale.Resaler;
-import models.sms.SMSUtil;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.WithdrawAccount;
@@ -13,6 +7,11 @@ import models.accounts.WithdrawBill;
 import models.accounts.WithdrawBillCondition;
 import models.accounts.WithdrawBillStatus;
 import models.accounts.util.AccountUtil;
+import models.admin.SupplierUser;
+import models.consumer.User;
+import models.consumer.UserInfo;
+import models.resale.Resaler;
+import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.collections.CollectionUtils;
@@ -172,12 +171,13 @@ public class WithdrawApproval extends Controller {
      * 结算信息确认.
      */
     public static void confirmSettle(Long supplierId, Date withdrawDate) {
-        System.out.println("supplierId:" + supplierId);
         List<Supplier> supplierList = getWithdrawSupplierList();
         Account supplierAccount = AccountUtil.getSupplierAccount(supplierId);
         Supplier supplier = Supplier.findById(supplierId);
         List<WithdrawAccount> withdrawAccountList = WithdrawAccount.findByUser(supplierId, AccountType.SUPPLIER);
-        BigDecimal amount = supplierAccount.getWithdrawAmount();//AccountSequence.getIncomeAmount(supplierAccount, DateUtil.getBeginOfDay(withdrawDate));
+
+        BigDecimal amount = supplierAccount.getWithdrawAmount();
+
         render("/WithdrawApproval/settle.html", supplierList, supplierId, withdrawDate, withdrawAccountList, amount, supplierAccount, supplier);
     }
 
@@ -194,7 +194,6 @@ public class WithdrawApproval extends Controller {
     public static void settle(Account supplierAccount, Date withdrawDate,
                               Long withdrawAccountId, BigDecimal amount, BigDecimal fee, String comment) {
         //生成结算账单
-        System.out.println("withdrawAccountId:" + withdrawAccountId);
         WithdrawAccount withdrawAccount = WithdrawAccount.findByIdAndUser(withdrawAccountId, supplierAccount.uid, AccountType.SUPPLIER);
         WithdrawBill bill = new WithdrawBill();
         bill.userName = withdrawAccount.userName;
