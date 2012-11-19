@@ -1,13 +1,13 @@
 package unit;
 
+import com.uhuila.common.constants.DeletedStatus;
+import factory.FactoryBoy;
 import models.cms.Block;
 import models.cms.BlockType;
 import org.junit.Before;
 import org.junit.Test;
 import play.modules.paginate.ModelPaginator;
-import play.test.Fixtures;
 import play.test.UnitTest;
-import com.uhuila.common.constants.DeletedStatus;
 
 /**
  * 公告单元测试.
@@ -17,11 +17,13 @@ import com.uhuila.common.constants.DeletedStatus;
  * Time: 3:48 PM
  */
 public class BlockUnitTest extends UnitTest {
+    Block block;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        Fixtures.delete(Block.class);
-        Fixtures.loadModels("fixture/blocks.yml");
+        FactoryBoy.deleteAll();
+        block = FactoryBoy.create(Block.class);
     }
 
     @Test
@@ -46,11 +48,9 @@ public class BlockUnitTest extends UnitTest {
 
     @Test
     public void testDelete() {
-        long id = (Long) Fixtures.idCache.get("models.cms.Block-Test");
+        Block.delete(block.id);
 
-        Block.delete(id);
-
-        Block deletedBlock = Block.findById(id);
+        Block deletedBlock = Block.findById(block.id);
 
         assertNotNull(deletedBlock);
         assertEquals(DeletedStatus.DELETED, deletedBlock.deleted);

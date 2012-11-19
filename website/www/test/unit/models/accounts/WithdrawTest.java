@@ -1,18 +1,15 @@
 package unit.models.accounts;
 
+import factory.FactoryBoy;
 import models.accounts.Account;
-import models.accounts.AccountSequence;
-import models.accounts.TradeBill;
 import models.accounts.WithdrawBill;
 import models.accounts.util.AccountUtil;
 import org.junit.Before;
 import org.junit.Test;
-import play.test.Fixtures;
 import play.test.UnitTest;
 
 import java.math.BigDecimal;
-
-import factory.FactoryBoy;
+import java.util.Date;
 
 /**
  * @author likang
@@ -43,7 +40,7 @@ public class WithdrawTest extends UnitTest {
         WithdrawBill bill = new WithdrawBill();
         bill.amount = balance;
         bill.save();
-        bill.apply("测试提现者", getConsumerAccount());
+        bill.apply("测试提现者", getConsumerAccount(), "consumerLoginName");
 
         assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPlatformWithdrawAccount().amount));
         assertEquals(0, BigDecimal.ZERO.compareTo(getConsumerAccount().amount));
@@ -56,8 +53,8 @@ public class WithdrawTest extends UnitTest {
         assertEquals(0, BigDecimal.ZERO.compareTo(getConsumerAccount().uncashAmount));
 
 
-        bill.apply("测试提现者", getConsumerAccount());
-        bill.agree(BigDecimal.ZERO, "测试提现成功");
+        bill.apply("测试提现者", getConsumerAccount(), "consumerLoginName");
+        bill.agree(BigDecimal.ZERO, "测试提现成功", new Date());
 
         assertEquals(0, balance.compareTo(AccountUtil.getPlatformWithdrawAccount().uncashAmount));
         assertEquals(0, BigDecimal.ZERO.compareTo(getConsumerAccount().amount));

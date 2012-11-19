@@ -25,3 +25,7 @@ supplier.brands=品牌
 withdraw.APPLIED=待审批
 withdraw.SUCCESS=成功
 withdraw.REJECTED=被拒绝
+
+accountSequence.null=
+accountSequence.CLEARED=已结算
+accountSequence.UNCLEARED=未结算

@@ -148,6 +148,7 @@ public class SupplierGoods extends Controller {
      */
     @ActiveNavigation("goods_add")
     public static void create(@Valid models.sales.Goods goods, @Required File imagePath, BigDecimal[] levelPrices) {
+        System.out.println("goods------");
         //TODO 仅仅在测试环境中会产生一个validation.invalid的错误，以下这段是为了让测试用例通过增加的代码
         if (Play.runingInTestMode() && validation.errorsMap().containsKey("imagePath")) {
             for (String key : validation.errorsMap().keySet()) {

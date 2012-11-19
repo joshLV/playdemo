@@ -5,10 +5,10 @@
 <meta name="Keywords" content="优惠券网,代金券，优惠券">
 #{/set}
 #{set 'moreStyles'}
-#{asset.css src:['/home/121112/home.css'] /}
+#{asset.css src:['/home/121113/home.css'] /}
 #{/set}
 #{set 'moreScripts'}
-#{asset.js src:['/u/slides.min.js','/home/121112/home.js'] /}
+#{asset.js src:['/u/slides.min.js','/home/121113/home.js'] /}
 #{/set}
 <div class="wrapper">
 <div id="content">
@@ -25,12 +25,12 @@
     <div class="side"><!-- 这里的style是多余的，开发时请很移除 -->
         #{if cas?.isLogin}
         <!-- 已登录 -->
-        <div class="status signed">
+        <div class="status signed" style="display:block">
             <div class="inner">
-                <a href="${helper.Domain.getHomeHost(request)}/coupons?condition.status=UNCONSUMED">待消费(<em>${unconsumedCount}</em>)</a>
-                <a href="${helper.Domain.getHomeHost(request)}/coupons"> 已节省<em>&yen;${savedMoney}</em></a>
-                <a href="${helper.Domain.getHomeHost(request)}/orders?condition.status=UNPAID">待付款(<em>${unpaidCount}</em>)</a>
-                <a href="${helper.Domain.getHomeHost(request)}/orders"> 查看更多</a>
+                <a href="${helper.Domain.getHomeHost(request)}/coupons?condition.status=UNCONSUMED" class="left">待消费(<em>${unconsumedCount}</em>)</a>
+                <a href="${helper.Domain.getHomeHost(request)}/coupons" class="right"> 已节省<em>&yen;${savedMoney?.format('#.#')}</em></a>
+                <a href="${helper.Domain.getHomeHost(request)}/orders?condition.status=UNPAID" class="left">待付款(<em>${unpaidCount}</em>)</a>
+                <a href="${helper.Domain.getHomeHost(request)}/orders" class="right"> 查看更多</a>
             </div>
         </div>
         #{/if}

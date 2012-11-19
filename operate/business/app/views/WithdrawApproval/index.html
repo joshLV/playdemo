@@ -130,7 +130,8 @@
     </ul>
     <input type="hidden" id="condition_interval" name="condition.interval"/>
 </form>
-
+<div class="clearfix"><a class="btn btn-primary pull-left" href="/withdraw/settle">结算</a></div>
+<br/>
 #{vx.tab
     name:'withdraw',
     enumItems: [models.accounts.WithdrawBillStatus.APPLIED,
@@ -140,10 +141,11 @@
     value:condition.status,
     form:'form'/}
 <div class="row-fluid">
+
     <table class="table table-striped">
         <tr>
             <th>申请时间</th>
-            <th>账户类型</th>
+            <th>账户</th>
             <th>申 请 者</th>
             <th>申请金额</th>
             <th>申请状态</th>
@@ -153,7 +155,7 @@
         #{paginate.list items:billPage, as:'withdrawBill'}
             <tr>
                 <td>${withdrawBill.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</td>
-                <td>&{'account.type.' + withdrawBill.account.accountType}</td>
+                <td>&{'account.type.' + withdrawBill.account.accountType}#{if org.apache.commons.lang.StringUtils.isNotBlank(withdrawBill.accountName)}(${withdrawBill.accountName})#{/if}</td>
                 <td>${withdrawBill.applier}</td>
                 <td>${withdrawBill.amount.formatCurrency('CNY')}</td>
                 <td>&{'withdraw.' + withdrawBill.status}</td>

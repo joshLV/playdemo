@@ -1,11 +1,7 @@
 package models.admin;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
+import play.db.jpa.Model;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,7 +15,12 @@ import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Query;
 import javax.persistence.Table;
-import play.db.jpa.Model;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
 
 @Entity
 @Table(name = "supplier_navigations")
@@ -153,13 +154,13 @@ public class SupplierNavigation extends Model {
 
     public static List<SupplierNavigation> getSecondLevelNavigations(String applicationName, String navName) {
         List<SupplierNavigation> parentStack = getNavigationParentStack(applicationName, navName);
+        System.out.println("parentStack:" + parentStack);
 
         if (parentStack == null || parentStack.size() < 1) {
             return Collections.emptyList();
         }
 
         SupplierNavigation topMenu = parentStack.get(0);
-
         return topMenu.children;
     }
 

@@ -66,7 +66,7 @@ public class UserWithdraw extends Controller {
             render("UserWithdraw/apply.html", withdraw, account);
         }
 
-        if (withdraw.apply(user.loginName, account)) {
+        if (withdraw.apply(user.loginName, account, user.loginName)) {
             sendNotification(withdraw);
             index(null);
         } else {

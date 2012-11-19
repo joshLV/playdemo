@@ -55,6 +55,7 @@ public class SupplierWithdraw extends Controller{
         Supplier supplier = Supplier.findById(supplierId);
         Account account = AccountUtil.getSupplierAccount(supplier.getId());
         List<WithdrawAccount> withdrawAccounts = WithdrawAccount.findByUser(supplier.getId(), AccountType.SUPPLIER);
+
         render(account, withdrawAccounts);
     }
 
@@ -84,7 +85,7 @@ public class SupplierWithdraw extends Controller{
         withdraw.cardNumber = withdrawAccount.cardNumber;
         withdraw.amount = amount;
 
-        if (withdraw.apply(supplier.fullName+"-"+SupplierRbac.currentUser().loginName, account)){
+        if (withdraw.apply(SupplierRbac.currentUser().loginName, account, supplier.otherName)){
             sendNotification(withdraw);
             index(null);
         }else {

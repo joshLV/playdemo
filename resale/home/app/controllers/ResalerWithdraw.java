@@ -49,7 +49,7 @@ public class ResalerWithdraw extends Controller{
             Validation.addError("withdraw.amount", "提现金额不能大于余额！！");
             render("ResalerWithdraw/apply.html", withdraw, account);
         }
-        if(withdraw.apply(resaler.loginName, account)){
+        if(withdraw.apply(resaler.loginName, account, resaler.userName)){
             index();
         }else {
             error("申请失败");

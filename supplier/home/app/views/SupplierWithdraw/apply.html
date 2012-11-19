@@ -25,12 +25,11 @@
                             <th>支行名称</th>
                             <th>银行卡号</th>
                         </tr>
-                        %{index = 0}%
                         #{list withdrawAccounts, as:'withdrawAccount'}
                             <tr>
                                 <td>
                                     <input type="radio" name="withdrawAccountId" value="${withdrawAccount.getId()}"
-                                        #{if ++index == 1} checked #{/if} >
+                                        #{if withdrawAccount_index == 1} checked #{/if} >
                                 </td>
                                 <td>${withdrawAccount.userName}</td>
                                 <td>${withdrawAccount.bankName}</td>
@@ -45,8 +44,8 @@
             </div>
             <div class="control-group">
                 <label class="control-label">提现金额</label>
-                <div class="controls">
-                    <input type="text" name="amount" class="input-small" placeholder="最少提现10元"/>
+                <div class="controls">${account.withdrawAmount}
+                    <input type="hidden" name="amount" value="${account.withdrawAmount}"/>
                     (账户可用余额:${account.amount}元)<br/><br/>
                     <span class="error">#{error 'amount'/}</span>
                 </div>

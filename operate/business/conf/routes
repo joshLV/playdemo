@@ -260,6 +260,9 @@ GET     /withdraw                               WithdrawApproval.index
 GET     /withdraw/detail/{id}                   WithdrawApproval.detail
 GET     /withdraw/{id}/detail                   WithdrawApproval.detail
 POST    /withdraw/approve                       WithdrawApproval.approve
+GET     /withdraw/settle                        WithdrawApproval.initSettle
+GET     /withdraw/confirmSettle                 WithdrawApproval.confirmSettle
+POST    /withdraw/settle                        WithdrawApproval.settle
 
 # 用户管理
 GET     /consumers                              OperateConsumers.index

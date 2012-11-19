@@ -6,14 +6,25 @@ import models.consumer.User;
 import models.consumer.UserInfo;
 import models.resale.Resaler;
 import models.sms.SMSUtil;
+import models.accounts.Account;
+import models.accounts.AccountType;
+import models.accounts.WithdrawAccount;
+import models.accounts.WithdrawBill;
+import models.accounts.WithdrawBillCondition;
+import models.accounts.WithdrawBillStatus;
+import models.accounts.util.AccountUtil;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,15 +56,15 @@ public class WithdrawApproval extends Controller {
 
     public static void detail(Long id, Long uid) {
         WithdrawBill bill = WithdrawBill.findById(id);
+        if (bill == null) {
+            error("withdraw bill not found");
+        }
         List<WithdrawBill> withdrawBillList = WithdrawBill.find("status=? and applier=?", WithdrawBillStatus.SUCCESS, bill.applier).fetch();
         BigDecimal temp = BigDecimal.ZERO;
         Double sum = 0d;
         String supplierFullName = "";
         for (WithdrawBill b : withdrawBillList) {
             sum += temp.add(b.amount).doubleValue();
-        }
-        if (bill == null) {
-            error("withdraw bill not found");
         }
         if (bill.account.accountType == AccountType.SUPPLIER) {
             Supplier supplier = Supplier.findById(uid);
@@ -108,8 +119,13 @@ public class WithdrawApproval extends Controller {
                 error("invalid fee");
                 return;
             }
-            bill.agree(fee, comment);
             sendContent += " 已结款. ";
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(bill.appliedAt);
+            cal.add(Calendar.DAY_OF_MONTH, -1);
+            Date withdrawDate = cal.getTime();
+            bill.agree(fee, comment, withdrawDate);
         } else if (action.equals("reject")) {
             bill.reject(comment);
             sendContent += " 未通过. ";
@@ -123,6 +139,74 @@ public class WithdrawApproval extends Controller {
         if (supplier != null && StringUtils.isNotBlank(supplier.accountLeaderMobile) && supplierUser != null && !supplier.accountLeaderMobile.equals(supplierUser.mobile)) {
             SMSUtil.send(sendContent, supplier.accountLeaderMobile);
         }
+        index(null);
+    }
+
+    /**
+     * 进入结算页面.
+     */
+    public static void initSettle() {
+        List<Supplier> supplierList = getWithdrawSupplierList();
+
+        render("/WithdrawApproval/settle.html", supplierList);
+    }
+
+    private static List<Supplier> getWithdrawSupplierList() {
+        List<Supplier> supplierList = Supplier.findUnDeleted();
+        List<Supplier> supplierResult = new ArrayList<>();
+
+        for (Supplier supplier : supplierList) {
+            Account supplierAccount = AccountUtil.getSupplierAccount(supplier.id);
+            BigDecimal amount = supplierAccount.getWithdrawAmount();
+            List<WithdrawAccount> withdrawAccountList = WithdrawAccount.findByUser(supplier.id, AccountType.SUPPLIER);
+
+            if (amount.compareTo(BigDecimal.ZERO) > 0 && CollectionUtils.isNotEmpty(withdrawAccountList)) {
+                supplier.otherName += "(账户金额:" + amount + ")";
+                supplierResult.add(supplier);
+            }
+        }
+        return supplierResult;
+    }
+
+    /**
+     * 结算信息确认.
+     */
+    public static void confirmSettle(Long supplierId, Date withdrawDate) {
+        System.out.println("supplierId:" + supplierId);
+        List<Supplier> supplierList = getWithdrawSupplierList();
+        Account supplierAccount = AccountUtil.getSupplierAccount(supplierId);
+        Supplier supplier = Supplier.findById(supplierId);
+        List<WithdrawAccount> withdrawAccountList = WithdrawAccount.findByUser(supplierId, AccountType.SUPPLIER);
+        BigDecimal amount = supplierAccount.getWithdrawAmount();//AccountSequence.getIncomeAmount(supplierAccount, DateUtil.getBeginOfDay(withdrawDate));
+        render("/WithdrawApproval/settle.html", supplierList, supplierId, withdrawDate, withdrawAccountList, amount, supplierAccount, supplier);
+    }
+
+    /**
+     * 结算商户资金.
+     *
+     * @param supplierAccount
+     * @param withdrawDate
+     * @param withdrawAccountId
+     * @param amount
+     * @param fee
+     * @param comment
+     */
+    public static void settle(Account supplierAccount, Date withdrawDate,
+                              Long withdrawAccountId, BigDecimal amount, BigDecimal fee, String comment) {
+        //生成结算账单
+        System.out.println("withdrawAccountId:" + withdrawAccountId);
+        WithdrawAccount withdrawAccount = WithdrawAccount.findByIdAndUser(withdrawAccountId, supplierAccount.uid, AccountType.SUPPLIER);
+        WithdrawBill bill = new WithdrawBill();
+        bill.userName = withdrawAccount.userName;
+        bill.bankCity = withdrawAccount.bankCity;
+        bill.bankName = withdrawAccount.bankName;
+        bill.subBankName = withdrawAccount.subBankName;
+        bill.cardNumber = withdrawAccount.cardNumber;
+        bill.amount = amount;
+        bill.fee = fee;
+        Supplier supplier = Supplier.findById(supplierAccount.uid);
+        bill.apply(OperateRbac.currentUser().userName, supplierAccount, supplier.otherName);
+        bill.agree(fee, comment, withdrawDate);
         index(null);
     }
 }

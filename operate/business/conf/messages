@@ -370,6 +370,7 @@ withdrawAccount.cardNumber=银行卡号
 
 withdraw.apply.withdraw_account=收款账户
 withdraw.apply.amount=提现金额
+withdrawDate=结算截止日期
 
 # 活动
 promotion.name=活动名称
@@ -503,3 +504,8 @@ area.displayOrder= 推荐度
 CITY=城市
 DISTRICT=区
 AREA=商圈
+
+
+accountSequence.null=
+accountSequence.CLEARED=已结算
+accountSequence.UNCLEARED=未结算

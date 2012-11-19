@@ -577,6 +577,7 @@ public class OperateGoods extends Controller {
         } else {
             redirect(BASE_URL + "?page=" + page + "&" + condition);
         }
+        redirect(BASE_URL + "?page=" + page + "&" + condition);
     }
 
     /**
