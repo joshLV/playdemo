@@ -350,6 +350,7 @@ public class SupplierGoods extends Controller {
      * @param id 商品ID
      */
     public static void apply(@As(",") Long... id) {
+        System.out.println("apply");
         updateStatus(GoodsStatus.APPLY, id);
     }
 
@@ -368,6 +369,7 @@ public class SupplierGoods extends Controller {
      * @param id 商品ID
      */
     public static void cancelApply(@As(",") Long... id) {
+        System.out.println("cancel apply");
         updateStatus(GoodsStatus.OFFSALE, id);
     }
 
@@ -379,8 +381,12 @@ public class SupplierGoods extends Controller {
      */
     private static void updateStatus(GoodsStatus status, Long... ids) {
         models.sales.Goods.updateStatus(status, ids);
-        for (int i = 0; i < ids.length; i++) {
-            Goods goodsItem = models.sales.Goods.findById(ids[i]);
+        System.out.println("ids=" + ids + ", length=" + ids.length);
+        for (Long id : ids) {
+            System.out.println("xxx id=" + id);
+            Goods goodsItem = models.sales.Goods.findById(id);
+            System.out.println("goodsItem.satus=" + goodsItem.status);
+            
             String createdFrom = "Sp";
             goodsItem.createHistory(createdFrom);
         }
