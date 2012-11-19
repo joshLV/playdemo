@@ -176,7 +176,8 @@ public class AccountSequence extends Model {
 
     public static BigDecimal getIncomeAmount(Account account, Date lastDate) {
         EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("select b.balance from AccountSequence b where b.account=:account and b.sequenceFlag=:sequenceFlag and b.createdAt<:lastDate order by created_at DESC");
+        Query q = entityManager.createQuery("select b.balance from AccountSequence b where b.account=:account and b.createdAt<:lastDate order by created_at DESC");
+        q.setParameter("sequenceFlag", account);
         q.setParameter("account", account);
         q.setParameter("lastDate", lastDate);
         q.setMaxResults(1);

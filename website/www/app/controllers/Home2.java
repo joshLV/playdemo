@@ -53,7 +53,7 @@ public class Home2 extends Controller {
                 CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_2F")
         );
 
-        //最新上架，新品推荐
+        //最新上架，新品推荐,相同商户不同商品只取一个最后上架的商品
         List<models.sales.Goods> newGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_NEW4"), new CacheCallBack<List<models.sales.Goods>>() {
             @Override
             public List<models.sales.Goods> loadData() {
@@ -62,7 +62,7 @@ public class Home2 extends Controller {
         });
 
         //猜你喜欢
-        List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECOMMENDS"), new CacheCallBack<List<models.sales.Goods>>() {
+        List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.BrowsedGoods.CACHEKEY, "WWW_YOURLIKE4"), new CacheCallBack<List<models.sales.Goods>>() {
             @Override
             public List<models.sales.Goods> loadData() {
                 List<BrowsedGoods> browsedGoodsList = BrowsedGoods.findTop(4, 2);
