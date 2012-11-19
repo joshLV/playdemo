@@ -36,8 +36,8 @@
     </service_shop_info>
     <start_date><![CDATA[${goods?.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}]]></start_date>
     <end_date><![CDATA[${goods?.expireAt?.format('yyyy-MM-dd HH:mm:ss')}]]></end_date>
-    <original_price><![CDATA[${goods?.originalPrice}]]></original_price>
-    <sale_price><![CDATA[${goods?.salePrice}]]></sale_price>
+    <original_price><![CDATA[${goods?.faceValue}]]></original_price>
+    <sale_price><![CDATA[${goods?.getResalePrice()}]]></sale_price>
     <team_max_num><![CDATA[${goods?.getRealStocks()}]]></team_max_num>
     <team_min_num><![CDATA[1]]></team_min_num>
     <source_sale_num><![CDATA[${goods?.getRealSaleCount()}]]></source_sale_num>
