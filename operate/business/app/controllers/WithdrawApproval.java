@@ -78,10 +78,10 @@ public class WithdrawApproval extends Controller {
         SupplierUser supplierUser = null;
         User user = null;
         Resaler resaler = null;
-        String[] arrayName = bill.applier.split("-");
         String title = "";
-        String mobile = "";
+        String mobile = null;
         if (bill.account.accountType == AccountType.SUPPLIER) {
+            String[] arrayName = bill.applier.split("-");
             supplier = Supplier.findById(bill.account.uid);
             supplierUser = SupplierUser.findById(bill.account.uid);
             if (supplierUser != null) {
