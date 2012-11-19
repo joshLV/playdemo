@@ -22,28 +22,69 @@ import java.util.List;
 public class ClearGoodsCacheJob extends Job {
 
     /**
-     * 查询三分钟内即将按上架时间显示的抽奖商品，清除缓存
+     * 清除缓存
      */
     @Override
     public void doJob() {
-        String sql = "select g from Goods g where g.deleted=:deleted and g.status =:status and g.isHideOnsale = false and g.isLottery=:isLottery " +
-                "and g.beginOnSaleAt >:beginDate and g.beginOnSaleAt <=:endDate and g.expireAt > :expireAt" +
-                " order by g.id";
-        Query query = Goods.em().createQuery(sql);
-        query.setParameter("deleted", DeletedStatus.UN_DELETED);
-        query.setParameter("status", GoodsStatus.ONSALE);
-        query.setParameter("isLottery", Boolean.TRUE);
-        query.setParameter("beginDate", DateHelper.beforeMinuts(1));
-        query.setParameter("endDate", DateHelper.afterMinuts(1));
-        query.setParameter("expireAt", new Date());
-        query.setFirstResult(0);
-        query.setMaxResults(200);
-        List<Goods> goodsList = query.getResultList();
+        //查询三分钟内即将按上架时间显示的商品，清除缓存
+        List<Goods> onsaleGoodsList = getBeginSaleList();
+        clearGoodsCache(onsaleGoodsList);
+        //查询三分钟内即将下架的商品，清除缓存，然后不显示在网站
+        List<Goods> offSaleList = getOffSaleList();
+        clearGoodsCache(offSaleList);
+    }
+
+    /**
+     * 清除缓存
+     *
+     * @param goodsList
+     */
+    private void clearGoodsCache(List<Goods> goodsList) {
         for (Goods goods : goodsList) {
             CacheHelper.delete(Goods.CACHEKEY);
             CacheHelper.delete(Goods.CACHEKEY + goods.id);
             CacheHelper.delete(Goods.CACHEKEY_SALECOUNT + goods.id);
             CacheHelper.delete(Goods.CACHEKEY_BASEID + goods.id);
         }
+    }
+
+    /**
+     * 查询三分钟内即将按上架时间显示的商品
+     *
+     * @return
+     */
+    private List<Goods> getBeginSaleList() {
+        String sql = "select g from Goods g where g.deleted=:deleted and g.status =:status and g.isHideOnsale = false " +
+                "and g.beginOnSaleAt >:beginDate and g.beginOnSaleAt <=:endDate and g.expireAt > :expireAt" +
+                " order by g.id";
+        Query query = Goods.em().createQuery(sql);
+        query.setParameter("deleted", DeletedStatus.UN_DELETED);
+        query.setParameter("status", GoodsStatus.ONSALE);
+        query.setParameter("beginDate", DateHelper.beforeMinuts(1));
+        query.setParameter("endDate", DateHelper.afterMinuts(1));
+        query.setParameter("expireAt", new Date());
+        query.setFirstResult(0);
+        query.setMaxResults(200);
+        return query.getResultList();
+    }
+
+    /**
+     * 查询三分钟内即将下架的抽奖商品，
+     *
+     * @return
+     */
+    private List<Goods> getOffSaleList() {
+        String sql = "select g from Goods g where g.deleted=:deleted and g.status =:status and g.isHideOnsale = false " +
+                "and g.beginOnSaleAt <=:beginOnSaleAt and g.expireAt > :beginDate and g.expireAt <= :endDate" +
+                " order by g.id";
+        Query query = Goods.em().createQuery(sql);
+        query.setParameter("deleted", DeletedStatus.UN_DELETED);
+        query.setParameter("status", GoodsStatus.ONSALE);
+        query.setParameter("beginOnSaleAt", new Date());
+        query.setParameter("beginDate", DateHelper.beforeMinuts(1));
+        query.setParameter("endDate", DateHelper.afterMinuts(1));
+        query.setFirstResult(0);
+        query.setMaxResults(200);
+        return query.getResultList();
     }
 }
