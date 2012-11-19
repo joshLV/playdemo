@@ -28,6 +28,7 @@ public class OperateUserFactory extends ModelFactory<OperateUser> {
         user.roles.add(role("admin"));
         user.roles.add(role("webop"));
         user.roles.add(role("manager"));
+        user.roles.add(role("test"));
         return user;
     }
 
@@ -36,6 +37,17 @@ public class OperateUserFactory extends ModelFactory<OperateUser> {
         user.loginName = "test" + FactoryBoy.sequence(OperateUser.class);
         user.userName = "TestName" + FactoryBoy.sequence(OperateUser.class);
     }
+
+    @Factory(name = "role")
+    public void defineRole(OperateUser user) {
+        user.mobile = "13211111111";
+        user.roles = new ArrayList<OperateRole>();
+        user.roles.add(role("sales"));
+        user.roles.add(role("customservice"));
+        user.roles.add(role("editor"));
+        user.roles.add(role("account"));
+    }
+
 
     public static OperateRole role(String roleName) {
         OperateRole role = OperateRole.find("byKey", roleName).first();
