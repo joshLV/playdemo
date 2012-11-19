@@ -72,7 +72,7 @@ public class SuppliersTest extends FunctionalTest {
         Http.Response response = GET("/suppliers/" + supplier.id + "/edit");
         assertStatus(200, response);
         Supplier supplier = (Supplier) renderArgs("supplier");
-        Set<OperateUser> operateUserList = (Set<OperateUser>) renderArgs("operateUserList");
+        List<OperateUser> operateUserList = (List<OperateUser>) renderArgs("operateUserList");
         List<WithdrawAccount> withdrawAccounts = (List<WithdrawAccount>) renderArgs("withdrawAccounts");
         SupplierUser supplierUser = (SupplierUser) renderArgs("admin");
         String baseDomain = (String) renderArgs("baseDomain");

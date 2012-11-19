@@ -50,7 +50,7 @@ public class SecKillGoodsUnitTest extends UnitTest {
 
         condition.goodsTitle = "TEST";
         secKillGoodsList = SecKillGoods.findByCondition(condition, 0, 10);
-        assertEquals(5, secKillGoodsList.size());
+        assertEquals(6, secKillGoodsList.size());
 
     }
 
