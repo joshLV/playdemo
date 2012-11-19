@@ -13,11 +13,10 @@ import models.supplier.Supplier;
 import java.util.ArrayList;
 
 /**
- * Created with IntelliJ IDEA.
+ * SupplierUser的测试对象.
  * User: hejun
  * Date: 12-8-23
  * Time: 上午11:42
- * To change this template use File | Settings | File Templates.
  */
 public class SupplierUserFactory extends ModelFactory<SupplierUser> {
 

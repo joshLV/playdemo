@@ -204,10 +204,10 @@ public class Shop extends Model {
     public String getAreaName() {
         String areaName;
         Area area = Area.findById(areaId);
-        if (area == null)
+        if (area == null) {
             return "";
-        else
-            areaName = area.name;
+        }
+        areaName = area.name;
         return areaName;
     }
 

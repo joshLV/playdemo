@@ -12,8 +12,26 @@ import play.libs.Images;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Mobile;
 
-import javax.persistence.*;
-import java.util.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Entity
 @Table(name = "supplier_users")
@@ -100,7 +118,7 @@ public class SupplierUser extends Model {
             joinColumns = @JoinColumn(name = "user_id"))
     public Set<SupplierPermission> permissions;
 
-    public SupplierUser(){
+    public SupplierUser() {
         supplierUserType = SupplierUserType.HUMAN;
         createdAt = new Date();
     }
@@ -117,16 +135,17 @@ public class SupplierUser extends Model {
                                                                     int pageNumber, int pageSize) {
         return getSupplierUserList(SupplierUserType.HUMAN, loginName, userName, jobNumber, supplierId, pageNumber, pageSize);
     }
-        /**
-         * 查询操作员信息
-         *
-         * @param loginName  用户名
-         * @param pageNumber 页数
-         * @param pageSize   记录数
-         * @return 操作员信息
-         */
-        public static JPAExtPaginator<SupplierUser> getSupplierUserList(SupplierUserType type, String loginName, String userName, String jobNumber, Long supplierId,
-        int pageNumber, int pageSize) {
+
+    /**
+     * 查询操作员信息
+     *
+     * @param loginName  用户名
+     * @param pageNumber 页数
+     * @param pageSize   记录数
+     * @return 操作员信息
+     */
+    public static JPAExtPaginator<SupplierUser> getSupplierUserList(SupplierUserType type, String loginName, String userName, String jobNumber, Long supplierId,
+                                                                    int pageNumber, int pageSize) {
         StringBuilder sql = new StringBuilder("1=1");
         Map<String, Object> params = new HashMap<>();
         if (supplierId != null) {
@@ -135,9 +154,9 @@ public class SupplierUser extends Model {
         }
 
         if (type != null) {
-            if(type == SupplierUserType.HUMAN) {
+            if (type == SupplierUserType.HUMAN) {
                 sql.append(" and (s.supplierUserType = :supplierUserType or s.supplierUserType is null)");
-            }else {
+            } else {
                 sql.append(" and s.supplierUserType = :supplierUserType");
             }
             params.put("supplierUserType", type);
@@ -165,8 +184,6 @@ public class SupplierUser extends Model {
         usersPage.setPageSize(pageSize);
         return usersPage;
     }
-
-
 
 
     /**
@@ -213,43 +230,49 @@ public class SupplierUser extends Model {
         List params = new ArrayList();
         params.add(DeletedStatus.UN_DELETED);
         params.add(loginName);
-        Supplier supplier2 = new Supplier();
-        supplier2.id = supplierId;
-        params.add(supplier2);
+        Supplier supplier = new Supplier();
+        supplier.id = supplierId;
+        params.add(supplier);
         if (id != null) {
             sq.append("and id <> ?");
             params.add(id);
         }
-        String returnFlag = "0";
+
         List<SupplierUser> supplierUserList = SupplierUser.find(sq.toString(), params.toArray()).fetch();
 
         //用户名存在的情况
-        if (supplierUserList.size() > 0) return "1";
+        if (supplierUserList.size() > 0) {
+            return "1";
+        }
 
         sq = new StringBuilder("deleted=? and mobile = ? and supplier=? ");
-        params = new ArrayList();
+        params.clear();
         params.add(DeletedStatus.UN_DELETED);
         params.add(mobile);
-        params.add(supplier2);
+        params.add(supplier);
         if (id != null) {
             sq.append("and id <> ?");
             params.add(id);
         }
         //手机存在的情况
         supplierUserList = SupplierUser.find(sq.toString(), params.toArray()).fetch();
-        if (supplierUserList.size() > 0) return "2";
+        if (supplierUserList.size() > 0) {
+            return "2";
+        }
         //工号存在
         sq = new StringBuilder("deleted=? and jobNumber = ? and supplier=? ");
-        params = new ArrayList();
+        params.clear();
         params.add(DeletedStatus.UN_DELETED);
         params.add(jobNumber);
-        params.add(supplier2);
+        params.add(supplier);
         if (id != null) {
             sq.append("and id <> ?");
             params.add(id);
         }
         supplierUserList = SupplierUser.find(sq.toString(), params.toArray()).fetch();
-        if (supplierUserList.size() > 0) return "3";
+        if (supplierUserList.size() > 0) {
+            return "3";
+        }
 
         return "0";
     }
@@ -279,16 +302,16 @@ public class SupplierUser extends Model {
     // FIXME: findAdmin这个名字，是指只找Admin用户？这个应该是findUser
     public static SupplierUser findAdmin(Long supplierId, String admin) {
         Supplier supplier = Supplier.findById(supplierId);
-        return find("bySupplierAndLoginNameAndDeleted", supplier, admin,DeletedStatus.UN_DELETED).first();
+        return find("bySupplierAndLoginNameAndDeleted", supplier, admin, DeletedStatus.UN_DELETED).first();
     }
 
     public static SupplierUser findUserByDomainName(String domainName, String loginName) {
-        Supplier supplier = Supplier.find("byDomainNameAndDeleted", domainName,DeletedStatus.UN_DELETED).first();
+        Supplier supplier = Supplier.find("byDomainNameAndDeleted", domainName, DeletedStatus.UN_DELETED).first();
         if (supplier == null) {
             return null;
         }
 //        System.out.println(supplier+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        return SupplierUser.find("bySupplierAndLoginNameAndDeleted", supplier, loginName,DeletedStatus.UN_DELETED).first();
+        return SupplierUser.find("bySupplierAndLoginNameAndDeleted", supplier, loginName, DeletedStatus.UN_DELETED).first();
     }
 
     /**
@@ -360,8 +383,8 @@ public class SupplierUser extends Model {
     }
 
     public static SupplierUser findByUnDeletedId(Long id) {
-          SupplierUser supplierUser = SupplierUser.find("deleted = ? and id = ?",
-                DeletedStatus.UN_DELETED,id).first();
+        SupplierUser supplierUser = SupplierUser.find("deleted = ? and id = ?",
+                DeletedStatus.UN_DELETED, id).first();
         return supplierUser;
     }
 }

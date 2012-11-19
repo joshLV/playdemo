@@ -1,5 +1,6 @@
 package models.accounts;
 
+import com.uhuila.common.util.DateUtil;
 import play.db.jpa.Model;
 
 import javax.persistence.Column;
@@ -35,7 +36,7 @@ public class Account extends Model {
     public BigDecimal promotionAmount;      //可支付、不可提现余额
 
     @Column(name = "uncash_amount")
-    public BigDecimal uncashAmount;         //不可支付、不可提现余额
+    public BigDecimal uncashAmount;         //不可支付、不可提现余额,申请提现待审批的
 
     @Enumerated(EnumType.STRING)
     public AccountStatus status;            //账户状态
@@ -57,6 +58,19 @@ public class Account extends Model {
     public static final long PARTNER_TENPAY = 101L; //财付通虚拟账户
     public static final long PARTNER_KUAIQIAN = 102L; //快钱虚拟账户
 
+
+    /**
+     * 从昨天到以前所有的未结算过的可提现金额.
+     */
+    @Transient
+    public BigDecimal getWithdrawAmount() {
+        BigDecimal incomeAmount = AccountSequence.getIncomeAmount(this, DateUtil.getBeginOfDay());
+        if (uncashAmount == null) {
+            return incomeAmount == null ? BigDecimal.ZERO : incomeAmount;
+        }
+        return incomeAmount.remainder(uncashAmount);
+    }
+
     public Account() {
 
     }
@@ -77,6 +91,10 @@ public class Account extends Model {
 
     public static Account getConsumer(Long uid) {
         return Account.find("byUidAndAccountType", uid, AccountType.CONSUMER).first();
+    }
+
+    public static Account getSupplier(Long uid) {
+        return Account.find("byUidAndAccountType", uid, AccountType.SUPPLIER).first();
     }
 
 }

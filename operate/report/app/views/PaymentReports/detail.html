@@ -18,6 +18,7 @@
             <th>订单信息</th>
             <th>充值金额</th>
             <th>支付渠道</th>
+            <th>结算状态</th>
         </tr>
     </thead>
     <tbody>
@@ -34,9 +35,11 @@
         </td>
         <td> ${accountSequence.changeAmount?.negate().formatCurrency('CNY')}</td>
         <td>${accountSequence.payMethod}</td>
+        <td>&{'accountSequence.'+accountSequence?.settlementStatus?:'CLEARED'}</td>
+
         %{total = total.add(accountSequence.changeAmount)}%
     </tr>
     #{/list}
-    <tr><td colspan="3" style="text-align:right">汇总</td><td>${total.negate().formatCurrency('CNY')}</td><td></td></tr>
+    <tr><td colspan="4" style="text-align:right">汇总</td><td>${total.negate().formatCurrency('CNY')}</td><td></td></tr>
     </tbody>
 </table>

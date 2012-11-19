@@ -263,14 +263,36 @@ public class OrderItems extends Model {
      */
     public static long getUnpaidOrderCount(Long userId, AccountType userType) {
         EntityManager entityManager = JPA.em();
-//        return count("order.userId=? " +
-//                "and order.userType=? and status=? and goods.isLottery=? group by 'order'",userId, userType, OrderStatus.UNPAID, false);
-        Query q = entityManager.createQuery("select count(*) from OrderItems o where o.order.userId=:userId " +
+        Query query = entityManager.createQuery("select o from OrderItems o where o.order.userId=:userId " +
+                "and o.order.userType=:userType and o.status=:status group by o.order");
+
+        query.setParameter("userId", userId);
+        query.setParameter("userType", userType);
+        query.setParameter("status", OrderStatus.UNPAID);
+        return CollectionUtils.isEmpty(query.getResultList()) ? 0l : query.getResultList().size();
+//        long count =  count("from OrderItems o where o.order.userId=? and o.order.userType=? and o.status=? group by o.order",userId, userType, OrderStatus.UNPAID);
+//        System.out.println("count:" + count);
+//        return count;
+        /*for (OrderItems orderItems : orderItemsList) {
+            System.out.println("orderItems.order.id:" + orderItems.order.id);
+        }
+        Query q = entityManager.createQuery("select count(o) from OrderItems o where o.order.userId=:userId " +
                 "and o.order.userType=:userType and o.status=:status group by o.order");
         q.setParameter("userId", userId);
         q.setParameter("userType", userType);
         q.setParameter("status", OrderStatus.UNPAID);
-        return CollectionUtils.isEmpty(q.getResultList()) ? 0l : (Long) q.getSingleResult();
+        System.out.println("q.getResultList():" + q.getResultList().get(0));
+        System.out.println("q.getSingleResult():" + q.getSingleResult());
+
+
+        return CollectionUtils.isEmpty(q.getResultList()) ? 0l : (Long) q.getSingleResult();*/
+    }
+
+    public static List<OrderItems> findBySupplierOrder(long supplierId, long orderId){
+        Query query =  OrderItems.em().createQuery("select o from OrderItems o where o.order = :order and o.goods.supplierId = :supplier");
+        query.setParameter("order", Order.findById(orderId));
+        query.setParameter("supplier", supplierId);
+        return query.getResultList();
     }
 
 }

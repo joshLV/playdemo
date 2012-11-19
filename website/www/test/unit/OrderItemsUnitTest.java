@@ -54,8 +54,13 @@ public class OrderItemsUnitTest extends UnitTest {
 
     @Test
     public void testGetUnpaidOrderCount() {
+        Order order = FactoryBoy.create(Order.class);
+        OrderItems orderItems = FactoryBoy.create(OrderItems.class);
+        orderItems.order = order;
+        orderItems.save();
+
         long count = OrderItems.getUnpaidOrderCount(user.id, AccountType.CONSUMER);
-        assertEquals(1, count);
+        assertEquals(2, count);
     }
 
 }

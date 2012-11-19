@@ -1,10 +1,10 @@
 package models.accounts;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.uhuila.common.util.DateUtil;
+import models.accounts.util.SerialNumberUtil;
+import play.db.jpa.JPA;
+import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,11 +15,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import models.accounts.util.SerialNumberUtil;
-import play.db.jpa.JPA;
-import play.db.jpa.Model;
-import play.modules.paginate.JPAExtPaginator;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 账户资金变动流水
@@ -44,7 +44,7 @@ public class AccountSequence extends Model {
     @Column(name = "trade_type")
     public TradeType tradeType;
 
-    public BigDecimal balance;                  //变动后可提现余额与不可提现余额余额
+    public BigDecimal balance;                  //变动后可提现余额与不可提现余额
 
     @Column(name = "cash_balance")
     public BigDecimal cashBalance;              //变动后可提现余额
@@ -73,6 +73,13 @@ public class AccountSequence extends Model {
 
     public String remark;                       //备注
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "settlement_status")
+    public SettlementStatus settlementStatus = SettlementStatus.UNCLEARED;   //结算状态
+
+    @ManyToOne
+    public WithdrawBill withdrawBill;
+
     @Transient
     public String orderNumber;                  //订单号
 
@@ -88,6 +95,7 @@ public class AccountSequence extends Model {
     @Transient
     public String platform;                     //平台
 
+
     public AccountSequence() {
 
     }
@@ -98,29 +106,29 @@ public class AccountSequence extends Model {
      * @param account       变动账户
      * @param sequenceFlag  入账或者出账
      * @param tradeType     交易类型
-     * @param changeAmount 变动总金额
+     * @param changeAmount  变动总金额
      * @param cashBalance   变动后账户可提现余额
      * @param uncashBalance 变动后账户不可提现余额
      * @param tradeId       交易ID
      */
     public AccountSequence(Account account, AccountSequenceFlag sequenceFlag, TradeType tradeType,
-            BigDecimal changeAmount, BigDecimal promotionChangeAmount,
-            BigDecimal cashBalance, BigDecimal uncashBalance, BigDecimal promotionBalance,  long tradeId) {
+                           BigDecimal changeAmount, BigDecimal promotionChangeAmount,
+                           BigDecimal cashBalance, BigDecimal uncashBalance, BigDecimal promotionBalance, long tradeId) {
 
-        this.account                = account;
-        this.sequenceFlag           = sequenceFlag;
-        this.tradeType              = tradeType;
-        this.changeAmount           = changeAmount;
-        this.promotionChangeAmount  = promotionChangeAmount;
-        this.balance                = cashBalance.add(uncashBalance);
-        this.cashBalance            = cashBalance;
-        this.uncashBalance          = uncashBalance;
-        this.promotionBalance       = promotionBalance;
-        this.tradeId                = tradeId;
+        this.account = account;
+        this.sequenceFlag = sequenceFlag;
+        this.tradeType = tradeType;
+        this.changeAmount = changeAmount;
+        this.promotionChangeAmount = promotionChangeAmount;
+        this.balance = cashBalance.add(uncashBalance);
+        this.cashBalance = cashBalance;
+        this.uncashBalance = uncashBalance;
+        this.promotionBalance = promotionBalance;
+        this.tradeId = tradeId;
 
-        this.createdAt              = new Date();
-        this.serialNumber           = SerialNumberUtil.generateSerialNumber(this.createdAt);
-        this.remark                 = null;
+        this.createdAt = new Date();
+        this.serialNumber = SerialNumberUtil.generateSerialNumber(this.createdAt);
+        this.remark = null;
     }
 
     public static JPAExtPaginator<AccountSequence> findByCondition(AccountSequenceCondition condition, int pageNumber, int pageSize) {
@@ -136,9 +144,9 @@ public class AccountSequence extends Model {
     public static AccountSequenceSummary findSummaryByCondition(AccountSequenceCondition condition) {
         EntityManager entityManager = JPA.em();
         Query query = entityManager.createQuery("SELECT a.sequenceFlag, count(a.sequenceFlag), " +
-                "sum(a.changeAmount) FROM AccountSequence a  WHERE "+condition.getFilter()+" group by a.sequenceFlag");
+                "sum(a.changeAmount) FROM AccountSequence a  WHERE " + condition.getFilter() + " group by a.sequenceFlag");
         for (String key : condition.getParams().keySet()) {
-            query.setParameter(key,condition.getParams().get(key));
+            query.setParameter(key, condition.getParams().get(key));
         }
         List<Object[]> result = query.getResultList();
         return new AccountSequenceSummary(result);
@@ -166,4 +174,35 @@ public class AccountSequence extends Model {
         return result;
     }
 
+    public static BigDecimal getIncomeAmount(Account account, Date lastDate) {
+        EntityManager entityManager = JPA.em();
+        Query q = entityManager.createQuery("select b.balance from AccountSequence b where b.account=:account and b.sequenceFlag=:sequenceFlag and b.createdAt<:lastDate order by created_at DESC");
+        q.setParameter("account", account);
+        q.setParameter("lastDate", lastDate);
+        q.setMaxResults(1);
+        return (BigDecimal) q.getSingleResult();
+    }
+
+    /**
+     * 把指定商户的所有指定日期之前的收入金额结算掉,返回update 的记录数
+     *
+     * @param supplierId    商户id
+     * @param withdrawDate  结算截止时间
+     * @return
+     */
+    public static int withdraw(Account supplierAccount, Date withdrawDate, WithdrawBill withdrawBill) {
+        if (supplierAccount == null) {
+            return 0;
+        }
+        EntityManager entityManager = JPA.em();
+        // 把指定商户的所有指定日期之前的收入金额结算状态改为已结算
+        Query query = entityManager.createQuery(" update AccountSequence as s set s.settlementStatus=:settlementStatus, withdrawBill = :withdrawBill " +
+                "where account=:account and createdAt<=:withdrawDate");
+        query.setParameter("settlementStatus", SettlementStatus.CLEARED);
+        query.setParameter("withdrawBill", withdrawBill);
+        query.setParameter("account", supplierAccount);
+        query.setParameter("withdrawDate", DateUtil.getEndOfDay(withdrawDate));
+        //update 的记录数
+        return query.executeUpdate();
+    }
 }

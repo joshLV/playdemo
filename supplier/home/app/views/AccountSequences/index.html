@@ -50,10 +50,11 @@
             <td width="10%">订单号</td>
             <td width="30%">备注</td>
             <td width="10%">创建时间</td>
-            <td width="10%">交易类型</td>
+            <td width="5%">交易类型</td>
             <td width="10%">收入(元)</td>
             <td width="10%">支出(元)</td>
             <td width="10%">账户余额(元)</td>
+            <td width="5%">结算状态</td>
         </tr>
     #{paginate.list items:accountSequences, as:'accountSequence'}
         <tr>
@@ -69,6 +70,7 @@
                 ${accountSequence?.changeAmount?.formatCurrency('CNY')}
             #{/if}</td>
             <td>${accountSequence?.balance}</td>
+            <td>&{'accountSequence.'+accountSequence?.settlementStatus?:'CLEARED'}</td>
         </tr>
     #{/paginate.list}
 
