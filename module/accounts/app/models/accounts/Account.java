@@ -65,8 +65,11 @@ public class Account extends Model {
     @Transient
     public BigDecimal getWithdrawAmount() {
         BigDecimal incomeAmount = AccountSequence.getIncomeAmount(this, DateUtil.getBeginOfDay());
-        if (uncashAmount == null) {
+        if (uncashAmount == null ) {
             return incomeAmount == null ? BigDecimal.ZERO : incomeAmount;
+        }
+        if (incomeAmount.compareTo(uncashAmount) <= 0){
+            return BigDecimal.ZERO;
         }
 
         return incomeAmount.subtract(uncashAmount);

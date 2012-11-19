@@ -44,14 +44,16 @@
             </div>
             <div class="control-group">
                 <label class="control-label">提现金额</label>
-                <div class="controls">${account.withdrawAmount}
+                <div class="controls">${account.withdrawAmount?.formatCurrency('CNY')}
                     <input type="hidden" name="amount" value="${account.withdrawAmount}"/>
                     (账户可用余额:${account.amount}元)<br/><br/>
                     <span class="error">#{error 'amount'/}</span>
                 </div>
             </div>
             <div class="form-actions">
+                #{if account.withdrawAmount.compareTo(BigDecimal.ZERO)>0}
                 <button type="submit" class="btn btn-primary">提交申请</button>
+                #{/if}
                 <a class="btn" href="/withdraw">取消</a>
             </div>
         </fieldset>
