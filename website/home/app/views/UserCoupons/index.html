@@ -163,7 +163,7 @@
             #{paginate.list items:couponsList, as:'coupon'}
                 %{
                 if (coupon.orderItems.goodsHistoryId != null) {
-                    goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/ph/" + coupon.orderItems.goodsHistoryId;
+                    goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" + coupon.orderItems.goods.id+ "/h/" + coupon.orderItems.goodsHistoryId;
                 } else {
                     goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" + coupon.orderItems.goods.id;
                 }
