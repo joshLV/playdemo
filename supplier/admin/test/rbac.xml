@@ -18,7 +18,7 @@
         <permission key="ROLE_EDIT" text="修改"/>
     </permission>
 
-    <permission key="PERM_TEST" text="测试权限" roles="test,sales,clerk,editor">
+    <permission key="PERM_TEST" text="测试权限" roles="test">
     </permission>
 
     <navigation key="main" text="系统管理" action="Application.index" display-order="99">

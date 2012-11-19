@@ -1,7 +1,6 @@
 package controllers;
 
 import models.accounts.Account;
-import models.accounts.AccountType;
 import models.accounts.WithdrawAccount;
 import models.accounts.WithdrawBill;
 import models.accounts.WithdrawBillCondition;
@@ -25,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import static models.accounts.AccountType.SUPPLIER;
 
 /**
  * 审批提现申请
@@ -65,51 +66,24 @@ public class WithdrawApproval extends Controller {
         for (WithdrawBill b : withdrawBillList) {
             sum += temp.add(b.amount).doubleValue();
         }
-        if (bill.account.accountType == AccountType.SUPPLIER) {
+        if (bill.account.accountType == SUPPLIER) {
             Supplier supplier = Supplier.findById(uid);
             supplierFullName = supplier.fullName;
         }
         render(bill, uid, sum, supplierFullName);
     }
 
+    /**
+     * 审批提现申请.
+     *
+     * @param id
+     * @param action
+     * @param fee
+     * @param comment
+     */
     public static void approve(Long id, String action, BigDecimal fee, String comment) {
         WithdrawBill bill = WithdrawBill.findById(id);
-        Supplier supplier = null;
-        SupplierUser supplierUser = null;
-        User user = null;
-        Resaler resaler = null;
-        String title = "";
-        String mobile = null;
-        if (bill.account.accountType == AccountType.SUPPLIER) {
-            String[] arrayName = bill.applier.split("-");
-            supplier = Supplier.findById(bill.account.uid);
-            supplierUser = SupplierUser.findById(bill.account.uid);
-            if (supplierUser != null) {
-                mobile = supplierUser.mobile;
-                title = arrayName[0];
-            }
-        } else if (bill.account.accountType == AccountType.CONSUMER) {
-            user = User.findById(bill.account.uid);
-            UserInfo userInfo = UserInfo.find("user=?", user).first();
-            if (user != null) {
-                mobile = user.mobile;
-            }
-            if (userInfo != null) {
-                if (StringUtils.isNotBlank(userInfo.fullName)) {
-                    title = userInfo.fullName;
-                } else if (StringUtils.isNotBlank(user.loginName)) {
-                    title = user.loginName;
-                }
-            }
-        } else if (bill.account.accountType == AccountType.RESALER) {
-            resaler = Resaler.findById(bill.account.uid);
-            if (resaler != null) {
-                title = bill.applier;
-                mobile = resaler.mobile;
-            }
-        }
-        String sendContent = title + " 申请提现:" + bill.amount;
-        if (bill == null || bill.status != WithdrawBillStatus.APPLIED) {
+        if (bill.status != WithdrawBillStatus.APPLIED) {
             error("cannot find the withdraw bill or the bill is processed");
             return;
         }
@@ -118,27 +92,98 @@ public class WithdrawApproval extends Controller {
                 error("invalid fee");
                 return;
             }
-            sendContent += " 已结款. ";
 
             Calendar cal = Calendar.getInstance();
             cal.setTime(bill.appliedAt);
             cal.add(Calendar.DAY_OF_MONTH, -1);
             Date withdrawDate = cal.getTime();
+
             bill.agree(fee, comment, withdrawDate);
+
+            sendAgreedSMS(bill, comment);
         } else if (action.equals("reject")) {
             bill.reject(comment);
-            sendContent += " 未通过. ";
-        }
-        if (StringUtils.isNotBlank(comment)) {
-            sendContent += "备注:" + comment;
-        }
-        if (StringUtils.isNotBlank(mobile) && StringUtils.isNotBlank(title)) {
-            SMSUtil.send(sendContent, mobile);
-        }
-        if (supplier != null && StringUtils.isNotBlank(supplier.accountLeaderMobile) && supplierUser != null && !supplier.accountLeaderMobile.equals(supplierUser.mobile)) {
-            SMSUtil.send(sendContent, supplier.accountLeaderMobile);
+
+            sendRejectedSMS(bill, comment);
         }
         index(null);
+    }
+
+    /**
+     * 发送拒绝提现申请的短信.
+     *
+     * @param bill
+     * @param comment
+     */
+    private static void sendRejectedSMS(WithdrawBill bill, String comment) {
+        sendWithdrawnSMS(bill, comment, "申请提现:" + bill.amount + " 未通过.");
+
+    }
+
+    /**
+     * 发送同意提现申请的短信.
+     *
+     * @param bill
+     * @param comment
+     */
+    private static void sendAgreedSMS(WithdrawBill bill, String comment) {
+        sendWithdrawnSMS(bill, comment, " 申请提现:" + bill.amount + " 已结款.");
+    }
+
+    private static void sendWithdrawnSMS(WithdrawBill bill, String comment, String sendContent) {
+        Supplier supplier = Supplier.findById(bill.account.uid);
+
+        String title = null;
+        String mobile = null;
+
+
+        if (StringUtils.isNotBlank(comment)) {
+            sendContent += " 备注:" + comment;
+        }
+
+        switch (bill.account.accountType) {
+            case SUPPLIER:
+                String[] arrayName = bill.applier == null ? new String[0] : bill.applier.split("-");
+                SupplierUser supplierUser = SupplierUser.findAdmin(bill.account.uid, arrayName[1]);
+                if (supplierUser != null) {
+                    mobile = supplierUser.mobile;
+                    title = arrayName[0];
+                }
+                if (supplier != null && StringUtils.isNotBlank(supplier.accountLeaderMobile) && supplierUser != null && !supplier.accountLeaderMobile.equals(supplierUser.mobile)) {
+                    SMSUtil.send(sendContent, supplier.accountLeaderMobile);
+                }
+
+                break;
+            case CONSUMER:
+                User user = User.findById(bill.account.uid);
+                UserInfo userInfo = UserInfo.find("byUser", user).first();
+                if (user == null || userInfo == null) {
+                    return;
+                }
+                mobile = user.mobile;
+                if (StringUtils.isNotBlank(userInfo.fullName)) {
+                    title = userInfo.fullName;
+                } else if (StringUtils.isNotBlank(user.loginName)) {
+                    title = user.loginName;
+                }
+
+                break;
+            case RESALER:
+                Resaler resaler = Resaler.findById(bill.account.uid);
+                if (resaler == null) {
+                    return;
+                }
+                mobile = resaler.mobile;
+                title = bill.applier;
+
+                break;
+        }
+        if (StringUtils.isBlank(mobile) || StringUtils.isBlank(title)) {
+            return;
+        }
+        sendContent = "【一百券】" + title + ", " + sendContent;
+        SMSUtil.send(sendContent, mobile);
+
     }
 
     /**
@@ -157,7 +202,7 @@ public class WithdrawApproval extends Controller {
         for (Supplier supplier : supplierList) {
             Account supplierAccount = AccountUtil.getSupplierAccount(supplier.id);
             BigDecimal amount = supplierAccount.getWithdrawAmount();
-            List<WithdrawAccount> withdrawAccountList = WithdrawAccount.findByUser(supplier.id, AccountType.SUPPLIER);
+            List<WithdrawAccount> withdrawAccountList = WithdrawAccount.findByUser(supplier.id, SUPPLIER);
 
             if (amount.compareTo(BigDecimal.ZERO) > 0 && CollectionUtils.isNotEmpty(withdrawAccountList)) {
                 supplier.otherName += "(账户金额:" + amount + ")";
@@ -174,7 +219,7 @@ public class WithdrawApproval extends Controller {
         List<Supplier> supplierList = getWithdrawSupplierList();
         Account supplierAccount = AccountUtil.getSupplierAccount(supplierId);
         Supplier supplier = Supplier.findById(supplierId);
-        List<WithdrawAccount> withdrawAccountList = WithdrawAccount.findByUser(supplierId, AccountType.SUPPLIER);
+        List<WithdrawAccount> withdrawAccountList = WithdrawAccount.findByUser(supplierId, SUPPLIER);
 
         BigDecimal amount = supplierAccount.getWithdrawAmount();
 
@@ -194,7 +239,7 @@ public class WithdrawApproval extends Controller {
     public static void settle(Account supplierAccount, Date withdrawDate,
                               Long withdrawAccountId, BigDecimal amount, BigDecimal fee, String comment) {
         //生成结算账单
-        WithdrawAccount withdrawAccount = WithdrawAccount.findByIdAndUser(withdrawAccountId, supplierAccount.uid, AccountType.SUPPLIER);
+        WithdrawAccount withdrawAccount = WithdrawAccount.findByIdAndUser(withdrawAccountId, supplierAccount.uid, SUPPLIER);
         WithdrawBill bill = new WithdrawBill();
         bill.userName = withdrawAccount.userName;
         bill.bankCity = withdrawAccount.bankCity;
@@ -206,6 +251,8 @@ public class WithdrawApproval extends Controller {
         Supplier supplier = Supplier.findById(supplierAccount.uid);
         bill.apply(OperateRbac.currentUser().userName, supplierAccount, supplier.otherName);
         bill.agree(fee, comment, withdrawDate);
+        sendWithdrawnSMS(bill, comment, "您的账户中有" + bill.amount + "已结款, 请查收.");
+
         index(null);
     }
 }

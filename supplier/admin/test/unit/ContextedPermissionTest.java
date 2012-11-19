@@ -51,8 +51,8 @@ public class ContextedPermissionTest extends UnitTest {
 	public void testTestUserHasPermission() {
 		ContextedPermission.init(supplierUser);
 		
-		assertEquals(3, ContextedPermission.getAllowPermissions().size());
+		assertEquals(2, ContextedPermission.getAllowPermissions().size());
 		
-		assertTrue(ContextedPermission.hasPermission("PERM_TEST"));
+		assertTrue(ContextedPermission.hasPermission("USER_ADD"));
 	}
 }
