@@ -1539,6 +1539,7 @@ public class Goods extends Model {
 
     /**
      * 获取最新商品
+     * 相同商户不同商品只取该商户的一个最后上架的商品
      *
      * @param limit
      * @return
@@ -1547,7 +1548,7 @@ public class Goods extends Model {
         Date nowDate = new Date();
         // 找出5倍需要的商品，然后手工过滤
         List<Goods> allGoods = Goods.find("status = ? and deleted = ? and isHideOnsale = false and beginOnSaleAt<=? and expireAt > ? order by createdAt DESC",
-                GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, nowDate, nowDate).fetch(limit * 5);
+                GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, nowDate, nowDate).fetch(limit * 10);
         Set<Long> supplierSet = new HashSet<>();
         List<Goods> goods = new ArrayList<>();
         for (Goods g : allGoods) {
