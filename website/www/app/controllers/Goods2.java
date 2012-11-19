@@ -527,7 +527,8 @@ public class Goods2 extends Controller {
      *
      * @param ghId 商品
      */
-    public static void showHistory(final long gId, final long ghId) {
+    public static void showHistory(final long gId, final long ghId, final long orderItemId) {
+        User user = SecureCAS.getUser();
         final Long userId = SecureCAS.getUser() == null ? null : SecureCAS
                 .getUser().getId();
         GoodsHistory goodsHistory = GoodsHistory.findById(ghId);
@@ -545,7 +546,15 @@ public class Goods2 extends Controller {
                                 ghId, GoodsType.NORMALGOODS, 0, 10);
                     }
                 });
+        Goods goods = Goods.findById(gId);
+        OrderItems orderItems = OrderItems.findById(orderItemId);
+        renderArgs.put("goodsUpdateAt", goods.updatedAt);
         renderArgs.put("questions", questions);
+        renderArgs.put("ghShow", true);
+        renderArgs.put("goodsId", gId);
+        if (orderItems != null) {
+            renderArgs.put("buyNumber", orderItems.buyNumber);
+        }
         render("Goods2/show.html");
     }
 
