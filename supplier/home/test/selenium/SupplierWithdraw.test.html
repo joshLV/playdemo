@@ -33,18 +33,5 @@ load:['fixture/roles.yml','fixture/supplierusers.yml'] /}
     clickAndWait('link=申请提现')
     click('name=withdrawAccountId')
     type('name=amount','1')
-    clickAndWait('css=button.btn.btn-primary')
-    verifyTextPresent('提现金额不能小于10元')
-    type('name=amount','400')
-    clickAndWait('css=button.btn.btn-primary')
-    verifyTextPresent('不能大于余额')
-    type('name=amount','20')
-    clickAndWait('css=button.btn.btn-primary')
-    verifyTextPresent('待审批')
-    clickAndWait('link=查看详情')
-    verifyTitle('提现详情')
-    verifyTextPresent('待审批')
-    clickAndWait('link=返回')
-    verifyTitle('提现')
 
 #{/selenium}
