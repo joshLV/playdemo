@@ -104,10 +104,9 @@ public class OperateAdminMenuCheckTest extends FunctionalTest {
             @Override
             public void build(OperateUser ou) {
                 ou.mobile = "13211111111";
-
             }
         });
-        System.out.println("OperateUser.findAll().size()>>>>" + OperateUser.findAll().size());
+
 
         // 加载test/rbac.xml配置文件
         VirtualFile file = VirtualFile.open("test/rbac.xml");
@@ -126,9 +125,6 @@ public class OperateAdminMenuCheckTest extends FunctionalTest {
 
     @Test
     public void testMenuBaseUrl() {
-//        Long id = (Long) Fixtures.idCache.get("models.admin.OperateUser-user3");
-//        OperateUser user = OperateUser.findById(operateUser.id);
-
         // 设置测试登录的用户名
         operateUser.refresh();
         Security.setLoginUserForTest(operateUser.loginName);

@@ -9,6 +9,7 @@ import models.admin.SupplierUser;
 import models.admin.SupplierUserType;
 import models.sales.Shop;
 import models.supplier.Supplier;
+import util.DateHelper;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -59,5 +60,24 @@ public class SupplierUserFactory extends ModelFactory<SupplierUser> {
         supplierUser.jobNumber = "001";
         return supplierUser;
     }
+
+    @Factory(name = "SalesAdmin")
+    public SupplierUser defineWithSalesAdmin(SupplierUser supplierUser) {
+        // 定义角色
+        supplierUser.roles = new ArrayList<>();
+        supplierUser.roles.add(role("sales"));
+        supplierUser.roles.add(role("admin"));
+        return supplierUser;
+    }
+
+    @Factory(name = "Test")
+    public SupplierUser defineWithTest(SupplierUser su) {
+        // 定义角色
+        su.loginName = "test";
+        su.roles = new ArrayList<>();
+        su.roles.add(role("test"));
+        return su;
+    }
+
 
 }
