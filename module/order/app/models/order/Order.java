@@ -584,7 +584,7 @@ public class Order extends Model {
             */
             orderItem.save();
 
-            //更新搜索服务器中的商品库存
+            //FIXME: “更新搜索服务器中的商品库存”- 不应该通过保存商品的方式更新搜索服务
             orderItem.goods.save();
 
             if (orderItem.goods.materialType == MaterialType.REAL) {
