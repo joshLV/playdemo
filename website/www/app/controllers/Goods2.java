@@ -525,27 +525,37 @@ public class Goods2 extends Controller {
     /**
      * 商品历史详情.
      *
-     * @param id 商品
+     * @param ghId 商品
      */
-    public static void showHistory(final long id) {
+    public static void showHistory(final long gId, final long ghId, final long orderItemId) {
+        User user = SecureCAS.getUser();
         final Long userId = SecureCAS.getUser() == null ? null : SecureCAS
                 .getUser().getId();
-        GoodsHistory goodsHistory = GoodsHistory.findById(id);
+        GoodsHistory goodsHistory = GoodsHistory.findById(ghId);
         if (goodsHistory == null) {
             error(404, "没有找到该商品！");
         }
         showGoodsHistory(goodsHistory);
         List<CmsQuestion> questions = CacheHelper.getCache(CacheHelper
-                .getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id,
+                .getCacheKey(models.sales.Goods.CACHEKEY_BASEID + ghId,
                         "QUESTION_u" + userId + "_c" + null),
                 new CacheCallBack<List<CmsQuestion>>() {
                     @Override
                     public List<CmsQuestion> loadData() {
                         return CmsQuestion.findOnGoodsShow(userId, null,
-                                id, GoodsType.NORMALGOODS, 0, 10);
+                                ghId, GoodsType.NORMALGOODS, 0, 10);
                     }
                 });
+        Goods goods = Goods.findById(gId);
+        OrderItems orderItems = OrderItems.findById(orderItemId);
+        System.out.println("goods>>>>" + goods);
+        renderArgs.put("goodsUpdateAt", goods.updatedAt);
         renderArgs.put("questions", questions);
+        renderArgs.put("ghShow", true);
+        renderArgs.put("goodsId", gId);
+        if (orderItems != null) {
+            renderArgs.put("buyNumber", orderItems.buyNumber);
+        }
         render("Goods2/show.html");
     }
 

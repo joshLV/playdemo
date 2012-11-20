@@ -33,7 +33,7 @@
         #{list items:orderItems, as:'orderItem' }
             %{
                 if (orderItem.goodsHistoryId != null) {
-                    goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/ph/" + orderItem.goodsHistoryId;
+                    goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" + orderItem.goods.id + "/h/" + orderItem.goodsHistoryId+"/orderItem/"+orderItem.id;
                 } else {
                     goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" + orderItem.goods.id;
                 }

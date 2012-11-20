@@ -55,7 +55,7 @@
 
             $('.select-outlet').click(function () {
                 if ($('.select-outlet input').attr('checked') == 'checked') {
-                    $('#couponshops').load('/coupon/'+id+'/shops');
+                    $('#couponshops').load('/coupon/' + id + '/shops');
                     $('#popupbox .outlet-list').show();
                 } else {
                     $('#popupbox .outlet-list').hide();
@@ -75,13 +75,10 @@
     }
 
 
-//    $("input[name='outlet-item[]']").click(
-//    $("[name='aa']").click(
-//    $('input:checkbox[name=aa]').click(
-//    $("#aa").click(
-
-
-
+    //    $("input[name='outlet-item[]']").click(
+    //    $("[name='aa']").click(
+    //    $('input:checkbox[name=aa]').click(
+    //    $("#aa").click(
 
 
     function sendMessageDialog() {
@@ -89,12 +86,12 @@
         var cnt = $("#times_" + id).val();
         var item = [];
         $("input[name='outlet-item[]']:checked").each(function () {
-                item.push($(this).val())
-            })
-        var couponshopsId=item.join(",");
+            item.push($(this).val())
+        })
+        var couponshopsId = item.join(",");
 
         $.ajax({
-            url:"/coupons-message/" + id + "/send?couponshopsId="+couponshopsId,
+            url:"/coupons-message/" + id + "/send?couponshopsId=" + couponshopsId,
             type:'GET',
             error:function () {
                 alert('发送失败!');
@@ -161,13 +158,16 @@
                 </tr>
                 </thead>
             #{paginate.list items:couponsList, as:'coupon'}
-                %{
+            %{
                 if (coupon.orderItems.goodsHistoryId != null) {
-                    goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/ph/" + coupon.orderItems.goodsHistoryId;
+                goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" +
+                coupon.orderItems.goods.id+ "/h/" +
+                coupon.orderItems.goodsHistoryId+"/orderItem/"+coupon?.orderItems?.id;
                 } else {
-                    goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" + coupon.orderItems.goods.id;
+                goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" +
+                coupon.orderItems.goods.id;
                 }
-                }%            
+                }%
                 <tbody>
                 <tr class="sep-row">
                     <td colspan="7"></td>
@@ -251,11 +251,11 @@
                     <ul id="couponshopsitem" class="outlet-list clearfix" name="shops">
                         <input type="hidden" name="couponshopsId" id="couponshopsId" value="${couponshopsId}"/>
 
-                    <span id="couponshops"></span>
-                        *{id="outlet-item1"}*
-                        *{id="aa"}*
-                        *{<li><input name="aa" id="outlet-item1" class="outlet-item"  type="checkbox"> <label for="outlet-item1">徐汇店</label></li>}*
-                        *{<li><input class="outlet-item" id="outlet-item2" type="checkbox"> <label for="outlet-item2">静安店</li>}*
+                        <span id="couponshops"></span>
+                    *{id="outlet-item1"}*
+                    *{id="aa"}*
+                    *{<li><input name="aa" id="outlet-item1" class="outlet-item"  type="checkbox"> <label for="outlet-item1">徐汇店</label></li>}*
+                    *{<li><input class="outlet-item" id="outlet-item2" type="checkbox"> <label for="outlet-item2">静安店</li>}*
 
                     </ul>
                 </li>
