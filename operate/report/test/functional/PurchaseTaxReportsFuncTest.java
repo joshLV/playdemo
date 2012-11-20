@@ -1,12 +1,15 @@
 package functional;
 
 import controllers.operate.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.PurchaseECouponReport;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
 import models.admin.SupplierUser;
 import models.consumer.UserWebIdentification;
 import models.order.ECoupon;
+import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderItems;
 import models.report.DetailDailyReport;
@@ -28,7 +31,9 @@ import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -44,44 +49,22 @@ public class PurchaseTaxReportsFuncTest extends FunctionalTest {
     @Before
     public void setup() {
 
-        Fixtures.delete(OperateUser.class);
-        Fixtures.delete(OperateRole.class);
-        Fixtures.delete(DetailDailyReport.class);
-        Fixtures.delete(ShopDailyReport.class);
-        Fixtures.delete(GoodsDailyReport.class);
-        Fixtures.delete(TotalDailyReport.class);
-        Fixtures.delete(OrderItems.class);
-        Fixtures.delete(Order.class);
-        Fixtures.delete(Goods.class);
-        Fixtures.delete(Shop.class);
-        Fixtures.delete(Category.class);
-        Fixtures.delete(Brand.class);
-        Fixtures.delete(Supplier.class);
-        Fixtures.delete(SupplierUser.class);
-        Fixtures.delete(UserWebIdentification.class);
-        Fixtures.delete(ECoupon.class);
-        Fixtures.delete(PurchaseECouponReport.class);
-        Fixtures.delete(PurchaseECouponReport.class);
-        Fixtures.loadModels("fixture/suppliers_unit.yml");
-        Fixtures.loadModels("fixture/categories_unit.yml");
-        Fixtures.loadModels("fixture/brands_unit.yml");
-        Fixtures.loadModels("fixture/shops_unit.yml");
-        Fixtures.loadModels("fixture/goods_unit.yml");
-        Fixtures.loadModels("fixture/orders.yml");
-        Fixtures.loadModels("fixture/detail_daily_reports.yml");
-        Fixtures.loadModels("fixture/shop_daily_reports.yml");
-        Fixtures.loadModels("fixture/goods_daily_reports.yml");
-        Fixtures.loadModels("fixture/total_daily_reports.yml");
-        Fixtures.loadModels("fixture/user_web_identifications.yml");
-        Fixtures.loadModels("fixture/ecoupon.yml");
+        FactoryBoy.deleteAll();
+        FactoryBoy.create(ECoupon.class, new BuildCallback<ECoupon>() {
+            @Override
+            public void build(ECoupon target) {
+                target.shop = FactoryBoy.lastOrCreate(Shop.class);
+                target.status = ECouponStatus.CONSUMED;
+                target.consumedAt = new Date();
+            }
+        });
 
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
 
-        Long id = (Long) Fixtures.idCache.get("models.admin.OperateUser-user1");
-        OperateUser user = OperateUser.findById(id);
+        OperateUser operateUser = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名
-        Security.setLoginUserForTest(user.loginName);
+        Security.setLoginUserForTest(operateUser.loginName);
     }
 
     @After
@@ -99,34 +82,16 @@ public class PurchaseTaxReportsFuncTest extends FunctionalTest {
 
     @Test
     public void testSearchWithRightCondition() {
-        /*
-        List<ECoupon> eCoupons = ECoupon.findAll();
-        System.out.println("size----------------------: "+eCoupons.size());
-        for ( ECoupon eCoupon : eCoupons){
-            System.out.println("id: "+eCoupon.getId()+" and ComsumedAt"+ (eCoupon.consumedAt==null? "null":eCoupon.consumedAt.toString()));
-        }
-         */
-        /*
-        long id = (Long) Fixtures.idCache.get("models.order.ECoupon-ecoupon_002");
-        assertNotNull(id);
-        ECoupon eCoupon = ECoupon.findById(id);
-        assertNotNull(eCoupon);
-        System.out.println(eCoupon.order.userType);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-        Set<String> keys = Fixtures.idCache.keySet();
-        List<ECoupon> coupons = new ArrayList<>();
-        for(String key : keys){
-            if (key.startsWith("models.order.ECoupon")){
-                ECoupon coupon = ECoupon.findById((Long)(Fixtures.idCache.get(key)));
-                if(coupon != null){
-                    coupons.add(coupon);
-                }
-            }
-        }
-        System.out.println("----------------- "+ coupons.size());
-        */
-
-        Http.Response response = GET("/reports/purchase?condition.supplier.id=0&condition.goodsLike=&condition.createdAtBegin=2012-07-01&condition.createdAtEnd=2012-08-01&condition.interval=");
+        String url ="/reports/purchase?" +
+                "condition.supplier.id="+ FactoryBoy.last(ECoupon.class).shop.supplierId +
+                "&condition.goodsLike=" +
+                "&condition.createdAtBegin=" + simpleDateFormat.format(new Date(System.currentTimeMillis() - 60000L*60*24*2)) +
+                "&condition.createdAtEnd=" + simpleDateFormat.format(new Date(System.currentTimeMillis() + 60000L*60*24*30)) +
+                "&condition.interval=";
+        System.out.println(url);
+        Http.Response response = GET(url);
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
         ValuePaginator<PurchaseECouponReport> reportPage = (ValuePaginator<PurchaseECouponReport>) renderArgs("reportPage");
