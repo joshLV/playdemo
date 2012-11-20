@@ -548,6 +548,7 @@ public class Goods2 extends Controller {
                 });
         Goods goods = Goods.findById(gId);
         OrderItems orderItems = OrderItems.findById(orderItemId);
+        System.out.println("goods>>>>" + goods);
         renderArgs.put("goodsUpdateAt", goods.updatedAt);
         renderArgs.put("questions", questions);
         renderArgs.put("ghShow", true);
