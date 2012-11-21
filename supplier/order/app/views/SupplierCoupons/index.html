@@ -50,6 +50,12 @@
                            name="condition.consumedAtEnd"
                            onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtEnd?.format()}">
                 </td>
+                <td>&nbsp;&nbsp付款时间&nbsp;&nbsp;
+                    <input type="text" id="condition_paid_begin" class="input-medium Wdate"
+                           name="condition.paidAtBegin"
+                           onfocus="WdatePicker({readOnly:true})" value="${condition?.paidAtBegin?.format()}"> -
+                    <input type="text" id="condition_paid_end" class="input-medium Wdate" name="condition.paidAtEnd"
+                           onfocus="WdatePicker({readOnly:true})" value="${condition?.paidAtEnd?.format()}">
                 <td> 退款时间
                     <input type="text" id="condition_refund_begin" class="input-medium Wdate"
                            name="condition.refundAtBegin"

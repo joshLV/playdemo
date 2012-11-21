@@ -1,9 +1,8 @@
 package unit;
 
-import java.text.ParseException;
-import java.util.Date;
-import java.util.List;
-
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
+import factory.callback.SequenceCallback;
 import models.accounts.AccountType;
 import models.consumer.User;
 import models.order.CouponHistory;
@@ -14,16 +13,15 @@ import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Goods;
 import models.supplier.Supplier;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.modules.paginate.JPAExtPaginator;
 import play.test.UnitTest;
 import util.DateHelper;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
-import factory.callback.SequenceCallback;
+
+import java.text.ParseException;
+import java.util.Date;
+import java.util.List;
 
 public class CouponsUnitTest extends UnitTest {
     Supplier supplier;
@@ -31,7 +29,7 @@ public class CouponsUnitTest extends UnitTest {
     Goods goods;
     Order order;
     ECoupon ecoupon;
-    
+
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
@@ -47,9 +45,12 @@ public class CouponsUnitTest extends UnitTest {
             }
         });
         ecoupon = FactoryBoy.create(ECoupon.class);
+
         FactoryBoy.batchCreate(3, ECoupon.class, new SequenceCallback<ECoupon>() {
             @Override
             public void sequence(ECoupon e, int seq) {
+                e.order.paidAt = DateHelper.beforeDays(2);
+                e.order.save();
             }
         });
     }
@@ -71,8 +72,8 @@ public class CouponsUnitTest extends UnitTest {
     @Test
     public void testUserQueryCoupons() throws ParseException {
         CouponsCondition condition = new CouponsCondition();
-        condition.createdAtBegin = DateHelper.beforeDays(30);
-        condition.createdAtEnd = new Date();
+        condition.paidAtBegin = DateHelper.beforeDays(10);
+        condition.paidAtEnd = new Date();
         condition.status = ECouponStatus.UNCONSUMED;
         condition.goodsName = "";
         condition.userId = user.id;
@@ -90,13 +91,13 @@ public class CouponsUnitTest extends UnitTest {
     public void testECoupon() {
         final Order order1 = FactoryBoy.create(Order.class);
         List<OrderItems> list = FactoryBoy.batchCreate(3, OrderItems.class,
-                        new SequenceCallback<OrderItems>() {
-                            @Override
-                            public void sequence(OrderItems oi, int seq) {
-                                oi.goods = FactoryBoy.create(Goods.class);
-                                oi.order = order1;
-                            }
-                        });
+                new SequenceCallback<OrderItems>() {
+                    @Override
+                    public void sequence(OrderItems oi, int seq) {
+                        oi.goods = FactoryBoy.create(Goods.class);
+                        oi.order = order1;
+                    }
+                });
         order1.orderItems = list;
         order1.save();
         assertEquals(3, list.size());

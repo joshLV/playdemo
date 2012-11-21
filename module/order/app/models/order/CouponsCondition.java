@@ -40,8 +40,8 @@ public class CouponsCondition implements Serializable {
     public String searchItems;
     public String searchKey;
     public boolean isLottery;
-    public Date paidAtBegin=DateUtil.getYesterday();
-    public Date paidAtEnd=new Date();
+    public Date paidAtBegin;
+    public Date paidAtEnd;
     public String userName;
 
     public Long operatorId;
