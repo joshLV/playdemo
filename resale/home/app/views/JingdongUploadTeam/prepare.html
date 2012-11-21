@@ -80,7 +80,7 @@
     <p><input type="text" name="marketPrice" value="${goods.faceValue}"></p>
 
     <p>团购现价<b>[必填]</b></p>
-    <p><input type="text" name="teamPrice" value="${goods.salePrice}"></p>
+    <p><input type="text" name="teamPrice" value="${goods.getResalePrice()}"></p>
 
     <p>团购开始时间<b>[必填]</b></p>
     <p><input type="text" name="beginTime" onfocus="WdatePicker({readOnly:true})" class="Wdate" ></p>

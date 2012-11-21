@@ -1,5 +1,7 @@
 package controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import controllers.modules.resale.cas.SecureCAS;
 import models.dangdang.DDAPIInvokeException;
 import models.dangdang.DDAPIUtil;
@@ -9,6 +11,9 @@ import models.resale.ResalerFav;
 import models.sales.Category;
 import models.sales.Goods;
 import models.sales.GoodsDeployRelation;
+import models.sales.GoodsThirdSupport;
+import models.sales.Shop;
+import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.data.binding.As;
 import play.mvc.Controller;
@@ -16,6 +21,7 @@ import play.mvc.With;
 import play.templates.Template;
 import play.templates.TemplateLoader;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +33,9 @@ import java.util.Map;
  * Time: 上午10:57
  */
 @With(SecureCAS.class)
-public class DDAPIPushGoods extends Controller {
+public class DDPushGoods extends Controller {
+    public static final String DATE_FORMAT = "yyy-MM-dd HH:mm:ss";
+
     /**
      * 批量发布商品
      *
@@ -87,5 +95,43 @@ public class DDAPIPushGoods extends Controller {
         }
 
         renderJSON("{\"error\":\"" + pushFlag + "\",\"info\":\"" + failGoods + "\"}");
+    }
+
+    public static void prepare(Long goodsId) {
+        Logger.info("DDAPIPushGoods API begin!");
+        Resaler user = SecureCAS.getResaler();
+        if (!Resaler.DD_LOGIN_NAME.equals(user.loginName)) {
+            error("user is not dangdang resaler");
+        }
+        models.sales.Goods goods = models.sales.Goods.findById(goodsId);
+        List<Shop> shops = Arrays.asList(goods.getShopList().toArray(new Shop[]{}));
+        render(goods, shops);
+    }
+
+    public static void push() {
+        Map<String, String> params = DDAPIUtil.filterPlayParameter(request.params.all());
+        Long goodsId = Long.valueOf(StringUtils.trimToEmpty(params.get("goodsId")));
+        Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();
+        Resaler user = SecureCAS.getResaler();
+        if (!Resaler.DD_LOGIN_NAME.equals(user.loginName)) {
+            error("user is not dangdang resaler");
+        }
+
+        Goods goods = Goods.findOnSale(goodsId);
+        ResalerFav resalerFav = ResalerFav.find("byGoodsAndResaler", goods, user).first();
+        if (resalerFav == null) {
+            error("no fav found");
+        }
+        String goodsData = gson.toJson(params);
+
+        GoodsThirdSupport support = GoodsThirdSupport.getSupportGoods(goods, OuterOrderPartner.DD);
+        if (support == null) {
+            new GoodsThirdSupport().generate(goods, goodsData, OuterOrderPartner.DD);
+        } else {
+            support.goodsData = goodsData;
+            support.save();
+        }
+
+        render();
     }
 }
