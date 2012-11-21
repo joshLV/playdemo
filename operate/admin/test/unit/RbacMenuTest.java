@@ -6,6 +6,8 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+
+import factory.FactoryBoy;
 import models.admin.OperateNavigation;
 import operate.rbac.Application;
 import operate.rbac.ContextedMenu;
@@ -28,7 +30,8 @@ public class RbacMenuTest extends UnitTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setupDatabase() {
-        Fixtures.delete(OperateNavigation.class);
+        FactoryBoy.deleteAll();
+
         Fixtures.loadModels("fixture/navigation.yml");
 
         // 加载test/rbac.xml配置文件

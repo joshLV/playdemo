@@ -509,3 +509,7 @@ AREA=商圈
 accountSequence.null=
 accountSequence.CLEARED=已结算
 accountSequence.UNCLEARED=未结算
+
+searchHotKeywords.keywords=热门搜索词
+searchHotKeywords.times=查询频率
+searchHotKeywords.updatedAt=最后搜索时间

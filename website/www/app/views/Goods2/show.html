@@ -126,6 +126,7 @@
                             <span class="addCart-icon"></span>
                             <h4>已成功添加到购物车</h4>
 
+
                             <p>购物车共有<em id="result-count"></em>件，总计<strong id="result-amount"></strong>元</p>
                             <a class="view-carts" href="/carts">查看购物车<b></b></a>
                             <a class="close-tips" id="J_closeTips" href="#">关闭</a>
@@ -149,16 +150,16 @@
             <span>分享到：</span>
             <a class="qq" id="qq" href=""></a>
             <a class="weibo"
-               href="http://service.weibo.com/share/share.php?url=${tjUrl.urlEncode()}&amp;appkey=&amp;title=我刚刚在@一百券网 上看到这个商品：${goods.title} 价格真实惠，#{if cas?.isLogin}现在注册购买还能折上再减1％，#{/if}分享给大家看看！地址: &amp;pic=&amp;ralateUid=&amp;language="
+               href="http://service.weibo.com/share/share.php?url=${tjUrl.urlEncode()}&amp;appkey=&amp;title=我刚刚在@一百券网 上看到这个商品：${goods.title} 价格真实惠，只要&yen;${goods.salePrice}，#{if cas?.isLogin}现在注册购买还能折上再减1％，#{/if}分享给大家看看！地址: &amp;pic=&amp;ralateUid=&amp;language="
                target="_blank"></a>
             <a class="qzone"
-               href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?title=${goods.name}&desc=我刚刚在一百券网上看到这个商品：${goods.title} 价格真实惠，#{if cas?.isLogin}现在注册购买还能折上再减1％，#{/if}分享给大家看看！&url=${tjUrl.urlEncode()}"
+               href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?title=${goods.name}&desc=我刚刚在一百券网上看到这个商品：${goods.title} 价格真实惠，只要&yen;${goods.salePrice}，#{if cas?.isLogin}现在注册购买还能折上再减1％，#{/if}分享给大家看看！&url=${tjUrl.urlEncode()}"
                target="_blank"></a>
             <a class="tqq"
-               href="http://share.v.t.qq.com/index.php?c=share&a=index&url=${tjUrl.urlEncode()}&title=我刚刚在一百券网上看到这个商品：${goods.title} 价格真实惠，#{if cas?.isLogin}现在注册购买还能折上再减1％，#{/if}分享给大家看看！地址:&appkey=801cf76d3cfc44ada52ec13114e84a96"
+               href="http://share.v.t.qq.com/index.php?c=share&a=index&url=${tjUrl.urlEncode()}&title=我刚刚在一百券网上看到这个商品：${goods.title} 价格真实惠，只要&yen;${goods.salePrice}，#{if cas?.isLogin}现在注册购买还能折上再减1％，#{/if}分享给大家看看！地址:&appkey=801cf76d3cfc44ada52ec13114e84a96"
                target="_blank"></a>
             <a class="renren"
-               href="http://widget.renren.com/dialog/share?url=${tjUrl.urlEncode()}&title=${goods.name}&description=我刚刚在一百券网上看到这个商品：${goods.title} 价格真实惠，#{if cas?.isLogin}现在注册购买还能折上再减1％，#{/if}分享给大家看看！地址: ${tjUrl.urlEncode()}"
+               href="http://widget.renren.com/dialog/share?url=${tjUrl.urlEncode()}&title=${goods.name}&description=我刚刚在一百券网上看到这个商品：${goods.title} 价格真实惠，只要&yen;${goods.salePrice}，#{if cas?.isLogin}现在注册购买还能折上再减1％，#{/if}分享给大家看看！地址: ${tjUrl.urlEncode()}"
                target="_blank"></a>
         </div>
         <div id="share-im">

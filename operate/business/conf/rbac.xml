@@ -17,7 +17,7 @@
     <permission key="Point_GOODS" text="积分商品管理" roles="editor,customservice"/>
 
     <permission key=" Point_GOODS_ORDER" text="积分商品订单管理" roles="customservice,account"/>
-    <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager,account" />
+    <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager,account"/>
 
     <permission key="SUPPLIERS_NEW" text="商户添加" roles="editor"/>
     <permission key="SUPPLIERS" text="商户管理" roles="editor,customservice"/>
@@ -53,6 +53,7 @@
     <permission key="DISCOUNT_CODE" text="折扣券管理" roles="customservice,editor"/>
     <permission key="crm_app" text="CRM" roles="customservice,editor"/>
     <permission key="SOLR" text="solr加载数据" roles="solr_load"/>
+    <permission key="HOT_KEYWORDS" text="热门关键词" roles="admin,editor,customservice,sales,manager"/>
     <navigation key="supplier_app" text="商户管理" action="Suppliers.index" display-order="20">
         <navigation key="suppliers" text="商户" permissions="SUPPLIERS_NEW,SUPPLIERS">
             <navigation key="suppliers_add" action="Suppliers.add" text="商户添加" permissions="SUPPLIERS_NEW"/>
@@ -90,6 +91,8 @@
             <navigation key="goods_add" action="OperateGoods.add" text="商品添加" permissions="GOODS_NEW"/>
             <navigation key="goods_index" action="OperateGoods.index" text="商品管理" permissions="GOODS"/>
             <navigation key="category_admin_index" action="CategoryAdmin.index" text="类别管理" permissions="GOODS"/>
+            <navigation key="hot_keywords" action="OperateSearchHotKeywords.index" text="热门关键词查询"
+                        permission="HOT_KEYWORDS"/>
         </navigation>
         <navigation key="solr" text="solr加载数据" permission="SOLR">
             <navigation key="solr_load" action="SolrLoadData.index" text="solr加载数据" permission="SOLR"/>
