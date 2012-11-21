@@ -17,6 +17,8 @@ import play.mvc.With;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 
 @With(OperateRbac.class)
@@ -26,6 +28,8 @@ public class CmsBlocks extends Controller {
 
     public static String ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
     public static String FILE_TYPES = Play.configuration.getProperty("newsImg.fileTypes", "");
+    public static final String HTTP_WWW_YIBAIQUAN_COM = "http://www.yibaiquan.com";
+
     public static long MAX_SIZE = Long.parseLong(Play.configuration.getProperty("upload.size", String.valueOf(1024 * 1024)));
 
 
@@ -44,14 +48,16 @@ public class CmsBlocks extends Controller {
 
     public static void create(@Valid Block block, @Required File image) {
         //TODO 仅仅在测试环境中会产生一个validation.invalid的错误，以下这段是为了让测试用例通过增加的代码
-        if (Play.runingInTestMode() && validation.errorsMap().containsKey("image")) {
+        if (Play.runingInTestMode() && validation.errorsMap().containsKey("image") && block.type != BlockType.HOT_KEYWORDS) {
             for (String key : validation.errorsMap().keySet()) {
                 Logger.warn("remove:     validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
             }
             Validation.clear();
         }
         checkExpireAt(block);
-        checkImageFile(image);
+        if (block.type != BlockType.HOT_KEYWORDS) {
+            checkImageFile(image);
+        }
 
         if (Validation.hasErrors()) {
             for (String key : validation.errorsMap().keySet()) {
@@ -68,6 +74,14 @@ public class CmsBlocks extends Controller {
             error(500, "brand.image_upload_failed");
         }
 
+        //如果是热门搜索词则link是自动生成的。不是填写的。
+        if (block.type == BlockType.HOT_KEYWORDS) {
+            try {
+                block.link = HTTP_WWW_YIBAIQUAN_COM + "/q?s=" + URLEncoder.encode(block.title.trim(), "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
         block.deleted = DeletedStatus.UN_DELETED;
         block.create();
         index(null);
@@ -136,14 +150,16 @@ public class CmsBlocks extends Controller {
 
     public static void update(Long id, @Valid Block block, File image) {
         //TODO 仅仅在测试环境中会产生一个validation.invalid的错误，以下这段是为了让测试用例通过增加的代码
-        if (Play.runingInTestMode() && validation.errorsMap().containsKey("image")) {
+        if (Play.runingInTestMode() && validation.errorsMap().containsKey("image") && block.type != BlockType.HOT_KEYWORDS) {
             for (String key : validation.errorsMap().keySet()) {
                 Logger.warn("remove:     validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
             }
             Validation.clear();
         }
         checkExpireAt(block);
-        checkImageFile(image);
+        if (block.type != BlockType.HOT_KEYWORDS) {
+            checkImageFile(image);
+        }
 
         if (Validation.hasErrors()) {
             for (String key : validation.errorsMap().keySet()) {
@@ -165,7 +181,11 @@ public class CmsBlocks extends Controller {
                 block.imageUrl = oldImagePath;
             }
 
-        } catch (IOException e) {
+            //如果是热门搜索词则link是自动生成的。不是填写的。
+            if (block.type == BlockType.HOT_KEYWORDS) {
+                block.link = HTTP_WWW_YIBAIQUAN_COM + "/q?s=" + URLEncoder.encode(block.title.trim(), "UTF-8");
+            }
+        } catch (Exception e) {
             e.printStackTrace();
             error(e);
         }

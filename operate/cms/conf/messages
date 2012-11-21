@@ -15,6 +15,7 @@ block.WEBSITE_SUPPLIER=合作商家
 block.JUMP_TO_OUTER=外链商品展示
 block.WEBSITE_1F=首页1F展示
 block.WEBSITE_2F=首页2F展示
+block.HOT_KEYWORDS=热门搜索词
 block.title=标题(或商品ID)
 block.link=链接
 block.imageUrl=图片

@@ -4,46 +4,13 @@
  */
 package models.sales;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-
+import cache.CacheCallBack;
+import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
+import com.uhuila.common.util.FileUploadUtil;
+import com.uhuila.common.util.HtmlUtil;
+import com.uhuila.common.util.PathUtil;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.order.ECoupon;
@@ -52,7 +19,6 @@ import models.order.OrderStatus;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.supplier.Supplier;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
@@ -63,7 +29,6 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
-
 import play.Logger;
 import play.Play;
 import play.data.binding.As;
@@ -85,14 +50,45 @@ import play.modules.solr.SolrEmbedded;
 import play.modules.solr.SolrField;
 import play.modules.solr.SolrSearchable;
 import play.modules.view_ext.annotation.Money;
-import cache.CacheCallBack;
-import cache.CacheHelper;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-import com.uhuila.common.util.FileUploadUtil;
-import com.uhuila.common.util.HtmlUtil;
-import com.uhuila.common.util.PathUtil;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import javax.persistence.Version;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.TimeZone;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Entity
 @Table(name = "goods")
@@ -1829,8 +1825,6 @@ public class Goods extends Model {
      * @return
      */
     public static QueryResponse search(String keywords, long brandId, int pageNumber, int pageSize) {
-
-//        System.out.println("))))))))))   Enter method Goods.search");
         GoodsWebsiteCondition condition = new GoodsWebsiteCondition();
         condition.keywords = keywords;
         condition.solrOrderBy = "goods.firstOnSaleAt_d";
@@ -1876,7 +1870,10 @@ public class Goods extends Model {
                 qBuilder.append("\"").append(keywordsArray[i]).append("\"").append("~0.8");
             }
             q = qBuilder.toString();
+            //给搜索的关键词记录搜索次数
+            SearchHotKeywords.addKeywords(condition.keywords);
         }
+
 
         return search(q, condition.parentCategoryId, condition.categoryId, condition.districtId, condition.areaId,
                 condition.isOrder, condition.materialType, condition.brandId,

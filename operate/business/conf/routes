@@ -299,6 +299,9 @@ GET     /discountcodes/{id}/show                    OperateDiscountCodes.show
 GET     /yihaodian-api                          YihaodianAPI.index
 POST    /yihaodian-api                          YihaodianAPI.request
 
+# 热门关键词
+GET     /keywords                               OperateSearchHotKeywords.index
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

@@ -2,8 +2,8 @@ package unit;
 
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
-import models.admin.SupplierNavigation;
-import navigation.RbacLoader;
+import models.admin.OperateNavigation;
+import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,41 +13,41 @@ import play.vfs.VirtualFile;
 
 import java.util.List;
 
-public class SupplierNavigationUnitTest extends UnitTest {
+public class OperateNavigationUnitTest extends UnitTest {
     public String applicationName = Play.configuration.get("application.name").toString();
 
     @Before
     @SuppressWarnings("unchecked")
     public void setupDatabase() {
         FactoryBoy.deleteAll();
-        final SupplierNavigation navigation = FactoryBoy.create(SupplierNavigation.class);
-        final SupplierNavigation userNavigation = FactoryBoy.create(SupplierNavigation.class, new BuildCallback<SupplierNavigation>() {
+        final OperateNavigation navigation = FactoryBoy.create(OperateNavigation.class);
+        final OperateNavigation userNavigation = FactoryBoy.create(OperateNavigation.class, new BuildCallback<OperateNavigation>() {
             @Override
-            public void build(SupplierNavigation subNavigation) {
+            public void build(OperateNavigation subNavigation) {
                 subNavigation.name = "user";
                 subNavigation.text = "用户管理";
                 subNavigation.parent = navigation;
             }
         });
-        final SupplierNavigation userAddNavigation = FactoryBoy.create(SupplierNavigation.class, new BuildCallback<SupplierNavigation>() {
+        final OperateNavigation userAddNavigation = FactoryBoy.create(OperateNavigation.class, new BuildCallback<OperateNavigation>() {
             @Override
-            public void build(SupplierNavigation subNavigation) {
+            public void build(OperateNavigation subNavigation) {
                 subNavigation.name = "user_add";
                 subNavigation.text = "添加用户";
                 subNavigation.parent = userNavigation;
             }
         });
-        final SupplierNavigation orderNavigation = FactoryBoy.create(SupplierNavigation.class, new BuildCallback<SupplierNavigation>() {
+        final OperateNavigation orderNavigation = FactoryBoy.create(OperateNavigation.class, new BuildCallback<OperateNavigation>() {
             @Override
-            public void build(SupplierNavigation subNavigation) {
+            public void build(OperateNavigation subNavigation) {
                 subNavigation.name = "order";
                 subNavigation.text = "订单管理";
                 subNavigation.parent = navigation;
             }
         });
-        final SupplierNavigation userEditNavigation = FactoryBoy.create(SupplierNavigation.class, new BuildCallback<SupplierNavigation>() {
+        final OperateNavigation userEditNavigation = FactoryBoy.create(OperateNavigation.class, new BuildCallback<OperateNavigation>() {
             @Override
-            public void build(SupplierNavigation subNavigation) {
+            public void build(OperateNavigation subNavigation) {
                 subNavigation.name = "user_edit";
                 subNavigation.text = "修改用户";
                 subNavigation.parent = userNavigation;
@@ -57,7 +57,7 @@ public class SupplierNavigationUnitTest extends UnitTest {
     }
 
     @After
-    public void initPluginAgain() {
+    public void  initPluginAgain() {
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
@@ -65,7 +65,7 @@ public class SupplierNavigationUnitTest extends UnitTest {
 
     @Test
     public void testGetTopNavigations() {
-        List<SupplierNavigation> topMenus = SupplierNavigation.getTopNavigations();
+        List<OperateNavigation> topMenus = OperateNavigation.getTopNavigations();
         assertEquals(1, topMenus.size());
         // display_order test
         assertEquals("main", topMenus.get(0).name);
@@ -73,7 +73,8 @@ public class SupplierNavigationUnitTest extends UnitTest {
 
     @Test
     public void testGetNavigationParentStack() {
-        List<SupplierNavigation> navigationStack = SupplierNavigation.getNavigationParentStack(applicationName, "user_add");
+        System.out.println("applicationName:" + applicationName);
+        List<OperateNavigation> navigationStack = OperateNavigation.getNavigationParentStack(applicationName, "user_add");
         assertEquals(3, navigationStack.size());
         // navigation stack order test
         assertEquals("main", navigationStack.get(0).name);
@@ -84,7 +85,7 @@ public class SupplierNavigationUnitTest extends UnitTest {
     @Test
     public void testGetSecondLevelNavigations() {
         System.out.println("applicationName:" + applicationName);
-        List<SupplierNavigation> secondLevelNavigations = SupplierNavigation.getSecondLevelNavigations(applicationName, "user_edit");
+        List<OperateNavigation> secondLevelNavigations = OperateNavigation.getSecondLevelNavigations(applicationName, "user_edit");
         assertEquals(2, secondLevelNavigations.size());
         // second level menu order test
         assertEquals("user", secondLevelNavigations.get(0).name);
