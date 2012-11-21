@@ -13,8 +13,8 @@ import java.util.*;
 
 public class OrdersCondition {
     public Map<String, Object> paramsMap = new HashMap<>();
-    public Date createdAtBegin;
-    public Date createdAtEnd;
+    public Date createdAtBegin = DateUtil.getYesterday();
+    public Date createdAtEnd = new Date();
     public Date paidAtBegin;
     public Date paidAtEnd;
     public Date refundAtBegin;

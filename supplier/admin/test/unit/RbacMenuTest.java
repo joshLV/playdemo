@@ -1,11 +1,6 @@
 package unit;
 
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.List;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+import factory.FactoryBoy;
 import models.admin.SupplierNavigation;
 import navigation.Application;
 import navigation.ContextedMenu;
@@ -14,11 +9,16 @@ import navigation.NavigationHandler;
 import navigation.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import play.test.Fixtures;
 import play.test.UnitTest;
 import play.vfs.VirtualFile;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.List;
 
 
 public class RbacMenuTest extends UnitTest {
@@ -26,38 +26,37 @@ public class RbacMenuTest extends UnitTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setupDatabase() {
-        Fixtures.delete(SupplierNavigation.class);
-        Fixtures.loadModels("fixture/navigation.yml");
-
+        FactoryBoy.deleteAll();
+        FactoryBoy.create(SupplierNavigation.class);
         // 加载test/rbac.xml配置文件
         VirtualFile file = VirtualFile.open("test/rbac.xml");
         RbacLoader.init(file);
     }
 
     @After
-    public void  initPluginAgain() {
+    public void initPluginAgain() {
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
     }
-    
+
     @Test
     public void theNoDefinedNavigationWillBeDeleted() {
         SupplierNavigation mainNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "main").first();
         assertNotNull(mainNav);
         assertNotNull(mainNav.permissions);
         assertEquals(4, mainNav.permissions.size());
-                
+
         SupplierNavigation userNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "user_add").first();
         assertNotNull(userNav);
         assertNotNull(userNav.permissions);
         assertEquals(2, userNav.permissions.size());
-        
+
         // 加载后，数据库中没有在yml定义的导航记录必须被删除
         SupplierNavigation toDeleteNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "to_delete").first();
         assertNull(toDeleteNav);
     }
-    
+
     @Test
     public void canLoadNavigationYamlFile() {
         assertNotNull(NavigationHandler.getMenuContext());
@@ -109,7 +108,7 @@ public class RbacMenuTest extends UnitTest {
 //        System.out.println(xmlString);
 
         StringReader sr = new StringReader(xmlString);
-        Application umApp = (Application)um.unmarshal(sr);
+        Application umApp = (Application) um.unmarshal(sr);
         assertNotNull(umApp);
         assertEquals("Hello", umApp.text);
         assertEquals(2, umApp.menus.size());
