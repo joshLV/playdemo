@@ -1,8 +1,7 @@
 package function;
 
-import java.util.regex.Pattern;
-
-import models.accounts.Account;
+import controllers.supplier.cas.Security;
+import factory.FactoryBoy;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.Order;
@@ -12,16 +11,12 @@ import models.sales.Goods;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import navigation.RbacLoader;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-import controllers.supplier.cas.Security;
-import factory.FactoryBoy;
 
 /**
  * Created with IntelliJ IDEA.
@@ -48,7 +43,7 @@ public class SupplierCouponsTest extends FunctionalTest {
         SupplierUser supplierUser = FactoryBoy.create(SupplierUser.class);
         shop = FactoryBoy.create(Shop.class);
         goods = FactoryBoy.create(Goods.class);
-        
+
         // 设置测试登录的用户名
         Security.setLoginUserForTest(supplierUser.loginName);
         coupon = FactoryBoy.create(ECoupon.class);
