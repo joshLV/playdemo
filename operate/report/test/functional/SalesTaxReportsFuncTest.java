@@ -42,6 +42,7 @@ public class SalesTaxReportsFuncTest extends FunctionalTest{
 
     @Before
     public void setup() {
+        FactoryBoy.deleteAll();
 
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
