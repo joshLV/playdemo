@@ -20,44 +20,23 @@ import models.supplier.Supplier;
 import org.junit.Before;
 import org.junit.Test;
 
+import factory.FactoryBoy;
+
 import play.db.jpa.JPAPlugin;
 import play.test.Fixtures;
 import play.test.UnitTest;
 
 public class EcouponLockVersionTest extends UnitTest{
-
+    
+    Supplier supplier;
+    Goods goods;
+    ECoupon ecoupon;
 	@Before
 	public void setup() {
-		Fixtures.delete(Account.class);
-		Fixtures.delete(Category.class);
-		Fixtures.delete(Brand.class);
-		Fixtures.delete(Area.class);
-		Fixtures.delete(Order.class);
-		Fixtures.delete(OrderItems.class);
-		Fixtures.delete(Goods.class);
-		Fixtures.delete(User.class);
-		Fixtures.delete(ECoupon.class);
-		Fixtures.delete(Account.class);
-		Fixtures.delete(SupplierRole.class);
-		Fixtures.delete(Supplier.class);
-		Fixtures.delete(SupplierUser.class);
-		Fixtures.loadModels("fixture/goods_base.yml", "fixture/roles.yml", 
-				"fixture/supplierusers.yml",
-				"fixture/user.yml",
-				"fixture/goods.yml","fixture/accounts.yml",
-				"fixture/orders.yml",
-				"fixture/orderItems.yml");
-
-		Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc");
-		Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
-		Goods goods = Goods.findById(goodsId);
-		goods.supplierId = supplierId;
-		goods.save();
-		goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-		goods = Goods.findById(goodsId);
-		goods.supplierId = supplierId;
-		goods.save();
-
+	    FactoryBoy.deleteAll();
+	    supplier = FactoryBoy.create(Supplier.class);
+	    goods = FactoryBoy.create(Goods.class);
+	    ecoupon = FactoryBoy.create(ECoupon.class);
 	}
 
 	@Test
@@ -67,9 +46,8 @@ public class EcouponLockVersionTest extends UnitTest{
 
 			public void run(){  
 				JPAPlugin.startTx(false);
-				String eCouponSn = "1234567002";
-				Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc");
-				ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
+				String eCouponSn = ecoupon.eCouponSn;
+				ECoupon eCoupon = ECoupon.query(eCouponSn, supplier.id);
 				try {
 					sleep(100l);
 				} catch (InterruptedException e) {
@@ -86,9 +64,9 @@ public class EcouponLockVersionTest extends UnitTest{
 			}
 		};        
 
-		String eCouponSn = "1234567002";
-		Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc");
-		ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
+		String eCouponSn = ecoupon.eCouponSn;
+
+		ECoupon eCoupon = ECoupon.query(eCouponSn, supplier.id);
 		a.start();
 		
 		Thread.sleep(300l);
