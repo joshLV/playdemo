@@ -118,7 +118,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
         eCoupon.goods.save();
 
         response = GET("/tel-verify?caller=" + caller +  "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
-        assertContentEquals("7", response);//;对不起，券不存在
+        assertContentEquals("8", response);//;对不起，券不存在
 
         eCoupon.goods.supplierId = originSupplierId;
         eCoupon.goods.save();

@@ -69,8 +69,19 @@ public class TelephoneVerify extends Controller {
             renderText("6");//签名错误
         }
 
+        //开始验证
+        ECoupon ecoupon = ECoupon.query(coupon, null);
+        if (ecoupon == null) {
+            Logger.info("telephone verify failed: coupon not found");
+            renderText("7");//对不起，未找到此券
+        }
+
         //查找店员
-        SupplierUser supplierUser = SupplierUser.find("byLoginName", caller).first();
+        Supplier supplier = Supplier.findById(ecoupon.goods.supplierId);
+        SupplierUser supplierUser = null;
+        if (supplier != null) {
+            supplierUser = SupplierUser.find("byLoginNameAndSupplier", caller, supplier).first();
+        }
         if (supplierUser == null || supplierUser.shop == null
                 || supplierUser.supplier == null
                 || supplierUser.supplier.deleted == DeletedStatus.DELETED
@@ -79,12 +90,6 @@ public class TelephoneVerify extends Controller {
             renderText("8");//对不起，商户不存在
         }
 
-        //开始验证
-        ECoupon ecoupon = ECoupon.query(coupon, null);
-        if (ecoupon == null) {
-            Logger.info("telephone verify failed: coupon not found");
-            renderText("7");//对不起，未找到此券
-        }
         if (ecoupon.isFreeze == 1) {
             Logger.info("telephone verify failed: coupon is freeze");
             renderText("11");//对不起，该券无法消费
