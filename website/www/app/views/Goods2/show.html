@@ -59,46 +59,42 @@
     </div>
     <div id="property">
     #{form @Orders.index(), id:'order_create_form' }
-    <ul id="metaBox">
-        #{if params['isSupplier']== null || !params['isSupplier']}
-            <li>现价：<span class="price">&yen;${goods.salePrice}</span></li>
-        #{/if}
-        #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
-            <li>原价：
-                <del>&yen;${goods.faceValue}</del>
-            </li>
-        #{/if}
-        #{if params['isSupplier']== null || !params['isSupplier']}
-            <li>折扣：<em class="discount">${goods.discountExpress}</em></li>
-        #{/if}
-    <li class="amount">购买数量:
-        #{if ghShow==true && goodsUpdateAt!=null }
-        ${buyNumber}
+        <ul id="metaBox">
+            #{if params['isSupplier']== null || !params['isSupplier']}
+                <li>现价：<span class="price">&yen;${goods.salePrice}</span></li>
+            #{/if}
+            #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
+                <li>原价：
+                    <del>&yen;${goods.faceValue}</del>
+                </li>
+            #{/if}
+            #{if params['isSupplier']== null || !params['isSupplier']}
+                <li>折扣：<em class="discount">${goods.discountExpress}</em></li>
+            #{/if}
 
-            <div class="snap">
-                <p class="msg" style="font-size:12px; font-family: " Times New Roman",Georgia,Serif;">您现在查看的是交易快照</p>
+            #{if ghShow==true && goodsUpdateAt!=null }
+                <li class="amount">购买数量: ${buyNumber}
+                    <div class="snap">
+                        <p class="msg" style="font-size:12px;">您现在查看的是交易快照</p>
 
-                <p style="font-size:12px; font-family: " Times New Roman
-                ",Georgia,Serif;">该商品在&nbsp;${goodsUpdateAt?.format('yyyy-MM-dd HH:mm:ss')}&nbsp;已被编辑</p>
-
-            %{
-                goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" +
-                goodsId;
-                }%
-                #{if goodsDeleted==com.uhuila.common.constants.DeletedStatus.UN_DELETED}
-                    <a href="${goodsUrl}" class="view" title="点此查看最新商品详情"
-                       target="_blank">点此查看最新商品详情</a>
-                #{/if}
-                #{else}
-                    <span style="font-size:12px; font-family: " Times New Roman
-                    ",Georgia,Serif;">此商品已被删除</span>
-                #{/else}
-            </div>
-
-
-        #{/if}
-        #{else}
-            <span id="amount">
+                        <p style="font-size:12px;">该商品在&nbsp;${goodsUpdateAt?.format('yyyy-MM-dd HH:mm:ss')}
+                            &nbsp;已被编辑</p>
+                    %{ goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" +
+                        goodsId;
+                        }%
+                        #{if goodsDeleted==com.uhuila.common.constants.DeletedStatus.UN_DELETED}
+                            <a href="${goodsUrl}" class="view" title="点此查看最新商品详情"
+                               target="_blank">点此查看最新商品详情</a>
+                        #{/if}
+                        #{else}
+                            <span style="font-size:12px;">此商品已被删除</span>
+                        #{/else}
+                    </div>
+                </li>
+            #{/if}
+            #{else}
+                <li class="amount">购买数量:${buyNumber}
+                    <span id="amount">
                     <input class="amount-ipt" id="number" name="g${goods.id}" type="text" value="1"/>
                             <span class="increase-btn" id="increase-btn" name="${goods.id}"></span>
                             <span class="decrease-btn" id="decrease-btn" name="${goods.id}"></span>
@@ -106,18 +102,19 @@
                         <input type="hidden" value="${goods.cumulativeStocks}" id="stock_${goods.id}">
                         <input type="hidden" value="${goods.limitNumber}" id="limit_${goods.id}">
                     </span> 件(已售出<em class="selled">${goods?.virtualSaleCount?:'0'}</em>件)
-            <span id="stock_hit" style="display:none;color:#f50">库存${goods.getRealStocks()}件</span>
-            #{if goods.limitNumber > 0}
-                <span id="limitNumber" style="color:#f50">限购${goods.limitNumber}件</span>
-            #{/if}
-            <span class="error">#{error 'number' /}</span>
-            <input type="hidden" id="stock" value="${goods.cumulativeStocks}">
-            <input type="hidden" id="boughtNumber" value="${boughtNumber}">
-            <input type="hidden" id="addCartNumber" value="${addCartNumber}">
-        </li>
+                    <span id="stock_hit" style="display:none;color:#f50">库存${goods.getRealStocks()}件</span>
+                    #{if goods.limitNumber > 0}
+                        <span id="limitNumber" style="color:#f50">限购${goods.limitNumber}件</span>
+                    #{/if}
+                    <span class="error">#{error 'number' /}</span>
+                    <input type="hidden" id="stock" value="${goods.cumulativeStocks}">
+                    <input type="hidden" id="boughtNumber" value="${boughtNumber}">
+                    <input type="hidden" id="addCartNumber" value="${addCartNumber}">
+                </li>
+            #{/else}
         </ul>
+        #{if ghShow == null || !ghShow }
             <input type="hidden" id="goodsId" name="gid" value="${goods.id}">
-
             <div id="btnBox">
                 #{if goods.onSale()}
                     #{if !bought}
@@ -144,7 +141,7 @@
                     <span>已下架</span>
                 #{/elseif}
             </div>
-        #{/else}
+        #{/if}
         <ul id="promise">
             <li class="quality"><a href="/service" target="_blank">品质保证</a></li>
             <li class="refund"><a href="/service" target="_blank">一键退款</a></li>
@@ -185,24 +182,20 @@
     <div class="bd">${goods?.exhibition?.raw()}</div>
 </div>
 #{/if}
-    <div id="warmtips">
-        <div class="hd">温馨提示</div>
-        <div class="bd"> ${goods?.prompt?.raw()}</div>
-    </div>
-    <!--抽奖商品和上海视惠公司自己的不显示地图,上海视惠公司Id=5-->
-#{if !goods?.isLottery && goods.supplierId !=5}
-    <div id="outlet">
-        <div class="hd">适用门店</div>
-        <div class="bd clearfix">
-            <div class="outlet-list">
-                <ul></ul>
-                <div class="outlet-more">
-                    <span class="outlet-total">共<em id="outlet-total-num"></em>家分店</span>
-                    <span id="outlet-page"></span>
-                </div>
-            </div>
-            <div class="outlet-gmap">
-                <div id="min_gmap" style="width: 330px; height: 225px"></div>
+<div id="warmtips">
+    <div class="hd">温馨提示</div>
+    <div class="bd"> ${goods?.prompt?.raw()}</div>
+</div>
+<!--抽奖商品和上海视惠公司自己的不显示地图,上海视惠公司Id=5-->
+#{if !goods?.isLottery && goods.supplierId !=5 &&(ghShow==false || ghShow==null)}}
+<div id="outlet">
+    <div class="hd">适用门店</div>
+    <div class="bd clearfix">
+        <div class="outlet-list">
+            <ul></ul>
+            <div class="outlet-more">
+                <span class="outlet-total">共<em id="outlet-total-num"></em>家分店</span>
+                <span id="outlet-page"></span>
             </div>
         </div>
         <div class="outlet-gmap">
@@ -227,7 +220,7 @@
     </div>
 </div>
 #{/if}
-#{if (ghShow==false || ghShow==null)&& goodsUpdateAt!=null}
+#{if ghShow==false || ghShow==null}
 <div id="consult">
     <div class="hd">购买咨询</div>
     <div class="bd">
