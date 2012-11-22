@@ -1,0 +1,22 @@
+#{if "add".equals(action)}
+    #{layout_operate.selectField name:'prepayment.supplier.id', value:prepayment?.supplier?.id, error:'prepayment.supplier',
+    class:'span2'}
+        #{list items:supplierList, as:'supplier' }
+        #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
+        #{/list}
+    #{/layout_operate.selectField}
+#{/if}
+#{else}
+<input type="hidden" name="prepayment.supplier.id" value="${prepayment?.supplier?.id}">
+    #{layout_operate.textField name:'prepayment.supplier', value:prepayment?.supplier?.fullName, disabled:true/}
+#{/else}
+#{layout_operate.textField name:'prepayment.amount', value:prepayment?.amount?:"0", note:'元', required:true/}
+#{layout_operate.dateScopeField name:'prepayment.effective', begin:'prepayment.effectiveAt',end:'prepayment.expireAt',
+beginValue:prepayment?.effectiveAt?.format(), endValue:prepayment?.expireAt?.format(), required:true/}
+#{layout_operate.textareaField name:'prepayment.remark', value:prepayment?.remark/}
+<div class="form-actions">
+    <input class="btn btn-primary" id="save" type="submit" value="保存"/>
+#{if "edit".equals(action)}
+    #{vx.cancelButton url:'/prepayments', class:'btn btn-primary'/}
+#{/if}
+</div>
