@@ -1103,11 +1103,12 @@ public class ECoupon extends Model {
 
         for (ECoupon ecoupon : ecoupons) {
             int res = totalValue.add(ecoupon.faceValue).compareTo(payValue);
-            if (res < 0) {
+            if (res <= 0) {
                 totalValue = totalValue.add(ecoupon.faceValue);
                 selectECoupons.add(ecoupon);
-            }else if(res == 0) {
-                break;
+                if (res == 0) {
+                    break;
+                }
             }
         }
 
