@@ -20,7 +20,11 @@ public class UserWebIdentificationConsumer extends RabbitMQConsumer<UserWebIdent
 		if (wui == null) {
 			wui = uwiMsg.toUserWebIdentification();
 			Logger.info("尝试保存UserWebIdentification（cookie:" + uwiMsg.cookieId + ")");
-			wui.save(); //考虑做一下如果有ID，调用更新操作，否则调用新增操作.
+			try {
+			  wui.save(); //考虑做一下如果有ID，调用更新操作，否则调用新增操作.
+			} catch (Exception e) {
+			    Logger.info("出现保存异常，先忽略.", e);
+			}
 		} else {
 			Logger.info("msg83841341:UserWebIdentification（cookie:" + uwiMsg.cookieId + ")已经被其它进程保存");
 		}
