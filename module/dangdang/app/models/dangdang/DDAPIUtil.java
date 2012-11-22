@@ -324,7 +324,7 @@ public class DDAPIUtil {
     /**
      * 发布商品
      *
-     * @param linkId      商品对应的ID
+     * @param linkId       商品对应的ID
      * @param requestItems
      * @throws DDAPIInvokeException
      */
@@ -336,4 +336,6 @@ public class DDAPIUtil {
         }
         return response.errorCode != ErrorCode.SUCCESS;
     }
+
+
 }
