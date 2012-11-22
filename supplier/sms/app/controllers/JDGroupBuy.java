@@ -148,7 +148,7 @@ public class JDGroupBuy extends Controller{
             finish(200, "success");
         }else {
             Logger.info("order status is not ORDER_DONE, instead it's %s", outerOrder.status);
-            finish(208, "the order has been processed");
+            finish(200, "the order has been processed");
         }
     }
 

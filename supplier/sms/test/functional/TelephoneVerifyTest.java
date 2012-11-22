@@ -186,6 +186,8 @@ public class TelephoneVerifyTest extends FunctionalTest{
     @Test
     public void testFacevalue(){
         ECoupon eCoupon = FactoryBoy.last(ECoupon.class);
+        eCoupon.triggerCouponSn = eCoupon.eCouponSn;
+        eCoupon.save();
 
         String coupon = eCoupon.eCouponSn;
         Long timestamp = System.currentTimeMillis()/1000;

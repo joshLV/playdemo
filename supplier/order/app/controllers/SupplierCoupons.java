@@ -146,11 +146,9 @@ public class SupplierCoupons extends Controller {
                         + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：400-6262-166", eCoupon.orderItems.phone, eCoupon.replyCode);
             } else {
                 // 多张券验证
-                System.out.println("verifyAmount=" + verifyAmount + ", comp=" + verifyAmount.compareTo(BigDecimal.ZERO));
                 if (verifyAmount == null || verifyAmount.compareTo(BigDecimal.ZERO) < 0) {
                     renderJSON("{\"code\":\"6\"}");
                 }
-                System.out.println("verifyAmount=" + verifyAmount);
                 List<ECoupon> checkECoupons = ECoupon.selectCheckECoupons(verifyAmount, ecoupons);
 
                 BigDecimal consumedAmount = BigDecimal.ZERO;
@@ -158,13 +156,12 @@ public class SupplierCoupons extends Controller {
                 int checkedCount = 0;
                 List<ECoupon> realCheckECoupon = new ArrayList<>();  //可能验证失败，所以要有一个实际真正验证成功的ecouponse
                 for (ECoupon e : checkECoupons) {
-                    System.out.println(e.eCouponSn + " e.faceValue=" + e.faceValue);
-                    if (e.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
+                    if (e.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(),
+                            VerifyCouponType.SHOP, eCoupon.eCouponSn)) {
                         checkedCount += 1;
                         consumedAmount = consumedAmount.add(e.faceValue);
                         realCheckECoupon.add(e);
                     }
-                    System.out.println("    ... had consumedAmount=" + consumedAmount);
                 }
                 renderArgs.put("consumedAmount", consumedAmount);
 
