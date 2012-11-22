@@ -182,8 +182,8 @@
         <div class="hd">温馨提示</div>
         <div class="bd"> ${goods?.prompt?.raw()}</div>
     </div>
-
-#{if !goods?.isLottery}
+    <!--抽奖商品和上海视惠公司自己的不显示地图,上海视惠公司Id=5-->
+#{if !goods?.isLottery && goods.supplierId !=5}
     <div id="outlet">
         <div class="hd">适用门店</div>
         <div class="bd clearfix">
