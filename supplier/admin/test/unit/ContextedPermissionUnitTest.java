@@ -10,7 +10,7 @@ import org.junit.Test;
 import play.test.UnitTest;
 import play.vfs.VirtualFile;
 
-public class ContextedPermissionTest extends UnitTest {
+public class ContextedPermissionUnitTest extends UnitTest {
 
     SupplierUser supplierUser;
 	@Before
@@ -29,7 +29,7 @@ public class ContextedPermissionTest extends UnitTest {
 	public void tearDown() {
 	    ContextedPermission.clean();
         // 重新加载配置文件
-        VirtualFile file = VirtualFile.open("test/rbac.xml");
+        VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file); 
 	}
 	

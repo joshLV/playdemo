@@ -65,7 +65,7 @@ public class SinaWeiboProvider extends AbstractOAuth20Provider {
         JsonNode subJson = userJson.get("id");
         if (subJson != null) {
             OAuthUserProfileHelper
-                    .addAttribute(userProfile, "uid", subJson.getIntValue());
+                    .addAttribute(userProfile, "uid", subJson.getLongValue());
         }
         subJson = userJson.get("domain");
         if (subJson != null) {

@@ -97,7 +97,6 @@ public class SecureCAS extends Controller {
                 OpenIdSource openIdSource = getOpenIdSourceFromUserIdentity(userIdentity);
                 if (openIdSource != null && !openIdSource.name().equals("0")) {
                     String openId = getOpenIdFromUserIdentity(userIdentity);
-
                     Logger.debug("openId:" + openId);
                     Logger.debug("openIdSource.value():" + openIdSource.name());
 

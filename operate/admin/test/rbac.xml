@@ -3,6 +3,7 @@
     <role key="admin" text="系统管理员" />
     <role key="sales" text="销售人员" />
     <role key="test" text="测试角色" />
+    <role key="no-admin" text="测试角色" />
 
     <permission key="USER" text="用户管理" roles="admin">
         <permission key="USER_ADD" text="新增" roles="admin,system" />
@@ -16,6 +17,8 @@
     </permission>
 
     <permission key="PERM_TEST" text="测试权限" roles="test">
+    </permission>
+    <permission key="NO_ADMIN" text="测试无角色的权限" roles="no-admin">
     </permission>
 
     <navigation key="main" text="系统管理" action="Application.index" permissions="USER">
