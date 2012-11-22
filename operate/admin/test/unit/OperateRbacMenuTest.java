@@ -27,7 +27,6 @@ public class OperateRbacMenuTest extends UnitTest {
     private String applicationName = Play.configuration.getProperty("application.name");
 
     @Before
-    @SuppressWarnings("unchecked")
     public void setupDatabase() {
         FactoryBoy.deleteAll();
         FactoryBoy.create(OperateNavigation.class);
