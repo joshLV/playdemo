@@ -2,6 +2,7 @@ package controllers;
 
 import cache.CacheCallBack;
 import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
 import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
 import models.cms.Block;
@@ -548,11 +549,13 @@ public class Goods2 extends Controller {
                 });
         Goods goods = Goods.findById(gId);
         OrderItems orderItems = OrderItems.findById(orderItemId);
-        System.out.println("goods>>>>" + goods);
+
         renderArgs.put("goodsUpdateAt", goods.updatedAt);
         renderArgs.put("questions", questions);
         renderArgs.put("ghShow", true);
         renderArgs.put("goodsId", gId);
+
+        renderArgs.put("goodsDeleted", goods.deleted);
         if (orderItems != null) {
             renderArgs.put("buyNumber", orderItems.buyNumber);
         }
