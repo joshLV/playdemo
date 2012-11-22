@@ -1,6 +1,8 @@
 package functional;
 
 import controllers.operate.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.SalesOrderItemReport;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
@@ -9,6 +11,7 @@ import models.consumer.UserWebIdentification;
 import models.order.ECoupon;
 import models.order.Order;
 import models.order.OrderItems;
+import models.order.OrderStatus;
 import models.report.DetailDailyReport;
 import models.report.GoodsDailyReport;
 import models.report.ShopDailyReport;
@@ -28,54 +31,32 @@ import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
- * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-2
- * Time: 下午1:22
- * To change this template use File | Settings | File Templates.
  */
 public class SalesTaxReportsFuncTest extends FunctionalTest{
 
     @Before
     public void setup() {
-
-        Fixtures.delete(OperateUser.class);
-        Fixtures.delete(OperateRole.class);
-        Fixtures.delete(DetailDailyReport.class);
-        Fixtures.delete(ShopDailyReport.class);
-        Fixtures.delete(GoodsDailyReport.class);
-        Fixtures.delete(TotalDailyReport.class);
-        Fixtures.delete(OrderItems.class);
-        Fixtures.delete(Order.class);
-        Fixtures.delete(Goods.class);
-        Fixtures.delete(Shop.class);
-        Fixtures.delete(Category.class);
-        Fixtures.delete(Brand.class);
-        Fixtures.delete(Supplier.class);
-        Fixtures.delete(SupplierUser.class);
-        Fixtures.delete(UserWebIdentification.class);
-        Fixtures.delete(ECoupon.class);
-        Fixtures.loadModels("fixture/suppliers_unit.yml");
-        Fixtures.loadModels("fixture/categories_unit.yml");
-        Fixtures.loadModels("fixture/brands_unit.yml");
-        Fixtures.loadModels("fixture/shops_unit.yml");
-        Fixtures.loadModels("fixture/goods_unit.yml");
-        Fixtures.loadModels("fixture/orders.yml");
-        Fixtures.loadModels("fixture/detail_daily_reports.yml");
-        Fixtures.loadModels("fixture/shop_daily_reports.yml");
-        Fixtures.loadModels("fixture/goods_daily_reports.yml");
-        Fixtures.loadModels("fixture/total_daily_reports.yml");
-        Fixtures.loadModels("fixture/user_web_identifications.yml");
-        Fixtures.loadModels("fixture/ecoupon.yml");
+        FactoryBoy.deleteAll();
 
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
+        OperateUser operateUser = FactoryBoy.create(OperateUser.class);
+        Security.setLoginUserForTest(operateUser.loginName);
 
-        Long id = (Long) Fixtures.idCache.get("models.admin.OperateUser-user1");
-        OperateUser user = OperateUser.findById(id);
-        // 设置测试登录的用户名
-        Security.setLoginUserForTest(user.loginName);
+        FactoryBoy.create(Order.class, new BuildCallback<Order>() {
+            @Override
+            public void build(Order target) {
+                target.status = OrderStatus.PAID;
+                target.paidAt = new Date();
+            }
+        });
+        FactoryBoy.create(ECoupon.class);
     }
 
     @After
@@ -91,19 +72,39 @@ public class SalesTaxReportsFuncTest extends FunctionalTest{
         assertNotNull(renderArgs("reportPage"));
     }
 
-    // 测试不完整，没有得到数据，没执行到 summary（）
     @Test
     public void testSearchWithRightCondition(){
-        Http.Response response = GET("/reports/sales?condition.supplier.id=0&condition.goodsLike=哈根达斯&condition.createdAtBegin=2012-02-01&condition.createdAtEnd=2012-08-02&condition.interval=");
+        Supplier supplier = FactoryBoy.last(Supplier.class);
+        assertNotNull(supplier);
+        Goods goods = FactoryBoy.last(Goods.class);
+        assertNotNull(goods);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        Http.Response response = GET("/reports/sales?condition.supplier.id=" + supplier.id +
+                "&condition.goodsLike=" + goods.name +
+                "&condition.createdAtBegin=" + simpleDateFormat.format(new Date(System.currentTimeMillis() - 60000L*24*2)) +
+                "&condition.createdAtEnd=" + simpleDateFormat.format(new Date(System.currentTimeMillis() + 60000L*24*2)) +
+                "&condition.interval=");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
         ValuePaginator<SalesOrderItemReport> reportPage = (ValuePaginator<SalesOrderItemReport>)renderArgs("reportPage");
         assertNotNull(reportPage);
+        assertEquals(1, reportPage.getRowCount());
     }
 
     @Test
     public void testSearchWithError(){
-        Http.Response response = GET("/reports/sales?condition.supplier.id=0&condition.goodsLike=&condition.createdAtBegin=2012-08-03&condition.createdAtEnd=2012-08-02&condition.interval=");
+        Supplier supplier = FactoryBoy.last(Supplier.class);
+        assertNotNull(supplier);
+        Goods goods = FactoryBoy.last(Goods.class);
+        assertNotNull(goods);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        Http.Response response = GET("/reports/sales?condition.supplier.id=" + supplier.id +
+                "&condition.goodsLike=NotExist" + goods.name +
+                "&condition.createdAtBegin=" + simpleDateFormat.format(new Date(System.currentTimeMillis() - 60000L*24*2)) +
+                "&condition.createdAtEnd=" + simpleDateFormat.format(new Date(System.currentTimeMillis() + 60000L*24*2)) +
+                "&condition.interval=");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
         ValuePaginator<SalesOrderItemReport> reportPage = (ValuePaginator<SalesOrderItemReport>)renderArgs("reportPage");
