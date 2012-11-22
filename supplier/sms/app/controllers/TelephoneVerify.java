@@ -162,6 +162,7 @@ public class TelephoneVerify extends Controller {
                             + DateUtil.getNowTime() + "已成功消费，使用门店：" + supplierUser.shop.name + "。如有疑问请致电：4006262166",
                             ecoupon.orderItems.phone, ecoupon.replyCode);
                 }
+                Logger.info("telephone verify: batch coupon success");
                 renderText("0");
                 return;//验证完成 结束了
 
