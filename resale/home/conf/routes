@@ -19,6 +19,11 @@ GET     /library                                ResalerFavs.index
 POST    /library                                ResalerFavs.order
 DELETE  /library/{goodsIds}                     ResalerFavs.delete
 
+#批量导出券号
+GET     /coupons/batchexport/index              BatchExportCoupons.index
+GET     /coupons/batchexport/generator          BatchExportCoupons.generator
+POST    /coupons/batchexport/generate           BatchExportCoupons.generate
+GET     /coupons/batchexport/{id}               BatchExportCoupons.details
 
 # 确认支付信息
 POST    /payment_info/confirm                   PaymentInfo.confirm

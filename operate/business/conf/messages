@@ -50,6 +50,7 @@ validation.existed=%s已经存在！
 validation.useWeekDay=请选择%s!
 goods.materialType=券类型
 
+
 pointGoods.materialType=积分商品类型
 
 goods.materialType_1=电子券
@@ -60,6 +61,7 @@ pointGoods.materialType_2=实物
 
 pointGoods.ELECTRONIC=电子券
 pointGoods.REAL=实物
+
 
 
 

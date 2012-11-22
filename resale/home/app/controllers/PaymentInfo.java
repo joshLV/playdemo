@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.List;
+
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
@@ -33,7 +34,7 @@ public class PaymentInfo extends Controller {
         //加载订单信息
         Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.RESALER);
         long goodsNumber = OrderItems.itemsNumber(order);
-        
+
         List<PaymentSource> paymentSources = PaymentSource.findAll();
 
         render(user, account, order, goodsNumber, paymentSources);
@@ -43,25 +44,27 @@ public class PaymentInfo extends Controller {
     /**
      * 接收用户反馈的订单的支付信息.
      *
-     * @param orderNumber 订单ID
+     * @param orderNumber       订单ID
      * @param useBalance        是否使用余额
      * @param paymentSourceCode 网银代码
      */
     public static void confirm(String orderNumber, boolean useBalance, String paymentSourceCode) {
+        System.out.println("paymentSourceCode>>>" + paymentSourceCode);
         Resaler resaler = SecureCAS.getResaler();
         Order order = Order.findOneByUser(orderNumber, resaler.getId(), AccountType.RESALER);
-        if (order == null){
-            error(500,"no such order");
+        System.out.println("order>>>" + order);
+        if (order == null) {
+            error(500, "no such order");
         }
-        if(order.status != OrderStatus.UNPAID){
+        if (order.status != OrderStatus.UNPAID) {
             error("wrong order status");
         }
         Account account = AccountUtil.getResalerAccount(resaler.getId());
-
-        if(Order.confirmPaymentInfo(order, account, useBalance, paymentSourceCode)){
+        System.out.println("inini");
+        if (Order.confirmPaymentInfo(order, account, useBalance, paymentSourceCode)) {
             PaymentSource paymentSource = PaymentSource.findByCode(order.payMethod);
             render(order, paymentSource);
-        }else {
+        } else {
             error(500, "can no confirm the payment info");
         }
 
@@ -70,24 +73,24 @@ public class PaymentInfo extends Controller {
     /**
      * 生成网银跳转页.
      *
-     * @param orderNumber              订单
+     * @param orderNumber 订单
      */
-    public static void payIt(String orderNumber,String paymentCode){
+    public static void payIt(String orderNumber, String paymentCode) {
         Resaler resaler = SecureCAS.getResaler();
         Order order = Order.findOneByUser(orderNumber, resaler.getId(), AccountType.RESALER);
 
         PaymentSource paymentSource = PaymentSource.findByCode(paymentCode);
 
-        if (order == null || paymentSource == null){
-            error(500,"no such order or payment source is invalid");
+        if (order == null || paymentSource == null) {
+            error(500, "no such order or payment source is invalid");
             return;
         }
-        if(order.status != OrderStatus.UNPAID){
+        if (order.status != OrderStatus.UNPAID) {
             error("wrong order status");
         }
 
         PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow(paymentSource.paymentCode);
-        if(paymentFlow == null) {
+        if (paymentFlow == null) {
             error("payment partner not found: " + paymentSource.paymentCode);
             return;
         }

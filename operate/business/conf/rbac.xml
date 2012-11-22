@@ -17,7 +17,7 @@
     <permission key="Point_GOODS" text="积分商品管理" roles="editor,customservice"/>
 
     <permission key=" Point_GOODS_ORDER" text="积分商品订单管理" roles="customservice,account"/>
-    <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager,account" />
+    <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager,account"/>
 
     <permission key="SUPPLIERS_NEW" text="商户添加" roles="editor"/>
     <permission key="SUPPLIERS" text="商户管理" roles="editor,customservice"/>
@@ -123,6 +123,7 @@
             <navigation key="pre_coupons" action="ImportCoupons.index" text="预购券管理" permissions="COUPONS_MANAGE"/>
             <navigation key="freeze_coupons" action="BatchFreezeCoupons.index" text="批量冻结券号"
                         permissions="COUPONS_MANAGE"/>
+
         </navigation>
         <navigation key="yihaodian_api" text="一号店">
             <navigation key="yihaodian_api_index" action="YihaodianAPI.index" text="API" permissions="ORDERS"/>

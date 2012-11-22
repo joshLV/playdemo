@@ -613,11 +613,14 @@ public class Order extends Model {
     }
 
     public void payAndSendECoupon() {
+        System.out.println("33333s");
         if (this.status == OrderStatus.PAID) {
+            System.out.println("4444s");
             return;
         }
 
         if (paid()) {
+            System.out.println("555s");
             sendECoupon();
         }
     }
@@ -693,17 +696,24 @@ public class Order extends Model {
      * 发送电子券相关短信/邮件/通知
      */
     private void sendECoupon() {
+        System.out.println("6666s");
         if (this.status != OrderStatus.PAID) {
+            System.out.println("111111");
             return;
         }
         if (this.orderItems == null) {
+            System.out.println("2222222");
             return;
         }
+        System.out.println("this.orderItems>>>>" + this.orderItems);
         for (OrderItems orderItem : this.orderItems) {
+            System.out.println("11222");
             Goods goods = orderItem.goods;
             if (goods == null) {
+                System.out.println("131313");
                 continue;
             }
+            System.out.println("goods.materialType>>>" + goods.materialType);
             //如果是电子券
             if (MaterialType.ELECTRONIC.equals(goods.materialType)) {
                 List<String> couponCodes = new ArrayList<>();
@@ -728,6 +738,7 @@ public class Order extends Model {
                             importedCoupon.save();
                         }
                     } else {
+                        System.out.println("8888s");
                         eCoupon = new ECoupon(this, goods, orderItem).save();
                     }
                     //记录券历史信息
@@ -1135,7 +1146,9 @@ public class Order extends Model {
         if (order.discountPay.compareTo(BigDecimal.ZERO) == 0
                 && order.accountPay.add(order.promotionBalancePay).compareTo(order.needPay) == 0) {
             order.payMethod = PaymentSource.getBalanceSource().code;
+            System.out.println("1111s");
             order.payAndSendECoupon();
+            System.out.println("2222s");
             return true;
         }
 

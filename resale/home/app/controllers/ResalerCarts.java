@@ -95,7 +95,7 @@ public class ResalerCarts extends Controller {
         redirect("/payment_info/" + order.orderNumber);
     }
 
-    /**
+    /**                              c
      * 批量加入购物车
      *
      * @param goodsId  商品ID
