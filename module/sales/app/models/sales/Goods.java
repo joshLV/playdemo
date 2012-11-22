@@ -289,7 +289,7 @@ public class Goods extends Model {
     /**
      * 开始上架时间
      */
-    @Column(name = "beigin_onsale_at")
+    @Column(name = "begin_onsale_at")
     @SolrField
     @As(lang = {"*"}, value = {"yyyy-MM-dd HH:mm:ss"})
     public Date beginOnSaleAt;
