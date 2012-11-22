@@ -914,8 +914,8 @@ public class ECoupon extends Model {
     public static List<ECoupon> findByMobileAndCode(String mobile,
                                                     String replyCode) {
         return ECoupon.find(
-                "from ECoupon where orderItems.phone=? and replyCode=?",
-                mobile, replyCode).fetch();
+                "from ECoupon where orderItems.phone=? and replyCode like ?",
+                mobile, replyCode + "%").fetch();
     }
 
     /**

@@ -43,8 +43,14 @@ public class ZtSMSProvider implements SMSProvider {
         List<NameValuePair> qparams = new ArrayList<NameValuePair>();
         qparams.add(new BasicNameValuePair("username", USERNAME));
         qparams.add(new BasicNameValuePair("password", PASSWORD));
-        qparams.add(new BasicNameValuePair("xh", message.getCode()));
+        // FIXME: 助通要求xh只能2位
+        String xh = message.getCode(); 
+        if (StringUtils.isNotBlank(xh)) {
+            xh = xh.substring(0, 2);
+        }
+        qparams.add(new BasicNameValuePair("xh", xh));
         qparams.add(new BasicNameValuePair("productid", "887361"));
+        
         /*
          * try { qparams.add(new BasicNameValuePair("Content",
          * URLEncoder.encode(message.getContent(), "GBK"))); } catch

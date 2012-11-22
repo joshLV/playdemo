@@ -28,7 +28,7 @@ public class EnsmsConsumerVerifyTest extends ConsumerSmsVerifyBaseTest {
                 String message = "mobiles=" + mobile1 + "&msg="
                         + msg +
                         "&username=wang&pwd=5a1a023fd486e2f0edbc595854c0d808&dt=1319873904&code="
-                        + ecoupon.replyCode;
+                        + ecoupon.replyCode.substring(0, 2);
                 Logger.info("url=%s", message);
                 return GET("/getsms?"
                         + message);

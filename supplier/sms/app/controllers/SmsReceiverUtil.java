@@ -161,7 +161,9 @@ public class SmsReceiverUtil {
             return ("Not Found the coupon");
         }
 
+        
         ECoupon ecoupon = ecoupons.get(0);
+        
         if (ecoupon.isFreeze == 1) {
             sendSmsToClerk("【一百券】该券已被冻结,如有疑问请致电：4006262166", mobile, code);
             return ("【一百券】该券已被冻结");
