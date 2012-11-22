@@ -14,6 +14,7 @@ import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
@@ -144,7 +145,11 @@ public class WithdrawApproval extends Controller {
         switch (bill.account.accountType) {
             case SUPPLIER:
                 String[] arrayName = bill.applier == null ? new String[0] : bill.applier.split("-");
-                SupplierUser supplierUser = SupplierUser.findAdmin(bill.account.uid, arrayName[1]);
+                String admin = null;
+                if (ArrayUtils.isNotEmpty(arrayName)) {
+                    admin = (arrayName.length == 2) ? arrayName[1] : arrayName[0];
+                }
+                SupplierUser supplierUser = SupplierUser.findAdmin(bill.account.uid, admin);
                 if (supplierUser != null) {
                     mobile = supplierUser.mobile;
                     title = arrayName[0];
@@ -227,7 +232,7 @@ public class WithdrawApproval extends Controller {
     }
 
     /**
-     * 结算商户资金.
+     * 结算商户资金,将结算金额与预付款金额进行绑定.
      *
      * @param supplierAccount
      * @param withdrawDate
@@ -249,8 +254,11 @@ public class WithdrawApproval extends Controller {
         bill.amount = amount;
         bill.fee = fee;
         Supplier supplier = Supplier.findById(supplierAccount.uid);
+        //申请提现
         bill.apply(OperateRbac.currentUser().userName, supplierAccount, supplier.otherName);
+        //审批提现
         bill.agree(fee, comment, withdrawDate);
+        //发送结算通知短信
         sendWithdrawnSMS(bill, comment, "您的账户中有" + bill.amount + "已结款, 请查收.");
 
         index(null);

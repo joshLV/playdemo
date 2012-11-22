@@ -2,6 +2,7 @@ package models.accounts;
 
 import com.uhuila.common.util.DateUtil;
 import models.accounts.util.SerialNumberUtil;
+import models.order.Prepayment;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
@@ -79,6 +80,9 @@ public class AccountSequence extends Model {
 
     @ManyToOne
     public WithdrawBill withdrawBill;
+
+    @ManyToOne
+    public Prepayment prepayment;
 
     @Transient
     public String orderNumber;                  //订单号
@@ -204,5 +208,13 @@ public class AccountSequence extends Model {
         query.setParameter("withdrawDate", DateUtil.getEndOfDay(withdrawDate));
         //update 的记录数
         return query.executeUpdate();
+    }
+
+    /**
+     * 获取指定预付款项的已结算流水的记录数
+     * @return
+     */
+    public static long countByPrepayment(Long prepaymentId) {
+        return count("prepayment.id = ?",prepaymentId);
     }
 }

@@ -54,6 +54,8 @@
     <permission key="crm_app" text="CRM" roles="customservice,editor"/>
     <permission key="SOLR" text="solr加载数据" roles="solr_load"/>
     <permission key="HOT_KEYWORDS" text="热门关键词" roles="admin,editor,customservice,sales,manager"/>
+    <permission key="PREPAYMENTS" text="预付款管理" roles="account"/>
+    <permission key="PREPAYMENTS_NEW" text="预付款添加" roles="account"/>
     <navigation key="supplier_app" text="商户管理" action="Suppliers.index" display-order="20">
         <navigation key="suppliers" text="商户" permissions="SUPPLIERS_NEW,SUPPLIERS">
             <navigation key="suppliers_add" action="Suppliers.add" text="商户添加" permissions="SUPPLIERS_NEW"/>
@@ -144,6 +146,10 @@
                         permission="WITHDRAW_APPROVAL"/>
             <navigation key="financing_incoming_note" action="FinancingIncomingNote.add" text="记录收款"
                         permission="FINANCING_INCOMING_NOTE"/>
+        </navigation>
+        <navigation key="prepayments" text="预付款管理" permissions="PREPAYMENTS,PREPAYMENTS_NEW">
+            <navigation key="prepayments_add" action="OperatePrepayments.add" text="预付款添加" permissions="PREPAYMENTS_NEW"/>
+            <navigation key="prepayments_index" action="OperatePrepayments.index" text="预付款管理" permissions="PREPAYMENTS"/>
         </navigation>
         <navigation key="report_app" text="财务报表">
             <navigation key="consumers_account_reports" action="OperateReports.showConsumerReport" text="消费者资金明细"
