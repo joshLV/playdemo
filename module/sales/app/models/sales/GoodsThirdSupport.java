@@ -28,9 +28,10 @@ public class GoodsThirdSupport extends Model {
     @ManyToOne
     @JoinColumn(name = "goods_id")
     public Goods goods;
-    @Basic(fetch = FetchType.LAZY)
+
     @Lob
     @Column(name = "goods_data")
+
     public String goodsData;          //此商品的完整信息
 
     @Enumerated(EnumType.STRING)
@@ -40,11 +41,13 @@ public class GoodsThirdSupport extends Model {
     @Column(name = "created_at")
     public Date createdAt;
 
-    public GoodsThirdSupport generate(Goods goods, String data, OuterOrderPartner partner) {
-        this.partner = partner;
-        this.goodsData = data;
-        this.goods = goods;
-        this.createdAt = new Date();
+    public static GoodsThirdSupport generate(Goods goods, String data, OuterOrderPartner partner) {
+        GoodsThirdSupport support = new GoodsThirdSupport();
+        support.partner = partner;
+        support.goodsData = data;
+        support.goods = goods;
+        support.createdAt = new Date();
+        return support;
     }
 
     public static GoodsThirdSupport getSupportGoods(Goods goods, OuterOrderPartner partner) {

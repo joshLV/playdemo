@@ -26,7 +26,7 @@
     }
 </style>
 
-<form action="/dangdang-add" method="POST">
+<form action="/dangdang-add" method="POST" form="form">
     <div id="content">
         <div>
             <table border="0">
@@ -67,86 +67,113 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="td" colspan="2">团购标题名称：(限<b>280</b>个字)<b>*</b><input type="text" size="200"
-                                                                                    name="teamSummary"
-                                                                                    value="${goods.name}"/></td>
+                    <td class="td" colspan="2">团购标题名称：(限<b>280</b>个字)<b>*</b>
+                        <input type="text" size="200" name="teamSummary" value="${name}"/></td>
                 </tr>
 
                 <tr>
-                    <td class="td" colspan="2">团购产品标题：(最长<b>[24]</b>个字)<b>*</b><input type="text" size="200"
-                                                                                      name="teamTitle"
-                                                                                      value="${goods.shortName}"/></td>
+                    <td class="td" colspan="2">团购产品标题：(最长<b>[24]</b>个字)<b>*</b>
+                        <input type="text" size="200" name="teamShortName" value="${shortName}"/></td>
                 </tr>
                 <tr>
-                    <td class="td" colspan="2">团购主图http开头：(图片大小在500k以内)<b>*</b><input type="text" size="200"
-                                                                                      name="srcImage"
-                                                                                      value="${goods.imageOriginalPath}"/>
+                    <td class="td" colspan="2">团购主图http开头：(图片大小在500k以内)<b>*</b>
+                        <input type="text" size="200" name="srcImage" value="${imageOriginalPath}"/>
                     </td>
                 </tr>
                 <tr>
-                    <td class="td">团购价：<input type="text" name="originalPrice"
-                                              value="${goods.getResalePrice()}"/><b>*</b></td>
-                    <td class="td">市场价：<input type="text" name="salePrice" value="${goods.faceValue}"/><b>*</b>
+                    <td class="td">团购价：
+                        <input type="text" name="salePrice" value="${salePrice}"/><b>*</b></td>
+                    <td class="td">市场价：
+                        <input type="text" name="originalPrice" value="${faceValue}"/><b>*</b>
                     </td>
                 </tr>
                 <tr>
                     <td class="td">团购开始时间：
-                        <input type="text" name="beginTime" onfocus="WdatePicker({readOnly:true})"
-                               value="${goods.effectiveAt.format('yyyy-MM-dd')}"
-                               class="Wdate"><b>*</b></td>
-                    <td class="td"> 团购结束时间:<input type="text" name="endTime" onfocus="WdatePicker({readOnly:true})"
-                                                  value="${goods.expireAt.format('yyyy-MM-dd')}" class="Wdate"><b>*</b>
+                        <input type="text" name="beginTime" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+                               size="25px" value="${effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}"
+                               class="Wdate"><b>*</b>
+                    </td>
+                    <td class="td"> 团购结束时间:
+                        <input type="text" name="endTime" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+                               size="25px" value="${expireAt?.format('yyyy-MM-dd HH:mm:ss')}"
+                               class="Wdate"><b>*</b>
                     </td>
                 </tr>
                 <tr>
                     <td class="td">有效期开始时间：
-                        <input type="text" name="effectStartDate" onfocus="WdatePicker({readOnly:true})"
-                               value="${goods.effectiveAt.format('yyyy-MM-dd')}"
+                        <input type="text" name="effectStartDate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+                               size="25px" value="${effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}"
                                class="Wdate"><b>*</b></td>
-                    <td class="td"> 有效期结束时间：<input type="text" name="effectEndDate"
-                                                   onfocus="WdatePicker({readOnly:true})"
-                                                   value="${goods.expireAt.format('yyyy-MM-dd')}" class="Wdate"><b>*</b>
+                    <td class="td"> 有效期结束时间：
+                        <input type="text" name="effectEndDate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+                               size="25px" value="${expireAt?.format('yyyy-MM-dd HH:mm:ss')}"
+                               class="Wdate"><b>*</b>
                     </td>
                 </tr>
                 <tr>
-                    <td class="td">成团数量：<input type="text" name="teamMinNumber" value="1"><b>*</b>
-                    <td class="td">团购上限 ：<input type="text" name="teamMaxNumber" value="99999"><b>*</b>
+                    <td class="td">成团数量：<input type="text" name="teamMinNum" value="${teamMinNum}"><b>*</b>
+                    <td class="td">团购上限 ：<input type="text" name="teamMaxNum" value="${teamMaxNum}"><b>*</b>
                     </td>
                 </tr>
                 <tr>
-                    <td class="td">每人上限：<input type="text" name="limitMaxNum"
-                                               value="${(goods?.limitNumber == null || goods.limitNumber == 0) ? "9999" : goods?.limitNumber}"><b>*</b>
-                    <td class="td">每人下限 ：<input type="text" name="limitMinNum" value="1"><b>*</b>
+                    <td class="td">每人上限：
+                        <input type="text" name="limitMaxNum"
+                               value="${limitMaxNum}"><b>*</b>
+                    <td class="td">每人下限 ：<input type="text" name="limitOnceMin" value="${limitOnceMin}"><b>*</b></td>
+                </tr>
+                <tr>
+                    <td class="td">单次上限 ：<input type="text" name="limitOnceMax" value="${limitOnceMax}"><b>*</b>
+                    <td class="td">单人购次数 ：<input type="text" name="buyTimes" value="${buyTimes}"><b>*</b>
                     </td>
                 </tr>
                 <tr>
-                    <td class="td">单次上限 ：<input type="text" name="limitOnceMin" value="99999"><b>*</b>
-                    <td class="td">单人购次数 ：<input type="text" name="limitOnceMaxn" value="999"><b>*</b>
+                    <td class="td">退款类型 ：
+                    #{select 'refundType', id:'refundType', value:refundType}
+                        #{option "1"}没使用可退款#{/option}
+                        #{option "0"}不允许退款#{/option}
+                    #{/select}<b>*</b></td>
+                    <td class="td">送货类型 ：
+                    #{select 'deliveryType', id:'deliveryType', value:deliveryType}
+                        #{option "1"}手机验证码#{/option}
+                        #{option "2"}快递#{/option}
+                    #{/select}<b>*</b>
                     </td>
                 </tr>
+                <tr>
+                    <td class="td">商家信息 ：
+                    #{select 'supplierId', id:'supplierId', value:supplierId}
+                        #{option "12046"}100券生活服务#{/option}
+                    #{/select}<b>*</b></td>
+                </tr>
+
             </table>
         </div>
         <p>特别提示 富文本数据<b>*</b></p>
-        <textarea rows="5" cols="200" name="notice"></textarea>
+        <textarea rows="5" cols="200" name="notice">${notice}</textarea>
 
-        <p>团购简介 富文本数据<b>*</b></p>
-        <textarea rows="5" cols="200" name="teamTitle">${goods.title}</textarea>
+        <p>短信信息<b>*</b></p>
+        <textarea rows="5" cols="200" name="teamTitle">${title}</textarea>
 
         <p>团购详情 富文本数据<b>*</b></p>
         <textarea rows="5" cols="200" name="teamDetail">
-        ${goods?.exhibition}
+        #{if exhibition}
+        ${exhibition.raw()}
             <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
                 <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
             </p>
-        ${goods.prompt}
+        ${prompt.raw()}
             <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
                 <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
             </p>
-        ${goods.details}
+        ${details.raw()}
             <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
                 <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
             </p>
-        ${goods?.supplierDes}
+        ${supplierDes.raw()}
+        #{/if}
+        #{else}
+        ${teamDetail?.raw()}
+        #{/else}
         </textarea>
         <b>
         #{list items:shops, as:'shop'}
@@ -155,8 +182,10 @@
             #{/if}
         #{/list}
         </b>
-        <input type="hidden" name="" value="${goods.id}">
-        <input type="submit" value="提交">
+        <input type="hidden" name="goodsId" value="${goodsId}">
+        <input type="hidden" name="save" id="save_flag" value="">
+        <input type="submit" id="save" value="保存但不推送">
+        <input type="submit" value="推送">
     </div>
 </form>
 
@@ -186,6 +215,10 @@
             } else if (obj == "其他") {
                 $("<option value='汽车美容'>汽车美容</option><option value='宠物服务'>宠物服务</option><option value='家政服务'>家政服务</option><option value='预订服务'>预订服务</option><option value='验光配镜'>验光配镜</option><option value='婚庆服务'>婚庆服务</option><option value='其他'>其他</option>").appendTo(sub_obj);
             }
+        });
+        $("#save").click(function () {
+            $("#save_flag").val("save");
+            $("#form").attr("target", "_self");
         });
     });
 
