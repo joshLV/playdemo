@@ -79,7 +79,7 @@
                 <p class="msg" style="font-size:12px; font-family: " Times New Roman",Georgia,Serif;">您现在查看的是交易快照</p>
 
                 <p style="font-size:12px; font-family: " Times New Roman
-                ",Georgia,Serif;">该商品在&nbsp;${goodsUpdateAt?.format('yyyy-MM-dd HH:mm:ss')}&nbsp;已被编辑。</p>
+                ",Georgia,Serif;">该商品在&nbsp;${goodsUpdateAt?.format('yyyy-MM-dd HH:mm:ss')}&nbsp;已被编辑</p>
 
             %{
                 goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" +
@@ -91,7 +91,7 @@
                 #{/if}
                 #{else}
                     <span style="font-size:12px; font-family: " Times New Roman
-                    ",Georgia,Serif;">此商品已被删除！！</span>
+                    ",Georgia,Serif;">此商品已被删除</span>
                 #{/else}
             </div>
 
