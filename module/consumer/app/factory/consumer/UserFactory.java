@@ -28,6 +28,7 @@ public class UserFactory extends ModelFactory<User> {
         user.captcha = "aa";
         user.mobile = "15026682165";
         user.promoterCode = "qweu2a";
+        user.status = UserStatus.NORMAL;
 
         user.userInfo = FactoryBoy.lastOrCreate(UserInfo.class);
         return user;
