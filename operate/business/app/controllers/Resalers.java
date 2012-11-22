@@ -46,7 +46,6 @@ public class Resalers extends Controller {
      * @param remark 备注
      */
     public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark, ResalerCreditable creditable, ResalerBatchExportCoupons batchExportCoupons) {
-        System.out.println("batchExportCoupons>>>" + batchExportCoupons);
         if (status == ResalerStatus.UNAPPROVED) {
             level = null;
         }

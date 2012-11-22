@@ -8,6 +8,21 @@
 </script>
 #{/set}
 
+<style type="text/css">
+    .btn-primary {
+        BORDER-RIGHT: #7b9ebd 1px solid;
+        PADDING-RIGHT: 2px;
+        BORDER-TOP: #7b9ebd 1px solid;
+        PADDING-LEFT: 2px;
+        FONT-SIZE: 12px;
+        FILTER: progid: DXImageTransform . Microsoft . Gradient(GradientType = 0, StartColorStr = #ffffff, EndColorStr = #cecfde);
+        BORDER-LEFT: #7b9ebd 1px solid;
+        CURSOR: hand;
+        COLOR: black;
+        PADDING-TOP: 2px;
+        BORDER-BOTTOM: #7b9ebd 1px solid;
+    }
+</style>
 
 #{set 'moreStyles'}
     #{asset.css src:['/r/base.css', '/r/orders.css', '/r/play-pagination.css'] /}
@@ -24,49 +39,57 @@
 
 <div id="content">
 #{breadcrumbs/breadcrumb breadcrumbs/}
-    <div class="main clearfix">
-    #{include "share/left.html"/}
+<div class="main clearfix">
+#{include "share/left.html"/}
+<div class="section">
+#{if err == null}
+    <h3>批量导出券号管理</h3>
 
-        <div class="section">
-            <h3>批量导出券号管理</h3>
-
-            <form class="form-horizontal" id="couponsFrm" action="@{BatchExportCoupons.index()}" method="GET">
-                备注名称：
-                <input class="medium-input" type="text" name="condition.name" value="${name}"/>
-                商品名称：
-                <input class="medium-input" type="text" name="condition.goodsName" value="${goodsName}"/>
+    <form class="form-horizontal" id="couponsFrm" action="@{BatchExportCoupons.index()}" method="GET">
+        备注名称：
+        <input class="medium-input" type="text" name="condition.name" value="${name}"/>
+        商品名称：
+        <input class="medium-input" type="text" name="condition.goodsName" value="${goodsName}"/>
 
 
-                <input type="submit" class="search-btn" value="搜索"/>
-            </form>
-            <table class="order-tab">
-                <thead>
-                <tr class="col-name">
-                    <th width="220">备注名称</th>
-                    <th width="220">商品名称</th>
-                    <th width="220">数量</th>
-                    <th width="220">创建时间</th>
+        <input type="submit" class="search-btn" value="搜索"/>
+        &nbsp; &nbsp;
+        <a href="/coupons/batchexport/generator" class="btn btn-primary" id="searchbtn2" type="submit"
+                >批量生成券</a>
+    </form>
+    <table class="order-tab">
+        <thead>
+        <tr class="col-name">
+            <th width="220">备注名称</th>
+            <th width="220">商品名称</th>
+            <th width="220">数量</th>
+            <th width="220">创建时间</th>
 
-                </tr>
-                </thead>
-            #{paginate.list items:couponPage, as:'coupon'}
-                <tbody>
+        </tr>
+        </thead>
+        #{paginate.list items:couponPage, as:'coupon'}
+            <tbody>
 
-                <tr class="order-bd">
-                    <td><a style="color: #0000ff;" href="/coupons/batchexport/${coupon.id}"
-                           target="_blank">${coupon?.name}</a></td>
-                    <td>${coupon?.goodsName}</td>
-                    <td>${coupon?.count}</td>
-                    <td>${coupon?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-                </tr>
-                </tbody>
-            #{/paginate.list}
-            </table>
-            <div class="pagination">
-                <ul>
-                #{paginate.controls items:couponPage /}
-                </ul>
-            </div>
-        </div>
+            <tr class="order-bd">
+                <td><a style="color: #0000ff;" href="/coupons/batchexport/${coupon.id}"
+                       target="_blank">${coupon?.name}</a></td>
+                <td>${coupon?.goodsName}</td>
+                <td>${coupon?.count}</td>
+                <td>${coupon?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+            </tr>
+            </tbody>
+        #{/paginate.list}
+    </table>
+    <div class="pagination">
+        <ul>
+            #{paginate.controls items:couponPage /}
+        </ul>
     </div>
 </div>
+</div>
+#{/if}
+#{else}
+    <center><span style="font-size:110% ">${err}</span></center>
+#{/else}
+</div>
+

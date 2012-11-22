@@ -24,72 +24,77 @@
 
 <div id="content">
 #{breadcrumbs/breadcrumb breadcrumbs/}
-    <div class="main clearfix">
-    #{include "share/left.html"/}
-        <div class="section">
-        #{form @BatchExportCoupons.generate(), method:'POST', class:'form-horizontal' }
-            <h1>批量生成券号</h1>
+<div class="main clearfix">
+#{include "share/left.html"/}
+<div class="section">
+#{if err == null}
+    #{form @BatchExportCoupons.generate(), method:'POST', class:'form-horizontal' }
+        <h1>批量生成券号</h1>
 
-            <div class="control-group">
-                <label class="control-label" for="inputName">备注名称:</label>
-                &nbsp; &nbsp; &nbsp;
-                <input type="text" id="inputName" name="name" value="${name}">
-                &nbsp;
-                <span class="help-inline">必填,如 美团2012-04-16</span>
+        <div class="control-group">
+            <label class="control-label" for="inputName">备注名称:</label>
+            &nbsp; &nbsp; &nbsp;
+            <input type="text" id="inputName" name="name" value="${name}">
+            &nbsp;
+            <span class="help-inline">必填,如 美团2012-04-16</span>
 
-            </div>
-            <br>
-
-            <div class="control-group">
-                <label class="control-label">商品名称:</label>
-                &nbsp; &nbsp; &nbsp;
-                #{select 'goodsId', id:'goodsId', class:'dingdan_stauts_bg', value:goods?.id}
-                    #{list items:goodsList, as:'goods' }
-                        #{option goods.id}${goods.shortName}#{/option}
-                    #{/list}
-                #{/select}
-
-
-            </div>
-            <br>
-
-
-            <div class="balance">可用余额： &nbsp; &nbsp; &nbsp;<span class="">${account?.amount}</span>元</div>
-
-            <br>
-
-            <div class="control-group">
-                <label class="control-label" for="inputCount">数量:</label>
-
-                &nbsp; &nbsp; &nbsp;
-                <input type="text" id="inputCount" name="count" value="${count}">
-                &nbsp; &nbsp;
-                <span class="help-inline">正整数(1-9999)</span>
-
-            </div>
-            <br>
-
-            <div class="control-group">
-                <label class="control-label" for="inputPrefix">2位数字前缀:</label>
-                &nbsp; &nbsp; &nbsp;
-
-                <input type="text" id="inputPrefix" name="prefix" value="${prefix}">
-                &nbsp; &nbsp;
-                <span class="help-inline">纯数字,如 21</span>
-
-            </div>
-            <br>
-
-            <div class="control-group">
-                <div class="controls">
-                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                    <button type="submit" class="btn btn-primary">生成</button>
-                </div>
-            </div>
-        #{/form}
-        #{if err}
-            <div style="color:red;"> ${err} </div>
-        #{/if}
         </div>
-    </div>
+        <br>
+
+        <div class="control-group">
+            <label class="control-label">商品名称:</label>
+            &nbsp; &nbsp; &nbsp;
+            #{select 'goodsId', id:'goodsId', class:'dingdan_stauts_bg', value:goods?.id}
+                #{list items:goodsList, as:'goods' }
+                    #{option goods.id}${goods.shortName}#{/option}
+                #{/list}
+            #{/select}
+
+
+        </div>
+        <br>
+
+
+        <div class="balance">可用余额： &nbsp; &nbsp; &nbsp;<span class="">${account?.amount}</span>元</div>
+
+        <br>
+
+        <div class="control-group">
+            <label class="control-label" for="inputCount">数量:</label>
+
+            &nbsp; &nbsp; &nbsp;
+            <input type="text" id="inputCount" name="count" value="${count}">
+            &nbsp; &nbsp;
+            <span class="help-inline">正整数(1-9999)</span>
+
+        </div>
+        <br>
+
+        <div class="control-group">
+            <label class="control-label" for="inputPrefix">2位数字前缀:</label>
+            &nbsp; &nbsp; &nbsp;
+
+            <input type="text" id="inputPrefix" name="prefix" value="${prefix}">
+            &nbsp; &nbsp;
+            <span class="help-inline">纯数字,如 21</span>
+
+        </div>
+        <br>
+
+        <div class="control-group">
+            <div class="controls">
+                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                <button type="submit" class="btn btn-primary">生成</button>
+            </div>
+        </div>
+    #{/form}
+    #{if err}
+        <div style="color:red;"> ${err} </div>
+    #{/if}
+</div>
+</div>
+#{/if}
+#{else}
+    <center><span style="font-size:110% ">${err}</span></center>
+#{/else}
 </div>
