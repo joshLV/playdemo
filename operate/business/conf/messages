@@ -230,6 +230,7 @@ resaler.UNAPPROVED=审核未通过
 resaler.FREEZE=冻结
 
 resaler.remark=备注
+resaler.batchExportCoupons=可批量发券
 
 #订单状态
 order.UNPAID=等待付款

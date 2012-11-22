@@ -48,6 +48,10 @@ public class Resaler extends Model {
     @Enumerated(EnumType.STRING)
     public ResalerCreditable creditable;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "batch_export_coupons")
+    public ResalerBatchExportCoupons batchExportCoupons;
+
     @Column(name = "login_name")
     @Required
     @MinSize(value = 1)
@@ -140,6 +144,10 @@ public class Resaler extends Model {
         return this.creditable == ResalerCreditable.YES;
     }
 
+    public boolean isBatchExportCoupons() {
+        return this.batchExportCoupons == batchExportCoupons.YES;
+    }
+
     /**
      * 判断用户名和手机是否唯一
      *
@@ -190,7 +198,7 @@ public class Resaler extends Model {
      * @param status 状态
      * @param remark 备注
      */
-    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark, ResalerCreditable creditable) {
+    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark, ResalerCreditable creditable, ResalerBatchExportCoupons batchExportCoupons) {
         Resaler resaler = Resaler.findById(id);
         if (status != null) resaler.status = status;
         if (level != null) resaler.level = level;
@@ -207,15 +215,16 @@ public class Resaler extends Model {
             }
             account.save();
         }
+        resaler.batchExportCoupons = batchExportCoupons;
         resaler.save();
     }
 
     public static void freeze(long id) {
-        update(id, ResalerStatus.FREEZE, null, null, null);
+        update(id, ResalerStatus.FREEZE, null, null, null, null);
     }
 
     public static void unfreeze(long id) {
-        update(id, ResalerStatus.APPROVED, null, null, null);
+        update(id, ResalerStatus.APPROVED, null, null, null, null);
     }
 
     /**
