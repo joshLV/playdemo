@@ -112,6 +112,7 @@ public class OperateCoupons extends Controller {
         condition.operatorId = OperateRbac.currentUser().id;
         JPAExtPaginator<ECoupon> couponsList;
 
+
         couponsList = ECoupon.query(condition, 1, PAGE_SIZE);
 
         for (ECoupon coupon : couponsList) {

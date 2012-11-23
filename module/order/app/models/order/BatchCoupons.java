@@ -45,7 +45,8 @@ public class BatchCoupons extends Model {
     @Column(name = "lock_version")
     public int lockVersion;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "batchCoupons")
+    @OrderBy("id")
     public List<ECoupon> coupons;
 
     public BatchCoupons() {

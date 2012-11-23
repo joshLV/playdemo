@@ -24,6 +24,8 @@ GET     /coupons/batchexport/index              BatchExportCoupons.index
 GET     /coupons/batchexport/generator          BatchExportCoupons.generator
 POST    /coupons/batchexport/generate           BatchExportCoupons.generate
 GET     /coupons/batchexport/{id}               BatchExportCoupons.details
+GET     /coupons/batchexport/{id}/excel         BatchExportCoupons.batchCouponsExcelOut
+
 
 
 # 确认支付信息

@@ -57,9 +57,9 @@
                     &nbsp; &nbsp; &nbsp;
                     #{select 'goodsId', onChange:'consumedAmount()',id:'goodsId', class:'dingdan_stauts_bg', value:goods?.id}
                         #{list items:goodsList, as:'goods' }
-                            <option value="${goods.id}" price="${goods.salePrice}">
-                            ${goods.shortName}&nbsp;&nbsp;---
-                                &nbsp;&nbsp;${goods.salePrice.formatCurrency('CNY')}
+                            <option value="${goods.id}" price="${goods?.salePrice}">
+                            ${goods?.shortName}&nbsp;&nbsp;---
+                                &nbsp;&nbsp;${goods?.salePrice?.formatCurrency('CNY')}
                             </option>
                         #{/list}
                     #{/select}
@@ -68,7 +68,7 @@
                 <br>
 
 
-                <div class="balance">账户余额： &nbsp; &nbsp; &nbsp;<span class="">${account?.amount}</span>元</div>
+                <div class="balance">账户余额： &nbsp; &nbsp; &nbsp;<span class="">${account?.amount?.formatCurrency('CNY')}</span></div>
 
                 <br>
 

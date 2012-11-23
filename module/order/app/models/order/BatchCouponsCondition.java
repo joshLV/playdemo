@@ -18,10 +18,11 @@ import org.jsoup.helper.StringUtil;
 public class BatchCouponsCondition implements Serializable {
     public String name;
     public String goodsName;
+    public Long operatorId;
     private Map<String, Object> params = new HashMap<>();
 
     public String getFilter() {
-        StringBuilder filter = new StringBuilder("1=1");
+        StringBuilder filter = new StringBuilder("operatorId=" + operatorId);
         if (!StringUtil.isBlank(name)) {
             filter.append(" and name like :name");
             params.put("name", "%" + name + "%");
@@ -30,6 +31,7 @@ public class BatchCouponsCondition implements Serializable {
             filter.append(" and goodsName like :goodsName");
             params.put("goodsName", "%" + goodsName + "%");
         }
+
 
         return filter.toString();
     }

@@ -82,7 +82,8 @@ public class ECoupon extends Model {
     @ManyToOne
     public Goods goods;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "batch_coupons_id", nullable = true)
     public BatchCoupons batchCoupons;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -236,9 +237,14 @@ public class ECoupon extends Model {
         this(order, goods, orderItems, null);
     }
 
-    public ECoupon(Order order, Goods goods, OrderItems orderItems, String couponSn) {
+    public ECoupon(Order order, Goods goods, OrderItems orderItems, BatchCoupons batchCoupons) {
+        this(order, goods, orderItems, null, batchCoupons);
+    }
+
+    public ECoupon(Order order, Goods goods, OrderItems orderItems, String couponSn, BatchCoupons batchCoupons) {
         this.order = order;
-        System.out.println("order??????" + order);
+        this.batchCoupons = batchCoupons;
+
         this.goods = goods;
 
         this.faceValue = orderItems.faceValue;
@@ -636,6 +642,19 @@ public class ECoupon extends Model {
      */
     public static JPAExtPaginator<ECoupon> query(CouponsCondition condition,
                                                  int pageNumber, int pageSize) {
+        JPAExtPaginator<ECoupon> couponsPage = new JPAExtPaginator<>
+                ("ECoupon e", "e", ECoupon.class,
+                        condition.getFilter(),
+                        condition.getParamMap())
+                .orderBy("e.consumedAt desc,e.createdAt desc");
+
+        couponsPage.setPageNumber(pageNumber);
+        couponsPage.setPageSize(pageSize);
+        return couponsPage;
+    }
+
+    public static JPAExtPaginator<ECoupon> queryBatchCoupons(BatchExportCouponsCondition condition,
+                                                             int pageNumber, int pageSize) {
         JPAExtPaginator<ECoupon> couponsPage = new JPAExtPaginator<>
                 ("ECoupon e", "e", ECoupon.class,
                         condition.getFilter(),

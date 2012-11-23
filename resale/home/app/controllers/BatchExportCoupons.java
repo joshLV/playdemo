@@ -9,18 +9,15 @@ import models.accounts.PaymentSource;
 import models.accounts.util.AccountUtil;
 import models.order.*;
 import models.resale.Resaler;
-import models.resale.ResalerCart;
 import models.sales.*;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
+import play.modules.paginate.ModelPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -42,15 +39,14 @@ public class BatchExportCoupons extends Controller {
      */
     public static void index(BatchCouponsCondition condition) {
         Resaler user = SecureCAS.getResaler();
-
+        String noPermissionError = null;
         if (user.isBatchExportCoupons() == true) {
             String page = request.params.get("page");
             int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-
             if (condition == null) {
                 condition = new BatchCouponsCondition();
             }
-
+            condition.operatorId = user.getId();
             JPAExtPaginator<BatchCoupons> couponPage = BatchCoupons.findByCondition(condition,
                     pageNumber, PAGE_SIZE);
 
@@ -77,7 +73,6 @@ public class BatchExportCoupons extends Controller {
         if (consumed == null) {
             consumed = BigDecimal.ZERO;
         }
-//        List<models.sales.Goods> goodsList = models.sales.Goods.find("deleted=?", DeletedStatus.UN_DELETED).fetch();
         if (user.isBatchExportCoupons() == true) {
             String page = params.get("page");
             int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
@@ -98,7 +93,7 @@ public class BatchExportCoupons extends Controller {
         Account account = AccountUtil.getResalerAccount(resaler.getId());
         if (name == null || name.trim().equals("")) {
             generator("备注名称不能为空", count, name, prefix, goodsId, consumed);
-        } else if (StringUtils.isBlank(prefix) || !pattern.matcher(prefix).matches() || prefix.length() > 2) {
+        } else if (StringUtils.isBlank(prefix) || !pattern.matcher(prefix).matches() || prefix.length() < 2) {
             generator("前缀不符合规范", count, name, prefix, goodsId, consumed);
         } else if (count < 1 || count > 9999) {
             generator("数量不符合规范", count, name, prefix, goodsId, consumed);
@@ -106,7 +101,6 @@ public class BatchExportCoupons extends Controller {
             generator("账户余额不够，请先充值", count, name, prefix, goodsId, consumed);
         }
         //加载用户账户信息
-
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
         BatchCoupons batchCoupons = new BatchCoupons();
         batchCoupons.name = name;
@@ -127,7 +121,6 @@ public class BatchExportCoupons extends Controller {
             order.deliveryType = DeliveryType.SMS;
             order.createAndUpdateInventory();
 
-//            PaymentInfo.confirm(order.orderNumber, true, "balance");
             if (order == null) {
                 error(500, "no such order");
             }
@@ -135,8 +128,8 @@ public class BatchExportCoupons extends Controller {
                 error("wrong order status");
             }
 
-
-            if (Order.confirmPaymentInfo(order, account, true, "balance")) {
+            order.save();
+            if (Order.confirmPaymentInfo(order, account, true, "balance", batchCoupons)) {
                 ECoupon coupon = ECoupon.find("order=?", order).first();
                 coupon.eCouponSn = prefix + coupon.eCouponSn;
                 while (true) {
@@ -158,11 +151,18 @@ public class BatchExportCoupons extends Controller {
     }
 
     public static void details(Long id) {
+        String page = request.params.get("page");
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         Resaler user = SecureCAS.getResaler();
         if (user.isBatchExportCoupons() == true) {
-            BatchCoupons batchCoupons = BatchCoupons.findById(id);
-            List<ECoupon> couponsList = batchCoupons.coupons;
-            render(couponsList, noPermissionError);
+            Map<String, Object> qparams = new HashMap<>();
+            qparams.put("batchCouponId", id);
+            JPAExtPaginator<ECoupon> couponPage = new JPAExtPaginator("ECoupon e", "e", ECoupon.class,
+                    "e.batchCoupons.id = :batchCouponId", qparams);
+            couponPage.setPageNumber(pageNumber);
+            couponPage.setPageSize(PAGE_SIZE);
+            couponPage.setBoundaryControlsEnabled(true);
+            render(couponPage, id, noPermissionError);
         } else {
             noPermissionError = "此账户没有批量发券的权限";
             render(noPermissionError);
@@ -188,6 +188,21 @@ public class BatchExportCoupons extends Controller {
             randomNumber = RandomNumberUtil.generateSerialNumber(10);
         } while (isNotUniqueEcouponSn(randomNumber));
         return randomNumber;
+    }
+
+    public static void batchCouponsExcelOut(Long id) {
+        BatchCoupons batchCoupons = BatchCoupons.findById(id);
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "券号列表_" + System.currentTimeMillis() + "备注:" + batchCoupons.name + ".xls");
+        Map<String, Object> qparams = new HashMap<>();
+        qparams.put("batchCouponId", id);
+        JPAExtPaginator<ECoupon> couponList = new JPAExtPaginator("ECoupon e", "e", ECoupon.class,
+                "e.batchCoupons.id = :batchCouponId", qparams);
+        couponList.setPageNumber(1);
+        couponList.setPageSize(PAGE_SIZE);
+        couponList.setBoundaryControlsEnabled(true);
+        render(couponList);
+
     }
 
 

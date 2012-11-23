@@ -60,10 +60,11 @@
     <table class="order-tab">
         <thead>
         <tr class="col-name">
-            <th width="220">备注名称</th>
+            <th width="220">备注</th>
             <th width="220">商品名称</th>
             <th width="220">数量</th>
             <th width="220">创建时间</th>
+            <th width="220">操作</th>
 
         </tr>
         </thead>
@@ -73,9 +74,10 @@
             <tr class="order-bd">
                 <td><a style="color: #0000ff;" href="/coupons/batchexport/${coupon.id}"
                        target="_blank">${coupon?.name}</a></td>
-                <td>${coupon?.goodsName}</td>
+                <td style="padding-left:50px" align="left">${coupon?.goodsName}</td>
                 <td>${coupon?.count}</td>
                 <td>${coupon?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td><a style="color: #0000ff;" href="/coupons/batchexport/${coupon.id}">券号列表</a></td>
             </tr>
             </tbody>
         #{/paginate.list}
