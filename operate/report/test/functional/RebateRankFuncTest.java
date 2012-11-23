@@ -77,7 +77,6 @@ public class RebateRankFuncTest extends FunctionalTest {
         assertEquals(1, reportPage.getRowCount());
         PromoteRebate summary = (PromoteRebate) (renderArgs("summary"));
         assertEquals(1, summary.promoteTimes);
-//        System.out.println(summary.rebateAmount);
         assertEquals(10, summary.rebateAmount.intValue());
     }
 

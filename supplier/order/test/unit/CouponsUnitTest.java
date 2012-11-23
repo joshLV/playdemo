@@ -45,12 +45,12 @@ public class CouponsUnitTest extends UnitTest {
             }
         });
         ecoupon = FactoryBoy.create(ECoupon.class);
-
+        ecoupon.consumedAt = DateHelper.beforeDays(2);
+        ecoupon.save();
         FactoryBoy.batchCreate(3, ECoupon.class, new SequenceCallback<ECoupon>() {
             @Override
             public void sequence(ECoupon e, int seq) {
-                e.order.paidAt = DateHelper.beforeDays(2);
-                e.order.save();
+                e.consumedAt = DateHelper.beforeDays(2);
             }
         });
     }
@@ -72,8 +72,8 @@ public class CouponsUnitTest extends UnitTest {
     @Test
     public void testUserQueryCoupons() throws ParseException {
         CouponsCondition condition = new CouponsCondition();
-        condition.paidAtBegin = DateHelper.beforeDays(10);
-        condition.paidAtEnd = new Date();
+        condition.consumedAtBegin = DateHelper.beforeDays(10);
+        condition.consumedAtEnd = new Date();
         condition.status = ECouponStatus.UNCONSUMED;
         condition.goodsName = "";
         condition.userId = user.id;

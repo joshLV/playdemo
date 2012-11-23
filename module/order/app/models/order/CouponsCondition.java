@@ -17,7 +17,7 @@ public class CouponsCondition implements Serializable {
     public Date createdAtBegin;
     public Date createdAtEnd;
 
-    public Date consumedAtBegin;
+    public Date consumedAtBegin=DateUtil.getYesterday();
     public Date consumedAtEnd;
 
     public Date refundAtBegin;
@@ -172,8 +172,10 @@ public class CouponsCondition implements Serializable {
 
 
         }
-
-
+        if (StringUtils.isNotBlank(eCouponSn)) {
+            sql.append(" and e.eCouponSn like :eCouponSn");
+            paramMap.put("eCouponSn", "%" + eCouponSn);
+        }
         if (brandId != 0) {
             sql.append(" and e.orderItems.goods.brand =:brand");
             Brand brand = new Brand();
@@ -181,7 +183,7 @@ public class CouponsCondition implements Serializable {
             paramMap.put("brand", brand);
         }
         if (StringUtils.isNotBlank(goodsName)) {
-            sql.append(" and e.goods.shortName like :name");
+            sql.append(" and e.goods.name like :name");
             paramMap.put("name", "%" + goodsName.trim() + "%");
         }
         if (status != null) {

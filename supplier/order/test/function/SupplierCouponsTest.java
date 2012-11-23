@@ -17,6 +17,7 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
+import util.DateHelper;
 
 /**
  * Created with IntelliJ IDEA.
@@ -47,6 +48,8 @@ public class SupplierCouponsTest extends FunctionalTest {
         // 设置测试登录的用户名
         Security.setLoginUserForTest(supplierUser.loginName);
         coupon = FactoryBoy.create(ECoupon.class);
+        coupon.consumedAt = DateHelper.beforeDays(1);
+        coupon.save();
     }
 
     @Test
