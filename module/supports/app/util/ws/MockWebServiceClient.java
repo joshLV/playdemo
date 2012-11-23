@@ -10,7 +10,6 @@ import models.journal.WebServiceCallLog;
 
 import org.apache.commons.io.input.ReaderInputStream;
 
-import play.libs.WS;
 import play.libs.WS.HttpResponse;
 import play.mvc.Http.Header;
 
@@ -103,6 +102,7 @@ public class MockWebServiceClient extends WebServiceClient {
         
         log.statusCode = response.status;
         log.responseText = response.content;
+        
         if (callback != null) {
             callback.process(response.status, response.content);
         }

@@ -61,6 +61,12 @@ public class WebServiceCallLog extends Model {
      */
     @Column(name = "status_code")
     public Integer statusCode;
+    
+    /**
+     * Request请求体.
+     */
+    @Column(name = "request_body")
+    public String requestBody;
 
     @Lob
     @Column(name = "response_text", length = 4000)

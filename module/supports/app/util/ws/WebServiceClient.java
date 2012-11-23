@@ -137,6 +137,67 @@ public abstract class WebServiceClient {
         return postJson(callType, url, params, keyword1, keyword2, keyword3, null);
     }
 
+    // ---------- POST with body -----------
+    public String postStringWithBody(String callType, String url, Map<String, Object> params, String keyword, WebServiceCallback callback) {
+        return postStringWithBody(callType, url, params, keyword, null, null, callback);
+    }
+    public String postStringWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2, WebServiceCallback callback) {
+        return postStringWithBody(callType, url, params, keyword1, keyword2, null, callback);
+    }
+    public String postStringWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2, String keyword3, WebServiceCallback callback) {
+        HttpResponse response = postHttpResponse(callType, url, params, keyword1, keyword2, keyword3, callback);
+        return response.getString();
+    }
+    public String postStringWithBody(String callType, String url, Map<String, Object> params, String keyword) {
+        return postStringWithBody(callType, url, params, keyword, null, null, null);
+    }
+    public String postStringWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2) {
+        return postStringWithBody(callType, url, params, keyword1, keyword2, null, null);
+    }
+    public String postStringWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2, String keyword3) {
+        return postStringWithBody(callType, url, params, keyword1, keyword2, keyword3, null);
+    }
+
+    public Document postXmlWithBody(String callType, String url, Map<String, Object> params, String keyword, WebServiceCallback callback) {
+        return postXmlWithBody(callType, url, params, keyword, null, null, callback);
+    }
+    public Document postXmlWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2, WebServiceCallback callback) {
+        return postXmlWithBody(callType, url, params, keyword1, keyword2, null, callback);
+    }
+    public Document postXmlWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2, String keyword3, WebServiceCallback callback) {
+        HttpResponse response = postHttpResponse(callType, url, params, keyword1, keyword2, keyword3, callback);
+        return response.getXml();
+    }
+    public Document postXmlWithBody(String callType, String url, Map<String, Object> params, String keyword) {
+        return postXmlWithBody(callType, url, params, keyword, null, null, null);
+    }
+    public Document postXmlWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2) {
+        return postXmlWithBody(callType, url, params, keyword1, keyword2, null, null);
+    }
+    public Document postXmlWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2, String keyword3) {
+        return postXmlWithBody(callType, url, params, keyword1, keyword2, keyword3, null);
+    }
+
+    public JsonElement postJsonWithBody(String callType, String url, Map<String, Object> params, String keyword, WebServiceCallback callback) {
+        return postJsonWithBody(callType, url, params, keyword, null, null, callback);
+    }
+    public JsonElement postJsonWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2, WebServiceCallback callback) {
+        return postJsonWithBody(callType, url, params, keyword1, keyword2, null, callback);
+    }
+    public JsonElement postJsonWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2, String keyword3, WebServiceCallback callback) {
+        HttpResponse response = postHttpResponse(callType, url, params, keyword1, keyword2, keyword3, callback);
+        return response.getJson();
+    }
+    public JsonElement postJsonWithBody(String callType, String url, Map<String, Object> params, String keyword) {
+        return postJsonWithBody(callType, url, params, keyword, null, null, null);
+    }
+    public JsonElement postJsonWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2) {
+        return postJsonWithBody(callType, url, params, keyword1, keyword2, null, null);
+    }
+    public JsonElement postJsonWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2, String keyword3) {
+        return postJsonWithBody(callType, url, params, keyword1, keyword2, keyword3, null);
+    }
+    
     public HttpResponse getHttpResponse(String callType, String url, String keyword1, String keyword2, String keyword3, WebServiceCallback callback) {
         // 考虑到在MQ调用时没有打开数据库连接，这里重新开一下
         Logger.info("call " + callType + "'s get(" + url + ")...");
@@ -167,9 +228,18 @@ public abstract class WebServiceClient {
 
     public HttpResponse postHttpResponse(String callType, String url, Map<String, Object> params,
                     String keyword1, String keyword2, String keyword3, WebServiceCallback callback) {
+        return postHttpResponse(callType, url, null, params, keyword1, keyword2, keyword3, callback);
+    }
+    
+    public HttpResponse postHttpResponse(String callType, String url, String body, Map<String, Object> params,
+                    String keyword1, String keyword2, String keyword3, WebServiceCallback callback) {
         Logger.info("call " + callType + "'s get(" + url + ")...");
         WebServiceCallLog log = createWebServiceCallLog(callType, "GET", url,
                         keyword1, keyword2, keyword3);
+        log.requestBody = body;
+        if (params != null) {
+            log.postParams = new Gson().toJson(params);
+        }
         
         try {
             long startTime = System.currentTimeMillis();
@@ -177,9 +247,6 @@ public abstract class WebServiceClient {
             long endTime = System.currentTimeMillis();
             log.duration = endTime - startTime; // 记录耗时
             log.responseText = response.getString();
-            if (params != null) {
-                log.postParams = new Gson().toJson(params);
-            }
             log.statusCode = response.getStatus();
             log.success = Boolean.TRUE;
             log.save();

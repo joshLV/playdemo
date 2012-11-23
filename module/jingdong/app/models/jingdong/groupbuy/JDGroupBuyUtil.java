@@ -11,6 +11,8 @@ import play.exceptions.UnexpectedException;
 import play.libs.WS;
 import play.templates.Template;
 import play.templates.TemplateLoader;
+import util.ws.WebServiceClient;
+import util.ws.WebServiceClientFactory;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -110,6 +112,12 @@ public class JDGroupBuyUtil {
         params.put("outerOrder", outerOrder);
         params.put("coupon", eCoupon);
         String restRequest = makeRequestRest(template.render(params));
+        
+
+        WebServiceClient client = WebServiceClientFactory
+                        .getClientHelper();
+
+        String responseResult = client.postStringWithBody("jingdong_verify_order", url, null, outerOrder.orderNumber, "" + outerOrder.orderId, "" + eCoupon.id);
         WS.HttpResponse response =  WS.url(url).body(restRequest).post();
 
         //解析请求
