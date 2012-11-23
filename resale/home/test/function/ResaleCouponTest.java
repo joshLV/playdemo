@@ -1,25 +1,22 @@
 package function;
 
-import models.accounts.Account;
-import models.accounts.AccountType;
-import models.order.ECoupon;
-import models.order.Order;
-import models.order.OrderItems;
-import models.resale.Resaler;
-import models.sales.Category;
-import models.sales.Goods;
-import models.sales.Shop;
-import models.supplier.Supplier;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import play.modules.paginate.JPAExtPaginator;
-import play.mvc.Http.Response;
-import play.test.FunctionalTest;
 import controllers.modules.resale.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
+import models.accounts.AccountType;
+import models.order.CouponsCondition;
+import models.order.ECoupon;
+import models.order.ECouponStatus;
+import models.order.Order;
+import models.resale.Resaler;
+import models.sales.Goods;
+import models.sales.Shop;
+import org.junit.Before;
+import org.junit.Test;
+import play.modules.paginate.JPAExtPaginator;
+import play.mvc.Http.Response;
+import play.test.FunctionalTest;
+import util.DateHelper;
 
 public class ResaleCouponTest extends FunctionalTest {
     Shop shop;
@@ -30,7 +27,7 @@ public class ResaleCouponTest extends FunctionalTest {
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
-        
+
         resaler = FactoryBoy.create(Resaler.class);
         shop = FactoryBoy.create(Shop.class);
         goods = FactoryBoy.create(Goods.class);
@@ -42,17 +39,21 @@ public class ResaleCouponTest extends FunctionalTest {
                 o.userId = resaler.id;
             }
         });
-        
+
         coupon = FactoryBoy.create(ECoupon.class);
-        
+        coupon.consumedAt = DateHelper.beforeDays(1);
+        coupon.status = ECouponStatus.CONSUMED;
+        coupon.save();
         Security.setLoginUserForTest(resaler.loginName);
     }
-    
+
     @Test
     public void testCoupons() throws Exception {
+        CouponsCondition condition = new CouponsCondition();
+        condition.consumedAtBegin = DateHelper.beforeDays(4);
         Response response = GET("/ecoupons");
         assertIsOk(response);
-        JPAExtPaginator<ECoupon> couponsList = (JPAExtPaginator<ECoupon>)renderArgs("couponsList");
+        JPAExtPaginator<ECoupon> couponsList = (JPAExtPaginator<ECoupon>) renderArgs("couponsList");
         assertNotNull(couponsList);
         assertEquals(1, couponsList.getRowCount());
     }
