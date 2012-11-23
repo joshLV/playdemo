@@ -860,8 +860,8 @@ public class Goods extends Model {
                 query.setParameter("goodsId", id);
                 query.setParameter("orderStatus", OrderStatus.CANCELED);
 
-                Long orderItemsBuyCount = (Long)query.getSingleResult();
-                
+                Long orderItemsBuyCount = (Long) query.getSingleResult();
+
                 if (orderItemsBuyCount == null) {
                     return 0l;
                 }
@@ -951,18 +951,21 @@ public class Goods extends Model {
         return areaNames;
     }
 
-    public String getHighLightName(String words) {
-        String highLight = name;
-        if (words != null) {
-            String[] wordArray = words.split(" |,|;|，");
-            if (wordArray != null) {
-                for (String word : wordArray) {
-                    highLight = highLight.replaceAll(word, "<em>" + word + "</em>");
-                }
-            }
-        }
-        return highLight;
-    }
+    @Transient
+    public String highLightName;
+
+//    public String getHighLightName(String words) {
+//        String highLight = name;
+//        if (words != null) {
+//            String[] wordArray = words.split(" |,|;|，");
+//            if (wordArray != null) {
+//                for (String word : wordArray) {
+//                    highLight = highLight.replaceAll(word, "<em>" + word + "</em>");
+//                }
+//            }
+//        }
+//        return highLight;
+//    }
 
     @Transient
     public String getWwwUrl() {
@@ -2002,8 +2005,7 @@ public class Goods extends Model {
             query.setStart(pageNumber * pageSize - pageSize);
         }
         query.setFacet(true).addFacetField(facetFields);
-        query.setHighlight(true).addHighlightField(SOLR_GOODS_NAME);
-
+        query.setHighlight(true).addHighlightField(SOLR_GOODS_NAME).setHighlightSimplePre("<em>").setHighlightSimplePost("</em>");
         return Solr.query(query);
     }
 
@@ -2041,6 +2043,12 @@ public class Goods extends Model {
             goods.areaNames = (String) doc.getFieldValue(SOLR_GOODS_AREAS);
             goods.imageSmallPath = (String) doc.getFieldValue(SOLR_GOODS_IMAGESMALLPATH);
             goods.virtualSaleCount = (Long) doc.getFieldValue(SOLR_GOODS_VIRTUALSALECOUNT);
+            if (response.getHighlighting() != null && response.getHighlighting().get(docId) != null &&
+                    response.getHighlighting().get(docId).get(SOLR_GOODS_NAME) != null &&
+                    response.getHighlighting().get(docId).get(SOLR_GOODS_NAME).size() > 0) {
+                goods.highLightName = response.getHighlighting().get(docId).get(SOLR_GOODS_NAME).get(0);
+            }
+            goods.highLightName = StringUtils.isBlank(goods.highLightName) ? goods.name : goods.highLightName;
             goodsList.add(goods);
         }
         return goodsList;

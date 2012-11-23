@@ -1,8 +1,6 @@
 package unit;
 
-import java.math.BigDecimal;
-import java.util.List;
-
+import factory.FactoryBoy;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.admin.SupplierUser;
@@ -13,15 +11,14 @@ import models.sales.Goods;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import navigation.RbacLoader;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import play.test.Fixtures;
 import play.test.UnitTest;
 import play.vfs.VirtualFile;
-import factory.FactoryBoy;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public class VerificationUnitTest extends UnitTest {
     

@@ -9,7 +9,6 @@ import models.resale.ResalerStatus;
 import org.junit.Test;
 
 import play.modules.paginate.JPAExtPaginator;
-import play.test.Fixtures;
 import play.test.UnitTest;
 import factory.FactoryBoy;
 

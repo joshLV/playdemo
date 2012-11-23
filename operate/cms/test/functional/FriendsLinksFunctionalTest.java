@@ -1,9 +1,8 @@
 package functional;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import models.admin.OperateRole;
+import com.uhuila.common.constants.DeletedStatus;
+import controllers.operate.cas.Security;
+import factory.FactoryBoy;
 import models.admin.OperateUser;
 import models.cms.Block;
 import models.cms.FriendsLink;
@@ -12,12 +11,11 @@ import org.junit.After;
 import org.junit.Test;
 import play.modules.paginate.ModelPaginator;
 import play.mvc.Http;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-import com.uhuila.common.constants.DeletedStatus;
-import controllers.operate.cas.Security;
-import factory.FactoryBoy;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.

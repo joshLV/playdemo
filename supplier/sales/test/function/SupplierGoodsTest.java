@@ -1,10 +1,9 @@
 package function;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.uhuila.common.constants.DeletedStatus;
+import controllers.supplier.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.admin.SupplierUser;
 import models.sales.Brand;
 import models.sales.Category;
@@ -13,24 +12,20 @@ import models.sales.GoodsStatus;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import navigation.RbacLoader;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
 import play.Play;
 import play.mvc.Http;
 import play.mvc.Http.Response;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
-import com.uhuila.common.constants.DeletedStatus;
-
-import controllers.supplier.cas.Security;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Edited by Juno 2012-07-24
@@ -42,6 +37,7 @@ public class SupplierGoodsTest extends FunctionalTest {
     Shop shop;
     Supplier supplier;
     Brand brand;
+    Category category;
 
     @Before
     public void setUp() {
@@ -99,7 +95,7 @@ public class SupplierGoodsTest extends FunctionalTest {
     @Test
     @Ignore
     public void testSimpleUpdate() {
-        Response response = PUT("/goods/" + goods.id, "text/html",  "goods.name=test&goods.id=" + goods.id);
+        Response response = PUT("/goods/" + goods.id, "text/html", "goods.name=test&goods.id=" + goods.id);
         assertStatus(302, response);
         Goods goods1 = Goods.findById(goods.id);
         assertEquals("test", goods1.name);
@@ -114,11 +110,7 @@ public class SupplierGoodsTest extends FunctionalTest {
     // 修改：在SupplierGoods.java 中添加了在测试模式中忽略上传图片为空的代码以通过测试
     public void testCreate() {
 
-        Long id = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_003");
-        Goods goods = Goods.findById(id);
         List<Goods> list = Goods.findAll();
-        Long cateId = (Long) Fixtures.idCache
-                        .get("models.sales.Category-Category_1");
 
         // 记录创建新商品前的商品数
         int oldSize = list.size();
@@ -131,7 +123,7 @@ public class SupplierGoodsTest extends FunctionalTest {
         goodsParams.put("goods.salePrice", "20");
         goodsParams.put("goods.faceValue", "20");
         goodsParams.put("goods.title", "title");
-        goodsParams.put("goods.categories[].id", cateId.toString());
+        goodsParams.put("goods.categories[].id", String.valueOf(category.id));
         goodsParams.put("goods.effectiveAt", "2012-02-28T14:41:33");
         goodsParams.put("goods.expireAt", "2015-02-28T14:41:33");
         goodsParams.put("goods.baseSale", "100");

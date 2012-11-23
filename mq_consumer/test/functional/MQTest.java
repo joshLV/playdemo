@@ -1,13 +1,13 @@
 package functional;
 
+import factory.FactoryBoy;
 import models.MQTestConsumer;
 import models.MQTestJournal;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 import play.Logger;
 import play.modules.rabbitmq.producer.RabbitMQPublisher;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 
 import java.text.SimpleDateFormat;
@@ -22,7 +22,7 @@ public class MQTest extends FunctionalTest{
 
     @Before
     public void setup(){
-        Fixtures.delete(MQTestJournal.class);
+        FactoryBoy.deleteAll();
     }
 
     @Ignore

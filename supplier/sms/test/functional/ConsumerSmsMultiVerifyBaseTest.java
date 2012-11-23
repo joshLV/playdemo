@@ -1,9 +1,10 @@
 package functional;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.regex.Pattern;
-
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
+import controllers.EnSmsReceivers;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.admin.SupplierUser;
@@ -19,9 +20,7 @@ import models.sms.SMSMessage;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
-
 import org.junit.Test;
-
 import play.Play;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -30,12 +29,9 @@ import play.test.Fixtures;
 import play.test.FunctionalTest;
 import util.mq.MockMQ;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-
-import controllers.EnSmsReceivers;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.regex.Pattern;
 
 public class ConsumerSmsMultiVerifyBaseTest extends FunctionalTest {
 
@@ -319,10 +315,7 @@ public class ConsumerSmsMultiVerifyBaseTest extends FunctionalTest {
      * @param messageSender
      */
     public void testTheGoodsFromOtherSupplier(MessageSender messageSender) {
-        Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon5");
-        ECoupon ecoupon = ECoupon.findById(id);
-
-        Response response = messageSender.doMessageSend(ecoupon,
+        Response response = messageSender.doMessageSend(kfcECoupon,
                         kfcClerk.jobNumber + "*20", null);
 
         assertContentEquals("【一百券】店员工号无效，请核实工号是否正确或是否是" + kfc.fullName
