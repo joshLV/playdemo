@@ -3,7 +3,6 @@ package functional;
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
-import models.admin.OperateRole;
 import models.admin.OperateUser;
 import models.cms.Topic;
 import operate.rbac.RbacLoader;
@@ -11,7 +10,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Http;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 

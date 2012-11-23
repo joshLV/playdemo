@@ -18,7 +18,6 @@ import org.junit.Test;
 
 import play.cache.Cache;
 import play.mvc.Http.Response;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import util.mq.MockMQ;
 import controllers.modules.website.cas.Security;

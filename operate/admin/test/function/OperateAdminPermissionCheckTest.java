@@ -1,5 +1,7 @@
 package function;
 
+import controllers.operate.cas.Security;
+import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.admin.OperatePermission;
 import models.admin.OperateRole;
@@ -11,13 +13,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import play.mvc.Http.Response;
 import play.mvc.Router;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-import controllers.operate.cas.Security;
-import factory.FactoryBoy;
-
-import java.util.ArrayList;
 
 public class OperateAdminPermissionCheckTest extends FunctionalTest {
     OperateUser operateUser;

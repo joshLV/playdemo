@@ -1,23 +1,17 @@
 package unit;
 
-import java.util.List;
-
+import factory.FactoryBoy;
 import models.cms.VoteQuestion;
 import models.cms.VoteType;
 import models.consumer.User;
 import models.consumer.UserVote;
 import models.consumer.UserVoteCondition;
-import models.sales.Brand;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.modules.paginate.JPAExtPaginator;
-import play.modules.paginate.ModelPaginator;
-import play.test.Fixtures;
 import play.test.UnitTest;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
+
+import java.util.List;
 
 /**
  * @author wangjia

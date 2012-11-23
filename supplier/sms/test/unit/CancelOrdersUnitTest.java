@@ -1,5 +1,7 @@
 package unit;
 
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.consumer.User;
 import models.job.CancelUnPaidOrderJob;
 import models.order.CancelUnpaidOrders;
@@ -8,16 +10,10 @@ import models.order.OrderItems;
 import models.sales.Goods;
 import org.junit.Before;
 import org.junit.Test;
-
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
-import play.test.Fixtures;
 import play.test.UnitTest;
 import util.DateHelper;
 
 import java.text.ParseException;
-import java.util.Calendar;
-import java.util.List;
 
 /**
  * <p/>

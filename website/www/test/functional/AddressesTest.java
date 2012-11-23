@@ -3,21 +3,19 @@
  */
 package functional;
 
-import java.util.List;
-
+import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
 import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.mvc.Http;
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
-import controllers.modules.website.cas.Security;
-import factory.FactoryBoy;
+
+import java.util.List;
 
 /**
  * @author wangjia
@@ -86,10 +84,6 @@ public class AddressesTest extends FunctionalTest {
     public void testUpdateDefault() {
         String updatedName = "徐汇区";
         address.city = updatedName;
-//		  	/friendsLinks/{id}
-//	        long id = (Long) Fixtures.idCache.get("models.cms.FriendsLink-Link1");
-//	        String params = "friendsLinks.linkName=changed&friendsLinks.link=www.changed.com";
-//	        Http.Response response =  PUT("/friendsLinks/"+id,"application/x-www-form-urlencoded",params);
         Http.Response response = PUT("/orders/addresses/" + address.id + "/default", "application/x-www-form-urlencoded", address.city);
         assertStatus(200, response);
         address = Address.findById(address.id);

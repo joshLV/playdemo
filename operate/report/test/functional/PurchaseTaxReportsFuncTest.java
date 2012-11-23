@@ -4,38 +4,21 @@ import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.PurchaseECouponReport;
-import models.admin.OperateRole;
 import models.admin.OperateUser;
-import models.admin.SupplierUser;
-import models.consumer.UserWebIdentification;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
-import models.order.Order;
-import models.order.OrderItems;
-import models.report.DetailDailyReport;
-import models.report.GoodsDailyReport;
-import models.report.ShopDailyReport;
-import models.report.TotalDailyReport;
-import models.sales.Brand;
-import models.sales.Category;
-import models.sales.Goods;
 import models.sales.Shop;
-import models.supplier.Supplier;
 import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import play.modules.paginate.ValuePaginator;
 import play.mvc.Http;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.

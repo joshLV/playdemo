@@ -1,11 +1,10 @@
 package function;
 
-import java.util.List;
-
+import controllers.supplier.cas.Security;
+import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
-import models.supplier.Supplier;
 import navigation.ContextedMenu;
 import navigation.RbacLoader;
 import org.junit.After;
@@ -13,12 +12,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import play.mvc.Router;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-import controllers.supplier.cas.Security;
-import factory.FactoryBoy;
-import factory.callback.SequenceCallback;
+
+import java.util.List;
 
 public class MenuCheckTest extends FunctionalTest {
     SupplierUser supplierUserAdminSales;

@@ -176,13 +176,13 @@ public class DateUtil {
     /**
      * 字符串转化成日期
      *
-     * @param sdate
+     * @param sDate
      * @return
      */
-    public static Date stringToDate(String sdate) {
+    public static Date stringToDate(String sDate) {
         Date date = null;
         try {
-            date = formatDate.parse(sdate);
+            date = formatDate.parse(sDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }

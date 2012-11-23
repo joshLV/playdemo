@@ -1,26 +1,13 @@
 package function;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import models.admin.SupplierRole;
-import models.admin.SupplierUser;
-import navigation.RbacLoader;
-
-import org.junit.After;
-import org.junit.Test;
-
-import com.uhuila.common.constants.DeletedStatus;
-
-import play.Play;
-import play.mvc.Http.Response;
-import play.test.Fixtures;
-import play.test.FunctionalTest;
-import play.vfs.VirtualFile;
-import controllers.supplier.cas.Security;
 import factory.FactoryBoy;
-import factory.callback.SequenceCallback;
+import models.admin.SupplierUser;
+import org.junit.Test;
+import play.mvc.Http.Response;
+import play.test.FunctionalTest;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SupplierUsersTest extends FunctionalTest {
     SupplierUser supplierUser;

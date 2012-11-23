@@ -69,6 +69,7 @@ public class TotalSalesCondition {
         }
 
         if (endAt != null) {
+            System.out.println(".................endAt:" + endAt);
             Date endDate = Supplier.getShopHour(endAt, shopEndHour, true);
             condBuilder.append(" and e.consumedAt <= :endAt");
             paramMap.put("endAt", endDate);
@@ -132,7 +133,6 @@ public class TotalSalesCondition {
     }
 
     public String getGroupBy() {
-        StringBuilder sb = new StringBuilder();
         switch (type) {
             case BY_SUPPLIER:
                 return "e.goods.supplierId";

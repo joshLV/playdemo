@@ -1,25 +1,14 @@
 package functional;
 
 import controllers.supplier.cas.Security;
-import models.admin.SupplierRole;
+import factory.FactoryBoy;
 import models.admin.SupplierUser;
-import models.sales.Shop;
-import org.junit.After;
+import navigation.RbacLoader;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Http;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-import navigation.RbacLoader;
-import models.sales.Shop;
-
-import java.math.BigDecimal;
-import models.report.ShopDailyReport;
-import factory.callback.SequenceCallback;
-import factory.callback.BuildCallback;
-import factory.FactoryBoy;
 
 public class SupplierReportsTest extends FunctionalTest {
 

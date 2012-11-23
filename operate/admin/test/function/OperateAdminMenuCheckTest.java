@@ -1,6 +1,8 @@
 package function;
 
 import controllers.operate.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
 import operate.rbac.ContextedMenu;
@@ -11,17 +13,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import play.Logger;
 import play.mvc.Router;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
-
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
-import util.DateHelper;
 
 public class OperateAdminMenuCheckTest extends FunctionalTest {
     OperateUser operateUser;

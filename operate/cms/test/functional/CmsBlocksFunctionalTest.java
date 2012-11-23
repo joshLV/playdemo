@@ -1,11 +1,8 @@
 package functional;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.uhuila.common.constants.DeletedStatus;
+import controllers.operate.cas.Security;
 import factory.FactoryBoy;
-import models.admin.OperateRole;
 import models.admin.OperateUser;
 import models.cms.Block;
 import operate.rbac.RbacLoader;
@@ -14,11 +11,12 @@ import org.junit.Before;
 import org.junit.Test;
 import play.Play;
 import play.mvc.Http;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-import com.uhuila.common.constants.DeletedStatus;
-import controllers.operate.cas.Security;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: Juno
