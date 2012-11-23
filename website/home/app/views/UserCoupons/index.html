@@ -127,8 +127,8 @@
                 <label>商品名称：</label>
                 <input class="medium-input goods-name" type="text" name="condition.goodsName"
                        value="${condition.goodsName}"/>
-                <label>订单号：</label>
-                <input class="short-input order-num" type="text" name="condition.searchItems"/>
+                <label>券号：</label>
+                <input class="short-input order-num" type="text" name="condition.eCouponSn"/>
                 <label>成交时间：</label>
                 <input class="short-input Wdate" type="text" name="condition.createdAtBegin"
                        value="${condition.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"/>
@@ -181,7 +181,7 @@
                            href="${goodsUrl}"
                            target="_blank"><img src="${coupon?.goods?.imageTinyPath}"/></a>
                         <a href="${goodsUrl}"
-                           target="_blank">${coupon?.goods?.shortName}</a>
+                           target="_blank">${coupon?.goods?.name}</a>
                     </td>
                     <td align="center">${coupon.order.orderNumber}</td>
                     <td align="center">

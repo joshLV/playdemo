@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>#{get 'title' /}</title>
 #{get 'metaContent'/}
-#{asset.css src:['/base/121031/base.css']/}
+#{asset.css src:['/base/121123/base.css']/}
     <link rel="shortcut icon" href="#{asset.url href:'/images/y/favicon.ico'/}" type="image/x-icon"/>
 #{get 'moreStyles' /}
 </head>
@@ -140,7 +140,7 @@
                #{if categoryId == 0}class="curr"#{/if}>首页<i class="right"></i></a>
         #{list topCategories, as: 'category'}
             <a href="${helper.Domain.getWWWHost(request)}/q/${category.id}"
-               #{if categoryId == category.id}class="curr"#{/if}>${category.name}<i class="right"></i></a>
+               #{if categoryId == category.id}class="curr"#{/if}>${category.name}#{if category.name=='餐饮美食'}<s class="hoticon"></s>#{/if}<i class="right"></i></a>
         #{/list}
 
         </div>

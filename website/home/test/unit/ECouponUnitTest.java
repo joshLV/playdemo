@@ -73,16 +73,14 @@ public class ECouponUnitTest extends UnitTest {
      */
     @Test
     public void testQueryCoupons() {
+
+        eCoupon.goods.isLottery = false;
+        eCoupon.consumedAt = DateHelper.beforeDays(3);
+        eCoupon.save();
         CouponsCondition condition = new CouponsCondition();
-        condition.createdAtBegin = DateHelper.beforeDays(new Date(), 1);
-        condition.createdAtEnd = new Date();
-        condition.status = ECouponStatus.UNCONSUMED;
+        condition.consumedAtBegin = DateHelper.beforeDays(4);
         condition.goodsName = "Product Name";
-        condition.userId = user.id;
-        condition.accountType = AccountType.CONSUMER;
-        int pageNumber = 1;
-        int pageSize = 15;
-        JPAExtPaginator<ECoupon> list = ECoupon.query(condition, pageNumber, pageSize);
+        JPAExtPaginator<ECoupon> list = ECoupon.query(condition, 1, 15);
         assertEquals(1, list.size());
 
     }
