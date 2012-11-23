@@ -19,26 +19,36 @@ public class UserWebIdentificationConsumer extends RabbitMQConsumer<UserWebIdent
 		UserWebIdentification wui = UserWebIdentification.findOne(uwiMsg.cookieId);
 		if (wui == null) {
 			wui = uwiMsg.toUserWebIdentification();
+	        boolean rollBack = false;
 			Logger.info("尝试保存UserWebIdentification（cookie:" + uwiMsg.cookieId + ")");
 			try {
-			  wui.save(); //考虑做一下如果有ID，调用更新操作，否则调用新增操作.
+			    if (wui.id != null && wui.id > 0l) {
+			        UserWebIdentification wui2 = UserWebIdentification.findById(wui.id);
+			        if (wui.user != null) {
+			            wui2.user = wui.user;
+			        }
+			        wui2.cartCount = wui.cartCount;
+			        wui2.orderCount = wui.cartCount;
+			        wui2.payAmount = wui.payAmount;
+			        wui2.registerCount = wui.registerCount;
+			        wui2.save();
+			    } else {
+			        // new wui.
+			        wui.save();
+			    }
+	            JPA.em().flush();
 			} catch (Exception e) {
-			    Logger.info("出现保存异常，先忽略.", e);
-			}
+	            rollBack = true;
+	            Logger.info("update UserWebIdentification failed, will roll back now.", e);
+			    return;
+			} finally {
+	            JPAPlugin.closeTx(rollBack);
+	        }
 		} else {
 			Logger.info("msg83841341:UserWebIdentification（cookie:" + uwiMsg.cookieId + ")已经被其它进程保存");
+			JPAPlugin.closeTx(true);
 		}
 
-        boolean rollBack = false;
-        try {
-            JPA.em().flush();
-        } catch (RuntimeException e) {
-            rollBack = true;
-            Logger.info("update UserWebIdentification failed, will roll back", e);
-            //不抛异常 不让mq重试本job
-        } finally {
-            JPAPlugin.closeTx(rollBack);
-        }
 	}
 
 	@Override
