@@ -119,13 +119,7 @@ public class OperatePointGoods extends Controller {
 
         checkPointPrice(pointGoods);
 
-//        System.out.println("limitnumber>>>"+pointGoods.limitNumber);
-
-//        System.out.println("basesale>>>"+pointGoods.baseSale);
-
-
         checkCount(pointGoods);
-
 
         if (pointGoods.materialType.toString() == models.sales.MaterialType.ELECTRONIC.toString())
             checkTime(pointGoods);
@@ -138,17 +132,10 @@ public class OperatePointGoods extends Controller {
             render("OperatePointGoods/add.html");
         }
 
-
         //预览
         if (GoodsStatus.UNCREATED.equals(pointGoods.status)) {
             preview(null, pointGoods, imagePath);
         }
-
-
-        // goods.createdBy = OperateRbac.currentUser().loginName;
-
-//        System.out.println("aaaaaaaa>>>lllll>>>");
-
         pointGoods.create();
         try {
             pointGoods.imagePath = uploadImagePath(imagePath, pointGoods.id, null);
@@ -156,11 +143,6 @@ public class OperatePointGoods extends Controller {
             error(500, "goods.image_upload_failed");
         }
         pointGoods.save();
-
-//                          System.out.println("aaaaaaaaaaaaa<<<<<"+imagePath+"cccccccc>>>>>");
-
-
-        // renderJSON(imagePath);
 
         index(null);
     }
