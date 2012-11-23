@@ -7,7 +7,7 @@
 <div class="body">
     <form class="form-horizontal" name="frm" action="" method="post">
         <legend>分销商详细信息</legend>
-      <!--  <div class="control-group">
+        <!--  <div class="control-group">
             <label class="control-label">帐户类型</label>
 
             <div class="controls">&{'resaler.'+resaler?.accountType}
@@ -49,7 +49,7 @@
             <div class="controls">${resaler?.phone}
             </div>
         </div>
-         <div class="control-group">
+        <div class="control-group">
             <label class="control-label">邮箱</label>
 
             <div class="controls">${resaler?.email}
@@ -61,7 +61,7 @@
             <div class="controls">${resaler?.address}
             </div>
         </div>
-         <div class="control-group">
+        <div class="control-group">
             <label class="control-label">联系人地址</label>
 
             <div class="controls">${resaler?.address}
@@ -69,60 +69,89 @@
         </div>
         <div class="control-group">
             <label class="control-label">会员级别</label>
+
             <div class="controls">
             #{if !"1".equals(flag)}
                 #{select 'resaler.level', value:resaler?.level,id:'level',class:'input-small'}
-                    #{option "NORMAL"}&{'resaler.NORMAL'}#{/option} 
-                    *{#{option "VIP1"}&{'resaler.VIP1'}#{/option} }*
-                    *{#{option "VIP2"}&{'resaler.VIP2'}#{/option} }*
-                    *{#{option "VIP3"}&{'resaler.VIP3'}#{/option} }*
+                    #{option "NORMAL"}&{'resaler.NORMAL'}#{/option}
+                *{#{option "VIP1"}&{'resaler.VIP1'}#{/option} }*
+                *{#{option "VIP2"}&{'resaler.VIP2'}#{/option} }*
+                *{#{option "VIP3"}&{'resaler.VIP3'}#{/option} }*
                 #{/select}
             #{/if}
             #{else}
-                 &{'resaler.'+resaler.level}
+            &{'resaler.'+resaler.level}
             #{/else}
             </div>
         </div>
         <div class="control-group">
             <label class="control-label">账户可欠款</label>
+
             <div class="controls">
-                #{if !"1".equals(flag)}
-                    <label class="radio">
-                        <input type="radio" name="creditable" value="YES" #{if resaler?.creditable} checked#{/if}>是
-                    </label>
-                    <label class="radio">
-                        <input type="radio" name="creditable" value="NO"  #{if !resaler?.creditable} checked#{/if}>否
-                    </label>
-                #{/if}
-                #{else}
-                    &{'resaler.creditable.' + resaler.creditable}
-                #{/else}
-            </div>
-        </div>
-         <div class="control-group">
-            <label class="control-label">备注</label>
-            <div class="controls">
-            #{if !"1".equals(flag) && !"APPROVED".equals(resaler?.status.toString())}
-            <textarea rows="5" cols="8" name="remark" id="remark">${resaler?.remark}</textarea>
-            <span class="error" id="checkRemark">#{error 'resaler.remark'/}</span>
+            #{if !"1".equals(flag)}
+                <label class="radio">
+                    <input type="radio" name="creditable" value="YES" #{if resaler?.creditable} checked#{/if}>是
+                </label>
+                <label class="radio">
+                    <input type="radio" name="creditable" value="NO"  #{if !resaler?.creditable} checked#{/if}>否
+                </label>
             #{/if}
             #{else}
-                 ${resaler?.remark}
+            &{'resaler.creditable.' + resaler.creditable}
             #{/else}
             </div>
         </div>
-        </form>
-        <form class="form-horizontal" id="checkFrm" method="post">
+
+        <div class="control-group">
+            <label class="control-label">可批量发券</label>
+
+            <div class="controls">
+            #{if !"1".equals(flag)}
+                <label class="radio">
+                    <input type="radio" name="batchExportCoupons" value="YES" #{if resaler?.batchExportCoupons}
+                           checked#{/if}>是
+                </label>
+                <label class="radio">
+                    <input type="radio" name="batchExportCoupons" value="NO"  #{if !resaler?.batchExportCoupons}
+                           checked#{/if}>否
+                </label>
+            #{/if}
+            #{else}
+            &{'resaler.batchExportCoupons.' + resaler.batchExportCoupons}
+            #{/else}
+            </div>
+        </div>
+
+
+        <div class="control-group">
+            <label class="control-label">备注</label>
+
+            <div class="controls">
+            #{if !"1".equals(flag) && !"APPROVED".equals(resaler?.status.toString())}
+                <textarea rows="5" cols="8" name="remark" id="remark">${resaler?.remark}</textarea>
+                <span class="error" id="checkRemark">#{error 'resaler.remark'/}</span>
+            #{/if}
+            #{else}
+            ${resaler?.remark}
+            #{/else}
+            </div>
+        </div>
+    </form>
+    <form class="form-horizontal" id="checkFrm" method="post">
         <div class="form-actions">
         #{if !"1".equals(flag)}
-            <button class="btn btn-primary" onclick="checkResaler('${resaler.id}','APPROVED')" id="approved" type="button">
-             #{if "PENDING".equals(resaler?.status.toString()) ||"UNAPPROVED".equals(resaler?.status.toString()) }审核#{/if} #{else}修改#{/else}
+            <button class="btn btn-primary" onclick="checkResaler('${resaler.id}','APPROVED')" id="approved"
+                    type="button">
+                #{if "PENDING".equals(resaler?.status.toString()) ||"UNAPPROVED".equals(resaler?.status.toString()) }
+                    审核#{/if} #{else}修改#{/else}
             </button>
-        #{/if}    
+        #{/if}
         #{if !"UNAPPROVED".equals(resaler?.status.toString()) && !"APPROVED".equals(resaler?.status.toString())}
-            <button class="btn btn-primary" onclick="checkResaler('${resaler.id}','UNAPPROVED',0)" id="unapproved" type="button">审核未通过</button>
+            <button class="btn btn-primary" onclick="checkResaler('${resaler.id}','UNAPPROVED',0)" id="unapproved"
+                    type="button">审核未通过
+            </button>
         #{/if}
             <button class="btn btn-primary" onclick="javascript:window.history.back(-1)" type="button">返回</button>
         </div>
-      </form>
+    </form>
 </div>

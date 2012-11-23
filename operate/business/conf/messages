@@ -50,6 +50,7 @@ validation.existed=%s已经存在！
 validation.useWeekDay=请选择%s!
 goods.materialType=券类型
 
+
 pointGoods.materialType=积分商品类型
 
 goods.materialType_1=电子券
@@ -60,6 +61,7 @@ pointGoods.materialType_2=实物
 
 pointGoods.ELECTRONIC=电子券
 pointGoods.REAL=实物
+
 
 
 
@@ -228,6 +230,7 @@ resaler.UNAPPROVED=审核未通过
 resaler.FREEZE=冻结
 
 resaler.remark=备注
+resaler.batchExportCoupons=可批量发券
 
 #订单状态
 order.UNPAID=等待付款

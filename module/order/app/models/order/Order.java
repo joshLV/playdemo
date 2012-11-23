@@ -196,6 +196,7 @@ public class Order extends Model {
     @Transient
     public String searchKey;
 
+
     @Transient
     public String searchItems;
 
@@ -613,12 +614,16 @@ public class Order extends Model {
     }
 
     public void payAndSendECoupon() {
+        this.payAndSendECoupon(null);
+    }
+
+    public void payAndSendECoupon(BatchCoupons batchCoupons) {
         if (this.status == OrderStatus.PAID) {
             return;
         }
 
         if (paid()) {
-            sendECoupon();
+            sendECoupon(batchCoupons);
         }
     }
 
@@ -689,10 +694,14 @@ public class Order extends Model {
         return true;
     }
 
+    private void sendECoupon() {
+        this.sendECoupon(null);
+    }
+
     /**
      * 发送电子券相关短信/邮件/通知
      */
-    private void sendECoupon() {
+    private void sendECoupon(BatchCoupons batchCoupons) {
         if (this.status != OrderStatus.PAID) {
             return;
         }
@@ -716,7 +725,7 @@ public class Order extends Model {
                         if (importedCoupon == null) {
                             throw new RuntimeException("can not find an imported coupon of goods " + goods.getId());
                         } else {
-                            eCoupon = new ECoupon(this, goods, orderItem, importedCoupon.coupon).save();
+                            eCoupon = new ECoupon(this, goods, orderItem, importedCoupon.coupon, batchCoupons).save();
                             Supplier supplier = Supplier.findById(goods.supplierId);
                             SupplierUser supplierUser = SupplierUser.find("bySupplier", supplier).first();
                             if (supplierUser == null) {
@@ -728,7 +737,7 @@ public class Order extends Model {
                             importedCoupon.save();
                         }
                     } else {
-                        eCoupon = new ECoupon(this, goods, orderItem).save();
+                        eCoupon = new ECoupon(this, goods, orderItem, batchCoupons).save();
                     }
                     //记录券历史信息
                     new CouponHistory(eCoupon, AccountType.RESALER.equals(orderItem.order.userType) ? "分销商：" + orderItem.order.getResaler().loginName : "消费者:" + orderItem.order.getUser().getShowName(), "产生券号", ECouponStatus.UNCONSUMED, ECouponStatus.UNCONSUMED, null).save();
@@ -1111,6 +1120,10 @@ public class Order extends Model {
     }
 
     public static boolean confirmPaymentInfo(Order order, Account account, boolean useBalance, String paymentSourceCode) {
+        return confirmPaymentInfo(order, account, useBalance, paymentSourceCode, null);
+    }
+
+    public static boolean confirmPaymentInfo(Order order, Account account, boolean useBalance, String paymentSourceCode, BatchCoupons batchCoupons) {
         //有些账号还没有promotionAmount
         if (account.promotionAmount == null) {
             account.promotionAmount = BigDecimal.ZERO;
@@ -1135,7 +1148,7 @@ public class Order extends Model {
         if (order.discountPay.compareTo(BigDecimal.ZERO) == 0
                 && order.accountPay.add(order.promotionBalancePay).compareTo(order.needPay) == 0) {
             order.payMethod = PaymentSource.getBalanceSource().code;
-            order.payAndSendECoupon();
+            order.payAndSendECoupon(batchCoupons);
             return true;
         }
 

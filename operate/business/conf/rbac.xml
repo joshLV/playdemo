@@ -128,6 +128,7 @@
             <navigation key="pre_coupons" action="ImportCoupons.index" text="预购券管理" permissions="COUPONS_MANAGE"/>
             <navigation key="freeze_coupons" action="BatchFreezeCoupons.index" text="批量冻结券号"
                         permissions="COUPONS_MANAGE"/>
+
         </navigation>
         <navigation key="yihaodian_api" text="一号店">
             <navigation key="yihaodian_api_index" action="YihaodianAPI.index" text="API" permissions="ORDERS"/>

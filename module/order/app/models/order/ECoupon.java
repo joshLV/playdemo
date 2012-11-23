@@ -83,6 +83,10 @@ public class ECoupon extends Model {
     public Goods goods;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "batch_coupons_id", nullable = true)
+    public BatchCoupons batchCoupons;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id", nullable = true)
     public OrderItems orderItems;
 
@@ -235,8 +239,14 @@ public class ECoupon extends Model {
         this(order, goods, orderItems, null);
     }
 
-    public ECoupon(Order order, Goods goods, OrderItems orderItems, String couponSn) {
+    public ECoupon(Order order, Goods goods, OrderItems orderItems, BatchCoupons batchCoupons) {
+        this(order, goods, orderItems, null, batchCoupons);
+    }
+
+    public ECoupon(Order order, Goods goods, OrderItems orderItems, String couponSn, BatchCoupons batchCoupons) {
         this.order = order;
+        this.batchCoupons = batchCoupons;
+
         this.goods = goods;
 
         this.faceValue = orderItems.faceValue;
@@ -636,6 +646,19 @@ public class ECoupon extends Model {
      */
     public static JPAExtPaginator<ECoupon> query(CouponsCondition condition,
                                                  int pageNumber, int pageSize) {
+        JPAExtPaginator<ECoupon> couponsPage = new JPAExtPaginator<>
+                ("ECoupon e", "e", ECoupon.class,
+                        condition.getFilter(),
+                        condition.getParamMap())
+                .orderBy("e.consumedAt desc,e.createdAt desc");
+
+        couponsPage.setPageNumber(pageNumber);
+        couponsPage.setPageSize(pageSize);
+        return couponsPage;
+    }
+
+    public static JPAExtPaginator<ECoupon> queryBatchCoupons(BatchExportCouponsCondition condition,
+                                                             int pageNumber, int pageSize) {
         JPAExtPaginator<ECoupon> couponsPage = new JPAExtPaginator<>
                 ("ECoupon e", "e", ECoupon.class,
                         condition.getFilter(),
@@ -1086,6 +1109,7 @@ public class ECoupon extends Model {
 
     /**
      * 从一组券中返回符合指定金额条件的券。
+     *
      * @param payValue
      * @param ecoupons
      * @return
@@ -1241,6 +1265,7 @@ public class ECoupon extends Model {
     /**
      * 查询同一组商品的券.
      * 先按groupCode查，如果没groupCode，则查同一个goodsId的券.
+     *
      * @param eCoupon
      * @return
      */
@@ -1249,21 +1274,22 @@ public class ECoupon extends Model {
             return new ArrayList<ECoupon>();
         }
         Goods goods = ecoupon.goods;
-        
+
         if (!StringUtils.isBlank(goods.groupCode)) {
             return ECoupon.find("order=? and orderItems.phone=? and status = ? and goods.isLottery=? and goods.groupCode=? and goods.supplierId=? order by id",
-                            ecoupon.order, ecoupon.orderItems.phone,
-                            ECouponStatus.UNCONSUMED, false,
-                            goods.groupCode, goods.supplierId).fetch();
+                    ecoupon.order, ecoupon.orderItems.phone,
+                    ECouponStatus.UNCONSUMED, false,
+                    goods.groupCode, goods.supplierId).fetch();
         }
         return ECoupon.find("order=? and orderItems.phone=? and status=? and goods.isLottery=? and goods.id=? and goods.supplierId=? order by id",
-                        ecoupon.order, ecoupon.orderItems.phone,
-                        ECouponStatus.UNCONSUMED, false,
-                        goods.id, goods.supplierId).fetch();
+                ecoupon.order, ecoupon.orderItems.phone,
+                ECouponStatus.UNCONSUMED, false,
+                goods.id, goods.supplierId).fetch();
     }
-    
+
     /**
      * 得到券的可验证状态信息，如果为null，则可验证，否则不允许验证
+     *
      * @param ecoupon
      * @return
      */
@@ -1273,7 +1299,7 @@ public class ECoupon extends Model {
         }
         String result = null;
         if (ecoupon.isFreeze == 1) {
-           result = "此券已被冻结不能使用!";
+            result = "此券已被冻结不能使用!";
         } else if (ecoupon.status == models.order.ECouponStatus.CONSUMED) {
             result = "此券已消费!";
         } else if (ecoupon.status == models.order.ECouponStatus.REFUND) {

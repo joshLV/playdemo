@@ -72,8 +72,6 @@ public class SupplierCoupons extends Controller {
         
         String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
         
-        System.out.println("ecoupon sn=" + eCouponSn);
-
         List<ECoupon> ecoupons = ECoupon.queryUnconsumedCouponsWithSameGoodsGroups(ecoupon);
         
         BigDecimal amount = summaryECouponsAmount(ecoupons);
