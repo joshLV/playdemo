@@ -164,7 +164,7 @@ public class SupplierCoupons extends Controller {
                         consumedAmount = consumedAmount.add(e.faceValue);
                         realCheckECoupon.add(e);
                     }
-                    System.out.println("    ... had consumedAmount=" + consumedAmount);
+                    System.out.println("    ... had ContentOfGenerator=" + consumedAmount);
                 }
                 renderArgs.put("consumedAmount", consumedAmount);
 

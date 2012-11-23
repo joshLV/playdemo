@@ -34,7 +34,8 @@ import java.util.regex.Pattern;
 @With(SecureCAS.class)
 public class BatchExportCoupons extends Controller {
     private static final int PAGE_SIZE = 15;
-    public static String err = null;
+    public static String noPermissionError = null;
+
 
     /**
      * 券号列表
@@ -61,18 +62,21 @@ public class BatchExportCoupons extends Controller {
                     }
                 }
             }
-            render(couponPage, condition, err);
+            render(couponPage, condition, noPermissionError);
         } else {
-            err = "此账户没有批量发券的权限";
-            render(err);
+            noPermissionError = "此账户没有批量发券的权限";
+            render(noPermissionError);
         }
     }
 
 
-    public static void generator(String err, int count, String name, String prefix, Long goodsId) {
+    public static void generator(String err, int count, String name, String prefix, Long goodsId, BigDecimal consumed) {
         //加载用户账户信息
         Resaler user = SecureCAS.getResaler();
         Account account = AccountUtil.getResalerAccount(user.getId());
+        if (consumed == null) {
+            consumed = BigDecimal.ZERO;
+        }
 //        List<models.sales.Goods> goodsList = models.sales.Goods.find("deleted=?", DeletedStatus.UN_DELETED).fetch();
         if (user.isBatchExportCoupons() == true) {
             String page = params.get("page");
@@ -80,25 +84,29 @@ public class BatchExportCoupons extends Controller {
             GoodsCondition goodsCond = new GoodsCondition();
             JPAExtPaginator<models.sales.Goods> goodsList = models.sales
                     .Goods.findByResaleCondition(user, goodsCond, pageNumber, PAGE_SIZE);
-            render(goodsList, account, err, count, name, prefix, goodsId, err);
+            render(goodsList, account, noPermissionError, count, name, prefix, goodsId, err, consumed);
         } else {
-            err = "此账户没有批量发券的权限";
-            render(err);
+            noPermissionError = "此账户没有批量发券的权限";
+            render(noPermissionError);
         }
     }
 
 
-    public static void generate(int count, String name, String prefix, Long goodsId) throws NotEnoughInventoryException {
+    public static void generate(int count, String name, String prefix, Long goodsId, BigDecimal consumed) throws NotEnoughInventoryException {
         Pattern pattern = Pattern.compile("^[0-9]*[1-9][0-9]*$");
+        Resaler resaler = SecureCAS.getResaler();
+        Account account = AccountUtil.getResalerAccount(resaler.getId());
         if (name == null || name.trim().equals("")) {
-            generator("备注名称不能为空", count, name, prefix, goodsId);
+            generator("备注名称不能为空", count, name, prefix, goodsId, consumed);
         } else if (StringUtils.isBlank(prefix) || !pattern.matcher(prefix).matches() || prefix.length() > 2) {
-            generator("前缀不符合规范", count, name, prefix, goodsId);
+            generator("前缀不符合规范", count, name, prefix, goodsId, consumed);
         } else if (count < 1 || count > 9999) {
-            generator("数量不符合规范", count, name, prefix, goodsId);
+            generator("数量不符合规范", count, name, prefix, goodsId, consumed);
+        } else if (consumed.compareTo(account.amount) > 0) {
+            generator("账户余额不够，请先充值", count, name, prefix, goodsId, consumed);
         }
         //加载用户账户信息
-        Resaler resaler = SecureCAS.getResaler();
+
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
         BatchCoupons batchCoupons = new BatchCoupons();
         batchCoupons.name = name;
@@ -108,7 +116,6 @@ public class BatchExportCoupons extends Controller {
         batchCoupons.coupons = new LinkedList<>();
         batchCoupons.save();
         for (int i = 0; i < count; i++) {
-            System.out.println("i>>>" + i);
             Order order = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
             int number = 1;
             String phone = null;
@@ -120,14 +127,14 @@ public class BatchExportCoupons extends Controller {
             order.deliveryType = DeliveryType.SMS;
             order.createAndUpdateInventory();
 
-//            PaymentInfo.confirm(order.orderNumber, true, "alipay");
+//            PaymentInfo.confirm(order.orderNumber, true, "balance");
             if (order == null) {
                 error(500, "no such order");
             }
             if (order.status != OrderStatus.UNPAID) {
                 error("wrong order status");
             }
-            Account account = AccountUtil.getResalerAccount(resaler.getId());
+
 
             if (Order.confirmPaymentInfo(order, account, true, "balance")) {
                 ECoupon coupon = ECoupon.find("order=?", order).first();
@@ -147,6 +154,7 @@ public class BatchExportCoupons extends Controller {
             }
         }
         index(null);
+
     }
 
     public static void details(Long id) {
@@ -154,14 +162,14 @@ public class BatchExportCoupons extends Controller {
         if (user.isBatchExportCoupons() == true) {
             BatchCoupons batchCoupons = BatchCoupons.findById(id);
             List<ECoupon> couponsList = batchCoupons.coupons;
-            render(couponsList, err);
+            render(couponsList, noPermissionError);
         } else {
-            err = "此账户没有批量发券的权限";
-            render(err);
+            noPermissionError = "此账户没有批量发券的权限";
+            render(noPermissionError);
         }
     }
 
-    public static boolean isNotUniqueEcouponSn(String randomNumber) {
+    private static boolean isNotUniqueEcouponSn(String randomNumber) {
         return ECoupon.find("from ECoupon where eCouponSn=?", randomNumber)
                 .fetch().size() > 0;
     }
@@ -169,7 +177,7 @@ public class BatchExportCoupons extends Controller {
     /**
      * 生成消费者唯一的券号.
      */
-    public static String generateAvailableEcouponSn() {
+    private static String generateAvailableEcouponSn() {
         String randomNumber;
         do {
             try {

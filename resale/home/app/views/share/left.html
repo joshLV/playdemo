@@ -6,7 +6,7 @@
             <li><a #{if request.url.equals("/orders")}   class="current" #{/if} href="@{ResalerOrders.index()}">我的订单</a></li>
             <li ><a #{if request.url.equals("/library")}   class="current" #{/if} href="/library">我的分销库</a></li>
             <li><a  #{if request.url.equals("/ecoupons")}   class="current" #{/if} href="/ecoupons">劵订单列表</a></li>
-            <li><a  #{if request.url.equals("/coupons/batchfreeze/index")}   class="current" #{/if} href="/ecoupons">批量导出券号</a></li>
+            <li><a  #{if request.url.contains("/coupons/batchexport")}   class="current" #{/if} href="/coupons/batchexport/index">批量导出券号</a></li>
         </ul>
         <ul>
             <li><a  #{if request.url.equals("/resaler-info")}   class="current" #{/if} href="/resaler-info">我的资料</a></li>

@@ -25,6 +25,7 @@ GET     /coupons/batchexport/generator          BatchExportCoupons.generator
 POST    /coupons/batchexport/generate           BatchExportCoupons.generate
 GET     /coupons/batchexport/{id}               BatchExportCoupons.details
 
+
 # 确认支付信息
 POST    /payment_info/confirm                   PaymentInfo.confirm
 GET     /payment_info/{orderNumber}             PaymentInfo.index

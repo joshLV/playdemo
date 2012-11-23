@@ -28,7 +28,7 @@
 #{include "share/left.html"/}
 
 <div class="section">
-#{if err == null}
+#{if noPermissionError == null}
     <h3>批量导出券号详情</h3>
 
 
@@ -65,6 +65,6 @@
 </div>
 #{/if}
 #{else}
-    <center><span style="font-size:110% ">${err}</span></center>
+    <center><span style="font-size:110% ">${noPermissionError}</span></center>
 #{/else}
 </div>

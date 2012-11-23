@@ -42,7 +42,7 @@
 <div class="main clearfix">
 #{include "share/left.html"/}
 <div class="section">
-#{if err == null}
+#{if noPermissionError == null}
     <h3>批量导出券号管理</h3>
 
     <form class="form-horizontal" id="couponsFrm" action="@{BatchExportCoupons.index()}" method="GET">
@@ -89,7 +89,7 @@
 </div>
 #{/if}
 #{else}
-    <center><span style="font-size:110% ">${err}</span></center>
+    <center><span style="font-size:110% ">${noPermissionError}</span></center>
 #{/else}
 </div>
 

@@ -305,7 +305,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         Http.Response response = POST("/coupons/update", params);
         assertEquals("HTTP状态码不是200", new Integer(200), response.status);
         
-        BigDecimal consumedAmount = (BigDecimal)renderArgs("consumedAmount");
+        BigDecimal consumedAmount = (BigDecimal)renderArgs("ContentOfGenerator");
         assertNotNull("没有得到已验证金额", consumedAmount);
         assertEquals("已验证金额" + consumedAmount + "与期望值" + expectConsumedAmount + "不符", new BigDecimal(expectConsumedAmount).setScale(2), consumedAmount.setScale(2));
     }
