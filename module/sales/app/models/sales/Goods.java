@@ -1681,7 +1681,6 @@ public class Goods extends Model {
     public static List<models.sales.Goods> filterTopGoods(List<models.sales.Goods> allGoods, final String tuanCategory, final String tuanNane, int limit) {
         List<models.sales.Goods> goodsList = new ArrayList<>();
         List<Category> noMessage = new ArrayList<Category>();
-        int i = 0;
         for (models.sales.Goods g : allGoods) {
             if (g.categories != null && g.categories.size() > 0
                     && g.categories.iterator() != null && g.categories.iterator().hasNext()) {
@@ -1697,6 +1696,8 @@ public class Goods extends Model {
                 }
             }
         }
+
+        /*
         if (noMessage.size() > 0) {
             //发送提醒邮件
             MailMessage mailMessage = new MailMessage();
@@ -1706,6 +1707,8 @@ public class Goods extends Model {
             mailMessage.putParam("mailCategoryList", noMessage);
             MailUtil.sendTuanCategoryMail(mailMessage);
         }
+        */
+        
         return goodsList;
     }
 
