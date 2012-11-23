@@ -1,22 +1,23 @@
 package unit;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import play.libs.Images;
-import play.test.UnitTest;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.FileImageOutputStream;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
-import java.io.File;
-import java.io.IOException;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
+import play.libs.Images;
+import play.test.UnitTest;
 
 /**
  * @author likang

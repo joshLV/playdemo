@@ -1,13 +1,15 @@
 package functional;
 
-import controllers.modules.website.cas.Security;
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.sales.SecKillGoodsItem;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import play.mvc.Http;
 import play.test.FunctionalTest;
+import controllers.modules.website.cas.Security;
 import factory.FactoryBoy;
 
 

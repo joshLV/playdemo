@@ -1,12 +1,14 @@
 package unit;
 
-import factory.FactoryBoy;
-import factory.callback.SequenceCallback;
 import models.sales.SearchHotKeywords;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import play.modules.paginate.ModelPaginator;
 import play.test.UnitTest;
+import factory.FactoryBoy;
+import factory.callback.SequenceCallback;
 
 /**
  * TODO.

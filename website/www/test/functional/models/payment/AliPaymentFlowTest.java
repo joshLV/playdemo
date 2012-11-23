@@ -4,13 +4,17 @@ import models.accounts.Account;
 import models.accounts.PaymentSource;
 import models.consumer.User;
 import models.order.Order;
-import models.order.OrderStatus;
-import models.payment.PaymentUtil;
 import models.payment.PaymentFlow;
-import models.sales.*;
+import models.payment.PaymentUtil;
+import models.sales.Area;
+import models.sales.Brand;
+import models.sales.Category;
+import models.sales.Goods;
+import models.sales.Shop;
+
 import org.junit.Before;
 import org.junit.Test;
-import play.test.Fixtures;
+
 import play.test.FunctionalTest;
 import factory.FactoryBoy;
 

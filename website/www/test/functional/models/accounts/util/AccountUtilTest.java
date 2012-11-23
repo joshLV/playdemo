@@ -1,6 +1,7 @@
 package functional.models.accounts.util;
 
-import factory.FactoryBoy;
+import java.math.BigDecimal;
+
 import models.accounts.Account;
 import models.accounts.AccountNotFoundException;
 import models.accounts.AccountSequence;
@@ -8,11 +9,12 @@ import models.accounts.AccountSequenceFlag;
 import models.accounts.BalanceNotEnoughException;
 import models.accounts.TradeType;
 import models.accounts.util.AccountUtil;
+
 import org.junit.Before;
 import org.junit.Test;
-import play.test.FunctionalTest;
 
-import java.math.BigDecimal;
+import play.test.FunctionalTest;
+import factory.FactoryBoy;
 
 
 /**

@@ -5,16 +5,15 @@ import java.util.Map;
 
 import models.consumer.User;
 import models.consumer.UserWebIdentification;
-import models.order.Order;
-import models.order.OrderItems;
 import models.sales.Goods;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import play.mvc.Http.Cookie;
 import play.mvc.Http.Header;
 import play.mvc.Http.Request;
 import play.mvc.Http.Response;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import controllers.WebsiteInjector;
 import factory.FactoryBoy;

@@ -1,15 +1,17 @@
 package unit;
 
+import java.util.List;
+
+import models.sales.Area;
+import models.sales.AreaType;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import play.test.UnitTest;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
-import models.sales.Area;
-import models.sales.AreaType;
-import org.junit.Before;
-import org.junit.Test;
-import play.test.UnitTest;
-
-import java.util.List;
 
 
 /**

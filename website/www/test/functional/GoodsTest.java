@@ -1,22 +1,24 @@
 package functional;
 
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
+
 import models.cms.CmsQuestion;
 import models.sales.Brand;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sales.Shop;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
 import play.Play;
 import play.mvc.Http;
 import play.test.FunctionalTest;
-
-import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.List;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 
 /**
  * 商品控制器的测试.

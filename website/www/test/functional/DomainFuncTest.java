@@ -1,10 +1,12 @@
 package functional;
 
-import factory.FactoryBoy;
 import helper.Domain;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import play.test.FunctionalTest;
+import factory.FactoryBoy;
 
 /**
  * 页面上的域名的工具类的测试.

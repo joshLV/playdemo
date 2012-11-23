@@ -1,17 +1,16 @@
 package unit;
 
-import models.cms.VoteQuestion;
-import models.cms.VoteType;
-import org.junit.Before;
-import org.junit.Test;
-import play.test.Fixtures;
-import play.test.UnitTest;
-
 import java.util.Date;
 import java.util.List;
 
+import models.cms.VoteQuestion;
+import models.cms.VoteType;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import play.test.UnitTest;
 import factory.FactoryBoy;
-import factory.callback.SequenceCallback;
 
 /**
  * TODO.

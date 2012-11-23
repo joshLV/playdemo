@@ -1,18 +1,17 @@
 package unit.models.accounts;
 
+import java.math.BigDecimal;
+
 import models.accounts.Account;
-import models.accounts.AccountSequence;
 import models.accounts.AccountType;
 import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
+
 import org.junit.Before;
 import org.junit.Test;
-import play.test.Fixtures;
+
 import play.test.UnitTest;
-
-import java.math.BigDecimal;
-
 import factory.FactoryBoy;
 
 /**

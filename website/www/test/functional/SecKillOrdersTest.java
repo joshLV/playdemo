@@ -1,8 +1,11 @@
 package functional;
 
-import controllers.modules.website.cas.Security;
-import factory.FactoryBoy;
-import factory.callback.SequenceCallback;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
@@ -10,22 +13,22 @@ import models.consumer.UserInfo;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrderStatus;
-import models.sales.*;
+import models.sales.Goods;
+import models.sales.MaterialType;
+import models.sales.SecKillGoods;
+import models.sales.SecKillGoodsItem;
+import models.sales.SecKillGoodsStatus;
+
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import play.data.validation.Validation;
+
 import play.mvc.Http;
 import play.test.FunctionalTest;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import factory.callback.BuildCallback;
 import util.DateHelper;
+import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
+import factory.callback.SequenceCallback;
 
 /**
  * Created with IntelliJ IDEA.

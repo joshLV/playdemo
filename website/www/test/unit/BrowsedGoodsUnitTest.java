@@ -1,14 +1,18 @@
 package unit;
 
-import com.uhuila.common.constants.DeletedStatus;
-import factory.FactoryBoy;
-import factory.callback.SequenceCallback;
+import java.util.List;
+
 import models.sales.BrowsedGoods;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import play.test.UnitTest;
 
-import java.util.List;
+import com.uhuila.common.constants.DeletedStatus;
+
+import factory.FactoryBoy;
+import factory.callback.SequenceCallback;
 
 /**
  * 浏览过的商品的测试.

@@ -1,19 +1,14 @@
 package functional;
 
 import java.io.File;
-import java.net.CookieStore;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import controllers.modules.website.cas.Security;
-import factory.FactoryBoy;
-import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import play.Play;
@@ -21,8 +16,9 @@ import play.cache.Cache;
 import play.data.validation.Validation;
 import play.mvc.Http;
 import play.mvc.Http.Response;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
+import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
 
 public class RegisterTest extends FunctionalTest {
     UserInfo userInfo;

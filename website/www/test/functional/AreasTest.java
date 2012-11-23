@@ -1,21 +1,18 @@
 package functional;
 
-import models.consumer.Address;
+import java.util.List;
 
 import models.sales.Area;
 import models.sales.AreaType;
+
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import play.mvc.Http;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
-
-import java.util.List;
 
 /**
  * 商圈区域控制器的测试.
@@ -123,7 +120,6 @@ public class AreasTest extends FunctionalTest {
 
     @Test
     public void testShowArea() {
-        String areaId = (String) Fixtures.idCache.get("models.sales.Area-city1");
         Http.Response response = GET("/areas/areas/" + areaAreas.get(0).id);
         assertIsOk(response);
         assertContentType("application/json", response);

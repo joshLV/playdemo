@@ -7,20 +7,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import models.consumer.User;
-
 import models.consumer.UserInfo;
+
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import play.cache.Cache;
 import play.mvc.Http.Response;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import controllers.modules.website.cas.Security;
 import factory.FactoryBoy;
-import factory.callback.SequenceCallback;
 
 /**
  * @author wangjia

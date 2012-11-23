@@ -3,19 +3,21 @@
  */
 package functional;
 
-import controllers.modules.website.cas.Security;
-import factory.FactoryBoy;
+import java.util.HashMap;
+import java.util.Map;
+
 import models.cms.CmsQuestion;
 import models.consumer.User;
 import models.sales.Goods;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
-
-import java.util.HashMap;
-import java.util.Map;
+import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
 
 
 /**

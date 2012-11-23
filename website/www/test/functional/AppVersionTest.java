@@ -1,6 +1,7 @@
 package functional;
 
 import org.junit.Test;
+
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
 

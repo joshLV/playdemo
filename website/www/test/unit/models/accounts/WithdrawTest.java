@@ -1,15 +1,17 @@
 package unit.models.accounts;
 
-import factory.FactoryBoy;
+import java.math.BigDecimal;
+import java.util.Date;
+
 import models.accounts.Account;
 import models.accounts.WithdrawBill;
 import models.accounts.util.AccountUtil;
+
 import org.junit.Before;
 import org.junit.Test;
-import play.test.UnitTest;
 
-import java.math.BigDecimal;
-import java.util.Date;
+import play.test.UnitTest;
+import factory.FactoryBoy;
 
 /**
  * @author likang

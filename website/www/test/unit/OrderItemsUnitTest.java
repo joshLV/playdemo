@@ -1,15 +1,17 @@
 package unit;
 
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
 import models.accounts.AccountType;
 import models.consumer.User;
 import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Goods;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import play.test.UnitTest;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 
 /**
  * OrderItems单元测试.

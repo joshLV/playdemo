@@ -24,7 +24,6 @@ import org.junit.Test;
 
 import play.cache.Cache;
 import play.modules.paginate.JPAExtPaginator;
-import play.test.Fixtures;
 import play.test.UnitTest;
 
 import com.uhuila.common.constants.DeletedStatus;

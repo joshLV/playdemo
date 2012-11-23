@@ -1,11 +1,13 @@
 package unit.models.sms;
 
-import models.sms.SMSMessage;
-import org.junit.Test;
-import play.test.UnitTest;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import models.sms.SMSMessage;
+
+import org.junit.Test;
+
+import play.test.UnitTest;
 
 /**
  * User: likang

@@ -1,9 +1,22 @@
 package unit.controllers;
 
-import controllers.*;
 import org.junit.Test;
+
 import play.mvc.Controller;
 import play.test.UnitTest;
+import controllers.Addresses;
+import controllers.Areas;
+import controllers.Carts;
+import controllers.FindPassword;
+import controllers.Goods;
+import controllers.Home;
+import controllers.OrderResult;
+import controllers.Orders;
+import controllers.PaymentInfo;
+import controllers.PaymentNotify;
+import controllers.Register;
+import controllers.Votes;
+import controllers.WEBApplication;
 
 /**
  * @author likang

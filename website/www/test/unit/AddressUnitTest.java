@@ -1,14 +1,16 @@
 package unit;
 
+import java.util.List;
+
 import models.consumer.Address;
 import models.consumer.User;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import play.test.UnitTest;
 import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
-
-import java.util.List;
 
 /**
  * 地址对象的测试.

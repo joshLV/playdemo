@@ -1,11 +1,13 @@
 package unit;
 
+import java.math.BigDecimal;
+
 import models.payment.PaymentFlow;
 import models.payment.PaymentUtil;
-import org.junit.Test;
-import play.test.UnitTest;
 
-import java.math.BigDecimal;
+import org.junit.Test;
+
+import play.test.UnitTest;
 
 /**
  * @author likang

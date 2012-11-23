@@ -1,22 +1,22 @@
 package functional.orders;
 
-import controllers.modules.website.cas.Security;
-import factory.FactoryBoy;
+import java.math.BigDecimal;
+import java.util.Date;
+
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.order.DiscountCode;
 import models.sales.Goods;
+
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+
 import play.mvc.Http;
 import play.test.FunctionalTest;
-
-import java.math.BigDecimal;
-import java.util.Date;
-
-import factory.callback.BuildCallback;
 import util.DateHelper;
+import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 
 /**
  * Created with IntelliJ IDEA.

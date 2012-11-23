@@ -1,20 +1,22 @@
 package unit.models.accounts;
 
-import models.accounts.*;
+import java.math.BigDecimal;
+
+import models.accounts.Account;
+import models.accounts.AccountSequence;
+import models.accounts.AccountType;
+import models.accounts.PaymentSource;
 import models.accounts.util.AccountUtil;
 import models.order.ECoupon;
 import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Goods;
+
 import org.junit.Before;
 import org.junit.Test;
-import play.test.Fixtures;
+
 import play.test.UnitTest;
-
-import java.math.BigDecimal;
-
 import factory.FactoryBoy;
-import factory.callback.SequenceCallback;
 
 /**
  * @author : likang

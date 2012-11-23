@@ -5,9 +5,9 @@ import models.consumer.User;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Before;
 import org.junit.Test;
-import factory.FactoryBoy;
-import factory.callback.SequenceCallback;
+
 import play.test.UnitTest;
+import factory.FactoryBoy;
 
 public class FindPasswordUnitTest extends UnitTest {
     User user1;

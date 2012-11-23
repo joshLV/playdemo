@@ -1,21 +1,22 @@
 package unit;
 
-import controllers.TuanFeeds;
-import controllers.modules.website.cas.Security;
-import factory.FactoryBoy;
-import factory.callback.SequenceCallback;
+import java.util.List;
+
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.sales.Category;
 import models.sales.Goods;
 import models.sales.Shop;
 import models.supplier.Supplier;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import play.i18n.Messages;
 import play.test.UnitTest;
-
-import java.util.List;
+import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.SequenceCallback;
 
 /**
  * Created with IntelliJ IDEA.

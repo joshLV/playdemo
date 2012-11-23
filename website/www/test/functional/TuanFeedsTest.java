@@ -1,27 +1,22 @@
 package functional;
 
-import controllers.TuanFeeds;
-import controllers.modules.website.cas.Security;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
-import factory.callback.SequenceCallback;
-import models.consumer.Address;
+import java.util.List;
+
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.sales.Category;
 import models.sales.Goods;
 import models.sales.Shop;
 import models.supplier.Supplier;
+
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+
 import play.i18n.Messages;
 import play.mvc.Http;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
-
-import java.util.List;
-import java.util.Set;
+import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
 
 /**
  * Created with IntelliJ IDEA.

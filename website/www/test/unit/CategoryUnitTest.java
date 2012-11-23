@@ -1,13 +1,13 @@
 package unit;
 
-import models.sales.Category;
-import org.junit.Before;
-import org.junit.Test;
-import play.test.Fixtures;
-import play.test.UnitTest;
-
 import java.util.List;
 
+import models.sales.Category;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import play.test.UnitTest;
 import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
 

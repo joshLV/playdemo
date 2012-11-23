@@ -1,13 +1,14 @@
 package functional;
 
-import factory.FactoryBoy;
-import models.consumer.User;
 import models.order.OrderItems;
 import models.sales.GoodsHistory;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import play.mvc.Http;
 import play.test.FunctionalTest;
+import factory.FactoryBoy;
 
 /**
  * Created with IntelliJ IDEA.

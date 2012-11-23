@@ -7,10 +7,11 @@ import models.cms.VoteQuestion;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.uhuila.common.constants.DeletedStatus;
-
 import play.modules.paginate.ModelPaginator;
 import play.test.UnitTest;
+
+import com.uhuila.common.constants.DeletedStatus;
+
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 

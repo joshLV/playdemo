@@ -3,31 +3,22 @@
  */
 package functional;
 
-import controllers.modules.website.cas.Security;
-import models.accounts.Account;
-import models.consumer.User;
-import models.consumer.UserInfo;
-import models.order.Cart;
-import models.order.ECoupon;
-import models.order.Order;
-import models.order.OrderItems;
-import models.sales.Brand;
-import models.sales.Category;
-import models.sales.Goods;
-import models.sales.Shop;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import play.mvc.Http.Response;
-import play.test.Fixtures;
-import play.test.FunctionalTest;
-
 import java.util.HashMap;
 import java.util.Map;
 
+import models.consumer.User;
+import models.consumer.UserInfo;
+import models.order.Cart;
+import models.sales.Goods;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import play.mvc.Http.Response;
+import play.test.FunctionalTest;
+import controllers.modules.website.cas.Security;
 import factory.FactoryBoy;
-import factory.callback.BuildCallback;
-import factory.callback.SequenceCallback;
 
 /**
  * @author wangjia

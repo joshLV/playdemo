@@ -1,17 +1,17 @@
 package unit;
 
+import java.util.List;
+
 import models.sales.Goods;
 import models.sales.GoodsStatistics;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import play.test.Fixtures;
-import play.test.UnitTest;
 
+import play.test.UnitTest;
 import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
-
-import java.util.List;
 
 /**
  * <p/>

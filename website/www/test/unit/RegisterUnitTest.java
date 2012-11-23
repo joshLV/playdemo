@@ -1,15 +1,16 @@
 package unit;
 
-import factory.FactoryBoy;
+import java.util.List;
+
 import models.consumer.User;
 import models.consumer.UserInfo;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Before;
 import org.junit.Test;
-import play.test.Fixtures;
-import play.test.UnitTest;
 
-import java.util.List;
+import play.test.UnitTest;
+import factory.FactoryBoy;
 
 public class RegisterUnitTest extends UnitTest {
     UserInfo userInfo;

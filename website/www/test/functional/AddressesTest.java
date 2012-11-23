@@ -3,29 +3,21 @@
  */
 package functional;
 
-import models.cms.VoteQuestion;
+import java.util.List;
+
 import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;
-import models.consumer.UserVote;
-
-import factory.FactoryBoy;
-import factory.callback.SequenceCallback;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.uhuila.common.constants.DeletedStatus;
-
-import controllers.modules.website.cas.Security;
-
 import play.mvc.Http;
 import play.mvc.Http.Response;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
-
-import java.util.List;
+import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
 
 /**
  * @author wangjia

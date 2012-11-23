@@ -1,15 +1,17 @@
 package functional.models.accounts.util;
 
-import factory.FactoryBoy;
+import java.math.BigDecimal;
+
 import models.accounts.Account;
 import models.accounts.PaymentSource;
 import models.accounts.TradeBill;
 import models.accounts.util.TradeUtil;
+
 import org.junit.Before;
 import org.junit.Test;
-import play.test.FunctionalTest;
 
-import java.math.BigDecimal;
+import play.test.FunctionalTest;
+import factory.FactoryBoy;
 
 /**
  * @author likang
@@ -75,11 +77,9 @@ public class TradeUtilTest extends FunctionalTest {
 
     @Test
     public void testCreateChargeTrade() {
-//        Long id = (Long) Fixtures.idCache.get("models.accounts.Account-account_1");
 //        Account account = Account.findById(id);
         assertNotNull(account);
 
-//        id = (Long) Fixtures.idCache.get("models.accounts.PaymentSource-alipay");
 //        PaymentSource aliPayment = PaymentSource.findById(id);
         assertNotNull(aliPayment);
 
@@ -118,7 +118,6 @@ public class TradeUtilTest extends FunctionalTest {
 
     @Test
     public void testCreateConsumeTrade() {
-//        Long id = (Long) Fixtures.idCache.get("models.accounts.Account-account_1");
 //        Account account = Account.findById(id);
         assertNotNull(account);
 

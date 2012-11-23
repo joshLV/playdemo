@@ -1,8 +1,11 @@
 package functional;
 
-import controllers.modules.website.cas.Security;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
+import java.io.File;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.order.ECoupon;
@@ -11,17 +14,16 @@ import models.order.OrderItems;
 import models.order.PromoteRebate;
 import models.sales.Goods;
 import models.sales.MaterialType;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import play.cache.Cache;
 import play.mvc.Http;
 import play.test.FunctionalTest;
-
-import java.io.File;
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 
 /**
  * <p/>
