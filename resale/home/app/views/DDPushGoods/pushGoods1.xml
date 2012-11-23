@@ -1,13 +1,13 @@
 <data>
     <spgid><![CDATA[${goodsMappingId}]]></spgid>
     <source_product_ids><![CDATA[${goodsMappingId}]]></source_product_ids>
-    <team_title><![CDATA[${teamShortName.raw()}]]></team_title>
+    <team_title><![CDATA[${teamSummary.raw()}]]></team_title>
     <team_summary><![CDATA[${teamSummary.raw()}]]></team_summary>
     <team_type><![CDATA[1]]></team_type>
     <category_name1><![CDATA[${category.raw()}]]></category_name1>
     <category_name2><![CDATA[${sub_category.raw()}]]></category_name2>
     <city_name><![CDATA[上海市]]></city_name>
-    <town_name><![CDATA[]]></town_name>
+    <town_name><![CDATA[其他区县]]></town_name>
     <zone_name><![CDATA[]]></zone_name>
     <shop_guid><![CDATA[]]></shop_guid>
     <service_shop_guid><![CDATA[${supplierId}]]></service_shop_guid>

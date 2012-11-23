@@ -73,7 +73,7 @@
 
                 <tr>
                     <td class="td" colspan="2">团购产品标题：(最长<b>[24]</b>个字)<b>*</b>
-                        <input type="text" size="200" name="teamShortName" value="${shortName}"/></td>
+                        <input type="text" size="200" name="teamShortName" value="${name}"/></td>
                 </tr>
                 <tr>
                     <td class="td" colspan="2">团购主图http开头：(图片大小在500k以内)<b>*</b>
@@ -170,6 +170,9 @@
                 <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
             </p>
         ${supplierDes.raw()}
+            <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                <span style="font-family:SimSun;font-size:small;color:#ffffff;">适用门店</span>
+            </p>
         #{/if}
         #{else}
         ${teamDetail?.raw()}
