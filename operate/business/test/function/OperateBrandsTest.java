@@ -5,6 +5,7 @@ import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import models.admin.OperateUser;
 import models.sales.Brand;
+import models.supplier.Supplier;
 import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
@@ -27,6 +28,7 @@ import java.util.Map;
  */
 
 public class OperateBrandsTest extends FunctionalTest {
+    Supplier supplier;
     Brand brand;
 
     /**
@@ -35,8 +37,8 @@ public class OperateBrandsTest extends FunctionalTest {
     @Before
     public void setup() {
         // 重新加载配置文件
-        FactoryBoy.delete(Brand.class);
-
+        FactoryBoy.deleteAll();
+        supplier = FactoryBoy.create(Supplier.class);
         brand = FactoryBoy.create(Brand.class);
 
         // 重新加载配置文件
@@ -64,17 +66,16 @@ public class OperateBrandsTest extends FunctionalTest {
         assertContentType("text/html", response);
         assertContentMatch("修改品牌", response);
         assertCharset(Play.defaultWebEncoding, response);
+        assertEquals(brand, (Brand) renderArgs("brand"));
     }
 
     @Test
     public void testUpdate() {
         String params = "brand.name=test&brand.description=test-update&brand.logo=abc&brand.displayOrder=0&brand.supplier=Supplier1&brand.logo=" +
                 brand.logo + "&brand.deleted=UN_DELETED&brand.introduce=0";
-
         Http.Response response = PUT("/brands/" + brand.id, "application/x-www-form-urlencoded", params);
         assertStatus(302, response);
         brand.refresh();
-
         assertEquals("test", brand.name);
     }
 
@@ -83,10 +84,23 @@ public class OperateBrandsTest extends FunctionalTest {
     public void testDelete() {
         Http.Response response = DELETE("/brands/" + brand.id);
         assertStatus(302, response);
-
         brand.refresh();
-
         assertEquals(DeletedStatus.DELETED, brand.deleted);
+    }
+
+    // 测试添加品牌的页面显示
+    @Test
+    public void testAdd() {
+        Http.Response response = GET("/brands/new");
+        assertStatus(200, response);
+        assertEquals(1, ((List<Supplier>) renderArgs("supplierList")).size());
+    }
+
+    @Test
+    public void testGoodsBrands() {
+        Http.Response response = GET("/goods_brands/" + supplier.id);
+        assertStatus(200, response);
+        assertEquals(1, ((List<Brand>) renderArgs("brandList")).size());
     }
 
     /**
