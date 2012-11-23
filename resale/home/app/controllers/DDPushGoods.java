@@ -171,7 +171,6 @@ public class DDPushGoods extends Controller {
         setGoodsParams(params, goods, goodsArgs, goodsMapping);
         Template template = TemplateLoader.load("DDPushGoods/pushGoods1.xml");
         String requestParams = template.render(goodsArgs);
-        System.out.println(requestParams);
         boolean pushFlag = true;
         try {
             pushFlag = DDAPIUtil.pushGoods(goodsMapping.linkId, requestParams);
