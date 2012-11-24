@@ -62,13 +62,13 @@ public class ResalerUnitTest extends UnitTest {
 	@Test
 	public void updateStatus() {
 		String remark ="";
-		Resaler.update(resaler.id, ResalerStatus.APPROVED,ResalerLevel.NORMAL, remark, ResalerCreditable.NO);
+		Resaler.update(resaler.id, ResalerStatus.APPROVED,ResalerLevel.NORMAL, remark, ResalerCreditable.NO, null);
 		Resaler r = Resaler.findById(resaler.id);
 		assertEquals(ResalerStatus.APPROVED, r.status );
 		assertEquals(ResalerLevel.NORMAL, r.level );
 
 		remark ="该分销商信用不够！";
-		Resaler.update(resaler.id, ResalerStatus.UNAPPROVED,ResalerLevel.NORMAL, remark, ResalerCreditable.NO);
+		Resaler.update(resaler.id, ResalerStatus.UNAPPROVED,ResalerLevel.NORMAL, remark, ResalerCreditable.NO, null);
 		r = Resaler.findById(resaler.id);
 		assertEquals(ResalerStatus.UNAPPROVED, r.status );
 		assertEquals(remark, r.remark );
