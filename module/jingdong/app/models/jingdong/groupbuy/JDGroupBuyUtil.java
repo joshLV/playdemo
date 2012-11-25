@@ -111,18 +111,18 @@ public class JDGroupBuyUtil {
         Map<String, Object> params = new HashMap<>();
         params.put("outerOrder", outerOrder);
         params.put("coupon", eCoupon);
-        String restRequest = makeRequestRest(template.render(params));
+        String restRequestBody = makeRequestRest(template.render(params));
         
 
         WebServiceClient client = WebServiceClientFactory
                         .getClientHelper();
 
-        String responseResult = client.postStringWithBody("jingdong_verify_order", url, null, outerOrder.orderNumber, "" + outerOrder.orderId, "" + eCoupon.id);
-        WS.HttpResponse response =  WS.url(url).body(restRequest).post();
+        System.out.println("client.class= " + client.getClass().getName());
+        String responseResult = client.postStringWithBody("jingdong_verify_order", url, restRequestBody, outerOrder.orderNumber, "" + outerOrder.orderId, "" + eCoupon.id);
 
         //解析请求
         JDRest<VerifyCouponResponse> sendOrderJDRest = new JDRest<>();
-        sendOrderJDRest.parse(response.getString(), new VerifyCouponResponse());
+        sendOrderJDRest.parse(responseResult, new VerifyCouponResponse());
         VerifyCouponResponse verifyCouponResponse = sendOrderJDRest.data;
         return verifyCouponResponse.verifyResult == 200;
     }

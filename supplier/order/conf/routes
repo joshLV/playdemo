@@ -19,6 +19,10 @@ POST    /coupons/update                         SupplierCoupons.update
 
 GET     /coupon-excel-out                       SupplierCoupons.couponExcelOut
 
+
+# 补偿未同步的状态
+GET    /ecoupon-compensation/consumed           ECouponCompensations.consumed
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

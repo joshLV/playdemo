@@ -1,14 +1,11 @@
 package factory.order;
 
-import factory.FactoryBoy;
-import factory.ModelFactory;
-import factory.annotation.Factory;
 import models.order.Order;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
-
-import java.util.Date;
+import factory.FactoryBoy;
+import factory.ModelFactory;
 
 /**
  * <p/>
@@ -20,6 +17,7 @@ public class OuterOrderFactory extends ModelFactory<OuterOrder> {
     @Override
     public OuterOrder define() {
         OuterOrder order = new OuterOrder();
+        order.ybqOrder = FactoryBoy.lastOrCreate(Order.class);
         order.orderNumber = "12345678";
         order.message = "";
         order.partner = OuterOrderPartner.DD;

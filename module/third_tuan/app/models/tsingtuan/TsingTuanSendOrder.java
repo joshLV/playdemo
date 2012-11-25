@@ -22,6 +22,6 @@ public class TsingTuanSendOrder {
      * @param order
      */
     public static void refund(TsingTuanOrder order) {
-        RabbitMQPublisher.publish(REFUND_ORDER, order);
+        MQPublisher.publish(REFUND_ORDER, order);
     }
 }

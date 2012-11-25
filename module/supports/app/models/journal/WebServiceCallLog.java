@@ -38,7 +38,7 @@ public class WebServiceCallLog extends Model {
     /**
      * POST参数，JSON格式，形式为{key1=value1,key2=value2}
      */
-    @Column(name = "post_params", length = 1000)
+    @Column(name = "post_params", length = 2000)
     public String postParams;
 
     /**
@@ -61,21 +61,21 @@ public class WebServiceCallLog extends Model {
      */
     @Column(name = "status_code")
     public Integer statusCode;
-    
+
     /**
      * Request请求体.
      */
+    @Lob
     @Column(name = "request_body")
     public String requestBody;
 
     @Lob
-    @Column(name = "response_text", length = 4000)
+    @Column(name = "response_text")
     public String responseText;
-    
+
     @Lob
-    @Column(name = "exception_text", length = 4000)
+    @Column(name = "exception_text")
     public String exceptionText;
-    
 
     @Column(name = "created_at")
     public Date createdAt = new Date();
@@ -135,42 +135,50 @@ public class WebServiceCallLog extends Model {
 
     @Transient
     private WebServiceCallType webServiceCallType;
-    
+
     @Transient
     public WebServiceCallType getWebServiceCallType() {
         if (webServiceCallType == null) {
-            webServiceCallType = WebServiceCallType.find("callType=?", callType).first();
+            webServiceCallType = WebServiceCallType
+                            .find("callType=?", callType).first();
         }
         return webServiceCallType;
     }
-    
+
     @Transient
     public String getCallTypeName() {
-        if (getWebServiceCallType() == null || StringUtils.isBlank(getWebServiceCallType().description)) {
+        if (getWebServiceCallType() == null
+                        || StringUtils.isBlank(getWebServiceCallType().description)) {
             return callType;
         }
         return getWebServiceCallType().description;
     }
+
     @Transient
     public String getKey1Name() {
-        if (getWebServiceCallType() == null || StringUtils.isBlank(getWebServiceCallType().key1Name)) {
+        if (getWebServiceCallType() == null
+                        || StringUtils.isBlank(getWebServiceCallType().key1Name)) {
             return key1;
         }
         return getWebServiceCallType().key1Name + ":" + key1;
     }
+
     @Transient
     public String getKey2Name() {
-        if (getWebServiceCallType() == null || StringUtils.isBlank(getWebServiceCallType().key2Name)) {
+        if (getWebServiceCallType() == null
+                        || StringUtils.isBlank(getWebServiceCallType().key2Name)) {
             return key2;
         }
         return getWebServiceCallType().key2Name + ":" + key2;
     }
+
     @Transient
     public String getKey3Name() {
-        if (getWebServiceCallType() == null || StringUtils.isBlank(getWebServiceCallType().key3Name)) {
+        if (getWebServiceCallType() == null
+                        || StringUtils.isBlank(getWebServiceCallType().key3Name)) {
             return key3;
         }
         return getWebServiceCallType().key3Name + ":" + key3;
     }
-    
+
 }

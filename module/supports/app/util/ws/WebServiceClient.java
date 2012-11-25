@@ -138,64 +138,64 @@ public abstract class WebServiceClient {
     }
 
     // ---------- POST with body -----------
-    public String postStringWithBody(String callType, String url, Map<String, Object> params, String keyword, WebServiceCallback callback) {
-        return postStringWithBody(callType, url, params, keyword, null, null, callback);
+    public String postStringWithBody(String callType, String url, String body, String keyword, WebServiceCallback callback) {
+        return postStringWithBody(callType, url, keyword, null, null, callback);
     }
-    public String postStringWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2, WebServiceCallback callback) {
-        return postStringWithBody(callType, url, params, keyword1, keyword2, null, callback);
+    public String postStringWithBody(String callType, String url, String body, String keyword1, String keyword2, WebServiceCallback callback) {
+        return postStringWithBody(callType, url, keyword1, keyword2, null, callback);
     }
-    public String postStringWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2, String keyword3, WebServiceCallback callback) {
-        HttpResponse response = postHttpResponse(callType, url, params, keyword1, keyword2, keyword3, callback);
+    public String postStringWithBody(String callType, String url, String body, String keyword1, String keyword2, String keyword3, WebServiceCallback callback) {
+        HttpResponse response = postHttpResponse(callType, url, body, null, keyword1, keyword2, keyword3, callback);
         return response.getString();
     }
-    public String postStringWithBody(String callType, String url, Map<String, Object> params, String keyword) {
-        return postStringWithBody(callType, url, params, keyword, null, null, null);
+    public String postStringWithBody(String callType, String url, String body, String keyword) {
+        return postStringWithBody(callType, url, body, keyword, null, null, null);
     }
-    public String postStringWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2) {
-        return postStringWithBody(callType, url, params, keyword1, keyword2, null, null);
+    public String postStringWithBody(String callType, String url, String body, String keyword1, String keyword2) {
+        return postStringWithBody(callType, url, body, keyword1, keyword2, null, null);
     }
-    public String postStringWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2, String keyword3) {
-        return postStringWithBody(callType, url, params, keyword1, keyword2, keyword3, null);
+    public String postStringWithBody(String callType, String url, String body, String keyword1, String keyword2, String keyword3) {
+        return postStringWithBody(callType, url, body, keyword1, keyword2, keyword3, null);
     }
 
-    public Document postXmlWithBody(String callType, String url, Map<String, Object> params, String keyword, WebServiceCallback callback) {
-        return postXmlWithBody(callType, url, params, keyword, null, null, callback);
+    public Document postXmlWithBody(String callType, String url, String body, String keyword, WebServiceCallback callback) {
+        return postXmlWithBody(callType, url, keyword, null, null, callback);
     }
-    public Document postXmlWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2, WebServiceCallback callback) {
-        return postXmlWithBody(callType, url, params, keyword1, keyword2, null, callback);
+    public Document postXmlWithBody(String callType, String url, String body, String keyword1, String keyword2, WebServiceCallback callback) {
+        return postXmlWithBody(callType, url, keyword1, keyword2, null, callback);
     }
-    public Document postXmlWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2, String keyword3, WebServiceCallback callback) {
-        HttpResponse response = postHttpResponse(callType, url, params, keyword1, keyword2, keyword3, callback);
+    public Document postXmlWithBody(String callType, String url, String body, String keyword1, String keyword2, String keyword3, WebServiceCallback callback) {
+        HttpResponse response = postHttpResponse(callType, url, body, null, keyword1, keyword2, keyword3, callback);
         return response.getXml();
     }
-    public Document postXmlWithBody(String callType, String url, Map<String, Object> params, String keyword) {
-        return postXmlWithBody(callType, url, params, keyword, null, null, null);
+    public Document postXmlWithBody(String callType, String url, String body, String keyword) {
+        return postXmlWithBody(callType, url, body, keyword, null, null, null);
     }
-    public Document postXmlWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2) {
-        return postXmlWithBody(callType, url, params, keyword1, keyword2, null, null);
+    public Document postXmlWithBody(String callType, String url, String body, String keyword1, String keyword2) {
+        return postXmlWithBody(callType, url, body, keyword1, keyword2, null, null);
     }
-    public Document postXmlWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2, String keyword3) {
-        return postXmlWithBody(callType, url, params, keyword1, keyword2, keyword3, null);
+    public Document postXmlWithBody(String callType, String url, String body, String keyword1, String keyword2, String keyword3) {
+        return postXmlWithBody(callType, url, body, keyword1, keyword2, keyword3, null);
     }
 
-    public JsonElement postJsonWithBody(String callType, String url, Map<String, Object> params, String keyword, WebServiceCallback callback) {
-        return postJsonWithBody(callType, url, params, keyword, null, null, callback);
+    public JsonElement postJsonWithBody(String callType, String url, String body, String keyword, WebServiceCallback callback) {
+        return postJsonWithBody(callType, url, body, keyword, null, null, callback);
     }
-    public JsonElement postJsonWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2, WebServiceCallback callback) {
-        return postJsonWithBody(callType, url, params, keyword1, keyword2, null, callback);
+    public JsonElement postJsonWithBody(String callType, String url, String body, String keyword1, String keyword2, WebServiceCallback callback) {
+        return postJsonWithBody(callType, url, body, keyword1, keyword2, null, callback);
     }
-    public JsonElement postJsonWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2, String keyword3, WebServiceCallback callback) {
-        HttpResponse response = postHttpResponse(callType, url, params, keyword1, keyword2, keyword3, callback);
+    public JsonElement postJsonWithBody(String callType, String url, String body, String keyword1, String keyword2, String keyword3, WebServiceCallback callback) {
+        HttpResponse response = postHttpResponse(callType, url, body, null, keyword1, keyword2, keyword3, callback);
         return response.getJson();
     }
-    public JsonElement postJsonWithBody(String callType, String url, Map<String, Object> params, String keyword) {
-        return postJsonWithBody(callType, url, params, keyword, null, null, null);
+    public JsonElement postJsonWithBody(String callType, String url, String body, String keyword) {
+        return postJsonWithBody(callType, url, body, keyword, null, null, null);
     }
-    public JsonElement postJsonWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2) {
-        return postJsonWithBody(callType, url, params, keyword1, keyword2, null, null);
+    public JsonElement postJsonWithBody(String callType, String url, String body, String keyword1, String keyword2) {
+        return postJsonWithBody(callType, url, body, keyword1, keyword2, null, null);
     }
-    public JsonElement postJsonWithBody(String callType, String url, Map<String, Object> params, String keyword1, String keyword2, String keyword3) {
-        return postJsonWithBody(callType, url, params, keyword1, keyword2, keyword3, null);
+    public JsonElement postJsonWithBody(String callType, String url, String body, String keyword1, String keyword2, String keyword3) {
+        return postJsonWithBody(callType, url, body, keyword1, keyword2, keyword3, null);
     }
     
     public HttpResponse getHttpResponse(String callType, String url, String keyword1, String keyword2, String keyword3, WebServiceCallback callback) {
@@ -215,12 +215,7 @@ public abstract class WebServiceClient {
             log.save();
             return response;
         } catch (Exception e) {
-            log.success = Boolean.FALSE;
-            StringWriter stringWriter = new StringWriter();
-            PrintWriter pw = new PrintWriter(stringWriter);
-            e.printStackTrace(pw);
-            log.exceptionText = stringWriter.toString();
-            log.save();
+            Logger.error("getHttpResponse(callType:" + callType + ", url:" + url + "...) exception:" + e.getMessage());
             throw e;
         }
         
@@ -252,12 +247,7 @@ public abstract class WebServiceClient {
             log.save();
             return response;
         } catch (Exception e) {
-            log.success = Boolean.FALSE;
-            StringWriter stringWriter = new StringWriter();
-            PrintWriter pw = new PrintWriter(stringWriter);
-            e.printStackTrace(pw);
-            log.responseText = stringWriter.toString();
-            log.save();
+            Logger.error("postHttpResponse(callType:" + callType + ", url:" + url + "...) exception:" + e.getMessage());
             throw e;
         }
         
