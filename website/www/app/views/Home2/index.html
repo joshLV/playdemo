@@ -219,10 +219,8 @@
                 #{/list}
             </dl>
             #{if showTwoLine}
-            <a class="advert" href="${webOneFloor?.link}" target="_blank">
-                #{if category_index==1}<img src="${webOneFloor?.showImageUrl}" alt=""/>#{/if}
-                #{if category_index==2}<img src="${webTwoFloor?.showImageUrl}" alt=""/>#{/if}
-            </a>
+            #{if category_index==1}<a class="advert" href="${webOneFloor?.link}" target="_blank"><img src="${webOneFloor?.showImageUrl}" alt=""/></a>#{/if}
+            #{if category_index==2}<a class="advert" href="${webTwoFloor?.link}" target="_blank"><img src="${webTwoFloor?.showImageUrl}" alt=""/></a>#{/if}
             #{/if}
         </div>
 
