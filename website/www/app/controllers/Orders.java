@@ -68,14 +68,17 @@ public class Orders extends Controller {
         }
         Map<String, String[]> params = request.params.all();
         String items = "";
+        List<String> paramsList = new ArrayList<>();
         for (Long goodsId : gid) {
             String[] numberStr = params.get("g" + goodsId);
             int number = 1;
             if (numberStr != null && numberStr.length > 0) {
                 number = Integer.parseInt(numberStr[0]);
             }
-            items += goodsId + "-" + number + ",";
+            paramsList.add(goodsId + "-" + number);
         }
+
+        items = StringUtils.join(paramsList, ",");
 
         DiscountCode discountCode = getDiscountCode();
 
@@ -228,6 +231,10 @@ public class Orders extends Controller {
             Validation.match("mobile", mobile, "^1[3|4|5|8][0-9]\\d{4,8}$");
         }
 
+        if (checkLimitNumber(items, mobile)) {
+            Validation.addError("mobile_limit_num", "该手机号已超过限购数量，请确认！");
+        }
+
         //实物券必须校验收货地址信息
         Address defaultAddress = null;
         String receiverMobile = "";
@@ -249,7 +256,7 @@ public class Orders extends Controller {
             List<String> orderItems_mobiles = OrderItems.getMobiles(user);
 
             showOrder(items, discountCode);
-            render("Orders/index.html", user, orderItems_mobiles);
+            render("Orders/index.html", user, orderItems_mobiles, mobile);
         }
 
         //创建订单
@@ -421,9 +428,9 @@ public class Orders extends Controller {
                 if (number > 0) {
                     Long goodsId = Long.parseLong(goodsItem[0]);
                     Long boughtNumber = OrderItems.itemsNumber(user, goodsId);
-                    boolean isBuyFlag = Order.checkLimitNumber(user, goodsId, boughtNumber, number);
-                    if (isBuyFlag) {
-                        redirect(WWW_URL + "/g/" + goodsId);
+                    boolean canNotBuy = Order.checkLimitNumber(goodsId, boughtNumber, number);
+                    if (canNotBuy) {
+                        redirect(WWW_URL + "/p/" + goodsId);
                         return;
                     }
                     //取出商品的限购数量
@@ -446,10 +453,10 @@ public class Orders extends Controller {
      * 判断限购数量
      *
      * @param items 商品列表
+     * @param phone 手机
      */
 
-    public static void checkLimitNumber(String items) {
-        User user = SecureCAS.getUser();
+    private static boolean checkLimitNumber(String items, String phone) {
         String[] itemSplits = items.split(",");
         for (String split : itemSplits) {
             String[] goodsItem = split.split("-");
@@ -457,14 +464,11 @@ public class Orders extends Controller {
                 Integer number = Integer.parseInt(goodsItem[1]);
                 if (number > 0) {
                     Long goodsId = Long.parseLong(goodsItem[0]);
-                    Long boughtNumber = OrderItems.itemsNumber(user, goodsId);
-                    boolean canNotBuy = Order.checkLimitNumber(user, goodsId, boughtNumber, number);
-                    if (canNotBuy) {
-                        renderJSON("1");
-                    }
+                    Long boughtNumber = OrderItems.getBuyNumberByPhone(phone, goodsId);
+                    return Order.checkLimitNumber(goodsId, boughtNumber, number);
                 }
             }
         }
-        renderJSON("0");
+        return false;
     }
 }

@@ -999,7 +999,6 @@ public class Goods extends Model {
         updateGoods.title = StringUtils.trimToEmpty(goods.title);
         updateGoods.no = goods.no;
         updateGoods.beginOnSaleAt = goods.beginOnSaleAt;
-        System.out.println(goods.beginOnSaleAt + "=======");
         updateGoods.effectiveAt = goods.effectiveAt;
         updateGoods.expireAt = DateUtil.getEndOfDay(goods.expireAt);
         updateGoods.faceValue = goods.faceValue;

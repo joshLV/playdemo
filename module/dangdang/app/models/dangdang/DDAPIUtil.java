@@ -55,11 +55,15 @@ public class DDAPIUtil {
     public static void syncSellCount(Goods goods) throws DDAPIInvokeException {
         //根据商品对应的GoodsDeployRelation的linkId
         GoodsDeployRelation deployRelation = GoodsDeployRelation.getDeployRelationGoods(OuterOrderPartner.DD, goods);
+        Long id = goods.id;
+        if (deployRelation != null) {
+            id = deployRelation.linkId;
+        }
         String request = String.format("<data><row><spgid><![CDATA[%s]]></spgid><sellcount><![CDATA[%s]]></sellcount" +
-                "></row></data>", deployRelation.linkId, goods.getRealSaleCount());
+                "></row></data>", id, goods.getRealSaleCount());
         Response response = DDAPIUtil.access(SYNC_URL, request, "push_team_stock");
         if (!response.success()) {
-            throw new DDAPIInvokeException("\ninvoke syncSellCount error(goodsId:" + deployRelation.linkId + "):" +
+            throw new DDAPIInvokeException("\ninvoke syncSellCount error(goodsId:" + goods.id + "):" +
                     "error_code:" + response.errorCode.getValue() + ",desc:" + response.desc);
         }
         Logger.info("[DangDang API] invoke syncSellCount success!");
@@ -195,6 +199,9 @@ public class DDAPIUtil {
 
         //从对应商品关系表中取得商品
         Goods goods = GoodsDeployRelation.getGoods(OuterOrderPartner.DD, spgid);
+        if (goods == null) {
+            goods = Goods.findById(spgid);
+        }
         ECoupon coupon = ECoupon.find("order=? and eCouponSn=? and goods=?", ybqOrder, consumeId, goods).first();
         if (coupon == null) {
             response.errorCode = ErrorCode.COUPON_SN_NOT_EXISTED;

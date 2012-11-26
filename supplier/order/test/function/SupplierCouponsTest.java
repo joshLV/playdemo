@@ -5,7 +5,6 @@ import factory.FactoryBoy;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.Order;
-import models.order.OrderItems;
 import models.sales.Category;
 import models.sales.Goods;
 import models.sales.Shop;
@@ -31,7 +30,6 @@ public class SupplierCouponsTest extends FunctionalTest {
     Shop shop;
     Goods goods;
     Order order;
-    OrderItems orderItem;
     Category category;
     ECoupon coupon;
 
@@ -48,7 +46,8 @@ public class SupplierCouponsTest extends FunctionalTest {
         // 设置测试登录的用户名
         Security.setLoginUserForTest(supplierUser.loginName);
         coupon = FactoryBoy.create(ECoupon.class);
-        coupon.consumedAt = DateHelper.beforeDays(1);
+        coupon.order.paidAt= DateHelper.beforeDays(1);
+        coupon.order.save();
         coupon.save();
     }
 

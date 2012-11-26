@@ -223,7 +223,7 @@ public class Goods extends Controller {
                     "LIMITNUMBER"), new CacheCallBack<Boolean>() {
                 @Override
                 public Boolean loadData() {
-                    return Order.checkLimitNumber(user, goods.id, finalBoughtNumber, 1);
+                    return Order.checkLimitNumber(goods.id, finalBoughtNumber, 1);
                 }
             });
             renderArgs.put("user", user);
@@ -293,7 +293,7 @@ public class Goods extends Controller {
                     "LIMITNUMBER"), new CacheCallBack<Boolean>() {
                 @Override
                 public Boolean loadData() {
-                    return Order.checkLimitNumber(user, goods.id, finalBoughtNumber, 1);
+                    return Order.checkLimitNumber(goods.id, finalBoughtNumber, 1);
                 }
             });
             renderArgs.put("user", user);

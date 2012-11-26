@@ -56,9 +56,9 @@ public class Carts extends Controller {
 
             for (Cart cart : carts) {
                 boughtNumber = OrderItems.itemsNumber(user, cart.goods.id);
-                boolean isBuyFlag = Order.checkLimitNumber(user, cart.goods.id, boughtNumber, (int) cart.number);
+                boolean canNotBuy = Order.checkLimitNumber(cart.goods.id, boughtNumber, (int) cart.number);
 
-                if (isBuyFlag) {
+                if (canNotBuy) {
                     renderArgs.put("limit_goodsId", cart.goods.id);
                 }
             }

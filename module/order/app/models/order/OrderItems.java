@@ -169,6 +169,22 @@ public class OrderItems extends Model {
         return result == null ? 0 : (Long) result;
     }
 
+    /**
+     * 取出该用户购买指定商品的数量
+     *
+     * @param phone    用户手机
+     * @param goodsId 商品ID
+     * @return
+     */
+    public static long getBuyNumberByPhone(String phone, Long goodsId) {
+        EntityManager entityManager = JPA.em();
+        Query q = entityManager.createQuery("SELECT sum( buyNumber ) FROM OrderItems WHERE goods.id=:goodsId and phone=:phone " );
+        q.setParameter("goodsId", goodsId);
+        q.setParameter("phone", phone);
+        Object result = q.getSingleResult();
+        return result == null ? 0 : (Long) result;
+    }
+
     public static long getBoughtNumberOfSecKillGoods(User user, Long goodsId, Long secKillGoodsId) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("SELECT sum( buyNumber ) FROM OrderItems WHERE goods.id=:goodsId and " +
@@ -288,8 +304,8 @@ public class OrderItems extends Model {
         return CollectionUtils.isEmpty(q.getResultList()) ? 0l : (Long) q.getSingleResult();*/
     }
 
-    public static List<OrderItems> findBySupplierOrder(long supplierId, long orderId){
-        Query query =  OrderItems.em().createQuery("select o from OrderItems o where o.order = :order and o.goods.supplierId = :supplier");
+    public static List<OrderItems> findBySupplierOrder(long supplierId, long orderId) {
+        Query query = OrderItems.em().createQuery("select o from OrderItems o where o.order = :order and o.goods.supplierId = :supplier");
         query.setParameter("order", Order.findById(orderId));
         query.setParameter("supplier", supplierId);
         return query.getResultList();

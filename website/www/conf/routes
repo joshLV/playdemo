@@ -76,7 +76,7 @@ POST    /sms/send                               SMS.send
 GET     /orders                                 Orders.index
 POST    /reorders                               Orders.index
 POST    /orders/new                             Orders.create
-GET     /orders_number                          Orders.checkLimitNumber
+#GET     /limit-number                          Orders.checkLimitNumber
 
 # 秒杀
 GET     /seckill-goods                          SecKillGoodsController.index
