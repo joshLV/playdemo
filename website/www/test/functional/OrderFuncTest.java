@@ -1,23 +1,21 @@
 package functional;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
 import models.consumer.User;
 import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Goods;
-
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.mvc.Http;
 import play.test.FunctionalTest;
-import controllers.modules.website.cas.Security;
-import factory.FactoryBoy;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 订单的功能测试.
@@ -102,21 +100,6 @@ public class OrderFuncTest extends FunctionalTest {
 
         long orderCountAfter = Order.count();
         assertEquals(orderCountBefore + 1, orderCountAfter);
-    }
-
-    @Test
-    public void testCheckLimitNumber_商品限制购买数() {
-        Goods goodsA = FactoryBoy.last(Goods.class);
-        Goods goodsB = FactoryBoy.create(Goods.class);
-        String items = String.format("%s-3,%s-2", goodsA.id, goodsB.id);
-
-        goodsA.limitNumber = 1;
-        goodsA.save();
-
-        Http.Response response = GET("/orders_number?items=" + items);
-        assertStatus(200, response);
-
-        assertContentEquals("1", response);
     }
 
 }

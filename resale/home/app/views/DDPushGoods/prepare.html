@@ -157,13 +157,26 @@
         <p>团购详情 富文本数据<b>*</b></p>
         <textarea rows="5" cols="200" name="teamDetail">
         #{if exhibition}
+            <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品详情</span>
+            </p>
         ${exhibition.raw()}
             <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
                 <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
             </p>
         ${prompt.raw()}
             <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
-                <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
+                <span style="font-family:SimSun;font-size:small;color:#ffffff;">小贴士</span>
+            </p>
+            <p>
+                ·本商品为电子券，购买后会以短信形式发送一串数字到您的手机
+                ·如果您不小心遗失了您的电子券，请拨打一百券客服热线
+                ·发票由最终服务提供商开具 用户跟商家索取发票
+                ·本产品由【一百券】提供，客服热线：400-6262-166
+            </p>
+
+            <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品展示</span>
             </p>
         ${details.raw()}
             <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">

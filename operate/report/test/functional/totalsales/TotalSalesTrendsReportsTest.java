@@ -32,7 +32,7 @@ public class TotalSalesTrendsReportsTest extends FunctionalTest {
         goods = FactoryBoy.create(Goods.class);
 
         coupon = FactoryBoy.create(ECoupon.class);
-        coupon.consumedAt = DateUtil.stringToDate("2012-07-02 11:30");
+        coupon.consumedAt = DateUtil.stringToDate("2012-07-02 11:30","yyy-MM-dd HH:mm");
         coupon.status = ECouponStatus.CONSUMED;
         coupon.save();
 

@@ -23,7 +23,6 @@ import play.mvc.Controller;
 import play.mvc.With;
 import play.templates.Template;
 import play.templates.TemplateLoader;
-import util.DateHelper;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -197,9 +196,11 @@ public class DDPushGoods extends Controller {
         renderArgs.put("salePrice", goods.getResalePrice());
         renderArgs.put("faceValue", goods.faceValue);
         Date nowDate = DateUtil.getBeginOfDay();
-        Date afterMonthDate = DateUtil.getEndOfDay(DateHelper.afterDays(30));
+        Date afterMonthDate = DateUtil.lastDayOfMonth(new Date());
         renderArgs.put("effectiveAt", nowDate);
         renderArgs.put("expireAt", afterMonthDate);
+        renderArgs.put("effectStartDate", nowDate);
+        renderArgs.put("effectEndDate", goods.expireAt);
         renderArgs.put("teamMaxNum", goods.getRealStocks());
         renderArgs.put("teamMinNum", "1");
         renderArgs.put("limitMaxNum", (goods.limitNumber == null || goods.limitNumber == 0) ? "9999" : goods.limitNumber);
@@ -219,19 +220,17 @@ public class DDPushGoods extends Controller {
      * @param support
      */
     private static void getGoodsSupportItems(GoodsThirdSupport support) {
-        Type type = new TypeToken<Map<String, String>>() {}.getType();
+        Type type = new TypeToken<Map<String, String>>() {
+        }.getType();
         Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();
         Map<String, String> map = gson.fromJson(support.goodsData, type);
-
         renderArgs.put("name", map.get("teamSummary"));
         renderArgs.put("title", map.get("teamTitle"));
         renderArgs.put("shortName", map.get("teamShortName"));
         renderArgs.put("salePrice", map.get("salePrice"));
         renderArgs.put("faceValue", map.get("originalPrice"));
-        Date nowDate = DateUtil.getBeginOfDay();
-        Date afterMonthDate = DateUtil.getEndOfDay(DateHelper.afterDays(30));
-        renderArgs.put("effectiveAt", nowDate);
-        renderArgs.put("expireAt", afterMonthDate);
+        renderArgs.put("effectiveAt", DateUtil.stringToDate(map.get("beginTime"),DATE_FORMAT));
+        renderArgs.put("expireAt", DateUtil.stringToDate(map.get("endTime"),DATE_FORMAT));
         renderArgs.put("teamMaxNum", map.get("teamMaxNum"));
         renderArgs.put("teamMinNum", map.get("teamMinNum"));
         renderArgs.put("limitMaxNum", map.get("limitMaxNum"));
@@ -239,8 +238,8 @@ public class DDPushGoods extends Controller {
         renderArgs.put("limitOnceMin", map.get("limitOnceMin"));
         renderArgs.put("buyTimes", map.get("buyTimes"));
         renderArgs.put("teamDetail", StringUtils.trimToEmpty(map.get("teamDetail")));
-        renderArgs.put("effectStartDate", nowDate);
-        renderArgs.put("effectEndDate", afterMonthDate);
+        renderArgs.put("effectStartDate", DateUtil.stringToDate(map.get("effectStartDate"),DATE_FORMAT));
+        renderArgs.put("effectEndDate", DateUtil.stringToDate(map.get("effectEndDate"),DATE_FORMAT));
         renderArgs.put("deliveryType", map.get("deliveryType"));
         renderArgs.put("imageOriginalPath", map.get("srcImage"));
         renderArgs.put("refundType", map.get("refundType"));
