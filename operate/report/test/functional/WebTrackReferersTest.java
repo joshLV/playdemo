@@ -26,47 +26,35 @@ import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
+import util.DateHelper;
 import controllers.operate.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 
 public class WebTrackReferersTest extends FunctionalTest {
 
     @Before
     public void setup() {
+        FactoryBoy.deleteAll();
 
-        Fixtures.delete(OperateUser.class);
-        Fixtures.delete(OperateRole.class);
-        Fixtures.delete(DetailDailyReport.class);
-        Fixtures.delete(ShopDailyReport.class);
-        Fixtures.delete(GoodsDailyReport.class);
-        Fixtures.delete(TotalDailyReport.class);
-        Fixtures.delete(OrderItems.class);
-        Fixtures.delete(Order.class);
-        Fixtures.delete(Goods.class);
-        Fixtures.delete(Shop.class);
-        Fixtures.delete(Category.class);
-        Fixtures.delete(Brand.class);
-        Fixtures.delete(Supplier.class);
-        Fixtures.delete(SupplierUser.class);
-        Fixtures.delete(UserWebIdentification.class);
-        Fixtures.loadModels("fixture/suppliers_unit.yml");
-        Fixtures.loadModels("fixture/categories_unit.yml");
-        Fixtures.loadModels("fixture/brands_unit.yml");
-        Fixtures.loadModels("fixture/shops_unit.yml");
-        Fixtures.loadModels("fixture/goods_unit.yml");
-        Fixtures.loadModels("fixture/orders.yml");
-        Fixtures.loadModels("fixture/detail_daily_reports.yml");
-        Fixtures.loadModels("fixture/shop_daily_reports.yml");
-        Fixtures.loadModels("fixture/goods_daily_reports.yml");
-        Fixtures.loadModels("fixture/total_daily_reports.yml");
-        Fixtures.loadModels("fixture/user_web_identifications.yml");
-        
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
-        
-        Long id = (Long) Fixtures.idCache.get("models.admin.OperateUser-user1");
-        OperateUser user = OperateUser.findById(id);
+
+        OperateUser user = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
+
+        FactoryBoy.create(UserWebIdentification.class);
+        FactoryBoy.create(UserWebIdentification.class,
+                        new BuildCallback<UserWebIdentification>() {
+                            @Override
+                            public void build(UserWebIdentification uwi) {
+                                uwi.createdAt = DateHelper.t("2012-07-17");
+                                uwi.referCode = "joinme";
+                                uwi.referer = "http://www.uhuila.com/payment_info";
+                                uwi.refererHost = "www.uhuila.com";
+                            }
+                        });
     }
 
     @After
@@ -81,14 +69,14 @@ public class WebTrackReferersTest extends FunctionalTest {
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
     }
- 
+
     @Test
     public void testSearchRefererLike() {
         Response response = GET("/webop/referers?condition.refererLike=uhuila&condition.begin=2012-07-16&condition.end=2012-07-18");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
-        ValuePaginator<WebTrackRefererReport> reportPage = (ValuePaginator<WebTrackRefererReport>)renderArgs("reportPage");
-        assertEquals(2, reportPage.getRowCount());
+        ValuePaginator<WebTrackRefererReport> reportPage = (ValuePaginator<WebTrackRefererReport>) renderArgs("reportPage");
+        assertEquals(1, reportPage.getRowCount());
         assertContentMatch("payment_info", response);
     }
 
@@ -97,16 +85,16 @@ public class WebTrackReferersTest extends FunctionalTest {
         Response response = GET("/webop/referers?condition.refererLike=yibaiqaa&condition.begin=2012-07-16&condition.end=2012-07-18");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
-        ValuePaginator<WebTrackRefererReport> reportPage = (ValuePaginator<WebTrackRefererReport>)renderArgs("reportPage");
+        ValuePaginator<WebTrackRefererReport> reportPage = (ValuePaginator<WebTrackRefererReport>) renderArgs("reportPage");
         assertEquals(0, reportPage.getRowCount());
-    }    
-       
+    }
+
     @Test
     public void testSearchRefererLikeOutOfRange() {
         Response response = GET("/webop/referers?condition.refererLike=uhuila&condition.begin=2012-06-16&condition.end=2012-06-18");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
-        ValuePaginator<WebTrackRefererReport> reportPage = (ValuePaginator<WebTrackRefererReport>)renderArgs("reportPage");
+        ValuePaginator<WebTrackRefererReport> reportPage = (ValuePaginator<WebTrackRefererReport>) renderArgs("reportPage");
         assertEquals(0, reportPage.getRowCount());
     }
 
@@ -115,10 +103,10 @@ public class WebTrackReferersTest extends FunctionalTest {
         Response response = GET("/webop/referers?condition.refererLike=uhuila&condition.isHost=true&condition.begin=2012-07-16&condition.end=2012-07-18");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
-        ValuePaginator<WebTrackRefererReport> reportPage = (ValuePaginator<WebTrackRefererReport>)renderArgs("reportPage");
-        assertEquals(2, reportPage.getRowCount());
+        ValuePaginator<WebTrackRefererReport> reportPage = (ValuePaginator<WebTrackRefererReport>) renderArgs("reportPage");
+        assertEquals(1, reportPage.getRowCount());
         assertContentNotMatch("payment_info", response);
-    }        
+    }
 
     public static void assertContentNotMatch(String pattern, Response response) {
         Pattern ptn = Pattern.compile(pattern);
