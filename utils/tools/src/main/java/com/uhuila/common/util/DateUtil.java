@@ -15,7 +15,6 @@ import java.util.Date;
 public class DateUtil {
     public static SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
     public static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-    public static SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     public static Date getEndOfDay(Date day) {
         if (day == null) {
@@ -103,15 +102,17 @@ public class DateUtil {
     }
 
     /**
-     * 得到本月的最后一天
+     * 获得指定日期的最后一天
      *
+     * @param date
      * @return
      */
-    public static Date getMonthLastDay() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH, calendar
-                .getActualMaximum(Calendar.DAY_OF_MONTH));
-        return calendar.getTime();
+    public static Date lastDayOfMonth(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int value = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        cal.set(Calendar.DAY_OF_MONTH, value);
+        return cal.getTime();
     }
 
     /**
@@ -176,12 +177,14 @@ public class DateUtil {
     /**
      * 字符串转化成日期
      *
-     * @param sDate
+     * @param sDate 日期字符串
+     * @param formatPattern 转化格式
      * @return
      */
-    public static Date stringToDate(String sDate) {
+    public static Date stringToDate(String sDate, String formatPattern) {
         Date date = null;
         try {
+            SimpleDateFormat formatDate = new SimpleDateFormat(formatPattern);
             date = formatDate.parse(sDate);
         } catch (ParseException e) {
             e.printStackTrace();

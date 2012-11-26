@@ -16,6 +16,7 @@ import play.modules.view_ext.annotation.Mobile;
 
 import javax.persistence.*;
 import java.beans.Transient;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,6 +42,7 @@ public class Supplier extends Model {
     public static final String IMAGE_DEFAULT = "";
     public static final String BEGIN_TIME = " 00:00";
     public static final String END_TIME = " 23:59";
+    public static final String DATE_FORMAT = "yyy-MM-dd HH:mm";
     /**
      * 域名
      */
@@ -302,7 +304,7 @@ public class Supplier extends Model {
      * 检查是否有营业时间
      *
      * @param conditionDate 传入的时间
-     * @param shopHour    营业时间
+     * @param shopHour      营业时间
      * @param hourFlag
      * @return
      */
@@ -312,6 +314,7 @@ public class Supplier extends Model {
         if (hourFlag) {
             days = 1;
         }
-        return DateUtil.stringToDate(DateUtil.dateToString(conditionDate, days) + (StringUtils.isBlank(shopHour) ? time : " " + shopHour));
+        String dateStr = DateUtil.dateToString(conditionDate, days) + (StringUtils.isBlank(shopHour) ? time : " " + shopHour);
+        return DateUtil.stringToDate(dateStr, DATE_FORMAT);
     }
 }
