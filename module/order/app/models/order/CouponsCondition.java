@@ -8,7 +8,11 @@ import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CouponsCondition implements Serializable {
 
@@ -17,7 +21,7 @@ public class CouponsCondition implements Serializable {
     public Date createdAtBegin;
     public Date createdAtEnd;
 
-    public Date consumedAtBegin = DateUtil.getYesterday();
+    public Date consumedAtBegin;
     public Date consumedAtEnd;
 
     public Date refundAtBegin;
@@ -40,8 +44,8 @@ public class CouponsCondition implements Serializable {
     public String searchItems;
     public String searchKey;
     public boolean isLottery;
-    public Date paidAtBegin;
-    public Date paidAtEnd;
+    public Date paidAtBegin= DateUtil.getYesterday();
+    public Date paidAtEnd=new Date();
     public String userName;
 
     public Long operatorId;
@@ -241,7 +245,6 @@ public class CouponsCondition implements Serializable {
                 paramMap.put("user", resaler.id);
             }
         }
-        System.out.println("sql.toString()>>>>>" + sql.toString());
         return sql.toString();
     }
 

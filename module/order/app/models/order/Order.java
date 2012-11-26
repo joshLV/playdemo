@@ -467,12 +467,11 @@ public class Order extends Model {
     /**
      * 计算会员订单明细中已购买的商品
      *
-     * @param user    会员ID
      * @param goodsId 商品ID
      * @param number  购买数量
      * @return true 表示已经超过限购数量， false 表示未超过
      */
-    public static Boolean checkLimitNumber(User user, Long goodsId, Long boughtNumber, int number) {
+    public static Boolean checkLimitNumber(Long goodsId, Long boughtNumber, int number) {
 
         //取出商品的限购数量
         Goods goods = Goods.findById(goodsId);

@@ -44,13 +44,13 @@ public class OrderItemsUnitTest extends UnitTest {
         // 已经购物
         long boughtNumber = OrderItems.itemsNumber(user, goods.id);
         assertEquals(1l, boughtNumber);
-        boolean isBuy = Order.checkLimitNumber(user, goods.id, boughtNumber, 1);
+        boolean isBuy = Order.checkLimitNumber(goods.id, boughtNumber, 1);
         assertTrue(isBuy);
 
         Goods goods2 = FactoryBoy.create(Goods.class);
         boughtNumber = OrderItems.itemsNumber(user, goods2.id);
         assertEquals(0l, boughtNumber);
-        isBuy = Order.checkLimitNumber(user, goods2.id, boughtNumber, 1);
+        isBuy = Order.checkLimitNumber(goods2.id, boughtNumber, 1);
         assertFalse(isBuy);
     }
 

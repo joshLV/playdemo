@@ -1,6 +1,6 @@
-$(function() {
+$(function () {
     // 添加、编辑收货地址
-    $('#J_saveNewAddr').live('click', function(ev){
+    $('#J_saveNewAddr').live('click', function (ev) {
         ev.preventDefault();
 
         var addrId = $(this).attr('data-addrId'),
@@ -10,32 +10,32 @@ $(function() {
             addrMobile = $('#J_addrMobile'),
             addrPhone = $('#J_addrPhone');
 
-        if ( addrName.val() == '' ) {
+        if (addrName.val() == '') {
             $("#err-name").html('请填写您的真实姓名！');
             return;
         }
-        if ( addrStreet.val() == '' ) {
+        if (addrStreet.val() == '') {
             $("#err-street").html('请填写详细路名及门牌号！');
             return;
         }
-        if ( !/^[1-9]\d{5}$/.test($.trim(addrPost.val())) ) {
+        if (!/^[1-9]\d{5}$/.test($.trim(addrPost.val()))) {
             $("#err-post").html('请填写正确的邮政编码！');
             return;
         }
-        if ( $.trim(addrMobile.val()) == '' && $.trim(addrPhone.val()) == '' ) {
+        if ($.trim(addrMobile.val()) == '' && $.trim(addrPhone.val()) == '') {
             $("#err-phone").html("手机和电话请至少填写一个！");
             return;
         }
         var mobi = /^((15)\d{9})$|^((13)\d{9})$|^((18)\d{9})$/i;
-        if ( !mobi.test($.trim(addrMobile.val())) && $.trim(addrPhone.val()) == '' ) {
+        if (!mobi.test($.trim(addrMobile.val())) && $.trim(addrPhone.val()) == '') {
             $("#err-phone").html("手机号码格式不正确！");
             return;
         }
-        if ( $.trim(addrMobile.val()) == '' && !/^[0-9\-]{7,18}$/.test($.trim(addrPhone.val())) ) {
+        if ($.trim(addrMobile.val()) == '' && !/^[0-9\-]{7,18}$/.test($.trim(addrPhone.val()))) {
             $("#err-phone").html("座机号码格式不正确!");
             return;
         }
-        if ( !addrId ) {
+        if (!addrId) {
             $.post('/orders/addresses/new', {
                 'address.name':$.trim(addrName.val()),
                 'address.postcode':$.trim(addrPost.val()),
@@ -66,19 +66,19 @@ $(function() {
                     'address.phoneNumber':$.trim(addrPhone.val()),
                     'address.isDefault':true
                 },
-                success: function (data) {
+                success:function (data) {
                     $('#J_addr').html(data);
                     $('#addressId').val(addrId);
                 }
             });
         }
     });
-    $("input[class*='addr-']").focus(function(){
+    $("input[class*='addr-']").focus(function () {
         $("span.error").html('');
     });
 
     // 删除
-    $('.addr-del').live('click', function(ev){
+    $('.addr-del').live('click', function (ev) {
         ev.preventDefault();
 
         var addrId = $(this).attr('data-addrid'),
@@ -87,13 +87,13 @@ $(function() {
         $('#J_addrEditBox').html('');
         $(this).parent().append('<div class="addr-del-confirm">您要删除该地址吗？<br><b>确定删除</b> <b>取消</b><img src="http://img.uhcdn.com/images/u/o_jian.png" /></div>');
 
-        $('.addr-del-confirm').live('click', function(ev){
+        $('.addr-del-confirm').live('click', function (ev) {
             var txt = $(ev.target).text();
             if (txt == '确定删除') {
                 $.ajax({
                     url:'/orders/addresses/' + addrId,
                     type:'DELETE',
-                    success:function() {
+                    success:function () {
                         $('#addr-li-' + addrId).remove();
                         //如果被删除的地址是默认地址的话，则默认收货地址信息和地址列表都要重新加载
                         if (isDefault) {
@@ -119,7 +119,7 @@ $(function() {
     });
 
     // 切换地址
-    $('#J_addrAll input[name="addr"]').live('click', function() {
+    $('#J_addrAll input[name="addr"]').live('click', function () {
         $('#J_addrEditBox').html('');
 
         if ($(this).attr('id') == 'addrId_new') {
@@ -132,12 +132,12 @@ $(function() {
     });
 
     // 确定地址
-    $('#J_saveAddr').live('click', function(ev){
+    $('#J_saveAddr').live('click', function (ev) {
         var addrId = $('#J_addrAll input:checked').val();
         $.ajax({
             url:'/orders/addresses/' + addrId,
             type:'GET',
-            success:function(data) {
+            success:function (data) {
                 $('#J_addr').html(data);
                 $('#addressId').val(addrId);
             }
@@ -145,15 +145,16 @@ $(function() {
     });
 
     // 选择手机
-    $('.mobi-item').click(function(){
+    $('.mobi-item').click(function () {
         var _this = $(this);
         _this.addClass('selected');
         $('#ecart_mobile').val(_this.text());
+        $("#limit").html("");
         _this.siblings().removeClass('selected');
     });
 
     // 附加留言
-    $('#J_explainHd').click(function(){
+    $('#J_explainHd').click(function () {
         if (!$(this).hasClass('minus')) {
             $(this).addClass('minus');
             $('#J_explainBd').show();
@@ -163,27 +164,10 @@ $(function() {
         }
     });
 
-
-    $("#J_confirmOrder b").click(function(ev) {
+    $('#J_modifyAddr').live('click', function (ev) {
         ev.preventDefault();
-       var url='/orders_number?items=' + $('#items').val();
-        $.ajax({
-            url:url,
-            type:'GET',
-            success:function (data) {
-                if (data == '1') {
-                   $("#limit").html("你所购买商品超过限购数量，请确认！");
-                } else {
-                    $("#order_create_form").submit();
-                }
-            }
+        $('#J_addr').load('/orders/addresses', function () {
         });
-
-    });
-
-    $('#J_modifyAddr').live('click', function(ev){
-        ev.preventDefault();
-        $('#J_addr').load('/orders/addresses', function(){});
     });
 
 });

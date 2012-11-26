@@ -20,7 +20,6 @@ import play.test.UnitTest;
 import util.DateHelper;
 
 import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 
 public class CouponsUnitTest extends UnitTest {
@@ -41,16 +40,16 @@ public class CouponsUnitTest extends UnitTest {
             public void build(Order o) {
                 o.userId = user.id;
                 o.userType = AccountType.CONSUMER;
+                o.paidAt = DateHelper.beforeDays(1);
                 o.createdAt = DateHelper.beforeDays(3);
             }
         });
         ecoupon = FactoryBoy.create(ECoupon.class);
-        ecoupon.consumedAt = DateHelper.beforeDays(2);
-        ecoupon.save();
         FactoryBoy.batchCreate(3, ECoupon.class, new SequenceCallback<ECoupon>() {
             @Override
             public void sequence(ECoupon e, int seq) {
-                e.consumedAt = DateHelper.beforeDays(2);
+                e.order.paidAt = DateHelper.beforeDays(1);
+                e.order.save();
             }
         });
     }
@@ -72,8 +71,6 @@ public class CouponsUnitTest extends UnitTest {
     @Test
     public void testUserQueryCoupons() throws ParseException {
         CouponsCondition condition = new CouponsCondition();
-        condition.consumedAtBegin = DateHelper.beforeDays(10);
-        condition.consumedAtEnd = new Date();
         condition.status = ECouponStatus.UNCONSUMED;
         condition.goodsName = "";
         condition.userId = user.id;

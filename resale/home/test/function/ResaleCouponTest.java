@@ -37,11 +37,11 @@ public class ResaleCouponTest extends FunctionalTest {
             public void build(Order o) {
                 o.userType = AccountType.RESALER;
                 o.userId = resaler.id;
+		o.paidAt = DateHelper.beforeDays(1);
             }
         });
 
         coupon = FactoryBoy.create(ECoupon.class);
-        coupon.consumedAt = DateHelper.beforeDays(1);
         coupon.status = ECouponStatus.CONSUMED;
         coupon.save();
         Security.setLoginUserForTest(resaler.loginName);
