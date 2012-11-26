@@ -3,6 +3,7 @@ package function;
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
@@ -33,6 +34,7 @@ import java.util.List;
  */
 public class OperateCouponsFuncTest extends FunctionalTest {
     OperateUser user;
+    Order order;
 
     @Before
     public void setUp() {
@@ -49,6 +51,12 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         // 初始化 电子券数据
         final Goods goods = FactoryBoy.create(Goods.class);
         final Shop shop = FactoryBoy.create(Shop.class);
+        order = FactoryBoy.create(Order.class, new BuildCallback<Order>() {
+            @Override
+            public void build(Order order) {
+                order.paidAt = new Date();
+            }
+        });
         FactoryBoy.batchCreate(10, ECoupon.class, "Id",
                 new SequenceCallback<ECoupon>() {
                     @Override
@@ -58,10 +66,12 @@ public class OperateCouponsFuncTest extends FunctionalTest {
                         target.eCouponSn = "8888000" + seq;
                         target.status = ECouponStatus.UNCONSUMED;
                         target.isFreeze = 0;
-                        target.consumedAt = DateHelper.afterDays(new Date(), 3);
+
 
                     }
                 });
+
+
     }
 
     @Test
