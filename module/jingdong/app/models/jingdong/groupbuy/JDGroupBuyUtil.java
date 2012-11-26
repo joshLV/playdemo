@@ -117,7 +117,6 @@ public class JDGroupBuyUtil {
         WebServiceClient client = WebServiceClientFactory
                         .getClientHelper();
 
-        System.out.println("client.class= " + client.getClass().getName());
         String responseResult = client.postStringWithBody("jingdong_verify_order", url, restRequestBody, outerOrder.orderNumber, "" + outerOrder.orderId, "" + eCoupon.id);
 
         //解析请求
