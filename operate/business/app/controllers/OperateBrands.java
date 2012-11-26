@@ -191,9 +191,9 @@ public class OperateBrands extends Controller {
     public static void goodsBrands(Long id) {
         //品牌列表
         Supplier supplier = Supplier.findById(id);
-        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+
         Long loginUserId = OperateRbac.currentUser().id;
-        List<Brand> brandList = Brand.findByOrder(supplier, loginUserId, right);
+        List<Brand> brandList = Brand.findByOrder(supplier, loginUserId);
         render(brandList);
     }
 
