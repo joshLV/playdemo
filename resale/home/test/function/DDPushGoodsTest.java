@@ -21,10 +21,10 @@ import play.mvc.Http;
 import play.templates.Template;
 import play.templates.TemplateLoader;
 import play.test.FunctionalTest;
-import util.DateHelper;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -126,9 +126,8 @@ public class DDPushGoodsTest extends FunctionalTest {
 
         assertEquals("5.00", renderArgs("salePrice"));
         assertEquals("10.00", renderArgs("faceValue"));
-        assertEquals(DateUtil.getBeginOfDay(), renderArgs("effectiveAt"));
-        Date afterMonthDate = DateUtil.getEndOfDay(DateHelper.afterDays(30));
-        assertEquals(afterMonthDate, renderArgs("expireAt"));
+        assertEquals(DateUtil.stringToDate("2012-11-22 00:00:00", "yyyy-MM-dd HH:mm:ss"), renderArgs("effectiveAt"));
+        assertEquals(DateUtil.stringToDate("2012-12-22 23:59:59", "yyyy-MM-dd HH:mm:ss"), renderArgs("expireAt"));
         assertEquals("10", renderArgs("teamMaxNum"));
         assertEquals("1", renderArgs("teamMinNum"));
         assertEquals("9999", renderArgs("limitMaxNum"));
@@ -153,8 +152,14 @@ public class DDPushGoodsTest extends FunctionalTest {
         assertEquals(new BigDecimal("5.00"), (BigDecimal) renderArgs("salePrice"));
         assertEquals(new BigDecimal("10.00"), (BigDecimal) renderArgs("faceValue"));
         assertEquals(DateUtil.getBeginOfDay(), renderArgs("effectiveAt"));
-        Date afterMonthDate = DateUtil.getEndOfDay(DateHelper.afterDays(30));
-        assertEquals(afterMonthDate, renderArgs("expireAt"));
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, 1);
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        Date afterMonthDate = DateUtil.lastDayOfMonth(cal.getTime());
+        assertEquals(afterMonthDate.toString(), renderArgs("expireAt").toString());
+
         assertEquals(Long.valueOf("10"), (Long) renderArgs("teamMaxNum"));
         assertEquals("1", renderArgs("teamMinNum"));
         assertEquals("9999", renderArgs("limitMaxNum"));

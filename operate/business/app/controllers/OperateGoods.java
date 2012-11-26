@@ -40,10 +40,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
-import static play.Logger.isDebugEnabled;
 import static play.Logger.warn;
 
 /**
@@ -173,6 +173,7 @@ public class OperateGoods extends Controller {
                 checkShops(goods.supplierId);
                 renderShopList(goods.supplierId);
             }
+            renderArgs.put("goods.beginOnSaleAt",new Date());
             renderArgs.put("goods.materialType", MaterialType.ELECTRONIC);
             renderArgs.put("selectAll", true);
         }
