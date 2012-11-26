@@ -116,9 +116,10 @@ public class OperateGoods extends Controller {
         goodsPage.setBoundaryControlsEnabled(true);
         List<Supplier> supplierList = Supplier.findUnDeleted();
 
-        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+
         Long id = OperateRbac.currentUser().id;
-        List<Brand> brandList = Brand.findByOrder(null, id, right);
+        System.out.println("222");
+        List<Brand> brandList = Brand.findByOrder(null, id);
 
         renderArgs.put("brandList", brandList);
         String queryString = StringUtils.trimToEmpty(getQueryString());
@@ -189,11 +190,12 @@ public class OperateGoods extends Controller {
             goods.isAllShop = true;
         }
 
-        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+
         Long id = OperateRbac.currentUser().id;
 
         if (goods.supplierId != null) {
-            List<Brand> brandList = Brand.findByOrder(new Supplier(goods.supplierId), id, right);
+            System.out.println("1111");
+            List<Brand> brandList = Brand.findByOrder(new Supplier(goods.supplierId), id);
             renderArgs.put("brandList", brandList);
         }
 
