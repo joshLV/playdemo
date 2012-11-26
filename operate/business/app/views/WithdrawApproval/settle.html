@@ -60,11 +60,12 @@
     <input type="hidden" id="supplierAccount.id" name="supplierAccount.id" value="${supplierAccount.id}">
     <input type="hidden" id="amount" name="amount" value="${amount}">
     <input type="hidden" id="withdrawAccountId" name="withdrawAccountId" value="1">
+    <input type="hidden" id="prepaymentId" name="prepaymentId" value="${prepaymentId}">
 
     <div class="control-group">
         <label class="control-label">商户名称</label>
         <label class="control-value">${supplier?.fullName}
-            &nbsp;&nbsp; #{if supplier?.otherName!=null}(&nbsp;${supplier?.otherName}&nbsp;)#{/if} &nbsp;&nbsp;
+            &nbsp;&nbsp; #{if supplier?.otherName!=null}&nbsp;--&nbsp;${supplier?.otherName}#{/if} &nbsp;&nbsp;
             <a href="/reports/supplier?condition.accountName=${supplier?.fullName}&condition.tradeType=PURCHASE_COSTING"
                target="_blank">账户资金明细</a>
         </label>
@@ -74,12 +75,22 @@
         <label class="control-value">${amount.formatCurrency('CNY')}</label>
     </div>
     <div class="control-group">
+        <label class="control-label">预付款 </label>
+        <label class="control-value">${prepaymentBalance.formatCurrency('CNY')}</label>
+    </div>
+    <div class="control-group">
+        <label class="control-label">实际需打款金额 </label>
+        <label class="control-value"><span class="label label-important">${needPay.formatCurrency('CNY')}</span></label>
+    </div>
+    #{if needPay?.compareTo(java.math.BigDecimal.ZERO)>0}
+    <div class="control-group">
         <label class="control-label" for="agree-fee">手续费</label>
 
         <div class="controls">
             <input type="text" class="input-xlarge" id="agree-fee" name="fee" value="0">元
         </div>
     </div>
+    #{/if}
     <div class="control-group">
         <label class="control-label" for="agree-comment">备注</label>
 
@@ -108,6 +119,7 @@
         <label class="control-label">银行卡号</label>
         <label class="control-value">${withdrawAccount?.cardNumber}</label>
     </div>
+    #{if amount?.compareTo(java.math.BigDecimal.ZERO)>0}
     <div class="control-group">
         <label class="control-label"></label>
         <label class="control-value">
@@ -115,6 +127,7 @@
                     onclick="settle(${withdrawAccount?.id})"/>
             结算</button></label>
     </div>
+    #{/if}
     #{/list}
     #{/form}
     #{/if}

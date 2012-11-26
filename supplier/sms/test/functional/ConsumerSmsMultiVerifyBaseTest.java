@@ -25,7 +25,6 @@ import play.Play;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Http.Response;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import util.mq.MockMQ;
 

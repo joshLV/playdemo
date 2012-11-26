@@ -186,6 +186,12 @@ public class AccountSequence extends Model {
                 accountSequence.balance : BigDecimal.ZERO;
     }
 
+    public static BigDecimal getTodayWithdrawAmount(Account account) {
+        BigDecimal amount = (BigDecimal) find("select sum(changeAmount) account=? and createdAt>=? and createdAt<? order by createdAt DESC", account, DateUtil.getBeginOfDay(), DateUtil.getEndOfDay(new Date())).first();
+
+        return amount != null ? amount : BigDecimal.ZERO;
+    }
+
     /**
      * 把指定商户的所有指定日期之前的收入金额结算掉,返回update 的记录数
      *
@@ -200,7 +206,7 @@ public class AccountSequence extends Model {
         }
         EntityManager entityManager = JPA.em();
         // 把指定商户的所有指定日期之前的收入金额结算状态改为已结算
-        Query query = entityManager.createQuery(" update AccountSequence as s set s.settlementStatus=:settlementStatus, withdrawBill = :withdrawBill " +
+        Query query = entityManager.createQuery("update AccountSequence as s set s.settlementStatus=:settlementStatus, withdrawBill = :withdrawBill " +
                 "where account=:account and createdAt<=:withdrawDate");
         query.setParameter("settlementStatus", SettlementStatus.CLEARED);
         query.setParameter("withdrawBill", withdrawBill);
@@ -212,9 +218,10 @@ public class AccountSequence extends Model {
 
     /**
      * 获取指定预付款项的已结算流水的记录数
+     *
      * @return
      */
     public static long countByPrepayment(Long prepaymentId) {
-        return count("prepayment.id = ?",prepaymentId);
+        return count("prepayment.id = ?", prepaymentId);
     }
 }

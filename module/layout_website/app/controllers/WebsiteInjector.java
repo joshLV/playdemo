@@ -5,6 +5,8 @@ import cache.CacheHelper;
 import com.uhuila.common.constants.PlatformType;
 import controllers.modules.website.cas.SecureCAS;
 import models.accounts.AccountType;
+import models.cms.Block;
+import models.cms.BlockType;
 import models.cms.Topic;
 import models.cms.TopicType;
 import models.consumer.User;
@@ -45,11 +47,13 @@ public class WebsiteInjector extends Controller {
         CacheHelper.preRead(CacheHelper.getCacheKey(models.sales.Category.CACHEKEY, "WWW_TOP_CATEGORIES7"),
                 CacheHelper.getCacheKey(models.sales.Category.CACHEKEY, "WWW_TOP_LEFT_CATEGORIES5"),
                 CacheHelper.getCacheKey(models.sales.Area.CACHEKEY, "WWW_AREAS6_" + Area.SHANGHAI),
+                CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_TOP_HOT_KEYWORDS"),
                 CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY1_TOPICS"),
                 CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY2_TOPICS"),
                 CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY3_TOPICS"),
                 CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY4_TOPICS"),
                 CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY5_TOPICS")
+
         );
 
         final User user = SecureCAS.getUser();
@@ -109,6 +113,14 @@ public class WebsiteInjector extends Controller {
         renderArgs.put("areas", areas);
 
         final Date currentDate = new Date();
+        //搜索框下面的热门搜索词
+       List <Block> hotKeywords = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_TOP_HOT_KEYWORDS"), new CacheCallBack<List<Block>>() {
+           @Override
+           public List<Block> loadData() {
+               return Block.findByType(BlockType.HOT_KEYWORDS,currentDate);
+           }
+       });
+
         //首页分类的公告1
         Topic categoryTopic1 = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY1_TOPICS"), new CacheCallBack<Topic>() {
             @Override
@@ -130,7 +142,7 @@ public class WebsiteInjector extends Controller {
                 return Topic.findByType(PlatformType.UHUILA, TopicType.WEB_CATEGORY3, currentDate, 1).get(0);
             }
         });
-        //首页分类的公告1
+        //首页分类的公告4
         Topic categoryTopic4 = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY4_TOPICS"), new CacheCallBack<Topic>() {
             @Override
             public Topic loadData() {
@@ -144,6 +156,7 @@ public class WebsiteInjector extends Controller {
                 return Topic.findByType(PlatformType.UHUILA, TopicType.WEB_CATEGORY5, currentDate, 1).get(0);
             }
         });
+        renderArgs.put("hotKeywords", hotKeywords);
         renderArgs.put("categoryTopic1", categoryTopic1);
         renderArgs.put("categoryTopic2", categoryTopic2);
         renderArgs.put("categoryTopic3", categoryTopic3);
