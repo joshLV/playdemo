@@ -26,6 +26,7 @@ import play.templates.TemplateLoader;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -196,9 +197,16 @@ public class DDPushGoods extends Controller {
         renderArgs.put("salePrice", goods.getResalePrice());
         renderArgs.put("faceValue", goods.faceValue);
         Date nowDate = DateUtil.getBeginOfDay();
-        Date afterMonthDate = DateUtil.lastDayOfMonth(new Date());
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, 1);
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        Date afterMonthDate = DateUtil.lastDayOfMonth(cal.getTime());
+
         renderArgs.put("effectiveAt", nowDate);
         renderArgs.put("expireAt", afterMonthDate);
+
         renderArgs.put("effectStartDate", nowDate);
         renderArgs.put("effectEndDate", goods.expireAt);
         renderArgs.put("teamMaxNum", goods.getRealStocks());
@@ -229,8 +237,8 @@ public class DDPushGoods extends Controller {
         renderArgs.put("shortName", map.get("teamShortName"));
         renderArgs.put("salePrice", map.get("salePrice"));
         renderArgs.put("faceValue", map.get("originalPrice"));
-        renderArgs.put("effectiveAt", DateUtil.stringToDate(map.get("beginTime"),DATE_FORMAT));
-        renderArgs.put("expireAt", DateUtil.stringToDate(map.get("endTime"),DATE_FORMAT));
+        renderArgs.put("effectiveAt", DateUtil.stringToDate(map.get("beginTime"), DATE_FORMAT));
+        renderArgs.put("expireAt", DateUtil.stringToDate(map.get("endTime"), DATE_FORMAT));
         renderArgs.put("teamMaxNum", map.get("teamMaxNum"));
         renderArgs.put("teamMinNum", map.get("teamMinNum"));
         renderArgs.put("limitMaxNum", map.get("limitMaxNum"));
@@ -238,8 +246,8 @@ public class DDPushGoods extends Controller {
         renderArgs.put("limitOnceMin", map.get("limitOnceMin"));
         renderArgs.put("buyTimes", map.get("buyTimes"));
         renderArgs.put("teamDetail", StringUtils.trimToEmpty(map.get("teamDetail")));
-        renderArgs.put("effectStartDate", DateUtil.stringToDate(map.get("effectStartDate"),DATE_FORMAT));
-        renderArgs.put("effectEndDate", DateUtil.stringToDate(map.get("effectEndDate"),DATE_FORMAT));
+        renderArgs.put("effectStartDate", DateUtil.stringToDate(map.get("effectStartDate"), DATE_FORMAT));
+        renderArgs.put("effectEndDate", DateUtil.stringToDate(map.get("effectEndDate"), DATE_FORMAT));
         renderArgs.put("deliveryType", map.get("deliveryType"));
         renderArgs.put("imageOriginalPath", map.get("srcImage"));
         renderArgs.put("refundType", map.get("refundType"));

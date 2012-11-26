@@ -125,22 +125,17 @@ public class ResaleSalesReport extends Model {
             query.setParameter(param, condition.getParamMap().get(param));
         }
 
-
-
         List<ResaleSalesReport> resultList = query.getResultList();
         List<Order> newList = new ArrayList<Order>();
         for (ResaleSalesReport item : resultList) {
             long consumedCount = 0l;
             long refundCount = 0l;
             BigDecimal consumedPrice = BigDecimal.ZERO;
-            long buyCount = 0l;
-            BigDecimal amount = BigDecimal.ZERO;
             BigDecimal refundPrice = BigDecimal.ZERO;
-            BigDecimal totRefundPrice = BigDecimal.ZERO;
             newList = Order.find("userId=? and userType=?", item.order.userId, AccountType.RESALER).fetch();
             for (Order order : newList) {
-
-                for (ECoupon coupon : order.eCoupons) {
+                List<ECoupon> eCoupons = ECoupon.find("order=?", order).fetch();
+                for (ECoupon coupon : eCoupons) {
                     if (coupon.status == ECouponStatus.CONSUMED) {
                         consumedCount++;
                         consumedPrice = consumedPrice.add(coupon.salePrice == null ? BigDecimal.ZERO : coupon.salePrice);
@@ -181,6 +176,7 @@ public class ResaleSalesReport extends Model {
         BigDecimal shouldGetPrice = BigDecimal.ZERO;
         BigDecimal haveGetPrice = BigDecimal.ZERO;
         for (ResaleSalesReport item : resultList) {
+
             buyCount += item.buyNumber;
             amount = amount.add(item.salePrice == null ? BigDecimal.ZERO : item.salePrice);
             totRefundPrice = item.refundPrice == null ? BigDecimal.ZERO : item.refundPrice;

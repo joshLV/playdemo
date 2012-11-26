@@ -1,15 +1,15 @@
 package function;
 
-import com.uhuila.common.constants.DeletedStatus;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
-import models.order.*;
-import models.sales.Brand;
-import models.sales.Category;
+import models.order.CouponHistory;
+import models.order.ECoupon;
+import models.order.ECouponStatus;
+import models.order.Order;
 import models.sales.Goods;
 import models.sales.Shop;
 import operate.rbac.RbacLoader;
@@ -66,8 +66,8 @@ public class OperateCouponsFuncTest extends FunctionalTest {
                         target.eCouponSn = "8888000" + seq;
                         target.status = ECouponStatus.UNCONSUMED;
                         target.isFreeze = 0;
-
-
+                        target.order.paidAt = DateHelper.beforeDays(1);
+                        target.order.save();
                     }
                 });
 

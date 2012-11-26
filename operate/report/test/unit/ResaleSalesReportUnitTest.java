@@ -1,30 +1,28 @@
 package unit;
 
+import com.uhuila.common.util.DateUtil;
 import controllers.operate.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.SequenceCallback;
 import models.ResaleSalesReport;
 import models.ResaleSalesReportCondition;
 import models.accounts.AccountType;
-import models.admin.OperateRole;
 import models.admin.OperateUser;
-import models.admin.SupplierUser;
 import models.order.ECoupon;
+import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderItems;
 import models.resale.Resaler;
-import models.sales.Brand;
-import models.sales.Category;
 import models.sales.Goods;
-import models.sales.Shop;
 import models.supplier.Supplier;
 import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import play.test.Fixtures;
 import play.test.UnitTest;
 import play.vfs.VirtualFile;
 
-import java.util.Calendar;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -35,47 +33,60 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class ResaleSalesReportUnitTest extends UnitTest {
+    Resaler resaler;
+    Supplier supplier;
+    Goods goods;
+    Order order;
+    OrderItems orderItem;
+
 
     @Before
     public void setup() {
+        FactoryBoy.deleteAll();
+        OperateUser operateUser = FactoryBoy.create(OperateUser.class);
 
-        Fixtures.delete(OperateUser.class);
-        Fixtures.delete(OperateRole.class);
-        Fixtures.delete(OrderItems.class);
-        Fixtures.delete(Order.class);
-        Fixtures.delete(Goods.class);
-        Fixtures.delete(Shop.class);
-        Fixtures.delete(Category.class);
-        Fixtures.delete(Brand.class);
-        Fixtures.delete(Supplier.class);
-        Fixtures.delete(SupplierUser.class);
-        Fixtures.delete(Resaler.class);
-        Fixtures.delete(ECoupon.class);
-        Fixtures.loadModels("fixture/suppliers_unit.yml");
-        Fixtures.loadModels("fixture/categories_unit.yml");
-        Fixtures.loadModels("fixture/brands_unit.yml");
-        Fixtures.loadModels("fixture/shops_unit.yml");
-        Fixtures.loadModels("fixture/goods_unit.yml");
-        Fixtures.loadModels("fixture/orders.yml");
-        Fixtures.loadModels("fixture/ecoupon.yml");
-        Fixtures.loadModels("fixture/user.yml");
-        Fixtures.loadModels("fixture/resaler.yml");
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
 
-        Long id = (Long) Fixtures.idCache.get("models.admin.OperateUser-user1");
-        OperateUser user = OperateUser.findById(id);
         // 设置测试登录的用户名
-        Security.setLoginUserForTest(user.loginName);
-        long resalerId = (Long) Fixtures.idCache.get("models.resale.Resaler-resaler_1");
-        id = (Long) Fixtures.idCache.get("models.order.Order-order1");
-        Order order = Order.findById(id);
-        order.userId = resalerId;
+        Security.setLoginUserForTest(operateUser.loginName);
+
+        goods = FactoryBoy.create(Goods.class);
+        supplier = FactoryBoy.create(Supplier.class);
+        orderItem = FactoryBoy.create(OrderItems.class);
+        order = FactoryBoy.create(Order.class);
+        resaler = FactoryBoy.create(Resaler.class);
+
+
+        order.userId = resaler.id;
         order.userType = AccountType.RESALER;
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE));
-        order.paidAt = calendar.getTime();
+        order.paidAt = DateUtil.getBeginOfDay();
+
         order.save();
+        orderItem.goods = goods;
+        orderItem.order = order;
+        orderItem.save();
+        FactoryBoy.batchCreate(5, ECoupon.class, new SequenceCallback<ECoupon>() {
+            @Override
+            public void sequence(ECoupon e, int seq) {
+                e.order = order;
+                e.goods = goods;
+                e.orderItems = orderItem;
+                e.status = ECouponStatus.CONSUMED;
+            }
+
+        });
+        FactoryBoy.batchCreate(5, ECoupon.class, new SequenceCallback<ECoupon>() {
+            @Override
+            public void sequence(ECoupon e, int seq) {
+                e.order = order;
+                e.orderItems = orderItem;
+                e.goods = goods;
+                e.refundPrice = BigDecimal.TEN;
+                e.status = ECouponStatus.REFUND;
+            }
+
+        });
 
     }
 
@@ -90,8 +101,6 @@ public class ResaleSalesReportUnitTest extends UnitTest {
         ResaleSalesReportCondition condition = new ResaleSalesReportCondition();
         List<ResaleSalesReport> list = ResaleSalesReport.queryConsumer(condition);
         assertEquals(1, list.size());
-
-
     }
 
     @Test
@@ -101,10 +110,10 @@ public class ResaleSalesReportUnitTest extends UnitTest {
         assertEquals(1, list.size());
 
         ResaleSalesReport report = ResaleSalesReport.summary(list);
-        assertEquals(1, report.totalNumber.intValue());
-        assertEquals(0, report.totalRefundPrice.intValue());
-        assertEquals(90, report.amount.intValue());
-        assertEquals(0, report.consumedPrice.intValue());
+        assertEquals(10, report.totalNumber.intValue());
+        assertEquals(50, report.totalRefundPrice.intValue());
+        assertEquals(85, report.amount.intValue());
+        assertEquals(42, report.consumedPrice.intValue());
 
     }
 
