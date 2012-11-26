@@ -27,6 +27,7 @@ public class GoodsSaleCountTest extends UnitTest {
         Goods goods = orderItems.goods;
         goods.cumulativeStocks = 20l;
         goods.save();
+
         Order order = orderItems.order;
         order.status = OrderStatus.PAID;
         order.save();

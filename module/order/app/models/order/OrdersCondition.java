@@ -178,7 +178,7 @@ public class OrdersCondition {
             sql.append(" and o.id in (select o.id from o.orderItems oi where oi.phone =:phone)");
             paramsMap.put("phone", searchItems);
         }
-
+        System.out.println("sql.toString()>>>>" + sql.toString());
         return sql.toString();
     }
 

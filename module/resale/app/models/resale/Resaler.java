@@ -191,6 +191,15 @@ public class Resaler extends Model {
         return resalers;
     }
 
+
+    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark, ResalerCreditable creditable) {
+        update(id, status, level, remark, creditable, null);
+    }
+
+    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark) {
+        update(id, status, level, remark, null, null);
+    }
+
     /**
      * 审核分销商
      *
@@ -215,7 +224,9 @@ public class Resaler extends Model {
             }
             account.save();
         }
-        resaler.batchExportCoupons = batchExportCoupons;
+        if (batchExportCoupons != null) {
+            resaler.batchExportCoupons = batchExportCoupons;
+        }
         resaler.save();
     }
 

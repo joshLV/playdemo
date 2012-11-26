@@ -47,7 +47,6 @@ public class BrandUnitTest extends UnitTest {
 
     @Test
     public void testFindByOrder() {
-
         Supplier supplier = Supplier.findById(brand.supplier.id);
         List<Brand> brands = Brand.findByOrder(supplier);
 
@@ -66,9 +65,7 @@ public class BrandUnitTest extends UnitTest {
     public void testGetOriginalLogo() {
         String imageServer = Play.configuration.getProperty
                 ("image.server", "img0.dev.uhcdn.com");
-//        System.out.println("Image Server:  " + imageServer);
         String imageURL = PathUtil.getImageUrl(imageServer, "/0/0/0/logo.jpg", "nw");
-//        System.out.println("Image URL: " + imageURL);
         assertEquals(imageURL, brand.getOriginalLogo());
     }
 

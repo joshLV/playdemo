@@ -17,7 +17,7 @@ public class CouponsCondition implements Serializable {
     public Date createdAtBegin;
     public Date createdAtEnd;
 
-    public Date consumedAtBegin=DateUtil.getYesterday();
+    public Date consumedAtBegin = DateUtil.getYesterday();
     public Date consumedAtEnd;
 
     public Date refundAtBegin;
@@ -241,6 +241,7 @@ public class CouponsCondition implements Serializable {
                 paramMap.put("user", resaler.id);
             }
         }
+        System.out.println("sql.toString()>>>>>" + sql.toString());
         return sql.toString();
     }
 
