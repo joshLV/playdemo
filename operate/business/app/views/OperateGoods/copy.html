@@ -62,6 +62,7 @@
         #{layout_operate.nameField name:'goods.name', value:goods?.name, required:true, length:500/}
         #{layout_operate.nameField name:'goods.title', value:goods?.title,note:'(包含商家名称和面值)', required:true, length:30/}
         #{layout_operate.dateScopeField name:'goods.effective', begin:'goods.effectiveAt',end:'goods.expireAt',required:true/}
+        #{layout_operate.dateTimeField name:'goods.beginOnSaleAt',value:goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')/}
         #{layout_operate.textField name:'goods.faceValue', value:goods?.faceValue, note:'元', required:true/}
         #{layout_operate.textField name:'goods.originalPrice', value:goods?.originalPrice,note:'元', required:true/}
         #{layout_operate.textField name:'goods.salePrice', value:goods.salePrice, note:'元', required:true/}

@@ -174,7 +174,7 @@ public class OperateGoods extends Controller {
                 checkShops(goods.supplierId);
                 renderShopList(goods.supplierId);
             }
-            renderArgs.put("goods.beginOnSaleAt",new Date());
+            goods.beginOnSaleAt=new Date();
             renderArgs.put("goods.materialType", MaterialType.ELECTRONIC);
             renderArgs.put("selectAll", true);
         }
