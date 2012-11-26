@@ -80,6 +80,8 @@ POST    /jd-test                                JingdongUploadTeam.test
 GET     /jd-test                                JingdongUploadTeam.showTest
 GET     /jd-add/{goodsId}                       JingdongUploadTeam.prepare
 
+GET     /58-add/{goodsId}                       WubaProduct.prepare
+POST    /58-add                                 WubaProduct.upload
 
 GET     /yhd-add/{goodsId}                      YHDProduct.prepare
 POST    /yhd-add                                YHDProduct.upload
