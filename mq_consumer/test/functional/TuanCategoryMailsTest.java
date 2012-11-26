@@ -4,12 +4,14 @@ import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
 import models.mail.MailMessage;
 import models.sales.Category;
+import models.sales.TuanNoCategoryData;
 import notifiers.TuanCategoryMails;
 import org.junit.Test;
 import play.libs.Mail;
 import play.test.FunctionalTest;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -22,12 +24,12 @@ import java.util.List;
 public class TuanCategoryMailsTest extends FunctionalTest {
 
     @Test
-    public void testDirectCouponMailSend() {
+    public void testDirectTuanMailSend() {
         String email = "826912022@qq.com";
         String mailUrl = "http://localhost:7001";
         MailMessage message = new MailMessage();
         String tuanName = "Tuan";
-        List<Category> noMessage = new ArrayList<>();
+        List<TuanNoCategoryData> noTuanCategoryMessageList = new LinkedList<>();
         List<Category> categoryList = FactoryBoy.batchCreate(15, Category.class,
                 new SequenceCallback<Category>() {
                     @Override
@@ -36,27 +38,26 @@ public class TuanCategoryMailsTest extends FunctionalTest {
                     }
                 });
         for (Category c : categoryList) {
-            noMessage.add(c);
+            noTuanCategoryMessageList.add(TuanNoCategoryData.from(c));
         }
         message.setSubject(tuanName + "收录分类[测试]");
         message.addRecipient(email);
         message.putParam("mail_url", mailUrl);
         message.putParam("tuanName", tuanName);
-        message.putParam("mailCategoryList", noMessage);
+        message.putParam("mailCategoryList", noTuanCategoryMessageList);
         TuanCategoryMails.notify(message);
 
         String mailBody = Mail.Mock.getLastMessageReceivedBy(email);
-//        System.out.println(mailBody);
         assertTrue(tuanName, mailBody.indexOf(tuanName) > 0);
     }
 
     @Test
-    public void testCouponMailSendByMQ() throws Exception {
+    public void testTuanMailSendByMQ() throws Exception {
         String email = "826912022@qq.com";
         String mailUrl = "http://localhost:7001";
         MailMessage message = new MailMessage();
         String tuanName = "Tuan";
-        List<Category> noMessage = new ArrayList<>();
+        List<TuanNoCategoryData> noTuanCategoryMessageList = new LinkedList<>();
         List<Category> categoryList = FactoryBoy.batchCreate(15, Category.class,
                 new SequenceCallback<Category>() {
                     @Override
@@ -65,18 +66,17 @@ public class TuanCategoryMailsTest extends FunctionalTest {
                     }
                 });
         for (Category c : categoryList) {
-            noMessage.add(c);
+            noTuanCategoryMessageList.add(TuanNoCategoryData.from(c));
         }
         message.setSubject(tuanName + "收录分类[测试]");
         message.addRecipient(email);
         message.putParam("mail_url", mailUrl);
         message.putParam("tuanName", tuanName);
-        message.putParam("mailCategoryList", noMessage);
+        message.putParam("mailCategoryList", noTuanCategoryMessageList);
         TuanCategoryMails.notify(message);
         Thread.sleep(500);
 
         String mailBody = Mail.Mock.getLastMessageReceivedBy(email);
-//        System.out.println(mailBody);
         assertTrue(tuanName, mailBody.indexOf(tuanName) > 0);
     }
 

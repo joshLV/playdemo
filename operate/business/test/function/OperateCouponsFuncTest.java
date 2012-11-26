@@ -2,12 +2,14 @@ package function;
 
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
 import models.order.CouponHistory;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
+import models.order.Order;
 import models.sales.Goods;
 import models.sales.Shop;
 import operate.rbac.RbacLoader;
@@ -20,6 +22,7 @@ import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 import util.DateHelper;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,6 +34,7 @@ import java.util.List;
  */
 public class OperateCouponsFuncTest extends FunctionalTest {
     OperateUser user;
+    Order order;
 
     @Before
     public void setUp() {
@@ -47,6 +51,12 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         // 初始化 电子券数据
         final Goods goods = FactoryBoy.create(Goods.class);
         final Shop shop = FactoryBoy.create(Shop.class);
+        order = FactoryBoy.create(Order.class, new BuildCallback<Order>() {
+            @Override
+            public void build(Order order) {
+                order.paidAt = new Date();
+            }
+        });
         FactoryBoy.batchCreate(10, ECoupon.class, "Id",
                 new SequenceCallback<ECoupon>() {
                     @Override
@@ -58,9 +68,10 @@ public class OperateCouponsFuncTest extends FunctionalTest {
                         target.isFreeze = 0;
                         target.order.paidAt = DateHelper.beforeDays(1);
                         target.order.save();
-
                     }
                 });
+
+
     }
 
     @Test

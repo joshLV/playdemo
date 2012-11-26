@@ -41,7 +41,7 @@ public class OperateOrdersTest extends FunctionalTest {
             public void build(Order o) {
                 o.userId = user.id;
                 o.description = "testorder";
-                o.createdAt = new Date();
+                o.paidAt = new Date();
             }
         });
         FactoryBoy.create(OrderItems.class, new BuildCallback<OrderItems>() {

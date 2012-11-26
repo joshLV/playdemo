@@ -2,6 +2,7 @@ package models.mail;
 
 import play.Play;
 import play.modules.rabbitmq.producer.RabbitMQPublisher;
+import util.mq.*;
 
 public class MailUtil {
     public static final String COUPON_MAIL_QUEUE_NAME = Play.mode.isProd() ? "coupon_mail" :
@@ -17,53 +18,37 @@ public class MailUtil {
     }
 
     public static void sendCouponMail(MailMessage message) {
-        if (!Play.runingInTestMode()) {
-            RabbitMQPublisher.publish(COUPON_MAIL_QUEUE_NAME, message);
-        }
+        MQPublisher.publish(COUPON_MAIL_QUEUE_NAME, message);
     }
 
     public static void sendFindPasswordMail(MailMessage message) {
-        if (!Play.runingInTestMode()) {
-            RabbitMQPublisher.publish(FIND_PWD_MAIL_QUEUE_NAME, message);
-        }
+        MQPublisher.publish(FIND_PWD_MAIL_QUEUE_NAME, message);
     }
 
     public static void sendOperatorNotificationMail(MailMessage message) {
-        if (!Play.runingInTestMode()) {
-            RabbitMQPublisher.publish(OPERATOR_NOTIFICATION, message);
-        }
+        MQPublisher.publish(OPERATOR_NOTIFICATION, message);
     }
 
     public static void sendGoodsOffSalesMail(MailMessage message) {
-        if (!Play.runingInTestMode()) {
-            RabbitMQPublisher.publish(GOODS_OFF_SALES_NOTIFY, message);
-        }
+        MQPublisher.publish(GOODS_OFF_SALES_NOTIFY, message);
     }
 
     public static void sendFinanceNotificationMail(MailMessage message) {
-        if (!Play.runingInTestMode()) {
-            RabbitMQPublisher.publish(FINANCE_NOTIFICATION, message);
-        }
+        MQPublisher.publish(FINANCE_NOTIFICATION, message);
     }
 
     public static void sendMail(MailMessage message) {
-        if (!Play.runingInTestMode()) {
-            RabbitMQPublisher.publish(GOODS_OFF_SALES_NOTIFY, message);
-        }
+        MQPublisher.publish(GOODS_OFF_SALES_NOTIFY, message);
+
     }
 
     public static void sendTuanCategoryMail(MailMessage message) {
-        if (!Play.runingInTestMode()) {
-            RabbitMQPublisher.publish(TUAN_CATEGORY_NOTIFY, message);
-        }
+        MQPublisher.publish(TUAN_CATEGORY_NOTIFY, message);
     }
 
     public static void sendCustomerRemarkMail(MailMessage message) {
-        if (!Play.runingInTestMode()) {
-            RabbitMQPublisher.publish(CUSTOMER_REMARK_NOTIFY, message);
-        }
+        MQPublisher.publish(CUSTOMER_REMARK_NOTIFY, message);
     }
-
 
 
 }
