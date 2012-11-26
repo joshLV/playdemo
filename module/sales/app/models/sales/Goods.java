@@ -76,17 +76,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1679,14 +1669,13 @@ public class Goods extends Model {
 
     public static List<models.sales.Goods> filterTopGoods(List<models.sales.Goods> allGoods, final String tuanCategory, final String tuanNane, int limit) {
         List<models.sales.Goods> goodsList = new ArrayList<>();
-        List<Category> noMessage = new ArrayList<Category>();
+        List<TuanNoCategoryData> noTuanCategoryMessageList = new LinkedList<>();
         for (models.sales.Goods g : allGoods) {
             if (g.categories != null && g.categories.size() > 0
                     && g.categories.iterator() != null && g.categories.iterator().hasNext()) {
-
                 Category category = g.categories.iterator().next();
                 if (Messages.get(tuanCategory + "." + category.id).contains(tuanCategory)) {
-                    noMessage.add(category);
+                    noTuanCategoryMessageList.add(TuanNoCategoryData.from(category));
                 } else {
                     goodsList.add(g);
                 }
@@ -1696,18 +1685,17 @@ public class Goods extends Model {
             }
         }
 
-        /*
-        if (noMessage.size() > 0) {
+        if (noTuanCategoryMessageList.size() > 0) {
             //发送提醒邮件
             MailMessage mailMessage = new MailMessage();
             mailMessage.addRecipient("dev@uhuila.com");
             mailMessage.setSubject(Play.mode.isProd() ? tuanNane + "收录分类" : tuanNane + "收录分类【测试】");
             mailMessage.putParam("tuanName", tuanNane);
-            mailMessage.putParam("mailCategoryList", noMessage);
+            mailMessage.putParam("mailCategoryList", noTuanCategoryMessageList);
             MailUtil.sendTuanCategoryMail(mailMessage);
         }
-        */
-        
+
+
         return goodsList;
     }
 
