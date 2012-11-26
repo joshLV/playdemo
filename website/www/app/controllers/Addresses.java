@@ -4,7 +4,6 @@ import controllers.modules.website.cas.SecureCAS;
 import models.consumer.Address;
 import play.mvc.Controller;
 import play.mvc.With;
-import play.test.Fixtures;
 
 import java.util.List;
 
@@ -87,6 +86,5 @@ public class Addresses extends Controller {
     public static void delete(long id) {
         Address.delete(id, SecureCAS.getUser());
         ok();
-       
     }
 }

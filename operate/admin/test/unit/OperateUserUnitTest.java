@@ -1,18 +1,15 @@
 package unit;
 
 import com.uhuila.common.constants.DeletedStatus;
-import models.admin.OperateRole;
+import factory.FactoryBoy;
 import models.admin.OperateUser;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Test;
 import play.libs.Images;
-import play.test.Fixtures;
 import play.test.UnitTest;
 
 import java.util.Date;
 import java.util.List;
-
-import factory.FactoryBoy;
 
 public class OperateUserUnitTest extends UnitTest {
     OperateUser operateUser;

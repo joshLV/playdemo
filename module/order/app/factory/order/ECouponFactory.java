@@ -4,11 +4,9 @@ import factory.FactoryBoy;
 import factory.ModelFactory;
 import factory.annotation.Factory;
 import models.order.ECoupon;
-import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Goods;
-import models.sales.Shop;
 
 import java.math.BigDecimal;
 
@@ -17,7 +15,6 @@ import java.math.BigDecimal;
  * User: hejun
  * Date: 12-8-20
  * Time: 下午7:33
- * To change this template use File | Settings | File Templates.
  */
 public class ECouponFactory extends ModelFactory<ECoupon> {
 

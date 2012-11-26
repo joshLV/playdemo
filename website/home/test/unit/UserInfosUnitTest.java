@@ -6,7 +6,6 @@ import models.consumer.UserInfo;
 import org.junit.Before;
 import org.junit.Test;
 
-import play.test.Fixtures;
 import play.test.UnitTest;
 import factory.FactoryBoy;
 

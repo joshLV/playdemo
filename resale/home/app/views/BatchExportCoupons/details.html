@@ -1,0 +1,88 @@
+#{extends 'main.html' /}
+
+#{set title:'批量导出券号详情' /}
+
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<script type="text/javascript" charset="utf-8">
+</script>
+#{/set}
+
+<script type="text/javascript">
+    function batchCouponsExcel(id) {
+        $("#frmlist").attr("action", "@{BatchExportCoupons.batchCouponsExcelOut(id)}");
+        $("#frmlist").attr("method", "get");
+        $("#frmlist").submit();
+        return false;
+    }
+</script>
+
+#{set 'moreStyles'}
+    #{asset.css src:['/r/base.css', '/r/orders.css', '/r/play-pagination.css'] /}
+#{/set}
+
+#{set 'navMenu'}
+<li><a href="/">首　页</a></li>
+<li><a href="/goods">商品库</a></li>
+<li><a class="current" href="/library">我的分销库</a></li>
+<li><a href="/charge">账户充值</a></li>
+<li><a href="/withdraw">账户提现</a></li>
+#{/set}
+
+
+<div id="content">
+#{breadcrumbs/breadcrumb breadcrumbs/}
+<div class="main clearfix">
+#{include "share/left.html"/}
+<form class="well form-inline" name="frmlist" id="frmlist" method="GET">
+<div class="section">
+
+#{if noPermissionError == null}
+    <h3>批量导出券号详情</h3>
+
+    &nbsp;
+    <button class="btn btn-primary" id="searchbtn" onclick="batchCouponsExcel(${id})">导出报表</button>
+
+
+    <table class="order-tab">
+        <thead>
+        <tr class="col-name">
+            <th width="220">商品名称</th>
+            <th width="220">单价</th>
+            <th width="220">券号</th>
+            <th width="220">状态</th>
+            <th width="220">验证时间</th>
+            <th width="220">创建时间</th>
+
+        </tr>
+        </thead>
+        #{paginate.list items:couponPage, as:'coupon'}
+            <tbody>
+
+            <tr class="order-bd">
+                <td>${coupon?.goods?.shortName}</td>
+                <td>${coupon?.order?.amount?.formatCurrency('CNY')}</td>
+                <td>${coupon?.eCouponSn}</td>
+                <td>&{'coupon.'+coupon?.status}</td>
+                <td>${coupon?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+                <td>${coupon?.order?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+            </tr>
+            </tbody>
+        #{/paginate.list}
+    </table>
+    <div class="pagination">
+        <ul>
+            #{paginate.controls items:couponPage /}
+        </ul>
+    </div>
+</div>
+</form>
+</div>
+#{/if}
+
+#{else}
+    <center><span style="font-size:110% ">${noPermissionError}</span></center>
+#{/else}
+
+
+</div>

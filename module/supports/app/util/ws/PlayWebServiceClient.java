@@ -3,8 +3,12 @@ package util.ws;
 import java.util.Map;
 
 import models.journal.WebServiceCallLog;
+
+import org.apache.commons.lang.StringUtils;
+
 import play.libs.WS;
 import play.libs.WS.HttpResponse;
+import play.libs.WS.WSRequest;
 
 public class PlayWebServiceClient extends WebServiceClient {
 
@@ -38,7 +42,14 @@ public class PlayWebServiceClient extends WebServiceClient {
     @Override
     protected HttpResponse doPost(WebServiceCallLog log,
                     Map<String, Object> params, WebServiceCallback callback) {
-        play.libs.WS.HttpResponse response = WS.url(log.url).params(params).post();
+        WSRequest request = WS.url(log.url);
+        if (params != null && params.size() > 0) {
+            request = request.params(params);
+        }
+        if (StringUtils.isNotBlank(log.requestBody)) {
+            request = request.body(log.requestBody);
+        }
+        play.libs.WS.HttpResponse response = request.post();
         log.statusCode = response.getStatus();
         log.responseText = response.getString();
         if (callback != null) {

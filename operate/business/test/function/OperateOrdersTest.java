@@ -1,5 +1,6 @@
 package function;
 
+import java.util.Date;
 import java.util.List;
 
 import models.admin.OperateUser;
@@ -19,11 +20,12 @@ import play.vfs.VirtualFile;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
+import util.DateHelper;
 
 public class OperateOrdersTest extends FunctionalTest {
 
     Order order;
-    
+
     @org.junit.Before
     public void setup() {
         FactoryBoy.deleteAll();
@@ -31,7 +33,7 @@ public class OperateOrdersTest extends FunctionalTest {
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
-        
+
         FactoryBoy.create(Goods.class);
         final User user = FactoryBoy.create(User.class);
         order = FactoryBoy.create(Order.class, new BuildCallback<Order>() {
@@ -39,6 +41,7 @@ public class OperateOrdersTest extends FunctionalTest {
             public void build(Order o) {
                 o.userId = user.id;
                 o.description = "testorder";
+                o.createdAt = new Date();
             }
         });
         FactoryBoy.create(OrderItems.class, new BuildCallback<OrderItems>() {
@@ -50,7 +53,7 @@ public class OperateOrdersTest extends FunctionalTest {
 
         OperateUser operateUser = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名
-        Security.setLoginUserForTest(operateUser.loginName);        
+        Security.setLoginUserForTest(operateUser.loginName);
     }
 
     @After
@@ -59,13 +62,13 @@ public class OperateOrdersTest extends FunctionalTest {
         Security.cleanLoginUserForTest();
     }
 
-	@Test
-  	public void testIndex() {
-		Response response = GET("/orders");
-		assertStatus(200, response);
-		List<Order> orders = (List<Order>)renderArgs("orderList");
-		assertEquals(1, orders.size());
-	}
+    @Test
+    public void testIndex() {
+        Response response = GET("/orders");
+        assertStatus(200, response);
+        List<Order> orders = (List<Order>) renderArgs("orderList");
+        assertEquals(1, orders.size());
+    }
 
     @Test
     public void testCoupons() {
@@ -77,7 +80,7 @@ public class OperateOrdersTest extends FunctionalTest {
     public void testDetails() {
         Response response = GET("/orders/" + order.id);
         assertStatus(200, response);
-        Order o = (Order)renderArgs("orders");
+        Order o = (Order) renderArgs("orders");
         List<OrderItems> orderItems = (List<OrderItems>) renderArgs("orderItems");
         assertNotNull(o);
         assertEquals(order.id, o.id);
@@ -88,7 +91,7 @@ public class OperateOrdersTest extends FunctionalTest {
     public void testIndexWithCondition() {
         Response response = GET("/orders?condition.createdAtBegin=&condition.createdAtEnd=&condition.paidAtBegin=&condition.paidAtEnd=&condition.brandId=0&condition.refundAtBegin=&condition.refundAtEnd=&condition.payMethod=&condition.userType=&condition.searchKey=&condition.searchItems=&condition.status=&condition.deliveryType=&desc=testorder");
         assertIsOk(response);
-        List<Order> orders = (List<Order>)renderArgs("orderList");
+        List<Order> orders = (List<Order>) renderArgs("orderList");
         assertEquals(1, orders.size());
         assertNotNull(renderArgs("desc"));
     }

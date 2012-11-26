@@ -1,30 +1,16 @@
 package unit;
 
-import java.util.Date;
-
-import javax.persistence.OptimisticLockException;
-
-import models.accounts.Account;
-import models.admin.SupplierRole;
-import models.admin.SupplierUser;
-import models.consumer.User;
+import factory.FactoryBoy;
 import models.order.ECoupon;
-import models.order.Order;
-import models.order.OrderItems;
-import models.sales.Area;
-import models.sales.Brand;
-import models.sales.Category;
 import models.sales.Goods;
 import models.supplier.Supplier;
-
 import org.junit.Before;
 import org.junit.Test;
-
-import factory.FactoryBoy;
-
 import play.db.jpa.JPAPlugin;
-import play.test.Fixtures;
 import play.test.UnitTest;
+
+import javax.persistence.OptimisticLockException;
+import java.util.Date;
 
 public class EcouponLockVersionTest extends UnitTest{
     

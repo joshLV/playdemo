@@ -1,6 +1,8 @@
 package models.jingdong.groupbuy.response;
 
 import models.jingdong.groupbuy.JDMessage;
+
+import org.apache.commons.lang.StringUtils;
 import org.dom4j.Element;
 
 import java.io.Serializable;
@@ -24,7 +26,11 @@ public class VerifyCouponResponse implements JDMessage, Serializable {
         jdOrderId = Long.parseLong(root.elementTextTrim("JdOrderId"));
         couponId = root.elementTextTrim("CouponId");
         couponPwd = root.elementTextTrim("CouponPwd");
-        verifyTime = new Date(Long.parseLong(root.elementTextTrim("VerifyTime")));
+        String elementVerifyTime = root.elementTextTrim("VerifyTime");
+        // 已验证时这个值为空.
+        if (StringUtils.isNotBlank(elementVerifyTime)) {
+            verifyTime = new Date(Long.parseLong(elementVerifyTime));
+        }
         verifyResult = Integer.parseInt(root.elementTextTrim("VerifyResult"));
 
         return true;

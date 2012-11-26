@@ -1,31 +1,20 @@
 package function;
 
-import com.uhuila.common.constants.DeletedStatus;
+import controllers.supplier.cas.Security;
+import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.admin.SupplierPermission;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
-import models.supplier.Supplier;
 import navigation.RbacLoader;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import play.mvc.Http.Response;
 import play.mvc.Router;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-import controllers.supplier.cas.Security;
-import factory.FactoryBoy;
-import factory.callback.SequenceCallback;
-import util.DateHelper;
-
-import java.util.ArrayList;
-
-import models.admin.SupplierRole;
 
 public class PermissionCheckTest extends FunctionalTest {
     SupplierUser supplierUserAdminSales;

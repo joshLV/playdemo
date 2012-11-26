@@ -301,17 +301,17 @@ public class Supplier extends Model {
     /**
      * 检查是否有营业时间
      *
-     * @param condionDate 传入的时间
+     * @param conditionDate 传入的时间
      * @param shopHour    营业时间
      * @param hourFlag
      * @return
      */
-    public static Date getShopHour(Date condionDate, String shopHour, boolean hourFlag) {
+    public static Date getShopHour(Date conditionDate, String shopHour, boolean hourFlag) {
         String time = END_TIME;
         int days = 0;
         if (hourFlag) {
             days = 1;
         }
-        return DateUtil.stringToDate(DateUtil.dateToString(condionDate, days) + (StringUtils.isBlank(shopHour) ? time : " " + shopHour));
+        return DateUtil.stringToDate(DateUtil.dateToString(conditionDate, days) + (StringUtils.isBlank(shopHour) ? time : " " + shopHour));
     }
 }

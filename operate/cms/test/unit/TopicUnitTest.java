@@ -7,7 +7,6 @@ import models.cms.TopicType;
 import org.junit.Before;
 import org.junit.Test;
 import play.modules.paginate.ModelPaginator;
-import play.test.Fixtures;
 import play.test.UnitTest;
 import factory.FactoryBoy;
 

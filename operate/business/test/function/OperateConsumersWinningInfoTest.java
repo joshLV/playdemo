@@ -5,32 +5,22 @@ package function;
  * @date 2012-7-23 上午11:47:33 
  */
 
-import java.util.List;
-
-import javax.persistence.Query;
-
-import models.admin.OperateRole;
+import com.uhuila.common.constants.DeletedStatus;
+import controllers.operate.cas.Security;
+import factory.FactoryBoy;
 import models.admin.OperateUser;
 import models.cms.VoteQuestion;
-import models.cms.VoteType;
 import models.consumer.User;
 import models.consumer.UserVote;
 import operate.rbac.RbacLoader;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import factory.FactoryBoy;
-
-import play.db.jpa.JPA;
 import play.mvc.Http.Response;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
-import com.uhuila.common.constants.DeletedStatus;
-
-import controllers.operate.cas.Security;
+import java.util.List;
 
 public class OperateConsumersWinningInfoTest extends FunctionalTest {
     User user;

@@ -4,7 +4,9 @@ import controllers.modules.resale.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.accounts.AccountType;
+import models.order.CouponsCondition;
 import models.order.ECoupon;
+import models.order.ECouponStatus;
 import models.order.Order;
 import models.resale.Resaler;
 import models.sales.Goods;
@@ -35,18 +37,20 @@ public class ResaleCouponTest extends FunctionalTest {
             public void build(Order o) {
                 o.userType = AccountType.RESALER;
                 o.userId = resaler.id;
+		o.paidAt = DateHelper.beforeDays(1);
             }
         });
 
         coupon = FactoryBoy.create(ECoupon.class);
-        coupon.order.paidAt = DateHelper.beforeDays(1);
-        coupon.order.save();
-
+        coupon.status = ECouponStatus.CONSUMED;
+        coupon.save();
         Security.setLoginUserForTest(resaler.loginName);
     }
 
     @Test
     public void testCoupons() throws Exception {
+        CouponsCondition condition = new CouponsCondition();
+        condition.consumedAtBegin = DateHelper.beforeDays(4);
         Response response = GET("/ecoupons");
         assertIsOk(response);
         JPAExtPaginator<ECoupon> couponsList = (JPAExtPaginator<ECoupon>) renderArgs("couponsList");

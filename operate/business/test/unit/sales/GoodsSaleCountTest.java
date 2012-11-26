@@ -27,6 +27,7 @@ public class GoodsSaleCountTest extends UnitTest {
         Goods goods = orderItems.goods;
         goods.cumulativeStocks = 20l;
         goods.save();
+
         Order order = orderItems.order;
         order.status = OrderStatus.PAID;
         order.save();
@@ -41,6 +42,7 @@ public class GoodsSaleCountTest extends UnitTest {
         assertEquals(new Long(0), goods.getRealSaleCount());
         assertEquals(new Long(20), goods.getRealStocks());
     }
+
 
     @Test
     public void 当券退款时会影响已销售数据() {

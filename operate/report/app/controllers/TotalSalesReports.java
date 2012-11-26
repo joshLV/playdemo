@@ -1,7 +1,5 @@
 package controllers;
 
-import java.util.List;
-import java.util.Map;
 import models.order.ECoupon;
 import models.sales.Goods;
 import models.sales.Shop;
@@ -14,6 +12,9 @@ import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 import utils.PaginateUtil;
+
+import java.util.List;
+import java.util.Map;
 
 @With(OperateRbac.class)
 public class TotalSalesReports extends Controller {
@@ -32,6 +33,7 @@ public class TotalSalesReports extends Controller {
         if (condition.needQueryTrends()) {
             List<TotalSalesReport> totalSales = TotalSalesReport.queryTrends(condition);
             renderArgs.put("totalSales", totalSales);
+            System.out.println("totalSales.size():" + totalSales.size());
         
             ValuePaginator<TotalSalesReport> reportPage = PaginateUtil.wrapValuePaginator(totalSales, pageNumber, PAGE_SIZE);
             TotalSalesReport summary = TotalSalesReport.summary(totalSales);

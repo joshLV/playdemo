@@ -23,6 +23,7 @@ import models.sales.GoodsUnPublishedPlatform;
 import models.sales.MaterialType;
 import models.sales.Shop;
 import models.supplier.Supplier;
+import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
@@ -42,6 +43,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import static play.Logger.isDebugEnabled;
 import static play.Logger.warn;
 
 /**
@@ -113,7 +115,11 @@ public class OperateGoods extends Controller {
                 PAGE_SIZE);
         goodsPage.setBoundaryControlsEnabled(true);
         List<Supplier> supplierList = Supplier.findUnDeleted();
-        List<Brand> brandList = Brand.findByOrder(null);
+
+        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        Long id = OperateRbac.currentUser().id;
+        List<Brand> brandList = Brand.findByOrder(null, id, right);
+
         renderArgs.put("brandList", brandList);
         String queryString = StringUtils.trimToEmpty(getQueryString());
         render(goodsPage, supplierList, condition, desc, queryString);
@@ -182,8 +188,12 @@ public class OperateGoods extends Controller {
             goods.shops = null;
             goods.isAllShop = true;
         }
+
+        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        Long id = OperateRbac.currentUser().id;
+
         if (goods.supplierId != null) {
-            List<Brand> brandList = Brand.findByOrder(new Supplier(goods.supplierId));
+            List<Brand> brandList = Brand.findByOrder(new Supplier(goods.supplierId), id, right);
             renderArgs.put("brandList", brandList);
         }
 
