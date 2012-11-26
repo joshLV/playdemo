@@ -1,29 +1,18 @@
 package functional;
 
 import java.util.regex.Pattern;
-import models.admin.OperateRole;
+
 import models.admin.OperateUser;
-import models.admin.SupplierUser;
 import models.consumer.UserWebIdentification;
-import models.order.Order;
-import models.order.OrderItems;
-import models.report.DetailDailyReport;
-import models.report.GoodsDailyReport;
-import models.report.ShopDailyReport;
-import models.report.TotalDailyReport;
-import models.sales.Brand;
-import models.sales.Category;
-import models.sales.Goods;
-import models.sales.Shop;
-import models.supplier.Supplier;
 import models.webop.WebTrackRefererReport;
 import operate.rbac.RbacLoader;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import play.modules.paginate.ValuePaginator;
 import play.mvc.Http.Response;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 import util.DateHelper;
