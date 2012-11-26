@@ -1667,7 +1667,7 @@ public class Goods extends Model {
         return goodsList;
     }
 
-    public static List<models.sales.Goods> filterTopGoods(List<models.sales.Goods> allGoods, final String tuanCategory, final String tuanNane, int limit) {
+    public static List<models.sales.Goods> filterTopGoods(List<models.sales.Goods> allGoods, final String tuanCategory, final String tuanName, int limit) {
         List<models.sales.Goods> goodsList = new ArrayList<>();
         List<TuanNoCategoryData> noTuanCategoryMessageList = new LinkedList<>();
         for (models.sales.Goods g : allGoods) {
@@ -1686,11 +1686,12 @@ public class Goods extends Model {
         }
 
         if (noTuanCategoryMessageList.size() > 0) {
+            System.out.println("noTuanCategoryMessageList>>"+noTuanCategoryMessageList.size());
             //发送提醒邮件
             MailMessage mailMessage = new MailMessage();
             mailMessage.addRecipient("dev@uhuila.com");
-            mailMessage.setSubject(Play.mode.isProd() ? tuanNane + "收录分类" : tuanNane + "收录分类【测试】");
-            mailMessage.putParam("tuanName", tuanNane);
+            mailMessage.setSubject(Play.mode.isProd() ? tuanName + "收录分类" : tuanName + "收录分类【测试】");
+            mailMessage.putParam("tuanName", tuanName);
             mailMessage.putParam("mailCategoryList", noTuanCategoryMessageList);
             MailUtil.sendTuanCategoryMail(mailMessage);
         }
