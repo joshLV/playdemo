@@ -120,7 +120,7 @@ public class UserPromoteRebateTest extends FunctionalTest {
         assertEquals(89, p.willGetAmount.intValue());
         assertEquals(31, p.haveGotAmount.intValue());
         BigDecimal boughtAmount = (BigDecimal) renderArgs("boughtAmount");
-        BigDecimal consumedAmount = (BigDecimal) renderArgs("ContentOfGenerator");
+        BigDecimal consumedAmount = (BigDecimal) renderArgs("consumedAmount");
         assertEquals(20, boughtAmount.intValue());
         assertEquals(8, consumedAmount.intValue());
         assertEquals("qweu2a", user.promoterCode);
@@ -177,7 +177,7 @@ public class UserPromoteRebateTest extends FunctionalTest {
         assertEquals(89, p.willGetAmount.intValue());
         assertEquals(31, p.haveGotAmount.intValue());
         BigDecimal boughtAmount = (BigDecimal) renderArgs("boughtAmount");
-        BigDecimal consumedAmount = (BigDecimal) renderArgs("ContentOfGenerator");
+        BigDecimal consumedAmount = (BigDecimal) renderArgs("consumedAmount");
         assertEquals(20, boughtAmount.intValue());
         assertEquals(8, consumedAmount.intValue());
     }
