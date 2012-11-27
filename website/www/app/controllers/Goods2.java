@@ -554,7 +554,8 @@ public class Goods2 extends Controller {
         renderArgs.put("ghShow", true);
         renderArgs.put("goodsId", gId);
         if (orderItems.createdAt != null && goods.updatedAt != null && orderItems.createdAt.compareTo(goods.updatedAt) > 0) {
-            renderArgs.put("ghShow", false);
+//            renderArgs.put("ghShow", false);
+
         }
 
         renderArgs.put("goodsDeleted", goods.deleted);

@@ -222,7 +222,7 @@ public class Suppliers extends Controller {
         edit(supplierId);
     }
 
-    public static void update(Long id, @Valid Supplier supplier, File image, SupplierUser admin, Long adminId) {
+    public static void update(Long id, @Valid Supplier supplier, File image) {
         int page = getPage();
         Supplier oldSupplier = Supplier.findById(id);
         if (StringUtils.isNotBlank(supplier.domainName) && !oldSupplier.domainName.equals(supplier.domainName)) {
@@ -235,15 +235,11 @@ public class Suppliers extends Controller {
             for (String key : validation.errorsMap().keySet()) {
                 warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
             }
-            admin.id = adminId;
             List<OperateUser> operateUserList = getSales();
             renderArgs.put("baseDomain", BASE_DOMAIN);
-            render("/Suppliers/edit.html", supplier, id, admin, operateUserList, page);
+            render("/Suppliers/edit.html", supplier, id, operateUserList, page);
         }
         Supplier.update(id, supplier);
-        if (adminId == null) {
-            admin.create(id);
-        }
 
         redirectUrl(page);
     }
