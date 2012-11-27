@@ -33,6 +33,7 @@ require:
     - jingdong -> jingdong
     - supports -> supports
     - third_tuan -> third_tuan
+    - wuba -> wuba
 
 repositories:
     - mavenRepository:
@@ -74,3 +75,4 @@ repositories:
             - jingdong -> *
             - supports -> *
             - third_tuan -> *
+            - wuba -> *

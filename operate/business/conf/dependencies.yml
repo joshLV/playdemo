@@ -39,6 +39,8 @@ require:
     - third_tuan -> third_tuan
     - com.yihaodian -> yhdclient 1.0
     - commons-httpclient -> commons-httpclient 3.1
+    - wuba -> wuba
+
 
 repositories:
     - mavenRepository:
@@ -83,3 +85,4 @@ repositories:
             - wuba -> *
             - supports -> *
             - third_tuan -> *
+            - wuba -> *

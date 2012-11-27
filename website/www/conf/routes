@@ -47,7 +47,7 @@ GET     /more-questions                         UserQuestions.moreQuestions
 GET     /q                                      Goods2.index
 GET     /q/{conditionStr}                       Goods2.search
 GET     /p/{id}                                 Goods2.show
-GET     /p/{gId}/h/{ghId}/orderItem/{orderItemId} Goods2.showHistory
+GET     /p/{gId}/h/{ghId}                       Goods2.showHistory
 GET     /goods/{id}/shops                       Goods2.shops(format:'json')
 GET     /goods/{id}/questions                   Goods2.questions(format:'json')
 GET     /user-question                          UserQuestions.add
