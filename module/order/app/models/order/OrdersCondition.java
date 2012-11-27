@@ -13,8 +13,8 @@ import java.util.*;
 
 public class OrdersCondition {
     public Map<String, Object> paramsMap = new HashMap<>();
-    public Date createdAtBegin = DateUtil.getYesterday();
-    public Date createdAtEnd = new Date();
+    public Date createdAtBegin;
+    public Date createdAtEnd;
     public Date paidAtBegin;
     public Date paidAtEnd;
     public Date refundAtBegin;
@@ -178,7 +178,6 @@ public class OrdersCondition {
             sql.append(" and o.id in (select o.id from o.orderItems oi where oi.phone =:phone)");
             paramsMap.put("phone", searchItems);
         }
-        System.out.println("sql.toString()>>>>" + sql.toString());
         return sql.toString();
     }
 
@@ -214,7 +213,7 @@ public class OrdersCondition {
         }
         //按照商品名称检索
         if (StringUtils.isNotBlank(goodsName)) {
-            sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.shortName like :goodsName)");
+            sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.name like :goodsName)");
             paramsMap.put("goodsName", "%" + goodsName + "%");
         }
 

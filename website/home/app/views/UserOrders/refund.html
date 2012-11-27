@@ -35,7 +35,7 @@
                                    value="${coupon.id}" name="couponIds" #{if coupon?.salePrice <=0 || ( coupon?.orderItems?.secKillGoods!=null )}disabled="true" #{/if}/>
                         #{/if}
                     </td>
-                    <td align="left" valign="middle">${coupon.goods.shortName}</td>
+                    <td align="left" valign="middle">${coupon.goods.name}</td>
                     <td align="center" valign="middle">${coupon.orderItems.phone}</td>
                     <td align="center" valign="middle">${coupon.salePrice?.formatCurrency('CNY').raw()}</td>
                     <td align="center" valign="middle">${coupon?.eCouponSn}</td>

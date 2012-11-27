@@ -8,12 +8,13 @@ import models.sales.Brand;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
-import play.Play;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
+import util.DateHelper;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @With(OperateRbac.class)
@@ -30,6 +31,8 @@ public class OperateOrders extends Controller {
     public static void index(OrdersCondition condition, String desc) {
         if (condition == null) {
             condition = new OrdersCondition();
+            condition.paidAtBegin = DateHelper.beforeDays(1);
+            condition.paidAtEnd = new Date();
         }
 
         // DESC 的值表示升降序，含7位，代表7个排序字段（不含订单编号,商品名称）， 1 为升序， 2 为降序， 0 为不排序

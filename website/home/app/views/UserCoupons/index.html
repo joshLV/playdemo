@@ -128,7 +128,7 @@
                 <input class="medium-input goods-name" type="text" name="condition.goodsName"
                        value="${condition.goodsName}"/>
                 <label>券号：</label>
-                <input class="short-input order-num" type="text" name="condition.eCouponSn"/>
+                <input class="short-input order-num" type="text" name="condition.eCouponSn" value="${condition?.eCouponSn}"/>
                 <label>成交时间：</label>
                 <input class="short-input Wdate" type="text" name="condition.createdAtBegin"
                        value="${condition.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"/>

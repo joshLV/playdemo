@@ -44,8 +44,8 @@ public class CouponsCondition implements Serializable {
     public String searchItems;
     public String searchKey;
     public boolean isLottery;
-    public Date paidAtBegin = DateUtil.getYesterday();
-    public Date paidAtEnd = new Date();
+    public Date paidAtBegin;
+    public Date paidAtEnd;
     public String userName;
 
     public Long operatorId;
@@ -178,7 +178,7 @@ public class CouponsCondition implements Serializable {
         }
         if (StringUtils.isNotBlank(eCouponSn)) {
             sql.append(" and e.eCouponSn like :eCouponSn");
-            paramMap.put("eCouponSn", "%" + eCouponSn);
+            paramMap.put("eCouponSn", "%" + eCouponSn+"%");
         }
         if (brandId != 0) {
             sql.append(" and e.orderItems.goods.brand =:brand");
@@ -245,7 +245,6 @@ public class CouponsCondition implements Serializable {
                 paramMap.put("user", resaler.id);
             }
         }
-        System.out.println("sql.toString>>>" + sql.toString());
         return sql.toString();
     }
 

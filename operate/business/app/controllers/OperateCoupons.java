@@ -1,21 +1,24 @@
 package controllers;
 
 import models.admin.OperateUser;
-import models.order.*;
+import models.order.CouponHistory;
+import models.order.CouponsCondition;
+import models.order.ECoupon;
+import models.order.ECouponStatus;
+import models.order.VerifyCouponType;
 import models.sales.Brand;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import operate.rbac.annotations.Right;
 import org.apache.commons.lang.StringUtils;
-import play.Play;
-import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
+import util.DateHelper;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
-import java.util.regex.Pattern;
 
 @With(OperateRbac.class)
 @ActiveNavigation("coupons_index")
@@ -30,6 +33,8 @@ public class OperateCoupons extends Controller {
     public static void index(CouponsCondition condition) {
         if (condition == null) {
             condition = new CouponsCondition();
+            condition.paidAtBegin = DateHelper.beforeDays(1);
+            condition.paidAtEnd = new Date();
         }
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
