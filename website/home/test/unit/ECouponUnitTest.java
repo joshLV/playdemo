@@ -44,6 +44,7 @@ public class ECouponUnitTest extends UnitTest {
         order = FactoryBoy.create(Order.class);
         order.setUser(user.id, AccountType.CONSUMER);
         order.promoteUserId = user.id;
+        order.paidAt = new Date();
         order.save();
         eCoupon = FactoryBoy.create(ECoupon.class);
         resaler = FactoryBoy.create(Resaler.class);
