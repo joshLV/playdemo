@@ -1,18 +1,18 @@
 package functional;
 
 import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
 import models.consumer.User;
+import models.consumer.UserInfo;
 import models.order.PointGoodsOrder;
-import models.sales.*;
+import models.sales.PointGoods;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Http;
-import play.test.Fixtures;
 import play.test.FunctionalTest;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,29 +22,21 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class PGPaymentInfoFuncTest extends FunctionalTest {
+    User user;
+    PointGoods pointGoods;
+    PointGoodsOrder pointOrders;
 
     @Before
-    public void setUp(){
-        Fixtures.delete(PointGoods.class);
-        Fixtures.delete(Shop.class);
-        Fixtures.delete(Goods.class);
-        Fixtures.delete(Category.class);
-        Fixtures.delete(Brand.class);
-        Fixtures.delete(Area.class);
-        Fixtures.delete(PointGoodsOrder.class);
-        Fixtures.loadModels("Fixture/pointgoods.yml");
-        Fixtures.loadModels("Fixture/areas_unit.yml");
-        Fixtures.loadModels("Fixture/categories_unit.yml");
-        Fixtures.loadModels("Fixture/supplier_unit.yml");
-        Fixtures.loadModels("Fixture/brands_unit.yml");
-        Fixtures.loadModels("Fixture/shops_unit.yml");
-        Fixtures.loadModels("Fixture/goods_unit.yml");
-        Fixtures.loadModels("Fixture/user.yml");
-        Fixtures.loadModels("Fixture/userInfo.yml");
-        Fixtures.loadModels("Fixture/pointgoodsorder.yml");
-
-        Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
-        User user = User.findById(userId);
+    public void setUp() {
+        FactoryBoy.deleteAll();
+        user = FactoryBoy.create(User.class);
+        UserInfo userInfo = FactoryBoy.create(UserInfo.class);
+        userInfo.user = user;
+        userInfo.save();
+        pointGoods = FactoryBoy.create(PointGoods.class);
+        pointOrders = FactoryBoy.create(PointGoodsOrder.class);
+        pointOrders.userId = user.id;
+        pointOrders.save();
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
 
@@ -57,42 +49,37 @@ public class PGPaymentInfoFuncTest extends FunctionalTest {
     }
 
     @Test
-    public void testIndex(){
+    public void testIndex() {
 
-        Long pointGoodsId =(Long) Fixtures.idCache.get("models.sales.PointGoods-pointgoods1");
-        assertNotNull(pointGoodsId);
-        HashMap<String,String> params = new HashMap<>();
-        params.put("gid",pointGoodsId.toString());
-        params.put("number","1");
-        params.put("mobile","13512345678");
-        params.put("remark","");
+        HashMap<String, String> params = new HashMap<>();
+        params.put("gid", pointGoods.id.toString());
+        params.put("number", "1");
+        params.put("mobile", "13512345678");
+        params.put("remark", "");
 
-        Http.Response response = POST("/payment_info/index",params);
+        Http.Response response = POST("/payment_info/index", params);
         assertIsOk(response);
-        assertContentMatch("一百券积分礼品兑换",response);
+        assertContentMatch("一百券积分礼品兑换", response);
 
     }
 
     @Test
-    public void testCreate(){
+    public void testCreate() {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("goodsId", pointGoods.id.toString());
+        params.put("number", "1");
+        params.put("mobile", "13512345678");
+        params.put("remark", "123456");
 
-        Long pointGoodsId =(Long) Fixtures.idCache.get("models.sales.PointGoods-pointgoods1");
-        assertNotNull(pointGoodsId);
-        HashMap<String,String> params = new HashMap<>();
-        params.put("goodsId",pointGoodsId.toString());
-        params.put("number","1");
-        params.put("mobile","13512345678");
-        params.put("remark","123456");
-
-        Http.Response response = POST("/payment_info/confirm",params);
-        assertStatus(302,response);
+        Http.Response response = POST("/payment_info/confirm", params);
+        assertStatus(302, response);
 
     }
 
     @Test
-    public void testSuccess(){
-        Http.Response response = GET("/payment_info/1213221412");
+    public void testSuccess() {
+        Http.Response response = GET("/payment_info/" +pointOrders.orderNumber);
         assertIsOk(response);
-        assertContentMatch("我的积分",response);
+        assertContentMatch("我的积分", response);
     }
 }
