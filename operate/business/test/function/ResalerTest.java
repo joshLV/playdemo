@@ -13,6 +13,8 @@ import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import play.modules.paginate.JPAExtPaginator;
+import play.mvc.Http;
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
@@ -21,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ResalerTest extends FunctionalTest {
-
+    Resaler resaler;
 
     @Before
     public void setup() {
@@ -57,6 +59,7 @@ public class ResalerTest extends FunctionalTest {
     public void testIndex() {
         Response response = GET("/resalers");
         assertStatus(200, response);
+        assertEquals(1, ((JPAExtPaginator<Resaler>) renderArgs("resalers")).size());
     }
 
     /**
@@ -68,6 +71,7 @@ public class ResalerTest extends FunctionalTest {
         Response response = GET("/resalers/" + resaler.id + "/view");
         assertStatus(200, response);
         assertContentMatch(resaler.loginName, response);
+        assertEquals(resaler.id, ((Resaler) renderArgs("resaler")).id);
     }
 
     /**
@@ -91,4 +95,38 @@ public class ResalerTest extends FunctionalTest {
         assertEquals(ResalerStatus.UNAPPROVED, resaler.status);
         assertEquals(remark, resaler.remark);
     }
+
+    @Test
+    public void testFreeze() {
+        resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
+            @Override
+            public void build(Resaler target) {
+                target.accountType = AccountType.CONSUMER;
+                target.status = ResalerStatus.APPROVED;
+            }
+        });
+        assertEquals(ResalerStatus.APPROVED, resaler.status);
+        Http.Response response = PUT("/resalers/" + resaler.id + "/freeze", "text/html", "");
+        assertStatus(302, response);
+        resaler.refresh();
+        assertEquals(ResalerStatus.FREEZE, resaler.status);
+    }
+
+    @Test
+    public void testUnFreeze() {
+        resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
+            @Override
+            public void build(Resaler target) {
+                target.accountType = AccountType.CONSUMER;
+                target.status = ResalerStatus.FREEZE;
+            }
+        });
+        assertEquals(ResalerStatus.FREEZE, resaler.status);
+        Http.Response response = PUT("/resalers/" + resaler.id + "/unfreeze", "text/html", "");
+        assertStatus(302, response);
+        resaler.refresh();
+        assertEquals(ResalerStatus.APPROVED, resaler.status);
+    }
+
+
 }
