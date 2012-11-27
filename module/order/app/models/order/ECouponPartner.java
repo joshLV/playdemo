@@ -7,5 +7,6 @@ package models.order;
 public enum ECouponPartner {
     JD,
     DD,
-    YHD
+    YHD,
+    WUBA
 }

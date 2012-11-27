@@ -18,6 +18,8 @@ import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
+
+import models.wuba.WubaUtil;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
@@ -469,6 +471,11 @@ public class ECoupon extends Model {
         if (this.partner == ECouponPartner.JD) {
             if (!JDGroupBuyUtil.verifyOnJingdong(this)) {
                 Logger.info("verify on jingdong failed");
+                return false;
+            }
+        }else if(this.partner == ECouponPartner.WUBA) {
+            if (!WubaUtil.verifyOnWuba(this)) {
+                Logger.info("verify on wuba failed");
                 return false;
             }
         }

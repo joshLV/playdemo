@@ -25,6 +25,10 @@ GET     /                                       SmsApplication.index
 *       /api/v1/jd/gb/query-team-sell-count     JDGroupBuy.queryTeamSellCount(format:'xml')
 *       /api/v1/jd/gb/send-sms                  JDGroupBuy.sendSms(format:'xml')
 
+# 58 API
+*       /api/v1/58/gb/order-add                 WubaGroupBuy.newOrder
+*       /api/v1/58/gb/refund                    WubaGroupBuy.refund
+
 # 北京ensms接收接口
 GET     /getsms                                 EnSmsReceivers.getSms
 

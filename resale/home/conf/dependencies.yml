@@ -38,6 +38,7 @@ require:
     - supports -> supports
     - third_tuan -> third_tuan
     - yihaodian -> yihaodian
+    - wuba -> wuba
     - com.yihaodian -> yhdclient 1.0
 
 repositories:
@@ -86,3 +87,4 @@ repositories:
             - supports -> *
             - yihaodian -> *
             - third_tuan -> *
+            - wuba -> *

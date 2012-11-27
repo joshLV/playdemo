@@ -1,0 +1,153 @@
+#{extends 'main.html' /}
+#{set title:'100券 - 58上传' /}
+#{set 'moreStyles'}
+    #{asset.css src:['/r/base.css', '/r/goods.css', '/r/play-pagination.css'] /}
+        <style type="text/css">
+            b{ color:red }
+            p{ margin-top:15px}
+            h1{margin-top:20px}
+        </style>
+#{/set}
+#{set 'moreScripts'}
+<script src="@@{'/public/javascripts/goods-index.js'}"></script>
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+
+#{set 'navMenu'}
+    <li><a href="/">首　页</a></li>
+    <li><a class="current" href="/goods">商品库</a></li>
+    <li><a href="/library">我的分销库</a></li>
+    <li><a href="/charge">账户充值</a></li>
+    <li><a href="/withdraw">账户提现</a></li>
+#{/set}
+
+<form action="/58-add" method="POST">
+<div id="content">
+    <h1 style="font-size:200%">商品信息</h1>
+
+    <p>商品分类<b>*</b></p>
+    <input type="text" name="productTypeId" value="1">
+    <p>
+        产品范畴<b>*</b>
+        <input type="radio" name="productCategory" value="0" checked> 消费类
+        <input type="radio" name="productCategory" value="1"> 快递类
+    </p>
+    <p>发布产品的名称<b>* 最多200字</b></p>
+    <input type="text" name="prodName" size="150" value="${goods.name}">
+    <p>产品短名称<b>*</b></p>
+    <input type="text" name="prodShortName" size="150" value="${goods.title}">
+    <p>商品详情<b>*</b></p>
+    <textarea rows="10" cols="150" name="prodDescription">
+        ${goods.exhibition}
+        <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+            <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
+        </p>
+        ${goods.prompt}
+        <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+            <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
+        </p>
+        ${goods.details}
+        <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+            <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
+        </p>
+        ${goods.supplierDes}
+    </textarea>
+    <p>商品大图<b>*</b>规格680x425</p>
+    <input type="text" name="prodImg" size="150" value="${goods.imageLargePath}">
+    <p>手机端特别提示<b>*</b></p>
+    <textarea rows="10" cols="150" name="mobileDescription">
+        ${goods.exhibition}
+        <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+            <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
+        </p>
+        ${goods.prompt}
+        <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+            <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
+        </p>
+        ${goods.details}
+        <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+            <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
+        </p>
+        ${goods.supplierDes}
+    </textarea>
+    <p>
+        是否配送<b>*</b>
+        <input type="radio" name="isSend" value="0" checked> 不配送
+        <input type="radio" name="isSend" value="1"> 配送
+        快递费
+        <input type="text" name="expressMoney">元
+    </p>
+    <p>发布城市<b>*</b></p>
+    <input type="text" name="cityIds" value="4">
+    <p>旅游目的城市，酒店类团购须此字段</p>
+    <input type="checkbox" name="travelCityIds">
+    <p>列表页短标题<b>*</b></p>
+    <input type="text" name="listShortTitle" size="150" value="${goods.title}">
+    <p>
+        团购开始时间<b>*</b>
+        <input type="text" name="startTime"  onfocus="WdatePicker({readOnly:true})"  class="Wdate" value="${new java.util.Date().format()}">
+        团购结束时间<b>*</b>
+        <input type="text" name="endTime"  onfocus="WdatePicker({readOnly:true})"  class="Wdate" value="${goods.expireAt?.format()}">
+        券有效期<b>*</b>
+        <input type="text" name="deadline"  onfocus="WdatePicker({readOnly:true})"  class="Wdate" value="${goods.expireAt?.format()}">
+    </p>
+    <p>
+        团购成功数量<b>*</b> <input type="text" name="successNum" value="1">
+        总的库存，0为无限制<b>*</b> <input type="text" name="saleMaxNum" value="0">
+    </p>
+    <p>
+        用户单笔最大购买数量，0为无限制<b>*</b> <input type="text" name="buyerMaxNum" value="99">
+        用户单笔最低购买数量，大于等于1<b>*</b> <input type="text" name="buyerMinNum" value="1">
+    </p>
+    <p>
+        商品原价<b>*</b> <input type="text" name="prodPrice" value="${goods.faceValue}">
+        团购价<b>*</b> <input type="text" name="groupPrice" value="${goods.resalePrice}">
+    </p>
+    <p>是否支持退款<b>*</b></p>
+    <input type="radio" name="isRefund" value="1" checked> 支持
+    <input type="radio" name="isRefund" value="0"> 不支持
+    <p>手机端广告图</p>
+    <input type="text" name="mobileImg" size="150">
+    <p>团购特别提示内容</p>
+    <textarea rows="10" cols="150" name="specialmessage"></textarea>
+
+    <h1 style="font-size:200%">商家信息</h1>
+    #{list items:shopList, as:'shop'}
+        <h1>门店${shop_index}</h1>
+        <input type="hidden" name="partnerId_${shop_index}" value="${shop.id}">
+        <p>商家名称(最大100个字符)<b>*</b></p>
+        <input type="text" name="title_${shop_index}" size="150" value="${supplier.otherName} ${shop.name}">
+        <p>商家名称缩写(最大50个字符)<b>*</b></p>
+        <input type="text" name="shortTitle_${shop_index}" size="150" value="${supplier.otherName} ${shop.name}">
+        <p>商圈<b>*</b></p>
+        <input type="text" name="circleId_${shop_index}" size="150" value="7021">
+        <p>商家地址</p>
+        <input type="text" name="address_${shop_index}" size="150" value="${shop.address}">
+        <p>电话<b>*</b></p>
+        <input type="text" name="telephone_${shop_index}" size="50" value="${shop.phone}">
+        <p>网址</p>
+        <input type="text" name="webUrl_${shop_index}" size="150">
+        <p>交通信息<b>*</b>(一个空格也可以，默认给了空格)</p>
+        <input type="text" name="busline_${shop_index}" size="150" value=" ">
+        <p>地图图片</p>
+        <input type="text" name="mapImg_${shop_index}" size="150" value="">
+        <p>地图链接</p>
+        <input type="text" name="mapUrl_${shop_index}" size="150">
+        <p>
+            地图服务商
+            <input type="radio" name="mapServiceId_${shop_index}" value="0"> Google
+            <input type="radio" name="mapServiceId_${shop_index}" value="1"> Baidu
+            <input type="radio" name="mapServiceId_${shop_index}" value="2"> Mapbar
+        </p>
+        <p>
+            地图经纬度 &nbsp;&nbsp;
+            经度：<input type="text" name="latitude_${shop_index}" value="${shop.latitude}">
+            纬度：<input type="text" name="longitude_${shop_index}" value="${shop.longitude}">
+        </p>
+    #{/list}
+
+    <input type="hidden" name="goodsId" value="${goods.id}">
+    <input type="hidden" name="shopSize" value="${shopList.size()}">
+    <p><button type="submit">提交</button></p>
+</div>
+</form>
