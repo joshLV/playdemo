@@ -8,16 +8,19 @@ require:
     - play1 -> paginate head
     - play1 -> app-version 0.1
     - play1 -> factory-boy 1.0
+    - play1 -> rabbitmq 0.3
     - layout_operate -> layout_operate
     - paginate_ext -> paginate_ext
     - view_ext -> view_ext
     - operate_rbac -> operate_rbac
+    - supports -> supports
     - cms -> cms
     - org.jsoup -> jsoup 1.6.1
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - asset_package -> asset_package
     - cache_helper -> cache_helper
     - emaillogs -> emaillogs
+
 
 repositories:
     - mavenRepository:
@@ -46,3 +49,4 @@ repositories:
             - view_ext -> *
             - cache_helper -> *
             - emaillogs -> *
+            - supports -> *

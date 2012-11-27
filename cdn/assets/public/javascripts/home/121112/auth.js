@@ -10,7 +10,7 @@ jQuery(function ($) {
         e.preventDefault();
 
         var isRegister = $(this).hasClass('signup'),
-            iframeSrc = !isRegister ? '../single/minLogin.php' : 'http://localhost:9001/register?embed=true';
+            iframeSrc = !isRegister ? '../single/minLogin.php' : '/register?embed=true';
 
         // 插入遮罩层
         if ($('#auth_mask').length == 0) {
