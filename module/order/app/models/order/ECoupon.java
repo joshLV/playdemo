@@ -1,29 +1,7 @@
 package models.order;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-
+import com.uhuila.common.util.DateUtil;
+import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.TradeBill;
@@ -40,9 +18,7 @@ import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
-
 import org.apache.commons.lang.StringUtils;
-
 import play.Logger;
 import play.Play;
 import play.data.validation.Required;
@@ -51,8 +27,28 @@ import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
 
-import com.uhuila.common.util.DateUtil;
-import com.uhuila.common.util.RandomNumberUtil;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "e_coupon")
@@ -1269,20 +1265,20 @@ public class ECoupon extends Model {
      * @param eCoupon
      * @return
      */
-    public static List<ECoupon> queryUnconsumedCouponsWithSameGoodsGroups(ECoupon ecoupon) {
-        if (ecoupon == null) {
-            return new ArrayList<ECoupon>();
+    public static List<ECoupon> queryUnconsumedCouponsWithSameGoodsGroups(ECoupon eCoupon) {
+        if (eCoupon == null) {
+            return new ArrayList<>();
         }
-        Goods goods = ecoupon.goods;
+        Goods goods = eCoupon.goods;
 
         if (!StringUtils.isBlank(goods.groupCode)) {
             return ECoupon.find("order=? and orderItems.phone=? and status = ? and goods.isLottery=? and goods.groupCode=? and goods.supplierId=? order by id",
-                    ecoupon.order, ecoupon.orderItems.phone,
+                    eCoupon.order, eCoupon.orderItems.phone,
                     ECouponStatus.UNCONSUMED, false,
                     goods.groupCode, goods.supplierId).fetch();
         }
         return ECoupon.find("order=? and orderItems.phone=? and status=? and goods.isLottery=? and goods.id=? and goods.supplierId=? order by id",
-                ecoupon.order, ecoupon.orderItems.phone,
+                eCoupon.order, eCoupon.orderItems.phone,
                 ECouponStatus.UNCONSUMED, false,
                 goods.id, goods.supplierId).fetch();
     }
@@ -1316,5 +1312,18 @@ public class ECoupon extends Model {
             return null;
         }
         return result;
+    }
+
+    /**
+     * 获取预付款的已消费总额.
+     *
+     * @param prepayment    预付款记录
+     * @return  预付款的已消费总额
+     */
+    public static BigDecimal getConsumedAmount(Prepayment prepayment) {
+        BigDecimal usedAmount = find("select sum(originalPrice) from ECoupon " +
+                "where goods.supplierId=? and status=? and consumedAt>=? and consumedAt<?",
+                prepayment.supplier.id, models.order.ECouponStatus.CONSUMED, prepayment.effectiveAt, prepayment.expireAt).first();
+        return usedAmount == null ? BigDecimal.ZERO : usedAmount;
     }
 }

@@ -232,13 +232,11 @@ public class WithdrawApproval extends Controller {
         BigDecimal prepaymentBalance = prepayments.size() > 0 ? prepayments.get(0).getBalance() : BigDecimal.ZERO;
         //实际需打款金额
         BigDecimal needPay = prepaymentBalance.compareTo(amount) >= 0 ? BigDecimal.ZERO : amount.subtract(prepaymentBalance);
-        Long prepaymentId = prepaymentBalance.compareTo(BigDecimal.ZERO) > 0?prepayments.get(0).id:null;
-        if (needPay.compareTo(BigDecimal.ZERO) > 0) {
-            List<WithdrawAccount> withdrawAccountList = WithdrawAccount.findByUser(supplierId, SUPPLIER);
-            renderArgs.put("withdrawAccountList", withdrawAccountList);
-        }
+        Long prepaymentId = prepaymentBalance.compareTo(BigDecimal.ZERO) > 0 ? prepayments.get(0).id : null;
+        List<WithdrawAccount> withdrawAccountList = WithdrawAccount.findByUser(supplierId, SUPPLIER);
 
-        render("/WithdrawApproval/settle.html", supplierList, supplierId, withdrawDate, amount, supplierAccount, supplier, prepaymentBalance, prepaymentId, needPay);
+        render("/WithdrawApproval/settle.html", supplierList, supplierId, withdrawDate, amount, supplierAccount,
+                supplier, prepaymentBalance, prepaymentId, needPay, withdrawAccountList);
     }
 
     /**
@@ -256,21 +254,23 @@ public class WithdrawApproval extends Controller {
         //生成结算账单
         WithdrawAccount withdrawAccount = WithdrawAccount.findByIdAndUser(withdrawAccountId, supplierAccount.uid, SUPPLIER);
         WithdrawBill bill = new WithdrawBill();
-        bill.userName = withdrawAccount.userName;
-        bill.bankCity = withdrawAccount.bankCity;
-        bill.bankName = withdrawAccount.bankName;
-        bill.subBankName = withdrawAccount.subBankName;
-        bill.cardNumber = withdrawAccount.cardNumber;
+        if (withdrawAccount != null) {
+            bill.userName = withdrawAccount.userName;
+            bill.bankCity = withdrawAccount.bankCity;
+            bill.bankName = withdrawAccount.bankName;
+            bill.subBankName = withdrawAccount.subBankName;
+            bill.cardNumber = withdrawAccount.cardNumber;
+        }
         bill.amount = amount;
         bill.fee = fee == null ? BigDecimal.ZERO : fee;
         Supplier supplier = Supplier.findById(supplierAccount.uid);
         //申请提现
         bill.apply(OperateRbac.currentUser().userName, supplierAccount, supplier.otherName);
         //审批提现
-        int withdrawCount = bill.agree(fee, comment, withdrawDate);
+        Prepayment prepayment = Prepayment.findById(prepaymentId);
+        int withdrawCount = bill.agree(fee, comment, withdrawDate, prepayment);
 
         if (withdrawCount > 0 && prepaymentId != null) {
-            Prepayment prepayment = Prepayment.findById(prepaymentId);
             //将结算金额与预付款金额进行绑定
             if (prepayment != null && prepayment.getBalance().compareTo(BigDecimal.ZERO) >= 0) {
                 boolean payAll = Prepayment.pay(prepayment, bill.amount.add(bill.fee));

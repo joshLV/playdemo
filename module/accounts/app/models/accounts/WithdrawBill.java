@@ -3,6 +3,7 @@ package models.accounts;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.SerialNumberUtil;
 import models.accounts.util.TradeUtil;
+import models.order.Prepayment;
 import play.Logger;
 import play.data.validation.Min;
 import play.data.validation.Required;
@@ -173,12 +174,24 @@ public class WithdrawBill extends Model {
      * @param withdrawDate
      * @return
      */
-    public int agree(BigDecimal fee, String comment, Date withdrawDate) {
+    public int agree(BigDecimal fee, String comment, Date withdrawDate, Prepayment prepayment) {
         if (agree(fee, comment) && account.accountType == AccountType.SUPPLIER) { //同意提现操作
             //标记所有详细销售记录为已结算
-            return AccountSequence.withdraw(account, withdrawDate, this);
+            return AccountSequence.withdraw(account, withdrawDate, this, prepayment);
         }
         return 0;
+    }
+
+    /**
+     * 结算操作，返回结算详细记录的笔数.
+     *
+     * @param fee
+     * @param comment
+     * @param withdrawDate
+     * @return
+     */
+    public int agree(BigDecimal fee, String comment, Date withdrawDate) {
+        return agree(fee, comment, withdrawDate, null);
     }
 
     public static JPAExtPaginator<WithdrawBill> findByCondition(

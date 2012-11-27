@@ -1,0 +1,65 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'预付款详情' /}
+#{include '/share/nav.html' /}
+#{set 'moreStyles'}
+<style type="text/css">
+    .control-label {
+        font-weight: bold;
+    }
+
+    .control-value {
+        line-height: 28px;
+        margin-left: 160px;
+    }
+
+    .form-horizontal .control-group {
+        margin-bottom: 4px;
+    }
+</style>
+#{/set}
+<div class="row-fluid">
+    <legend>预付款详情</legend>
+    <div class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label">&{'prepayment.supplier'}</label>
+            <label class="control-value">${(prepayment?.supplier?.otherName==null)?prepayment?.supplier?.fullName:prepayment?.supplier?.otherName}</label>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'prepayment.amount'}</label>
+            <label class="control-value">${prepayment.amount?.formatCurrency('CNY')}</label>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'prepayment.withdrawAmount'}</label>
+            <label class="control-value">${prepayment.withdrawAmount?.formatCurrency('CNY')}</label>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'prepayment.balance'}</label>
+            <label class="control-value">${prepayment.balance?.formatCurrency('CNY')}</label>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'prepayment.effective'}</label>
+            <label class="control-value">${prepayment.effectiveAt} 至 ${prepayment.expireAt}</label>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'prepayment.createdAt'}</label>
+            <label class="control-value">${prepayment.createdAt}</label>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'prepayment.createdBy'}</label>
+            <label class="control-value">${prepayment.createdBy}</label>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'prepayment.updatedAt'}</label>
+            <label class="control-value">${prepayment.updatedAt}</label>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'prepayment.updatedBy'}</label>
+            <label class="control-value">${prepayment.updatedBy}</label>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'prepayment.remark'}</label>
+            <label class="control-value">${prepayment.remark}</label>
+        </div>
+    </div>
+
+</div>

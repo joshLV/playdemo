@@ -7,13 +7,10 @@
     function settle(withdrawAccountId) {
         $("#withdrawAccountId").val(withdrawAccountId);
     }
-    $(
-            function () {
-                $("#agree-fee").change(function () {
-                    var originNeedPay = ${needPay};
-                      $("#needPay").val(originNeedPay- $("#agree-fee").val());
-                });
-            });
+    function changeNeedPay(fee) {
+        var originNeedPay = ${needPay};
+        $("#needPay").text(originNeedPay - $(fee).val());
+    }
 </script>
 #{/set}
 #{set 'moreStyles'}
@@ -83,14 +80,16 @@
             </div>
             <div class="control-group">
                 <label class="control-label">预付款 </label>
-                <label class="control-value">${prepaymentBalance.formatCurrency('CNY')}</label>
+                <label class="control-value"><a href="/prepayments/${prepaymentId}"
+                                                target="_blank">${prepaymentBalance.formatCurrency('CNY')}</a></label>
             </div>
             #{if needPay?.compareTo(java.math.BigDecimal.ZERO)>0}
                 <div class="control-group">
                     <label class="control-label" for="agree-fee">手续费</label>
 
                     <div class="controls">
-                        <input type="text" class="input-xlarge" id="agree-fee" name="fee" value="0">元
+                        <input type="text" class="input-xlarge" id="agree-fee" name="fee" value="0"
+                               onkeyup="changeNeedPay(this)" onchange="changeNeedPay(this)">元
                     </div>
                 </div>
             #{/if}
@@ -106,37 +105,50 @@
                     <textarea rows="3" class="input-xlarge" id="agree-comment" name="comment">无</textarea>
                 </div>
             </div>
-            #{list items:withdrawAccountList, as:'withdrawAccount'}
+            #{if org.apache.commons.collections.CollectionUtils.isEmpty(withdrawAccountList)
+            && prepaymentBalance?.compareTo(java.math.BigDecimal.ZERO)>0}
                 <div class="control-group">
-                    <label class="control-label">所在城市</label>
-                    <label class="control-value">${withdrawAccount?.bankCity}</label>
+                    <label class="control-label"></label>
+                    <label class="control-value">
+                        <button class="btn btn-primary" id="settle"
+                                onclick="settle(null)"/>
+                        结算</button></label>
                 </div>
-                <div class="control-group">
-                    <label class="control-label">开户银行</label>
-                    <label class="control-value">${withdrawAccount?.bankName}</label>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">分行名称</label>
-                    <label class="control-value">${withdrawAccount?.subBankName}</label>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">开户姓名</label>
-                    <label class="control-value">${withdrawAccount?.userName}</label>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">银行卡号</label>
-                    <label class="control-value">${withdrawAccount?.cardNumber}</label>
-                </div>
-                #{if amount?.compareTo(java.math.BigDecimal.ZERO)>0}
+            #{/if}
+            #{else}
+                #{list items:withdrawAccountList, as:'withdrawAccount'}
                     <div class="control-group">
-                        <label class="control-label"></label>
-                        <label class="control-value">
-                            <button class="btn btn-primary" id="settle_${withdrawAccount?.id}"
-                                    onclick="settle(${withdrawAccount?.id})"/>
-                            结算</button></label>
+                        <label class="control-label">所在城市</label>
+                        <label class="control-value">${withdrawAccount?.bankCity}</label>
                     </div>
-                #{/if}
-            #{/list}
+                    <div class="control-group">
+                        <label class="control-label">开户银行</label>
+                        <label class="control-value">${withdrawAccount?.bankName}</label>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">分行名称</label>
+                        <label class="control-value">${withdrawAccount?.subBankName}</label>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">开户姓名</label>
+                        <label class="control-value">${withdrawAccount?.userName}</label>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">银行卡号</label>
+                        <label class="control-value">${withdrawAccount?.cardNumber}</label>
+                    </div>
+                    #{if amount?.compareTo(java.math.BigDecimal.ZERO)>0}
+                        <div class="control-group">
+                            <label class="control-label"></label>
+                            <label class="control-value">
+                                <button class="btn btn-primary" id="settle_${withdrawAccount?.id}"
+                                        onclick="settle(${withdrawAccount?.id})"/>
+                                结算</button></label>
+                        </div>
+                    #{/if}
+                #{/list}
+            #{/else}
+
         #{/form}
     #{/if}
 

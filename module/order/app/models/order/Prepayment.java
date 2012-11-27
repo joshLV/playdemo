@@ -72,6 +72,7 @@ public class Prepayment extends Model {
         oldPrepayment.updatedBy = loginName;
         oldPrepayment.effectiveAt = prepayment.effectiveAt;
         oldPrepayment.expireAt = prepayment.expireAt;
+        oldPrepayment.remark = prepayment.remark;
         oldPrepayment.save();
     }
 
@@ -124,7 +125,7 @@ public class Prepayment extends Model {
 
 
     /**
-     * 返回是否给定的预付款记录支付了全部需要支付的费用
+     * 修改预付款记录，并返回是否给定的预付款记录支付了全部需要支付的费用
      *
      * @param prepayment
      * @param amount
