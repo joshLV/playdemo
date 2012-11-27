@@ -484,6 +484,7 @@ public class Goods2 extends Controller {
         renderArgs.put("goods", goodsHistory);
         renderArgs.put("shops", goodsHistory.getShopList());
         renderArgs.put("breadcrumbs", breadcrumbs);
+
     }
 
     /**
@@ -556,6 +557,7 @@ public class Goods2 extends Controller {
         renderArgs.put("questions", questions);
         renderArgs.put("ghShow", true);
         renderArgs.put("goodsId", gId);
+
         if (ghId == OrderItems.getLastHistoryId(gId)) {
 //            renderArgs.put("ghShow", false);
             redirect(WWW_URL + "/p/" + goods.id);

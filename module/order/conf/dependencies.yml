@@ -18,6 +18,7 @@ require:
     - dangdang -> dangdang
     - sms -> sms
     - commons-httpclient -> commons-httpclient 3.1
+    - wuba -> wuba
 
 repositories:
     - mavenRepository:
@@ -44,5 +45,6 @@ repositories:
             - accounts -> *
             - order -> *
             - dangdang -> *
+            - wuba -> *
 
 

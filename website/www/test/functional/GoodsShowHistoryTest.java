@@ -52,7 +52,7 @@ public class GoodsShowHistoryTest extends FunctionalTest {
     @Test
     public void testGoodsShowHistory() {
         Http.Response response = GET("/p/" + goodsHistory.goodsId + "/h/" + goodsHistory.id);
-        assertIsOk(response);
+        assertStatus(302, response);
         GoodsHistory getGoodsHistory = (GoodsHistory) renderArgs("goods");
         assertEquals(goodsHistory.name, getGoodsHistory.name);
 
