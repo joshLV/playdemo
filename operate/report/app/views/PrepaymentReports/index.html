@@ -1,0 +1,58 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'预付款明细表' /}
+#{include '/share/nav.html' /}
+<form class="form-horizontal" name="frmlist" id="frmlist" action="@{PrepaymentReports.index()}" method="GET">
+    <table width="100%">
+        <tr>
+            <td width="30%">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
+                #{select 'supplierId', id:supplierId, class:'select', value:supplierId}
+                #{option "0"}不限#{/option}
+                #{list items:supplierList, as:'supplier'}
+                #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
+                #{/list}
+                #{/select}
+            </td>
+            <td>
+                <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
+            </td>
+        </tr>
+    </table>
+</form>
+
+<table class="table table-striped table-bordered table-condensed">
+    <thead>
+    <th width="10px">商户</th>
+    <th width="10px">预付款金额</th>
+    <th width="80px">已销售金额</th>
+    <th width="50px">已消费金额</th>
+    <th width="50px">预付款余额</th>
+    <th width="50px">预付款开始日</th>
+    <th width="50px">预付款到期日</th>
+    <th width="50px">消费进度</th>
+    <th width="50px">时间进度</th>
+    <th width="50px">进度比较<br/>(消费/时间)</th>
+    <th width="50px">操作</th>
+    </thead>
+    #{paginate.list items:reportPage, as:'report'}
+    <tr>
+        <td>${report?.supplierName}</td>
+        <td>${report?.amount?.formatCurrency('CNY')}</td>
+        <td>${report?.soldAmount?.formatCurrency('CNY')}</td>
+        <td>${report?.consumedAmount?.formatCurrency('CNY')}</td>
+        <td>${report?.balance?.formatCurrency('CNY')}</td>
+        <td>${report?.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+        <td>${report?.expireAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+        <td>${report?.consumedProcess?.format('#.##')}%</td>
+        <td>${report?.timeProcess?.format('#.##')}%</td>
+        <td>${report?.processCompare?.format('#.##')}%</td>
+        <td>
+            <a href="/reports"
+               target="_blank">查看销售曲线图</a></td>
+    </tr>
+    #{/paginate.list}
+</table>
+<div class="pagination">
+    <ul>
+        #{paginate.controls items:reportPage /}
+    </ul>
+</div>

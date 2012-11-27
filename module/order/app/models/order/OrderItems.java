@@ -172,13 +172,13 @@ public class OrderItems extends Model {
     /**
      * 取出该用户购买指定商品的数量
      *
-     * @param phone    用户手机
+     * @param phone   用户手机
      * @param goodsId 商品ID
      * @return
      */
     public static long getBuyNumberByPhone(String phone, Long goodsId) {
         EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("SELECT sum( buyNumber ) FROM OrderItems WHERE goods.id=:goodsId and phone=:phone " );
+        Query q = entityManager.createQuery("SELECT sum( buyNumber ) FROM OrderItems WHERE goods.id=:goodsId and phone=:phone ");
         q.setParameter("goodsId", goodsId);
         q.setParameter("phone", phone);
         Object result = q.getSingleResult();
@@ -311,4 +311,14 @@ public class OrderItems extends Model {
         return query.getResultList();
     }
 
+    /**
+     * 获取预付款的已销售总额.
+     *
+     * @param prepayment    预付款记录
+     * @return  预付款的已销售总额
+     */
+    public static BigDecimal getSoldAmount(Prepayment prepayment) {
+        BigDecimal soldAmount = find("select sum(originalPrice*buyNumber) from OrderItems where goods.supplierId=? and (status=? or status=?) and createdAt>=? and createdAt <?", prepayment.supplier.id, OrderStatus.PAID, OrderStatus.SENT, prepayment.effectiveAt, prepayment.expireAt).first();
+        return soldAmount == null ? BigDecimal.ZERO : soldAmount;
+    }
 }

@@ -24,7 +24,7 @@ import static play.Logger.warn;
  * Time: 11:52 AM
  */
 @With(OperateRbac.class)
-@ActiveNavigation("prepayment_index")
+@ActiveNavigation("prepayments_index")
 public class OperatePrepayments extends Controller {
 
     public static int PAGE_SIZE = 15;
@@ -32,7 +32,7 @@ public class OperatePrepayments extends Controller {
     /**
      * 获取券号列表页.
      */
-    @ActiveNavigation("prepayment_index")
+    @ActiveNavigation("prepayments_index")
     public static void index(Long supplierId) {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
@@ -42,17 +42,22 @@ public class OperatePrepayments extends Controller {
         render(prepaymentPage, supplierList, supplierId);
     }
 
+    public static void show(Long id) {
+        Prepayment prepayment = Prepayment.findById(id);
+        render(prepayment);
+    }
+
     /**
      * 显示添加页面
      */
-    @ActiveNavigation("prepayment_add")
+    @ActiveNavigation("prepayments_add")
     public static void add() {
         List<Supplier> supplierList = Supplier.findUnDeleted();
         Prepayment loginName = new Prepayment();
         render(supplierList, loginName);
     }
 
-    @ActiveNavigation("prepayment_add")
+    @ActiveNavigation("prepayments_add")
     public static void create(@Valid Prepayment prepayment) {
         String loginName = OperateRbac.currentUser().loginName;
 
@@ -72,7 +77,6 @@ public class OperatePrepayments extends Controller {
         index(null);
     }
 
-    @ActiveNavigation("prepayment_edit")
     public static void edit(Long id) {
         Prepayment prepayment = Prepayment.findById(id);
         List<Supplier> supplierList = Supplier.findUnDeleted();
@@ -103,4 +107,13 @@ public class OperatePrepayments extends Controller {
         index(null);
     }
 
+
+    public static void report(Long supplierId) {
+        String page = request.params.get("page");
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+        ModelPaginator<Prepayment> prepaymentPage = Prepayment.getPage(pageNumber, PAGE_SIZE, supplierId);
+
+        List<Supplier> supplierList = Supplier.findUnDeleted();
+        render(prepaymentPage, supplierList, supplierId);
+    }
 }

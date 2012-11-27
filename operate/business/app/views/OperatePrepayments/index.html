@@ -27,6 +27,7 @@
             <tr>
                 <th width="200">&{'prepayment.supplier'}</th>
                 <th width="100">&{'prepayment.amount'}</th>
+                <th width="100">&{'prepayment.withdrawAmount'}</th>
                 <th width="100">&{'prepayment.effectiveAt'}</th>
                 <th width="100">&{'prepayment.expireAt'}</th>
                 <th width="80">&{'prepayment.createdAt'}</th>
@@ -43,12 +44,13 @@
             #{paginate.list items:prepaymentPage, as:'prepayment'}
             <tr>
                 <td align="center">${prepayment?.supplier?.otherName==null?prepayment?.supplier?.fullName:prepayment?.supplier?.otherName}</td>
-                <td>${prepayment.amount}</td>
-                <td>${prepayment.effectiveAt}</td>
-                <td>${prepayment.expireAt}</td>
-                <td>${prepayment.createdAt}</td>
+                <td>${prepayment.amount?.formatCurrency('CNY')}</td>
+                <td>${prepayment.withdrawAmount?.formatCurrency('CNY')}</td>
+                <td>${prepayment.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>${prepayment.expireAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>${prepayment.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>${prepayment.createdBy}</td>
-                <td>${prepayment.updatedAt}</td>
+                <td>${prepayment.updatedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>${prepayment.updatedBy}</td>
                 <td>${prepayment.remark}</td>
                 <td>#{if prepayment.canUpdate()}<a href="@{OperatePrepayments.edit(prepayment.id)}">修改</a>

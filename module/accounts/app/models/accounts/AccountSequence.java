@@ -194,6 +194,11 @@ public class AccountSequence extends Model {
         return amount != null ? amount.abs() : BigDecimal.ZERO;
     }
 
+
+    public static int withdraw(Account supplierAccount, Date withdrawDate, WithdrawBill withdrawBill) {
+        return withdraw(supplierAccount, withdrawDate, withdrawBill, null);
+    }
+
     /**
      * 把指定商户的所有指定日期之前的收入金额结算掉,返回update 的记录数
      *
@@ -202,18 +207,22 @@ public class AccountSequence extends Model {
      * @param withdrawBill    结算账单
      * @return
      */
-    public static int withdraw(Account supplierAccount, Date withdrawDate, WithdrawBill withdrawBill) {
-        if (supplierAccount == null) {
+    public static int withdraw(Account supplierAccount, Date withdrawDate, WithdrawBill withdrawBill, Prepayment prepayment) {
+        if (supplierAccount == null && prepayment == null) {
             return 0;
         }
         EntityManager entityManager = JPA.em();
         // 把指定商户的所有指定日期之前的收入金额结算状态改为已结算
-        Query query = entityManager.createQuery("update AccountSequence as s set s.settlementStatus=:settlementStatus, withdrawBill = :withdrawBill " +
-                "where account=:account and createdAt<=:withdrawDate");
+        String prepaymentCond = prepayment == null ? "" : ",s.prepayment=:prepayment";
+        String accountCond = supplierAccount == null ? "" : " s.account=:account and ";
+        Query query = entityManager.createQuery("update AccountSequence as s set s.settlementStatus=:settlementStatus, s.withdrawBill = :withdrawBill " +
+                prepaymentCond +
+                " where " + accountCond + "s.createdAt<=:withdrawDate");
         query.setParameter("settlementStatus", SettlementStatus.CLEARED);
         query.setParameter("withdrawBill", withdrawBill);
         query.setParameter("account", supplierAccount);
         query.setParameter("withdrawDate", DateUtil.getEndOfDay(withdrawDate));
+        query.setParameter("prepayment", prepayment);
         //update 的记录数
         return query.executeUpdate();
     }
