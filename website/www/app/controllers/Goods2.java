@@ -534,9 +534,9 @@ public class Goods2 extends Controller {
         final Long userId = SecureCAS.getUser() == null ? null : SecureCAS
                 .getUser().getId();
         GoodsHistory goodsHistory = GoodsHistory.findById(ghId);
-        System.out.println("1111");
+
         if (goodsHistory == null) {
-            System.out.println("222");
+
             error(404, "没有找到该商品！");
         }
         showGoodsHistory(goodsHistory);

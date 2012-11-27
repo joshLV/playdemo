@@ -30,7 +30,10 @@ public class Register extends Controller {
     /**
      * 注册页面
      */
-    public static void index() {
+    public static void index(Boolean embed) {
+        if (embed != null && embed == true) {
+            render("/Register/embedIndex.html");
+        }
         render();
     }
 
@@ -77,7 +80,7 @@ public class Register extends Controller {
             //记录推荐人和被推荐人的关系
             User promoterUser = User.getUserByPromoterCode(tj_cookie.value);
             if (promoterUser != null) {
-                new PromoteRebate(promoterUser, user, null, BigDecimal.ZERO,true).save();
+                new PromoteRebate(promoterUser, user, null, BigDecimal.ZERO, true).save();
                 user.promoteUserId = promoterUser.id;
             }
         }
@@ -87,8 +90,8 @@ public class Register extends Controller {
         if (WebsiteInjector.getUserWebIdentification() != null) {
             UserWebIdentification uwi = UserWebIdentification.findOne(WebsiteInjector.getUserWebIdentification().cookieId);
             if (uwi == null) {
-            	uwi = WebsiteInjector.getUserWebIdentification();
-            	uwi.save();
+                uwi = WebsiteInjector.getUserWebIdentification();
+                uwi.save();
             }
             if (uwi.registerCount == null) {
                 uwi.registerCount = 0;
