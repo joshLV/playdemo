@@ -194,6 +194,7 @@ public class AccountUtil {
         if (saveSequence) {
             accountChanged(account, cashAugend.add(uncashAugend), promotionAugend, billId, tradeType, sequenceFlag, note, orderId);
         }
+
         return account;
     }
 

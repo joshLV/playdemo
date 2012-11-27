@@ -28,6 +28,7 @@ public class AccountSequenceFactory extends ModelFactory<AccountSequence> {
         AccountSequence accountSequence = new AccountSequence(account, AccountSequenceFlag.VOSTRO, TradeType.PAY,
                 new BigDecimal(100), BigDecimal.ZERO,
                 new BigDecimal(100), BigDecimal.ZERO, BigDecimal.ZERO, 10l);
+
         return accountSequence;
 
     }
