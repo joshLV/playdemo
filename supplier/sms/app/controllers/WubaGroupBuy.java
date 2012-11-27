@@ -28,27 +28,20 @@ import java.util.regex.Pattern;
  * @author likang
  *         Date: 12-11-23
  */
-public class WubaOrder extends Controller {
+public class WubaGroupBuy extends Controller {
     public static String PHONE_REGEX = "^1[3,5,8]\\d{9}$";
-
-    public static void index(String m, String f, String appid, String param) {
-        JsonObject requestJson = WubaUtil.parseRequest(param);
-        switch (m) {
-            case "emc.groupbuy.add":
-                newOrder(requestJson);
-                break;
-            case "emc.groupbuy.refund":
-                break;
-            default:
-                break;
-        }
-    }
 
     /**
      * 新订单通知
-     * @param orderJson 订单信息
+     * @param param
      */
-    public static void newOrder(JsonObject orderJson) {
+    public static void newOrder(String param) {
+        Map<String, String> allParams = request.params.allSimple();
+        allParams.remove("body");
+        Logger.info("wuba request: \n%s", new Gson().toJson(allParams));
+        JsonObject orderJson = WubaUtil.parseRequest(param);
+        Logger.info("wuba request decrypted: \n%s", orderJson.toString());
+
         Map<String, Object> result = new HashMap<>();
         putStatusAndMsg(result, "10000", "成功");
         Long orderId, outerGroupId;
@@ -63,6 +56,7 @@ public class WubaOrder extends Controller {
             userPhone = orderJson.get("mobile").getAsString();
             outerGroupId = orderJson.get("groupbuyIdThirdpart").getAsLong();
         }catch (Exception e) {
+            Logger.info("wuba request failed: wrong params");
             putStatusAndMsg(result, "10201", "参数解析错误");
             finish(result);return;
         }
@@ -81,18 +75,19 @@ public class WubaOrder extends Controller {
                 JPA.em().flush();
             }catch (Exception e){ // 如果写入失败，说明 已经存在一个相同的orderCode 的订单，则放弃
                 putStatusAndMsg(result, "10100", "并发的订单请求");
+                Logger.info("wuba request failed: concurrency request");
                 finish(result); return;
             }
         }else {
             outerOrder.message = orderJson.toString();
         }
-        Logger.info("58 new order request: \n%s", outerOrder.message);
 
         outerOrder.orderId = orderId;
         outerOrder.save();
         //检查订单数量
         if(productNum <= 0 || productPrize.compareTo(BigDecimal.ZERO) < 0 || !checkPhone(userPhone)){
             putStatusAndMsg(result, "20210", "输入参数错误");
+            Logger.info("wuba request failed: invalid params");
             finish(result);return;
         }
 
@@ -102,6 +97,7 @@ public class WubaOrder extends Controller {
         }catch (PersistenceException e){
             //没拿到锁 放弃
             putStatusAndMsg(result, "10100", "并发的订单请求");
+            Logger.info("wuba request failed: concurrency request");
             finish(result); return;
         }
 
@@ -114,8 +110,9 @@ public class WubaOrder extends Controller {
                 outerOrder.ybqOrder = ybqOrder;
                 outerOrder.save();
             }
-        }else if(outerOrder.status != OuterOrderStatus.ORDER_CANCELED){
-            putStatusAndMsg(result, "10100", "订单已取消");
+        }else if(outerOrder.status != OuterOrderStatus.ORDER_SYNCED){
+            putStatusAndMsg(result, "10100", "订单状态错误");
+            Logger.info("wuba request failed: wrong order status");
             finish(result);return;
         }
 
@@ -132,18 +129,25 @@ public class WubaOrder extends Controller {
             Map<String, Object> ticket = new HashMap<>();
             ticket.put("ticketId", coupon.id);
             ticket.put("ticketCode", coupon.eCouponSn);
+            ticket.put("ticketPass", "");
             ticket.put("ticketCount", 1);
             ticket.put("createTime", simpleDateFormat.format(coupon.createdAt));
             ticket.put("endTime", simpleDateFormat.format(coupon.expireAt));
             tickets.add(ticket);
         }
         data.put("tickets", tickets);
-
         result.put("data", data);
+        Logger.info("wuba request success. %s tickets generated", tickets.size());
         finish(result);
     }
 
-    public static void refund(JsonObject refundJson) {
+    public static void refund(String param) {
+        Map<String, String> allParams = request.params.allSimple();
+        allParams.remove("body");
+        Logger.info("wuba request: \n%s", new Gson().toJson(allParams));
+        JsonObject refundJson = WubaUtil.parseRequest(param);
+        Logger.info("wuba request: \n%s", refundJson.toString());
+
         Long ticketId;
         Long orderId;
         String reason;
@@ -199,15 +203,18 @@ public class WubaOrder extends Controller {
             GoodsDeployRelation goodsDeployRelation = GoodsDeployRelation.find("byLinkId", outerGroupId).first();
             if (goodsDeployRelation == null || goodsDeployRelation.goods == null){
                 Logger.info("can not find goodsDeployRelation: %s", outerGroupId);
+                putStatusAndMsg(result, "10202", "未找到商品对应关系");
                 return null;
             }
             models.sales.Goods goods =  goodsDeployRelation.goods;
             if(goods == null){
+                putStatusAndMsg(result, "10100", "未找到商品");
                 Logger.info("goods not found: %s", outerGroupId);
                 return null;
             }
             if(goods.originalPrice.compareTo(productPrize) > 0){
                 Logger.info("invalid yhd productPrice: %s", productPrize);
+                putStatusAndMsg(result, "10100", "价格非法");
                 return null;
             }
 
@@ -221,6 +228,7 @@ public class WubaOrder extends Controller {
             }
         } catch (NotEnoughInventoryException e) {
             Logger.info("enventory not enough");
+            putStatusAndMsg(result, "10100", "价格非法");
             return null;
         }
 

@@ -39,7 +39,7 @@ public class WubaProduct extends Controller{
     }
 
     public static void upload(long goodsId, int prodCategory, int isSend, BigDecimal expressMoney,
-                              int prodModelType, Integer[] cityIds, Integer[] travelCityIds, Date startTime, Date endTime, Date deadline,
+                              Integer[] cityIds, Integer[] travelCityIds, Date startTime, Date endTime, Date deadline,
                               int successNum, int saleMaxNum, int buyerMaxNum, int buyerMinNum,
                               BigDecimal prodPrice, BigDecimal groupPrice, int isRefund, int shopSize) {
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
@@ -61,6 +61,7 @@ public class WubaProduct extends Controller{
         }
 
         groupbuyInfo.put("prodTypeId", 1);
+        groupbuyInfo.put("prodModelType", 1);
         Map<String, Object> prodModelJson = new HashMap<>();
         prodModelJson.put("prodmodcatename", groupbuyInfo.get("prodName"));
         prodModelJson.put("prodprice", prodPrice);
@@ -74,7 +75,6 @@ public class WubaProduct extends Controller{
         groupbuyInfo.put("prodCategory", prodCategory);
         groupbuyInfo.put("isSend", isSend);
         groupbuyInfo.put("expressMoney", expressMoney);
-        groupbuyInfo.put("prodModelType", prodModelType);
         groupbuyInfo.put("cityIds", cityIds);
 
         groupbuyInfo.put("travelCityIds", travelCityIds);
