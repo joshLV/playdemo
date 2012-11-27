@@ -17,6 +17,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 付给商户的预付款.
@@ -38,13 +39,15 @@ public class Prepayment extends Model {
     @Max(999999)
     public BigDecimal amount;   //金额
 
+    public BigDecimal withdrawAmount = BigDecimal.ZERO;   //已结算金额
+
     @Column(name = "effective_at")
     public Date effectiveAt;    //有效期开始时间
 
     @Column(name = "expire_at")
     public Date expireAt;       //有效期结束时间
 
-    public String remark;
+    public String remark;       //备注
 
     @Column(name = "created_at")
     public Date createdAt;      //创建时间
@@ -91,7 +94,54 @@ public class Prepayment extends Model {
     }
 
     @Transient
+    /**
+     * 只有从未被结算过的预付款记录才允许修改和删除
+     */
     public boolean canUpdate() {
         return AccountSequence.countByPrepayment(id) <= 0l;
+    }
+
+    public static List<Prepayment> getUnclearedPrepayments(long uid) {
+        return find("supplier.id=? and amount>withdrawAmount order by createdAt", uid).fetch();
+    }
+
+    public static BigDecimal getUnclearedBalance(Long uid) {
+        BigDecimal prepaymentAmount = find("select sum(amount)-sum(withdrawAmount) from Prepayment where supplier.id=? and amount>withdrawAmount", uid).first();
+        return prepaymentAmount == null ? BigDecimal.ZERO : prepaymentAmount;
+    }
+
+    @Transient
+    public BigDecimal getBalance() {
+        if (amount == null) {
+            return BigDecimal.ZERO;
+        }
+        if (withdrawAmount == null) {
+            return amount;
+        }
+        return amount.subtract(withdrawAmount);
+
+    }
+
+
+    /**
+     * 返回是否给定的预付款记录支付了全部需要支付的费用
+     *
+     * @param prepayment
+     * @param amount
+     * @return
+     */
+    public static boolean pay(Prepayment prepayment, BigDecimal amount) {
+        if (amount == null) {
+            return true;
+        }
+        if (amount.compareTo(prepayment.amount) > 0) {
+            prepayment.withdrawAmount = prepayment.amount;
+            prepayment.save();
+            return false;
+        } else {
+            prepayment.withdrawAmount = prepayment.withdrawAmount == null ? amount : prepayment.withdrawAmount.add(amount);
+            prepayment.save();
+            return true;
+        }
     }
 }

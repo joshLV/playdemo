@@ -9,6 +9,7 @@ import models.accounts.util.AccountUtil;
 import models.admin.SupplierUser;
 import models.consumer.User;
 import models.consumer.UserInfo;
+import models.order.Prepayment;
 import models.resale.Resaler;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
@@ -224,11 +225,20 @@ public class WithdrawApproval extends Controller {
         List<Supplier> supplierList = getWithdrawSupplierList();
         Account supplierAccount = AccountUtil.getSupplierAccount(supplierId);
         Supplier supplier = Supplier.findById(supplierId);
-        List<WithdrawAccount> withdrawAccountList = WithdrawAccount.findByUser(supplierId, SUPPLIER);
-
+        //结算总额
         BigDecimal amount = supplierAccount.getWithdrawAmount();
+        //单笔预付款金额
+        List<Prepayment> prepayments = Prepayment.getUnclearedPrepayments(supplier.id);
+        BigDecimal prepaymentBalance = prepayments.size() > 0 ? prepayments.get(0).getBalance() : BigDecimal.ZERO;
+        //实际需打款金额
+        BigDecimal needPay = prepaymentBalance.compareTo(amount) >= 0 ? BigDecimal.ZERO : amount.subtract(prepaymentBalance);
+        Long prepaymentId = prepaymentBalance.compareTo(BigDecimal.ZERO) > 0?prepayments.get(0).id:null;
+        if (needPay.compareTo(BigDecimal.ZERO) > 0) {
+            List<WithdrawAccount> withdrawAccountList = WithdrawAccount.findByUser(supplierId, SUPPLIER);
+            renderArgs.put("withdrawAccountList", withdrawAccountList);
+        }
 
-        render("/WithdrawApproval/settle.html", supplierList, supplierId, withdrawDate, withdrawAccountList, amount, supplierAccount, supplier);
+        render("/WithdrawApproval/settle.html", supplierList, supplierId, withdrawDate, amount, supplierAccount, supplier, prepaymentBalance, prepaymentId, needPay);
     }
 
     /**
@@ -242,7 +252,7 @@ public class WithdrawApproval extends Controller {
      * @param comment
      */
     public static void settle(Account supplierAccount, Date withdrawDate,
-                              Long withdrawAccountId, BigDecimal amount, BigDecimal fee, String comment) {
+                              Long withdrawAccountId, BigDecimal amount, BigDecimal fee, String comment, Long prepaymentId) {
         //生成结算账单
         WithdrawAccount withdrawAccount = WithdrawAccount.findByIdAndUser(withdrawAccountId, supplierAccount.uid, SUPPLIER);
         WithdrawBill bill = new WithdrawBill();
@@ -252,15 +262,22 @@ public class WithdrawApproval extends Controller {
         bill.subBankName = withdrawAccount.subBankName;
         bill.cardNumber = withdrawAccount.cardNumber;
         bill.amount = amount;
-        bill.fee = fee;
+        bill.fee = fee == null ? BigDecimal.ZERO : fee;
         Supplier supplier = Supplier.findById(supplierAccount.uid);
         //申请提现
         bill.apply(OperateRbac.currentUser().userName, supplierAccount, supplier.otherName);
         //审批提现
-        bill.agree(fee, comment, withdrawDate);
-        //发送结算通知短信
-        sendWithdrawnSMS(bill, comment, "您的账户中有" + bill.amount + "已结款, 请查收.");
+        int withdrawCount = bill.agree(fee, comment, withdrawDate);
 
+        if (withdrawCount > 0 && prepaymentId != null) {
+            Prepayment prepayment = Prepayment.findById(prepaymentId);
+            //将结算金额与预付款金额进行绑定
+            if (prepayment != null && prepayment.getBalance().compareTo(BigDecimal.ZERO) >= 0) {
+                boolean payAll = Prepayment.pay(prepayment, bill.amount.add(bill.fee));
+            }
+            //发送结算通知短信
+            sendWithdrawnSMS(bill, comment, "您的账户中有" + bill.amount + "已结款, 手续费" + bill.fee + "元,请查收.");
+        }
         index(null);
     }
 }
