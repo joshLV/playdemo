@@ -162,7 +162,7 @@
                 if (coupon.orderItems.goodsHistoryId != null) {
                 goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" +
                 coupon.orderItems.goods.id+ "/h/" +
-                coupon.orderItems.goodsHistoryId+"/orderItem/"+coupon?.orderItems?.id;
+                coupon.orderItems.goodsHistoryId;
                 } else {
                 goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" +
                 coupon.orderItems.goods.id;

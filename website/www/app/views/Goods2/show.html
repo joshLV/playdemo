@@ -73,7 +73,7 @@
             #{/if}
 
             #{if ghShow==true && goodsUpdateAt!=null }
-                <li class="amount">购买数量: ${buyNumber}
+                <li class="amount">
                     <div class="snap">
                         <p class="msg" style="font-size:12px;">您现在查看的是交易快照</p>
 
@@ -115,6 +115,7 @@
         </ul>
         #{if ghShow == null || !ghShow }
             <input type="hidden" id="goodsId" name="gid" value="${goods.id}">
+
             <div id="btnBox">
                 #{if goods.onSale()}
                     #{if !bought}
@@ -142,6 +143,9 @@
                 #{/elseif}
             </div>
         #{/if}
+        #{else}
+            <input type="hidden" id="goodsId" name="gid" value="${goodsId}">
+        #{/else}
         <ul id="promise">
             <li class="quality"><a href="/service" target="_blank">品质保证</a></li>
             <li class="refund"><a href="/service" target="_blank">一键退款</a></li>
@@ -187,6 +191,7 @@
     <div class="bd"> ${goods?.prompt?.raw()}</div>
 </div>
 <!--抽奖商品和上海视惠公司自己的不显示地图,上海视惠公司Id=5-->
+
 #{if !goods?.isLottery && goods.supplierId !=5 &&(ghShow==false || ghShow==null)}
 <div id="outlet">
     <div class="hd">适用门店</div>

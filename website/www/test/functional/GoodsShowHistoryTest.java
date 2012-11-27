@@ -6,6 +6,7 @@ import models.order.OrderItems;
 import models.sales.Goods;
 import models.sales.GoodsHistory;
 
+import models.sales.Shop;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,6 +24,7 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 public class GoodsShowHistoryTest extends FunctionalTest {
+    Shop shop;
     Goods goods;
     OrderItems orderItems;
     GoodsHistory goodsHistory;
@@ -30,6 +32,7 @@ public class GoodsShowHistoryTest extends FunctionalTest {
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
+        shop = FactoryBoy.create(Shop.class);
         goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
             @Override
             public void build(Goods goods) {
@@ -48,7 +51,7 @@ public class GoodsShowHistoryTest extends FunctionalTest {
 
     @Test
     public void testGoodsShowHistory() {
-        Http.Response response = GET("/p/" + goodsHistory.goodsId + "/h/" + goodsHistory.id + "/orderItem/" + orderItems.id);
+        Http.Response response = GET("/p/" + goodsHistory.goodsId + "/h/" + goodsHistory.id);
         assertIsOk(response);
         GoodsHistory getGoodsHistory = (GoodsHistory) renderArgs("goods");
         assertEquals(goodsHistory.name, getGoodsHistory.name);

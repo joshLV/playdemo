@@ -96,7 +96,7 @@
                     %{
                     if (rowItem.goodsHistoryId != null) {
                     goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" +
-                    rowItem.goods.id+ "/h/" + rowItem.goodsHistoryId+"/orderItem/"+rowItem.id;
+                    rowItem.goods.id+ "/h/" + rowItem.goodsHistoryId;
                     } else {
                     goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" +
                     rowItem.goods.id;

@@ -528,12 +528,14 @@ public class Goods2 extends Controller {
      *
      * @param ghId 商品
      */
-    public static void showHistory(final long gId, final long ghId, final long orderItemId) {
+    public static void showHistory(final long gId, final long ghId) {
         User user = SecureCAS.getUser();
         final Long userId = SecureCAS.getUser() == null ? null : SecureCAS
                 .getUser().getId();
         GoodsHistory goodsHistory = GoodsHistory.findById(ghId);
+        System.out.println("1111");
         if (goodsHistory == null) {
+            System.out.println("222");
             error(404, "没有找到该商品！");
         }
         showGoodsHistory(goodsHistory);
@@ -548,22 +550,19 @@ public class Goods2 extends Controller {
                     }
                 });
         Goods goods = Goods.findById(gId);
-        OrderItems orderItems = OrderItems.findById(orderItemId);
+
 
         renderArgs.put("goodsUpdateAt", goods.updatedAt);
         renderArgs.put("questions", questions);
         renderArgs.put("ghShow", true);
         renderArgs.put("goodsId", gId);
-        if (orderItems.createdAt != null && goods.updatedAt != null && orderItems.createdAt.compareTo(goods.updatedAt) > 0) {
+        if (ghId == OrderItems.getLastHistoryId(gId)) {
 //            renderArgs.put("ghShow", false);
             redirect(WWW_URL + "/p/" + goods.id);
-
         }
 
         renderArgs.put("goodsDeleted", goods.deleted);
-        if (orderItems != null) {
-            renderArgs.put("buyNumber", orderItems.buyNumber);
-        }
+
         render("Goods2/show.html");
     }
 
