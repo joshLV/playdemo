@@ -23,6 +23,7 @@ import models.sales.GoodsWebsiteCondition;
 import models.sales.Shop;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import play.Play;
 import play.modules.breadcrumbs.Breadcrumb;
 import play.modules.breadcrumbs.BreadcrumbList;
 import play.modules.paginate.SimplePaginator;
@@ -49,7 +50,7 @@ import java.util.List;
 @With({SecureCAS.class, WebsiteInjector.class})
 @SkipCAS
 public class Goods2 extends Controller {
-
+    public static String WWW_URL = Play.configuration.getProperty("application.baseUrl", "");
     public static int PAGE_SIZE = 24;
 
     /**
@@ -555,6 +556,7 @@ public class Goods2 extends Controller {
         renderArgs.put("goodsId", gId);
         if (orderItems.createdAt != null && goods.updatedAt != null && orderItems.createdAt.compareTo(goods.updatedAt) > 0) {
 //            renderArgs.put("ghShow", false);
+            redirect(WWW_URL + "/p/" + goods.id);
 
         }
 
