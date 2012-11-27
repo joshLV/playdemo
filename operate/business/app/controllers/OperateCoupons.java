@@ -1,21 +1,22 @@
 package controllers;
 
 import models.admin.OperateUser;
-import models.order.*;
+import models.order.CouponHistory;
+import models.order.CouponsCondition;
+import models.order.ECoupon;
+import models.order.ECouponStatus;
+import models.order.VerifyCouponType;
 import models.sales.Brand;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import operate.rbac.annotations.Right;
 import org.apache.commons.lang.StringUtils;
-import play.Play;
-import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.regex.Pattern;
 
 @With(OperateRbac.class)
 @ActiveNavigation("coupons_index")
@@ -52,7 +53,6 @@ public class OperateCoupons extends Controller {
         BigDecimal amountSummary = ECoupon.summary(couponPage);
         //判断角色是否有解冻券号的权限
         boolean hasRight = ContextedPermission.hasPermission("COUPON_UNFREEZE");
-        System.out.println("couponPage>>>" + couponPage.size());
         render(couponPage, condition, amountSummary, hasRight);
     }
 
@@ -87,6 +87,7 @@ public class OperateCoupons extends Controller {
         }
 
         List<CouponHistory> couponList = CouponHistory.find("coupon=?", coupon).fetch();
+        couponSn = coupon.getMaskedEcouponSn();
         render("OperateCoupons/history.html", couponSn, couponList);
     }
 

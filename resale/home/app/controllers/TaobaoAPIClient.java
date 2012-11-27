@@ -173,7 +173,7 @@ public class TaobaoAPIClient extends Controller {
         addRequest.setLocationState("上海");
         addRequest.setLocationCity("上海");
         addRequest.setCid(50015759L);
-        addRequest.setProps("2001943:3262455;3816036:3871548;31859:47600677;8648185:29423");
+        addRequest.setProps("2001943:3262455;3816036:3871548;8648185:29423;");
         addRequest.setInputStr(String.valueOf(goods.faceValue.setScale(0))); //面值value
         addRequest.setInputPids("5392163");//面值key
         addRequest.setApproveStatus("instock");//初始为下架的，在淘宝仓库中
