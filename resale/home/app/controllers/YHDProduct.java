@@ -66,6 +66,6 @@ public class YHDProduct extends Controller{
                 renderArgs.put("errors", res.getErrors());
             }
         }
-        render();
+        render("YHDProduct/result.html");
     }
 }

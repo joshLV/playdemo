@@ -67,7 +67,7 @@ public class WubaProduct extends Controller{
         prodModelJson.put("groupprice", groupPrice);
         prodModelJson.put("prodcode", "");
         prodModelJson.put("count", 0);
-        requestMap.put("prodModelJson", "{" + new Gson().toJson(prodModelJson) + "}");
+        groupbuyInfo.put("prodModelJson", "{" + new Gson().toJson(prodModelJson) + "}");
 
         groupbuyInfo.put("groupbuyId", goodsDeployRelation.linkId);
 
@@ -116,10 +116,10 @@ public class WubaProduct extends Controller{
         requestMap.put("partners", partners);
 
 
-        JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.addgroupbuy");
+        JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.addgroupbuy", false);
         String status = result.get("status").getAsString();
         String msg = result.get("msg").getAsString();
-        render(status, msg);
+        render("WubaProduct/result.html", status, msg);
     }
 
 }

@@ -22,7 +22,7 @@ import java.util.Map;
  *         Date: 12-11-23
  */
 public class WubaUtil {
-    public static final String GATEWAY_URL  = Play.configuration.getProperty("wuba.gateway_url", "http://eapi.58.com/api/rest");
+    public static final String GATEWAY_URL  = Play.configuration.getProperty("wuba.gateway_url", "http://eapi.58.com:8080/api/rest");
     public static final String WUBA_APP_KEY = Play.configuration.getProperty("wuba.wuba_app_key");
     public static final String YBQ_APP_KEY  = Play.configuration.getProperty("wuba.ybq_app_key");
     public static final String SECRET_KEY   = Play.configuration.getProperty("wuba.secret_key");
@@ -71,7 +71,7 @@ public class WubaUtil {
             params.put("param", jsonRequest);
         }
 
-        Logger.info("wuba request: \n%s", new Gson().toJson(appParams));
+        Logger.info("wuba request: \n%s", new Gson().toJson(params));
         String json = WS.url(GATEWAY_URL).params(params).post().getString();
         Logger.info("wuba response: \n%s", json);
 
@@ -93,10 +93,12 @@ public class WubaUtil {
 
             JsonElement jsonElement = jsonParser.parse(jsonResponse);
             JsonObject result = jsonElement.getAsJsonObject();
-            String data = result.get("data").getAsString();
-            String decrypted = decryptMessage(data);
-            JsonElement dataElement = jsonParser.parse(decrypted);
-            result.add("data", dataElement);
+            if (result.has("data")){
+                String data = result.get("data").getAsString();
+                String decrypted = decryptMessage(data);
+                JsonElement dataElement = jsonParser.parse(decrypted);
+                result.add("data", dataElement);
+            }
             return result;
         } catch (Exception e) {
             Logger.error("Bad JSON: \n%s", jsonResponse);
