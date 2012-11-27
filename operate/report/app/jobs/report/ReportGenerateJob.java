@@ -27,7 +27,6 @@ public class ReportGenerateJob extends Job {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
         final String today = format.format(new Date());
-        Logger.info("=================Start ReportGenerateJob(" + today + ") ...");
 
         String[] reportNames = Play.configuration.getProperty("job.report.names", "").split(",");
 
