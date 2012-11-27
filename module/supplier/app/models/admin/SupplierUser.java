@@ -285,6 +285,7 @@ public class SupplierUser extends Model {
      */
     public boolean create(Long supplierId) {
         Images.Captcha captcha = Images.captcha();
+//        Supplier supplier = Supplier.findById(supplierId);
         Supplier supplier = Supplier.findById(supplierId);
         String password_salt = captcha.getText(6);
         // 密码加密
@@ -293,8 +294,12 @@ public class SupplierUser extends Model {
         // 随机码
         passwordSalt = password_salt;
         lockVersion = 0;
+        System.out.println("supplier>>>" + supplier);
+
+        System.out.println(" this.supplier>>>" + this.supplier);
         this.supplier = supplier;
         this.loginName = this.loginName.toLowerCase().trim();
+
         deleted = DeletedStatus.UN_DELETED;
         return super.create();
     }
