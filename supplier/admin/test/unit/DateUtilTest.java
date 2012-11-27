@@ -1,10 +1,13 @@
-package com.uhuila.common.util;
-
-import junit.framework.TestCase;
-import org.junit.Test;
+package unit;
 
 import java.util.Calendar;
 import java.util.Date;
+
+import org.junit.Test;
+
+import play.test.UnitTest;
+
+import com.uhuila.common.util.DateUtil;
 
 /**
  * 日期工具类的测试.
@@ -13,7 +16,7 @@ import java.util.Date;
  * Date: 4/6/12
  * Time: 4:02 PM
  */
-public class DateUtilTest extends TestCase {
+public class DateUtilTest extends UnitTest {
     @Test
     public void testGetEndOfDay() {
         Date aDate = new Date();
