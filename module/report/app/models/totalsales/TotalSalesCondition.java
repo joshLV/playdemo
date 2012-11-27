@@ -69,7 +69,6 @@ public class TotalSalesCondition {
         }
 
         if (endAt != null) {
-            System.out.println(".................endAt:" + endAt);
             Date endDate = Supplier.getShopHour(endAt, shopEndHour, true);
             condBuilder.append(" and e.consumedAt <= :endAt");
             paramMap.put("endAt", endDate);
