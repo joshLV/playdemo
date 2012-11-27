@@ -78,7 +78,7 @@ public class WithdrawBill extends Model {
 
     @Column(name = "account_name")
     public String accountName;        //帐户名称，如果是商户，则为商户的短名称
-    
+
     /**
      * 申请提现.
      *
@@ -95,6 +95,7 @@ public class WithdrawBill extends Model {
         this.save();
 
         try {
+
             AccountUtil.addBalanceWithoutSavingSequence(account.getId(), this.amount.negate(), this.amount, BigDecimal.ZERO,
                     this.getId(), "申请提现", null);
         } catch (BalanceNotEnoughException e) {
@@ -104,6 +105,7 @@ public class WithdrawBill extends Model {
             Logger.error(e, e.getMessage());
             return false;
         }
+
         return true;
     }
 
