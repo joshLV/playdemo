@@ -11,8 +11,8 @@
 
     <navigation key="main" text="系统管理" action="OperateUsers.index" permissions="SYSTEM_HOME" display-order="1000">
         <navigation key="user" text="操作员" permissions="USER">
-          <navigation key="user_add" text="新增操作员" action="OperateUsers.add" permissions="USER"/>
-          <navigation key="user_search" text="操作员管理" action="OperateUsers.index" permissions="USER"/>
+          <navigation key="user_add" text="新增操作员" action="OperateUsers.add" permissions="USER_ADD"/>
+          <navigation key="user_search" text="操作员管理" action="OperateUsers.index" permissions="USER_EDIT"/>
         </navigation>
         <navigation key="application_logs_view" text="系统日志">
           <navigation key="ws_call_logs" text="Web服务调用日志" 

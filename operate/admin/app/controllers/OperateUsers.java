@@ -103,6 +103,7 @@ public class OperateUsers extends Controller {
     /**
      * 逻辑删除操作员
      */
+    @ActiveNavigation("user_add")
     public static void delete(Long id) {
         OperateUser supplierUser = OperateUser.findById(id);
         supplierUser.deleted = DeletedStatus.DELETED;
@@ -113,6 +114,7 @@ public class OperateUsers extends Controller {
     /**
      * 操作员编辑页面
      */
+    @ActiveNavigation("user_add")
     public static void edit(Long id) {
         OperateUser operateUser = OperateUser.findById(id);
         String roleIds = "";
@@ -134,6 +136,7 @@ public class OperateUsers extends Controller {
      * @param id          ID
      * @param operateUser 用户信息
      */
+    @ActiveNavigation("user_add")
     public static void update(Long id, @Valid OperateUser operateUser) {
         if (operateUser.roles == null) {
             Validation.addError("operateUser.roles", "validation.selected");
