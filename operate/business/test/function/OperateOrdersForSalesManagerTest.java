@@ -1,8 +1,9 @@
 package function;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import controllers.operate.cas.Security;
+import factory.FactoryBoy;
+import factory.admin.OperateUserFactory;
+import factory.callback.BuildCallback;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
 import models.consumer.User;
@@ -10,26 +11,23 @@ import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Goods;
 import models.supplier.Supplier;
-
 import operate.rbac.RbacLoader;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-import controllers.operate.cas.Security;
-import factory.FactoryBoy;
-import factory.admin.OperateUserFactory;
-import factory.callback.BuildCallback;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class OperateOrdersForSalesManagerTest extends FunctionalTest {
 
     Order order;
     OperateUser operateUser;
-    
+
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
@@ -37,7 +35,7 @@ public class OperateOrdersForSalesManagerTest extends FunctionalTest {
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
-        
+
         // only sales role.
         operateUser = FactoryBoy.create(OperateUser.class, new BuildCallback<OperateUser>() {
             @Override
@@ -49,7 +47,7 @@ public class OperateOrdersForSalesManagerTest extends FunctionalTest {
             }
         });
         // 设置测试登录的用户名
-        Security.setLoginUserForTest(operateUser.loginName);        
+        Security.setLoginUserForTest(operateUser.loginName);
     }
 
     @After
@@ -67,6 +65,7 @@ public class OperateOrdersForSalesManagerTest extends FunctionalTest {
             public void build(Order o) {
                 o.userId = user.id;
                 o.description = "testorder";
+                o.paidAt = new Date();
             }
         });
         FactoryBoy.create(OrderItems.class, new BuildCallback<OrderItems>() {
@@ -75,10 +74,10 @@ public class OperateOrdersForSalesManagerTest extends FunctionalTest {
                 oi.phone = user.mobile;
             }
         });
-        
+
         Response response = GET("/orders");
         assertStatus(200, response);
-        List<Order> orders = (List<Order>)renderArgs("orderList");
+        List<Order> orders = (List<Order>) renderArgs("orderList");
         assertEquals(1, orders.size());
     }
 
@@ -97,6 +96,7 @@ public class OperateOrdersForSalesManagerTest extends FunctionalTest {
             public void build(Order o) {
                 o.userId = user.id;
                 o.description = "testorder";
+                o.paidAt = new Date();
             }
         });
         FactoryBoy.create(OrderItems.class, new BuildCallback<OrderItems>() {
@@ -105,10 +105,10 @@ public class OperateOrdersForSalesManagerTest extends FunctionalTest {
                 oi.phone = user.mobile;
             }
         });
-        
+
         Response response = GET("/orders");
         assertStatus(200, response);
-        List<Order> orders = (List<Order>)renderArgs("orderList");
+        List<Order> orders = (List<Order>) renderArgs("orderList");
         assertEquals(1, orders.size());
     }
 

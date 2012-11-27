@@ -1,8 +1,9 @@
 package function;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import controllers.operate.cas.Security;
+import factory.FactoryBoy;
+import factory.admin.OperateUserFactory;
+import factory.callback.BuildCallback;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
 import models.consumer.User;
@@ -10,20 +11,17 @@ import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Goods;
 import models.supplier.Supplier;
-
 import operate.rbac.RbacLoader;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-import controllers.operate.cas.Security;
-import factory.FactoryBoy;
-import factory.admin.OperateUserFactory;
-import factory.callback.BuildCallback;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class OperateOrdersForSalesTest extends FunctionalTest {
 
@@ -66,6 +64,7 @@ public class OperateOrdersForSalesTest extends FunctionalTest {
             public void build(Order o) {
                 o.userId = user.id;
                 o.description = "testorder";
+                o.paidAt = new Date();
             }
         });
         FactoryBoy.create(OrderItems.class, new BuildCallback<OrderItems>() {
@@ -96,6 +95,7 @@ public class OperateOrdersForSalesTest extends FunctionalTest {
             public void build(Order o) {
                 o.userId = user.id;
                 o.description = "testorder";
+                o.paidAt = new Date();
             }
         });
         FactoryBoy.create(OrderItems.class, new BuildCallback<OrderItems>() {
