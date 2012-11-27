@@ -187,9 +187,11 @@ public class AccountSequence extends Model {
     }
 
     public static BigDecimal getTodayWithdrawAmount(Account account) {
-        BigDecimal amount = (BigDecimal) find("select sum(changeAmount) account=? and createdAt>=? and createdAt<? order by createdAt DESC", account, DateUtil.getBeginOfDay(), DateUtil.getEndOfDay(new Date())).first();
+        BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
+                " account=? and createdAt>=? and createdAt<? order by createdAt DESC",
+                account, DateUtil.getBeginOfDay(), DateUtil.getEndOfDay(new Date())).first();
 
-        return amount != null ? amount : BigDecimal.ZERO;
+        return amount != null ? amount.abs() : BigDecimal.ZERO;
     }
 
     /**
