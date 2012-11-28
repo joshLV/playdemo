@@ -30,6 +30,7 @@ public class OperateQuestions extends Controller {
 
     @ActiveNavigation("questions_index")
     public static void index(QuestionCondition condition) {
+        System.out.println("ini");
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         if (condition == null) {
@@ -77,12 +78,11 @@ public class OperateQuestions extends Controller {
             question.operateUser = operateUser.userName;
         }
 
-        if (question.goodsId != null){
-            if (question.goodsType == GoodsType.POINTGOODS){
+        if (question.goodsId != null) {
+            if (question.goodsType == GoodsType.POINTGOODS) {
                 models.sales.PointGoods pointGoods = models.sales.PointGoods.findById(question.goodsId);
                 question.goodsName = pointGoods.name;
-            }
-            else{
+            } else {
                 Goods goods = Goods.findById(question.goodsId);
                 question.goodsName = goods.name;
             }
