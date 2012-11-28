@@ -13,6 +13,7 @@ GET     /reports/payment-detail                 PaymentReports.detail
 GET     /reports/withdraw                       WithdrawReports.index
 GET     /reports/balance                        BalanceReports.index
 GET     /reports/prepayment                     PrepaymentReports.index
+GET     /reports/prepayment/{id}/trends         PrepaymentReports.trends
 
 # 网站运营报表
 GET     /webop/referers                         WebTrackReports.referers

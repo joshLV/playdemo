@@ -110,7 +110,7 @@
         <td>${report?.consumedProcess?.format('#.##')} %</td>
         <td>${report?.timeProcess?.format('#.##')} %</td>
         <td>${report?.processCompare?.format('#.##')} %</td>
-        <td><a href="/reports"
+        <td><a href="/reports/prepayment/${report?.prepayment?.id}/trends"
                target="_blank">查看销售曲线图</a></td>
     </tr>
 #{/paginate.list}
