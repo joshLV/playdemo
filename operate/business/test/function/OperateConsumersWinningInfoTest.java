@@ -16,6 +16,7 @@ import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
@@ -63,6 +64,7 @@ public class OperateConsumersWinningInfoTest extends FunctionalTest {
         List<UserVote> userVoteResultLastest = UserVote.find("user=? and vote=?", user, voteQuestion).fetch();
         UserVote userVote = userVoteResultLastest.get(0);
         assertEquals("A", userVote.answer);
+        assertEquals(1, ((JPAExtPaginator<UserVote>) renderArgs("votePage")).size());
 
     }
 
