@@ -24,8 +24,8 @@
         #{/if}
         #{else}
             <li class="first"><a class="login" id="login" href="${helper.Domain.getWWWHost(request)}/login">登录</a></li>
-        *{<li><a class="signup" href="${helper.Domain.getWWWHost(request)}/register">注册</a></li>}*
-            <li><a class="signup j_auth" href="" target="_blank">注册</a></li>
+        <li><a class="signup" href="${helper.Domain.getWWWHost(request)}/register">注册</a></li>
+
 
 
             <li><a href="${helper.Domain.getHomeHost(request)}">我的一百券</a></li>
@@ -161,7 +161,7 @@
     </div>
 </div>
 <!-- #footer -->
-#{asset.js src:['/u/jquery-1.7.2.min.js','/base/121031/base.js','/home/121112/auth.js'] /}
+#{asset.js src:['/u/jquery-1.7.2.min.js','/base/121031/base.js'] /}
 #{get 'moreScripts' /}
 <div style="display:none">
 #{if !play.Play.runingInTestMode()}
