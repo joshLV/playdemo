@@ -220,9 +220,13 @@ public class AccountSequence extends Model {
                 " where " + accountCond + "s.createdAt<=:withdrawDate");
         query.setParameter("settlementStatus", SettlementStatus.CLEARED);
         query.setParameter("withdrawBill", withdrawBill);
-        query.setParameter("account", supplierAccount);
+        if (supplierAccount != null) {
+            query.setParameter("account", supplierAccount);
+        }
         query.setParameter("withdrawDate", DateUtil.getEndOfDay(withdrawDate));
-        query.setParameter("prepayment", prepayment);
+        if (prepayment != null) {
+            query.setParameter("prepayment", prepayment);
+        }
         //update 的记录数
         return query.executeUpdate();
     }

@@ -23,7 +23,6 @@ import models.sales.GoodsUnPublishedPlatform;
 import models.sales.MaterialType;
 import models.sales.Shop;
 import models.supplier.Supplier;
-import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
@@ -141,8 +140,7 @@ public class OperateGoods extends Controller {
 
     private static int getPage() {
         String page = request.params.get("page");
-        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        return pageNumber;
+        return StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
     }
 
     /**
