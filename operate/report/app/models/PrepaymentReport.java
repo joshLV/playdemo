@@ -27,6 +27,7 @@ import java.util.List;
  * Time: 2:22 PM
  */
 public class PrepaymentReport extends Model {
+    public Prepayment prepayment;
     public String supplierName;
     public BigDecimal amount;  //预付款金额
     public BigDecimal soldAmount;  //已销售金额
@@ -46,6 +47,7 @@ public class PrepaymentReport extends Model {
         if (prepayment == null || prepayment.supplier == null) {
             return;
         }
+        this.prepayment = prepayment;
         this.supplierName = (StringUtils.isNotBlank(prepayment.supplier.otherName)) ?
                 prepayment.supplier.fullName + "(" + prepayment.supplier.otherName + ")"
                 : prepayment.supplier.fullName;

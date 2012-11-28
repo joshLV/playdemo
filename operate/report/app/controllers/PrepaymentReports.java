@@ -37,6 +37,10 @@ public class PrepaymentReports extends Controller {
         render(reportPage, supplierList, supplierId, isEffective, orderBy);
     }
 
+    public static void trends() {
+        
+    }
+
     private static int getPageNumber() {
         String page = request.params.get("page");
         return StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
