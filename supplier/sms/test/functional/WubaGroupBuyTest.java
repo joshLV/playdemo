@@ -3,13 +3,11 @@ package functional;
 import com.google.gson.Gson;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
-import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
 import models.order.ECoupon;
 import models.order.Order;
 import models.resale.Resaler;
-import models.sales.Goods;
 import models.sales.GoodsDeployRelation;
 import models.wuba.WubaUtil;
 import org.junit.Before;
@@ -17,14 +15,16 @@ import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * @author likang
  *         Date: 12-11-27
  */
-public class WubaGroupBuyTest extends FunctionalTest{
+public class WubaGroupBuyTest extends FunctionalTest {
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
@@ -45,7 +45,7 @@ public class WubaGroupBuyTest extends FunctionalTest{
 
         Map<String, Object> params = new HashMap<>();
         params.put("orderId", System.currentTimeMillis());
-        params.put("groupbuyIdThirdpart",goodsDeployRelation.linkId);
+        params.put("groupbuyIdThirdpart", goodsDeployRelation.linkId);
         params.put("mobile", "13472581853");
         params.put("prodCount", 1);
         params.put("prodPrice", 20);
@@ -56,5 +56,26 @@ public class WubaGroupBuyTest extends FunctionalTest{
         assertIsOk(response);
         assertEquals(1, Order.count());
         assertEquals(1, ECoupon.count());
+    }
+
+    @Test
+    public void testQueryCoupon() {
+        ECoupon coupon = FactoryBoy.create(ECoupon.class);
+        ECoupon coupon1 = FactoryBoy.create(ECoupon.class);
+
+        Map<String, Object> params = new HashMap<>();
+
+        String[] s = {coupon.id.toString(), coupon1.id.toString()};
+        List<String> ticketIds = new ArrayList<>();
+        ticketIds.add("" + coupon.id.toString());
+        ticketIds.add(coupon1.id.toString());
+        params.put("ticketIds", s);
+
+        Map<String, String> requestParam = new HashMap<>();
+        requestParam.put("param", WubaUtil.encryptMessage(new Gson().toJson(params)));
+        Http.Response response = POST("/api/v1/58/gb/coupon-info", requestParam);
+        assertIsOk(response);
+        System.out.println(response.out.toString());
+        assertEquals("{\"status\":\"10000\",\"data\":\"ODA0NjZmMjZkMWJmZWE5NQ%3D%3D\",\"msg\":\"成功\"}", response.out.toString());
     }
 }

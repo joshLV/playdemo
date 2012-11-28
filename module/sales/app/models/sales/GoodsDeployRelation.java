@@ -52,8 +52,4 @@ public class GoodsDeployRelation extends Model {
         return deployRelation != null ? deployRelation.goods : null;
     }
 
-    public static GoodsDeployRelation getDeployRelationGoods(OuterOrderPartner partner, Goods goods) {
-        GoodsDeployRelation deployRelation = GoodsDeployRelation.find("partner=? and goods=?", partner, goods).first();
-        return deployRelation;
-    }
 }
