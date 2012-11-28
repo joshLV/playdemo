@@ -27,16 +27,14 @@ public class PrepaymentReports extends Controller {
      * 查询预付款金额明细表.
      */
     @ActiveNavigation("prepayment_reports")
-    public static void index(Long supplierId, String orderBy) {
+    public static void index(Long supplierId, int isEffective, String orderBy) {
         int pageNumber = getPageNumber();
 
         List<Supplier> supplierList = Supplier.findUnDeleted();
         // 查询出所有结果
-        SimplePaginator<PrepaymentReport> reportPage = PrepaymentReport.getPage(supplierId, orderBy,pageNumber, PAGE_SIZE);
+        SimplePaginator<PrepaymentReport> reportPage = PrepaymentReport.getPage(supplierId, isEffective, orderBy, pageNumber, PAGE_SIZE);
 
-        render(reportPage, supplierList, supplierId);
-
-
+        render(reportPage, supplierList, supplierId, isEffective, orderBy);
     }
 
     private static int getPageNumber() {

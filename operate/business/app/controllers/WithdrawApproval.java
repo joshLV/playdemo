@@ -267,7 +267,11 @@ public class WithdrawApproval extends Controller {
         //申请提现
         bill.apply(OperateRbac.currentUser().userName, supplierAccount, supplier.otherName);
         //审批提现
-        Prepayment prepayment = Prepayment.findById(prepaymentId);
+        System.out.println("prepaymentId:" + prepaymentId);
+        Prepayment prepayment = null;
+        if (prepaymentId != null) {
+            prepayment = Prepayment.findById(prepaymentId);
+        }
         int withdrawCount = bill.agree(fee, comment, withdrawDate, prepayment);
 
         if (withdrawCount > 0 && prepaymentId != null) {

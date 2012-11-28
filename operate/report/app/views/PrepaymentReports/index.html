@@ -1,40 +1,105 @@
 #{extends 'layout_operate/layout.html' /}
 #{set title:'预付款明细表' /}
+#{set 'moreScripts'}
+<script type="text/javascript">
+    $(function () {
+
+        $('#processOrder').click(function (ev) {
+            ev.preventDefault();
+            var order = '${orderBy}';
+
+            if (order == null || order == '') {
+                $('#orderBy').val("desc");
+            } else if (order == "desc") {
+                $('#orderBy').val("asc");
+            } else {
+                $('#orderBy').val("");
+            }
+            $('#frmlist').submit();
+        });
+    });
+</script>
+
+#{/set}
+#{set 'moreStyles'}
+<style type="text/css">
+    .table-striped tbody .tr-expired {
+        color: #A0A0A0;
+    }
+
+    .table-striped tbody tr.transparent td td {
+        border-left: 0px;
+        background: transparent;
+    }
+
+    .expired {
+        color: #ffbe28;
+        font-weight: bold;
+    }
+
+    .zeroBaseSale {
+        color: #942e8f;
+        font-weight: bold;
+    }
+
+    .default-order {
+        background: url(http://y1.uhcdn.com/images/2012/11/f30406611dd51bba.png) no-repeat right 16px;
+    }
+
+    .asc {
+        background: url(http://y1.uhcdn.com/images/2012/11/0ab07600b7c1e671.png) no-repeat right 16px;
+    }
+
+    .desc {
+        background: url(http://y1.uhcdn.com/images/2012/11/6fbd68649f111b05.png) no-repeat right 16px;
+    }
+
+</style>
+#{/set}
+
 #{include '/share/nav.html' /}
 <form class="form-horizontal" name="frmlist" id="frmlist" action="@{PrepaymentReports.index()}" method="GET">
     <table width="100%">
         <tr>
             <td width="30%">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
-                #{select 'supplierId', id:supplierId, class:'select', value:supplierId}
+            #{select 'supplierId', id:supplierId, class:'select', value:supplierId}
                 #{option "0"}不限#{/option}
                 #{list items:supplierList, as:'supplier'}
-                #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
+                    #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
                 #{/list}
-                #{/select}
+            #{/select}
+
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                只显示未到期的<input type="checkbox" name="isEffective" id="isEffective" class="input-medium"
+                              value="${isEffective?:1}" ${isEffective == 1 ?'checked':''}/>
             </td>
             <td>
                 <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
             </td>
         </tr>
     </table>
+    <input type="hidden" id="orderBy" name="orderBy" value="${orderBy}">
+
 </form>
 
 <table class="table table-striped table-bordered table-condensed">
     <thead>
-    <th width="10px">商户</th>
-    <th width="10px">预付款金额</th>
-    <th width="80px">已销售金额</th>
+    <th width="100px">商户</th>
+    <th width="50px">预付款金额</th>
+    <th width="50px">已销售金额</th>
     <th width="50px">已消费金额</th>
     <th width="50px">预付款余额</th>
     <th width="50px">预付款开始日</th>
     <th width="50px">预付款到期日</th>
     <th width="50px">消费进度</th>
     <th width="50px">时间进度</th>
-    <th width="50px">进度比较<br/>(消费/时间)</th>
+    <th width="50px" class="${orderBy==null || orderBy.equals('')?'default-order':orderBy}"><a id="processOrder"
+                                                                                               href="#">进度比较<br/>(消费/时间)</a>
+    </th>
     <th width="50px">操作</th>
     </thead>
-    #{paginate.list items:reportPage, as:'report'}
-    <tr>
+#{paginate.list items:reportPage, as:'report'}
+    <tr class="#{if report?.isExpired()}tr-expired#{/if} transparent">
         <td>${report?.supplierName}</td>
         <td>${report?.amount?.formatCurrency('CNY')}</td>
         <td>${report?.soldAmount?.formatCurrency('CNY')}</td>
@@ -42,17 +107,16 @@
         <td>${report?.balance?.formatCurrency('CNY')}</td>
         <td>${report?.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
         <td>${report?.expireAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-        <td>${report?.consumedProcess?.format('#.##')}%</td>
-        <td>${report?.timeProcess?.format('#.##')}%</td>
-        <td>${report?.processCompare?.format('#.##')}%</td>
-        <td>
-            <a href="/reports"
+        <td>${report?.consumedProcess?.format('#.##')} %</td>
+        <td>${report?.timeProcess?.format('#.##')} %</td>
+        <td>${report?.processCompare?.format('#.##')} %</td>
+        <td><a href="/reports"
                target="_blank">查看销售曲线图</a></td>
     </tr>
-    #{/paginate.list}
+#{/paginate.list}
 </table>
 <div class="pagination">
     <ul>
-        #{paginate.controls items:reportPage /}
+    #{paginate.controls items:reportPage /}
     </ul>
 </div>
