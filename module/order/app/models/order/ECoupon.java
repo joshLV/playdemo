@@ -458,14 +458,16 @@ public class ECoupon extends Model {
                                            VerifyCouponType type, String triggerCouponSn) {
 
         //===================判断是否当当订单产生的券=============================
-        try {
-            if (DDAPIUtil.isRefund(this)) {//如果券在当当上已经退款，则不允许券的消费。
+        if (this.partner == ECouponPartner.DD) {
+            try {
+                if (DDAPIUtil.isRefund(this)) {//如果券在当当上已经退款，则不允许券的消费。
+                    return false;
+                }
+            } catch (DDAPIInvokeException e) {
+                //当当接口调用失败，目前仅记录日志。不阻止券的消费。以便保证用户体验。
+                Logger.error(e.getMessage(), e);
                 return false;
             }
-        } catch (DDAPIInvokeException e) {
-            //当当接口调用失败，目前仅记录日志。不阻止券的消费。以便保证用户体验。
-            Logger.error(e.getMessage(), e);
-            return false;
         }
 
         if (this.partner == ECouponPartner.JD) {
@@ -473,13 +475,12 @@ public class ECoupon extends Model {
                 Logger.info("verify on jingdong failed");
                 return false;
             }
-        }else if(this.partner == ECouponPartner.WUBA) {
+        } else if (this.partner == ECouponPartner.WUBA) {
             if (!WubaUtil.verifyOnWuba(this)) {
                 Logger.info("verify on wuba failed");
                 return false;
             }
         }
-
 
         //===================券消费处理开始=====================================
         if (consumed(shopId, operateUserId, supplierUser, type)) {
@@ -490,7 +491,9 @@ public class ECoupon extends Model {
         //===================券消费处理完毕=====================================
 
         //=========通知当当该券已经使用,如果通知失败会记录到表dd_failure_log中======
-        DDAPIUtil.notifyVerified(this);
+        if (this.partner == ECouponPartner.DD) {
+            DDAPIUtil.notifyVerified(this);
+        }
         return true;
 
     }
@@ -1324,8 +1327,8 @@ public class ECoupon extends Model {
     /**
      * 获取预付款的已消费总额.
      *
-     * @param prepayment    预付款记录
-     * @return  预付款的已消费总额
+     * @param prepayment 预付款记录
+     * @return 预付款的已消费总额
      */
     public static BigDecimal getConsumedAmount(Prepayment prepayment) {
         BigDecimal usedAmount = find("select sum(originalPrice) from ECoupon " +

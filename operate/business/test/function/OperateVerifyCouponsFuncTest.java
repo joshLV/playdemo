@@ -9,8 +9,18 @@ import models.accounts.util.AccountUtil;
 import models.admin.OperateUser;
 import models.consumer.User;
 import models.consumer.UserInfo;
-import models.dangdang.*;
-import models.order.*;
+import models.dangdang.DDAPIInvokeException;
+import models.dangdang.DDAPIUtil;
+import models.dangdang.DDOrderItem;
+import models.dangdang.HttpProxy;
+import models.dangdang.Response;
+import models.order.CouponHistory;
+import models.order.ECoupon;
+import models.order.ECouponPartner;
+import models.order.ECouponStatus;
+import models.order.Order;
+import models.order.PromoteRebate;
+import models.order.RebateStatus;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sales.Shop;
@@ -193,6 +203,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
             public void build(ECoupon target) {
                 target.shop = shop;
                 target.goods = goods;
+                target.partner = ECouponPartner.DD;
                 target.expireAt = goods.expireAt;
                 target.operateUserId = 2L;
                 target.originalPrice = new BigDecimal(100);

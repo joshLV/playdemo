@@ -9,6 +9,7 @@ import models.dangdang.DDOrderItem;
 import models.dangdang.ErrorCode;
 import models.dangdang.ErrorInfo;
 import models.order.ECoupon;
+import models.order.ECouponPartner;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OrderItems;
@@ -17,8 +18,8 @@ import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
 import models.resale.Resaler;
 import models.resale.ResalerStatus;
-import models.sales.*;
 import models.sales.Goods;
+import models.sales.GoodsDeployRelation;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.db.jpa.JPA;
@@ -163,6 +164,10 @@ public class DDOrderAPI extends Controller {
         outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
         outerOrder.save();
         List<ECoupon> eCouponList = ECoupon.findByOrder(order);
+        for (ECoupon coupon : eCouponList) {
+            coupon.partner = ECouponPartner.DD;
+            coupon.save();
+        }
         Logger.info("\n [DDOrderAPI] end ");
         render(order, id, kx_order_id, eCouponList);
     }

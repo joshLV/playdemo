@@ -84,14 +84,14 @@ public class OperateCoupons extends Controller {
     /**
      * 券号列表
      */
-    public static void couponHistory(String couponSn) {
-        ECoupon coupon = ECoupon.find("eCouponSn=?", couponSn).first();
+    public static void couponHistory(Long couponId) {
+        ECoupon coupon = ECoupon.findById(couponId);
         if (coupon == null) {
             return;
         }
 
         List<CouponHistory> couponList = CouponHistory.find("coupon=?", coupon).fetch();
-        couponSn = coupon.getMaskedEcouponSn();
+        String couponSn = coupon.getMaskedEcouponSn();
         render("OperateCoupons/history.html", couponSn, couponList);
     }
 

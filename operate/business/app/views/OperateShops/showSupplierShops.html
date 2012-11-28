@@ -1,5 +1,5 @@
 #{layout_operate.selectField name:'supplierUser.shop.id', value:supplierUser?.shop?.id, error:'supplierUser.shop', required:true}
- #{option ""}全部#{/option}
+ #{option ""}---请选择---#{/option}
 #{list items:shopList, as:'shop'}
  #{option shop?.id}${shop?.name}-${shop?.address}#{/option}
 #{/list}
