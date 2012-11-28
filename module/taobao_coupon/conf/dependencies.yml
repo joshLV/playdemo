@@ -1,0 +1,4 @@
+self: play -> taobao_coupon 0.1
+
+require:
+    - play
