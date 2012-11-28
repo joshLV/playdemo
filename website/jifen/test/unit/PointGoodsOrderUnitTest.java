@@ -1,8 +1,7 @@
 package unit;
 
+import factory.FactoryBoy;
 import models.consumer.Address;
-import models.consumer.User;
-import models.consumer.UserInfo;
 import models.order.NotEnoughInventoryException;
 import models.order.PointGoodsOrder;
 import models.order.PointGoodsOrderSentStatus;
@@ -10,192 +9,121 @@ import models.order.PointGoodsOrderStatus;
 import models.sales.PointGoods;
 import org.junit.Before;
 import org.junit.Test;
-import play.test.Fixtures;
 import play.test.UnitTest;
 
 /**
- * Created with IntelliJ IDEA.
+ * 积分订单的单元测试.
+ *
  * User: hejun
  * Date: 12-8-9
  * Time: 下午1:16
- * To change this template use File | Settings | File Templates.
  */
 public class PointGoodsOrderUnitTest extends UnitTest {
 
+    PointGoodsOrder pointGoodsOrder;
+
     @Before
     public void setup() {
-        Fixtures.delete(PointGoodsOrder.class);
-        Fixtures.delete(PointGoods.class);
-        Fixtures.delete(User.class);
-        Fixtures.delete(UserInfo.class);
-        Fixtures.loadModels("Fixture/user.yml");
-        Fixtures.loadModels("Fixture/pointgoods.yml");
-        Fixtures.loadModels("Fixture/userInfo.yml");
-        Fixtures.loadModels("Fixture/userPointsConfig.yml");
-        Fixtures.loadModels("Fixture/addresses.yml");
-        Fixtures.loadModels("Fixture/pointgoodsorder.yml");
+        FactoryBoy.deleteAll();
+
+        pointGoodsOrder = FactoryBoy.create(PointGoodsOrder.class);
     }
 
     @Test
-    public void testOrderInit(){
-        Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
-        User user = User.findById(userId);
-        Long pointGoodsId = (Long) Fixtures.idCache.get("models.sales.PointGoods-pointgoods1");
-        PointGoods pointGoods = PointGoods.findById(pointGoodsId);
+    public void testOrderInit() throws NotEnoughInventoryException {
         Long buyNumber = 2L;
-        try{
-        PointGoodsOrder pointGoodsOrder = new PointGoodsOrder(userId,pointGoods,buyNumber);
-        assertEquals("2",pointGoodsOrder.buyNumber.toString());
-        assertEquals(pointGoods.name,pointGoodsOrder.pointGoodsName);
-        }
-        catch (NotEnoughInventoryException e){
-            System.out.println("error");
-        }
+        Long userId = pointGoodsOrder == null ? 0 : pointGoodsOrder.userId;
+        PointGoods pointGoods = pointGoodsOrder == null ? null : pointGoodsOrder.pointGoods;
+
+        PointGoodsOrder pointGoodsOrder = new PointGoodsOrder(userId, pointGoods, buyNumber);
+        assertEquals("2", pointGoodsOrder.buyNumber.toString());
+        assertEquals(pointGoodsOrder.pointGoods.name, pointGoodsOrder.pointGoodsName);
+
     }
 
     @Test
-    public void testSetAddress(){
-        Long pointGoodsOrderId = (Long) Fixtures.idCache.get("models.order.PointGoodsOrder-order1");
-        assertNotNull(pointGoodsOrderId);
-        PointGoodsOrder pointGoodsOrder = PointGoodsOrder.findById(pointGoodsOrderId);
-
-        Long addressId = (Long) Fixtures.idCache.get("models.consumer.Address-test3");
-        assertNotNull(addressId);
-        Address address = Address.findById(addressId);
+    public void testSetAddress() {
+        Address address = FactoryBoy.create(Address.class);
         pointGoodsOrder.setAddress(address);
 
-        assertEquals("13764081569",pointGoodsOrder.receiverMobile);
-        assertEquals("sujie1",pointGoodsOrder.receiverName);
-        assertEquals("123456",pointGoodsOrder.postcode);
-
+        assertEquals(address.mobile, pointGoodsOrder.receiverMobile);
+        assertEquals(address.name, pointGoodsOrder.receiverName);
+        assertEquals(address.postcode, pointGoodsOrder.postcode);
     }
 
     @Test
-    public void testCheckLimitNumber(){
-
-        Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
-        User user = User.findById(userId);
-
-        Long pointGoodsId = (Long) Fixtures.idCache.get("models.sales.PointGoods-pointgoods1");
-        PointGoods pointGoods = PointGoods.findById(pointGoodsId);
-
-        Long pointGoodsOrderId = (Long) Fixtures.idCache.get("models.order.PointGoodsOrder-order1");
-        assertNotNull(pointGoodsOrderId);
-        PointGoodsOrder pointGoodsOrder = PointGoodsOrder.findById(pointGoodsOrderId);
-
-        boolean b = pointGoodsOrder.checkLimitNumber(pointGoodsId,pointGoodsOrder.buyNumber);
+    public void testCheckLimitNumber() throws Exception {
+        boolean b = PointGoodsOrder.checkLimitNumber(pointGoodsOrder.pointGoods.id, pointGoodsOrder.buyNumber);
         assertFalse(b);
-
     }
 
     @Test
-    public void testCreateAndCancel(){
-        Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
-        User user = User.findById(userId);
-
-        Long pointGoodsOrderId = (Long) Fixtures.idCache.get("models.order.PointGoodsOrder-order1");
-        assertNotNull(pointGoodsOrderId);
-        PointGoodsOrder pointGoodsOrder = PointGoodsOrder.findById(pointGoodsOrderId);
-        pointGoodsOrder.userId = userId;
-
+    public void testCreateAndCancel() {
         pointGoodsOrder.createAndUpdateInventory();
+        pointGoodsOrder.refresh();
+        assertEquals(7, pointGoodsOrder.pointGoods.baseSale.intValue());
+        assertEquals(0, pointGoodsOrder.totalPoint);
 
-        Long pointGoodsId = (Long) Fixtures.idCache.get("models.sales.PointGoods-pointgoods1");
-        PointGoods pointGoods = PointGoods.findById(pointGoodsId);
-
-        assertEquals(12,pointGoods.baseSale.intValue());
-
-        UserInfo userInfo = UserInfo.findByUser(user);
-        assertEquals(191000,userInfo.totalPoints.intValue());
 
         pointGoodsOrder.cancelAndUpdateOrder();
-        assertEquals(13,pointGoods.baseSale.intValue());
-        assertEquals(200000,pointGoodsOrder.totalPoint);
-        assertEquals(PointGoodsOrderStatus.CANCELED,pointGoodsOrder.status);
+        assertEquals(8, pointGoodsOrder.pointGoods.baseSale.intValue());
+        assertEquals(0, pointGoodsOrder.totalPoint);
+        assertEquals(PointGoodsOrderStatus.CANCELED, pointGoodsOrder.status);
     }
 
     @Test
-    public void testAccept(){
-        Long pointGoodsOrderId = (Long) Fixtures.idCache.get("models.order.PointGoodsOrder-order1");
-        assertNotNull(pointGoodsOrderId);
-        PointGoodsOrder pointGoodsOrder = PointGoodsOrder.findById(pointGoodsOrderId);
+    public void testAccept() {
         pointGoodsOrder.status = PointGoodsOrderStatus.APPLY;
-        pointGoodsOrder.accept(Long.valueOf(11));
+        pointGoodsOrder.accept(11l);
+        pointGoodsOrder.save();
 
-        assertEquals(PointGoodsOrderStatus.ACCEPT,pointGoodsOrder.status);
-
-    }
-
-    @Test
-    public void testAcceptOrder(){
-
-        Long pointGoodsOrderId = (Long) Fixtures.idCache.get("models.order.PointGoodsOrder-order1");
-        assertNotNull(pointGoodsOrderId);
-        PointGoodsOrder order = PointGoodsOrder.findById(pointGoodsOrderId);
-        order.acceptOrder(pointGoodsOrderId);
-        assertEquals(PointGoodsOrderStatus.ACCEPT,order.status);
+        assertEquals(PointGoodsOrderStatus.ACCEPT, pointGoodsOrder.status);
 
     }
 
     @Test
-    public void testCancelOrder(){
+    public void testAcceptOrder() {
+        pointGoodsOrder.status = PointGoodsOrderStatus.APPLY;
+        pointGoodsOrder.save();
 
-        Long pointGoodsOrderId = (Long) Fixtures.idCache.get("models.order.PointGoodsOrder-order1");
-        assertNotNull(pointGoodsOrderId);
-        PointGoodsOrder order = PointGoodsOrder.findById(pointGoodsOrderId);
-        order.userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
-        order.save();
-        order.cancelOrder(pointGoodsOrderId,"no");
-        assertEquals(PointGoodsOrderStatus.CANCELED,order.status);
+        PointGoodsOrder.acceptOrder(pointGoodsOrder.id);
+        assertEquals(PointGoodsOrderStatus.ACCEPT, pointGoodsOrder.status);
+    }
+
+    @Test
+    public void testCancelOrder() {
+        pointGoodsOrder.status = PointGoodsOrderStatus.APPLY;
+        pointGoodsOrder.save();
+
+        PointGoodsOrder.cancelOrder(pointGoodsOrder.id, "no");
+        assertEquals(PointGoodsOrderStatus.CANCELED, pointGoodsOrder.status);
 
     }
 
     @Test
-    public void testSendGoods(){
-
-        Long pointGoodsOrderId = (Long) Fixtures.idCache.get("models.order.PointGoodsOrder-order1");
-        assertNotNull(pointGoodsOrderId);
-        PointGoodsOrder order = PointGoodsOrder.findById(pointGoodsOrderId);
-        order.status = PointGoodsOrderStatus.ACCEPT;
-        order.save();
-        order.refresh();
-        order.sendGoods(pointGoodsOrderId," ");
-        assertEquals(PointGoodsOrderSentStatus.SENT,order.sentStatus);
+    public void testSendGoods() {
+        pointGoodsOrder.status = PointGoodsOrderStatus.ACCEPT;
+        pointGoodsOrder.save();
+        pointGoodsOrder.refresh();
+        PointGoodsOrder.sendGoods(pointGoodsOrder.id, " ");
+        assertEquals(PointGoodsOrderSentStatus.SENT, pointGoodsOrder.sentStatus);
 
     }
 
     @Test
-    public void testFindByOrderNumber(){
-
-        Long pointGoodsOrderId = (Long) Fixtures.idCache.get("models.order.PointGoodsOrder-order1");
-        assertNotNull(pointGoodsOrderId);
-        PointGoodsOrder order = PointGoodsOrder.findById(pointGoodsOrderId);
-        PointGoodsOrder foundOrder = PointGoodsOrder.findByOrderNumber(order.orderNumber);
+    public void testFindByOrderNumber() {
+        PointGoodsOrder foundOrder = PointGoodsOrder.findByOrderNumber(pointGoodsOrder.orderNumber);
         assertNotNull(foundOrder);
+    }
+
+    @Test
+    public void testGetUser() {
+        assertNotNull(pointGoodsOrder.getUser());
 
     }
 
     @Test
-    public void testGetUser(){
-
-        Long pointGoodsOrderId = (Long) Fixtures.idCache.get("models.order.PointGoodsOrder-order1");
-        assertNotNull(pointGoodsOrderId);
-        PointGoodsOrder order = PointGoodsOrder.findById(pointGoodsOrderId);
-        order.userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
-        order.save();
-
-        assertNotNull(order.getUser());
-
+    public void testContiansRealGoods() {
+        assertFalse(pointGoodsOrder.containsRealGoods());
     }
-
-    @Test
-    public void testContiansRealGoods(){
-
-        Long pointGoodsOrderId = (Long) Fixtures.idCache.get("models.order.PointGoodsOrder-order1");
-        assertNotNull(pointGoodsOrderId);
-        PointGoodsOrder order = PointGoodsOrder.findById(pointGoodsOrderId);
-        assertFalse(order.containsRealGoods());
-
-    }
-
 }

@@ -12,7 +12,6 @@ import play.test.FunctionalTest;
  * User: hejun
  * Date: 12-8-7
  * Time: 下午1:41
- * To change this template use File | Settings | File Templates.
  */
 public class PointGoodsFuncTest extends FunctionalTest {
 

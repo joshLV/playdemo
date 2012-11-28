@@ -356,7 +356,7 @@ public class PointGoodsOrder extends Model {
     }
 
 
-    public void acceptOrder(Long id) {
+    public static void acceptOrder(Long id) {
         PointGoodsOrder order = PointGoodsOrder.findById(id);
 
         if (order.status != PointGoodsOrderStatus.APPLY) {
@@ -370,17 +370,15 @@ public class PointGoodsOrder extends Model {
         }
     }
 
-    public void cancelOrder(Long id, String note) {
+    public static void cancelOrder(Long id, String note) {
         PointGoodsOrder orderNew = PointGoodsOrder.findById(id);
 
+        if (orderNew == null) {
+            return;
+        }
         if (orderNew.status != PointGoodsOrderStatus.APPLY) {
             throw new RuntimeException("can not deal with order:" + orderNew.getId() + " since it's " + orderNew.status.toString());
         } else {
-            if (orderNew == null) {
-                return;
-            }
-
-
             User user = User.findById(orderNew.userId);
 
             orderNew.cancelAndUpdateOrder();
@@ -393,21 +391,19 @@ public class PointGoodsOrder extends Model {
             orderNew.updatedAt = new Date();
             orderNew.note = note;
             orderNew.save();
-
-
         }
     }
 
 
-    public void sendGoods(Long id, String note) {
+    public static void sendGoods(Long id, String note) {
         PointGoodsOrder orderNew = PointGoodsOrder.findById(id);
 
+        if (orderNew == null) {
+            return;
+        }
         if (orderNew.status != PointGoodsOrderStatus.ACCEPT) {
             throw new RuntimeException("can not deal with order:" + orderNew.getId() + " since it's " + orderNew.status.toString());
         } else {
-            if (orderNew == null) {
-                return;
-            }
             orderNew.sentStatus = PointGoodsOrderSentStatus.SENT;
             orderNew.updatedAt = new Date();
             orderNew.note = note;

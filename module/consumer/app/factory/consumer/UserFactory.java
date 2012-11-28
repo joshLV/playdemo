@@ -15,7 +15,6 @@ import java.util.Date;
  * User: wangjia
  * Date: 12-8-23
  * Time: 上午10:06
- * To change this template use File | Settings | File Templates.
  */
 public class UserFactory extends ModelFactory<User> {
 
