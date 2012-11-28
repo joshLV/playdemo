@@ -41,9 +41,8 @@ public class OperatePointGoodsOrders extends Controller {
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
 
-
         JPAExtPaginator<PointGoodsOrder> orderList =
-        PointGoodsOrder.query(condition, pageNumber, PAGE_SIZE);
+                PointGoodsOrder.query(condition, pageNumber, PAGE_SIZE);
 
 //        BigDecimal amountSummary = PointGoodsOrder.findUserTotalPoint  (orderList);
 //        List<Brand> brandList = Brand.findByOrder(null);
@@ -57,42 +56,40 @@ public class OperatePointGoodsOrders extends Controller {
      * 审核.
      */
     //Long id,     PointGoodsOrder order
-    public static void send(Long id,PointGoodsOrder pointGoodsOrder) {
-   PointGoodsOrder originalOrder = PointGoodsOrder.findById(id);
+    public static void send(Long id, PointGoodsOrder pointGoodsOrder) {
+        PointGoodsOrder originalOrder = PointGoodsOrder.findById(id);
         if (originalOrder == null) {
             error(500, "can not deal with the order:" + id);
         }
 
 //        System.out.println("originalOrder.note"+originalOrder.note);
 
-        if(pointGoodsOrder.note==null||pointGoodsOrder.note.trim().isEmpty())
-        originalOrder.acceptOrder(id);
-        else
-        originalOrder.cancelOrder(id,pointGoodsOrder.note);
+        if (pointGoodsOrder.note == null || pointGoodsOrder.note.trim().isEmpty()) {
+            PointGoodsOrder.acceptOrder(id);
+        } else {
+            PointGoodsOrder.cancelOrder(id, pointGoodsOrder.note);
+        }
         index(null);
     }
 
     /**
      * 订单发货
+     *
      * @param id
      * @param pointGoodsOrder
      */
 
 
-    public static void sendGoods(Long id,PointGoodsOrder pointGoodsOrder) {
+    public static void sendGoods(Long id, PointGoodsOrder pointGoodsOrder) {
         PointGoodsOrder originalOrder = PointGoodsOrder.findById(id);
         if (originalOrder == null) {
             error(500, "can not deal with the order:" + id);
         }
 
-
-            originalOrder.sendGoods(id,pointGoodsOrder.note);
+        PointGoodsOrder.sendGoods(id, pointGoodsOrder.note);
 
         index(null);
     }
-
-
-
 
 
     /**
@@ -102,7 +99,7 @@ public class OperatePointGoodsOrders extends Controller {
      */
     public static void details(Long id) {
         //订单信息
-        models.order. PointGoodsOrder  pointGoodsOrder = models.order. PointGoodsOrder.findById(id);
+        models.order.PointGoodsOrder pointGoodsOrder = models.order.PointGoodsOrder.findById(id);
 //        List<OrderItems> orderItems = orders.orderItems;
         //收货信息
 //        render(orders, orderItems);
@@ -131,8 +128,6 @@ public class OperatePointGoodsOrders extends Controller {
 //        render(__EXCEL_FILE_NAME__, orderList);
 
     }
-
-
 
 
 }
