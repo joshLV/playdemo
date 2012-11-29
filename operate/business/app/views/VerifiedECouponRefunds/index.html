@@ -1,0 +1,24 @@
+#{extends 'layout_operate/layout.html' /}
+#{include 'share/nav.html' /}
+#{set title:'已消费券退款' /}
+
+<legend>已消费电子券 退款</legend>
+#{form @VerifiedECouponRefunds.refund() , id:'verifiedRefundForm',class:"form-horizontal" }
+	<div class="control-group">
+	    <label for="eCouponSn" class="control-label">券号:</label>
+	    <div class="controls">
+	        <input type="text" name="eCouponSn" id="eCouponSn" class="input-large"/>
+	        <span class="control-group" style="padding-left: 10px" id="checksn"></span>
+	    </div>
+	</div>
+    <div class="control-group">
+        <label for="refundComment" class="control-label">备注:</label>
+        <div class="controls">
+            <input type="text" name="refundComment" id="refundComment" class="input-large"/>
+            <span class="control-group" style="padding-left: 10px" id="checksn"></span>
+        </div>
+    </div>
+	<div class="form-actions" style="padding-left: 180px">
+	    <button class="btn btn-primary" type="submit">退款</button>
+	</div>
+#{/form}

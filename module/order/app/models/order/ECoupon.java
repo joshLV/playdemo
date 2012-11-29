@@ -758,7 +758,7 @@ public class ECoupon extends Model {
 
         if (!TradeUtil.success(tradeBill,
                 "退款成功.券号:" + eCoupon.getMaskedEcouponSn() + ",商品:"
-                        + eCoupon.goods.name)) {
+                        + eCoupon.goods.shortName)) {
             returnFlg = "{\"error\":\"refound failed\"}";
             return returnFlg;
         }
@@ -801,7 +801,12 @@ public class ECoupon extends Model {
         return returnFlg;
     }
 
-    private static BigDecimal getLintRefundPrice(ECoupon coupon) {
+    /**
+     * 得到券折扣金额
+     * @param coupon
+     * @return
+     */
+    public static BigDecimal getLintRefundPrice(ECoupon coupon) {
         BigDecimal refundPrice = coupon.salePrice;
         //折扣金额
         BigDecimal rebateValue = coupon.rebateValue;
