@@ -20,7 +20,7 @@ public class VxSms extends Model {
     @Column(length=100)
     public String mobile;
     
-    @Column(length=200)
+    @Column(length=2000)
     public String message;
     
     @Column(name="created_at")
