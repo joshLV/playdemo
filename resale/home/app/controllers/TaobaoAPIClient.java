@@ -177,6 +177,7 @@ public class TaobaoAPIClient extends Controller {
         addRequest.setInputStr(String.valueOf(goods.faceValue.setScale(0))); //面值value
         addRequest.setInputPids("5392163");//面值key
         addRequest.setApproveStatus("instock");//初始为下架的，在淘宝仓库中
+        addRequest.setOuterId(goods.id.toString());
 
         ItemAddResponse response;
         try {
