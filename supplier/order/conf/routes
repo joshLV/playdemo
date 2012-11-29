@@ -11,12 +11,16 @@ GET     /coupons                                SupplierCoupons.index
 
 
 #验证电子券页面
-GET     /coupons/verify                         SupplierCoupons.verify
+#GET     /coupons/verify                         SupplierCoupons.verify
+GET     /coupons/single-verify                  SupplierVerifyCoupons.single
+GET     /coupons/multi-verify                  SupplierVerifyCoupons.multi
 #验证电子券有效性
-GET    /coupons/query                           SupplierCoupons.query
+#GET    /coupons/query                           SupplierCoupons.query
+GET    /coupons/query                           SupplierVerifyCoupons.query
 #更新电子券状态及产生交易
 POST    /coupons/update                         SupplierCoupons.update
-
+POST    /coupons/single-verify                  SupplierVerifyCoupons.singleVerify
+POST    /coupons/multi-verify                    SupplierVerifyCoupons.multiVerify
 GET     /coupon-excel-out                       SupplierCoupons.couponExcelOut
 
 

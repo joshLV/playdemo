@@ -1,0 +1,61 @@
+#{extends 'layout_trader/layout.html' /}
+#{include 'Share/nav.html' /}
+#{set title:'商户验证消费券' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/coupons.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+<style type="text/css">
+
+    .control-group, input, textarea, select, legend {
+        font-size: 22px;
+    }
+
+    .input-large {
+        height: 25px;
+    }
+
+    .btn-primary {
+        font-size: 22px;
+    }
+
+    .control-group {
+        line-height: 2;
+    }
+</style>
+#{form @SupplierVerifyCoupons.singleVerify(), id:'form'}
+<legend>商户验证消费券</legend>
+<div class="control-group"><a href="/coupons/multi-verify">批量验证券</a></div>
+<div class="control-group">
+    <div class="controls">门&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;店:
+        #{if supplierUser?.shop?.id == null}
+            #{select 'shopId', id:'shopId', class:'span2', value:supplierUser?.shop?.id}
+                #{list items:shopList, as:'shop'}
+                    #{option shop?.id}${shop?.name}#{/option}
+                #{/list}
+            #{/select}
+        #{/if}
+        #{else}
+            <input type="text" name="shopName" id="shopName" disabled="true" value="${shop?.name}"
+                   class="input-large"/>
+            <input type="hidden" name="shopId" id="shopId" value="${shop?.id}" class="input-large"/>
+        #{/else}
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="error">#{error 'supplierUser.shop' /}</span>
+    </div>
+</div>
+<div class="control-group">
+    <div class="controls">券&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号:
+        <input type="text" name="eCouponSn" id="eCouponSn" value="${eCouponSn}" class="input-large"/>
+        <span class="error" id="checksn">${success_info}</span>
+    </div>
+</div>
+<div class="control-group" style="display: none">#{include 'SupplierVerifyCoupons/consume.html' /}</div>
+<div class="control-group" id="showinfo"></div>
+<span class="error" id="statusw">#{error 'error-info' /}</span>
+
+<div class="form-actions">
+    <button class="btn btn-primary" id="query" type="button">查询</button>
+    <button class="btn btn-primary" id="sure" type="submit" disabled>验证</button>
+</div>
+<input type="hidden" name="isSingle" id="isSingle" value="true">
+#{/form}

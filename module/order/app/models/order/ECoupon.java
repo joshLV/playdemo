@@ -414,7 +414,7 @@ public class ECoupon extends Model {
         }
         if (StringUtils.isNotBlank(eCouponSn)) {
             sql.append(" and e.eCouponSn = :eCouponSn");
-            params.put("eCouponSn", eCouponSn);
+            params.put("eCouponSn", eCouponSn.trim());
         }
         Query couponQuery = entityManager.createQuery(sql.toString());
         for (Map.Entry<String, Object> entry : params.entrySet()) {
@@ -1300,10 +1300,14 @@ public class ECoupon extends Model {
      * @return
      */
     public static String getECouponStatusDescription(ECoupon ecoupon, Long targetShopId) {
-        if (ecoupon == null) {
-            return null;
-        }
+
         String result = null;
+        if (ecoupon == null) {
+            return "对不起，没有找到对应的券号！";
+        }
+        if (targetShopId == null) {
+            return "对不起，该券不能在此门店使用!";
+        }
         if (ecoupon.isFreeze == 1) {
             result = "此券已被冻结不能使用!";
         } else if (ecoupon.status == models.order.ECouponStatus.CONSUMED) {
