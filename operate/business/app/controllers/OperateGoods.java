@@ -158,7 +158,8 @@ public class OperateGoods extends Controller {
      *
      * @param goods
      */
-    private static void renderInit(models.sales.Goods goods) {
+    private static void
+    renderInit(models.sales.Goods goods) {
         List<Supplier> supplierList = Supplier.findUnDeleted();
 
         if (goods == null) {

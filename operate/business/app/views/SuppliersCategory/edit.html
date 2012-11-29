@@ -1,0 +1,11 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'修改商户类别' /}
+#{include '/share/nav.html' /}
+<div class="row-fluid" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+#{form @SuppliersCategory.update(id), id:'updateForm',enctype:'multipart/form-data',class:"form-horizontal" }
+    <legend>修改商户类别</legend>
+    #{set action:"edit"/}
+    #{include '/SuppliersCategory/supplierCategoryForm.html'/}
+    <input type="hidden" name="page" value="${page}">
+#{/form}
+</div>

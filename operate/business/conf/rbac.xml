@@ -62,6 +62,7 @@
         <navigation key="suppliers" text="商户" permissions="SUPPLIERS_NEW,SUPPLIERS">
             <navigation key="suppliers_add" action="Suppliers.add" text="商户添加" permissions="SUPPLIERS_NEW"/>
             <navigation key="suppliers_index" action="Suppliers.index" text="商户管理" permissions="SUPPLIERS"/>
+            <navigation key="suppliers_category_index" action="SuppliersCategory.index" text="商户类别" permissions="SUPPLIERS"/>
         </navigation>
         <navigation key="supplierUsers" text="商户操作员" permissions="SUPPLIER_USERS_NEW,SUPPLIER_USERS">
             <navigation key="supplierUsers_add" action="OperateSupplierUsers.add" text="商户操作员添加"
