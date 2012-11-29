@@ -30,9 +30,7 @@ public class SecKillGoodsTest extends FunctionalTest {
     @Before
     public void setUp() {
 
-        FactoryBoy.delete(Goods.class);
-        FactoryBoy.delete(SecKillGoods.class);
-        FactoryBoy.delete(SecKillGoodsItem.class);
+        FactoryBoy.deleteAll();
 
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
