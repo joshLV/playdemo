@@ -10,6 +10,13 @@ import javax.persistence.Table;
 
 import play.db.jpa.Model;
 
+/**
+ * 分销渠道补偿验证记录。
+ * 
+ * 有时没有把消费记录同步到分销商，则通过这个功能进行。
+ * @author tanglq
+ *
+ */
 @Entity
 @Table(name="ecoupon_compensations")
 public class ECouponCompensation extends Model {

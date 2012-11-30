@@ -591,6 +591,15 @@ public class ECoupon extends Model {
                     rebateValue, BigDecimal.ZERO);
             rabateTrade.orderId = this.order.id;
             TradeUtil.success(rabateTrade, "活动折扣费" + rebateValue);
+        } else if (salePrice.compareTo(originalPrice) < 0) {
+            BigDecimal detaPrice = originalPrice.subtract(salePrice);
+            // 如果售价低于进价，从活动金账户出
+            TradeBill rabateTrade = TradeUtil.createTransferTrade(
+                    AccountUtil.getPromotionAccount(),
+                    AccountUtil.getPlatformIncomingAccount(),
+                    detaPrice, BigDecimal.ZERO);
+            rabateTrade.orderId = this.order.id;
+            TradeUtil.success(rabateTrade, "低价销售补贴" + rebateValue);
         }
 
         //给推荐人返利金额
