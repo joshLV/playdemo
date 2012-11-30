@@ -599,7 +599,7 @@ public class ECoupon extends Model {
                     AccountUtil.getPlatformIncomingAccount(),
                     detaPrice, BigDecimal.ZERO);
             rabateTrade.orderId = this.order.id;
-            TradeUtil.success(rabateTrade, "低价销售补贴" + rebateValue);
+            TradeUtil.success(rabateTrade, "低价销售补贴" + detaPrice);
         }
 
         //给推荐人返利金额
