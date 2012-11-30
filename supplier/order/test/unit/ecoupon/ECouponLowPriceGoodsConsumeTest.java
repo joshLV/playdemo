@@ -47,9 +47,6 @@ public class ECouponLowPriceGoodsConsumeTest extends UnitTest {
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
-        // 重新加载配置文件
-        VirtualFile file = VirtualFile.open("conf/rbac.xml");
-        RbacLoader.init(file);
 
         supplier = FactoryBoy.create(Supplier.class);
         shop = FactoryBoy.create(Shop.class);
