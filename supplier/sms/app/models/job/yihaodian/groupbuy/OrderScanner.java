@@ -1,6 +1,7 @@
 package models.job.yihaodian.groupbuy;
 
 import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
 import models.yihaodian.YHDGroupBuyMessage;
 import models.yihaodian.YihaodianQueueUtil;
@@ -21,7 +22,8 @@ public class OrderScanner extends Job{
         if(Play.runingInTestMode()){
             return;
         }
-        List<OuterOrder> orders = OuterOrder.find("status = ? or status = ?",
+        List<OuterOrder> orders = OuterOrder.find("partner = ? and (status = ? or status = ?)",
+                OuterOrderPartner.JD,
                 OuterOrderStatus.ORDER_DONE,
                 OuterOrderStatus.REFUND_DONE).fetch();
         for (OuterOrder order : orders){

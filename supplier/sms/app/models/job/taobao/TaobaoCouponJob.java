@@ -2,6 +2,7 @@ package models.job.taobao;
 
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
+import models.order.OuterOrderStatus;
 import models.taobao.TaobaoCouponMessageUtil;
 import play.jobs.Every;
 import play.jobs.Job;
@@ -15,7 +16,11 @@ import play.jobs.Job;
 public class TaobaoCouponJob extends Job{
     @Override
     public void doJob() {
-        List<OuterOrder> outerOrders = OuterOrder.find("partner = ? and extra is not null", OuterOrderPartner.TB).fetch();
+        List<OuterOrder> outerOrders = OuterOrder.find("partner = ? and (status = ? or status = ? or status = ?)",
+                OuterOrderPartner.TB,
+                OuterOrderStatus.ORDER_COPY,
+                OuterOrderStatus.ORDER_DONE,
+                OuterOrderStatus.RESEND_COPY).fetch();
         for (OuterOrder outerOrder : outerOrders) {
             TaobaoCouponMessageUtil.send(outerOrder.id);
         }

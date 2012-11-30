@@ -39,13 +39,10 @@ import java.util.TreeMap;
  */
 public class TaobaoCouponUtil {
     // 淘宝电子凭证的secret
-    public static final String COUPON_SECRET = Play.configuration.getProperty("taobao.coupon.secret", "");
-    public static final String TOP_APPKEY = Play.configuration.getProperty("taobao.top.appkey", "12621657");
-    public static final String TOP_APPSECRET = Play.configuration.getProperty("taobao.top.appsecret", "b0d06603b45a281f783b6ccd72ad8745");
+    public static final String COUPON_SECRET = Play.configuration.getProperty("taobao.coupon.secret", "4f64e4c29f3790388965c9a095784d67");
+    public static final String TOP_APPKEY = Play.configuration.getProperty("taobao.top.appkey", "21293912");
+    public static final String TOP_APPSECRET = Play.configuration.getProperty("taobao.top.appsecret", "1781d22a1f06c4f25f1f679ae0633400");
     public static final String URL = Play.configuration.getProperty("taobao.top.url", "http://gw.api.taobao.com/router/rest");
-
-    public static String ACTION_SEND    = "send";
-    public static String ACTION_RESEND  = "resend";
 
     /**
      * 告诉淘宝我券已经发过了
