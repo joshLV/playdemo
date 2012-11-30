@@ -146,6 +146,25 @@ public class Supplier extends Model {
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
 
+    /**
+     * 商户流水码（4位）
+     */
+    @Column(name = "sequence_code")
+    public String sequenceCode;
+    /**
+     * 商户编码 【商户类别编码（2位）+商户流水码（4位）】
+     */
+    public String code;
+
+    /**
+     * 商户类别
+     */
+    @Required
+    @ManyToOne
+    @JoinColumn(name = "supplier_category_id")
+    public SupplierCategory supplierCategory;
+
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderColumn(name = "`display_order`")
     @JoinColumn(name = "supplier_id")
@@ -197,6 +216,12 @@ public class Supplier extends Model {
         deleted = DeletedStatus.UN_DELETED;
         status = SupplierStatus.NORMAL;
         createdAt = new Date();
+        Supplier supplier = Supplier.find("supplierCategory.id=? by createdAt desc", supplierCategory.id).first();
+        if (supplier == null) {
+            sequenceCode = "0001";
+        } else {
+            sequenceCode = supplier.sequenceCode + 1;
+        }
 
         return super.create();
     }

@@ -11,6 +11,8 @@ import models.admin.SupplierUser;
 import models.admin.SupplierUserType;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
+import models.supplier.SupplierCategory;
+import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
@@ -53,7 +55,8 @@ public class Suppliers extends Controller {
     public static void add() {
         List<OperateUser> operateUserList = getSales();
         renderArgs.put("baseDomain", BASE_DOMAIN);
-        render(operateUserList);
+        List<SupplierCategory> supplierCategoryList = SupplierCategory.findAll();
+        render(operateUserList, supplierCategoryList);
     }
 
     private static int getPage() {
@@ -92,6 +95,7 @@ public class Suppliers extends Controller {
             render("Suppliers/add.html", supplier, operateUserList);
         }
         supplier.loginName = admin.loginName;
+        System.out.println("supplier.supplierCategory>>>"+supplier.supplierCategory);
         supplier.create();
         try {
             supplier.logo = uploadImagePath(image, supplier.id);
@@ -196,8 +200,10 @@ public class Suppliers extends Controller {
         List<WithdrawAccount> withdrawAccounts =
                 WithdrawAccount.find("byUserIdAndAccountType", supplier.getId(), AccountType.SUPPLIER).fetch();
         List<OperateUser> operateUserList = getSales();
+        List<SupplierCategory> supplierCategoryList = SupplierCategory.findAll();
         renderArgs.put("baseDomain", BASE_DOMAIN);
-        render(supplier, admin, id, withdrawAccounts, operateUserList, page);
+        Boolean hasSupplierCodeEditPermission = ContextedPermission.hasPermission("SUPPLIER_CODE_EDIT");
+        render(supplier, supplierCategoryList, hasSupplierCodeEditPermission, admin, id, withdrawAccounts, operateUserList, page);
     }
 
     public static void withdrawAccountCreateAndUpdate(@Valid WithdrawAccount withdrawAccount, Long supplierId) {

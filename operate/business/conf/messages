@@ -222,6 +222,8 @@ supplier.shopHour=营业截止时间
 #supplier.shopBeginHour=营业开始时间
 #supplier.shopEndHour=结束时间
 
+supplier.supplierCategory.id=商户类别
+
 supplierCategory.code=编码
 supplierCategory.name=类别名称
 

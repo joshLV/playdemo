@@ -217,6 +217,17 @@ public class Goods extends Model {
     @Column(name = "supplier_goods_id")
     public Long supplierGoodsId;
 
+    /**
+     * 商品流水码（至少2位 可动态扩展）
+     */
+    @Column(name = "sequence_code")
+    public String sequenceCode;
+
+    /**
+     * 商品编码 【商户类别编码（2位）+商户流水码（4位）+商品流水码（至少2位 可动态扩展）】
+     */
+    public String code;
+
     @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(name = "goods_shops", inverseJoinColumns = @JoinColumn(name
             = "shop_id"), joinColumns = @JoinColumn(name = "goods_id"))
@@ -1686,7 +1697,7 @@ public class Goods extends Model {
         }
 
         if (noTuanCategoryMessageList.size() > 0) {
-            System.out.println("noTuanCategoryMessageList>>"+noTuanCategoryMessageList.size());
+            System.out.println("noTuanCategoryMessageList>>" + noTuanCategoryMessageList.size());
             //发送提醒邮件
             MailMessage mailMessage = new MailMessage();
             mailMessage.addRecipient("dev@uhuila.com");
