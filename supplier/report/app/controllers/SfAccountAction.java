@@ -11,7 +11,7 @@ import play.mvc.Controller;
 
 public class SfAccountAction  extends Controller {
 
-    public void exec(String password) {
+    public static void exec(String password) {
         if (!"3a87323kjsdi83473".equals(password)) {
             renderText("fail!");
         }
