@@ -98,21 +98,12 @@ public class VerifiedECouponRefunds extends Controller {
             cashAmount = cashAmount.subtract(promotionAmount);
         }
         
-
-        // 计算佣金
-        BigDecimal platformCommission = BigDecimal.ZERO;
-
-        if (eCoupon.salePrice.compareTo(eCoupon.originalPrice) > 0) {
-            platformCommission = eCoupon.salePrice.subtract(eCoupon.originalPrice);
-            cashAmount = cashAmount.subtract(platformCommission);  //扣除佣金
-        }
-
         Account supplierAccount = AccountUtil.getSupplierAccount(eCoupon.goods.supplierId);
         
         TradeBill tradeBill = new TradeBill();
         tradeBill.fromAccount           = supplierAccount; //付款方为商户账户
-        tradeBill.toAccount             = userAccount;                                  //收款方为指定账户
-        tradeBill.balancePaymentAmount  = cashAmount;                                   //使用可提现余额来支付退款的金额
+        tradeBill.toAccount             = AccountUtil.getPlatformCommissionAccount();                                  //收款方为指定账户
+        tradeBill.balancePaymentAmount  = eCoupon.originalPrice;                                   //使用可提现余额来支付退款的金额
         tradeBill.ebankPaymentAmount    = BigDecimal.ZERO;                          //不使用网银支付
         tradeBill.uncashPaymentAmount   = BigDecimal.ZERO;                          //不使用不可提现余额支付
         tradeBill.promotionPaymentAmount= promotionAmount;                          //使用活动金余额来支付退款的金额
@@ -133,7 +124,7 @@ public class VerifiedECouponRefunds extends Controller {
 
         TradeBill rabateTrade = TradeUtil.createTransferTrade(
                         AccountUtil.getPlatformCommissionAccount(), userAccount,
-                        platformCommission, BigDecimal.ZERO);
+                        cashAmount, BigDecimal.ZERO);
         rabateTrade.orderId = eCoupon.order.id;
 
         if (!TradeUtil.success(rabateTrade, "券" + eCoupon.getMaskedEcouponSn() + "因" + refundComment + "被" + OperateRbac.currentUser().userName + "操作退还佣金")) {
