@@ -147,6 +147,7 @@ PUT     /suppliers/{id}                         Suppliers.update
 PUT     /suppliers/{id}/freeze                  Suppliers.freeze
 PUT     /suppliers/{id}/unfreeze                Suppliers.unfreeze
 DELETE  /suppliers/{id}                         Suppliers.delete
+GET     /suppliers/{id}/supplier_category/{supplierCategoryId}  Suppliers.showCode
 
 
 #商户类别

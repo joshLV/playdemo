@@ -3,6 +3,7 @@
 #{include '/share/nav.html' /}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/supplierCode.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 <div class="row-fluid" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 #{form @Suppliers.update(id), id:'updateForm',enctype:'multipart/form-data',class:"form-horizontal" }
@@ -13,9 +14,10 @@
 #{/form}
 
     <legend>新建提现账户</legend>
-    #{form @Suppliers.withdrawAccountCreateAndUpdate(), class:"form-horizontal"}
+#{form @Suppliers.withdrawAccountCreateAndUpdate(), class:"form-horizontal"}
     <div class="control-group">
         <label class="control-label"><span style="color: red; ">*</span>开户姓名</label>
+
         <div class="controls">
             <input type="text" class="input" name="withdrawAccount.userName" value="${withdrawAccount?.userName}">
             <span class="error"> #{error 'withdrawAccount.userName'/}</span>
@@ -23,6 +25,7 @@
     </div>
     <div class="control-group">
         <label class="control-label"><span style="color: red; ">*</span>银行</label>
+
         <div class="controls">
             <input type="text" class="input" name="withdrawAccount.bankName" value="${withdrawAccount?.bankName}">
             <span class="error"> #{error 'withdrawAccount.bankName'/}</span>
@@ -30,6 +33,7 @@
     </div>
     <div class="control-group">
         <label class="control-label"><span style="color: red; ">*</span>城市</label>
+
         <div class="controls">
             <input type="text" class="input-small" name="withdrawAccount.bankCity" value="${withdrawAccount?.bankCity}">
             <span class="error"> #{error 'withdrawAccount.bankCity'/}</span>
@@ -37,6 +41,7 @@
     </div>
     <div class="control-group">
         <label class="control-label"><span style="color: red; ">*</span>分行</label>
+
         <div class="controls">
             <input type="text" name="withdrawAccount.subBankName" value="${withdrawAccount?.subBankName}">
             <span class="error"> #{error 'withdrawAccount.subBankName'/}</span>
@@ -44,6 +49,7 @@
     </div>
     <div class="control-group">
         <label class="control-label"><span style="color: red; ">*</span>银行卡号</label>
+
         <div class="controls">
             <input type="text" name="withdrawAccount.cardNumber" value="${withdrawAccount?.cardNumber}">
             <span class="error">#{error 'withdrawAccount.cardNumber'/}</span>
@@ -53,13 +59,13 @@
         <input type="hidden" name="supplierId" value="${supplier?.getId()}"/>
         <button class="btn btn-primary" type="submit">新 建</button>
     </div>
-    #{/form}
+#{/form}
     <legend>修改提现账户</legend>
-    #{if withdrawAccounts?.size() == 0}
+#{if withdrawAccounts?.size() == 0}
     暂无提现账户
-    #{/if}
-    #{else}
-    <table class="table"  style="width:auto">
+#{/if}
+#{else}
+    <table class="table" style="width:auto">
         <tr>
             <th>开户姓名</th>
             <th>银行</th>
@@ -71,26 +77,31 @@
         #{list items:withdrawAccounts, as:'account'}
             <tr>
                 #{form @Suppliers.withdrawAccountCreateAndUpdate()}
-                <td><input type="text" class="input-small" name="withdrawAccount.userName" value="${account?.userName}"></td>
-                <td><input type="text" class="input-small" name="withdrawAccount.bankName" value="${account?.bankName}"></td>
-                <td><input type="text" class="input-small" name="withdrawAccount.bankCity" value="${account?.bankCity}"></td>
-                <td><input type="text" name="withdrawAccount.subBankName" value="${account?.subBankName}"></td>
-                <td><input type="text" name="withdrawAccount.cardNumber" value="${account?.cardNumber}"></td>
+                    <td><input type="text" class="input-small" name="withdrawAccount.userName"
+                               value="${account?.userName}"></td>
+                    <td><input type="text" class="input-small" name="withdrawAccount.bankName"
+                               value="${account?.bankName}"></td>
+                    <td><input type="text" class="input-small" name="withdrawAccount.bankCity"
+                               value="${account?.bankCity}"></td>
+                    <td><input type="text" name="withdrawAccount.subBankName" value="${account?.subBankName}"></td>
+                    <td><input type="text" name="withdrawAccount.cardNumber" value="${account?.cardNumber}"></td>
                 <td>
                     <input type="hidden" name="supplierId" value="${supplier.getId()}"/>
                     <input type="hidden" name="withdrawAccount.id" value="${account?.id}">
                     <button class="btn btn-primary" type="submit">修 改</button>
-                 #{/form}
-                    #{form @Suppliers.withdrawAccountDelete(), style:"display:inline"}
-                        <input type="hidden" name="supplierId" value="${supplier.getId()}"/>
-                        <input type="hidden" name="id" value="${account.getId()}"/>
-                        <button class="btn btn-danger" >删 除</button>
-                    #{/form}
-                </td>
+                #{/form}
+                #{form @Suppliers.withdrawAccountDelete(), style:"display:inline"}
+                    <input type="hidden" name="supplierId" value="${supplier.getId()}"/>
+                    <input type="hidden" name="id" value="${account.getId()}"/>
+                    <button class="btn btn-danger">删 除</button>
+                #{/form}
+            </td>
             </tr>
         #{/list}
     </table>
-    #{/else}
+#{/else}
 
 </div>
+
+
 

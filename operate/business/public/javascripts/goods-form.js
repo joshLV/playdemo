@@ -10,7 +10,6 @@
 $(
     function () {
         $("#goods_supplierId").change(function () {
-
             $("#brand").load("/goods_brands/" + $("#goods_supplierId").val(), function (data) {
             });
             $("#tableShop").load("/shops/" + $("#goods_supplierId").val() + "/showGoodsShops", function (data) {

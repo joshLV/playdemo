@@ -96,7 +96,6 @@ public class Suppliers extends Controller {
             render("Suppliers/add.html", supplier, operateUserList, supplierCategoryList);
         }
         supplier.loginName = admin.loginName;
-        System.out.println("supplier.supplierCategory>>>" + supplier.supplierCategory);
         supplier.create();
         try {
             supplier.logo = uploadImagePath(image, supplier.id);
@@ -197,7 +196,6 @@ public class Suppliers extends Controller {
         int page = getPage();
         Supplier supplier = Supplier.findById(id);
         SupplierUser admin = SupplierUser.findAdmin(id, supplier.loginName);
-
         List<WithdrawAccount> withdrawAccounts =
                 WithdrawAccount.find("byUserIdAndAccountType", supplier.getId(), AccountType.SUPPLIER).fetch();
         List<OperateUser> operateUserList = getSales();
@@ -249,6 +247,16 @@ public class Suppliers extends Controller {
         Supplier.update(id, supplier);
 
         redirectUrl(page);
+    }
+
+    public static void showCode(Long id, Long supplierCategoryId) {
+        Supplier supplier = Supplier.findById(id);
+        SupplierCategory supplierCategory = SupplierCategory.findById(supplierCategoryId);
+        if (supplier != null && supplierCategory != null) {
+            supplier.getCode(supplierCategory);
+        }
+
+        render(supplier);
     }
 
     public static void freeze(long id) {

@@ -151,6 +151,7 @@ public class Supplier extends Model {
      */
     @Column(name = "sequence_code")
     public String sequenceCode;
+
     /**
      * 商户编码 【商户类别编码（2位）+商户流水码（4位）】
      */
@@ -216,7 +217,7 @@ public class Supplier extends Model {
         deleted = DeletedStatus.UN_DELETED;
         status = SupplierStatus.NORMAL;
         createdAt = new Date();
-        getCode(supplierCategory.id, this);
+        getCode(this.supplierCategory);
         return super.create();
     }
 
@@ -224,24 +225,18 @@ public class Supplier extends Model {
         return String.format("%0" + digits + "d", Integer.valueOf(originalCode) + 1);
     }
 
-    public void getCode(Long supplierCategoryId, Supplier newSupplier) {
+    public void getCode(SupplierCategory supplierCategory) {
         Supplier supplier = null;
-        if (supplierCategoryId != null) {
-            supplier = Supplier.find("supplierCategory.id=? order by createdAt desc", supplierCategoryId).first();
-            Supplier tempSupplier = Supplier.find("supplierCategory.id=? order by updatedAt desc", supplierCategoryId).first();
-            if (tempSupplier.updatedAt.compareTo(supplier.createdAt) > 0) {
-                supplier = tempSupplier;
-            }
+        if (supplierCategory != null) {
+            supplier = Supplier.find("supplierCategory.id=? order by code desc", supplierCategory.id).first();
         }
-        if (supplier == null) {
+        if (supplier == null || supplier.sequenceCode == null) {
             this.sequenceCode = "0001";
         } else {
             this.sequenceCode = calculateFormattedCode(supplier.sequenceCode, "4");
         }
-        if (StringUtils.isNotBlank(this.supplierCategory.code)) {
-            this.code = newSupplier.supplierCategory.code + sequenceCode;
-            this.supplierCategory = newSupplier.supplierCategory;
-        }
+        this.code = supplierCategory.code + this.sequenceCode;
+        this.supplierCategory = supplierCategory;
     }
 
     public static void update(Long id, Supplier supplier) {
@@ -267,7 +262,7 @@ public class Supplier extends Model {
         sp.shopEndHour = supplier.shopEndHour;
         sp.updatedAt = new Date();
         if (supplier.supplierCategory.id != sp.supplierCategory.id) {
-            sp.getCode(supplier.supplierCategory.id, supplier);
+            sp.getCode(supplier.supplierCategory);
         }
         sp.save();
     }
