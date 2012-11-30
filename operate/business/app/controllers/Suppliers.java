@@ -92,10 +92,11 @@ public class Suppliers extends Controller {
         if (Validation.hasErrors()) {
             List<OperateUser> operateUserList = getSales();
             renderArgs.put("baseDomain", BASE_DOMAIN);
-            render("Suppliers/add.html", supplier, operateUserList);
+            List<SupplierCategory> supplierCategoryList = SupplierCategory.findAll();
+            render("Suppliers/add.html", supplier, operateUserList, supplierCategoryList);
         }
         supplier.loginName = admin.loginName;
-        System.out.println("supplier.supplierCategory>>>"+supplier.supplierCategory);
+        System.out.println("supplier.supplierCategory>>>" + supplier.supplierCategory);
         supplier.create();
         try {
             supplier.logo = uploadImagePath(image, supplier.id);
@@ -283,4 +284,6 @@ public class Suppliers extends Controller {
                 , "sales", DeletedStatus.UN_DELETED).fetch();
         return operateUsers;
     }
+
+
 }

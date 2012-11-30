@@ -216,16 +216,33 @@ public class Supplier extends Model {
         deleted = DeletedStatus.UN_DELETED;
         status = SupplierStatus.NORMAL;
         createdAt = new Date();
-        Supplier supplier = Supplier.find("supplierCategory.id=? by createdAt desc", supplierCategory.id).first();
-        if (supplier == null) {
-            sequenceCode = "0001";
-        } else {
-            sequenceCode = supplier.sequenceCode + 1;
-        }
-
+        getCode(supplierCategory.id, this);
         return super.create();
     }
 
+    public static String calculateFormattedCode(String originalCode, String digits) {
+        return String.format("%0" + digits + "d", Integer.valueOf(originalCode) + 1);
+    }
+
+    public void getCode(Long supplierCategoryId, Supplier newSupplier) {
+        Supplier supplier = null;
+        if (supplierCategoryId != null) {
+            supplier = Supplier.find("supplierCategory.id=? order by createdAt desc", supplierCategoryId).first();
+            Supplier tempSupplier = Supplier.find("supplierCategory.id=? order by updatedAt desc", supplierCategoryId).first();
+            if (tempSupplier.updatedAt.compareTo(supplier.createdAt) > 0) {
+                supplier = tempSupplier;
+            }
+        }
+        if (supplier == null) {
+            this.sequenceCode = "0001";
+        } else {
+            this.sequenceCode = calculateFormattedCode(supplier.sequenceCode, "4");
+        }
+        if (StringUtils.isNotBlank(this.supplierCategory.code)) {
+            this.code = newSupplier.supplierCategory.code + sequenceCode;
+            this.supplierCategory = newSupplier.supplierCategory;
+        }
+    }
 
     public static void update(Long id, Supplier supplier) {
         Supplier sp = findById(id);
@@ -249,6 +266,9 @@ public class Supplier extends Model {
         sp.salesId = supplier.salesId;
         sp.shopEndHour = supplier.shopEndHour;
         sp.updatedAt = new Date();
+        if (supplier.supplierCategory.id != sp.supplierCategory.id) {
+            sp.getCode(supplier.supplierCategory.id, supplier);
+        }
         sp.save();
     }
 
