@@ -31,14 +31,14 @@ public class OperateUsersProfiles extends Controller {
         }
         render(operateUser, roleIds);
     }
-    
-      /**
+
+    /**
      * 操作员信息修改
      *
-     * @param operateUser
-     *            用户信息
+     * @param operateUser 用户信息
      */
     public static void update(@Valid OperateUser operateUser) {
+        System.out.println("vali>>" + validation.errorsMap());
         if (Validation.hasErrors()) {
             List rolesList = OperateRole.findAll();
             String roleIds = "";
@@ -47,7 +47,7 @@ public class OperateUsersProfiles extends Controller {
                     roleIds += role.id + ",";
                 }
             }
-            render("OperateUsersProfiles/index.html", operateUser, roleIds );
+            render("OperateUsersProfiles/index.html", operateUser, roleIds);
         }
         Long id = OperateRbac.currentUser().id;
         // 更新用户信息
@@ -55,5 +55,5 @@ public class OperateUsersProfiles extends Controller {
 
         index();
     }
-    
+
 }
