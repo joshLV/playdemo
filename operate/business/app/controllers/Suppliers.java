@@ -77,7 +77,6 @@ public class Suppliers extends Controller {
      */
     @ActiveNavigation("suppliers_add")
     public static void create(@Valid Supplier supplier, File image, @Valid SupplierUser admin) {
-
         checkImage(image);
         initAdmin(admin);
 

@@ -6,6 +6,7 @@ import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.PathUtil;
 import models.admin.SupplierUser;
 import models.sales.Brand;
+import models.sales.Goods;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.data.validation.*;
@@ -217,7 +218,7 @@ public class Supplier extends Model {
         deleted = DeletedStatus.UN_DELETED;
         status = SupplierStatus.NORMAL;
         createdAt = new Date();
-        getCode(this.supplierCategory);
+        this.getCode(this.supplierCategory);
         return super.create();
     }
 
@@ -265,6 +266,14 @@ public class Supplier extends Model {
             sp.getCode(supplier.supplierCategory);
         }
         sp.save();
+        List<Goods> goodsList = Goods.find("supplierId=? and code is not null order by code desc", sp.id).fetch();
+        for (Goods g : goodsList) {
+            g.refresh();
+            Supplier tempSupplier = Supplier.findById(g.supplierId);
+            g.code = tempSupplier.code + g.sequenceCode;
+            g.save();
+        }
+
     }
 
     public static void delete(long id) {
@@ -356,5 +365,10 @@ public class Supplier extends Model {
         }
         String dateStr = DateUtil.dateToString(conditionDate, days) + (StringUtils.isBlank(shopHour) ? time : " " + shopHour);
         return DateUtil.stringToDate(dateStr, DATE_FORMAT);
+    }
+
+    public List<Goods> getGoods() {
+        return Goods.find("supplierId=?", this.id
+        ).fetch();
     }
 }

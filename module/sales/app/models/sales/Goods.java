@@ -990,6 +990,7 @@ public class Goods extends Model {
             unPublishedPlatforms = new HashSet<>();
         }
         resaleAddPrice = salePrice.compareTo(originalPrice) > 0 ? salePrice.subtract(originalPrice) : BigDecimal.ZERO;
+        this.getCode();
         return super.create();
     }
 
@@ -1786,6 +1787,27 @@ public class Goods extends Model {
         goodsHistory.groupCode = this.groupCode;
         goodsHistory.save();
     }
+
+
+    public void getCode() {
+        Goods goods = Goods.find("supplierId=? and code is not null order by code desc", this.supplierId).first();
+        Supplier supplier = null;
+        System.out.println("goods>>" + goods);
+        if (goods == null) {
+            System.out.println("111");
+            this.sequenceCode = "01";
+        } else {
+            System.out.println("this.sequenceCode>>>" + this.sequenceCode);
+            supplier = Supplier.findById(goods.supplierId);
+            System.out.println("goods.sequenceCode>>" + goods.sequenceCode);
+            this.sequenceCode = Supplier.calculateFormattedCode(goods.sequenceCode, "2");
+        }
+        if (supplier != null && StringUtils.isNotBlank(supplier.code)) {
+            this.code = supplier.code + this.sequenceCode;
+            System.out.println("code>>" + this.code);
+        }
+    }
+
 
     @Override
     public boolean equals(Object o) {
