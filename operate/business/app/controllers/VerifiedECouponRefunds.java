@@ -119,7 +119,7 @@ public class VerifiedECouponRefunds extends Controller {
         
         if (!TradeUtil.success(tradeBill,
                 "券" + eCoupon.getMaskedEcouponSn() + "因" + refundComment + "被" + OperateRbac.currentUser().userName + "操作退款")) {
-            throw new RuntimeException("退款失败:" + eCoupon.eCouponSn);
+            throw new RuntimeException("商户退款失败:" + eCoupon.eCouponSn);
         }
 
         TradeBill rabateTrade = TradeUtil.createTransferTrade(
@@ -127,8 +127,8 @@ public class VerifiedECouponRefunds extends Controller {
                         cashAmount, BigDecimal.ZERO);
         rabateTrade.orderId = eCoupon.order.id;
 
-        if (!TradeUtil.success(rabateTrade, "券" + eCoupon.getMaskedEcouponSn() + "因" + refundComment + "被" + OperateRbac.currentUser().userName + "操作退还佣金")) {
-            throw new RuntimeException("退佣金失败:" + eCoupon.eCouponSn);
+        if (!TradeUtil.success(rabateTrade, "券" + eCoupon.getMaskedEcouponSn() + "因" + refundComment + "被" + OperateRbac.currentUser().userName + "操作退款")) {
+            throw new RuntimeException("退款失败:" + eCoupon.eCouponSn);
         }
 
         // 更新已退款的活动金金额
