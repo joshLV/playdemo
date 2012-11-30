@@ -19,12 +19,21 @@ public class SfAccountAction  extends Controller {
         Account targetAccount = AccountUtil.getAccount(49659l, AccountType.SUPPLIER);
         
 
-        TradeBill rabateTrade = TradeUtil.createTransferTrade(
-                sourceAccount, targetAccount,
+        TradeBill rabateTrade0 = TradeUtil.createTransferTrade(
+                targetAccount, sourceAccount,
                 new BigDecimal(35), BigDecimal.ZERO);
-        rabateTrade.orderId = 11215l;
+        rabateTrade0.orderId = 11215l;
         
-        TradeUtil.success(rabateTrade, "11月28日柳小姐误验证7张券处理-佣金退还35元");
+        TradeUtil.success(rabateTrade0, "11月28日柳小姐误验证7张券处理-误操作重新退还35元");
+        
+
+        Account sfAccount = AccountUtil.getAccount(72l, AccountType.SUPPLIER);
+        TradeBill rabateTrade1 = TradeUtil.createTransferTrade(
+                        sourceAccount, sfAccount,
+                        new BigDecimal(35), BigDecimal.ZERO);
+        rabateTrade1.orderId = 11215l;
+                
+        TradeUtil.success(rabateTrade1, "11月28日柳小姐误验证7张券处理-佣金退还35元");
         
         renderText("ok");
     }
