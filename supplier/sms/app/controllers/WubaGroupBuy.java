@@ -63,11 +63,11 @@ public class WubaGroupBuy extends Controller {
 
 
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
-                OuterOrderPartner.WUBA, orderId).first();
+                OuterOrderPartner.WB, orderId).first();
         //如果找不到该orderCode的订单，说明还没有新建，则新建一个
         if(outerOrder == null){
             outerOrder = new OuterOrder();
-            outerOrder.partner = OuterOrderPartner.WUBA;
+            outerOrder.partner = OuterOrderPartner.WB;
             outerOrder.status = OuterOrderStatus.ORDER_COPY;
             outerOrder.message = orderJson.toString();
             outerOrder.save();
@@ -123,7 +123,7 @@ public class WubaGroupBuy extends Controller {
         List<Map<String, Object>> tickets = new ArrayList<>();
         List<ECoupon> eCoupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
         for(ECoupon coupon : eCoupons) {
-            coupon.partner = ECouponPartner.WUBA;
+            coupon.partner = ECouponPartner.WB;
             coupon.save();
 
             Map<String, Object> ticket = new HashMap<>();

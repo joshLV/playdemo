@@ -16,6 +16,7 @@ import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.Shop;
 import models.sms.SMSUtil;
+import models.taobao_coupon.TaobaoCouponUtil;
 import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
 
@@ -473,11 +474,17 @@ public class ECoupon extends Model {
                 Logger.info("verify on jingdong failed");
                 return false;
             }
-        }else if(this.partner == ECouponPartner.WUBA) {
+        }else if (this.partner == ECouponPartner.WB) {
             if (!WubaUtil.verifyOnWuba(this)) {
                 Logger.info("verify on wuba failed");
                 return false;
             }
+        }else if (this.partner == ECouponPartner.TB) {
+            if (!TaobaoCouponUtil.verifyOnTaobao(this)) {
+                Logger.info("verify on taobao failed");
+                return false;
+            }
+
         }
 
 

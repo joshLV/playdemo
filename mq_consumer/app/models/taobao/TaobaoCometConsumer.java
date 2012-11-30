@@ -236,21 +236,4 @@ public class TaobaoCometConsumer extends RabbitMQConsumer<TaobaoCometMessage>{
     protected String queue() {
         return TaobaoCometUtil.QUEUE_NAME;
     }
-/*    {
-    "notify_trade":
-       {
-         "topic":"trade",
-         "payment":"0.01",
-         "status":"TradeBuyerPay",
-         "type":"guarantee_trade",
-         "modified":"2012-05-03 15:46:13",
-         "buyer_nick":"kisbear",
-         "nick":"玲丫月",
-         "oid":169412921091179,
-         "is_3D":true,
-         "user_id":85365940,
-         "tid":169412921091179,
-         "seller_nick":"玲丫月"
-       }
-    }*/
 }

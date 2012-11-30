@@ -33,6 +33,9 @@ public class OuterOrder extends Model {
     @Column(name = "status")
     public OuterOrderStatus status; //此订单的执行状态
 
+    @Column(name = "extra")
+    public String extra;            //额外的信息
+
     @Basic(fetch = FetchType.LAZY)
     @Lob
     @Column(name = "message")
