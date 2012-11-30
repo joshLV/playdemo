@@ -20,6 +20,7 @@ public class TaobaoCouponAPI extends Controller {
         Map<String, String> params = request.params.allSimple();
         Logger.info("taobao coupon request: \n%s", new Gson().toJson(params));
         if (!TaobaoCouponUtil.verifyParam(params)) {
+            Logger.info("taobao coupon request error param verify failed!");
             renderJSON("{\"code\":501}");
             return;//签名错误
         }
@@ -49,7 +50,7 @@ public class TaobaoCouponAPI extends Controller {
      *
      * @param params 淘宝传过来的参数
      */
-    public static void send(Map<String, String> params) {
+    private static void send(Map<String, String> params) {
         Long orderId;
         try {
             orderId = Long.parseLong(params.get("order_id"));//淘宝订单交易号
@@ -81,7 +82,7 @@ public class TaobaoCouponAPI extends Controller {
         renderJSON("{\"code\":200}");
     }
 
-    public static void resend(Map<String, String> params) {
+    private static void resend(Map<String, String> params) {
         Long orderId;
         String sellerNick;
         try {
@@ -103,6 +104,7 @@ public class TaobaoCouponAPI extends Controller {
         }
         outerOrder.status = OuterOrderStatus.RESEND_COPY;
         outerOrder.save();
+        Logger.info("taobao coupon resend success");
         renderJSON("{\"code\":200}");
     }
 
@@ -111,7 +113,7 @@ public class TaobaoCouponAPI extends Controller {
      *
      * @param params 淘宝传过来的参数
      */
-    public static void cancel(Map<String, String> params) {
+    private static void cancel(Map<String, String> params) {
         Long orderId;
         String sellerNick;
         try {
@@ -140,6 +142,7 @@ public class TaobaoCouponAPI extends Controller {
         }
         outerOrder.status = OuterOrderStatus.REFUND_SYNCED;
         outerOrder.save();
+        Logger.error("taobao refund success");
         renderJSON("{\"code\":200}");
     }
 
@@ -148,7 +151,7 @@ public class TaobaoCouponAPI extends Controller {
      *
      * @param params 淘宝传过来的参数
      */
-    public static void modified(Map<String, String> params) {
+    private static void modified(Map<String, String> params) {
         Long orderId;
         String sellerNick, mobile;
         try {
@@ -175,6 +178,7 @@ public class TaobaoCouponAPI extends Controller {
             orderItems.phone = mobile;
             orderItems.save();
         }
+        Logger.error("taobao modify mobile success");
         renderJSON("{\"code\":200}");//发送的码是跟之前一样的
     }
 

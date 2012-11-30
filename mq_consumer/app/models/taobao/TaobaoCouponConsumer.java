@@ -13,7 +13,6 @@ import models.taobao_coupon.TaobaoCouponUtil;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.jobs.OnApplicationStart;
-import play.modules.rabbitmq.consumer.RabbitMQConsumer;
 
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
@@ -35,6 +34,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         OuterOrder outerOrder = OuterOrder.findById(taobaoCouponMessage.outerOrderId);
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
             //订单接收到，开始创建一百券订单，并告诉淘宝我们的订单信息
+            Logger.info("start taobao coupon consumer send order");
             if (send(outerOrder)) {
                 //通知淘宝我发货了
                 if(TaobaoCouponUtil.tellTaobaoCouponSend(outerOrder)) {
@@ -49,6 +49,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                 Logger.info("taobao coupon job failed: create our order failed %s", taobaoCouponMessage.outerOrderId);
             }
         }else if (outerOrder.status == OuterOrderStatus.RESEND_COPY) {
+            Logger.info("start taobao coupon consumer resend order");
             //重新发货的请求接收到，并先告诉淘宝我们要重新发货，然后再重新发货
             if(TaobaoCouponUtil.tellTaobaoCouponResend(outerOrder)) {
                 List<ECoupon> eCoupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
@@ -63,6 +64,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             outerOrder.status = OuterOrderStatus.RESEND_DONE;
             outerOrder.save();
         }else if (outerOrder.status == OuterOrderStatus.ORDER_DONE) {
+            Logger.info("start taobao coupon consumer tell taobao order done");
             //我们发货了，但还没有通知淘宝成功，于是继续通知
             if(TaobaoCouponUtil.tellTaobaoCouponSend(outerOrder)) {
                 outerOrder.status = OuterOrderStatus.ORDER_SYNCED;

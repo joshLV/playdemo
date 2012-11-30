@@ -39,6 +39,7 @@ require:
     - third_tuan -> third_tuan
     - yihaodian -> yihaodian
     - wuba -> wuba
+    - taobao_coupon -> taobao_coupon
     - com.yihaodian -> yhdclient 1.0
 
 repositories:
@@ -88,3 +89,4 @@ repositories:
             - yihaodian -> *
             - third_tuan -> *
             - wuba -> *
+            - taobao_coupon -> *

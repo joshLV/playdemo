@@ -181,7 +181,7 @@ public class TaobaoCouponUtil {
         }
         try {
             byte[] paramBytes = paramString.toString().getBytes("GBK");
-            return new String(DigestUtils.md5(paramBytes), "GBK");
+            return DigestUtils.md5Hex(paramBytes).toUpperCase();
         } catch (UnsupportedEncodingException e) {
             return null;
         }
