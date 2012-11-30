@@ -1,7 +1,29 @@
 package models.order;
 
-import com.uhuila.common.util.DateUtil;
-import com.uhuila.common.util.RandomNumberUtil;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
+
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.TradeBill;
@@ -19,7 +41,9 @@ import models.sms.SMSUtil;
 import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
 import models.wuba.WubaUtil;
+
 import org.apache.commons.lang.StringUtils;
+
 import play.Logger;
 import play.Play;
 import play.data.validation.Required;
@@ -28,28 +52,8 @@ import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.uhuila.common.util.DateUtil;
+import com.uhuila.common.util.RandomNumberUtil;
 
 @Entity
 @Table(name = "e_coupon")
@@ -1135,16 +1139,40 @@ public class ECoupon extends Model {
      */
     public static List<ECoupon> selectCheckECoupons(BigDecimal payValue,
                                                     List<ECoupon> ecoupons) {
-        Collections.sort(ecoupons, new Comparator<ECoupon>() {
+        return selectCheckECoupons(payValue, ecoupons, null);
+    }
+    
+    /**
+     * 从一组券中返回符合指定金额条件的券，需要包含ecoupon.
+     * @param payValue
+     * @param ecoupons
+     * @param eCoupon
+     * @return
+     */
+    public static List<ECoupon> selectCheckECoupons(BigDecimal payValue,
+                    List<ECoupon> ecoupons, ECoupon eCoupon) {
+        List<ECoupon> newECoupons = new ArrayList<>(); 
+        for (ECoupon e : ecoupons) {
+            if (eCoupon == null || e.id != eCoupon.id){
+                newECoupons.add(e);
+            }
+        }
+
+        Collections.sort(newECoupons, new Comparator<ECoupon>() {
             @Override
             public int compare(ECoupon e1, ECoupon e2) {
                 return e2.faceValue.compareTo(e1.faceValue);
             }
         });
         BigDecimal totalValue = BigDecimal.ZERO;
+        
         List<ECoupon> selectECoupons = new ArrayList<>();
+        if (eCoupon != null && eCoupon.faceValue.compareTo(payValue) <= 0) {
+            selectECoupons.add(eCoupon);
+            payValue = payValue.subtract(eCoupon.faceValue);
+        }
 
-        for (ECoupon ecoupon : ecoupons) {
+        for (ECoupon ecoupon : newECoupons) {
             int res = totalValue.add(ecoupon.faceValue).compareTo(payValue);
             if (res <= 0) {
                 totalValue = totalValue.add(ecoupon.faceValue);
@@ -1154,7 +1182,6 @@ public class ECoupon extends Model {
                 }
             }
         }
-
         return selectECoupons;
     }
 

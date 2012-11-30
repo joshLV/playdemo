@@ -38,6 +38,7 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
     OperateUser operateUser;
     ECoupon ecoupon;
     Account supplierAccount;
+    Account platformCommissionAccount;
     
     @Before
     public void setup() {
@@ -70,9 +71,15 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
         ecoupon = FactoryBoy.create(ECoupon.class, new BuildCallback<ECoupon>() {
             @Override
             public void build(ECoupon ecoupon) {
+                ecoupon.salePrice = goods.salePrice;
+                ecoupon.originalPrice = goods.originalPrice;
                 ecoupon.status = ECouponStatus.CONSUMED;
             }
         });
+        
+        platformCommissionAccount = AccountUtil.getPlatformCommissionAccount();
+        platformCommissionAccount.amount = new BigDecimal(1000);
+        platformCommissionAccount.save();
     }
 
     @After
@@ -155,7 +162,11 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
         Account userAccount = AccountUtil.getAccount(user.id, AccountType.CONSUMER);
         assertEquals(ecoupon.salePrice.setScale(2), userAccount.amount.setScale(2));
         supplierAccount.refresh();
-        assertEquals(baseAmount.subtract(ecoupon.salePrice).setScale(2), supplierAccount.amount.setScale(2));
+        assertEquals(baseAmount.subtract(ecoupon.originalPrice).setScale(2), supplierAccount.amount.setScale(2));
+
+        // 佣金账户少钱
+        platformCommissionAccount.refresh();
+        assertEquals((new BigDecimal(1000)).subtract(ecoupon.salePrice.subtract(ecoupon.originalPrice)).setScale(2), platformCommissionAccount.amount.setScale(2));
     }
 
     @Test
@@ -176,10 +187,14 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
         assertEquals(ECouponStatus.REFUND, checkECoupon.status);
         
         // 检查余额
+        // 商户少了oritinPrice
         Account resalerAccount = AccountUtil.getAccount(resaler.id, AccountType.RESALER);
         assertEquals(ecoupon.salePrice.setScale(2), resalerAccount.amount.setScale(2));
         supplierAccount.refresh();
-        assertEquals(baseAmount.subtract(ecoupon.salePrice).setScale(2), supplierAccount.amount.setScale(2));
+        assertEquals(baseAmount.subtract(ecoupon.originalPrice).setScale(2), supplierAccount.amount.setScale(2));
+        // 佣金账户少钱
+        platformCommissionAccount.refresh();
+        assertEquals((new BigDecimal(1000)).subtract(ecoupon.salePrice.subtract(ecoupon.originalPrice)).setScale(2), platformCommissionAccount.amount.setScale(2));
     }
     
     private Map<String, String> getECouponSnParams(String eCouponSn) {

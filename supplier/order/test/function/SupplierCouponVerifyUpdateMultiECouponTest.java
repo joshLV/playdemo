@@ -304,6 +304,11 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         params.put("verifyAmount", verifyAmount);
         Http.Response response = POST("/coupons/update", params);
         assertEquals("HTTP状态码不是200", new Integer(200), response.status);
+
+        if (new BigDecimal(expectConsumedAmount).compareTo(BigDecimal.ZERO) > 0) {
+            firstEcoupon.refresh();
+            assertEquals("第一张券必须已经验证", ECouponStatus.CONSUMED, firstEcoupon.status);
+        }
         
         BigDecimal consumedAmount = (BigDecimal)renderArgs("consumedAmount");
         assertNotNull("没有得到已验证金额", consumedAmount);
@@ -318,11 +323,9 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
     protected List<String> getAvaiableECouponSNs(List<ECoupon> ecoupons, int expectAvaiableECouponNumber) {
        
         List<String> availableECouponSNs = new ArrayList<>();
-        System.out.println("ecoupons.size=" + ecoupons.size());
         for (ECoupon e : ecoupons) {
             ECoupon e1 = ECoupon.findById(e.id);
             e1.refresh();
-            System.out.println("e1.sn=" + e1.eCouponSn + ", status=" + e1.status);
             if (e1.status == ECouponStatus.UNCONSUMED) {
                 availableECouponSNs.add(e1.eCouponSn);
             }
