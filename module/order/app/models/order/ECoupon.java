@@ -18,7 +18,6 @@ import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
-
 import models.wuba.WubaUtil;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
@@ -1339,6 +1338,13 @@ public class ECoupon extends Model {
         BigDecimal usedAmount = find("select sum(originalPrice) from ECoupon " +
                 "where goods.supplierId=? and status=? and consumedAt>=? and consumedAt<?",
                 prepayment.supplier.id, models.order.ECouponStatus.CONSUMED, prepayment.effectiveAt, prepayment.expireAt).first();
+        return usedAmount == null ? BigDecimal.ZERO : usedAmount;
+    }
+
+    public static BigDecimal findConsumedByDay(long supplierId, Date beginAt, Date endAt) {
+        BigDecimal usedAmount = find("select sum(originalPrice) from ECoupon " +
+                "where goods.supplierId=? and status=? and consumedAt>=? and consumedAt<?",
+                supplierId, models.order.ECouponStatus.CONSUMED, DateUtil.getBeginOfDay(beginAt), DateUtil.getEndOfDay(endAt)).first();
         return usedAmount == null ? BigDecimal.ZERO : usedAmount;
     }
 }

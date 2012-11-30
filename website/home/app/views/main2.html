@@ -50,14 +50,8 @@
                                      x-webkit-speech="" x-webkit-grammar="builtin:translate" value="${s}"></div>
             <button type="submit"> 搜 索</button>
         </form>
-        <div class="hotword"><a href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','火锅').getUrl()}">火锅</a>
-            <a href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','川菜').getUrl()}">川菜</a> <a
-                    href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','美容').getUrl()}">美容</a> <a
-                    href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','KTV').getUrl()}">KTV</a> <a
-                    href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','瑜伽').getUrl()}">瑜伽</a> <a
-                    href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','SPA').getUrl()}">SPA</a> <a
-                    href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','墙纸').getUrl()}">墙纸</a> <a
-                    href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('keywords','洗车').getUrl()}">洗车</a>
+        <div class="hotword">#{list hotKeywords,as: 'keywords'}<a
+                href="${keywords.link}">${keywords.title}</a>#{/list}
         </div>
     </div>
     <div id="cart">
