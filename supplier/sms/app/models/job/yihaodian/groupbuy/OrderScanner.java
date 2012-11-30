@@ -23,7 +23,7 @@ public class OrderScanner extends Job{
             return;
         }
         List<OuterOrder> orders = OuterOrder.find("partner = ? and (status = ? or status = ?)",
-                OuterOrderPartner.JD,
+                OuterOrderPartner.YHD,
                 OuterOrderStatus.ORDER_DONE,
                 OuterOrderStatus.REFUND_DONE).fetch();
         for (OuterOrder order : orders){

@@ -25,6 +25,7 @@ require:
     - org.json -> json 20090211
     - sms -> sms
     - cms -> cms
+    - oauth -> oauth
     - emaillogs -> emaillogs
     - view_ext -> view_ext
     - cache_helper -> cache_helper
@@ -73,6 +74,7 @@ repositories:
             - sms -> *
             - view_ext -> *
             - cms -> *
+            - oauth -> *
             - emaillogs -> *
             - asset_package -> *
             - cache_helper -> *

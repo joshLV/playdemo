@@ -5,10 +5,6 @@ import com.google.gson.JsonParser;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
-import com.taobao.api.internal.util.RequestParametersHolder;
-import com.taobao.api.internal.util.TaobaoHashMap;
-import com.taobao.api.internal.util.TaobaoUtils;
-import com.taobao.api.internal.util.WebUtils;
 import com.taobao.api.request.VmarketEticketConsumeRequest;
 import com.taobao.api.request.VmarketEticketResendRequest;
 import com.taobao.api.request.VmarketEticketSendRequest;
@@ -18,7 +14,6 @@ import com.taobao.api.response.VmarketEticketSendResponse;
 import models.accounts.AccountType;
 import models.oauth.OAuthToken;
 import models.order.ECoupon;
-import models.order.Order;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
@@ -26,7 +21,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
-import play.libs.Codec;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -171,10 +165,14 @@ public class TaobaoCouponUtil {
     }
 
     public static boolean verifyParam(Map<String, String> params) {
-        params.remove("body");
         String sign = params.get("sign");
-        TreeMap<String, String> orderedParams = new TreeMap<>(params);
+        return sign != null && sign.equals(sign(params));
+    }
+
+    public static String sign(Map<String, String> params) {
+        params.remove("body");
         StringBuilder paramString = new StringBuilder(COUPON_SECRET);
+        TreeMap<String, String> orderedParams = new TreeMap<>(params);
         for (String key : orderedParams.keySet()) {
             String value = orderedParams.get(key);
             if (!StringUtils.isBlank(value) && !"sign".equals(key)) {
@@ -183,11 +181,9 @@ public class TaobaoCouponUtil {
         }
         try {
             byte[] paramBytes = paramString.toString().getBytes("GBK");
-            String calculatedSign = new String(DigestUtils.md5(paramBytes), "GBK");
-            return calculatedSign.equals(sign);
-        }catch (UnsupportedEncodingException e) {
-            Logger.info("Verify param failed: unsupported encoding. %s", paramString.toString());
-            return false;
+            return new String(DigestUtils.md5(paramBytes), "GBK");
+        } catch (UnsupportedEncodingException e) {
+            return null;
         }
     }
 
