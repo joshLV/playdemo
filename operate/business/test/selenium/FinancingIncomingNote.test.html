@@ -14,7 +14,7 @@ load:['fixture/roles.yml','fixture/supplierusers.yml'] /}
     open('/financing_incoming_add')
     assertTitle('记录收款')
     clickAndWait('css=button.btn.btn-primary')
-    verifyTextPresent('未选择账户,或所选无效账户')
+    *{verifyTextPresent('未选择账户,或所选无效账户')}*
     click('name=id')
     clickAndWait('css=button.btn.btn-primary')
     verifyTextPresent('无效金额')
