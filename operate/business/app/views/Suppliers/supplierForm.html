@@ -25,8 +25,14 @@ note:'.quanmx.com (只能是字母、数字、下划线，且长度限定在3-20
 #{layout_operate.textField name:'supplier.position', value:supplier?.position/}
 #{layout_operate.textField name:'supplier.email', value:supplier?.email/}
 *{#{layout_operate.textField name:'supplier.salesEmail', value:supplier?.salesEmail/}}*
+#{layout_operate.textField name:'supplier.mobile', value:supplier?.mobile,note:'(负责人手机和电话至少填写一项)'/}
+#{layout_operate.textField name:'supplier.phone', value:supplier?.phone/}
 
 
+
+<input type="hidden" id="supplier_salesId" name="supplier.salesId" value="${supplier?.salesId}">
+
+#{layout_operate.textField name:'supplier.accountLeaderMobile', value:supplier?.accountLeaderMobile/}
 #{layout_operate.selectField name:'supplier.salesId', class:'span2', value:supplier?.salesId,
 error:'supplier.salesId'}
     #{list items:operateUserList, as:'operateUser' }
@@ -40,11 +46,6 @@ error:'supplier.salesId'}
         #{/option}
     #{/list}
 #{/layout_operate.selectField}
-
-<input type="hidden" id="supplier_salesId" name="supplier.salesId" value="${supplier?.salesId}">
-#{layout_operate.textField name:'supplier.accountLeaderMobile', value:supplier?.accountLeaderMobile/}
-#{layout_operate.textField name:'supplier.mobile', value:supplier?.mobile,note:'(负责人手机和电话至少填写一项)'/}
-#{layout_operate.textField name:'supplier.phone', value:supplier?.phone/}
 #{if !"edit".equals(action)}
     #{layout_operate.textField name:'admin.loginName', value:admin?.loginName, required:true/}
     #{layout_operate.textField name:'admin.mobile', value:admin?.mobile, required:true/}
