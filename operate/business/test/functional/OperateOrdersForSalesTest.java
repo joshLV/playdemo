@@ -1,4 +1,4 @@
-package function;
+package functional;
 
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
@@ -23,11 +23,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class OperateOrdersForSalesManagerTest extends FunctionalTest {
+public class OperateOrdersForSalesTest extends FunctionalTest {
 
     Order order;
     OperateUser operateUser;
-
+    
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
@@ -35,7 +35,7 @@ public class OperateOrdersForSalesManagerTest extends FunctionalTest {
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
-
+        
         // only sales role.
         operateUser = FactoryBoy.create(OperateUser.class, new BuildCallback<OperateUser>() {
             @Override
@@ -43,11 +43,10 @@ public class OperateOrdersForSalesManagerTest extends FunctionalTest {
                 // 定义角色
                 user.roles = new ArrayList<OperateRole>();
                 user.roles.add(OperateUserFactory.role("sales"));
-                user.roles.add(OperateUserFactory.role("manager"));
             }
         });
         // 设置测试登录的用户名
-        Security.setLoginUserForTest(operateUser.loginName);
+        Security.setLoginUserForTest(operateUser.loginName);        
     }
 
     @After
@@ -57,7 +56,7 @@ public class OperateOrdersForSalesManagerTest extends FunctionalTest {
     }
 
     @Test
-    public void 可以查看其它人的订单() {
+    public void 不能查看其它人的订单() {
         FactoryBoy.create(Goods.class);
         final User user = FactoryBoy.create(User.class);
         order = FactoryBoy.create(Order.class, new BuildCallback<Order>() {
@@ -74,11 +73,11 @@ public class OperateOrdersForSalesManagerTest extends FunctionalTest {
                 oi.phone = user.mobile;
             }
         });
-
+        
         Response response = GET("/orders");
         assertStatus(200, response);
-        List<Order> orders = (List<Order>) renderArgs("orderList");
-        assertEquals(1, orders.size());
+        List<Order> orders = (List<Order>)renderArgs("orderList");
+        assertEquals(0, orders.size());
     }
 
     @Test
@@ -105,10 +104,10 @@ public class OperateOrdersForSalesManagerTest extends FunctionalTest {
                 oi.phone = user.mobile;
             }
         });
-
+        
         Response response = GET("/orders");
         assertStatus(200, response);
-        List<Order> orders = (List<Order>) renderArgs("orderList");
+        List<Order> orders = (List<Order>)renderArgs("orderList");
         assertEquals(1, orders.size());
     }
 

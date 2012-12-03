@@ -1,4 +1,4 @@
-package function;
+package functional;
 
 import factory.FactoryBoy;
 import models.dangdang.DDAPIInvokeException;

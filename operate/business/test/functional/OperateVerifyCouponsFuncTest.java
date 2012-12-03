@@ -1,4 +1,4 @@
-package function;
+package functional;
 
 import com.uhuila.common.util.DateUtil;
 import controllers.operate.cas.Security;

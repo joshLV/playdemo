@@ -73,21 +73,29 @@ public class Account extends Model {
     }
 
     /**
-     * 从指定日期到以前所有的未结算过的可提现金额.
+     * 从指定日期到以前所有的未结算过的可结算金额.
      */
     @Transient
     public BigDecimal getWithdrawAmount(Date date) {
         BigDecimal todayWithdrawAmount = AccountSequence.getTodayWithdrawAmount(this);
         BigDecimal incomeAmount = AccountSequence.getIncomeAmount(this, date).subtract(todayWithdrawAmount);
 
-        if (uncashAmount == null ) {
+        if (uncashAmount == null) {
             return incomeAmount == null ? BigDecimal.ZERO : incomeAmount;
         }
-        if (incomeAmount.compareTo(uncashAmount) <= 0){
+        if (incomeAmount.compareTo(uncashAmount) <= 0) {
             return BigDecimal.ZERO;
         }
 
         return incomeAmount.subtract(uncashAmount);
+    }
+
+    public BigDecimal getSupplierWithdrawAmount(BigDecimal prepaymentBalance, Date date) {
+        BigDecimal withdrawAmount = getWithdrawAmount(date);
+        if (prepaymentBalance.compareTo(withdrawAmount) > 0) {
+            return BigDecimal.ZERO;
+        }
+        return withdrawAmount.subtract(prepaymentBalance);
     }
 
     public boolean isCreditable() {

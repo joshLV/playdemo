@@ -145,4 +145,19 @@ public class Prepayment extends Model {
             return true;
         }
     }
+
+    public static BigDecimal findAmountBySupplier(Supplier supplier) {
+        BigDecimal amount = find("select sum(amount-withdrawAmount) from Prepayment where supplier=? and expireAt>? and amount>withdrawAmount", supplier, new Date()).first();
+        return amount == null ? BigDecimal.ZERO : amount;
+    }
+
+    /**
+     * 获取商户的有效的预付款记录.
+     *
+     * @param supplier
+     * @return
+     */
+    public static List<Prepayment> findBySupplier(Supplier supplier) {
+        return  find("supplier=? and expireAt>? and amount>withdrawAmount", supplier, new Date()).fetch();
+    }
 }
