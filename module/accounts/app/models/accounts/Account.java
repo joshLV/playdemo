@@ -1,6 +1,5 @@
 package models.accounts;
 
-import com.uhuila.common.util.DateUtil;
 import play.db.jpa.Model;
 
 import javax.persistence.Column;
@@ -59,24 +58,6 @@ public class Account extends Model {
     public static final long PARTNER_KUAIQIAN = 102L; //快钱虚拟账户
 
 
-    /**
-     * 从昨天到以前所有的未结算过的可提现金额.
-     */
-    @Transient
-    public BigDecimal getWithdrawAmount() {
-        BigDecimal todayWithdrawAmount = AccountSequence.getTodayWithdrawAmount(this);
-        BigDecimal incomeAmount = AccountSequence.getIncomeAmount(this, DateUtil.getBeginOfDay()).subtract(todayWithdrawAmount);
-
-        if (uncashAmount == null ) {
-            return incomeAmount == null ? BigDecimal.ZERO : incomeAmount;
-        }
-        if (incomeAmount.compareTo(uncashAmount) <= 0){
-            return BigDecimal.ZERO;
-        }
-
-        return incomeAmount.subtract(uncashAmount);
-    }
-
     public Account() {
 
     }
@@ -89,6 +70,24 @@ public class Account extends Model {
         this.status = AccountStatus.NORMAL;
         this.createdAt = new Date();
         this.creditable = AccountCreditable.NO;
+    }
+
+    /**
+     * 从指定日期到以前所有的未结算过的可提现金额.
+     */
+    @Transient
+    public BigDecimal getWithdrawAmount(Date date) {
+        BigDecimal todayWithdrawAmount = AccountSequence.getTodayWithdrawAmount(this);
+        BigDecimal incomeAmount = AccountSequence.getIncomeAmount(this, date).subtract(todayWithdrawAmount);
+
+        if (uncashAmount == null ) {
+            return incomeAmount == null ? BigDecimal.ZERO : incomeAmount;
+        }
+        if (incomeAmount.compareTo(uncashAmount) <= 0){
+            return BigDecimal.ZERO;
+        }
+
+        return incomeAmount.subtract(uncashAmount);
     }
 
     public boolean isCreditable() {
