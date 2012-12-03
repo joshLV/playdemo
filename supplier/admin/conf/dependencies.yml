@@ -34,6 +34,7 @@ require:
     - supports -> supports
     - third_tuan -> third_tuan
     - commons-httpclient -> commons-httpclient 3.1
+    - taobao -> taobao
 
 repositories:
     - mavenRepository:
@@ -75,3 +76,4 @@ repositories:
             - jingdong -> *
             - supports -> *
             - third_tuan -> *
+            - taobao -> *

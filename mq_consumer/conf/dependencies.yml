@@ -33,7 +33,7 @@ require:
     - dangdang -> dangdang
     - jingdong -> jingdong
     - wuba -> wuba
-    - taobao_coupon -> taobao_coupon
+    - taobao -> taobao
     - supports -> supports
     - com.yihaodian -> yhdclient 1.0
     - commons-httpclient -> commons-httpclient 3.1
@@ -72,7 +72,7 @@ repositories:
             - jingdong -> *
             - supports -> *
             - third_tuan -> *
-            - taobao_coupon -> *
+            - taobao -> *
             - wuba -> *
 
     - play1ContributedModules:

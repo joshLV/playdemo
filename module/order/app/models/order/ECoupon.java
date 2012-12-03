@@ -16,7 +16,7 @@ import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.Shop;
 import models.sms.SMSUtil;
-import models.taobao_coupon.TaobaoCouponUtil;
+import models.taobao.TaobaoCouponUtil;
 import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
 

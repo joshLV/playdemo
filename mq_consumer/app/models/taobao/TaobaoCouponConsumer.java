@@ -9,7 +9,6 @@ import models.order.*;
 import models.resale.Resaler;
 import models.sales.GoodsDeployRelation;
 import models.sales.MaterialType;
-import models.taobao_coupon.TaobaoCouponUtil;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.jobs.OnApplicationStart;

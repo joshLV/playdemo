@@ -2,7 +2,7 @@ package controllers;
 
 import com.google.gson.Gson;
 import models.order.*;
-import models.taobao_coupon.TaobaoCouponUtil;
+import models.taobao.TaobaoCouponUtil;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.mvc.Controller;

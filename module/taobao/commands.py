@@ -1,10 +1,10 @@
 # Here you can create play commands that are specific to the module, and extend existing commands
 
-MODULE = 'taobao_coupon'
+MODULE = 'taobao'
 
 # Commands that are specific to your module
 
-COMMANDS = ['taobao_coupon:hello']
+COMMANDS = ['taobao:hello']
 
 def execute(**kargs):
     command = kargs.get("command")
@@ -12,7 +12,7 @@ def execute(**kargs):
     args = kargs.get("args")
     env = kargs.get("env")
 
-    if command == "taobao_coupon:hello":
+    if command == "taobao:hello":
         print "~ Hello"
 
 

@@ -1,6 +1,6 @@
 package functional;
 
-import models.taobao_coupon.TaobaoCouponUtil;
+import models.taobao.TaobaoCouponUtil;
 import org.junit.Before;
 import org.junit.Test;
 import play.test.FunctionalTest;

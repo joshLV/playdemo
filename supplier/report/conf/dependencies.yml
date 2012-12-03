@@ -34,6 +34,7 @@ require:
     - jingdong -> jingdong
     - supports -> supports
     - third_tuan -> third_tuan
+    - taobao -> taobao
 
 repositories:
     - mavenRepository:
@@ -76,3 +77,4 @@ repositories:
             - jingdong -> *
             - supports -> *
             - third_tuan -> *
+            - taobao -> *

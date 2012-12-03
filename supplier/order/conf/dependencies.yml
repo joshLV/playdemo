@@ -33,6 +33,8 @@ require:
     - view_ext -> view_ext
     - cache_helper -> cache_helper
     - commons-httpclient -> commons-httpclient 3.1
+    - wuba -> wuba
+    - taobao -> taobao
 
 repositories:
     - mavenRepository:
@@ -73,3 +75,4 @@ repositories:
             - asset_package -> *
             - view_ext -> *
             - cache_helper -> *
+            - taobao -> *

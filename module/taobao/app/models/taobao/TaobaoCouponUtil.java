@@ -1,4 +1,4 @@
-package models.taobao_coupon;
+package models.taobao;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
