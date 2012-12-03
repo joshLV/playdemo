@@ -193,7 +193,6 @@ public class OperateGoods extends Controller {
         Long id = OperateRbac.currentUser().id;
 
         if (goods.supplierId != null) {
-            System.out.println("1111");
             List<Brand> brandList = Brand.findByOrder(new Supplier(goods.supplierId), id);
             renderArgs.put("brandList", brandList);
         }

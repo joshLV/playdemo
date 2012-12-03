@@ -31,7 +31,6 @@ public class GoodsThirdSupport extends Model {
 
     @Lob
     @Column(name = "goods_data")
-
     public String goodsData;          //此商品的完整信息
 
     @Enumerated(EnumType.STRING)

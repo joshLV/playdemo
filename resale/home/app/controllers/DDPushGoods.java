@@ -40,7 +40,7 @@ import java.util.Map;
  */
 @With(SecureCAS.class)
 public class DDPushGoods extends Controller {
-    public static final String DATE_FORMAT = "yyy-MM-dd HH:mm:ss";
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     /**
      * 批量发布商品
@@ -124,13 +124,12 @@ public class DDPushGoods extends Controller {
 
         GoodsThirdSupport support = GoodsThirdSupport.getSupportGoods(goods, OuterOrderPartner.DD);
         if (support == null) {
-            goods = models.sales.Goods.findById(goodsId);
             getGoodsItems(goods);
         } else {
             getGoodsSupportItems(support);
         }
         List<Shop> shops = Arrays.asList(goods.getShopList().toArray(new Shop[]{}));
-        render(goods, shops, supplier);
+        render(shops, supplier);
     }
 
     /**
@@ -203,7 +202,6 @@ public class DDPushGoods extends Controller {
         cal.set(Calendar.MINUTE, 59);
         cal.set(Calendar.SECOND, 59);
         Date afterMonthDate = DateUtil.lastDayOfMonth(cal.getTime());
-
         renderArgs.put("effectiveAt", nowDate);
         renderArgs.put("expireAt", afterMonthDate);
 
@@ -219,6 +217,7 @@ public class DDPushGoods extends Controller {
         renderArgs.put("prompt", goods.getPrompt());
         renderArgs.put("details", goods.getDetails());
         renderArgs.put("supplierDes", goods.getSupplierDes());
+        renderArgs.put("shopList", goods.getShopList());
         renderArgs.put("goodsId", goods.id);
     }
 

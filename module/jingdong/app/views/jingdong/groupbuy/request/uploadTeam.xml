@@ -59,11 +59,11 @@
     *{ 单人购买上限 仅数字，0表示无上限，最大支持9999 [必填] }*
     <PerNumber>${perNumber}</PerNumber>
     *{ 特别提示 富文本数据，为保证验证通过，请讲内容放到<![CDATA[]]> [必填]  }*
-    <Notice> <![CDATA[ ${notice.raw()} ]]> </Notice>
+    <Notice><![CDATA[ ${notice?.raw()} ]]> </Notice>
     *{ 团购简介 富文本数据，为保证验证通过，请讲内容放到<![CDATA[]]>  [必填]  }*
     <Summary><![CDATA[ ${summary.raw()} ]]></Summary>
     *{ 团购详情 富文本数据，为保证验证通过，请讲内容放到<![CDATA[]]>  [必填] }*
-    <TeamDetail> <![CDATA[ ${teamDetail.raw()} ]]> </TeamDetail>
+    <TeamDetail><![CDATA[ ${teamDetail.raw()} ]]> </TeamDetail>
     *{ 团购所在的商家信息，支持多商家，至少填写一个商家信息 }*
     <Partners>
     #{list items:shops, as:'shop'}
