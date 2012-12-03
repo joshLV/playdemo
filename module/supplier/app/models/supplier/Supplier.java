@@ -262,16 +262,25 @@ public class Supplier extends Model {
         sp.salesId = supplier.salesId;
         sp.shopEndHour = supplier.shopEndHour;
         sp.updatedAt = new Date();
-        if (supplier.supplierCategory.id != sp.supplierCategory.id) {
+        if (sp.supplierCategory == null || (sp.supplierCategory != null && supplier.supplierCategory != null && supplier.supplierCategory.id != sp.supplierCategory.id)) {
             sp.getCode(supplier.supplierCategory);
         }
         sp.save();
         List<Goods> goodsList = Goods.find("supplierId=? and code is not null order by code desc", sp.id).fetch();
-        for (Goods g : goodsList) {
-            g.refresh();
-            Supplier tempSupplier = Supplier.findById(g.supplierId);
-            g.code = tempSupplier.code + g.sequenceCode;
-            g.save();
+        if (goodsList != null && goodsList.size() > 0) {
+            for (Goods g : goodsList) {
+                g.refresh();
+                Supplier tempSupplier = Supplier.findById(g.supplierId);
+                g.code = tempSupplier.code + g.sequenceCode;
+                g.save();
+            }
+        } else {
+            List<Goods> existedGoodsList = Goods.find("supplierId=? order by createdAt desc", sp.id).fetch();
+            for (Goods g : existedGoodsList) {
+                g.refresh();
+                g.getCode();
+                g.save();
+            }
         }
 
     }

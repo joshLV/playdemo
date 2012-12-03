@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -87,5 +88,10 @@ public class SupplierCategory extends Model {
         supplierCategoryPage.setPageSize(pageSize);
         supplierCategoryPage.setBoundaryControlsEnabled(false);
         return supplierCategoryPage;
+    }
+
+    public List<Supplier> getSuppliers() {
+        return Supplier.find("supplierCategory.id=?", this.id
+        ).fetch();
     }
 }

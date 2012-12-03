@@ -1698,7 +1698,6 @@ public class Goods extends Model {
         }
 
         if (noTuanCategoryMessageList.size() > 0) {
-            System.out.println("noTuanCategoryMessageList>>" + noTuanCategoryMessageList.size());
             //发送提醒邮件
             MailMessage mailMessage = new MailMessage();
             mailMessage.addRecipient("dev@uhuila.com");
@@ -1791,20 +1790,14 @@ public class Goods extends Model {
 
     public void getCode() {
         Goods goods = Goods.find("supplierId=? and code is not null order by code desc", this.supplierId).first();
-        Supplier supplier = null;
-        System.out.println("goods>>" + goods);
+        Supplier supplier = Supplier.findById(this.supplierId);
         if (goods == null) {
-            System.out.println("111");
             this.sequenceCode = "01";
         } else {
-            System.out.println("this.sequenceCode>>>" + this.sequenceCode);
-            supplier = Supplier.findById(goods.supplierId);
-            System.out.println("goods.sequenceCode>>" + goods.sequenceCode);
             this.sequenceCode = Supplier.calculateFormattedCode(goods.sequenceCode, "2");
         }
         if (supplier != null && StringUtils.isNotBlank(supplier.code)) {
             this.code = supplier.code + this.sequenceCode;
-            System.out.println("code>>" + this.code);
         }
     }
 

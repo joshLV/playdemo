@@ -191,6 +191,7 @@ public class Suppliers extends Controller {
      *
      * @param id 门店标识
      */
+    @ActiveNavigation("suppliers_index")
     public static void edit(long id) {
         int page = getPage();
         Supplier supplier = Supplier.findById(id);
@@ -251,7 +252,7 @@ public class Suppliers extends Controller {
     public static void showCode(Long id, Long supplierCategoryId) {
         Supplier supplier = Supplier.findById(id);
         SupplierCategory supplierCategory = SupplierCategory.findById(supplierCategoryId);
-        if (supplier != null && supplierCategory != null) {
+        if (supplier != null && supplierCategory != null && supplier.supplierCategory.id != supplierCategoryId) {
             supplier.getCode(supplierCategory);
         }
 

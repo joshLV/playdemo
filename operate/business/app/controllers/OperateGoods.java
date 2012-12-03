@@ -193,7 +193,6 @@ public class OperateGoods extends Controller {
         Long id = OperateRbac.currentUser().id;
 
         if (goods.supplierId != null) {
-            System.out.println("1111");
             List<Brand> brandList = Brand.findByOrder(new Supplier(goods.supplierId), id);
             renderArgs.put("brandList", brandList);
         }
@@ -258,7 +257,6 @@ public class OperateGoods extends Controller {
      */
     @ActiveNavigation("goods_add")
     public static void create(@Valid models.sales.Goods goods, @Required File imagePath) {
-        System.out.println("121212");
         checkImageFile(imagePath);
         checkExpireAt(goods);
         checkSalePrice(goods);
@@ -284,7 +282,6 @@ public class OperateGoods extends Controller {
             }
         }
         goods.createdBy = OperateRbac.currentUser().loginName;
-        System.out.println("13131313");
         goods.create();
         try {
             goods.imagePath = uploadImagePath(imagePath, goods.id, null);
@@ -294,7 +291,6 @@ public class OperateGoods extends Controller {
         goods.save();
         String createdFrom = "Op";
         goods.createHistory(createdFrom);
-        System.out.println("goodscode>>>" + goods.code);
         index(null, "");
     }
 
