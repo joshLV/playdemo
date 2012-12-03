@@ -153,8 +153,9 @@ GET     /suppliers/{id}/supplier_category/{supplierCategoryId}  Suppliers.showCo
 #商户类别
 GET     /suppliers_category                     SuppliersCategory.index
 GET     /suppliers_category/new                 SuppliersCategory.add
+POST    /suppliers_category                     SuppliersCategory.create
 GET     /suppliers_category/{id}/edit           SuppliersCategory.edit
-PUT     /suppliers_category/{id}                         SuppliersCategory.update
+PUT     /suppliers_category/{id}                SuppliersCategory.update
 
 #商户操作员管理
 GET     /users                                  OperateSupplierUsers.index

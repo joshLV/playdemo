@@ -49,7 +49,6 @@ public class SuppliersCategory extends Controller {
         if (!checkUniqueName(supplierCategory.name)) {
             Validation.addError("supplierCategory.name", "validation.unique");
         }
-
         if (Validation.hasErrors()) {
             render("SuppliersCategory/add.html", supplierCategory);
         }
