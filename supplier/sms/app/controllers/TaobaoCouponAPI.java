@@ -18,9 +18,10 @@ public class TaobaoCouponAPI extends Controller {
 
     public static void index(String method) {
         Map<String, String> params = request.params.allSimple();
+        params.remove("body");
         Logger.info("taobao coupon request: \n%s", new Gson().toJson(params));
         if (!TaobaoCouponUtil.verifyParam(params)) {
-            Logger.info("taobao coupon request error param verify failed!");
+            Logger.info("taobao coupon request error: param verify failed!");
             renderJSON("{\"code\":501}");
             return;//签名错误
         }

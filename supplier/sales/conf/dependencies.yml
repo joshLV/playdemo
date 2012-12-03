@@ -15,6 +15,7 @@ require:
     - view_ext -> view_ext
     - commons-lang -> commons-lang 2.6
     - commons-httpclient -> commons-httpclient 3.1
+    - com.taobao -> taobao-top 20121130
     - sales -> sales
     - supplier -> supplier
     - paginate_ext -> paginate_ext
@@ -45,6 +46,7 @@ repositories:
             - commons-httpclient -> *
             - commons-lang -> *
             - org.jsoup -> *
+            - com.taobao -> *
         m2compatible: true
 
     - play1ContributedModules:

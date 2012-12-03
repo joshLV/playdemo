@@ -36,6 +36,7 @@ require:
     - commons-httpclient -> commons-httpclient 3.1
     - wuba -> wuba
     - taobao -> taobao
+    - com.taobao -> taobao-top 20121130
 
 repositories:
     - mavenRepository:
@@ -45,6 +46,7 @@ repositories:
             - com.uhuila.utils -> *
             - commons-lang -> *
             - org.jsoup -> *
+            - com.taobao -> *
         m2compatible: true
 
     - play1ContributedModules:
