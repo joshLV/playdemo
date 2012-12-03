@@ -150,7 +150,23 @@ public class FindPasswordTest extends FunctionalTest {
         Http.Response response = GET("/reset-password?mobile=" + user.mobile + "&token=" + user.passwordToken);
         assertStatus(200, response);
         assertEquals(false, renderArgs("isExpired"));
+    }
 
+    @Test
+    public void testFindByEmailOrMobile() {
+        Http.Response response = GET("/find-password?from=email");
+        assertStatus(200, response);
+        assertContentMatch("请填写您的注册邮箱", response);
+        response = GET("/find-password?from=mobile");
+        assertStatus(200, response);
+        assertContentMatch("输注册手机", response);
+    }
+
+    @Test
+    public void testSendEmailSuccess() {
+        Http.Response response = GET("/send-email/success");
+        assertStatus(200, response);
+        assertContentMatch("找回密码-邮件发送成功", response);
     }
 
 
