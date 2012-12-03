@@ -33,8 +33,8 @@ public class OperateCoupons extends Controller {
     public static void index(CouponsCondition condition) {
         if (condition == null) {
             condition = new CouponsCondition();
-            condition.paidAtBegin = DateHelper.beforeDays(1);
-            condition.paidAtEnd = new Date();
+            condition.hidPaidAtBegin = DateHelper.beforeDays(1);
+            condition.hidPaidAtEnd = new Date();
         }
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);

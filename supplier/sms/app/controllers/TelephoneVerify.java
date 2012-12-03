@@ -123,7 +123,7 @@ public class TelephoneVerify extends Controller {
             //批量验证
             if(value != null && value.compareTo(BigDecimal.ZERO) > 0){
                 List<ECoupon> eCoupons = ECoupon.queryUnconsumedCouponsWithSameGoodsGroups(ecoupon);
-                List<ECoupon> checkECoupons = ECoupon.selectCheckECoupons(value, eCoupons);
+                List<ECoupon> checkECoupons = ECoupon.selectCheckECoupons(value, eCoupons,ecoupon);
 
                 BigDecimal consumedAmount = BigDecimal.ZERO;
 

@@ -43,7 +43,7 @@
                 <span id="sure_amount" style="display: inline;color: #00A800;font-size: 25px"></span>
             </div>
             <div class="form-actions">
-                <button class="btn btn-primary" id="multi-sure" disabled="true" type="submit">验证</button>
+                <button class="btn btn-success" id="multi-sure" disabled="true" type="submit">验证</button>
             </div>
         </div>
         #{/if}
@@ -65,7 +65,7 @@
         截止日期：${ecoupon.expireAt?.format('yyyy-MM-dd HH:mm:ss')}
         #{if !success_info}
         <div class="form-actions">
-            <button class="btn btn-primary" id="sure" type="submit">验证</button>
+            <button class="btn btn-success" id="sure" type="submit">验证</button>
         </div>
         #{/if}
     </p>
