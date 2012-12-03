@@ -2,6 +2,7 @@ package models.order;
 
 import com.uhuila.common.constants.DeletedStatus;
 import models.accounts.AccountSequence;
+import models.accounts.SettlementStatus;
 import models.supplier.Supplier;
 import play.data.validation.Max;
 import play.data.validation.Min;
@@ -55,11 +56,16 @@ public class Prepayment extends Model {
     @Column(name = "created_by")
     public String createdBy;    //创建人帐号
 
+    @Column(name = "updated_at")
     public Date updatedAt;      //最后修改时间
 
+    @Column(name = "updated_by")
     public String updatedBy;    //最后修改人帐号
 
     public DeletedStatus deleted;   //删除状态
+
+    @Column(name = "settlement_status")
+    public SettlementStatus settlementStatus;   //结算状态
 
     public static void update(Long id, Prepayment prepayment, String loginName) {
         Prepayment oldPrepayment = Prepayment.findById(id);
@@ -120,9 +126,7 @@ public class Prepayment extends Model {
             return amount;
         }
         return amount.subtract(withdrawAmount);
-
     }
-
 
     /**
      * 修改预付款记录，并返回是否给定的预付款记录支付了全部需要支付的费用
@@ -137,10 +141,14 @@ public class Prepayment extends Model {
         }
         if (amount.compareTo(prepayment.amount) > 0) {
             prepayment.withdrawAmount = prepayment.amount;
+            prepayment.settlementStatus = SettlementStatus.CLEARED;
             prepayment.save();
             return false;
         } else {
             prepayment.withdrawAmount = prepayment.withdrawAmount == null ? amount : prepayment.withdrawAmount.add(amount);
+            if (prepayment.withdrawAmount.compareTo(prepayment.amount) == 0) {
+                prepayment.settlementStatus = SettlementStatus.CLEARED;
+            }
             prepayment.save();
             return true;
         }
@@ -158,6 +166,6 @@ public class Prepayment extends Model {
      * @return
      */
     public static List<Prepayment> findBySupplier(Supplier supplier) {
-        return  find("supplier=? and expireAt>? and amount>withdrawAmount", supplier, new Date()).fetch();
+        return find("supplier=? and expireAt>? and amount>withdrawAmount and settlement=?", supplier, new Date(), SettlementStatus.UNCLEARED).fetch();
     }
 }

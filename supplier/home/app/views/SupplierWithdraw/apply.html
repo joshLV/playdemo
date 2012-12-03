@@ -6,7 +6,7 @@
 <script type="text/javascript">
     $(function () {
     $("#prepaymentDetail").click(function () {
-        $(".table-striped").toggle();
+    $(".table-striped").toggle();
     });
     });
 
@@ -71,7 +71,7 @@
         </div>
     </div>
     <div class="control-group">
-        <label class="control-label">账户金额</label>
+        <label class="control-label">账户余额</label>
 
         <div class="control-value">${account.amount?.formatCurrency('CNY')}
         </div>
@@ -81,7 +81,7 @@
 
         <div class="control-value">${prepaymentBalance?.formatCurrency('CNY')}
             <input type="hidden" name="amount"
-                   value="${account.getWithdrawAmount(com.uhuila.common.util.DateUtil.getBeginOfDay())}"/>
+                   value="${withdrawAmount}"/>
             <a id="prepaymentDetail" href="#">查看明细</a>
         </div>
     </div>
@@ -89,9 +89,8 @@
         <label class="control-label">可提现金额</label>
 
         <div class="control-value">
-            ${account.getSupplierWithdrawAmount(prepaymentBalance,com.uhuila.common.util.DateUtil.getBeginOfDay())?.formatCurrency('CNY')}
-            <input type="hidden" name="amount"
-                   value="${account.getWithdrawAmount(com.uhuila.common.util.DateUtil.getBeginOfDay())}"/>
+            ${supplierWithdrawAmount?.formatCurrency('CNY')}
+            <input type="hidden" name="amount" value="${withdrawAmount}"/>
             (统计截止日期: ${com.uhuila.common.util.DateUtil.getYesterday().format('yyyy-MM-dd')})
         </div>
     </div>

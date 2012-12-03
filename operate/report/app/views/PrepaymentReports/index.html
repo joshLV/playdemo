@@ -4,19 +4,19 @@
 <script type="text/javascript">
     $(function () {
 
-        $('#processOrder').click(function (ev) {
-            ev.preventDefault();
-            var order = '${orderBy}';
+    $('#processOrder').click(function (ev) {
+    ev.preventDefault();
+    var order = '${orderBy}';
 
-            if (order == null || order == '') {
-                $('#orderBy').val("desc");
-            } else if (order == "desc") {
-                $('#orderBy').val("asc");
-            } else {
-                $('#orderBy').val("");
-            }
-            $('#frmlist').submit();
-        });
+    if (order == null || order == '') {
+    $('#orderBy').val("desc");
+    } else if (order == "desc") {
+    $('#orderBy').val("asc");
+    } else {
+    $('#orderBy').val("");
+    }
+    $('#frmlist').submit();
+    });
     });
 </script>
 
@@ -24,34 +24,34 @@
 #{set 'moreStyles'}
 <style type="text/css">
     .table-striped tbody .tr-expired {
-        color: #A0A0A0;
+    color: #A0A0A0;
     }
 
     .table-striped tbody tr.transparent td td {
-        border-left: 0px;
-        background: transparent;
+    border-left: 0px;
+    background: transparent;
     }
 
     .expired {
-        color: #ffbe28;
-        font-weight: bold;
+    color: #ffbe28;
+    font-weight: bold;
     }
 
     .zeroBaseSale {
-        color: #942e8f;
-        font-weight: bold;
+    color: #942e8f;
+    font-weight: bold;
     }
 
     .default-order {
-        background: url(http://y1.uhcdn.com/images/2012/11/f30406611dd51bba.png) no-repeat right 16px;
+    background: url(http://y1.uhcdn.com/images/2012/11/f30406611dd51bba.png) no-repeat right 16px;
     }
 
     .asc {
-        background: url(http://y1.uhcdn.com/images/2012/11/0ab07600b7c1e671.png) no-repeat right 16px;
+    background: url(http://y1.uhcdn.com/images/2012/11/0ab07600b7c1e671.png) no-repeat right 16px;
     }
 
     .desc {
-        background: url(http://y1.uhcdn.com/images/2012/11/6fbd68649f111b05.png) no-repeat right 16px;
+    background: url(http://y1.uhcdn.com/images/2012/11/6fbd68649f111b05.png) no-repeat right 16px;
     }
 
 </style>
@@ -62,12 +62,12 @@
     <table width="100%">
         <tr>
             <td width="30%">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
-            #{select 'supplierId', id:supplierId, class:'select', value:supplierId}
+                #{select 'supplierId', id:supplierId, class:'select', value:supplierId}
                 #{option "0"}不限#{/option}
                 #{list items:supplierList, as:'supplier'}
-                    #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
+                #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
                 #{/list}
-            #{/select}
+                #{/select}
 
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 只显示未到期的<input type="checkbox" name="isEffective" id="isEffective" class="input-medium"
@@ -88,7 +88,7 @@
     <th width="50px">预付款金额</th>
     <th width="50px">已销售金额</th>
     <th width="50px">已消费金额</th>
-    <th width="50px">预付款余额</th>
+    <th width="50px">可用预付款</th>
     <th width="50px">预付款开始日</th>
     <th width="50px">预付款到期日</th>
     <th width="50px">消费进度</th>
@@ -98,13 +98,13 @@
     </th>
     <th width="50px">操作</th>
     </thead>
-#{paginate.list items:reportPage, as:'report'}
+    #{paginate.list items:reportPage, as:'report'}
     <tr class="#{if report?.isExpired()}tr-expired#{/if} transparent">
         <td>${report?.supplierName}</td>
         <td>${report?.amount?.formatCurrency('CNY')}</td>
         <td>${report?.soldAmount?.formatCurrency('CNY')}</td>
         <td>${report?.consumedAmount?.formatCurrency('CNY')}</td>
-        <td>${report?.balance?.formatCurrency('CNY')}</td>
+        <td>${report?.availableBalance?.formatCurrency('CNY')}</td>
         <td>${report?.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
         <td>${report?.expireAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
         <td>${report?.consumedProcess?.format('#.##')} %</td>
@@ -113,10 +113,10 @@
         <td><a href="/reports/prepayment/${report?.prepayment?.id}/trends"
                target="_blank">查看销售曲线图</a></td>
     </tr>
-#{/paginate.list}
+    #{/paginate.list}
 </table>
 <div class="pagination">
     <ul>
-    #{paginate.controls items:reportPage /}
+        #{paginate.controls items:reportPage /}
     </ul>
 </div>
