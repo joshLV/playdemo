@@ -170,12 +170,11 @@ public class TaobaoCouponUtil {
     }
 
     public static String sign(Map<String, String> params) {
-        params.remove("body");
         StringBuilder paramString = new StringBuilder(COUPON_SECRET);
         TreeMap<String, String> orderedParams = new TreeMap<>(params);
         for (String key : orderedParams.keySet()) {
             String value = orderedParams.get(key);
-            if (!StringUtils.isBlank(value) && !"sign".equals(key)) {
+            if (!"sign".equals(key) && !"body".equals(key) && !StringUtils.isBlank(value)) {
                 paramString.append(key).append(value);
             }
         }
@@ -183,6 +182,7 @@ public class TaobaoCouponUtil {
             byte[] paramBytes = paramString.toString().getBytes("GBK");
             return DigestUtils.md5Hex(paramBytes).toUpperCase();
         } catch (UnsupportedEncodingException e) {
+            Logger.warn("unsupported encoding gbk: %s", paramString.toString());
             return null;
         }
     }

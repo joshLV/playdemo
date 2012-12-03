@@ -34,6 +34,7 @@ require:
     - dangdang -> dangdang
     - jingdong -> jingdong
     - taobao -> taobao
+    - com.taobao -> taobao-top 20121130
     - supports -> supports
     - wuba -> wuba
 
@@ -46,6 +47,7 @@ repositories:
             - commons-lang -> *
             - commons-httpclient -> *
             - org.jsoup -> *
+            - com.taobao -> *
         m2compatible: true
 
     - play1ContributedModules:

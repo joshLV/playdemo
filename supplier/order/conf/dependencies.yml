@@ -23,6 +23,7 @@ require:
     - accounts -> accounts
     - supplier_rbac -> supplier_rbac
     - org.jsoup -> jsoup 1.6.1
+    - com.taobao -> taobao-top 20121130
     - sms -> sms
     - cms -> cms
     - dangdang -> dangdang
@@ -44,6 +45,7 @@ repositories:
             - com.uhuila.utils -> *
             - commons-httpclient -> *
             - org.jsoup -> *
+            - com.taobao -> *
         m2compatible: true
 
     - play1ContributedModules:

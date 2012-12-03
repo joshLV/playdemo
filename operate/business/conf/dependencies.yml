@@ -36,6 +36,7 @@ require:
     - jingdong -> jingdong
     - wuba -> wuba
     - taobao -> taobao
+    - com.taobao -> taobao-top 20121130
     - supports -> supports
     - third_tuan -> third_tuan
     - com.yihaodian -> yhdclient 1.0
@@ -52,6 +53,7 @@ repositories:
             - commons-lang -> *
             - org.jsoup -> *
             - com.yihaodian -> *
+            - com.taobao -> *
         m2compatible: true
 
     - play1ContributedModules:
