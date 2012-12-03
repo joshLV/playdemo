@@ -1,11 +1,8 @@
 package function;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
+import com.uhuila.common.util.DateUtil;
+import controllers.supplier.cas.Security;
+import factory.FactoryBoy;
 import models.accounts.Account;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
@@ -18,19 +15,16 @@ import models.sms.SMSMessage;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import navigation.RbacLoader;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 import util.mq.MockMQ;
 
-import com.uhuila.common.util.DateUtil;
-
-import controllers.supplier.cas.Security;
-import factory.FactoryBoy;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * 门店验证测试：验证只有一张券的情况。
@@ -71,7 +65,7 @@ public class SupplierCouponVerifyUpdateSingleECuponTest extends FunctionalTest {
         Map<String, String> params = new HashMap<>();
         params.put("shopId", shop.id.toString());
         params.put("eCouponSn", coupon.eCouponSn);
-        Http.Response response = POST("/coupons/update", params);
+        Http.Response response = POST("/coupons/single-verify", params);
 
         assertContentMatch("0", response);
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
@@ -86,7 +80,7 @@ public class SupplierCouponVerifyUpdateSingleECuponTest extends FunctionalTest {
         Map<String, String> params = new HashMap<>();
         params.put("shopId", "99999999");
         params.put("eCouponSn", "0000000000");
-        Http.Response response = POST("/coupons/update", params);
+        Http.Response response = POST("/coupons/single-verify", params);
 
         assertContentMatch("1", response);
     }
@@ -96,7 +90,7 @@ public class SupplierCouponVerifyUpdateSingleECuponTest extends FunctionalTest {
         Map<String, String> params = new HashMap<>();
         params.put("shopId", shop.id.toString());
         params.put("eCouponSn", "0000000000");
-        Http.Response response = POST("/coupons/update", params);
+        Http.Response response = POST("/coupons/single-verify", params);
 
         assertContentMatch("err", response);
     }

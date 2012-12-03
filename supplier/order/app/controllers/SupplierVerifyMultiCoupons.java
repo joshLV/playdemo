@@ -3,16 +3,15 @@ package controllers;
 import com.uhuila.common.util.DateUtil;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
-import models.order.ECouponPartner;
 import models.order.ECouponStatus;
 import models.order.VerifyCouponType;
 import models.sales.Shop;
 import models.sms.SMSUtil;
 import navigation.annotations.ActiveNavigation;
+import org.apache.commons.lang.StringUtils;
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
-import org.apache.commons.lang.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -27,13 +26,9 @@ import java.util.Set;
  * Time: 上午10:43
  */
 @With(SupplierRbac.class)
-public class SupplierVerifyCoupons extends Controller {
-
-    /**
-     * 券验证页面
-     */
-    @ActiveNavigation("coupons_single_verify")
-    public static void single() {
+@ActiveNavigation("coupons_multi_index")
+public class SupplierVerifyMultiCoupons extends Controller {
+    public static void index() {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         Long supplierUserId = SupplierRbac.currentUser().id;
         SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
@@ -56,23 +51,29 @@ public class SupplierVerifyCoupons extends Controller {
      *
      * @param eCouponSn 券号
      */
-    public static void query(Long shopId, String eCouponSn, boolean isSingle) {
+    @ActiveNavigation("coupons_multi_index")
+    public static void multiQuery(Long shopId, String eCouponSn) {
+        String amount = StringUtils.trimToEmpty(request.params.get("amount"));
         Long supplierId = SupplierRbac.currentUser().supplier.id;
-
+        Long supplierUserId = SupplierRbac.currentUser().id;
+        SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
+        List shopList = Shop.findShopBySupplier(supplierId);
         //根据页面录入券号查询对应信息
         ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
-
-        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
-        List<ECoupon> ecoupons = null;
-        if (isSingle) {
-            render("/SupplierVerifyCoupons/consume.html", ecoupon, isSingle, ecoupons, ecouponStatusDescription);
+        if (ecoupon == null) {
+            Validation.addError("error-info", "对不起，没有该券的信息！");
         }
-        ecoupons = ECoupon.queryUnconsumedCouponsWithSameGoodsGroups(ecoupon);
 
-        BigDecimal amount = summaryECouponsAmount(ecoupons);
+        if (Validation.hasErrors()) {
+            render("SupplierVerifyMultiCoupons/index.html", ecoupon, shopId, eCouponSn, supplierUser, shopList);
+        }
+        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
+        List<ECoupon> ecoupons = ECoupon.queryUnconsumedCouponsWithSameGoodsGroups(ecoupon);
 
+        BigDecimal verifyAmount = summaryECouponsAmount(ecoupons);
         renderArgs.put("amount", amount);
-        render("/SupplierVerifyCoupons/consume.html", ecoupon, ecoupons, amount, ecouponStatusDescription);
+        renderArgs.put("verifyAmount", verifyAmount);
+        render("SupplierVerifyMultiCoupons/index.html", ecoupon, ecoupons, ecouponStatusDescription, shopId, eCouponSn, supplierUser, shopList);
     }
 
     private static BigDecimal summaryECouponsAmount(List<ECoupon> ecoupons) {
@@ -83,65 +84,9 @@ public class SupplierVerifyCoupons extends Controller {
         return amount;
     }
 
-    @ActiveNavigation("coupons_single_verify")
-    public static void singleVerify() {
-        Long supplierUserId = SupplierRbac.currentUser().id;
-        Long supplierId = SupplierRbac.currentUser().supplier.id;
-        Long shopId = Long.valueOf(request.params.get("shopId"));
-        String eCouponSn = request.params.get("eCouponSn");
-        SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
-        List shopList = Shop.findShopBySupplier(supplierId);
-
-        ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
-        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(eCoupon, shopId);
-        if (ecouponStatusDescription != null) {
-            Validation.addError("error-info", ecouponStatusDescription);
-        }
-        if (Validation.hasErrors()) {
-            render("SupplierVerifyCoupons/single.html", shopId, eCouponSn, eCoupon, supplierUser, shopList);
-        }
-
-        Shop shop = Shop.findById(shopId);
-        eCoupon.partner = ECouponPartner.DD;
-        if (eCoupon.status == ECouponStatus.UNCONSUMED) {
-            if (!eCoupon.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
-                Validation.addError("error-info", "第三方" + eCoupon.partner + "券验证失败！券号：" + eCoupon.eCouponSn);
-            }
-            if (Validation.hasErrors()) {
-                render("SupplierVerifyCoupons/single.html", shopId, eCouponSn, eCoupon, supplierUser, shopList);
-            }
-            String dateTime = DateUtil.getNowTime();
-            String ecouponSNLast4Code = eCoupon.getLastCode(4);
-            // 发给消费者
-            SMSUtil.send2("【一百券】您尾号" + ecouponSNLast4Code + "的券号于" + dateTime
-                    + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：400-6262-166", eCoupon.orderItems.phone, eCoupon.replyCode);
-        }
-
-        renderArgs.put("success_info", "券消费成功！");
-        render("SupplierVerifyCoupons/single.html", shopId, eCouponSn, eCoupon, supplierUser, shopList);
-
-    }
-
-    @ActiveNavigation("coupons_multi_verify")
-    public static void multi() {
-        Long supplierId = SupplierRbac.currentUser().supplier.id;
-        Long supplierUserId = SupplierRbac.currentUser().id;
-        SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
-        List shopList = Shop.findShopBySupplier(supplierId);
-        if (shopList.size() == 0) {
-            error("该商户没有添加门店信息！");
-        }
-        if (supplierUser.shop == null) {
-            render(shopList, supplierUser);
-        } else {
-            Shop shop = supplierUser.shop;
-
-            //根据页面录入券号查询对应信息
-            render(shop, supplierUser);
-        }
-    }
-
-    @ActiveNavigation("coupons_multi_verify")
+    /**
+     * 验证多个券
+     */
     public static void multiVerify() {
         Long supplierUserId = SupplierRbac.currentUser().id;
         Long supplierId = SupplierRbac.currentUser().supplier.id;
@@ -151,23 +96,29 @@ public class SupplierVerifyCoupons extends Controller {
         SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
         List shopList = Shop.findShopBySupplier(supplierId);
 
-        ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
-        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(eCoupon, shopId);
-        if (ecouponStatusDescription != null) {
-            Validation.addError("error-info", ecouponStatusDescription);
+        ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
+        if (ecoupon == null) {
+            Validation.addError("error-info", "对不起，没有该券的信息！");
         }
+
         if (StringUtils.isEmpty(amount) || new BigDecimal(amount).compareTo(BigDecimal.ZERO) < 0) {
             Validation.addError("error-info", "请输入正确的验证金额！");
         }
-        if (Validation.hasErrors()) {
-            render("SupplierVerifyCoupons/multi.html", shopId, eCouponSn, eCoupon, supplierUser, shopList);
+
+        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
+        if (ecouponStatusDescription != null) {
+            Validation.addError("error-info", ecouponStatusDescription);
         }
+        if (Validation.hasErrors()) {
+            render("SupplierVerifyMultiCoupons/index.html", ecouponStatusDescription, shopId, eCouponSn, supplierUser, shopList);
+        }
+
         Shop shop = Shop.findById(shopId);
-        if (eCoupon.status == ECouponStatus.UNCONSUMED) {
-            String ecouponSNLast4Code = eCoupon.getLastCode(4);
+        if (ecoupon.status == ECouponStatus.UNCONSUMED) {
+            String ecouponSNLast4Code = ecoupon.getLastCode(4);
             BigDecimal verifyAmount = new BigDecimal(amount);
             // 多张券验证
-            List<ECoupon> ecoupons = ECoupon.queryUnconsumedCouponsWithSameGoodsGroups(eCoupon);
+            List<ECoupon> ecoupons = ECoupon.queryUnconsumedCouponsWithSameGoodsGroups(ecoupon);
             renderArgs.put("ecoupons", ecoupons);
             List<ECoupon> checkECoupons = ECoupon.selectCheckECoupons(verifyAmount, ecoupons);
             BigDecimal consumedAmount = BigDecimal.ZERO;
@@ -181,17 +132,17 @@ public class SupplierVerifyCoupons extends Controller {
                     consumedAmount = consumedAmount.add(e.faceValue);
                     realCheckECoupon.add(e);
                 } else {
-                    Validation.addError("error-info", "第三方" + e.partner + "券验证失败！券号：" + e.eCouponSn);
+                    Validation.addError("error-info", "第三方" + e.partner + "券验证失败！券号：" + e.eCouponSn + ",请确认！");
                 }
             }
             if (consumedAmount.compareTo(BigDecimal.ZERO) == 0) {
                 // 没有验证到券
                 Validation.addError("error-info", "没有验证任何券，可能是输入金额小于最小面值的券！");
             }
-            if (Validation.hasErrors()) {
-                render("SupplierVerifyCoupons/multi.html", shopId, eCouponSn, eCoupon, supplierUser, shopList);
-            }
             renderArgs.put("consumedAmount", consumedAmount);
+            if (Validation.hasErrors()) {
+                render("SupplierVerifyMultiCoupons/index.html", shopId, eCouponSn, supplierUser, shopList);
+            }
 
             List<ECoupon> availableECoupons = substractECouponList(ecoupons, realCheckECoupon);
             BigDecimal availableAmount = summaryECouponsAmount(availableECoupons);
@@ -199,29 +150,29 @@ public class SupplierVerifyCoupons extends Controller {
             for (ECoupon ae : availableECoupons) {
                 availableECouponSNs.add(ae.eCouponSn);
             }
-
             if (availableECoupons.size() > 0) {
                 SMSUtil.send2("【一百券】您尾号" + ecouponSNLast4Code
                         + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(0) + "元)于"
                         + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。您还有" + availableECouponSNs.size() + "张券（"
                         + StringUtils.join(availableECouponSNs, "/")
                         + "总面值" + availableAmount.setScale(0) + "元）未消费。如有疑问请致电：4006262166",
-                        eCoupon.orderItems.phone, eCoupon.replyCode);
+                        ecoupon.orderItems.phone, ecoupon.replyCode);
             } else {
                 SMSUtil.send2("【一百券】您尾号" + ecouponSNLast4Code
                         + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(0) + "元)于"
                         + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
-                        eCoupon.orderItems.phone, eCoupon.replyCode);
+                        ecoupon.orderItems.phone, ecoupon.replyCode);
             }
 
+            renderArgs.put("success_info", true);
             if (verifyAmount.compareTo(consumedAmount) == 0) {
-                renderArgs.put("success_info", "成功验证" + consumedAmount + "元!");
+                renderArgs.put("info", "成功验证：" + consumedAmount + "元!");
             } else {
-                renderArgs.put("success_info", "成功验证" + consumedAmount + "元，顾客还需要现金支付" + verifyAmount.subtract(consumedAmount));
+                renderArgs.put("info", "成功验证：" + consumedAmount + "元，顾客还需要现金支付：" + verifyAmount.subtract(consumedAmount) + "元！");
             }
         }
 
-        render("SupplierVerifyCoupons/multi.html", shopId, eCouponSn, eCoupon, supplierUser, shopList);
+        render("SupplierVerifyMultiCoupons/index.html", shopId, amount, eCouponSn, ecoupon, supplierUser, shopList);
 
     }
 

@@ -1300,11 +1300,10 @@ public class ECoupon extends Model {
      * @return
      */
     public static String getECouponStatusDescription(ECoupon ecoupon, Long targetShopId) {
-
-        String result = null;
         if (ecoupon == null) {
-            return "对不起，没有找到对应的券号！";
+            return "对不起，没有该券的信息!";
         }
+        String result = null;
         if (targetShopId == null) {
             return "对不起，该券不能在此门店使用!";
         }

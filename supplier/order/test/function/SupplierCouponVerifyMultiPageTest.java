@@ -23,7 +23,7 @@ import java.util.List;
  * 门店验证测试
  * @author tanglq
  */
-public class SupplierCouponVerifyPageTest extends FunctionalTest {
+public class SupplierCouponVerifyMultiPageTest extends FunctionalTest {
     Supplier supplier;
     Shop shop;
     Goods goods;
@@ -52,7 +52,7 @@ public class SupplierCouponVerifyPageTest extends FunctionalTest {
 
     @Test
     public void 门店店号验证页面只出现一个Shop() throws Exception {
-        Response response = GET("/coupons/single");
+        Response response = GET("/coupons/multi");
         assertIsOk(response);
         assertContentMatch("商户验证消费券", response);
         assertNull(renderArgs("shopList"));
@@ -64,7 +64,7 @@ public class SupplierCouponVerifyPageTest extends FunctionalTest {
     public void 超级用户验证页面出现ShopList() throws Exception {
         supplierUser.shop = null;
         supplierUser.save();
-        Response response = GET("/coupons/single");
+        Response response = GET("/coupons/multi");
         assertIsOk(response);
         assertContentMatch("商户验证消费券", response);
         assertNull(renderArgs("shop"));
@@ -82,7 +82,7 @@ public class SupplierCouponVerifyPageTest extends FunctionalTest {
         shop.delete();
         
         // 测试.
-        Response response = GET("/coupons/single");
+        Response response = GET("/coupons/multi");
         assertStatus(500, response);
     }
 }

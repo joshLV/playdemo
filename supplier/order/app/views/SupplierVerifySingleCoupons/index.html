@@ -3,11 +3,13 @@
 #{set title:'商户验证消费券' /}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/coupons.js'}" type="text/javascript" charset="UTF-8"></script>
-
 #{/set}
 <style type="text/css">
+    .nav-tabs > li > a {
+        font-size: 20px;
+    }
 
-    .control-group, input, textarea, select, legend {
+    .control-group, input, textarea, select {
         font-size: 22px;
     }
 
@@ -18,12 +20,18 @@
     .btn-primary {
         font-size: 22px;
     }
-    .control-group {
-        line-height: 2;
+
+    p {
+        font-size: 20px;
+        line-height: 30px;
     }
+
 </style>
-#{form @SupplierVerifyCoupons.multiVerify(), id:'form'}
-<legend>商户验证消费券</legend>
+#{form @SupplierVerifySingleCoupons.singleQuery(), id:'form'}
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#">单张券验证</a></li>
+    <li><a href="/coupons/multi">批量券验证</a></li>
+</ul>
 <div class="control-group">
     <div class="controls">门&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;店:
         #{if supplierUser?.shop?.id == null}
@@ -34,12 +42,10 @@
             #{/select}
         #{/if}
         #{else}
-
             <input type="text" name="shopName" id="shopName" disabled="true" value="${shop?.name}"
                    class="input-large"/>
             <input type="hidden" name="shopId" id="shopId" value="${shop?.id}" class="input-large"/>
         #{/else}
-
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <span class="error">#{error 'supplierUser.shop' /}</span>
     </div>
@@ -47,23 +53,13 @@
 <div class="control-group">
     <div class="controls">券&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号:
         <input type="text" name="eCouponSn" id="eCouponSn" value="${eCouponSn}" class="input-large"/>
-        <span class="error" id="checksn">${success_info}</span>
+        <span class="error" id="checksn"></span>
     </div>
 </div>
-<div class="control-group" id="verify_amount_group">
-    <div class="controls">验证金额:
-        <input type="text" name="verifyAmount" id="verifyAmount" class="input-large"/>
-        <span class="error" id="verifyAmount-err"></span>
-    </div>
-</div>
-<div class="control-group" style="display: none">#{include 'SupplierVerifyCoupons/consume.html' /}</div>
-<div class="control-group" id="showinfo"></div>
-<span class="error" id="statusw">#{error 'error-info' /}</span>
 
 <div class="form-actions">
-    <button class="btn btn-primary" id="query" type="button">查询</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class="btn btn-primary" id="sure" disabled>验证</button>
-    <input type="hidden" name="isSingle" id="isSingle" value="false">
+    <button class="btn btn-primary" id="query" type="submit">查询</button>
 </div>
+<span style="font-size:28px;color:#ff0000;line-height: 2">#{error 'error-info' /}</span>
+<div class="control-group">#{include 'SupplierVerifySingleCoupons/consume.html' /}</div>
 #{/form}

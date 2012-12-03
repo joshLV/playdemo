@@ -10,19 +10,19 @@ GET     /orders/{orderNumber}                   SupplierOrders.details
 GET     /coupons                                SupplierCoupons.index
 
 
-#验证电子券页面
-#GET     /coupons/verify                         SupplierCoupons.verify
-GET     /coupons/single-verify                  SupplierVerifyCoupons.single
-GET     /coupons/multi-verify                  SupplierVerifyCoupons.multi
-#验证电子券有效性
-#GET    /coupons/query                           SupplierCoupons.query
-GET    /coupons/query                           SupplierVerifyCoupons.query
-#更新电子券状态及产生交易
+#验证电子券页面--v1
+#GET     /coupons/verify                        SupplierCoupons.verify
+GET    /coupons/query                           SupplierCoupons.query
 POST    /coupons/update                         SupplierCoupons.update
-POST    /coupons/single-verify                  SupplierVerifyCoupons.singleVerify
-POST    /coupons/multi-verify                    SupplierVerifyCoupons.multiVerify
-GET     /coupon-excel-out                       SupplierCoupons.couponExcelOut
+#验证电子券页面--v2
+GET     /coupons/single                         SupplierVerifySingleCoupons.index
+GET     /coupons/multi                          SupplierVerifyMultiCoupons.index
+GET     /coupons/single-query                  SupplierVerifySingleCoupons.singleQuery
+GET     /coupons/multi-query                   SupplierVerifyMultiCoupons.multiQuery
+POST    /coupons/single-verify                  SupplierVerifySingleCoupons.singleVerify
+POST    /coupons/multi-verify                   SupplierVerifyMultiCoupons.multiVerify
 
+GET     /coupon-excel-out                       SupplierCoupons.couponExcelOut
 
 # 补偿未同步的状态
 GET    /ecoupon-compensation/consumed           ECouponCompensations.consumed

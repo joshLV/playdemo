@@ -24,10 +24,10 @@
     <navigation key="coupon_app" text="券管理" action="SupplierCoupons.verify" display-order="60">
         <navigation key="coupon" text="消费券">
             <navigation key="coupons_index" action="SupplierCoupons.index" text="券列表" permissions="COUPON_INDEX"/>
-            <!--<navigation key="coupons_verify" action="SupplierCoupons.verify" text="验证券" permissions="COUPON_VERIFY"/>-->
-            <navigation key="coupons_single_verify" action="SupplierVerifyCoupons.single" text="单张券验证"
+            <navigation key="coupons_verify" action="SupplierCoupons.verify" text="验证券" permissions="COUPON_VERIFY"/>
+            <navigation key="coupons_single_index" action="SupplierVerifySingleCoupons.index" text="单张券验证"
                         permissions="COUPON_SINGLE_VERIFY"/>
-            <navigation key="coupons_multi_verify" action="SupplierVerifyCoupons.multi" text="批量券验证"
+            <navigation key="coupons_multi_index" action="SupplierVerifyMultiCoupons.index" text="批量券验证"
                         permissions="COUPON_MULTI_VERIFY"/>
         </navigation>
     </navigation>
