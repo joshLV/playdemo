@@ -90,6 +90,13 @@ public class Account extends Model {
         return incomeAmount.subtract(uncashAmount);
     }
 
+    /**
+     * 账户可提现余额
+     *
+     * @param prepaymentBalance
+     * @param date
+     * @return
+     */
     public BigDecimal getSupplierWithdrawAmount(BigDecimal prepaymentBalance, Date date) {
         BigDecimal withdrawAmount = getWithdrawAmount(date);
         if (prepaymentBalance.compareTo(withdrawAmount) > 0) {

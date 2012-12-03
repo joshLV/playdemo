@@ -33,7 +33,6 @@ public class SupplierWithdraw extends Controller {
     private static String[] NOTIFICATION_EMAILS = Play.configuration.getProperty("withdraw_notification.email.receiver", "jingyue.gong@seewi.com.cn").split(",");
     private static String[] NOTIFICATION_MOBILES = Play.configuration.getProperty("withdraw_notification.mobile", "").trim().split(",");
 
-
     @ActiveNavigation("account_withdraw")
     public static void index(WithdrawBillCondition condition) {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
@@ -61,7 +60,10 @@ public class SupplierWithdraw extends Controller {
 
         List<WithdrawAccount> withdrawAccounts = WithdrawAccount.findByUser(supplier.getId(), AccountType.SUPPLIER);
         List<Prepayment> prepayments = Prepayment.findBySupplier(supplier);
-        render(account, withdrawAccounts, prepaymentBalance, prepayments);
+
+        BigDecimal withdrawAmount = account.getWithdrawAmount(com.uhuila.common.util.DateUtil.getBeginOfDay());
+        BigDecimal supplierWithdrawAmount = account.getSupplierWithdrawAmount(prepaymentBalance, com.uhuila.common.util.DateUtil.getBeginOfDay());
+        render(account, withdrawAccounts, prepaymentBalance, prepayments, withdrawAmount, supplierWithdrawAmount);
     }
 
     @ActiveNavigation("account_withdraw")

@@ -96,7 +96,6 @@ public class WithdrawBill extends Model {
         this.save();
 
         try {
-
             AccountUtil.addBalanceWithoutSavingSequence(account.getId(), this.amount.negate(), this.amount, BigDecimal.ZERO,
                     this.getId(), "申请提现", null);
         } catch (BalanceNotEnoughException e) {
@@ -107,6 +106,18 @@ public class WithdrawBill extends Model {
             return false;
         }
 
+        return true;
+    }
+
+    /**
+     * 结算.
+     *
+     * @param settlementAccount
+     * @param account
+     * @param accountName
+     * @return
+     */
+    public boolean settle(String settlementAccount, Account account, String accountName) {
         return true;
     }
 

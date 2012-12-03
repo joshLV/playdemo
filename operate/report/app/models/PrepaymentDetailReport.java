@@ -48,6 +48,10 @@ public class PrepaymentDetailReport {
      * 销售进度
      */
     public BigDecimal soldBalance = BigDecimal.ZERO;
+    /**
+     * 可用预付款
+     */
+    public BigDecimal availableBalance = BigDecimal.ZERO;
 
     public PrepaymentDetailReport() {
     }
@@ -88,7 +92,7 @@ public class PrepaymentDetailReport {
             if (report.expectedSoldBalance.compareTo(BigDecimal.ZERO) < 0) {
                 report.expectedSoldBalance = BigDecimal.ZERO;
             }
-
+            report.availableBalance = prepayment.amount.subtract(report.consumed);
             if (report.date.before(new Date())) {
 
                 report.consumed = ECoupon.findConsumedByDay(prepayment.supplier.id, previousDay, day);

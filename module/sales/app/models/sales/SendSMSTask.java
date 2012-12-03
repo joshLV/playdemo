@@ -6,6 +6,7 @@ import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -74,4 +75,10 @@ public class SendSMSTask extends Model {
         return smsTaskList;
 
     }
+
+
+    public static List<SendSMSTask> findUnDeleted() {
+        return SendSMSTask.find("deleted=?", DeletedStatus.UN_DELETED).fetch();
+    }
+
 }
