@@ -1,8 +1,8 @@
 package function;
 
-import java.math.BigDecimal;
-import java.util.List;
-
+import controllers.supplier.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.Order;
@@ -12,16 +12,14 @@ import models.sales.Goods;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import navigation.RbacLoader;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-import controllers.supplier.cas.Security;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 门店验证测试
@@ -119,7 +117,7 @@ public class SupplierCouponQueryMultiECouponTest extends FunctionalTest {
         // 订单1: 2个同组商品
         generateOrder1WithSameGroupGoods();
         
-        Http.Response response = GET("/coupons/query?shopId=" + shop.id + "&eCouponSn=" + coupon2.eCouponSn);
+        Http.Response response = GET("/coupons/multi-query?shopId=" + shop.id + "&eCouponSn=" + coupon2.eCouponSn);
         assertStatus(200, response);
         
         assertNotNull(renderArgs("ecoupon"));        
@@ -128,7 +126,7 @@ public class SupplierCouponQueryMultiECouponTest extends FunctionalTest {
 
         List<ECoupon> ecoupons = (List<ECoupon>) renderArgs("ecoupons");
         assertEquals(5, ecoupons.size());
-        BigDecimal amount = (BigDecimal) renderArgs("amount");
+        BigDecimal amount = (BigDecimal) renderArgs("verifyAmount");
         assertNotNull(amount);
         assertEquals(new BigDecimal("350").setScale(2), amount.setScale(2));
     }
@@ -138,7 +136,7 @@ public class SupplierCouponQueryMultiECouponTest extends FunctionalTest {
         // 订单2：2个同组商品，3个无组商品
         generateOrder2With2Group3Single();
                 
-        Http.Response response = GET("/coupons/query?shopId=" + shop.id + "&eCouponSn=" + singleCoupon1.eCouponSn);
+        Http.Response response = GET("/coupons/multi-query?shopId=" + shop.id + "&eCouponSn=" + singleCoupon1.eCouponSn);
         assertStatus(200, response);
         
         assertNotNull(renderArgs("ecoupon"));
@@ -147,7 +145,7 @@ public class SupplierCouponQueryMultiECouponTest extends FunctionalTest {
 
         List<ECoupon> ecoupons = (List<ECoupon>) renderArgs("ecoupons");
         assertEquals(3, ecoupons.size());
-        BigDecimal amount = (BigDecimal) renderArgs("amount");
+        BigDecimal amount = (BigDecimal) renderArgs("verifyAmount");
         assertNotNull(amount);
         assertEquals(new BigDecimal("225").setScale(2), amount.setScale(2));
     }
