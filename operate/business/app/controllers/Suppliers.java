@@ -47,7 +47,8 @@ public class Suppliers extends Controller {
         int page = getPage();
 
         String otherName = request.params.get("otherName");
-        List<Supplier> suppliers = Supplier.findByCondition(otherName);
+        String code = request.params.get("code");
+        List<Supplier> suppliers = Supplier.findByCondition(otherName, code);
         render(suppliers, otherName, page);
     }
 

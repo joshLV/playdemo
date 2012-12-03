@@ -26,7 +26,7 @@
         <tr>
             <td>${supplierCategory?.code}</td>
             <td>${supplierCategory?.name}</td>
-            <td><a href="">${supplierCategory?.getSuppliers().size()}</a></td>
+            <td><a href="/suppliers?code=${supplierCategory.code}">${supplierCategory?.getSuppliers().size()}</a></td>
             <td><a href="/suppliers_category/${supplierCategory.id}/edit?page=${page?:1}">修改</a></td>
         </tr>
         #{/paginate.list}

@@ -302,6 +302,10 @@ public class Supplier extends Model {
     }
 
     public static List<Supplier> findByCondition(String otherName) {
+        return findByCondition(otherName, null);
+    }
+
+    public static List<Supplier> findByCondition(String otherName, String code) {
         StringBuilder sql = new StringBuilder("deleted=?");
         List params = new ArrayList();
         params.add(DeletedStatus.UN_DELETED);
@@ -313,6 +317,11 @@ public class Supplier extends Model {
         if (StringUtils.isNotBlank(otherName)) {
             sql.append("or fullName like ?");
             params.add("%" + otherName + "%");
+        }
+
+        if (StringUtils.isNotBlank(code)) {
+            sql.append("and code like ?");
+            params.add(code + "%");
         }
 
         sql.append(" order by createdAt DESC");
