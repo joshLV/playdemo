@@ -4,14 +4,11 @@ import com.uhuila.common.constants.DeletedStatus;
 import models.sales.SendSMSInfo;
 import models.sales.SendSMSTask;
 import models.sms.SMSUtil;
-import org.apache.commons.lang.StringUtils;
 import play.jobs.Every;
 import play.jobs.Job;
 import play.jobs.OnApplicationStart;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -20,19 +17,20 @@ import java.util.List;
  * User: wangjia
  * Date: 12-9-12
  * Time: 上午11:34
- * To change this template use File | Settings | File Templates.
  */
 
 @OnApplicationStart(async = true)
 @Every("1mn")
+//@On("0 * * * * ?")  //每天凌晨执行,自动取消过期十天的未付款的订单
 public class SMSScheduler extends Job {
     @Override
     public void doJob() throws ParseException {
+        System.out.println("DeletedStatus.UN_DELETED.ordinal():" + DeletedStatus.UN_DELETED.ordinal());
         List<SendSMSTask> smsTaskList = SendSMSTask.find("deleted=?", DeletedStatus.UN_DELETED).fetch();
         for (SendSMSTask st : smsTaskList) {
             Date currentDate = new Date();
 
-            if (st.finished != st.total && st.scheduledTime != null && st.scheduledTime.before(currentDate)) {
+            if (st.finished.longValue() != st.total.longValue() && st.scheduledTime != null && st.scheduledTime.before(currentDate)) {
                 List<SendSMSInfo> smsList = SendSMSInfo.find("sendAt=null and deleted=? and taskNo=? ", DeletedStatus.UN_DELETED, st.taskNo).fetch();
                 for (SendSMSInfo s : smsList) {
                     try {

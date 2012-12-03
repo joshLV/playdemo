@@ -1,13 +1,17 @@
 package controllers;
 
-import models.accounts.*;
+import models.accounts.Account;
+import models.accounts.AccountType;
+import models.accounts.WithdrawAccount;
+import models.accounts.WithdrawBill;
+import models.accounts.WithdrawBillCondition;
 import models.accounts.util.AccountUtil;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
+import models.order.Prepayment;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
-import navigation.annotations.Right;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.data.validation.Validation;
@@ -53,8 +57,11 @@ public class SupplierWithdraw extends Controller {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         Supplier supplier = Supplier.findById(supplierId);
         Account account = AccountUtil.getSupplierAccount(supplier.getId());
+        BigDecimal prepaymentBalance = Prepayment.findAmountBySupplier(supplier);
+
         List<WithdrawAccount> withdrawAccounts = WithdrawAccount.findByUser(supplier.getId(), AccountType.SUPPLIER);
-        render(account, withdrawAccounts);
+        List<Prepayment> prepayments = Prepayment.findBySupplier(supplier);
+        render(account, withdrawAccounts, prepaymentBalance, prepayments);
     }
 
     @ActiveNavigation("account_withdraw")
