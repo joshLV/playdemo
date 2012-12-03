@@ -94,7 +94,7 @@ public class SupplierVerifySingleCoupons extends Controller {
         Shop shop = Shop.findById(shopId);
         if (ecoupon.status == ECouponStatus.UNCONSUMED) {
             if (!ecoupon.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
-                Validation.addError("error-info", "第三方" + ecoupon.partner + "券验证失败！券号：" + ecoupon.eCouponSn + ",请确认！");
+                Validation.addError("error-info", "第三方" + ecoupon.partner + "券验证失败！券号：" + ecoupon.eCouponSn + ",请确认券状态！");
             }
             if (Validation.hasErrors()) {
                 render("SupplierVerifySingleCoupons/index.html", shopId, eCouponSn, supplierUser, shopList);

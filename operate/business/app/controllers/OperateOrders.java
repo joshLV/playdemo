@@ -31,8 +31,8 @@ public class OperateOrders extends Controller {
     public static void index(OrdersCondition condition, String desc) {
         if (condition == null) {
             condition = new OrdersCondition();
-            condition.paidAtBegin = DateHelper.beforeDays(1);
-            condition.paidAtEnd = new Date();
+            condition.hidPaidAtBegin = DateHelper.beforeDays(1);
+            condition.hidPaidAtEnd= new Date();
         }
 
         // DESC 的值表示升降序，含7位，代表7个排序字段（不含订单编号,商品名称）， 1 为升序， 2 为降序， 0 为不排序

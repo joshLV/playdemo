@@ -120,7 +120,7 @@ public class SupplierVerifyMultiCoupons extends Controller {
             // 多张券验证
             List<ECoupon> ecoupons = ECoupon.queryUnconsumedCouponsWithSameGoodsGroups(ecoupon);
             renderArgs.put("ecoupons", ecoupons);
-            List<ECoupon> checkECoupons = ECoupon.selectCheckECoupons(verifyAmount, ecoupons);
+            List<ECoupon> checkECoupons = ECoupon.selectCheckECoupons(verifyAmount, ecoupons,ecoupon);
             BigDecimal consumedAmount = BigDecimal.ZERO;
 
             int checkedCount = 0;
@@ -132,7 +132,7 @@ public class SupplierVerifyMultiCoupons extends Controller {
                     consumedAmount = consumedAmount.add(e.faceValue);
                     realCheckECoupon.add(e);
                 } else {
-                    Validation.addError("error-info", "第三方" + e.partner + "券验证失败！券号：" + e.eCouponSn + ",请确认！");
+                    Validation.addError("error-info", "第三方" + e.partner + "券验证失败！券号：" + e.eCouponSn + ",请确认券状态！");
                 }
             }
             if (consumedAmount.compareTo(BigDecimal.ZERO) == 0) {
