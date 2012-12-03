@@ -1,5 +1,6 @@
 package controllers;
 
+import com.uhuila.common.util.DateUtil;
 import models.accounts.Account;
 import models.accounts.WithdrawAccount;
 import models.accounts.WithdrawBill;
@@ -207,13 +208,18 @@ public class WithdrawApproval extends Controller {
         render("/WithdrawApproval/settle.html", supplierList);
     }
 
+    /**
+     * 获取可结算商户.
+     *
+     * @return
+     */
     private static List<Supplier> getWithdrawSupplierList() {
         List<Supplier> supplierList = Supplier.findUnDeleted();
         List<Supplier> supplierResult = new ArrayList<>();
 
         for (Supplier supplier : supplierList) {
             Account supplierAccount = AccountUtil.getSupplierAccount(supplier.id);
-            BigDecimal amount = supplierAccount.getWithdrawAmount();
+            BigDecimal amount = supplierAccount.getWithdrawAmount(DateUtil.getBeginOfDay());
             List<WithdrawAccount> withdrawAccountList = WithdrawAccount.findByUser(supplier.id, SUPPLIER);
 
             if (amount.compareTo(BigDecimal.ZERO) > 0 && CollectionUtils.isNotEmpty(withdrawAccountList)) {
@@ -232,7 +238,7 @@ public class WithdrawApproval extends Controller {
         Account supplierAccount = AccountUtil.getSupplierAccount(supplierId);
         Supplier supplier = Supplier.findById(supplierId);
         //结算总额
-        BigDecimal amount = supplierAccount.getWithdrawAmount();
+        BigDecimal amount = supplierAccount.getWithdrawAmount(DateUtil.getBeginOfDay());
         //单笔预付款金额
         List<Prepayment> prepayments = Prepayment.getUnclearedPrepayments(supplier.id);
         BigDecimal prepaymentBalance = prepayments.size() > 0 ? prepayments.get(0).getBalance() : BigDecimal.ZERO;

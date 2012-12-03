@@ -136,6 +136,7 @@ select:'condition_trade_type',value:condition.tradeType,form:'form'/}
                 <th>名称/备注</th>
                 <th>支出</th>
                 <th>收入</th>
+                <th>结算状态</th>
             </tr>
         #{paginate.list items:accountSequencePage, as:'accountSequence'}
             <tr>
@@ -161,6 +162,7 @@ select:'condition_trade_type',value:condition.tradeType,form:'form'/}
                     <div class="alert alert-info">${accountSequence.changeAmount?.formatCurrency('CNY')}</div>
                     #{/if}
                 </td>
+                <td>&{'accountSequence.'+accountSequence?.settlementStatus?:'CLEARED'}</td>
             </tr>
         #{/paginate.list}
         </table>

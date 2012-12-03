@@ -1,8 +1,7 @@
 package models.mail;
 
 import play.Play;
-import play.modules.rabbitmq.producer.RabbitMQPublisher;
-import util.mq.*;
+import util.mq.MQPublisher;
 
 public class MailUtil {
     public static final String COUPON_MAIL_QUEUE_NAME = Play.mode.isProd() ? "coupon_mail" :
@@ -13,6 +12,7 @@ public class MailUtil {
     public static final String FINANCE_NOTIFICATION = Play.mode.isProd() ? "finance_notification" : "finance_notification_dev";
     public static final String TUAN_CATEGORY_NOTIFY = Play.mode.isProd() ? "tuan_notification" : "tuan_notification_dev";
     public static final String CUSTOMER_REMARK_NOTIFY = Play.mode.isProd() ? "customer_remark_notification" : "customer_remark_notification_dev";
+    public static final String PREPAYMENT_NOTIFY = Play.mode.isProd() ? "prepayment_notify" : "prepayment_notify_dev";
 
     private MailUtil() {
     }
@@ -50,5 +50,7 @@ public class MailUtil {
         MQPublisher.publish(CUSTOMER_REMARK_NOTIFY, message);
     }
 
-
+    public static void sendPrepaymentNoticeMail(MailMessage message) {
+        MQPublisher.publish(PREPAYMENT_NOTIFY, message);
+    }
 }
