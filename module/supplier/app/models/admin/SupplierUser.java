@@ -178,7 +178,6 @@ public class SupplierUser extends Model {
             sql.append(" and jobNumber =:jobNumber");
             params.put("jobNumber", jobNumber);
         }
-        System.out.println("sql.toString>>>" + sql.toString());
         JPAExtPaginator<SupplierUser> usersPage = new JPAExtPaginator<>("SupplierUser s", "s",
                 SupplierUser.class, sql.toString(), params).orderBy("createdAt desc");
         usersPage.setPageNumber(pageNumber);
