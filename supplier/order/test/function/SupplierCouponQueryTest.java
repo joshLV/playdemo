@@ -1,5 +1,7 @@
 package function;
 
+import controllers.supplier.cas.Security;
+import factory.FactoryBoy;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.Order;
@@ -9,18 +11,15 @@ import models.sales.Goods;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import navigation.RbacLoader;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-import controllers.supplier.cas.Security;
-import factory.FactoryBoy;
 
 /**
  * 门店验证测试
+ *
  * @author tanglq
  */
 public class SupplierCouponQueryTest extends FunctionalTest {
@@ -32,7 +31,7 @@ public class SupplierCouponQueryTest extends FunctionalTest {
     Category category;
     ECoupon coupon;
     SupplierUser supplierUser;
-    
+
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
@@ -42,10 +41,21 @@ public class SupplierCouponQueryTest extends FunctionalTest {
 
         FactoryBoy.create(Supplier.class);
         shop = FactoryBoy.create(Shop.class);
+
         goods = FactoryBoy.create(Goods.class);
         supplierUser = FactoryBoy.create(SupplierUser.class);
+        supplierUser.shop = shop;
+        supplierUser.save();
+
+        shop.supplierId = supplierUser.supplier.id;
+        shop.save();
+        goods.supplierId = supplierUser.supplier.id;
+        goods.save();
+
         coupon = FactoryBoy.create(ECoupon.class);
-        
+        coupon.shop = shop;
+        coupon.goods = goods;
+        coupon.save();
         // 设置测试登录的用户名
         Security.setLoginUserForTest(supplierUser.loginName);
     }
@@ -53,21 +63,19 @@ public class SupplierCouponQueryTest extends FunctionalTest {
     @Test
     public void 正常券() {
         System.out.println("ecoupon.su=" + coupon.goods.supplierId + ", sn=" + coupon.eCouponSn);
-        String url = "/coupons/query?shopId=" + shop.id + "&eCouponSn=" + coupon.eCouponSn;
-        System.out.println("url=" + url);
+        String url = "/coupons/single-query?shopId=" + shop.id + "&eCouponSn=" + coupon.eCouponSn;
         Http.Response response = GET(url);
         assertStatus(200, response);
-        System.out.println("result:" + getContent(response));
         assertNotNull(renderArgs("ecoupon"));
-        assertContentMatch("券状态:未消费", response);
-        assertContentMatch("券编号: " + coupon.eCouponSn, response);
+        assertContentMatch("该券未消费！", response);
+        assertContentMatch("券编号：" + coupon.eCouponSn, response);
         ECoupon getCoupon = (ECoupon) renderArgs("ecoupon");
         assertEquals(coupon.eCouponSn, getCoupon.eCouponSn);
     }
 
     @Test
     public void 非法参数() {
-        Http.Response response = GET("/coupons/query?shopId=" + shop.id + "&eCouponSn=11aa");
+        Http.Response response = GET("/coupons/single-query?shopId=" + shop.id + "&eCouponSn=11aa");
         assertStatus(200, response);
         assertNull(renderArgs("ecoupon"));
     }

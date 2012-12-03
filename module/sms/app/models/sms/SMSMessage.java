@@ -8,6 +8,7 @@ import java.util.List;
  * User: likang
  */
 public class SMSMessage implements Serializable {
+    private static final long serialVersionUID = -8170943259282104651L;
     private String content;
     /**
      * 端口参数。

@@ -1,5 +1,6 @@
 package models.order;
 
+import com.uhuila.common.util.DateUtil;
 import models.accounts.AccountType;
 import models.consumer.User;
 import models.sales.Goods;
@@ -314,11 +315,19 @@ public class OrderItems extends Model {
     /**
      * 获取预付款的已销售总额.
      *
-     * @param prepayment    预付款记录
-     * @return  预付款的已销售总额
+     * @param prepayment 预付款记录
+     * @return 预付款的已销售总额
      */
     public static BigDecimal getSoldAmount(Prepayment prepayment) {
-        BigDecimal soldAmount = find("select sum(originalPrice*buyNumber) from OrderItems where goods.supplierId=? and (status=? or status=?) and createdAt>=? and createdAt <?", prepayment.supplier.id, OrderStatus.PAID, OrderStatus.SENT, prepayment.effectiveAt, prepayment.expireAt).first();
+        BigDecimal soldAmount = find("select sum(originalPrice*buyNumber) from OrderItems " +
+                "where goods.supplierId=? and (status=? or status=?) and createdAt>=? and createdAt <?", prepayment.supplier.id, OrderStatus.PAID, OrderStatus.SENT, prepayment.effectiveAt, prepayment.expireAt).first();
+        return soldAmount == null ? BigDecimal.ZERO : soldAmount;
+    }
+
+    public static BigDecimal findSoldByDay(long supplierId, Date beginAt, Date endAt) {
+        BigDecimal soldAmount = find("select sum(originalPrice*buyNumber) from OrderItems " +
+                "where goods.supplierId=? and (status=? or status=?) and createdAt>=? and createdAt <?",
+                supplierId, OrderStatus.PAID, OrderStatus.SENT, DateUtil.getBeginOfDay(beginAt), DateUtil.getEndOfDay(endAt)).first();
         return soldAmount == null ? BigDecimal.ZERO : soldAmount;
     }
 }

@@ -273,10 +273,10 @@ select:'condition_status',value:condition?.status/}
                 <tbody>
                 <tr>
                     <td>
-                        <a href="http://${play.Play.configuration.getProperty("www.url")}/g/${goods.id}?preview=true"><img
+                        <a href="http://${play.Play.configuration.getProperty("www.url")}/p/${goods.id}?preview=true"><img
                                 src="${goods?.imageTinyPath}"/></a></td>
                     <td>
-                        <a href="http://${play.Play.configuration.getProperty("www.url")}/g/${goods.id}?preview=true">${goods?.shortName}
+                        <a href="http://${play.Play.configuration.getProperty("www.url")}/p/${goods.id}?preview=true">${goods?.shortName}
                         </a>
                         #{if goods.priority != null && goods.priority >0}
                             &nbsp;<span style="color: #ff0000;">&{'goods.priority'}:${goods.priority}</span>#{/if}
@@ -310,6 +310,7 @@ select:'condition_status',value:condition?.status/}
                 <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}#{/if}
             #{if models.sales.GoodsStatus.OFFSALE.equals(goods.status)}
                 <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}#{/if}
+
         </td>
         <td>${goods?.code}</td>
         <td>

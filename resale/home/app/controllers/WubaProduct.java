@@ -47,7 +47,7 @@ public class WubaProduct extends Controller{
         if (goods == null) {
             error("商品没找到"); return;
         }
-        GoodsDeployRelation goodsDeployRelation = GoodsDeployRelation.generate(goods, OuterOrderPartner.WUBA);
+        GoodsDeployRelation goodsDeployRelation = GoodsDeployRelation.generate(goods, OuterOrderPartner.WB);
 
         String[] stringParamKeys = new String[] {
                 "prodName", "prodDescription","prodShortName","prodImg","mobileDescription",

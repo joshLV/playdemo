@@ -24,9 +24,9 @@ public class VxSms extends Model {
     public String message;
     
     @Column(name="created_at")
-    public Date createdAt;
+    public Date createdAt = new Date();
     
     @Column(name="sys_type")
     public String smsType;
-    
+
 }

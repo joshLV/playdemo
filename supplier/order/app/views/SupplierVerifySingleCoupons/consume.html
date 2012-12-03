@@ -1,0 +1,75 @@
+#{if ecoupon != null}
+    #{if ecouponStatusDescription != null }
+    <span style="color:#ff0000;line-height: 2">${ecouponStatusDescription}<br></span>
+    <script type="text/javascript">
+        $("#sure").attr("disabled", true);
+    </script>
+    <p>券编号: ${ecoupon.eCouponSn}<br/>
+        商品名称: ${ecoupon.goods.title}<br/>
+        #{if ecoupon.consumedAt != null}
+            消费日期：${ecoupon.consumedAt?.format('yyyy-MM-dd HH:mm:ss')}<br/>
+            验证门店：${ecoupon.shop?.name}<br/>
+            验证方式：&{'coupon.'+ecoupon.verifyType}<br/>
+            验证人：${ecoupon.supplierUser?.userName}<br/>
+        #{/if}
+        #{if ecoupon.refundAt != null}
+            退款日期：${ecoupon.refundAt?.format('yyyy-MM-dd HH:mm:ss')}<br/>
+        #{/if}
+        #{if ecoupon.expireAt != null}
+            截止日期：${ecoupon.expireAt?.format('yyyy-MM-dd HH:mm:ss')}
+        #{/if}
+    </p>
+    #{/if}
+    #{elseif ecoupons?.size() >= 1 }
+    <script type="text/javascript">
+        $("#sure").attr("disabled", true);
+    </script>
+    <p>
+        #{if success_info}
+            <span style="border:1px solid #090;color:#009900;">${info}</span><br/>
+        #{/if}
+        #{else}
+            <span style="border:1px solid #090;color:#009900;">券状态:未消费！可用券张数：${ecoupons.size()}
+                , 可用金额：${verifyAmount}</span><br/>
+        #{/else}
+        券编号: ${ecoupon.eCouponSn}<br/>
+        商品名称: ${ecoupon.goods.title}<br/>
+        截止日期：${ecoupon.expireAt?.format('yyyy-MM-dd HH:mm:ss')}
+    </p>
+        #{if !success_info}
+        <div class="control-group">
+            <div class="controls">确认金额:
+                <input type="text" name="verifyAmount" id="verifyAmount" class="input-large"/>
+                <span id="sure_amount" style="display: inline;color: #00A800;font-size: 25px"></span>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-success" id="multi-sure" disabled="true" type="submit">验证</button>
+            </div>
+        </div>
+        #{/if}
+    #{/elseif}
+    #{else}
+    <script type="text/javascript">
+        $("#sure").attr("disabled", false);
+    </script>
+    <p>
+        #{if success_info}
+            <span style="border:1px solid #090;color:#009900;">验证成功！验证金额:${ecoupon.goods.faceValue}元</span>
+        #{/if}
+        #{else}
+            <span style="border:1px solid #090;color:#009900;">该券未消费！可用金额:${ecoupon.goods.faceValue}元</span>
+        #{/else}
+        <br/>
+        券编号：${ecoupon.eCouponSn}<br/>
+        商品名称：${ecoupon.goods.title} <br/>
+        截止日期：${ecoupon.expireAt?.format('yyyy-MM-dd HH:mm:ss')}
+        #{if !success_info}
+        <div class="form-actions">
+            <button class="btn btn-success" id="sure" type="submit">验证</button>
+        </div>
+        #{/if}
+    </p>
+    #{/else}
+#{/if}
+
+

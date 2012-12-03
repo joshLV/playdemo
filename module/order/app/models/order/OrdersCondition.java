@@ -33,6 +33,8 @@ public class OrdersCondition {
     public long brandId = 0;
     public Long operatorId;
     public Boolean hasSeeAllSupplierPermission;
+    public Date hidPaidAtBegin;
+    public Date hidPaidAtEnd;
 
     /**
      * 查询条件hql.
@@ -85,6 +87,14 @@ public class OrdersCondition {
         if (paidAtEnd != null) {
             sql.append(" and o.paidAt <= :paidAtEnd");
             paramsMap.put("paidAtEnd", DateUtil.getEndOfDay(paidAtEnd));
+        }
+        if (hidPaidAtBegin != null) {
+            sql.append(" and o.paidAt >= :paidAtBegin");
+            paramsMap.put("paidAtBegin", hidPaidAtBegin);
+        }
+        if (hidPaidAtEnd != null) {
+            sql.append(" and o.paidAt <= :paidAtEnd");
+            paramsMap.put("paidAtEnd", DateUtil.getEndOfDay(hidPaidAtEnd));
         }
         if (refundAtBegin != null) {
             sql.append(" and o.refundAt >= :refundAtBegin");

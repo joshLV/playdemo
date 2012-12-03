@@ -33,6 +33,9 @@ require:
     - emaillogs -> emaillogs
     - dangdang -> dangdang
     - jingdong -> jingdong
+    - oauth -> oauth
+    - taobao -> taobao
+    - com.taobao -> taobao-top 20121130
     - supports -> supports
     - wuba -> wuba
 
@@ -45,6 +48,7 @@ repositories:
             - commons-lang -> *
             - commons-httpclient -> *
             - org.jsoup -> *
+            - com.taobao -> *
         m2compatible: true
 
     - play1ContributedModules:
@@ -75,6 +79,8 @@ repositories:
             - emaillogs -> *
             - dangdang -> *
             - jingdong -> *
+            - oauth -> *
+            - taobao -> *
             - supports -> *
             - third_tuan -> *
             - wuba -> *

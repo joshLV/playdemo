@@ -3,6 +3,7 @@
  */
 package functional;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,10 +15,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import play.cache.Cache;
+import play.mvc.Http;
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
 import controllers.modules.website.cas.Security;
 import factory.FactoryBoy;
+import util.DateHelper;
 
 /**
  * @author wangjia
@@ -37,7 +40,7 @@ public class FindPasswordTest extends FunctionalTest {
 
         Cache.clear();
     }
-    
+
     protected void login() {
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
@@ -130,5 +133,25 @@ public class FindPasswordTest extends FunctionalTest {
         assertEquals("2", response.out.toString()); // 浏览器相应
 
     }
+
+    @Test
+    public void testIndex() {
+        Http.Response response = GET("/forget-password");
+        assertStatus(200, response);
+        assertContentMatch("请选择找回密码的方式", response);
+    }
+
+    @Test
+    public void testResetPassword() {
+        user.passwordToken = "12345";
+        user.sendMailAt = DateHelper.beforeDays(new Date(), 1);
+        user.save();
+        user.refresh();
+        Http.Response response = GET("/reset-password?mobile=" + user.mobile + "&token=" + user.passwordToken);
+        assertStatus(200, response);
+        assertEquals(false, renderArgs("isExpired"));
+
+    }
+
 
 }

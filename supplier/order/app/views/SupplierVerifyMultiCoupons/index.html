@@ -1,0 +1,77 @@
+#{extends 'layout_trader/layout.html' /}
+#{include 'Share/nav.html' /}
+#{set title:'商户验证消费券' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/coupons.js'}" type="text/javascript" charset="UTF-8"></script>
+
+#{/set}
+<style type="text/css">
+
+    .control-group, input, textarea, select {
+        font-size: 22px;
+    }
+
+    .input-large {
+        height: 25px;
+    }
+
+    .btn-warning, .btn-success {
+        font-size: 22px;
+    }
+
+    .nav-tabs > li > a {
+        font-size: 20px;
+    }
+
+    span {
+        font-size: 28px;
+    }
+
+    p {
+        font-size: 20px;
+        line-height: 30px;
+    }
+</style>
+#{form @SupplierVerifyMultiCoupons.multiQuery(), id:'form'}
+<ul class="nav nav-tabs">
+    <li><a href="/coupons/single">单张券验证</a></li>
+    <li class="active"><a href="#">批量券验证</a></li>
+</ul>
+<div class="control-group">
+    <div class="controls">门&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;店:
+        #{if supplierUser?.shop?.id == null}
+            #{select 'shopId', id:'shopId', class:'span2', value:supplierUser?.shop?.id}
+                #{list items:shopList, as:'shop'}
+                    #{option shop?.id}${shop?.name}#{/option}
+                #{/list}
+            #{/select}
+        #{/if}
+        #{else}
+
+            <input type="text" name="shopName" id="shopName" disabled="true" value="${shop?.name}"
+                   class="input-large"/>
+            <input type="hidden" name="shopId" id="shopId" value="${shop?.id}" class="input-large"/>
+        #{/else}
+
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="error">#{error 'supplierUser.shop' /}</span>
+    </div>
+</div>
+<div class="control-group">
+    <div class="controls">券&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号:
+        <input type="text" name="eCouponSn" id="eCouponSn" value="${eCouponSn}" class="input-large"/>
+        <span class="error" id="checksn"></span>
+    </div>
+</div>
+<div class="control-group" id="verify_amount_group">
+    <div class="controls">验证金额:
+        <input type="text" name="amount" id="amount" value="${amount}" class="input-large"/>
+    <span style="display: block;color: #FD6F00;font-size: 15px">请输入需要验证的金额，请勿多输以免引起客户投诉。</span>
+    </div>
+</div>
+<div class="form-actions">
+    <button class="btn btn-warning" id="query" type="submit">查询</button>
+</div>
+<span style="color:#ff0000;line-height: 2">#{error 'error-info' /}</span>
+<div class="control-group">#{include 'SupplierVerifySingleCoupons/consume.html' /}</div>
+#{/form}

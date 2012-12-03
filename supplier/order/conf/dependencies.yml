@@ -23,6 +23,7 @@ require:
     - accounts -> accounts
     - supplier_rbac -> supplier_rbac
     - org.jsoup -> jsoup 1.6.1
+    - com.taobao -> taobao-top 20121130
     - sms -> sms
     - cms -> cms
     - dangdang -> dangdang
@@ -34,6 +35,8 @@ require:
     - cache_helper -> cache_helper
     - commons-httpclient -> commons-httpclient 3.1
     - wuba -> wuba
+    - oauth -> oauth
+    - taobao -> taobao
 
 repositories:
     - mavenRepository:
@@ -43,6 +46,7 @@ repositories:
             - com.uhuila.utils -> *
             - commons-httpclient -> *
             - org.jsoup -> *
+            - com.taobao -> *
         m2compatible: true
 
     - play1ContributedModules:
@@ -75,3 +79,5 @@ repositories:
             - view_ext -> *
             - cache_helper -> *
             - wuba -> *
+            - oauth -> *
+            - taobao -> *

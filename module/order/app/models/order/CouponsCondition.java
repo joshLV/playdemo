@@ -46,6 +46,8 @@ public class CouponsCondition implements Serializable {
     public boolean isLottery;
     public Date paidAtBegin;
     public Date paidAtEnd;
+    public Date hidPaidAtBegin;
+    public Date hidPaidAtEnd;
     public String userName;
 
     public Long operatorId;
@@ -106,6 +108,16 @@ public class CouponsCondition implements Serializable {
         if (paidAtEnd != null) {
             sql.append(" and e.order.paidAt<= :paidAtEnd");
             paramMap.put("paidAtEnd", DateUtil.getEndOfDay(paidAtEnd));
+        }
+
+         if (hidPaidAtBegin != null) {
+            sql.append(" and e.order.paidAt>= :paidAtBegin");
+            paramMap.put("paidAtBegin", hidPaidAtBegin);
+        }
+
+        if (hidPaidAtEnd != null) {
+            sql.append(" and e.order.paidAt<= :paidAtEnd");
+            paramMap.put("paidAtEnd", DateUtil.getEndOfDay(hidPaidAtEnd));
         }
         if (QueryType.GOODS_NAME.toString().equals(searchKey) && StringUtils.isNotBlank(searchItems)) {
 

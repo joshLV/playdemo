@@ -147,7 +147,7 @@ public class SupplierCoupons extends Controller {
                 if (verifyAmount == null || verifyAmount.compareTo(BigDecimal.ZERO) < 0) {
                     renderJSON("{\"code\":\"6\"}");
                 }
-                List<ECoupon> checkECoupons = ECoupon.selectCheckECoupons(verifyAmount, ecoupons);
+                List<ECoupon> checkECoupons = ECoupon.selectCheckECoupons(verifyAmount, ecoupons, eCoupon);
 
                 BigDecimal consumedAmount = BigDecimal.ZERO;
                 

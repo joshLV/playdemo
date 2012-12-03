@@ -1,101 +1,70 @@
 #{extends 'layout_operate/layout.html' /}
-#{set title:'券消费趋势报表' /}
+#{set title:'采购商品销售曲线图' /}
 #{include '/share/nav.html' /}
 
 #{set 'moreScripts'}
     #{asset.js src:['/charts/highcharts.js', '/charts/modules/exporting.js'] /}
-
-<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
     $(function () {
-        $("#supplierId,#goodsId,#shopId,#ctype").change(function() {
-            $("#search_form").submit();
-        });
-        $("[start]").each(function () {
-            $(this).click(function () {
-                if ($(this).parent().attr("class") == 'active') {
-                    return false;
-                }
-                var today = new Date();
-                var endDay = new Date();
-                var startDay = new Date();
-
-                startDay.setDate(today.getDate() - 1)
-                endDay.setDate(today.getDate() - 1)
-
-                var interval = $(this).attr("start");
-                var sig = interval.charAt(interval.length - 1);
-                var count = parseInt(interval.substring(0, interval.length - 1));
-                if (sig == 'd') {
-                    startDay.setDate(startDay.getDate() - count);
-                } else if (sig == 'm') {
-                    startDay.setMonth(startDay.getMonth() - count);
-                } else if (sig == 'y') {
-                    startDay.setFullYear(startDay.getFullYear() - count);
-                }
-
-                $("#condition_begin").val(startDay.getFullYear() + "-" + (startDay.getMonth() + 1) + "-" + startDay.getDate());
-                $("#condition_end").val(today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + endDay.getDate());
-                $("#condition_interval").val(interval);
-                $("#search_form").submit();
-                return false;
-            });
-        });
         #{if chartsMap?.size() > 0}
 
             var chart;
-            $(document).ready(function() {
+            $(document).ready(function () {
                 chart = new Highcharts.Chart({
-                    chart: { renderTo: 'chart1', type: 'line'},
-                    title: {
-                        text: '券消费趋势图'
+                    chart:{ renderTo:'chart1', type:'line'},
+                    title:{
+                        text:'采购商品销售曲线图'
                     },
-                    subtitle: {
-                        text: '2012年'
+                    subtitle:{
+                        text:'${prepayment.supplier?.otherName==null?prepayment.supplier?.fullName:prepayment.supplier?.otherName}(${prepayment.effectiveAt?.format('yyyy-MM-dd')}-${prepayment.expireAt?.format('yyyy-MM-dd')})'
                     },
-                    xAxis: {
-                        categories: [#{list items:dateList, as:'d'}'${d}'${d_isLast ? '' : ','} #{/list}]
+                    xAxis:{
+                        categories:[#{list items:dateList, as:'d'}'${d.substring(5)}'${d_isLast ? '' : ','} #{/list}]
                     },
-                    yAxis: {
-                        title: {
-                            text: '金额(元)'
+                    yAxis:{
+                        title:{
+                            text:'金额(元)'
                         },
-                        min: 0
+                        min:0
                     },
-                    tooltip: {
-                        enabled: true,
-                        formatter: function() {
-                            return '<b>'+ this.series.name +'</b><br/>'+
-                                    this.x +': '+ this.y +'元';
+                    tooltip:{
+                        enabled:true,
+                        formatter:function () {
+                            return '<b>' + this.series.name + '</b><br/>' +
+                                    this.x + ': ' + this.y + '元';
                         }
                     },
-                    plotOptions: {
-                        line: {
-                            dataLabels: {
-                                enabled: true
+                    plotOptions:{
+                        line:{
+                            dataLabels:{
+                                enabled:false
                             },
-                            enableMouseTracking: true
+                            enableMouseTracking:true
                         }
                     },
-                    series: [
-                        #{list items:chartsMap.keySet(), as:'key'}
-                            {
-                                name: '${key}面值',
-                                data: [#{list items:chartsMap.get(key), as:'item'}${item.sumFaceValue}${item_isLast ? '' : ','} #{/list}]
-                            },
-                            {
-                                name: '${key}收款',
-                                data: [#{list items:chartsMap.get(key), as:'item'}${item.sumOriginValue}${item_isLast ? '' : ','} #{/list}]
-                            }${key_isLast ? '' : ','}
-                        #{/list}
+                    series:[
+                        {
+                            name:'预期消费进度',
+                            data:[#{list items:dateList, as:'d'}${chartsMap.get(d)?.expectedConsumedBalance}${(!item_isLast) ? ',' : ''} #{/list}]
+                        },
+                        {
+                            name:'预期销售进度',
+                            data:[#{list items:dateList, as:'d'}${chartsMap.get(d)?.expectedSoldBalance}${(!item_isLast) ? ',' : ''} #{/list}]
+                        },
+                        {
+                            name:'消费进度',
+                            data:[#{list items:dateList, as:'d'}${chartsMap.get(d)?.consumedBalance}${(!item_isLast) ? ',' : ''} #{/list}]
+                        },
+                        {
+                            name:'销售进度',
+                            data:[#{list items:dateList, as:'d'}${chartsMap.get(d)?.soldBalance}${(!item_isLast) ? ',' : ''} #{/list}]
+                        }
                     ]
                 });
             });
 
         #{/if}
-
     });
-
 </script>
 #{/set}
 
@@ -123,136 +92,37 @@
         text-align: center;
         margin: 5px 1%;
     }
-
-    .seq {
-        margin-top: 20px;
-    }
-
-    .alert {
-        margin-bottom: 0px;
-    }
-
-    .seq thead tr :first {
-        background-color: #f5f5f5;
-    }
-
-    footer {
-        margin-top: 20px;
-    }
 </style>
 #{/set}
-
-<form class="well form-inline" action="@{TotalSalesReports.trends()}" method="GET" id="search_form"
-      name="search_form">
-    <div class="form-inline">
-        报表类型：
-    #{select 'condition.type', id:"ctype", class:'select', value:condition?.type}
-        #{option "0"}汇总报表#{/option}
-        #{option "1"}门店报表#{/option}
-        #{option "2"}商品报表#{/option}
-    #{/select}
-    #{select 'condition.supplierId', id:"supplierId", class:'select', value:condition?.supplierId}
-        #{option ""}请选择商户#{/option}
-        #{list items:suppliers, as:'supplier'}
-            #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
-        #{/list}
-    #{/select}
-    #{if shops != null && condition?.type != 0 && condition?.type == 1 }
-        #{select 'condition.shopId', id:"shopId", class:'select', value:condition?.shopId}
-            #{option "0"}请选择门店#{/option}
-            #{list items:shops, as:'shop'}
-                #{option shop?.id}${shop?.name}#{/option}
-            #{/list}
-        #{/select}
-    #{/if}
-
-    #{if allGoods != null  && condition?.type == 2 }
-        #{select 'condition.goodsId', id:"goodsId", class:'select', value:condition?.goodsId}
-            #{option "0"}请选择商品#{/option}
-            #{list items:allGoods, as:'goods'}
-                #{option goods?.id}${goods?.name}#{/option}
-            #{/list}
-        #{/select}
-    #{/if}
-    </div>
-    <div class="form-inline">
-        起止日期
-        <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.beginAt"
-               onfocus="WdatePicker({readOnly:true})" value="${condition.beginAt?.format()}"> -
-        <input type="text" id="condition_end" class="input-medium Wdate" name="condition.endAt"
-               onfocus="WdatePicker({readOnly:true})" value="${condition.endAt?.format()}">
-
-        <button type="submit" class="btn btn-primary" id="search">搜索</button>
-        <ul class="nav nav-pills">
-            <li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">昨天</a></li>
-            <li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>
-            <li #{if condition.interval=='1m'} class="active" #{/if}  ><a start="1m" href="#">1个月</a></li>
-            <li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>
-        </ul>
-        <input type="hidden" id="condition_interval" name="condition.interval"/>
-    </div>
-</form>
 
 <div class="tabbable" style="margin-bottom: 18px;">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#tab1" data-toggle="tab">数据</a></li>
-        <li class=""><a href="#tab2" data-toggle="tab">走势图</a></li>
+        <li class=""><a href="#tab2" data-toggle="tab">曲线图</a></li>
     </ul>
     <div class="tab-content" style="padding-bottom: 9px; border-bottom: 1px solid #ddd;">
         <div class="tab-pane active" id="tab1">
             <table class="table table-striped table-bordered table-condensed">
                 <thead>
                 <th>日期</th>
-                <th>&{'totalsales.trends.key.' + condition.type}</th>
-                <th>验证笔数</th>
-                <th>面值金额</th>
-                <th>销售金额</th>
-                <th>收款金额</th>
+                <th>预期消费进度</th>
+                <th>预期销售进度</th>
+                <th>消费单日金额</th>
+                <th>消费进度</th>
+                <th>销售单日金额</th>
+                <th>销售进度</th>
                 </thead>
-            #{set i:0/}
             #{paginate.list items:reportPage, as:'report'}
                 <tr>
-                    <td>${report?.checkedOn}</td>
-                    <td>${report?.key}</td>
-                    <td class="amount">
-                        <a href="@{TotalSalesReports.list()}?condition.type=${condition.type}&condition.supplierId=${condition.supplierId}&condition.goodsId=${condition.goodsId}&condition.shopId=${condition.shopId}&condition.beginAt=${report?.checkedOn}&condition.endAt=${report?.checkedOn}" target="_blank">
-                        ${report?.checkedCount}
-                        </a>
-                    </td>
-                    <td class="amount">
-                        <a href="@{TotalSalesReports.list()}?condition.type=${condition.type}&condition.supplierId=${condition.supplierId}&condition.goodsId=${condition.goodsId}&condition.shopId=${condition.shopId}&condition.beginAt=${report?.checkedOn}&condition.endAt=${report?.checkedOn}" target="_blank">
-                        ${report?.sumFaceValue?.formatCurrency('CNY')}
-                        </a>
-                    </td>
-                    <td class="amount">
-                        <a href="@{TotalSalesReports.list()}?condition.type=${condition.type}&condition.supplierId=${condition.supplierId}&condition.goodsId=${condition.goodsId}&condition.shopId=${condition.shopId}&condition.beginAt=${report?.checkedOn}&condition.endAt=${report?.checkedOn}" target="_blank">
-                        ${report?.sumSalesAmount?.formatCurrency('CNY')}
-                        </a>
-                    </td>
-                    <td class="amount">
-                        <a href="@{TotalSalesReports.list()}?condition.type=${condition.type}&condition.supplierId=${condition.supplierId}&condition.goodsId=${condition.goodsId}&condition.shopId=${condition.shopId}&condition.beginAt=${report?.checkedOn}&condition.endAt=${report?.checkedOn}" target="_blank">
-                        ${report?.sumOriginValue?.formatCurrency('CNY')}
-                        </a>
-                    </td>
+                    <td>${report?.date?.format('yyyy-MM-dd')}</td>
+                    <td class="amount">${report?.expectedConsumedBalance}</td>
+                    <td class="amount">${report?.expectedSoldBalance}</td>
+                    <td class="amount">${report?.consumed}</td>
+                    <td class="amount">${report?.consumedBalance}</td>
+                    <td class="amount">${report?.sold}</td>
+                    <td class="amount">${report?.soldBalance}</td>
                 </tr>
             #{/paginate.list}
-                <tfoot>
-                <tr>
-                    <td colspan="2" class="amount">汇总</td>
-                    <td class="amount">
-                    ${summary?.checkedCount}
-                    </td>
-                    <td class="amount">
-                    ${summary?.sumFaceValue?.formatCurrency('CNY')}
-                    </td>
-                    <td class="amount">
-                    ${summary?.sumSalesAmount?.formatCurrency('CNY')}
-                    </td>
-                    <td class="amount">
-                    ${summary?.sumOriginValue?.formatCurrency('CNY')}
-                    </td>
-                </tr>
-                </tfoot>
             </table>
         #{if reportPage?.getPageCount() > 1}
             <div class="pagination">

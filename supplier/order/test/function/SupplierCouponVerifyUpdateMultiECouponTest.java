@@ -1,11 +1,9 @@
 package function;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.uhuila.common.util.DateUtil;
+import controllers.supplier.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.admin.SupplierUser;
 import models.order.CouponHistory;
@@ -20,21 +18,19 @@ import models.sms.SMSMessage;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import navigation.RbacLoader;
-
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 import util.mq.MockMQ;
 
-import com.uhuila.common.util.DateUtil;
-
-import controllers.supplier.cas.Security;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 门店验证测试
@@ -302,8 +298,13 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         params.put("shopId", shop.id.toString());
         params.put("eCouponSn", firstEcoupon.eCouponSn);
         params.put("verifyAmount", verifyAmount);
-        Http.Response response = POST("/coupons/update", params);
+        Http.Response response = POST("/coupons/multi-verify", params);
         assertEquals("HTTP状态码不是200", new Integer(200), response.status);
+
+        if (new BigDecimal(expectConsumedAmount).compareTo(BigDecimal.ZERO) > 0) {
+            firstEcoupon.refresh();
+            assertEquals("第一张券必须已经验证", ECouponStatus.CONSUMED, firstEcoupon.status);
+        }
         
         BigDecimal consumedAmount = (BigDecimal)renderArgs("consumedAmount");
         assertNotNull("没有得到已验证金额", consumedAmount);
@@ -318,11 +319,9 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
     protected List<String> getAvaiableECouponSNs(List<ECoupon> ecoupons, int expectAvaiableECouponNumber) {
        
         List<String> availableECouponSNs = new ArrayList<>();
-        System.out.println("ecoupons.size=" + ecoupons.size());
         for (ECoupon e : ecoupons) {
             ECoupon e1 = ECoupon.findById(e.id);
             e1.refresh();
-            System.out.println("e1.sn=" + e1.eCouponSn + ", status=" + e1.status);
             if (e1.status == ECouponStatus.UNCONSUMED) {
                 availableECouponSNs.add(e1.eCouponSn);
             }

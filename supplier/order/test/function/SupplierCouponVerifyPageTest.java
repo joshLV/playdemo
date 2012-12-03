@@ -1,7 +1,7 @@
 package function;
 
-import java.util.List;
-
+import controllers.supplier.cas.Security;
+import factory.FactoryBoy;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.Order;
@@ -11,15 +11,13 @@ import models.sales.Goods;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import navigation.RbacLoader;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-import controllers.supplier.cas.Security;
-import factory.FactoryBoy;
+
+import java.util.List;
 
 /**
  * 门店验证测试
@@ -54,7 +52,7 @@ public class SupplierCouponVerifyPageTest extends FunctionalTest {
 
     @Test
     public void 门店店号验证页面只出现一个Shop() throws Exception {
-        Response response = GET("/coupons/verify");
+        Response response = GET("/coupons/single");
         assertIsOk(response);
         assertContentMatch("商户验证消费券", response);
         assertNull(renderArgs("shopList"));
@@ -66,7 +64,7 @@ public class SupplierCouponVerifyPageTest extends FunctionalTest {
     public void 超级用户验证页面出现ShopList() throws Exception {
         supplierUser.shop = null;
         supplierUser.save();
-        Response response = GET("/coupons/verify");
+        Response response = GET("/coupons/single");
         assertIsOk(response);
         assertContentMatch("商户验证消费券", response);
         assertNull(renderArgs("shop"));
@@ -84,7 +82,7 @@ public class SupplierCouponVerifyPageTest extends FunctionalTest {
         shop.delete();
         
         // 测试.
-        Response response = GET("/coupons/verify");
+        Response response = GET("/coupons/single");
         assertStatus(500, response);
     }
 }

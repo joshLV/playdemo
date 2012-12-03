@@ -11,6 +11,7 @@ require:
     - play1 -> factory-boy 1.0
     - play1 -> play-solr 0.2.27
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
+    - com.taobao -> taobao-top 20121130
     - layout_trader -> layout_trader
     - order -> order
     - consumer -> consumer
@@ -24,6 +25,7 @@ require:
     - org.json -> json 20090211
     - sms -> sms
     - cms -> cms
+    - oauth -> oauth
     - emaillogs -> emaillogs
     - view_ext -> view_ext
     - cache_helper -> cache_helper
@@ -31,6 +33,7 @@ require:
     - dangdang -> dangdang
     - jingdong -> jingdong
     - wuba -> wuba
+    - taobao -> taobao
     - supports -> supports
     - third_tuan -> third_tuan
     - com.yihaodian -> yhdclient 1.0
@@ -43,6 +46,7 @@ repositories:
         root:       "http://dev.uhuila.cn/nexus/content/groups/public"
         contains:
             - commons-lang -> *
+            - com.taobao -> *
             - com.uhuila.utils -> *
             - org.jsoup -> *
             - org.json -> *
@@ -70,6 +74,7 @@ repositories:
             - sms -> *
             - view_ext -> *
             - cms -> *
+            - oauth -> *
             - emaillogs -> *
             - asset_package -> *
             - cache_helper -> *
@@ -79,4 +84,4 @@ repositories:
             - supports -> *
             - third_tuan -> *
             - wuba -> *
-
+            - taobao -> *

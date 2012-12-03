@@ -22,7 +22,7 @@ require:
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - com.uhuila.utils -> alipay 1.0.0-SNAPSHOT
     - com.uhuila.utils -> tenpay 1.1.1
-    - com.taobao -> taobao-top 20120405
+    - com.taobao -> taobao-top 20121130
     - breadcrumbs -> breadcrumbs
     - accounts -> accounts
     - resale -> resale
@@ -39,6 +39,7 @@ require:
     - third_tuan -> third_tuan
     - yihaodian -> yihaodian
     - wuba -> wuba
+    - taobao -> taobao
     - com.yihaodian -> yhdclient 1.0
 
 repositories:
@@ -88,3 +89,4 @@ repositories:
             - yihaodian -> *
             - third_tuan -> *
             - wuba -> *
+            - taobao -> *

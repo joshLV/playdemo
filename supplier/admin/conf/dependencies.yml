@@ -35,6 +35,9 @@ require:
     - third_tuan -> third_tuan
     - commons-httpclient -> commons-httpclient 3.1
     - wuba -> wuba
+    - oauth -> oauth
+    - taobao -> taobao
+    - com.taobao -> taobao-top 20121130
 
 repositories:
     - mavenRepository:
@@ -44,6 +47,7 @@ repositories:
             - com.uhuila.utils -> *
             - commons-lang -> *
             - org.jsoup -> *
+            - com.taobao -> *
         m2compatible: true
 
     - play1ContributedModules:
@@ -77,3 +81,5 @@ repositories:
             - supports -> *
             - third_tuan -> *
             - wuba -> *
+            - oauth -> *
+            - taobao -> *

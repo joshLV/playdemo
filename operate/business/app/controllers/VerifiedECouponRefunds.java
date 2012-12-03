@@ -66,8 +66,9 @@ public class VerifiedECouponRefunds extends Controller {
             return "不支持的券类别，请检查";
         }
         
-        // 查找原订单信息
-        Account account = AccountUtil.getAccount(userId, accountType);
+        // 查找原订单信息 可能是分销账户，也可能是消费者账户
+        Account userAccount = AccountUtil.getAccount(userId, accountType);
+        
         // 计算需要退款的活动金金额
         // 计算方法：本订单中，抛开已消费的和已经退款过的活动金，先退活动金
         // 例如，订单金额100，用活动金支付40，用余额支付60，若此时退款，则首先退到活动金中。
@@ -96,18 +97,18 @@ public class VerifiedECouponRefunds extends Controller {
                     .subtract(usedPromotionAmount));
             cashAmount = cashAmount.subtract(promotionAmount);
         }
-
+        
         Account supplierAccount = AccountUtil.getSupplierAccount(eCoupon.goods.supplierId);
         
         TradeBill tradeBill = new TradeBill();
         tradeBill.fromAccount           = supplierAccount; //付款方为商户账户
-        tradeBill.toAccount             = account;                                  //收款方为指定账户
-        tradeBill.balancePaymentAmount  = cashAmount;                                   //使用可提现余额来支付退款的金额
+        tradeBill.toAccount             = AccountUtil.getPlatformCommissionAccount();                                  //收款方为指定账户
+        tradeBill.balancePaymentAmount  = eCoupon.originalPrice;                                   //使用可提现余额来支付退款的金额
         tradeBill.ebankPaymentAmount    = BigDecimal.ZERO;                          //不使用网银支付
         tradeBill.uncashPaymentAmount   = BigDecimal.ZERO;                          //不使用不可提现余额支付
         tradeBill.promotionPaymentAmount= promotionAmount;                          //使用活动金余额来支付退款的金额
         tradeBill.tradeType             = TradeType.REFUND;                         //交易类型为退款
-        tradeBill.orderId               = eCoupon.order.getId();                                  //冗余订单ID
+        tradeBill.orderId               = eCoupon.order.id;                                  //冗余订单ID
         tradeBill.eCouponSn             = eCoupon.eCouponSn;                                //冗余券编号
         tradeBill.amount = tradeBill.balancePaymentAmount
                 .add(tradeBill.ebankPaymentAmount)
@@ -118,7 +119,16 @@ public class VerifiedECouponRefunds extends Controller {
         
         if (!TradeUtil.success(tradeBill,
                 "券" + eCoupon.getMaskedEcouponSn() + "因" + refundComment + "被" + OperateRbac.currentUser().userName + "操作退款")) {
-            return "退款失败:" + eCoupon.eCouponSn;
+            throw new RuntimeException("商户退款失败:" + eCoupon.eCouponSn);
+        }
+
+        TradeBill rabateTrade = TradeUtil.createTransferTrade(
+                        AccountUtil.getPlatformCommissionAccount(), userAccount,
+                        cashAmount, BigDecimal.ZERO);
+        rabateTrade.orderId = eCoupon.order.id;
+
+        if (!TradeUtil.success(rabateTrade, "券" + eCoupon.getMaskedEcouponSn() + "因" + refundComment + "被" + OperateRbac.currentUser().userName + "操作退款")) {
+            throw new RuntimeException("退款失败:" + eCoupon.eCouponSn);
         }
 
         // 更新已退款的活动金金额

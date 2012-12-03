@@ -14,9 +14,13 @@ import models.resale.Resaler;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+
+import com.uhuila.common.util.DateUtil;
+
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
+import util.DateHelper;
 
 /**
  * 财务报表.
@@ -38,7 +42,7 @@ public class OperateReports extends Controller {
     public static void showConsumerReport(AccountSequenceCondition condition) {
         int pageNumber = getPageNumber();
         if (condition == null) {
-            condition = new AccountSequenceCondition();
+            condition = getDefaultAccountSequenceCondition();
         }
 
         if(condition.accountName != null && !condition.accountName.trim().equals("")){
@@ -87,7 +91,7 @@ public class OperateReports extends Controller {
     public static void showResaleReport(AccountSequenceCondition condition) {
         int pageNumber = getPageNumber();
         if (condition == null) {
-            condition = new AccountSequenceCondition();
+            condition = getDefaultAccountSequenceCondition();
         }
 
         if(condition.accountName != null && !condition.accountName.trim().equals("")){
@@ -115,6 +119,12 @@ public class OperateReports extends Controller {
         render(accountSequencePage, summary, condition);
     }
 
+    protected static AccountSequenceCondition getDefaultAccountSequenceCondition() {
+        AccountSequenceCondition condition = new AccountSequenceCondition();
+        condition.createdAtBegin = DateHelper.beforeDays(7);
+        return condition;
+    }
+
     /**
      * 查询商户资金明细.
      *
@@ -124,7 +134,7 @@ public class OperateReports extends Controller {
     public static void showSupplierReport(AccountSequenceCondition condition) {
         int pageNumber = getPageNumber();
         if (condition == null) {
-            condition = new AccountSequenceCondition();
+            condition = getDefaultAccountSequenceCondition();
         }
 
         if(condition.accountName != null && !condition.accountName.trim().equals("")){
@@ -160,7 +170,7 @@ public class OperateReports extends Controller {
     public static void showPromotionReport(AccountSequenceCondition condition){
         int pageNumber = getPageNumber();
         if(condition == null){
-            condition = new AccountSequenceCondition();
+            condition = getDefaultAccountSequenceCondition();
         }
         condition.account = AccountUtil.getPromotionAccount();
 
@@ -182,7 +192,7 @@ public class OperateReports extends Controller {
     public static void showWebsiteReport(AccountSequenceCondition condition) {
         int pageNumber = getPageNumber();
         if (condition == null) {
-            condition = new AccountSequenceCondition();
+            condition = getDefaultAccountSequenceCondition();
         }
 
         condition.account = AccountUtil.getUhuilaAccount();
@@ -222,7 +232,7 @@ public class OperateReports extends Controller {
     public static void showPlatformReport(AccountSequenceCondition condition) {
         int pageNumber = getPageNumber();
         if (condition == null) {
-            condition = new AccountSequenceCondition();
+            condition = getDefaultAccountSequenceCondition();
         }
 
         condition.account = AccountUtil.getPlatformCommissionAccount();
@@ -245,7 +255,7 @@ public class OperateReports extends Controller {
     public static void showIncomingReport(AccountSequenceCondition condition) {
         int pageNumber = getPageNumber();
         if (condition == null) {
-            condition = new AccountSequenceCondition();
+            condition = getDefaultAccountSequenceCondition();
         }
 
         condition.account = AccountUtil.getPlatformIncomingAccount();
@@ -265,7 +275,7 @@ public class OperateReports extends Controller {
     public static void showWithdrawReport(AccountSequenceCondition condition) {
         int pageNumber = getPageNumber();
         if (condition == null) {
-            condition = new AccountSequenceCondition();
+            condition = getDefaultAccountSequenceCondition();
         }
 
         condition.account = AccountUtil.getPlatformWithdrawAccount();
@@ -284,7 +294,7 @@ public class OperateReports extends Controller {
     public static void showFinancingIncomingReport(AccountSequenceCondition condition) {
         int pageNumber = getPageNumber();
         if (condition == null) {
-            condition = new AccountSequenceCondition();
+            condition = getDefaultAccountSequenceCondition();
         }
 
         condition.account = AccountUtil.getFinancingIncomingAccount();
