@@ -1,7 +1,29 @@
 package models.order;
 
-import com.uhuila.common.util.DateUtil;
-import com.uhuila.common.util.RandomNumberUtil;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
+
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.TradeBill;
@@ -18,9 +40,10 @@ import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
-
 import models.wuba.WubaUtil;
+
 import org.apache.commons.lang.StringUtils;
+
 import play.Logger;
 import play.Play;
 import play.data.validation.Required;
@@ -29,28 +52,8 @@ import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.uhuila.common.util.DateUtil;
+import com.uhuila.common.util.RandomNumberUtil;
 
 @Entity
 @Table(name = "e_coupon")
@@ -592,6 +595,15 @@ public class ECoupon extends Model {
                     rebateValue, BigDecimal.ZERO);
             rabateTrade.orderId = this.order.id;
             TradeUtil.success(rabateTrade, "活动折扣费" + rebateValue);
+        } else if (salePrice.compareTo(originalPrice) < 0) {
+            BigDecimal detaPrice = originalPrice.subtract(salePrice);
+            // 如果售价低于进价，从活动金账户出
+            TradeBill rabateTrade = TradeUtil.createTransferTrade(
+                    AccountUtil.getPromotionAccount(),
+                    AccountUtil.getPlatformIncomingAccount(),
+                    detaPrice, BigDecimal.ZERO);
+            rabateTrade.orderId = this.order.id;
+            TradeUtil.success(rabateTrade, "低价销售补贴" + detaPrice);
         }
 
         //给推荐人返利金额
@@ -758,7 +770,7 @@ public class ECoupon extends Model {
 
         if (!TradeUtil.success(tradeBill,
                 "退款成功.券号:" + eCoupon.getMaskedEcouponSn() + ",商品:"
-                        + eCoupon.goods.name)) {
+                        + eCoupon.goods.shortName)) {
             returnFlg = "{\"error\":\"refound failed\"}";
             return returnFlg;
         }
@@ -801,7 +813,12 @@ public class ECoupon extends Model {
         return returnFlg;
     }
 
-    private static BigDecimal getLintRefundPrice(ECoupon coupon) {
+    /**
+     * 得到券折扣金额
+     * @param coupon
+     * @return
+     */
+    public static BigDecimal getLintRefundPrice(ECoupon coupon) {
         BigDecimal refundPrice = coupon.salePrice;
         //折扣金额
         BigDecimal rebateValue = coupon.rebateValue;
@@ -1122,16 +1139,40 @@ public class ECoupon extends Model {
      */
     public static List<ECoupon> selectCheckECoupons(BigDecimal payValue,
                                                     List<ECoupon> ecoupons) {
-        Collections.sort(ecoupons, new Comparator<ECoupon>() {
+        return selectCheckECoupons(payValue, ecoupons, null);
+    }
+    
+    /**
+     * 从一组券中返回符合指定金额条件的券，需要包含ecoupon.
+     * @param payValue
+     * @param ecoupons
+     * @param eCoupon
+     * @return
+     */
+    public static List<ECoupon> selectCheckECoupons(BigDecimal payValue,
+                    List<ECoupon> ecoupons, ECoupon eCoupon) {
+        List<ECoupon> newECoupons = new ArrayList<>(); 
+        for (ECoupon e : ecoupons) {
+            if (eCoupon == null || e.id != eCoupon.id){
+                newECoupons.add(e);
+            }
+        }
+
+        Collections.sort(newECoupons, new Comparator<ECoupon>() {
             @Override
             public int compare(ECoupon e1, ECoupon e2) {
                 return e2.faceValue.compareTo(e1.faceValue);
             }
         });
         BigDecimal totalValue = BigDecimal.ZERO;
+        
         List<ECoupon> selectECoupons = new ArrayList<>();
+        if (eCoupon != null && eCoupon.faceValue.compareTo(payValue) <= 0) {
+            selectECoupons.add(eCoupon);
+            payValue = payValue.subtract(eCoupon.faceValue);
+        }
 
-        for (ECoupon ecoupon : ecoupons) {
+        for (ECoupon ecoupon : newECoupons) {
             int res = totalValue.add(ecoupon.faceValue).compareTo(payValue);
             if (res <= 0) {
                 totalValue = totalValue.add(ecoupon.faceValue);
@@ -1141,7 +1182,6 @@ public class ECoupon extends Model {
                 }
             }
         }
-
         return selectECoupons;
     }
 
@@ -1337,6 +1377,13 @@ public class ECoupon extends Model {
         BigDecimal usedAmount = find("select sum(originalPrice) from ECoupon " +
                 "where goods.supplierId=? and status=? and consumedAt>=? and consumedAt<?",
                 prepayment.supplier.id, models.order.ECouponStatus.CONSUMED, prepayment.effectiveAt, prepayment.expireAt).first();
+        return usedAmount == null ? BigDecimal.ZERO : usedAmount;
+    }
+
+    public static BigDecimal findConsumedByDay(long supplierId, Date beginAt, Date endAt) {
+        BigDecimal usedAmount = find("select sum(originalPrice) from ECoupon " +
+                "where goods.supplierId=? and status=? and consumedAt>=? and consumedAt<?",
+                supplierId, models.order.ECouponStatus.CONSUMED, DateUtil.getBeginOfDay(beginAt), DateUtil.getEndOfDay(endAt)).first();
         return usedAmount == null ? BigDecimal.ZERO : usedAmount;
     }
 }

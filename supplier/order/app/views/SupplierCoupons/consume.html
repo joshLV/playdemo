@@ -28,11 +28,12 @@
             $("#sure").attr("disabled", false);
             $("#verify_amount_group").show();
         </script>
+        <font color="red" size="16">请输入实际的金额，请勿多输以免引起客户投诉。</font><br/>
+        <br/>
         券状态:未消费<br/>
         券编号: ${ecoupon.eCouponSn}<br/>
         商品名称: ${ecoupon.goods.title}<br/>
         可用券张数：${ecoupons.size()}  可用金额：${amount}<br/>
-        <font color="red">请输入需要验证的金额，请勿多输以免引起客户投诉。</font><br/>
     #{/elseif}
     #{else}
 	    <script type="text/javascript">

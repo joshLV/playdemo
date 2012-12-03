@@ -12,6 +12,13 @@ import util.DateHelper;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 
+/**
+ * 分销渠道补偿验证记录。
+ * 
+ * 有时没有把消费记录同步到分销商，则通过这个功能进行。
+ * @author tanglq
+ *
+ */
 public class ECouponCompensationTest extends UnitTest {
 
     @Before

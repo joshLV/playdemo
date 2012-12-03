@@ -33,8 +33,7 @@ public class TotalSalesReports extends Controller {
         if (condition.needQueryTrends()) {
             List<TotalSalesReport> totalSales = TotalSalesReport.queryTrends(condition);
             renderArgs.put("totalSales", totalSales);
-            System.out.println("totalSales.size():" + totalSales.size());
-        
+
             ValuePaginator<TotalSalesReport> reportPage = PaginateUtil.wrapValuePaginator(totalSales, pageNumber, PAGE_SIZE);
             TotalSalesReport summary = TotalSalesReport.summary(totalSales);
             

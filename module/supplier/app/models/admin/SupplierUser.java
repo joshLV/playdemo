@@ -178,6 +178,7 @@ public class SupplierUser extends Model {
             sql.append(" and jobNumber =:jobNumber");
             params.put("jobNumber", jobNumber);
         }
+        System.out.println("sql.toString>>>" + sql.toString());
         JPAExtPaginator<SupplierUser> usersPage = new JPAExtPaginator<>("SupplierUser s", "s",
                 SupplierUser.class, sql.toString(), params).orderBy("createdAt desc");
         usersPage.setPageNumber(pageNumber);
@@ -237,14 +238,11 @@ public class SupplierUser extends Model {
             sq.append("and id <> ?");
             params.add(id);
         }
-
         List<SupplierUser> supplierUserList = SupplierUser.find(sq.toString(), params.toArray()).fetch();
-
         //用户名存在的情况
         if (supplierUserList.size() > 0) {
             return "1";
         }
-
         sq = new StringBuilder("deleted=? and mobile = ? and supplier=? ");
         params.clear();
         params.add(DeletedStatus.UN_DELETED);

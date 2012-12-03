@@ -23,7 +23,6 @@ public class OperateVoteUnitTest extends UnitTest {
     VoteQuestion vote;
 
     @Before
-    @SuppressWarnings("unchecked")
     public void setup() {
         FactoryBoy.deleteAll();
         vote = FactoryBoy.create(VoteQuestion.class);

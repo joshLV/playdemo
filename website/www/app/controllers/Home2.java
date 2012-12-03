@@ -1,10 +1,10 @@
 package controllers;
 
-import cache.CacheCallBack;
-import cache.CacheHelper;
-import com.uhuila.common.constants.PlatformType;
-import controllers.modules.website.cas.SecureCAS;
-import controllers.modules.website.cas.annotations.SkipCAS;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import models.accounts.AccountType;
 import models.cms.Block;
 import models.cms.BlockType;
@@ -16,15 +16,20 @@ import models.order.ECoupon;
 import models.order.OrderItems;
 import models.sales.BrowsedGoods;
 import models.sales.Category;
+
 import org.apache.commons.collections.CollectionUtils;
+
 import play.mvc.After;
 import play.mvc.Controller;
 import play.mvc.With;
+import cache.CacheCallBack;
+import cache.CacheHelper;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.uhuila.common.constants.PlatformType;
+import com.uhuila.common.util.DateUtil;
+
+import controllers.modules.website.cas.SecureCAS;
+import controllers.modules.website.cas.annotations.SkipCAS;
 
 /**
  * 首页控制器.
@@ -39,7 +44,8 @@ public class Home2 extends Controller {
 
     public static void index(final long categoryId) {
         User user = SecureCAS.getUser();
-
+        String dateCacheKey = String.valueOf(DateUtil.getBeginOfDay().getTime());
+        
         CacheHelper.preRead(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_NEW4"),
                 CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECOMMENDS4"),
                 CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_HOT_SALE4"),
@@ -47,7 +53,7 @@ public class Home2 extends Controller {
                 CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_FLOOR_CATEGORIES"),
                 CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_TOPICS"),
                 CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_RIGHT_SLIDES"),
-                CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SLIDES"),
+                CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SLIDES_" + dateCacheKey),
                 CacheHelper.getCacheKey(FriendsLink.CACHEKEY, "FRIENDS_LINK"),
                 CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_1F"),
                 CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_2F")
@@ -119,7 +125,7 @@ public class Home2 extends Controller {
         });
 
         // CMS 区块
-        List<Block> slides = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SLIDES"), new CacheCallBack<List<Block>>() {
+        List<Block> slides = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SLIDES_" + dateCacheKey), new CacheCallBack<List<Block>>() {
             @Override
             public List<Block> loadData() {
                 return Block.findByType(BlockType.WEBSITE_SLIDE, currentDate);

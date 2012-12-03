@@ -64,7 +64,6 @@ public class SupplierCouponQueryTest extends FunctionalTest {
     public void 正常券() {
         System.out.println("ecoupon.su=" + coupon.goods.supplierId + ", sn=" + coupon.eCouponSn);
         String url = "/coupons/single-query?shopId=" + shop.id + "&eCouponSn=" + coupon.eCouponSn;
-        System.out.println("url=" + url);
         Http.Response response = GET(url);
         assertStatus(200, response);
         assertNotNull(renderArgs("ecoupon"));

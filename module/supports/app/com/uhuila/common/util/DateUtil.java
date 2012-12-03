@@ -2,8 +2,10 @@ package com.uhuila.common.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 日期工具类.
@@ -177,7 +179,7 @@ public class DateUtil {
     /**
      * 字符串转化成日期
      *
-     * @param sDate 日期字符串
+     * @param sDate         日期字符串
      * @param formatPattern 转化格式
      * @return
      */
@@ -191,4 +193,42 @@ public class DateUtil {
         }
         return date;
     }
+
+    /**
+     * 根据给定时间段和间隔天数，返回指定时间字符串列表
+     *
+     * @param beginAt
+     * @param endAt
+     * @param dateFormat
+     * @return
+     */
+    public static List<String> getDateList(Date beginAt, Date endAt, int intervalDays, String dateFormat) {
+        Date date = beginAt;
+        SimpleDateFormat df = new SimpleDateFormat(dateFormat);
+        List<String> dateList = new ArrayList<>();
+        long oneDay = 1000L * 60 * 60 * 24;
+        do {
+            dateList.add(df.format(date));
+            date = new Date(date.getTime() + oneDay * intervalDays);
+        } while (date.compareTo(endAt) <= 0);
+        if (DateUtil.getBeginOfDay(date).compareTo(DateUtil.getBeginOfDay(endAt))>0){
+            dateList.add(df.format(endAt));
+        }
+        return dateList;
+    }
+
+    /**
+     * 获取指定日期之前n天的日期.
+     *
+     * @param day
+     * @param intervalDays
+     * @return
+     */
+    public static Date getBeforeDate(Date day, int intervalDays) {
+        Calendar beforeDay = Calendar.getInstance();
+        beforeDay.setTime(day);
+        beforeDay.add(Calendar.DATE, 1 - intervalDays);
+        return beforeDay.getTime();
+    }
+
 }

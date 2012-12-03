@@ -1,5 +1,7 @@
 package controllers;
 
+import java.util.Date;
+
 import models.sms.VxSms;
 
 import org.apache.commons.lang.StringUtils;
@@ -18,6 +20,7 @@ public class VxSmses extends Controller {
             vxSms.mobile = mobile;
             vxSms.message = content;
             vxSms.smsType = smsType;
+            vxSms.createdAt = new Date();
             vxSms.save();
         }
         renderText("0|发送成功");

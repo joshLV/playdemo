@@ -18,7 +18,8 @@ public class OperateUserFactory extends ModelFactory<OperateUser> {
         user.deleted = DeletedStatus.UN_DELETED;
         user.mobile = "13900118888";
         user.userName = "tom";
-
+        user.email = "test@uhuila.com";
+        user.jobNumber = "123456";
         // 定义角色
         user.roles = new ArrayList<OperateRole>();
         user.roles.add(role("sales"));

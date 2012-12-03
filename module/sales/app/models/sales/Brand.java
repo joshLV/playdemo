@@ -174,7 +174,6 @@ public class Brand extends Model {
         oldBrand.isHot = (brand.isHot == null) ? Boolean.FALSE : brand.isHot;
         oldBrand.display = (brand.display == null) ? Boolean.TRUE : brand.display;
 
-        System.out.println("oldBrand.display:" + oldBrand.display);
         oldBrand.description = brand.description;
         if (!StringUtils.isEmpty(brand.logo)) {
             oldBrand.logo = brand.logo;
@@ -201,7 +200,6 @@ public class Brand extends Model {
         StringBuilder sq = new StringBuilder("deleted = ?");
         List params = new ArrayList();
         params.add(DeletedStatus.UN_DELETED);
-        System.out.println("hasSeeAllSupplierPermission>>>" + hasSeeAllSupplierPermission);
         if (supplier != null) {
             sq.append(" and supplier = ?");
             params.add(supplier);
@@ -213,7 +211,6 @@ public class Brand extends Model {
                 params.add(operatorId);
             }
         }
-        System.out.println("sq.toString()>>>>" + sq.toString());
         return find(sq.toString(), params.toArray()).fetch();
     }
 
