@@ -286,7 +286,8 @@ public class OrderItems extends Model {
         query.setParameter("userId", userId);
         query.setParameter("userType", userType);
         query.setParameter("status", OrderStatus.UNPAID);
-        return CollectionUtils.isEmpty(query.getResultList()) ? 0l : query.getResultList().size();
+        List result = query.getResultList();
+        return (result == null || result.isEmpty()) ? 0l : result.size();
 //        long count =  count("from OrderItems o where o.order.userId=? and o.order.userType=? and o.status=? group by o.order",userId, userType, OrderStatus.UNPAID);
 //        System.out.println("count:" + count);
 //        return count;
