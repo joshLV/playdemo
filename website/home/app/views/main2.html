@@ -7,6 +7,8 @@
     #{asset.css src:['/base/121123/base.css']/}
     <link rel="shortcut icon" href="#{asset.url href:'/images/y/favicon.ico'/}" type="image/x-icon"/>
     #{get 'moreStyles' /}
+	#{asset.js src:['/u/jquery-1.7.2.min.js','/base/121031/base.js', '/u/location.js'] /}
+	#{get 'moreScripts' /}
 </head>
 <body
 #{if request.url.equals("/")}class="home"#{/if}>
@@ -153,8 +155,6 @@
     </div>
 </div>
 <!-- #footer -->
-#{asset.js src:['/u/jquery-1.7.2.min.js','/base/121031/base.js'] /}
-#{get 'moreScripts' /}
 <div style="display:none">
     #{if !play.Play.runingInTestMode()}
     <script type="text/javascript" id="bdshare_js" data="type=tools&uid=763119"></script>
