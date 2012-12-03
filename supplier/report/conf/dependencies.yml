@@ -36,6 +36,7 @@ require:
     - supports -> supports
     - third_tuan -> third_tuan
     - wuba -> wuba
+    - oauth -> oauth
     - taobao -> taobao
 
 repositories:
@@ -81,4 +82,5 @@ repositories:
             - supports -> *
             - third_tuan -> *
             - wuba -> *
+            - oauth -> *
             - taobao -> *

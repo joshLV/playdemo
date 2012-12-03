@@ -249,7 +249,7 @@ public class WubaGroupBuy extends Controller {
                 continue;
             }
             OuterOrder outerOrder = OuterOrder.find("byPartnerAndYbqOrder",
-                    OuterOrderPartner.WUBA, coupon.order).first();
+                    OuterOrderPartner.WB, coupon.order).first();
             if (outerOrder == null) {
                 continue;
             }
