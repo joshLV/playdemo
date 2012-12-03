@@ -155,10 +155,13 @@ public class WithdrawApproval extends Controller {
                     mobile = supplierUser.mobile;
                     title = arrayName[0];
                 }
+                sendContent += "如有疑问请致电4006262166";
+                if (StringUtils.isNotBlank(OperateRbac.currentUser().mobile)) {
+                    sendContent += "或致电" + OperateRbac.currentUser().mobile;
+                }
                 if (supplier != null && StringUtils.isNotBlank(supplier.accountLeaderMobile) && supplierUser != null && !supplier.accountLeaderMobile.equals(supplierUser.mobile)) {
                     SMSUtil.send(sendContent, supplier.accountLeaderMobile);
                 }
-
                 break;
             case CONSUMER:
                 User user = User.findById(bill.account.uid);
@@ -172,7 +175,7 @@ public class WithdrawApproval extends Controller {
                 } else if (StringUtils.isNotBlank(user.loginName)) {
                     title = user.loginName;
                 }
-
+                sendContent += "如有疑问请致电4006262166";
                 break;
             case RESALER:
                 Resaler resaler = Resaler.findById(bill.account.uid);
@@ -181,7 +184,10 @@ public class WithdrawApproval extends Controller {
                 }
                 mobile = resaler.mobile;
                 title = bill.applier;
-
+                sendContent += "如有疑问请致电4006262166";
+                if (StringUtils.isNotBlank(OperateRbac.currentUser().mobile)) {
+                    sendContent += "或致电" + OperateRbac.currentUser().mobile;
+                }
                 break;
         }
         if (StringUtils.isBlank(mobile) || StringUtils.isBlank(title)) {
@@ -267,13 +273,11 @@ public class WithdrawApproval extends Controller {
         //申请提现
         bill.apply(OperateRbac.currentUser().userName, supplierAccount, supplier.otherName);
         //审批提现
-        System.out.println("prepaymentId:" + prepaymentId);
         Prepayment prepayment = null;
         if (prepaymentId != null) {
             prepayment = Prepayment.findById(prepaymentId);
         }
         int withdrawCount = bill.agree(fee, comment, withdrawDate, prepayment);
-
         if (withdrawCount > 0 && prepaymentId != null) {
             //将结算金额与预付款金额进行绑定
             if (prepayment != null && prepayment.getBalance().compareTo(BigDecimal.ZERO) >= 0) {
