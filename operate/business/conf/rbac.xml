@@ -7,6 +7,7 @@
     <role key="sales" text="商务销售"/>
     <role key="manager" text="经理"/>
     <role key="solr_load" text="solr加载数据"/>
+    <role key="developer" text="开发人员"/>
 
     <permission key="GOODS_NEW" text="商品添加" roles="editor"/>
     <permission key="GOODS" text="商品管理" roles="editor,customservice"/>
@@ -18,6 +19,7 @@
 
     <permission key=" Point_GOODS_ORDER" text="积分商品订单管理" roles="customservice,account"/>
     <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager,account"/>
+    <permission key="SUPPLIER_CODE_EDIT" text="修改商户编码" roles="developer"/>
 
     <permission key="SUPPLIERS_NEW" text="商户添加" roles="editor"/>
     <permission key="SUPPLIERS" text="商户管理" roles="editor,customservice"/>
@@ -62,6 +64,8 @@
         <navigation key="suppliers" text="商户" permissions="SUPPLIERS_NEW,SUPPLIERS">
             <navigation key="suppliers_add" action="Suppliers.add" text="商户添加" permissions="SUPPLIERS_NEW"/>
             <navigation key="suppliers_index" action="Suppliers.index" text="商户管理" permissions="SUPPLIERS"/>
+            <navigation key="suppliers_category_index" action="SuppliersCategory.index" text="商户类别"
+                        permissions="SUPPLIERS"/>
         </navigation>
         <navigation key="supplierUsers" text="商户操作员" permissions="SUPPLIER_USERS_NEW,SUPPLIER_USERS">
             <navigation key="supplierUsers_add" action="OperateSupplierUsers.add" text="商户操作员添加"
@@ -153,8 +157,10 @@
                         permission="FINANCING_INCOMING_NOTE"/>
         </navigation>
         <navigation key="prepayments" text="预付款管理" permissions="PREPAYMENTS,PREPAYMENTS_NEW">
-            <navigation key="prepayments_add" action="OperatePrepayments.add" text="预付款添加" permissions="PREPAYMENTS_NEW"/>
-            <navigation key="prepayments_index" action="OperatePrepayments.index" text="预付款管理" permissions="PREPAYMENTS"/>
+            <navigation key="prepayments_add" action="OperatePrepayments.add" text="预付款添加"
+                        permissions="PREPAYMENTS_NEW"/>
+            <navigation key="prepayments_index" action="OperatePrepayments.index" text="预付款管理"
+                        permissions="PREPAYMENTS"/>
         </navigation>
         <navigation key="report_app" text="财务报表">
             <navigation key="consumers_account_reports" action="OperateReports.showConsumerReport" text="消费者资金明细"

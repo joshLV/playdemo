@@ -6,6 +6,7 @@ import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.PathUtil;
 import models.admin.SupplierUser;
 import models.sales.Brand;
+import models.sales.Goods;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.data.validation.*;
@@ -146,6 +147,26 @@ public class Supplier extends Model {
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
 
+    /**
+     * 商户流水码（4位）
+     */
+    @Column(name = "sequence_code")
+    public String sequenceCode;
+
+    /**
+     * 商户编码 【商户类别编码（2位）+商户流水码（4位）】
+     */
+    public String code;
+
+    /**
+     * 商户类别
+     */
+    @Required
+    @ManyToOne
+    @JoinColumn(name = "supplier_category_id")
+    public SupplierCategory supplierCategory;
+
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderColumn(name = "`display_order`")
     @JoinColumn(name = "supplier_id")
@@ -197,10 +218,27 @@ public class Supplier extends Model {
         deleted = DeletedStatus.UN_DELETED;
         status = SupplierStatus.NORMAL;
         createdAt = new Date();
-
+        this.getCode(this.supplierCategory);
         return super.create();
     }
 
+    public static String calculateFormattedCode(String originalCode, String digits) {
+        return String.format("%0" + digits + "d", Integer.valueOf(originalCode) + 1);
+    }
+
+    public void getCode(SupplierCategory supplierCategory) {
+        Supplier supplier = null;
+        if (supplierCategory != null) {
+            supplier = Supplier.find("supplierCategory.id=? order by code desc", supplierCategory.id).first();
+        }
+        if (supplier == null || supplier.sequenceCode == null) {
+            this.sequenceCode = "0001";
+        } else {
+            this.sequenceCode = calculateFormattedCode(supplier.sequenceCode, "4");
+        }
+        this.code = supplierCategory.code + this.sequenceCode;
+        this.supplierCategory = supplierCategory;
+    }
 
     public static void update(Long id, Supplier supplier) {
         Supplier sp = findById(id);
@@ -224,7 +262,27 @@ public class Supplier extends Model {
         sp.salesId = supplier.salesId;
         sp.shopEndHour = supplier.shopEndHour;
         sp.updatedAt = new Date();
+        if (sp.supplierCategory == null || (sp.supplierCategory != null && supplier.supplierCategory != null && supplier.supplierCategory.id != sp.supplierCategory.id)) {
+            sp.getCode(supplier.supplierCategory);
+        }
         sp.save();
+        List<Goods> goodsList = Goods.find("supplierId=? and code is not null order by code desc", sp.id).fetch();
+        if (goodsList != null && goodsList.size() > 0) {
+            for (Goods g : goodsList) {
+                g.refresh();
+                Supplier tempSupplier = Supplier.findById(g.supplierId);
+                g.code = tempSupplier.code + g.sequenceCode;
+                g.save();
+            }
+        } else {
+            List<Goods> existedGoodsList = Goods.find("supplierId=? order by createdAt desc", sp.id).fetch();
+            for (Goods g : existedGoodsList) {
+                g.refresh();
+                g.getCode();
+                g.save();
+            }
+        }
+
     }
 
     public static void delete(long id) {
@@ -244,6 +302,10 @@ public class Supplier extends Model {
     }
 
     public static List<Supplier> findByCondition(String otherName) {
+        return findByCondition(otherName, null);
+    }
+
+    public static List<Supplier> findByCondition(String otherName, String code) {
         StringBuilder sql = new StringBuilder("deleted=?");
         List params = new ArrayList();
         params.add(DeletedStatus.UN_DELETED);
@@ -255,6 +317,11 @@ public class Supplier extends Model {
         if (StringUtils.isNotBlank(otherName)) {
             sql.append("or fullName like ?");
             params.add("%" + otherName + "%");
+        }
+
+        if (StringUtils.isNotBlank(code)) {
+            sql.append("and code like ?");
+            params.add(code + "%");
         }
 
         sql.append(" order by createdAt DESC");
@@ -316,5 +383,10 @@ public class Supplier extends Model {
         }
         String dateStr = DateUtil.dateToString(conditionDate, days) + (StringUtils.isBlank(shopHour) ? time : " " + shopHour);
         return DateUtil.stringToDate(dateStr, DATE_FORMAT);
+    }
+
+    public List<Goods> getGoods() {
+        return Goods.find("supplierId=?", this.id
+        ).fetch();
     }
 }

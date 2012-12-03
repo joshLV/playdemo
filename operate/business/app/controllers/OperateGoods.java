@@ -117,7 +117,6 @@ public class OperateGoods extends Controller {
 
 
         Long id = OperateRbac.currentUser().id;
-        System.out.println("222");
         List<Brand> brandList = Brand.findByOrder(null, id);
 
         renderArgs.put("brandList", brandList);
@@ -158,7 +157,8 @@ public class OperateGoods extends Controller {
      *
      * @param goods
      */
-    private static void renderInit(models.sales.Goods goods) {
+    private static void
+    renderInit(models.sales.Goods goods) {
         List<Supplier> supplierList = Supplier.findUnDeleted();
 
         if (goods == null) {
@@ -172,7 +172,7 @@ public class OperateGoods extends Controller {
                 checkShops(goods.supplierId);
                 renderShopList(goods.supplierId);
             }
-            goods.beginOnSaleAt=new Date();
+            goods.beginOnSaleAt = new Date();
             renderArgs.put("goods.materialType", MaterialType.ELECTRONIC);
             renderArgs.put("selectAll", true);
         }
@@ -193,7 +193,6 @@ public class OperateGoods extends Controller {
         Long id = OperateRbac.currentUser().id;
 
         if (goods.supplierId != null) {
-            System.out.println("1111");
             List<Brand> brandList = Brand.findByOrder(new Supplier(goods.supplierId), id);
             renderArgs.put("brandList", brandList);
         }
@@ -283,7 +282,6 @@ public class OperateGoods extends Controller {
             }
         }
         goods.createdBy = OperateRbac.currentUser().loginName;
-
         goods.create();
         try {
             goods.imagePath = uploadImagePath(imagePath, goods.id, null);
@@ -293,7 +291,6 @@ public class OperateGoods extends Controller {
         goods.save();
         String createdFrom = "Op";
         goods.createHistory(createdFrom);
-
         index(null, "");
     }
 

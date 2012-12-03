@@ -5,6 +5,7 @@ import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.PathUtil;
 import factory.FactoryBoy;
 import models.supplier.Supplier;
+import models.supplier.SupplierCategory;
 import models.supplier.SupplierStatus;
 import org.junit.Before;
 import org.junit.Test;
@@ -87,6 +88,7 @@ public class SupplierUnitTest extends UnitTest {
     @Test
     public void testUpdate() {
         supplier.domainName = "updated.localhost";
+        supplier.supplierCategory = FactoryBoy.create(SupplierCategory.class);
         Supplier.update(supplier.id, supplier);
         supplier.refresh();
         assertEquals("updated.localhost", supplier.domainName);

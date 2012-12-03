@@ -4,6 +4,23 @@
 #{layout_operate.textField name:'supplier.domainName', value:supplier?.domainName,
 note:'.quanmx.com (只能是字母、数字、下划线，且长度限定在3-20位内)',required:true/}
 *{#{layout_operate.fileField name:'image'/}}*
+#{if "add".equals(action) || ("edit".equals(action) && hasSupplierCodeEditPermission==true)}
+
+    #{layout_operate.selectField name:'supplier.supplierCategory.id', class:'span2', value:supplier?.supplierCategory?.id,
+    error:'supplier.supplierCategory', required:true}
+        #{list items:supplierCategoryList, as:'supplierCategory' }
+            #{option supplierCategory?.id}
+            ${supplierCategory?.name}
+            #{/option}
+        #{/list}
+    #{/layout_operate.selectField}
+*{<input type="hidden" id="supplier_supplierCategory_id" name="supplier.category.id"}*
+*{value="${supplier?.supplierCategory?.id}">}*
+#{/if}
+#{if "edit".equals(action) && hasSupplierCodeEditPermission == true}
+    #{include '/Suppliers/showCode.html'/}
+#{/if}
+
 #{layout_operate.textField name:'supplier.userName', value:supplier?.userName/}
 #{layout_operate.textField name:'supplier.position', value:supplier?.position/}
 #{layout_operate.textField name:'supplier.email', value:supplier?.email/}
@@ -53,4 +70,7 @@ error:'supplier.salesId'}
 #{if "edit".equals(action)}
     #{vx.cancelButton url:'/suppliers', class:'btn btn-primary'/}
 #{/if}
+    <input type="hidden" name="id" id="id" value="${id}"/>
+
 </div>
+

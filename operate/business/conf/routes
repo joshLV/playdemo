@@ -147,6 +147,15 @@ PUT     /suppliers/{id}                         Suppliers.update
 PUT     /suppliers/{id}/freeze                  Suppliers.freeze
 PUT     /suppliers/{id}/unfreeze                Suppliers.unfreeze
 DELETE  /suppliers/{id}                         Suppliers.delete
+GET     /suppliers/{id}/supplier_category/{supplierCategoryId}  Suppliers.showCode
+
+
+#商户类别
+GET     /suppliers_category                     SuppliersCategory.index
+GET     /suppliers_category/new                 SuppliersCategory.add
+POST    /suppliers_category                     SuppliersCategory.create
+GET     /suppliers_category/{id}/edit           SuppliersCategory.edit
+PUT     /suppliers_category/{id}                SuppliersCategory.update
 
 #商户操作员管理
 GET     /users                                  OperateSupplierUsers.index

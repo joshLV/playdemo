@@ -1,0 +1,40 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'商户类别' /}
+#{include '/share/nav.html' /}
+
+<div class="body">
+    <legend>商户类别</legend>
+#{form @SuppliersCategory.index() , id:'operForm',class:"form-horizontal" }
+    <div>编码:<input type="text" name="condition.code" id="code" value="${condition.code}" class="input-medium"/>
+        类别名称 <input type="text" name="condition.name" id="name" value="${condition.name}" class="input-medium"/>
+        <button class="btn btn-primary" id="search" type="submit">搜索</button>
+        &nbsp;&nbsp; &nbsp;&nbsp;
+        <a href="/suppliers_category/new" class="btn btn-primary">添加</a>
+    </div>
+#{/form}
+    <table class="table table-striped table-bordered table-condensed">
+        <thead>
+        <tr>
+            <th width="150px">编码</th>
+            <th width="200">类别名称</th>
+            <th width="150px">所属商户数</th>
+            <th width="150px">操 作</th>
+        </tr>
+        </thead>
+        <tbody>
+        #{paginate.list items:supplierCategoryPage, as:'supplierCategory'}
+        <tr>
+            <td>${supplierCategory?.code}</td>
+            <td>${supplierCategory?.name}</td>
+            <td><a href="/suppliers?code=${supplierCategory.code}">${supplierCategory?.getSuppliers().size()}</a></td>
+            <td><a href="/suppliers_category/${supplierCategory.id}/edit?page=${page?:1}">修改</a></td>
+        </tr>
+        #{/paginate.list}
+        </tbody>
+    </table>
+    <div class="pagination" align="center">
+        <ul>
+        #{paginate.controls items:supplierCategoryPage /}
+        </ul>
+    </div>
+</div>

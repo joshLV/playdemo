@@ -1,0 +1,14 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'添加商户类别' /}
+#{include '/share/nav.html' /}
+
+
+<div class="body">
+#{form @SuppliersCategory.create() , id:'creationForm',enctype:'multipart/form-data',class:"form-horizontal" }
+    <legend>添加商户类别</legend>
+    #{set action:"add"/}
+    #{include '/SuppliersCategory/supplierCategoryForm.html'/}
+#{/form}
+</div>
+
+

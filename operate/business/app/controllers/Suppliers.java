@@ -11,6 +11,8 @@ import models.admin.SupplierUser;
 import models.admin.SupplierUserType;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
+import models.supplier.SupplierCategory;
+import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
@@ -45,7 +47,8 @@ public class Suppliers extends Controller {
         int page = getPage();
 
         String otherName = request.params.get("otherName");
-        List<Supplier> suppliers = Supplier.findByCondition(otherName);
+        String code = request.params.get("code");
+        List<Supplier> suppliers = Supplier.findByCondition(otherName, code);
         render(suppliers, otherName, page);
     }
 
@@ -53,7 +56,8 @@ public class Suppliers extends Controller {
     public static void add() {
         List<OperateUser> operateUserList = getSales();
         renderArgs.put("baseDomain", BASE_DOMAIN);
-        render(operateUserList);
+        List<SupplierCategory> supplierCategoryList = SupplierCategory.findAll();
+        render(operateUserList, supplierCategoryList);
     }
 
     private static int getPage() {
@@ -74,7 +78,6 @@ public class Suppliers extends Controller {
      */
     @ActiveNavigation("suppliers_add")
     public static void create(@Valid Supplier supplier, File image, @Valid SupplierUser admin) {
-
         checkImage(image);
         initAdmin(admin);
 
@@ -89,7 +92,8 @@ public class Suppliers extends Controller {
         if (Validation.hasErrors()) {
             List<OperateUser> operateUserList = getSales();
             renderArgs.put("baseDomain", BASE_DOMAIN);
-            render("Suppliers/add.html", supplier, operateUserList);
+            List<SupplierCategory> supplierCategoryList = SupplierCategory.findAll();
+            render("Suppliers/add.html", supplier, operateUserList, supplierCategoryList);
         }
         supplier.loginName = admin.loginName;
         supplier.create();
@@ -188,16 +192,18 @@ public class Suppliers extends Controller {
      *
      * @param id 门店标识
      */
+    @ActiveNavigation("suppliers_index")
     public static void edit(long id) {
         int page = getPage();
         Supplier supplier = Supplier.findById(id);
         SupplierUser admin = SupplierUser.findAdmin(id, supplier.loginName);
-
         List<WithdrawAccount> withdrawAccounts =
                 WithdrawAccount.find("byUserIdAndAccountType", supplier.getId(), AccountType.SUPPLIER).fetch();
         List<OperateUser> operateUserList = getSales();
+        List<SupplierCategory> supplierCategoryList = SupplierCategory.findAll();
         renderArgs.put("baseDomain", BASE_DOMAIN);
-        render(supplier, admin, id, withdrawAccounts, operateUserList, page);
+        Boolean hasSupplierCodeEditPermission = ContextedPermission.hasPermission("SUPPLIER_CODE_EDIT");
+        render(supplier, supplierCategoryList, hasSupplierCodeEditPermission, admin, id, withdrawAccounts, operateUserList, page);
     }
 
     public static void withdrawAccountCreateAndUpdate(@Valid WithdrawAccount withdrawAccount, Long supplierId) {
@@ -244,6 +250,16 @@ public class Suppliers extends Controller {
         redirectUrl(page);
     }
 
+    public static void showCode(Long id, Long supplierCategoryId) {
+        Supplier supplier = Supplier.findById(id);
+        SupplierCategory supplierCategory = SupplierCategory.findById(supplierCategoryId);
+        if (supplier != null && supplierCategory != null && supplier.supplierCategory.id != supplierCategoryId) {
+            supplier.getCode(supplierCategory);
+        }
+
+        render(supplier);
+    }
+
     public static void freeze(long id) {
         Supplier.freeze(id);
         redirectUrl(getPage());
@@ -277,4 +293,6 @@ public class Suppliers extends Controller {
                 , "sales", DeletedStatus.UN_DELETED).fetch();
         return operateUsers;
     }
+
+
 }

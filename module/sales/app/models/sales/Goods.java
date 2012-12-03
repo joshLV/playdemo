@@ -217,6 +217,17 @@ public class Goods extends Model {
     @Column(name = "supplier_goods_id")
     public Long supplierGoodsId;
 
+    /**
+     * 商品流水码（至少2位 可动态扩展）
+     */
+    @Column(name = "sequence_code")
+    public String sequenceCode;
+
+    /**
+     * 商品编码 【商户类别编码（2位）+商户流水码（4位）+商品流水码（至少2位 可动态扩展）】
+     */
+    public String code;
+
     @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(name = "goods_shops", inverseJoinColumns = @JoinColumn(name
             = "shop_id"), joinColumns = @JoinColumn(name = "goods_id"))
@@ -979,6 +990,7 @@ public class Goods extends Model {
             unPublishedPlatforms = new HashSet<>();
         }
         resaleAddPrice = salePrice.compareTo(originalPrice) > 0 ? salePrice.subtract(originalPrice) : BigDecimal.ZERO;
+        this.getCode();
         return super.create();
     }
 
@@ -1686,7 +1698,6 @@ public class Goods extends Model {
         }
 
         if (noTuanCategoryMessageList.size() > 0) {
-            System.out.println("noTuanCategoryMessageList>>"+noTuanCategoryMessageList.size());
             //发送提醒邮件
             MailMessage mailMessage = new MailMessage();
             mailMessage.addRecipient("dev@uhuila.com");
@@ -1775,6 +1786,21 @@ public class Goods extends Model {
         goodsHistory.groupCode = this.groupCode;
         goodsHistory.save();
     }
+
+
+    public void getCode() {
+        Goods goods = Goods.find("supplierId=? and code is not null order by code desc", this.supplierId).first();
+        Supplier supplier = Supplier.findById(this.supplierId);
+        if (goods == null) {
+            this.sequenceCode = "01";
+        } else {
+            this.sequenceCode = Supplier.calculateFormattedCode(goods.sequenceCode, "2");
+        }
+        if (supplier != null && StringUtils.isNotBlank(supplier.code)) {
+            this.code = supplier.code + this.sequenceCode;
+        }
+    }
+
 
     @Override
     public boolean equals(Object o) {

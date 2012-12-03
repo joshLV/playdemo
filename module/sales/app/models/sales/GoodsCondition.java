@@ -43,6 +43,7 @@ public class GoodsCondition implements Serializable {
     public String name;
     public String shortName;
     public String no;
+    public String code;
 
 
     public BigDecimal pointPriceBegin;
@@ -173,6 +174,11 @@ public class GoodsCondition implements Serializable {
         if (StringUtils.isNotBlank(no)) {
             condBuilder.append(" and g.no like :no ");
             paramMap.put("no", "%" + no.trim() + "%");
+        }
+
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and g.code like :code ");
+            paramMap.put("code", code.trim() + "%");
         }
 
         if (status != null) {

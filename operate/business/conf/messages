@@ -48,6 +48,10 @@ validation.allRequiredUseTime=请把可用时段输入完整!
 validation.noShop=该商户没有门店，请先为商户添加门店！
 validation.existed=%s已经存在！
 validation.useWeekDay=请选择%s!
+validation.selected=请选择%s!
+
+validation.valid=%s不符合规范!
+
 goods.materialType=券类型
 
 
@@ -218,6 +222,13 @@ admin.jobNumber=工号
 supplier.shopHour=营业截止时间
 #supplier.shopBeginHour=营业开始时间
 #supplier.shopEndHour=结束时间
+
+supplier.supplierCategory.id=商户类别
+
+supplierCategory.code=编码
+supplierCategory.name=类别名称
+
+
 resaler.NORMAL=普通会员
 resaler.VIP1=VIP1
 resaler.VIP2=VIP2
