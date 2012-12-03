@@ -5,6 +5,7 @@ import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
 import models.taobao.TaobaoCouponMessageUtil;
 import play.Logger;
+import play.Play;
 import play.jobs.Every;
 import play.jobs.Job;
  import java.util.List;
@@ -17,6 +18,9 @@ import play.jobs.Job;
 public class TaobaoCouponJob extends Job{
     @Override
     public void doJob() {
+        if (Play.runingInTestMode()) {
+            return;
+        }
         Logger.info("start taobao coupon job");
         List<OuterOrder> outerOrders = OuterOrder.find("partner = ? and (status = ? or status = ? or status = ?)",
                 OuterOrderPartner.TB,

@@ -21,6 +21,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
+import play.exceptions.UnexpectedException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -46,9 +47,6 @@ public class TaobaoCouponUtil {
      */
     public static boolean tellTaobaoCouponSend(OuterOrder outerOrder) {
         OAuthToken oAuthToken = getToken();
-        if (oAuthToken == null) {
-            oAuthToken = refreshToken();
-        }
 
         // 组合券
         List<ECoupon> eCoupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
@@ -85,9 +83,6 @@ public class TaobaoCouponUtil {
      */
     public static boolean tellTaobaoCouponResend(OuterOrder outerOrder) {
         OAuthToken oAuthToken = getToken();
-        if (oAuthToken == null) {
-            oAuthToken = refreshToken();
-        }
         JsonObject jsonObject = new JsonParser().parse(outerOrder.message).getAsJsonObject();
         String token = jsonObject.get("token").getAsString();
 
@@ -124,9 +119,6 @@ public class TaobaoCouponUtil {
      */
     public static boolean verifyOnTaobao(ECoupon eCoupon) {
         OAuthToken oAuthToken = getToken();
-        if (oAuthToken == null) {
-            oAuthToken = refreshToken();
-        }
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndYbqOrder", OuterOrderPartner.TB, eCoupon.order).first();
         if (outerOrder == null) {
             Logger.info("consume on taobao failed: outerOrder not found");
@@ -154,12 +146,15 @@ public class TaobaoCouponUtil {
         if (resaler == null) {
             throw new RuntimeException("no taobao resaler found");
         }
-        return OAuthToken.find("byUserIdAndAccountType", resaler.id, AccountType.RESALER).first();
-    }
-
-    public static OAuthToken refreshToken() {
-        OAuthToken token = getToken();
-        if (token == null) {
+        OAuthToken token = OAuthToken.find("byUserIdAndAccountType", resaler.id, AccountType.RESALER).first();
+        if (token == null || token.isExpired()) {
+            /*
+             2012-12-03
+             淘宝的token 有效时间是一年，如果过期了，或者不小心删除了，
+             请先清除oauth_token表中的token,然后使用taobao 这个账号登陆分销平台，
+             然后随便找一个商品点击发布到淘宝，会跳转到淘宝的授权认证，点击授权后跳转回来之后，token就已经是最新的了
+             */
+            throw new UnexpectedException("!!!!!!!!!!!!!!!!!! 淘宝 token 过期 请联系技术人员, 或看此处代码的注释");
         }
         return token;
     }

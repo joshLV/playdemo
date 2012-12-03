@@ -35,6 +35,7 @@ require:
     - dangdang -> dangdang
     - jingdong -> jingdong
     - wuba -> wuba
+    - oauth -> oauth
     - taobao -> taobao
     - com.taobao -> taobao-top 20121130
     - supports -> supports
@@ -86,7 +87,7 @@ repositories:
             - dangdang -> *
             - jingdong -> *
             - wuba -> *
+            - oauth -> *
             - taobao -> *
             - supports -> *
             - third_tuan -> *
-            - wuba -> *

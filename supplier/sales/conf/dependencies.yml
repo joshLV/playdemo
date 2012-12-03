@@ -32,6 +32,7 @@ require:
     - cache_helper -> cache_helper
     - dangdang -> dangdang
     - jingdong -> jingdong
+    - oauth -> oauth
     - taobao -> taobao
     - supports -> supports
     - third_tuan -> third_tuan
@@ -76,10 +77,8 @@ repositories:
             - cache_helper -> *
             - dangdang -> *
             - jingdong -> *
+            - oauth -> *
             - taobao -> *
             - supports -> *
             - third_tuan -> *
-<<<<<<< HEAD
             - wuba -> *
-=======
->>>>>>> likang/taobao-coupon
