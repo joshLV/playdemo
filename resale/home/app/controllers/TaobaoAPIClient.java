@@ -29,11 +29,11 @@ import java.util.List;
 @With(SecureCAS.class)
 public class TaobaoAPIClient extends Controller {
     private static final String URL = Play.configuration.getProperty("taobao.top.url", "http://gw.api.taobao.com/router/rest");
-    private static final String APPKEY = Play.configuration.getProperty("taobao.top.appkey", "12621657");
-    private static final String APPSECRET = Play.configuration.getProperty("taobao.top.appsecret", "b0d06603b45a281f783b6ccd72ad8745");
+    private static final String APPKEY = Play.configuration.getProperty("taobao.top.appkey", "21293912");
+    private static final String APPSECRET = Play.configuration.getProperty("taobao.top.appsecret", "1781d22a1f06c4f25f1f679ae0633400");
 
     public static String IMG_ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
-    public static String TAOBAO_TOP_OAUTH_URL = Play.configuration.getProperty("taobao.top.oauth_url", "http://container.api.taobao.com/container?appkey=12621657&encode=utf-8");
+    public static String TAOBAO_TOP_OAUTH_URL = Play.configuration.getProperty("taobao.top.oauth_url", "http://container.api.taobao.com/container?appkey=21293912&encode=utf-8");
 
     public static void add(Long goodsId) {
         Resaler user = SecureCAS.getResaler();

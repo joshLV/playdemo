@@ -30,6 +30,9 @@ GET     /                                       SmsApplication.index
 *       /api/v1/58/gb/refund                    WubaGroupBuy.refund
 *       /api/v1/58/gb/coupon-info               WubaGroupBuy.coupon
 
+# 淘宝
+*       /api/v1/taobao/coupon                   TaobaoCouponAPI.index
+
 # 北京ensms接收接口
 GET     /getsms                                 EnSmsReceivers.getSms
 

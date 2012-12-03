@@ -37,6 +37,7 @@ require:
     - dangdang -> dangdang
     - jingdong -> jingdong
     - wuba -> wuba
+    - taobao -> taobao
     - supports -> supports
     - third_tuan -> third_tuan
 
@@ -84,4 +85,4 @@ repositories:
             - supports -> *
             - third_tuan -> *
             - wuba -> *
-
+            - taobao -> *

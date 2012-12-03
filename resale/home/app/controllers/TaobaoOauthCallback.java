@@ -5,13 +5,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
-import com.taobao.api.ApiException;
-import com.taobao.api.DefaultTaobaoClient;
-import com.taobao.api.TaobaoClient;
 import com.taobao.api.internal.util.TaobaoUtils;
 
-import com.taobao.api.request.IncrementCustomerPermitRequest;
-import com.taobao.api.response.IncrementCustomerPermitResponse;
 import models.accounts.AccountType;
 import models.oauth.OAuthToken;
 import models.oauth.WebSite;
@@ -65,8 +60,6 @@ public class TaobaoOauthCallback extends Controller{
 
             oAuthToken.save();
 
-            taobaoIncrementPermit(oAuthToken);
-
         } catch (IOException e) {
             Logger.error(e, "oauth callback failed");
             redirect("/library");
@@ -74,22 +67,4 @@ public class TaobaoOauthCallback extends Controller{
         redirect("/library");
     }
 
-    /**
-     * 为用户申请主动通知服务
-     *
-     * @param oauthToken oauth token
-     */
-    private static void taobaoIncrementPermit(OAuthToken oauthToken) {
-        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, APPKEY, APPSECRET);
-
-        IncrementCustomerPermitRequest req=new IncrementCustomerPermitRequest();
-        req.setType("get,syn,notify");
-        req.setTopics("trade;refund;item");
-        req.setStatus("all;all;ItemAdd,ItemUpdate");
-        try {
-            IncrementCustomerPermitResponse response = taobaoClient.execute(req , oauthToken.accessToken);
-        } catch (ApiException e) {
-            Logger.error(e, "taobao increment permit failed" );
-        }
-    }
 }

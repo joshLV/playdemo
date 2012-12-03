@@ -33,6 +33,7 @@ require:
     - emaillogs -> emaillogs
     - dangdang -> dangdang
     - jingdong -> jingdong
+    - taobao -> taobao
     - supports -> supports
     - wuba -> wuba
 
@@ -75,6 +76,7 @@ repositories:
             - emaillogs -> *
             - dangdang -> *
             - jingdong -> *
+            - taobao -> *
             - supports -> *
             - third_tuan -> *
             - wuba -> *

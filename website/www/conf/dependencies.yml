@@ -40,6 +40,7 @@ require:
     - dangdang -> dangdang
     - jingdong -> jingdong
     - wuba -> wuba
+    - taobao -> taobao
     - supports -> supports
     - third_tuan -> third_tuan
     - commons-httpclient -> commons-httpclient 3.1
@@ -88,3 +89,4 @@ repositories:
             - supports -> *
             - third_tuan -> *
             - wuba -> *
+            - taobao -> *
