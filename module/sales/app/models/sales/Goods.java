@@ -1531,17 +1531,19 @@ public class Goods extends Model {
             }
         });
 
+        Date nowDate = new Date();
         String sql = "select g from Goods g,GoodsStatistics s  where g.id =s.goodsId " +
                 " and g.status =:status and g.deleted =:deleted and " +
                 " g.id in (select g.id from g.categories c where c.id = :categoryId or (c.parentCategory is not null and c.parentCategory.id=:categoryId))" +
-                "and g.id <> :goodsId and g.supplierId <> :supplierId and g.expireAt >:expireAt and g.isLottery is false order by s.summaryCount desc";
+                "and g.id <> :goodsId and g.supplierId <> :supplierId and g.beginOnSaleAt<= :beginOnSaleAt and g.expireAt >:expireAt and g.isLottery is false order by s.summaryCount desc";
         Query query = Goods.em().createQuery(sql);
         query.setParameter("status", GoodsStatus.ONSALE);
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
         query.setParameter("categoryId", categoryId);
         query.setParameter("goodsId", goods.id);
         query.setParameter("supplierId", goods.supplierId);
-        query.setParameter("expireAt", new Date());
+        query.setParameter("beginOnSaleAt", nowDate);
+        query.setParameter("expireAt", nowDate);
         query.setMaxResults(limit);
         List<Goods> goodsList = query.getResultList();
         return goodsList;
@@ -1581,8 +1583,9 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findNewGoodsOfOthers(Long id, int limit) {
-        return Goods.find(" id <> ? and status = ? and deleted = ? and isHideOnsale = false and expireAt > ? order by createdAt DESC",
-                id, GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit);
+        Date nowDate = new Date();
+        return Goods.find(" id <> ? and status = ? and deleted = ? and isHideOnsale = false and beginOnSaleAt<= ? and expireAt > ? order by createdAt DESC",
+                id, GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, no).fetch(limit);
     }
 
     /**
