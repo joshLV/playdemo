@@ -4,7 +4,11 @@ import com.uhuila.common.constants.DeletedStatus;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Table;
 import java.util.Date;
 import java.util.List;
 
@@ -78,7 +82,7 @@ public class SendSMSTask extends Model {
 
 
     public static List<SendSMSTask> findUnDeleted() {
-        return SendSMSTask.find("deleted=?", DeletedStatus.UN_DELETED).fetch();
+        return SendSMSTask.find("deleted=com.uhuila.common.constants.DeletedStatus.UN_DELETED").fetch();
     }
 
 }
