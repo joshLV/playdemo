@@ -33,52 +33,42 @@
         <input type="radio" name="productCategory" value="1"> 快递类
     </p>
     <p>发布产品的名称<b>* 最多200字</b></p>
-    <input type="text" name="prodName" size="150" value="${name}">
+    <input type="text" name="prodName" size="150" value="${goods.name}">
     <p>产品短名称<b>*</b></p>
-    <input type="text" name="prodShortName" size="150" value="${title}">
+    <input type="text" name="prodShortName" size="150" value="${goods.title}">
     <p>商品详情<b>*</b></p>
     <textarea rows="10" cols="150" name="prodDescription">
-    #{if exhibition}
-        ${exhibition}
+        ${goods.exhibition}
         <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
             <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
         </p>
-        ${prompt}
+        ${goods.prompt}
         <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
             <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
         </p>
-        ${details}
+        ${goods.details}
         <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
             <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
         </p>
-        ${supplierDes}
-     #{/if}
-    #{else}
-        ${prodDescription?.raw()}
-    #{/else}
+        ${goods.supplierDes}
     </textarea>
     <p>商品大图<b>*</b>规格680x425</p>
-    <input type="text" name="prodImg" size="150" value="${imageLargePath}">
+    <input type="text" name="prodImg" size="150" value="${goods.imageLargePath}">
     <p>手机端特别提示<b>*</b></p>
     <textarea rows="10" cols="150" name="mobileDescription">
-    #{if exhibition}
-        ${exhibition}
+        ${goods.exhibition}
         <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
             <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
         </p>
-        ${prompt}
+        ${goods.prompt}
         <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
             <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
         </p>
-        ${details}
+        ${goods.details}
         <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
             <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
         </p>
-        ${supplierDes}
-    #{/if}
-    #{else}
-    ${mobileDescription?.raw()}
-    #{/else}
+        ${goods.supplierDes}
     </textarea>
     <p>
         是否配送<b>*</b>
@@ -92,34 +82,34 @@
     <p>旅游目的城市，酒店类团购须此字段</p>
     <input type="checkbox" name="travelCityIds">
     <p>列表页短标题<b>*</b></p>
-    <input type="text" name="listShortTitle" size="150" value="${title}">
+    <input type="text" name="listShortTitle" size="150" value="${goods.title}">
     <p>
         团购开始时间<b>*</b>
         <input type="text" name="startTime"  onfocus="WdatePicker({readOnly:true})"  class="Wdate" value="${new java.util.Date().format()}">
         团购结束时间<b>*</b>
-        <input type="text" name="endTime"  onfocus="WdatePicker({readOnly:true})"  class="Wdate" value="${endTime?.format()}">
+        <input type="text" name="endTime"  onfocus="WdatePicker({readOnly:true})"  class="Wdate" value="${goods.expireAt?.format()}">
         券有效期<b>*</b>
-        <input type="text" name="deadline"  onfocus="WdatePicker({readOnly:true})"  class="Wdate" value="${deadline?.format()}">
+        <input type="text" name="deadline"  onfocus="WdatePicker({readOnly:true})"  class="Wdate" value="${goods.expireAt?.format()}">
     </p>
     <p>
-        团购成功数量<b>*</b> <input type="text" name="successNum" value="${successNum}">
-        总的库存，0为无限制<b>*</b> <input type="text" name="saleMaxNum" value="${saleMaxNum}">
+        团购成功数量<b>*</b> <input type="text" name="successNum" value="1">
+        总的库存，0为无限制<b>*</b> <input type="text" name="saleMaxNum" value="0">
     </p>
     <p>
-        用户单笔最大购买数量，0为无限制<b>*</b> <input type="text" name="buyerMaxNum" value="${buyerMaxNum}">
-        用户单笔最低购买数量，大于等于1<b>*</b> <input type="text" name="buyerMinNum" value="${buyerMinNum}">
+        用户单笔最大购买数量，0为无限制<b>*</b> <input type="text" name="buyerMaxNum" value="99">
+        用户单笔最低购买数量，大于等于1<b>*</b> <input type="text" name="buyerMinNum" value="1">
     </p>
     <p>
-        商品原价<b>*</b> <input type="text" name="prodPrice" value="${faceValue}">
-        团购价<b>*</b> <input type="text" name="groupPrice" value="${salePrice}">
+        商品原价<b>*</b> <input type="text" name="prodPrice" value="${goods.faceValue}">
+        团购价<b>*</b> <input type="text" name="groupPrice" value="${goods.resalePrice}">
     </p>
     <p>是否支持退款<b>*</b></p>
     <input type="radio" name="isRefund" value="1" checked> 支持
     <input type="radio" name="isRefund" value="0"> 不支持
     <p>手机端广告图</p>
-    <input type="text" name="mobileImg" size="150" value="${mobileImg}">
+    <input type="text" name="mobileImg" size="150">
     <p>团购特别提示内容</p>
-    <textarea rows="10" cols="150" name="specialmessage">${specialmessage}</textarea>
+    <textarea rows="10" cols="150" name="specialmessage"></textarea>
 
     <h1 style="font-size:200%">商家信息</h1>
     #{list items:shopList, as:'shop'}
@@ -156,7 +146,7 @@
         </p>
     #{/list}
 
-    <input type="hidden" name="goodsId" value="${goodsId}">
+    <input type="hidden" name="goodsId" value="${goods.id}">
     <input type="hidden" name="shopSize" value="${shopList.size()}">
     <p><button type="submit">提交</button></p>
 </div>
