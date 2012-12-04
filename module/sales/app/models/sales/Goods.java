@@ -1792,7 +1792,7 @@ public class Goods extends Model {
 
 
     public void getCode() {
-        Goods goods = Goods.find("supplierId=? and code is not null order by code desc", this.supplierId).first();
+        Goods goods = Goods.find("supplierId=? and sequenceCode is not null order by sequenceCode desc", this.supplierId).first();
         Supplier supplier = Supplier.findById(this.supplierId);
         if (goods == null) {
             this.sequenceCode = "01";

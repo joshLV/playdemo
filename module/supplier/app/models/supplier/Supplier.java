@@ -229,7 +229,7 @@ public class Supplier extends Model {
     public void getCode(SupplierCategory supplierCategory) {
         Supplier supplier = null;
         if (supplierCategory != null) {
-            supplier = Supplier.find("supplierCategory.id=? order by code desc", supplierCategory.id).first();
+            supplier = Supplier.find("supplierCategory.id=? and sequenceCode is not null order by sequenceCode desc", supplierCategory.id).first();
         }
         if (supplier == null || supplier.sequenceCode == null) {
             this.sequenceCode = "0001";
@@ -262,6 +262,8 @@ public class Supplier extends Model {
         sp.salesId = supplier.salesId;
         sp.shopEndHour = supplier.shopEndHour;
         sp.updatedAt = new Date();
+        System.out.println("supplier.supplierCategory.id>>> )" + supplier.supplierCategory.id);
+        System.out.println("sp.supplierCategory>>>" + sp.supplierCategory);
         if (sp.supplierCategory == null || (sp.supplierCategory != null && supplier.supplierCategory != null && supplier.supplierCategory.id != sp.supplierCategory.id)) {
             sp.getCode(supplier.supplierCategory);
         }
