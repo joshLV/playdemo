@@ -115,13 +115,23 @@
                             #{/else}
                         #{/if}
                         #{elseif resaler.loginName == 'jingdong'}
-                            | <a href="/jd-add/${favItem.goods.id}">发布到京东</a>
+                            #{if favItem.partner==models.order.OuterOrderPartner.JD}
+                                | <a href="/jd-add/${favItem.goods.id}">重新发布到京东</a>
+                            #{/if}
+                            #{else}
+                                | <a href="/jd-add/${favItem.goods.id}">发布到京东</a>
+                            #{/else}
                         #{/elseif}
                         #{elseif resaler.loginName == 'yihaodian'}
                             | <a href="/yhd-add/${favItem.goods.id}">发布到一号店</a>
                         #{/elseif}
                         #{elseif resaler.loginName == 'wuba'}
-                            | <a href="/58-add/${favItem.goods.id}">发布到58</a>
+                            #{if favItem.partner==models.order.OuterOrderPartner.WB}
+                                | <a href="/58-add/${favItem.goods.id}">重新发布到58</a>
+                            #{/if}
+                            #{else}
+                                | <a href="/58-add/${favItem.goods.id}">发布到58</a>
+                            #{/else}
                         #{/elseif}
                         #{else}
                             #{if favItem.goods.status== models.sales.GoodsStatus.ONSALE }
