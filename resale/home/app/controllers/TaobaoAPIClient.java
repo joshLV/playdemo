@@ -149,6 +149,15 @@ public class TaobaoAPIClient extends Controller {
         builder.append("<p style=\"BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold\">");
         builder.append("<span style=\"font-family:SimSun;font-size:small;color:#ffffff;\">适用门店</span>");
         builder.append("</p>");
+        builder.append("<table border=\"1\" cellpadding=\"4\" cellspacing=\"0\">");
+        for (Shop shop : goods.getShopList()) {
+            builder.append("<tr>");
+            builder.append("<td width=\"150px\">" + shop.name + "</td>");
+            builder.append("<td width=\"380px\">地址：" + shop.address + " <br> 电话：" + shop.phone + "</td>");
+            builder.append("<td width=\"200px\">交通：" + shop.transport + "</td>");
+            builder.append("</tr>");
+        }
+        builder.append("</table> ");
         return builder.toString();
     }
 
