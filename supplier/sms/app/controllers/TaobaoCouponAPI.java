@@ -40,7 +40,7 @@ public class TaobaoCouponAPI extends Controller {
             renderJSON("{\"code\":502}");
             return;
         }
-        if (!"券生活8".equals(sellerNick)) {
+        if (!"order_modify".equals(method) && !"券生活8".equals(sellerNick)) {
             Logger.warn("taobao coupon request error: wrong seller nick: %s", sellerNick);
             renderJSON("{\"code\":503}");
             return;//暂时只发我们自己的店
@@ -125,7 +125,7 @@ public class TaobaoCouponAPI extends Controller {
         }
         outerOrder.status = OuterOrderStatus.REFUND_SYNCED;
         outerOrder.save();
-        Logger.error("taobao refund success");
+        Logger.info("taobao refund success");
         renderJSON("{\"code\":200}");
     }
 
@@ -163,6 +163,7 @@ public class TaobaoCouponAPI extends Controller {
         JsonObject dataJson;
         try{
             dataJson = new JsonParser().parse(data).getAsJsonObject();
+            System.out.println(dataJson.toString());
         }catch (Exception e) {
             Logger.warn("taobao coupon order modify failed: can not parse data as json %s", data);
             renderJSON("{\"code\":504}");
