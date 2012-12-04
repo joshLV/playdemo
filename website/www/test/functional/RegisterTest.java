@@ -61,7 +61,7 @@ public class RegisterTest extends FunctionalTest {
 
     @Test
     public void testCreate_PromoterUserNull() {
-        List old = User.findAll();
+        List old = User.findAll();  d
         int count = old.size();
         Map<String, String> loginUserParams = new HashMap<String, String>();
         loginUserParams.put("user.loginName", "11@qq.com");
