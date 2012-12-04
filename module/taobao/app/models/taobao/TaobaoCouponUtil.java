@@ -14,6 +14,7 @@ import com.taobao.api.response.VmarketEticketSendResponse;
 import models.accounts.AccountType;
 import models.oauth.OAuthToken;
 import models.order.ECoupon;
+import models.order.ECouponStatus;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
@@ -69,7 +70,7 @@ public class TaobaoCouponUtil {
 
         try {
             VmarketEticketSendResponse response = taobaoClient.execute(request, oAuthToken.accessToken);
-            return response.getRetCode() == 1;
+            return response != null && response.getRetCode() == 1;
         } catch (ApiException e) {
             return false;
         }
@@ -89,11 +90,16 @@ public class TaobaoCouponUtil {
         // 组合券
         List<ECoupon> eCoupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
         StringBuilder verifyCodes = new StringBuilder();
-        for (int i = 0 ;i < eCoupons.size(); i++) {
+        int i =0;
+        for (ECoupon coupon : eCoupons) {
+            if (coupon.status != ECouponStatus.UNCONSUMED) {
+                continue;
+            }
             if (i != 0) {
                 verifyCodes.append(",");
             }
-            verifyCodes.append(eCoupons.get(i).eCouponSn).append(":1");
+            verifyCodes.append(coupon.eCouponSn).append(":1");
+            i ++;
         }
 
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, TOP_APPKEY, TOP_APPSECRET);
@@ -104,7 +110,7 @@ public class TaobaoCouponUtil {
 
         try {
             VmarketEticketResendResponse response = taobaoClient.execute(request, oAuthToken.accessToken);
-            return response.getRetCode() == 1;
+            return response!= null && response.getRetCode() != null && response.getRetCode() == 1;
         } catch (ApiException e) {
             return false;
         }
@@ -135,7 +141,7 @@ public class TaobaoCouponUtil {
         request.setToken(token);
         try {
             VmarketEticketConsumeResponse response = taobaoClient.execute(request,oAuthToken.accessToken);
-            return response.getRetCode()  == 1L;
+            return response != null && response.getRetCode()  == 1L;
         } catch (ApiException e) {
             return false;
         }

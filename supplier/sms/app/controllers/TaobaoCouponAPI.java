@@ -164,7 +164,7 @@ public class TaobaoCouponAPI extends Controller {
             return;
         }
         if (!"券生活8".equals(sellerNick)) {
-            renderJSON("{\"code\":504}");
+            renderJSON("{\"code\":503}");
             return;//暂时只发我们自己的店
         }
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
@@ -174,12 +174,16 @@ public class TaobaoCouponAPI extends Controller {
             return;//没找到外部订单
         }
 
-        List<OrderItems> orderItemsList = OrderItems.find("byOrder", outerOrder.ybqOrder).fetch();
-        for (OrderItems orderItems : orderItemsList) {
-            orderItems.phone = mobile;
-            orderItems.save();
+        List<ECoupon> eCouponList = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
+        for (ECoupon coupon : eCouponList) {
+            if(coupon.status == ECouponStatus.UNCONSUMED) {
+                coupon.orderItems.phone = mobile;
+                coupon.orderItems.save();
+            }
         }
-        Logger.error("taobao modify mobile success");
+        outerOrder.status = OuterOrderStatus.RESEND_COPY;
+        outerOrder.save();
+        Logger.info("taobao modify mobile success");
         renderJSON("{\"code\":200}");//发送的码是跟之前一样的
     }
 

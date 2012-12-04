@@ -35,6 +35,11 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             //订单接收到，开始创建一百券订单，并告诉淘宝我们的订单信息
             Logger.info("start taobao coupon consumer send order");
             if (send(outerOrder)) {
+                List<ECoupon> couponList = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
+                for(ECoupon coupon : couponList) {
+                    coupon.partner = ECouponPartner.TB;
+                    coupon.save();
+                }
                 //通知淘宝我发货了
                 if(TaobaoCouponUtil.tellTaobaoCouponSend(outerOrder)) {
                     outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
@@ -53,15 +58,20 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             if(TaobaoCouponUtil.tellTaobaoCouponResend(outerOrder)) {
                 List<ECoupon> eCoupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
                 for(ECoupon eCoupon: eCoupons) {
+                    if (eCoupon.status != ECouponStatus.UNCONSUMED) {
+                        continue;
+                    }
                     if (eCoupon.downloadTimes > 0) {
                         ECoupon.send(eCoupon, eCoupon.orderItems.phone);
                         eCoupon.downloadTimes -= 1;
                         eCoupon.save();
                     }
                 }
+                outerOrder.status = OuterOrderStatus.RESEND_SYNCED;
+                outerOrder.save();
+            }else {
+                Logger.info("taobao coupon job failed: tell taobao coupon resend failed %s", taobaoCouponMessage.outerOrderId);
             }
-            outerOrder.status = OuterOrderStatus.RESEND_DONE;
-            outerOrder.save();
         }else if (outerOrder.status == OuterOrderStatus.ORDER_DONE) {
             Logger.info("start taobao coupon consumer tell taobao order done");
             //我们发货了，但还没有通知淘宝成功，于是继续通知
