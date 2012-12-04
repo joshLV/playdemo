@@ -80,6 +80,7 @@ public class Account extends Model {
     @Transient
     public BigDecimal getWithdrawAmount(Date date) {
         BigDecimal todayWithdrawAmount = AccountSequence.getVostroAmount(this, date);
+        System.out.println("todayWithdrawAmount:" + todayWithdrawAmount);
         return (amount.compareTo(todayWithdrawAmount) <= 0) ? BigDecimal.ZERO : amount.subtract(todayWithdrawAmount);
 
 //        BigDecimal incomeAmount = AccountSequence.getIncomeAmount(this, date).subtract(todayWithdrawAmount);
