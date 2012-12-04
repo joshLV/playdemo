@@ -1,12 +1,17 @@
 package controllers;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import models.order.*;
 import models.taobao.TaobaoCouponUtil;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.mvc.Controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -21,25 +26,44 @@ public class TaobaoCouponAPI extends Controller {
         params.remove("body");
         Logger.info("taobao coupon request: \n%s", new Gson().toJson(params));
         if (!TaobaoCouponUtil.verifyParam(params)) {
-            Logger.info("taobao coupon request error: param verify failed!");
+            Logger.warn("taobao coupon request error: param verify failed!");
             renderJSON("{\"code\":501}");
             return;//签名错误
         }
+        Long orderId;
+        String sellerNick;
+        try {
+            orderId = Long.parseLong(params.get("order_id"));//淘宝订单交易号
+            sellerNick = params.get("seller_nick");//淘宝卖家用户名（旺旺号）
+        } catch (Exception e) {
+            Logger.warn("taobao coupon request error: param invalid");
+            renderJSON("{\"code\":502}");
+            return;
+        }
+        if (!"券生活8".equals(sellerNick)) {
+            Logger.warn("taobao coupon request error: wrong seller nick: %s", sellerNick);
+            renderJSON("{\"code\":503}");
+            return;//暂时只发我们自己的店
+        }
+
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
+                OuterOrderPartner.TB, orderId).first();
+
         switch (method) {
             case "send":
-                send(params);
+                send(params, orderId, outerOrder);
                 break;
             case "resend":
-                resend(params);
+                resend(outerOrder);
                 break;
             case "cancel":
-                cancel(params);
+                cancel(outerOrder);
                 break;
             case "modified"://用户修改手机号
-                modified(params);
+                mobileModified(params, outerOrder);
                 break;
             case "order_modify"://订单修改通知
-                renderJSON("{\"code\":200}");//我们不做任何操作
+                orderModify(params, outerOrder);
                 break;
             default:
                 throw new IllegalArgumentException("no such method");
@@ -48,21 +72,8 @@ public class TaobaoCouponAPI extends Controller {
 
     /**
      * 接收发码通知
-     *
-     * @param params 淘宝传过来的参数
      */
-    private static void send(Map<String, String> params) {
-        Long orderId;
-        try {
-            orderId = Long.parseLong(params.get("order_id"));//淘宝订单交易号
-        } catch (Exception e) {
-            Logger.info("taobao coupon request failed: invalid order_id %s", params.get("order_id"));
-            renderJSON("{\"code\":502}");
-            return;
-        }
-
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
-                OuterOrderPartner.TB, orderId).first();
+    private static void send(Map<String, String> params, Long orderId, OuterOrder outerOrder) {
         //如果找不到该orderCode的订单，说明还没有新建，则新建一个
         if (outerOrder == null) {
             outerOrder = new OuterOrder();
@@ -83,22 +94,10 @@ public class TaobaoCouponAPI extends Controller {
         renderJSON("{\"code\":200}");
     }
 
-    private static void resend(Map<String, String> params) {
-        Long orderId;
-        String sellerNick;
-        try {
-            orderId = Long.parseLong(params.get("order_id"));//淘宝订单交易号
-            sellerNick = params.get("seller_nick");//淘宝卖家用户名（旺旺号）
-        } catch (Exception e) {
-            renderJSON("{\"code\":503}");
-            return;
-        }
-        if (!"券生活8".equals(sellerNick)) {
-            renderJSON("{\"code\":504}");
-            return;//暂时只发我们自己的店
-        }
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
-                OuterOrderPartner.TB, orderId).first();
+    /**
+     * 处理重发请求
+     */
+    private static void resend(OuterOrder outerOrder) {
         if (outerOrder == null) {
             renderJSON("{\"code\":504}");
             return;//没有找到订单
@@ -111,25 +110,8 @@ public class TaobaoCouponAPI extends Controller {
 
     /**
      * 退款逻辑
-     *
-     * @param params 淘宝传过来的参数
      */
-    private static void cancel(Map<String, String> params) {
-        Long orderId;
-        String sellerNick;
-        try {
-            orderId = Long.parseLong(params.get("order_id"));//淘宝订单交易号
-            sellerNick = params.get("seller_nick");//淘宝卖家用户名（旺旺号）
-        } catch (Exception e) {
-            renderJSON("{\"code\":503}");
-            return;
-        }
-        if (!"券生活8".equals(sellerNick)) {
-            renderJSON("{\"code\":504}");
-            return;//暂时只发我们自己的店
-        }
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
-                OuterOrderPartner.TB, orderId).first();
+    private static void cancel(OuterOrder outerOrder) {
         if (outerOrder == null) {
             renderJSON("{\"code\":504}");
             return;//没找到外部商品ID
@@ -152,23 +134,8 @@ public class TaobaoCouponAPI extends Controller {
      *
      * @param params 淘宝传过来的参数
      */
-    private static void modified(Map<String, String> params) {
-        Long orderId;
-        String sellerNick, mobile;
-        try {
-            orderId = Long.parseLong(params.get("order_id"));//淘宝订单交易号
-            sellerNick = params.get("seller_nick");//淘宝卖家用户名（旺旺号）
-            mobile = params.get("mobile");//买家新的手机号
-        } catch (Exception e) {
-            renderJSON("{\"code\":503}");
-            return;
-        }
-        if (!"券生活8".equals(sellerNick)) {
-            renderJSON("{\"code\":503}");
-            return;//暂时只发我们自己的店
-        }
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
-                OuterOrderPartner.TB, orderId).first();
+    private static void mobileModified(Map<String, String> params, OuterOrder outerOrder) {
+        String mobile = params.get("mobile");//买家新的手机号
         if (outerOrder == null) {
             renderJSON("{\"code\":504}");
             return;//没找到外部订单
@@ -187,5 +154,66 @@ public class TaobaoCouponAPI extends Controller {
         renderJSON("{\"code\":200}");//发送的码是跟之前一样的
     }
 
+    /**
+     * 淘宝订单修改了，目前只有有效期更改的通知
+     */
+    private static void orderModify(Map<String, String> params, OuterOrder outerOrder) {
+        String subMethod = params.get("sub_method");
+        String data = params.get("data");
+        JsonObject dataJson;
+        try{
+            dataJson = new JsonParser().parse(data).getAsJsonObject();
+        }catch (Exception e) {
+            Logger.warn("taobao coupon order modify failed: can not parse data as json %s", data);
+            renderJSON("{\"code\":504}");
+            return;
+        }
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        switch (subMethod) {
+            case "1":
+                List<ECoupon> couponList = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
+                //修改生效时间
+                if (dataJson.has("valid_start")) {
+                    Date validStart = null;
+                    try {
+                        validStart = dateFormat.parse(dataJson.get("valid_start").getAsString());
+                    } catch (ParseException e) {
+                        Logger.warn("taobao coupon order modify failed: parse date error", data);
+                        renderJSON("{\"code\":505}");
+                        return;
+                    }
+                    for (ECoupon coupon : couponList) {
+                        if (coupon.status == ECouponStatus.UNCONSUMED) {
+                            coupon.effectiveAt = validStart;
+                            coupon.save();
+                        }
+                    }
+                }
+                //修改过期时间
+                if (dataJson.has("valid_ends")) {
+                    Date validEnd = null;
+                    try {
+                        validEnd = dateFormat.parse(dataJson.get("valid_ends").getAsString());
+                    } catch (ParseException e) {
+                        Logger.warn("taobao coupon order modify failed: parse date error", data);
+                        renderJSON("{\"code\":505}");
+                        return;
+                    }
+                    for (ECoupon coupon : couponList) {
+                        if (coupon.status == ECouponStatus.UNCONSUMED) {
+                            coupon.expireAt = validEnd;
+                            coupon.save();
+                        }
+                    }
+                }
+                renderJSON("{\"code\":200}");
+                break;
+            default:
+                Logger.warn("taobao coupon order modify failed: unknown sub method: %s", subMethod);
+                renderJSON("{\"code\":505}");
+                break;
+        }
+    }
 }
