@@ -106,10 +106,10 @@
     #{option "RESALER"}&{'report.RESALER'}#{/option}
 #{/select}
     起止日期
-    <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.paidAtBegin"
-           onfocus="WdatePicker({readOnly:true})" value="${condition.paidAtBegin?.format()}"> -
-    <input type="text" id="condition_end" class="input-medium Wdate" name="condition.paidAtEnd"
-           onfocus="WdatePicker({readOnly:true})" value="${condition.paidAtEnd?.format()}">
+    <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.beginAt"
+           onfocus="WdatePicker({readOnly:true})" value="${condition.beginAt?.format()}"> -
+    <input type="text" id="condition_end" class="input-medium Wdate" name="condition.endAt"
+           onfocus="WdatePicker({readOnly:true})" value="${condition.endAt?.format()}">
 
     <button type="submit" class="btn btn-primary" id="search">搜索</button>
     <ul class="nav nav-pills">
@@ -145,8 +145,8 @@
 #{paginate.list items:reportPage, as:'report'}
 %{
     userType=report?.order?.userType== null ? 'CONSUMER':report?.order?.userType;
-    paidAtBegin=condition?.paidAtBegin?.format();
-    paidAtEnd=condition?.paidAtEnd?.format();
+    beginAt=condition?.beginAt?.format();
+    endAt=condition?.endAt?.format();
 
     userName="condition.userName="+report?.loginName;
     }%
@@ -156,22 +156,22 @@
         <td>${report?.order?.userType==models.accounts.AccountType.RESALER ? '分销商':'消费者'}</td>
         <td>${report.userName}<br>${report?.loginName}</td>
         <td>
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${paidAtBegin}&condition.paidAtEnd=${paidAtEnd}"
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
                target="_blank">${report?.buyNumber}</a></td>
         <td>
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${paidAtBegin}&condition.paidAtEnd=${paidAtEnd}"
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
                target="_blank">${report?.salePrice?.formatCurrency('CNY')}</a></td>
         <td>
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.paidAtBegin=${paidAtBegin}&condition.paidAtEnd=${paidAtEnd}"
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
                target="_blank">${report?.consumedNumber}</a></td>
         <td>
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${paidAtBegin}&condition.consumedAtEnd=${paidAtEnd}"
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
                target="_blank">${report?.consumedPrice?.formatCurrency('CNY')}</a></td>
         <td>
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.paidAtBegin=${paidAtBegin}&condition.paidAtEnd=${paidAtEnd}"
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
                target="_blank">${report?.refundNumber}</a></td>
         <td>
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${paidAtBegin}&condition.refundAtEnd=${paidAtEnd}"
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
                target="_blank">${report?.refundPrice?.formatCurrency('CNY')}</a></td>
         <td>${(report?.salePrice-report?.refundPrice)?.formatCurrency('CNY')}</td>
         <td>0</td>

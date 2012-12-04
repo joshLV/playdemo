@@ -2,6 +2,7 @@ package models;
 
 import com.uhuila.common.util.DateUtil;
 import models.accounts.AccountType;
+import play.data.binding.types.DateBinder;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -14,31 +15,69 @@ import java.util.Map;
  * Time: 下午4:52
  */
 public class ResaleSalesReportCondition {
-
-    public Date paidAtBegin = DateUtil.getBeginOfDay();
-    public Date paidAtEnd = DateUtil.getEndOfDay(new Date());
+    public Date beginAt = DateUtil.getBeginOfDay();
+    public Date endAt = DateUtil.getEndOfDay(new Date());
     public String interval = "-1d";
     public AccountType accountType;
     private Map<String, Object> paramMap = new HashMap<>();
 
-    public String getFilter(AccountType type) {
+    public String getFilterPaidAt(AccountType type) {
         StringBuilder condBuilder = new StringBuilder(" where e.order.userType = :userType and e.goods.isLottery=false");
 
         paramMap.put("userType", type);
 
-        if (paidAtBegin != null) {
+        if (beginAt != null) {
             condBuilder.append(" and e.order.paidAt >= :createdAtBegin");
-            paramMap.put("createdAtBegin", paidAtBegin);
+            paramMap.put("createdAtBegin", beginAt);
         }
-        if (paidAtEnd != null) {
+        if (endAt != null) {
             condBuilder.append(" and e.order.paidAt < :createdAtEnd");
-            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(paidAtEnd));
+            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
         }
 
 
         System.out.println("condBuilder.toString():" + condBuilder.toString());
         return condBuilder.toString();
     }
+
+    public String getFilterConsumedAt(AccountType type) {
+        StringBuilder condBuilder = new StringBuilder(" where e.order.userType = :userType and e.goods.isLottery=false and e.status = models.order.ECouponStatus.CONSUMED");
+
+        paramMap.put("userType", type);
+
+        if (beginAt != null) {
+            condBuilder.append(" and e.consumedAt >= :createdAtBegin");
+            paramMap.put("createdAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and e.consumedAt < :createdAtEnd");
+            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
+        }
+
+
+        System.out.println("condBuilder.toString():" + condBuilder.toString());
+        return condBuilder.toString();
+    }
+
+    public String getFilterRefundAt(AccountType type) {
+        StringBuilder condBuilder = new StringBuilder(" where e.order.userType = :userType and e.goods.isLottery=false and e.status = models.order.ECouponStatus.REFUND");
+
+        paramMap.put("userType", type);
+
+        if (beginAt != null) {
+            condBuilder.append(" and e.refundAt >= :createdAtBegin");
+            paramMap.put("createdAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and e.refundAt < :createdAtEnd");
+            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
+        }
+
+
+        System.out.println("condBuilder.toString():" + condBuilder.toString());
+        return condBuilder.toString();
+    }
+
 
     public Map<String, Object> getParamMap() {
         return paramMap;
