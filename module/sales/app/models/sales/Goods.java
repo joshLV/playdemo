@@ -1585,7 +1585,7 @@ public class Goods extends Model {
     public static List<Goods> findNewGoodsOfOthers(Long id, int limit) {
         Date nowDate = new Date();
         return Goods.find(" id <> ? and status = ? and deleted = ? and isHideOnsale = false and beginOnSaleAt<= ? and expireAt > ? order by createdAt DESC",
-                id, GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, no).fetch(limit);
+                id, GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, nowDate).fetch(limit);
     }
 
     /**
