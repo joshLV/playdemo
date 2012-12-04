@@ -73,21 +73,25 @@ public class Account extends Model {
     }
 
     /**
+     * 可结算金额.
      * 从指定日期到以前所有的未结算过的可结算金额.
+     * 可结算金额=账户余额-指定日期之后消费总额
      */
     @Transient
     public BigDecimal getWithdrawAmount(Date date) {
-        BigDecimal todayWithdrawAmount = AccountSequence.getTodayWithdrawAmount(this);
-        BigDecimal incomeAmount = AccountSequence.getIncomeAmount(this, date).subtract(todayWithdrawAmount);
+        BigDecimal todayWithdrawAmount = AccountSequence.getVostroAmount(this, date);
+        return (amount.compareTo(todayWithdrawAmount) <= 0) ? BigDecimal.ZERO : amount.subtract(todayWithdrawAmount);
 
-        if (uncashAmount == null) {
-            return incomeAmount == null ? BigDecimal.ZERO : incomeAmount;
-        }
-        if (incomeAmount.compareTo(uncashAmount) <= 0) {
-            return BigDecimal.ZERO;
-        }
-
-        return incomeAmount.subtract(uncashAmount);
+//        BigDecimal incomeAmount = AccountSequence.getIncomeAmount(this, date).subtract(todayWithdrawAmount);
+//
+//        if (uncashAmount == null) {
+//            return incomeAmount == null ? BigDecimal.ZERO : incomeAmount;
+//        }
+//        if (incomeAmount.compareTo(uncashAmount) <= 0) {
+//            return BigDecimal.ZERO;
+//        }
+//
+//        return incomeAmount.subtract(uncashAmount);
     }
 
     /**

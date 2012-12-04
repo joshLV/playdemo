@@ -186,10 +186,18 @@ public class AccountSequence extends Model {
                 accountSequence.balance : BigDecimal.ZERO;
     }
 
-    public static BigDecimal getTodayWithdrawAmount(Account account) {
+    public static BigDecimal getVostroAmount(Account account, Date fromDate, Date toDate) {
         BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
-                " account=? and sequenceFlag=? and createdAt>=? and createdAt<? group by createdAt",
-                account, AccountSequenceFlag.NOSTRO, DateUtil.getBeginOfDay(), DateUtil.getEndOfDay(new Date())).first();
+                " account=? and sequenceFlag=? and createdAt>=? and createdAt<? and settlementStatus=? group by createdAt",
+                account, AccountSequenceFlag.VOSTRO, SettlementStatus.UNCLEARED, fromDate, toDate).first();
+
+        return amount != null ? amount.abs() : BigDecimal.ZERO;
+    }
+
+    public static BigDecimal getVostroAmount(Account account, Date beginDate) {
+        BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
+                " account=? and sequenceFlag=? and createdAt>=? and settlementStatus=? group by createdAt",
+                account, AccountSequenceFlag.VOSTRO, SettlementStatus.UNCLEARED, beginDate).first();
 
         return amount != null ? amount.abs() : BigDecimal.ZERO;
     }
@@ -208,21 +216,18 @@ public class AccountSequence extends Model {
      * @return
      */
     public static int withdraw(Account supplierAccount, Date withdrawDate, WithdrawBill withdrawBill, Prepayment prepayment) {
-        if (supplierAccount == null && prepayment == null) {
+        if (supplierAccount == null) {
             return 0;
         }
         EntityManager entityManager = JPA.em();
         // 把指定商户的所有指定日期之前的收入金额结算状态改为已结算
         String prepaymentCond = prepayment == null ? "" : ",s.prepayment=:prepayment";
-        String accountCond = supplierAccount == null ? "" : " s.account=:account and ";
         Query query = entityManager.createQuery("update AccountSequence as s set s.settlementStatus=:settlementStatus, s.withdrawBill = :withdrawBill " +
                 prepaymentCond +
-                " where " + accountCond + "s.createdAt<=:withdrawDate");
+                " where  s.account=:account and s.createdAt<=:withdrawDate");
         query.setParameter("settlementStatus", SettlementStatus.CLEARED);
         query.setParameter("withdrawBill", withdrawBill);
-        if (supplierAccount != null) {
             query.setParameter("account", supplierAccount);
-        }
         query.setParameter("withdrawDate", DateUtil.getEndOfDay(withdrawDate));
         if (prepayment != null) {
             query.setParameter("prepayment", prepayment);
