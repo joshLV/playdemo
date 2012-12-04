@@ -165,13 +165,13 @@
             <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.paidAtBegin=${paidAtBegin}&condition.paidAtEnd=${paidAtEnd}"
                target="_blank">${report?.consumedNumber}</a></td>
         <td>
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.paidAtBegin=${paidAtBegin}&condition.paidAtEnd=${paidAtEnd}"
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${paidAtBegin}&condition.consumedAtEnd=${paidAtEnd}"
                target="_blank">${report?.consumedPrice?.formatCurrency('CNY')}</a></td>
         <td>
             <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.paidAtBegin=${paidAtBegin}&condition.paidAtEnd=${paidAtEnd}"
                target="_blank">${report?.refundNumber}</a></td>
         <td>
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.paidAtBegin=${paidAtBegin}&condition.paidAtEnd=${paidAtEnd}"
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${paidAtBegin}&condition.refundAtEnd=${paidAtEnd}"
                target="_blank">${report?.refundPrice?.formatCurrency('CNY')}</a></td>
         <td>${(report?.salePrice-report?.refundPrice)?.formatCurrency('CNY')}</td>
         <td>0</td>

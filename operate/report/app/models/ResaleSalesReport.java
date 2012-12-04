@@ -127,6 +127,7 @@ public class ResaleSalesReport extends Model {
 
         List<ResaleSalesReport> resultList = query.getResultList();
         List<Order> newList = new ArrayList<Order>();
+
         for (ResaleSalesReport item : resultList) {
             long consumedCount = 0l;
             long refundCount = 0l;
