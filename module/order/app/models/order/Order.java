@@ -34,6 +34,7 @@ import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
+import play.exceptions.UnexpectedException;
 import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.Column;
@@ -623,6 +624,7 @@ public class Order extends Model {
 
         if (paid()) {
             sendECoupon(batchCoupons);
+            remindBigOrderRemark();
         }
     }
 
@@ -704,129 +706,163 @@ public class Order extends Model {
         if (this.status != OrderStatus.PAID) {
             return;
         }
-        if (this.orderItems == null) {
-            return;
+        if (this.orderItems == null || this.orderItems.size() == 0) {
+            throw new UnexpectedException("the paid order has no order items! order id: " + this.id);
         }
         for (OrderItems orderItem : this.orderItems) {
             Goods goods = orderItem.goods;
             if (goods == null) {
                 continue;
             }
-            //如果是电子券
-            if (MaterialType.ELECTRONIC.equals(goods.materialType)) {
+            //如果不是电子券，跳过
+            if (MaterialType.ELECTRONIC  == goods.materialType) {
+                //唐力群同学来认领这个对象
                 List<String> couponCodes = new ArrayList<>();
-                SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
                 for (int i = 0; i < orderItem.buyNumber; i++) {
-                    ECoupon eCoupon = null;
-                    //支持导入券号
-                    if (goods.couponType == GoodsCouponType.IMPORT) {
-                        ImportedCoupon importedCoupon = ImportedCoupon.find("byGoodsAndStatus", goods, ImportedCouponStatus.UNUSED).first();
-                        if (importedCoupon == null) {
-                            throw new RuntimeException("can not find an imported coupon of goods " + goods.getId());
-                        } else {
-                            eCoupon = new ECoupon(this, goods, orderItem, importedCoupon.coupon, batchCoupons).save();
-                            Supplier supplier = Supplier.findById(goods.supplierId);
-                            SupplierUser supplierUser = SupplierUser.find("bySupplier", supplier).first();
-                            if (supplierUser == null) {
-                                throw new RuntimeException("can not find a supplierUser of goods " + goods.getId());
-                            }
-                            eCoupon.consumeAndPayCommission(supplierUser.shop.id, null, supplierUser, VerifyCouponType.IMPORT_VERIFY);
-                            eCoupon.save();
-                            importedCoupon.status = ImportedCouponStatus.USED;
-                            importedCoupon.save();
-                        }
-                    } else {
-                        eCoupon = new ECoupon(this, goods, orderItem, batchCoupons).save();
-                    }
+                    //创建电子券
+                    ECoupon eCoupon = createCoupon(goods, orderItem, batchCoupons);
                     //记录券历史信息
                     new CouponHistory(eCoupon, AccountType.RESALER.equals(orderItem.order.userType) ? "分销商：" + orderItem.order.getResaler().loginName : "消费者:" + orderItem.order.getUser().getShowName(), "产生券号", ECouponStatus.UNCONSUMED, ECouponStatus.UNCONSUMED, null).save();
-
-                    if (!Play.runingInTestMode() && (goods.isLottery == null || !goods.isLottery)) {
-                        // 如果是京东的订单 不要发短信，京东自己调我们的发短信接口
-                        if (!AccountType.RESALER.equals(orderItem.order.userType)
-                                || !orderItem.order.getResaler().loginName.equals(Resaler.JD_LOGIN_NAME)) {
-
-                            TsingTuanOrder tsingTuanOrder = TsingTuanOrder.from(eCoupon);
-                            if (tsingTuanOrder != null) {
-                                // 清团券发送
-                                String password = RandomNumberUtil.generateSerialNumber(6);
-                                eCoupon.password = password;
-                                eCoupon.save();
-                                tsingTuanOrder.password = password;
-                                SMSUtil.send("【清团】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name +
-                                        "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "" +
-                                        "密码" + password + ",截止" + dateFormat.format(eCoupon.expireAt) + "客服4006013975",
-                                        orderItem.phone, eCoupon.replyCode);
-                                TsingTuanSendOrder.send(tsingTuanOrder);
-                            } else {
-                                SMSUtil.send("【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name +
-                                        "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
-                                        "截止" + dateFormat.format(eCoupon.expireAt) + "客服4006262166",
-                                        orderItem.phone, eCoupon.replyCode);
-                            }
-                        }
-                        BigDecimal compareValue = BigDecimal.valueOf(300.0);
-                        if (StringUtils.isNotBlank(remark) && amount.compareTo(compareValue) == 1) {
-                            String goodsName = "";
-                            if (realGoods.size() > 0 && realGoods != null) {
-                                for (Goods g : realGoods) {
-                                    goodsName += g.name + " ";
-                                }
-                            }
-                            if (electronicGoods.size() > 0 && electronicGoods != null) {
-                                for (Goods g : electronicGoods) {
-                                    goodsName += g.name + " ";
-                                }
-                            }
-
-                            //发送提醒邮件
-                            MailMessage mailMessage = new MailMessage();
-                            mailMessage.addRecipient("op@uhuila.com");
-                            mailMessage.setSubject(Play.mode.isProd() ? "客户留言" : "客户留言【测试】");
-                            mailMessage.putParam("orderNumber", orderNumber);
-                            mailMessage.putParam("remark", remark);
-                            mailMessage.putParam("goodsName", goodsName);
-                            mailMessage.putParam("phone", buyerMobile);
-                            mailMessage.putParam("orderId", id);
-                            mailMessage.putParam("addr", play.Play.configuration.getProperty("application.baseUrl"));
-                            MailUtil.sendCustomerRemarkMail(mailMessage);
-
-                            //发送短信
-                            String content = "订单号" + orderNumber + "(金额" + amount + "),商品名：" + goodsName + ",客户手机号:" + buyerMobile + ",客户留言：" + remark;
-                            String phone = "15026580827";
-                            SMSUtil.send(content, phone);
-
-                        }
-
-                    }
                     couponCodes.add(eCoupon.getMaskedEcouponSn());
-                }
-                if (goods.isLottery == null || !goods.isLottery) {
-                    MailMessage mail = new MailMessage();
-                    //分销商
-                    if (AccountType.RESALER.equals(orderItem.order.userType)) {
-                        mail.addRecipient(orderItem.order.getResaler().email);
-                    } else {
-                        String email = orderItem.order.getUser().loginName;
-                        if (StringUtils.isNotBlank(email)) {
-                            //消费者
-                            mail.addRecipient(email);
-                            String note = "";
-                            if (this.orderItems.size() > 1) {
-                                note = "等件";
-                            }
-                            String content = "您已成功购买" + goods.name + note + "订单号是" + this
-                                    .orderNumber + "，支付金额是" + this.amount + "元。\r";
 
-                            mail.putParam("full_name", content);
-                            MailUtil.sendCouponMail(mail);
-                        }
+                    //抽奖商品不发短信邮件等提示
+                    if(goods.isLottery != null && goods.isLottery) {
+                        continue;
                     }
-
+                    //京东的不发短信邮件等提示，因为等会儿京东会再次主动通知我们发短信
+                    if(AccountType.RESALER.equals(orderItem.order.userType)
+                            && orderItem.order.getResaler().loginName.equals(Resaler.JD_LOGIN_NAME)) {
+                        continue;
+                    }
+                    //发短信
+                    sendEcouponSms(eCoupon, goods, orderItem);
                 }
             }
+            //邮件提醒
+            sendPaidMail(goods, orderItem);
             goods.save();
         }
+    }
+
+    private void sendEcouponSms(ECoupon eCoupon, Goods goods, OrderItems orderItem) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
+        TsingTuanOrder tsingTuanOrder = TsingTuanOrder.from(eCoupon);
+        if (tsingTuanOrder != null) {
+            // 清团券发送
+            String password = RandomNumberUtil.generateSerialNumber(6);
+            eCoupon.password = password;
+            eCoupon.save();
+            tsingTuanOrder.password = password;
+            SMSUtil.send("【清团】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name +
+                    "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "" +
+                    "密码" + password + ",截止" + dateFormat.format(eCoupon.expireAt) + "客服4006013975",
+                    orderItem.phone, eCoupon.replyCode);
+            TsingTuanSendOrder.send(tsingTuanOrder);
+        } else {
+            SMSUtil.send("【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name +
+                    "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
+                    "截止" + dateFormat.format(eCoupon.expireAt) + "客服4006262166",
+                    orderItem.phone, eCoupon.replyCode);
+        }
+
+    }
+
+    /**
+     * 邮件提醒
+     */
+    private void sendPaidMail(Goods goods, OrderItems orderItem) {
+        //抽奖商品不提醒
+        if (goods.isLottery != null && goods.isLottery) {
+            return;
+        }
+        MailMessage mail = new MailMessage();
+        //分销商
+        if (AccountType.RESALER.equals(orderItem.order.userType)) {
+            mail.addRecipient(orderItem.order.getResaler().email);
+        } else {
+            String email = orderItem.order.getUser().loginName;
+            if (StringUtils.isNotBlank(email)) {
+                //消费者
+                mail.addRecipient(email);
+                String note = "";
+                if (this.orderItems.size() > 1) {
+                    note = "等件";
+                }
+                String content = "您已成功购买" + goods.name + note + "订单号是" + this
+                        .orderNumber + "，支付金额是" + this.amount + "元。\r";
+
+                mail.putParam("full_name", content);
+                MailUtil.sendCouponMail(mail);
+            }
+        }
+    }
+
+    /**
+     * 当订单金额大于一定额度时，如果用户有留言，提醒运营人员
+     */
+    private void remindBigOrderRemark(){
+        if (StringUtils.isBlank(remark)
+                || amount.compareTo(new BigDecimal("300.00")) < 0) {
+            return;
+        }
+        String goodsName = "";
+        if (realGoods != null && realGoods.size() > 0) {
+            for (Goods g : realGoods) {
+                goodsName += g.name + " ";
+            }
+        }
+        if (electronicGoods.size() > 0 && electronicGoods != null) {
+            for (Goods g : electronicGoods) {
+                goodsName += g.name + " ";
+            }
+        }
+
+        //发送提醒邮件
+        MailMessage mailMessage = new MailMessage();
+        mailMessage.addRecipient("op@uhuila.com");
+        mailMessage.setSubject(Play.mode.isProd() ? "客户留言" : "客户留言【测试】");
+        mailMessage.putParam("orderNumber", orderNumber);
+        mailMessage.putParam("remark", remark);
+        mailMessage.putParam("goodsName", goodsName);
+        mailMessage.putParam("phone", buyerMobile);
+        mailMessage.putParam("orderId", id);
+        mailMessage.putParam("addr", play.Play.configuration.getProperty("application.baseUrl"));
+        MailUtil.sendCustomerRemarkMail(mailMessage);
+
+        //发送短信
+        String content = "订单号" + orderNumber + "(金额" + amount + "),商品名：" + goodsName + ",客户手机号:" + buyerMobile + ",客户留言：" + remark;
+        String phone = "15026580827";
+        SMSUtil.send(content, phone);
+    }
+
+    /**
+     * 创建 一个券
+     *
+     * @return 一个电子券
+     */
+    private ECoupon createCoupon(Goods goods, OrderItems orderItem, BatchCoupons batchCoupons) {
+        ECoupon eCoupon = null;
+        //支持导入券号
+        if (goods.couponType == GoodsCouponType.IMPORT) {
+            ImportedCoupon importedCoupon = ImportedCoupon.find("byGoodsAndStatus", goods, ImportedCouponStatus.UNUSED).first();
+            if (importedCoupon == null) {
+                throw new RuntimeException("can not find an imported coupon of goods " + goods.getId());
+            } else {
+                eCoupon = new ECoupon(this, goods, orderItem, importedCoupon.coupon, batchCoupons).save();
+                Supplier supplier = Supplier.findById(goods.supplierId);
+                SupplierUser supplierUser = SupplierUser.find("bySupplier", supplier).first();
+                if (supplierUser == null) {
+                    throw new RuntimeException("can not find a supplierUser of goods " + goods.getId());
+                }
+                eCoupon.consumeAndPayCommission(supplierUser.shop.id, null, supplierUser, VerifyCouponType.IMPORT_VERIFY);
+                eCoupon.save();
+                importedCoupon.status = ImportedCouponStatus.USED;
+                importedCoupon.save();
+            }
+        } else {
+            eCoupon = new ECoupon(this, goods, orderItem, batchCoupons).save();
+        }
+        return eCoupon;
     }
 
 
