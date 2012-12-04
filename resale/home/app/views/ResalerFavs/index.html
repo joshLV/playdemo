@@ -122,6 +122,8 @@
                         #{/elseif}
                         #{elseif resaler.loginName == 'wuba'}
                             | <a href="/58-add/${favItem.goods.id}">发布到58</a>
+                            | <a href="/58-edit/${favItem.goods.id}">修改58信息</a>
+
                         #{/elseif}
                         #{else}
                             #{if favItem.goods.status== models.sales.GoodsStatus.ONSALE }

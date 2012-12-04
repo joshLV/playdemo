@@ -43,10 +43,10 @@
         </p>
 
         <p>发布产品的名称<b>* 最多200字</b></p>
-        <input type="text" name="prodName" size="150" value="${name}">
+        <input type="text" name="prodName" size="150" maxlength="200" value="${name}">
 
         <p>产品短名称<b>*</b></p>
-        <input type="text" name="prodShortName" size="150" value="${title}">
+        <input type="text" name="prodShortName" size="150" maxlength="20" value="${title}">
 
         <p>商品详情<b>*</b></p>
         <textarea rows="10" cols="150" name="prodDescription">
@@ -160,7 +160,7 @@
         <input type="text" name="shortTitle_${shop_index}" size="150" value="${supplier.otherName} ${shop.name}">
 
         <p>商圈<b>*</b></p>
-        <input type="text" name="circleId_${shop_index}" size="150" value="7021">
+        <input type="text" name="circleId_${shop_index}" size="150" value="${circleId?:7201}">
 
         <p>商家地址</p>
         <input type="text" name="address_${shop_index}" size="150" value="${shop.address}">
@@ -169,22 +169,22 @@
         <input type="text" name="telephone_${shop_index}" size="50" value="${shop.phone}">
 
         <p>网址</p>
-        <input type="text" name="webUrl_${shop_index}" size="150">
+        <input type="text" name="webUrl_${shop_index}" size="150" value=${webUrl}>
 
         <p>交通信息<b>*</b>(一个空格也可以，默认给了空格)</p>
-        <input type="text" name="busline_${shop_index}" size="150" value=" ">
+        <input type="text" name="busline_${shop_index}" size="150" value="${busline?:' '}">
 
         <p>地图图片</p>
-        <input type="text" name="mapImg_${shop_index}" size="150" value="">
+        <input type="text" name="mapImg_${shop_index}" size="150" value="${mapImg}">
 
         <p>地图链接</p>
-        <input type="text" name="mapUrl_${shop_index}" size="150">
+        <input type="text" name="mapUrl_${shop_index}" size="150" value="${mapUrl}">
 
         <p>
             地图服务商
-            <input type="radio" name="mapServiceId_${shop_index}" value="0"> Google
-            <input type="radio" name="mapServiceId_${shop_index}" value="1"> Baidu
-            <input type="radio" name="mapServiceId_${shop_index}" value="2"> Mapbar
+            <input type="radio" name="mapServiceId_${shop_index}" value="0" #{if mapServiceId ==0 || mapServiceId ==null} checked#{/if}> Google
+            <input type="radio" name="mapServiceId_${shop_index}" value="1"#{if mapServiceId ==1} checked#{/if}> Baidu
+            <input type="radio" name="mapServiceId_${shop_index}" value="2"#{if mapServiceId ==2} checked#{/if}> Mapbar
         </p>
 
         <p>
@@ -195,6 +195,7 @@
     #{/list}
 
         <input type="hidden" name="goodsId" value="${goodsId}">
+        <input type="hidden" name="isEdit" value="${isEdit}">
         <input type="hidden" name="shopSize" value="${shopList.size()}">
 
         <p>
@@ -202,10 +203,8 @@
         </p>
     </div>
 </form>
-<script type="text/javascript" >
-//    var dataa = {};
-
-
+<script type="text/javascript">
+    //    var dataa = {};
 
 
 </script>

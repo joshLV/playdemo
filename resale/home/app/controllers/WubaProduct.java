@@ -1,6 +1,7 @@
 package controllers;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -35,21 +36,21 @@ import java.util.Map;
 public class WubaProduct extends Controller {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
-    public static void prepare1(long goodsId) {
+    public static void prepare(long goodsId) {
         Resaler resaler = SecureCAS.getResaler();
         if (!Resaler.WUBA_LOGIN_NAME.equals(resaler.loginName)) {
             error("there is nothing you can do");
         }
 
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
-
+        getGoodsItems(goods);
         List<Shop> shopList = Shop.find("bySupplierIdAndDeleted", goods.supplierId, DeletedStatus.UN_DELETED).fetch();
 
         Supplier supplier = Supplier.findById(goods.supplierId);
-        render(goods, supplier, shopList);
+        render(supplier, shopList);
     }
 
-    public static void prepare(long goodsId) {
+    public static void edit(long goodsId) {
         Resaler resaler = SecureCAS.getResaler();
         if (!Resaler.WUBA_LOGIN_NAME.equals(resaler.loginName)) {
             error("there is nothing you can do");
@@ -63,11 +64,8 @@ public class WubaProduct extends Controller {
         } else {
             getGoodsSupportItems(support);
         }
-
-        List<Shop> shopList = Shop.find("bySupplierIdAndDeleted", goods.supplierId, DeletedStatus.UN_DELETED).fetch();
-
-        Supplier supplier = Supplier.findById(goods.supplierId);
-        render(supplier, shopList);
+        renderArgs.put("isEdit", "edit");
+        render("WubaProduct/prepare.html");
     }
 
     public static void upload(long goodsId, int prodCategory, int isSend, BigDecimal expressMoney,
@@ -140,14 +138,16 @@ public class WubaProduct extends Controller {
             partnerMap.put("mapImg", request.params.get("mapImg_" + i));
             partnerMap.put("mapUrl", request.params.get("mapUrl_" + i));
             partnerMap.put("mapServiceId", request.params.get("mapServiceId_" + i) == null ? null : Integer.parseInt(request.params.get("mapServiceId_" + i)));
+
             partnerMap.put("latitude", request.params.get("latitude_" + i));
             partnerMap.put("longitude", request.params.get("longitude_" + i));
 
             partners.add(partnerMap);
 
         }
-        requestMap.put("partners", partners);
 
+        requestMap.put("partners", partners);
+        requestMap.put("shopSize", shopSize);
         String goodsData = new Gson().toJson(requestMap);
 
         //查询是否已经推送过该商品，没有则创建，有则更新
@@ -158,8 +158,11 @@ public class WubaProduct extends Controller {
             support.goodsData = goodsData;
             support.save();
         }
-
-        JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.addgroupbuy", false);
+        String method = "emc.groupbuy.addgroupbuy";
+        if ("edit".equals(StringUtils.trimToEmpty(request.params.get("isEdit")))) {
+            method = "emc.groupbuy.editgroupbuyinfo";
+        }
+        JsonObject result = WubaUtil.sendRequest(requestMap, method, false);
         String status = result.get("status").getAsString();
         String msg = result.get("msg").getAsString();
         render("WubaProduct/result.html", status, msg);
@@ -234,7 +237,8 @@ public class WubaProduct extends Controller {
             partnerMap.put("busline", request.params.get("busline_" + i));
             partnerMap.put("mapImg", request.params.get("mapImg_" + i));
             partnerMap.put("mapUrl", request.params.get("mapUrl_" + i));
-            partnerMap.put("mapServiceId", request.params.get("mapServiceId_" + i) == null ? null : Integer.parseInt(request.params.get("mapServiceId_" + i)));
+            partnerMap.put("mapServiceId", request.params.get("mapServiceId_" + i) == null ? null : Integer.parseInt(request.params.get("mapServiceId_" + i)))
+            ;
             partnerMap.put("latitude", request.params.get("latitude_" + i));
             partnerMap.put("longitude", request.params.get("longitude_" + i));
 
@@ -244,7 +248,7 @@ public class WubaProduct extends Controller {
         requestMap.put("partners", partners);
 
 
-        JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.addgroupbuy", false);
+        JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.editgroupbuyinfo", false);
         String status = result.get("status").getAsString();
         String msg = result.get("msg").getAsString();
         render("WubaProduct/result.html", status, msg);
@@ -310,10 +314,35 @@ public class WubaProduct extends Controller {
             }
 
         }
+        int shopSize = jsonObject.get("shopSize").getAsInt();
+        Supplier supplier = Supplier.findById(support.goods.supplierId);
+        renderArgs.put("supplier", supplier);
 
+        int i = 0;
+        List<Shop> shopList = new ArrayList<>();
+        Shop shop = new Shop();
+        JsonArray jsonArray = jsonObject.get("partners").getAsJsonArray();
+        for (JsonElement element : jsonArray) {
+            JsonObject partnerObject = element.getAsJsonObject();
+            if (i == shopSize) break;
+            shop.id = element.getAsJsonObject().get("partnerId").getAsLong();
+            shop.name = partnerObject.get("title").getAsString();
+//                shop.put("circleId", Long.parseLong(request.params.get("circleId_" + i)));
+            shop.address = partnerObject.get("address").getAsString();
+            shop.phone = partnerObject.get("telephone").getAsString();
+            shop.latitude = partnerObject.get("latitude").getAsString();
+            shop.longitude = partnerObject.get("longitude").getAsString();
+            renderArgs.put("webUrl", partnerObject.get("webUrl").getAsString());
+            renderArgs.put("busline", partnerObject.get("busline").getAsString());
+            renderArgs.put("mapImg", partnerObject.get("mapImg").getAsString());
+            renderArgs.put("mapUrl", partnerObject.get("mapUrl").getAsString());
+            int mapServiceId = partnerObject.get("mapServiceId").getAsInt();
+            renderArgs.put("mapServiceId", mapServiceId);
+            shopList.add(shop);
+            i++;
+        }
 
-
-
+        renderArgs.put("shopList", shopList);
         renderArgs.put("goodsId", support.goods.id);
 
     }
