@@ -11,7 +11,6 @@ import play.mvc.With;
 import java.util.List;
 
 @With(SupplierRbac.class)
-
 public class SupplierProfiles extends Controller {
 
     /**
@@ -36,14 +35,14 @@ public class SupplierProfiles extends Controller {
     /**
      * 操作员信息修改
      *
-     * @param id           ID
+     * @param id           ID   不应当通过ID修改对象，应当通过session得到
      * @param supplierUser 用户信息
      */
     public static void update(Long id, @Valid SupplierUser supplierUser) {
-
-        checkValid(id, supplierUser);
+        Long userId = SupplierRbac.currentUser().id;
+        checkValid(userId, supplierUser);
         // 更新用户信息
-        SupplierUser.update(id, supplierUser);
+        SupplierUser.update(userId, supplierUser);
         index();
     }
 
@@ -53,8 +52,6 @@ public class SupplierProfiles extends Controller {
      * @param supplierUser 操作员信息
      */
     private static void checkValid(Long id, SupplierUser supplierUser) {
-        Validation.required("supplierUser.encryptedPassword", supplierUser.encryptedPassword);
-        Validation.required("supplierUser.confirmPassword", supplierUser.confirmPassword);
         Validation.match("validation.jobNumber", supplierUser.jobNumber, "^[0-9]*");
         if (Validation.hasErrors()) {
             List rolesList = SupplierRole.findAll();

@@ -112,6 +112,7 @@ public class ImportCoupons extends Controller{
         }
         ImportedCouponTemp.deleteAll();
 
+        goods.refresh();
         goods.cumulativeStocks += insertCount;
         goods.save();
         index("无", StringUtils.join(duplicateCouponsInTemp,","),StringUtils.join(duplicateCouponsWithIC, ","));
