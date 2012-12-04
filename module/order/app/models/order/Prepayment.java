@@ -166,6 +166,6 @@ public class Prepayment extends Model {
      * @return
      */
     public static List<Prepayment> findBySupplier(Supplier supplier) {
-        return find("supplier=? and expireAt>? and amount>withdrawAmount and settlement=?", supplier, new Date(), SettlementStatus.UNCLEARED).fetch();
+        return find("supplier=? and expireAt>? and amount>withdrawAmount and settlementStatus=?", supplier, new Date(), SettlementStatus.UNCLEARED).fetch();
     }
 }
