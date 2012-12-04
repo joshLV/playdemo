@@ -1,13 +1,10 @@
 package unit.account;
 
-import static util.DateHelper.afterDays;
-import static util.DateHelper.afterMinuts;
-import static util.DateHelper.beforeDays;
-
-import java.math.BigDecimal;
-import java.util.Date;
-
+import com.uhuila.common.util.DateUtil;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.accounts.Account;
+import models.accounts.AccountSequence;
 import models.accounts.AccountType;
 import models.accounts.SettlementStatus;
 import models.accounts.TradeBill;
@@ -21,13 +18,17 @@ import models.order.OrderItems;
 import models.order.Prepayment;
 import models.sales.Goods;
 import models.supplier.Supplier;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.test.UnitTest;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+import static util.DateHelper.afterDays;
+import static util.DateHelper.afterMinuts;
+import static util.DateHelper.beforeDays;
 
 /**
  * 使用了预付款的商户提现测试.
@@ -79,15 +80,14 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
         assertBigDecimalEquals(BigDecimal.ZERO, 可提现金额(beforeDays(15)));
         assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
 
-        产生一笔20元消费记录(beforeDays(14));  //  60元
-        产生一笔20元消费记录(beforeDays(12));  //  80元
-        产生一笔20元消费记录(beforeDays(10));  // 100元
+        产生多笔20元消费记录(beforeDays(14), 3);  //  100元
         assertBigDecimalEquals(new BigDecimal(100), 账户余额());
         assertBigDecimalEquals(BigDecimal.ZERO, 可提现金额(beforeDays(9)));
         assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
 
         产生一笔20元消费记录(beforeDays(8));   // 120元
         assertBigDecimalEquals(new BigDecimal(120), 账户余额());
+        assertBigDecimalEquals(new BigDecimal(120), 可结算余额(beforeDays(7)));
         assertBigDecimalEquals(new BigDecimal(20), 可提现金额(beforeDays(7)));
         assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
 
@@ -133,11 +133,12 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
 
     private BigDecimal 可提现金额(Date date) {
         Prepayment lastPrepayment = Prepayment.getLastUnclearedPrepayments(supplier.id);
+
         return Supplier.getWithdrawAmount(AccountUtil.getSupplierAccount(supplier.id), lastPrepayment, 可结算余额(date), date);
     }
-    
+
     private BigDecimal 可结算余额(Date date) {
-        return supplierAccount.getWithdrawAmount(date);
+        return supplierAccount.getWithdrawAmount(DateUtil.getBeginOfDay(date));
     }
 
     private BigDecimal 预付款余额() {
@@ -175,7 +176,7 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
     private void 产生一笔20元消费记录(final Date date) {
         产生多笔20元消费记录(date, 1);
     }
-    
+
     private void 产生多笔20元消费记录(final Date date, int number) {
         for (int i = 0; i < number; i++) {
             final int afterMinuts = i;
@@ -188,12 +189,18 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
                     e.consumedAt = afterMinuts(date, afterMinuts);
                 }
             });
-    
+
             // 给商户打钱
             TradeBill consumeTrade = TradeUtil.createConsumeTrade(ecoupon.eCouponSn,
                     supplierAccount, ecoupon.originalPrice, ecoupon.order.getId());
-            consumeTrade.createdAt = date;
+            consumeTrade.createdAt = afterMinuts(date, afterMinuts);
             TradeUtil.success(consumeTrade, "券消费(" + ecoupon.order.description + ")");
+
+            List<AccountSequence> accountSequences = AccountSequence.find("tradeId=?", consumeTrade.id).fetch();
+            for (AccountSequence accountSequence : accountSequences) {
+                accountSequence.createdAt = consumeTrade.createdAt;
+                accountSequence.save();
+            }
         }
     }
 }
