@@ -1,8 +1,27 @@
 package models.order;
 
-import cache.CacheHelper;
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.RandomNumberUtil;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
+
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
@@ -24,39 +43,25 @@ import models.sales.ImportedCoupon;
 import models.sales.ImportedCouponStatus;
 import models.sales.MaterialType;
 import models.sales.SecKillGoodsItem;
+import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Index;
+
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.exceptions.UnexpectedException;
 import play.modules.paginate.JPAExtPaginator;
+import cache.CacheHelper;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.RandomNumberUtil;
 
 
 @Entity
@@ -854,7 +859,11 @@ public class Order extends Model {
                 if (supplierUser == null) {
                     throw new RuntimeException("can not find a supplierUser of goods " + goods.getId());
                 }
-                eCoupon.consumeAndPayCommission(supplierUser.shop.id, null, supplierUser, VerifyCouponType.IMPORT_VERIFY);
+                Shop shop = supplierUser.shop;
+                if (supplierUser.shop == null) {
+                    shop = Shop.findShopBySupplier(supplier.id).get(0);
+                }
+                eCoupon.consumeAndPayCommission(shop.id, null, supplierUser, VerifyCouponType.IMPORT_VERIFY);
                 eCoupon.save();
                 importedCoupon.status = ImportedCouponStatus.USED;
                 importedCoupon.save();
