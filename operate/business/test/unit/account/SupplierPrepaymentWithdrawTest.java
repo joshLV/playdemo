@@ -17,7 +17,6 @@ import models.order.Prepayment;
 import models.sales.Goods;
 import models.supplier.Supplier;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.test.UnitTest;
 
@@ -52,7 +51,6 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
         supplierAccount = AccountUtil.getAccount(supplier.id, AccountType.SUPPLIER);
     }
 
-    @Ignore
     @Test
     public void 预付款足额消费状态测试() {
         assertBigDecimalEquals(BigDecimal.ZERO, 账户余额(supplier));
@@ -90,7 +88,6 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
         //assertBigDecimalEquals(new BigDecimal(20), supplierAccount.getSupplierWithdrawAmount(new BigDecimal(100), beforeDays(7)));       
     }
 
-    @Ignore
     @Test
     public void 预付款未完成消费状态测试() {
         Prepayment prepayment = 创建预付款(beforeDays(20), beforeDays(10), new BigDecimal(100));
