@@ -1,24 +1,22 @@
 package functional;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
 import models.consumer.User;
 import models.consumer.UserInfo;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.Play;
 import play.cache.Cache;
 import play.data.validation.Validation;
 import play.mvc.Http;
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
-import controllers.modules.website.cas.Security;
-import factory.FactoryBoy;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RegisterTest extends FunctionalTest {
     UserInfo userInfo;
@@ -61,7 +59,7 @@ public class RegisterTest extends FunctionalTest {
 
     @Test
     public void testCreate_PromoterUserNull() {
-        List old = User.findAll();  d
+        List old = User.findAll();
         int count = old.size();
         Map<String, String> loginUserParams = new HashMap<String, String>();
         loginUserParams.put("user.loginName", "11@qq.com");
