@@ -21,6 +21,7 @@ import models.sales.GoodsStatistics;
 import models.sales.GoodsStatisticsType;
 import models.sales.GoodsWebsiteCondition;
 import models.sales.Shop;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import play.Play;
@@ -74,12 +75,12 @@ public class Goods2 extends Controller {
         long brandId = StringUtils.isBlank(brandIdStr) ? 0 : Long.parseLong(brandIdStr);
 
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+        final GoodsWebsiteCondition condition = new GoodsWebsiteCondition("", keywords, brandId);
 
         CacheHelper.preRead(CacheHelper.getCacheKey(new String[]{Goods.CACHEKEY, Goods.CACHEKEY_BASEID, GoodsStatistics.CACHEKEY},
                 "SHOW_TOP" + PAGE_SIZE + "RECOMMEND"),
                 CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_RIGHT_SLIDES"),
                 CacheHelper.getCacheKey(Goods.CACHEKEY, "WWW_HOT_SALE4"));
-
         //只按关键字搜索
         QueryResponse queryResponse = models.sales.Goods.search(keywords, brandId, pageNumber, PAGE_SIZE);
 
@@ -96,15 +97,10 @@ public class Goods2 extends Controller {
             //搜索结果的分类
             List<Category> searchCategories = Goods.getStatisticTopCategories(queryResponse);
             renderArgs.put("searchCategories", searchCategories);
-        } else {
-            // 网友推荐商品
-            renderRecommendGoods(PAGE_SIZE);
         }
-
-        //输出右侧展示条数据
+        //输出右侧展示条数据(包含网友推荐)
         renderRightBar(null);
 
-        final GoodsWebsiteCondition condition = new GoodsWebsiteCondition("", keywords, brandId);
         //面包屑导航
         BreadcrumbList breadcrumbs = createBreadcrumbs(condition);
         //组装网页标题
@@ -202,8 +198,6 @@ public class Goods2 extends Controller {
                     searchAreas = models.sales.Goods.statisticAreas(condition);
                     renderArgs.put("searchAreas", searchAreas);
                 }
-            } else {
-                renderRecommendGoods(PAGE_SIZE);
             }
 
             BreadcrumbList breadcrumbs = createBreadcrumbs(condition);
@@ -221,17 +215,21 @@ public class Goods2 extends Controller {
         }
     }
 
-    private static void renderRecommendGoods(final int count) {
-        // 网友推荐商品
-        List<Goods> recommendGoodsList = CacheHelper.getCache(
-                CacheHelper.getCacheKey(new String[]{Goods.CACHEKEY, Goods.CACHEKEY_BASEID, GoodsStatistics.CACHEKEY},
-                        "SHOW_TOP" + count + "RECOMMEND"),
-                new CacheCallBack<List<Goods>>() {
-                    @Override
-                    public List<Goods> loadData() {
-                        return Goods.findTopRecommend(count);
+    private static void renderRecommendGoods() {
+           //猜你喜欢
+        List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.BrowsedGoods.CACHEKEY, "WWW_YOURLIKE4"), new CacheCallBack<List<models.sales.Goods>>() {
+            @Override
+            public List<models.sales.Goods> loadData() {
+                List<BrowsedGoods> browsedGoodsList = BrowsedGoods.findTop(5, 2);
+                List<models.sales.Goods> goodsList = new ArrayList<>();
+                if (CollectionUtils.isNotEmpty(browsedGoodsList)) {
+                    for (BrowsedGoods browsedGoods : browsedGoodsList) {
+                        goodsList.add(browsedGoods.goods);
                     }
-                });
+                }
+                return goodsList;
+            }
+        });
         renderArgs.put("recommendGoodsList", recommendGoodsList);
     }
 
@@ -374,11 +372,9 @@ public class Goods2 extends Controller {
         renderArgs.put("hotSaleGoodsList", hotSaleGoodsList);
         if (goods != null) {
             renderRecommendGoods(goods);
-
-
         } else {
-            //感兴趣的商品
-            renderRecommendGoods(5);
+            //感兴趣的商品(和首页显示的次你喜欢一样)
+            renderRecommendGoods();
         }
 
         return rightSlides;
