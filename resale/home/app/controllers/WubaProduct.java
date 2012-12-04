@@ -253,6 +253,7 @@ public class WubaProduct extends Controller {
     private static void getGoodsItems(Goods goods) {
         renderArgs.put("name", goods.name);
         renderArgs.put("title", goods.title);
+        renderArgs.put("listShortTitle", goods.shortName);
         renderArgs.put("imageLargePath", goods.getImageLargePath());
         renderArgs.put("salePrice", goods.getResalePrice());
         renderArgs.put("faceValue", goods.faceValue);
@@ -282,27 +283,37 @@ public class WubaProduct extends Controller {
             if (entry.getKey().equals("groupbuyInfo")) {
                 JsonElement groupbuyInfo = entry.getValue();
                 JsonObject groupbuyInfoAsJsonObject = groupbuyInfo.getAsJsonObject();
-                System.out.println(groupbuyInfoAsJsonObject.get("prodName").getAsString() + "-------------------");
+                renderArgs.put("name", groupbuyInfoAsJsonObject.get("prodName").getAsString());
+                renderArgs.put("prodDescription", StringUtils.trimToEmpty(groupbuyInfoAsJsonObject.get("prodDescription").getAsString()));
+                renderArgs.put("title", groupbuyInfoAsJsonObject.get("prodShortName").getAsString());
+                renderArgs.put("imageLargePath", groupbuyInfoAsJsonObject.get("prodImg").getAsString());
+                renderArgs.put("mobileDescription", StringUtils.trimToEmpty(groupbuyInfoAsJsonObject.get("mobileDescription").getAsString()));
+                renderArgs.put("listShortTitle", StringUtils.trimToEmpty(groupbuyInfoAsJsonObject.get("listShortTitle").getAsString()));
+                renderArgs.put("mobileImg", StringUtils.trimToEmpty(groupbuyInfoAsJsonObject.get("mobileImg").getAsString()));
+                renderArgs.put("specialmessage", StringUtils.trimToEmpty(groupbuyInfoAsJsonObject.get("specialmessage").getAsString()));
+                renderArgs.put("prodCategory", groupbuyInfoAsJsonObject.get("prodCategory").getAsInt());
+                renderArgs.put("isSend", groupbuyInfoAsJsonObject.get("isSend").getAsInt());
+//                renderArgs.put("expressMoney", groupbuyInfoAsJsonObject.get("expressMoney").getAsDouble());
+                renderArgs.put("salePrice", groupbuyInfoAsJsonObject.get("groupPrice").getAsBigDecimal());
+                renderArgs.put("faceValue", groupbuyInfoAsJsonObject.get("prodPrice").getAsBigDecimal());
+                renderArgs.put("successNum", groupbuyInfoAsJsonObject.get("successNum").getAsString());
+                renderArgs.put("saleMaxNum", groupbuyInfoAsJsonObject.get("saleMaxNum").getAsString());
+                renderArgs.put("buyerMaxNum", groupbuyInfoAsJsonObject.get("buyerMaxNum").getAsString());
+                renderArgs.put("buyerMinNum", groupbuyInfoAsJsonObject.get("buyerMinNum").getAsString());
+//                groupbuyInfo.put("prodModelJson", "{" + new Gson().toJson(prodModelJson) + "}");
+                renderArgs.put("startTime", DateUtil.stringToDate(groupbuyInfoAsJsonObject.get("startTime").getAsString(), DATE_FORMAT));
+                renderArgs.put("endTime", DateUtil.stringToDate(groupbuyInfoAsJsonObject.get("endTime").getAsString(), DATE_FORMAT));
+                renderArgs.put("deadline", DateUtil.stringToDate(groupbuyInfoAsJsonObject.get("deadline").getAsString(), DATE_FORMAT));
+//                renderArgs.put("cityIds", groupbuyInfoAsJsonObject.get("cityIds").getAsString());
+//                renderArgs.put("travelCityIds", groupbuyInfoAsJsonObject.get("travelCityIds").getAsString());
+                renderArgs.put("isRefund", groupbuyInfoAsJsonObject.get("isRefund").getAsString());
             }
 
         }
-//        renderArgs.put("name", groupbuyInfoObject.get("prodName"));
-        renderArgs.put("title", jsonObject.get("prodShortName").getAsString());
-        renderArgs.put("prodDescription", StringUtils.trimToEmpty(jsonObject.get("prodDescription").getAsString()));
-        renderArgs.put("title", StringUtils.trimToEmpty(jsonObject.get("listShortTitle").getAsString()));
-        renderArgs.put("imageOriginalPath", jsonObject.get("prodImg").getAsString());
-        renderArgs.put("salePrice", jsonObject.get("groupPrice").getAsBigDecimal());
-        renderArgs.put("faceValue", jsonObject.get("prodPrice").getAsBigDecimal());
-        renderArgs.put("startTime", DateUtil.stringToDate(jsonObject.get("startTime").getAsString(), DATE_FORMAT));
-        renderArgs.put("endTime", DateUtil.stringToDate(jsonObject.get("endTime").getAsString(), DATE_FORMAT));
-        renderArgs.put("deadline", DateUtil.stringToDate(jsonObject.get("deadline").getAsString(), DATE_FORMAT));
-        renderArgs.put("mobileImg", StringUtils.trimToEmpty(jsonObject.get("mobileImg").getAsString()));
-        renderArgs.put("specialmessage", StringUtils.trimToEmpty(jsonObject.get("specialmessage").getAsString()));
-        renderArgs.put("mobileDescription", StringUtils.trimToEmpty(jsonObject.get("mobileDescription").getAsString()));
-        renderArgs.put("successNum", jsonObject.get("successNum").getAsString());
-        renderArgs.put("saleMaxNum", jsonObject.get("saleMaxNum").getAsString());
-        renderArgs.put("buyerMaxNum", jsonObject.get("buyerMaxNum").getAsString());
-        renderArgs.put("buyerMinNum", jsonObject.get("buyerMinNum").getAsString());
+
+
+
+
         renderArgs.put("goodsId", support.goods.id);
 
     }
