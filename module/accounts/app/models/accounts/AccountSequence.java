@@ -56,7 +56,6 @@ public class AccountSequence extends Model {
     @Column(name = "promotion_balance")
     public BigDecimal promotionBalance;         //变动后活动金余额
 
-
     @Column(name = "change_amount")
     public BigDecimal changeAmount;             //可提现余额（包括账户余额和因提现而冻结的余额）变动发生额
 
@@ -198,7 +197,6 @@ public class AccountSequence extends Model {
         BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
                 " account=? and sequenceFlag=? and createdAt>=? and settlementStatus=?",
                 account, AccountSequenceFlag.VOSTRO, beginDate, SettlementStatus.UNCLEARED).first();
-        System.out.println("beginDate:" + beginDate);
         return amount != null ? amount.abs() : BigDecimal.ZERO;
     }
 
@@ -227,7 +225,7 @@ public class AccountSequence extends Model {
                 " where  s.account=:account and s.createdAt<=:withdrawDate");
         query.setParameter("settlementStatus", SettlementStatus.CLEARED);
         query.setParameter("withdrawBill", withdrawBill);
-            query.setParameter("account", supplierAccount);
+        query.setParameter("account", supplierAccount);
         query.setParameter("withdrawDate", DateUtil.getEndOfDay(withdrawDate));
         if (prepayment != null) {
             query.setParameter("prepayment", prepayment);

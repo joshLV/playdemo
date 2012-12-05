@@ -291,7 +291,7 @@ public class WithdrawApproval extends Controller {
         if (withdrawCount > 0 && prepaymentId != null) {
             //将结算金额与预付款金额进行绑定
             if (prepayment != null && prepayment.getBalance().compareTo(BigDecimal.ZERO) >= 0) {
-                boolean payAll = Prepayment.pay(prepayment, bill.amount);
+                boolean payAll = Prepayment.pay(prepayment, bill.amount, new Date());
             }
             //发送结算通知短信
             sendWithdrawnSMS(bill, comment, "您的账户中有" + bill.amount + "已结款, 含转帐手续费" + bill.fee + "元,请查收.");
