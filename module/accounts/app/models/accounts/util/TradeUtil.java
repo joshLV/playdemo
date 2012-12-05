@@ -141,9 +141,11 @@ public class TradeUtil {
         if (eCouponSn == null) {
             throw new IllegalArgumentException("error while create consume trade: invalid eCouponSn");
         }
+        /*
         if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("error while create consume trade. invalid amount: " + amount);
         }
+        */
 
         TradeBill tradeBill = new TradeBill();
         tradeBill.fromAccount          = AccountUtil.getPlatformIncomingAccount();  //付款方账户为平台收款账户
@@ -176,9 +178,11 @@ public class TradeUtil {
         if (eCouponSn == null) {
             throw new IllegalArgumentException("error while create commission trade: invalid eCouponSn");
         }
+        /*
         if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("error while create commission trade. invalid amount: " + amount);
         }
+        */
 
         TradeBill tradeBill = new TradeBill();
         tradeBill.fromAccount          = AccountUtil.getPlatformIncomingAccount();  //付款方账户为平台收款账户

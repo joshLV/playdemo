@@ -151,12 +151,13 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
 
         Response response = POST("/verified-ecoupon-refunds", getECouponSnParams(ecoupon.eCouponSn));
         assertIsOk(response);
-        
+        assertContentMatch("退款成功:" + ecoupon.eCouponSn, response);
+
         ECoupon e = (ECoupon) renderArgs("ecoupon");
         assertEquals(ecoupon.id, e.id);
         ECoupon checkECoupon = ECoupon.findById(e.id);
         checkECoupon.refresh();
-        assertEquals(ECouponStatus.REFUND, checkECoupon.status);
+        assertEquals(ECouponStatus.UNCONSUMED, checkECoupon.status);
         
         // 检查余额
         Account userAccount = AccountUtil.getAccount(user.id, AccountType.CONSUMER);
@@ -179,17 +180,18 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
 
         Response response = POST("/verified-ecoupon-refunds", getECouponSnParams(ecoupon.eCouponSn));
         assertIsOk(response);
-        
+        assertContentMatch("退款成功:" + ecoupon.eCouponSn, response);
+
         ECoupon e = (ECoupon) renderArgs("ecoupon");
         assertEquals(ecoupon.id, e.id);
         ECoupon checkECoupon = ECoupon.findById(e.id);
         checkECoupon.refresh();
-        assertEquals(ECouponStatus.REFUND, checkECoupon.status);
+        assertEquals(ECouponStatus.UNCONSUMED, checkECoupon.status);
         
         // 检查余额
         // 商户少了oritinPrice
-        Account resalerAccount = AccountUtil.getAccount(resaler.id, AccountType.RESALER);
-        assertEquals(ecoupon.salePrice.setScale(2), resalerAccount.amount.setScale(2));
+//        Account resalerAccount = AccountUtil.getAccount(resaler.id, AccountType.RESALER);
+//        assertEquals(ecoupon.salePrice.setScale(2), resalerAccount.amount.setScale(2));
         supplierAccount.refresh();
         assertEquals(baseAmount.subtract(ecoupon.originalPrice).setScale(2), supplierAccount.amount.setScale(2));
         // 佣金账户少钱
