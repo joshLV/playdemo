@@ -127,7 +127,7 @@
                         #{/elseif}
                         #{elseif resaler.loginName == 'wuba'}
                             #{if favItem.partner==models.order.OuterOrderPartner.WB}
-                                | <a href="/58-add/${favItem.goods.id}">重新发布到58</a>
+                                | <a href="/58-edit/${favItem.goods.id}">修改58信息</a>
                             #{/if}
                             #{else}
                                 | <a href="/58-add/${favItem.goods.id}">发布到58</a>
