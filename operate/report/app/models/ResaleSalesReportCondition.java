@@ -22,8 +22,9 @@ public class ResaleSalesReportCondition {
     private Map<String, Object> paramMap = new HashMap<>();
 
     public String getFilterPaidAt(AccountType type) {
-        StringBuilder condBuilder = new StringBuilder("and r.order.status='PAID' and r.order.userType = :userType and r.goods.isLottery=false");
-
+        StringBuilder condBuilder = new StringBuilder("and r.order.status='PAID' " +
+                "and r.order.userType = :userType " +
+                "and r.goods.isLottery=false");
         paramMap.put("userType", type);
 
         if (beginAt != null) {
@@ -41,7 +42,9 @@ public class ResaleSalesReportCondition {
     }
 
     public String getFilterRealSendAt(AccountType type) {
-        StringBuilder condBuilder = new StringBuilder(" where r.order.status='SENT' and r.order.userType = :userType and r.goods.isLottery=false");
+        StringBuilder condBuilder = new StringBuilder(" where r.order.status='SENT' " +
+                "and r.order.userType = :userType " +
+                "and r.goods.isLottery=false and r.goods.materialType=models.sales.MaterialType.REAL");
 
         paramMap.put("userType", type);
 

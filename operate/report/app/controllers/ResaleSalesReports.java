@@ -35,23 +35,23 @@ public class ResaleSalesReports extends Controller {
         if (condition.accountType == AccountType.RESALER) {
             resultList = ResaleSalesReport.query(condition);
         } else if (condition.accountType == AccountType.CONSUMER) {
-            resultList = ResaleSalesReport.query(condition);
+            resultList = ResaleSalesReport.queryConsumer(condition);
             //            resultList = ResaleSalesReport.queryConsumer(condition);
 
         } else {
             resultList = ResaleSalesReport.query(condition);
-            List<ResaleSalesReport> consumerList = ResaleSalesReport.query(condition);
+            List<ResaleSalesReport> consumerList = ResaleSalesReport.queryConsumer(condition);
             //            List<ResaleSalesReport> consumerList = ResaleSalesReport.queryConsumer(condition);
 
             // 查询出所有结果
             for (ResaleSalesReport resaleSalesReport : consumerList) {
                 resultList.add(resaleSalesReport);
             }
+            System.out.println("resultList>>.1>>>>" + resultList.size());
         }
 
         // 分页
         ValuePaginator<ResaleSalesReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
-
         ResaleSalesReport summary = ResaleSalesReport.summary(resultList);
         render(reportPage, condition, summary);
     }

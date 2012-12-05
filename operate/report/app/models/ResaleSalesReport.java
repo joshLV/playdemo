@@ -103,8 +103,12 @@ public class ResaleSalesReport extends Model {
                 this.userName = order.getResaler().userName;
             }
         }
-
-        this.salePrice = salePrice;
+        if (salePrice != null) {
+            this.salePrice = salePrice;
+        } else {
+            this.salePrice = BigDecimal.ZERO;
+            System.out.println("111111111111111111111111");
+        }
         this.buyNumber = buyNumber;
     }
 
@@ -218,7 +222,7 @@ public class ResaleSalesReport extends Model {
             ResaleSalesReportCondition condition) {
 
         //paidAt ecoupon
-        String sql = "select new models.ResaleSalesReport(r.order,sum(r.salePrice),count(r.buyNumber)) from OrderItems r, ECoupon e  where e.orderItems=r ";
+        String sql = "select new models.ResaleSalesReport(r.order,sum(e.salePrice),count(r.buyNumber)) from OrderItems r, ECoupon e  where e.orderItems=r ";
         String groupBy = " group by r.order.userId";
         Query query = JPA.em()
                 .createQuery(sql + condition.getFilterPaidAt(AccountType.RESALER) + groupBy + " order by sum(r.salePrice) desc");
@@ -238,7 +242,7 @@ public class ResaleSalesReport extends Model {
 
 
         //consumedAt ecoupon
-        sql = "select new models.ResaleSalesReport(sum(r.salePrice),r.order,count(e)) from OrderItems r, ECoupon e where e.orderItems=r";
+        sql = "select new models.ResaleSalesReport(sum(e.salePrice),r.order,count(e)) from OrderItems r, ECoupon e where e.orderItems=r";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterConsumedAt(AccountType.RESALER) + groupBy + " order by sum(r.salePrice) desc");
         for (String param : condition.getParamMap().keySet()) {
@@ -281,13 +285,13 @@ public class ResaleSalesReport extends Model {
             ResaleSalesReport item = map.get(getReportKey(consumedItem));
             if (item == null) {
                 map.put(getReportKey(consumedItem), consumedItem);
+            } else {
+                item.consumedPrice = consumedItem.consumedPrice;
+                item.consumedNumber = consumedItem.consumedNumber;
             }
-            item.consumedPrice = consumedItem.consumedPrice;
-            item.consumedNumber = consumedItem.consumedNumber;
         }
 
         for (ResaleSalesReport refundItem : refundResultList) {
-            System.out.println("refundItem>>" + refundItem);
             ResaleSalesReport item = map.get(getReportKey(refundItem));
             if (item == null) {
                 map.put(getReportKey(refundItem), refundItem);
@@ -314,7 +318,7 @@ public class ResaleSalesReport extends Model {
 
     public static ResaleSalesReport summary(List<ResaleSalesReport> resultList) {
         if (resultList == null || resultList.size() == 0) {
-            return new ResaleSalesReport(0l, BigDecimal.ZERO, BigDecimal.ZERO, 0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO);
+            return new ResaleSalesReport(0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO, 0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO);
         }
         long refundCount = 0l;
         long consumedCount = 0l;
@@ -337,7 +341,10 @@ public class ResaleSalesReport extends Model {
             refundPrice = refundPrice.add(totRefundPrice);
             refundCount += item.refundNumber;
             consumedCount += item.consumedNumber;
-            consumedPrice = consumedPrice.add(item.consumedPrice);
+            System.out.println("item?????????????" + item);
+            if (item.consumedPrice != null) {
+                consumedPrice = consumedPrice.add(item.consumedPrice);
+            }
             shouldGetPrice = amount.subtract(refundPrice);
             haveGetPrice = BigDecimal.ZERO;
         }
@@ -351,48 +358,69 @@ public class ResaleSalesReport extends Model {
      * @return
      */
     public static List<ResaleSalesReport> queryConsumer(ResaleSalesReportCondition condition) {
-        String sql = "select new models.ResaleSalesReport(e.order,sum(e.salePrice),count(e.orderItems.buyNumber)) from ECoupon e ";
-        String groupBy = " group by e.order";
-
+        //paidAt ecoupon
+        String sql = "select new models.ResaleSalesReport(r.order,sum(e.salePrice),count(r.buyNumber)) from OrderItems r, ECoupon e  where e.orderItems=r ";
         Query query = JPA.em()
-                .createQuery(sql + condition.getFilterPaidAt(AccountType.CONSUMER) + groupBy + " order by sum(e.salePrice) desc");
-
+                .createQuery(sql + condition.getFilterPaidAt(AccountType.CONSUMER)  + " order by sum(r.salePrice) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
+        List<ResaleSalesReport> paidResultList = query.getResultList();
 
-        List<ResaleSalesReport> resultList = query.getResultList();
-        long refundCount = 0l;
-        long consumedCount = 0l;
-        BigDecimal consumedPrice = BigDecimal.ZERO;
+        //sendAt real
+        sql = "select new models.ResaleSalesReport(r.order,sum(r.salePrice),count(r.buyNumber)) from OrderItems r ";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterRealSendAt(AccountType.CONSUMER) + " order by sum(r.salePrice) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<ResaleSalesReport> sentRealResultList = query.getResultList();
 
-        long buyCount = 0l;
-        BigDecimal amount = BigDecimal.ZERO;
-        BigDecimal refundPrice = BigDecimal.ZERO;
-        List<ResaleSalesReport> newList = new ArrayList<ResaleSalesReport>();
-        for (ResaleSalesReport item : resultList) {
-            for (ECoupon coupon : item.order.eCoupons) {
-                if (coupon.status == ECouponStatus.REFUND) {
-                    refundCount++;
-                    refundPrice = refundPrice.add(coupon.refundPrice == null ? BigDecimal.ZERO : coupon.refundPrice);
-                } else if (coupon.status == ECouponStatus.CONSUMED) {
-                    consumedCount++;
-                    consumedPrice = consumedPrice.add(coupon.salePrice == null ? BigDecimal.ZERO : coupon.salePrice);
-                }
+
+        //consumedAt ecoupon
+        sql = "select new models.ResaleSalesReport(sum(e.salePrice),r.order,count(e)) from OrderItems r, ECoupon e where e.orderItems=r";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterConsumedAt(AccountType.CONSUMER) + " order by sum(r.salePrice) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<ResaleSalesReport> consumedResultList = query.getResultList();
+
+        //refundAt ecoupon
+        sql = "select new models.ResaleSalesReport(sum(e.refundPrice),count(e),r.order) from OrderItems r, ECoupon e where e.orderItems=r";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterRefundAt(AccountType.CONSUMER)  + " order by sum(e.refundPrice) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<ResaleSalesReport> refundResultList = query.getResultList();
+
+        //refundAt real need to do !!!!!
+        ResaleSalesReport result = null;
+        List<ResaleSalesReport> resultList = new ArrayList<>();
+        if (paidResultList != null && paidResultList.size() > 0) {
+            result = paidResultList.get(0);
+            if (sentRealResultList != null && sentRealResultList.size() > 0) {
+                result.realSalePrice = sentRealResultList.get(0).realSalePrice;
+                result.realBuyNumber = sentRealResultList.get(0).realBuyNumber;
             }
-
-            buyCount += item.buyNumber;
-            amount = amount.add(item.salePrice);
+            if (consumedResultList != null && consumedResultList.size() > 0) {
+                result.consumedPrice = consumedResultList.get(0).consumedPrice;
+                result.consumedNumber = consumedResultList.get(0).consumedNumber;
+            }
+            if (refundResultList != null && refundResultList.size() > 0) {
+                result.refundPrice = refundResultList.get(0).refundPrice;
+                result.refundPrice = refundResultList.get(0).refundPrice;
+            }
+            resultList.add(result);
         }
 
-        newList.add(new ResaleSalesReport(amount, buyCount, refundPrice, refundCount, consumedPrice, consumedCount));
 
-        return newList;
+        return resultList;
     }
 
     private static Long getReportKey(ResaleSalesReport refoundItem) {
         return refoundItem.order.userId;
     }
-
 
 }
