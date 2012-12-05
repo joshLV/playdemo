@@ -72,6 +72,7 @@ public class TaobaoCouponAPI extends Controller {
 
     /**
      * 接收发码通知
+     * 此处只接收、记录请求内容，并立即返回，具体工作由 TaobaoCouponConsumer 来做
      */
     private static void send(Map<String, String> params, Long orderId, OuterOrder outerOrder) {
         //如果找不到该orderCode的订单，说明还没有新建，则新建一个
@@ -96,6 +97,7 @@ public class TaobaoCouponAPI extends Controller {
 
     /**
      * 处理重发请求
+     * 此处只接收、记录请求内容，并立即返回，具体工作由 TaobaoCouponConsumer 来做
      */
     private static void resend(OuterOrder outerOrder) {
         if (outerOrder == null) {
@@ -163,7 +165,6 @@ public class TaobaoCouponAPI extends Controller {
         JsonObject dataJson;
         try{
             dataJson = new JsonParser().parse(data).getAsJsonObject();
-            System.out.println(dataJson.toString());
         }catch (Exception e) {
             Logger.warn("taobao coupon order modify failed: can not parse data as json %s", data);
             renderJSON("{\"code\":504}");
