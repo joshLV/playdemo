@@ -270,6 +270,7 @@ public class WithdrawApproval extends Controller {
         WithdrawAccount withdrawAccount = WithdrawAccount.findByIdAndUser(withdrawAccountId, supplierAccount.uid, SUPPLIER);
         WithdrawBill bill = new WithdrawBill();
         if (withdrawAccount != null) {
+            bill.account = supplierAccount;
             bill.userName = withdrawAccount.userName;
             bill.bankCity = withdrawAccount.bankCity;
             bill.bankName = withdrawAccount.bankName;

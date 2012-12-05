@@ -422,7 +422,11 @@ public class Supplier extends Model {
             return withdrawAmount;
         }
         //预付款已过期
-        if (lastPrepayment.isExpired()) {
+        if (lastPrepayment.expireAt != null && lastPrepayment.expireAt.before(date)) {
+            BigDecimal prepayConsumedAmount = AccountSequence.getVostroAmount(supplierAccount, lastPrepayment.effectiveAt, lastPrepayment.expireAt);
+            if (prepayConsumedAmount.compareTo(lastPrepayment.getBalance()) > 0) {
+                return prepayConsumedAmount.subtract(lastPrepayment.getBalance()).add(AccountSequence.getVostroAmount(supplierAccount, lastPrepayment.expireAt, date));
+            }
             return AccountSequence.getVostroAmount(supplierAccount, lastPrepayment.expireAt, date);
         }
         if (withdrawAmount.compareTo(lastPrepayment.getBalance()) <= 0) {
