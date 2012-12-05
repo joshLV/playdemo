@@ -36,7 +36,6 @@ import static models.accounts.AccountType.SUPPLIER;
  * @author likang
  *         Date: 12-5-7
  */
-
 @With(OperateRbac.class)
 @ActiveNavigation("withdraw_approval_index")
 public class WithdrawApproval extends Controller {
@@ -203,13 +202,14 @@ public class WithdrawApproval extends Controller {
      * 进入结算页面.
      */
     public static void initSettle() {
-        List<Supplier> supplierList = getWithdrawSupplierList();
+        List<Supplier> supplierList = getWithdrawSupplierList(); //获取可结算商户
 
         render("/WithdrawApproval/settle.html", supplierList);
     }
 
     /**
      * 获取可结算商户.
+     * 即可结算
      *
      * @return
      */
@@ -223,7 +223,7 @@ public class WithdrawApproval extends Controller {
             List<WithdrawAccount> withdrawAccountList = WithdrawAccount.findByUser(supplier.id, SUPPLIER);
 
             if (amount.compareTo(BigDecimal.ZERO) > 0 && CollectionUtils.isNotEmpty(withdrawAccountList)) {
-                supplier.otherName += "(账户金额:" + amount + ")";
+                supplier.otherName += "(可结算金额:" + amount + ")";
                 supplierResult.add(supplier);
             }
         }
@@ -237,14 +237,17 @@ public class WithdrawApproval extends Controller {
         List<Supplier> supplierList = getWithdrawSupplierList();
         Account supplierAccount = AccountUtil.getSupplierAccount(supplierId);
         Supplier supplier = Supplier.findById(supplierId);
-        //结算总额
-        BigDecimal amount = supplierAccount.getWithdrawAmount(DateUtil.getBeginOfDay());
-        //单笔预付款金额
-        List<Prepayment> prepayments = Prepayment.getUnclearedPrepayments(supplier.id);
-        BigDecimal prepaymentBalance = prepayments.size() > 0 ? prepayments.get(0).getBalance() : BigDecimal.ZERO;
-        //实际需打款金额
-        BigDecimal needPay = prepaymentBalance.compareTo(amount) >= 0 ? BigDecimal.ZERO : amount.subtract(prepaymentBalance);
-        Long prepaymentId = prepaymentBalance.compareTo(BigDecimal.ZERO) > 0 ? prepayments.get(0).id : null;
+        final Date beginOfToday = DateUtil.getBeginOfDay();
+        //可结算总额
+        BigDecimal amount = supplierAccount.getWithdrawAmount(beginOfToday);
+        //最后一笔未结算预付款
+        Prepayment lastPrepayment = Prepayment.getLastUnclearedPrepayments(supplier.id);
+        //预付款余额
+        BigDecimal prepaymentBalance = lastPrepayment == null ? BigDecimal.ZERO : lastPrepayment.getBalance();
+        //可提现金额（实际需打款金额）
+        BigDecimal needPay = Supplier.getWithdrawAmount(supplierAccount, lastPrepayment, amount, beginOfToday);
+
+        Long prepaymentId = prepaymentBalance.compareTo(BigDecimal.ZERO) > 0 ? lastPrepayment.id : null;
         List<WithdrawAccount> withdrawAccountList = WithdrawAccount.findByUser(supplierId, SUPPLIER);
 
         render("/WithdrawApproval/settle.html", supplierList, supplierId, withdrawDate, amount, supplierAccount,
@@ -267,6 +270,7 @@ public class WithdrawApproval extends Controller {
         WithdrawAccount withdrawAccount = WithdrawAccount.findByIdAndUser(withdrawAccountId, supplierAccount.uid, SUPPLIER);
         WithdrawBill bill = new WithdrawBill();
         if (withdrawAccount != null) {
+            bill.account = supplierAccount;
             bill.userName = withdrawAccount.userName;
             bill.bankCity = withdrawAccount.bankCity;
             bill.bankName = withdrawAccount.bankName;
@@ -278,19 +282,20 @@ public class WithdrawApproval extends Controller {
         Supplier supplier = Supplier.findById(supplierAccount.uid);
         //申请提现
         bill.apply(OperateRbac.currentUser().userName, supplierAccount, supplier.otherName);
-        //审批提现
+
         Prepayment prepayment = null;
         if (prepaymentId != null) {
             prepayment = Prepayment.findById(prepaymentId);
         }
-        int withdrawCount = bill.agree(fee, comment, withdrawDate, prepayment);
+        //结算
+        int withdrawCount = bill.settle(fee, comment, withdrawDate, prepayment);
         if (withdrawCount > 0 && prepaymentId != null) {
             //将结算金额与预付款金额进行绑定
             if (prepayment != null && prepayment.getBalance().compareTo(BigDecimal.ZERO) >= 0) {
-                boolean payAll = Prepayment.pay(prepayment, bill.amount.add(bill.fee));
+                boolean payAll = Prepayment.pay(prepayment, bill.amount, new Date());
             }
             //发送结算通知短信
-            sendWithdrawnSMS(bill, comment, "您的账户中有" + bill.amount + "已结款, 手续费" + bill.fee + "元,请查收.");
+            sendWithdrawnSMS(bill, comment, "您的账户中有" + bill.amount + "已结款, 含转帐手续费" + bill.fee + "元,请查收.");
         }
         index(null);
     }

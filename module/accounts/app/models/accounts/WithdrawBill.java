@@ -1,5 +1,6 @@
 package models.accounts;
 
+import com.uhuila.common.util.DateUtil;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.SerialNumberUtil;
 import models.accounts.util.TradeUtil;
@@ -183,15 +184,75 @@ public class WithdrawBill extends Model {
      * @param fee
      * @param comment
      * @param withdrawDate
+     * @return public int agree(BigDecimal fee, String comment, Date withdrawDate, Prepayment prepayment) {
+    if (agree(fee, comment) && account.accountType == AccountType.SUPPLIER) { //同意提现操作
+    //标记所有详细销售记录为已结算
+    return AccountSequence.withdraw(account, withdrawDate, this, prepayment);
+    }
+    return 0;
+    }
+     */
+
+    /**
+     * 结算操作，返回结算详细记录的笔数.
+     *
+     * @param fee
+     * @param comment
+     * @param withdrawDate
      * @return
      */
-    public int agree(BigDecimal fee, String comment, Date withdrawDate, Prepayment prepayment) {
-        if (agree(fee, comment) && account.accountType == AccountType.SUPPLIER) { //同意提现操作
+    public int settle(BigDecimal fee, String comment, Date withdrawDate, Prepayment prepayment) {
+        if (this.status != WithdrawBillStatus.APPLIED) {
+            Logger.error("the withdraw bill has been processed already");
+            return 0;
+        }
+
+        if (amount.compareTo(prepayment.getBalance()) <= 0) { //可结算金额小于或等于预付款余额时，产生一笔TradeBill，只产生预付款结算记录
+            create2TradeBill(BigDecimal.ZERO, this.amount);
+        } else {
+            //如果预付款已过期
+            if (withdrawDate.after(prepayment.expireAt)) {
+                BigDecimal cashSettledAmount = AccountSequence.getVostroAmount(account, DateUtil.getBeginOfDay(prepayment.expireAt));
+                System.out.println("amount:" + amount);
+                System.out.println("cashSettledAmount:" + cashSettledAmount);
+                System.out.println("prepayment.getBalance():" + prepayment.getBalance());
+                if (cashSettledAmount.compareTo(BigDecimal.ZERO) <= 0) {
+                    create2TradeBill(amount.subtract(prepayment.getBalance()), prepayment.getBalance());
+                } else {
+                    BigDecimal moreAmount = AccountSequence.getVostroAmount(account, prepayment.effectiveAt, prepayment.expireAt);
+                    moreAmount = moreAmount.compareTo(prepayment.getBalance()) > 0 ? moreAmount.subtract(prepayment.getBalance()) : BigDecimal.ZERO;
+                    create2TradeBill(cashSettledAmount.add(moreAmount), amount.subtract(cashSettledAmount).subtract(moreAmount));
+                }
+            } else {
+                //预付款未过期
+                create2TradeBill(amount.subtract(prepayment.getBalance()), prepayment.getBalance());
+            }
+        }
+
+        this.status = WithdrawBillStatus.SUCCESS;
+        this.comment = comment;
+        this.processedAt = new Date();
+        this.fee = fee;
+        this.save();
+
+        if (account.accountType == AccountType.SUPPLIER) { //同意提现操作
             //标记所有详细销售记录为已结算
             return AccountSequence.withdraw(account, withdrawDate, this, prepayment);
         }
         return 0;
     }
+
+    private void create2TradeBill(BigDecimal cashSettledAmount, BigDecimal prepaymentSettledAmount) {
+        if (cashSettledAmount.compareTo(BigDecimal.ZERO) > 0) {
+            TradeBill prepaymentTradeBill = TradeUtil.createWithdrawTrade(this.account, cashSettledAmount);
+            TradeUtil.success(prepaymentTradeBill, "现金结算");
+        }
+        if (prepaymentSettledAmount.compareTo(BigDecimal.ZERO) > 0) {
+            TradeBill cashPayTradeBill = TradeUtil.createWithdrawTrade(this.account, prepaymentSettledAmount);
+            TradeUtil.success(cashPayTradeBill, "预付款结算");
+        }
+    }
+
 
     /**
      * 结算操作，返回结算详细记录的笔数.
@@ -202,7 +263,25 @@ public class WithdrawBill extends Model {
      * @return
      */
     public int agree(BigDecimal fee, String comment, Date withdrawDate) {
-        return agree(fee, comment, withdrawDate, null);
+        if (this.status != WithdrawBillStatus.APPLIED) {
+            Logger.error("the withdraw bill has been processed already");
+            return 0;
+        }
+
+        TradeBill tradeBill = TradeUtil.createWithdrawTrade(this.account, this.amount);
+        TradeUtil.success(tradeBill, "提现成功");
+
+        this.status = WithdrawBillStatus.SUCCESS;
+        this.comment = comment;
+        this.processedAt = new Date();
+        this.fee = fee;
+        this.save();
+
+        if (account.accountType == AccountType.SUPPLIER) { //同意提现操作
+            //标记所有详细销售记录为已结算
+            return AccountSequence.withdraw(account, withdrawDate, this, null);
+        }
+        return 0;
     }
 
     public static JPAExtPaginator<WithdrawBill> findByCondition(

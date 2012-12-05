@@ -1,27 +1,29 @@
 package function;
 
-import controllers.supplier.cas.Security;
-import factory.FactoryBoy;
-import models.admin.SupplierUser;
-import models.sales.Shop;
-import org.junit.Test;
-import play.mvc.Http.Response;
-import play.test.FunctionalTest;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import models.admin.SupplierUser;
+import models.sales.Shop;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import play.mvc.Http.Response;
+import play.test.FunctionalTest;
+import controllers.supplier.cas.Security;
+import factory.FactoryBoy;
+
 public class SupplierUsersTest extends FunctionalTest {
     SupplierUser supplierUser;
 
-    @org.junit.Before
+    @Before
     public void setup() {
         FactoryBoy.deleteAll();
         supplierUser = FactoryBoy.create(SupplierUser.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(supplierUser.loginName);
-
     }
 
     @Test
@@ -62,6 +64,7 @@ public class SupplierUsersTest extends FunctionalTest {
         assertStatus(200, response);
         SupplierUser supplierUser1 = (SupplierUser) renderArgs("supplierUser");
         String roleIds = (String) renderArgs("roleIds");
+        assertNotNull(roleIds);
         List<Shop> shopList = (List<Shop>) renderArgs("shopList");
         assertEquals(supplierUser.loginName, supplierUser1.loginName);
         assertEquals(supplierUser.shop, shopList.get(0));

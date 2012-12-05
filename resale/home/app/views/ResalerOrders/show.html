@@ -28,8 +28,8 @@
                     <th align="center" width="40"><input type="checkbox" name="select_all_checkbox" /></th>
                     <th align="left">商品</th>
                     <th align="left" width="120"><span>收货手机</span></th>
+                    <th align="left" width="120">市场价（元）</th>
                     <th align="left" width="120">分销价（元）</th>
-                    <th align="left" width="120">原价（元）</th>
                     <th align="left" width="120">券号</th>
                     <th align="left" width="120">券状态</th>
                 </tr>
@@ -44,8 +44,8 @@
                 </td>
                 <td valign="middle">${coupon.goods.name}</td>
                 <td valign="middle">${coupon.orderItems.phone}</td>
+                <td valign="middle">${coupon.orderItems.faceValue?.formatCurrency('CNY').raw()}</td>
                 <td valign="middle">${coupon.orderItems.resalerPrice?.formatCurrency('CNY').raw()}</td>
-                <td valign="middle">${coupon.orderItems.originalPrice?.formatCurrency('CNY').raw()}</td>
                 <td valign="middle">${coupon?.getMaskedEcouponSn()}</td>
                 <td valign="middle">&{'coupon.'+coupon.status}</td>
             </tr>

@@ -124,7 +124,10 @@ public class TradeUtil {
 
         return tradeBill.save();
     }
-    
+
+    public static TradeBill createConsumeTrade(String eCouponSn, Account account, BigDecimal amount, Long orderId) {
+        return createConsumeTrade(eCouponSn, account, amount, orderId, false);
+    }
     /**
      * 创建消费交易，
      * 消费者消费成功,资金从平台收款账户转到商户
@@ -134,20 +137,26 @@ public class TradeUtil {
      * @param amount   券的进货价
      * @return 消费交易记录
      */
-    public static TradeBill createConsumeTrade(String eCouponSn, Account account, BigDecimal amount, Long orderId) {
+    public static TradeBill createConsumeTrade(String eCouponSn, Account account, BigDecimal amount, Long orderId, boolean reverse) {
         if (account == null) {
             throw new IllegalArgumentException("error while create consume trade: invalid account");
         }
         if (eCouponSn == null) {
             throw new IllegalArgumentException("error while create consume trade: invalid eCouponSn");
         }
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
+        if (amount == null) {
             throw new IllegalArgumentException("error while create consume trade. invalid amount: " + amount);
         }
 
         TradeBill tradeBill = new TradeBill();
-        tradeBill.fromAccount          = AccountUtil.getPlatformIncomingAccount();  //付款方账户为平台收款账户
-        tradeBill.toAccount            = account;                                   //商户账户
+        if (!reverse){
+            tradeBill.fromAccount          = AccountUtil.getPlatformIncomingAccount();  //付款方账户为平台收款账户
+            tradeBill.toAccount            = account;                                   //商户账户
+        }else {
+            //目前只有已消费退款会发生这样的情况
+            tradeBill.fromAccount          = account;                                   //商户账户
+            tradeBill.toAccount            = AccountUtil.getPlatformIncomingAccount();  //收款方账户为平台收款账户
+        }
         tradeBill.balancePaymentAmount = amount;                                    //全部使用平台收款账户的余额支付
         tradeBill.ebankPaymentAmount   = BigDecimal.ZERO;                           //不使用网银支付
         tradeBill.uncashPaymentAmount  = BigDecimal.ZERO;                           //不使用不可提现余额支付
@@ -160,7 +169,11 @@ public class TradeUtil {
 
         return tradeBill.save();
     }
-    
+
+    public static TradeBill createCommissionTrade(Account account, BigDecimal amount, String eCouponSn, Long orderId){
+        return createCommissionTrade(account, amount, eCouponSn, orderId, false);
+    }
+
     /**
      * 创建佣金交易，消费者消费成功后，将佣金付给平台和一百券
      * 
@@ -169,20 +182,26 @@ public class TradeUtil {
      * @param eCouponSn 对应的电子券号
      * @return 新建立的佣金交易信息
      */
-    public static TradeBill createCommissionTrade(Account account, BigDecimal amount, String eCouponSn, Long orderId){
+    public static TradeBill createCommissionTrade(Account account, BigDecimal amount, String eCouponSn, Long orderId, boolean reverse){
         if (account == null) {
             throw new IllegalArgumentException("error while create commission trade: invalid account");
         }
         if (eCouponSn == null) {
             throw new IllegalArgumentException("error while create commission trade: invalid eCouponSn");
         }
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
+        if (amount == null) {
             throw new IllegalArgumentException("error while create commission trade. invalid amount: " + amount);
         }
 
         TradeBill tradeBill = new TradeBill();
-        tradeBill.fromAccount          = AccountUtil.getPlatformIncomingAccount();  //付款方账户为平台收款账户
-        tradeBill.toAccount            = account;                                   //收款方账户
+        if (!reverse) {
+            tradeBill.fromAccount          = AccountUtil.getPlatformIncomingAccount();  //付款方账户为平台收款账户
+            tradeBill.toAccount            = account;                                   //收款方账户
+        }else {
+            //目前只有已消费退款会发生这样的情况
+            tradeBill.fromAccount          = account;                                   //付款方账户
+            tradeBill.toAccount            = AccountUtil.getPlatformIncomingAccount();  //收款方账户为平台收款账户
+        }
         tradeBill.balancePaymentAmount = amount;                                    //全部使用平台收款账户的余额支付
         tradeBill.ebankPaymentAmount   = BigDecimal.ZERO;                           //不使用网银支付
         tradeBill.uncashPaymentAmount  = BigDecimal.ZERO;                           //不使用不可提现余额支付

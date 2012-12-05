@@ -4,6 +4,7 @@
 package functional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import models.consumer.User;
@@ -52,6 +53,7 @@ public class CartsTest extends FunctionalTest {
         assertStatus(200, response);
         assertContentMatch("一百券 - 购物车", response);
         assertEquals(user, renderArgs("user"));
+        assertEquals(1, ((List<Cart>) renderArgs("carts")).size());
     }
 
     @Test
@@ -107,6 +109,15 @@ public class CartsTest extends FunctionalTest {
         testCart = Cart.find("id=?", cart.id).first();
         assertNull(testCart);
         assertEquals(0, Cart.count());
+
+    }
+
+    @Test
+    public void testTops() {
+        auth();
+        Response response = GET("/carts/tops");
+        assertStatus(200, response);
+        assertEquals(1, renderArgs("count"));
 
     }
 

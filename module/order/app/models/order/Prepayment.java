@@ -67,6 +67,8 @@ public class Prepayment extends Model {
     @Column(name = "settlement_status")
     public SettlementStatus settlementStatus;   //结算状态
 
+    public Boolean warning = false;
+
     public static void update(Long id, Prepayment prepayment, String loginName) {
         Prepayment oldPrepayment = Prepayment.findById(id);
         if (prepayment == null) {
@@ -108,12 +110,13 @@ public class Prepayment extends Model {
         return AccountSequence.countByPrepayment(id) <= 0l;
     }
 
-    public static List<Prepayment> getUnclearedPrepayments(long uid) {
-        return find("supplier.id=? and amount>withdrawAmount order by createdAt", uid).fetch();
+    public static Prepayment getLastUnclearedPrepayments(long uid) {
+        return find("supplier.id=? and settlementStatus=? order by createdAt DESC", uid, SettlementStatus.UNCLEARED).first();
     }
 
-    public static BigDecimal getUnclearedBalance(Long uid) {
-        BigDecimal prepaymentAmount = find("select sum(amount)-sum(withdrawAmount) from Prepayment where supplier.id=? and amount>withdrawAmount", uid).first();
+    public static BigDecimal getUnclearedBalance(long uid) {
+        BigDecimal prepaymentAmount = find("select sum(amount)-sum(withdrawAmount) from Prepayment where supplier.id=? " +
+                "and settlementStatus=? group by supplier", uid, SettlementStatus.UNCLEARED).first();
         return prepaymentAmount == null ? BigDecimal.ZERO : prepaymentAmount;
     }
 
@@ -132,10 +135,11 @@ public class Prepayment extends Model {
      * 修改预付款记录，并返回是否给定的预付款记录支付了全部需要支付的费用
      *
      * @param prepayment
-     * @param amount
+     * @param amount      结算金额
+     * @param settledDate 结算时间
      * @return
      */
-    public static boolean pay(Prepayment prepayment, BigDecimal amount) {
+    public static boolean pay(Prepayment prepayment, BigDecimal amount, Date settledDate) {
         if (amount == null) {
             return true;
         }
@@ -146,7 +150,7 @@ public class Prepayment extends Model {
             return false;
         } else {
             prepayment.withdrawAmount = prepayment.withdrawAmount == null ? amount : prepayment.withdrawAmount.add(amount);
-            if (prepayment.withdrawAmount.compareTo(prepayment.amount) == 0) {
+            if (prepayment.withdrawAmount.compareTo(prepayment.amount) == 0 || (settledDate != null && settledDate.after(prepayment.expireAt))) {
                 prepayment.settlementStatus = SettlementStatus.CLEARED;
             }
             prepayment.save();
@@ -168,4 +172,18 @@ public class Prepayment extends Model {
     public static List<Prepayment> findBySupplier(Supplier supplier) {
         return find("supplier=? and expireAt>? and amount>withdrawAmount and settlementStatus=?", supplier, new Date(), SettlementStatus.UNCLEARED).fetch();
     }
+
+    /**
+     * 获取指定商户的未过期的所有预付款记录.
+     *
+     * @param supplier
+     * @return
+     */
+    public static List<Prepayment> findNotExpiredBySupplier(Supplier supplier) {
+        return Prepayment.find("deleted = ? and expireAt>? and supplier.id=? and warning=false",
+                DeletedStatus.UN_DELETED,
+                new Date(),
+                supplier.id).fetch();
+    }
+
 }
