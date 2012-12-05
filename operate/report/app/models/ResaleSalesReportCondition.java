@@ -22,16 +22,16 @@ public class ResaleSalesReportCondition {
     private Map<String, Object> paramMap = new HashMap<>();
 
     public String getFilterPaidAt(AccountType type) {
-        StringBuilder condBuilder = new StringBuilder(" where e.order.userType = :userType and e.goods.isLottery=false");
+        StringBuilder condBuilder = new StringBuilder(" where (r.order.status='PAID' or r.order.status='SENT') and r.order.userType = :userType and r.goods.isLottery=false");
 
         paramMap.put("userType", type);
 
         if (beginAt != null) {
-            condBuilder.append(" and e.order.paidAt >= :createdAtBegin");
+            condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);
         }
         if (endAt != null) {
-            condBuilder.append(" and e.order.paidAt < :createdAtEnd");
+            condBuilder.append(" and r.order.paidAt < :createdAtEnd");
             paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
         }
 
@@ -41,7 +41,7 @@ public class ResaleSalesReportCondition {
     }
 
     public String getFilterConsumedAt(AccountType type) {
-        StringBuilder condBuilder = new StringBuilder(" where e.order.userType = :userType and e.goods.isLottery=false and e.status = models.order.ECouponStatus.CONSUMED");
+        StringBuilder condBuilder = new StringBuilder(" and r.order.status='PAID' and r.order.userType = :userType and r.goods.isLottery=false and e.status = models.order.ECouponStatus.CONSUMED");
 
         paramMap.put("userType", type);
 
@@ -59,8 +59,8 @@ public class ResaleSalesReportCondition {
         return condBuilder.toString();
     }
 
-    public String getFilterRefundAt(AccountType type) {
-        StringBuilder condBuilder = new StringBuilder(" where e.order.userType = :userType and e.goods.isLottery=false and e.status = models.order.ECouponStatus.REFUND");
+    public String getFilterElectircsRefundAt(AccountType type) {
+        StringBuilder condBuilder = new StringBuilder(" and r.order.status='PAID' and e.order.userType = :userType and e.goods.isLottery=false and e.status = models.order.ECouponStatus.REFUND");
 
         paramMap.put("userType", type);
 
@@ -70,6 +70,25 @@ public class ResaleSalesReportCondition {
         }
         if (endAt != null) {
             condBuilder.append(" and e.refundAt < :createdAtEnd");
+            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
+        }
+
+
+        System.out.println("condBuilder.toString():" + condBuilder.toString());
+        return condBuilder.toString();
+    }
+
+    public String getFilterRealRefundAt(AccountType type) {
+        StringBuilder condBuilder = new StringBuilder(" where r.order.status='SENT' and r.order.userType = :userType and r.goods.isLottery=false");
+
+        paramMap.put("userType", type);
+
+        if (beginAt != null) {
+            condBuilder.append(" and r.order.refundAt >= :createdAtBegin");
+            paramMap.put("createdAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and r.order.refundAt < :createdAtEnd");
             paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
         }
 

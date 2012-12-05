@@ -149,33 +149,61 @@ public class ResaleSalesReport extends Model {
             ResaleSalesReportCondition condition) {
 
         //paidAt
-        String sql = "select new models.ResaleSalesReport(e.order,sum(e.salePrice),count(e.orderItems.buyNumber)) from ECoupon e ";
-        String groupBy = " group by e.order.userId";
+        String sql = "select new models.ResaleSalesReport(r.order,sum(r.salePrice),count(r.buyNumber)) from OrderItems r ";
+        String groupBy = " group by r.order.userId";
         Query query = JPA.em()
-                .createQuery(sql + condition.getFilterPaidAt(AccountType.RESALER) + groupBy + " order by sum(e.salePrice) desc");
+                .createQuery(sql + condition.getFilterPaidAt(AccountType.RESALER) + groupBy + " order by sum(r.salePrice) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<ResaleSalesReport> paidResultList = query.getResultList();
 
         //consumedAt
-        sql = "select new models.ResaleSalesReport(sum(e.salePrice),e.order,count(e)) from ECoupon e ";
+        sql = "select new models.ResaleSalesReport(sum(r.salePrice),r.order,count(e)) from OrderItems r, ECoupon e where e.orderItems=r";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterConsumedAt(AccountType.RESALER) + groupBy + " order by sum(e.salePrice) desc");
+                .createQuery(sql + condition.getFilterConsumedAt(AccountType.RESALER) + groupBy + " order by sum(r.salePrice) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<ResaleSalesReport> consumedResultList = query.getResultList();
 
-        sql = "select new models.ResaleSalesReport(sum(e.refundPrice),count(e),e.order) from ECoupon e ";
+        //paidAt Electrics
+        sql = "select new models.ResaleSalesReport(sum(e.refundPrice),count(e),e.order) from OrderItems r, ECoupon e where e.orderItems=r";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundAt(AccountType.RESALER) + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilterElectircsRefundAt(AccountType.RESALER) + groupBy + " order by sum(e.refundPrice) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<ResaleSalesReport> refundResultList = query.getResultList();
 
+        //Real
+        sql = "select new models.ResaleSalesReport(sum(r.faceValue),count(r),r.order) from OrderItems r";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterRealRefundAt(AccountType.RESALER) + groupBy + " order by sum(r.faceValue) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<ResaleSalesReport> refundRealResultList = query.getResultList();
+
+
         Map<Long, ResaleSalesReport> map = new HashMap<>();
+
+        //merge refund between electrics and real
+        for (ResaleSalesReport refundItem : refundResultList) {
+            map.put(getReportKey(refundItem), refundItem);
+        }
+
+        for (ResaleSalesReport refundItem : refundRealResultList) {
+            ResaleSalesReport item = map.get(getReportKey(refundItem));
+            if (item == null) {
+                map.put(getReportKey(refundItem), refundItem);
+            }
+            item.refundPrice = item.refundPrice.add(refundItem.refundPrice);
+            item.refundNumber = item.refundNumber + refundItem.refundNumber;
+        }
+
+
+        //merge 3
 
         for (ResaleSalesReport paidItem : paidResultList) {
             map.put(getReportKey(paidItem), paidItem);
