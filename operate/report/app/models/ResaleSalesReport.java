@@ -20,7 +20,7 @@ import java.util.*;
  */
 @Entity
 @Table(name = "resale_sales_report")
-public class ResaleSalesReport extends Model {
+public class ResaleSalesReport {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = true)
@@ -30,26 +30,48 @@ public class ResaleSalesReport extends Model {
     /**
      * 售出券数
      */
-    public long buyNumber;
+    public long buyNumber = 0l;
 
     /**
      * 退款券数
      */
     public long refundNumber = 0l;
+
+    /**
+     * 售出实物数
+     */
+    public long realBuyNumber = 0l;
+
+    /**
+     * 退款实物数
+     */
+    public long realRefundNumber = 0l;
+
+
+    /**
+     * 售出券金额
+     */
+    public BigDecimal salePrice = BigDecimal.ZERO;
+
+    /**
+     * 退款券金额
+     */
+    public BigDecimal refundPrice = BigDecimal.ZERO;
+
+    /**
+     * 售出实物金额
+     */
+    public BigDecimal realSalePrice = BigDecimal.ZERO;
+
+    /**
+     * 退款实物金额
+     */
+    public BigDecimal realRefundPrice = BigDecimal.ZERO;
+
     /**
      * 消费券数
      */
     public long consumedNumber = 0l;
-
-    /**
-     * 售出金额
-     */
-    public BigDecimal salePrice;
-
-    /**
-     * 退款金额
-     */
-    public BigDecimal refundPrice = BigDecimal.ZERO;
 
     /**
      * 消费金额
@@ -84,6 +106,21 @@ public class ResaleSalesReport extends Model {
         this.buyNumber = buyNumber;
     }
 
+    public ResaleSalesReport(Order order, Long buyNumber, BigDecimal salePrice) {
+        this.order = order;
+        if (order != null) {
+            if (order.userType == AccountType.CONSUMER) {
+                this.loginName = "一百券";
+            } else {
+                this.loginName = order.getResaler().loginName;
+                this.userName = order.getResaler().userName;
+            }
+        }
+
+        this.realSalePrice = salePrice;
+        this.realBuyNumber = buyNumber;
+    }
+
 
     public ResaleSalesReport(BigDecimal consumedPrice, Order order, Long consumedNumber) {
         this.order = order;
@@ -113,6 +150,21 @@ public class ResaleSalesReport extends Model {
 
         this.refundPrice = refundPrice;
         this.refundNumber = refundNumber;
+    }
+
+    public ResaleSalesReport(Long refundNumber, BigDecimal refundPrice, Order order) {
+        this.order = order;
+        if (order != null) {
+            if (order.userType == AccountType.CONSUMER) {
+                this.loginName = "一百券";
+            } else {
+                this.loginName = order.getResaler().loginName;
+                this.userName = order.getResaler().userName;
+            }
+        }
+
+        this.realRefundPrice = refundPrice;
+        this.realRefundNumber = refundNumber;
     }
 
 
