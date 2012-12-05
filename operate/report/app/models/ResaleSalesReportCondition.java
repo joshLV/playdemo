@@ -22,7 +22,7 @@ public class ResaleSalesReportCondition {
     private Map<String, Object> paramMap = new HashMap<>();
 
     public String getFilterPaidAt(AccountType type) {
-        StringBuilder condBuilder = new StringBuilder(" where (r.order.status='PAID' or r.order.status='SENT') and r.order.userType = :userType and r.goods.isLottery=false");
+        StringBuilder condBuilder = new StringBuilder("and r.order.status='PAID' and r.order.userType = :userType and r.goods.isLottery=false");
 
         paramMap.put("userType", type);
 
@@ -39,6 +39,26 @@ public class ResaleSalesReportCondition {
         System.out.println("condBuilder.toString():" + condBuilder.toString());
         return condBuilder.toString();
     }
+
+    public String getFilterRealSendAt(AccountType type) {
+        StringBuilder condBuilder = new StringBuilder(" where r.order.status='SENT' and r.order.userType = :userType and r.goods.isLottery=false");
+
+        paramMap.put("userType", type);
+
+        if (beginAt != null) {
+            condBuilder.append(" and r.sendAt >= :createdAtBegin");
+            paramMap.put("createdAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and r.sendAt < :createdAtEnd");
+            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
+        }
+
+
+        System.out.println("condBuilder.toString():" + condBuilder.toString());
+        return condBuilder.toString();
+    }
+
 
     public String getFilterConsumedAt(AccountType type) {
         StringBuilder condBuilder = new StringBuilder(" and r.order.status='PAID' and r.order.userType = :userType and r.goods.isLottery=false and e.status = models.order.ECouponStatus.CONSUMED");
@@ -59,7 +79,7 @@ public class ResaleSalesReportCondition {
         return condBuilder.toString();
     }
 
-    public String getFilterElectircsRefundAt(AccountType type) {
+    public String getFilterRefundAt(AccountType type) {
         StringBuilder condBuilder = new StringBuilder(" and r.order.status='PAID' and e.order.userType = :userType and e.goods.isLottery=false and e.status = models.order.ECouponStatus.REFUND");
 
         paramMap.put("userType", type);

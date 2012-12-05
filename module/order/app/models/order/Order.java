@@ -166,6 +166,7 @@ public class Order extends Model {
     @Column(name = "paid_at")
     public Date paidAt;
 
+
     @Column(name = "refund_at")
     public Date refundAt;
 
@@ -721,7 +722,7 @@ public class Order extends Model {
                 continue;
             }
             //如果不是电子券，跳过
-            if (MaterialType.ELECTRONIC  == goods.materialType) {
+            if (MaterialType.ELECTRONIC == goods.materialType) {
                 //唐力群同学来认领这个对象
                 List<String> couponCodes = new ArrayList<>();
                 for (int i = 0; i < orderItem.buyNumber; i++) {
@@ -732,11 +733,11 @@ public class Order extends Model {
                     couponCodes.add(eCoupon.getMaskedEcouponSn());
 
                     //抽奖商品不发短信邮件等提示
-                    if(goods.isLottery != null && goods.isLottery) {
+                    if (goods.isLottery != null && goods.isLottery) {
                         continue;
                     }
                     //京东的不发短信邮件等提示，因为等会儿京东会再次主动通知我们发短信
-                    if(AccountType.RESALER.equals(orderItem.order.userType)
+                    if (AccountType.RESALER.equals(orderItem.order.userType)
                             && orderItem.order.getResaler().loginName.equals(Resaler.JD_LOGIN_NAME)) {
                         continue;
                     }
@@ -806,7 +807,7 @@ public class Order extends Model {
     /**
      * 当订单金额大于一定额度时，如果用户有留言，提醒运营人员
      */
-    private void remindBigOrderRemark(){
+    private void remindBigOrderRemark() {
         if (StringUtils.isBlank(remark)
                 || amount.compareTo(new BigDecimal("300.00")) < 0) {
             return;
@@ -1046,6 +1047,7 @@ public class Order extends Model {
         for (OrderItems orderItem : order.orderItems) {
             if (MaterialType.REAL.equals(orderItem.goods.materialType)) {
                 orderItem.status = OrderStatus.SENT;
+                orderItem.sendAt = new Date();
                 orderItem.save();
             }
         }
