@@ -1,17 +1,16 @@
 package models.job;
 
-import com.uhuila.common.constants.DeletedStatus;
-import models.accounts.WithdrawBill;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
+import models.order.ECoupon;
 import models.order.Prepayment;
 import models.supplier.Supplier;
 import play.Play;
 import play.jobs.Job;
 import play.jobs.On;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,12 +22,12 @@ import java.util.List;
  */
 @On("0 0 12 * * ?")
 public class PrepaymentNotice extends Job {
-    private static String[] NOTIFICATION_EMAILS = Play.configuration.getProperty("withdraw_notification.email.receiver", "jingyue.gong@seewi.com.cn").split(",");
+    private static String[] NOTIFICATION_EMAILS = Play.configuration.getProperty("prepayment_notification.email.receiver", "tangliqun@uhuila.com,sujie@uhuila.com").split(",");
 
     /**
-     * 在预付款余额少于10%时给财务发邮件预警
-     *
-     * 邮件内容：[商户名]预付款余额(总额-已消费)已少于10%。[该商户预付款金额明细url]
+     * 在可用预付款少于10%时给财务发邮件预警
+     * <p/>
+     * 邮件内容：[商户名]可用预付款(总额-已消费)已少于10%。[该商户预付款金额明细url]
      *
      * @throws ParseException
      */
@@ -36,26 +35,33 @@ public class PrepaymentNotice extends Job {
     public void doJob() throws ParseException {
         List<Supplier> suppliers = Supplier.findUnDeleted();
         for (Supplier supplier : suppliers) {
-            List<Prepayment> prepayments = Prepayment.find("deleted = ? and expireAt>? and supplier.id=?",
-                    DeletedStatus.UN_DELETED,
-                    new Date(),
-                    supplier.id).fetch();
-
-
+            List<Prepayment> prepayments = Prepayment.findNotExpiredBySupplier(supplier);
+            for (Prepayment prepayment : prepayments) {
+                BigDecimal consumedAmount = ECoupon.getConsumedAmount(prepayment);  //已消费
+                BigDecimal availableBalance = prepayment.amount.subtract(consumedAmount);    //可用预付款
+                if (availableBalance.compareTo(prepayment.amount.divide(BigDecimal.TEN)) < 0) {
+                    sendNotification(prepayment, consumedAmount, availableBalance);
+                    prepayment.warning = true;
+                    prepayment.save();
+                }
+            }
         }
     }
 
-    private static void sendNotification(WithdrawBill withdrawBill) {
+    private static void sendNotification(Prepayment prepayment, BigDecimal consumedAmount, BigDecimal balance) {
         // 发邮件
         MailMessage message = new MailMessage();
         message.addRecipient(NOTIFICATION_EMAILS);
         message.setFrom("yibaiquan <noreplay@uhuila.com>");
-        message.setSubject("预付款余额已少于10%");
-        message.putParam("applier", withdrawBill.applier);
-        message.putParam("amount", withdrawBill.amount);
-        message.putParam("withdraw", withdrawBill.id);
-        message.setTemplate("withdraw");
+        message.setSubject("可用预付款已少于10%");
+        message.putParam("prepaymentId", prepayment.id);
+        message.putParam("supplier", prepayment.supplier.otherName);
+        message.putParam("effectiveAt", prepayment.effectiveAt);
+        message.putParam("expireAt", prepayment.expireAt);
+        message.putParam("amount", prepayment.amount);
+        message.putParam("consumed", consumedAmount);
+        message.putParam("balance", balance);
+        message.setTemplate("prepayment");
         MailUtil.sendPrepaymentNoticeMail(message);
     }
-
 }
