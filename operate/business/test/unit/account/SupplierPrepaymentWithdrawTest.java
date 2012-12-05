@@ -1,6 +1,5 @@
 package unit.account;
 
-import static models.accounts.AccountType.SUPPLIER;
 import static util.DateHelper.afterDays;
 import static util.DateHelper.afterMinuts;
 import static util.DateHelper.beforeDays;
@@ -18,6 +17,7 @@ import models.accounts.WithdrawAccount;
 import models.accounts.WithdrawBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
+import models.admin.OperateUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;
@@ -48,6 +48,7 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
     Goods goods;
     Account supplierAccount;
     WithdrawAccount withdrawAccount;
+    OperateUser operateUser;
     
     @Before
     public void setUp() {
@@ -65,6 +66,7 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
         Account incomingAccount = AccountUtil.getPlatformIncomingAccount();
         incomingAccount.amount = new BigDecimal(10000);
         incomingAccount.save();
+        operateUser = FactoryBoy.create(OperateUser.class);
     }
 
     @Test
@@ -134,65 +136,157 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
     }
 
     @Test
-    public void 预付款未完成消费_有效期后结算() {
-        创建预付款(beforeDays(20), beforeDays(10), new BigDecimal(100));
+    public void 预付款足额消费_有效期后结算() {
+        Prepayment prepayment = 创建预付款(beforeDays(20), beforeDays(10), new BigDecimal(100));
         assertBigDecimalEquals(BigDecimal.ZERO, 账户余额());
         assertBigDecimalEquals(BigDecimal.ZERO, 可提现金额(beforeDays(19)));
         assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
 
-        产生一笔20元消费记录(beforeDays(18));  // 20元
-        assertBigDecimalEquals(new BigDecimal(20), 账户余额());
-        assertBigDecimalEquals(BigDecimal.ZERO, 可提现金额(beforeDays(17)));
-        assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
-
-        产生一笔20元消费记录(beforeDays(16));  // 40元
-        assertBigDecimalEquals(new BigDecimal(40), 账户余额());
-        assertBigDecimalEquals(BigDecimal.ZERO, 可提现金额(beforeDays(15)));
-        assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
-
-        产生一笔20元消费记录(beforeDays(14));  //  60元
-
-        // 过截止期未消费完成
-        产生一笔20元消费记录(beforeDays(8));  // 80元
-        assertBigDecimalEquals(new BigDecimal(80), 账户余额());
-        assertBigDecimalEquals(new BigDecimal(20), 可提现金额(beforeDays(7)));
-        assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
-
-        产生一笔20元消费记录(beforeDays(6));   // 100元
+        产生多笔20元消费记录(beforeDays(18), 5);  // 100元
         assertBigDecimalEquals(new BigDecimal(100), 账户余额());
-        assertBigDecimalEquals(new BigDecimal(40), 可提现金额(beforeDays(5)));
+        assertBigDecimalEquals(new BigDecimal(100), 可结算余额(beforeDays(7)));
+        assertBigDecimalEquals(new BigDecimal(0), 可提现金额(beforeDays(7)));
         assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
+
+        结算预付款(prepayment, new BigDecimal(100), beforeDays(2));
+        assertBigDecimalEquals(new BigDecimal(0), 现金结算款(beforeDays(2)));
+        assertBigDecimalEquals(new BigDecimal(0), 账户余额());
+        assertBigDecimalEquals(new BigDecimal(0), 可提现金额(beforeDays(1)));
+        assertBigDecimalEquals(new BigDecimal(0), 预付款余额());
+    }
+    
+    @Test
+    public void 预付款超额消费_有效期后结算() {
+        Prepayment prepayment = 创建预付款(beforeDays(20), beforeDays(10), new BigDecimal(100));
+        assertBigDecimalEquals(BigDecimal.ZERO, 账户余额());
+        assertBigDecimalEquals(BigDecimal.ZERO, 可提现金额(beforeDays(19)));
+        assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
+
+        产生多笔20元消费记录(beforeDays(18), 6);  // 120元
+        assertBigDecimalEquals(new BigDecimal(120), 账户余额());
+        assertBigDecimalEquals(new BigDecimal(120), 可结算余额(beforeDays(7)));
+        assertBigDecimalEquals(new BigDecimal(0), 可提现金额(beforeDays(7)));
+        assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
+
+        // 未消费完，结算80元
+        结算预付款(prepayment, new BigDecimal(120), beforeDays(2));
+        assertBigDecimalEquals(new BigDecimal(20), 现金结算款(beforeDays(2)));
+        assertBigDecimalEquals(new BigDecimal(0), 账户余额());
+        assertBigDecimalEquals(new BigDecimal(0), 可提现金额(beforeDays(1)));
+        assertBigDecimalEquals(new BigDecimal(0), 预付款余额());
     }
 
     @Test
-    public void 预付款未完成消费_有效期内结算() {
-        创建预付款(beforeDays(20), beforeDays(10), new BigDecimal(100));
+    public void 预付款未完成消费_有效期后结算() {
+        Prepayment prepayment = 创建预付款(beforeDays(20), beforeDays(10), new BigDecimal(100));
         assertBigDecimalEquals(BigDecimal.ZERO, 账户余额());
         assertBigDecimalEquals(BigDecimal.ZERO, 可提现金额(beforeDays(19)));
         assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
 
-        产生一笔20元消费记录(beforeDays(18));  // 20元
-        assertBigDecimalEquals(new BigDecimal(20), 账户余额());
-        assertBigDecimalEquals(BigDecimal.ZERO, 可提现金额(beforeDays(17)));
-        assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
-
-        产生一笔20元消费记录(beforeDays(16));  // 40元
-        assertBigDecimalEquals(new BigDecimal(40), 账户余额());
-        assertBigDecimalEquals(BigDecimal.ZERO, 可提现金额(beforeDays(15)));
-        assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
-
-        产生一笔20元消费记录(beforeDays(14));  //  60元
-
-        // 过截止期未消费完成
-        产生一笔20元消费记录(beforeDays(8));  // 80元
+        产生多笔20元消费记录(beforeDays(18), 4);  // 80元
         assertBigDecimalEquals(new BigDecimal(80), 账户余额());
+        assertBigDecimalEquals(new BigDecimal(80), 可结算余额(beforeDays(7)));
+        assertBigDecimalEquals(new BigDecimal(0), 可提现金额(beforeDays(7)));
+        assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
+
+        // 未消费完，结算80元
+        结算预付款(prepayment, new BigDecimal(80), beforeDays(2));
+        assertBigDecimalEquals(new BigDecimal(0), 现金结算款(beforeDays(2)));
+        assertBigDecimalEquals(new BigDecimal(0), 账户余额());
+        assertBigDecimalEquals(new BigDecimal(0), 可提现金额(beforeDays(1)));
+        assertBigDecimalEquals(new BigDecimal(0), 预付款余额());
+        
+    }
+
+    @Test
+    public void 预付款超额消费_有效期后产生消费再结算() {
+        Prepayment prepayment = 创建预付款(beforeDays(20), beforeDays(10), new BigDecimal(100));
+        assertBigDecimalEquals(BigDecimal.ZERO, 账户余额());
+        assertBigDecimalEquals(new BigDecimal(0), 可结算余额(beforeDays(7)));
+        assertBigDecimalEquals(BigDecimal.ZERO, 可提现金额(beforeDays(19)));
+        assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
+
+        产生多笔20元消费记录(beforeDays(18), 6);  // 120元
+        assertBigDecimalEquals(new BigDecimal(120), 账户余额());
+        assertBigDecimalEquals(new BigDecimal(120), 可结算余额(beforeDays(7)));
         assertBigDecimalEquals(new BigDecimal(20), 可提现金额(beforeDays(7)));
         assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
 
-        产生一笔20元消费记录(beforeDays(6));   // 100元
-        assertBigDecimalEquals(new BigDecimal(100), 账户余额());
-        assertBigDecimalEquals(new BigDecimal(40), 可提现金额(beforeDays(5)));
+        // 过有效期后消费40元
+        产生多笔20元消费记录(beforeDays(5), 2);  // 160元
+        assertBigDecimalEquals(new BigDecimal(160), 账户余额());
+        assertBigDecimalEquals(new BigDecimal(160), 可结算余额(beforeDays(7)));
+        assertBigDecimalEquals(new BigDecimal(60), 可提现金额(beforeDays(7)));
         assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
+        
+        // 未消费完，结算得现金40元
+        结算预付款(prepayment, new BigDecimal(160), beforeDays(2));
+        assertBigDecimalEquals(new BigDecimal(60), 现金结算款(beforeDays(2)));
+        assertBigDecimalEquals(new BigDecimal(0), 账户余额());
+        assertBigDecimalEquals(new BigDecimal(0), 可提现金额(beforeDays(1)));
+        assertBigDecimalEquals(new BigDecimal(0), 预付款余额());
+    }
+    
+    
+    @Test
+    public void 预付款未完成消费_有效期后产生消费再结算() {
+        Prepayment prepayment = 创建预付款(beforeDays(20), beforeDays(10), new BigDecimal(100));
+        assertBigDecimalEquals(BigDecimal.ZERO, 账户余额());
+        assertBigDecimalEquals(new BigDecimal(0), 可结算余额(beforeDays(7)));
+        assertBigDecimalEquals(BigDecimal.ZERO, 可提现金额(beforeDays(19)));
+        assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
+
+        产生多笔20元消费记录(beforeDays(18), 4);  // 80元
+        assertBigDecimalEquals(new BigDecimal(80), 账户余额());
+        assertBigDecimalEquals(new BigDecimal(80), 可结算余额(beforeDays(7)));
+        assertBigDecimalEquals(new BigDecimal(0), 可提现金额(beforeDays(7)));
+        assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
+
+        // 过有效期后消费40元
+        产生多笔20元消费记录(beforeDays(5), 2);  // 40元
+        assertBigDecimalEquals(new BigDecimal(120), 账户余额());
+        assertBigDecimalEquals(new BigDecimal(120), 可结算余额(beforeDays(7)));
+        assertBigDecimalEquals(new BigDecimal(40), 可提现金额(beforeDays(7)));
+        assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
+        
+        // 未消费完，结算得现金40元
+        结算预付款(prepayment, new BigDecimal(120), beforeDays(2));
+        assertBigDecimalEquals(new BigDecimal(40), 现金结算款(beforeDays(2)));
+        assertBigDecimalEquals(new BigDecimal(0), 账户余额());
+        assertBigDecimalEquals(new BigDecimal(0), 可提现金额(beforeDays(1)));
+        assertBigDecimalEquals(new BigDecimal(0), 预付款余额());
+    }
+    
+    @Test
+    public void 预付款未完成消费_有效期内结算() {
+        Prepayment prepayment = 创建预付款(beforeDays(20), beforeDays(10), new BigDecimal(200));
+        assertBigDecimalEquals(BigDecimal.ZERO, 账户余额());
+        assertBigDecimalEquals(BigDecimal.ZERO, 可提现金额(beforeDays(19)));
+        assertBigDecimalEquals(new BigDecimal(200), 预付款余额());
+
+        产生多笔20元消费记录(beforeDays(18), 4);  // 80元
+        assertBigDecimalEquals(new BigDecimal(80), 账户余额());
+        assertBigDecimalEquals(new BigDecimal(0), 可提现金额(beforeDays(12)));
+        assertBigDecimalEquals(new BigDecimal(200), 预付款余额());
+
+        // 未消费完，有效期内只能结算0元，结算80元
+        结算预付款(prepayment, new BigDecimal(80), beforeDays(17));
+        assertBigDecimalEquals(new BigDecimal(0), 现金结算款(beforeDays(17)));
+        assertBigDecimalEquals(new BigDecimal(0), 账户余额());
+        assertBigDecimalEquals(new BigDecimal(0), 可提现金额(beforeDays(17)));
+        assertBigDecimalEquals(new BigDecimal(120), 预付款余额());
+
+        产生多笔20元消费记录(beforeDays(15), 3);  // 80元
+        assertBigDecimalEquals(new BigDecimal(60), 账户余额());
+        assertBigDecimalEquals(new BigDecimal(0), 可提现金额(beforeDays(15)));
+        assertBigDecimalEquals(new BigDecimal(120), 预付款余额());
+
+        // 未消费完，结算60元
+        结算预付款(prepayment, new BigDecimal(60), beforeDays(12));
+        assertBigDecimalEquals(new BigDecimal(0), 现金结算款(beforeDays(12)));
+        assertBigDecimalEquals(new BigDecimal(0), 账户余额());
+        assertBigDecimalEquals(new BigDecimal(0), 可提现金额(beforeDays(11)));
+        assertBigDecimalEquals(new BigDecimal(60), 预付款余额());
     }
 
 
@@ -215,6 +309,11 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
         Prepayment lastPrepayment = Prepayment.getLastUnclearedPrepayments(supplier.id);
         return lastPrepayment == null ? BigDecimal.ZERO : lastPrepayment.getBalance();
     }
+    
+    private BigDecimal 现金结算款(Date date) {
+        AccountSequence accountSequence = AccountSequence.find("account=? and remark=? and createdAt>? order by createdAt desc", supplierAccount, "现金结算", DateUtil.getBeginOfDay(date)).first();
+        return accountSequence == null ? BigDecimal.ZERO : accountSequence.changeAmount.abs();
+    }
 
     private void 结算预付款(Prepayment prepayment, BigDecimal amount, Date withdrawDate) {
         BigDecimal fee = BigDecimal.ZERO;
@@ -232,7 +331,7 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
         bill.fee = fee == null ? BigDecimal.ZERO : fee;
         Supplier supplier = Supplier.findById(supplierAccount.uid);
         //申请提现
-        bill.apply(OperateRbac.currentUser().userName, supplierAccount, supplier.otherName);
+        bill.apply(operateUser.userName, supplierAccount, supplier.otherName);
 
         //结算
         int withdrawCount = bill.settle(fee, "通过提现", withdrawDate, prepayment);
