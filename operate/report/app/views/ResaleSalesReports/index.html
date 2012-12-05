@@ -128,12 +128,12 @@
     <th width="10px">序号</th>
     <th width="80px">渠道来源</th>
     <th width="70px">帐号</th>
-    <th width="200px">售出券数量/售出金额</th>
-    <th width="200px">售出实物数量/售出金额</th>
-    <th width="100px">消费券数量</th>
-    <th width="100px">消费金额</th>
-    <th width="180px">退款券数量/退款金额</th>
-    <th width="180px">退款实物数量/退款金额</th>
+    <th width="200px">售出券数量/金额</th>
+    <th width="200px">售出实物数量/金额</th>
+
+    <th width="180px">退款券数量/金额</th>
+    <th width="180px">退款实物数量/金额</th>
+    <th width="200px">消费券数量/金额</th>
     </thead>
 #{set i:0/}
 %{
@@ -162,13 +162,8 @@
         <td>
         ${report?.realBuyNumber} / ${report?.realSalePrice?.formatCurrency('CNY')}
         </td>
-        <td>
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
-               target="_blank">${report?.consumedNumber}</a></td>
-        <td>
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
-               target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}</a>
-        </td>
+
+
         <td>
             <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
                target="_blank">${report?.refundNumber}</a>
@@ -177,6 +172,13 @@
                target="_blank">${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}</a>
         </td>
         <td>
+        </td>
+        <td>
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
+               target="_blank">${report?.consumedNumber}</a>
+            /
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
+               target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
         </td>
 
     </tr>
@@ -192,12 +194,8 @@
         </td>
         <td>     ${summary?.realTotalNumber} / ${summary?.realAmount?.formatCurrency("CNY")}
         </td>
-        <td>
-            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
-               target="_blank">${summary?.consumedNumber}</a></td>
-        <td>
-            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
-               target="_blank">${summary?.consumedPrice?.formatCurrency("CNY")}</a></td>
+
+
         <td>
             <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
                target="_blank">${summary?.refundNumber}</a>
@@ -206,6 +204,13 @@
                target="_blank">${summary?.totalRefundPrice?.formatCurrency('CNY')}</a>
         </td>
         <td>
+        </td>
+        <td>
+            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
+               target="_blank">${summary?.consumedNumber}</a>
+            /
+            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
+               target="_blank">${summary?.consumedPrice?.formatCurrency("CNY")}</a>
         </td>
 
     </tr>

@@ -361,7 +361,7 @@ public class ResaleSalesReport extends Model {
         //paidAt ecoupon
         String sql = "select new models.ResaleSalesReport(r.order,sum(e.salePrice),count(r.buyNumber)) from OrderItems r, ECoupon e  where e.orderItems=r ";
         Query query = JPA.em()
-                .createQuery(sql + condition.getFilterPaidAt(AccountType.CONSUMER)  + " order by sum(r.salePrice) desc");
+                .createQuery(sql + condition.getFilterPaidAt(AccountType.CONSUMER) + " order by sum(r.salePrice) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
@@ -389,7 +389,7 @@ public class ResaleSalesReport extends Model {
         //refundAt ecoupon
         sql = "select new models.ResaleSalesReport(sum(e.refundPrice),count(e),r.order) from OrderItems r, ECoupon e where e.orderItems=r";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundAt(AccountType.CONSUMER)  + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilterRefundAt(AccountType.CONSUMER) + " order by sum(e.refundPrice) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
