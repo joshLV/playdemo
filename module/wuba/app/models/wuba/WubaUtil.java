@@ -8,6 +8,8 @@ import play.Play;
 import play.exceptions.UnexpectedException;
 import play.libs.Codec;
 import play.libs.WS;
+import util.ws.WebServiceClient;
+import util.ws.WebServiceClientFactory;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -46,6 +48,12 @@ public class WubaUtil {
         return false;
     }
 
+    /**
+     * 返回指定goodsId的状态.
+     */
+    public static void getStatus() {
+        
+    }
 
     public static JsonObject sendRequest(Map<String,Object> appParams, String method){
         return sendRequest(appParams, method, true);
@@ -72,7 +80,13 @@ public class WubaUtil {
         }
 
         Logger.info("wuba request: \n%s", new Gson().toJson(params));
-        String json = WS.url(GATEWAY_URL).params(params).post().getString();
+
+        WebServiceClient client = WebServiceClientFactory
+                        .getClientHelper();
+
+        String json = client.postString("58_" + method,
+                        GATEWAY_URL, params, "58");
+
         Logger.info("wuba response: \n%s", json);
 
         JsonObject result = parseResponse(json);

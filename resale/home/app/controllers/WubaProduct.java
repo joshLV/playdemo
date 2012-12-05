@@ -1,13 +1,13 @@
 package controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-import controllers.modules.resale.cas.SecureCAS;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
@@ -17,17 +17,21 @@ import models.sales.GoodsThirdSupport;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import models.wuba.WubaUtil;
+
 import org.apache.commons.lang.StringUtils;
+
 import play.mvc.Controller;
 import play.mvc.With;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
+
+import controllers.modules.resale.cas.SecureCAS;
 
 /**
  * @author likang
@@ -293,6 +297,97 @@ public class WubaProduct extends Controller {
         }
         render("WubaProduct/result.html", status, msg);
     }
+    
+    
+    public static void getStatus(Long goodsId) {
+        GoodsDeployRelation relation = GoodsDeployRelation.getLast(goodsId, OuterOrderPartner.WB);
+        ResalerFav resalerFav = ResalerFav.findByGoodsId(SecureCAS.getResaler(), goodsId);
+
+        if (relation == null) {
+            renderText("bad relation");
+        }
+        if (resalerFav == null) {
+            renderText("bad resalerFav");
+        }
+        Map<String, Object> requestMap = new HashMap<>();
+        List<String> ids = new ArrayList<String>();
+        ids.add(relation.linkId.toString());
+        requestMap.put("groupbyIds", ids);
+        requestMap.put("status", -1);
+        
+        JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.getstatus", false);
+        System.out.println("getStatus(" + goodsId + ") result:" + result);
+        String status = result.get("status").getAsString();
+        if (!"10000".equals(status)) {
+            renderText("failed:" + result);
+        }
+        JsonObject data = result.get("data").getAsJsonObject();
+        int statusCode = data.get("status").getAsInt();
+        
+        switch(statusCode) {
+        case 0:
+            resalerFav.outerStatus = "在售中"; break;
+        case 1:
+            resalerFav.outerStatus = "审核拒绝"; break;
+        case 2:
+            resalerFav.outerStatus = "售完下架"; break;
+        case 3:
+            resalerFav.outerStatus = "强制下架"; break;
+        default:
+            resalerFav.outerStatus = "未知状态" + statusCode;
+        }
+        resalerFav.save();
+        // flash("message" + goodsId, "状态更新成功");
+        redirect("/library?goodsId=" + goodsId);
+    }
+    
+
+    
+    public static void onsale(Long goodsId) {
+        GoodsDeployRelation relation = GoodsDeployRelation.getLast(goodsId, OuterOrderPartner.WB);
+        ResalerFav resalerFav = ResalerFav.findByGoodsId(SecureCAS.getResaler(), goodsId);
+
+        if (relation == null) {
+            renderText("bad relation");
+        }
+        if (resalerFav == null) {
+            renderText("bad resalerFav");
+        }
+        Map<String, Object> requestMap = new HashMap<>();
+        requestMap.put("groupbuyId", relation.linkId);
+        JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.shangxian", false);
+        System.out.println("onsale(" + goodsId + ") result:" + result);
+        String status = result.get("status").getAsString();
+        if (!"10000".equals(status)) {
+            renderText("failed:" + result);
+        }
+        // flash("message" + goodsId, "状态更新成功");
+        redirect("/58-status/" + goodsId);
+    }
+
+    
+    public static void offsale(Long goodsId) {
+        GoodsDeployRelation relation = GoodsDeployRelation.getLast(goodsId, OuterOrderPartner.WB);
+        ResalerFav resalerFav = ResalerFav.findByGoodsId(SecureCAS.getResaler(), goodsId);
+
+        if (relation == null) {
+            renderText("bad relation");
+        }
+        if (resalerFav == null) {
+            renderText("bad resalerFav");
+        }
+        Map<String, Object> requestMap = new HashMap<>();
+        requestMap.put("groupbuyId", relation.linkId);
+        JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.xiaxian", false);
+        System.out.println("offsale(" + goodsId + ") result:" + result);
+        String status = result.get("status").getAsString();
+        if (!"10000".equals(status)) {
+            renderText("failed:" + result);
+        }
+        // flash("message" + goodsId, "状态更新成功");
+        redirect("/58-status/" + goodsId);
+    }
+
 
     private static void getGoodsItems(Goods goods) {
         renderArgs.put("name", goods.name);

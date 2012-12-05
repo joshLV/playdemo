@@ -1,19 +1,30 @@
 package models.resale;
 
-import com.uhuila.common.util.DateUtil;
-import models.order.OuterOrderPartner;
-import models.sales.Goods;
-import models.sales.GoodsStatus;
-import models.sales.MaterialType;
-import org.apache.commons.lang.StringUtils;
-import play.db.jpa.JPA;
-import play.db.jpa.Model;
-
-import javax.persistence.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
+import javax.persistence.Query;
+import javax.persistence.Table;
+
+import models.order.OuterOrderPartner;
+import models.sales.Goods;
+import models.sales.GoodsStatus;
+import models.sales.MaterialType;
+
+import org.apache.commons.lang.StringUtils;
+
+import play.db.jpa.JPA;
+import play.db.jpa.Model;
+
+import com.uhuila.common.util.DateUtil;
 
 @Entity
 @Table(name = "resaler_fav")
@@ -36,6 +47,21 @@ public class ResalerFav extends Model {
     @Enumerated(EnumType.STRING)
     @Column(name = "partner")
     public OuterOrderPartner partner;      //合作伙伴
+    
+    /**
+     * 第三方上架时间.
+     */
+    public Date onsaledAt;
+    
+    /**
+     * 第三方下架时间.
+     */
+    public Date offSaleAt;
+    
+    /**
+     * 第三方状态.
+     */
+    public String outerStatus;
 
     public ResalerFav(Resaler resaler, Goods goods) {
         this.resaler = resaler;
@@ -58,6 +84,9 @@ public class ResalerFav extends Model {
      * @return sql 查询条件
      */
     public static List<ResalerFav> findFavs(Resaler resaler, Date createdAtBegin, Date createdAtEnd, String goodsName) {
+        return findFavs(resaler, createdAtBegin, createdAtEnd, goodsName, null);
+    }
+    public static List<ResalerFav> findFavs(Resaler resaler, Date createdAtBegin, Date createdAtEnd, String goodsName, Long goodsId) {
         StringBuilder sql = new StringBuilder();
         Map<String, Object> paramsMap = new HashMap<>();
         sql.append("select f from ResalerFav f where 1=1");
@@ -83,6 +112,12 @@ public class ResalerFav extends Model {
             sql.append(" and f.createdAt <= :createdAtEnd");
             paramsMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
         }
+
+        if (goodsId != null && goodsId > 0l) {
+            sql.append(" and f.goods.id = :goodsId");
+            paramsMap.put("goodsId", goodsId);
+        }
+
 
         //按照商品名称检索
         if (StringUtils.isNotBlank(goodsName)) {
@@ -151,4 +186,7 @@ public class ResalerFav extends Model {
         return map;
     }
 
+    public static ResalerFav findByGoodsId(Resaler resaler, Long goodsId) {
+        return ResalerFav.find("resaler = ? and goods.id = ?", resaler, goodsId).first();
+    }
 }

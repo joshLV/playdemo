@@ -26,10 +26,10 @@ import com.uhuila.common.util.DateUtil;
 @Table(name = "ws_call_logs")
 public class WebServiceCallLog extends Model {
 
-    @Column(name = "call_type", length = 30)
+    @Column(name = "call_type", length = 10)
     public String callType;
 
-    @Column(name = "call_method", length = 10)
+    @Column(name = "call_method", length = 250)
     public String callMethod;
 
     @Column(length = 500)

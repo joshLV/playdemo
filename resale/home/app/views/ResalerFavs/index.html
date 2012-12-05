@@ -101,7 +101,14 @@
                     <td>${favItem.goods?.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
                     <td>${favItem.goods?.faceValue?.formatCurrency('CNY').raw()}</td>
                     <td id="price_${favItem.goods.id}">${favItem.goods.getResalePrice()}</td>
-                    <td>&{'goods.'+favItem.goods?.status}</td>
+                    <td>
+                        #{if resaler.loginName == 'wuba'}
+                            ${favItem.outerStatus}
+                        #{/if}
+                        #{else}
+                        &{'goods.'+favItem.goods?.status}
+                        #{/else}
+                    </td>
                     <td class="action">
                         <a href="#" id="del_${favItem.id}" name="${favItem.goods.id}" class="delete_gift">删除</a>
 
@@ -128,6 +135,9 @@
                         #{elseif resaler.loginName == 'wuba'}
                             #{if favItem.partner==models.order.OuterOrderPartner.WB}
                                 | <a href="/58-edit/${favItem.goods.id}" style="color: #D72300">修改58信息</a>
+	                            | <a href="/58-status/${favItem.goods.id}">同步状态</a>
+	                            | <a href="/58-status/onsale/${favItem.goods.id}">上架</a>
+                                | <a href="/58-status/offsale/${favItem.goods.id}">下架</a>
                             #{/if}
                             #{else}
                                 | <a href="/58-add/${favItem.goods.id}">发布到58</a>
