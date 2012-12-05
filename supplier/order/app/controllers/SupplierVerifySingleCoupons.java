@@ -1,6 +1,7 @@
 package controllers;
 
-import com.uhuila.common.util.DateUtil;
+import java.util.List;
+
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
@@ -8,12 +9,14 @@ import models.order.VerifyCouponType;
 import models.sales.Shop;
 import models.sms.SMSUtil;
 import navigation.annotations.ActiveNavigation;
+
 import org.apache.commons.lang.StringUtils;
+
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import java.util.List;
+import com.uhuila.common.util.DateUtil;
 
 /**
  * <p/>
@@ -68,7 +71,8 @@ public class SupplierVerifySingleCoupons extends Controller {
             render("SupplierVerifySingleCoupons/index.html", shopId, eCouponSn, supplierUser, shopList);
         }
         String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
-        render("SupplierVerifySingleCoupons/index.html", ecoupon, shopId, eCouponSn, supplierUser, shopList, ecouponStatusDescription);
+        Shop shop = Shop.findById(shopId);
+        render("SupplierVerifySingleCoupons/index.html", ecoupon, shopId, shop, eCouponSn, supplierUser, shopList, ecouponStatusDescription);
     }
 
     public static void singleVerify() {
