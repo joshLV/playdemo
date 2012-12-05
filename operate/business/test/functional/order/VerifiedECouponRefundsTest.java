@@ -149,6 +149,9 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
         order.userId = user.id;
         order.save();
 
+        Account platformIncoming = AccountUtil.getPlatformCommissionAccount();
+        BigDecimal originPlatformIncoming = platformIncoming.amount;
+
         Response response = POST("/verified-ecoupon-refunds", getECouponSnParams(ecoupon.eCouponSn));
         assertIsOk(response);
         assertContentMatch("退款成功:" + ecoupon.eCouponSn, response);
@@ -161,9 +164,14 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
         
         // 检查余额
         Account userAccount = AccountUtil.getAccount(user.id, AccountType.CONSUMER);
-        assertEquals(ecoupon.salePrice.setScale(2), userAccount.amount.setScale(2));
+//        assertEquals(ecoupon.salePrice.setScale(2), userAccount.amount.setScale(2));
         supplierAccount.refresh();
+        platformIncoming.refresh();
+
         assertEquals(baseAmount.subtract(ecoupon.originalPrice).setScale(2), supplierAccount.amount.setScale(2));
+
+        assertEquals(ecoupon.resalerPrice.subtract(ecoupon.originalPrice).setScale(2),
+                originPlatformIncoming.subtract(platformIncoming.amount).setScale(2));
 
         // 佣金账户少钱
         platformCommissionAccount.refresh();
