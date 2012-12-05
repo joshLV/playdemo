@@ -10,6 +10,7 @@ import models.order.OrderItems;
 import models.supplier.Supplier;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;
@@ -21,6 +22,7 @@ import java.util.List;
  * @author likang
  *         Date: 12-11-22
  */
+@Ignore
 public class TelephoneBatchVerifyTest extends FunctionalTest{
     @Before
     public void setup(){
