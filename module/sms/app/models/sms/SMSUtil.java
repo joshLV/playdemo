@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import play.Play;
-import play.modules.rabbitmq.producer.RabbitMQPublisher;
 import util.mq.MQPublisher;
 
 /**
@@ -23,7 +22,12 @@ public class SMSUtil {
     public static void send(String content, String phoneNumber, String code){
         MQPublisher.publish(SMS_QUEUE, new SMSMessage(content, phoneNumber, code));
     }
-    public static void send(String content, String... phoneNumbers){
+
+    public static void send(String content, String phoneNumber){
+        MQPublisher.publish(SMS_QUEUE, new SMSMessage(content, phoneNumber));
+    }
+    
+    public static void send(String content, String[] phoneNumbers){
         MQPublisher.publish(SMS_QUEUE, new SMSMessage(content, Arrays.asList(phoneNumbers)));
     }
         

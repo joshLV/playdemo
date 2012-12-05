@@ -4,20 +4,37 @@ import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.PathUtil;
+import models.accounts.Account;
+import models.accounts.AccountSequence;
 import models.admin.SupplierUser;
+import models.order.Prepayment;
 import models.sales.Brand;
 import models.sales.Goods;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
-import play.data.validation.*;
+import play.data.validation.Email;
+import play.data.validation.Match;
+import play.data.validation.MaxSize;
+import play.data.validation.Phone;
+import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.solr.SolrField;
 import play.modules.solr.SolrSearchable;
 import play.modules.view_ext.annotation.Mobile;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
+import javax.persistence.Table;
 import java.beans.Transient;
-import java.text.DateFormat;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -229,7 +246,7 @@ public class Supplier extends Model {
     public void getCode(SupplierCategory supplierCategory) {
         Supplier supplier = null;
         if (supplierCategory != null) {
-            supplier = Supplier.find("supplierCategory.id=? order by code desc", supplierCategory.id).first();
+            supplier = Supplier.find("supplierCategory.id=? and sequenceCode is not null order by sequenceCode desc", supplierCategory.id).first();
         }
         if (supplier == null || supplier.sequenceCode == null) {
             this.sequenceCode = "0001";
@@ -262,6 +279,8 @@ public class Supplier extends Model {
         sp.salesId = supplier.salesId;
         sp.shopEndHour = supplier.shopEndHour;
         sp.updatedAt = new Date();
+        System.out.println("supplier.supplierCategory.id>>> )" + supplier.supplierCategory.id);
+        System.out.println("sp.supplierCategory>>>" + sp.supplierCategory);
         if (sp.supplierCategory == null || (sp.supplierCategory != null && supplier.supplierCategory != null && supplier.supplierCategory.id != sp.supplierCategory.id)) {
             sp.getCode(supplier.supplierCategory);
         }
@@ -388,5 +407,27 @@ public class Supplier extends Model {
     public List<Goods> getGoods() {
         return Goods.find("supplierId=?", this.id
         ).fetch();
+    }
+
+    /**
+     * 可提现金额.
+     *
+     * @param lastPrepayment 预付款记录
+     * @param withdrawAmount 可结算余额
+     * @param date
+     * @return
+     */
+    public static BigDecimal getWithdrawAmount(Account supplierAccount, Prepayment lastPrepayment, BigDecimal withdrawAmount, Date date) {
+        if (lastPrepayment == null) {
+            return withdrawAmount;
+        }
+        //预付款已过期
+        if (lastPrepayment.isExpired()) {
+            return AccountSequence.getVostroAmount(supplierAccount, lastPrepayment.expireAt, date);
+        }
+        if (withdrawAmount.compareTo(lastPrepayment.getBalance()) <= 0) {
+            return BigDecimal.ZERO;
+        }
+        return withdrawAmount.subtract(lastPrepayment.getBalance());
     }
 }

@@ -22,6 +22,8 @@ import play.mvc.With;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.uhuila.common.util.DateUtil.*;
+
 /**
  * @author likang
  *         Date: 12-5-9
@@ -61,8 +63,8 @@ public class SupplierWithdraw extends Controller {
         List<WithdrawAccount> withdrawAccounts = WithdrawAccount.findByUser(supplier.getId(), AccountType.SUPPLIER);
         List<Prepayment> prepayments = Prepayment.findBySupplier(supplier);
 
-        BigDecimal withdrawAmount = account.getWithdrawAmount(com.uhuila.common.util.DateUtil.getBeginOfDay());
-        BigDecimal supplierWithdrawAmount = account.getSupplierWithdrawAmount(prepaymentBalance, com.uhuila.common.util.DateUtil.getBeginOfDay());
+        BigDecimal withdrawAmount = account.getWithdrawAmount(getBeginOfDay());
+        BigDecimal supplierWithdrawAmount = account.getSupplierWithdrawAmount(prepaymentBalance, getBeginOfDay());
         render(account, withdrawAccounts, prepaymentBalance, prepayments, withdrawAmount, supplierWithdrawAmount);
     }
 

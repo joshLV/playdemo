@@ -72,7 +72,7 @@ public class TsingTuanOrder implements Serializable {
     public static TsingTuanOrder from(ECoupon ecoupon) {
         
         Goods goods = ecoupon.goods;
-        if (!"tsingtuan".equals(goods.getSupplier().domainName)) {
+        if (goods.getSupplier() == null || !"tsingtuan".equals(goods.getSupplier().domainName)) {
             return null;   // 不是清团的产品不会返回记录
         }
         TsingTuanOrder order = new TsingTuanOrder();

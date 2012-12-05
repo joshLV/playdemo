@@ -13,6 +13,7 @@ import models.jingdong.groupbuy.response.UploadTeamResponse;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.sales.Goods;
+import models.sales.GoodsDeployRelation;
 import models.sales.GoodsThirdSupport;
 import models.sales.Shop;
 import models.supplier.Supplier;
@@ -150,6 +151,7 @@ public class JingdongUploadTeam extends Controller {
 
         allParams.put("areas", StringUtils.join(areas.toArray(), ","));
         allParams.put("subGroupIds", StringUtils.join(subGroupIds.toArray(), ","));
+
         Goods goods = Goods.findById(venderTeamId);
         if (goods == null) {
             error("goods not found: " + venderTeamId);
@@ -170,14 +172,16 @@ public class JingdongUploadTeam extends Controller {
 
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/uploadTeam.action";
         Template template = TemplateLoader.load("jingdong/groupbuy/request/uploadTeam.xml");
-
+        GoodsDeployRelation goodsMapping = GoodsDeployRelation.generate(goods, OuterOrderPartner.JD);
 
         params.put("shops", shops);
         params.put("areaMap", areaMap);
         params.put("groupId", groupId);
         params.put("group2List", group2List);
+        params.put("venderTeamId", goodsMapping.linkId);
         String data = template.render(params);
         Logger.info("request, %s", data);
+
         String restRequest = JDGroupBuyUtil.makeRequestRest(data);
         WS.HttpResponse response = WS.url(url).body(restRequest).post();
 

@@ -12,7 +12,9 @@ import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import models.order.CouponHistory;
 import models.order.ECoupon;
+import models.order.ECouponPartner;
 import models.order.ECouponStatus;
+import models.taobao.TaobaoCouponUtil;
 import operate.rbac.annotations.ActiveNavigation;
 
 import org.apache.commons.lang.StringUtils;
@@ -61,11 +63,18 @@ public class VerifiedECouponRefunds extends Controller {
     private static String applyRefund(ECoupon eCoupon, String refundComment) {
         AccountType accountType = eCoupon.order.userType;
         Long userId = eCoupon.order.userId;
-        
+
+
         if (accountType != AccountType.CONSUMER && accountType != AccountType.RESALER) {
             return "不支持的券类别，请检查";
         }
-        
+
+        if (eCoupon.partner == ECouponPartner.TB) {
+            if (!TaobaoCouponUtil.reverseOnTaobao(eCoupon)) {
+                return "在淘宝上撤销失败！";
+            }
+        }
+
         // 查找原订单信息 可能是分销账户，也可能是消费者账户
         Account userAccount = AccountUtil.getAccount(userId, accountType);
         

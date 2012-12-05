@@ -183,15 +183,52 @@ public class WithdrawBill extends Model {
      * @param fee
      * @param comment
      * @param withdrawDate
+     * @return public int agree(BigDecimal fee, String comment, Date withdrawDate, Prepayment prepayment) {
+    if (agree(fee, comment) && account.accountType == AccountType.SUPPLIER) { //同意提现操作
+    //标记所有详细销售记录为已结算
+    return AccountSequence.withdraw(account, withdrawDate, this, prepayment);
+    }
+    return 0;
+    }
+     */
+
+    /**
+     * 结算操作，返回结算详细记录的笔数.
+     *
+     * @param fee
+     * @param comment
+     * @param withdrawDate
      * @return
      */
-    public int agree(BigDecimal fee, String comment, Date withdrawDate, Prepayment prepayment) {
-        if (agree(fee, comment) && account.accountType == AccountType.SUPPLIER) { //同意提现操作
+    public int settle(BigDecimal fee, String comment, Date withdrawDate, Prepayment prepayment) {
+        if (this.status != WithdrawBillStatus.APPLIED) {
+            Logger.error("the withdraw bill has been processed already");
+            return 0;
+        }
+
+        if (amount.compareTo(prepayment.getBalance()) > 0) {
+            TradeBill prepaymentTradeBill = TradeUtil.createWithdrawTrade(this.account, prepayment.getBalance());
+            TradeUtil.success(prepaymentTradeBill, "结算成功");
+            TradeBill cashPayTradeBill = TradeUtil.createWithdrawTrade(this.account, amount.subtract(prepayment.getBalance()));
+            TradeUtil.success(cashPayTradeBill, "结算成功");
+        } else {//可结算金额小于或等于预付款余额时，产生一笔TradeBill
+            TradeBill tradeBill = TradeUtil.createWithdrawTrade(this.account, this.amount);
+            TradeUtil.success(tradeBill, "结算成功");
+        }
+
+        this.status = WithdrawBillStatus.SUCCESS;
+        this.comment = comment;
+        this.processedAt = new Date();
+        this.fee = fee;
+        this.save();
+
+        if (account.accountType == AccountType.SUPPLIER) { //同意提现操作
             //标记所有详细销售记录为已结算
             return AccountSequence.withdraw(account, withdrawDate, this, prepayment);
         }
         return 0;
     }
+
 
     /**
      * 结算操作，返回结算详细记录的笔数.
@@ -202,7 +239,25 @@ public class WithdrawBill extends Model {
      * @return
      */
     public int agree(BigDecimal fee, String comment, Date withdrawDate) {
-        return agree(fee, comment, withdrawDate, null);
+        if (this.status != WithdrawBillStatus.APPLIED) {
+            Logger.error("the withdraw bill has been processed already");
+            return 0;
+        }
+
+        TradeBill tradeBill = TradeUtil.createWithdrawTrade(this.account, this.amount);
+        TradeUtil.success(tradeBill, "提现成功");
+
+        this.status = WithdrawBillStatus.SUCCESS;
+        this.comment = comment;
+        this.processedAt = new Date();
+        this.fee = fee;
+        this.save();
+
+        if (account.accountType == AccountType.SUPPLIER) { //同意提现操作
+            //标记所有详细销售记录为已结算
+            return AccountSequence.withdraw(account, withdrawDate, this, null);
+        }
+        return 0;
     }
 
     public static JPAExtPaginator<WithdrawBill> findByCondition(

@@ -60,7 +60,7 @@ public class PaymentInfo extends Controller {
             error("wrong order status");
         }
         Account account = AccountUtil.getResalerAccount(resaler.getId());
-        System.out.println("inini");
+
         if (Order.confirmPaymentInfo(order, account, useBalance, paymentSourceCode)) {
             PaymentSource paymentSource = PaymentSource.findByCode(order.payMethod);
             render(order, paymentSource);

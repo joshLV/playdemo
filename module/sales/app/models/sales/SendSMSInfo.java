@@ -8,8 +8,15 @@ import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Mobile;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Lob;
+import javax.persistence.Table;
+import javax.persistence.Version;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -85,7 +92,7 @@ public class SendSMSInfo extends Model {
 
 
     public static JPAExtPaginator<SendSMSInfo> findByCondition(SendSMSInfoCondition condition,
-                                                         int pageNumber, int pageSize) {
+                                                               int pageNumber, int pageSize) {
 
         JPAExtPaginator<SendSMSInfo> smsList = new JPAExtPaginator<>
                 ("SendSMSInfo s", "s", SendSMSInfo.class, condition.getFilter(),
@@ -97,8 +104,7 @@ public class SendSMSInfo extends Model {
         return smsList;
     }
 
-
-
-
-
+    public static List<SendSMSInfo> findUnDeleted(String taskNo) {
+        return find("sendAt=null and deleted=com.uhuila.common.constants.DeletedStatus.UN_DELETED and taskNo=? ", taskNo).fetch();
+    }
 }

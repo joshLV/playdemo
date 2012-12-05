@@ -108,12 +108,13 @@ public class Prepayment extends Model {
         return AccountSequence.countByPrepayment(id) <= 0l;
     }
 
-    public static List<Prepayment> getUnclearedPrepayments(long uid) {
-        return find("supplier.id=? and amount>withdrawAmount order by createdAt", uid).fetch();
+    public static Prepayment getLastUnclearedPrepayments(long uid) {
+        return find("supplier.id=? and settlementStatus=? order by createdAt DESC", uid, SettlementStatus.UNCLEARED).first();
     }
 
-    public static BigDecimal getUnclearedBalance(Long uid) {
-        BigDecimal prepaymentAmount = find("select sum(amount)-sum(withdrawAmount) from Prepayment where supplier.id=? and amount>withdrawAmount", uid).first();
+    public static BigDecimal getUnclearedBalance(long uid) {
+        BigDecimal prepaymentAmount = find("select sum(amount)-sum(withdrawAmount) from Prepayment where supplier.id=? " +
+                "and settlementStatus=? group by supplier", uid, SettlementStatus.UNCLEARED).first();
         return prepaymentAmount == null ? BigDecimal.ZERO : prepaymentAmount;
     }
 

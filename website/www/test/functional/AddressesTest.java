@@ -15,7 +15,9 @@ import play.mvc.Http;
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author wangjia
@@ -53,6 +55,32 @@ public class AddressesTest extends FunctionalTest {
         assertEquals(address.id, testAddress.get(0).id);
     }
 
+    @Test
+    public void testCreate() {
+        Long cnt = Address.count();
+        assertEquals(1, cnt.intValue());
+        Map<String, String> params = new HashMap();
+        params.put("address.name", "上海浦东新区凌兆路");
+        params.put("address.address", "凌兆路");
+        params.put("address.postcode", "2000120");
+        params.put("address.mobile", "134242424121");
+        params.put("address.phoneNumber", "021");
+        params.put("address.province", "上海");
+        params.put("address.district", "浦东新区");
+        params.put("address.city", "上海");
+
+        Http.Response response = POST("/orders/addresses/new");
+        assertStatus(200, response);
+        assertContentMatch("收货地址", response);
+        assertEquals(cnt + 1, Address.count());
+
+    }
+     @Test
+    public void testAdd() {
+        Http.Response response = GET("/orders/addresses/new");
+        assertStatus(200, response);
+        assertContentMatch("请填写您的真实姓名", response);
+    }
     @Test
     public void testList() {
         Http.Response response = GET("/orders/addresses/list");

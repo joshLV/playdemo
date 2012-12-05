@@ -18,6 +18,10 @@ public class DateUtil {
     public static SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
     public static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
+    public static Date getEndOfDay(){
+        return getEndOfDay(new Date());
+    }
+
     public static Date getEndOfDay(Date day) {
         if (day == null) {
             return null;

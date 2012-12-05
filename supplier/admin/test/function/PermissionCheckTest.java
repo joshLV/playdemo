@@ -31,7 +31,7 @@ public class PermissionCheckTest extends FunctionalTest {
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
-        SupplierRole roleSales = FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
+        FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
             @Override
             public void build(SupplierRole role) {
                 role.text = "销售人员";
@@ -40,7 +40,7 @@ public class PermissionCheckTest extends FunctionalTest {
         });
 
 
-        SupplierRole roleAdmin = FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
+        FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
             @Override
             public void build(SupplierRole role) {
                 role.text = "系统管理员";
@@ -48,7 +48,7 @@ public class PermissionCheckTest extends FunctionalTest {
             }
         });
 
-        SupplierRole roleTest = FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
+        FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
             @Override
             public void build(SupplierRole role) {
                 role.text = "测试角色";
@@ -56,7 +56,7 @@ public class PermissionCheckTest extends FunctionalTest {
             }
         });
 
-        SupplierRole roleEditor = FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
+        FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
             @Override
             public void build(SupplierRole role) {
                 role.text = "商品编辑";
@@ -64,7 +64,7 @@ public class PermissionCheckTest extends FunctionalTest {
             }
         });
 
-        SupplierRole roleClerk = FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
+        FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
             @Override
             public void build(SupplierRole role) {
                 role.text = "店员";
@@ -72,7 +72,7 @@ public class PermissionCheckTest extends FunctionalTest {
             }
         });
 
-        SupplierRole roleManager = FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
+        FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
             @Override
             public void build(SupplierRole role) {
                 role.text = "经理";
@@ -80,7 +80,7 @@ public class PermissionCheckTest extends FunctionalTest {
             }
         });
 
-        SupplierRole roleAccount = FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
+        FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
             @Override
             public void build(SupplierRole role) {
                 role.text = "财务";
