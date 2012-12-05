@@ -10,6 +10,7 @@ import com.uhuila.common.util.DateUtil;
 import controllers.modules.resale.cas.SecureCAS;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
+import models.resale.ResalerFav;
 import models.sales.Goods;
 import models.sales.GoodsDeployRelation;
 import models.sales.GoodsThirdSupport;
@@ -76,6 +77,9 @@ public class WubaProduct extends Controller {
         render("WubaProduct/prepare.html");
     }
 
+    /**
+     * 修改团购和修改商家
+     */
     public static void update(long goodsId, int prodCategory, int isSend, BigDecimal expressMoney,
                               Integer[] cityIds, Integer[] travelCityIds, Date startTime, Date endTime, Date deadline,
                               int successNum, int saleMaxNum, int buyerMaxNum, int buyerMinNum,
@@ -139,7 +143,6 @@ public class WubaProduct extends Controller {
         String msg = result.get("msg").getAsString();
         List<Map<String, Object>> partners = new ArrayList<>();
         if ("10000".equals(status)) {
-
             for (int i = 1; i <= shopSize; i++) {
                 Map<String, Object> partnerMap = new HashMap<>();
                 partnerMap.put("partnerId", Long.parseLong(request.params.get("partnerId_" + i)));
@@ -182,6 +185,9 @@ public class WubaProduct extends Controller {
         render("WubaProduct/result.html", status, msg);
     }
 
+    /**
+     * 新增团购信息
+     */
     public static void upload(long goodsId, int prodCategory, int isSend, BigDecimal expressMoney,
                               Integer[] cityIds, Integer[] travelCityIds, Date startTime, Date endTime, Date deadline,
                               int successNum, int saleMaxNum, int buyerMaxNum, int buyerMinNum,
@@ -191,6 +197,15 @@ public class WubaProduct extends Controller {
         if (goods == null) {
             error("商品没找到");
             return;
+        }
+        Resaler user = SecureCAS.getResaler();
+        if (!Resaler.DD_LOGIN_NAME.equals(user.loginName)) {
+            error("user is not dangdang resaler");
+        }
+
+        ResalerFav resalerFav = ResalerFav.find("byGoodsAndResaler", goods, user).first();
+        if (resalerFav == null) {
+            error("no fav found");
         }
         GoodsDeployRelation goodsDeployRelation = GoodsDeployRelation.generate(goods, OuterOrderPartner.WB);
 
@@ -268,9 +283,14 @@ public class WubaProduct extends Controller {
             support.goodsData = goodsData;
             support.save();
         }
-        JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.editgroupbuyinfo", false);
+        JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.addgroupbuy", false);
         String status = result.get("status").getAsString();
         String msg = result.get("msg").getAsString();
+
+        if ("10000".equals(status)) {
+            resalerFav.partner = OuterOrderPartner.WB;
+            resalerFav.save();
+        }
         render("WubaProduct/result.html", status, msg);
     }
 
