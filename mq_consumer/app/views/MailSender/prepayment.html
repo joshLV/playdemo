@@ -1,0 +1,30 @@
+<html>
+<body>
+【通知】${message.getParam("supplier")}的可用预付款已少于10%<br/>
+<table>
+    <tr>
+        <td>商户：</td>
+        <td>${message.getParam("supplier")}</td>
+    </tr>
+    <tr>
+        <td>预付款总额：</td>
+        <td>${message.getParam("amount")}</td>
+    </tr>
+    <tr>
+        <td>已消费总额：</td>
+        <td>${message.getParam("consumed")}</td>
+    </tr>
+    <tr>
+        <td>可用预付款：</td>
+        <td>${message.getParam("balance")}</td>
+    </tr>
+    <tr>
+        <td>预付款有效期：</td>
+        <td>${message.getParam("effectiveAt")} - ${message.getParam("expireAt")}</td>
+    </tr>
+</table>
+<br/>
+<a href="http://report.qgongchang.com/reports/prepayment/${message.getParam('prepaymentId')}/trends">点击查看销售曲线</a>
+</body>
+</html>
+

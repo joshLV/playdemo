@@ -208,12 +208,12 @@ public class WithdrawBill extends Model {
 
         if (amount.compareTo(prepayment.getBalance()) > 0) {
             TradeBill prepaymentTradeBill = TradeUtil.createWithdrawTrade(this.account, prepayment.getBalance());
-            TradeUtil.success(prepaymentTradeBill, "结算成功");
+            TradeUtil.success(prepaymentTradeBill, "预付款结算");
             TradeBill cashPayTradeBill = TradeUtil.createWithdrawTrade(this.account, amount.subtract(prepayment.getBalance()));
-            TradeUtil.success(cashPayTradeBill, "结算成功");
+            TradeUtil.success(cashPayTradeBill, "现金结算");
         } else {//可结算金额小于或等于预付款余额时，产生一笔TradeBill
             TradeBill tradeBill = TradeUtil.createWithdrawTrade(this.account, this.amount);
-            TradeUtil.success(tradeBill, "结算成功");
+            TradeUtil.success(tradeBill, "预付款结算");
         }
 
         this.status = WithdrawBillStatus.SUCCESS;
