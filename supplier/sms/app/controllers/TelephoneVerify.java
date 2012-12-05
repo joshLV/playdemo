@@ -121,6 +121,7 @@ public class TelephoneVerify extends Controller {
             renderText("11");//对不起，该券无法消费
         } else {
             //批量验证
+            /*
             if(value != null && value.compareTo(BigDecimal.ZERO) > 0){
                 List<ECoupon> eCoupons = ECoupon.queryUnconsumedCouponsWithSameGoodsGroups(ecoupon);
                 List<ECoupon> checkECoupons = ECoupon.selectCheckECoupons(value, eCoupons,ecoupon);
@@ -176,6 +177,7 @@ public class TelephoneVerify extends Controller {
                     return;
                 }
             }
+            */
 
             if (!ecoupon.consumeAndPayCommission(supplierUser.shop.id, null, supplierUser, VerifyCouponType.CLERK_MESSAGE)){
                 Logger.info("telephone verify failed: coupon has been refunded");
