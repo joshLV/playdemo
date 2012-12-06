@@ -493,7 +493,7 @@ public class WubaProduct extends Controller {
             Map<String, Object> shopMap = new HashMap<>();
             JsonObject partnerObject = element.getAsJsonObject();
             shopMap.put("name", partnerObject.get("title").getAsString());
-            System.out.println(">>>>>>."+ partnerObject.get("title").getAsString());
+            shopMap.put("shortTitle", partnerObject.get("shortTitle").getAsString());
             shopMap.put("partnerId", partnerObject.get("partnerId").getAsLong());
             shopMap.put("circleId", partnerObject.get("circleId").getAsLong());
             shopMap.put("address", partnerObject.get("address").getAsString());
