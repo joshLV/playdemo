@@ -1,7 +1,7 @@
 #{extends 'main.html' /}
 #{set title:'100券 - 58上传' /}
 #{set 'moreStyles'}
-#{asset.css src:['/r/base.css', '/r/goods.css', '/r/play-pagination.css'] /}
+    #{asset.css src:['/r/base.css', '/r/goods.css', '/r/play-pagination.css'] /}
 #{/set}
 #{set 'moreScripts'}
 <script src="@@{'/public/javascripts/goods-index.js'}"></script>
@@ -17,5 +17,9 @@
 
 <div id="content">
     状态：${status}  (10000表示成功)<br/>
-    信息：${msg}
+    信息：${msg}<br>
+
+#{if status=="10000"}<a href="/58-status/onsale/${goodsId}" style="color: #D72300">上架</a> | #{/if}
+    <a href="/library" style="color: #D72300">进入我的分销库</a> |
+    <a href="javascript:history.go(-1)" style="color: #D72300">返回前页面</a>
 </div>

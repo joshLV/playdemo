@@ -19,6 +19,7 @@ import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.data.binding.As;
+import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.With;
 import play.templates.Template;
@@ -50,9 +51,6 @@ public class DDPushGoods extends Controller {
     public static void batchAdd(@As(",") List<Long> goodsIds) {
         Logger.info("DDAPIPushGoods API begin!");
         Resaler user = SecureCAS.getResaler();
-        if (!Resaler.DD_LOGIN_NAME.equals(user.loginName)) {
-            error("user is not dangdang resaler");
-        }
         String failGoods = "";
         boolean pushFlag = true;
         for (Long goodsId : goodsIds) {
@@ -102,7 +100,13 @@ public class DDPushGoods extends Controller {
 
         renderJSON("{\"error\":\"" + pushFlag + "\",\"info\":\"" + failGoods + "\"}");
     }
-
+    @Before
+    public static void checkUser() {
+        Resaler user = SecureCAS.getResaler();
+        if (!Resaler.DD_LOGIN_NAME.equals(user.loginName)) {
+            error("user is not dangdang resaler");
+        }
+    }
     /**
      * 推送商品页面
      *
@@ -111,9 +115,6 @@ public class DDPushGoods extends Controller {
     public static void prepare(Long goodsId) {
         Logger.info("DDAPIPushGoods API begin!");
         Resaler user = SecureCAS.getResaler();
-        if (!Resaler.DD_LOGIN_NAME.equals(user.loginName)) {
-            error("user is not dangdang resaler");
-        }
         //查询是否已经推送过该商品，是则直接从GoodsThirdSupport读取，不是就从goods表查询
         Goods goods = Goods.findOnSale(goodsId);
         ResalerFav resalerFav = ResalerFav.find("byGoodsAndResaler", goods, user).first();
@@ -140,10 +141,6 @@ public class DDPushGoods extends Controller {
         Long goodsId = Long.valueOf(StringUtils.trimToEmpty(params.get("goodsId")));
         Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();
         Resaler user = SecureCAS.getResaler();
-        if (!Resaler.DD_LOGIN_NAME.equals(user.loginName)) {
-            error("user is not dangdang resaler");
-        }
-
         Goods goods = Goods.findOnSale(goodsId);
         ResalerFav resalerFav = ResalerFav.find("byGoodsAndResaler", goods, user).first();
         if (resalerFav == null) {
