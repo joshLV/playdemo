@@ -373,8 +373,6 @@ public class ResaleSalesReport extends Model {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<ResaleSalesReport> sentRealResultList = query.getResultList();
-        System.out.println("sentRealResultList>size>>>" + sentRealResultList.size());
-        System.out.println("sentRealResultList>size value>>>" + sentRealResultList.get(0).realSalePrice);
 
         //consumedAt ecoupon
         sql = "select new models.ResaleSalesReport(sum(e.salePrice),r.order,count(e)) from OrderItems r, ECoupon e where e.orderItems=r";
@@ -408,7 +406,7 @@ public class ResaleSalesReport extends Model {
                 result.consumedNumber = consumedResultList.get(0).consumedNumber;
             }
             if (refundResultList != null && refundResultList.size() > 0) {
-                result.refundPrice = refundResultList.get(0).refundPrice;
+                result.refundNumber = refundResultList.get(0).refundNumber;
                 result.refundPrice = refundResultList.get(0).refundPrice;
             }
             resultList.add(result);
