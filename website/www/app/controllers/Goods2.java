@@ -79,8 +79,8 @@ public class Goods2 extends Controller {
 
         CacheHelper.preRead(CacheHelper.getCacheKey(new String[]{Goods.CACHEKEY, Goods.CACHEKEY_BASEID, GoodsStatistics.CACHEKEY},
                 "SHOW_TOP" + PAGE_SIZE + "RECOMMEND"),
-                CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_RIGHT_SLIDES"),
-                CacheHelper.getCacheKey(Goods.CACHEKEY, "WWW_HOT_SALE4"));
+                CacheHelper.getCacheKey(Block.CACHEKEY, "GOODS2_RIGHT_SLIDES"),
+                CacheHelper.getCacheKey(Goods.CACHEKEY, "GOODS2_HOT_SALE4"));
         //只按关键字搜索
         QueryResponse queryResponse = models.sales.Goods.search(keywords, brandId, pageNumber, PAGE_SIZE);
 
@@ -134,8 +134,8 @@ public class Goods2 extends Controller {
 
         CacheHelper.preRead(CacheHelper.getCacheKey(new String[]{Goods.CACHEKEY, Goods.CACHEKEY_BASEID, GoodsStatistics.CACHEKEY},
                 "SHOW_TOP" + PAGE_SIZE + "RECOMMEND"),
-                CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_RIGHT_SLIDES"),
-                CacheHelper.getCacheKey(Goods.CACHEKEY, "WWW_HOT_SALE4"));
+                CacheHelper.getCacheKey(Block.CACHEKEY, "GOODS2_RIGHT_SLIDES"),
+                CacheHelper.getCacheKey(Goods.CACHEKEY, "GOODS2_HOT_SALE4"));
 
         try {
             final GoodsWebsiteCondition condition = new GoodsWebsiteCondition(conditionStr, keywords, brandId);
@@ -217,7 +217,7 @@ public class Goods2 extends Controller {
 
     private static void renderRecommendGoods() {
            //猜你喜欢
-        List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.BrowsedGoods.CACHEKEY, "WWW_YOURLIKE4"), new CacheCallBack<List<models.sales.Goods>>() {
+        List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.BrowsedGoods.CACHEKEY, "GOODS2_YOURLIKE4"), new CacheCallBack<List<models.sales.Goods>>() {
             @Override
             public List<models.sales.Goods> loadData() {
                 List<BrowsedGoods> browsedGoodsList = BrowsedGoods.findTop(5, 2);
@@ -354,7 +354,7 @@ public class Goods2 extends Controller {
         final Date currentDate = new Date();
 
         //右上侧图片展示
-        List<Block> rightSlides = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_RIGHT_SLIDES"), new CacheCallBack<List<Block>>() {
+        List<Block> rightSlides = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "GOODS2_RIGHT_SLIDES"), new CacheCallBack<List<Block>>() {
             @Override
             public List<Block> loadData() {
                 return Block.findByType(BlockType.WEBSITE_RIGHT_SLIDE, currentDate);
@@ -363,7 +363,7 @@ public class Goods2 extends Controller {
         renderArgs.put("rightSlides", rightSlides);
 
         //热卖商品，销量最多的商品
-        List<Goods> hotSaleGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(Goods.CACHEKEY, "WWW_HOT_SALE4"), new CacheCallBack<List<Goods>>() {
+        List<Goods> hotSaleGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(Goods.CACHEKEY, "GOODS2_HOT_SALE4"), new CacheCallBack<List<Goods>>() {
             @Override
             public List<Goods> loadData() {
                 return Goods.findTopHotSale(4);

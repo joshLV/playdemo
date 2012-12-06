@@ -87,14 +87,14 @@ public class JDGroupBuy extends Controller {
                 .multiply(new BigDecimal(sendOrderRequest.count))
                 .compareTo(sendOrderRequest.origin) != 0) {
             Logger.info("the total amount does not match the team price and count");
-            finish(202, "the total amount does not match the team price and count");
+            finish(203, "the total amount does not match the team price and count");
             return;
         }
 
         //检查手机号
         if (!checkPhone(sendOrderRequest.mobile)) {
             Logger.info("invalid mobile");
-            finish(203, "invalid mobile");
+            finish(204, "invalid mobile");
         }
 
         //检查并保存此新请求
@@ -112,7 +112,7 @@ public class JDGroupBuy extends Controller {
                 JPA.em().flush();
             } catch (Exception e) { // 如果写入失败，说明 已经存在一个相同的orderId 的订单，则放弃
                 Logger.info("flush failed");
-                finish(202, "there is another parallel request");
+                finish(205, "there is another parallel request");
                 return;
             }
         } else {
@@ -127,22 +127,22 @@ public class JDGroupBuy extends Controller {
         } catch (PersistenceException e) {
             //没拿到锁 放弃
             Logger.info("failed to request persistence lock");
-            finish(202, "there is another parallel request");
+            finish(206, "there is another parallel request");
             return;
         }
+        //生成一百券订单
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
             Order ybqOrder = createYbqOrder(sendOrderRequest);
             outerOrder.status = OuterOrderStatus.ORDER_DONE;
             outerOrder.ybqOrder = ybqOrder;
             outerOrder.save();
         }
-
+        //保存京东的券号密码
+        List<ECoupon> coupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
         if (outerOrder.status == OuterOrderStatus.ORDER_DONE) {
-            Template template = TemplateLoader.load("jingdong/groupbuy/response/sendOrder.xml");
-            List<ECoupon> coupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
             if (coupons.size() != sendOrderRequest.coupons.size()) {
                 Logger.info("coupon size not matched, ybq size: %s, jd size: %s", coupons.size(), sendOrderRequest.coupons.size());
-                finish(207, "coupon size not matched, ybq size: " + coupons.size() + " jd size:" + sendOrderRequest.coupons.size());
+                finish(211, "coupon size not matched, ybq size: " + coupons.size() + " jd size:" + sendOrderRequest.coupons.size());
             }
             // 保存京东的券号密码
             for (int i = 0; i < coupons.size(); i++) {
@@ -153,7 +153,12 @@ public class JDGroupBuy extends Controller {
                 coupon.partnerCouponPwd = jdCoupon.couponPwd;
                 coupon.save();
             }
+            outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
+            outerOrder.save();
+        }
 
+        if (outerOrder.status == OuterOrderStatus.ORDER_SYNCED){
+            Template template = TemplateLoader.load("jingdong/groupbuy/response/sendOrder.xml");
             models.sales.Goods goods = models.sales.Goods.findById(sendOrderRequest.venderTeamId);
             Map<String, Object> params = new HashMap<>();
             params.put("sendOrderRequest", sendOrderRequest);
@@ -161,13 +166,11 @@ public class JDGroupBuy extends Controller {
             params.put("coupons", coupons);
             params.put("goods", goods);
             renderArgs.put("data", template.render(params));
-            outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
-            outerOrder.save();
             Logger.info("jd send order success: %s", outerOrder.ybqOrder.getId());
             finish(200, "success");
         } else {
             Logger.info("order status is not ORDER_DONE, instead it's %s", outerOrder.status);
-            finish(200, "the order has been processed");
+            finish(212, "the order has been processed");
         }
     }
 
@@ -271,7 +274,7 @@ public class JDGroupBuy extends Controller {
 
         if (!checkPhone(sendSmsRequest.mobile)) {
             Logger.info("invalid mobile");
-            finish(203, "invalid mobile");
+            finish(202, "invalid mobile");
         }
 
         //重发短信
@@ -310,7 +313,7 @@ public class JDGroupBuy extends Controller {
         Logger.info("create ybq order");
         if (resaler == null) {
             Logger.error("can not find the resaler by login name: %s", Resaler.JD_LOGIN_NAME);
-            finish(203, "can not find the jingdong resaler");
+            finish(207, "can not find the jingdong resaler");
             return null;
         }
         Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
@@ -320,12 +323,12 @@ public class JDGroupBuy extends Controller {
 //            models.sales.Goods goods = models.sales.Goods.find("byId", sendOrderRequest.venderTeamId).first();
             if (goods == null) {
                 Logger.info("goods not found: %s", sendOrderRequest.venderTeamId);
-                finish(204, "can not find goods: " + sendOrderRequest.venderTeamId);
+                finish(208, "can not find goods: " + sendOrderRequest.venderTeamId);
                 return null;
             }
             if (goods.originalPrice.compareTo(sendOrderRequest.teamPrice) > 0) {
                 Logger.info("invalid yhd productPrice: %s", sendOrderRequest.teamPrice);
-                finish(205, "invalid product price: " + sendOrderRequest.teamPrice);
+                finish(209, "invalid product price: " + sendOrderRequest.teamPrice);
                 return null;
             }
 
@@ -343,7 +346,7 @@ public class JDGroupBuy extends Controller {
             }
         } catch (NotEnoughInventoryException e) {
             Logger.info("inventory not enough");
-            finish(206, "inventory not enough");
+            finish(210, "inventory not enough");
             return null;
         }
 
