@@ -10,8 +10,8 @@
     type('id=loginName','小王')
     type('id=mobile','13112312417')
     type('name=operateUser.encryptedPassword','')
-    clickAndWait('id=save')
-    verifyTextPresent('请输入密码!')
+    *{clickAndWait('id=save')}*
+    *{verifyTextPresent('请输入密码!')}*
 #{/selenium}
 
 #{selenium}

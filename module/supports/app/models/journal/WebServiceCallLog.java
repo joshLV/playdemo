@@ -19,17 +19,17 @@ import com.uhuila.common.util.DateUtil;
 
 /**
  * 记录基于Http的服务调用日志.
- * 
+ *
  * @author tanglq
  */
 @Entity
 @Table(name = "ws_call_logs")
 public class WebServiceCallLog extends Model {
 
-    @Column(name = "call_type", length = 10)
+    @Column(name = "call_type", length = 250)
     public String callType;
 
-    @Column(name = "call_method", length = 250)
+    @Column(name = "call_method", length = 30)
     public String callMethod;
 
     @Column(length = 500)
@@ -101,8 +101,8 @@ public class WebServiceCallLog extends Model {
     public Boolean success;
 
     public static JPAExtPaginator<WebServiceCallLog> query(
-                    WebServiceCallLog log,
-                    int pageNumber, int pageSize) {
+            WebServiceCallLog log,
+            int pageNumber, int pageSize) {
         StringBuffer sql = new StringBuffer("1=1");
         Map params = new HashMap();
 
@@ -124,9 +124,9 @@ public class WebServiceCallLog extends Model {
         }
 
         JPAExtPaginator<WebServiceCallLog> logPages = new JPAExtPaginator<>(
-                        "WebServiceCallLog l", "l",
-                        WebServiceCallLog.class, sql.toString(), params)
-                        .orderBy("l.createdAt desc");
+                "WebServiceCallLog l", "l",
+                WebServiceCallLog.class, sql.toString(), params)
+                .orderBy("l.createdAt desc");
         logPages.setPageNumber(pageNumber);
         logPages.setPageSize(pageSize);
         logPages.setBoundaryControlsEnabled(true);
@@ -140,7 +140,7 @@ public class WebServiceCallLog extends Model {
     public WebServiceCallType getWebServiceCallType() {
         if (webServiceCallType == null) {
             webServiceCallType = WebServiceCallType
-                            .find("callType=?", callType).first();
+                    .find("callType=?", callType).first();
         }
         return webServiceCallType;
     }
@@ -148,7 +148,7 @@ public class WebServiceCallLog extends Model {
     @Transient
     public String getCallTypeName() {
         if (getWebServiceCallType() == null
-                        || StringUtils.isBlank(getWebServiceCallType().description)) {
+                || StringUtils.isBlank(getWebServiceCallType().description)) {
             return callType;
         }
         return getWebServiceCallType().description;
@@ -157,7 +157,7 @@ public class WebServiceCallLog extends Model {
     @Transient
     public String getKey1Name() {
         if (getWebServiceCallType() == null
-                        || StringUtils.isBlank(getWebServiceCallType().key1Name)) {
+                || StringUtils.isBlank(getWebServiceCallType().key1Name)) {
             return key1;
         }
         return getWebServiceCallType().key1Name + ":" + key1;
@@ -166,7 +166,7 @@ public class WebServiceCallLog extends Model {
     @Transient
     public String getKey2Name() {
         if (getWebServiceCallType() == null
-                        || StringUtils.isBlank(getWebServiceCallType().key2Name)) {
+                || StringUtils.isBlank(getWebServiceCallType().key2Name)) {
             return key2;
         }
         return getWebServiceCallType().key2Name + ":" + key2;
@@ -175,7 +175,7 @@ public class WebServiceCallLog extends Model {
     @Transient
     public String getKey3Name() {
         if (getWebServiceCallType() == null
-                        || StringUtils.isBlank(getWebServiceCallType().key3Name)) {
+                || StringUtils.isBlank(getWebServiceCallType().key3Name)) {
             return key3;
         }
         return getWebServiceCallType().key3Name + ":" + key3;
