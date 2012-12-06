@@ -13,6 +13,8 @@ import play.modules.view_ext.annotation.Money;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -40,6 +42,7 @@ public class Prepayment extends Model {
     @Max(999999)
     public BigDecimal amount;   //金额
 
+    @Column(name = "withdraw_amount")
     public BigDecimal withdrawAmount = BigDecimal.ZERO;   //已结算金额
 
     @Column(name = "effective_at")
@@ -62,10 +65,11 @@ public class Prepayment extends Model {
     @Column(name = "updated_by")
     public String updatedBy;    //最后修改人帐号
 
-    public DeletedStatus deleted;   //删除状态
+    public DeletedStatus deleted = DeletedStatus.UN_DELETED;   //删除状态
 
     @Column(name = "settlement_status")
-    public SettlementStatus settlementStatus;   //结算状态
+    @Enumerated(EnumType.STRING)
+    public SettlementStatus settlementStatus = SettlementStatus.UNCLEARED;   //结算状态
 
     public Boolean warning = false;
 
@@ -81,6 +85,9 @@ public class Prepayment extends Model {
         oldPrepayment.effectiveAt = prepayment.effectiveAt;
         oldPrepayment.expireAt = prepayment.expireAt;
         oldPrepayment.remark = prepayment.remark;
+        if (oldPrepayment.settlementStatus == null){
+            oldPrepayment.settlementStatus = SettlementStatus.UNCLEARED;
+        }
         oldPrepayment.save();
     }
 

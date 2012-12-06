@@ -1,6 +1,7 @@
 package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
+import models.accounts.SettlementStatus;
 import models.order.Prepayment;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
@@ -70,6 +71,7 @@ public class OperatePrepayments extends Controller {
         }
 
         prepayment.deleted = DeletedStatus.UN_DELETED;
+        prepayment.settlementStatus = SettlementStatus.UNCLEARED;
         prepayment.createdAt = new Date();
         prepayment.createdBy = loginName;
         prepayment.create();
