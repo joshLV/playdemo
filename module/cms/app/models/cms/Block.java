@@ -21,6 +21,7 @@ import play.data.validation.MinSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
+import util.DateHelper;
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
@@ -183,7 +184,7 @@ public class Block extends Model {
         final String orderBy = "displayOrder, effectiveAt desc, expireAt";
             
         List<Block> blocks = Block.find("deleted = ? and type = ? and effectiveAt <= ? and expireAt >= ? order by " + orderBy,
-                    DeletedStatus.UN_DELETED, type, currentDate, currentDate).fetch();
+                    DeletedStatus.UN_DELETED, type, currentDate, DateHelper.beforeDays(currentDate, 1)).fetch();
 
         //如果都过期了，取一个最近的日期进行显示
         if (blocks.size() == 0) {
