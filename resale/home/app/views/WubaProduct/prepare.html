@@ -206,10 +206,10 @@ ${mobileDescription?.raw()}
     <input type="hidden" name="partnerId_${shop_index}" value="${shop.partnerId}">
 
     <p>商家名称(最大100个字符)<b>*</b></p>
-    <input type="text" name="title_${shop_index}" size="150" value="${supplier.otherName} ${shop.name}">
+    <input type="text" name="title_${shop_index}" size="150" value="${shop.name}">
 
     <p>商家名称缩写(最大50个字符)<b>*</b></p>
-    <input type="text" name="shortTitle_${shop_index}" size="150" value="${supplier.otherName} ${shop.name}">
+    <input type="text" name="shortTitle_${shop_index}" size="150" value="${shop.name}">
 
     <p>商圈<b>*</b></p>
     *{<input type="text" name="circleId_${shop_index}" size="150" value="${shop.circleId}">}*

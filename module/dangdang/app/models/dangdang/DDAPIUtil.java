@@ -54,8 +54,8 @@ public class DDAPIUtil {
      */
     public static void syncSellCount(Goods goods) throws DDAPIInvokeException {
         //根据商品对应的GoodsDeployRelation的linkId
-        GoodsDeployRelation deployRelation = GoodsDeployRelation.find("partner=? and goods=? order by createAt desc", OuterOrderPartner.DD, goods).first();
         Long id = goods.id;
+        GoodsDeployRelation deployRelation = GoodsDeployRelation.getLast(id, OuterOrderPartner.DD);
         if (deployRelation != null) {
             id = deployRelation.linkId;
         }
