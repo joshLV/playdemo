@@ -58,7 +58,7 @@ public class ResaleSalesReportCondition {
         }
 
 
-        System.out.println("condBuilder.toString():" + condBuilder.toString());
+        System.out.println("sendAt condBuilder.toString():" + condBuilder.toString());
         return condBuilder.toString();
     }
 

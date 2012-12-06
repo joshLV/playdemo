@@ -231,7 +231,7 @@ public class ResaleSalesReport extends Model {
         }
         List<ResaleSalesReport> paidResultList = query.getResultList();
         //sendAt real
-        sql = "select new models.ResaleSalesReport(r.order,sum(r.salePrice),count(r.buyNumber)) from OrderItems r ";
+        sql = "select new models.ResaleSalesReport(r.order,count(r.buyNumber),sum(r.salePrice)) from OrderItems r ";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterRealSendAt(AccountType.RESALER) + groupBy + " order by sum(r.salePrice) desc");
         for (String param : condition.getParamMap().keySet()) {
@@ -250,7 +250,7 @@ public class ResaleSalesReport extends Model {
         List<ResaleSalesReport> consumedResultList = query.getResultList();
 
         //refundAt ecoupon
-        sql = "select new models.ResaleSalesReport(sum(e.refundPrice),count(e),r.order) from OrderItems r, ECoupon e where e.orderItems=r";
+        sql = "select new models.ResaleSalesReport(sum(e.salePrice),count(e),r.order) from OrderItems r, ECoupon e where e.orderItems=r";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterRefundAt(AccountType.RESALER) + groupBy + " order by sum(e.refundPrice) desc");
         for (String param : condition.getParamMap().keySet()) {
@@ -364,15 +364,17 @@ public class ResaleSalesReport extends Model {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<ResaleSalesReport> paidResultList = query.getResultList();
+
         //sendAt real
-        sql = "select new models.ResaleSalesReport(r.order,sum(r.salePrice),count(r.buyNumber)) from OrderItems r ";
+        sql = "select new models.ResaleSalesReport(r.order,count(r.buyNumber),sum(r.salePrice)) from OrderItems r ";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterRealSendAt(AccountType.CONSUMER) + " order by sum(r.salePrice) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<ResaleSalesReport> sentRealResultList = query.getResultList();
-
+        System.out.println("sentRealResultList>size>>>" + sentRealResultList.size());
+        System.out.println("sentRealResultList>size value>>>" + sentRealResultList.get(0).realSalePrice);
 
         //consumedAt ecoupon
         sql = "select new models.ResaleSalesReport(sum(e.salePrice),r.order,count(e)) from OrderItems r, ECoupon e where e.orderItems=r";

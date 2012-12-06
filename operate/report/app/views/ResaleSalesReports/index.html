@@ -130,7 +130,6 @@
     <th width="70px">帐号</th>
     <th width="200px">售出券数量/金额</th>
     <th width="200px">售出实物数量/金额</th>
-
     <th width="180px">退款券数量/金额</th>
     <th width="180px">退款实物数量/金额</th>
     <th width="200px">消费券数量/金额</th>
@@ -160,7 +159,8 @@
                target="_blank">${report?.salePrice?.formatCurrency('CNY')}</a>
         </td>
         <td>
-        ${report?.realBuyNumber} / ${report?.realSalePrice?.formatCurrency('CNY')}
+        ${report?.realBuyNumber}
+            / ${report?.realSalePrice == null ?'￥0.00':report?.realSalePrice?.formatCurrency('CNY')}
         </td>
 
 
@@ -192,7 +192,8 @@
             <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
                target="_blank">${summary?.amount?.formatCurrency("CNY")}</a>
         </td>
-        <td>     ${summary?.realTotalNumber} / ${summary?.realAmount?.formatCurrency("CNY")}
+        <td>     ${summary?.realTotalNumber}
+            / ${summary?.realAmount == null ?'￥0.00':summary?.realAmount?.formatCurrency('CNY')}
         </td>
 
 
