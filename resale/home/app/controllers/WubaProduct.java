@@ -312,7 +312,7 @@ public class WubaProduct extends Controller {
         Map<String, Object> requestMap = new HashMap<>();
         List<String> ids = new ArrayList<String>();
         ids.add(relation.linkId.toString());
-        requestMap.put("groupbyIds", ids);
+        requestMap.put("groupbuyIds", ids);
         requestMap.put("status", -1);
         
         JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.getstatus", false);
@@ -321,7 +321,8 @@ public class WubaProduct extends Controller {
         if (!"10000".equals(status)) {
             renderText("failed:" + result);
         }
-        JsonObject data = result.get("data").getAsJsonObject();
+        JsonArray dataArray = result.get("data").getAsJsonArray();
+        JsonObject data = dataArray.get(0).getAsJsonObject();
         int statusCode = data.get("status").getAsInt();
         
         switch(statusCode) {
