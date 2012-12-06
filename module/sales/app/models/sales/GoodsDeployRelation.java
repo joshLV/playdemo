@@ -52,4 +52,15 @@ public class GoodsDeployRelation extends Model {
         return deployRelation != null ? deployRelation.goods : null;
     }
 
+    /**
+     * 得到最后一条GoodsDeployRelation.
+     * @param goodsId
+     * @param partner
+     * @return
+     */
+    public static GoodsDeployRelation getLast(Long goodsId, OuterOrderPartner partner) {
+        GoodsDeployRelation deployRelation = GoodsDeployRelation.find("partner=? and goods.id=? order by id desc", partner, goodsId).first();
+        return deployRelation;
+    }
+    
 }

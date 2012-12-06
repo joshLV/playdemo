@@ -11,7 +11,7 @@ GET     /coupons                                SupplierCoupons.index
 
 
 #验证电子券页面--v1
-#GET     /coupons/verify                        SupplierCoupons.verify
+GET     /coupons/verify                         SupplierVerifySingleCoupons.singleQuery
 GET    /coupons/query                           SupplierCoupons.query
 POST    /coupons/update                         SupplierCoupons.update
 #验证电子券页面--v2

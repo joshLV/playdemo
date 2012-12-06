@@ -22,10 +22,10 @@ public class ResalerFavs extends Controller {
 	/**
 	 * 分销库主界面
 	 */
-	public static void index(Date createdAtBegin, Date createdAtEnd, String goodsName) {
+	public static void index(Date createdAtBegin, Date createdAtEnd, String goodsName, Long goodsId) {
 		Resaler resaler = SecureCAS.getResaler();
 		List<ResalerFav> favs = ResalerFav.findFavs(resaler,createdAtBegin, createdAtEnd,
-				goodsName);
+				goodsName, goodsId);
 		renderArgs.put("createdAtBegin", createdAtBegin);
 		renderArgs.put("createdAtEnd", createdAtEnd);
 		renderArgs.put("goodsName", goodsName);

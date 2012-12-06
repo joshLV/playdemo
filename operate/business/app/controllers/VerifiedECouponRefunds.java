@@ -79,12 +79,13 @@ public class VerifiedECouponRefunds extends Controller {
         /**
          * 以下过程完全于ECoupon 的 付款后发佣金的过程相反(金额都用.negate()方法取负值)，需要完全相反
          */
+        boolean reverse = true;
 
         Account supplierAccount = AccountUtil
                 .getSupplierAccount(eCoupon.orderItems.goods.supplierId);
         // 给商户打钱
         TradeBill consumeTrade = TradeUtil.createConsumeTrade(eCoupon.eCouponSn,
-                supplierAccount, eCoupon.originalPrice.negate(), eCoupon.order.getId());
+                supplierAccount, eCoupon.originalPrice, eCoupon.order.getId(), reverse);
         TradeUtil.success(consumeTrade, "已消费退款：" + refundComment + "。" + eCoupon.order.description);
 
         BigDecimal platformCommission = BigDecimal.ZERO;
@@ -101,9 +102,9 @@ public class VerifiedECouponRefunds extends Controller {
                 TradeBill uhuilaCommissionTrade = TradeUtil
                         .createCommissionTrade(
                                 AccountUtil.getUhuilaAccount(),
-                                eCoupon.salePrice.subtract(eCoupon.resalerPrice).negate(),
+                                eCoupon.salePrice.subtract(eCoupon.resalerPrice),
                                 eCoupon.eCouponSn,
-                                eCoupon.order.getId());
+                                eCoupon.order.getId(),reverse);
 
                 TradeUtil.success(uhuilaCommissionTrade, "已消费退款：" + refundComment + "。" + eCoupon.order.description);
             }
@@ -114,26 +115,26 @@ public class VerifiedECouponRefunds extends Controller {
             TradeBill platformCommissionTrade = TradeUtil
                     .createCommissionTrade(
                             AccountUtil.getPlatformCommissionAccount(),
-                            platformCommission.negate(),
+                            platformCommission,
                             eCoupon.eCouponSn,
-                            eCoupon.order.getId());
-            TradeUtil.success(platformCommissionTrade, eCoupon.order.description);
+                            eCoupon.order.getId(),reverse);
+            TradeUtil.success(platformCommissionTrade,"已消费退款：" + refundComment + "。" + eCoupon.order.description);
         }
 
         if (eCoupon.rebateValue != null && eCoupon.rebateValue.compareTo(BigDecimal.ZERO) > 0) {
             TradeBill rabateTrade = TradeUtil.createTransferTrade(
-                    AccountUtil.getUhuilaAccount(),
                     AccountUtil.getPlatformIncomingAccount(),
-                    eCoupon.rebateValue.negate(), BigDecimal.ZERO);
+                    AccountUtil.getUhuilaAccount(),
+                    eCoupon.rebateValue, BigDecimal.ZERO);
             rabateTrade.orderId = eCoupon.order.id;
             TradeUtil.success(rabateTrade, "已消费退款：" + refundComment + "。活动折扣费" + eCoupon.rebateValue);
         } else if (eCoupon.salePrice.compareTo(eCoupon.originalPrice) < 0) {
             BigDecimal detaPrice = eCoupon.originalPrice.subtract(eCoupon.salePrice);
             // 如果售价低于进价，从活动金账户出
             TradeBill rabateTrade = TradeUtil.createTransferTrade(
-                    AccountUtil.getPromotionAccount(),
                     AccountUtil.getPlatformIncomingAccount(),
-                    detaPrice.negate(), BigDecimal.ZERO);
+                    AccountUtil.getPromotionAccount(),
+                    detaPrice, BigDecimal.ZERO);
             rabateTrade.orderId = eCoupon.order.id;
             TradeUtil.success(rabateTrade, "已消费退款：" + refundComment +  "。低价销售补贴" + detaPrice);
         }

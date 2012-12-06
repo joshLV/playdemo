@@ -19,7 +19,6 @@ import java.util.List;
 public class SMSScheduler extends Job {
     @Override
     public void doJob() throws ParseException {
-        System.out.println("))))))))))   Enter method SMSScheduler.doJob:" + new Date());
         List<SendSMSTask> smsTaskList = SendSMSTask.findUnDeleted();
         Date currentDate;
         for (SendSMSTask st : smsTaskList) {

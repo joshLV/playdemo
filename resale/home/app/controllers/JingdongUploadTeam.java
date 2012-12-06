@@ -40,8 +40,7 @@ import java.util.Map;
  */
 @With(SecureCAS.class)
 public class JingdongUploadTeam extends Controller {
-    public static final String DATE_FORMAT = "yyy-MM-dd HH:mm:ss";
-    public static final String DATE_FORMAT1 = "yyyy-MM-dd";
+    public static final String DATE_FORMAT = "yyyy-MM-dd";
 
     public static void prepare(Long goodsId) {
         Resaler resaler = SecureCAS.getResaler();
@@ -173,7 +172,6 @@ public class JingdongUploadTeam extends Controller {
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/uploadTeam.action";
         Template template = TemplateLoader.load("jingdong/groupbuy/request/uploadTeam.xml");
         GoodsDeployRelation goodsMapping = GoodsDeployRelation.generate(goods, OuterOrderPartner.JD);
-
         params.put("shops", shops);
         params.put("areaMap", areaMap);
         params.put("groupId", groupId);
@@ -228,9 +226,9 @@ public class JingdongUploadTeam extends Controller {
         renderArgs.put("imageOriginalPath", jsonObject.get("grouponBImg").getAsString());
         renderArgs.put("salePrice", jsonObject.get("teamPrice").getAsBigDecimal());
         renderArgs.put("faceValue", jsonObject.get("marketPrice").getAsBigDecimal());
-        renderArgs.put("effectiveAt", DateUtil.stringToDate(jsonObject.get("beginTime").getAsString(), DATE_FORMAT1));
-        renderArgs.put("expireAt", DateUtil.stringToDate(jsonObject.get("endTime").getAsString(), DATE_FORMAT1));
-        renderArgs.put("couponExpireTime", DateUtil.stringToDate(jsonObject.get("couponExpireTime").getAsString(), DATE_FORMAT1));
+        renderArgs.put("effectiveAt", DateUtil.stringToDate(jsonObject.get("beginTime").getAsString(), DATE_FORMAT));
+        renderArgs.put("expireAt", DateUtil.stringToDate(jsonObject.get("endTime").getAsString(), DATE_FORMAT));
+        renderArgs.put("couponExpireTime", DateUtil.stringToDate(jsonObject.get("couponExpireTime").getAsString(), DATE_FORMAT));
         renderArgs.put("notice", StringUtils.trimToEmpty(jsonObject.get("notice").getAsString()));
         renderArgs.put("teamDetail", StringUtils.trimToEmpty(jsonObject.get("teamDetail").getAsString()));
         renderArgs.put("goodsId", support.goods.id);

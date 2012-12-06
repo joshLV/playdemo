@@ -73,7 +73,8 @@ public class SupplierVerifyMultiCoupons extends Controller {
         BigDecimal verifyAmount = summaryECouponsAmount(ecoupons);
         renderArgs.put("amount", amount);
         renderArgs.put("verifyAmount", verifyAmount);
-        render("SupplierVerifyMultiCoupons/index.html", ecoupon, ecoupons, ecouponStatusDescription, shopId, eCouponSn, supplierUser, shopList);
+        Shop shop = Shop.findById(shopId);
+        render("SupplierVerifyMultiCoupons/index.html", ecoupon, ecoupons, ecouponStatusDescription, shopId, shop, eCouponSn, supplierUser, shopList);
     }
 
     private static BigDecimal summaryECouponsAmount(List<ECoupon> ecoupons) {
