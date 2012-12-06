@@ -9,5 +9,6 @@ public enum ECouponPartner {
     DD,     // 当当
     YHD,    // 一号店
     WB,     // 58
+    WUBA,
     TB,     // 淘宝
 }

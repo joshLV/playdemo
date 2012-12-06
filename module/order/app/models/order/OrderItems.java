@@ -96,6 +96,9 @@ public class OrderItems extends Model {
     @Column(name = "created_at")
     public Date createdAt;
 
+    @Column(name = "send_at")
+    public Date sendAt;
+
     @Enumerated(EnumType.STRING)
     public OrderStatus status;
 

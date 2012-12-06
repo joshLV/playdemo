@@ -823,6 +823,7 @@ public class ECoupon extends Model {
 
     /**
      * 得到券折扣金额
+     *
      * @param coupon
      * @return
      */
@@ -1149,19 +1150,20 @@ public class ECoupon extends Model {
                                                     List<ECoupon> ecoupons) {
         return selectCheckECoupons(payValue, ecoupons, null);
     }
-    
+
     /**
      * 从一组券中返回符合指定金额条件的券，需要包含ecoupon.
+     *
      * @param payValue
      * @param ecoupons
      * @param eCoupon
      * @return
      */
     public static List<ECoupon> selectCheckECoupons(BigDecimal payValue,
-                    List<ECoupon> ecoupons, ECoupon eCoupon) {
-        List<ECoupon> newECoupons = new ArrayList<>(); 
+                                                    List<ECoupon> ecoupons, ECoupon eCoupon) {
+        List<ECoupon> newECoupons = new ArrayList<>();
         for (ECoupon e : ecoupons) {
-            if (eCoupon == null || e.id != eCoupon.id){
+            if (eCoupon == null || e.id != eCoupon.id) {
                 newECoupons.add(e);
             }
         }
@@ -1173,7 +1175,7 @@ public class ECoupon extends Model {
             }
         });
         BigDecimal totalValue = BigDecimal.ZERO;
-        
+
         List<ECoupon> selectECoupons = new ArrayList<>();
         if (eCoupon != null && eCoupon.faceValue.compareTo(payValue) <= 0) {
             selectECoupons.add(eCoupon);
@@ -1203,12 +1205,7 @@ public class ECoupon extends Model {
         BigDecimal amount = BigDecimal.ZERO;
 
         for (ECoupon coupon : couponPage) {
-            if (coupon.status == ECouponStatus.REFUND) {
-                amount = amount.add(coupon.refundPrice == null ? BigDecimal.ZERO
-                        : coupon.refundPrice);
-            } else {
-                amount = amount.add(coupon.salePrice);
-            }
+            amount = amount.add(coupon.salePrice);
         }
         return amount;
     }
