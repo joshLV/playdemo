@@ -1205,12 +1205,7 @@ public class ECoupon extends Model {
         BigDecimal amount = BigDecimal.ZERO;
 
         for (ECoupon coupon : couponPage) {
-            if (coupon.status == ECouponStatus.REFUND) {
-                amount = amount.add(coupon.refundPrice == null ? BigDecimal.ZERO
-                        : coupon.refundPrice);
-            } else {
-                amount = amount.add(coupon.salePrice);
-            }
+            amount = amount.add(coupon.salePrice);
         }
         return amount;
     }

@@ -110,7 +110,7 @@ public class CouponsCondition implements Serializable {
             paramMap.put("paidAtEnd", DateUtil.getEndOfDay(paidAtEnd));
         }
 
-         if (hidPaidAtBegin != null) {
+        if (hidPaidAtBegin != null) {
             sql.append(" and e.order.paidAt>= :paidAtBegin");
             paramMap.put("paidAtBegin", hidPaidAtBegin);
         }
@@ -190,7 +190,7 @@ public class CouponsCondition implements Serializable {
         }
         if (StringUtils.isNotBlank(eCouponSn)) {
             sql.append(" and e.eCouponSn like :eCouponSn");
-            paramMap.put("eCouponSn", "%" + eCouponSn+"%");
+            paramMap.put("eCouponSn", "%" + eCouponSn + "%");
         }
         if (brandId != 0) {
             sql.append(" and e.orderItems.goods.brand =:brand");
