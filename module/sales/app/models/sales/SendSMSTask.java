@@ -82,7 +82,7 @@ public class SendSMSTask extends Model {
 
 
     public static List<SendSMSTask> findUnDeleted() {
-        return SendSMSTask.find("deleted=com.uhuila.common.constants.DeletedStatus.UN_DELETED").fetch();
+        return find("deleted=com.uhuila.common.constants.DeletedStatus.UN_DELETED").fetch();
     }
 
 }

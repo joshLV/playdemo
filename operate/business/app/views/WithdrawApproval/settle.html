@@ -80,8 +80,8 @@
             </div>
             <div class="control-group">
                 <label class="control-label">预付款余额 </label>
-                <label class="control-value"><a href="/prepayments/${prepaymentId}"
-                                                target="_blank">${prepaymentBalance.formatCurrency('CNY')}</a></label>
+                <label class="control-value">#{if prepaymentId!=null}<a href="/prepayments/${prepaymentId}"
+                                                target="_blank">${prepaymentBalance.formatCurrency('CNY')}</a>#{/if}#{else}${prepaymentBalance.formatCurrency('CNY')}#{/else}</label>
             </div>
             #{if needPay?.compareTo(java.math.BigDecimal.ZERO)>0}
                 <div class="control-group">
