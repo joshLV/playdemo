@@ -9,6 +9,7 @@ import models.dangdang.ErrorCode;
 import models.dangdang.HttpProxy;
 import models.dangdang.Response;
 import models.order.OuterOrderPartner;
+import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.sales.Goods;
 import models.sales.GoodsDeployRelation;
@@ -44,11 +45,12 @@ public class DDPushGoodsTest extends FunctionalTest {
     public void setup() {
         FactoryBoy.deleteAll();
 
+        Resaler resaler = FactoryBoy.create(Resaler.class);
         resalerFav = FactoryBoy.create(ResalerFav.class);
-        resalerFav.resaler.loginName = "dangdang";
+        resalerFav.resaler = resaler;
         resalerFav.save();
         goods = resalerFav.goods;
-        Security.setLoginUserForTest(resalerFav.resaler.loginName);
+        Security.setLoginUserForTest(resaler.loginName);
 
     }
 
