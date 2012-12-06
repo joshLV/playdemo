@@ -1,16 +1,15 @@
 package factory.order;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
+import com.uhuila.common.constants.DeletedStatus;
+import factory.FactoryBoy;
+import factory.ModelFactory;
+import models.accounts.SettlementStatus;
 import models.order.Prepayment;
 import models.supplier.Supplier;
 import util.DateHelper;
 
-import com.uhuila.common.constants.DeletedStatus;
-
-import factory.FactoryBoy;
-import factory.ModelFactory;
+import java.math.BigDecimal;
+import java.util.Date;
 
 public class PrepaymentFactory extends ModelFactory<Prepayment> {
 
@@ -23,6 +22,9 @@ public class PrepaymentFactory extends ModelFactory<Prepayment> {
         prepayment.effectiveAt = DateHelper.beforeDays(3);
         prepayment.expireAt = DateHelper.afterDays(1);
         prepayment.deleted = DeletedStatus.UN_DELETED;
+        prepayment.createdBy = "admin";
+        prepayment.warning = false;
+        prepayment.settlementStatus = SettlementStatus.UNCLEARED;
         prepayment.remark = "测试备注";
         return prepayment;
     }
