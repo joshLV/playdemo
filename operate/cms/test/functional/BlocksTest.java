@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * User: Juno
  */
-public class CmsBlocksFunctionalTest extends FunctionalTest{
+public class BlocksTest extends FunctionalTest{
 
     @Before
     public void setup() {
