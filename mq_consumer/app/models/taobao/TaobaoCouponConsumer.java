@@ -7,6 +7,7 @@ import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.order.*;
 import models.resale.Resaler;
+import models.sales.Goods;
 import models.sales.GoodsDeployRelation;
 import models.sales.MaterialType;
 import play.Logger;
@@ -145,12 +146,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
         ybqOrder.save();
         try {
-            GoodsDeployRelation goodsDeployRelation = GoodsDeployRelation.find("byLinkId", outerGroupId).first();
-            if (goodsDeployRelation == null || goodsDeployRelation.goods == null) {
-                Logger.info("can not find goodsDeployRelation: %s", outerGroupId);
-                return null;
-            }
-            models.sales.Goods goods = goodsDeployRelation.goods;
+            Goods goods = Goods.findById(outerGroupId);
             if (goods == null) {
                 Logger.info("goods not found: %s", outerGroupId);
                 return null;
