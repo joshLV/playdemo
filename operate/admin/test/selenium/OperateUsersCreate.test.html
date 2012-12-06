@@ -26,6 +26,7 @@
     type('id=email','11@qq.com')
     type('id=jobNumber','113242')
     type('name=operateUser.encryptedPassword','123456')
-    clickAndWait('id=save')
-    assertTitle('操作员一览')
+    *{clickAndWait('id=save')}*
+    *{assertTitle('操作员一览')}*
 #{/selenium}
+
