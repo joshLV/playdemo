@@ -595,6 +595,13 @@ public class Goods extends Model {
     public Boolean isOrder = Boolean.FALSE;
 
     /**
+     * 不可退款
+     */
+    @Column(name = "no_refund")
+    @SolrField
+    public Boolean noRefund = Boolean.FALSE;
+
+    /**
      * 是否隐藏上架
      */
     @Column(name = "is_hide_onsale")
@@ -1546,7 +1553,7 @@ public class Goods extends Model {
         query.setParameter("expireAt", nowDate);
         query.setMaxResults(limit);
         List<Goods> goodsList = query.getResultList();
-        System.out.println(goodsList.size()+"---------------");
+        System.out.println(goodsList.size() + "---------------");
         return goodsList;
 
     }
@@ -1586,7 +1593,7 @@ public class Goods extends Model {
     public static List<Goods> findNewGoodsOfOthers(Long id, int limit) {
         Date nowDate = new Date();
         return Goods.find(" id <> ? and status = ? and deleted = ? and isHideOnsale = false and beginOnSaleAt<= ? and expireAt > ? order by createdAt DESC",
-                id, GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, nowDate,nowDate).fetch(limit);
+                id, GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, nowDate, nowDate).fetch(limit);
     }
 
     /**

@@ -91,6 +91,15 @@ $(
                 $("#isOrder").val(false)
             }
         });
+
+        $("#noRefund").click(function () {
+            if (this.checked) {
+                $("#noRefund").val(true)
+            } else {
+                $("#noRefund").val(false)
+            }
+        });
+
         $("input[name='useWeekDay[]'],#selectWeekDayAll").click(
             function () {
                 var week = [];
