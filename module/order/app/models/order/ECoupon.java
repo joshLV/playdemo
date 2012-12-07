@@ -492,7 +492,6 @@ public class ECoupon extends Model {
 
         }
 
-        this.refresh();
         //===================券消费处理开始=====================================
         if (consumed(shopId, operateUserId, supplierUser, type)) {
             payCommission();
