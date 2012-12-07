@@ -83,6 +83,7 @@ public class WubaGroupBuy extends Controller {
             outerOrder = new OuterOrder();
             outerOrder.partner = OuterOrderPartner.WB;
             outerOrder.status = OuterOrderStatus.ORDER_COPY;
+            outerOrder.orderId = orderId;
             outerOrder.message = orderJson.toString();
             outerOrder.save();
             try { // 将订单写入数据库
@@ -93,12 +94,8 @@ public class WubaGroupBuy extends Controller {
                 finish(result);
                 return;
             }
-        } else {
-            outerOrder.message = orderJson.toString();
         }
 
-        outerOrder.orderId = orderId;
-        outerOrder.save();
         //检查订单数量
         if (productNum <= 0 || productPrize.compareTo(BigDecimal.ZERO) < 0 || !checkPhone(userPhone)) {
             putStatusAndMsg(result, "20210", "输入参数错误");
@@ -126,6 +123,7 @@ public class WubaGroupBuy extends Controller {
             } else if (ybqOrder != null) {
                 outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
                 outerOrder.ybqOrder = ybqOrder;
+                outerOrder.message = orderJson.toString();
                 outerOrder.save();
             }
         } else if (outerOrder.status != OuterOrderStatus.ORDER_SYNCED) {
