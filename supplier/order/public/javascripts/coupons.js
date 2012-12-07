@@ -13,8 +13,6 @@ $(function () {
     });
     $("#query").click(function () {
         var eCouponSn = $("#eCouponSn").val();
-        var shopId = $("#shopId").val();
-        var isSingle = $("#isSingle").val();
         if (eCouponSn == "") {
             $("#checksn").html("请输入券号!");
             return false;
@@ -38,10 +36,6 @@ $(function () {
             $("#checksn").html("请输入券号!");
             return false;
         }
-        if (eCouponSn == "") {
-            $("#checksn").html("请输入券号!");
-            return false;
-        }
         $("#form").attr("target", "_self");
         $("#form").attr("action", "/coupons/multi-verify");
         $("#form").attr("method", "POST");
@@ -58,7 +52,7 @@ function verifyAmount() {
     } else {
         verifyAmount = verifyAmount * 1;
         if (verifyAmount >= 0 && amount == verifyAmount) {
-            $("#sure_amount").html("√");
+            $("#sure_amount").html("√").css("color", "#FD6F00");
             $("#multi-sure").attr("disabled", false);
         } else {
             $("#sure_amount").html("×").css("color", "#FD6F00");
