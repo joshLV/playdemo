@@ -27,6 +27,7 @@ import play.templates.TemplateLoader;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -106,16 +107,15 @@ public class DDPushGoods extends Controller {
      * @param goodsId
      */
     public static void prepare(Long goodsId) {
-        Logger.info("DDAPIPushGoods API begin!");
         Resaler user = SecureCAS.getResaler();
-       if (!Resaler.DD_LOGIN_NAME.equals(user.loginName)) {
+        if (!Resaler.DD_LOGIN_NAME.equals(user.loginName)) {
             error("user is not dangdang resaler");
         }
         //查询是否已经推送过该商品，是则直接从GoodsThirdSupport读取，不是就从goods表查询
         Goods goods = Goods.findOnSale(goodsId);
         ResalerFav resalerFav = ResalerFav.find("byGoodsAndResaler", goods, user).first();
         if (resalerFav == null) {
-            error("no goods found");
+            error("no goods found,请检查该商品是否已下架，或是否设置隐藏上架！");
         }
         Supplier supplier = Supplier.findById(goods.supplierId);
 
@@ -125,7 +125,7 @@ public class DDPushGoods extends Controller {
         } else {
             getGoodsSupportItems(support);
         }
-        List<Shop> shops = Arrays.asList(goods.getShopList().toArray(new Shop[]{}));
+        Collection<Shop> shops = goods.getShopList();
         render(shops, supplier);
     }
 
@@ -143,7 +143,7 @@ public class DDPushGoods extends Controller {
         Goods goods = Goods.findOnSale(goodsId);
         ResalerFav resalerFav = ResalerFav.find("byGoodsAndResaler", goods, user).first();
         if (resalerFav == null) {
-            error("no fav found");
+            error("no goods found,请检查该商品是否已下架，或是否设置隐藏上架！");
         }
         String goodsData = gson.toJson(params);
 

@@ -1,7 +1,6 @@
 package controllers;
 
-import java.util.List;
-
+import com.uhuila.common.util.DateUtil;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
@@ -9,14 +8,12 @@ import models.order.VerifyCouponType;
 import models.sales.Shop;
 import models.sms.SMSUtil;
 import navigation.annotations.ActiveNavigation;
-
 import org.apache.commons.lang.StringUtils;
-
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import com.uhuila.common.util.DateUtil;
+import java.util.List;
 
 /**
  * <p/>
@@ -57,51 +54,46 @@ public class SupplierVerifySingleCoupons extends Controller {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         Long supplierUserId = SupplierRbac.currentUser().id;
         SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
-        List shopList = Shop.findShopBySupplier(supplierId);
+        List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+
         eCouponSn = StringUtils.trim(eCouponSn);
         //根据页面录入券号查询对应信息
         ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
-        if (ecoupon == null) {
-            Validation.addError("error-info", "对不起，没有该券的信息！");
-        }
-        if (shopId == null) {
-            Validation.addError("error-info", "对不起，该券不能在此门店使用!");
-        }
-        if (Validation.hasErrors()) {
-            render("SupplierVerifySingleCoupons/index.html", shopId, eCouponSn, supplierUser, shopList);
-        }
-        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
         Shop shop = Shop.findById(shopId);
-        render("SupplierVerifySingleCoupons/index.html", ecoupon, shopId, shop, eCouponSn, supplierUser, shopList, ecouponStatusDescription);
+        //check券和门店
+        checkCoupon(ecoupon, shopId, shopList, supplierUser);
+
+        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
+
+        render("SupplierVerifySingleCoupons/index.html", ecoupon, shop, supplierUser, shopList, ecouponStatusDescription);
     }
 
+    /**
+     * 验证券
+     */
     public static void singleVerify() {
         Long supplierUserId = SupplierRbac.currentUser().id;
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         Long shopId = Long.valueOf(request.params.get("shopId"));
         String eCouponSn = request.params.get("eCouponSn");
         SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
-        List shopList = Shop.findShopBySupplier(supplierId);
-
+        List<Shop> shopList = Shop.findShopBySupplier(supplierId);
         ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
-        if (ecoupon == null) {
-            Validation.addError("error-info", "对不起，没有该券的信息！");
-        }
-        if (Validation.hasErrors()) {
-            render("SupplierVerifySingleCoupons/index.html", shopId, eCouponSn, supplierUser, shopList);
-        }
+        //check券和门店
+        checkCoupon(ecoupon, shopId, shopList, supplierUser);
 
         String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
         if (ecouponStatusDescription != null) {
             Validation.addError("error-info", ecouponStatusDescription);
         }
         Shop shop = Shop.findById(shopId);
+
         if (ecoupon.status == ECouponStatus.UNCONSUMED) {
             if (!ecoupon.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
                 Validation.addError("error-info", "第三方" + ecoupon.partner + "券验证失败！券号：" + ecoupon.eCouponSn + ",请确认券状态！");
             }
             if (Validation.hasErrors()) {
-                render("SupplierVerifySingleCoupons/index.html", shopId, eCouponSn, supplierUser, shopList);
+                render("SupplierVerifySingleCoupons/index.html", shop, eCouponSn, supplierUser, shopList);
             }
             String dateTime = DateUtil.getNowTime();
             String ecouponSNLast4Code = ecoupon.getLastCode(4);
@@ -111,7 +103,21 @@ public class SupplierVerifySingleCoupons extends Controller {
         }
 
         renderArgs.put("success_info", "true");
-        render("SupplierVerifySingleCoupons/index.html", shopId, eCouponSn, ecoupon, supplierUser, shopList);
+        render("SupplierVerifySingleCoupons/index.html", shop, ecoupon, supplierUser, shopList);
 
+    }
+
+    private static void checkCoupon(ECoupon ecoupon, Long shopId, List<Shop> shopList, SupplierUser supplierUser) {
+        if (ecoupon == null) {
+            Validation.addError("error-info", "对不起，没有该券的信息！");
+        }
+        if (shopId == null) {
+            Validation.addError("error-info", "对不起，该券不能在此门店使用!");
+        }
+
+        Shop shop = Shop.findById(shopId);
+        if (Validation.hasErrors()) {
+            render("SupplierVerifySingleCoupons/index.html", shop, ecoupon, supplierUser, shopList);
+        }
     }
 }

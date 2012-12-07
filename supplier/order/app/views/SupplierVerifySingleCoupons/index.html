@@ -36,8 +36,8 @@
     <div class="controls">门&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;店:
         #{if supplierUser?.shop?.id == null}
             #{select 'shopId', id:'shopId', class:'span2', value:supplierUser?.shop?.id}
-                #{list items:shopList, as:'shop'}
-                    #{option shop?.id}${shop?.name}#{/option}
+                #{list items:shopList, as:'supplierShop'}
+                    #{option supplierShop?.id}${supplierShop?.name}#{/option}
                 #{/list}
             #{/select}
         #{/if}
@@ -52,7 +52,7 @@
 </div>
 <div class="control-group">
     <div class="controls">券&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号:
-        <input type="text" name="eCouponSn" id="eCouponSn" value="${eCouponSn}" class="input-large"/>
+        <input type="text" name="eCouponSn" id="eCouponSn" value="${ecoupon?.eCouponSn}" class="input-large"/>
         <span class="error" id="checksn"></span>
     </div>
 </div>
@@ -63,3 +63,6 @@
 <span style="font-size:28px;color:#ff0000;line-height: 2">#{error 'error-info' /}</span>
 <div class="control-group">#{include 'SupplierVerifySingleCoupons/consume.html' /}</div>
 #{/form}
+<script type="text/javascript">
+    $("#shopId").val(${shop?.id});
+</script>
