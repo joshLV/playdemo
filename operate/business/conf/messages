@@ -38,6 +38,10 @@ validation.moreThanFaceValue=%s不能超过原价!
 validation.lessThanOriginalPrice=%s不能低于采购价!
 validation.moreThanLastLevel=%s不能超过前一级别的VIP加价!
 validation.beforeThanEffectiveAt=%s不能早于有效期开始时间!
+
+validation.beforeThanBeginOnSaleAt=%s不能早于上架开始时间!
+validation.afterThanExpireAt=%s不能晚于过期时间!
+
 validation.beforeThanSecKillBeginAt=%s不能早于秒杀开始时间!
 validation.phone=无效的电话!
 validation.useEndTime=使用结束时间要在06：00之前！
@@ -143,6 +147,8 @@ goods.category=分类
 goods.brand=品牌
 goods.brand.id=品牌
 goods.beginOnSaleAt=开始上架时间
+goods.endOnSaleAt=结束上架时间
+goods.onSale=上架时间
 goods.effective=券有效期
 goods.effectiveAt=开始时间
 goods.expireAt=到期时间

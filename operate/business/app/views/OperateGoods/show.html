@@ -59,6 +59,16 @@
                 至 ${goods?.expireAt?.format('yyyy-MM-dd HH:mm:ss')}
             </div>
         </div>
+
+        <div class="control-group">
+            <label class="control-label">&{'goods.onSale'}</label>
+
+            <div class="controls">${goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}
+                至 ${goods?.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}
+            </div>
+
+        </div>
+
         <div class="control-group">
             <label class="control-label">&{'goods.faceValue'}</label>
 

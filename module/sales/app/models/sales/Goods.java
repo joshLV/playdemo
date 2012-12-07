@@ -290,10 +290,21 @@ public class Goods extends Model {
     /**
      * 开始上架时间
      */
+    @Required
     @Column(name = "begin_onsale_at")
     @SolrField
     @As(lang = {"*"}, value = {"yyyy-MM-dd HH:mm:ss"})
     public Date beginOnSaleAt;
+
+
+    /**
+     * 结束上架时间
+     */
+    @Required
+    @Column(name = "end_onsale_at")
+    @SolrField
+    @As(lang = {"*"}, value = {"yyyy-MM-dd HH:mm:ss"})
+    public Date endOnSaleAt;
 
     /**
      * 最早上架时间
@@ -1042,7 +1053,8 @@ public class Goods extends Model {
         updateGoods.useBeginTime = goods.useBeginTime;
         updateGoods.useEndTime = goods.useEndTime;
         updateGoods.useWeekDay = goods.useWeekDay;
-
+        updateGoods.beginOnSaleAt = goods.beginOnSaleAt;
+        updateGoods.endOnSaleAt = goods.endOnSaleAt;
         updateGoods.isOrder = (goods.isOrder == null) ? Boolean.FALSE : goods.isOrder;
         updateGoods.isLottery = (goods.isLottery == null) ? Boolean.FALSE : goods.isLottery;
         updateGoods.isHideOnsale = (goods.isHideOnsale == null) ? Boolean.FALSE : goods.isHideOnsale;
@@ -1546,7 +1558,7 @@ public class Goods extends Model {
         query.setParameter("expireAt", nowDate);
         query.setMaxResults(limit);
         List<Goods> goodsList = query.getResultList();
-        System.out.println(goodsList.size()+"---------------");
+        System.out.println(goodsList.size() + "---------------");
         return goodsList;
 
     }
@@ -1586,7 +1598,7 @@ public class Goods extends Model {
     public static List<Goods> findNewGoodsOfOthers(Long id, int limit) {
         Date nowDate = new Date();
         return Goods.find(" id <> ? and status = ? and deleted = ? and isHideOnsale = false and beginOnSaleAt<= ? and expireAt > ? order by createdAt DESC",
-                id, GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, nowDate,nowDate).fetch(limit);
+                id, GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, nowDate, nowDate).fetch(limit);
     }
 
     /**

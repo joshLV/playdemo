@@ -337,6 +337,20 @@ public class OperateGoods extends Controller {
         }
     }
 
+    private static void checkSaleAt(models.sales.Goods goods) {
+        if (goods.beginOnSaleAt != null && goods.endOnSaleAt != null && goods.endOnSaleAt.before(goods.beginOnSaleAt)) {
+            Validation.addError("goods.endOnSaleAt", "validation.beforeThanBeginOnSaleAt");
+        }
+
+        if (goods.beginOnSaleAt != null && goods.expireAt != null && goods.beginOnSaleAt.after(goods.expireAt)) {
+            Validation.addError("goods.beginOnSaleAt", "validation.afterThanExpireAt");
+        }
+
+        if (goods.endOnSaleAt != null && goods.expireAt != null && goods.endOnSaleAt.after(goods.expireAt)) {
+            Validation.addError("goods.endOnSaleAt", "validation.afterThanExpireAt");
+        }
+    }
+
     private static void checkImageFile(File imagePath) {
         if (imagePath != null) {
             //检查目录
@@ -474,9 +488,9 @@ public class OperateGoods extends Controller {
         if (goods.isAllShop && goods.shops != null) {
             goods.shops = null;
         }
-
         checkImageFile(imagePath);
         checkExpireAt(goods);
+        checkSalePrice(goods);
         checkSalePrice(goods);
         checkShops(goods.supplierId);
         checkUseWeekDay(goods);
@@ -531,6 +545,7 @@ public class OperateGoods extends Controller {
         }
         checkImageFile(imagePath);
         checkExpireAt(goods);
+        checkSaleAt(goods);
         checkSalePrice(goods);
         checkShops(goods.supplierId);
         checkUseWeekDay(goods);
