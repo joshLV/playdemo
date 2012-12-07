@@ -4,6 +4,7 @@ import controllers.supplier.cas.Security;
 import factory.FactoryBoy;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
+import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Category;
@@ -16,6 +17,7 @@ import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
+import util.DateHelper;
 
 /**
  * 门店验证测试
@@ -85,6 +87,52 @@ public class SupplierCouponQueryTest extends FunctionalTest {
         ECoupon getCoupon = (ECoupon) renderArgs("ecoupon");
         assertEquals(coupon.eCouponSn, getCoupon.eCouponSn);
     }
+
+    @Test
+    public void 已消费的券() {
+        coupon.status = ECouponStatus.CONSUMED;
+        coupon.save();
+        String url = "/coupons/single-query?shopId=" + shop.id + "&eCouponSn=" + coupon.eCouponSn;
+        Http.Response response = GET(url);
+        assertStatus(200, response);
+        assertNotNull(renderArgs("ecoupon"));
+        assertContentMatch("此券已消费", response);
+        assertContentMatch(coupon.eCouponSn, response);
+        ECoupon getCoupon = (ECoupon) renderArgs("ecoupon");
+        assertEquals(coupon.eCouponSn, getCoupon.eCouponSn);
+    }
+
+    @Test
+    public void 已过期的券() {
+        coupon.expireAt = DateHelper.beforeDays(2);
+        coupon.save();
+        String url = "/coupons/single-query?shopId=" + shop.id + "&eCouponSn=" + coupon.eCouponSn;
+        Http.Response response = GET(url);
+        assertStatus(200, response);
+        assertNotNull(renderArgs("ecoupon"));
+        assertContentMatch("此券已过期", response);
+        assertContentMatch(coupon.eCouponSn, response);
+        System.out.println(response.out.toString());
+        ECoupon getCoupon = (ECoupon) renderArgs("ecoupon");
+        assertEquals(coupon.eCouponSn, getCoupon.eCouponSn);
+    }
+
+    @Test
+    public void 已冻结的券() {
+        coupon.refresh();
+        coupon.isFreeze = 1;
+        coupon.save();
+        String url = "/coupons/single-query?shopId=" + shop.id + "&eCouponSn=" + coupon.eCouponSn;
+        Http.Response response = GET(url);
+        assertStatus(200, response);
+        assertNotNull(renderArgs("ecoupon"));
+        assertContentMatch("此券已被冻结不能使用", response);
+        assertContentMatch(coupon.eCouponSn, response);
+        System.out.println(response.out.toString());
+        ECoupon getCoupon = (ECoupon) renderArgs("ecoupon");
+        assertEquals(coupon.eCouponSn, getCoupon.eCouponSn);
+    }
+
     @Test
     public void 非法参数() {
         Http.Response response = GET("/coupons/single-query?shopId=" + shop.id + "&eCouponSn=11aa");

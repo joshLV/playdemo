@@ -86,14 +86,18 @@ public class SupplierVerifySingleCoupons extends Controller {
         if (ecouponStatusDescription != null) {
             Validation.addError("error-info", ecouponStatusDescription);
         }
+
         Shop shop = Shop.findById(shopId);
+        if (Validation.hasErrors()) {
+            render("SupplierVerifySingleCoupons/index.html", shop, ecoupon, supplierUser, shopList);
+        }
 
         if (ecoupon.status == ECouponStatus.UNCONSUMED) {
-            if (!ecoupon.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
+            if (ecoupon.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
                 Validation.addError("error-info", "第三方" + ecoupon.partner + "券验证失败！,请确认券状态(是否过期或退款等)！");
             }
             if (Validation.hasErrors()) {
-                render("SupplierVerifySingleCoupons/index.html", shop, eCouponSn, supplierUser, shopList);
+                render("SupplierVerifySingleCoupons/index.html", shop, ecoupon, supplierUser, shopList);
             }
             String dateTime = DateUtil.getNowTime();
             String ecouponSNLast4Code = ecoupon.getLastCode(4);
