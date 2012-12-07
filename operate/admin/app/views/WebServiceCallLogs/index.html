@@ -94,7 +94,10 @@
            ${row.key3Name}
         </td>
         <td style="word-break: break-all;">${row.url}</td>
-        <td style="word-break: break-all;">${row.postParams}</td>
+        <td style="word-break: break-all;">
+          ${row.postParams}
+          ${row.requestBody}
+        </td>
         <td style="word-break: break-all;">
           ${row.responseText}
           #{if row.exceptionText != null}
