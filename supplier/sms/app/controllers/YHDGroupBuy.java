@@ -57,6 +57,7 @@ public class YHDGroupBuy extends Controller{
         if(outerOrder == null){
             outerOrder = new OuterOrder();
             outerOrder.partner = OuterOrderPartner.YHD;
+            outerOrder.orderNumber = orderCode;
             outerOrder.status = OuterOrderStatus.ORDER_COPY;
             outerOrder.message = gson.toJson(params);
             outerOrder.save();
@@ -66,13 +67,9 @@ public class YHDGroupBuy extends Controller{
                 errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.error", "重复的请求", null));
                 finish(errorInfoList, totalCount);
             }
-        }else {
-            outerOrder.message = gson.toJson(params);
         }
         Logger.info("yihaodian: %s", outerOrder.message);
 
-        outerOrder.orderNumber = orderCode;
-        outerOrder.save();
         //检查订单数量
         if(productNum <= 0){
             errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "购买数量不能小于0", null));
@@ -113,6 +110,7 @@ public class YHDGroupBuy extends Controller{
             }else if(ybqOrder != null){
                 outerOrder.status = OuterOrderStatus.ORDER_DONE;
                 outerOrder.ybqOrder = ybqOrder;
+                outerOrder.message = gson.toJson(params);
                 outerOrder.save();
                 renderArgs.put("data", "\"updateCount\": 1");
                 totalCount = 1;
