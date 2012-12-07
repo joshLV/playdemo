@@ -1,7 +1,6 @@
-#{fixture delete:'all' , load:['fixture/user.yml','fixture/userInfo.yml'] /}
+#{factory delete:'all'/}
+#{factory var:'user', type:'consumer.User',name:'selenium'/}
 %{
-id = play.test.Fixtures.idCache.get("models.consumer.User-selenium");
-user = models.consumer.User.findById(id);
 account = models.accounts.util.AccountUtil.getAccount(user.getId(), models.accounts.AccountType.CONSUMER)
 account.amount = new java.math.BigDecimal("300.00")
 account.save()
