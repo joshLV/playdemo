@@ -43,12 +43,7 @@ public class AccountSequencesTest extends FunctionalTest {
             }
         });
         supplierUser = FactoryBoy.create(SupplierUser.class);
-        accountSequence = FactoryBoy.create(AccountSequence.class, new BuildCallback<AccountSequence>() {
-            @Override
-            public void build(AccountSequence accountSequence) {
-                accountSequence.account = account;
-            }
-        });
+        accountSequence = FactoryBoy.create(AccountSequence.class);
 
         // 设置测试登录的用户名
         Security.setLoginUserForTest(supplierUser.loginName);
