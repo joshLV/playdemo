@@ -74,6 +74,18 @@ public class SupplierCouponQueryTest extends FunctionalTest {
     }
 
     @Test
+    public void 在当当已经退款的券进行消费() {
+        System.out.println("ecoupon.su=" + coupon.goods.supplierId + ", sn=" + coupon.eCouponSn);
+        String url = "/coupons/single-query?shopId=" + shop.id + "&eCouponSn=" + coupon.eCouponSn;
+        Http.Response response = GET(url);
+        assertStatus(200, response);
+        assertNotNull(renderArgs("ecoupon"));
+        assertContentMatch("该券未消费！", response);
+        assertContentMatch("券编号：" + coupon.eCouponSn, response);
+        ECoupon getCoupon = (ECoupon) renderArgs("ecoupon");
+        assertEquals(coupon.eCouponSn, getCoupon.eCouponSn);
+    }
+    @Test
     public void 非法参数() {
         Http.Response response = GET("/coupons/single-query?shopId=" + shop.id + "&eCouponSn=11aa");
         assertStatus(200, response);

@@ -215,7 +215,7 @@ POST    /coupons/batchfreeze/doing             BatchFreezeCoupons.batchFreezeCou
 #验证消费券
 GET     /coupons/index                          OperateVerifyCoupons.index
 GET     /coupons/verify                         OperateVerifyCoupons.verify
-POST    /coupons/update                         OperateVerifyCoupons.update
+POST    /coupons/verify                         OperateVerifyCoupons.update
 
 # 预购券管理
 GET     /import-coupons                         ImportCoupons.index

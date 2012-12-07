@@ -132,13 +132,13 @@ public class SupplierVerifyMultiCoupons extends Controller {
             int checkedCount = 0;
             List<ECoupon> realCheckECoupon = new ArrayList<>();  //可能验证失败，所以要有一个实际真正验证成功的ecoupons
             for (ECoupon e : checkECoupons) {
-                if (!e.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(),
+                if (e.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(),
                         VerifyCouponType.SHOP, e.eCouponSn)) {
                     checkedCount += 1;
                     consumedAmount = consumedAmount.add(e.faceValue);
                     realCheckECoupon.add(e);
                 } else {
-                    Validation.addError("error-info", "第三方" + e.partner + "券验证失败！券号：" + e.eCouponSn + ",请确认券状态！");
+                    Validation.addError("error-info", "第三方" + ecoupon.partner + "券验证失败！券号：" + ecoupon.eCouponSn + ",请确认券状态！");
                 }
             }
             if (consumedAmount.compareTo(BigDecimal.ZERO) == 0) {
