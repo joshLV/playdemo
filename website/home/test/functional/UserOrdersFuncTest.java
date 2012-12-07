@@ -44,7 +44,7 @@ public class UserOrdersFuncTest extends FunctionalTest {
     Order order;
     OrderItems orderItems;
     ECoupon ecoupon;
-    
+
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
@@ -53,10 +53,10 @@ public class UserOrdersFuncTest extends FunctionalTest {
         // 设置测试登录的用户名
         user = FactoryBoy.create(User.class);
         Security.setLoginUserForTest(user.loginName);
-        
+
         FactoryBoy.create(Supplier.class);
         FactoryBoy.create(Shop.class);
-        
+
         goods = FactoryBoy.create(Goods.class);
         order = FactoryBoy.create(Order.class, new BuildCallback<Order>() {
             @Override
@@ -74,12 +74,12 @@ public class UserOrdersFuncTest extends FunctionalTest {
         List<ECoupon> ecoupons = FactoryBoy.batchCreate(3, ECoupon.class, new SequenceCallback<ECoupon>() {
             @Override
             public void sequence(ECoupon ecoupon, int seq) {
-                 // do nothing.   
+                // do nothing.
             }
         });
         ecoupon = ecoupons.get(0);
     }
-    
+
     @After
     public void tearDown() {
         // 清除登录Mock
@@ -122,6 +122,7 @@ public class UserOrdersFuncTest extends FunctionalTest {
 
         Http.Response response = GET("/orders/refund/" + order.orderNumber);
         assertStatus(200, response);
+        assertEquals(order, (Order) renderArgs("order"));
 
         Order resultOrder = (Order) renderArgs("order");
         assertEquals(order.orderNumber, resultOrder.orderNumber);
@@ -146,7 +147,7 @@ public class UserOrdersFuncTest extends FunctionalTest {
         BigDecimal originAmount = new BigDecimal("10000");
         account.amount = originAmount;
         account.save();
-        
+
         Http.Response response = POST("/orders/batch-refund", args);
         assertStatus(302, response);
 
@@ -168,5 +169,12 @@ public class UserOrdersFuncTest extends FunctionalTest {
         Order updatedOrder = Order.findById(order.id);
         updatedOrder.refresh();
         assertEquals(OrderStatus.CANCELED, updatedOrder.status);
+    }
+
+    @Test
+    public void testDetails() {
+        Http.Response response = GET("/orders/" + order.orderNumber);
+        assertStatus(200, response);
+        assertEquals(order, (Order) renderArgs("order"));
     }
 }
