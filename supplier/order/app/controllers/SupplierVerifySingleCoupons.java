@@ -1,6 +1,7 @@
 package controllers;
 
-import com.uhuila.common.util.DateUtil;
+import java.util.List;
+
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
@@ -8,12 +9,15 @@ import models.order.VerifyCouponType;
 import models.sales.Shop;
 import models.sms.SMSUtil;
 import navigation.annotations.ActiveNavigation;
+
 import org.apache.commons.lang.StringUtils;
+
 import play.data.validation.Validation;
+import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import java.util.List;
+import com.uhuila.common.util.DateUtil;
 
 /**
  * <p/>
@@ -24,6 +28,23 @@ import java.util.List;
 @With(SupplierRbac.class)
 @ActiveNavigation("coupons_single_index")
 public class SupplierVerifySingleCoupons extends Controller {
+
+    @Before(priority=1000)
+    public static void storeShopIp() {
+        SupplierUser supplierUser = SupplierRbac.currentUser();
+        String strShopId = request.params.get("shopId");
+        System.out.println("hello storeshopid=" + strShopId + ", lastShopId=" + supplierUser.lastShopId);
+        if (StringUtils.isNotBlank(strShopId)) {
+            Long shopId = Long.parseLong(strShopId);
+            if (supplierUser.lastShopId == null || supplierUser.lastShopId != shopId) {
+                supplierUser.lastShopId = shopId;
+                supplierUser.save();
+            }
+        }
+        if (supplierUser.lastShopId != null) {
+            renderArgs.put("shopId", supplierUser.lastShopId);
+        }
+    }
 
     /**
      * 券验证页面
@@ -93,8 +114,8 @@ public class SupplierVerifySingleCoupons extends Controller {
         }
 
         if (ecoupon.status == ECouponStatus.UNCONSUMED) {
-            if (ecoupon.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
-                Validation.addError("error-info", "第三方" + ecoupon.partner + "券验证失败！,请确认券状态(是否过期或退款等)！");
+            if (!ecoupon.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
+                Validation.addError("error-info", "第三方" + ecoupon.partner + "券验证失败！请确认券状态(是否过期或退款等)！");
             }
             if (Validation.hasErrors()) {
                 render("SupplierVerifySingleCoupons/index.html", shop, ecoupon, supplierUser, shopList);

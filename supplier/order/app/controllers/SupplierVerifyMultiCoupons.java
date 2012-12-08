@@ -10,6 +10,7 @@ import models.sms.SMSUtil;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Validation;
+import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -28,6 +29,24 @@ import java.util.Set;
 @With(SupplierRbac.class)
 @ActiveNavigation("coupons_multi_index")
 public class SupplierVerifyMultiCoupons extends Controller {
+
+    @Before(priority=1000)
+    public static void storeShopIp() {
+        SupplierUser supplierUser = SupplierRbac.currentUser();
+        String strShopId = request.params.get("shopId");
+        System.out.println("hello storeshopid=" + strShopId);
+        if (StringUtils.isNotBlank(strShopId)) {
+            Long shopId = Long.parseLong(strShopId);
+            if (supplierUser.lastShopId == null || supplierUser.lastShopId != shopId) {
+                supplierUser.lastShopId = shopId;
+                supplierUser.save();
+            }
+        }
+        if (supplierUser.lastShopId != null) {
+            renderArgs.put("shopId", supplierUser.lastShopId);
+        }
+    }
+    
     public static void index() {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         Long supplierUserId = SupplierRbac.currentUser().id;

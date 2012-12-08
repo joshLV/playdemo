@@ -35,7 +35,7 @@
 <div class="control-group">
     <div class="controls">门&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;店:
         #{if supplierUser?.shop?.id == null}
-            #{select 'shopId', id:'shopId', class:'span2', value:supplierUser?.shop?.id}
+            #{select 'shopId', id:'shopId', class:'span2', value:shopId}
                 #{list items:shopList, as:'supplierShop'}
                     #{option supplierShop?.id}${supplierShop?.name}#{/option}
                 #{/list}
