@@ -1,9 +1,0 @@
-sales.Brand(Brand_1):
- "name": "来一份"
- "displayOrder": "100"
- "supplier": Supplier1
-
-sales.Brand(Brand_2):
- "name": "豆捞坊"
- "displayOrder": "200"
- "supplier": Supplier1
