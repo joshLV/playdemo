@@ -28,10 +28,10 @@ public class ClearGoodsCacheJob extends Job {
     public void doJob() {
         //查询三分钟内即将按上架时间显示的商品，清除缓存
         List<Goods> onsaleGoodsList = getBeginSaleList();
-        clearGoodsCache(onsaleGoodsList);
+        clearGoodsCache(onsaleGoodsList, "onsale");
         //查询三分钟内即将下架的商品，清除缓存，然后不显示在网站
         List<Goods> offSaleList = getOffSaleList();
-        clearGoodsCache(offSaleList);
+        clearGoodsCache(offSaleList, "offsale");
     }
 
     /**
@@ -39,8 +39,13 @@ public class ClearGoodsCacheJob extends Job {
      *
      * @param goodsList
      */
-    private void clearGoodsCache(List<Goods> goodsList) {
+    private void clearGoodsCache(List<Goods> goodsList, String status) {
         for (Goods goods : goodsList) {
+            if (status.equals("offsale")) {
+                goods.refresh();
+                goods.status = GoodsStatus.OFFSALE;
+                goods.save();
+            }
             CacheHelper.delete(Goods.CACHEKEY);
             CacheHelper.delete(Goods.CACHEKEY + goods.id);
             CacheHelper.delete(Goods.CACHEKEY_SALECOUNT + goods.id);
@@ -75,14 +80,14 @@ public class ClearGoodsCacheJob extends Job {
      */
     private List<Goods> getOffSaleList() {
         String sql = "select g from Goods g where g.deleted=:deleted and g.status =:status and g.isHideOnsale = false " +
-                "and g.beginOnSaleAt <=:beginOnSaleAt and g.expireAt > :beginDate and g.expireAt <= :endDate" +
+                "and g.beginOnSaleAt <=:beginOnSaleAt and g.endOnSaleAt <=:endOnSaleAt" +
                 " order by g.id";
+        Goods goods = Goods.findById(596l);
         Query query = Goods.em().createQuery(sql);
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
         query.setParameter("status", GoodsStatus.ONSALE);
         query.setParameter("beginOnSaleAt", new Date());
-        query.setParameter("beginDate", DateHelper.beforeMinuts(1));
-        query.setParameter("endDate", DateHelper.afterMinuts(1));
+        query.setParameter("endOnSaleAt", new Date());
         query.setFirstResult(0);
         query.setMaxResults(200);
         return query.getResultList();

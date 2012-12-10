@@ -51,6 +51,18 @@ $(
             $("#form").attr("target", "_self");
         });
 
+        $("#reject").click(function () {
+            console.log($("#goods_beginOnSaleAt").val())
+            $("#status").val("REJECT");
+            $("#form").attr("target", "_self");
+        });
+
+        $("#apply").click(function () {
+            console.log($("#goods_beginOnSaleAt").val())
+            $("#status").val("APPLY");
+            $("#form").attr("target", "_self");
+        });
+
         $("#selectWeekDayAll").click(function () {
             if (this.checked) {
                 $("[name='useWeekDay[]']").attr("checked", 'true');//全选

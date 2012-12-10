@@ -22,7 +22,7 @@
         #{/layout_operate.selectField}
     #{/if}
     #{else}
-    <input type="hidden" id="goods_supplierId" name="goods.supplierId" value="${goods?.supplierId}">
+    <input type="hidden" goods_supplierId" name="goods.supplierId" value="${goods?.supplierId}">
         #{layout_operate.textField name:'goods.supplier', value:goods?.supplier?.fullName, disabled:true/}
     #{/else}
 <div class="control-group">
@@ -58,7 +58,12 @@
     #{layout_operate.nameField name:'goods.title', value:goods?.title,note:'(包含商家名称和面值)', required:true, length:30/}
     #{layout_operate.dateScopeField name:'goods.effective', begin:'goods.effectiveAt',end:'goods.expireAt',
     beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), required:true/}
-    #{layout_operate.dateTimeField name:'goods.beginOnSaleAt',value:goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')/}
+
+*{#{layout_operate.dateTimeField name:'goods.beginOnSaleAt',value:goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')/}}*
+
+    #{layout_operate.dateTimeScopeField name:'goods.onSale', begin:'goods.beginOnSaleAt',end:'goods.endOnSaleAt',
+    beginValue:goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss'), endValue:goods?.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss'), required:true/}
+
     #{layout_operate.textField name:'goods.faceValue', value:goods?.faceValue?:"0", note:'元', required:true/}
     #{layout_operate.textField name:'goods.originalPrice', value:goods?.originalPrice?:"0",note:'元', required:true/}
     #{layout_operate.textField name:'goods.salePrice', value:goods?.salePrice?:"0", note:'元', required:true/}
@@ -170,7 +175,21 @@
 <div class="form-actions">
     <input class="btn btn-primary" id="save" type="submit" value="保存"
            #{if "edit".equals(action) && goods?.status == models.sales.GoodsStatus.ONSALE}disabled #{/if}/>
-    <input class="btn btn-primary" id="onsale" type="submit" value="保存并上架"/>
+    &nbsp;
+    #{if goods?.status != models.sales.GoodsStatus.APPLY}
+        <input class="btn btn-primary" id="apply" type="submit" value="上架申请"/>
+        &nbsp;
+    #{/if}
+    #{if  hasApproveGoodsPermission == true }
+        <input class="btn btn-primary" id="onsale" type="submit" value="同意上架"/>
+        &nbsp;
+    #{/if}
+
+    #{if  hasApproveGoodsPermission == true }
+        <input class="btn btn-primary" id="reject" type="submit" value="拒绝上架"/>
+        &nbsp;
+    #{/if}
+
     #{if "edit".equals(action)}
         <input class="btn btn-primary" id="preview" type="submit" value="预览"/>
     #{/if}
