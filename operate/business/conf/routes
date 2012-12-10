@@ -244,6 +244,7 @@ PUT     /suppliers/{id}                         Suppliers.update
 
 # 品牌管理
 GET     /brands                                 OperateBrands.index
+GET     /brands/test                            OperateBrands.test
 GET     /brands/new                             OperateBrands.add
 POST    /brands                                 OperateBrands.create
 DELETE  /brands/{id}                            OperateBrands.delete
