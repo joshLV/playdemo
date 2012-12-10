@@ -95,7 +95,7 @@ public class OperateGoods extends Controller {
                         break;
                     }
                 }
-                String[] orderBy = {"g.supplierId", "g.no", "g.name", "g.faceValue", "g.originalPrice", "g.salePrice", "g.baseSale", "g.saleCount", "g.beginOnSaleAt", "g.firstOnSaleAt", "g.updatedAt", "g.materialType"};
+                String[] orderBy = {"g.supplierId", "g.no", "g.name", "g.faceValue", "g.originalPrice", "g.salePrice", "g.baseSale", "g.saleCount", "g.firstOnSaleAt", "g.updatedAt", "g.materialType", "g.beginOnSaleAt", "g.endOnSaleAt"};
                 // 添加排序属性
                 condition.orderBy = orderBy[index];
                 // 添加升降序方式
@@ -406,7 +406,6 @@ public class OperateGoods extends Controller {
      */
     public static void edit2(Long id, int page) {
         Boolean hasApproveGoodsPermission = ContextedPermission.hasPermission("GOODS_APPROVE_ONSALE");
-        System.out.println("hasApproveGoodsPermission>>" + hasApproveGoodsPermission);
         String queryString = StringUtils.trimToEmpty(getQueryString());
         models.sales.Goods goods = models.sales.Goods.findById(id);
         checkShops(goods.supplierId);
@@ -461,9 +460,10 @@ public class OperateGoods extends Controller {
      * 取得指定商品信息
      */
     public static void show(Long id) {
+        Boolean hasApproveGoodsPermission = ContextedPermission.hasPermission("GOODS_APPROVE_ONSALE");
         models.sales.Goods goods = models.sales.Goods.findById(id);
         List<Shop> shopList = Shop.findShopBySupplier(goods.supplierId);
-        renderTemplate("OperateGoods/show.html", goods, shopList);
+        renderTemplate("OperateGoods/show.html", goods, shopList, hasApproveGoodsPermission);
     }
 
     /**
@@ -743,7 +743,7 @@ public class OperateGoods extends Controller {
      * @return
      */
     public static boolean isValidDesc(String desc) {
-        if (desc.length() != 11) {
+        if (desc.length() != 13) {
             return false;
         }
         int countZero = 0;
@@ -752,7 +752,7 @@ public class OperateGoods extends Controller {
                 countZero++;
             }
         }
-        if (countZero != 10) {
+        if (countZero != 12) {
             return false;
         }
         for (int i = 0; i < desc.length(); i++) {

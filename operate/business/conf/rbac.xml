@@ -21,7 +21,7 @@
     <permission key=" Point_GOODS_ORDER" text="积分商品订单管理" roles="customservice,account"/>
     <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager,account"/>
     <permission key="SUPPLIER_CODE_EDIT" text="修改商户编码" roles="developer"/>
-    <permission key="GOODS_APPROVE_ONSALE" text="审核通过并上架" roles="reviewer"/>
+    <permission key="GOODS_APPROVE_ONSALE" text="审核商品上架" roles="reviewer"/>
 
 
     <permission key="SUPPLIERS_NEW" text="商户添加" roles="editor"/>

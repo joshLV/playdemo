@@ -139,134 +139,140 @@ select:'condition_status',value:condition?.status/}
 <tr>
     <th width="35px"><input type="checkbox" id="selectall" name="selectall">全选</th>
 
-#{if desc.equals("10000000000") }
-    <th width="50px" class="rank rank-asc"><a class="fn-rank" data-rank="20000000000">&{'goods.supplierId'}</a>
+#{if desc.equals("1000000000000") }
+    <th width="50px" class="rank rank-asc"><a class="fn-rank" data-rank="2000000000000">&{'goods.supplierId'}</a>
     </th>#{/if}
-#{elseif desc.equals("20000000000")}
-    <th width="50px" class="rank rank-desc"><a class="fn-rank" data-rank="10000000000">&{'goods.supplierId'}</a>
+#{elseif desc.equals("2000000000000")}
+    <th width="50px" class="rank rank-desc"><a class="fn-rank" data-rank="1000000000000">&{'goods.supplierId'}</a>
     </th>#{/elseif}
 #{else}
-    <th width="50px" class="rank"><a class="fn-rank" data-rank="20000000000">&{'goods.supplierId'}</a>
+    <th width="50px" class="rank"><a class="fn-rank" data-rank="2000000000000">&{'goods.supplierId'}</a>
     </th>#{/else}
 
-#{if desc.equals("01000000000") }
-    <th width="50px" class="rank rank-asc"><a class="fn-rank" data-rank="02000000000">&{'goods.no'}</a>
+#{if desc.equals("0100000000000") }
+    <th width="50px" class="rank rank-asc"><a class="fn-rank" data-rank="0200000000000">&{'goods.no'}</a>
     </th>#{/if}
-#{elseif desc.equals("02000000000")}
-    <th width="50px" class="rank rank-desc"><a class="fn-rank" data-rank="01000000000">&{'goods.no'}</a>
+#{elseif desc.equals("0200000000000")}
+    <th width="50px" class="rank rank-desc"><a class="fn-rank" data-rank="0100000000000">&{'goods.no'}</a>
     </th>#{/elseif}
 #{else}
-    <th width="30px" class="rank"><a class="fn-rank" data-rank="02000000000">&{'goods.no'}</a></th>#{/else}
+    <th width="30px" class="rank"><a class="fn-rank" data-rank="0200000000000">&{'goods.no'}</a></th>#{/else}
 
-#{if desc.equals("00100000000") }
-    <th width="220px" class="rank rank-asc"><a class="fn-rank" data-rank="00200000000">&{'goods.shortName'}</a>
+#{if desc.equals("0010000000000") }
+    <th width="220px" class="rank rank-asc"><a class="fn-rank" data-rank="0020000000000">&{'goods.shortName'}</a>
     </th>#{/if}
-#{elseif desc.equals("00200000000")}
-    <th width="220px" class="rank rank-desc"><a class="fn-rank" data-rank="00100000000">&{'goods.shortName'}</a>
+#{elseif desc.equals("0020000000000")}
+    <th width="220px" class="rank rank-desc"><a class="fn-rank" data-rank="0010000000000">&{'goods.shortName'}</a>
     </th>#{/elseif}
 #{else}
-    <th width="220px" class="rank"><a class="fn-rank" data-rank="00200000000">&{'goods.shortName'}</a>
+    <th width="220px" class="rank"><a class="fn-rank" data-rank="0020000000000">&{'goods.shortName'}</a>
     </th>#{/else}
 
-#{if desc.equals("00010000000") }
-    <th width="50px" class="rank rank-asc"><a class="fn-rank" data-rank="00020000000">&{'goods.faceValue'}</a>
+#{if desc.equals("0001000000000") }
+    <th width="50px" class="rank rank-asc"><a class="fn-rank" data-rank="0002000000000">&{'goods.faceValue'}</a>
     </th>#{/if}
-#{elseif desc.equals("00020000000")}
-    <th width="50px" class="rank rank-desc"><a class="fn-rank" data-rank="00010000000">&{'goods.faceValue'}</a>
+#{elseif desc.equals("0002000000000")}
+    <th width="50px" class="rank rank-desc"><a class="fn-rank" data-rank="0001000000000">&{'goods.faceValue'}</a>
     </th>#{/elseif}
 #{else}
-    <th width="50px" class="rank"><a class="fn-rank" data-rank="00020000000">&{'goods.faceValue'}</a>
+    <th width="50px" class="rank"><a class="fn-rank" data-rank="0002000000000">&{'goods.faceValue'}</a>
     </th>#{/else}
 
-#{if desc.equals("00001000000") }
+#{if desc.equals("0000100000000") }
     <th width="50px" class="rank rank-asc"><a class="fn-rank"
-                                              data-rank="00002000000">&{'goods.originalPrice'}</a></th>#{/if}
-#{elseif desc.equals("00002000000")}
+                                              data-rank="0000200000000">&{'goods.originalPrice'}</a></th>#{/if}
+#{elseif desc.equals("0000200000000")}
     <th width="50px" class="rank rank-desc"><a class="fn-rank"
-                                               data-rank="00001000000">&{'goods.originalPrice'}</a>
+                                               data-rank="0000100000000">&{'goods.originalPrice'}</a>
     </th>#{/elseif}
 #{else}
-    <th width="50px" class="rank"><a class="fn-rank" data-rank="00002000000">&{'goods.originalPrice'}</a>
+    <th width="50px" class="rank"><a class="fn-rank" data-rank="0000200000000">&{'goods.originalPrice'}</a>
     </th>#{/else}
 
-#{if desc.equals("00000100000") }
-    <th width="70px" class="rank rank-asc"><a class="fn-rank" data-rank="00000200000">&{'goods.salePrice'}</a>
+#{if desc.equals("0000010000000") }
+    <th width="70px" class="rank rank-asc"><a class="fn-rank" data-rank="0000020000000">&{'goods.salePrice'}</a>
     </th>#{/if}
-#{elseif desc.equals("00000200000")}
-    <th width="70px" class="rank rank-desc"><a class="fn-rank" data-rank="00000100000">&{'goods.salePrice'}</a>
+#{elseif desc.equals("0000020000000")}
+    <th width="70px" class="rank rank-desc"><a class="fn-rank" data-rank="0000010000000">&{'goods.salePrice'}</a>
     </th>#{/elseif}
 #{else}
-    <th width="70px" class="rank"><a class="fn-rank" data-rank="00000200000">&{'goods.salePrice'}</a>
+    <th width="70px" class="rank"><a class="fn-rank" data-rank="0000020000000">&{'goods.salePrice'}</a>
     </th>#{/else}
 
-#{if desc.equals("00000010000") }
+#{if desc.equals("0000001000000") }
     <th width="50px" class="rank rank-asc"><a class="fn-rank"
-                                              data-rank="00000020000">&{'goods.cumulativeStocks'}</a>
+                                              data-rank="0000002000000">&{'goods.cumulativeStocks'}</a>
     </th>#{/if}
-#{elseif desc.equals("00000020000")}
+#{elseif desc.equals("0000002000000")}
     <th width="50px" class="rank rank-desc"><a class="fn-rank"
-                                               data-rank="00000010000">&{'goods.cumulativeStocks'}</a>
+                                               data-rank="0000001000000">&{'goods.cumulativeStocks'}</a>
     </th>#{/elseif}
 #{else}
-    <th width="30px" class="rank"><a class="fn-rank" data-rank="00000020000">&{'goods.cumulativeStocks'}</a>
+    <th width="30px" class="rank"><a class="fn-rank" data-rank="0000002000000">&{'goods.cumulativeStocks'}</a>
     </th>#{/else}
 
-#{if desc.equals("00000001000") }
+#{if desc.equals("0000000100000") }
     <th width="60px" class="rank rank-asc"><a class="fn-rank"
-                                              data-rank="00000002000">&{'goods.virtualBaseSaleCount'}</a>
+                                              data-rank="0000000200000">&{'goods.virtualBaseSaleCount'}</a>
     </th>#{/if}
-#{elseif desc.equals("00000002000")}
+#{elseif desc.equals("0000000200000")}
     <th width="60px" class="rank rank-desc"><a class="fn-rank"
-                                               data-rank="00000001000">&{'goods.virtualBaseSaleCount'}</a>
+                                               data-rank="0000000100000">&{'goods.virtualBaseSaleCount'}</a>
     </th>#{/elseif}
 #{else}
-    <th width="50px" class="rank"><a class="fn-rank" data-rank="00000002000">&{'goods.virtualBaseSaleCount'}</a>
+    <th width="50px" class="rank"><a class="fn-rank" data-rank="0000000200000">&{'goods.virtualBaseSaleCount'}</a>
     </th>#{/else}
 
-*{#{if desc.equals("000000000100") }}*
-*{<th width="80px" class="rank rank-asc"><a class="fn-rank" data-rank="00000000020">&{'goods.beginOnSaleAt'}</a>}*
-*{</th>#{/if}}*
-*{#{elseif desc.equals("00000000200")}}*
-*{<th width="80px" class="rank rank-desc"><a class="fn-rank" data-rank="00000000010">&{'goods.beginOnSaleAt'}</a>}*
-*{</th>#{/elseif}}*
-*{#{else}}*
-*{<th width="80px" class="rank"><a class="fn-rank" data-rank="00000000020">&{'goods.beginOnSaleAt'}</a>}*
-*{</th>#{/else}}*
-
-    <th width="80px">&{'goods.beginOnSaleAt'}</th>
-
-    <th width="80px">&{'goods.endOnSaleAt'}</th>
-
-#{if desc.equals("00000000100") }
-    <th width="80px" class="rank rank-asc"><a class="fn-rank"
-                                              data-rank="00000000200">&{'goods.firstOnSaleAt'}</a></th>#{/if}
-#{elseif desc.equals("00000000200")}
-    <th width="80px" class="rank rank-desc"><a class="fn-rank"
-                                               data-rank="00000000100">&{'goods.firstOnSaleAt'}</a>
-    </th>#{/elseif}
-#{else}
-    <th width="80px" class="rank"><a class="fn-rank" data-rank="00000000200">&{'goods.firstOnSaleAt'}</a>
-    </th>#{/else}
-
-#{if desc.equals("00000000010") }
-    <th width="80px" class="rank rank-asc"><a class="fn-rank" data-rank="00000000020">&{'goods.updatedAt'}</a>
+#{if desc.equals("0000000000010") }
+    <th width="80px" class="rank rank-asc"><a class="fn-rank" data-rank="0000000000020">&{'goods.beginOnSaleAt'}</a>
     </th>#{/if}
-#{elseif desc.equals("00000000020")}
-    <th width="80px" class="rank rank-desc"><a class="fn-rank" data-rank="00000000010">&{'goods.updatedAt'}</a>
+#{elseif desc.equals("0000000000020")}
+    <th width="80px" class="rank rank-desc"><a class="fn-rank" data-rank="0000000000010">&{'goods.beginOnSaleAt'}</a>
     </th>#{/elseif}
 #{else}
-    <th width="80px" class="rank"><a class="fn-rank" data-rank="00000000020">&{'goods.updatedAt'}</a>
+    <th width="80px" class="rank"><a class="fn-rank" data-rank="0000000000020">&{'goods.beginOnSaleAt'}</a>
     </th>#{/else}
 
-#{if desc.equals("00000000001") }
-    <th width="50px" class="rank rank-asc"><a class="fn-rank"
-                                              data-rank="00000000002">&{'goods.materialType'}</a></th>#{/if}
-#{elseif desc.equals("00000000002")}
-    <th width="50px" class="rank rank-desc"><a class="fn-rank"
-                                               data-rank="00000000001">&{'goods.materialType'}</a>
+#{if desc.equals("0000000000001") }
+    <th width="80px" class="rank rank-asc"><a class="fn-rank" data-rank="0000000000002">&{'goods.endOnSaleAt'}</a>
+    </th>#{/if}
+#{elseif desc.equals("0000000000002")}
+    <th width="80px" class="rank rank-desc"><a class="fn-rank" data-rank="0000000000001">&{'goods.endOnSaleAt'}</a>
     </th>#{/elseif}
 #{else}
-    <th width="50px" class="rank"><a class="fn-rank" data-rank="00000000002">&{'goods.materialType'}</a>
+    <th width="80px" class="rank"><a class="fn-rank" data-rank="0000000000002">&{'goods.endOnSaleAt'}</a>
+    </th>#{/else}
+
+#{if desc.equals("0000000010000") }
+    <th width="80px" class="rank rank-asc"><a class="fn-rank"
+                                              data-rank="0000000020000">&{'goods.firstOnSaleAt'}</a></th>#{/if}
+#{elseif desc.equals("0000000020000")}
+    <th width="80px" class="rank rank-desc"><a class="fn-rank"
+                                               data-rank="0000000010000">&{'goods.firstOnSaleAt'}</a>
+    </th>#{/elseif}
+#{else}
+    <th width="80px" class="rank"><a class="fn-rank" data-rank="0000000020000">&{'goods.firstOnSaleAt'}</a>
+    </th>#{/else}
+
+#{if desc.equals("0000000001000") }
+    <th width="80px" class="rank rank-asc"><a class="fn-rank" data-rank="0000000002000">&{'goods.updatedAt'}</a>
+    </th>#{/if}
+#{elseif desc.equals("0000000002000")}
+    <th width="80px" class="rank rank-desc"><a class="fn-rank" data-rank="0000000001000">&{'goods.updatedAt'}</a>
+    </th>#{/elseif}
+#{else}
+    <th width="80px" class="rank"><a class="fn-rank" data-rank="0000000002000">&{'goods.updatedAt'}</a>
+    </th>#{/else}
+
+#{if desc.equals("0000000000100") }
+    <th width="50px" class="rank rank-asc"><a class="fn-rank"
+                                              data-rank="0000000000200">&{'goods.materialType'}</a></th>#{/if}
+#{elseif desc.equals("0000000000200")}
+    <th width="50px" class="rank rank-desc"><a class="fn-rank"
+                                               data-rank="0000000000100">&{'goods.materialType'}</a>
+    </th>#{/elseif}
+#{else}
+    <th width="50px" class="rank"><a class="fn-rank" data-rank="0000000000200">&{'goods.materialType'}</a>
     </th>#{/else}
 
     <th width="80px">&{'goods.status'}</th>
