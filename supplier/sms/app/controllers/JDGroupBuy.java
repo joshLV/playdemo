@@ -188,12 +188,14 @@ public class JDGroupBuy extends Controller {
         QueryTeamSellCountRequest queryTeamSellCountRequest = sendOrderJDRest.data;
 
         //查询商品
-        models.sales.Goods goods = models.sales.Goods.findById(queryTeamSellCountRequest.venderTeamId);
-        if (goods == null) {
+        GoodsDeployRelation goodsMapping = GoodsDeployRelation.getLast(queryTeamSellCountRequest.venderTeamId,
+                OuterOrderPartner.JD);
+        if (goodsMapping == null) {
             Logger.info("goods not found");
             finish(202, "goods not found");
             return;
         }
+        models.sales.Goods goods = goodsMapping.goods;
 
         //响应
         Template template = TemplateLoader.load("jingdong/groupbuy/response/queryTeamSellCount.xml");

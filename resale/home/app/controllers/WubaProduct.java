@@ -93,7 +93,7 @@ public class WubaProduct extends Controller {
         }
         String[] stringParamKeys = new String[]{
                 "prodName", "prodDescription", "prodShortName", "prodImg", "mobileDescription",
-                "listShortTitle", "mobileImg", "specialmessage"
+                "listShortTitle", "specialmessage"
         };
 
         Map<String, Object> requestMap = new HashMap<>();
@@ -176,6 +176,9 @@ public class WubaProduct extends Controller {
                 support.goodsData = goodsData;
                 support.save();
             }
+        }
+        if ("10000".equals(status)) {
+            redirect("/58-status/" + goodsId);
         }
         render("WubaProduct/result.html", status, msg, goodsId);
     }
@@ -288,6 +291,7 @@ public class WubaProduct extends Controller {
         if ("10000".equals(status)) {
             resalerFav.partner = OuterOrderPartner.WB;
             resalerFav.save();
+            redirect("/58-status/" + goodsId);
         }
         render("WubaProduct/result.html", status, msg, goodsId);
     }
@@ -409,6 +413,7 @@ public class WubaProduct extends Controller {
         renderArgs.put("saleMaxNum", "0");
         renderArgs.put("buyerMaxNum", "99");
         renderArgs.put("buyerMinNum", "1");
+        renderArgs.put("isSend", "0");
         renderArgs.put("cityIds", "4");
 
         renderArgs.put("goodsId", goods.id);
@@ -464,13 +469,13 @@ public class WubaProduct extends Controller {
                 if (groupbuyInfoAsJsonObject.has("deadline")) {
                     renderArgs.put("deadline", DateUtil.stringToDate(groupbuyInfoAsJsonObject.get("deadline").getAsString(), DATE_FORMAT));
                 }
-                List<Long> cityIds = new ArrayList<>();//
+                List<Long> cityIds = new ArrayList<>();
                 JsonArray jsonArray = groupbuyInfoAsJsonObject.get("cityIds").getAsJsonArray();
                 for (JsonElement element : jsonArray) {
                     cityIds.add(element.getAsLong());
                 }
                 renderArgs.put("cityIds", StringUtils.join(cityIds, ","));
-                List<Long> travelCityIds = new ArrayList<>();//
+                List<Long> travelCityIds = new ArrayList<>();
 
                 if (groupbuyInfoAsJsonObject.has("travelCityIds")) {
                     JsonArray travelArray = groupbuyInfoAsJsonObject.get("travelCityIds").getAsJsonArray();
