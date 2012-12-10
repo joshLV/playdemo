@@ -22,14 +22,13 @@ import play.mvc.Http;
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
+import util.DateHelper;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.Map;
 
 public class OperateGoodsTest extends FunctionalTest {
     Goods goods;
@@ -52,6 +51,8 @@ public class OperateGoodsTest extends FunctionalTest {
         brand = FactoryBoy.create(Brand.class);
         goods.supplierId = supplier.id;
         goods.brand = brand;
+        goods.beginOnSaleAt = com.uhuila.common.util.DateUtil.getEndOfDay(DateHelper.beforeDays(goods.effectiveAt, 5));
+        goods.endOnSaleAt = com.uhuila.common.util.DateUtil.getEndOfDay(DateHelper.beforeDays(goods.expireAt, 5));
 
         goods.save();
         shop.supplierId = supplier.id;
@@ -81,7 +82,6 @@ public class OperateGoodsTest extends FunctionalTest {
      */
     // 同样存在 POST 图片文件 在测试环境 接受不了的问题，跳过
     @Test
-    @Ignore
     public void testCreate() {
         // TODO
     }
@@ -238,6 +238,7 @@ public class OperateGoodsTest extends FunctionalTest {
         Category category = FactoryBoy.create(Category.class);
         Long cateId = category.id;
         // 生产更新参数
+        goods.refresh();
         String params = "goods.name=testName&goods.no=001" +
                 "&goods.supplierId=" + goods.supplierId +
                 "&goods.originalPrice=100" +
@@ -254,7 +255,9 @@ public class OperateGoodsTest extends FunctionalTest {
                 "&goods.expireAt=2015-02-28T14:41:33" +
                 "&goods.cumulativeStocks=100" +
                 "&goods.faceValue=1000" +
-                "&goods.brand.id=" + goods.brand.id.toString();
+                "&goods.brand.id=" + goods.brand.id.toString() +
+                "&goods.beginOnSaleAt=" + goods.beginOnSaleAt +
+                "&goods.endOnSaleAt=" + goods.endOnSaleAt;
         Response response = PUT("/goods/" + goods.id, "application/x-www-form-urlencoded", params);
         // 更新响应正确
         assertStatus(302, response);
@@ -274,12 +277,14 @@ public class OperateGoodsTest extends FunctionalTest {
     /**
      * 修改商品信息
      */
+
     @Test
     public void testUpdate2() {
         // 获取categories的ID
         Category category = FactoryBoy.create(Category.class);
         Long cateId = category.id;
         // 生产更新参数
+        goods.refresh();
         String params = "goods.name=testName&goods.no=001" +
                 "&goods.supplierId=" + goods.supplierId +
                 "&goods.originalPrice=100" +
@@ -296,8 +301,10 @@ public class OperateGoodsTest extends FunctionalTest {
                 "&goods.expireAt=2015-02-28T14:41:33" +
                 "&goods.cumulativeStocks=100" +
                 "&goods.faceValue=1000" +
-                "&goods.brand.id=" + goods.brand.id.toString();
-        Response response = PUT("/goods/" + goods.id, "application/x-www-form-urlencoded", params);
+                "&goods.brand.id=" + goods.brand.id.toString() +
+                "&goods.beginOnSaleAt=" + goods.beginOnSaleAt +
+                "&goods.endOnSaleAt=" + goods.endOnSaleAt;
+        Response response = PUT("/goods2/" + goods.id, "application/x-www-form-urlencoded", params);
         // 更新响应正确
         assertStatus(302, response);
 
