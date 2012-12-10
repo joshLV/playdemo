@@ -51,7 +51,7 @@
 <p>发布产品的名称<b>* 最多200字</b></p>
 <input type="text" name="prodName" size="150" maxlength="200" value="${name}">
 
-<p>产品短名称<b>*</b></p>
+<p>产品短名称<b>* 最多20字</b></p>
 <input type="text" name="prodShortName" size="150" maxlength="20" value="${title}">
 
 <p>商品详情<b>*</b></p>
@@ -103,8 +103,8 @@ ${mobileDescription?.raw()}
 
 <p>
     是否配送<b>*</b>
-    <input type="radio" name="isSend" value="0" #{if isSend==0}checked#{/if}> 不配送
-    <input type="radio" name="isSend" value="1"#{if isSend==1}checked#{/if}> 配送
+    <input type="radio" name="isSend" value="0" #{if isSend=='0'}checked#{/if}>不配送
+    <input type="radio" name="isSend" value="1"#{if isSend=='1'}checked#{/if}> 配送
     快递费
     <input type="text" name="expressMoney" value="${expressMoney}">元
 </p>
