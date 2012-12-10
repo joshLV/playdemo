@@ -115,9 +115,6 @@ public class JDGroupBuy extends Controller {
                 finish(205, "there is another parallel request");
                 return;
             }
-        } else {
-            outerOrder.message = restXml;
-            outerOrder.save();
         }
 
         //申请行锁后处理订单
@@ -135,6 +132,7 @@ public class JDGroupBuy extends Controller {
             Order ybqOrder = createYbqOrder(sendOrderRequest);
             outerOrder.status = OuterOrderStatus.ORDER_DONE;
             outerOrder.ybqOrder = ybqOrder;
+            outerOrder.message = restXml;
             outerOrder.save();
         }
         //保存京东的券号密码

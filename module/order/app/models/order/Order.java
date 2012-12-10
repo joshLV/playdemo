@@ -624,7 +624,6 @@ public class Order extends Model {
     }
 
     public void payAndSendECoupon(BatchCoupons batchCoupons) {
-        this.refresh();
         if (this.status == OrderStatus.PAID) {
             return;
         }
