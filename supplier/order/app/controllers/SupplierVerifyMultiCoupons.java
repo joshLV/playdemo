@@ -10,6 +10,7 @@ import models.sms.SMSUtil;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Validation;
+import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -28,6 +29,24 @@ import java.util.Set;
 @With(SupplierRbac.class)
 @ActiveNavigation("coupons_multi_index")
 public class SupplierVerifyMultiCoupons extends Controller {
+
+    @Before(priority=1000)
+    public static void storeShopIp() {
+        SupplierUser supplierUser = SupplierRbac.currentUser();
+        String strShopId = request.params.get("shopId");
+        System.out.println("hello storeshopid=" + strShopId);
+        if (StringUtils.isNotBlank(strShopId)) {
+            Long shopId = Long.parseLong(strShopId);
+            if (supplierUser.lastShopId == null || supplierUser.lastShopId != shopId) {
+                supplierUser.lastShopId = shopId;
+                supplierUser.save();
+            }
+        }
+        if (supplierUser.lastShopId != null) {
+            renderArgs.put("shopId", supplierUser.lastShopId);
+        }
+    }
+    
     public static void index() {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         Long supplierUserId = SupplierRbac.currentUser().id;
@@ -63,9 +82,12 @@ public class SupplierVerifyMultiCoupons extends Controller {
         if (ecoupon == null) {
             Validation.addError("error-info", "对不起，没有该券的信息！");
         }
-
+        if (shopId == null) {
+            Validation.addError("error-info", "对不起，该券不能在此门店使用!");
+        }
+        Shop shop = Shop.findById(shopId);
         if (Validation.hasErrors()) {
-            render("SupplierVerifyMultiCoupons/index.html", ecoupon, shopId, eCouponSn, supplierUser, shopList);
+            render("SupplierVerifyMultiCoupons/index.html", ecoupon, shop, supplierUser, shopList);
         }
         String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
         List<ECoupon> ecoupons = ECoupon.queryUnconsumedCouponsWithSameGoodsGroups(ecoupon);
@@ -73,8 +95,8 @@ public class SupplierVerifyMultiCoupons extends Controller {
         BigDecimal verifyAmount = summaryECouponsAmount(ecoupons);
         renderArgs.put("amount", amount);
         renderArgs.put("verifyAmount", verifyAmount);
-        Shop shop = Shop.findById(shopId);
-        render("SupplierVerifyMultiCoupons/index.html", ecoupon, ecoupons, ecouponStatusDescription, shopId, shop, eCouponSn, supplierUser, shopList);
+
+        render("SupplierVerifyMultiCoupons/index.html", ecoupon, ecoupons, ecouponStatusDescription, shop, supplierUser, shopList);
     }
 
     private static BigDecimal summaryECouponsAmount(List<ECoupon> ecoupons) {
@@ -101,7 +123,10 @@ public class SupplierVerifyMultiCoupons extends Controller {
         if (ecoupon == null) {
             Validation.addError("error-info", "对不起，没有该券的信息！");
         }
-
+        if (shopId == null) {
+            Validation.addError("error-info", "对不起，该券不能在此门店使用!");
+        }
+        Shop shop = Shop.findById(shopId);
         if (StringUtils.isEmpty(amount) || new BigDecimal(amount).compareTo(BigDecimal.ZERO) < 0) {
             Validation.addError("error-info", "请输入正确的验证金额！");
         }
@@ -111,17 +136,16 @@ public class SupplierVerifyMultiCoupons extends Controller {
             Validation.addError("error-info", ecouponStatusDescription);
         }
         if (Validation.hasErrors()) {
-            render("SupplierVerifyMultiCoupons/index.html", ecouponStatusDescription, shopId, eCouponSn, supplierUser, shopList);
+            render("SupplierVerifyMultiCoupons/index.html", ecouponStatusDescription, shop, supplierUser, shopList);
         }
 
-        Shop shop = Shop.findById(shopId);
         if (ecoupon.status == ECouponStatus.UNCONSUMED) {
             String ecouponSNLast4Code = ecoupon.getLastCode(4);
             BigDecimal verifyAmount = new BigDecimal(amount);
             // 多张券验证
             List<ECoupon> ecoupons = ECoupon.queryUnconsumedCouponsWithSameGoodsGroups(ecoupon);
             renderArgs.put("ecoupons", ecoupons);
-            List<ECoupon> checkECoupons = ECoupon.selectCheckECoupons(verifyAmount, ecoupons,ecoupon);
+            List<ECoupon> checkECoupons = ECoupon.selectCheckECoupons(verifyAmount, ecoupons, ecoupon);
             BigDecimal consumedAmount = BigDecimal.ZERO;
 
             int checkedCount = 0;
@@ -133,7 +157,7 @@ public class SupplierVerifyMultiCoupons extends Controller {
                     consumedAmount = consumedAmount.add(e.faceValue);
                     realCheckECoupon.add(e);
                 } else {
-                    Validation.addError("error-info", "第三方" + e.partner + "券验证失败！券号：" + e.eCouponSn + ",请确认券状态！");
+                    Validation.addError("error-info", "第三方" + ecoupon.partner + "券验证失败！券号：" + ecoupon.eCouponSn + ",请确认券状态！");
                 }
             }
             if (consumedAmount.compareTo(BigDecimal.ZERO) == 0) {
@@ -142,7 +166,7 @@ public class SupplierVerifyMultiCoupons extends Controller {
             }
             renderArgs.put("consumedAmount", consumedAmount);
             if (Validation.hasErrors()) {
-                render("SupplierVerifyMultiCoupons/index.html", shopId, eCouponSn, supplierUser, shopList);
+                render("SupplierVerifyMultiCoupons/index.html", shop, ecoupon, supplierUser, shopList);
             }
 
             List<ECoupon> availableECoupons = substractECouponList(ecoupons, realCheckECoupon);
@@ -173,7 +197,7 @@ public class SupplierVerifyMultiCoupons extends Controller {
             }
         }
 
-        render("SupplierVerifyMultiCoupons/index.html", shopId, amount, eCouponSn, ecoupon, supplierUser, shopList);
+        render("SupplierVerifyMultiCoupons/index.html", shop, amount, ecoupon, supplierUser, shopList);
 
     }
 

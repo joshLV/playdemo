@@ -11,11 +11,10 @@ import java.util.Date;
 
 
 /**
- * Created with IntelliJ IDEA.
+ * 提现账单测试类.
  * User: wangjia
  * Date: 12-11-27
  * Time: 下午4:02
- * To change this template use File | Settings | File Templates.
  */
 public class WithdrawBillFactory extends ModelFactory<WithdrawBill> {
     @Override

@@ -20,7 +20,7 @@ import java.util.Date;
  * @author likang Date: 12-9-20
  */
 @With({
-                SecureCAS.class, WebsiteInjector.class
+        SecureCAS.class, WebsiteInjector.class
 })
 public class UserCashCoupons extends Controller {
     public static void index() {
@@ -40,18 +40,17 @@ public class UserCashCoupons extends Controller {
         CashCoupon coupon = null;
         String ridA = null;
         String ridB = null;
-
         if (Cache.get(randomID) == null
-                        || code == null
-                        || !((String) Cache.get(randomID)).toLowerCase()
-                                        .equals(code.toLowerCase())) {
+                || code == null
+                || !((String) Cache.get(randomID)).toLowerCase()
+                .equals(code.toLowerCase())) {
             errMsg = "验证码错误";
         } else {
             coupon = CashCoupon.find("byChargeCode", couponCode).first();
             if (coupon == null) {
                 errMsg = "现金券充值密码输入错误";
             } else if (CashCoupon.find("byUserIdAndName", user.getId(),
-                            coupon.name).first() != null) {
+                    coupon.name).first() != null) {
                 errMsg = "您已经领取过一次【" + coupon.name + "】";
             } else if (coupon.chargedAt != null || coupon.userId != null) {
                 errMsg = "该现金券已被使用";
@@ -70,8 +69,8 @@ public class UserCashCoupons extends Controller {
         randomID = Codec.UUID();
         BreadcrumbList breadcrumbs = new BreadcrumbList("现金券充值", "/cash-coupon");
         render("UserCashCoupons/index.html", randomID, errMsg,
-                        breadcrumbs, user, account, action, coupon, ridA, ridB,
-                        couponCode);
+                breadcrumbs, user, account, action, coupon, ridA, ridB,
+                couponCode);
     }
 
     public static void useCoupon(String ridA, String ridB) {
@@ -80,14 +79,13 @@ public class UserCashCoupons extends Controller {
         String errMsg = null;
         String suc = null;
         String action = "verify";
-
         if (Cache.get(ridA) == null || Cache.get(ridB) == null
-                        || !((String) Cache.get(ridA)).equals(ridB)) {
+                || !((String) Cache.get(ridA)).equals(ridB)) {
             errMsg = "验证失败";
         } else {
             CashCoupon coupon = CashCoupon.findById((Long) Cache.get(ridB));
             if (coupon == null || coupon.chargedAt != null
-                            || coupon.userId != null) {
+                    || coupon.userId != null) {
                 errMsg = "验证失败";
             } else if (coupon.deleted == DeletedStatus.DELETED) {
                 errMsg = "该券无法使用";
@@ -97,9 +95,9 @@ public class UserCashCoupons extends Controller {
                 coupon.userId = user.getId();
                 coupon.save();
                 TradeBill tradeBill = TradeUtil.createPromotionChargeTrade(
-                                account, coupon.faceValue, null);
+                        account, coupon.faceValue, null);
                 TradeUtil.success(tradeBill, "代金券: " + coupon.name + " 充值"
-                                + coupon.faceValue + "元");
+                        + coupon.faceValue + "元");
             }
         }
         Cache.delete(ridA);
@@ -107,7 +105,7 @@ public class UserCashCoupons extends Controller {
         String randomID = Codec.UUID();
         BreadcrumbList breadcrumbs = new BreadcrumbList("现金券充值", "/cash-coupon");
         render("UserCashCoupons/index.html", randomID, suc, errMsg,
-                        breadcrumbs, user, account, action);
+                breadcrumbs, user, account, action);
     }
 
 }

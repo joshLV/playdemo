@@ -139,7 +139,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         params.put("shopName", shop.name);
 
         // 检测测试结果
-        Http.Response response = POST("/coupons/update", params);
+        Http.Response response = POST("/coupons/verify", params);
         assertIsOk(response);
         eCoupon.refresh();
         ECoupon eCouponConsumed = ECoupon.findById(eCoupon.id);
@@ -184,9 +184,9 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         params.put("shopName", shop.name);
 
         // 检测测试结果
-        Http.Response response = POST("/coupons/update", params);
+        Http.Response response = POST("/coupons/verify", params);
         assertIsOk(response);
-        assertEquals("4", response.out.toString());
+        assertContentMatch("此券已过期", response);
     }
 
     @Test
@@ -209,6 +209,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
                 target.originalPrice = new BigDecimal(100);
                 target.salePrice = new BigDecimal(100);
                 target.faceValue = new BigDecimal(150);
+                target.partner=ECouponPartner.DD;
             }
         });
         DDOrderItem item = FactoryBoy.create(DDOrderItem.class);
@@ -246,9 +247,11 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         params.put("shopName", shop.name);
 
         // 检测测试结果
-        Http.Response response = POST("/coupons/update", params);
+        Http.Response response = POST("/coupons/verify", params);
         assertIsOk(response);
-        assertEquals("5", response.out.toString());
+        String info=(String)renderArgs("ecouponStatusDescription");
+        assertNull(info);
+        assertContentMatch("第三方DD券验证失败！", response);
     }
 
     @Test
@@ -317,7 +320,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         params.put("shopName", shop.name);
 
         // 检测测试结果
-        Http.Response response = POST("/coupons/update", params);
+        Http.Response response = POST("/coupons/verify", params);
         assertStatus(200, response);
         eCoupon.refresh();
         promoteRebate.refresh();

@@ -50,19 +50,39 @@ public class OperateVerifyCoupons extends Controller {
      * @param eCouponSn 券号
      */
     public static void verify(Long supplierId, Long shopId, String eCouponSn) {
-
-        List shopList = Shop.findShopBySupplier(supplierId);
-        if (Validation.hasErrors()) {
-            render("/OperateVerifyCoupons/index.html", shopList, eCouponSn, supplierId);
-        }
-
+        List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+        List<Supplier> supplierList = Supplier.findUnDeleted();
         //根据页面录入券号查询对应信息
         ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
+        renderArgs.put("supplierList", supplierList);
+        renderArgs.put("supplierId", supplierId);
+
+        //check券和门店
+        checkCoupon(ecoupon, shopId, supplierId, shopList);
+
+        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
+
         if (ecoupon != null && ecoupon.operateUserId != null) {
             OperateUser operateUser = OperateUser.findById(ecoupon.operateUserId);
             ecoupon.operateUserName = operateUser.userName;
         }
-        render("/OperateVerifyCoupons/verify.html", shopList, shopId, ecoupon);
+        Shop shop = Shop.findById(shopId);
+        renderArgs.put("shop", shop);
+        render("/OperateVerifyCoupons/index.html", shopList, supplierId, ecoupon, ecouponStatusDescription);
+    }
+
+    private static void checkCoupon(ECoupon ecoupon, Long shopId, Long supplierId, List<Shop> shopList) {
+        if (ecoupon == null) {
+            Validation.addError("error-info", "对不起，没有该券的信息！");
+        }
+        if (shopId == null) {
+            Validation.addError("error-info", "对不起，该券不能在此门店使用!");
+        }
+
+        Shop shop = Shop.findById(shopId);
+        if (Validation.hasErrors()) {
+            render("OperateVerifyCoupons/index.html", shop, ecoupon, supplierId, shopList);
+        }
     }
 
     /**
@@ -70,55 +90,34 @@ public class OperateVerifyCoupons extends Controller {
      *
      * @param eCouponSn 券号
      */
-    @ActiveNavigation("coupons_verify")
     public static void update(Long shopId, Long supplierId, String eCouponSn) {
-        List shopList = Shop.findShopBySupplier(supplierId);
-        if (Validation.hasErrors()) {
-            render("/OperateVerifyCoupons/index.html", shopList, eCouponSn, supplierId);
-        }
+        List<Supplier> supplierList = Supplier.findUnDeleted();
+        List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+        ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
+        renderArgs.put("supplierList", supplierList);
+        renderArgs.put("supplierId", supplierId);
+        //check券和门店
+        checkCoupon(ecoupon, shopId, supplierId, shopList);
 
-        ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
-        //根据页面录入券号查询对应信息,并产生消费交易记录
-        if (eCoupon == null) {
-            renderJSON("err");
+        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
+        if (ecouponStatusDescription != null) {
+            Validation.addError("error-info", ecouponStatusDescription);
         }
-
         Shop shop = Shop.findById(shopId);
-        if (shop == null) {
-            renderJSON("1");
-        }
-
-        if (eCoupon.status == ECouponStatus.UNCONSUMED) {
-
-            //冻结的券
-            if (eCoupon.isFreeze == 1) {
-                renderJSON("3");
+        if (ecoupon.status == ECouponStatus.UNCONSUMED) {
+            if (!ecoupon.consumeAndPayCommission(shopId, OperateRbac.currentUser().id, null, VerifyCouponType.OP_VERIFY)) {
+                Validation.addError("error-info", "第三方" + ecoupon.partner + "券验证失败！请确认券状态(是否过期或退款等)！");
             }
-            if (eCoupon.isExpired()){
-                renderJSON("4");
+            if (Validation.hasErrors()) {
+                render("OperateVerifyCoupons/index.html", shop, ecoupon, shopList);
             }
-            if (!eCoupon.isBelongShop(shopId)) {
-                renderJSON("1");
-            }
-//            //不在验证时间范围内 -------运营后台验证的时候去掉该验证，只进行提示
-//            if (!eCoupon.checkVerifyTimeRegion(new Date())) {
-//                String info = eCoupon.getCheckInfo();
-//                renderJSON("{\"error\":\"2\",\"info\":\"" + info + "\"}");
-//            }
-            if (!eCoupon.consumeAndPayCommission(shopId, OperateRbac.currentUser().id, null, VerifyCouponType.OP_VERIFY)) {
-                renderJSON("5");
-            }
-
             // 发给消费者
             String dateTime = DateUtil.getNowTime();
-            String coupon = eCoupon.getLastCode(4);
+            String coupon = ecoupon.getLastCode(4);
             SMSUtil.send("【一百券】您尾号" + coupon + "券于" + dateTime
-                    + "成功消费，门店：" + shop.name + "。客服4006262166", eCoupon.orderItems.phone, eCoupon.replyCode);
-        } else {
-
-            renderJSON(eCoupon.status);
+                    + "成功消费，门店：" + shop.name + "。客服4006262166", ecoupon.orderItems.phone, ecoupon.replyCode);
         }
-
-        renderJSON("0");
+        renderArgs.put("success_info", "true");
+        render("OperateVerifyCoupons/index.html", shop, ecoupon, shopList);
     }
 }

@@ -98,6 +98,12 @@ public class SupplierUser extends Model {
     @Enumerated(EnumType.STRING)
     @Column(name = "supplier_user_type")
     public SupplierUserType supplierUserType;
+    
+    /**
+     * 记录最后一次使用的shopId.
+     */
+    @Column(name="last_shop_id")
+    public Long lastShopId;
 
     /**
      * 逻辑删除,0:未删除，1:已删除

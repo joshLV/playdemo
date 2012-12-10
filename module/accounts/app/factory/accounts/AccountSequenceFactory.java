@@ -21,7 +21,7 @@ public class AccountSequenceFactory extends ModelFactory<AccountSequence> {
 
     @Override
     public AccountSequence define() {
-        Account account = FactoryBoy.create(Account.class);
+        Account account = FactoryBoy.lastOrCreate(Account.class);
 //        User user = FactoryBoy.create(User.class);
 //        account.uid = user.id;
 
