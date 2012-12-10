@@ -251,8 +251,8 @@ public class OperateGoodsTest extends FunctionalTest {
                 "&goods.prompt=prompt111111" +
                 "&goods.useWeekDay=1" +
                 "&goods.categories[].id=" + cateId +
-                "&goods.effectiveAt=2012-02-28T14:41:33" +
-                "&goods.expireAt=2015-02-28T14:41:33" +
+                "&goods.effectiveAt=" + goods.effectiveAt +
+                "&goods.expireAt=" + goods.expireAt +
                 "&goods.cumulativeStocks=100" +
                 "&goods.faceValue=1000" +
                 "&goods.brand.id=" + goods.brand.id.toString() +
@@ -297,8 +297,8 @@ public class OperateGoodsTest extends FunctionalTest {
                 "&goods.prompt=prompt111111" +
                 "&goods.useWeekDay=1" +
                 "&goods.categories[].id=" + cateId +
-                "&goods.effectiveAt=2012-02-28T14:41:33" +
-                "&goods.expireAt=2015-02-28T14:41:33" +
+                "&goods.effectiveAt=" + goods.effectiveAt +
+                "&goods.expireAt=" + goods.expireAt +
                 "&goods.cumulativeStocks=100" +
                 "&goods.faceValue=1000" +
                 "&goods.brand.id=" + goods.brand.id.toString() +
