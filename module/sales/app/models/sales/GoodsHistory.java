@@ -341,6 +341,12 @@ public class GoodsHistory extends Model {
     @Lob
     public String prompt;
 
+    /**
+     * 不可退款
+     */
+    @Column(name = "no_refund")
+    public Boolean noRefund = Boolean.FALSE;
+
     @Required
     @MinSize(7)
     @MaxSize(65000)

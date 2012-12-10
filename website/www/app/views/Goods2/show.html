@@ -148,13 +148,13 @@
         #{/else}
         <ul id="promise">
             <li class="quality"><a href="/service" target="_blank">品质保证</a></li>
-            #{if goods?.noRefund==false}
+            #{if goods?.noRefund==false || goods?.noRefund==null}
                 <li class="refund"><a href="/service" target="_blank">一键退款</a></li>
             #{/if}
             #{else}
                 <li class="refund"><a href="/service" target="_blank">noRefund</a></li>
             #{/else}
-            #{if goods?.noRefund==false}
+            #{if goods?.noRefund==false || goods?.noRefund==null}
                 <li class="return"><a href="/service" target="_blank">随时退货</a></li>
             #{/if}
             #{else}

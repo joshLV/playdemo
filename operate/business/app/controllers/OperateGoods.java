@@ -1,7 +1,7 @@
 /*
- * Copyright 2012 uhuila.com, Inc. All rights reserved.
- * uhuila.com PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- */
+* Copyright 2012 uhuila.com, Inc. All rights reserved.
+* uhuila.com PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+*/
 package controllers;
 
 

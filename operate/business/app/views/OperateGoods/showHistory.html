@@ -36,7 +36,9 @@
             <td>${goods?.originalPrice?.formatCurrency('CNY')}</td>
             <td>${goods?.salePrice?.formatCurrency('CNY')}</td>
             <td>&{'goods.'+goods?.getStatus()}</td>
-            <td><a href=" http://${play.Play.configuration.getProperty("www.url")}/gh/${goods.id}" target="_blank"/>预览</td>
+            <td><a href=" http://${play.Play.configuration.getProperty("www.url")}/p/${goods?.goods.id}/h/${goods.id}"
+                   target="_blank"/>预览
+            </td>
         #{/list}
         </tbody>
     </table>

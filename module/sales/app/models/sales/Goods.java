@@ -1763,6 +1763,7 @@ public class Goods extends Model {
         goodsHistory.prompt = this.prompt;
         goodsHistory.details = this.details;
         goodsHistory.createdAt = new Date();
+        goodsHistory.noRefund = this.noRefund;
         if (StringUtils.isNotBlank(this.updatedBy)) {
             goodsHistory.createdBy = this.updatedBy;
         } else {
