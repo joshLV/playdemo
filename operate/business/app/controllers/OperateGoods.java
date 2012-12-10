@@ -23,6 +23,7 @@ import models.sales.GoodsUnPublishedPlatform;
 import models.sales.MaterialType;
 import models.sales.Shop;
 import models.supplier.Supplier;
+import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
@@ -64,6 +65,7 @@ public class OperateGoods extends Controller {
      */
     @ActiveNavigation("goods_index")
     public static void index(models.sales.GoodsCondition condition, String desc) {
+        Boolean hasApproveGoodsPermission = ContextedPermission.hasPermission("GOODS_APPROVE_ONSALE");
         int pageNumber = getPage();
         if (condition == null) {
             condition = new GoodsCondition();
@@ -93,7 +95,7 @@ public class OperateGoods extends Controller {
                         break;
                     }
                 }
-                String[] orderBy = {"g.supplierId", "g.no", "g.name", "g.faceValue", "g.originalPrice", "g.salePrice", "g.baseSale", "g.saleCount", "g.firstOnSaleAt", "g.updatedAt", "g.materialType"};
+                String[] orderBy = {"g.supplierId", "g.no", "g.name", "g.faceValue", "g.originalPrice", "g.salePrice", "g.baseSale", "g.saleCount", "g.beginOnSaleAt", "g.firstOnSaleAt", "g.updatedAt", "g.materialType"};
                 // 添加排序属性
                 condition.orderBy = orderBy[index];
                 // 添加升降序方式
@@ -121,7 +123,7 @@ public class OperateGoods extends Controller {
 
         renderArgs.put("brandList", brandList);
         String queryString = StringUtils.trimToEmpty(getQueryString());
-        render(goodsPage, supplierList, condition, desc, queryString);
+        render(goodsPage, supplierList, condition, desc, queryString, hasApproveGoodsPermission);
     }
 
     private static String getQueryString() {
@@ -147,8 +149,9 @@ public class OperateGoods extends Controller {
      */
     @ActiveNavigation("goods_add")
     public static void add() {
+        Boolean hasApproveGoodsPermission = ContextedPermission.hasPermission("GOODS_APPROVE_ONSALE");
         renderInit(null);
-        render();
+        render(hasApproveGoodsPermission);
     }
 
     /**
@@ -257,6 +260,7 @@ public class OperateGoods extends Controller {
      */
     @ActiveNavigation("goods_add")
     public static void create(@Valid models.sales.Goods goods, @Required File imagePath) {
+        Boolean hasApproveGoodsPermission = ContextedPermission.hasPermission("GOODS_APPROVE_ONSALE");
         checkImageFile(imagePath);
         checkExpireAt(goods);
         checkSalePrice(goods);
@@ -266,7 +270,7 @@ public class OperateGoods extends Controller {
         if (Validation.hasErrors()) {
             renderInit(goods);
             boolean selectAll = false;
-            render("OperateGoods/add.html", selectAll);
+            render("OperateGoods/add.html", selectAll, hasApproveGoodsPermission);
         }
         //预览
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
@@ -401,15 +405,16 @@ public class OperateGoods extends Controller {
      * 取得指定商品信息
      */
     public static void edit2(Long id, int page) {
+        Boolean hasApproveGoodsPermission = ContextedPermission.hasPermission("GOODS_APPROVE_ONSALE");
+        System.out.println("hasApproveGoodsPermission>>" + hasApproveGoodsPermission);
         String queryString = StringUtils.trimToEmpty(getQueryString());
         models.sales.Goods goods = models.sales.Goods.findById(id);
-
         checkShops(goods.supplierId);
         renderInit(goods);
         renderArgs.put("imageLargePath", goods.getImageLargePath());
         renderArgs.put("page", page);
         renderArgs.put("queryString", queryString);
-        render(id);
+        render(id, hasApproveGoodsPermission);
 
     }
 
@@ -540,6 +545,7 @@ public class OperateGoods extends Controller {
      * 更新指定商品信息
      */
     public static void update2(Long id, @Valid final models.sales.Goods goods, File imagePath, String imageLargePath, String queryString, int page) {
+        Boolean hasApproveGoodsPermission = ContextedPermission.hasPermission("GOODS_APPROVE_ONSALE");
         if (goods.isAllShop && goods.shops != null) {
             goods.shops = null;
         }
@@ -552,7 +558,7 @@ public class OperateGoods extends Controller {
         if (Validation.hasErrors()) {
             renderArgs.put("imageLargePath", imageLargePath);
             renderInit(goods);
-            render("OperateGoods/edit2.html", goods, id, page, queryString);
+            render("OperateGoods/edit2.html", goods, id, page, queryString, hasApproveGoodsPermission);
         }
 
         //添加商品处理
@@ -610,6 +616,7 @@ public class OperateGoods extends Controller {
      * @param id 商品ID
      */
     public static void onSale(@As(",") Long... id) {
+        Boolean hasApproveGoodsPermission = ContextedPermission.hasPermission("GOODS_APPROVE_ONSALE");
         for (Long goodsId : id) {
             models.sales.Goods goods = models.sales.Goods.findById(goodsId);
             if (goods != null) {
@@ -623,7 +630,7 @@ public class OperateGoods extends Controller {
                 renderSupplierList(goods);
                 renderInit(goods);
                 renderArgs.put("id", goodsId);
-                render("OperateGoods/edit2.html", goods);
+                render("OperateGoods/edit2.html", goods, hasApproveGoodsPermission);
             }
         }
         updateStatus(GoodsStatus.ONSALE, id);

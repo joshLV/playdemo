@@ -1642,7 +1642,7 @@ public class Goods extends Model {
     }
 
     public boolean onSale() {
-        return (GoodsStatus.ONSALE.equals(status) && expireAt.after(new Date())
+        return (GoodsStatus.ONSALE.equals(status) && endOnSaleAt.after(new Date())
                 && getRealStocks() > 0 && DeletedStatus.UN_DELETED.equals(deleted));
     }
 

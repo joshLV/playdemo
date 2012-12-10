@@ -42,7 +42,9 @@ public class ClearGoodsCacheJob extends Job {
     private void clearGoodsCache(List<Goods> goodsList, String status) {
         for (Goods goods : goodsList) {
             if (status.equals("offsale")) {
+                goods.refresh();
                 goods.status = GoodsStatus.OFFSALE;
+                goods.save();
             }
             CacheHelper.delete(Goods.CACHEKEY);
             CacheHelper.delete(Goods.CACHEKEY + goods.id);
@@ -78,8 +80,9 @@ public class ClearGoodsCacheJob extends Job {
      */
     private List<Goods> getOffSaleList() {
         String sql = "select g from Goods g where g.deleted=:deleted and g.status =:status and g.isHideOnsale = false " +
-                "and g.beginOnSaleAt <=:beginOnSaleAt and g.endOnSaleAt >=:endOnSaleAt" +
+                "and g.beginOnSaleAt <=:beginOnSaleAt and g.endOnSaleAt <=:endOnSaleAt" +
                 " order by g.id";
+        Goods goods = Goods.findById(596l);
         Query query = Goods.em().createQuery(sql);
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
         query.setParameter("status", GoodsStatus.ONSALE);
