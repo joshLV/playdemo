@@ -104,6 +104,7 @@
                         permission="HOT_KEYWORDS"/>
         </navigation>
         <navigation key="schedule" text="商品排期管理" permission="GOODS_SCHEDULE">
+            <navigation key="goods_schedule_add" action="GoodsSchedule.add" text="商品排期添加" permission="GOODS_SCHEDULE_ADD"/>
             <navigation key="goods_schedule" action="GoodsSchedule.index" text="商品排期" permission="GOODS_SCHEDULE"/>
         </navigation>
         <navigation key="solr" text="solr加载数据" permission="SOLR">

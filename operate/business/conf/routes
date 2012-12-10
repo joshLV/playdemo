@@ -320,6 +320,13 @@ DELETE  /prepayments/{id}                       OperatePrepayments.delete
 GET     /prepayments/{id}/edit                  OperatePrepayments.edit
 PUT     /prepayments/{id}                       OperatePrepayments.update
 
+# 排期管理
+GET     /goods-schedule                         GoodsSchedule.index
+GET     /goods-schedule/new                     GoodsSchedule.add
+POST    /goods-schedule                         GoodsSchedule.create
+DELETE  /goods-schedule/{id}                    GoodsSchedule.delete
+GET     /goods-schedule/{id}/edit               GoodsSchedule.edit
+PUT     /goods-schedule/{id}                    GoodsSchedule.update
 
 # 已验证券 退款
 GET      /verified-ecoupon-refunds              VerifiedECouponRefunds.index

@@ -1,0 +1,15 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'修改商品排期' /}
+#{get 'moreScripts'}
+#{/get}
+#{include '/share/nav.html' /}
+<div class="body">
+#{form @GoodsSchedule.update(id), id:'form',enctype:'multipart/form-data',
+class:"form-horizontal", method:'PUT' }
+    <legend>${title}</legend>
+    #{set action:"edit"/}
+    #{include '/GoodsSchedule/scheduleForm.html'/}
+#{/form}
+</div>
+
+
