@@ -93,7 +93,7 @@ public class WubaProduct extends Controller {
         }
         String[] stringParamKeys = new String[]{
                 "prodName", "prodDescription", "prodShortName", "prodImg", "mobileDescription",
-                "listShortTitle", "mobileImg", "specialmessage"
+                "listShortTitle", "specialmessage"
         };
 
         Map<String, Object> requestMap = new HashMap<>();
@@ -176,6 +176,9 @@ public class WubaProduct extends Controller {
                 support.goodsData = goodsData;
                 support.save();
             }
+        }
+        if ("10000".equals(status)) {
+            redirect("/58-status/" + goodsId);
         }
         render("WubaProduct/result.html", status, msg, goodsId);
     }
@@ -288,6 +291,7 @@ public class WubaProduct extends Controller {
         if ("10000".equals(status)) {
             resalerFav.partner = OuterOrderPartner.WB;
             resalerFav.save();
+            redirect("/58-status/" + goodsId);
         }
         render("WubaProduct/result.html", status, msg, goodsId);
     }
