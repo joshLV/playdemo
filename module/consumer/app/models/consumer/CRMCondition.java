@@ -36,10 +36,8 @@ public class CRMCondition {
                 params.add(user.getId());
             }
         }
-//        System.out.println(mobile + "++++++++++=");
         if (StringUtils.isNotBlank(mobile)) {
             User user = User.findByLoginName(mobile.trim());
-//            System.out.println(user + ">>>>>>>>");
             if (user != null) {
                 sq.append(" and order.userId = :user");
                 params.add(user.getId());

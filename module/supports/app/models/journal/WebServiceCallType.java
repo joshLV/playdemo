@@ -1,10 +1,10 @@
 package models.journal;
 
+import play.db.jpa.Model;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-import play.db.jpa.Model;
 
 /**
  * 用于自动记录WebServiceCallLog中的callType，方便查询。
@@ -32,7 +32,6 @@ public class WebServiceCallType extends Model {
 
     public static void checkOrCreate(String callType2) {
         long existsCount = WebServiceCallType.count("callType=?", callType2);
-        System.out.println("callcount=" + existsCount);
         if (existsCount == 0) {
             WebServiceCallType type = new WebServiceCallType();
             type.callType = callType2;

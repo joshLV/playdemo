@@ -96,8 +96,6 @@ public class TotalSalesReport {
                                 + condition.getGroupBy() + " order by e.consumedAt"); 
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
-            System.out.println("param:" + param);
-            System.out.println("condition.getParamMap().get(param):" + condition.getParamMap().get(param));
         }
         return query.getResultList();
     }

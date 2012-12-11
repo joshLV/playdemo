@@ -64,7 +64,6 @@ public class SupplierCouponQueryTest extends FunctionalTest {
 
     @Test
     public void 正常券() {
-        System.out.println("ecoupon.su=" + coupon.goods.supplierId + ", sn=" + coupon.eCouponSn);
         String url = "/coupons/single-query?shopId=" + shop.id + "&eCouponSn=" + coupon.eCouponSn;
         Http.Response response = GET(url);
         assertStatus(200, response);
@@ -77,7 +76,6 @@ public class SupplierCouponQueryTest extends FunctionalTest {
 
     @Test
     public void 在当当已经退款的券进行消费() {
-        System.out.println("ecoupon.su=" + coupon.goods.supplierId + ", sn=" + coupon.eCouponSn);
         String url = "/coupons/single-query?shopId=" + shop.id + "&eCouponSn=" + coupon.eCouponSn;
         Http.Response response = GET(url);
         assertStatus(200, response);
@@ -112,7 +110,6 @@ public class SupplierCouponQueryTest extends FunctionalTest {
         assertNotNull(renderArgs("ecoupon"));
         assertContentMatch("此券已过期", response);
         assertContentMatch(coupon.eCouponSn, response);
-        System.out.println(response.out.toString());
         ECoupon getCoupon = (ECoupon) renderArgs("ecoupon");
         assertEquals(coupon.eCouponSn, getCoupon.eCouponSn);
     }
@@ -128,7 +125,6 @@ public class SupplierCouponQueryTest extends FunctionalTest {
         assertNotNull(renderArgs("ecoupon"));
         assertContentMatch("此券已被冻结不能使用", response);
         assertContentMatch(coupon.eCouponSn, response);
-        System.out.println(response.out.toString());
         ECoupon getCoupon = (ECoupon) renderArgs("ecoupon");
         assertEquals(coupon.eCouponSn, getCoupon.eCouponSn);
     }

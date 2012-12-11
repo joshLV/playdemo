@@ -43,7 +43,6 @@ public class CustomerRemarkMailsTest extends FunctionalTest {
         CustomerRemarkMails.notify(message);
 
         String mailBody = Mail.Mock.getLastMessageReceivedBy(email);
-//        System.out.println(mailBody);
         assertTrue(order.orderNumber, mailBody.indexOf(order.orderNumber) > 0);
     }
 
@@ -65,7 +64,6 @@ public class CustomerRemarkMailsTest extends FunctionalTest {
         Thread.sleep(500);
         String mailBody = Mail.Mock.getLastMessageReceivedBy(email);
 
-//        System.out.println(mailBody);
         assertTrue(order.orderNumber, mailBody.indexOf(order.orderNumber) > 0);
     }
 }

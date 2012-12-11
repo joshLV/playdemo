@@ -2,7 +2,6 @@ package models;
 
 import com.uhuila.common.util.DateUtil;
 import models.accounts.AccountType;
-import play.data.binding.types.DateBinder;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -36,8 +35,6 @@ public class ResaleSalesReportCondition {
             paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
         }
 
-
-        System.out.println("condBuilder.toString():" + condBuilder.toString());
         return condBuilder.toString();
     }
 
@@ -57,8 +54,6 @@ public class ResaleSalesReportCondition {
             paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
         }
 
-
-        System.out.println("sendAt condBuilder.toString():" + condBuilder.toString());
         return condBuilder.toString();
     }
 
@@ -77,8 +72,6 @@ public class ResaleSalesReportCondition {
             paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
         }
 
-
-        System.out.println("condBuilder.toString():" + condBuilder.toString());
         return condBuilder.toString();
     }
 
@@ -96,8 +89,6 @@ public class ResaleSalesReportCondition {
             paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
         }
 
-
-        System.out.println("condBuilder.toString():" + condBuilder.toString());
         return condBuilder.toString();
     }
 
@@ -115,8 +106,6 @@ public class ResaleSalesReportCondition {
             paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
         }
 
-
-        System.out.println("condBuilder.toString():" + condBuilder.toString());
         return condBuilder.toString();
     }
 

@@ -213,9 +213,6 @@ public class WithdrawBill extends Model {
             //如果预付款已过期
             if (withdrawDate.after(prepayment.expireAt)) {
                 BigDecimal cashSettledAmount = AccountSequence.getVostroAmount(account, DateUtil.getBeginOfDay(prepayment.expireAt));
-                System.out.println("amount:" + amount);
-                System.out.println("cashSettledAmount:" + cashSettledAmount);
-                System.out.println("prepayment.getBalance():" + prepayment.getBalance());
                 if (cashSettledAmount.compareTo(BigDecimal.ZERO) <= 0) {
                     create2TradeBill(amount.subtract(prepayment.getBalance()), prepayment.getBalance());
                 } else {
