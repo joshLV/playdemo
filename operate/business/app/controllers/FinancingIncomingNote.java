@@ -16,10 +16,10 @@ import java.util.List;
  * @author likang
  */
 @With(OperateRbac.class)
-public class FinancingIncomingNote extends Controller {
+@ActiveNavigation("financing_incoming_note")
+public class FinancingIncomingNote extends Controller{
 
-    @ActiveNavigation("financing_incoming_note")
-    public static void add(BigDecimal amount, Long id) {
+    public static void add(BigDecimal amount, Long id){
         List<Account> accounts = Account.find("byAccountTypeAndCreditableAndStatus",
                 AccountType.RESALER, AccountCreditable.YES, AccountStatus.NORMAL).fetch();
         for (Account account : accounts) {

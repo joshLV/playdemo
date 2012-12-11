@@ -265,6 +265,7 @@ GET     /reports/financing_incoming             OperateReports.showFinancingInco
 GET     /reports/promotion                      OperateReports.showPromotionReport
 
 GET     /financing_incoming_add                 FinancingIncomingNote.add
+POST    /financing_incoming                     FinancingIncomingNote.create
 
 # 提现管理
 GET     /withdraw                               WithdrawApproval.index
