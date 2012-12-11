@@ -66,6 +66,7 @@ public class PaymentReportUnitTest extends UnitTest {
         //System.out.println(AccountSequence.findAll().size());
         List<PaymentReport> list = PaymentReport.queryPaymentReport(condition);
         assertNotNull(list);
-        assertEquals(10,list.size());
+//        assertEquals(10,list.size());
+        assertEquals(1,list.size());
     }
 }
