@@ -1,6 +1,5 @@
 package function;
 
-import com.uhuila.common.util.PinyinUtil;
 import controllers.modules.resale.cas.Security;
 import factory.FactoryBoy;
 import models.resale.Resaler;
@@ -36,12 +35,6 @@ public class ResaleGoodsTest extends FunctionalTest {
 
     @Test
     public void testShow() {
-
-
-            System.out.println(PinyinUtil.getHeadLetterString("城市"));
-
-
-//        PinyinHelper.getFirstHanyuPinyinString("城市".toCharArray(),hanyuPinyinOutputFormat);
         Http.Response response = GET("/goods/" + goods.id);
         assertIsOk(response);
 

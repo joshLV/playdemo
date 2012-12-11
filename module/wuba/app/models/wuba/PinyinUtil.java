@@ -1,4 +1,4 @@
-package com.uhuila.common.util;
+package models.wuba;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
 

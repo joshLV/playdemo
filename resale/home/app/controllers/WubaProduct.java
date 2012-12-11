@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
-import com.uhuila.common.util.PinyinUtil;
+import models.wuba.PinyinUtil;
 import controllers.modules.resale.cas.SecureCAS;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
