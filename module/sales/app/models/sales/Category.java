@@ -310,31 +310,31 @@ public class Category extends Model {
      * @return
      */
     public List<Category> getByParent() {
-//        return CacheHelper.getCache(CacheHelper.getCacheKey(new String[]{Goods.CACHEKEY, Category.CACHEKEY}, "WWW_SUB_CATEGORIES" + id), new CacheCallBack<List<Category>>() {
-//            @Override
-//            public List<Category> loadData() {
-        List<Category> categories = Category.findByParent(id);
-        List<Category> hasGoodsCategories = new ArrayList<>();
+        return CacheHelper.getCache(CacheHelper.getCacheKey(new String[]{Goods.CACHEKEY, Category.CACHEKEY}, "WWW_SUB_CATEGORIES" + id), new CacheCallBack<List<Category>>() {
+            @Override
+            public List<Category> loadData() {
+                List<Category> categories = Category.findByParent(id);
+                List<Category> hasGoodsCategories = new ArrayList<>();
 
-//                int count = 0;
-        for (int i = 0; i < categories.size(); i++) {
-            Category category = categories.get(i);
+        //                int count = 0;
+                for (int i = 0; i < categories.size(); i++) {
+                    Category category = categories.get(i);
 
-            long count = Goods.countOnSaleByCategory(category.id);
-            if (count > 0) {
-                category.goodsCount = count;
-                hasGoodsCategories.add(category);
+                    long count = Goods.countOnSaleByCategory(category.id);
+                    if (count > 0) {
+                        category.goodsCount = count;
+                        hasGoodsCategories.add(category);
+                    }
+                }
+
+        //                Category topCategory = new Category();
+        //                topCategory.id = 0l;
+        //                topCategory.name = "全部";
+        //                topCategory.goodsCount = (long) count;
+        //                topAllCategories.add(0, topCategory);
+                return hasGoodsCategories;
             }
-        }
-
-//                Category topCategory = new Category();
-//                topCategory.id = 0l;
-//                topCategory.name = "全部";
-//                topCategory.goodsCount = (long) count;
-//                topAllCategories.add(0, topCategory);
-        return hasGoodsCategories;
-//            }
-//        });
+        });
     }
 
     public static void update(Long id, Category category, Long parentId) {
