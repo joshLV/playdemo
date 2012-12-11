@@ -164,6 +164,15 @@ form:'form'
                             订单号：<a href="/orders/${accountSequence.orderId}"
                                    target="_blank">${accountSequence .orderNumber}</a>
                         #{/if}
+
+                        #{if accountSequence.comment!=null && accountSequence.comment!=""}
+                            备注：${accountSequence .comment}
+                            <br>
+                        #{/if}
+
+                        #{if accountSequence.operatedBy!=null && accountSequence.operatedBy!=""}
+                            操作人: ${accountSequence .operatedBy}
+                        #{/if}
                     #{/if}
                 </td>
                 <td>
