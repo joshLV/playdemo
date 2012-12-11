@@ -1,7 +1,6 @@
 package models.accounts;
 
 import com.uhuila.common.util.DateUtil;
-import org.apache.commons.lang.time.DateUtils;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -59,6 +58,7 @@ public class AccountSequenceCondition implements Serializable {
             filter.append(" and tradeType = :tradeType");
             params.put("tradeType", tradeType);
         }
+        System.out.println("filter.toString():" + filter.toString());
         return filter.toString();
     }
 

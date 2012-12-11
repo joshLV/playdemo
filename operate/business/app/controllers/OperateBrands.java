@@ -4,7 +4,6 @@ import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.FileUploadUtil;
 import models.sales.Brand;
 import models.supplier.Supplier;
-import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
@@ -195,6 +194,10 @@ public class OperateBrands extends Controller {
         Long loginUserId = OperateRbac.currentUser().id;
         List<Brand> brandList = Brand.findByOrder(supplier, loginUserId);
         render(brandList);
+    }
+
+    public static void test() {
+        render();
     }
 
 }
