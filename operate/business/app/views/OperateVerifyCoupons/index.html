@@ -30,14 +30,11 @@
 </style>
 <form action="@{OperateVerifyCoupons.verify()}" class="form-horizontal" id='form'>
     <legend>验证消费券</legend>
-    <div class="control-group">
-        <label class="control-label"><span style="color: red; ">*</span>商户</label>
-
-        <div class="controls">
-        #{layout_operate.selectInputField name:"supplierName", id:"supplierId", list:supplierList/}
-            <span class="error">#{error 'supplierId'/}</span>
-        </div>
-    </div>
+#{layout_operate.selectField name:'supplierId',class:'span2', value:supplierId, error:'supplierUser.supplierId'}
+    #{list items:supplierList, as:'supplier' }
+        #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
+    #{/list}
+#{/layout_operate.selectField}
 
     <div id="shop">#{include '/OperateShops/showSupplierShops.html'/}</div>
     <div class="control-group">

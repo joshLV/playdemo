@@ -80,7 +80,7 @@
                     #{else}<a href="/s/${categoryId}-${searchAreaId}-0-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}">全部</a>#{/else}
                     </div>
                     <div class="cat-list">
-                         #{list brands, as:'brand'}
+                    #{list brands, as:'brand'}
                     #{if brandId == brand.id}
                         <a class="curr">#{if brand.isHot}<strong style="color:red">#{/if}${brand.name}#{if brand.isHot}</strong>#{/if}</a>
                     #{/if}

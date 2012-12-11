@@ -8,43 +8,37 @@
 #{/set}
 
 #{set 'navMenu'}
-    <li><a href="/">首　页</a></li>
-    <li><a class="current" href="/goods">商品库</a></li>
-    <li><a href="/library">我的分销库</a></li>
-    <li><a href="/charge">账户充值</a></li>
-    <li><a href="/withdraw">账户提现</a></li>
+<li><a href="/">首　页</a></li>
+<li><a class="current" href="/goods">商品库</a></li>
+<li><a href="/library">我的分销库</a></li>
+<li><a href="/charge">账户充值</a></li>
+<li><a href="/withdraw">账户提现</a></li>
 #{/set}
 
 <div id="content">
-    #{breadcrumbs/breadcrumb breadcrumbs/}
+#{breadcrumbs/breadcrumb breadcrumbs/}
     <div id="filter">
         <dl class="clearfix">
             <dt>推荐品牌：</dt>
             <dd>
-                #{if brandId == 0}
-                    <span class="selected">全部</span>
-                #{/if}
-                #{else}
-                    <a href="/goods/list/0-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-${type}">全部</a>
-                #{/else}
+            #{if brandId == 0}
+                <span class="selected">全部</span>
+            #{/if}
+            #{else}
+                <a href="/goods/list/0-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-${type}">全部</a>
+            #{/else}
             #{list brands, as:'brand'}
                 #{if brandId == brand.id}
                     <span class="selected">
 
-                     #{if brand.name!="一百券"}
-
-
-
-                    ${brand.name}
-                     #{/if}
-
+                        #{if brand.name!="一百券"}${brand.name}#{/if}
 
                     </span>
                 #{/if}
                 #{else}
-                #{if brand.name!="一百券"}
-                    <a href="/goods/list/${brand.id}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-${type}">${brand.name}</a>
-                #{/if}
+                    #{if brand.name!="一百券"}
+                        <a href="/goods/list/${brand.id}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-${type}">${brand.name}</a>
+                    #{/if}
                 #{/else}
             #{/list}
             </dd>
@@ -52,141 +46,147 @@
         <dl class="clearfix">
             <dt>价格：</dt>
             <dd>
-                #{if priceFrom == 0 && priceTo == 0}
-                    <span class="selected">全部</span>
-                #{/if}
-                #{else}
-                    <a href="/goods/list/${brandId}-0-0-${orderBy}-${orderByType}-${type}">全部</a>
-                #{/else}
-                #{if priceFrom == 0 && priceTo == 30}
-                    <span class="selected">0-30元</span>
-                #{/if}
-                #{else}
-                    <a href="/goods/list/${brandId}-0-30-${orderBy}-${orderByType}-${type}">0-30元</a>
-                #{/else}
-                #{if priceFrom == 30 && priceTo == 60}
-                    <span class="selected">30-60元</span>
-                #{/if}
-                #{else}
-                    <a href="/goods/list/${brandId}-30-60-${orderBy}-${orderByType}-${type}">30-60元</a>
-                #{/else}
-                #{if priceFrom == 60 && priceTo == 90}
-                    <span class="selected">60-90元</span>
-                #{/if}
-                #{else}
-                    <a href="/goods/list/${brandId}-60-90-${orderBy}-${orderByType}-${type}">60-90元</a>
-                #{/else}
-                #{if priceFrom == 90 && priceTo == 120}
-                    <span class="selected">90-120元</span>
-                #{/if}
-                #{else}
-                    <a href="/goods/list/${brandId}-90-120-${orderBy}-${orderByType}-${type}">90-120元</a>
-                #{/else}
-                #{if priceFrom == 120 && priceTo == 160}
-                    <span class="selected">120-160元</span>
-                #{/if}
-                #{else}
-                    <a href="/goods/list/${brandId}-120-160-${orderBy}-${orderByType}-${type}">120-160元</a>
-                #{/else}
-                #{if priceFrom == 160 && priceTo == 0}
-                    <span class="selected">160元以上</span>
-                #{/if}
-                #{else}
-                    <a href="/goods/list/${brandId}-160-0-${orderBy}-${orderByType}-${type}">160元以上</a>
-                #{/else}
-                    <input id="input_price_from" type="text" value="#{if priceFrom != 0}${priceFrom}#{/if}"/> 至
-                    <input id="input_price_to" type="text" value="#{if priceTo != 0}${priceTo}#{/if}"/>
-                    <a id="link_price_confirm" class="submit" href="/goods/list/${brandId}-0-0-${orderBy}-${orderByType}-${type}">确定</a>
+            #{if priceFrom == 0 && priceTo == 0}
+                <span class="selected">全部</span>
+            #{/if}
+            #{else}
+                <a href="/goods/list/${brandId}-0-0-${orderBy}-${orderByType}-${type}">全部</a>
+            #{/else}
+            #{if priceFrom == 0 && priceTo == 30}
+                <span class="selected">0-30元</span>
+            #{/if}
+            #{else}
+                <a href="/goods/list/${brandId}-0-30-${orderBy}-${orderByType}-${type}">0-30元</a>
+            #{/else}
+            #{if priceFrom == 30 && priceTo == 60}
+                <span class="selected">30-60元</span>
+            #{/if}
+            #{else}
+                <a href="/goods/list/${brandId}-30-60-${orderBy}-${orderByType}-${type}">30-60元</a>
+            #{/else}
+            #{if priceFrom == 60 && priceTo == 90}
+                <span class="selected">60-90元</span>
+            #{/if}
+            #{else}
+                <a href="/goods/list/${brandId}-60-90-${orderBy}-${orderByType}-${type}">60-90元</a>
+            #{/else}
+            #{if priceFrom == 90 && priceTo == 120}
+                <span class="selected">90-120元</span>
+            #{/if}
+            #{else}
+                <a href="/goods/list/${brandId}-90-120-${orderBy}-${orderByType}-${type}">90-120元</a>
+            #{/else}
+            #{if priceFrom == 120 && priceTo == 160}
+                <span class="selected">120-160元</span>
+            #{/if}
+            #{else}
+                <a href="/goods/list/${brandId}-120-160-${orderBy}-${orderByType}-${type}">120-160元</a>
+            #{/else}
+            #{if priceFrom == 160 && priceTo == 0}
+                <span class="selected">160元以上</span>
+            #{/if}
+            #{else}
+                <a href="/goods/list/${brandId}-160-0-${orderBy}-${orderByType}-${type}">160元以上</a>
+            #{/else}
+                <input id="input_price_from" type="text" value="#{if priceFrom != 0}${priceFrom}#{/if}"/> 至
+                <input id="input_price_to" type="text" value="#{if priceTo != 0}${priceTo}#{/if}"/>
+                <a id="link_price_confirm" class="submit"
+                   href="/goods/list/${brandId}-0-0-${orderBy}-${orderByType}-${type}">确定</a>
             </dd>
         </dl>
     </div>
     <div id="rankbar" class="clearfix">
-            <a #{if orderBy == 0}class="current"#{/if}
-               href="/goods/list/${brandId}-${priceFrom}-${priceTo}-0-1-${type}" value="${orderBy}">默认排序</a>
+        <a #{if orderBy == 0}class="current"#{/if}
+           href="/goods/list/${brandId}-${priceFrom}-${priceTo}-0-1-${type}" value="${orderBy}">默认排序</a>
 
-        #{if orderBy == 1}
-            <a #{if orderByType == 1}class="current prop rank-desc"#{/if}
-               #{else}class="current prop rank-asc"#{/else}
-               href="/goods/list/${brandId}-${priceFrom}-${priceTo}-1-${orderByType}-${type}-1-${orderByType==0?1:0}">销量</a>
-        #{/if}
-        #{else}
-            <a class="prop" href="/goods/list/${brandId}-${priceFrom}-${priceTo}-1-${orderByType}-${type}-1-${orderByType==0?1:0}">销量</a>
-        #{/else}
+    #{if orderBy == 1}
+        <a #{if orderByType == 1}class="current prop rank-desc"#{/if}
+           #{else}class="current prop rank-asc"#{/else}
+           href="/goods/list/${brandId}-${priceFrom}-${priceTo}-1-${orderByType}-${type}-1-${orderByType==0?1:0}">销量</a>
+    #{/if}
+    #{else}
+        <a class="prop"
+           href="/goods/list/${brandId}-${priceFrom}-${priceTo}-1-${orderByType}-${type}-1-${orderByType==0?1:0}">销量</a>
+    #{/else}
 
-        #{if orderBy == 2}
-            <a #{if orderByType == 1}class="current prop rank-desc"#{/if}
-               #{else}class="current prop rank-asc"#{/else}
-               href="/goods/list/${brandId}-${priceFrom}-${priceTo}-2-${orderByType}-${type}-2-${orderByType==0?1:0}">价格</a>
-        #{/if}
-        #{else}
-            <a class="prop" href="/goods/list/${brandId}-${priceFrom}-${priceTo}-2-${orderByType}-${type}-2-${orderByType==0?1:0}">价格</a>
-        #{/else}
+    #{if orderBy == 2}
+        <a #{if orderByType == 1}class="current prop rank-desc"#{/if}
+           #{else}class="current prop rank-asc"#{/else}
+           href="/goods/list/${brandId}-${priceFrom}-${priceTo}-2-${orderByType}-${type}-2-${orderByType==0?1:0}">价格</a>
+    #{/if}
+    #{else}
+        <a class="prop"
+           href="/goods/list/${brandId}-${priceFrom}-${priceTo}-2-${orderByType}-${type}-2-${orderByType==0?1:0}">价格</a>
+    #{/else}
 
-        #{if orderBy == 3}
-            <a #{if orderByType == 1}class="current prop rank-desc"#{/if}
-               #{else}class="current prop rank-asc"#{/else}
-               href="/goods/list/${brandId}-${priceFrom}-${priceTo}-3-${orderByType}-${type}-3-${orderByType==0?1:0}">折扣</a>
-        #{/if}
-        #{else}
-            <a class="prop" href="/goods/list/${brandId}-${priceFrom}-${priceTo}-3-${orderByType}-${type}-3-${orderByType==0?1:0}">折扣</a>
-        #{/else}
+    #{if orderBy == 3}
+        <a #{if orderByType == 1}class="current prop rank-desc"#{/if}
+           #{else}class="current prop rank-asc"#{/else}
+           href="/goods/list/${brandId}-${priceFrom}-${priceTo}-3-${orderByType}-${type}-3-${orderByType==0?1:0}">折扣</a>
+    #{/if}
+    #{else}
+        <a class="prop"
+           href="/goods/list/${brandId}-${priceFrom}-${priceTo}-3-${orderByType}-${type}-3-${orderByType==0?1:0}">折扣</a>
+    #{/else}
 
-        #{if orderBy == 4}
-            <a #{if orderByType == 1}class="current prop rank-desc"#{/if}
-               #{else}class="current prop rank-asc"#{/else}
-               href="/goods/list/${brandId}-${priceFrom}-${priceTo}-4-${orderByType}-${type}-4-${orderByType==0?1:0}">最新</a>
-        #{/if}
-        #{else}
-            <a class="prop" href="/goods/list/${brandId}-${priceFrom}-${priceTo}-4-${orderByType}-${type}-4-${orderByType==0?1:0}">最新</a>
-        #{/else}
+    #{if orderBy == 4}
+        <a #{if orderByType == 1}class="current prop rank-desc"#{/if}
+           #{else}class="current prop rank-asc"#{/else}
+           href="/goods/list/${brandId}-${priceFrom}-${priceTo}-4-${orderByType}-${type}-4-${orderByType==0?1:0}">最新</a>
+    #{/if}
+    #{else}
+        <a class="prop"
+           href="/goods/list/${brandId}-${priceFrom}-${priceTo}-4-${orderByType}-${type}-4-${orderByType==0?1:0}">最新</a>
+    #{/else}
     </div>
 
     <input type="checkbox" id="selectall" name="selectall"> 全选 <a href="#" id="addto">批量加入分销库</a>
     <span id="batchAdd" class="buttom_dibu" style="display: none;font-size:14px">已成功添加到分销库！是否进入?  <a href="/library">点击进入</a></span>
 
-    #{form @ResalerGoods.index() , id:'indexForm'}
+#{form @ResalerGoods.index() , id:'indexForm'}
     <ul id="lists">
-    #{paginate.list items:goodsList, as:'goods'}
-       *{#{if !goods?.expireAt?.before( new java.util.Date())}}*
-        <li class="clearfix">
-            <div class="check">
-                #{if !goods.isExistLibrary(resaler)}
-                    <input type="checkbox" value="${goods.id}"  name="goodsIds[]"/>
-                #{/if}
-                #{else}
-                    <input type="checkbox" disabled/>
-                #{/else}
-            </div>
-            <div class="photo"><a href="/goods/${goods.id}"><img src="${goods.imageTinyPath}"/></a></div>
-            <div class="name">
-                <a href="/goods/${goods.id}">${goods.name}</a><br>
-                <span>截止日期：${goods.expireAt}</span>
-            </div>
-            <div class="price">
-                市场价：￥${goods.faceValue}<br>
-                采购价：<span class="purchass-price">￥${goods.getResalePrice()}</span><br>
-                折扣：${goods.discountExpress}
-            </div>
-            <div class="action">
-                <a class="view-detail" href="@{ResalerGoods.show(goods.id)}">查看详情</a><br>
-                #{if !goods.isExistLibrary(resaler)}
-                    <span id= "add_${goods.id}" onclick="addToLibrary('${goods.id}')" style="cursor:pointer;color:#4991D4">加入分销库 </span>
-                #{/if}
-                #{else}
-                    已加入分销库 
-                #{/else}
-            </div>
-        </li>
-       *{#{/if}}*
-    #{/paginate.list}
+        #{paginate.list items:goodsList, as:'goods'}
+        *{#{if !goods?.expireAt?.before( new java.util.Date())}}*
+            <li class="clearfix">
+                <div class="check">
+                    #{if !goods.isExistLibrary(resaler)}
+                        <input type="checkbox" value="${goods.id}" name="goodsIds[]"/>
+                    #{/if}
+                    #{else}
+                        <input type="checkbox" disabled/>
+                    #{/else}
+                </div>
+                <div class="photo"><a href="/goods/${goods.id}"><img src="${goods.imageTinyPath}"/></a></div>
+                <div class="name">
+                    <a href="/goods/${goods.id}">${goods.name}</a><br>
+                    <span>截止日期：${goods.expireAt}</span>
+                </div>
+                <div class="price">
+                    市场价：￥${goods.faceValue}<br>
+                    采购价：<span class="purchass-price">￥${goods.getResalePrice()}</span><br>
+                    折扣：${goods.discountExpress}
+                </div>
+                <div class="action">
+                    <a class="view-detail" href="@{ResalerGoods.show(goods.id)}">查看详情</a><br>
+                    #{if !goods.isExistLibrary(resaler)}
+                        <span id="add_${goods.id}" onclick="addToLibrary('${goods.id}')"
+                              style="cursor:pointer;color:#4991D4">加入分销库 </span>
+                    #{/if}
+                    #{else}
+                        已加入分销库
+                    #{/else}
+                </div>
+            </li>
+        *{#{/if}}*
+        #{/paginate.list}
     </ul>
-   #{/form}
+#{/form}
 
-    #{paginate.controls items:goodsList /}
+#{paginate.controls items:goodsList /}
 
 
     <div class="pagination">
-	    <ul>
-	    </ul>
-     </div>
+        <ul>
+        </ul>
+    </div>
 </div>

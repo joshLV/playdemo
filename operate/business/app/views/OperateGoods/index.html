@@ -69,12 +69,7 @@
         </tr>
         <tr>
             <td width="30%">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
-            #{select 'condition.brandId', id:'brandId', class:'select', value:condition?.brandId}
-                #{option "0"}不限#{/option}
-                #{list items:brandList, as:'brand'}
-                    #{option brand?.id}${brand?.name}#{/option}
-                #{/list}
-            #{/select}</td>
+            #{layout_operate.selectInputField name:"brandName", id:"condition.brandId", list:brandList/}</td>
             <td width="30%">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：
             #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
                 #{option ""}不限#{/option}
