@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
+import models.wuba.PinyinUtil;
 import controllers.modules.resale.cas.SecureCAS;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
@@ -37,6 +38,7 @@ import java.util.Map;
 @With(SecureCAS.class)
 public class WubaProduct extends Controller {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
+    public static final String THIRD_URL = "http://t.58.com/";
 
     public static void prepare(long goodsId) {
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
@@ -76,7 +78,7 @@ public class WubaProduct extends Controller {
     /**
      * 修改团购和修改商家
      */
-    public static void update(long goodsId, int prodCategory, int isSend, BigDecimal expressMoney,
+    public static void update(long goodsId, int prodCategory, int isSend, BigDecimal expressMoney, String[] cities,
                               Integer[] cityIds, Integer[] travelCityIds, Date startTime, Date endTime, Date deadline,
                               int successNum, int saleMaxNum, int buyerMaxNum, int buyerMinNum,
                               BigDecimal prodPrice, BigDecimal groupPrice, int isRefund, int shopSize, int prodTypeId) {
@@ -85,6 +87,11 @@ public class WubaProduct extends Controller {
         if (goods == null) {
             error("商品没找到");
             return;
+        }
+        Resaler user = SecureCAS.getResaler();
+        ResalerFav resalerFav = ResalerFav.find("byGoodsAndResaler", goods, user).first();
+        if (resalerFav == null) {
+            error("no fav found");
         }
         GoodsDeployRelation deployRelation = GoodsDeployRelation.getLast(goods.id, OuterOrderPartner.WB);
         Long id = goods.id;
@@ -177,7 +184,11 @@ public class WubaProduct extends Controller {
                 support.save();
             }
         }
+
+
         if ("10000".equals(status)) {
+            setUrlParams(cities, cityIds, resalerFav);
+            resalerFav.save();
             redirect("/58-status/" + goodsId);
         }
         render("WubaProduct/result.html", status, msg, goodsId);
@@ -194,7 +205,7 @@ public class WubaProduct extends Controller {
     /**
      * 新增团购信息
      */
-    public static void upload(long goodsId, int prodCategory, int isSend, BigDecimal expressMoney,
+    public static void upload(long goodsId, int prodCategory, int isSend, BigDecimal expressMoney, String[] cities,
                               Integer[] cityIds, Integer[] travelCityIds, Date startTime, Date endTime, Date deadline,
                               int successNum, int saleMaxNum, int buyerMaxNum, int buyerMinNum,
                               BigDecimal prodPrice, BigDecimal groupPrice, int isRefund, int shopSize, int prodTypeId) {
@@ -288,12 +299,45 @@ public class WubaProduct extends Controller {
         JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.addgroupbuy", false);
         String status = result.get("status").getAsString();
         String msg = result.get("msg").getAsString();
+
+
         if ("10000".equals(status)) {
+            JsonObject jsonObject = result.get("data").getAsJsonObject();
+            Long wubaGoodsId = jsonObject.get("groupbuyId58").getAsLong();
+            setUrlParams(cities, cityIds, resalerFav);
             resalerFav.partner = OuterOrderPartner.WB;
+            resalerFav.thirdGroupbuyId = wubaGoodsId;
             resalerFav.save();
             redirect("/58-status/" + goodsId);
         }
         render("WubaProduct/result.html", status, msg, goodsId);
+    }
+
+    /**
+     * 设置新增或修改成功，显示的参数
+     *
+     * @param cities
+     * @param cityIds
+     * @param resalerFav
+     */
+    private static void setUrlParams(String[] cities, Integer[] cityIds, ResalerFav resalerFav) {
+        String cityName = "";
+        String moreCityName = "";
+        String url = "";
+        for (String city : cities) {
+            for (int cityId : cityIds) {
+                int city0Id = Integer.valueOf(city.split(":")[0]);
+                if (city0Id == cityId) {
+                    cityName = city.split(":")[1];
+                    url += THIRD_URL + PinyinUtil.getHeadLetterString(cityName);
+                    moreCityName += cityName + ",";
+
+                }
+            }
+        }
+
+        resalerFav.thirdUrl = url;
+        resalerFav.thirdCity = moreCityName;
     }
 
 
