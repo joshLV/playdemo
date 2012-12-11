@@ -1558,7 +1558,6 @@ public class Goods extends Model {
         query.setParameter("endOnSaleAt", nowDate);
         query.setMaxResults(limit);
         List<Goods> goodsList = query.getResultList();
-        System.out.println(goodsList.size() + "---------------");
         return goodsList;
 
     }
@@ -2022,19 +2021,15 @@ public class Goods extends Model {
         if (brandId > 0) {
             queryStr.append(" AND brand.id_l:" + brandId);
         }
-//        System.out.println("==> queryStr:" + queryStr);
         SolrQuery query = new SolrQuery(queryStr.toString());
         if (onlyStatistic) {
             query.setRows(0);
         } else {
             query.setRows(pageSize);
             query.setFields(SOLR_ID, SOLR_GOODS_NAME, SOLR_GOODS_SALEPRICE, SOLR_GOODS_FACEVALUE, SOLR_GOODS_VIRTUALSALECOUNT, SOLR_GOODS_AREAS, SOLR_GOODS_IMAGESMALLPATH);
-//            System.out.println("GoodsWebsiteCondition.getSolrOrderBy(0):" + GoodsWebsiteCondition.getSolrOrderBy(0));
-//            System.out.println("==> orderBy:" + orderBy + " " + (isAsc ? "asc" : "desc"));
             if ((StringUtils.isNotBlank(q) && !GoodsWebsiteCondition.getSolrOrderBy(0).equals(orderBy)) ||
                     (StringUtils.isBlank(q))) {
                 query.setSortField(orderBy, isAsc ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
-//                System.out.println("==>set Sort Field");
             }
             query.setStart(pageNumber * pageSize - pageSize);
         }

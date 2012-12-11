@@ -16,7 +16,6 @@ import util.DateHelper;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 public class DiscountCodeTest extends UnitTest {
 
@@ -69,11 +68,8 @@ public class DiscountCodeTest extends UnitTest {
                                 target.discountSn = "TEST" + seq;
                             }
                         });
-        List<DiscountCode> list = DiscountCode.findAll();
-        /*for (DiscountCode discountCode2 : list) {
-            System.out.println(discountCode2.id + ". name="
-                            + discountCode2.discountSn);
-        }*/
+//        List<DiscountCode> list = DiscountCode.findAll();
+
         assertEquals(6l, DiscountCode.count());
 
         ModelPaginator discountCodePage = DiscountCode.getDiscountCodePage(0,

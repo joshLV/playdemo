@@ -27,7 +27,6 @@ public class AddressFactory extends ModelFactory<Address> {
         address.isDefault = true;
         address.name = "add1";
         address.user = FactoryBoy.lastOrCreate(User.class);
-//        System.out.println("useru11111<<<>>>>"+user);
         return address;
     }
 

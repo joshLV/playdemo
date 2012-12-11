@@ -71,7 +71,6 @@ public class ReportGenerateJob extends Job {
                         pm.setObject(i, rs.getObject(i));
                     }
                     int result = pm.executeUpdate();
-//                    System.out.println("insert result:" + result);
                 }
             }
             DB.close();
