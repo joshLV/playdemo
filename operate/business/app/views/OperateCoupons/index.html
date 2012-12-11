@@ -76,14 +76,8 @@
                            class="input-medium"/></td>
                 <td>
                     &nbsp;&nbsp;品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌&nbsp;&nbsp;
-                #{select 'condition.brandId', id:'brandId', class:'input-medium', value:condition?.brandId}
-                    #{if brandList.size()>0}
-                        #{option "0"}不限#{/option}
-                    #{/if}
-                    #{list items:brandList, as:'brand'}
-                        #{option brand?.id}${brand?.name}#{/option}
-                    #{/list}
-                #{/select}
+                #{layout_operate.selectInputField name:"brandName", id:"condition.brandId", list:brandList/}
+
                     &nbsp;&nbsp;验证方式&nbsp;&nbsp;
                 #{select 'condition.verifyType', id:'condition_verifyType', class:'input-medium', value:condition?.verifyType}
                     #{option ""}不限#{/option}
