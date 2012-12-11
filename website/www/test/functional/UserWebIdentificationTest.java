@@ -3,6 +3,7 @@ package functional;
 import java.util.HashMap;
 import java.util.Map;
 
+import factory.callback.BuildCallback;
 import models.consumer.User;
 import models.consumer.UserWebIdentification;
 import models.sales.Goods;
@@ -17,6 +18,7 @@ import play.mvc.Http.Response;
 import play.test.FunctionalTest;
 import controllers.WebsiteInjector;
 import factory.FactoryBoy;
+import util.DateHelper;
 
 public class UserWebIdentificationTest extends FunctionalTest {
     User user;
@@ -26,7 +28,13 @@ public class UserWebIdentificationTest extends FunctionalTest {
     public void setup() {
         FactoryBoy.deleteAll();
         user = FactoryBoy.create(User.class);
-        goods = FactoryBoy.create(Goods.class);
+        goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+            @Override
+            public void build(Goods g) {
+                g.beginOnSaleAt = com.uhuila.common.util.DateUtil.getEndOfDay(DateHelper.beforeDays(g.effectiveAt, 5));
+                g.endOnSaleAt = com.uhuila.common.util.DateUtil.getEndOfDay(DateHelper.beforeDays(g.expireAt, 5));
+            }
+        });
 
     }
 

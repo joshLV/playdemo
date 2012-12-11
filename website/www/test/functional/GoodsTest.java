@@ -19,6 +19,7 @@ import play.mvc.Http;
 import play.test.FunctionalTest;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
+import util.DateHelper;
 
 /**
  * 商品控制器的测试.
@@ -37,6 +38,8 @@ public class GoodsTest extends FunctionalTest {
         goods = FactoryBoy.create(Goods.class);
         brand = FactoryBoy.create(Brand.class);
         goods.brand = brand;
+        goods.beginOnSaleAt = com.uhuila.common.util.DateUtil.getEndOfDay(DateHelper.beforeDays(goods.effectiveAt, 5));
+        goods.endOnSaleAt = com.uhuila.common.util.DateUtil.getEndOfDay(DateHelper.beforeDays(goods.expireAt, 5));
         goods.save();
     }
 

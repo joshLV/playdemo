@@ -31,6 +31,8 @@ public class GoodsShowTest extends FunctionalTest {
         goods = FactoryBoy.create(Goods.class);
         brand = FactoryBoy.create(Brand.class);
         goods.brand = brand;
+        goods.beginOnSaleAt = com.uhuila.common.util.DateUtil.getEndOfDay(DateHelper.beforeDays(goods.effectiveAt, 5));
+        goods.endOnSaleAt = com.uhuila.common.util.DateUtil.getEndOfDay(DateHelper.beforeDays(goods.expireAt, 5));
         goods.save();
     }
 
@@ -70,7 +72,7 @@ public class GoodsShowTest extends FunctionalTest {
     public void 限购商品() throws Exception {
         goods.limitNumber = 1;
         goods.save();
-        
+
         Response response = GET("/p/" + goods.id);
         assertIsOk(response);
         assertContentMatch("限购1件", response);
@@ -83,7 +85,7 @@ public class GoodsShowTest extends FunctionalTest {
         //设置虚拟登录
         final User user = FactoryBoy.create(User.class);
         Security.setLoginUserForTest(user.loginName);
-        
+
         FactoryBoy.create(Order.class, new BuildCallback<Order>() {
             @Override
             public void build(Order o) {
@@ -92,11 +94,11 @@ public class GoodsShowTest extends FunctionalTest {
             }
         });
         FactoryBoy.create(ECoupon.class);
-        
+
         Response response = GET("/p/" + goods.id);
         assertIsOk(response);
         assertContentMatch("您已经购买过此商品", response);
-        
+
         // 注销登录
         Security.cleanLoginUserForTest();
     }

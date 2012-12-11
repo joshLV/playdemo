@@ -162,7 +162,6 @@ public class OperateGoods extends Controller {
      */
     private static void
     renderInit(models.sales.Goods goods) {
-        System.out.println("goods?????22222222begin>>>" + goods.beginOnSaleAt);
         List<Supplier> supplierList = Supplier.findUnDeleted();
 
         if (goods == null) {
