@@ -178,7 +178,7 @@ public class Supplier extends Model {
     /**
      * 商户类别
      */
-    @Required
+
     @ManyToOne
     @JoinColumn(name = "supplier_category_id")
     public SupplierCategory supplierCategory;
@@ -279,8 +279,6 @@ public class Supplier extends Model {
         sp.salesId = supplier.salesId;
         sp.shopEndHour = supplier.shopEndHour;
         sp.updatedAt = new Date();
-        System.out.println("supplier.supplierCategory.id>>> )" + supplier.supplierCategory.id);
-        System.out.println("sp.supplierCategory>>>" + sp.supplierCategory);
         if (sp.supplierCategory == null || (sp.supplierCategory != null && supplier.supplierCategory != null && supplier.supplierCategory.id != sp.supplierCategory.id)) {
             sp.getCode(supplier.supplierCategory);
         }
