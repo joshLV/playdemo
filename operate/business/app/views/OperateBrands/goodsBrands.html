@@ -1,8 +1,5 @@
-<div class="control-group">
-    <label class="control-label"><span style="color: red; ">*</span>品牌</label>
-
-    <div class="controls">
-        #{layout_operate.selectInputField name:"brandName", id:"goods.brand.id", list:brandList/}
-        <span class="error">#{error 'goods.brand'/}</span>
-    </div>
-</div>
+#{layout_operate.selectField name:'goods.brand.id', value:goods?.brand?.id, error:'goods.brand', required:true}
+    #{list items:brandList, as:'brand'}
+        #{option brand?.id}${brand?.name}#{/option}
+    #{/list}
+#{/layout_operate.selectField}
