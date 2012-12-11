@@ -74,8 +74,8 @@ public class PaymentInfoTest extends FunctionalTest {
         Http.Response response = POST("/payment_info/confirm", params);
         assertStatus(200, response);
         Order order1 = (Order) renderArgs("order");
-        String paymentSource=(String)renderArgs("paymentSource");
+        PaymentSource paymentSource1=(PaymentSource)renderArgs("paymentSource");
         assertEquals(order1, order);
-        assertEquals(order.payMethod, paymentSource);
+        assertEquals(paymentSource, paymentSource1.code);
     }
 }
