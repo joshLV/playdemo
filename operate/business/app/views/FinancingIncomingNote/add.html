@@ -9,6 +9,7 @@
 #{form @FinancingIncomingNote.create(), class:"form-horizontal"}
 <div class="control-group">
     <label class="control-label">打款金额</label>
+
     <div class="controls">
         <input type="text" class="input" name="amount" value="${amount}">
         <span class="error"> #{error 'financing_incoming.amount'/}</span>
@@ -16,16 +17,25 @@
 </div>
 <div class="control-group">
     <label class="control-label">分销商</label>
+
     <div class="controls">
         <ul>
             #{list items:accounts, as:'account'}
-            <label class="radio">
-                <input type="radio" name="id" value="${account.id}" #{if id==account.id} checked#{/if} >
+                <label class="radio">
+                    <input type="radio" name="id" value="${account.id}" #{if id==account.id} checked#{/if} >
                 ${account.info}
-            </label>
+                </label>
             #{/list}
         </ul>
         <span class="error"> #{error 'financing_incoming.account'/}</span>
+    </div>
+    <div class="control-group">
+        <label class="control-label">备注</label>
+
+        <div class="controls">
+            <input type="text" class="input" name="comment" value="${comment}">
+            <span class="error"> #{error 'financing_incoming.comment'/}</span>
+        </div>
     </div>
 </div>
 <div class="form-actions">
