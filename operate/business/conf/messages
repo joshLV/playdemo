@@ -549,3 +549,7 @@ prepayment.updatedAt=最后修改时间
 prepayment.updatedBy=最后修改帐号
 prepayment.remark=备注
 
+goodsSchedule.goods.id=商品ID
+goodsSchedule.effectiveAt=有效期开始日
+goodsSchedule.expireAt=有效期结束日
+goodsSchedule.effective=有效期

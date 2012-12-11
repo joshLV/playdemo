@@ -12,6 +12,7 @@
 
     <permission key="GOODS_NEW" text="商品添加" roles="editor"/>
     <permission key="GOODS" text="商品管理" roles="editor,customservice"/>
+    <permission key="GOODS_SCHEDULE" text="商品排期" roles="editor,customservice"/>
     <permission key="SECKILL_GOODS_NEW" text="秒杀活动添加" roles="editor"/>
     <permission key="SECKILL_GOODS" text="秒杀活动管理" roles="editor,customservice"/>
     <permission key="Point_GOODS_NEW" text="积分商品添加" roles="editor"/>
@@ -104,6 +105,10 @@
             <navigation key="category_admin_index" action="CategoryAdmin.index" text="类别管理" permissions="GOODS"/>
             <navigation key="hot_keywords" action="OperateSearchHotKeywords.index" text="热门搜索词查询"
                         permission="HOT_KEYWORDS"/>
+        </navigation>
+        <navigation key="schedule" text="商品排期管理" permission="GOODS_SCHEDULE">
+            <navigation key="goods_schedule_add" action="GoodsSchedules.add" text="商品排期添加" permission="GOODS_SCHEDULE_ADD"/>
+            <navigation key="goods_schedule_index" action="GoodsSchedules.index" text="商品排期" permission="GOODS_SCHEDULE"/>
         </navigation>
         <navigation key="solr" text="solr加载数据" permission="SOLR">
             <navigation key="solr_load" action="SolrLoadData.index" text="solr加载数据" permission="SOLR"/>
