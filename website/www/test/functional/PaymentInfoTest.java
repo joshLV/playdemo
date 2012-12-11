@@ -76,6 +76,6 @@ public class PaymentInfoTest extends FunctionalTest {
         Order order1 = (Order) renderArgs("order");
         PaymentSource paymentSource1=(PaymentSource)renderArgs("paymentSource");
         assertEquals(order1, order);
-        assertEquals(paymentSource, paymentSource1.code);
+        assertEquals(paymentSource.code, paymentSource1.code);
     }
 }
