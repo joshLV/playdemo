@@ -1,16 +1,15 @@
 package function;
 
+import com.uhuila.common.util.PinyinUtil;
+import controllers.modules.resale.cas.Security;
+import factory.FactoryBoy;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.Shop;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.mvc.Http;
 import play.test.FunctionalTest;
-import controllers.modules.resale.cas.Security;
-import factory.FactoryBoy;
 
 /**
  * 分销商品控制器的测试.
@@ -27,21 +26,27 @@ public class ResaleGoodsTest extends FunctionalTest {
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
-        
+
         resaler = FactoryBoy.create(Resaler.class);
         shop = FactoryBoy.create(Shop.class);
         goods = FactoryBoy.create(Goods.class);
 
         Security.setLoginUserForTest(resaler.loginName);
     }
-    
+
     @Test
     public void testShow() {
+
+
+            System.out.println(PinyinUtil.getHeadLetterString("城市"));
+
+
+//        PinyinHelper.getFirstHanyuPinyinString("城市".toCharArray(),hanyuPinyinOutputFormat);
         Http.Response response = GET("/goods/" + goods.id);
         assertIsOk(response);
-        
+
         assertNotNull(renderArgs("goods"));
-    }	
+    }
 
 
     @Test
