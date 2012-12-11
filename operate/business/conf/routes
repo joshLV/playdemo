@@ -321,12 +321,13 @@ GET     /prepayments/{id}/edit                  OperatePrepayments.edit
 PUT     /prepayments/{id}                       OperatePrepayments.update
 
 # 排期管理
-GET     /goods-schedule                         GoodsSchedule.index
-GET     /goods-schedule/new                     GoodsSchedule.add
-POST    /goods-schedule                         GoodsSchedule.create
-DELETE  /goods-schedule/{id}                    GoodsSchedule.delete
-GET     /goods-schedule/{id}/edit               GoodsSchedule.edit
-PUT     /goods-schedule/{id}                    GoodsSchedule.update
+GET     /goods-schedule                         GoodsSchedules.index
+GET     /goods-schedule/new                     GoodsSchedules.add
+POST    /goods-schedule                         GoodsSchedules.create
+PUT     /goods-schedule/{id}                    GoodsSchedules.update
+GET     /goods-schedule/{id}/edit               GoodsSchedules.edit
+GET     /goods-name/{id}                        GoodsSchedules.getName
+DELETE  /goods-schedule/{id}                    GoodsSchedules.delete
 
 # 已验证券 退款
 GET      /verified-ecoupon-refunds              VerifiedECouponRefunds.index

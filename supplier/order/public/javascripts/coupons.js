@@ -8,6 +8,9 @@ $(function () {
     $("#verifyAmount").blur(function () {
         verifyAmount();
     });
+    $("#verifyAmount").keyup(function () {
+        verifyAmount();
+    });
     $("#verifyAmount").keydown(function () {
         verifyAmount();
     });

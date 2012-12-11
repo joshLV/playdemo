@@ -1,0 +1,60 @@
+#{if "add".equals(action)}
+    #{layout_operate.textField name:'goodsSchedule.goods.id', value:goodsSchedule?.goods?.id, required:true/}
+#{/if}
+#{else}
+    #{layout_operate.textField name:'goodsSchedule.goods.id', value:goodsSchedule?.goods?.id,disabled:true/}
+<input type="hidden" name="goodsSchedule.goods.id" value="${goodsSchedule?.goods?.id}">
+#{/else}
+<div class="control-group" id="goodsName" style="padding-left:158px;color: #ff0000">${goodsName}</div>
+
+#{layout_operate.dateScopeField name:'goodsSchedule.effective', begin:'goodsSchedule.effectiveAt',end:'goodsSchedule.expireAt',
+beginValue:goodsSchedule?.effectiveAt?.format(), endValue:goodsSchedule?.expireAt?.format(), required:true/}
+<div class="form-actions">
+    <input class="btn btn-primary" id="save" type="submit" value="保存"/>
+#{if "edit".equals(action)}
+    #{vx.cancelButton url:'/goods-schedule', class:'btn btn-primary'/}
+#{/if}
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("#goodsSchedule_goods_id").blur(function () {
+            checkGoods(false);
+            return false;
+
+        });
+        $("#goodsSchedule_goods_id").keyup(function () {
+            checkGoods(false);
+            return false;
+
+        });
+    });
+
+    function checkGoods(subm) {
+        var id = $("#goodsSchedule_goods_id").val();
+        if (id == '') {
+            $("#goodsName").html("请输入的商品ID！");
+            return;
+        }
+
+        $.ajax({
+            url:'/goods-name/' + id,
+            type:'GET',
+            datatype:'text',
+            error:function () {
+                alert('取得失败!');
+            },
+            success:function (data) {
+                if (data != null && data != '') {
+                    if (subm) {
+                        $("#form").submit();
+                    } else {
+                        $("#goodsName").html("商品名：" + data);
+                    }
+                } else {
+                    $("#goodsName").html("您输入的商品ID不存在！");
+                }
+            }
+        });
+
+    }
+</script>
