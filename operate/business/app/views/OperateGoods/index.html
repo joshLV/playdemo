@@ -59,12 +59,7 @@
     <table width="100%">
         <tr>
             <td width="30%">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
-            #{select 'condition.supplierId', id:supplierId, class:'select', value:condition?.supplierId}
-                #{option "0"}不限#{/option}
-                #{list items:supplierList, as:'supplier'}
-                    #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
-                #{/list}
-            #{/select}</td>
+            #{layout_operate.selectInputField name:"supplierName", id:"condition.supplierId", list:supplierList/}</td>
 
             <td width="30%">商品名称：<input type="text" name="condition.shortName" class="input-medium"
                                         value="${condition?.shortName}"/></td>

@@ -8,12 +8,7 @@
         <table width="100%">
             <tr>
                 <td width="30%">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
-                    #{select 'supplierId', id:supplierId, class:'select', value:supplierId}
-                    #{option "0"}不限#{/option}
-                    #{list items:supplierList, as:'supplier'}
-                    #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
-                    #{/list}
-                    #{/select}
+                #{layout_operate.selectInputField name:"supplierName", id:"supplierId", list:supplierList/}
                 </td>
                 <td>
                     <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>

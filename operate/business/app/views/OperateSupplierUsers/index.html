@@ -14,12 +14,7 @@
     &nbsp;&nbsp;工号<input type="text" name="jobNumber" id="jobNumber" value="${jobNumber}" class="input-medium"/>
 
     &nbsp;商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
-                #{select 'supplierId', id:supplierId, class:'input-medium', value:supplierId}
-                    #{option ""}不限#{/option}
-                    #{list items:supplierList, as:'supplier'}
-                        #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
-                    #{/list}
-                #{/select}
+        #{layout_operate.selectInputField name:"supplierName", id:"supplierId", list:supplierList/}
      <button class="btn btn-primary" id="search" type="submit">搜索</button>
      <a href="@{OperateSupplierUsers.add()}" class="btn btn-primary">添加操作员</a>
     </td>
@@ -46,7 +41,7 @@
 
     #{paginate.list items:supplierUsersPage, as:'row'}
     <tr>
-     <td>${row?.supplier?.otherName?:row?.supplier?.fullName}</td>
+     <td>${row?.supplier?.otherName?:row?.supplier?.name}</td>
      <td>${row.loginName}</td>
      <td>${row.userName}</td>
      <td>${row.jobNumber}</td>
