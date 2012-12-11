@@ -24,12 +24,15 @@
 #{if supplierList?.size() > 0 }
     #{form @OperateVerifyPhones.create() , id:'operForm',class:"form-horizontal" }
      <legend>添加电话验证机</legend>
-    #{layout_operate.selectField name:'supplierUser.supplier.id', class:'span2', value:supplierUser?.supplier?.id,
-            error:'supplierUser.supplierId'}
-                #{list items:supplierList, as:'supplier' }
-                  #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
-                #{/list}
-            #{/layout_operate.selectField}
+    <div class="control-group">
+        <label class="control-label"><span style="color: red; ">*</span>商户</label>
+
+        <div class="controls">
+            #{layout_operate.selectInputField name:"supplierName", id:"supplierUser.supplier.id", list:supplierList/}
+            <span class="error">#{error 'supplierUser.supplierId'/}</span>
+        </div>
+    </div>
+
      <div class="control-group">
       <label for="loginName" class="control-label"><span style="color: red; ">*</span>电话号码</label>
       <div class="controls">

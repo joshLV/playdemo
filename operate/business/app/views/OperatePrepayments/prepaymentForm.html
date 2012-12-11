@@ -1,14 +1,16 @@
 #{if "add".equals(action)}
-    #{layout_operate.selectField name:'prepayment.supplier.id', value:prepayment?.supplier?.id, error:'prepayment.supplier',
-    class:'span2'}
-        #{list items:supplierList, as:'supplier' }
-        #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
-        #{/list}
-    #{/layout_operate.selectField}
+    <div class="control-group">
+        <label class="control-label"><span style="color: red; ">*</span>商户</label>
+
+        <div class="controls">
+            #{layout_operate.selectInputField name:"supplierName", id:"prepayment.supplier.id", list:supplierList/}
+            <span class="error">#{error 'prepayment.supplier'/}</span>
+        </div>
+    </div>
 #{/if}
 #{else}
-<input type="hidden" name="prepayment.supplier.id" value="${prepayment?.supplier?.id}">
-    #{layout_operate.textField name:'prepayment.supplier', value:prepayment?.supplier?.fullName, disabled:true/}
+    <input type="hidden" name="prepayment.supplier.id" value="${prepayment?.supplier?.id}">
+        #{layout_operate.textField name:'prepayment.supplier', value:prepayment?.supplier?.fullName, disabled:true/}
 #{/else}
 #{layout_operate.textField name:'prepayment.amount', value:prepayment?.amount?:"0", note:'元', required:true/}
 #{layout_operate.dateScopeField name:'prepayment.effective', begin:'prepayment.effectiveAt',end:'prepayment.expireAt',

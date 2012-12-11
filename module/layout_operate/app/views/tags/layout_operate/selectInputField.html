@@ -1,0 +1,51 @@
+*{下拉文本框，可自动显示匹配的下拉选项，可以按拼音、拼音首字母和中文进行查询}*
+*{name:      存放下拉文本框的名称}*
+*{id:        存放下拉文本框id的名称}*
+*{list:      下拉选项列表}*
+#{field _name}
+    #{set 'moreStyles'}
+    <link type="text/css" rel="stylesheet" href="@{'/public/stylesheets/jquery.autocomplete.css'}">
+    #{/set}
+    #{set 'moreScripts'}
+        #{get 'moreScripts'/}
+    <script src="@{'/public/javascripts/jquery.autocomplete.min.js'}" type="text/javascript" charset="UTF-8"></script>
+    <script src="@{'/public/javascripts/ChinesePY.js'}" type="text/javascript" charset="UTF-8"></script>
+    <script type="text/javascript">
+        var list = [
+            #{list items:_list, as:'row'}
+                { firstPin: Pinyin.getWordsCode("${row.name}"), allPin: Pinyin.GetQP("${row.name}"), name: "${row.name}", id: "${row.id}" }#{if !row_isLast},#{/if}
+            #{/list}
+        ];
+
+        $().ready(function () {
+            $("#${field.id}").focus().autocomplete(list, {
+                resultsClass: "acResults",
+                loadingClass: "acLoading",
+                minChars: 0,
+                width: 310,
+                matchContains: true,
+                autoFill: false,
+                scroll: true,
+                scrollHeight: 300,
+                mustMatch: false,
+                formatItem: function (row, i, max) {
+                    return row.name;
+                },
+                formatMatch: function (row, i, max) {
+                    return row.name + " " + row.firstPin + " " + row.allPin;
+                },
+                formatResult: function (row) {
+                    return row.name;
+                }
+            });
+
+            $("#${field.id}").result(function (event, data, formatted) {
+                data ? $("#${"id_"+field.id}").val(data.id) : $("#${"id_"+field.id}").val(0);
+            });
+        });
+    </script>
+    #{/set}
+    <input type="text" id="${field.id}" name="${field.name}"
+           value='${params[field.id]}'><input type="hidden" id="${"id_"+field.id}" name="${_id}"
+                                                value="${params[_id]}">
+#{/field}

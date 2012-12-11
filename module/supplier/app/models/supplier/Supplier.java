@@ -196,6 +196,11 @@ public class Supplier extends Model {
     @Column(name = "shop_end_hour")
     public String shopEndHour;
 
+    @Transient
+    public String getName() {
+        return StringUtils.isBlank(otherName) ? fullName : otherName;
+    }
+
     public Supplier() {
     }
 
