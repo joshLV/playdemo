@@ -176,6 +176,13 @@ public class GoodsHistory extends Model {
     public Date beginOnSaleAt;
 
     /**
+     * 下架时间
+     */
+    @Column(name = "end_onsale_at")
+    @As(lang = {"*"}, value = {"yyyy-MM-dd HH:mm:ss"})
+    public Date endOnSaleAt;
+
+    /**
      * 累积进货量
      * <p/>
      * 通过管理界面增加进货量后得到累计进货量，只会越来越大，因为是累计的
