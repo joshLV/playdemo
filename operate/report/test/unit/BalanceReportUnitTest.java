@@ -2,7 +2,6 @@ package unit;
 
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
-import factory.annotation.Factory;
 import factory.callback.SequenceCallback;
 import models.accounts.AccountSequence;
 import models.accounts.AccountSequenceCondition;
@@ -17,7 +16,6 @@ import play.test.UnitTest;
 import play.vfs.VirtualFile;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -68,7 +66,6 @@ public class BalanceReportUnitTest extends UnitTest {
         condition.createdAtBegin =  new Date();
         condition.createdAtEnd =  new Date();
 
-        //System.out.println(AccountSequence.findAll().size());
         List<BalanceReport> list = BalanceReport.queryWithdrawReport(condition);
         assertNotNull(list);
         assertEquals(1,list.size());

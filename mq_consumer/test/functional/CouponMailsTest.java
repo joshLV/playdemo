@@ -31,7 +31,6 @@ public class CouponMailsTest extends FunctionalTest {
         CouponMails.notify(message);
 
         String mailBody = Mail.Mock.getLastMessageReceivedBy(email);
-//        System.out.println(">>>>>>>>>>>>>>>>>>>." + mailBody);
         assertTrue("邮件标题不正确", mailBody.indexOf("Subject: [一百券] 您订购的消费券") > 0);
         assertTrue("邮件中必须出现fullName", mailBody.indexOf(fullName) > 0);
 //        assertTrue("邮件中必须出现fulcoupon1", mailBody.indexOf(coupon1) > 0);
@@ -58,7 +57,6 @@ public class CouponMailsTest extends FunctionalTest {
         RabbitMQPlugin.retries();
 
         String mailBody = Mail.Mock.getLastMessageReceivedBy(email);
-//        System.out.println(mailBody);
         assertTrue("邮件标题不正确", mailBody.indexOf("Subject: [一百券] 您订购的消费券") > 0);
         assertTrue("邮件中必须出现fullName", mailBody.indexOf(fullName) > 0);
 //        assertTrue("邮件中必须出现fulcoupon1", mailBody.indexOf(coupon1) > 0);

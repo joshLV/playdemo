@@ -302,7 +302,6 @@ public class SecKillGoodsItem extends Model {
             average = 1l;
         }
         long virtualTailCount = Math.abs(new Random().nextInt((int) average));
-//        System.out.println("virtualTailCount:" + virtualTailCount);
         virtualTailCount = virtualTailCount <= 0 ? 1 : virtualTailCount;
         long randomCount = virtualInventory - (average * (baseSale - count - 1) + virtualTailCount);
         return randomCount > virtualInventory ? virtualInventory : randomCount;

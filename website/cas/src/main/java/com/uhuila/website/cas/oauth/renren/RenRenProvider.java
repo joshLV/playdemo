@@ -69,9 +69,6 @@ public class RenRenProvider extends AbstractOAuth20Provider {
 
     @Override
     protected UserProfile extractOAuthUserProfile(String body) {
-//        System.out.println("???????????body:" + body);
-
-
         UserProfile userProfile = new UserProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         JsonNode userJson = json.get("user");

@@ -164,7 +164,6 @@ public class SupplierPrepaymentWithdrawTest extends UnitTest {
         assertBigDecimalEquals(new BigDecimal(100), 预付款余额());
 
         // 未消费完，结算80元
-        System.out.println("结算预付款:" + 120);
         结算预付款(prepayment, new BigDecimal(120), beforeDays(2));
         assertBigDecimalEquals(new BigDecimal(20), 现金结算款(beforeDays(2)));
         assertBigDecimalEquals(new BigDecimal(0), 账户余额());
