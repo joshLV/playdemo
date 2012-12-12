@@ -39,6 +39,9 @@ GET     /totalsales/trends                      TotalSalesReports.trends
 GET     /totalsales/ratios                      TotalSalesReports.ratios
 GET     /totalsales/list                        TotalSalesReports.list
 
+# 运营报表
+GET     /sales_report                           OperationReports.showSalesReport
+
 
 # Home page
 GET     /                                       OperateReportApplication.index

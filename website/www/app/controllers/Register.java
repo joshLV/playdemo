@@ -43,14 +43,14 @@ public class Register extends Controller {
      * @param user 用户信息
      */
     public static void create(@Valid User user) {
-
+        System.out.println("user>>>" + user);
         if (Validation.hasError("user.mobile")
                 && Validation.hasError("user")) {
             Validation.clear();
 
 
         }
-
+        System.out.println("user.loginName==" + user.loginName);
         if (User.checkLoginName(user.loginName)) {
             Validation.addError("user.loginName", "validation.loginName");
         }
@@ -88,12 +88,15 @@ public class Register extends Controller {
 
 
         if (WebsiteInjector.getUserWebIdentification() != null) {
+            System.out.println("111");
             UserWebIdentification uwi = UserWebIdentification.findOne(WebsiteInjector.getUserWebIdentification().cookieId);
             if (uwi == null) {
+                System.out.println("2222");
                 uwi = WebsiteInjector.getUserWebIdentification();
                 uwi.save();
             }
             if (uwi.registerCount == null) {
+                System.out.println("333");
                 uwi.registerCount = 0;
             }
             uwi.registerCount += 1;

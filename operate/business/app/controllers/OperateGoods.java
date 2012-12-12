@@ -44,6 +44,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import static play.Logger.isDebugEnabled;
 import static play.Logger.warn;
 
 /**
@@ -116,11 +117,17 @@ public class OperateGoods extends Controller {
                 PAGE_SIZE);
         goodsPage.setBoundaryControlsEnabled(true);
         List<Supplier> supplierList = Supplier.findUnDeleted();
+<<<<<<< Updated upstream
 
 
         Long id = OperateRbac.currentUser().id;
         List<Brand> brandList = Brand.findByOrder(null, id);
 
+=======
+        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        Long id = OperateRbac.currentUser().id;
+        List<Brand> brandList = Brand.findByOrder(null, id, right);
+>>>>>>> Stashed changes
         renderArgs.put("brandList", brandList);
         String queryString = StringUtils.trimToEmpty(getQueryString());
         render(goodsPage, supplierList, condition, desc, queryString, hasApproveGoodsPermission);
@@ -191,12 +198,19 @@ public class OperateGoods extends Controller {
             goods.shops = null;
             goods.isAllShop = true;
         }
+<<<<<<< Updated upstream
 
 
         Long id = OperateRbac.currentUser().id;
 
         if (goods.supplierId != null) {
             List<Brand> brandList = Brand.findByOrder(new Supplier(goods.supplierId), id);
+=======
+        Boolean right = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        Long id = OperateRbac.currentUser().id;
+        if (goods.supplierId != null) {
+            List<Brand> brandList = Brand.findByOrder(new Supplier(goods.supplierId), id, right);
+>>>>>>> Stashed changes
             renderArgs.put("brandList", brandList);
         }
 

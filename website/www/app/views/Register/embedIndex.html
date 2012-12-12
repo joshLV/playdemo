@@ -3,34 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <title>迷你注册</title>
-    <link rel="shortcut icon" href="http://a.uhcdn.com/images/y/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="http://a.uhcdn.com/images/y/favicon.ico" type="image/x-icon"/>
     <style>
-        body, h2, h3, form, label, input { padding: 0; margin: 0; }
-        body, a, button, input { color: #3E3E3E; font: 12px/1.5 tahoma, arial, \5b8b\4f53, sans-serif; }
-        #auth-popup { width: 415px; height: 395px; height: 395px; margin: 0 auto; border: 5px solid #ccc; background-color: #fff; }
-        #auth-popup .hd { height: 32px; line-height: 32px; text-indent: 10px; background: url(//img.uhcdn.com/images/y/min-register.png) repeat-x 0 0; border-top: 3px solid #f97311; border-bottom: 1px solid #e8e8e8; }
-        #auth-popup .hd span { float: left; color: #f97311; font-weight: 700; }
-        #auth-popup .bd { clear: both; padding: 25px 20px; }
-        #auth-popup .bd .auth-form { margin-bottom: 15px; }
-        #auth-popup .bd .auth-form .field { clear: both; padding: 2px 0; height: 46px; }
-        #auth-popup .bd .auth-form label { float: left; display: inline-block; width: 80px; height: 24px; line-height: 24px; text-align: right; }
-        #auth-popup .bd .auth-form label i { color: #fc7410; padding-right: 3px; vertical-align: middle; font-style: normal; font-family: \5b8b\4f53, sans-serif; }
-        #auth-popup .bd .auth-form input { float: left; margin-right: 5px; height: 22px; padding: 0 2px; font-size: 12px; line-height: 22px; border: 1px solid #D1D1D1; }
-        #auth-popup .bd .auth-form span { float: left; line-height: 24px; }
-        #auth-popup .bd .auth-form .img { float: left; width: 73px; height: 22px; margin-right: 5px; border: 1px solid #f6f6f6; }
-        #auth-popup .bd .auth-form .medium { width: 180px; }
-        #auth-popup .bd .auth-form #checkcode { width: 70px; }
-        #auth-popup .bd .auth-form .forget { float: left; line-height: 24px; color: #fc7410; text-decoration: none; }
-        #auth-popup .bd .auth-form .error { display: block; width: 186px; height: 20px; padding-left: 80px; color: #f00; }
-        #auth-popup .bd .auth-form .auth-btn { padding: 15px 0 0 80px; }
-        #auth-popup .bd .auth-form .auth-btn button { float: left; width: 157px; height: 37px; border: 0; color: #F8F8F8; font-size: 14px; font-weight: 700; background: #a6c726 url(//img.uhcdn.com/images/y/min-register.png) no-repeat 0 -33px; cursor: pointer; }
-        #auth-popup .bd .auth-form .auth-btn .fast-login { margin-left: 10px; line-height: 37px; color: #027ede; text-decoration: none; }
-        #auth-popup .bd .service-term { clear: both; padding-left: 80px; }
-        #auth-popup .bd .service-term a {font-size: 14px; color: #4c4c4c; font-weight: 700; }
+        body, h2, h3, form, label, input {
+            padding: 0;
+            margin: 0;
+        }
+
+        body, a, button, input {
+            color: #3E3E3E;
+            font: 12px/1.5 tahoma, arial, \5b8b\4f53, sans-serif;
+        }
+
+        #auth-popup {
+            width: 415px;
+            height: 395px;
+            height: 395px;
+            margin: 0 auto;
+            border: 5px solid #ccc;
+            background-color: #fff;
+        }
+
+        #auth-popup .hd {
+            height: 32px;
+            line-height: 32px;
+            text-indent: 10px;
+            background: url(//img.uhcdn.com/images/y/min-register.png) repeat-x 0 0;
+            border-top: 3px solid #f97311;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        #auth-popup .hd span {
+            float: left;
+            color: #f97311;
+            font-weight: 700;
+        }
+
+        #auth-popup .bd {
+            clear: both;
+            padding: 25px 20px;
+        }
+
+        #auth-popup .bd .auth-form {
+            margin-bottom: 15px;
+        }
+
+        #auth-popup .bd .auth-form .field {
+            clear: both;
+            padding: 2px 0;
+            height: 46px;
+        }
+
+        #auth-popup .bd .auth-form label {
+            float: left;
+            display: inline-block;
+            width: 80px;
+            height: 24px;
+            line-height: 24px;
+            text-align: right;
+        }
+
+        #auth-popup .bd .auth-form label i {
+            color: #fc7410;
+            padding-right: 3px;
+            vertical-align: middle;
+            font-style: normal;
+            font-family: \5b8b\4f53, sans-serif;
+        }
+
+        #auth-popup .bd .auth-form input {
+            float: left;
+            margin-right: 5px;
+            height: 22px;
+            padding: 0 2px;
+            font-size: 12px;
+            line-height: 22px;
+            border: 1px solid #D1D1D1;
+        }
+
+        #auth-popup .bd .auth-form span {
+            float: left;
+            line-height: 24px;
+        }
+
+        #auth-popup .bd .auth-form .img {
+            float: left;
+            width: 73px;
+            height: 22px;
+            margin-right: 5px;
+            border: 1px solid #f6f6f6;
+        }
+
+        #auth-popup .bd .auth-form .medium {
+            width: 180px;
+        }
+
+        #auth-popup .bd .auth-form #checkcode {
+            width: 70px;
+        }
+
+        #auth-popup .bd .auth-form .forget {
+            float: left;
+            line-height: 24px;
+            color: #fc7410;
+            text-decoration: none;
+        }
+
+        #auth-popup .bd .auth-form .error {
+            display: block;
+            width: 186px;
+            height: 20px;
+            padding-left: 80px;
+            color: #f00;
+        }
+
+        #auth-popup .bd .auth-form .auth-btn {
+            padding: 15px 0 0 80px;
+        }
+
+        #auth-popup .bd .auth-form .auth-btn button {
+            float: left;
+            width: 157px;
+            height: 37px;
+            border: 0;
+            color: #F8F8F8;
+            font-size: 14px;
+            font-weight: 700;
+            background: #a6c726 url(//img.uhcdn.com/images/y/min-register.png) no-repeat 0 -33px;
+            cursor: pointer;
+        }
+
+        #auth-popup .bd .auth-form .auth-btn .fast-login {
+            margin-left: 10px;
+            line-height: 37px;
+            color: #027ede;
+            text-decoration: none;
+        }
+
+        #auth-popup .bd .service-term {
+            clear: both;
+            padding-left: 80px;
+        }
+
+        #auth-popup .bd .service-term a {
+            font-size: 14px;
+            color: #4c4c4c;
+            font-weight: 700;
+        }
     </style>
     <script src="http://a.uhcdn.com/js/u/jquery-1.7.2.min.js"></script>
 </head>
 <body>
+%{ randomID = controllers.Register.genRandomId(); }%
 <div id="auth-popup">
     <div class="hd">
         <span>用户注册</span>
@@ -38,43 +162,53 @@
     <div class="bd">
         <form id="auth-form" class="auth-form" action="" method="post">
             <div class="field">
-                <label for="username"><i>*</i>邮箱：</label>
-                <input id="username" name="username" tabindex="1" class="medium" type="text" value="" size="25" maxlength="32" autocomplete="false"/>
-                <span id="username-error" class="error"></span>
+                <label for="loginName"><i>*</i>邮箱：</label>
+                <input id="loginName" name="user.loginName" tabindex="1" class="medium" type="text" value="" size="25"
+                       maxlength="32" autocomplete="false" value="${user?.loginName}"/>
+                <span id="username-error" class="error">#{error 'user.loginName' /}</span>
             </div>
             <div class="field">
                 <label for="password"><i>*</i>设置密码：</label>
-                <input id="password" name="password" tabindex="2" class="medium" type="password" value="" maxlength="20" autocomplete="off"/>
-                <span id="password-error" class="error"></span>
+                <input id="password" name="user.password" tabindex="2" class="medium" type="password" value=""
+                       maxlength="20"
+                       autocomplete="off" value="${user?.password}"/>
+                <span id="password-error" class="error">#{error 'user.password' /}</span>
             </div>
             <div class="field">
-                <label for="password2"><i>*</i>确认密码：</label>
-                <input id="password2" name="password2" tabindex="2" class="medium" type="password" value="" maxlength="20" autocomplete="off"/>
-                <span id="password2-error" class="error"></span>
+                <label for="confirmPassword"><i>*</i>确认密码：</label>
+                <input id="confirmPassword" name="user.confirmPassword" tabindex="2" class="medium" type="password"
+                       value="${user?.confirmPassword}"
+                       maxlength="20" autocomplete="off"/>
+                <span id="password2-error" class="error">#{error 'user.confirmPassword' /}</span>
             </div>
             <div class="field">
-                <label for="checkcode"><i>*</i>验证码：</label>
-                <input id="checkcode" type="text" maxlength="20" tabindex="3" />
-                <span class="img"><img id="captchaImg" src="http://cas.yibaiquan.com/captcha" width="73" height="22" /></span>
+                <label for="captcha"><i>*</i>验证码：</label>
+                <input name="user.captcha" id="captcha" type="text" maxlength="20" tabindex="3"/>
+                <span class="img"><img id="captchaImg" src="
+                /captcha?randomID=${randomID}" width="73"
+                                       height="22"/></span>
+                <input type="hidden" name="randomID" id="randomID" value="${randomID}"/>
                 <span>看不清？<a id="newcode" href="" tabindex="4">换一张</a></span>
-                <span id="checkcode-error" class="error"></span>
+                <span id="checkcode-error" class="error">#{error 'user.captcha' /}</span>
             </div>
             <div class="field auth-btn">
-                <button type="submit" id="submit" tabindex="6"></button> <a class="fast-login" href="minLogin.php" target="_self">我有账户</a>
+                <button type="submit" id="submit" tabindex="6"></button>
+                <a class="fast-login" href="minLogin.php" target="_self">我有账户</a>
             </div>
         </form>
         <div class="service-term"><a href="" target="_blank">《一百券网站服务条款》</a></div>
     </div>
 </div>
 <script>
-    (function($) {
-        var username = $('#username'),
+    (function ($) {
+        var username = $('#loginName'),
                 password = $('#password'),
-                password2 = $('#password2'),
-                checkcode = $('#checkcode'),
+                password2 = $('#confirmPassword'),
+                checkcode = $('#captcha'),
                 reEmail = /^([\w-_]+(?:\.[\w-_]+)*)@((?:[a-z0-9]+(?:-[a-zA-Z0-9]+)*)+\.[a-z]{2,6})$/i; // 邮箱格式
 
-        $('#auth-form').submit(function() {
+        $('#auth-form').submit(function () {
+
             if (username.val() == '') {
                 username.css('border', '1px solid #F50');
                 username.focus();
@@ -98,6 +232,7 @@
                 $('#password2-error').text('请再次输入密码');
                 return false;
             }
+
             if (password.val() != password2.val()) {
                 password2.css('border', '1px solid #F50');
                 password2.focus();
@@ -111,26 +246,26 @@
                 return false;
             }
         });
-        username.blur(function() {
+        username.blur(function () {
             checkLoginName();
         });
-        password.blur(function() {
+        password.blur(function () {
             password.css('border', '1px solid #D1D1D1');
             $('#password-error').text('');
         });
-        password2.blur(function() {
+        password2.blur(function () {
             password2.css('border', '1px solid #D1D1D1');
             $('#password2-error').text('');
         });
-        checkcode.blur(function() {
+        checkcode.blur(function () {
             checkcode.css('border', '1px solid #D1D1D1');
             $('#checkcode-error').text('');
         });
-        $('#newcode').click(function(ev) {
+        $('#newcode').click(function (ev) {
             ev.preventDefault();
             var img = $('#captchaImg'),
                     src = img.attr('src').replace(/\?\d*$/, '');
-            img.attr('src', src +'?'+ +new Date);
+            img.attr('src', src + '?' + +new Date);
         });
 
         function checkLoginName() {
@@ -140,8 +275,8 @@
                 $('#username-error').text('邮箱格式不正确');
                 return false;
             }
-            $.post("/register/checkLoginName", {loginName:usernameVal}, function(data) {
-                if (data == 1 ) {
+            $.post("/register/checkLoginName", {loginName:usernameVal}, function (data) {
+                if (data == 1) {
                     $("#username-error").html("该邮箱已注册!");
                     return false;
                 } else {

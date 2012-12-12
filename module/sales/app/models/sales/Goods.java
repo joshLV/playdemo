@@ -15,6 +15,7 @@ import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
+import models.order.OrderItems;
 import models.order.OrderStatus;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
@@ -875,16 +876,17 @@ public class Goods extends Model {
             @Override
             public Long loadData() {
                 // 先找出OrderItems中的已销售数量
+
                 Query query = JPA.em().createQuery("SELECT SUM(oi.buyNumber) FROM OrderItems oi where oi.goods.id= :goodsId and oi.order.status != :orderStatus");
                 query.setParameter("goodsId", id);
                 query.setParameter("orderStatus", OrderStatus.CANCELED);
 
-                Long orderItemsBuyCount = (Long) query.getSingleResult();
 
-                if (orderItemsBuyCount == null) {
-                    return 0l;
-                }
                 // 减去已退款的数量, 不需要考虑实体券问题.
+
+                long orderItemsBuyCount = OrderItems.count("goods.id=? and order.status != ?", id, OrderStatus.CANCELED);
+                // 减去已退款的数量
+
                 long ecouponRefundCount = ECoupon.count("goods.id=? and status=?", id, ECouponStatus.REFUND);
                 return orderItemsBuyCount - ecouponRefundCount;
             }
