@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
-import models.wuba.PinyinUtil;
 import controllers.modules.resale.cas.SecureCAS;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
@@ -326,12 +325,12 @@ public class WubaProduct extends Controller {
         String url = "";
         for (String city : cities) {
             for (int cityId : cityIds) {
-                int city0Id = Integer.valueOf(city.split(":")[0]);
+                String[] cityArr = city.split(":");
+                int city0Id = Integer.valueOf(cityArr[0]);
                 if (city0Id == cityId) {
-                    cityName = city.split(":")[1];
-                    url += THIRD_URL + PinyinUtil.getHeadLetterString(cityName);
+                    cityName = cityArr[1];
+                    url += THIRD_URL + cityArr[2]+",";
                     moreCityName += cityName + ",";
-
                 }
             }
         }

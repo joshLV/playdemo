@@ -46,23 +46,14 @@ public class GoodsSchedules extends Controller {
 
     @ActiveNavigation("goods_schedule_add")
     public static void create(@Valid GoodsSchedule goodsSchedule) {
-        checkExpireAt(goodsSchedule);
-        if (Validation.hasErrors()) {
-            String goodsName = "商品名：" + goodsSchedule.goods.shortName;
-            render("GoodsSchedules/add.html", goodsName);
-        }
-
+        checkItems(goodsSchedule, "add.html");
         goodsSchedule.createdAt = new Date();
         goodsSchedule.save();
         index(null);
     }
 
     public static void update(Long id, @Valid GoodsSchedule goodsSchedule) {
-        checkExpireAt(goodsSchedule);
-        if (Validation.hasErrors()) {
-            String goodsName = "商品名：" + goodsSchedule.goods.shortName;
-            render("GoodsSchedules/edit.html", goodsName);
-        }
+        checkItems(goodsSchedule, "edit.html");
         GoodsSchedule.update(id, goodsSchedule);
         index(null);
     }
@@ -85,9 +76,18 @@ public class GoodsSchedules extends Controller {
         }
     }
 
-    private static void checkExpireAt(GoodsSchedule goods) {
-        if (goods.effectiveAt != null && goods.expireAt != null && goods.expireAt.before(goods.effectiveAt)) {
+    private static void checkItems(GoodsSchedule goodsSchedule, String page) {
+        String goodsName = "";
+        if (goodsSchedule.goods == null) {
+            Validation.addError("goodsSchedule.goods.id", "validation.required");
+        } else {
+            goodsName = "商品名：" + goodsSchedule.goods.shortName;
+        }
+        if (goodsSchedule.effectiveAt != null && goodsSchedule.expireAt != null && goodsSchedule.expireAt.before(goodsSchedule.effectiveAt)) {
             Validation.addError("goodsSchedule.expireAt", "validation.beforeThanEffectiveAt");
+        }
+        if (Validation.hasErrors()) {
+            render("GoodsSchedules/" + page, goodsName);
         }
     }
 

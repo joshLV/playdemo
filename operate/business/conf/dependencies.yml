@@ -42,8 +42,6 @@ require:
     - third_tuan -> third_tuan
     - com.yihaodian -> yhdclient 1.0
     - commons-httpclient -> commons-httpclient 3.1
-    - net.sourceforge.pinyin4j -> pinyin4j 2.5.0
-
 
 repositories:
     - mavenRepository:
@@ -55,7 +53,6 @@ repositories:
             - org.jsoup -> *
             - com.yihaodian -> *
             - com.taobao -> *
-            - net.sourceforge.pinyin4j -> *
         m2compatible: true
 
     - play1ContributedModules:
