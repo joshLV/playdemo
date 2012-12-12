@@ -69,7 +69,6 @@
     function checkName(nameField) {
         var len=$(nameField).attr("maxlength");
         var remainLen = parseInt((len -getByteLen($(nameField).val())) / 2);
-        console.log(len+"-----"+remainLen)
         var id= $(nameField).attr("id");
         $("#tip_head_"+id).html("还可以输入");
         if (remainLen <= 0) {

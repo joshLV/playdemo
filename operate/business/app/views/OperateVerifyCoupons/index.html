@@ -3,17 +3,6 @@
 #{set title:'验证消费券' /}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/coupons.js'}" type="text/javascript" charset="UTF-8"></script>
-<script type="text/javascript">
-    $(
-            function () {
-                $("#supplierId").change(function () {
-                    $("#shop").load("/shops/" + $("#supplierId").val() + "/showSupplierShops", function (data) {
-                        $("#selectAll").click();
-                    });
-                });
-            });
-</script>
-
 #{/set}
 <style type="text/css">
     .control-group {
@@ -30,11 +19,14 @@
 </style>
 <form action="@{OperateVerifyCoupons.verify()}" class="form-horizontal" id='form'>
     <legend>验证消费券</legend>
-#{layout_operate.selectField name:'supplierId',class:'span2', value:supplierId, error:'supplierUser.supplierId'}
-    #{list items:supplierList, as:'supplier' }
-        #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
-    #{/list}
-#{/layout_operate.selectField}
+    <div class="control-group">
+        <label class="control-label"><span style="color: red; ">*</span>商户</label>
+
+        <div class="controls">
+        #{layout_operate.selectInputField name:"supplierName", id:"supplierId", list:supplierList/}
+            <span class="error" id="err-supplierUser_supplier_id">#{error 'supplierId'/}</span>
+        </div>
+    </div>
 
     <div id="shop">#{include '/OperateShops/showSupplierShops.html'/}</div>
     <div class="control-group">
@@ -55,4 +47,35 @@
     <div class="control-group">#{include 'OperateVerifyCoupons/verify.html' /}</div>
     <input type="hidden" name="shopId" id="shopId" value="${shop?.id}" class="input-large"/>
 </form>
+<SCRIPT type=text/javascript>
+    $(
+            function () {
+                $("#supplierName").blur(function () {
+                    var found = false;
+                    var m = list.length;
+                    var id = null;
+                    for (i = 0; i < m; i++) {
+                        if (list[i].name == $("#supplierName").val()) {
+                            found = true;
+                            id = list[i].id;
+                        }
+                    }
+                    if (!found) {
+                        $("#id_supplierName").val(-1);
+                        $("#save").attr('disabled', true);
+                        $("#supplierUser_shop_id").empty();
+                    } else {
+                        $("#err-supplierUser_supplier_id").html("");
+                        $("#save").attr('disabled', false);
+                        $("#shop").load("/shops/" + id + "/showSupplierShops", function (data) {
+                        });
+                    }
 
+                    if ($("#supplierName").val().trim() == '') {
+                        $("#id_supplierName").val(0);
+                        $("#save").attr('disabled', true);
+                        $("#supplierUser_shop_id").empty();
+                    }
+                });
+            });
+</SCRIPT>

@@ -139,6 +139,8 @@ public class OperateSupplierUsers extends Controller {
         Validation.match("validation.jobNumber", supplierUser.jobNumber, "^[0-9]*");
         if (Validation.hasErrors()) {
             List rolesList = SupplierRole.findAll();
+            List<Supplier> supplierList = Supplier.findUnDeleted();
+
             String roleIds = "";
             if (supplierUser.roles != null && supplierUser.roles.size() > 0) {
                 for (SupplierRole role : supplierUser.roles) {
@@ -147,9 +149,9 @@ public class OperateSupplierUsers extends Controller {
             }
             supplierUser.id = id;
             if (id != null) {
-                render("OperateSupplierUsers/edit.html", supplierUser, roleIds, rolesList);
+                render("OperateSupplierUsers/edit.html", supplierUser, roleIds, rolesList, supplierList);
             } else {
-                render("OperateSupplierUsers/add.html", supplierUser, roleIds, rolesList);
+                render("OperateSupplierUsers/add.html", supplierUser, roleIds, rolesList, supplierList);
             }
         }
 

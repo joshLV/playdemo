@@ -14,7 +14,6 @@ $(function () {
 
     $("#save").click(function () {
         var loginName = $("#loginName").val();
-        var supplierId = $("#supplierUser_supplier_id").val();
         if (loginName == "") {
             $("#checkName").html("<font color=red>请输入用户名!</font>");
             return false;
@@ -36,10 +35,10 @@ $(function () {
             $("#jobNumber").html("");
         }
         var hiddenId = $("#hiddenId").val();
-        var supplierId = $("#supplierUser_supplier_id").val();
+        var supplierId = $("#id_supplierName").val() ? 0 : $("#id_supplierName").val();
         $.post(
             "/users/checkLoginName",
-            {id:hiddenId,supplierId:supplierId, loginName:loginName, mobile:mobile, jobNumber:jobNumber},
+            {id: hiddenId, supplierId: supplierId, loginName: loginName, mobile: mobile, jobNumber: jobNumber},
             function (data) {
                 if (data == 1) {
                     $("#checkName").html("<font color=red>对不起，该用户名已经存在!</font>");
@@ -68,7 +67,7 @@ function checkLoginNameAndMobile() {
     var mobile = $("#mobile").val();
     var jobNumber = $("#jobNumber").val();
     var hiddenId = $("#hiddenId").val();
-    var supplierId = $("#supplierUser_supplier_id").val();
+    var supplierId = $("#id_supplierName").val() ? 0 : $("#id_supplierName").val();
     if (loginName == "") {
         $("#checkName").html("<font color=red>请输入用户名!</font>");
         return false;
@@ -94,7 +93,7 @@ function checkLoginNameAndMobile() {
 
     $.post(
         "/users/checkLoginName",
-        {id:hiddenId,supplierId:supplierId, loginName:loginName, mobile:mobile, jobNumber:jobNumber},
+        {id: hiddenId, supplierId: supplierId, loginName: loginName, mobile: mobile, jobNumber: jobNumber},
         function (data) {
             if (data == 1) {
                 $("#checkName").html("<font color=red>对不起，该用户名已经存在!</font>");
