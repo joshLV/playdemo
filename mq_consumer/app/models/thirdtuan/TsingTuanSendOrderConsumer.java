@@ -1,19 +1,18 @@
 package models.thirdtuan;
 
+import models.RabbitMQConsumerWithTx;
+import models.tsingtuan.TsingTuanOrder;
+import models.tsingtuan.TsingTuanSendOrder;
+import play.Logger;
+import util.ws.WebServiceClient;
+import util.ws.WebServiceClientFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import models.RabbitMQConsumerWithTx;
-import models.tsingtuan.TsingTuanOrder;
-import models.tsingtuan.TsingTuanSendOrder;
-import play.Logger;
-import play.jobs.OnApplicationStart;
-import util.ws.WebServiceClient;
-import util.ws.WebServiceClientFactory;
-
-@OnApplicationStart(async = true)
+// @OnApplicationStart(async = true)
 public class TsingTuanSendOrderConsumer extends RabbitMQConsumerWithTx<TsingTuanOrder> {
 
     @Override

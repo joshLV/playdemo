@@ -749,6 +749,7 @@ public class Order extends Model {
 
     private void sendEcouponSms(ECoupon eCoupon, Goods goods, OrderItems orderItem) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
+        /*
         TsingTuanOrder tsingTuanOrder = TsingTuanOrder.from(eCoupon);
         if (tsingTuanOrder != null) {
             // 清团券发送
@@ -760,9 +761,10 @@ public class Order extends Model {
                     "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "" +
                     "密码" + password + ",截止" + dateFormat.format(eCoupon.expireAt) + "客服4006013975",
                     orderItem.phone, eCoupon.replyCode);
-            TsingTuanSendOrder.send(tsingTuanOrder);
+            //TsingTuanSendOrder.send(tsingTuanOrder);
             return;
         }
+        */
 
         // 58团
         if (AccountType.RESALER.equals(orderItem.order.userType)
