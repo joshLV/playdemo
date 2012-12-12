@@ -185,7 +185,7 @@
            #{if "edit".equals(action) && goods?.status == models.sales.GoodsStatus.ONSALE}disabled #{/if}/>
     &nbsp;
     #{if goods?.status != models.sales.GoodsStatus.APPLY}
-        <input class="btn btn-primary" id="apply" type="submit" value="上架申请"/>
+        <input class="btn btn-primary" id="apply" type="submit" value="申请上架"/>
         &nbsp;
     #{/if}
     #{if  hasApproveGoodsPermission == true }
