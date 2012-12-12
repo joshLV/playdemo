@@ -131,9 +131,9 @@
                                 #{if (row.status == models.order.OrderStatus.PAID) && (rowItem.goods.noRefund==false || rowItem.goods.noRefund==null)}
                                     <a id="apply_${row.orderNumber}" href="/orders/refund/${row.orderNumber}">申请退款</a>
                                 #{/if}
-                                #{else}
+                                #{elseif row.status == models.order.OrderStatus.PAID}
                                     不可退款
-                                #{/else}
+                                #{/elseif}
                                 #{if (row.status == models.order.OrderStatus.UNPAID)}
                                     <a class="order-payment" href="@{UserOrders.pay(row.orderNumber)}"></a>
                                 #{/if}
