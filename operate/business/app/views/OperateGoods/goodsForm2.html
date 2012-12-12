@@ -39,6 +39,14 @@
         <input type="checkbox" name="goods.isOrder" id="isOrder" class="input-medium"
                value="${goods?.isOrder}" ${goods?.isOrder?'checked':''}/><span id="err-isOrder"></span>
         预约商品&nbsp;&nbsp;
+
+        <input type="checkbox" name="goods.noRefund" id="noRefund" class="input-medium"
+               value="${goods?.noRefund}" ${goods?.noRefund?'checked':''}
+            #{if !"add".equals(action)}
+               onclick="return false;"
+            #{/if}/><span id="err-noRefund"></span>
+
+        不可退款&nbsp;&nbsp;
     </div>
     <span id="err-isLottery"></span>
 </div>

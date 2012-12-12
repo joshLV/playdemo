@@ -128,7 +128,8 @@
                 <input class="medium-input goods-name" type="text" name="condition.goodsName"
                        value="${condition.goodsName}"/>
                 <label>券号：</label>
-                <input class="short-input order-num" type="text" name="condition.eCouponSn" value="${condition?.eCouponSn}"/>
+                <input class="short-input order-num" type="text" name="condition.eCouponSn"
+                       value="${condition?.eCouponSn}"/>
                 <label>成交时间：</label>
                 <input class="short-input Wdate" type="text" name="condition.createdAtBegin"
                        value="${condition.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"/>
@@ -216,11 +217,16 @@
                             <input type="hidden" id="times_${coupon.id}" value="${coupon.downloadTimes}"/>
                             <br>
                         #{/if}
-                        #{if coupon.status == models.order.ECouponStatus.UNCONSUMED && !coupon?.goods?.isLottery && coupon?.salePrice>0 && coupon?.orderItems?.secKillGoods==null && coupon?.orderItems?.secKillGoodsItemId==null}
+                        #{if coupon.status == models.order.ECouponStatus.UNCONSUMED && (coupon.goods.noRefund==false ||coupon.goods.noRefund==null)
+                        && !coupon?.goods?.isLottery && coupon?.salePrice>0 &&
+                        coupon?.orderItems?.secKillGoods==null && coupon?.orderItems?.secKillGoodsItemId==null}
                             <a class="apply-refund"
                                href="javascript:applyRefund('${coupon.id}','${coupon.salePrice}','${coupon?.rebateValue}')"
                                id="apply_${coupon.id}">申请退款</a>
                         #{/if}
+                        #{else}
+                            不可退款
+                        #{/else}
                     </td>
                 </tr>
                 </tbody>

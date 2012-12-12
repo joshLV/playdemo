@@ -6,7 +6,7 @@
 <meta name="Keywords" content="${detailKeywords}">
 #{/set}
 #{set 'moreStyles'}
-    #{asset.css src:['/home/121109/detail.css']/}
+    #{asset.css src:['/home/121212/detail.css']/}
 #{/set}
 <script src="http://maps.googleapis.com/maps/api/js?e&language=zh-CN&region=GB&key=AIzaSyCbnBNu40y5eXnL8jOey4lbS3P1vQ_HR5E&sensor=false"></script>
 #{set 'moreScripts'}
@@ -148,8 +148,18 @@
         #{/else}
         <ul id="promise">
             <li class="quality"><a href="/service" target="_blank">品质保证</a></li>
-            <li class="refund"><a href="/service" target="_blank">一键退款</a></li>
-            <li class="return"><a href="/service" target="_blank">随时退货</a></li>
+            #{if goods?.noRefund==false || goods?.noRefund==null}
+                <li class="refund"><a href="/service" target="_blank">一键退款</a></li>
+            #{/if}
+            #{else}
+                <li class="refund no-refund"><a href="/service" target="_blank">不可退款</a></li>
+            #{/else}
+            #{if goods?.noRefund==false || goods?.noRefund==null}
+                <li class="return"><a href="/service" target="_blank">随时退货</a></li>
+            #{/if}
+            #{else}
+                <li class="return no-return"><a href="/service" target="_blank">不可退货</a></li>
+            #{/else}
         </ul>
     #{/form}
     </div>

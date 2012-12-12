@@ -606,6 +606,13 @@ public class Goods extends Model {
     public Boolean isOrder = Boolean.FALSE;
 
     /**
+     * 不可退款
+     */
+    @Column(name = "no_refund")
+    @SolrField
+    public Boolean noRefund = Boolean.FALSE;
+
+    /**
      * 是否隐藏上架
      */
     @Column(name = "is_hide_onsale")
@@ -1596,8 +1603,7 @@ public class Goods extends Model {
      */
     public static List<Goods> findNewGoodsOfOthers(Long id, int limit) {
         Date nowDate = new Date();
-        return Goods.find(" id <> ? and status = ? and deleted = ? and isHideOnsale = false and beginOnSaleAt<= ? and endOnSaleAt > ? order by createdAt DESC",
-                id, GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, nowDate, nowDate).fetch(limit);
+        return Goods.find(" id <> ? and status = ? and deleted = ? and isHideOnsale = false and beginOnSaleAt<= ? and endOnSaleAt > ? order by createdAt DESC", id, GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, nowDate, nowDate).fetch(limit);
     }
 
     /**
@@ -1767,6 +1773,7 @@ public class Goods extends Model {
         goodsHistory.prompt = this.prompt;
         goodsHistory.details = this.details;
         goodsHistory.createdAt = new Date();
+        goodsHistory.noRefund = this.noRefund;
         if (StringUtils.isNotBlank(this.updatedBy)) {
             goodsHistory.createdBy = this.updatedBy;
         } else {

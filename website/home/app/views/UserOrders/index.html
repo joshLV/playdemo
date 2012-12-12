@@ -128,9 +128,12 @@
                                 <a class="order-detail" href="@{UserOrders.details(row.orderNumber)}" target="_blank">订单详情</a>
                             </td>
                             <td align="center" rowspan="${row?.orderItems?.size()}">
-                                #{if (row.status == models.order.OrderStatus.PAID)}
+                                #{if (row.status == models.order.OrderStatus.PAID) && (row.goods.noRefund==false ||row.goods.noRefund==null)}
                                     <a id="apply_${row.orderNumber}" href="/orders/refund/${row.orderNumber}">申请退款</a>
                                 #{/if}
+                                #{else}
+                                    不可退款
+                                #{/else}
                                 #{if (row.status == models.order.OrderStatus.UNPAID)}
                                     <a class="order-payment" href="@{UserOrders.pay(row.orderNumber)}"></a>
                                 #{/if}
