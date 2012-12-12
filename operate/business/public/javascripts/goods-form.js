@@ -9,14 +9,6 @@
 
 $(
     function () {
-        $("#goods_supplierId").change(function () {
-            $("#brand").load("/goods_brands/" + $("#goods_supplierId").val(), function (data) {
-            });
-            $("#tableShop").load("/shops/" + $("#goods_supplierId").val() + "/showGoodsShops", function (data) {
-                $("#selectAll").click();
-            });
-        });
-
         $("#goods_topCategoryId").change(function () {
             $("#goods_categories_id").load("/category/sub/" + $("#goods_topCategoryId").val(), function (data) {
                 var categoryList = $.parseJSON(data);
