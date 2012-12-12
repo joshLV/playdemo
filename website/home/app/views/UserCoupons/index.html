@@ -224,9 +224,9 @@
                                href="javascript:applyRefund('${coupon.id}','${coupon.salePrice}','${coupon?.rebateValue}')"
                                id="apply_${coupon.id}">申请退款</a>
                         #{/if}
-                        #{elseif coupon.status == models.order.ECouponStatus.UNCONSUMED}
+                        #{else}
                             不可退款
-                        #{/elseif}
+                        #{/else}
                     </td>
                 </tr>
                 </tbody>
