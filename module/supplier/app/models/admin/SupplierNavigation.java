@@ -154,7 +154,6 @@ public class SupplierNavigation extends Model {
 
     public static List<SupplierNavigation> getSecondLevelNavigations(String applicationName, String navName) {
         List<SupplierNavigation> parentStack = getNavigationParentStack(applicationName, navName);
-        System.out.println("parentStack:" + parentStack);
 
         if (parentStack == null || parentStack.size() < 1) {
             return Collections.emptyList();

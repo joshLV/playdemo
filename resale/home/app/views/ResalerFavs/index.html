@@ -78,6 +78,7 @@
                     <th width="80">原价（元）</th>
                     <th width="80">采购价（元）</th>
                     <th width="80">状态</th>
+                    <th width="110">第三方URL</th>
                     <th width="140">操作</th>
                 </tr>
                 </thead>
@@ -85,10 +86,10 @@
             #{list items:favs, as:'favItem'}
                 <tbody>
                 <tr class="sep-row" id="row_sep_${favItem.goods.id}">
-                    <td colspan="6"></td>
+                    <td colspan="7"></td>
                 </tr>
                 <tr class="order-hd" id="row_hd_${favItem.goods.id}">
-                    <td colspan="6">
+                    <td colspan="7">
                         <input type="checkbox" id="check_goods_${favItem.goods.id}"/>
                         <span>成交时间：${favItem.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</span>
                         <span id="list_err_${favItem.goods.id}" style="color: #ff0000;padding-left:450px"></span>
@@ -103,11 +104,26 @@
                     <td id="price_${favItem.goods.id}">${favItem.goods.getResalePrice()}</td>
                     <td>
                         #{if resaler.loginName == 'wuba'}
-                            ${favItem.outerStatus}
+                        ${favItem.outerStatus}
                         #{/if}
                         #{else}
                         &{'goods.'+favItem.goods?.status}
                         #{/else}
+                    </td>
+                   %{
+                    List<String> cityList = new ArrayList<String>();
+                    String[] cityName = favItem?.thirdCity?.split(",");
+
+                    for (String city:cityName) {
+                         cityList.add(city);
+                    }
+                    }%
+                    <td class="action">
+                           #{list items:cityList, as:'city'}
+                        #{if favItem?.thirdUrl?.split(",").length>0}
+                            <a href="${favItem?.thirdUrl?.split(",")[city_index-1]}/${favItem?.thirdGroupbuyId}" target="_blank">${city}</a> |
+                        #{/if}
+                        #{/list}
                     </td>
                     <td class="action">
                         <a href="#" id="del_${favItem.id}" name="${favItem.goods.id}" class="delete_gift">删除</a>
@@ -135,8 +151,8 @@
                         #{elseif resaler.loginName == 'wuba'}
                             #{if favItem.partner==models.order.OuterOrderPartner.WB}
                                 | <a href="/58-edit/${favItem.goods.id}" style="color: #D72300">修改58信息</a>
-	                            | <a href="/58-status/${favItem.goods.id}">同步状态</a>
-	                            | <a href="/58-status/onsale/${favItem.goods.id}">上架</a>
+                                | <a href="/58-status/${favItem.goods.id}">同步状态</a>
+                                | <a href="/58-status/onsale/${favItem.goods.id}">上架</a>
                                 | <a href="/58-status/offsale/${favItem.goods.id}">下架</a>
                             #{/if}
                             #{else}
@@ -166,10 +182,10 @@
             #{/if}
                 <tfoot>
                 <tr class="sep-row">
-                    <td colspan="6"></td>
+                    <td colspan="7"></td>
                 </tr>
                 <tr class="order-ft">
-                    <td colspan="6">
+                    <td colspan="7">
                         <input type="checkbox" id="uuuu" value="" name="select_all_checkbox"/> 全选
                         <a href="#" id="batch_delete">批量删除</a>
                         <!--<a href="#" id="batch_upload_show">批量发布到淘宝</a>-->

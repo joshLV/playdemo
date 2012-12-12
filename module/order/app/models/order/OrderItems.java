@@ -292,21 +292,14 @@ public class OrderItems extends Model {
         List result = query.getResultList();
         return (result == null || result.isEmpty()) ? 0l : result.size();
 //        long count =  count("from OrderItems o where o.order.userId=? and o.order.userType=? and o.status=? group by o.order",userId, userType, OrderStatus.UNPAID);
-//        System.out.println("count:" + count);
 //        return count;
-        /*for (OrderItems orderItems : orderItemsList) {
-            System.out.println("orderItems.order.id:" + orderItems.order.id);
-        }
-        Query q = entityManager.createQuery("select count(o) from OrderItems o where o.order.userId=:userId " +
-                "and o.order.userType=:userType and o.status=:status group by o.order");
-        q.setParameter("userId", userId);
-        q.setParameter("userType", userType);
-        q.setParameter("status", OrderStatus.UNPAID);
-        System.out.println("q.getResultList():" + q.getResultList().get(0));
-        System.out.println("q.getSingleResult():" + q.getSingleResult());
-
-
-        return CollectionUtils.isEmpty(q.getResultList()) ? 0l : (Long) q.getSingleResult();*/
+//        Query q = entityManager.createQuery("select count(o) from OrderItems o where o.order.userId=:userId " +
+//                "and o.order.userType=:userType and o.status=:status group by o.order");
+//        q.setParameter("userId", userId);
+//        q.setParameter("userType", userType);
+//        q.setParameter("status", OrderStatus.UNPAID);
+//
+//        return CollectionUtils.isEmpty(q.getResultList()) ? 0l : (Long) q.getSingleResult();*/
     }
 
     public static List<OrderItems> findBySupplierOrder(long supplierId, long orderId) {

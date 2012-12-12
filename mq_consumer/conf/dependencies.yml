@@ -37,7 +37,7 @@ require:
     - supports -> supports
     - com.yihaodian -> yhdclient 1.0
     - commons-httpclient -> commons-httpclient 3.1
-    - wuba -> wuba
+    - net.sourceforge.pinyin4j -> pinyin4j 2.5.0
 
 repositories:
     - mavenRepository:
@@ -49,6 +49,7 @@ repositories:
             - com.uhuila.utils -> *
             - org.jsoup -> *
             - com.yihaodian -> *
+            - net.sourceforge.pinyin4j -> *
         m2compatible: true
 
     - customModules:

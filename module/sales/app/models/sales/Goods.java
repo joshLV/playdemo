@@ -290,10 +290,21 @@ public class Goods extends Model {
     /**
      * 开始上架时间
      */
+    @Required
     @Column(name = "begin_onsale_at")
     @SolrField
     @As(lang = {"*"}, value = {"yyyy-MM-dd HH:mm:ss"})
     public Date beginOnSaleAt;
+
+
+    /**
+     * 结束上架时间
+     */
+    @Required
+    @Column(name = "end_onsale_at")
+    @SolrField
+    @As(lang = {"*"}, value = {"yyyy-MM-dd HH:mm:ss"})
+    public Date endOnSaleAt;
 
     /**
      * 最早上架时间
@@ -1049,7 +1060,8 @@ public class Goods extends Model {
         updateGoods.useBeginTime = goods.useBeginTime;
         updateGoods.useEndTime = goods.useEndTime;
         updateGoods.useWeekDay = goods.useWeekDay;
-
+        updateGoods.beginOnSaleAt = goods.beginOnSaleAt;
+        updateGoods.endOnSaleAt = goods.endOnSaleAt;
         updateGoods.isOrder = (goods.isOrder == null) ? Boolean.FALSE : goods.isOrder;
         updateGoods.isLottery = (goods.isLottery == null) ? Boolean.FALSE : goods.isLottery;
         updateGoods.isHideOnsale = (goods.isHideOnsale == null) ? Boolean.FALSE : goods.isHideOnsale;
@@ -1093,7 +1105,7 @@ public class Goods extends Model {
      */
     public static List<Goods> findTop(int limit) {
         Date nowDate = new Date();
-        return find("status=? and deleted=? and isHideOnsale = false and beginOnSaleAt <=? and expireAt > ? order by priority DESC,createdAt DESC",
+        return find("status=? and deleted=? and isHideOnsale = false and beginOnSaleAt <=? and endOnSaleAt > ? order by priority DESC,createdAt DESC",
                 GoodsStatus.ONSALE,
                 DeletedStatus.UN_DELETED,
                 nowDate, nowDate).fetch(limit);
@@ -1109,11 +1121,11 @@ public class Goods extends Model {
         Date nowDate = new Date();
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
-                "and g.isHideOnsale = false and g.beginOnSaleAt <= :beginOnSaleAt and g.expireAt > :expireAt and g.id in (select g.id from g.categories c where c.parentCategory.id = :categoryId) ");
+                "and g.isHideOnsale = false and g.beginOnSaleAt <= :beginOnSaleAt and g.endOnSaleAt > :endOnSaleAt and g.id in (select g.id from g.categories c where c.parentCategory.id = :categoryId) ");
         q.setParameter("status", GoodsStatus.ONSALE);
         q.setParameter("deleted", DeletedStatus.UN_DELETED);
         q.setParameter("beginOnSaleAt", nowDate);
-        q.setParameter("expireAt", nowDate);
+        q.setParameter("endOnSaleAt", nowDate);
         q.setParameter("categoryId", categoryId);
         return q.getResultList().size();
     }
@@ -1128,11 +1140,11 @@ public class Goods extends Model {
         Date nowDate = new Date();
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
-                "and g.isHideOnsale = false and g.beginOnSaleAt <= :beginOnSaleAt and g.expireAt > :expireAt and g.id in (select g.id from g.categories c where c.id = :categoryId) ");
+                "and g.isHideOnsale = false and g.beginOnSaleAt <= :beginOnSaleAt and g.endOnSaleAt > :endOnSaleAt and g.id in (select g.id from g.categories c where c.id = :categoryId) ");
         q.setParameter("status", GoodsStatus.ONSALE);
         q.setParameter("deleted", DeletedStatus.UN_DELETED);
         q.setParameter("beginOnSaleAt", nowDate);
-        q.setParameter("expireAt", nowDate);
+        q.setParameter("endOnSaleAt", nowDate);
         q.setParameter("categoryId", categoryId);
         return q.getResultList().size();
     }
@@ -1158,12 +1170,12 @@ public class Goods extends Model {
         EntityManager entityManager = JPA.em();
         String categoryQueryCond = isRootCategory ? "c.parentCategory.id" : "c.id";
         Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
-                "and g.isHideOnsale = false and g.beginOnSaleAt <= :beginOnSaleAt and g.expireAt > :expireAt and g.id in (select g.id from g.categories c where " + categoryQueryCond + " = :categoryId) " +
+                "and g.isHideOnsale = false and g.beginOnSaleAt <= :beginOnSaleAt and g.endOnSaleAt > :endOnSaleAt and g.id in (select g.id from g.categories c where " + categoryQueryCond + " = :categoryId) " +
                 "order by priority DESC,createdAt DESC");
         q.setParameter("status", GoodsStatus.ONSALE);
         q.setParameter("deleted", DeletedStatus.UN_DELETED);
         q.setParameter("beginOnSaleAt", nowDate);
-        q.setParameter("expireAt", nowDate);
+        q.setParameter("endOnSaleAt", nowDate);
         q.setParameter("categoryId", categoryId);
         q.setMaxResults(limit);
         return q.getResultList();
@@ -1463,12 +1475,12 @@ public class Goods extends Model {
     public static List<Goods> findTopRecommend(int limit) {
         Date nowDate = new Date();
         String sql = "select g from Goods g,GoodsStatistics s  where g.id =s.goodsId " +
-                " and g.status =:status and g.deleted =:deleted and g.beginOnSaleAt<= :beginOnSaleAt and g.expireAt >:expireAt and g.isHideOnsale is false and g.isLottery is false order by s.summaryCount desc";
+                " and g.status =:status and g.deleted =:deleted and g.beginOnSaleAt<= :beginOnSaleAt and g.endOnSaleAt >:endOnSaleAt and g.isHideOnsale is false and g.isLottery is false order by s.summaryCount desc";
         Query query = Goods.em().createQuery(sql);
         query.setParameter("status", GoodsStatus.ONSALE);
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
         query.setParameter("beginOnSaleAt", nowDate);
-        query.setParameter("expireAt", nowDate);
+        query.setParameter("endOnSaleAt", nowDate);
         query.setMaxResults(limit);
         return query.getResultList();
     }
@@ -1483,14 +1495,14 @@ public class Goods extends Model {
         Date nowDate = new Date();
         String sql = "select g from Goods g,GoodsStatistics s  where g.id =s.goodsId " +
                 " and g.status =:status and g.supplierId=:supplierId and g.deleted =:deleted and " +
-                " g.id <> :goodsId and g.beginOnSaleAt<= :beginOnSaleAt and g.expireAt >:expireAt and g.isLottery is false order by s.summaryCount desc";
+                " g.id <> :goodsId and g.beginOnSaleAt<= :beginOnSaleAt and g.endOnSaleAt >:endOnSaleAt and g.isLottery is false order by s.summaryCount desc";
         Query query = Goods.em().createQuery(sql);
         query.setParameter("status", GoodsStatus.ONSALE);
         query.setParameter("supplierId", goods.supplierId);
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
         query.setParameter("goodsId", goods.id);
         query.setParameter("beginOnSaleAt", nowDate);
-        query.setParameter("expireAt", nowDate);
+        query.setParameter("endOnSaleAt", nowDate);
         query.setMaxResults(limit);
         List<Goods> goodsList = query.getResultList();
         List<Goods> otherGoodsList = new ArrayList<>();
@@ -1542,7 +1554,7 @@ public class Goods extends Model {
         String sql = "select g from Goods g,GoodsStatistics s  where g.id =s.goodsId " +
                 " and g.status =:status and g.deleted =:deleted and " +
                 " g.id in (select g.id from g.categories c where c.id = :categoryId or (c.parentCategory is not null and c.parentCategory.id=:categoryId))" +
-                "and g.id <> :goodsId and g.supplierId <> :supplierId and g.beginOnSaleAt<= :beginOnSaleAt and g.expireAt >:expireAt and g.isLottery is false order by s.summaryCount desc";
+                "and g.id <> :goodsId and g.supplierId <> :supplierId and g.beginOnSaleAt<= :beginOnSaleAt and g.endOnSaleAt >:endOnSaleAt and g.isLottery is false order by s.summaryCount desc";
         Query query = Goods.em().createQuery(sql);
         query.setParameter("status", GoodsStatus.ONSALE);
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
@@ -1550,10 +1562,13 @@ public class Goods extends Model {
         query.setParameter("goodsId", goods.id);
         query.setParameter("supplierId", goods.supplierId);
         query.setParameter("beginOnSaleAt", nowDate);
-        query.setParameter("expireAt", nowDate);
+        query.setParameter("endOnSaleAt", nowDate);
         query.setMaxResults(limit);
         List<Goods> goodsList = query.getResultList();
+<<<<<<< HEAD
         System.out.println(goodsList.size() + "---------------");
+=======
+>>>>>>> develop
         return goodsList;
 
     }
@@ -1568,7 +1583,7 @@ public class Goods extends Model {
     public static List<Goods> findNewGoods(int limit) {
         Date nowDate = new Date();
         // 找出5倍需要的商品，然后手工过滤
-        List<Goods> allGoods = Goods.find("status = ? and deleted = ? and isHideOnsale = false and beginOnSaleAt<=? and expireAt > ? order by createdAt DESC",
+        List<Goods> allGoods = Goods.find("status = ? and deleted = ? and isHideOnsale = false and beginOnSaleAt<=? and endOnSaleAt > ? order by createdAt DESC",
                 GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, nowDate, nowDate).fetch(limit * 10);
         Set<Long> supplierSet = new HashSet<>();
         List<Goods> goods = new ArrayList<>();
@@ -1592,7 +1607,11 @@ public class Goods extends Model {
      */
     public static List<Goods> findNewGoodsOfOthers(Long id, int limit) {
         Date nowDate = new Date();
+<<<<<<< HEAD
         return Goods.find(" id <> ? and status = ? and deleted = ? and isHideOnsale = false and beginOnSaleAt<= ? and expireAt > ? order by createdAt DESC",
+=======
+        return Goods.find(" id <> ? and status = ? and deleted = ? and isHideOnsale = false and beginOnSaleAt<= ? and endOnSaleAt > ? order by createdAt DESC",
+>>>>>>> develop
                 id, GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, nowDate, nowDate).fetch(limit);
     }
 
@@ -1637,7 +1656,7 @@ public class Goods extends Model {
     }
 
     public boolean onSale() {
-        return (GoodsStatus.ONSALE.equals(status) && expireAt.after(new Date())
+        return (GoodsStatus.ONSALE.equals(status) && endOnSaleAt.after(new Date())
                 && getRealStocks() > 0 && DeletedStatus.UN_DELETED.equals(deleted));
     }
 
@@ -1779,6 +1798,7 @@ public class Goods extends Model {
         goodsHistory.exhibition = this.exhibition;
         goodsHistory.supplierDes = this.supplierDes;
         goodsHistory.beginOnSaleAt = this.beginOnSaleAt;
+        goodsHistory.endOnSaleAt = this.endOnSaleAt;
         goodsHistory.limitNumber = this.limitNumber;
         goodsHistory.couponType = this.couponType;
         goodsHistory.imagePath = this.imagePath;
@@ -1988,7 +2008,7 @@ public class Goods extends Model {
                 " AND goods.isHideOnsale_b:false" +
                 " AND goods.status_s:\"models.sales.GoodsStatus:ONSALE\"" +
                 " AND goods.realStocks_l:[1 TO " + Integer.MAX_VALUE + "]" +
-                " AND goods.expireAt_dt:[" + dateFormat.format(nowDate) + " TO 2512-05-24T05:55:36Z]" +
+                " AND goods.endOnSaleAt_dt:[" + dateFormat.format(nowDate) + " TO 2512-05-24T05:55:36Z]" +
                 " AND goods.beginOnSaleAt_dt:[2011-05-24T05:55:36Z TO " + dateFormat.format(nowDate) + "]";
         StringBuilder queryStr = new StringBuilder();
         if (StringUtils.isNotBlank(q)) {
@@ -2017,19 +2037,15 @@ public class Goods extends Model {
         if (brandId > 0) {
             queryStr.append(" AND brand.id_l:" + brandId);
         }
-//        System.out.println("==> queryStr:" + queryStr);
         SolrQuery query = new SolrQuery(queryStr.toString());
         if (onlyStatistic) {
             query.setRows(0);
         } else {
             query.setRows(pageSize);
             query.setFields(SOLR_ID, SOLR_GOODS_NAME, SOLR_GOODS_SALEPRICE, SOLR_GOODS_FACEVALUE, SOLR_GOODS_VIRTUALSALECOUNT, SOLR_GOODS_AREAS, SOLR_GOODS_IMAGESMALLPATH);
-//            System.out.println("GoodsWebsiteCondition.getSolrOrderBy(0):" + GoodsWebsiteCondition.getSolrOrderBy(0));
-//            System.out.println("==> orderBy:" + orderBy + " " + (isAsc ? "asc" : "desc"));
             if ((StringUtils.isNotBlank(q) && !GoodsWebsiteCondition.getSolrOrderBy(0).equals(orderBy)) ||
                     (StringUtils.isBlank(q))) {
                 query.setSortField(orderBy, isAsc ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
-//                System.out.println("==>set Sort Field");
             }
             query.setStart(pageNumber * pageSize - pageSize);
         }

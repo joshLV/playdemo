@@ -33,14 +33,16 @@ public class ClearGoodsCacheJobTest extends UnitTest {
         assertEquals(0, n);
 
         goods.beginOnSaleAt = DateHelper.beforeMinuts(1);
-        goods.expireAt = DateHelper.afterHours(2);
+//        goods.expireAt = DateHelper.afterHours(2);
+        goods.endOnSaleAt = DateHelper.afterHours(2);
         goods.save();
         ClearGoodsCacheJob job = new ClearGoodsCacheJob();
         job.doJob();
         goodsList = Goods.findNewGoods(5);
         assertEquals(n + 1, goodsList.size());
 
-        goods.expireAt = DateHelper.beforeMinuts(1);
+//        goods.expireAt = DateHelper.beforeMinuts(1);
+        goods.endOnSaleAt = DateHelper.beforeMinuts(1);
         goods.save();
         job.doJob();
         goodsList = Goods.findNewGoods(5);

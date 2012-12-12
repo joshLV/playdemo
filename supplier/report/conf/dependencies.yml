@@ -38,6 +38,7 @@ require:
     - wuba -> wuba
     - oauth -> oauth
     - taobao -> taobao
+    - net.sourceforge.pinyin4j -> pinyin4j 2.5.0
 
 repositories:
     - mavenRepository:
@@ -49,6 +50,7 @@ repositories:
             - commons-httpclient -> *
             - org.jsoup -> *
             - com.taobao -> *
+            - net.sourceforge.pinyin4j -> *
         m2compatible: true
 
     - play1ContributedModules:

@@ -1,6 +1,0 @@
-models.order.SentCouponMessage(messge1):
-  couponNumber: 1600915935
-  isSend: 1
-  sentAt: 2012-05-31 15:01:20
-  mobile: 15018096151
-  goodsName: "asdasd"

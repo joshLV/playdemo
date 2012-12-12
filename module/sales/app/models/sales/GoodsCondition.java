@@ -503,4 +503,28 @@ public class GoodsCondition implements Serializable {
                 ",materialType:" + materialType + ",status:" + status + ",baseSaleBegin:" + baseSaleBegin +
                 ",baseSaleEnd:" + baseSaleEnd + ",expireAtBegin:" + expireAtBegin + ",expireAtEnd:" + expireAtEnd + "]";
     }
+
+    /**
+     * 商品排期查询条件
+     *
+     * @return
+     */
+    public String getScheduleFilter() {
+        StringBuilder condBuilder = new StringBuilder(" 1=1 ");
+        if (StringUtils.isNotBlank(name)) {
+            condBuilder.append(" and g.goods.name like :goodsTitle");
+            paramMap.put("goodsTitle", "%" + name.trim() + "%");
+        }
+        if (expireAtBegin != null) {
+            condBuilder.append(" and g.expireAt > :expireAtBegin");
+            paramMap.put("expireAtBegin", expireAtBegin);
+        }
+
+        if (expireAtEnd != null) {
+            condBuilder.append(" and g.expireAt <= :expireAtEnd");
+            paramMap.put("expireAtEnd", expireAtEnd);
+        }
+
+        return condBuilder.toString();
+    }
 }

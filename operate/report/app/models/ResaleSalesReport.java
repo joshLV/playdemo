@@ -107,7 +107,6 @@ public class ResaleSalesReport extends Model {
             this.salePrice = salePrice;
         } else {
             this.salePrice = BigDecimal.ZERO;
-            System.out.println("111111111111111111111111");
         }
         this.buyNumber = buyNumber;
     }

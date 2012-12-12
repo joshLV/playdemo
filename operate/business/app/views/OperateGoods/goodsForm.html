@@ -13,12 +13,14 @@
     #{layout_operate.checkboxField name:'goods.publishedPlatforms', items:models.sales.GoodsPublishedPlatformType
     .values(), value:goods?.publishedPlatforms/}
     #{if "add".equals(action)}
-        #{layout_operate.selectField name:'goods.supplierId', class:'span2', value:goods?.supplierId,
-        error:'goods.supplierId'}
-            #{list items:supplierList, as:'supplier' }
-                #{option supplier.id}${supplier.fullName}#{/option}
-            #{/list}
-        #{/layout_operate.selectField}
+    <div class="control-group">
+        <label class="control-label"><span style="color: red; ">*</span>商户</label>
+
+        <div class="controls">
+            #{layout_operate.selectInputField name:"supplierName", id:"goods.supplierId", list:supplierList/}
+            <span class="error">#{error 'goods.supplierId'/}</span>
+        </div>
+    </div>
     #{/if}
     #{else}
     <input type="hidden" id="goods_supplierId" name="goods.supplierId" value="${goods?.supplierId}">
@@ -35,7 +37,7 @@
         <input type="checkbox" name="goods.isHideOnsale" id="isHideOnsale" class="input-medium"
                value="${goods?.isHideOnsale}" ${goods?.isHideOnsale?'checked':''}/>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;预约商品&nbsp;&nbsp;
-         <input type="checkbox" name="goods.isOrder" id="isOrder" class="input-medium"
+        <input type="checkbox" name="goods.isOrder" id="isOrder" class="input-medium"
                value="${goods?.isOrder}" ${goods?.isOrder?'checked':''}/><span id="err-isOrder"></span>
     </div>
     <span id="err-isLottery"></span>
@@ -55,6 +57,9 @@
     #{layout_operate.nameField name:'goods.title', value:goods?.title,note:'(包含商家名称和面值)', required:true, length:30/}
     #{layout_operate.dateScopeField name:'goods.effective', begin:'goods.effectiveAt',end:'goods.expireAt',
     beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), required:true/}
+    #{layout_operate.dateTimeScopeField name:'goods.onSale', begin:'goods.beginOnSaleAt',end:'goods.endOnSaleAt',
+    beginValue:goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss'), endValue:goods?.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss'), required:true/}
+
     #{layout_operate.textField name:'goods.faceValue', value:goods?.faceValue?:"0", note:'元', required:true/}
     #{layout_operate.textField name:'goods.originalPrice', value:goods?.originalPrice?:"0",note:'元', required:true/}
     #{layout_operate.textField name:'goods.salePrice', value:goods?.salePrice?:"0", note:'元', required:true/}

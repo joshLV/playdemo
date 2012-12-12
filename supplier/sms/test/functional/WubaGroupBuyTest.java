@@ -75,7 +75,6 @@ public class WubaGroupBuyTest extends FunctionalTest {
         requestParam.put("param", WubaUtil.encryptMessage(new Gson().toJson(params)));
         Http.Response response = POST("/api/v1/58/gb/coupon-info", requestParam);
         assertIsOk(response);
-        System.out.println(response.out.toString());
         assertEquals("{\"status\":\"10000\",\"data\":\"ODA0NjZmMjZkMWJmZWE5NQ%3D%3D\",\"msg\":\"成功\"}", response.out.toString());
     }
 }

@@ -32,7 +32,7 @@
                 <label class="radio inline">
                     <input type="radio" value="overwrite" name="action"> 覆盖
                 </label>
-                <span class="help-block">在原有券列表中，添加所有不重复的券号</span>
+                <span class="help-block">在原有券列表中，添加所有不重复的券号/覆盖会清空没有使用的券，再添加新的券</span>
             </div>
         </div>
         <div class="control-group">
@@ -62,10 +62,10 @@
         <tbody>
         #{paginate.list items:goodsList, as:'goods' }
         <tr>
-            <td>${goods.name}</td>
-            <td>${goods.baseSale}</td>
-            <td></td>
-            <td></td>
+            <td>${goods.title}</td>
+            <td>${goods.cumulativeStocks}</td>
+            <td>${goods.getRealSaleCount()}</td>
+            <td>${goods.getRealStocks()}</td>
             <td></td>
         </tr>
         #{/paginate.list}

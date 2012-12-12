@@ -39,6 +39,7 @@ require:
     - com.yihaodian -> yhdclient 1.0
     - commons-lang -> commons-lang 2.6
     - commons-httpclient -> commons-httpclient 3.1
+    - net.sourceforge.pinyin4j -> pinyin4j 2.5.0
 
 repositories:
     - mavenRepository:
@@ -51,6 +52,7 @@ repositories:
             - org.jsoup -> *
             - org.json -> *
             - com.yihaodian -> *
+            - net.sourceforge.pinyin4j -> *
         m2compatible: true
 
     - play1ContributedModules:

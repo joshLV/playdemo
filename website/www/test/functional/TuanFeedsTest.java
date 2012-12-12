@@ -2,6 +2,7 @@ package functional;
 
 import java.util.List;
 
+import factory.callback.BuildCallback;
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.sales.Category;
@@ -17,6 +18,7 @@ import play.mvc.Http;
 import play.test.FunctionalTest;
 import controllers.modules.website.cas.Security;
 import factory.FactoryBoy;
+import util.DateHelper;
 
 /**
  * Created with IntelliJ IDEA.
@@ -41,7 +43,13 @@ public class TuanFeedsTest extends FunctionalTest {
         supplier = FactoryBoy.create(Supplier.class);
         category = FactoryBoy.create(Category.class);
         shop = FactoryBoy.create(Shop.class);
-        goods = FactoryBoy.create(Goods.class);
+        goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+            @Override
+            public void build(Goods g) {
+                g.beginOnSaleAt = com.uhuila.common.util.DateUtil.getEndOfDay(DateHelper.beforeDays(g.effectiveAt, 5));
+                g.endOnSaleAt = com.uhuila.common.util.DateUtil.getEndOfDay(DateHelper.beforeDays(g.expireAt, 5));
+            }
+        });
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
     }

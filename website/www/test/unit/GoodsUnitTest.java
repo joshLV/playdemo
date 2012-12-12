@@ -34,6 +34,7 @@ import factory.asserts.Callback;
 import factory.asserts.ModelAssert;
 import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
+import util.DateHelper;
 
 /**
  * 商品Model的单元测试.
@@ -45,18 +46,20 @@ import factory.callback.SequenceCallback;
 public class GoodsUnitTest extends UnitTest {
     Goods goods;
     Category category;
-    
-	@Before
+
+    @Before
     public void setUp() {
-    	FactoryBoy.deleteAll();
-    	category = FactoryBoy.create(Category.class);
-    	goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
-			@Override
-			public void build(Goods g) {
-				g.title = "哈根达斯100元抵用券";
-				g.name = "哈根达斯100元抵用券";
-			}
-		});
+        FactoryBoy.deleteAll();
+        category = FactoryBoy.create(Category.class);
+        goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+            @Override
+            public void build(Goods g) {
+                g.title = "哈根达斯100元抵用券";
+                g.name = "哈根达斯100元抵用券";
+                g.beginOnSaleAt = com.uhuila.common.util.DateUtil.getEndOfDay(DateHelper.beforeDays(g.effectiveAt, 5));
+                g.endOnSaleAt = com.uhuila.common.util.DateUtil.getEndOfDay(DateHelper.beforeDays(g.expireAt, 5));
+            }
+        });
     }
 
     @Test
@@ -162,13 +165,13 @@ public class GoodsUnitTest extends UnitTest {
      */
     @Test
     public void testFindByCondition() {
-    	FactoryBoy.batchCreate(20, Goods.class, new SequenceCallback<Goods>() {
-			@Override
-			public void sequence(Goods g, int seq) {
-				g.name = "G_" + seq;
-				g.materialType = MaterialType.REAL;
-			}
-		});
+        FactoryBoy.batchCreate(20, Goods.class, new SequenceCallback<Goods>() {
+            @Override
+            public void sequence(Goods g, int seq) {
+                g.name = "G_" + seq;
+                g.materialType = MaterialType.REAL;
+            }
+        });
         String condition = "0-021-0-0-0-0-1";
         GoodsCondition goodsCond = new GoodsCondition(condition);
 
@@ -176,18 +179,18 @@ public class GoodsUnitTest extends UnitTest {
                 (goodsCond, 1, 50);
         assertEquals(21, goodsPage.size());
     }
-    
+
 
     @Test
     public void 测试过滤掉隐藏上架的商品() {
-    	FactoryBoy.batchCreate(20, Goods.class, new SequenceCallback<Goods>() {
-			@Override
-			public void sequence(Goods g, int seq) {
-				g.name = "G_" + seq;
-				g.materialType = MaterialType.REAL;
-				g.isHideOnsale = true;
-			}
-		});
+        FactoryBoy.batchCreate(20, Goods.class, new SequenceCallback<Goods>() {
+            @Override
+            public void sequence(Goods g, int seq) {
+                g.name = "G_" + seq;
+                g.materialType = MaterialType.REAL;
+                g.isHideOnsale = true;
+            }
+        });
         String condition = "0-021-0-0-0-0-1";
         GoodsCondition goodsCond = new GoodsCondition(condition);
         goodsCond.isHideOnsale = true;
@@ -199,14 +202,14 @@ public class GoodsUnitTest extends UnitTest {
 
     @Test
     public void 测试不过滤掉隐藏上架的商品() {
-    	FactoryBoy.batchCreate(20, Goods.class, new SequenceCallback<Goods>() {
-			@Override
-			public void sequence(Goods g, int seq) {
-				g.name = "G_" + seq;
-				g.materialType = MaterialType.REAL;
-				g.isHideOnsale = true;
-			}
-		});
+        FactoryBoy.batchCreate(20, Goods.class, new SequenceCallback<Goods>() {
+            @Override
+            public void sequence(Goods g, int seq) {
+                g.name = "G_" + seq;
+                g.materialType = MaterialType.REAL;
+                g.isHideOnsale = true;
+            }
+        });
         String condition = "0-021-0-0-0-0-1";
         GoodsCondition goodsCond = new GoodsCondition(condition);
         goodsCond.isHideOnsale = false;
@@ -246,10 +249,10 @@ public class GoodsUnitTest extends UnitTest {
     @Test
     public void testGetSupplierId() {
         Supplier supplier = FactoryBoy.create(Supplier.class, new BuildCallback<Supplier>() {
-			@Override
-			public void build(Supplier s) {
-				s.fullName = "上海一百食品";
-			}
+            @Override
+            public void build(Supplier s) {
+                s.fullName = "上海一百食品";
+            }
         });
         goods.supplierId = supplier.id;
         goods.save();
@@ -258,17 +261,17 @@ public class GoodsUnitTest extends UnitTest {
 
     @Test
     public void testCreate() throws Exception {
-    	ModelAssert.assertDifference(Goods.class, 1, new Callback() {
-			@Override
-			public void run() {
-		        Goods g = FactoryBoy.build(Goods.class);
-		        g.no = "11";
-		        g.expireAt = new Date();
-		        g.create();
-		        assertEquals(DateUtil.getEndOfDay(new Date()), g.expireAt);
-			}
-    		
-    	});
+        ModelAssert.assertDifference(Goods.class, 1, new Callback() {
+            @Override
+            public void run() {
+                Goods g = FactoryBoy.build(Goods.class);
+                g.no = "11";
+                g.expireAt = new Date();
+                g.create();
+                assertEquals(DateUtil.getEndOfDay(new Date()), g.expireAt);
+            }
+
+        });
     }
 
     @Test
@@ -315,11 +318,11 @@ public class GoodsUnitTest extends UnitTest {
 
     @Test
     public void testFindTradeGoodsRecently() {
-    	// 默认没有成交商品
-    	assertEquals(0, Goods.findTradeRecently(3).size());
-    	
-    	// 测试最近成交商品
-    	FactoryBoy.create(OrderItems.class);
+        // 默认没有成交商品
+        assertEquals(0, Goods.findTradeRecently(3).size());
+
+        // 测试最近成交商品
+        FactoryBoy.create(OrderItems.class);
         List<Goods> goodsList = Goods.findTradeRecently(3);
         assertEquals(1, goodsList.size());
         assertEquals("哈根达斯100元抵用券", goodsList.get(0).name);
@@ -362,7 +365,6 @@ public class GoodsUnitTest extends UnitTest {
                 .fetch();
         assertEquals(0, unPublishedPlatforms.size());
     }
-
 
 
 }

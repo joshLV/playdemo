@@ -73,7 +73,6 @@ public class PurchaseTaxReportsFuncTest extends FunctionalTest {
                 "&condition.createdAtBegin=" + simpleDateFormat.format(new Date(System.currentTimeMillis() - 60000L*60*24*2)) +
                 "&condition.createdAtEnd=" + simpleDateFormat.format(new Date(System.currentTimeMillis() + 60000L*60*24*30)) +
                 "&condition.interval=";
-        System.out.println(url);
         Http.Response response = GET(url);
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));

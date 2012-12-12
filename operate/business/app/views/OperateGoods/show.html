@@ -59,6 +59,16 @@
                 至 ${goods?.expireAt?.format('yyyy-MM-dd HH:mm:ss')}
             </div>
         </div>
+
+        <div class="control-group">
+            <label class="control-label">&{'goods.onSale'}</label>
+
+            <div class="controls">${goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}
+                至 ${goods?.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}
+            </div>
+
+        </div>
+
         <div class="control-group">
             <label class="control-label">&{'goods.faceValue'}</label>
 
@@ -86,7 +96,7 @@
         <div class="control-group">
             <label class="control-label">&{'goods.baseSale'}</label>
 
-            <div class="controls">${goods?.baseSale}件
+            <div class="controls">${goods?.cumulativeStocks}件
             </div>
         </div>
     #{if goods?.useBeginTime != "" && goods?.useBeginTime != null}
@@ -148,22 +158,26 @@
             <div class="controls">&{'goods.'+goods.status}
             </div>
         </div>
+
         <div class="form-actions">
-        #{if models.sales.GoodsStatus.APPLY.equals(goods.status)}
-            #{vx.operateButton text:"同意上架",form:'frm',url:"/goods/"+goods.id+"/onSale",method:"PUT",
-            class:"btn btn-primary" /}
-            #{vx.operateButton text:"拒绝上架",form:'frm',url:"/goods/"+goods.id+"/reject",method:"PUT",
-            class:"btn btn-primary" /}#{/if}
-        #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
-            #{vx.operateLink text:"强制下架",form:'frm',url:"/goods/"+goods.id+"/reject",method:"PUT",
-            class:"btn btn-primary" /}#{/if}
-        #{if models.sales.GoodsStatus.REJECT.equals(goods.status)}
-            #{vx.operateButton text:"同意上架",form:'frm',url:"/goods/"+goods.id+"/onSale",method:"PUT",
-            class:"btn btn-primary" /}#{/if}
-        #{if models.sales.GoodsStatus.OFFSALE.equals(goods.status)}
-            #{vx.operateButton text:"同意上架",form:'frm',url:"/goods/"+goods.id+"/onSale",method:"PUT",
-            class:"btn btn-primary" /}#{/if}
+        #{if  hasApproveGoodsPermission == true }
+            #{if models.sales.GoodsStatus.APPLY.equals(goods.status)}
+                #{vx.operateButton text:"同意上架",form:'frm',url:"/goods/"+goods.id+"/onSale",method:"PUT",
+                class:"btn btn-primary" /}
+                #{vx.operateButton text:"拒绝上架",form:'frm',url:"/goods/"+goods.id+"/reject",method:"PUT",
+                class:"btn btn-primary" /}#{/if}
+            #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
+                #{vx.operateLink text:"强制下架",form:'frm',url:"/goods/"+goods.id+"/offSale",method:"PUT",
+                class:"btn btn-primary" /}#{/if}
+            #{if models.sales.GoodsStatus.REJECT.equals(goods.status)}
+                #{vx.operateButton text:"同意上架",form:'frm',url:"/goods/"+goods.id+"/onSale",method:"PUT",
+                class:"btn btn-primary" /}#{/if}
+            #{if models.sales.GoodsStatus.OFFSALE.equals(goods.status)}
+                #{vx.operateButton text:"同意上架",form:'frm',url:"/goods/"+goods.id+"/onSale",method:"PUT",
+                class:"btn btn-primary" /}#{/if}
+        #{/if}
             #{vx.cancelButton url:'/goods', class:'btn btn-primary'/}
         </div>
+
     </form>
 </div>

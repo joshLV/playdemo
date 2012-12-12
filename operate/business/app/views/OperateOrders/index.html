@@ -125,18 +125,8 @@
                                                                  value="${condition.paidAtEnd?.format()}"
                                                                  onfocus="WdatePicker({readOnly:true})"
                                                                  class="input-medium Wdate"/></td>
-            <td>
-                品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
-            #{select 'condition.brandId', id:'brandId', class:'input-medium', value:condition?.brandId}
-                #{if brandList.size()>0}
-                    #{option "0"}不限#{/option}
-                #{/if}
-                #{list items:brandList, as:'brand'}
-                    #{option brand?.id}${brand?.name}#{/option}
-                #{/list}
-            #{/select}
-
-            </td>
+            <td>品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
+            #{layout_operate.selectInputField name:"brandName", id:"condition.brandId", list:brandList/}</td>
         </tr>
         <tr>
             <td>退款时间：<input type="text" name="condition.refundAtBegin" value="${condition.refundAtBegin?.format()}"

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -47,17 +48,33 @@ public class ResalerFav extends Model {
     @Enumerated(EnumType.STRING)
     @Column(name = "partner")
     public OuterOrderPartner partner;      //合作伙伴
-    
+
     /**
      * 第三方上架时间.
      */
     public Date onsaledAt;
-    
+
     /**
      * 第三方下架时间.
      */
     public Date offSaleAt;
-    
+    /**
+     * 第三方发布城市.
+     */
+    @Column(name = "third_city")
+    public String thirdCity;
+
+    /**
+     * 第三方url.
+     */
+    @Column(name = "third_url")
+    public String thirdUrl;
+    /**
+     * 第三方团购ID.
+     */
+    @Column(name = "third_groupbuy_id")
+    public Long thirdGroupbuyId;
+
     /**
      * 第三方状态.
      */
@@ -86,6 +103,7 @@ public class ResalerFav extends Model {
     public static List<ResalerFav> findFavs(Resaler resaler, Date createdAtBegin, Date createdAtEnd, String goodsName) {
         return findFavs(resaler, createdAtBegin, createdAtEnd, goodsName, null);
     }
+
     public static List<ResalerFav> findFavs(Resaler resaler, Date createdAtBegin, Date createdAtEnd, String goodsName, Long goodsId) {
         StringBuilder sql = new StringBuilder();
         Map<String, Object> paramsMap = new HashMap<>();
@@ -98,7 +116,7 @@ public class ResalerFav extends Model {
         paramsMap.put("status", GoodsStatus.ONSALE);
 
         sql.append(" and f.goods.expireAt >= :expireAt");
-        paramsMap.put("expireAt",new Date());
+        paramsMap.put("expireAt", new Date());
 
         if (resaler != null) {
             sql.append(" and f.resaler = :resaler");

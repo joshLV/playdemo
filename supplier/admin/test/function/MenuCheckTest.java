@@ -108,8 +108,6 @@ public class MenuCheckTest extends FunctionalTest {
 
     @Test
     public void testMenuBaseUrl() {
-//		System.out.println("++++++++++++++++   user.id:" + user.id + ", name:" + user.loginName + ", supplier:" + user.supplier);
-
         // 设置测试登录的用户名
         Security.setLoginUserForTest(supplierUserAdminSales.loginName);
         assertIsOk(GET("/singlefoo/user"));

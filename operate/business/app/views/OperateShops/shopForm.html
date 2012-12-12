@@ -1,10 +1,12 @@
 #{if "add".equals(action)}
-    #{layout_operate.selectField name:'shop.supplierId', class:'span2', value:shop?.supplierId,
-    error:'shop.supplierId'}
-        #{list items:supplierList, as:'supplier' }
-            #{option supplier.id}${supplier.fullName}#{/option}
-        #{/list}
-    #{/layout_operate.selectField}
+    <div class="control-group">
+        <label class="control-label"><span style="color: red; ">*</span>商户</label>
+
+        <div class="controls">
+            #{layout_operate.selectInputField name:"supplierName", id:"shop.supplierId", list:supplierList/}
+            <span class="error">#{error 'shop.supplierId'/}</span>
+        </div>
+    </div>
 #{/if}
 #{else}
 <input type="hidden" name="shop.supplierId" value="${shop?.supplierId}">

@@ -73,6 +73,15 @@ public class AccountSequence extends Model {
 
     public String remark;                       //备注
 
+    public String comment;                              //记录外部收款时的备注
+
+    /**
+     * 操作人
+     */
+    @Column(name = "operated_by")
+    public String operatedBy;
+
+
     @Enumerated(EnumType.STRING)
     @Column(name = "settlement_status")
     public SettlementStatus settlementStatus = SettlementStatus.UNCLEARED;   //结算状态

@@ -253,7 +253,6 @@ public class SupplierGoodsTest extends FunctionalTest {
      */
     @Test
     public void testCancelApply() {
-        System.out.println("cancel goods = " + goods.id);
         goods.status = GoodsStatus.APPLY;
         goods.save();
         Response response = PUT("/goods/" + goods.id + "/cancelApply",

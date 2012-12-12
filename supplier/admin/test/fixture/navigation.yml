@@ -1,5 +1,0 @@
-models.admin.SupplierNavigation(to_delete):
-  name: "to_delete"
-  text: "TO Delete"
-  url: "http://www.google.com"
-  applicationName: "traders-admin"

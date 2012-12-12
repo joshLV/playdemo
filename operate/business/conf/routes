@@ -82,7 +82,7 @@ GET     /callcenter/phone                                         OperateCRM.get
 GET     /callcenter/phone/incoming                                OperateCRM.callCenter
 GET     /callcenter/phone/{phone}                                 OperateCRM.callCenter
 GET     /callcenter/phone/{phone}/record/{consultId}              OperateCRM.index
-POST     /callcenter/phone/record/save                            OperateCRM.save
+POST    /callcenter/phone/record/save                             OperateCRM.save
 GET     /crm/{id}/edit                                            OperateCRM.edit
 GET     /crm/bind                                                 OperateCRM.bind
 POST     /callcenter/phone/{phone}/record/{consultId}/tempSave    OperateCRM.tempSave
@@ -244,6 +244,7 @@ PUT     /suppliers/{id}                         Suppliers.update
 
 # 品牌管理
 GET     /brands                                 OperateBrands.index
+GET     /brands/test                            OperateBrands.test
 GET     /brands/new                             OperateBrands.add
 POST    /brands                                 OperateBrands.create
 DELETE  /brands/{id}                            OperateBrands.delete
@@ -264,6 +265,7 @@ GET     /reports/financing_incoming             OperateReports.showFinancingInco
 GET     /reports/promotion                      OperateReports.showPromotionReport
 
 GET     /financing_incoming_add                 FinancingIncomingNote.add
+POST    /financing_incoming                     FinancingIncomingNote.create
 
 # 提现管理
 GET     /withdraw                               WithdrawApproval.index
@@ -320,6 +322,14 @@ DELETE  /prepayments/{id}                       OperatePrepayments.delete
 GET     /prepayments/{id}/edit                  OperatePrepayments.edit
 PUT     /prepayments/{id}                       OperatePrepayments.update
 
+# 排期管理
+GET     /goods-schedule                         GoodsSchedules.index
+GET     /goods-schedule/new                     GoodsSchedules.add
+POST    /goods-schedule                         GoodsSchedules.create
+PUT     /goods-schedule/{id}                    GoodsSchedules.update
+GET     /goods-schedule/{id}/edit               GoodsSchedules.edit
+GET     /goods-name/{id}                        GoodsSchedules.getName
+DELETE  /goods-schedule/{id}                    GoodsSchedules.delete
 
 # 已验证券 退款
 GET      /verified-ecoupon-refunds              VerifiedECouponRefunds.index

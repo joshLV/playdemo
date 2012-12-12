@@ -16,39 +16,39 @@ import java.util.List;
  * @author likang
  */
 @With(OperateRbac.class)
+@ActiveNavigation("financing_incoming_note")
 public class FinancingIncomingNote extends Controller{
 
-    @ActiveNavigation("financing_incoming_note")
     public static void add(BigDecimal amount, Long id){
         List<Account> accounts = Account.find("byAccountTypeAndCreditableAndStatus",
                 AccountType.RESALER, AccountCreditable.YES, AccountStatus.NORMAL).fetch();
-        for (Account account : accounts){
+        for (Account account : accounts) {
             Resaler resaler = Resaler.findById(account.uid);
-            if(resaler != null){
+            if (resaler != null) {
                 account.info = resaler.loginName;
             }
         }
-       render(accounts, amount, id);
+        render(accounts, amount, id);
     }
 
-    public static void create(BigDecimal amount, Long id){
+    public static void create(BigDecimal amount, Long id, String comment) {
         Account account = null;
-        if(id != null){
+        if (id != null) {
             account = Account.findById(id);
         }
-        if(account == null || !account.isCreditable()){
+        if (account == null || !account.isCreditable()) {
             Validation.addError("financing_incoming.account", "未选择账户,或所选无效账户");
             Validation.keep();
             add(amount, id);
         }
-        if(amount == null || amount.compareTo(BigDecimal.ZERO) <= 0){
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             Validation.addError("financing_incoming.amount", "无效金额");
             Validation.keep();
             add(amount, id);
         }
         TradeBill bill = TradeUtil.createTransferTrade(
                 AccountUtil.getFinancingIncomingAccount(), account, amount, BigDecimal.ZERO);
-        TradeUtil.success(bill, "财务收到款项");
+        TradeUtil.success(bill, "财务收到款项", comment, OperateRbac.currentUser().loginName);
         OperateReports.showFinancingIncomingReport(null);
     }
 }

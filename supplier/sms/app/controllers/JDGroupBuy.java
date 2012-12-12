@@ -157,7 +157,7 @@ public class JDGroupBuy extends Controller {
 
         if (outerOrder.status == OuterOrderStatus.ORDER_SYNCED){
             Template template = TemplateLoader.load("jingdong/groupbuy/response/sendOrder.xml");
-            models.sales.Goods goods = models.sales.Goods.findById(sendOrderRequest.venderTeamId);
+            Goods goods = GoodsDeployRelation.getGoods(OuterOrderPartner.JD, sendOrderRequest.venderTeamId);
             Map<String, Object> params = new HashMap<>();
             params.put("sendOrderRequest", sendOrderRequest);
             params.put("ybqOrder", outerOrder.ybqOrder);
@@ -188,14 +188,12 @@ public class JDGroupBuy extends Controller {
         QueryTeamSellCountRequest queryTeamSellCountRequest = sendOrderJDRest.data;
 
         //查询商品
-        GoodsDeployRelation goodsMapping = GoodsDeployRelation.getLast(queryTeamSellCountRequest.venderTeamId,
-                OuterOrderPartner.JD);
-        if (goodsMapping == null) {
+        Goods goods = GoodsDeployRelation.getGoods(OuterOrderPartner.JD, queryTeamSellCountRequest.venderTeamId);
+        if (goods == null) {
             Logger.info("goods not found");
             finish(202, "goods not found");
             return;
         }
-        models.sales.Goods goods = goodsMapping.goods;
 
         //响应
         Template template = TemplateLoader.load("jingdong/groupbuy/response/queryTeamSellCount.xml");
@@ -320,7 +318,6 @@ public class JDGroupBuy extends Controller {
         ybqOrder.save();
         try {
             Goods goods = GoodsDeployRelation.getGoods(OuterOrderPartner.JD, sendOrderRequest.venderTeamId);
-//            models.sales.Goods goods = models.sales.Goods.find("byId", sendOrderRequest.venderTeamId).first();
             if (goods == null) {
                 Logger.info("goods not found: %s", sendOrderRequest.venderTeamId);
                 finish(208, "can not find goods: " + sendOrderRequest.venderTeamId);

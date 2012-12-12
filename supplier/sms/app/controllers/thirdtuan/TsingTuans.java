@@ -83,13 +83,13 @@ public class TsingTuans extends Controller {
             3|已过有效期
      */
     public static void check(String coupon, String team_id, String check_time, String sign) {
-        System.out.println("check. coupon=" + coupon + ",team_id=" + team_id 
-                        + ", check_time=" + check_time + ", sign=" + sign);
+//        System.out.println("check. coupon=" + coupon + ",team_id=" + team_id
+//                        + ", check_time=" + check_time + ", sign=" + sign);
 
         if (StringUtils.isBlank(coupon) || StringUtils.isBlank(team_id) || StringUtils.isBlank(check_time) || StringUtils.isBlank(sign)) {
             renderText("9|参数非法");
         }
-        System.out.println("md5=" + md5sum(coupon, team_id, check_time, TsingTuanOrder.SECRET));
+//        System.out.println("md5=" + md5sum(coupon, team_id, check_time, TsingTuanOrder.SECRET));
         if (!sign.equals(md5sum(coupon, team_id, check_time, TsingTuanOrder.SECRET))) {
             renderText("8|参数MD5校验失败");
         }

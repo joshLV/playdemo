@@ -114,8 +114,6 @@ public class SecureCAS extends Controller {
             return null;
         }
 
-//        System.out.println("==============userIdentity.substring(location + 1):" + userIdentity.substring(location +
-//                1));
         return userIdentity.substring(location + 1);
     }
 
@@ -124,8 +122,6 @@ public class SecureCAS extends Controller {
         if (location < 0) {
             return null;
         }
-//        System.out.println("===============userIdentity.substring(\"UserProfile#\".length(), " +
-//                "location):" + userIdentity.substring("UserProfile#".length(), location));
         OpenIdSource openIdSource = null;
         try {
             openIdSource = OpenIdSource.valueOf(userIdentity.substring("UserProfile#".length(), location));
@@ -211,7 +207,6 @@ public class SecureCAS extends Controller {
             if (casUser != null) {
                 isAuthenticated = Boolean.TRUE;
 
-//                System.out.println("====   casUser.getUsername():" + casUser.getUsername());
                 session.put(SESSION_USER_KEY, casUser.getUsername());
                 Cache.add(SESSION_USER_KEY + casUser.getUsername(), Boolean.TRUE);
                 // we invoke the implementation of onAuthenticate

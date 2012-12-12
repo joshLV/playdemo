@@ -2,28 +2,11 @@ package models.sales;
 
 
 import cache.CacheCallBack;
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
-
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Lob;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.persistence.Version;
+import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
+import com.uhuila.common.util.FileUploadUtil;
+import com.uhuila.common.util.PathUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
@@ -40,11 +23,25 @@ import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Money;
 
-import cache.CacheHelper;
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-import com.uhuila.common.util.FileUploadUtil;
-import com.uhuila.common.util.PathUtil;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Lob;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import javax.persistence.Version;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -549,10 +546,6 @@ public class PointGoods extends Model {
     public static String preview(Long id, PointGoods pointGoods, File imageFile, String rootDir) throws IOException {
         pointGoods.status = GoodsStatus.UNCREATED;
 
-
-       // System.out.println(" UUID cacheIdididid>>>>"+ pointGoods.id);
-
-
         if (id == null && imageFile == null) {
             pointGoods.imagePath = null;
         } else if (imageFile == null || imageFile.getName() == null) {
@@ -569,8 +562,6 @@ public class PointGoods extends Model {
             pointGoods.imagePath = imagePath;
         }
         UUID cacheId = UUID.randomUUID();
-//        System.out.println(" UUID cacheId>>>>"+cacheId.toString());
-//        System.out.println(" UUID cacheIdididid>>>>"+ pointGoods.id);
         play.cache.Cache.set(cacheId.toString(), id, expiration);
         return cacheId.toString();
     }
