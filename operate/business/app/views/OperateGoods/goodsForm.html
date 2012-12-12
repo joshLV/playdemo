@@ -216,6 +216,38 @@
                 $("#selectAll").click();
             #{/if}
         });
+
+        $("#supplierName").blur(function () {
+            var found = false;
+            var m = list.length;
+            var id = null;
+            for (i = 0; i < m; i++) {
+                if (list[i].name == $("#supplierName").val()) {
+                    found = true;
+                    id = list[i].id;
+                }
+            }
+            if (!found) {
+                $("#id_supplierName").val(-1);
+                $("#save").attr('disabled', true);
+                $("#goods_brand_id").empty();
+            } else {
+                $("#err-supplierUser_supplier_id").html("");
+                $("#save").attr('disabled', false);
+                $("#brand").load("/goods_brands/" + id, function (data) {
+                });
+                $("#tableShop").load("/shops/" + id + "/showGoodsShops", function (data) {
+                    $("#selectAll").click();
+                });
+            }
+
+            if ($("#supplierName").val().trim() == '') {
+                $("#id_supplierName").val(0);
+                $("#save").attr('disabled', true);
+                $("#goods_brand_id").empty();
+            }
+        });
+
     });
 
     function limitMoneyFormat(obj, value) {

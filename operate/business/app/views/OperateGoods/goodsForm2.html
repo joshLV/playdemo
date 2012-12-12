@@ -14,12 +14,14 @@
     .values(), value:goods?.publishedPlatforms/}
 
     #{if "add".equals(action)}
-        #{layout_operate.selectField name:'goods.supplierId', class:'span2', value:goods?.supplierId,
-        error:'goods.supplierId'}
-            #{list items:supplierList, as:'supplier' }
-                #{option supplier.id}${supplier.fullName}#{/option}
-            #{/list}
-        #{/layout_operate.selectField}
+    <div class="control-group">
+        <label class="control-label"><span style="color: red; ">*</span>商户</label>
+
+        <div class="controls">
+            #{layout_operate.selectInputField name:"supplierName", id:"goods.supplierId", list:supplierList/}
+            <span class="error">#{error 'goods.supplierId'/}</span>
+        </div>
+    </div>
     #{/if}
     #{else}
     <input type="hidden" goods_supplierId" name="goods.supplierId" value="${goods?.supplierId}">
@@ -248,6 +250,38 @@
                 $("#selectAll").click();
             #{/if}
         });
+
+        $("#supplierName").blur(function () {
+            var found = false;
+            var m = list.length;
+            var id = null;
+            for (i = 0; i < m; i++) {
+                if (list[i].name == $("#supplierName").val()) {
+                    found = true;
+                    id = list[i].id;
+                }
+            }
+            if (!found) {
+                $("#id_supplierName").val(-1);
+                $("#save").attr('disabled', true);
+                $("#goods_brand_id").empty();
+            } else {
+                $("#err-supplierUser_supplier_id").html("");
+                $("#save").attr('disabled', false);
+                $("#brand").load("/goods_brands/" + id, function (data) {
+                });
+                $("#tableShop").load("/shops/" + id + "/showGoodsShops", function (data) {
+                    $("#selectAll").click();
+                });
+            }
+
+            if ($("#supplierName").val().trim() == '') {
+                $("#id_supplierName").val(0);
+                $("#save").attr('disabled', true);
+                $("#goods_brand_id").empty();
+            }
+        });
+
     });
 
     function limitMoneyFormat(obj, value) {
@@ -266,5 +300,7 @@
         }
         return true;
     }
+
+
 </script>
 #{/else}
