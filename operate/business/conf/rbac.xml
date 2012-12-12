@@ -106,10 +106,6 @@
             <navigation key="hot_keywords" action="OperateSearchHotKeywords.index" text="热门搜索词查询"
                         permission="HOT_KEYWORDS"/>
         </navigation>
-        <navigation key="schedule" text="商品排期管理" permission="GOODS_SCHEDULE">
-            <navigation key="goods_schedule_add" action="GoodsSchedules.add" text="商品排期添加" permission="GOODS_SCHEDULE_ADD"/>
-            <navigation key="goods_schedule_index" action="GoodsSchedules.index" text="商品排期" permission="GOODS_SCHEDULE"/>
-        </navigation>
         <navigation key="solr" text="solr加载数据" permission="SOLR">
             <navigation key="solr_load" action="SolrLoadData.index" text="solr加载数据" permission="SOLR"/>
         </navigation>
@@ -216,6 +212,10 @@
                         permissions="SECKILL_GOODS_NEW"/>
             <navigation key="seckill_goods_index" action="SecKillGoods.index" text="秒杀活动管理"
                         permissions="SECKILL_GOODS"/>
+        </navigation>
+        <navigation key="schedule" text="商品排期管理" permission="GOODS_SCHEDULE">
+            <navigation key="goods_schedule_add" action="GoodsSchedules.add" text="商品排期添加" permission="GOODS_SCHEDULE_ADD"/>
+            <navigation key="goods_schedule_index" action="GoodsSchedules.index" text="商品排期" permission="GOODS_SCHEDULE"/>
         </navigation>
     </navigation>
 

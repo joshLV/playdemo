@@ -25,7 +25,6 @@ import java.util.Date;
 @Table(name = "goods_schedule")
 @Entity
 public class GoodsSchedule extends Model {
-    @Required
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id", nullable = true)
     public Goods goods;
@@ -43,7 +42,6 @@ public class GoodsSchedule extends Model {
     @Required
     @Column(name = "expire_at")
     @Temporal(TemporalType.TIMESTAMP)
-    @SolrField
     public Date expireAt;
 
     @Column(name = "created_at")

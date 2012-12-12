@@ -41,7 +41,6 @@ require:
     - wuba -> wuba
     - taobao -> taobao
     - com.yihaodian -> yhdclient 1.0
-    - net.sourceforge.pinyin4j -> pinyin4j 2.5.0
 
 repositories:
     - mavenRepository:
@@ -55,7 +54,6 @@ repositories:
             - org.apache.httpcomponents -> *
             - org.jsoup -> *
             - com.yihaodian -> *
-            - net.sourceforge.pinyin4j -> *
         m2compatible: true
 
     - play1ContributedModules:

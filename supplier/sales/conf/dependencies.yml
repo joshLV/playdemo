@@ -37,7 +37,6 @@ require:
     - supports -> supports
     - third_tuan -> third_tuan
     - wuba -> wuba
-    - net.sourceforge.pinyin4j -> pinyin4j 2.5.0
 
 repositories:
     - mavenRepository:
@@ -49,7 +48,6 @@ repositories:
             - commons-lang -> *
             - org.jsoup -> *
             - com.taobao -> *
-            - net.sourceforge.pinyin4j -> *
         m2compatible: true
 
     - play1ContributedModules:

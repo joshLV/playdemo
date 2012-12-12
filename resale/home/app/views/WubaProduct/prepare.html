@@ -262,7 +262,7 @@ ${mobileDescription?.raw()}
     $.each(eval(data), function (i, item) {
         if (item.cityId == 2 || item.cityId == 4 || item.cityId == 5 || item.cityId == 21 || item.cityId == 36 || item.cityId == 10) {
             city += "<td><input type='checkbox' id='city_" + item.cityId + "' value='" + item.cityId + "' name='cityIds'>"
-                    + item.cityName + "<input type='hidden' name='cities' value='" + item.cityId+":"+item.cityName + "'></td>";
+                    + item.cityName + "<input type='hidden' name='cities' value='" + item.cityId+":"+item.cityName+":"+item.cityEnShortName + "'></td>";
         }
     });
     $("#cityId").html(city);
@@ -293,10 +293,7 @@ ${mobileDescription?.raw()}
         }
     });
 
-    if (${jsonArray?.raw()} !=
-    null
-    )
-    {
+    if (${jsonArray?.raw()} != null ) {
         var shopArray = ${jsonArray.raw()};
         for (var i = 0; i < shopArray.length; i++) {
             var areaName = shopArray[i]['areaName'];
