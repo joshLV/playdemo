@@ -81,7 +81,6 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         assertEquals(10, ((JPAExtPaginator<ECoupon>) renderArgs("couponPage")).size());
     }
 
-    @Ignore
     @Test
     public void testIndexWithCondition() {
         String condition = "?condition.status=UNCONSUMED";
@@ -92,7 +91,6 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         assertTrue(hasRight);
     }
 
-    @Ignore
     @Test
     public void testIndexWithoutRight() {
         String condition = "?condition.status=UNCONSUMED";
@@ -109,7 +107,6 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         return role;
     }
 
-    @Ignore
     @Test
     public void testFreeze() {
         ECoupon eCoupon = FactoryBoy.create(ECoupon.class);
@@ -124,7 +121,6 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         assertEquals("冻结券号", historyList.remark);
     }
 
-    @Ignore
     @Test
     public void testUnFreeze() {
         ECoupon eCoupon = FactoryBoy.create(ECoupon.class);
@@ -140,7 +136,6 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         assertEquals("解冻券号", historyList.remark);
     }
 
-    @Ignore
     @Test
     public void testSendMessage() {
         ECoupon eCoupon = FactoryBoy.create(ECoupon.class);
@@ -154,21 +149,19 @@ public class OperateCouponsFuncTest extends FunctionalTest {
 
     }
 
-    @Ignore
     @Test
     public void testCouponHistory() {
         ECoupon eCoupon = FactoryBoy.create(ECoupon.class);
         CouponHistory history = FactoryBoy.create(CouponHistory.class);
         history.coupon = eCoupon;
         history.save();
-        Http.Response response = GET("/coupon_history?couponSn=" + eCoupon.eCouponSn);
+        Http.Response response = GET("/coupon_history?couponId=" + eCoupon.id);
         assertIsOk(response);
         assertNotNull(renderArgs("couponList"));
         List<CouponHistory> historyList = (List) renderArgs("couponList");
         assertEquals("产生券号", historyList.get(0).remark);
     }
 
-    @Ignore
     @Test
     public void testExcelOut() {
         Http.Response response = GET("/coupon_excel");
