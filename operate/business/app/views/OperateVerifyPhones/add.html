@@ -4,26 +4,16 @@
 #{set title:'添加电话验证机' /}
 #{set 'moreScripts'}
 <SCRIPT type=text/javascript>
-    $(function(){
-        if($("#shop").find("option").length == 0 ){
+    $(function () {
+        if ($("#shop").find("option").length == 0) {
             $("#save").attr("disabled", true);
         }
-        $("#supplierUser_supplier_id").change(function () {
-            $("#shop").load("/verify-tel/supplier-shops/"+ $("#supplierUser_supplier_id").val(),
-                function (data) {}
-            );
-            if($("#shop").find("option").length == 0 ){
-                $("#save").attr("disabled", true);
-            }else{
-                $("#save").attr("disabled", false);
-            }
-        });
     });
-    </SCRIPT>
+</SCRIPT>
 #{/set}
 #{if supplierList?.size() > 0 }
     #{form @OperateVerifyPhones.create() , id:'operForm',class:"form-horizontal" }
-     <legend>添加电话验证机</legend>
+    <legend>添加电话验证机</legend>
     <div class="control-group">
         <label class="control-label"><span style="color: red; ">*</span>商户</label>
 
@@ -33,26 +23,60 @@
         </div>
     </div>
 
-     <div class="control-group">
-      <label for="loginName" class="control-label"><span style="color: red; ">*</span>电话号码</label>
-      <div class="controls">
-       <input type="text" name="supplierUser.loginName" class="input-large" id="loginName" value="${supplierUser?.loginName}"/>
-        <span style="color:#808080;">(要加区号，如02150504740)</span>
-        <span class="error" id="checkName">#{error 'supplierUser.loginName' /}</span>
-      </div>
-     </div>
+    <div class="control-group">
+        <label for="loginName" class="control-label"><span style="color: red; ">*</span>电话号码</label>
+
+        <div class="controls">
+            <input type="text" name="supplierUser.loginName" class="input-large" id="loginName"
+                   value="${supplierUser?.loginName}"/>
+            <span style="color:#808080;">(要加区号，如02150504740)</span>
+            <span class="error" id="checkName">#{error 'supplierUser.loginName' /}</span>
+        </div>
+    </div>
     <div id="shop">
         #{layout_operate.selectField name:'supplierUser.shop.id', value:supplierUser?.shop?.id, error:'supplierUser.shop', required:true}
         #{list items:shopList, as:'shop'}
-        #{option shop?.id}${shop?.name}#{/option}
+            #{option shop?.id}${shop?.name}#{/option}
         #{/list}
         #{/layout_operate.selectField}
     </div>
-     <div class="form-actions">
-      <button class="btn btn-primary" id="save" type="submit">保 存</button>
-     </div>
+    <div class="form-actions">
+        <button class="btn btn-primary" id="save" type="submit">保 存</button>
+    </div>
     #{/form}
 #{/if}
 #{else}
-        没有商户，请首先添加商户。
+没有商户，请首先添加商户。
 #{/else}
+<SCRIPT type=text/javascript>
+    $(
+            function () {
+                $("#supplierName").blur(function () {
+                    var found = false;
+                    var m = list.length;
+                    var id = null;
+                    for (i = 0; i < m; i++) {
+                        if (list[i].name == $("#supplierName").val()) {
+                            found = true;
+                            id = list[i].id;
+                        }
+                    }
+                    if (!found) {
+                        $("#id_supplierName").val(-1);
+                        $("#save").attr('disabled', true);
+                        $("#supplierUser_shop_id").empty();
+                    } else {
+                        $("#err-supplierUser_supplier_id").html("");
+                        $("#save").attr('disabled', false);
+                        $("#shop").load("/shops/" + id + "/showSupplierShops", function (data) {
+                        });
+                    }
+
+                    if ($("#supplierName").val().trim() == '') {
+                        $("#id_supplierName").val(0);
+                        $("#save").attr('disabled', true);
+                        $("#supplierUser_shop_id").empty();
+                    }
+                });
+            });
+</SCRIPT>

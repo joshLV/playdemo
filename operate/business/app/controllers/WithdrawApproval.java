@@ -68,7 +68,7 @@ public class WithdrawApproval extends Controller {
         for (WithdrawBill b : withdrawBillList) {
             sum += temp.add(b.amount).doubleValue();
         }
-        if (bill.account.accountType == SUPPLIER) {
+        if (bill.account.accountType == SUPPLIER && uid != null) {
             Supplier supplier = Supplier.findById(uid);
             supplierFullName = supplier.fullName;
         }

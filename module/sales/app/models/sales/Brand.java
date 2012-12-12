@@ -239,7 +239,7 @@ public class Brand extends Model {
 
     public static ModelPaginator getBrandPage(int pageNumber, int pageSize, Long supplierId) {
         ModelPaginator page;
-        if (supplierId != null) {
+        if (supplierId != null && supplierId.longValue() != 0) {
             page = new ModelPaginator(Brand.class, "deleted = ? and supplier.id=?", DeletedStatus.UN_DELETED,
                     supplierId).orderBy("displayOrder,name");
         } else {

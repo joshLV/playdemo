@@ -4,23 +4,6 @@
 #{set title:'操作员添加' /}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/supplierUser.js'}" type="text/javascript" charset="UTF-8"></script>
-<SCRIPT type=text/javascript>
-    $(
-            function () {
-                if ('${noShop}' == 'noShop') {
-                    $("#err-supplierUser_supplier_id").html("该商户没有门店，请先为商户添加门店！");
-                    $("#save").attr('disabled', true);
-                } else {
-                    $("#err-supplierUser_supplier_id").html("");
-                    $("#save").attr('disabled', false);
-                }
-
-                $("#supplierUser_supplier_id").change(function () {
-                    $("#shop").load("/shops/" + $("#supplierUser_supplier_id").val() + "/showSupplierShops", function (data) {
-                    });
-                });
-            });
-</SCRIPT>
 #{/set}
 #{form @OperateSupplierUsers.create() , id:'operForm',class:"form-horizontal" }
 <legend>操作员添加</legend>
@@ -43,8 +26,8 @@
     <label class="control-label"><span style="color: red; ">*</span>商户</label>
 
     <div class="controls">
-        #{layout_operate.selectInputField name:"supplierName", id:"supplierUser.supplier.id", list:supplierList/}
-        <span class="error">#{error 'supplierUser.supplierId'/}</span>
+        #{layout_operate.selectInputField name:"supplierName", id:"supplierUser.supplier.id", value:supplierUser?.supplier?.id, list:supplierList/}
+        <span class="error" id="err-supplierUser_supplier_id">#{error 'supplierUser.supplierId'/}</span>
     </div>
 </div>
 <div class="control-group">
@@ -121,3 +104,35 @@
     #{/list}
     </tbody>
 </table>
+<SCRIPT type=text/javascript>
+    $(
+            function () {
+                $("#supplierName").blur(function () {
+                    var found = false;
+                    var m = list.length;
+                    var id = null;
+                    for (i = 0; i < m; i++) {
+                        if (list[i].name == $("#supplierName").val()) {
+                            found = true;
+                            id = list[i].id;
+                        }
+                    }
+                    if (!found) {
+                        $("#id_supplierName").val(-1);
+                        $("#save").attr('disabled', true);
+                        $("#supplierUser_shop_id").empty();
+                    } else {
+                        $("#err-supplierUser_supplier_id").html("");
+                        $("#save").attr('disabled', false);
+                        $("#shop").load("/shops/" + id + "/showSupplierShops", function (data) {
+                        });
+                    }
+
+                    if ($("#supplierName").val().trim() == '') {
+                        $("#id_supplierName").val(0);
+                        $("#save").attr('disabled', true);
+                        $("#supplierUser_shop_id").empty();
+                    }
+                });
+            });
+</SCRIPT>
