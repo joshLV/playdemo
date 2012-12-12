@@ -490,8 +490,6 @@ public class OperateGoods extends Controller {
      * 更新指定商品信息
      */
     public static void update(Long id, @Valid final models.sales.Goods goods, File imagePath, String imageLargePath) {
-        System.out.println("goods.inin1111>>begin>>>" + goods.beginOnSaleAt);
-        System.out.println("goods.inin1111>>eff>>>" + goods.effectiveAt);
         if (goods.isAllShop && goods.shops != null) {
             goods.shops = null;
         }

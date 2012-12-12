@@ -1565,10 +1565,6 @@ public class Goods extends Model {
         query.setParameter("endOnSaleAt", nowDate);
         query.setMaxResults(limit);
         List<Goods> goodsList = query.getResultList();
-<<<<<<< HEAD
-        System.out.println(goodsList.size() + "---------------");
-=======
->>>>>>> develop
         return goodsList;
 
     }
@@ -1607,12 +1603,7 @@ public class Goods extends Model {
      */
     public static List<Goods> findNewGoodsOfOthers(Long id, int limit) {
         Date nowDate = new Date();
-<<<<<<< HEAD
-        return Goods.find(" id <> ? and status = ? and deleted = ? and isHideOnsale = false and beginOnSaleAt<= ? and expireAt > ? order by createdAt DESC",
-=======
-        return Goods.find(" id <> ? and status = ? and deleted = ? and isHideOnsale = false and beginOnSaleAt<= ? and endOnSaleAt > ? order by createdAt DESC",
->>>>>>> develop
-                id, GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, nowDate, nowDate).fetch(limit);
+        return Goods.find(" id <> ? and status = ? and deleted = ? and isHideOnsale = false and beginOnSaleAt<= ? and endOnSaleAt > ? order by createdAt DESC", id, GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, nowDate, nowDate).fetch(limit);
     }
 
     /**
