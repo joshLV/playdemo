@@ -192,7 +192,7 @@ public class CouponsCondition implements Serializable {
             sql.append(" and e.eCouponSn like :eCouponSn");
             paramMap.put("eCouponSn", "%" + eCouponSn + "%");
         }
-        if (brandId != 0) {
+        if (brandId != null && brandId != 0) {
             sql.append(" and e.orderItems.goods.brand =:brand");
             Brand brand = new Brand();
             brand.id = brandId;
