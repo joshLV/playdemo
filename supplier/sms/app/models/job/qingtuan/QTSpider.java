@@ -2,7 +2,14 @@ package models.job.qingtuan;
 
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.FileUploadUtil;
-import models.sales.*;
+import models.sales.Area;
+import models.sales.Brand;
+import models.sales.Category;
+import models.sales.Goods;
+import models.sales.GoodsCouponType;
+import models.sales.GoodsStatus;
+import models.sales.MaterialType;
+import models.sales.Shop;
 import models.supplier.Supplier;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
@@ -14,12 +21,10 @@ import play.Logger;
 import play.Play;
 import play.i18n.Messages;
 import play.jobs.Job;
-import play.jobs.On;
 import play.libs.IO;
 import play.libs.WS;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -34,7 +39,7 @@ import java.util.List;
  * 每天凌晨三点执行
  * Date: 12-11-8
  */
-@On("0 0 3 * * ?")
+// @On("0 0 3 * * ?")
 public class QTSpider extends Job{
     private static final String GATEWAY = "http://www.tsingtuan.com/api/team.php";
     private static final int PAGE_SIZE = 200;
