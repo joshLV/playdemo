@@ -3,6 +3,7 @@ package function;
 import controllers.supplier.cas.Security;
 import factory.FactoryBoy;
 import models.admin.SupplierUser;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import play.cache.Cache;
@@ -28,6 +29,11 @@ public class SuppliersFindPasswordTest extends FunctionalTest {
         supplierUser = FactoryBoy.create(SupplierUser.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(supplierUser.loginName);
+    }
+
+    @After
+    public void tearDown() {
+        Cache.clear();
     }
 
     @Test
@@ -68,6 +74,7 @@ public class SuppliersFindPasswordTest extends FunctionalTest {
 
     @Test
     public void testUpdatePassword() {
+        Cache.set("mobile_", supplierUser.mobile);
         Map<String, String> params = new HashMap<>();
         params.put("supplierUserId", supplierUser.id.toString());
         params.put("mobile", supplierUser.mobile);
