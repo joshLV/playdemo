@@ -44,6 +44,9 @@ POST    /user/edit-password                           UserPasswords.update
 GET     /user-point                                   UserPoints.index
 GET     /user-point-record                            UserPoints.record
 GET     /user-point-record/{orderNumber}              UserPoints.detail
+#我的金币
+GET     /user-coins                                   UserCoins.index
+GET     /user-coins-record                            UserCoins.record
 #推荐返利
 GET     /rebate                                       UserPromoteRebate.index
 GET     /rebate-account                               UserPromoteRebate.account
