@@ -71,9 +71,15 @@ $(
             if (this.checked) {
                 this.value = true;
                 $("#isLottery").val(true)
+<<<<<<< Updated upstream
                 if ($("#goods_supplierId").val() != 5) {
                     $("#err-isLottery").html("抽奖商品只能选择上海视惠信息科技有限公司！").css("color", "#ff0000");
                     $("#goods_supplierId").val(5);
+=======
+                if ($("#id_supplierName").val() != 5) {
+                    $("#err-isLottery").html("抽奖商品的商户必须是视惠！").css("color", "#ff0000");
+                    $("#id_supplierName").val(5);
+>>>>>>> Stashed changes
                 }
             } else {
                 $("#isLottery").val(false)
