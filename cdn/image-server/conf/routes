@@ -5,8 +5,8 @@
 # Home page
 # GET     /                                       Application.index
 
-GET     /p/{firstDir}/{secondDir}/{thirdDir}/{imageName}    Images.showImage
-GET     /o/{path1}/{path2}/{path3}/{path4}      Images.showOriginalImage
+GET     /p/{firstDir}/{secondDir}/{thirdDir}/{imageName}    CDNImages.showImage
+GET     /o/{path1}/{path2}/{path3}/{path4}      CDNImages.showOriginalImage
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
