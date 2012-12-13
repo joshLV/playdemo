@@ -318,9 +318,9 @@ public class WubaGroupBuy extends Controller {
                     goods, productNum, userPhone, productPrize, productPrize);
             uhuilaOrderItem.save();
             if (goods.materialType.equals(MaterialType.REAL)) {
-                ybqOrder.deliveryType = DeliveryType.SMS;
-            } else if (goods.materialType.equals(MaterialType.ELECTRONIC)) {
                 ybqOrder.deliveryType = DeliveryType.LOGISTICS;
+            } else if (goods.materialType.equals(MaterialType.ELECTRONIC)) {
+                ybqOrder.deliveryType = DeliveryType.SMS;
             }
         } catch (NotEnoughInventoryException e) {
             Logger.info("enventory not enough");
