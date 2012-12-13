@@ -65,6 +65,7 @@ public class ResalerWithdraw extends Controller{
         message.putParam("applier", withdrawBill.applier);
         message.putParam("amount", withdrawBill.amount);
         message.putParam("withdraw", withdrawBill.id);
+        message.putParam("uid", withdrawBill.account.uid);
         message.setTemplate("withdraw");
         MailUtil.sendFinanceNotificationMail(message);
 
