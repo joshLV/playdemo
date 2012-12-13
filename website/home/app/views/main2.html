@@ -81,11 +81,12 @@
             <div class="menu">
                 #{list leftCategories,as:'category'}
                 <dl class="item">
-                    <dt><a href="">${category.name}</a></dt>
+                    <dt><a href="${helper.Domain.getWWWHost(request)}/q/${category.id}">${category.name}</a></dt>
                     <dd class="line"></dd>
                     <dd class="some #{if category_index==3 || category_index==5}one#{/if}">
                         <div>#{list category.getShowKeywordsList(10),as:'keywords'}<a
-                                href="${new models.sales.GoodsWebsiteCondition().buildUrl('keywords', keywords).getUrl()}">${keywords}</a>
+                                href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition()
+                                .buildUrl('keywords', keywords).getUrl()}">${keywords}</a>
                             #{/list}
                         </div>
                     </dd>
@@ -93,20 +94,20 @@
                         <ul class="clearfix">
                             #{list category.getByParent(),as:'subCategory'}
                             <li>
-                                <a href="${new models.sales.GoodsWebsiteCondition().buildUrl('categoryId',subCategory.id).getUrl()}">${subCategory.name}（${subCategory.goodsCount}）</a>
+                                <a href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('categoryId',subCategory.id).getUrl()}">${subCategory.name}（${subCategory.goodsCount}）</a>
                             </li>
                             #{/list}
                         </ul>
                         <div class="ads">
-                            <a href="/topic/${categoryTopic1?.id}"
+                            <a href="${helper.Domain.getWWWHost(request)}/topic/${categoryTopic1?.id}"
                                target="_blank">#{if category_index==1}${categoryTopic1?.title}#{/if}</a>
-                            <a href="/topic/${categoryTopic2?.id}"
+                            <a href="${helper.Domain.getWWWHost(request)}/topic/${categoryTopic2?.id}"
                                target="_blank">#{if category_index==2}${categoryTopic2?.title}#{/if}</a>
-                            <a href="/topic/${categoryTopic3?.id}"
+                            <a href="${helper.Domain.getWWWHost(request)}/topic/${categoryTopic3?.id}"
                                target="_blank">#{if category_index==3}${categoryTopic3?.title}#{/if}</a>
-                            <a href="/topic/${categoryTopic4?.id}"
+                            <a href="${helper.Domain.getWWWHost(request)}/topic/${categoryTopic4?.id}"
                                target="_blank">#{if category_index==4}${categoryTopic4?.title}#{/if}</a>
-                            <a href="/topic/${categoryTopic5?.id}"
+                            <a href="${helper.Domain.getWWWHost(request)}/topic/${categoryTopic5?.id}"
                                target="_blank">#{if category_index==5}${categoryTopic5?.title}#{/if}</a>
                         </div>
                     </dd>
@@ -116,7 +117,7 @@
                 <dl class="area">
                     <dt><a href="">热门商圈</a></dt>
                     <dd class="some">#{list areas, as:'area'}
-                        <a href="${new models.sales.GoodsWebsiteCondition().buildUrl('areaId',area.id).getUrl()}">${area.name}</a>
+                        <a href="${helper.Domain.getWWWHost(request)}${new models.sales.GoodsWebsiteCondition().buildUrl('areaId',area.id).getUrl()}">${area.name}</a>
                         #{/list}
                     </dd>
                 </dl>
