@@ -38,19 +38,16 @@ $(
             $("#form").attr("target", "_self");
         });
         $("#onsale").click(function () {
-            console.log($("#goods_beginOnSaleAt").val())
             $("#status").val("ONSALE");
             $("#form").attr("target", "_self");
         });
 
         $("#reject").click(function () {
-            console.log($("#goods_beginOnSaleAt").val())
             $("#status").val("REJECT");
             $("#form").attr("target", "_self");
         });
 
         $("#apply").click(function () {
-            console.log($("#goods_beginOnSaleAt").val())
             $("#status").val("APPLY");
             $("#form").attr("target", "_self");
         });

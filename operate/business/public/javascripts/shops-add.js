@@ -26,7 +26,6 @@ function cityChange(cityId) {
 
 $(function () {
     $("#shop_cityId").change(function () {
-        console.log($("#shop_cityId").val())
         cityChange($("#shop_cityId").val());
     });
     $("#shop_districtId").change(function () {
