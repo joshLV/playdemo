@@ -9,6 +9,7 @@ import models.cms.BlockType;
 import models.cms.CmsQuestion;
 import models.cms.GoodsType;
 import models.consumer.User;
+import models.consumer.UserGoldenCoin;
 import models.order.Cart;
 import models.order.Order;
 import models.order.OrderItems;
@@ -353,11 +354,13 @@ public class Goods2 extends Controller {
                     }
                 });
         //判断该商品是否签到商品
-        System.out.println(scheduleList.size()+"----------");
-        boolean isExcited = scheduleList.size() > 0;
+        boolean isCheckinGoods = scheduleList.size() > 0;
+        renderArgs.put("coinNumber", UserGoldenCoin.getCoinNumber(user));
+        renderArgs.put("totalCoins", UserGoldenCoin.getTotalCoins(user));
+
 
         renderArgs.put("tjUrl", tjUrl);
-        renderArgs.put("isExcited", isExcited);
+        renderArgs.put("isCheckinGoods", isCheckinGoods);
         renderArgs.put("browsedGoodsList", browsedGoodsList);
         renderArgs.put("goods", goods);
         renderArgs.put("imagesList", goods.getCachedGoodsImagesList());

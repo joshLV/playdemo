@@ -258,9 +258,11 @@
 </div>
 <!-- #section -->
 <div id="sidebar">
-#{if isExcited}
+#{if isCheckinGoods}
     <div class="checkin-box">
-        <a id="j_checkin" class="checkin" href="javascript:void(0)">马上签到领金币</a>
+       *{<a id="login" class="checkin" href="@{ObtainGoldenCoins.show(goods.id)}" style="display: block;"></a>}*
+        <a id="j_checkin" class="checkin" href="@{ObtainGoldenCoins.show(goods.id)}">马上签到领金币</a>
+           <p>本月累计签到 <span>+ data.checkins +'</span> 天<br>'+'已领取 <span>'+ data.totalCoins +'</span> 金币 <a href="" target="_blank">去兑换</a></p>');
     </div>
 #{/if}
 #{include '/Goods2/sidebar.html' /}

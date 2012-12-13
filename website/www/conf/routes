@@ -123,6 +123,7 @@ GET     /jump/to/{id}                           JumpPages.doJump
 
 #点券
 GET     /coins                                  ObtainGoldenCoins.index
+GET     /show                                   ObtainGoldenCoins.show
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

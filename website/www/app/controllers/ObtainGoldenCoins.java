@@ -15,7 +15,6 @@ import models.sales.Goods;
  */
 @With(SecureCAS.class)
 public class ObtainGoldenCoins extends Controller {
-
     /**
      * 取得消费者签到次数和金币数
      */
@@ -25,9 +24,11 @@ public class ObtainGoldenCoins extends Controller {
         if (gid != null) {
             goods = Goods.findOnSale(gid);
         }
+        if (goods == null) {
+            error("no goods!");
+        }
         UserGoldenCoin.checkin(user, goods, "每天签到");
-        String coinInfo = UserGoldenCoin.getCoinsInfo(user);
-        renderJSON(coinInfo);
+        redirect("/p/" + gid);
     }
 
 

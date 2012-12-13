@@ -15,8 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
-import java.util.List;
 
 /**
  * <p/>
@@ -47,6 +47,13 @@ public class UserGoldenCoin extends Model {
     @Column(name = "created_at")
     public Date createdAt;
 
+    @Transient
+    public Long checkinTimes;
+
+    @Transient
+    public Long totalCoins;
+
+
     public static JPAExtPaginator<UserGoldenCoin> find(User user, UserCondition condition, int pageNumber, int pageSize) {
         JPAExtPaginator<UserGoldenCoin> coinsPage = new JPAExtPaginator<>
                 ("UserGoldenCoin u", "u", UserGoldenCoin.class, condition.getCondition(user),
@@ -64,7 +71,7 @@ public class UserGoldenCoin extends Model {
      * @param user
      * @return
      */
-    public static Long coinNumber(User user) {
+    public static Long getCoinNumber(User user) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("SELECT sum( number ) FROM UserGoldenCoin WHERE user = :user");
         q.setParameter("user", user);
@@ -80,11 +87,8 @@ public class UserGoldenCoin extends Model {
      * @param user
      * @return
      */
-    public static String getCoinsInfo(User user) {
-        //取得该用户金币数
-        Long coins = coinNumber(user);
+    public static Long getTotalCoins(User user) {
         //  取得该用户签到次数
-        Long checkins;
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("SELECT sum( number ) FROM UserGoldenCoin WHERE user = :user and createdAt >=:beginDate and createdAt <=:endDate");
         q.setParameter("user", user);
@@ -92,8 +96,8 @@ public class UserGoldenCoin extends Model {
         q.setParameter("endDate", DateUtil.getEndOfDay());
 
         Object result = q.getSingleResult();
-        checkins = result == null ? 0 : (Long) result;
-        return "{\"checkins\":" + checkins + ",\"totalCoins\":" + coins + "}";
+
+        return result == null ? 0 : (Long) result;
     }
 
     /**
