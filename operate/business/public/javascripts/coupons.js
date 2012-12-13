@@ -14,7 +14,6 @@ $(function () {
             return false;
         }
         $("#shopId").val(shopId);
-        console.log(shopId)
     });
     $("#sure").click(function () {
         var shopId = $("#supplierUser_shop_id").val();

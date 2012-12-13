@@ -175,7 +175,6 @@ $(
                 type:'GET',
                 url:'/dangdang-batch-add?goodsIds=' + checked,
                 success:function (data) {
-                    console.log(data.error == 'false');
                     if (data.error == 'true') {
                         $("#error-info").html(data.info + "的商品发布失败或当当已存在该商品！");
                     } else {
