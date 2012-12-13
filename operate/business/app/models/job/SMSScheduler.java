@@ -3,6 +3,7 @@ package models.job;
 import models.sales.SendSMSInfo;
 import models.sales.SendSMSTask;
 import models.sms.SMSUtil;
+import org.apache.commons.collections.CollectionUtils;
 import play.jobs.Every;
 import play.jobs.Job;
 
@@ -21,6 +22,9 @@ public class SMSScheduler extends Job {
     public void doJob() throws ParseException {
         List<SendSMSTask> smsTaskList = SendSMSTask.findUnDeleted();
         Date currentDate;
+        if (CollectionUtils.isEmpty(smsTaskList)) {
+            return;
+        }
         for (SendSMSTask st : smsTaskList) {
             currentDate = new Date();
 

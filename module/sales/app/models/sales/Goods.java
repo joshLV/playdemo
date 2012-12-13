@@ -76,7 +76,18 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.TimeZone;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1240,10 +1251,11 @@ public class Goods extends Model {
     public static List<Brand> findBrandByCondition(GoodsCondition condition, int limit) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select distinct g.brand from Goods g where " +
-                condition.getFilter() + " and g.status='ONSALE' and g.brand.display=true order by g.brand.displayOrder desc,g.brand.supplier.createdAt desc");
+                condition.getFilter() + " and g.status='ONSALE' and g.deleted='UNDELETED' and g.brand.display=true and g.brand.deleted='UNDELETED' and g.isHideOnsale=false and g.expireAt >:expireAt order by g.brand.displayOrder desc,g.brand.supplier.createdAt desc");
         for (String key : condition.getParamMap().keySet()) {
             q.setParameter(key, condition.getParamMap().get(key));
         }
+        q.setParameter("expireAt", new Date());
         if (limit > 0) {
             q.setMaxResults(limit);
         }
