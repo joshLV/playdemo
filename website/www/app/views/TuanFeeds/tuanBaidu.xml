@@ -20,6 +20,7 @@
                 <thrcategory></thrcategory>
                 <major>#{if goods_index==1} 1 #{/if} #{else}0#{/else}</major>
                 <title>${goods.name}</title>
+                <shortTitle>${goods.shortName}</shortTitle>
                 <image>${goods.imageMiddlePath}</image>
                 <startTime>
                     ${goods.firstOnSaleAt == null ? goods.effectiveAt?.format("yyyy-MM-dd HH:mm:ss") : goods.firstOnSaleAt?.format("yyyy-MM-dd HH:mm:ss")}
