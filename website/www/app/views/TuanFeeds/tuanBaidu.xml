@@ -35,7 +35,7 @@
                 <tips>${goods.exhibition}</tips>
                 <seller>
                     #{list goods.getShopList(), as:'shop'}
-                    ${shop.name} ${shop_isLast ?'':',' }
+                    ${goods.getSupplierName()}${shop.name} ${shop_isLast ?'':',' }
                     #{/list}
                 </seller>
                 <address>
@@ -63,7 +63,7 @@
                 <shops>
                     #{list goods.getShopList(), as:'shop'}
                     <shop>
-                        <shopSeller>${shop.name}</shopSeller>
+                        <shopSeller>${goods.getSupplierName()}${shop.name}</shopSeller>
                         <shopAddress>${shop.address}</shopAddress>
                         <shopPhone>${shop.phone}</shopPhone>
                         <openTime></openTime>
