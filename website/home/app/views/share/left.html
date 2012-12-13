@@ -2,7 +2,7 @@
     <div class="menu">
         <h3
         #{if request.url.contains("/orders")||request.url.equals("/")||request.url.contains("/coupons")}class="active"#{/if}>
-            我的商城</h3>
+            我的一百券</h3>
         <ul>
             <li><a #{if request.url.contains("/orders")||request.url.equals("/")}class="current"#{/if}
                    href="@{UserOrders.index()}">» 我的订单</a></li>

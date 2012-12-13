@@ -9,11 +9,14 @@ import models.order.ECoupon;
 import models.order.Order;
 import models.resale.Resaler;
 import models.sales.GoodsDeployRelation;
+import models.sms.SMSMessage;
+import models.sms.SMSUtil;
 import models.wuba.WubaUtil;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;
+import util.mq.MockMQ;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,6 +59,10 @@ public class WubaGroupBuyTest extends FunctionalTest {
         assertIsOk(response);
         assertEquals(1, Order.count());
         assertEquals(1, ECoupon.count());
+
+        SMSMessage message = (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
+        assertNotNull(message);
+        assertTrue(message.getContent().startsWith("【58团】"));
     }
 
     @Test

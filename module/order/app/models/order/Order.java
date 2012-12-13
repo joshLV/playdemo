@@ -722,14 +722,11 @@ public class Order extends Model {
             }
             //如果不是电子券，跳过
             if (MaterialType.ELECTRONIC == goods.materialType) {
-                //唐力群同学来认领这个对象
-                List<String> couponCodes = new ArrayList<>();
                 for (int i = 0; i < orderItem.buyNumber; i++) {
                     //创建电子券
                     ECoupon eCoupon = createCoupon(goods, orderItem, batchCoupons);
                     //记录券历史信息
                     new CouponHistory(eCoupon, AccountType.RESALER.equals(orderItem.order.userType) ? "分销商：" + orderItem.order.getResaler().loginName : "消费者:" + orderItem.order.getUser().getShowName(), "产生券号", ECouponStatus.UNCONSUMED, ECouponStatus.UNCONSUMED, null).save();
-                    couponCodes.add(eCoupon.getMaskedEcouponSn());
 
                     //抽奖商品不发短信邮件等提示
                     if (goods.isLottery != null && goods.isLottery) {
@@ -752,6 +749,7 @@ public class Order extends Model {
 
     private void sendEcouponSms(ECoupon eCoupon, Goods goods, OrderItems orderItem) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
+        /*
         TsingTuanOrder tsingTuanOrder = TsingTuanOrder.from(eCoupon);
         if (tsingTuanOrder != null) {
             // 清团券发送
@@ -763,14 +761,24 @@ public class Order extends Model {
                     "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "" +
                     "密码" + password + ",截止" + dateFormat.format(eCoupon.expireAt) + "客服4006013975",
                     orderItem.phone, eCoupon.replyCode);
-            TsingTuanSendOrder.send(tsingTuanOrder);
-        } else {
-            SMSUtil.send("【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name +
+            //TsingTuanSendOrder.send(tsingTuanOrder);
+            return;
+        }
+        */
+
+        // 58团
+        if (AccountType.RESALER.equals(orderItem.order.userType)
+                && orderItem.order.getResaler().loginName.equals(Resaler.WUBA_LOGIN_NAME)) {
+            SMSUtil.send("【58团】【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name +
+                    "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
+                    "截止" + dateFormat.format(eCoupon.expireAt) + "客服4007895858",
+                    orderItem.phone, eCoupon.replyCode);
+            return;
+        }
+        SMSUtil.send("【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name +
                     "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
                     "截止" + dateFormat.format(eCoupon.expireAt) + "客服4006262166",
                     orderItem.phone, eCoupon.replyCode);
-        }
-
     }
 
     /**

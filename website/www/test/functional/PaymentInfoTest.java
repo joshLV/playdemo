@@ -9,10 +9,13 @@ import models.consumer.User;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrderStatus;
+import models.sms.SMSMessage;
+import models.sms.SMSUtil;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;
+import util.mq.MockMQ;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -53,6 +56,8 @@ public class PaymentInfoTest extends FunctionalTest {
         // 设置测试登录的用户名
 
         Security.setLoginUserForTest(user.loginName);
+
+        MockMQ.clear();
     }
 
     @Test
@@ -111,6 +116,9 @@ public class PaymentInfoTest extends FunctionalTest {
         assertEquals(order1, order);
         assertEquals(paymentSource.code, paymentSource1.code);
         assertContentMatch("恭喜您付款成功！", response);
+        SMSMessage message = (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
+        assertNotNull(message);
+        assertTrue(message.getContent().startsWith("【一百券】"));
     }
 
     @Test
