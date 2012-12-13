@@ -20,6 +20,7 @@
                 <thrcategory></thrcategory>
                 <major>#{if goods_index==1} 1 #{/if} #{else}0#{/else}</major>
                 <title>${goods.name}</title>
+                <shortTitle>${goods.shortName}</shortTitle>
                 <image>${goods.imageMiddlePath}</image>
                 <startTime>
                     ${goods.firstOnSaleAt == null ? goods.effectiveAt?.format("yyyy-MM-dd HH:mm:ss") : goods.firstOnSaleAt?.format("yyyy-MM-dd HH:mm:ss")}
@@ -35,7 +36,7 @@
                 <tips>${goods.exhibition}</tips>
                 <seller>
                     #{list goods.getShopList(), as:'shop'}
-                    ${shop.name} ${shop_isLast ?'':',' }
+                    ${goods.getSupplierName()}${shop.name} ${shop_isLast ?'':',' }
                     #{/list}
                 </seller>
                 <address>
@@ -63,7 +64,7 @@
                 <shops>
                     #{list goods.getShopList(), as:'shop'}
                     <shop>
-                        <shopSeller>${shop.name}</shopSeller>
+                        <shopSeller>${goods.getSupplierName()}${shop.name}</shopSeller>
                         <shopAddress>${shop.address}</shopAddress>
                         <shopPhone>${shop.phone}</shopPhone>
                         <openTime></openTime>
