@@ -121,6 +121,9 @@ GET     /jump/360buy                            JumpPages.jump360buy
 GET     /jump/360buy/{id}                       JumpPages.jump360buy
 GET     /jump/to/{id}                           JumpPages.doJump
 
+#点券
+GET     /coins                                  ObtainGoldenCoins.index
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

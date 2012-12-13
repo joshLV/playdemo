@@ -17,6 +17,7 @@ import models.sales.BrowsedGoods;
 import models.sales.Category;
 import models.sales.Goods;
 import models.sales.GoodsHistory;
+import models.sales.GoodsSchedule;
 import models.sales.GoodsStatistics;
 import models.sales.GoodsStatisticsType;
 import models.sales.GoodsWebsiteCondition;
@@ -216,7 +217,7 @@ public class Goods2 extends Controller {
     }
 
     private static void renderRecommendGoods() {
-           //猜你喜欢
+        //猜你喜欢
         List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.BrowsedGoods.CACHEKEY, "GOODS2_YOURLIKE4"), new CacheCallBack<List<models.sales.Goods>>() {
             @Override
             public List<models.sales.Goods> loadData() {
@@ -342,8 +343,21 @@ public class Goods2 extends Controller {
         } else {
             tjUrl += "?tj=gshare";
         }
+        final Date currDate = new Date();
+        List<GoodsSchedule> scheduleList = CacheHelper.getCache(
+                CacheHelper.getCacheKey(GoodsSchedule.CACHEKEY, "SCHEDULE_GOODS"),
+                new CacheCallBack<List<GoodsSchedule>>() {
+                    @Override
+                    public List<GoodsSchedule> loadData() {
+                        return GoodsSchedule.findSchedule(goods, currDate);
+                    }
+                });
+        //判断该商品是否签到商品
+        System.out.println(scheduleList.size()+"----------");
+        boolean isExcited = scheduleList.size() > 0;
 
         renderArgs.put("tjUrl", tjUrl);
+        renderArgs.put("isExcited", isExcited);
         renderArgs.put("browsedGoodsList", browsedGoodsList);
         renderArgs.put("goods", goods);
         renderArgs.put("imagesList", goods.getCachedGoodsImagesList());
