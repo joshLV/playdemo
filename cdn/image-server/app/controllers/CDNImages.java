@@ -7,7 +7,6 @@ import play.Logger;
 import play.Play;
 import play.mvc.Controller;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +19,7 @@ import java.util.regex.Pattern;
  * Date: 2/8/12
  * Time: 11:42 AM
  */
-public class Images extends Controller {
+public class CDNImages extends Controller {
     private static final String IMAGE_ROOT_ORIGINAL = play.Play .configuration.getProperty("image.root.original", "/nfs/images/o"); //原始图根目录
     private static final String IMAGE_ROOT_GENERATED = play.Play .configuration.getProperty("image.root.generated", "/nfs/images/p"); //缩略图根目录
     public static String ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");

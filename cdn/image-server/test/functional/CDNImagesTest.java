@@ -13,7 +13,7 @@ import play.test.FunctionalTest;
  * Date: 2/8/12
  * Time: 11:33 AM
  */
-public class ImagesTest extends FunctionalTest {
+public class CDNImagesTest extends FunctionalTest {
 
     @Test
     public void testInvalidSign() {
