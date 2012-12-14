@@ -29,14 +29,13 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new SalesReportCondition();
         }
-        System.out.println("interval>>>" + condition.interval);
 
 
-//        List<SalesReport> resultList = SalesReport.query(condition);
+        List<SalesReport> resultList = SalesReport.query(condition);
         // 分页
-//        ValuePaginator<SalesReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
+        ValuePaginator<SalesReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
 
-        render(condition);
+        render(condition, reportPage);
 
     }
 

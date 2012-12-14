@@ -1,6 +1,7 @@
 package models;
 
 import models.order.ECouponStatus;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -16,23 +17,58 @@ import java.util.Map;
  */
 public class SalesReportCondition implements Serializable {
 
-    public Date begin = com.uhuila.common.util.DateUtil.getYesterday();
-    public Date end = com.uhuila.common.util.DateUtil.getYesterday();
+    public Date begin = new Date();
+    public Date end = new Date();
     public String interval = "-1d";
+    public String shortName;
+    public String code;
     private Map<String, Object> paramMap = new HashMap<>();
+    private Map<String, Object> paramMap1 = new HashMap<>();
 
     public String getFilter() {
+        StringBuilder condBuilder = new StringBuilder(" where r.goods.isLottery=false");
+//        paramMap.put("status", ECouponStatus.REFUND);
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and r.goods.shortName like :shortName");
+            paramMap.put("shortName", "%" + shortName + "%");
+        }
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and r.goods.code = :code");
+            paramMap.put("code", code);
+        }
+        if (begin != null) {
+            condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
+            paramMap.put("createdAtBegin", begin);
+        }
+        if (end != null) {
+            condBuilder.append(" and r.order.paidAt < :createdAtEnd");
+            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(end));
+        }
+
+
+        return condBuilder.toString();
+    }
+
+    public String getRefundFilter() {
         StringBuilder condBuilder = new StringBuilder(" where e.status=:status and e.goods.isLottery=false");
-        paramMap.put("status", ECouponStatus.REFUND);
-//        if (refundAtBegin != null) {
-//            condBuilder.append(" and e.refundAt >= :refundAtBegin");
-//            paramMap.put("refundAtBegin", refundAtBegin);
-//        }
+        paramMap1.put("status", ECouponStatus.REFUND);
+        if (begin != null) {
+            condBuilder.append(" and e.refundAt >= :refundAtBegin");
+            paramMap1.put("refundAtBegin", begin);
+        }
+        if (end != null) {
+            condBuilder.append(" and e.refundAt <= :refundAtEnd");
+            paramMap1.put("refundAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(end));
+        }
 
         return condBuilder.toString();
     }
 
     public Map<String, Object> getParamMap() {
         return paramMap;
+    }
+
+    public Map<String, Object> getParamMap1() {
+        return paramMap1;
     }
 }
