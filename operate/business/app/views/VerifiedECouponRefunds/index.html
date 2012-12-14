@@ -8,14 +8,22 @@
 	    <label for="eCouponSn" class="control-label">券号:</label>
 	    <div class="controls">
 	        <input type="text" name="eCouponSn" id="eCouponSn" class="input-large"/>
-	        <span class="control-group" style="padding-left: 10px" id="checksn"></span>
+	        <span class="control-group" style="padding-left: 10px" id="eCouponSnMessage"></span>
 	    </div>
 	</div>
+    <div class="control-group">
+        <label for="choice" class="control-label">动作:</label>
+        <div class="controls">
+            <input type="text" name="choice" id="choice" class="input-large"/>
+            <span class="control-group" style="padding-left: 10px"
+                  id="choiceCommentMessage">请输入『REFUND』退款或『UNCONSUME』取消验证。取消验证则券状态返回为未消费.</span>
+        </div>
+    </div>
     <div class="control-group">
         <label for="refundComment" class="control-label">备注:</label>
         <div class="controls">
             <input type="text" name="refundComment" id="refundComment" class="input-large"/>
-            <span class="control-group" style="padding-left: 10px" id="checksn"></span>
+            <span class="control-group" style="padding-left: 10px" id="refundCommentMessage"></span>
         </div>
     </div>
 	<div class="form-actions" style="padding-left: 180px">
