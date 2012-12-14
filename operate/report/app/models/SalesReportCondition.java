@@ -16,9 +16,8 @@ import java.util.Map;
  * Time: 下午4:07
  */
 public class SalesReportCondition implements Serializable {
-
-    public Date begin = new Date();
-    public Date end = new Date();
+    public Date begin = com.uhuila.common.util.DateUtil.getBeginOfDay();
+    public Date end = com.uhuila.common.util.DateUtil.getEndOfDay(new Date());
     public String interval = "-1d";
     public String shortName;
     public String code;
@@ -26,8 +25,7 @@ public class SalesReportCondition implements Serializable {
     private Map<String, Object> paramMap1 = new HashMap<>();
 
     public String getFilter() {
-        StringBuilder condBuilder = new StringBuilder(" where r.goods.isLottery=false");
-//        paramMap.put("status", ECouponStatus.REFUND);
+        StringBuilder condBuilder = new StringBuilder(" where (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false");
         if (StringUtils.isNotBlank(shortName)) {
             condBuilder.append(" and r.goods.shortName like :shortName");
             paramMap.put("shortName", "%" + shortName + "%");

@@ -72,18 +72,20 @@
         <th>销售数量</th>
         <th>总销售额</th>
         <th>退款总额</th>
+        <th>净销售额</th>
         </thead>
     #{set i:0/}
     #{paginate.list items:reportPage, as:'report'}
         <tr>
             #{set i:i+1/}
-            <td>${report?.goods?.code}</td>
+            <td>${report?.goods?.code} --- ${report?.goods?.getSupplier().fullName}</td>
             <td>${report?.goods?.shortName}</td>
             <td>${(report?.originalPrice?:0).formatCurrency('CNY')}</td>
             <td>${(report?.totalAmount/report?.buyNumber).formatCurrency('CNY')}</td>
             <td>${report?.buyNumber?:0}</td>
             <td>${(report?.totalAmount?:0).formatCurrency('CNY')}</td>
             <td>${(report?.refundAmount?:0).formatCurrency('CNY')}</td>
+            <td>${(report?.totalAmount-(report?.refundAmount?:0)).formatCurrency('CNY')}</td>
         </tr>
     #{/paginate.list}
     </table>

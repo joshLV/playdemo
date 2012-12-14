@@ -52,9 +52,11 @@ public class SalesReport {
         //paidAt
         String sql = "select new models.SalesReport(r.goods,r.originalPrice,count(r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)) from OrderItems r";
-        String groupBy = " group by r.goods";
+        String groupBy = " group by r.goods.id";
         Query query = JPA.em()
-                .createQuery(sql + condition.getFilter() + groupBy + " order by count(r.buyNumber) desc");
+                .createQuery(sql + condition.getFilter() + groupBy + " order by count(r.buyNumber) desc ");
+        //count(r.buyNumber) desc
+
 
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
@@ -64,7 +66,7 @@ public class SalesReport {
 
         //取得退款的数据 ecoupon
         sql = "select new models.SalesReport(sum(e.refundPrice),e.orderItems.goods) from ECoupon e ";
-        groupBy = " group by e.orderItems.goods";
+        groupBy = " group by e.orderItems.goods.id";
 
         query = JPA.em()
                 .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.refundPrice) desc");
@@ -75,7 +77,7 @@ public class SalesReport {
 
         List<SalesReport> refundList = query.getResultList();
 
-        Map<Long, SalesReport> map = new HashMap<>();
+        Map<Goods, SalesReport> map = new HashMap<>();
 
         //merge ecoupon and real when sales
         for (SalesReport paidItem : paidResultList) {
@@ -92,15 +94,15 @@ public class SalesReport {
         }
 
         List resultList = new ArrayList();
-        for (Long key : map.keySet()) {
+        for (Goods key : map.keySet()) {
             resultList.add(map.get(key));
         }
 
         return resultList;
     }
 
-    private static Long getReportKey(SalesReport refoundItem) {
-        return refoundItem.goods.id;
+    private static Goods getReportKey(SalesReport refoundItem) {
+        return refoundItem.goods;
     }
 
 }

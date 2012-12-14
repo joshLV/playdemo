@@ -20,7 +20,7 @@ import java.util.List;
  */
 @With(OperateRbac.class)
 public class OperationReports extends Controller {
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 100;
 
     @ActiveNavigation("sales_reports")
     public static void showSalesReport(SalesReportCondition condition) {
