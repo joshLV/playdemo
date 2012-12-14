@@ -14,7 +14,8 @@
     h1 {
         margin-top: 20px
     }
-    td{
+
+    td {
         font-size: 14px;
         padding-top: 10px;
     }
@@ -45,7 +46,7 @@
 <h1 style="font-size:200%">商品信息</h1>
 
 <p>商品分类(可以用拼音搜索)<b>*</b></p>
-#{vx.selectInputField1 name:"prodType", id:"prodTypeId",importJs:shop_isFirst/}
+#{vx.selectInputField1 name:"prodType", id:"prodTypeId",value:1/}
 <p>
     产品范畴<b>*</b>
     <input type="radio" name="prodCategory" value="0" checked> 消费类
@@ -162,38 +163,56 @@ ${mobileDescription?.raw()}
 <input type="hidden" name="partnerId_${shop_index}" value="${shop?.id}">
 
 <table>
-    <tr> <td colspan="2" style="color: #ff5500;">门店${shop_index} </td> </tr>
     <tr>
-        <td width="400px">商家名称:<input type="text" name="title_${shop_index}" size="30px" value="${supplier.otherName} ${shop.name}">(最大100字)<b>*</b></td>
-        <td width="520px">商家缩写:<input type="text" name="shortTitle_${shop_index}" size="30px"  value="${supplier.otherName} ${shop.name}">(最大50字)<b>*</b></td>
+        <td colspan="2" style="color: #ff5500;">门店${shop_index} </td>
+    </tr>
+    <tr>
+        <td width="400px">商家名称:<input type="text" name="title_${shop_index}" size="30px"
+                                      value="${supplier.otherName} ${shop.name}">(最大100字)<b>*</b></td>
+        <td width="520px">商家缩写:<input type="text" name="shortTitle_${shop_index}" size="30px"
+                                      value="${supplier.otherName} ${shop.name}">(最大50字)<b>*</b></td>
     </tr>
     <tr>
         <td width="400px">一百券商圈：<input type="text" size="30" value="${shop.areaName}"></td>
         <td width="520px">
-            58商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;圈:#{vx.selectInputField name:"circleName${shop_index}", id:"circleId_${shop_index}",importJs:shop_isFirst/}<b>*</b></td>
+            58商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;圈:#{vx.selectInputField name:"circleName${shop_index}",
+            id:"circleId_${shop_index}",importJs:shop_isFirst/}<b>*</b></td>
     </tr>
     <tr>
-        <td width="400px">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话:<input type="text" name="telephone_${shop_index}" size="30" value="${shop.phone}"><b>*</b></td>
-        <td width="520px">网&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址:<input type="text" name="webUrl_${shop_index}" size="50" value=${webUrl}></td>
+        <td width="400px">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话:<input type="text"
+                                                                              name="telephone_${shop_index}"
+                                                                              size="30"
+                                                                              value="${shop.phone}"><b>*</b></td>
+        <td width="520px">网&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址:<input type="text"
+                                                                              name="webUrl_${shop_index}" size="50"
+                                                                              value=${webUrl}></td>
     </tr>
     <tr>
-        <td width="400px">交通信息:<input type="text" name="busline_${shop_index}" size="30" value="${busline?:' '}"><b>*</b></td>
+        <td width="400px">交通信息:<input type="text" name="busline_${shop_index}" size="30"
+                                      value="${busline?:' '}"><b>*</b>
+        </td>
         <td width="520px">地图图片:<input type="text" name="mapImg_${shop_index}" size="50" value="${mapImg}"></td>
     </tr>
     <tr>
         <td width="520px">地图服务商:<input type="radio" name="mapServiceId_${shop_index}"
                                        value="0" #{if mapServiceId ==0 || mapServiceId ==null} checked#{/if}> Google
-            <input type="radio" name="mapServiceId_${shop_index}" value="1"#{if mapServiceId ==1} checked#{/if}> Baidu
-            <input type="radio" name="mapServiceId_${shop_index}" value="2"#{if mapServiceId ==2} checked#{/if}> Mapbar</td>
+            <input type="radio" name="mapServiceId_${shop_index}" value="1"#{if mapServiceId ==1} checked#{/if}>
+            Baidu
+            <input type="radio" name="mapServiceId_${shop_index}" value="2"#{if mapServiceId ==2} checked#{/if}>
+            Mapbar
+        </td>
         <td width="400px">地图链接:<input type="text" name="mapUrl_${shop_index}" size="50" value="${mapUrl}"></td>
     </tr>
     <tr>
         <td width="400px"> 地图经纬度 &nbsp;&nbsp;
             经度：<input type="text" name="latitude_${shop_index}" value="${shop.latitude}"></td>
-        <td width="520px">纬&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;度：<input type="text" name="longitude_${shop_index}" value="${shop.longitude}"></td>
+        <td width="520px">纬&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;度：<input type="text"
+                                                                              name="longitude_${shop_index}"
+                                                                              value="${shop.longitude}"></td>
     </tr>
     <tr>
-        <td width="520px" colspan="2">商家地址:<input type="text" name="address_${shop_index}" size="65" value="${shop.address}"></td>
+        <td width="520px" colspan="2">商家地址:<input type="text" name="address_${shop_index}" size="65"
+                                                  value="${shop.address}"></td>
     </tr>
 </table>
 
@@ -202,34 +221,55 @@ ${mobileDescription?.raw()}
 #{list items:editShopList, as:'shop'}
 <input type="hidden" name="partnerId_${shop_index}" value="${shop.partnerId}">
 <table>
-    <tr> <td colspan="2" style="color: #ff5500;">门店${shop_index} </td> </tr>
     <tr>
-        <td width="400px">商家名称:<input type="text" name="title_${shop_index}" size="30px" value="${shop.name}">(最大100字)<b>*</b></td>
-        <td width="520px">商家地址:<input type="text" name="address_${shop_index}" size="65" value="${shop.address}"></td>
+        <td colspan="2" style="color: #ff5500;">门店${shop_index} </td>
     </tr>
     <tr>
-        <td width="400px">商家缩写:<input type="text" name="shortTitle_${shop_index}" size="30px"  value="${shop.shortTitle}">(最大50字)<b>*</b></td>
-        <td width="520px">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;圈:#{vx.selectInputField name:"circleName${shop_index}", id:"circleId_${shop_index}",importJs:shop_isFirst, value: shop.circleId/}<b>*</b></td>
+        <td width="400px">商家名称:<input type="text" name="title_${shop_index}" size="30px"
+                                      value="${shop.name}">(最大100字)<b>*</b>
+        </td>
+        <td width="520px">商家地址:<input type="text" name="address_${shop_index}" size="65" value="${shop.address}">
+        </td>
     </tr>
-     <tr>
-        <td width="400px">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话:<input type="text" name="telephone_${shop_index}" size="30" value="${shop.phone}"><b>*</b></td>
-        <td width="520px">网&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址:<input type="text" name="webUrl_${shop_index}" size="50" value=${shop.webUrl}></td>
+    <tr>
+        <td width="400px">商家缩写:<input type="text" name="shortTitle_${shop_index}" size="30px"
+                                      value="${shop.shortTitle}">(最大50字)<b>*</b></td>
+        <td width="520px">
+            商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;圈:#{vx.selectInputField name:"circleName${shop_index}",
+            id:"circleId_${shop_index}",importJs:shop_isFirst, value: shop.circleId/}<b>*</b></td>
     </tr>
-     <tr>
-        <td width="400px">交通信息:<input type="text" name="busline_${shop_index}" size="30" value="${shop.busline?:' '}"><b>*</b></td>
-        <td width="520px">地图图片:<input type="text" name="mapImg_${shop_index}" size="50" value="${shop?.mapImg}"></td>
+    <tr>
+        <td width="400px">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话:<input type="text"
+                                                                              name="telephone_${shop_index}"
+                                                                              size="30"
+                                                                              value="${shop.phone}"><b>*</b></td>
+        <td width="520px">网&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址:<input type="text"
+                                                                              name="webUrl_${shop_index}" size="50"
+                                                                              value=${shop.webUrl}></td>
     </tr>
-     <tr>
+    <tr>
+        <td width="400px">交通信息:<input type="text" name="busline_${shop_index}" size="30"
+                                      value="${shop.busline?:' '}"><b>*</b></td>
+        <td width="520px">地图图片:<input type="text" name="mapImg_${shop_index}" size="50" value="${shop?.mapImg}">
+        </td>
+    </tr>
+    <tr>
         <td width="520px">地图服务商:<input type="radio" name="mapServiceId_${shop_index}"
-           value="0" #{if mapServiceId ==0 || mapServiceId ==null} checked#{/if}> Google
-    <input type="radio" name="mapServiceId_${shop_index}" value="1"#{if mapServiceId ==1} checked#{/if}> Baidu
-    <input type="radio" name="mapServiceId_${shop_index}" value="2"#{if mapServiceId ==2} checked#{/if}> Mapbar</td>
-         <td width="400px">地图链接:<input type="text" name="mapUrl_${shop_index}" size="50" value="${shop?.mapUrl}"></td>
+                                       value="0" #{if mapServiceId ==0 || mapServiceId ==null} checked#{/if}> Google
+            <input type="radio" name="mapServiceId_${shop_index}" value="1"#{if mapServiceId ==1} checked#{/if}>
+            Baidu
+            <input type="radio" name="mapServiceId_${shop_index}" value="2"#{if mapServiceId ==2} checked#{/if}>
+            Mapbar
+        </td>
+        <td width="400px">地图链接:<input type="text" name="mapUrl_${shop_index}" size="50" value="${shop?.mapUrl}">
+        </td>
     </tr>
-      <tr>
+    <tr>
         <td width="400px"> 地图经纬度 &nbsp;&nbsp;
-    经度：<input type="text" name="latitude_${shop_index}" value="${shop.latitude}"></td>
-    <td width="520px">纬&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;度：<input type="text" name="longitude_${shop_index}" value="${shop.longitude}"></td>
+            经度：<input type="text" name="latitude_${shop_index}" value="${shop.latitude}"></td>
+        <td width="520px">纬&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;度：<input type="text"
+                                                                              name="longitude_${shop_index}"
+                                                                              value="${shop.longitude}"></td>
     </tr>
 </table>
 
@@ -284,28 +324,17 @@ ${mobileDescription?.raw()}
         }
     });
 
-
-    if (${jsonArray?.raw()} != null ) {
-        var shopArray = ${jsonArray.raw()};
-        for (var i = 0; i < shopArray.length; i++) {
-            var areaName = shopArray[i]['areaName'];
-            var op = " option[t='" + areaName + "']";
-            $("#circleId_" + (i + 1)).append(option);
-            $("#circleId_" + (i + 1) + op).attr("selected", true)
-        }
-    }
-
     //分类
     var categoryData = CATEGORY.data;
     $.each(eval(categoryData), function (i, item) {
         $("<option value='" + item.prodTypeId + "'>" + item.name + "</option>").appendTo($("#category"));
     });
 
-       //加载分类的list
+    //加载分类的list
     slist = new Array(6);
     var slistIndex = 0;
     $.each(eval(categoryData), function (i, item) {
-            slist[slistIndex++] = { firstPin:Pinyin.getWordsCode(item.name), allPin:Pinyin.GetQP(item.name), name:item.name, id:item.prodTypeId };
+        slist[slistIndex++] = { firstPin:Pinyin.getWordsCode(item.name), allPin:Pinyin.GetQP(item.name), name:item.name, id:item.prodTypeId };
     });
     for (m = 0; m < slist.length; m++) {
         if (slist[m].id == ${prodTypeId}) {
@@ -322,15 +351,25 @@ ${mobileDescription?.raw()}
         }
     });
 
+    if (${jsonArray?.raw()} != null ) {
+        var shopArray = ${jsonArray.raw()};
+        for (var i = 0; i < shopArray.length; i++) {
+            var areaName = shopArray[i]['areaName'];
+            for (j = 0; j < list.length; j++) {
+                if (list[j].name == areaName) {
+                     $("#circleName" + (i + 1)).val(areaName);
+                    $("#id_circleName" + (i + 1)).val(list[j].id);
+                }
+            }
+        }
+    }
     //编辑门店
     var editShopArray = ${new com.google.gson.Gson().toJson(editShopList).raw()};
     for (var i = 0; i < editShopArray.length; i++) {
-        $("#circleId_" + (i + 1)).append(option);
         for (j = 0; j < list.length; j++) {
             if (list[j].id == editShopArray[i]['circleId']) {
                 $("#circleName" + (i + 1)).val(list[j].name);
             }
         }
-        $("#circleId_" + (i + 1)).val(editShopArray[i]['circleId']);
     }
 </script>
