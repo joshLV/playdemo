@@ -21,18 +21,23 @@ import javax.persistence.Query;
  */
 public class SalesReport {
     public Goods goods;
-    public BigDecimal avgOriginalPrice;
+    public BigDecimal avgSalesPrice;
+    public BigDecimal grossMargin;       //毛利率
     public BigDecimal originalPrice;
     public Long buyNumber;
     public BigDecimal totalAmount;
     public String reportDate;
     public BigDecimal refundAmount;
 
-    public SalesReport(Goods goods, BigDecimal originalPrice, Long buyNumber, BigDecimal totalAmount) {
+    public SalesReport(Goods goods, BigDecimal originalPrice, Long buyNumber,
+                       BigDecimal totalAmount, BigDecimal avgSalesPrice, BigDecimal grossMargin) {
         this.goods = goods;
         this.originalPrice = originalPrice;
         this.buyNumber = buyNumber;
         this.totalAmount = totalAmount;
+        this.avgSalesPrice = avgSalesPrice;
+        this.grossMargin = grossMargin;
+
     }
 
     //refund ecoupon
@@ -51,11 +56,13 @@ public class SalesReport {
     public static List<SalesReport> query(SalesReportCondition condition) {
         //paidAt
         String sql = "select new models.SalesReport(r.goods,r.originalPrice,count(r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)) from OrderItems r";
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)/count(r.buyNumber)" +
+                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*count(r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100)" +
+                "from OrderItems r";
         String groupBy = " group by r.goods.id";
         Query query = JPA.em()
                 .createQuery(sql + condition.getFilter() + groupBy + " order by count(r.buyNumber) desc ");
-        //count(r.buyNumber) desc
 
 
         for (String param : condition.getParamMap().keySet()) {
@@ -79,7 +86,7 @@ public class SalesReport {
 
         Map<Goods, SalesReport> map = new HashMap<>();
 
-        //merge ecoupon and real when sales
+        //merge
         for (SalesReport paidItem : paidResultList) {
             map.put(getReportKey(paidItem), paidItem);
         }
@@ -92,6 +99,7 @@ public class SalesReport {
                 item.refundAmount = refundItem.refundAmount;
             }
         }
+
 
         List resultList = new ArrayList();
         for (Goods key : map.keySet()) {

@@ -65,7 +65,7 @@
 
     <table class="table table-striped table-bordered table-condensed">
         <thead>
-        <th>商品代码</th>
+        <th>商品编码</th>
         <th>商品名称</th>
         <th>进价</th>
         <th>平均售价</th>
@@ -73,6 +73,7 @@
         <th>总销售额</th>
         <th>退款总额</th>
         <th>净销售额</th>
+        <th>毛利率</th>
         </thead>
     #{set i:0/}
     #{paginate.list items:reportPage, as:'report'}
@@ -81,11 +82,12 @@
             <td>${report?.goods?.code} --- ${report?.goods?.getSupplier().fullName}</td>
             <td>${report?.goods?.shortName}</td>
             <td>${(report?.originalPrice?:0).formatCurrency('CNY')}</td>
-            <td>${(report?.totalAmount/report?.buyNumber).formatCurrency('CNY')}</td>
+            <td>${(report?.avgSalesPrice?:0).formatCurrency('CNY')}</td>
             <td>${report?.buyNumber?:0}</td>
             <td>${(report?.totalAmount?:0).formatCurrency('CNY')}</td>
             <td>${(report?.refundAmount?:0).formatCurrency('CNY')}</td>
             <td>${(report?.totalAmount-(report?.refundAmount?:0)).formatCurrency('CNY')}</td>
+            <td>${(report?.grossMargin?:0).format('#')}%</td>
         </tr>
     #{/paginate.list}
     </table>
