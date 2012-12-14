@@ -356,7 +356,7 @@ public class WubaProduct extends Controller {
         requestMap.put("groupbuyIds", ids);
         requestMap.put("status", -1);
 
-        JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.getstatus", false);
+        JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.getstatus", true);
         System.out.println("getStatus(" + goodsId + ") result:" + result);
         String status = result.get("status").getAsString();
         if (!"10000".equals(status)) {
