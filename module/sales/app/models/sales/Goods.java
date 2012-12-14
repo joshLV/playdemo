@@ -102,6 +102,7 @@ public class Goods extends Model {
 
     public static final String IMAGE_TINY = "60x46_nw";
     public static final String IMAGE_SMALL = "172x132";
+    public static final String IMAGE_SMALL2 = "199x152";
     public static final String IMAGE_MIDDLE = "234x178";
     public static final String IMAGE_LARGE = "340x260";
     public static final String IMAGE_LOGO = "300x180_nw";
@@ -756,6 +757,14 @@ public class Goods extends Model {
             return imageSmallPath;
         }
         return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_SMALL);
+    }
+
+    /**
+     * 199*152图片路径，用于首页
+     */
+    @Transient
+    public String getImageSmall2Path() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_SMALL2);
     }
 
     /**

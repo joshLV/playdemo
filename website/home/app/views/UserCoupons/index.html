@@ -219,14 +219,14 @@
                         #{/if}
                         #{if coupon.status == models.order.ECouponStatus.UNCONSUMED && (coupon.goods.noRefund==false ||coupon.goods.noRefund==null)
                         && !coupon?.goods?.isLottery && coupon?.salePrice>0 &&
-                        coupon?.orderItems?.secKillGoods==null && coupon?.orderItems?.secKillGoodsItemId==null}
+                        coupon?.orderItems?.secKillGoods==null && coupon?.orderItems?.secKillGoodsItemId==null && coupon?.goods?.materialType== models.sales.MaterialType.ELECTRONIC}
                             <a class="apply-refund"
                                href="javascript:applyRefund('${coupon.id}','${coupon.salePrice}','${coupon?.rebateValue}')"
                                id="apply_${coupon.id}">申请退款</a>
                         #{/if}
-                        #{else}
+                        #{elseif coupon.status != models.order.ECouponStatus.REFUND}
                             不可退款
-                        #{/else}
+                        #{/elseif}
                     </td>
                 </tr>
                 </tbody>
