@@ -232,6 +232,16 @@ public class Supplier extends Model {
         return PathUtil.getImageUrl(IMAGE_SERVER, logo, IMAGE_ORIGINAL);
     }
 
+    /**
+     * 获取商户完整域名
+     *
+     * @return
+     */
+    @Transient
+    public String getSupplierHost() {
+        return domainName + "." + play.Play.configuration.getProperty("application.supplierDomain", "quanmx.com");
+    }
+
     private static final String IMAGE_SERVER = Play.configuration.getProperty
             ("image.server", "img0.uhcdn.com");
 
@@ -425,12 +435,18 @@ public class Supplier extends Model {
             return withdrawAmount;
         }
         //预付款已过期
+        System.out.println("lastPrepayment.getBalance():" + lastPrepayment.getBalance());
+        System.out.println("withdrawAmount:" + withdrawAmount);
         if (lastPrepayment.expireAt != null && lastPrepayment.expireAt.before(date)) {
             BigDecimal prepayConsumedAmount = AccountSequence.getVostroAmount(supplierAccount, lastPrepayment.effectiveAt, lastPrepayment.expireAt);
+            System.out.println("prepayConsumedAmount:" + prepayConsumedAmount);
+            BigDecimal vostroAmount = AccountSequence.getVostroAmount(supplierAccount, lastPrepayment.expireAt, date);
+            System.out.println("vostroAmount:" + vostroAmount);
             if (prepayConsumedAmount.compareTo(lastPrepayment.getBalance()) > 0) {
-                return prepayConsumedAmount.subtract(lastPrepayment.getBalance()).add(AccountSequence.getVostroAmount(supplierAccount, lastPrepayment.expireAt, date));
+                System.out.println("prepayConsumedAmount.subtract(lastPrepayment.getBalance()).add(vostroAmount):" + prepayConsumedAmount.subtract(lastPrepayment.getBalance()).add(vostroAmount));
+                return prepayConsumedAmount.subtract(lastPrepayment.getBalance()).add(vostroAmount);
             }
-            return AccountSequence.getVostroAmount(supplierAccount, lastPrepayment.expireAt, date);
+            return vostroAmount;
         }
         if (withdrawAmount.compareTo(lastPrepayment.getBalance()) <= 0) {
             return BigDecimal.ZERO;

@@ -117,6 +117,10 @@ public class OperateGoods extends Controller {
         goodsPage.setBoundaryControlsEnabled(true);
         List<Supplier> supplierList = Supplier.findUnDeleted();
 
+        for (Supplier supplier : supplierList) {
+            System.out.println("" + supplier.id + ":" + supplier.otherName);
+        }
+
 
         Long id = OperateRbac.currentUser().id;
         List<Brand> brandList = Brand.findByOrder(null, id);
@@ -160,8 +164,7 @@ public class OperateGoods extends Controller {
      *
      * @param goods
      */
-    private static void
-    renderInit(models.sales.Goods goods) {
+    private static void renderInit(models.sales.Goods goods) {
         List<Supplier> supplierList = Supplier.findUnDeleted();
 
         if (goods == null) {

@@ -35,7 +35,7 @@
         <tr>
             <td>${supplier?.fullName}</td>
             <td>${supplier?.otherName}</td>
-            <td>${supplier?.domainName}.quanmx.com</td>
+            <td><a href="http://${supplier?.supplierHost}">${supplier?.supplierHost}</a></td>
             <td>&{'supplier.'+supplier.status}</td>
             <td>${supplier?.code}</td>
             <td><a href="/?condition.supplierId=${supplier?.id}">${supplier?.getGoods().size()}个</a></td>

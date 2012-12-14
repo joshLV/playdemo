@@ -56,19 +56,7 @@ $(function () {
             $("#deletefrm").submit();
         }
     });
-    $("#solr").click(function () {
-        $.ajax({
-            type:'GET',
-            url:"/solr-init",
-            success:function (msg) {
-                if (msg == "ok") {
-                    $("#solr-err").html("初始化成功！");
-                } else {
-                    $("#solr-err").html("初始化失败！");
-                }
 
-            }});
-    })
     /**
      * 批量下架
      */

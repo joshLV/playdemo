@@ -501,6 +501,7 @@ public class Goods extends Model {
      */
     @SolrField
     public Integer priority = 0;
+
     /**
      * 收藏指数.
      */

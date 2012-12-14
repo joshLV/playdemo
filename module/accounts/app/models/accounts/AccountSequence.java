@@ -209,6 +209,13 @@ public class AccountSequence extends Model {
         return amount != null ? amount.abs() : BigDecimal.ZERO;
     }
 
+    public static BigDecimal getVostroAmountTo(Account account, Date toDate) {
+        BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
+                " account=? and sequenceFlag=? and createdAt<=? and settlementStatus=?",
+                account, AccountSequenceFlag.VOSTRO, toDate, SettlementStatus.UNCLEARED).first();
+        return amount != null ? amount.abs() : BigDecimal.ZERO;
+    }
+
 
     public static int withdraw(Account supplierAccount, Date withdrawDate, WithdrawBill withdrawBill) {
         return withdraw(supplierAccount, withdrawDate, withdrawBill, null);
@@ -250,5 +257,20 @@ public class AccountSequence extends Model {
      */
     public static long countByPrepayment(Long prepaymentId) {
         return count("prepayment.id = ?", prepaymentId);
+    }
+
+    public static AccountSequence checkAccountAmount(Account account) {
+        List<AccountSequence> accountSequences = find("account=? order by id", account).fetch();
+
+        BigDecimal lastBalance = BigDecimal.ZERO;
+        for (AccountSequence accountSequence : accountSequences) {
+            BigDecimal correctBalance = lastBalance.add(accountSequence.changeAmount);
+            if (correctBalance.compareTo(accountSequence.balance) != 0) {
+                return accountSequence;
+            }
+            lastBalance = accountSequence.balance;
+        }
+
+        return null;
     }
 }
