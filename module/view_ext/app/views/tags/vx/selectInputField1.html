@@ -41,9 +41,9 @@
 
             $("#${field.id}").blur(function () {
                 var found = false;
-                var m = list.length;
+                var m = slist.length;
                 for (i = 0; i < m; i++) {
-                    if (list[i].name == $("#${field.id}").val()) {
+                    if (slist[i].name == $("#${field.id}").val()) {
                         found = true;
                     }
                 }
