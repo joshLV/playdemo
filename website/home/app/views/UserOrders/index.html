@@ -128,7 +128,7 @@
                                 <a class="order-detail" href="@{UserOrders.details(row.orderNumber)}" target="_blank">订单详情</a>
                             </td>
                             <td align="center" rowspan="${row?.orderItems?.size()}">
-                                #{if (row.status == models.order.OrderStatus.PAID) && (rowItem.goods.noRefund==false || rowItem.goods.noRefund==null)}
+                                #{if (row.status == models.order.OrderStatus.PAID) && (rowItem.goods.noRefund==false || rowItem.goods.noRefund==null) && rowItem?.goods?.materialType== models.sales.MaterialType.ELECTRONIC}
                                     <a id="apply_${row.orderNumber}" href="/orders/refund/${row.orderNumber}">申请退款</a>
                                 #{/if}
                                 #{elseif row.status == models.order.OrderStatus.PAID}
