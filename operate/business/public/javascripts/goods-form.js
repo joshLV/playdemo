@@ -38,19 +38,16 @@ $(
             $("#form").attr("target", "_self");
         });
         $("#onsale").click(function () {
-            console.log($("#goods_beginOnSaleAt").val())
             $("#status").val("ONSALE");
             $("#form").attr("target", "_self");
         });
 
         $("#reject").click(function () {
-            console.log($("#goods_beginOnSaleAt").val())
             $("#status").val("REJECT");
             $("#form").attr("target", "_self");
         });
 
         $("#apply").click(function () {
-            console.log($("#goods_beginOnSaleAt").val())
             $("#status").val("APPLY");
             $("#form").attr("target", "_self");
         });
@@ -71,9 +68,9 @@ $(
             if (this.checked) {
                 this.value = true;
                 $("#isLottery").val(true)
-                if ($("#goods_supplierId").val() != 5) {
-                    $("#err-isLottery").html("抽奖商品只能选择上海视惠信息科技有限公司！").css("color", "#ff0000");
-                    $("#goods_supplierId").val(5);
+                if ($("#id_supplierName").val() != 5) {
+                    $("#err-isLottery").html("抽奖商品的商户必须是视惠！").css("color", "#ff0000");
+                    $("#id_supplierName").val(5);
                 }
             } else {
                 $("#isLottery").val(false)
@@ -120,9 +117,9 @@ $(
             ev.preventDefault();
             var imageId = $(this).attr("imageId");
             $.ajax({
-                type:'DELETE',
-                url:'/goods_images/' + imageId,
-                success:function () {
+                type: 'DELETE',
+                url: '/goods_images/' + imageId,
+                success: function () {
 //                    $("#li_" + imageId).remove();
                     window.location.reload();
                 }});
@@ -133,9 +130,9 @@ $(
             var imageId = $(this).attr("imageId");
             var goodsId = $(this).attr("goodsId");
             $.ajax({
-                type:'POST',
-                url:'/goods_images/' + imageId + "?goodsId=" + goodsId,
-                success:function () {
+                type: 'POST',
+                url: '/goods_images/' + imageId + "?goodsId=" + goodsId,
+                success: function () {
                     window.location.reload();
                 }});
         })

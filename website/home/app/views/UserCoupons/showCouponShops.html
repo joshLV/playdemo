@@ -1,12 +1,7 @@
 #{list items:shops, as:'shop'}
-<li><input name="outlet-item[]" class="outlet-item" id="outlet-item${shop_index}" type="checkbox" value="${shop?.id}">
-    <label for="outlet-item${shop_index}">${shop?.name}</label></li>
-    #{if shops_index>7}
-    <li class="hide"><input name="outlet-item[]" class="outlet-item" id="outlet-item${shop_index}" type="checkbox">
-        <label for="outlet-item${shop_index}">${shop?.name}</label></li>
-    #{/if}
+    <li#{if shop_index>10} class="hide"#{/if}><label><input name="outlet-item[]" class="outlet-item" type="checkbox" value="${shop?.id}"> ${shop?.name}</label></li>
 #{/list}
-#{if shops.size()>7}
+#{if shops.size()>10}
 <li><a class="more-outlet" href="javascript:void(0)">更多>></a></li>
 #{/if}
 

@@ -8,6 +8,7 @@ import models.dangdang.DDAPIUtil;
 import models.dangdang.DDOrderItem;
 import models.dangdang.ErrorCode;
 import models.dangdang.ErrorInfo;
+import models.order.DeliveryType;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
 import models.order.NotEnoughInventoryException;
@@ -147,6 +148,7 @@ public class DDOrderAPI extends Controller {
             }
         }
 
+        order.deliveryType = DeliveryType.SMS;
         order.remark = express_memo;
         order.createAndUpdateInventory();
         order.accountPay = order.needPay;

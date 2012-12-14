@@ -21,7 +21,7 @@
     <permission key="NO_ADMIN" text="测试无角色的权限" roles="no-admin">
     </permission>
 
-    <navigation key="main" text="系统管理" action="Application.index" permissions="USER">
+    <navigation key="main" text="系统管理" action="OperateAdminApplication.index" permissions="USER">
         <navigation key="home" text="主页" permissions="USER" />
         <navigation key="user" text="用户管理" permissions="USER">
           <navigation key="user_add" text="新增用户" action="OperateUsers.add" permissions="USER, USER_ADD"/>

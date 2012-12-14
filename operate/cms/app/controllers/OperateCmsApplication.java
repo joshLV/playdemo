@@ -6,7 +6,7 @@ import play.mvc.With;
 
 @With(OperateRbac.class)
 @ActiveNavigation("cms_main")
-public class Application extends Controller {
+public class OperateCmsApplication extends Controller {
 
     public static void index() {
         render();

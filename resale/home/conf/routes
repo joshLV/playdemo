@@ -1,8 +1,8 @@
 # Routes
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
-GET     /                                       Application.index
-GET     /solution                               Application.solution
+GET     /                                       ResaleHomeApplication.index
+GET     /solution                               ResaleHomeApplication.solution
 
 #注册
 GET     /register                               ResalerRegister.index

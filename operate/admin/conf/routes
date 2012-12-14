@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET     /                                       Application.index
+GET     /                                       OperateAdminApplication.index
 GET     /users                                  OperateUsers.index
 GET     /users/new                              OperateUsers.add
 POST    /users                                  OperateUsers.create

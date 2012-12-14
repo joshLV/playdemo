@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET     /                                       Application.index
+GET     /                                       OperateCmsApplication.index
 
 #公告管理
 GET     /topics                                 OperateTopics.index

@@ -549,12 +549,12 @@ jQuery(function($) {
         });
     });
     // 签到
-    $('#j_checkin').click(function(){
-        var _this = $(this);
-        $.getJSON('/coins', function(data){
-            _this.replaceWith('<p>本月累计签到 <span>'+ data.checkins +'</span> 天<br>'+'已领取 <span>'+ data.totalCoins +'</span> 金币 <a href="" target="_blank">去兑换</a></p>');
-        });
-    });
+    // $('#j_checkin').click(function(){
+        // var _this = $(this);
+        // $.getJSON('/coins?gid='+ goodsId, function(data){
+            // _this.replaceWith('<p>本月累计签到 <span>'+ data.checkins +'</span> 天<br>'+'已领取 <span>'+ data.totalCoins +'</span> 金币 <a href="" target="_blank">去兑换</a></p>');
+        // });
+    // });
 
     (new GoTop()).init({
         pageWidth           :960,

@@ -3,23 +3,30 @@
 *{id:        存放下拉文本框id的名称}*
 *{list:      下拉选项列表}*
 #{field _name}
-    #{set 'moreStyles'}
-        #{get 'moreStyles'/}
-    <link type="text/css" rel="stylesheet" href="@{'/public/stylesheets/jquery.autocomplete.css'}">
-    #{/set}
+    #{if _importJs?:true}
+        #{set 'moreStyles'}
+            #{get 'moreStyles'/}
+        <link type="text/css" rel="stylesheet" href="@{'/public/stylesheets/jquery.autocomplete.css'}">
+        #{/set}
+        #{set 'moreScripts'}
+            #{get 'moreScripts'/}
+        <script src="@{'/public/javascripts/jquery.autocomplete.min.js'}" type="text/javascript"
+                charset="UTF-8"></script>
+        <script src="@{'/public/javascripts/ChinesePY.js'}" type="text/javascript" charset="UTF-8"></script>
+        <script type="text/javascript">
+            var list = [
+                #{list items:_list, as:'row'}
+                    { firstPin:Pinyin.getWordsCode("${row.name}"), allPin:Pinyin.GetQP("${row.name}"), name:"${row.name}", id:"${row.id}" }#{if !row_isLast},#{/if}
+                #{/list}
+            ];
+        </script>
+        #{/set}
+    #{/if}
     #{set 'moreScripts'}
         #{get 'moreScripts'/}
-    <script src="@{'/public/javascripts/jquery.autocomplete.min.js'}" type="text/javascript" charset="UTF-8"></script>
-    <script src="@{'/public/javascripts/ChinesePY.js'}" type="text/javascript" charset="UTF-8"></script>
     <script type="text/javascript">
-        var list = [
-            #{list items:_list, as:'row'}
-                { firstPin:Pinyin.getWordsCode("${row.name}"), allPin:Pinyin.GetQP("${row.name}"), name:"${row.name}", id:"${row.id}" }#{if !row_isLast},#{/if}
-            #{/list}
-        ];
-
-        $().ready(function () {
-            $("#${field.id}").focus().autocomplete(list, {
+        $(function () {
+            $("#${field.id}").autocomplete(list, {
                 resultsClass:"acResults",
                 loadingClass:"acLoading",
                 minChars:0,
@@ -33,6 +40,7 @@
                     return row.name;
                 },
                 formatMatch:function (row, i, max) {
+                    console.log(row)
                     return row.name + " " + row.firstPin + " " + row.allPin;
                 },
                 formatResult:function (row) {

@@ -67,8 +67,8 @@
                     target.attr('checked', false);
                 }
             });
-            $('.more-outlet').click(function () {
-                $('.outlet-list .hide').show();
+            $('.more-outlet').live('click', function () {
+                $('.outlet-list .hide').removeClass('hide');
                 $(this).hide();
             });
         }
