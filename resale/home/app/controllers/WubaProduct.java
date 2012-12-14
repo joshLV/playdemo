@@ -458,7 +458,7 @@ public class WubaProduct extends Controller {
         renderArgs.put("buyerMinNum", "1");
         renderArgs.put("isSend", "0");
         renderArgs.put("cityIds", "4");
-
+        renderArgs.put("prodTypeId", "1");
         renderArgs.put("goodsId", goods.id);
     }
 
