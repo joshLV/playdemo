@@ -1,0 +1,50 @@
+*{html编辑框}*
+*{name:      文本框的名称}*
+*{value:     文本框中的值}*
+*{uploadImgUrl:     上传图片的url}*
+*{_required: 文字标签前面是否要加必填项标志（选填，默认不标识必填项）}*
+
+
+#{field _name}
+    #{set 'moreStyles'}
+        #{get 'moreStyles'/}
+    <link type="text/css" rel="stylesheet" href="@{'/public/stylesheets/themes/default/default.css'}">
+    #{/set}
+    #{set 'moreScripts'}
+        #{get 'moreScripts'/}
+    <script src="@{'/public/javascripts/kindeditor-min.js'}" type="text/javascript" charset="UTF-8"></script>
+    <script src="@{'/public/javascripts/lang/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
+    #{/set}
+<script type="text/javascript">
+
+    $(function () {
+        KindEditor.ready(function (K) {
+            var editor = K.editor({
+                allowFileManager:true,
+                uploadJson:'${_uploadImgUrl}'
+            });
+
+            K('#image').click(function () {
+                editor.loadPlugin('image', function () {
+                    editor.plugin.imageDialog({
+                        showRemote:false,
+                        imageUrl:K('#${field.id}').val(),
+                        clickFn:function (url, title, width, height, border, align) {
+                            K('#${field.id}').val(url);
+                            editor.hideDialog();
+                        }
+                    });
+                });
+            });
+        });
+
+
+    });
+
+</script>
+
+
+<input type="text" id="${field.id}" size="${_size}" name="${field.name}" value="${_value}"/> <input type="button" id="image" value="选择图片"/>
+
+
+#{/field}

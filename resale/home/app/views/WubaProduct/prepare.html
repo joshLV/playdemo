@@ -44,8 +44,8 @@
 <div id="content">
 <h1 style="font-size:200%">商品信息</h1>
 
-<p>商品分类<b>*</b></p>
-#{select 'prodTypeId', id:'category',value:prodTypeId}#{/select}
+<p>商品分类(可以用拼音搜索)<b>*</b></p>
+#{vx.selectInputField1 name:"prodType", id:"prodTypeId",importJs:shop_isFirst/}
 <p>
     产品范畴<b>*</b>
     <input type="radio" name="prodCategory" value="0" checked> 消费类
@@ -81,8 +81,7 @@ ${prodDescription?.raw()}
 </textarea>
 
 <p>商品大图<b>*</b>规格680x425</p>
-<input type="text" name="prodImg" size="150" value="${imageLargePath}">
-
+#{vx.imageUpload name:'prodImg', value:imageLargePath, uploadImgUrl:'/images',size:100, required:true/}
 <p>手机端特别提示<b>*</b></p>
 <textarea rows="10" cols="150" name="mobileDescription">
 #{if exhibition}
@@ -190,7 +189,7 @@ ${mobileDescription?.raw()}
     </tr>
     <tr>
         <td width="400px"> 地图经纬度 &nbsp;&nbsp;
-            经度：<input type="text" name="latitude_${shop_index}" value="${shop.latitude}"</td>
+            经度：<input type="text" name="latitude_${shop_index}" value="${shop.latitude}"></td>
         <td width="520px">纬&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;度：<input type="text" name="longitude_${shop_index}" value="${shop.longitude}"></td>
     </tr>
     <tr>
@@ -229,7 +228,7 @@ ${mobileDescription?.raw()}
     </tr>
       <tr>
         <td width="400px"> 地图经纬度 &nbsp;&nbsp;
-    经度：<input type="text" name="latitude_${shop_index}" value="${shop.latitude}"</td>
+    经度：<input type="text" name="latitude_${shop_index}" value="${shop.latitude}"></td>
     <td width="520px">纬&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;度：<input type="text" name="longitude_${shop_index}" value="${shop.longitude}"></td>
     </tr>
 </table>
@@ -301,7 +300,18 @@ ${mobileDescription?.raw()}
     $.each(eval(categoryData), function (i, item) {
         $("<option value='" + item.prodTypeId + "'>" + item.name + "</option>").appendTo($("#category"));
     });
-    $("#category").val(${prodTypeId});
+
+       //加载分类的list
+    slist = new Array(6);
+    var slistIndex = 0;
+    $.each(eval(categoryData), function (i, item) {
+            slist[slistIndex++] = { firstPin:Pinyin.getWordsCode(item.name), allPin:Pinyin.GetQP(item.name), name:item.name, id:item.prodTypeId };
+    });
+    for (m = 0; m < slist.length; m++) {
+        if (slist[m].id == ${prodTypeId}) {
+            $("#prodType").val(slist[m].name);
+        }
+    }
 
     //加载商圈的list
     list = new Array(6);
