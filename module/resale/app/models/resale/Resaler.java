@@ -201,15 +201,17 @@ public class Resaler extends Model {
     }
 
 
-    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark, ResalerCreditable creditable) {
-        update(id, status, level, remark, creditable, null);
-    }
-
     public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark) {
-        update(id, status, level, remark, null, null);
+        update(id, status, level, remark, null, null, null);
     }
 
+    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark, ResalerCreditable creditable) {
+        update(id, status, level, remark, creditable, null, null);
+    }
 
+    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark, ResalerCreditable creditable, ResalerBatchExportCoupons batchExportCoupons) {
+        update(id, status, level, remark, creditable, batchExportCoupons, null);
+    }
 
     /**
      * 审核分销商
@@ -218,7 +220,9 @@ public class Resaler extends Model {
      * @param status 状态
      * @param remark 备注
      */
-    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark, ResalerCreditable creditable, ResalerBatchExportCoupons batchExportCoupons) {
+    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark,
+                              ResalerCreditable creditable, ResalerBatchExportCoupons batchExportCoupons,
+                              BigDecimal commissionRatio) {
         Resaler resaler = Resaler.findById(id);
         if (status != null) resaler.status = status;
         if (level != null) resaler.level = level;
@@ -237,6 +241,11 @@ public class Resaler extends Model {
         }
         if (batchExportCoupons != null) {
             resaler.batchExportCoupons = batchExportCoupons;
+        }
+        if (commissionRatio == null) {
+            resaler.commissionRatio = BigDecimal.ZERO;
+        } else {
+            resaler.commissionRatio = commissionRatio;
         }
         resaler.save();
     }
