@@ -136,7 +136,7 @@
             #{/else}
             </div>
         </div>
-
+    #{if hasHandleResalerCommissionRatioPermission == true}
         <div class="control-group">
             <label class="control-label">佣金比例</label>
 
@@ -147,6 +147,7 @@
                 <span class="error"> #{error 'resaler.commissionRatio'/}</span>
             </div>
         </div>
+    #{/if}
 
     </form>
     <form class="form-horizontal" id="checkFrm" method="post">

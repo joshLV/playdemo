@@ -23,6 +23,7 @@
     <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager,account"/>
     <permission key="SUPPLIER_CODE_EDIT" text="修改商户编码" roles="developer"/>
     <permission key="GOODS_APPROVE_ONSALE" text="审核商品上架" roles="reviewer"/>
+    <permission key="RESALER_COMMISSIONRATIO" text="操作分销商佣金比例" roles="manager"/>
 
 
     <permission key="SUPPLIERS_NEW" text="商户添加" roles="editor"/>
@@ -214,8 +215,10 @@
                         permissions="SECKILL_GOODS"/>
         </navigation>
         <navigation key="schedule" text="商品排期管理" permission="GOODS_SCHEDULE">
-            <navigation key="goods_schedule_add" action="GoodsSchedules.add" text="商品排期添加" permission="GOODS_SCHEDULE_ADD"/>
-            <navigation key="goods_schedule_index" action="GoodsSchedules.index" text="商品排期" permission="GOODS_SCHEDULE"/>
+            <navigation key="goods_schedule_add" action="GoodsSchedules.add" text="商品排期添加"
+                        permission="GOODS_SCHEDULE_ADD"/>
+            <navigation key="goods_schedule_index" action="GoodsSchedules.index" text="商品排期"
+                        permission="GOODS_SCHEDULE"/>
         </navigation>
     </navigation>
 
