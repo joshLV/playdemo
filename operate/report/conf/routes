@@ -41,6 +41,8 @@ GET     /totalsales/list                        TotalSalesReports.list
 
 # 运营报表
 GET     /sales_report                           OperationReports.showSalesReport
+GET     /sales_report_with_privilege_excel      OperationReports.salesReportWithPrivilegeExcelOut
+GET     /sales_report_excel                     OperationReports.salesReportExcelOut
 
 
 # Home page

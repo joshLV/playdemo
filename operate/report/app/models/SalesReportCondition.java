@@ -30,7 +30,7 @@ public class SalesReportCondition implements Serializable {
             condBuilder.append(" and r.goods.shortName like :shortName");
             paramMap.put("shortName", "%" + shortName + "%");
         }
-        if (StringUtils.isNotBlank(shortName)) {
+        if (StringUtils.isNotBlank(code)) {
             condBuilder.append(" and r.goods.code = :code");
             paramMap.put("code", code);
         }
@@ -50,6 +50,14 @@ public class SalesReportCondition implements Serializable {
     public String getRefundFilter() {
         StringBuilder condBuilder = new StringBuilder(" where e.status=:status and e.goods.isLottery=false");
         paramMap1.put("status", ECouponStatus.REFUND);
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and e.goods.shortName like :shortName");
+            paramMap1.put("shortName", "%" + shortName + "%");
+        }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and e.goods.code = :code");
+            paramMap1.put("code", code);
+        }
         if (begin != null) {
             condBuilder.append(" and e.refundAt >= :refundAtBegin");
             paramMap1.put("refundAtBegin", begin);

@@ -38,7 +38,7 @@ public class Resalers extends Controller {
      * @param id 分销商ID
      */
     public static void detail(Long id, String flag) {
-        Boolean hasHandleResalerCommissionRatioPermission = ContextedPermission.hasPermission("RESALER_COMMISSIONRATIO");
+        Boolean hasHandleResalerCommissionRatioPermission = ContextedPermission.hasPermission("HANDLE_RESALER_COMMISSIONRATIO");
         Resaler resaler = Resaler.findById(id);
         render(resaler, flag, hasHandleResalerCommissionRatioPermission);
     }
@@ -53,7 +53,6 @@ public class Resalers extends Controller {
     public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark,
                               ResalerCreditable creditable, ResalerBatchExportCoupons batchExportCoupons,
                               BigDecimal commissionRatio) {
-        System.out.println("commissionRatio>>>" + commissionRatio);
         if (status == ResalerStatus.UNAPPROVED) {
             level = null;
         }

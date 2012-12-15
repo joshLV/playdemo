@@ -38,6 +38,28 @@
         });
 
     });
+
+    function salesReportExcel() {
+        $("#search_form").attr("action", "@{OperationReports.salesReportExcelOut()}");
+        $("#search_form").attr("method", "get");
+        $("#search_form").submit();
+    }
+    ;
+
+    function salesReportWithPrivilegeExcel() {
+        $("#search_form").attr("action", "@{OperationReports.salesReportWithPrivilegeExcelOut()}");
+        $("#search_form").attr("method", "get");
+        $("#search_form").submit();
+    }
+    ;
+
+    function showSalesReport() {
+        $("#search_form").attr("action", "@{OperationReports.showSalesReport()}");
+        $("#search_form").attr("method", "get");
+        $("#search_form").submit();
+    }
+    ;
+
 </script>
 #{/set}
 <div class="body">
@@ -52,7 +74,26 @@
                onfocus="WdatePicker({readOnly:true})" value="${condition?.begin?.format()}"> -
         <input type="text" id="condition_end" class="input-medium Wdate" name="condition.end"
                onfocus="WdatePicker({readOnly:true})" value="${condition?.end?.format()}">
-        <button type="submit" class="btn btn-primary" id="search">搜索</button>
+        <button type="submit" class="btn btn-primary" id="search" onclick="showSalesReport()">搜索</button>
+        <br/>
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        <button class="btn btn-primary" id="searchbtn" onclick="salesReportExcel()">导出报表</button>
+    #{if hasSeeSalesRepotProfitRight == true}
+        <button class="btn btn-primary" id="searchbtn" onclick="salesReportWithPrivilegeExcel()">导出报表附带利润</button>
+    #{/if}
         <ul class="nav nav-pills">
             <li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">今天</a></li>
             <li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>
@@ -73,7 +114,10 @@
         <th>总销售额</th>
         <th>退款总额</th>
         <th>净销售额</th>
+        #{if hasSeeSalesRepotProfitRight == true}
         <th>毛利率</th>
+        <th>利润</th>
+        #{/if}
         </thead>
     #{set i:0/}
     #{paginate.list items:reportPage, as:'report'}
@@ -86,8 +130,11 @@
             <td>${report?.buyNumber?:0}</td>
             <td>${(report?.totalAmount?:0).formatCurrency('CNY')}</td>
             <td>${(report?.refundAmount?:0).formatCurrency('CNY')}</td>
-            <td>${(report?.totalAmount-(report?.refundAmount?:0)).formatCurrency('CNY')}</td>
-            <td>${(report?.grossMargin?:0).format('#')}%</td>
+            <td>${(report?.netSalesAmount?:0).formatCurrency('CNY')}</td>
+            #{if hasSeeSalesRepotProfitRight == true}
+                <td>${(report?.grossMargin?:0).format('#')}%</td>
+                <td>${(report?.profit?:0).formatCurrency('CNY')}</td>
+            #{/if}
         </tr>
     #{/paginate.list}
     </table>

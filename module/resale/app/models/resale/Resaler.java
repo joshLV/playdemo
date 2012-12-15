@@ -223,7 +223,6 @@ public class Resaler extends Model {
     public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark,
                               ResalerCreditable creditable, ResalerBatchExportCoupons batchExportCoupons,
                               BigDecimal commissionRatio) {
-        System.out.println("inini");
         Resaler resaler = Resaler.findById(id);
         if (status != null) resaler.status = status;
         if (level != null) resaler.level = level;
@@ -243,7 +242,6 @@ public class Resaler extends Model {
         if (batchExportCoupons != null) {
             resaler.batchExportCoupons = batchExportCoupons;
         }
-        System.out.println("commissionRatio<<<" + commissionRatio);
         if (commissionRatio == null) {
             resaler.commissionRatio = BigDecimal.ZERO;
         } else {
