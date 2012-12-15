@@ -5,6 +5,7 @@ import models.resale.*;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -52,10 +53,11 @@ public class Resalers extends Controller {
     public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark,
                               ResalerCreditable creditable, ResalerBatchExportCoupons batchExportCoupons,
                               BigDecimal commissionRatio) {
+        System.out.println("commissionRatio>>>" + commissionRatio);
         if (status == ResalerStatus.UNAPPROVED) {
             level = null;
         }
-        Resaler.update(id, status, level, remark, creditable, batchExportCoupons);
+        Resaler.update(id, status, level, remark, creditable, batchExportCoupons, commissionRatio);
         index(null);
     }
 

@@ -142,7 +142,7 @@
 
             <div class="controls">
                 <input type="text" class="input-small" id="commissionRatio" name="commissionRatio"
-                       value="${resaler?.commissionRatio}">
+                       value="${resaler?.commissionRatio}" onchange="check()">
             % &nbsp;&nbsp;(0-100%)
                 <span class="error"> #{error 'resaler.commissionRatio'/}</span>
             </div>
@@ -168,3 +168,18 @@
         </div>
     </form>
 </div>
+
+
+<script type="text/javascript">
+
+    function check() {
+        var str = document.all("commissionRatio").value;
+        if (str < 0 || str > 100) {
+            alert("请在佣金比例中输入大于0小于100的数！ ");
+            document.all("commissionRatio").value = "";
+            return   false;
+        }
+        return   true;
+    }
+
+</script>
