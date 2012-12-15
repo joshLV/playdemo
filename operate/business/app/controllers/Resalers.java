@@ -8,6 +8,8 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.math.BigDecimal;
+
 @With(OperateRbac.class)
 @ActiveNavigation("resalers_index")
 public class Resalers extends Controller {
@@ -45,7 +47,10 @@ public class Resalers extends Controller {
      * @param status 状态
      * @param remark 备注
      */
-    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark, ResalerCreditable creditable, ResalerBatchExportCoupons batchExportCoupons) {
+    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark,
+                              ResalerCreditable creditable, ResalerBatchExportCoupons batchExportCoupons,
+                              BigDecimal commissionRatio) {
+        System.out.println("commissionRatio>>>" + commissionRatio);
         if (status == ResalerStatus.UNAPPROVED) {
             level = null;
         }

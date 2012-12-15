@@ -136,7 +136,17 @@
             #{/else}
             </div>
         </div>
-    #{layout_operate.textField name:'commissionRatio', value:resaler?.commissionRatio,note:'% (0-100%)'/}
+
+        <div class="control-group">
+            <label class="control-label">佣金比例</label>
+
+            <div class="controls">
+                <input type="text" class="input-small" id="commissionRatio" name="commissionRatio"
+                       value="${resaler?.commissionRatio}">
+            % &nbsp;&nbsp;(0-100%)
+                <span class="error"> #{error 'resaler.commissionRatio'/}</span>
+            </div>
+        </div>
 
     </form>
     <form class="form-horizontal" id="checkFrm" method="post">
