@@ -36,21 +36,6 @@
     .rank-desc {
         background: url(http://y1.uhcdn.com/images/2012/11/6fbd68649f111b05.png) no-repeat right 10px;
     }
-
-        /*.rank {*/
-        /*background-image: url(http://img.uhcdn.com/images/r/rank.png);*/
-        /*background-position: right 6px;*/
-        /*background-repeat: no-repeat;*/
-        /*}*/
-
-        /*.rank-asc {*/
-        /*background-position: right -15px;*/
-        /*}*/
-
-        /*.rank-desc {*/
-        /*background-position: right -36px;*/
-        /*}*/
-
 </style>
 #{/set}
 <div class="body">
@@ -59,7 +44,7 @@
     <table width="100%">
         <tr>
             <td width="30%">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
-            #{layout_operate.selectInputField name:"supplierName", id:"condition.supplierId", list:supplierList/}</td>
+            #{vx.selectInputField name:"supplierName", id:"condition.supplierId", list:supplierList, value:condition?.supplierId, array:"supplierArray",importJs:true/}</td>
 
             <td width="30%">商品名称：<input type="text" name="condition.shortName" class="input-medium"
                                         value="${condition?.shortName}"/></td>
@@ -69,7 +54,7 @@
         </tr>
         <tr>
             <td width="30%">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
-            #{layout_operate.selectInputField name:"brandName", id:"condition.brandId", list:brandList/}</td>
+            #{vx.selectInputField name:"brandName", id:"condition.brandId", list:brandList, array:"brandArray",importJs:false/}</td>
             <td width="30%">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：
             #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
                 #{option ""}不限#{/option}

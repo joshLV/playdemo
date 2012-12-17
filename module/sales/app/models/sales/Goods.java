@@ -289,6 +289,7 @@ public class Goods extends Model {
      * 原始图片路径
      */
     @Column(name = "image_path")
+    @SolrField
     public String imagePath;
 
     /**
@@ -503,6 +504,7 @@ public class Goods extends Model {
      */
     @SolrField
     public Integer priority = 0;
+
     /**
      * 收藏指数.
      */
@@ -764,6 +766,7 @@ public class Goods extends Model {
      */
     @Transient
     public String getImageSmall2Path() {
+        System.out.println(id + ":imagePath:" + imagePath);
         return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_SMALL2);
     }
 
@@ -1882,6 +1885,7 @@ public class Goods extends Model {
     private static final String SOLR_GOODS_VIRTUALSALECOUNT = "goods.virtualSaleCount_l";
     private static final String SOLR_GOODS_AREAS = "goods.areaNames_s";
     private static final String SOLR_GOODS_IMAGESMALLPATH = "goods.imageSmallPath_s";
+    private static final String SOLR_GOODS_IMAGEPATH = "goods.imagePath_s";
 
     /**
      * 搜索
@@ -2058,7 +2062,7 @@ public class Goods extends Model {
             query.setRows(0);
         } else {
             query.setRows(pageSize);
-            query.setFields(SOLR_ID, SOLR_GOODS_NAME, SOLR_GOODS_SALEPRICE, SOLR_GOODS_FACEVALUE, SOLR_GOODS_VIRTUALSALECOUNT, SOLR_GOODS_AREAS, SOLR_GOODS_IMAGESMALLPATH);
+            query.setFields(SOLR_ID, SOLR_GOODS_NAME, SOLR_GOODS_SALEPRICE, SOLR_GOODS_FACEVALUE, SOLR_GOODS_VIRTUALSALECOUNT, SOLR_GOODS_AREAS, SOLR_GOODS_IMAGESMALLPATH, SOLR_GOODS_IMAGEPATH);
             if ((StringUtils.isNotBlank(q) && !GoodsWebsiteCondition.getSolrOrderBy(0).equals(orderBy)) ||
                     (StringUtils.isBlank(q))) {
                 query.setSortField(orderBy, isAsc ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
@@ -2102,6 +2106,7 @@ public class Goods extends Model {
                 goods.salePrice = new BigDecimal(salePrice.substring(0, salePrice.length() - 4));
             }
             goods.areaNames = (String) doc.getFieldValue(SOLR_GOODS_AREAS);
+            goods.imagePath = (String) doc.getFieldValue(SOLR_GOODS_IMAGEPATH);
             goods.imageSmallPath = (String) doc.getFieldValue(SOLR_GOODS_IMAGESMALLPATH);
             goods.virtualSaleCount = (Long) doc.getFieldValue(SOLR_GOODS_VIRTUALSALECOUNT);
             if (response.getHighlighting() != null && response.getHighlighting().get(docId) != null &&

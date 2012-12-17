@@ -58,7 +58,6 @@ public class AccountSequenceCondition implements Serializable {
             filter.append(" and tradeType = :tradeType");
             params.put("tradeType", tradeType);
         }
-        System.out.println("filter.toString():" + filter.toString());
         return filter.toString();
     }
 

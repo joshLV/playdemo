@@ -1,0 +1,108 @@
+package controllers;
+
+import com.uhuila.common.constants.DeletedStatus;
+import controllers.modules.website.cas.SecureCAS;
+import models.accounts.Account;
+import models.accounts.TradeBill;
+import models.accounts.Voucher;
+import models.accounts.util.AccountUtil;
+import models.accounts.util.TradeUtil;
+import models.consumer.User;
+import play.cache.Cache;
+import play.libs.Codec;
+import play.modules.breadcrumbs.BreadcrumbList;
+import play.mvc.Controller;
+import play.mvc.With;
+
+import java.util.Date;
+
+/**
+ * @author likang
+ *         Date: 12-12-16
+ */
+@With({
+        SecureCAS.class, WebsiteInjector.class
+})
+public class UserVouchers extends Controller {
+    public static void index() {
+        BreadcrumbList breadcrumbs = new BreadcrumbList("代金券领取", "/vouchers");
+        User user = SecureCAS.getUser();
+        Account account = AccountUtil.getConsumerAccount(user.getId());
+        String randomID = Codec.UUID();
+        String action = "verify";
+        render(randomID, breadcrumbs, user, account, action);
+    }
+
+    public static void verify(String voucherCode, String code, String randomID) {
+        String errMsg = null;
+        User user = SecureCAS.getUser();
+        Account account = AccountUtil.getConsumerAccount(user.getId());
+        String action = "verify";
+        Voucher voucher = null;
+        String ridA = null;
+        String ridB = null;
+        if (Cache.get(randomID) == null
+                || code == null
+                || !((String) Cache.get(randomID)).toLowerCase()
+                .equals(code.toLowerCase())) {
+            errMsg = "验证码错误";
+        } else {
+            voucher = Voucher.find("byChargeCode", voucherCode).first();
+            if (voucher == null) {
+                errMsg = "现金券充值密码输入错误";
+            } else if (voucher.assignedAt != null || voucher.account != null) {
+                errMsg = "该现金券已被使用";
+            } else if (voucher.deleted == DeletedStatus.DELETED) {
+                errMsg = "该券无法使用";
+            } else if (voucher.expiredAt.before(new Date())) {
+                errMsg = "该券已过期";
+            } else {
+                action = "use";
+                ridA = Codec.UUID();
+                ridB = Codec.UUID();
+                Cache.set(ridA, ridB, "5mn");
+                Cache.set(ridB, voucher.getId(), "5mn");
+            }
+        }
+
+        Cache.delete(randomID);
+        randomID = Codec.UUID();
+        BreadcrumbList breadcrumbs = new BreadcrumbList("代金券领取", "/vouchers");
+        render("UserVouchers/index.html", randomID, errMsg,
+                breadcrumbs, user, account, action, voucher, ridA, ridB,
+                voucherCode);
+    }
+
+    public static void useCoupon(String ridA, String ridB) {
+        User user = SecureCAS.getUser();
+        Account account = AccountUtil.getConsumerAccount(user.getId());
+        String errMsg = null;
+        String suc = null;
+        String action = "verify";
+        if (Cache.get(ridA) == null || Cache.get(ridB) == null
+                || !((String) Cache.get(ridA)).equals(ridB)) {
+            errMsg = "验证失败";
+        } else {
+            Voucher voucher = Voucher.findById((Long) Cache.get(ridB));
+            if (voucher == null || voucher.assignedAt != null
+                    || voucher.account != null) {
+                errMsg = "验证失败";
+            } else if (voucher.deleted == DeletedStatus.DELETED) {
+                errMsg = "该券无法使用";
+            } else if (voucher.expiredAt.before(new Date())) {
+                errMsg = "该券已过期";
+            } else {
+                suc = "领取成功";
+                voucher.assignedAt = new Date();
+                voucher.account = AccountUtil.getConsumerAccount(user.getId());
+                voucher.save();
+            }
+        }
+        Cache.delete(ridA);
+        Cache.delete(ridB);
+        String randomID = Codec.UUID();
+        BreadcrumbList breadcrumbs = new BreadcrumbList("代金券领取", "/vouchers");
+        render("UserVouchers/index.html", randomID, suc, errMsg,
+                breadcrumbs, user, account, action);
+    }
+}

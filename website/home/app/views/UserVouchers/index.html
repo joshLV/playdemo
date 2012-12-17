@@ -1,0 +1,98 @@
+#{extends 'main2.html' /}
+#{set title:'代金券券' /}
+#{set 'moreStyles'}
+    #{asset.css src:['/y/user/userBase.css', '/y/user/userCashRecharge.css'] /}
+#{/set}
+
+<div id="content" class="clearfix">
+    #{include "share/left.html"/}
+    <div class="section">
+        #{breadcrumbs/breadcrumb breadcrumbs/}
+        <div class="user-account">
+            账户：<strong>${user?.showName}</strong> 可提现账户余额：<span>${account.amount}</span>元 不可提现账户余额：<span>${account.promotionAmount?:"0.00"}</span>元
+        </div>
+
+        #{if action=="verify"}
+            #{form @UserCashCoupons.verify(), method:'POST', class:'recharge-form'}
+                #{if suc}
+                    <div class="item item-success"> ${suc} </div>
+                #{/if}
+                #{if errMsg}
+                    <div class="item item-error"> ${errMsg} </div>
+                #{/if}
+
+
+                <div class="item item-passsword">
+                    <label for="recharge-passsword">代金券领取密码</label>
+                    <input type="text" id="recharge-passsword" name="voucherCode" value="${voucherCode}">
+                    <span class="error" id="passsword-error"></span>
+                </div>
+                <div class="item item-verification">
+                    <label for="verification-code">验 证 码：</label>
+                    <input type="text" id="verification-code" name="code">
+                    <img id="captchaImg" style="width:82px;height:24px" src="@{CaptchaProvider.captcha(randomID)}">
+                    <a id="diff-code" class="diff-code" href="">看不清，换一张</a>
+                    <span class="error" id="verification-error"></span>
+                </div>
+                <div class="item item-btn">
+                    <input type="hidden" name="randomID" value="${randomID}" id="randomID">
+                    <button class="recharge-btn" id="recharge-btn" type="submit"> 领 取 </button>
+                </div>
+            #{/form}
+        #{/if}
+        #{elseif action=="use"}
+            #{form @UserCashCoupons.useCoupon(), method:'POST', class:'recharge-form'}
+                <div class="item">
+                    名 称：${coupon?.name}<br>
+                    金 额：<em class="cash">${coupon?.faceValue}</em>元
+                </div>
+                <div class="item item-btn">
+                    <input type="hidden" name="ridA" value="${ridA}">
+                    <input type="hidden" name="ridB" value="${ridB}">
+                    <button class="recharge-btn" id="confirm-btn" type="submit"> 确 定 </button>
+                </div>
+            #{/form}
+        #{/elseif}
+
+        <div class="recharge-instruction">
+            <strong>代金券充值只可用于消费，不能提现。</strong><br>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+$(document).ready(function(){
+    $('#diff-code').click(function(ev){
+        ev.preventDefault();
+        var img = $('#captchaImg');
+        var t = +new Date;
+        img.attr('src', '/captcha?id='+ t);
+        $("#randomID").val(t);
+    });
+
+    $('#recharge-btn').click(function(){
+        var pw = $('#recharge-passsword'),
+        vc = $('#verification-code');
+
+        if (pw.val() == '') {
+            $('#passsword-error').html('请输入充值密码');
+            pw.focus().keydown(function(){
+                $('#passsword-error').html('');
+            });
+            return false;
+        }
+        if (vc.val() == '') {
+            $('#verification-error').html('请输入验证码');
+            vc.focus().keydown(function(){
+                $('#verification-error').html('');
+            });
+            return false;
+        }
+
+    });
+});
+</script>
+
+

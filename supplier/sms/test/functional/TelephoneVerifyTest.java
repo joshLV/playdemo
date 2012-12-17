@@ -85,7 +85,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
         String sign = getSign(timestamp);
 
         Http.Response response = GET("/tel-verify?caller=" + caller + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
-        assertContentEquals("7", response);//;对不起，未找到此券
+        assertContentEquals("8", response);//;对不起，未找到此券
     }
 
     @Test
@@ -100,14 +100,14 @@ public class TelephoneVerifyTest extends FunctionalTest{
         String sign = getSign(timestamp);
 
         Http.Response response = GET("/tel-verify?caller=" + caller + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
-        assertContentEquals("8", response);//;对不起，商户不存在
+        assertContentEquals("7", response);//;对不起，商户不存在
 
         supplier.deleted = DeletedStatus.UN_DELETED;
         supplier.status = SupplierStatus.FREEZE;
         supplier.save();
 
         response = GET("/tel-verify?caller=" + caller +  "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
-        assertContentEquals("8", response);//;对不起，商户不存在
+        assertContentEquals("7", response);//;对不起，商户不存在
 
         supplier.status = SupplierStatus.NORMAL;
         supplier.save();
@@ -118,7 +118,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
         eCoupon.goods.save();
 
         response = GET("/tel-verify?caller=" + caller +  "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
-        assertContentEquals("8", response);//;对不起，券不存在
+        assertContentEquals("9", response);//;对不起，券不存在
 
         eCoupon.goods.supplierId = originSupplierId;
         eCoupon.goods.save();
@@ -127,7 +127,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
         supplierUser.delete();
         supplier.delete();
         response = GET("/tel-verify?caller=" + caller + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
-        assertContentEquals("8", response);//;对不起，商户不存在
+        assertContentEquals("7", response);//;对不起，商户不存在
     }
 
     @Test

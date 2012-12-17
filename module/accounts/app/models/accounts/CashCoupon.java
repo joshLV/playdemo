@@ -49,7 +49,7 @@ public class CashCoupon extends Model {
 	
 	/**
 	 * 充值码.
-	 * 为随机生成的15位数字
+	 * 伪随机生成的15位数字
 	 */
 	@Column(name="charge_code", unique = true)
 	public String chargeCode;

@@ -69,26 +69,28 @@ public class TelephoneVerify extends Controller {
             renderText("6");//签名错误
         }
 
-        //开始验证
-        ECoupon ecoupon = ECoupon.query(coupon, null);
-        if (ecoupon == null) {
-            Logger.info("telephone verify failed: coupon not found");
-            renderText("7");//对不起，未找到此券
-        }
-
         //查找店员
-        Supplier supplier = Supplier.findById(ecoupon.goods.supplierId);
-        SupplierUser supplierUser = null;
-        if (supplier != null) {
-            supplierUser = SupplierUser.find("byLoginNameAndSupplier", caller, supplier).first();
-        }
+        SupplierUser supplierUser = SupplierUser.find("byLoginName", caller).first();
         if (supplierUser == null || supplierUser.shop == null
                 || supplierUser.supplier == null
                 || supplierUser.supplier.deleted == DeletedStatus.DELETED
                 || supplierUser.supplier.status == SupplierStatus.FREEZE) {
             Logger.info("telephone verify failed: invalid caller %s", caller);
-            renderText("8");//对不起，商户不存在
+            renderText("7");//对不起，您的电话还没绑定，请使用已绑定的电话座机操作
         }
+
+        //开始验证
+        ECoupon ecoupon = ECoupon.query(coupon, null);
+        if (ecoupon == null) {
+            Logger.info("telephone verify failed: coupon not found");
+            renderText("8");//对不起，未找到此券
+        }
+        //验证打电话进来的商户和券所属的商户是一样的
+        if (!ecoupon.goods.supplierId.equals(supplierUser.supplier.getId())) {
+            Logger.info("telephone verify failed: supplier not match");
+            renderText("9");//对不起，您无权验证此券
+        }
+
 
         if (ecoupon.isFreeze == 1) {
             Logger.info("telephone verify failed: coupon is freeze");
@@ -99,10 +101,7 @@ public class TelephoneVerify extends Controller {
             Logger.info("telephone verify failed: %s", info);
             renderText("11");//对不起，该券无法消费
         }
-        if (!ecoupon.goods.supplierId.equals(supplierUser.supplier.getId())) {
-            Logger.info("telephone verify failed: wrong supplier");
-            renderText("7");//对不起，未找到此券  商户错误 todo
-        }
+        // 指定门店才能消费
 
         if (ecoupon.status == ECouponStatus.CONSUMED) {
             Logger.info("telephone verify failed: coupon consumed");
@@ -181,7 +180,7 @@ public class TelephoneVerify extends Controller {
 
             if (!ecoupon.consumeAndPayCommission(supplierUser.shop.id, null, supplierUser, VerifyCouponType.CLERK_MESSAGE)){
                 Logger.info("telephone verify failed: coupon has been refunded");
-                renderText("11");//对不起，该券已退款
+                renderText("11");//对不起，该券无法消费
                 return;
             }
 

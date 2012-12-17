@@ -1,0 +1,56 @@
+#{extends 'layout_operate/layout.html' /}
+#{include 'share/nav.html' /}
+#{set title:'生成代金券' /}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{form @OperateVouchers.generate(), method:'POST', class:'form-horizontal' }
+    <div class="control-group">
+        <label class="control-label" for="inputName">券名称</label>
+        <div class="controls">
+            <input type="text" id="inputName" name="name">
+            <span class="help-inline">必填</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="inputPrefix">卡号前缀</label>
+        <div class="controls">
+            <input type="text" id="inputPrefix" name="prefix">
+            <span class="help-inline">纯英文和数字，英文开头，3-10位,如 TEST20120925</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="inputUsername">绑定的消费者账号ID</label>
+        <div class="controls">
+            <input type="text" id="inputUsername" name="uid">
+            <span class="help-inline">这个不是必填的</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="inputFaceValue">面值</label>
+        <div class="controls">
+            <input type="text" id="inputFaceValue" name="faceValue">
+            <span class="help-inline">正整数(1-10000)</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="inputCount">数量</label>
+        <div class="controls">
+            <input type="text" id="inputCount" name="count">
+            <span class="help-inline">正整数(1-9999)</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="inputExpire">过期时间</label>
+        <div class="controls">
+            <input type="text" id="inputExpire" name="expire"  onfocus="WdatePicker({readOnly:true})" class="input-medium Wdate">
+            <span class="help-inline">正整数(1-9999)</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <button type="submit" class="btn btn-primary">勇敢的撒钱吧</button>
+        </div>
+    </div>
+#{/form}
+#{if err}
+    <div class="alert alert-error"> ${err} </div>
+#{/if}
