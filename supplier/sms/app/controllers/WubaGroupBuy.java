@@ -200,6 +200,14 @@ public class WubaGroupBuy extends Controller {
             return;
         }
 
+        if (coupon.status == ECouponStatus.CONSUMED) {
+            Logger.error("58tuan: ECoupon(id:" + coupon.id + ",SN:" + coupon.eCouponSn + ") is Consumed, " +
+                    "can't refund!");
+            putStatusAndMsg(result, "10100", "该券为已消费状态，无法退款，需要先联系视惠客服.");
+            finish(result);
+            return;
+        }
+
         if (coupon.status == ECouponStatus.REFUND) {
             finish(result);  // success!
             return;
