@@ -187,7 +187,7 @@ public class WubaGroupBuy extends Controller {
             finish(result);
             return;
         }
-        if (!status.equals("10") && !status.equals("11")) {
+        if (!"10".equals(status) && !"11".equals(status) && !"12".equals(status)) {
             putStatusAndMsg(result, "10100", "该券状态无法退款");
             finish(result);
             return;
@@ -197,6 +197,11 @@ public class WubaGroupBuy extends Controller {
         if (resaler == null) {
             Logger.error("can not find the resaler by login name: %s", Resaler.WUBA_LOGIN_NAME);
             putStatusAndMsg(result, "10100", "未找到58账户");
+            return;
+        }
+
+        if (coupon.status == ECouponStatus.REFUND) {
+            finish(result);  // success!
             return;
         }
 
