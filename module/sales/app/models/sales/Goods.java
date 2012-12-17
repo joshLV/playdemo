@@ -77,7 +77,10 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1874,6 +1877,19 @@ public class Goods extends Model {
         return result;
     }
 
+    /**
+     * 查找新创建或修改过的商品
+     * 用于solr更新索引
+     *
+     * @param endDate
+     * @param beginDate
+     * @return
+     */
+    public static List<Goods> findUpdatedGoods(Calendar endDate, Calendar beginDate) {
+        return Goods.find("(createdAt>? and createdAt <=?) or (updatedAt>? and updatedAt<=?)", beginDate, endDate, beginDate, endDate).fetch();
+    }
+
+
     //------------------------------------------- 使用solr服务进行搜索的方法 (Begin) --------------------------------------
     private static final String SOLR_ID = "id";
     private static final String SOLR_GOODS_NAME = "goods.name_s";
@@ -2178,6 +2194,14 @@ public class Goods extends Model {
                 }
             }
         }
+
+        //根据displayOrder重新排序
+        Collections.sort(categoryList, new Comparator<Category>() {
+            @Override
+            public int compare(Category c1, Category c2) {
+                return c1.displayOrder.compareTo(c2.displayOrder);
+            }
+        });
         return categoryList;
     }
 
