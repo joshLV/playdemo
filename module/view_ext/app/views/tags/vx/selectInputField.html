@@ -3,7 +3,7 @@
 *{id:        存放下拉文本框id的名称}*
 *{list:      下拉选项列表}*
 #{field _name}
-    #{if _importJs?:true}
+    #{if _importJs!=null?_importJs:true}
         #{set 'moreStyles'}
             #{get 'moreStyles'/}
         <link type="text/css" rel="stylesheet" href="@{'/public/stylesheets/jquery.autocomplete.css'}">
@@ -13,16 +13,17 @@
         <script src="@{'/public/javascripts/jquery.autocomplete.min.js'}" type="text/javascript"
                 charset="UTF-8"></script>
         <script src="@{'/public/javascripts/ChinesePY.js'}" type="text/javascript" charset="UTF-8"></script>
-        #{set selectArray:_array?:"list"/}
-        <script type="text/javascript">
-            var ${selectArray} = [
-                #{list items:_list, as:'row'}
-                    { firstPin:Pinyin.getWordsCode("${row.name}"), allPin:Pinyin.GetQP("${row.name}"), name:"${row.name}", id:"${row.id}" }#{if !row_isLast},#{/if}
-                #{/list}
-            ];
-        </script>
         #{/set}
     #{/if}
+    #{set selectArray:_array?:"list"/}
+<script type="text/javascript">
+    var ${selectArray} = [
+        #{list items:_list, as:'row'}
+            { firstPin:Pinyin.getWordsCode("${row.name}"), allPin:Pinyin.GetQP("${row.name}"), name:"${row.name}", id:"${row.id}" }#{if !row_isLast},#{/if}
+        #{/list}
+    ];
+</script>
+
     #{set 'moreScripts'}
         #{get 'moreScripts'/}
     <script type="text/javascript">
@@ -54,7 +55,8 @@
 
             $("#${field.id}").blur(function () {
                 var found = false;
-                var m = ${selectArray}.length;
+                var m = ${selectArray}.
+                length;
                 for (i = 0; i < m; i++) {
                     if (${selectArray}[i].name == $("#${field.id}").val()) {
                         found = true;
