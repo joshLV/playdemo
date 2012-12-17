@@ -29,8 +29,8 @@ GET     /coupons/batchexport/{id}/excel         BatchExportCoupons.batchCouponsE
 
 
 # 确认支付信息
-POST    /payment_info/confirm                   PaymentInfo.confirm
-GET     /payment_info/{orderNumber}             PaymentInfo.index
+POST    /payment_info/confirm                   ResalePaymentInfo.confirm
+GET     /payment_info/{orderNumber}             ResalePaymentInfo.index
 
 # 充值
 GET     /charge                                 Charge.index

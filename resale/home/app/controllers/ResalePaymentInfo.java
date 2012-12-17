@@ -1,7 +1,6 @@
 package controllers;
 
-import java.util.List;
-
+import controllers.modules.resale.cas.SecureCAS;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
@@ -9,17 +8,18 @@ import models.accounts.util.AccountUtil;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrderStatus;
+import models.payment.PaymentFlow;
 import models.payment.PaymentJournal;
 import models.payment.PaymentUtil;
-import models.payment.PaymentFlow;
 import models.resale.Resaler;
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.modules.resale.cas.SecureCAS;
+
+import java.util.List;
 
 @With(SecureCAS.class)
-public class PaymentInfo extends Controller {
+public class ResalePaymentInfo extends Controller {
 
     /**
      * 展示确认支付信息页.

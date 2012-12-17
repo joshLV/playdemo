@@ -15,7 +15,7 @@ public class ResaleHomeControllerInstancesTest extends UnitTest{
         assertTrue(new Charge() instanceof Controller);
         assertTrue(new Coupons() instanceof Controller);
         assertTrue(new OrderResult() instanceof Controller);
-        assertTrue(new PaymentInfo() instanceof Controller);
+        assertTrue(new ResalePaymentInfo() instanceof Controller);
         assertTrue(new ResalerAccounts() instanceof Controller);
         assertTrue(new ResalerCarts() instanceof Controller);
         assertTrue(new ResalerFavs() instanceof Controller);
