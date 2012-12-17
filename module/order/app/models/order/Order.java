@@ -1,27 +1,7 @@
 package models.order;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-
+import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
@@ -46,22 +26,36 @@ import models.sales.SecKillGoodsItem;
 import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
-import models.tsingtuan.TsingTuanOrder;
-import models.tsingtuan.TsingTuanSendOrder;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Index;
-
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.exceptions.UnexpectedException;
 import play.modules.paginate.JPAExtPaginator;
-import cache.CacheHelper;
+import play.modules.solr.Solr;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.RandomNumberUtil;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 
 @Entity
@@ -551,8 +545,8 @@ public class Order extends Model {
 
             orderItem.status = OrderStatus.CANCELED;
             orderItem.save();
-            //触发一下goods的save,使得goods的销量在搜索服务器中得以更新
-            orderItem.goods.save();
+            //更新在搜索服务器中goods的销量
+            Solr.save(orderItem.goods);
 
             //如果是秒杀商品，做回库处理
             cancelSecKillOrder(orderItem);
@@ -592,7 +586,9 @@ public class Order extends Model {
             orderItem.save();
 
             //FIXME: “更新搜索服务器中的商品库存”- 不应该通过保存商品的方式更新搜索服务
-            orderItem.goods.save();
+            Solr.save(orderItem.goods);
+
+//            orderItem.goods.save();
 
             if (orderItem.goods.materialType == MaterialType.REAL) {
                 haveFreight = true;
