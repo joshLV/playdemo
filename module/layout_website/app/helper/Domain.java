@@ -20,10 +20,6 @@ public class Domain {
         return getHost(request, "home");
     }
 
-    public static String getSupplierHost(Http.Request request,String subDomain) {
-        return "http://" + subDomain + "." + play.Play.configuration.getProperty("application.baseDomain");
-    }
-
     private static String getHost(Http.Request request, String subDomain) {
         if (Play.mode.isDev() && request != null && subDomain != null) {
             int port = subDomain.equals("www") ? 9001 : 9002;

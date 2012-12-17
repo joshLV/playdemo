@@ -63,6 +63,7 @@
     <permission key="HOT_KEYWORDS" text="热门关键词" roles="admin,editor,customservice,sales,manager"/>
     <permission key="PREPAYMENTS" text="预付款管理" roles="account"/>
     <permission key="PREPAYMENTS_NEW" text="预付款添加" roles="account"/>
+    <permission key="CHECK_ACCOUNTSEQUENCE" text="核帐" roles="account"/>
 
     <navigation key="supplier_app" text="商户管理" action="Suppliers.index" display-order="20">
         <navigation key="suppliers" text="商户" permissions="SUPPLIERS_NEW,SUPPLIERS">
@@ -165,6 +166,10 @@
                         permissions="PREPAYMENTS_NEW"/>
             <navigation key="prepayments_index" action="OperatePrepayments.index" text="预付款管理"
                         permissions="PREPAYMENTS"/>
+        </navigation>
+        <navigation key="check_accounts" text="核帐" permissions="CHECK_ACCOUNTSEQUENCE">
+            <navigation key="check_accountsequence" action="OperateFinances.index" text="核对资金明细"
+                        permissions="CHECK_ACCOUNTSEQUENCE"/>
         </navigation>
         <navigation key="report_app" text="财务报表">
             <navigation key="consumers_account_reports" action="OperateReports.showConsumerReport" text="消费者资金明细"

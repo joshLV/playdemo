@@ -267,6 +267,10 @@ GET     /reports/promotion                      OperateReports.showPromotionRepo
 GET     /financing_incoming_add                 FinancingIncomingNote.add
 POST    /financing_incoming                     FinancingIncomingNote.create
 
+# 核帐
+GET     /finances                               OperateFinances.index
+GET    /finances/check                          OperateFinances.checkAccountSequence
+
 # 提现管理
 GET     /withdraw                               WithdrawApproval.index
 GET     /withdraw/detail/{id}                   WithdrawApproval.detail

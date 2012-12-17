@@ -79,19 +79,7 @@ public class Account extends Model {
      */
     @Transient
     public BigDecimal getWithdrawAmount(Date date) {
-        BigDecimal afterWithdrawAmount = AccountSequence.getVostroAmount(this, date);
-        return (amount.compareTo(afterWithdrawAmount) <= 0) ? BigDecimal.ZERO : amount.subtract(afterWithdrawAmount);
-
-//        BigDecimal incomeAmount = AccountSequence.getIncomeAmount(this, date).subtract(afterWithdrawAmount);
-//
-//        if (uncashAmount == null) {
-//            return incomeAmount == null ? BigDecimal.ZERO : incomeAmount;
-//        }
-//        if (incomeAmount.compareTo(uncashAmount) <= 0) {
-//            return BigDecimal.ZERO;
-//        }
-//
-//        return incomeAmount.subtract(uncashAmount);
+        return AccountSequence.getVostroAmountTo(this, date);
     }
 
     /**

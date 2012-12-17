@@ -245,6 +245,7 @@ public class WithdrawApproval extends Controller {
         //预付款余额
         BigDecimal prepaymentBalance = lastPrepayment == null ? BigDecimal.ZERO : lastPrepayment.getBalance();
         //可提现金额（实际需打款金额）
+        System.out.println("amount:" + amount);
         BigDecimal needPay = Supplier.getWithdrawAmount(supplierAccount, lastPrepayment, amount, beginOfToday);
 
         Long prepaymentId = prepaymentBalance.compareTo(BigDecimal.ZERO) > 0 ? lastPrepayment.id : null;

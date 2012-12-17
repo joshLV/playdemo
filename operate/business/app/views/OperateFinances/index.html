@@ -1,0 +1,52 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'核对资金明细' /}
+#{include '/share/nav.html' /}
+<div class="body">
+#{if isOk==false}
+    <div class="alert">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>核帐失败!</strong>资金明细ID${accountSequence?.id},发生额：${accountSequence?.changeAmount}
+        ,余额：${accountSequence?.balance}.
+    </div>
+#{/if}
+#{elseif isOk!=null}
+    <div class="alert">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>核帐成功.</strong>
+    </div>
+#{/elseif}
+#{form @OperateFinances.checkAccountSequence() , id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
+    <legend>${title}</legend>
+    <div class="control-group">
+        <label class="control-label"><input type="radio" name="accountType" class="input-medium"
+            #{if accountType ==  models.accounts.AccountType.SUPPLIER} checked #{/if}
+                                            value="SUPPLIER">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户</label>
+
+        <div class="controls">
+            #{layout_operate.selectInputField name:"supplierName", id:"supplierId", list:supplierList/}
+            <span class="error">#{error 'supplierId'/}</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label"><input type="radio" name="accountType" class="input-medium"
+            #{if accountType ==  models.accounts.AccountType.RESALER} checked #{/if} value="RESALER">分销商帐号</label>
+
+        <div class="controls">
+            <input type="text" name="resalerLoginName" value="${resalerLoginName}">
+            <span class="error">#{error 'supplierId'/}</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label"><input type="radio" name="accountType" class="input-medium"
+            #{if accountType ==  models.accounts.AccountType.CONSUMER} checked #{/if} value="CONSUMER">消费者帐号</label>
+
+        <div class="controls">
+            <input type="text" name="consumerLoginName" value="${consumerLoginName}">
+            <span class="error">#{error 'supplierId'/}</span>
+        </div>
+    </div>
+    <div class="form-actions">
+        <input class="btn btn-primary" id="save" type="submit" value="核帐"/>
+    </div>
+#{/form}
+</div>
