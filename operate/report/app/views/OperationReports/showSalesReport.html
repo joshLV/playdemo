@@ -128,11 +128,11 @@
         </tr>
     #{/paginate.list}
     </table>
-*{#{if reportPage.getPageCount() > 1}}*
-*{<div class="pagination">}*
-*{<ul>}*
-*{#{paginate.controls items:reportPage /}}*
-*{</ul>}*
-*{</div>}*
-*{#{/if}}*
+#{if reportPage.getPageCount() > 1}
+    <div class="pagination">
+        <ul>
+            #{paginate.controls items:reportPage /}
+        </ul>
+    </div>
+#{/if}
 </div>
