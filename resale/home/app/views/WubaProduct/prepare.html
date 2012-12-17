@@ -46,7 +46,7 @@
 <h1 style="font-size:200%">商品信息</h1>
 
 <p>商品分类(可以用拼音搜索)<b>*</b></p>
-#{vx.selectInputField1 name:"prodType", id:"prodTypeId",value:1/}
+#{vx.selectInputField name:"prodType", id:"prodTypeId", array:"prodTypeArray",value:1,importJs:true/}
 <p>
     产品范畴<b>*</b>
     <input type="radio" name="prodCategory" value="0" checked> 消费类
@@ -176,7 +176,7 @@ ${mobileDescription?.raw()}
         <td width="400px">一百券商圈：<input type="text" size="30" value="${shop.areaName}"></td>
         <td width="520px">
             58商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;圈:#{vx.selectInputField name:"circleName${shop_index}",
-            id:"circleId_${shop_index}",importJs:shop_isFirst/}<b>*</b></td>
+            id:"circleId_${shop_index}",importJs:false,array:"list"/}<b>*</b></td>
     </tr>
     <tr>
         <td width="400px">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话:<input type="text"
@@ -236,7 +236,7 @@ ${mobileDescription?.raw()}
                                       value="${shop.shortTitle}">(最大50字)<b>*</b></td>
         <td width="520px">
             商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;圈:#{vx.selectInputField name:"circleName${shop_index}",
-            id:"circleId_${shop_index}",importJs:shop_isFirst, value: shop.circleId/}<b>*</b></td>
+            id:"circleId_${shop_index}",importJs:shop_isFirst, value: shop.circleId,array:"list"/}<b>*</b></td>
     </tr>
     <tr>
         <td width="400px">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话:<input type="text"
@@ -331,14 +331,14 @@ ${mobileDescription?.raw()}
     });
 
     //加载分类的list
-    slist = new Array(6);
+    prodTypeArray = new Array(6);
     var slistIndex = 0;
     $.each(eval(categoryData), function (i, item) {
-        slist[slistIndex++] = { firstPin:Pinyin.getWordsCode(item.name), allPin:Pinyin.GetQP(item.name), name:item.name, id:item.prodTypeId };
+        prodTypeArray[slistIndex++] = { firstPin:Pinyin.getWordsCode(item.name), allPin:Pinyin.GetQP(item.name), name:item.name, id:item.prodTypeId };
     });
-    for (m = 0; m < slist.length; m++) {
-        if (slist[m].id == ${prodTypeId}) {
-            $("#prodType").val(slist[m].name);
+    for (m = 0; m < prodTypeArray.length; m++) {
+        if (prodTypeArray[m].id == ${prodTypeId}) {
+            $("#prodType").val(prodTypeArray[m].name);
         }
     }
 
