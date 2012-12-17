@@ -52,7 +52,8 @@
     <permission key="CONSUMERS" text="用户管理" roles="customservice"/>
     <permission key="PROMOTION_LIST" text="活动管理" roles="customservice,editor"/>
     <permission key="send_sms" text="发送优惠券" roles="customservice,editor"/>
-    <permission key="CASH_COUPON" text="系统" roles="admin"/>
+    <permission key="CASH_COUPON" text="现金券" roles="admin"/>
+    <permission key="VOUCHER" text="抵用券" roles="admin"/>
     <permission key="VERIFIED_ECOUPON_REFUND" text="已消费券退款" roles="manager"/>
 
     <permission key="QUESTION" text="咨询管理" roles="customservice,editor"/>
@@ -205,6 +206,12 @@
                         permissions="CASH_COUPON"/>
             <navigation key="cash_coupon_generator" action="OperatorCashCoupons.generator" text="现金券生成"
                         permissions="CASH_COUPON"/>
+        </navigation>
+        <navigation key="voucher" text="抵用券">
+            <navigation key="voucher_index" action="OperateVouchers.index" text="抵用券管理"
+                        permissions="VOUCHER"/>
+            <navigation key="voucher_generator" action="OperateVouchers.generator" text="抵用券生成"
+                        permissions="VOUCHER"/>
         </navigation>
         <navigation key="seckill_goods" text="秒杀活动">
             <navigation key="seckill_goods_add" action="SecKillGoods.add" text="秒杀活动添加"

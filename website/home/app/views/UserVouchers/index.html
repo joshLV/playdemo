@@ -1,5 +1,5 @@
 #{extends 'main2.html' /}
-#{set title:'现金券' /}
+#{set title:'代金券券' /}
 #{set 'moreStyles'}
     #{asset.css src:['/y/user/userBase.css', '/y/user/userCashRecharge.css'] /}
 #{/set}
@@ -23,8 +23,8 @@
 
 
                 <div class="item item-passsword">
-                    <label for="recharge-passsword">充值密码：</label>
-                    <input type="text" id="recharge-passsword" name="couponCode" value="${couponCode}">
+                    <label for="recharge-passsword">代金券领取密码</label>
+                    <input type="text" id="recharge-passsword" name="voucherCode" value="${voucherCode}">
                     <span class="error" id="passsword-error"></span>
                 </div>
                 <div class="item item-verification">
@@ -36,7 +36,7 @@
                 </div>
                 <div class="item item-btn">
                     <input type="hidden" name="randomID" value="${randomID}" id="randomID">
-                    <button class="recharge-btn" id="recharge-btn" type="submit"> 充 值 </button>
+                    <button class="recharge-btn" id="recharge-btn" type="submit"> 领 取 </button>
                 </div>
             #{/form}
         #{/if}
@@ -55,8 +55,7 @@
         #{/elseif}
 
         <div class="recharge-instruction">
-            <strong>现金券充值只可用于消费，不能提现。</strong><br>
-            <span>充值步骤：</span>请输入您收到的现金券密码，点击充值后，券面金额将充值到您的账户余额，可在“<a href="">我的一百券-资金明细</a>”中查看。
+            <strong>代金券充值只可用于消费，不能提现。</strong><br>
         </div>
 
     </div>
