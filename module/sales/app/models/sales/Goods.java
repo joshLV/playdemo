@@ -288,6 +288,7 @@ public class Goods extends Model {
      * 原始图片路径
      */
     @Column(name = "image_path")
+    @SolrField
     public String imagePath;
 
     /**
