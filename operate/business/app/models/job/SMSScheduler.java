@@ -25,6 +25,9 @@ public class SMSScheduler extends Job {
         if (CollectionUtils.isEmpty(smsTaskList)) {
             return;
         }
+        if (CollectionUtils.isEmpty(smsTaskList)) {
+            return;
+        }
         for (SendSMSTask st : smsTaskList) {
             currentDate = new Date();
 

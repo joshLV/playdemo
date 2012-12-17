@@ -74,10 +74,11 @@ $(function(){
             <table class="order-tab" cellpadding="0" cellspacing="0">
                 <thead>
                 <tr class="col-name align">
-                    <th width="250">账户明细</th>
-                    <th width="150">类型</th>
-                    <th width="160">交易时间</th>
-                    <th width="160">金额</th>
+                    <th width="100">订单ID</th>
+                    <th width="50">类型</th>
+                    <th width="150">交易时间</th>
+                    <th width="100">金额</th>
+                    <th>备注</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -90,6 +91,7 @@ $(function(){
                     </td>
                     <td>${accountSequence.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
                     <td>${accountSequence.changeAmount}</td>
+                    <td>${accountSequence.remark}</td>
                 </tr>
                 #{/paginate.list}
                 </tbody>

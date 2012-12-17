@@ -30,7 +30,6 @@ public class OperateQuestions extends Controller {
 
     @ActiveNavigation("questions_index")
     public static void index(QuestionCondition condition) {
-        System.out.println("ini");
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         if (condition == null) {

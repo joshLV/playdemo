@@ -36,7 +36,6 @@ public class OperateConsumers extends Controller {
     }
 
     public static void show(long id) {
-        System.out.println("id>>>" + id);
         User user = User.findById(id);
         render(user);
     }
