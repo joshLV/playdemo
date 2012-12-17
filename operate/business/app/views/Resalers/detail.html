@@ -148,7 +148,7 @@
             </div>
         </div>
     #{/if}
-    #{elseif !"0".equals(flag)}
+    #{elseif hasHandleResalerCommissionRatioPermission == true && !"0".equals(flag)}
         <div class="control-group">
             <label class="control-label">佣金比例</label>
 

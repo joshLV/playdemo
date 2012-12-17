@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import models.accounts.AccountType;
+import models.order.Order;
+import models.resale.Resaler;
 import models.sales.Goods;
 import org.apache.commons.lang.StringUtils;
 import play.db.jpa.JPA;
@@ -30,6 +33,8 @@ public class SalesReport {
     public BigDecimal refundAmount;
     public BigDecimal profit;
     public BigDecimal netSalesAmount;
+    public BigDecimal totalCost;
+    public BigDecimal ratio;
 
     public SalesReport(Goods goods, BigDecimal originalPrice, Long buyNumber,
                        BigDecimal totalAmount, BigDecimal avgSalesPrice,
@@ -42,6 +47,15 @@ public class SalesReport {
         this.grossMargin = grossMargin;
         this.profit = profit;
         this.netSalesAmount = netSalesAmount;
+    }
+
+    //from resaler
+    public SalesReport(Goods goods, BigDecimal totalAmount, BigDecimal totalCost, BigDecimal profit, BigDecimal ratio) {
+        this.goods = goods;
+        this.totalAmount = totalAmount;
+        this.totalCost = totalCost;
+        this.profit = profit;
+        this.ratio = ratio;
     }
 
     //refund ecoupon
@@ -59,16 +73,16 @@ public class SalesReport {
      */
     public static List<SalesReport> query(SalesReportCondition condition) {
         //paidAt
-        String sql = "select new models.SalesReport(r.goods,r.originalPrice,count(r.buyNumber)" +
+        String sql = "select new models.SalesReport(r.goods,r.originalPrice,sum(r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)/count(r.buyNumber)" +
-                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*count(r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*count(r.buyNumber)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)/sum(r.buyNumber)" +
+                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*sum(r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*sum(r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue))" +
                 " from OrderItems r";
         String groupBy = " group by r.goods.id";
         Query query = JPA.em()
-                .createQuery(sql + condition.getFilter() + groupBy + " order by count(r.buyNumber) desc ");
+                .createQuery(sql + condition.getFilter() + groupBy + " order by sum(r.buyNumber) desc ");
 
 
         for (String param : condition.getParamMap().keySet()) {
@@ -76,6 +90,23 @@ public class SalesReport {
         }
 
         List<SalesReport> paidResultList = query.getResultList();
+
+
+        //from resaler
+        sql = "select new models.SalesReport(r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),r.originalPrice*sum(r.buyNumber)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-r.originalPrice*sum(r.buyNumber)" +
+                ",b.commissionRatio)" +
+                " from OrderItems r,Order o,Resaler b";
+        groupBy = " group by r.goods.id";
+        query = JPA.em()
+                .createQuery(sql + condition.getResalerFilter() + groupBy + " order by sum(r.buyNumber) desc ");
+
+
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+
+        List<SalesReport> paidResalerResultList = query.getResultList();
 
         //取得退款的数据 ecoupon
         sql = "select new models.SalesReport(sum(e.refundPrice),e.orderItems.goods) from ECoupon e ";
@@ -107,6 +138,15 @@ public class SalesReport {
             }
         }
 
+        //merge from resaler if commissionRatio
+        for (SalesReport resalerItem : paidResalerResultList) {
+            SalesReport item = map.get(getReportKey(resalerItem));
+            if (item == null) {
+                map.put(getReportKey(resalerItem), resalerItem);
+            } else {
+                item.profit = item.profit.subtract(resalerItem.totalAmount.subtract(resalerItem.totalCost)).add(resalerItem.profit);
+            }
+        }
 
         List resultList = new ArrayList();
         for (Goods key : map.keySet()) {
