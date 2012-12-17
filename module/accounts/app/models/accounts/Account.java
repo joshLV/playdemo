@@ -100,13 +100,4 @@ public class Account extends Model {
     public boolean isCreditable() {
         return this.creditable == AccountCreditable.YES;
     }
-
-    public static Account getConsumer(Long uid) {
-        return Account.find("byUidAndAccountType", uid, AccountType.CONSUMER).first();
-    }
-
-    public static Account getSupplier(Long uid) {
-        return Account.find("byUidAndAccountType", uid, AccountType.SUPPLIER).first();
-    }
-
 }

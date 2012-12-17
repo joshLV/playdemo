@@ -2,6 +2,7 @@ package models.consumer;
 
 import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.Account;
+import models.accounts.util.AccountUtil;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -369,7 +370,7 @@ public class User extends Model {
         if (account != null) {
             return account;
         }
-        account = Account.getConsumer(id);
+        account = AccountUtil.getConsumerAccount(id);
         return account;
     }
 

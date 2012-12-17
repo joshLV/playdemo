@@ -1,6 +1,6 @@
 #{extends 'layout_operate/layout.html' /}
 #{include 'share/nav.html' /}
-#{set title:'生成现金券' /}
+#{set title:'代金券' /}
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 
 <form class="well form-inline" action="@{OperatorCashCoupons.index()}" method="GET" id="form" name="form">
@@ -14,6 +14,10 @@
                 #{option "DELETED"}已删除#{/option}
                 #{/select}
             </td>
+            <td> <label class="control-label">抵用券名称</label> </td>
+            <td> <input type="text" name="condition.name" class="input-medium" value="${condition?.name}"/> </td>
+        </tr>
+        <tr>
             <td> <label class="control-label">使用状态</label> </td>
             <td>
                 #{select 'condition.usedStatus',id:'condition_used_status',value:condition?.usedStatus}
@@ -22,19 +26,19 @@
                 #{option "DELETED"}已使用#{/option}
                 #{/select}
             </td>
+            <td> <label class="control-label">绑定的消费者账号ID</label> </td>
+            <td> <input type="text" name="condition.userid" class="input-medium" value="${condition?.userid}"/> </td>
         </tr>
         <tr>
-            <td> <label class="control-label">消费券名称(前缀)</label> </td>
-            <td> <input type="text" name="condition.name" class="input-medium" value="${condition?.name}"/> </td>
-            <td> <label class="control-label">充值卡号(前缀)</label> </td>
-            <td> <input type="text" name="condition.serialNo" class="input-medium" value="${condition?.serialNo}"/><br/> </td>
-        </tr>
-        <tr>
-            <td> <label class="control-label">充值密码(完整)</label> </td>
-            <td> <input type="text" name="condition.chargeCode" class="input-medium" value="${condition?.chargeCode}"/> </td>
-            <td> <button type="submit" class="btn btn-primary">搜索</button> </td>
+            <td> <label class="control-label">绑定状态</label> </td>
             <td>
+                #{select 'condition.assignedStatus',id:'condition_assigned_status',value:condition?.assignedStatus}
+                #{option ""}全部#{/option}
+                #{option "UN_DELETED"}未绑定#{/option}
+                #{option "DELETED"}已绑定#{/option}
+                #{/select}
             </td>
+            <td> <button type="submit" class="btn btn-primary">搜索</button> </td>
         </tr>
     </table>
 </form>
@@ -44,9 +48,10 @@
     <tr>
         <th>券名称</th>
         <th>面值</th>
-        <th>卡号</th>
-        <th>卡密</th>
         <th>创建时间</th>
+        <td>绑定的账号</td>
+        <td>绑定时间</td>
+        <td>使用时间</td>
         <th>创建者</th>
         <th>状态/操作</th>
     </tr>
