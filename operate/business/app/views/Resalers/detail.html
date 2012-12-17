@@ -136,7 +136,7 @@
             #{/else}
             </div>
         </div>
-    #{if hasHandleResalerCommissionRatioPermission == true}
+    #{if hasHandleResalerCommissionRatioPermission == true && "0".equals(flag)}
         <div class="control-group">
             <label class="control-label">佣金比例</label>
 
@@ -148,7 +148,16 @@
             </div>
         </div>
     #{/if}
+    #{elseif !"0".equals(flag)}
+        <div class="control-group">
+            <label class="control-label">佣金比例</label>
 
+            <div class="controls">
+            ${resaler?.commissionRatio?:0}%
+            </div>
+        </div>
+
+    #{/elseif}
     </form>
     <form class="form-horizontal" id="checkFrm" method="post">
         <div class="form-actions">
