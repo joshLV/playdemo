@@ -182,10 +182,9 @@ public class SalesReport {
         BigDecimal netSalesAmount = BigDecimal.ZERO;
         BigDecimal refundAmount = BigDecimal.ZERO;
         for (SalesReport item : resultList) {
-            totalAmount = totalAmount.add(item.totalAmount);
+            totalAmount = totalAmount.add(item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount);
             netSalesAmount = netSalesAmount.add(item.netSalesAmount == null ? BigDecimal.ZERO : item.netSalesAmount);
             refundAmount = refundAmount.add(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount);
-
         }
         return new SalesReport(totalAmount, refundAmount, netSalesAmount);
     }
