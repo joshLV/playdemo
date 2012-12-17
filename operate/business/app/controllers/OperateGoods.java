@@ -636,9 +636,6 @@ public class OperateGoods extends Controller {
                 renderArgs.put("id", goodsId);
                 render("OperateGoods/edit2.html", goods, hasApproveGoodsPermission);
             }
-            if (goods.beginOnSaleAt == null || (goods.beginOnSaleAt != null && goods.beginOnSaleAt.compareTo(new Date()) < 0)) {
-                goods.beginOnSaleAt = new Date();
-            }
         }
         updateStatus(GoodsStatus.ONSALE, id);
     }

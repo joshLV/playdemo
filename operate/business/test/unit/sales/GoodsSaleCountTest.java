@@ -19,6 +19,7 @@ public class GoodsSaleCountTest extends UnitTest {
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
+
     }
 
     @Test
@@ -34,6 +35,7 @@ public class GoodsSaleCountTest extends UnitTest {
         assertEquals(new Long(1), goods.getRealSaleCount());
         assertEquals(new Long(19), goods.getRealStocks());
         order.refresh();
+
         // 取消订单后库存释放
         assertEquals(1, order.orderItems.size());
         order.status = OrderStatus.CANCELED;
@@ -54,6 +56,7 @@ public class GoodsSaleCountTest extends UnitTest {
         });
         Goods goods = ecoupon.goods;
         goods.cumulativeStocks= 20l;
+
         goods.save();
         Order order = ecoupon.order;
         order.status = OrderStatus.PAID;

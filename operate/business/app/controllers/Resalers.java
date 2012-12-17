@@ -2,11 +2,15 @@ package controllers;
 
 import models.resale.ResalerCreditable;
 import models.resale.*;
+import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
+
+import java.math.BigDecimal;
 
 @With(OperateRbac.class)
 @ActiveNavigation("resalers_index")
@@ -34,8 +38,9 @@ public class Resalers extends Controller {
      * @param id 分销商ID
      */
     public static void detail(Long id, String flag) {
+        Boolean hasHandleResalerCommissionRatioPermission = ContextedPermission.hasPermission("HANDLE_RESALER_COMMISSIONRATIO");
         Resaler resaler = Resaler.findById(id);
-        render(resaler, flag);
+        render(resaler, flag, hasHandleResalerCommissionRatioPermission);
     }
 
     /**
@@ -45,11 +50,13 @@ public class Resalers extends Controller {
      * @param status 状态
      * @param remark 备注
      */
-    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark, ResalerCreditable creditable, ResalerBatchExportCoupons batchExportCoupons) {
+    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark,
+                              ResalerCreditable creditable, ResalerBatchExportCoupons batchExportCoupons,
+                              BigDecimal commissionRatio) {
         if (status == ResalerStatus.UNAPPROVED) {
             level = null;
         }
-        Resaler.update(id, status, level, remark, creditable, batchExportCoupons);
+        Resaler.update(id, status, level, remark, creditable, batchExportCoupons, commissionRatio);
         index(null);
     }
 

@@ -6,15 +6,12 @@ import models.accounts.util.AccountUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Index;
-import play.data.validation.Email;
-import play.data.validation.MaxSize;
-import play.data.validation.MinSize;
-import play.data.validation.Phone;
-import play.data.validation.Required;
+import play.data.validation.*;
 import play.db.jpa.Model;
 import play.libs.Images;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Mobile;
+import play.modules.view_ext.annotation.Money;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,6 +19,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -31,11 +29,11 @@ public class Resaler extends Model {
 
     private static final long serialVersionUID = 16323229113062L;
 
-    public static final String JD_LOGIN_NAME    = "jingdong";
-    public static final String DD_LOGIN_NAME    = "dangdang";
-    public static final String YHD_LOGIN_NAME   = "yihaodian";
-    public static final String WUBA_LOGIN_NAME  = "wuba";
-    public static final String TAOBAO_LOGIN_NAME  = "taobao";
+    public static final String JD_LOGIN_NAME = "jingdong";
+    public static final String DD_LOGIN_NAME = "dangdang";
+    public static final String YHD_LOGIN_NAME = "yihaodian";
+    public static final String WUBA_LOGIN_NAME = "wuba";
+    public static final String TAOBAO_LOGIN_NAME = "taobao";
 
     /**
      * 分销商账户类型
@@ -115,6 +113,7 @@ public class Resaler extends Model {
     @Column(name = "app_secret_key")
     public String appSecretKey;
 
+
     /**
      * 分销商状态
      */
@@ -138,6 +137,14 @@ public class Resaler extends Model {
 
     @MaxSize(value = 500)
     public String remark;
+
+    /**
+     * 佣金比例
+     */
+    @Column(name = "commission_ratio")
+    @Min(0)
+    @Max(100)
+    public BigDecimal commissionRatio = new BigDecimal(0);
 
     @Transient
     public String oldPassword;
@@ -194,12 +201,16 @@ public class Resaler extends Model {
     }
 
 
-    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark, ResalerCreditable creditable) {
-        update(id, status, level, remark, creditable, null);
+    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark) {
+        update(id, status, level, remark, null, null, null);
     }
 
-    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark) {
-        update(id, status, level, remark, null, null);
+    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark, ResalerCreditable creditable) {
+        update(id, status, level, remark, creditable, null, null);
+    }
+
+    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark, ResalerCreditable creditable, ResalerBatchExportCoupons batchExportCoupons) {
+        update(id, status, level, remark, creditable, batchExportCoupons, null);
     }
 
     /**
@@ -209,7 +220,9 @@ public class Resaler extends Model {
      * @param status 状态
      * @param remark 备注
      */
-    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark, ResalerCreditable creditable, ResalerBatchExportCoupons batchExportCoupons) {
+    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark,
+                              ResalerCreditable creditable, ResalerBatchExportCoupons batchExportCoupons,
+                              BigDecimal commissionRatio) {
         Resaler resaler = Resaler.findById(id);
         if (status != null) resaler.status = status;
         if (level != null) resaler.level = level;
@@ -228,6 +241,11 @@ public class Resaler extends Model {
         }
         if (batchExportCoupons != null) {
             resaler.batchExportCoupons = batchExportCoupons;
+        }
+        if (commissionRatio == null) {
+            resaler.commissionRatio = BigDecimal.ZERO;
+        } else {
+            resaler.commissionRatio = commissionRatio;
         }
         resaler.save();
     }

@@ -7,7 +7,8 @@ function checkResaler(id, status, flg) {
         var level = $("#level").val();
         var creditable = $("input:radio[name='creditable']:checked").val()
         var batchExportCoupons = $("input:radio[name='batchExportCoupons']:checked").val()
-        var url = "/resalers/update?id=" + id + "&status=" + status + "&level=" + level + "&remark=" + remark + "&creditable=" + creditable + "&batchExportCoupons=" + batchExportCoupons;
+        var commissionRatio= $("#commissionRatio").val();
+        var url = "/resalers/update?id=" + id + "&status=" + status + "&level=" + level + "&remark=" + remark + "&creditable=" + creditable + "&batchExportCoupons=" + batchExportCoupons + "&commissionRatio=" + commissionRatio;
         $("#checkFrm").attr("method", "POST");
         $("#checkFrm").attr("action", url);
         $("#checkFrm").submit();

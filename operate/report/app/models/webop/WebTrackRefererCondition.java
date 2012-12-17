@@ -32,7 +32,7 @@ public class WebTrackRefererCondition {
             paramMap.put("Begin", begin);
         }
         if (end != null) {
-            condBuilder.append(" and w.createdAt < :End");
+            condBuilder.append(" and w.crezatedAt < :End");
             paramMap.put("End", DateUtil.getEndOfDay(end)); 
         }
 

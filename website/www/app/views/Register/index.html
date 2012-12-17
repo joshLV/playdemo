@@ -212,6 +212,7 @@ $(function(){
         //reEmail = /^(?:\w+\.?)*\w+@(?:\w+\.?)*\w+$/;
 
     $('#regist-form').submit(function(){
+
         if (username.val() == '') {
             username.css('border', '1px solid #F50');
             $('#username-error').text('请输入邮箱');

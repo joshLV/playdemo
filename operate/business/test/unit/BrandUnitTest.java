@@ -2,9 +2,11 @@ package unit;
 
 import java.util.List;
 
+
 import models.sales.Brand;
 import models.supplier.Supplier;
 
+import operate.rbac.ContextedPermission;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +26,6 @@ import factory.FactoryBoy;
  * Time: 4:14 PM
  */
 public class BrandUnitTest extends UnitTest {
-
     Brand brand;
 
     @Before
@@ -33,6 +34,7 @@ public class BrandUnitTest extends UnitTest {
         FactoryBoy.deleteAll();
 
         brand = FactoryBoy.create(Brand.class);
+
     }
 
     @Test
@@ -43,6 +45,7 @@ public class BrandUnitTest extends UnitTest {
 
         assertEquals(1, brands.size());
 
+
     }
 
     @Test
@@ -51,12 +54,14 @@ public class BrandUnitTest extends UnitTest {
         List<Brand> brands = Brand.findByOrder(supplier);
 
         assertEquals(1, brands.size());
+
     }
 
     @Test
     public void testGetBrandPage() {
         ModelPaginator brandPage = Brand.getBrandPage(1, 15, brand.supplier.id);
         assertEquals(1, brandPage.size());
+
         Brand firstBrand = (Brand) brandPage.get(0);
         assertEquals("来一份", firstBrand.name);
     }
@@ -66,6 +71,7 @@ public class BrandUnitTest extends UnitTest {
         String imageServer = Play.configuration.getProperty
                 ("image.server", "img0.dev.uhcdn.com");
         String imageURL = PathUtil.getImageUrl(imageServer, "/0/0/0/logo.jpg", "nw");
+
         assertEquals(imageURL, brand.getOriginalLogo());
     }
 

@@ -25,6 +25,8 @@
         #{else}
             <li class="first"><a class="login" id="login" href="${helper.Domain.getWWWHost(request)}/login">登录</a></li>
         <li><a class="signup" href="${helper.Domain.getWWWHost(request)}/register">注册</a></li>
+            *{<li><a class="signup j_auth" href="" target="_blank">注册</a></li>}*
+
 
 
 
@@ -161,7 +163,7 @@
     </div>
 </div>
 <!-- #footer -->
-#{asset.js src:['/u/jquery-1.7.2.min.js','/base/121031/base.js'] /}
+#{asset.js src:['/u/jquery-1.7.2.min.js','/base/121031/base.js','/base/121031/auth.js'] /}
 #{get 'moreScripts' /}
 <div style="display:none">
 #{if !play.Play.runingInTestMode()}
