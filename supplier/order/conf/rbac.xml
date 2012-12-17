@@ -3,10 +3,6 @@
     <role key="sales" text="销售经理"/>
     <role key="clerk" text="收款店员"/>
 
-    <!--
-      <permission key="ORDER" text="订单管理" roles="sales"/>
-      <permission key="ORDER_EDIT" text="修改订单" roles="sales" />
-    -->
     <permission key="COUPON" text="券管理" roles="clerk">
         <permission key="COUPON_INDEX" text="券列表" roles="clerk"/>
         <permission key="COUPON_VERIFY" text="验证券" roles="clerk"/>
@@ -14,13 +10,6 @@
         <permission key="COUPON_MULTI_VERIFY" text="批量券验证" roles="clerk"/>
     </permission>
 
-    <!--
-      <navigation key="order_app" text="销售订单" action="SupplierOrders.index" permissions="ORDER" display-order="50">
-        <navigation key="order" text="订单" permission="ORDER" permissions="ORDER">
-          <navigation key="order_index" action="SupplierOrders.index" text="订单管理" permissions="ORDER"/>
-        </navigation>
-      </navigation>
-    -->
     <navigation key="coupon_app" text="券管理" action="SupplierVerifySingleCoupons.index" display-order="60">
         <navigation key="coupon" text="消费券">
             <navigation key="coupons_index" action="SupplierCoupons.index" text="券列表" permissions="COUPON_INDEX"/>

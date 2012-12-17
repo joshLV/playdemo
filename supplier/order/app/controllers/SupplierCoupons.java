@@ -1,12 +1,6 @@
 package controllers;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.uhuila.common.util.DateUtil;
 import models.admin.SupplierUser;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
@@ -15,16 +9,19 @@ import models.order.VerifyCouponType;
 import models.sales.Shop;
 import models.sms.SMSUtil;
 import navigation.annotations.ActiveNavigation;
-
 import org.apache.commons.lang.StringUtils;
-
 import play.data.validation.Validation;
 import play.i18n.Messages;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import com.uhuila.common.util.DateUtil;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @With(SupplierRbac.class)
 public class SupplierCoupons extends Controller {
@@ -235,6 +232,8 @@ public class SupplierCoupons extends Controller {
         }
 
         condition.supplier = SupplierRbac.currentUser().supplier;
+
+        condition.status = ECouponStatus.CONSUMED;
 
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
