@@ -219,7 +219,7 @@
                         permissions="VOUCHER"/>
             <navigation key="voucher_generator" action="OperateVouchers.generator" text="抵用券生成"
                         permissions="VOUCHER"/>
-            <navigation key="voucher_assign" action="OperateVouchers.showAssign" text="抵用券生成"
+            <navigation key="voucher_assign" action="OperateVouchers.showAssign" text="抵用券分配"
                         permissions="VOUCHER"/>
         </navigation>
         <navigation key="seckill_goods" text="秒杀活动">

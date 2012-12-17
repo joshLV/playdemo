@@ -228,8 +228,11 @@ POST    /cash-coupon/generate                   OperatorCashCoupons.generate
 
 # 生成抵用券
 GET     /voucher                                OperateVouchers.index
+PUT     /voucher                                OperateVouchers.update
 GET     /voucher/generator                      OperateVouchers.generator
 POST    /voucher/generate                       OperateVouchers.generate
+GET     /voucher/assign                         OperateVouchers.showAssign
+POST    /voucher/assign                         OperateVouchers.assign
 
 GET     /shops                                  OperateShops.index
 GET     /shops/new                              OperateShops.add
