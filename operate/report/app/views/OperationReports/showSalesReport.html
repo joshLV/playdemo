@@ -76,24 +76,14 @@
                onfocus="WdatePicker({readOnly:true})" value="${condition?.end?.format()}">
         <button type="submit" class="btn btn-primary" id="search" onclick="showSalesReport()">搜索</button>
         <br/>
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        <button class="btn btn-primary" id="searchbtn" onclick="salesReportExcel()">导出报表</button>
-    #{if hasSeeSalesRepotProfitRight == true}
-        <button class="btn btn-primary" id="searchbtn" onclick="salesReportWithPrivilegeExcel()">导出报表附带利润</button>
-    #{/if}
+
+        <div style="float:right">
+            <button class="btn btn-primary" id="searchbtn" onclick="salesReportExcel()">导出报表</button>
+        #{if hasSeeSalesRepotProfitRight == true}
+            <button class="btn btn-primary" id="searchbtn" onclick="salesReportWithPrivilegeExcel()">导出报表附带利润</button>
+        #{/if}
+        </div>
+
         <ul class="nav nav-pills">
             <li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">今天</a></li>
             <li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>
