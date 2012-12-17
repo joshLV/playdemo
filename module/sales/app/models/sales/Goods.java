@@ -78,7 +78,6 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -769,7 +768,6 @@ public class Goods extends Model {
      */
     @Transient
     public String getImageSmall2Path() {
-        System.out.println(id + ":imagePath:" + imagePath);
         return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_SMALL2);
     }
 
@@ -1888,7 +1886,7 @@ public class Goods extends Model {
      * @param beginDate
      * @return
      */
-    public static List<Goods> findUpdatedGoods(Calendar endDate, Calendar beginDate) {
+    public static List<Goods> findUpdatedGoods(Date beginDate, Date endDate) {
         return Goods.find("(createdAt>? and createdAt <=?) or (updatedAt>? and updatedAt<=?)", beginDate, endDate, beginDate, endDate).fetch();
     }
 

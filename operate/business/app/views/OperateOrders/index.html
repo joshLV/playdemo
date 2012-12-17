@@ -66,12 +66,12 @@
             $('#frmlist').submit();
         });
     });
+
     function orderExcel() {
         $("#frmlist").attr("action", "@{OperateOrders.orderExcelOut()}");
         $("#frmlist").attr("method", "get");
         $("#frmlist").submit();
     }
-    ;
 
     function changeList(status) {
         $("#condition_status").val(status);

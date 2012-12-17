@@ -64,10 +64,10 @@
             <tr>
                 <td>付款账号详情：
                     #{if orders.userType == models.accounts.AccountType.CONSUMER}
-                        <a href="/consumers/${orders.userId}" target="_blank">&{'account.type.'+orders.userType}</a>
+                        <a href="/consumers/${orders.userId}" target="_blank">&{'account.type.'+orders.userType}:${loginName}</a>
                     #{/if}
                     #{if orders.userType == models.accounts.AccountType.RESALER}
-                        <a href="/resalers/${orders.userId}/view?flag=1" target="_blank">&{'account.type.'+orders.userType}</a>
+                        <a href="/resalers/${orders.userId}/view?flag=1" target="_blank">&{'account.type.'+orders.userType}:${loginName}</a>
                     #{/if}
                 </td>
                 <td></td>

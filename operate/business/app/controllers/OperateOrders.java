@@ -1,9 +1,11 @@
 package controllers;
 
+import models.consumer.User;
 import models.accounts.AccountType;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrdersCondition;
+import models.resale.Resaler;
 import models.sales.Brand;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
@@ -32,7 +34,7 @@ public class OperateOrders extends Controller {
         if (condition == null) {
             condition = new OrdersCondition();
             condition.hidPaidAtBegin = DateHelper.beforeDays(1);
-            condition.hidPaidAtEnd= new Date();
+            condition.hidPaidAtEnd = new Date();
         }
 
         // DESC 的值表示升降序，含7位，代表7个排序字段（不含订单编号,商品名称）， 1 为升序， 2 为降序， 0 为不排序
@@ -78,7 +80,6 @@ public class OperateOrders extends Controller {
         JPAExtPaginator<models.order.Order> orderList;
 
         orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE);
-        System.out.println("orderList>>>" + orderList.size());
         BigDecimal amountSummary = Order.summary(orderList);
 
         List<Brand> brandList = Brand.findByOrder(null, operatorId, hasSeeAllSupplierPermission);
@@ -109,7 +110,19 @@ public class OperateOrders extends Controller {
         models.order.Order orders = models.order.Order.findById(id);
         List<OrderItems> orderItems = orders.orderItems;
         //收货信息
-        render(orders, orderItems);
+        String loginName = "";
+        if (orders.userType == AccountType.RESALER) {
+            Resaler resaler = Resaler.findById(orders.userId);
+            if (resaler != null) {
+                loginName = resaler.loginName;
+            }
+        } else if (orders.userType == AccountType.CONSUMER) {
+            User user = User.findById(orders.userId);
+            if (user != null) {
+                loginName = user.loginName;
+            }
+        }
+        render(orders, orderItems, loginName);
     }
 
 
