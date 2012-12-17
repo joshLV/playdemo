@@ -17,7 +17,7 @@ import java.util.Map;
 
 @With(OperateRbac.class)
 @ActiveNavigation("goods_index")
-public class UploadFiles extends Controller {
+public class OperateUploadFiles extends Controller {
     public static final String IMAGE_MIDDLE = "234x178";
     public static String ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
     public static String FILE_TYPES = Play.configuration.getProperty("newsImg.fileTypes", "");

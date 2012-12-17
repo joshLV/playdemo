@@ -148,7 +148,7 @@ public class Suppliers extends Controller {
             return;
         }
         //检查目录
-        File uploadDir = new File(UploadFiles.ROOT_PATH);
+        File uploadDir = new File(OperateUploadFiles.ROOT_PATH);
         if (!uploadDir.isDirectory()) {
             Validation.addError("supplier.image", "validation.write");
         }
@@ -158,13 +158,13 @@ public class Suppliers extends Controller {
             Validation.addError("supplier.image", "validation.write");
         }
 
-        if (image.length() > UploadFiles.MAX_SIZE) {
+        if (image.length() > OperateUploadFiles.MAX_SIZE) {
             Validation.addError("supplier.image", "validation.maxFileSize");
         }
 
         //检查扩展名
         //定义允许上传的文件扩展名
-        String[] fileTypes = UploadFiles.FILE_TYPES.trim().split(",");
+        String[] fileTypes = OperateUploadFiles.FILE_TYPES.trim().split(",");
         String fileExt = image.getName().substring(image.getName().lastIndexOf(".") + 1).toLowerCase();
         if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
             Validation.addError("supplier.image", "validation.invalidType", StringUtils.join(fileTypes, ','));
@@ -183,8 +183,8 @@ public class Suppliers extends Controller {
         }
         //取得文件存储路径
 
-        String absolutePath = FileUploadUtil.storeImage(uploadImageFile, supplierId, UploadFiles.ROOT_PATH);
-        return absolutePath.substring(UploadFiles.ROOT_PATH.length(), absolutePath.length());
+        String absolutePath = FileUploadUtil.storeImage(uploadImageFile, supplierId, OperateUploadFiles.ROOT_PATH);
+        return absolutePath.substring(OperateUploadFiles.ROOT_PATH.length(), absolutePath.length());
     }
 
     /**

@@ -19,14 +19,14 @@ PUT     /goods/{id}/offSale                     OperateGoods.offSale
 PUT     /goods/{id}/reject                      OperateGoods.reject
 PUT     /goods/{id}/priority                    OperateGoods.priority
 DELETE  /goods/{id}                             OperateGoods.delete
-POST    /goods/images                           UploadFiles.uploadJson
+POST    /goods/images                           OperateUploadFiles.uploadJson
 POST    /goods_images/{id}                      OperateGoods.setDisplay
-POST    /goods_images                           UploadFiles.uploadImages
+POST    /goods_images                           OperateUploadFiles.uploadImages
 DELETE  /goods_images/{id}                      OperateGoods.deleteImage
 
-POST    /goods/filemanager                      UploadFiles.fileManagerJson
+POST    /goods/filemanager                      OperateUploadFiles.fileManagerJson
 GET     /goods_brands/{id}                      OperateBrands.goodsBrands
-GET     /category/sub/{id}                      Categories.showSubs
+GET     /category/sub/{id}                      OperateCategories.showSubs
 
 #类别管理
 GET     /category                               CategoryAdmin.index
@@ -71,7 +71,7 @@ GET     /seckill_goods/new                      SecKillGoods.add
 POST    /seckill_goods                          SecKillGoods.create
 GET     /seckill_goods/{id}/edit                SecKillGoods.edit
 PUT     /seckill_goods/{id}                     SecKillGoods.update
-POST    /seckill_goods/images                   UploadFiles.uploadJson
+POST    /seckill_goods/images                   OperateUploadFiles.uploadJson
 GET     /seckill_goods/{id}/check               SecKillGoods.checkGoodsId
 DELETE  /seckill_goods/{id}                     SecKillGoods.delete
 
@@ -114,8 +114,8 @@ PUT     /pointgoods/{id}/onSale                      OperatePointGoods.onSale
 PUT     /pointgoods/{id}/offSale                     OperatePointGoods.offSale
 PUT     /pointgoods/{id}/reject                      OperatePointGoods.reject
 DELETE  /pointgoods/{id}                             OperatePointGoods.delete
-POST    /pointgoods/images                           UploadFiles.uploadJson
-POST    /pointgoods/filemanager                      UploadFiles.fileManagerJson
+POST    /pointgoods/images                           OperateUploadFiles.uploadJson
+POST    /pointgoods/filemanager                      OperateUploadFiles.fileManagerJson
 GET     /pointgoods/imageName                        OperatePointGoods.imageName
 
 

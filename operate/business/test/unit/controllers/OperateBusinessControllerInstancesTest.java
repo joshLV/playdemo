@@ -11,7 +11,7 @@ import play.test.UnitTest;
 public class OperateBusinessControllerInstancesTest extends UnitTest{
     @Test
     public void controllerInstancesTest(){
-        assertTrue(new Categories() instanceof Controller);
+        assertTrue(new OperateCategories() instanceof Controller);
         assertTrue(new Files() instanceof  Controller);
         assertTrue(new OperateBrands() instanceof Controller);
         assertTrue(new OperateConsumers() instanceof Controller);
@@ -22,7 +22,7 @@ public class OperateBusinessControllerInstancesTest extends UnitTest{
         assertTrue(new OperateShops() instanceof Controller);
         assertTrue(new Resalers() instanceof Controller);
         assertTrue(new Suppliers() instanceof Controller);
-        assertTrue(new UploadFiles() instanceof Controller);
+        assertTrue(new OperateUploadFiles() instanceof Controller);
         assertTrue(new WithdrawApproval() instanceof Controller);
         assertTrue(new Promotions() instanceof Controller);
         

@@ -141,7 +141,7 @@ public class SecKillGoods extends Controller {
     private static void checkImageFile(File imagePath) {
         if (imagePath != null) {
             //检查目录
-            File uploadDir = new File(UploadFiles.ROOT_PATH);
+            File uploadDir = new File(OperateUploadFiles.ROOT_PATH);
             if (!uploadDir.isDirectory()) {
                 Validation.addError("secKillGoods.imagePath", "validation.write");
             }
@@ -151,13 +151,13 @@ public class SecKillGoods extends Controller {
                 Validation.addError("secKillGoods.imagePath", "validation.write");
             }
 
-            if (imagePath.length() > UploadFiles.MAX_SIZE) {
+            if (imagePath.length() > OperateUploadFiles.MAX_SIZE) {
                 Validation.addError("secKillGoods.imagePath", "validation.maxFileSize");
             }
 
             //检查扩展名
             //定义允许上传的文件扩展名
-            String[] fileTypes = UploadFiles.FILE_TYPES.trim().split(",");
+            String[] fileTypes = OperateUploadFiles.FILE_TYPES.trim().split(",");
             String fileExt = imagePath.getName().substring(imagePath.getName().lastIndexOf(".") + 1).toLowerCase();
             if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
                 Validation.addError("secKillGoods.imagePath", "validation.invalidType", StringUtils.join(fileTypes, ','));
@@ -176,12 +176,12 @@ public class SecKillGoods extends Controller {
             return "";
         }
         //取得文件存储路径
-        String absolutePath = FileUploadUtil.storeImage(uploadImageFile, goodsId, UploadFiles.ROOT_PATH);
+        String absolutePath = FileUploadUtil.storeImage(uploadImageFile, goodsId, OperateUploadFiles.ROOT_PATH);
         if (oldImageFile != null && !"".equals(oldImageFile)) {
-            File oldImage = new File(UploadFiles.ROOT_PATH + oldImageFile);
+            File oldImage = new File(OperateUploadFiles.ROOT_PATH + oldImageFile);
             oldImage.delete();
         }
-        return absolutePath.substring(UploadFiles.ROOT_PATH.length(), absolutePath.length());
+        return absolutePath.substring(OperateUploadFiles.ROOT_PATH.length(), absolutePath.length());
 
     }
 

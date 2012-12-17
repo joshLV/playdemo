@@ -1,11 +1,12 @@
 package controllers;
 
-import java.util.List;
 import models.sales.Category;
 import models.sales.CategorySerializer;
 import operate.rbac.annotations.ActiveNavigation;
 import play.mvc.Controller;
 import play.mvc.With;
+
+import java.util.List;
 
 /**
  * 商品分类的控制器.
@@ -16,7 +17,7 @@ import play.mvc.With;
  */
 @With(OperateRbac.class)
 @ActiveNavigation("goods_index")
-public class Categories extends Controller {
+public class OperateCategories extends Controller {
 
     public static void showSubs(Long id) {
         List<Category> categories = Category.findByParent(id);

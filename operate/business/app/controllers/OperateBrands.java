@@ -4,7 +4,6 @@ import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.FileUploadUtil;
 import models.sales.Brand;
 import models.supplier.Supplier;
-import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
@@ -92,12 +91,12 @@ public class OperateBrands extends Controller {
             return "";
         }
         //取得文件存储路径
-        String absolutePath = FileUploadUtil.storeImage(uploadImageFile, UploadFiles.ROOT_PATH);
+        String absolutePath = FileUploadUtil.storeImage(uploadImageFile, OperateUploadFiles.ROOT_PATH);
         if (oldImageFile != null && !"".equals(oldImageFile)) {
-            File oldImage = new File(UploadFiles.ROOT_PATH + oldImageFile);
+            File oldImage = new File(OperateUploadFiles.ROOT_PATH + oldImageFile);
             oldImage.delete();
         }
-        return absolutePath.substring(UploadFiles.ROOT_PATH.length(), absolutePath.length());
+        return absolutePath.substring(OperateUploadFiles.ROOT_PATH.length(), absolutePath.length());
     }
 
 
@@ -106,7 +105,7 @@ public class OperateBrands extends Controller {
             return;
         }
         //检查目录
-        File uploadDir = new File(UploadFiles.ROOT_PATH);
+        File uploadDir = new File(OperateUploadFiles.ROOT_PATH);
         if (!uploadDir.isDirectory()) {
             Validation.addError("brand.logo", "validation.write");
         }
@@ -116,13 +115,13 @@ public class OperateBrands extends Controller {
             Validation.addError("brand.logo", "validation.write");
         }
 
-        if (logo.length() > UploadFiles.MAX_SIZE) {
+        if (logo.length() > OperateUploadFiles.MAX_SIZE) {
             Validation.addError("brand.logo", "validation.maxFileSize");
         }
 
         //检查扩展名
         //定义允许上传的文件扩展名
-        String[] fileTypes = UploadFiles.FILE_TYPES.trim().split(",");
+        String[] fileTypes = OperateUploadFiles.FILE_TYPES.trim().split(",");
         String fileExt = logo.getName().substring(logo.getName().lastIndexOf(".") + 1).toLowerCase();
         if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
             Validation.addError("brand.logo", "validation.invalidType", StringUtils.join(fileTypes, ','));
