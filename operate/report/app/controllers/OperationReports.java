@@ -35,7 +35,10 @@ public class OperationReports extends Controller {
         // 分页
         ValuePaginator<SalesReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
 
-        render(condition, reportPage, hasSeeSalesRepotProfitRight);
+        // 汇总
+        SalesReport summary = SalesReport.getNetSummary(resultList);
+
+        render(condition, reportPage, hasSeeSalesRepotProfitRight, summary);
 
     }
 

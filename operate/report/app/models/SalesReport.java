@@ -35,6 +35,7 @@ public class SalesReport {
     public BigDecimal netSalesAmount;
     public BigDecimal totalCost;
     public BigDecimal ratio;
+    public BigDecimal originalAmount;
 
     public SalesReport(Goods goods, BigDecimal originalPrice, Long buyNumber,
                        BigDecimal totalAmount, BigDecimal avgSalesPrice,
@@ -63,6 +64,17 @@ public class SalesReport {
         this.refundAmount = refundAmount;
         this.goods = goods;
 
+    }
+
+    public SalesReport(Long buyNumber, BigDecimal originalAmount) {
+        this.buyNumber = buyNumber;
+        this.originalAmount = originalAmount;
+    }
+
+    public SalesReport(BigDecimal totalAmount, BigDecimal refundAmount, BigDecimal netSalesAmount) {
+        this.totalAmount = totalAmount;
+        this.netSalesAmount = netSalesAmount;
+        this.refundAmount = refundAmount;
     }
 
     /**
@@ -154,6 +166,28 @@ public class SalesReport {
         }
 
         return resultList;
+    }
+
+    /**
+     * 取得净销售的总计
+     *
+     * @param resultList
+     * @return
+     */
+    public static SalesReport getNetSummary(List<SalesReport> resultList) {
+        if (resultList == null || resultList.size() == 0) {
+            return new SalesReport(0l, BigDecimal.ZERO);
+        }
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        BigDecimal netSalesAmount = BigDecimal.ZERO;
+        BigDecimal refundAmount = BigDecimal.ZERO;
+        for (SalesReport item : resultList) {
+            totalAmount = totalAmount.add(item.totalAmount);
+            netSalesAmount = netSalesAmount.add(item.netSalesAmount == null ? BigDecimal.ZERO : item.netSalesAmount);
+            refundAmount = refundAmount.add(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount);
+
+        }
+        return new SalesReport(totalAmount, refundAmount, netSalesAmount);
     }
 
     private static Goods getReportKey(SalesReport refoundItem) {
