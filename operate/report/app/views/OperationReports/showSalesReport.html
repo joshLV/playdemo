@@ -116,7 +116,7 @@
     #{paginate.list items:reportPage, as:'report'}
         <tr>
             #{set i:i+1/}
-            <td>${report?.goods?.code} --- ${report?.goods?.getSupplier().fullName}</td>
+            <td>${report?.goods?.code}</td>
             <td>${report?.goods?.shortName}</td>
             <td>${(report?.originalPrice?:0).formatCurrency('CNY')}</td>
             <td>${(report?.avgSalesPrice?:0).formatCurrency('CNY')}</td>
