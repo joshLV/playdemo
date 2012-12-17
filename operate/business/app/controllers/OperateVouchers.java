@@ -42,8 +42,14 @@ public class OperateVouchers extends Controller {
         render(voucherPage, condition);
     }
 
+    @ActiveNavigation("voucher_assign")
+    public static void showAssign(String err) {
+        render(err);
+    }
+
+
     @ActiveNavigation("voucher_generator")
-    public static void generator(String err){
+    public static void generator(String err) {
         render(err);
     }
 
