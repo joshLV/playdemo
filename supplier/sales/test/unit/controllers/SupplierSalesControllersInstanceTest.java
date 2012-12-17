@@ -13,7 +13,6 @@ public class SupplierSalesControllersInstanceTest extends UnitTest {
     @Test
     public void controllerInstancesTest(){
         assertTrue(new Categories() instanceof Controller);
-        assertTrue(new Files() instanceof Controller);
         assertTrue(new Shops() instanceof Controller);
         assertTrue(new SupplierGoods() instanceof Controller);
         assertTrue(new UploadFiles() instanceof Controller);
