@@ -14,7 +14,7 @@ import javax.persistence.OptimisticLockException;
 import java.util.Map;
 
 @With(SecureCAS.class)
-public class OrderResult extends Controller {
+public class ResalerOrderResult extends Controller {
 
     /**
      * 支付 url 跳转回来.
@@ -52,6 +52,6 @@ public class OrderResult extends Controller {
             }
         }
         PaymentJournal.saveUrlReturnJournal(orderNumber, params.all(), result, success);
-        renderTemplate("OrderResult/index.html", errorMessage, orderNumber);
+        renderTemplate("ResalerOrderResult/index.html", errorMessage, orderNumber);
     }
 }

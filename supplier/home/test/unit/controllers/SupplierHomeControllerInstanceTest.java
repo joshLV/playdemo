@@ -12,8 +12,7 @@ public class SupplierHomeControllerInstanceTest extends UnitTest {
     @Test
     public void controllerInstanceTest(){
         assertTrue(new AccountSequences() instanceof Controller);
-        assertTrue(new Application() instanceof Controller);
-        assertTrue(new Home() instanceof Controller);
+        assertTrue(new SupplierHome() instanceof Controller);
         assertTrue(new HomeSuppliers() instanceof Controller);
         assertTrue(new SupplierWithdraw() instanceof Controller);
     }

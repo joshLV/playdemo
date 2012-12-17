@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET     /                                       Home.index
+GET     /                                       SupplierHome.index
 
 # 资金帐户明细
 GET     /account-sequences                      AccountSequences.index
