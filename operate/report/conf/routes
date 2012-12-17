@@ -47,6 +47,7 @@ GET     /sales_report_excel                     OperationReports.salesReportExce
 
 # Home page
 GET     /                                       OperateReportApplication.index
+GET     /operation_report                       OperationReports.index
 
 # Map static resources from the /app/public folder to the /public path
 GET     /public/                                staticDir:public
