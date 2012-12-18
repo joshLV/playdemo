@@ -1,10 +1,8 @@
 package controllers;
 
+import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.AccountType;
-import static models.accounts.AccountType.SUPPLIER;
-import static models.accounts.AccountType.RESALER;
-import static models.accounts.AccountType.CONSUMER;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
 import models.resale.Resaler;
@@ -14,8 +12,6 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.util.List;
-import models.accounts.Account;
-import models.accounts.AccountSequence;
 
 /**
  * 财务核帐.
@@ -34,7 +30,12 @@ public class OperateFinances extends Controller {
     }
 
     public static void checkAccountSequence(Long supplierId, String resalerLoginName, String consumerLoginName, AccountType accountType) {
+        List<Supplier> supplierList = Supplier.findUnDeleted();
+
         long uid = 0;
+        if (accountType == null) {
+            render("OperateFinances/index.html", supplierList);
+        }
         switch (accountType) {
             case SUPPLIER:
                 uid = supplierId;
@@ -55,7 +56,7 @@ public class OperateFinances extends Controller {
         Account account = AccountUtil.getAccount(uid, accountType);
         AccountSequence accountSequence = AccountSequence.checkAccountAmount(account);
         boolean isOk = accountSequence == null;
-        render("OperateFinances/index.html", isOk, accountSequence, supplierId, resalerLoginName, consumerLoginName, accountType);
+        render("OperateFinances/index.html", supplierList, isOk, accountSequence, supplierId, resalerLoginName, consumerLoginName, accountType);
     }
 
 }
