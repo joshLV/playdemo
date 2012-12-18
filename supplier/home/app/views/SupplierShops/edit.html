@@ -1,0 +1,10 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set title:'编辑门店' /}
+#{set menu:"shops" /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/shops-add.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/shops-edit.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+<form class="form-horizontal" action="@{SupplierShops.update(shop.id)}" method="post">
+#{include '/SupplierShops/shopForm.html' /}
+</form>
