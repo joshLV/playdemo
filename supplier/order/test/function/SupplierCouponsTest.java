@@ -19,11 +19,11 @@ import play.vfs.VirtualFile;
 import util.DateHelper;
 
 /**
- * Created with IntelliJ IDEA.
+ * 商户券功能测试.
+ *
  * User: wangjia
  * Date: 12-10-9
  * Time: 下午6:46
- * To change this template use File | Settings | File Templates.
  */
 public class SupplierCouponsTest extends FunctionalTest {
     Supplier supplier;
