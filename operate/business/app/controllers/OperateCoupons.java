@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.List;
 
 @With(OperateRbac.class)
-@ActiveNavigation("coupons_index")
 public class OperateCoupons extends Controller {
 
     public static int PAGE_SIZE = 15;
@@ -69,6 +68,7 @@ public class OperateCoupons extends Controller {
      *
      * @param id
      */
+    @ActiveNavigation("coupons_index")
     public static void freeze(long id) {
         ECoupon.freeze(id, OperateRbac.currentUser().userName);
         index(null);
@@ -88,6 +88,7 @@ public class OperateCoupons extends Controller {
     /**
      * 券号列表
      */
+    @ActiveNavigation("coupons_index")
     public static void couponHistory(Long couponId) {
         ECoupon coupon = ECoupon.findById(couponId);
         if (coupon == null) {
@@ -99,18 +100,18 @@ public class OperateCoupons extends Controller {
         render("OperateCoupons/history.html", couponSn, couponList);
     }
 
+    @Right("ECOUPON_REFUND")
     public static void refund(Long couponId) {
         ECoupon coupon = ECoupon.findById(couponId);
-        Boolean hasEcouponRefundPermission = ContextedPermission.hasPermission("ECOUPON_REFUND");
         Boolean couponNoRefund = false;
         if (coupon.goods.noRefund != null && coupon.goods.noRefund == true) {
             couponNoRefund = true;
         }
-        render("OperateCoupons/refund.html", couponNoRefund, coupon, couponId, hasEcouponRefundPermission);
+        render("OperateCoupons/refund.html", couponNoRefund, coupon, couponId);
     }
 
+    @Right("ECOUPON_REFUND")
     public static void handleRefund(Long couponId, String eCouponSn, String refundComment) {
-        Boolean hasEcouponRefundPermission = ContextedPermission.hasPermission("ECOUPON_REFUND");
         if (StringUtils.isBlank(eCouponSn)) {
             Validation.addError("eCouponSn", "券号不能为空");
         }
@@ -139,7 +140,7 @@ public class OperateCoupons extends Controller {
             if (coupon.goods.noRefund != null && coupon.goods.noRefund == true) {
                 couponNoRefund = true;
             }
-            render("OperateCoupons/refund.html", couponNoRefund, coupon, couponId, eCouponSn, refundComment, hasEcouponRefundPermission);
+            render("OperateCoupons/refund.html", couponNoRefund, coupon, couponId, eCouponSn, refundComment);
         }
         String returnFlg = "";
         if (ecoupon.status == ECouponStatus.UNCONSUMED && ecoupon.order.userType == AccountType.CONSUMER) {
@@ -164,6 +165,7 @@ public class OperateCoupons extends Controller {
      *
      * @param id
      */
+    @ActiveNavigation("coupons_index")
     public static void sendMessage(long id) {
         boolean sendFalg = ECoupon.sendMessage(id);
         ECoupon eCoupon = ECoupon.findById(id);
@@ -171,6 +173,7 @@ public class OperateCoupons extends Controller {
         renderJSON(sendFalg ? "0" : "1");
     }
 
+    @ActiveNavigation("coupons_index")
     public static void couponExcelOut(CouponsCondition condition) {
 
         if (condition == null) {

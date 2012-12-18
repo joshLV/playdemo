@@ -2,7 +2,6 @@
 #{include 'share/nav.html' /}
 #{set title:'电子券退款' /}
 <div class="body">
-#{if hasEcouponRefundPermission == true}
     <legend>电子券 退款</legend>
     <table class="table table-striped table-bordered table-condensed">
         <thead>
@@ -57,5 +56,4 @@
         </div>
         <input type="hidden" name="couponId" id="couponId" value="${couponId}"/>
     #{/form}
-#{/if}
 </div>
