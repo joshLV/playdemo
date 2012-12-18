@@ -65,9 +65,9 @@ public class UserGoldenCoin extends Model {
         this.createdAt = new Date();
     }
 
-    public static JPAExtPaginator<UserGoldenCoin> find(UserCondition condition, int pageNumber, int pageSize) {
+    public static JPAExtPaginator<UserGoldenCoin> find(User user,UserCondition condition, int pageNumber, int pageSize) {
         JPAExtPaginator<UserGoldenCoin> coinsPage = new JPAExtPaginator<>
-                ("UserGoldenCoin u", "u", UserGoldenCoin.class, condition.getCoinsCondition(),
+                ("UserGoldenCoin u", "u", UserGoldenCoin.class, condition.getCoinsCondition(user),
                         condition.paramsMap)
                 .orderBy("u.createdAt desc");
         coinsPage.setPageNumber(pageNumber);
@@ -82,7 +82,7 @@ public class UserGoldenCoin extends Model {
      * @param user
      * @return
      */
-    public static Long getCoinNumber(User user) {
+    public static Long getCheckinNumber(User user) {
         EntityManager entityManager = JPA.em();
         String sql = "SELECT count( id ) FROM UserGoldenCoin WHERE user = :user and createdAt >=:beginDate and createdAt <=:endDate";
         Query q = entityManager.createQuery(sql);
@@ -96,18 +96,15 @@ public class UserGoldenCoin extends Model {
 
 
     /**
-     * 取得该用户当月签到的金币数
+     * 取得该用户签到的总金币数
      *
      * @param user
      * @return
      */
     public static Long getTotalCoins(User user) {
         EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("SELECT sum( number ) FROM UserGoldenCoin WHERE user = :user and createdAt >=:beginDate and createdAt <=:endDate");
+        Query q = entityManager.createQuery("SELECT sum( number ) FROM UserGoldenCoin WHERE user = :user ");
         q.setParameter("user", user);
-        q.setParameter("beginDate", DateUtil.getMonthFirstDay());
-        q.setParameter("endDate", DateUtil.getEndOfDay());
-
         Object result = q.getSingleResult();
 
         return result == null ? 0 : (Long) result;

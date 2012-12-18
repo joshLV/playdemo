@@ -48,17 +48,9 @@ public class UserGoldenUnitTest extends UnitTest {
 
     @Test
     public void testList() {
-        JPAExtPaginator<UserGoldenCoin> reportPage = UserGoldenCoin.find(new UserCondition(), 1, 15);
+        JPAExtPaginator<UserGoldenCoin> reportPage = UserGoldenCoin.find(user,new UserCondition(), 1, 15);
         assertEquals(21, reportPage.size());
-    }
-
-    @Test
-    public void test_getCoinNumber() {
-        assertEquals(105, UserGoldenCoin.getCoinNumber(user).intValue());
-    }
-
-    @Test
-    public void test_getTotalCoins() {
+        assertEquals(21, UserGoldenCoin.getCheckinNumber(user).intValue());
         assertEquals(105, UserGoldenCoin.getTotalCoins(user).intValue());
     }
 }

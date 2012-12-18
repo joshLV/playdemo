@@ -20,10 +20,13 @@ public class UserCondition {
     public int tradeType;
     public Map<String, Object> paramsMap = new HashMap<>();
 
-    public String getCoinsCondition() {
+    public String getCoinsCondition(User user) {
 
         StringBuilder sql = new StringBuilder("1=1");
-
+        if (user != null) {
+            sql.append(" and u.user = :user");
+            paramsMap.put("user", user);
+        }
         if (createdAtBegin != null) {
             sql.append(" and u.createdAt >= :createdAtBegin");
             paramsMap.put("createdAtBegin", createdAtBegin);

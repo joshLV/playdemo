@@ -359,7 +359,7 @@ public class Goods2 extends Controller {
         //判断是否签到
         UserGoldenCoin userGoldenCoin = UserGoldenCoin.getCheckinInfo(user,false);
         renderArgs.put("isCheckinToday", userGoldenCoin != null);
-        renderArgs.put("coinNumber", UserGoldenCoin.getCoinNumber(user));
+        renderArgs.put("checkinNumber", UserGoldenCoin.getCheckinNumber(user));
         renderArgs.put("totalCoins", UserGoldenCoin.getTotalCoins(user));
 
 

@@ -39,7 +39,7 @@ public class GoldenCoinReports extends Controller {
             condition.createdAtBegin = DateUtil.getBeginOfDay();
             condition.createdAtEnd = DateUtil.getEndOfDay(new Date());
         }
-        JPAExtPaginator<UserGoldenCoin> reportPage = UserGoldenCoin.find(condition, pageNumber, PAGE_SIZE);
+        JPAExtPaginator<UserGoldenCoin> reportPage = UserGoldenCoin.find(null,condition, pageNumber, PAGE_SIZE);
         CheckinRelations summary = CheckinRelations.summary(reportPage);
 
         render(reportPage, condition, summary);

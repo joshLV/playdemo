@@ -38,10 +38,10 @@ public class UserCoins extends Controller {
         if (condition == null) {
             condition = new UserCondition();
         }
-        JPAExtPaginator<UserGoldenCoin> coinList = UserGoldenCoin.find(condition, pageNumber, PAGE_SIZE);
+        JPAExtPaginator<UserGoldenCoin> coinList = UserGoldenCoin.find(user,condition, pageNumber, PAGE_SIZE);
         BreadcrumbList breadcrumbs = new BreadcrumbList("金币明细", "/user-coins");
 
-        Long coinsNumber = UserGoldenCoin.getCoinNumber(user);
+        Long coinsNumber = UserGoldenCoin.getTotalCoins(user);
 
         //兑换比例
         Long number = UserGoldenCoin.getPersentOfCoins(coinsNumber);
@@ -56,7 +56,7 @@ public class UserCoins extends Controller {
     public static void exchange(Long exNumber) {
         User user = SecureCAS.getUser();
         //总金币数
-        Long coinsNumber = UserGoldenCoin.getCoinNumber(user);
+        Long coinsNumber = UserGoldenCoin.getTotalCoins(user);
         //兑换比例
         Long number = UserGoldenCoin.getPersentOfCoins(coinsNumber);
         if (exNumber > number) {
