@@ -127,7 +127,7 @@
             <td>${report?.buyNumber?:0}</td>
             <td>${(report?.totalAmount?:0).formatCurrency('CNY')}</td>
             <td>${(report?.refundAmount?:0).formatCurrency('CNY')}</td>
-            <td>${(report?.netSalesAmount?:0).formatCurrency('CNY')}</td>
+            <td>￥${(report?.netSalesAmount?:0)}</td>
             #{if hasSeeSalesRepotProfitRight == true}
                 <td>${(report?.grossMargin?:0).format('#')}%</td>
                 <td>${(report?.profit?:0).formatCurrency('CNY')}</td>
