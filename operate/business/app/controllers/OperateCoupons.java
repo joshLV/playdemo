@@ -1,5 +1,6 @@
 package controllers;
 
+import models.accounts.AccountType;
 import models.admin.OperateUser;
 import models.order.CouponHistory;
 import models.order.CouponsCondition;
@@ -11,6 +12,7 @@ import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import operate.rbac.annotations.Right;
 import org.apache.commons.lang.StringUtils;
+import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -31,6 +33,8 @@ public class OperateCoupons extends Controller {
      */
     @ActiveNavigation("coupons_index")
     public static void index(CouponsCondition condition) {
+        Boolean hasEcouponRefundPermission = ContextedPermission.hasPermission("ECOUPON_REFUND");
+
         if (condition == null) {
             condition = new CouponsCondition();
             condition.hidPaidAtBegin = DateHelper.beforeDays(1);
@@ -57,7 +61,7 @@ public class OperateCoupons extends Controller {
         BigDecimal amountSummary = ECoupon.summary(couponPage);
         //判断角色是否有解冻券号的权限
         boolean hasRight = ContextedPermission.hasPermission("COUPON_UNFREEZE");
-        render(couponPage, condition, amountSummary, hasRight);
+        render(couponPage, condition, amountSummary, hasRight, hasEcouponRefundPermission);
     }
 
     /**
@@ -94,6 +98,64 @@ public class OperateCoupons extends Controller {
         String couponSn = coupon.getMaskedEcouponSn();
         render("OperateCoupons/history.html", couponSn, couponList);
     }
+
+    public static void refund(Long couponId) {
+        ECoupon coupon = ECoupon.findById(couponId);
+        Boolean hasEcouponRefundPermission = ContextedPermission.hasPermission("ECOUPON_REFUND");
+        Boolean couponNoRefund = false;
+        if (coupon.goods.noRefund != null && coupon.goods.noRefund == true) {
+            couponNoRefund = true;
+        }
+        render("OperateCoupons/refund.html", couponNoRefund, coupon, couponId, hasEcouponRefundPermission);
+    }
+
+    public static void handleRefund(Long couponId, String eCouponSn, String refundComment) {
+        Boolean hasEcouponRefundPermission = ContextedPermission.hasPermission("ECOUPON_REFUND");
+        if (StringUtils.isBlank(eCouponSn)) {
+            Validation.addError("eCouponSn", "券号不能为空");
+        }
+        if (StringUtils.isBlank(refundComment)) {
+            Validation.addError("refundComment", "备注不能为空");
+        }
+
+        ECoupon prevEcoupon = ECoupon.findById(couponId);
+        ECoupon ecoupon = ECoupon.find("eCouponSn=?", eCouponSn).first();
+        if (ecoupon != null && prevEcoupon != null && !prevEcoupon.equals(ecoupon)) {
+            Validation.addError("eCouponSn", "此券号与要退款的券号不一致，请核实");
+        }
+
+        if (ecoupon == null) {
+            Validation.addError("eCouponSn", "不存在的券号");
+        }
+        if (ecoupon != null && ecoupon.status == ECouponStatus.CONSUMED) {
+            Validation.addError("eCouponSn", "券号已消费");
+        }
+
+        if (Validation.hasErrors()) {
+            ECoupon coupon = ECoupon.findById(couponId);
+            Boolean couponNoRefund = false;
+            if (coupon.goods.noRefund != null && coupon.goods.noRefund == true) {
+                couponNoRefund = true;
+            }
+            render("OperateCoupons/refund.html", couponNoRefund, coupon, couponId, eCouponSn, refundComment, hasEcouponRefundPermission);
+        }
+        String returnFlg = "";
+        if (ecoupon.order.userType == AccountType.CONSUMER) {
+            returnFlg = ECoupon.applyRefund(ecoupon, ecoupon.order.userId, AccountType.CONSUMER, OperateRbac.currentUser().userName, refundComment);
+        }
+        if (ecoupon.order.userType == AccountType.RESALER) {
+            returnFlg = ECoupon.applyRefund(ecoupon, ecoupon.order.userId, AccountType.RESALER, OperateRbac.currentUser().userName, refundComment);
+        }
+        String message = "";
+        if (returnFlg == "{\"error\":\"ok\"}") {
+            message = "电子券退款成功";
+            render(message);
+        } else {
+            message = "电子券退款失败，请重新操作";
+            render(message);
+        }
+    }
+
 
     /**
      * 重发短信

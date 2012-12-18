@@ -1,0 +1,61 @@
+#{extends 'layout_operate/layout.html' /}
+#{include 'share/nav.html' /}
+#{set title:'电子券退款' /}
+<div class="body">
+#{if hasEcouponRefundPermission == true}
+    <legend>电子券 退款</legend>
+    <table class="table table-striped table-bordered table-condensed">
+        <thead>
+        <tr>
+            <th width="10px">订单号</th>
+            <th width="8px">手机</th>
+            <th width="90px">商品名称</th>
+            <th width="30px">单价</th>
+            <th width="30px">有效期</th>
+            <th width="50px">付款时间</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a></abbr></td>
+            <td>${coupon?.orderItems?.phone}</td>
+            <td>${coupon?.goods?.shortName}</td>
+            <td>${coupon?.salePrice?.formatCurrency('CNY')}</td>
+            <td>${coupon?.effectiveAt ?.format()} /
+            ${coupon?.expireAt?.format()}</td>
+            <td>${coupon?.order?.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+        </tr>
+        </tbody>
+    </table>
+    <br/>
+    #{if couponNoRefund == true}
+        <div style="color:red;">
+            <h3>此商品已设置为不可退款</h3>
+            <br/>
+        </div>
+    #{/if}
+    #{form @OperateCoupons.handleRefund() , id:'refund',class:"form-horizontal" }
+        <div class="control-group">
+            <label for="eCouponSn" class="control-label"><span style="color:red;">*</span>券号:</label>
+
+            <div class="controls">
+                <input type="text" name="eCouponSn" id="eCouponSn" class="input-large" value="${eCouponSn}"/>
+                <span class="error">#{error 'eCouponSn'/}</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="refundComment" class="control-label"><span style="color:red;">*</span>备注:</label>
+
+            <div class="controls">
+                <input type="text" name="refundComment" id="refundComment" value="${refundComment}"
+                       class="input-large"/>
+                <span class="error">#{error 'refundComment'/}</span>
+            </div>
+        </div>
+        <div class="form-actions" style="padding-left: 180px">
+            <button class="btn btn-primary" type="submit">退款</button>
+        </div>
+        <input type="hidden" name="couponId" id="couponId" value="${couponId}"/>
+    #{/form}
+#{/if}
+</div>
