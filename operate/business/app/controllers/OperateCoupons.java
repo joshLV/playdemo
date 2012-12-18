@@ -79,7 +79,7 @@ public class OperateCoupons extends Controller {
      *
      * @param id
      */
-    @Right("manager")
+    @Right("UNFREEZE_COUPON")
     public static void unfreeze(long id) {
         ECoupon.unfreeze(id, OperateRbac.currentUser().userName);
         index(null);

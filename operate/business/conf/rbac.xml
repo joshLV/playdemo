@@ -25,7 +25,7 @@
     <permission key="GOODS_APPROVE_ONSALE" text="审核商品上架" roles="reviewer"/>
     <permission key="HANDLE_RESALER_COMMISSIONRATIO" text="操作分销商佣金比例" roles="manager"/>
     <permission key="ECOUPON_REFUND" text="电子券退款操作" roles="customservice"/>
-
+    <permission key="UNFREEZE_COUPON" text="券解冻" roles="manager"/>
 
     <permission key="SUPPLIERS_NEW" text="商户添加" roles="editor"/>
     <permission key="SUPPLIERS" text="商户管理" roles="editor,customservice"/>
@@ -38,7 +38,6 @@
     <permission key="RESALERS" text="分销商管理" roles="customservice"/>
     <permission key="ORDERS" text="运营订单管理" roles="customservice,account,sales,manager"/>
     <permission key="COUPONS" text="券查询" roles="sales,customservice,account,manager"/>
-    <permission key="COUPONS_REFUND" text="券退款" roles="customservice"/>
     <permission key="COUPONS_MANAGE" text="券管理" roles="customservice,account,manager"/>
     <permission key="CONSUMERS_REPORT" text="消费者资金明细" roles="account"/>
     <permission key="RESALES_REPORT" text="分销商资金明细" roles="account"/>
