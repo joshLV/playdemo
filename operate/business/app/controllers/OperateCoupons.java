@@ -131,7 +131,7 @@ public class OperateCoupons extends Controller {
         if (ecoupon != null && ecoupon.status == ECouponStatus.CONSUMED) {
             Validation.addError("eCouponSn", "券号已消费");
         }
-        if (ecoupon.status != ECouponStatus.UNCONSUMED) {
+        if (ecoupon != null && ecoupon.status != ECouponStatus.UNCONSUMED) {
             Validation.addError("eCouponSn", "只有未消费券可退款");
         }
         if (Validation.hasErrors()) {
