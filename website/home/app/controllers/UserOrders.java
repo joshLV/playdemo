@@ -2,6 +2,7 @@ package controllers;
 
 import controllers.modules.website.cas.SecureCAS;
 import models.accounts.AccountType;
+import models.accounts.Voucher;
 import models.consumer.User;
 import models.order.*;
 import org.apache.commons.lang.StringUtils;
@@ -120,6 +121,12 @@ public class UserOrders extends Controller {
         }
         //更新订单信息
         order.cancelAndUpdateOrder();
+        List<Voucher> voucherList = Voucher.find("byOrder", order).fetch();
+        for(Voucher voucher : voucherList) {
+            voucher.order = null;
+            voucher.usedAt = null;
+            voucher.save();
+        }
         renderJSON("");
     }
 

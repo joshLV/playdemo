@@ -3,18 +3,20 @@ package controllers;
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.modules.website.cas.SecureCAS;
 import models.accounts.Account;
-import models.accounts.TradeBill;
 import models.accounts.Voucher;
+import models.accounts.VoucherCondition;
 import models.accounts.util.AccountUtil;
-import models.accounts.util.TradeUtil;
 import models.consumer.User;
+import org.apache.commons.lang.StringUtils;
 import play.cache.Cache;
 import play.libs.Codec;
 import play.modules.breadcrumbs.BreadcrumbList;
+import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author likang
@@ -24,8 +26,26 @@ import java.util.Date;
         SecureCAS.class, WebsiteInjector.class
 })
 public class UserVouchers extends Controller {
+    public static int PAGE_SIZE = 15;
+
     public static void index() {
-        BreadcrumbList breadcrumbs = new BreadcrumbList("代金券领取", "/vouchers");
+        BreadcrumbList breadcrumbs = new BreadcrumbList("我的红包", "/voucher");
+        User user = SecureCAS.getUser();
+        Account account = AccountUtil.getConsumerAccount(user.getId());
+
+        String page = request.params.get("page");
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+        VoucherCondition condition = new VoucherCondition();
+        condition.uid = user.getId();
+        condition.deletedStatus = DeletedStatus.UN_DELETED;
+
+        JPAExtPaginator<Voucher> voucherList = Voucher.findByCondition(condition, pageNumber, PAGE_SIZE);
+
+        render(breadcrumbs, user, account, voucherList);
+    }
+
+    public static void showAssign() {
+        BreadcrumbList breadcrumbs = new BreadcrumbList("红包领取", "/voucher/assign");
         User user = SecureCAS.getUser();
         Account account = AccountUtil.getConsumerAccount(user.getId());
         String randomID = Codec.UUID();
@@ -57,7 +77,7 @@ public class UserVouchers extends Controller {
             } else if (voucher.expiredAt.before(new Date())) {
                 errMsg = "该券已过期";
             } else {
-                action = "use";
+                action = "assign";
                 ridA = Codec.UUID();
                 ridB = Codec.UUID();
                 Cache.set(ridA, ridB, "5mn");
@@ -67,8 +87,8 @@ public class UserVouchers extends Controller {
 
         Cache.delete(randomID);
         randomID = Codec.UUID();
-        BreadcrumbList breadcrumbs = new BreadcrumbList("代金券领取", "/vouchers");
-        render("UserVouchers/index.html", randomID, errMsg,
+        BreadcrumbList breadcrumbs = new BreadcrumbList("代金券领取", "/voucher/assign");
+        render("UserVouchers/showAssign.html", randomID, errMsg,
                 breadcrumbs, user, account, action, voucher, ridA, ridB,
                 voucherCode);
     }
@@ -101,8 +121,8 @@ public class UserVouchers extends Controller {
         Cache.delete(ridA);
         Cache.delete(ridB);
         String randomID = Codec.UUID();
-        BreadcrumbList breadcrumbs = new BreadcrumbList("代金券领取", "/vouchers");
-        render("UserVouchers/index.html", randomID, suc, errMsg,
+        BreadcrumbList breadcrumbs = new BreadcrumbList("红包领取", "/voucher/assign");
+        render("UserVouchers/showAssign.html", randomID, suc, errMsg,
                 breadcrumbs, user, account, action);
     }
 }

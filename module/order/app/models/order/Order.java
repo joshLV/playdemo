@@ -2,10 +2,7 @@ package models.order;
 
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
-import models.accounts.Account;
-import models.accounts.AccountType;
-import models.accounts.PaymentSource;
-import models.accounts.TradeBill;
+import models.accounts.*;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import models.admin.SupplierUser;
@@ -1170,10 +1167,31 @@ public class Order extends Model {
     }
 
     public static boolean confirmPaymentInfo(Order order, Account account, boolean useBalance, String paymentSourceCode) {
-        return confirmPaymentInfo(order, account, useBalance, paymentSourceCode, null);
+        return confirmPaymentInfo(order, account, useBalance, paymentSourceCode, null, null);
+    }
+    public static boolean confirmPaymentInfo(Order order, Account account, boolean useBalance, String paymentSourceCode,
+                                             BatchCoupons batchCoupons) {
+        return confirmPaymentInfo(order, account, useBalance, paymentSourceCode, batchCoupons, null);
     }
 
-    public static boolean confirmPaymentInfo(Order order, Account account, boolean useBalance, String paymentSourceCode, BatchCoupons batchCoupons) {
+    public static boolean confirmPaymentInfo(Order order, Account account, boolean useBalance, String paymentSourceCode,
+                                             BatchCoupons batchCoupons, List<Voucher> vouchers) {
+        //使用抵用券
+        BigDecimal voucherValue = BigDecimal.ZERO;
+        List<Voucher> validVouchers = new ArrayList<>();
+        if(vouchers != null) {
+            for (Voucher voucher : vouchers) {
+                if (Voucher.canAssign(account, voucher)) {
+                    voucherValue = voucherValue.add(voucher.value);
+                    validVouchers.add(voucher);
+                }
+            }
+        }
+        order.needPay = order.needPay.subtract(voucherValue);
+        if (order.needPay.compareTo(BigDecimal.ZERO) < 0) {
+            order.needPay = BigDecimal.ZERO;
+        }
+
         //有些账号还没有promotionAmount
         if (account.promotionAmount == null) {
             account.promotionAmount = BigDecimal.ZERO;
@@ -1199,6 +1217,7 @@ public class Order extends Model {
                 && order.accountPay.add(order.promotionBalancePay).compareTo(order.needPay) == 0) {
             order.payMethod = PaymentSource.getBalanceSource().code;
             order.payAndSendECoupon(batchCoupons);
+            useVouchers(validVouchers, order);
             return true;
         }
 
@@ -1211,7 +1230,17 @@ public class Order extends Model {
         }
 
         order.save();
+        //试用抵用券
+        useVouchers(validVouchers, order);
         return true;
+    }
+
+    private static void useVouchers(List<Voucher> vouchers, Order order) {
+        for (Voucher voucher : vouchers) {
+            voucher.order = order;
+            voucher.usedAt = new Date();
+            voucher.save();
+        }
     }
 
     /**
