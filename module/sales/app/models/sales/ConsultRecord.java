@@ -35,7 +35,6 @@ public class ConsultRecord extends Model {
     public String createdAtInfo;
 
 
-
     /**
      * 更新时间
      */
@@ -97,10 +96,8 @@ public class ConsultRecord extends Model {
 //    public List<CouponCallBind> couponCallBindList;
 //
 
-
-
     @OneToMany
-    @JoinColumn(name ="coupon_call_bind_list")
+    @JoinColumn(name = "coupon_call_bind_id")
     public List<CouponCallBind> couponCallBindList;
 
     @Enumerated(EnumType.STRING)

@@ -713,6 +713,11 @@ public class ECoupon extends Model {
         return couponsPage;
     }
 
+    public static String applyRefund(ECoupon eCoupon, Long userId,
+                                     AccountType accountType) {
+        return applyRefund(eCoupon, userId, accountType, null, null);
+    }
+
     /**
      * 退款
      *
@@ -721,7 +726,7 @@ public class ECoupon extends Model {
      * @return
      */
     public static String applyRefund(ECoupon eCoupon, Long userId,
-                                     AccountType accountType) {
+                                     AccountType accountType, String userName, String refundComment) {
         String returnFlg = ECOUPON_REFUND_OK;
 
         if (eCoupon == null || eCoupon.order.userId != userId
@@ -786,17 +791,22 @@ public class ECoupon extends Model {
             eCoupon.order.save();
         }
 
-        String userName = "";
-        if (AccountType.RESALER == accountType) {
-            Resaler resaler = Resaler.findById(userId);
-            userName = "分销商:" + (resaler != null ? resaler.loginName : "");
-        }
-        if (AccountType.CONSUMER == accountType) {
-            User user = User.findById(userId);
-            userName = "消费者:" + user.getShowName();
+        if (StringUtils.isBlank(userName)) {
+            if (AccountType.RESALER == accountType) {
+                Resaler resaler = Resaler.findById(userId);
+                userName = "分销商:" + (resaler != null ? resaler.loginName : "");
+            }
+            if (AccountType.CONSUMER == accountType) {
+                User user = User.findById(userId);
+                userName = "消费者:" + user.getShowName();
+            }
         }
         //记录券历史信息
-        new CouponHistory(eCoupon, userName, "券退款", eCoupon.status, ECouponStatus.REFUND, null).save();
+        if (refundComment == null) {
+            new CouponHistory(eCoupon, userName, "券退款", eCoupon.status, ECouponStatus.REFUND, null).save();
+        } else {
+            new CouponHistory(eCoupon, userName, "未消费券退款:" + refundComment, eCoupon.status, ECouponStatus.REFUND, null).save();
+        }
 
 
         // 更改订单状态

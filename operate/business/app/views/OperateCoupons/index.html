@@ -170,8 +170,8 @@
         <tr>
             <td><a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a></abbr></td>
             <td>${coupon?.orderItems?.phone}</td>
-            <td>${n}${coupon?.getMaskedEcouponSn()}</td>
-        *{<td>${coupon?.eCouponSn}</td>}*
+            *{<td>${n}${coupon?.getMaskedEcouponSn()}</td>}*
+        <td>${coupon?.eCouponSn}</td>
         *{<td>${coupon?.orderItems?.phone}</td>}*
             <td>${coupon?.goods?.shortName}</td>
             <td>${coupon?.salePrice?.formatCurrency('CNY')}</td>
@@ -198,6 +198,10 @@
                 #{/elseif}
             #{/if}
                 <a href="@{OperateCoupons.couponHistory(coupon?.id)}">查看历史</a>
+                #{if coupon?.status== models.order.ECouponStatus.UNCONSUMED && hasEcouponRefundPermission == true}
+                    <br/>
+                    <a href="@{OperateCoupons.refund(coupon?.id)}">退款</a>
+                #{/if}
             </td>
         </tr>
         #{/paginate.list}
