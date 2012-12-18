@@ -36,6 +36,7 @@ public class CouponsCondition implements Serializable {
     public Long userId;
     public AccountType accountType;
     public Supplier supplier;
+    public Long shopId;
     public String shopLike;
     public String jobNumber;
     public String eCouponSn;
@@ -120,6 +121,12 @@ public class CouponsCondition implements Serializable {
             sql.append(" and e.order.paidAt<= :paidAtEnd");
             paramMap.put("paidAtEnd", DateUtil.getEndOfDay(hidPaidAtEnd));
         }
+
+        if (shopId != null) {
+            sql.append(" and e.shop.id = :shopId");
+            paramMap.put("shopId", shopId);
+        }
+
         if (QueryType.GOODS_NAME.toString().equals(searchKey) && StringUtils.isNotBlank(searchItems)) {
 
             sql.append(" and e.goods.shortName like :name");

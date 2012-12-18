@@ -17,11 +17,13 @@ import java.util.List;
 
 /**
  * 商户的现金账户控制器.
+ * 1.0版，只做维护
  * <p/>
  * User: sujie
  * Date: 3/7/12
  * Time: 3:35 PM
  */
+@Deprecated
 @With(SupplierRbac.class)
 public class AccountSequences extends Controller {
 

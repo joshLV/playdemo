@@ -22,13 +22,16 @@ import play.mvc.With;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static com.uhuila.common.util.DateUtil.*;
+import static com.uhuila.common.util.DateUtil.getBeginOfDay;
 
 /**
+ * 1.0版，只做维护
+ *
  * @author likang
  *         Date: 12-5-9
  */
 
+@Deprecated
 @With(SupplierRbac.class)
 public class SupplierWithdraw extends Controller {
     private static final int PAGE_SIZE = 20;

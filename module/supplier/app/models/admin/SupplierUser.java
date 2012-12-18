@@ -193,6 +193,16 @@ public class SupplierUser extends Model {
 
 
     /**
+     * 查询操作员信息
+     *
+     * @param supplierId 商户标识
+     * @return 操作员信息
+     */
+    public static List<SupplierUser> findBySupplier(Long supplierId) {
+        return find("supplier.id=? and deleted=?", supplierId, DeletedStatus.UN_DELETED).fetch();
+    }
+
+    /**
      * 更新操作员信息
      *
      * @param id           ID
