@@ -31,8 +31,6 @@
         <h3 #{if request.url.contains("/user-coins")}class="active"#{/if}>我的金币</h3>
         <ul>
             <li><a #{if request.url.equals("/user-coins")}class="current"#{/if} href="/user-coins">» 金币明细</a></li>
-            <li><a #{if request.url.contains("/user-coins-record")}class="current"#{/if} href="/user-coins-record">»
-                积点兑换</a></li>
         </ul>
     *{
         <h3 #{if request.url.contains("/rebate")}class="active"#{/if}>推荐返利</h3>

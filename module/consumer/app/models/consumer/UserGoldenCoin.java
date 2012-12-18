@@ -35,7 +35,7 @@ public class UserGoldenCoin extends Model {
     @JoinColumn(name = "goods_id", nullable = true)
     public Goods goods;
 
-    @Column(name = "golden_coin_number")
+    @Column(name = "number")
     public Long number;
 
     /**
@@ -47,16 +47,27 @@ public class UserGoldenCoin extends Model {
     @Column(name = "created_at")
     public Date createdAt;
 
-    @Transient
-    public Long checkinTimes;
+    /**
+     * 累计到一定天数的奖励为true
+     */
+    @Column(name = "is_present")
+    public boolean isPresent;
 
-    @Transient
-    public Long totalCoins;
+    public UserGoldenCoin() {
+    }
 
+    public UserGoldenCoin(User user, Long number, Goods goods, String remarks, boolean isPresent) {
+        this.number = number;
+        this.user = user;
+        this.goods = goods;
+        this.remarks = remarks;
+        this.isPresent = isPresent;
+        this.createdAt = new Date();
+    }
 
-    public static JPAExtPaginator<UserGoldenCoin> find(User user, UserCondition condition, int pageNumber, int pageSize) {
+    public static JPAExtPaginator<UserGoldenCoin> find(UserCondition condition, int pageNumber, int pageSize) {
         JPAExtPaginator<UserGoldenCoin> coinsPage = new JPAExtPaginator<>
-                ("UserGoldenCoin u", "u", UserGoldenCoin.class, condition.getCondition(user),
+                ("UserGoldenCoin u", "u", UserGoldenCoin.class, condition.getCoinsCondition(),
                         condition.paramsMap)
                 .orderBy("u.createdAt desc");
         coinsPage.setPageNumber(pageNumber);
@@ -66,29 +77,31 @@ public class UserGoldenCoin extends Model {
     }
 
     /**
-     * 取得该用户所有的签到的金币数
+     * 取得该用户所有的签到次数
      *
      * @param user
      * @return
      */
     public static Long getCoinNumber(User user) {
         EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("SELECT sum( number ) FROM UserGoldenCoin WHERE user = :user");
-        q.setParameter("user", user);
+        String sql = "SELECT count( id ) FROM UserGoldenCoin WHERE user = :user and createdAt >=:beginDate and createdAt <=:endDate";
+        Query q = entityManager.createQuery(sql);
 
+        q.setParameter("user", user);
+        q.setParameter("beginDate", DateUtil.getMonthFirstDay());
+        q.setParameter("endDate", DateUtil.getEndOfDay());
         Object result = q.getSingleResult();
         return result == null ? 0 : (Long) result;
     }
 
 
     /**
-     * 取得该用户签到次数和金币数
+     * 取得该用户当月签到的金币数
      *
      * @param user
      * @return
      */
     public static Long getTotalCoins(User user) {
-        //  取得该用户签到次数
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("SELECT sum( number ) FROM UserGoldenCoin WHERE user = :user and createdAt >=:beginDate and createdAt <=:endDate");
         q.setParameter("user", user);
@@ -101,6 +114,16 @@ public class UserGoldenCoin extends Model {
     }
 
     /**
+     * 判断当天是否签到
+     *
+     * @param user
+     * @return
+     */
+    public static UserGoldenCoin getCheckinInfo(User user, boolean isPresent) {
+        return UserGoldenCoin.find("user=? and isPresent = ? and createdAt >=? and createdAt <=? ", user, isPresent, DateUtil.getBeginOfDay(), DateUtil.getEndOfDay()).first();
+    }
+
+    /**
      * 签到
      *
      * @param user
@@ -108,15 +131,14 @@ public class UserGoldenCoin extends Model {
      * @param remarks
      */
     public static void checkin(User user, Goods goods, String remarks) {
-        UserGoldenCoin goldenCoin = UserGoldenCoin.find("user=? and createdAt >=? and createdAt <=? ", user, DateUtil.getBeginOfDay(), DateUtil.getEndOfDay()).first();
+        UserGoldenCoin goldenCoin = UserGoldenCoin.getCheckinInfo(user, false);
         if (goldenCoin == null) {
-            goldenCoin = new UserGoldenCoin();
-            goldenCoin.number = 1L;
-            goldenCoin.user = user;
-            goldenCoin.goods = goods;
-            goldenCoin.remarks = remarks;
-            goldenCoin.createdAt = new Date();
-            goldenCoin.save();
+            new UserGoldenCoin(user, +5L, goods, remarks, false).save();
         }
+    }
+
+
+    public static Long getPersentOfCoins(Long coinsNumber) {
+        return coinsNumber / 500;
     }
 }

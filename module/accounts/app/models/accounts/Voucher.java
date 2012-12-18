@@ -2,33 +2,42 @@ package models.accounts;
 
 
 import com.uhuila.common.constants.DeletedStatus;
-import models.accounts.Account;
 import models.order.Order;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Version;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * @author likang
- * Date: 12-12-12
+ *         Date: 12-12-12
  */
 @Entity
 @Table(name = "vouchers")
 public class Voucher extends Model {
 
+    private static final String DECIMAL_FORMAT = "00000";
     /**
      * 序列号.
      * 保存为英文大写和数字。
-     *
+     * <p/>
      * 录入时，编辑可以指定一个前缀，然后生成时用前缀加数字序号即可.
      * 可以这样做：
-     *      DecimalFormat myFormatter = new DecimalFormat("00000");
-     *      String serialNo = prefix + myFormatter.format(22);
+     * DecimalFormat myFormatter = new DecimalFormat("00000");
+     * String serialNo = prefix + myFormatter.format(22);
      */
-    @Column(name="serial_no", unique = true)
+    @Column(name = "serial_no", unique = true)
     public String serialNo;
 
     @Column(name = "prefix")
@@ -38,7 +47,7 @@ public class Voucher extends Model {
      * 充值码.
      * 伪随机生成的15位数字
      */
-    @Column(name="charge_code", unique = true)
+    @Column(name = "charge_code", unique = true)
     public String chargeCode;
 
     /**
@@ -62,7 +71,7 @@ public class Voucher extends Model {
     public Order order;
 
     @Version
-    @Column(name="lock_version")
+    @Column(name = "lock_version")
     public int lockVersion;
 
     /**
@@ -89,6 +98,7 @@ public class Voucher extends Model {
     @Column(name = "assigned_at")
     public Date assignedAt;
 
+    public String remarks;
     /**
      * 使用时间
      */
@@ -100,6 +110,32 @@ public class Voucher extends Model {
      */
     @Column(name = "expired_at")
     public Date expiredAt;
+
+
+    public static void generate(int count, BigDecimal faceValue, String name, String prefix, Account account, Long operatorId, String remarks, Date expiredAt) {
+        Random random = new Random();
+        DecimalFormat decimalFormat = new DecimalFormat(DECIMAL_FORMAT);
+
+        for (int i = 0; i < count; i++) {
+            String chargeCode = decimalFormat.format(random.nextInt(100000)) +
+                    decimalFormat.format(random.nextInt(100000)) +
+                    decimalFormat.format(random.nextInt(100000));
+
+            Voucher voucher = new Voucher();
+            voucher.chargeCode = chargeCode;
+            voucher.value = faceValue;
+            voucher.name = name;
+            voucher.account = account;
+            if (voucher.account != null) {
+                voucher.assignedAt = new Date();
+            }
+            voucher.serialNo = prefix + decimalFormat.format(i + 1);
+            voucher.operatorId = operatorId;
+            voucher.remarks = remarks;
+            voucher.expiredAt = expiredAt;
+            voucher.save();
+        }
+    }
 
     /**
      * 删除状态。
