@@ -130,7 +130,9 @@ public class OperateCoupons extends Controller {
         if (ecoupon != null && ecoupon.status == ECouponStatus.CONSUMED) {
             Validation.addError("eCouponSn", "券号已消费");
         }
-
+        if (ecoupon.status != ECouponStatus.UNCONSUMED) {
+            Validation.addError("eCouponSn", "只有未消费券可退款");
+        }
         if (Validation.hasErrors()) {
             ECoupon coupon = ECoupon.findById(couponId);
             Boolean couponNoRefund = false;
@@ -140,10 +142,10 @@ public class OperateCoupons extends Controller {
             render("OperateCoupons/refund.html", couponNoRefund, coupon, couponId, eCouponSn, refundComment, hasEcouponRefundPermission);
         }
         String returnFlg = "";
-        if (ecoupon.order.userType == AccountType.CONSUMER) {
+        if (ecoupon.status == ECouponStatus.UNCONSUMED && ecoupon.order.userType == AccountType.CONSUMER) {
             returnFlg = ECoupon.applyRefund(ecoupon, ecoupon.order.userId, AccountType.CONSUMER, OperateRbac.currentUser().userName, refundComment);
         }
-        if (ecoupon.order.userType == AccountType.RESALER) {
+        if (ecoupon.status == ECouponStatus.UNCONSUMED && ecoupon.order.userType == AccountType.RESALER) {
             returnFlg = ECoupon.applyRefund(ecoupon, ecoupon.order.userId, AccountType.RESALER, OperateRbac.currentUser().userName, refundComment);
         }
         String message = "";
