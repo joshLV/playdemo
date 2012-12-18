@@ -4,6 +4,7 @@ import controllers.supplier.cas.Security;
 import factory.FactoryBoy;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
+import models.order.ECouponStatus;
 import models.order.Order;
 import models.sales.Category;
 import models.sales.Goods;
@@ -46,6 +47,7 @@ public class SupplierCouponsTest extends FunctionalTest {
         // 设置测试登录的用户名
         Security.setLoginUserForTest(supplierUser.loginName);
         coupon = FactoryBoy.create(ECoupon.class);
+        coupon.status = ECouponStatus.CONSUMED;
         coupon.order.paidAt= DateHelper.beforeDays(1);
         coupon.order.save();
         coupon.save();
@@ -70,7 +72,6 @@ public class SupplierCouponsTest extends FunctionalTest {
         assertNotNull(couponList);
         assertEquals(1, couponList.size());
         assertEquals(goods.id, couponList.get(0).goods.id);
-
     }
 
 }
