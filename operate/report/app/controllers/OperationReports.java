@@ -1,7 +1,11 @@
 package controllers;
 
+import models.ChannelCategoryReportCondition;
+import models.ResaleSalesReport;
+import models.ResaleSalesReportCondition;
 import models.SalesReport;
 import models.SalesReportCondition;
+import models.accounts.AccountType;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -9,6 +13,7 @@ import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
 import play.mvc.With;
+import utils.PaginateUtil;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -45,6 +50,35 @@ public class OperationReports extends Controller {
 
         render(condition, reportPage, hasSeeSalesRepotProfitRight, summary);
 
+    }
+
+    public static void showChannelReport(ResaleSalesReportCondition condition) {
+        int pageNumber = getPageNumber();
+
+        if (condition == null) {
+            condition = new ResaleSalesReportCondition();
+        }
+        List<ResaleSalesReport> resultList = null;
+        // 查询出分销的所有结果
+        if (condition.accountType == AccountType.RESALER) {
+            resultList = ResaleSalesReport.query(condition);
+        } else if (condition.accountType == AccountType.CONSUMER) {
+            resultList = ResaleSalesReport.queryConsumer(condition);
+
+        } else {
+            resultList = ResaleSalesReport.query(condition);
+            List<ResaleSalesReport> consumerList = ResaleSalesReport.queryConsumer(condition);
+
+            // 查询出所有结果
+            for (ResaleSalesReport resaleSalesReport : consumerList) {
+                resultList.add(resaleSalesReport);
+            }
+        }
+
+        // 分页
+        ValuePaginator<ResaleSalesReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
+        ResaleSalesReport summary = ResaleSalesReport.summary(resultList);
+        render(reportPage, condition, summary);
     }
 
     public static void salesReportWithPrivilegeExcelOut(SalesReportCondition condition) {

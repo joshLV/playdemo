@@ -93,6 +93,35 @@ public class ResaleSalesReport extends Model {
     public BigDecimal realAmount;
     public BigDecimal totalRefundPrice;
 
+    /**
+     * 总销售额
+     */
+    public BigDecimal totalAmount;
+
+    /**
+     * 总成本
+     */
+    public BigDecimal totalCost;
+
+    /**
+     * 毛利率
+     */
+    public BigDecimal grossMargin;
+
+    /**
+     * 渠道成本
+     */
+    public BigDecimal channelCost;
+
+    /**
+     * 净利润
+     */
+    public BigDecimal profit;
+
+
+    /**
+     * paidAt ecoupon
+     */
     public ResaleSalesReport(Order order, BigDecimal salePrice, Long buyNumber) {
         this.order = order;
         if (order != null) {
@@ -229,6 +258,7 @@ public class ResaleSalesReport extends Model {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<ResaleSalesReport> paidResultList = query.getResultList();
+
         //sendAt real
         sql = "select new models.ResaleSalesReport(r.order,count(r.buyNumber),sum(r.salePrice)) from OrderItems r ";
         query = JPA.em()

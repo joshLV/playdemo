@@ -16,8 +16,8 @@ import java.util.Map;
  * Time: 下午4:07
  */
 public class SalesReportCondition implements Serializable {
-    public Date begin = com.uhuila.common.util.DateUtil.getBeginOfDay();
-    public Date end = com.uhuila.common.util.DateUtil.getEndOfDay(new Date());
+    public Date beginAt = com.uhuila.common.util.DateUtil.getBeginOfDay();
+    public Date endAt= com.uhuila.common.util.DateUtil.getEndOfDay(new Date());
     public String interval = "-1d";
     public String shortName;
     public String code;
@@ -32,15 +32,16 @@ public class SalesReportCondition implements Serializable {
         }
         if (StringUtils.isNotBlank(code)) {
             condBuilder.append(" and r.goods.code = :code");
-            paramMap.put("code", code);
+            paramMap.put("code", code.trim() + "%");
         }
-        if (begin != null) {
+
+        if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
-            paramMap.put("createdAtBegin", begin);
+            paramMap.put("createdAtBegin", beginAt);
         }
-        if (end != null) {
+        if (endAt != null) {
             condBuilder.append(" and r.order.paidAt < :createdAtEnd");
-            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(end));
+            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
 
 
@@ -57,15 +58,15 @@ public class SalesReportCondition implements Serializable {
         }
         if (StringUtils.isNotBlank(code)) {
             condBuilder.append(" and r.goods.code = :code");
-            paramMap.put("code", code);
+            paramMap.put("code", code.trim() + "%");
         }
-        if (begin != null) {
+        if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
-            paramMap.put("createdAtBegin", begin);
+            paramMap.put("createdAtBegin", beginAt);
         }
-        if (end != null) {
+        if (endAt != null) {
             condBuilder.append(" and r.order.paidAt < :createdAtEnd");
-            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(end));
+            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
 
         return condBuilder.toString();
@@ -80,15 +81,15 @@ public class SalesReportCondition implements Serializable {
         }
         if (StringUtils.isNotBlank(code)) {
             condBuilder.append(" and e.goods.code = :code");
-            paramMap1.put("code", code);
+            paramMap1.put("code", code.trim() + "%");
         }
-        if (begin != null) {
+        if (beginAt != null) {
             condBuilder.append(" and e.refundAt >= :refundAtBegin");
-            paramMap1.put("refundAtBegin", begin);
+            paramMap1.put("refundAtBegin", beginAt);
         }
-        if (end != null) {
+        if (endAt != null) {
             condBuilder.append(" and e.refundAt <= :refundAtEnd");
-            paramMap1.put("refundAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(end));
+            paramMap1.put("refundAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
 
         return condBuilder.toString();

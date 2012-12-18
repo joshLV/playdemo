@@ -25,7 +25,11 @@ import javax.persistence.Query;
 public class SalesReport {
     public Goods goods;
     public BigDecimal avgSalesPrice;
-    public BigDecimal grossMargin;       //毛利率
+
+    /**
+     * 毛利率
+     */
+    public BigDecimal grossMargin;
     public BigDecimal originalPrice;
     public Long buyNumber;
     public BigDecimal totalAmount;
