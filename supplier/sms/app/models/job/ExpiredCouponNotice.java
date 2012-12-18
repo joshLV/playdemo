@@ -6,9 +6,7 @@ import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.SentCouponMessage;
 import models.sms.SMSUtil;
-import play.Play;
 import play.jobs.Job;
-import play.jobs.On;
 
 import javax.persistence.Query;
 import java.text.ParseException;
@@ -22,7 +20,7 @@ import java.util.List;
  * @author 12-5-30
  *         Time: 下午1:57
  */
-@On("0 0 12 * * ?")
+// @ O n("0 0 12 * * ?")
 public class ExpiredCouponNotice extends Job {
 
     @Override
