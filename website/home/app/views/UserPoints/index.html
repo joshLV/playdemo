@@ -19,7 +19,8 @@
     <div class="section">
         #{breadcrumbs/breadcrumb breadcrumbs/}
         <div class="user-account">
-            账户：<strong>${user?.loginName}</strong> 积分：<span>${user?.userInfo?.totalPoints}</span>
+            <span>账户：${user?.loginName}</span>
+            <span>积分：<em>${user?.userInfo?.totalPoints}</em></span>
         </div>
 
         <form class="form-horizontal" id="couponsFrm" action="@{UserPoints.index()}" method="GET">
@@ -39,7 +40,7 @@
             <button class="search-btn" id="search"> 搜　索 </button>
         </div>
         </form>
-        <table class="order-tab">
+        <table class="order-tab table">
             <thead>
                 <tr class="col-name">
                     <th width="160">操作时间</th>
@@ -49,9 +50,8 @@
                     <th width="154">操作类型</th>
                 </tr>
             </thead>
-            #{paginate.list items:pointList, as:'point'}
             <tbody>
-                <tr class="sep-row"><td colspan="5"></td></tr>
+            #{paginate.list items:pointList, as:'point'}
                 <tr class="order-bd">
                     <td>${point?.createdAt?.format()}</td>
                     <td class="get-integral">${point?.dealType=='1' ? point?.dealPoints:''}</td>
@@ -59,11 +59,11 @@
                     <td class="current-integral">${point?.currentPoints}</td>
                     <td> ${point?.getPointTitle()}</td> 
                 </tr>
-            </tbody>
             #{/paginate.list}
+            </tbody>
         </table>
         <div class="pagination">
-            <ul>#{paginate.controls items:pointList /}</ul>
+            #{paginate.controls items:pointList /}
         </div>
     </div><!-- .section -->
 </div>

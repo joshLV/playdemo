@@ -61,7 +61,7 @@
                        value="${condition?.createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})"/>
                 <button class="search-btn" id="search"> 搜　索</button>
             </div>
-            <table class="order-tab">
+            <table class="order-tab table">
                 <thead>
                 <tr class="col-name">
                     <th width="165">流水号</th>
@@ -81,11 +81,8 @@
                     <th width="80">支付方式</th>
                 </tr>
                 </thead>
-            #{paginate.list items:amountList, as:'accountSequence'}
                 <tbody>
-                <tr class="sep-row">
-                    <td colspan="7"></td>
-                </tr>
+            #{paginate.list items:amountList, as:'accountSequence'}
                 <tr class="order-bd">
                     <td align="center">${accountSequence.serialNumber}</td>
                     <td align="center">${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
@@ -109,13 +106,13 @@
                         +${accountSequence.changeAmount.add(accountSequence.promotionChangeAmount?:java.math.BigDecimal.ZERO)} #{/if}</td>
                     <td align="center">${accountSequence?.payMethod}</td>
                 </tr>
-                </tbody>
             #{/paginate.list}
+                </tbody>
             </table>
         </form>
 
         <div class="pagination">
-            <ul>#{paginate.controls items:amountList /}</ul>
+            #{paginate.controls items:amountList /}
         </div>
 
     </div>

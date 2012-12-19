@@ -9,10 +9,11 @@
     <div class="section">
         #{breadcrumbs/breadcrumb breadcrumbs/}
         <div class="user-account">
-            账户：<strong>${user?.showName}</strong> 账户余额：<span>${account?.amount}</span>元
+            <span>账户：${user?.showName}</span>
+            <span>账户余额：<em>${account?.amount}</em>元</span>
             <a class="withdraw-btn" id="apply" href="/withdraw/apply"> 提 现 </a>
         </div>
-        <table class="order-tab">
+        <table class="order-tab table">
             <thead>
                 <tr class="col-name">
                     <th width="160">申请时间</th>
