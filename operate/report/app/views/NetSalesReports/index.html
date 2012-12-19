@@ -145,8 +145,8 @@
         #{set i:i+1/}
     *{<td>${(reportPage.pageNumber-1)*reportPage.pageSize+i}</td>}*
     %{
-        if(report?.supplier?.operator!=null){
-        ou=models.admin.OperateUser.findById(report?.supplier?.operator?.id); }
+        if(report?.supplier?.salesId!=null){
+        ou=models.admin.OperateUser.findById(report?.supplier?.salesId); }
         }%
         <td>${ou?.jobNumber}</td>
         <td>${report?.supplier?.fullName}</td>

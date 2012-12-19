@@ -31,7 +31,7 @@ note:'.quanmx.com (只能是字母、数字、下划线，且长度限定在3-20
 
 #{layout_operate.textField name:'supplier.accountLeaderMobile', value:supplier?.accountLeaderMobile/}
 
-#{layout_operate.selectField name:'supplier.operator.id', class:'span2', value:supplier?.operator?.id,
+#{layout_operate.selectField name:'supplier.salesId', class:'span2', value:supplier?.salesId,
 error:'supplier.operator'}
     #{list items:operateUserList, as:'operator' }
         #{option operator?.id}

@@ -229,7 +229,6 @@ public class Suppliers extends Controller {
     }
 
     public static void update(Long id, @Valid Supplier supplier, File image) {
-        System.out.println("supplier.operator>>>" + supplier.operator);
         int page = getPage();
         Supplier oldSupplier = Supplier.findById(id);
         if (StringUtils.isNotBlank(supplier.domainName) && !oldSupplier.domainName.equals(supplier.domainName)) {
