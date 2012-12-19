@@ -2,6 +2,8 @@ package models.accounts;
 
 
 import com.uhuila.common.constants.DeletedStatus;
+import models.admin.OperateUser;
+import models.consumer.User;
 import models.order.Order;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
@@ -14,6 +16,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -139,6 +142,26 @@ public class Voucher extends Model {
             voucher.expiredAt = expiredAt;
             voucher.save();
         }
+    }
+
+    @Transient
+    public String getOperator() {
+        String userName = "";
+        if (operatorId==null) {
+            return userName;
+        }
+        if (voucherType == VoucherType.EXCHANGE) {
+            User user = User.findById(operatorId);
+            if (user != null) {
+                userName = "消费者兑换：" + user.getShowName();
+            }
+        } else {
+            OperateUser operateUser = OperateUser.findById(operatorId);
+            if (operateUser != null) {
+                userName = "运营人员：" + operateUser.userName;
+            }
+        }
+        return userName;
     }
 
     /**

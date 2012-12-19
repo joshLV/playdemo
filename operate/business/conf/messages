@@ -554,3 +554,6 @@ goodsSchedule.goods.id=商品ID
 goodsSchedule.effectiveAt=有效期开始日
 goodsSchedule.expireAt=有效期结束日
 goodsSchedule.effective=有效期
+
+voucherType.exchange=消费者兑换
+voucherType.operate=运营生成
