@@ -29,29 +29,29 @@ public class MailUtil {
     public static void sendCouponMail(MailMessage message) {
         message.setSubject("[一百券] 您订购的消费券");
         message.setTemplate("couponMail");
-        MQPublisher.publish(COMMON_QUEUE, message);
+        sendCommonMail(message);
     }
 
     public static void sendFindPasswordMail(MailMessage message) {
         message.setSubject("[一百券] 找回密码");
         message.setTemplate("findPassword");
-        MQPublisher.publish(COMMON_QUEUE, message);
+        sendCommonMail(message);
     }
 
     public static void sendGoodsOffSalesMail(MailMessage message) {
         message.setTemplate("goodsOffSales");
-        MQPublisher.publish(COMMON_QUEUE, message);
+        sendCommonMail(message);
     }
 
 
     public static void sendTuanCategoryMail(MailMessage message) {
         message.setTemplate("tuanCategory");
-        MQPublisher.publish(COMMON_QUEUE, message);
+        sendCommonMail(message);
     }
 
     public static void sendCustomerRemarkMail(MailMessage message) {
         message.setTemplate("customerRemarkMail");
-        MQPublisher.publish(COMMON_QUEUE, message);
+        sendCommonMail(message);
     }
 
 }
