@@ -62,6 +62,6 @@ public class PrepaymentNotice extends Job {
         message.putParam("consumed", consumedAmount);
         message.putParam("balance", balance);
         message.setTemplate("prepayment");
-        MailUtil.sendPrepaymentNoticeMail(message);
+        MailUtil.sendCommonMail(message);
     }
 }

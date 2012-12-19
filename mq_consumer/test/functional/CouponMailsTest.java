@@ -2,7 +2,7 @@ package functional;
 
 import models.mail.MailMessage;
 import models.mail.MailUtil;
-import notifiers.CouponMails;
+import notifiers.MailSender;
 import org.junit.Test;
 import play.libs.Mail;
 import play.modules.rabbitmq.RabbitMQPlugin;
@@ -28,7 +28,9 @@ public class CouponMailsTest extends FunctionalTest {
         coupons.add(coupon1);
         coupons.add(coupon2);
 
-        CouponMails.notify(message);
+        message.setSubject("[一百券] 您订购的消费券");
+        message.setTemplate("couponMail");
+        MailSender.send(message);
 
         String mailBody = Mail.Mock.getLastMessageReceivedBy(email);
         assertTrue("邮件标题不正确", mailBody.indexOf("Subject: [一百券] 您订购的消费券") > 0);
@@ -51,7 +53,9 @@ public class CouponMailsTest extends FunctionalTest {
         coupons.add(coupon1);
         coupons.add(coupon2);
 
-        MailUtil.sendCouponMail(message);
+        message.setSubject("[一百券] 您订购的消费券");
+        message.setTemplate("couponMail");
+        MailSender.send(message);
         Thread.sleep(500);
 
         RabbitMQPlugin.retries();
