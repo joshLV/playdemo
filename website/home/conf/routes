@@ -64,6 +64,12 @@ GET     /cash-coupon                                    UserCashCoupons.index
 POST    /cash-coupon/verify                             UserCashCoupons.verify
 POST    /cash-coupon/use                                UserCashCoupons.useCoupon
 
+# 抵用券
+GET     /voucher                                        UserVouchers.index
+GET     /voucher/assign                                 UserVouchers.showAssign
+POST    /voucher/verify                                 UserVouchers.verify
+POST    /voucher/assign                                 UserVouchers.assign
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

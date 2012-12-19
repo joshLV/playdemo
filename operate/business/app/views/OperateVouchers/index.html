@@ -3,6 +3,35 @@
 #{set title:'代金券' /}
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 
+#{set 'moreScripts'}
+    <script type="text/javascript">
+        $(function(){
+            $(".delete").click(function(){
+                var e = $(this);
+                e.text('正在删除...');
+                $.ajax({
+                    url:'/voucher',
+                    type:'put',
+                    data:{id:e.attr('id'),action:'delete'},
+                    success:function(data){
+                        if (data.status == 'ok'){
+                            e.css('cursor','auto')
+                            .addClass('label-important')
+                            .text('已删除')
+                            .unbind();
+                        }else{
+                            e.text('删除');
+                        }
+                    },
+                    failed:function(data){
+                        e.text('删除');
+                    }
+                });
+            });
+        });
+    </script>
+#{/set}
+
 <form class="well form-inline" action="@{OperatorCashCoupons.index()}" method="GET" id="form" name="form">
     <table>
         <tr>
@@ -27,7 +56,7 @@
                 #{/select}
             </td>
             <td> <label class="control-label">绑定的消费者账号ID</label> </td>
-            <td> <input type="text" name="condition.userid" class="input-medium" value="${condition?.userid}"/> </td>
+            <td> <input type="text" name="condition.uid" class="input-medium" value="${condition?.uid}"/> </td>
         </tr>
         <tr>
             <td> <label class="control-label">绑定状态</label> </td>
@@ -48,6 +77,7 @@
     <tr>
         <th>券名称</th>
         <th>面值</th>
+        <th>券号</th>
         <th>创建时间</th>
         <td>绑定的账号</td>
         <td>绑定时间</td>
@@ -55,22 +85,24 @@
         <th>创建者</th>
         <th>状态/操作</th>
     </tr>
-    #{paginate.list items:couponPage, as:'coupon'}
+    #{paginate.list items:voucherPage, as:'voucher'}
     <tr>
-        <td>${coupon.name}</td>
-        <td>${coupon.faceValue.formatCurrency("CNY")}</td>
-        <td>${coupon.serialNo}</td>
-        <td>${coupon.chargeCode}</td>
-        <td>${coupon.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
-        <td>${coupon.operatorName}</td>
+        <td>${voucher.name}</td>
+        <td>${voucher.value.formatCurrency("CNY")}</td>
+        <td>${voucher.serialNo}</td>
+        <td>${voucher.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+        <td><a href="/consumers/${voucher.account?.uid}" target="_blank">${voucher.account?.uid}</a> </td>
+        <td>${voucher.assignedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+        <td>${voucher.usedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+        <td></td>
         <td>
-            #{if coupon.userId || coupon.chargedAt} <span class="label label-important">已使用</span> #{/if}
+            #{if voucher.usedAt} <span class="label label-important">已使用</span> #{/if}
             #{else}<span class="label label-success">未使用</span>#{/else}
-            #{if coupon.deleted == com.uhuila.common.constants.DeletedStatus.DELETED }
+            #{if voucher.deleted == com.uhuila.common.constants.DeletedStatus.DELETED }
                 <span class="label label-important">已删除</span>
             #{/if}
             #{else}
-                <a href="@{OperatorCashCoupons.index()}?action=delete&delete_id=${coupon.id}" class="label">删除</a>
+                <span class="label delete" style="cursor:pointer" id="${voucher.id}">删除</span>
             #{/else}
         </td>
     </tr>

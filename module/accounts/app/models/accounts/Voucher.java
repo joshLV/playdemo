@@ -18,6 +18,7 @@ import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -149,6 +150,7 @@ public class Voucher extends Model {
 
     public Voucher() {
         createdAt = new Date();
+        deleted = DeletedStatus.UN_DELETED;
         lockVersion = 0;
     }
 
@@ -161,5 +163,31 @@ public class Voucher extends Model {
         page.setPageNumber(pageNumber);
         page.setPageSize(pageSize);
         return page;
+    }
+
+    public static List<Voucher> validVouchers(Account account) {
+        return Voucher.find("account = ? and expiredAt > ? and deleted = ? and order != null",
+                account, new Date(), DeletedStatus.UN_DELETED).fetch();
+    }
+
+    public static long validVoucherCount(Account account) {
+        return Voucher.count("account = ? and expiredAt > ? and deleted = ? and order != null",
+                account, new Date(), DeletedStatus.UN_DELETED);
+    }
+
+    public static boolean canAssign(Account account, Voucher voucher) {
+        if (!voucher.account.getId().equals(account.getId())) {
+            return false;
+        }
+        if (voucher.expiredAt.before(new Date())) {
+            return false;
+        }
+        if (voucher.deleted == DeletedStatus.DELETED) {
+            return false;
+        }
+        if (voucher.order != null) {
+            return false;
+        }
+        return true;
     }
 }
