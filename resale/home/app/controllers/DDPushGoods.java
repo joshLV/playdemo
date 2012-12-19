@@ -174,6 +174,7 @@ public class DDPushGoods extends Controller {
         }
         if (!pushFlag) {
             resalerFav.partner = OuterOrderPartner.DD;
+            resalerFav.lastLinkId = goodsMapping.linkId;
             resalerFav.save();
             Logger.info("[DDAPIPushGoods API] invoke push goods success!");
         }
