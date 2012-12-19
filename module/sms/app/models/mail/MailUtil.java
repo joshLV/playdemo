@@ -3,18 +3,25 @@ package models.mail;
 import play.Play;
 import util.mq.MQPublisher;
 
+/**
+ * 新建一个邮件模板的步骤：
+ * 1. 在mq_consumer/app/views/MailSender中创建自己的模板
+ * 2. 自己组装MailMessage，
+ *     MailMessage message = new MailMessage();
+ *     message.setSubject() 设置标题
+ *     message.addRecipient() 设置收件人，参数为多个String或者一个String数组
+ *     message.setTemplate() 设置模板，名字与上一步创建的模板名字相同
+ *     message.putParam()  添加模板变量，可多次添加，变量可以在模板中以message.getParam()的方式使用
+ * 3. 调用MailUtil.sendCommonMail发送邮件
+ * 4. （不必须）可以在下面创建自己的static方法，代码请参考以下
+ */
 public class MailUtil {
-    public static final String TUAN_CATEGORY_NOTIFY = Play.mode.isProd() ? "tuan_notification" : "tuan_notification_dev";
-
     public static final String COMMON_QUEUE = Play.mode.isProd() ? "common_mail" : "common_mail_dev";
 
     private MailUtil() {
     }
 
 
-    /**
-     * 调用此函数前需要在message中指定template，就像下面那些函数做的一样
-     */
     public static void sendCommonMail(MailMessage message) {
         MQPublisher.publish(COMMON_QUEUE, message);
     }
@@ -28,10 +35,6 @@ public class MailUtil {
     public static void sendFindPasswordMail(MailMessage message) {
         message.setSubject("[一百券] 找回密码");
         message.setTemplate("findPassword");
-        MQPublisher.publish(COMMON_QUEUE, message);
-    }
-
-    public static void sendOperatorNotificationMail(MailMessage message) {
         MQPublisher.publish(COMMON_QUEUE, message);
     }
 
