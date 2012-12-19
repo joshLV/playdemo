@@ -122,7 +122,7 @@ public class ResaleSalesReport extends Model {
     /**
      * paidAt ecoupon
      */
-    public ResaleSalesReport(Order order, BigDecimal salePrice, Long buyNumber) {
+    public ResaleSalesReport(Order order, BigDecimal salePrice, Long buyNumber, BigDecimal totalCost) {
         this.order = order;
         if (order != null) {
             if (order.userType == AccountType.CONSUMER) {
@@ -138,9 +138,11 @@ public class ResaleSalesReport extends Model {
             this.salePrice = BigDecimal.ZERO;
         }
         this.buyNumber = buyNumber;
+        this.totalCost = totalCost;
     }
 
-    public ResaleSalesReport(Order order, Long buyNumber, BigDecimal salePrice) {
+    //sendAt real
+    public ResaleSalesReport(Order order, Long buyNumber, BigDecimal salePrice, BigDecimal totalCost) {
         this.order = order;
         if (order != null) {
             if (order.userType == AccountType.CONSUMER) {
@@ -153,6 +155,7 @@ public class ResaleSalesReport extends Model {
 
         this.realSalePrice = salePrice;
         this.realBuyNumber = buyNumber;
+        this.totalCost = totalCost;
     }
 
 
@@ -250,7 +253,9 @@ public class ResaleSalesReport extends Model {
             ResaleSalesReportCondition condition) {
 
         //paidAt ecoupon
-        String sql = "select new models.ResaleSalesReport(r.order,sum(r.salePrice-r.rebateValue),count(r.buyNumber)) from OrderItems r, ECoupon e  where e.orderItems=r ";
+        String sql = "select new models.ResaleSalesReport(r.order,sum(r.salePrice-r.rebateValue),count(r.buyNumber)" +
+                ",sum(r.goods.originalPrice)" +
+                ") from OrderItems r, ECoupon e  where e.orderItems=r ";
         String groupBy = " group by r.order.userId";
         Query query = JPA.em()
                 .createQuery(sql + condition.getFilterPaidAt(AccountType.RESALER) + groupBy + " order by sum(r.salePrice-r.rebateValue) desc");
@@ -260,7 +265,9 @@ public class ResaleSalesReport extends Model {
         List<ResaleSalesReport> paidResultList = query.getResultList();
 
         //sendAt real
-        sql = "select new models.ResaleSalesReport(r.order,count(r.buyNumber),sum(r.salePrice-r.rebateValue)) from OrderItems r ";
+        sql = "select new models.ResaleSalesReport(r.order,count(r.buyNumber),sum(r.salePrice-r.rebateValue)" +
+                ",sum(r.goods.originalPrice)" +
+                ") from OrderItems r ";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterRealSendAt(AccountType.RESALER) + groupBy + " order by sum(r.salePrice-r.rebateValue) desc");
         for (String param : condition.getParamMap().keySet()) {
@@ -386,7 +393,9 @@ public class ResaleSalesReport extends Model {
      */
     public static List<ResaleSalesReport> queryConsumer(ResaleSalesReportCondition condition) {
         //paidAt ecoupon
-        String sql = "select new models.ResaleSalesReport(r.order,sum(r.salePrice-r.rebateValue),count(r.buyNumber)) from OrderItems r, ECoupon e  where e.orderItems=r ";
+        String sql = "select new models.ResaleSalesReport(r.order,sum(r.salePrice-r.rebateValue),count(r.buyNumber)" +
+                ",sum(r.goods.originalPrice)" +
+                ") from OrderItems r, ECoupon e  where e.orderItems=r ";
         Query query = JPA.em()
                 .createQuery(sql + condition.getFilterPaidAt(AccountType.CONSUMER) + " order by sum(r.salePrice-r.rebateValue) desc");
         for (String param : condition.getParamMap().keySet()) {
@@ -395,7 +404,9 @@ public class ResaleSalesReport extends Model {
         List<ResaleSalesReport> paidResultList = query.getResultList();
 
         //sendAt real
-        sql = "select new models.ResaleSalesReport(r.order,count(r.buyNumber),sum(r.salePrice-r.rebateValue)) from OrderItems r ";
+        sql = "select new models.ResaleSalesReport(r.order,count(r.buyNumber),sum(r.salePrice-r.rebateValue)" +
+                ",sum(r.goods.originalPrice)" +
+                ") from OrderItems r ";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterRealSendAt(AccountType.CONSUMER) + " order by sum(r.salePrice-r.rebateValue) desc");
         for (String param : condition.getParamMap().keySet()) {
