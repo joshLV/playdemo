@@ -41,8 +41,8 @@ GET     /reports/goods                          SupplierReports.showGoodsReport
 
 # [v2] 券列表
 GET     /coupons                                SupplierECoupons.index
-GET     /verify                                 SupplierVerifyCoupons.index
-GET     /verify/multi                           SupplierVerifyCoupons.index
+GET     /verify                                 SupplierVerifyECoupons.showSingle
+GET     /verify/multi                           SupplierVerifyECoupons.showMulti
 
 
 # [v2] 验证电子券页面--v1
