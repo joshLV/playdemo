@@ -39,7 +39,7 @@ public class ResaleSalesReportCondition {
     }
 
     public String getFilterRealSendAt(AccountType type) {
-        StringBuilder condBuilder = new StringBuilder(" where r.order.status='SENT' " +
+        StringBuilder condBuilder = new StringBuilder(" where r.order=o and o.userId=b.id and r.order.status='SENT' " +
                 "and r.order.userType = :userType " +
                 "and r.goods.isLottery=false and r.goods.materialType=models.sales.MaterialType.REAL");
 
