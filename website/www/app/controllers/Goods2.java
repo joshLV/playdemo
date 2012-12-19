@@ -346,7 +346,7 @@ public class Goods2 extends Controller {
         }
         final Date currDate = new Date();
         List<GoodsSchedule> scheduleList = CacheHelper.getCache(
-                CacheHelper.getCacheKey(GoodsSchedule.CACHEKEY, "SCHEDULE_GOODS"),
+                CacheHelper.getCacheKey(GoodsSchedule.CACHEKEY, "GOODS2_SCHEDULE_GOODS"),
                 new CacheCallBack<List<GoodsSchedule>>() {
                     @Override
                     public List<GoodsSchedule> loadData() {

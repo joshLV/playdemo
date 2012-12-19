@@ -45,6 +45,8 @@
 <div id="content">
 <h1 style="font-size:200%">商品信息</h1>
 
+#{if groupbuyId}<p>商品linkID：${groupbuyId}</p>#{/if}
+
 <p>商品分类(可以用拼音搜索)<b>*</b></p>
 #{vx.selectInputField name:"prodType", id:"prodTypeId", array:"prodTypeArray",value:1,importJs:true/}
 <p>

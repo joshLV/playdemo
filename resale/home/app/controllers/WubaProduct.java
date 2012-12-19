@@ -5,7 +5,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import controllers.modules.resale.cas.SecureCAS;
 import models.order.OuterOrderPartner;
@@ -25,6 +24,7 @@ import play.mvc.With;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -42,8 +42,8 @@ public class WubaProduct extends Controller {
     public static void prepare(long goodsId) {
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
         getGoodsItems(goods);
-        List<Shop> shopList = Shop.find("bySupplierIdAndDeleted", goods.supplierId, DeletedStatus.UN_DELETED).fetch();
 
+        List<Shop> shopList = Arrays.asList(goods.getShopList().toArray(new Shop[]{}));
         JsonArray jsonArray1 = new JsonParser().parse(new Gson().toJson(shopList)).getAsJsonArray();
         JsonArray jsonArray = new JsonArray();
         for (int i = 0; i < shopList.size(); i++) {
@@ -329,7 +329,7 @@ public class WubaProduct extends Controller {
                 int city0Id = Integer.valueOf(cityArr[0]);
                 if (city0Id == cityId) {
                     cityName = cityArr[1];
-                    url += THIRD_URL + cityArr[2]+",";
+                    url += THIRD_URL + cityArr[2] + ",";
                     moreCityName += cityName + ",";
                 }
             }
@@ -483,6 +483,7 @@ public class WubaProduct extends Controller {
                 if (groupbuyInfoAsJsonObject.has("specialmessage")) {
                     renderArgs.put("specialmessage", StringUtils.trimToEmpty(groupbuyInfoAsJsonObject.get("specialmessage").getAsString()));
                 }
+                renderArgs.put("groupbuyId", groupbuyInfoAsJsonObject.get("groupbuyId").getAsLong());
                 renderArgs.put("prodCategory", groupbuyInfoAsJsonObject.get("prodCategory").getAsInt());
                 renderArgs.put("prodTypeId", groupbuyInfoAsJsonObject.get("prodTypeId").getAsInt());
                 renderArgs.put("isSend", groupbuyInfoAsJsonObject.get("isSend").getAsInt());
