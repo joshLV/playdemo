@@ -262,7 +262,7 @@
     <div class="checkin-box">
         #{if isCheckinToday && cas?.isLogin}
             <p>本月累计签到 <span>${checkinNumber}</span> 天<br>您有 <span>${totalCoins}</span> 枚金币
-                <a href="" target="_blank">去兑换</a>
+                <a href="${helper.Domain.getHomeHost(request)}/user-coins" target="_blank">去兑换</a>
             </p>
         #{/if}
         #{else}

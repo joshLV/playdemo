@@ -1,10 +1,11 @@
 package controllers;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import cache.CacheCallBack;
+import cache.CacheHelper;
+import com.uhuila.common.constants.PlatformType;
+import com.uhuila.common.util.DateUtil;
+import controllers.modules.website.cas.SecureCAS;
+import controllers.modules.website.cas.annotations.SkipCAS;
 import models.accounts.AccountType;
 import models.cms.Block;
 import models.cms.BlockType;
@@ -16,20 +17,16 @@ import models.order.ECoupon;
 import models.order.OrderItems;
 import models.sales.BrowsedGoods;
 import models.sales.Category;
-
+import models.sales.GoodsSchedule;
 import org.apache.commons.collections.CollectionUtils;
-
 import play.mvc.After;
 import play.mvc.Controller;
 import play.mvc.With;
-import cache.CacheCallBack;
-import cache.CacheHelper;
 
-import com.uhuila.common.constants.PlatformType;
-import com.uhuila.common.util.DateUtil;
-
-import controllers.modules.website.cas.SecureCAS;
-import controllers.modules.website.cas.annotations.SkipCAS;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 首页控制器.
@@ -45,7 +42,7 @@ public class Home2 extends Controller {
     public static void index(final long categoryId) {
         User user = SecureCAS.getUser();
         String dateCacheKey = String.valueOf(DateUtil.getBeginOfDay().getTime());
-        
+
         CacheHelper.preRead(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_NEW4"),
                 CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECOMMENDS4"),
                 CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_HOT_SALE4"),
@@ -56,7 +53,8 @@ public class Home2 extends Controller {
                 CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SLIDES_" + dateCacheKey),
                 CacheHelper.getCacheKey(FriendsLink.CACHEKEY, "FRIENDS_LINK"),
                 CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_1F"),
-                CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_2F")
+                CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_2F"),
+                CacheHelper.getCacheKey(GoodsSchedule.CACHEKEY, "WWW_SCHEDULE_GOODS")
         );
 
         //最新上架，新品推荐,相同商户不同商品只取一个最后上架的商品
@@ -154,6 +152,16 @@ public class Home2 extends Controller {
             renderArgs.put("savedMoney", savedMoney);
         }
 
+        //判断是否有签到商品
+        List<GoodsSchedule> scheduleList = CacheHelper.getCache(
+                CacheHelper.getCacheKey(GoodsSchedule.CACHEKEY, "WWW_SCHEDULE_GOODS"),
+                new CacheCallBack<List<GoodsSchedule>>() {
+                    @Override
+                    public List<GoodsSchedule> loadData() {
+                        return GoodsSchedule.findSchedule(null, currentDate);
+                    }
+                });
+        renderArgs.put("scheduleList", scheduleList);
 
         //首页楼层banner
         Block webOneFloor = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_1F"), new CacheCallBack<Block>() {

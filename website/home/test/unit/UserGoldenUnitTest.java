@@ -7,12 +7,12 @@ import models.consumer.User;
 import models.consumer.UserCondition;
 import models.consumer.UserGoldenCoin;
 import models.sales.Goods;
+import models.sales.GoodsSchedule;
 import org.junit.Before;
 import org.junit.Test;
 import play.modules.paginate.JPAExtPaginator;
 import play.test.UnitTest;
-
-import java.util.Date;
+import util.DateHelper;
 
 /**
  * <p/>
@@ -22,6 +22,7 @@ import java.util.Date;
  */
 public class UserGoldenUnitTest extends UnitTest {
     User user;
+    UserGoldenCoin goldenCoin;
 
     @Before
     public void setup() {
@@ -39,18 +40,35 @@ public class UserGoldenUnitTest extends UnitTest {
                         target.user = user;
                         target.remarks = "签到20天";
                         target.number = 5L;
-                        target.createdAt = new Date();
+                        target.createdAt = DateHelper.beforeDays(1);
                     }
                 });
 
-        FactoryBoy.create(UserGoldenCoin.class);
+        goldenCoin = FactoryBoy.create(UserGoldenCoin.class);
     }
 
     @Test
     public void testList() {
-        JPAExtPaginator<UserGoldenCoin> reportPage = UserGoldenCoin.find(user,new UserCondition(), 1, 15);
+        JPAExtPaginator<UserGoldenCoin> reportPage = UserGoldenCoin.find(user, new UserCondition(), 1, 15);
         assertEquals(21, reportPage.size());
         assertEquals(21, UserGoldenCoin.getCheckinNumber(user).intValue());
         assertEquals(105, UserGoldenCoin.getTotalCoins(user).intValue());
+    }
+
+    @Test
+    public void testCheckin() {
+        assertEquals(21, UserGoldenCoin.count());
+
+        GoodsSchedule schedule = FactoryBoy.create(GoodsSchedule.class);
+        schedule.expireAt = DateHelper.afterDays(2);
+        schedule.save();
+        //今天签到过的情况
+        UserGoldenCoin.checkin(user, schedule.goods, "每天签到");
+        assertEquals(21, UserGoldenCoin.count());
+        //今天没有签到过的情况
+        goldenCoin.createdAt = DateHelper.beforeDays(2);
+        goldenCoin.save();
+        UserGoldenCoin.checkin(user, schedule.goods, "每天签到");
+        assertEquals(22, UserGoldenCoin.count());
     }
 }

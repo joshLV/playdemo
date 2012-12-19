@@ -91,6 +91,9 @@ public class GoodsSchedule extends Model {
      * @return
      */
     public static List<GoodsSchedule> findSchedule(Goods goods, Date currDate) {
+        if (goods == null) {
+            return GoodsSchedule.find("effectiveAt <= ? and expireAt >=?", currDate, currDate).fetch();
+        }
         List<GoodsSchedule> scheduleList = GoodsSchedule.find("goods=? and effectiveAt <= ? and expireAt >=?", goods, currDate, currDate).fetch();
         return scheduleList;
     }

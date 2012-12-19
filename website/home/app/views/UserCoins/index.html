@@ -28,10 +28,10 @@
             <div class="coins-num">我的金币：<span>${coinsNumber}</span>枚</div>
             <div class="exchange-rule">金币可用来兑换抵用券，无消费金额限制，500枚金币可兑换1张5元抵用券，有效期1年 <a class="view-rule" href=""
                                                                                     target="_blank">查看详细规则</a></div>
-            <form class="exchange-form" id="exchange-form" action="@{UserCoins.exchange()}" method="GET">
+            <form class="exchange-form" id="exchange-form" action="@{UserCoins.exchange()}" method="POST">
 
                 我要兑换：<input class="quantity" type="text" name="exNumber" id="exNumber" value="1"/> 张抵用券
-                <button class="btn" type="button" id="ex">兑换</button><a class="how-to-use" style="display: inline;" href="" target="_blank">抵用券怎么用？</a>
+                <button class="btn" type="button" id="ex">兑换</button><a class="how-to-use" style="display: inline;" href="${helper.Domain.getWWWHost(request)}/help" target="_blank">抵用券怎么用？</a>
                 <div class="failed" id="info" style="display: none;">目前金币还不够哦，天天来签到攒金币吧！</div>
 
             #{if isExchange}
