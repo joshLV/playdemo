@@ -29,23 +29,22 @@ note:'.quanmx.com (只能是字母、数字、下划线，且长度限定在3-20
 #{layout_operate.textField name:'supplier.phone', value:supplier?.phone/}
 
 
-
-<input type="hidden" id="supplier_salesId" name="supplier.salesId" value="${supplier?.salesId}">
-
 #{layout_operate.textField name:'supplier.accountLeaderMobile', value:supplier?.accountLeaderMobile/}
-#{layout_operate.selectField name:'supplier.salesId', class:'span2', value:supplier?.salesId,
-error:'supplier.salesId'}
-    #{list items:operateUserList, as:'operateUser' }
-        #{option operateUser.id}
-            #{if operateUser?.userName!=null}
-            ${operateUser?.userName}
+
+#{layout_operate.selectField name:'supplier.operator.id', class:'span2', value:supplier?.operator?.id,
+error:'supplier.operator'}
+    #{list items:operateUserList, as:'operator' }
+        #{option operator?.id}
+            #{if operator?.userName!=null}
+            ${operator?.userName}
             #{/if}
             #{else}
-            ${operateUser?.loginName}
+            ${operator?.loginName}
             #{/else}
         #{/option}
     #{/list}
 #{/layout_operate.selectField}
+
 #{if !"edit".equals(action)}
     #{layout_operate.textField name:'admin.loginName', value:admin?.loginName, required:true/}
     #{layout_operate.textField name:'admin.mobile', value:admin?.mobile, required:true/}

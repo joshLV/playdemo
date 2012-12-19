@@ -6,6 +6,7 @@ import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.PathUtil;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
+import models.admin.OperateUser;
 import models.admin.SupplierUser;
 import models.order.Prepayment;
 import models.sales.Brand;
@@ -153,10 +154,11 @@ public class Supplier extends Model {
     public String salesEmail;
 
     /**
-     * 所属操作员ID
+     * 所属操作员
      */
-    @Column(name = "sales_id")
-    public Long salesId;
+    @ManyToOne
+    @JoinColumn(name = "operator_id")
+    public OperateUser operator;
 
     /**
      * 删除状态
@@ -291,7 +293,7 @@ public class Supplier extends Model {
         sp.email = supplier.email;
         sp.accountLeaderMobile = supplier.accountLeaderMobile;
 //        sp.salesEmail = supplier.salesEmail;
-        sp.salesId = supplier.salesId;
+        sp.operator = supplier.operator;
         sp.shopEndHour = supplier.shopEndHour;
         sp.updatedAt = new Date();
         if (sp.supplierCategory == null || (sp.supplierCategory != null && supplier.supplierCategory != null && supplier.supplierCategory.id != sp.supplierCategory.id)) {
