@@ -205,6 +205,9 @@ public class Order extends Model {
     @Column(name = "ext_request_sn")
     public String extRequestSN;
 
+    @Column(name = "voucher_value")
+    public BigDecimal voucherValue;
+
     /**
      * 支付方式名称
      */
@@ -1187,9 +1190,12 @@ public class Order extends Model {
                 }
             }
         }
+        BigDecimal originNeedPay = order.needPay;
         order.needPay = order.needPay.subtract(voucherValue);
+        order.voucherValue = voucherValue;
         if (order.needPay.compareTo(BigDecimal.ZERO) < 0) {
             order.needPay = BigDecimal.ZERO;
+            order.voucherValue = originNeedPay;
         }
 
         //有些账号还没有promotionAmount

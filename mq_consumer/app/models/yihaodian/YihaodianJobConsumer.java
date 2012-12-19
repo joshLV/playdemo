@@ -99,8 +99,9 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
                                 MailMessage mailMessage = new MailMessage();
                                 mailMessage.addRecipient("op@uhuila.com");
                                 mailMessage.setSubject("一号店实体券订单");
-                                mailMessage.putParam("orderId", yihaodianOrder.orderId);
-                                MailUtil.sendGoodsOffSalesMail(mailMessage);
+                                mailMessage.putParam("yhdOrderId", yihaodianOrder.orderId);
+                                mailMessage.setTemplate("yihaodianRealGoods");
+                                MailUtil.sendCommonMail(mailMessage);
                             }else {
                                 yihaodianOrder.jobFlag = JobFlag.SEND_DONE;
                                 YihaodianJobMessage syncMessage = new YihaodianJobMessage(yihaodianOrder.orderId);
