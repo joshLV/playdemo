@@ -65,7 +65,7 @@ public class UserGoldenCoin extends Model {
         this.createdAt = new Date();
     }
 
-    public static JPAExtPaginator<UserGoldenCoin> find(User user,UserCondition condition, int pageNumber, int pageSize) {
+    public static JPAExtPaginator<UserGoldenCoin> find(User user, UserCondition condition, int pageNumber, int pageSize) {
         JPAExtPaginator<UserGoldenCoin> coinsPage = new JPAExtPaginator<>
                 ("UserGoldenCoin u", "u", UserGoldenCoin.class, condition.getCoinsCondition(user),
                         condition.paramsMap)
@@ -106,7 +106,6 @@ public class UserGoldenCoin extends Model {
         Query q = entityManager.createQuery("SELECT sum( number ) FROM UserGoldenCoin WHERE user = :user ");
         q.setParameter("user", user);
         Object result = q.getSingleResult();
-        System.out.println(result+"---");
         return result == null ? 0 : (Long) result;
     }
 
@@ -135,6 +134,12 @@ public class UserGoldenCoin extends Model {
     }
 
 
+    /**
+     * 计算可以兑换抵用券的比例
+     *
+     * @param coinsNumber
+     * @return
+     */
     public static Long getPresentOfCoins(Long coinsNumber) {
         return coinsNumber / 500;
     }
