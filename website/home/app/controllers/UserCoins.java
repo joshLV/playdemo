@@ -71,7 +71,7 @@ public class UserCoins extends Controller {
         String prefix = "YBQ" + RandomNumberUtil.generateRandomNumber(7);
 
         Date expiredAt = DateUtil.nextYear(new Date());
-        Voucher.generate(exNumber.intValue(), new BigDecimal(5), name, prefix, account, null, VoucherType.EXCHANGE, expiredAt);
+        Voucher.generate(exNumber.intValue(), new BigDecimal(5), name, prefix, account, user.id, VoucherType.EXCHANGE, expiredAt);
         redirect("/user-coins?isExchange=true");
     }
 
