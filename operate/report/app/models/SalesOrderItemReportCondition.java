@@ -53,7 +53,7 @@ public class SalesOrderItemReportCondition implements Serializable {
         }
 
         if (hasSeeAllSupplierPermission != null && !hasSeeAllSupplierPermission) {
-            condBuilder.append(" and s.operator.id = :salesId");
+            condBuilder.append(" and s.salesId = :salesId");
             paramMap.put("salesId", operatorId);
         }
 
@@ -98,7 +98,7 @@ public class SalesOrderItemReportCondition implements Serializable {
         }
 
         if (hasSeeAllSupplierPermission != null && !hasSeeAllSupplierPermission) {
-            condBuilder.append(" and s.operator.id = :salesId");
+            condBuilder.append(" and s.salesId = :salesId");
             paramMap.put("salesId", operatorId);
         }
 

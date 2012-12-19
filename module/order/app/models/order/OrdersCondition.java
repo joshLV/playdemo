@@ -54,7 +54,7 @@ public class OrdersCondition {
 
 
         if (hasSeeAllSupplierPermission != null && !hasSeeAllSupplierPermission) {
-            List<Supplier> suppliers = Supplier.find("operator.id=?", operatorId).fetch();
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
             List<Long> supplierIds = new ArrayList<>();
             for (Supplier s : suppliers) {
                 supplierIds.add(s.id);

@@ -42,12 +42,16 @@
             <td><a href="/?condition.supplierId=${supplier?.id}">${supplier?.getGoods().size()}个</a></td>
             <td>${supplier?.remark}</td>
             <td>
-                #{if supplier?.operator?.userName !=null && supplier?.operator?.userName!=""}
-                ${supplier?.operator?.userName}
+            %{ operatorUser=null;
+                if(supplier.salesId!=null){
+                operatorUser=models.admin.OperateUser.findById(supplier?.salesId); }
+                }%
+                #{if operatorUser?.userName !=null && operatorUser?.userName!=""}
+                ${operatorUser?.userName}
                 #{/if}
                 #{else}
-            ${supplier?.operator?.loginName}
-            #{/else}
+                ${operatorUser?.loginName}
+                #{/else}
             </td>
             <td>${supplier?.createdAt?.format()}</td>
             <td>${supplier?.updatedAt?.format()}</td>

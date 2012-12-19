@@ -85,7 +85,7 @@ public class OperateOrdersForSalesTest extends FunctionalTest {
         FactoryBoy.create(Supplier.class, new BuildCallback<Supplier>() {
             @Override
             public void build(Supplier s) {
-                s.operator = operateUser;
+                s.salesId = operateUser.id;
             }
         });
         FactoryBoy.create(Goods.class);

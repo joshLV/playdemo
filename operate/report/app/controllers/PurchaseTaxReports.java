@@ -48,7 +48,7 @@ public class PurchaseTaxReports extends Controller {
             supplierList = Supplier.findUnDeleted();
         } else {
             supplierList = Supplier.find(
-                    "deleted=? and operator.id=? order by createdAt DESC",
+                    "deleted=? and salesId=? order by createdAt DESC",
                     DeletedStatus.UN_DELETED,
                     OperateRbac.currentUser().id).fetch();
         }

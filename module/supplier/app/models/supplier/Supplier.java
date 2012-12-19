@@ -6,7 +6,6 @@ import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.PathUtil;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
-import models.admin.OperateUser;
 import models.admin.SupplierUser;
 import models.order.Prepayment;
 import models.sales.Brand;
@@ -14,6 +13,7 @@ import models.sales.Goods;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.data.validation.Email;
+
 import play.data.validation.Match;
 import play.data.validation.MaxSize;
 import play.data.validation.Phone;
@@ -156,9 +156,8 @@ public class Supplier extends Model {
     /**
      * 所属操作员
      */
-    @ManyToOne
-    @JoinColumn(name = "operator_id")
-    public OperateUser operator;
+    @Column(name = "sales_id")
+    public Long salesId;
 
     /**
      * 删除状态
@@ -293,7 +292,7 @@ public class Supplier extends Model {
         sp.email = supplier.email;
         sp.accountLeaderMobile = supplier.accountLeaderMobile;
 //        sp.salesEmail = supplier.salesEmail;
-        sp.operator = supplier.operator;
+        sp.salesId = supplier.salesId;
         sp.shopEndHour = supplier.shopEndHour;
         sp.updatedAt = new Date();
         if (sp.supplierCategory == null || (sp.supplierCategory != null && supplier.supplierCategory != null && supplier.supplierCategory.id != sp.supplierCategory.id)) {
