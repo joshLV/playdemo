@@ -20,8 +20,7 @@
                 提现申请</a></li>
             <li><a #{if request.url.contains("/cash-coupon")}class="current"#{/if}  href="@{UserCashCoupons.index()}">»
                 现金券充值</a></li>
-            <li><a #{if request.url.contains("/voucher")}class="current"#{/if}  href="@{UserVouchers.index()}">»
-                红包领取</a></li>
+            <li><a #{if request.url.equals("/user-coins")}class="current"#{/if} href="/user-coins">» 我的金币</a></li>
         </ul>
         <h3 #{if request.url.contains("/voucher")}class="active"#{/if}>
         我的红包</h3>
@@ -37,10 +36,6 @@
             <li><a #{if request.url.equals("/user-point")}class="current"#{/if} href="/user-point">» 积分明细</a></li>
             <li><a #{if request.url.contains("/user-point-record")}class="current"#{/if} href="/user-point-record">»
                 兑换记录</a></li>
-        </ul>
-        <h3 #{if request.url.contains("/user-coins")}class="active"#{/if}>我的金币</h3>
-        <ul>
-            <li><a #{if request.url.equals("/user-coins")}class="current"#{/if} href="/user-coins">» 金币明细</a></li>
         </ul>
     *{
         <h3 #{if request.url.contains("/rebate")}class="active"#{/if}>推荐返利</h3>

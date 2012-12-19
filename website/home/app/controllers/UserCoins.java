@@ -5,6 +5,7 @@ import com.uhuila.common.util.RandomNumberUtil;
 import controllers.modules.website.cas.SecureCAS;
 import models.accounts.Account;
 import models.accounts.Voucher;
+import models.accounts.VoucherType;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
 import models.consumer.UserCondition;
@@ -34,18 +35,19 @@ public class UserCoins extends Controller {
     public static void index(UserCondition condition) {
         User user = SecureCAS.getUser();
         String page = request.params.get("page");
+        String isExchange = request.params.get("isExchange");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         if (condition == null) {
             condition = new UserCondition();
         }
-        JPAExtPaginator<UserGoldenCoin> coinList = UserGoldenCoin.find(user,condition, pageNumber, PAGE_SIZE);
+        JPAExtPaginator<UserGoldenCoin> coinList = UserGoldenCoin.find(user, condition, pageNumber, PAGE_SIZE);
         BreadcrumbList breadcrumbs = new BreadcrumbList("金币明细", "/user-coins");
 
         Long coinsNumber = UserGoldenCoin.getTotalCoins(user);
 
         //兑换比例
-        Long number = UserGoldenCoin.getPersentOfCoins(coinsNumber);
-        render(coinList, breadcrumbs, user, coinsNumber, condition, number);
+        Long number = UserGoldenCoin.getPresentOfCoins(coinsNumber);
+        render(coinList, breadcrumbs, user, coinsNumber, condition, number, isExchange);
     }
 
     /**
@@ -58,20 +60,20 @@ public class UserCoins extends Controller {
         //总金币数
         Long coinsNumber = UserGoldenCoin.getTotalCoins(user);
         //兑换比例
-        Long number = UserGoldenCoin.getPersentOfCoins(coinsNumber);
+        Long number = UserGoldenCoin.getPresentOfCoins(coinsNumber);
         if (exNumber > number) {
-            error("对不起，你暂时只能兑换" + number + "张抵用券");
+            error("对不起，你的金币暂时不够兑换！");
         }
 
-        new UserGoldenCoin(user, -(exNumber * 500), null, "兑换" + exNumber + "张5元抵用券",false).save();
+        new UserGoldenCoin(user, -(exNumber * 500), null, "兑换" + exNumber + "张5元抵用券", false).save();
         Account account = AccountUtil.getConsumerAccount(user.id);
         String name = "一百券抵用券";
         String prefix = "YBQ" + RandomNumberUtil.generateRandomNumber(7);
 
         Date expiredAt = DateUtil.nextYear(new Date());
-        Voucher.generate(exNumber.intValue(), new BigDecimal(5), name, prefix, account, null, "消费者兑换抵用券！", expiredAt);
-
-        redirect("/user-coins");
+        Voucher.generate(exNumber.intValue(), new BigDecimal(5), name, prefix, account, null, VoucherType.EXCHANGE, expiredAt);
+        redirect("/user-coins?isExchange=true");
     }
+
 
 }
