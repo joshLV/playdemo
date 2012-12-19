@@ -25,7 +25,7 @@ public class SolrGoodsReindexJob extends Job {
         Calendar endDate = Calendar.getInstance();
         Calendar beginDate = Calendar.getInstance();
         beginDate.add(Calendar.MINUTE, -5);
-        List<Goods> updatedGoods = Goods.findUpdatedGoods(endDate, beginDate);
+        List<Goods> updatedGoods = Goods.findUpdatedGoods(beginDate.getTime(), endDate.getTime());
         if (CollectionUtils.isEmpty(updatedGoods)) {
             return;
         }
@@ -36,7 +36,7 @@ public class SolrGoodsReindexJob extends Job {
             goodsIds.append(updatedGood.id);
             goodsIds.append(",");
         }
-        Logger.info("Solr Goods reindex:(id:" + goodsIds + ")");
+        Logger.info("Solr Goods reindex:(id:" + goodsIds.substring(0, goodsIds.length() - 1) + ")");
     }
 
 }

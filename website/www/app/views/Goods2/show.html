@@ -6,11 +6,11 @@
 <meta name="Keywords" content="${detailKeywords}">
 #{/set}
 #{set 'moreStyles'}
-    #{asset.css src:['/home/121212/detail.css']/}
+    #{asset.css src:['/home/121213/detail.css']/}
 #{/set}
 <script src="http://maps.googleapis.com/maps/api/js?e&language=zh-CN&region=GB&key=AIzaSyCbnBNu40y5eXnL8jOey4lbS3P1vQ_HR5E&sensor=false"></script>
 #{set 'moreScripts'}
-    #{asset.js src:['/u/slides.min.js','/home/121031/detail.js']/}
+    #{asset.js src:['/u/slides.min.js','/home/121213/detail.js']/}
 #{/set}
 
 <style type="text/css">
@@ -257,7 +257,21 @@
 <!-- #consult -->
 </div>
 <!-- #section -->
+<div id="sidebar">
+#{if isCheckinGoods}
+    <div class="checkin-box">
+        #{if isCheckinToday && cas?.isLogin}
+            <p>本月累计签到 <span>${checkinNumber}</span> 天<br>您有 <span>${totalCoins}</span> 枚金币
+                <a href="" target="_blank">去兑换</a>
+            </p>
+        #{/if}
+        #{else}
+            <a id="j_checkin" class="checkin" href="@{ObtainGoldenCoins.index(goods.id)}">马上签到领金币</a>
+        #{/else}
+    </div>
+#{/if}
 #{include '/Goods2/sidebar.html' /}
+</div>
 </div>
 <!-- #content -->
 </div>

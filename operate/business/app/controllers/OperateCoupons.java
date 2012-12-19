@@ -1,5 +1,6 @@
 package controllers;
 
+import models.accounts.AccountType;
 import models.admin.OperateUser;
 import models.order.CouponHistory;
 import models.order.CouponsCondition;
@@ -11,6 +12,7 @@ import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import operate.rbac.annotations.Right;
 import org.apache.commons.lang.StringUtils;
+import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -21,7 +23,6 @@ import java.util.Date;
 import java.util.List;
 
 @With(OperateRbac.class)
-@ActiveNavigation("coupons_index")
 public class OperateCoupons extends Controller {
 
     public static int PAGE_SIZE = 15;
@@ -31,6 +32,8 @@ public class OperateCoupons extends Controller {
      */
     @ActiveNavigation("coupons_index")
     public static void index(CouponsCondition condition) {
+        Boolean hasEcouponRefundPermission = ContextedPermission.hasPermission("ECOUPON_REFUND");
+
         if (condition == null) {
             condition = new CouponsCondition();
             condition.hidPaidAtBegin = DateHelper.beforeDays(1);
@@ -57,7 +60,7 @@ public class OperateCoupons extends Controller {
         BigDecimal amountSummary = ECoupon.summary(couponPage);
         //判断角色是否有解冻券号的权限
         boolean hasRight = ContextedPermission.hasPermission("COUPON_UNFREEZE");
-        render(couponPage, condition, amountSummary, hasRight);
+        render(couponPage, condition, amountSummary, hasRight, hasEcouponRefundPermission);
     }
 
     /**
@@ -65,6 +68,7 @@ public class OperateCoupons extends Controller {
      *
      * @param id
      */
+    @ActiveNavigation("coupons_index")
     public static void freeze(long id) {
         ECoupon.freeze(id, OperateRbac.currentUser().userName);
         index(null);
@@ -75,7 +79,7 @@ public class OperateCoupons extends Controller {
      *
      * @param id
      */
-    @Right("manager")
+    @Right("UNFREEZE_COUPON")
     public static void unfreeze(long id) {
         ECoupon.unfreeze(id, OperateRbac.currentUser().userName);
         index(null);
@@ -84,6 +88,7 @@ public class OperateCoupons extends Controller {
     /**
      * 券号列表
      */
+    @ActiveNavigation("coupons_index")
     public static void couponHistory(Long couponId) {
         ECoupon coupon = ECoupon.findById(couponId);
         if (coupon == null) {
@@ -95,11 +100,72 @@ public class OperateCoupons extends Controller {
         render("OperateCoupons/history.html", couponSn, couponList);
     }
 
+    @Right("ECOUPON_REFUND")
+    public static void refund(Long couponId) {
+        ECoupon coupon = ECoupon.findById(couponId);
+        Boolean couponNoRefund = false;
+        if (coupon.goods.noRefund != null && coupon.goods.noRefund == true) {
+            couponNoRefund = true;
+        }
+        render("OperateCoupons/refund.html", couponNoRefund, coupon, couponId);
+    }
+
+    @Right("ECOUPON_REFUND")
+    public static void handleRefund(Long couponId, String eCouponSn, String refundComment) {
+        if (StringUtils.isBlank(eCouponSn)) {
+            Validation.addError("eCouponSn", "券号不能为空");
+        }
+        if (StringUtils.isBlank(refundComment)) {
+            Validation.addError("refundComment", "备注不能为空");
+        }
+
+        ECoupon prevEcoupon = ECoupon.findById(couponId);
+        ECoupon ecoupon = ECoupon.find("eCouponSn=?", eCouponSn).first();
+        if (ecoupon != null && prevEcoupon != null && !prevEcoupon.equals(ecoupon)) {
+            Validation.addError("eCouponSn", "此券号与要退款的券号不一致，请核实");
+        }
+
+        if (ecoupon == null) {
+            Validation.addError("eCouponSn", "不存在的券号");
+        }
+        if (ecoupon != null && ecoupon.status == ECouponStatus.CONSUMED) {
+            Validation.addError("eCouponSn", "券号已消费");
+        }
+        if (ecoupon != null && ecoupon.status != ECouponStatus.UNCONSUMED) {
+            Validation.addError("eCouponSn", "只有未消费券可退款");
+        }
+        if (Validation.hasErrors()) {
+            ECoupon coupon = ECoupon.findById(couponId);
+            Boolean couponNoRefund = false;
+            if (coupon.goods.noRefund != null && coupon.goods.noRefund == true) {
+                couponNoRefund = true;
+            }
+            render("OperateCoupons/refund.html", couponNoRefund, coupon, couponId, eCouponSn, refundComment);
+        }
+        String returnFlg = "";
+        if (ecoupon.status == ECouponStatus.UNCONSUMED && ecoupon.order.userType == AccountType.CONSUMER) {
+            returnFlg = ECoupon.applyRefund(ecoupon, ecoupon.order.userId, AccountType.CONSUMER, OperateRbac.currentUser().userName, refundComment);
+        }
+        if (ecoupon.status == ECouponStatus.UNCONSUMED && ecoupon.order.userType == AccountType.RESALER) {
+            returnFlg = ECoupon.applyRefund(ecoupon, ecoupon.order.userId, AccountType.RESALER, OperateRbac.currentUser().userName, refundComment);
+        }
+        String message = "";
+        if (returnFlg == "{\"error\":\"ok\"}") {
+            message = "电子券退款成功";
+            render(message);
+        } else {
+            message = "电子券退款失败，请重新操作";
+            render(message);
+        }
+    }
+
+
     /**
      * 重发短信
      *
      * @param id
      */
+    @ActiveNavigation("coupons_index")
     public static void sendMessage(long id) {
         boolean sendFalg = ECoupon.sendMessage(id);
         ECoupon eCoupon = ECoupon.findById(id);
@@ -107,6 +173,7 @@ public class OperateCoupons extends Controller {
         renderJSON(sendFalg ? "0" : "1");
     }
 
+    @ActiveNavigation("coupons_index")
     public static void couponExcelOut(CouponsCondition condition) {
 
         if (condition == null) {

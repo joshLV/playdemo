@@ -9,6 +9,7 @@ import models.cms.BlockType;
 import models.cms.CmsQuestion;
 import models.cms.GoodsType;
 import models.consumer.User;
+import models.consumer.UserGoldenCoin;
 import models.order.Cart;
 import models.order.Order;
 import models.order.OrderItems;
@@ -17,6 +18,7 @@ import models.sales.BrowsedGoods;
 import models.sales.Category;
 import models.sales.Goods;
 import models.sales.GoodsHistory;
+import models.sales.GoodsSchedule;
 import models.sales.GoodsStatistics;
 import models.sales.GoodsStatisticsType;
 import models.sales.GoodsWebsiteCondition;
@@ -216,7 +218,7 @@ public class Goods2 extends Controller {
     }
 
     private static void renderRecommendGoods() {
-           //猜你喜欢
+        //猜你喜欢
         List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.BrowsedGoods.CACHEKEY, "GOODS2_YOURLIKE4"), new CacheCallBack<List<models.sales.Goods>>() {
             @Override
             public List<models.sales.Goods> loadData() {
@@ -342,8 +344,27 @@ public class Goods2 extends Controller {
         } else {
             tjUrl += "?tj=gshare";
         }
+        final Date currDate = new Date();
+        List<GoodsSchedule> scheduleList = CacheHelper.getCache(
+                CacheHelper.getCacheKey(GoodsSchedule.CACHEKEY, "SCHEDULE_GOODS"),
+                new CacheCallBack<List<GoodsSchedule>>() {
+                    @Override
+                    public List<GoodsSchedule> loadData() {
+                        return GoodsSchedule.findSchedule(goods, currDate);
+                    }
+                });
+        //判断该商品是否签到商品
+        boolean isCheckinGoods = scheduleList.size() > 0;
+
+        //判断是否签到
+        UserGoldenCoin userGoldenCoin = UserGoldenCoin.getCheckinInfo(user,false);
+        renderArgs.put("isCheckinToday", userGoldenCoin != null);
+        renderArgs.put("checkinNumber", UserGoldenCoin.getCheckinNumber(user));
+        renderArgs.put("totalCoins", UserGoldenCoin.getTotalCoins(user));
+
 
         renderArgs.put("tjUrl", tjUrl);
+        renderArgs.put("isCheckinGoods", isCheckinGoods);
         renderArgs.put("browsedGoodsList", browsedGoodsList);
         renderArgs.put("goods", goods);
         renderArgs.put("imagesList", goods.getCachedGoodsImagesList());

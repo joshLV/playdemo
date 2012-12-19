@@ -1,9 +1,6 @@
 package unit;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
+import factory.FactoryBoy;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
@@ -19,15 +16,16 @@ import models.order.OrdersCondition;
 import models.sales.Goods;
 import models.sales.GoodsHistory;
 import models.supplier.Supplier;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
 import play.modules.paginate.JPAExtPaginator;
 import play.test.UnitTest;
 import util.DateHelper;
-import factory.FactoryBoy;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class OrderUnitTest extends UnitTest {
@@ -127,6 +125,7 @@ public class OrderUnitTest extends UnitTest {
         oldGoods.refresh();
 
         long baseSale = oldGoods.getRealStocks();
+        System.out.println("baseSale=" + baseSale);
         long saleCount = oldGoods.getRealSaleCount();
         Order order = Order.createConsumeOrder(user.id, AccountType.CONSUMER);
 

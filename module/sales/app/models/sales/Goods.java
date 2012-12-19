@@ -78,7 +78,6 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -769,7 +768,6 @@ public class Goods extends Model {
      */
     @Transient
     public String getImageSmall2Path() {
-        System.out.println(id + ":imagePath:" + imagePath);
         return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_SMALL2);
     }
 
@@ -902,17 +900,18 @@ public class Goods extends Model {
             @Override
             public Long loadData() {
                 // 先找出OrderItems中的已销售数量
-
                 Query query = JPA.em().createQuery("SELECT SUM(oi.buyNumber) FROM OrderItems oi where oi.goods.id= :goodsId and oi.order.status != :orderStatus");
                 query.setParameter("goodsId", id);
                 query.setParameter("orderStatus", OrderStatus.CANCELED);
 
-
                 // 减去已退款的数量, 不需要考虑实体券问题.
+                Long orderItemsBuyCount = (Long) query.getSingleResult();
 
-                long orderItemsBuyCount = OrderItems.count("goods.id=? and order.status != ?", id, OrderStatus.CANCELED);
+                if (orderItemsBuyCount == null) {
+                    return 0l;
+                }
+
                 // 减去已退款的数量
-
                 long ecouponRefundCount = ECoupon.count("goods.id=? and status=?", id, ECouponStatus.REFUND);
                 return orderItemsBuyCount - ecouponRefundCount;
             }
@@ -1888,7 +1887,7 @@ public class Goods extends Model {
      * @param beginDate
      * @return
      */
-    public static List<Goods> findUpdatedGoods(Calendar endDate, Calendar beginDate) {
+    public static List<Goods> findUpdatedGoods(Date beginDate, Date endDate) {
         return Goods.find("(createdAt>? and createdAt <=?) or (updatedAt>? and updatedAt<=?)", beginDate, endDate, beginDate, endDate).fetch();
     }
 

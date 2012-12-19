@@ -119,11 +119,15 @@
             <td>${report?.goods?.code}</td>
             <td>${report?.goods?.shortName}</td>
             <td>${(report?.originalPrice?:0).formatCurrency('CNY')}</td>
-            <td>${(report?.avgSalesPrice?:0).formatCurrency('CNY')}</td>
+            <td>
+                #{if report?.avgSalesPrice!=null}
+          ${(report?.avgSalesPrice?:0).formatCurrency('CNY')}
+          #{/if}
+            </td>
             <td>${report?.buyNumber?:0}</td>
             <td>${(report?.totalAmount?:0).formatCurrency('CNY')}</td>
             <td>${(report?.refundAmount?:0).formatCurrency('CNY')}</td>
-            <td>${(report?.netSalesAmount?:0).formatCurrency('CNY')}</td>
+            <td>￥${(report?.netSalesAmount?:0)}</td>
             #{if hasSeeSalesRepotProfitRight == true}
                 <td>${(report?.grossMargin?:0).format('#')}%</td>
                 <td>${(report?.profit?:0).formatCurrency('CNY')}</td>

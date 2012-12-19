@@ -29,12 +29,8 @@ public class CouponCallBind extends Model {
     @Column(name = "coupon_id")
     public Long couponId;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "consult_record_id", nullable = true)
-//    public ConsultRecord consultRecord;
-
     @ManyToOne
-    @JoinColumn(name = "consult_record")
+    @JoinColumn(name = "consult_record_id")
     public ConsultRecord consultRecord;
 
     @Column(name = "consult_id")

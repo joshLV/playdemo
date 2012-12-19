@@ -117,11 +117,6 @@ public class OperateGoods extends Controller {
         goodsPage.setBoundaryControlsEnabled(true);
         List<Supplier> supplierList = Supplier.findUnDeleted();
 
-        for (Supplier supplier : supplierList) {
-            System.out.println("" + supplier.id + ":" + supplier.otherName);
-        }
-
-
         Long id = OperateRbac.currentUser().id;
         List<Brand> brandList = Brand.findByOrder(null, id);
 
@@ -548,7 +543,6 @@ public class OperateGoods extends Controller {
      * 更新指定商品信息
      */
     public static void update2(Long id, @Valid final models.sales.Goods goods, File imagePath, String imageLargePath, String queryString, int page) {
-        System.out.println("goods.inin1111>>begin>>>" + goods.beginOnSaleAt);
         Boolean hasApproveGoodsPermission = ContextedPermission.hasPermission("GOODS_APPROVE_ONSALE");
         if (goods.isAllShop && goods.shops != null) {
             goods.shops = null;

@@ -7,7 +7,6 @@ import models.accounts.TradeType;
 import models.accounts.util.AccountUtil;
 import models.order.OrderItems;
 import navigation.annotations.ActiveNavigation;
-import navigation.annotations.Right;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
@@ -49,8 +48,9 @@ public class AccountSequences extends Controller {
             }
             List<OrderItems> orderItems = OrderItems.findBySupplierOrder(accountId, sequence.orderId);
             if (orderItems.size() > 0) {
+                sequence.orderNumber = orderItems.get(0).order.orderNumber;
                 String postfix = orderItems.size() > 1 ? "等" + orderItems.size() + "个商品" : "";
-                sequence.remark = orderItems.get(0).goods.name + postfix;
+                sequence.remark = orderItems.get(0).goods.shortName + postfix;
             }
         }
         renderArgs.put("condition", condition);

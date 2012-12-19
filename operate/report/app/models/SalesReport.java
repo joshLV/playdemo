@@ -143,6 +143,9 @@ public class SalesReport {
         for (SalesReport refundItem : refundList) {
             SalesReport item = map.get(getReportKey(refundItem));
             if (item == null) {
+                Goods goods = Goods.findById(refundItem.goods.id);
+                refundItem.originalPrice = goods.originalPrice;
+                refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
                 map.put(getReportKey(refundItem), refundItem);
             } else {
                 item.refundAmount = refundItem.refundAmount;

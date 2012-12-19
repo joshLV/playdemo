@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Date;
-import java.util.Random;
 import java.util.regex.Pattern;
 
 /**
@@ -156,27 +155,8 @@ public class OperateVouchers extends Controller {
                 }
             }
         }
-        Random random = new Random();
-        DecimalFormat decimalFormat = new DecimalFormat(DECIMAL_FORMAT);
+        Voucher.generate(count,faceValue,name,prefix,account,OperateRbac.currentUser().getId(),"",expire);
 
-        for(int i = 0; i < count; i ++){
-            String chargeCode = decimalFormat.format(random.nextInt(100000)) +
-                    decimalFormat.format(random.nextInt(100000)) +
-                    decimalFormat.format(random.nextInt(100000));
-
-            Voucher voucher = new Voucher();
-            voucher.chargeCode = chargeCode;
-            voucher.value = faceValue;
-            voucher.name = name;
-            voucher.account = account;
-            if (voucher.account != null) {
-                voucher.assignedAt = new Date();
-            }
-            voucher.serialNo = prefix + decimalFormat.format(i + 1);
-            voucher.operatorId = OperateRbac.currentUser().getId();
-            voucher.expiredAt = expire;
-            voucher.save();
-        }
         index(null);
 
     }
