@@ -120,8 +120,8 @@
                                 #{if (row.status == models.order.OrderStatus.SENT || row.status == models.order.OrderStatus.PAID)}
                                     <span class="order-status paid">交易成功</span>#{/if}
                                 #{else}
-                                    #{if row.status == models.order.OrderStatus.UNPAID }<span
-                                            class="order-status unpaid">#{/if}
+                                    #{if row.status == models.order.OrderStatus.UNPAID }
+                                    <span class="order-status unpaid"></span>#{/if}
                                     #{elseif row.status == models.order.OrderStatus.CANCELED }<span
                                             class="order-status canceled">#{/elseif}&{'order.'+row.status}</span>
                                 #{/else}

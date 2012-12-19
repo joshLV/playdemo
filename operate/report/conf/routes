@@ -24,6 +24,9 @@ GET     /reports/resale                         ResaleSalesReports.index
 GET     /reports/refund                         GoodsRefundReports.index
 GET     /reports/consumer_refund                ConsumerRefundReports.index
 
+#金币明细报表
+GET     /reports/golden-coins                   GoldenCoinReports.index
+GET     /reports/checkin                        GoldenCoinReports.checkin
 #返利排名报表
 GET     /reports/rank                           RebateRankReports.index
 #净销售报表

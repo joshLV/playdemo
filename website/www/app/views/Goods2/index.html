@@ -6,34 +6,34 @@
 #{/set}
 
 #{set 'moreStyles'}
-#{asset.css src:['/home/121108/list.css'] /}
+    #{asset.css src:['/home/121108/list.css'] /}
 #{/set}
 
 #{set 'moreScripts'}
-#{asset.js src:['/u/slides.min.js','/home/121031/list.js']/}
+    #{asset.js src:['/u/slides.min.js','/home/121031/list.js']/}
 <script type="text/javascript">
     $(function () {
-    $("#dz").click(function () {
-    if ($("#dz").attr("checked")) {
-    window.location.href = "${condition.buildUrl('materialType', models.sales.MaterialType.ELECTRONIC).getUrl()}";
-    } else {
-    window.location.href = "${condition.buildUrl('materialType', null).getUrl()}";
-    }
-    });
-    $("#st").click(function () {
-    if ($("#st").attr("checked")) {
-    window.location.href = "${condition.buildUrl('materialType', models.sales.MaterialType.REAL).getUrl()}";
-    } else {
-    window.location.href = "${condition.buildUrl('materialType', null).getUrl()}";
-    }
-    });
-    $("#yy").click(function () {
-    if ($("#yy").attr("checked")) {
-    window.location.href = "${condition.buildUrl('isOrderNum', 1).getUrl()}";
-    } else {
-    window.location.href = "${condition.buildUrl('isOrderNum', 0).getUrl()}";
-    }
-    });
+        $("#dz").click(function () {
+            if ($("#dz").attr("checked")) {
+                window.location.href = "${condition.buildUrl('materialType', models.sales.MaterialType.ELECTRONIC).getUrl()}";
+            } else {
+                window.location.href = "${condition.buildUrl('materialType', null).getUrl()}";
+            }
+        });
+        $("#st").click(function () {
+            if ($("#st").attr("checked")) {
+                window.location.href = "${condition.buildUrl('materialType', models.sales.MaterialType.REAL).getUrl()}";
+            } else {
+                window.location.href = "${condition.buildUrl('materialType', null).getUrl()}";
+            }
+        });
+        $("#yy").click(function () {
+            if ($("#yy").attr("checked")) {
+                window.location.href = "${condition.buildUrl('isOrderNum', 1).getUrl()}";
+            } else {
+                window.location.href = "${condition.buildUrl('isOrderNum', 0).getUrl()}";
+            }
+        });
 
     });
 </script>
@@ -42,8 +42,8 @@
 <div class="wrapper">
     <div id="content" class="clearfix">
         <div id="crumbs-panel">
-            #{breadcrumbs/breadcrumb breadcrumbs/}
-            #{if onSaleGoodsCount != null && onSaleGoodsCount > 0 && (org.apache.commons.lang.StringUtils.isNotBlank(s)||org.apache.commons.lang.StringUtils.isNotBlank(b))}
+        #{breadcrumbs/breadcrumb breadcrumbs/}
+        #{if onSaleGoodsCount != null && onSaleGoodsCount > 0 && (org.apache.commons.lang.StringUtils.isNotBlank(s)||org.apache.commons.lang.StringUtils.isNotBlank(b))}
 
             <div class="stats">
                 <i class="left"></i>
@@ -55,12 +55,12 @@
                 </div>
                 <i class="right"></i>
             </div>
-            #{/if}
+        #{/if}
         </div>
 
         <div id="section">
 
-            #{if onSaleGoodsCount == null || onSaleGoodsCount == 0}
+        #{if onSaleGoodsCount == null || onSaleGoodsCount == 0}
             <div id="sorry">
                 <div class="inner">很抱歉！ 没有找到<span class="keyword">${s}</span>相关的商品。</div>
             </div>
@@ -69,63 +69,65 @@
                 <div class="bd">
                     <ul class="goods clearfix">
                         #{list recommendGoodsList,as:'aGoods'}
-                        <li
-                        #{if aGoods_index%3 == 1}class="first"#{/if}>
-                        <div class="inner">
-                            <div class="image">
-                                <a href="${aGoods.wwwUrl}" target="_blank"><img src="${aGoods.imageSmallPath}"
-                                                                                width="199"
-                                                                                height="152"/></a>
-                                #{if aGoods.areaNames?.size()>0}<a class="region" href="${aGoods?.wwwUrl}"
-                                                                   target="_blank"><span>商圈：</span>${aGoods.areaNames}
-                            </a>#{/if}
-                            </div>
-                            <div class="title"><a href="${aGoods.wwwUrl}"
-                                                  target="_blank">${aGoods.name}</a>
-                            </div>
-                            <div class="attribute">
-                                <div class="left">
-                                    <div class="price">&yen;${aGoods.salePrice}</div>
-                                    <del>原价：${aGoods.faceValue}</del>
-                                    <div class="count">已售出<em>${aGoods?.virtualSaleCount}</em>件</div>
+                            <li
+                                #{if aGoods_index%3 == 1}class="first"#{/if}>
+                                <div class="inner">
+                                    <div class="image">
+                                        <a href="${aGoods.wwwUrl}" target="_blank"><img src="${aGoods.imageSmallPath}"
+                                                                                        width="199"
+                                                                                        height="152"/></a>
+                                        #{if aGoods.areaNames?.size()>0}<a class="region" href="${aGoods?.wwwUrl}"
+                                                                           target="_blank"><span>商圈：</span>${aGoods.areaNames}
+                                        </a>#{/if}
+                                    </div>
+                                    <div class="title"><a href="${aGoods.wwwUrl}"
+                                                          target="_blank">${aGoods.name}</a>
+                                    </div>
+                                    <div class="attribute">
+                                        <div class="left">
+                                            <div class="price">&yen;${aGoods.salePrice}</div>
+                                            <del>原价：${aGoods.faceValue}</del>
+                                            <div class="count">已售出<em>${aGoods?.virtualSaleCount}</em>件</div>
+                                        </div>
+                                        <div class="right"><a class="view" href="${aGoods.wwwUrl}">去看看</a></div>
+                                    </div>
                                 </div>
-                                <div class="right"><a class="view" href="${aGoods.wwwUrl}">去看看</a></div>
-                            </div>
-                        </div>
-                        </li>
+                            </li>
                         #{/list}
                     </ul>
                 </div>
             </div>
 
-            #{/if}
-            #{else}
+        #{/if}
+        #{else}
             <div id="filter">
                 <dl class="cate clearfix">
                     <dt>分类：</dt>
                     <dd>
                         <ul class="some clearfix">
                             <li><a href="${condition.buildUrl('categoryId',0l).getUrl()}"
-                                #{if categoryId == null || categoryId
-                                == 0l}class="curr"#{/if}>全部</a></li>
+                                   #{if categoryId == null || categoryId
+                                   == 0l}class="curr"#{/if}>全部</a></li>
                             #{list searchCategories, as:'category'}
-                            <li><a href="${condition.buildUrl('categoryId',category.id).getUrl()}"
-                                #{if category.id ==
-                                categoryId}class="curr"#{/if}>${category.name}<em>(${category.goodsCount})</em></a></li>
+                                <li><a href="${condition.buildUrl('categoryId',category.id).getUrl()}"
+                                       #{if category.id ==
+                                       categoryId}class="curr"#{/if}>${category.name}<em>(${category.goodsCount}
+                                    )</em></a></li>
                             #{/list}
                         </ul>
                         #{if subCategories!= null && subCategories.size() > 0}
-                        <div class="outer">
-                            <ul class="more clearfix">
-                                #{list subCategories,as:'subCategory'}
-                                <li><a href="${condition.buildUrl('categoryId', subCategory.id).getUrl()}"
-                                    #{if (subCategory.id == condition.categoryId)
-                                    || (subCategory.id == 0 && category?.isRoot())
-                                    }class="curr"#{/if}>${subCategory.name}<em>(${subCategory.goodsCount})</em></a>
-                                </li>
-                                #{/list}
-                            </ul>
-                        </div>
+                            <div class="outer">
+                                <ul class="more clearfix">
+                                    #{list subCategories,as:'subCategory'}
+                                        <li><a href="${condition.buildUrl('categoryId', subCategory.id).getUrl()}"
+                                               #{if (subCategory.id == condition.categoryId)
+                                               || (subCategory.id == 0 && category?.isRoot())
+                                               }class="curr"#{/if}>${subCategory.name}<em>(${subCategory.goodsCount}
+                                            )</em></a>
+                                        </li>
+                                    #{/list}
+                                </ul>
+                            </div>
                         #{/if}
                     </dd>
                 </dl>
@@ -134,27 +136,29 @@
                     <dd>
                         <ul class="some clearfix">
                             <li><a href="${condition.buildUrl('searchAreaId', '0').getUrl()}"
-                                #{if condition.searchAreaId ==
-                                null ||
-                                condition.searchAreaId.equals("0")}class="curr"#{/if}}>全部</a>
+                                   #{if condition.searchAreaId ==
+                                   null ||
+                                   condition.searchAreaId.equals("0")}class="curr"#{/if}}>全部</a>
                             </li>
                             #{list districts,as:'area'}
-                            <li><a href="${condition.buildUrl('searchAreaId', area.id).getUrl()}" #{if
+                                <li><a href="${condition.buildUrl('searchAreaId', area.id).getUrl()}" #{if
                                 condition.searchAreaId.length() >= 5 &&
-                                condition.searchAreaId.startsWith(area.id)}class="curr"#{/if}>${area.name}<em>(${area.goodsCount})</em></a>
-                            </li>
+                                condition.searchAreaId.startsWith(area.id)}class="curr"#{/if}>${area.name}
+                                    <em>(${area.goodsCount})</em></a>
+                                </li>
                             #{/list}
                         </ul>
                         #{if searchAreas != null && searchAreas.size() != 0}
-                        <div class="outer">
-                            <ul class="more clearfix">
-                                #{list searchAreas,as:'area'}
-                                <li><a href="${condition.buildUrl('searchAreaId', area.id).getUrl()}" #{if
-                                    area.id.equals(condition.searchAreaId)}class="curr"#{/if}>${area.name}<em>(${area.goodsCount})</em></a>
-                                </li>
-                                #{/list}
-                            </ul>
-                        </div>
+                            <div class="outer">
+                                <ul class="more clearfix">
+                                    #{list searchAreas,as:'area'}
+                                        <li><a href="${condition.buildUrl('searchAreaId', area.id).getUrl()}" #{if
+                                        area.id.equals(condition.searchAreaId)}class="curr"#{/if}>${area.name}
+                                            <em>(${area.goodsCount})</em></a>
+                                        </li>
+                                    #{/list}
+                                </ul>
+                            </div>
                         #{/if}
                     </dd>
                 </dl>
@@ -166,20 +170,20 @@
 
                     <div class="sort">
                         <a #{if
-                        condition.solrOrderBy.equals(models.sales.GoodsWebsiteCondition.getSolrOrderBy(0))}class="curr"#{/if}
-                        href="${condition.buildUrl('orderByNum', 0).buildUrl('orderByTypeNum',1).getUrl()}">默认</a>
+                           condition.solrOrderBy.equals(models.sales.GoodsWebsiteCondition.getSolrOrderBy(0))}class="curr"#{/if}
+                           href="${condition.buildUrl('orderByNum', 0).buildUrl('orderByTypeNum',1).getUrl()}">默认</a>
                         <a #{if
-                        condition.solrOrderBy.equals(models.sales.GoodsWebsiteCondition.getSolrOrderBy(1))}class="curr"#{/if}
-                        href="${condition.getOrderUrl(1)}" title="${condition.getOrderTitle(1)}"><span
-                            class="${condition.getOrderStyle(1)}">销量</span></a>
+                           condition.solrOrderBy.equals(models.sales.GoodsWebsiteCondition.getSolrOrderBy(1))}class="curr"#{/if}
+                           href="${condition.getOrderUrl(1)}" title="${condition.getOrderTitle(1)}"><span
+                                class="${condition.getOrderStyle(1)}">销量</span></a>
                         <a #{if
-                        condition.solrOrderBy.equals(models.sales.GoodsWebsiteCondition.getSolrOrderBy(2))}class="curr"#{/if}
-                        href="${condition.getOrderUrl(2)}" title="${condition.getOrderTitle(2)}"><span
-                            class="${condition.getOrderStyle(2)}">价格</span></a>
+                           condition.solrOrderBy.equals(models.sales.GoodsWebsiteCondition.getSolrOrderBy(2))}class="curr"#{/if}
+                           href="${condition.getOrderUrl(2)}" title="${condition.getOrderTitle(2)}"><span
+                                class="${condition.getOrderStyle(2)}">价格</span></a>
                         <a #{if
-                        condition.solrOrderBy.equals(models.sales.GoodsWebsiteCondition.getSolrOrderBy(3))}class="curr"#{/if}
-                        href="${condition.getOrderUrl(3)}" title="${condition.getOrderTitle(3)}"><span
-                            class="${condition.getOrderStyle(3)}">发布时间</span></a>
+                           condition.solrOrderBy.equals(models.sales.GoodsWebsiteCondition.getSolrOrderBy(3))}class="curr"#{/if}
+                           href="${condition.getOrderUrl(3)}" title="${condition.getOrderTitle(3)}"><span
+                                class="${condition.getOrderStyle(3)}">发布时间</span></a>
                     </div>
                     <div class="sift">
                         <input id="yy" type="checkbox" #{if condition.isOrder != null}checked #{/if}/><label
@@ -190,40 +194,43 @@
                 <div class="bd">
                     <ul class="goods clearfix">
                         #{paginate.list items:goodsPage,as:'aGoods'}
-                        <li
-                        #{if aGoods_index%3 == 1}class="first"#{/if}>
-                        <div class="inner">
-                            <div class="image">
-                                <a href="${aGoods?.wwwUrl}" target="_blank"><img src="${aGoods.imageSmallPath}"
-                                                                                 width="199"
-                                                                                 height="152"/></a>
-                                #{if aGoods.areaNames?.size()>0}<a class="region" href="${aGoods?.wwwUrl}"
-                                                                   target="_blank"><span>商圈：</span>${aGoods.areaNames}
-                            </a>#{/if}
-                            </div>
-                            <div class="title"><a href="${aGoods?.wwwUrl}"
-                                                  target="_blank">${aGoods.highLightName.raw()}</a>
-                            </div>
-                            <div class="attribute">
-                                <div class="left">
-                                    <div class="price">&yen;${aGoods.salePrice}</div>
-                                    <del>原价：${aGoods.faceValue}</del>
-                                    <div class="count">已售出<em>${aGoods?.virtualSaleCount}</em>件</div>
+                            <li
+                                #{if aGoods_index%3 == 1}class="first"#{/if}>
+                                <div class="inner">
+                                    <div class="image">
+                                        <a href="${aGoods?.wwwUrl}" target="_blank"><img src="${aGoods.imageSmallPath}"
+                                                                                         width="199"
+                                                                                         height="152"/></a>
+                                        #{if aGoods.areaNames?.size()>0}<a class="region" href="${aGoods?.wwwUrl}"
+                                                                           target="_blank"><span>商圈：</span>${aGoods.areaNames}
+                                        </a>#{/if}
+                                    </div>
+                                    <div class="title"><a href="${aGoods?.wwwUrl}"
+                                                          target="_blank">${aGoods.highLightName.raw()}</a>
+                                    </div>
+                                    <div class="attribute">
+                                        <div class="left">
+                                            <div class="price">&yen;${aGoods.salePrice}</div>
+                                            <del>原价：${aGoods.faceValue}</del>
+                                            <div class="count">已售出<em>${aGoods?.virtualSaleCount}</em>件</div>
+                                        </div>
+                                        <div class="right"><a class="view" href="${aGoods.wwwUrl}">去看看</a></div>
+                                    </div>
                                 </div>
-                                <div class="right"><a class="view" href="${aGoods.wwwUrl}">去看看</a></div>
-                            </div>
-                        </div>
-                        </li>
+                            </li>
                         #{/paginate.list}
                     </ul>
                     #{paginate.controls items:goodsPage /}
                 </div>
             </div>
-            #{/else}
+        #{/else}
         </div>
         <!-- #section -->
 
-        #{include '/Goods2/sidebar.html' /}
+        <div id="sidebar">
+            #{include '/Goods2/sidebar.html' /}
+        </div>
+        <!-- #sidebar -->
     </div>
     <!-- #content -->
 </div>
