@@ -357,7 +357,6 @@ public class WubaProduct extends Controller {
         requestMap.put("status", -1);
 
         JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.getstatus", true);
-        System.out.println("getStatus(" + goodsId + ") result:" + result);
         String status = result.get("status").getAsString();
         if (!"10000".equals(status)) {
             renderText("failed:" + result);
@@ -401,7 +400,6 @@ public class WubaProduct extends Controller {
         Map<String, Object> requestMap = new HashMap<>();
         requestMap.put("groupbuyId", relation.linkId);
         JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.shangxian", true);
-        System.out.println("onsale(" + goodsId + ") result:" + result);
         String status = result.get("status").getAsString();
         if (!"10000".equals(status)) {
             renderText("failed:" + result);
@@ -426,7 +424,6 @@ public class WubaProduct extends Controller {
         Map<String, Object> requestMap = new HashMap<>();
         requestMap.put("groupbuyId", relation.linkId);
         JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.xiaxian", true);
-        System.out.println("offsale(" + goodsId + ") result:" + result);
         String status = result.get("status").getAsString();
         if (!"10000".equals(status)) {
             renderText("failed:" + result);
