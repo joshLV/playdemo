@@ -40,7 +40,7 @@ public class GoodsThirdSupport extends Model {
     @Column(name = "created_at")
     public Date createdAt;
 
-    public static GoodsThirdSupport generate(Goods goods, String data, OuterOrderPartner partner) {
+    public static GoodsThirdSupport generate(Goods goods, String data,OuterOrderPartner partner) {
         GoodsThirdSupport support = new GoodsThirdSupport();
         support.partner = partner;
         support.goodsData = data;
@@ -50,7 +50,7 @@ public class GoodsThirdSupport extends Model {
     }
 
     public static GoodsThirdSupport getSupportGoods(Goods goods, OuterOrderPartner partner) {
-        GoodsThirdSupport support = GoodsThirdSupport.find("partner=? and goods=?", partner, goods).first();
+        GoodsThirdSupport support = GoodsThirdSupport.find("partner=? and goods=? order by id desc", partner, goods).first();
         return support;
     }
 }

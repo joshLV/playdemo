@@ -2,7 +2,6 @@ package models.accounts;
 
 
 import com.uhuila.common.constants.DeletedStatus;
-import models.admin.OperateUser;
 import models.consumer.User;
 import models.order.Order;
 import play.db.jpa.Model;
@@ -147,7 +146,7 @@ public class Voucher extends Model {
     @Transient
     public String getOperator() {
         String userName = "";
-        if (operatorId==null) {
+        if (operatorId == null) {
             return userName;
         }
         if (voucherType == VoucherType.EXCHANGE) {
@@ -156,10 +155,7 @@ public class Voucher extends Model {
                 userName = "消费者兑换：" + user.getShowName();
             }
         } else {
-            OperateUser operateUser = OperateUser.findById(operatorId);
-            if (operateUser != null) {
-                userName = "运营人员：" + operateUser.userName;
-            }
+            userName = "运营人员ID：" + operatorId;
         }
         return userName;
     }

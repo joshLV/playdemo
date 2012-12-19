@@ -93,9 +93,9 @@ public class WubaProduct extends Controller {
             error("no fav found");
         }
         GoodsDeployRelation deployRelation = GoodsDeployRelation.getLast(goods.id, OuterOrderPartner.WB);
-        Long id = goods.id;
+        Long linkId = goods.id;
         if (deployRelation != null) {
-            id = deployRelation.linkId;
+            linkId = deployRelation.linkId;
         }
         String[] stringParamKeys = new String[]{
                 "prodName", "prodDescription", "prodShortName", "prodImg", "mobileDescription",
@@ -105,7 +105,7 @@ public class WubaProduct extends Controller {
         Map<String, Object> requestMap = new HashMap<>();
         Map<String, Object> groupbuyInfo = new HashMap<>();
 
-        groupbuyInfo.put("groupbuyId", id);
+        groupbuyInfo.put("groupbuyId", linkId);
         groupbuyInfo.put("prodTypeId", prodTypeId);
         groupbuyInfo.put("prodCategory", prodCategory);
 
@@ -184,7 +184,6 @@ public class WubaProduct extends Controller {
             }
         }
 
-
         if ("10000".equals(status)) {
             setUrlParams(cities, cityIds, resalerFav);
             resalerFav.save();
@@ -220,6 +219,7 @@ public class WubaProduct extends Controller {
             error("no fav found");
         }
         GoodsDeployRelation goodsDeployRelation = GoodsDeployRelation.generate(goods, OuterOrderPartner.WB);
+        Long linkId = goodsDeployRelation.linkId;
 
         String[] stringParamKeys = new String[]{
                 "prodName", "prodDescription", "prodShortName", "prodImg", "mobileDescription",
@@ -241,7 +241,7 @@ public class WubaProduct extends Controller {
         prodModelJson.put("count", 0);
         groupbuyInfo.put("prodModelJson", "{" + new Gson().toJson(prodModelJson) + "}");
 
-        groupbuyInfo.put("groupbuyId", goodsDeployRelation.linkId);
+        groupbuyInfo.put("groupbuyId", linkId);
 
         groupbuyInfo.put("prodCategory", prodCategory);
         groupbuyInfo.put("isSend", isSend);
@@ -287,24 +287,20 @@ public class WubaProduct extends Controller {
         requestMap.put("partners", partners);
         String goodsData = new Gson().toJson(requestMap);
 
-        //查询是否已经推送过该商品，没有则创建，有则更新
-        GoodsThirdSupport support = GoodsThirdSupport.getSupportGoods(goods, OuterOrderPartner.WB);
-        if (support == null) {
-            GoodsThirdSupport.generate(goods, goodsData, OuterOrderPartner.WB).save();
-        } else {
-            support.goodsData = goodsData;
-            support.save();
-        }
         JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.addgroupbuy", false);
         String status = result.get("status").getAsString();
         String msg = result.get("msg").getAsString();
 
 
         if ("10000".equals(status)) {
+            //成功则保存数据
+            GoodsThirdSupport.generate(goods, goodsData, OuterOrderPartner.WB).save();
+
             JsonObject jsonObject = result.get("data").getAsJsonObject();
             Long wubaGoodsId = jsonObject.get("groupbuyId58").getAsLong();
             setUrlParams(cities, cityIds, resalerFav);
             resalerFav.partner = OuterOrderPartner.WB;
+            resalerFav.lastLinkId = linkId;
             resalerFav.thirdGroupbuyId = wubaGoodsId;
             resalerFav.save();
             redirect("/58-status/" + goodsId);

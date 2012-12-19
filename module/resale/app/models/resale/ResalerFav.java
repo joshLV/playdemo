@@ -75,6 +75,9 @@ public class ResalerFav extends Model {
     @Column(name = "third_groupbuy_id")
     public Long thirdGroupbuyId;
 
+    @Column(name = "last_link_id")
+    public Long lastLinkId;//记录最后一次推送的linkId
+
     /**
      * 第三方状态.
      */
