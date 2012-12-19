@@ -1,45 +1,51 @@
 #{extends 'layout_trader/layout2.html' /}
 #{set title:'账号列表' /}
 #{set menu:"users"/}
+#{set 'moreStyles'}
+    #{asset.css src:['/m/account.css'] /}
+#{/set}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/supplierUser.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
-<table cellspacing="0" cellpadding="0" border="0" class="title-table">
-    <tr>
-        <th wdith="50%">帐号总数：${supplierUserList?.size()}</th>
-        <td wdith="50%"><a class="btn" href="@{SupplierUsers.add()}">新增账号</a></td>
-    </tr>
-</table>
+<div class="outlet">
+    <h2>${title}</h2>
+    <table cellspacing="0" cellpadding="0" border="0" class="title-table">
+        <tr>
+            <th wdith="50%">帐号总数：${supplierUserList?.size()}</th>
+            <td wdith="50%"><a class="btn" href="@{SupplierUsers.add()}">新增账号</a></td>
+        </tr>
+    </table>
 
-<table class="standard-table">
-    <thead>
-    <tr>
-        <th width="60">用户名</th>
-        <th width="60">姓名</th>
-        <th width="60">工号</th>
-        <th width="100">手机号</th>
-        <th>角色</th>
-        <th width="85">创建时间</th>
-        <th width="85">上次登录时间</th>
-        <th width="80">操 作</th>
-    </tr>
-    </thead>
-    <tbody>
-    #{list items:supplierUserList, as:'row'}
-    <tr>
-        <td>${row.loginName}</td>
-        <td>${row.userName}</td>
-        <td>${row.jobNumber}</td>
-        <td>${row.mobile}</td>
-        <td>${row.roles.text ==[] ?'':row.roles.text}</td>
-        <td>${row.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-        <td>${row.lastLoginAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
-        <td>
-            <a href="@{SupplierUsers.edit(row.id)}">修改</a> /
-            <a href="/users/${row.id}" id="del_${row.id}"
-               onclick="if (confirm('确定删除吗？')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href + '?x-http-method-override=DELETE'; f.submit(); };return false;">删除</a>
-        </td>
-    </tr>
-    #{/list}
-    </tbody>
-</table>
+    <table class="standard-table">
+        <thead>
+        <tr>
+            <th width="60">用户名</th>
+            <th width="60">姓名</th>
+            <th width="60">工号</th>
+            <th width="100">手机号</th>
+            <th>角色</th>
+            <th width="85">创建时间</th>
+            <th width="85">上次登录时间</th>
+            <th width="80">操 作</th>
+        </tr>
+        </thead>
+        <tbody>
+        #{list items:supplierUserList, as:'row'}
+        <tr>
+            <td>${row.loginName}</td>
+            <td>${row.userName}</td>
+            <td>${row.jobNumber}</td>
+            <td>${row.mobile}</td>
+            <td>${row.roles.text ==[] ?'':row.roles.text}</td>
+            <td>${row.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td>${row.lastLoginAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td>
+                <a href="@{SupplierUsers.edit(row.id)}">修改</a> /
+                <a href="/users/${row.id}" id="del_${row.id}"
+                   onclick="if (confirm('确定删除吗？')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href + '?x-http-method-override=DELETE'; f.submit(); };return false;">删除</a>
+            </td>
+        </tr>
+        #{/list}
+        </tbody>
+    </table>
+</div>

@@ -1,34 +1,37 @@
 #{extends 'layout_trader/layout2.html' /}
 #{set title:'门店列表' /}
 #{set menu:"shops" /}
-<table cellspacing="0" cellpadding="0" border="0" class="title-table">
-    <tr>
-        <th wdith="50%">门店总数：${shopList?.size()}</th>
-        <td wdith="50%"><a class="btn" href="@{SupplierShops.add}">新增门店</a></td>
-    </tr>
-</table>
+<div class="outlet">
+    <h2>${title}</h2>
+    <table cellspacing="0" cellpadding="0" border="0" class="title-table">
+        <tr>
+            <th wdith="50%">门店总数：${shopList?.size()}</th>
+            <td wdith="50%"><a class="btn" href="@{SupplierShops.add}">新增门店</a></td>
+        </tr>
+    </table>
 
-<table cellspacing="0" cellpadding="0" border="0" class="standard-table">
-    <thead>
-    <tr>
-        <th>门店名称</th>
-        <th>门店地址</th>
-        <th>门店电话</th>
-        <th>操 作</th>
-    </tr>
-    </thead>
+    <table cellspacing="0" cellpadding="0" border="0" class="standard-table">
+        <thead>
+        <tr>
+            <th>门店名称</th>
+            <th>门店地址</th>
+            <th>门店电话</th>
+            <th>操 作</th>
+        </tr>
+        </thead>
 
-    <tbody>
-    #{list items:shopList, as:'shop' }
-    <tr>
-        <td>${shop.name}</td>
-        <td>${shop.address}</td>
-        <td>${shop.phone}</td>
-        <td><a href="@{SupplierShops.edit(shop.id)}">修改</a>/#{vx.deleteLink action:"shops", id:shop.id, name:shop.name/}
-        </td>
-    </tr>
-    #{/list}
-    </tbody>
-</table>
-
+        <tbody>
+        #{list items:shopList, as:'shop' }
+        <tr>
+            <td>${shop.name}</td>
+            <td>${shop.address}</td>
+            <td>${shop.phone}</td>
+            <td>
+                <a href="@{SupplierShops.edit(shop.id)}">修改</a>/#{vx.deleteLink action:"shops", id:shop.id, name:shop.name/}
+            </td>
+        </tr>
+        #{/list}
+        </tbody>
+    </table>
+</div>
 

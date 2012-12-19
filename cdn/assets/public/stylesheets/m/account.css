@@ -1,8 +1,8 @@
-.outlet {
+.account {
     padding: 10px 20px 20px;
     background-color: white;
 }
-.outlet h2 {
+.account h2 {
     font-size: 24px;
     padding-bottom: 8px;
     margin-bottom: 20px;
@@ -32,15 +32,15 @@
     font-size: 14px;
     vertical-align: middle;
 }
-.field-group input.text {
+.field-group input.time {
+    margin: 0 5px;
     padding: 5px;
-    width: 588px;
+    width: 198px;
     height: 20px;
     line-height: 20px;
     vertical-align: middle;
     border: 1px solid #CCC;
 }
-
 
 .title-table {
     width: 100%;
@@ -71,7 +71,4 @@
     font-size: 14px;
     border-right: 1px dotted #E3E3E3;
     border-bottom: 1px dotted #E3E3E3;
-}
-.standard-table td a {
-    color: #FF7B33;
 }
