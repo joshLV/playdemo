@@ -1,12 +1,11 @@
 .user-account {
     padding: 15px 0 10px;
 }
-.user-account strong {
+.user-account span {
     margin-right: 30px;
 }
-.user-account span {
+.user-account span em {
     color: #f00;
-    font-size: 14px;
     font-weight: 700;
 
 }
@@ -38,28 +37,28 @@
     background-position: 0 -26px;
 }
 
-.order-tab {
-    table-layout: fixed;
-    width: 100%;
-    border-collapse: collapse;
-}
-.order-tab th {
-    color: #fff;
-    padding: 5px 0;
-    background-color: #adadad;
-}
+/* .order-tab { */
+    /* table-layout: fixed; */
+    /* width: 100%; */
+    /* border-collapse: collapse; */
+/* } */
+/* .order-tab th { */
+    /* color: #fff; */
+    /* padding: 5px 0; */
+    /* background-color: #adadad; */
+/* } */
 .col-name .order-status {
     height: 22px;
     width: 86px;
     padding: 1px;
 }
-.sep-row td {
-    height: 10px;
-}
-.order-bd td {
-    padding: 10px 5px;
-    border: 1px solid #d4d4d4;
-}
+/* .sep-row td { */
+    /* height: 10px; */
+/* } */
+/* .order-bd td { */
+    /* padding: 10px 5px; */
+    /* border: 1px solid #d4d4d4; */
+/* } */
 .order-bd .income {
     color: #99c928;
 }

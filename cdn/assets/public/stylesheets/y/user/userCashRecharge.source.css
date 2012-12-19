@@ -3,6 +3,7 @@
 }
 .user-account strong {
     margin-right: 30px;
+    font-weight: normal;
 }
 .user-account span {
     color: #f00;
