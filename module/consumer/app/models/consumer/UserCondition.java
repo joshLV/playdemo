@@ -18,6 +18,7 @@ public class UserCondition {
 
     public String pointNumber;
     public int tradeType;
+    public boolean isExchange;
     public Map<String, Object> paramsMap = new HashMap<>();
 
     public String getCoinsCondition(User user) {

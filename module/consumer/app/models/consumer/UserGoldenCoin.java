@@ -106,7 +106,7 @@ public class UserGoldenCoin extends Model {
         Query q = entityManager.createQuery("SELECT sum( number ) FROM UserGoldenCoin WHERE user = :user ");
         q.setParameter("user", user);
         Object result = q.getSingleResult();
-
+        System.out.println(result+"---");
         return result == null ? 0 : (Long) result;
     }
 
@@ -135,7 +135,7 @@ public class UserGoldenCoin extends Model {
     }
 
 
-    public static Long getPersentOfCoins(Long coinsNumber) {
+    public static Long getPresentOfCoins(Long coinsNumber) {
         return coinsNumber / 500;
     }
 }

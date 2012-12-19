@@ -8,6 +8,7 @@ import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -98,7 +99,9 @@ public class Voucher extends Model {
     @Column(name = "assigned_at")
     public Date assignedAt;
 
-    public String remarks;
+    @Column(name = "voucher_type")
+    @Enumerated(EnumType.STRING)
+    public VoucherType voucherType;
     /**
      * 使用时间
      */
@@ -112,7 +115,7 @@ public class Voucher extends Model {
     public Date expiredAt;
 
 
-    public static void generate(int count, BigDecimal faceValue, String name, String prefix, Account account, Long operatorId, String remarks, Date expiredAt) {
+    public static void generate(int count, BigDecimal faceValue, String name, String prefix, Account account, Long operatorId, VoucherType type, Date expiredAt) {
         Random random = new Random();
         DecimalFormat decimalFormat = new DecimalFormat(DECIMAL_FORMAT);
 
@@ -131,7 +134,7 @@ public class Voucher extends Model {
             }
             voucher.serialNo = prefix + decimalFormat.format(i + 1);
             voucher.operatorId = operatorId;
-            voucher.remarks = remarks;
+            voucher.voucherType = type;
             voucher.expiredAt = expiredAt;
             voucher.save();
         }
