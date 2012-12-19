@@ -124,6 +124,7 @@ public class ECoupon extends Model {
      */
     @Column(name = "rebate_value")
     public BigDecimal rebateValue;
+
     /**
      * 给推荐人返利费用.
      */

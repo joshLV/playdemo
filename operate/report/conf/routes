@@ -47,7 +47,7 @@ GET     /sales_report_with_privilege_excel      OperationReports.salesReportWith
 GET     /sales_report_excel                     OperationReports.salesReportExcelOut
 
 #渠道类别报表
-GET     /channel_category_report                OperationReports.showChannelReport
+GET     /channel_report                OperationReports.showChannelReport
 
 # Home page
 GET     /                                       OperateReportApplication.index

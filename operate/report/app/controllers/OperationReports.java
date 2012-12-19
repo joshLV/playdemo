@@ -1,6 +1,5 @@
 package controllers;
 
-import models.ChannelCategoryReportCondition;
 import models.ResaleSalesReport;
 import models.ResaleSalesReportCondition;
 import models.SalesReport;
@@ -40,7 +39,7 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new SalesReportCondition();
         }
-        Boolean hasSeeSalesRepotProfitRight = ContextedPermission.hasPermission("SEE_SALE_REPORT_PROFIT");
+        Boolean hasSeeSalesRepotProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         List<SalesReport> resultList = SalesReport.query(condition);
         // 分页
         ValuePaginator<SalesReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
@@ -58,6 +57,8 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new ResaleSalesReportCondition();
         }
+        Boolean hasSeeSalesRepotProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+
         List<ResaleSalesReport> resultList = null;
         // 查询出分销的所有结果
         if (condition.accountType == AccountType.RESALER) {

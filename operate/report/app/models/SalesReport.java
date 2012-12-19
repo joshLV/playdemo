@@ -178,6 +178,7 @@ public class SalesReport {
     /**
      * 取得净销售的总计
      *
+     *
      * @param resultList
      * @return
      */
