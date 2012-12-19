@@ -20,6 +20,16 @@
                 提现申请</a></li>
             <li><a #{if request.url.contains("/cash-coupon")}class="current"#{/if}  href="@{UserCashCoupons.index()}">»
                 现金券充值</a></li>
+            <li><a #{if request.url.contains("/voucher")}class="current"#{/if}  href="@{UserVouchers.index()}">»
+                红包领取</a></li>
+        </ul>
+        <h3 #{if request.url.contains("/voucher")}class="active"#{/if}>
+        我的红包</h3>
+        <ul>
+            <li><a #{if request.url.contains("/voucher")}class="current"#{/if}  href="@{UserVouchers.index()}">»
+               我的红包</a></li>
+            <li><a #{if request.url.contains("/voucher/assign")}class="current"#{/if}  href="@{UserVouchers.showAssign()}">»
+                红包领取</a></li>
         </ul>
 
         <h3 #{if request.url.contains("/user-point")}class="active"#{/if}>我的积分</h3>

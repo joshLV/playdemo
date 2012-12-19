@@ -1,5 +1,6 @@
 package controllers;
 
+import com.uhuila.common.constants.DeletedStatus;
 import models.accounts.Account;
 import models.accounts.Voucher;
 import models.accounts.VoucherCondition;
@@ -41,10 +42,78 @@ public class OperateVouchers extends Controller {
         render(voucherPage, condition);
     }
 
+    public static void update(Long id, String action) {
+        Voucher voucher = Voucher.findById(id);
+        if (voucher != null) {
+            if (!StringUtils.isBlank(action)){
+                if (action.equalsIgnoreCase("delete")) {
+                    voucher.deleted = DeletedStatus.DELETED;
+                    voucher.save();
+                    renderJSON("{\"status\":\"ok\"}");
+                }
+            }
+        }
+        renderJSON("{\"status\":\"failed\"}");
+    }
+
     @ActiveNavigation("voucher_assign")
     public static void showAssign(String err) {
         render(err);
     }
+
+    @ActiveNavigation("voucher_assign")
+    public static void assign(String users, String vouchers, String type) {
+        if (StringUtils.isBlank(users) || StringUtils.isBlank(vouchers) || StringUtils.isBlank(type)) {
+            showAssign("请输入一点信息啊");return;
+        }
+        String[] userIds = users.split("\\r?\\n");
+        String[] voucherIds = vouchers.split("\\r?\\n");
+        if(userIds.length == 0 || voucherIds.length == 0) {
+            showAssign("起码输入一点内容，好不");return;
+        }
+        boolean is1to1 = type.equalsIgnoreCase("1to1");
+        if(is1to1  && userIds.length != voucherIds.length) {
+            showAssign("两边数量要相等");return;
+        }
+        Long userId = 0L;
+        User user = null;
+
+        StringBuilder err = new StringBuilder("已完成，请注意以下错误（没有就算了）<br/>");
+        for (int i = 0; i < userIds.length; i++) {
+            if (is1to1 || i == 0) {
+                try{
+                    userId = Long.parseLong(userIds[i]);
+                }catch (Exception e) {
+                    err.append("第"+(i+1)+"个用户,ID：" + userIds[i] + "解析错误<br/>");
+                    if (is1to1) continue;
+                    else  break;
+                }
+                user = User.findById(userId);
+                if (user == null) {
+                    err.append("第"+(i+1)+"个用户,ID：" + userIds[i] + "没找到<br/>");
+                    if (is1to1) continue;
+                    else  break;
+                }
+            }
+            Voucher voucher = Voucher.find("bySerialNo", voucherIds[i]).first();
+            if (voucher == null) {
+                err.append("第"+(i+1)+"个券号：" + voucherIds[i] + "没找到<br/>");
+                continue;
+            }
+            if (voucher.account != null || voucher.assignedAt != null) {
+                err.append("第"+(i+1)+"个券号：" + voucherIds[i] + "已经绑定过了<br/>");
+                continue;
+            }
+
+            voucher.account = AccountUtil.getConsumerAccount(user.getId());
+            voucher.assignedAt = new Date();
+            voucher.operatorId = OperateRbac.currentUser().getId();
+            voucher.save();
+        }
+
+        showAssign(err.toString());
+    }
+
 
 
     @ActiveNavigation("voucher_generator")
@@ -86,7 +155,7 @@ public class OperateVouchers extends Controller {
                 }
             }
         }
-        Voucher.generate(count,faceValue,name,prefix,account,OperateRbac.currentUser().getId(),"");
+        Voucher.generate(count,faceValue,name,prefix,account,OperateRbac.currentUser().getId(),"",expire);
 
         index(null);
 
