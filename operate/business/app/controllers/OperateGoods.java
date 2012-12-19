@@ -547,6 +547,7 @@ public class OperateGoods extends Controller {
         if (goods.isAllShop && goods.shops != null) {
             goods.shops = null;
         }
+
         checkImageFile(imagePath);
         checkExpireAt(goods);
         checkSaleAt(goods);
@@ -684,8 +685,8 @@ public class OperateGoods extends Controller {
                 Supplier supplier = Supplier.findById(goods.supplierId);
                 if (supplier != null) {
                     String email = "";
-                    if (supplier.salesId != null) {
-                        OperateUser operateUser = OperateUser.findById(supplier.salesId);
+                    if (supplier.operator != null) {
+                        OperateUser operateUser = OperateUser.findById(supplier.operator.id);
                         email = operateUser.email;
                     } else if (StringUtils.isNotBlank(supplier.salesEmail)) {
                         email = supplier.salesEmail;

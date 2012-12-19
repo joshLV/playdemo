@@ -46,7 +46,7 @@ public class NetSalesReports extends Controller {
             supplierList = Supplier.findUnDeleted();
         } else {
             supplierList = Supplier.find(
-                    "deleted=? and salesId=? order by createdAt DESC",
+                    "deleted=? and operator.id=? order by createdAt DESC",
                     DeletedStatus.UN_DELETED,
                     OperateRbac.currentUser().id).fetch();
         }
