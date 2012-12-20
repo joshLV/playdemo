@@ -23,12 +23,12 @@
             <li><a #{if request.url.equals("/user-coins")}class="current"#{/if} href="/user-coins">» 我的金币</a></li>
         </ul>
         <h3 #{if request.url.contains("/voucher")}class="active"#{/if}>
-        我的红包</h3>
+        我的抵用券</h3>
         <ul>
             <li><a #{if request.url.contains("/voucher")}class="current"#{/if}  href="@{UserVouchers.index()}">»
-               我的红包</a></li>
+               我的抵用券</a></li>
             <li><a #{if request.url.contains("/voucher/assign")}class="current"#{/if}  href="@{UserVouchers.showAssign()}">»
-                红包领取</a></li>
+                抵用券领取</a></li>
         </ul>
 
         <h3 #{if request.url.contains("/user-point")}class="active"#{/if}>我的积分</h3>

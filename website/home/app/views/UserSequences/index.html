@@ -43,9 +43,7 @@
     <div class="section">
     #{breadcrumbs/breadcrumb breadcrumbs/}
         <form class="form-horizontal" id="amountFrm" action="@{UserSequences.index()}" method="GET">
-            <div class="user-account">
-                账户：<strong>${user?.showName}</strong> 可提现账户余额：<span>${account.amount}</span>元 不可提现账户余额：<span>${account.promotionAmount?:"0.00"}</span>元
-            </div>
+            #{include "share/userAccount.html"/}
             <div class="search-box">
                 <label>资金流向：</label>
             #{select 'condition.sequenceFlag', id:'sequenceFlag', value:condition?.sequenceFlag}

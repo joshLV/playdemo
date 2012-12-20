@@ -1,5 +1,5 @@
 #{extends 'main2.html' /}
-#{set title:'我的红包' /}
+#{set title:'我的抵用券' /}
 #{set 'moreStyles'}
     #{asset.css src:['/y/user/userBase.css','/y/user/userVoucher.css', '/y/user/userCashRecharge.css'] /}
 #{/set}
@@ -8,18 +8,14 @@
     #{include "share/left.html"/}
     <div class="section">
         #{breadcrumbs/breadcrumb breadcrumbs/}
-        <div class="user-account">
-            <span>账户：${user?.showName}</span>
-            <span>可提现账户余额：<em>${account.amount}</em>元</span>
-            <span>不可提现账户余额：<em>${account.promotionAmount?:"0.00"}</em>元</span>
-        </div>
+        #{include "share/userAccount.html"/}
 
         <h3>我的抵用券</h3>
         <div class="tips">抵用券只可用于消费，不能用于充值和提现。<a class="how-to-use" href="" target="_blank">抵用券怎么用？</a></div>
         <table class="table">
             <thead>
             <tr class="col-name">
-                <th width="100">抵用券编号</th>
+                <th width="190">抵用券编号</th>
                 <th>抵用券名称</th>
                 <th width="50">面值</th>
                 <th width="120">过期时间</th>
@@ -32,7 +28,7 @@
                 <tr>
                     <td>${voucher.serialNo}</td>
                     <td>${voucher.name}</td>
-                    <td>${voucher.value.formatCurrency('CNY')}</td>
+                    <td style="text-align: right">${voucher.value.formatCurrency('CNY')}</td>
                     <td>${voucher.expiredAt.format('yyyy-MM-dd HH:mm:ss')}</td>
                     <td>${voucher.assignedAt.format('yyyy-MM-dd HH:mm:ss')}</td>
                     #{if voucher.order}

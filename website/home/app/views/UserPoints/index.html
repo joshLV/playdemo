@@ -18,10 +18,7 @@
     #{include "share/left.html"/}
     <div class="section">
         #{breadcrumbs/breadcrumb breadcrumbs/}
-        <div class="user-account">
-            <span>账户：${user?.loginName}</span>
-            <span>积分：<em>${user?.userInfo?.totalPoints}</em></span>
-        </div>
+        #{include "share/userAccount.html"/}
 
         <form class="form-horizontal" id="couponsFrm" action="@{UserPoints.index()}" method="GET">
         <div class="search-box">

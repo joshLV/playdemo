@@ -8,11 +8,7 @@
     #{include "share/left.html"/}
     <div class="section">
         #{breadcrumbs/breadcrumb breadcrumbs/}
-        <div class="user-account">
-            <span>账户：${user?.showName}</span>
-            <span>账户余额：<em>${account?.amount}</em>元</span>
-            <a class="withdraw-btn" id="apply" href="/withdraw/apply"> 提 现 </a>
-        </div>
+        #{include "share/userAccount.html"/}
         <table class="order-tab table">
             <thead>
                 <tr class="col-name">

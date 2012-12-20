@@ -29,7 +29,7 @@ public class UserVouchers extends Controller {
     public static int PAGE_SIZE = 15;
 
     public static void index() {
-        BreadcrumbList breadcrumbs = new BreadcrumbList("我的红包", "/voucher");
+        BreadcrumbList breadcrumbs = new BreadcrumbList("我的抵用券", "/voucher");
         User user = SecureCAS.getUser();
         Account account = AccountUtil.getConsumerAccount(user.getId());
 
@@ -45,7 +45,7 @@ public class UserVouchers extends Controller {
     }
 
     public static void showAssign() {
-        BreadcrumbList breadcrumbs = new BreadcrumbList("红包领取", "/voucher/assign");
+        BreadcrumbList breadcrumbs = new BreadcrumbList("抵用券领取", "/voucher/assign");
         User user = SecureCAS.getUser();
         Account account = AccountUtil.getConsumerAccount(user.getId());
         String randomID = Codec.UUID();
@@ -121,7 +121,7 @@ public class UserVouchers extends Controller {
         Cache.delete(ridA);
         Cache.delete(ridB);
         String randomID = Codec.UUID();
-        BreadcrumbList breadcrumbs = new BreadcrumbList("红包领取", "/voucher/assign");
+        BreadcrumbList breadcrumbs = new BreadcrumbList("抵用券领取", "/voucher/assign");
         render("UserVouchers/showAssign.html", randomID, suc, errMsg,
                 breadcrumbs, user, account, action);
     }
