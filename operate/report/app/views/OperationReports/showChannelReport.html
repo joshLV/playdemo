@@ -52,6 +52,28 @@
         });
 
     });
+
+    function channelReportExcel() {
+        $("#form").attr("action", "@{OperationReports.channelReportExcelOut()}");
+        $("#form").attr("method", "get");
+        $("#form").submit();
+    }
+    ;
+
+    function channelReportWithPrivilegeExcel() {
+        $("#form").attr("action", "@{OperationReports.channelReportWithPrivilegeExcelOut()}");
+        $("#form").attr("method", "get");
+        $("#form").submit();
+    }
+    ;
+
+    function channelReport() {
+        $("#form").attr("action", "@{OperationReports.showChannelReport()}");
+        $("#form").attr("method", "get");
+        $("#form").submit();
+    }
+    ;
+
 </script>
 #{/set}
 
@@ -106,7 +128,13 @@
     <input type="text" id="condition_end" class="input-medium Wdate" name="condition.endAt"
            onfocus="WdatePicker({readOnly:true})" value="${condition.endAt?.format()}">
 
-    <button type="submit" class="btn btn-primary" id="search">搜索</button>
+    <button type="submit" class="btn btn-primary" id="search" onclick="showChannelReport()">搜索</button>
+    *{<div style="float:right">}*
+        *{<button class="btn btn-primary" id="searchbtn" onclick="channelReportExcel()">导出报表</button>}*
+    *{#{if hasSeeSalesRepotProfitRight == true}}*
+        *{<button class="btn btn-primary" id="searchbtn" onclick="channelReportWithPrivilegeExcel()">导出报表附带利润</button>}*
+    *{#{/if}}*
+    *{</div>}*
     <ul class="nav nav-pills">
         <li #{if condition.interval=='-1d'} class="active" #{/if}  ><a start="-1d" href="#">今天</a></li>
     *{<li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">昨天</a></li>}*
@@ -126,10 +154,11 @@
     <th>退款券数量/金额</th>
     <th>退款实物数量/金额</th>
     <th>消费券数量/金额</th>
-
+    #{if hasSeeSalesRepotProfitRight == true}
     <th>毛利率</th>
     <th>渠道成本</th>
     <th>净利润</th>
+    #{/if}
     </thead>
 #{set i:0/}
 %{
@@ -175,16 +204,18 @@
             <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
                target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
         </td>
-        <td>${(report?.grossMargin?:0).format('#')}%</td>
-        <td>${(report?.channelCost?:0).formatCurrency('CNY')}</td>
-        <td>
-            #{if report.profit != null && report.profit!=0}
-                ￥${(report?.profit?:0).format('#.00')}
-            #{/if}
-            #{else}
-                ￥0
-            #{/else}
-        </td>
+        #{if hasSeeSalesRepotProfitRight == true}
+            <td>${(report?.grossMargin?:0).format('#')}%</td>
+            <td>${(report?.channelCost?:0).formatCurrency('CNY')}</td>
+            <td>
+                #{if report.profit != null && report.profit!=0}
+                    ￥${(report?.profit?:0).format('#.00')}
+                #{/if}
+                #{else}
+                    ￥0
+                #{/else}
+            </td>
+        #{/if}
 
     </tr>
 #{/paginate.list}
@@ -218,16 +249,18 @@
             <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
                target="_blank">${summary?.consumedPrice?.formatCurrency("CNY")}</a>
         </td>
+    #{if hasSeeSalesRepotProfitRight == true}
         <td>${(summary?.grossMargin?:0).format('#')}%</td>
         <td>${(summary?.channelCost?:0).formatCurrency('CNY')}</td>
         <td>
-        #{if summary.profit != null && summary.profit!=0}
-            ￥${(summary?.profit?:0).format('#.00')}
-        #{/if}
-        #{else}
-            ￥0
-        #{/else}
+            #{if summary.profit != null && summary.profit!=0}
+                ￥${(summary?.profit?:0).format('#.00')}
+            #{/if}
+            #{else}
+                ￥0
+            #{/else}
         </td>
+    #{/if}
     </tr>
 </table>
 <div class="pagination">

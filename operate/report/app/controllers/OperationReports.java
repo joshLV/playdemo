@@ -72,7 +72,7 @@ public class OperationReports extends Controller {
         // 分页
         ValuePaginator<ResaleSalesReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
         ResaleSalesReport summary = ResaleSalesReport.summary(resultList);
-        render(reportPage, condition, summary);
+        render(reportPage, condition, summary, hasSeeSalesRepotProfitRight);
     }
 
     public static void salesReportWithPrivilegeExcelOut(SalesReportCondition condition) {
@@ -89,8 +89,9 @@ public class OperationReports extends Controller {
         for (SalesReport report : salesReportList) {
             BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
             report.grossMargin = tempGrossMargin;
-            if (report.refundAmount == null)
+            if (report.refundAmount == null) {
                 report.refundAmount = BigDecimal.ZERO;
+            }
         }
         render(salesReportList);
     }
@@ -107,11 +108,83 @@ public class OperationReports extends Controller {
 
 
         for (SalesReport report : salesReportList) {
-            if (report.refundAmount == null)
+            if (report.refundAmount == null) {
                 report.refundAmount = BigDecimal.ZERO;
+            }
         }
         render(salesReportList);
     }
+
+
+    public static void channelReportWithPrivilegeExcelOut(ResaleSalesReportCondition condition) {
+        if (condition == null) {
+            condition = new ResaleSalesReportCondition();
+        }
+        String page = request.params.get("page");
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "渠道汇总报表_" + System.currentTimeMillis() + ".xls");
+
+        List<ResaleSalesReport> resultList = null;
+        condition.accountType = null;
+        resultList = ResaleSalesReport.query(condition);
+        List<ResaleSalesReport> consumerList = ResaleSalesReport.queryConsumer(condition);
+
+        // 查询出所有结果
+        for (ResaleSalesReport resaleSalesReport : consumerList) {
+            resultList.add(resaleSalesReport);
+        }
+
+
+        for (ResaleSalesReport report : resultList) {
+            if (report.refundPrice == null) {
+                report.refundPrice = BigDecimal.ZERO;
+            }
+            if (report.realRefundPrice == null) {
+                report.realRefundPrice = BigDecimal.ZERO;
+            }
+            if (report.consumedPrice == null) {
+                report.consumedPrice = BigDecimal.ZERO;
+            }
+        }
+        ResaleSalesReport summary = ResaleSalesReport.summary(resultList);
+        System.out.println("summary>>>" + summary.buyNumber);
+        render(resultList, summary);
+    }
+
+    public static void channelReportExcelOut(ResaleSalesReportCondition condition) {
+        if (condition == null) {
+            condition = new ResaleSalesReportCondition();
+        }
+        String page = request.params.get("page");
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "渠道汇总报表_" + System.currentTimeMillis() + ".xls");
+
+        List<ResaleSalesReport> resultList = null;
+        condition.accountType = null;
+        resultList = ResaleSalesReport.query(condition);
+        List<ResaleSalesReport> consumerList = ResaleSalesReport.queryConsumer(condition);
+
+        // 查询出所有结果
+        for (ResaleSalesReport resaleSalesReport : consumerList) {
+            resultList.add(resaleSalesReport);
+        }
+
+
+        for (ResaleSalesReport report : resultList) {
+            if (report.refundPrice == null) {
+                report.refundPrice = BigDecimal.ZERO;
+            }
+            if (report.realRefundPrice == null) {
+                report.realRefundPrice = BigDecimal.ZERO;
+            }
+            if (report.consumedPrice == null) {
+                report.consumedPrice = BigDecimal.ZERO;
+            }
+
+        }
+        render(resultList);
+    }
+
 
     private static int getPageNumber() {
         String page = request.params.get("page");
