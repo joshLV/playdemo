@@ -1,6 +1,7 @@
 package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
 import models.accounts.SettlementStatus;
 import models.order.Prepayment;
 import models.supplier.Supplier;
@@ -74,6 +75,8 @@ public class OperatePrepayments extends Controller {
         prepayment.settlementStatus = SettlementStatus.UNCLEARED;
         prepayment.createdAt = new Date();
         prepayment.createdBy = loginName;
+        prepayment.expireAt = DateUtil.getEndOfDay(prepayment.expireAt);
+
         prepayment.create();
 
         index(null);
