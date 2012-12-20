@@ -76,7 +76,7 @@ public class TaobaoCouponUtil {
             VmarketEticketSendResponse response = taobaoClient.execute(request, oAuthToken.accessToken);
             if (response != null) {
                 Logger.info("tell taobao coupon send response. ret code: %s", response.getRetCode());
-                return response.getRetCode() == 1;
+                return response.getRetCode() != null && response.getRetCode() == 1;
             }else {
                 Logger.info("tell taobao coupon send response. no response");
             }
@@ -125,7 +125,7 @@ public class TaobaoCouponUtil {
             VmarketEticketResendResponse response = taobaoClient.execute(request, oAuthToken.accessToken);
             if (response != null) {
                 Logger.info("tell taobao coupon resend response. ret code: %s", response.getRetCode());
-                return response.getRetCode() == 1;
+                return response.getRetCode() != null && response.getRetCode() == 1;
             }else {
                 Logger.info("tell taobao coupon resend response. no response");
             }
