@@ -1379,8 +1379,10 @@ public class Goods extends Model {
      */
     @Transient
     public BigDecimal getResalePrice() {
-        BigDecimal resalePrice = originalPrice.add(this.resaleAddPrice == null ? BigDecimal.ZERO : this.resaleAddPrice);
-        return resalePrice;
+        if (this.resaleAddPrice == null) {
+            return this.salePrice;
+        }
+        return originalPrice.add(this.resaleAddPrice);
     }
 
     public BigDecimal getResalerPriceOfUhuila() {
