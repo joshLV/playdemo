@@ -1,15 +1,15 @@
-.user-account {
-    padding: 15px 0;
-}
-.user-account span {
-    margin-right: 30px;
-}
-.user-account span em {
-    color: #f00;
-    font-size: 14px;
-    font-weight: 700;
+/* .user-account { */
+    /* padding: 15px 0; */
+/* } */
+/* .user-account span { */
+    /* margin-right: 30px; */
+/* } */
+/* .user-account span em { */
+    /* color: #f00; */
+    /* font-size: 14px; */
+    /* font-weight: 700; */
 
-}
+/* } */
 .user-account .withdraw-btn {
     float: right;
     width: 67px;

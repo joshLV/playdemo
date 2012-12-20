@@ -8,16 +8,16 @@
 .voucher .tips a {
     color: blue;
 }
-.voucher-account {
-    margin: 20px 0 20px;
-}
-.voucher-account span {
-    padding: 0 5px;
-}
-.voucher-account span em {
-    color: red;
-    font-weight: 700;
-}
+/* .voucher-account { */
+    /* margin: 20px 0 20px; */
+/* } */
+/* .voucher-account span { */
+    /* padding: 0 5px; */
+/* } */
+/* .voucher-account span em { */
+    /* color: red; */
+    /* font-weight: 700; */
+/* } */
 .activate-form {
     width: 450px;
     padding: 10px 50px 0;
