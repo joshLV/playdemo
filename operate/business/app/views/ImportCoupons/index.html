@@ -60,7 +60,7 @@
         </thead>
 
         <tbody>
-        #{paginate.list items:goodsList, as:'goods' }
+        #{list items:goodsList, as:'goods' }
         <tr>
             <td>${goods.title}</td>
             <td>${goods.cumulativeStocks}</td>
@@ -68,15 +68,10 @@
             <td>${goods.getRealStocks()}</td>
             <td></td>
         </tr>
-        #{/paginate.list}
+        #{/list}
 
         </tbody>
     </table>
-    <div class="pagination" align="center">
-        <ul>
-        #{paginate.controls items:couponPage /}
-        </ul>
-    </div>
 #{/if}
 #{else}
         没有可以导入券的商品
