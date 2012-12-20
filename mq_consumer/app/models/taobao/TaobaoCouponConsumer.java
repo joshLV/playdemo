@@ -46,13 +46,16 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                     coupon.partner = ECouponPartner.TB;
                     coupon.save();
                 }
+                outerOrder.status = OuterOrderStatus.ORDER_DONE;
                 //通知淘宝我发货了
-                if(TaobaoCouponUtil.tellTaobaoCouponSend(outerOrder)) {
-                    outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
-                }else {
-                    //通知失败，标记为任务已做完
+                try{
+                    if(TaobaoCouponUtil.tellTaobaoCouponSend(outerOrder)) {
+                        outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
+                    }else {
+                        Logger.info("taobao coupon job failed: tell taobao coupon send failed %s", taobaoCouponMessage.outerOrderId);
+                    }
+                }catch (Exception e) {
                     Logger.info("taobao coupon job failed: tell taobao coupon send failed %s", taobaoCouponMessage.outerOrderId);
-                    outerOrder.status = OuterOrderStatus.ORDER_DONE;
                 }
                 outerOrder.save();
             } else {
