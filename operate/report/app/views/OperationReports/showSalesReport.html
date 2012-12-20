@@ -130,7 +130,7 @@
             <td>￥${(report?.netSalesAmount?:0)}</td>
             #{if hasSeeSalesRepotProfitRight == true}
                 <td>${(report?.grossMargin?:0).format('#')}%</td>
-                <td>${(report?.profit?:0).formatCurrency('CNY')}</td>
+                <td>￥${(report?.profit?:0).format('#.00')}</td>
             #{/if}
         </tr>
     #{/paginate.list}

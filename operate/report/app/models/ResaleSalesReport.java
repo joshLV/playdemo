@@ -1,5 +1,6 @@
 package models;
 
+
 import models.accounts.AccountType;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
@@ -10,6 +11,7 @@ import play.db.jpa.Model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 /**
@@ -122,7 +124,8 @@ public class ResaleSalesReport extends Model {
     /**
      * paidAt ecoupon
      */
-    public ResaleSalesReport(Order order, BigDecimal salePrice, Long buyNumber, BigDecimal totalCost) {
+    public ResaleSalesReport(Order order, BigDecimal salePrice, Long buyNumber, BigDecimal totalCost
+            , BigDecimal channelCost, BigDecimal grossMargin, BigDecimal profit) {
         this.order = order;
         if (order != null) {
             if (order.userType == AccountType.CONSUMER) {
@@ -139,10 +142,14 @@ public class ResaleSalesReport extends Model {
         }
         this.buyNumber = buyNumber;
         this.totalCost = totalCost;
+        this.channelCost = channelCost;
+        this.grossMargin = grossMargin;
+        this.profit = profit;
     }
 
     //sendAt real
-    public ResaleSalesReport(Order order, Long buyNumber, BigDecimal salePrice, BigDecimal totalCost) {
+    public ResaleSalesReport(Order order, Long buyNumber, BigDecimal salePrice, BigDecimal totalCost
+            , BigDecimal channelCost, BigDecimal grossMargin, BigDecimal profit) {
         this.order = order;
         if (order != null) {
             if (order.userType == AccountType.CONSUMER) {
@@ -156,6 +163,9 @@ public class ResaleSalesReport extends Model {
         this.realSalePrice = salePrice;
         this.realBuyNumber = buyNumber;
         this.totalCost = totalCost;
+        this.channelCost = channelCost;
+        this.grossMargin = grossMargin;
+        this.profit = profit;
     }
 
 
@@ -254,7 +264,9 @@ public class ResaleSalesReport extends Model {
 
         //paidAt ecoupon
         String sql = "select new models.ResaleSalesReport(r.order,sum(r.salePrice-r.rebateValue),count(r.buyNumber)" +
-                ",sum(r.goods.originalPrice)" +
+                ",sum(r.goods.originalPrice),sum(r.salePrice-r.rebateValue)*b.commissionRatio/100" +
+                ",(sum(r.salePrice-r.rebateValue)-sum(r.goods.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
+                ",sum(r.salePrice-r.rebateValue)-sum(r.salePrice-r.rebateValue)*b.commissionRatio/100-sum(r.goods.originalPrice)" +
                 ") from OrderItems r, ECoupon e,Order o,Resaler b where e.orderItems=r and r.order=o and o.userId=b.id ";
         String groupBy = " group by r.order.userId";
         Query query = JPA.em()
@@ -266,7 +278,9 @@ public class ResaleSalesReport extends Model {
 
         //sendAt real
         sql = "select new models.ResaleSalesReport(r.order,count(r.buyNumber),sum(r.salePrice-r.rebateValue)" +
-                ",sum(r.goods.originalPrice)" +
+                ",sum(r.goods.originalPrice),sum(r.salePrice-r.rebateValue)*b.commissionRatio/100" +
+                ",(sum(r.salePrice-r.rebateValue)-sum(r.goods.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
+                ",sum(r.salePrice-r.rebateValue)-sum(r.salePrice-r.rebateValue)*b.commissionRatio/100-sum(r.goods.originalPrice)" +
                 ") from OrderItems r,Order o,Resaler b   ";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterRealSendAt(AccountType.RESALER) + groupBy + " order by sum(r.salePrice-r.rebateValue) desc");
@@ -311,6 +325,13 @@ public class ResaleSalesReport extends Model {
             } else {
                 item.realSalePrice = paidItem.realSalePrice;
                 item.realBuyNumber = paidItem.realBuyNumber;
+                item.grossMargin = (item.salePrice.add(paidItem.realSalePrice)
+                        .subtract(item.totalCost).subtract(paidItem.totalCost))
+                        .divide(item.salePrice.add(paidItem.realSalePrice)).multiply(BigDecimal.valueOf(100));
+                item.channelCost = item.channelCost.add(paidItem.channelCost);
+                item.profit = item.salePrice.add(paidItem.realSalePrice)
+                        .subtract(item.channelCost)
+                        .subtract(item.totalCost.add(paidItem.totalCost));
             }
         }
 
@@ -394,7 +415,9 @@ public class ResaleSalesReport extends Model {
     public static List<ResaleSalesReport> queryConsumer(ResaleSalesReportCondition condition) {
         //paidAt ecoupon
         String sql = "select new models.ResaleSalesReport(r.order,sum(r.salePrice-r.rebateValue),count(r.buyNumber)" +
-                ",sum(r.goods.originalPrice)" +
+                ",sum(r.goods.originalPrice),sum(r.salePrice-r.rebateValue)*b.commissionRatio/100" +
+                ",(sum(r.salePrice-r.rebateValue)-sum(r.goods.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
+                ",sum(r.salePrice-r.rebateValue)-sum(r.salePrice-r.rebateValue)*b.commissionRatio/100-sum(r.goods.originalPrice)" +
                 ") from OrderItems r, ECoupon e,Order o,Resaler b  where e.orderItems=r and r.order=o and o.userId=b.id  ";
         Query query = JPA.em()
                 .createQuery(sql + condition.getFilterPaidAt(AccountType.CONSUMER) + " order by sum(r.salePrice-r.rebateValue) desc");
@@ -405,7 +428,9 @@ public class ResaleSalesReport extends Model {
 
         //sendAt real
         sql = "select new models.ResaleSalesReport(r.order,count(r.buyNumber),sum(r.salePrice-r.rebateValue)" +
-                ",sum(r.goods.originalPrice)" +
+                ",sum(r.goods.originalPrice),sum(r.salePrice-r.rebateValue)*b.commissionRatio/100" +
+                ",(sum(r.salePrice-r.rebateValue)-sum(r.goods.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
+                ",sum(r.salePrice-r.rebateValue)-sum(r.salePrice-r.rebateValue)*b.commissionRatio/100-sum(r.goods.originalPrice)" +
                 ") from OrderItems r,Order o,Resaler b ";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterRealSendAt(AccountType.CONSUMER) + " order by sum(r.salePrice-r.rebateValue) desc");
@@ -438,8 +463,23 @@ public class ResaleSalesReport extends Model {
         if (paidResultList != null && paidResultList.size() > 0) {
             result = paidResultList.get(0);
             if (sentRealResultList != null && sentRealResultList.size() > 0) {
+                System.out.println("result.saleprice..." + result.salePrice);
                 result.realSalePrice = sentRealResultList.get(0).realSalePrice;
                 result.realBuyNumber = sentRealResultList.get(0).realBuyNumber;
+                BigDecimal totalSalesPrice = result.salePrice == null ? BigDecimal.ZERO : result.salePrice.add(sentRealResultList.get(0).realSalePrice == null ? BigDecimal.ZERO : sentRealResultList.get(0).realSalePrice);
+                BigDecimal totalCost = result.totalCost == null ? BigDecimal.ZERO : result.totalCost.add(sentRealResultList.get(0).totalCost == null ? BigDecimal.ZERO : sentRealResultList.get(0).totalCost);
+                System.out.println("totalSalesPrice>>>" + totalSalesPrice);
+                System.out.println("totalCost>>>" + totalCost);
+                if (totalSalesPrice.compareTo(BigDecimal.ZERO) != 0) {
+                    result.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+                }
+                result.channelCost = result.channelCost == null ? BigDecimal.ZERO : result.channelCost.add(sentRealResultList.get(0).channelCost == null ? BigDecimal.ZERO : sentRealResultList.get(0).channelCost);
+
+
+//                result.channelCost = result.channelCost.add(sentRealResultList.get(0).channelCost);
+//                result.profit = result.salePrice.add(sentRealResultList.get(0).realSalePrice)
+//                        .subtract(result.channelCost)
+//                        .subtract(result.totalCost.add(sentRealResultList.get(0).totalCost));
             }
             if (consumedResultList != null && consumedResultList.size() > 0) {
                 result.consumedPrice = consumedResultList.get(0).consumedPrice;
@@ -461,3 +501,12 @@ public class ResaleSalesReport extends Model {
     }
 
 }
+
+
+
+
+
+
+
+
+

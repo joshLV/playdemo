@@ -175,9 +175,9 @@
             <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
                target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
         </td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>${(report?.grossMargin?:0).format('#')}%</td>
+        <td>${(report?.channelCost?:0).formatCurrency('CNY')}</td>
+        <td>￥${(report?.profit?:0).format('#.00')}</td>
 
     </tr>
 #{/paginate.list}

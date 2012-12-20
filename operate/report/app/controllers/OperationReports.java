@@ -60,20 +60,13 @@ public class OperationReports extends Controller {
         Boolean hasSeeSalesRepotProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
 
         List<ResaleSalesReport> resultList = null;
-        // 查询出分销的所有结果
-        if (condition.accountType == AccountType.RESALER) {
-            resultList = ResaleSalesReport.query(condition);
-        } else if (condition.accountType == AccountType.CONSUMER) {
-            resultList = ResaleSalesReport.queryConsumer(condition);
+        condition.accountType = null;
+        resultList = ResaleSalesReport.query(condition);
+        List<ResaleSalesReport> consumerList = ResaleSalesReport.queryConsumer(condition);
 
-        } else {
-            resultList = ResaleSalesReport.query(condition);
-            List<ResaleSalesReport> consumerList = ResaleSalesReport.queryConsumer(condition);
-
-            // 查询出所有结果
-            for (ResaleSalesReport resaleSalesReport : consumerList) {
-                resultList.add(resaleSalesReport);
-            }
+        // 查询出所有结果
+        for (ResaleSalesReport resaleSalesReport : consumerList) {
+            resultList.add(resaleSalesReport);
         }
 
         // 分页
