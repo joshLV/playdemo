@@ -1,6 +1,7 @@
 package models.order;
 
 import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
 import models.accounts.AccountSequence;
 import models.accounts.SettlementStatus;
 import models.supplier.Supplier;
@@ -83,9 +84,9 @@ public class Prepayment extends Model {
         oldPrepayment.updatedAt = new Date();
         oldPrepayment.updatedBy = loginName;
         oldPrepayment.effectiveAt = prepayment.effectiveAt;
-        oldPrepayment.expireAt = prepayment.expireAt;
+        oldPrepayment.expireAt = DateUtil.getEndOfDay(prepayment.expireAt);
         oldPrepayment.remark = prepayment.remark;
-        if (oldPrepayment.settlementStatus == null){
+        if (oldPrepayment.settlementStatus == null) {
             oldPrepayment.settlementStatus = SettlementStatus.UNCLEARED;
         }
         oldPrepayment.save();
@@ -118,7 +119,7 @@ public class Prepayment extends Model {
     }
 
     public static Prepayment getLastUnclearedPrepayments(long uid) {
-        return find("supplier.id=? and settlementStatus=? order by createdAt DESC", uid, SettlementStatus.UNCLEARED).first();
+        return find("supplier.id=? and settlementStatus=? and deleted = ? order by createdAt DESC", uid, SettlementStatus.UNCLEARED, DeletedStatus.UN_DELETED).first();
     }
 
     public static BigDecimal getUnclearedBalance(long uid) {
