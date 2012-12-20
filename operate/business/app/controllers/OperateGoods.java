@@ -792,4 +792,5 @@ public class OperateGoods extends Controller {
         }
         renderJSON("");
     }
+
 }

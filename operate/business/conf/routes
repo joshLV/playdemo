@@ -349,6 +349,9 @@ DELETE  /goods-schedule/{id}                    GoodsSchedules.delete
 GET      /verified-ecoupon-refunds              VerifiedECouponRefunds.index
 POST     /verified-ecoupon-refunds              VerifiedECouponRefunds.refund
 
+#渠道商品
+GET      /channel-goods                          ChannelGoodsInfos.index
+POST     /channel-goods                          ChannelGoodsInfos.create
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
