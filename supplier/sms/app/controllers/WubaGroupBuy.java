@@ -341,6 +341,7 @@ public class WubaGroupBuy extends Controller {
         } catch (NotEnoughInventoryException e) {
             Logger.info("enventory not enough");
             putStatusAndMsg(result, "10100", "价格非法");
+            JPA.em().getTransaction().rollback();
             return null;
         }
 

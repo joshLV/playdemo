@@ -275,6 +275,7 @@ public class YHDGroupBuy extends Controller{
         } catch (NotEnoughInventoryException e) {
             Logger.info("enventory not enough");
             errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.error", "库存不足", null));
+            JPA.em().getTransaction().rollback();
             return null;
         }
 

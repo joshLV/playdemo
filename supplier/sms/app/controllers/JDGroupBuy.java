@@ -346,6 +346,7 @@ public class JDGroupBuy extends Controller {
             }
         } catch (NotEnoughInventoryException e) {
             Logger.info("inventory not enough");
+            JPA.em().getTransaction().rollback();
             finish(210, "inventory not enough");
             return null;
         }

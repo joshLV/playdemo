@@ -262,6 +262,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
             }
         } catch (NotEnoughInventoryException e) {
             Logger.info("enventory not enough");
+            JPA.em().getTransaction().rollback();
             return null;
         }
         if (containsElectronic) {
