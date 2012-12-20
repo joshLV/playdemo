@@ -71,9 +71,11 @@ public class PaymentInfo extends Controller {
         }
 
         List<Voucher> vouchers = new ArrayList<>();
-        for (Long voucherId : voucherIds) {
-            Voucher voucher = Voucher.findById(voucherId);
-            vouchers.add(voucher);
+        if (voucherIds != null && voucherIds.length > 0) {
+            for (Long voucherId : voucherIds) {
+                Voucher voucher = Voucher.findById(voucherId);
+                vouchers.add(voucher);
+            }
         }
 
         
