@@ -11,9 +11,11 @@ import com.uhuila.common.util.FileUploadUtil;
 import models.admin.OperateUser;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
+import models.resale.Resaler;
 import models.resale.ResalerLevel;
 import models.sales.Brand;
 import models.sales.Category;
+import models.sales.ChannelGoodsInfo;
 import models.sales.Goods;
 import models.sales.GoodsCondition;
 import models.sales.GoodsHistory;
@@ -793,4 +795,95 @@ public class OperateGoods extends Controller {
         renderJSON("");
     }
 
+    /**
+     * 各个渠道分销商品信息
+     *
+     * @param goodsId
+     */
+    public static void channel(Long goodsId) {
+        Goods goods = Goods.findUnDeletedById(goodsId);
+        initInfo(goods);
+        render(goods);
+
+    }
+
+    private static void initInfo(Goods goods) {
+        List<Resaler> resalerList = Resaler.findByStatus();
+        List<ChannelGoodsInfo> channelGoodsInfoList = ChannelGoodsInfo.findByGoods(goods);
+        renderArgs.put("resalerList", resalerList);
+        renderArgs.put("channelGoodsInfoList", channelGoodsInfoList);
+    }
+
+    /**
+     * 创建渠道的商品
+     *
+     * @param goodsId
+     * @param channelGoodsInfo
+     */
+    public static void createChannel(Long goodsId, @Valid ChannelGoodsInfo channelGoodsInfo) {
+        checkExpireAt(channelGoodsInfo);
+        Goods goods = Goods.findUnDeletedById(goodsId);
+        if (channelGoodsInfo.resaler == null) {
+            Validation.addError("channelGoodsInfo.resaler.id", "请选择分销商！");
+        }
+        if (Validation.hasErrors()) {
+            initInfo(goods);
+            render("OperateGoods/channel.html",goods);
+        }
+
+        channelGoodsInfo.goods = goods;
+        channelGoodsInfo.operateName = OperateRbac.currentUser().userName;
+        channelGoodsInfo.createdAt = new Date();
+        channelGoodsInfo.create();
+        channel(goodsId);
+    }
+
+
+    private static void checkExpireAt(ChannelGoodsInfo channelGoodsInfo) {
+        if (channelGoodsInfo.onSaleAt != null && channelGoodsInfo.offSaleAt != null && channelGoodsInfo.offSaleAt.before(channelGoodsInfo.onSaleAt)) {
+            Validation.addError("channelGoodsInfo.onSaleAt", "validation.beforeThanOnSaleAt");
+        }
+    }
+
+    /**
+     * 修改渠道的信息
+     *
+     * @param id
+     */
+    public static void editChannel(Long id) {
+        ChannelGoodsInfo channelGoodsInfo = ChannelGoodsInfo.findById(id);
+        List<Resaler> resalerList = Resaler.findByStatus();
+        render("OperateGoods/channelForm.html", resalerList, channelGoodsInfo);
+    }
+
+    /**
+     * 修改渠道的信息
+     *
+     * @param id
+     */
+    public static void updateChannel(Long id, @Valid ChannelGoodsInfo channelGoodsInfo) {
+        List<Resaler> resalerList = Resaler.findByStatus();
+        if (Validation.hasErrors()) {
+            render("OperateGoods/channelForm.html", resalerList, channelGoodsInfo);
+        }
+
+        ChannelGoodsInfo updInfo = ChannelGoodsInfo.findById(id);
+        updInfo.url = channelGoodsInfo.url;
+        updInfo.operateName = OperateRbac.currentUser().userName;
+        updInfo.offSaleAt = channelGoodsInfo.offSaleAt;
+        updInfo.onSaleAt = channelGoodsInfo.onSaleAt;
+        updInfo.save();
+        channel(updInfo.goods.id);
+    }
+
+    /**
+     * 删除渠道商品信息
+     *
+     * @param id
+     */
+    public static void deleteChannel(Long id) {
+        ChannelGoodsInfo updInfo = ChannelGoodsInfo.findById(id);
+        updInfo.delete();
+        channel(updInfo.goods.id);
+    }
 }

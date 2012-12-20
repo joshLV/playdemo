@@ -1,0 +1,23 @@
+<input type="hidden" name="goodsId" value="${goods?.id?:channelGoodsInfo?.goods?.id}">
+
+<div class="control-group">
+    <label class="control-label"><span style="color: red; ">*</span>分销商</label>
+
+    <div class="controls">
+
+    #{select 'channelGoodsInfo.resaler.id', id:'condition_status',value:channelGoodsInfo?.resaler?.id, class:'input-medu'}
+        #{option ""}不限#{/option}
+        #{list items:resalerList,as:'resaler'}
+            #{option resaler.id}${resaler.loginName}-${resaler.userName}#{/option}
+        #{/list}
+    #{/select}
+    <span class="error">#{error 'channelGoodsInfo.resaler.id'/}</span>
+    </div>
+</div>
+#{layout_operate.textField name:'channelGoodsInfo.goods.shortName', value:goods?.shortName?:channelGoodsInfo?.goods?.shortName,disabled:true/}
+#{layout_operate.textField name:'channelGoodsInfo.url',value:channelGoodsInfo?.url, required:true/}
+#{layout_operate.dateTimeField name:'channelGoodsInfo.onSaleAt',value:(goods?.beginOnSaleAt?:channelGoodsInfo?.onSaleAt)?.format('yyyy-MM-dd HH:mm:ss'),required:true/}
+#{layout_operate.dateTimeField name:'channelGoodsInfo.offSaleAt',value:(goods?.endOnSaleAt?:channelGoodsInfo?.offSaleAt)?.format('yyyy-MM-dd HH:mm:ss'),required:true/}
+<div class="form-actions">
+    <input class="btn btn-primary" id="save" type="submit" value="确定"/>
+</div>
