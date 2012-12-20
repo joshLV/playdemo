@@ -28,7 +28,7 @@
             <form class="form-horizontal" id="form" action="@{UserAddresses.create()}" method="POST">
             #{include "UserAddresses/form.html"/}
             </form>
-           <table class="order-tab">
+           <table class="order-tab table">
             <thead>
                 <tr class="col-name">
                     <th width="80">收货人</th>
@@ -40,6 +40,7 @@
                     <th width="80">操作</th>
                 </tr>
             </thead>
+            <tbody>
             *{
                 <tr id="tr_address_${address.id}" height="35px">
                     <td align="left" id="address_name_${address?.id}">&nbsp;${address.name}</td>
@@ -59,8 +60,6 @@
                 </tr>
                 }*
             #{list items:addressList, as:'address'}
-            <tbody>
-                <tr class="sep-row"><td colspan="5"></td></tr>
                 <tr class="order-bd">
                     <td>${address.name}</td>
                     <td>${address.area}</td>
@@ -79,8 +78,8 @@
                         #{vx.deleteLink action:"addresses", id:address.id, name:address.name/}
                         </td>
                 </tr>
-            </tbody>
             #{/list}
+            </tbody>
         </table>
     </div>
 </div>

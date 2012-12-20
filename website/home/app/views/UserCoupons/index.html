@@ -139,7 +139,7 @@
                 <button class="search-btn" id="search"> 搜　索</button>
             </div>
             <div style="color: #ff0000">标有*的券号只限抽奖，不可用于消费</div>
-            <table class="order-tab">
+            <table class="order-tab table">
                 <thead>
                 <tr class="col-name">
                     <th width="80">劵号</th>
@@ -158,6 +158,7 @@
                     <th width="80">操作</th>
                 </tr>
                 </thead>
+                <tbody>
             #{paginate.list items:couponsList, as:'coupon'}
             %{
                 if (coupon.orderItems.goodsHistoryId != null) {
@@ -169,10 +170,6 @@
                 coupon.orderItems.goods.id;
                 }
                 }%
-                <tbody>
-                <tr class="sep-row">
-                    <td colspan="7"></td>
-                </tr>
                 <tr class="order-bd">
                     <td height="30" align="center">#{if row?.goods?.isLottery}<a style="color: #ff0000"
                                                                                  href="/orders/${coupon?.order?.orderNumber}">${coupon?.getMaskedEcouponSn()}</a>#{/if}#{else}${coupon?.eCouponSn}#{/else}
@@ -229,8 +226,8 @@
                         #{/elseif}
                     </td>
                 </tr>
-                </tbody>
             #{/paginate.list}
+                </tbody>
             </table>
         </form>
         <div class="pagination">

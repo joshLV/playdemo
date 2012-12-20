@@ -50,26 +50,26 @@
     background-color: #9ac72c;
 }
 
-.order-tab {
-    table-layout: fixed;
-    width: 100%;
-    border-collapse: collapse;
-}
-.order-tab th {
-    color: #fff;
-    padding: 5px 0;
-    background-color: #adadad;
-    border: 1px solid #adadad;
-}
-.sep-row td {
-    height: 10px;
-}
-.order-bd td {
-    color: #787878;
-    text-align: center;
-    padding: 10px 5px;
-    border: 1px solid #d4d4d4;
-}
+/* .order-tab { */
+    /* table-layout: fixed; */
+    /* width: 100%; */
+    /* border-collapse: collapse; */
+/* } */
+/* .order-tab th { */
+    /* color: #fff; */
+    /* padding: 5px 0; */
+    /* background-color: #adadad; */
+    /* border: 1px solid #adadad; */
+/* } */
+/* .sep-row td { */
+    /* height: 10px; */
+/* } */
+/* .order-bd td { */
+    /* color: #787878; */
+    /* text-align: center; */
+    /* padding: 10px 5px; */
+    /* border: 1px solid #d4d4d4; */
+/* } */
 .order-tab .action a {
     color: #9ac82b;
 }

@@ -1,10 +1,7 @@
-.coins .coins-num {
-    font-size: 14px; 
-    font-weight: 700;
-}
 .coins .coins-num span {
     color: red;
     padding: 0 2px;
+    font-weight: 700;
 }
 
 .exchange-rule {

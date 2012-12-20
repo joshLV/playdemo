@@ -1,10 +1,10 @@
 .user-account {
-    padding: 15px 0 10px;
-}
-.user-account strong {
-    margin-right: 30px;
+    padding: 15px 0;
 }
 .user-account span {
+    margin-right: 30px;
+}
+.user-account span em {
     color: #f00;
     font-size: 14px;
     font-weight: 700;
@@ -21,23 +21,23 @@
     background: url(//img.uhcdn.com/images/y/user/btn.png) no-repeat 0 0;
 }
 
-.order-tab {
-    table-layout: fixed;
-    width: 100%;
-    border-collapse: collapse;
-}
-.order-tab th {
-    color: #fff;
-    padding: 5px 0;
-    background-color: #adadad;
-    border: 1px solid #adadad;
-}
-.order-bd td {
-    color: #787878;
-    text-align: center;
-    padding: 10px 5px;
-    border: 1px solid #d4d4d4;
-}
+/* .order-tab { */
+    /* table-layout: fixed; */
+    /* width: 100%; */
+    /* border-collapse: collapse; */
+/* } */
+/* .order-tab th { */
+    /* color: #fff; */
+    /* padding: 5px 0; */
+    /* background-color: #adadad; */
+    /* border: 1px solid #adadad; */
+/* } */
+/* .order-bd td { */
+    /* color: #787878; */
+    /* text-align: center; */
+    /* padding: 10px 5px; */
+    /* border: 1px solid #d4d4d4; */
+/* } */
 .order-bd .apply-money {
     font-weight: 700;
 }
