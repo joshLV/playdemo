@@ -129,7 +129,10 @@ public class JDGroupBuy extends Controller {
         }
         //生成一百券订单
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
-            Order ybqOrder = createYbqOrder(sendOrderRequest);
+            Order ybqOrder = outerOrder.ybqOrder;
+            if(ybqOrder == null) {
+                ybqOrder = createYbqOrder(sendOrderRequest);
+            }
             outerOrder.status = OuterOrderStatus.ORDER_DONE;
             outerOrder.ybqOrder = ybqOrder;
             outerOrder.message = restXml;

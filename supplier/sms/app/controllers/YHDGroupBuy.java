@@ -104,7 +104,10 @@ public class YHDGroupBuy extends Controller{
             outerOrder.save();
         }
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY){
-            Order ybqOrder = createYbqOrder(outerGroupId, productPrize, productNum, userPhone, errorInfoList);
+            Order ybqOrder =  outerOrder.ybqOrder;
+            if (ybqOrder == null) {
+                ybqOrder= createYbqOrder(outerGroupId, productPrize, productNum, userPhone, errorInfoList);
+            }
             if(errorInfoList.size() > 0){
                 finish(errorInfoList, totalCount);
             }else if(ybqOrder != null){

@@ -30,6 +30,11 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
     public static String PHONE_REGEX = "^1[3,5,8]\\d{9}$";
 
     @Override
+    protected int retries(){
+        return 0;//抛异常不重试
+    }
+
+    @Override
     public void consumeWithTx(TaobaoCouponMessage taobaoCouponMessage) {
         OuterOrder outerOrder = OuterOrder.findById(taobaoCouponMessage.outerOrderId);
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
@@ -71,7 +76,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                 outerOrder.status = OuterOrderStatus.RESEND_SYNCED;
                 outerOrder.save();
             }else {
-                Logger.info("taobao coupon job failed: tell taobao coupon resend failed %s", taobaoCouponMessage.outerOrderId);
+                throw new RuntimeException("taobao coupon job failed: tell taobao coupon resend failed " + taobaoCouponMessage.outerOrderId);
             }
         }else if (outerOrder.status == OuterOrderStatus.ORDER_DONE) {
             Logger.info("start taobao coupon consumer tell taobao order done");

@@ -91,7 +91,12 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
                 YihaodianOrder refreshOrder = refreshYihaodianOrder(yihaodianOrder);
                 if(refreshOrder != null){
                     if (refreshOrder.orderStatus != OrderStatus.ORDER_CANCEL) {
-                        models.order.Order ybqOrder = buildYibaiquanOrder(yihaodianOrder);
+                        models.order.Order ybqOrder = null;
+                        if(yihaodianOrder.ybqOrderId == null) {
+                            ybqOrder = buildYibaiquanOrder(yihaodianOrder);
+                        } else {
+                            ybqOrder = models.order.Order.findById(yihaodianOrder.ybqOrderId);
+                        }
                         if( ybqOrder != null){
                             if (realItems > 0) {
                                 yihaodianOrder.jobFlag = JobFlag.IGNORE;
