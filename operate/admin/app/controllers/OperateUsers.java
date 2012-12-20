@@ -15,7 +15,9 @@ import play.mvc.With;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 操作员CRUD
@@ -117,10 +119,10 @@ public class OperateUsers extends Controller {
     @ActiveNavigation("user_add")
     public static void edit(Long id) {
         OperateUser operateUser = OperateUser.findById(id);
-        String roleIds = "";
+        Set<Long> roleIds = new HashSet<>();
         if (operateUser.roles != null && !operateUser.roles.isEmpty()) {
             for (OperateRole role : operateUser.roles) {
-                roleIds += role.id + ",";
+                roleIds.add(role.id);
             }
         }
 
@@ -144,10 +146,10 @@ public class OperateUsers extends Controller {
 
         if (Validation.hasErrors()) {
             List rolesList = OperateRole.findAll();
-            String roleIds = "";
+            Set<Long> roleIds = new HashSet<>();
             if (operateUser.roles != null && !operateUser.roles.isEmpty()) {
                 for (OperateRole role : operateUser.roles) {
-                    roleIds += role.id + ",";
+                    roleIds.add(role.id);
                 }
             }
             operateUser.id = id;
