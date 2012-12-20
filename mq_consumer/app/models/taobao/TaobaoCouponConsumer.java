@@ -57,6 +57,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                 outerOrder.save();
             } else {
                 Logger.info("taobao coupon job failed: create our order failed %s", taobaoCouponMessage.outerOrderId);
+                throw new RuntimeException("taobao coupon job failed: create our order failed " + taobaoCouponMessage.outerOrderId);
             }
         }else if (outerOrder.status == OuterOrderStatus.RESEND_COPY) {
             Logger.info("start taobao coupon consumer resend order");
@@ -76,7 +77,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                 outerOrder.status = OuterOrderStatus.RESEND_SYNCED;
                 outerOrder.save();
             }else {
-                throw new RuntimeException("taobao coupon job failed: tell taobao coupon resend failed " + taobaoCouponMessage.outerOrderId);
+                Logger.info("taobao coupon job failed: tell taobao coupon resend failed %s", taobaoCouponMessage.outerOrderId);
             }
         }else if (outerOrder.status == OuterOrderStatus.ORDER_DONE) {
             Logger.info("start taobao coupon consumer tell taobao order done");
