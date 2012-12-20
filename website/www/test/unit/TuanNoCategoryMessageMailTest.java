@@ -4,6 +4,7 @@ import factory.FactoryBoy;
 
 import factory.callback.SequenceCallback;
 import models.mail.MailMessage;
+import models.mail.MailUtil;
 import models.sales.Category;
 import models.sales.Goods;
 import models.sales.TuanNoCategoryData;
@@ -27,7 +28,6 @@ import util.mq.*;
  */
 public class TuanNoCategoryMessageMailTest extends UnitTest {
     List<Goods> goodsList;
-    public static final String TUAN_CATEGORY_NOTIFY = Play.mode.isProd() ? "tuan_notification" : "tuan_notification_dev";
 
     @Before
     public void setup() {
@@ -45,7 +45,7 @@ public class TuanNoCategoryMessageMailTest extends UnitTest {
     @Test
     public void testTuanDirectMailSend() {
         Goods.filterTopGoods(goodsList, "tuan360test", "tuan360", 6);
-        MailMessage mailBody = (MailMessage) MockMQ.getLastMessage(TUAN_CATEGORY_NOTIFY);
+        MailMessage mailBody = (MailMessage) MockMQ.getLastMessage(MailUtil.COMMON_QUEUE);
         assertNotNull(mailBody);
         assertTrue(mailBody.getRecipients().contains("dev@uhuila.com"));
         assertEquals("tuan360", mailBody.getParam("tuanName"));
@@ -55,7 +55,7 @@ public class TuanNoCategoryMessageMailTest extends UnitTest {
     public void testTuanMailSendByMQ() throws Exception {
         Goods.filterTopGoods(goodsList, "tuan360test", "tuan360", 6);
         Thread.sleep(500);
-        MailMessage mailBody = (MailMessage) MockMQ.getLastMessage(TUAN_CATEGORY_NOTIFY);
+        MailMessage mailBody = (MailMessage) MockMQ.getLastMessage(MailUtil.COMMON_QUEUE);
         assertNotNull(mailBody);
         assertTrue(mailBody.getRecipients().contains("dev@uhuila.com"));
         assertEquals("tuan360", mailBody.getParam("tuanName"));

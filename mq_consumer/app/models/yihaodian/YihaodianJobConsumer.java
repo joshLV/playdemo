@@ -2,12 +2,15 @@ package models.yihaodian;
 
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
+import models.mail.MailMessage;
+import models.mail.MailUtil;
 import models.order.DeliveryType;
 import models.order.NotEnoughInventoryException;
 import models.order.OrderItems;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.MaterialType;
+import models.supplier.Supplier;
 import models.yihaodian.shop.*;
 import play.Logger;
 import play.Play;
@@ -57,6 +60,21 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
             JPAPlugin.closeTx(true);
             return;
         }
+
+        //查看是否有实体券，如果全部都是的话就直接将此订单置为忽略状态，并结束任务
+        int realItems =0;
+        for (OrderItem orderItem : yihaodianOrder.orderItems) {
+            if (orderItem.outerId == null) {
+                realItems += 1;
+            }
+        }
+        if (realItems == yihaodianOrder.orderItems.size()) {
+            yihaodianOrder.jobFlag = JobFlag.IGNORE;
+            yihaodianOrder.save();
+            JPAPlugin.closeTx(false);
+            return;
+        }
+
         try{
             YihaodianOrder.em().refresh(yihaodianOrder, LockModeType.PESSIMISTIC_WRITE);
         }catch (PersistenceException e){
@@ -75,11 +93,22 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
                     if (refreshOrder.orderStatus != OrderStatus.ORDER_CANCEL) {
                         models.order.Order ybqOrder = buildYibaiquanOrder(yihaodianOrder);
                         if( ybqOrder != null){
-                            yihaodianOrder.jobFlag = JobFlag.SEND_DONE;
+                            if (realItems > 0) {
+                                yihaodianOrder.jobFlag = JobFlag.IGNORE;
+
+                                MailMessage mailMessage = new MailMessage();
+                                mailMessage.addRecipient("op@uhuila.com");
+                                mailMessage.setSubject("一号店实体券订单");
+                                mailMessage.putParam("yhdOrderId", yihaodianOrder.orderId);
+                                mailMessage.setTemplate("yihaodianRealGoods");
+                                MailUtil.sendCommonMail(mailMessage);
+                            }else {
+                                yihaodianOrder.jobFlag = JobFlag.SEND_DONE;
+                                YihaodianJobMessage syncMessage = new YihaodianJobMessage(yihaodianOrder.orderId);
+                                YihaodianQueueUtil.addJob(syncMessage);
+                            }
                             yihaodianOrder.ybqOrderId = ybqOrder.getId();
                             yihaodianOrder.save();
-                            YihaodianJobMessage syncMessage = new YihaodianJobMessage(yihaodianOrder.orderId);
-                            YihaodianQueueUtil.addJob(syncMessage);
                         }
                     }else {
                         yihaodianOrder.jobFlag = JobFlag.CANCEL_SYNCED;
@@ -88,9 +117,14 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
                 }
             }
         }else if(yihaodianOrder.jobFlag == JobFlag.SEND_DONE){
-            if(syncWithYihaodian(yihaodianOrder)){
-                yihaodianOrder.jobFlag = JobFlag.SEND_SYNCED;
+            if (realItems > 0) {
+                yihaodianOrder.jobFlag = JobFlag.IGNORE;
                 yihaodianOrder.save();
+            }else {
+                if(syncWithYihaodian(yihaodianOrder)){
+                    yihaodianOrder.jobFlag = JobFlag.SEND_SYNCED;
+                    yihaodianOrder.save();
+                }
             }
         }
 
@@ -190,7 +224,13 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
         boolean containsElectronic = false;
         boolean containsReal = false;
         try {
+            boolean hasElectronicOrderItem = false;
             for (OrderItem orderItem : order.orderItems){
+                if (orderItem.outerId == null) {
+                    continue;//实体券无视
+                }else if (!hasElectronicOrderItem){
+                    hasElectronicOrderItem = true;
+                }
                 Goods goods = Goods.find("byId", orderItem.outerId).first();
                 if(goods == null){
                     Logger.info("goods not found: %s", orderItem.outerId );
@@ -210,6 +250,10 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
                 }else if (goods.materialType.equals(MaterialType.ELECTRONIC)) {
                     containsElectronic = true;
                 }
+            }
+            if(!hasElectronicOrderItem) {
+                Logger.info("has no electronic order item");
+                return null;
             }
         } catch (NotEnoughInventoryException e) {
             Logger.info("enventory not enough");

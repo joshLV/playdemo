@@ -103,7 +103,6 @@ public class PointGoodsUserQuestion extends Controller {
             MailMessage mailMessage = new MailMessage();
             mailMessage.addRecipient(QUESTION_MAIL_RECEIVERS);
             mailMessage.setSubject(Play.mode.isProd() ? "一百券用户咨询" : "一百券用户咨询【测试】");
-            mailMessage.setFrom("一百券 <noreplay@uhuila.com>");
             mailMessage.putParam("date", new SimpleDateFormat(QUESTION_DATE_FORMAT).format(question.createdAt));
             mailMessage.putParam("user", questionMap.get("user"));
             mailMessage.putParam("content", question.content);
@@ -112,7 +111,7 @@ public class PointGoodsUserQuestion extends Controller {
             mailMessage.putParam("questionId", question.id);
             mailMessage.putParam("goodsId", goodsId);
             mailMessage.setTemplate("userQuestion");
-            MailUtil.sendOperatorNotificationMail(mailMessage);
+            MailUtil.sendCommonMail(mailMessage);
         }
 
         renderJSON(result);

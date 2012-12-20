@@ -2,8 +2,9 @@ package functional;
 
 
 import models.mail.MailMessage;
-import notifiers.FindPassWordMails;
+import models.mail.MailUtil;
 
+import notifiers.MailSender;
 import org.junit.Test;
 
 import play.libs.Mail;
@@ -19,7 +20,10 @@ public class FindPasswordMailsTest extends FunctionalTest {
         message.addRecipient(email);
         message.putParam("mail_url", mailUrl);
 
-        FindPassWordMails.notify(message);
+        message.setSubject("[一百券] 找回密码");
+        message.setTemplate("findPassword");
+
+        MailSender.send(message);
         
         String mailBody = Mail.Mock.getLastMessageReceivedBy(email);
         assertTrue("邮件标题不正确", mailBody.indexOf("Subject: [一百券] 找回密码") > 0);
@@ -34,7 +38,9 @@ public class FindPasswordMailsTest extends FunctionalTest {
         message.addRecipient(email);
         message.putParam("mail_url", mailUrl);
 
-        FindPassWordMails.notify(message);
+        message.setSubject("[一百券] 找回密码");
+        message.setTemplate("findPassword");
+        MailSender.send(message);
         Thread.sleep(500);
         
         String mailBody = Mail.Mock.getLastMessageReceivedBy(email);

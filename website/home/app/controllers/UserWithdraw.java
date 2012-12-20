@@ -96,7 +96,7 @@ public class UserWithdraw extends Controller {
         message.putParam("uid", withdrawBill.account.uid);
 
         message.setTemplate("withdraw");
-        MailUtil.sendFinanceNotificationMail(message);
+        MailUtil.sendCommonMail(message);
 
         if(NOTIFICATION_MOBILES.length > 0 && !"".equals(NOTIFICATION_MOBILES[0])){
             SMSUtil.send("一百券用户" + withdrawBill.applier + "申请提现" + withdrawBill.amount + "元", NOTIFICATION_MOBILES);
