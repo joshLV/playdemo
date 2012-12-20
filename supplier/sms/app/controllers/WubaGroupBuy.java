@@ -116,7 +116,10 @@ public class WubaGroupBuy extends Controller {
         }
 
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
-            Order ybqOrder = createYbqOrder(outerGroupId, productPrize, productNum, userPhone, result);
+            Order ybqOrder = outerOrder.ybqOrder;
+            if (ybqOrder == null) {
+                ybqOrder = createYbqOrder(outerGroupId, productPrize, productNum, userPhone, result);
+            }
             if (!result.get("status").equals("10000")) {
                 finish(result);
                 return;
@@ -338,6 +341,7 @@ public class WubaGroupBuy extends Controller {
         } catch (NotEnoughInventoryException e) {
             Logger.info("enventory not enough");
             putStatusAndMsg(result, "10100", "价格非法");
+            JPA.em().getTransaction().rollback();
             return null;
         }
 
