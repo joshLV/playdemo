@@ -284,7 +284,8 @@ public class ResaleSalesReport extends Model {
     }
 
     public ResaleSalesReport(long totalNumber, BigDecimal amount, long realTotalNumber, BigDecimal realAmount, BigDecimal totalRefundPrice, Long refundNumber,
-                             BigDecimal consumedPrice, Long consumedNumber, BigDecimal shouldGetPrice, BigDecimal haveGetPrice) {
+                             BigDecimal consumedPrice, Long consumedNumber, BigDecimal shouldGetPrice, BigDecimal haveGetPrice
+            , BigDecimal grossMargin, BigDecimal channelCost, BigDecimal profit) {
         this.totalNumber = totalNumber;
         this.amount = amount;
         this.realTotalNumber = realTotalNumber;
@@ -295,6 +296,9 @@ public class ResaleSalesReport extends Model {
         this.consumedNumber = consumedNumber;
         this.shouldGetPrice = shouldGetPrice;
         this.haveGetPrice = haveGetPrice;
+        this.grossMargin = grossMargin;
+        this.channelCost = channelCost;
+        this.profit = profit;
     }
 
 
@@ -370,13 +374,18 @@ public class ResaleSalesReport extends Model {
             } else {
                 item.realSalePrice = paidItem.realSalePrice;
                 item.realBuyNumber = paidItem.realBuyNumber;
-                item.grossMargin = (item.salePrice.add(paidItem.realSalePrice)
-                        .subtract(item.totalCost).subtract(paidItem.totalCost))
-                        .divide(item.salePrice.add(paidItem.realSalePrice)).multiply(BigDecimal.valueOf(100));
+                BigDecimal totalSalesPrice = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice);
+                BigDecimal totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
+
+                if (totalSalesPrice.compareTo(BigDecimal.ZERO) != 0) {
+                    item.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+                }
+
                 item.channelCost = item.channelCost.add(paidItem.channelCost);
-                item.profit = item.salePrice.add(paidItem.realSalePrice)
-                        .subtract(item.channelCost)
-                        .subtract(item.totalCost.add(paidItem.totalCost));
+                item.profit = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice)
+                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).subtract(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
+
+                item.totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
             }
         }
 
@@ -419,7 +428,8 @@ public class ResaleSalesReport extends Model {
 
     public static ResaleSalesReport summary(List<ResaleSalesReport> resultList) {
         if (resultList == null || resultList.size() == 0) {
-            return new ResaleSalesReport(0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO, 0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO);
+            return new ResaleSalesReport(0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO, 0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO
+                    , BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
         }
         long refundCount = 0l;
         long consumedCount = 0l;
@@ -432,6 +442,11 @@ public class ResaleSalesReport extends Model {
         BigDecimal totRefundPrice = BigDecimal.ZERO;
         BigDecimal shouldGetPrice = BigDecimal.ZERO;
         BigDecimal haveGetPrice = BigDecimal.ZERO;
+        BigDecimal grossMargin = BigDecimal.ZERO;
+        BigDecimal channelCost = BigDecimal.ZERO;
+        BigDecimal profit = BigDecimal.ZERO;
+        BigDecimal totolSalePrice = BigDecimal.ZERO;
+        BigDecimal totalCost = BigDecimal.ZERO;
         for (ResaleSalesReport item : resultList) {
 
             buyCount += item.buyNumber;
@@ -442,13 +457,22 @@ public class ResaleSalesReport extends Model {
             refundPrice = refundPrice.add(totRefundPrice);
             refundCount += item.refundNumber;
             consumedCount += item.consumedNumber;
+
             if (item.consumedPrice != null) {
                 consumedPrice = consumedPrice.add(item.consumedPrice);
             }
             shouldGetPrice = amount.subtract(refundPrice);
             haveGetPrice = BigDecimal.ZERO;
+            totolSalePrice = totolSalePrice.add(item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(item.realSalePrice == null ? BigDecimal.ZERO : item.realSalePrice));
+            totalCost = totalCost.add(item.totalCost == null ? BigDecimal.ZERO : item.totalCost);
+            channelCost = channelCost.add(item.channelCost == null ? BigDecimal.ZERO : item.channelCost);
+            profit = profit.add(item.profit == null ? BigDecimal.ZERO : item.profit);
         }
-        return new ResaleSalesReport(buyCount, amount, realBuyCount, realAmount, refundPrice, refundCount, consumedPrice, consumedCount, shouldGetPrice, haveGetPrice);
+        if (totolSalePrice.compareTo(BigDecimal.ZERO) != 0) {
+            grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+        }
+        return new ResaleSalesReport(buyCount, amount, realBuyCount, realAmount, refundPrice, refundCount, consumedPrice, consumedCount, shouldGetPrice, haveGetPrice
+                , grossMargin, channelCost, profit);
     }
 
     /**
@@ -459,7 +483,7 @@ public class ResaleSalesReport extends Model {
      */
     public static List<ResaleSalesReport> queryConsumer(ResaleSalesReportCondition condition) {
         //paidAt ecoupon
-        String sql = "select new models.ResaleSalesReport(r.order,sum(e.salePrice),count(r.buyNumber)" +
+        String sql = "select new models.ResaleSalesReport(r.order,sum(r.salePrice-r.rebateValue),count(r.buyNumber)" +
                 ",sum(r.goods.originalPrice)" +
                 ",(sum(r.salePrice-r.rebateValue)-sum(r.goods.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
                 ",sum(r.salePrice-r.rebateValue)-sum(r.goods.originalPrice)" +
@@ -470,7 +494,6 @@ public class ResaleSalesReport extends Model {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<ResaleSalesReport> paidResultList = query.getResultList();
-
         //sendAt real
         sql = "select new models.ResaleSalesReport(r.order,count(r.buyNumber),sum(r.salePrice-r.rebateValue)" +
                 ",sum(r.goods.originalPrice)" +
@@ -483,7 +506,6 @@ public class ResaleSalesReport extends Model {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<ResaleSalesReport> sentRealResultList = query.getResultList();
-
         //consumedAt ecoupon
         sql = "select new models.ResaleSalesReport(sum(r.salePrice-r.rebateValue),r.order,count(e)) from OrderItems r, ECoupon e where e.orderItems=r";
         query = JPA.em()
@@ -507,7 +529,7 @@ public class ResaleSalesReport extends Model {
         List<ResaleSalesReport> resultList = new ArrayList<>();
         if (paidResultList != null && paidResultList.size() > 0) {
             result = paidResultList.get(0);
-            if (sentRealResultList != null && sentRealResultList.size() > 0) {
+            if (sentRealResultList != null && sentRealResultList.size() > 0 && sentRealResultList.get(0).realBuyNumber > 0) {
                 result.realSalePrice = sentRealResultList.get(0).realSalePrice;
                 result.realBuyNumber = sentRealResultList.get(0).realBuyNumber;
                 BigDecimal totalSalesPrice = result.salePrice == null ? BigDecimal.ZERO : result.salePrice.add(sentRealResultList.get(0).realSalePrice == null ? BigDecimal.ZERO : sentRealResultList.get(0).realSalePrice);
@@ -515,9 +537,10 @@ public class ResaleSalesReport extends Model {
                 if (totalSalesPrice.compareTo(BigDecimal.ZERO) != 0) {
                     result.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 }
-                result.channelCost = result.channelCost == null ? BigDecimal.ZERO : result.channelCost.add(sentRealResultList.get(0).channelCost == null ? BigDecimal.ZERO : sentRealResultList.get(0).channelCost);
 
-
+                result.profit = result.salePrice == null ? BigDecimal.ZERO : result.salePrice.add(sentRealResultList.get(0).realSalePrice == null ? BigDecimal.ZERO : sentRealResultList.get(0).realSalePrice)
+                        .subtract(result.totalCost == null ? BigDecimal.ZERO : result.totalCost).subtract(sentRealResultList.get(0).totalCost == null ? BigDecimal.ZERO : sentRealResultList.get(0).totalCost);
+                result.totalCost = result.totalCost == null ? BigDecimal.ZERO : result.totalCost.add(sentRealResultList.get(0).totalCost == null ? BigDecimal.ZERO : sentRealResultList.get(0).totalCost);
 //                result.channelCost = result.channelCost.add(sentRealResultList.get(0).channelCost);
 //                result.profit = result.salePrice.add(sentRealResultList.get(0).realSalePrice)
 //                        .subtract(result.channelCost)

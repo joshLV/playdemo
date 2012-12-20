@@ -25,7 +25,8 @@ public class SalesReportCondition implements Serializable {
     private Map<String, Object> paramMap1 = new HashMap<>();
 
     public String getFilter() {
-        StringBuilder condBuilder = new StringBuilder(" where (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false");
+        StringBuilder condBuilder = new StringBuilder(" where (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false" +
+                " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
         if (StringUtils.isNotBlank(shortName)) {
             condBuilder.append(" and r.goods.shortName like :shortName");
             paramMap.put("shortName", "%" + shortName + "%");
@@ -51,7 +52,8 @@ public class SalesReportCondition implements Serializable {
     public String getResalerFilter() {
         StringBuilder condBuilder = new StringBuilder(" where r.order.userType=models.accounts.AccountType.RESALER " +
                 " and (r.order.status='PAID' or r.order.status='SENT')" +
-                " and r.goods.isLottery=false and r.order=o and o.userId=b.id");
+                " and r.goods.isLottery=false and r.order=o and o.userId=b.id" +
+                " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
         if (StringUtils.isNotBlank(shortName)) {
             condBuilder.append(" and r.goods.shortName like :shortName");
             paramMap.put("shortName", "%" + shortName + "%");
@@ -73,7 +75,8 @@ public class SalesReportCondition implements Serializable {
     }
 
     public String getRefundFilter() {
-        StringBuilder condBuilder = new StringBuilder(" where e.status=:status and e.goods.isLottery=false");
+        StringBuilder condBuilder = new StringBuilder(" where e.status=:status and e.goods.isLottery=false" +
+                " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
         paramMap1.put("status", ECouponStatus.REFUND);
         if (StringUtils.isNotBlank(shortName)) {
             condBuilder.append(" and e.goods.shortName like :shortName");

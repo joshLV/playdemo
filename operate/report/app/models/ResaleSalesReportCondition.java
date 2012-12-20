@@ -23,7 +23,10 @@ public class ResaleSalesReportCondition {
     public String getFilterPaidAt(AccountType type) {
         StringBuilder condBuilder = new StringBuilder("and r.order.status='PAID' " +
                 "and r.order.userType = :userType " +
-                "and r.goods.isLottery=false");
+                "and r.goods.isLottery=false and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED"
+        );
+
+
         paramMap.put("userType", type);
 
         if (beginAt != null) {
@@ -39,18 +42,20 @@ public class ResaleSalesReportCondition {
     }
 
     public String getFilterRealSendAt(AccountType type) {
-        StringBuilder condBuilder = new StringBuilder("r.order.status='SENT' " +
+        StringBuilder condBuilder = new StringBuilder("(r.order.status='PAID' or r.order.status='SENT')  " +
                 "and r.order.userType = :userType " +
-                "and r.goods.isLottery=false and r.goods.materialType=models.sales.MaterialType.REAL");
+                "and r.goods.isLottery=false and r.goods.materialType=models.sales.MaterialType.REAL" +
+                " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
+                " and r.order.deliveryType=models.order.DeliveryType.LOGISTICS");
 
         paramMap.put("userType", type);
 
         if (beginAt != null) {
-            condBuilder.append(" and r.sendAt >= :createdAtBegin");
+            condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);
         }
         if (endAt != null) {
-            condBuilder.append(" and r.sendAt < :createdAtEnd");
+            condBuilder.append(" and r.order.paidAt < :createdAtEnd");
             paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
         }
 
@@ -59,7 +64,8 @@ public class ResaleSalesReportCondition {
 
 
     public String getFilterConsumedAt(AccountType type) {
-        StringBuilder condBuilder = new StringBuilder(" and r.order.status='PAID' and r.order.userType = :userType and r.goods.isLottery=false and e.status = models.order.ECouponStatus.CONSUMED");
+        StringBuilder condBuilder = new StringBuilder(" and r.order.status='PAID' and r.order.userType = :userType and r.goods.isLottery=false and e.status = models.order.ECouponStatus.CONSUMED" +
+                " and  r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
 
         paramMap.put("userType", type);
 
@@ -76,7 +82,8 @@ public class ResaleSalesReportCondition {
     }
 
     public String getFilterRefundAt(AccountType type) {
-        StringBuilder condBuilder = new StringBuilder(" and r.order.status='PAID' and e.order.userType = :userType and e.goods.isLottery=false and e.status = models.order.ECouponStatus.REFUND");
+        StringBuilder condBuilder = new StringBuilder(" and r.order.status='PAID' and e.order.userType = :userType and e.goods.isLottery=false and e.status = models.order.ECouponStatus.REFUND" +
+                " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
 
         paramMap.put("userType", type);
 
@@ -93,7 +100,8 @@ public class ResaleSalesReportCondition {
     }
 
     public String getFilterRealRefundAt(AccountType type) {
-        StringBuilder condBuilder = new StringBuilder(" where r.order.status='SENT' and r.order.userType = :userType and r.goods.isLottery=false");
+        StringBuilder condBuilder = new StringBuilder(" where r.order.status='SENT' and r.order.userType = :userType and r.goods.isLottery=false" +
+                " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
 
         paramMap.put("userType", type);
 

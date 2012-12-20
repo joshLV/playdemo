@@ -177,7 +177,14 @@
         </td>
         <td>${(report?.grossMargin?:0).format('#')}%</td>
         <td>${(report?.channelCost?:0).formatCurrency('CNY')}</td>
-        <td>￥${(report?.profit?:0).format('#.00')}</td>
+        <td>
+            #{if report.profit != null && report.profit!=0}
+                ￥${(report?.profit?:0).format('#.00')}
+            #{/if}
+            #{else}
+                ￥0
+            #{/else}
+        </td>
 
     </tr>
 #{/paginate.list}
@@ -211,10 +218,16 @@
             <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
                target="_blank">${summary?.consumedPrice?.formatCurrency("CNY")}</a>
         </td>
-        <td></td>
-        <td></td>
-        <td></td>
-
+        <td>${(summary?.grossMargin?:0).format('#')}%</td>
+        <td>${(summary?.channelCost?:0).formatCurrency('CNY')}</td>
+        <td>
+        #{if summary.profit != null && summary.profit!=0}
+            ￥${(summary?.profit?:0).format('#.00')}
+        #{/if}
+        #{else}
+            ￥0
+        #{/else}
+        </td>
     </tr>
 </table>
 <div class="pagination">
