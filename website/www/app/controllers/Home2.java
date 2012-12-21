@@ -111,7 +111,7 @@ public class Home2 extends Controller {
         List<Topic> topics = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_TOPICS"), new CacheCallBack<List<Topic>>() {
             @Override
             public List<Topic> loadData() {
-                return Topic.findByType(PlatformType.UHUILA, TopicType.TOPIC, currentDate, 4);
+                return Topic.findByType(PlatformType.UHUILA, TopicType.TOPIC, currentDate, 2);
             }
         });
         //首屏小图图片展示

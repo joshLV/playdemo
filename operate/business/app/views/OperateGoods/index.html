@@ -338,7 +338,7 @@ select:'condition_status',value:condition?.status/}
     <td>
 
         <a href="@{OperateGoods.show(goods.id)}">查看</a>
-        /<a href="/goods/${goods.id}/edit2?page=${goodsPage.pageNumber?:'1'}&${queryString}">修改2</a>
+        /<a href="/goods/${goods.id}/edit2?page=${goodsPage.pageNumber?:'1'}&${queryString}">修改</a>
         #{if !models.sales.GoodsStatus.ONSALE.equals(goods.status) && !models.sales.GoodsStatus.APPLY
         .equals(goods.status)}
             / #{vx.deleteLink action:"goods", id:goods.id, name:goods.shortName/}
@@ -349,7 +349,7 @@ select:'condition_status',value:condition?.status/}
                         ">网站选项</a>
 
         #{/if}/<a href="@{OperateGoods.copy(goods.id)}">复制</a>/<a
-            href="@{OperateGoods.edit(goods.id)}">修改(old)</a>
+            href="@{OperateGoods.channel(goods.id)}" target="_blank">渠道跟进</a>
         /
 
         <a href="@{OperateGoods.showHistory(goods.id)}" target="_blank">查看历史记录</a>

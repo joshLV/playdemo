@@ -5,20 +5,20 @@
 #{/set}
 
 <div id="content" class="clearfix">
-    #{include "share/left.html"/}
+#{include "share/left.html"/}
     <div class="section">
-        #{breadcrumbs/breadcrumb breadcrumbs/}
+    #{breadcrumbs/breadcrumb breadcrumbs/}
+        <div class="user-account">
         #{include "share/userAccount.html"/}
-
-        #{if action=="verify"}
-            #{form @UserVouchers.verify(), method:'POST', class:'recharge-form'}
-                #{if suc}
-                    <div class="item item-success"> ${suc} </div>
-                #{/if}
-                #{if errMsg}
-                    <div class="item item-error"> ${errMsg} </div>
-                #{/if}
-
+        </div>
+    #{if action=="verify"}
+        #{form @UserVouchers.verify(), method:'POST', class:'recharge-form'}
+            #{if suc}
+                <div class="item item-success"> ${suc} </div>
+            #{/if}
+            #{if errMsg}
+                <div class="item item-error"> ${errMsg} </div>
+            #{/if}
 
                 <div class="item item-passsword">
                     <label for="recharge-passsword">抵用券密码</label>
@@ -62,18 +62,18 @@
 
 
 <script>
-$(document).ready(function(){
-    $('#diff-code').click(function(ev){
-        ev.preventDefault();
-        var img = $('#captchaImg');
-        var t = +new Date;
-        img.attr('src', '/captcha?id='+ t);
-        $("#randomID").val(t);
-    });
+    $(document).ready(function () {
+        $('#diff-code').click(function (ev) {
+            ev.preventDefault();
+            var img = $('#captchaImg');
+            var t = +new Date;
+            img.attr('src', '/captcha?id=' + t);
+            $("#randomID").val(t);
+        });
 
-    $('#recharge-btn').click(function(){
-        var pw = $('#recharge-passsword'),
-        vc = $('#verification-code');
+        $('#recharge-btn').click(function () {
+            var pw = $('#recharge-passsword'),
+                    vc = $('#verification-code');
 
         if (pw.val() == '') {
             $('#passsword-error').html('请输入抵用券密码');
@@ -89,9 +89,8 @@ $(document).ready(function(){
             });
             return false;
         }
-
+        });
     });
-});
 </script>
 
 

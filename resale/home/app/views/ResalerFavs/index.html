@@ -130,7 +130,6 @@
 
                         #{if resaler.loginName=='dangdang'}
                             #{if favItem.partner==models.order.OuterOrderPartner.DD}
-                            *{<a href="#" goodsId="${favItem.goods.id}" class="push_dd">发布到当当</a>}*
                                 <a href="/dangdang-add/${favItem.goods.id}">重新发布到当当</a>
                             #{/if}
                             #{else}

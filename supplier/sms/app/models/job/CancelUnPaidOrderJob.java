@@ -4,7 +4,6 @@ import com.uhuila.common.util.DateUtil;
 import models.order.CancelUnpaidOrders;
 import models.order.Order;
 import models.order.OrderStatus;
-import play.Play;
 import play.jobs.Job;
 import play.jobs.On;
 
@@ -28,7 +27,7 @@ public class CancelUnPaidOrderJob extends Job {
                 "c ) and o.status =:status and o.createdAt <=:createdAtEnd order by o.id";
         Query query = Order.em().createQuery(sql);
         query.setParameter("status", OrderStatus.UNPAID);
-        query.setParameter("createdAtEnd", DateUtil.getEndExpiredDate(-10));
+        query.setParameter("createdAtEnd", DateUtil.getEndExpiredDate(-2));
         query.setFirstResult(0);
         query.setMaxResults(200);
 
