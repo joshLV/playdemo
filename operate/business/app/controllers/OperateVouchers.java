@@ -96,7 +96,7 @@ public class OperateVouchers extends Controller {
                     else  break;
                 }
             }
-            Voucher voucher = Voucher.find("bySerialNo", voucherIds[i]).first();
+            Voucher voucher = Voucher.find("byChargeCode", voucherIds[i]).first();
             if (voucher == null) {
                 err.append("第"+(i+1)+"个券号：" + voucherIds[i] + "没找到<br/>");
                 continue;

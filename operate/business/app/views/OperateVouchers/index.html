@@ -102,6 +102,7 @@
         <td>${voucher.value.formatCurrency("CNY")}</td>
         <td>${voucher.serialNo}</td>
         <td>${voucher.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+        <td>${voucher.expiredAt.format('yyyy-MM-dd HH:mm:ss')}</td>
         <td><a href="/consumers/${voucher.account?.uid}" target="_blank">${voucher.account?.uid}</a></td>
         <td>${voucher.assignedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
         <td>${voucher.usedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
