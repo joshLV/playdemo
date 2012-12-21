@@ -20,7 +20,7 @@ public class OperateCouponMakeUp extends Controller {
         }
 
         if (partner.equalsIgnoreCase("taobao")) {
-            ECoupon eCoupon = ECoupon.find("byECouponSn").first();
+            ECoupon eCoupon = ECoupon.find("byECouponSn", coupon).first();
             if (eCoupon == null) {
                 renderText("coupon没找到"); return;
             }
@@ -28,9 +28,9 @@ public class OperateCouponMakeUp extends Controller {
                 renderText("coupon的消费状态不是已消费"); return;
             }
             if( TaobaoCouponUtil.verifyOnTaobao(eCoupon)){
-                renderText("在淘宝消费成功");return;
+                renderText("id" + eCoupon.id + "在淘宝消费成功");return;
             }else {
-                renderText("在淘宝消费失败");return;
+                renderText("id" + eCoupon.id + "在淘宝消费失败");return;
             }
         }
     }
