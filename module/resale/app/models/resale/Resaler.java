@@ -265,8 +265,10 @@ public class Resaler extends Model {
     }
 
     public static void update(Long id, Resaler resaler) {
+        System.out.println("resaler.statkus>>>" + resaler.status);
         Resaler updResaler = Resaler.findById(id);
         updResaler.status = resaler.status;
+        System.out.println("updResaler.status >>>" + updResaler.status);
         if (resaler.level != null) updResaler.level = resaler.level;
         updResaler.remark = resaler.remark;
 
