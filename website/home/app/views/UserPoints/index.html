@@ -11,58 +11,62 @@
         $("#pointNumber").change(function () {
             $('#couponsFrm').submit();
         });
-   });
+    });
 </script>
 #{/set}
 <div id="content" class="clearfix">
-    #{include "share/left.html"/}
+#{include "share/left.html"/}
     <div class="section">
-        #{breadcrumbs/breadcrumb breadcrumbs/}
+    #{breadcrumbs/breadcrumb breadcrumbs/}
+        <div class="user-account">
         #{include "share/userAccount.html"/}
-
+        </div>
         <form class="form-horizontal" id="couponsFrm" action="@{UserPoints.index()}" method="GET">
-        <div class="search-box">
-            <label>操作类型：</label>
+            <div class="search-box">
+                <label>操作类型：</label>
             #{select 'condition.pointNumber', id:'pointNumber',
-                class:'sequence-flag', value:pointNumber}
+            class:'sequence-flag', value:pointNumber}
                 #{option ''}不限#{/option}
                 #{list items:configList, as:'config'}
                     #{option config?.pointNumber}${config?.pointTitle}#{/option}
                 #{/list}
             #{/select}
-            <label>操作时间：</label>
-            <input class="Wdate" type="text" name="condition.createdAtBegin" id="createdAtBegin" value="${condition?.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" />
-            -
-            <input class="Wdate" type="text" id="createdAtEnd" name="condition.createdAtEnd" value="${condition?.createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
-            <button class="search-btn" id="search"> 搜　索 </button>
-        </div>
+                <label>操作时间：</label>
+                <input class="Wdate" type="text" name="condition.createdAtBegin" id="createdAtBegin"
+                       value="${condition?.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"/>
+                -
+                <input class="Wdate" type="text" id="createdAtEnd" name="condition.createdAtEnd"
+                       value="${condition?.createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})"/>
+                <button class="search-btn" id="search"> 搜　索</button>
+            </div>
         </form>
         <table class="order-tab table">
             <thead>
-                <tr class="col-name">
-                    <th width="160">操作时间</th>
-                    <th width="160">获得积分</th>
-                    <th width="160">使用积分</th>
-                    <th width="160">当前积分</th>
-                    <th width="154">操作类型</th>
-                </tr>
+            <tr class="col-name">
+                <th width="160">操作时间</th>
+                <th width="160">获得积分</th>
+                <th width="160">使用积分</th>
+                <th width="160">当前积分</th>
+                <th width="154">操作类型</th>
+            </tr>
             </thead>
             <tbody>
             #{paginate.list items:pointList, as:'point'}
-                <tr class="order-bd">
-                    <td>${point?.createdAt?.format()}</td>
-                    <td class="get-integral">${point?.dealType=='1' ? point?.dealPoints:''}</td>
-                    <td class="use-integral">${point?.dealType=='0'? point?.dealPoints:''}</td>
-                    <td class="current-integral">${point?.currentPoints}</td>
-                    <td> ${point?.getPointTitle()}</td> 
-                </tr>
+            <tr class="order-bd">
+                <td>${point?.createdAt?.format()}</td>
+                <td class="get-integral">${point?.dealType=='1' ? point?.dealPoints:''}</td>
+                <td class="use-integral">${point?.dealType=='0'? point?.dealPoints:''}</td>
+                <td class="current-integral">${point?.currentPoints}</td>
+                <td> ${point?.getPointTitle()}</td>
+            </tr>
             #{/paginate.list}
             </tbody>
         </table>
         <div class="pagination">
-            #{paginate.controls items:pointList /}
+        #{paginate.controls items:pointList /}
         </div>
-    </div><!-- .section -->
+    </div>
+    <!-- .section -->
 </div>
 
 *{

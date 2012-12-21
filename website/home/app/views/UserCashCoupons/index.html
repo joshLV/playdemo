@@ -8,8 +8,9 @@
     #{include "share/left.html"/}
     <div class="section">
         #{breadcrumbs/breadcrumb breadcrumbs/}
-        #{include "share/userAccount.html"/}
-
+            <div class="user-account">
+            #{include "share/userAccount.html"/}
+            </div>
         #{if action=="verify"}
             #{form @UserCashCoupons.verify(), method:'POST', class:'recharge-form'}
                 #{if suc}
