@@ -489,7 +489,6 @@ public class Goods extends Controller {
     }
 
     private static void renderGoodsCond(GoodsCondition goodsCond) {
-        Logger.info("goodsCond.categoryId=" + goodsCond.categoryId);
         renderArgs.put("categoryId", goodsCond.categoryId);
         renderArgs.put("cityId", goodsCond.cityId);
         renderArgs.put("districtId", goodsCond.districtId);
