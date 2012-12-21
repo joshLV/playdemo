@@ -100,7 +100,7 @@ public class DDPushGoodsTest extends FunctionalTest {
             GoodsDeployRelation goodsMapping = GoodsDeployRelation.generate(goods, OuterOrderPartner.DD);
             goodsArgs.put("goods", goods);
             goodsArgs.put("goodsMappingId", goods.id);
-            Template template = TemplateLoader.load("DDPushGoods/pushGoods1.xml");
+            Template template = TemplateLoader.load("DDPushGoods/pushGoods.xml");
             String requestParams = template.render(goodsArgs);
             DDAPIUtil.pushGoods(goodsMapping.linkId, requestParams);
 
@@ -151,7 +151,7 @@ public class DDPushGoodsTest extends FunctionalTest {
         assertTrue((title.contains("Product Title")));
         String shortName = (String) renderArgs("shortName");
         assertTrue((shortName.contains("Product Name")));
-        assertEquals(new BigDecimal("5.00"), (BigDecimal) renderArgs("salePrice"));
+        assertEquals(new BigDecimal("8.50"), (BigDecimal) renderArgs("salePrice"));
         assertEquals(new BigDecimal("10.00"), (BigDecimal) renderArgs("faceValue"));
         assertEquals(DateUtil.getBeginOfDay(), renderArgs("effectiveAt"));
         Calendar cal = Calendar.getInstance();

@@ -43,7 +43,9 @@
     <div class="section">
     #{breadcrumbs/breadcrumb breadcrumbs/}
         <form class="form-horizontal" id="amountFrm" action="@{UserSequences.index()}" method="GET">
+            <div class="user-account">
             #{include "share/userAccount.html"/}
+            </div>
             <div class="search-box">
                 <label>资金流向：</label>
             #{select 'condition.sequenceFlag', id:'sequenceFlag', value:condition?.sequenceFlag}
@@ -80,13 +82,13 @@
                 </tr>
                 </thead>
                 <tbody>
-            #{paginate.list items:amountList, as:'accountSequence'}
+                #{paginate.list items:amountList, as:'accountSequence'}
                 <tr class="order-bd">
                     <td align="center">${accountSequence.serialNumber}</td>
                     <td align="center">${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
                     <td align="center">
-                        ${accountSequence.balance?.formatCurrency('CNY')}/
-                        ${accountSequence.promotionBalance?.formatCurrency('CNY')?:"0.00"}
+                    ${accountSequence.balance?.formatCurrency('CNY')}/
+                    ${accountSequence.promotionBalance?.formatCurrency('CNY')?:"0.00"}
                     </td>
                     <td>${accountSequence.remark}
                         #{if accountSequence.orderId != null && accountSequence.tradeType.isOrder()}
@@ -104,13 +106,13 @@
                         +${accountSequence.changeAmount.add(accountSequence.promotionChangeAmount?:java.math.BigDecimal.ZERO)} #{/if}</td>
                     <td align="center">${accountSequence?.payMethod}</td>
                 </tr>
-            #{/paginate.list}
+                #{/paginate.list}
                 </tbody>
             </table>
         </form>
 
         <div class="pagination">
-            #{paginate.controls items:amountList /}
+        #{paginate.controls items:amountList /}
         </div>
 
     </div>
