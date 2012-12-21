@@ -52,9 +52,6 @@ public class Resalers extends Controller {
      * @param id 分销商ID
      */
     public static void update(Long id, Resaler resaler) {
-        if (resaler.status == ResalerStatus.UNAPPROVED) {
-            resaler.level = null;
-        }
         Resaler.update(id, resaler);
         index(null);
     }

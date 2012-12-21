@@ -7,7 +7,6 @@ import models.admin.OperateUser;
 import models.admin.SupplierUser;
 import models.resale.AccountType;
 import models.resale.Resaler;
-import models.resale.ResalerLevel;
 import models.resale.ResalerStatus;
 import operate.rbac.RbacLoader;
 import org.junit.After;
@@ -86,9 +85,9 @@ public class ResalerTest extends FunctionalTest {
         String remark = "unapproved";
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put("id", resaler.id.toString());
-        paramMap.put("resaler.status", ResalerStatus.UNAPPROVED.toString());
-        paramMap.put("resaler.remark", remark);
-        Response response = POST("/resalers/update", paramMap);
+        paramMap.put("status", ResalerStatus.UNAPPROVED.toString());
+        paramMap.put("remark", remark);
+        Response response = POST("/resalers/check", paramMap);
         assertStatus(302, response);
 
         resaler.refresh();
