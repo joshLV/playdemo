@@ -101,6 +101,10 @@ public class OperateVouchers extends Controller {
                 err.append("第"+(i+1)+"个券号：" + voucherIds[i] + "没找到<br/>");
                 continue;
             }
+            if (voucher.expiredAt.before(new Date())) {
+                err.append("第"+(i+1)+"个券号：" + voucherIds[i] + "是过期的<br/>");
+                continue;
+            }
             if (voucher.account != null || voucher.assignedAt != null) {
                 err.append("第"+(i+1)+"个券号：" + voucherIds[i] + "已经绑定过了<br/>");
                 continue;
@@ -138,8 +142,8 @@ public class OperateVouchers extends Controller {
             generator("面值不符合要求");
         } else if (count < 1 || count > 9999) {
             generator("数量不符合要求");
-        } else if (expire == null) {
-            generator("过期时间不能为空");
+        } else if (expire == null || expire.before(new Date())) {
+            generator("过期时间不能为空,也不能小于当前时间");
         } else {
             Voucher voucher = Voucher.find("bySerialNo",
                     prefix + new DecimalFormat("00000").format(1)).first();

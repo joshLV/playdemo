@@ -38,7 +38,12 @@
                         <td>已使用</td>
                     #{/if}
                     #{else}
-                        <td>未使用</td>
+                        #{if voucher.expiredAt.before(new java.util.Date())}
+                            <td>已过期</td>
+                        #{/if}
+                        #{else}
+                            <td>未使用</td>
+                        #{/else}
                     #{/else}
                 </tr>
                 #{/paginate.list}
