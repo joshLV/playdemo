@@ -68,7 +68,6 @@ public class PaymentInfoTest extends FunctionalTest {
         Account account1 = (Account) renderArgs("account");
         assertEquals(order1, order);
         assertEquals(new BigDecimal("20.00"), account1.amount);
-        assertContentMatch(" <button id=\"confirm-pay\" class=\"confirm-pay\" type=\"submit\"style=\"display:none\">", response);
         assertContentMatch(" <div id=\"other-pay\" class=\"onlinepay\"style=\"display:block\">", response);
     }
 
@@ -94,7 +93,6 @@ public class PaymentInfoTest extends FunctionalTest {
         order.save();
         Http.Response response = GET("/payment_info/" + order.orderNumber);
         assertStatus(200, response);
-        assertContentMatch(" <button id=\"confirm-pay\" class=\"confirm-pay\" type=\"submit\"style=\"display:block\">", response);
         assertContentMatch(" <div id=\"other-pay\" class=\"onlinepay\"style=\"display:none\">", response);
     }
 
@@ -127,9 +125,8 @@ public class PaymentInfoTest extends FunctionalTest {
         order.save();
         Http.Response response = GET("/payment_info/" + order.orderNumber);
         assertStatus(200, response);
-        assertContentMatch(" <div id=\"other-pay\" class=\"onlinepay\"style=\"display:block\">", response);
         assertContentMatch("用余额付款<em id=\"balance-pay\">20.00</em>元", response);
-        assertContentMatch("剩余 <strong>30.00</strong> 元可选择其他付款方式付款", response);
+        assertContentMatch("剩余 <strong id=\"online-pay\">30.00</strong> 元可选择其他付款方式付款", response);
     }
 
     @Test

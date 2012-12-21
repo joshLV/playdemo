@@ -92,10 +92,6 @@
                 #{/if}
             </label>
         </div>
-        *{
-        <div class="confirmpay">
-            <button id="confirm-pay" class="confirm-pay" type="submit"style="display:${confirmPayDisplay}"></button>
-        </div>}*
     </div>
     %{
     otherPayDisplay = "block"
@@ -124,16 +120,6 @@
             <dl class="kuaiqian">
                 <dt>银行或机构支付：</dt>
                 <dd class="clearfix">
-                    *{#{list items:paymentSources, as:'payment'}}*
-                        *{#{if payment.paymentCode =='99bill'}}*
-
-                            *{<div class="item">}*
-                                *{<input type="radio" name="paymentSourceCode" id="${payment.code}"}*
-                                       *{value="${payment.code}"/>}*
-                                *{<label for="${payment.code}"><img src="/public/${payment.logo}"/></label>}*
-                            *{</div>}*
-                        *{#{/if}}*
-                    *{#{/list}}*
 
                     <div class="item">
                         <input type="radio" name="paymentSourceCode" id="99bill_ICBC" value="99bill_ICBC"/>
@@ -261,7 +247,6 @@
                     </div>
                 </dd>
              </dl>
-             *{<a class="nextstep" id="confirm" href="#">下一步<b></b></a>}*
         </div>
         <button type="submit" class="nextstep" id="confirm"></button>
     </div><!-- #other-pay END-->

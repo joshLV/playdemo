@@ -208,6 +208,9 @@ public class Order extends Model {
     @Column(name = "voucher_value")
     public BigDecimal voucherValue;
 
+    @Column(name = "refunded_voucher_value")
+    public BigDecimal refundedVoucherValue;
+
     /**
      * 支付方式名称
      */
@@ -273,6 +276,8 @@ public class Order extends Model {
         this.discountPay = BigDecimal.ZERO;
         this.promotionBalancePay = BigDecimal.ZERO;
         this.refundedPromotionAmount = BigDecimal.ZERO;
+        this.voucherValue = BigDecimal.ZERO;
+        this.refundedVoucherValue = BigDecimal.ZERO;
         this.freight = BigDecimal.ZERO;
 
         this.lockVersion = 0;

@@ -135,6 +135,7 @@ public class Voucher extends Model {
             if (voucher.account != null) {
                 voucher.assignedAt = new Date();
             }
+            voucher.prefix = prefix;
             voucher.serialNo = prefix + decimalFormat.format(i + 1);
             voucher.operatorId = operatorId;
             voucher.voucherType = type;
