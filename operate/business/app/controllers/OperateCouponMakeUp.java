@@ -1,11 +1,17 @@
 package controllers;
 
+import models.dangdang.DDAPIUtil;
+import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.taobao.TaobaoCouponUtil;
+import models.wuba.WubaUtil;
 import org.apache.commons.lang.StringUtils;
 import play.mvc.Controller;
 import play.mvc.With;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author likang
@@ -16,22 +22,47 @@ import play.mvc.With;
 public class OperateCouponMakeUp extends Controller {
     public static void index(String partner, String coupon) {
         if (StringUtils.isBlank(partner) || StringUtils.isBlank(coupon)) {
-            renderText("输入partner和coupon"); return;
+            renderText("请输入partner和coupon,多个coupon请用半角逗号分割"); return;
         }
 
-        if (partner.equalsIgnoreCase("taobao")) {
+        String[] couponList = coupon.trim().split(",");
+        if (couponList.length == 0  || StringUtils.isBlank(couponList[0])) {
+            renderText("输入coupon,用半角逗号分割"); return;
+        }
+
+        StringBuilder successMessage = new StringBuilder("成功：");
+        StringBuilder failMessage = new StringBuilder("失败：\n");
+        for(String c : couponList) {
             ECoupon eCoupon = ECoupon.find("byECouponSn", coupon).first();
             if (eCoupon == null) {
-                renderText("coupon没找到"); return;
+                failMessage.append(c).append(" 没有找到\n");
+                continue;
             }
             if (eCoupon.status != ECouponStatus.CONSUMED) {
-                renderText("coupon的消费状态不是已消费"); return;
+                failMessage.append(c).append(" 状态不是已消费\n");
+                continue;
             }
-            if( TaobaoCouponUtil.verifyOnTaobao(eCoupon)){
-                renderText("id" + eCoupon.id + "在淘宝消费成功");return;
+
+            boolean success = false;
+            if (partner.equalsIgnoreCase("taobao"))
+                success = TaobaoCouponUtil.verifyOnTaobao(eCoupon);
+            else if (partner.equalsIgnoreCase("jingdong"))
+                success = JDGroupBuyUtil.verifyOnJingdong(eCoupon);
+            else if (partner.equalsIgnoreCase("wuba"))
+                success = WubaUtil.verifyOnWuba(eCoupon);
+            else if (partner.equalsIgnoreCase("dangdang")){
+                    DDAPIUtil.notifyVerified(eCoupon);
+                    success = true;
+            }
+            if (success) {
+                successMessage.append(c).append(",");
             }else {
-                renderText("id" + eCoupon.id + "在淘宝消费失败");return;
+                failMessage.append(c).append(" 在第三方消费失败\n");
             }
         }
+
+        renderText("输入：" + coupon + "\n"
+                + successMessage + "\n"
+                + failMessage);
     }
 }

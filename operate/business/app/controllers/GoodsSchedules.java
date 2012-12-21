@@ -1,5 +1,6 @@
 package controllers;
 
+import com.uhuila.common.util.DateUtil;
 import models.sales.Goods;
 import models.sales.GoodsCondition;
 import models.sales.GoodsSchedule;
@@ -48,6 +49,7 @@ public class GoodsSchedules extends Controller {
     public static void create(@Valid GoodsSchedule goodsSchedule) {
         checkItems(goodsSchedule, "add.html");
         goodsSchedule.createdAt = new Date();
+        goodsSchedule.expireAt = DateUtil.getEndOfDay(goodsSchedule.expireAt);
         goodsSchedule.save();
         index(null);
     }

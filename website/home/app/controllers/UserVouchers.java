@@ -93,7 +93,7 @@ public class UserVouchers extends Controller {
                 voucherCode);
     }
 
-    public static void useCoupon(String ridA, String ridB) {
+    public static void assign(String ridA, String ridB) {
         User user = SecureCAS.getUser();
         Account account = AccountUtil.getConsumerAccount(user.getId());
         String errMsg = null;

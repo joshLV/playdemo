@@ -178,7 +178,7 @@ ${mobileDescription?.raw()}
         <td width="400px">一百券商圈：<input type="text" size="30" value="${shop.areaName}"></td>
         <td width="520px">
             58商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;圈:#{vx.selectInputField name:"circleName${shop_index}",
-            id:"circleId_${shop_index}",importJs:false,array:"list"/}<b>*</b></td>
+            id:"circleId_${shop_index}",array:"list"/}<b>*</b></td>
     </tr>
     <tr>
         <td width="400px">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话:<input type="text"
@@ -238,7 +238,7 @@ ${mobileDescription?.raw()}
                                       value="${shop.shortTitle}">(最大50字)<b>*</b></td>
         <td width="520px">
             商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;圈:#{vx.selectInputField name:"circleName${shop_index}",
-            id:"circleId_${shop_index}",importJs:shop_isFirst, value: shop.circleId,array:"list"/}<b>*</b></td>
+            id:"circleId_${shop_index}", value: shop.circleId,array:"list"/}<b>*</b></td>
     </tr>
     <tr>
         <td width="400px">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话:<input type="text"
@@ -353,13 +353,16 @@ ${mobileDescription?.raw()}
         }
     });
 
-    if (${jsonArray?.raw()} != null ) {
+    if (${jsonArray?.raw()} !=
+    null
+    )
+    {
         var shopArray = ${jsonArray.raw()};
         for (var i = 0; i < shopArray.length; i++) {
             var areaName = shopArray[i]['areaName'];
             for (j = 0; j < list.length; j++) {
                 if (list[j].name == areaName) {
-                     $("#circleName" + (i + 1)).val(areaName);
+                    $("#circleName" + (i + 1)).val(areaName);
                     $("#id_circleName" + (i + 1)).val(list[j].id);
                 }
             }

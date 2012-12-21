@@ -257,4 +257,12 @@ public class OperateUser extends Model {
 
     }
 
+
+    public static List<OperateUser> getSales(String role) {
+        List<OperateUser> operateUsers = OperateUser.find("select ou from OperateUser ou" +
+                " where ou.id in (select ou.id from ou.roles r where r.key= ?) and deleted=?", role, DeletedStatus.UN_DELETED).fetch();
+        return operateUsers;
+    }
+
+
 }
