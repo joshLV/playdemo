@@ -4,15 +4,13 @@ function checkResaler(id, status, flg) {
         $("#checkRemark").html("请输入备注！");
     } else {
         $("#checkRemark").html("");
-        var level = $("#level").val();
-        var creditable = $("input:radio[name='creditable']:checked").val()
-        var batchExportCoupons = $("input:radio[name='batchExportCoupons']:checked").val()
-        var commissionRatio= $("#commissionRatio").val();
-        var url = "/resalers/update?id=" + id + "&status=" + status + "&level=" + level + "&remark=" + remark + "&creditable=" + creditable + "&batchExportCoupons=" + batchExportCoupons + "&commissionRatio=" + commissionRatio;
-        $("#checkFrm").attr("method", "POST");
-        $("#checkFrm").attr("action", url);
-        $("#checkFrm").submit();
+
     }
+    var url = "/resalers/" + id + "/status?status=" + status + "&remark=" + remark;
+    $("#checkFrm").attr("method", "POST");
+    $("#checkFrm").attr("action", url);
+    $("#checkFrm").submit();
+
 }
 
 $(document).ready(function () {
@@ -24,5 +22,6 @@ $(document).ready(function () {
         $("#flag").val("1");
         $("#flagForm").submit();
     });
+
 }); 
 
