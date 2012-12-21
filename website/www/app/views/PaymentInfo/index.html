@@ -1,7 +1,7 @@
 #{extends 'main2.html' /}
 #{set title:'一百券 - 确认付款' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/cart/121109/flowstep.css', '/cart/121217/payment.css'] /}
+    #{asset.css src:['/cart/121221/flowstep.css', '/cart/121221/payment.css'] /}
 #{/set}
 #{set 'moreScripts'}
     #{asset.js src:['/cart/121221/payment.js'] /}
@@ -92,9 +92,10 @@
                 #{/if}
             </label>
         </div>
+        *{
         <div class="confirmpay">
             <button id="confirm-pay" class="confirm-pay" type="submit"style="display:${confirmPayDisplay}"></button>
-        </div>
+        </div>}*
     </div>
     %{
     otherPayDisplay = "block"
@@ -260,8 +261,9 @@
                     </div>
                 </dd>
              </dl>
-            <a class="nextstep" id="confirm" href="#">下一步<b></b></a>
+             *{<a class="nextstep" id="confirm" href="#">下一步<b></b></a>}*
         </div>
+        <button type="submit" class="nextstep" id="confirm"></button>
     </div><!-- #other-pay END-->
     #{/form}
     #{/if}
