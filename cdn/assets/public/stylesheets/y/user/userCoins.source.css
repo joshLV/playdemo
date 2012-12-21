@@ -4,6 +4,39 @@
     /* font-weight: 700; */
 /* } */
 
+.search-box {
+    padding: 20px 0;
+}
+.search-box input {
+    height: 21px;
+}
+.search-box .short-input {
+    width: 100px;
+}
+.search-box .medium-input {
+    width: 180px;
+}
+.search-box .goods-name {
+    margin-right: 10px;
+}
+.search-box .order-num {
+    margin-right: 10px;
+}
+.search-box .search-btn {
+    position: relative;
+    top: -1px;
+    width: 67px;
+    height: 25px;
+    border: 0;
+    cursor: pointer;
+    margin-left: 13px;
+    *margin-left: 10px;
+    _margin-left: 17px;
+    background: url(//img.uhcdn.com/images/y/user/btn.png) no-repeat 0 0;
+}
+.search-box .search-btn:hover {
+    background-position: 0 -26px;
+}
 .exchange-rule {
     padding: 10px 15px;
     background: url(http://y1.uhcdn.com/images/2012/12/08e575947cc524f1.png) no-repeat 0 12px;
