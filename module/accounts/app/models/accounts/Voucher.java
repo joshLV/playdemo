@@ -185,13 +185,17 @@ public class Voucher extends Model {
     }
 
     public static List<Voucher> validVouchers(Account account) {
-        return Voucher.find("account = ? and expiredAt > ? and deleted = ? and order != null",
+        return Voucher.find("account = ? and expiredAt > ? and deleted = ? and order = null order by expiredAt ",
                 account, new Date(), DeletedStatus.UN_DELETED).fetch();
     }
 
     public static long validVoucherCount(Account account) {
-        return Voucher.count("account = ? and expiredAt > ? and deleted = ? and order != null",
+        return Voucher.count("account = ? and expiredAt > ? and deleted = ? and order = null",
                 account, new Date(), DeletedStatus.UN_DELETED);
+    }
+
+    public static List<Voucher> usedInOrder(Long orderId) {
+        return Voucher.find("order != null and order.id = ?", orderId).fetch();
     }
 
     public static boolean canAssign(Account account, Voucher voucher) {

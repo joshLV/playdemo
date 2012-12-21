@@ -1,5 +1,6 @@
 package controllers;
 
+import models.accounts.Voucher;
 import models.consumer.User;
 import models.accounts.AccountType;
 import models.order.Order;

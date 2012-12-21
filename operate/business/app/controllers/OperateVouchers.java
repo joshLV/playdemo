@@ -156,6 +156,7 @@ public class OperateVouchers extends Controller {
                 }
             }
         }
+        expire = new Date(expire.getTime() - 1000);
         Voucher.generate(count, faceValue, name, prefix, account, OperateRbac.currentUser().getId(), VoucherType.OPERATE, expire);
 
         index(null);
