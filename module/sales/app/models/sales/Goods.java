@@ -1379,7 +1379,6 @@ public class Goods extends Model {
      */
     @Transient
     public BigDecimal getResalePrice() {
-        System.out.println(resaleAddPrice+"--------------"+salePrice);
         if (this.resaleAddPrice == null) {
             return this.salePrice;
         }
