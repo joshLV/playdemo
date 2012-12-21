@@ -49,9 +49,9 @@ public class CouponsCondition implements Serializable {
     public Date hidPaidAtBegin;
     public Date hidPaidAtEnd;
     public String userName;
-
     public Long operatorId;
     public Boolean hasSeeAllSupplierPermission;
+    public Long goodsId;
 
     public String getOrderByExpress() {
         return "e.createdAt desc";
@@ -75,6 +75,7 @@ public class CouponsCondition implements Serializable {
             sql.append(" and e.createdAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", createdAtBegin);
         }
+
 
         if (createdAtEnd != null) {
             sql.append(" and e.createdAt <= :createdAtEnd");
@@ -257,6 +258,12 @@ public class CouponsCondition implements Serializable {
                 paramMap.put("user", resaler.id);
             }
         }
+
+        if (goodsId != null) {
+            sql.append(" and e.goods.id = :goodsId");
+            paramMap.put("goodsId", goodsId);
+        }
+
         return sql.toString();
     }
 
