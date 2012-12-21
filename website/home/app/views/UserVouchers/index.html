@@ -13,21 +13,21 @@
         </div>
         <div class="voucher">
 
-            <div class="tips">抵用券只可用于消费，不能用于充值和提现。<a class="how-to-use" href="${helper.Domain.getWWWHost(request)}/help"
-                                                     target="_blank">抵用券怎么用？</a></div>
-            <table class="table">
-                <thead>
-                <tr class="col-name">
-                    <th width="190">抵用券编号</th>
-                    <th>抵用券名称</th>
-                    <th width="50">面值</th>
-                    <th width="120">过期时间</th>
-                    <th width="120">激活时间</th>
-                    <th width="50">状态</th>
-                </tr>
-                </thead>
-                <tbody>
-                #{paginate.list items:voucherList, as:'voucher'}
+        <h3>我的抵用券</h3>
+        <div class="tips">抵用券只可用于消费，不能用于充值和提现。<a class="how-to-use" href="${helper.Domain.getWWWHost(request)}/help" target="_blank">抵用券怎么用？</a></div>
+        <table class="table">
+            <thead>
+            <tr class="col-name">
+                <th width="190">抵用券编号</th>
+                <th>抵用券名称</th>
+                <th width="50">面值</th>
+                <th width="120">过期时间</th>
+                <th width="120">激活时间</th>
+                <th width="50">状态</th>
+            </tr>
+            </thead>
+            <tbody>
+            #{paginate.list items:voucherList, as:'voucher'}
                 <tr>
                     <td>${voucher.serialNo}</td>
                     <td>${voucher.name}</td>

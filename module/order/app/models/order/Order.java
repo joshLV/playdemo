@@ -1180,23 +1180,21 @@ public class Order extends Model {
     public static boolean confirmPaymentInfo(Order order, Account account, boolean useBalance, String paymentSourceCode,
                                              BatchCoupons batchCoupons, List<Voucher> vouchers) {
         //使用抵用券
-        BigDecimal voucherValue = BigDecimal.ZERO;
+        order.voucherValue = BigDecimal.ZERO;
         List<Voucher> validVouchers = new ArrayList<>();
         if(vouchers != null) {
             for (Voucher voucher : vouchers) {
                 if (Voucher.canAssign(account, voucher)) {
-                    voucherValue = voucherValue.add(voucher.value);
+                    order.voucherValue = order.voucherValue.add(voucher.value);
                     validVouchers.add(voucher);
                 }
             }
         }
-        BigDecimal originNeedPay = order.needPay;
-        order.needPay = order.needPay.subtract(voucherValue);
-        order.voucherValue = voucherValue;
-        if (order.needPay.compareTo(BigDecimal.ZERO) < 0) {
-            order.needPay = BigDecimal.ZERO;
-            order.voucherValue = originNeedPay;
+        if (order.voucherValue.compareTo(order.needPay) > 0) {
+            order.voucherValue = order.needPay;
         }
+
+        BigDecimal needPayExceptVoucher = order.needPay.subtract(order.voucherValue);
 
         //有些账号还没有promotionAmount
         if (account.promotionAmount == null) {
@@ -1207,20 +1205,22 @@ public class Order extends Model {
         BigDecimal ebankPaymentAmount = BigDecimal.ZERO;
         //先计算总余额支付和银行卡支付
         if (useBalance && order.orderType == OrderType.CONSUME) {
-            balancePaymentAmount = account.amount.add(account.promotionAmount).min(order.needPay);
-            ebankPaymentAmount = order.needPay.subtract(balancePaymentAmount);
+            balancePaymentAmount = account.amount.add(account.promotionAmount).min(needPayExceptVoucher);
+            ebankPaymentAmount = needPayExceptVoucher.subtract(balancePaymentAmount);
         } else {
-            ebankPaymentAmount = order.needPay;
+            ebankPaymentAmount = needPayExceptVoucher;
         }
         //余额支付中再分一下可提现和不可提现支付
         order.accountPay = balancePaymentAmount.subtract(account.promotionAmount.min(balancePaymentAmount));
         order.promotionBalancePay = balancePaymentAmount.subtract(order.accountPay);
         order.discountPay = ebankPaymentAmount;
 
+
         //创建订单交易
         //如果使用余额足以支付，则付款直接成功
         if (order.discountPay.compareTo(BigDecimal.ZERO) == 0
-                && order.accountPay.add(order.promotionBalancePay).compareTo(order.needPay) == 0) {
+                && order.accountPay .add(order.promotionBalancePay) .add(order.voucherValue)
+                .compareTo(order.needPay) == 0) {
             order.payMethod = PaymentSource.getBalanceSource().code;
             order.payAndSendECoupon(batchCoupons);
             useVouchers(validVouchers, order);
