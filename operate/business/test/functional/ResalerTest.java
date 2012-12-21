@@ -86,8 +86,8 @@ public class ResalerTest extends FunctionalTest {
         String remark = "unapproved";
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put("id", resaler.id.toString());
-        paramMap.put("status", ResalerStatus.UNAPPROVED.toString());
-        paramMap.put("remark", remark);
+        paramMap.put("resaler.status", ResalerStatus.UNAPPROVED.toString());
+        paramMap.put("resaler.remark", remark);
         Response response = POST("/resalers/update", paramMap);
         assertStatus(302, response);
 

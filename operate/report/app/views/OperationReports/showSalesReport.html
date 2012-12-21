@@ -113,6 +113,9 @@
         #{/if}
         </thead>
     #{set i:0/}
+    %{
+        baseUrl=play.Play.configuration.getProperty("uri.operate_business");
+        }%
     #{paginate.list items:reportPage, as:'report'}
         <tr>
             #{set i:i+1/}
@@ -125,9 +128,29 @@
           #{/if}
             </td>
             <td>${report?.buyNumber?:0}</td>
-            <td>${(report?.totalAmount?:0).formatCurrency('CNY')}</td>
-            <td>${(report?.refundAmount?:0).formatCurrency('CNY')}</td>
-            <td>￥${(report?.netSalesAmount?:0)}</td>
+            <td>
+                #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
+                    <a href="${baseUrl}/coupons?condition.paidAtBegin=${condition?.begin?.format()}&condition.paidAtEnd=${condition?.end?.format()}
+                &condition.goodsId=${report?.goods?.id}"
+                       target="_blank">${(report?.totalAmount?:0).formatCurrency('CNY')}</a>
+                #{/if}
+                #{else}
+                ${(report?.totalAmount?:0).formatCurrency('CNY')}
+                #{/else}
+            </td>
+            <td>
+                #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
+                    <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.begin?.format()}&condition.refundAtBegin=${condition?.end?.format()}
+                &condition.goodsId=${report?.goods?.id}"
+                       target="_blank"> ${(report?.refundAmount?:0).formatCurrency('CNY')}</a>
+                #{/if}
+                #{else}
+                ${(report?.refundAmount?:0).formatCurrency('CNY')}
+                #{/else}
+            </td>
+            <td>
+                ￥${(report?.netSalesAmount?:0)}
+            </td>
             #{if hasSeeSalesRepotProfitRight == true}
                 <td>${(report?.grossMargin?:0).format('#')}%</td>
                 <td>${(report?.profit?:0).formatCurrency('CNY')}</td>
