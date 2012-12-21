@@ -1,6 +1,5 @@
 package controllers;
 
-import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.FileUploadUtil;
 import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.AccountType;
@@ -24,7 +23,9 @@ import play.mvc.With;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static play.Logger.warn;
 
@@ -54,7 +55,7 @@ public class Suppliers extends Controller {
 
     @ActiveNavigation("suppliers_add")
     public static void add() {
-        List<OperateUser> operateUserList = getSales();
+        List<OperateUser> operateUserList = OperateUser.getSales(SALES_ROLE);
         renderArgs.put("baseDomain", BASE_DOMAIN);
         List<SupplierCategory> supplierCategoryList = SupplierCategory.findAll();
         render(operateUserList, supplierCategoryList);
@@ -90,7 +91,7 @@ public class Suppliers extends Controller {
         Validation.match("validation.jobNumber", admin.jobNumber, "^[0-9]*");
 
         if (Validation.hasErrors()) {
-            List<OperateUser> operateUserList = getSales();
+            List<OperateUser> operateUserList = OperateUser.getSales(SALES_ROLE);
             renderArgs.put("baseDomain", BASE_DOMAIN);
             List<SupplierCategory> supplierCategoryList = SupplierCategory.findAll();
             render("Suppliers/add.html", supplier, operateUserList, supplierCategoryList);
@@ -199,7 +200,7 @@ public class Suppliers extends Controller {
         SupplierUser admin = SupplierUser.findAdmin(id, supplier.loginName);
         List<WithdrawAccount> withdrawAccounts =
                 WithdrawAccount.find("byUserIdAndAccountType", supplier.getId(), AccountType.SUPPLIER).fetch();
-        List<OperateUser> operateUserList = getSales();
+        List<OperateUser> operateUserList = OperateUser.getSales(SALES_ROLE);
         List<SupplierCategory> supplierCategoryList = SupplierCategory.findAll();
         renderArgs.put("baseDomain", BASE_DOMAIN);
         Boolean hasSupplierCodeEditPermission = ContextedPermission.hasPermission("SUPPLIER_CODE_EDIT");
@@ -241,7 +242,7 @@ public class Suppliers extends Controller {
             for (String key : validation.errorsMap().keySet()) {
                 warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
             }
-            List<OperateUser> operateUserList = getSales();
+            List<OperateUser> operateUserList = OperateUser.getSales(SALES_ROLE);
             renderArgs.put("baseDomain", BASE_DOMAIN);
             render("/Suppliers/edit.html", supplier, id, operateUserList, page);
         }
@@ -285,13 +286,6 @@ public class Suppliers extends Controller {
                         supplierId, 1,
                         1);
         render(supplierUsersPage, supplierDomainName, supplierUsers);
-    }
-
-    public static List<OperateUser> getSales() {
-        List<OperateUser> operateUsers = OperateUser.find("select ou from OperateUser ou" +
-                " where ou.id in (select ou.id from ou.roles r where r.key= ?) and deleted=?"
-                , "sales", DeletedStatus.UN_DELETED).fetch();
-        return operateUsers;
     }
 
 

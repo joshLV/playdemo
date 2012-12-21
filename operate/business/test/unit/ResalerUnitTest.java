@@ -1,16 +1,13 @@
 package unit;
 
+import factory.FactoryBoy;
 import models.resale.Resaler;
 import models.resale.ResalerCondition;
-import models.resale.ResalerCreditable;
 import models.resale.ResalerLevel;
 import models.resale.ResalerStatus;
-
 import org.junit.Test;
-
 import play.modules.paginate.JPAExtPaginator;
 import play.test.UnitTest;
-import factory.FactoryBoy;
 
 public class ResalerUnitTest extends UnitTest {
 
@@ -62,13 +59,13 @@ public class ResalerUnitTest extends UnitTest {
     @Test
     public void updateStatus() {
         String remark = "";
-        Resaler.update(resaler.id, ResalerStatus.APPROVED, ResalerLevel.NORMAL, remark);
+        Resaler.updateStatus(resaler.id, ResalerStatus.APPROVED, remark);
         Resaler r = Resaler.findById(resaler.id);
         assertEquals(ResalerStatus.APPROVED, r.status);
         assertEquals(ResalerLevel.NORMAL, r.level);
 
         remark = "该分销商信用不够！";
-        Resaler.update(resaler.id, ResalerStatus.UNAPPROVED, ResalerLevel.NORMAL, remark);
+        Resaler.updateStatus(resaler.id, ResalerStatus.UNAPPROVED,remark);
         r = Resaler.findById(resaler.id);
         assertEquals(ResalerStatus.UNAPPROVED, r.status);
         assertEquals(remark, r.remark);

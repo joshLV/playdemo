@@ -39,7 +39,7 @@ import java.util.Set;
  * Date: 2/27/12
  * Time: 5:59 PM
  */
-public class GoodsUnitTest extends UnitTest {
+public class WebGoodsUnitTest extends UnitTest {
     Goods goods;
     Category category;
 

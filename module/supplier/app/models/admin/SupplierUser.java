@@ -98,11 +98,11 @@ public class SupplierUser extends Model {
     @Enumerated(EnumType.STRING)
     @Column(name = "supplier_user_type")
     public SupplierUserType supplierUserType;
-    
+
     /**
      * 记录最后一次使用的shopId.
      */
-    @Column(name="last_shop_id")
+    @Column(name = "last_shop_id")
     public Long lastShopId;
 
     /**
@@ -154,7 +154,7 @@ public class SupplierUser extends Model {
                                                                     int pageNumber, int pageSize) {
         StringBuilder sql = new StringBuilder("1=1");
         Map<String, Object> params = new HashMap<>();
-        if (supplierId != null) {
+        if (supplierId != null && supplierId > 0) {
             sql.append(" and supplier.id = :supplierId");
             params.put("supplierId", supplierId);
         }

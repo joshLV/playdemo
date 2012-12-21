@@ -112,7 +112,11 @@ public class Resaler extends Model {
 
     @Column(name = "app_secret_key")
     public String appSecretKey;
-
+    /**
+     * 分销负责专员
+     */
+    @Column(name = "sales_id")
+    public Long salesId;
 
     /**
      * 分销商状态
@@ -201,61 +205,19 @@ public class Resaler extends Model {
     }
 
 
-    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark) {
-        update(id, status, level, remark, null, null, null);
-    }
-
-    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark, ResalerCreditable creditable) {
-        update(id, status, level, remark, creditable, null, null);
-    }
-
-    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark, ResalerCreditable creditable, ResalerBatchExportCoupons batchExportCoupons) {
-        update(id, status, level, remark, creditable, batchExportCoupons, null);
-    }
-
-    /**
-     * 审核分销商
-     *
-     * @param id     分销商ID
-     * @param status 状态
-     * @param remark 备注
-     */
-    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark,
-                              ResalerCreditable creditable, ResalerBatchExportCoupons batchExportCoupons,
-                              BigDecimal commissionRatio) {
-        Resaler resaler = Resaler.findById(id);
-        if (status != null) resaler.status = status;
-        if (level != null) resaler.level = level;
-        if (StringUtils.isNotEmpty(remark)) resaler.remark = remark;
-
-        //修改现金账户是否可欠款
-        if (creditable != null) {
-            resaler.creditable = creditable;
-            Account account = AccountUtil.getResalerAccount(resaler.getId());
-            if (resaler.isCreditable()) {
-                account.creditable = AccountCreditable.YES;
-            } else {
-                account.creditable = AccountCreditable.NO;
-            }
-            account.save();
-        }
-        if (batchExportCoupons != null) {
-            resaler.batchExportCoupons = batchExportCoupons;
-        }
-        if (commissionRatio == null) {
-            resaler.commissionRatio = BigDecimal.ZERO;
-        } else {
-            resaler.commissionRatio = commissionRatio;
-        }
-        resaler.save();
-    }
-
     public static void freeze(long id) {
-        update(id, ResalerStatus.FREEZE, null, null, null, null);
+        updateStatus(id, ResalerStatus.FREEZE, null);
     }
 
     public static void unfreeze(long id) {
-        update(id, ResalerStatus.APPROVED, null, null, null, null);
+        updateStatus(id, ResalerStatus.APPROVED, null);
+    }
+
+    public static void updateStatus(Long id, ResalerStatus status, String remark) {
+        Resaler resaler = Resaler.findById(id);
+        resaler.status = status;
+        resaler.remark = remark;
+        resaler.save();
     }
 
     /**
@@ -299,6 +261,35 @@ public class Resaler extends Model {
     }
 
     public static List<Resaler> findByStatus() {
-        return Resaler.find("status=? order by id desc",ResalerStatus.APPROVED).fetch();
+        return Resaler.find("status=? order by id desc", ResalerStatus.APPROVED).fetch();
+    }
+
+    public static void update(Long id, Resaler resaler) {
+        Resaler updResaler = Resaler.findById(id);
+        updResaler.status = resaler.status;
+        if (resaler.level != null) updResaler.level = resaler.level;
+        updResaler.remark = resaler.remark;
+
+        //修改现金账户是否可欠款
+        if (resaler.creditable != null) {
+            updResaler.creditable = resaler.creditable;
+            Account account = AccountUtil.getResalerAccount(id);
+            if (resaler.isCreditable()) {
+                account.creditable = AccountCreditable.YES;
+            } else {
+                account.creditable = AccountCreditable.NO;
+            }
+            account.save();
+        }
+        if (resaler.batchExportCoupons != null) {
+            updResaler.batchExportCoupons = resaler.batchExportCoupons;
+        }
+        if (resaler.commissionRatio == null) {
+            updResaler.commissionRatio = BigDecimal.ZERO;
+        } else {
+            updResaler.commissionRatio = resaler.commissionRatio;
+        }
+        updResaler.salesId = resaler.salesId;
+        updResaler.save();
     }
 }

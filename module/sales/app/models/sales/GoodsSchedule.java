@@ -1,7 +1,7 @@
 package models.sales;
 
-import cache.CacheCallBack;
 import cache.CacheHelper;
+import com.uhuila.common.util.DateUtil;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
@@ -68,7 +68,7 @@ public class GoodsSchedule extends Model {
     public static void update(Long id, GoodsSchedule goodsSchedule) {
         GoodsSchedule updGoods = GoodsSchedule.findById(id);
         updGoods.effectiveAt = goodsSchedule.effectiveAt;
-        updGoods.expireAt = goodsSchedule.expireAt;
+        updGoods.expireAt = DateUtil.getEndOfDay(goodsSchedule.expireAt);
         updGoods.id = id;
         updGoods.save();
     }
