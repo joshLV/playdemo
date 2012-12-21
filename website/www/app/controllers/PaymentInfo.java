@@ -4,6 +4,7 @@ import controllers.modules.website.cas.SecureCAS;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
+import models.accounts.Voucher;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
 import models.order.Order;
@@ -15,6 +16,7 @@ import models.payment.PaymentUtil;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @With({SecureCAS.class, WebsiteInjector.class})
@@ -36,7 +38,8 @@ public class PaymentInfo extends Controller {
 
         List<PaymentSource> paymentSources = PaymentSource.find("order by showOrder").fetch();
 
-        render(user, account, order, goodsNumber, paymentSources);
+        List<Voucher> voucherList = Voucher.validVouchers(AccountUtil.getConsumerAccount(user.getId()));
+        render(user, account, order, goodsNumber, paymentSources, voucherList);
     }
 
 
@@ -47,7 +50,7 @@ public class PaymentInfo extends Controller {
      * @param useBalance        是否使用余额
      * @param paymentSourceCode 网银代码
      */
-    public static void confirm(String orderNumber, boolean useBalance, String paymentSourceCode) {
+    public static void confirm(String orderNumber, boolean useBalance, String paymentSourceCode, Long[] voucherIds) {
         User user = SecureCAS.getUser();
         Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.CONSUMER);
         if (order == null) {
@@ -66,10 +69,19 @@ public class PaymentInfo extends Controller {
                 }
             }
         }
+
+        List<Voucher> vouchers = new ArrayList<>();
+        if (voucherIds != null && voucherIds.length > 0) {
+            for (Long voucherId : voucherIds) {
+                Voucher voucher = Voucher.findById(voucherId);
+                vouchers.add(voucher);
+            }
+        }
+
         
         Account account = AccountUtil.getConsumerAccount(user.getId());
 
-        if (Order.confirmPaymentInfo(order, account, useBalance, paymentSourceCode)) {
+        if (Order.confirmPaymentInfo(order, account, useBalance, paymentSourceCode, null, vouchers)) {
             PaymentSource paymentSource = PaymentSource.findByCode(order.payMethod);
             //近日成交商品
             List<models.sales.Goods> recentGoodsList = models.sales.Goods.findTradeRecently(5);

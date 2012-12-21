@@ -27,7 +27,7 @@ public class OperateOrdersForSalesTest extends FunctionalTest {
 
     Order order;
     OperateUser operateUser;
-    
+
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
@@ -35,7 +35,7 @@ public class OperateOrdersForSalesTest extends FunctionalTest {
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
-        
+
         // only sales role.
         operateUser = FactoryBoy.create(OperateUser.class, new BuildCallback<OperateUser>() {
             @Override
@@ -46,7 +46,7 @@ public class OperateOrdersForSalesTest extends FunctionalTest {
             }
         });
         // 设置测试登录的用户名
-        Security.setLoginUserForTest(operateUser.loginName);        
+        Security.setLoginUserForTest(operateUser.loginName);
     }
 
     @After
@@ -73,10 +73,10 @@ public class OperateOrdersForSalesTest extends FunctionalTest {
                 oi.phone = user.mobile;
             }
         });
-        
+
         Response response = GET("/orders");
         assertStatus(200, response);
-        List<Order> orders = (List<Order>)renderArgs("orderList");
+        List<Order> orders = (List<Order>) renderArgs("orderList");
         assertEquals(0, orders.size());
     }
 
@@ -104,10 +104,10 @@ public class OperateOrdersForSalesTest extends FunctionalTest {
                 oi.phone = user.mobile;
             }
         });
-        
+
         Response response = GET("/orders");
         assertStatus(200, response);
-        List<Order> orders = (List<Order>)renderArgs("orderList");
+        List<Order> orders = (List<Order>) renderArgs("orderList");
         assertEquals(1, orders.size());
     }
 

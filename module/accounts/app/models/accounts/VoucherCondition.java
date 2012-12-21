@@ -1,7 +1,7 @@
 package models.accounts;
 
 import com.uhuila.common.constants.DeletedStatus;
-import org.jsoup.helper.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -17,10 +17,12 @@ public class VoucherCondition implements Serializable {
     public DeletedStatus deletedStatus;
     public DeletedStatus assignedStatus;
     public DeletedStatus usedStatus;
+    public VoucherType voucherType;
     private Map<String, Object> params = new HashMap<>();
+
     public String getFilter() {
         StringBuilder filter = new StringBuilder("1=1");
-        if (!StringUtil.isBlank(name)) {
+        if (!StringUtils.isBlank(name)) {
             filter.append(" and name like :name");
             params.put("name", name + "%");
         }
@@ -30,27 +32,30 @@ public class VoucherCondition implements Serializable {
             params.put("uid", uid);
             params.put("accountType", AccountType.CONSUMER);
         }
-
-        if(deletedStatus != null){
-            if(deletedStatus == DeletedStatus.DELETED){
+        if (voucherType != null) {
+            filter.append(" and voucherType =:voucherType");
+            params.put("voucherType", voucherType);
+        }
+        if (deletedStatus != null) {
+            if (deletedStatus == DeletedStatus.DELETED) {
                 filter.append(" and deleted = :deletedStatus");
-            }else {
+            } else {
                 filter.append(" and deleted != :deletedStatus");
             }
             params.put("deletedStatus", DeletedStatus.DELETED);
         }
-        if(assignedStatus != null){
-            if(deletedStatus == DeletedStatus.DELETED){
+        if (assignedStatus != null) {
+            if (deletedStatus == DeletedStatus.DELETED) {
                 filter.append(" and account != null");
-            }else {
+            } else {
                 filter.append(" and account = null");
             }
         }
 
-        if(usedStatus != null){
-            if(usedStatus == DeletedStatus.DELETED){
+        if (usedStatus != null) {
+            if (usedStatus == DeletedStatus.DELETED) {
                 filter.append(" and usedAt != null");
-            }else {
+            } else {
                 filter.append(" and usedAt = null");
             }
         }
@@ -58,7 +63,7 @@ public class VoucherCondition implements Serializable {
         return filter.toString();
     }
 
-    public Map<String, Object> getParams(){
+    public Map<String, Object> getParams() {
         return params;
     }
 }

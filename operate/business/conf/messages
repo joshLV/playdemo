@@ -38,7 +38,7 @@ validation.moreThanFaceValue=%s不能超过原价!
 validation.lessThanOriginalPrice=%s不能低于采购价!
 validation.moreThanLastLevel=%s不能超过前一级别的VIP加价!
 validation.beforeThanEffectiveAt=%s不能早于有效期开始时间!
-
+validation.beforeThanOnSaleAt=%s不能早于上架时间!
 validation.beforeThanBeginOnSaleAt=%s不能早于上架开始时间!
 validation.afterThanExpireAt=%s不能晚于过期时间!
 
@@ -218,6 +218,7 @@ supplier.position=负责人职务
 supplier.email=邮箱
 supplier.salesEmail=销售专员邮箱
 supplier.salesId=销售专员
+supplier.operator.id=销售专员
 image=Logo
 supplier.mobile=负责人手机
 supplier.phone=负责人电话
@@ -554,3 +555,12 @@ goodsSchedule.goods.id=商品ID
 goodsSchedule.effectiveAt=有效期开始日
 goodsSchedule.expireAt=有效期结束日
 goodsSchedule.effective=有效期
+
+voucherType.exchange=消费者兑换
+voucherType.operate=运营生成
+
+channelGoodsInfo.resaler.id=分销商
+channelGoodsInfo.onSaleAt=上架时间
+channelGoodsInfo.offSaleAt=下架时间
+channelGoodsInfo.goods.shortName=商品名称
+channelGoodsInfo.url=URL

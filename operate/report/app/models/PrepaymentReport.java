@@ -36,8 +36,8 @@ public class PrepaymentReport extends Model {
     public Date effectiveAt;//预付款开始日
     public Date expireAt;//预付款到期日
     public BigDecimal consumedProcess;//消费进度
-    public BigDecimal timeProcess;//时间进度
-    public BigDecimal processCompare;//进度比较（消费/时间）
+    public BigDecimal timeProcess = BigDecimal.ZERO;//时间进度
+    public BigDecimal processCompare = BigDecimal.ZERO;//进度比较（消费/时间）
 
     public boolean isExpired() {
         return expireAt != null && expireAt.before(new Date());
@@ -157,7 +157,9 @@ public class PrepaymentReport extends Model {
             if (prepayment.expireAt != null && prepayment.effectiveAt != null) {
                 final BigDecimal pastTimeLen = new BigDecimal(new Date().getTime() - report.effectiveAt.getTime());
                 final BigDecimal effectiveTimeLen = new BigDecimal(report.expireAt.getTime() - report.effectiveAt.getTime());
-                report.timeProcess = pastTimeLen.divide(effectiveTimeLen, 4, RoundingMode.CEILING).multiply(ONE_HUNDRED);
+                if (effectiveTimeLen.compareTo(BigDecimal.ZERO)>0){
+                    report.timeProcess = pastTimeLen.divide(effectiveTimeLen, 4, RoundingMode.CEILING).multiply(ONE_HUNDRED);
+                }
                 if (report.timeProcess.compareTo(ONE_HUNDRED) > 0) {
                     report.timeProcess = ONE_HUNDRED;
                 }

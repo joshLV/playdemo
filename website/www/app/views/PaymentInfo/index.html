@@ -1,10 +1,10 @@
 #{extends 'main2.html' /}
 #{set title:'一百券 - 确认付款' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/cart/121109/flowstep.css', '/cart/121109/payment.css'] /}
+    #{asset.css src:['/cart/121109/flowstep.css', '/cart/121217/payment.css'] /}
 #{/set}
 #{set 'moreScripts'}
-    #{asset.js src:['/y/payment.js'] /}
+    #{asset.js src:['/cart/121217/payment.js'] /}
 #{/set}
 
 <div id="content" class="clearfix">
@@ -33,7 +33,7 @@
         <div class="cashier-info">
             <div class="inner clearfix">
                 <div class="order-num">共<em>${goodsNumber}</em>笔订单</div>
-                <div class="money-num">总金额：<em>${order.needPay}</em>元</div>
+                <div class="money-num">总金额：<em id="j_total-money">${order.needPay}</em>元</div>
             </div>
         </div>
         %{
@@ -54,10 +54,41 @@
             <div class="account-name">你的账户：<strong>${user.showName}</strong></div>
             <div class="account-balance">可用余额：<strong>${userBalance}</strong>元</div>
         </div>
+        #{if voucherList && voucherList.size() > 0 }
+        <div id="j_voucher" class="voucher">
+            <div class="voucher-num">可用红包：<span>${voucherList.size()} 张</span> <a class="use" href="javascript:void(0)">立即使用</a></div>
+            <div class="voucher-box">
+                <div class="voucher-tips">
+                    <div id="j_selected-voucher" class="selected-voucher">请选择要使用的抵用券</div>
+                    <div class="warm-tips">温馨提示：订单退款时红包金额不予返还 <a href="" target="_blank">查看退款规则</a></div>
+                </div>
+                <div class="valid-voucher">以下抵用券可同时使用：</div>
+                <ul class="voucher-list">
+                    #{list items:voucherList, as:'voucher'}
+                        <li>
+                            <input type="checkbox" data-facevalue="${voucher.value}" value="${voucher.id}" id="voucher${voucher_index}" name="voucherIds">
+                            <label for="voucher${voucher_index}">${voucher.value.formatCurrency('CNY')}元</label>
+                            %{ differenceDay = (int)((voucher.expiredAt.getTime() - java.lang.System.currentTimeMillis())/(24*60*60000))}%
+
+                            #{if differenceDay < 1 }
+                                <span class="expire">今晚零点到期</span>
+                            #{/if}
+                            #{elseif differenceDay == 1}
+                                <span class="expire">明晚零点到期</span>
+                            #{/elseif}
+                            #{else}
+                                <span class="expire">${differenceDay}天后到期</span>
+                            #{/else}
+                        </li>
+                    #{/list}
+                </ul>
+            </div>
+        </div>
+        #{/if}
         <div id="payment" style="display:${useBalanceDisplay}" class="balance-payment">
             <input type="checkbox" name="useBalance" id="use_balance" ${useBalanceStatus} />
             <label for="use_balance">
-                用余额付款<em>${userBalance.min(order.needPay)}</em>元
+                用余额付款<em id="balance-pay">${userBalance.min(order.needPay)}</em>元
                 #{if userBalance.compareTo(order.needPay) < 0}
                     剩余 <strong>${order.needPay.subtract(userBalance)}</strong> 元可选择其他付款方式付款。
                 #{/if}

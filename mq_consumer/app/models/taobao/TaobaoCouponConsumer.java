@@ -30,28 +30,37 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
     public static String PHONE_REGEX = "^1[3,5,8]\\d{9}$";
 
     @Override
+    protected int retries(){
+        return 0;//抛异常不重试
+    }
+
+    @Override
     public void consumeWithTx(TaobaoCouponMessage taobaoCouponMessage) {
         OuterOrder outerOrder = OuterOrder.findById(taobaoCouponMessage.outerOrderId);
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
             //订单接收到，开始创建一百券订单，并告诉淘宝我们的订单信息
             Logger.info("start taobao coupon consumer send order");
-            if (send(outerOrder)) {
+            if (outerOrder.ybqOrder != null || send(outerOrder)) {
                 List<ECoupon> couponList = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
                 for(ECoupon coupon : couponList) {
                     coupon.partner = ECouponPartner.TB;
                     coupon.save();
                 }
+                outerOrder.status = OuterOrderStatus.ORDER_DONE;
                 //通知淘宝我发货了
-                if(TaobaoCouponUtil.tellTaobaoCouponSend(outerOrder)) {
-                    outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
-                }else {
-                    //通知失败，标记为任务已做完
+                try{
+                    if(TaobaoCouponUtil.tellTaobaoCouponSend(outerOrder)) {
+                        outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
+                    }else {
+                        Logger.info("taobao coupon job failed: tell taobao coupon send failed %s", taobaoCouponMessage.outerOrderId);
+                    }
+                }catch (Exception e) {
                     Logger.info("taobao coupon job failed: tell taobao coupon send failed %s", taobaoCouponMessage.outerOrderId);
-                    outerOrder.status = OuterOrderStatus.ORDER_DONE;
                 }
                 outerOrder.save();
             } else {
                 Logger.info("taobao coupon job failed: create our order failed %s", taobaoCouponMessage.outerOrderId);
+                throw new RuntimeException("taobao coupon job failed: create our order failed " + taobaoCouponMessage.outerOrderId);
             }
         }else if (outerOrder.status == OuterOrderStatus.RESEND_COPY) {
             Logger.info("start taobao coupon consumer resend order");

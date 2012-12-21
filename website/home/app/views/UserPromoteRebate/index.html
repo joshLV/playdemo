@@ -12,7 +12,7 @@
     <div class="section">
         <div class="crumbs">您的位置：<a href="/">首页</a> > <a href="">我的订单</a></div>
         <div class="rebate-share">
-            <div class="user-account">账户：<strong>${user?.showName}</strong></div>
+            #{include "share/userAccount.html"/}
             <div class="rebate-info">推荐购物：<span>${boughtAmount?.formatCurrency("CNY")}</span>元
                 　　待返利：<span>${promoteRebate?.willGetAmount?.formatCurrency("CNY")}</span>元
                 　　推荐消费：<span>${consumedAmount?.formatCurrency("CNY")}</span>元

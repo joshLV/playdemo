@@ -20,7 +20,7 @@
         #{list items:rolesList, as:'role'}
             <label class="checkbox inline">
                 <input type="checkbox" value="${role.id}" id="operateUser.roles.id" name="operateUser.roles.id"
-                       #{if roleIds?.contains(String.valueOf(role?.id))}checked#{/if}/> ${role.text}
+                       #{if roleIds?.contains(role.id)}checked#{/if}/> ${role.text}
             </label>
         #{/list}
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

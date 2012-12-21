@@ -47,7 +47,8 @@ public class ImportCoupons extends Controller{
             return;
         }
         if("overwrite".equals(action)){
-            goods.cumulativeStocks-= ImportedCoupon.delete("status = ?", ImportedCouponStatus.UNUSED);
+            goods.cumulativeStocks -= ImportedCoupon.delete("goods = ? and status = ?",
+                    goods, ImportedCouponStatus.UNUSED);
         }
 
         // 将所有非空数据trim后插入到临时表里

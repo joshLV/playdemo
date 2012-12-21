@@ -1,14 +1,13 @@
-.user-account {
-    padding: 15px 0 10px;
-}
-.user-account strong {
-    margin-right: 30px;
-}
-.user-account span {
-    color: #f00;
-    font-size: 14px;
-    font-weight: 700;
-}
+/* .user-account { */
+    /* padding: 15px 0 10px; */
+/* } */
+/* .user-account span { */
+    /* margin-right: 30px; */
+/* } */
+/* .user-account span em { */
+    /* color: #f00; */
+    /* font-weight: 700; */
+/* } */
 
 .search-box {
     padding: 20px 0;
@@ -39,25 +38,8 @@
 }
 
 
-.order-tab {
-    table-layout: fixed;
-    width: 100%;
-    border-collapse: collapse;
-}
-.order-tab th {
-    color: #fff;
-    padding: 5px 0;
-    background-color: #adadad;
-    border: 1px solid #adadad;
-}
-.sep-row td {
-    height: 10px;
-}
 .order-bd td {
-    color: #787878;
     text-align: center;
-    padding: 10px 5px;
-    border: 1px solid #d4d4d4;
 }
 .order-bd .get-integral {
     color: #91ce00;

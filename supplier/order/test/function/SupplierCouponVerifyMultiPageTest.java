@@ -51,7 +51,7 @@ public class SupplierCouponVerifyMultiPageTest extends FunctionalTest {
     }
 
     @Test
-    public void 门店店号验证页面只出现一个Shop() throws Exception {
+    public void 门店店号验证页面只出现一个Shop() {
         Response response = GET("/coupons/multi");
         assertIsOk(response);
         assertContentMatch("商户验证消费券", response);
@@ -61,7 +61,7 @@ public class SupplierCouponVerifyMultiPageTest extends FunctionalTest {
     }
 
     @Test
-    public void 超级用户验证页面出现ShopList() throws Exception {
+    public void 超级用户验证页面出现ShopList() {
         supplierUser.shop = null;
         supplierUser.save();
         Response response = GET("/coupons/multi");

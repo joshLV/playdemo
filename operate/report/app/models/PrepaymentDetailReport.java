@@ -53,6 +53,9 @@ public class PrepaymentDetailReport {
      */
     public BigDecimal availableBalance = BigDecimal.ZERO;
 
+    private static BigDecimal lastSoldBalance = BigDecimal.ZERO;
+    private static BigDecimal lastConsumedBalance = BigDecimal.ZERO;
+
     public PrepaymentDetailReport() {
     }
 
@@ -66,20 +69,20 @@ public class PrepaymentDetailReport {
         this.soldBalance = soldBalance;
     }
 
-    public static Map<String, PrepaymentDetailReport> find(Prepayment prepayment, List<String> dateList) {
+    public static Map<String, PrepaymentDetailReport> find(Prepayment prepayment, List<String> sortedDateList) {
         Map<String, PrepaymentDetailReport> reportMap = new HashMap<>();
 
         BigDecimal consumedAmount = BigDecimal.ZERO;
         BigDecimal soldAmount = BigDecimal.ZERO;
-        final Date firstDay = DateUtil.stringToDate(dateList.get(0), "yyyy-M-dd");
-        final Date lastDay = DateUtil.stringToDate(dateList.get(dateList.size() - 1), "yyyy-M-dd");
+        final Date firstDay = DateUtil.stringToDate(sortedDateList.get(0), "yyyy-M-dd");
+        final Date lastDay = DateUtil.stringToDate(sortedDateList.get(sortedDateList.size() - 1), "yyyy-M-dd");
         final long totalDayCount = (lastDay.getTime() - firstDay.getTime()) / (3600 * 1000 * 24);
         final long expectedDayCount = totalDayCount * 9 / 10;
         long dayCount = 0;
-        for (int i = 0; i < dateList.size(); i++) {
+        for (int i = 0; i < sortedDateList.size(); i++) {
             PrepaymentDetailReport report = new PrepaymentDetailReport();
-            Date day = DateUtil.stringToDate(dateList.get(i), "yyyy-M-dd");
-            Date previousDay = i == 0 ? firstDay : DateUtil.stringToDate(dateList.get(i - 1), "yyyy-M-dd");
+            Date day = DateUtil.stringToDate(sortedDateList.get(i), "yyyy-M-dd");
+            Date previousDay = i == 0 ? firstDay : DateUtil.stringToDate(sortedDateList.get(i - 1), "yyyy-M-dd");
             dayCount += (day.getTime() - previousDay.getTime()) / (3600 * 1000 * 24);
 
             report.date = day;
@@ -110,8 +113,13 @@ public class PrepaymentDetailReport {
                 }
                 soldAmount = soldAmount.add(report.sold);
 
+            } else {
+                report.soldBalance = lastSoldBalance;
+                report.consumedBalance = lastConsumedBalance;
             }
-            reportMap.put(dateList.get(i), report);
+            lastSoldBalance = report.soldBalance;
+            lastConsumedBalance = report.consumedBalance;
+            reportMap.put(sortedDateList.get(i), report);
         }
         return reportMap;
     }

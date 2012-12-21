@@ -5,28 +5,31 @@
 #{/set}
 
 <div id="content" class="clearfix">
-    #{include "share/left.html"/}
+#{include "share/left.html"/}
     <div class="section">
-        #{breadcrumbs/breadcrumb breadcrumbs/}
+    #{breadcrumbs/breadcrumb breadcrumbs/}
         <div class="user-account">
-            账户：<strong>${user?.showName}</strong> 账户余额：<span>${account?.amount}</span>元
+        #{include "share/userAccount.html"/}
             <a class="withdraw-btn" id="apply" href="/withdraw/apply"> 提 现 </a>
         </div>
-        <table class="order-tab">
+
+        <table class="order-tab table">
             <thead>
-                <tr class="col-name">
-                    <th width="160">申请时间</th>
-                    <th width="100">收款人</th>
-                    <th width="120">银行</th>
-                    <th>银行卡号</th>
-                    <th width="100">申请金额</th>
-                    <th width="80">申请状态</th>
-                    <th width="80">操作</th>
-                </tr>
+            <tr class="col-name">
+                <th width="160">申请时间</th>
+                <th width="100">收款人</th>
+                <th width="120">银行</th>
+                <th>银行卡号</th>
+                <th width="100">申请金额</th>
+                <th width="80">申请状态</th>
+                <th width="80">操作</th>
+            </tr>
             </thead>
             <tbody>
             #{if billPage.size() == 0}
-                <tr class="order-bd"><td colspan="7">暂无提现申请记录</td></tr>
+            <tr class="order-bd">
+                <td colspan="7">暂无提现申请记录</td>
+            </tr>
             #{/if}
             #{else}
                 #{paginate.list items:billPage, as:'withdrawBill'}

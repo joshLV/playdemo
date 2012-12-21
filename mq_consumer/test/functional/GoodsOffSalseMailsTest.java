@@ -1,7 +1,7 @@
 package functional;
 
 import models.mail.MailMessage;
-import notifiers.GoodsOffSalesMails;
+import notifiers.MailSender;
 import org.junit.Test;
 import play.libs.Mail;
 import play.test.FunctionalTest;
@@ -26,7 +26,8 @@ public class GoodsOffSalseMailsTest extends FunctionalTest {
         mailMessage.putParam("faceValue", "10");
         mailMessage.putParam("operateUserName", "小小");
 
-        GoodsOffSalesMails.notify(mailMessage);
+        mailMessage.setTemplate("goodsOffSales");
+        MailSender.send(mailMessage);
 
         String mailBody = Mail.Mock.getLastMessageReceivedBy(email);
         assertTrue("商品下架", mailBody.indexOf("商品下架") > 0);
@@ -49,7 +50,9 @@ public class GoodsOffSalseMailsTest extends FunctionalTest {
         mailMessage.putParam("faceValue", "10");
         mailMessage.putParam("baseSales", "0");
         mailMessage.putParam("offSalesFlag", "noInventory");
-        GoodsOffSalesMails.notify(mailMessage);
+
+        mailMessage.setTemplate("goodsOffSales");
+        MailSender.send(mailMessage);
 
         String mailBody = Mail.Mock.getLastMessageReceivedBy(email);
         assertTrue("库存不足，商品即将下架", mailBody.indexOf("库存不足，商品即将下架") > 0);

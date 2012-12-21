@@ -50,6 +50,10 @@
                         permissions="WEB_TRACKS_REPORT"/>
             <navigation key="rank_reports" action="RebateRankReports.index" text="推荐返利排名"
                         permissions="WEB_TRACKS_REPORT"/>
+            <navigation key="golden_coins_reports" action="GoldenCoinReports.index" text="金币明细报表"
+                        permissions="WEB_TRACKS_REPORT"/>
+            <navigation key="checkin_reports" action="GoldenCoinReports.checkin" text="签到报表"
+                        permissions="WEB_TRACKS_REPORT"/>
         </navigation>
         <navigation key="sales_report_app" text="销售报表">
             <navigation key="resale_sales_reports" action="ResaleSalesReports.index" text="渠道销售汇总"

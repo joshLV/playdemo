@@ -1,9 +1,10 @@
 package models.sales;
 
+import cache.CacheCallBack;
+import cache.CacheHelper;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
-import play.modules.solr.SolrField;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p/>
@@ -30,14 +32,14 @@ public class GoodsSchedule extends Model {
     public Goods goods;
 
     /**
-     * 券有效开始日
+     * 有效开始日
      */
     @Required
     @Column(name = "effective_at")
     @Temporal(TemporalType.TIMESTAMP)
     public Date effectiveAt;
     /**
-     * 券有效结束日
+     * 有效结束日
      */
     @Required
     @Column(name = "expire_at")
@@ -46,6 +48,22 @@ public class GoodsSchedule extends Model {
 
     @Column(name = "created_at")
     public Date createdAt;
+
+    public static final String CACHEKEY = "GOODS";
+
+    @Override
+    public void _save() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);
+        super._save();
+    }
+
+    @Override
+    public void _delete() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);
+        super._delete();
+    }
 
     public static void update(Long id, GoodsSchedule goodsSchedule) {
         GoodsSchedule updGoods = GoodsSchedule.findById(id);
@@ -66,5 +84,17 @@ public class GoodsSchedule extends Model {
 
         return goodsPage;
 
+    }
+
+    /**
+     * @param goods
+     * @return
+     */
+    public static List<GoodsSchedule> findSchedule(Goods goods, Date currDate) {
+        if (goods == null) {
+            return GoodsSchedule.find("effectiveAt <= ? and expireAt >=?", currDate, currDate).fetch();
+        }
+        List<GoodsSchedule> scheduleList = GoodsSchedule.find("goods=? and effectiveAt <= ? and expireAt >=?", goods, currDate, currDate).fetch();
+        return scheduleList;
     }
 }

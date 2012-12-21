@@ -28,6 +28,13 @@ POST    /goods/filemanager                      OperateUploadFiles.fileManagerJs
 GET     /goods_brands/{id}                      OperateBrands.goodsBrands
 GET     /category/sub/{id}                      OperateCategories.showSubs
 
+#渠道商品
+GET      /channel-goods                         OperateGoods.channel
+POST     /channel-goods                         OperateGoods.createChannel
+GET      /channel-goods/{id}/edit               OperateGoods.editChannel
+PUT     /channel-goods/{id}                     OperateGoods.updateChannel
+DELETE   /channel-goods/{id}                    OperateGoods.deleteChannel
+
 #类别管理
 GET     /category                               CategoryAdmin.index
 GET     /category/new                           CategoryAdmin.add
@@ -230,8 +237,11 @@ POST    /cash-coupon/generate                   OperatorCashCoupons.generate
 
 # 生成抵用券
 GET     /voucher                                OperateVouchers.index
+PUT     /voucher                                OperateVouchers.update
 GET     /voucher/generator                      OperateVouchers.generator
 POST    /voucher/generate                       OperateVouchers.generate
+GET     /voucher/assign                         OperateVouchers.showAssign
+POST    /voucher/assign                         OperateVouchers.assign
 
 GET     /shops                                  OperateShops.index
 GET     /shops/new                              OperateShops.add
@@ -345,6 +355,9 @@ DELETE  /goods-schedule/{id}                    GoodsSchedules.delete
 # 已验证券 退款
 GET      /verified-ecoupon-refunds              VerifiedECouponRefunds.index
 POST     /verified-ecoupon-refunds              VerifiedECouponRefunds.refund
+
+GET     /makeup                                 OperateCouponMakeUp.index
+
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

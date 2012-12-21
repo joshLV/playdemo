@@ -8,10 +8,9 @@
     #{include "share/left.html"/}
     <div class="section">
         #{breadcrumbs/breadcrumb breadcrumbs/}
-        <div class="user-account">
-            账户：<strong>${user?.showName}</strong> 可提现账户余额：<span>${account.amount}</span>元 不可提现账户余额：<span>${account.promotionAmount?:"0.00"}</span>元
-        </div>
-
+            <div class="user-account">
+            #{include "share/userAccount.html"/}
+            </div>
         #{if action=="verify"}
             #{form @UserCashCoupons.verify(), method:'POST', class:'recharge-form'}
                 #{if suc}

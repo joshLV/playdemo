@@ -297,4 +297,8 @@ public class Resaler extends Model {
     public static Resaler findOneByLoginName(String loginName) {
         return find("loginName = ?", loginName.trim()).first();
     }
+
+    public static List<Resaler> findByStatus() {
+        return Resaler.find("status=? order by id desc",ResalerStatus.APPROVED).fetch();
+    }
 }

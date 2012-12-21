@@ -10,7 +10,6 @@ import models.dangdang.DDAPIUtil;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
-import models.sales.Category;
 import models.sales.Goods;
 import models.sales.GoodsDeployRelation;
 import models.sales.GoodsThirdSupport;
@@ -18,13 +17,13 @@ import models.sales.Shop;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
-import play.data.binding.As;
 import play.mvc.Controller;
 import play.mvc.With;
 import play.templates.Template;
 import play.templates.TemplateLoader;
 
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -42,64 +41,6 @@ import java.util.Map;
 @With(SecureCAS.class)
 public class DDPushGoods extends Controller {
     public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
-    /**
-     * 批量发布商品
-     *
-     * @param goodsIds
-     */
-    public static void batchAdd(@As(",") List<Long> goodsIds) {
-        Logger.info("DDAPIPushGoods API begin!");
-        Resaler user = SecureCAS.getResaler();
-        String failGoods = "";
-        boolean pushFlag = true;
-        for (Long goodsId : goodsIds) {
-            Goods goods = Goods.findOnSale(goodsId);
-            ResalerFav resalerFav = ResalerFav.find("byGoodsAndResaler", goods, user).first();
-            if (resalerFav == null) {
-                error("no fav found");
-            }
-
-            Map<String, Object> goodsArgs = new HashMap<>();
-            List<Category> categoryList = Category.findByParent(0);//获取顶层分类
-            Long categoryId = 0L;
-            if (categoryList.size() > 0) {
-                if (goods.categories != null && goods.categories.size() > 0 && goods.categories.iterator() != null && goods.categories.iterator().hasNext()) {
-                    Category category = goods.categories.iterator().next();
-                    categoryId = category.id;
-
-                    if ((goods.topCategoryId == null || goods.topCategoryId == 0) && category.parentCategory != null) {
-                        goods.topCategoryId = category.parentCategory.id;
-                    }
-                }
-                if (goods.topCategoryId == null) {
-                    goods.topCategoryId = categoryList.get(0).id;
-                }
-            }
-            goodsArgs.put("categoryId", categoryId);
-            goodsArgs.put("goods", goods);
-
-            GoodsDeployRelation goodsMapping = GoodsDeployRelation.generate(goods, OuterOrderPartner.DD);
-
-            goodsArgs.put("goodsMappingId", goodsMapping.linkId);
-            Template template = TemplateLoader.load("DDPushGoods/pushGoods.xml");
-
-            String requestParams = template.render(goodsArgs);
-            try {
-                pushFlag = DDAPIUtil.pushGoods(goodsMapping.linkId, requestParams);
-            } catch (DDAPIInvokeException e) {
-                Logger.info("[DDAPIPushGoods API] invoke push goods fail! goodsId=" + goodsId);
-            }
-            if (pushFlag) failGoods += "商品ID=" + goodsId + ",";
-            if (!pushFlag) {
-                resalerFav.partner = OuterOrderPartner.DD;
-                resalerFav.save();
-                Logger.info("[DDAPIPushGoods API] invoke push goods success!");
-            }
-        }
-
-        renderJSON("{\"error\":\"" + pushFlag + "\",\"info\":\"" + failGoods + "\"}");
-    }
 
     /**
      * 推送商品页面
@@ -134,6 +75,8 @@ public class DDPushGoods extends Controller {
      */
     public static void push() {
         Map<String, String> params = DDAPIUtil.filterPlayParameter(request.params.all());
+        params.put("originalPrice", new BigDecimal(params.get("originalPrice")).setScale(2).toString());
+        params.put("salePrice", new BigDecimal(params.get("salePrice")).setScale(2).toString());
         Long goodsId = Long.valueOf(StringUtils.trimToEmpty(params.get("goodsId")));
         Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();
         Resaler user = SecureCAS.getResaler();
@@ -164,7 +107,7 @@ public class DDPushGoods extends Controller {
         GoodsDeployRelation goodsMapping = GoodsDeployRelation.generate(goods, OuterOrderPartner.DD);
         // 设置参数
         setGoodsParams(params, goods, goodsArgs, goodsMapping);
-        Template template = TemplateLoader.load("DDPushGoods/pushGoods1.xml");
+        Template template = TemplateLoader.load("DDPushGoods/pushGoods.xml");
         String requestParams = template.render(goodsArgs);
         boolean pushFlag = true;
         try {
@@ -174,8 +117,9 @@ public class DDPushGoods extends Controller {
         }
         if (!pushFlag) {
             resalerFav.partner = OuterOrderPartner.DD;
+            resalerFav.lastLinkId = goodsMapping.linkId;
             resalerFav.save();
-            Logger.info("[DDAPIPushGoods API] invoke push goods success!");
+            Logger.info("[DDAPIPushGoods API] invoke push goods success!" + goodsId);
         }
         render("/DDPushGoods/result.html", pushFlag);
     }

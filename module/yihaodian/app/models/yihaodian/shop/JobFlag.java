@@ -16,4 +16,6 @@ public enum JobFlag {
     CANCEL_COPY,    //取消任务已接收
     CANCEL_DONE,    //取消任务已处理
     CANCEL_SYNCED,  //取消任务已同步
+
+    IGNORE,         //订单中有实体券 忽略
 }

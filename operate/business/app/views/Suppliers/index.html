@@ -23,6 +23,7 @@
             <th width="50px">编码</th>
             <th width="50px">商品数</th>
             <th width="400px">备注</th>
+            <th width="400px">销售专员</th>
             <th width="100px">创建时间</th>
             <th width="100px">修改时间</th>
             <th width="150px">操 作</th>
@@ -40,6 +41,18 @@
             <td>${supplier?.code}</td>
             <td><a href="/?condition.supplierId=${supplier?.id}">${supplier?.getGoods().size()}个</a></td>
             <td>${supplier?.remark}</td>
+            <td>
+            %{ operatorUser=null;
+                if(supplier.salesId!=null){
+                operatorUser=models.admin.OperateUser.findById(supplier?.salesId); }
+                }%
+                #{if operatorUser?.userName !=null && operatorUser?.userName!=""}
+                ${operatorUser?.userName}
+                #{/if}
+                #{else}
+                ${operatorUser?.loginName}
+                #{/else}
+            </td>
             <td>${supplier?.createdAt?.format()}</td>
             <td>${supplier?.updatedAt?.format()}</td>
             <td><a href="/suppliers/${supplier.id}/edit?page=${page?:1}">修改</a>

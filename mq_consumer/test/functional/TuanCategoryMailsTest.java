@@ -5,12 +5,11 @@ import factory.callback.SequenceCallback;
 import models.mail.MailMessage;
 import models.sales.Category;
 import models.sales.TuanNoCategoryData;
-import notifiers.TuanCategoryMails;
+import notifiers.MailSender;
 import org.junit.Test;
 import play.libs.Mail;
 import play.test.FunctionalTest;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -45,7 +44,8 @@ public class TuanCategoryMailsTest extends FunctionalTest {
         message.putParam("mail_url", mailUrl);
         message.putParam("tuanName", tuanName);
         message.putParam("mailCategoryList", noTuanCategoryMessageList);
-        TuanCategoryMails.notify(message);
+        message.setTemplate("tuanCategory");
+        MailSender.send(message);
 
         String mailBody = Mail.Mock.getLastMessageReceivedBy(email);
         assertTrue(tuanName, mailBody.indexOf(tuanName) > 0);
@@ -73,7 +73,9 @@ public class TuanCategoryMailsTest extends FunctionalTest {
         message.putParam("mail_url", mailUrl);
         message.putParam("tuanName", tuanName);
         message.putParam("mailCategoryList", noTuanCategoryMessageList);
-        TuanCategoryMails.notify(message);
+
+        message.setTemplate("tuanCategory");
+        MailSender.send(message);
         Thread.sleep(500);
 
         String mailBody = Mail.Mock.getLastMessageReceivedBy(email);

@@ -14,10 +14,39 @@ public class UserCondition {
     public String mobile;
     public String loginName;
     public UserStatus status;
-    public String interval = "0";
+    public String interval = "-1d";
 
     public String pointNumber;
+    public int tradeType;
+    public boolean isExchange;
     public Map<String, Object> paramsMap = new HashMap<>();
+
+    public String getCoinsCondition(User user) {
+
+        StringBuilder sql = new StringBuilder("1=1");
+        if (user != null) {
+            sql.append(" and u.user = :user");
+            paramsMap.put("user", user);
+        }
+        if (createdAtBegin != null) {
+            sql.append(" and u.createdAt >= :createdAtBegin");
+            paramsMap.put("createdAtBegin", createdAtBegin);
+        }
+        if (createdAtEnd != null) {
+            sql.append(" and u.createdAt <= :createdAtEnd");
+            paramsMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
+        }
+
+        if (tradeType != 0) {
+            if (tradeType > 0) {
+                sql.append(" and number>0");
+            } else {
+                sql.append(" and number<0");
+            }
+        }
+
+        return sql.toString();
+    }
 
     public String getCondition(User user) {
 
@@ -57,13 +86,13 @@ public class UserCondition {
 
         if (StringUtils.isNotBlank(loginName)) {
             String name = loginName.trim();
-            if (User.isOpenIdExpress(name)){
+            if (User.isOpenIdExpress(name)) {
                 OpenIdSource source = User.getOpenSourceFromName(name);
                 name = User.getOpenIdFromName(name);
                 sql.append(" and (u.loginName like :loginName or (u.openIdSource =:openIdSource and u.openId like :loginName))");
-                paramsMap.put("openIdSource",source);
-                paramsMap.put("name",name);
-            }else{
+                paramsMap.put("openIdSource", source);
+                paramsMap.put("name", name);
+            } else {
                 sql.append(" and (u.loginName like :loginName )");
                 paramsMap.put("loginName", "%" + name + "%");
             }

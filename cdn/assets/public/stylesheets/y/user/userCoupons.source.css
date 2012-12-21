@@ -32,27 +32,27 @@
     background-position: 0 -26px;
 }
 
-.order-tab {
-    table-layout: fixed;
-    width: 100%;
-    border-collapse: collapse;
-}
-.order-tab th {
-    color: #fff;
-    padding: 5px 0;
-    background-color: #adadad;
-}
+/* .order-tab { */
+    /* table-layout: fixed; */
+    /* width: 100%; */
+    /* border-collapse: collapse; */
+/* } */
+/* .order-tab th { */
+    /* color: #fff; */
+    /* padding: 5px 0; */
+    /* background-color: #adadad; */
+/* } */
 .col-name .order-status {
     height: 22px;
     padding: 1px;
 }
-.sep-row td {
-    height: 10px;
-}
-.order-bd td {
-    padding: 10px 5px;
-    border: 1px solid #d4d4d4;
-}
+/* .sep-row td { */
+    /* height: 10px; */
+/* } */
+/* .order-bd td { */
+    /* padding: 10px 5px; */
+    /* border: 1px solid #d4d4d4; */
+/* } */
 .order-bd .goods-image {
     float: left;
     margin-right: 5px;

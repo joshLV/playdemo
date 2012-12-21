@@ -1,0 +1,57 @@
+#{extends 'layout_operate/layout.html' /}
+#{include 'share/nav.html' /}
+#{set title:'代金券分配' /}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{form @OperateVouchers.assign(), method:'POST'}
+<legend>抵用券分配(批量一对一)</legend>
+#{if err}
+<div class="alert alert-error"> ${err.raw()} </div>
+#{/if}
+<div>
+    <table>
+        <tr>
+            <td>消费者ID</td>
+            <td>抵用券号(是券号，不是密码)</td>
+        </tr>
+        <tr>
+            <td>
+                <textarea rows="10" name="users"></textarea>
+            </td>
+            <td>
+                <textarea rows="10" name="vouchers"></textarea>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="control-group">
+    <div class="controls">
+        <input type="hidden" name="type" value="1to1">
+        <button type="submit" class="btn btn-primary">给TA们吧</button>
+    </div>
+</div>
+#{/form}
+#{form @OperateVouchers.assign(), method:'POST'}
+<legend>抵用券分配(一对多)</legend>
+<div>
+    <table>
+        <tr>
+            <td>消费者ID</td>
+            <td>
+                <input class="input" name="users">
+            </td>
+        </tr>
+        <tr>
+            <td>抵用券号(是券号，不是密码)</td>
+            <td>
+                <textarea rows="10" name="vouchers"></textarea>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="control-group">
+    <div class="controls">
+        <input type="hidden" name="type" value="1toN">
+        <button type="submit" class="btn btn-primary">给TA吧</button>
+    </div>
+</div>
+#{/form}

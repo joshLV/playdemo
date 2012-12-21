@@ -1,6 +1,7 @@
 package models.yihaodian.shop;
 
 import models.yihaodian.YHDParser;
+import org.apache.commons.lang.StringUtils;
 import org.dom4j.Element;
 import play.db.jpa.Model;
 
@@ -82,7 +83,13 @@ public class OrderItem extends Model {
             orderItem.itemLeaf = Integer.parseInt(node.elementTextTrim("isItemLeaf"));
             orderItem.merchantId = Long.parseLong(node.elementTextTrim("merchantId"));
             orderItem.promoteType = Integer.parseInt(node.elementTextTrim("promoteType"));
-            orderItem.outerId = Long.parseLong(node.elementTextTrim("outerId"));
+            String outerId = node.elementTextTrim("outerId");
+
+            if (StringUtils.isBlank(outerId)) {
+                orderItem.outerId = null;
+            } else {
+                orderItem.outerId = Long.parseLong(outerId);
+            }
 
             try{
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

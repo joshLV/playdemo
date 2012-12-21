@@ -3,54 +3,55 @@ package models.mail;
 import play.Play;
 import util.mq.MQPublisher;
 
+/**
+ * 新建一个邮件模板的步骤：
+ * 1. 在mq_consumer/app/views/MailSender中创建自己的模板
+ * 2. 自己组装MailMessage，
+ *     MailMessage message = new MailMessage();
+ *     message.setSubject() 设置标题
+ *     message.addRecipient() 设置收件人，参数为多个String或者一个String数组
+ *     message.setTemplate() 设置模板，名字与上一步创建的模板名字相同
+ *     message.putParam()  添加模板变量，可多次添加，变量可以在模板中以message.getParam()的方式使用
+ * 3. 调用MailUtil.sendCommonMail发送邮件
+ * 4. （不必须）可以在下面创建自己的static方法，代码请参考以下
+ */
 public class MailUtil {
-    public static final String COUPON_MAIL_QUEUE_NAME = Play.mode.isProd() ? "coupon_mail" :
-            (Play.runingInTestMode() ? "coupon_mail_" + System.currentTimeMillis() : "coupon_mail_dev");
-    public static final String FIND_PWD_MAIL_QUEUE_NAME = Play.mode.isProd() ? "find_password_mail" : "find_password_mail_dev";
-    public static final String OPERATOR_NOTIFICATION = Play.mode.isProd() ? "operator_notification" : "operator_notification_dev";
-    public static final String GOODS_OFF_SALES_NOTIFY = Play.mode.isProd() ? "goods_off_sales_notify" : "goods_off_sales_dev";
-    public static final String FINANCE_NOTIFICATION = Play.mode.isProd() ? "finance_notification" : "finance_notification_dev";
-    public static final String TUAN_CATEGORY_NOTIFY = Play.mode.isProd() ? "tuan_notification" : "tuan_notification_dev";
-    public static final String CUSTOMER_REMARK_NOTIFY = Play.mode.isProd() ? "customer_remark_notification" : "customer_remark_notification_dev";
-    public static final String PREPAYMENT_NOTIFY = Play.mode.isProd() ? "prepayment_notify" : "prepayment_notify_dev";
+    public static final String COMMON_QUEUE = Play.mode.isProd() ? "common_mail" : "common_mail_dev";
 
     private MailUtil() {
     }
 
+
+    public static void sendCommonMail(MailMessage message) {
+        MQPublisher.publish(COMMON_QUEUE, message);
+    }
+
     public static void sendCouponMail(MailMessage message) {
-        MQPublisher.publish(COUPON_MAIL_QUEUE_NAME, message);
+        message.setSubject("[一百券] 您订购的消费券");
+        message.setTemplate("couponMail");
+        sendCommonMail(message);
     }
 
     public static void sendFindPasswordMail(MailMessage message) {
-        MQPublisher.publish(FIND_PWD_MAIL_QUEUE_NAME, message);
-    }
-
-    public static void sendOperatorNotificationMail(MailMessage message) {
-        MQPublisher.publish(OPERATOR_NOTIFICATION, message);
+        message.setSubject("[一百券] 找回密码");
+        message.setTemplate("findPassword");
+        sendCommonMail(message);
     }
 
     public static void sendGoodsOffSalesMail(MailMessage message) {
-        MQPublisher.publish(GOODS_OFF_SALES_NOTIFY, message);
+        message.setTemplate("goodsOffSales");
+        sendCommonMail(message);
     }
 
-    public static void sendFinanceNotificationMail(MailMessage message) {
-        MQPublisher.publish(FINANCE_NOTIFICATION, message);
-    }
-
-    public static void sendMail(MailMessage message) {
-        MQPublisher.publish(GOODS_OFF_SALES_NOTIFY, message);
-
-    }
 
     public static void sendTuanCategoryMail(MailMessage message) {
-        MQPublisher.publish(TUAN_CATEGORY_NOTIFY, message);
+        message.setTemplate("tuanCategory");
+        sendCommonMail(message);
     }
 
     public static void sendCustomerRemarkMail(MailMessage message) {
-        MQPublisher.publish(CUSTOMER_REMARK_NOTIFY, message);
+        message.setTemplate("customerRemarkMail");
+        sendCommonMail(message);
     }
 
-    public static void sendPrepaymentNoticeMail(MailMessage message) {
-        MQPublisher.publish(PREPAYMENT_NOTIFY, message);
-    }
 }

@@ -1,0 +1,5 @@
+%{account=user?.getAccount();}%
+<span>账户：${user?.showName}</span>
+<span>可提现账户余额：<em>${account?.amount}</em>元</span>
+<span>不可提现账户余额：<em>${account?.promotionAmount?:"0.00"}</em>元</span>
+

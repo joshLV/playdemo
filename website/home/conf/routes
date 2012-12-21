@@ -44,6 +44,9 @@ POST    /user/edit-password                           UserPasswords.update
 GET     /user-point                                   UserPoints.index
 GET     /user-point-record                            UserPoints.record
 GET     /user-point-record/{orderNumber}              UserPoints.detail
+#我的金币
+GET     /user-coins                                   UserCoins.index
+POST     /coins-exchange                               UserCoins.exchange
 #推荐返利
 GET     /rebate                                       UserPromoteRebate.index
 GET     /rebate-account                               UserPromoteRebate.account
@@ -60,6 +63,12 @@ POST    /withdraw/apply                                 UserWithdraw.create
 GET     /cash-coupon                                    UserCashCoupons.index
 POST    /cash-coupon/verify                             UserCashCoupons.verify
 POST    /cash-coupon/use                                UserCashCoupons.useCoupon
+
+# 抵用券
+GET     /voucher                                        UserVouchers.index
+GET     /voucher/assign                                 UserVouchers.showAssign
+POST    /voucher/verify                                 UserVouchers.verify
+POST    /voucher/assign                                 UserVouchers.assign
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

@@ -1,0 +1,122 @@
+/* .coins .coins-num span { */
+    /* color: red; */
+    /* padding: 0 2px; */
+    /* font-weight: 700; */
+/* } */
+
+.search-box {
+    padding: 20px 0;
+}
+.search-box input {
+    height: 21px;
+}
+.search-box .short-input {
+    width: 100px;
+}
+.search-box .medium-input {
+    width: 180px;
+}
+.search-box .goods-name {
+    margin-right: 10px;
+}
+.search-box .order-num {
+    margin-right: 10px;
+}
+.search-box .search-btn {
+    position: relative;
+    top: -1px;
+    width: 67px;
+    height: 25px;
+    border: 0;
+    cursor: pointer;
+    margin-left: 13px;
+    *margin-left: 10px;
+    _margin-left: 17px;
+    background: url(//img.uhcdn.com/images/y/user/btn.png) no-repeat 0 0;
+}
+.search-box .search-btn:hover {
+    background-position: 0 -26px;
+}
+.exchange-rule {
+    padding: 10px 15px;
+    background: url(http://y1.uhcdn.com/images/2012/12/08e575947cc524f1.png) no-repeat 0 12px;
+}
+.exchange-rule .view-rule,
+.exchange-form .how-to-use {
+    color: blue;
+    margin-left: 10px;
+}
+.exchange-form {
+    padding: 20px 15px;
+    margin-bottom: 10px;
+}
+.exchange-form .quantity {
+    width: 35px;
+    height: 24px;
+    margin: 0 3px;
+    padding: 0 2px;
+    color: #787878;
+    font-size: 14px;
+    font-weight: 700;
+    border: 1px solid #dcdcdc;
+}
+.exchange-form .btn {
+    width: 61px;
+    height: 25px;
+    color: white;
+    margin: 0 10px 0 20px;
+    line-height: 25px;
+    text-align: center;
+    display: inline-block;
+    border: 0;
+    background: url(http://y1.uhcdn.com/images/2012/12/74fcc74ea9cde7dd.jpg) no-repeat 0 0;
+    cursor: pointer;
+}
+.exchange-form .btn:hover {
+    text-decoration: none;
+}
+.exchange-form .failed {
+    color: red;
+    padding: 15px 0 0 15px;
+    background: url(http://y1.uhcdn.com/images/2012/12/646e0de86617cfb2.png) no-repeat 0 17px;
+}
+.exchange-form .success {
+    color: green;
+    padding: 15px 0 0 15px;
+    background: url(http://y1.uhcdn.com/images/2012/12/eaeb93c7f909961f.png) no-repeat 0 18px;
+}
+
+.table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #d4d4d4;
+}
+.table th {
+    padding: 5px;
+    background-color: #eee;
+    border: 1px solid #d4d4d4;
+}
+.table td {
+    color: #787878;
+    text-align: left;
+    padding: 8px 5px;
+    border: 1px dotted #d4d4d4;
+}
+.table .info {
+    text-align: left;
+}
+.table .time {
+    text-align: center;
+}
+.table .num {
+    text-align: right;
+}
+.table .decrease {
+    color: red;
+    font-weight: 700;
+}
+.table .increase {
+    color: green;
+    font-weight: 700;
+}

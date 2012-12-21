@@ -13,6 +13,7 @@ import models.sales.Goods;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.data.validation.Email;
+
 import play.data.validation.Match;
 import play.data.validation.MaxSize;
 import play.data.validation.Phone;
@@ -153,7 +154,7 @@ public class Supplier extends Model {
     public String salesEmail;
 
     /**
-     * 所属操作员ID
+     * 所属操作员
      */
     @Column(name = "sales_id")
     public Long salesId;

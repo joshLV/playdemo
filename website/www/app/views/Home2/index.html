@@ -5,7 +5,7 @@
 <meta name="Keywords" content="优惠券网,代金券，优惠券">
 #{/set}
 #{set 'moreStyles'}
-    #{asset.css src:['/home/121113/home.css'] /}
+    #{asset.css src:['/home/121213/home.css'] /}
 #{/set}
 #{set 'moreScripts'}
     #{asset.js src:['/u/slides.min.js','/home/121112/home.js'] /}
@@ -37,16 +37,22 @@
                 <a href="${helper.Domain.getHomeHost(request)}/orders" class="right"> 查看更多</a>
             </div>
         </div>
+
     #{/if}
     #{else}
         <!-- 未登录 -->
         <div class="status" style="display:block">
             <a href="${helper.Domain.getWWWHost(request)}/login" class="login">登录</a>
-        <a href="${helper.Domain.getWWWHost(request)}/register" class="register">注册</a>
-
-
+            <a href="${helper.Domain.getWWWHost(request)}/register" class="register">注册</a>
         </div>
     #{/else}
+
+        <div class="checkin">
+            <a class="link"#{if scheduleList.size()>0} href="/p/${scheduleList.get(0).goods.id}" #{/if}
+               #{else}href=""#{/else}target="_blank">领金币　兑现金</a>
+            <a class="help" href="" target="_blank"></a>
+        </div>
+
         <div class="promise"><a href="/service" target="_blank"><img src="http://img.uhcdn.com/home/prom.png"
                                                                      alt=""/></a></div>
         <div class="notice">

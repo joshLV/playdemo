@@ -63,6 +63,18 @@ html {
 .crumbs a:hover {
     color: #26a7e0;
 }
+/* user-account */
+.user-account {
+    padding: 15px 0 10px;
+}
+.user-account span {
+    margin-right: 30px;
+}
+.user-account span em {
+    color: #f00;
+    font-weight: 700;
+}
+
 /* 分页 */
 .pagination-container {
     text-align: center;
@@ -91,4 +103,22 @@ html {
     font-weight: 700;
     background-color: #9ac82b;
     border: 1px solid #9ac82b;
+}
+/* 表格 */
+.table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #d4d4d4;
+}
+.table th {
+    padding: 5px;
+    background-color: #eee;
+    border: 1px solid #d4d4d4;
+}
+.table td {
+    color: #787878;
+    text-align: left;
+    padding: 8px 5px;
+    border: 1px dotted #d4d4d4;
 }

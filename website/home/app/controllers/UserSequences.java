@@ -21,8 +21,6 @@ public class UserSequences extends Controller {
      */
     public static void index(AccountSequenceCondition condition) {
 
-        System.out.println("........condition:" + condition);
-
         User user = SecureCAS.getUser();
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
@@ -32,7 +30,6 @@ public class UserSequences extends Controller {
         Account account = AccountUtil.getConsumerAccount(user.getId());
         condition.account = account;
 
-        System.out.println("condition.account.uid:" + condition.account.uid);
         JPAExtPaginator<AccountSequence> amountList = AccountSequence.findByCondition(condition, pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : amountList) {
             setOrderInfo(accountSequence);

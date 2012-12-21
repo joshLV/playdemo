@@ -1,12 +1,12 @@
 package unit;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
+import factory.FactoryBoy;
+import factory.asserts.Callback;
+import factory.asserts.ModelAssert;
+import factory.callback.BuildCallback;
+import factory.callback.SequenceCallback;
 import models.order.OrderItems;
 import models.resale.Resaler;
 import models.resale.ResalerLevel;
@@ -18,23 +18,19 @@ import models.sales.GoodsStatus;
 import models.sales.GoodsUnPublishedPlatform;
 import models.sales.MaterialType;
 import models.supplier.Supplier;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.cache.Cache;
 import play.modules.paginate.JPAExtPaginator;
 import play.test.UnitTest;
-
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-
-import factory.FactoryBoy;
-import factory.asserts.Callback;
-import factory.asserts.ModelAssert;
-import factory.callback.BuildCallback;
-import factory.callback.SequenceCallback;
 import util.DateHelper;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 商品Model的单元测试.
@@ -298,10 +294,15 @@ public class GoodsUnitTest extends UnitTest {
     @Test
     public void testGetResalePrice() {
         models.sales.Goods goods = new Goods();
-        goods.faceValue = BigDecimal.TEN;
+        goods.salePrice = BigDecimal.TEN;
         goods.originalPrice = BigDecimal.ONE;
         BigDecimal resalePrice = goods.getResalePrice();
-        assertEquals(BigDecimal.ONE, resalePrice);
+        assertEquals(BigDecimal.TEN, resalePrice);
+
+        goods.resaleAddPrice = BigDecimal.ONE;
+        resalePrice = goods.getResalePrice();
+        assertEquals(new BigDecimal("2"), resalePrice);
+
     }
 
     @Test
