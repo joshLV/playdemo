@@ -108,7 +108,7 @@
         <td><a href="/consumers/${voucher.account?.uid}" target="_blank">${voucher.account?.uid}</a></td>
         <td>${voucher.assignedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
         <td>${voucher.usedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-        <td width="180">${voucher.getOperator()}</td>
+        <td width="180">${voucher.operatorName}</td>
         <td>
             #{if voucher.usedAt} <span class="label label-important">已使用</span> #{/if}
             #{else}<span class="label label-success">未使用</span>#{/else}

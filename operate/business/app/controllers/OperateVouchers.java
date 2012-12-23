@@ -6,6 +6,7 @@ import models.accounts.Voucher;
 import models.accounts.VoucherCondition;
 import models.accounts.VoucherType;
 import models.accounts.util.AccountUtil;
+import models.admin.OperateUser;
 import models.consumer.User;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -39,6 +40,9 @@ public class OperateVouchers extends Controller {
         }
         JPAExtPaginator<Voucher> voucherPage = Voucher.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
+        for (Voucher voucher : voucherPage) {
+            setOperatorName(voucher);
+        }
 
         render(voucherPage, condition);
     }
@@ -165,5 +169,20 @@ public class OperateVouchers extends Controller {
 
         index(null);
 
+    }
+    private static void setOperatorName(Voucher voucher) {
+        if (voucher.operatorId == null) {
+            voucher.operatorName = "";
+            return;
+        }
+        if (voucher.voucherType == VoucherType.EXCHANGE) {
+            User user = User.findById(voucher.operatorId);
+            if (user != null) {
+                voucher.operatorName = "消费者兑换：" + user.getShowName();
+            }
+        } else {
+            OperateUser operateUser = OperateUser.findById(voucher.operatorId);
+            voucher.operatorName = "运营人员：" + operateUser.loginName;
+        }
     }
 }
