@@ -153,6 +153,8 @@ public class ECouponUnitTest extends UnitTest {
         assertEquals(new BigDecimal("0.00"), eCoupon.refundPrice);
         assertNull(eCoupon.refundAt);
 
+        eCoupon.order.accountPay = new BigDecimal("8.50");
+        eCoupon.order.save();
         long cnt = CouponHistory.count();
         assertEquals(cnt, CouponHistory.count());
         ret = ECoupon.applyRefund(eCoupon, user.id, AccountType.CONSUMER);
@@ -171,6 +173,8 @@ public class ECouponUnitTest extends UnitTest {
         eCoupon.order.userId = resaler.id;
         eCoupon.order.userType = AccountType.RESALER;
         eCoupon.refundPrice = BigDecimal.ZERO;
+        eCoupon.order.refundedAmount = BigDecimal.ZERO;
+        eCoupon.order.save();
         eCoupon.save();
         assertEquals(BigDecimal.ZERO, eCoupon.refundPrice);
         ret = ECoupon.applyRefund(eCoupon, resaler.id, AccountType.RESALER);
