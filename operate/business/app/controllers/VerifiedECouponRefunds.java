@@ -76,22 +76,36 @@ public class VerifiedECouponRefunds extends Controller {
         if (accountType != AccountType.CONSUMER && accountType != AccountType.RESALER) {
             return "不支持的券类别，请检查";
         }
+        if (eCoupon.order.refundedAmount == null) {
+            eCoupon.order.refundedAmount = BigDecimal.ZERO;
+        }
+        if (eCoupon.order.promotionBalancePay == null) {
+            eCoupon.order.promotionBalancePay = BigDecimal.ZERO;
+        }
 
         // 查找原订单信息 可能是分销账户，也可能是消费者账户
         Account userAccount = AccountUtil.getAccount(userId, accountType);
 
+        System.out.println("===coupon.salePrice" + eCoupon.salePrice);
+        System.out.println("===coupon.rebate" + eCoupon.rebateValue);
+        System.out.println("===order.account" + eCoupon.order.accountPay);
+        System.out.println("===order.disaccount" + eCoupon.order.discountPay);
+        System.out.println("===order.promotion" + eCoupon.order.promotionBalancePay);
 
-        //先计算已消费的金额
+        //先计算已消费的金额(此处应去除本券)
         BigDecimal consumedAmount = BigDecimal.ZERO;
         List<ECoupon> eCoupons = ECoupon.find("byOrderAndStatus",
                 eCoupon.order, ECouponStatus.CONSUMED).fetch();
         for (ECoupon c : eCoupons) {
-            consumedAmount = consumedAmount.add(ECoupon.getLintRefundPrice(c));
+            if (!c.getId().equals(eCoupon.getId()))
+                consumedAmount = consumedAmount.add(ECoupon.getLintRefundPrice(c));
         }
 
+        System.out.println("===consumedAmount" + consumedAmount);
         //已消费的金额加上已退款的金额作为垫底
         BigDecimal onTheBottom = consumedAmount.add(eCoupon.order.refundedAmount);
 
+        System.out.println("===onTheBottom" + onTheBottom);
         //再来看看去掉垫底的资金后，此订单还能退多少活动金和可提现余额
         BigDecimal refundOrderTotalCashAmount = eCoupon.order.accountPay.add(eCoupon.order.discountPay);
         BigDecimal refundOrderTotalPromotionAmount = eCoupon.order.promotionBalancePay;
@@ -108,8 +122,11 @@ public class VerifiedECouponRefunds extends Controller {
             }
         }
 
+        System.out.println("===refundOrderTotalCashAmount" + refundOrderTotalCashAmount);
+        System.out.println("===refundOrderTotalPromotionAmount" + refundOrderTotalPromotionAmount);
         //用户为此券实际支付的金额,也就是从用户为该券付的钱来看，最多能退多少
         BigDecimal refundAtMostCouponAmount =  ECoupon.getLintRefundPrice(eCoupon);
+        System.out.println("===refundAtMostCouponAmount" + refundAtMostCouponAmount);
 
         //最后我们来看看最终能退多少
         BigDecimal refundPromotionAmount = BigDecimal.ZERO;
@@ -119,11 +136,11 @@ public class VerifiedECouponRefunds extends Controller {
             refundPromotionAmount = refundOrderTotalPromotionAmount.subtract(refundAtMostCouponAmount);
         }else {
             refundPromotionAmount = refundOrderTotalPromotionAmount;
-            refundCashAmount = refundOrderTotalCashAmount.add(refundOrderTotalPromotionAmount).subtract(refundAtMostCouponAmount);
-            if (refundCashAmount.compareTo(BigDecimal.ZERO) < 0) {
-                refundCashAmount = BigDecimal.ZERO;
-            }
+            refundCashAmount = refundAtMostCouponAmount.subtract(refundPromotionAmount);
+            refundCashAmount = refundCashAmount.min(refundOrderTotalCashAmount);
         }
+        System.out.println("===refundCashAmount" + refundCashAmount);
+        System.out.println("===refundPromotionAmount" + refundPromotionAmount);
 
         Account supplierAccount = AccountUtil.getSupplierAccount(eCoupon.goods.supplierId);
 
