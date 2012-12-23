@@ -38,6 +38,16 @@ public class PaymentInfo extends Controller {
 
         List<PaymentSource> paymentSources = PaymentSource.find("order by showOrder").fetch();
 
+        //先把这个订单已经使用的给解绑
+        if (order.status == OrderStatus.UNPAID) {
+            List<Voucher> bindVouchers = Voucher.find("byAccountAndOrder", account, order).fetch();
+            for (Voucher voucher : bindVouchers) {
+                voucher.order = null;
+                voucher.usedAt = null;
+                voucher.save();
+            }
+        }
+
         List<Voucher> voucherList = Voucher.validVouchers(AccountUtil.getConsumerAccount(user.getId()));
         render(user, account, order, goodsNumber, paymentSources, voucherList);
     }
@@ -78,9 +88,8 @@ public class PaymentInfo extends Controller {
             }
         }
 
-        
-        Account account = AccountUtil.getConsumerAccount(user.getId());
 
+        Account account = AccountUtil.getConsumerAccount(user.getId());
         if (Order.confirmPaymentInfo(order, account, useBalance, paymentSourceCode, null, vouchers)) {
             PaymentSource paymentSource = PaymentSource.findByCode(order.payMethod);
             //近日成交商品
