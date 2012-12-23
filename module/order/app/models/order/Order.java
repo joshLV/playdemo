@@ -115,8 +115,6 @@ public class Order extends Model {
     @Column(name = "promotion_balance_pay")
     public BigDecimal promotionBalancePay;  //使用活动金余额付款金额
 
-    @Column(name = "refunded_promotion_amount")
-    public BigDecimal refundedPromotionAmount;  //此订单已退款的用活动金支付的金额
 
     /**
      * 订单应付金额
@@ -208,8 +206,11 @@ public class Order extends Model {
     @Column(name = "voucher_value")
     public BigDecimal voucherValue;
 
-    @Column(name = "refunded_voucher_value")
-    public BigDecimal refundedVoucherValue;
+    /**
+     * 此订单已退回到账户的金额,这个最大只能等于此订单余额支付和网银支付的总额
+     */
+    @Column(name = "refunded_amount")
+    public BigDecimal refundedAmount;
 
     /**
      * 支付方式名称
@@ -275,9 +276,8 @@ public class Order extends Model {
         this.accountPay = BigDecimal.ZERO;
         this.discountPay = BigDecimal.ZERO;
         this.promotionBalancePay = BigDecimal.ZERO;
-        this.refundedPromotionAmount = BigDecimal.ZERO;
         this.voucherValue = BigDecimal.ZERO;
-        this.refundedVoucherValue = BigDecimal.ZERO;
+        this.refundedAmount = BigDecimal.ZERO;
         this.freight = BigDecimal.ZERO;
 
         this.lockVersion = 0;
