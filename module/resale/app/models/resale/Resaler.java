@@ -260,8 +260,11 @@ public class Resaler extends Model {
         return find("loginName = ?", loginName.trim()).first();
     }
 
-    public static List<Resaler> findByStatus() {
-        return Resaler.find("status=? order by id desc", ResalerStatus.APPROVED).fetch();
+    public static List<Resaler> findByStatus(Long operateUserId) {
+        if (operateUserId==null) {
+          return Resaler.find("status=? order by id desc",ResalerStatus.APPROVED).fetch();
+        }
+        return Resaler.find("salesId=? and status=? order by id desc", operateUserId, ResalerStatus.APPROVED).fetch();
     }
 
     public static void update(Long id, Resaler resaler) {

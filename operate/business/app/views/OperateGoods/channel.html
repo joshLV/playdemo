@@ -7,30 +7,7 @@
 <div class="body">
     <legend>${title}</legend>
     <form class="form-horizontal" name="frmlist" id="form" action="@{OperateGoods.createChannel()}" method="POST">
-           #{include "OperateGoods/channelForm.html"/}
-
-        *{<input type="hidden" name="goodsId" value="${goods.id}">}*
-
-        *{<div class="control-group">}*
-            *{<label class="control-label"><span style="color: red; ">*</span>分销商</label>}*
-
-            *{<div class="controls">}*
-            *{#{select 'channelGoodsInfo.resaler.id', id:'condition_status', class:'input-small'}}*
-                *{#{option ""}不限#{/option}}*
-                *{#{list items:resalerList,as:'resaler'}}*
-                    *{#{option resaler.id}${resaler.loginName}-${resaler.userName}#{/option}}*
-                *{#{/list}}*
-            *{#{/select}}*
-            *{</div>}*
-        *{</div>}*
-    *{#{layout_operate.textField name:'channelGoodsInfo.goods.shortName', value:goods?.shortName,disabled:true/}}*
-    *{#{layout_operate.textField name:'channelGoodsInfo.url', required:true/}}*
-    *{#{layout_operate.dateTimeField name:'channelGoodsInfo.onSaleAt',value:goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss'),required:true/}}*
-    *{#{layout_operate.dateTimeField name:'channelGoodsInfo.offSaleAt',value:goods?.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss'),required:true/}}*
-        *{<div class="form-actions">}*
-            *{<input class="btn btn-primary" id="save" type="submit" value="确定"/>}*
-            *{<input class="btn btn-primary" type="submit" value="取消"/>}*
-        *{</div>}*
+    #{include "OperateGoods/channelForm.html"/}
     </form>
 
     <form class="form-horizontal" name="deletefrm" id="deletefrm">
@@ -57,8 +34,11 @@
                 <td>${channel.onSaleAt.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>${channel.offSaleAt.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>${channel.operateName}</td>
-                <td><a href="#" onclick="edit(${channel.id})"> 修改 </a>
-                    / #{vx.deleteLink action:"channel-goods", id:channel.id/}
+                <td>
+                    #{if channel.resaler?.salesId==operateUserId}
+                        <a href="#" onclick="edit(${channel.id})"> 修改 </a>
+                        / #{vx.deleteLink action:"channel-goods", id:channel.id/}
+                    #{/if}
             </tr>
             #{/paginate.list}
             </tbody>
@@ -70,7 +50,7 @@
         </ul>
     </div>
 </div>
- <script type="text/javascript">
+<script type="text/javascript">
     function edit(id) {
         $("#form").load("/channel-goods/" + id + "/edit", function (data) {
             $("#form").attr("action", "/channel-goods/" + id + "?x-http-method-override=PUT");

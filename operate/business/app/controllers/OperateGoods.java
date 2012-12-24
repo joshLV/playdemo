@@ -803,12 +803,20 @@ public class OperateGoods extends Controller {
     public static void channel(Long goodsId) {
         Goods goods = Goods.findUnDeletedById(goodsId);
         initInfo(goods);
+        if (Validation.hasErrors()) {
+            render("OperateGoods/channel.html", goods);
+        }
         render(goods);
 
     }
 
     private static void initInfo(Goods goods) {
-        List<Resaler> resalerList = Resaler.findByStatus();
+        Long operateUserId = OperateRbac.currentUser().id;
+        List<Resaler> resalerList = Resaler.findByStatus(operateUserId);
+        if (resalerList.size() == 0) {
+            Validation.addError("channelGoodsInfo.resaler.id", "你不是分销负责专员！");
+        }
+        renderArgs.put("operateUserId", operateUserId);
         List<ChannelGoodsInfo> channelGoodsInfoList = ChannelGoodsInfo.findByGoods(goods);
         renderArgs.put("resalerList", resalerList);
         renderArgs.put("channelGoodsInfoList", channelGoodsInfoList);
@@ -826,9 +834,9 @@ public class OperateGoods extends Controller {
         if (channelGoodsInfo.resaler == null) {
             Validation.addError("channelGoodsInfo.resaler.id", "请选择分销商！");
         }
+        initInfo(goods);
         if (Validation.hasErrors()) {
-            initInfo(goods);
-            render("OperateGoods/channel.html",goods);
+            render("OperateGoods/channel.html", goods);
         }
 
         channelGoodsInfo.goods = goods;
@@ -851,9 +859,16 @@ public class OperateGoods extends Controller {
      * @param id
      */
     public static void editChannel(Long id) {
+        setEditInfo(id);
+        render("OperateGoods/channelForm.html");
+    }
+
+    private static void setEditInfo(Long id) {
         ChannelGoodsInfo channelGoodsInfo = ChannelGoodsInfo.findById(id);
-        List<Resaler> resalerList = Resaler.findByStatus();
-        render("OperateGoods/channelForm.html", resalerList, channelGoodsInfo);
+        Long operateUserId = OperateRbac.currentUser().id;
+        List<Resaler> resalerList = Resaler.findByStatus(operateUserId);
+        renderArgs.put("resalerList", resalerList);
+        renderArgs.put("channelGoodsInfo", channelGoodsInfo);
     }
 
     /**
@@ -862,9 +877,9 @@ public class OperateGoods extends Controller {
      * @param id
      */
     public static void updateChannel(Long id, @Valid ChannelGoodsInfo channelGoodsInfo) {
-        List<Resaler> resalerList = Resaler.findByStatus();
+        setEditInfo(id);
         if (Validation.hasErrors()) {
-            render("OperateGoods/channelForm.html", resalerList, channelGoodsInfo);
+            render("OperateGoods/channelForm.html");
         }
 
         ChannelGoodsInfo updInfo = ChannelGoodsInfo.findById(id);

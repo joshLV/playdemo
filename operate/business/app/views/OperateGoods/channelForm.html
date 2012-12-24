@@ -19,5 +19,5 @@
 #{layout_operate.dateTimeField name:'channelGoodsInfo.onSaleAt',value:(goods?.beginOnSaleAt?:channelGoodsInfo?.onSaleAt)?.format('yyyy-MM-dd HH:mm:ss'),required:true/}
 #{layout_operate.dateTimeField name:'channelGoodsInfo.offSaleAt',value:(goods?.endOnSaleAt?:channelGoodsInfo?.offSaleAt)?.format('yyyy-MM-dd HH:mm:ss'),required:true/}
 <div class="form-actions">
-    <input class="btn btn-primary" id="save" type="submit" value="确定"/>
+    <input class="btn btn-primary" id="save" type="submit" value="确定" #{if resalerList.size()==0}disabled="true" #{/if}/>
 </div>

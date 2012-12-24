@@ -241,6 +241,7 @@ public class Goods extends Model {
     /**
      * 商品编码 【商户类别编码（2位）+商户流水码（4位）+商品流水码（至少2位 可动态扩展）】
      */
+    @Column(name = "code")
     public String code;
 
     @ManyToMany(cascade = CascadeType.REFRESH)
@@ -665,6 +666,7 @@ public class Goods extends Model {
      *
      * @return
      */
+    @Transient
     public String getDetails() {
         if (StringUtils.isBlank(details) || "<br />".equals(details)) {
             return "";
@@ -1843,6 +1845,7 @@ public class Goods extends Model {
     }
 
 
+    @Transient
     public void getCode() {
         Goods goods = Goods.find("supplierId=? and sequenceCode is not null order by sequenceCode desc", this.supplierId).first();
         Supplier supplier = Supplier.findById(this.supplierId);
