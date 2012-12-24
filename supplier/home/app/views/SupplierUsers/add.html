@@ -4,6 +4,9 @@
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/supplierUser.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
+#{set 'moreStyles'}
+    #{asset.css src:['/m/account.css'] /}
+#{/set}
 <div class="account">
     <h2>${title}</h2>
 #{form @SupplierUsers.create() , id:'operForm',class:"form-horizontal" }

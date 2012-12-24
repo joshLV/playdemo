@@ -41,13 +41,14 @@ GET     /reports/goods                          SupplierReports.showGoodsReport
 
 # [v2] 券列表
 GET     /coupons                                SupplierECoupons.index
-GET     /verify                                 SupplierVerifyECoupons.showSingle
+GET     /verify                                 SupplierVerifyECoupons.index
+GET     /verify/single-query                    SupplierVerifyECoupons.singleQuery
+POST    /verify/single-verify                   SupplierVerifyECoupons.singleVerify
 GET     /verify/multi                           SupplierVerifyECoupons.showMulti
 
 
 # [v2] 验证电子券页面--v1
 GET     /coupons/verify                         SupplierVerifySingleCoupons.index
-GET     /coupons/query                          SupplierECoupons.
 POST    /coupons/update                         SupplierECoupons.update
 # [v2] 验证电子券页面--v2
 GET     /coupons/single                         SupplierVerifySingleCoupons.index

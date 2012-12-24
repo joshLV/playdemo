@@ -1,5 +1,5 @@
 body {
-    background: url(//img.uhcdn.com/m/bg.gif) repeat 0 0;
+    background: url(http://y1.uhcdn.com/images/2012/12/2525e1b30c9ea843.gif) repeat 0 0;
 }
 #header {
     margin-bottom: 20px;
@@ -24,6 +24,49 @@ body {
 #header .user a {
     color: white;
     margin-left: 10px;
+}
+.message {
+    position: relative;
+    width: 1000px;
+    margin: 0 auto 20px;
+}
+.message .close {
+    position: absolute;
+    top: 11px;
+    right: 10px;
+    color: #b7b7b7;
+    padding-left: 12px;
+    background: url(http://y1.uhcdn.com/images/2012/12/0a9bc329d8478889.png) no-repeat 0 6px;
+}
+.message .close:hover {
+    color: #333;
+    text-decoration: none;
+    background-position: 0 -34px;
+}
+.message .normal {
+    padding: 10px 60px 10px 10px;
+    border: 1px solid #f7bd7d;
+    background-color: #fffbf0;
+    border-radius: 3px;
+}
+.message .normal p em {
+    color: #FF7B33;
+}
+.message p a {
+    color: #d18136;
+}
+.message .success {
+    font-size: 22px;
+    padding: 3px 60px 4px 10px;
+    border: 1px solid #9AC82B;
+    background-color: #f3f8de;
+    border-radius: 3px;
+}
+.message .success p em {
+    color: #9AC82B;
+}
+.message .success p a {
+    font-size: 22px;
 }
 #content {
     width: 1000px;
@@ -70,6 +113,15 @@ body {
     float: right;
     width: 800px;
 }
+#footer {
+    width: 1000px;
+    color: #787878;
+    margin: 0 auto;
+    padding: 10px 0;
+    text-align: right;
+    border-top:1px dotted #dcdcdc;
+}
+
 .btn {
     display: inline-block;
     margin-right: 10px;
@@ -99,12 +151,82 @@ a.btn {
 a.btn:hover {
     text-decoration: none;
 }
-
-#footer {
-    width: 1000px;
-    color: #787878;
-    margin: 0 auto;
-    padding: 10px 0;
+a.cancel {
+    line-height: 36px;
+    margin-left: 10px;
+}
+/* 表格 */
+.title-table {
+    width: 100%;
+    margin: 5px 0;
+}
+.title-table th {
+    text-align: left;
+}
+.title-table td {
+    color: #FF7B33;
     text-align: right;
-    border-top:1px dotted #dcdcdc;
+}
+.standard-table {
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid #E3E3E3;
+}
+.standard-table th {
+    padding: 5px;
+    font-size: 14px;
+    background-color: #EEE;
+    border-right: 1px solid #E3E3E3;
+    border-bottom: 1px solid #E3E3E3;
+}
+.standard-table td {
+    padding: 5px;
+    font-size: 14px;
+    border-right: 1px dotted #E3E3E3;
+    border-bottom: 1px dotted #E3E3E3;
+}
+.standard-table td a {
+    color: #d18136;
+}
+/* 分页 */
+.pagination {
+    padding-top: 15px;
+}
+.pagination a,
+.pagination span {
+    display: block;
+    float: left;
+    font-size: 12px;
+    margin-right: 5px;
+    padding: 1px 10px;
+    color: #6e6e6e;
+    border: 1px solid #d8d8d8;
+}
+.pagination a:hover {
+    text-decoration: none;
+    background-color: whiteSmoke;
+    box-shadow: inset 0 1px 2px #BBB;
+}
+.pagination .curr {
+    font-weight: 700;
+    background-color: whiteSmoke;
+    box-shadow: inset 0 1px 2px #BBB;
+}
+.pagination .prev,
+.pagination .next {
+    position: relative;
+}
+.pagination .prev a {
+    margin-left: 0;
+    margin-right: 6px;
+    padding-left: 14px;
+}
+.pagination .next a {
+    margin-left: 10px;
+    padding-right: 14px;
+}
+.pagination .dots {
+    border: 0;
+    padding: 1px 0;
 }

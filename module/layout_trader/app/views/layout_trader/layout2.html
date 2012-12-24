@@ -5,10 +5,17 @@
     <meta charset="UTF-8">
     <title>#{get 'title' /}</title>
     <script src="@{'/public/assets/js/jquery.js'}"></script>
-#{asset.css src:['/m/reset.css', '/m/index.css', '/m/outlet.css'] /}
-
+#{asset.css src:['/m/reset.css', '/m/index.css'] /}
 #{get 'moreStyles' /}
 #{get 'moreScripts' /}
+    <script type="text/javascript">
+        $(function () {
+            $('.close').click(function () {
+                $('#error').hide();
+                $('#success').hide();
+            });
+        });
+    </script>
 </head>
 <body>
 <div id="header" class="clearfix">
@@ -24,6 +31,22 @@
         </div>
     </div>
 </div>
+#{if errorInfo != null}
+<div id="error" class="message">
+    <div class="normal">
+        <p><em>温馨提示：</em>${errorInfo?.raw()}</p>
+    </div>
+    <a id="error-close" class="close" href="javascript:void(0)">关闭</a>
+</div>
+#{/if}
+#{if successInfo != null}
+<div id="success" class="message">
+    <div class="success">
+        <p><em>${successInfo?.raw()}</em></p>
+    </div>
+    <a id="success-close" class="close" href="javascript:void(0)">关闭</a>
+</div>
+#{/if}
 <!-- .content -->
 <div id="content" class="clearfix">
     <div class="sidebar">
