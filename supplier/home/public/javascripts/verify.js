@@ -1,4 +1,10 @@
 jQuery(function ($) {
+    $(document).keydown(function (e) {
+        if (e.keyCode == ctrlKey) ctrlDown = true;
+    }).keyup(function (e) {
+            if (e.keyCode == ctrlKey) ctrlDown = false;
+        });
+
 
     // 格式化券号
     $('.enter-coupon').live('keypress', function () {
@@ -80,14 +86,19 @@ jQuery(function ($) {
         }
     });
 
-    $('#eCouponSn').keydown("c",function(e) {
-        if(e.ctrlKey){//同时按下ctrl+c
+    var ctrlDown = false;
+    var ctrlKey = 17, vKey = 86, cKey = 67;
+
+    $('#eCouponSn').keyup("v", function (e) {
+        if (e.ctrlKey) {//同时按下ctrl+v
             var _this = $(this);
             var value = _this.val();
             if (value.length > 3) {
-                _this.val(value + ' ');
-            } else if (value.length == 7) {
-                _this.val(value + ' ');
+                _this.val(value.substring(0, 3) + ' ' + value.substring(3, value.length));
+                value = _this.val();
+            }
+            if (value.length > 7) {
+                _this.val(value.substring(0, 7) + ' ' + value.substring(7, value.length));
             }
         }
     });

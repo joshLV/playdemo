@@ -124,7 +124,7 @@ public class SupplierVerifyECoupons extends Controller {
                     + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：400-6262-166", ecoupon.orderItems.phone, ecoupon.replyCode);
         }
 
-        String successInfo = "券号" + eCouponSn + "，已成功验证！查看<a href=\"/coupons\">已验证券号</a>";
+        String successInfo = "券号" + eCouponSn + "消费成功！查看<a href=\"/coupons\">已验证券号</a>";
         render("SupplierVerifyECoupons/index.html", shop, ecoupon, supplierUser, shopList, successInfo);
     }
 
