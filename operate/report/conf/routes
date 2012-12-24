@@ -46,8 +46,8 @@ GET     /totalsales/list                        TotalSalesReports.list
 
 #销售报表
 GET     /sales_report                           OperationReports.showSalesReport
-GET     /sales_report_with_privilege_excel      OperationReports.salesReportWithPrivilegeExcelOut
 GET     /sales_report_excel                     OperationReports.salesReportExcelOut
+GET     /sales_report_with_privilege_excel      OperationReports.salesReportWithPrivilegeExcelOut
 
 #渠道类别报表
 GET     /channel_report                           OperationReports.showChannelReport
@@ -55,8 +55,9 @@ GET     /channel_report_with_privilege_excel      OperationReports.channelReport
 GET     /channel_report_excel                     OperationReports.channelReportExcelOut
 
 #渠道大类报表
-GET     /channel_category_report                  OperationReports.showChannelCategoryReport
-
+GET     /channel_category_report                           OperationReports.showChannelCategoryReport
+GET     /channel_category_report_with_privilege_excel      OperationReports.channelCategoryReportWithPrivilegeExcelOut
+GET     /channel_category_report_excel                     OperationReports.channelCategoryReportExcelOut
 
 # Home page
 GET     /                                       OperateReportApplication.index

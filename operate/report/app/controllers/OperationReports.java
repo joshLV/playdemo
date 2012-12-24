@@ -80,7 +80,6 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new ChannelCategoryReportCondition();
         }
-
         Boolean hasSeeSalesRepotProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
 
 
@@ -118,7 +117,7 @@ public class OperationReports extends Controller {
         ValuePaginator<ChannelCategoryReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
 
 
-        render(condition, reportPage, channelPage, channelSummary);
+        render(condition, reportPage, channelPage, channelSummary, hasSeeSalesRepotProfitRight);
     }
 
     public static void salesReportWithPrivilegeExcelOut(SalesReportCondition condition) {
@@ -184,6 +183,8 @@ public class OperationReports extends Controller {
 
 
         for (ResaleSalesReport report : resultList) {
+            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
+            report.grossMargin = tempGrossMargin;
             if (report.refundPrice == null) {
                 report.refundPrice = BigDecimal.ZERO;
             }
@@ -206,9 +207,7 @@ public class OperationReports extends Controller {
                 report.profit = BigDecimal.ZERO;
             }
         }
-        ResaleSalesReport summary = ResaleSalesReport.summary(resultList);
-        System.out.println("summary>>>" + summary.buyNumber);
-        render(resultList, summary);
+        render(resultList);
     }
 
     public static void channelReportExcelOut(ResaleSalesReportCondition condition) {
@@ -245,6 +244,87 @@ public class OperationReports extends Controller {
         render(resultList);
     }
 
+
+    public static void channelCategoryReportWithPrivilegeExcelOut(ChannelCategoryReportCondition condition) {
+        if (condition == null) {
+            condition = new ChannelCategoryReportCondition();
+        }
+        String page = request.params.get("page");
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "渠道大类报表_" + System.currentTimeMillis() + ".xls");
+
+        List<ChannelCategoryReport> resultList = null;
+        condition.accountType = null;
+        resultList = ChannelCategoryReport.query(condition);
+        List<ChannelCategoryReport> consumerList = ChannelCategoryReport.queryConsumer(condition);
+
+        // 查询出所有结果
+        for (ChannelCategoryReport resaleSalesReport : consumerList) {
+            resultList.add(resaleSalesReport);
+        }
+
+
+        for (ChannelCategoryReport report : resultList) {
+            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
+            report.grossMargin = tempGrossMargin;
+            if (report.refundPrice == null) {
+                report.refundPrice = BigDecimal.ZERO;
+            }
+            if (report.realRefundPrice == null) {
+                report.realRefundPrice = BigDecimal.ZERO;
+            }
+            if (report.consumedPrice == null) {
+                report.consumedPrice = BigDecimal.ZERO;
+            }
+            if (report.grossMargin == null) {
+                report.grossMargin = BigDecimal.ZERO;
+            }
+
+            if (report.channelCost == null) {
+                report.channelCost = BigDecimal.ZERO;
+
+            }
+
+            if (report.profit == null) {
+                report.profit = BigDecimal.ZERO;
+            }
+        }
+        render(resultList);
+    }
+
+    public static void channelCategoryReportExcelOut(ChannelCategoryReportCondition condition) {
+        if (condition == null) {
+            condition = new ChannelCategoryReportCondition();
+        }
+        String page = request.params.get("page");
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "渠道大类报表_" + System.currentTimeMillis() + ".xls");
+
+        List<ChannelCategoryReport> resultList = null;
+        condition.accountType = null;
+        resultList = ChannelCategoryReport.query(condition);
+        List<ChannelCategoryReport> consumerList = ChannelCategoryReport.queryConsumer(condition);
+
+        // 查询出所有结果
+        for (ChannelCategoryReport resaleSalesReport : consumerList) {
+            resultList.add(resaleSalesReport);
+        }
+
+
+        for (ChannelCategoryReport report : resultList) {
+            if (report.refundPrice == null) {
+                report.refundPrice = BigDecimal.ZERO;
+            }
+            if (report.realRefundPrice == null) {
+                report.realRefundPrice = BigDecimal.ZERO;
+            }
+            if (report.consumedPrice == null) {
+                report.consumedPrice = BigDecimal.ZERO;
+            }
+
+        }
+        render(resultList);
+    }
 
     private static int getPageNumber() {
         String page = request.params.get("page");
