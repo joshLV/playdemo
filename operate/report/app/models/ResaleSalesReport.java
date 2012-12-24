@@ -120,6 +120,7 @@ public class ResaleSalesReport extends Model {
      */
     public BigDecimal profit;
 
+
     /**
      * paidAt ecoupon  resaler
      */
@@ -312,11 +313,12 @@ public class ResaleSalesReport extends Model {
             ResaleSalesReportCondition condition) {
 
         //paidAt ecoupon
-        String sql = "select new models.ResaleSalesReport(r.order,sum(r.salePrice-r.rebateValue),count(r.buyNumber)" +
+        String sql = "select new models.ResaleSalesReport(r.order, sum(r.salePrice-r.rebateValue),count(r.buyNumber)" +
                 ",sum(r.goods.originalPrice),sum(r.salePrice-r.rebateValue)*b.commissionRatio/100" +
                 ",(sum(r.salePrice-r.rebateValue)-sum(r.goods.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
                 ",sum(r.salePrice-r.rebateValue)-sum(r.salePrice-r.rebateValue)*b.commissionRatio/100-sum(r.goods.originalPrice)" +
-                ") from OrderItems r, ECoupon e,Order o,Resaler b where e.orderItems=r and r.order=o and o.userId=b.id ";
+                ") from OrderItems r, ECoupon e,Order o,Resaler b,Supplier s where e.orderItems=r and r.order=o and o.userId=b.id" +
+                " and r.goods.supplierId = s ";
         String groupBy = " group by r.order.userId";
         Query query = JPA.em()
                 .createQuery(sql + condition.getFilterPaidAt(AccountType.RESALER) + groupBy + " order by sum(r.salePrice-r.rebateValue) desc");

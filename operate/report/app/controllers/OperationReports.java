@@ -1,9 +1,6 @@
 package controllers;
 
-import models.ResaleSalesReport;
-import models.ResaleSalesReportCondition;
-import models.SalesReport;
-import models.SalesReportCondition;
+import models.*;
 import models.accounts.AccountType;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
@@ -51,6 +48,7 @@ public class OperationReports extends Controller {
 
     }
 
+    @ActiveNavigation("channel_reports")
     public static void showChannelReport(ResaleSalesReportCondition condition) {
         int pageNumber = getPageNumber();
 
@@ -73,6 +71,44 @@ public class OperationReports extends Controller {
         ValuePaginator<ResaleSalesReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
         ResaleSalesReport summary = ResaleSalesReport.summary(resultList);
         render(reportPage, condition, summary, hasSeeSalesRepotProfitRight);
+    }
+
+    @ActiveNavigation("channel_category_reports")
+    public static void showChannelCategoryReport(ChannelCategoryReportCondition condition) {
+        int pageNumber = getPageNumber();
+
+        if (condition == null) {
+            condition = new ChannelCategoryReportCondition();
+        }
+
+        Boolean hasSeeSalesRepotProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+
+
+        List<ResaleSalesReport> channelList = null;
+        ResaleSalesReportCondition channelCondition = new ResaleSalesReportCondition();
+        channelCondition.beginAt = condition.beginAt;
+        channelCondition.endAt = condition.endAt;
+
+        condition.accountType = null;
+        channelList = ResaleSalesReport.query(channelCondition);
+        List<ResaleSalesReport> consumerList = ResaleSalesReport.queryConsumer(channelCondition);
+
+        // 查询出所有结果
+        for (ResaleSalesReport resaleSalesReport : consumerList) {
+            channelList.add(resaleSalesReport);
+        }
+        // 分页
+        ValuePaginator<ResaleSalesReport> channelPage = PaginateUtil.wrapValuePaginator(channelList, pageNumber, PAGE_SIZE);
+
+        ResaleSalesReport channelSummary = ResaleSalesReport.summary(channelList);
+
+        List<ChannelCategoryReport> resultList = ChannelCategoryReport.query(condition);
+
+        // 分页
+        ValuePaginator<ChannelCategoryReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
+
+
+        render(condition, reportPage, channelPage, channelSummary);
     }
 
     public static void salesReportWithPrivilegeExcelOut(SalesReportCondition condition) {

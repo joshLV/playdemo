@@ -54,6 +54,10 @@ GET     /channel_report                           OperationReports.showChannelRe
 GET     /channel_report_with_privilege_excel      OperationReports.channelReportWithPrivilegeExcelOut
 GET     /channel_report_excel                     OperationReports.channelReportExcelOut
 
+#渠道大类报表
+GET     /channel_category_report                  OperationReports.showChannelCategoryReport
+
+
 # Home page
 GET     /                                       OperateReportApplication.index
 GET     /operation_report                       OperationReports.index
