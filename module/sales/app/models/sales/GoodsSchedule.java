@@ -27,7 +27,7 @@ import java.util.List;
 @Table(name = "goods_schedule")
 @Entity
 public class GoodsSchedule extends Model {
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "goods_id", nullable = true)
     public Goods goods;
 
@@ -49,7 +49,7 @@ public class GoodsSchedule extends Model {
     @Column(name = "created_at")
     public Date createdAt;
 
-    public static final String CACHEKEY = "GOODS";
+    public static final String CACHEKEY = "GOODS_SCHEDULE";
 
     @Override
     public void _save() {
