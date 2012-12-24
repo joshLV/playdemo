@@ -272,6 +272,10 @@ public class User extends Model {
         boolean isExpired = false;
         if (!StringUtils.isBlank(token)) {
             User user = User.find("byPasswordToken", token).first();
+            if (user == null) {
+                isExpired = true; // 已过期
+                return isExpired;
+            }
             Date d1 = user.sendMailAt;
             Date d2 = new Date();
             long diff = d2.getTime() - d1.getTime();

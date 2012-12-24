@@ -73,7 +73,7 @@ public class ECoupon extends Model {
     static {
         String useProductSerialReplyCode = Play.configuration.getProperty(
                 KEY_USE_PRODUCT_SERIAL_REPLYCODE,
-                "false");
+                "true");
         USE_PRODUCT_SERIAL_REPLYCODE = Boolean
                 .parseBoolean(useProductSerialReplyCode);
     }
