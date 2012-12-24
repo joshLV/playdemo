@@ -84,23 +84,25 @@ public class OperationReports extends Controller {
         Boolean hasSeeSalesRepotProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
 
 
-        List<ResaleSalesReport> channelList = null;
+        List<ResaleSalesReport> channelPage = null;
         ResaleSalesReportCondition channelCondition = new ResaleSalesReportCondition();
         channelCondition.beginAt = condition.beginAt;
         channelCondition.endAt = condition.endAt;
 
         condition.accountType = null;
-        channelList = ResaleSalesReport.query(channelCondition);
+        channelPage = ResaleSalesReport.query(channelCondition);
         List<ResaleSalesReport> channelConsumerList = ResaleSalesReport.queryConsumer(channelCondition);
 
         // 查询出所有结果
         for (ResaleSalesReport resaleSalesReport : channelConsumerList) {
-            channelList.add(resaleSalesReport);
+            channelPage.add(resaleSalesReport);
         }
-        // 分页
-        ValuePaginator<ResaleSalesReport> channelPage = PaginateUtil.wrapValuePaginator(channelList, pageNumber, PAGE_SIZE);
 
-        ResaleSalesReport channelSummary = ResaleSalesReport.summary(channelList);
+
+        // 分页
+//        ValuePaginator<ResaleSalesReport> channelPage = PaginateUtil.wrapValuePaginator(channelList, pageNumber, PAGE_SIZE);
+
+        ResaleSalesReport channelSummary = ResaleSalesReport.summary(channelPage);
 
 
         List<ChannelCategoryReport> resultList = ChannelCategoryReport.query(condition);
@@ -136,6 +138,8 @@ public class OperationReports extends Controller {
             if (report.refundAmount == null) {
                 report.refundAmount = BigDecimal.ZERO;
             }
+
+
         }
         render(salesReportList);
     }
@@ -188,6 +192,18 @@ public class OperationReports extends Controller {
             }
             if (report.consumedPrice == null) {
                 report.consumedPrice = BigDecimal.ZERO;
+            }
+            if (report.grossMargin == null) {
+                report.grossMargin = BigDecimal.ZERO;
+            }
+
+            if (report.channelCost == null) {
+                report.channelCost = BigDecimal.ZERO;
+
+            }
+
+            if (report.profit == null) {
+                report.profit = BigDecimal.ZERO;
             }
         }
         ResaleSalesReport summary = ResaleSalesReport.summary(resultList);

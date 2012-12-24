@@ -130,7 +130,7 @@
             <td>${report?.buyNumber?:0}</td>
             <td>
                 #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
-                    <a href="${baseUrl}/coupons?condition.paidAtBegin=${condition?.begin?.format()}&condition.paidAtEnd=${condition?.end?.format()}
+                    <a href="${baseUrl}/coupons?condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}
                 &condition.goodsId=${report?.goods?.id}"
                        target="_blank">${(report?.totalAmount?:0).formatCurrency('CNY')}</a>
                 #{/if}
@@ -140,7 +140,7 @@
             </td>
             <td>
                 #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
-                    <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.begin?.format()}&condition.refundAtBegin=${condition?.end?.format()}
+                    <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtBegin=${condition?.endAt?.format()}
                 &condition.goodsId=${report?.goods?.id}"
                        target="_blank"> ${(report?.refundAmount?:0).formatCurrency('CNY')}</a>
                 #{/if}
