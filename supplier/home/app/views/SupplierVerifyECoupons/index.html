@@ -1,0 +1,63 @@
+#{extends 'layout_trader/layout2.html' /}
+#{include 'Share/nav.html' /}
+#{set title:'商户验证消费券' /}
+#{set menu:"verify" /}
+#{set 'moreStyles'}
+    #{asset.css src:['/m/verify.css'] /}
+#{/set}
+#{set 'moreScripts'}
+    <script src="@{'/public/javascripts/verify.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+<form id="coupon-form" action="@{SupplierVerifyECoupons.singleVerify()}" method="post" onload="javascript:listenKey()">
+    <div class="verify">
+        <div class="hd clearfix">
+            <a class="curr" href="?page=verify">单券验证</a>
+            <a href="?page=verify&batch">批量验证</a>
+        </div>
+        <div class="bd single-verify">
+            <div class="help"><a href="">怎样验证</a></div>
+            <div class="outlet">
+                <span>请选择分店</span>
+                <ul class="outlet-list clearfix">
+                #{if supplierUser?.shop?.id == null}
+                    #{list items:shopList, as:'shop'}
+                        <li><label><input type="radio" name="shopId" value="${shop?.id}"
+                                          #{if supplierUser?.shop?.id?.longValue() == shop?.id?.longValue()}checked="checked"#{/if}/>${shop?.name}
+                        </label></li>
+                    #{/list}
+                #{/if}
+                #{else}
+                    <input type="text" name="shopName" id="shopName" disabled="true" value="${shop?.name}"
+                           class="input-large"/>
+                    <input type="hidden" name="shopId" id="shopId" value="${shop?.id}" class="input-large"/>
+                #{/else}
+
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span class="error">#{error 'supplierUser.shop' /}</span>
+                </ul>
+            </div>
+            <div class="coupon-verify">
+                <label for="eCouponSn">请输入券号(10位)</label>
+
+                <div>
+                    <input type="text" size="12" maxlength="12" name="eCouponSn" id="eCouponSn" class="enter-coupon"/>
+                    <input type="button" value="验证" id="check-btn" class="btn"/>
+                </div>
+                <div class="tip">请及时验证当天接待的券号（1个工作日内），避免消费者退款造成损失</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="popup-mask" class="popup-mask"></div>
+    <div id="popup" class="popup">
+        <a class="close" href="javascript:void(0)" hidefocus="true"></a>
+
+        <h3 class="hd">确认验证</h3>
+
+        <div class="bd">
+            <span id="eCouponInfo"></span>
+            <a id="verify-btn" class="btn" href="javascript:void(0)">核对无误，确认验证</a>
+            <a class="cancel" href="javascript:void(0)">取消</a>
+        </div>
+    </div>
+</form>
