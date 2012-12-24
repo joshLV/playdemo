@@ -91,10 +91,10 @@ public class OperationReports extends Controller {
 
         condition.accountType = null;
         channelList = ResaleSalesReport.query(channelCondition);
-        List<ResaleSalesReport> consumerList = ResaleSalesReport.queryConsumer(channelCondition);
+        List<ResaleSalesReport> channelConsumerList = ResaleSalesReport.queryConsumer(channelCondition);
 
         // 查询出所有结果
-        for (ResaleSalesReport resaleSalesReport : consumerList) {
+        for (ResaleSalesReport resaleSalesReport : channelConsumerList) {
             channelList.add(resaleSalesReport);
         }
         // 分页
@@ -102,7 +102,15 @@ public class OperationReports extends Controller {
 
         ResaleSalesReport channelSummary = ResaleSalesReport.summary(channelList);
 
+
         List<ChannelCategoryReport> resultList = ChannelCategoryReport.query(condition);
+        List<ChannelCategoryReport> consumerList = ChannelCategoryReport.queryConsumer(condition);
+
+        // 查询出所有结果
+        for (ChannelCategoryReport c : consumerList) {
+            resultList.add(c);
+        }
+
 
         // 分页
         ValuePaginator<ChannelCategoryReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);

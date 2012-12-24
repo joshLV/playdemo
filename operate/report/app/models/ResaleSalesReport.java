@@ -485,7 +485,7 @@ public class ResaleSalesReport extends Model {
      */
     public static List<ResaleSalesReport> queryConsumer(ResaleSalesReportCondition condition) {
         //paidAt ecoupon
-        String sql = "select new models.ResaleSalesReport(r.order,sum(r.salePrice-r.rebateValue),count(r.buyNumber)" +
+        String sql = "select new models.ResaleSalesReport(r.order, sum(r.salePrice-r.rebateValue),count(r.buyNumber)" +
                 ",sum(r.goods.originalPrice)" +
                 ",(sum(r.salePrice-r.rebateValue)-sum(r.goods.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
                 ",sum(r.salePrice-r.rebateValue)-sum(r.goods.originalPrice)" +

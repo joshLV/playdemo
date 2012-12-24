@@ -156,11 +156,11 @@
     <th>退款券数量/金额</th>
     <th>退款实物数量/金额</th>
     <th>消费券数量/金额</th>
-    #{if hasSeeSalesRepotProfitRight == true}
+    *{#{if hasSeeSalesRepotProfitRight == true}}*
     <th>毛利率</th>
     <th>渠道成本</th>
     <th>净利润</th>
-    #{/if}
+    *{#{/if}}*
     </thead>
 #{set i:0/}
 
@@ -209,18 +209,18 @@
             <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
                target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
         </td>
-        #{if hasSeeSalesRepotProfitRight == true}
-            <td>${(report?.grossMargin?:0).format('#')}%</td>
-            <td>${(report?.channelCost?:0).formatCurrency('CNY')}</td>
-            <td>
-                #{if report.profit != null && report.profit!=0}
-                    ￥${(report?.profit?:0).format('#.00')}
-                #{/if}
-                #{else}
-                    ￥0
-                #{/else}
-            </td>
-        #{/if}
+    *{#{if hasSeeSalesRepotProfitRight == true}}*
+        <td>${(report?.grossMargin?:0).format('#')}%</td>
+        <td>${(report?.channelCost?:0).formatCurrency('CNY')}</td>
+        <td>
+            #{if report.profit != null && report.profit!=0}
+                ￥${(report?.profit?:0).format('#.00')}
+            #{/if}
+            #{else}
+                ￥0
+            #{/else}
+        </td>
+    *{#{/if}}*
 
     </tr>
 *{<tr>}*
@@ -302,7 +302,7 @@
             <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
                target="_blank">${channelSummary?.consumedPrice?.formatCurrency("CNY")}</a>
         </td>
-    #{if hasSeeSalesRepotProfitRight == true}
+    *{#{if hasSeeSalesRepotProfitRight == true}}*
         <td>${(channelSummary?.grossMargin?:0).format('#')}%</td>
         <td>${(channelSummary?.channelCost?:0).formatCurrency('CNY')}</td>
         <td>
@@ -313,7 +313,7 @@
                 ￥0
             #{/else}
         </td>
-    #{/if}
+    *{#{/if}}*
     </tr>
 
 
