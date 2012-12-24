@@ -52,6 +52,8 @@
                         permissions="WEB_TRACKS_REPORT"/>
             <navigation key="checkin_reports" action="GoldenCoinReports.checkin" text="签到报表"
                         permissions="WEB_TRACKS_REPORT"/>
+            <navigation key="goods_status_reports" action="GoodsOnSaleAndOffSaleReports.index" text="商品上下架报表"
+                        permissions="WEB_TRACKS_REPORT"/>
         </navigation>
         <navigation key="sales_report_app" text="销售报表">
             <navigation key="resale_sales_reports" action="ResaleSalesReports.index" text="渠道销售汇总"

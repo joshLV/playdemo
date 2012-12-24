@@ -261,6 +261,9 @@ public class Resaler extends Model {
     }
 
     public static List<Resaler> findByStatus(Long operateUserId) {
+        if (operateUserId==null) {
+          return Resaler.find("status=? order by id desc",ResalerStatus.APPROVED).fetch();
+        }
         return Resaler.find("salesId=? and status=? order by id desc", operateUserId, ResalerStatus.APPROVED).fetch();
     }
 
