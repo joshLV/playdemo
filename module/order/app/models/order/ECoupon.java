@@ -1299,7 +1299,7 @@ public class ECoupon extends Model {
      * @return
      */
     public String getCheckInfo() {
-        String info = "对不起，该券只能在";
+        String info = "对不起，只能在";
         String useWeekDay = this.goods.useWeekDay;
         boolean isWeekDayAll = false;
         if ((useWeekDay != null && useWeekDay.length() == 13)) {
@@ -1318,7 +1318,7 @@ public class ECoupon extends Model {
         if (this.checkUseBeginTimeAndUseEndTime(new Date())) {
             info += "次日";
         }
-        info += this.goods.useEndTime + "时间内使用！";
+        info += this.goods.useEndTime + "时间内使用该券！";
         return info;
     }
 
@@ -1407,30 +1407,30 @@ public class ECoupon extends Model {
      */
     public static String getECouponStatusDescription(ECoupon ecoupon, Long targetShopId) {
         if (ecoupon == null) {
-            return "对不起，未找到此券!";
+            return "对不起，没有该券的信息!";
         }
+        String result = null;
         if (targetShopId == null) {
-            return "对不起，该券有使用门店限制!";
+            return "对不起，该券不能在此门店使用!";
         }
         if (ecoupon.isFreeze == 1) {
-            return "对不起，该券已被冻结!";
+            result = "此券已被冻结不能使用!";
         } else if (ecoupon.status == models.order.ECouponStatus.CONSUMED) {
-            System.out.println("ecoupon.eCouponSn:" + ecoupon.eCouponSn);
-            SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日HH点mm分");
-
-            return "对不起，该券已使用过。 消费时间为" + format.format(ecoupon.consumedAt);
+            result = "此券已消费!";
         } else if (ecoupon.status == models.order.ECouponStatus.REFUND) {
-            return "对不起，该券已退款!";
+            result = "此券已经退款，无法再使用该券号进行消费!";
         } else if (ecoupon.expireAt.before(new java.util.Date())) {
-            return "对不起，该券已过期!";
+            result = "此券已过期!";
         } else if (!ecoupon.checkVerifyTimeRegion(new Date())) {
             // TODO: 现在已经不在检查时间范围，所以先不处理
             Logger.error("券ID" + ecoupon.id + "(goodsId:" + ecoupon.goods.id + ")出现了时间段检查，但现在不建议使用时间段配置，请联系运营编辑。");
-            return ecoupon.getCheckInfo();
+            result = ecoupon.getCheckInfo();
         } else if (!ecoupon.isBelongShop(targetShopId)) {
-            return "对不起，该券是其他商户的!";
+            result = "对不起，该券不能在此门店使用!";
+        } else {
+            return null;
         }
-        return null;
+        return result;
     }
 
     /**

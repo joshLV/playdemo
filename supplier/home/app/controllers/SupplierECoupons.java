@@ -28,8 +28,6 @@ public class SupplierECoupons extends Controller {
 
     public static int PAGE_SIZE = 15;
 
-
-
     /**
      * 验证页面
      */
