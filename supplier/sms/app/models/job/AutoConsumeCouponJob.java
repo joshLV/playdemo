@@ -1,0 +1,60 @@
+package models.job;
+
+import com.uhuila.common.constants.DeletedStatus;
+import models.dangdang.DDAPIUtil;
+import models.jingdong.groupbuy.JDGroupBuyUtil;
+import models.order.ECoupon;
+import models.order.ECouponCreateType;
+import models.order.ECouponPartner;
+import models.taobao.TaobaoCouponUtil;
+import models.wuba.WubaUtil;
+import play.Logger;
+import play.jobs.Every;
+import play.jobs.Job;
+
+import java.util.List;
+
+/**
+ * @author likang
+ *         Date: 12-12-25
+ */
+@Every("1mn")
+public class AutoConsumeCouponJob extends Job {
+    @Override
+    public void doJob() {
+        List<ECoupon> couponList = ECoupon.find("createType = ? and autoConsumed = ?",
+                ECouponCreateType.IMPORT, DeletedStatus.UN_DELETED).fetch(20);
+        for(ECoupon coupon : couponList) {
+            boolean consumed = true;
+            if (coupon.partner == ECouponPartner.JD) {
+                if (!JDGroupBuyUtil.verifyOnJingdong(coupon)) {
+                    consumed = false;
+                    Logger.info("verify on jingdong failed");
+                }
+            } else if (coupon.partner == ECouponPartner.WB) {
+                if (!WubaUtil.verifyOnWuba(coupon)) {
+                    consumed = false;
+                    Logger.info("verify on wuba failed");
+                }
+            } else if (coupon.partner == ECouponPartner.TB) {
+                if (!TaobaoCouponUtil.verifyOnTaobao(coupon)) {
+                    consumed = false;
+                    Logger.info("verify on taobao failed");
+                }
+            } else if (coupon.partner == ECouponPartner.DD) {
+                try{
+                    DDAPIUtil.notifyVerified(coupon);
+                } catch (Exception e) {
+                    consumed = false;
+                    Logger.info("verify on taobao failed");
+                }
+            }else {
+                consumed = false;
+            }
+            if (consumed) {
+                coupon.autoConsumed = DeletedStatus.DELETED;
+                coupon.save();
+            }
+        }
+    }
+}
