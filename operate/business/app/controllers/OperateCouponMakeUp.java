@@ -33,7 +33,7 @@ public class OperateCouponMakeUp extends Controller {
         StringBuilder successMessage = new StringBuilder("成功：");
         StringBuilder failMessage = new StringBuilder("失败：\n");
         for(String c : couponList) {
-            ECoupon eCoupon = ECoupon.find("byECouponSn", coupon).first();
+            ECoupon eCoupon = ECoupon.find("byECouponSn", c).first();
             if (eCoupon == null) {
                 failMessage.append(c).append(" 没有找到\n");
                 continue;
