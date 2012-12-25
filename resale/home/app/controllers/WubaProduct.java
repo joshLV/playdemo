@@ -15,6 +15,7 @@ import models.sales.GoodsDeployRelation;
 import models.sales.GoodsThirdSupport;
 import models.sales.Shop;
 import models.supplier.Supplier;
+import models.wuba.AreaMapping;
 import models.wuba.WubaUtil;
 import org.apache.commons.lang.StringUtils;
 import play.mvc.Before;
@@ -44,11 +45,21 @@ public class WubaProduct extends Controller {
         getGoodsItems(goods);
 
         List<Shop> shopList = Arrays.asList(goods.getShopList().toArray(new Shop[]{}));
+        List<AreaMapping> areaMappingList = AreaMapping.findAll();
+
         JsonArray jsonArray1 = new JsonParser().parse(new Gson().toJson(shopList)).getAsJsonArray();
         JsonArray jsonArray = new JsonArray();
         for (int i = 0; i < shopList.size(); i++) {
             JsonObject jsonObject = jsonArray1.get(i).getAsJsonObject();
-            jsonObject.addProperty("areaName", shopList.get(i).getAreaName());
+            String areaName = shopList.get(i).getAreaName();
+            jsonObject.addProperty("areaName", areaName);
+            for (AreaMapping areaMapping : areaMappingList) {
+                if (areaMapping.ybqCircleName.equals(areaName)) {
+                    jsonObject.addProperty("areaName", areaMapping.wbCircleName);
+                    break;
+                }
+            }
+
             jsonArray.add(jsonObject);
         }
         renderArgs.put("editShopList", new ArrayList<>());
@@ -266,6 +277,12 @@ public class WubaProduct extends Controller {
 
         for (int i = 1; i <= shopSize; i++) {
             Map<String, Object> partnerMap = new HashMap<>();
+            String ybqCircleName = request.params.get("ybqCircleName" + i);
+            String circleName = request.params.get("circleName" + i);
+            if (!circleName.equals(ybqCircleName) && !AreaMapping.isExistedYbqCircleName(ybqCircleName)) {
+                new AreaMapping(ybqCircleName, circleName).save();
+            }
+
             partnerMap.put("partnerId", Long.parseLong(request.params.get("partnerId_" + i)));
             partnerMap.put("title", StringUtils.trimToEmpty(request.params.get("title_" + i)));
             partnerMap.put("shortTitle", StringUtils.trimToEmpty(request.params.get("shortTitle_" + i)));
@@ -279,14 +296,12 @@ public class WubaProduct extends Controller {
             partnerMap.put("mapServiceId", request.params.get("mapServiceId_" + i) == null ? null : Integer.parseInt(request.params.get("mapServiceId_" + i)));
             partnerMap.put("latitude", request.params.get("latitude_" + i));
             partnerMap.put("longitude", request.params.get("longitude_" + i));
-
             partners.add(partnerMap);
 
         }
 
         requestMap.put("partners", partners);
         String goodsData = new Gson().toJson(requestMap);
-
         JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.addgroupbuy", false);
         String status = result.get("status").getAsString();
         String msg = result.get("msg").getAsString();
