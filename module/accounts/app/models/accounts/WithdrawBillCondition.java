@@ -88,8 +88,6 @@ public class WithdrawBillCondition implements Serializable {
             params.put("searchUser", searchUser);
         }
 
-
-        System.out.println("filter.toString()>>>" + filter.toString());
         return filter.toString();
     }
 

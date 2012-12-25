@@ -14,13 +14,12 @@ import models.resale.Resaler;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
-
-import com.uhuila.common.util.DateUtil;
-
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 import util.DateHelper;
+
+import java.util.List;
 
 /**
  * 财务报表.
@@ -45,11 +44,11 @@ public class OperateReports extends Controller {
             condition = getDefaultAccountSequenceCondition();
         }
 
-        if(condition.accountName != null && !condition.accountName.trim().equals("")){
+        if (condition.accountName != null && !condition.accountName.trim().equals("")) {
             User user = User.findByLoginName(condition.accountName);
             if (user != null) {
                 condition.account = AccountUtil.getConsumerAccount(user.id);
-            }else {
+            } else {
                 condition.account = new Account();
                 condition.account.id = -1L;
             }
@@ -94,7 +93,7 @@ public class OperateReports extends Controller {
             condition = getDefaultAccountSequenceCondition();
         }
 
-        if(condition.accountName != null && !condition.accountName.trim().equals("")){
+        if (condition.accountName != null && !condition.accountName.trim().equals("")) {
             Resaler user = Resaler.findOneByLoginName(condition.accountName);
             if (user != null) {
                 condition.account = AccountUtil.getResalerAccount(user.id);
@@ -137,10 +136,10 @@ public class OperateReports extends Controller {
             condition = getDefaultAccountSequenceCondition();
         }
 
-        if(condition.accountName != null && !condition.accountName.trim().equals("")){
-            Supplier user = Supplier.findByFullName(condition.accountName);
-            if (user != null) {
-                condition.account = AccountUtil.getSupplierAccount(user.id);
+        if (condition.accountUid != null) {
+            Supplier supplier = Supplier.findById(condition.accountUid);
+            if (supplier != null) {
+                condition.account = AccountUtil.getSupplierAccount(supplier.id);
             } else {
                 condition.account = new Account();
                 condition.account.id = -1L;
@@ -152,24 +151,24 @@ public class OperateReports extends Controller {
         for (AccountSequence accountSequence : accountSequencePage) {
             Supplier supplier = Supplier.findById(accountSequence.account.uid);
             if (supplier != null) {
-                accountSequence.supplierName = supplier.fullName;
+                accountSequence.supplierName = supplier.otherName + "/" + supplier.fullName;
                 accountSequence.accountName = supplier.loginName;
             }
             setOrderInfo(accountSequence);
         }
 
         AccountSequenceSummary summary = AccountSequence.findSummaryByCondition(condition);
-
-        render(accountSequencePage, summary, condition);
+        List<Supplier> supplierList = Supplier.findUnDeleted();
+        render(accountSequencePage, summary, supplierList, condition);
     }
 
     /**
      * 查询活动金账户资金明细
      */
     @ActiveNavigation("promotion_account_reports")
-    public static void showPromotionReport(AccountSequenceCondition condition){
+    public static void showPromotionReport(AccountSequenceCondition condition) {
         int pageNumber = getPageNumber();
-        if(condition == null){
+        if (condition == null) {
             condition = getDefaultAccountSequenceCondition();
         }
         condition.account = AccountUtil.getPromotionAccount();
