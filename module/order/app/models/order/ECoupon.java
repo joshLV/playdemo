@@ -1415,6 +1415,7 @@ public class ECoupon extends Model {
         if (ecoupon.isFreeze == 1) {
             return "对不起，该券已被冻结!";
         } else if (ecoupon.status == models.order.ECouponStatus.CONSUMED) {
+            System.out.println("ecoupon.eCouponSn:" + ecoupon.eCouponSn);
             SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日HH点mm分");
 
             return "对不起，该券已使用过。 消费时间为" + format.format(ecoupon.consumedAt);

@@ -12,6 +12,7 @@
     <div class="hd clearfix">
         <a class="curr" id="single-page" href="javascript:void(0);">单券验证</a>
         <a id="multi-page" href="javascript:void(0);">批量验证</a>
+        <input id="tabPage" name="tabPage" type="hidden" value="${tabPage?:1}"/>
     </div>
 *{单券验证}*
     <div class="bd single-verify">
@@ -30,7 +31,7 @@
                 #{else}
                     <input type="text" name="shopName" id="shopName" disabled="true" value="${shop?.name}"
                            class="input-large"/>
-                    <input type="hidden" name="shopId" id="shopId" value="${shop?.id}" class="input-large"/>
+                    <input type="hidden" name="shopId" id="shopId" value="${shop?.id}"/>
                 #{/else}
 
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -54,7 +55,7 @@
             <div class="field-sect">
                 <div class="field-group">
                     <label>选择分店</label>
-                #{select 'shopId', id:shopId, value:shopId}
+                #{select 'shopId', id:"shopId", value:shopId}
                     #{option ""}全部#{/option}
                     #{list items:shopList, as:'shop'}
                         #{option shop?.id}${shop?.name}#{/option}
@@ -71,8 +72,10 @@
             <table cellspacing="0" cellpadding="0" border="0" class="coupons-table" id="coupons-table">
                 <tr>
                     <th width="30">序号</th>
-                    <th width="40" class="code">操作</th>
                     <th width="150">输入的券号</th>
+                    <th width="30">面值</th>
+                    <th width="100">有效期</th>
+                    <th width="40" class="code">操作</th>
                     <th width="auto">验证消费提示</th>
                 </tr>
             </table>
