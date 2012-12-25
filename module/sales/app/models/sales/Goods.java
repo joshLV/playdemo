@@ -203,6 +203,7 @@ public class Goods extends Model {
     @MaxSize(24)
     @Column(name = "short_name")
     public String shortName;
+
     /**
      * (网站标题)原来叫商品名称
      */

@@ -721,6 +721,9 @@ public class Order extends Model {
             if (goods == null) {
                 continue;
             }
+            // 用于批量发送
+            List<String> eCouponSNs = new ArrayList<>();
+            String replyCode = null;
             //如果不是电子券，跳过
             if (MaterialType.ELECTRONIC == goods.materialType) {
                 for (int i = 0; i < orderItem.buyNumber; i++) {
@@ -738,16 +741,59 @@ public class Order extends Model {
                             && orderItem.order.getResaler().loginName.equals(Resaler.JD_LOGIN_NAME)) {
                         continue;
                     }
-                    //发短信
-                    sendEcouponSms(eCoupon, goods, orderItem);
+                    if (!ECoupon.USE_PRODUCT_SERIAL_REPLYCODE) {
+                        //发短信
+                        sendEcouponSms(eCoupon, goods, orderItem);
+                    }
+                    replyCode = eCoupon.replyCode;
+                    eCouponSNs.add(eCoupon.eCouponSn);
                 }
             }
             //邮件提醒
             sendPaidMail(goods, orderItem);
+
+            // 同一产品发一个短信
+            if (ECoupon.USE_PRODUCT_SERIAL_REPLYCODE) {
+                sendGoodsEcoupons(goods, orderItem, replyCode, eCouponSNs);
+            }
             goods.save();
         }
+
     }
 
+    /**
+     * 发送一组
+     * @param goods
+     * @param ecoupons
+     */
+    public void sendGoodsEcoupons(Goods goods, OrderItems orderItem, String replyCode, List<String> ecoupons) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
+
+        String ecouponStr = StringUtils.join(ecoupons, "/");
+        BigDecimal count = new BigDecimal(ecoupons.size());
+        BigDecimal sumFaceValue = goods.faceValue.multiply(count).setScale(0);
+
+        // 58团
+        if (AccountType.RESALER.equals(orderItem.order.userType)
+                && orderItem.order.getResaler().loginName.equals(Resaler.WUBA_LOGIN_NAME)) {
+            SMSUtil.send("【58团】【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
+                    "[总面值" + sumFaceValue + "元]" + "券号" + ecouponStr + "," +
+                    "截止" + dateFormat.format(goods.expireAt) + "客服4007895858",
+                    orderItem.phone, replyCode);
+            return;
+        }
+        SMSUtil.send("【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
+                "[总面值" + sumFaceValue + "元]" + "券号" + ecouponStr + "," +
+                "截止" + dateFormat.format(goods.expireAt) + "客服4006262166",
+                orderItem.phone, replyCode);
+    }
+
+    /**
+     * 发送半张券到消费者手机
+     * @param eCoupon
+     * @param goods
+     * @param orderItem
+     */
     private void sendEcouponSms(ECoupon eCoupon, Goods goods, OrderItems orderItem) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
         /*
@@ -770,13 +816,13 @@ public class Order extends Model {
         // 58团
         if (AccountType.RESALER.equals(orderItem.order.userType)
                 && orderItem.order.getResaler().loginName.equals(Resaler.WUBA_LOGIN_NAME)) {
-            SMSUtil.send("【58团】【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name +
+            SMSUtil.send("【58团】【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.shortName +
                     "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
                     "截止" + dateFormat.format(eCoupon.expireAt) + "客服4007895858",
                     orderItem.phone, eCoupon.replyCode);
             return;
         }
-        SMSUtil.send("【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name +
+        SMSUtil.send("【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.shortName +
                     "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
                     "截止" + dateFormat.format(eCoupon.expireAt) + "客服4006262166",
                     orderItem.phone, eCoupon.replyCode);
