@@ -44,7 +44,8 @@ GET     /coupons                                SupplierECoupons.index
 GET     /verify                                 SupplierVerifyECoupons.index
 GET     /verify/single-query                    SupplierVerifyECoupons.singleQuery
 POST    /verify/single-verify                   SupplierVerifyECoupons.singleVerify
-GET     /verify/multi                           SupplierVerifyECoupons.showMulti
+GET     /verify/multi-query                     SupplierVerifyECoupons.multiQuery
+POST    /verify/multi-verify                    SupplierVerifyECoupons.multiVerify
 
 
 # [v2] 验证电子券页面--v1

@@ -1,12 +1,25 @@
+/**
+ * 用ctrl-v粘贴券号到输入框时自动格式化输入框中的券号，加上空格分开
+ * @param e
+ * @param $
+ */
+function formatCopyECouponSn(e, $) {
+    if (e.ctrlKey) {//同时按下ctrl+v
+        var _this = $(this);
+        var value = _this.val();
+        if (value.length > 3) {
+            _this.val(value.substring(0, 3) + ' ' + value.substring(3, value.length));
+            value = _this.val();
+        }
+        if (value.length > 7) {
+            _this.val(value.substring(0, 7) + ' ' + value.substring(7, value.length));
+        }
+    }
+}
+
 jQuery(function ($) {
-    $(document).keydown(function (e) {
-        if (e.keyCode == ctrlKey) ctrlDown = true;
-    }).keyup(function (e) {
-            if (e.keyCode == ctrlKey) ctrlDown = false;
-        });
 
-
-    // 格式化券号
+    //批量验证 格式化券号
     $('.enter-coupon').live('keypress', function () {
         var _this = $(this),
             value = _this.val();
@@ -15,25 +28,9 @@ jQuery(function ($) {
         } else if (value.length == 7) {
             _this.val(value + ' ');
         }
-
-        // 仿美团点格式化
-        // var val = $(this).val();
-        // var arr = val.split('');
-        // for (var i = 0, l = arr.length; i < l; i++) {
-        // if (i == 3 && arr[i] != " ") {
-        // arr.splice(3, 0, " ");
-        // l = arr.length;
-        // } else if (i == 7 && arr[i] != " ") {
-        // arr.splice(7, 0, " ");
-        // l = arr.length;
-        // } else if (i != 3 && i != 7 && arr[i] == " ") {
-        // arr.splice(i, 1);
-        // l = arr.length;
-        // }
-        // }
-        // $(this).val(arr.join(''));
     });
 
+    //单券验证前查询券的合法性
     var singleCoupon = $('#eCouponSn'),
         singleVerify = function () {
             eCouponSn = singleCoupon.val().replace(' ', '');
@@ -59,8 +56,9 @@ jQuery(function ($) {
                 });
         };
 
-    checkCouponSn = function (snInput) {
-        var shopId = $("input[name='shopId']:checked").val();
+    //前端检查券号格式合法性
+    checkCouponSn = function (shopIdInput, snInput) {
+        var shopId = shopIdInput.val();
         if (shopId == null) {
             alert("请选择门店！");
             return false;
@@ -80,27 +78,22 @@ jQuery(function ($) {
         return true;
     };
 
+    //单券的券验证按钮点击事件，点击后先前端验证合法性，再后台验证，如果合法，则弹出确认验证的小窗口
     $('#check-btn').click(function () {
-        if (checkCouponSn(singleCoupon)) {
+        if (checkCouponSn($("input[name='shopId']:checked"), singleCoupon)) {
             singleVerify();
         }
     });
 
-    var ctrlDown = false;
-    var ctrlKey = 17, vKey = 86, cKey = 67;
+    //批量验证的添加券号的按钮点击事件，点击后验证当前输入的券号.
+    $('.add-coupon').click(function () {
+        if (checkCouponSn($("#shopId"), singleCoupon)) {
+            singleVerify();
+        }
+    });
 
     $('#eCouponSn').keyup("v", function (e) {
-        if (e.ctrlKey) {//同时按下ctrl+v
-            var _this = $(this);
-            var value = _this.val();
-            if (value.length > 3) {
-                _this.val(value.substring(0, 3) + ' ' + value.substring(3, value.length));
-                value = _this.val();
-            }
-            if (value.length > 7) {
-                _this.val(value.substring(0, 7) + ' ' + value.substring(7, value.length));
-            }
-        }
+        formatCopyECouponSn.call(this, e, $);
     });
 
     $('.close').click(function () {
@@ -122,15 +115,27 @@ jQuery(function ($) {
         $('#coupon-form').submit();
     });
 
+    //批量验证的输入框
+    enterCoupon = $('#enter-coupon');
+
+    enterCoupon.keyup("v", function (e) {
+        formatCopyECouponSn.call(this, e, $);
+    });
+
+    // 直接在input上按下enter键
+    enterCoupon.keydown(function (e) {
+        if (e.keyCode == 13) {
+            addVerifyQueue();
+        }
+    });
     var serial = 0, coupons = [];
-    enterCoupon = $('#eCouponSn');
     addVerifyQueue = function () {
         if (serial > 10) {
             alert('一次最多只能验证10张券号，请分次验证。');
             return false;
         }
 
-        if (!checkCouponSn(enterCoupon)) {
+        if (!checkCouponSn($("#shopId"), enterCoupon)) {
             return false;
         }
 
@@ -149,12 +154,8 @@ jQuery(function ($) {
             '</tr>');
         enterCoupon.val('');
     };
-// 直接在input上按下enter键
-    enterCoupon.keydown(function (e) {
-        if (e.keyCode == 13) {
-            addVerifyQueue();
-        }
-    });
+
+
 // 代理a上的点击事件
     $('#batch-verify-coupons').delegate('a', 'click', function () {
         var _this = $(this);
@@ -196,24 +197,23 @@ jQuery(function ($) {
             });
         }
     });
-});
 
-function getKey(e) {
-    e = e || window.event;
-    var keycode = e.which ? e.which : e.keyCode;
-    if (keycode == 13 || keycode == 108) { //如果按下ENTER键
-        //在这里设置你想绑定的事件
-        $('#popup-mask').hide();
-        $('#popup').hide();
-    }
-}
-// 把keyup事件绑定到document中
-function listenKey() {
-    if (document.addEventListener) {
-        document.addEventListener("keyup", getKey, false);
-    } else if (document.attachEvent) {
-        document.attachEvent("onkeyup", getKey);
-    } else {
-        document.onkeyup = getKey;
-    }
-}
+
+    //
+    $('#single-page').click(function () {
+        $('#single-page').addClass('curr');
+        $('#multi-page').removeClass('curr');
+        $('.single-verify').show();
+        $('.batch-verify').hide();
+        $('#eCouponSn').val('');
+
+    });
+
+    $('#multi-page').click(function () {
+        $('#multi-page').addClass('curr');
+        $('#single-page').removeClass('curr');
+        $('.single-verify').hide();
+        $('.batch-verify').show();
+        $('#enter-coupon').val('');
+    });
+});
