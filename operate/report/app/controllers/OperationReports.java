@@ -82,7 +82,6 @@ public class OperationReports extends Controller {
         }
         Boolean hasSeeSalesRepotProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
 
-
         List<ResaleSalesReport> channelPage = null;
         ResaleSalesReportCondition channelCondition = new ResaleSalesReportCondition();
         channelCondition.beginAt = condition.beginAt;
@@ -119,6 +118,34 @@ public class OperationReports extends Controller {
 
         render(condition, reportPage, channelPage, channelSummary, hasSeeSalesRepotProfitRight);
     }
+
+
+    @ActiveNavigation("channel_goods_reports")
+    public static void showChannelGoodsReport(ChannelGoodsReportCondition condition) {
+        int pageNumber = getPageNumber();
+        if (condition == null) {
+            condition = new ChannelGoodsReportCondition();
+        }
+        Boolean hasSeeSalesRepotProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+
+        List<ChannelGoodsReport> resultList = ChannelGoodsReport.query(condition);
+        List<ChannelGoodsReport> consumerList = ChannelGoodsReport.queryConsumer(condition);
+        // 查询出所有结果
+        for (ChannelGoodsReport c : consumerList) {
+            resultList.add(c);
+        }
+
+
+        // 分页
+        ValuePaginator<ChannelGoodsReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
+
+        // 汇总
+        ChannelGoodsReport summary = ChannelGoodsReport.getNetSummary(resultList);
+
+        render(condition, reportPage, hasSeeSalesRepotProfitRight, summary);
+
+    }
+
 
     public static void salesReportWithPrivilegeExcelOut(SalesReportCondition condition) {
         if (condition == null) {

@@ -163,7 +163,9 @@ public class SalesReport {
             if (item == null) {
                 map.put(getReportKey(resalerItem), resalerItem);
             } else {
-                item.profit = item.profit.subtract(resalerItem.totalAmount.subtract(resalerItem.totalCost)).add(resalerItem.profit);
+                item.profit = item.profit == null ? BigDecimal.ZERO : item.profit.subtract(resalerItem.totalAmount  == null ? BigDecimal.ZERO : resalerItem.totalAmount
+                        .subtract(resalerItem.totalCost == null ? BigDecimal.ZERO : resalerItem.totalCost))
+                        .add(resalerItem.profit == null ? BigDecimal.ZERO : resalerItem.profit);
             }
         }
 

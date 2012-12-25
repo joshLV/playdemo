@@ -9,10 +9,7 @@ import play.db.jpa.JPA;
 import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 渠道大类报表
@@ -327,11 +324,17 @@ public class ChannelCategoryReport {
                 " and r.goods.supplierId = s ";
         String groupBy = " group by r.order.userId, s.supplierCategory.id";
         Query query = JPA.em()
-                .createQuery(sql + condition.getFilterPaidAt(AccountType.RESALER) + groupBy + " order by r.order.userId,sum(r.salePrice-r.rebateValue) desc");
+                .createQuery(sql + condition.getFilterPaidAt(AccountType.RESALER) + groupBy + " order by r.order.userId, s.supplierCategory.id desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<ChannelCategoryReport> paidResultList = query.getResultList();
+        for (ChannelCategoryReport c : paidResultList) {
+            System.out.println("name>>" + c.loginName + "    profit>>>" + c.profit);
+            System.out.println("saleprice>>>" + c.salePrice);
+            System.out.println("cost>>>" + c.totalCost);
+        }
+
 
         //sendAt real
         sql = "select new models.ChannelCategoryReport(r.order,s.supplierCategory.id,count(r.buyNumber) " +
@@ -341,7 +344,7 @@ public class ChannelCategoryReport {
                 ",sum(r.salePrice-r.rebateValue)-sum(r.salePrice-r.rebateValue)*b.commissionRatio/100-sum(r.goods.originalPrice)" +
                 ") from OrderItems r,Order o,Resaler b,Supplier s  where r.order=o and o.userId=b.id  and r.goods.supplierId = s and ";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRealSendAt(AccountType.RESALER) + groupBy + " order by sum(r.salePrice-r.rebateValue) desc");
+                .createQuery(sql + condition.getFilterRealSendAt(AccountType.RESALER) + groupBy + " order by r.order.userId, s.supplierCategory.id desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
@@ -351,7 +354,7 @@ public class ChannelCategoryReport {
         sql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue),s.supplierCategory.id,r.order,count(e))" +
                 " from OrderItems r, ECoupon e,Supplier s  where e.orderItems=r and r.goods.supplierId = s ";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterConsumedAt(AccountType.RESALER) + groupBy + " order by sum(r.salePrice-r.rebateValue) desc");
+                .createQuery(sql + condition.getFilterConsumedAt(AccountType.RESALER) + groupBy + " order by r.order.userId, s.supplierCategory.id desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
@@ -362,7 +365,7 @@ public class ChannelCategoryReport {
         sql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue),s.supplierCategory.id, count(e),r.order) " +
                 " from OrderItems r, ECoupon e ,Supplier s where e.orderItems=r and r.goods.supplierId = s ";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundAt(AccountType.RESALER) + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilterRefundAt(AccountType.RESALER) + groupBy + " order by r.order.userId, s.supplierCategory.id desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
@@ -422,7 +425,15 @@ public class ChannelCategoryReport {
             }
         }
         List resultList = new ArrayList();
-        for (String key : map.keySet()) {
+
+        List<String> tempString = new ArrayList<>();
+        for (String s : map.keySet()) {
+            tempString.add(s);
+
+        }
+        Collections.sort(tempString);
+
+        for (String key : tempString) {
             resultList.add(map.get(key));
         }
 
@@ -572,6 +583,8 @@ public class ChannelCategoryReport {
         }
 
         List resultList = new ArrayList();
+
+
         for (String key : map.keySet()) {
             resultList.add(map.get(key));
         }
@@ -581,11 +594,12 @@ public class ChannelCategoryReport {
 
 
     private static String getReportKey(ChannelCategoryReport refoundItem) {
-//        if (refoundItem.code != null) {
-        return refoundItem.order.userId + refoundItem.code;
-//        } else {
-//            return String.valueOf(refoundItem.order.userId);
-//        }
+        if (refoundItem.code != null) {
+
+            return refoundItem.order.userId + refoundItem.code;
+        } else {
+            return String.valueOf(refoundItem.order.userId) + "00";
+        }
     }
 
     private static String getConsumerReportKey(ChannelCategoryReport refoundItem) {

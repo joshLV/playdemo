@@ -14,7 +14,7 @@
     <permission key="BALANCE_REPORT" text="余额报表" roles="account"/>
     <permission key="SALES_REPORT" text="销售表" roles="account,sales,manager"/>
     <permission key="WEB_TRACKS_REPORT" text="网站跟踪报表" roles="webop"/>
-    <permission key="CONSUMER_REPORT" text="消费报表" roles="manager,account"/>
+    <permission key="CONSUMRER_REPORT" text="消费报表" roles="manager,account"/>
     <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager,account"/>
     <permission key="PREPAYMENT_REPORT" text="预付款明细表" roles="manager,account"/>
     <permission key="OPERATION_SALES_REPORT" text="运营报表" roles="sales,account,manager"/>
@@ -27,6 +27,8 @@
         <navigation key="channel_reports" action="OperationReports.showChannelReport" text="渠道汇总报表"
                     permissions="OPERATION_SALES_REPORT"/>
         <navigation key="channel_category_reports" action="OperationReports.showChannelCategoryReport" text="渠道大类报表"
+                    permissions="OPERATION_SALES_REPORT"/>
+        <navigation key="channel_goods_reports" action="OperationReports.showChannelGoodsReport" text="渠道商品报表"
                     permissions="OPERATION_SALES_REPORT"/>
     </navigation>
 
