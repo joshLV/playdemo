@@ -33,8 +33,11 @@ public class SMSFactory {
             smsProvider = new LingshiSMSProvider();
         } else if ("vxsms".endsWith(smsType)) {
             smsProvider = new VxSMSProvider();
+        } else if ("mock".endsWith(smsType)) {
+            Logger.info("use mock smsprovider.");
+            smsProvider = new VxSMSProvider();
         } else {
-            Logger.error("NOT set SMSType");
+            Logger.error("NOT set SMSType, use mock.");
             smsProvider = new VxSMSProvider();
         }
 

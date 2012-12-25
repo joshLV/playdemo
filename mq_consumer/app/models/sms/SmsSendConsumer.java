@@ -25,6 +25,7 @@ public class SmsSendConsumer extends RabbitMQConsumerWithTx<SMSMessage> {
 
     @Override
     public void consumeWithTx(SMSMessage message) {
+        Logger.info("send message by sms.type:" + SMS_TYPE);
         if (SMS_TYPE == null) {
             return;
         }
