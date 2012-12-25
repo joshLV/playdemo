@@ -7,7 +7,6 @@ import models.sales.Goods;
 import models.sales.GoodsHistory;
 import models.sales.MaterialType;
 import models.sales.SecKillGoods;
-import org.apache.commons.collections.CollectionUtils;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 
@@ -118,7 +117,7 @@ public class OrderItems extends Model {
         this.originalPrice = goods.originalPrice;
         this.salePrice = salePrice;
         this.resalerPrice = resalerPrice;
-        this.goodsName = goods.name;
+        this.goodsName = goods.shortName;
         this.buyNumber = buyNumber;
         this.phone = phone;
         this.status = OrderStatus.UNPAID;

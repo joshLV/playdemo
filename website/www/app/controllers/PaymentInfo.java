@@ -16,6 +16,7 @@ import models.payment.PaymentUtil;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,9 +35,35 @@ public class PaymentInfo extends Controller {
 
         //加载订单信息
         Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.CONSUMER);
+
+        if (order == null) {
+            error("order not found");return;
+        }
+        //如果订单总金额是0元，就直接付款成功吧
+        if (order.needPay.compareTo(BigDecimal.ZERO) == 0) {
+            if (Order.confirmPaymentInfo(order, account, false, null, null, null)){
+                PaymentSource paymentSource = PaymentSource.findByCode(order.payMethod);
+                //近日成交商品
+                List<models.sales.Goods> recentGoodsList = models.sales.Goods.findTradeRecently(5);
+                render("PaymentInfo/confirm.html", order, paymentSource, recentGoodsList);
+                return;
+            }
+        }
+
+
         long goodsNumber = OrderItems.itemsNumber(order);
 
         List<PaymentSource> paymentSources = PaymentSource.find("order by showOrder").fetch();
+
+        //先把这个订单已经使用的给解绑
+        if (order.status == OrderStatus.UNPAID) {
+            List<Voucher> bindVouchers = Voucher.find("byAccountAndOrder", account, order).fetch();
+            for (Voucher voucher : bindVouchers) {
+                voucher.order = null;
+                voucher.usedAt = null;
+                voucher.save();
+            }
+        }
 
         List<Voucher> voucherList = Voucher.validVouchers(AccountUtil.getConsumerAccount(user.getId()));
         render(user, account, order, goodsNumber, paymentSources, voucherList);
@@ -78,9 +105,8 @@ public class PaymentInfo extends Controller {
             }
         }
 
-        
-        Account account = AccountUtil.getConsumerAccount(user.getId());
 
+        Account account = AccountUtil.getConsumerAccount(user.getId());
         if (Order.confirmPaymentInfo(order, account, useBalance, paymentSourceCode, null, vouchers)) {
             PaymentSource paymentSource = PaymentSource.findByCode(order.payMethod);
             //近日成交商品

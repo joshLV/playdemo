@@ -146,6 +146,7 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
         User user = FactoryBoy.create(User.class);
         order.userType = AccountType.CONSUMER;
         order.userId = user.id;
+        order.accountPay = ecoupon.salePrice;
         order.save();
 
         Response response = POST("/verified-ecoupon-refunds", getECouponSnParams(ecoupon.eCouponSn));
@@ -159,6 +160,7 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
 
         // 检查余额
         Account userAccount = AccountUtil.getAccount(user.id, AccountType.CONSUMER);
+        userAccount.refresh();
         assertEquals(ecoupon.salePrice.setScale(2), userAccount.amount.setScale(2));
         supplierAccount.refresh();
         assertEquals(baseAmount.subtract(ecoupon.originalPrice).setScale(2), supplierAccount.amount.setScale(2));
@@ -174,6 +176,7 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
         Resaler resaler = FactoryBoy.create(Resaler.class);
         order.userType = AccountType.RESALER;
         order.userId = resaler.id;
+        order.accountPay = new BigDecimal("8.5");
         order.save();
 
         Response response = POST("/verified-ecoupon-refunds", getECouponSnParams(ecoupon.eCouponSn));

@@ -90,6 +90,9 @@ public class Voucher extends Model {
     @Column(name = "operator_id")
     public Long operatorId;
 
+    @Transient
+    public String operatorName;
+
     /**
      * 创建时间
      */
@@ -135,6 +138,7 @@ public class Voucher extends Model {
             if (voucher.account != null) {
                 voucher.assignedAt = new Date();
             }
+            voucher.prefix = prefix;
             voucher.serialNo = prefix + decimalFormat.format(i + 1);
             voucher.operatorId = operatorId;
             voucher.voucherType = type;
@@ -143,22 +147,6 @@ public class Voucher extends Model {
         }
     }
 
-    @Transient
-    public String getOperator() {
-        String userName = "";
-        if (operatorId == null) {
-            return userName;
-        }
-        if (voucherType == VoucherType.EXCHANGE) {
-            User user = User.findById(operatorId);
-            if (user != null) {
-                userName = "消费者兑换：" + user.getShowName();
-            }
-        } else {
-            userName = "运营人员ID：" + operatorId;
-        }
-        return userName;
-    }
 
     /**
      * 删除状态。

@@ -90,6 +90,7 @@
         <th>券号</th>
         <th>创建时间</th>
         <th>过期时间</th>
+        <th>密码</th>
         <td>绑定的账号</td>
         <td>绑定时间</td>
         <td>使用时间</td>
@@ -102,10 +103,12 @@
         <td>${voucher.value.formatCurrency("CNY")}</td>
         <td>${voucher.serialNo}</td>
         <td>${voucher.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+        <td>${voucher.expiredAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+        <td>${voucher.chargeCode}</td>
         <td><a href="/consumers/${voucher.account?.uid}" target="_blank">${voucher.account?.uid}</a></td>
         <td>${voucher.assignedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
         <td>${voucher.usedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-        <td width="180">${voucher.getOperator()}</td>
+        <td width="180">${voucher.operatorName}</td>
         <td>
             #{if voucher.usedAt} <span class="label label-important">已使用</span> #{/if}
             #{else}<span class="label label-success">未使用</span>#{/else}

@@ -35,7 +35,7 @@ GET     /reports/net_sales                       NetSalesReports.index
 GET     /favicon.ico                            404
 
 GET     /reports                                PurchaseTaxReports.index
-
+GET     /reports/channel                        GoodsOnSaleAndOffSaleReports.index
 
 # 商户销售汇总表
 GET     /totalsales/trends                      TotalSalesReports.trends

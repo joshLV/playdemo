@@ -76,38 +76,71 @@ public class VerifiedECouponRefunds extends Controller {
         if (accountType != AccountType.CONSUMER && accountType != AccountType.RESALER) {
             return "不支持的券类别，请检查";
         }
+        if (eCoupon.order.refundedAmount == null) {
+            eCoupon.order.refundedAmount = BigDecimal.ZERO;
+        }
+        if (eCoupon.order.promotionBalancePay == null) {
+            eCoupon.order.promotionBalancePay = BigDecimal.ZERO;
+        }
 
         // 查找原订单信息 可能是分销账户，也可能是消费者账户
         Account userAccount = AccountUtil.getAccount(userId, accountType);
 
-        // 计算需要退款的活动金金额
-        // 计算方法：本订单中，抛开已消费的和已经退款过的活动金，先退活动金
-        // 例如，订单金额100，用活动金支付40，用余额支付60，若此时退款，则首先退到活动金中。
-        // 如果已经消费了20， 那仍然首先退到活动金，但是最多退40-20=20元，也就是说，视用户消费时首先消费的是活动金
+        System.out.println("===coupon.salePrice" + eCoupon.salePrice);
+        System.out.println("===coupon.rebate" + eCoupon.rebateValue);
+        System.out.println("===order.account" + eCoupon.order.accountPay);
+        System.out.println("===order.disaccount" + eCoupon.order.discountPay);
+        System.out.println("===order.promotion" + eCoupon.order.promotionBalancePay);
 
-        BigDecimal promotionAmount = BigDecimal.ZERO;
+        //先计算已消费的金额(此处应去除本券)
         BigDecimal consumedAmount = BigDecimal.ZERO;
-
-        //退款金额为该券金额减去折扣金额
-        BigDecimal cashAmount = ECoupon.getLintRefundPrice(eCoupon);
-
-        if (eCoupon.order.refundedPromotionAmount == null) {
-            eCoupon.order.refundedPromotionAmount = BigDecimal.ZERO;
-        }
         List<ECoupon> eCoupons = ECoupon.find("byOrderAndStatus",
                 eCoupon.order, ECouponStatus.CONSUMED).fetch();
         for (ECoupon c : eCoupons) {
-            consumedAmount = consumedAmount.add(c.salePrice);
+            if (!c.getId().equals(eCoupon.getId()))
+                consumedAmount = consumedAmount.add(ECoupon.getLintRefundPrice(c));
         }
-        BigDecimal usedPromotionAmount = eCoupon.order.refundedPromotionAmount
-                .add(consumedAmount);
-        if (eCoupon.order.promotionBalancePay != null
-                && eCoupon.order.promotionBalancePay
-                .compareTo(usedPromotionAmount) > 0) {
-            promotionAmount = cashAmount.min(eCoupon.order.promotionBalancePay
-                    .subtract(usedPromotionAmount));
-            cashAmount = cashAmount.subtract(promotionAmount);
+
+        System.out.println("===consumedAmount" + consumedAmount);
+        //已消费的金额加上已退款的金额作为垫底
+        BigDecimal onTheBottom = consumedAmount.add(eCoupon.order.refundedAmount);
+
+        System.out.println("===onTheBottom" + onTheBottom);
+        //再来看看去掉垫底的资金后，此订单还能退多少活动金和可提现余额
+        BigDecimal refundOrderTotalCashAmount = eCoupon.order.accountPay.add(eCoupon.order.discountPay);
+        BigDecimal refundOrderTotalPromotionAmount = eCoupon.order.promotionBalancePay;
+        if (refundOrderTotalPromotionAmount.compareTo(onTheBottom) > 0) {
+            //如果该订单的活动金大于垫底资金
+            refundOrderTotalPromotionAmount = refundOrderTotalPromotionAmount.subtract(onTheBottom);
+        }else{
+            refundOrderTotalCashAmount = refundOrderTotalCashAmount
+                    .add(refundOrderTotalPromotionAmount)
+                    .subtract(onTheBottom);
+            refundOrderTotalPromotionAmount = BigDecimal.ZERO;
+            if (refundOrderTotalCashAmount.compareTo(BigDecimal.ZERO) < 0) {
+                refundOrderTotalCashAmount = BigDecimal.ZERO;
+            }
         }
+
+        System.out.println("===refundOrderTotalCashAmount" + refundOrderTotalCashAmount);
+        System.out.println("===refundOrderTotalPromotionAmount" + refundOrderTotalPromotionAmount);
+        //用户为此券实际支付的金额,也就是从用户为该券付的钱来看，最多能退多少
+        BigDecimal refundAtMostCouponAmount =  ECoupon.getLintRefundPrice(eCoupon);
+        System.out.println("===refundAtMostCouponAmount" + refundAtMostCouponAmount);
+
+        //最后我们来看看最终能退多少
+        BigDecimal refundPromotionAmount = BigDecimal.ZERO;
+        BigDecimal refundCashAmount = BigDecimal.ZERO;
+
+        if (refundOrderTotalPromotionAmount.compareTo(refundAtMostCouponAmount) > 0) {
+            refundPromotionAmount = refundOrderTotalPromotionAmount.subtract(refundAtMostCouponAmount);
+        }else {
+            refundPromotionAmount = refundOrderTotalPromotionAmount;
+            refundCashAmount = refundAtMostCouponAmount.subtract(refundPromotionAmount);
+            refundCashAmount = refundCashAmount.min(refundOrderTotalCashAmount);
+        }
+        System.out.println("===refundCashAmount" + refundCashAmount);
+        System.out.println("===refundPromotionAmount" + refundPromotionAmount);
 
         Account supplierAccount = AccountUtil.getSupplierAccount(eCoupon.goods.supplierId);
 
@@ -117,14 +150,14 @@ public class VerifiedECouponRefunds extends Controller {
         tradeBill.balancePaymentAmount  = eCoupon.originalPrice;                                   //使用可提现余额来支付退款的金额
         tradeBill.ebankPaymentAmount    = BigDecimal.ZERO;                          //不使用网银支付
         tradeBill.uncashPaymentAmount   = BigDecimal.ZERO;                          //不使用不可提现余额支付
-        tradeBill.promotionPaymentAmount= promotionAmount;                          //使用活动金余额来支付退款的金额
+        tradeBill.promotionPaymentAmount= refundPromotionAmount;                          //使用活动金余额来支付退款的金额
         tradeBill.tradeType             = TradeType.REFUND;                         //交易类型为退款
         tradeBill.orderId               = eCoupon.order.id;                                  //冗余订单ID
         tradeBill.eCouponSn             = eCoupon.eCouponSn;                                //冗余券编号
         tradeBill.amount = tradeBill.balancePaymentAmount
                 .add(tradeBill.ebankPaymentAmount)
                 .add(tradeBill.uncashPaymentAmount)
-                .add(promotionAmount);
+                .add(refundPromotionAmount);
 
         tradeBill.save();
 
@@ -135,7 +168,7 @@ public class VerifiedECouponRefunds extends Controller {
 
         TradeBill rabateTrade = TradeUtil.createTransferTrade(
                 AccountUtil.getPlatformCommissionAccount(), userAccount,
-                cashAmount, BigDecimal.ZERO);
+                refundCashAmount, BigDecimal.ZERO);
         rabateTrade.orderId = eCoupon.order.id;
 
         if (!TradeUtil.success(rabateTrade, "券" + eCoupon.getMaskedEcouponSn() + "因" + refundComment + "被" + OperateRbac.currentUser().userName + "操作退款")) {
@@ -143,11 +176,9 @@ public class VerifiedECouponRefunds extends Controller {
         }
 
         // 更新已退款的活动金金额
-        if (promotionAmount.compareTo(BigDecimal.ZERO) > 0) {
-            eCoupon.order.refundedPromotionAmount = eCoupon.order.refundedPromotionAmount
-                    .add(promotionAmount);
-            eCoupon.order.save();
-        }
+        // 更新已退款的活动金金额
+        eCoupon.order.refundedAmount = eCoupon.order.refundedAmount.add(refundCashAmount).add(refundPromotionAmount);
+        eCoupon.order.save();
 
         String userName = OperateRbac.currentUser().userName;
 
@@ -157,7 +188,7 @@ public class VerifiedECouponRefunds extends Controller {
         // 更改订单状态
         eCoupon.status = ECouponStatus.REFUND;
         eCoupon.refundAt = new Date();
-        eCoupon.refundPrice = cashAmount;
+        eCoupon.refundPrice = refundCashAmount.add(refundPromotionAmount);
         eCoupon.save();
 
         return "退款成功，状态为已退款:" + eCoupon.eCouponSn + ", status:" + eCoupon.status;

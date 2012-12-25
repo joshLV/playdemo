@@ -6,6 +6,7 @@ import models.accounts.Voucher;
 import models.accounts.VoucherCondition;
 import models.accounts.VoucherType;
 import models.accounts.util.AccountUtil;
+import models.admin.OperateUser;
 import models.consumer.User;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -39,6 +40,9 @@ public class OperateVouchers extends Controller {
         }
         JPAExtPaginator<Voucher> voucherPage = Voucher.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
+        for (Voucher voucher : voucherPage) {
+            setOperatorName(voucher);
+        }
 
         render(voucherPage, condition);
     }
@@ -96,9 +100,13 @@ public class OperateVouchers extends Controller {
                     else  break;
                 }
             }
-            Voucher voucher = Voucher.find("bySerialNo", voucherIds[i]).first();
+            Voucher voucher = Voucher.find("byChargeCode", voucherIds[i]).first();
             if (voucher == null) {
                 err.append("第"+(i+1)+"个券号：" + voucherIds[i] + "没找到<br/>");
+                continue;
+            }
+            if (voucher.expiredAt.before(new Date())) {
+                err.append("第"+(i+1)+"个券号：" + voucherIds[i] + "是过期的<br/>");
                 continue;
             }
             if (voucher.account != null || voucher.assignedAt != null) {
@@ -138,8 +146,8 @@ public class OperateVouchers extends Controller {
             generator("面值不符合要求");
         } else if (count < 1 || count > 9999) {
             generator("数量不符合要求");
-        } else if (expire == null) {
-            generator("过期时间不能为空");
+        } else if (expire == null || expire.before(new Date())) {
+            generator("过期时间不能为空,也不能小于当前时间");
         } else {
             Voucher voucher = Voucher.find("bySerialNo",
                     prefix + new DecimalFormat("00000").format(1)).first();
@@ -161,5 +169,20 @@ public class OperateVouchers extends Controller {
 
         index(null);
 
+    }
+    private static void setOperatorName(Voucher voucher) {
+        if (voucher.operatorId == null) {
+            voucher.operatorName = "";
+            return;
+        }
+        if (voucher.voucherType == VoucherType.EXCHANGE) {
+            User user = User.findById(voucher.operatorId);
+            if (user != null) {
+                voucher.operatorName = "消费者兑换：" + user.getShowName();
+            }
+        } else {
+            OperateUser operateUser = OperateUser.findById(voucher.operatorId);
+            voucher.operatorName = "运营人员：" + operateUser.loginName;
+        }
     }
 }

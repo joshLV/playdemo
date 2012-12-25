@@ -1,7 +1,7 @@
 #{extends 'main2.html' /}
 #{set title:'一百券 - 确认付款' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/cart/121109/flowstep.css', '/cart/121217/payment.css'] /}
+    #{asset.css src:['/cart/121221/flowstep.css', '/cart/121221/payment.css'] /}
 #{/set}
 #{set 'moreScripts'}
     #{asset.js src:['/cart/121221/payment.js'] /}
@@ -60,7 +60,7 @@
             <div class="voucher-box">
                 <div class="voucher-tips">
                     <div id="j_selected-voucher" class="selected-voucher">请选择要使用的抵用券</div>
-                    <div class="warm-tips">温馨提示：订单退款时抵用券金额不予返还 <a href="" target="_blank">查看退款规则</a></div>
+                    <div class="warm-tips">温馨提示：订单退款时抵用券金额不予返还 <a href="/service" target="_blank">查看退款规则</a></div>
                 </div>
                 <div class="valid-voucher">以下抵用券可同时使用：</div>
                 <ul class="voucher-list">
@@ -92,9 +92,6 @@
                 #{/if}
             </label>
         </div>
-        <div class="confirmpay">
-            <button id="confirm-pay" class="confirm-pay" type="submit"style="display:${confirmPayDisplay}"></button>
-        </div>
     </div>
     %{
     otherPayDisplay = "block"
@@ -123,16 +120,6 @@
             <dl class="kuaiqian">
                 <dt>银行或机构支付：</dt>
                 <dd class="clearfix">
-                    *{#{list items:paymentSources, as:'payment'}}*
-                        *{#{if payment.paymentCode =='99bill'}}*
-
-                            *{<div class="item">}*
-                                *{<input type="radio" name="paymentSourceCode" id="${payment.code}"}*
-                                       *{value="${payment.code}"/>}*
-                                *{<label for="${payment.code}"><img src="/public/${payment.logo}"/></label>}*
-                            *{</div>}*
-                        *{#{/if}}*
-                    *{#{/list}}*
 
                     <div class="item">
                         <input type="radio" name="paymentSourceCode" id="99bill_ICBC" value="99bill_ICBC"/>
@@ -260,9 +247,11 @@
                     </div>
                 </dd>
              </dl>
-            <a class="nextstep" id="confirm" href="#">下一步<b></b></a>
         </div>
     </div><!-- #other-pay END-->
+
+    <div style="margin-left:20px;margin-top:10px;"><button type="submit" class="nextstep" id="confirm"></button></div>
+
     #{/form}
     #{/if}
 

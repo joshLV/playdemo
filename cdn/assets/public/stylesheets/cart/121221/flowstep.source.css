@@ -1,0 +1,97 @@
+.flowstep {
+    width: 960px;
+    height: 32px;
+    margin: 30px 0;
+    /* background-image: url(../img/flowstep2.png); */
+    background-image: url(http://img.uhcdn.com/images/y/cart/flowstep2.png);
+    background-repeat: no-repeat;
+}
+.step1 {
+    background-position: 0 0;
+}
+.step2 {
+    background-position: 0 -32px;
+}
+.step3 {
+    background-position: 0 -64px;
+}
+.step4 {
+    background-position: 0 -96px;
+}
+.flowstep li {
+    float: left;
+    width: 240px;
+    color: #949494;
+    text-align: center;
+    line-height: 32px;
+    font-size: 14px;
+    font-weight: 700;
+}
+.flowstep li a {
+    display: block;
+    color: #f60;
+    text-align: center;
+    line-height: 32px;
+    font-size: 14px;
+    font-weight: 700;
+}
+.flowstep li a:hover {
+    text-decoration: none;
+}
+.flowstep .done {
+    color: #f60;
+}
+
+.pay-ok,
+.goshop b,
+.explain-hd,
+.nextstep,
+.vieworder b,
+.confirm-pay b,
+.totalize .confirm-order,
+.balance-payment,
+/* .confirmpay .confirm-pay, */
+.cart-total .confirm-order,
+.mobi .mobi-bd dl span.selected {
+    /* background: url(../img/sprite.png) no-repeat -9999px -9999px; */
+    background: url(http://img.uhcdn.com/images/y/cart/sprite.png) no-repeat -9999px -9999px;
+}
+
+.cart-total .confirm-order {
+    background-position: 0 -179px;
+}
+.mobi .mobi-bd dl span.selected {
+    background-position: 87px 18px;
+}
+.explain-hd {
+    background-position: -113px 3px;
+}
+.explain .minus {
+    background-position: -113px -19px;
+}
+.totalize .confirm-order {
+    background-position: 0 -179px;
+}
+.balance-payment {
+    background-repeat: repeat-x;
+    background-position: 0 -103px;
+}
+.nextstep {
+    /* background-position: 0 -259px; */
+    background-position: 0 -219px;
+}
+/* .confirm-pay b { */
+    /* background-position: 0 -219px; */
+/* } */
+.pay-ok {
+    background-position: -66px -38px;
+}
+.vieworder b {
+    background-position: 0 -339px;
+}
+.goshop b {
+    background-position: 0 -299px;
+}
+.confirmpay .confirm-pay {
+    background-position: 0 -379px;
+}
