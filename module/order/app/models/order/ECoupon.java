@@ -1,5 +1,6 @@
 package models.order;
 
+import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.Account;
@@ -134,6 +135,9 @@ public class ECoupon extends Model {
     @Column(name = "create_type")
     @Enumerated(EnumType.STRING)
     public ECouponCreateType createType;
+
+    @Column(name = "auto_consumed")
+    public DeletedStatus autoConsumed;//第三方卖的导入券要自动给消费掉
 
     @Column(name = "refund_price")
     public BigDecimal refundPrice;
@@ -275,6 +279,7 @@ public class ECoupon extends Model {
         this.downloadTimes = 3;
         this.isFreeze = 0;
         this.lockVersion = 0;
+        this.autoConsumed = DeletedStatus.UN_DELETED;
 
         if (USE_PRODUCT_SERIAL_REPLYCODE) {
             this.replyCode = generateAvailableReplayCode(order.userId,
