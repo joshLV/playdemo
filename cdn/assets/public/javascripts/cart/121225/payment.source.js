@@ -4,7 +4,7 @@ jQuery(function($){
         orderTotalMoney = Number($('#j_total-money').text()), //订单总金额
         accountBalance = Number($('#balance').text()), //账户可用余额
         selectedVoucher = $('#j_selected-voucher'),
-        paymentBox = $('#balance-payment'),
+        paymentBox = $('#payment'),
         otherPayBox = $('#other-pay');
 
     // 抵用券
