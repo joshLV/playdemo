@@ -311,7 +311,7 @@ public class Supplier extends Model {
             List<Goods> existedGoodsList = Goods.find("supplierId=? order by createdAt desc", sp.id).fetch();
             for (Goods g : existedGoodsList) {
                 g.refresh();
-                g.getCode();
+                g.resetCode();
                 g.save();
             }
         }
