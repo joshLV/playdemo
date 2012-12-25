@@ -43,7 +43,7 @@ public class OperationReports extends Controller {
 
         // 汇总
         SalesReport summary = SalesReport.getNetSummary(resultList);
-
+        System.out.println("hasSeeSalesRepotProfitRight>>>" + hasSeeSalesRepotProfitRight);
         render(condition, reportPage, hasSeeSalesRepotProfitRight, summary);
 
     }
