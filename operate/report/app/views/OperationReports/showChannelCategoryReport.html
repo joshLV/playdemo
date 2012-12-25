@@ -209,7 +209,7 @@
          净利润：<b>
 
     #{if channelSummary.profit != null && channelSummary.profit!=0}
-        ￥${(channelSummary?.profit?:0).format('#.00')}
+        ￥${(channelSummary?.profit?:0).format('#0.00')}
     #{/if}
     #{else}
         ￥0
@@ -287,7 +287,7 @@
         <td>${(report?.channelCost?:0).formatCurrency('CNY')}</td>
         <td>
             #{if report.profit != null && report.profit!=0}
-                ￥${(report?.profit?:0).format('#.00')}
+                ￥${(report?.profit?:0).format('#0.00')}
             #{/if}
             #{else}
                 ￥0
@@ -334,7 +334,7 @@
 *{<td>${(channelPage.get(i)?.channelPage.get(i)?:0).formatCurrency('CNY')}</td>}*
 *{<td>}*
 *{#{if channelPage.get(i).profit != null && channelPage.get(i).profit!=0}}*
-*{￥${(channelPage.get(i)?.profit?:0).format('#.00')}}*
+*{￥${(channelPage.get(i)?.profit?:0).format('#0.00')}}*
 *{#{/if}}*
 *{#{else}}*
 *{￥0}*

@@ -209,7 +209,7 @@
             <td>${(report?.channelCost?:0).formatCurrency('CNY')}</td>
             <td>
                 #{if report.profit != null && report.profit!=0}
-                    ￥${(report?.profit?:0).format('#.00')}
+                    ￥${(report?.profit?:0).format('#0.00')}
                 #{/if}
                 #{else}
                     ￥0
@@ -254,7 +254,7 @@
         <td>${(summary?.channelCost?:0).formatCurrency('CNY')}</td>
         <td>
             #{if summary.profit != null && summary.profit!=0}
-                ￥${(summary?.profit?:0).format('#.00')}
+                ￥${(summary?.profit?:0).format('#0.00')}
             #{/if}
             #{else}
                 ￥0

@@ -7,6 +7,7 @@ import play.db.jpa.JPA;
 
 import javax.persistence.Query;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 /**
@@ -38,9 +39,15 @@ public class ChannelGoodsReport {
     public BigDecimal ratio;
     public BigDecimal originalAmount;
 
+    /**
+     * 渠道成本
+     */
+    public BigDecimal channelCost;
+
     public ChannelGoodsReport(Order order, Goods goods, BigDecimal originalPrice, Long buyNumber,
                               BigDecimal totalAmount, BigDecimal avgSalesPrice,
-                              BigDecimal grossMargin, BigDecimal profit, BigDecimal netSalesAmount) {
+                              BigDecimal grossMargin, BigDecimal profit, BigDecimal netSalesAmount
+            , BigDecimal totalCost) {
         this.order = order;
         if (order != null) {
             if (order.userType == AccountType.CONSUMER) {
@@ -59,6 +66,7 @@ public class ChannelGoodsReport {
         this.grossMargin = grossMargin;
         this.profit = profit;
         this.netSalesAmount = netSalesAmount;
+        this.totalCost = totalCost;
     }
 
     //from resaler
@@ -112,10 +120,14 @@ public class ChannelGoodsReport {
         this.originalAmount = originalAmount;
     }
 
-    public ChannelGoodsReport(BigDecimal totalAmount, BigDecimal refundAmount, BigDecimal netSalesAmount) {
+    public ChannelGoodsReport(BigDecimal totalAmount, BigDecimal refundAmount, BigDecimal netSalesAmount
+            , BigDecimal grossMargin, BigDecimal channelCost, BigDecimal profit) {
         this.totalAmount = totalAmount;
         this.netSalesAmount = netSalesAmount;
         this.refundAmount = refundAmount;
+        this.grossMargin = grossMargin;
+        this.channelCost = channelCost;
+        this.profit = profit;
     }
 
     /**
@@ -131,7 +143,9 @@ public class ChannelGoodsReport {
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)/sum(r.buyNumber)" +
                 ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*sum(r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*sum(r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue))" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+                ",sum(r.goods.originalPrice*r.buyNumber)" +
+                " )" +
                 " from OrderItems r,Order o where r.order=o and ";
         String groupBy = " group by  r.order.userId, r.goods.id ";
         Query query = JPA.em()
@@ -144,14 +158,14 @@ public class ChannelGoodsReport {
 
         List<ChannelGoodsReport> paidResultList = query.getResultList();
 
-//        System.out.println("padiRe>>>" + paidResultList.size());
-//
-//        for (ChannelGoodsReport c : paidResultList) {
-//            System.out.println("c.name>>" + c.loginName);
-//            System.out.println("c.goods.name>>>" + c.goods.name);
-//            System.out.println("c.buy>>>" + c.buyNumber);
-//            System.out.println("");
-//        }
+        System.out.println("padiRe>>>" + paidResultList.size());
+
+        for (ChannelGoodsReport c : paidResultList) {
+            System.out.println("c.name>>" + c.loginName);
+            System.out.println("c.goods.name>>>" + c.goods.name);
+            System.out.println("c.profit>>>" + c.profit);
+            System.out.println("");
+        }
 
 
         //from resaler
@@ -188,10 +202,6 @@ public class ChannelGoodsReport {
 
         //merge
         for (ChannelGoodsReport paidItem : paidResultList) {
-            System.out.println("ffffffffffffffffffff");
-            System.out.println("padiitem.name>>>" + paidItem.loginName);
-            System.out.println("getReportKey(paidItem)>>>" + getReportKey(paidItem));
-            System.out.println("");
             map.put(getReportKey(paidItem), paidItem);
         }
 
@@ -203,8 +213,6 @@ public class ChannelGoodsReport {
                 refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
                 map.put(getReportKey(refundItem), refundItem);
             } else {
-                System.out.println("refundItem.name>>>" + refundItem.loginName);
-                System.out.println("getReportKey(refundItem)>>>" + getReportKey(refundItem));
                 item.refundAmount = refundItem.refundAmount;
                 item.netSalesAmount = item.totalAmount.subtract(item.refundAmount);
             }
@@ -216,15 +224,13 @@ public class ChannelGoodsReport {
             if (item == null) {
                 map.put(getReportKey(resalerItem), resalerItem);
             } else {
-                System.out.println("resalerItem.name>>>" + resalerItem.loginName);
-                System.out.println("getReportKey(resalerItem)>>>" + getReportKey(resalerItem));
                 item.profit = item.profit == null ? BigDecimal.ZERO : item.profit.subtract(resalerItem.totalAmount == null ? BigDecimal.ZERO : resalerItem.totalAmount
                         .subtract(resalerItem.totalCost == null ? BigDecimal.ZERO : resalerItem.totalCost))
-                        .add(resalerItem.profit == null ? BigDecimal.ZERO : resalerItem.totalCost);
+                        .add(resalerItem.profit == null ? BigDecimal.ZERO : resalerItem.profit);
             }
         }
 
-        List resultList = new ArrayList();
+        List<ChannelGoodsReport> resultList = new ArrayList();
 
         List<String> tempString = new ArrayList<>();
         for (String s : map.keySet()) {
@@ -237,6 +243,13 @@ public class ChannelGoodsReport {
             resultList.add(map.get(key));
         }
 
+        for (ChannelGoodsReport c : resultList) {
+            System.out.println("after>>..");
+            System.out.println("c.name>>" + c.loginName);
+            System.out.println("c.goods.name>>>" + c.goods.name);
+            System.out.println("c.profit>>>" + c.profit);
+            System.out.println("");
+        }
 
         return resultList;
     }
@@ -255,7 +268,9 @@ public class ChannelGoodsReport {
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)/sum(r.buyNumber)" +
                 ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*sum(r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*sum(r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue))" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+                ",sum(r.goods.originalPrice*r.buyNumber) " +
+                ")" +
                 " from OrderItems r,Order o where r.order=o and ";
         String groupBy = " group by  r.goods.id ";
         Query query = JPA.em()
@@ -361,12 +376,30 @@ public class ChannelGoodsReport {
         BigDecimal totalAmount = BigDecimal.ZERO;
         BigDecimal netSalesAmount = BigDecimal.ZERO;
         BigDecimal refundAmount = BigDecimal.ZERO;
+
+        BigDecimal totolSalePrice = BigDecimal.ZERO;
+        BigDecimal totalCost = BigDecimal.ZERO;
+        BigDecimal channelCost = BigDecimal.ZERO;
+        BigDecimal grossMargin = BigDecimal.ZERO;
+        BigDecimal profit = BigDecimal.ZERO;
+
         for (ChannelGoodsReport item : resultList) {
             totalAmount = totalAmount.add(item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount);
             netSalesAmount = netSalesAmount.add(item.netSalesAmount == null ? BigDecimal.ZERO : item.netSalesAmount);
             refundAmount = refundAmount.add(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount);
+
+            totolSalePrice = totolSalePrice.add(item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount);
+            totalCost = totalCost.add(item.totalCost == null ? BigDecimal.ZERO : item.totalCost);
+            channelCost = channelCost.add(item.channelCost == null ? BigDecimal.ZERO : item.channelCost);
+            profit = profit.add(item.profit == null ? BigDecimal.ZERO : item.profit);
+            System.out.println("profit>>>>" + profit);
         }
-        return new ChannelGoodsReport(totalAmount, refundAmount, netSalesAmount);
+
+        if (totolSalePrice.compareTo(BigDecimal.ZERO) != 0) {
+            grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+        }
+
+        return new ChannelGoodsReport(totalAmount, refundAmount, netSalesAmount, grossMargin, channelCost, profit);
     }
 
     public static String getReportKey(ChannelGoodsReport refoundItem) {

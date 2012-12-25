@@ -100,7 +100,7 @@
         毛利率：<b>${(summary?.grossMargin?:0).format('#')}%</b>
          净利润：<b>
             #{if summary.profit != null && summary.profit!=0}
-                ￥${(summary?.profit?:0).format('#.00')}
+                ￥${(summary?.profit?:0).format('#0.00')}
             #{/if}
             #{else}
                 ￥0
@@ -167,7 +167,7 @@
             <td>${(report?.grossMargin?:0).format('#')}%</td>
             <td>
                 #{if report.profit != null && report.profit!=0}
-                    ￥${(report?.profit?:0).format('#.00')}
+                    ￥${(report?.profit?:0).format('#0.00')}
                 #{/if}
                 #{else}
                     ￥0

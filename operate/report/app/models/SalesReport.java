@@ -220,6 +220,7 @@ public class SalesReport {
             totalCost = totalCost.add(item.totalCost == null ? BigDecimal.ZERO : item.totalCost);
             channelCost = channelCost.add(item.channelCost == null ? BigDecimal.ZERO : item.channelCost);
             profit = profit.add(item.profit == null ? BigDecimal.ZERO : item.profit);
+            System.out.println("profit>>>" + profit);
         }
 
         if (totolSalePrice.compareTo(BigDecimal.ZERO) != 0) {
