@@ -207,8 +207,10 @@ public class WithdrawBill extends Model {
             return 0;
         }
 
-        if (amount.compareTo(prepayment.getBalance()) <= 0) { //可结算金额小于或等于预付款余额时，产生一笔TradeBill，只产生预付款结算记录
-            create2TradeBill(BigDecimal.ZERO, this.amount);
+        if (prepayment == null) {
+            create2TradeBill(amount, BigDecimal.ZERO);
+        } else if (amount.compareTo(prepayment.getBalance()) <= 0) { //可结算金额小于或等于预付款余额时，产生一笔TradeBill，只产生预付款结算记录
+            create2TradeBill(BigDecimal.ZERO, amount);
         } else {
             //如果预付款已过期
             if (withdrawDate.after(prepayment.expireAt)) {
@@ -239,6 +241,12 @@ public class WithdrawBill extends Model {
         return 0;
     }
 
+    /**
+     * 结算时生成TradeBill.
+     *
+     * @param cashSettledAmount
+     * @param prepaymentSettledAmount
+     */
     private void create2TradeBill(BigDecimal cashSettledAmount, BigDecimal prepaymentSettledAmount) {
         if (cashSettledAmount.compareTo(BigDecimal.ZERO) > 0) {
             TradeBill prepaymentTradeBill = TradeUtil.createWithdrawTrade(this.account, cashSettledAmount);

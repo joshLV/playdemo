@@ -18,6 +18,7 @@ import java.util.Map;
  */
 public class AccountSequenceCondition implements Serializable {
     public Account account;
+    public Long accountUid;
     public List<Account> accounts;
     public AccountType accountType;
     public List<AccountType> accountTypes;

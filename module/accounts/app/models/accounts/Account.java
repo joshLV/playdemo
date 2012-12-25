@@ -79,7 +79,11 @@ public class Account extends Model {
      */
     @Transient
     public BigDecimal getWithdrawAmount(Date date) {
-        return AccountSequence.getVostroAmountTo(this, date);
+        BigDecimal vostroAmount = AccountSequence.getVostroAmountTo(this, date);
+        if (uncashAmount == null) {
+            return vostroAmount == null ? BigDecimal.ZERO : vostroAmount;
+        }
+        return vostroAmount.subtract(uncashAmount);
     }
 
     /**
