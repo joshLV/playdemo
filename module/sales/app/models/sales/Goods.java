@@ -15,7 +15,6 @@ import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
-import models.order.OrderItems;
 import models.order.OrderStatus;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
@@ -1039,7 +1038,7 @@ public class Goods extends Model {
             unPublishedPlatforms = new HashSet<>();
         }
         resaleAddPrice = salePrice.compareTo(originalPrice) > 0 ? salePrice.subtract(originalPrice) : BigDecimal.ZERO;
-        this.getCode();
+        this.resetCode();
         return super.create();
     }
 
@@ -1845,8 +1844,7 @@ public class Goods extends Model {
     }
 
 
-    @Transient
-    public void getCode() {
+    public void resetCode() {
         Goods goods = Goods.find("supplierId=? and sequenceCode is not null order by sequenceCode desc", this.supplierId).first();
         Supplier supplier = Supplier.findById(this.supplierId);
         if (goods == null) {
