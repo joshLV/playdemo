@@ -38,6 +38,7 @@ public class PaymentInfoTest extends FunctionalTest {
         FactoryBoy.deleteAll();
         user = FactoryBoy.create(User.class);
         order = FactoryBoy.create(Order.class);
+        FactoryBoy.create(OrderItems.class);
         order.setUser(user.id, AccountType.CONSUMER);
         order.needPay = BigDecimal.TEN;
         order.payMethod = "balance";
@@ -93,16 +94,14 @@ public class PaymentInfoTest extends FunctionalTest {
         order.save();
         Http.Response response = GET("/payment_info/" + order.orderNumber);
         assertStatus(200, response);
-        assertContentMatch(" <div id=\"other-pay\" class=\"onlinepay\"style=\"display:none\">", response);
+        order.refresh();
+        assertEquals(OrderStatus.PAID, order.status);
     }
 
     @Test
     public void test_测试支付0元() {
         order.needPay = BigDecimal.ZERO;
         order.save();
-        OrderItems orderItems = FactoryBoy.create(OrderItems.class);
-        orderItems.order = order;
-        orderItems.save();
         Map<String, String> params = new HashMap<>();
         params.put("orderNumber", order.orderNumber);
         params.put("useBalance", "false");
@@ -132,9 +131,6 @@ public class PaymentInfoTest extends FunctionalTest {
     @Test
     public void test_测试使用部分余额支付() {
         order.needPay = new BigDecimal("50");
-        OrderItems orderItems = FactoryBoy.create(OrderItems.class);
-        orderItems.order = order;
-        orderItems.save();
         paymentSource.code = "alipay";
         paymentSource.save();
         Map<String, String> params = new HashMap<>();
