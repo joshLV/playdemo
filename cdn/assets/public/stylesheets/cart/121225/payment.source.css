@@ -1,0 +1,145 @@
+body {
+	overflow-y: scroll;
+}
+#content {
+    clear: both;
+    width: 960px;
+    margin: 10px auto;
+}
+
+.cashier {
+    margin-bottom: 20px;
+    border: 1px solid #dcdfe5;
+}
+.cashier h3 {
+    color: #666;
+    padding: 15px;
+    padding-bottom: 5px;
+}
+.cashier-info {
+    margin: 0 15px;
+    border: 1px solid #ddefb1;
+    border-radius: 2px;
+}
+.cashier-info .inner {
+    margin: 1px;
+    padding: 5px;
+    color: #666;
+    font-size: 14px;
+    font-weight: 700;
+    background-color: #f7ffe4;
+}
+.cashier-info em {
+    color: #fb7512;
+    padding: 0 1px;
+}
+.cashier-info .order-num {
+    float: left;
+}
+.cashier-info .money-num {
+    float: right;
+}
+
+.account {
+    color: #666;
+    padding: 30px 80px 0;
+}
+.account strong {
+    font-size: 16px;
+}
+.account .account-balance strong {
+    color: #fb7512;
+}
+.voucher {
+    padding: 0 80px 30px;
+}
+.voucher-num a {
+    color: blue;
+    margin-left: 5px;
+}
+.voucher-box {
+    display: none;
+}
+.voucher-tips {
+    margin: 5px 0;
+    padding: 5px 10px;
+    line-height: 22px;
+    border: 1px solid #f7bd7d;
+    border-radius: 3px;
+    background-color: #fffbf0;
+}
+.voucher-tips .selected-voucher {
+    font-size: 13px;
+}
+.voucher-tips .selected-voucher em {
+    padding: 0 2px;
+    color: #FB7512;
+    font-size: 13px;
+}
+.valid-voucher {
+    line-height: 26px;
+}
+.voucher-list {
+    margin-bottom: 10px;
+}
+.voucher-list li {
+    width: 260px;
+    padding-bottom: 5px;
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+}
+.voucher-list li .expire {
+    color: #999;
+    margin-left: 5px;
+}
+.balance-payment {
+    padding: 14px 81px 15px;
+    border-top: 1px solid #e3e8d9;
+}
+.balance-payment em {
+    color: #fb7512;
+    padding: 0 2px;
+}
+
+.onlinepay {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #E3E8D9;
+}
+.onlinepay-hd {
+    color: #666;
+    padding-bottom: 8px;
+}
+
+.onlinepay-bd {
+    /* margin-bottom: 20px; */
+    padding: 0 25px 20px;
+    background-color: #fafafa;
+}
+.onlinepay-bd dt {
+    padding: 10px 0 0 0;
+}
+.onlinepay-bd dl {
+    border-bottom: 1px dotted #666;
+}
+.onlinepay .item {
+    float: left;
+    margin: 15px 32px 10px 0;
+    *margin: 15px 24px 10px 0;
+}
+.onlinepay .item input {
+    position: relative;
+    top: -15px;
+}
+
+.message {
+    color: red;
+    padding-left: 15px;
+}
+.nextstep {
+    width: 127px;
+    height: 39px;
+    border: 0;
+    cursor: pointer;
+}
