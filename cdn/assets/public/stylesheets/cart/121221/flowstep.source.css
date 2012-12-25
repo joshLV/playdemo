@@ -80,9 +80,9 @@
     /* background-position: 0 -259px; */
     background-position: 0 -219px;
 }
-/* .confirm-pay b { */
-    /* background-position: 0 -219px; */
-/* } */
+.confirm-pay b {
+    background-position: 0 -219px;
+}
 .pay-ok {
     background-position: -66px -38px;
 }
