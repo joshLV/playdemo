@@ -165,6 +165,7 @@ jQuery(function ($) {
                 $('#coupons-table').append('<tr class="row-coupon' + (serial % 2 == 0 ? " odd" : "") + '">' +
                     '<td class="serial">' + serial + '</td>' +
                     '<td><input size="12" maxlength="12" type="text" class="enter-coupon" value="' + value + '"></td>' +
+                    '<td>' + data.goodsName + '</td>' +
                     '<td>' + data.faceValue + '</td>' +
                     '<td>' + data.expireAt + '</td>' +
                     '<td><a class="delete-coupon" href="javascript:void(0)">删除</a></td>' +
