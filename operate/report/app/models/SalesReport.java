@@ -102,13 +102,13 @@ public class SalesReport {
      */
     public static List<SalesReport> query(SalesReportCondition condition) {
         //paidAt
-        String sql = "select new models.SalesReport(r.goods,r.originalPrice,sum(r.buyNumber)" +
+        String sql = "select new models.SalesReport(r.goods,r.goods.originalPrice,sum(r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)/sum(r.buyNumber)" +
                 ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*sum(r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*sum(r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
-                ",sum(r.goods.originalPrice*r.buyNumber) " +
+                ",sum(r.originalPrice*r.buyNumber) " +
                 " )" +
                 " from OrderItems r";
         String groupBy = " group by r.goods.id";

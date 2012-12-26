@@ -18,6 +18,7 @@ import java.util.Map;
 public class ChannelGoodsReportCondition {
     public Date beginAt = com.uhuila.common.util.DateUtil.getBeginOfDay();
     public Date endAt = com.uhuila.common.util.DateUtil.getEndOfDay(new Date());
+    public String shortName;
     public String interval = "-1d";
     private Map<String, Object> paramMap = new HashMap<>();
     private Map<String, Object> paramMap1 = new HashMap<>();
@@ -28,6 +29,10 @@ public class ChannelGoodsReportCondition {
         StringBuilder condBuilder = new StringBuilder(" (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED and r.order.userType = :userType ");
         paramMap.put("userType", type);
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and r.goods.shortName like :shortName");
+            paramMap.put("shortName", "%" + shortName + "%");
+        }
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);
@@ -47,6 +52,10 @@ public class ChannelGoodsReportCondition {
                 " and r.goods.isLottery=false and r.order=o and o.userId=b.id" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED and r.order.userType = :userType ");
         paramMap.put("userType", type);
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and r.goods.shortName like :shortName");
+            paramMap.put("shortName", "%" + shortName + "%");
+        }
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);
@@ -64,6 +73,10 @@ public class ChannelGoodsReportCondition {
                 " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED and e.order.userType = :userType ");
         paramMap1.put("status", ECouponStatus.REFUND);
         paramMap1.put("userType", type);
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and e.goods.shortName like :shortName");
+            paramMap1.put("shortName", "%" + shortName + "%");
+        }
         if (beginAt != null) {
             condBuilder.append(" and e.refundAt >= :refundAtBegin");
             paramMap1.put("refundAtBegin", beginAt);

@@ -60,6 +60,9 @@ public class ChannelGoodsReport {
 
         this.goods = goods;
         this.originalPrice = originalPrice;
+        System.out.println("goods.id>>>" + goods.id);
+        System.out.println("orignalprice>>>" + originalPrice);
+        System.out.println("");
         this.buyNumber = buyNumber;
         this.totalAmount = totalAmount;
         this.avgSalesPrice = avgSalesPrice;
@@ -138,13 +141,13 @@ public class ChannelGoodsReport {
      */
     public static List<ChannelGoodsReport> query(ChannelGoodsReportCondition condition) {
         //paidAt
-        String sql = "select new models.ChannelGoodsReport(r.order, r.goods,r.originalPrice,sum(r.buyNumber)" +
+        String sql = "select new models.ChannelGoodsReport(r.order, r.goods,r.goods.originalPrice,sum(r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)/sum(r.buyNumber)" +
                 ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*sum(r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*sum(r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
-                ",sum(r.goods.originalPrice*r.buyNumber)" +
+                ",sum(r.originalPrice*r.buyNumber)" +
                 " )" +
                 " from OrderItems r,Order o where r.order=o and ";
         String groupBy = " group by  r.order.userId, r.goods.id ";
@@ -158,14 +161,14 @@ public class ChannelGoodsReport {
 
         List<ChannelGoodsReport> paidResultList = query.getResultList();
 
-        System.out.println("padiRe>>>" + paidResultList.size());
+//        System.out.println("padiRe>>>" + paidResultList.size());
 
-        for (ChannelGoodsReport c : paidResultList) {
-            System.out.println("c.name>>" + c.loginName);
-            System.out.println("c.goods.name>>>" + c.goods.name);
-            System.out.println("c.profit>>>" + c.profit);
-            System.out.println("");
-        }
+//        for (ChannelGoodsReport c : paidResultList) {
+//            System.out.println("c.name>>" + c.loginName);
+//            System.out.println("c.goods.name>>>" + c.goods.name);
+//            System.out.println("c.profit>>>" + c.profit);
+//            System.out.println("");
+//        }
 
 
         //from resaler
@@ -243,13 +246,13 @@ public class ChannelGoodsReport {
             resultList.add(map.get(key));
         }
 
-        for (ChannelGoodsReport c : resultList) {
-            System.out.println("after>>..");
-            System.out.println("c.name>>" + c.loginName);
-            System.out.println("c.goods.name>>>" + c.goods.name);
-            System.out.println("c.profit>>>" + c.profit);
-            System.out.println("");
-        }
+//        for (ChannelGoodsReport c : resultList) {
+//            System.out.println("after>>..");
+//            System.out.println("c.name>>" + c.loginName);
+//            System.out.println("c.goods.name>>>" + c.goods.name);
+//            System.out.println("c.profit>>>" + c.profit);
+//            System.out.println("");
+//        }
 
         return resultList;
     }
@@ -263,18 +266,28 @@ public class ChannelGoodsReport {
      */
     public static List<ChannelGoodsReport> queryConsumer(ChannelGoodsReportCondition condition) {
         //paidAt
-        String sql = "select new models.ChannelGoodsReport(r.order, r.goods,r.originalPrice,sum(r.buyNumber)" +
+        String sql = "select new models.ChannelGoodsReport(r.order, r.goods,r.goods.originalPrice,sum(r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)/sum(r.buyNumber)" +
                 ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*sum(r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*sum(r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
-                ",sum(r.goods.originalPrice*r.buyNumber) " +
+                ",sum(r.originalPrice*r.buyNumber) " +
                 ")" +
                 " from OrderItems r,Order o where r.order=o and ";
         String groupBy = " group by  r.goods.id ";
         Query query = JPA.em()
                 .createQuery(sql + condition.getFilter(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
+        Goods goods1 = Goods.findById(619l);
+        System.out.println("");
+        System.out.println("");
+
+        System.out.println("");
+
+        System.out.println("");
+        System.out.println("");
+
+        System.out.println("goods.orignalpirce>>>" + goods1.originalPrice);
 
 
         for (String param : condition.getParamMap().keySet()) {
@@ -392,7 +405,7 @@ public class ChannelGoodsReport {
             totalCost = totalCost.add(item.totalCost == null ? BigDecimal.ZERO : item.totalCost);
             channelCost = channelCost.add(item.channelCost == null ? BigDecimal.ZERO : item.channelCost);
             profit = profit.add(item.profit == null ? BigDecimal.ZERO : item.profit);
-            System.out.println("profit>>>>" + profit);
+//            System.out.println("profit>>>>" + profit);
         }
 
         if (totolSalePrice.compareTo(BigDecimal.ZERO) != 0) {
@@ -404,11 +417,11 @@ public class ChannelGoodsReport {
 
     public static String getReportKey(ChannelGoodsReport refoundItem) {
         if (refoundItem.order == null) {
-            System.out.println("null order.goods.id>>>>" + refoundItem.goods.id);
+//            System.out.println("null order.goods.id>>>>" + refoundItem.goods.id);
             return String.valueOf(refoundItem.goods.id);
         } else {
-            System.out.println("order.userId>>>>" + refoundItem.order.userId);
-            System.out.println("order.goods.id>>>>" + refoundItem.goods.id);
+//            System.out.println("order.userId>>>>" + refoundItem.order.userId);
+//            System.out.println("order.goods.id>>>>" + refoundItem.goods.id);
             return String.valueOf(refoundItem.order.userId) + String.valueOf(refoundItem.goods.id);
         }
     }
