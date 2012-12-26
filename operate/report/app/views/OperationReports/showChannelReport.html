@@ -1,5 +1,5 @@
 #{extends 'layout_operate/layout.html' /}
-#{set title:'渠道报表' /}
+#{set title:'渠道汇总报表' /}
 #{include '/share/nav.html' /}
 
 #{set 'moreScripts'}
@@ -131,9 +131,9 @@
     <button type="submit" class="btn btn-primary" id="search" onclick="channelReport()">搜索</button>
     <div style="float:right">
         <button class="btn btn-primary" id="searchbtn" onclick="channelReportExcel()">导出报表</button>
-    #{if hasSeeSalesRepotProfitRight == true}
+    *{#{if hasSeeSalesRepotProfitRight == true}}*
         <button class="btn btn-primary" id="searchbtn" onclick="channelReportWithPrivilegeExcel()">导出报表附带利润</button>
-    #{/if}
+    *{#{/if}}*
     </div>
     <ul class="nav nav-pills">
         <li #{if condition.interval=='-1d'} class="active" #{/if}  ><a start="-1d" href="#">今天</a></li>
@@ -146,6 +146,31 @@
     <input type="hidden" id="condition_interval" name="condition.interval"/>
 </form>
 
+<div class="alert alert-success" style="margin-bottom: 10px;">
+    <span>
+        在此期间 共售出券：<b>${summary?.amount?.formatCurrency("CNY")}</b> (${summary?.totalNumber}件),
+         售出实物：<b>${summary?.realAmount == null ?'￥0.00':summary?.realAmount?.formatCurrency('CNY')}</b> (${summary?.realTotalNumber}
+        件),
+                退款券：<b>${summary?.totalRefundPrice?.formatCurrency('CNY')}</b> (${summary?.refundNumber}
+        件),
+                   消费券：<b>${summary?.consumedPrice?.formatCurrency("CNY")}</b> (${summary?.consumedNumber}
+        件)
+        <br/>
+           &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;
+        毛利率：<b>${(summary?.grossMargin?:0).format('#')}%</b>
+        渠道成本：<b>${(summary?.channelCost?:0).formatCurrency('CNY')}</b>
+         净利润：<b>
+
+    #{if summary.profit != null && summary.profit!=0}
+        ￥${(summary?.profit?:0).format('#0.00')}
+    #{/if}
+    #{else}
+        ￥0
+    #{/else}
+    </b>
+      </span>
+</div>
+
 <table class="table table-striped table-bordered table-condensed">
     <thead>
     <th>帐号</th>
@@ -154,11 +179,11 @@
     <th>退款券数量/金额</th>
     <th>退款实物数量/金额</th>
     <th>消费券数量/金额</th>
-    #{if hasSeeSalesRepotProfitRight == true}
+    *{#{if hasSeeSalesRepotProfitRight == true}}*
     <th>毛利率</th>
     <th>渠道成本</th>
     <th>净利润</th>
-    #{/if}
+    *{#{/if}}*
     </thead>
 #{set i:0/}
 %{
@@ -204,64 +229,22 @@
             <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
                target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
         </td>
-        #{if hasSeeSalesRepotProfitRight == true}
-            <td>${(report?.grossMargin?:0).format('#')}%</td>
-            <td>${(report?.channelCost?:0).formatCurrency('CNY')}</td>
-            <td>
-                #{if report.profit != null && report.profit!=0}
-                    ￥${(report?.profit?:0).format('#0.00')}
-                #{/if}
-                #{else}
-                    ￥0
-                #{/else}
-            </td>
-        #{/if}
-
-    </tr>
-#{/paginate.list}
-    <tr>
-        <td>汇总</td>
+    *{#{if hasSeeSalesRepotProfitRight == true}}*
+        <td>${(report?.grossMargin?:0).format('#')}%</td>
+        <td>${(report?.channelCost?:0).formatCurrency('CNY')}</td>
         <td>
-            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
-               target="_blank">${summary?.totalNumber}</a>
-            /
-            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
-               target="_blank">${summary?.amount?.formatCurrency("CNY")}</a>
-        </td>
-        <td>     ${summary?.realTotalNumber}
-            / ${summary?.realAmount == null ?'￥0.00':summary?.realAmount?.formatCurrency('CNY')}
-        </td>
-
-
-        <td>
-            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
-               target="_blank">${summary?.refundNumber}</a>
-            /
-            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
-               target="_blank">${summary?.totalRefundPrice?.formatCurrency('CNY')}</a>
-        </td>
-        <td>
-        </td>
-        <td>
-            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
-               target="_blank">${summary?.consumedNumber}</a>
-            /
-            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
-               target="_blank">${summary?.consumedPrice?.formatCurrency("CNY")}</a>
-        </td>
-    #{if hasSeeSalesRepotProfitRight == true}
-        <td>${(summary?.grossMargin?:0).format('#')}%</td>
-        <td>${(summary?.channelCost?:0).formatCurrency('CNY')}</td>
-        <td>
-            #{if summary.profit != null && summary.profit!=0}
-                ￥${(summary?.profit?:0).format('#0.00')}
+            #{if report.profit != null && report.profit!=0}
+                ￥${(report?.profit?:0).format('#0.00')}
             #{/if}
             #{else}
                 ￥0
             #{/else}
         </td>
-    #{/if}
+    *{#{/if}}*
+
     </tr>
+#{/paginate.list}
+
 </table>
 <div class="pagination">
     <ul>
