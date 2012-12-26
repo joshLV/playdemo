@@ -1,0 +1,89 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set title:'新增账号' /}
+#{set menu:"users" /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/supplierUser.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+#{set 'moreStyles'}
+    #{asset.css src:['/m/account.css'] /}
+#{/set}
+<div class="account">
+    <h2>${title}</h2>
+#{form @SupplierUsers.create() , id:'operForm',class:"form-horizontal" }
+    <div class="field-group">
+        <label>角色</label>
+        #{list items:rolesList, as:'role'}
+            <input type="checkbox" value="${role.id}" name="supplierUser.roles.id" id="supplierUser.roles_${role.id}"
+                   #{if roleIds?.contains(String.valueOf(role?.id))}checked#{/if}/> ${role.text}
+        #{/list}
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="error">#{error 'supplierUser.roles' /}</span>
+    </div>
+    <div class="field-group">
+        <label><span style="color: red; ">*</span>用户名</label>
+        <input type="text" name="supplierUser.loginName" class="input-large" id="loginName"
+               value="${supplierUser?.loginName}"/>
+        <span style="color:#808080;">(*限字母，数字)</span>
+        <span class="error" id="checkName">#{error 'supplierUser.loginName' /}</span>
+    </div>
+    <div class="field-group">
+        <label><span style="color: red; ">*</span>手机</label>
+        <input type="text" name="supplierUser.mobile" class="input-large" id="mobile" maxlength="11"
+               value="${supplierUser?.mobile}"/>
+        <span class="error" id="checkMobile">#{error 'supplierUser.mobile' /}</span>
+    </div>
+    <div class="field-group">
+        <label><span style="color: red; ">*</span>密码</label>
+        <input type="password" name="supplierUser.encryptedPassword" class="input-large" id="encryptedPassword"
+               value="${supplierUser?.encryptedPassword}"/>
+        <input type="hidden" name="supplierUser.confirmPassword" class="input-large" id="confirmPassword" value="**"/>
+        <span class="error">#{error 'supplierUser.encryptedPassword' /}</span>
+    </div>
+    <div class="field-group">
+        <label>姓名</label>
+        <input type="text" name="supplierUser.userName" class="input-large" id="userName"
+               value="${supplierUser?.userName}"/>
+    </div>
+    <div class="field-group">
+        <label><span style="color: red; ">*</span>工号</label>
+        <input type="text" name="supplierUser.jobNumber" class="input-large" id="jobNumber" maxlength="6"
+               value="${supplierUser?.jobNumber}"/>
+        <span style="color:#808080;">(*限6位数字)</span>
+        <span class="error" id="checkJobNumber">#{error 'supplierUser.jobNumber' /}</span>
+    </div>
+    <div class="field-group">
+        <label>门店</label>
+        #{select 'supplierUser.shop.id', id:shopId, class:'span2', value:supplierUser?.shop?.id}
+            #{option ""}全部#{/option}
+            #{list items:shopList, as:'shop'}
+                #{option shop?.id}${shop?.name}#{/option}
+            #{/list}
+        #{/select}
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="error">#{error 'supplierUser.shop' /}</span>
+    </div>
+    <div class="field-group">
+        <input class="btn" type="submit" value="保 存"/> <a href="?page=account">取消</a>
+    </div>
+#{/form}
+
+    <h3>角色权限对应说明</h3>
+    <table class="standard-table">
+        <thead>
+        <tr>
+            <th>角色名</th>
+            <th>权限</th>
+        </tr>
+        </thead>
+        <tbody>
+        #{list items:rolesList, as:'role'}
+        <tr>
+            <td>${role.text}</td>
+            <td>
+                #{list items:role.getSortedPermissions(), as:'perm'} ${perm.text} #{/list}
+            </td>
+        </tr>
+        #{/list}
+        </tbody>
+    </table>
+</div>

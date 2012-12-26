@@ -1,0 +1,116 @@
+#{extends 'layout_trader/layout2.html' /}
+#{include 'Share/nav.html' /}
+#{set title:'商户验证消费券' /}
+#{set menu:"verify" /}
+#{set 'moreStyles'}
+    #{asset.css src:['/m/verify.css'] /}
+#{/set}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/verify.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+<div class="verify">
+    <div class="hd clearfix">
+        <a class="curr" id="single-page" href="javascript:void(0);">单券验证</a>
+        <a id="multi-page" href="javascript:void(0);">批量验证</a>
+        <input id="tabPage" name="tabPage" type="hidden" value="${tabPage?:1}"/>
+    </div>
+*{单券验证}*
+    <div class="bd single-verify">
+        <form id="coupon-single-form" action="@{SupplierVerifyECoupons.singleVerify()}" method="post">
+        *{<div class="help"><a href="">怎样验证</a></div>}*
+            <div class="outlet">
+                <span>请选择分店</span>
+                <ul class="outlet-list clearfix">
+                #{if supplierUser?.shop?.id == null}
+                    #{list items:shopList, as:'shop'}
+                        <li><label><input type="radio" name="shopId" value="${shop?.id}"
+                                          #{if supplierUser?.shop?.id?.longValue() == shop?.id?.longValue()}checked="checked"#{/if}/>${shop?.name}
+                        </label></li>
+                    #{/list}
+                #{/if}
+                #{else}
+                    <input type="text" name="shopName" id="shopName" disabled="true" value="${shop?.name}"
+                           class="input-large"/>
+                    <input type="hidden" name="shopId" id="shopId" value="${shop?.id}"/>
+                #{/else}
+
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span class="error">#{error 'supplierUser.shop' /}</span>
+                </ul>
+            </div>
+            <div class="coupon-verify">
+                <label for="eCouponSn">请输入券号(10位)</label>
+
+                <div>
+                    <input type="text" size="12" maxlength="12" name="eCouponSn" id="eCouponSn" class="enter-coupon"/>
+                    <input type="button" value="验证" id="check-btn" class="btn"/>
+                </div>
+                <div class="tip">请及时验证当天接待的券号（1个工作日内），避免消费者退款造成损失</div>
+            </div>
+        </form>
+    </div>
+*{批量验证}*
+    <div class="bd batch-verify" style="display: none">
+        <form id="coupon-multi-form" action="@{SupplierVerifyECoupons.multiVerify()}" method="post">
+            <div class="field-sect">
+                <div class="field-group">
+                    <label>选择分店</label>
+                #{select 'shopId', id:"shopId", value:shopId}
+                    #{option ""}全部#{/option}
+                    #{list items:shopList, as:'shop'}
+                        #{option shop?.id}${shop?.name}#{/option}
+                    #{/list}
+                #{/select}
+                </div>
+                <div class="field-group">
+                    <label class="coupon-label" for="enter-coupon">输入券号</label>
+                    <input type="text" size="12" maxlength="12" name="coupon" autofocus="true" id="enter-coupon"
+                           class="enter-coupon" value=""/>
+                    <a class="btn add-coupon" href="javascript:void(0);" hidefocus="true">添加</a>
+                </div>
+            </div>
+            <table cellspacing="0" cellpadding="0" border="0" class="coupons-table" id="coupons-table">
+                <tr>
+                    <th width="30">序号</th>
+                    <th width="150">输入的券号</th>
+                    <th width="30">面值</th>
+                    <th width="100">有效期</th>
+                    <th width="40" class="code">操作</th>
+                    <th width="auto">验证消费提示</th>
+                </tr>
+            </table>
+            <div class="verify-sect">
+                <a class="btn batch-verify" href="javascript:void(0);" hidefocus="true">批量验证并消费</a>
+                <a class="btn clear-coupon" href="javascript:void(0);" hidefocus="true">清空</a>
+            </div>
+        </form>
+        <div class="tip">
+            <h5>批量验证帮助</h5>
+            <ul>
+                <li>输入券号后回车或者点击<strong>【添加】</strong>即可将券号添加到列表中</li>
+                <li>每次最多可以验证10张券</li>
+                <li>点击<strong>【批量验证并消费】</strong>后
+                    <ul>
+                        <li>可点击<strong>【清空】</strong>，将会清空所有验证过的券号</li>
+                        <li>可点击<strong>【删除】</strong>，删除不想要的或验证过的券号；同时修改认为有错的券号，避免重复验证</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+
+<div id="popup-mask" class="popup-mask"></div>
+<div id="popup" class="popup">
+    <a class="close" href="javascript:void(0)" hidefocus="true"></a>
+
+    <h3 class="hd">确认验证</h3>
+
+    <div class="bd">
+        <span id="eCouponInfo"></span>
+        <a id="verify-btn" class="btn" href="javascript:void(0)">核对无误，确认验证</a>
+        <a class="cancel" href="javascript:void(0)">取消</a>
+    </div>
+</div>

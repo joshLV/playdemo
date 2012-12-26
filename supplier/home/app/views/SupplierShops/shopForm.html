@@ -1,0 +1,30 @@
+<div class="field-group">
+    <label>城市</label>
+    #{layout_trader.selectList name:'shop.cityId', value:shop?.cityId?:'000', list:cities/}
+    <span class="error">#{error 'shop.cityId'/}</span>
+</div>
+<div class="field-group">
+    <label>区域</label>
+    #{layout_trader.selectList name:'shop.districtId', value:shop?.districtId, list:districts/}
+    <span class="error">#{error 'shop.districtId'/}</span>
+</div>
+<div class="field-group">
+    <label>商圈</label>
+    #{layout_trader.selectList name:'shop.areaId', value:shop?.areaId, list:areas/}
+    <span class="error">#{error 'shop.areaId'/}</span>
+</div>
+<div class="field-group">
+    <label>门店名称</label>
+    <input class="text" name="outlet-name" type="text" value="${shop?.name}"/>
+</div>
+<div class="field-group">
+    <label>门店地址</label>
+    <input class="text" name="outlet-address" type="text" value="${shop?.address}"/>
+</div>
+<div class="field-group">
+    <label>门店电话</label>
+    <input class="text" name="outlet-phone" type="text" value="${shop?.phone}"/>
+</div>
+<div class="field-group">
+    <input type="submit" class="btn" value="确定"/> <a href="?page=outlet">取消</a>
+</div>

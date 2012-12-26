@@ -663,6 +663,29 @@ public class ECoupon extends Model {
         return ordersPage;
     }
 
+
+    /**
+     * 券号列表
+     * 商户后台v2
+     *
+     * @param condition  条件
+     * @param pageNumber 页数
+     * @param pageSize   记录数
+     * @return couponsPage 券记录
+     */
+    public static JPAExtPaginator<ECoupon> findByCondition(CouponsCondition condition,
+                                                           int pageNumber, int pageSize) {
+        JPAExtPaginator<ECoupon> couponsPage = new JPAExtPaginator<>
+                ("ECoupon e", "e", ECoupon.class,
+                        condition.getFilter(),
+                        condition.getParamMap())
+                .orderBy("e.consumedAt desc,e.createdAt desc");
+
+        couponsPage.setPageNumber(pageNumber);
+        couponsPage.setPageSize(pageSize);
+        return couponsPage;
+    }
+
     /**
      * 券号列表
      *
@@ -781,7 +804,7 @@ public class ECoupon extends Model {
         if (refundOrderTotalPromotionAmount.compareTo(onTheBottom) > 0) {
             //如果该订单的活动金大于垫底资金
             refundOrderTotalPromotionAmount = refundOrderTotalPromotionAmount.subtract(onTheBottom);
-        }else{
+        } else {
             refundOrderTotalCashAmount = refundOrderTotalCashAmount
                     .add(refundOrderTotalPromotionAmount)
                     .subtract(onTheBottom);
@@ -794,7 +817,7 @@ public class ECoupon extends Model {
 //        System.out.println("===refundOrderTotalPromotionAmount" + refundOrderTotalPromotionAmount);
 
         //用户为此券实际支付的金额,也就是从用户为该券付的钱来看，最多能退多少
-        BigDecimal refundAtMostCouponAmount =  getLintRefundPrice(eCoupon);
+        BigDecimal refundAtMostCouponAmount = getLintRefundPrice(eCoupon);
 //        System.out.println("===refundAtMostCouponAmount" + refundAtMostCouponAmount);
 
         //最后我们来看看最终能退多少
@@ -803,7 +826,7 @@ public class ECoupon extends Model {
 
         if (refundOrderTotalPromotionAmount.compareTo(refundAtMostCouponAmount) > 0) {
             refundPromotionAmount = refundOrderTotalPromotionAmount.subtract(refundAtMostCouponAmount);
-        }else {
+        } else {
             refundPromotionAmount = refundOrderTotalPromotionAmount;
             refundCashAmount = refundAtMostCouponAmount.subtract(refundPromotionAmount);
             refundCashAmount = refundCashAmount.min(refundOrderTotalCashAmount);

@@ -10,11 +10,13 @@ import java.util.List;
 
 /**
  * 商户信息控制器.
+ * 1.0版，只做维护
  * <p/>
  * User: sujie
  * Date: 4/17/12
  * Time: 4:16 PM
  */
+@Deprecated
 @With(SupplierRbac.class)
 public class HomeSuppliers extends Controller {
 

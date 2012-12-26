@@ -1,0 +1,215 @@
+package controllers;
+
+import com.uhuila.common.util.DateUtil;
+import models.admin.SupplierUser;
+import models.order.ECoupon;
+import models.order.ECouponStatus;
+import models.order.VerifyCouponType;
+import models.sales.Shop;
+import models.sms.SMSUtil;
+import models.supplier.Supplier;
+import navigation.annotations.ActiveNavigation;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import play.mvc.Before;
+import play.mvc.Controller;
+import play.mvc.With;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * 电子券验证.
+ * <p/>
+ * <p/>
+ * User: sujie
+ * Date: 12/19/12
+ * Time: 9:59 AM
+ */
+@With(SupplierRbac.class)
+@ActiveNavigation("coupons_single_index")
+public class SupplierVerifyECoupons extends Controller {
+
+
+    @Before(priority = 1000)
+    public static void storeShopIp() {
+        SupplierUser supplierUser = SupplierRbac.currentUser();
+        String strShopId = request.params.get("shopId");
+        if (StringUtils.isNotBlank(strShopId)) {
+            try {
+                Long shopId = Long.parseLong(strShopId);
+                if (supplierUser.lastShopId == null || supplierUser.lastShopId != shopId) {
+                    supplierUser.lastShopId = shopId;
+                    supplierUser.save();
+                }
+            } catch (Exception e) {
+                //ignore
+            }
+        }
+        if (supplierUser.lastShopId != null) {
+            renderArgs.put("shopId", supplierUser.lastShopId);
+        }
+    }
+
+    /**
+     * 券验证页面
+     */
+    public static void index() {
+        Long supplierId = SupplierRbac.currentUser().supplier.id;
+        Long supplierUserId = SupplierRbac.currentUser().id;
+        SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
+        List shopList = Shop.findShopBySupplier(supplierId);
+        if (shopList.size() == 0) {
+            error("该商户没有添加门店信息！");
+        }
+        if (supplierUser.shop == null) {
+            render(shopList, supplierUser);
+        } else {
+            Shop shop = supplierUser.shop;
+            //根据页面录入券号查询对应信息
+            render(shop, supplierUser);
+        }
+    }
+
+    /**
+     * 券验证页面
+     */
+    public static void multiQuery() {
+        Long supplierId = SupplierRbac.currentUser().supplier.id;
+        Long supplierUserId = SupplierRbac.currentUser().id;
+        SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
+        List shopList = Shop.findShopBySupplier(supplierId);
+        if (shopList.size() == 0) {
+            error("该商户没有添加门店信息！");
+        }
+        if (supplierUser.shop == null) {
+            render(shopList, supplierUser);
+        } else {
+            Shop shop = supplierUser.shop;
+            //根据页面录入券号查询对应信息
+            render(shop, supplierUser);
+        }
+    }
+
+    /**
+     * 查询
+     *
+     * @param eCouponSn 券号
+     */
+    public static void singleQuery(Long shopId, String eCouponSn) {
+        Long supplierId = SupplierRbac.currentUser().supplier.id;
+
+        eCouponSn = StringUtils.trim(eCouponSn);
+        //根据页面录入券号查询对应信息
+        ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
+
+        //check券和门店
+        String errorInfo = ECoupon.getECouponStatusDescription(ecoupon, shopId);
+        if (StringUtils.isNotEmpty(errorInfo)) {
+            renderJSON("{\"errorInfo\":\"" + errorInfo + "\"}");
+        } else {
+            Supplier supplier = Supplier.findById(supplierId);
+            renderJSON("{\"supplierName\":\"" + supplier.getName() + "\",\"faceValue\":" + ecoupon.faceValue
+                    + ",\"expireAt\":\"" + DateUtil.dateToString(ecoupon.expireAt, 0) + "\"}");
+        }
+    }
+
+    /**
+     * 验证券
+     */
+    public static void singleVerify(Long shopId, String eCouponSn) {
+        Long supplierUserId = SupplierRbac.currentUser().id;
+        Long supplierId = SupplierRbac.currentUser().supplier.id;
+        Supplier supplier = Supplier.findById(supplierId);
+        SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
+        List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+        ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
+        Shop shop = Shop.findById(shopId);
+
+        //check券和门店
+        String errorInfo = ECoupon.getECouponStatusDescription(ecoupon, shopId);
+        if (StringUtils.isNotEmpty(errorInfo)) {
+            render("SupplierVerifyECoupons/index.html", shop, ecoupon, supplierUser, shopList, errorInfo);
+        }
+
+        if (ecoupon.status == ECouponStatus.UNCONSUMED) {
+            if (!ecoupon.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
+                errorInfo = "第三方" + ecoupon.partner + "券验证失败！请确认券状态(是否过期或退款等)！";
+            }
+            if (StringUtils.isNotEmpty(errorInfo)) {
+                render("SupplierVerifyECoupons/index.html", shop, ecoupon, supplierUser, shopList, errorInfo);
+            }
+            sendVerifySMS(ecoupon, shop.name);
+        }
+
+        String successInfo = "消费成功！ " + supplier.getName() + "(" + ecoupon.faceValue + ")";
+        renderArgs.put("tabPage", "1");
+        render("SupplierVerifyECoupons/index.html", shop, ecoupon, supplierUser, shopList, successInfo);
+    }
+
+    private static void sendVerifySMS(ECoupon eCoupon, String shopName) {
+        String dateTime = DateUtil.getNowTime();
+        String ecouponSNLast4Code = eCoupon.getLastCode(4);
+        // 发给消费者
+        SMSUtil.send2("【一百券】您尾号" + ecouponSNLast4Code + "的券号于" + dateTime
+                + "已成功消费，使用门店：" + shopName + "。如有疑问请致电：400-6262-166", eCoupon.orderItems.phone, eCoupon.replyCode);
+    }
+
+    /**
+     * 验证多个券
+     */
+    public static void multiVerify(Long shopId, String[] eCouponSns) {
+        Long supplierId = SupplierRbac.currentUser().supplier.id;
+        Shop shop = Shop.findById(shopId);
+
+        List<String> eCouponResult = new ArrayList<>();
+        if (ArrayUtils.isNotEmpty(eCouponSns)) {
+            for (String eCouponSn : eCouponSns) {
+                System.out.println("eCouponSn:" + eCouponSn);
+                ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
+                String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
+                if (StringUtils.isNotEmpty(ecouponStatusDescription)) {
+                    eCouponResult.add(ecouponStatusDescription);
+                    continue;
+                }
+                if (ecoupon.status == ECouponStatus.UNCONSUMED) {
+                    if (!ecoupon.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
+                        eCouponResult.add("第三方" + ecoupon.partner + "券验证失败！请确认券状态(是否过期或退款等)！");
+                        continue;
+                    }
+
+                    sendVerifySMS(ecoupon, shop.name);
+                    eCouponResult.add("消费成功.");
+                }
+            }
+        }
+
+        renderJSON(eCouponResult);
+    }
+
+
+    /**
+     * 得到sourceECoupons - checkECoupons的数组.
+     *
+     * @param sourceECoupons
+     * @param checkECoupons
+     * @return
+     */
+    private static List<ECoupon> substractECouponList(List<ECoupon> sourceECoupons,
+                                                      List<ECoupon> checkECoupons) {
+        Set<Long> checkECouponIdSet = new HashSet<>();
+        for (ECoupon e : checkECoupons) {
+            checkECouponIdSet.add(e.id);
+        }
+        List<ECoupon> results = new ArrayList<>();
+        for (ECoupon e : sourceECoupons) {
+            if (!checkECouponIdSet.contains(e.id)) {
+                results.add(e);
+            }
+        }
+        return results;
+    }
+
+}

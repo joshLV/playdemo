@@ -1,10 +1,74 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML>
 <html>
 <head>
-  <title></title>
+#{set menu:menu?:"verify" /}
+    <meta charset="UTF-8">
+    <title>#{get 'title' /}</title>
+    <script src="@{'/public/assets/js/jquery.js'}"></script>
+#{asset.css src:['/m/reset.css', '/m/index.css'] /}
+#{get 'moreStyles' /}
+#{get 'moreScripts' /}
+    <script type="text/javascript">
+        $(function () {
+            $('.close').click(function () {
+                $('#error').hide();
+                $('#success').hide();
+            });
+        });
+    </script>
 </head>
 <body>
+<div id="header" class="clearfix">
+    <div class="wrap">
+        <h1>商户操作台</h1>
 
+        <div class="user">
+            欢迎，${supplierCompany.name}(${currentUser?.loginName})!
+            <a href="/logout">退出</a>
+            <a href="">修改密码</a>
+            <a href="">帮助</a>
+            <a href="">反馈</a>
+        </div>
+    </div>
+</div>
+#{if errorInfo != null}
+<div id="error" class="message">
+    <div class="normal">
+        <p><em>温馨提示：</em>${errorInfo?.raw()}</p>
+    </div>
+    <a id="error-close" class="close" href="javascript:void(0)">关闭</a>
+</div>
+#{/if}
+#{if successInfo != null}
+<div id="success" class="message">
+    <div class="success">
+        <p><em>${successInfo?.raw()}</em></p>
+    </div>
+    <a id="success-close" class="close" href="javascript:void(0)">关闭</a>
+</div>
+#{/if}
+<!-- .content -->
+<div id="content" class="clearfix">
+    <div class="sidebar">
+        <ul class="menu">
+            <li><a #{if "verify".equals(menu)}class="curr"#{/if} href="/verify">券验证</a></li>
+            <li><a #{if "coupons".equals(menu)}class="curr"#{/if} href="/coupons">券号列表</a></li>
+            <li><a #{if "bills".equals(menu)}class="curr"#{/if} href="/bills">财务管理</a></li>
+            <li><a #{if "reports".equals(menu)}class="curr"#{/if} href="/reports">报表一览</a></li>
+            <li><a #{if "shops".equals(menu)}class="curr"#{/if} href="/shops">我的门店</a></li>
+            <li><a #{if "users".equals(menu)}class="curr"#{/if} href="/users">账号管理</a></li>
+        </ul>
+        <div class="sbox">
+            商家电话验证请致电<br>
+            <strong>400-626-2166</strong>
+        </div>
+    </div>
+    <div class="section">
+        <!-- .content -->#{doLayout /}
+    </div>
+</div>
+<div id="footer">
+    ©2012 上海视惠信息科技有限公司
+</div>
 </body>
 </html>

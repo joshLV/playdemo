@@ -1,0 +1,74 @@
+.account {
+    padding: 10px 20px 20px;
+    background-color: white;
+}
+.account h2 {
+    font-size: 24px;
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+    border-bottom: 1px dashed #E3E3E3;
+}
+
+.field-group {
+    position: relative;
+    padding-left: 90px;
+    margin-bottom: 12px;
+}
+.field-group label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80px;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: right;
+}
+.field-group select {
+    width: 600px;
+    height: auto;
+    margin: 0;
+    padding: 5px;
+    border: 3px solid silver;
+    font-size: 14px;
+    vertical-align: middle;
+}
+.field-group input.time {
+    margin: 0 5px;
+    padding: 5px;
+    width: 198px;
+    height: 20px;
+    line-height: 20px;
+    vertical-align: middle;
+    border: 1px solid #CCC;
+}
+
+.title-table {
+    width: 100%;
+    margin: 5px 0;
+}
+.title-table th {
+    text-align: left;
+}
+.title-table td {
+    color: #FF7B33;
+    text-align: right;
+}
+.standard-table {
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid #E3E3E3;
+}
+.standard-table th {
+    padding: 5px;
+    font-size: 14px;
+    background-color: #EEE;
+    border-right: 1px solid #E3E3E3;
+    border-bottom: 1px solid #E3E3E3;
+}
+.standard-table td {
+    padding: 5px;
+    font-size: 14px;
+    border-right: 1px dotted #E3E3E3;
+    border-bottom: 1px dotted #E3E3E3;
+}

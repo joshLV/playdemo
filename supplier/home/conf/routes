@@ -16,6 +16,54 @@ POST    /withdraw/apply                         SupplierWithdraw.create
 # 商户信息
 GET     /info                                   HomeSuppliers.show
 
+# [v2] 门店管理
+GET     /shops                                  SupplierShops.index
+GET     /shops/new                              SupplierShops.add
+POST    /shops                                  SupplierShops.create
+GET     /shops/{id}/edit                        SupplierShops.edit
+POST    /shops/{id}                             SupplierShops.update
+DELETE  /shops/{id}                             SupplierShops.delete
+GET     /shops/area                             SupplierShops.showAreas
+
+# [v2] 操作员管理
+GET     /users                                  SupplierUsers.index
+GET     /users/new                              SupplierUsers.add
+POST    /users                                  SupplierUsers.create
+POST    /users/checkLoginName                   SupplierUsers.checkLoginName
+GET     /users/{id}/edit                        SupplierUsers.edit
+POST    /users/{id}                             SupplierUsers.update
+DELETE  /users/{id}                             SupplierUsers.delete
+
+# [v2] 财务报表
+GET     /reports/daily                          SupplierReports.showDailyReport
+GET     /reports/shop                           SupplierReports.showShopReport
+GET     /reports/goods                          SupplierReports.showGoodsReport
+
+# [v2] 券列表
+GET     /coupons                                SupplierECoupons.index
+GET     /verify                                 SupplierVerifyECoupons.index
+GET     /verify/single-query                    SupplierVerifyECoupons.singleQuery
+POST    /verify/single-verify                   SupplierVerifyECoupons.singleVerify
+GET     /verify/multi-query                     SupplierVerifyECoupons.multiQuery
+POST    /verify/multi-verify                    SupplierVerifyECoupons.multiVerify
+
+
+# [v2] 验证电子券页面--v1
+GET     /coupons/verify                         SupplierVerifySingleCoupons.index
+POST    /coupons/update                         SupplierECoupons.update
+# [v2] 验证电子券页面--v2
+GET     /coupons/single                         SupplierVerifySingleCoupons.index
+GET     /coupons/multi                          SupplierVerifyMultiCoupons.index
+GET     /coupons/single-query                   SupplierVerifySingleCoupons.singleQuery
+GET     /coupons/multi-query                    SupplierVerifyMultiCoupons.multiQuery
+POST    /coupons/single-verify                  SupplierVerifySingleCoupons.singleVerify
+POST    /coupons/multi-verify                   SupplierVerifyMultiCoupons.multiVerify
+
+GET     /coupon-excel-out                       SupplierECoupons.couponExcelOut
+
+# 补偿未同步的状态
+GET    /ecoupon-compensation/consumed           ECouponCompensations.consumed
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
