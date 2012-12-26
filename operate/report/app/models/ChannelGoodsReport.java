@@ -163,16 +163,16 @@ public class ChannelGoodsReport {
 
 //        System.out.println("padiRe>>>" + paidResultList.size());
 
-        for (ChannelGoodsReport c : paidResultList) {
-                System.out.println("c.name>>" + c.loginName);
-                System.out.println("c.goods.name>>>" + c.goods.name);
-                System.out.println("c.profit>>>" + c.profit);
-                System.out.println("c.buyNumber>>>" + c.buyNumber);
-                System.out.println("c.totalAmount>>>" + c.totalAmount);
-                System.out.println("c.totalCost>>>" + c.totalCost);
-
-                System.out.println("");
-        }
+//        for (ChannelGoodsReport c : paidResultList) {
+//                System.out.println("c.name>>" + c.loginName);
+//                System.out.println("c.goods.name>>>" + c.goods.name);
+//                System.out.println("c.profit>>>" + c.profit);
+//                System.out.println("c.buyNumber>>>" + c.buyNumber);
+//                System.out.println("c.totalAmount>>>" + c.totalAmount);
+//                System.out.println("c.totalCost>>>" + c.totalCost);
+//
+//                System.out.println("");
+//        }
 
 //        for (ChannelGoodsReport c : paidResultList) {
 //            System.out.println("c.name>>" + c.loginName);
@@ -258,6 +258,7 @@ public class ChannelGoodsReport {
         Collections.sort(tempString);
 
         for (String key : tempString) {
+//            System.out.println("key>>>" + key);
             resultList.add(map.get(key));
         }
 

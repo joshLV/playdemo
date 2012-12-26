@@ -23,7 +23,7 @@ import java.util.List;
  */
 @With(OperateRbac.class)
 public class OperationReports extends Controller {
-    private static final int PAGE_SIZE = 15;
+    private static final int PAGE_SIZE = 10;
 
     @ActiveNavigation("operation_reports_app")
     public static void index() {
@@ -43,7 +43,7 @@ public class OperationReports extends Controller {
 
         // 汇总
         SalesReport summary = SalesReport.getNetSummary(resultList);
-        System.out.println("hasSeeSalesRepotProfitRight>>>" + hasSeeSalesRepotProfitRight);
+//        System.out.println("hasSeeSalesRepotProfitRight>>>" + hasSeeSalesRepotProfitRight);
         render(condition, reportPage, hasSeeSalesRepotProfitRight, summary);
 
     }
@@ -110,7 +110,6 @@ public class OperationReports extends Controller {
         for (ChannelCategoryReport c : consumerList) {
             resultList.add(c);
         }
-
 
         // 分页
         ValuePaginator<ChannelCategoryReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);

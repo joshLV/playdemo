@@ -200,29 +200,29 @@
     <tr>
         #{set i:i+1/}
         <td>${report.userName}<br>${report?.loginName}</td>
-        <td>
+        <td style="text-align:right;">
             <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
                target="_blank">${report?.buyNumber}</a>
             /
             <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
                target="_blank">${report?.salePrice?.formatCurrency('CNY')}</a>
         </td>
-        <td>
+        <td style="text-align:right;">
         ${report?.realBuyNumber}
             / ${report?.realSalePrice == null ?'￥0.00':report?.realSalePrice?.formatCurrency('CNY')}
         </td>
 
 
-        <td>
+        <td style="text-align:right;">
             <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
                target="_blank">${report?.refundNumber}</a>
             /
             <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
                target="_blank">${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}</a>
         </td>
-        <td>
+        <td style="text-align:right;">
         </td>
-        <td>
+        <td style="text-align:right;">
             <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
                target="_blank">${report?.consumedNumber}</a>
             /
@@ -231,8 +231,8 @@
         </td>
     *{#{if hasSeeSalesRepotProfitRight == true}}*
         <td>${(report?.grossMargin?:0).format('#')}%</td>
-        <td>${(report?.channelCost?:0).formatCurrency('CNY')}</td>
-        <td>
+        <td style="text-align:right;">${(report?.channelCost?:0).formatCurrency('CNY')}</td>
+        <td style="text-align:right;">
             #{if report.profit != null && report.profit!=0}
                 ￥${(report?.profit?:0).format('#0.00')}
             #{/if}

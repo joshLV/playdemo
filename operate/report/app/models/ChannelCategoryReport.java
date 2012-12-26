@@ -150,6 +150,39 @@ public class ChannelCategoryReport {
 
 
     /**
+     * paidAt ecoupon  resaler  total
+     */
+    public ChannelCategoryReport(Order order,
+                                 BigDecimal salePrice, Long buyNumber, BigDecimal totalCost
+            , BigDecimal channelCost, BigDecimal grossMargin, BigDecimal profit) {
+        this.order = order;
+        if (order != null) {
+            if (order.userType == AccountType.CONSUMER) {
+                this.loginName = "一百券";
+            } else {
+                this.loginName = order.getResaler().loginName;
+                this.userName = order.getResaler().userName;
+            }
+        }
+
+        this.code = "999";
+        System.out.println("oooooooooooo");
+        this.name = "小计";
+
+        if (salePrice != null) {
+            this.salePrice = salePrice;
+        } else {
+            this.salePrice = BigDecimal.ZERO;
+        }
+        this.buyNumber = buyNumber;
+        this.totalCost = totalCost;
+        this.channelCost = channelCost;
+        this.grossMargin = grossMargin;
+        this.profit = profit;
+    }
+
+
+    /**
      * paidAt ecoupon   consumer
      */
     public ChannelCategoryReport(Order order, Long supplierCategoryId, BigDecimal salePrice, Long buyNumber, BigDecimal totalCost
@@ -169,6 +202,36 @@ public class ChannelCategoryReport {
             this.code = supplierCategory.code;
             this.name = supplierCategory.name;
         }
+
+        if (salePrice != null) {
+            this.salePrice = salePrice;
+        } else {
+            this.salePrice = BigDecimal.ZERO;
+        }
+        this.buyNumber = buyNumber;
+        this.totalCost = totalCost;
+        this.grossMargin = grossMargin;
+        this.profit = profit;
+    }
+
+
+    /**
+     * paidAt ecoupon   consumer total
+     */
+    public ChannelCategoryReport(Order order, BigDecimal salePrice, Long buyNumber, BigDecimal totalCost
+            , BigDecimal grossMargin, BigDecimal profit) {
+        this.order = order;
+        if (order != null) {
+            if (order.userType == AccountType.CONSUMER) {
+                this.loginName = "一百券";
+            } else {
+                this.loginName = order.getResaler().loginName;
+                this.userName = order.getResaler().userName;
+            }
+        }
+
+        this.code = "999";
+        this.name = "小计";
 
         if (salePrice != null) {
             this.salePrice = salePrice;
@@ -208,6 +271,30 @@ public class ChannelCategoryReport {
         this.profit = profit;
     }
 
+    //sendAt real   resaler  total
+    public ChannelCategoryReport(Order order, Long buyNumber, BigDecimal salePrice, BigDecimal totalCost
+            , BigDecimal channelCost, BigDecimal grossMargin, BigDecimal profit) {
+        this.order = order;
+        if (order != null) {
+            if (order.userType == AccountType.CONSUMER) {
+                this.loginName = "一百券";
+            } else {
+                this.loginName = order.getResaler().loginName;
+                this.userName = order.getResaler().userName;
+            }
+        }
+        this.code = "999";
+        this.name = "小计";
+
+        this.realSalePrice = salePrice;
+        this.realBuyNumber = buyNumber;
+        this.totalCost = totalCost;
+        this.channelCost = channelCost;
+        this.grossMargin = grossMargin;
+        this.profit = profit;
+    }
+
+
     //sendAt real consumer
     public ChannelCategoryReport(Order order, Long supplierCategoryId, Long buyNumber, BigDecimal salePrice, BigDecimal totalCost
             , BigDecimal grossMargin, BigDecimal profit) {
@@ -225,6 +312,28 @@ public class ChannelCategoryReport {
             this.code = supplierCategory.code;
             this.name = supplierCategory.name;
         }
+
+        this.realSalePrice = salePrice;
+        this.realBuyNumber = buyNumber;
+        this.totalCost = totalCost;
+        this.grossMargin = grossMargin;
+        this.profit = profit;
+    }
+
+    //sendAt real consumer total
+    public ChannelCategoryReport(Order order, Long buyNumber, BigDecimal salePrice, BigDecimal totalCost
+            , BigDecimal grossMargin, BigDecimal profit) {
+        this.order = order;
+        if (order != null) {
+            if (order.userType == AccountType.CONSUMER) {
+                this.loginName = "一百券";
+            } else {
+                this.loginName = order.getResaler().loginName;
+                this.userName = order.getResaler().userName;
+            }
+        }
+        this.code = "999";
+        this.name = "小计";
 
         this.realSalePrice = salePrice;
         this.realBuyNumber = buyNumber;
@@ -255,6 +364,25 @@ public class ChannelCategoryReport {
         this.consumedNumber = consumedNumber;
     }
 
+    //total
+    public ChannelCategoryReport(BigDecimal consumedPrice, Order order, Long consumedNumber) {
+        this.order = order;
+        if (order != null) {
+            if (order.userType == AccountType.CONSUMER) {
+                this.loginName = "一百券";
+            } else {
+                this.loginName = order.getResaler().loginName;
+                this.userName = order.getResaler().userName;
+            }
+        }
+
+        this.code = "999";
+        this.name = "小计";
+
+        this.consumedPrice = consumedPrice;
+        this.consumedNumber = consumedNumber;
+    }
+
     public ChannelCategoryReport(BigDecimal refundPrice, Long supplierCategoryId, Long refundNumber, Order order) {
         this.order = order;
         if (order != null) {
@@ -271,6 +399,25 @@ public class ChannelCategoryReport {
             this.code = supplierCategory.code;
             this.name = supplierCategory.name;
         }
+
+        this.refundPrice = refundPrice;
+        this.refundNumber = refundNumber;
+    }
+
+    //total
+    public ChannelCategoryReport(BigDecimal refundPrice, Long refundNumber, Order order) {
+        this.order = order;
+        if (order != null) {
+            if (order.userType == AccountType.CONSUMER) {
+                this.loginName = "一百券";
+            } else {
+                this.loginName = order.getResaler().loginName;
+                this.userName = order.getResaler().userName;
+            }
+        }
+
+        this.code = "999";
+        this.name = "小计";
 
         this.refundPrice = refundPrice;
         this.refundNumber = refundNumber;
@@ -424,17 +571,186 @@ public class ChannelCategoryReport {
                 item.refundNumber = refundItem.refundNumber;
             }
         }
+
+
+        //total
+        //paidAt ecoupon
+        String totalSql = "select new models.ChannelCategoryReport(r.order, sum(r.salePrice-r.rebateValue),count(r.buyNumber)" +
+                ",sum(r.goods.originalPrice),sum(r.salePrice-r.rebateValue)*b.commissionRatio/100" +
+                ",(sum(r.salePrice-r.rebateValue)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
+                ",sum(r.salePrice-r.rebateValue)-sum(r.salePrice-r.rebateValue)*b.commissionRatio/100-sum(r.originalPrice)" +
+                ") from OrderItems r, ECoupon e,Order o,Resaler b,Supplier s where e.orderItems=r and r.order=o and o.userId=b.id" +
+                " and r.goods.supplierId = s ";
+        String totalGroupBy = " group by r.order.userId";
+        Query totalQuery = JPA.em()
+                .createQuery(totalSql + condition.getFilterPaidAt(AccountType.RESALER) + totalGroupBy + " order by sum(r.salePrice-r.rebateValue) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            totalQuery.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<ChannelCategoryReport> totalPaidResultList = totalQuery.getResultList();
+        System.out.println("totalPaidResultList>>>" + totalPaidResultList.size());
+        for (ChannelCategoryReport c : totalPaidResultList) {
+            System.out.println("totalPaidResultList.lo>>>>" + c.loginName);
+            System.out.println("cat>>>>" + c.name);
+            System.out.println("profit>>>" + c.profit);
+        }
+
+        //sendAt real
+        totalSql = "select new models.ChannelCategoryReport(r.order,count(r.buyNumber),sum(r.salePrice-r.rebateValue)" +
+                ",sum(r.goods.originalPrice),sum(r.salePrice-r.rebateValue)*b.commissionRatio/100" +
+                ",(sum(r.salePrice-r.rebateValue)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
+                ",sum(r.salePrice-r.rebateValue)-sum(r.salePrice-r.rebateValue)*b.commissionRatio/100-sum(r.originalPrice)" +
+                ") from OrderItems r,Order o,Resaler b where r.order=o and o.userId=b.id and ";
+        totalQuery = JPA.em()
+                .createQuery(totalSql + condition.getFilterRealSendAt(AccountType.RESALER) + totalGroupBy + " order by sum(r.salePrice-r.rebateValue) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            totalQuery.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<ChannelCategoryReport> totalSentRealResultList = totalQuery.getResultList();
+        System.out.println("");
+        System.out.println("totalSentRealResultList>>>" + totalSentRealResultList.size());
+        for (ChannelCategoryReport c : totalSentRealResultList) {
+            System.out.println("totalSentRealResultList.lo>>>>" + c.loginName);
+
+        }
+
+        //consumedAt ecoupon
+        totalSql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue),r.order,count(e)) from OrderItems r, ECoupon e where e.orderItems=r";
+        totalQuery = JPA.em()
+                .createQuery(totalSql + condition.getFilterConsumedAt(AccountType.RESALER) + totalGroupBy + " order by sum(r.salePrice-r.rebateValue) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            totalQuery.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<ChannelCategoryReport> totalConsumedResultList = totalQuery.getResultList();
+
+
+        System.out.println("");
+        System.out.println("totalConsumedResultList>>>" + totalConsumedResultList.size());
+        for (ChannelCategoryReport c : totalConsumedResultList) {
+            System.out.println("totalConsumedResultList.lo>>>>" + c.loginName);
+
+        }
+
+
+        //refundAt ecoupon
+        totalSql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue),count(e),r.order) from OrderItems r, ECoupon e where e.orderItems=r";
+        totalQuery = JPA.em()
+                .createQuery(totalSql + condition.getFilterRefundAt(AccountType.RESALER) + totalGroupBy + " order by sum(e.refundPrice) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            totalQuery.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<ChannelCategoryReport> totalRefundResultList = totalQuery.getResultList();
+
+
+        System.out.println("");
+        System.out.println("totalRefundResultList>>>" + totalRefundResultList.size());
+        for (ChannelCategoryReport c : totalRefundResultList) {
+            System.out.println("totalRefundResultList.lo>>>>" + c.loginName);
+
+        }
+        //refundAt real need to do !!!!!
+
+
+        Map<String, ChannelCategoryReport> totalMap = new HashMap<>();
+
+        //merge ecoupon and real when sales
+        for (ChannelCategoryReport paidItem : totalPaidResultList) {
+            System.out.println("paid put >>>>" + getTotalReportKey(paidItem));
+            totalMap.put(getTotalReportKey(paidItem), paidItem);
+        }
+        System.out.println("map>>>>>>" + totalMap.size());
+
+        for (ChannelCategoryReport paidItem : totalSentRealResultList) {
+            ChannelCategoryReport item = totalMap.get(getTotalReportKey(paidItem));
+            System.out.println("sent--------getTotalReportKey(paidItem)>>>" + getTotalReportKey(paidItem));
+            if (item == null) {
+                totalMap.put(getTotalReportKey(paidItem), paidItem);
+            } else {
+                item.realSalePrice = paidItem.realSalePrice;
+                item.realBuyNumber = paidItem.realBuyNumber;
+                BigDecimal totalSalesPrice = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice);
+                BigDecimal totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
+
+                if (totalSalesPrice.compareTo(BigDecimal.ZERO) != 0) {
+                    item.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+                }
+
+                item.channelCost = item.channelCost.add(paidItem.channelCost);
+                item.profit = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice)
+                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).subtract(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
+
+                item.totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
+            }
+        }
+
+        System.out.println("map>sent>>>>>" + totalMap.size());
+
+
+        //merge other 2
+        for (ChannelCategoryReport totalConsumedItem : totalConsumedResultList) {
+            ChannelCategoryReport item = totalMap.get(getTotalReportKey(totalConsumedItem));
+            if (item == null) {
+                System.out.println("getTotalReportKey(totalConsumedItem)>>>>" + getTotalReportKey(totalConsumedItem));
+                System.out.println("ininini");
+                totalMap.put(getTotalReportKey(totalConsumedItem), totalConsumedItem);
+            } else {
+                item.consumedPrice = totalConsumedItem.consumedPrice;
+                item.consumedNumber = totalConsumedItem.consumedNumber;
+            }
+        }
+
+        System.out.println("map>consume>>>>>" + totalMap.size());
+
+
+        for (ChannelCategoryReport refundItem : totalRefundResultList) {
+            ChannelCategoryReport item = totalMap.get(getTotalReportKey(refundItem));
+            if (item == null) {
+                totalMap.put(getTotalReportKey(refundItem), refundItem);
+            } else {
+                item.refundPrice = refundItem.refundPrice;
+                item.refundNumber = refundItem.refundNumber;
+            }
+        }
+
+        System.out.println("map>refund>>>>>" + totalMap.size());
+
+
+        List<ChannelCategoryReport> totalResultList = new ArrayList();
+        for (String key : totalMap.keySet()) {
+            totalResultList.add(totalMap.get(key));
+        }
+        System.out.println("total.size()>>>" + totalResultList.size());
+        for (ChannelCategoryReport c : totalResultList) {
+            System.out.println("c.lo>>>>" + c.loginName);
+
+        }
+
+        //merge total into result
         List resultList = new ArrayList();
 
         List<String> tempString = new ArrayList<>();
         for (String s : map.keySet()) {
             tempString.add(s);
-
+        }
+        for (String s : totalMap.keySet()) {
+            tempString.add(s);
         }
         Collections.sort(tempString);
 
+//        for (String key : tempString) {
+//            if (map.get(key) == null) {
+//                resultList.add(map.get(key));
+//            } else {
+//                resultList.add(totalMap.get(key));
+//            }
+//        }
+
         for (String key : tempString) {
-            resultList.add(map.get(key));
+            if (map.get(key) != null) {
+                resultList.add(map.get(key));
+            } else {
+                resultList.add(totalMap.get(key));
+            }
         }
 
         return resultList;
@@ -599,6 +915,14 @@ public class ChannelCategoryReport {
             return refoundItem.order.userId + refoundItem.code;
         } else {
             return String.valueOf(refoundItem.order.userId) + "00";
+        }
+    }
+
+    private static String getTotalReportKey(ChannelCategoryReport refoundItem) {
+        if (refoundItem.code != null) {
+            return refoundItem.order.userId + refoundItem.code;
+        } else {
+            return String.valueOf(refoundItem.order.userId) + "999";
         }
     }
 

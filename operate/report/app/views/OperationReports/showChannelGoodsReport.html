@@ -186,14 +186,14 @@
             <td>${report.userName}<br>${report?.loginName}</td>
             <td>${report?.goods?.code}</td>
             <td>${report?.goods?.shortName}</td>
-            <td>${(report?.originalPrice?:0).formatCurrency('CNY')}</td>
-            <td>
+            <td style="text-align:right;">${(report?.originalPrice?:0).formatCurrency('CNY')}</td>
+            <td style="text-align:right;">
                 #{if report?.avgSalesPrice!=null}
           ${(report?.avgSalesPrice?:0).formatCurrency('CNY')}
           #{/if}
             </td>
             <td>${report?.buyNumber?:0}</td>
-            <td>
+            <td style="text-align:right;">
                 #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
                     <a href="${baseUrl}/coupons?condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}
                 &condition.goodsId=${report?.goods?.id}"
@@ -203,7 +203,7 @@
                 ${(report?.totalAmount?:0).formatCurrency('CNY')}
                 #{/else}
             </td>
-            <td>
+            <td style="text-align:right;">
                 #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
                     <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtBegin=${condition?.endAt?.format()}
                 &condition.goodsId=${report?.goods?.id}"
@@ -213,12 +213,12 @@
                 ${(report?.refundAmount?:0).formatCurrency('CNY')}
                 #{/else}
             </td>
-            <td>
+            <td style="text-align:right;">
                 ￥${(report?.netSalesAmount?:0)}
             </td>
         *{#{if hasSeeSalesRepotProfitRight == true}}*
             <td>${(report?.grossMargin?:0).format('#')}%</td>
-            <td>
+            <td style="text-align:right;">
                 #{if report.profit != null && report.profit!=0}
                     ￥${(report?.profit?:0).format('#0.00')}
                 #{/if}
