@@ -72,26 +72,6 @@ public class SupplierVerifyECoupons extends Controller {
     }
 
     /**
-     * 券验证页面
-     */
-    public static void multiQuery() {
-        Long supplierId = SupplierRbac.currentUser().supplier.id;
-        Long supplierUserId = SupplierRbac.currentUser().id;
-        SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
-        List shopList = Shop.findShopBySupplier(supplierId);
-        if (shopList.size() == 0) {
-            error("该商户没有添加门店信息！");
-        }
-        if (supplierUser.shop == null) {
-            render(shopList, supplierUser);
-        } else {
-            Shop shop = supplierUser.shop;
-            //根据页面录入券号查询对应信息
-            render(shop, supplierUser);
-        }
-    }
-
-    /**
      * 查询
      *
      * @param eCouponSn 券号
@@ -114,42 +94,9 @@ public class SupplierVerifyECoupons extends Controller {
     }
 
     /**
-     * 验证券
-     */
-    public static void singleVerify(Long shopId, String eCouponSn) {
-        Long supplierUserId = SupplierRbac.currentUser().id;
-        Long supplierId = SupplierRbac.currentUser().supplier.id;
-        Supplier supplier = Supplier.findById(supplierId);
-        SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
-        List<Shop> shopList = Shop.findShopBySupplier(supplierId);
-        ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
-        Shop shop = Shop.findById(shopId);
-
-        //check券和门店
-        String errorInfo = ECoupon.getECouponStatusDescription(ecoupon, shopId);
-        if (StringUtils.isNotEmpty(errorInfo)) {
-            render("SupplierVerifyECoupons/index.html", ecoupon, supplierUser, shopList, errorInfo);
-        }
-
-        if (ecoupon.status == ECouponStatus.UNCONSUMED) {
-            if (!ecoupon.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
-                errorInfo = "第三方" + ecoupon.partner + "券验证失败！请确认券状态(是否过期或退款等)！";
-            }
-            if (StringUtils.isNotEmpty(errorInfo)) {
-                render("SupplierVerifyECoupons/index.html", shop, ecoupon, supplierUser, shopList, errorInfo);
-            }
-            sendVerifySMS(ecoupon, shop.name);
-        }
-
-        String successInfo = "消费成功！ " + supplier.getName() + "(" + ecoupon.faceValue + ")";
-        renderArgs.put("tabPage", "1");
-        render("SupplierVerifyECoupons/index.html", ecoupon, supplierUser, shopList, successInfo);
-    }
-
-    /**
      * 验证多个券
      */
-    public static void multiVerify(Long shopId, String[] eCouponSns) {
+    public static void verify(Long shopId, String[] eCouponSns) {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         Shop shop = Shop.findById(shopId);
 

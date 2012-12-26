@@ -41,23 +41,11 @@ GET     /reports/goods                          SupplierReports.showGoodsReport
 
 # [v2] 券列表
 GET     /coupons                                SupplierECoupons.index
+
+# [v2] 券验证
 GET     /verify                                 SupplierVerifyECoupons.index
-GET     /verify/single-query                    SupplierVerifyECoupons.singleQuery
-POST    /verify/single-verify                   SupplierVerifyECoupons.singleVerify
-GET     /verify/multi-query                     SupplierVerifyECoupons.multiQuery
-POST    /verify/multi-verify                    SupplierVerifyECoupons.multiVerify
-
-
-# [v2] 验证电子券页面--v1
-GET     /coupons/verify                         SupplierVerifySingleCoupons.index
-POST    /coupons/update                         SupplierECoupons.update
-# [v2] 验证电子券页面--v2
-GET     /coupons/single                         SupplierVerifySingleCoupons.index
-GET     /coupons/multi                          SupplierVerifyMultiCoupons.index
-GET     /coupons/single-query                   SupplierVerifySingleCoupons.singleQuery
-GET     /coupons/multi-query                    SupplierVerifyMultiCoupons.multiQuery
-POST    /coupons/single-verify                  SupplierVerifySingleCoupons.singleVerify
-POST    /coupons/multi-verify                   SupplierVerifyMultiCoupons.multiVerify
+GET     /verify/{shopId}/{eCouponSn}            SupplierVerifyECoupons.singleQuery
+POST    /verify/verify                          SupplierVerifyECoupons.verify
 
 GET     /coupon-excel-out                       SupplierECoupons.couponExcelOut
 

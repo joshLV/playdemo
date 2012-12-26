@@ -155,6 +155,12 @@ a.cancel {
     line-height: 36px;
     margin-left: 10px;
 }
+a.disabled {
+    color: #a0a0a0;
+    text-shadow: 1px 1px #e2e2e2;
+    border-color: #d2d2d2;
+    background-color: #d8d8d8;
+}
 /* 表格 */
 .title-table {
     width: 100%;
