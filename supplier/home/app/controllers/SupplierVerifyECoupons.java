@@ -31,11 +31,8 @@ import java.util.Set;
 @With(SupplierRbac.class)
 @ActiveNavigation("coupons_single_index")
 public class SupplierVerifyECoupons extends Controller {
-
-
     @Before(priority = 1000)
     public static void storeShopIp() {
-        System.out.println(")))))))))         Enter SupplierVerifyECoupons.storeShopIp");
         SupplierUser supplierUser = SupplierRbac.currentUser();
         String strShopId = request.params.get("shopId");
         if (StringUtils.isNotBlank(strShopId)) {
