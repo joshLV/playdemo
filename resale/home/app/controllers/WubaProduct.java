@@ -279,8 +279,14 @@ public class WubaProduct extends Controller {
             Map<String, Object> partnerMap = new HashMap<>();
             String ybqCircleName = request.params.get("ybqCircleName" + i);
             String circleName = request.params.get("circleName" + i);
-            if (!circleName.equals(ybqCircleName) && !AreaMapping.isExistedYbqCircleName(ybqCircleName)) {
-                new AreaMapping(ybqCircleName, circleName).save();
+            if (!circleName.equals(ybqCircleName)) {
+                AreaMapping areaMapping = AreaMapping.getArea(ybqCircleName);
+                if (areaMapping == null) {
+                    new AreaMapping(ybqCircleName, circleName).save();
+                } else {
+                    areaMapping.wbCircleName = circleName;
+                    areaMapping.save();
+                }
             }
 
             partnerMap.put("partnerId", Long.parseLong(request.params.get("partnerId_" + i)));

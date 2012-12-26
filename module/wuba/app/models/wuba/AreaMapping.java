@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p/>
@@ -24,14 +25,13 @@ public class AreaMapping extends Model {
     @Column(name = "created_at")
     public Date createdAt;
 
-    public AreaMapping(String ybqCircleName, String wbCircleName) {
+    public AreaMapping( String ybqCircleName, String wbCircleName) {
         this.wbCircleName = wbCircleName;
         this.ybqCircleName = ybqCircleName;
         this.createdAt = new Date();
     }
 
-    public static boolean isExistedYbqCircleName(String ybqCircleName) {
-        return AreaMapping.find("ybqCircleName", ybqCircleName).fetch().size() > 0;
+    public static AreaMapping getArea(String ybqCircleName) {
+        return AreaMapping.find("ybqCircleName=? order by id desc", ybqCircleName).first();
     }
-
 }
