@@ -144,8 +144,8 @@ public class ChannelGoodsReport {
         String sql = "select new models.ChannelGoodsReport(r.order, r.goods,r.goods.originalPrice,sum(r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)/sum(r.buyNumber)" +
-                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*sum(r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*sum(r.buyNumber)" +
+                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
                 ",sum(r.originalPrice*r.buyNumber)" +
                 " )" +
@@ -174,10 +174,21 @@ public class ChannelGoodsReport {
 //            System.out.println("");
 //        }
 
+        for (ChannelGoodsReport c : paidResultList) {
+            System.out.println("c.name>>" + c.loginName);
+            System.out.println("c.goods.name>>>" + c.goods.name);
+            System.out.println("c.goods.id>>>" + c.goods.id);
+            System.out.println("c.buy>>>" + c.buyNumber);
+            System.out.println("res.sale>>>" + c.totalAmount);
+            System.out.println("res.cost>>>" + c.totalCost);
+            System.out.println("res.gross>>>" + c.grossMargin);
+            System.out.println("");
+        }
+
 
         //from resaler
-        sql = "select new models.ChannelGoodsReport(r.order, r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),r.originalPrice*sum(r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-r.originalPrice*sum(r.buyNumber)" +
+        sql = "select new models.ChannelGoodsReport(r.order, r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),sum(r.originalPrice*r.buyNumber)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-sum(r.originalPrice*r.buyNumber)" +
                 ",b.commissionRatio)" +
                 " from OrderItems r,Order o,Resaler b where r.order=o and  ";
         groupBy = " group by r.order.userId, r.goods.id";
@@ -273,8 +284,8 @@ public class ChannelGoodsReport {
         String sql = "select new models.ChannelGoodsReport(r.order, r.goods,r.goods.originalPrice,sum(r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)/sum(r.buyNumber)" +
-                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*sum(r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*sum(r.buyNumber)" +
+                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
                 ",sum(r.originalPrice*r.buyNumber) " +
                 ")" +
@@ -302,14 +313,17 @@ public class ChannelGoodsReport {
 
         List<ChannelGoodsReport> paidResultList = query.getResultList();
 
-//        System.out.println("padiRe>>>" + paidResultList.size());
-//
-//        for (ChannelGoodsReport c : paidResultList) {
-//            System.out.println("c.name>>" + c.loginName);
-//            System.out.println("c.goods.name>>>" + c.goods.name);
-//            System.out.println("c.buy>>>" + c.buyNumber);
-//            System.out.println("");
-//        }
+        System.out.println("padiRe>>>" + paidResultList.size());
+
+        for (ChannelGoodsReport c : paidResultList) {
+            System.out.println("c.name>>" + c.loginName);
+            System.out.println("c.goods.name>>>" + c.goods.name);
+            System.out.println("c.buy>>>" + c.buyNumber);
+            System.out.println("consumer.sale>>>" + c.totalAmount);
+            System.out.println("consumer.cost>>>" + c.totalCost);
+            System.out.println("consumer.gross>>>" + c.grossMargin);
+            System.out.println("");
+        }
 
 //        for (ChannelGoodsReport c : paidResultList) {
 //            System.out.println("c.name>>" + c.loginName);
@@ -323,8 +337,8 @@ public class ChannelGoodsReport {
 //        }
 
         //from resaler
-        sql = "select new models.ChannelGoodsReport(r.order, r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),r.originalPrice*sum(r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-r.originalPrice*sum(r.buyNumber)" +
+        sql = "select new models.ChannelGoodsReport(r.order, r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),sum(r.originalPrice*r.buyNumber)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-sum(r.originalPrice*r.buyNumber)" +
                 ",b.commissionRatio)" +
                 " from OrderItems r,Order o,Resaler b where r.order=o and  ";
         groupBy = " group by  r.goods.id";

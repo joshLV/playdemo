@@ -105,7 +105,7 @@ public class SalesReport {
         String sql = "select new models.SalesReport(r.goods,r.goods.originalPrice,sum(r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)/sum(r.buyNumber)" +
-                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*sum(r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
+                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
                 ",sum(r.originalPrice*r.buyNumber) " +
@@ -129,13 +129,14 @@ public class SalesReport {
             System.out.println("c.buyNumber>>>" + c.buyNumber);
             System.out.println("c.totalAmount>>>" + c.totalAmount);
             System.out.println("c.totalCost>>>" + c.totalCost);
+            System.out.println("c.gross>>>" + c.grossMargin);
 
             System.out.println("");
         }
 
 
         //from resaler
-        sql = "select new models.SalesReport(r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),r.originalPrice*sum(r.buyNumber)" +
+        sql = "select new models.SalesReport(r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),sum(r.originalPrice*r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-sum(r.originalPrice*r.buyNumber)" +
                 ",b.commissionRatio)" +
                 " from OrderItems r,Order o,Resaler b";
