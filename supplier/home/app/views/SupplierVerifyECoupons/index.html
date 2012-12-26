@@ -23,7 +23,7 @@
                 <ul class="outlet-list clearfix">
                 #{if supplierUser?.shop?.id == null}
                     #{list items:shopList, as:'shop'}
-                        <li><label><input type="radio" name="shopId" value="${shop.id}"
+<                       <li><label><input type="radio" name="shopId" value="${shop.id}"
                                           #{if shop?.id?.longValue() == shopId?.longValue()}checked="checked"#{/if}/>${shop?.name}
                         </label></li>
                     #{/list}
