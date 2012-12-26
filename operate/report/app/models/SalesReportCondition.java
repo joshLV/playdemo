@@ -101,4 +101,91 @@ public class SalesReportCondition implements Serializable {
     public Map<String, Object> getParamMap1() {
         return paramMap1;
     }
+
+    public String getFilterOfPeopleEffect() {
+        StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId =s.id and s.deleted=0  and (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false");
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and r.goods.shortName like :shortName");
+            paramMap.put("shortName", "%" + shortName + "%");
+        }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and r.goods.code = :code");
+            paramMap.put("code", code);
+        }
+        if (begin != null) {
+            condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
+            paramMap.put("createdAtBegin", begin);
+        }
+        if (end != null) {
+            condBuilder.append(" and r.order.paidAt < :createdAtEnd");
+            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(end));
+        }
+
+
+        return condBuilder.toString();
+
+
+    }
+
+    public String getResalerFilterOfPeopleEffect() {
+        StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId =s.id and s.deleted=0 and r.order.userType=models.accounts.AccountType.RESALER " +
+                " and (r.order.status='PAID' or r.order.status='SENT')" +
+                " and r.goods.isLottery=false and r.order=o and o.userId=b.id");
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and r.goods.shortName like :shortName");
+            paramMap.put("shortName", "%" + shortName + "%");
+        }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and r.goods.code = :code");
+            paramMap.put("code", code);
+        }
+        if (begin != null) {
+            condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
+            paramMap.put("createdAtBegin", begin);
+        }
+        if (end != null) {
+            condBuilder.append(" and r.order.paidAt < :createdAtEnd");
+            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(end));
+        }
+
+        return condBuilder.toString();
+    }
+
+    public String getRefundFilterOfPeopleEffect(ECouponStatus status) {
+        paramMap1 = new HashMap<>();
+        StringBuilder condBuilder = new StringBuilder(" where e.goods.supplierId=s.id and s.deleted=0 and e.status=:status and e.goods.isLottery=false");
+        paramMap1.put("status", status);
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and e.goods.shortName like :shortName");
+            paramMap1.put("shortName", "%" + shortName + "%");
+        }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and e.goods.code = :code");
+            paramMap1.put("code", code);
+        }
+
+        if (status == ECouponStatus.REFUND) {
+            if (begin != null) {
+                condBuilder.append(" and e.refundAt >= :refundAtBegin");
+                paramMap1.put("refundAtBegin", begin);
+            }
+            if (end != null) {
+                condBuilder.append(" and e.refundAt <= :refundAtEnd");
+                paramMap1.put("refundAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(end));
+            }
+
+        } else if (status == ECouponStatus.CONSUMED) {
+            if (begin != null) {
+                condBuilder.append(" and e.consumedAt>= :consumedAtBegin");
+                paramMap1.put("consumedAtBegin", begin);
+            }
+            if (end != null) {
+                condBuilder.append(" and e.consumedAt <= :consumedAtEnd");
+                paramMap1.put("consumedAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(end));
+            }
+
+        }
+        return condBuilder.toString();
+    }
+
 }
