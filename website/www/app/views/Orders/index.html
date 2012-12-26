@@ -1,30 +1,68 @@
 #{extends 'main2.html' /}
 #{set title:'一百券 - 确认订单信息' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/cart/121221/flowstep.css', '/cart/121109/order.css'] /}
+    #{asset.css src:['/cart/121221/flowstep.css', '/cart/121109/order.css', '/cart/121109/viewcart.css'] /}
 #{/set}
 #{set 'moreScripts'}
     #{asset.js src:['/y/order.js'] /}
 <script type="text/javascript">
     $(function () {
-        function reloadDiscount() {
-            var val = $.trim($('#discount_sn').val());
-            if (val) {
-                window.location.href = '/orders?${querystring.raw()}&discountSN=' + val + '&mobile=' + $("#ecart_mobile").val();
-            } else {
-                $('.discount-error').html('优惠码为空，请输入优惠码');
-            }
+        function reloadOrder() {
+            var discount = $.trim($('#discount_sn').val());
+            var mobile = $.trim($('#ecart_mobile').val());
+            var orderItems = '';
+            $('.num-ipt').each(function(){
+                var ele = $(this);
+                var goods_id = ele.attr('goods_id');
+                var num = ele.val();
+                orderItems += 'gid=' + goods_id + '&g' + goods_id + '=' + num + '&'
+            });
+
+            window.location.href = '/orders?' + orderItems +  'discountSN=' + discount + '&mobile=' + mobile;
         }
 
         $('#discount-btn').click(function () {
-            reloadDiscount();
+            if ($("#discount_sn").val()) {
+                reloadOrder();
+            }else{
+                $('.discount-error').html('优惠码为空，请输入优惠码');
+            }
+            return false;
         });
         $('#discount_sn').keydown(function (e) {
             if (e.keyCode == 13) {
-                reloadDiscount();
+                $(this).click();
                 return false;
             }
         });
+
+        //点击+-按钮
+        $(".add-btn,.reduce-btn").click(function () {
+            var ele = $(this);
+            var goods_id = ele.attr("goods_id");
+            var num_ele = $("#num_" + goods_id);
+            var new_num = Number(num_ele.val()) + Number(ele.attr("add_value"));
+            if (new_num <= 0) {
+                return false;
+            }
+            num_ele.val(new_num);
+            reloadOrder();
+            return false;
+        });
+
+        $(".num-ipt").blur(function(){
+            var ele = $(this);
+            var ele_id = ele.attr("id");
+            var last_ele_num = $("#last_" + ele_id);
+            var re = /^\d+(\.\d+)?$/;
+
+            if (!re.test(ele.val())) {
+                ele.val(last_ele_num.val());
+                return;
+            }
+            reloadOrder();
+        });
+
     });
 </script>
 #{/set}
@@ -53,13 +91,13 @@
                 #{include '/Addresses/show.html'/}
             #{/else}
         </div>
-        <table class="orderlist">
+        <table class="orderlist cartlist">
             <caption>产品清单</caption>
             <thead>
             <tr>
                 <th align="left">商品</th>
                 <th width="80">单价（元）</th>
-                <th width="50">数量</th>
+                <th width="90">数量</th>
                 <th width="80">小计</th>
             </tr>
             </thead>
@@ -69,12 +107,15 @@
                 <tr>
                     <td style="text-align:left"><a href="/g/${rCart.goods.id}">${rCart.goods.name}</a></td>
                     <td>${rCart.goods.salePrice}</td>
-                    <td>${rCart.number}</td>
-                *{#{if (++i) == 1 }}*
-                    <td valign="middle">
-                    ${(rCart.goods.salePrice*rCart.number).formatCurrency('CNY').raw()}<br/>
+                    <td>
+                        <a href="#" class="reduce-btn" goods_id="${rCart.goods.id}" add_value="-1" hidefocus="true">-</a>
+                        <input class="num-ipt" type="text" value="${rCart.number}" goods_id="${rCart.goods.id}" id="num_${rCart.goods.id}"/>
+                        <input type="hidden" value="${rCart.number}" id="last_num_${rCart.goods.id}"/>
+                        <a href="#" class="add-btn" goods_id="${rCart.goods.id}" add_value="1" hidefocus="true">+</a>
                     </td>
-                *{#{/if}}*
+                    <td valign="middle">
+                        ${(rCart.goods.salePrice*rCart.number).formatCurrency('CNY').raw()}<br/>
+                    </td>
                 </tr>
                 #{/list}
                 #{set i:0} #{/set}
@@ -90,7 +131,7 @@
 
 #{form @Orders.create(), id:'order_create_form' }
     #{if eCartList.size()>0}
-        <div class="order">
+        <div class="order cartlist">
             <div class="mobi">
                 <div class="mobi-hd">电子凭证-收货手机</div>
                 <div class="mobi-bd">
@@ -117,7 +158,7 @@
                 <tr>
                     <th align="left">商品</th>
                     <th width="80">单价（元）</th>
-                    <th width="50">数量</th>
+                    <th width="90">数量</th>
                     <th width="80">折扣（元）</th>
                     <th width="80">小计</th>
                 </tr>
@@ -131,7 +172,13 @@
                             #{/if}
                         </td>
                         <td>${eCart.goods.salePrice.formatCurrency('CNY').raw()}</td>
-                        <td>${eCart.number}</td>
+                        <td>
+                            <a href="#" class="reduce-btn" goods_id="${eCart.goods.id}" add_value="-1" hidefocus="true">-</a>
+                            <input class="num-ipt" type="text" value="${eCart.number}" goods_id="${eCart.goods.id}" id="num_${eCart.goods.id}"/>
+                            <input type="hidden" value="${eCart.number}" id="last_num_${eCart.goods.id}"/>
+                            <a href="#" class="add-btn" goods_id="${eCart.goods.id}" add_value="1" hidefocus="true">+</a>
+                        </td>
+
                         <td style="color:red">#{if eCart.rebateValue?.compareTo(java.math.BigDecimal.ZERO) > 0}${eCart.rebateValue?.negate()?.formatCurrency('CNY')}#{/if}</td>
                         <td valign="middle">${eCart.getLineValue().formatCurrency('CNY').raw()}</td>
                     </tr>
