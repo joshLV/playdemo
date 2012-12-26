@@ -161,29 +161,29 @@ public class ChannelGoodsReport {
 
         List<ChannelGoodsReport> paidResultList = query.getResultList();
 
-        System.out.println("padiRe>>>" + paidResultList.size());
+//        System.out.println("padiRe>>>" + paidResultList.size());
+
+        for (ChannelGoodsReport c : paidResultList) {
+                System.out.println("c.name>>" + c.loginName);
+                System.out.println("c.goods.name>>>" + c.goods.name);
+                System.out.println("c.profit>>>" + c.profit);
+                System.out.println("c.buyNumber>>>" + c.buyNumber);
+                System.out.println("c.totalAmount>>>" + c.totalAmount);
+                System.out.println("c.totalCost>>>" + c.totalCost);
+
+                System.out.println("");
+        }
 
 //        for (ChannelGoodsReport c : paidResultList) {
 //            System.out.println("c.name>>" + c.loginName);
 //            System.out.println("c.goods.name>>>" + c.goods.name);
-//            System.out.println("c.profit>>>" + c.profit);
-//            System.out.println("c.buyNumber>>>"+c.buyNumber);
-//            System.out.println("c.totalAmount>>>"+c.totalAmount);
-//            System.out.println("c.totalCost>>>"+c.totalCost);
-//
+//            System.out.println("c.goods.id>>>" + c.goods.id);
+//            System.out.println("c.buy>>>" + c.buyNumber);
+//            System.out.println("res.sale>>>" + c.totalAmount);
+//            System.out.println("res.cost>>>" + c.totalCost);
+//            System.out.println("res.gross>>>" + c.grossMargin);
 //            System.out.println("");
 //        }
-
-        for (ChannelGoodsReport c : paidResultList) {
-            System.out.println("c.name>>" + c.loginName);
-            System.out.println("c.goods.name>>>" + c.goods.name);
-            System.out.println("c.goods.id>>>" + c.goods.id);
-            System.out.println("c.buy>>>" + c.buyNumber);
-            System.out.println("res.sale>>>" + c.totalAmount);
-            System.out.println("res.cost>>>" + c.totalCost);
-            System.out.println("res.gross>>>" + c.grossMargin);
-            System.out.println("");
-        }
 
 
         //from resaler
@@ -313,17 +313,17 @@ public class ChannelGoodsReport {
 
         List<ChannelGoodsReport> paidResultList = query.getResultList();
 
-        System.out.println("padiRe>>>" + paidResultList.size());
-
-        for (ChannelGoodsReport c : paidResultList) {
-            System.out.println("c.name>>" + c.loginName);
-            System.out.println("c.goods.name>>>" + c.goods.name);
-            System.out.println("c.buy>>>" + c.buyNumber);
-            System.out.println("consumer.sale>>>" + c.totalAmount);
-            System.out.println("consumer.cost>>>" + c.totalCost);
-            System.out.println("consumer.gross>>>" + c.grossMargin);
-            System.out.println("");
-        }
+//        System.out.println("padiRe>>>" + paidResultList.size());
+//
+//        for (ChannelGoodsReport c : paidResultList) {
+//            System.out.println("c.name>>" + c.loginName);
+//            System.out.println("c.goods.name>>>" + c.goods.name);
+//            System.out.println("c.buy>>>" + c.buyNumber);
+//            System.out.println("consumer.sale>>>" + c.totalAmount);
+//            System.out.println("consumer.cost>>>" + c.totalCost);
+//            System.out.println("consumer.gross>>>" + c.grossMargin);
+//            System.out.println("");
+//        }
 
 //        for (ChannelGoodsReport c : paidResultList) {
 //            System.out.println("c.name>>" + c.loginName);

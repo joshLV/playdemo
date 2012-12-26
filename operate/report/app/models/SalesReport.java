@@ -66,9 +66,12 @@ public class SalesReport {
     //from resaler
     public SalesReport(Goods goods, BigDecimal totalAmount, BigDecimal totalCost, BigDecimal profit, BigDecimal ratio) {
         this.goods = goods;
+        System.out.println("totalamount>>>" + totalAmount);
         this.totalAmount = totalAmount;
         this.totalCost = totalCost;
         this.profit = profit;
+        System.out.println("ratio>>>" + ratio);
+        System.out.println("name>>>" + goods.shortName);
         this.ratio = ratio;
     }
 
@@ -122,17 +125,17 @@ public class SalesReport {
 
         List<SalesReport> paidResultList = query.getResultList();
 
-        for (SalesReport c : paidResultList) {
-//            System.out.println("c.name>>" + c.loginName);
-            System.out.println("c.goods.name>>>" + c.goods.name);
-            System.out.println("c.profit>>>" + c.profit);
-            System.out.println("c.buyNumber>>>" + c.buyNumber);
-            System.out.println("c.totalAmount>>>" + c.totalAmount);
-            System.out.println("c.totalCost>>>" + c.totalCost);
-            System.out.println("c.gross>>>" + c.grossMargin);
-
-            System.out.println("");
-        }
+//        for (SalesReport c : paidResultList) {
+////            System.out.println("c.name>>" + c.loginName);
+//            System.out.println("c.goods.name>>>" + c.goods.name);
+//            System.out.println("c.profit>>>" + c.profit);
+//            System.out.println("c.buyNumber>>>" + c.buyNumber);
+//            System.out.println("c.totalAmount>>>" + c.totalAmount);
+//            System.out.println("c.totalCost>>>" + c.totalCost);
+//            System.out.println("c.gross>>>" + c.grossMargin);
+//
+//            System.out.println("");
+//        }
 
 
         //from resaler
@@ -147,6 +150,21 @@ public class SalesReport {
 
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
+        }
+
+        for (SalesReport c : paidResultList) {
+//            System.out.println("c.name>>" + c.loginName);
+            if (c.goods.shortName.compareTo("999泰国6天4晚豪华游") == 1) {
+                System.out.println("resaler.goods.name>>>" + c.goods.name);
+                System.out.println("c.profit>>>" + c.profit);
+                System.out.println("c.buyNumber>>>" + c.buyNumber);
+                System.out.println("c.totalAmount>>>" + c.totalAmount);
+                System.out.println("c.totalCost>>>" + c.totalCost);
+                System.out.println("c.gross>>>" + c.grossMargin);
+                System.out.println("c.ratio>>>" + c.ratio);
+
+                System.out.println("");
+            }
         }
 
         List<SalesReport> paidResalerResultList = query.getResultList();
@@ -193,6 +211,14 @@ public class SalesReport {
                 item.profit = item.profit == null ? BigDecimal.ZERO : item.profit.subtract(resalerItem.totalAmount == null ? BigDecimal.ZERO : resalerItem.totalAmount
                         .subtract(resalerItem.totalCost == null ? BigDecimal.ZERO : resalerItem.totalCost))
                         .add(resalerItem.profit == null ? BigDecimal.ZERO : resalerItem.profit);
+
+//                item.profit= item.totalAmount.multiply(BigDecimal.ONE.subtract())
+                System.out.println("item.sale>>" + resalerItem.totalAmount);
+                System.out.println("bought>>>" + resalerItem.buyNumber);
+                System.out.println("item.cost>>" + resalerItem.totalCost);
+                System.out.println("item.profit>>>" + resalerItem.profit);
+                System.out.println("");
+
             }
         }
 

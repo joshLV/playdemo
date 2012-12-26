@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class SalesReportCondition implements Serializable {
     public Date beginAt = com.uhuila.common.util.DateUtil.getBeginOfDay();
-    public Date endAt= com.uhuila.common.util.DateUtil.getEndOfDay(new Date());
+    public Date endAt = com.uhuila.common.util.DateUtil.getEndOfDay(new Date());
     public String interval = "-1d";
     public String shortName;
     public String code;
@@ -53,7 +53,7 @@ public class SalesReportCondition implements Serializable {
         StringBuilder condBuilder = new StringBuilder(" where r.order.userType=models.accounts.AccountType.RESALER " +
                 " and (r.order.status='PAID' or r.order.status='SENT')" +
                 " and r.goods.isLottery=false and r.order=o and o.userId=b.id" +
-                " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
+                " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED ");
         if (StringUtils.isNotBlank(shortName)) {
             condBuilder.append(" and r.goods.shortName like :shortName");
             paramMap.put("shortName", "%" + shortName + "%");
