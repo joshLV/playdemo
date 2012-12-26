@@ -812,41 +812,6 @@ public class ChannelCategoryReport {
         List<ChannelCategoryReport> refundResultList = query.getResultList();
         //refundAt real need to do !!!!!
 
-
-//        ChannelCategoryReport result = null;
-//        List<ChannelCategoryReport> resultList = new ArrayList<>();
-//        if (paidResultList != null && paidResultList.size() > 0) {
-//            result = paidResultList.get(0);
-//            if (sentRealResultList != null && sentRealResultList.size() > 0 && sentRealResultList.get(0).realBuyNumber > 0) {
-//                result.realSalePrice = sentRealResultList.get(0).realSalePrice;
-//                result.realBuyNumber = sentRealResultList.get(0).realBuyNumber;
-//                BigDecimal totalSalesPrice = result.salePrice == null ? BigDecimal.ZERO : result.salePrice.add(sentRealResultList.get(0).realSalePrice == null ? BigDecimal.ZERO : sentRealResultList.get(0).realSalePrice);
-//                BigDecimal totalCost = result.totalCost == null ? BigDecimal.ZERO : result.totalCost.add(sentRealResultList.get(0).totalCost == null ? BigDecimal.ZERO : sentRealResultList.get(0).totalCost);
-//                if (totalSalesPrice.compareTo(BigDecimal.ZERO) != 0) {
-//                    result.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
-//                }
-//
-//                result.profit = result.salePrice == null ? BigDecimal.ZERO : result.salePrice.add(sentRealResultList.get(0).realSalePrice == null ? BigDecimal.ZERO : sentRealResultList.get(0).realSalePrice)
-//                        .subtract(result.totalCost == null ? BigDecimal.ZERO : result.totalCost).subtract(sentRealResultList.get(0).totalCost == null ? BigDecimal.ZERO : sentRealResultList.get(0).totalCost);
-//                result.totalCost = result.totalCost == null ? BigDecimal.ZERO : result.totalCost.add(sentRealResultList.get(0).totalCost == null ? BigDecimal.ZERO : sentRealResultList.get(0).totalCost);
-////                result.channelCost = result.channelCost.add(sentRealResultList.get(0).channelCost);
-////                result.profit = result.salePrice.add(sentRealResultList.get(0).realSalePrice)
-////                        .subtract(result.channelCost)
-////                        .subtract(result.totalCost.add(sentRealResultList.get(0).totalCost));
-//            }
-//            if (consumedResultList != null && consumedResultList.size() > 0) {
-//                result.consumedPrice = consumedResultList.get(0).consumedPrice;
-//                result.consumedNumber = consumedResultList.get(0).consumedNumber;
-//            }
-//            if (refundResultList != null && refundResultList.size() > 0) {
-//                result.refundNumber = refundResultList.get(0).refundNumber;
-//                result.refundPrice = refundResultList.get(0).refundPrice;
-//            }
-//            resultList.add(result);
-
-
-        //refundAt real need to do !!!!!
-
         Map<String, ChannelCategoryReport> map = new HashMap<>();
 
         //merge ecoupon and real when sales
@@ -898,12 +863,92 @@ public class ChannelCategoryReport {
             }
         }
 
+
+        //total
+        //paidAt ecoupon
+        sql = "select new models.ChannelCategoryReport(r.order, sum(r.salePrice-r.rebateValue),count(r.buyNumber)" +
+                ",sum(r.goods.originalPrice)" +
+                ",(sum(r.salePrice-r.rebateValue)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
+                ",sum(r.salePrice-r.rebateValue)-sum(r.originalPrice)" +
+                ") from OrderItems r, ECoupon e where e.orderItems=r  ";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterPaidAt(AccountType.CONSUMER) + " order by sum(r.salePrice-r.rebateValue) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<ChannelCategoryReport> totalPaidResultList = query.getResultList();
+        //sendAt real
+        sql = "select new models.ChannelCategoryReport(r.order,count(r.buyNumber),sum(r.salePrice-r.rebateValue)" +
+                ",sum(r.goods.originalPrice)" +
+                ",(sum(r.salePrice-r.rebateValue)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
+                ",sum(r.salePrice-r.rebateValue)-sum(r.originalPrice)" +
+                ") from OrderItems r where ";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterRealSendAt(AccountType.CONSUMER) + " order by sum(r.salePrice-r.rebateValue) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<ChannelCategoryReport> totalSentRealResultList = query.getResultList();
+        //consumedAt ecoupon
+        sql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue),r.order,count(e)) from OrderItems r, ECoupon e where e.orderItems=r";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterConsumedAt(AccountType.CONSUMER) + " order by sum(r.salePrice-r.rebateValue) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<ChannelCategoryReport> totalConsumedResultList = query.getResultList();
+
+        //refundAt ecoupon
+        sql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue),count(e),r.order) from OrderItems r, ECoupon e where e.orderItems=r";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterRefundAt(AccountType.CONSUMER) + " order by sum(e.refundPrice) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<ChannelCategoryReport> totalRefundResultList = query.getResultList();
+
+        //refundAt real need to do !!!!!
+        ChannelCategoryReport result = null;
+        List<ChannelCategoryReport> totalResultList = new ArrayList<>();
+        if (totalPaidResultList != null && totalPaidResultList.size() > 0) {
+            result = totalPaidResultList.get(0);
+            if (totalSentRealResultList != null && totalSentRealResultList.size() > 0 && totalSentRealResultList.get(0).realBuyNumber > 0) {
+                result.realSalePrice = totalSentRealResultList.get(0).realSalePrice;
+                result.realBuyNumber = totalSentRealResultList.get(0).realBuyNumber;
+                BigDecimal totalSalesPrice = result.salePrice == null ? BigDecimal.ZERO : result.salePrice.add(totalSentRealResultList.get(0).realSalePrice == null ? BigDecimal.ZERO : totalSentRealResultList.get(0).realSalePrice);
+                BigDecimal totalCost = result.totalCost == null ? BigDecimal.ZERO : result.totalCost.add(totalSentRealResultList.get(0).totalCost == null ? BigDecimal.ZERO : totalSentRealResultList.get(0).totalCost);
+                if (totalSalesPrice.compareTo(BigDecimal.ZERO) != 0) {
+                    result.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+                }
+
+                result.profit = result.salePrice == null ? BigDecimal.ZERO : result.salePrice.add(totalSentRealResultList.get(0).realSalePrice == null ? BigDecimal.ZERO : totalSentRealResultList.get(0).realSalePrice)
+                        .subtract(result.totalCost == null ? BigDecimal.ZERO : result.totalCost).subtract(totalSentRealResultList.get(0).totalCost == null ? BigDecimal.ZERO : totalSentRealResultList.get(0).totalCost);
+                result.totalCost = result.totalCost == null ? BigDecimal.ZERO : result.totalCost.add(totalSentRealResultList.get(0).totalCost == null ? BigDecimal.ZERO : totalSentRealResultList.get(0).totalCost);
+//                result.channelCost = result.channelCost.add(totalSentRealResultList.get(0).channelCost);
+//                result.profit = result.salePrice.add(totalSentRealResultList.get(0).realSalePrice)
+//                        .subtract(result.channelCost)
+//                        .subtract(result.totalCost.add(totalSentRealResultList.get(0).totalCost));
+            }
+            if (totalConsumedResultList != null && totalConsumedResultList.size() > 0) {
+                result.consumedPrice = totalConsumedResultList.get(0).consumedPrice;
+                result.consumedNumber = totalConsumedResultList.get(0).consumedNumber;
+            }
+            if (totalRefundResultList != null && totalRefundResultList.size() > 0) {
+                result.refundNumber = totalRefundResultList.get(0).refundNumber;
+                result.refundPrice = totalRefundResultList.get(0).refundPrice;
+            }
+            totalResultList.add(result);
+        }
+
         List resultList = new ArrayList();
 
 
         for (String key : map.keySet()) {
             resultList.add(map.get(key));
         }
+
+        resultList.add(totalResultList.get(0));
+
 
         return resultList;
     }

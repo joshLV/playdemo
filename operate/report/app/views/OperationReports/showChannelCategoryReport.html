@@ -301,66 +301,6 @@
 
     </tr>
 
-*{#{set i:0/}}*
-*{<tr class="total" style="display:none">}*
-*{<td colspan="3">小计</td>}*
-*{<td>}*
-*{<a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"}*
-*{target="_blank">${channelPage.get(i)?.buyNumber}</a>}*
-*{/}*
-        *{<a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"}*
-*{target="_blank">${channelPage.get(i)?.salePrice?.formatCurrency('CNY')}</a>}*
-*{</td>}*
-*{<td>}*
-*{${channelPage.get(i)?.realBuyNumber}}*
-*{/ ${channelPage.get(i)?.realSalePrice == null ?'￥0.00':channelPage.get(i)?.realSalePrice?.formatCurrency('CNY')}}*
-*{</td>}*
-
-
-*{<td>}*
-*{<a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"}*
-*{target="_blank">${channelPage.get(i)?.refundNumber}</a>}*
-*{/}*
-        *{<a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"}*
-*{target="_blank">${channelPage.get(i)?.refundPrice == null ?'￥0.00':channelPage.get(i)?.refundPrice?.formatCurrency('CNY')}</a>}*
-*{</td>}*
-*{<td>}*
-*{</td>}*
-*{<td>}*
-*{<a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"}*
-*{target="_blank">${channelPage.get(i)?.consumedNumber}</a>}*
-*{/}*
-        *{<a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"}*
-*{target="_blank">${channelPage.get(i)?.consumedPrice == null ?'￥0.00':channelPage.get(i)?.consumedPrice?.formatCurrency('CNY')}   </a>}*
-*{</td>}*
-*{#{if hasSeeSalesRepotProfitRight == true}}*
-*{<td>${(channelPage.get(i)?.grossMargin?:0).format('#')}%</td>}*
-*{<td>${(channelPage.get(i)?.channelPage.get(i)?:0).formatCurrency('CNY')}</td>}*
-*{<td>}*
-*{#{if channelPage.get(i).profit != null && channelPage.get(i).profit!=0}}*
-*{￥${(channelPage.get(i)?.profit?:0).format('#0.00')}}*
-*{#{/if}}*
-*{#{else}}*
-*{￥0}*
-*{#{/else}}*
-*{</td>}*
-*{#{/if}}*
-*{#{set i:i+1/}}*
-*{</tr>}*
-
-*{<tr style="visibility: hidden;">}*
-*{<td>aaa</td>}*
-*{<td></td>}*
-*{<td></td>}*
-*{<td></td>}*
-*{<td></td>}*
-*{<td></td>}*
-*{<td></td>}*
-*{<td></td>}*
-*{<td></td>}*
-*{<td></td>}*
-*{</tr>}*
-
 #{/paginate.list}
 
 </table>
