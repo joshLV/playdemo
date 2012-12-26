@@ -60,9 +60,9 @@ public class ChannelGoodsReport {
 
         this.goods = goods;
         this.originalPrice = originalPrice;
-        System.out.println("goods.id>>>" + goods.id);
-        System.out.println("orignalprice>>>" + originalPrice);
-        System.out.println("");
+//        System.out.println("goods.id>>>" + goods.id);
+//        System.out.println("orignalprice>>>" + originalPrice);
+//        System.out.println("");
         this.buyNumber = buyNumber;
         this.totalAmount = totalAmount;
         this.avgSalesPrice = avgSalesPrice;
@@ -161,12 +161,16 @@ public class ChannelGoodsReport {
 
         List<ChannelGoodsReport> paidResultList = query.getResultList();
 
-//        System.out.println("padiRe>>>" + paidResultList.size());
+        System.out.println("padiRe>>>" + paidResultList.size());
 
 //        for (ChannelGoodsReport c : paidResultList) {
 //            System.out.println("c.name>>" + c.loginName);
 //            System.out.println("c.goods.name>>>" + c.goods.name);
 //            System.out.println("c.profit>>>" + c.profit);
+//            System.out.println("c.buyNumber>>>"+c.buyNumber);
+//            System.out.println("c.totalAmount>>>"+c.totalAmount);
+//            System.out.println("c.totalCost>>>"+c.totalCost);
+//
 //            System.out.println("");
 //        }
 
@@ -279,15 +283,17 @@ public class ChannelGoodsReport {
         Query query = JPA.em()
                 .createQuery(sql + condition.getFilter(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
         Goods goods1 = Goods.findById(619l);
-        System.out.println("");
-        System.out.println("");
 
-        System.out.println("");
 
-        System.out.println("");
-        System.out.println("");
-
-        System.out.println("goods.orignalpirce>>>" + goods1.originalPrice);
+//        System.out.println("");
+//        System.out.println("");
+//
+//        System.out.println("");
+//
+//        System.out.println("");
+//        System.out.println("");
+//
+//        System.out.println("goods.orignalpirce>>>" + goods1.originalPrice);
 
 
         for (String param : condition.getParamMap().keySet()) {
@@ -305,6 +311,16 @@ public class ChannelGoodsReport {
 //            System.out.println("");
 //        }
 
+//        for (ChannelGoodsReport c : paidResultList) {
+//            System.out.println("c.name>>" + c.loginName);
+//            System.out.println("c.goods.name>>>" + c.goods.name);
+//            System.out.println("c.profit>>>" + c.profit);
+//            System.out.println("c.buyNumber>>>" + c.buyNumber);
+//            System.out.println("c.totalAmount>>>" + c.totalAmount);
+//            System.out.println("c.totalCost>>>" + c.totalCost);
+//
+//            System.out.println("");
+//        }
 
         //from resaler
         sql = "select new models.ChannelGoodsReport(r.order, r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),r.originalPrice*sum(r.buyNumber)" +

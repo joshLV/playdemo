@@ -106,11 +106,11 @@ public class SalesReport {
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)/sum(r.buyNumber)" +
                 ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*sum(r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*sum(r.buyNumber)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
                 ",sum(r.originalPrice*r.buyNumber) " +
                 " )" +
-                " from OrderItems r";
+                " from OrderItems r ";
         String groupBy = " group by r.goods.id";
         Query query = JPA.em()
                 .createQuery(sql + condition.getFilter() + groupBy + " order by sum(r.buyNumber) desc ");
@@ -122,10 +122,21 @@ public class SalesReport {
 
         List<SalesReport> paidResultList = query.getResultList();
 
+        for (SalesReport c : paidResultList) {
+//            System.out.println("c.name>>" + c.loginName);
+            System.out.println("c.goods.name>>>" + c.goods.name);
+            System.out.println("c.profit>>>" + c.profit);
+            System.out.println("c.buyNumber>>>" + c.buyNumber);
+            System.out.println("c.totalAmount>>>" + c.totalAmount);
+            System.out.println("c.totalCost>>>" + c.totalCost);
+
+            System.out.println("");
+        }
+
 
         //from resaler
         sql = "select new models.SalesReport(r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),r.originalPrice*sum(r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-r.originalPrice*sum(r.buyNumber)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-sum(r.originalPrice*r.buyNumber)" +
                 ",b.commissionRatio)" +
                 " from OrderItems r,Order o,Resaler b";
         groupBy = " group by r.goods.id";
