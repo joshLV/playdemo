@@ -143,7 +143,7 @@ public class SalesReport {
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-sum(r.originalPrice*r.buyNumber)" +
                 ",b.commissionRatio)" +
                 " from OrderItems r,Order o,Resaler b";
-        groupBy = " group by r.goods.id";
+        groupBy = " group by r.goods.id,b ";
         query = JPA.em()
                 .createQuery(sql + condition.getResalerFilter() + groupBy + " order by sum(r.buyNumber) desc ");
 
