@@ -177,7 +177,7 @@
     <button type="submit" class="btn btn-primary" id="search" onclick="channelCategoryReport()">搜索</button>
     <div style="float:right">
         <button class="btn btn-primary" id="searchbtn" onclick="channelCategoryReportExcel()">导出报表</button>
-    #{if hasSeeSalesRepotProfitRight == true}
+    #{if hasSeeReportProfitRight == true}
         <button class="btn btn-primary" id="searchbtn" onclick="channelCategoryReportWithPrivilegeExcel()">导出报表附带利润
         </button>
     #{/if}
@@ -228,11 +228,11 @@
     <th>退款券数量/金额</th>
     <th>退款实物数量/金额</th>
     <th>消费券数量/金额</th>
-    *{#{if hasSeeSalesRepotProfitRight == true}}*
+    #{if hasSeeReportProfitRight == true}
     <th>毛利率</th>
     <th>渠道成本</th>
     <th>净利润</th>
-    *{#{/if}}*
+    #{/if}
     </thead>
 #{set i:0/}
 
@@ -257,12 +257,17 @@
         #{else}
             <td colspan="3" bgcolor="#add8e6" style="text-align:center;"> 小计</td>
         #{/else}
-        <td #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
-               target="_blank">${report?.buyNumber}</a>
-            /
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
-               target="_blank">${report?.salePrice?.formatCurrency('CNY')}</a>
+        <td #{if report?.code == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
+            #{if report?.code == "999"}
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
+                   target="_blank">${report?.buyNumber}</a>
+                /
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
+                   target="_blank">${report?.salePrice?.formatCurrency('CNY')}</a>
+            #{/if}
+            #{else}
+            ${report?.buyNumber} / ${report?.salePrice?.formatCurrency('CNY')}
+            #{/else}
         </td>
         <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if}  style="text-align:right;">
         ${report?.realBuyNumber}
@@ -271,24 +276,36 @@
 
 
         <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
-               target="_blank">${report?.refundNumber}</a>
-            /
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
-               target="_blank">${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}</a>
+            #{if report?.code == "999"}
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
+                   target="_blank">${report?.refundNumber}</a>
+                /
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
+                   target="_blank">${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}</a>
+            #{/if}
+            #{else}
+            ${report?.refundNumber} / ${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}
+            #{/else}
         </td>
         <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
         </td>
         <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
-               target="_blank">${report?.consumedNumber}</a>
-            /
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
-               target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
+            #{if report?.code == "999"}
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
+                   target="_blank">${report?.consumedNumber}</a>
+                /
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
+                   target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
+            #{/if}
+            #{else}
+            ${report?.consumedNumber}
+                / ${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}
+            #{/else}
         </td>
-    *{#{if hasSeeSalesRepotProfitRight == true}}*
+    #{if hasSeeReportProfitRight == true}
         <td #{if report?.code == "999"} bgcolor="#add8e6" #{/if} >${(report?.grossMargin?:0).format('#')}%</td>
-        <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">${(report?.channelCost?:0).formatCurrency('CNY')}</td>
+        <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if}
+                                         style="text-align:right;">${(report?.channelCost?:0).formatCurrency('CNY')}</td>
         <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
             #{if report?.profit != null && report.profit!=0}
                 ￥${(report?.profit?:0).format('#0.00')}
@@ -297,7 +314,7 @@
                 ￥0
             #{/else}
         </td>
-    *{#{/if}}*
+    #{/if}
 
     </tr>
 

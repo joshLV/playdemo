@@ -60,8 +60,9 @@ GET     /channel_category_report_with_privilege_excel      OperationReports.chan
 GET     /channel_category_report_excel                     OperationReports.channelCategoryReportExcelOut
 
 #渠道商品报表
-GET     /channel_goods_report                          OperationReports.showChannelGoodsReport
-
+GET     /channel_goods_report                           OperationReports.showChannelGoodsReport
+GET     /channel_goods_report_with_privilege_excel      OperationReports.channelGoodsReportWithPrivilegeExcelOut
+GET     /channel_goods_report_excel                     OperationReports.channelGoodsReportExcelOut
 
 # Home page
 GET     /                                       OperateReportApplication.index

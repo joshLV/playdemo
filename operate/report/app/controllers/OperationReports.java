@@ -12,6 +12,7 @@ import play.mvc.With;
 import utils.PaginateUtil;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -23,7 +24,7 @@ import java.util.List;
  */
 @With(OperateRbac.class)
 public class OperationReports extends Controller {
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 50;
 
     @ActiveNavigation("operation_reports_app")
     public static void index() {
@@ -36,15 +37,14 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new SalesReportCondition();
         }
-        Boolean hasSeeSalesRepotProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         List<SalesReport> resultList = SalesReport.query(condition);
         // 分页
         ValuePaginator<SalesReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
 
         // 汇总
         SalesReport summary = SalesReport.getNetSummary(resultList);
-//        System.out.println("hasSeeSalesRepotProfitRight>>>" + hasSeeSalesRepotProfitRight);
-        render(condition, reportPage, hasSeeSalesRepotProfitRight, summary);
+        render(condition, reportPage, hasSeeReportProfitRight, summary);
 
     }
 
@@ -55,7 +55,7 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new ResaleSalesReportCondition();
         }
-        Boolean hasSeeSalesRepotProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
 
         List<ResaleSalesReport> resultList = null;
         condition.accountType = null;
@@ -70,7 +70,7 @@ public class OperationReports extends Controller {
         // 分页
         ValuePaginator<ResaleSalesReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
         ResaleSalesReport summary = ResaleSalesReport.summary(resultList);
-        render(reportPage, condition, summary, hasSeeSalesRepotProfitRight);
+        render(reportPage, condition, summary, hasSeeReportProfitRight);
     }
 
     @ActiveNavigation("channel_category_reports")
@@ -80,7 +80,7 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new ChannelCategoryReportCondition();
         }
-        Boolean hasSeeSalesRepotProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
 
         List<ResaleSalesReport> channelPage = null;
         ResaleSalesReportCondition channelCondition = new ResaleSalesReportCondition();
@@ -115,7 +115,7 @@ public class OperationReports extends Controller {
         ValuePaginator<ChannelCategoryReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
 
 
-        render(condition, reportPage, channelPage, channelSummary, hasSeeSalesRepotProfitRight);
+        render(condition, reportPage, channelPage, channelSummary, hasSeeReportProfitRight);
     }
 
 
@@ -125,7 +125,7 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new ChannelGoodsReportCondition();
         }
-        Boolean hasSeeSalesRepotProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
 
         List<ChannelGoodsReport> resultList = ChannelGoodsReport.query(condition);
         List<ChannelGoodsReport> consumerList = ChannelGoodsReport.queryConsumer(condition);
@@ -140,7 +140,7 @@ public class OperationReports extends Controller {
         // 汇总
         ChannelGoodsReport summary = ChannelGoodsReport.getNetSummary(resultList);
 
-        render(condition, reportPage, hasSeeSalesRepotProfitRight, summary);
+        render(condition, reportPage, hasSeeReportProfitRight, summary);
 
     }
 
@@ -290,8 +290,11 @@ public class OperationReports extends Controller {
 
 
         for (ChannelCategoryReport report : resultList) {
-            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
-            report.grossMargin = tempGrossMargin;
+//            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
+//            report.grossMargin = tempGrossMargin;
+            DecimalFormat df = new DecimalFormat("0.00");
+            report.grossMargin = new BigDecimal(df.format(report.grossMargin));
+
             if (report.refundPrice == null) {
                 report.refundPrice = BigDecimal.ZERO;
             }
@@ -350,6 +353,82 @@ public class OperationReports extends Controller {
         }
         render(resultList);
     }
+
+
+    public static void channelGoodsReportWithPrivilegeExcelOut(ChannelGoodsReportCondition condition) {
+        if (condition == null) {
+            condition = new ChannelGoodsReportCondition();
+        }
+        String page = request.params.get("page");
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "渠道商品报表_" + System.currentTimeMillis() + ".xls");
+
+        List<ChannelGoodsReport> resultList = null;
+        resultList = ChannelGoodsReport.query(condition);
+        List<ChannelGoodsReport> consumerList = ChannelGoodsReport.queryConsumer(condition);
+
+        // 查询出所有结果
+        for (ChannelGoodsReport resaleSalesReport : consumerList) {
+            resultList.add(resaleSalesReport);
+        }
+
+
+        for (ChannelGoodsReport report : resultList) {
+            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
+            report.grossMargin = tempGrossMargin;
+            if (report.refundAmount == null) {
+                report.refundAmount = BigDecimal.ZERO;
+            }
+            if (report.netSalesAmount == null) {
+                report.netSalesAmount = BigDecimal.ZERO;
+            }
+
+            if (report.grossMargin == null) {
+                report.grossMargin = BigDecimal.ZERO;
+            }
+
+            if (report.channelCost == null) {
+                report.channelCost = BigDecimal.ZERO;
+
+            }
+
+            if (report.profit == null) {
+                report.profit = BigDecimal.ZERO;
+            }
+        }
+        render(resultList);
+    }
+
+    public static void channelGoodsReportExcelOut(ChannelGoodsReportCondition condition) {
+        if (condition == null) {
+            condition = new ChannelGoodsReportCondition();
+        }
+        String page = request.params.get("page");
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "渠道商品报表_" + System.currentTimeMillis() + ".xls");
+
+        List<ChannelGoodsReport> resultList = null;
+        resultList = ChannelGoodsReport.query(condition);
+        List<ChannelGoodsReport> consumerList = ChannelGoodsReport.queryConsumer(condition);
+
+        // 查询出所有结果
+        for (ChannelGoodsReport resaleSalesReport : consumerList) {
+            resultList.add(resaleSalesReport);
+        }
+
+
+        for (ChannelGoodsReport report : resultList) {
+            if (report.refundAmount == null) {
+                report.refundAmount = BigDecimal.ZERO;
+            }
+            if (report.netSalesAmount == null) {
+                report.netSalesAmount = BigDecimal.ZERO;
+            }
+
+        }
+        render(resultList);
+    }
+
 
     private static int getPageNumber() {
         String page = request.params.get("page");

@@ -131,9 +131,9 @@
     <button type="submit" class="btn btn-primary" id="search" onclick="channelReport()">搜索</button>
     <div style="float:right">
         <button class="btn btn-primary" id="searchbtn" onclick="channelReportExcel()">导出报表</button>
-    *{#{if hasSeeSalesRepotProfitRight == true}}*
+    #{if hasSeeReportProfitRight == true}
         <button class="btn btn-primary" id="searchbtn" onclick="channelReportWithPrivilegeExcel()">导出报表附带利润</button>
-    *{#{/if}}*
+    #{/if}
     </div>
     <ul class="nav nav-pills">
         <li #{if condition.interval=='-1d'} class="active" #{/if}  ><a start="-1d" href="#">今天</a></li>
@@ -179,11 +179,11 @@
     <th>退款券数量/金额</th>
     <th>退款实物数量/金额</th>
     <th>消费券数量/金额</th>
-    *{#{if hasSeeSalesRepotProfitRight == true}}*
+    #{if hasSeeReportProfitRight == true}
     <th>毛利率</th>
     <th>渠道成本</th>
     <th>净利润</th>
-    *{#{/if}}*
+    #{/if}
     </thead>
 #{set i:0/}
 %{
@@ -229,18 +229,18 @@
             <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
                target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
         </td>
-    *{#{if hasSeeSalesRepotProfitRight == true}}*
-        <td>${(report?.grossMargin?:0).format('#')}%</td>
-        <td style="text-align:right;">${(report?.channelCost?:0).formatCurrency('CNY')}</td>
-        <td style="text-align:right;">
-            #{if report.profit != null && report.profit!=0}
-                ￥${(report?.profit?:0).format('#0.00')}
-            #{/if}
-            #{else}
-                ￥0
-            #{/else}
-        </td>
-    *{#{/if}}*
+        #{if hasSeeReportProfitRight == true}
+            <td>${(report?.grossMargin?:0).format('#')}%</td>
+            <td style="text-align:right;">${(report?.channelCost?:0).formatCurrency('CNY')}</td>
+            <td style="text-align:right;">
+                #{if report.profit != null && report.profit!=0}
+                    ￥${(report?.profit?:0).format('#0.00')}
+                #{/if}
+                #{else}
+                    ￥0
+                #{/else}
+            </td>
+        #{/if}
 
     </tr>
 #{/paginate.list}

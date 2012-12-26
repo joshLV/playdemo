@@ -38,15 +38,15 @@
 
     });
 
-    function salesReportExcel() {
-        $("#search_form").attr("action", "@{OperationReports.salesReportExcelOut()}");
+    function channelGoodsReportExcel() {
+        $("#search_form").attr("action", "@{OperationReports.channelGoodsReportExcelOut()}");
         $("#search_form").attr("method", "get");
         $("#search_form").submit();
     }
     ;
 
-    function salesReportWithPrivilegeExcel() {
-        $("#search_form").attr("action", "@{OperationReports.salesReportWithPrivilegeExcelOut()}");
+    function channelGoodsReportWithPrivilegeExcel() {
+        $("#search_form").attr("action", "@{OperationReports.channelGoodsReportWithPrivilegeExcelOut()}");
         $("#search_form").attr("method", "get");
         $("#search_form").submit();
     }
@@ -122,10 +122,11 @@
         <br/>
 
         <div style="float:right">
-            <button class="btn btn-primary" id="searchbtn" onclick="salesReportExcel()">导出报表</button>
-        *{#{if hasSeeSalesRepotProfitRight == true}}*
-            <button class="btn btn-primary" id="searchbtn" onclick="salesReportWithPrivilegeExcel()">导出报表附带利润</button>
-        *{#{/if}}*
+            <button class="btn btn-primary" id="searchbtn" onclick="channelGoodsReportExcel()">导出报表</button>
+        #{if hasSeeReportProfitRight == true}
+            <button class="btn btn-primary" id="searchbtn" onclick="channelGoodsReportWithPrivilegeExcel()">导出报表附带利润
+            </button>
+        #{/if}
         </div>
 
         <ul class="nav nav-pills">
@@ -165,10 +166,10 @@
         <th>总销售额</th>
         <th>退款总额</th>
         <th>净销售额</th>
-        *{#{if hasSeeSalesRepotProfitRight == true}}*
+        #{if hasSeeReportProfitRight == true}
         <th>毛利率</th>
         <th>净利润</th>
-        *{#{/if}}*
+        #{/if}
         </thead>
     #{set i:0/}
     %{
@@ -188,9 +189,12 @@
             <td>${report?.goods?.shortName}</td>
             <td style="text-align:right;">${(report?.originalPrice?:0).formatCurrency('CNY')}</td>
             <td style="text-align:right;">
-                #{if report?.avgSalesPrice!=null}
-          ${(report?.avgSalesPrice?:0).formatCurrency('CNY')}
-          #{/if}
+                #{if report?.avgSalesPrice!=null ||report?.avgSalesPrice==0}
+                ${(report?.avgSalesPrice?:0).formatCurrency('CNY')}
+                #{/if}
+                #{else}
+                    ￥0
+                #{/else}
             </td>
             <td>${report?.buyNumber?:0}</td>
             <td style="text-align:right;">
@@ -216,17 +220,17 @@
             <td style="text-align:right;">
                 ￥${(report?.netSalesAmount?:0)}
             </td>
-        *{#{if hasSeeSalesRepotProfitRight == true}}*
-            <td>${(report?.grossMargin?:0).format('#')}%</td>
-            <td style="text-align:right;">
-                #{if report.profit != null && report.profit!=0}
-                    ￥${(report?.profit?:0).format('#0.00')}
-                #{/if}
-                #{else}
-                    ￥0
-                #{/else}
-            </td>
-        *{#{/if}}*
+            #{if hasSeeReportProfitRight == true}
+                <td>${(report?.grossMargin?:0).format('#')}%</td>
+                <td style="text-align:right;">
+                    #{if report.profit != null && report.profit!=0}
+                        ￥${(report?.profit?:0).format('#0.00')}
+                    #{/if}
+                    #{else}
+                        ￥0
+                    #{/else}
+                </td>
+            #{/if}
         </tr>
     #{/paginate.list}
     </table>

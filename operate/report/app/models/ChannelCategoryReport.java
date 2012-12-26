@@ -166,7 +166,6 @@ public class ChannelCategoryReport {
         }
 
         this.code = "999";
-        System.out.println("oooooooooooo");
         this.name = "小计";
 
         if (salePrice != null) {
@@ -476,11 +475,6 @@ public class ChannelCategoryReport {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<ChannelCategoryReport> paidResultList = query.getResultList();
-        for (ChannelCategoryReport c : paidResultList) {
-            System.out.println("name>>" + c.loginName + "    profit>>>" + c.profit);
-            System.out.println("saleprice>>>" + c.salePrice);
-            System.out.println("cost>>>" + c.totalCost);
-        }
 
 
         //sendAt real
@@ -588,12 +582,7 @@ public class ChannelCategoryReport {
             totalQuery.setParameter(param, condition.getParamMap().get(param));
         }
         List<ChannelCategoryReport> totalPaidResultList = totalQuery.getResultList();
-        System.out.println("totalPaidResultList>>>" + totalPaidResultList.size());
-        for (ChannelCategoryReport c : totalPaidResultList) {
-            System.out.println("totalPaidResultList.lo>>>>" + c.loginName);
-            System.out.println("cat>>>>" + c.name);
-            System.out.println("profit>>>" + c.profit);
-        }
+
 
         //sendAt real
         totalSql = "select new models.ChannelCategoryReport(r.order,count(r.buyNumber),sum(r.salePrice-r.rebateValue)" +
@@ -607,12 +596,7 @@ public class ChannelCategoryReport {
             totalQuery.setParameter(param, condition.getParamMap().get(param));
         }
         List<ChannelCategoryReport> totalSentRealResultList = totalQuery.getResultList();
-        System.out.println("");
-        System.out.println("totalSentRealResultList>>>" + totalSentRealResultList.size());
-        for (ChannelCategoryReport c : totalSentRealResultList) {
-            System.out.println("totalSentRealResultList.lo>>>>" + c.loginName);
 
-        }
 
         //consumedAt ecoupon
         totalSql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue),r.order,count(e)) from OrderItems r, ECoupon e where e.orderItems=r";
@@ -622,14 +606,6 @@ public class ChannelCategoryReport {
             totalQuery.setParameter(param, condition.getParamMap().get(param));
         }
         List<ChannelCategoryReport> totalConsumedResultList = totalQuery.getResultList();
-
-
-        System.out.println("");
-        System.out.println("totalConsumedResultList>>>" + totalConsumedResultList.size());
-        for (ChannelCategoryReport c : totalConsumedResultList) {
-            System.out.println("totalConsumedResultList.lo>>>>" + c.loginName);
-
-        }
 
 
         //refundAt ecoupon
@@ -642,12 +618,6 @@ public class ChannelCategoryReport {
         List<ChannelCategoryReport> totalRefundResultList = totalQuery.getResultList();
 
 
-        System.out.println("");
-        System.out.println("totalRefundResultList>>>" + totalRefundResultList.size());
-        for (ChannelCategoryReport c : totalRefundResultList) {
-            System.out.println("totalRefundResultList.lo>>>>" + c.loginName);
-
-        }
         //refundAt real need to do !!!!!
 
 
@@ -655,14 +625,11 @@ public class ChannelCategoryReport {
 
         //merge ecoupon and real when sales
         for (ChannelCategoryReport paidItem : totalPaidResultList) {
-            System.out.println("paid put >>>>" + getTotalReportKey(paidItem));
             totalMap.put(getTotalReportKey(paidItem), paidItem);
         }
-        System.out.println("map>>>>>>" + totalMap.size());
 
         for (ChannelCategoryReport paidItem : totalSentRealResultList) {
             ChannelCategoryReport item = totalMap.get(getTotalReportKey(paidItem));
-            System.out.println("sent--------getTotalReportKey(paidItem)>>>" + getTotalReportKey(paidItem));
             if (item == null) {
                 totalMap.put(getTotalReportKey(paidItem), paidItem);
             } else {
@@ -683,23 +650,17 @@ public class ChannelCategoryReport {
             }
         }
 
-        System.out.println("map>sent>>>>>" + totalMap.size());
-
 
         //merge other 2
         for (ChannelCategoryReport totalConsumedItem : totalConsumedResultList) {
             ChannelCategoryReport item = totalMap.get(getTotalReportKey(totalConsumedItem));
             if (item == null) {
-                System.out.println("getTotalReportKey(totalConsumedItem)>>>>" + getTotalReportKey(totalConsumedItem));
-                System.out.println("ininini");
                 totalMap.put(getTotalReportKey(totalConsumedItem), totalConsumedItem);
             } else {
                 item.consumedPrice = totalConsumedItem.consumedPrice;
                 item.consumedNumber = totalConsumedItem.consumedNumber;
             }
         }
-
-        System.out.println("map>consume>>>>>" + totalMap.size());
 
 
         for (ChannelCategoryReport refundItem : totalRefundResultList) {
@@ -712,18 +673,12 @@ public class ChannelCategoryReport {
             }
         }
 
-        System.out.println("map>refund>>>>>" + totalMap.size());
-
 
         List<ChannelCategoryReport> totalResultList = new ArrayList();
         for (String key : totalMap.keySet()) {
             totalResultList.add(totalMap.get(key));
         }
-        System.out.println("total.size()>>>" + totalResultList.size());
-        for (ChannelCategoryReport c : totalResultList) {
-            System.out.println("c.lo>>>>" + c.loginName);
 
-        }
 
         //merge total into result
         List resultList = new ArrayList();
@@ -946,7 +901,6 @@ public class ChannelCategoryReport {
         for (String key : map.keySet()) {
             resultList.add(map.get(key));
         }
-
         resultList.add(totalResultList.get(0));
 
 

@@ -79,7 +79,7 @@
 
         <div style="float:right">
             <button class="btn btn-primary" id="searchbtn" onclick="salesReportExcel()">导出报表</button>
-        #{if hasSeeSalesRepotProfitRight == true}
+        #{if hasSeeReportProfitRight == true}
             <button class="btn btn-primary" id="searchbtn" onclick="salesReportWithPrivilegeExcel()">导出报表附带利润</button>
         #{/if}
         </div>
@@ -119,10 +119,10 @@
         <th>总销售额</th>
         <th>退款总额</th>
         <th>净销售额</th>
-        *{#{if hasSeeSalesRepotProfitRight == true}}*
+        #{if hasSeeReportProfitRight == true}
         <th>毛利率</th>
         <th>净利润</th>
-        *{#{/if}}*
+        #{/if}
         </thead>
     #{set i:0/}
     %{
@@ -163,7 +163,7 @@
             <td style="text-align:right;">
                 ￥${(report?.netSalesAmount?:0)}
             </td>
-        *{#{if hasSeeSalesRepotProfitRight == true}}*
+        #{if hasSeeReportProfitRight == true}
             <td>${(report?.grossMargin?:0).format('#')}%</td>
             <td style="text-align:right;">
                 #{if report.profit != null && report.profit!=0}
@@ -173,7 +173,7 @@
                     ￥0
                 #{/else}
             </td>
-        *{#{/if}}*
+        #{/if}
         </tr>
     #{/paginate.list}
     </table>
