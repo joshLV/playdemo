@@ -1,7 +1,13 @@
 package controllers;
 
-import models.*;
-import models.accounts.AccountType;
+import models.ChannelCategoryReport;
+import models.ChannelCategoryReportCondition;
+import models.ChannelGoodsReport;
+import models.ChannelGoodsReportCondition;
+import models.ResaleSalesReport;
+import models.ResaleSalesReportCondition;
+import models.SalesReport;
+import models.SalesReportCondition;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -78,7 +84,7 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new SalesReportCondition();
         }
-        Boolean hasSeeSalesRepotProfitRight = ContextedPermission.hasPermission("SEE_SALE_REPORT_PROFIT");
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         List<SalesReport> resultList = SalesReport.queryPeopleEffectData(condition);
         // 分页
         ValuePaginator<SalesReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
@@ -86,7 +92,7 @@ public class OperationReports extends Controller {
         // 汇总
         SalesReport summary = SalesReport.getPeopleEffectSummary(resultList);
 
-        render(condition, reportPage, hasSeeSalesRepotProfitRight, summary);
+        render(condition, reportPage, hasSeeReportProfitRight, summary);
 
     }
 
