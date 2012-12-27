@@ -84,8 +84,10 @@ jQuery(function($){
 
     function otherPayBoxToggle() {
         if ($('#use_balance').attr('checked') == 'checked') {
-            if (voucherTotalValue + accountBalance > orderTotalMoney) {
+            if (voucherTotalValue + accountBalance >= orderTotalMoney) {
                 otherPayBox.slideUp(50);
+            } else {
+                otherPayBox.slideDown(50);
             }
         } else {
             otherPayBox.slideDown(50);
