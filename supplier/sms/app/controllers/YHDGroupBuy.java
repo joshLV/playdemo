@@ -43,7 +43,7 @@ public class YHDGroupBuy extends Controller{
                                    String outerGroupId) {
         TreeMap<String, String> params = YHDUtil.filterPlayParams(request.params.allSimple());
         List<YHDErrorInfo> errorInfoList = YHDUtil.checkParam(params, "sign", "orderCode", "productId", "productNum",
-                "orderAmount", "createTime", "paidTime", "userPhone", "productPrize", "groupId", "outerGroupId");
+                "orderAmount", "createTime", "paidTime", "userPhone", "productPrice", "groupId", "outerGroupId");
         int totalCount = 0;
         if(errorInfoList.size() > 0){
             finish(errorInfoList, totalCount);
