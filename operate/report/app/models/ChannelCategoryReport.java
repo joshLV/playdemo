@@ -462,10 +462,10 @@ public class ChannelCategoryReport {
 
         //paidAt ecoupon
         String sql = "select new models.ChannelCategoryReport(r.order, s.supplierCategory.id" +
-                ", sum(r.salePrice-r.rebateValue),count(r.buyNumber)" +
-                ",sum(r.originalPrice),sum(r.salePrice-r.rebateValue)*b.commissionRatio/100" +
-                ",(sum(r.salePrice-r.rebateValue)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
-                ",sum(r.salePrice-r.rebateValue)-sum(r.salePrice-r.rebateValue)*b.commissionRatio/100-sum(r.originalPrice)" +
+                ", sum(r.salePrice-r.rebateValue/r.buyNumber),count(r.buyNumber)" +
+                ",sum(r.originalPrice),sum(r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio/100" +
+                ",(sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue/r.buyNumber)*100" +
+                ",sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio/100-sum(r.originalPrice)" +
                 ") from OrderItems r, ECoupon e,Order o,Resaler b, Supplier s where e.orderItems=r and r.order=o and o.userId=b.id " +
                 " and r.goods.supplierId = s ";
         String groupBy = " group by r.order.userId, s.supplierCategory.id";
@@ -479,10 +479,10 @@ public class ChannelCategoryReport {
 
         //sendAt real
         sql = "select new models.ChannelCategoryReport(r.order,s.supplierCategory.id,count(r.buyNumber) " +
-                ",sum(r.salePrice-r.rebateValue)" +
-                ",sum(r.originalPrice),sum(r.salePrice-r.rebateValue)*b.commissionRatio/100" +
-                ",(sum(r.salePrice-r.rebateValue)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
-                ",sum(r.salePrice-r.rebateValue)-sum(r.salePrice-r.rebateValue)*b.commissionRatio/100-sum(r.originalPrice)" +
+                ",sum(r.salePrice-r.rebateValue/r.buyNumber)" +
+                ",sum(r.originalPrice),sum(r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio/100" +
+                ",(sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue/r.buyNumber)*100" +
+                ",sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio/100-sum(r.originalPrice)" +
                 ") from OrderItems r,Order o,Resaler b,Supplier s  where r.order=o and o.userId=b.id  and r.goods.supplierId = s and ";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterRealSendAt(AccountType.RESALER) + groupBy + " order by r.order.userId, s.supplierCategory.id desc");
@@ -493,7 +493,7 @@ public class ChannelCategoryReport {
 
 
         //consumedAt ecoupon
-        sql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue),s.supplierCategory.id,r.order,count(e))" +
+        sql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue/r.buyNumber),s.supplierCategory.id,r.order,count(e))" +
                 " from OrderItems r, ECoupon e,Supplier s  where e.orderItems=r and r.goods.supplierId = s ";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterConsumedAt(AccountType.RESALER) + groupBy + " order by r.order.userId, s.supplierCategory.id desc");
@@ -504,7 +504,7 @@ public class ChannelCategoryReport {
 
 
         //refundAt ecoupon
-        sql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue),s.supplierCategory.id, count(e),r.order) " +
+        sql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue/r.buyNumber),s.supplierCategory.id, count(e),r.order) " +
                 " from OrderItems r, ECoupon e ,Supplier s where e.orderItems=r and r.goods.supplierId = s ";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterRefundAt(AccountType.RESALER) + groupBy + " order by r.order.userId, s.supplierCategory.id desc");
@@ -570,15 +570,15 @@ public class ChannelCategoryReport {
 
         //total
         //paidAt ecoupon
-        String totalSql = "select new models.ChannelCategoryReport(r.order, sum(r.salePrice-r.rebateValue),count(r.buyNumber)" +
-                ",sum(r.originalPrice),sum(r.salePrice-r.rebateValue)*b.commissionRatio/100" +
-                ",(sum(r.salePrice-r.rebateValue)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
-                ",sum(r.salePrice-r.rebateValue)-sum(r.salePrice-r.rebateValue)*b.commissionRatio/100-sum(r.originalPrice)" +
+        String totalSql = "select new models.ChannelCategoryReport(r.order, sum(r.salePrice-r.rebateValue/r.buyNumber),count(r.buyNumber)" +
+                ",sum(r.originalPrice),sum(r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio/100" +
+                ",(sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue/r.buyNumber)*100" +
+                ",sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio/100-sum(r.originalPrice)" +
                 ") from OrderItems r, ECoupon e,Order o,Resaler b,Supplier s where e.orderItems=r and r.order=o and o.userId=b.id" +
                 " and r.goods.supplierId = s ";
         String totalGroupBy = " group by r.order.userId";
         Query totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getFilterPaidAt(AccountType.RESALER) + totalGroupBy + " order by sum(r.salePrice-r.rebateValue) desc");
+                .createQuery(totalSql + condition.getFilterPaidAt(AccountType.RESALER) + totalGroupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
         for (String param : condition.getParamMap().keySet()) {
             totalQuery.setParameter(param, condition.getParamMap().get(param));
         }
@@ -586,13 +586,13 @@ public class ChannelCategoryReport {
 
 
         //sendAt real
-        totalSql = "select new models.ChannelCategoryReport(r.order,count(r.buyNumber),sum(r.salePrice-r.rebateValue)" +
-                ",sum(r.originalPrice),sum(r.salePrice-r.rebateValue)*b.commissionRatio/100" +
-                ",(sum(r.salePrice-r.rebateValue)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
-                ",sum(r.salePrice-r.rebateValue)-sum(r.salePrice-r.rebateValue)*b.commissionRatio/100-sum(r.originalPrice)" +
+        totalSql = "select new models.ChannelCategoryReport(r.order,count(r.buyNumber),sum(r.salePrice-r.rebateValue/r.buyNumber)" +
+                ",sum(r.originalPrice),sum(r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio/100" +
+                ",(sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue/r.buyNumber)*100" +
+                ",sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio/100-sum(r.originalPrice)" +
                 ") from OrderItems r,Order o,Resaler b where r.order=o and o.userId=b.id and ";
         totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getFilterRealSendAt(AccountType.RESALER) + totalGroupBy + " order by sum(r.salePrice-r.rebateValue) desc");
+                .createQuery(totalSql + condition.getFilterRealSendAt(AccountType.RESALER) + totalGroupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
         for (String param : condition.getParamMap().keySet()) {
             totalQuery.setParameter(param, condition.getParamMap().get(param));
         }
@@ -600,9 +600,9 @@ public class ChannelCategoryReport {
 
 
         //consumedAt ecoupon
-        totalSql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue),r.order,count(e)) from OrderItems r, ECoupon e where e.orderItems=r";
+        totalSql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue/r.buyNumber),r.order,count(e)) from OrderItems r, ECoupon e where e.orderItems=r";
         totalQuery = JPA.em()
-                .createQuery(totalSql + condition.getFilterConsumedAt(AccountType.RESALER) + totalGroupBy + " order by sum(r.salePrice-r.rebateValue) desc");
+                .createQuery(totalSql + condition.getFilterConsumedAt(AccountType.RESALER) + totalGroupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
         for (String param : condition.getParamMap().keySet()) {
             totalQuery.setParameter(param, condition.getParamMap().get(param));
         }
@@ -610,7 +610,7 @@ public class ChannelCategoryReport {
 
 
         //refundAt ecoupon
-        totalSql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue),count(e),r.order) from OrderItems r, ECoupon e where e.orderItems=r";
+        totalSql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue/r.buyNumber),count(e),r.order) from OrderItems r, ECoupon e where e.orderItems=r";
         totalQuery = JPA.em()
                 .createQuery(totalSql + condition.getFilterRefundAt(AccountType.RESALER) + totalGroupBy + " order by sum(e.refundPrice) desc");
         for (String param : condition.getParamMap().keySet()) {
@@ -854,14 +854,14 @@ public class ChannelCategoryReport {
      */
     public static List<ChannelCategoryReport> queryConsumer(ChannelCategoryReportCondition condition) {
         //paidAt ecoupon
-        String sql = "select new models.ChannelCategoryReport(r.order, s.supplierCategory.id, sum(r.salePrice-r.rebateValue),count(r.buyNumber)" +
+        String sql = "select new models.ChannelCategoryReport(r.order, s.supplierCategory.id, sum(r.salePrice-r.rebateValue/r.buyNumber),count(r.buyNumber)" +
                 ",sum(r.originalPrice)" +
-                ",(sum(r.salePrice-r.rebateValue)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
-                ",sum(r.salePrice-r.rebateValue)-sum(r.originalPrice)" +
+                ",(sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue/r.buyNumber)*100" +
+                ",sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice)" +
                 ") from OrderItems r, ECoupon e , Supplier s where e.orderItems=r and r.goods.supplierId = s  ";
         String groupBy = " group by s.supplierCategory.id";
         Query query = JPA.em()
-                .createQuery(sql + condition.getFilterPaidAt(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice-r.rebateValue) desc");
+                .createQuery(sql + condition.getFilterPaidAt(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
@@ -872,30 +872,30 @@ public class ChannelCategoryReport {
         }
 
         //sendAt real
-        sql = "select new models.ChannelCategoryReport(r.order, s.supplierCategory.id, count(r.buyNumber),sum(r.salePrice-r.rebateValue)" +
+        sql = "select new models.ChannelCategoryReport(r.order, s.supplierCategory.id, count(r.buyNumber),sum(r.salePrice-r.rebateValue/r.buyNumber)" +
                 ",sum(r.originalPrice)" +
-                ",(sum(r.salePrice-r.rebateValue)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
-                ",sum(r.salePrice-r.rebateValue)-sum(r.originalPrice)" +
+                ",(sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue/r.buyNumber)*100" +
+                ",sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice)" +
                 ") from OrderItems r , Supplier s where r.goods.supplierId = s and ";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRealSendAt(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice-r.rebateValue) desc");
+                .createQuery(sql + condition.getFilterRealSendAt(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<ChannelCategoryReport> sentRealResultList = query.getResultList();
 
         //consumedAt ecoupon
-        sql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue), s.supplierCategory.id, r.order,count(e)) " +
+        sql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue/r.buyNumber), s.supplierCategory.id, r.order,count(e)) " +
                 " from OrderItems r, ECoupon e , Supplier s where e.orderItems=r and r.goods.supplierId = s ";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterConsumedAt(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice-r.rebateValue) desc");
+                .createQuery(sql + condition.getFilterConsumedAt(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<ChannelCategoryReport> consumedResultList = query.getResultList();
 
         //refundAt ecoupon
-        sql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue), s.supplierCategory.id, count(e),r.order) " +
+        sql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue/r.buyNumber), s.supplierCategory.id, count(e),r.order) " +
                 " from OrderItems r, ECoupon e , Supplier s where e.orderItems=r and r.goods.supplierId = s ";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterRefundAt(AccountType.CONSUMER) + groupBy + " order by sum(e.refundPrice) desc");
@@ -964,40 +964,40 @@ public class ChannelCategoryReport {
 
         //total
         //paidAt ecoupon
-        sql = "select new models.ChannelCategoryReport(r.order, sum(r.salePrice-r.rebateValue),count(r.buyNumber)" +
+        sql = "select new models.ChannelCategoryReport(r.order, sum(r.salePrice-r.rebateValue/r.buyNumber),count(r.buyNumber)" +
                 ",sum(r.originalPrice)" +
-                ",(sum(r.salePrice-r.rebateValue)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
-                ",sum(r.salePrice-r.rebateValue)-sum(r.originalPrice)" +
+                ",(sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue/r.buyNumber)*100" +
+                ",sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice)" +
                 ") from OrderItems r, ECoupon e where e.orderItems=r  ";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterPaidAt(AccountType.CONSUMER) + " order by sum(r.salePrice-r.rebateValue) desc");
+                .createQuery(sql + condition.getFilterPaidAt(AccountType.CONSUMER) + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<ChannelCategoryReport> totalPaidResultList = query.getResultList();
         //sendAt real
-        sql = "select new models.ChannelCategoryReport(r.order,count(r.buyNumber),sum(r.salePrice-r.rebateValue)" +
+        sql = "select new models.ChannelCategoryReport(r.order,count(r.buyNumber),sum(r.salePrice-r.rebateValue/r.buyNumber)" +
                 ",sum(r.originalPrice)" +
-                ",(sum(r.salePrice-r.rebateValue)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
-                ",sum(r.salePrice-r.rebateValue)-sum(r.originalPrice)" +
+                ",(sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue/r.buyNumber)*100" +
+                ",sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice)" +
                 ") from OrderItems r where ";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRealSendAt(AccountType.CONSUMER) + " order by sum(r.salePrice-r.rebateValue) desc");
+                .createQuery(sql + condition.getFilterRealSendAt(AccountType.CONSUMER) + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<ChannelCategoryReport> totalSentRealResultList = query.getResultList();
         //consumedAt ecoupon
-        sql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue),r.order,count(e)) from OrderItems r, ECoupon e where e.orderItems=r";
+        sql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue/r.buyNumber),r.order,count(e)) from OrderItems r, ECoupon e where e.orderItems=r";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterConsumedAt(AccountType.CONSUMER) + " order by sum(r.salePrice-r.rebateValue) desc");
+                .createQuery(sql + condition.getFilterConsumedAt(AccountType.CONSUMER) + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<ChannelCategoryReport> totalConsumedResultList = query.getResultList();
 
         //refundAt ecoupon
-        sql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue),count(e),r.order) from OrderItems r, ECoupon e where e.orderItems=r";
+        sql = "select new models.ChannelCategoryReport(sum(r.salePrice-r.rebateValue/r.buyNumber),count(e),r.order) from OrderItems r, ECoupon e where e.orderItems=r";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterRefundAt(AccountType.CONSUMER) + " order by sum(e.refundPrice) desc");
         for (String param : condition.getParamMap().keySet()) {
