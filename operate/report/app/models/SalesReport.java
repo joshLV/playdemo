@@ -3,7 +3,6 @@ package models;
 import models.admin.OperateUser;
 import models.order.ECouponStatus;
 import models.sales.Goods;
-import models.supplier.Supplier;
 import play.db.jpa.JPA;
 
 import javax.persistence.Query;
@@ -72,9 +71,9 @@ public class SalesReport {
     public OperateUser operateUser;
 
     //--------人效报表_begin---------------------------//
-    public SalesReport(Supplier supplier, Long buyNumber,
+    public SalesReport(OperateUser operateUser, Long buyNumber,
                        BigDecimal totalAmount, BigDecimal grossMargin, BigDecimal profit, BigDecimal netSalesAmount) {
-        this.operateUser = OperateUser.findById(supplier.salesId);
+        this.operateUser = operateUser;
         this.buyNumber = buyNumber;
         this.totalAmount = totalAmount;
         this.grossMargin = grossMargin;
@@ -83,8 +82,8 @@ public class SalesReport {
     }
 
     //from resaler
-    public SalesReport(Supplier supplier, BigDecimal totalAmount, BigDecimal totalCost, BigDecimal profit, BigDecimal ratio) {
-        this.operateUser = OperateUser.findById(supplier.salesId);
+    public SalesReport(OperateUser operateUser, BigDecimal totalAmount, BigDecimal totalCost, BigDecimal profit, BigDecimal ratio) {
+        this.operateUser = operateUser;
         this.totalAmount = totalAmount;
         this.totalCost = totalCost;
         this.profit = profit;
@@ -98,6 +97,20 @@ public class SalesReport {
         this.refundAmount = refundAmount;
         this.totalBuyNumber = totalBuyNumber;
     }
+
+    //refund   ecoupon
+    public SalesReport(OperateUser operateUser, BigDecimal amount, Goods goods, ECouponStatus status) {
+        this.operateUser = operateUser;
+        if (status == ECouponStatus.REFUND) {
+            this.refundAmount = amount;
+        } else if (status == ECouponStatus.CONSUMED) {
+            this.consumedAmount = amount;
+        }
+
+        this.goods = goods;
+
+    }
+
 
     //--------销售报表_begin---------------------------//
     /**
@@ -265,12 +278,12 @@ public class SalesReport {
         //毛利率= （总的销售额-总成本（进价*数量）/总销售额
 
         //paidAt
-        String sql = "select new models.SalesReport(s,sum(r.buyNumber)" +
+        String sql = "select new models.SalesReport(o,sum(r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
                 ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue))" +
-                " from OrderItems r,Supplier s";
+                " from OrderItems r,Supplier s,OperateUser o";
         String groupBy = " group by s.salesId";
         Query query = JPA.em()
                 .createQuery(sql + condition.getFilterOfPeopleEffect() + groupBy + " order by sum(r.buyNumber) desc ");
@@ -283,10 +296,10 @@ public class SalesReport {
         List<SalesReport> paidResultList = query.getResultList();
 
         //from resaler
-        sql = "select new models.SalesReport(s,sum(r.salePrice*r.buyNumber-r.rebateValue),sum(r.originalPrice*r.buyNumber)" +
+        sql = "select new models.SalesReport(ou,sum(r.salePrice*r.buyNumber-r.rebateValue),sum(r.originalPrice*r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-r.originalPrice*sum(r.buyNumber)" +
                 ",b.commissionRatio)" +
-                " from OrderItems r,Order o,Resaler b,Supplier s";
+                " from OrderItems r,Order o,Resaler b,Supplier s,OperateUser ou";
         groupBy = " group by s.salesId,b";
         query = JPA.em()
                 .createQuery(sql + condition.getResalerFilterOfPeopleEffect() + groupBy + " order by sum(r.buyNumber) desc ");
@@ -299,7 +312,7 @@ public class SalesReport {
         List<SalesReport> paidResalerResultList = query.getResultList();
 
         //取得退款的数据 ecoupon
-        sql = "select new models.SalesReport(sum(e.refundPrice),e.orderItems.goods) from ECoupon e,Supplier s ";
+        sql = "select new models.SalesReport(o,sum(e.refundPrice),e.orderItems.goods,e.status) from ECoupon e,Supplier s,OperateUser o ";
         groupBy = " group by s.salesId";
 
         query = JPA.em()
@@ -310,9 +323,20 @@ public class SalesReport {
         }
 
         List<SalesReport> refundList = query.getResultList();
+        Map<OperateUser, SalesReport> map = new HashMap<>();
+        //merge
+        for (SalesReport paidItem : paidResultList) {
+            map.put(getReportKeyOfPeopleEffect(paidItem), paidItem);
+        }
 
+        for (SalesReport refundItem : refundList) {
+            SalesReport item = map.get(getReportKeyOfPeopleEffect(refundItem));
+            if (item != null) {
+                item.refundAmount = refundItem.refundAmount;
+            }
+        }
         //取得消费的数据 ecoupon
-        sql = "select new models.SalesReport(sum(e.salePrice),e.orderItems.goods) from ECoupon e,Supplier s ";
+        sql = "select new models.SalesReport(o,sum(e.salePrice),e.orderItems.goods,e.status) from ECoupon e,Supplier s,OperateUser o ";
         groupBy = " group by s.salesId";
 
         query = JPA.em()
@@ -324,25 +348,12 @@ public class SalesReport {
 
         List<SalesReport> consumedList = query.getResultList();
 
-        Map<OperateUser, SalesReport> map = new HashMap<>();
-
-        //merge
-        for (SalesReport paidItem : paidResultList) {
-            map.put(getReportKeyOfPeopleEffect(paidItem), paidItem);
-        }
-
-        for (SalesReport refundItem : refundList) {
-            System.out.println(refundItem.operateUser + "----");
-            SalesReport item = map.get(getReportKeyOfPeopleEffect(refundItem));
-            if (item != null) {
-                item.refundAmount = refundItem.refundAmount;
-            }
-        }
         for (SalesReport consumedItem : consumedList) {
             SalesReport item = map.get(getReportKeyOfPeopleEffect(consumedItem));
             if (item != null) {
                 item.consumedAmount = consumedItem.consumedAmount;
             }
+
         }
         //merge from resaler if commissionRatio
         for (SalesReport resalerItem : paidResalerResultList) {
