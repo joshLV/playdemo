@@ -124,6 +124,9 @@ public class SupplierUser extends Model {
             joinColumns = @JoinColumn(name = "user_id"))
     public Set<SupplierPermission> permissions;
 
+    @Column(name = "default_ui_version")
+    public String  defaultUiVersion;
+
     public SupplierUser() {
         supplierUserType = SupplierUserType.HUMAN;
         createdAt = new Date();

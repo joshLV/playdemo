@@ -49,8 +49,13 @@ public class SupplierVerifyMultiCoupons extends Controller {
     
     public static void index() {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
-        Long supplierUserId = SupplierRbac.currentUser().id;
-        SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
+        SupplierUser supplierUser = SupplierRbac.currentUser();
+
+        // 如果跳转过新验证界面，使用之
+        if ("v2".equals(supplierUser.defaultUiVersion)) {
+            redirect("/ui-version/to/v2");
+        }
+
         List shopList = Shop.findShopBySupplier(supplierId);
         if (shopList.size() == 0) {
             error("该商户没有添加门店信息！");

@@ -32,6 +32,14 @@
     <li class="active"><a href="#">单张券验证</a></li>
     <li><a href="/coupons/multi">批量券验证</a></li>
 </ul>
+
+<div>
+    <p class="alert">
+        <strong>一百券商户后台新版本发布啦！</strong>
+        更快，更便捷！支持IE6，解决界面错乱问题！
+        <a href="/ui-version/to/v2" style="font-size: 18px">马上切换到新版</a>
+    </p>
+</div>
 <div class="control-group">
     <div class="controls">门&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;店:
         #{if supplierUser?.shop?.id == null}
@@ -59,7 +67,6 @@
 
 <div class="form-actions">
     <button class="btn btn-warning" id="query" type="submit">查询</button>
-    <a href="/verify">切换到新版</a>
 </div>
 <span style="font-size:28px;color:#ff0000;line-height: 2">#{error 'error-info' /}</span>
 <div class="control-group">#{include 'SupplierVerifySingleCoupons/consume.html' /}</div>
