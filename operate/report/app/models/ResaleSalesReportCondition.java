@@ -21,7 +21,7 @@ public class ResaleSalesReportCondition {
     private Map<String, Object> paramMap = new HashMap<>();
 
     public String getFilterPaidAt(AccountType type) {
-        StringBuilder condBuilder = new StringBuilder("and r.order.status='PAID' " +
+        StringBuilder condBuilder = new StringBuilder("and (r.order.status='PAID' or r.order.status='SENT') " +
                 "and r.order.userType = :userType " +
                 "and r.goods.isLottery=false and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED"
         );
