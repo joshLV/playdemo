@@ -313,8 +313,8 @@ public class OperationReports extends Controller {
 
         List<ChannelCategoryReport> resultList = null;
         condition.accountType = null;
-        resultList = ChannelCategoryReport.query(condition);
-        List<ChannelCategoryReport> consumerList = ChannelCategoryReport.queryConsumer(condition);
+        resultList = ChannelCategoryReport.excelQuery(condition);
+        List<ChannelCategoryReport> consumerList = ChannelCategoryReport.excelQueryConsumer(condition);
 
         // 查询出所有结果
         for (ChannelCategoryReport resaleSalesReport : consumerList) {
@@ -364,8 +364,8 @@ public class OperationReports extends Controller {
 
         List<ChannelCategoryReport> resultList = null;
         condition.accountType = null;
-        resultList = ChannelCategoryReport.query(condition);
-        List<ChannelCategoryReport> consumerList = ChannelCategoryReport.queryConsumer(condition);
+        resultList = ChannelCategoryReport.excelQuery(condition);
+        List<ChannelCategoryReport> consumerList = ChannelCategoryReport.excelQueryConsumer(condition);
 
         // 查询出所有结果
         for (ChannelCategoryReport resaleSalesReport : consumerList) {
@@ -422,7 +422,6 @@ public class OperationReports extends Controller {
             if (report.netSalesAmount == null) {
                 report.netSalesAmount = BigDecimal.ZERO;
             }
-
 
 
             if (report.channelCost == null) {
