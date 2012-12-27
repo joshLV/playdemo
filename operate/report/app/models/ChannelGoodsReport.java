@@ -261,8 +261,6 @@ public class ChannelGoodsReport {
         String groupBy = " group by  r.goods.id ";
         Query query = JPA.em()
                 .createQuery(sql + condition.getFilter(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice-r.rebateValue) desc ");
-        Goods goods1 = Goods.findById(619l);
-
 
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));

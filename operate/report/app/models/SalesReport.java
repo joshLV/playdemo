@@ -191,7 +191,12 @@ public class SalesReport {
         }
 
         List<SalesReport> paidResultList = query.getResultList();
-
+        for (SalesReport r : paidResultList) {
+            System.out.println("sales>>>>r.profit>>>" + r.profit);
+            System.out.println("r.sales>>>" + r.totalAmount);
+            System.out.println("r.cost>>>" + r.totalCost);
+            System.out.println("");
+        }
 
         //from resaler
         sql = "select new models.SalesReport(r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),sum(r.originalPrice*r.buyNumber)" +

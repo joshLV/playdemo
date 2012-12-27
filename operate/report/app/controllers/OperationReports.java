@@ -180,8 +180,14 @@ public class OperationReports extends Controller {
 
 
         for (SalesReport report : salesReportList) {
-            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
-            report.grossMargin = tempGrossMargin;
+//            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
+//            report.grossMargin = tempGrossMargin;
+            if (report.grossMargin == null) {
+                report.grossMargin = BigDecimal.ZERO;
+            }
+
+            DecimalFormat df = new DecimalFormat("0.00");
+            report.grossMargin = new BigDecimal(df.format(report.grossMargin));
             if (report.refundAmount == null) {
                 report.refundAmount = BigDecimal.ZERO;
             }
@@ -230,8 +236,14 @@ public class OperationReports extends Controller {
 
 
         for (ResaleSalesReport report : resultList) {
-            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
-            report.grossMargin = tempGrossMargin;
+//            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
+//            report.grossMargin = tempGrossMargin;
+            if (report.grossMargin == null) {
+                report.grossMargin = BigDecimal.ZERO;
+            }
+
+            DecimalFormat df = new DecimalFormat("0.00");
+            report.grossMargin = new BigDecimal(df.format(report.grossMargin));
             if (report.refundPrice == null) {
                 report.refundPrice = BigDecimal.ZERO;
             }
@@ -241,9 +253,7 @@ public class OperationReports extends Controller {
             if (report.consumedPrice == null) {
                 report.consumedPrice = BigDecimal.ZERO;
             }
-            if (report.grossMargin == null) {
-                report.grossMargin = BigDecimal.ZERO;
-            }
+
 
             if (report.channelCost == null) {
                 report.channelCost = BigDecimal.ZERO;
@@ -302,8 +312,8 @@ public class OperationReports extends Controller {
 
         List<ChannelCategoryReport> resultList = null;
         condition.accountType = null;
-        resultList = ChannelCategoryReport.query(condition);
-        List<ChannelCategoryReport> consumerList = ChannelCategoryReport.queryConsumer(condition);
+        resultList = ChannelCategoryReport.excelQuery(condition);
+        List<ChannelCategoryReport> consumerList = ChannelCategoryReport.excelQueryConsumer(condition);
 
         // 查询出所有结果
         for (ChannelCategoryReport resaleSalesReport : consumerList) {
@@ -314,6 +324,9 @@ public class OperationReports extends Controller {
         for (ChannelCategoryReport report : resultList) {
 //            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
 //            report.grossMargin = tempGrossMargin;
+            if (report.grossMargin == null) {
+                report.grossMargin = BigDecimal.ZERO;
+            }
             DecimalFormat df = new DecimalFormat("0.00");
             report.grossMargin = new BigDecimal(df.format(report.grossMargin));
 
@@ -326,9 +339,7 @@ public class OperationReports extends Controller {
             if (report.consumedPrice == null) {
                 report.consumedPrice = BigDecimal.ZERO;
             }
-            if (report.grossMargin == null) {
-                report.grossMargin = BigDecimal.ZERO;
-            }
+
 
             if (report.channelCost == null) {
                 report.channelCost = BigDecimal.ZERO;
@@ -352,8 +363,8 @@ public class OperationReports extends Controller {
 
         List<ChannelCategoryReport> resultList = null;
         condition.accountType = null;
-        resultList = ChannelCategoryReport.query(condition);
-        List<ChannelCategoryReport> consumerList = ChannelCategoryReport.queryConsumer(condition);
+        resultList = ChannelCategoryReport.excelQuery(condition);
+        List<ChannelCategoryReport> consumerList = ChannelCategoryReport.excelQueryConsumer(condition);
 
         // 查询出所有结果
         for (ChannelCategoryReport resaleSalesReport : consumerList) {
@@ -396,8 +407,14 @@ public class OperationReports extends Controller {
 
 
         for (ChannelGoodsReport report : resultList) {
-            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
-            report.grossMargin = tempGrossMargin;
+//            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
+//            report.grossMargin = tempGrossMargin;
+            if (report.grossMargin == null) {
+                report.grossMargin = BigDecimal.ZERO;
+            }
+
+            DecimalFormat df = new DecimalFormat("0.00");
+            report.grossMargin = new BigDecimal(df.format(report.grossMargin));
             if (report.refundAmount == null) {
                 report.refundAmount = BigDecimal.ZERO;
             }
@@ -405,9 +422,6 @@ public class OperationReports extends Controller {
                 report.netSalesAmount = BigDecimal.ZERO;
             }
 
-            if (report.grossMargin == null) {
-                report.grossMargin = BigDecimal.ZERO;
-            }
 
             if (report.channelCost == null) {
                 report.channelCost = BigDecimal.ZERO;
