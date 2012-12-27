@@ -24,25 +24,10 @@
         #{/if}
         #{else}
             <li class="first"><a class="login" id="login" href="${helper.Domain.getWWWHost(request)}/login">登录</a></li>
-        <li><a class="signup" href="${helper.Domain.getWWWHost(request)}/register">注册</a></li>
-            *{<li><a class="signup j_auth" href="" target="_blank">注册</a></li>}*
-
-
-
-
+            <li><a class="signup" href="${helper.Domain.getWWWHost(request)}/register">注册</a></li>
             <li><a href="${helper.Domain.getHomeHost(request)}">我的一百券</a></li>
-        *{
-            <li><a class="quick" href="" target="_blank">快捷登录</a></li>
-            }*
         #{/else}
-            <li><a id="favorite" class="favorite" href="">收藏一百券</a></li>
-            <li class="last">
-            #{if !play.Play.runingInTestMode()}
-                <iframe width="63" height="24" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0"
-                        scrolling="no" border="0"
-                        src="http://widget.weibo.com/relationship/followbutton.php?language=zh_cn&width=63&height=24&uid=1642909335&style=1&btn=red&dpc=1"></iframe>
-            #{/if}
-            </li>
+            <li class="last"><a id="favorite" class="favorite" href="">收藏一百券</a></li>
         </ul>
         <div class="hot-line">客服热线：<span>400-6262-166</span></div>
     </div>
@@ -163,7 +148,7 @@
     </div>
 </div>
 <!-- #footer -->
-#{asset.js src:['/u/jquery-1.7.2.min.js','/base/121031/base.js','/base/121031/auth.js'] /}
+#{asset.js src:['/u/jquery-1.7.2.min.js','/base/121031/base.js'] /}
 #{get 'moreScripts' /}
 <div style="display:none">
 #{if !play.Play.runingInTestMode()}
