@@ -41,7 +41,14 @@
     vertical-align: middle;
     border: 1px solid #CCC;
 }
-
+.field-group input.text {
+    padding: 5px;
+    width: 588px;
+    height: 20px;
+    line-height: 20px;
+    vertical-align: middle;
+    border: 1px solid #CCC;
+}
 .title-table {
     width: 100%;
     margin: 5px 0;

@@ -98,11 +98,11 @@
     border: 1px solid #ccc;
 }
 
-.batch-verify .coupons-table td.verify-result .success {
+.batch-verify .coupons-table td.success {
     color: #9AC82B;
 }
 
-.batch-verify .coupons-table td.verify-result .error {
+.batch-verify .coupons-table td.error {
     color: #c33;
 }
 

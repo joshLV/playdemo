@@ -51,16 +51,16 @@
                    onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtEnd?.format()}">
         </div>
         <div class="field-group">
-            <input type="submit" class="btn" value="查询"/>
+            <button class="btn" onclick="couponIndex()">查询</button>
         </div>
-    </form>
 
     <table cellspacing="0" cellpadding="0" border="0" class="title-table">
         <tr>
-            <th wdith="50%">查询结果合计：10</th>
-            <td wdith="50%"><a href="">导出</a></td>
+            <th wdith="50%" id="search">查询结果合计： ${couponPage.size()}</th>
+            <td wdith="50%" id="output" ><a href="javascript:couponExcel()">导出</a></td>
         </tr>
     </table>
+    </form>
 
 *{<div style="margin-bottom: 12px">}*
 *{<button class="btn btn-primary" type="button">导出报表</button>}*

@@ -21,39 +21,39 @@
     </div>
     <div class="field-group">
         <label><span style="color: red; ">*</span>用户名</label>
-        <input type="text" name="supplierUser.loginName" class="input-large" id="loginName"
+        <input type="text" name="supplierUser.loginName" class="text" id="loginName"
                value="${supplierUser?.loginName}"/>
         <span style="color:#808080;">(*限字母，数字)</span>
         <span class="error" id="checkName">#{error 'supplierUser.loginName' /}</span>
     </div>
     <div class="field-group">
         <label><span style="color: red; ">*</span>手机</label>
-        <input type="text" name="supplierUser.mobile" class="input-large" id="mobile" maxlength="11"
+        <input type="text" name="supplierUser.mobile" class="text" id="mobile" maxlength="11"
                value="${supplierUser?.mobile}"/>
         <span class="error" id="checkMobile">#{error 'supplierUser.mobile' /}</span>
     </div>
     <div class="field-group">
         <label><span style="color: red; ">*</span>密码</label>
-        <input type="password" name="supplierUser.encryptedPassword" class="input-large" id="encryptedPassword"
+        <input type="password" name="supplierUser.encryptedPassword" class="text" id="encryptedPassword"
                value="${supplierUser?.encryptedPassword}"/>
-        <input type="hidden" name="supplierUser.confirmPassword" class="input-large" id="confirmPassword" value="**"/>
+        <input type="hidden" name="supplierUser.confirmPassword" id="confirmPassword" value="**"/>
         <span class="error">#{error 'supplierUser.encryptedPassword' /}</span>
     </div>
     <div class="field-group">
         <label>姓名</label>
-        <input type="text" name="supplierUser.userName" class="input-large" id="userName"
+        <input type="text" name="supplierUser.userName" class="text" id="userName"
                value="${supplierUser?.userName}"/>
     </div>
     <div class="field-group">
         <label><span style="color: red; ">*</span>工号</label>
-        <input type="text" name="supplierUser.jobNumber" class="input-large" id="jobNumber" maxlength="6"
+        <input type="text" name="supplierUser.jobNumber" class="text" id="jobNumber" maxlength="6"
                value="${supplierUser?.jobNumber}"/>
         <span style="color:#808080;">(*限6位数字)</span>
         <span class="error" id="checkJobNumber">#{error 'supplierUser.jobNumber' /}</span>
     </div>
     <div class="field-group">
         <label>门店</label>
-        #{select 'supplierUser.shop.id', id:shopId, class:'span2', value:supplierUser?.shop?.id}
+        #{select 'supplierUser.shop.id', id:shopId, value:supplierUser?.shop?.id}
             #{option ""}全部#{/option}
             #{list items:shopList, as:'shop'}
                 #{option shop?.id}${shop?.name}#{/option}
@@ -63,7 +63,7 @@
         <span class="error">#{error 'supplierUser.shop' /}</span>
     </div>
     <div class="field-group">
-        <input class="btn" type="submit" value="保 存"/> <a href="?page=account">取消</a>
+        <input class="btn" type="submit" value="保 存"/> <a href="/users">取消</a>
     </div>
 #{/form}
 
@@ -71,7 +71,7 @@
     <table class="standard-table">
         <thead>
         <tr>
-            <th>角色名</th>
+            <th width="20%">角色名</th>
             <th>权限</th>
         </tr>
         </thead>
