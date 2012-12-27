@@ -18,7 +18,7 @@
                 orderItems += 'gid=' + goods_id + '&g' + goods_id + '=' + num + '&'
             });
 
-            window.location.href = '/orders?' + orderItems +  'discountSN=' + discount + '&mobile=' + mobile;
+            window.location.replace( '/orders?' + orderItems +  'discountSN=' + discount + '&mobile=' + mobile);
         }
 
         $('#discount-btn').click(function () {
