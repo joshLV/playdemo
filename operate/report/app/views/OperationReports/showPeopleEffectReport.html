@@ -39,15 +39,16 @@
 
     });
 
-    function salesReportExcel() {
-        $("#search_form").attr("action", "@{OperationReports.salesReportExcelOut()}");
+    function exportReportExcel() {
+        $("#search_form").attr("action", "@{OperationReports.peopleEffectReportExcelOut()}");
         $("#search_form").attr("method", "get");
         $("#search_form").submit();
     }
     ;
 
-    function salesReportWithPrivilegeExcel() {
-        $("#search_form").attr("action", "@{OperationReports.salesReportWithPrivilegeExcelOut()}");
+    function exportReportWithPrivilegeExcel() {
+        $("#hasProfitRight").val(true);
+        $("#search_form").attr("action", "@{OperationReports.peopleEffectReportExcelOut()}");
         $("#search_form").attr("method", "get");
         $("#search_form").submit();
     }
@@ -78,9 +79,9 @@
         <br/>
 
         <div style="float:right">
-            <button class="btn btn-primary" id="searchbtn" onclick="salesReportExcel()">导出报表</button>
+            <button class="btn btn-primary" id="searchbtn" onclick="exportReportExcel()">导出报表</button>
         #{if hasSeeReportProfitRight== true}
-            <button class="btn btn-primary" id="searchbtn" onclick="salesReportWithPrivilegeExcel()">导出报表附带利润</button>
+            <button class="btn btn-primary" id="searchbtn" onclick="exportReportWithPrivilegeExcel()">导出报表附带利润</button>
         #{/if}
         </div>
 
@@ -91,6 +92,7 @@
             <li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>
         </ul>
         <input type="hidden" id="condition_interval" name="condition.interval"/>
+        <input type="hidden" id="hasProfitRight" name="hasProfitRight" value="false"/>
     </form>
 
     <div class="alert alert-success">

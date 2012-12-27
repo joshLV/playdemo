@@ -47,8 +47,6 @@ GET     /totalsales/list                        TotalSalesReports.list
 #销售报表
 GET     /sales_report                           OperationReports.showSalesReport
 GET     /sales_report_excel                     OperationReports.salesReportExcelOut
-#人效报表
-GET     /people_effect_report                   OperationReports.showPeopleEffectReport
 GET     /sales_report_with_privilege_excel      OperationReports.salesReportWithPrivilegeExcelOut
 
 #渠道类别报表
@@ -66,6 +64,9 @@ GET     /channel_goods_report                           OperationReports.showCha
 GET     /channel_goods_report_with_privilege_excel      OperationReports.channelGoodsReportWithPrivilegeExcelOut
 GET     /channel_goods_report_excel                     OperationReports.channelGoodsReportExcelOut
 
+#人效报表
+GET     /people_effect_report                   OperationReports.showPeopleEffectReport
+GET     /people_effect_report_excel             OperationReports.peopleEffectReportExcelOut
 # Home page
 GET     /                                       OperateReportApplication.index
 GET     /operation_report                       OperationReports.index

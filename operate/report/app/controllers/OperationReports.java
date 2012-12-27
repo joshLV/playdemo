@@ -195,7 +195,6 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new SalesReportCondition();
         }
-        String page = request.params.get("page");
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "销售报表_" + System.currentTimeMillis() + ".xls");
 
@@ -450,6 +449,34 @@ public class OperationReports extends Controller {
 
         }
         render(resultList);
+    }
+
+    /**
+     * 人效报表导出（有权限的导出利润）
+     *
+     * @param condition
+     */
+    public static void peopleEffectReportExcelOut(SalesReportCondition condition, Boolean hasProfitRight) {
+        if (condition == null) {
+            condition = new SalesReportCondition();
+        }
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "人效报表_" + System.currentTimeMillis() + ".xls");
+
+        List<SalesReport> peopleEffectReportList = SalesReport.queryPeopleEffectData(condition);
+        for (SalesReport report : peopleEffectReportList) {
+            if (hasProfitRight) {
+                BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
+                report.grossMargin = tempGrossMargin;
+                report.profit = report.profit == null ? BigDecimal.ZERO : report.profit.setScale(2,BigDecimal.ROUND_HALF_UP);
+            }
+        }
+
+        if (hasProfitRight) {
+            render("OperationReports/peopleEffectReportWithPrivilegeExcelOut.xls", peopleEffectReportList);
+        }
+
+        render(peopleEffectReportList);
     }
 
 
