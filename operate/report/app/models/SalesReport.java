@@ -1,6 +1,7 @@
 package models;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +26,11 @@ import javax.persistence.Query;
 public class SalesReport {
     public Goods goods;
     public BigDecimal avgSalesPrice;
-    public BigDecimal grossMargin;       //毛利率
+
+    /**
+     * 毛利率
+     */
+    public BigDecimal grossMargin;
     public BigDecimal originalPrice;
     public Long buyNumber;
     public BigDecimal totalAmount;
@@ -37,9 +42,16 @@ public class SalesReport {
     public BigDecimal ratio;
     public BigDecimal originalAmount;
 
+    /**
+     * 渠道成本
+     */
+    public BigDecimal channelCost;
+
+
     public SalesReport(Goods goods, BigDecimal originalPrice, Long buyNumber,
                        BigDecimal totalAmount, BigDecimal avgSalesPrice,
-                       BigDecimal grossMargin, BigDecimal profit, BigDecimal netSalesAmount) {
+                       BigDecimal grossMargin, BigDecimal profit, BigDecimal netSalesAmount
+            , BigDecimal totalCost) {
         this.goods = goods;
         this.originalPrice = originalPrice;
         this.buyNumber = buyNumber;
@@ -48,6 +60,7 @@ public class SalesReport {
         this.grossMargin = grossMargin;
         this.profit = profit;
         this.netSalesAmount = netSalesAmount;
+        this.totalCost = totalCost;
     }
 
     //from resaler
@@ -71,10 +84,14 @@ public class SalesReport {
         this.originalAmount = originalAmount;
     }
 
-    public SalesReport(BigDecimal totalAmount, BigDecimal refundAmount, BigDecimal netSalesAmount) {
+    public SalesReport(BigDecimal totalAmount, BigDecimal refundAmount, BigDecimal netSalesAmount
+            , BigDecimal grossMargin, BigDecimal channelCost, BigDecimal profit) {
         this.totalAmount = totalAmount;
         this.netSalesAmount = netSalesAmount;
         this.refundAmount = refundAmount;
+        this.grossMargin = grossMargin;
+        this.channelCost = channelCost;
+        this.profit = profit;
     }
 
     /**
@@ -85,13 +102,15 @@ public class SalesReport {
      */
     public static List<SalesReport> query(SalesReportCondition condition) {
         //paidAt
-        String sql = "select new models.SalesReport(r.goods,r.originalPrice,sum(r.buyNumber)" +
+        String sql = "select new models.SalesReport(r.goods,r.goods.originalPrice,sum(r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)/sum(r.buyNumber)" +
-                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*sum(r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-r.originalPrice*sum(r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue))" +
-                " from OrderItems r";
+                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+                ",sum(r.originalPrice*r.buyNumber) " +
+                " )" +
+                " from OrderItems r ";
         String groupBy = " group by r.goods.id";
         Query query = JPA.em()
                 .createQuery(sql + condition.getFilter() + groupBy + " order by sum(r.buyNumber) desc ");
@@ -104,12 +123,14 @@ public class SalesReport {
         List<SalesReport> paidResultList = query.getResultList();
 
 
+
+
         //from resaler
-        sql = "select new models.SalesReport(r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),r.originalPrice*sum(r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-r.originalPrice*sum(r.buyNumber)" +
+        sql = "select new models.SalesReport(r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),sum(r.originalPrice*r.buyNumber)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-sum(r.originalPrice*r.buyNumber)" +
                 ",b.commissionRatio)" +
                 " from OrderItems r,Order o,Resaler b";
-        groupBy = " group by r.goods.id";
+        groupBy = " group by r.goods.id,b ";
         query = JPA.em()
                 .createQuery(sql + condition.getResalerFilter() + groupBy + " order by sum(r.buyNumber) desc ");
 
@@ -117,6 +138,8 @@ public class SalesReport {
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
+
+
 
         List<SalesReport> paidResalerResultList = query.getResultList();
 
@@ -159,7 +182,13 @@ public class SalesReport {
             if (item == null) {
                 map.put(getReportKey(resalerItem), resalerItem);
             } else {
-                item.profit = item.profit.subtract(resalerItem.totalAmount.subtract(resalerItem.totalCost)).add(resalerItem.profit);
+                item.profit = item.profit == null ? BigDecimal.ZERO : item.profit.subtract(resalerItem.totalAmount == null ? BigDecimal.ZERO : resalerItem.totalAmount
+                        .subtract(resalerItem.totalCost == null ? BigDecimal.ZERO : resalerItem.totalCost))
+                        .add(resalerItem.profit == null ? BigDecimal.ZERO : resalerItem.profit);
+
+//                item.profit= item.totalAmount.multiply(BigDecimal.ONE.subtract())
+
+
             }
         }
 
@@ -184,12 +213,27 @@ public class SalesReport {
         BigDecimal totalAmount = BigDecimal.ZERO;
         BigDecimal netSalesAmount = BigDecimal.ZERO;
         BigDecimal refundAmount = BigDecimal.ZERO;
+        BigDecimal totolSalePrice = BigDecimal.ZERO;
+        BigDecimal totalCost = BigDecimal.ZERO;
+        BigDecimal channelCost = BigDecimal.ZERO;
+        BigDecimal grossMargin = BigDecimal.ZERO;
+        BigDecimal profit = BigDecimal.ZERO;
+
         for (SalesReport item : resultList) {
             totalAmount = totalAmount.add(item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount);
             netSalesAmount = netSalesAmount.add(item.netSalesAmount == null ? BigDecimal.ZERO : item.netSalesAmount);
             refundAmount = refundAmount.add(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount);
+
+            totolSalePrice = totolSalePrice.add(item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount);
+            totalCost = totalCost.add(item.totalCost == null ? BigDecimal.ZERO : item.totalCost);
+            channelCost = channelCost.add(item.channelCost == null ? BigDecimal.ZERO : item.channelCost);
+            profit = profit.add(item.profit == null ? BigDecimal.ZERO : item.profit);
         }
-        return new SalesReport(totalAmount, refundAmount, netSalesAmount);
+
+        if (totolSalePrice.compareTo(BigDecimal.ZERO) != 0) {
+            grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+        }
+        return new SalesReport(totalAmount, refundAmount, netSalesAmount, grossMargin, channelCost, profit);
     }
 
     private static Goods getReportKey(SalesReport refoundItem) {

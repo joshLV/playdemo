@@ -1,0 +1,328 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'渠道大类报表' /}
+#{include '/share/nav.html' /}
+
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+
+<script type="text/javascript">
+    window.onload = function () {
+        var tab = document.getElementById("tab");
+        var maxCol = 1, val, count, start;
+
+        for (var col = maxCol - 1; col >= 0; col--) {
+            count = 1;
+            val = "";
+            for (var i = 0; i < tab.rows.length; i++) {
+                if (val == tab.rows[i].cells[col].innerHTML) {
+                    count++;
+
+                } else {
+                    if (count > 1) { //合并
+                        start = i - count;
+                        tab.rows[start].cells[col].rowSpan = count;
+                        for (var j = start + 1; j < i; j++) {
+                            tab.rows[j].cells[col].style.display = "none";
+                        }
+                        count = 1;
+                    }
+                    val = tab.rows[i].cells[col].innerHTML;
+//                    $('#intab').append('<tr><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td></tr>');
+
+                }
+
+            }
+
+            if (count > 1) { //合并，最后几行相同的情况下
+                start = i - count;
+
+                tab.rows[start].cells[col].rowSpan = count;
+                for (var j = start + 1; j < i; j++) {
+                    tab.rows[j].cells[col].style.display = "none";
+
+                }
+
+
+            }
+        }
+    };
+
+</script>
+
+
+<script type="text/javascript" charset="utf-8">
+    $(function () {
+        $("[start]").each(function () {
+            $(this).click(function () {
+                if ($(this).parent().attr("class") == 'active') {
+                    return false;
+                }
+                var today = new Date();
+                var endDay = new Date();
+                var startDay = new Date();
+
+                var interval = $(this).attr("start");
+                var sig = interval.charAt(interval.length - 1);
+                if (sig == 0) {
+                    $("#condition_begin").val("");
+                    $("#condition_end").val("");
+                } else {
+                    var count = parseInt(interval.substring(0, interval.length - 1));
+
+                    if (sig == 'd') {
+                        if (count > 0) {
+                            startDay.setDate(startDay.getDate() - count);
+                            endDay.setDate(today.getDate());
+                        } else if (count < 0) {
+                            startDay.setDate(today.getDate());
+                            endDay.setDate(today.getDate());
+                        } else {
+                            startDay.setDate(today.getDate() - 1);
+                            endDay.setDate(today.getDate() - 1);
+                        }
+                    } else if (sig == 'm') {
+                        startDay.setMonth(startDay.getMonth() - count);
+                        endDay.setDate(today.getDate());
+                    } else if (sig == 'y') {
+                        startDay.setFullYear(startDay.getFullYear() - count);
+                        endDay.setDate(today.getDate());
+                    }
+
+                    $("#condition_begin").val(startDay.getFullYear() + "-" + (startDay.getMonth() + 1) + "-" + startDay.getDate());
+                    $("#condition_end").val(today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + endDay.getDate());
+                }
+                $("#condition_interval").val(interval);
+                $("#form").submit();
+                return false;
+            });
+        });
+
+    });
+
+    function channelCategoryReportExcel() {
+        $("#form").attr("action", "@{OperationReports.channelCategoryReportExcelOut()}");
+        $("#form").attr("method", "get");
+        $("#form").submit();
+    }
+    ;
+
+    function channelCategoryReportWithPrivilegeExcel() {
+        $("#form").attr("action", "@{OperationReports.channelCategoryReportWithPrivilegeExcelOut()}");
+        $("#form").attr("method", "get");
+        $("#form").submit();
+    }
+    ;
+
+    function channelCategoryReport() {
+        $("#form").attr("action", "@{OperationReports.showChannelCategoryReport()}");
+        $("#form").attr("method", "get");
+        $("#form").submit();
+    }
+    ;
+
+</script>
+#{/set}
+
+#{set 'moreStyles'}
+<style type="text/css">
+    .form-inline ul {
+        display: inline-block;
+        margin-bottom: -15px;
+    }
+
+    .nav-tabs {
+        margin-bottom: 0px;
+    }
+
+    .tab-content {
+        border-left: 1px solid #DDD;
+        border-right: 1px solid #DDD;
+        border-bottom: 1px solid #DDD;
+        clear: both;
+    }
+
+    .tab-content .binary {
+        width: 40%;
+        float: left;
+        text-align: center;
+        margin: 5px 1%;
+    }
+
+    .seq {
+        margin-top: 20px;
+    }
+
+    .alert {
+        margin-bottom: 0px;
+    }
+
+    .seq thead tr :first {
+        background-color: #f5f5f5;
+    }
+
+    footer {
+        margin-top: 20px;
+    }
+</style>
+#{/set}
+
+<form class="well form-inline" action="@{OperationReports.showChannelCategoryReport()}" method="GET" id="form"
+      name="form">
+    起止日期
+    <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.beginAt"
+           onfocus="WdatePicker({readOnly:true})" value="${condition.beginAt?.format()}"> -
+    <input type="text" id="condition_end" class="input-medium Wdate" name="condition.endAt"
+           onfocus="WdatePicker({readOnly:true})" value="${condition.endAt?.format()}">
+
+    <button type="submit" class="btn btn-primary" id="search" onclick="channelCategoryReport()">搜索</button>
+    <div style="float:right">
+        <button class="btn btn-primary" id="searchbtn" onclick="channelCategoryReportExcel()">导出报表</button>
+    #{if hasSeeReportProfitRight == true}
+        <button class="btn btn-primary" id="searchbtn" onclick="channelCategoryReportWithPrivilegeExcel()">导出报表附带利润
+        </button>
+    #{/if}
+    </div>
+    <ul class="nav nav-pills">
+        <li #{if condition.interval=='-1d'} class="active" #{/if}  ><a start="-1d" href="#">今天</a></li>
+    *{<li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">昨天</a></li>}*
+        <li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>
+        <li #{if condition.interval=='1m'} class="active" #{/if}  ><a start="1m" href="#">1个月</a></li>
+        <li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>
+        <li #{if condition.interval=='0'} class="active" #{/if}  ><a start="0" href="#">全部</a></li>
+    </ul>
+    <input type="hidden" id="condition_interval" name="condition.interval"/>
+</form>
+
+<div class="alert alert-success" style="margin-bottom: 10px;">
+    <span>
+        在此期间 共售出券：<b>${channelSummary?.amount?.formatCurrency("CNY")}</b> (${channelSummary?.totalNumber}件),
+         售出实物：<b>${channelSummary?.realAmount == null ?'￥0.00':channelSummary?.realAmount?.formatCurrency('CNY')}</b> (${channelSummary?.realTotalNumber}
+        件),
+                退款券：<b>${channelSummary?.totalRefundPrice?.formatCurrency('CNY')}</b> (${channelSummary?.refundNumber}
+        件),
+                   消费券：<b>${channelSummary?.consumedPrice?.formatCurrency("CNY")}</b> (${channelSummary?.consumedNumber}
+        件)
+        <br/>
+           &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;
+        毛利率：<b>${(channelSummary?.grossMargin?:0).format('#')}%</b>
+        渠道成本：<b>${(channelSummary?.channelCost?:0).formatCurrency('CNY')}</b>
+         净利润：<b>
+
+    #{if channelSummary.profit != null && channelSummary.profit!=0}
+        ￥${(channelSummary?.profit?:0).format('#0.00')}
+    #{/if}
+    #{else}
+        ￥0
+    #{/else}
+    </b>
+      </span>
+</div>
+
+<table class="table table-striped table-bordered table-condensed" id="tab">
+    <thead>
+    <th>帐号</th>
+    <th>类别编码</th>
+    <th>类别名称</th>
+    <th>售出券数量/金额</th>
+    <th>售出实物数量/金额</th>
+    <th>退款券数量/金额</th>
+    <th>退款实物数量/金额</th>
+    <th>消费券数量/金额</th>
+    #{if hasSeeReportProfitRight == true}
+    <th>毛利率</th>
+    <th>渠道成本</th>
+    <th>净利润</th>
+    #{/if}
+    </thead>
+#{set i:0/}
+
+%{
+    baseUrl=play.Play.configuration.getProperty("uri.operate_business");
+
+    }%
+#{paginate.list items:reportPage, as:'report'}
+%{
+    userType=report?.order?.userType== null ? 'CONSUMER':report?.order?.userType;
+    beginAt=condition?.beginAt?.format();
+    endAt=condition?.endAt?.format();
+    userName="condition.userName="+report?.loginName;
+    }%
+    <tr>
+        #{set i:i+1/}
+        #{if report?.code != "999"}
+            <td>${report?.userName}<br>${report?.loginName}</td>
+            <td>${report?.code}</td>
+            <td>${report?.name}</td>
+        #{/if}
+        #{else}
+            <td colspan="3" bgcolor="#add8e6" style="text-align:center;"> 小计</td>
+        #{/else}
+        <td #{if report?.code == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
+            #{if report?.code == "999"}
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
+                   target="_blank">${report?.buyNumber}</a>
+                /
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
+                   target="_blank">${report?.salePrice?.formatCurrency('CNY')}</a>
+            #{/if}
+            #{else}
+            ${report?.buyNumber} / ${report?.salePrice?.formatCurrency('CNY')}
+            #{/else}
+        </td>
+        <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if}  style="text-align:right;">
+        ${report?.realBuyNumber}
+            / ${report?.realSalePrice == null ?'￥0.00':report?.realSalePrice?.formatCurrency('CNY')}
+        </td>
+
+
+        <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
+            #{if report?.code == "999"}
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
+                   target="_blank">${report?.refundNumber}</a>
+                /
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
+                   target="_blank">${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}</a>
+            #{/if}
+            #{else}
+            ${report?.refundNumber} / ${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}
+            #{/else}
+        </td>
+        <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
+        </td>
+        <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
+            #{if report?.code == "999"}
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
+                   target="_blank">${report?.consumedNumber}</a>
+                /
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
+                   target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
+            #{/if}
+            #{else}
+            ${report?.consumedNumber}
+                / ${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}
+            #{/else}
+        </td>
+    #{if hasSeeReportProfitRight == true}
+        <td #{if report?.code == "999"} bgcolor="#add8e6" #{/if} >${(report?.grossMargin?:0).format('#')}%</td>
+        <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if}
+                                         style="text-align:right;">${(report?.channelCost?:0).formatCurrency('CNY')}</td>
+        <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
+            #{if report?.profit != null && report.profit!=0}
+                ￥${(report?.profit?:0).format('#0.00')}
+            #{/if}
+            #{else}
+                ￥0
+            #{/else}
+        </td>
+    #{/if}
+
+    </tr>
+
+#{/paginate.list}
+
+</table>
+<div class="pagination">
+    <ul>
+    #{paginate.controls items:reportPage /}
+    </ul>
+</div>

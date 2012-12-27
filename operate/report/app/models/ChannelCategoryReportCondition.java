@@ -1,21 +1,22 @@
 package models;
 
-import com.uhuila.common.util.DateUtil;
 import models.accounts.AccountType;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 渠道大类查询条件
  * <p/>
- * User: yanjy
- * Date: 12-7-18
- * Time: 下午4:52
+ * User: wangjia
+ * Date: 12-12-20
+ * Time: 下午5:57
  */
-public class ResaleSalesReportCondition {
-    public Date beginAt = DateUtil.getBeginOfDay();
-    public Date endAt = DateUtil.getEndOfDay(new Date());
+public class ChannelCategoryReportCondition implements Serializable {
+    public Date beginAt = com.uhuila.common.util.DateUtil.getBeginOfDay();
+    public Date endAt = com.uhuila.common.util.DateUtil.getEndOfDay(new Date());
     public String interval = "-1d";
     public AccountType accountType;
     private Map<String, Object> paramMap = new HashMap<>();
@@ -35,7 +36,7 @@ public class ResaleSalesReportCondition {
         }
         if (endAt != null) {
             condBuilder.append(" and r.order.paidAt < :createdAtEnd");
-            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
+            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
 
         return condBuilder.toString();
@@ -56,7 +57,7 @@ public class ResaleSalesReportCondition {
         }
         if (endAt != null) {
             condBuilder.append(" and r.order.paidAt < :createdAtEnd");
-            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
+            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
 
         return condBuilder.toString();
@@ -75,7 +76,7 @@ public class ResaleSalesReportCondition {
         }
         if (endAt != null) {
             condBuilder.append(" and e.consumedAt < :createdAtEnd");
-            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
+            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
 
         return condBuilder.toString();
@@ -93,7 +94,7 @@ public class ResaleSalesReportCondition {
         }
         if (endAt != null) {
             condBuilder.append(" and e.refundAt < :createdAtEnd");
-            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
+            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
 
         return condBuilder.toString();
@@ -111,7 +112,7 @@ public class ResaleSalesReportCondition {
         }
         if (endAt != null) {
             condBuilder.append(" and r.order.refundAt < :createdAtEnd");
-            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
+            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
 
         return condBuilder.toString();
@@ -121,5 +122,6 @@ public class ResaleSalesReportCondition {
     public Map<String, Object> getParamMap() {
         return paramMap;
     }
+
 
 }
