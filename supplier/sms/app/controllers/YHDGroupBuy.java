@@ -39,8 +39,8 @@ public class YHDGroupBuy extends Controller{
      * 接收一号店的新订单通知
      */
     public static void orderInform(String orderCode, Long productId, Integer productNum, BigDecimal orderAmount,
-                                   Date createTime, Date paidTime, String userPhone, BigDecimal productPrize,
-                                   Long groupId, String outerGroupId) {
+                                   Date createTime, Date paidTime, String userPhone, BigDecimal productPrice,
+                                   String outerGroupId) {
         TreeMap<String, String> params = YHDUtil.filterPlayParams(request.params.allSimple());
         List<YHDErrorInfo> errorInfoList = YHDUtil.checkParam(params, "sign", "orderCode", "productId", "productNum",
                 "orderAmount", "createTime", "paidTime", "userPhone", "productPrize", "groupId", "outerGroupId");
@@ -64,7 +64,7 @@ public class YHDGroupBuy extends Controller{
             try{ // 将订单写入数据库
                 JPA.em().flush();
             }catch (Exception e){ // 如果写入失败，说明 已经存在一个相同的orderCode 的订单，则放弃
-                errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.error", "重复的请求", null));
+                errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform_orderCode_exist", "重复的请求", null));
                 finish(errorInfoList, totalCount);
             }
         }
@@ -75,12 +75,12 @@ public class YHDGroupBuy extends Controller{
             errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "购买数量不能小于0", null));
         }
         //检查价格
-        if(productPrize.compareTo(BigDecimal.ZERO) < 0){
-            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "商品价格不能小于0元", null));
+        if(productPrice.compareTo(BigDecimal.ZERO) < 0){
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform_productPrice_invalid", "商品价格不能小于0元", null));
         }
         //检查订单金额
-        if(productPrize.multiply(new BigDecimal(productNum)).compareTo(orderAmount) != 0){
-            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "订单金额不一致", null));
+        if(productPrice.multiply(new BigDecimal(productNum)).compareTo(orderAmount) != 0){
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform_orderAmount_invalid", "订单金额不一致", null));
         }
         //检查手机号
         if(!checkPhone(userPhone)){
@@ -95,7 +95,7 @@ public class YHDGroupBuy extends Controller{
             JPA.em().refresh(outerOrder, LockModeType.PESSIMISTIC_WRITE);
         }catch (PersistenceException e){
             //没拿到锁 放弃
-            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.error", "重复的请求", null));
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform_orderCode_exist", "重复的请求", null));
             finish(errorInfoList, totalCount); return;
         }
         //保存订单编号
@@ -106,7 +106,7 @@ public class YHDGroupBuy extends Controller{
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY){
             Order ybqOrder =  outerOrder.ybqOrder;
             if (ybqOrder == null) {
-                ybqOrder= createYbqOrder(outerGroupId, productPrize, productNum, userPhone, errorInfoList);
+                ybqOrder= createYbqOrder(outerGroupId, productPrice, productNum, userPhone, errorInfoList);
             }
             if(errorInfoList.size() > 0){
                 finish(errorInfoList, totalCount);
@@ -121,7 +121,7 @@ public class YHDGroupBuy extends Controller{
             }
         }else if(outerOrder.status != OuterOrderStatus.ORDER_CANCELED){
             //目前（12-09-20）一号店要求，如果订单不是order_copy或者order_canceled 那么其他状态应该都返回给一号店失败
-            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.error", "订单已存在,重复的订单请求", null));
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform_orderCode_exist", "订单已存在,重复的订单请求", null));
             finish(errorInfoList, totalCount);
         }
     }
@@ -140,9 +140,9 @@ public class YHDGroupBuy extends Controller{
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
                 OuterOrderPartner.YHD, params.get("orderCode")).first();
         if(outerOrder == null || outerOrder.ybqOrder == null){
-            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.get.vouchers_not_found", "订单不存在,请检查 orderCode", null));
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.get_orderCode_invalid", "订单不存在,请检查 orderCode", null));
         }else if(!outerOrder.ybqOrder.orderNumber.equals(params.get("partnerOrderCode"))){
-            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.get.vouchers_not_found", "订单关联错误,请检查 partnerOrderCode", null));
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.get_partnerOrderCode_invalid", "订单关联错误,请检查 partnerOrderCode", null));
         }
         if(errorInfoList.size() > 0){
             finish(errorInfoList, totalCount);
@@ -175,9 +175,9 @@ public class YHDGroupBuy extends Controller{
         ECoupon eCoupon = null;
         //检查订单存在与否
         if(outerOrder == null || outerOrder.ybqOrder == null){
-            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "订单不存在,请检查 orderCode", null));
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.voucher.resend_orderCode_invalid", "订单不存在,请检查 orderCode", null));
         }else if(!outerOrder.ybqOrder.orderNumber.equals(params.get("partnerOrderCode"))){
-            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "订单关联错误,请检查 partnerOrderCode", null));
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.voucher.resend_partnerOrderCode_invalid", "订单关联错误,请检查 partnerOrderCode", null));
         }
         //检查请求时间
         if(errorInfoList.size() == 0){
@@ -185,7 +185,7 @@ public class YHDGroupBuy extends Controller{
             try{
                 Date date = dateFormat.parse(params.get("requestTime"));
                 if(Math.abs(date.getTime() - System.currentTimeMillis()) > 600000){
-                    errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.resend.time_invalid", "请求时间误差大于10分钟", null));
+                    errorInfoList.add(new YHDErrorInfo("yhd.group.buy.voucher.resend_requestTime_invalid", "请求时间误差大于10分钟", null));
                 }
             }catch (ParseException e){
                 errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.resend.time_invalid", "请求时间格式有误,请检查 requestTime", null));
@@ -195,13 +195,13 @@ public class YHDGroupBuy extends Controller{
         if(errorInfoList.size() == 0){
             eCoupon = ECoupon.find("byOrderAndECouponSn", outerOrder.ybqOrder, params.get("voucherCode")).first();
             if(eCoupon == null) {
-                errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "消费券不存在", null));
+                errorInfoList.add(new YHDErrorInfo("yhd.group.buy.voucher.resend_voucherCode_invalid", "消费券不存在", null));
             }
         }
         // 检查券的发送次数
         if(errorInfoList.size() == 0){
             if(eCoupon.downloadTimes <= 0){
-                errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "券发送次数已经到达3次上限", null));
+                errorInfoList.add(new YHDErrorInfo("yhd.group.buy.voucher.resend_requestNumber_invalid", "券发送次数已经到达3次上限", null));
             }
         }
         // 检查手机号
@@ -260,7 +260,7 @@ public class YHDGroupBuy extends Controller{
             }
             if(goods.originalPrice.compareTo(productPrize) > 0){
                 Logger.info("invalid yhd productPrice: %s", productPrize );
-                errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.error", "商品价格不合法，拒绝订单", null));
+                errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform_productPrize_invalid", "商品价格不合法，拒绝订单", null));
                 return null;
             }
 
