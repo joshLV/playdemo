@@ -70,10 +70,21 @@ public class Orders extends Controller {
         String items = "";
         List<String> paramsList = new ArrayList<>();
         for (Long goodsId : gid) {
+            models.sales.Goods goods = models.sales.Goods.findById(goodsId);
+            if (goods == null) {
+                continue;
+            }
             String[] numberStr = params.get("g" + goodsId);
             int number = 1;
             if (numberStr != null && numberStr.length > 0) {
                 number = Integer.parseInt(numberStr[0]);
+                if (number > 999) {
+                    number = 999;
+                }
+                long realStock = goods.getRealStocks();
+                if (number > realStock) {
+                    number = (int)realStock;
+                }
             }
             paramsList.add(goodsId + "-" + number);
         }

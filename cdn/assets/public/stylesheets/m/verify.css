@@ -9,68 +9,22 @@
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
 }
+
 .verify .hd a.curr {
     background-color: white;
 }
+
 .verify .bd {
     padding: 20px;
     background-color: white;
 }
-/* 单券验证 {{{ */
-.single-verify .help {
-    height: 32px;
-    line-height: 32px;
-    text-align: right;
-    margin-bottom: 20px;
-    border-bottom: 1px dotted #dcdcdc;
-}
-.single-verify .help a {
-    color: #F97310;
-}
-.single-verify .outlet span {
-    font-size: 16px;
-    font-weight: 700;
-}
-.single-verify .outlet-list {
-    margin: 10px 0 30px;
-    padding: 6px 0 0 10px;
-    border: 2px solid #ccc;
-}
-.single-verify .outlet-list li {
-    width: 183px;
-    *width: 186px;
-    margin-bottom: 6px;
-    vertical-align: top;
-    display: inline-block;
-    *display: inline;
-    *zoom: 1;
-}
-.single-verify .coupon-verify label {
-    display: block;
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 10px;
-}
-.single-verify .coupon-verify .enter-coupon {
-    width: 260px;
-    height: 26px;
-    margin-right: 10px;
-    padding: 4px 10px;
-    font-size: 20px;
-    font-weight: bold;
-    border: 1px solid #F97310;
-}
-.single-verify .tip {
-    color: #FF7B33;
-    font-size: 12px;
-    line-height: 36px;
-}
-/* }}} */
+
 /* 批量验证 {{{ */
 .batch-verify .field-sect {
     background: #F6F3EA;
     padding: 15px 20px 5px;
 }
+
 .batch-verify .field-group {
     position: relative;
     padding: 5px 10px 5px 100px;
@@ -78,6 +32,7 @@
     overflow: hidden;
     zoom: 1;
 }
+
 .batch-verify .field-group label {
     position: absolute;
     left: 0;
@@ -86,6 +41,7 @@
     font-weight: 700;
     text-align: right;
 }
+
 .batch-verify .field-group select {
     width: 600px;
     height: auto;
@@ -95,10 +51,12 @@
     font-size: 14px;
     vertical-align: middle;
 }
+
 .batch-verify .field-group .coupon-label {
     height: 36px;
     line-height: 36px;
 }
+
 .batch-verify .field-group .enter-coupon {
     width: 270px;
     height: 30px;
@@ -110,20 +68,24 @@
     border: 3px solid #CCC;
     vertical-align: top;
 }
+
 .batch-verify .coupons-table {
     width: 100%;
     color: #222;
     text-align: center;
 }
+
 .batch-verify .coupons-table th,
 .batch-verify .coupons-table td {
     padding: 10px;
     border-bottom: 1px dashed #E3E3E3;
     font-size: 14px;
 }
+
 .batch-verify .coupons-table td a {
     color: #FF7B33;
 }
+
 .batch-verify .coupons-table td input {
     width: 120px;
     padding: 0 3px;
@@ -135,19 +97,28 @@
     line-height: 30px;
     border: 1px solid #ccc;
 }
+
+.batch-verify .coupons-table td.verify-result .success {
+    color: #9AC82B;
+}
+
+.batch-verify .coupons-table td.verify-result .error {
+    color: #c33;
+}
+
 .batch-verify .coupons-table tr.odd td {
     background-color: #EEF7F6;
 }
-.batch-verify .coupons-table td.verify-result {
-    color: #c33;
-}
+
 .batch-verify .verify-sect {
-    padding: 20px 151px;
+    padding: 20px 304px;
     background: #EEE;
     clear: both;
     overflow: hidden;
+    vertical-align: middle;
     zoom: 1;
 }
+
 .batch-verify .verify-sect a.batch-verify {
     width: 120px;
 }
@@ -157,78 +128,25 @@
     margin-top: 10px;
     padding: 10px;
 }
+
 .batch-verify .tip h5 {
     font-size: 16px;
     font-weight: bold;
     line-height: 30px;
 }
+
 .batch-verify .tip li {
     margin-bottom: 5px;
     list-style: disc inside;
 }
+
 .batch-verify .tip li ul {
     margin-top: 5px;
 }
+
 .batch-verify .tip li li {
     margin-left: 18px;
     list-style: circle inside;
 }
-/* }}} */
 
-.popup {
-    position: absolute;
-    width: 360px;
-    background-color: white;
-    border: 3px solid #DEDEDE;
-    border-radius: 3px;
-    z-index: 9999;
-    left:50%;top:45%;
-    margin-left:-200px;margin-top:-100px;
-    display: none;
-}
-.popup .btn {
-    width: 130px;
-    padding: 5px;
-}
-.popup h3 {
-    text-indent: 8px;
-    line-height: 24px;
-    background-color: #FFC;
-}
-.popup .bd {
-    padding: 5px 15px 15px;
-}
-.popup .bd p {
-    padding: 20px 0;
-    font-size: 18px;
-    font-weight: 700;
-}
-.popup .bd p em {
-    color: #FF7B33;
-}
-.popup .close {
-    position: absolute;
-    top: 0;
-    right: 0;
-    color: #b7b7b7;
-    width: 24px;
-    height: 24px;
-    background: url(http://y1.uhcdn.com/images/2012/12/0a9bc329d8478889.png) no-repeat 6px 6px;
-}
-.popup .close:hover {
-    background-position: 6px -34px;
-}
-.popup .cancel {
-    color: #D18136;
-    line-height: 36px;
-    margin-left: 20px;
-}
-.popup-mask {
-    background-color: gray;
-    display: none;
-    z-index: 500;
-    position: absolute;
-    left: 0;
-    top: 0;
-    opacity: .4;
-}
+/* }}} */

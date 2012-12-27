@@ -12,6 +12,7 @@ import play.Logger;
 import play.jobs.Every;
 import play.jobs.Job;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,7 +23,9 @@ import java.util.List;
 public class AutoConsumeCouponJob extends Job {
     @Override
     public void doJob() {
-        List<ECoupon> couponList = ECoupon.find("createType = ? and autoConsumed = ?",
+        //2天内，5分钟前
+        List<ECoupon> couponList = ECoupon.find("createdAt > ? and createdAt < ? and createType = ? and autoConsumed = ?",
+                new Date(System.currentTimeMillis() - 2*24*60*60*1000), new Date(System.currentTimeMillis() - 5*60*1000),
                 ECouponCreateType.IMPORT, DeletedStatus.UN_DELETED).fetch(20);
         for(ECoupon coupon : couponList) {
             boolean consumed = true;

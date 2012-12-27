@@ -4,8 +4,9 @@
  * @param $
  */
 jQuery(function ($) {
-    //--------------------------- 批量验证和单券验证通用 -------------------------------
-    //格式化券号输入框中的数字
+    /**
+     * 格式化券号输入框中的数字
+     */
     $('.enter-coupon').live('keypress', function () {
         var _this = $(this),
             value = _this.val();
@@ -16,11 +17,18 @@ jQuery(function ($) {
         }
     });
 
-    //前端检查券号格式合法性
+    /**
+     * 前端检查券号格式合法性
+     *
+     * @param shopIdInput
+     * @param snInput
+     * @return {boolean}
+     */
     checkCouponSn = function (shopIdInput, snInput) {
         var shopId = shopIdInput.val();
         if (shopId == null) {
             alert("请选择门店！");
+            shopIdInput.focus();
             return false;
         }
 
@@ -38,11 +46,15 @@ jQuery(function ($) {
         return true;
     };
 
-    //ctrl+v格式券号
+    /**
+     * ctrl+v格式券号
+     *
+     * @param eCouponInput
+     * @param e
+     */
     formatCopyECouponSn = function (eCouponInput, e) {
         if (e.ctrlKey) {//同时按下ctrl+v
             var value = eCouponInput.val();
-            console.log("value" + value);
             if (value.length > 3) {
                 eCouponInput.val(value.substring(0, 3) + ' ' + value.substring(3, value.length));
                 value = eCouponInput.val();
@@ -53,83 +65,19 @@ jQuery(function ($) {
         }
     }
 
-    //--------------------------- 单券验证 -------------------------------
-    //单券验证前查询券的合法性
-    var singleCoupon = $('#eCouponSn');
+    var serial = 0, coupons = [], needClearList = false;
 
-    singleVerify = function (shopIdInput, snInput) {
-        //去除券号输入框中的空格
-        var eCouponSn = snInput.val().replace(/ /g, '');
-
-        var shopId = shopIdInput.val();
-        var verifyResult = null;
-        $.get('/verify/single-query',
-            {shopId: shopId, eCouponSn: eCouponSn},
-            function (data) {
-                verifyResult = data;
-            });
-        return verifyResult;
-    };
-
-    //单券的券验证按钮点击事件，点击后先前端验证合法性，再后台验证，如果合法，则弹出确认验证的小窗口
-    $('#check-btn').click(function () {
-        var shopIdInput = $("input[name='shopId']:checked");
-        if (checkCouponSn(shopIdInput, singleCoupon)) {
-            $.get('/verify/single-query',
-                {shopId: shopIdInput.val(), eCouponSn: singleCoupon.val().replace(/ /g, '')},
-                function (data) {
-                    // 券号不能通过验证时，给出提示
-                    if (data.errorInfo != null && data.errorInfo != "null") {
-                        alert(data.errorInfo);
-                        return;
-                    }
-                    // 券号能验证时，让用户确认验证
-                    $('#eCouponInfo').html("<p>" + data.supplierName + " " + data.faceValue + "元 <em>(" + data.expireAt + ")</em></p>");
-                    $('#popup-mask').show();
-                    $('#popup').show();
-
-                });
-        }
-    });
-
-    //单券验证时粘贴响应事件
-    singleCoupon.keyup("v", function (e) {
-        formatCopyECouponSn(singleCoupon, e);
-    });
-
-    $('.close').click(function () {
-        $('#popup-mask').hide();
-        $('#popup').hide();
-    });
-
-    $('.cancel').click(function () {
-        $('#popup-mask').hide();
-        $('#popup').hide();
-    });
-
-    $('#verify-btn').click(function () {
-        var eCouponSn = singleCoupon.val().replace(/ /g, '');
-        singleCoupon.val(eCouponSn);
-        $('#coupon-single-form').submit();
-    });
-
-    //--------------------------- 批量验证 -------------------------------
-
-    //批量验证的输入框
+    /**
+     * 批量验证的输入框
+     */
     enterCoupon = $('#enter-coupon');
+
+    enterCoupon.focusin(function () {
+    });
 
     enterCoupon.keyup("v", function (e) {
         formatCopyECouponSn(enterCoupon, e);
     });
-
-    // 直接在input上按下enter键
-    enterCoupon.keydown(function (e) {
-        if (e.keyCode == 13) {
-            addMultiVerifyCoupon();
-        }
-    });
-
-    var serial = 0, coupons = [];
 
     addMultiVerifyCoupon = function () {
         if (serial > 10) {
@@ -143,16 +91,22 @@ jQuery(function ($) {
             return false;
         }
 
-        if (checkCouponSn($("#shopId"), enterCoupon)) {
+        if (checkCouponSn($("#id_shopName"), enterCoupon)) {
             addVerifyQueue();
+            if (needClearList) {
+                clearList();
+                needClearList = false;
+            }
         }
     };
 
+    /**
+     * 增加待验证的券到列表中.
+     */
     addVerifyQueue = function () {
         var value = enterCoupon.val();
         var eCouponSn = value.replace(/ /g, '');
-        $.get('/verify/single-query',
-            {shopId: $("#shopId").val(), eCouponSn: eCouponSn},
+        $.get('/verify/' + $("#id_shopName").val() + "/" + eCouponSn,
             function (data) {
                 // 券号不能通过验证时，给出提示
                 if (data.errorInfo != null && data.errorInfo != "null") {
@@ -164,19 +118,40 @@ jQuery(function ($) {
                 // 券号能验证时，让用户确认验证
                 $('#coupons-table').append('<tr class="row-coupon' + (serial % 2 == 0 ? " odd" : "") + '">' +
                     '<td class="serial">' + serial + '</td>' +
-                    '<td><input size="12" maxlength="12" type="text" class="enter-coupon" value="' + value + '"></td>' +
-                    '<td>' + data.faceValue + '</td>' +
+                    '<td>' + value + '</td>' +
+                    '<td>' + data.goodsName + '</td>' +
+                    '<td>' + data.faceValue + '元</td>' +
                     '<td>' + data.expireAt + '</td>' +
                     '<td><a class="delete-coupon" href="javascript:void(0)">删除</a></td>' +
                     '<td class="verify-result"></td>' +
                     '</tr>');
                 enterCoupon.val('');
+                $('.batch-verify').removeClass("disabled");
             });
 
     };
 
-    //批量验证FORM的点击事件
-    $('#coupon-multi-form').delegate('a', 'click', function () {
+    clearList = function () {
+        coupons = [];
+        $("#eCouponSns").val('');
+        serial = 0;
+        $('.row-coupon').remove();
+        $('.batch-verify').addClass("disabled");
+
+    };
+
+    $('#coupon-form').keypress(function (e) {
+        if (e.keyCode == 13) {
+            addMultiVerifyCoupon();
+            return false;
+        }
+    });
+
+
+    /**
+     * 批量验证FORM的点击事件
+     */
+    $('#coupon-form').delegate('a', 'click', function () {
         var _this = $(this);
         // 删除
         if (_this.hasClass('delete-coupon')) {
@@ -190,50 +165,27 @@ jQuery(function ($) {
                     $(this).text(i + 1);
                 });
             }
-            // 清空
-        } else if (_this.hasClass('clear-coupon')) {
-            if (window.confirm('清空后输入的所有券号将消失，确定吗？')) {
-                coupons = [];
-                $("#eCouponSns").val('');
-                serial = 0;
-                $('.row-coupon').remove();
-            }
             //批量验证的添加券号的按钮点击事件，点击后验证当前输入的券号.
         } else if (_this.hasClass('add-coupon')) {
             addMultiVerifyCoupon();
             // 批量验证
         } else if (_this.hasClass('batch-verify')) {
-            $.post('/verify/multi-verify', {'shopId': $("#shopId").val(), 'eCouponSns': coupons},
+            $.post('/verify/verify', {'shopId': $("#id_shopName").val(), 'eCouponSns': coupons},
                 function (data) {
-                    console.log("data" + data);
                     if (data != null) {
                         $('.verify-result').each(function (i) {
                             $(this).text(data[i]);
+
+                            if (data[i] != null && data[i].indexOf("成功") >= 0) {
+                                $(this).addClass("success")
+                            } else {
+                                $(this).addClass("error")
+                            }
+
                         });
+                        needClearList = true;
                     }
                 });
         }
-    });
-
-
-    //tab切换到单券验证
-    $('#single-page').click(function () {
-        $('#single-page').addClass('curr');
-        $('#multi-page').removeClass('curr');
-        $('.single-verify').show();
-        $('.batch-verify').hide();
-        $('#eCouponSn').val('');
-        $('#tabPage').val('1');
-
-    });
-
-    //tab切换到批量验证
-    $('#multi-page').click(function () {
-        $('#multi-page').addClass('curr');
-        $('#single-page').removeClass('curr');
-        $('.single-verify').hide();
-        $('.batch-verify').show();
-        $('#enter-coupon').val('');
-        $('#tabPage').val('2');
     });
 });

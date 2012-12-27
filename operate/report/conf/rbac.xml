@@ -14,20 +14,24 @@
     <permission key="BALANCE_REPORT" text="余额报表" roles="account"/>
     <permission key="SALES_REPORT" text="销售表" roles="account,sales,manager"/>
     <permission key="WEB_TRACKS_REPORT" text="网站跟踪报表" roles="webop"/>
-    <permission key="CONSUMER_REPORT" text="消费报表" roles="manager,account"/>
+    <permission key="CONSUMRER_REPORT" text="消费报表" roles="manager,account"/>
     <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager,account"/>
     <permission key="PREPAYMENT_REPORT" text="预付款明细表" roles="manager,account"/>
-    <permission key="SALE_REPORT" text="销售报表" roles="sales,account,manager"/>
-    <permission key="SEE_SALE_REPORT_PROFIT" text="查看销售报表利润" roles="manager,account"/>
+    <permission key="OPERATION_SALES_REPORT" text="运营报表" roles="sales,account,manager"/>
+    <permission key="SEE_OPERATION_REPORT_PROFIT" text="查看运营报表利润" roles="manager,account"/>
 
 
-    <navigation key="operation_app" text="运营报表" action="OperationReports.index" display-order="70">
-        <navigation key="operation_report_app" text="运营报表">
-            <navigation key="sales_reports" action="OperationReports.showSalesReport" text="销售报表"
-                        permissions="SALE_REPORT"/>
-            <navigation key="people_effect_reports" action="OperationReports.showPeopleEffectReport" text="人效报表"
-                        permissions="PEOPLE_EFFECT_REPORT"/>
-        </navigation>
+    <navigation key="operation_reports_app" text="运营报表" action="OperationReports.index" display-order="70">
+        <navigation key="sales_reports" action="OperationReports.showSalesReport" text="销售报表"
+                    permissions="OPERATION_SALES_REPORT"/>
+        <navigation key="channel_reports" action="OperationReports.showChannelReport" text="渠道汇总报表"
+                    permissions="OPERATION_SALES_REPORT"/>
+        <navigation key="channel_category_reports" action="OperationReports.showChannelCategoryReport" text="渠道大类报表"
+                    permissions="OPERATION_SALES_REPORT"/>
+        <navigation key="channel_goods_reports" action="OperationReports.showChannelGoodsReport" text="渠道商品报表"
+                    permissions="OPERATION_SALES_REPORT"/>
+        <navigation key="people_effect_reports" action="OperationReports.showPeopleEffectReport" text="人效报表"
+                    permissions="PEOPLE_EFFECT_REPORT"/>
     </navigation>
 
     <navigation key="reports_app" text="报表" action="OperateReportApplication.index" display-order="80">
