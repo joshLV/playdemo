@@ -44,7 +44,7 @@ GET     /coupons                                SupplierECoupons.index
 
 # [v2] 券验证
 GET     /verify                                 SupplierVerifyECoupons.index
-GET     /verify/{shopId}/{eCouponSn}            SupplierVerifyECoupons.singleQuery
+POST    /verify/{shopId}/{eCouponSn}            SupplierVerifyECoupons.singleQuery
 POST    /verify/verify                          SupplierVerifyECoupons.verify
 
 GET     /coupon-excel-out                       SupplierECoupons.couponExcelOut

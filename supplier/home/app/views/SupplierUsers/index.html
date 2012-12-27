@@ -40,10 +40,7 @@
             <td>${row.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
             <td>${row.lastLoginAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
             <td>
-                <a href="@{SupplierUsers.edit(row.id)}">修改</a> /
-                <a href="/users/${row.id}" id="del_${row.id}"
-                   onclick="if (confirm('确定删除吗？')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href + '?x-http-method-override=DELETE'; f.submit(); };return false;">删除</a>
-            </td>
+                <a href="@{SupplierUsers.edit(row.id)}">修改</a> / #{vx.deleteLink action:"users", id:row.id, name:row.loginName+"("+row.userName+")"/}            </td>
         </tr>
         #{/list}
         </tbody>

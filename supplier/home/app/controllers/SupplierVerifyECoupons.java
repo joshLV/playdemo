@@ -29,7 +29,7 @@ import java.util.Set;
  * Time: 9:59 AM
  */
 @With(SupplierRbac.class)
-@ActiveNavigation("coupons_single_index")
+@ActiveNavigation("coupons_multi_index")
 public class SupplierVerifyECoupons extends Controller {
     @Before(priority = 1000)
     public static void storeShopIp() {
@@ -38,7 +38,7 @@ public class SupplierVerifyECoupons extends Controller {
         if (StringUtils.isNotBlank(strShopId)) {
             try {
                 Long shopId = Long.parseLong(strShopId);
-                if (supplierUser.lastShopId == null || supplierUser.lastShopId != shopId) {
+                if (supplierUser.lastShopId == null || !supplierUser.lastShopId.equals(shopId)) {
                     supplierUser.lastShopId = shopId;
                     supplierUser.save();
                 }
@@ -76,6 +76,7 @@ public class SupplierVerifyECoupons extends Controller {
      *
      * @param eCouponSn 券号
      */
+    @ActiveNavigation("coupons_verify")
     public static void singleQuery(Long shopId, String eCouponSn) {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
 
