@@ -65,15 +65,15 @@
 <div class="body">
     <form action="@{OperationReports.showPeopleEffectReport()}" method="GET" id="search_form"
           name="search_form">
-        商品名称：<input type="text" name="condition.shortName" class="input-medium"
-                    value="${condition?.shortName}"/>
-        商品编码：<input type="text" name="condition.code" class="input-medium"
-                    value="${condition?.code}"/>
+        工号：<input type="text" name="condition.jobNumber" class="input-medium"
+                  value="${condition?.jobNumber}"/>
+        姓名：<input type="text" name="condition.userName" class="input-medium"
+                  value="${condition?.userName}"/>
         起止日期
-        <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.begin"
-               onfocus="WdatePicker({readOnly:true})" value="${condition?.begin?.format()}"> -
-        <input type="text" id="condition_end" class="input-medium Wdate" name="condition.end"
-               onfocus="WdatePicker({readOnly:true})" value="${condition?.end?.format()}">
+        <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.beginAt"
+               onfocus="WdatePicker({readOnly:true})" value="${condition?.beginAt?.format()}"> -
+        <input type="text" id="condition_end" class="input-medium Wdate" name="condition.endAt"
+               onfocus="WdatePicker({readOnly:true})" value="${condition?.endAt?.format()}">
         <button type="submit" class="btn btn-primary" id="search" onclick="showSalesReport()">搜索</button>
         <br/>
 
@@ -120,9 +120,18 @@
             <td>${report?.operateUser?.jobNumber}</td>
             <td>${report?.operateUser?.userName}</td>
             <td>${report?.buyNumber?:0}</td>
-            <td>${(report?.totalAmount?:0).formatCurrency('CNY')}</td>
-            <td>${(report?.consumedAmount?:0).formatCurrency('CNY')}</td>
-            <td>${(report?.refundAmount?:0).formatCurrency('CNY')}</td>
+            <td>
+                <a target="_blank" href="${baseUrl}/coupons?condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}">
+            ${(report?.totalAmount?:0).formatCurrency('CNY')}</a>
+            </td>
+            <td>
+                <a target="_blank" href="${baseUrl}/coupons?condition.consumedAtBegin=${condition?.beginAt?.format()}&condition.consumedAtEnd=${condition?.endAt?.format()}">
+                ${(report?.consumedAmount?:0).formatCurrency('CNY')}</a>
+            </td>
+            <td>
+                <a target="_blank" href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}">
+                ${(report?.refundAmount?:0).formatCurrency('CNY')}</a>
+            </td>
             #{if hasSeeReportProfitRight == true}
                 <td>${(report?.grossMargin?:0).format('#')}%</td>
                 <td>${(report?.profit?:0).formatCurrency('CNY')}</td>
