@@ -5,7 +5,6 @@ import models.accounts.AccountType;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
-import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -71,6 +70,24 @@ public class OperationReports extends Controller {
         ValuePaginator<ResaleSalesReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
         ResaleSalesReport summary = ResaleSalesReport.summary(resultList);
         render(reportPage, condition, summary, hasSeeReportProfitRight);
+    }
+
+    @ActiveNavigation("people_effect_reports")
+    public static void showPeopleEffectReport(SalesReportCondition condition) {
+        int pageNumber = getPageNumber();
+        if (condition == null) {
+            condition = new SalesReportCondition();
+        }
+        Boolean hasSeeSalesRepotProfitRight = ContextedPermission.hasPermission("SEE_SALE_REPORT_PROFIT");
+        List<SalesReport> resultList = SalesReport.queryPeopleEffectData(condition);
+        // 分页
+        ValuePaginator<SalesReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
+
+        // 汇总
+        SalesReport summary = SalesReport.getPeopleEffectSummary(resultList);
+
+        render(condition, reportPage, hasSeeSalesRepotProfitRight, summary);
+
     }
 
     @ActiveNavigation("channel_category_reports")

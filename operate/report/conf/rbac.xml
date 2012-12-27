@@ -30,6 +30,8 @@
                     permissions="OPERATION_SALES_REPORT"/>
         <navigation key="channel_goods_reports" action="OperationReports.showChannelGoodsReport" text="渠道商品报表"
                     permissions="OPERATION_SALES_REPORT"/>
+        <navigation key="people_effect_reports" action="OperationReports.showPeopleEffectReport" text="人效报表"
+                    permissions="PEOPLE_EFFECT_REPORT"/>
     </navigation>
 
     <navigation key="reports_app" text="报表" action="OperateReportApplication.index" display-order="80">
