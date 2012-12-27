@@ -79,7 +79,7 @@
 
         <div style="float:right">
             <button class="btn btn-primary" id="searchbtn" onclick="salesReportExcel()">导出报表</button>
-        #{if hasSeeSalesRepotProfitRight == true}
+        #{if hasSeeReportProfitRight== true}
             <button class="btn btn-primary" id="searchbtn" onclick="salesReportWithPrivilegeExcel()">导出报表附带利润</button>
         #{/if}
         </div>
@@ -105,7 +105,7 @@
         <th>总销售额</th>
         <th>消费金额</th>
         <th>退款金额</th>
-        #{if hasSeeSalesRepotProfitRight == true}
+        #{if hasSeeReportProfitRight== true}
         <th>毛利率</th>
         <th>净利润</th>
         #{/if}
@@ -123,7 +123,7 @@
             <td>${(report?.totalAmount?:0).formatCurrency('CNY')}</td>
             <td>${(report?.consumedAmount?:0).formatCurrency('CNY')}</td>
             <td>${(report?.refundAmount?:0).formatCurrency('CNY')}</td>
-            #{if hasSeeSalesRepotProfitRight == true}
+            #{if hasSeeReportProfitRight == true}
                 <td>${(report?.grossMargin?:0).format('#')}%</td>
                 <td>${(report?.profit?:0).formatCurrency('CNY')}</td>
             #{/if}
