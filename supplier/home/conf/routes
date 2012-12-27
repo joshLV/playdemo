@@ -41,13 +41,15 @@ GET     /reports/goods                          SupplierReports.showGoodsReport
 
 # [v2] 券列表
 GET     /coupons                                SupplierECoupons.index
+GET     /coupon-excel-out                       SupplierECoupons.couponExcelOut
 
 # [v2] 券验证
 GET     /verify                                 SupplierVerifyECoupons.index
 POST    /verify/{shopId}/{eCouponSn}            SupplierVerifyECoupons.singleQuery
 POST    /verify/verify                          SupplierVerifyECoupons.verify
 
-GET     /coupon-excel-out                       SupplierECoupons.couponExcelOut
+# [v2]
+GET     /version/{number}                       SupplierVersions.change
 
 # 补偿未同步的状态
 GET    /ecoupon-compensation/consumed           ECouponCompensations.consumed

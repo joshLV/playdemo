@@ -4,10 +4,10 @@
  * @param $
  */
 jQuery(function ($) {
-    checkShop = function (shopIdInput) {
+    var checkShop = function (shopIdInput) {
         var shopId = shopIdInput.val();
-        if (shopId == null || shopId.trim() == "" || shopId == 0) {
-            if (shopId.trim() != '') {
+        if (shopId == null || shopId == "" || shopId == 0) {
+            if (shopId != '') {
                 alert('您输入的分店不存在，请选择分店。');
                 shopIdInput.focus();
             } else {
@@ -27,7 +27,7 @@ jQuery(function ($) {
      * @param snInput
      * @return {boolean}
      */
-    checkCouponSn = function (shopIdInput, snInput) {
+    var checkCouponSn = function (shopIdInput, snInput) {
         if (!checkShop(shopIdInput)) {
             return false;
         }
@@ -52,7 +52,7 @@ jQuery(function ($) {
      * @param eCouponInput
      * @param e
      */
-    formatCopyECouponSn = function (eCouponInput, e) {
+    var formatCopyECouponSn = function (eCouponInput, e) {
         if (e.ctrlKey) {//同时按下ctrl+v
             var value = eCouponInput.val().replace(/ /g, '');
             if (value.length > 3) {
@@ -70,8 +70,8 @@ jQuery(function ($) {
     /**
      * 批量验证的输入框
      */
-    enterCoupon = $('#enter-coupon');
-    shopIdInput = $('#id_shopName');
+    var enterCoupon = $('#enter-coupon');
+    var shopIdInput = $('#id_shopName');
 
     enterCoupon.keyup("v", function (e) {
         formatCopyECouponSn(enterCoupon, e);
@@ -90,7 +90,7 @@ jQuery(function ($) {
         }
     });
 
-    addMultiVerifyCoupon = function () {
+    var addMultiVerifyCoupon = function () {
         if (serial > 10) {
             alert('一次最多只能验证10张券号，请分次验证。');
             return false;
@@ -122,7 +122,7 @@ jQuery(function ($) {
     /**
      * 增加待验证的券到列表中.
      */
-    addVerifyQueue = function () {
+    var addVerifyQueue = function () {
         var value = enterCoupon.val();
         var eCouponSn = value.replace(/ /g, '');
 
@@ -181,7 +181,7 @@ jQuery(function ($) {
 //
     };
 
-    clearList = function () {
+    var clearList = function () {
         coupons = [];
         $("#eCouponSns").val('');
         serial = 0;
