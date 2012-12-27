@@ -98,7 +98,7 @@ public class SalesReport {
         this.totalBuyNumber = totalBuyNumber;
     }
 
-    //refund   ecoupon
+    //refund and consumed ecoupon
     public SalesReport(OperateUser operateUser, BigDecimal amount, Goods goods, ECouponStatus status) {
         this.operateUser = operateUser;
         if (status == ECouponStatus.REFUND) {
@@ -108,9 +108,8 @@ public class SalesReport {
         }
 
         this.goods = goods;
-
     }
-
+    //--------人效报表_end---------------------------//
 
     //--------销售报表_begin---------------------------//
     /**
@@ -297,7 +296,7 @@ public class SalesReport {
 
         //from resaler
         sql = "select new models.SalesReport(ou,sum(r.salePrice*r.buyNumber-r.rebateValue),sum(r.originalPrice*r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-r.originalPrice*sum(r.buyNumber)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-sum(r.originalPrice*r.buyNumber)" +
                 ",b.commissionRatio)" +
                 " from OrderItems r,Order o,Resaler b,Supplier s,OperateUser ou";
         groupBy = " group by s.salesId,b";
