@@ -85,12 +85,12 @@ public class YHDGroupBuyTest extends FunctionalTest{
         params.put("productNum", "2");
 
         //价格
-        params.put("productPrize", "-1");
+        params.put("productPrice", "-1");
         params.put("orderAmount", new BigDecimal("-1").multiply(new BigDecimal("2")).toString());
         resign(params);
         response = POST("/api/v1/yhd/gb/order-inform", params);
         errorCount(1, response);
-        params.put("productPrize", goods.salePrice.toString());
+        params.put("productPrice", goods.salePrice.toString());
 
         //总价
         params.put("orderAmount", "1");
@@ -255,7 +255,7 @@ public class YHDGroupBuyTest extends FunctionalTest{
         params.put("createTime", dateFormat.format(new Date()));
         params.put("paidTime", dateFormat.format(new Date(new Date().getTime() + 300000)));
         params.put("userPhone", "13472581853");
-        params.put("productPrize", goods.salePrice.toString());
+        params.put("productPrice", goods.salePrice.toString());
         params.put("groupId", "1");
         params.put("outerGroupId", String.valueOf(goods.getId()));
 
