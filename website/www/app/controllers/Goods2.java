@@ -293,7 +293,7 @@ public class Goods2 extends Controller {
             final Long finalBoughtNumber = boughtNumber;
             Boolean isBuyFlag = CacheHelper.getCache(CacheHelper.getCacheKey(
                     new String[]{Order.CACHEKEY_BASEUSERID + user.id,
-                            models.sales.Goods.CACHEKEY_BASEID + goods.id},
+                            models.sales.Goods.CACHEKEY_BASEID + goods.id + "_" + finalBoughtNumber},
                     "LIMITNUMBER"), new CacheCallBack<Boolean>() {
                 @Override
                 public Boolean loadData() {
@@ -344,20 +344,21 @@ public class Goods2 extends Controller {
         } else {
             tjUrl += "?tj=gshare";
         }
-        final Date currDate = new Date();
+        final Date currentDate = new Date();
         List<GoodsSchedule> scheduleList = CacheHelper.getCache(
-                CacheHelper.getCacheKey(GoodsSchedule.CACHEKEY, "GOODS2_SCHEDULE_GOODS"),
+                CacheHelper.getCacheKey(GoodsSchedule.CACHEKEY, "GOODS2_SCHEDULE_GOODS" + goods.id),
                 new CacheCallBack<List<GoodsSchedule>>() {
                     @Override
                     public List<GoodsSchedule> loadData() {
-                        return GoodsSchedule.findSchedule(goods, currDate);
+                        return GoodsSchedule.findSchedule(goods, currentDate);
                     }
                 });
+        System.out.println(scheduleList.size() + "--------");
         //判断该商品是否签到商品
         boolean isCheckinGoods = scheduleList.size() > 0;
 
         //判断是否签到
-        UserGoldenCoin userGoldenCoin = UserGoldenCoin.getCheckinInfo(user,false);
+        UserGoldenCoin userGoldenCoin = UserGoldenCoin.getCheckinInfo(user, false);
         renderArgs.put("isCheckinToday", userGoldenCoin != null);
         renderArgs.put("checkinNumber", UserGoldenCoin.getCheckinNumber(user));
         renderArgs.put("totalCoins", UserGoldenCoin.getTotalCoins(user));

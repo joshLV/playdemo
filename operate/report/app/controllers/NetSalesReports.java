@@ -52,6 +52,7 @@ public class NetSalesReports extends Controller {
         }
 
         condition.operatorId = OperateRbac.currentUser().id;
+
         // 查询出所有结果
         List<SalesOrderItemReport> resultList = SalesOrderItemReport.getNetSales(condition);
 

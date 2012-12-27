@@ -69,9 +69,9 @@ public class UserVouchers extends Controller {
         } else {
             voucher = Voucher.find("byChargeCode", voucherCode).first();
             if (voucher == null) {
-                errMsg = "现金券充值密码输入错误";
+                errMsg = "抵用券充值密码输入错误";
             } else if (voucher.assignedAt != null || voucher.account != null) {
-                errMsg = "该现金券已被使用";
+                errMsg = "该抵用券已被使用";
             } else if (voucher.deleted == DeletedStatus.DELETED) {
                 errMsg = "该券无法使用";
             } else if (voucher.expiredAt.before(new Date())) {
@@ -87,7 +87,7 @@ public class UserVouchers extends Controller {
 
         Cache.delete(randomID);
         randomID = Codec.UUID();
-        BreadcrumbList breadcrumbs = new BreadcrumbList("代金券领取", "/voucher/assign");
+        BreadcrumbList breadcrumbs = new BreadcrumbList("抵用券领取", "/voucher/assign");
         render("UserVouchers/showAssign.html", randomID, errMsg,
                 breadcrumbs, user, account, action, voucher, ridA, ridB,
                 voucherCode);

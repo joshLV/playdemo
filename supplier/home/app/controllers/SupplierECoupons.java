@@ -61,6 +61,8 @@ public class SupplierECoupons extends Controller {
             condition = new CouponsCondition();
         }
         condition.supplier = SupplierRbac.currentUser().supplier;
+        condition.status = ECouponStatus.CONSUMED;
+
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "券内容列表_" + System.currentTimeMillis() + ".xls");
         JPAExtPaginator<ECoupon> couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE);

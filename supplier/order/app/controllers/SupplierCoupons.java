@@ -248,6 +248,7 @@ public class SupplierCoupons extends Controller {
         if (condition == null) {
             condition = new CouponsCondition();
         }
+        condition.status = ECouponStatus.CONSUMED;
         condition.supplier = SupplierRbac.currentUser().supplier;
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "券内容列表_" + System.currentTimeMillis() + ".xls");

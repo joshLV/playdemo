@@ -62,7 +62,7 @@
         <tr>
             <th width="10px">券号</th>
             <th width="120px">商品名称</th>
-            <th width="30px">单价</th>
+            <th width="30px">面值</th>
             <th width="50px">消费门店</th>
             <th width="40px">验证方式</th>
             <th width="50px">消费时间</th>
@@ -76,7 +76,7 @@
         <tr>
             <td>${coupon?.eCouponSn}</td>
             <td>${coupon?.goods?.shortName}</td>
-            <td>${coupon?.salePrice?.formatCurrency('CNY')}</td>
+            <td>${coupon?.faceValue?.formatCurrency('CNY')}</td>
             <td>${coupon?.getConsumedShop()}</td>
             <td>&{'coupon.'+coupon?.verifyType}</td>
             <td>${coupon?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
