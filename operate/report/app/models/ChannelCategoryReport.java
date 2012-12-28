@@ -128,14 +128,11 @@ public class ChannelCategoryReport {
                 this.userName = order.getResaler().userName;
             }
         }
-
         if (supplierCategoryId != null) {
             SupplierCategory supplierCategory = SupplierCategory.findById(supplierCategoryId);
             this.code = supplierCategory.code;
             this.name = supplierCategory.name;
         }
-
-
         if (salePrice != null) {
             this.salePrice = salePrice;
         } else {
@@ -866,7 +863,6 @@ public class ChannelCategoryReport {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<ChannelCategoryReport> paidResultList = query.getResultList();
-
 
 
         //sendAt real

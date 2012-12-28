@@ -1,13 +1,6 @@
 package controllers;
 
-import models.ChannelCategoryReport;
-import models.ChannelCategoryReportCondition;
-import models.ChannelGoodsReport;
-import models.ChannelGoodsReportCondition;
-import models.ResaleSalesReport;
-import models.ResaleSalesReportCondition;
-import models.SalesReport;
-import models.SalesReportCondition;
+import models.*;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -52,6 +45,24 @@ public class OperationReports extends Controller {
         render(condition, reportPage, hasSeeReportProfitRight, summary);
 
     }
+
+
+    @ActiveNavigation("category_sales_reports")
+    public static void showCategorySalesReport(CategorySalesReportCondition condition) {
+        int pageNumber = getPageNumber();
+        if (condition == null) {
+            condition = new CategorySalesReportCondition();
+        }
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        List<CategorySalesReport> resultList = CategorySalesReport.query(condition);
+        // 分页
+        ValuePaginator<CategorySalesReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
+
+        // 汇总
+        CategorySalesReport summary = CategorySalesReport.getNetSummary(resultList);
+        render(condition, reportPage, hasSeeReportProfitRight, summary);
+    }
+
 
     @ActiveNavigation("channel_reports")
     public static void showChannelReport(ResaleSalesReportCondition condition) {
@@ -482,7 +493,7 @@ public class OperationReports extends Controller {
             if (hasProfitRight) {
                 BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
                 report.grossMargin = tempGrossMargin;
-                report.profit = report.profit == null ? BigDecimal.ZERO : report.profit.setScale(2,BigDecimal.ROUND_HALF_UP);
+                report.profit = report.profit == null ? BigDecimal.ZERO : report.profit.setScale(2, BigDecimal.ROUND_HALF_UP);
             }
         }
 
