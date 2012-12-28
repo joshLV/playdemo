@@ -130,7 +130,7 @@ jQuery(function ($) {
                 $('.batch-verify').removeClass("disabled");
             },
             error: function (data) {
-                window.location.href = '/verify';
+                window.location.href = '${play.Play.configuration.getProperty("cas.loginUrl=")}';
             }
         });
     };
@@ -177,6 +177,9 @@ jQuery(function ($) {
             if (_this.hasClass("disabled")) {
                 return;
             }
+            $("#verify-btn").text("正在验证......");
+            $("#verify-btn").addClass("disabled");
+
             $.ajax({
                 type: 'POST',
                 url: '/verify/verify',
@@ -194,8 +197,11 @@ jQuery(function ($) {
 
                         });
                         needClearList = true;
-                        $('.batch-verify').addClass("disabled");
+                        $("#verify-btn").text("验证并消费");
                     }
+                },
+                error: function(){
+                   window.location.href = '${play.Play.configuration.getProperty("cas.loginUrl=")}';
                 }
 
             });
