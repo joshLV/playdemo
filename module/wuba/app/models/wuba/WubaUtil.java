@@ -26,8 +26,7 @@ import java.util.Map;
  *         Date: 12-11-23
  */
 public class WubaUtil {
-    //    public static final String GATEWAY_URL  = Play.configuration.getProperty("wuba.gateway_url", "http://eapi.58.com:8080/api/rest");
-    public static final String GATEWAY_URL = "http://eapi.test.58v5.cn/api/rest";
+    public static final String GATEWAY_URL = Play.configuration.getProperty("wuba.gateway_url", "http://eapi.58.com:8080/api/rest");
     public static final String WUBA_APP_KEY = Play.configuration.getProperty("wuba.wuba_app_key");
     public static final String YBQ_APP_KEY = Play.configuration.getProperty("wuba.ybq_app_key");
     public static final String SECRET_KEY = Play.configuration.getProperty("wuba.secret_key");
@@ -69,9 +68,9 @@ public class WubaUtil {
     /**
      * 调用58的接口
      *
-     * @param appParams   post的参数列表
-     * @param method      58的接口方法
-     * @param requestNeedEncrypt 请求是否需要加密。对于部分接口不需加密的，传入false即可
+     * @param appParams           post的参数列表
+     * @param method              58的接口方法
+     * @param requestNeedEncrypt  请求是否需要加密。对于部分接口不需加密的，传入false即可
      * @param responseNeedDecrypt 响应是否需要解密，对于部分接口不需解密的，传入false
      * @return 解析为json对象形式的58返回结果
      */
@@ -89,7 +88,7 @@ public class WubaUtil {
             params.put("param", jsonRequest);
         }
 
-//        Logger.info("wuba request: \n%s", new Gson().toJson(params));
+        Logger.info("wuba request: \n%s", new Gson().toJson(params));
 
         WebServiceClient client = WebServiceClientFactory
                 .getClientHelper();
@@ -97,11 +96,11 @@ public class WubaUtil {
         String json = client.postString("58_" + method,
                 GATEWAY_URL, params, "58");
 
-//        Logger.info("wuba response: \n%s", json);
+        Logger.info("wuba response: \n%s", json);
 
         JsonObject result = parseResponse(json, responseNeedDecrypt);
 
-//        Logger.info("wuba response decrypted: \n%s", result.toString());
+        Logger.info("wuba response decrypted: \n%s", result.toString());
 
         return result;
     }
