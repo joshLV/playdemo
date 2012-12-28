@@ -505,6 +505,68 @@ public class OperationReports extends Controller {
         render(peopleEffectReportList);
     }
 
+    public static void categorySalesReportWithPrivilegeExcelOut(CategorySalesReportCondition condition) {
+        if (condition == null) {
+            condition = new CategorySalesReportCondition();
+        }
+        String page = request.params.get("page");
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "大类销售报表_" + System.currentTimeMillis() + ".xls");
+
+        List<CategorySalesReport> resultList = null;
+        resultList = CategorySalesReport.excelQuery(condition);
+
+        for (CategorySalesReport report : resultList) {
+//            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
+//            report.grossMargin = tempGrossMargin;
+            if (report.grossMargin == null) {
+                report.grossMargin = BigDecimal.ZERO;
+            }
+            DecimalFormat df = new DecimalFormat("0.00");
+            report.grossMargin = new BigDecimal(df.format(report.grossMargin));
+
+            if (report.refundAmount == null) {
+                report.refundAmount = BigDecimal.ZERO;
+            }
+            if (report.netSalesAmount == null) {
+                report.netSalesAmount = BigDecimal.ZERO;
+            }
+
+            if (report.channelCost == null) {
+                report.channelCost = BigDecimal.ZERO;
+
+            }
+
+            if (report.profit == null) {
+                report.profit = BigDecimal.ZERO;
+            }
+        }
+        render(resultList);
+    }
+
+    public static void categorySalesReportExcelOut(CategorySalesReportCondition condition) {
+        if (condition == null) {
+            condition = new CategorySalesReportCondition();
+        }
+        String page = request.params.get("page");
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "大类销售报表_" + System.currentTimeMillis() + ".xls");
+
+        List<CategorySalesReport> resultList = null;
+        resultList = CategorySalesReport.excelQuery(condition);
+
+        for (CategorySalesReport report : resultList) {
+            if (report.refundAmount == null) {
+                report.refundAmount = BigDecimal.ZERO;
+            }
+            if (report.netSalesAmount == null) {
+                report.netSalesAmount = BigDecimal.ZERO;
+            }
+
+        }
+        render(resultList);
+    }
+
 
     private static int getPageNumber() {
         String page = request.params.get("page");

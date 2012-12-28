@@ -42,21 +42,21 @@
     });
 
     function categorySalesReportExcel() {
-        $("#search_form").attr("action", "@{OperationReports.salesReportExcelOut()}");
+        $("#search_form").attr("action", "@{OperationReports.categorySalesReportExcelOut()}");
         $("#search_form").attr("method", "get");
         $("#search_form").submit();
     }
     ;
 
     function categorySalesReportWithPrivilegeExcel() {
-        $("#search_form").attr("action", "@{OperationReports.salesReportWithPrivilegeExcelOut()}");
+        $("#search_form").attr("action", "@{OperationReports.categorySalesReportWithPrivilegeExcelOut()}");
         $("#search_form").attr("method", "get");
         $("#search_form").submit();
     }
     ;
 
     function showCategorySalesReport() {
-        $("#search_form").attr("action", "@{OperationReports.showSalesReport()}");
+        $("#search_form").attr("action", "@{OperationReports.showCategorySalesReport()}");
         $("#search_form").attr("method", "get");
         $("#search_form").submit();
     }
@@ -197,7 +197,8 @@
             #{else}
                 <td bgcolor="#add8e6" colspan="6" style="text-align:center;">小计</td>
             #{/else}
-            <td #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">${report?.buyNumber?:0}</td>
+            <td #{if report?.name == "999" } bgcolor="#add8e6" #{/if}
+                                             style="text-align:right;">${report?.buyNumber?:0}</td>
 
             <td #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
                 #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
@@ -223,8 +224,10 @@
                 ￥${(report?.netSalesAmount?:0)}
             </td>
             #{if hasSeeReportProfitRight == true}
-                <td #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">${(report?.grossMargin?:0).format('#')}%</td>
-                <td  #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;" style="text-align:right;">
+                <td #{if report?.name == "999" } bgcolor="#add8e6" #{/if}
+                                                 style="text-align:right;">${(report?.grossMargin?:0).format('#')}%</td>
+                <td  #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;"
+                                                  style="text-align:right;">
                     #{if report.profit != null && report.profit!=0}
                         ￥${(report?.profit?:0).format('#0.00')}
                     #{/if}

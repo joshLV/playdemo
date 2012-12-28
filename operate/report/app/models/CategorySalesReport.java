@@ -320,6 +320,110 @@ public class CategorySalesReport {
     }
 
 
+    public static List<CategorySalesReport> excelQuery(CategorySalesReportCondition condition) {
+        //paidAt
+        String sql = "select new models.CategorySalesReport(r.goods,s.supplierCategory.id,r.goods.originalPrice,sum(r.buyNumber)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)/sum(r.buyNumber)" +
+                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+                ",sum(r.originalPrice*r.buyNumber) " +
+                " )" +
+                " from OrderItems r, Supplier s ";
+        String groupBy = " group by s.supplierCategory.id, r.goods.id";
+        Query query = JPA.em()
+                .createQuery(sql + condition.getFilter() + groupBy + " order by sum(r.buyNumber) desc ");
+
+
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+
+        List<CategorySalesReport> paidResultList = query.getResultList();
+
+
+        //from resaler
+        sql = "select new models.CategorySalesReport(r.goods,s.supplierCategory.id,sum(r.salePrice*r.buyNumber-r.rebateValue),sum(r.originalPrice*r.buyNumber)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-sum(r.originalPrice*r.buyNumber)" +
+                ",b.commissionRatio)" +
+                " from OrderItems r,Order o,Resaler b, Supplier s ";
+        groupBy = " group by s.supplierCategory.id,r.goods.id,b ";
+        query = JPA.em()
+                .createQuery(sql + condition.getResalerFilter() + groupBy + " order by sum(r.buyNumber) desc ");
+
+
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+
+
+        List<CategorySalesReport> paidResalerResultList = query.getResultList();
+
+        //取得退款的数据 ecoupon
+        sql = "select new models.CategorySalesReport(sum(e.refundPrice),e.orderItems.goods,s.supplierCategory.id ) " +
+                " from ECoupon e, Supplier s ";
+        groupBy = " group by s.supplierCategory.id,e.orderItems.goods.id ";
+
+        query = JPA.em()
+                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.refundPrice) desc");
+
+        for (String param : condition.getParamMap1().keySet()) {
+            query.setParameter(param, condition.getParamMap1().get(param));
+        }
+
+        List<CategorySalesReport> refundList = query.getResultList();
+
+        Map<String, CategorySalesReport> map = new HashMap<>();
+
+        //merge
+        for (CategorySalesReport paidItem : paidResultList) {
+            map.put(getReportKey(paidItem), paidItem);
+        }
+
+        for (CategorySalesReport refundItem : refundList) {
+            CategorySalesReport item = map.get(getReportKey(refundItem));
+            if (item == null) {
+                Goods goods = Goods.findById(refundItem.goods.id);
+                refundItem.originalPrice = goods.originalPrice;
+                refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
+                map.put(getReportKey(refundItem), refundItem);
+            } else {
+                item.refundAmount = refundItem.refundAmount;
+                item.netSalesAmount = item.totalAmount.subtract(item.refundAmount);
+            }
+        }
+
+        //merge from resaler if commissionRatio
+        for (CategorySalesReport resalerItem : paidResalerResultList) {
+            CategorySalesReport item = map.get(getReportKey(resalerItem));
+            if (item == null) {
+                map.put(getReportKey(resalerItem), resalerItem);
+            } else {
+                item.profit = item.profit == null ? BigDecimal.ZERO : item.profit.subtract(resalerItem.totalAmount == null ? BigDecimal.ZERO : resalerItem.totalAmount
+                        .subtract(resalerItem.totalCost == null ? BigDecimal.ZERO : resalerItem.totalCost))
+                        .add(resalerItem.profit == null ? BigDecimal.ZERO : resalerItem.profit);
+//                item.profit= item.totalAmount.multiply(BigDecimal.ONE.subtract())
+            }
+        }
+
+
+        List resultList = new ArrayList();
+
+        List<String> tempString = new ArrayList<>();
+        for (String s : map.keySet()) {
+            tempString.add(s);
+        }
+
+        Collections.sort(tempString);
+
+        for (String key : tempString) {
+            resultList.add(map.get(key));
+        }
+        return resultList;
+    }
+
+
     /**
      * 取得净销售的总计
      *
