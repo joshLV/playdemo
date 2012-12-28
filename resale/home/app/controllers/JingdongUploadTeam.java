@@ -47,7 +47,7 @@ public class JingdongUploadTeam extends Controller {
         if (!Resaler.JD_LOGIN_NAME.equals(resaler.loginName)) {
             error("there is nothing you can do");
         }
-        Goods goods = Goods.findById(goodsId);
+        Goods goods = Goods.findOnSale(goodsId);
 
         GoodsThirdSupport support = GoodsThirdSupport.getSupportGoods(goods, OuterOrderPartner.JD);
         if (support == null) {
