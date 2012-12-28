@@ -212,7 +212,7 @@ public class WubaProduct extends Controller {
         }
 
         if ("10000".equals(status)) {
-            setUrlParams(cities, cityIds, resalerFav);
+            setUrlParams(cities, cityIds, resalerFav, resalerFav.thirdGroupbuyId);
             resalerFav.save();
             redirect("/58-status/" + goodsId);
         }
@@ -335,7 +335,7 @@ public class WubaProduct extends Controller {
 
             JsonObject jsonObject = result.get("data").getAsJsonObject();
             Long wubaGoodsId = jsonObject.get("groupbuyId58").getAsLong();
-            setUrlParams(cities, cityIds, resalerFav);
+            setUrlParams(cities, cityIds, resalerFav, wubaGoodsId);
             resalerFav.partner = OuterOrderPartner.WB;
             resalerFav.lastLinkId = linkId;
             resalerFav.thirdGroupbuyId = wubaGoodsId;
@@ -352,24 +352,24 @@ public class WubaProduct extends Controller {
      * @param cityIds
      * @param resalerFav
      */
-    private static void setUrlParams(String[] cities, Integer[] cityIds, ResalerFav resalerFav) {
-        String cityName = "";
-        String moreCityName = "";
-        String url = "";
+    private static void setUrlParams(String[] cities, Integer[] cityIds, ResalerFav resalerFav, Long wubaGoodsId) {
+        List<String> urls = new ArrayList<>();
+        List<String> cityNames = new ArrayList<>();
         for (String city : cities) {
             for (int cityId : cityIds) {
                 String[] cityArr = city.split(":");
                 int city0Id = Integer.valueOf(cityArr[0]);
                 if (city0Id == cityId) {
-                    cityName = cityArr[1];
-                    url += THIRD_URL + cityArr[2] + ",";
-                    moreCityName += cityName + ",";
+                    String cityName = cityArr[1];
+                    String url = THIRD_URL + cityArr[2] + "/" + wubaGoodsId;
+                    urls.add(url);
+                    cityNames.add(cityName);
                 }
             }
         }
 
-        resalerFav.thirdUrl = url;
-        resalerFav.thirdCity = moreCityName;
+        resalerFav.thirdUrl = StringUtils.join(urls, ",");
+        resalerFav.thirdCity = StringUtils.join(cityNames, ",");
     }
 
 
