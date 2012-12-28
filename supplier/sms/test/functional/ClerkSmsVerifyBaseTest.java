@@ -188,7 +188,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         day = kfcECoupon.getWeek();
         // 消费者短信
         SMSMessage msg = getLastClerkSMSMessage();
-        assertSMSContentMatch("【一百券】对不起，只能在" + day.substring(0, day.length() - 1) + "的" + kfcGoods.useBeginTime + "~" + kfcGoods.useEndTime + "时间内使用该券！如有疑问请致电：4006262166", msg.getContent());
+        assertSMSContentMatch("【一百券】对不起，该券只能在" + day.substring(0, day.length() - 1) + "的" + kfcGoods.useBeginTime + "~" + kfcGoods.useEndTime + "时间内使用！如有疑问请致电：4006262166", msg.getContent());
 
         Goods goods = Goods.findById(kfcGoods.id);
         ca = Calendar.getInstance();
@@ -204,7 +204,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         day = kfcECoupon.getWeek();
         assertStatus(200, response);
         msg = getLastClerkSMSMessage();
-        assertSMSContentMatch("【一百券】对不起，只能在" + day.substring(0, day.length() - 1) + "的" + goods.useBeginTime + "~次日" + goods.useEndTime + "时间内使用该券！如有疑问请致电：4006262166", msg.getContent());
+        assertSMSContentMatch("【一百券】对不起，该券只能在" + day.substring(0, day.length() - 1) + "的" + goods.useBeginTime + "~次日" + goods.useEndTime + "时间内使用！如有疑问请致电：4006262166", msg.getContent());
 
 
         goods = Goods.findById(kfcGoods.id);
@@ -218,7 +218,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
 
         assertStatus(200, response);
         msg = getLastClerkSMSMessage();
-        assertSMSContentMatch("【一百券】对不起，只能在每天的" + goods.useBeginTime + "~" + goods.useEndTime + "时间内使用该券！如有疑问请致电：4006262166", msg.getContent());
+        assertSMSContentMatch("【一百券】对不起，该券只能在每天的" + goods.useBeginTime + "~" + goods.useEndTime + "时间内使用！如有疑问请致电：4006262166", msg.getContent());
     }
 
     private int getWeek(int w){
