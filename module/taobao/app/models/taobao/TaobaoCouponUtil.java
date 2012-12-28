@@ -158,7 +158,7 @@ public class TaobaoCouponUtil {
         request.setConsumeNum(1L);
         request.setToken(token);
 
-        Logger.info("tell taobao coupon resend request. orderId: %s, verifyCode: %s, token: %s",
+        Logger.info("tell taobao coupon verify request. orderId: %s, verifyCode: %s, token: %s",
                 request.getOrderId(), request.getVerifyCode(), request.getToken());
 
         try {
