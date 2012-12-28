@@ -1422,8 +1422,13 @@ public class ECoupon extends Model {
         }
         if (ecoupon.status == models.order.ECouponStatus.CONSUMED) {
             SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日HH点mm分");
-
             Shop shop = Shop.findById(targetShopId);
+            if (ecoupon.consumedAt == null) {
+                return "对不起，该券已使用过。";
+            }
+            if (shop == null) {
+                return "对不起，该券已使用过。 消费时间为" + format.format(ecoupon.consumedAt);
+            }
             return "对不起，该券已使用过。 消费门店为" + shop.name + "，消费时间为" + format.format(ecoupon.consumedAt);
         }
         if (ecoupon.status == models.order.ECouponStatus.REFUND) {

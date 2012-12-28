@@ -94,7 +94,7 @@ public class SupplierCouponQueryTest extends FunctionalTest {
         Http.Response response = GET(url);
         assertStatus(200, response);
         assertNotNull(renderArgs("ecoupon"));
-        assertContentMatch("此券已消费", response);
+        assertContentMatch("对不起，该券已消费", response);
         assertContentMatch(coupon.eCouponSn, response);
         ECoupon getCoupon = (ECoupon) renderArgs("ecoupon");
         assertEquals(coupon.eCouponSn, getCoupon.eCouponSn);
@@ -108,7 +108,12 @@ public class SupplierCouponQueryTest extends FunctionalTest {
         Http.Response response = GET(url);
         assertStatus(200, response);
         assertNotNull(renderArgs("ecoupon"));
-        assertContentMatch("此券已过期", response);
+
+        System.out.println("getContent(response):" + getContent(response));
+
+
+
+        assertContentMatch("对不起，该券已过期", response);
         assertContentMatch(coupon.eCouponSn, response);
         ECoupon getCoupon = (ECoupon) renderArgs("ecoupon");
         assertEquals(coupon.eCouponSn, getCoupon.eCouponSn);
@@ -123,7 +128,7 @@ public class SupplierCouponQueryTest extends FunctionalTest {
         Http.Response response = GET(url);
         assertStatus(200, response);
         assertNotNull(renderArgs("ecoupon"));
-        assertContentMatch("此券已被冻结不能使用", response);
+        assertContentMatch("对不起，该券已被冻结", response);
         assertContentMatch(coupon.eCouponSn, response);
         ECoupon getCoupon = (ECoupon) renderArgs("ecoupon");
         assertEquals(coupon.eCouponSn, getCoupon.eCouponSn);

@@ -99,11 +99,11 @@
 }
 
 .batch-verify .coupons-table td.success {
-    color: #9AC82B;
+    color: #468847;
 }
 
 .batch-verify .coupons-table td.error {
-    color: #c33;
+    color: #B94A48;
 }
 
 .batch-verify .coupons-table tr.odd td {
