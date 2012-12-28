@@ -50,6 +50,7 @@ public class JingdongUploadTeam extends Controller {
     public static void checkJingDong() {
         Resaler resaler = SecureCAS.getResaler();
         if (!Resaler.JD_LOGIN_NAME.equals(resaler.loginName)) {
+            Logger.warn("the login name is not jingdong");
             error("there is nothing you can do");
         }
     }
@@ -149,7 +150,7 @@ public class JingdongUploadTeam extends Controller {
         JsonObject jsonObject = jsonElement.getAsJsonObject();
         jsonObject.remove("teamTitle");
         jsonObject.addProperty("teamTitle", title);
-        support.goodsData = jsonObject.getAsString();
+        support.goodsData = jsonObject.toString();
 
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/updateTitle.action";
         Template template = TemplateLoader.load("jingdong/groupbuy/request/updateTitleRequest.xml");
@@ -187,9 +188,9 @@ public class JingdongUploadTeam extends Controller {
 
         JsonElement jsonElement = new JsonParser().parse(support.goodsData);
         JsonObject jsonObject = jsonElement.getAsJsonObject();
-        jsonObject.remove("teamTitle");
-        jsonObject.addProperty("teamTitle", detail);
-        support.goodsData = jsonObject.getAsString();
+        jsonObject.remove("teamDetail");
+        jsonObject.addProperty("teamDetail", detail);
+        support.goodsData = jsonObject.toString();
 
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/updateDetail.action";
         Template template = TemplateLoader.load("jingdong/groupbuy/request/updateDetailRequest.xml");
