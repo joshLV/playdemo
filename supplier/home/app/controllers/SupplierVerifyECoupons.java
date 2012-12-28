@@ -123,6 +123,11 @@ public class SupplierVerifyECoupons extends Controller {
         renderJSON(eCouponResult);
     }
 
+    @ActiveNavigation("coupons_verify")
+    public static void refresh() {
+
+    }
+
     private static void sendVerifySMS(ECoupon eCoupon, String shopName) {
         String dateTime = DateUtil.getNowTime();
         String ecouponSNLast4Code = eCoupon.getLastCode(4);

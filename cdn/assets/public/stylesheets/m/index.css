@@ -141,6 +141,10 @@ body {
     background-color: #006dcc;
     zoom: 1;
 }
+.error {
+    color: #ba0001;
+    font-size: 16px;
+}
 input.btn {
     width: 100px;
     height: 36px;
