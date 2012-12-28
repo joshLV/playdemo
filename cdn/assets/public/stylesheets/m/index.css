@@ -3,7 +3,7 @@ body {
 }
 #header {
     margin-bottom: 20px;
-    background-color: #FF7B33;
+    background-color: #1b1b1b;
 }
 #header .wrap {
     height: 36px;
@@ -45,15 +45,17 @@ body {
 }
 #message .normal {
     padding: 10px 60px 10px 10px;
-    border: 1px solid #f7bd7d;
-    background-color: #fffbf0;
+    border: 1px solid #fbeed5;
+    color: #c09853;
+    background-color: #fcf8e3;
     border-radius: 3px;
 }
 #message .normal p em {
-    color: #FF7B33;
+    color: #c09853;
+    font-weight: bold;
 }
 #message p a {
-    color: #d18136;
+    color: #08c;
 }
 #message .success {
     font-size: 22px;
@@ -88,7 +90,7 @@ body {
 }
 .sidebar .menu a {
     display: block;
-    color: #F97310;
+    color: #08c;
     height: 32px;
     line-height: 32px;
     text-indent: 15px;
@@ -100,7 +102,7 @@ body {
 }
 .sidebar .menu a.curr {
     color: white;
-    background-color: #F97310;
+    background-color: #08c;
 }
 .sidebar .sbox {
     padding: 10px;
@@ -132,11 +134,11 @@ body {
     text-align: center;
     vertical-align: top;
     text-decoration: none;
-    text-shadow: 1px 1px #FF7B33;
+    text-shadow: 1px 1px #006dcc;
     cursor: pointer;
-    border: 1px solid #F97310;
+    border: 1px solid #006dcc;
     border-radius: 2px;
-    background-color: #FF7B33;
+    background-color: #006dcc;
     zoom: 1;
 }
 input.btn {
@@ -194,7 +196,7 @@ input.disabled {
     border-bottom: 1px dotted #E3E3E3;
 }
 .standard-table td a {
-    color: #d18136;
+    color: #08c;
 }
 /* 分页 */
 .pagination {

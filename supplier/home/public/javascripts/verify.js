@@ -130,7 +130,7 @@ jQuery(function ($) {
                 $('.batch-verify').removeClass("disabled");
             },
             error: function (data) {
-                window.location.href = '/';
+                window.location.href = '/verify';
             }
         });
     };
