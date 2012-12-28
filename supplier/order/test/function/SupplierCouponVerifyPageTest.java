@@ -51,6 +51,15 @@ public class SupplierCouponVerifyPageTest extends FunctionalTest {
     }
 
     @Test
+    public void 跳转到新版界面() throws Exception {
+        supplierUser.defaultUiVersion = "v2";
+        supplierUser.save();
+
+        Response response = GET("/coupons/single");
+        assertStatus(302, response);
+    }
+
+    @Test
     public void 门店店号验证页面只出现一个Shop() throws Exception {
         Response response = GET("/coupons/single");
         assertIsOk(response);

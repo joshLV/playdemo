@@ -2,19 +2,12 @@ package function;
 
 import controllers.supplier.cas.Security;
 import factory.FactoryBoy;
-import factory.callback.BuildCallback;
-import models.accounts.Account;
-import models.accounts.AccountType;
-import models.accounts.WithdrawBill;
 import models.admin.SupplierUser;
 import models.supplier.Supplier;
 import org.junit.Before;
 import org.junit.Test;
-import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http;
 import play.test.FunctionalTest;
-
-import java.math.BigDecimal;
 
 /**
  * Created with IntelliJ IDEA.
@@ -36,6 +29,7 @@ public class HomeSuppliersTest extends FunctionalTest {
         Security.setLoginUserForTest(supplierUser.loginName);
 
     }
+
 
     @Test
     public void testIndex() {

@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  * 门店验证测试：验证只有一张券的情况。
  * @author tanglq
  */
-public class SupplierCouponVerifyUpdateSingleECuponTest extends FunctionalTest {
+public class SupplierCouponVerifyUpdateSingleECouponTest extends FunctionalTest {
     Supplier supplier;
     Shop shop;
     Goods goods;

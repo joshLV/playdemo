@@ -7,7 +7,6 @@ import models.order.ECouponStatus;
 import models.order.VerifyCouponType;
 import models.sales.Shop;
 import models.sms.SMSUtil;
-import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -16,9 +15,7 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 电子券验证.
@@ -58,7 +55,8 @@ public class SupplierVerifyECoupons extends Controller {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         Long supplierUserId = SupplierRbac.currentUser().id;
         SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
-        List shopList = Shop.findShopBySupplier(supplierId);
+        List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+
         if (shopList.size() == 0) {
             error("该商户没有添加门店信息！");
         }

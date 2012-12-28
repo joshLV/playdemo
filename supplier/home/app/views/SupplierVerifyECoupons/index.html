@@ -14,7 +14,17 @@
             <div class="field-sect">
                 <div class="field-group">
                     <label>选择分店</label>
-                #{vx.selectInputField name:"shopName", id:"shopId", list:shopList,  value:shopId, class:"enter-coupon"/}
+                #{if shop == null}
+                    #{select 'shopId', id:"shopId", value:shopId}
+                        #{list items:shopList, as:'shop'}
+                            #{option shop?.id}${shop?.name}#{/option}
+                        #{/list}
+                    #{/select}
+                #{/if}
+                #{else}
+                    <p>${shop?.name}</p>
+                    <input type="hidden" name="shopId" id="shopId" value="${shop?.id}" class="input-large"/>
+                #{/else}
                 </div>
                 <div class="field-group">
                     <label class="coupon-label" for="enter-coupon">输入券号</label>
@@ -35,7 +45,7 @@
                 </tr>
             </table>
             <div class="verify-sect">
-                <a class="btn batch-verify disabled" href="javascript:void(0);" hidefocus="true">验证并消费</a>
+                <a id="verify-btn" class="btn batch-verify disabled" href="javascript:void(0);" hidefocus="true">验证并消费</a>
             </div>
         </form>
         <div class="tip">
