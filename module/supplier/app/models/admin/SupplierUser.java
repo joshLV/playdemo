@@ -202,7 +202,7 @@ public class SupplierUser extends Model {
      * @return 操作员信息
      */
     public static List<SupplierUser> findBySupplier(Long supplierId) {
-        return find("supplier.id=? and deleted=?", supplierId, DeletedStatus.UN_DELETED).fetch();
+        return find("supplier.id=? and deleted=? and (supplierUserType=? or supplierUserType is null)", supplierId, DeletedStatus.UN_DELETED, SupplierUserType.HUMAN).fetch();
     }
 
     /**
