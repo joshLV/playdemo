@@ -139,6 +139,15 @@ public class Prepayment extends Model {
         return amount.subtract(withdrawAmount);
     }
 
+    @Transient
+    public BigDecimal getAvailableBalance(BigDecimal consumedAmount) {
+        if (amount == null) {
+            return BigDecimal.ZERO;
+        }
+        final BigDecimal availableBalance = amount.subtract(consumedAmount);
+        return availableBalance.compareTo(BigDecimal.ZERO) > 0 ? availableBalance : BigDecimal.ZERO;
+    }
+
     /**
      * 修改预付款记录，并返回是否给定的预付款记录支付了全部需要支付的费用
      *
