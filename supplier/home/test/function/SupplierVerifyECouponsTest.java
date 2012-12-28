@@ -109,7 +109,7 @@ public class SupplierVerifyECouponsTest extends FunctionalTest {
         params.put("eCouponSns", "0000000000");
         Http.Response response = POST("/verify/verify", params);
 
-        assertEquals("[\"对不起，没有该券的信息!\"]", getContent(response));
+        assertEquals("[\"对不起，未找到此券!\"]", getContent(response));
     }
 
     @Test
@@ -119,7 +119,7 @@ public class SupplierVerifyECouponsTest extends FunctionalTest {
         params.put("eCouponSns", "0000000000");
         Http.Response response = POST("/verify/verify", params);
 
-        assertContentMatch("对不起，没有该券的信息!", response);
+        assertContentMatch("对不起，未找到此券!", response);
     }
 
     /**
