@@ -31,7 +31,7 @@ public class WubaUtilTest extends UnitTest {
                 "\"data\": \"" + WubaUtil.encryptMessage(dataJson, WubaUtil.SECRET_KEY) + "\"" +
                 "}";
 
-        JsonObject result = WubaUtil.parseResponse(json);
+        JsonObject result = WubaUtil.parseResponse(json, true);
         assertEquals(10000L, result.get("status").getAsLong());
         assertEquals("执行成功", result.get("msg").getAsString());
         JsonObject data = result.getAsJsonObject("data");

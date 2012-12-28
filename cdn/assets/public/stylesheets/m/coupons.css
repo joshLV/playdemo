@@ -13,6 +13,7 @@
     position: relative;
     padding-left: 90px;
     margin-bottom: 12px;
+    *zoom: 1;
 }
 .field-group label {
     position: absolute;
@@ -54,7 +55,7 @@
     text-align: right;
 }
 .title-table td a {
-    color: #FF7B33;
+    color: #08c;
 }
 .standard-table {
     width: 100%;

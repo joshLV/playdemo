@@ -352,7 +352,7 @@ public class ResaleSalesReport extends Model {
         List<ResaleSalesReport> consumedResultList = query.getResultList();
 
         //refundAt ecoupon
-        sql = "select new models.ResaleSalesReport(sum(r.salePrice-r.rebateValue/r.buyNumber),count(e),r.order) from OrderItems r, ECoupon e where e.orderItems=r";
+        sql = "select new models.ResaleSalesReport(sum(e.refundPrice),count(e),r.order) from OrderItems r, ECoupon e where e.orderItems=r";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterRefundAt(AccountType.RESALER) + groupBy + " order by sum(e.refundPrice) desc");
         for (String param : condition.getParamMap().keySet()) {
@@ -523,7 +523,7 @@ public class ResaleSalesReport extends Model {
         List<ResaleSalesReport> consumedResultList = query.getResultList();
 
         //refundAt ecoupon
-        sql = "select new models.ResaleSalesReport(sum(r.salePrice-r.rebateValue/r.buyNumber),count(e),r.order) from OrderItems r, ECoupon e where e.orderItems=r";
+        sql = "select new models.ResaleSalesReport(sum(e.refundPrice),count(e),r.order) from OrderItems r, ECoupon e where e.orderItems=r";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterRefundAt(AccountType.CONSUMER) + " order by sum(e.refundPrice) desc");
         for (String param : condition.getParamMap().keySet()) {
