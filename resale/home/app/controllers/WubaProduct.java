@@ -18,6 +18,7 @@ import models.supplier.Supplier;
 import models.wuba.AreaMapping;
 import models.wuba.WubaUtil;
 import org.apache.commons.lang.StringUtils;
+import play.cache.Cache;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -41,6 +42,7 @@ public class WubaProduct extends Controller {
     public static final String THIRD_URL = "http://t.58.com/";
 
     public static void prepare(long goodsId) {
+        Object categoryArr = getWUBACategory();
         models.sales.Goods goods = models.sales.Goods.findOnSale(goodsId);
         getGoodsItems(goods);
 
@@ -64,7 +66,21 @@ public class WubaProduct extends Controller {
         }
         renderArgs.put("editShopList", new ArrayList<>());
         Supplier supplier = Supplier.findById(goods.supplierId);
-        render(supplier, shopList, jsonArray);
+        render(supplier, shopList, jsonArray, categoryArr);
+    }
+
+    /**
+     * 一天调用一次分类接口
+     * @return
+     */
+    private static Object getWUBACategory() {
+        Object categoryArr = Cache.get("wuba_category");
+        if (categoryArr == null) {
+            JsonObject categoryData = WubaUtil.sendRequest(null, "emc.groupbuy.find.allprotype", false, false);
+            categoryArr = categoryData.getAsJsonArray("data");
+            Cache.set("wuba_category", categoryArr.toString(), "1d");
+        }
+        return categoryArr;
     }
 
     public static void edit(long goodsId) {
@@ -72,7 +88,7 @@ public class WubaProduct extends Controller {
         if (!Resaler.WUBA_LOGIN_NAME.equals(resaler.loginName)) {
             error("there is nothing you can do");
         }
-
+        Object categoryArr = getWUBACategory();
         Goods goods = Goods.findById(goodsId);
 
         GoodsThirdSupport support = GoodsThirdSupport.getSupportGoods(goods, OuterOrderPartner.WB);
@@ -82,7 +98,7 @@ public class WubaProduct extends Controller {
             getGoodsSupportItems(support);
         }
         renderArgs.put("isEdit", "edit");
-        render("WubaProduct/prepare.html");
+        render("WubaProduct/prepare.html", categoryArr);
     }
 
     /**
@@ -373,7 +389,7 @@ public class WubaProduct extends Controller {
         requestMap.put("groupbuyIds", ids);
         requestMap.put("status", -1);
 
-        JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.getstatus", true);
+        JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.getstatus");
         String status = result.get("status").getAsString();
         if (!"10000".equals(status)) {
             renderText("failed:" + result);
@@ -416,7 +432,7 @@ public class WubaProduct extends Controller {
         }
         Map<String, Object> requestMap = new HashMap<>();
         requestMap.put("groupbuyId", relation.linkId);
-        JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.shangxian", true);
+        JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.shangxian");
         String status = result.get("status").getAsString();
         if (!"10000".equals(status)) {
             renderText("failed:" + result);
@@ -440,7 +456,7 @@ public class WubaProduct extends Controller {
         }
         Map<String, Object> requestMap = new HashMap<>();
         requestMap.put("groupbuyId", relation.linkId);
-        JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.xiaxian", true);
+        JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.xiaxian");
         String status = result.get("status").getAsString();
         if (!"10000".equals(status)) {
             renderText("failed:" + result);

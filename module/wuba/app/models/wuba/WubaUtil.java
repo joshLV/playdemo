@@ -1,13 +1,15 @@
 package models.wuba;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import models.order.ECoupon;
 import org.apache.commons.codec.binary.Base64;
 import play.Logger;
 import play.Play;
 import play.exceptions.UnexpectedException;
 import play.libs.Codec;
-import play.libs.WS;
 import util.ws.WebServiceClient;
 import util.ws.WebServiceClientFactory;
 
@@ -24,11 +26,12 @@ import java.util.Map;
  *         Date: 12-11-23
  */
 public class WubaUtil {
-    public static final String GATEWAY_URL  = Play.configuration.getProperty("wuba.gateway_url", "http://eapi.58.com:8080/api/rest");
+    //    public static final String GATEWAY_URL  = Play.configuration.getProperty("wuba.gateway_url", "http://eapi.58.com:8080/api/rest");
+    public static final String GATEWAY_URL = "http://eapi.test.58v5.cn/api/rest";
     public static final String WUBA_APP_KEY = Play.configuration.getProperty("wuba.wuba_app_key");
-    public static final String YBQ_APP_KEY  = Play.configuration.getProperty("wuba.ybq_app_key");
-    public static final String SECRET_KEY   = Play.configuration.getProperty("wuba.secret_key");
-    public static final String PARTNER_ID   = Play.configuration.getProperty("wuba.partner_id");
+    public static final String YBQ_APP_KEY = Play.configuration.getProperty("wuba.ybq_app_key");
+    public static final String SECRET_KEY = Play.configuration.getProperty("wuba.secret_key");
+    public static final String PARTNER_ID = Play.configuration.getProperty("wuba.partner_id");
 
     public static final String CODE_CHARSET = "utf-8";
     public static final String CODE_TRANSFORMATION = "DES/ECB/PKCS5Padding";
@@ -48,69 +51,79 @@ public class WubaUtil {
         return false;
     }
 
+
     /**
-     * 返回指定goodsId的状态.
+     * 默认请求需要加密，响应需要解密
      */
-    public static void getStatus() {
-        
+    public static JsonObject sendRequest(Map<String, Object> appParams, String method) {
+        return sendRequest(appParams, method, true, true);
     }
 
-    public static JsonObject sendRequest(Map<String,Object> appParams, String method){
-        return sendRequest(appParams, method, true);
+    /**
+     * 默认响应需要解密
+     */
+    public static JsonObject sendRequest(Map<String, Object> appParams, String method, boolean requestNeedEncrypt) {
+        return sendRequest(appParams, method, requestNeedEncrypt, true);
     }
+
     /**
      * 调用58的接口
      *
-     * @param appParams post的参数列表
-     * @param method 58的接口方法
-     * @param needEncrypt 是否需要加密。对于部分接口不需加密的，传入fase即可
+     * @param appParams   post的参数列表
+     * @param method      58的接口方法
+     * @param requestNeedEncrypt 请求是否需要加密。对于部分接口不需加密的，传入false即可
+     * @param responseNeedDecrypt 响应是否需要解密，对于部分接口不需解密的，传入false
      * @return 解析为json对象形式的58返回结果
      */
-    public static JsonObject sendRequest(Map<String,Object> appParams, String method, boolean needEncrypt){
+    public static JsonObject sendRequest(Map<String, Object> appParams, String method,
+                                         boolean requestNeedEncrypt, boolean responseNeedDecrypt) {
         // 系统级参数设置
         Map<String, Object> params = sysParams();
         params.put("m", method);
 
         String jsonRequest = new Gson().toJson(appParams);
         // 应用级参数设置
-        if (needEncrypt) {
+        if (requestNeedEncrypt) {
             params.put("param", encryptMessage(jsonRequest, SECRET_KEY));
-        }else {
+        } else {
             params.put("param", jsonRequest);
         }
 
-        Logger.info("wuba request: \n%s", new Gson().toJson(params));
+//        Logger.info("wuba request: \n%s", new Gson().toJson(params));
 
         WebServiceClient client = WebServiceClientFactory
-                        .getClientHelper();
+                .getClientHelper();
 
         String json = client.postString("58_" + method,
-                        GATEWAY_URL, params, "58");
+                GATEWAY_URL, params, "58");
 
-        Logger.info("wuba response: \n%s", json);
+//        Logger.info("wuba response: \n%s", json);
 
-        JsonObject result = parseResponse(json);
+        JsonObject result = parseResponse(json, responseNeedDecrypt);
 
-        Logger.info("wuba response decrypted: \n%s", result.toString());
+//        Logger.info("wuba response decrypted: \n%s", result.toString());
 
         return result;
     }
 
     /**
      * 解析58的返回信息为json
+     *
      * @param jsonResponse json 文本
      * @return json对象
      */
-    public static JsonObject parseResponse(String jsonResponse) {
+    public static JsonObject parseResponse(String jsonResponse, boolean decrypt) {
         try {
             JsonParser jsonParser = new JsonParser();
 
             JsonElement jsonElement = jsonParser.parse(jsonResponse);
             JsonObject result = jsonElement.getAsJsonObject();
-            if (result.has("data")){
+            if (result.has("data")) {
                 String data = result.get("data").getAsString();
-                String decrypted = decryptMessage(data);
-                JsonElement dataElement = jsonParser.parse(decrypted);
+                if (decrypt) {
+                    data = decryptMessage(data);
+                }
+                JsonElement dataElement = jsonParser.parse(data);
                 result.add("data", dataElement);
             }
             return result;
@@ -122,6 +135,7 @@ public class WubaUtil {
 
     /**
      * 解析58的请求信息为json
+     *
      * @param jsonRequest 58的请求信息
      * @return json对象
      */
@@ -132,22 +146,22 @@ public class WubaUtil {
     }
 
 
-
     public static String encryptMessage(String message) {
         return encryptMessage(message, SECRET_KEY);
     }
 
     /**
      * 加密提交给58的信息
+     *
      * @param message 要加密的信息
-     * @param key 密钥
+     * @param key     密钥
      * @return 加密后的文本
      */
     public static String encryptMessage(String message, String key) {
-        if(message == null){
+        if (message == null) {
             throw new IllegalArgumentException("message to be encrypted can not be null");
         }
-        if(key == null){
+        if (key == null) {
             throw new RuntimeException("no wuba SECRET_KEY found");
         }
 
@@ -183,15 +197,16 @@ public class WubaUtil {
 
     /**
      * 解密58返回信息
+     *
      * @param message 返回的信息
-     * @param key 密钥
+     * @param key     密钥
      * @return 解密后的信息
      */
     public static String decryptMessage(String message, String key) {
-        if(message == null){
+        if (message == null) {
             throw new IllegalArgumentException("message to be encrypted can not be null");
         }
-        if(key == null){
+        if (key == null) {
             throw new RuntimeException("no wuba SECRET_KEY found");
         }
         try {
@@ -211,7 +226,7 @@ public class WubaUtil {
             //将生成的16进制形式的字符串转为bytes
             byte[] hexBytes = Codec.hexStringToByte(base64DecodedStr);
             //进行解密
-            byte [] decryptedBytes = cipher.doFinal(hexBytes);
+            byte[] decryptedBytes = cipher.doFinal(hexBytes);
             String decryptedStr = new String(decryptedBytes, CODE_CHARSET);
             //最后再做一次urldecode
             return URLDecoder.decode(decryptedStr, CODE_CHARSET);
@@ -220,7 +235,7 @@ public class WubaUtil {
         }
     }
 
-    private static Map<String, Object> sysParams(){
+    private static Map<String, Object> sysParams() {
         Map<String, Object> paramMap = new HashMap<>();
         // 系统级参数设置（必须）
         paramMap.put("appid", WUBA_APP_KEY);
