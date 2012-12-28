@@ -24,7 +24,7 @@
     text-align: right;
 }
 .field-group select {
-    width: 600px;
+    width: 412px;
     height: auto;
     margin: 0;
     padding: 5px;
@@ -34,7 +34,7 @@
 }
 .field-group input.text {
     padding: 5px;
-    width: 588px;
+    width: 400px;
     height: 20px;
     line-height: 20px;
     vertical-align: middle;
