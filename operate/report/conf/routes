@@ -73,6 +73,8 @@ GET     /channel_goods_report_excel                     OperationReports.channel
 #人效报表
 GET     /people_effect_report                   OperationReports.showPeopleEffectReport
 GET     /people_effect_report_excel             OperationReports.peopleEffectReportExcelOut
+GET     /people_effect_category_report          OperationReports.showPeopleEffectCategoryReport
+GET     /people_effect_category_report_excel    OperationReports.peopleEffectCategoryReportExcelOut
 # Home page
 GET     /                                       OperateReportApplication.index
 GET     /operation_report                       OperationReports.index
