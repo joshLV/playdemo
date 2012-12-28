@@ -767,6 +767,10 @@ public class Order extends Model {
      * @param ecoupons
      */
     public void sendGoodsEcoupons(Goods goods, OrderItems orderItem, String replyCode, List<String> ecoupons) {
+        if (ecoupons.size() == 0) {
+            return;
+        }
+
         SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
 
         String ecouponStr = StringUtils.join(ecoupons, "，");
