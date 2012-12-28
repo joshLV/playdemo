@@ -96,7 +96,7 @@ public class UserCashCoupons extends Controller {
                 coupon.save();
                 TradeBill tradeBill = TradeUtil.createPromotionChargeTrade(
                         account, coupon.faceValue, null);
-                TradeUtil.success(tradeBill, "代金券: " + coupon.name + " 充值"
+                TradeUtil.success(tradeBill, "现金券: " + coupon.name + " 充值"
                         + coupon.faceValue + "元");
             }
         }
