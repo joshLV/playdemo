@@ -1423,16 +1423,17 @@ public class ECoupon extends Model {
         if (ecoupon.status == models.order.ECouponStatus.CONSUMED) {
             SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日HH点mm分");
 
-            return "对不起，该券已使用过。 消费时间为" + format.format(ecoupon.consumedAt);
+            Shop shop = Shop.findById(targetShopId);
+            return "对不起，该券已使用过。 消费门店为" + shop.name + "，消费时间为" + format.format(ecoupon.consumedAt);
         }
         if (ecoupon.status == models.order.ECouponStatus.REFUND) {
             return "对不起，该券已退款!";
         }
         final Date now = new Date();
-        if (ecoupon.expireAt.before(now)) {
+        if (ecoupon.expireAt != null && ecoupon.expireAt.before(now)) {
             return "对不起，该券已过期!";
         }
-        if (ecoupon.effectiveAt.before(now)) {
+        if (ecoupon.effectiveAt != null && ecoupon.effectiveAt.after(now)) {
             return "对不起，该券有效期还没开始！";
         }
         //        if (!ecoupon.checkVerifyTimeRegion(new Date())) {

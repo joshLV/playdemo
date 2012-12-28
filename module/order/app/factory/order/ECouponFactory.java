@@ -1,5 +1,6 @@
 package factory.order;
 
+import com.uhuila.common.util.DateUtil;
 import factory.FactoryBoy;
 import factory.ModelFactory;
 import factory.annotation.Factory;
@@ -38,6 +39,7 @@ public class ECouponFactory extends ModelFactory<ECoupon> {
     @Factory(name = "couponForCommissionsTest")
     public ECoupon defineCouponForCommissionsTest(ECoupon eCoupon) {
         eCoupon.eCouponSn = "1234566001";
+        eCoupon.effectiveAt = DateUtil.getBeginOfDay();
         eCoupon.faceValue = BigDecimal.valueOf(15);
         eCoupon.originalPrice = BigDecimal.valueOf(5);
         eCoupon.resalerPrice = BigDecimal.valueOf(8);

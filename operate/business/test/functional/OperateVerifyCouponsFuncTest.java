@@ -38,11 +38,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
+ * 运营后台券验证功能测试.
+ *
  * User: hejun
  * Date: 12-8-20
  * Time: 下午4:12
- * To change this template use File | Settings | File Templates.
  */
 public class OperateVerifyCouponsFuncTest extends FunctionalTest {
     PromoteRebate promoteRebate;
@@ -186,7 +186,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         // 检测测试结果
         Http.Response response = POST("/coupons/verify", params);
         assertIsOk(response);
-        assertContentMatch("此券已过期", response);
+        assertContentMatch("对不起，该券已过期", response);
     }
 
     @Test
@@ -210,6 +210,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
                 target.salePrice = new BigDecimal(100);
                 target.faceValue = new BigDecimal(150);
                 target.partner=ECouponPartner.DD;
+                target.effectiveAt = goods.effectiveAt;
             }
         });
         DDOrderItem item = FactoryBoy.create(DDOrderItem.class);
