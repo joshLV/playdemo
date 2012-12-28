@@ -130,7 +130,7 @@ jQuery(function ($) {
                 $('.batch-verify').removeClass("disabled");
             },
             error: function (data) {
-                window.location.href = '${play.Play.configuration.getProperty("cas.loginUrl=")}';
+                window.location.href = '/verify';
             }
         });
     };
@@ -201,7 +201,7 @@ jQuery(function ($) {
                     }
                 },
                 error: function(){
-                   window.location.href = '${play.Play.configuration.getProperty("cas.loginUrl=")}';
+                   window.location.href = '/verify';
                 }
 
             });

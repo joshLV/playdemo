@@ -444,15 +444,15 @@ public class ECoupon extends Model {
      */
     public boolean isBelongShop(Long shopId) {
         // 判断该券是否属于所在消费门店
-        if (!this.goods.isAllShop) {
-            for (Shop shop : this.goods.shops) {
-                if (shop.id.compareTo(shopId) == 0) {
-                    return true;
-                }
-            }
-            return false;
+        if (this.goods.isAllShop) {
+            return true;
         }
-        return true;
+        for (Shop shop : this.goods.shops) {
+            if (shop.id.compareTo(shopId) == 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean consumeAndPayCommission(Long shopId, Long operateUserId,
@@ -1427,12 +1427,10 @@ public class ECoupon extends Model {
             return "对不起，该券已退款!";
         } else if (ecoupon.expireAt.before(new java.util.Date())) {
             return "对不起，该券已过期!";
-        } else if (!ecoupon.checkVerifyTimeRegion(new Date())) {
-            // TODO: 现在已经不在检查时间范围，所以先不处理
-            Logger.error("券ID" + ecoupon.id + "(goodsId:" + ecoupon.goods.id + ")出现了时间段检查，但现在不建议使用时间段配置，请联系运营编辑。");
-            return ecoupon.getCheckInfo();
-        } else if (!ecoupon.isBelongShop(targetShopId)) {
-            return "对不起，该券是其他商户的!";
+//        } else if (!ecoupon.checkVerifyTimeRegion(new Date())) {
+//            //现在已经不在检查时间范围，所以先不处理
+//            Logger.error("券ID" + ecoupon.id + "(goodsId:" + ecoupon.goods.id + ")出现了时间段检查，但现在不建议使用时间段配置，请联系运营编辑。");
+//            return ecoupon.getCheckInfo();
         }
         return null;
     }
