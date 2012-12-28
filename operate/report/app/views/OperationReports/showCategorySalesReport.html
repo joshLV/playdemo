@@ -1,5 +1,5 @@
 #{extends 'layout_operate/layout.html' /}
-#{set title:'商品销售报表' /}
+#{set title:'大类销售报表' /}
 #{include '/share/nav.html' /}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
@@ -32,7 +32,7 @@
                 $("#condition_beginAt").val(startDay.getFullYear() + "-" + (startDay.getMonth() + 1) + "-" + startDay.getDate());
                 $("#condition_endAt").val(today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + endDay.getDate());
                 $("#condition_interval").val(interval);
-                $("#search_form").attr("action", "@{OperationReports.showSalesReport()}");
+                $("#search_form").attr("action", "@{OperationReports.showCategorySalesReport()}");
                 $("#search_form").attr("method", "get");
                 $("#search_form").submit();
                 return false;
@@ -41,31 +41,77 @@
 
     });
 
-    function salesReportExcel() {
-        $("#search_form").attr("action", "@{OperationReports.salesReportExcelOut()}");
+    function categorySalesReportExcel() {
+        $("#search_form").attr("action", "@{OperationReports.categorySalesReportExcelOut()}");
         $("#search_form").attr("method", "get");
         $("#search_form").submit();
     }
     ;
 
-    function salesReportWithPrivilegeExcel() {
-        $("#search_form").attr("action", "@{OperationReports.salesReportWithPrivilegeExcelOut()}");
+    function categorySalesReportWithPrivilegeExcel() {
+        $("#search_form").attr("action", "@{OperationReports.categorySalesReportWithPrivilegeExcelOut()}");
         $("#search_form").attr("method", "get");
         $("#search_form").submit();
     }
     ;
 
-    function showSalesReport() {
-        $("#search_form").attr("action", "@{OperationReports.showSalesReport()}");
+    function showCategorySalesReport() {
+        $("#search_form").attr("action", "@{OperationReports.showCategorySalesReport()}");
         $("#search_form").attr("method", "get");
         $("#search_form").submit();
     }
     ;
 
 </script>
+
+<script type="text/javascript">
+    window.onload = function () {
+        var tab = document.getElementById("tab");
+        var maxCol = 2, val, count, start;
+
+        for (var col = maxCol - 1; col >= 0; col--) {
+            count = 1;
+            val = "";
+            for (var i = 0; i < tab.rows.length; i++) {
+                if (val == tab.rows[i].cells[col].innerHTML) {
+                    count++;
+
+                } else {
+                    if (count > 1) { //合并
+                        start = i - count;
+                        tab.rows[start].cells[col].rowSpan = count;
+                        for (var j = start + 1; j < i; j++) {
+                            tab.rows[j].cells[col].style.display = "none";
+                        }
+                        count = 1;
+                    }
+                    val = tab.rows[i].cells[col].innerHTML;
+//                    $('#intab').append('<tr><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td><td>aaa</td></tr>');
+
+                }
+
+            }
+
+            if (count > 1) { //合并，最后几行相同的情况下
+                start = i - count;
+
+                tab.rows[start].cells[col].rowSpan = count;
+                for (var j = start + 1; j < i; j++) {
+                    tab.rows[j].cells[col].style.display = "none";
+
+                }
+
+
+            }
+        }
+    };
+
+</script>
+
+
 #{/set}
 <div class="body">
-    <form action="@{OperationReports.showSalesReport()}" method="GET" id="search_form"
+    <form action="@{OperationReports.showCategorySalesReport()}" method="GET" id="search_form"
           name="search_form">
         商品名称：<input type="text" name="condition.shortName" class="input-medium"
                     value="${condition?.shortName}"/>
@@ -76,13 +122,14 @@
                onfocus="WdatePicker({readOnly:true})" value="${condition?.beginAt?.format()}"> -
         <input type="text" id="condition_endAt" class="input-medium Wdate" name="condition.endAt"
                onfocus="WdatePicker({readOnly:true})" value="${condition?.endAt?.format()}">
-        <button type="submit" class="btn btn-primary" id="search" onclick="showSalesReport()">搜索</button>
+        <button type="submit" class="btn btn-primary" id="search" onclick="showCategorySalesReport()">搜索</button>
         <br/>
 
         <div style="float:right">
-            <button class="btn btn-primary" id="searchbtn" onclick="salesReportExcel()">导出报表</button>
+            <button class="btn btn-primary" id="searchbtn" onclick="categorySalesReportExcel()">导出报表</button>
         #{if hasSeeReportProfitRight == true}
-            <button class="btn btn-primary" id="searchbtn" onclick="salesReportWithPrivilegeExcel()">导出报表附带利润</button>
+            <button class="btn btn-primary" id="searchbtn" onclick="categorySalesReportWithPrivilegeExcel()">导出报表附带利润
+            </button>
         #{/if}
         </div>
 
@@ -111,8 +158,10 @@
         </span>
     </div>
 
-    <table class="table table-striped table-bordered table-condensed">
+    <table class="table table-bordered table-condensed" id="tab">
         <thead>
+        <th>类别编码</th>
+        <th>类别名称</th>
         <th>商品编码</th>
         <th>商品名称</th>
         <th>进价</th>
@@ -133,16 +182,25 @@
     #{paginate.list items:reportPage, as:'report'}
         <tr>
             #{set i:i+1/}
-            <td>${report?.goods?.code}</td>
-            <td>${report?.goods?.shortName}</td>
-            <td style="text-align:right;">${(report?.originalPrice?:0).formatCurrency('CNY')}</td>
-            <td style="text-align:right;">
-                #{if report?.avgSalesPrice!=null}
+            #{if report?.name != "999"}
+                <td>${report?.code}</td>
+                <td>${report?.name}</td>
+                <td>${report?.goods?.code}</td>
+                <td>${report?.goods?.shortName}</td>
+                <td style="text-align:right;">${(report?.originalPrice?:0).formatCurrency('CNY')}</td>
+                <td style="text-align:right;">
+                    #{if report?.avgSalesPrice!=null}
           ${(report?.avgSalesPrice?:0).formatCurrency('CNY')}
           #{/if}
-            </td>
-            <td style="text-align:right;">${report?.buyNumber?:0}</td>
-            <td style="text-align:right;">
+                </td>
+            #{/if}
+            #{else}
+                <td bgcolor="#add8e6" colspan="6" style="text-align:center;">小计</td>
+            #{/else}
+            <td #{if report?.name == "999" } bgcolor="#add8e6" #{/if}
+                                             style="text-align:right;">${report?.buyNumber?:0}</td>
+
+            <td #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
                 #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
                     <a href="${baseUrl}/coupons?condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}
                 &condition.goodsId=${report?.goods?.id}"
@@ -152,7 +210,7 @@
                 ${(report?.totalAmount?:0).formatCurrency('CNY')}
                 #{/else}
             </td>
-            <td style="text-align:right;">
+            <td  #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
                 #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
                     <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtBegin=${condition?.endAt?.format()}
                 &condition.goodsId=${report?.goods?.id}"
@@ -162,12 +220,14 @@
                 ${(report?.refundAmount?:0).formatCurrency('CNY')}
                 #{/else}
             </td>
-            <td style="text-align:right;">
+            <td  #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
                 ￥${(report?.netSalesAmount?:0)}
             </td>
             #{if hasSeeReportProfitRight == true}
-                <td style="text-align:right;">${(report?.grossMargin?:0).format('#')}%</td>
-                <td style="text-align:right;">
+                <td #{if report?.name == "999" } bgcolor="#add8e6" #{/if}
+                                                 style="text-align:right;">${(report?.grossMargin?:0).format('#')}%</td>
+                <td  #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;"
+                                                  style="text-align:right;">
                     #{if report.profit != null && report.profit!=0}
                         ￥${(report?.profit?:0).format('#0.00')}
                     #{/if}

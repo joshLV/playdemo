@@ -424,6 +424,7 @@ public class SalesReport {
             totalCost = totalCost.add(item.totalCost == null ? BigDecimal.ZERO : item.totalCost);
             channelCost = channelCost.add(item.channelCost == null ? BigDecimal.ZERO : item.channelCost);
             profit = profit.add(item.profit == null ? BigDecimal.ZERO : item.profit);
+            netSalesAmount = netSalesAmount.add(item.netSalesAmount == null ? BigDecimal.ZERO : item.netSalesAmount);
         }
 
         if (totolSalePrice.compareTo(BigDecimal.ZERO) != 0) {
@@ -431,6 +432,7 @@ public class SalesReport {
         }
         return new SalesReport(totalAmount, refundAmount, netSalesAmount, grossMargin, channelCost, profit);
     }
+
 
     private static Goods getReportKey(SalesReport refundItem) {
         return refundItem.goods;

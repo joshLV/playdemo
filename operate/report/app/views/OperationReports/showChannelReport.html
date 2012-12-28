@@ -232,7 +232,7 @@
                target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
         </td>
         #{if hasSeeReportProfitRight == true}
-            <td>${(report?.grossMargin?:0).format('#')}%</td>
+            <td style="text-align:right;">${(report?.grossMargin?:0).format('#')}%</td>
             <td style="text-align:right;">${(report?.channelCost?:0).formatCurrency('CNY')}</td>
             <td style="text-align:right;">
                 #{if report.profit != null && report.profit!=0}

@@ -1,13 +1,6 @@
 package controllers;
 
-import models.ChannelCategoryReport;
-import models.ChannelCategoryReportCondition;
-import models.ChannelGoodsReport;
-import models.ChannelGoodsReportCondition;
-import models.ResaleSalesReport;
-import models.ResaleSalesReportCondition;
-import models.SalesReport;
-import models.SalesReportCondition;
+import models.*;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -52,6 +45,25 @@ public class OperationReports extends Controller {
         render(condition, reportPage, hasSeeReportProfitRight, summary);
 
     }
+
+
+    @ActiveNavigation("category_sales_reports")
+    public static void showCategorySalesReport(CategorySalesReportCondition condition) {
+        int pageNumber = getPageNumber();
+        if (condition == null) {
+            condition = new CategorySalesReportCondition();
+        }
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        List<CategorySalesReport> resultList = CategorySalesReport.query(condition);
+        // 分页
+        ValuePaginator<CategorySalesReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
+
+        List<CategorySalesReport> totalList = CategorySalesReport.queryTotal(condition);
+        // 汇总
+        CategorySalesReport summary = CategorySalesReport.getNetSummary(totalList);
+        render(condition, reportPage, hasSeeReportProfitRight, summary);
+    }
+
 
     @ActiveNavigation("channel_reports")
     public static void showChannelReport(ResaleSalesReportCondition condition) {
@@ -482,7 +494,7 @@ public class OperationReports extends Controller {
             if (hasProfitRight) {
                 BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
                 report.grossMargin = tempGrossMargin;
-                report.profit = report.profit == null ? BigDecimal.ZERO : report.profit.setScale(2,BigDecimal.ROUND_HALF_UP);
+                report.profit = report.profit == null ? BigDecimal.ZERO : report.profit.setScale(2, BigDecimal.ROUND_HALF_UP);
             }
         }
 
@@ -491,6 +503,68 @@ public class OperationReports extends Controller {
         }
 
         render(peopleEffectReportList);
+    }
+
+    public static void categorySalesReportWithPrivilegeExcelOut(CategorySalesReportCondition condition) {
+        if (condition == null) {
+            condition = new CategorySalesReportCondition();
+        }
+        String page = request.params.get("page");
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "大类销售报表_" + System.currentTimeMillis() + ".xls");
+
+        List<CategorySalesReport> resultList = null;
+        resultList = CategorySalesReport.excelQuery(condition);
+
+        for (CategorySalesReport report : resultList) {
+//            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
+//            report.grossMargin = tempGrossMargin;
+            if (report.grossMargin == null) {
+                report.grossMargin = BigDecimal.ZERO;
+            }
+            DecimalFormat df = new DecimalFormat("0.00");
+            report.grossMargin = new BigDecimal(df.format(report.grossMargin));
+
+            if (report.refundAmount == null) {
+                report.refundAmount = BigDecimal.ZERO;
+            }
+            if (report.netSalesAmount == null) {
+                report.netSalesAmount = BigDecimal.ZERO;
+            }
+
+            if (report.channelCost == null) {
+                report.channelCost = BigDecimal.ZERO;
+
+            }
+
+            if (report.profit == null) {
+                report.profit = BigDecimal.ZERO;
+            }
+        }
+        render(resultList);
+    }
+
+    public static void categorySalesReportExcelOut(CategorySalesReportCondition condition) {
+        if (condition == null) {
+            condition = new CategorySalesReportCondition();
+        }
+        String page = request.params.get("page");
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "大类销售报表_" + System.currentTimeMillis() + ".xls");
+
+        List<CategorySalesReport> resultList = null;
+        resultList = CategorySalesReport.excelQuery(condition);
+
+        for (CategorySalesReport report : resultList) {
+            if (report.refundAmount == null) {
+                report.refundAmount = BigDecimal.ZERO;
+            }
+            if (report.netSalesAmount == null) {
+                report.netSalesAmount = BigDecimal.ZERO;
+            }
+
+        }
+        render(resultList);
     }
 
 

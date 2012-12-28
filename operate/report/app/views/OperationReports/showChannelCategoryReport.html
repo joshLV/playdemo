@@ -305,7 +305,7 @@
             #{/else}
         </td>
         #{if hasSeeReportProfitRight == true}
-            <td #{if report?.code == "999"} bgcolor="#add8e6" #{/if} >${(report?.grossMargin?:0).format('#')}%</td>
+            <td #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">${(report?.grossMargin?:0).format('#')}%</td>
             <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if}
                                              style="text-align:right;">${(report?.channelCost?:0).formatCurrency('CNY')}</td>
             <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
