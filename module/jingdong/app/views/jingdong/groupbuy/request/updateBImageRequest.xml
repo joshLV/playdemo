@@ -1,0 +1,9 @@
+<Message xmlns="http://tuan.360buy.com/UpdateBImageRequest">
+    *{ 更新团购主图的接口 请求 合作伙伴请求 }*
+    *{ 合作伙伴方团购ID 必须大于0 [必填] }*
+    <VenderTeamId>${venderTeamId}</VenderTeamId>
+    *{ 京东团购ID 必须大于0 [必填] }*
+    <JdTeamId>${jdTeamId}</JdTeamId>
+    *{ 团购主图  此为图片链接地址http开头，图片尺寸为440*280，图片大小在100kb以内 [必填] }*
+    <GrouponBImg>${imgUrl}</GrouponBImg>
+</Message>

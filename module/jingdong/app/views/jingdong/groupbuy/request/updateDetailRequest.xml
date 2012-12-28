@@ -1,13 +1,12 @@
-<!-- 更新团购本单详情的接口 请求 合作伙伴请求-->
 <Message xmlns="http://tuan.360buy.com/UpdateDetailRequest">
-    <!--合作伙伴方团购ID 必须大于0 [必填] -->
+    *{ 合作伙伴方团购ID 必须大于0 [必填] }*
     <VenderTeamId>${venderTeamId}</VenderTeamId>
-    <!--京东团购ID 必须大于0 [必填] -->
+    *{ 京东团购ID 必须大于0 [必填] }*
     <JdTeamId>${jdTeamId}</JdTeamId>
-    <!--团购本单详情更新说明。长度小于100 [必填]-->
+    *{ 团购本单详情更新说明。长度小于100 [必填] }*
     <Notes>${notes}</Notes>
-    <!--团购详情 富文本数据，为保证验证通过，请讲内容放到<![CDATA[]]>  [必填]-->
+    *{ 团购详情 富文本数据，为保证验证通过，请讲内容放到<![CDATA[]]>  [必填] }*
     <TeamDetail>
-        <![CDATA[ ${teamDetail} ]]>
+        <![CDATA[ ${teamDetail.raw()} ]]>
     </TeamDetail>
 </Message>

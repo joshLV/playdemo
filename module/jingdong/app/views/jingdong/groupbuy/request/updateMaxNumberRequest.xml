@@ -1,0 +1,9 @@
+<Message xmlns="http://tuan.360buy.com/UpdateMaxNumberRequest">
+    *{ 更新团购最大库存数接口 请求 合作伙伴请求 }*
+    *{ 合作伙伴方团购ID 必须大于0 [必填] }*
+    <VenderTeamId>${venderTeamId}</VenderTeamId>
+    *{ 京东团购ID 必须大于0 [必填] }*
+    <JdTeamId>${jdTeamId}</JdTeamId>
+    *{ 团购库存上限 仅数字，必须大于等于0，0表示无上限 [必填] }*
+    <MaxNumber>${maxNumber}</MaxNumber>
+</Message>
