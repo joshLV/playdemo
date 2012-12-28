@@ -58,8 +58,9 @@ public class OperationReports extends Controller {
         // 分页
         ValuePaginator<CategorySalesReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
 
+        List<CategorySalesReport> totalList = CategorySalesReport.queryTotal(condition);
         // 汇总
-        CategorySalesReport summary = CategorySalesReport.getNetSummary(resultList);
+        CategorySalesReport summary = CategorySalesReport.getNetSummary(totalList);
         render(condition, reportPage, hasSeeReportProfitRight, summary);
     }
 

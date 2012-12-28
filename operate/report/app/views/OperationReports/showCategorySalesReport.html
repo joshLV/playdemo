@@ -182,18 +182,24 @@
     #{paginate.list items:reportPage, as:'report'}
         <tr>
             #{set i:i+1/}
-            <td>${report?.code}</td>
-            <td>${report?.name}</td>
-            <td>${report?.goods?.code}</td>
-            <td>${report?.goods?.shortName}</td>
-            <td style="text-align:right;">${(report?.originalPrice?:0).formatCurrency('CNY')}</td>
-            <td style="text-align:right;">
-                #{if report?.avgSalesPrice!=null}
+            #{if report?.name != "999"}
+                <td>${report?.code}</td>
+                <td>${report?.name}</td>
+                <td>${report?.goods?.code}</td>
+                <td>${report?.goods?.shortName}</td>
+                <td style="text-align:right;">${(report?.originalPrice?:0).formatCurrency('CNY')}</td>
+                <td style="text-align:right;">
+                    #{if report?.avgSalesPrice!=null}
           ${(report?.avgSalesPrice?:0).formatCurrency('CNY')}
           #{/if}
-            </td>
-            <td>${report?.buyNumber?:0}</td>
-            <td style="text-align:right;">
+                </td>
+            #{/if}
+            #{else}
+                <td bgcolor="#add8e6" colspan="6" style="text-align:center;">小计</td>
+            #{/else}
+            <td #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">${report?.buyNumber?:0}</td>
+
+            <td #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
                 #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
                     <a href="${baseUrl}/coupons?condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}
                 &condition.goodsId=${report?.goods?.id}"
@@ -203,7 +209,7 @@
                 ${(report?.totalAmount?:0).formatCurrency('CNY')}
                 #{/else}
             </td>
-            <td style="text-align:right;">
+            <td  #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
                 #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
                     <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtBegin=${condition?.endAt?.format()}
                 &condition.goodsId=${report?.goods?.id}"
@@ -213,12 +219,12 @@
                 ${(report?.refundAmount?:0).formatCurrency('CNY')}
                 #{/else}
             </td>
-            <td style="text-align:right;">
+            <td  #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
                 ￥${(report?.netSalesAmount?:0)}
             </td>
             #{if hasSeeReportProfitRight == true}
-                <td>${(report?.grossMargin?:0).format('#')}%</td>
-                <td style="text-align:right;">
+                <td #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">${(report?.grossMargin?:0).format('#')}%</td>
+                <td  #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;" style="text-align:right;">
                     #{if report.profit != null && report.profit!=0}
                         ￥${(report?.profit?:0).format('#0.00')}
                     #{/if}

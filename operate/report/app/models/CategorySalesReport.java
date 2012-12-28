@@ -105,6 +105,27 @@ public class CategorySalesReport {
         this.totalCost = totalCost;
     }
 
+    //total
+    public CategorySalesReport(Long supplierCategoryId, Long buyNumber,
+                               BigDecimal totalAmount,
+                               BigDecimal grossMargin, BigDecimal profit, BigDecimal netSalesAmount
+            , BigDecimal totalCost) {
+        if (supplierCategoryId != null) {
+            SupplierCategory supplierCategory = SupplierCategory.findById(supplierCategoryId);
+            this.code = supplierCategory.code;
+            this.name = "999";
+        } else {
+            this.name = "999";
+        }
+        this.buyNumber = buyNumber;
+        this.totalAmount = totalAmount;
+        this.grossMargin = grossMargin;
+        this.profit = profit;
+        this.netSalesAmount = netSalesAmount;
+        this.totalCost = totalCost;
+    }
+
+
     //from resaler
     public CategorySalesReport(Goods goods, Long supplierCategoryId, BigDecimal totalAmount, BigDecimal totalCost, BigDecimal profit, BigDecimal ratio) {
         this.goods = goods;
@@ -119,6 +140,22 @@ public class CategorySalesReport {
         this.ratio = ratio;
     }
 
+    //from resaler total
+    public CategorySalesReport(Long supplierCategoryId, BigDecimal totalAmount, BigDecimal totalCost, BigDecimal profit, BigDecimal ratio) {
+        if (supplierCategoryId != null) {
+            SupplierCategory supplierCategory = SupplierCategory.findById(supplierCategoryId);
+            this.code = supplierCategory.code;
+            this.name = "999";
+        } else {
+            this.name = "999";
+        }
+        this.totalAmount = totalAmount;
+        this.totalCost = totalCost;
+        this.profit = profit;
+        this.ratio = ratio;
+    }
+
+
     //refund ecoupon
     public CategorySalesReport(BigDecimal refundAmount, Goods goods, Long supplierCategoryId) {
         this.refundAmount = refundAmount;
@@ -129,6 +166,19 @@ public class CategorySalesReport {
             this.name = supplierCategory.name;
         }
     }
+
+    //refund ecoupon  total
+    public CategorySalesReport(BigDecimal refundAmount, Long supplierCategoryId) {
+        this.refundAmount = refundAmount;
+        if (supplierCategoryId != null) {
+            SupplierCategory supplierCategory = SupplierCategory.findById(supplierCategoryId);
+            this.code = supplierCategory.code;
+            this.name = "999";
+        } else {
+            this.name = "999";
+        }
+    }
+
 
     public CategorySalesReport(Long buyNumber, BigDecimal originalAmount) {
         this.buyNumber = buyNumber;
@@ -238,21 +288,33 @@ public class CategorySalesReport {
             }
         }
 
-        List resultList = new ArrayList();
+        //total
+        List<CategorySalesReport> tempTotal = queryTotal(condition);
+        Map<String, CategorySalesReport> totalMap = new HashMap<>();
 
-//        for (Goods key : map.keySet()) {
-//            resultList.add(map.get(key));
-//        }
+
+        for (int i = 0; i < tempTotal.size(); i++) {
+            totalMap.put(getTotalReportKey(tempTotal.get(i)), tempTotal.get(i));
+        }
+
+        List resultList = new ArrayList();
 
         List<String> tempString = new ArrayList<>();
         for (String s : map.keySet()) {
+            tempString.add(s);
+        }
+        for (String s : totalMap.keySet()) {
             tempString.add(s);
         }
 
         Collections.sort(tempString);
 
         for (String key : tempString) {
-            resultList.add(map.get(key));
+            if (map.get(key) != null) {
+                resultList.add(map.get(key));
+            } else {
+                resultList.add(totalMap.get(key));
+            }
         }
         return resultList;
     }
@@ -261,9 +323,99 @@ public class CategorySalesReport {
     /**
      * 取得净销售的总计
      *
-     * @param resultList
+     * @param condition
      * @return
      */
+
+    public static List<CategorySalesReport> queryTotal(CategorySalesReportCondition condition) {
+        //paidAt
+        String sql = "select new models.CategorySalesReport(s.supplierCategory.id,sum(r.buyNumber)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+                ",sum(r.originalPrice*r.buyNumber) " +
+                " )" +
+                " from OrderItems r, Supplier s ";
+        String groupBy = " group by s.supplierCategory.id ";
+        Query query = JPA.em()
+                .createQuery(sql + condition.getFilter() + groupBy + " order by sum(r.buyNumber) desc ");
+
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+
+        List<CategorySalesReport> totalPaidResultList = query.getResultList();
+
+        //from resaler
+        sql = "select new models.CategorySalesReport(s.supplierCategory.id,sum(r.salePrice*r.buyNumber-r.rebateValue),sum(r.originalPrice*r.buyNumber)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-sum(r.originalPrice*r.buyNumber)" +
+                ",b.commissionRatio)" +
+                " from OrderItems r,Order o,Resaler b, Supplier s ";
+        groupBy = " group by s.supplierCategory.id,b ";
+        query = JPA.em()
+                .createQuery(sql + condition.getResalerFilter() + groupBy + " order by sum(r.buyNumber) desc ");
+
+
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+
+
+        List<CategorySalesReport> totalPaidResalerResultList = query.getResultList();
+
+        //取得退款的数据 ecoupon
+        sql = "select new models.CategorySalesReport(sum(e.refundPrice),s.supplierCategory.id ) " +
+                " from ECoupon e, Supplier s ";
+        groupBy = " group by s.supplierCategory.id ";
+
+        query = JPA.em()
+                .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.refundPrice) desc");
+
+        for (String param : condition.getParamMap1().keySet()) {
+            query.setParameter(param, condition.getParamMap1().get(param));
+        }
+
+        List<CategorySalesReport> totalRefundList = query.getResultList();
+
+        Map<String, CategorySalesReport> totalMap = new HashMap<>();
+
+        //merge
+        for (CategorySalesReport paidItem : totalPaidResultList) {
+            totalMap.put(getTotalReportKey(paidItem), paidItem);
+        }
+
+        for (CategorySalesReport refundItem : totalRefundList) {
+            CategorySalesReport item = totalMap.get(getTotalReportKey(refundItem));
+            if (item == null) {
+                Goods goods = Goods.findById(refundItem.goods.id);
+                refundItem.originalPrice = goods.originalPrice;
+                refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
+                totalMap.put(getTotalReportKey(refundItem), refundItem);
+            } else {
+                item.refundAmount = refundItem.refundAmount;
+                item.netSalesAmount = item.totalAmount.subtract(item.refundAmount);
+            }
+        }
+
+        //merge from resaler if commissionRatio
+        for (CategorySalesReport resalerItem : totalPaidResalerResultList) {
+            CategorySalesReport item = totalMap.get(getTotalReportKey(resalerItem));
+            if (item == null) {
+                totalMap.put(getTotalReportKey(resalerItem), resalerItem);
+            } else {
+                item.profit = item.profit == null ? BigDecimal.ZERO : item.profit.subtract(resalerItem.totalAmount == null ? BigDecimal.ZERO : resalerItem.totalAmount
+                        .subtract(resalerItem.totalCost == null ? BigDecimal.ZERO : resalerItem.totalCost))
+                        .add(resalerItem.profit == null ? BigDecimal.ZERO : resalerItem.profit);
+//                item.profit= item.totalAmount.multiply(BigDecimal.ONE.subtract())
+            }
+        }
+        List<CategorySalesReport> resultList = new ArrayList();
+        for (String key : totalMap.keySet()) {
+            resultList.add(totalMap.get(key));
+        }
+        return resultList;
+    }
 
     public static CategorySalesReport getNetSummary(List<CategorySalesReport> resultList) {
         if (resultList == null || resultList.size() == 0) {
@@ -297,11 +449,15 @@ public class CategorySalesReport {
 
 
     private static String getReportKey(CategorySalesReport refoundItem) {
-        if (refoundItem.code != null) {
+        if (refoundItem.code != null && refoundItem.goods != null) {
             return refoundItem.code + refoundItem.goods.id;
         } else {
             return "999" + String.valueOf(refoundItem.goods.id);
         }
+    }
+
+    private static String getTotalReportKey(CategorySalesReport refoundItem) {
+        return refoundItem.code + "999";
     }
 
 

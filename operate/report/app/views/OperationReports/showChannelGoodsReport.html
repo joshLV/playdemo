@@ -198,7 +198,7 @@
                     ￥0
                 #{/else}
             </td>
-            <td>${report?.buyNumber?:0}</td>
+            <td style="text-align:right;">${report?.buyNumber?:0}</td>
             <td style="text-align:right;">
                 #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
                     <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}
@@ -223,7 +223,7 @@
                 ￥${(report?.netSalesAmount?:0)}
             </td>
             #{if hasSeeReportProfitRight == true}
-                <td>${(report?.grossMargin?:0).format('#')}%</td>
+                <td style="text-align:right;">${(report?.grossMargin?:0).format('#')}%</td>
                 <td style="text-align:right;">
                     #{if report.profit != null && report.profit!=0}
                         ￥${(report?.profit?:0).format('#0.00')}
