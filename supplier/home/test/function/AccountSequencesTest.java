@@ -6,7 +6,6 @@ import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.AccountType;
-import models.accounts.WithdrawBill;
 import models.admin.SupplierUser;
 import models.supplier.Supplier;
 import org.junit.Before;
@@ -57,4 +56,6 @@ public class AccountSequencesTest extends FunctionalTest {
         assertEquals(1, ((JPAExtPaginator<AccountSequence>) renderArgs("accountSequences")).size());
 
     }
+
+
 }

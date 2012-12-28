@@ -9,7 +9,6 @@ import models.admin.SupplierUser;
 import models.admin.SupplierUserType;
 import models.sales.Shop;
 import models.supplier.Supplier;
-import util.DateHelper;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,7 +26,7 @@ public class SupplierUserFactory extends ModelFactory<SupplierUser> {
 
         supplierUser.supplier = FactoryBoy.lastOrCreate(Supplier.class);
         supplierUser.shop = FactoryBoy.lastOrCreate(Shop.class);
-        supplierUser.userName="abc";
+        supplierUser.userName = "abc";
         supplierUser.deleted = DeletedStatus.UN_DELETED;
         supplierUser.mobile = "13700001111";
         supplierUser.loginName = "02188888888";
