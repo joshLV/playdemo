@@ -51,7 +51,7 @@ public class YHDGroupBuyTest extends FunctionalTest{
 
         /// =========================  测试参数
         Http.Response response = POST("/api/v1/yhd/gb/order-inform", params);
-        errorCount(11, response);
+        errorCount(10, response);
 
         params = orderInformParams();
 
