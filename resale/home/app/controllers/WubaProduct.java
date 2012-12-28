@@ -41,7 +41,7 @@ public class WubaProduct extends Controller {
     public static final String THIRD_URL = "http://t.58.com/";
 
     public static void prepare(long goodsId) {
-        models.sales.Goods goods = models.sales.Goods.findById(goodsId);
+        models.sales.Goods goods = models.sales.Goods.findOnSale(goodsId);
         getGoodsItems(goods);
 
         List<Shop> shopList = Arrays.asList(goods.getShopList().toArray(new Shop[]{}));

@@ -31,7 +31,7 @@ public class YHDProduct extends Controller{
             error("there is nothing you can do");
         }
 
-        models.sales.Goods goods = models.sales.Goods.findById(goodsId);
+        models.sales.Goods goods = models.sales.Goods.findOnSale(goodsId);
 
         List<YHDProductCategory> categories = YHDCategoryAPI.productCategoriesCache(0L);
         List<YHDMerchantCategory> merchantCategories = YHDCategoryAPI.merchantCategoriesCache(0L);
