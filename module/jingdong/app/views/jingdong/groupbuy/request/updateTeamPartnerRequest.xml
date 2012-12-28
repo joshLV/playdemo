@@ -11,17 +11,17 @@
             *{ 商家名称 最长40个字符 [必填] }*
             <Name>${partner.name}</Name>
             *{ 商家地址 最长80个字符 [必填] }*
-            <Address>商家详细地址</Address>
+            <Address>${partner.address}</Address>
             *{ 地图连接，填写地图的URL，必须以http开头。此字段可以为空。若链接过长超过100个字符请使用加密过的url短链接 此字段可以为空。 }*
-            <Map></Map>
+            <Map>${partner.map}</Map>
             *{ 商家联系人 最长30个字符 此字段可以为空。 }*
-            <Contact></Contact>
+            <Contact>${partner.contact}</Contact>
             *{ 商家电话。最长40个字符 [必填] }*
-            <Tel></Tel>
+            <Tel>${partner.tel}</Tel>
             *{ 商家手机信息。最长12个字符，只能是数字。此字段可以为空。 }*
-            <Mobile></Mobile>
+            <Mobile>${partner.mobile}</Mobile>
             *{ 交通信息，位置信息。最长400个字符。此字段可以为空。 }*
-            <Location></Location>
+            <Location>${partner.location}</Location>
         </Partner>
         #{/list}
     </Partners>
