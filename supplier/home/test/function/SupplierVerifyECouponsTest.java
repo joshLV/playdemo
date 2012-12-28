@@ -73,21 +73,27 @@ public class SupplierVerifyECouponsTest extends FunctionalTest {
         assertStatus(200, response);
         List<Shop> shopList = (List<Shop>) renderArgs("shopList");
         Shop shop = (Shop) renderArgs("shop");
-        assertNotNull(shopList);
+        assertNull(shopList);
         assertNotNull(shop);
-        assertEquals(1, shopList.size());
         assertEquals(this.shop.id, shop.id);
     }
 
+    @Test
+    public void 查询一张券() {
+        Http.Response response = POST("/verify/" + shop.id + "/" + coupon.eCouponSn);
+
+        assertEquals("{\"goodsName\":\"" + coupon.goods.shortName + "\",\"faceValue\":" + coupon.faceValue
+                + ",\"expireAt\":\"" + DateUtil.dateToString(coupon.expireAt, 0) + "\"}", getContent(response));
+    }
 
     @Test
     public void 验证一张券() {
         Map<String, String> params = new HashMap<>();
-//        params.put("shopId", shop.id.toString());
-//        params.put("eCouponSn", coupon.eCouponSn);
-        Http.Response response = POST("/verify/" + shop.id + "/" + coupon.eCouponSn);
+        params.put("shopId", shop.id.toString());
+        params.put("eCouponSns", coupon.eCouponSn);
+        Http.Response response = POST("/verify/verify", params);
 
-        System.out.println("response:" + response);
+        assertEquals("[\"消费成功.\"]", getContent(response));
 
         SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
         assertSMSContentMatch("【一百券】您尾号" + coupon.getLastCode(4)
@@ -100,20 +106,20 @@ public class SupplierVerifyECouponsTest extends FunctionalTest {
     public void 无效店ID() {
         Map<String, String> params = new HashMap<>();
         params.put("shopId", "99999999");
-        params.put("eCouponSn", "0000000000");
-        Http.Response response = POST("/coupons/single-verify", params);
+        params.put("eCouponSns", "0000000000");
+        Http.Response response = POST("/verify/verify", params);
 
-        assertContentMatch("1", response);
+        assertEquals("[\"对不起，没有该券的信息!\"]", getContent(response));
     }
 
     @Test
     public void 验证无效券() {
         Map<String, String> params = new HashMap<>();
         params.put("shopId", shop.id.toString());
-        params.put("eCouponSn", "0000000000");
-        Http.Response response = POST("/coupons/single-verify", params);
+        params.put("eCouponSns", "0000000000");
+        Http.Response response = POST("/verify/verify", params);
 
-        assertContentMatch("err", response);
+        assertContentMatch("对不起，没有该券的信息!", response);
     }
 
     /**

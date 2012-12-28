@@ -25,12 +25,12 @@ body {
     color: white;
     margin-left: 10px;
 }
-.message {
+#message {
     position: relative;
     width: 1000px;
     margin: 0 auto 20px;
 }
-.message .close {
+#message .close {
     position: absolute;
     top: 11px;
     right: 10px;
@@ -38,34 +38,34 @@ body {
     padding-left: 12px;
     background: url(http://y1.uhcdn.com/images/2012/12/0a9bc329d8478889.png) no-repeat 0 6px;
 }
-.message .close:hover {
+#message .close:hover {
     color: #333;
     text-decoration: none;
     background-position: 0 -34px;
 }
-.message .normal {
+#message .normal {
     padding: 10px 60px 10px 10px;
     border: 1px solid #f7bd7d;
     background-color: #fffbf0;
     border-radius: 3px;
 }
-.message .normal p em {
+#message .normal p em {
     color: #FF7B33;
 }
-.message p a {
+#message p a {
     color: #d18136;
 }
-.message .success {
+#message .success {
     font-size: 22px;
     padding: 3px 60px 4px 10px;
     border: 1px solid #9AC82B;
     background-color: #f3f8de;
     border-radius: 3px;
 }
-.message .success p em {
+#message .success p em {
     color: #9AC82B;
 }
-.message .success p a {
+#message .success p a {
     font-size: 22px;
 }
 #content {
@@ -155,7 +155,8 @@ a.cancel {
     line-height: 36px;
     margin-left: 10px;
 }
-a.disabled {
+a.disabled,
+input.disabled {
     color: #a0a0a0;
     text-shadow: 1px 1px #e2e2e2;
     border-color: #d2d2d2;
@@ -214,7 +215,7 @@ a.disabled {
     background-color: whiteSmoke;
     box-shadow: inset 0 1px 2px #BBB;
 }
-.pagination .curr {
+.pagination .active {
     font-weight: 700;
     background-color: whiteSmoke;
     box-shadow: inset 0 1px 2px #BBB;

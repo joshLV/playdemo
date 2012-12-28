@@ -4,22 +4,6 @@
  * @param $
  */
 jQuery(function ($) {
-    var checkShop = function (shopIdInput) {
-        var shopId = shopIdInput.val();
-        if (shopId == null || shopId == "" || shopId == 0) {
-            if (shopId != '') {
-                alert('您输入的分店不存在，请选择分店。');
-                shopIdInput.focus();
-            } else {
-                alert('请选择分店。');
-                shopIdInput.focus();
-            }
-
-            return false;
-        }
-        return true;
-    };
-
     /**
      * 前端检查券号格式合法性
      *
@@ -28,17 +12,19 @@ jQuery(function ($) {
      * @return {boolean}
      */
     var checkCouponSn = function (shopIdInput, snInput) {
-        if (!checkShop(shopIdInput)) {
+        var shopId = shopIdInput.val();
+        if (shopId == null || shopId == "" || shopId == 0) {
+            alert('请选择分店。');
+            shopIdInput.focus();
             return false;
         }
-
         if (snInput.val() == '') {
             alert('请输入券号。');
             snInput.focus();
             return false;
         }
-        var re = /[0-9]{3} [0-9]{3} [0-9]{4}/;   //判断字符串是否为数字
-        if (!re.test(snInput.val())) {
+        var re = /[0-9]{10}/;   //判断字符串是否为数字
+        if (!re.test(snInput.val().replace(/ /g, ''))) {
             alert('券号应为10位数字，请修正。');
             snInput.focus();
             return false;
@@ -71,7 +57,7 @@ jQuery(function ($) {
      * 批量验证的输入框
      */
     var enterCoupon = $('#enter-coupon');
-    var shopIdInput = $('#id_shopName');
+    var shopIdInput = $('#shopId');
 
     enterCoupon.keyup("v", function (e) {
         formatCopyECouponSn(enterCoupon, e);
@@ -112,14 +98,6 @@ jQuery(function ($) {
     };
 
     /**
-     * 点击门店输入框显示下拉列表.
-     */
-    $('#shopName').click(function () {
-        $(".ac_input").keydown();
-        $(".acResults").show();
-    });
-
-    /**
      * 增加待验证的券到列表中.
      */
     var addVerifyQueue = function () {
@@ -155,30 +133,6 @@ jQuery(function ($) {
                 window.location.href = '/';
             }
         });
-//        $.post('/verify/' + shopIdInput.val() + "/" + eCouponSn,
-//            function (data) {
-//                // 券号不能通过验证时，给出提示
-//                if (data.errorInfo != null && data.errorInfo != "null") {
-//                    alert(data.errorInfo);
-//                    enterCoupon.focus();
-//                    return;
-//                }
-//                coupons[serial++] = eCouponSn;
-//                $("#eCouponSns").val(coupons.join(','));
-//                // 券号能验证时，让用户确认验证
-//                $('#coupons-table').append('<tr class="row-coupon' + (serial % 2 == 0 ? " odd" : "") + '">' +
-//                    '<td class="serial">' + serial + '</td>' +
-//                    '<td>' + value + '</td>' +
-//                    '<td>' + data.goodsName + '</td>' +
-//                    '<td>' + data.faceValue + '元</td>' +
-//                    '<td>' + data.expireAt + '</td>' +
-//                    '<td><a class="delete-coupon" href="javascript:void(0)">删除</a></td>' +
-//                    '<td class="verify-result"></td>' +
-//                    '</tr>');
-//                enterCoupon.val('');
-//                $('.batch-verify').removeClass("disabled");
-//            });
-//
     };
 
     var clearList = function () {
@@ -221,9 +175,6 @@ jQuery(function ($) {
             // 批量验证
         } else if (_this.hasClass('batch-verify')) {
             if (_this.hasClass("disabled")) {
-                return;
-            }
-            if (!checkShop()) {
                 return;
             }
             $.ajax({
