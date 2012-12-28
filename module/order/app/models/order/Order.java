@@ -1401,7 +1401,7 @@ public class Order extends Model {
      */
     public static BigDecimal getPromoteRebateOfGoodsAmount(Goods goods, Integer number) {
         //默认给被推荐人1%，如果商品没设置返利
-        BigDecimal invitedUserPrice = goods.invitedUserPrice == null || goods.invitedUserPrice.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ONE : goods.invitedUserPrice;
+        BigDecimal invitedUserPrice = goods.invitedUserPrice == null ? BigDecimal.ONE : goods.invitedUserPrice;
         return goods.salePrice.multiply(invitedUserPrice).multiply(new BigDecimal(number)).multiply(new BigDecimal(0.01));
     }
 
