@@ -13,6 +13,7 @@
     position: relative;
     padding-left: 90px;
     margin-bottom: 12px;
+    *zoom: 1;
 }
 .field-group label {
     position: absolute;

@@ -9,6 +9,7 @@
 #{/set}
 <div class="coupons">
     <h2>${title}</h2>
+
     <form class="well form-inline" name="frmlist" id="frmlist" action="@{SupplierECoupons.index()}" method="GET">
         <div class="field-group">
             <label>选择分店</label>
@@ -30,14 +31,6 @@
             #{option "OP_VERIFY"}&{'coupon.OP_VERIFY'}#{/option}
         #{/select}
         </div>
-        <div class="field-group">
-            <label>订单来源</label>
-        #{select 'condition.accountType', value:condition.accountType}
-            #{option ""}不限#{/option}
-            #{option "CONSUMER"}&{'order.CONSUMER'}#{/option}
-            #{option "RESALER"}&{'order.RESALER'}#{/option}
-        #{/select}
-        </div>
 
         <div class="field-group">
             <label>消费时间</label>
@@ -54,12 +47,12 @@
             <button class="btn" onclick="couponIndex()">查询</button>
         </div>
 
-    <table cellspacing="0" cellpadding="0" border="0" class="title-table">
-        <tr>
-            <th wdith="50%" id="search">查询结果合计： ${couponPage.size()}</th>
-            <td wdith="50%" id="output" ><a href="javascript:couponExcel()">导出</a></td>
-        </tr>
-    </table>
+        <table cellspacing="0" cellpadding="0" border="0" class="title-table">
+            <tr>
+                <th wdith="50%" id="search">查询结果合计： ${couponPage.size()}</th>
+                <td wdith="50%" id="output"><a href="javascript:couponExcel()">导出</a></td>
+            </tr>
+        </table>
     </form>
 
 *{<div style="margin-bottom: 12px">}*
@@ -69,7 +62,7 @@
     <table cellspacing="0" cellpadding="0" border="0" class="standard-table">
         <thead>
         <tr>
-            <th width="10px">券号</th>
+            <th width="50px">券号</th>
             <th width="120px">商品名称</th>
             <th width="30px">单价</th>
             <th width="50px">消费门店</th>
@@ -96,11 +89,7 @@
 
         </tbody>
     </table>
-    <div class="pagination" align="center">
-        <ul>
-        #{paginate.controls items:couponPage /}
-        </ul>
-    </div>
+#{paginate.controls items:couponPage /}
 </div>
 <script type="text/javascript">
     function couponIndex() {
