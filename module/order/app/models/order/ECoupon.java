@@ -1419,19 +1419,27 @@ public class ECoupon extends Model {
         }
         if (ecoupon.isFreeze == 1) {
             return "对不起，该券已被冻结!";
-        } else if (ecoupon.status == models.order.ECouponStatus.CONSUMED) {
+        }
+        if (ecoupon.status == models.order.ECouponStatus.CONSUMED) {
             SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日HH点mm分");
 
             return "对不起，该券已使用过。 消费时间为" + format.format(ecoupon.consumedAt);
-        } else if (ecoupon.status == models.order.ECouponStatus.REFUND) {
-            return "对不起，该券已退款!";
-        } else if (ecoupon.expireAt.before(new java.util.Date())) {
-            return "对不起，该券已过期!";
-//        } else if (!ecoupon.checkVerifyTimeRegion(new Date())) {
-//            //现在已经不在检查时间范围，所以先不处理
-//            Logger.error("券ID" + ecoupon.id + "(goodsId:" + ecoupon.goods.id + ")出现了时间段检查，但现在不建议使用时间段配置，请联系运营编辑。");
-//            return ecoupon.getCheckInfo();
         }
+        if (ecoupon.status == models.order.ECouponStatus.REFUND) {
+            return "对不起，该券已退款!";
+        }
+        final Date now = new Date();
+        if (ecoupon.expireAt.before(now)) {
+            return "对不起，该券已过期!";
+        }
+        if (ecoupon.effectiveAt.before(now)) {
+            return "对不起，该券有效期还没开始！";
+        }
+        //        if (!ecoupon.checkVerifyTimeRegion(new Date())) {
+        //            //现在已经不在检查时间范围，所以先不处理
+        //            Logger.error("券ID" + ecoupon.id + "(goodsId:" + ecoupon.goods.id + ")出现了时间段检查，但现在不建议使用时间段配置，请联系运营编辑。");
+        //            return ecoupon.getCheckInfo();
+        //        }
         return null;
     }
 
