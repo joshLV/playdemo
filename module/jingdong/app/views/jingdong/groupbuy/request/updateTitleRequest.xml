@@ -1,0 +1,9 @@
+<Message xmlns="http://tuan.360buy.com/UpdateTitleRequest">
+    *{ 更新团购标题的接口 请求 合作伙伴请求 }*
+    *{ 合作伙伴方团购ID 必须大于0 [必填] }*
+    <VenderTeamId>${venderTeamId}</VenderTeamId>
+    *{ 京东团购ID 必须大于0 [必填] }*
+    <JdTeamId>${jdTeamId}</JdTeamId>
+    *{ 团购标题名称  最长200个[必填] }*
+    <TeamTitle>${teamTitle}</TeamTitle>
+</Message>
