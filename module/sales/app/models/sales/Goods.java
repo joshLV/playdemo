@@ -1230,7 +1230,7 @@ public class Goods extends Model {
     }
 
     public static Goods findOnSale(long id) {
-        return find("id=? and deleted=? and status=? and isHideOnsale = false and expireAt > ?", id,
+        return find("id=? and deleted=? and status=? and expireAt > ?", id,
                 DeletedStatus.UN_DELETED, GoodsStatus.ONSALE, new Date()).first();
     }
 
