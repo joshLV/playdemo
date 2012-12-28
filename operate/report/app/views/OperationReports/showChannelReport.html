@@ -46,6 +46,8 @@
                     $("#condition_end").val(today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + endDay.getDate());
                 }
                 $("#condition_interval").val(interval);
+                $("#form").attr("action", "@{OperationReports.showChannelReport()}");
+                $("#form").attr("method", "get");
                 $("#form").submit();
                 return false;
             });

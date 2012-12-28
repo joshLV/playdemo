@@ -32,6 +32,8 @@
                 $("#condition_beginAt").val(startDay.getFullYear() + "-" + (startDay.getMonth() + 1) + "-" + startDay.getDate());
                 $("#condition_endAt").val(today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + endDay.getDate());
                 $("#condition_interval").val(interval);
+                $("#search_form").attr("action", "@{OperationReports.showSalesReport()}");
+                $("#search_form").attr("method", "get");
                 $("#search_form").submit();
                 return false;
             });
@@ -163,17 +165,17 @@
             <td style="text-align:right;">
                 ￥${(report?.netSalesAmount?:0)}
             </td>
-        #{if hasSeeReportProfitRight == true}
-            <td>${(report?.grossMargin?:0).format('#')}%</td>
-            <td style="text-align:right;">
-                #{if report.profit != null && report.profit!=0}
-                    ￥${(report?.profit?:0).format('#0.00')}
-                #{/if}
-                #{else}
-                    ￥0
-                #{/else}
-            </td>
-        #{/if}
+            #{if hasSeeReportProfitRight == true}
+                <td>${(report?.grossMargin?:0).format('#')}%</td>
+                <td style="text-align:right;">
+                    #{if report.profit != null && report.profit!=0}
+                        ￥${(report?.profit?:0).format('#0.00')}
+                    #{/if}
+                    #{else}
+                        ￥0
+                    #{/else}
+                </td>
+            #{/if}
         </tr>
     #{/paginate.list}
     </table>
