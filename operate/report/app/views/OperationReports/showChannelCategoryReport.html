@@ -92,6 +92,8 @@
                     $("#condition_end").val(today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + endDay.getDate());
                 }
                 $("#condition_interval").val(interval);
+                $("#form").attr("action", "@{OperationReports.showChannelCategoryReport()}");
+                $("#form").attr("method", "get");
                 $("#form").submit();
                 return false;
             });
@@ -302,19 +304,19 @@
                 / ${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}
             #{/else}
         </td>
-    #{if hasSeeReportProfitRight == true}
-        <td #{if report?.code == "999"} bgcolor="#add8e6" #{/if} >${(report?.grossMargin?:0).format('#')}%</td>
-        <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if}
-                                         style="text-align:right;">${(report?.channelCost?:0).formatCurrency('CNY')}</td>
-        <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
-            #{if report?.profit != null && report.profit!=0}
-                ￥${(report?.profit?:0).format('#0.00')}
-            #{/if}
-            #{else}
-                ￥0
-            #{/else}
-        </td>
-    #{/if}
+        #{if hasSeeReportProfitRight == true}
+            <td #{if report?.code == "999"} bgcolor="#add8e6" #{/if} >${(report?.grossMargin?:0).format('#')}%</td>
+            <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if}
+                                             style="text-align:right;">${(report?.channelCost?:0).formatCurrency('CNY')}</td>
+            <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
+                #{if report?.profit != null && report.profit!=0}
+                    ￥${(report?.profit?:0).format('#0.00')}
+                #{/if}
+                #{else}
+                    ￥0
+                #{/else}
+            </td>
+        #{/if}
 
     </tr>
 

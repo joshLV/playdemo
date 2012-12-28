@@ -31,6 +31,8 @@
                 $("#condition_beginAt").val(startDay.getFullYear() + "-" + (startDay.getMonth() + 1) + "-" + startDay.getDate());
                 $("#condition_endAt").val(today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + endDay.getDate());
                 $("#condition_interval").val(interval);
+                $("#search_form").attr("action", "@{OperationReports.showChannelGoodsReport()}");
+                $("#search_form").attr("method", "get");
                 $("#search_form").submit();
                 return false;
             });
