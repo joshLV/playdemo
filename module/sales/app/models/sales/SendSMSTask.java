@@ -13,11 +13,11 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
+ * 短信发送任务.
+ *
  * User: wangjia
  * Date: 12-9-12
  * Time: 下午4:01
- * To change this template use File | Settings | File Templates.
  */
 @Entity
 @Table(name = "send_sms_task")

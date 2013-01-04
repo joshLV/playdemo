@@ -21,6 +21,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -213,12 +214,17 @@ public class WithdrawBill extends Model {
             create2TradeBill(BigDecimal.ZERO, amount);
         } else {
             //如果预付款已过期
+            System.out.println("prepayment:" + prepayment);
+            System.out.println("withdrawDate:" + withdrawDate);
             if (withdrawDate.after(prepayment.expireAt)) {
                 BigDecimal cashSettledAmount = AccountSequence.getVostroAmount(account, DateUtil.getBeginOfDay(prepayment.expireAt));
                 if (cashSettledAmount.compareTo(BigDecimal.ZERO) <= 0) {
                     create2TradeBill(amount.subtract(prepayment.getBalance()), prepayment.getBalance());
                 } else {
-                    BigDecimal moreAmount = AccountSequence.getVostroAmount(account, prepayment.effectiveAt, prepayment.expireAt);
+                    //获取过期时间之前的所有的未结算的收入总额。
+                    Calendar cal = Calendar.getInstance();
+                    cal.add(Calendar.YEAR, -10);
+                    BigDecimal moreAmount = AccountSequence.getVostroAmount(account, cal.getTime(), prepayment.expireAt);
                     moreAmount = moreAmount.compareTo(prepayment.getBalance()) > 0 ? moreAmount.subtract(prepayment.getBalance()) : BigDecimal.ZERO;
                     create2TradeBill(cashSettledAmount.add(moreAmount), amount.subtract(cashSettledAmount).subtract(moreAmount));
                 }

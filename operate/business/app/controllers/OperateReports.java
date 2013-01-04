@@ -149,12 +149,14 @@ public class OperateReports extends Controller {
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : accountSequencePage) {
-            Supplier supplier = Supplier.findById(accountSequence.account.uid);
-            if (supplier != null) {
-                accountSequence.supplierName = supplier.otherName + "/" + supplier.fullName;
-                accountSequence.accountName = supplier.loginName;
+            if (accountSequence.account != null) {
+                Supplier supplier = Supplier.findById(accountSequence.account.uid);
+                if (supplier != null) {
+                    accountSequence.supplierName = supplier.otherName + "/" + supplier.fullName;
+                    accountSequence.accountName = supplier.loginName;
+                }
+                setOrderInfo(accountSequence);
             }
-            setOrderInfo(accountSequence);
         }
 
         AccountSequenceSummary summary = AccountSequence.findSummaryByCondition(condition);
