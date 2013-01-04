@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
 public class JDGroupBuy extends Controller {
     public static String DATE_FORMAT = "yyy-MM-dd HH:mm:ss";
 
-    public static String PHONE_REGEX = "^1[3,5,8]\\d{9}$";
+    public static String PHONE_REGEX = "^1\\d{10}$";
 
     /**
      * 基本相应参数

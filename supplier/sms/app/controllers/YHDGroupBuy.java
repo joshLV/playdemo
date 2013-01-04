@@ -33,7 +33,7 @@ public class YHDGroupBuy extends Controller{
     public static String YHD_LOGIN_NAME = Resaler.YHD_LOGIN_NAME;
     public static String DATE_FORMAT = "yyy-MM-dd HH:mm:ss";
 
-    public static String PHONE_REGEX = "^1[3,5,8]\\d{9}$";
+    public static String PHONE_REGEX = "^1\\d{10}$";
 
     /**
      * 接收一号店的新订单通知

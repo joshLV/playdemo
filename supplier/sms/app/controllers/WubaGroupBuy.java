@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
  *         Date: 12-11-23
  */
 public class WubaGroupBuy extends Controller {
-    public static String PHONE_REGEX = "^1[3,5,8]\\d{9}$";
+    public static String PHONE_REGEX = "^1\\d{10}$";
 
     /**
      * 新订单通知

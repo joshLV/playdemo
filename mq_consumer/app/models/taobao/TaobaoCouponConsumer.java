@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  */
 @OnApplicationStart(async = true)
 public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMessage> {
-    public static String PHONE_REGEX = "^1[3,5,8]\\d{9}$";
+    public static String PHONE_REGEX = "^1\\d{10}$";
 
     @Override
     protected int retries(){
