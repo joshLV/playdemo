@@ -64,15 +64,15 @@ public class WithdrawApproval extends Controller {
         List<WithdrawBill> withdrawBillList = WithdrawBill.find("status=? and applier=?", WithdrawBillStatus.SUCCESS, bill.applier).fetch();
         BigDecimal temp = BigDecimal.ZERO;
         Double sum = 0d;
-        String supplierFullName = "";
+        String supplierName = "";
         for (WithdrawBill b : withdrawBillList) {
             sum += temp.add(b.amount).doubleValue();
         }
         if (bill.account.accountType == SUPPLIER && uid != null) {
             Supplier supplier = Supplier.findById(uid);
-            supplierFullName = supplier.fullName;
+            supplierName = supplier.otherName;
         }
-        render(bill, uid, sum, supplierFullName);
+        render(bill, uid, sum, supplierName);
     }
 
     /**
