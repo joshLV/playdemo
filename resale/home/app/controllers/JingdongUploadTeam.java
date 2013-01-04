@@ -8,6 +8,7 @@ import com.uhuila.common.util.DateUtil;
 import controllers.modules.resale.cas.SecureCAS;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.jingdong.groupbuy.JDRest;
+import models.jingdong.groupbuy.response.CommonUpdateResponse;
 import models.jingdong.groupbuy.response.IdNameResponse;
 import models.jingdong.groupbuy.response.UploadTeamResponse;
 import models.order.OuterOrderPartner;
@@ -169,8 +170,8 @@ public class JingdongUploadTeam extends Controller {
         String responseResult = client.postStringWithBody("jingdong_update_title", url, restRequest,
                 fav.goods.id.toString(), fav.goods.shortName);
 
-        JDRest<UploadTeamResponse> uploadTeamRest = new JDRest<>();
-        if (uploadTeamRest.parse(responseResult, new UploadTeamResponse())) {
+        JDRest<CommonUpdateResponse> uploadTeamRest = new JDRest<>();
+        if (uploadTeamRest.parse(responseResult, new CommonUpdateResponse())) {
             Logger.info("update jingdong fav:" + id + " title:" + title + " success.");
         }
         render("JingdongUploadTeam/result.html", uploadTeamRest);
@@ -210,11 +211,43 @@ public class JingdongUploadTeam extends Controller {
         String responseResult = client.postStringWithBody("jingdong_update_detail", url, restRequest,
                 fav.goods.id.toString(), fav.goods.shortName);
 
-        JDRest<UploadTeamResponse> uploadTeamRest = new JDRest<>();
-        if (uploadTeamRest.parse(responseResult, new UploadTeamResponse())) {
+        JDRest<CommonUpdateResponse> uploadTeamRest = new JDRest<>();
+        if (uploadTeamRest.parse(responseResult, new CommonUpdateResponse())) {
             Logger.info("update jingdong fav:" + id + " detail:" + detail + " success.");
         }
         render("JingdongUploadTeam/result.html", uploadTeamRest);
+    }
+
+    /**
+     * 延长有效期
+     */
+    public static void updateExpire(Long id, Date expireTime) {
+        ResalerFav fav = ResalerFav.findById(id);
+
+        String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/couponExtension.action";
+        Template template = TemplateLoader.load("jingdong/groupbuy/request/couponExtensionRequest.xml");
+        Map<String, Object> params = new HashMap<>();
+        params.put("venderTeamId",  fav.lastLinkId.toString());
+        params.put("jdTeamId",  fav.thirdGroupbuyId.toString());
+        params.put("expireTime", expireTime);
+
+        String data = template.render(params);
+        Logger.info("request, %s", data);
+
+        String restRequest = JDGroupBuyUtil.makeRequestRest(data);
+
+        WebServiceClient client = WebServiceClientFactory
+                .getClientHelper();
+
+        String responseResult = client.postStringWithBody("jingdong_update_expire", url, restRequest,
+                fav.goods.id.toString(), fav.goods.shortName);
+
+        JDRest<CommonUpdateResponse> uploadTeamRest = new JDRest<>();
+        if (uploadTeamRest.parse(responseResult, new CommonUpdateResponse())) {
+            Logger.info("update jingdong fav:" + id + " expire:" + expireTime + " success.");
+        }
+        render("JingdongUploadTeam/result.html", uploadTeamRest);
+
     }
 
     public static void upload(Long venderTeamId, List<String> areas, List<String> subGroupIds) {
