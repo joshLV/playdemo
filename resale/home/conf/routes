@@ -81,6 +81,7 @@ GET     /jd-add/{goodsId}                       JingdongUploadTeam.prepare
 GET     /jd-edit/{goodsId}                      JingdongUploadTeam.edit
 POST    /jd-update/title                        JingdongUploadTeam.updateTitle
 POST    /jd-update/detail                       JingdongUploadTeam.updateDetail
+POST    /jd-update/expire                       JingdongUploadTeam.updateExpire
 
 GET     /58-add/{goodsId}                       WubaProduct.prepare
 GET     /58-edit/{goodsId}                      WubaProduct.edit

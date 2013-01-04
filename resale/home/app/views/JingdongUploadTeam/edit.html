@@ -40,6 +40,16 @@
 
         <input type="submit" value="修改详情">
     </form>
+
+    <form action="/jd-update/expire" method="POST">
+        <input type="hidden" name="id" value="${fav.id}">
+        <h3>团购延长有效期修改</h3>
+        <p>日期往后选</p>
+        <p><input type="text" name="expireTime" onfocus="WdatePicker({readOnly:true})"  class="Wdate" value="${fav.goods.expireAt?.format()}"></p>
+
+        <input type="submit" value="延长有效期">
+    </form>
+
 <br/>
 
 </div>

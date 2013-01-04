@@ -17,7 +17,7 @@ public class CommonUpdateResponse implements JDMessage, Serializable {
     @Override
     public boolean parse(Element root) {
         jdTeamId = Long.parseLong(root.elementTextTrim("JdTeamId"));
-        venderTeamId = Long.parseLong(root.elementTextTrim("venderTeamId"));
+        venderTeamId = Long.parseLong(root.elementTextTrim("VenderTeamId"));
         return true;
     }
 }
