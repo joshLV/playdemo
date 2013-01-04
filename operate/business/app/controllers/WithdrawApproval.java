@@ -202,7 +202,7 @@ public class WithdrawApproval extends Controller {
      * 进入结算页面.
      */
     public static void initSettle() {
-        List<Supplier> supplierList = getWithdrawSupplierList(); //获取可结算商户
+        List<Supplier> supplierList = getWithdrawSupplierList(DateUtil.getBeginOfDay()); //获取可结算商户
 
         render("/WithdrawApproval/settle.html", supplierList);
     }
@@ -213,13 +213,13 @@ public class WithdrawApproval extends Controller {
      *
      * @return
      */
-    private static List<Supplier> getWithdrawSupplierList() {
+    private static List<Supplier> getWithdrawSupplierList(Date withdrawDate) {
         List<Supplier> supplierList = Supplier.findUnDeleted();
         List<Supplier> supplierResult = new ArrayList<>();
 
         for (Supplier supplier : supplierList) {
             Account supplierAccount = AccountUtil.getSupplierAccount(supplier.id);
-            BigDecimal amount = supplierAccount.getWithdrawAmount(DateUtil.getBeginOfDay());
+            BigDecimal amount = supplierAccount.getWithdrawAmount(withdrawDate);
             List<WithdrawAccount> withdrawAccountList = WithdrawAccount.findByUser(supplier.id, SUPPLIER);
 
             if (amount.compareTo(BigDecimal.ZERO) > 0 && CollectionUtils.isNotEmpty(withdrawAccountList)) {
@@ -234,18 +234,18 @@ public class WithdrawApproval extends Controller {
      * 结算信息确认.
      */
     public static void confirmSettle(Long supplierId, Date withdrawDate) {
-        List<Supplier> supplierList = getWithdrawSupplierList();
+        final Date endOfDay = DateUtil.getEndOfDay(withdrawDate);
+        List<Supplier> supplierList = getWithdrawSupplierList(endOfDay);
         Account supplierAccount = AccountUtil.getSupplierAccount(supplierId);
         Supplier supplier = Supplier.findById(supplierId);
-        final Date beginOfToday = DateUtil.getBeginOfDay();
         //可结算总额
-        BigDecimal amount = supplierAccount.getWithdrawAmount(beginOfToday);
+        BigDecimal amount = supplierAccount.getWithdrawAmount(endOfDay);
         //最后一笔未结算预付款
         Prepayment lastPrepayment = Prepayment.getLastUnclearedPrepayments(supplier.id);
         //预付款余额
         BigDecimal prepaymentBalance = lastPrepayment == null ? BigDecimal.ZERO : lastPrepayment.getBalance();
         //可提现金额（实际需打款金额）
-        BigDecimal needPay = Supplier.getWithdrawAmount(supplierAccount, lastPrepayment, amount, beginOfToday);
+        BigDecimal needPay = Supplier.getWithdrawAmount(supplierAccount, lastPrepayment, amount, endOfDay);
 
         Long prepaymentId = prepaymentBalance.compareTo(BigDecimal.ZERO) > 0 ? lastPrepayment.id : null;
         List<WithdrawAccount> withdrawAccountList = WithdrawAccount.findByUser(supplierId, SUPPLIER);
@@ -266,6 +266,7 @@ public class WithdrawApproval extends Controller {
      */
     public static void settle(Account supplierAccount, Date withdrawDate,
                               Long withdrawAccountId, BigDecimal amount, BigDecimal fee, String comment, Long prepaymentId) {
+        System.out.println(")))))))))         Enter WithdrawApproval.settle");
         //生成结算账单
         WithdrawAccount withdrawAccount = WithdrawAccount.findByIdAndUser(withdrawAccountId, supplierAccount.uid, SUPPLIER);
         WithdrawBill bill = new WithdrawBill();
@@ -288,7 +289,8 @@ public class WithdrawApproval extends Controller {
             prepayment = Prepayment.findById(prepaymentId);
         }
         //结算
-        int withdrawCount = bill.settle(fee, comment, withdrawDate, prepayment);
+        System.out.println("withdrawDate:" + withdrawDate);
+        int withdrawCount = bill.settle(fee, comment, DateUtil.getEndOfDay(withdrawDate), prepayment);
         if (withdrawCount > 0 && prepaymentId != null) {
             //将结算金额与预付款金额进行绑定
             if (prepayment != null && prepayment.getBalance().compareTo(BigDecimal.ZERO) >= 0) {

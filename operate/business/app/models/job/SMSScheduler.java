@@ -25,10 +25,15 @@ public class SMSScheduler extends Job {
         if (CollectionUtils.isEmpty(smsTaskList)) {
             return;
         }
-        if (CollectionUtils.isEmpty(smsTaskList)) {
-            return;
-        }
-        for (SendSMSTask st : smsTaskList) {
+        for (int i = 0; i < smsTaskList.size(); i++) {
+            Object obj = smsTaskList.get(i);
+            if (!(obj instanceof SendSMSTask)){
+                continue;
+            }
+            SendSMSTask st = smsTaskList.get(i);
+            if (st == null) {
+                continue;
+            }
             currentDate = new Date();
 
             if (st.finished.longValue() != st.total.longValue() && st.scheduledTime != null && st.scheduledTime.before(currentDate)) {
