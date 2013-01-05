@@ -1,6 +1,16 @@
 package controllers;
 
 import models.*;
+import models.ChannelCategoryReport;
+import models.ChannelCategoryReportCondition;
+import models.ChannelGoodsReport;
+import models.ChannelGoodsReportCondition;
+import models.PeopleEffectCategoryReport;
+import models.PeopleEffectCategoryReportCondition;
+import models.ResaleSalesReport;
+import models.ResaleSalesReportCondition;
+import models.SalesReport;
+import models.SalesReportCondition;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -106,6 +116,24 @@ public class OperationReports extends Controller {
 
         render(condition, reportPage, hasSeeReportProfitRight, summary);
 
+    }
+
+    @ActiveNavigation("people_effect_category_reports")
+    public static void showPeopleEffectCategoryReport(PeopleEffectCategoryReportCondition condition) {
+        int pageNumber = getPageNumber();
+
+        if (condition == null) {
+            condition = new PeopleEffectCategoryReportCondition();
+        }
+
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+
+        List<PeopleEffectCategoryReport> resultList = PeopleEffectCategoryReport.query(condition);
+        // 分页
+        ValuePaginator<PeopleEffectCategoryReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
+
+        PeopleEffectCategoryReport summary = PeopleEffectCategoryReport.summary(reportPage);
+        render(condition, reportPage, hasSeeReportProfitRight, summary);
     }
 
     @ActiveNavigation("channel_category_reports")
@@ -478,7 +506,7 @@ public class OperationReports extends Controller {
     }
 
     /**
-     * 人效报表导出（有权限的导出利润）
+     * 人效报表导出
      *
      * @param condition
      */
@@ -488,6 +516,34 @@ public class OperationReports extends Controller {
         }
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "人效报表_" + System.currentTimeMillis() + ".xls");
+
+        List<SalesReport> peopleEffectReportList = SalesReport.queryPeopleEffectData(condition);
+        for (SalesReport report : peopleEffectReportList) {
+            if (hasProfitRight) {
+                BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
+                report.grossMargin = tempGrossMargin;
+                report.profit = report.profit == null ? BigDecimal.ZERO : report.profit.setScale(2, BigDecimal.ROUND_HALF_UP);
+            }
+        }
+
+        if (hasProfitRight) {
+            render("OperationReports/peopleEffectReportWithPrivilegeExcelOut.xls", peopleEffectReportList);
+        }
+
+        render(peopleEffectReportList);
+    }
+
+    /**
+     * 人效报表导出
+     *
+     * @param condition
+     */
+    public static void peopleEffectCategoryReportExcelOut(SalesReportCondition condition, Boolean hasProfitRight) {
+        if (condition == null) {
+            condition = new SalesReportCondition();
+        }
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "人效大类报表_" + System.currentTimeMillis() + ".xls");
 
         List<SalesReport> peopleEffectReportList = SalesReport.queryPeopleEffectData(condition);
         for (SalesReport report : peopleEffectReportList) {

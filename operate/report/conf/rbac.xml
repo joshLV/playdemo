@@ -35,6 +35,8 @@
                         permissions="OPERATION_REPORT"/>
             <navigation key="people_effect_reports" action="OperationReports.showPeopleEffectReport" text="人效报表"
                         permissions="OPERATION_REPORT"/>
+            <navigation key="people_effect_category_reports" action="OperationReports.showPeopleEffectCategoryReport" text="人效大类报表"
+                        permissions="OPERATION_REPORT"/>
         </navigation>
     </navigation>
 

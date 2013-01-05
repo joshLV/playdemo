@@ -118,7 +118,6 @@
         }%
     #{paginate.list items:reportPage, as:'report'}
         <tr>
-            #{set i:i+1/}
             <td>${report?.operateUser?.jobNumber}</td>
             <td>${report?.operateUser?.userName}</td>
             <td>${report?.buyNumber?:0}</td>
