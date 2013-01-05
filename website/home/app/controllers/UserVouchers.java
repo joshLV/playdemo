@@ -15,6 +15,7 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -41,7 +42,13 @@ public class UserVouchers extends Controller {
 
         JPAExtPaginator<Voucher> voucherList = Voucher.findByCondition(condition, pageNumber, PAGE_SIZE);
 
-        render(breadcrumbs, user, account, voucherList);
+        List<Voucher> validVouchers = Voucher.validVouchers(account);
+        BigDecimal validValue = BigDecimal.ZERO;
+        for (Voucher voucher: validVouchers) {
+            validValue = validValue.add(voucher.value);
+        }
+
+        render(breadcrumbs, user, account, voucherList, validVouchers, validValue);
     }
 
     public static void showAssign() {
