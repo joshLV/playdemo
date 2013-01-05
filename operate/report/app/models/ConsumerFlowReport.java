@@ -106,6 +106,10 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
     public BigDecimal totalCost;
 
     /**
+     * 客单价
+     */
+    public BigDecimal perOrderPrice;
+    /**
      * 毛利率
      */
     public BigDecimal grossMargin;
@@ -123,10 +127,11 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
     /**
      * paidAt ecoupon resaler
      */
-    public ConsumerFlowReport(String date, Long orderNum, BigDecimal salePrice, Long buyNumber, BigDecimal totalCost
+    public ConsumerFlowReport(String date, Long orderNum, BigDecimal perOrderPrice, BigDecimal salePrice, Long buyNumber, BigDecimal totalCost
             , BigDecimal channelCost, BigDecimal grossMargin, BigDecimal profit) {
         this.date = date;
         this.orderNum = orderNum;
+        this.perOrderPrice = perOrderPrice;
         if (salePrice != null) {
             this.salePrice = salePrice;
         } else {
@@ -143,10 +148,11 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
     /**
      * paidAt ecoupon   consumer (order not necessary but for not tuple)
      */
-    public ConsumerFlowReport(Order order, BigDecimal salePrice, Long orderNum, String date, Long buyNumber, BigDecimal totalCost
+    public ConsumerFlowReport(Order order, BigDecimal salePrice, Long orderNum, BigDecimal perOrderPrice, String date, Long buyNumber, BigDecimal totalCost
             , BigDecimal grossMargin, BigDecimal profit) {
         this.date = date;
         this.orderNum = orderNum;
+        this.perOrderPrice = perOrderPrice;
         if (order != null) {
             if (order.userType == AccountType.CONSUMER) {
                 this.loginName = "一百券";
@@ -168,10 +174,11 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
 
 
     //sendAt real resaler
-    public ConsumerFlowReport(String date, Long orderNum, Long buyNumber, BigDecimal salePrice, BigDecimal totalCost
+    public ConsumerFlowReport(String date, Long orderNum, BigDecimal perOrderPrice, Long buyNumber, BigDecimal salePrice, BigDecimal totalCost
             , BigDecimal channelCost, BigDecimal grossMargin, BigDecimal profit) {
         this.date = date;
         this.orderNum = orderNum;
+        this.perOrderPrice = perOrderPrice;
         this.realSalePrice = salePrice;
         this.realBuyNumber = buyNumber;
         this.totalCost = totalCost;
@@ -181,10 +188,11 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
     }
 
     //sendAt real consumer
-    public ConsumerFlowReport(Order order, String date, Long orderNum, Long buyNumber, BigDecimal salePrice, BigDecimal totalCost
+    public ConsumerFlowReport(Order order, String date, Long orderNum, BigDecimal perOrderPrice, Long buyNumber, BigDecimal salePrice, BigDecimal totalCost
             , BigDecimal grossMargin, BigDecimal profit) {
         this.date = date;
         this.orderNum = orderNum;
+        this.perOrderPrice = perOrderPrice;
         if (order != null) {
             if (order.userType == AccountType.CONSUMER) {
                 this.loginName = "一百券";
@@ -273,7 +281,8 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
             ConsumerFlowReportCondition condition) {
 
         //paidAt ecoupon  resaler
-        String sql = "select new models.ConsumerFlowReport(str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),count(r.order.id), sum(r.salePrice-r.rebateValue/r.buyNumber),count(r.buyNumber)" +
+        String sql = "select new models.ConsumerFlowReport(str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),count(r.order.id)" +
+                " ,sum(r.salePrice-r.rebateValue/r.buyNumber)/count(r.order.id), sum(r.salePrice-r.rebateValue/r.buyNumber),count(r.buyNumber)" +
                 ",sum(r.originalPrice),sum((r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio)/100" +
                 ",(sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
                 ",sum(r.salePrice-r.rebateValue/r.buyNumber)-sum((r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio)/100-sum(r.originalPrice)" +
@@ -289,7 +298,8 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
 
 
         //paidAt ecoupon  consumer  (order not necessary but for not tuple)
-        sql = "select new models.ConsumerFlowReport(r.order,sum(r.salePrice-r.rebateValue/r.buyNumber), count(r.order.id),str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),count(r.buyNumber)" +
+        sql = "select new models.ConsumerFlowReport(r.order,sum(r.salePrice-r.rebateValue/r.buyNumber), count(r.order.id)," +
+                " sum(r.salePrice-r.rebateValue/r.buyNumber)/count(r.order.id),str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),count(r.buyNumber)" +
                 ",sum(r.originalPrice)" +
                 ",(sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue/r.buyNumber)*100" +
                 ",sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice)" +
@@ -304,7 +314,8 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
 
 
         //sendAt real resaler
-        sql = "select new models.ConsumerFlowReport(str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),sum(r.order.id),count(r.buyNumber),sum(r.salePrice-r.rebateValue/r.buyNumber)" +
+        sql = "select new models.ConsumerFlowReport(str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),count(r.order.id)" +
+                " ,sum(r.salePrice-r.rebateValue/r.buyNumber)/count(r.order.id),count(r.buyNumber),sum(r.salePrice-r.rebateValue/r.buyNumber)" +
                 ",sum(r.originalPrice),sum((r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio)/100" +
                 ",(sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
                 ",sum(r.salePrice-r.rebateValue/r.buyNumber)-sum((r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio)/100-sum(r.originalPrice)" +
@@ -318,7 +329,8 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
         List<ConsumerFlowReport> sentResalerRealResultList = query.getResultList();
 
         //sendAt real consumer  (order not necessary)
-        sql = "select new models.ConsumerFlowReport(r.order,str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),sum(r.order.id),count(r.buyNumber),sum(r.salePrice-r.rebateValue/r.buyNumber)" +
+        sql = "select new models.ConsumerFlowReport(r.order,str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),count(r.order.id)," +
+                " sum(r.salePrice-r.rebateValue/r.buyNumber)/count(r.order.id),count(r.buyNumber),sum(r.salePrice-r.rebateValue/r.buyNumber)" +
                 ",sum(r.originalPrice)" +
                 ",(sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue/r.buyNumber)*100" +
                 ",sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice)" +
@@ -377,6 +389,8 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
                 item.consumedPrice = item.consumedPrice.add(paidItem.consumedPrice);
                 item.consumedNumber = item.consumedNumber + paidItem.consumedNumber;
                 item.totalCost = item.totalCost.add(paidItem.totalCost);
+                item.orderNum = item.orderNum + paidItem.orderNum;
+                item.perOrderPrice = item.salePrice.divide(BigDecimal.valueOf(item.orderNum), 2, RoundingMode.HALF_UP);
 
                 item.grossMargin = item.salePrice.subtract(item.totalCost).divide(item.salePrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
 
@@ -398,6 +412,9 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
                 item.realBuyNumber = paidItem.realBuyNumber;
                 BigDecimal totalSalesPrice = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice);
                 BigDecimal totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
+                BigDecimal totalSalePrice = item.salePrice.add(paidItem.realSalePrice);
+                item.orderNum = item.orderNum + paidItem.orderNum;
+                item.perOrderPrice = totalSalePrice.divide(BigDecimal.valueOf(item.orderNum), 2, RoundingMode.HALF_UP);
 
                 if (totalSalesPrice.compareTo(BigDecimal.ZERO) != 0) {
                     item.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
@@ -421,6 +438,9 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
                 item.realBuyNumber = item.realBuyNumber + paidItem.realBuyNumber;
                 BigDecimal totalSalesPrice = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice);
                 BigDecimal totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
+                BigDecimal totalSalePrice = item.salePrice.add(paidItem.realSalePrice).add(item.realSalePrice);
+                item.orderNum = item.orderNum + paidItem.orderNum;
+                item.perOrderPrice = totalSalePrice.divide(BigDecimal.valueOf(item.orderNum), 2, RoundingMode.HALF_UP);
 
                 if (totalSalesPrice.compareTo(BigDecimal.ZERO) != 0) {
                     item.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
