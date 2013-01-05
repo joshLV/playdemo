@@ -339,7 +339,8 @@ GET     /keywords                               OperateSearchHotKeywords.index
 
 # 预付款
 GET     /prepayments                            OperatePrepayments.index
-GET     /prepayments/add                        OperatePrepayments.add
+POST    /prepayments                            OperatePrepayments.create
+GET     /prepayments/new                        OperatePrepayments.add
 GET     /prepayments/{id}                       OperatePrepayments.show
 DELETE  /prepayments/{id}                       OperatePrepayments.delete
 GET     /prepayments/{id}/edit                  OperatePrepayments.edit
