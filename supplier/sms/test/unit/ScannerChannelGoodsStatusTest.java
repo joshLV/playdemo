@@ -1,8 +1,10 @@
 package unit;
 
 import factory.FactoryBoy;
+import models.job.ScannerChannelGoodsStatusJob;
 import models.sales.ChannelGoodsInfo;
 import org.junit.Before;
+import org.junit.Test;
 import play.test.UnitTest;
 
 /**
@@ -19,8 +21,10 @@ public class ScannerChannelGoodsStatusTest extends UnitTest {
         FactoryBoy.deleteAll();
     }
 
-//    public void test_Job() {
-//
-//    }
+    @Test
+    public void test_Job() {
+        ScannerChannelGoodsStatusJob job = new ScannerChannelGoodsStatusJob();
+        job.doJob();
+    }
 
 }
