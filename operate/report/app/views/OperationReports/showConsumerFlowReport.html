@@ -55,21 +55,21 @@
 
     });
 
-    function channelReportExcel() {
-        $("#form").attr("action", "@{OperationReports.channelReportExcelOut()}");
+    function consumerFlowReportExcel() {
+        $("#form").attr("action", "@{OperationReports.ConsumerFlowReportExcelOut()}");
         $("#form").attr("method", "get");
         $("#form").submit();
     }
     ;
 
-    function channelReportWithPrivilegeExcel() {
-        $("#form").attr("action", "@{OperationReports.channelReportWithPrivilegeExcelOut()}");
+    function consumerFlowReportWithPrivilegeExcel() {
+        $("#form").attr("action", "@{OperationReports.ConsumerFlowReportWithPrivilegeExcelOut()}");
         $("#form").attr("method", "get");
         $("#form").submit();
     }
     ;
 
-    function flowReport() {
+    function consumerFlowReport() {
         $("#form").attr("action", "@{OperationReports.showConsumerFlowReport()}");
         $("#form").attr("method", "get");
         $("#form").submit();
@@ -130,11 +130,12 @@
     <input type="text" id="condition_end" class="input-medium Wdate" name="condition.endAt"
            onfocus="WdatePicker({readOnly:true})" value="${condition.endAt?.format()}">
 
-    <button type="submit" class="btn btn-primary" id="search" onclick="flowReport()">搜索</button>
+    <button type="submit" class="btn btn-primary" id="search" onclick="consumerFlowReport()">搜索</button>
     <div style="float:right">
-        <button class="btn btn-primary" id="searchbtn" onclick="channelReportExcel()">导出报表</button>
+        <button class="btn btn-primary" id="searchbtn" onclick="consumerFlowReportExcel()">导出报表</button>
     #{if hasSeeReportProfitRight == true}
-        <button class="btn btn-primary" id="searchbtn" onclick="channelReportWithPrivilegeExcel()">导出报表附带利润</button>
+        <button class="btn btn-primary" id="searchbtn" onclick="consumerFlowReportWithPrivilegeExcel()">导出报表附带利润
+        </button>
     #{/if}
     </div>
     <ul class="nav nav-pills">
@@ -191,7 +192,6 @@
 #{set i:0/}
 %{
     baseUrl=play.Play.configuration.getProperty("uri.operate_business");
-
     }%
 #{paginate.list items:reportPage, as:'report'}
 %{

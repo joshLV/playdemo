@@ -481,10 +481,6 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
             resultList.add(map.get(key));
         }
 
-//        for (ConsumerFlowReport c : resultList) {
-//            System.out.println("profit>>>>" + c.profit);
-//        }
-
         return resultList;
     }
 

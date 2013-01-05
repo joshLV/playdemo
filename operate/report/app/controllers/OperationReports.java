@@ -646,6 +646,121 @@ public class OperationReports extends Controller {
         render(resultList);
     }
 
+    public static void consumerFlowReportWithPrivilegeExcelOut(ConsumerFlowReportCondition condition) {
+        if (condition == null) {
+            condition = new ConsumerFlowReportCondition();
+        }
+        String page = request.params.get("page");
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "客流报表_" + System.currentTimeMillis() + ".xls");
+
+        List<ConsumerFlowReport> resultList = null;
+        resultList = ConsumerFlowReport.query(condition);
+
+
+        for (ConsumerFlowReport report : resultList) {
+//            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
+//            report.grossMargin = tempGrossMargin;
+            if (report.grossMargin == null) {
+                report.grossMargin = BigDecimal.ZERO;
+            }
+
+            DecimalFormat df = new DecimalFormat("0.00");
+            report.grossMargin = new BigDecimal(df.format(report.grossMargin));
+            if (report.refundPrice == null) {
+                report.refundPrice = BigDecimal.ZERO;
+            } else {
+                report.refundPrice = new BigDecimal(df.format(report.refundPrice));
+            }
+            if (report.realRefundPrice == null) {
+                report.realRefundPrice = BigDecimal.ZERO;
+            } else {
+                report.realRefundPrice = new BigDecimal(df.format(report.realRefundPrice));
+            }
+            if (report.consumedPrice == null) {
+                report.consumedPrice = BigDecimal.ZERO;
+            } else {
+                report.consumedPrice = new BigDecimal(df.format(report.consumedPrice));
+            }
+            if (report.channelCost == null) {
+                report.channelCost = BigDecimal.ZERO;
+            } else {
+                report.channelCost = new BigDecimal(df.format(report.channelCost));
+            }
+
+            if (report.profit == null) {
+                report.profit = BigDecimal.ZERO;
+            } else {
+                report.profit = new BigDecimal(df.format(report.profit));
+            }
+            if (report.perOrderPrice == null) {
+                report.perOrderPrice = BigDecimal.ZERO;
+            } else {
+
+                report.perOrderPrice = new BigDecimal(df.format(report.perOrderPrice));
+            }
+            if (report.salePrice == null) {
+                report.salePrice = BigDecimal.ZERO;
+            } else {
+                report.salePrice = new BigDecimal(df.format(report.salePrice));
+            }
+            if (report.realSalePrice == null) {
+                report.realSalePrice = BigDecimal.ZERO;
+            } else {
+                report.realSalePrice = new BigDecimal(df.format(report.realSalePrice));
+            }
+        }
+        render(resultList);
+    }
+
+    public static void consumerFlowReportExcelOut(ConsumerFlowReportCondition condition) {
+        if (condition == null) {
+            condition = new ConsumerFlowReportCondition();
+        }
+
+        String page = request.params.get("page");
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "客流报表_" + System.currentTimeMillis() + ".xls");
+
+        List<ConsumerFlowReport> resultList = ConsumerFlowReport.query(condition);
+        DecimalFormat df = new DecimalFormat("0.00");
+        for (ConsumerFlowReport report : resultList) {
+            if (report.refundPrice == null) {
+                report.refundPrice = BigDecimal.ZERO;
+            } else {
+                report.refundPrice = new BigDecimal(df.format(report.refundPrice));
+            }
+            if (report.realRefundPrice == null) {
+                report.realRefundPrice = BigDecimal.ZERO;
+            } else {
+                report.realRefundPrice = new BigDecimal(df.format(report.realRefundPrice));
+            }
+            if (report.consumedPrice == null) {
+                report.consumedPrice = BigDecimal.ZERO;
+            } else {
+                report.consumedPrice = new BigDecimal(df.format(report.consumedPrice));
+            }
+            if (report.perOrderPrice == null) {
+                report.perOrderPrice = BigDecimal.ZERO;
+            } else {
+                report.perOrderPrice = new BigDecimal(df.format(report.perOrderPrice));
+            }
+            if (report.salePrice == null) {
+                report.salePrice = BigDecimal.ZERO;
+            } else {
+                report.salePrice = new BigDecimal(df.format(report.salePrice));
+            }
+            if (report.realSalePrice == null) {
+                report.realSalePrice = BigDecimal.ZERO;
+            } else {
+                report.realSalePrice = new BigDecimal(df.format(report.realSalePrice));
+            }
+
+
+        }
+        render(resultList);
+    }
+
 
     private static int getPageNumber() {
         String page = request.params.get("page");
