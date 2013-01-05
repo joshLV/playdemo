@@ -1,11 +1,15 @@
 package models.resale;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
+import models.order.OuterOrderPartner;
+import models.sales.Goods;
+import models.sales.GoodsStatus;
+import models.sales.MaterialType;
+import org.apache.commons.lang.StringUtils;
+import play.db.jpa.JPA;
+import play.db.jpa.Model;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -14,18 +18,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
-
-import models.order.OuterOrderPartner;
-import models.sales.Goods;
-import models.sales.GoodsStatus;
-import models.sales.MaterialType;
-
-import org.apache.commons.lang.StringUtils;
-
-import play.db.jpa.JPA;
-import play.db.jpa.Model;
-
-import com.uhuila.common.util.DateUtil;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "resaler_fav")
@@ -83,6 +79,12 @@ public class ResalerFav extends Model {
      */
     public String outerStatus;
 
+    /**
+     * 逻辑删除,0:未删除，1:已删除
+     */
+    @Enumerated(EnumType.ORDINAL)
+    public DeletedStatus deleted;
+
     public ResalerFav(Resaler resaler, Goods goods) {
         this.resaler = resaler;
         this.goods = goods;
@@ -111,6 +113,9 @@ public class ResalerFav extends Model {
         StringBuilder sql = new StringBuilder();
         Map<String, Object> paramsMap = new HashMap<>();
         sql.append("select f from ResalerFav f where 1=1");
+
+        sql.append(" and f.deleted = :deleted");
+        paramsMap.put("deleted", DeletedStatus.UN_DELETED);
 
         sql.append(" and f.goods.materialType = :materialType");
         paramsMap.put("materialType", MaterialType.ELECTRONIC);
@@ -151,7 +156,6 @@ public class ResalerFav extends Model {
         for (Map.Entry<String, Object> entry : paramsMap.entrySet()) {
             result.setParameter(entry.getKey(), entry.getValue());
         }
-
         return result.getResultList();
     }
 
