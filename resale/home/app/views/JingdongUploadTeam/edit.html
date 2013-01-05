@@ -50,6 +50,23 @@
         <input type="submit" value="延长有效期">
     </form>
 
+    <form action="/jd-update/big-img" method="POST">
+        <input type="hidden" name="id" value="${fav.id}">
+        <h3>团购主图 </h3>
+        <p>此为图片链接地址http开头，图片尺寸为440*280，图片大小在100kb以内</p>
+        <p><input type="text" name="bigImg" size="100"></p>
+
+        <input type="submit" value="修改主图">
+    </form>
+
+    <form action="/jd-update/partners" method="POST">
+        <input type="hidden" name="id" value="${fav.id}">
+        <h3>商家信息 </h3>
+        <p>自动上传我们所有的商家信息</p>
+
+        <input type="submit" value="更新商家信息">
+    </form>
+
 <br/>
 
 </div>
