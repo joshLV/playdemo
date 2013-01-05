@@ -203,10 +203,12 @@
         #{set i:i+1/}
         <td>${report?.date}</td>
         <td style="text-align:right;">
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}
+            &condition.paidAtBegin=${report?.date}&condition.paidAtEnd=${report?.date}"
                target="_blank">${report?.buyNumber}</a>
             /
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}
+            &condition.paidAtBegin=${report?.date}&condition.paidAtEnd=${report?.date}"
                target="_blank">${report?.salePrice?.formatCurrency('CNY')}</a>
         </td>
         <td style="text-align:right;">
@@ -216,19 +218,23 @@
 
 
         <td style="text-align:right;">
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}
+            &condition.status=REFUND&condition.refundAtBegin=${report?.date}&condition.refundAtEnd=${report?.date}"
                target="_blank">${report?.refundNumber}</a>
             /
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND
+            &condition.refundAtBegin=${report?.date}&condition.refundAtEnd=${report?.date}"
                target="_blank">${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}</a>
         </td>
         <td style="text-align:right;">
         </td>
         <td style="text-align:right;">
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}
+            &condition.status=CONSUMED&condition.consumedAtBegin=${report?.date}&condition.consumedAtEnd=${report?.date}"
                target="_blank">${report?.consumedNumber}</a>
             /
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}
+            &condition.status=CONSUMED&condition.consumedAtBegin=${report?.date}&condition.consumedAtEnd=${report?.date}"
                target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
         </td>
         <td>

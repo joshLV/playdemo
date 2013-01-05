@@ -755,8 +755,6 @@ public class OperationReports extends Controller {
             } else {
                 report.realSalePrice = new BigDecimal(df.format(report.realSalePrice));
             }
-
-
         }
         render(resultList);
     }
