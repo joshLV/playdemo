@@ -10,7 +10,8 @@
             </li>
         </ul>
 
-        <h3 #{if request.url.contains("/user-sequences")||request.url.contains("/withdraw")||request.url.contains("/cash-coupon")||request.url.equals("/user-coins")}class="active"#{/if}>
+        <h3 #{if request.url.contains("/user-sequences") ||request.url.contains("/withdraw")
+                || request.url.contains("/cash-coupon") || request.url.contains("user-coins")}class="active"#{/if}>
             我的资金</h3>
         <ul>
             <li><a #{if request.url.contains("/user-sequences")}class="current"#{/if} href="@{UserSequences.index()}">»
