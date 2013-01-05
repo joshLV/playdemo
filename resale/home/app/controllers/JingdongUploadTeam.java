@@ -250,6 +250,76 @@ public class JingdongUploadTeam extends Controller {
 
     }
 
+    /**
+     * 修改主图
+     */
+    public static void updateBigImg(Long id, String bigImg) {
+        ResalerFav fav = ResalerFav.findById(id);
+
+        String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/updateBImage.action";
+        Template template = TemplateLoader.load("jingdong/groupbuy/request/updateBImageRequest.xml");
+        Map<String, Object> params = new HashMap<>();
+        params.put("venderTeamId",  fav.lastLinkId.toString());
+        params.put("jdTeamId",  fav.thirdGroupbuyId.toString());
+        params.put("imgUrl", bigImg);
+
+        String data = template.render(params);
+        Logger.info("request, %s", data);
+
+        String restRequest = JDGroupBuyUtil.makeRequestRest(data);
+
+        WebServiceClient client = WebServiceClientFactory
+                .getClientHelper();
+
+        String responseResult = client.postStringWithBody("jingdong_update_bigimg", url, restRequest,
+                fav.goods.id.toString(), fav.goods.shortName);
+
+        JDRest<CommonUpdateResponse> uploadTeamRest = new JDRest<>();
+        if (uploadTeamRest.parse(responseResult, new CommonUpdateResponse())) {
+            Logger.info("update jingdong fav:" + id + " bigimg:" + bigImg + " success.");
+        }
+        render("JingdongUploadTeam/result.html", uploadTeamRest);
+    }
+
+    /**
+     * 修改商家信息
+     */
+    public static void updatePartners(Long id) {
+        ResalerFav fav = ResalerFav.findById(id);
+
+        Collection<Shop> shops = fav.goods.getShopList();
+        for (Shop shop : shops) {
+            if (StringUtils.isBlank(shop.phone)) {
+                render(shop.name + " 门店缺少电话信息，需要先去运营后台补充一下"); return;
+            }
+        }
+
+        String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/updateTeamPartner.action";
+        Template template = TemplateLoader.load("jingdong/groupbuy/request/updateTeamPartnerRequest.xml");
+        Map<String, Object> params = new HashMap<>();
+        params.put("venderTeamId",  fav.lastLinkId.toString());
+        params.put("jdTeamId",  fav.thirdGroupbuyId.toString());
+        params.put("shops", shops);
+
+        String data = template.render(params);
+        Logger.info("request, %s", data);
+
+        String restRequest = JDGroupBuyUtil.makeRequestRest(data);
+
+        WebServiceClient client = WebServiceClientFactory
+                .getClientHelper();
+
+        String responseResult = client.postStringWithBody("jingdong_update_partners", url, restRequest,
+                fav.goods.id.toString(), fav.goods.shortName);
+
+        JDRest<CommonUpdateResponse> uploadTeamRest = new JDRest<>();
+        if (uploadTeamRest.parse(responseResult, new CommonUpdateResponse())) {
+            Logger.info("update jingdong fav:" + id + " partners success.");
+        }
+        render("JingdongUploadTeam/result.html", uploadTeamRest);
+    }
+
+
     public static void upload(Long venderTeamId, List<String> areas, List<String> subGroupIds) {
         Map<String, String> allParams = request.params.allSimple();
         allParams.remove("body");
