@@ -286,7 +286,7 @@ public class VerifiedECouponRefunds extends Controller {
         String userName = OperateRbac.currentUser().userName;
 
         //记录券历史信息
-        new CouponHistory(eCoupon, userName, "已消费券退款:" + refundComment, eCoupon.status, ECouponStatus.REFUND, null).save();
+        new CouponHistory(eCoupon, userName, "已消费券取消验证:" + refundComment, eCoupon.status, ECouponStatus.UNCONSUMED, null).save();
 
         // 更改券状态
         eCoupon.status = ECouponStatus.UNCONSUMED;

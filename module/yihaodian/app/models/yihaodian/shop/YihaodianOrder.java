@@ -110,15 +110,6 @@ public class YihaodianOrder extends Model{
     @Column(name = "good_receiver_mobile")
     public String goodReceiverMobile;
 
-    @Column(name = "fost_rebate")
-    public Float fostRebate;
-
-    @Column(name = "delivery_method_type")
-    public Integer deliveryMethodType;
-
-    @Column(name = "create_pay_time")
-    public Date createPayTime;
-
     @Column(name = "payment_confirm_date")
     public Date paymentConfirmDate;
 
@@ -127,9 +118,6 @@ public class YihaodianOrder extends Model{
 
     @Column(name = "pay_service_type")
     public Integer payServiceType;
-
-    @Column(name = "recompens_points")
-    public Float recompensPoints;
 
     // 订单摘要解析器
     public static YHDParser<YihaodianOrder> parser = new YHDParser<YihaodianOrder>() {
@@ -180,10 +168,6 @@ public class YihaodianOrder extends Model{
             order.deliveryDate = parseDate(baseInfoNode.elementTextTrim("deliveryDate"));
             order.expressNbr = baseInfoNode.elementTextTrim("merchantExpressNbr");
             order.receiveDate = parseDate(baseInfoNode.elementTextTrim("receiveDate"));
-            nodeText = baseInfoNode.elementTextTrim("deliveryMethodType");
-            if (nodeText != null && !nodeText.trim().equals("")){
-                order.deliveryMethodType = Integer.parseInt(nodeText);
-            }
 
             order.goodReceiverAddress = baseInfoNode.elementTextTrim("goodReceiverAddress");
             order.goodReceiverCity = baseInfoNode.elementTextTrim("goodReceiverCity");
@@ -193,16 +177,10 @@ public class YihaodianOrder extends Model{
             order.goodReceiverPhone = baseInfoNode.elementTextTrim("goodReceiverPhone");
             order.goodReceiverPostcode = baseInfoNode.elementTextTrim("goodReceiverPostCode");
             order.goodReceiverProvince = baseInfoNode.elementTextTrim("goodReceiverProvince");
-            try {
-                order.fostRebate = Float.parseFloat(baseInfoNode.elementTextTrim("orderFostRebate"));
-                order.promotionDiscount = new BigDecimal(baseInfoNode.elementTextTrim("orderPromotionDiscount"));
-                order.payServiceType = Integer.parseInt(baseInfoNode.elementTextTrim("payServiceType"));
-                order.recompensPoints = Float.parseFloat(baseInfoNode.elementTextTrim("recompensPoints"));
-            } catch (Exception e) {
-                //ignore
-            }
 
-            order.createPayTime = parseDate(baseInfoNode.elementTextTrim("orderCreatePayTime"));
+            order.promotionDiscount = new BigDecimal(baseInfoNode.elementTextTrim("orderPromotionDiscount"));
+            order.payServiceType = Integer.parseInt(baseInfoNode.elementTextTrim("payServiceType"));
+
             order.paymentConfirmDate = parseDate(baseInfoNode.elementTextTrim("orderPaymentConfirmDate"));
 
             //解析订单条目信息
