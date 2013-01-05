@@ -44,20 +44,11 @@ public class OrderItem extends Model {
     @Column(name = "original_price")
     public BigDecimal originalPrice;
 
-    @Column(name = "tax_rate")
-    public BigDecimal taxRate;
-
     @Column(name = "product_id")
     public Long productId;
 
-    @Column(name = "item_leaf")
-    public Integer itemLeaf;
-
     @Column(name = "merchantId")
     public Long merchantId;
-
-    @Column(name = "promote_type")
-    public Integer promoteType;
 
     @Column(name = "process_finish_date")
     public Date processFinishDate;
@@ -67,6 +58,9 @@ public class OrderItem extends Model {
 
     @Column(name = "outer_id")
     public Long outerId;
+
+    @Column(name = "group_flag")
+    public Integer groupFlag;//1表示团购产品 0 表示非团购产品
 
     public static YHDParser<OrderItem> parser = new YHDParser<OrderItem>() {
         @Override
@@ -78,11 +72,9 @@ public class OrderItem extends Model {
             orderItem.orderItemNum = Integer.parseInt(node.elementTextTrim("orderItemNum"));
             orderItem.orderItemPrice = new BigDecimal(node.elementTextTrim("orderItemPrice"));
             orderItem.originalPrice = new BigDecimal(node.elementTextTrim("originalPrice"));
-            orderItem.taxRate = new BigDecimal(node.elementTextTrim("taxRate"));
             orderItem.productId = Long.parseLong(node.elementTextTrim("productId"));
-            orderItem.itemLeaf = Integer.parseInt(node.elementTextTrim("isItemLeaf"));
             orderItem.merchantId = Long.parseLong(node.elementTextTrim("merchantId"));
-            orderItem.promoteType = Integer.parseInt(node.elementTextTrim("promoteType"));
+            orderItem.groupFlag = Integer.parseInt(node.elementTextTrim("groupFlag"));
             String outerId = node.elementTextTrim("outerId");
 
             if (StringUtils.isBlank(outerId)) {
