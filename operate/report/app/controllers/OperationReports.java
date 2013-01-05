@@ -118,8 +118,8 @@ public class OperationReports extends Controller {
 
 
         // 汇总
-//        ConsumerFlowReport summary = ConsumerFlowReport.getNetSummary(totalList);
-        render(condition, reportPage, hasSeeReportProfitRight);
+        ConsumerFlowReport summary = ConsumerFlowReport.summary(resultList);
+        render(condition, reportPage, hasSeeReportProfitRight, summary);
     }
 
 

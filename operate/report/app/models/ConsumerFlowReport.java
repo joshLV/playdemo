@@ -80,6 +80,8 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
      */
     public BigDecimal consumedPrice = BigDecimal.ZERO;
 
+    public BigDecimal refundAmount = BigDecimal.ZERO;
+
     /**
      * 应收款金额
      */
@@ -271,6 +273,20 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
         this.profit = profit;
     }
 
+    public ConsumerFlowReport(Long buyNumber) {
+        this.buyNumber = buyNumber;
+    }
+
+    public ConsumerFlowReport(BigDecimal totalAmount, BigDecimal refundAmount
+            , BigDecimal grossMargin, BigDecimal channelCost, BigDecimal profit) {
+        this.totalAmount = totalAmount;
+        this.refundAmount = refundAmount;
+        this.grossMargin = grossMargin;
+        this.channelCost = channelCost;
+        this.profit = profit;
+    }
+
+
     /**
      * 客流报表统计
      *
@@ -395,11 +411,8 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
                 item.grossMargin = item.salePrice.subtract(item.totalCost).divide(item.salePrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
 
                 item.channelCost = item.channelCost.add(paidItem.channelCost == null ? BigDecimal.ZERO : paidItem.channelCost);
-                System.out.println("item.protit>>>>" + item.profit);
                 item.profit = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice)
                         .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).subtract(item.channelCost);
-                System.out.println("item.protit2>>>>" + item.profit);
-                item.totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
             }
         }
 
@@ -412,6 +425,7 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
                 item.realBuyNumber = paidItem.realBuyNumber;
                 BigDecimal totalSalesPrice = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice);
                 BigDecimal totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
+
                 BigDecimal totalSalePrice = item.salePrice.add(paidItem.realSalePrice);
                 item.orderNum = item.orderNum + paidItem.orderNum;
                 item.perOrderPrice = totalSalePrice.divide(BigDecimal.valueOf(item.orderNum), 2, RoundingMode.HALF_UP);
@@ -421,7 +435,6 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
                 }
 
                 item.channelCost = item.channelCost.add(paidItem.channelCost);
-                System.out.println("sent resale  profit>>>" + item.profit);
                 item.profit = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice)
                         .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).subtract(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
 
@@ -438,6 +451,7 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
                 item.realBuyNumber = item.realBuyNumber + paidItem.realBuyNumber;
                 BigDecimal totalSalesPrice = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice);
                 BigDecimal totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
+
                 BigDecimal totalSalePrice = item.salePrice.add(paidItem.realSalePrice).add(item.realSalePrice);
                 item.orderNum = item.orderNum + paidItem.orderNum;
                 item.perOrderPrice = totalSalePrice.divide(BigDecimal.valueOf(item.orderNum), 2, RoundingMode.HALF_UP);
@@ -447,14 +461,8 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
                 }
 
                 item.channelCost = item.channelCost.add(paidItem.channelCost == null ? BigDecimal.ZERO : paidItem.channelCost);
-                System.out.println("sent  consumer profit>>>" + item.profit);
-                System.out.println("paidItem.realSalePrice>>>>" + paidItem.realSalePrice);
-                System.out.println(" item.salePrice>>>>" + item.salePrice);
-                System.out.println("item.totalcost>>>" + item.totalCost);
-                System.out.println("paidItem.totalcost>>>" + paidItem.totalCost);
                 item.profit = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice)
                         .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).subtract(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost).subtract(item.channelCost);
-                System.out.println("sent 222 consumer profit>>>" + item.profit);
 
                 item.totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
             }
@@ -493,6 +501,54 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
         return resultList;
     }
 
+    public static ConsumerFlowReport summary(List<ConsumerFlowReport> resultList) {
+        if (resultList == null || resultList.size() == 0) {
+            return new ConsumerFlowReport(0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO, 0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO
+                    , BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+        }
+        long refundCount = 0l;
+        long consumedCount = 0l;
+        BigDecimal consumedPrice = BigDecimal.ZERO;
+        long buyCount = 0l;
+        long realBuyCount = 0l;
+        BigDecimal amount = BigDecimal.ZERO;
+        BigDecimal realAmount = BigDecimal.ZERO;
+        BigDecimal refundPrice = BigDecimal.ZERO;
+        BigDecimal totRefundPrice = BigDecimal.ZERO;
+        BigDecimal shouldGetPrice = BigDecimal.ZERO;
+        BigDecimal haveGetPrice = BigDecimal.ZERO;
+        BigDecimal grossMargin = BigDecimal.ZERO;
+        BigDecimal channelCost = BigDecimal.ZERO;
+        BigDecimal profit = BigDecimal.ZERO;
+        BigDecimal totolSalePrice = BigDecimal.ZERO;
+        BigDecimal totalCost = BigDecimal.ZERO;
+        for (ConsumerFlowReport item : resultList) {
+
+            buyCount += item.buyNumber;
+            amount = amount.add(item.salePrice == null ? BigDecimal.ZERO : item.salePrice);
+            realBuyCount += item.realBuyNumber;
+            realAmount = realAmount.add(item.realSalePrice == null ? BigDecimal.ZERO : item.realSalePrice);
+            totRefundPrice = item.refundPrice == null ? BigDecimal.ZERO : item.refundPrice;
+            refundPrice = refundPrice.add(totRefundPrice);
+            refundCount += item.refundNumber;
+            consumedCount += item.consumedNumber;
+
+            if (item.consumedPrice != null) {
+                consumedPrice = consumedPrice.add(item.consumedPrice);
+            }
+            shouldGetPrice = amount.subtract(refundPrice);
+            haveGetPrice = BigDecimal.ZERO;
+            totolSalePrice = totolSalePrice.add(item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(item.realSalePrice == null ? BigDecimal.ZERO : item.realSalePrice));
+            totalCost = totalCost.add(item.totalCost == null ? BigDecimal.ZERO : item.totalCost);
+            channelCost = channelCost.add(item.channelCost == null ? BigDecimal.ZERO : item.channelCost);
+            profit = profit.add(item.profit == null ? BigDecimal.ZERO : item.profit);
+        }
+        if (totolSalePrice.compareTo(BigDecimal.ZERO) != 0) {
+            grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+        }
+        return new ConsumerFlowReport(buyCount, amount, realBuyCount, realAmount, refundPrice, refundCount, consumedPrice, consumedCount, shouldGetPrice, haveGetPrice
+                , grossMargin, channelCost, profit);
+    }
 
     private static String getReportKey(ConsumerFlowReport refoundItem) {
         return refoundItem.date;
