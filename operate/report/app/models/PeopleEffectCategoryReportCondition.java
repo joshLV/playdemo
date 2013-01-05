@@ -1,5 +1,6 @@
 package models;
 
+import com.uhuila.common.util.DateUtil;
 import models.accounts.AccountType;
 
 import java.io.Serializable;
@@ -18,6 +19,8 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
     public Date beginAt = com.uhuila.common.util.DateUtil.getBeginOfDay();
     public Date endAt = com.uhuila.common.util.DateUtil.getEndOfDay(new Date());
     public String interval = "-1d";
+    public String userName;
+    public String jobNumber;
     public AccountType accountType;
     private Map<String, Object> paramMap = new HashMap<>();
 
@@ -32,7 +35,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
         }
         if (endAt != null) {
             condBuilder.append(" and r.order.paidAt < :createdAtEnd");
-            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
         }
 
         return condBuilder.toString();
@@ -51,12 +54,11 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
         }
         if (endAt != null) {
             condBuilder.append(" and r.order.paidAt < :createdAtEnd");
-            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
         }
 
         return condBuilder.toString();
     }
-
 
     public String getFilterConsumedAt() {
         StringBuilder condBuilder = new StringBuilder(" where e.goods.supplierId =s.id and s.deleted=0 and s.salesId=ou.id and ou.deleted=0 and e.goods.isLottery=false and e.status = models.order.ECouponStatus.CONSUMED");

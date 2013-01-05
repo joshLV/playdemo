@@ -92,7 +92,7 @@
                     $("#condition_end").val(today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + endDay.getDate());
                 }
                 $("#condition_interval").val(interval);
-
+                $("#form").attr("action", "@{OperationReports.showPeopleEffectCategoryReport()}");
                 $("#form").submit();
                 return false;
             });
@@ -196,30 +196,29 @@
     <input type="hidden" id="hasProfitRight" name="hasProfitRight" value="false"/>
 </form>
 
-*{<div class="alert alert-success" style="margin-bottom: 10px;">}*
-*{<span>}*
-*{在此期间 共售出券：<b>${channelSummary?.amount?.formatCurrency("CNY")}</b> (${channelSummary?.totalNumber}件),}*
-*{售出实物：<b>${channelSummary?.realAmount == null ?'￥0.00':channelSummary?.realAmount?.formatCurrency('CNY')}</b> (${channelSummary?.realTotalNumber}}*
-*{件),}*
-*{退款券：<b>${channelSummary?.totalRefundPrice?.formatCurrency('CNY')}</b> (${channelSummary?.refundNumber}}*
-*{件),}*
-*{消费券：<b>${channelSummary?.consumedPrice?.formatCurrency("CNY")}</b> (${channelSummary?.consumedNumber}}*
-*{件)}*
-*{<br/>}*
-*{&nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;}*
-*{毛利率：<b>${(channelSummary?.grossMargin?:0).format('#')}%</b>}*
-*{渠道成本：<b>${(channelSummary?.channelCost?:0).formatCurrency('CNY')}</b>}*
-*{净利润：<b>}*
+<div class="alert alert-success" style="margin-bottom: 10px;">
+<span>
+在此期间 共售出券：<b>${summary?.totalAmount?.formatCurrency("CNY")}</b> (${summary?.totalNumber}件),
+售出实物：<b>${summary?.realSalePrice== null ?'￥0.00':summary?.realSalePrice?.formatCurrency('CNY')}</b> (${summary?.realBuyNumber}
+    件),
+退款券：<b>${summary?.refundPrice?.formatCurrency('CNY')}</b> (${summary?.refundNumber}
+    件),
+消费券：<b>${summary?.consumedPrice?.formatCurrency("CNY")}</b> (${summary?.consumedNumber}
+    件)
+<br/>
+&nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;
+毛利率：<b>${(summary?.grossMargin?:0).format('#')}%</b>
+净利润：<b>
 
-*{#{if channelSummary.profit != null && channelSummary.profit!=0}}*
-*{￥${(channelSummary?.profit?:0).format('#0.00')}}*
-*{#{/if}}*
-*{#{else}}*
-*{￥0}*
-*{#{/else}}*
-*{</b>}*
-*{</span>}*
-*{</div>}*
+#{if summary.profit != null && summary.profit!=0}
+    ￥${(summary?.profit?:0).format('#0.00')}
+#{/if}
+#{else}
+    ￥0
+#{/else}
+</b>
+</span>
+</div>
 
 <table class="table table-striped table-bordered table-condensed" id="tab">
     <thead>
@@ -241,9 +240,9 @@
 
 %{
     baseUrl=play.Play.configuration.getProperty("uri.operate_business");
-
     }%
 #{paginate.list items:reportPage, as:'report'}
+
     <tr>
         #{if report?.code != "999"}
             <td>${report?.operateUser?.jobNumber}</td>
@@ -252,18 +251,18 @@
             <td>${report?.name}</td>
         #{/if}
         #{else}
-            <td colspan="3" bgcolor="#add8e6" style="text-align:center;"> 小计</td>
+            <td colspan="4" bgcolor="#add8e6" style="text-align:center;"> 小计</td>
         #{/else}
         <td #{if report?.code == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
             #{if report?.code == "999"}
-                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
+                <a href="${baseUrl}/coupons?condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
                    target="_blank">${report?.buyNumber}</a>
                 /
-                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
+                <a href="${baseUrl}/coupons?condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
                    target="_blank">${report?.totalAmount?.formatCurrency('CNY')}</a>
             #{/if}
             #{else}
-            ${report?.buyNumber} / ${report?.totalAmount?.formatCurrency('CNY')}
+            ${report?.buyNumber} / ${report?.salePrice?.formatCurrency('CNY')}
             #{/else}
         </td>
         <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if}  style="text-align:right;">

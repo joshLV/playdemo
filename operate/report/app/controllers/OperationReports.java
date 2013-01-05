@@ -129,12 +129,11 @@ public class OperationReports extends Controller {
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
 
         List<PeopleEffectCategoryReport> resultList = PeopleEffectCategoryReport.query(condition);
-
         // 分页
         ValuePaginator<PeopleEffectCategoryReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
 
-
-        render(condition, reportPage, hasSeeReportProfitRight);
+        PeopleEffectCategoryReport summary = PeopleEffectCategoryReport.summary(reportPage);
+        render(condition, reportPage, hasSeeReportProfitRight, summary);
     }
 
     @ActiveNavigation("channel_category_reports")
