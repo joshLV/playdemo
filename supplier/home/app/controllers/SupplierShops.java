@@ -113,6 +113,7 @@ public class SupplierShops extends Controller {
         Shop sp = Shop.findById(id);
         if (Validation.hasErrors()) {
             shop.id = id;
+            renderParams(shop);
             render("SupplierShops/edit.html", shop, id);
         }
         if (shop.areaId == null) {

@@ -32,7 +32,7 @@ public class PrepaymentReport extends Model {
     public BigDecimal amount;  //预付款金额
     public BigDecimal soldAmount;  //已销售金额
     public BigDecimal consumedAmount;        //已消费金额
-    public BigDecimal balance;     //预付款余额
+    public BigDecimal availableBalance;     //可用预付款
     public Date effectiveAt;//预付款开始日
     public Date expireAt;//预付款到期日
     public BigDecimal consumedProcess;//消费进度
@@ -52,7 +52,6 @@ public class PrepaymentReport extends Model {
                 prepayment.supplier.fullName + "(" + prepayment.supplier.otherName + ")"
                 : prepayment.supplier.fullName;
         this.amount = prepayment.amount;
-        this.balance = prepayment.getBalance();
         this.effectiveAt = prepayment.effectiveAt;
         this.expireAt = prepayment.expireAt;
     }
@@ -151,6 +150,8 @@ public class PrepaymentReport extends Model {
             PrepaymentReport report = new PrepaymentReport(prepayment);
             report.soldAmount = OrderItems.getSoldAmount(prepayment);
             report.consumedAmount = ECoupon.getConsumedAmount(prepayment);
+            report.availableBalance = prepayment.getAvailableBalance(report.consumedAmount);
+
             if (report.amount.compareTo(BigDecimal.ZERO) > 0) {
                 report.consumedProcess = report.consumedAmount.divide(report.amount, 4, RoundingMode.CEILING).multiply(ONE_HUNDRED);
             }

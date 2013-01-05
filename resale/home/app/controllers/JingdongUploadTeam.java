@@ -8,10 +8,12 @@ import com.uhuila.common.util.DateUtil;
 import controllers.modules.resale.cas.SecureCAS;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.jingdong.groupbuy.JDRest;
+import models.jingdong.groupbuy.response.CommonUpdateResponse;
 import models.jingdong.groupbuy.response.IdNameResponse;
 import models.jingdong.groupbuy.response.UploadTeamResponse;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
+import models.resale.ResalerFav;
 import models.sales.Goods;
 import models.sales.GoodsDeployRelation;
 import models.sales.GoodsThirdSupport;
@@ -20,10 +22,13 @@ import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.libs.WS;
+import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.With;
 import play.templates.Template;
 import play.templates.TemplateLoader;
+import util.ws.WebServiceClient;
+import util.ws.WebServiceClientFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,11 +47,16 @@ import java.util.Map;
 public class JingdongUploadTeam extends Controller {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
-    public static void prepare(Long goodsId) {
+    @Before
+    public static void checkJingDong() {
         Resaler resaler = SecureCAS.getResaler();
         if (!Resaler.JD_LOGIN_NAME.equals(resaler.loginName)) {
+            Logger.warn("the login name is not jingdong");
             error("there is nothing you can do");
         }
+    }
+
+    public static void prepare(Long goodsId) {
         Goods goods = Goods.findOnSale(goodsId);
 
         GoodsThirdSupport support = GoodsThirdSupport.getSupportGoods(goods, OuterOrderPartner.JD);
@@ -106,6 +116,139 @@ public class JingdongUploadTeam extends Controller {
         render(supplier, city, categories, subCategories, areaNames, shops);
     }
 
+    /**
+     * 修改已上架的界面
+     * @param goodsId
+     */
+    public static void edit(Long goodsId) {
+        Resaler resaler = SecureCAS.getResaler();
+
+        Goods goods = Goods.findOnSale(goodsId);
+
+        GoodsThirdSupport support = GoodsThirdSupport.getSupportGoods(goods, OuterOrderPartner.JD);
+        if (support == null) {
+            getGoodsItems(goods);
+        } else {
+            getGoodsSupportItems(support);
+        }
+
+        ResalerFav fav = ResalerFav.findByGoodsId(resaler, goods.id);
+
+        render(goods, fav);
+    }
+
+    /**
+     * 修改标题.
+     * @param id
+     * @param title
+     */
+    public static void updateTitle(Long id, String title) {
+        ResalerFav fav = ResalerFav.findById(id);
+
+        GoodsThirdSupport support = GoodsThirdSupport.getSupportGoods(fav.goods, OuterOrderPartner.JD);
+
+        JsonElement jsonElement = new JsonParser().parse(support.goodsData);
+        JsonObject jsonObject = jsonElement.getAsJsonObject();
+        jsonObject.remove("teamTitle");
+        jsonObject.addProperty("teamTitle", title);
+        support.goodsData = jsonObject.toString();
+
+        String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/updateTitle.action";
+        Template template = TemplateLoader.load("jingdong/groupbuy/request/updateTitleRequest.xml");
+        Map<String, Object> params = new HashMap<>();
+        params.put("venderTeamId",  fav.lastLinkId.toString());
+        params.put("jdTeamId",  fav.thirdGroupbuyId.toString());
+        params.put("teamTitle",  title);
+        String data = template.render(params);
+        Logger.info("request, %s", data);
+
+        String restRequest = JDGroupBuyUtil.makeRequestRest(data);
+
+        WebServiceClient client = WebServiceClientFactory
+                .getClientHelper();
+
+        String responseResult = client.postStringWithBody("jingdong_update_title", url, restRequest,
+                fav.goods.id.toString(), fav.goods.shortName);
+
+        JDRest<CommonUpdateResponse> uploadTeamRest = new JDRest<>();
+        if (uploadTeamRest.parse(responseResult, new CommonUpdateResponse())) {
+            Logger.info("update jingdong fav:" + id + " title:" + title + " success.");
+        }
+        render("JingdongUploadTeam/result.html", uploadTeamRest);
+    }
+
+    /**
+     * 更新商品详情.
+     * @param id
+     * @param detail
+     */
+    public static void updateDetail(Long id, String detail) {
+        ResalerFav fav = ResalerFav.findById(id);
+
+        GoodsThirdSupport support = GoodsThirdSupport.getSupportGoods(fav.goods, OuterOrderPartner.JD);
+
+        JsonElement jsonElement = new JsonParser().parse(support.goodsData);
+        JsonObject jsonObject = jsonElement.getAsJsonObject();
+        jsonObject.remove("teamDetail");
+        jsonObject.addProperty("teamDetail", detail);
+        support.goodsData = jsonObject.toString();
+
+        String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/updateDetail.action";
+        Template template = TemplateLoader.load("jingdong/groupbuy/request/updateDetailRequest.xml");
+        Map<String, Object> params = new HashMap<>();
+        params.put("venderTeamId",  fav.lastLinkId.toString());
+        params.put("jdTeamId",  fav.thirdGroupbuyId.toString());
+        params.put("notes", "修改");
+        params.put("teamDetail",  detail);
+        String data = template.render(params);
+        Logger.info("request, %s", data);
+
+        String restRequest = JDGroupBuyUtil.makeRequestRest(data);
+
+        WebServiceClient client = WebServiceClientFactory
+                .getClientHelper();
+
+        String responseResult = client.postStringWithBody("jingdong_update_detail", url, restRequest,
+                fav.goods.id.toString(), fav.goods.shortName);
+
+        JDRest<CommonUpdateResponse> uploadTeamRest = new JDRest<>();
+        if (uploadTeamRest.parse(responseResult, new CommonUpdateResponse())) {
+            Logger.info("update jingdong fav:" + id + " detail:" + detail + " success.");
+        }
+        render("JingdongUploadTeam/result.html", uploadTeamRest);
+    }
+
+    /**
+     * 延长有效期
+     */
+    public static void updateExpire(Long id, Date expireTime) {
+        ResalerFav fav = ResalerFav.findById(id);
+
+        String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/couponExtension.action";
+        Template template = TemplateLoader.load("jingdong/groupbuy/request/couponExtensionRequest.xml");
+        Map<String, Object> params = new HashMap<>();
+        params.put("venderTeamId",  fav.lastLinkId.toString());
+        params.put("jdTeamId",  fav.thirdGroupbuyId.toString());
+        params.put("expireTime", expireTime);
+
+        String data = template.render(params);
+        Logger.info("request, %s", data);
+
+        String restRequest = JDGroupBuyUtil.makeRequestRest(data);
+
+        WebServiceClient client = WebServiceClientFactory
+                .getClientHelper();
+
+        String responseResult = client.postStringWithBody("jingdong_update_expire", url, restRequest,
+                fav.goods.id.toString(), fav.goods.shortName);
+
+        JDRest<CommonUpdateResponse> uploadTeamRest = new JDRest<>();
+        if (uploadTeamRest.parse(responseResult, new CommonUpdateResponse())) {
+            Logger.info("update jingdong fav:" + id + " expire:" + expireTime + " success.");
+        }
+        render("JingdongUploadTeam/result.html", uploadTeamRest);
+
+    }
 
     public static void upload(Long venderTeamId, List<String> areas, List<String> subGroupIds) {
         Map<String, String> allParams = request.params.allSimple();
@@ -115,9 +258,7 @@ public class JingdongUploadTeam extends Controller {
             params.put(param.getKey(), param.getValue());
         }
         Resaler resaler = SecureCAS.getResaler();
-        if (!Resaler.JD_LOGIN_NAME.equals(resaler.loginName)) {
-            error("there is nothing you can do");
-        }
+
         Map<String, List<String>> areaMap = new HashMap<>();
         //构建商圈数据结构
         for (String area : areas) {
@@ -184,8 +325,13 @@ public class JingdongUploadTeam extends Controller {
         WS.HttpResponse response = WS.url(url).body(restRequest).post();
 
         JDRest<UploadTeamResponse> uploadTeamRest = new JDRest<>();
-        if (!uploadTeamRest.parse(response.getString(), new UploadTeamResponse())) {
-            render("JingdongUploadTeam/result.html", uploadTeamRest);
+        if (uploadTeamRest.parse(response.getString(), new UploadTeamResponse())) {
+            ResalerFav fav = ResalerFav.findByGoodsId(resaler, goods.id);
+            fav.lastLinkId = goodsMapping.linkId;
+            fav.thirdGroupbuyId = uploadTeamRest.data.jdTeamId;
+            fav.thirdUrl = "http://tuan.360buy.com/team-" + fav.thirdGroupbuyId + ".html";
+            fav.thirdCity = "京东";
+            fav.save();
         }
         render("JingdongUploadTeam/result.html", uploadTeamRest);
     }

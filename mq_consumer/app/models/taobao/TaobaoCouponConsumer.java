@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  */
 @OnApplicationStart(async = true)
 public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMessage> {
-    public static String PHONE_REGEX = "^1[3,5,8]\\d{9}$";
+    public static String PHONE_REGEX = "^1\\d{10}$";
 
     @Override
     protected int retries(){
@@ -40,7 +40,9 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
             //订单接收到，开始创建一百券订单，并告诉淘宝我们的订单信息
             Logger.info("start taobao coupon consumer send order");
-            if (outerOrder.ybqOrder != null || send(outerOrder)) {
+            if (outerOrder.ybqOrder != null) {
+                Logger.info("our order already created");
+            }else if (send(outerOrder)) {
                 List<ECoupon> couponList = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
                 for(ECoupon coupon : couponList) {
                     coupon.partner = ECouponPartner.TB;

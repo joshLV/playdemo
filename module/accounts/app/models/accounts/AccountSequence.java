@@ -211,8 +211,8 @@ public class AccountSequence extends Model {
 
     public static BigDecimal getVostroAmountTo(Account account, Date toDate) {
         BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
-                " account=? and sequenceFlag=? and createdAt<=? and settlementStatus=?",
-                account, AccountSequenceFlag.VOSTRO, toDate, SettlementStatus.UNCLEARED).first();
+                " account=? and sequenceFlag=? and settlementStatus=? and createdAt<=?",
+                account, AccountSequenceFlag.VOSTRO, SettlementStatus.UNCLEARED, toDate).first();
         return amount != null ? amount.abs() : BigDecimal.ZERO;
     }
 

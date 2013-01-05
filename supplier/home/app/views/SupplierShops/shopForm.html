@@ -15,15 +15,18 @@
 </div>
 <div class="field-group">
     <label>门店名称</label>
-    <input class="text" name="outlet-name" type="text" value="${shop?.name}"/>
+    <input class="text" name="shop.name" type="text" value="${shop?.name}"/>
+    <span class="error">#{error 'shop.name'/}</span>
 </div>
 <div class="field-group">
     <label>门店地址</label>
-    <input class="text" name="outlet-address" type="text" value="${shop?.address}"/>
+    <input class="text" name="shop.address" type="text" value="${shop?.address}"/>
+    <span class="error">#{error 'shop.address'/}</span>
 </div>
 <div class="field-group">
     <label>门店电话</label>
-    <input class="text" name="outlet-phone" type="text" value="${shop?.phone}"/>
+    <input class="text" name="shop.phone" type="text" value="${shop?.phone}"/>
+    <span class="error">#{error 'shop.phone'/}</span>
 </div>
 <div class="field-group">
     <input type="submit" class="btn" value="确定"/> <a href="/shops">取消</a>

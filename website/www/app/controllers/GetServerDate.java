@@ -7,10 +7,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * <p/>
- * User: yanjy
- * Date: 12-8-21
- * Time: 下午9:44
+ * 用于秒杀，得到当前服务器时间。
  */
 public class GetServerDate extends Controller {
     public static void time() {

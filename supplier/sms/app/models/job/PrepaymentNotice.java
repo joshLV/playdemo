@@ -38,7 +38,7 @@ public class PrepaymentNotice extends Job {
             List<Prepayment> prepayments = Prepayment.findNotExpiredBySupplier(supplier);
             for (Prepayment prepayment : prepayments) {
                 BigDecimal consumedAmount = ECoupon.getConsumedAmount(prepayment);  //已消费
-                BigDecimal availableBalance = prepayment.amount.subtract(consumedAmount);    //可用预付款
+                BigDecimal availableBalance = prepayment.getAvailableBalance(consumedAmount);    //可用预付款
                 if (availableBalance.compareTo(prepayment.amount.divide(BigDecimal.TEN)) < 0) {
                     sendNotification(prepayment, consumedAmount, availableBalance);
                     prepayment.warning = true;

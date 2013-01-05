@@ -20,7 +20,7 @@ import java.util.Map;
  * Date: 12/28/12
  * Time: 9:54 AM
  */
-public class SupplierUsersTest extends FunctionalTest {
+public class SupplierHomeUsersTest extends FunctionalTest {
     SupplierUser supplierUser;
 
     @Before

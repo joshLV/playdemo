@@ -60,12 +60,12 @@ body {
 #message .success {
     font-size: 22px;
     padding: 3px 60px 4px 10px;
-    border: 1px solid #9AC82B;
+    border: 1px solid #00c807;
     background-color: #f3f8de;
     border-radius: 3px;
 }
 #message .success p em {
-    color: #9AC82B;
+    color: #00c807;
 }
 #message .success p a {
     font-size: 22px;
@@ -140,6 +140,10 @@ body {
     border-radius: 2px;
     background-color: #006dcc;
     zoom: 1;
+}
+.error {
+    color: #B94A48;
+    font-size: 16px;
 }
 input.btn {
     width: 100px;

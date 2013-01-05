@@ -119,10 +119,10 @@
                     }
                     }%
                     <td class="action">
-                           #{list items:cityList, as:'city'}
-                        #{if favItem?.thirdUrl?.split(",").length>0}
-                            <a href="${favItem?.thirdUrl?.split(",")[city_index-1]}/${favItem?.thirdGroupbuyId}" target="_blank">${city}</a> |
-                        #{/if}
+                        #{list items:cityList, as:'city'}
+                            #{if favItem?.thirdUrl?.split(",").length>0}
+                                <a href="${favItem?.thirdUrl?.split(",")[city_index-1]}" target="_blank">${city}</a> |
+                            #{/if}
                         #{/list}
                     </td>
                     <td class="action">
@@ -143,6 +143,9 @@
                             #{else}
                                 | <a href="/jd-add/${favItem.goods.id}">发布到京东</a>
                             #{/else}
+                            #{if favItem.thirdGroupbuyId != null }
+                             | <a href="/jd-edit/${favItem.goods.id}">修改京东信息</a>
+                            #{/if}
                         #{/elseif}
                         #{elseif resaler.loginName == 'yihaodian'}
                             | <a href="/yhd-add/${favItem.goods.id}">发布到一号店</a>

@@ -492,9 +492,9 @@ public class CategorySalesReport {
         for (CategorySalesReport refundItem : totalRefundList) {
             CategorySalesReport item = totalMap.get(getTotalReportKey(refundItem));
             if (item == null) {
-                Goods goods = Goods.findById(refundItem.goods.id);
-                refundItem.originalPrice = goods.originalPrice;
-                refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
+//                Goods goods = Goods.findById(refundItem.goods.id);
+//                refundItem.originalPrice = goods.originalPrice;
+//                refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
                 totalMap.put(getTotalReportKey(refundItem), refundItem);
             } else {
                 item.refundAmount = refundItem.refundAmount;

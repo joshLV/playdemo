@@ -96,9 +96,9 @@ public class Prepayment extends Model {
         ModelPaginator<Prepayment> page;
         if (supplierId != null) {
             page = new ModelPaginator<>(Prepayment.class, "deleted = ? and supplier.id=?", DeletedStatus.UN_DELETED,
-                    supplierId).orderBy("supplier,createdAt desc");
+                    supplierId).orderBy("createdAt desc");
         } else {
-            page = new ModelPaginator<>(Prepayment.class, "deleted = ? ", DeletedStatus.UN_DELETED).orderBy("supplier,createdAt desc");
+            page = new ModelPaginator<>(Prepayment.class, "deleted = ? ", DeletedStatus.UN_DELETED).orderBy("createdAt desc");
         }
         page.setPageNumber(pageNumber);
         page.setPageSize(pageSize);
@@ -137,6 +137,15 @@ public class Prepayment extends Model {
             return amount;
         }
         return amount.subtract(withdrawAmount);
+    }
+
+    @Transient
+    public BigDecimal getAvailableBalance(BigDecimal consumedAmount) {
+        if (amount == null) {
+            return BigDecimal.ZERO;
+        }
+        final BigDecimal availableBalance = amount.subtract(consumedAmount);
+        return availableBalance.compareTo(BigDecimal.ZERO) > 0 ? availableBalance : BigDecimal.ZERO;
     }
 
     /**

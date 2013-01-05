@@ -95,6 +95,7 @@ jQuery(function ($) {
                 needClearList = false;
             }
         }
+        enterCoupon.focus();
     };
 
     /**
@@ -130,6 +131,7 @@ jQuery(function ($) {
                 $('.batch-verify').removeClass("disabled");
             },
             error: function (data) {
+                console.log("error:" + data);
                 window.location.href = '/verify';
             }
         });
@@ -201,7 +203,8 @@ jQuery(function ($) {
                     }
                 },
                 error: function(){
-                   window.location.href = '/verify';
+                    console.log("error:" + data);
+                    window.location.href = '/verify';
                 }
 
             });
