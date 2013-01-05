@@ -57,7 +57,7 @@ public class OperateVouchersTest extends FunctionalTest {
 
     @Test
     public void testIndexVoucherExchangeType() {
-        voucher.operatorId = user.id;
+        voucher.operatorId = operator.id;
         voucher.voucherType = VoucherType.EXCHANGE;
         voucher.save();
         voucher.refresh();
@@ -68,7 +68,7 @@ public class OperateVouchersTest extends FunctionalTest {
 
     @Test
     public void testIndexVoucherOperateType() {
-        voucher.operatorId = user.id;
+        voucher.operatorId = operator.id;
         voucher.voucherType = VoucherType.OPERATE;
         voucher.save();
         voucher.refresh();
