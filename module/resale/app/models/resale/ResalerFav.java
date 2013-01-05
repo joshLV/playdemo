@@ -89,6 +89,7 @@ public class ResalerFav extends Model {
         this.resaler = resaler;
         this.goods = goods;
         this.lockVersion = 0;
+        this.deleted = DeletedStatus.UN_DELETED;
         this.createdAt = new Date();
     }
 
@@ -178,7 +179,8 @@ public class ResalerFav extends Model {
         List<ResalerFav> favs = query.getResultList();
 
         for (ResalerFav fav : favs) {
-            fav.delete();
+            fav.deleted = DeletedStatus.DELETED;
+            fav.save();
         }
         return favs.size();
     }
@@ -196,8 +198,8 @@ public class ResalerFav extends Model {
         if (goodsIds != null) {
             for (long goodsId : goodsIds) {
                 models.sales.Goods goods = models.sales.Goods.findById(goodsId);
-                ResalerFav fav = ResalerFav.find("byResalerAndGoods", resaler, goods).first();
-                //如果记录不存在，则新建购物车记录
+                ResalerFav fav =  ResalerFav.findByGoodsId(resaler, goods.id);
+                //如果记录不存在，则新建记录
                 if (fav != null) {
                     map.put("isExist", "1");
                 } else {
@@ -212,6 +214,7 @@ public class ResalerFav extends Model {
     }
 
     public static ResalerFav findByGoodsId(Resaler resaler, Long goodsId) {
-        return ResalerFav.find("resaler = ? and goods.id = ?", resaler, goodsId).first();
+        return ResalerFav.find("resaler = ? and goods.id = ? and deleted = ?",
+                resaler, goodsId, DeletedStatus.UN_DELETED).first();
     }
 }
