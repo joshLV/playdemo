@@ -19,8 +19,8 @@ public class ScannerChannelGoodsStatusTest extends UnitTest {
         FactoryBoy.deleteAll();
     }
 
-    public void test_Job() {
-
-    }
+//    public void test_Job() {
+//
+//    }
 
 }
