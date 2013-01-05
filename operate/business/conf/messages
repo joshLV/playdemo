@@ -537,3 +537,9 @@ channelGoodsInfo.onSaleAt=上架时间
 channelGoodsInfo.offSaleAt=下架时间
 channelGoodsInfo.goods.shortName=商品名称
 channelGoodsInfo.url=URL
+channelGoodsInfo.tag=标签
+channel.ONSALE=已上架
+channel.OFFSALE=已下架
+channel.null=
+
+

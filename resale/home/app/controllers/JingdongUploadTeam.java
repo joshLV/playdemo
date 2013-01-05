@@ -14,6 +14,7 @@ import models.jingdong.groupbuy.response.UploadTeamResponse;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
+import models.sales.ChannelGoodsInfo;
 import models.sales.Goods;
 import models.sales.GoodsDeployRelation;
 import models.sales.GoodsThirdSupport;
@@ -118,6 +119,7 @@ public class JingdongUploadTeam extends Controller {
 
     /**
      * 修改已上架的界面
+     *
      * @param goodsId
      */
     public static void edit(Long goodsId) {
@@ -139,6 +141,7 @@ public class JingdongUploadTeam extends Controller {
 
     /**
      * 修改标题.
+     *
      * @param id
      * @param title
      */
@@ -156,9 +159,9 @@ public class JingdongUploadTeam extends Controller {
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/updateTitle.action";
         Template template = TemplateLoader.load("jingdong/groupbuy/request/updateTitleRequest.xml");
         Map<String, Object> params = new HashMap<>();
-        params.put("venderTeamId",  fav.lastLinkId.toString());
-        params.put("jdTeamId",  fav.thirdGroupbuyId.toString());
-        params.put("teamTitle",  title);
+        params.put("venderTeamId", fav.lastLinkId.toString());
+        params.put("jdTeamId", fav.thirdGroupbuyId.toString());
+        params.put("teamTitle", title);
         String data = template.render(params);
         Logger.info("request, %s", data);
 
@@ -179,6 +182,7 @@ public class JingdongUploadTeam extends Controller {
 
     /**
      * 更新商品详情.
+     *
      * @param id
      * @param detail
      */
@@ -196,10 +200,10 @@ public class JingdongUploadTeam extends Controller {
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/updateDetail.action";
         Template template = TemplateLoader.load("jingdong/groupbuy/request/updateDetailRequest.xml");
         Map<String, Object> params = new HashMap<>();
-        params.put("venderTeamId",  fav.lastLinkId.toString());
-        params.put("jdTeamId",  fav.thirdGroupbuyId.toString());
+        params.put("venderTeamId", fav.lastLinkId.toString());
+        params.put("jdTeamId", fav.thirdGroupbuyId.toString());
         params.put("notes", "修改");
-        params.put("teamDetail",  detail);
+        params.put("teamDetail", detail);
         String data = template.render(params);
         Logger.info("request, %s", data);
 
@@ -227,8 +231,8 @@ public class JingdongUploadTeam extends Controller {
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/couponExtension.action";
         Template template = TemplateLoader.load("jingdong/groupbuy/request/couponExtensionRequest.xml");
         Map<String, Object> params = new HashMap<>();
-        params.put("venderTeamId",  fav.lastLinkId.toString());
-        params.put("jdTeamId",  fav.thirdGroupbuyId.toString());
+        params.put("venderTeamId", fav.lastLinkId.toString());
+        params.put("jdTeamId", fav.thirdGroupbuyId.toString());
         params.put("expireTime", expireTime);
 
         String data = template.render(params);
@@ -329,9 +333,19 @@ public class JingdongUploadTeam extends Controller {
             ResalerFav fav = ResalerFav.findByGoodsId(resaler, goods.id);
             fav.lastLinkId = goodsMapping.linkId;
             fav.thirdGroupbuyId = uploadTeamRest.data.jdTeamId;
-            fav.thirdUrl = "http://tuan.360buy.com/team-" + fav.thirdGroupbuyId + ".html";
-            fav.thirdCity = "京东";
+//            fav.thirdUrl = "http://tuan.360buy.com/team-" + fav.thirdGroupbuyId + ".html";
+//            fav.thirdCity = "京东";
             fav.save();
+
+            url = "http://tuan.360buy.com/team-" + fav.thirdGroupbuyId + ".html";
+            ChannelGoodsInfo channelGoodsInfo = ChannelGoodsInfo.findByResaler(resaler, url);
+            if (channelGoodsInfo == null) {
+                new ChannelGoodsInfo(goods, resaler, url, "京东", "京东商品推送").save();
+            } else {
+                channelGoodsInfo.url = url;
+                channelGoodsInfo.tag = "京东";
+                channelGoodsInfo.save();
+            }
         }
         render("JingdongUploadTeam/result.html", uploadTeamRest);
     }
