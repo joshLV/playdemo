@@ -17,11 +17,11 @@ import util.DateHelper;
 import java.util.Date;
 
 /**
- * Created with IntelliJ IDEA.
+ * 商户的测试对象.
+ *
  * User: hejun
  * Date: 12-8-20
  * Time: 下午4:20
- * To change this template use File | Settings | File Templates.
  */
 public class SupplierFactory extends ModelFactory<Supplier> {
 
