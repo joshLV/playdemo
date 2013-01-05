@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * 短信发送任务.
- *
+ * <p/>
  * User: wangjia
  * Date: 12-9-12
  * Time: 下午4:01
@@ -82,7 +82,8 @@ public class SendSMSTask extends Model {
 
 
     public static List<SendSMSTask> findUnDeleted() {
-        return find("deleted=com.uhuila.common.constants.DeletedStatus.UN_DELETED").fetch();
+        return find("deleted=com.uhuila.common.constants.DeletedStatus.UN_DELETED " +
+                " and finished<>total ").fetch();
     }
 
 }
