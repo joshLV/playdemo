@@ -10,6 +10,7 @@ import controllers.modules.resale.cas.SecureCAS;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
+import models.sales.ChannelGoodsInfo;
 import models.sales.Goods;
 import models.sales.GoodsDeployRelation;
 import models.sales.GoodsThirdSupport;
@@ -71,6 +72,7 @@ public class WubaProduct extends Controller {
 
     /**
      * 一天调用一次分类接口
+     *
      * @return
      */
     private static Object getWUBACategory() {
@@ -212,7 +214,7 @@ public class WubaProduct extends Controller {
         }
 
         if ("10000".equals(status)) {
-            setUrlParams(cities, cityIds, resalerFav, resalerFav.thirdGroupbuyId);
+            setUrlParams(cities, cityIds, goods, resalerFav.resaler, resalerFav.thirdGroupbuyId);
             resalerFav.save();
             redirect("/58-status/" + goodsId);
         }
@@ -335,11 +337,12 @@ public class WubaProduct extends Controller {
 
             JsonObject jsonObject = result.get("data").getAsJsonObject();
             Long wubaGoodsId = jsonObject.get("groupbuyId58").getAsLong();
-            setUrlParams(cities, cityIds, resalerFav, wubaGoodsId);
+            setUrlParams(cities, cityIds, goods, resalerFav.resaler, wubaGoodsId);
             resalerFav.partner = OuterOrderPartner.WB;
             resalerFav.lastLinkId = linkId;
             resalerFav.thirdGroupbuyId = wubaGoodsId;
             resalerFav.save();
+
             redirect("/58-status/" + goodsId);
         }
         render("WubaProduct/result.html", status, msg, goodsId);
@@ -350,11 +353,10 @@ public class WubaProduct extends Controller {
      *
      * @param cities
      * @param cityIds
-     * @param resalerFav
      */
-    private static void setUrlParams(String[] cities, Integer[] cityIds, ResalerFav resalerFav, Long wubaGoodsId) {
-        List<String> urls = new ArrayList<>();
-        List<String> cityNames = new ArrayList<>();
+    private static void setUrlParams(String[] cities, Integer[] cityIds, Goods goods, Resaler resaler, Long wubaGoodsId) {
+//        List<String> urls = new ArrayList<>();
+//        List<String> cityNames = new ArrayList<>();
         for (String city : cities) {
             for (int cityId : cityIds) {
                 String[] cityArr = city.split(":");
@@ -362,14 +364,21 @@ public class WubaProduct extends Controller {
                 if (city0Id == cityId) {
                     String cityName = cityArr[1];
                     String url = THIRD_URL + cityArr[2] + "/" + wubaGoodsId;
-                    urls.add(url);
-                    cityNames.add(cityName);
+                    ChannelGoodsInfo channelGoodsInfo = ChannelGoodsInfo.findByResaler(resaler, url);
+                    if (channelGoodsInfo == null) {
+                        new ChannelGoodsInfo(goods, resaler, url, cityName, "58商品推送").save();
+                    } else {
+                        channelGoodsInfo.url = url;
+                        channelGoodsInfo.tag = cityName;
+                        channelGoodsInfo.save();
+                    }
+//                    urls.add(url);
+//                    cityNames.add(cityName);
                 }
             }
         }
-
-        resalerFav.thirdUrl = StringUtils.join(urls, ",");
-        resalerFav.thirdCity = StringUtils.join(cityNames, ",");
+//        resalerFav.thirdUrl = StringUtils.join(urls, ",");
+//        resalerFav.thirdCity = StringUtils.join(cityNames, ",");
     }
 
 

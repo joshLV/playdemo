@@ -1,6 +1,7 @@
 package factory.resale;
 
 import factory.ModelFactory;
+import factory.annotation.Factory;
 import models.resale.AccountType;
 import models.resale.Resaler;
 import models.resale.ResalerLevel;
@@ -45,4 +46,14 @@ public class ResalerFactory extends ModelFactory<Resaler> {
 
     }
 
+    @Factory(name = "jingdong")
+    public Resaler defineWithJD(Resaler resaler) {
+        resaler.loginName="jingdong";
+        return resaler;
+    }
+    @Factory(name = "wuba")
+    public Resaler defineWuba(Resaler resaler) {
+        resaler.loginName="wuba";
+        return resaler;
+    }
 }

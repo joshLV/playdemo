@@ -835,10 +835,16 @@ public class OperateGoods extends Controller {
             Validation.addError("channelGoodsInfo.resaler.id", "请选择分销商！");
         }
         initInfo(goods);
-        if (Validation.hasErrors()) {
-            render("OperateGoods/channel.html", goods);
-        }
 
+
+        ChannelGoodsInfo goodsInfo = ChannelGoodsInfo.findByResaler(channelGoodsInfo.resaler, channelGoodsInfo.url);
+        if (goodsInfo != null) {
+            Validation.addError("channelGoodsInfo.url", "该分销的url已经存在！");
+        }
+        if (Validation.hasErrors()) {
+            render("OperateGoods/channel.html", goods,channelGoodsInfo);
+        }
+        channelGoodsInfo.deleted = DeletedStatus.UN_DELETED;
         channelGoodsInfo.goods = goods;
         channelGoodsInfo.operateName = OperateRbac.currentUser().userName;
         channelGoodsInfo.createdAt = new Date();
@@ -883,10 +889,13 @@ public class OperateGoods extends Controller {
         }
 
         ChannelGoodsInfo updInfo = ChannelGoodsInfo.findById(id);
+        updInfo.tag = channelGoodsInfo.tag;
         updInfo.url = channelGoodsInfo.url;
         updInfo.operateName = OperateRbac.currentUser().userName;
-        updInfo.offSaleAt = channelGoodsInfo.offSaleAt;
-        updInfo.onSaleAt = channelGoodsInfo.onSaleAt;
+        if (channelGoodsInfo.onSaleAt != null) {
+            updInfo.offSaleAt = channelGoodsInfo.offSaleAt;
+            updInfo.onSaleAt = channelGoodsInfo.onSaleAt;
+        }
         updInfo.save();
         channel(updInfo.goods.id);
     }
@@ -898,7 +907,8 @@ public class OperateGoods extends Controller {
      */
     public static void deleteChannel(Long id) {
         ChannelGoodsInfo updInfo = ChannelGoodsInfo.findById(id);
-        updInfo.delete();
+        updInfo.deleted = DeletedStatus.DELETED;
+        updInfo.save();
         channel(updInfo.goods.id);
     }
 }
