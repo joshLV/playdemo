@@ -257,7 +257,7 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
 
     public ConsumerFlowReport(long totalNumber, BigDecimal amount, long realTotalNumber, BigDecimal realAmount, BigDecimal totalRefundPrice, Long refundNumber,
                               BigDecimal consumedPrice, Long consumedNumber, BigDecimal shouldGetPrice, BigDecimal haveGetPrice
-            , BigDecimal grossMargin, BigDecimal channelCost, BigDecimal profit) {
+            , BigDecimal grossMargin, BigDecimal channelCost, BigDecimal profit, BigDecimal perOrderPrice) {
         this.totalNumber = totalNumber;
         this.amount = amount;
         this.realTotalNumber = realTotalNumber;
@@ -271,21 +271,8 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
         this.grossMargin = grossMargin;
         this.channelCost = channelCost;
         this.profit = profit;
+        this.perOrderPrice = perOrderPrice;
     }
-
-    public ConsumerFlowReport(Long buyNumber) {
-        this.buyNumber = buyNumber;
-    }
-
-    public ConsumerFlowReport(BigDecimal totalAmount, BigDecimal refundAmount
-            , BigDecimal grossMargin, BigDecimal channelCost, BigDecimal profit) {
-        this.totalAmount = totalAmount;
-        this.refundAmount = refundAmount;
-        this.grossMargin = grossMargin;
-        this.channelCost = channelCost;
-        this.profit = profit;
-    }
-
 
     /**
      * 客流报表统计
@@ -504,7 +491,7 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
     public static ConsumerFlowReport summary(List<ConsumerFlowReport> resultList) {
         if (resultList == null || resultList.size() == 0) {
             return new ConsumerFlowReport(0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO, 0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO
-                    , BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+                    , BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
         }
         long refundCount = 0l;
         long consumedCount = 0l;
@@ -522,6 +509,9 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
         BigDecimal profit = BigDecimal.ZERO;
         BigDecimal totolSalePrice = BigDecimal.ZERO;
         BigDecimal totalCost = BigDecimal.ZERO;
+        Long orderNum = 0l;
+        BigDecimal perOrderPrice = BigDecimal.ZERO;
+
         for (ConsumerFlowReport item : resultList) {
 
             buyCount += item.buyNumber;
@@ -542,12 +532,15 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
             totalCost = totalCost.add(item.totalCost == null ? BigDecimal.ZERO : item.totalCost);
             channelCost = channelCost.add(item.channelCost == null ? BigDecimal.ZERO : item.channelCost);
             profit = profit.add(item.profit == null ? BigDecimal.ZERO : item.profit);
+            orderNum = orderNum + item.orderNum;
+
         }
         if (totolSalePrice.compareTo(BigDecimal.ZERO) != 0) {
+            perOrderPrice = totolSalePrice.divide(BigDecimal.valueOf(orderNum), 2, RoundingMode.HALF_UP);
             grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
         return new ConsumerFlowReport(buyCount, amount, realBuyCount, realAmount, refundPrice, refundCount, consumedPrice, consumedCount, shouldGetPrice, haveGetPrice
-                , grossMargin, channelCost, profit);
+                , grossMargin, channelCost, profit, perOrderPrice);
     }
 
     private static String getReportKey(ConsumerFlowReport refoundItem) {

@@ -159,6 +159,7 @@
         件)
         <br/>
            &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;
+        客单价:<b>${(summary?.perOrderPrice?:0).formatCurrency('CNY')}</b>
         毛利率：<b>${(summary?.grossMargin?:0).format('#')}%</b>
         渠道成本：<b>${(summary?.channelCost?:0).formatCurrency('CNY')}</b>
          净利润：<b>
