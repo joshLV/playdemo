@@ -135,7 +135,7 @@
                                                                  value="${condition.refundAtEnd?.format()}"
                                                                  onfocus="WdatePicker({readOnly:true})"
                                                                  class="input-medium Wdate"/></td>
-            <td>支付方式：#{select 'condition.payMethod', class:'input-medium', value:condition.payMethod}
+            <td colspan="2">支付方式：#{select 'condition.payMethod', class:'input-medium', value:condition.payMethod}
                 #{option ""}不限#{/option}
                 #{option "alipay"}支付宝#{/option}
                 #{option "tenpay"}财付通#{/option}
@@ -151,7 +151,7 @@
         </tr>
         <tr>
             <td>关&nbsp;键&nbsp;字：
-            #{select 'condition.searchKey', class:'input-medium', value:condition.searchKey}
+            #{select 'condition.searchKey', class:'input-small', value:condition.searchKey}
                 #{option ""}不限#{/option}
                 #{option "GOODS_NAME"}&{'queryType.GOODS_NAME'}#{/option}
                 #{option "ORDER_NUMBER"}&{'queryType.ORDER_NUMBER'}#{/option}
@@ -160,8 +160,8 @@
             #{/select}
 
                 <input type="text" name="condition.searchItems" value="${condition.searchItems}"
-                       class="input-larger"/></td>
-            <td>订单状态：
+                       class="input-large"/></td>
+            <td colspan="2">订单状态：
             #{select 'condition.status', id:'condition_status', class:'input-medium', value:condition.status}
                 #{option ""}不限#{/option}
                 #{option "UNPAID"}&{'order.UNPAID'}#{/option}
@@ -175,13 +175,17 @@
                 #{option models.order.DeliveryType.SMS}无物流#{/option}
                 #{option models.order.DeliveryType.LOGISTICS}有物流#{/option}
             #{/select}
-                &nbsp;&nbsp;&nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery"
-                                              class="input-medium"
-                                              value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
-            <td>
+
+            &nbsp;&nbsp;&nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery"
+                                          class="input-medium"
+                                          value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
+            </td>
+            <tr align="right">
+            <td colspan="3">
                 <button class="btn btn-primary" id="search" type="submit">搜索</button>
                 <button class="btn btn-primary" id="searchbtn" onclick="orderExcel()">导出报表</button>
             </td>
+            </tr>
             <input type="hidden" id="J_rank" name="desc"/>
         </tr>
     </table>

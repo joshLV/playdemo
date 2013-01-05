@@ -55,8 +55,7 @@ public class OperatePrepayments extends Controller {
     @ActiveNavigation("prepayments_add")
     public static void add() {
         List<Supplier> supplierList = Supplier.findUnDeleted();
-        Prepayment loginName = new Prepayment();
-        render(supplierList, loginName);
+        render(supplierList);
     }
 
     @ActiveNavigation("prepayments_add")
@@ -110,15 +109,5 @@ public class OperatePrepayments extends Controller {
             prepayment.save();
         }
         index(null);
-    }
-
-
-    public static void report(Long supplierId) {
-        String page = request.params.get("page");
-        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        ModelPaginator<Prepayment> prepaymentPage = Prepayment.getPage(pageNumber, PAGE_SIZE, supplierId);
-
-        List<Supplier> supplierList = Supplier.findUnDeleted();
-        render(prepaymentPage, supplierList, supplierId);
     }
 }

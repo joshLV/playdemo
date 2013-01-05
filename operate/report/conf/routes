@@ -55,10 +55,16 @@ GET     /category_sales_report_with_privilege_excel      OperationReports.catego
 GET     /category_sales_report_excel                     OperationReports.categorySalesReportExcelOut
 
 
-#渠道类别报表
+#渠道报表
 GET     /channel_report                           OperationReports.showChannelReport
 GET     /channel_report_with_privilege_excel      OperationReports.channelReportWithPrivilegeExcelOut
 GET     /channel_report_excel                     OperationReports.channelReportExcelOut
+
+#客流报表
+GET     /consumer_flow_report                           OperationReports.showConsumerFlowReport
+GET     /consumer_flow_report_with_privilege_excel      OperationReports.consumerFlowReportWithPrivilegeExcelOut
+GET     /consumer_flow_report_excel                     OperationReports.consumerFlowReportExcelOut
+
 
 #渠道大类报表
 GET     /channel_category_report                           OperationReports.showChannelCategoryReport

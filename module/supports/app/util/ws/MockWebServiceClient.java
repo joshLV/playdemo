@@ -1,18 +1,16 @@
 package util.ws;
 
+import models.journal.WebServiceCallLog;
+import org.apache.commons.io.input.ReaderInputStream;
+import play.Logger;
+import play.libs.WS.HttpResponse;
+import play.mvc.Http.Header;
+
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-
-import models.journal.WebServiceCallLog;
-
-import org.apache.commons.io.input.ReaderInputStream;
-
-import play.Logger;
-import play.libs.WS.HttpResponse;
-import play.mvc.Http.Header;
 
 public class MockWebServiceClient extends WebServiceClient {
 
@@ -93,6 +91,10 @@ public class MockWebServiceClient extends WebServiceClient {
         @Override
         public String getHeader(String key) {
             return null;
+        }
+
+        public String getStatusText() {
+            return status + ":OK";
         }
     }
 
