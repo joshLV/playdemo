@@ -11,6 +11,7 @@ import utils.PaginateUtil;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -89,6 +90,28 @@ public class OperationReports extends Controller {
         ResaleSalesReport summary = ResaleSalesReport.summary(resultList);
         render(reportPage, condition, summary, hasSeeReportProfitRight);
     }
+
+    @ActiveNavigation("consumer_flow_reports")
+    public static void showConsumerFlowReport(ConsumerFlowReportCondition condition) {
+        int pageNumber = getPageNumber();
+        if (condition == null) {
+            condition = new ConsumerFlowReportCondition();
+        }
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        List<ConsumerFlowReport> resultList = ConsumerFlowReport.query(condition);
+
+        Collections.sort(resultList);
+
+
+        // 分页
+        ValuePaginator<ConsumerFlowReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
+
+
+        // 汇总
+//        ConsumerFlowReport summary = ConsumerFlowReport.getNetSummary(totalList);
+        render(condition, reportPage, hasSeeReportProfitRight);
+    }
+
 
     @ActiveNavigation("people_effect_reports")
     public static void showPeopleEffectReport(SalesReportCondition condition) {
