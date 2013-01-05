@@ -20,6 +20,7 @@ public class LingShiSmsReceiversTest extends ConsumerSmsVerifyBaseTest {
 
     /**
      * 正常发送券对象的类
+     *
      */
     protected MessageSender getTheMessageSender() {
         return new MessageSender() {
@@ -30,9 +31,9 @@ public class LingShiSmsReceiversTest extends ConsumerSmsVerifyBaseTest {
                 if (mobile != null) {
                     mobile1 = mobile;
                 }
-                String message = "mobiles=" + mobile1 + "&msg="
+                String message = "SrcMobile=" + mobile1 + "&Content="
                         + msg +
-                        "&username=wang&pwd=5a1a023fd486e2f0edbc595854c0d808&dt=1319873904&code="
+                        "&username=wang&pwd=5a1a023fd486e2f0edbc595854c0d808&dt=1319873904&AppendID="
                         + ecoupon.replyCode.substring(0, 2);
                 Logger.info("url=%s", message);
                 return GET("/lingshi?"
@@ -48,9 +49,9 @@ public class LingShiSmsReceiversTest extends ConsumerSmsVerifyBaseTest {
         return new InvalidMessageSender() {
             @Override
             public Http.Response doMessageSend(String msg) {
-                return GET("/lingshi?mobiles=15900002342&msg=" + msg +
+                return GET("/lingshi?SrcMobile=15900002342&Content=" + msg +
                         "&username=wang&pwd=5a1a023fd486e2f0edbc595854c0d808&dt" +
-                        "=1319873904&code=1028");
+                        "=1319873904&AppendID=1028");
             }
         };
     }
