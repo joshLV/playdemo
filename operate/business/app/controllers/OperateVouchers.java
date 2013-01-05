@@ -43,14 +43,13 @@ public class OperateVouchers extends Controller {
         for (Voucher voucher : voucherPage) {
             setOperatorName(voucher);
         }
-
         render(voucherPage, condition);
     }
 
     public static void update(Long id, String action) {
         Voucher voucher = Voucher.findById(id);
         if (voucher != null) {
-            if (!StringUtils.isBlank(action)){
+            if (!StringUtils.isBlank(action)) {
                 if (action.equalsIgnoreCase("delete")) {
                     voucher.deleted = DeletedStatus.DELETED;
                     voucher.save();
@@ -69,16 +68,14 @@ public class OperateVouchers extends Controller {
     @ActiveNavigation("voucher_assign")
     public static void assign(String users, String vouchers, String type) {
         if (StringUtils.isBlank(users) || StringUtils.isBlank(vouchers) || StringUtils.isBlank(type)) {
-            showAssign("请输入一点信息啊");return;
+            showAssign("请输入一点信息啊");
         }
         String[] userIds = users.split("\\r?\\n");
         String[] voucherIds = vouchers.split("\\r?\\n");
-        if(userIds.length == 0 || voucherIds.length == 0) {
-            showAssign("起码输入一点内容，好不");return;
-        }
+
         boolean is1to1 = type.equalsIgnoreCase("1to1");
-        if(is1to1  && userIds.length != voucherIds.length) {
-            showAssign("两边数量要相等");return;
+        if (is1to1 && userIds.length != voucherIds.length) {
+            showAssign("两边数量要相等");
         }
         Long userId = 0L;
         User user = null;
@@ -86,31 +83,31 @@ public class OperateVouchers extends Controller {
         StringBuilder err = new StringBuilder("已完成，请注意以下错误（没有就算了）<br/>");
         for (int i = 0; i < userIds.length; i++) {
             if (is1to1 || i == 0) {
-                try{
+                try {
                     userId = Long.parseLong(userIds[i]);
-                }catch (Exception e) {
-                    err.append("第"+(i+1)+"个用户,ID：" + userIds[i] + "解析错误<br/>");
+                } catch (Exception e) {
+                    err.append("第" + (i + 1) + "个用户,ID：" + userIds[i] + "解析错误<br/>");
                     if (is1to1) continue;
-                    else  break;
+                    else break;
                 }
                 user = User.findById(userId);
                 if (user == null) {
-                    err.append("第"+(i+1)+"个用户,ID：" + userIds[i] + "没找到<br/>");
+                    err.append("第" + (i + 1) + "个用户,ID：" + userIds[i] + "没找到<br/>");
                     if (is1to1) continue;
-                    else  break;
+                    else break;
                 }
             }
             Voucher voucher = Voucher.find("byChargeCode", voucherIds[i]).first();
             if (voucher == null) {
-                err.append("第"+(i+1)+"个券号：" + voucherIds[i] + "没找到<br/>");
+                err.append("第" + (i + 1) + "个券号：" + voucherIds[i] + "没找到<br/>");
                 continue;
             }
             if (voucher.expiredAt.before(new Date())) {
-                err.append("第"+(i+1)+"个券号：" + voucherIds[i] + "是过期的<br/>");
+                err.append("第" + (i + 1) + "个券号：" + voucherIds[i] + "是过期的<br/>");
                 continue;
             }
             if (voucher.account != null || voucher.assignedAt != null) {
-                err.append("第"+(i+1)+"个券号：" + voucherIds[i] + "已经绑定过了<br/>");
+                err.append("第" + (i + 1) + "个券号：" + voucherIds[i] + "已经绑定过了<br/>");
                 continue;
             }
 
@@ -124,7 +121,6 @@ public class OperateVouchers extends Controller {
     }
 
 
-
     @ActiveNavigation("voucher_generator")
     public static void generator(String err) {
         render(err);
@@ -132,7 +128,6 @@ public class OperateVouchers extends Controller {
 
     @ActiveNavigation("voucher_generator")
     public static void generate(String name, String prefix, BigDecimal faceValue, int count, Long uid, Date expire) {
-
         Pattern pattern = Pattern.compile("^[a-zA-Z][a-zA-Z0-9]{0,9}$");
         Account account = null;
         if (name == null || name.trim().equals("")) {
@@ -170,6 +165,7 @@ public class OperateVouchers extends Controller {
         index(null);
 
     }
+
     private static void setOperatorName(Voucher voucher) {
         if (voucher.operatorId == null) {
             voucher.operatorName = "";
