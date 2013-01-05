@@ -193,10 +193,14 @@ public class YihaodianOrder extends Model{
             order.goodReceiverPhone = baseInfoNode.elementTextTrim("goodReceiverPhone");
             order.goodReceiverPostcode = baseInfoNode.elementTextTrim("goodReceiverPostCode");
             order.goodReceiverProvince = baseInfoNode.elementTextTrim("goodReceiverProvince");
-            order.fostRebate = Float.parseFloat(baseInfoNode.elementTextTrim("orderFostRebate"));
-            order.promotionDiscount = new BigDecimal(baseInfoNode.elementTextTrim("orderPromotionDiscount"));
-            order.payServiceType = Integer.parseInt(baseInfoNode.elementTextTrim("payServiceType"));
-            order.recompensPoints = Float.parseFloat(baseInfoNode.elementTextTrim("recompensPoints"));
+            try {
+                order.fostRebate = Float.parseFloat(baseInfoNode.elementTextTrim("orderFostRebate"));
+                order.promotionDiscount = new BigDecimal(baseInfoNode.elementTextTrim("orderPromotionDiscount"));
+                order.payServiceType = Integer.parseInt(baseInfoNode.elementTextTrim("payServiceType"));
+                order.recompensPoints = Float.parseFloat(baseInfoNode.elementTextTrim("recompensPoints"));
+            } catch (Exception e) {
+                //ignore
+            }
 
             order.createPayTime = parseDate(baseInfoNode.elementTextTrim("orderCreatePayTime"));
             order.paymentConfirmDate = parseDate(baseInfoNode.elementTextTrim("orderPaymentConfirmDate"));
