@@ -112,7 +112,6 @@ public class OperationReports extends Controller {
 
         Collections.sort(resultList);
 
-
         // 分页
         ValuePaginator<ConsumerFlowReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
 
