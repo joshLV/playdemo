@@ -102,6 +102,14 @@ public class TaobaoCouponAPITest extends FunctionalTest{
 
         outerOrder.refresh();
         assertEquals(OuterOrderStatus.RESEND_COPY, outerOrder.status);
+
+
+        params.put("order_id", "123321");
+        resign(params);
+        response = POST2("/api/v1/taobao/coupon", params);
+
+        assertIsOk(response);
+        assertContentEquals("{\"code\":504}", response);
     }
 
     @Test
@@ -126,6 +134,15 @@ public class TaobaoCouponAPITest extends FunctionalTest{
             coupon.refresh();
             assertTrue(coupon.status == ECouponStatus.REFUND);
         }
+
+
+        params.put("order_id", "123321");
+        resign(params);
+        response = POST2("/api/v1/taobao/coupon", params);
+
+        assertIsOk(response);
+        assertContentEquals("{\"code\":504}", response);
+
     }
 
     @Test
@@ -145,6 +162,13 @@ public class TaobaoCouponAPITest extends FunctionalTest{
         orderItem.refresh();
 
         assertEquals("13472581854", orderItem.phone);
+
+        params.put("order_id", "123321");
+        resign(params);
+        response = POST2("/api/v1/taobao/coupon", params);
+
+        assertIsOk(response);
+        assertContentEquals("{\"code\":504}", response);
     }
 
     @Test
@@ -172,6 +196,53 @@ public class TaobaoCouponAPITest extends FunctionalTest{
             assertEquals(dateFormat.format(coupon.effectiveAt), dateFormat.format(start));
             assertEquals(dateFormat.format(coupon.expireAt), dateFormat.format(end));
         }
+
+        //测试找不倒订单
+        params.put("order_id", "123321");
+        resign(params);
+        response = POST2("/api/v1/taobao/coupon", params);
+
+        assertIsOk(response);
+        assertContentEquals("{\"code\":504}", response);
+
+        //测试无效的data
+        params.put("order_id", String.valueOf(TAOBAO_ORDER_ID));
+        params.put("data", "\"valid_start\":\"" + dateFormat.format(start) + "\", \"valid_ends\":\"" + dateFormat.format(end) + "\"}");
+        resign(params);
+
+        response = POST2("/api/v1/taobao/coupon", params);
+
+        assertIsOk(response);
+        assertContentEquals("{\"code\":505}", response);
+
+        //测试submethod
+        params.put("data", "{\"valid_start\":\"" + dateFormat.format(start) + "\", \"valid_ends\":\"" + dateFormat.format(end) + "\"}");
+        params.put("sub_method","2");
+        resign(params);
+
+        response = POST2("/api/v1/taobao/coupon", params);
+
+        assertIsOk(response);
+        assertContentEquals("{\"code\":506}", response);
+
+        //测试无效的日期格式
+        params.put("data", "{\"valid_start\":\"a" + dateFormat.format(start) + "\", \"valid_ends\":\"" + dateFormat.format(end) + "\"}");
+        params.put("sub_method","1");
+        resign(params);
+
+        response = POST2("/api/v1/taobao/coupon", params);
+
+        assertIsOk(response);
+        assertContentEquals("{\"code\":507}", response);
+
+        params.put("data", "{\"valid_start\":\"" + dateFormat.format(start) + "\", \"valid_ends\":\"a" + dateFormat.format(end) + "\"}");
+        params.put("sub_method","1");
+        resign(params);
+
+        response = POST2("/api/v1/taobao/coupon", params);
+
+        assertIsOk(response);
+        assertContentEquals("{\"code\":508}", response);
     }
 
 
