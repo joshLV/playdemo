@@ -63,6 +63,16 @@ public class CategorySalesReport {
     public BigDecimal consumedAmount;
 
     /**
+     * 消费金额小计
+     */
+    public BigDecimal totalConsumed;
+
+    /**
+     * 消费金额汇总
+     */
+    public BigDecimal summaryConsumed;
+
+    /**
      * 利润
      */
     public BigDecimal profit;
@@ -155,6 +165,29 @@ public class CategorySalesReport {
         this.ratio = ratio;
     }
 
+    //consumedAt ecoupon
+    public CategorySalesReport(Long supplierCategoryId, BigDecimal consumedAmount, Goods goods) {
+        if (supplierCategoryId != null) {
+            SupplierCategory supplierCategory = SupplierCategory.findById(supplierCategoryId);
+            this.code = supplierCategory.code;
+            this.name = supplierCategory.name;
+        }
+        this.goods = goods;
+        this.consumedAmount = consumedAmount;
+    }
+
+    //consumedAt total ecoupon
+    public CategorySalesReport(Long supplierCategoryId, Goods goods, BigDecimal consumedAmount) {
+        if (supplierCategoryId != null) {
+            SupplierCategory supplierCategory = SupplierCategory.findById(supplierCategoryId);
+            this.code = supplierCategory.code;
+            this.name = "999";
+        } else {
+            this.name = "999";
+        }
+        this.goods = goods;
+        this.consumedAmount = consumedAmount;
+    }
 
     //refund ecoupon
     public CategorySalesReport(BigDecimal refundAmount, Goods goods, Long supplierCategoryId) {
@@ -166,6 +199,7 @@ public class CategorySalesReport {
             this.name = supplierCategory.name;
         }
     }
+
 
     //refund ecoupon  total
     public CategorySalesReport(BigDecimal refundAmount, Long supplierCategoryId) {
@@ -185,8 +219,9 @@ public class CategorySalesReport {
         this.originalAmount = originalAmount;
     }
 
-    public CategorySalesReport(BigDecimal totalAmount, BigDecimal refundAmount, BigDecimal netSalesAmount
+    public CategorySalesReport(BigDecimal summaryConsumed, BigDecimal totalAmount, BigDecimal refundAmount, BigDecimal netSalesAmount
             , BigDecimal grossMargin, BigDecimal channelCost, BigDecimal profit) {
+        this.summaryConsumed = summaryConsumed;
         this.totalAmount = totalAmount;
         this.netSalesAmount = netSalesAmount;
         this.refundAmount = refundAmount;
@@ -241,6 +276,18 @@ public class CategorySalesReport {
 
         List<CategorySalesReport> paidResalerResultList = query.getResultList();
 
+
+        //consumedAt coupon
+        sql = "select new models.CategorySalesReport(s.supplierCategory.id,sum(r.salePrice-r.rebateValue/r.buyNumber),r.goods) " +
+                " from OrderItems r, ECoupon e,Supplier s where e.orderItems=r and r.goods.supplierId = s ";
+        groupBy = " group by s.supplierCategory.id,r.goods.id";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterConsumedAt() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<CategorySalesReport> consumedResultList = query.getResultList();
+
         //取得退款的数据 ecoupon
         sql = "select new models.CategorySalesReport(sum(e.refundPrice),e.orderItems.goods,s.supplierCategory.id ) " +
                 " from ECoupon e, Supplier s ";
@@ -262,6 +309,15 @@ public class CategorySalesReport {
             map.put(getReportKey(paidItem), paidItem);
         }
 
+        for (CategorySalesReport consumedItem : consumedResultList) {
+            CategorySalesReport item = map.get(getReportKey(consumedItem));
+            if (item == null) {
+                map.put(getReportKey(consumedItem), consumedItem);
+            } else {
+                item.consumedAmount = consumedItem.consumedAmount;
+            }
+        }
+
         for (CategorySalesReport refundItem : refundList) {
             CategorySalesReport item = map.get(getReportKey(refundItem));
             if (item == null) {
@@ -271,7 +327,7 @@ public class CategorySalesReport {
                 map.put(getReportKey(refundItem), refundItem);
             } else {
                 item.refundAmount = refundItem.refundAmount;
-                item.netSalesAmount = item.totalAmount.subtract(item.refundAmount);
+                item.netSalesAmount = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount.subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount);
             }
         }
 
@@ -468,6 +524,19 @@ public class CategorySalesReport {
 
         List<CategorySalesReport> totalPaidResalerResultList = query.getResultList();
 
+
+        //consumedAt coupon
+        sql = "select new models.CategorySalesReport(s.supplierCategory.id,r.goods,sum(r.salePrice-r.rebateValue/r.buyNumber)) " +
+                " from OrderItems r, ECoupon e,Supplier s where e.orderItems=r and r.goods.supplierId = s ";
+        groupBy = " group by s.supplierCategory.id ";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterConsumedAt() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<CategorySalesReport> consumedResultList = query.getResultList();
+
+
         //取得退款的数据 ecoupon
         sql = "select new models.CategorySalesReport(sum(e.refundPrice),s.supplierCategory.id ) " +
                 " from ECoupon e, Supplier s ";
@@ -487,6 +556,15 @@ public class CategorySalesReport {
         //merge
         for (CategorySalesReport paidItem : totalPaidResultList) {
             totalMap.put(getTotalReportKey(paidItem), paidItem);
+        }
+
+        for (CategorySalesReport consumedItem : consumedResultList) {
+            CategorySalesReport item = totalMap.get(getReportKey(consumedItem));
+            if (item == null) {
+                totalMap.put(getReportKey(consumedItem), consumedItem);
+            } else {
+                item.consumedAmount = consumedItem.consumedAmount;
+            }
         }
 
         for (CategorySalesReport refundItem : totalRefundList) {
@@ -533,11 +611,12 @@ public class CategorySalesReport {
         BigDecimal channelCost = BigDecimal.ZERO;
         BigDecimal grossMargin = BigDecimal.ZERO;
         BigDecimal profit = BigDecimal.ZERO;
+        BigDecimal summaryConsumed = BigDecimal.ZERO;
 
         for (CategorySalesReport item : resultList) {
             totalAmount = totalAmount.add(item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount);
             refundAmount = refundAmount.add(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount);
-
+            summaryConsumed = summaryConsumed.add(item.consumedAmount == null ? BigDecimal.ZERO : item.consumedAmount);
             totolSalePrice = totolSalePrice.add(item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount);
             totalCost = totalCost.add(item.totalCost == null ? BigDecimal.ZERO : item.totalCost);
             channelCost = channelCost.add(item.channelCost == null ? BigDecimal.ZERO : item.channelCost);
@@ -548,7 +627,7 @@ public class CategorySalesReport {
         if (totolSalePrice.compareTo(BigDecimal.ZERO) != 0) {
             grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
-        return new CategorySalesReport(totalAmount, refundAmount, netSalesAmount, grossMargin, channelCost, profit);
+        return new CategorySalesReport(summaryConsumed.setScale(2), totalAmount, refundAmount, netSalesAmount, grossMargin, channelCost, profit);
     }
 
 

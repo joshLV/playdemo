@@ -145,6 +145,7 @@
     <div class="alert alert-success">
         <span>在此期间 总销售金额：<b>￥${summary?.totalAmount?:0}</b>,
             总退款金额：<b>￥${summary?.refundAmount?:0}</b>,
+                        消费券总额：<b>￥${summary?.summaryConsumed?:0}</b>,
             净销售金额：<b>￥${summary?.netSalesAmount?:0}</b>
         毛利率：<b>${(summary?.grossMargin?:0).format('#')}%</b>
          净利润：<b>
@@ -169,6 +170,7 @@
         <th>销售数量</th>
         <th>总销售额</th>
         <th>退款总额</th>
+        <th>消费券总额</th>
         <th>净销售额</th>
         #{if hasSeeReportProfitRight == true}
         <th>毛利率</th>
@@ -201,7 +203,7 @@
                                              style="text-align:right;">${report?.buyNumber?:0}</td>
 
             <td #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
-                #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
+                #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC && report?.name != "999" }
                     <a href="${baseUrl}/coupons?condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}
                 &condition.goodsId=${report?.goods?.id}"
                        target="_blank">${(report?.totalAmount?:0).formatCurrency('CNY')}</a>
@@ -211,13 +213,26 @@
                 #{/else}
             </td>
             <td  #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
-                #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
+                #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC && report?.name != "999"}
                     <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtBegin=${condition?.endAt?.format()}
                 &condition.goodsId=${report?.goods?.id}"
                        target="_blank"> ${(report?.refundAmount?:0).formatCurrency('CNY')}</a>
                 #{/if}
                 #{else}
                 ${(report?.refundAmount?:0).formatCurrency('CNY')}
+                #{/else}
+            </td>
+            <td  #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
+                #{if report?.name != "999"}
+
+                    <a href="${baseUrl}/coupons?condition.consumedAtBegin=${condition?.beginAt?.format()}&condition.consumedAtEnd=${condition?.endAt?.format()}
+                &condition.goodsId=${report?.goods?.id}"
+                       target="_blank">
+                    ${(report?.consumedAmount?:0).formatCurrency('CNY')}
+                    </a>
+                #{/if}
+                #{else}
+                ${(report?.consumedAmount?:0).formatCurrency('CNY')}
                 #{/else}
             </td>
             <td  #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">

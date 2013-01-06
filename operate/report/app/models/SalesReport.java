@@ -267,8 +267,6 @@ public class SalesReport {
 
         for (SalesReport consumedItem : consumedResultList) {
             SalesReport item = map.get(getReportKey(consumedItem));
-
-
             if (item == null) {
                 Goods goods = Goods.findById(consumedItem.goods.id);
                 consumedItem.originalPrice = goods.originalPrice;
