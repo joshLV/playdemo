@@ -110,19 +110,10 @@
                         &{'goods.'+favItem.goods?.status}
                         #{/else}
                     </td>
-                   %{
-                    List<String> cityList = new ArrayList<String>();
-                    String[] cityName = favItem?.thirdCity?.split(",");
 
-                    for (String city:cityName) {
-                         cityList.add(city);
-                    }
-                    }%
                     <td class="action">
-                        #{list items:cityList, as:'city'}
-                            #{if favItem?.thirdUrl?.split(",").length>0}
-                                <a href="${favItem?.thirdUrl?.split(",")[city_index-1]}" target="_blank">${city}</a> |
-                            #{/if}
+                        #{list items:models.sales.ChannelGoodsInfo.findByGoods(favItem.goods), as:'city'}
+                           <a href="${city?.url}" target="_blank">${city.tag}</a> |
                         #{/list}
                     </td>
                     <td class="action">
@@ -144,7 +135,7 @@
                                 | <a href="/jd-add/${favItem.goods.id}">发布到京东</a>
                             #{/else}
                             #{if favItem.thirdGroupbuyId != null }
-                             | <a href="/jd-edit/${favItem.goods.id}">修改京东信息</a>
+                                | <a href="/jd-edit/${favItem.goods.id}">修改京东信息</a>
                             #{/if}
                         #{/elseif}
                         #{elseif resaler.loginName == 'yihaodian'}

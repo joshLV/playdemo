@@ -33,6 +33,10 @@ public class GoodsThirdSupport extends Model {
     @Column(name = "goods_data")
     public String goodsData;          //此商品的完整信息
 
+    @Lob
+    @Column(name = "goods_supplier_info")
+    public String goodsSupplierInfo;          //此对应商品门店变化的时候，更新这个字段
+
     @Enumerated(EnumType.STRING)
     @Column(name = "partner")
     public OuterOrderPartner partner;      //合作伙伴

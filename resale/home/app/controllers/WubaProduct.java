@@ -97,7 +97,7 @@ public class WubaProduct extends Controller {
         if (support == null) {
             getGoodsItems(goods);
         } else {
-            getGoodsSupportItems(support);
+            getGoodsSupportItems(support, goods);
         }
         renderArgs.put("isEdit", "edit");
         render("WubaProduct/prepare.html", categoryArr);
@@ -349,6 +349,76 @@ public class WubaProduct extends Controller {
     }
 
     /**
+     * 更新商家门店信息
+     */
+    public static void updateShop(long goodsId, int shopSize) {
+
+        models.sales.Goods goods = models.sales.Goods.findById(goodsId);
+
+        if (goods == null) {
+            error("商品没找到");
+            return;
+        }
+        Resaler user = SecureCAS.getResaler();
+        ResalerFav resalerFav = ResalerFav.find("byGoodsAndResaler", goods, user).first();
+        if (resalerFav == null) {
+            error("no fav found");
+        }
+        Long linkId = resalerFav.lastLinkId;
+
+        Map<String, Object> requestMap = new HashMap<>();
+        Map<String, Object> groupbuyInfo = new HashMap<>();
+        groupbuyInfo.put("groupbuyId", linkId);
+
+        requestMap.put("groupbuyInfo", groupbuyInfo);
+
+        List<Map<String, Object>> partners = new ArrayList<>();
+        for (int i = 1; i <= shopSize; i++) {
+            Map<String, Object> partnerMap = new HashMap<>();
+            partnerMap.put("partnerId", Long.parseLong(request.params.get("partnerId_" + i)));
+            partnerMap.put("title", StringUtils.trimToEmpty(request.params.get("title_" + i)));
+            partnerMap.put("shortTitle", StringUtils.trimToEmpty(request.params.get("shortTitle_" + i)));
+            partnerMap.put("circleId", Long.parseLong(request.params.get("circleId_" + i)));
+            partnerMap.put("address", StringUtils.trimToEmpty(request.params.get("address_" + i)));
+            partnerMap.put("telephone", StringUtils.trimToEmpty(request.params.get("telephone_" + i)));
+            partnerMap.put("webUrl", StringUtils.trimToEmpty(request.params.get("webUrl_" + i)));
+            partnerMap.put("busline", request.params.get("busline_" + i));
+            partnerMap.put("mapImg", StringUtils.trimToEmpty(request.params.get("mapImg_" + i)));
+            partnerMap.put("mapUrl", StringUtils.trimToEmpty(request.params.get("mapUrl_" + i)));
+            partnerMap.put("mapServiceId", request.params.get("mapServiceId_" + i) == null ? null : Integer.parseInt(request.params.get("mapServiceId_" + i)));
+            partnerMap.put("latitude", request.params.get("latitude_" + i));
+            partnerMap.put("longitude", request.params.get("longitude_" + i));
+
+            partners.add(partnerMap);
+            requestMap.put("partners", partners);
+        }
+
+        JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.editpartnerbygroupbuy", false);
+
+        String status = result.get("status").getAsString();
+        String msg = result.get("msg").getAsString();
+        if (!"10000".equals(status)) {
+            render("WubaProduct/result.html", status, msg);
+        }
+        requestMap.put("partners", partners);
+        String goodsData = new Gson().toJson(requestMap);
+
+        //查询是否已经推送过该商品，没有则创建，有则更新
+        GoodsThirdSupport support = GoodsThirdSupport.getSupportGoods(goods, OuterOrderPartner.WB);
+        if (support == null) {
+            GoodsThirdSupport.generate(goods, goodsData, OuterOrderPartner.WB).save();
+        } else {
+            support.goodsSupplierInfo = goodsData;
+            support.save();
+        }
+        if ("10000".equals(status)) {
+            redirect("/58-status/" + goodsId);
+        }
+        render("WubaProduct/result.html", status, msg, goodsId);
+
+    }
+
+    /**
      * 设置新增或修改成功，显示的参数
      *
      * @param cities
@@ -377,6 +447,7 @@ public class WubaProduct extends Controller {
                 }
             }
         }
+
 //        resalerFav.thirdUrl = StringUtils.join(urls, ",");
 //        resalerFav.thirdCity = StringUtils.join(cityNames, ",");
     }
@@ -506,7 +577,7 @@ public class WubaProduct extends Controller {
      *
      * @param support
      */
-    private static void getGoodsSupportItems(GoodsThirdSupport support) {
+    private static void getGoodsSupportItems(GoodsThirdSupport support, Goods goods) {
         JsonElement jsonElement = new JsonParser().parse(support.goodsData);
         JsonObject jsonObject = jsonElement.getAsJsonObject();
         for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
@@ -528,7 +599,7 @@ public class WubaProduct extends Controller {
                 renderArgs.put("groupbuyId", groupbuyInfoAsJsonObject.get("groupbuyId").getAsLong());
                 renderArgs.put("prodCategory", groupbuyInfoAsJsonObject.get("prodCategory").getAsInt());
                 renderArgs.put("prodTypeId", groupbuyInfoAsJsonObject.get("prodTypeId").getAsInt());
-                renderArgs.put("isSend", groupbuyInfoAsJsonObject.get("isSend").getAsInt());
+                renderArgs.put("isSend", groupbuyInfoAsJsonObject.get("isSend").getAsString());
                 if (groupbuyInfoAsJsonObject.has("expressMoney")) {
                     renderArgs.put("expressMoney", groupbuyInfoAsJsonObject.get("expressMoney").getAsDouble());
                 }
@@ -574,31 +645,57 @@ public class WubaProduct extends Controller {
 
         }
 
+        List<Shop> shopList = Arrays.asList(goods.getShopList().toArray(new Shop[]{}));
         List<Map<String, Object>> editShopList = new ArrayList<>();
 
         JsonArray jsonArray = jsonObject.get("partners").getAsJsonArray();
-        for (JsonElement element : jsonArray) {
-            Map<String, Object> shopMap = new HashMap<>();
-            JsonObject partnerObject = element.getAsJsonObject();
-            shopMap.put("name", partnerObject.get("title").getAsString());
-            shopMap.put("shortTitle", partnerObject.get("shortTitle").getAsString());
-            shopMap.put("partnerId", partnerObject.get("partnerId").getAsLong());
-            shopMap.put("circleId", partnerObject.get("circleId").getAsLong());
-            shopMap.put("address", partnerObject.get("address").getAsString());
-            shopMap.put("phone", partnerObject.get("telephone").getAsString());
-            shopMap.put("latitude", partnerObject.get("latitude").getAsString());
-            shopMap.put("longitude", partnerObject.get("longitude").getAsString());
-            shopMap.put("webUrl", partnerObject.get("webUrl").getAsString());
-            shopMap.put("busline", partnerObject.get("busline").getAsString());
-            shopMap.put("mapImg", partnerObject.get("mapImg").getAsString());
-            shopMap.put("mapUrl", partnerObject.get("mapUrl").getAsString());
-            int mapServiceId = partnerObject.get("mapServiceId").getAsInt();
-            shopMap.put("mapServiceId", mapServiceId);
-            editShopList.add(shopMap);
-        }
+        int shopSize = jsonArray.size();
+        if (shopList.size() > 0 && shopList.size() != shopSize) {
+            List<AreaMapping> areaMappingList = AreaMapping.findAll();
+            Supplier supplier = Supplier.findById(goods.supplierId);
+            JsonArray jsonArray1 = new JsonParser().parse(new Gson().toJson(shopList)).getAsJsonArray();
+            jsonArray = new JsonArray();
+            for (int i = 0; i < shopList.size(); i++) {
+                jsonObject = jsonArray1.get(i).getAsJsonObject();
+                String areaName = shopList.get(i).getAreaName();
+                jsonObject.addProperty("areaName", areaName);
+                for (AreaMapping areaMapping : areaMappingList) {
+                    if (areaMapping.ybqCircleName.equals(areaName)) {
+                        jsonObject.addProperty("areaName", areaMapping.wbCircleName);
+                        break;
+                    }
+                }
 
-        renderArgs.put("jsonArray", new JsonArray());
-        renderArgs.put("editShopList", editShopList);
+                jsonArray.add(jsonObject);
+                renderArgs.put("jsonArray", jsonArray);
+                renderArgs.put("shopList", shopList);
+                renderArgs.put("editShopList", new ArrayList<>());
+                renderArgs.put("supplier", supplier);
+            }
+        } else {
+            for (JsonElement element : jsonArray) {
+                Map<String, Object> shopMap = new HashMap<>();
+                JsonObject partnerObject = element.getAsJsonObject();
+                Long partnerId = partnerObject.get("partnerId").getAsLong();
+                shopMap.put("name", partnerObject.get("title").getAsString());
+                shopMap.put("shortTitle", partnerObject.get("shortTitle").getAsString());
+                shopMap.put("partnerId", partnerId);
+                shopMap.put("circleId", partnerObject.get("circleId").getAsLong());
+                shopMap.put("address", partnerObject.get("address").getAsString());
+                shopMap.put("phone", partnerObject.get("telephone").getAsString());
+                shopMap.put("latitude", partnerObject.get("latitude").getAsString());
+                shopMap.put("longitude", partnerObject.get("longitude").getAsString());
+                shopMap.put("webUrl", partnerObject.get("webUrl").getAsString());
+                shopMap.put("busline", partnerObject.get("busline").getAsString());
+                shopMap.put("mapImg", partnerObject.get("mapImg").getAsString());
+                shopMap.put("mapUrl", partnerObject.get("mapUrl").getAsString());
+                int mapServiceId = partnerObject.get("mapServiceId").getAsInt();
+                shopMap.put("mapServiceId", mapServiceId);
+                editShopList.add(shopMap);
+                renderArgs.put("jsonArray", new JsonArray());
+                renderArgs.put("editShopList", editShopList);
+            }
+        }
         renderArgs.put("goodsId", support.goods.id);
 
     }
