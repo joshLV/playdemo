@@ -27,33 +27,25 @@
         </tbody>
     </table>
     <br/>
-    #{if couponNoRefund == true}
-        <div style="color:red;">
-            <h3>此商品已设置为不可退款</h3>
-            <br/>
-        </div>
-    #{/if}
-    #{form @OperateCoupons.handleRefund() , id:'refund',class:"form-horizontal" }
-        <div class="control-group">
-            <label for="eCouponSn" class="control-label"><span style="color:red;">*</span>券号:</label>
+#{if couponNoRefund == true}
+    <div style="color:red;">
+        <h3>此商品已设置为不可退款</h3>
+        <br/>
+    </div>
+#{/if}
+#{form @OperateCoupons.handleRefund() , id:'refund',class:"form-horizontal" }
+    <div class="control-group">
+        <label for="refundComment" class="control-label"><span style="color:red;">*</span>备注:</label>
 
-            <div class="controls">
-                <input type="text" name="eCouponSn" id="eCouponSn" class="input-large" value="${eCouponSn}"/>
-                <span class="error">#{error 'eCouponSn'/}</span>
-            </div>
+        <div class="controls">
+            <input type="text" name="refundComment" id="refundComment" value="${refundComment}"
+                   class="input-large"/>
+            <span class="error">#{error 'refundComment'/}</span>
         </div>
-        <div class="control-group">
-            <label for="refundComment" class="control-label"><span style="color:red;">*</span>备注:</label>
-
-            <div class="controls">
-                <input type="text" name="refundComment" id="refundComment" value="${refundComment}"
-                       class="input-large"/>
-                <span class="error">#{error 'refundComment'/}</span>
-            </div>
-        </div>
-        <div class="form-actions" style="padding-left: 180px">
-            <button class="btn btn-primary" type="submit">退款</button>
-        </div>
-        <input type="hidden" name="couponId" id="couponId" value="${couponId}"/>
-    #{/form}
+    </div>
+    <div class="form-actions" style="padding-left: 180px">
+        <button class="btn btn-primary" type="submit">退款</button>
+    </div>
+    <input type="hidden" name="couponId" id="couponId" value="${couponId}"/>
+#{/form}
 </div>
