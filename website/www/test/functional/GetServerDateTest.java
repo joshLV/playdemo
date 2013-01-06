@@ -33,6 +33,6 @@ public class GetServerDateTest extends FunctionalTest {
 
     @Test
     public void testInstance() throws Exception {
-        assertTrue((new GetServerDate) instanceof Controller);
+        assertTrue((new GetServerDate()) instanceof Controller);
     }
 }

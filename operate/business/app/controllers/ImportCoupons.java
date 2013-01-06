@@ -6,6 +6,7 @@ import models.sales.ImportedCouponStatus;
 import models.sales.ImportedCouponTemp;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.db.jpa.JPA;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -39,6 +40,7 @@ public class ImportCoupons extends Controller{
         }else if( action == null || (!action.equals("append") && !action.equals("overwrite"))){
             index("请选择上传方式", null, null);
         }else if(couponfile == null){
+            Logger.info("Not pass couponfile param.");
             index("请选择上传文件", null, null);
         }
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);

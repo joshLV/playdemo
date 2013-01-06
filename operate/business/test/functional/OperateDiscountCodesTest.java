@@ -1,16 +1,14 @@
 package functional;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.uhuila.common.constants.DeletedStatus;
+import controllers.operate.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.SequenceCallback;
 import models.admin.OperateUser;
 import models.order.DiscountCode;
 import models.sales.Goods;
 import operate.rbac.RbacLoader;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import play.modules.paginate.ModelPaginator;
@@ -18,10 +16,11 @@ import play.mvc.Http;
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-import controllers.operate.cas.Security;
-import factory.FactoryBoy;
-import factory.callback.SequenceCallback;
-import util.DateHelper;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class OperateDiscountCodesTest extends FunctionalTest {
 
@@ -47,6 +46,12 @@ public class OperateDiscountCodesTest extends FunctionalTest {
                     }
                 });
 
+    }
+
+    @After
+    public void tearDown() {
+        // 清除登录Mock
+        Security.cleanLoginUserForTest();
     }
 
     @Test
