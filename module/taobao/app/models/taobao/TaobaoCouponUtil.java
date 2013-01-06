@@ -49,6 +49,9 @@ public class TaobaoCouponUtil {
      * @return 是否告诉成功
      */
     public static boolean tellTaobaoCouponSend(OuterOrder outerOrder) {
+        if (Play.runingInTestMode()) {
+            return true;
+        }
         OAuthToken oAuthToken = getToken();
 
         // 组合券
@@ -93,6 +96,9 @@ public class TaobaoCouponUtil {
      * @return 是否通知成功
      */
     public static boolean tellTaobaoCouponResend(OuterOrder outerOrder) {
+        if (Play.runingInTestMode()) {
+            return true;
+        }
         OAuthToken oAuthToken = getToken();
         JsonObject jsonObject = new JsonParser().parse(outerOrder.message).getAsJsonObject();
         String token = jsonObject.get("token").getAsString();
