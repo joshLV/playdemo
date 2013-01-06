@@ -15,10 +15,12 @@
             <thead>
             <tr>
                 <th width="75">分销商</th>
-                <th width="200">商品名称</th>
-                <th width="100">URL</th>
+                <th width="300">商品名称</th>
+                <th width="180">标签</th>
+                <th width="200">URL</th>
                 <th width="100">上架时间</th>
                 <th width="100">下架时间</th>
+                <th width="50">状态</th>
                 <th width="100">创建人</th>
                 <th width="80"> 操 作</th>
             </tr>
@@ -30,9 +32,11 @@
             <tr>
                 <td align="center">${channel.resaler.loginName}</td>
                 <td>${channel.goods.shortName?.raw()}</td>
+                <td>${channel?.tag}</td>
                 <td>${channel.url}</td>
-                <td>${channel.onSaleAt.format('yyyy-MM-dd HH:mm:ss')}</td>
-                <td>${channel.offSaleAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>${channel?.onSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>${channel?.offSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>&{'channel.'+channel?.status}</td>
                 <td>${channel.operateName}</td>
                 <td>
                     #{if channel.resaler?.salesId==operateUserId}

@@ -36,7 +36,6 @@ import controllers.modules.resale.cas.annotations.SkipCAS;
  * request. If the user is note logged, it redirect the user to the CAS login page and authenticate it.
  *
  * @author bsimard
- *
  */
 public class SecureCAS extends Controller {
 
@@ -44,8 +43,8 @@ public class SecureCAS extends Controller {
 
     @Before
     public static void setResaler() {
-    	Resaler resaler = getResaler();
-    	
+        Resaler resaler = getResaler();
+
         Cas cas = new Cas();
         if (resaler != null) {
             cas.isLogin = true;
@@ -57,12 +56,11 @@ public class SecureCAS extends Controller {
 
     public static Resaler getResaler() {
         String loginName = session.get(SESSION_USER_KEY);
-        
         if (loginName == null || "".equals(loginName)) {
             return null;
         }
         return Resaler.find("byLoginName", loginName).first();
-    }    
+    }
 
     /**
      * Action for the login route. We simply redirect to CAS login page.
@@ -146,9 +144,9 @@ public class SecureCAS extends Controller {
                 history.loginIp = request.remoteAddress;
                 history.applicationName = Play.configuration.getProperty("application.name");
                 history.sessionId = session.getId();
-                history.save();            
+                history.save();
             }
-            
+
             // we redirect to the original URL
             String url = (String) Cache.get("url_" + session.getId());
             Cache.delete("url_" + session.getId());
@@ -157,8 +155,7 @@ public class SecureCAS extends Controller {
             }
             Logger.debug("[SecureCAS]: redirect to url -> " + url);
             redirect(url);
-        }
-        else {
+        } else {
             fail();
         }
     }
@@ -191,7 +188,7 @@ public class SecureCAS extends Controller {
      *
      * @throws Throwable
      */
-    @Before(unless = { "login", "logout", "fail", "authenticate", "pgtCallBack" })
+    @Before(unless = {"login", "logout", "fail", "authenticate", "pgtCallBack"})
     public static void filter() throws Throwable {
         Logger.debug("[SecureCAS]: CAS Filter for URL -> " + request.url + ", test=" + Security.isTestLogined());
 
@@ -200,7 +197,7 @@ public class SecureCAS extends Controller {
             Logger.debug("set test user %s", Security.getLoginUserForTest());
             session.put(SESSION_USER_KEY, Security.getLoginUserForTest());
         }
-        
+
         Logger.debug("[SecureCAS]: CAS Filter for URL -> " + request.url);
 
         if (skipCAS()) {

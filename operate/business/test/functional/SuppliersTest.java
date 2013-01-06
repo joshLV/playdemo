@@ -14,7 +14,6 @@ import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -82,7 +81,7 @@ public class SuppliersTest extends FunctionalTest {
         assertNotNull(withdrawAccounts);
         assertEquals(1, operateUserList.size());
         assertEquals("Supplier0", supplier.fullName);
-        assertEquals("uhuila.net", baseDomain);
+        assertEquals("home.uhuila.net", baseDomain);
         assertEquals("tom", supplierUser.loginName);
         assertEquals(1, withdrawAccounts.size());
         assertEquals(supplier.id, withdrawAccounts.get(0).userId);

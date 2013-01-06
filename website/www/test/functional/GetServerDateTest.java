@@ -1,6 +1,8 @@
 package functional;
 
+import controllers.GetServerDate;
 import org.junit.Test;
+import play.mvc.Controller;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 
@@ -27,5 +29,10 @@ public class GetServerDateTest extends FunctionalTest {
 
         // 得到的时间与当前时间差要小于2秒. 服务器可能太慢
         assertTrue(((new Date()).getTime() - dateTime.getTime()) < 2000);
+    }
+
+    @Test
+    public void testInstance() throws Exception {
+        assertTrue((new GetServerDate) instanceof Controller);
     }
 }

@@ -11,13 +11,28 @@
             #{option resaler.id}${resaler.loginName}-${resaler.userName}#{/option}
         #{/list}
     #{/select}
-    <span class="error">#{error 'channelGoodsInfo.resaler.id'/}</span>
+        <span class="error">#{error 'channelGoodsInfo.resaler.id'/}</span>
     </div>
 </div>
 #{layout_operate.textField name:'channelGoodsInfo.goods.shortName', value:goods?.shortName?:channelGoodsInfo?.goods?.shortName,disabled:true/}
-#{layout_operate.textField name:'channelGoodsInfo.url',value:channelGoodsInfo?.url, required:true/}
-#{layout_operate.dateTimeField name:'channelGoodsInfo.onSaleAt',value:(goods?.beginOnSaleAt?:channelGoodsInfo?.onSaleAt)?.format('yyyy-MM-dd HH:mm:ss'),required:true/}
-#{layout_operate.dateTimeField name:'channelGoodsInfo.offSaleAt',value:(goods?.endOnSaleAt?:channelGoodsInfo?.offSaleAt)?.format('yyyy-MM-dd HH:mm:ss'),required:true/}
+<div class="control-group">
+    <label class="control-label" for="inputUsername">标签</label>
+
+    <div class="controls">
+        <input type="text" id="inputUsername" name="channelGoodsInfo.tag" value="${channelGoodsInfo?.tag}">
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="inputUsername">&{'channelGoodsInfo.url'}</label>
+
+    <div class="controls">
+        <input type="text" name="channelGoodsInfo.url" id="channelGoodsInfo_url" class="input-xlarge"
+               value="${channelGoodsInfo?.url}"> <span class="error">#{error 'channelGoodsInfo.url'/}</span>
+    </div>
+</div>
+*{#{layout_operate.dateTimeField name:'channelGoodsInfo.onSaleAt',value:(goods?.beginOnSaleAt?:channelGoodsInfo?.onSaleAt)?.format('yyyy-MM-dd HH:mm:ss'),required:true/}}*
+*{#{layout_operate.dateTimeField name:'channelGoodsInfo.offSaleAt',value:(goods?.endOnSaleAt?:channelGoodsInfo?.offSaleAt)?.format('yyyy-MM-dd HH:mm:ss'),required:true/}}*
 <div class="form-actions">
-    <input class="btn btn-primary" id="save" type="submit" value="确定" #{if resalerList.size()==0}disabled="true" #{/if}/>
+    <input class="btn btn-primary" id="save" type="submit" value="确定"
+           #{if resalerList.size()==0}disabled="true" #{/if}/>
 </div>

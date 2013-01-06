@@ -111,36 +111,18 @@ public class OperateCoupons extends Controller {
     }
 
     @Right("ECOUPON_REFUND")
-    public static void handleRefund(Long couponId, String eCouponSn, String refundComment) {
-        if (StringUtils.isBlank(eCouponSn)) {
-            Validation.addError("eCouponSn", "券号不能为空");
-        }
+    public static void handleRefund(Long couponId, String refundComment) {
         if (StringUtils.isBlank(refundComment)) {
             Validation.addError("refundComment", "备注不能为空");
         }
-
-        ECoupon prevEcoupon = ECoupon.findById(couponId);
-        ECoupon ecoupon = ECoupon.find("eCouponSn=?", eCouponSn).first();
-        if (ecoupon != null && prevEcoupon != null && !prevEcoupon.equals(ecoupon)) {
-            Validation.addError("eCouponSn", "此券号与要退款的券号不一致，请核实");
-        }
-
-        if (ecoupon == null) {
-            Validation.addError("eCouponSn", "不存在的券号");
-        }
-        if (ecoupon != null && ecoupon.status == ECouponStatus.CONSUMED) {
-            Validation.addError("eCouponSn", "券号已消费");
-        }
-        if (ecoupon != null && ecoupon.status != ECouponStatus.UNCONSUMED) {
-            Validation.addError("eCouponSn", "只有未消费券可退款");
-        }
+        ECoupon ecoupon = ECoupon.findById(couponId);
         if (Validation.hasErrors()) {
             ECoupon coupon = ECoupon.findById(couponId);
             Boolean couponNoRefund = false;
             if (coupon.goods.noRefund != null && coupon.goods.noRefund == true) {
                 couponNoRefund = true;
             }
-            render("OperateCoupons/refund.html", couponNoRefund, coupon, couponId, eCouponSn, refundComment);
+            render("OperateCoupons/refund.html", couponNoRefund, coupon, couponId, refundComment);
         }
         String returnFlg = "";
         if (ecoupon.status == ECouponStatus.UNCONSUMED && ecoupon.order.userType == AccountType.CONSUMER) {

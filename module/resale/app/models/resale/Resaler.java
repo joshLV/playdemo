@@ -4,14 +4,18 @@ import models.accounts.Account;
 import models.accounts.AccountCreditable;
 import models.accounts.util.AccountUtil;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Index;
-import play.data.validation.*;
+import play.data.validation.Email;
+import play.data.validation.Max;
+import play.data.validation.MaxSize;
+import play.data.validation.Min;
+import play.data.validation.MinSize;
+import play.data.validation.Phone;
+import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.libs.Images;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Mobile;
-import play.modules.view_ext.annotation.Money;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -142,6 +146,12 @@ public class Resaler extends Model {
     @MaxSize(value = 500)
     public String remark;
 
+    //第三方商品上架状态的关键词
+    @Column(name="third_status_buy")
+    public String thirdStatusBuy;
+      //第三方商品上下架状态的关键词
+    @Column(name="third_status_end")
+    public String thirdStatusEnd;
     /**
      * 佣金比例
      */
@@ -268,10 +278,8 @@ public class Resaler extends Model {
     }
 
     public static void update(Long id, Resaler resaler) {
-        System.out.println("resaler.statkus>>>" + resaler.status);
         Resaler updResaler = Resaler.findById(id);
         updResaler.status = resaler.status;
-        System.out.println("updResaler.status >>>" + updResaler.status);
         if (resaler.level != null) updResaler.level = resaler.level;
         updResaler.remark = resaler.remark;
 

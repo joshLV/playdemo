@@ -6,7 +6,7 @@ import models.sales.SearchHotKeywords;
 import java.util.Date;
 
 /**
- * TODO.
+ * 热门搜索词的测试对象.
  * <p/>
  * User: sujie
  * Date: 11/21/12

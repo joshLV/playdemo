@@ -101,6 +101,7 @@ public class TaobaoCouponAPI extends Controller {
      */
     private static void resend(OuterOrder outerOrder) {
         if (outerOrder == null) {
+            Logger.warn("taobao coupon resend error: outerOrder not found");
             renderJSON("{\"code\":504}");
             return;//没有找到订单
         }
@@ -115,6 +116,7 @@ public class TaobaoCouponAPI extends Controller {
      */
     private static void cancel(OuterOrder outerOrder) {
         if (outerOrder == null) {
+            Logger.warn("taobao coupon cancel error: outerOrder not found");
             renderJSON("{\"code\":504}");
             return;//没找到外部商品ID
         }
@@ -139,6 +141,7 @@ public class TaobaoCouponAPI extends Controller {
     private static void mobileModified(Map<String, String> params, OuterOrder outerOrder) {
         String mobile = params.get("mobile");//买家新的手机号
         if (outerOrder == null) {
+            Logger.warn("taobao coupon mobileModify error: outerOrder not found");
             renderJSON("{\"code\":504}");
             return;//没找到外部订单
         }
@@ -160,6 +163,12 @@ public class TaobaoCouponAPI extends Controller {
      * 淘宝订单修改了，目前只有有效期更改的通知
      */
     private static void orderModify(Map<String, String> params, OuterOrder outerOrder) {
+        if (outerOrder == null) {
+            Logger.warn("taobao coupon orderModify error: outerOrder not found");
+            renderJSON("{\"code\":504}");
+            return;//没找到外部订单
+        }
+
         String subMethod = params.get("sub_method");
         String data = params.get("data");
         JsonObject dataJson;
@@ -167,7 +176,7 @@ public class TaobaoCouponAPI extends Controller {
             dataJson = new JsonParser().parse(data).getAsJsonObject();
         }catch (Exception e) {
             Logger.warn("taobao coupon order modify failed: can not parse data as json %s", data);
-            renderJSON("{\"code\":504}");
+            renderJSON("{\"code\":505}");
             return;
         }
 
@@ -183,7 +192,7 @@ public class TaobaoCouponAPI extends Controller {
                         validStart = dateFormat.parse(dataJson.get("valid_start").getAsString());
                     } catch (ParseException e) {
                         Logger.warn("taobao coupon order modify failed: parse date error", data);
-                        renderJSON("{\"code\":505}");
+                        renderJSON("{\"code\":507}");
                         return;
                     }
                     for (ECoupon coupon : couponList) {
@@ -200,7 +209,7 @@ public class TaobaoCouponAPI extends Controller {
                         validEnd = dateFormat.parse(dataJson.get("valid_ends").getAsString());
                     } catch (ParseException e) {
                         Logger.warn("taobao coupon order modify failed: parse date error", data);
-                        renderJSON("{\"code\":505}");
+                        renderJSON("{\"code\":508}");
                         return;
                     }
                     for (ECoupon coupon : couponList) {
@@ -214,7 +223,7 @@ public class TaobaoCouponAPI extends Controller {
                 break;
             default:
                 Logger.warn("taobao coupon order modify failed: unknown sub method: %s", subMethod);
-                renderJSON("{\"code\":505}");
+                renderJSON("{\"code\":506}");
                 break;
         }
     }
