@@ -165,7 +165,11 @@
                 #{/else}
             </td>
             <td style="text-align:right;">
-            ${(report?.consumedAmount?:0).formatCurrency('CNY')}
+                <a href="${baseUrl}/coupons?condition.consumedAtBegin=${condition?.beginAt?.format()}&condition.consumedAtEnd=${condition?.endAt?.format()}
+                &condition.goodsId=${report?.goods?.id}"
+                   target="_blank">
+                ${(report?.consumedAmount?:0).formatCurrency('CNY')}
+                </a>
             </td>
             <td style="text-align:right;">
                 ￥${(report?.netSalesAmount?:0)}

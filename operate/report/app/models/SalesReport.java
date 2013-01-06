@@ -157,9 +157,7 @@ public class SalesReport {
     //consumedAt ecoupon
     public SalesReport(Goods goods, BigDecimal consumedAmount) {
         this.goods = goods;
-        System.out.println("name>>>" + goods.name);
         this.consumedAmount = consumedAmount;
-        System.out.println("consumed>>>>" + consumedAmount);
     }
 
     public SalesReport(Long buyNumber, BigDecimal originalAmount) {
@@ -248,13 +246,6 @@ public class SalesReport {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<SalesReport> consumedResultList = query.getResultList();
-
-//        BigDecimal value = BigDecimal.ZERO;
-//        for (SalesReport s : consumedResultList) {
-//            value = value.add(s.consumedAmount);
-//        }
-//        System.out.println("value>>>>" + value);
-
 
         //merge
         for (SalesReport paidItem : paidResultList) {
