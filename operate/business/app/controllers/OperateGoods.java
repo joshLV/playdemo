@@ -97,7 +97,7 @@ public class OperateGoods extends Controller {
                         break;
                     }
                 }
-                String[] orderBy = {"g.supplierId", "g.no", "g.name", "g.faceValue", "g.originalPrice", "g.salePrice", "g.baseSale", "g.saleCount", "g.firstOnSaleAt", "g.updatedAt", "g.materialType", "g.beginOnSaleAt", "g.endOnSaleAt"};
+                String[] orderBy = {"g.supplierId", "g.no", "g.name", "g.faceValue", "g.originalPrice", "g.salePrice", "g.baseSale", "g.saleCount", "g.expireAt", "g.updatedAt", "g.materialType", "g.beginOnSaleAt", "g.endOnSaleAt"};
                 // 添加排序属性
                 condition.orderBy = orderBy[index];
                 // 添加升降序方式

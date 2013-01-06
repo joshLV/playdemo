@@ -220,13 +220,13 @@ select:'condition_status',value:condition?.status/}
 
 #{if desc.equals("0000000010000") }
     <th width="80px" class="rank rank-asc"><a class="fn-rank"
-                                              data-rank="0000000020000">&{'goods.firstOnSaleAt'}</a></th>#{/if}
+                                              data-rank="0000000020000">&{'goods.expireAt'}</a></th>#{/if}
 #{elseif desc.equals("0000000020000")}
     <th width="80px" class="rank rank-desc"><a class="fn-rank"
-                                               data-rank="0000000010000">&{'goods.firstOnSaleAt'}</a>
+                                               data-rank="0000000010000">&{'goods.expireAt'}</a>
     </th>#{/elseif}
 #{else}
-    <th width="80px" class="rank"><a class="fn-rank" data-rank="0000000020000">&{'goods.firstOnSaleAt'}</a>
+    <th width="80px" class="rank"><a class="fn-rank" data-rank="0000000020000">&{'goods.expireAt'}</a>
     </th>#{/else}
 
 #{if desc.equals("0000000001000") }
@@ -303,7 +303,7 @@ select:'condition_status',value:condition?.status/}
         <td>${goods?.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
     #{/else}
 
-    <td>${goods?.firstOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+    <td>${goods?.expireAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
     <td>${goods?.updatedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
     <td>&{'goods.'+goods?.materialType}</td>
     <td> #{if goods.isExpired()}<span class="expired">已过期</span><br/>#{/if}
