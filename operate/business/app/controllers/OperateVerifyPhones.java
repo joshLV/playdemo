@@ -32,7 +32,7 @@ public class OperateVerifyPhones extends Controller {
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         JPAExtPaginator<SupplierUser> supplierUsersPage = SupplierUser
                 .getSupplierUserList(SupplierUserType.ANDROID, loginName, null, null,
-                        supplierId, pageNumber,
+                        supplierId, null, pageNumber,
                         PAGE_SIZE);
 
         List<Supplier> supplierList = Supplier.findUnDeleted();

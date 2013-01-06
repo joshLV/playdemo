@@ -171,7 +171,7 @@
                     <div class="sort">
                         <a #{if
                            condition.solrOrderBy.equals(models.sales.GoodsWebsiteCondition.getSolrOrderBy(0))}class="curr"#{/if}
-                           href="${condition.buildUrl('orderByNum', 0).buildUrl('orderByTypeNum',1).getUrl()}">默认</a>
+                           href="${condition.buildUrl('orderByNum', 0).buildUrl('orderByTypeNum', 1).getUrl()}">默认</a>
                         <a #{if
                            condition.solrOrderBy.equals(models.sales.GoodsWebsiteCondition.getSolrOrderBy(1))}class="curr"#{/if}
                            href="${condition.getOrderUrl(1)}" title="${condition.getOrderTitle(1)}"><span
