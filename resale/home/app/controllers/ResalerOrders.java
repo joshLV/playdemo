@@ -36,11 +36,9 @@ public class ResalerOrders extends Controller {
             condition = new OrdersCondition();
         }
         JPAExtPaginator<models.order.Order> orderList = Order.findResalerOrders(condition, resaler, pageNumber, PAGE_SIZE);
-
         BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders");
-        renderGoodsCond(condition);
 
-        render(orderList, breadcrumbs,resaler);
+        render(orderList, breadcrumbs,resaler,condition);
     }
 
     /**
@@ -90,15 +88,4 @@ public class ResalerOrders extends Controller {
         redirect("/payment_info/" + orderNumber);
     }
 
-    /**
-     * 向页面设置选择信息
-     *
-     * @param goodsCond 页面设置选择信息
-     */
-    private static void renderGoodsCond(OrdersCondition goodsCond) {
-        renderArgs.put("createdAtBegin", goodsCond.createdAtBegin);
-        renderArgs.put("createdAtEnd", goodsCond.createdAtEnd);
-        renderArgs.put("status", goodsCond.status);
-        renderArgs.put("goodsName", goodsCond.goodsName);
-    }
 }

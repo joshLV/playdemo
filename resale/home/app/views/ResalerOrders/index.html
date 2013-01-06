@@ -44,11 +44,11 @@ if(confirm("确定取消此订单吗？")){
            <h3>我的商品订单</h3>
            <form class="search-order" id="orderForm" action="@{ResalerOrders.index()}" method="GET">
                 <span>下单时间：
-                    <input class="short-input Wdate" type="text" name="condition.createdAtBegin" value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
-                    <input class="short-input Wdate" type="text" name="condition.createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
+                    <input class="short-input Wdate" type="text" name="condition.createdAtBegin" value="${condition?.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
+                    <input class="short-input Wdate" type="text" name="condition.createdAtEnd" value="${condition?.createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
                 </span>
                 <span>订单状态：
-                    #{select 'condition.status', id:'condition_status', class:'dingdan_stauts_bg', value:status}
+                    #{select 'condition.status', id:'condition_status', class:'dingdan_stauts_bg', value:condition?.status}
                         #{option ""}不限#{/option}
                         #{option "UNPAID"}&{'order.UNPAID'}#{/option}
                         #{option "PAID"}&{'order.PAID'}#{/option}
@@ -56,7 +56,7 @@ if(confirm("确定取消此订单吗？")){
                     #{/select}
                 </span>
                 <span>商品名称：
-                    <input class="medium-input" type="text" name="condition.goodsName" value="${goodsName}" />
+                    <input class="medium-input" type="text" name="condition.goodsName" value="${condition?.goodsName}" />
                 </span>
                 <button type="submit" class="search-btn" id="search">搜素</button>
             </form>
