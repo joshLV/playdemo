@@ -41,7 +41,7 @@ import static play.Logger.warn;
 public class Suppliers extends Controller {
     private static final String ADMIN_ROLE = "admin";
     private static final String SALES_ROLE = "sales";
-    public static final String BASE_DOMAIN = Play.configuration.getProperty("application.baseDomain");
+    public static final String SUPPLIER_BASE_DOMAIN = Play.configuration.getProperty("application.supplierDomain");
     public static final String BASE_URL = Play.configuration.getProperty("application.baseUrl", "");
 
     public static void index() {
@@ -56,7 +56,7 @@ public class Suppliers extends Controller {
     @ActiveNavigation("suppliers_add")
     public static void add() {
         List<OperateUser> operateUserList = OperateUser.getSales(SALES_ROLE);
-        renderArgs.put("baseDomain", BASE_DOMAIN);
+        renderArgs.put("baseDomain", SUPPLIER_BASE_DOMAIN);
         List<SupplierCategory> supplierCategoryList = SupplierCategory.findAll();
         render(operateUserList, supplierCategoryList);
     }
@@ -92,7 +92,7 @@ public class Suppliers extends Controller {
 
         if (Validation.hasErrors()) {
             List<OperateUser> operateUserList = OperateUser.getSales(SALES_ROLE);
-            renderArgs.put("baseDomain", BASE_DOMAIN);
+            renderArgs.put("baseDomain", SUPPLIER_BASE_DOMAIN);
             List<SupplierCategory> supplierCategoryList = SupplierCategory.findAll();
             render("Suppliers/add.html", supplier, operateUserList, supplierCategoryList);
         }
@@ -202,7 +202,7 @@ public class Suppliers extends Controller {
                 WithdrawAccount.find("byUserIdAndAccountType", supplier.getId(), AccountType.SUPPLIER).fetch();
         List<OperateUser> operateUserList = OperateUser.getSales(SALES_ROLE);
         List<SupplierCategory> supplierCategoryList = SupplierCategory.findAll();
-        renderArgs.put("baseDomain", BASE_DOMAIN);
+        renderArgs.put("baseDomain", SUPPLIER_BASE_DOMAIN);
         Boolean hasSupplierCodeEditPermission = ContextedPermission.hasPermission("SUPPLIER_CODE_EDIT");
         render(supplier, supplierCategoryList, hasSupplierCodeEditPermission, admin, id, withdrawAccounts, operateUserList, page);
     }
@@ -243,7 +243,7 @@ public class Suppliers extends Controller {
                 warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
             }
             List<OperateUser> operateUserList = OperateUser.getSales(SALES_ROLE);
-            renderArgs.put("baseDomain", BASE_DOMAIN);
+            renderArgs.put("baseDomain", SUPPLIER_BASE_DOMAIN);
             render("/Suppliers/edit.html", supplier, id, operateUserList, page);
         }
         Supplier.update(id, supplier);
