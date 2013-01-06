@@ -1,0 +1,6 @@
+#{select 'shopId', id:"supplierUser_shop_id", value:shopId, class:"input-medium"}
+<option value="">全部</option>
+#{list items:shopList, as:'shop'}
+<option value="${shop?.id}">${shop?.name}</option>
+#{/list}
+#{/select}

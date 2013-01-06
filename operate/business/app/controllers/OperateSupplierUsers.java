@@ -34,17 +34,17 @@ public class OperateSupplierUsers extends Controller {
         String loginName = request.params.get("loginName");
         String userName = request.params.get("userName");
         String jobNumber = request.params.get("jobNumber");
+        String shopIdStr = request.params.get("shopId");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+        Long shopId = StringUtils.isEmpty(shopIdStr) ? 0l : Long.parseLong(shopIdStr);
         JPAExtPaginator<SupplierUser> supplierUsersPage = SupplierUser
                 .getSupplierUserList(loginName, userName, jobNumber,
-                        supplierId, pageNumber,
+                        supplierId, shopId, pageNumber,
                         PAGE_SIZE);
 
         List<Supplier> supplierList = Supplier.findUnDeleted();
-        renderArgs.put("loginName", loginName);
-        renderArgs.put("userName", userName);
-        renderArgs.put("jobNumber", jobNumber);
-        render(supplierUsersPage, supplierList, supplierId);
+        List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+        render(supplierUsersPage, supplierList, shopList, loginName, userName, jobNumber, supplierId, shopId);
     }
 
     /**
@@ -170,4 +170,8 @@ public class OperateSupplierUsers extends Controller {
         renderJSON(returnFlag);
     }
 
+    public static void shopList(Long supplierId) {
+        List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+        render(shopList);
+    }
 }

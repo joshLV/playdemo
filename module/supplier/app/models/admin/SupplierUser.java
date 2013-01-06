@@ -125,7 +125,7 @@ public class SupplierUser extends Model {
     public Set<SupplierPermission> permissions;
 
     @Column(name = "default_ui_version")
-    public String  defaultUiVersion;
+    public String defaultUiVersion;
 
     public SupplierUser() {
         supplierUserType = SupplierUserType.HUMAN;
@@ -140,9 +140,10 @@ public class SupplierUser extends Model {
      * @param pageSize   记录数
      * @return 操作员信息
      */
-    public static JPAExtPaginator<SupplierUser> getSupplierUserList(String loginName, String userName, String jobNumber, Long supplierId,
+    public static JPAExtPaginator<SupplierUser> getSupplierUserList(String loginName, String userName, String jobNumber,
+                                                                    Long supplierId, Long shopId,
                                                                     int pageNumber, int pageSize) {
-        return getSupplierUserList(SupplierUserType.HUMAN, loginName, userName, jobNumber, supplierId, pageNumber, pageSize);
+        return getSupplierUserList(SupplierUserType.HUMAN, loginName, userName, jobNumber, supplierId, shopId, pageNumber, pageSize);
     }
 
     /**
@@ -153,13 +154,20 @@ public class SupplierUser extends Model {
      * @param pageSize   记录数
      * @return 操作员信息
      */
-    public static JPAExtPaginator<SupplierUser> getSupplierUserList(SupplierUserType type, String loginName, String userName, String jobNumber, Long supplierId,
+    public static JPAExtPaginator<SupplierUser> getSupplierUserList(SupplierUserType type,
+                                                                    String loginName, String userName,
+                                                                    String jobNumber, Long supplierId,
+                                                                    Long shopId,
                                                                     int pageNumber, int pageSize) {
         StringBuilder sql = new StringBuilder("1=1");
         Map<String, Object> params = new HashMap<>();
         if (supplierId != null && supplierId > 0) {
             sql.append(" and supplier.id = :supplierId");
             params.put("supplierId", supplierId);
+        }
+        if (shopId != null && shopId > 0) {
+            sql.append(" and shop.id = :shopId");
+            params.put("shopId", shopId);
         }
 
         if (type != null) {

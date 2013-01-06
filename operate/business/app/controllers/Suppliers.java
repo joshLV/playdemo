@@ -279,11 +279,11 @@ public class Suppliers extends Controller {
     public static void exportMaterial(long supplierId, String supplierDomainName) {
         JPAExtPaginator<SupplierUser> supplierUsersPage = SupplierUser
                 .getSupplierUserList(SupplierUserType.ANDROID, null, null, null,
-                        supplierId, 1,
+                        supplierId, null, 1,
                         1);
         JPAExtPaginator<SupplierUser> supplierUsers = SupplierUser
                 .getSupplierUserList(null, null, null,
-                        supplierId, 1,
+                        supplierId, null, 1,
                         1);
         render(supplierUsersPage, supplierDomainName, supplierUsers);
     }

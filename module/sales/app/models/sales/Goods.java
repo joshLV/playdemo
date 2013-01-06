@@ -1918,7 +1918,8 @@ public class Goods extends Model {
     public static QueryResponse search(String keywords, long brandId, int pageNumber, int pageSize) {
         GoodsWebsiteCondition condition = new GoodsWebsiteCondition();
         condition.keywords = keywords;
-        condition.solrOrderBy = "goods.firstOnSaleAt_d";
+        condition.solrOrderBy = "goods.priority_i";
+        condition.orderByType = "desc";
         condition.brandId = brandId;
         return searchFullText(condition, pageNumber, pageSize);
 
@@ -1949,7 +1950,7 @@ public class Goods extends Model {
      * @return
      */
     public static QueryResponse searchFullText(GoodsWebsiteCondition condition, int pageNumber, int pageSize) {
-        StringBuilder qBuilder = null;
+        StringBuilder qBuilder;
         String q = null;
         if (StringUtils.isNotBlank(condition.keywords)) {
             qBuilder = new StringBuilder("text:");
@@ -2090,6 +2091,7 @@ public class Goods extends Model {
         }
         query.setFacet(true).addFacetField(facetFields);
         query.setHighlight(true).addHighlightField(SOLR_GOODS_NAME).setHighlightSimplePre("<em>").setHighlightSimplePost("</em>");
+
         return Solr.query(query);
     }
 

@@ -172,6 +172,8 @@ POST    /users/checkLoginName                   OperateSupplierUsers.checkLoginN
 GET     /users/{id}/edit                        OperateSupplierUsers.edit
 POST    /users/{id}                             OperateSupplierUsers.update
 DELETE  /users/{id}                             OperateSupplierUsers.delete
+GET     /users/shops/{supplierId}               OperateSupplierUsers.shopList
+
 #商户验证电话管理
 GET     /verify-tel                             OperateVerifyPhones.index
 GET     /verify-tel/supplier-shops/{id}         OperateVerifyPhones.showSupplierShops

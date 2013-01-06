@@ -192,7 +192,7 @@ public class GoodsWebsiteCondition implements Serializable {
                 orderBy = "g.materialType, g.firstOnSaleAt"; //电子券优化显示
                 break;
             default:
-                orderBy = "g.materialType, g.recommend"; //电子券优化显示
+                orderBy = "g.materialType, g.priority"; //电子券优化显示
                 break;
         }
         return orderBy;
@@ -215,7 +215,7 @@ public class GoodsWebsiteCondition implements Serializable {
                 orderBy = "goods.materialType_s, goods.firstOnSaleAt_dt"; //电子券优化显示
                 break;
             default:
-                orderBy = "goods.recommend_i"; //电子券优化显示
+                orderBy = "goods.priority_i"; //电子券优化显示
                 break;
         }
         return orderBy;
