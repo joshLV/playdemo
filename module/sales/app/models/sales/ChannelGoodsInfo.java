@@ -1,5 +1,6 @@
 package models.sales;
 
+import com.taobao.api.internal.util.StringUtils;
 import com.uhuila.common.constants.DeletedStatus;
 import models.resale.Resaler;
 import play.data.binding.As;

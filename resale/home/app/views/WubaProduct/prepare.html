@@ -36,7 +36,7 @@
 #{/set}
 
 #{if isEdit=='edit'}
-<form action="/58-edit" method="POST">
+<form action="/58-edit" id="form" method="POST">
 #{/if}
 #{else}
 <form action="/58-add" method="POST">
@@ -282,10 +282,23 @@ ${mobileDescription?.raw()}
 
 <p>
     <button type="submit">提交</button>
+    #{if isEdit=='edit'}
+    <button type="button" id="upd-shop">更新门店</button>
+    #{/if}
 </p>
 </div>
 </form>
 <script type="text/javascript">
+
+    $(function () {
+        $("#upd-shop").click(function () {
+            $("#form").attr("action", "/58-upd-shop");
+            $("#form").attr("method", "POST");
+            $("#form").attr("target", "_self");
+            $("#form").submit();
+        })
+
+    });
 
     //城市
     var data = CITY.data;

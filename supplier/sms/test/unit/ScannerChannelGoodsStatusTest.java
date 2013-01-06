@@ -10,7 +10,6 @@ import org.junit.Test;
 import play.test.UnitTest;
 
 import java.util.Date;
-import java.util.regex.Pattern;
 
 /**
  * <p/>
@@ -36,16 +35,16 @@ public class ScannerChannelGoodsStatusTest extends UnitTest {
         channelGoodsInfo.save();
 
     }
-    @Test
-    public void test_Job() {
-        String succTxt = "<div class=\"buy_btn b_buy\">";
-        Pattern onSalePattern = Pattern.compile(resaler.onSaleKey);
-        assertTrue(onSalePattern.matcher(succTxt).find());
-
-        String endTxt = "<div class=\"buy_btn b_end\">";
-        Pattern offSalePattern = Pattern.compile(resaler.offSaleKey);
-        assertTrue(offSalePattern.matcher(endTxt).find());
-    }
+//    @Test
+//    public void test_Job() {
+//        String succTxt = "<div class=\"buy_btn b_buy\">";
+//        Pattern onSalePattern = Pattern.compile(resaler.onSaleKey);
+//        assertTrue(onSalePattern.matcher(succTxt).find());
+//
+//        String endTxt = "<div class=\"buy_btn b_end\">";
+//        Pattern offSalePattern = Pattern.compile(resaler.offSaleKey);
+//        assertTrue(offSalePattern.matcher(endTxt).find());
+//    }
     @Test
     public void test_Job_from_onsale_to_onSale() {
         channelGoodsInfo.status = ChannelGoodsInfoStatus.ONSALE;

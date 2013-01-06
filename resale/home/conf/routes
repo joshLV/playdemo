@@ -89,6 +89,7 @@ GET     /58-add/{goodsId}                       WubaProduct.prepare
 GET     /58-edit/{goodsId}                      WubaProduct.edit
 POST    /58-add                                 WubaProduct.upload
 POST    /58-edit                                WubaProduct.update
+POST    /58-upd-shop                            WubaProduct.updateShop
 POST    /images                                 ResalerUploadFiles.uploadJson
 
 GET     /58-status/{goodsId}                    WubaProduct.getStatus
