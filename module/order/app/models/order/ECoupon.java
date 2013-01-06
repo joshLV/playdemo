@@ -1110,7 +1110,8 @@ public class ECoupon extends Model {
         if (StringUtils.isBlank(phone)) {
             phone = eCoupon.orderItems.phone;
         }
-        send(eCoupon, phone);
+//        send(eCoupon, phone);
+
         SMSUtil.send("【一百券】"
                 + (StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title
                 : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]"))
