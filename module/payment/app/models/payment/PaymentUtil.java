@@ -2,6 +2,7 @@ package models.payment;
 
 import models.payment.alipay.AliPaymentFlow;
 import models.payment.kuaiqian.KuaiqianPaymentFlow;
+import models.payment.sina.SinaPaymentFlow;
 import models.payment.tenpay.TenpayPaymentFlow;
 import models.payment.test.TestPaymentFlow;
 
@@ -16,11 +17,13 @@ public class PaymentUtil {
     private static PaymentFlow alipayPaymentFlow = new AliPaymentFlow();
     private static PaymentFlow tenpayPaymentFlow = new TenpayPaymentFlow();
     private static PaymentFlow kuaiqianPaymentFlow = new KuaiqianPaymentFlow();
+    private static PaymentFlow sinaPaymentFlow = new SinaPaymentFlow();
     private static PaymentFlow testPaymentFlow = new TestPaymentFlow();
 
     public static final String PARTNER_CODE_ALIPAY  = "alipay";
     public static final String PARTNER_CODE_TENPAY  = "tenpay";
     public static final String PARTNER_CODE_99BILL  = "99bill";
+    public static final String PARTNER_CODE_SINA    = "sina";
     public static final String PARTNER_CODE_TESTPAY = "testpay";
 
     public static PaymentFlow getPaymentFlow(String partner){
@@ -32,6 +35,8 @@ public class PaymentUtil {
                 return tenpayPaymentFlow;
             case PARTNER_CODE_99BILL:
                 return kuaiqianPaymentFlow;
+            case PARTNER_CODE_SINA:
+                return sinaPaymentFlow;
             case PARTNER_CODE_TESTPAY:
                 if(TestPaymentFlow.ON) { return testPaymentFlow; }
                 else { return null; }
