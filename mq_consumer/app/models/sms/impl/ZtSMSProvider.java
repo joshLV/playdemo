@@ -1,23 +1,21 @@
 package models.sms.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import models.sms.SMSException;
 import models.sms.SMSMessage;
 import models.sms.SMSProvider;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
-
 import play.Logger;
 import play.Play;
-import util.ws.WebServiceClientFactory;
 import util.ws.WebServiceClient;
+import util.ws.WebServiceClientFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 上海助通网络接口.
@@ -71,8 +69,12 @@ public class ZtSMSProvider implements SMSProvider {
         result = result.trim();
         Matcher m = RESULTCODE_PATTERN.matcher(result);
         if (!m.find()) {
-            // 发送失败
-            throw new SMSException("发送助通短信不成功:" + result);
+            if (result.startsWith("13")) {
+                Logger.info("忽略13：30分钟内重复发送.");
+            } else {
+                // 发送失败
+                throw new SMSException("发送助通短信不成功:" + result);
+            }
         }
 
     }
