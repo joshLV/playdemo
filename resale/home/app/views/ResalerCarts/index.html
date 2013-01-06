@@ -32,17 +32,13 @@
                         radioStatus="";
                         radioChecked="";
                         info="";
-                        if (favItem.goods.baseSale <= 0){ info += "<em>已无库存</em>"; radioStatus = "disabled"}
+                        if (favItem.goods.getRealStocks() <= 0){ info += "<em>已无库存</em>"; radioStatus = "disabled"}
                         if (!favItem.goods.onSale()){info += "<em>已下架</em>"; radioStatus = "disabled"}
                         if( java.lang.String.valueOf(favItem.goods.id) == goodsId){    radioChecked="checked";
 
                     }
                     }%
                     <li>
-                        *{var val=jQuery("#check_goods_"${favItem.goods.id}).val();}*
-                        *{jQuery}*
-
-                            *{$("check_goods_"${favItem.goods.id}).attr("checked");}*
 
                         <input type="radio" name="goodsId" value="${favItem.goods.id}"
                                id="goods_${favItem.goods.id}" ${radioStatus.raw()} ${radioChecked.raw()}/>
@@ -108,7 +104,7 @@
                         </a>
                         <input class="num-input" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}-${cartItem.phone}"/>
                         <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}-${cartItem.phone}"/>
-                        <input type="hidden" value="${cartItem.goods.baseSale}" id="stock_${cartItem.goods.id}-${cartItem.phone}">
+                        <input type="hidden" value="${cartItem.goods.getRealStocks()}" id="stock_${cartItem.goods.id}-${cartItem.phone}">
                         <a class="add_box" href="#" iden="${cartItem.goods.id}" phone="${cartItem.phone}">
                             <img src="@{'/public/images/add_anniu.jpg'}" id="inc_add_${cartItem.goods.id}-${cartItem.phone}"/>
                         </a>
