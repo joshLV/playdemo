@@ -3,30 +3,77 @@
 #{set title:'已消费券退款' /}
 
 <legend>已消费电子券 退款</legend>
-#{form @VerifiedECouponRefunds.refund() , id:'verifiedRefundForm',class:"form-horizontal" }
-	<div class="control-group">
-	    <label for="eCouponSn" class="control-label">券号:</label>
-	    <div class="controls">
-	        <input type="text" name="eCouponSn" id="eCouponSn" class="input-large"/>
-	        <span class="control-group" style="padding-left: 10px" id="eCouponSnMessage"></span>
-	    </div>
-	</div>
-    <div class="control-group">
-        <label for="choice" class="control-label">动作:</label>
-        <div class="controls">
-            <input type="text" name="choice" id="choice" class="input-large"/>
-            <span class="control-group" style="padding-left: 10px"
-                  id="choiceCommentMessage">请输入『REFUND』退款或『UNCONSUME』取消验证。取消验证则券状态返回为未消费.</span>
+#{if !coupon}
+    #{form @VerifiedECouponRefunds.index() , id:'verifiedRefundForm',class:"form-horizontal" }
+        <div class="control-group">
+            <label for="eCouponSn" class="control-label">券号:</label>
+            <div class="controls">
+                <input type="text" name="eCouponSn" id="eCouponSn" class="input-large"/>
+                #{if eCouponSn}
+                    <span class="alert">
+                        该券不存在
+                    </span>
+                #{/if}
+            </div>
         </div>
-    </div>
-    <div class="control-group">
-        <label for="refundComment" class="control-label">备注:</label>
-        <div class="controls">
-            <input type="text" name="refundComment" id="refundComment" class="input-large"/>
-            <span class="control-group" style="padding-left: 10px" id="refundCommentMessage"></span>
+        <div class="form-actions" style="padding-left: 180px">
+            <button class="btn btn-primary" type="submit">查询</button>
         </div>
-    </div>
-	<div class="form-actions" style="padding-left: 180px">
-	    <button class="btn btn-primary" type="submit">退款</button>
-	</div>
-#{/form}
+    #{/form}
+#{/if}
+#{else}
+    #{form @VerifiedECouponRefunds.refund() , id:'verifiedRefundForm',class:"form-horizontal" }
+        <div class="control-group">
+            <div class="controls">
+            <table class="table table-bordered " style="width: auto">
+                <tr>
+                    <th>商品名</th>
+                    <td>${coupon.goods.title}</td>
+                </tr>
+                <tr>
+                    <th>券状态</th>
+                    <td>&{'coupon.' + coupon.status}</td>
+                </tr>
+                <tr>
+                    <th>券面值</th>
+                    <td>${coupon.faceValue}</td>
+                </tr>
+            </table></div>
+        </div>
+        #{if coupon.status == models.order.ECouponStatus.CONSUMED}
+            <div class="control-group">
+                <label for="eCouponSn" class="control-label">券号:</label>
+                <div class="controls">
+                    <input type="text" name="eCouponSn" id="eCouponSn" class="input-large" disabled value="${coupon.eCouponSn}"/>
+                    <span class="control-group" style="padding-left: 10px" id="eCouponSnMessage"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="choice" class="control-label">动作:</label>
+                <div class="controls">
+                    <input type="text" name="choice" id="choice" class="input-large"/>
+                            <span class="control-group" style="padding-left: 10px"
+                                  id="choiceCommentMessage">请输入『REFUND』退款或『UNCONSUME』取消验证。取消验证则券状态返回为未消费.</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="refundComment" class="control-label">备注:</label>
+                <div class="controls">
+                    <input type="text" name="refundComment" id="refundComment" class="input-large"/>
+                    <span class="control-group" style="padding-left: 10px" id="refundCommentMessage"></span>
+                </div>
+            </div>
+            <div class="form-actions" style="padding-left: 180px">
+                <button class="btn btn-primary" type="submit">退款</button>
+            </div>
+        #{/if}
+        #{else}
+            <div class="form-actions" style="padding-left: 180px">
+                券状态不是已消费的，不能使用此功能的啦。
+            </div>
+        #{/else}
+
+    #{/form}
+
+#{/else}
+

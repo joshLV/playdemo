@@ -30,8 +30,12 @@ import java.util.List;
 @ActiveNavigation("verified_ecoupon_refund")
 public class VerifiedECouponRefunds extends Controller {
 
-    public static void index() {
-        render();
+    public static void index(String eCouponSn) {
+        if (!StringUtils.isBlank(eCouponSn)) {
+            ECoupon eCoupon = ECoupon.find("byECouponSn", eCouponSn).first();
+            renderArgs.put("coupon", eCoupon);
+        }
+        render(eCouponSn);
     }
     
     public static void refund(String eCouponSn, String refundComment, String choice) {
