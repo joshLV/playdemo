@@ -27,7 +27,7 @@ public class SearchHotKeywords extends Model {
     @Required
     public Long times = 1l;
 
-    @Column(name = "updatedAt")
+    @Column(name = "updated_at")
     public Date updatedAt = new Date();
 
     public static void addKeywords(String keywords) {
