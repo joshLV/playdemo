@@ -175,7 +175,8 @@ public class OperationReports extends Controller {
         condition.accountType = null;
         channelPage = ResaleSalesReport.query(channelCondition);
         List<ResaleSalesReport> channelConsumerList = ResaleSalesReport.queryConsumer(channelCondition);
-
+        System.out.println("size>>>" + channelConsumerList.size());
+        System.out.println("name>>>" + channelConsumerList.get(0).loginName);
         // 查询出所有结果
         for (ResaleSalesReport resaleSalesReport : channelConsumerList) {
             channelPage.add(resaleSalesReport);
@@ -193,6 +194,11 @@ public class OperationReports extends Controller {
 
         // 查询出所有结果
         for (ChannelCategoryReport c : consumerList) {
+            if (c.loginName == null) {
+                c.code = "";
+                c.name = "";
+                c.loginName = "一百券";
+            }
             resultList.add(c);
         }
 
