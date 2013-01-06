@@ -52,6 +52,24 @@ public class SalesReportCondition implements Serializable {
         return condBuilder.toString();
     }
 
+    public String getFilterConsumedAt() {
+        StringBuilder condBuilder = new StringBuilder(" and r.order.status='PAID' " +
+                " and r.goods.isLottery=false and e.status = models.order.ECouponStatus.CONSUMED" +
+                " and  r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
+
+        if (beginAt != null) {
+            condBuilder.append(" and e.consumedAt >= :createdAtBegin");
+            paramMap.put("createdAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and e.consumedAt < :createdAtEnd");
+            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
+        }
+
+        return condBuilder.toString();
+    }
+
+
     public String getResalerFilter() {
         StringBuilder condBuilder = new StringBuilder(" where r.order.userType=models.accounts.AccountType.RESALER " +
                 " and (r.order.status='PAID' or r.order.status='SENT')" +
@@ -76,6 +94,7 @@ public class SalesReportCondition implements Serializable {
 
         return condBuilder.toString();
     }
+
 
     public String getRefundFilter() {
         StringBuilder condBuilder = new StringBuilder(" where e.status=:status and e.goods.isLottery=false" +
@@ -114,7 +133,7 @@ public class SalesReportCondition implements Serializable {
 
         if (StringUtils.isNotBlank(userName)) {
             condBuilder.append(" and o.userName like :shortName");
-            paramMap.put("shortName", "%" + userName+ "%");
+            paramMap.put("shortName", "%" + userName + "%");
         }
         if (StringUtils.isNotBlank(jobNumber)) {
             condBuilder.append(" and o.jobNumber= :jobNumber");
@@ -142,7 +161,7 @@ public class SalesReportCondition implements Serializable {
                 " and r.goods.isLottery=false and r.order=o and o.userId=b.id");
         if (StringUtils.isNotBlank(userName)) {
             condBuilder.append(" and ou.userName like :shortName");
-            paramMap.put("shortName", "%" + userName+ "%");
+            paramMap.put("shortName", "%" + userName + "%");
         }
         if (StringUtils.isNotBlank(jobNumber)) {
             condBuilder.append(" and ou.jobNumber= :jobNumber");
@@ -165,9 +184,9 @@ public class SalesReportCondition implements Serializable {
         StringBuilder condBuilder = new StringBuilder(" where e.goods.supplierId=s.id and s.deleted=0 and s.salesId=o.id and o.deleted=0 and e.status=:status and e.goods.isLottery=false");
         paramMap1.put("status", status);
 
-         if (StringUtils.isNotBlank(userName)) {
+        if (StringUtils.isNotBlank(userName)) {
             condBuilder.append(" and o.userName like :userName");
-            paramMap1.put("userName", "%" + userName+ "%");
+            paramMap1.put("userName", "%" + userName + "%");
         }
         if (StringUtils.isNotBlank(jobNumber)) {
             condBuilder.append(" and o.jobNumber=:jobNumber");

@@ -498,7 +498,6 @@ public class ResaleSalesReport extends Model {
         }
         List<ResaleSalesReport> paidResultList = query.getResultList();
 
-
         //sendAt real
         sql = "select new models.ResaleSalesReport(r.order,count(r.buyNumber),sum(r.salePrice-r.rebateValue/r.buyNumber)" +
                 ",sum(r.originalPrice)" +

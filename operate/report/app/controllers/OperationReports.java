@@ -175,7 +175,6 @@ public class OperationReports extends Controller {
         condition.accountType = null;
         channelPage = ResaleSalesReport.query(channelCondition);
         List<ResaleSalesReport> channelConsumerList = ResaleSalesReport.queryConsumer(channelCondition);
-
         // 查询出所有结果
         for (ResaleSalesReport resaleSalesReport : channelConsumerList) {
             channelPage.add(resaleSalesReport);
@@ -193,6 +192,11 @@ public class OperationReports extends Controller {
 
         // 查询出所有结果
         for (ChannelCategoryReport c : consumerList) {
+            if (c.loginName == null) {
+                c.code = "";
+                c.name = "";
+                c.loginName = "一百券";
+            }
             resultList.add(c);
         }
 
@@ -247,11 +251,26 @@ public class OperationReports extends Controller {
             if (report.grossMargin == null) {
                 report.grossMargin = BigDecimal.ZERO;
             }
+            if (report.consumedAmount == null) {
+                report.consumedAmount = BigDecimal.ZERO;
+            }
 
             DecimalFormat df = new DecimalFormat("0.00");
             report.grossMargin = new BigDecimal(df.format(report.grossMargin));
             if (report.refundAmount == null) {
                 report.refundAmount = BigDecimal.ZERO;
+            }
+            if (report.totalAmount == null) {
+                report.totalAmount = BigDecimal.ZERO;
+            }
+            if (report.buyNumber == null) {
+                report.buyNumber = 0l;
+            }
+            if (report.netSalesAmount == null) {
+                report.netSalesAmount = BigDecimal.ZERO;
+            }
+            if (report.profit == null) {
+                report.profit = BigDecimal.ZERO;
             }
 
 
@@ -272,6 +291,21 @@ public class OperationReports extends Controller {
         for (SalesReport report : salesReportList) {
             if (report.refundAmount == null) {
                 report.refundAmount = BigDecimal.ZERO;
+            }
+            if (report.consumedAmount == null) {
+                report.consumedAmount = BigDecimal.ZERO;
+            }
+            if (report.totalAmount == null) {
+                report.totalAmount = BigDecimal.ZERO;
+            }
+            if (report.buyNumber == null) {
+                report.buyNumber = 0l;
+            }
+            if (report.netSalesAmount == null) {
+                report.netSalesAmount = BigDecimal.ZERO;
+            }
+            if (report.profit == null) {
+                report.profit = BigDecimal.ZERO;
             }
         }
         render(salesReportList);
@@ -618,6 +652,21 @@ public class OperationReports extends Controller {
             if (report.profit == null) {
                 report.profit = BigDecimal.ZERO;
             }
+            if (report.consumedAmount == null) {
+                report.consumedAmount = BigDecimal.ZERO;
+            }
+            if (report.totalAmount == null) {
+                report.totalAmount = BigDecimal.ZERO;
+            }
+            if (report.buyNumber == null) {
+                report.buyNumber = 0l;
+            }
+            if (report.netSalesAmount == null) {
+                report.netSalesAmount = BigDecimal.ZERO;
+            }
+            if (report.profit == null) {
+                report.profit = BigDecimal.ZERO;
+            }
         }
         render(resultList);
     }
@@ -639,6 +688,21 @@ public class OperationReports extends Controller {
             }
             if (report.netSalesAmount == null) {
                 report.netSalesAmount = BigDecimal.ZERO;
+            }
+            if (report.consumedAmount == null) {
+                report.consumedAmount = BigDecimal.ZERO;
+            }
+            if (report.totalAmount == null) {
+                report.totalAmount = BigDecimal.ZERO;
+            }
+            if (report.buyNumber == null) {
+                report.buyNumber = 0l;
+            }
+            if (report.netSalesAmount == null) {
+                report.netSalesAmount = BigDecimal.ZERO;
+            }
+            if (report.profit == null) {
+                report.profit = BigDecimal.ZERO;
             }
 
         }

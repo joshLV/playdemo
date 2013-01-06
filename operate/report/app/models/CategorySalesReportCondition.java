@@ -75,6 +75,23 @@ public class CategorySalesReportCondition {
         return condBuilder.toString();
     }
 
+    public String getFilterConsumedAt() {
+        StringBuilder condBuilder = new StringBuilder(" and r.order.status='PAID' " +
+                " and r.goods.isLottery=false and e.status = models.order.ECouponStatus.CONSUMED" +
+                " and  r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
+
+        if (beginAt != null) {
+            condBuilder.append(" and e.consumedAt >= :createdAtBegin");
+            paramMap.put("createdAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and e.consumedAt < :createdAtEnd");
+            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+        }
+
+        return condBuilder.toString();
+    }
+
     public String getRefundFilter() {
         StringBuilder condBuilder = new StringBuilder(" where e.orderItems.goods.supplierId = s and e.status=:status and e.goods.isLottery=false" +
                 " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");

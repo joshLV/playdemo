@@ -56,6 +56,11 @@ public class SalesReport {
     public BigDecimal consumedAmount;
 
     /**
+     * 消费金额汇总
+     */
+    public BigDecimal totalConsumed;
+
+    /**
      * 利润
      */
     public BigDecimal profit;
@@ -149,13 +154,20 @@ public class SalesReport {
 
     }
 
+    //consumedAt ecoupon
+    public SalesReport(Goods goods, BigDecimal consumedAmount) {
+        this.goods = goods;
+        this.consumedAmount = consumedAmount;
+    }
+
     public SalesReport(Long buyNumber, BigDecimal originalAmount) {
         this.buyNumber = buyNumber;
         this.originalAmount = originalAmount;
     }
 
-    public SalesReport(BigDecimal totalAmount, BigDecimal refundAmount, BigDecimal netSalesAmount
+    public SalesReport(BigDecimal totalConsumed, BigDecimal totalAmount, BigDecimal refundAmount, BigDecimal netSalesAmount
             , BigDecimal grossMargin, BigDecimal channelCost, BigDecimal profit) {
+        this.totalConsumed = totalConsumed;
         this.totalAmount = totalAmount;
         this.netSalesAmount = netSalesAmount;
         this.refundAmount = refundAmount;
@@ -225,6 +237,16 @@ public class SalesReport {
 
         Map<Goods, SalesReport> map = new HashMap<>();
 
+        //consumedAt
+        sql = "select new models.SalesReport(r.goods,sum(r.salePrice-r.rebateValue/r.buyNumber)) " +
+                " from OrderItems r, ECoupon e where e.orderItems=r";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterConsumedAt() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<SalesReport> consumedResultList = query.getResultList();
+
         //merge
         for (SalesReport paidItem : paidResultList) {
             map.put(getReportKey(paidItem), paidItem);
@@ -240,6 +262,17 @@ public class SalesReport {
             } else {
                 item.refundAmount = refundItem.refundAmount;
                 item.netSalesAmount = item.totalAmount.subtract(item.refundAmount);
+            }
+        }
+
+        for (SalesReport consumedItem : consumedResultList) {
+            SalesReport item = map.get(getReportKey(consumedItem));
+            if (item == null) {
+                Goods goods = Goods.findById(consumedItem.goods.id);
+                consumedItem.originalPrice = goods.originalPrice;
+                map.put(getReportKey(consumedItem), consumedItem);
+            } else {
+                item.consumedAmount = consumedItem.consumedAmount;
             }
         }
 
@@ -412,11 +445,12 @@ public class SalesReport {
         BigDecimal channelCost = BigDecimal.ZERO;
         BigDecimal grossMargin = BigDecimal.ZERO;
         BigDecimal profit = BigDecimal.ZERO;
+        BigDecimal totalConsumed = BigDecimal.ZERO;
 
         for (SalesReport item : resultList) {
             totalAmount = totalAmount.add(item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount);
             refundAmount = refundAmount.add(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount);
-
+            totalConsumed = totalConsumed.add(item.consumedAmount == null ? BigDecimal.ZERO : item.consumedAmount);
             totolSalePrice = totolSalePrice.add(item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount);
             totalCost = totalCost.add(item.totalCost == null ? BigDecimal.ZERO : item.totalCost);
             channelCost = channelCost.add(item.channelCost == null ? BigDecimal.ZERO : item.channelCost);
@@ -427,7 +461,7 @@ public class SalesReport {
         if (totolSalePrice.compareTo(BigDecimal.ZERO) != 0) {
             grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
-        return new SalesReport(totalAmount, refundAmount, netSalesAmount, grossMargin, channelCost, profit);
+        return new SalesReport(totalConsumed.setScale(2), totalAmount, refundAmount, netSalesAmount, grossMargin, channelCost, profit);
     }
 
 
