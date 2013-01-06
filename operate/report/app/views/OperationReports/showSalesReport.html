@@ -98,6 +98,7 @@
     <div class="alert alert-success">
         <span>在此期间 总销售金额：<b>￥${summary?.totalAmount?:0}</b>,
             总退款金额：<b>￥${summary?.refundAmount?:0}</b>,
+            消费券总额：<b>￥${summary?.totalConsumed?:0}</b>,
             净销售金额：<b>￥${summary?.netSalesAmount?:0}</b>
         毛利率：<b>${(summary?.grossMargin?:0).format('#')}%</b>
          净利润：<b>
@@ -120,6 +121,7 @@
         <th>销售数量</th>
         <th>总销售额</th>
         <th>退款总额</th>
+        <th>消费券总额</th>
         <th>净销售额</th>
         #{if hasSeeReportProfitRight == true}
         <th>毛利率</th>
@@ -161,6 +163,9 @@
                 #{else}
                 ${(report?.refundAmount?:0).formatCurrency('CNY')}
                 #{/else}
+            </td>
+            <td style="text-align:right;">
+            ${(report?.consumedAmount?:0).formatCurrency('CNY')}
             </td>
             <td style="text-align:right;">
                 ￥${(report?.netSalesAmount?:0)}
