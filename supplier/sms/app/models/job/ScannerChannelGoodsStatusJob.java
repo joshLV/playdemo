@@ -2,7 +2,7 @@ package models.job;
 
 import models.resale.Resaler;
 import models.sales.ChannelGoodsInfo;
-import models.sales.GoodsStatus;
+import models.sales.ChannelGoodsInfoStatus;
 import org.apache.commons.lang.StringUtils;
 import play.db.jpa.JPA;
 import play.jobs.Every;
@@ -12,6 +12,8 @@ import play.libs.WS;
 import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 每小时查询各渠道商品的状态
@@ -22,10 +24,21 @@ import java.util.List;
  */
 @Every("1h")
 public class ScannerChannelGoodsStatusJob extends Job {
+
     @Override
     public void doJob() {
         List<Resaler> resalerList = Resaler.findByStatus(null);
         for (Resaler resaler : resalerList) {
+            String onSaleKey = resaler.onSaleKey;
+            String offSaleKey = resaler.offSaleKey;
+
+            if (StringUtils.isBlank(onSaleKey) && StringUtils.isBlank(offSaleKey)) {
+                continue;
+            }
+
+            Pattern onSalePattern = Pattern.compile(onSaleKey);
+            Pattern offSalePattern = Pattern.compile(offSaleKey);
+
             String sql = "select c from ChannelGoodsInfo c where c.deleted=0 and c.resaler=:resaler";
             Query query = JPA.em().createQuery(sql);
             query.setParameter("resaler", resaler);
@@ -35,25 +48,29 @@ public class ScannerChannelGoodsStatusJob extends Job {
             for (ChannelGoodsInfo channelGoodsInfo : resultList) {
                 String url = channelGoodsInfo.url;
                 //变更前的状态
-                GoodsStatus preStatus = channelGoodsInfo.status;
+                ChannelGoodsInfoStatus preStatus = channelGoodsInfo.status;
                 WS.HttpResponse response = WS.url(url).get();
-
-                if (preStatus != GoodsStatus.ONSALE && StringUtils.isNotBlank(resaler.thirdStatusBuy) && response.getString().contains(resaler.thirdStatusBuy)) {
-                    channelGoodsInfo.status = GoodsStatus.ONSALE;
-                    channelGoodsInfo.onSaleAt = new Date();
-                    channelGoodsInfo.offSaleAt = null;
+                if (response.getStatus() != 200) {
+                    channelGoodsInfo.status = ChannelGoodsInfoStatus.PAGE_NOT_EXISTED;
                     channelGoodsInfo.save();
-                } else if (preStatus != GoodsStatus.OFFSALE && StringUtils.isNotBlank(resaler.thirdStatusEnd) && response.getString().contains(resaler.thirdStatusEnd)) {
-                    channelGoodsInfo.status = GoodsStatus.OFFSALE;
-                    channelGoodsInfo.offSaleAt = new Date();
-                    channelGoodsInfo.onSaleAt = null;
-                    channelGoodsInfo.save();
+                    continue;
                 }
 
+                Matcher onSaleMatcher = onSalePattern.matcher(response.getString());
+                Matcher offSaleMatcher = offSalePattern.matcher(response.getString());
+                if (preStatus != ChannelGoodsInfoStatus.ONSALE && onSaleMatcher.find()) {
+                    channelGoodsInfo.status = ChannelGoodsInfoStatus.ONSALE;
+                    channelGoodsInfo.onSaleAt = new Date();
+                    channelGoodsInfo.save();
+                } else if (preStatus != ChannelGoodsInfoStatus.OFFSALE && offSaleMatcher.find()) {
+                    channelGoodsInfo.status = ChannelGoodsInfoStatus.OFFSALE;
+                    channelGoodsInfo.offSaleAt = new Date();
+                    channelGoodsInfo.save();
+                } else if (!offSaleMatcher.find() && !onSaleMatcher.find()) {
+                    channelGoodsInfo.status = ChannelGoodsInfoStatus.PAGE_NOT_EXISTED;
+                    channelGoodsInfo.save();
+                }
             }
         }
-
-
     }
-
 }

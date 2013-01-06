@@ -146,12 +146,12 @@ public class Resaler extends Model {
     @MaxSize(value = 500)
     public String remark;
 
-    //第三方商品上架状态的关键词
-    @Column(name="third_status_buy")
-    public String thirdStatusBuy;
-      //第三方商品上下架状态的关键词
-    @Column(name="third_status_end")
-    public String thirdStatusEnd;
+    //商品上架状态的关键词
+    @Column(name = "onsale_key")
+    public String onSaleKey;
+    //商品下架状态的关键词
+    @Column(name = "offsale_key")
+    public String offSaleKey;
     /**
      * 佣金比例
      */
@@ -271,8 +271,8 @@ public class Resaler extends Model {
     }
 
     public static List<Resaler> findByStatus(Long operateUserId) {
-        if (operateUserId==null) {
-          return Resaler.find("status=? order by id desc",ResalerStatus.APPROVED).fetch();
+        if (operateUserId == null) {
+            return Resaler.find("status=? order by id desc", ResalerStatus.APPROVED).fetch();
         }
         return Resaler.find("salesId=? and status=? order by id desc", operateUserId, ResalerStatus.APPROVED).fetch();
     }

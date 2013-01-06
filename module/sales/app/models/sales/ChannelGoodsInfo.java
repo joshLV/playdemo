@@ -54,7 +54,7 @@ public class ChannelGoodsInfo extends Model {
     public Date offSaleAt;
 
     @Enumerated(EnumType.STRING)
-    public GoodsStatus status;
+    public ChannelGoodsInfoStatus status;
 
     @Column(name = "operate_name")
     public String operateName;
