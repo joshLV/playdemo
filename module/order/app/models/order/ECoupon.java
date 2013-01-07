@@ -94,6 +94,9 @@ public class ECoupon extends Model {
     @Column(name = "e_coupon_sn", unique = true)
     public String eCouponSn;
 
+    @Column(name = "is_cheated_order")
+    public Boolean isCheatedOrder = false;
+
 
     /**
      * 部分第三方团购可能使用密码，而券市场的券不需要。
@@ -1049,12 +1052,34 @@ public class ECoupon extends Model {
     }
 
     /**
+     * 冻结此券(刷单）
+     *
+     * @param id
+     */
+    public static void freeze(long id, String userName, Boolean isCheatedOrder) {
+        update(id, 1, userName, isCheatedOrder);
+    }
+
+    /**
      * 解冻此券
      *
      * @param id
      */
     public static void unfreeze(long id, String userName) {
         update(id, 0, userName);
+    }
+
+    /**
+     * 更新券(刷单订单)是否冻结 并且标记是刷单
+     */
+    private static void update(long id, Integer isFreeze, String userName, Boolean isCheatedOrder) {
+
+        ECoupon eCoupon = ECoupon.findById(id);
+        //记录券历史信息
+        new CouponHistory(eCoupon, userName, isFreeze == 0 ? "解冻券号" : "冻结券号(刷单)", eCoupon.status, eCoupon.status, null).save();
+        eCoupon.isFreeze = isFreeze;
+        eCoupon.isCheatedOrder = isCheatedOrder;
+        eCoupon.save();
     }
 
     /**

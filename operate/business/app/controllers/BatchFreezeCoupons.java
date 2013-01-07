@@ -13,11 +13,11 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * Created with IntelliJ IDEA.
+ * 批量冻结券
+ * <p/>
  * User: wangjia
  * Date: 12-10-23
  * Time: 上午11:31
- * To change this template use File | Settings | File Templates.
  */
 @With(OperateRbac.class)
 @ActiveNavigation("freeze_coupons")
@@ -84,7 +84,7 @@ public class BatchFreezeCoupons extends Controller {
         render(inExistentCoupons, usedCouponsList, freezedCouponsList, unUsedCouponsList, sumUnUsed, sumFreezed, couponsFreezedId);
     }
 
-    public static void batchFreezeCoupons(String couponsFreezedId) {
+    public static void batchFreezeCoupons(String couponsFreezedId, Boolean isCheatedOrder) {
         Set<ECoupon> unUsedCouponsList = new HashSet<>();
         Double sumUnUsed = 0d;
         BigDecimal tempUnUsed = BigDecimal.ZERO;
@@ -93,9 +93,13 @@ public class BatchFreezeCoupons extends Controller {
             ECoupon tempCoupon = ECoupon.findById(Long.parseLong(c[i]));
             unUsedCouponsList.add(tempCoupon);
             sumUnUsed += tempUnUsed.add(tempCoupon.salePrice).doubleValue();
-            ECoupon.freeze(Long.parseLong(c[i]), OperateRbac.currentUser().userName);
-        }
+            if (isCheatedOrder == null || isCheatedOrder == false) {
+                ECoupon.freeze(Long.parseLong(c[i]), OperateRbac.currentUser().userName);
+            } else {
+                ECoupon.freeze(Long.parseLong(c[i]), OperateRbac.currentUser().userName, isCheatedOrder);
 
+            }
+        }
         render(unUsedCouponsList, sumUnUsed);
     }
 }

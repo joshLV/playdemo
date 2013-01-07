@@ -204,7 +204,6 @@ public class SalesReport {
 
         List<SalesReport> paidResultList = query.getResultList();
 
-
         //from resaler
         sql = "select new models.SalesReport(r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),sum(r.originalPrice*r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-sum(r.originalPrice*r.buyNumber)" +
