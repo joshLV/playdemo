@@ -254,7 +254,6 @@ public class CouponsCondition implements Serializable {
                 sql.append(" and 5 =:supplierIds");
                 paramMap.put("supplierIds", 6);
             }
-
         }
 
         //按照帐号检索
