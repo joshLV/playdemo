@@ -1255,7 +1255,7 @@ public class ECoupon extends Model {
                                                     List<ECoupon> ecoupons, ECoupon eCoupon) {
         List<ECoupon> newECoupons = new ArrayList<>();
         for (ECoupon e : ecoupons) {
-            if (eCoupon == null || e.id != eCoupon.id) {
+            if (eCoupon == null || !e.id.equals(eCoupon.id)) {
                 newECoupons.add(e);
             }
         }
