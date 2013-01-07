@@ -54,7 +54,8 @@ public class SupplierUserUnitTest extends UnitTest {
         supplierUser.supplierUserType = SupplierUserType.HUMAN;
         supplierUser.save();
 
-        JPAExtPaginator<SupplierUser> list = SupplierUser.getSupplierUserList(supplierUser.loginName, supplierUser.userName, supplierUser.jobNumber, supplierUser.supplier.id, pageNumber, pageSize);
+        JPAExtPaginator<SupplierUser> list = SupplierUser.getSupplierUserList(supplierUser.loginName,
+                supplierUser.userName, supplierUser.jobNumber, supplierUser.supplier.id,supplierUser.shop.id, pageNumber, pageSize);
         assertEquals(1, list.size());
     }
 
