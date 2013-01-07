@@ -128,6 +128,7 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new SalesReportCondition();
         }
+        condition.salesId = OperateRbac.currentUser().id;
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         List<SalesReport> resultList = SalesReport.queryPeopleEffectData(condition);
         // 分页
@@ -148,6 +149,7 @@ public class OperationReports extends Controller {
             condition = new PeopleEffectCategoryReportCondition();
         }
 
+        condition.salesId = OperateRbac.currentUser().id;
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
 
         List<PeopleEffectCategoryReport> resultList = PeopleEffectCategoryReport.query(condition);
@@ -566,23 +568,23 @@ public class OperationReports extends Controller {
      *
      * @param condition
      */
-    public static void peopleEffectReportExcelOut(SalesReportCondition condition, Boolean hasProfitRight) {
+    public static void peopleEffectReportExcelOut(SalesReportCondition condition) {
         if (condition == null) {
             condition = new SalesReportCondition();
         }
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "人效报表_" + System.currentTimeMillis() + ".xls");
-
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         List<SalesReport> peopleEffectReportList = SalesReport.queryPeopleEffectData(condition);
         for (SalesReport report : peopleEffectReportList) {
-            if (hasProfitRight) {
+            if (hasSeeReportProfitRight) {
                 BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
                 report.grossMargin = tempGrossMargin;
                 report.profit = report.profit == null ? BigDecimal.ZERO : report.profit.setScale(2, BigDecimal.ROUND_HALF_UP);
             }
         }
 
-        if (hasProfitRight) {
+        if (hasSeeReportProfitRight) {
             render("OperationReports/peopleEffectReportWithPrivilegeExcelOut.xls", peopleEffectReportList);
         }
 
@@ -594,13 +596,14 @@ public class OperationReports extends Controller {
      *
      * @param condition
      */
-    public static void peopleEffectCategoryReportExcelOut(SalesReportCondition condition, Boolean hasProfitRight) {
+    public static void peopleEffectCategoryReportExcelOut(SalesReportCondition condition) {
         if (condition == null) {
             condition = new SalesReportCondition();
         }
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "人效大类报表_" + System.currentTimeMillis() + ".xls");
 
+        Boolean hasProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         List<SalesReport> peopleEffectReportList = SalesReport.queryPeopleEffectData(condition);
         for (SalesReport report : peopleEffectReportList) {
             if (hasProfitRight) {

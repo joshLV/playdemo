@@ -1,6 +1,7 @@
 package models;
 
 import models.resale.Resaler;
+import models.sales.ChannelGoodsInfoStatus;
 import models.sales.Goods;
 import play.db.jpa.JPA;
 import utils.CrossTableConverter;
@@ -20,11 +21,12 @@ public class GoodsOnSaleAndOffSaleReport {
     public Resaler resaler;
     public String url;
     public String resalerName;
-
-    public static CrossTableConverter<GoodsOnSaleAndOffSaleReport, String> converter = new CrossTableConverter<GoodsOnSaleAndOffSaleReport, String>() {
+    public ChannelGoodsInfoStatus status;
+    public Long id;
+    public static CrossTableConverter<GoodsOnSaleAndOffSaleReport, GoodsOnSaleAndOffSaleReport> converter = new CrossTableConverter<GoodsOnSaleAndOffSaleReport, GoodsOnSaleAndOffSaleReport>() {
         @Override
         public String getRowKey(GoodsOnSaleAndOffSaleReport target) {
-            return target.goods.shortName + "-" + target.goods.code;
+            return target.goods.shortName + "※" + target.goods.code;
         }
 
         @Override
@@ -33,14 +35,17 @@ public class GoodsOnSaleAndOffSaleReport {
         }
 
         @Override
-        public String addValue(GoodsOnSaleAndOffSaleReport target, String oldValue) {
-            if (target.url == null) {
+        public GoodsOnSaleAndOffSaleReport addValue(GoodsOnSaleAndOffSaleReport target, GoodsOnSaleAndOffSaleReport oldValue) {
+            if (target == null) {
                 return oldValue;
             }
-            if (oldValue != null) {
-                target.url = oldValue;
+            if (oldValue != null && oldValue.status == ChannelGoodsInfoStatus.ONSALE) {
+                return oldValue;
             }
-            return target.url;
+            if (target.status == ChannelGoodsInfoStatus.ONSALE) {
+                return target;
+            }
+            return target;
         }
     };
 
@@ -48,10 +53,11 @@ public class GoodsOnSaleAndOffSaleReport {
         this.resalerName = resaler.userName;
     }
 
-    public GoodsOnSaleAndOffSaleReport(Goods goods, Resaler resaler, String url) {
+    public GoodsOnSaleAndOffSaleReport(Long id, Goods goods, Resaler resaler, String url, ChannelGoodsInfoStatus status) {
         this.goods = goods;
         this.resaler = resaler;
         this.url = url;
+        this.status = status;
     }
 
     public static List<GoodsOnSaleAndOffSaleReport> findByStatus() {
@@ -67,15 +73,19 @@ public class GoodsOnSaleAndOffSaleReport {
     public static List<GoodsOnSaleAndOffSaleReport> getChannelGoods(GoodsOnSaleAndOffSaleCondition condition) {
         Query query = JPA.em()
                 .createQuery(
-                        "select new models.GoodsOnSaleAndOffSaleReport(c.goods,c.resaler,c.url) "
+                        "select new models.GoodsOnSaleAndOffSaleReport(c.id,c.goods,c.resaler,c.url,c.status ) "
                                 + " from ChannelGoodsInfo c "
-                                + condition.filter() + " group by c.goods, c.resaler order by c.resaler desc");
+                                + condition.filter() + "  order by c.resaler desc");
 
         for (Map.Entry<String, Object> param : condition.getParamMap().entrySet()) {
             query.setParameter(param.getKey(), param.getValue());
         }
-        return query.getResultList();
+
+        List<GoodsOnSaleAndOffSaleReport> onlyOnSaleList = query.getResultList();
+        return onlyOnSaleList;
     }
 
-
+    public static String getKey(GoodsOnSaleAndOffSaleReport item) {
+        return String.valueOf(item.goods.id + item.resaler.id);
+    }
 }

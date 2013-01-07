@@ -92,7 +92,6 @@
             <li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>
         </ul>
         <input type="hidden" id="condition_interval" name="condition.interval"/>
-        <input type="hidden" id="hasProfitRight" name="hasProfitRight" value="false"/>
     </form>
 
     <div class="alert alert-success">
@@ -122,15 +121,15 @@
             <td>${report?.operateUser?.userName}</td>
             <td>${report?.buyNumber?:0}</td>
             <td>
-                <a target="_blank" href="${baseUrl}/coupons?condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}">
+                <a target="_blank" href="${baseUrl}/coupons?condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}&condition.salesId=${report?.operateUser?.id}">
             ${(report?.totalAmount?:0).formatCurrency('CNY')}</a>
             </td>
             <td>
-                <a target="_blank" href="${baseUrl}/coupons?condition.consumedAtBegin=${condition?.beginAt?.format()}&condition.consumedAtEnd=${condition?.endAt?.format()}">
+                <a target="_blank" href="${baseUrl}/coupons?condition.consumedAtBegin=${condition?.beginAt?.format()}&condition.consumedAtEnd=${condition?.endAt?.format()}&condition.salesId=${report?.operateUser?.id}">
                 ${(report?.consumedAmount?:0).formatCurrency('CNY')}</a>
             </td>
             <td>
-                <a target="_blank" href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}">
+                <a target="_blank" href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}&condition.salesId=${report?.operateUser?.id}">
                 ${(report?.refundAmount?:0).formatCurrency('CNY')}</a>
             </td>
             #{if hasSeeReportProfitRight == true}

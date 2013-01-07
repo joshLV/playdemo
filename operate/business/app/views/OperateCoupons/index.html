@@ -33,9 +33,6 @@
         $("#search").click(function () {
             formSubmit();
         });
-//        $("#brandId").click(function(){
-//                formSubmit();
-//        })
     });
 
     function couponExcel() {
@@ -71,14 +68,14 @@
                     #{option "MOBILE"}&{'queryType.MOBILE'}#{/option}
                     #{option "COUPON"}&{'queryType.COUPON'}#{/option}
                     #{option "UID"}&{'queryType.UID'}#{/option}
-                #{/select} &nbsp; &nbsp;
+                #{/select}&nbsp;&nbsp;
                     <input type="text" name="condition.searchItems" value="${condition?.searchItems}"
                            class="input-medium"/></td>
                 <td>
-                    &nbsp;&nbsp;品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌&nbsp;&nbsp;
+                    &nbsp;&nbsp;品&nbsp;&nbsp;&nbsp;&nbsp;牌
                 #{layout_operate.selectInputField name:"brandName", id:"condition.brandId", list:brandList/}
 
-                    &nbsp;&nbsp;验证方式&nbsp;&nbsp;
+                    &nbsp;&nbsp;验证方式
                 #{select 'condition.verifyType', id:'condition_verifyType', class:'input-medium', value:condition?.verifyType}
                     #{option ""}不限#{/option}
                     #{option "CLERK_MESSAGE"}&{'coupon.CLERK_MESSAGE'}#{/option}
@@ -87,14 +84,26 @@
                     #{option "TELEPHONE"}&{'coupon.TELEPHONE'}#{/option}
                     #{option "OP_VERIFY"}&{'coupon.OP_VERIFY'}#{/option}
                 #{/select}
-                    状态
+                </td>
+            </tr>
+
+            <tr>
+                <td>消费时间
+                    <input type="text" id="condition_consumed_begin" class="input-medium Wdate"
+                           name="condition.consumedAtBegin"
+                           onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtBegin?.format()}"> -
+                    <input type="text" id="condition_consumed_end" class="input-medium Wdate"
+                           name="condition.consumedAtEnd"
+                           onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtEnd?.format()}">
+                </td>
+                <td>&nbsp;&nbsp;状态
                 #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
                     #{option ""}不限#{/option}
                     #{option "UNCONSUMED"}&{'coupon.UNCONSUMED'}#{/option}
                     #{option "CONSUMED"}&{'coupon.CONSUMED'}#{/option}
                     #{option "REFUND"}&{'coupon.REFUND'}#{/option}
                 #{/select}
-                    &nbsp;&nbsp;&nbsp;订单来源：#{select 'condition.accountType', class:'input-small', value:condition.accountType}
+                    &nbsp;&nbsp;&nbsp;订单来源#{select 'condition.accountType', class:'input-small', value:condition.accountType}
                     #{option ""}不限#{/option}
                     #{option "CONSUMER"}&{'order.CONSUMER'}#{/option}
                     #{option "RESALER"}&{'order.RESALER'}#{/option}
@@ -105,31 +114,27 @@
                 </td>
             </tr>
             <tr>
-                <td>消费时间
-                    <input type="text" id="condition_consumed_begin" class="input-medium Wdate"
-                           name="condition.consumedAtBegin"
-                           onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtBegin?.format()}"> -
-                    <input type="text" id="condition_consumed_end" class="input-medium Wdate"
-                           name="condition.consumedAtEnd"
-                           onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtEnd?.format()}">
-                </td>
-                <td>&nbsp;&nbsp付款时间&nbsp;&nbsp;
+                <td>付款时间
                     <input type="text" id="condition_paid_begin" class="input-medium Wdate"
                            name="condition.paidAtBegin"
                            onfocus="WdatePicker({readOnly:true})" value="${condition?.paidAtBegin?.format()}"> -
                     <input type="text" id="condition_paid_end" class="input-medium Wdate" name="condition.paidAtEnd"
                            onfocus="WdatePicker({readOnly:true})" value="${condition?.paidAtEnd?.format()}">
 
-                    &nbsp;&nbsp;退款时间&nbsp;&nbsp;
-                    <input type="text" id="condition_refund_begin" class="input-medium Wdate"
-                           name="condition.refundAtBegin"
-                           onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtBegin?.format()}"> -
-                    <input type="text" id="condition_refund_end" class="input-medium Wdate" name="condition.refundAtEnd"
-                           onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtEnd?.format()}">
-
                 </td>
-                <td>
-                    <button type="submit" class="btn btn-primary" id="search">搜索</button>
+               <td>
+                   &nbsp;&nbsp;退款时间&nbsp;&nbsp;
+                   <input type="text" id="condition_refund_begin" class="input-medium Wdate"
+                          name="condition.refundAtBegin"
+                          onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtBegin?.format()}"> -
+                   <input type="text" id="condition_refund_end" class="input-medium Wdate" name="condition.refundAtEnd"
+                          onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtEnd?.format()}">
+                </td>
+
+            </tr>
+            <tr align="right">
+                <td colspan="2">
+                    <button class="btn btn-primary" id="search" type="submit">搜索</button>
                     <button class="btn btn-primary" id="searchbtn" onclick="couponExcel()">导出报表</button>
                 </td>
             </tr>
