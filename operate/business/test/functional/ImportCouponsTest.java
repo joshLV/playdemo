@@ -12,12 +12,11 @@ import models.sales.ImportedCouponStatus;
 import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Controller;
 import play.mvc.Http;
+import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-import test.yabo.YaboFunctionalTest;
 
 import java.io.File;
 import java.util.HashMap;
@@ -29,8 +28,7 @@ import java.util.Map;
  * Date: 13-1-6
  * Time: 上午11:38
  */
-@Ignore
-public class ImportCouponsTest extends YaboFunctionalTest {
+public class ImportCouponsTest extends FunctionalTest {
 
     Goods goods;
 
@@ -51,6 +49,7 @@ public class ImportCouponsTest extends YaboFunctionalTest {
             @Override 
             public void build(Goods g) {
                 g.couponType = GoodsCouponType.IMPORT;
+                g.cumulativeStocks = 0l;
             }
         });
 
@@ -63,8 +62,6 @@ public class ImportCouponsTest extends YaboFunctionalTest {
         Security.cleanLoginUserForTest();
     }
 
-
-    //GET     /import-coupons                         ImportCoupons.index
     @Test
     public void testIndex() throws Exception {
         Http.Response response = GET("/import-coupons");
@@ -83,7 +80,7 @@ public class ImportCouponsTest extends YaboFunctionalTest {
         Map<String, File> fileParams = new HashMap<>();
         fileParams.put("couponfile", dataFile.getRealFile());
         Http.Response response = POST("/import-coupons", params, fileParams);
-        assertIsOk(response);
+        assertStatus(302, response);
 
         goods.refresh();
         assertEquals(new Long(2), goods.cumulativeStocks);
@@ -99,7 +96,7 @@ public class ImportCouponsTest extends YaboFunctionalTest {
         Map<String, File> fileParams = new HashMap<>();
         fileParams.put("couponfile", dataFile.getRealFile());
         Http.Response response = POST("/import-coupons", params, fileParams);
-        assertIsOk(response);
+        assertStatus(302, response);
 
         goods.refresh();
         assertEquals(new Long(2), goods.cumulativeStocks);
@@ -122,7 +119,7 @@ public class ImportCouponsTest extends YaboFunctionalTest {
         Map<String, File> fileParams = new HashMap<>();
         fileParams.put("couponfile", dataFile.getRealFile());
         Http.Response response = POST("/import-coupons", params, fileParams);
-        assertIsOk(response);
+        assertStatus(302, response);
 
         goods.refresh();
         assertEquals(new Long(2), goods.cumulativeStocks);
@@ -158,6 +155,5 @@ public class ImportCouponsTest extends YaboFunctionalTest {
     public void testInstance() throws Exception {
         assertTrue((new ImportCoupons()) instanceof Controller);
     }
-
 
 }

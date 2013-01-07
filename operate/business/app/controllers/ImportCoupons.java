@@ -75,8 +75,7 @@ public class ImportCoupons extends Controller{
 
         int duplicateCount = 0;
         //找出并删除导入的数据中的重复记录
-        Query query = JPA.em().createNativeQuery("select i.coupon from (select coupon from imported_coupon_temp where goods_id = ?) i " +
-                "group by i.coupon having count(i.coupon) > 1");
+        Query query = JPA.em().createQuery("select coupon from ImportedCouponTemp where goods.id = ? group by coupon having count(id) > 1");
         query.setParameter(1, goodsId);
         List<String> duplicateCouponsInTemp =query.getResultList();
         if(duplicateCouponsInTemp != null && duplicateCouponsInTemp.size() > 0){

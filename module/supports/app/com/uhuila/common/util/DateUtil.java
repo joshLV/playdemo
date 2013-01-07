@@ -16,8 +16,9 @@ import java.util.List;
  * Time: 3:57 PM
  */
 public class DateUtil {
-    public static SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
-    public static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+    // SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+
 
     public static Date getEndOfDay() {
         return getEndOfDay(new Date());
@@ -154,6 +155,7 @@ public class DateUtil {
     }
 
     public static Long diffDay(Date date) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         long dateRange = 0l;
         String now = format.format(new Date());
         Date sysDate = null;
@@ -175,6 +177,7 @@ public class DateUtil {
      * @return
      */
     public static String dateToString(Date date, int days) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.add(Calendar.DAY_OF_YEAR, days);

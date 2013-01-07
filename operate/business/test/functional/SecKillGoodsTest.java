@@ -3,9 +3,7 @@ package functional;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import models.admin.OperateUser;
-import models.sales.Goods;
 import models.sales.SecKillGoods;
-import models.sales.SecKillGoodsItem;
 import operate.rbac.RbacLoader;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,13 +61,13 @@ public class SecKillGoodsTest extends FunctionalTest {
     public void testCreate() {
         Map<String, String> params = new HashMap<>();
 
-        SecKillGoods goods = FactoryBoy.create(SecKillGoods.class);
+        SecKillGoods goods = FactoryBoy.build(SecKillGoods.class);
 
         params.put("secKillGoods.goods.id", goods.goods.id.toString());
 
         params.put("secKillGoods.goods.name", goods.goods.name);
         params.put("secKillGoods.personLimitNumber", goods.personLimitNumber.toString());
-        params.put("secKillGoods.createdAt", goods.createdAt.toString());
+        params.put("secKillGoods.createdAt", "2012-12-15 23:50");
 
         //配置 图片 参数
         Map<String, File> files = new HashMap<>();
@@ -84,6 +82,7 @@ public class SecKillGoodsTest extends FunctionalTest {
 
         assertStatus(302, response);
 
+        assertEquals(1, SecKillGoods.count());
 
     }
 
