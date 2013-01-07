@@ -73,7 +73,7 @@ public class SecKillGoods extends Controller {
         }
 
         secKillGoods.createdAt = new Date();
-        //secKillGoods.create();
+        secKillGoods.create();
 
         try {
             secKillGoods.imagePath = uploadImagePath(imagePath, secKillGoods.id, null);
