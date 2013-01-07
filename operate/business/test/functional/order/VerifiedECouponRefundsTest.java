@@ -95,7 +95,7 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
 
     @Test
     public void 不输入券号() throws Exception {
-        Response response = POST("/verified-ecoupon-refunds");
+        Response response = POST("/verified-ecoupon-do-refund");
         assertIsOk(response);
         assertContentMatch("券号不能为空", response);
         assertNull(renderArgs("ecoupon"));
@@ -105,7 +105,7 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
     public void 不输入备注() throws Exception {
         Map<String, String> map = new HashMap<>();
         map.put("eCouponSn", ecoupon.eCouponSn);
-        Response response = POST("/verified-ecoupon-refunds", map);
+        Response response = POST("/verified-ecoupon-do-refund", map);
         assertIsOk(response);
         assertContentMatch("备注不能为空", response);
         assertNull(renderArgs("ecoupon"));
@@ -113,7 +113,7 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
 
     @Test
     public void 输入不存在的券号() throws Exception {
-        Response response = POST("/verified-ecoupon-refunds", getECouponSnParams("11234"));
+        Response response = POST("/verified-ecoupon-do-refund", getECouponSnParams("11234"));
         assertIsOk(response);
         assertContentMatch("不存在的券号或券号未验证", response);
         assertNull(renderArgs("ecoupon"));
@@ -123,7 +123,7 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
     public void 输入未验证的券号() throws Exception {
         ecoupon.status = ECouponStatus.UNCONSUMED;
         ecoupon.save();
-        Response response = POST("/verified-ecoupon-refunds", getECouponSnParams(ecoupon.eCouponSn));
+        Response response = POST("/verified-ecoupon-do-refund", getECouponSnParams(ecoupon.eCouponSn));
         assertIsOk(response);
         assertContentMatch("不存在的券号或券号未验证", response);
         assertNull(renderArgs("ecoupon"));
@@ -135,7 +135,7 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
         order.userType = AccountType.SUPPLIER;
         order.save();
 
-        Response response = POST("/verified-ecoupon-refunds", getECouponSnParams(ecoupon.eCouponSn));
+        Response response = POST("/verified-ecoupon-do-refund", getECouponSnParams(ecoupon.eCouponSn));
         assertIsOk(response);
         assertContentMatch("不支持的券类别，请检查", response);
         assertNotNull(renderArgs("ecoupon"));
@@ -149,7 +149,7 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
         order.accountPay = ecoupon.salePrice;
         order.save();
 
-        Response response = POST("/verified-ecoupon-refunds", getECouponSnParams(ecoupon.eCouponSn));
+        Response response = POST("/verified-ecoupon-do-refund", getECouponSnParams(ecoupon.eCouponSn));
         assertIsOk(response);
 
         ECoupon e = (ECoupon) renderArgs("ecoupon");
@@ -179,7 +179,7 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
         order.accountPay = new BigDecimal("8.5");
         order.save();
 
-        Response response = POST("/verified-ecoupon-refunds", getECouponSnParams(ecoupon.eCouponSn));
+        Response response = POST("/verified-ecoupon-do-refund", getECouponSnParams(ecoupon.eCouponSn));
         assertIsOk(response);
 
         ECoupon e = (ECoupon) renderArgs("ecoupon");

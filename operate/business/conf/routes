@@ -359,7 +359,7 @@ DELETE  /goods-schedule/{id}                    GoodsSchedules.delete
 
 # 已验证券 退款
 *        /verified-ecoupon-refunds              VerifiedECouponRefunds.index
-POST     /verified-ecoupon-refunds              VerifiedECouponRefunds.refund
+POST     /verified-ecoupon-do-refund            VerifiedECouponRefunds.refund
 
 GET     /makeup                                 OperateCouponMakeUp.index
 
