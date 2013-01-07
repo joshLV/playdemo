@@ -596,16 +596,16 @@ public class OperationReports extends Controller {
      *
      * @param condition
      */
-    public static void peopleEffectCategoryReportExcelOut(SalesReportCondition condition) {
+    public static void peopleEffectCategoryReportExcelOut(PeopleEffectCategoryReportCondition condition) {
         if (condition == null) {
-            condition = new SalesReportCondition();
+            condition = new PeopleEffectCategoryReportCondition();
         }
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "人效大类报表_" + System.currentTimeMillis() + ".xls");
 
         Boolean hasProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
-        List<SalesReport> peopleEffectReportList = SalesReport.queryPeopleEffectData(condition);
-        for (SalesReport report : peopleEffectReportList) {
+        List<PeopleEffectCategoryReport> peopleEffectReportList = PeopleEffectCategoryReport.query(condition);
+        for (PeopleEffectCategoryReport report : peopleEffectReportList) {
             if (hasProfitRight) {
                 BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
                 report.grossMargin = tempGrossMargin;
@@ -614,7 +614,7 @@ public class OperationReports extends Controller {
         }
 
         if (hasProfitRight) {
-            render("OperationReports/peopleEffectReportWithPrivilegeExcelOut.xls", peopleEffectReportList);
+            render("OperationReports/peopleEffectCategoryReportWithPrivilegeExcelOut.xls", peopleEffectReportList);
         }
 
         render(peopleEffectReportList);

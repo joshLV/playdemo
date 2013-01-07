@@ -26,7 +26,7 @@ public class GoodsOnSaleAndOffSaleReport {
     public static CrossTableConverter<GoodsOnSaleAndOffSaleReport, GoodsOnSaleAndOffSaleReport> converter = new CrossTableConverter<GoodsOnSaleAndOffSaleReport, GoodsOnSaleAndOffSaleReport>() {
         @Override
         public String getRowKey(GoodsOnSaleAndOffSaleReport target) {
-            return target.goods.shortName + "※" + target.goods.code;
+            return target.goods.shortName + "※" + target.goods.code+ "※" + target.goods.id;
         }
 
         @Override

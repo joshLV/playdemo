@@ -27,11 +27,14 @@
         rowkey=report?.get("RowKey").split("※");
         name=rowkey[0];
         code=rowkey[1]=='null'? "":rowkey[1];
+        id=rowkey[2]=='null'? "":rowkey[2];
 
+        wwwUrl=play.Play.configuration.getProperty("www.url");
         }%
         <td>${report_index}</td>
         <td>${code}</td>
-        <td>${name}</td>
+        <td><a href="http://${wwwUrl}/p/${id}"
+               target="_blank">${name}</a></td>
         #{list items:resalerList, as:'resaler'}
         %{
             goodsReport = report?.get(resaler.resalerName);
