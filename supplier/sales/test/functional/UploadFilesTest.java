@@ -41,7 +41,7 @@ public class UploadFilesTest extends FunctionalTest {
 
     @Before
     public void setUp() throws Exception {
-        Play.configuration.setProperty("upload.imagepath", "/tmp");
+        // Play.configuration.setProperty("upload.imagepath", "/tmp");
         FactoryBoy.deleteAll();
         // f重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
