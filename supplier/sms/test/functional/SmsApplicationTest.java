@@ -21,6 +21,6 @@ public class SmsApplicationTest extends FunctionalTest {
 
     @Test
     public void testInstance() throws Exception {
-        assertEquals(true, (new SmsApplication) instanceof Controller);
+        assertEquals(true, (new SmsApplication()) instanceof Controller);
     }
 }
