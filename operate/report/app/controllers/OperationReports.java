@@ -67,6 +67,8 @@ public class OperationReports extends Controller {
             condition = new CategorySalesReportCondition();
         }
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
+        condition.operatorId = OperateRbac.currentUser().id;
         List<CategorySalesReport> resultList = CategorySalesReport.query(condition);
         // 分页
         ValuePaginator<CategorySalesReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
@@ -86,7 +88,8 @@ public class OperationReports extends Controller {
             condition = new ResaleSalesReportCondition();
         }
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
-
+        condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
+        condition.operatorId = OperateRbac.currentUser().id;
         List<ResaleSalesReport> resultList = null;
         condition.accountType = null;
         resultList = ResaleSalesReport.query(condition);
@@ -110,6 +113,8 @@ public class OperationReports extends Controller {
             condition = new ConsumerFlowReportCondition();
         }
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
+        condition.operatorId = OperateRbac.currentUser().id;
         List<ConsumerFlowReport> resultList = ConsumerFlowReport.query(condition);
 
         Collections.sort(resultList);
@@ -168,7 +173,8 @@ public class OperationReports extends Controller {
             condition = new ChannelCategoryReportCondition();
         }
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
-
+        condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
+        condition.operatorId = OperateRbac.currentUser().id;
         List<ResaleSalesReport> channelPage = null;
         ResaleSalesReportCondition channelCondition = new ResaleSalesReportCondition();
         channelCondition.beginAt = condition.beginAt;
@@ -217,7 +223,8 @@ public class OperationReports extends Controller {
             condition = new ChannelGoodsReportCondition();
         }
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
-
+        condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
+        condition.operatorId = OperateRbac.currentUser().id;
         List<ChannelGoodsReport> resultList = ChannelGoodsReport.query(condition);
         List<ChannelGoodsReport> consumerList = ChannelGoodsReport.queryConsumer(condition);
         // 查询出所有结果
@@ -325,7 +332,9 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new ResaleSalesReportCondition();
         }
-
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
+        condition.operatorId = OperateRbac.currentUser().id;
         String page = request.params.get("page");
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "渠道汇总报表_" + System.currentTimeMillis() + ".xls");
@@ -377,6 +386,9 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new ResaleSalesReportCondition();
         }
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
+        condition.operatorId = OperateRbac.currentUser().id;
         String page = request.params.get("page");
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "渠道汇总报表_" + System.currentTimeMillis() + ".xls");
@@ -412,6 +424,9 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new ChannelCategoryReportCondition();
         }
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
+        condition.operatorId = OperateRbac.currentUser().id;
         String page = request.params.get("page");
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "渠道大类报表_" + System.currentTimeMillis() + ".xls");
@@ -463,6 +478,9 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new ChannelCategoryReportCondition();
         }
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
+        condition.operatorId = OperateRbac.currentUser().id;
         String page = request.params.get("page");
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "渠道大类报表_" + System.currentTimeMillis() + ".xls");
@@ -498,6 +516,9 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new ChannelGoodsReportCondition();
         }
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
+        condition.operatorId = OperateRbac.currentUser().id;
         String page = request.params.get("page");
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "渠道商品报表_" + System.currentTimeMillis() + ".xls");
@@ -545,6 +566,9 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new ChannelGoodsReportCondition();
         }
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
+        condition.operatorId = OperateRbac.currentUser().id;
         String page = request.params.get("page");
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "渠道商品报表_" + System.currentTimeMillis() + ".xls");
@@ -631,6 +655,9 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new CategorySalesReportCondition();
         }
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
+        condition.operatorId = OperateRbac.currentUser().id;
         String page = request.params.get("page");
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "大类销售报表_" + System.currentTimeMillis() + ".xls");
@@ -685,6 +712,9 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new CategorySalesReportCondition();
         }
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
+        condition.operatorId = OperateRbac.currentUser().id;
         String page = request.params.get("page");
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "大类销售报表_" + System.currentTimeMillis() + ".xls");
@@ -723,6 +753,9 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new ConsumerFlowReportCondition();
         }
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
+        condition.operatorId = OperateRbac.currentUser().id;
         String page = request.params.get("page");
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "客流报表_" + System.currentTimeMillis() + ".xls");
@@ -790,7 +823,9 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new ConsumerFlowReportCondition();
         }
-
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
+        condition.operatorId = OperateRbac.currentUser().id;
         String page = request.params.get("page");
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "客流报表_" + System.currentTimeMillis() + ".xls");
