@@ -73,12 +73,15 @@ public class SecKillGoods extends Controller {
         }
 
         secKillGoods.createdAt = new Date();
-        secKillGoods.create();
+        //secKillGoods.create();
 
         try {
             secKillGoods.imagePath = uploadImagePath(imagePath, secKillGoods.id, null);
         } catch (IOException e) {
+            e.printStackTrace();
             error(500, "secKillGoods.image_upload_failed");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         secKillGoods.save();
 
@@ -166,7 +169,7 @@ public class SecKillGoods extends Controller {
         String absolutePath = FileUploadUtil.storeImage(uploadImageFile, goodsId, OperateUploadFiles.ROOT_PATH);
         if (oldImageFile != null && !"".equals(oldImageFile)) {
             File oldImage = new File(OperateUploadFiles.ROOT_PATH + oldImageFile);
-            oldImage.delete();
+            oldImage.delete();/
         }
         return absolutePath.substring(OperateUploadFiles.ROOT_PATH.length(), absolutePath.length());
 
