@@ -30,22 +30,22 @@ public class UploadFiles extends Controller {
     public static void uploadImage(File imgFile) {
         //文件保存目录路径
         if (imgFile == null) {
-            getError("请选择文件。");
+            getError(1, "请选择文件。");
         }
         //检查目录
         File uploadDir = new File(ROOT_PATH);
         if (!uploadDir.isDirectory()) {
-            getError("上传目录不存在。");
+            getError(2, "上传目录不存在。");
         }
 
         //检查目录写权限
         if (!uploadDir.canWrite()) {
-            getError("上传目录没有写权限。");
+            getError(3, "上传目录没有写权限。");
         }
 
         //检查文件大小
         if (imgFile.length() > MAX_SIZE) {
-            getError("上传文件大小超过限制。");
+            getError(4, "上传文件大小超过限制。");
         }
 
         //检查扩展名
@@ -53,7 +53,7 @@ public class UploadFiles extends Controller {
         String[] fileTypes = FILE_TYPES.trim().split(",");
         String fileExt = imgFile.getName().substring(imgFile.getName().lastIndexOf(".") + 1).toLowerCase();
         if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
-            getError("上传文件扩展名仅限于：" + StringUtils.join(fileTypes) + "。");
+            getError(5, "上传文件扩展名仅限于：" + StringUtils.join(fileTypes) + "。");
         }
 
         //上传文件
@@ -67,20 +67,20 @@ public class UploadFiles extends Controller {
             //不加水印
             path = PathUtil.addImgPathMark(path, "nw");
             if(path == null){
-                getError("上传失败，服务器忙，请稍后再试。");
+                getError(6, "上传失败，服务器忙，请稍后再试。");
             }
             path = PathUtil.signImgPath(path);
             map.put("url", "http://" + Goods.IMAGE_SERVER + "/p" + path);
 
             renderJSON(map);
         } catch (Exception e) {
-            getError("上传失败，服务器忙，请稍候再试。");
+            getError(7, "上传失败，服务器忙，请稍候再试。");
         }
     }
 
-    private static void getError(String message) {
+    private static void getError(int errorCode, String message) {
         Map map = new HashMap();
-        map.put("error", 1);
+        map.put("error", errorCode);
         map.put("message", message);
         renderJSON(map);
     }
