@@ -169,7 +169,7 @@ public class SecKillGoods extends Controller {
         String absolutePath = FileUploadUtil.storeImage(uploadImageFile, goodsId, OperateUploadFiles.ROOT_PATH);
         if (oldImageFile != null && !"".equals(oldImageFile)) {
             File oldImage = new File(OperateUploadFiles.ROOT_PATH + oldImageFile);
-            oldImage.delete();/
+            oldImage.delete();
         }
         return absolutePath.substring(OperateUploadFiles.ROOT_PATH.length(), absolutePath.length());
 
