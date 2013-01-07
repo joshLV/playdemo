@@ -53,7 +53,7 @@ public class ResalerFavsTest extends FunctionalTest {
         Http.Response response = POST("/library", params);
         assertStatus(200, response);
         Map<String, String> result = new HashMap<>();
-        assertEquals("{\"goodsId\":\"" + goods.id + "\"}", getContent(response));
+        assertEquals("{\"goodsId\":\"" + goods.id + "\",\"isExist\":\"1\"}", getContent(response));
     }
 
     @Test
@@ -63,6 +63,6 @@ public class ResalerFavsTest extends FunctionalTest {
         Http.Response response = DELETE("/library/" + goods.id);
         assertStatus(200, response);
         favList = ResalerFav.find("deleted=?", com.uhuila.common.constants.DeletedStatus.DELETED).fetch();
-        assertEquals(0, favList.size());
+        assertEquals(1, favList.size());
     }
 }
