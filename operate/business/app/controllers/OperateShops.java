@@ -5,6 +5,7 @@ import models.sales.Area;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.data.validation.Valid;
@@ -87,8 +88,18 @@ public class OperateShops extends Controller {
         if (StringUtils.isEmpty(shop.areaId) || district == null) {
             //城市列表
             List<Area> cities = Area.findAllSubAreas(null);
+            if (CollectionUtils.isNotEmpty(cities)) {
+                List<Area> districts = Area.findAllSubAreas(cities.get(0).id);
+                renderArgs.put("districts", districts);
+                if (CollectionUtils.isNotEmpty(districts)) {
+                    List<Area> areas = Area.findAllSubAreas(districts.get(0).id);
+                    renderArgs.put("areas", areas);
+                }
+            }
+
             shop.cityId = shop.areaId;
             renderArgs.put("cities", cities);
+
             renderArgs.put("supplierList", supplierList);
             return;
         } else {
@@ -100,7 +111,7 @@ public class OperateShops extends Controller {
         //城市列表
         List<Area> cities = Area.findAllSubAreas(null);
         //区域列表
-        String cityId = StringUtils.isEmpty(shop.cityId) ? cities.get(0).getId() : shop.cityId;
+        String cityId = StringUtils.isEmpty(shop.cityId) ? cities.get(0).id : shop.cityId;
 
         List<Area> districts = Area.findAllSubAreas(cityId);
         //商圈列表
