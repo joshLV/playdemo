@@ -36,6 +36,7 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.beginOnSaleAt= beforeDays(30);
         goods.effectiveAt= beforeDays(30);
         goods.expireAt = afterDays(30);
+        goods.endOnSaleAt = afterDays(30);
         goods.faceValue = new BigDecimal("10.00");
         goods.materialType = MaterialType.ELECTRONIC;
         goods.cumulativeStocks = 100L;  //库存

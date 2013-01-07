@@ -3,22 +3,19 @@ package factory.resale;
 import factory.FactoryBoy;
 import factory.ModelFactory;
 import models.resale.Resaler;
-import models.resale.ResalerFav;
+import models.resale.ResalerCart;
 import models.sales.Goods;
 
 /**
- * TODO.
- * <p/>
- * User: yanjy
- * Date: 12-11-15
- * Time: 下午5:23
+ * @author likang
+ *         Date: 13-1-7
  */
-public class ResalerFavFactory extends ModelFactory<ResalerFav> {
+public class ResalerCartFactory extends ModelFactory<ResalerCart>{
     @Override
-    public ResalerFav define() {
+    public ResalerCart define() {
         Resaler resaler = FactoryBoy.lastOrCreate(Resaler.class);
         Goods goods = FactoryBoy.lastOrCreate(Goods.class);
-        ResalerFav resalerFav = new ResalerFav(resaler, goods);
-        return resalerFav;
+
+        return new ResalerCart(resaler, goods, "13472581853", 2L);
     }
 }

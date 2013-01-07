@@ -156,7 +156,7 @@ public class ResalerCarts extends Controller {
             ResalerCart.delete(resaler, goods );
         }
 
-     index();
+         index();
     }
 
     /**

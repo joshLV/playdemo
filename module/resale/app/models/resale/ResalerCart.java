@@ -153,7 +153,7 @@ public class ResalerCart extends Model {
      */
     public static List<List<ResalerCart>> groupFindAll(Resaler resaler) {
         if (resaler == null) {
-            return new ArrayList<List<ResalerCart>>();
+            return new ArrayList<>();
         }
         List<ResalerCart> carts = ResalerCart.find(
                 "select r from ResalerCart r where r.resaler = ? order by r.createdAt desc", resaler).fetch();
@@ -161,14 +161,14 @@ public class ResalerCart extends Model {
         for (ResalerCart cart : carts) {
             boolean found = false;
             for (List<ResalerCart> rcl : result) {
-                if (rcl.get(0).goods.id == cart.goods.id) {
+                if (rcl.get(0).goods.id.equals(cart.goods.id)) {
                     rcl.add(cart);
                     found = true;
                     break;
                 }
             }
             if (!found) {
-                List<ResalerCart> rcl = new ArrayList<ResalerCart>();
+                List<ResalerCart> rcl = new ArrayList<>();
                 rcl.add(cart);
                 result.add(rcl);
 
@@ -179,7 +179,7 @@ public class ResalerCart extends Model {
 
     public static List<ResalerCart> findAll(Resaler resaler) {
         if (resaler == null) {
-            return new ArrayList<ResalerCart>();
+            return new ArrayList<>();
         }
         return ResalerCart.find("byResaler", resaler).fetch();
     }
