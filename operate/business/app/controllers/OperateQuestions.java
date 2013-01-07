@@ -74,7 +74,9 @@ public class OperateQuestions extends Controller {
         }
         if (question.operateUserId != null) {
             OperateUser operateUser = OperateUser.findById(question.operateUserId);
-            question.operateUser = operateUser.userName;
+            if (operateUser != null) {
+                question.operateUser = operateUser.userName;
+            }
         }
 
         if (question.goodsId != null) {
