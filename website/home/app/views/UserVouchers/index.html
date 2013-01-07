@@ -1,7 +1,7 @@
 #{extends 'main2.html' /}
 #{set title:'我的抵用券' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/y/user/userBase.css','/y/user/userVoucher.css'] /}
+    #{asset.css src:['/user/130107/user.css'] /}
 #{/set}
 
 <div id="content" class="clearfix">
@@ -16,13 +16,13 @@
         <div class="voucher">
 
         <h3>我的抵用券</h3>
-        <div class="tips">抵用券只可用于消费，不能用于充值和提现。<a class="how-to-use" href="${helper.Domain.getWWWHost(request)}/help" target="_blank">抵用券怎么用？</a></div>
+        <div class="normal-tips">抵用券只可用于消费，不能用于充值和提现。<a href="${helper.Domain.getWWWHost(request)}/help" target="_blank">抵用券怎么用？</a></div>
         <table class="table">
             <thead>
-            <tr class="col-name">
-                <th width="190">抵用券编号</th>
-                <th>抵用券名称</th>
-                <th width="50">面值</th>
+            <tr>
+                <th width="100">抵用券编号</th>
+                <th class="text">抵用券名称</th>
+                <th width="80">面值</th>
                 <th width="120">过期时间</th>
                 <th width="120">激活时间</th>
                 <th width="50">状态</th>
@@ -33,7 +33,7 @@
                 <tr>
                     <td>${voucher.serialNo}</td>
                     <td>${voucher.name}</td>
-                    <td style="text-align: right">${voucher.value.formatCurrency('CNY')}</td>
+                    <td class="digit">${voucher.value.formatCurrency('CNY')}</td>
                     <td>${voucher.expiredAt.format('yyyy-MM-dd HH:mm:ss')}</td>
                     <td>${voucher.assignedAt.format('yyyy-MM-dd HH:mm:ss')}</td>
                     #{if voucher.order}
@@ -52,9 +52,7 @@
                 </tbody>
             </table>
             <div class="pagination">
-                <ul>
                 #{paginate.controls items:voucherList /}
-                </ul>
             </div>
         </div>
     </div>

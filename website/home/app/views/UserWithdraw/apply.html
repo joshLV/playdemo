@@ -1,27 +1,25 @@
 #{extends 'main2.html' /}
 #{set title:'提现申请' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/y/user/userBase.css', '/y/user/userWithdraw.css'] /}
+    #{asset.css src:['/user/130107/user.css'] /}
 #{/set}
 
 <div id="content" class="clearfix">
 #{include "share/left.html"/}
     <div class="section">
-    #{breadcrumbs/breadcrumb breadcrumbs/}
-        #{form @UserWithdraw.create()}
-        <table class="withdraw-tab">
-            <tr>
-                <td class="right"><span class="required">*</span>开户名：</td>
-                <td align="left">
-                    *{<input type="text" class="long-input" name="withdraw.userName" value="">}*
-                <input type="text" class="long_input" name="withdraw.userName" value="${withdraw?.userName}">
-                <span class="error">#{error 'withdraw.userName'/}</span>
-                </td>
-            </tr>
-            <tr>
-                <td class="right"><span class="required">*</span>选择银行：</td>
-                <td align="left">
-                    <select name="withdraw.bankName" class="long-input">
+        #{breadcrumbs/breadcrumb breadcrumbs/}
+        #{form @UserWithdraw.create(), class:'form-horizontal'}
+            <div class="group">
+                <label><span class="required">*</span>开户名：</label>
+                <div class="control">
+                    <input type="text" class="medium-input" name="withdraw.userName" value="${withdraw?.userName}">
+                    <span class="error">#{error 'withdraw.userName'/}</span>
+                </div>
+            </div>
+            <div class="group">
+                <label><span class="required">*</span>选择银行：</label>
+                <div class="control">
+                    <select name="withdraw.bankName" class="medium-input">
                         <option value="招商银行">招商银行</option>
                         <option value="中国工商银行">中国工商银行</option>
                         <option value="中国建设银行">中国建设银行</option>
@@ -30,52 +28,49 @@
                         <option value="中国银行">中国银行</option>
                     </select>
                     <span class="error">#{error 'withdraw.bankName'/}</span>
-                </td>
-            </tr>
-            <tr>
-                <td class="right"><span class="required">*</span>银行所在城市：</td>
-                <td align="left">
-                    <input type="text" name="withdraw.bankCity" class="long-input" readonly="true" value="上海">
+                </div>
+            </div>
+            <div class="group">
+                <label><span class="required">*</span>银行所在城市：</label>
+                <div class="control">
+                    <input type="text" name="withdraw.bankCity" class="medium-input" readonly="true" value="上海">
                     <span class="error">#{error 'withdraw.bankCity'/}</span>
-                </td>
-            </tr>
-            <tr>
-                <td class="right"><span class="required">*</span>支行：</td>
-                <td align="left">
-                    <input type="text" name="withdraw.subBankName" class="long-input" value="${withdraw?.subBankName}">
+                </div>
+            </div>
+            <div class="group">
+                <label><span class="required">*</span>支行：</label>
+                <div class="control">
+                    <input type="text" name="withdraw.subBankName" class="medium-input" value="${withdraw?.subBankName}">
                     <span class="error">#{error 'withdraw.subBankName'/}</span>
-                </td>
-            </tr>
-            <tr>
-                <td class="right"><span class="required">*</span>银行卡号：</td>
-                <td align="left">
-                    <input type="text" name="withdraw.cardNumber" class="long-input" value="${withdraw?.cardNumber}">
+                </div>
+            </div>
+            <div class="group">
+                <label><span class="required">*</span>银行卡号：</label>
+                <div class="control">
+                    <input type="text" name="withdraw.cardNumber" class="medium-input" value="${withdraw?.cardNumber}">
                     <span class="error">#{error 'withdraw.cardNumber'/}</span>
-                </td>
-            </tr>
-            <tr>
-                <td class="right"><span class="required">*</span>提现金额：</td>
-                <td align="left">
-                    <input type="text" name="withdraw.amount" class="long-input" value="${withdraw?.amount}">
-                    <span class="balance-tips">余额:<em>${account?.amount}</em>元，最少提现10元!</span>
+                </div>
+            </div>
+            <div class="group">
+                <label><span class="required">*</span>提现金额：</label>
+                <div class="control">
+                    <input type="text" name="withdraw.amount" class="medium-input" value="${withdraw?.amount}">
+                    <span>余额:<em class="red">${account?.amount}</em>元，最少提现10元!</span>
                     <span class="error">#{error 'withdraw.amount'/}</span>
-                </td>
-            </tr>
-            <tr>
-                <td align="right" width="100px"></td>
-                <td align="left">
-                    <input type="submit" value=" 申 请 " class="search-btn">
-                </td>
-            </tr>
-        </table>
+                </div>
+            </div>
+            <div class="group">
+                <button type="submit" class="btn"> 申 请 </button>
+            </div>
        #{/form}
-        <div class="apply-tips">
+
+        <div class="help">
             <h4>取款费率说明：</h4>
             <ol>
                 <li>1、向上海地区个人账号转账：一个工作日内到账，不收手续费</li>
                 <li>2、向其他地区个人账号转账：（非上海地区为异地）</li>
             </ol>
-            <table>
+            <table class="table">
                 <thead>
                 <tr>
                     <th width="80">银行名称</th>
@@ -102,12 +97,8 @@
                 <li>2、因为需要手工处理您的提款要求，10元以下的提款我们暂不接受。</li>
                 <li>3、若五个工作日内款还没划到您的账户上，请及时与本站工作人员联系。400-6262-166。</li>
                 <li>4、提款周一至周五每日处理，法定节假日除外。工作日17点前申请提款，当日处理；17点后申请的提款，次日处理。</li>
-                <!--  
-                <li>5、<span style="color:red">按银行风控要求，每帐号每周限制提现三次，每次不超过500元。</span></li>
-                 -->
             </ol>
-        </div><!-- .apply-tips END -->
+        </div>
 
     </div>
 </div>
-

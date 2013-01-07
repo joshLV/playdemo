@@ -1,7 +1,7 @@
 #{extends 'main2.html' /}
 #{set title:'提现申请' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/y/user/userBase.css', '/y/user/userWithdraw.css'] /}
+    #{asset.css src:['/user/130107/user.css'] /}
 #{/set}
 
 <div id="content" class="clearfix">
@@ -10,39 +10,39 @@
     #{breadcrumbs/breadcrumb breadcrumbs/}
         <div class="user-account">
         #{include "share/userAccount.html"/}
-            <a class="withdraw-btn" id="apply" href="/withdraw/apply"> 提 现 </a>
+            <a class="btn" href="/withdraw/apply"> 提 现 </a>
         </div>
 
-        <table class="order-tab table">
+        <table class="table">
             <thead>
-            <tr class="col-name">
+            <tr>
                 <th width="160">申请时间</th>
                 <th width="100">收款人</th>
                 <th width="120">银行</th>
                 <th>银行卡号</th>
-                <th width="100">申请金额</th>
+                <th width="80">申请金额</th>
                 <th width="80">申请状态</th>
                 <th width="80">操作</th>
             </tr>
             </thead>
             <tbody>
             #{if billPage.size() == 0}
-            <tr class="order-bd">
-                <td colspan="7">暂无提现申请记录</td>
-            </tr>
+                <tr>
+                    <td colspan="7">暂无提现申请记录</td>
+                </tr>
             #{/if}
             #{else}
                 #{paginate.list items:billPage, as:'withdrawBill'}
-                <tr class="order-bd">
+                <tr>
                     <td>${withdrawBill.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</td>
                     <td>${withdrawBill.userName}</td>
                     <td>${withdrawBill.bankName}</td>
                     <td>${withdrawBill.cardNumber}</td>
-                    <td><span class="apply-money">${withdrawBill.amount.formatCurrency('CNY')}</span></td>
+                    <td class="digit">${withdrawBill.amount.formatCurrency('CNY')}</td>
                     <td>
-                        <span class="pending-approval">&{'withdraw.' + withdrawBill.status}</span>
+                        <span>&{'withdraw.' + withdrawBill.status}</span>
                     </td>
-                    <td><a class="view-detail" id="view" href="/withdraw/detail/${withdrawBill.id}">查看详情</a></td>
+                    <td class="action"><a id="view" href="/withdraw/detail/${withdrawBill.id}">查看详情</a></td>
                 </tr>
                 #{/paginate.list}
             #{/else}
@@ -50,5 +50,3 @@
         </table>
     </div>
 </div>
-
-
