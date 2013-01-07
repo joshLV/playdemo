@@ -64,8 +64,9 @@ public class SmsReceiverUtil {
                     Supplier supplier = Supplier.findById(supplierId);
 
                     if (supplier == null || supplier.deleted == DeletedStatus.DELETED) {
-                        sendSmsToClerk("【一百券】" + supplier.fullName + "未在一百券登记使用，如有疑问请致电：4006262166", mobile, code);
-                        return ("【一百券】" + supplier.fullName + "未在一百券登记使用");
+                        String supplierName = (supplier == null) ? "" : supplier.fullName;
+                        sendSmsToClerk("【一百券】" + supplierName + "未在一百券登记使用，如有疑问请致电：4006262166", mobile, code);
+                        return ("【一百券】" + supplierName + "未在一百券登记使用");
                     }
 
                     if (supplier.status == SupplierStatus.FREEZE) {
@@ -177,8 +178,9 @@ public class SmsReceiverUtil {
         Supplier supplier = Supplier.findById(ecoupon.goods.supplierId);
 
         if (supplier == null || supplier.deleted == DeletedStatus.DELETED) {
-            sendSmsToConsumer("【一百券】" + supplier.fullName + "未在一百券登记使用，请致电4006262166咨询", mobile, code);
-            return ("【一百券】" + supplier.fullName + "未在一百券登记使用");
+            String supplierName = (supplier == null) ? "" : supplier.fullName;
+            sendSmsToConsumer("【一百券】" + supplierName + "未在一百券登记使用，请致电4006262166咨询", mobile, code);
+            return ("【一百券】" + supplierName + "未在一百券登记使用");
         }
 
         if (supplier.status == SupplierStatus.FREEZE) {
