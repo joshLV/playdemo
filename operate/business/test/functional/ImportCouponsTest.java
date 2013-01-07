@@ -13,6 +13,7 @@ import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import play.Play;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.test.FunctionalTest;
@@ -36,6 +37,7 @@ public class ImportCouponsTest extends FunctionalTest {
 
     @Before
     public void setUp() throws Exception {
+        Play.tmpDir = new File("/tmp");
         FactoryBoy.deleteAll();
 
         // 重新加载配置文件
@@ -58,6 +60,7 @@ public class ImportCouponsTest extends FunctionalTest {
 
     @After
     public void tearDown() {
+        Play.tmpDir = null;
         // 清除登录Mock
         Security.cleanLoginUserForTest();
     }

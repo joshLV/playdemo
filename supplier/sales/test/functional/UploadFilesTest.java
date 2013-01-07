@@ -29,6 +29,7 @@ public class UploadFilesTest extends FunctionalTest {
 
     @Before
     public void setUp() throws Exception {
+        Play.tmpDir = new File("/tmp");
         Play.configuration.setProperty("upload.imagepath", "/tmp");
         FactoryBoy.deleteAll();
         // f重新加载配置文件
@@ -41,6 +42,7 @@ public class UploadFilesTest extends FunctionalTest {
 
     @After
     public void tearDown() {
+        Play.tmpDir = null;
         // 清除登录Mock
         Security.cleanLoginUserForTest();
     }
