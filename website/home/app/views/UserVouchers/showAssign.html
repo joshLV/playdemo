@@ -1,7 +1,7 @@
 #{extends 'main2.html' /}
 #{set title:'抵用券领取' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/y/user/userBase.css', '/y/user/userCashRecharge.css'] /}
+    #{asset.css src:['/user/130107/user.css'] /}
 #{/set}
 
 <div id="content" class="clearfix">
@@ -12,47 +12,54 @@
         #{include "share/userAccount.html"/}
         </div>
     #{if action=="verify"}
-        #{form @UserVouchers.verify(), method:'POST', class:'recharge-form'}
-            #{if suc}
-                <div class="item item-success"> ${suc} </div>
-            #{/if}
-            #{if errMsg}
-                <div class="item item-error"> ${errMsg} </div>
-            #{/if}
+        #{form @UserVouchers.verify(), method:'POST', class:'form-horizontal'}
+                <div class="group">
+                #{if suc}
+                    <div class="success-tips"> ${suc} </div>
+                #{/if}
+                #{if errMsg}
+                    <div class="failed-tips"> ${errMsg} </div>
+                #{/if}
+                </div>
 
-                <div class="item item-passsword">
+                <div class="group">
                     <label for="recharge-passsword">抵用券密码</label>
-                    <input type="text" id="recharge-passsword" name="voucherCode" value="${voucherCode}">
-                    <span class="error" id="passsword-error"></span>
+                    <div class="control">
+                        <input type="text" id="recharge-passsword" name="voucherCode" value="${voucherCode}">
+                        <span class="red" id="passsword-error"></span>
+                    </div>
                 </div>
-                <div class="item item-verification">
+                <div class="group">
                     <label for="verification-code">验 证 码：</label>
-                    <input type="text" id="verification-code" name="code">
-                    <img id="captchaImg" style="width:82px;height:24px" src="@{CaptchaProvider.captcha(randomID)}">
-                    <a id="diff-code" class="diff-code" href="">看不清，换一张</a>
-                    <span class="error" id="verification-error"></span>
+                    <div class="control control-captcha">
+                        <input type="text" id="verification-code" name="code">
+                        <img id="captchaImg" style="width:82px;height:24px" src="@{CaptchaProvider.captcha(randomID)}">
+                        <a id="diff-code" href="">看不清，换一张</a>
+                        <span class="red" id="verification-error"></span>
+                    </div>
                 </div>
-                <div class="item item-btn">
+                <div class="group">
                     <input type="hidden" name="randomID" value="${randomID}" id="randomID">
-                    <button class="recharge-btn" id="recharge-btn" type="submit"> 下一步 </button>
+                    <button class="btn" id="recharge-btn" type="submit"> 下一步 </button>
                 </div>
             #{/form}
         #{/if}
         #{elseif action=="assign"}
-            #{form @UserVouchers.assign(), method:'POST', class:'recharge-form'}
-                <div class="item">
-                    名 称：${voucher.name}<br>
-                    金 额：<em class="cash">${voucher.value}</em>元
+            #{form @UserVouchers.assign(), method:'POST', class:'form-horizontal'}
+                <div class="field">
+                    <span>名 称：</span>${voucher.name}
+                <div class="field">
+                    <span>金 额：</span><em class="red">${voucher.value}</em>元
                 </div>
-                <div class="item item-btn">
+                <div class="group">
                     <input type="hidden" name="ridA" value="${ridA}">
                     <input type="hidden" name="ridB" value="${ridB}">
-                    <button class="recharge-btn" id="confirm-btn" type="submit"> 激 活 </button>
+                    <button class="btn" id="confirm-btn" type="submit"> 激 活 </button>
                 </div>
             #{/form}
         #{/elseif}
 
-        <div class="recharge-instruction">
+        <div class="help">
             <strong>抵用券只可用于消费，不能提现。</strong><br>
             <span>激活步骤：</span>请输入您收到的抵用券密码，点击下一步并激活后，即可在订单付款时使用该抵用券，可在<a href="/voucher">"我的抵用券"</a>中查看明细。
         </div>
@@ -92,5 +99,3 @@
         });
     });
 </script>
-
-

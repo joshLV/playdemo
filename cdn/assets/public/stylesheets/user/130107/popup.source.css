@@ -1,0 +1,89 @@
+.popup-container {
+    padding: 0px;
+    overflow: hidden;
+    display: block;
+    float: left;
+    margin: 0px auto;
+    background:  #fff;
+    box-shadow: 3px 3px 5px #666;
+}
+.popup_overlay {
+   position: absolute;
+   background-color: #000;
+}
+.uhlbox_t {
+    height: 32px;
+    background-color:  #f97511;
+}
+.uhlbox_t b {
+    float: left;
+    text-indent: 12px;
+    line-height: 32px;
+}
+.table_c {
+    height: 100%;
+    width: 100%;
+}
+a.close {
+    width: 18px; 
+    height: 32px; 
+    line-height: 32px;
+    color: #666;
+    font-size: 12px;
+    display: block; 
+    float: right; 
+    cursor: pointer;
+    text-shadow: 0 1px 1px #D6AB8A;
+}
+a.close:hover {
+    text-decoration: none;
+}
+
+.popup-content {
+    padding: 10px;
+}
+.popup-content .item {
+    padding: 5px 0;
+}
+.popup-content .btn-box {
+    padding: 5px 0 10px 103px;
+}
+.popup-content .btn-box button {
+    padding: 2px 10px;
+}
+.popup-content .faq-tips {
+    color: #666;
+    line-height: 22px;
+    font-size: 13px;
+}
+.popup-content .faq-tips .tips {
+    color: #888;
+    font-size: 12px;
+}
+.popup-content .faq-tips dt {
+    font-weight: 700;
+}
+.popup-content .outlet-list {
+    display: none;
+    padding: 0 17px;
+}
+.popup-content .outlet-list li {
+    width: 128px;
+    margin-bottom: 6px;
+    vertical-align: top;
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+}
+.popup-content .outlet-list li.hide {
+    display: none;
+}
+.popup-content .outlet-list .more-outlet {
+    color: #29A7E2;
+}
+#refund .popup-content,
+#sendMsg .popup-content,
+#bindusertel .popup-content,
+#changeusertel .popup-content {
+    display: none;
+}
