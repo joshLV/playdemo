@@ -2,6 +2,7 @@ package models;
 
 import com.uhuila.common.util.DateUtil;
 import models.order.ECouponStatus;
+import operate.rbac.ContextedPermission;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
@@ -23,6 +24,7 @@ public class SalesReportCondition implements Serializable {
     public String shortName;
     public String code;
     public String userName;
+    public Long salesId;
     public String jobNumber;
     private Map<String, Object> paramMap = new HashMap<>();
     private Map<String, Object> paramMap1 = new HashMap<>();
@@ -30,6 +32,8 @@ public class SalesReportCondition implements Serializable {
     public String getFilter() {
         StringBuilder condBuilder = new StringBuilder(" where (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
+
+
         if (StringUtils.isNotBlank(shortName)) {
             condBuilder.append(" and r.goods.shortName like :shortName");
             paramMap.put("shortName", "%" + shortName + "%");
@@ -130,7 +134,11 @@ public class SalesReportCondition implements Serializable {
 
     public String getFilterOfPeopleEffect() {
         StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId =s.id and s.deleted=0 and s.salesId=o.id and o.deleted=0  and (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false");
-
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        if (!hasSeeReportProfitRight) {
+            condBuilder.append(" and o.id =:salesId");
+            paramMap.put("salesId", salesId);
+        }
         if (StringUtils.isNotBlank(userName)) {
             condBuilder.append(" and o.userName like :shortName");
             paramMap.put("shortName", "%" + userName + "%");
@@ -159,6 +167,11 @@ public class SalesReportCondition implements Serializable {
         StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId =s.id and s.deleted=0 and s.salesId=ou.id and ou.deleted=0 and r.order.userType=models.accounts.AccountType.RESALER " +
                 " and (r.order.status='PAID' or r.order.status='SENT')" +
                 " and r.goods.isLottery=false and r.order=o and o.userId=b.id");
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        if (!hasSeeReportProfitRight) {
+            condBuilder.append(" and o.id =:salesId");
+            paramMap.put("salesId", salesId);
+        }
         if (StringUtils.isNotBlank(userName)) {
             condBuilder.append(" and ou.userName like :shortName");
             paramMap.put("shortName", "%" + userName + "%");
@@ -183,7 +196,11 @@ public class SalesReportCondition implements Serializable {
         paramMap1 = new HashMap<>();
         StringBuilder condBuilder = new StringBuilder(" where e.goods.supplierId=s.id and s.deleted=0 and s.salesId=o.id and o.deleted=0 and e.status=:status and e.goods.isLottery=false");
         paramMap1.put("status", status);
-
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        if (!hasSeeReportProfitRight) {
+            condBuilder.append(" and o.id =:salesId");
+            paramMap1.put("salesId", salesId);
+        }
         if (StringUtils.isNotBlank(userName)) {
             condBuilder.append(" and o.userName like :userName");
             paramMap1.put("userName", "%" + userName + "%");

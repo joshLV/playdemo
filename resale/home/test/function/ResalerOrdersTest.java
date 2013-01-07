@@ -134,4 +134,20 @@ public class ResalerOrdersTest extends FunctionalTest {
         ecoupon.refresh();
         assertEquals(ecoupon.status, ECouponStatus.REFUND);
     }
+
+    @Test
+    public void testCancelOrder() {
+        order.status = OrderStatus.PAID;
+        order.save();
+        assertEquals(OrderStatus.PAID, order.status);
+        Http.Response response = PUT("/orders/" + order.orderNumber + "/cancel", "application/x-www-form-urlencoded", "");
+        assertContentType("application/json", response); // this is OK
+        order.refresh();
+        assertEquals(order.status, OrderStatus.CANCELED);
+        orderItems.refresh();
+        for (OrderItems item : order.orderItems) {
+            assertEquals(item.status, OrderStatus.CANCELED);
+
+        }
+    }
 }

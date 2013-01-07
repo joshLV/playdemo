@@ -22,7 +22,6 @@ public class GoodsOnSaleAndOffSaleCondition {
     private Map<String, Object> paramMap = new HashMap<>();
 
     public String filter() {
-
         StringBuilder builder = new StringBuilder(" where 1=1 ");
         if (shortName != null) {
             builder.append(" and c.goods.shortName like :shortName");
