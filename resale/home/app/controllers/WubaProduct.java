@@ -436,7 +436,7 @@ public class WubaProduct extends Controller {
                     String url = THIRD_URL + cityArr[2] + "/" + wubaGoodsId;
                     ChannelGoodsInfo channelGoodsInfo = ChannelGoodsInfo.findByResaler(resaler, url);
                     if (channelGoodsInfo == null) {
-                        new ChannelGoodsInfo(goods, resaler, url, cityName, "58商品推送").save();
+                        new ChannelGoodsInfo(goods, resaler, url, cityName, resaler.userName).save();
                     } else {
                         channelGoodsInfo.url = url;
                         channelGoodsInfo.tag = cityName;
