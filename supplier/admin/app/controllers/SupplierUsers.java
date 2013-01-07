@@ -52,7 +52,7 @@ public class SupplierUsers extends Controller {
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         JPAExtPaginator<SupplierUser> supplierUsersPage = SupplierUser
                 .getSupplierUserList(loginName, userName, jobNumber,
-                        supplierId, pageNumber,
+                        supplierId, null, pageNumber,
                         PAGE_SIZE);
         renderArgs.put("userName", userName);
         renderArgs.put("jobNumber", jobNumber);

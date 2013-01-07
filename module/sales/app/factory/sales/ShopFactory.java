@@ -31,7 +31,7 @@ public class ShopFactory extends ModelFactory<Shop> {
         shop.longitude = "31.12888";
         shop.createdAt = DateHelper.beforeDays(20);
         shop.updatedAt = DateHelper.beforeDays(15);
-        Area area = FactoryBoy.create(Area.class);
+        Area area = FactoryBoy.lastOrCreate(Area.class);
 		shop.areaId = area.id;
         shop.name = "测试店";
         shop.deleted = DeletedStatus.UN_DELETED;
