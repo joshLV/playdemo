@@ -2,12 +2,11 @@ package models;
 
 import com.uhuila.common.util.DateUtil;
 import models.order.ECouponStatus;
+import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 销售报表查询条件
@@ -26,6 +25,8 @@ public class SalesReportCondition implements Serializable {
     public String jobNumber;
     private Map<String, Object> paramMap = new HashMap<>();
     private Map<String, Object> paramMap1 = new HashMap<>();
+    public Boolean hasSeeReportProfitRight;
+    public Long operatorId;
 
     public String getFilter() {
         StringBuilder condBuilder = new StringBuilder(" where (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false" +
@@ -47,6 +48,20 @@ public class SalesReportCondition implements Serializable {
             condBuilder.append(" and r.order.paidAt < :createdAtEnd");
             paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
+                paramMap.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap.put("supplierIds", 6);
+            }
+        }
 
 
         return condBuilder.toString();
@@ -64,6 +79,20 @@ public class SalesReportCondition implements Serializable {
         if (endAt != null) {
             condBuilder.append(" and e.consumedAt < :createdAtEnd");
             paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
+        }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
+                paramMap.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap.put("supplierIds", 6);
+            }
         }
 
         return condBuilder.toString();
@@ -91,6 +120,20 @@ public class SalesReportCondition implements Serializable {
             condBuilder.append(" and r.order.paidAt < :createdAtEnd");
             paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
+                paramMap.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap.put("supplierIds", 6);
+            }
+        }
 
         return condBuilder.toString();
     }
@@ -115,6 +158,20 @@ public class SalesReportCondition implements Serializable {
         if (endAt != null) {
             condBuilder.append(" and e.refundAt <= :refundAtEnd");
             paramMap1.put("refundAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+        }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and e.goods.supplierId in (:supplierIds)");
+                paramMap1.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap1.put("supplierIds", 6);
+            }
         }
 
         return condBuilder.toString();
@@ -211,7 +268,6 @@ public class SalesReportCondition implements Serializable {
                 condBuilder.append(" and e.consumedAt <= :consumedAtEnd");
                 paramMap1.put("consumedAtEnd", DateUtil.getEndOfDay(endAt));
             }
-
         }
         return condBuilder.toString();
     }

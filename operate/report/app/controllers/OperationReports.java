@@ -47,6 +47,8 @@ public class OperationReports extends Controller {
             condition = new SalesReportCondition();
         }
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
+        condition.operatorId = OperateRbac.currentUser().id;
         List<SalesReport> resultList = SalesReport.query(condition);
         // 分页
         ValuePaginator<SalesReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
@@ -238,6 +240,10 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new SalesReportCondition();
         }
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
+        condition.operatorId = OperateRbac.currentUser().id;
+
         String page = request.params.get("page");
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "销售报表_" + System.currentTimeMillis() + ".xls");
@@ -282,6 +288,9 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new SalesReportCondition();
         }
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
+        condition.operatorId = OperateRbac.currentUser().id;
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "销售报表_" + System.currentTimeMillis() + ".xls");
 
@@ -316,6 +325,7 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new ResaleSalesReportCondition();
         }
+
         String page = request.params.get("page");
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "渠道汇总报表_" + System.currentTimeMillis() + ".xls");
