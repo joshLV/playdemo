@@ -67,11 +67,57 @@ public class SalesReportCondition implements Serializable {
         return condBuilder.toString();
     }
 
+    public String getFilterCheatedOrder() {
+        StringBuilder condBuilder = new StringBuilder(" r.order.status='PAID' and r.goods.isLottery=false" +
+                " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
+                " and e.isCheatedOrder = true ");
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and r.goods.shortName like :shortName");
+            paramMap.put("shortName", "%" + shortName + "%");
+        }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and r.goods.code = :code");
+            paramMap.put("code", code.trim() + "%");
+        }
+
+        if (beginAt != null) {
+            condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
+            paramMap.put("createdAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and r.order.paidAt < :createdAtEnd");
+            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+        }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
+                paramMap.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap.put("supplierIds", 6);
+            }
+        }
+
+        return condBuilder.toString();
+    }
+
     public String getFilterConsumedAt() {
         StringBuilder condBuilder = new StringBuilder(" and r.order.status='PAID' " +
                 " and r.goods.isLottery=false and e.status = models.order.ECouponStatus.CONSUMED" +
                 " and  r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
-
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and r.goods.shortName like :shortName");
+            paramMap.put("shortName", "%" + shortName + "%");
+        }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and r.goods.code = :code");
+            paramMap.put("code", code.trim() + "%");
+        }
         if (beginAt != null) {
             condBuilder.append(" and e.consumedAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);
@@ -140,7 +186,7 @@ public class SalesReportCondition implements Serializable {
 
 
     public String getRefundFilter() {
-        StringBuilder condBuilder = new StringBuilder(" where e.status=:status and e.goods.isLottery=false" +
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.status=:status and e.goods.isLottery=false" +
                 " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
         paramMap1.put("status", ECouponStatus.REFUND);
         if (StringUtils.isNotBlank(shortName)) {
