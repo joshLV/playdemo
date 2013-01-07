@@ -72,7 +72,6 @@ public class UploadFiles extends Controller {
             path = PathUtil.signImgPath(path);
             map.put("url", "http://" + Goods.IMAGE_SERVER + "/p" + path);
 
-
             renderJSON(map);
         } catch (Exception e) {
             getError("上传失败，服务器忙，请稍候再试。");
