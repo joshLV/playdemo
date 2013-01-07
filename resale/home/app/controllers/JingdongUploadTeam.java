@@ -410,7 +410,7 @@ public class JingdongUploadTeam extends Controller {
             url = "http://tuan.360buy.com/team-" + fav.thirdGroupbuyId + ".html";
             ChannelGoodsInfo channelGoodsInfo = ChannelGoodsInfo.findByResaler(resaler, url);
             if (channelGoodsInfo == null) {
-                new ChannelGoodsInfo(goods, resaler, url, "京东", "京东商品推送").save();
+                new ChannelGoodsInfo(goods, resaler, url, "京东", resaler.userName).save();
             } else {
                 channelGoodsInfo.url = url;
                 channelGoodsInfo.tag = "京东";

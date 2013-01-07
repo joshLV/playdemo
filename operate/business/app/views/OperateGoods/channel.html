@@ -32,8 +32,8 @@
             <tr>
                 <td align="center">${channel.resaler.loginName}</td>
                 <td>${channel.goods.shortName?.raw()}</td>
-                <td>${channel?.tag}</td>
-                <td>${channel.url}</td>
+                <td><a href="${channel.url}" target="_blank">${channel?.tag}</a></td>
+                <td><a href="${channel.url}" target="_blank">${channel.url}</a></td>
                 <td>${channel?.onSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>${channel?.offSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>&{'channel.'+channel?.status}</td>
