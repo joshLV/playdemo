@@ -50,17 +50,9 @@ public class ScannerChannelGoodsStatusJob extends Job {
                 String url = channelGoodsInfo.url;
                 //变更前的状态
                 ChannelGoodsInfoStatus preStatus = channelGoodsInfo.status;
-//                WS.HttpResponse response = WS.url(url).get();
-
                 WebServiceClient client = WebServiceClientFactory
                         .getClientHelper();
-
-                String retResponse = client.getString("", url, channelGoodsInfo.status.toString());
-//                if (response.getStatus() != 200) {
-//                    channelGoodsInfo.status = ChannelGoodsInfoStatus.PAGE_NOT_EXISTED;
-//                    channelGoodsInfo.save();
-//                    continue;
-//                }
+                String retResponse = client.getString("", url, url);
                 Matcher onSaleMatcher = onSalePattern.matcher(retResponse);
                 Matcher offSaleMatcher = offSalePattern.matcher(retResponse);
                 if (preStatus != ChannelGoodsInfoStatus.ONSALE && onSaleMatcher.find()) {
