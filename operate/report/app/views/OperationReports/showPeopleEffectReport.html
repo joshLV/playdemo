@@ -47,7 +47,7 @@
     ;
 
     function exportReportWithPrivilegeExcel() {
-        $("#hasProfitRight").val(true);
+        $("#condition_hasRight").val(true);
         $("#search_form").attr("action", "@{OperationReports.peopleEffectReportExcelOut()}");
         $("#search_form").attr("method", "get");
         $("#search_form").submit();
@@ -92,6 +92,7 @@
             <li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>
         </ul>
         <input type="hidden" id="condition_interval" name="condition.interval"/>
+        <input type="hidden" id="condition_hasRight" name="hasRight" value="false"/>
     </form>
 
     <div class="alert alert-success">
