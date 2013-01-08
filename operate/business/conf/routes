@@ -30,7 +30,7 @@ GET     /category/sub/{id}                      OperateCategories.showSubs
 # 外部商品
 GET     /resale-partner-products                 ResalePartnerProducts.index
 
-GET     /resale-partner-products/yhd/upload/{goodsId}  resale.YHDGroupBuyProduct.showUpdate
+GET     /resale-partner-products/yhd/upload/{goodsId}   resale.YHDGroupBuyProduct.showUpload
 GET     /resale-partner-products/yhd/products/{goodsId} resale.YHDGroupBuyProduct.showProducts
 
 #渠道商品

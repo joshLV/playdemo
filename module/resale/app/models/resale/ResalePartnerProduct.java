@@ -17,11 +17,6 @@ import java.util.Date;
 @Table(name = "resale_partner_product")
 public class ResalePartnerProduct extends Model {
 
-    @ManyToOne
-    public OperateUser creator;
-
-    @ManyToOne
-    public OperateUser lastModifier;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "partner")
@@ -45,6 +40,12 @@ public class ResalePartnerProduct extends Model {
 
     @Column(name = "created_at")
     public Date createdAt;
+
+    @Column(name = "creator_id")
+    public Long creatorId;
+
+    @Column(name = "last_modifier_id")
+    public Long lastModifierId;
 
     /**
      * 第三方状态.

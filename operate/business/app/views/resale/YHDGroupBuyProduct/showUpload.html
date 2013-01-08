@@ -1,0 +1,39 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'上传商品' /}
+#{include '/share/nav.html' /}
+#{set 'moreScripts'}
+#{/set}
+#{set 'moreStyles'}
+#{/set}
+<div class="body">
+    <form class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label" for="inputGoodsId">商品ID</label>
+            <div class="controls">
+                <input type="text" id="inputGoodsId" name="goodsId" value="${goods.id}" disabled>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputProductType">产品类型</label>
+            <div class="controls">
+                <input type="text" id="inputProductType" name="productType" value="0">
+                <span class="help-inline">0普通产品;1图书</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">产品类别</label>
+            <div class="controls">
+                <input type="checkbox" name="autoGroupBuy"> 自动发布到团购
+                <input type="checkbox" name="autoGroupBuy"> 自动发布到团购
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <label class="checkbox">
+                    <input type="checkbox" name="autoGroupBuy"> 自动发布到团购
+                </label>
+                <button type="submit" class="btn">Sign in</button>
+            </div>
+        </div>
+    </form>
+</div>

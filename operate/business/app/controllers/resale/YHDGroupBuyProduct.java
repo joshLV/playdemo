@@ -19,7 +19,8 @@ import java.util.List;
 @ActiveNavigation("resale_partner_product")
 public class YHDGroupBuyProduct extends Controller{
     public static void showUpload(Long goodsId) {
-
+        Goods goods = Goods.findById(goodsId);
+        render(goods);
     }
 
     @ActiveNavigation("resale_partner_product")
