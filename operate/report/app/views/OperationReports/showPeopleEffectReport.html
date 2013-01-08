@@ -114,6 +114,8 @@
     #{set i:0/}
     %{
         baseUrl=play.Play.configuration.getProperty("uri.operate_business");
+        beginAt=condition?.beginAt?.format();
+        endAt =condition?.endAt?.format();
         }%
     #{paginate.list items:reportPage, as:'report'}
         <tr>
@@ -121,15 +123,18 @@
             <td>${report?.operateUser?.userName}</td>
             <td>${report?.buyNumber?:0}</td>
             <td>
-                <a target="_blank" href="${baseUrl}/coupons?condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}&condition.salesId=${report?.operateUser?.id}">
-            ${(report?.totalAmount?:0).formatCurrency('CNY')}</a>
+                <a target="_blank"
+                   href="${baseUrl}/coupons?condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}">
+                ${(report?.totalAmount?:0).formatCurrency('CNY')}</a>
             </td>
             <td>
-                <a target="_blank" href="${baseUrl}/coupons?condition.consumedAtBegin=${condition?.beginAt?.format()}&condition.consumedAtEnd=${condition?.endAt?.format()}&condition.salesId=${report?.operateUser?.id}">
+                <a target="_blank"
+                   href="${baseUrl}/coupons?condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}">
                 ${(report?.consumedAmount?:0).formatCurrency('CNY')}</a>
             </td>
             <td>
-                <a target="_blank" href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}&condition.salesId=${report?.operateUser?.id}">
+                <a target="_blank"
+                   href="${baseUrl}/coupons?condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}">
                 ${(report?.refundAmount?:0).formatCurrency('CNY')}</a>
             </td>
             #{if hasSeeReportProfitRight == true}

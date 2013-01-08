@@ -8,6 +8,7 @@ import models.sales.ChannelGoodsInfoStatus;
 import org.junit.Before;
 import org.junit.Test;
 import play.test.UnitTest;
+import util.ws.MockWebServiceClient;
 
 import java.util.Date;
 
@@ -35,7 +36,8 @@ public class ScannerChannelGoodsStatusTest extends UnitTest {
         channelGoodsInfo.save();
 
     }
-//    @Test
+
+    //    @Test
 //    public void test_Job() {
 //        String succTxt = "<div class=\"buy_btn b_buy\">";
 //        Pattern onSalePattern = Pattern.compile(resaler.onSaleKey);
@@ -70,14 +72,19 @@ public class ScannerChannelGoodsStatusTest extends UnitTest {
     public void test_Job_from_null_to_offSale() {
         channelGoodsInfo.url = "http://t.58.com/sh/65589866425859008";
         channelGoodsInfo.save();
+
+        String resultXml = "";
+        MockWebServiceClient.pushMockHttpRequest(200, resultXml);
+
+
         assertNull(channelGoodsInfo.status);
         assertNull(channelGoodsInfo.offSaleAt);
         ScannerChannelGoodsStatusJob job = new ScannerChannelGoodsStatusJob();
         job.doJob();
+
         assertEquals(ChannelGoodsInfoStatus.OFFSALE, channelGoodsInfo.status);
         assertNotNull(channelGoodsInfo.offSaleAt);
     }
-
 
 
     @Test

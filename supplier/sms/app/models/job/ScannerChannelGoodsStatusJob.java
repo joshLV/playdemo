@@ -7,7 +7,8 @@ import org.apache.commons.lang.StringUtils;
 import play.db.jpa.JPA;
 import play.jobs.Every;
 import play.jobs.Job;
-import play.libs.WS;
+import util.ws.WebServiceClient;
+import util.ws.WebServiceClientFactory;
 
 import javax.persistence.Query;
 import java.util.Date;
@@ -49,15 +50,19 @@ public class ScannerChannelGoodsStatusJob extends Job {
                 String url = channelGoodsInfo.url;
                 //变更前的状态
                 ChannelGoodsInfoStatus preStatus = channelGoodsInfo.status;
-                WS.HttpResponse response = WS.url(url).get();
-                if (response.getStatus() != 200) {
-                    channelGoodsInfo.status = ChannelGoodsInfoStatus.PAGE_NOT_EXISTED;
-                    channelGoodsInfo.save();
-                    continue;
-                }
+//                WS.HttpResponse response = WS.url(url).get();
 
-                Matcher onSaleMatcher = onSalePattern.matcher(response.getString());
-                Matcher offSaleMatcher = offSalePattern.matcher(response.getString());
+                WebServiceClient client = WebServiceClientFactory
+                        .getClientHelper();
+
+                String retResponse = client.getString("", url, channelGoodsInfo.status.toString());
+//                if (response.getStatus() != 200) {
+//                    channelGoodsInfo.status = ChannelGoodsInfoStatus.PAGE_NOT_EXISTED;
+//                    channelGoodsInfo.save();
+//                    continue;
+//                }
+                Matcher onSaleMatcher = onSalePattern.matcher(retResponse);
+                Matcher offSaleMatcher = offSalePattern.matcher(retResponse);
                 if (preStatus != ChannelGoodsInfoStatus.ONSALE && onSaleMatcher.find()) {
                     channelGoodsInfo.status = ChannelGoodsInfoStatus.ONSALE;
                     channelGoodsInfo.onSaleAt = new Date();
