@@ -32,8 +32,7 @@
                     <tr class="order-bd">
                         <td align="center">
                             #{if coupon.status == models.order.ECouponStatus.UNCONSUMED }
-                                <input class="select-item" type="checkbox" id="check_coupon_${coupon.id}"
-                                       value="${coupon.id}" name="couponIds"
+                                <input class="select-item" type="checkbox" id="check_coupon_${coupon.id}" value="${coupon.id}" name="couponIds"
                                        #{if coupon?.salePrice <=0 || ( coupon?.orderItems?.secKillGoods!=null )}disabled="true" #{/if}/>
                             #{/if}
                         </td>
@@ -47,9 +46,9 @@
                 #{/list }
                 </tbody>
             </table>
-            <div class="btn">
+            <div class="btn-box">
                 <input class="select-all" type="checkbox" name="select_all_checkbox"/><label>全选</label>
-                <input class="refund" type="submit" id="refund" value="申请退款">
+                <button class="btn refund" type="submit" id="refund">申请退款</button>
                 <input type="hidden" value="${order.orderNumber}" name="orderNumber">
             </div>
         </form>
