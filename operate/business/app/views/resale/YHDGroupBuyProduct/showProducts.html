@@ -1,0 +1,52 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'发布历史' /}
+#{include '/share/nav.html' /}
+#{set 'moreScripts'}
+#{/set}
+#{set 'moreStyles'}
+#{/set}
+<div class="body">
+    #{if products}
+        <legend>发布历史：<a href="/goods/${products.get(0).goods.id}" target="_blank">
+            ${products.get(0).goods.shortName}</a>
+        </legend>
+    #{/if}
+
+
+
+<table class="table table-striped table-bordered table-condensed">
+<thead>
+<tr>
+    <th>#</th>
+    <th>发布时间</th>
+    <th>上传人</th>
+    <th>最后修改人</th>
+    <th>外部ID</th>
+    <th>操作</th>
+</tr>
+</thead>
+
+<tbody>
+
+#{paginate.list items:products, as:'product'}
+<tr>
+    <td>${product_index}</td>
+    <td>${product.createdAt}</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>
+        <a href="/resale-partner-products/${product.partner.toString().toLowerCase()}/upload/${product.goods.id}"><span class="label label-info">再发</span></a>
+        <a href="/resale-partner-products/${product.partner.toString().toLowerCase()}/edit/${product.goods.id}"><span class="label label-success">修改</span></a>
+    </td>
+</tr>
+#{/paginate.list}
+</tbody>
+</table>
+<div class="pagination" align="center">
+    <ul>
+    #{paginate.controls items:goodsPage /}
+    </ul>
+</div>
+</div>
+
