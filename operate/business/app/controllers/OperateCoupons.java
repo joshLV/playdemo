@@ -42,7 +42,6 @@ public class OperateCoupons extends Controller {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         condition.hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
-
         condition.operatorId = OperateRbac.currentUser().id;
         Boolean hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
         Long operatorId = OperateRbac.currentUser().id;

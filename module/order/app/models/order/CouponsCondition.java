@@ -53,7 +53,11 @@ public class CouponsCondition implements Serializable {
     public Long operatorId;
     public Boolean hasSeeAllSupplierPermission;
     public Long goodsId;
+
+    public Boolean isCheatedOrder;
+
     public Long salesId;
+
 
     public String getOrderByExpress() {
         return "e.createdAt desc";
@@ -283,6 +287,12 @@ public class CouponsCondition implements Serializable {
                 sql.append(" and 5 =:supplierIds");
                 paramMap.put("supplierIds", 6);
             }
+        }
+
+        if (isCheatedOrder == null || isCheatedOrder == false) {
+            sql.append(" and 1=1");
+        } else if (isCheatedOrder == true) {
+            sql.append(" and e.isCheatedOrder=true");
         }
 
         return sql.toString();

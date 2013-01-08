@@ -2,13 +2,15 @@ package models;
 
 import com.uhuila.common.util.DateUtil;
 import models.order.ECouponStatus;
+
+import models.supplier.Supplier;
+
 import operate.rbac.ContextedPermission;
+
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 销售报表查询条件
@@ -28,6 +30,8 @@ public class SalesReportCondition implements Serializable {
     public String jobNumber;
     private Map<String, Object> paramMap = new HashMap<>();
     private Map<String, Object> paramMap1 = new HashMap<>();
+    public Boolean hasSeeReportProfitRight;
+    public Long operatorId;
 
     public String getFilter() {
         StringBuilder condBuilder = new StringBuilder(" where (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false" +
@@ -51,16 +55,116 @@ public class SalesReportCondition implements Serializable {
             condBuilder.append(" and r.order.paidAt < :createdAtEnd");
             paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
+                paramMap.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap.put("supplierIds", 6);
+            }
+        }
 
 
         return condBuilder.toString();
     }
 
+    public String getFilterCheatedOrder() {
+        StringBuilder condBuilder = new StringBuilder(" r.order.status='PAID' and r.goods.isLottery=false" +
+                " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
+                " and e.isCheatedOrder = true ");
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and r.goods.shortName like :shortName");
+            paramMap.put("shortName", "%" + shortName + "%");
+        }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and r.goods.code = :code");
+            paramMap.put("code", code.trim() + "%");
+        }
+
+        if (beginAt != null) {
+            condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
+            paramMap.put("createdAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and r.order.paidAt < :createdAtEnd");
+            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+        }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
+                paramMap.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap.put("supplierIds", 6);
+            }
+        }
+
+        return condBuilder.toString();
+    }
+
+    public String getFilterCheatedOrderResaler() {
+        StringBuilder condBuilder = new StringBuilder("  r.order.status='PAID' and r.goods.isLottery=false" +
+                " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
+                " and e.isCheatedOrder = true and r.order.userType=models.accounts.AccountType.RESALER and r.order=o and o.userId=b.id ");
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and r.goods.shortName like :shortName");
+            paramMap.put("shortName", "%" + shortName + "%");
+        }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and r.goods.code = :code");
+            paramMap.put("code", code.trim() + "%");
+        }
+
+        if (beginAt != null) {
+            condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
+            paramMap.put("createdAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and r.order.paidAt < :createdAtEnd");
+            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+        }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
+                paramMap.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap.put("supplierIds", 6);
+            }
+        }
+
+        return condBuilder.toString();
+    }
+
+
     public String getFilterConsumedAt() {
         StringBuilder condBuilder = new StringBuilder(" and r.order.status='PAID' " +
                 " and r.goods.isLottery=false and e.status = models.order.ECouponStatus.CONSUMED" +
                 " and  r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
-
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and r.goods.shortName like :shortName");
+            paramMap.put("shortName", "%" + shortName + "%");
+        }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and r.goods.code = :code");
+            paramMap.put("code", code.trim() + "%");
+        }
         if (beginAt != null) {
             condBuilder.append(" and e.consumedAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);
@@ -68,6 +172,20 @@ public class SalesReportCondition implements Serializable {
         if (endAt != null) {
             condBuilder.append(" and e.consumedAt < :createdAtEnd");
             paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
+        }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
+                paramMap.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap.put("supplierIds", 6);
+            }
         }
 
         return condBuilder.toString();
@@ -95,13 +213,27 @@ public class SalesReportCondition implements Serializable {
             condBuilder.append(" and r.order.paidAt < :createdAtEnd");
             paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
+                paramMap.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap.put("supplierIds", 6);
+            }
+        }
 
         return condBuilder.toString();
     }
 
 
     public String getRefundFilter() {
-        StringBuilder condBuilder = new StringBuilder(" where e.status=:status and e.goods.isLottery=false" +
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.status=:status and e.goods.isLottery=false" +
                 " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
         paramMap1.put("status", ECouponStatus.REFUND);
         if (StringUtils.isNotBlank(shortName)) {
@@ -120,9 +252,63 @@ public class SalesReportCondition implements Serializable {
             condBuilder.append(" and e.refundAt <= :refundAtEnd");
             paramMap1.put("refundAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and e.goods.supplierId in (:supplierIds)");
+                paramMap1.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap1.put("supplierIds", 6);
+            }
+        }
 
         return condBuilder.toString();
     }
+
+    public String getFilterRefundResaler() {
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.status=:status and e.goods.isLottery=false" +
+                " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
+                " and r.order.userType=models.accounts.AccountType.RESALER and r.order=o and o.userId=b.id ");
+        paramMap1.put("status", ECouponStatus.REFUND);
+        if (StringUtils.isNotBlank(shortName)) {
+            condBuilder.append(" and e.goods.shortName like :shortName");
+            paramMap1.put("shortName", "%" + shortName + "%");
+        }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and e.goods.code = :code");
+            paramMap1.put("code", code.trim() + "%");
+        }
+        if (beginAt != null) {
+            condBuilder.append(" and e.refundAt >= :refundAtBegin");
+            paramMap1.put("refundAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and e.refundAt <= :refundAtEnd");
+            paramMap1.put("refundAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+        }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and e.goods.supplierId in (:supplierIds)");
+                paramMap1.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap1.put("supplierIds", 6);
+            }
+        }
+
+        return condBuilder.toString();
+    }
+
 
     public Map<String, Object> getParamMap() {
         return paramMap;
@@ -228,7 +414,6 @@ public class SalesReportCondition implements Serializable {
                 condBuilder.append(" and e.consumedAt <= :consumedAtEnd");
                 paramMap1.put("consumedAtEnd", DateUtil.getEndOfDay(endAt));
             }
-
         }
         return condBuilder.toString();
     }

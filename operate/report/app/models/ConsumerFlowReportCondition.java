@@ -1,10 +1,9 @@
 package models;
 
 import models.accounts.AccountType;
+import models.supplier.Supplier;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,7 +18,8 @@ public class ConsumerFlowReportCondition {
     public String interval = "-1d";
     private Map<String, Object> paramMap = new HashMap<>();
     private Map<String, Object> paramMap1 = new HashMap<>();
-
+    public Boolean hasSeeReportProfitRight;
+    public Long operatorId;
 
     public String getFilterPaidAt(AccountType type) {
         StringBuilder condBuilder = new StringBuilder("and (r.order.status='PAID' or r.order.status='SENT') " +
@@ -37,7 +37,20 @@ public class ConsumerFlowReportCondition {
             condBuilder.append(" and r.order.paidAt < :createdAtEnd");
             paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
-
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
+                paramMap.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap.put("supplierIds", 6);
+            }
+        }
         return condBuilder.toString();
     }
 
@@ -58,6 +71,20 @@ public class ConsumerFlowReportCondition {
             condBuilder.append(" and r.order.paidAt < :createdAtEnd");
             paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
+                paramMap.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap.put("supplierIds", 6);
+            }
+        }
 
         return condBuilder.toString();
     }
@@ -75,6 +102,20 @@ public class ConsumerFlowReportCondition {
             condBuilder.append(" and e.consumedAt < :createdAtEnd");
             paramMap1.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
+                paramMap1.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap1.put("supplierIds", 6);
+            }
+        }
 
         return condBuilder.toString();
     }
@@ -91,7 +132,20 @@ public class ConsumerFlowReportCondition {
             condBuilder.append(" and e.refundAt < :createdAtEnd");
             paramMap1.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
-
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
+                paramMap1.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap1.put("supplierIds", 6);
+            }
+        }
         return condBuilder.toString();
     }
 
@@ -107,7 +161,20 @@ public class ConsumerFlowReportCondition {
             condBuilder.append(" and r.order.refundAt < :createdAtEnd");
             paramMap1.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
-
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
+                paramMap1.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap1.put("supplierIds", 6);
+            }
+        }
         return condBuilder.toString();
     }
 

@@ -1,11 +1,10 @@
 package models;
 
 import models.order.ECouponStatus;
+import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,6 +23,8 @@ public class CategorySalesReportCondition {
     public String jobNumber;
     private Map<String, Object> paramMap = new HashMap<>();
     private Map<String, Object> paramMap1 = new HashMap<>();
+    public Boolean hasSeeReportProfitRight;
+    public Long operatorId;
 
     public String getFilter() {
         StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId = s and (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false" +
@@ -44,6 +45,20 @@ public class CategorySalesReportCondition {
         if (endAt != null) {
             condBuilder.append(" and r.order.paidAt < :createdAtEnd");
             paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+        }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
+                paramMap.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap.put("supplierIds", 6);
+            }
         }
 
 
@@ -71,7 +86,20 @@ public class CategorySalesReportCondition {
             condBuilder.append(" and r.order.paidAt < :createdAtEnd");
             paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
-
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
+                paramMap.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap.put("supplierIds", 6);
+            }
+        }
         return condBuilder.toString();
     }
 
@@ -87,6 +115,20 @@ public class CategorySalesReportCondition {
         if (endAt != null) {
             condBuilder.append(" and e.consumedAt < :createdAtEnd");
             paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+        }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
+                paramMap.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap.put("supplierIds", 6);
+            }
         }
 
         return condBuilder.toString();
@@ -111,6 +153,20 @@ public class CategorySalesReportCondition {
         if (endAt != null) {
             condBuilder.append(" and e.refundAt <= :refundAtEnd");
             paramMap1.put("refundAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+        }
+        if (hasSeeReportProfitRight != null && !hasSeeReportProfitRight) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and e.goods.supplierId in (:supplierIds)");
+                paramMap1.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 5 =:supplierIds");
+                paramMap1.put("supplierIds", 6);
+            }
         }
 
         return condBuilder.toString();

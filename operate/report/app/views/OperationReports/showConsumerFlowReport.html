@@ -237,7 +237,7 @@
             &condition.status=CONSUMED&condition.consumedAtBegin=${report?.date}&condition.consumedAtEnd=${report?.date}"
                target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
         </td>
-        <td>
+        <td style="text-align:right;">
         ${(report?.perOrderPrice?:0).formatCurrency('CNY')}
         </td>
         #{if hasSeeReportProfitRight == true}

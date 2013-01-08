@@ -61,6 +61,49 @@ public class SalesReport {
     public BigDecimal totalConsumed;
 
     /**
+     * 刷单金额
+     */
+    public BigDecimal cheatedOrderAmount;
+
+    /**
+     * 刷单量
+     */
+    public Long cheatedOrderNum;
+
+    /**
+     * 刷单看陈本
+     */
+    public BigDecimal cheatedOrderCost;
+
+    /**
+     * 退款成本
+     */
+    public BigDecimal refundCost;
+
+
+    /**
+     * 总销售额佣金成本
+     */
+    public BigDecimal totalAmountCommissionAmount = BigDecimal.ZERO;
+
+    /**
+     * 退款佣金成本
+     */
+    public BigDecimal refundCommissionAmount = BigDecimal.ZERO;
+
+    /**
+     * 刷单佣金成本
+     */
+    public BigDecimal cheatedOrderCommissionAmount = BigDecimal.ZERO;
+
+
+    /**
+     * 从分销销来 的退款数量
+     */
+    public Long refundNum;
+
+
+    /**
      * 利润
      */
     public BigDecimal profit;
@@ -138,19 +181,42 @@ public class SalesReport {
         this.totalCost = totalCost;
     }
 
-    //from resaler
-    public SalesReport(Goods goods, BigDecimal totalAmount, BigDecimal totalCost, BigDecimal profit, BigDecimal ratio) {
-        this.goods = goods;
-        this.totalAmount = totalAmount;
-        this.totalCost = totalCost;
-        this.profit = profit;
+    //padiAt from resaler
+    public SalesReport(Goods goods, BigDecimal totalAmountCommissionAmount, BigDecimal ratio) {
         this.ratio = ratio;
+        this.goods = goods;
+        this.totalAmountCommissionAmount = totalAmountCommissionAmount;
     }
 
+    //cheated order from resaler
+    public SalesReport(BigDecimal cheatedOrderCommissionAmount, BigDecimal ratio, Goods goods) {
+        this.ratio = ratio;
+        this.goods = goods;
+        this.cheatedOrderCommissionAmount = cheatedOrderCommissionAmount;
+    }
+
+    //refund from resaler
+    public SalesReport(BigDecimal refundCommissionAmount, Goods goods, BigDecimal ratio, Long refundNum) {
+        this.ratio = ratio;
+        this.goods = goods;
+        this.refundCommissionAmount = refundCommissionAmount;
+        this.refundNum = refundNum;
+    }
+
+    //cheated order
+    public SalesReport(Goods goods, BigDecimal cheatedOrderAmount, Long cheatedOrderNum, BigDecimal cheatedOrderCost) {
+        this.goods = goods;
+        this.cheatedOrderAmount = cheatedOrderAmount;
+        this.cheatedOrderNum = cheatedOrderNum;
+        this.cheatedOrderCost = cheatedOrderCost;
+    }
+
+
     //refund ecoupon
-    public SalesReport(BigDecimal refundAmount, Goods goods) {
+    public SalesReport(BigDecimal refundAmount, Goods goods, BigDecimal refundCost) {
         this.refundAmount = refundAmount;
         this.goods = goods;
+        this.refundCost = refundCost;
 
     }
 
@@ -204,10 +270,9 @@ public class SalesReport {
 
         List<SalesReport> paidResultList = query.getResultList();
 
-        //from resaler
-        sql = "select new models.SalesReport(r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),sum(r.originalPrice*r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-sum(r.originalPrice*r.buyNumber)" +
-                ",b.commissionRatio)" +
+
+        //paidAt from resaler
+        sql = "select new models.SalesReport(r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio/100,b.commissionRatio)" +
                 " from OrderItems r,Order o,Resaler b";
         groupBy = " group by r.goods.id,b ";
         query = JPA.em()
@@ -218,11 +283,39 @@ public class SalesReport {
             query.setParameter(param, condition.getParamMap().get(param));
         }
 
-
         List<SalesReport> paidResalerResultList = query.getResultList();
 
+
+        //cheated order
+        sql = "select new models.SalesReport(r.goods,sum(r.salePrice-r.rebateValue/r.buyNumber),sum(r.buyNumber)" +
+                " ,sum(r.originalPrice)) " +
+                " from OrderItems r, ECoupon e where e.orderItems=r and ";
+        groupBy = " group by r.goods.id";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterCheatedOrder() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<SalesReport> cheatedOrderResultList = query.getResultList();
+
+        //cheated order from resaler
+        sql = "select new models.SalesReport(sum(r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio/100,b.commissionRatio,r.goods)" +
+                " from OrderItems r,Order o,Resaler b, ECoupon e where e.orderItems=r and";
+        groupBy = " group by r.goods.id,b ";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterCheatedOrderResaler() + groupBy + " order by sum(r.buyNumber) desc ");
+
+
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+
+        List<SalesReport> cheatedOrderResalerResultList = query.getResultList();
+
+
         //取得退款的数据 ecoupon
-        sql = "select new models.SalesReport(sum(e.refundPrice),e.orderItems.goods) from ECoupon e ";
+        sql = "select new models.SalesReport(sum(e.refundPrice),e.orderItems.goods,sum(r.originalPrice)) " +
+                " from ECoupon e,OrderItems r ";
         groupBy = " group by e.orderItems.goods.id";
 
         query = JPA.em()
@@ -234,21 +327,53 @@ public class SalesReport {
 
         List<SalesReport> refundList = query.getResultList();
 
-        Map<Goods, SalesReport> map = new HashMap<>();
+        //refund from resaler
+        sql = "select new models.SalesReport(sum(e.refundPrice)*b.commissionRatio/100,r.goods,b.commissionRatio,sum(r)) " +
+                " from ECoupon e,OrderItems r,Resaler b ,Order o";
+        groupBy = " group by e.orderItems.goods.id,b";
+
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterRefundResaler() + groupBy + " order by sum(e.refundPrice) desc");
+
+        for (String param : condition.getParamMap1().keySet()) {
+            query.setParameter(param, condition.getParamMap1().get(param));
+        }
+
+        List<SalesReport> refundResalerResultList = query.getResultList();
 
         //consumedAt
         sql = "select new models.SalesReport(r.goods,sum(r.salePrice-r.rebateValue/r.buyNumber)) " +
                 " from OrderItems r, ECoupon e where e.orderItems=r";
+        groupBy = " group by r.goods.id";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterConsumedAt() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
+                .createQuery(sql + condition.getFilterConsumedAt() + groupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<SalesReport> consumedResultList = query.getResultList();
 
+        Map<Goods, SalesReport> map = new HashMap<>();
+
         //merge
         for (SalesReport paidItem : paidResultList) {
             map.put(getReportKey(paidItem), paidItem);
+        }
+
+        for (SalesReport cheatedItem : cheatedOrderResultList) {
+            SalesReport item = map.get(getReportKey(cheatedItem));
+            if (item == null) {
+                Goods goods = Goods.findById(cheatedItem.goods.id);
+                cheatedItem.originalPrice = goods.originalPrice;
+                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.refundAmount);
+                cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
+                map.put(getReportKey(cheatedItem), cheatedItem);
+            } else {
+                item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
+                item.cheatedOrderCost = cheatedItem.cheatedOrderCost;
+                item.netSalesAmount = item.totalAmount.subtract(item.cheatedOrderAmount);
+                item.profit = item.totalAmount.subtract(cheatedItem.cheatedOrderAmount)
+                        .subtract(item.totalCost).add(cheatedItem.cheatedOrderCost);
+            }
         }
 
         for (SalesReport refundItem : refundList) {
@@ -257,10 +382,14 @@ public class SalesReport {
                 Goods goods = Goods.findById(refundItem.goods.id);
                 refundItem.originalPrice = goods.originalPrice;
                 refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
+                refundItem.profit = BigDecimal.ZERO.subtract(refundItem.refundAmount).subtract(refundItem.refundCost);
                 map.put(getReportKey(refundItem), refundItem);
             } else {
                 item.refundAmount = refundItem.refundAmount;
-                item.netSalesAmount = item.totalAmount.subtract(item.refundAmount);
+                item.refundCost = refundItem.refundCost;
+                item.netSalesAmount = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount.subtract(item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).setScale(2);
+                item.profit = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount.subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount)
+                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost);
             }
         }
 
@@ -276,15 +405,54 @@ public class SalesReport {
         }
 
         //merge from resaler if commissionRatio
+        BigDecimal totalCommission = BigDecimal.ZERO;
         for (SalesReport resalerItem : paidResalerResultList) {
             SalesReport item = map.get(getReportKey(resalerItem));
             if (item == null) {
                 map.put(getReportKey(resalerItem), resalerItem);
             } else {
-                item.profit = item.profit == null ? BigDecimal.ZERO : item.profit.subtract(resalerItem.totalAmount == null ? BigDecimal.ZERO : resalerItem.totalAmount
-                        .subtract(resalerItem.totalCost == null ? BigDecimal.ZERO : resalerItem.totalCost))
-                        .add(resalerItem.profit == null ? BigDecimal.ZERO : resalerItem.profit);
-//                item.profit= item.totalAmount.multiply(BigDecimal.ONE.subtract())
+                totalCommission = item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount;
+                totalCommission = totalCommission.add(resalerItem.totalAmountCommissionAmount == null ? BigDecimal.ZERO : resalerItem.totalAmountCommissionAmount);
+                item.totalAmountCommissionAmount = totalCommission;
+                item.profit = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount.subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
+                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
+                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
+            }
+        }
+
+        totalCommission = BigDecimal.ZERO;
+        for (SalesReport cheatedResalerItem : cheatedOrderResalerResultList) {
+            SalesReport item = map.get(getReportKey(cheatedResalerItem));
+            if (item == null) {
+                map.put(getReportKey(cheatedResalerItem), cheatedResalerItem);
+            } else {
+
+//                totalCommission = totalCommission.add(cheatedResalerItem.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : cheatedResalerItem.cheatedOrderCommissionAmount);
+//                item.cheatedOrderCommissionAmount = totalCommission;
+
+                totalCommission = item.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : item.cheatedOrderCommissionAmount;
+                totalCommission = totalCommission.add(cheatedResalerItem.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : cheatedResalerItem.cheatedOrderCommissionAmount);
+                item.cheatedOrderCommissionAmount = totalCommission;
+
+                item.profit = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount.subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
+                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
+                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
+
+            }
+        }
+        totalCommission = BigDecimal.ZERO;
+        for (SalesReport refundResalerItem : refundResalerResultList) {
+            SalesReport item = map.get(getReportKey(refundResalerItem));
+            if (item == null) {
+                map.put(getReportKey(refundResalerItem), refundResalerItem);
+            } else {
+                totalCommission = item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount;
+                totalCommission = totalCommission.add(refundResalerItem.refundCommissionAmount == null ? BigDecimal.ZERO : refundResalerItem.refundCommissionAmount);
+                item.refundCommissionAmount = totalCommission;
+
+                item.profit = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount.subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
+                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
+                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
             }
         }
 
