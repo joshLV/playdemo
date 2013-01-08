@@ -1,13 +1,14 @@
 package navigation;
 
+import org.apache.commons.collections.CollectionUtils;
+import play.Play;
+import play.mvc.Router;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.apache.commons.collections.CollectionUtils;
-import play.Play;
-import play.mvc.Router;
 
 /**
  * Wrapper for Menu and MenuContext
@@ -66,7 +67,11 @@ public class ContextedMenu {
         if(children == null) {
             children = new ArrayList<ContextedMenu>(menu.children.size());
             for(Menu childMenu : menu.children) {
-                children.add(new ContextedMenu(childMenu, menuContext));
+                if (childMenu.getPermissions() == null ||
+                        childMenu.getPermissions().size() == 0 ||
+                        ContextedPermission.hasPermissionKeys(childMenu.getPermissions())) {
+                    children.add(new ContextedMenu(childMenu, menuContext));
+                }
             }
         }
         return children;

@@ -125,7 +125,7 @@
                                                                  value="${condition.paidAtEnd?.format()}"
                                                                  onfocus="WdatePicker({readOnly:true})"
                                                                  class="input-medium Wdate"/></td>
-            <td>品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
+            <td>品&nbsp;&nbsp;&nbsp;牌：
             #{layout_operate.selectInputField name:"brandName", id:"condition.brandId", list:brandList/}</td>
         </tr>
         <tr>
@@ -311,7 +311,7 @@ select:'condition_status',value:condition?.status/}
             <td rowspan="${order?.orderItems?.size()}">${order?.resaler?.loginName}</td>
         #{/if}
         #{if order.userType ==models.accounts.AccountType.CONSUMER}
-            <td rowspan="${order?.orderItems?.size()}">${order?.user?.loginName}</td>
+            <td rowspan="${order?.orderItems?.size()}">${order?.user?.loginName?:order?.user?.openIdExpress}</td>
         #{/if}
         <td rowspan="${order?.orderItems?.size()}">&{'order.'+order.userType}</td>
         <td rowspan="${order?.orderItems?.size()}">${order.amount?.formatCurrency('CNY')}</td>

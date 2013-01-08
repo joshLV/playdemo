@@ -263,8 +263,8 @@ public class JingdongUploadTeam extends Controller {
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/updateBImage.action";
         Template template = TemplateLoader.load("jingdong/groupbuy/request/updateBImageRequest.xml");
         Map<String, Object> params = new HashMap<>();
-        params.put("venderTeamId",  fav.lastLinkId.toString());
-        params.put("jdTeamId",  fav.thirdGroupbuyId.toString());
+        params.put("venderTeamId", fav.lastLinkId.toString());
+        params.put("jdTeamId", fav.thirdGroupbuyId.toString());
         params.put("imgUrl", bigImg);
 
         String data = template.render(params);
@@ -294,15 +294,16 @@ public class JingdongUploadTeam extends Controller {
         Collection<Shop> shops = fav.goods.getShopList();
         for (Shop shop : shops) {
             if (StringUtils.isBlank(shop.phone)) {
-                render(shop.name + " 门店缺少电话信息，需要先去运营后台补充一下"); return;
+                render(shop.name + " 门店缺少电话信息，需要先去运营后台补充一下");
+                return;
             }
         }
 
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/updateTeamPartner.action";
         Template template = TemplateLoader.load("jingdong/groupbuy/request/updateTeamPartnerRequest.xml");
         Map<String, Object> params = new HashMap<>();
-        params.put("venderTeamId",  fav.lastLinkId.toString());
-        params.put("jdTeamId",  fav.thirdGroupbuyId.toString());
+        params.put("venderTeamId", fav.lastLinkId.toString());
+        params.put("jdTeamId", fav.thirdGroupbuyId.toString());
         params.put("shops", shops);
 
         String data = template.render(params);
@@ -402,6 +403,7 @@ public class JingdongUploadTeam extends Controller {
         if (uploadTeamRest.parse(response.getString(), new UploadTeamResponse())) {
             ResalerFav fav = ResalerFav.findByGoodsId(resaler, goods.id);
             fav.lastLinkId = goodsMapping.linkId;
+            fav.partner = OuterOrderPartner.JD;
             fav.thirdGroupbuyId = uploadTeamRest.data.jdTeamId;
 //            fav.thirdUrl = "http://tuan.360buy.com/team-" + fav.thirdGroupbuyId + ".html";
 //            fav.thirdCity = "京东";

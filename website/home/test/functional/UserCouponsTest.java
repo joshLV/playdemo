@@ -1,6 +1,7 @@
 package functional;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +27,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import controllers.modules.website.cas.Security;
@@ -36,14 +38,14 @@ import factory.callback.BuildCallback;
  * User: hejun
  * Date: 12-7-30
  */
-public class UserCouponsFuncTest extends FunctionalTest {
+public class UserCouponsTest extends FunctionalTest {
 
     User user;
     Goods goods;
     Order order;
     OrderItems orderItems;
     ECoupon ecoupon;
-    
+
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
@@ -52,10 +54,10 @@ public class UserCouponsFuncTest extends FunctionalTest {
         // 设置测试登录的用户名
         user = FactoryBoy.create(User.class);
         Security.setLoginUserForTest(user.loginName);
-        
+
         FactoryBoy.create(Supplier.class);
         FactoryBoy.create(Shop.class);
-        
+
         goods = FactoryBoy.create(Goods.class);
         order = FactoryBoy.create(Order.class, new BuildCallback<Order>() {
             @Override
@@ -72,12 +74,45 @@ public class UserCouponsFuncTest extends FunctionalTest {
         });
         ecoupon = FactoryBoy.create(ECoupon.class);
     }
-    
+
     @After
     public void tearDown() {
         // 清除登录Mock
         Security.cleanLoginUserForTest();
     }
+
+
+    @Test
+    public void testIndexConditionNull() {
+        Http.Response response = GET("/coupons");
+        assertIsOk(response);
+        assertEquals(1, ((JPAExtPaginator<ECoupon>) renderArgs("couponsList")).size());
+    }
+
+    @Test
+    public void testApplyRefundNoCoupon() {
+        Map<String, String> params = new HashMap<>();
+        params.put("applyNote", "我要退款");
+        Http.Response response = POST("/coupons/refund/" + ecoupon.id + 6l, params);
+        assertStatus(404, response);
+    }
+
+
+    @Test
+    public void testIndex() {
+        Http.Response response = GET("/coupons?condition.goodsName=" + goods.name);
+        assertIsOk(response);
+        assertEquals(1, ((JPAExtPaginator<ECoupon>) renderArgs("couponsList")).size());
+        assertEquals(goods.salePrice.setScale(2), ((JPAExtPaginator<ECoupon>) renderArgs("couponsList")).get(0).salePrice.setScale(2));
+    }
+
+    @Test
+    public void testShowCouponShops() {
+        Http.Response response = GET("/coupon/" + ecoupon.id + "/shops");
+        assertIsOk(response);
+        assertEquals(1, ((Collection<Shop>) renderArgs("shops")).size());
+    }
+
 
     @Test
     public void testApplyRefund() {

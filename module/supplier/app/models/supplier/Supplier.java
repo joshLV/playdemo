@@ -454,4 +454,8 @@ public class Supplier extends Model {
         }
         return withdrawAmount.subtract(lastPrepayment.getBalance());
     }
+
+    public static Supplier findUnDeletedById(Long id) {
+        return Supplier.find("id=? and deleted=?", id, DeletedStatus.UN_DELETED).first();
+    }
 }

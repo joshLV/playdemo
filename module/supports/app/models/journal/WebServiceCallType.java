@@ -1,5 +1,6 @@
 package models.journal;
 
+import org.apache.commons.lang.StringUtils;
 import play.db.jpa.Model;
 
 import javax.persistence.Column;
@@ -31,6 +32,9 @@ public class WebServiceCallType extends Model {
     public String key3Name;
 
     public static void checkOrCreate(String callType2) {
+        if (StringUtils.isBlank(callType2)) {
+            return;
+        }
         long existsCount = WebServiceCallType.count("callType=?", callType2);
         if (existsCount == 0) {
             WebServiceCallType type = new WebServiceCallType();

@@ -4,6 +4,7 @@ import models.admin.OperateUser;
 import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderItems;
+import models.sales.Goods;
 import models.supplier.SupplierCategory;
 import play.db.jpa.JPA;
 
@@ -67,6 +68,7 @@ public class PeopleEffectCategoryReport {
      * 退款券金额
      */
     public BigDecimal refundPrice = BigDecimal.ZERO;
+    public BigDecimal totalRefundPrice = BigDecimal.ZERO;
 
     /**
      * 售出实物金额
@@ -87,6 +89,7 @@ public class PeopleEffectCategoryReport {
      * 消费金额
      */
     public BigDecimal consumedPrice = BigDecimal.ZERO;
+    public BigDecimal totalConsumedPrice = BigDecimal.ZERO;
 
     /**
      * 总销售额
@@ -109,6 +112,7 @@ public class PeopleEffectCategoryReport {
     public BigDecimal profit;
 
     public OperateUser operateUser;
+    public Goods goods;
 
     public PeopleEffectCategoryReport(OperateUser operateUser, Long supplierCategoryId, Long buyNumber,
                                       BigDecimal salePrice, BigDecimal grossMargin, BigDecimal profit, BigDecimal totalCost) {
@@ -177,6 +181,42 @@ public class PeopleEffectCategoryReport {
         this.profit = profit;
     }
 
+    public PeopleEffectCategoryReport(OperateUser operateUser, Long buyNumber,
+                                      BigDecimal totalAmount, BigDecimal grossMargin, BigDecimal profit, BigDecimal netSalesAmount) {
+        this.operateUser = operateUser;
+        this.buyNumber = buyNumber;
+        this.totalAmount = totalAmount;
+        this.grossMargin = grossMargin;
+        this.profit = profit;
+    }
+
+    //from resaler
+    public PeopleEffectCategoryReport(OperateUser operateUser, BigDecimal totalAmount, BigDecimal totalCost, BigDecimal profit, BigDecimal ratio) {
+        this.operateUser = operateUser;
+        this.totalAmount = totalAmount;
+        this.totalCost = totalCost;
+        this.profit = profit;
+    }
+
+    public PeopleEffectCategoryReport(BigDecimal totalAmount, BigDecimal refundAmount, BigDecimal consumedAmount, BigDecimal profit, Long totalBuyNumber) {
+        this.totalAmount = totalAmount;
+        this.consumedPrice = consumedAmount;
+        this.profit = profit;
+        this.refundPrice = refundAmount;
+        this.totalNumber = totalBuyNumber;
+    }
+
+    //refund and consumed ecoupon
+    public PeopleEffectCategoryReport(OperateUser operateUser, BigDecimal amount, Goods goods, ECouponStatus status) {
+        this.operateUser = operateUser;
+        if (status == ECouponStatus.REFUND) {
+            this.refundPrice = amount;
+        } else if (status == ECouponStatus.CONSUMED) {
+            this.consumedPrice = amount;
+        }
+
+        this.goods = goods;
+    }
 
     public PeopleEffectCategoryReport() {
     }
@@ -278,6 +318,7 @@ public class PeopleEffectCategoryReport {
                 item.consumedPrice = consumedItem.consumedPrice;
                 item.consumedNumber = consumedItem.consumedNumber;
             }
+
         }
 
         for (PeopleEffectCategoryReport refundItem : refundResultList) {
@@ -290,7 +331,18 @@ public class PeopleEffectCategoryReport {
             }
         }
 
-        //total
+//        //total
+//        List<PeopleEffectCategoryReport> totalPeopleEffectList = queryPeopleEffectData(condition);
+//        for (PeopleEffectCategoryReport totalItem : totalPeopleEffectList) {
+//            PeopleEffectCategoryReport item = map.get(getReportKey(totalItem));
+//            if (item == null) {
+//                map.put(getReportKey(totalItem), totalItem);
+//            } else {
+//                System.out.println(item.operateUser.jobNumber+"===========");
+//                item.code = "999";
+//            }
+//
+//        }
 
 
         //merge total into result
@@ -309,6 +361,112 @@ public class PeopleEffectCategoryReport {
             }
         }
 
+        return resultList;
+    }
+
+    /**
+     * 取得按销售人员统计的销售记录
+     *
+     * @param condition
+     * @return
+     */
+    private static List<PeopleEffectCategoryReport> queryPeopleEffectData(PeopleEffectCategoryReportCondition condition) {
+        //毛利率= （总的销售额-总成本（进价*数量）/总销售额
+
+        //paidAt
+        String sql = "select new models.PeopleEffectCategoryReport(o,sum(r.buyNumber)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue))" +
+                " from OrderItems r,Supplier s,OperateUser o";
+        String groupBy = " group by s.salesId";
+        Query query = JPA.em()
+                .createQuery(sql + condition.getFilterOfPeopleEffect() + groupBy + " order by sum(r.buyNumber) desc ");
+
+
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+
+        List<PeopleEffectCategoryReport> paidResultList = query.getResultList();
+
+        //from resaler
+        sql = "select new models.PeopleEffectCategoryReport(ou,sum(r.salePrice*r.buyNumber-r.rebateValue),sum(r.originalPrice*r.buyNumber)" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-sum(r.originalPrice*r.buyNumber)" +
+                ",b.commissionRatio)" +
+                " from OrderItems r,Order o,Resaler b,Supplier s,OperateUser ou";
+        groupBy = " group by s.salesId,b";
+        query = JPA.em()
+                .createQuery(sql + condition.getResalerFilterOfPeopleEffect() + groupBy + " order by sum(r.buyNumber) desc ");
+
+
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+
+        List<PeopleEffectCategoryReport> paidResalerResultList = query.getResultList();
+
+        //取得退款的数据 ecoupon
+        sql = "select new models.PeopleEffectCategoryReport(o,sum(e.refundPrice),e.orderItems.goods,e.status) from ECoupon e,Supplier s,OperateUser o ";
+        groupBy = " group by s.salesId";
+
+        query = JPA.em()
+                .createQuery(sql + condition.getRefundFilterOfPeopleEffect(ECouponStatus.REFUND) + groupBy + " order by sum(e.refundPrice) desc");
+
+        for (String param : condition.getParamMap1().keySet()) {
+            query.setParameter(param, condition.getParamMap1().get(param));
+        }
+
+        List<PeopleEffectCategoryReport> refundList = query.getResultList();
+        Map<OperateUser, PeopleEffectCategoryReport> map = new HashMap<>();
+        //merge
+        for (PeopleEffectCategoryReport paidItem : paidResultList) {
+            map.put(getReportKeyOfPeopleEffect(paidItem), paidItem);
+        }
+
+        for (PeopleEffectCategoryReport refundItem : refundList) {
+            PeopleEffectCategoryReport item = map.get(getReportKeyOfPeopleEffect(refundItem));
+            if (item != null) {
+                item.totalRefundPrice = refundItem.refundPrice;
+            }
+        }
+        //取得消费的数据 ecoupon
+        sql = "select new models.PeopleEffectCategoryReport(o,sum(e.salePrice),e.orderItems.goods,e.status) from ECoupon e,Supplier s,OperateUser o ";
+        groupBy = " group by s.salesId";
+
+        query = JPA.em()
+                .createQuery(sql + condition.getRefundFilterOfPeopleEffect(ECouponStatus.CONSUMED) + groupBy + " order by sum(e.salePrice) desc");
+
+        for (String param : condition.getParamMap1().keySet()) {
+            query.setParameter(param, condition.getParamMap1().get(param));
+        }
+
+        List<PeopleEffectCategoryReport> consumedList = query.getResultList();
+
+        for (PeopleEffectCategoryReport consumedItem : consumedList) {
+            PeopleEffectCategoryReport item = map.get(getReportKeyOfPeopleEffect(consumedItem));
+            if (item != null) {
+                item.totalConsumedPrice = consumedItem.consumedPrice;
+
+            }
+
+        }
+        //merge from resaler if commissionRatio
+        for (PeopleEffectCategoryReport resalerItem : paidResalerResultList) {
+
+            PeopleEffectCategoryReport item = map.get(getReportKeyOfPeopleEffect(resalerItem));
+            if (item == null) {
+                map.put(getReportKeyOfPeopleEffect(resalerItem), resalerItem);
+            } else {
+                item.profit = item.profit == null ? BigDecimal.ZERO : item.profit.subtract(resalerItem.totalAmount.subtract(resalerItem.totalCost)).add(resalerItem.profit);
+            }
+        }
+
+        List resultList = new ArrayList();
+        for (OperateUser key : map.keySet()) {
+            resultList.add(map.get(key));
+        }
         return resultList;
     }
 
@@ -362,6 +520,9 @@ public class PeopleEffectCategoryReport {
         }
     }
 
+    private static OperateUser getReportKeyOfPeopleEffect(PeopleEffectCategoryReport item) {
+        return item.operateUser;
+    }
 }
 
 

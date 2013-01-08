@@ -133,13 +133,11 @@ PUT     /pointgoods_orders/{id}/send                       OperatePointGoodsOrde
 PUT     /pointgoods_orders/{id}/sendGoods                  OperatePointGoodsOrders.sendGoods
 GET     /pointgoods_order_excel                            OperatePointGoodsOrders.orderExcelOut
 
-
-
 GET     /shops                                  OperateShops.index
 GET     /shops/new                              OperateShops.add
 POST    /shops                                  OperateShops.create
 GET     /shops/{id}/edit                        OperateShops.edit
-POST    /shops/{id}                             OperateShops.update
+PUT    /shops/{id}                              OperateShops.update
 DELETE  /shops/{id}                             OperateShops.delete
 GET     /shops/area                             OperateShops.showAreas
 GET     /shops/{supplierId}/showGoodsShops      OperateShops.showGoodsShops
@@ -155,7 +153,9 @@ PUT     /suppliers/{id}/freeze                  Suppliers.freeze
 PUT     /suppliers/{id}/unfreeze                Suppliers.unfreeze
 DELETE  /suppliers/{id}                         Suppliers.delete
 GET     /suppliers/{id}/supplier_category/{supplierCategoryId}  Suppliers.showCode
-
+# 增加提现账户
+POST    /withdraw-account                       Suppliers.withdrawAccountCreateAndUpdate
+POST    /withdraw-account/delete                Suppliers.withdrawAccountDelete
 
 #商户类别
 GET     /suppliers_category                     SuppliersCategory.index
@@ -183,9 +183,6 @@ POST    /verify-tel/checkLoginName              OperateVerifyPhones.checkLoginNa
 GET     /verify-tel/{id}/edit                   OperateVerifyPhones.edit
 POST    /verify-tel/{id}                        OperateVerifyPhones.update
 DELETE  /verify-tel/{id}                        OperateVerifyPhones.delete
-# 增加提现账户
-POST    /withdraw-account                       Suppliers.withdrawAccountCreateAndUpdate
-POST    /withdraw-account/delete                Suppliers.withdrawAccountDelete
 
 GET     /resalers                               Resalers.index
 GET     /resalers/{id}/view                     Resalers.detail
@@ -201,14 +198,6 @@ GET     /orders                                 OperateOrders.index
 GET     /orders/{id}                            OperateOrders.details
 PUT     /orders/{id}/send                       OperateOrders.send
 GET     /order_excel                            OperateOrders.orderExcelOut
-
-GET     /shops                                  OperateShops.index
-GET     /shops/new                              OperateShops.add
-POST    /shops                                  OperateShops.create
-GET     /shops/{id}/edit                        OperateShops.edit
-POST    /shops/{id}                             OperateShops.update
-DELETE  /shops/{id}                             OperateShops.delete
-GET     /shops/area                             OperateShops.showAreas
 GET     /coupons                                OperateCoupons.index
 PUT     /coupons/{id}/freeze                    OperateCoupons.freeze
 PUT     /coupons/{id}/unfreeze                  OperateCoupons.unfreeze
@@ -246,22 +235,6 @@ GET     /voucher/generator                      OperateVouchers.generator
 POST    /voucher/generate                       OperateVouchers.generate
 GET     /voucher/assign                         OperateVouchers.showAssign
 POST    /voucher/assign                         OperateVouchers.assign
-
-GET     /shops                                  OperateShops.index
-GET     /shops/new                              OperateShops.add
-POST    /shops                                  OperateShops.create
-GET     /shops/{id}/edit                        OperateShops.edit
-POST    /shops/{id}                             OperateShops.update
-DELETE  /shops/{id}                             OperateShops.delete
-GET     /shops/area                             OperateShops.showAreas
-GET     /shops/{supplierId}/showGoodsShops      OperateShops.showGoodsShops
-GET     /shops/{supplierId}/showSupplierShops   OperateShops.showSupplierShops
-
-GET     /suppliers                              Suppliers.index
-GET     /suppliers/new                          Suppliers.add
-POST    /suppliers                              Suppliers.create
-GET     /suppliers/{id}/edit                    Suppliers.edit
-PUT     /suppliers/{id}                         Suppliers.update
 
 # 品牌管理
 GET     /brands                                 OperateBrands.index
@@ -359,7 +332,7 @@ DELETE  /goods-schedule/{id}                    GoodsSchedules.delete
 
 # 已验证券 退款
 *        /verified-ecoupon-refunds              VerifiedECouponRefunds.index
-POST     /verified-ecoupon-refunds              VerifiedECouponRefunds.refund
+POST     /verified-ecoupon-do-refund            VerifiedECouponRefunds.refund
 
 GET     /makeup                                 OperateCouponMakeUp.index
 

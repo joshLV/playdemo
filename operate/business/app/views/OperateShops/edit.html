@@ -6,10 +6,10 @@
 <script src="@{'/public/javascripts/shops-edit.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 <div class="body">
-    <form class="form-horizontal" action="@{OperateShops.update(shop.id)}" method="post">
-        <legend>编辑门店</legend>
+#{form @OperateShops.update(shop.id), id:'updateForm',enctype:'multipart/form-data',class:"form-horizontal" }
+    <legend>编辑门店</legend>
     #{set action:"edit"/}
     #{include '/OperateShops/shopForm.html' /}
-        <input type="hidden" name="page" value="${page}">
-    </form>
+    <input type="hidden" name="page" value="${page}">
+#{/form}
 </div>

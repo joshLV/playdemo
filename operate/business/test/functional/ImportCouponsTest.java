@@ -11,8 +11,11 @@ import models.sales.ImportedCoupon;
 import models.sales.ImportedCouponStatus;
 import operate.rbac.RbacLoader;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import play.Play;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.test.FunctionalTest;
@@ -33,6 +36,16 @@ public class ImportCouponsTest extends FunctionalTest {
     Goods goods;
 
     ImportedCoupon importedCoupon;
+
+    @BeforeClass
+    public static void setUpClass() {
+        Play.tmpDir = new File("/tmp");
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        Play.tmpDir = null;
+    }
 
     @Before
     public void setUp() throws Exception {

@@ -16,8 +16,8 @@ import models.sales.Goods;
 public class ResalerFavFactory extends ModelFactory<ResalerFav> {
     @Override
     public ResalerFav define() {
-        Resaler resaler = FactoryBoy.create(Resaler.class);
-        Goods goods = FactoryBoy.create(Goods.class);
+        Resaler resaler = FactoryBoy.lastOrCreate(Resaler.class);
+        Goods goods = FactoryBoy.lastOrCreate(Goods.class);
         ResalerFav resalerFav = new ResalerFav(resaler, goods);
         return resalerFav;
     }

@@ -1,4 +1,4 @@
-#{extends 'layout_operate/layout.html' /}
+import models.supplier.Supplierimport models.supplier.Supplier#{extends 'layout_operate/layout.html' /}
 #{include 'share/nav.html' /}
 #{set title:'订单详请' /}
 #{set 'moreScripts'}
@@ -13,10 +13,10 @@
             $("#send").click(function () {
                 var result = true;
                 if ($("#order_deliveryNo").val().trim() == "") {
-        //                $("#note_order_deliveryNo").addClass("error");
-                $("#note_order_deliveryNo").html("请输入单号!");
-                $("#order_deliveryNo").focus();
-                result = false;
+                    //                $("#note_order_deliveryNo").addClass("error");
+                    $("#note_order_deliveryNo").html("请输入单号!");
+                    $("#order_deliveryNo").focus();
+                    result = false;
                 }
                 else {
                     //                $("#note_order_deliveryCompany").removeClass("error");
@@ -35,7 +35,7 @@
                 if (result) {
                     $("#sendForm").submit();
                 }
-                });
+            });
         #{/if}
         #{else}
             $("#send").click(function () {
@@ -63,12 +63,14 @@
             </tr>
             <tr>
                 <td>付款账号详情：
-                    #{if orders.userType == models.accounts.AccountType.CONSUMER}
-                        <a href="/consumers/${orders.userId}" target="_blank">&{'account.type.'+orders.userType}:${loginName}</a>
-                    #{/if}
-                    #{if orders.userType == models.accounts.AccountType.RESALER}
-                        <a href="/resalers/${orders.userId}/view?flag=1" target="_blank">&{'account.type.'+orders.userType}:${loginName}</a>
-                    #{/if}
+                #{if orders.userType == models.accounts.AccountType.CONSUMER}
+                    <a href="/consumers/${orders.userId}" target="_blank">&{'account.type.'+
+                        orders.userType}:${loginName}</a>
+                #{/if}
+                #{if orders.userType == models.accounts.AccountType.RESALER}
+                    <a href="/resalers/${orders.userId}/view?flag=1" target="_blank">&{'account.type.'+
+                        orders.userType}:${loginName}</a>
+                #{/if}
                 </td>
                 <td></td>
                 <td></td>
@@ -83,6 +85,7 @@
                 <th>商品编号</th>
                 <th>商品名称</th>
                 <th>类型</th>
+                <th>销售人员</th>
                 <th>单价</th>
                 <th>数量</th>
                 <th>手机</th>
@@ -94,9 +97,13 @@
             <tbody>
             #{list items:orderItems, as:'orderItem' }
             <tr>
+            %{
+                supplier=models.supplier.Supplier.findUnDeletedById(orderItem.goods.supplierId);
+                }%
                 <td>${orderItem.goods.no}</td>
                 <td>${orderItem.goodsName}</td>
                 <td>&{'goods.'+orderItem.goods.materialType}</td>
+                <td>${models.admin.OperateUser.findBySalesId(supplier.salesId)?.userName}</td>
                 <td>${orderItem.salePrice?.formatCurrency('CNY')}</td>
                 <td>${orderItem.buyNumber}</td>
                 <td>${orderItem.phone}</td>
@@ -104,9 +111,9 @@
                     - ${orderItem.goods.expireAt?.format("yyyy-MM-dd")}
                 </td>
                 <td style="color:red">
-                #{if orderItem.rebateValue != null && orderItem.rebateValue?.compareTo(BigDecimal.ZERO) > 0}
-                    &nbsp;${orderItem.rebateValue?.formatCurrency('CNY')} 
-                #{/if}                
+                    #{if orderItem.rebateValue != null && orderItem.rebateValue?.compareTo(java.math.BigDecimal.ZERO) > 0}
+                        &nbsp;${orderItem.rebateValue?.formatCurrency('CNY')}
+                    #{/if}
                 </td>
                 <td>${orderItem.amount?.formatCurrency('CNY')}</td>
                 <td>&{'order.'+orders.status}</td>
@@ -114,14 +121,14 @@
             #{/list}
             </tbody>
             <tr>
-                <td colspan="10">商品金额： #{if orders.containsRealGoods()}
+                <td colspan="11">商品金额： #{if orders.containsRealGoods()}
                 ${orders.amount.subtract(models.order.Order.FREIGHT)}#{/if}#{else}${orders.amount}#{/else}&nbsp;元
                     &nbsp;+ 运费：
-                #{if orders.containsRealGoods()}${models.order.Order.FREIGHT}#{/if}#{else}0#{/else} 元 
+                #{if orders.containsRealGoods()}${models.order.Order.FREIGHT}#{/if}#{else}0#{/else} 元
                 #{if orders.rebateValue != null && orders.rebateValue.compareTo(BigDecimal.ZERO) > 0}
-                    &nbsp;- <span style="color:red">折扣：${orders.rebateValue}元</span> 
+                    &nbsp;- <span style="color:red">折扣：${orders.rebateValue}元</span>
                 #{/if}
-                = &nbsp;总金额：
+                    = &nbsp;总金额：
                 ${orders.amount} 元 (可提现余额支付:${orders.accountPay}元,
                     不可提现余额支付:${orders.promotionBalancePay?:java.math.BigDecimal.ZERO}元,
                     网银支付:${orders.discountPay}元,
@@ -202,10 +209,10 @@
     </div>
 
     <div class="modal-body">
-        #{form @OperateOrders.index(), id:"sendForm", name:"sendForm", enctype:'multipart/form-data',
+    #{form @OperateOrders.index(), id:"sendForm", name:"sendForm", enctype:'multipart/form-data',
         class:"form-horizontal",method:"PUT"}
         #{layout_operate.textField name:'order.deliveryCompany', value:order?.deliveryCompany, required:true,
-        err:"deliveryCompany"/}
+    err:"deliveryCompany"/}
         #{layout_operate.textField name:'order.deliveryNo', value:order?.deliveryNo, required:true/}
         #{/form}
     </div>

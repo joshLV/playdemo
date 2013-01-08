@@ -267,7 +267,7 @@ public class OperateUser extends Model {
      public static OperateUser findByUserName(String userName) {
         return OperateUser.find("userName=? and deleted=?", userName, DeletedStatus.UN_DELETED).first();
     }
-    public static OperateUser findById(Long salesId) {
+    public static OperateUser findBySalesId(Long salesId) {
         return OperateUser.find("id=? and deleted=?", salesId, DeletedStatus.UN_DELETED).first();
     }
 }

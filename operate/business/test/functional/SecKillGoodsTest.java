@@ -5,7 +5,10 @@ import factory.FactoryBoy;
 import models.admin.OperateUser;
 import models.sales.SecKillGoods;
 import operate.rbac.RbacLoader;
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import play.Play;
 import play.mvc.Http;
@@ -25,9 +28,18 @@ import java.util.Map;
  */
 public class SecKillGoodsTest extends FunctionalTest {
 
+    @BeforeClass
+    public static void setUpClass() {
+        Play.tmpDir = new File("/tmp");
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        Play.tmpDir = null;
+    }
+
     @Before
     public void setUp() {
-
         FactoryBoy.deleteAll();
 
         // 重新加载配置文件
@@ -39,6 +51,10 @@ public class SecKillGoodsTest extends FunctionalTest {
         Security.setLoginUserForTest(user.loginName);
     }
 
+    @After
+    public void tearDown() throws Exception {
+        Security.cleanLoginUserForTest();
+    }
 
     @Test
     public void testIndex() {

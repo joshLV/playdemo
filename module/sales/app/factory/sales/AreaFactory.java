@@ -16,7 +16,7 @@ import models.sales.AreaType;
 public class AreaFactory extends ModelFactory<Area> {
     @Override
     public Area define() {
-        return buildOrFindArea(AreaType.AREA, "0210201", "徐家汇", getXihuiDist());
+        return buildOrFindArea(AreaType.AREA, "0210201", "徐家汇", getXuhuiDist());
     }
 
     /**
@@ -33,7 +33,7 @@ public class AreaFactory extends ModelFactory<Area> {
      *
      * @return
      */
-    public Area getXihuiDist() {
+    public Area getXuhuiDist() {
         return createOrFindArea(AreaType.DISTRICT, "02102", "徐汇区", getShanghaiCity());
     }
 
