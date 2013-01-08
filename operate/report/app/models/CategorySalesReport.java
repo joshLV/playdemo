@@ -62,10 +62,6 @@ public class CategorySalesReport {
      */
     public BigDecimal consumedAmount;
 
-    /**
-     * 消费金额小计
-     */
-    public BigDecimal totalConsumed;
 
     /**
      * 消费金额汇总
@@ -94,6 +90,20 @@ public class CategorySalesReport {
      */
     public BigDecimal channelCost;
 
+    /**
+     * 刷单金额
+     */
+    public BigDecimal cheatedOrderAmount;
+
+    /**
+     * 刷单量
+     */
+    public Long cheatedOrderNum;
+
+    /**
+     * 刷单成本
+     */
+    public BigDecimal cheatedOrderCost;
 
     public CategorySalesReport(Goods goods, Long supplierCategoryId, BigDecimal originalPrice, Long buyNumber,
                                BigDecimal totalAmount, BigDecimal avgSalesPrice,
@@ -163,6 +173,31 @@ public class CategorySalesReport {
         this.totalCost = totalCost;
         this.profit = profit;
         this.ratio = ratio;
+    }
+
+    //cheated order total
+    public CategorySalesReport(Goods goods, Long supplierCategoryId, BigDecimal cheatedOrderAmount, BigDecimal cheatedOrderCost) {
+        if (supplierCategoryId != null) {
+            SupplierCategory supplierCategory = SupplierCategory.findById(supplierCategoryId);
+            this.code = supplierCategory.code;
+            this.name = supplierCategory.name;
+        }
+        this.goods = goods;
+        this.cheatedOrderAmount = cheatedOrderAmount;
+        this.cheatedOrderCost = cheatedOrderCost;
+    }
+
+    //cheated order
+    public CategorySalesReport(Goods goods, Long supplierCategoryId, BigDecimal cheatedOrderAmount, Long cheatedOrderNum, BigDecimal cheatedOrderCost) {
+        if (supplierCategoryId != null) {
+            SupplierCategory supplierCategory = SupplierCategory.findById(supplierCategoryId);
+            this.code = supplierCategory.code;
+            this.name = supplierCategory.name;
+        }
+        this.goods = goods;
+        this.cheatedOrderAmount = cheatedOrderAmount;
+        this.cheatedOrderNum = cheatedOrderNum;
+        this.cheatedOrderCost = cheatedOrderCost;
     }
 
     //consumedAt ecoupon
@@ -277,6 +312,18 @@ public class CategorySalesReport {
         List<CategorySalesReport> paidResalerResultList = query.getResultList();
 
 
+        //cheated order
+        sql = "select new models.CategorySalesReport(r.goods,s.supplierCategory.id,sum(r.salePrice-r.rebateValue/r.buyNumber),sum(r.buyNumber)" +
+                " ,sum(r.originalPrice)) " +
+                " from OrderItems r, ECoupon e,Supplier s where e.orderItems=r and ";
+        groupBy = " group by s.supplierCategory.id,r.goods.id";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterCheatedOrder() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<CategorySalesReport> cheatedOrderResultList = query.getResultList();
+
         //consumedAt coupon
         sql = "select new models.CategorySalesReport(s.supplierCategory.id,sum(r.salePrice-r.rebateValue/r.buyNumber),r.goods) " +
                 " from OrderItems r, ECoupon e,Supplier s where e.orderItems=r and r.goods.supplierId = s ";
@@ -309,6 +356,23 @@ public class CategorySalesReport {
             map.put(getReportKey(paidItem), paidItem);
         }
 
+        for (CategorySalesReport cheatedItem : cheatedOrderResultList) {
+            CategorySalesReport item = map.get(getReportKey(cheatedItem));
+            if (item == null) {
+                Goods goods = Goods.findById(cheatedItem.goods.id);
+                cheatedItem.originalPrice = goods.originalPrice;
+                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.refundAmount);
+                cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
+                map.put(getReportKey(cheatedItem), cheatedItem);
+            } else {
+                item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
+                item.cheatedOrderCost = cheatedItem.cheatedOrderCost;
+                item.netSalesAmount = item.totalAmount.subtract(item.cheatedOrderAmount);
+                item.profit = item.totalAmount.subtract(cheatedItem.cheatedOrderAmount)
+                        .subtract(item.totalCost).add(cheatedItem.cheatedOrderCost);
+            }
+        }
+
         for (CategorySalesReport consumedItem : consumedResultList) {
             CategorySalesReport item = map.get(getReportKey(consumedItem));
             if (item == null) {
@@ -327,7 +391,8 @@ public class CategorySalesReport {
                 map.put(getReportKey(refundItem), refundItem);
             } else {
                 item.refundAmount = refundItem.refundAmount;
-                item.netSalesAmount = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount.subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount);
+                item.netSalesAmount = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount.subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
+                        .subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).setScale(2);
             }
         }
 
@@ -524,6 +589,16 @@ public class CategorySalesReport {
 
         List<CategorySalesReport> totalPaidResalerResultList = query.getResultList();
 
+        //cheated order
+        sql = "select new models.CategorySalesReport(r.goods,s.supplierCategory.id,sum(r.salePrice-r.rebateValue/r.buyNumber),sum(r.originalPrice))" +
+                " from OrderItems r, ECoupon e,Supplier s where e.orderItems=r and ";
+        groupBy = " group by s.supplierCategory.id ";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterCheatedOrder() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<CategorySalesReport> cheatedOrderResultList = query.getResultList();
 
         //consumedAt coupon
         sql = "select new models.CategorySalesReport(s.supplierCategory.id,r.goods,sum(r.salePrice-r.rebateValue/r.buyNumber)) " +
@@ -558,10 +633,27 @@ public class CategorySalesReport {
             totalMap.put(getTotalReportKey(paidItem), paidItem);
         }
 
-        for (CategorySalesReport consumedItem : consumedResultList) {
-            CategorySalesReport item = totalMap.get(getReportKey(consumedItem));
+        for (CategorySalesReport cheatedItem : cheatedOrderResultList) {
+            CategorySalesReport item = totalMap.get(getTotalReportKey(cheatedItem));
             if (item == null) {
-                totalMap.put(getReportKey(consumedItem), consumedItem);
+                Goods goods = Goods.findById(cheatedItem.goods.id);
+                cheatedItem.originalPrice = goods.originalPrice;
+                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.refundAmount);
+                cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
+                totalMap.put(getTotalReportKey(cheatedItem), cheatedItem);
+            } else {
+                item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
+                item.cheatedOrderCost = cheatedItem.cheatedOrderCost;
+                item.netSalesAmount = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount.subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).setScale(2);
+                item.profit = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount.subtract(cheatedItem.cheatedOrderAmount == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderAmount)
+                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
+            }
+        }
+
+        for (CategorySalesReport consumedItem : consumedResultList) {
+            CategorySalesReport item = totalMap.get(getTotalReportKey(consumedItem));
+            if (item == null) {
+                totalMap.put(getTotalReportKey(consumedItem), consumedItem);
             } else {
                 item.consumedAmount = consumedItem.consumedAmount;
             }
@@ -576,7 +668,7 @@ public class CategorySalesReport {
                 totalMap.put(getTotalReportKey(refundItem), refundItem);
             } else {
                 item.refundAmount = refundItem.refundAmount;
-                item.netSalesAmount = item.totalAmount.subtract(item.refundAmount);
+                item.netSalesAmount = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount.subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).setScale(2);
             }
         }
 
