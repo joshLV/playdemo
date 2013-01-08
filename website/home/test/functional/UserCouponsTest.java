@@ -38,7 +38,7 @@ import factory.callback.BuildCallback;
  * User: hejun
  * Date: 12-7-30
  */
-public class UserCouponsFuncTest extends FunctionalTest {
+public class UserCouponsTest extends FunctionalTest {
 
     User user;
     Goods goods;
