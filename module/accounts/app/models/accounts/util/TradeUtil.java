@@ -1,6 +1,14 @@
 package models.accounts.util;
 
-import models.accounts.*;
+import models.accounts.Account;
+import models.accounts.AccountNotFoundException;
+import models.accounts.AccountSequenceFlag;
+import models.accounts.BalanceNotEnoughException;
+import models.accounts.PaymentSource;
+import models.accounts.SettlementStatus;
+import models.accounts.TradeBill;
+import models.accounts.TradeStatus;
+import models.accounts.TradeType;
 import play.Logger;
 
 import java.math.BigDecimal;
@@ -392,13 +400,14 @@ public class TradeUtil {
         return true;
     }
 
+
     /**
      * 交易成功
      *
      * @param tradeBill 需变更的交易记录
      * @return 是否成功
      */
-    public static boolean success(TradeBill tradeBill, String note) {
+    public static boolean success(TradeBill tradeBill, String note, SettlementStatus settlementStatus) {
         if (tradeBill.fromAccount == null || tradeBill.toAccount == null) {
             throw new RuntimeException("invalid trade: none of the fromAccount or toAccount is available. trade:" + tradeBill.getId());
         }
@@ -411,6 +420,7 @@ public class TradeUtil {
                     tradeBill.getId(),
                     tradeBill.tradeType,
                     AccountSequenceFlag.NOSTRO,
+                    settlementStatus,
                     note,
                     tradeBill.orderId);
 
@@ -422,6 +432,7 @@ public class TradeUtil {
                     tradeBill.getId(),
                     tradeBill.tradeType,
                     AccountSequenceFlag.VOSTRO,
+                    settlementStatus,
                     note,
                     tradeBill.orderId);
         } catch (BalanceNotEnoughException e) {
@@ -434,5 +445,15 @@ public class TradeUtil {
         tradeBill.tradeStatus = TradeStatus.SUCCESS;
         tradeBill.save();
         return true;
+    }
+
+    /**
+     * 交易成功
+     *
+     * @param tradeBill 需变更的交易记录
+     * @return 是否成功
+     */
+    public static boolean success(TradeBill tradeBill, String note) {
+        return success(tradeBill, note, SettlementStatus.UNCLEARED);
     }
 }
