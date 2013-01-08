@@ -426,10 +426,6 @@ public class SalesReport {
             if (item == null) {
                 map.put(getReportKey(cheatedResalerItem), cheatedResalerItem);
             } else {
-
-//                totalCommission = totalCommission.add(cheatedResalerItem.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : cheatedResalerItem.cheatedOrderCommissionAmount);
-//                item.cheatedOrderCommissionAmount = totalCommission;
-
                 totalCommission = item.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : item.cheatedOrderCommissionAmount;
                 totalCommission = totalCommission.add(cheatedResalerItem.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : cheatedResalerItem.cheatedOrderCommissionAmount);
                 item.cheatedOrderCommissionAmount = totalCommission;
