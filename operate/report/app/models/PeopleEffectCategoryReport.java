@@ -188,6 +188,7 @@ public class PeopleEffectCategoryReport {
         this.totalAmount = totalAmount;
         this.grossMargin = grossMargin;
         this.profit = profit;
+        this.code = "999";
     }
 
     //from resaler
@@ -196,6 +197,7 @@ public class PeopleEffectCategoryReport {
         this.totalAmount = totalAmount;
         this.totalCost = totalCost;
         this.profit = profit;
+        this.code = "999";
     }
 
     public PeopleEffectCategoryReport(BigDecimal totalAmount, BigDecimal refundAmount, BigDecimal consumedAmount, BigDecimal profit, Long totalBuyNumber) {
@@ -204,18 +206,22 @@ public class PeopleEffectCategoryReport {
         this.profit = profit;
         this.refundPrice = refundAmount;
         this.totalNumber = totalBuyNumber;
+        this.code = "999";
     }
 
     //refund and consumed ecoupon
-    public PeopleEffectCategoryReport(OperateUser operateUser, BigDecimal amount, Goods goods, ECouponStatus status) {
+    public PeopleEffectCategoryReport(OperateUser operateUser, BigDecimal amount, Long buyNumber, Goods goods, ECouponStatus status) {
         this.operateUser = operateUser;
         if (status == ECouponStatus.REFUND) {
             this.refundPrice = amount;
+            this.refundNumber = buyNumber;
         } else if (status == ECouponStatus.CONSUMED) {
             this.consumedPrice = amount;
+            this.consumedNumber = buyNumber;
         }
 
         this.goods = goods;
+        this.code = "999";
     }
 
     public PeopleEffectCategoryReport() {
@@ -331,18 +337,14 @@ public class PeopleEffectCategoryReport {
             }
         }
 
-//        //total
-//        List<PeopleEffectCategoryReport> totalPeopleEffectList = queryPeopleEffectData(condition);
-//        for (PeopleEffectCategoryReport totalItem : totalPeopleEffectList) {
-//            PeopleEffectCategoryReport item = map.get(getReportKey(totalItem));
-//            if (item == null) {
-//                map.put(getReportKey(totalItem), totalItem);
-//            } else {
-//                System.out.println(item.operateUser.jobNumber+"===========");
-//                item.code = "999";
-//            }
-//
-//        }
+        //total
+        List<PeopleEffectCategoryReport> totalPeopleEffectList = queryPeopleEffectData(condition);
+        for (PeopleEffectCategoryReport totalItem : totalPeopleEffectList) {
+            PeopleEffectCategoryReport item = map.get(getReportKey(totalItem));
+            if (item == null) {
+                map.put(getReportKey(totalItem), totalItem);
+            }
+        }
 
 
         //merge total into result
@@ -408,7 +410,7 @@ public class PeopleEffectCategoryReport {
         List<PeopleEffectCategoryReport> paidResalerResultList = query.getResultList();
 
         //取得退款的数据 ecoupon
-        sql = "select new models.PeopleEffectCategoryReport(o,sum(e.refundPrice),e.orderItems.goods,e.status) from ECoupon e,Supplier s,OperateUser o ";
+        sql = "select new models.PeopleEffectCategoryReport(o,sum(e.refundPrice),count(e.id),e.orderItems.goods,e.status) from ECoupon e,Supplier s,OperateUser o ";
         groupBy = " group by s.salesId";
 
         query = JPA.em()
@@ -429,10 +431,11 @@ public class PeopleEffectCategoryReport {
             PeopleEffectCategoryReport item = map.get(getReportKeyOfPeopleEffect(refundItem));
             if (item != null) {
                 item.totalRefundPrice = refundItem.refundPrice;
+                item.refundNumber = refundItem.refundNumber;
             }
         }
         //取得消费的数据 ecoupon
-        sql = "select new models.PeopleEffectCategoryReport(o,sum(e.salePrice),e.orderItems.goods,e.status) from ECoupon e,Supplier s,OperateUser o ";
+        sql = "select new models.PeopleEffectCategoryReport(o,sum(e.salePrice),count(e.id),e.orderItems.goods,e.status) from ECoupon e,Supplier s,OperateUser o ";
         groupBy = " group by s.salesId";
 
         query = JPA.em()
@@ -448,7 +451,7 @@ public class PeopleEffectCategoryReport {
             PeopleEffectCategoryReport item = map.get(getReportKeyOfPeopleEffect(consumedItem));
             if (item != null) {
                 item.totalConsumedPrice = consumedItem.consumedPrice;
-
+                item.consumedNumber = consumedItem.consumedNumber;
             }
 
         }
