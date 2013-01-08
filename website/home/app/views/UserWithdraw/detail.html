@@ -1,29 +1,7 @@
 #{extends 'main2.html' /}
 #{set title:'提现申请' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/y/user/userBase.css'] /}
-<style>
-.table {
-    margin: 10px 0;
-}
-.table td {
-    padding: 5px;
-    font-family: "宋体", Arial;
-}
-.back-btn {
-    display: block;
-    width: 67px;
-    height: 25px;
-    border: 0;
-    text-align: center;
-    line-height: 25px;
-    background: url(//img.uhcdn.com/images/y/user/btn.png) no-repeat 0 0;
-}
-.back-btn:hover {
-    text-decoration: none;
-    background-position: 0 -26px;
-}
-</style>
+    #{asset.css src:['/user/130107/user.css'] /}
 #{/set}
 
 <div id="content" class="clearfix">
@@ -31,7 +9,7 @@
     <div class="section">
         #{breadcrumbs/breadcrumb breadcrumbs/}
         <h3>提现详情</h3>
-        <table class="table" width="100%">
+        <table class="table">
             <tr>
                 <td align="right" width="100px">申请时间：</td>
                 <td align="left">
@@ -89,7 +67,7 @@
             <tr>
                 <td align="right" width="100px"></td>
                 <td align="left">
-                    <a href="/withdraw" id="goBack" class="back-btn"> 返 回 </a>
+                    <a href="/withdraw" id="goBack" class="btn"> 返 回 </a>
                 </td>
             </tr>
         </table>
