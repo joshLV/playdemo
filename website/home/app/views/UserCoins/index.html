@@ -1,7 +1,7 @@
 #{extends 'main2.html' /}
 #{set title:'一百券 - 我的金币' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/y/user/userBase.css', '/y/user/userCoins.css'] /}
+    #{asset.css src:['/user/130107/user.css'] /}
 #{/set}
 
 #{set 'moreScripts'}
@@ -23,69 +23,68 @@
 <div id="content" class="clearfix">
 #{include "share/left.html"/}
     <div class="section">
-    #{breadcrumbs/breadcrumb breadcrumbs/}
-        <div class="coins">
-            <div class="coins-num">我的金币：<span>${coinsNumber}</span>枚</div>
-            <div class="exchange-rule">金币可用来兑换抵用券，无消费金额限制，500枚金币可兑换1张5元抵用券，有效期1年 <a class="view-rule" href="http://www.yibaiquan.com/topic/117"
-                                                                                    target="_blank">查看详细规则</a></div>
-            <form class="exchange-form" id="exchange-form" action="@{UserCoins.exchange()}" method="POST">
-
-                我要兑换：<input class="quantity" type="text" name="exNumber" id="exNumber" value="1"/> 张抵用券
-                <button class="btn" type="button" id="ex">兑换</button><a class="how-to-use" style="display: inline;" href="${helper.Domain.getWWWHost(request)}/help" target="_blank">抵用券怎么用？</a>
-                <div class="failed" id="info" style="display: none;">目前金币还不够哦，天天来签到攒金币吧！</div>
-
+        #{breadcrumbs/breadcrumb breadcrumbs/}
+        <div class="user-account">
+            <span>我的金币：<em>${coinsNumber}</em>枚</span>
+        </div>
+        <div class="normal-tips">金币可用来兑换抵用券，无消费金额限制，500枚金币可兑换1张5元抵用券，有效期1年 <a href="http://www.yibaiquan.com/topic/117" target="_blank">查看详细规则</a></div>
+        <form class="form-horizontal" id="exchange-form" action="@{UserCoins.exchange()}" method="POST">
+            <div class="failed-tips" id="info" style="display: none;">目前金币还不够哦，天天来签到攒金币吧！</div>
             #{if isExchange}
-                <div class="success" id="su">兑换成功，去看看有什么喜欢的商品吧！</div>
+                <div class="success-tips" id="su">兑换成功，去看看有什么喜欢的商品吧！</div>
             #{/if}
-
-            </form>
-            <form id="couponsFrm" action="@{UserCoins.index()}" method="GET">
-                <div class="search-box">
-                    明细分类：#{select 'condition.tradeType', value:condition?.tradeType}
-                    #{option 0}--全部--#{/option}
-                    #{option 1}收入#{/option}
-                    #{option -1}支出#{/option}
-                #{/select}
+            我要兑换：<input class="short-input" type="text" name="exNumber" id="exNumber" value="1"/> 张抵用券
+            <button class="btn" type="button" id="ex"> 兑 换 </button>
+            <a href="${helper.Domain.getWWWHost(request)}/help" target="_blank">抵用券怎么用？</a>
+        </form>
+        <form id="couponsFrm" action="@{UserCoins.index()}" method="GET">
+            <div class="search-box">
+                <span class="field">
+                    <label>明细分类：</label>
+                    #{select 'condition.tradeType', value:condition?.tradeType, class:'short-select'}
+                        #{option 0}--全部--#{/option}
+                        #{option 1}收入#{/option}
+                        #{option -1}支出#{/option}
+                    #{/select}
+                </span>
+                <span class="field">
                     <label>交易时间：</label>
-                    <input class="Wdate" type="text" name="condition.createdAtBegin" id="createdAtBegin"
+                    <input class="short-input Wdate" type="text" name="condition.createdAtBegin" id="createdAtBegin"
                            value="${condition?.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"/>
                     -
-                    <input class="Wdate" type="text" id="createdAtEnd" name="condition.createdAtEnd"
+                    <input class="short-input Wdate" type="text" id="createdAtEnd" name="condition.createdAtEnd"
                            value="${condition?.createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})"/>
-                    <button class="search-btn" id="search"> 搜　索</button>
-                </div>
-            </form>
-            <table class="table">
-                <thead>
-                <tr class="col-name">
-                    <th class="time" width="140">时间</th>
-                    <th class="info">名称/备注</th>
-                    <th class="num" width="120">金币数量</th>
-                </tr>
-                </thead>
-            #{paginate.list items:coinList, as:'coin'}
-                <tbody>
-                <tr>
-                    <td class="time">${coin?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-                    <td class="info">${coin?.remarks?.raw()}</td>
-                    <td class="num">
-                        #{if coin?.number<0}
-                            <span class="decrease">${coin?.number}</span>
-                        #{/if}
-                        #{else}
-                            <span class="increase">+${coin?.number}</span>
-                        #{/else}枚
-                    </td>
-                </tr>
-                </tbody>
-            #{/paginate.list}
-
-            </table>
-            <div class="pagination">
-                <ul>#{paginate.controls items:coinList/}</ul>
+                </span>
+                <button type="submit" class="btn" id="search"> 搜　索</button>
             </div>
+        </form>
+        <table class="table">
+            <thead>
+            <tr>
+                <th class="time" width="140">时间</th>
+                <th class="text">名称/备注</th>
+                <th class="digit" width="120">金币数量</th>
+            </tr>
+            </thead>
+            <tbody>
+            #{paginate.list items:coinList, as:'coin'}
+            <tr>
+                <td class="time">${coin?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td class="text">${coin?.remarks?.raw()}</td>
+                <td class="digit">
+                    #{if coin?.number<0}
+                        <span class="red">${coin?.number}</span>
+                    #{/if}
+                    #{else}
+                        <span class="green">+${coin?.number}</span>
+                    #{/else} 枚
+                </td>
+            </tr>
+            #{/paginate.list}
+            </tbody>
+        </table>
+        <div class="pagination">
+            #{paginate.controls items:coinList/}
         </div>
     </div>
-    <!-- .section -->
 </div>
-

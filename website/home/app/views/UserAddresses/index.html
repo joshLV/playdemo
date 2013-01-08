@@ -1,7 +1,7 @@
 #{extends 'main2.html' /}
 #{set title:'一百券 - 地址管理' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/y/user/userBase.css', '/y/user/userAddresses.css'] /}
+    #{asset.css src:['/user/130107/user.css'] /}
 #{/set}
 <script type="text/javascript">
     function editAddress(addressId) {
@@ -24,43 +24,25 @@
     #{include "share/left.html"/}
     <div class="section">
         #{breadcrumbs/breadcrumb breadcrumbs/}
-        <div class="ship-addr"><strong>收货地址</strong></div>
-            <form class="form-horizontal" id="form" action="@{UserAddresses.create()}" method="POST">
-            #{include "UserAddresses/form.html"/}
-            </form>
-           <table class="order-tab table">
+        <h3>收货地址</h3>
+        <form class="form-horizontal" id="form" action="@{UserAddresses.create()}" method="POST">
+        #{include "UserAddresses/form.html"/}
+        </form>
+        <table class="table">
             <thead>
-                <tr class="col-name">
-                    <th width="80">收货人</th>
-                    <th width="160">所在地区</th>
+                <tr>
+                    <th width="60">收货人</th>
+                    <th width="120">所在地区</th>
                     <th>街道地址</th>
-                    <th width="80">邮编</th>
+                    <th width="60">邮编</th>
                     <th width="160">手机\电话</th>
-                    <th width="120"></th>
-                    <th width="80">操作</th>
+                    <th width="100"></th>
+                    <th width="60">操作</th>
                 </tr>
             </thead>
             <tbody>
-            *{
-                <tr id="tr_address_${address.id}" height="35px">
-                    <td align="left" id="address_name_${address?.id}">&nbsp;${address.name}</td>
-                    <td id="address_area_${address?.id}">${address.area}</td>
-                    <td id="address_address_${address?.id}">${address.address}</td>
-                    <td id="address_postcode_${address?.id}">${address.postcode}</td>
-                    <td id="address_phone_${address?.id}">${address.mobile}<br/>${address.normalPhone}</td>
-                    <td align="center" id="address_isDefault_${address?.id}">#{if address.isDefault}
-                        默认地址#{/if}#{else}#{vx.operateLink url:'/addresses/'+address.id+'/default',
-                    text:'设为默认', method:'PUT'/}#{/else}</td>
-                    <td width="80" align="center">
-                        <a id="update_${address?.id}" class="address_span_modify" href="#"
-                           onclick="editAddress(${address?.id})
-                                   ">修改</a> |
-                        #{vx.deleteLink action:"addresses", id:address.id, name:address.name/}
-                    </td>
-                </tr>
-                }*
             #{list items:addressList, as:'address'}
-                <tr class="order-bd">
+                <tr>
                     <td>${address.name}</td>
                     <td>${address.area}</td>
                     <td>${address.address}</td>
@@ -76,63 +58,10 @@
                     <td class="action">
                         <a  href="#" id="update_${address?.id}" onclick="editAddress(${address?.id})">修改</a>
                         #{vx.deleteLink action:"addresses", id:address.id, name:address.name/}
-                        </td>
+                    </td>
                 </tr>
             #{/list}
             </tbody>
         </table>
     </div>
 </div>
-
-*{
-<div class="wrap clearfix">
-#{include "share/left.html"/}
-    <div class="section">
-    #{breadcrumbs/breadcrumb breadcrumbs/}
-        <div class="tab_top"><span id="addressTitle">新增地址</span>
-        </div>
-        <div class="tab_top2">
-            <form class="form-horizontal" id="form" action="@{UserAddresses.create()}" method="POST">
-            #{include "UserAddresses/form.html"/}
-            </form>
-
-        </div>
-        <div class="tab_top">已保存地址</div>
-        <div class="tab_top2">
-            <table class="order-tab" cellpadding="0" cellspacing="0">
-                <thead>
-                <tr class="col-name">
-                    <th width="78" height="30" align="center">&{'address.name'}</th>
-                    <th width="150" align="center">&{'address.district'}</th>
-                    <th width="200" align="center">&{'address.address'}</th>
-                    <th width="70" align="center">&{'address.postcode'}</th>
-                    <th width="140" align="center">&{'address.phone'}</th>
-                    <th width="80"></th>
-                    <th width="80" align="center">操作</th>
-                </tr>
-                </thead>
-                <tbody>
-                #{list items:addressList, as:'address'}
-                <tr id="tr_address_${address.id}" height="35px">
-                    <td align="left" id="address_name_${address?.id}">&nbsp;${address.name}</td>
-                    <td id="address_area_${address?.id}">${address.area}</td>
-                    <td id="address_address_${address?.id}">${address.address}</td>
-                    <td id="address_postcode_${address?.id}">${address.postcode}</td>
-                    <td id="address_phone_${address?.id}">${address.mobile}<br/>${address.normalPhone}</td>
-                    <td align="center" id="address_isDefault_${address?.id}">#{if address.isDefault}
-                        默认地址#{/if}#{else}#{vx.operateLink url:'/addresses/'+address.id+'/default',
-                    text:'设为默认', method:'PUT'/}#{/else}</td>
-                    <td width="80" align="center">
-                        <a id="update_${address?.id}" class="address_span_modify" href="#"
-                           onclick="editAddress(${address?.id})
-                                   ">修改</a> |
-                        #{vx.deleteLink action:"addresses", id:address.id, name:address.name/}
-                    </td>
-                </tr>
-                #{/list}
-                </tbody>
-            </table>
-        </div>
-
-    </div>
-}*
