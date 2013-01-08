@@ -25,7 +25,6 @@ POST    /goods_images                           OperateUploadFiles.uploadImages
 DELETE  /goods_images/{id}                      OperateGoods.deleteImage
 
 POST    /goods/filemanager                      OperateUploadFiles.fileManagerJson
-GET     /goods_brands/{id}                      OperateBrands.goodsBrands
 GET     /category/sub/{id}                      OperateCategories.showSubs
 
 # 外部商品
@@ -242,9 +241,11 @@ POST    /voucher/generate                       OperateVouchers.generate
 GET     /voucher/assign                         OperateVouchers.showAssign
 POST    /voucher/assign                         OperateVouchers.assign
 
+
+GET     /goods_brands/{id}                      OperateBrands.goodsBrands
+
 # 品牌管理
 GET     /brands                                 OperateBrands.index
-GET     /brands/test                            OperateBrands.test
 GET     /brands/new                             OperateBrands.add
 POST    /brands                                 OperateBrands.create
 DELETE  /brands/{id}                            OperateBrands.delete

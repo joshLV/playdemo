@@ -235,6 +235,7 @@ public class WithdrawApproval extends Controller {
      */
     public static void confirmSettle(Long supplierId, Date withdrawDate) {
         final Date endOfDay = DateUtil.getEndOfDay(withdrawDate);
+        System.out.println("endOfDay:" + endOfDay);
         List<Supplier> supplierList = getWithdrawSupplierList(endOfDay);
         Account supplierAccount = AccountUtil.getSupplierAccount(supplierId);
         Supplier supplier = Supplier.findById(supplierId);
@@ -266,7 +267,6 @@ public class WithdrawApproval extends Controller {
      */
     public static void settle(Account supplierAccount, Date withdrawDate,
                               Long withdrawAccountId, BigDecimal amount, BigDecimal fee, String comment, Long prepaymentId) {
-        System.out.println(")))))))))         Enter WithdrawApproval.settle");
         //生成结算账单
         WithdrawAccount withdrawAccount = WithdrawAccount.findByIdAndUser(withdrawAccountId, supplierAccount.uid, SUPPLIER);
         WithdrawBill bill = new WithdrawBill();
@@ -289,7 +289,6 @@ public class WithdrawApproval extends Controller {
             prepayment = Prepayment.findById(prepaymentId);
         }
         //结算
-        System.out.println("withdrawDate:" + withdrawDate);
         int withdrawCount = bill.settle(fee, comment, DateUtil.getEndOfDay(withdrawDate), prepayment);
         if (withdrawCount > 0 && prepaymentId != null) {
             //将结算金额与预付款金额进行绑定

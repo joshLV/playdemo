@@ -8,14 +8,18 @@ import models.sales.Brand;
 import models.supplier.Supplier;
 import operate.rbac.RbacLoader;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import play.Play;
+import play.data.validation.Error;
 import play.mvc.Http;
+import play.mvc.Router;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +34,16 @@ import java.util.Map;
 public class OperateBrandsTest extends FunctionalTest {
     Supplier supplier;
     Brand brand;
+
+    @BeforeClass
+    public static void setUpClass() {
+        Play.tmpDir = new File("/tmp");
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        Play.tmpDir = null;
+    }
 
     /**
      * 测试数据准备
@@ -70,13 +84,41 @@ public class OperateBrandsTest extends FunctionalTest {
     }
 
     @Test
+    public void testUpdateInvalid() {
+        String params = "brand.description=test-update&brand.logo=abc" +
+                "&brand.supplier=Supplier1&brand.deleted=UN_DELETED&brand.introduce=0&brand.logo="+brand.logo;
+        Map<String, Object> urlMap = new HashMap<>();
+        urlMap.put("id", brand.id);
+        Http.Response response = PUT(Router.reverse("OperateBrands.update", urlMap).url, "application/x-www-form-urlencoded", params);
+        assertStatus(200, response);
+        List<play.data.validation.Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("brand.name", errors.get(0).getKey());
+    }
+
+    @Test
     public void testUpdate() {
-        String params = "brand.name=test&brand.description=test-update&brand.logo=abc&brand.displayOrder=0&brand.supplier=Supplier1&brand.logo=" +
-                brand.logo + "&brand.deleted=UN_DELETED&brand.introduce=0";
-        Http.Response response = PUT("/brands/" + brand.id, "application/x-www-form-urlencoded", params);
+        VirtualFile vfImage = VirtualFile.fromRelativePath("test/leaves.jpg");
+        Map<String, File> fileParams = new HashMap<>();
+        fileParams.put("siteDisplayImage", vfImage.getRealFile());
+        fileParams.put("logoImage", vfImage.getRealFile());
+        Map<String, String> params = new HashMap<>();
+        params.put("x-http-method-override", "PUT");
+        params.put("brand.name", "test-brand");
+        params.put("brand.description", "test-update");
+        params.put("brand.logo", "abc");
+        params.put("brand.displayOrder", "0");
+        params.put("brand.supplier", "Supplier1");
+        params.put("brand.logo", brand.logo);
+        params.put("brand.deleted", "UN_DELETED");
+        params.put("brand.introduce=", "0");
+
+        Map<String, Object> urlMap = new HashMap<>();
+        urlMap.put("id", brand.id);
+        Http.Response response = POST("/brands/"+brand.id+"?x-http-method-override=PUT", params, fileParams);
         assertStatus(302, response);
+
         brand.refresh();
-        assertEquals("test", brand.name);
+        assertEquals("test-brand", brand.name);
     }
 
     // 测试能否删除品牌信息
@@ -106,10 +148,13 @@ public class OperateBrandsTest extends FunctionalTest {
     /**
      * 测试添加品牌
      */
-    // 同样存在 POST 图片文件 在测试环境 接受不了的问题，跳过
     @Test
-    @Ignore
     public void testCreate() {
+        VirtualFile vfImage = VirtualFile.fromRelativePath("test/leaves.jpg");
+        Map<String, File> fileParams = new HashMap<>();
+        fileParams.put("siteDisplayImage", vfImage.getRealFile());
+        fileParams.put("logoImage", vfImage.getRealFile());
+
         List<Brand> list = Brand.findAll();
         int count = list.size();
         Map<String, String> brandParams = new HashMap<>();
@@ -117,9 +162,8 @@ public class OperateBrandsTest extends FunctionalTest {
         brandParams.put("brand.description", "test description");
         brandParams.put("brand.logo", "logo.jpg");
         brandParams.put("brand.siteDisplayImage", "test.jpg");
-        Http.Response response = POST("/brands", brandParams);
-        response.setContentTypeIfNotSet("text/html; charset=GBK");
-        assertStatus(200, response);
+        Http.Response response = POST("/brands", brandParams, fileParams);
+        assertStatus(302, response);
         list = Brand.findAll();
         assertEquals(count + 1, list.size());
     }

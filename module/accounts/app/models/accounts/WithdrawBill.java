@@ -111,18 +111,6 @@ public class WithdrawBill extends Model {
         return true;
     }
 
-    /**
-     * 结算.
-     *
-     * @param settlementAccount
-     * @param account
-     * @param accountName
-     * @return
-     */
-    public boolean settle(String settlementAccount, Account account, String accountName) {
-        return true;
-    }
-
     public static WithdrawBill findByIdAndUser(Long id, Long userId, AccountType accountType) {
         return WithdrawBill.find("id = ? and account.uid = ? and account.accountType = ?",
                 id, userId, accountType).first();
@@ -169,7 +157,7 @@ public class WithdrawBill extends Model {
         }
 
         TradeBill tradeBill = TradeUtil.createWithdrawTrade(this.account, this.amount);
-        TradeUtil.success(tradeBill, "提现成功");
+        TradeUtil.success(tradeBill, "提现成功", SettlementStatus.CLEARED);
 
         this.status = WithdrawBillStatus.SUCCESS;
         this.comment = comment;
@@ -216,15 +204,15 @@ public class WithdrawBill extends Model {
             //如果预付款已过期
             System.out.println("prepayment:" + prepayment);
             System.out.println("withdrawDate:" + withdrawDate);
-            if (withdrawDate.after(prepayment.expireAt)) {
-                BigDecimal cashSettledAmount = AccountSequence.getVostroAmount(account, DateUtil.getBeginOfDay(prepayment.expireAt));
+            final Date endOfPrepaymentExpireAt = DateUtil.getEndOfDay(prepayment.expireAt);
+
+            if (withdrawDate.after(endOfPrepaymentExpireAt)) {
+                BigDecimal cashSettledAmount = AccountSequence.getVostroAmount(account, endOfPrepaymentExpireAt);
                 if (cashSettledAmount.compareTo(BigDecimal.ZERO) <= 0) {
                     create2TradeBill(amount.subtract(prepayment.getBalance()), prepayment.getBalance());
                 } else {
                     //获取过期时间之前的所有的未结算的收入总额。
-                    Calendar cal = Calendar.getInstance();
-                    cal.add(Calendar.YEAR, -10);
-                    BigDecimal moreAmount = AccountSequence.getVostroAmount(account, cal.getTime(), prepayment.expireAt);
+                    BigDecimal moreAmount = AccountSequence.getVostroAmountTo(account, endOfPrepaymentExpireAt);
                     moreAmount = moreAmount.compareTo(prepayment.getBalance()) > 0 ? moreAmount.subtract(prepayment.getBalance()) : BigDecimal.ZERO;
                     create2TradeBill(cashSettledAmount.add(moreAmount), amount.subtract(cashSettledAmount).subtract(moreAmount));
                 }
@@ -256,11 +244,11 @@ public class WithdrawBill extends Model {
     private void create2TradeBill(BigDecimal cashSettledAmount, BigDecimal prepaymentSettledAmount) {
         if (cashSettledAmount.compareTo(BigDecimal.ZERO) > 0) {
             TradeBill prepaymentTradeBill = TradeUtil.createWithdrawTrade(this.account, cashSettledAmount);
-            TradeUtil.success(prepaymentTradeBill, "现金结算");
+            TradeUtil.success(prepaymentTradeBill, "现金结算", SettlementStatus.CLEARED);
         }
         if (prepaymentSettledAmount.compareTo(BigDecimal.ZERO) > 0) {
             TradeBill cashPayTradeBill = TradeUtil.createWithdrawTrade(this.account, prepaymentSettledAmount);
-            TradeUtil.success(cashPayTradeBill, "预付款结算");
+            TradeUtil.success(cashPayTradeBill, "预付款结算", SettlementStatus.CLEARED);
         }
     }
 
@@ -280,7 +268,7 @@ public class WithdrawBill extends Model {
         }
 
         TradeBill tradeBill = TradeUtil.createWithdrawTrade(this.account, this.amount);
-        TradeUtil.success(tradeBill, "提现成功");
+        TradeUtil.success(tradeBill, "提现成功", SettlementStatus.CLEARED);
 
         this.status = WithdrawBillStatus.SUCCESS;
         this.comment = comment;
