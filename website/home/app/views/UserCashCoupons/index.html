@@ -1,7 +1,7 @@
 #{extends 'main2.html' /}
 #{set title:'现金券' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/y/user/userBase.css', '/y/user/userCashRecharge.css'] /}
+    #{asset.css src:['/user/130107/user.css'] /}
 #{/set}
 
 <div id="content" class="clearfix">
@@ -12,55 +12,61 @@
             #{include "share/userAccount.html"/}
             </div>
         #{if action=="verify"}
-            #{form @UserCashCoupons.verify(), method:'POST', class:'recharge-form'}
+            #{form @UserCashCoupons.verify(), method:'POST', class:'form-horizontal'}
+                <div class="group">
                 #{if suc}
-                    <div class="item item-success"> ${suc} </div>
+                    <div class="success-tips"> ${suc} </div>
                 #{/if}
                 #{if errMsg}
-                    <div class="item item-error"> ${errMsg} </div>
+                    <div class="failed-tips"> ${errMsg} </div>
                 #{/if}
+                </div>
 
-
-                <div class="item item-passsword">
+                <div class="group">
                     <label for="recharge-passsword">充值密码：</label>
-                    <input type="text" id="recharge-passsword" name="couponCode" value="${couponCode}">
-                    <span class="error" id="passsword-error"></span>
+                    <div class="control">
+                        <input type="text" id="recharge-passsword" name="couponCode" value="${couponCode}">
+                        <span class="error" id="passsword-error"></span>
+                    </div>
                 </div>
-                <div class="item item-verification">
+                <div class="group">
                     <label for="verification-code">验 证 码：</label>
-                    <input type="text" id="verification-code" name="code">
-                    <img id="captchaImg" style="width:82px;height:24px" src="@{CaptchaProvider.captcha(randomID)}">
-                    <a id="diff-code" class="diff-code" href="">看不清，换一张</a>
-                    <span class="error" id="verification-error"></span>
+                    <div class="control control-captcha">
+                        <input type="text" id="verification-code" name="code">
+                        <img id="captchaImg" style="width:82px;height:24px" src="@{CaptchaProvider.captcha(randomID)}">
+                        <a id="diff-code" class="diff-code" href="">看不清，换一张</a>
+                        <span class="error" id="verification-error"></span>
+                    </div>
                 </div>
-                <div class="item item-btn">
+                <div class="group">
                     <input type="hidden" name="randomID" value="${randomID}" id="randomID">
-                    <button class="recharge-btn" id="recharge-btn" type="submit"> 充 值 </button>
+                    <button class="btn" id="recharge-btn" type="submit"> 充 值 </button>
                 </div>
             #{/form}
         #{/if}
         #{elseif action=="use"}
-            #{form @UserCashCoupons.useCoupon(), method:'POST', class:'recharge-form'}
-                <div class="item">
-                    名 称：${coupon?.name}<br>
-                    金 额：<em class="cash">${coupon?.faceValue}</em>元
+            #{form @UserCashCoupons.useCoupon(), method:'POST', class:'form-horizontal'}
+                <div class="field">
+                    <span>名 称：</span>${coupon?.name}
                 </div>
-                <div class="item item-btn">
+                <div class="field">
+                    <span>金 额：</span><em class="red">${coupon?.faceValue}</em>元
+                </div>
+                <div class="group">
                     <input type="hidden" name="ridA" value="${ridA}">
                     <input type="hidden" name="ridB" value="${ridB}">
-                    <button class="recharge-btn" id="confirm-btn" type="submit"> 确 定 </button>
+                    <button class="btn" id="confirm-btn" type="submit"> 确 定 </button>
                 </div>
             #{/form}
         #{/elseif}
 
-        <div class="recharge-instruction">
+        <div class="help">
             <strong>现金券充值只可用于消费，不能提现。</strong><br>
             <span>充值步骤：</span>请输入您收到的现金券密码，点击充值后，券面金额将充值到您的账户余额，可在“<a href="">我的一百券-资金明细</a>”中查看。
         </div>
 
     </div>
 </div>
-
 
 <script>
 $(document).ready(function(){
@@ -94,5 +100,3 @@ $(document).ready(function(){
     });
 });
 </script>
-
-
