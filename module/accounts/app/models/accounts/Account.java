@@ -77,7 +77,6 @@ public class Account extends Model {
      * 从指定日期到以前所有的未结算过的可结算金额.
      * 可结算金额=账户余额-指定日期之后消费总额
      */
-    @Transient
     public BigDecimal getWithdrawAmount(Date date) {
         BigDecimal vostroAmount = AccountSequence.getVostroAmountTo(this, date);
         if (uncashAmount == null) {

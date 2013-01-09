@@ -141,7 +141,8 @@ public class AccountUtil {
                                                     Long billId, TradeType tradeType, AccountSequenceFlag sequenceFlag,
                                                     String note, Long orderId, String comment, String operatedBy)
             throws BalanceNotEnoughException, AccountNotFoundException {
-        return addBalance(accountId, cashAugend, uncashAugend, promotionAugend, billId, tradeType, sequenceFlag, SettlementStatus.UNCLEARED, note, orderId, true, comment, operatedBy);
+        return addBalance(accountId, cashAugend, uncashAugend, promotionAugend, billId, tradeType, sequenceFlag,
+                SettlementStatus.UNCLEARED, note, orderId, true, comment, operatedBy);
     }
 
     /*
