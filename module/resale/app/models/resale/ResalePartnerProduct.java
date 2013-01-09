@@ -1,6 +1,5 @@
 package models.resale;
 
-import models.admin.OperateUser;
 import models.order.OuterOrderPartner;
 import models.sales.Goods;
 import org.hibernate.annotations.Index;
