@@ -436,15 +436,10 @@ public class Supplier extends Model {
             return withdrawAmount;
         }
         //预付款已过期
-        System.out.println("lastPrepayment.getBalance():" + lastPrepayment.getBalance());
-        System.out.println("withdrawAmount:" + withdrawAmount);
         if (lastPrepayment.expireAt != null && lastPrepayment.expireAt.before(date)) {
-            BigDecimal prepayConsumedAmount = AccountSequence.getVostroAmount(supplierAccount, lastPrepayment.effectiveAt, lastPrepayment.expireAt);
-            System.out.println("prepayConsumedAmount:" + prepayConsumedAmount);
+            BigDecimal prepayConsumedAmount = AccountSequence.getVostroAmountTo(supplierAccount, lastPrepayment.expireAt);
             BigDecimal vostroAmount = AccountSequence.getVostroAmount(supplierAccount, lastPrepayment.expireAt, date);
-            System.out.println("vostroAmount:" + vostroAmount);
             if (prepayConsumedAmount.compareTo(lastPrepayment.getBalance()) > 0) {
-                System.out.println("prepayConsumedAmount.subtract(lastPrepayment.getBalance()).add(vostroAmount):" + prepayConsumedAmount.subtract(lastPrepayment.getBalance()).add(vostroAmount));
                 return prepayConsumedAmount.subtract(lastPrepayment.getBalance()).add(vostroAmount);
             }
             return vostroAmount;

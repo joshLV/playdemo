@@ -234,21 +234,31 @@ public class WithdrawApproval extends Controller {
      * 结算信息确认.
      */
     public static void confirmSettle(Long supplierId, Date withdrawDate) {
+
+        System.out.println("supplierId:" + supplierId);
         final Date endOfDay = DateUtil.getEndOfDay(withdrawDate);
         System.out.println("endOfDay:" + endOfDay);
         List<Supplier> supplierList = getWithdrawSupplierList(endOfDay);
         Account supplierAccount = AccountUtil.getSupplierAccount(supplierId);
-        Supplier supplier = Supplier.findById(supplierId);
-        //可结算总额
-        BigDecimal amount = supplierAccount.getWithdrawAmount(endOfDay);
-        //最后一笔未结算预付款
-        Prepayment lastPrepayment = Prepayment.getLastUnclearedPrepayments(supplier.id);
-        //预付款余额
-        BigDecimal prepaymentBalance = lastPrepayment == null ? BigDecimal.ZERO : lastPrepayment.getBalance();
-        //可提现金额（实际需打款金额）
-        BigDecimal needPay = Supplier.getWithdrawAmount(supplierAccount, lastPrepayment, amount, endOfDay);
+        Supplier supplier = Supplier.findUnDeletedById(supplierId);
+        BigDecimal amount = BigDecimal.ZERO;
+        Prepayment lastPrepayment = null;
+        BigDecimal prepaymentBalance = BigDecimal.ZERO;
+        BigDecimal needPay = BigDecimal.ZERO;
+        Long prepaymentId = null;
+        if (supplier != null) {
+            supplier.otherName = request.params.get("supplierName");
+            //可结算总额
+            amount = supplierAccount.getWithdrawAmount(endOfDay);
+            //最后一笔未结算预付款
+            lastPrepayment = Prepayment.getLastUnclearedPrepayments(supplier.id);
+            //预付款余额
+            prepaymentBalance = lastPrepayment == null ? BigDecimal.ZERO : lastPrepayment.getBalance();
+            //可提现金额（实际需打款金额）
+            needPay = Supplier.getWithdrawAmount(supplierAccount, lastPrepayment, amount, endOfDay);
 
-        Long prepaymentId = prepaymentBalance.compareTo(BigDecimal.ZERO) > 0 ? lastPrepayment.id : null;
+            prepaymentId = prepaymentBalance.compareTo(BigDecimal.ZERO) > 0 ? lastPrepayment.id : null;
+        }
         List<WithdrawAccount> withdrawAccountList = WithdrawAccount.findByUser(supplierId, SUPPLIER);
 
         render("/WithdrawApproval/settle.html", supplierList, supplierId, withdrawDate, amount, supplierAccount,

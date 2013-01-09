@@ -77,7 +77,11 @@
         </div>
         <div class="control-group">
             <label class="control-label">手续费</label>
-            <label class="control-value">${bill.fee?.formatCurrency('CNY')}</label>
+            <label class="control-value">${bill?.fee?.formatCurrency('CNY')}</label>
+        </div>
+        <div class="control-group">
+            <label class="control-label">备注</label>
+            <label class="control-value">${bill?.comment}</label>
         </div>
         <div class="form-actions">
         #{if bill.status == models.accounts.WithdrawBillStatus.APPLIED}
