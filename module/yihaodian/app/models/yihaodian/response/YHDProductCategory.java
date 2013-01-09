@@ -4,6 +4,7 @@ import models.yihaodian.YHDParser;
 import org.dom4j.Element;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author likang
@@ -12,15 +13,17 @@ import java.io.Serializable;
 public class YHDProductCategory implements Serializable {
     private static final long serialVersionUID = 7061222013910330652L;
 
-    public String code;
-    public Boolean isLeaf;
     public Long id;
-    public Long parentId;
     public String name;
+    public Boolean isLeaf = false;
+    public String code;
+    public Long parentId;
+    public Integer listOrder;
     public String searchName;
     public Long forumId;
     public Boolean isVisible;
-    public Integer listOrder;
+
+    public List<YHDProductCategory> children;
 
     public static YHDParser<YHDProductCategory> parser = new YHDParser<YHDProductCategory>() {
         @Override

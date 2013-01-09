@@ -6,33 +6,139 @@
 #{set 'moreStyles'}
 #{/set}
 <div class="body">
+    <legend>一号店上传商品：<a href="/goods/${goods.id}" target="_blank">
+        ${goods.shortName}</a>
+    </legend>
     <form class="form-horizontal">
         <div class="control-group">
-            <label class="control-label" for="inputGoodsId">商品ID</label>
+            <label class="control-label" for="inputOuterId">商品ID * </label>
             <div class="controls">
-                <input type="text" id="inputGoodsId" name="goodsId" value="${goods.id}" disabled>
+                <input type="text" id="inputOuterId" name="outerId" value="${goods.id}" disabled>
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="inputProductType">产品类型</label>
+            <label class="control-label">是否电子凭证 *</label>
             <div class="controls">
-                <input type="text" id="inputProductType" name="productType" value="0">
-                <span class="help-inline">0普通产品;1图书</span>
+                <input type="radio" name="electronicCerticate" value="是" checked>是
+                <input type="radio" name="electronicCerticate" value="否">否
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label">产品类别</label>
+            <label class="control-label" for="inputWeight">毛重 *</label>
             <div class="controls">
-                <input type="checkbox" name="autoGroupBuy"> 自动发布到团购
-                <input type="checkbox" name="autoGroupBuy"> 自动发布到团购
+                <input type="text" id="inputWeight" name="weight" value="0">
+                <span class="help-inline">单位KG，最多两位小数</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">产品类别 *</label>
+            <div class="controls">
+                <div class="row-fluid" style="max-width:500px;background-color:#EEE;padding:5px 10px">
+                    <div class="span4" style="background-color:white">
+                        <table class="table table-hover table-bordered">
+                            <tr> <td>你好</td></tr>
+                            <tr> <td>你好</td></tr>
+                            <tr> <td>你好</td></tr>
+                            <tr> <td>你好</td></tr>
+                        </table>
+                    </div>
+                    <div class="span4" style="background-color:white">
+                        <table class="table table-hover table-bordered">
+                            <tr> <td>你好</td></tr>
+                            <tr> <td>你好</td></tr>
+                            <tr> <td>你好</td></tr>
+                            <tr> <td>你好</td></tr>
+                        </table>
+                    </div>
+                    <div class="span4" style="background-color:white">
+                        <table class="table table-hover table-bordered">
+                            <tr> <td>你好</td></tr>
+                            <tr> <td>你好</td></tr>
+                            <tr> <td>你好</td></tr>
+                            <tr> <td>你好</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">商家产品类别 *</label>
+            <div class="controls">
+                #{list items:merchantCategories, as:'merchantCategory'}
+                    <input type="checkbox" name="merchantCategoryId" value="${merchantCategory.id}"> ${merchantCategory.name}
+                #{/list}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputProductCname">产品名称 *</label>
+            <div class="controls">
+                <input type="text" id="inputProductCname" name="productCname">
+                <span class="help-inline">必须以品牌名或品牌名加英文空格开头,不超过100个字符</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputProductSubTitle">产品名称副标题&nbsp;&nbsp;</label>
+            <div class="controls">
+                <input type="text" id="inputProductSubTitle" name="productSubTitle">
+                <span class="help-inline">不超过100个字符</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputProductNamePrefix">产品名称前缀&nbsp;&nbsp;</label>
+            <div class="controls">
+                <input type="text" id="inputProductNamePrefix" name="productNamePrefix">
+                <span class="help-inline">不超过10个字符</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">商家品牌 *</label>
+            <div class="controls">
+                #{list items:brands, as:'brand'}
+                    <input type="radio" name="brandId" value="${brand.id}"> ${brand.name}
+                #{/list}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputProductMarketPrice">市场价 *</label>
+            <div class="controls">
+                <input type="text" id="inputProductMarketPrice" name="productMarketPrice">
+                <span class="help-inline">最多两位小数</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputProductSalePrice">销售价 *</label>
+            <div class="controls">
+                <input type="text" id="inputProductSalePrice" name="productSalePrice">
+                <span class="help-inline">不能大于市场价，最多两位小数</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputVirtualStockNum">库存 *</label>
+            <div class="controls">
+                <input type="text" id="inputVirtualStockNum" name="virtualStockNum" value="">
+                <span class="help-inline">大于或等于0</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">是否可销售</label>
+            <div class="controls">
+                <input type="radio" name="canSale" value="1" checked> 是
+                <input type="radio" name="canSale" value="0"> 否
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">产品描述</label>
+            <div class="controls">
+                <textarea rows="3"  name="productDescription"></textarea>
             </div>
         </div>
         <div class="control-group">
             <div class="controls">
                 <label class="checkbox">
-                    <input type="checkbox" name="autoGroupBuy"> 自动发布到团购
+                    <input type="checkbox" name="autoGroupBuy" value="true" checked> 同时发布到团购
                 </label>
-                <button type="submit" class="btn">Sign in</button>
+                <input type="hidden" id="inputProductType" name="productType" value="0" disabled>
+                <button type="submit" class="btn btn-primary">发布</button>
             </div>
         </div>
     </form>
