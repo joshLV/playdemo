@@ -9,7 +9,9 @@
     <div class="section">
     #{breadcrumbs/breadcrumb breadcrumbs/}
         <div class="user-account">
-        #{include "share/userAccount.html"/}
+            <span>账户：${user?.showName}</span>
+            <span>可用抵用券：<em>${validVouchers.size()}</em>张</span>
+            <span>价值：<em>${validValue}</em>元</span>
         </div>
     #{if action=="verify"}
         #{form @UserVouchers.verify(), method:'POST', class:'form-horizontal'}
