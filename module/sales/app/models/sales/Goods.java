@@ -1400,7 +1400,8 @@ public class Goods extends Model {
     public boolean isExistLibrary(Resaler resaler) {
         boolean isExist = false;
         Query query = play.db.jpa.JPA.em().createQuery(
-                "select r from ResalerFav r where r.resaler = :resaler and r.goods =:goods");
+                "select r from ResalerFav r where r.deleted=:deleted and r.resaler = :resaler and r.goods =:goods");
+        query.setParameter("deleted", DeletedStatus.UN_DELETED);
         query.setParameter("resaler", resaler);
         query.setParameter("goods", this);
         List<ResalerFav> favs = query.getResultList();
