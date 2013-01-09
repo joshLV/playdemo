@@ -112,7 +112,7 @@
                     </td>
 
                     <td class="action">
-                        #{list items:models.sales.ChannelGoodsInfo.findByGoods(favItem.goods), as:'city'}
+                        #{list items:models.sales.ChannelGoodsInfo.findByGoods(favItem.goods,resaler), as:'city'}
                            <a href="${city?.url}" target="_blank">${city.tag}</a> |
                         #{/list}
                     </td>
