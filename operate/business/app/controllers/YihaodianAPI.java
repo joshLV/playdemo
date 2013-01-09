@@ -2,6 +2,7 @@ package controllers;
 
 import models.yihaodian.YHDUtil;
 import operate.rbac.annotations.ActiveNavigation;
+import org.apache.commons.lang.StringUtils;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -26,6 +27,7 @@ public class YihaodianAPI extends Controller{
             String[] param = line.split("::");
             params.put(param[0], param[1]);
         }
-        renderText(YHDUtil.sendRequest(params, method));
+        if (StringUtils.isNotBlank(method))
+            renderText(YHDUtil.sendRequest(params, method));
     }
 }

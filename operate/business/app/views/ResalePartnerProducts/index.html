@@ -34,7 +34,7 @@
 <tr>
     <th>#</th>
     <th>名称</th>
-    <th>一百券价</th>
+    <th style="text-align:right">一百券价</th>
     <th>京东</th>
     <th>58</th>
     <th>淘宝</th>
@@ -49,7 +49,7 @@
 <tr>
     <td>${goods.id}</td>
     <td><a href="/goods/${goods.id}" target="_blank">${goods.shortName}</a> </td>
-    <td>${goods.salePrice.formatCurrency("CNY")}</td>
+    <td style="text-align:right">${goods.salePrice.formatCurrency("CNY")}</td>
     %{
         partners = ['JD','WB','TB','DD','YHD']
     }%
@@ -59,15 +59,15 @@
         }%
         <td>
             #{if !pd}
-            <a href="/resale-partner-products/${partner.toLowerCase()}/upload/${goods.id}" class="btn btn-mini" rel="tooltip" title="上传"><i class="icon-arrow-up"></i></a>
+            <a href="/resale-partner-products/${partner.toLowerCase()}/upload/${goods.id}" class="btn btn-mini" rel="tooltip" title="上传"><i class="icon-share-alt"></i></a>
             #{/if}
             #{elseif pd?.size() == 1}
-            <a href="/resale-partner-products/${partner.toLowerCase()}/upload/${goods.id}" class="btn btn-mini" rel="tooltip" title="再次上传"><i class="icon-arrow-up"></i></a>
-            <a href="/resale-partner-products/${partner.toLowerCase()}/edit/${goods.id}" class="btn btn-mini" rel="tooltip" title="编辑"><i class="icon-edit"></i></a>
+            <a href="/resale-partner-products/${partner.toLowerCase()}/upload/${goods.id}" class="btn btn-mini" rel="tooltip" title="再次上传"><i class="icon-share-alt"></i></a>
+            <a href="/resale-partner-products/${partner.toLowerCase()}/edit/${goods.id}" class="btn btn-mini" rel="tooltip" title="编辑"><i class="icon-pencil"></i></a>
             <a href="/resale-partner-products/${partner.toLowerCase()}/products/${goods.id}" class="btn btn-mini" rel="tooltip" title="详情"><i class="icon-th-list"></i></a>
             #{/elseif}
             #{else}
-            <a href="/resale-partner-products/${partner.toLowerCase()}/upload/${goods.id}" class="btn btn-mini" rel="tooltip" title="再次上传"><i class="icon-arrow-up"></i></a>
+            <a href="/resale-partner-products/${partner.toLowerCase()}/upload/${goods.id}" class="btn btn-mini" rel="tooltip" title="再次上传"><i class="icon-share-alt"></i></a>
             <a href="/resale-partner-products/${partner.toLowerCase()}/products/${goods.id}" class="btn btn-mini" rel="tooltip" title="历史详情"><i class="icon-th-list"></i></a>
             #{/else}
         </td>

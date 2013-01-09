@@ -5,6 +5,8 @@ import org.dom4j.Element;
 import play.Logger;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author likang
@@ -15,7 +17,7 @@ public class YHDMerchantCategory implements Serializable {
 
     public Long backOperatorId;
     public String code;
-    public Boolean isLeaf;
+    public Boolean isLeaf = false;
     public String name;
     public Long parentId;
     public Long id;
@@ -24,6 +26,7 @@ public class YHDMerchantCategory implements Serializable {
     public Boolean isVisible;
     public String picUrl;
 
+    public List<YHDMerchantCategory> children;
 
     public static YHDParser<YHDMerchantCategory> parser = new YHDParser<YHDMerchantCategory>() {
         @Override

@@ -26,7 +26,7 @@ public class YHDCategoryAPI {
      * 根据商家id及父类别id查询商家被授权产品类别列表，只返回下一级。
      * http://openapi.yihaodian.com/forward/inshop/yhd.category.products.get.html
      */
-    public static List<YHDProductCategory> productCategories(Long parentId){
+    public static List<YHDProductCategory> productCategories(Long parentId, boolean recursive){
         Map<String, String> params = new HashMap<>();
         params.put("categoryParentId", String.valueOf(parentId));
         Logger.info("yhd.category.products.get categoryParentId %s", parentId);
@@ -37,19 +37,27 @@ public class YHDCategoryAPI {
             YHDResponse<YHDProductCategory> res = new YHDResponse<>();
             res.parseXml(responseXml, "categoryInfoList", true, YHDProductCategory.parser);
             if(res.getErrorCount() == 0){
-                return res.getVs();
+                List<YHDProductCategory> result =  res.getVs();
+                if (recursive) {
+                    for (YHDProductCategory category : result) {
+                        if (!category.isLeaf){
+                            category.children = productCategories(category.id, recursive);
+                        }
+                    }
+                }
+                return result;
             }
         }
         return new ArrayList<>();
     }
 
-    public static List<YHDProductCategory> productCategoriesCache(final Long parentId){
+    public static List<YHDProductCategory> productCategoriesCache(final Long parentId, final boolean recursive){
         return CacheHelper.getCache(
-                CacheHelper.getCacheKey(CACHE_KEY, "PRODUCT_CATEGORY_" + parentId),
+                CacheHelper.getCacheKey(CACHE_KEY, "PRODUCT_CATEGORY_" + parentId + "_" + recursive),
                 new CacheCallBack<List<YHDProductCategory>>() {
                     @Override
                     public List<YHDProductCategory> loadData() {
-                        return productCategories(parentId);
+                        return productCategories(parentId, recursive);
                     }
                 }
         );
@@ -59,7 +67,7 @@ public class YHDCategoryAPI {
      * 根据商家id和父类别id 查询商家产品类别列表（店铺类别），只返回下一级。
      * http://openapi.yihaodian.com/forward/inshop/yhd.category.merchant.products.get.html
      */
-    public static List<YHDMerchantCategory> merchantCategories(Long parentId){
+    public static List<YHDMerchantCategory> merchantCategories(Long parentId, boolean recursive){
         Map<String, String> params = new HashMap<>();
         params.put("categoryParentId", String.valueOf(parentId));
         Logger.info("yhd.category.merchant.products.get categoryParentId %s", parentId);
@@ -70,19 +78,27 @@ public class YHDCategoryAPI {
             YHDResponse<YHDMerchantCategory> res = new YHDResponse<>();
             res.parseXml(responseXml, "merchantCategoryInfoList", true, YHDMerchantCategory.parser);
             if(res.getErrorCount() == 0){
-                return res.getVs();
+                List<YHDMerchantCategory> result = res.getVs();
+                if (recursive){
+                    for (YHDMerchantCategory category : result) {
+                        if (!category.isLeaf) {
+                            category.children = merchantCategories(category.id, recursive);
+                        }
+                    }
+                }
+                return result;
             }
         }
         return new ArrayList<>();
     }
 
-    public static List<YHDMerchantCategory> merchantCategoriesCache(final Long parentId){
+    public static List<YHDMerchantCategory> merchantCategoriesCache(final Long parentId, final boolean recursive){
         return CacheHelper.getCache(
-                CacheHelper.getCacheKey(CACHE_KEY, "MERCHANT_CATEGORY_" + parentId),
+                CacheHelper.getCacheKey(CACHE_KEY, "MERCHANT_CATEGORY_" + parentId + "_" + recursive),
                 new CacheCallBack<List<YHDMerchantCategory>>() {
                     @Override
                     public List<YHDMerchantCategory> loadData() {
-                        return merchantCategories(parentId);
+                        return merchantCategories(parentId, recursive);
                     }
                 }
         );

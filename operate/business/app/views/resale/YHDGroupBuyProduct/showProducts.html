@@ -2,6 +2,9 @@
 #{set title:'发布历史' /}
 #{include '/share/nav.html' /}
 #{set 'moreScripts'}
+<script>
+    $("a[rel='tooltip']").tooltip();
+</script>
 #{/set}
 #{set 'moreStyles'}
 #{/set}
@@ -36,8 +39,8 @@
     <td></td>
     <td></td>
     <td>
-        <a href="/resale-partner-products/${product.partner.toString().toLowerCase()}/upload/${product.goods.id}"><span class="label label-info">再发</span></a>
-        <a href="/resale-partner-products/${product.partner.toString().toLowerCase()}/edit/${product.goods.id}"><span class="label label-success">修改</span></a>
+        <a href="/resale-partner-products/${product.partner.toString().toLowerCase()}/upload/${product.goods.id}" class="btn btn-mini" rel="tooltip" title="再次上传"><i class="icon-share-alt"></i></a>
+        <a href="/resale-partner-products/${product.partner.toString().toLowerCase()}/edit/${product.goods.id}" class="btn btn-mini" rel="tooltip" title="编辑"><i class="icon-pencil"></i></a>
     </td>
 </tr>
 #{/paginate.list}
