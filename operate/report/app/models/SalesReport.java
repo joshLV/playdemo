@@ -529,6 +529,8 @@ public class SalesReport {
             SalesReport item = map.get(getReportKeyOfPeopleEffect(refundItem));
             if (item != null) {
                 item.refundAmount = refundItem.refundAmount;
+            } else {
+                map.put(getReportKeyOfPeopleEffect(refundItem), refundItem);
             }
         }
         //取得消费的数据 ecoupon
@@ -548,6 +550,8 @@ public class SalesReport {
             SalesReport item = map.get(getReportKeyOfPeopleEffect(consumedItem));
             if (item != null) {
                 item.consumedAmount = consumedItem.consumedAmount;
+            } else {
+                map.put(getReportKeyOfPeopleEffect(consumedItem), consumedItem);
             }
 
         }
@@ -588,8 +592,8 @@ public class SalesReport {
             totalAmount = totalAmount.add(item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount);
             consumedAmount = consumedAmount.add(item.consumedAmount == null ? BigDecimal.ZERO : item.consumedAmount);
             refundAmount = refundAmount.add(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount);
-            totalBuyNumber = totalBuyNumber + item.buyNumber;
-            netProfit = netProfit.add(item.profit).setScale(3);
+            totalBuyNumber = totalBuyNumber + (item.buyNumber == null ? 0l : item.buyNumber);
+            netProfit = netProfit.add(item.profit == null ? BigDecimal.ZERO : item.profit).setScale(3);
         }
         return new SalesReport(totalAmount, refundAmount, consumedAmount, netProfit, totalBuyNumber);
     }

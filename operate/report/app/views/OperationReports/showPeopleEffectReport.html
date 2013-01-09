@@ -96,7 +96,10 @@
     </form>
 
     <div class="alert alert-success">
-        <span>在此期间 销售<b>${summary?.totalBuyNumber?:0}</b>笔 总销售金额：<b>${summary?.totalAmount?:0}</b>元,总退款金额：<b>${summary?.refundAmount?:0}</b>元,总利润：<b>${summary?.profit?:0}</b> 元</span>
+        <span>在此期间 销售<b>${summary?.totalBuyNumber?:0}</b>笔 总销售金额：<b>${summary?.totalAmount?:0}</b>元,
+            总消费金额：<b>${summary?.consumedAmount?:0}</b>元,
+            总退款金额：<b>${summary?.refundAmount?:0}</b>元,
+            总利润：<b>${summary?.profit?:0}</b> 元</span>
     </div>
 
     <table class="table table-striped table-bordered table-condensed">

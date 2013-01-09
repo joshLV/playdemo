@@ -213,10 +213,10 @@ public class PeopleEffectCategoryReport {
     public PeopleEffectCategoryReport(OperateUser operateUser, BigDecimal amount, Long buyNumber, Goods goods, ECouponStatus status) {
         this.operateUser = operateUser;
         if (status == ECouponStatus.REFUND) {
-            this.refundPrice = amount;
+            this.totalRefundPrice = amount;
             this.refundNumber = buyNumber;
         } else if (status == ECouponStatus.CONSUMED) {
-            this.consumedPrice = amount;
+            this.totalConsumedPrice = amount;
             this.consumedNumber = buyNumber;
         }
 
@@ -362,7 +362,6 @@ public class PeopleEffectCategoryReport {
                 resultList.add(map.get(key));
             }
         }
-
         return resultList;
     }
 
@@ -430,8 +429,10 @@ public class PeopleEffectCategoryReport {
         for (PeopleEffectCategoryReport refundItem : refundList) {
             PeopleEffectCategoryReport item = map.get(getReportKeyOfPeopleEffect(refundItem));
             if (item != null) {
-                item.totalRefundPrice = refundItem.refundPrice;
+                item.totalRefundPrice = refundItem.totalRefundPrice;
                 item.refundNumber = refundItem.refundNumber;
+            } else {
+                map.put(getReportKeyOfPeopleEffect(refundItem), refundItem);
             }
         }
         //取得消费的数据 ecoupon
@@ -450,8 +451,10 @@ public class PeopleEffectCategoryReport {
         for (PeopleEffectCategoryReport consumedItem : consumedList) {
             PeopleEffectCategoryReport item = map.get(getReportKeyOfPeopleEffect(consumedItem));
             if (item != null) {
-                item.totalConsumedPrice = consumedItem.consumedPrice;
+                item.totalConsumedPrice = consumedItem.totalConsumedPrice;
                 item.consumedNumber = consumedItem.consumedNumber;
+            } else {
+                map.put(getReportKeyOfPeopleEffect(consumedItem), consumedItem);
             }
 
         }
