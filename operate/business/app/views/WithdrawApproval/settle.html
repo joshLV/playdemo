@@ -70,15 +70,16 @@
             <input type="hidden" id="withdrawAccountId" name="withdrawAccountId" value="1">
             <input type="hidden" id="prepaymentId" name="prepaymentId" value="${prepaymentId}">
             <input type="hidden" id="withdrawDate" name="withdrawDate" value="${withdrawDate.format("yyyy-MM-dd")}">
-
-            <div class="control-group">
-                <label class="control-label">商户名称</label>
-                <label class="control-value">${supplier?.fullName}
-                    &nbsp;&nbsp; #{if supplier?.otherName!=null}&nbsp;--&nbsp;${supplier?.otherName}#{/if} &nbsp;&nbsp;
-                    <a href="/reports/supplier?supplierName=${supplier?.name?.substring(0, supplier?.name?.indexOf('('))}&condition.accountUid=${supplierId}&condition.tradeType=PURCHASE_COSTING"
-                       target="_blank">账户资金明细</a>
-                </label>
-            </div>
+            #{if supplier!=null}
+                <div class="control-group">
+                    <label class="control-label">商户名称</label>
+                    <label class="control-value">${supplier?.fullName}
+                        &nbsp;&nbsp; #{if supplier?.otherName!=null}&nbsp;--&nbsp;${supplier?.otherName}#{/if} &nbsp;&nbsp;
+                        <a href="/reports/supplier?supplierName=${supplier?.name}&condition.accountUid=${supplierId}&condition.tradeType=PURCHASE_COSTING"
+                           target="_blank">账户资金明细</a>
+                    </label>
+                </div>
+            #{/if}
             <div class="control-group">
                 <label class="control-label">结算金额 </label>
                 <label class="control-value">${amount.formatCurrency('CNY')}</label>
@@ -104,15 +105,15 @@
                 <label class="control-value"><span id="needPay"
                                                    class="label label-important">${needPay.formatCurrency('CNY')}</span></label>
             </div>
-            <div class="control-group">
-                <label class="control-label" for="agree-comment">备注</label>
-
-                <div class="controls">
-                    <textarea rows="3" class="input-xlarge" id="agree-comment" name="comment">无</textarea>
-                </div>
-            </div>
             #{if org.apache.commons.collections.CollectionUtils.isEmpty(withdrawAccountList)
             && prepaymentBalance?.compareTo(java.math.BigDecimal.ZERO)>0}
+                <div class="control-group">
+                    <label class="control-label" for="agree-comment">备注</label>
+
+                    <div class="controls">
+                        <textarea rows="3" class="input-xlarge" id="agree-comment" name="comment">无</textarea>
+                    </div>
+                </div>
                 <div class="control-group">
                     <label class="control-label"></label>
                     <label class="control-value">
