@@ -74,6 +74,7 @@ public class OperationReports extends Controller {
         condition.operatorId = OperateRbac.currentUser().id;
         List<CategorySalesReport> resultList = CategorySalesReport.query(condition);
         // 分页
+
         ValuePaginator<CategorySalesReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
 
         List<CategorySalesReport> totalList = CategorySalesReport.queryTotal(condition);
@@ -614,7 +615,7 @@ public class OperationReports extends Controller {
         List<SalesReport> peopleEffectReportList = SalesReport.queryPeopleEffectData(condition);
         for (SalesReport report : peopleEffectReportList) {
             if (hasRight) {
-                BigDecimal tempGrossMargin = report.grossMargin== null ? BigDecimal.ZERO : report.grossMargin.divide(BigDecimal.valueOf(100));
+                BigDecimal tempGrossMargin = report.grossMargin == null ? BigDecimal.ZERO : report.grossMargin.divide(BigDecimal.valueOf(100));
                 report.grossMargin = tempGrossMargin;
                 report.profit = report.profit == null ? BigDecimal.ZERO : report.profit.setScale(2, BigDecimal.ROUND_HALF_UP);
             }
@@ -692,6 +693,10 @@ public class OperationReports extends Controller {
             if (report.profit == null) {
                 report.profit = BigDecimal.ZERO;
             }
+            if (report.cheatedOrderAmount == null) {
+                report.cheatedOrderAmount = BigDecimal.ZERO;
+            }
+
             if (report.consumedAmount == null) {
                 report.consumedAmount = BigDecimal.ZERO;
             }
@@ -728,6 +733,9 @@ public class OperationReports extends Controller {
         for (CategorySalesReport report : resultList) {
             if (report.refundAmount == null) {
                 report.refundAmount = BigDecimal.ZERO;
+            }
+            if (report.cheatedOrderAmount == null) {
+                report.cheatedOrderAmount = BigDecimal.ZERO;
             }
             if (report.netSalesAmount == null) {
                 report.netSalesAmount = BigDecimal.ZERO;
