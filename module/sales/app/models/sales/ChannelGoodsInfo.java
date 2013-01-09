@@ -80,7 +80,7 @@ public class ChannelGoodsInfo extends Model {
         if (resaler == null) {
             return ChannelGoodsInfo.find("goods=? and deleted=0 order by resaler desc", goods).fetch();
         }
-        return ChannelGoodsInfo.find("goods=? and resaler=? and deleted=0 order by resaler desc", goods, resaler).fetch();
+        return ChannelGoodsInfo.find("goods=? and resaler=? and deleted=0 order by id desc", goods, resaler).fetch();
     }
 
     public static ChannelGoodsInfo findByResaler(Resaler resaler, String url) {

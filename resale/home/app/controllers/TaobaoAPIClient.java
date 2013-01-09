@@ -38,8 +38,7 @@ public class TaobaoAPIClient extends Controller {
     public static void add(Long goodsId) {
         Resaler user = SecureCAS.getResaler();
         OAuthToken token = OAuthToken.getOAuthToken(user.getId(), AccountType.RESALER, WebSite.TAOBAO);
-        Goods goods = Goods.findById(goodsId);
-        ResalerFav resalerFav = ResalerFav.find("byGoodsAndResaler", goods, user).first();
+        ResalerFav resalerFav = ResalerFav.findByGoodsId(user,goodsId);
         if (resalerFav == null) {
             error("no fav found");
         }

@@ -112,9 +112,17 @@
                     </td>
 
                     <td class="action">
-                        #{list items:models.sales.ChannelGoodsInfo.findByGoods(favItem.goods,resaler), as:'city'}
-                           <a href="${city?.url}" target="_blank">${city.tag}</a> |
-                        #{/list}
+                    %{infoList=models.sales.ChannelGoodsInfo.findByGoods(favItem.goods,resaler);
+
+                        if (infoList.size>0){
+                        city=infoList.get(0);
+                        }
+                        }%
+                    *{#{list items:, as:'city'}}*
+                        #{if city}
+                        <a href="${city?.url}" target="_blank">${city?.tag}</a> |
+                        #{/if}
+                    *{#{/list}}*
                     </td>
                     <td class="action">
                         <a href="#" id="del_${favItem.id}" name="${favItem.goods.id}" class="delete_gift">删除</a>

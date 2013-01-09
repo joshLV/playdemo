@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import controllers.modules.resale.cas.SecureCAS;
 import models.order.OuterOrderPartner;
@@ -117,7 +118,7 @@ public class WubaProduct extends Controller {
             return;
         }
         Resaler user = SecureCAS.getResaler();
-        ResalerFav resalerFav = ResalerFav.find("byGoodsAndResaler", goods, user).first();
+        ResalerFav resalerFav = ResalerFav.findByGoodsId(user,goodsId);
         if (resalerFav == null) {
             error("no fav found");
         }
@@ -243,7 +244,7 @@ public class WubaProduct extends Controller {
             return;
         }
         Resaler user = SecureCAS.getResaler();
-        ResalerFav resalerFav = ResalerFav.find("byGoodsAndResaler", goods, user).first();
+        ResalerFav resalerFav = ResalerFav.find("byGoodsAndResalerAndDeleted", goods, user, DeletedStatus.UN_DELETED).first();
         if (resalerFav == null) {
             error("no fav found");
         }
@@ -360,7 +361,7 @@ public class WubaProduct extends Controller {
             return;
         }
         Resaler user = SecureCAS.getResaler();
-        ResalerFav resalerFav = ResalerFav.find("byGoodsAndResaler", goods, user).first();
+        ResalerFav resalerFav = ResalerFav.findByGoodsId(user,goodsId);
         if (resalerFav == null) {
             error("no fav found");
         }
