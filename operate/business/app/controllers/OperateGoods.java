@@ -817,7 +817,7 @@ public class OperateGoods extends Controller {
             Validation.addError("channelGoodsInfo.resaler.id", "你不是分销负责专员！");
         }
         renderArgs.put("operateUserId", operateUserId);
-        List<ChannelGoodsInfo> channelGoodsInfoList = ChannelGoodsInfo.findByGoods(goods);
+        List<ChannelGoodsInfo> channelGoodsInfoList = ChannelGoodsInfo.findByGoods(goods, null);
         renderArgs.put("resalerList", resalerList);
         renderArgs.put("channelGoodsInfoList", channelGoodsInfoList);
     }
@@ -842,7 +842,7 @@ public class OperateGoods extends Controller {
             Validation.addError("channelGoodsInfo.url", "该分销的url已经存在！");
         }
         if (Validation.hasErrors()) {
-            render("OperateGoods/channel.html", goods,channelGoodsInfo);
+            render("OperateGoods/channel.html", goods, channelGoodsInfo);
         }
         channelGoodsInfo.deleted = DeletedStatus.UN_DELETED;
         channelGoodsInfo.goods = goods;
