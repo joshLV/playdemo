@@ -144,8 +144,9 @@ select:'condition_trade_type',value:condition.tradeType,form:'form'/}
                 <td>${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>${accountSequence.accountName}</td>
                 <td>${accountSequence.supplierName}</td>
-                <td>${accountSequence.balance?.formatCurrency('CNY')}<br/>
-                    (不可提现余额:${accountSequence.uncashBalance?.formatCurrency('CNY')})
+                <td>${accountSequence.balance?.formatCurrency('CNY')}
+                    *{<br/>}*
+                    *{(不可提现余额:${accountSequence.uncashBalance?.formatCurrency('CNY')})}*
                 </td>
                 <td>&{'trade_type.'+ accountSequence.tradeType}</td>
                 <td>${accountSequence.remark}

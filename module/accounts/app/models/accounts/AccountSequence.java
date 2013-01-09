@@ -260,7 +260,7 @@ public class AccountSequence extends Model {
     }
 
     public static AccountSequence checkAccountAmount(Account account) {
-        List<AccountSequence> accountSequences = find("account=? order by id", account).fetch();
+        List<AccountSequence> accountSequences = find("account=? order by created_at, id", account).fetch();
 
         BigDecimal lastBalance = BigDecimal.ZERO;
         for (AccountSequence accountSequence : accountSequences) {

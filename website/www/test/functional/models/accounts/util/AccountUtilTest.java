@@ -1,7 +1,6 @@
 package functional.models.accounts.util;
 
-import java.math.BigDecimal;
-
+import factory.FactoryBoy;
 import models.accounts.Account;
 import models.accounts.AccountNotFoundException;
 import models.accounts.AccountSequence;
@@ -9,12 +8,11 @@ import models.accounts.AccountSequenceFlag;
 import models.accounts.BalanceNotEnoughException;
 import models.accounts.TradeType;
 import models.accounts.util.AccountUtil;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.test.FunctionalTest;
-import factory.FactoryBoy;
+
+import java.math.BigDecimal;
 
 
 /**
@@ -42,7 +40,7 @@ public class AccountUtilTest extends FunctionalTest {
 
         Boolean exception = false;
         try {
-            AccountUtil.addBalanceAndSaveSequence(null, null, null, null, null, TradeType.REFUND, AccountSequenceFlag.VOSTRO, "test note", null);
+            AccountUtil.addBalanceAndSaveSequence(null, null, null, null, null, TradeType.REFUND, AccountSequenceFlag.VOSTRO, "test note", null, null, null);
         } catch (RuntimeException e) {
             exception = true;
         } catch (BalanceNotEnoughException e) {
@@ -55,7 +53,7 @@ public class AccountUtilTest extends FunctionalTest {
         }
         exception = false;
         try {
-            AccountUtil.addBalanceAndSaveSequence(null, null, null, null, new Long(1), null, null, "test note", null);
+            AccountUtil.addBalanceAndSaveSequence(null, null, null, null, new Long(1), null, null, "test note", null, null, null);
         } catch (RuntimeException e) {
             exception = true;
         } catch (BalanceNotEnoughException e) {
@@ -71,10 +69,12 @@ public class AccountUtilTest extends FunctionalTest {
         BigDecimal augend = BigDecimal.ONE;
         try {
             AccountUtil.addBalanceAndSaveSequence(account.getId(), augend, BigDecimal.ZERO, BigDecimal.ZERO, new Long(1),
-                    TradeType.CHARGE, AccountSequenceFlag.VOSTRO, "test note", null);
+                    TradeType.CHARGE, AccountSequenceFlag.VOSTRO, "test note", null, null, null);
         } catch (BalanceNotEnoughException e) {
+            fail();
 
         } catch (AccountNotFoundException e) {
+            fail();
         }
         assertEquals(originAmount.add(augend), account.amount);
 
