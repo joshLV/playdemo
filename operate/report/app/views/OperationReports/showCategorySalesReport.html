@@ -225,7 +225,7 @@
             </td>
             <td  #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
                 #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC && report?.name != "999"}
-                    <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtBegin=${condition?.endAt?.format()}
+                    <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}
                 &condition.goodsId=${report?.goods?.id}"
                        target="_blank"> ${(report?.refundAmount?:0).formatCurrency('CNY')}</a>
                 #{/if}
@@ -256,6 +256,7 @@
                                                   style="text-align:right;">
                     #{if report.profit != null && report.profit!=0}
                         ￥${(report?.profit?:0).format('#0.00')}
+
                     #{/if}
                     #{else}
                         ￥0
