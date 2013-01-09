@@ -132,14 +132,15 @@ public class DDOrderAPI extends Controller {
             if (arrGoodsItem != null) {
                 Goods goods = GoodsDeployRelation.getGoods(OuterOrderPartner.DD, Long.parseLong(arrGoodsItem[0]));
                 BigDecimal resalerPrice = goods.getResalePrice();
-                ybqPrice = ybqPrice.add(resalerPrice.multiply(new BigDecimal(arrGoodsItem[1])));
+                BigDecimal number = new BigDecimal(arrGoodsItem[1]);
+                ybqPrice = ybqPrice.add(resalerPrice.multiply(number));
                 if (ybqPrice.compareTo(amount) != 0) {
-                    resalerPrice = amount;
+                    resalerPrice = amount.divide(number);
                     Logger.error("当当订单金额不一致！当当amount=" + amount + ",ybqPrice=" + ybqPrice);
                 }
                 try {
                     //创建一百券订单Items
-                    order.addOrderItem(goods, Integer.parseInt(arrGoodsItem[1]), user_mobile, resalerPrice, resalerPrice);
+                    order.addOrderItem(goods, number.intValue(), user_mobile, resalerPrice, resalerPrice);
                 } catch (NotEnoughInventoryException e) {
                     errorInfo.errorCode = ErrorCode.INVENTORY_NOT_ENOUGH;
                     errorInfo.errorDes = "库存不足！";

@@ -137,20 +137,13 @@ public class OperateBrands extends Controller {
     }
 
     public static void update(Long id, File siteDisplayImage, File logoImage, @Valid Brand brand) {
-        //TODO 仅仅在测试环境中会产生一个validation.invalid的错误，以下这段是为了让测试用例通过增加的代码
-        if (Play.runingInTestMode() && validation.errorsMap().containsKey("logoImage")) {
-            for (String key : validation.errorsMap().keySet()) {
-                warn("remove:     validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
-            }
-            Validation.clear();
-        }
-
         checkImageFile(logoImage);
         checkImageFile(siteDisplayImage);
         if (Validation.hasErrors()) {
             renderArgs.put("imageLogoPath", brand.getShowLogo());
             for (String key : validation.errorsMap().keySet()) {
                 warn("update: validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
+                System.out.println("update: validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));;
             }
             render("OperateBrands/edit.html", brand, id);
         }
@@ -174,6 +167,7 @@ public class OperateBrands extends Controller {
         }
         Brand.update(id, brand);
 
+        System.out.println("updated:");
         index(null);
     }
 
@@ -196,9 +190,4 @@ public class OperateBrands extends Controller {
 
         render(brandList);
     }
-
-    public static void test() {
-        render();
-    }
-
 }

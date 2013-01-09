@@ -23,7 +23,7 @@
         #{/list}
         </div>
     </div>
-    <div class="side"><!-- 这里的style是多余的，开发时请很移除 -->
+    <div class="side">
     #{if cas?.isLogin}
         <!-- 已登录 -->
         <div class="status signed" style="display:block">
@@ -232,9 +232,9 @@
                 #{/list}
             </dl>
             #{if showTwoLine}
-                #{if category_index==1}<a class="advert" href="${webOneFloor?.link}" target="_blank"><img
+            #{if category_index==1}<a class="advert" href="${webOneFloor?.link}" width="200" target="_blank"><img
                         src="${webOneFloor?.showImageUrl}" alt=""/></a>#{/if}
-                #{if category_index==2}<a class="advert" href="${webTwoFloor?.link}" target="_blank"><img
+                #{if category_index==2}<a class="advert" href="${webTwoFloor?.link}" width="200" target="_blank"><img
                         src="${webTwoFloor?.showImageUrl}" alt=""/></a>#{/if}
             #{/if}
         </div>

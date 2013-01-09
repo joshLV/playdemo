@@ -7,6 +7,7 @@ import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.sql.SQLOutput;
 import java.util.List;
 
 /**
@@ -38,7 +39,6 @@ public class OperateUsersProfiles extends Controller {
      * @param operateUser 用户信息
      */
     public static void update(@Valid OperateUser operateUser) {
-        System.out.println("vali>>" + validation.errorsMap());
         if (Validation.hasErrors()) {
             List rolesList = OperateRole.findAll();
             String roleIds = "";

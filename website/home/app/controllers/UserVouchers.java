@@ -42,13 +42,18 @@ public class UserVouchers extends Controller {
 
         JPAExtPaginator<Voucher> voucherList = Voucher.findByCondition(condition, pageNumber, PAGE_SIZE);
 
+        addValidVoucherArgs(account);
+        render(breadcrumbs, user, account, voucherList);
+    }
+
+    private static void addValidVoucherArgs(Account account){
         List<Voucher> validVouchers = Voucher.validVouchers(account);
         BigDecimal validValue = BigDecimal.ZERO;
         for (Voucher voucher: validVouchers) {
             validValue = validValue.add(voucher.value);
         }
-
-        render(breadcrumbs, user, account, voucherList, validVouchers, validValue);
+        renderArgs.put("validVouchers", validVouchers);
+        renderArgs.put("validValue", validValue);
     }
 
     public static void showAssign() {
@@ -57,6 +62,7 @@ public class UserVouchers extends Controller {
         Account account = AccountUtil.getConsumerAccount(user.getId());
         String randomID = Codec.UUID();
         String action = "verify";
+        addValidVoucherArgs(account);
         render(randomID, breadcrumbs, user, account, action);
     }
 
@@ -95,6 +101,7 @@ public class UserVouchers extends Controller {
         Cache.delete(randomID);
         randomID = Codec.UUID();
         BreadcrumbList breadcrumbs = new BreadcrumbList("抵用券领取", "/voucher/assign");
+        addValidVoucherArgs(account);
         render("UserVouchers/showAssign.html", randomID, errMsg,
                 breadcrumbs, user, account, action, voucher, ridA, ridB,
                 voucherCode);
@@ -129,6 +136,7 @@ public class UserVouchers extends Controller {
         Cache.delete(ridB);
         String randomID = Codec.UUID();
         BreadcrumbList breadcrumbs = new BreadcrumbList("抵用券领取", "/voucher/assign");
+        addValidVoucherArgs(account);
         render("UserVouchers/showAssign.html", randomID, suc, errMsg,
                 breadcrumbs, user, account, action);
     }

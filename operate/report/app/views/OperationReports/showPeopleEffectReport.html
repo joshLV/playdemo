@@ -47,7 +47,7 @@
     ;
 
     function exportReportWithPrivilegeExcel() {
-        $("#hasProfitRight").val(true);
+        $("#condition_hasRight").val(true);
         $("#search_form").attr("action", "@{OperationReports.peopleEffectReportExcelOut()}");
         $("#search_form").attr("method", "get");
         $("#search_form").submit();
@@ -92,10 +92,14 @@
             <li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>
         </ul>
         <input type="hidden" id="condition_interval" name="condition.interval"/>
+        <input type="hidden" id="condition_hasRight" name="hasRight" value="false"/>
     </form>
 
     <div class="alert alert-success">
-        <span>在此期间 销售<b>${summary?.totalBuyNumber?:0}</b>笔 总销售金额：<b>${summary?.totalAmount?:0}</b>元,总退款金额：<b>${summary?.refundAmount?:0}</b>元,总利润：<b>${summary?.profit?:0}</b> 元</span>
+        <span>在此期间 销售<b>${summary?.totalBuyNumber?:0}</b>笔 总销售金额：<b>${summary?.totalAmount?:0}</b>元,
+            总消费金额：<b>${summary?.consumedAmount?:0}</b>元,
+            总退款金额：<b>${summary?.refundAmount?:0}</b>元,
+            总利润：<b>${summary?.profit?:0}</b> 元</span>
     </div>
 
     <table class="table table-striped table-bordered table-condensed">
@@ -114,6 +118,8 @@
     #{set i:0/}
     %{
         baseUrl=play.Play.configuration.getProperty("uri.operate_business");
+        beginAt=condition?.beginAt?.format();
+        endAt =condition?.endAt?.format();
         }%
     #{paginate.list items:reportPage, as:'report'}
         <tr>
@@ -121,15 +127,18 @@
             <td>${report?.operateUser?.userName}</td>
             <td>${report?.buyNumber?:0}</td>
             <td>
-                <a target="_blank" href="${baseUrl}/coupons?condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}&condition.salesId=${report?.operateUser?.id}">
-            ${(report?.totalAmount?:0).formatCurrency('CNY')}</a>
+                <a target="_blank"
+                   href="${baseUrl}/coupons?condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}">
+                ${(report?.totalAmount?:0).formatCurrency('CNY')}</a>
             </td>
             <td>
-                <a target="_blank" href="${baseUrl}/coupons?condition.consumedAtBegin=${condition?.beginAt?.format()}&condition.consumedAtEnd=${condition?.endAt?.format()}&condition.salesId=${report?.operateUser?.id}">
+                <a target="_blank"
+                   href="${baseUrl}/coupons?condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}">
                 ${(report?.consumedAmount?:0).formatCurrency('CNY')}</a>
             </td>
             <td>
-                <a target="_blank" href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}&condition.salesId=${report?.operateUser?.id}">
+                <a target="_blank"
+                   href="${baseUrl}/coupons?condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}">
                 ${(report?.refundAmount?:0).formatCurrency('CNY')}</a>
             </td>
             #{if hasSeeReportProfitRight == true}

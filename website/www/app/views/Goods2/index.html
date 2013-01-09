@@ -111,8 +111,7 @@
                             #{list searchCategories, as:'category'}
                                 <li><a href="${condition.buildUrl('categoryId',category.id).getUrl()}"
                                        #{if category.id ==
-                                       categoryId}class="curr"#{/if}>${category.name}<em>(${category.goodsCount}
-                                    )</em></a></li>
+                                       categoryId}class="curr"#{/if}>${category.name}<em>(${category.goodsCount})</em></a></li>
                             #{/list}
                         </ul>
                         #{if subCategories!= null && subCategories.size() > 0}
@@ -122,8 +121,7 @@
                                         <li><a href="${condition.buildUrl('categoryId', subCategory.id).getUrl()}"
                                                #{if (subCategory.id == condition.categoryId)
                                                || (subCategory.id == 0 && category?.isRoot())
-                                               }class="curr"#{/if}>${subCategory.name}<em>(${subCategory.goodsCount}
-                                            )</em></a>
+                                               }class="curr"#{/if}>${subCategory.name}<em>(${subCategory.goodsCount})</em></a>
                                         </li>
                                     #{/list}
                                 </ul>
@@ -143,8 +141,7 @@
                             #{list districts,as:'area'}
                                 <li><a href="${condition.buildUrl('searchAreaId', area.id).getUrl()}" #{if
                                 condition.searchAreaId.length() >= 5 &&
-                                condition.searchAreaId.startsWith(area.id)}class="curr"#{/if}>${area.name}
-                                    <em>(${area.goodsCount})</em></a>
+                                condition.searchAreaId.startsWith(area.id)}class="curr"#{/if}>${area.name}<em>(${area.goodsCount})</em></a>
                                 </li>
                             #{/list}
                         </ul>
@@ -153,8 +150,7 @@
                                 <ul class="more clearfix">
                                     #{list searchAreas,as:'area'}
                                         <li><a href="${condition.buildUrl('searchAreaId', area.id).getUrl()}" #{if
-                                        area.id.equals(condition.searchAreaId)}class="curr"#{/if}>${area.name}
-                                            <em>(${area.goodsCount})</em></a>
+                                        area.id.equals(condition.searchAreaId)}class="curr"#{/if}>${area.name}<em>(${area.goodsCount})</em></a>
                                         </li>
                                     #{/list}
                                 </ul>

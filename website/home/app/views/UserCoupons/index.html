@@ -132,12 +132,14 @@
                     <label>券号：</label>
                     <input class="short-input" type="text" name="condition.eCouponSn" value="${condition?.eCouponSn}"/>
                 </span>
-                <label>成交时间：</label>
-                <input class="short-input Wdate" type="text" name="condition.createdAtBegin"
-                       value="${condition.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"/>
-                -
-                <input class="short-input Wdate" type="text" name="condition.createdAtEnd"
-                       value="${condition.createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})"/>
+                <span class="field">
+                    <label>成交时间：</label>
+                    <input class="short-input Wdate" type="text" name="condition.createdAtBegin"
+                           value="${condition.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"/>
+                    -
+                    <input class="short-input Wdate" type="text" name="condition.createdAtEnd"
+                           value="${condition.createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})"/>
+                </span>
                 <button type="submit" class="btn" id="search"> 搜　索</button>
             </div>
 

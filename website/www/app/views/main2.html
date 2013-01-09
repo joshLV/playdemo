@@ -84,8 +84,7 @@
                         <ul class="clearfix">
                             #{list category.getByParent(),as:'subCategory'}
                                 <li>
-                                    <a href="${new models.sales.GoodsWebsiteCondition().buildUrl('categoryId',subCategory.id).getUrl()}">${subCategory.name}
-                                        （${subCategory.goodsCount}）</a>
+                                    <a href="${new models.sales.GoodsWebsiteCondition().buildUrl('categoryId',subCategory.id).getUrl()}">${subCategory.name}（${subCategory.goodsCount}）</a>
                                 </li>
                             #{/list}
                         </ul>
@@ -143,9 +142,7 @@
         |
         <span class="">客服热线：400-6262-166</span>
     </div>
-    <div class="copyright">
-        Copyright © 2012 一百券YiBaiQuan.COM 版权所有 <span> 沪ICP备08114451号-4</span>
-    </div>
+    <div class="copyright">${helper.Title.copyRightTitle().raw()}</div>
 </div>
 <!-- #footer -->
 #{asset.js src:['/u/jquery-1.7.2.min.js','/base/121031/base.js'] /}

@@ -53,13 +53,14 @@
       </div>
     </div>
     <div class="container-fluid">
+      <i class="icon icon-chevron-left" id="expand-sidebar" style="margin-top: -14px;cursor:pointer"></i>
       <div class="row-fluid">
-        <div class="span2">
+        <div class="span2" id="content-left-side">
           <div class="well sidebar-nav">
             #{get 'sidebar-nav'/}
           </div><!--/.well -->
         </div><!--/span-->
-        <div class="span10">
+        <div class="span10" id="content-right-side">
           #{doLayout /}
         </div>
       </div>
@@ -81,6 +82,24 @@
     <script src="@{'/public/assets/js/bootstrap-collapse.js'}"></script>
     <script src="@{'/public/assets/js/bootstrap-carousel.js'}"></script>
     <script src="@{'/public/assets/js/bootstrap-typeahead.js'}"></script>
+    <script>
+        $(function(){
+            $("#expand-sidebar").click(function(){
+                var ele = $(this);
+                if (ele.hasClass("icon-chevron-left")){
+                    ele.removeClass("icon-chevron-left");
+                    ele.addClass("icon-chevron-right");
+                    $("#content-left-side").hide();
+                    $("#content-right-side").removeClass("span10");
+                }else{
+                    ele.addClass("icon-chevron-left");
+                    ele.removeClass("icon-chevron-right");
+                    $("#content-left-side").show();
+                    $("#content-right-side").addClass("span10");
+                }
+            });
+        });
+    </script>
 
     #{get 'moreScripts' /}
 

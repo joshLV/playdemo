@@ -196,22 +196,22 @@ public class AccountSequence extends Model {
 
     public static BigDecimal getVostroAmount(Account account, Date fromDate, Date toDate) {
         BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
-                " account=? and sequenceFlag=? and createdAt>=? and createdAt<? and settlementStatus=?",
-                account, AccountSequenceFlag.VOSTRO, fromDate, toDate, SettlementStatus.UNCLEARED).first();
+                " account=? and sequenceFlag=? and settlementStatus=? and createdAt>=? and createdAt<?",
+                account, AccountSequenceFlag.VOSTRO, SettlementStatus.UNCLEARED, fromDate, toDate).first();
 
         return amount != null ? amount.abs() : BigDecimal.ZERO;
     }
 
     public static BigDecimal getVostroAmount(Account account, Date beginDate) {
         BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
-                " account=? and sequenceFlag=? and createdAt>=? and settlementStatus=?",
-                account, AccountSequenceFlag.VOSTRO, beginDate, SettlementStatus.UNCLEARED).first();
+                " account=? and sequenceFlag=? and settlementStatus=? and createdAt>=? ",
+                account, AccountSequenceFlag.VOSTRO, SettlementStatus.UNCLEARED, beginDate).first();
         return amount != null ? amount.abs() : BigDecimal.ZERO;
     }
 
     public static BigDecimal getVostroAmountTo(Account account, Date toDate) {
         BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
-                " account=? and sequenceFlag=? and settlementStatus=? and createdAt<=?",
+                " account=? and sequenceFlag=? and settlementStatus=? and createdAt<?",
                 account, AccountSequenceFlag.VOSTRO, SettlementStatus.UNCLEARED, toDate).first();
         return amount != null ? amount.abs() : BigDecimal.ZERO;
     }

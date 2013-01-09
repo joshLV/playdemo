@@ -106,4 +106,7 @@ public class Title {
         return keywordsMap;
     }
 
+    public static String copyRightTitle() {
+        return "©2012-2013 一百券 yibaiquan.com 版权所有 <span> 沪ICP备08114451号</span>";
+    }
 }

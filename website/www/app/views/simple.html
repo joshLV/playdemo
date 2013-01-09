@@ -19,9 +19,7 @@
     #{doLayout /}
 </div>
 <div id="footer">
-    <div class="copyright">
-        © 2012 一百券 yibaiquan.com 版权所有 <span> 沪ICP备08114451号</span>
-    </div>
+    <div class="copyright">${helper.Title.copyRightTitle().raw()}</div>
 </div>
     #{asset.js src:['/u/slides.min.js', '/u/base.js'] /}
     #{get 'moreScripts' /}

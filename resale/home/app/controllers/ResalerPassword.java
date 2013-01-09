@@ -1,12 +1,10 @@
 package controllers;
 
 import controllers.modules.resale.cas.SecureCAS;
-import models.consumer.User;
 import models.resale.Resaler;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Validation;
-import play.libs.Images;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -49,7 +47,6 @@ public class ResalerPassword extends Controller {
      * 验证密码
      *
      * @param resaler    新分销商密码信息
-     * @param oldResaler 原分销商密码信息
      */
     private static void checkPassword(Resaler resaler, Resaler newResaler) {
         // 新密码
