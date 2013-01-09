@@ -212,7 +212,7 @@
                         <span class="red" id="status_apply_${coupon.id}">已退款</span>
                     #{/elseif}
                     </td>
-                    <td>
+                    <td class="action">
                         #{if !coupon.goods.isLottery && !isExpired && coupon.status == models.order.ECouponStatus.UNCONSUMED}
                             <a class="send-sms" href="javascript:void(0)" id="send_${coupon.id}"
                                onclick="sendMessage('${coupon.id}', '${coupon.orderItems.phone}')">发送短信</a>
