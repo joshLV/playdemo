@@ -58,7 +58,7 @@ public class JingdongUploadTeam extends Controller {
     }
 
     public static void prepare(Long goodsId) {
-        Goods goods = Goods.findOnSale(goodsId);
+        Goods goods = Goods.findById(goodsId);
 
         GoodsThirdSupport support = GoodsThirdSupport.getSupportGoods(goods, OuterOrderPartner.JD);
         if (support == null) {
