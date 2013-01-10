@@ -74,6 +74,7 @@ public class SalesReportCondition implements Serializable {
         return condBuilder.toString();
     }
 
+
     public String getFilterCheatedOrder() {
         StringBuilder condBuilder = new StringBuilder(" r.order.status='PAID' and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +

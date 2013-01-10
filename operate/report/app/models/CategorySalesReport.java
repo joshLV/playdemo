@@ -1235,7 +1235,7 @@ public class CategorySalesReport {
         if (totolSalePrice.compareTo(BigDecimal.ZERO) != 0) {
             grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
-        return new CategorySalesReport(summaryConsumed.setScale(2), totalAmount, refundAmount, netSalesAmount, grossMargin, channelCost, profit);
+        return new CategorySalesReport(summaryConsumed.setScale(2,4), totalAmount.setScale(2,4), refundAmount.setScale(2,4), netSalesAmount.setScale(2,4), grossMargin, channelCost.setScale(2,4), profit.setScale(2,4));
     }
 
 
