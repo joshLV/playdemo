@@ -211,11 +211,10 @@
                 ${(report?.totalAmount?:0).formatCurrency('CNY')}
                 #{/else}
             </td>
-
             <td style="text-align:right;">
-            *{<a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}}*
-                *{&condition.goodsId=${report?.goods?.id}&condition.isCheatedOrder=true "}*
-                   *{target="_blank">${(report?.cheatedOrderAmount?:0).formatCurrency('CNY')}</a>}*
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}
+                &condition.goodsId=${report?.goods?.id}&condition.isCheatedOrder=true "
+                   target="_blank">${(report?.cheatedOrderAmount?:0).formatCurrency('CNY')}</a>
             </td>
 
             <td style="text-align:right;">
@@ -234,6 +233,9 @@
                    target="_blank">
                 ${(report?.consumedAmount?:0).formatCurrency('CNY')}
                 </a>
+            </td>
+            <td style="text-align:right;">
+                ￥${(report?.netSalesAmount?:0)}
             </td>
             #{if hasSeeReportProfitRight == true}
                 <td style="text-align:right;">${(report?.grossMargin?:0).format('#')}%</td>

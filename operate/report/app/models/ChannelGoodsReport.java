@@ -11,11 +11,11 @@ import java.math.RoundingMode;
 import java.util.*;
 
 /**
- * Created with IntelliJ IDEA.
+ * 渠道商品报表
+ * <p/>
  * User: wangjia
  * Date: 12-12-25
  * Time: 上午10:16
- * To change this template use File | Settings | File Templates.
  */
 public class ChannelGoodsReport {
     public Order order;
@@ -124,6 +124,23 @@ public class ChannelGoodsReport {
 
     }
 
+    //cheated order
+    public ChannelGoodsReport(Order order, Goods goods, BigDecimal cheatedOrderAmount, Long cheatedOrderNum, BigDecimal cheatedOrderCost) {
+        this.order = order;
+        if (order != null) {
+            if (order.userType == AccountType.CONSUMER) {
+                this.loginName = "一百券";
+            } else {
+                this.loginName = order.getResaler().loginName;
+                this.userName = order.getResaler().userName;
+            }
+        }
+        this.goods = goods;
+        this.cheatedOrderAmount = cheatedOrderAmount;
+        this.cheatedOrderNum = cheatedOrderNum;
+        this.cheatedOrderCost = cheatedOrderCost;
+    }
+
     //consumedAt
     public ChannelGoodsReport(Order order, Goods goods, BigDecimal consumedAmount) {
         this.order = order;
@@ -209,6 +226,18 @@ public class ChannelGoodsReport {
 
         List<ChannelGoodsReport> paidResalerResultList = query.getResultList();
 
+        //cheated order
+        sql = "select new models.ChannelGoodsReport(r.order,r.goods,sum(r.salePrice-r.rebateValue/r.buyNumber),sum(r.buyNumber)" +
+                " ,sum(r.originalPrice)) " +
+                " from OrderItems r, ECoupon e where e.orderItems=r and ";
+        groupBy = " group by r.order.userId, r.goods.id";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterCheatedOrder(AccountType.RESALER) + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<ChannelGoodsReport> cheatedOrderResultList = query.getResultList();
+
         //取得退款的数据 ecoupon
         sql = "select new models.ChannelGoodsReport(e.order, sum(e.refundPrice),e.orderItems.goods) " +
                 " from ECoupon e ";
@@ -239,6 +268,23 @@ public class ChannelGoodsReport {
         //merge
         for (ChannelGoodsReport paidItem : paidResultList) {
             map.put(getReportKey(paidItem), paidItem);
+        }
+
+        for (ChannelGoodsReport cheatedItem : cheatedOrderResultList) {
+            ChannelGoodsReport item = map.get(getReportKey(cheatedItem));
+            if (item == null) {
+                Goods goods = Goods.findById(cheatedItem.goods.id);
+                cheatedItem.originalPrice = goods.originalPrice;
+                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.refundAmount == null ? BigDecimal.ZERO : cheatedItem.refundAmount);
+                cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
+                map.put(getReportKey(cheatedItem), cheatedItem);
+            } else {
+                item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
+                item.cheatedOrderCost = cheatedItem.cheatedOrderCost;
+                item.netSalesAmount = item.totalAmount.subtract(item.cheatedOrderAmount);
+                item.profit = item.totalAmount.subtract(cheatedItem.cheatedOrderAmount)
+                        .subtract(item.totalCost).add(cheatedItem.cheatedOrderCost);
+            }
         }
 
         for (ChannelGoodsReport refundItem : refundList) {
@@ -322,6 +368,17 @@ public class ChannelGoodsReport {
 
         List<ChannelGoodsReport> paidResultList = query.getResultList();
 
+        //cheated order
+        sql = "select new models.ChannelGoodsReport(r.order,r.goods,sum(r.salePrice-r.rebateValue/r.buyNumber),sum(r.buyNumber)" +
+                " ,sum(r.originalPrice)) " +
+                " from OrderItems r, ECoupon e where e.orderItems=r and ";
+        groupBy = " group by r.goods.id";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterCheatedOrder(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<ChannelGoodsReport> cheatedOrderResultList = query.getResultList();
 
         //from resaler
         sql = "select new models.ChannelGoodsReport(r.order, r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),sum(r.originalPrice*r.buyNumber)" +
@@ -369,6 +426,23 @@ public class ChannelGoodsReport {
         //merge
         for (ChannelGoodsReport paidItem : paidResultList) {
             map.put(getConsumerReportKey(paidItem), paidItem);
+        }
+
+        for (ChannelGoodsReport cheatedItem : cheatedOrderResultList) {
+            ChannelGoodsReport item = map.get(getConsumerReportKey(cheatedItem));
+            if (item == null) {
+                Goods goods = Goods.findById(cheatedItem.goods.id);
+                cheatedItem.originalPrice = goods.originalPrice;
+                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.refundAmount == null ? BigDecimal.ZERO : cheatedItem.refundAmount);
+                cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
+                map.put(getConsumerReportKey(cheatedItem), cheatedItem);
+            } else {
+                item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
+                item.cheatedOrderCost = cheatedItem.cheatedOrderCost;
+                item.netSalesAmount = item.totalAmount.subtract(item.cheatedOrderAmount);
+                item.profit = item.totalAmount.subtract(cheatedItem.cheatedOrderAmount)
+                        .subtract(item.totalCost).add(cheatedItem.cheatedOrderCost);
+            }
         }
 
         for (ChannelGoodsReport refundItem : refundList) {

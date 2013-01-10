@@ -364,7 +364,7 @@ public class SalesReport {
             if (item == null) {
                 Goods goods = Goods.findById(cheatedItem.goods.id);
                 cheatedItem.originalPrice = goods.originalPrice;
-                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.refundAmount);
+                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.refundAmount== null ? BigDecimal.ZERO : cheatedItem.refundAmount);
                 cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
                 map.put(getReportKey(cheatedItem), cheatedItem);
             } else {
