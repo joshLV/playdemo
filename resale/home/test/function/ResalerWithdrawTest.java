@@ -17,13 +17,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 用户结算的功能测试.
  * <p/>
- * User: sujie
- * Date: 12/7/12
+ * User:yanjy
  * Time: 3:50 PM
  */
-public class ReesalerWithdrawTest extends FunctionalTest {
+public class ResalerWithdrawTest extends FunctionalTest {
     Resaler user;
     Account account;
     WithdrawBill withdrawBill;

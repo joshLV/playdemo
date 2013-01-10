@@ -11,6 +11,7 @@ import play.test.UnitTest;
 import util.ws.MockWebServiceClient;
 
 import java.util.Date;
+import java.util.regex.Pattern;
 
 /**
  * <p/>
@@ -37,16 +38,20 @@ public class ScannerChannelGoodsStatusTest extends UnitTest {
 
     }
 
-    //    @Test
-//    public void test_Job() {
-//        String succTxt = "<div class=\"buy_btn b_buy\">";
-//        Pattern onSalePattern = Pattern.compile(resaler.onSaleKey);
-//        assertTrue(onSalePattern.matcher(succTxt).find());
-//
-//        String endTxt = "<div class=\"buy_btn b_end\">";
-//        Pattern offSalePattern = Pattern.compile(resaler.offSaleKey);
-//        assertTrue(offSalePattern.matcher(endTxt).find());
-//    }
+    @Test
+    public void test_Job() {
+        channelGoodsInfo.url = "http://tuan.360buy.com/team-10515352.html";
+        channelGoodsInfo.save();
+
+        String succTxt = "<a href=\"/team/buy.php";
+        Pattern onSalePattern = Pattern.compile("href=\"/team/buy.php");
+        assertTrue(onSalePattern.matcher(succTxt).find());
+
+        String endTxt = "<div class=\"buy_btn b_end\">";
+        Pattern offSalePattern = Pattern.compile(resaler.offSaleKey);
+        assertTrue(offSalePattern.matcher(endTxt).find());
+    }
+
     @Test
     public void test_Job_from_onsale_to_onSale() {
         channelGoodsInfo.status = ChannelGoodsInfoStatus.ONSALE;
