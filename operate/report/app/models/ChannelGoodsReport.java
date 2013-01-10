@@ -23,7 +23,25 @@ public class ChannelGoodsReport {
     public String userName;
     public Goods goods;
     public BigDecimal avgSalesPrice;
+    /**
+     * 消费金额
+     */
+    public BigDecimal consumedAmount;
 
+    /**
+     * 刷单金额
+     */
+    public BigDecimal cheatedOrderAmount;
+
+    /**
+     * 刷单量
+     */
+    public Long cheatedOrderNum;
+
+    /**
+     * 刷单看陈本
+     */
+    public BigDecimal cheatedOrderCost;
     /**
      * 毛利率
      */
@@ -104,6 +122,21 @@ public class ChannelGoodsReport {
         this.refundAmount = refundAmount;
         this.goods = goods;
 
+    }
+
+    //consumedAt
+    public ChannelGoodsReport(Order order, Goods goods, BigDecimal consumedAmount) {
+        this.order = order;
+        if (order != null) {
+            if (order.userType == AccountType.CONSUMER) {
+                this.loginName = "一百券";
+            } else {
+                this.loginName = order.getResaler().loginName;
+                this.userName = order.getResaler().userName;
+            }
+        }
+        this.goods = goods;
+        this.consumedAmount = consumedAmount;
     }
 
     public ChannelGoodsReport(Order order, Long buyNumber, BigDecimal originalAmount) {
@@ -190,6 +223,17 @@ public class ChannelGoodsReport {
 
         List<ChannelGoodsReport> refundList = query.getResultList();
 
+        //consumedAt
+        sql = "select new models.ChannelGoodsReport(e.order,e.orderItems.goods,sum(r.salePrice-r.rebateValue/r.buyNumber)) " +
+                " from OrderItems r, ECoupon e where e.orderItems=r";
+        groupBy = " group by e.order.userId, e.orderItems.goods.id";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterConsumedAt(AccountType.RESALER) + groupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<ChannelGoodsReport> consumedResultList = query.getResultList();
+
         Map<String, ChannelGoodsReport> map = new HashMap<>();
 
         //merge
@@ -207,6 +251,17 @@ public class ChannelGoodsReport {
             } else {
                 item.refundAmount = refundItem.refundAmount;
                 item.netSalesAmount = item.totalAmount.subtract(item.refundAmount);
+            }
+        }
+
+        for (ChannelGoodsReport consumedItem : consumedResultList) {
+            ChannelGoodsReport item = map.get(getReportKey(consumedItem));
+            if (item == null) {
+                Goods goods = Goods.findById(consumedItem.goods.id);
+                consumedItem.originalPrice = goods.originalPrice;
+                map.put(getReportKey(consumedItem), consumedItem);
+            } else {
+                item.consumedAmount = consumedItem.consumedAmount;
             }
         }
 
@@ -234,7 +289,6 @@ public class ChannelGoodsReport {
         for (String key : tempString) {
             resultList.add(map.get(key));
         }
-
 
 
         return resultList;
@@ -269,7 +323,6 @@ public class ChannelGoodsReport {
         List<ChannelGoodsReport> paidResultList = query.getResultList();
 
 
-
         //from resaler
         sql = "select new models.ChannelGoodsReport(r.order, r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue),sum(r.originalPrice*r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)*(1-b.commissionRatio/100)-sum(r.originalPrice*r.buyNumber)" +
@@ -300,6 +353,17 @@ public class ChannelGoodsReport {
 
         List<ChannelGoodsReport> refundList = query.getResultList();
 
+        //consumedAt
+        sql = "select new models.ChannelGoodsReport(e.order,e.orderItems.goods,sum(r.salePrice-r.rebateValue/r.buyNumber)) " +
+                " from OrderItems r, ECoupon e where e.orderItems=r";
+        groupBy = " group by e.orderItems.goods.id";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterConsumedAt(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<ChannelGoodsReport> consumedResultList = query.getResultList();
+
         Map<String, ChannelGoodsReport> map = new HashMap<>();
 
         //merge
@@ -320,6 +384,17 @@ public class ChannelGoodsReport {
             }
         }
 
+        for (ChannelGoodsReport consumedItem : consumedResultList) {
+            ChannelGoodsReport item = map.get(getConsumerReportKey(consumedItem));
+            if (item == null) {
+                Goods goods = Goods.findById(consumedItem.goods.id);
+                consumedItem.originalPrice = goods.originalPrice;
+                map.put(getConsumerReportKey(consumedItem), consumedItem);
+            } else {
+                item.consumedAmount = consumedItem.consumedAmount;
+            }
+        }
+
         //merge from resaler if commissionRatio
         for (ChannelGoodsReport resalerItem : paidResalerResultList) {
             ChannelGoodsReport item = map.get(getConsumerReportKey(resalerItem));
@@ -331,6 +406,7 @@ public class ChannelGoodsReport {
                         .add(resalerItem.profit == null ? BigDecimal.ZERO : resalerItem.totalCost);
             }
         }
+
 
         List resultList = new ArrayList();
         for (String key : map.keySet()) {
