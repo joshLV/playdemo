@@ -244,17 +244,16 @@ public class OperateUser extends Model {
     /**
      * 修改密码
      *
-     * @param newUser 新用户
-     * @param user    原用户
+     * @param newUser  新用户
+     * @param password 密码
      */
-    public static void updatePassword(OperateUser newUser, OperateUser user) {
+    public static void updatePassword(OperateUser newUser, String password) {
         // 随机码
         Images.Captcha captcha = Images.captcha();
         String newPasswordSalt = captcha.getText(6);
         newUser.passwordSalt = newPasswordSalt;
         // 新密码
-        String newPassword = user.encryptedPassword;
-        newUser.encryptedPassword = DigestUtils.md5Hex(newPassword + newPasswordSalt);
+        newUser.encryptedPassword = DigestUtils.md5Hex(password + newPasswordSalt);
         newUser.save();
 
     }
@@ -266,9 +265,10 @@ public class OperateUser extends Model {
         return operateUsers;
     }
 
-     public static OperateUser findByUserName(String userName) {
+    public static OperateUser findByUserName(String userName) {
         return OperateUser.find("userName=? and deleted=?", userName, DeletedStatus.UN_DELETED).first();
     }
+
     public static OperateUser findBySalesId(Long salesId) {
         return OperateUser.find("id=? and deleted=?", salesId, DeletedStatus.UN_DELETED).first();
     }

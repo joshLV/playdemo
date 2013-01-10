@@ -9,76 +9,69 @@ import play.mvc.With;
 
 /**
  * 商户信息管理中心
- * 
+ *
  * @author yanjy
- * 
  */
 @With(SupplierRbac.class)
 public class SuppliersPassword extends Controller {
 
-	/**
-	 * 修改密码页面
-	 */
+    /**
+     * 修改密码页面
+     */
 
-	public static void edit() {
-		SupplierUser supplierUser = SupplierUser.findByUnDeletedId(SupplierRbac.currentUser().id);
-		supplierUser.encryptedPassword = "";
-		render(supplierUser);
-	}
+    public static void index() {
+        render();
+    }
 
-	/**
-	 * 修改密码
-	 */
-	public static void update(SupplierUser supplierUser) {
-		SupplierUser newSupplierUser = SupplierUser.findByUnDeletedId(SupplierRbac.currentUser().id);
+    /**
+     * 修改密码
+     */
+    public static void update(String oldPassword, String password, String confirmPassword) {
+        SupplierUser newSupplierUser = SupplierUser.findByUnDeletedId(SupplierRbac.currentUser().id);
 
-		//密码验证
-		checkPassword(supplierUser, newSupplierUser);
+        //密码验证
+        checkPassword(newSupplierUser, oldPassword, password, confirmPassword);
 
-		if (Validation.hasErrors()) {
-			render("SuppliersPassword/edit.html", supplierUser);
-		}
+        if (Validation.hasErrors()) {
+            render("SuppliersPassword/index.html", oldPassword, password, confirmPassword);
+        }
 
-		SupplierUser.updatePassword(newSupplierUser, supplierUser);
-		String isOk = "isOk";
-		render("SuppliersPassword/edit.html", supplierUser, isOk);
-	}
+        SupplierUser.updatePassword(newSupplierUser, password);
+        boolean isOk = true;
+        render("SuppliersPassword/index.html", isOk);
+    }
 
-	/**
-	 * 验证密码
-	 *
-	 */
-	private static void checkPassword(SupplierUser supplierUser, SupplierUser newSupplierUser) {
-		// 新密码
-		String newPassword = supplierUser.encryptedPassword;
-		Validation.required("supplierUser.newPassword", newPassword);
-		Validation.required("supplierUser.newConfirmPassword",
-				supplierUser.confirmPassword);
-		Validation.required("supplierUser.oldPassword", supplierUser.oldPassword);
+    /**
+     * 验证密码
+     */
+    private static void checkPassword(SupplierUser newSupplierUser, String oldPassword, String newPassword, String confirmPassword) {
+        // 新密码
+        Validation.required("supplierUser.newPassword", newPassword);
+        Validation.required("supplierUser.confirmPassword",confirmPassword);
+        Validation.required("supplierUser.oldPassword", oldPassword);
 
-		if (StringUtils.isNotBlank(newPassword) && newPassword.length() < 6) {
-			Validation.addError("supplierUser.newPassword", "validation.newPassword.minSize");
-		}
-		if (StringUtils.isNotBlank(newPassword) && newPassword.length() > 20) {
-			Validation.addError("supplierUser.newPassword", "validation.newPassword.maxSize");
-		}
-		// 新密码比较
-		if (StringUtils.isNotBlank(newPassword)
-				&& !newPassword.equals(supplierUser.confirmPassword)) {
-			Validation.addError("supplierUser.newConfirmPassword", "validation.confirmPassword");
-		}
+        if (StringUtils.isNotBlank(newPassword) && newPassword.length() < 6) {
+            Validation.addError("supplierUser.newPassword", "validation.newPassword.minSize");
+        }
+        if (StringUtils.isNotBlank(newPassword) && newPassword.length() > 20) {
+            Validation.addError("supplierUser.newPassword", "validation.newPassword.maxSize");
+        }
+        // 加密后的原密码比较
+        String encryptedPassword = DigestUtils.md5Hex(oldPassword
+                + newSupplierUser.passwordSalt);
+        if (!encryptedPassword.equals(newSupplierUser.encryptedPassword)) {
+            Validation.addError("supplierUser.oldPassword", "validation.oldPassword");
+        }
+        // 新密码比较
+        if (StringUtils.isNotBlank(newPassword)
+                && !newPassword.equals(confirmPassword)) {
+            Validation.addError("supplierUser.confirmPassword", "validation.passwordDiff");
+        }
 
-		// 加密后的原密码比较
-		String oldPassword = DigestUtils.md5Hex(supplierUser.oldPassword
-				+ newSupplierUser.passwordSalt);
-		if (!StringUtils.normalizeSpace(oldPassword)
-				.equals(newSupplierUser.encryptedPassword)) {
-			Validation.addError("supplierUser.oldPassword", "validation.oldPassword");
-		}
-
-		if (StringUtils.normalizeSpace(supplierUser.oldPassword)
-				.equals(newPassword)) {
-			Validation.addError("supplierUser.newPassword", "validation.newPassword.confirm");
-		}
-	}
+        //新密码和旧密码不能一样
+        if (StringUtils.isNotBlank(oldPassword)
+                && oldPassword.equals(newPassword)) {
+            Validation.addError("supplierUser.newPassword", "validation.newPassword.confirm");
+        }
+    }
 }

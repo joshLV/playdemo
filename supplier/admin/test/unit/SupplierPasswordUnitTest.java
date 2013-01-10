@@ -18,13 +18,8 @@ public class SupplierPasswordUnitTest extends UnitTest {
 
     @Test
     public void passwordTest() {
-        SupplierUser newSupplierUser = new SupplierUser();
-        newSupplierUser.encryptedPassword = "654321";
-        String password = supplierUser.encryptedPassword;
-
-        newSupplierUser.updatePassword(supplierUser, newSupplierUser);
+        supplierUser.updatePassword(supplierUser, "654321");
         supplierUser.refresh();
-        assertNotSame(password, supplierUser.encryptedPassword);
         assertEquals(DigestUtils.md5Hex("654321" + supplierUser.passwordSalt), supplierUser.encryptedPassword);
     }
 }

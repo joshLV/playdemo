@@ -1,8 +1,8 @@
 package function;
 
-import controllers.operate.cas.Security;
+import controllers.supplier.cas.Security;
 import factory.FactoryBoy;
-import models.admin.OperateUser;
+import models.admin.SupplierUser;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Test;
 import play.data.validation.Error;
@@ -21,13 +21,13 @@ import java.util.Map;
  * Date: 1/10/13
  * Time: 9:49 AM
  */
-public class OperateUsersPasswordTest extends FunctionalTest {
-    OperateUser user;
+public class SupplierUsersPasswordTest extends FunctionalTest {
+    SupplierUser user;
 
     @org.junit.Before
     public void setup() {
         FactoryBoy.deleteAll();
-        user = FactoryBoy.create(OperateUser.class);
+        user = FactoryBoy.create(SupplierUser.class);
         user.passwordSalt = "1234";
         user.encryptedPassword = DigestUtils.md5Hex("111111" + user.passwordSalt);
         user.save();
@@ -37,7 +37,7 @@ public class OperateUsersPasswordTest extends FunctionalTest {
 
     @Test
     public void testIndex() {
-        Http.Response response = GET(Router.reverse("OperateUsersPassword.index").url);
+        Http.Response response = GET(Router.reverse("SuppliersPassword.index").url);
         assertIsOk(response);
     }
 
@@ -47,7 +47,7 @@ public class OperateUsersPasswordTest extends FunctionalTest {
         params.put("password", "123456");
         params.put("confirmPassword", "123456");
         params.put("oldPassword", "111111");
-        Http.Response response = POST(Router.reverse("OperateUsersPassword.update"), params);
+        Http.Response response = POST(Router.reverse("SuppliersPassword.update"), params);
         assertIsOk(response);
         assertTrue((Boolean) renderArgs("isOk"));
 
@@ -62,10 +62,10 @@ public class OperateUsersPasswordTest extends FunctionalTest {
         Map<String, String> params = new HashMap<>();
         params.put("confirmPassword", "123456");
         params.put("oldPassword", "111111");
-        Http.Response response = POST(Router.reverse("OperateUsersPassword.update"), params);
+        Http.Response response = POST(Router.reverse("SuppliersPassword.update"), params);
 
-        List<play.data.validation.Error> errors = (List<Error>) renderArgs("errors");
-        assertEquals("operateUser.newPassword", errors.get(0).getKey());
+        List<Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("supplierUser.newPassword", errors.get(0).getKey());
         assertIsOk(response);
     }
 
@@ -74,10 +74,10 @@ public class OperateUsersPasswordTest extends FunctionalTest {
         Map<String, String> params = new HashMap<>();
         params.put("password", "123456");
         params.put("oldPassword", "111111");
-        Http.Response response = POST(Router.reverse("OperateUsersPassword.update"), params);
+        Http.Response response = POST(Router.reverse("SuppliersPassword.update"), params);
 
-        List<play.data.validation.Error> errors = (List<Error>) renderArgs("errors");
-        assertEquals("operateUser.confirmPassword", errors.get(0).getKey());
+        List<Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("supplierUser.confirmPassword", errors.get(0).getKey());
         assertIsOk(response);
     }
 
@@ -87,10 +87,10 @@ public class OperateUsersPasswordTest extends FunctionalTest {
         params.put("password", "12345");
         params.put("confirmPassword", "12345");
         params.put("oldPassword", "111111");
-        Http.Response response = POST(Router.reverse("OperateUsersPassword.update"), params);
+        Http.Response response = POST(Router.reverse("SuppliersPassword.update"), params);
 
-        List<play.data.validation.Error> errors = (List<Error>) renderArgs("errors");
-        assertEquals("operateUser.newPassword", errors.get(0).getKey());
+        List<Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("supplierUser.newPassword", errors.get(0).getKey());
         assertIsOk(response);
     }
 
@@ -100,10 +100,10 @@ public class OperateUsersPasswordTest extends FunctionalTest {
         params.put("password", "12345456789012345678901");
         params.put("confirmPassword", "12345456789012345678901");
         params.put("oldPassword", "111111");
-        Http.Response response = POST(Router.reverse("OperateUsersPassword.update"), params);
+        Http.Response response = POST(Router.reverse("SuppliersPassword.update"), params);
 
-        List<play.data.validation.Error> errors = (List<Error>) renderArgs("errors");
-        assertEquals("operateUser.newPassword", errors.get(0).getKey());
+        List<Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("supplierUser.newPassword", errors.get(0).getKey());
         assertIsOk(response);
     }
 
@@ -113,10 +113,10 @@ public class OperateUsersPasswordTest extends FunctionalTest {
         params.put("password", "123454");
         params.put("confirmPassword", "123456");
         params.put("oldPassword", "111111");
-        Http.Response response = POST(Router.reverse("OperateUsersPassword.update"), params);
+        Http.Response response = POST(Router.reverse("SuppliersPassword.update"), params);
 
-        List<play.data.validation.Error> errors = (List<Error>) renderArgs("errors");
-        assertEquals("operateUser.confirmPassword", errors.get(0).getKey());
+        List<Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("supplierUser.confirmPassword", errors.get(0).getKey());
         assertIsOk(response);
     }
 
@@ -126,10 +126,10 @@ public class OperateUsersPasswordTest extends FunctionalTest {
         params.put("password", "123456");
         params.put("confirmPassword", "123456");
         params.put("oldPassword", "111");
-        Http.Response response = POST(Router.reverse("OperateUsersPassword.update"), params);
+        Http.Response response = POST(Router.reverse("SuppliersPassword.update"), params);
 
-        List<play.data.validation.Error> errors = (List<Error>) renderArgs("errors");
-        assertEquals("operateUser.oldPassword", errors.get(0).getKey());
+        List<Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("supplierUser.oldPassword", errors.get(0).getKey());
         assertIsOk(response);
     }
 
@@ -139,10 +139,10 @@ public class OperateUsersPasswordTest extends FunctionalTest {
         params.put("password", "111111");
         params.put("confirmPassword", "111111");
         params.put("oldPassword", "111111");
-        Http.Response response = POST(Router.reverse("OperateUsersPassword.update"), params);
+        Http.Response response = POST(Router.reverse("SuppliersPassword.update"), params);
 
-        List<play.data.validation.Error> errors = (List<Error>) renderArgs("errors");
-        assertEquals("operateUser.newPassword", errors.get(0).getKey());
+        List<Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("supplierUser.newPassword", errors.get(0).getKey());
         assertIsOk(response);
     }
 }

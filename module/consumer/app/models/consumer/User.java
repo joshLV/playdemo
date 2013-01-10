@@ -193,17 +193,16 @@ public class User extends Model {
     /**
      * 修改密码
      *
-     * @param newUser 新密码信息
-     * @param user    原密码信息
+     * @param newUser  新密码信息
+     * @param password 密码
      */
-    public static void updatePassword(User newUser, User user) {
+    public static void updatePassword(User newUser, String password) {
         // 随机码
         Images.Captcha captcha = Images.captcha();
         String newPasswordSalt = captcha.getText(6);
         newUser.passwordSalt = newPasswordSalt;
         // 新密码
-        String newPassword = user.password;
-        newUser.password = DigestUtils.md5Hex(newPassword + newPasswordSalt);
+        newUser.password = DigestUtils.md5Hex(password + newPasswordSalt);
         newUser.save();
     }
 

@@ -11,7 +11,7 @@ validation.minSize=%s的长度至少%d位!
 validation.maxSize=%s的长度不能超过%d!
 validation.newPassword.minSize=密码不能小于6位！
 validation.newPassword.maxSize=密码不能大于20位！
-validation.confirmPassword=两次密码输入的不一样！！
+validation.passwordDiff=两次密码输入的不一样！！
 validation.oldPassword=原密码输入的不对！
 validation.newPassword.confirm=新密码和原密码一样，请重新输入！
 validation.invalid=无效的%s!
@@ -20,7 +20,7 @@ validation.min=%s必须大于或等于%.2f!
 
 user.oldPassword=原密码
 user.newPassword=新密码
-user.newConfirmPassword=确认新密码
+user.confirmPassword=确认新密码
 #订单状态
 order.UNPAID=未付款
 order.PAID=交易成功

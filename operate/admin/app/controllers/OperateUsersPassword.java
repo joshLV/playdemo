@@ -3,7 +3,6 @@ package controllers;
 import models.admin.OperateUser;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
-import play.data.validation.Error;
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -19,65 +18,61 @@ import play.mvc.With;
 public class OperateUsersPassword extends Controller {
 
     public static void index() {
-        OperateUser operateUser = OperateUser.findById(OperateRbac.currentUser().id);
-        operateUser.encryptedPassword = "";
-        render(operateUser);
+        render();
     }
 
     /**
      * 修改密码
      */
-    public static void update(OperateUser operateUser) {
+    public static void update(String oldPassword, String password, String confirmPassword) {
         OperateUser currentOperateUser = OperateUser.findById(OperateRbac.currentUser().id);
 
         //密码验证
-        checkPassword(operateUser, currentOperateUser);
+        checkPassword(currentOperateUser, oldPassword, password, confirmPassword);
 
         if (Validation.hasErrors()) {
-            render("OperateUsersPassword/index.html", operateUser);
+            render("OperateUsersPassword/index.html", oldPassword, password, confirmPassword);
         }
 
-        OperateUser.updatePassword(currentOperateUser, operateUser);
-        String isOk = "isOk";
+        OperateUser.updatePassword(currentOperateUser, password);
+        boolean isOk = true;
 
-        render("OperateUsersPassword/index.html", operateUser, isOk);
+        render("OperateUsersPassword/index.html", isOk);
     }
 
     /**
      * 验证密码
      */
-    private static void checkPassword(OperateUser operateUser, OperateUser newOperateUser) {
+    private static void checkPassword(OperateUser newOperateUser, String oldPassword, String newPassword, String confirmPassword) {
         // 新密码
-        String newPassword = operateUser.encryptedPassword;
-        Validation.required("operateUser.newPassword", newPassword);
-        Validation.required("operateUser.newConfirmPassword",
-                operateUser.confirmPassword);
-        Validation.required("operateUser.oldPassword", operateUser.oldPassword);
+        Validation.required("supplierUser.newPassword", newPassword);
+        Validation.required("supplierUser.confirmPassword", confirmPassword);
+        Validation.required("supplierUser.oldPassword", oldPassword);
 
         if (StringUtils.isNotBlank(newPassword) && newPassword.length() < 6) {
-            Validation.addError("operateUser.newPassword", "validation.newPassword.minSize");
+            Validation.addError("supplierUser.newPassword", "validation.newPassword.minSize");
         }
         if (StringUtils.isNotBlank(newPassword) && newPassword.length() > 20) {
-            Validation.addError("operateUser.newPassword", "validation.newPassword.maxSize");
-        }
-
-        // 新密码比较
-        if (StringUtils.isNotBlank(newPassword)
-                && !newPassword.equals(operateUser.confirmPassword)) {
-            Validation.addError("operateUser.newConfirmPassword", "validation.confirmPassword");
+            Validation.addError("supplierUser.newPassword", "validation.newPassword.maxSize");
         }
 
         // 加密后的原密码比较
-        String oldPassword = DigestUtils.md5Hex(operateUser.oldPassword
+        String encryptedPassword = DigestUtils.md5Hex(oldPassword
                 + newOperateUser.passwordSalt);
-        if (!StringUtils.normalizeSpace(oldPassword)
-                .equals(newOperateUser.encryptedPassword)) {
-            Validation.addError("operateUser.oldPassword", "validation.oldPassword");
+        if (!encryptedPassword.equals(newOperateUser.encryptedPassword)) {
+            Validation.addError("supplierUser.oldPassword", "validation.oldPassword");
+        }
+        // 新密码比较
+        if (StringUtils.isNotBlank(newPassword)
+                && !newPassword.equals(confirmPassword)) {
+            Validation.addError("supplierUser.confirmPassword", "validation.confirmPassword");
         }
 
-        if (StringUtils.normalizeSpace(operateUser.oldPassword)
-                .equals(newPassword)) {
-            Validation.addError("operateUser.newPassword", "validation.newPassword.confirm");
+        //新密码和旧密码不能一样
+        if (StringUtils.isNotBlank(oldPassword)
+                && oldPassword.equals(newPassword)) {
+            Validation.addError("supplierUser.newPassword", "validation.newPassword.confirm");
         }
+
     }
 }

@@ -121,7 +121,7 @@
     <li><a href="/withdraw">账户提现</a></li>
 #{/set}
 
-<body onload="isOk('${isOk}')">
+<body onload="editSuccess('${isOk}')">
 
 <div id="content">
     #{breadcrumbs/breadcrumb breadcrumbs/}
@@ -129,15 +129,16 @@
         #{include "share/left.html"/}
         <div class="section">
             <h3>修改密码</h3>
-            <form class="form-horizontal user-form" action="@{ResalerPassword.update(resaler.id)}" method="POST">
+            <form class="form-horizontal user-form" action="@{ResalerPassword.update()}" method="POST">
                 <div class="item old-password clearfix">
                     <span class="label">原密码：</span>
-                    <input name="resaler.oldPassword" type="password" id="old_password" size="26" maxlength="20" value="${resaler?.oldPassword}" />
+                    <input name="oldPassword" type="password" id="old_password" size="26" maxlength="20" value="${oldPassword}" />
                     <span class="error">#{error 'resaler.oldPassword' /}</span>
                 </div>
                 <div class="item clearfix">
                     <span class="label">新密码：</span> 
-                    <input name="resaler.password" type="password" id="password" size="26" maxlength="20"  value="${resaler?.password}" onkeyup="javascript:ChangeQD();" />
+                    <input name="password" type="password" id="password" size="26" maxlength="20"  value="${password}" onkeyup="javascript:ChangeQD();" />
+                    <span style="color:#808080;">(*至少6位)</span>
                     <span class="error">#{error 'resaler.newPassword' /}</span>
                     <div class="qdbox_hongse setClose" id="qdbox">
                         <div id="pwQiangdu" class="qdhongse">很弱</div>
@@ -145,8 +146,8 @@
                 </div>
                 <div class="item clearfix">
                     <span class="label">确认新密码：</span>
-                    <input name="resaler.confirmPassword" type="password" id="confirmPassword" size="26" maxlength="20" value="${resaler?.confirmPassword}" />
-                    <span class="error">#{error 'resaler.newConfirmPassword' /}</span>
+                    <input name="confirmPassword" type="password" id="confirmPassword" size="26" maxlength="20" value="${confirmPassword}" />
+                    <span class="error">#{error 'resaler.confirmPassword' /}</span>
                 </div>
                 <div class="btn-box">
                     <button type="submit" class="submit-btn" id="sure_submit">确 认</button>
