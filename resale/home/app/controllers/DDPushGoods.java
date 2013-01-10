@@ -54,7 +54,7 @@ public class DDPushGoods extends Controller {
         }
         //查询是否已经推送过该商品，是则直接从GoodsThirdSupport读取，不是就从goods表查询
         Goods goods = Goods.findOnSale(goodsId);
-        ResalerFav resalerFav = ResalerFav.find("byGoodsAndResaler", goods, user).first();
+        ResalerFav resalerFav = ResalerFav.findByGoodsId(user,goodsId);
         if (resalerFav == null) {
             error("no goods found,请检查该商品是否已下架，或是否设置隐藏上架！");
         }
@@ -84,7 +84,7 @@ public class DDPushGoods extends Controller {
             error("user is not dangdang resaler");
         }
         Goods goods = Goods.findOnSale(goodsId);
-        ResalerFav resalerFav = ResalerFav.find("byGoodsAndResaler", goods, user).first();
+        ResalerFav resalerFav = ResalerFav.findByGoodsId(user,goodsId);
         if (resalerFav == null) {
             error("no goods found,请检查该商品是否已下架，或是否设置隐藏上架！");
         }
