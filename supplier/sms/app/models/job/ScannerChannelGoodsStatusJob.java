@@ -4,6 +4,7 @@ import models.resale.Resaler;
 import models.sales.ChannelGoodsInfo;
 import models.sales.ChannelGoodsInfoStatus;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.db.jpa.JPA;
 import play.jobs.Every;
 import play.jobs.Job;
@@ -23,11 +24,12 @@ import java.util.regex.Pattern;
  * Date: 12-12-17
  * Time: 下午3:51
  */
-@Every("1h")
+@Every("2mn")
 public class ScannerChannelGoodsStatusJob extends Job {
 
     @Override
     public void doJob() {
+        Logger.info("ScannerChannelGoodsStatusJob begin!");
         List<Resaler> resalerList = Resaler.findByStatus(null);
         for (Resaler resaler : resalerList) {
             String onSaleKey = resaler.onSaleKey;
@@ -40,7 +42,7 @@ public class ScannerChannelGoodsStatusJob extends Job {
             Pattern onSalePattern = Pattern.compile(onSaleKey);
             Pattern offSalePattern = Pattern.compile(offSaleKey);
 
-            String sql = "select c from ChannelGoodsInfo c where c.deleted=0 and c.resaler=:resaler";
+            String sql = "select c from ChannelGoodsInfo c where c.deleted=0 and c.resaler=:resaler and c.status is null";
             Query query = JPA.em().createQuery(sql);
             query.setParameter("resaler", resaler);
             query.setFirstResult(0);
@@ -52,14 +54,15 @@ public class ScannerChannelGoodsStatusJob extends Job {
                 ChannelGoodsInfoStatus preStatus = channelGoodsInfo.status;
                 WebServiceClient client = WebServiceClientFactory
                         .getClientHelper();
-                String retResponse = client.getString("", url, url);
+                String retResponse = client.getString("", url, resaler.id.toString());
+
                 Matcher onSaleMatcher = onSalePattern.matcher(retResponse);
                 Matcher offSaleMatcher = offSalePattern.matcher(retResponse);
                 if (preStatus != ChannelGoodsInfoStatus.ONSALE && onSaleMatcher.find()) {
                     channelGoodsInfo.status = ChannelGoodsInfoStatus.ONSALE;
                     channelGoodsInfo.onSaleAt = new Date();
                     channelGoodsInfo.save();
-                } else if (preStatus != ChannelGoodsInfoStatus.OFFSALE && offSaleMatcher.find()) {
+                } else if (preStatus != ChannelGoodsInfoStatus.OFFSALE && (!onSaleMatcher.find()|| offSaleMatcher.find())) {
                     channelGoodsInfo.status = ChannelGoodsInfoStatus.OFFSALE;
                     channelGoodsInfo.offSaleAt = new Date();
                     channelGoodsInfo.save();
@@ -69,5 +72,6 @@ public class ScannerChannelGoodsStatusJob extends Job {
                 }
             }
         }
+        Logger.info("ScannerChannelGoodsStatusJob end!");
     }
 }
