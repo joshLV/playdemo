@@ -75,12 +75,14 @@ public class AddressesTest extends FunctionalTest {
         assertEquals(cnt + 1, Address.count());
 
     }
-     @Test
+
+    @Test
     public void testAdd() {
         Http.Response response = GET("/orders/addresses/new");
         assertStatus(200, response);
         assertContentMatch("请填写您的真实姓名", response);
     }
+
     @Test
     public void testList() {
         Http.Response response = GET("/orders/addresses/list");
@@ -130,4 +132,27 @@ public class AddressesTest extends FunctionalTest {
         assertNull(addressDeleted);
     }
 
+    @Test
+    public void testEdit() {
+        Http.Response response = GET("/orders/addresses/" + address.id + "/edit");
+        assertStatus(200, response);
+        assertEquals(address, (Address) renderArgs("address"));
+    }
+
+    @Test
+    public void testUpdate() {
+        Http.Response response = PUT("/orders/addresses/" + address.id, "application/x-www-form-urlencoded", "address.id=" + address.id);
+        assertStatus(200, response);
+        assertEquals(address, (Address) renderArgs("address"));
+    }
+
+    @Test
+    public void testUpdateNoDefault() {
+        address.isDefault = null;
+        address.save();
+        address.refresh();
+        Http.Response response = PUT("/orders/addresses/" + address.id, "application/x-www-form-urlencoded", "address.id=" + address.id);
+        assertStatus(200, response);
+        assertEquals(address, (Address) renderArgs("address"));
+    }
 }
