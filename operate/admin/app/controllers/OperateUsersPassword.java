@@ -3,11 +3,13 @@ package controllers;
 import models.admin.OperateUser;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+import play.data.validation.Error;
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
 
 /**
+ * 运营后台
  * <p/>
  * User: yanjy
  * Date: 12-6-1
@@ -26,16 +28,16 @@ public class OperateUsersPassword extends Controller {
      * 修改密码
      */
     public static void update(OperateUser operateUser) {
-        OperateUser newOperateUser = OperateUser.findById(OperateRbac.currentUser().id);
+        OperateUser currentOperateUser = OperateUser.findById(OperateRbac.currentUser().id);
 
         //密码验证
-        checkPassword(operateUser, newOperateUser);
+        checkPassword(operateUser, currentOperateUser);
 
         if (Validation.hasErrors()) {
             render("OperateUsersPassword/index.html", operateUser);
         }
 
-        OperateUser.updatePassword(newOperateUser, operateUser);
+        OperateUser.updatePassword(currentOperateUser, operateUser);
         String isOk = "isOk";
 
         render("OperateUsersPassword/index.html", operateUser, isOk);
