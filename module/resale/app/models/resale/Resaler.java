@@ -234,15 +234,15 @@ public class Resaler extends Model {
      * 修改密码
      *
      * @param newResaler 新密码信息
-     * @param resaler    原密码信息
+     * @param password   密码
      */
-    public static void updatePassword(Resaler newResaler, Resaler resaler) {
+    public static void updatePassword(Resaler newResaler, String password) {
         // 随机码
         Images.Captcha captcha = Images.captcha();
         String newPasswordSalt = captcha.getText(6);
         newResaler.passwordSalt = newPasswordSalt;
         // 新密码
-        String newPassword = resaler.password;
+        String newPassword = password;
         newResaler.password = DigestUtils.md5Hex(newPassword + newPasswordSalt);
         newResaler.save();
 

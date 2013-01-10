@@ -31,9 +31,8 @@ public class ResalerInfoUnitTest extends UnitTest {
 
     @Test
     public void passwordTest() {
-        resaler.password = "123456";
-        Resaler newresaler = Resaler.findById(resaler.id);
-        resaler.updatePassword(newresaler, resaler);
+        Resaler newResaler = Resaler.findById(resaler.id);
+        resaler.updatePassword(newResaler,"123456");
         resaler.refresh();
         assertEquals(DigestUtils.md5Hex("123456" + resaler.passwordSalt), resaler.password);
     }

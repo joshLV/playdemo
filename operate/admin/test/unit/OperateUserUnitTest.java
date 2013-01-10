@@ -81,11 +81,8 @@ public class OperateUserUnitTest extends UnitTest {
 
     @Test
     public void testUpdatePassword() {
-        OperateUser supplierUser = new OperateUser();
-        supplierUser.encryptedPassword = "1234567";
-
         OperateUser newUser = OperateUser.findById(operateUser.id);
-        OperateUser.updatePassword(newUser, supplierUser);
+        OperateUser.updatePassword(newUser, "1234567");
 
         OperateUser user = OperateUser.findById(operateUser.id);
 

@@ -9,8 +9,8 @@
 #{/set}
 #{set 'moreScripts'}
 <script type="text/javascript">
-    function isOk(val){
-        if (val=="isOk") {
+    function editSuccess(isOk){
+        if (isOk) {
             alert("密码修改成功！");
         }
 
@@ -18,7 +18,7 @@
 </script>
 
 #{/set}
-<body onload="isOk('${isOk}')">
+<body onload="editSuccess('${isOk}')">
 <legend>修改密码</legend>
 <div class="control-group">
     <form class="form-horizontal" action="@{OperateUsersPassword.update()}" method="POST">
@@ -27,8 +27,8 @@
             </label>
 
             <div class="controls">
-                <input name="operateUser.oldPassword" type="password" id="old_password" size="26"
-                       maxlength="20" class="inputBox" value="${operateUser?.oldPassword}"/><span
+                <input name="oldPassword" type="password" id="old_password" size="26"
+                       maxlength="20" class="inputBox" value="${oldPassword}"/><span
                     class="error">#{error 'operateUser.oldPassword' /}</span>
             </div>
         </div>
@@ -37,8 +37,8 @@
             </label>
 
             <div class="controls">
-                <input name="operateUser.encryptedPassword" type="password" id="password" size="26" maxlength="20"
-                       value="${operateUser?.encryptedPassword}"
+                <input name="password" type="password" id="password" size="26" maxlength="20"
+                       value="${password}"
                        class="inputBox" onkeyup="javascript:ChangeQD();"/> <span style="color:#808080;">(*至少6位)</span><span
                     class="error">#{error 'operateUser.newPassword' /}</span>
             </div>
@@ -48,9 +48,9 @@
             <label for="input01" class="control-label"><span style="color: red;">*</span>确认新密码</label>
 
             <div class="controls">
-                <input name="operateUser.confirmPassword" type="password" id="confirmPassword" size="26" maxlength="20"
-                       class="inputBox" value="${operateUser?.confirmPassword}"/><span
-                    class="error">#{error 'operateUser.newConfirmPassword' /}</span>
+                <input name="confirmPassword" type="password" id="confirmPassword" size="26" maxlength="20"
+                       class="inputBox" value="${confirmPassword}"/><span
+                    class="error">#{error 'operateUser.confirmPassword' /}</span>
             </div>
         </div>
         <div class="form-actions">
