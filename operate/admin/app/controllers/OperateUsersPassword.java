@@ -45,33 +45,33 @@ public class OperateUsersPassword extends Controller {
      */
     private static void checkPassword(OperateUser newOperateUser, String oldPassword, String newPassword, String confirmPassword) {
         // 新密码
-        Validation.required("supplierUser.newPassword", newPassword);
-        Validation.required("supplierUser.confirmPassword", confirmPassword);
-        Validation.required("supplierUser.oldPassword", oldPassword);
+        Validation.required("operateUser.newPassword", newPassword);
+        Validation.required("operateUser.confirmPassword", confirmPassword);
+        Validation.required("operateUser.oldPassword", oldPassword);
 
         if (StringUtils.isNotBlank(newPassword) && newPassword.length() < 6) {
-            Validation.addError("supplierUser.newPassword", "validation.newPassword.minSize");
+            Validation.addError("operateUser.newPassword", "validation.newPassword.minSize");
         }
         if (StringUtils.isNotBlank(newPassword) && newPassword.length() > 20) {
-            Validation.addError("supplierUser.newPassword", "validation.newPassword.maxSize");
+            Validation.addError("operateUser.newPassword", "validation.newPassword.maxSize");
         }
 
         // 加密后的原密码比较
         String encryptedPassword = DigestUtils.md5Hex(oldPassword
                 + newOperateUser.passwordSalt);
         if (!encryptedPassword.equals(newOperateUser.encryptedPassword)) {
-            Validation.addError("supplierUser.oldPassword", "validation.oldPassword");
+            Validation.addError("operateUser.oldPassword", "validation.oldPassword");
         }
         // 新密码比较
         if (StringUtils.isNotBlank(newPassword)
                 && !newPassword.equals(confirmPassword)) {
-            Validation.addError("supplierUser.confirmPassword", "validation.confirmPassword");
+            Validation.addError("operateUser.confirmPassword", "validation.confirmPassword");
         }
 
         //新密码和旧密码不能一样
         if (StringUtils.isNotBlank(oldPassword)
                 && oldPassword.equals(newPassword)) {
-            Validation.addError("supplierUser.newPassword", "validation.newPassword.confirm");
+            Validation.addError("operateUser.newPassword", "validation.newPassword.confirm");
         }
 
     }
