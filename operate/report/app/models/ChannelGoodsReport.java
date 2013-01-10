@@ -275,7 +275,7 @@ public class ChannelGoodsReport {
             if (item == null) {
                 Goods goods = Goods.findById(cheatedItem.goods.id);
                 cheatedItem.originalPrice = goods.originalPrice;
-                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.refundAmount == null ? BigDecimal.ZERO : cheatedItem.refundAmount);
+                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderAmount);
                 cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
                 map.put(getReportKey(cheatedItem), cheatedItem);
             } else {
@@ -296,7 +296,7 @@ public class ChannelGoodsReport {
                 map.put(getReportKey(refundItem), refundItem);
             } else {
                 item.refundAmount = refundItem.refundAmount;
-                item.netSalesAmount = item.totalAmount.subtract(item.refundAmount);
+                item.netSalesAmount = item.totalAmount.subtract(item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).setScale(2);
             }
         }
 
@@ -433,7 +433,7 @@ public class ChannelGoodsReport {
             if (item == null) {
                 Goods goods = Goods.findById(cheatedItem.goods.id);
                 cheatedItem.originalPrice = goods.originalPrice;
-                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.refundAmount == null ? BigDecimal.ZERO : cheatedItem.refundAmount);
+                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
                 cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
                 map.put(getConsumerReportKey(cheatedItem), cheatedItem);
             } else {
@@ -454,7 +454,7 @@ public class ChannelGoodsReport {
                 map.put(getConsumerReportKey(refundItem), refundItem);
             } else {
                 item.refundAmount = refundItem.refundAmount;
-                item.netSalesAmount = item.totalAmount.subtract(item.refundAmount);
+                item.netSalesAmount = item.totalAmount.subtract(item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderCost).setScale(2);
             }
         }
 
