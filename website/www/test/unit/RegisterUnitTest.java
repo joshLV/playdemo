@@ -1,16 +1,14 @@
 package unit;
 
-import java.util.List;
-
+import factory.FactoryBoy;
 import models.consumer.User;
 import models.consumer.UserInfo;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.test.UnitTest;
-import factory.FactoryBoy;
+
+import java.util.List;
 
 public class RegisterUnitTest extends UnitTest {
     UserInfo userInfo;
@@ -47,10 +45,8 @@ public class RegisterUnitTest extends UnitTest {
 	@Test
 	public void testUpdatePassword(){
 		Long userId = user.id;
-		User user = new User();
-		user.password="654321";
 		User newUser = User.findById(userId);
-		user.updatePassword(newUser, user);
+		user.updatePassword(newUser, "654321");
 		User newUser1 = User.findById(userId);
 		String password = DigestUtils.md5Hex("654321"+newUser1.passwordSalt);
 		assertEquals(password,newUser1.password);
