@@ -149,7 +149,8 @@
                      消费券总额：<b>￥${summary?.totalConsumed?:0}</b>,
             净销售金额：<b>￥${summary?.netSalesAmount?:0}</b>,
                   净成本：<b>￥${(summary?.netCost?:0).format('#0.00')}</b>
-            <br>
+     #{if hasSeeReportProfitRight == true}
+         <br>
          &nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
         毛利率：<b>${(summary?.grossMargin?:0).format('#0.00')}%</b> ,
          净利润：<b>
@@ -159,8 +160,8 @@
          #{else}
              ￥0
          #{/else}
-         </b>
-
+     </b>
+     #{/if}
         </span>
     </div>
 

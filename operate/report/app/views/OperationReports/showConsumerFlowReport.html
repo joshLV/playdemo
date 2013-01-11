@@ -158,19 +158,23 @@
         件),
                    消费券：<b>${summary?.consumedPrice?.formatCurrency("CNY")}</b> (${summary?.consumedNumber}
         件)
+
+        客单价:<b>${(summary?.perOrderPrice?:0).formatCurrency('CNY')}</b>
+
+    #{if hasSeeReportProfitRight == true}
         <br/>
            &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;
-        客单价:<b>${(summary?.perOrderPrice?:0).formatCurrency('CNY')}</b>
         毛利率：<b>${(summary?.grossMargin?:0).format('#0.00')}%</b>
         渠道成本：<b>${(summary?.channelCost?:0).formatCurrency('CNY')}</b>
          净利润：<b>
-    #{if summary.profit != null && summary.profit!=0}
-        ￥${(summary?.profit?:0).format('#0.00')}
-    #{/if}
-    #{else}
-        ￥0
-    #{/else}
+        #{if summary.profit != null && summary.profit!=0}
+            ￥${(summary?.profit?:0).format('#0.00')}
+        #{/if}
+        #{else}
+            ￥0
+        #{/else}
     </b>
+    #{/if}
       </span>
 </div>
 
