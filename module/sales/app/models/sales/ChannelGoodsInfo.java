@@ -76,6 +76,10 @@ public class ChannelGoodsInfo extends Model {
         this.deleted = DeletedStatus.UN_DELETED;
     }
 
+    public ChannelGoodsInfo getChannelGoodsInfo(Goods goods, Resaler resaler) {
+        return ChannelGoodsInfo.find("goods=? and resaler=? and deleted=0 order by id desc", goods, resaler).first();
+    }
+
     public static List<ChannelGoodsInfo> findByGoods(Goods goods, Resaler resaler) {
         if (resaler == null) {
             return ChannelGoodsInfo.find("goods=? and deleted=0 order by resaler desc", goods).fetch();

@@ -96,9 +96,11 @@
     </form>
 
     <div class="alert alert-success">
-        <span>在此期间 销售<b>${summary?.totalBuyNumber?:0}</b>笔 总销售金额：<b>${summary?.totalAmount?:0}</b>元,
+        <span>在此期间 销售<b>${summary?.totalBuyNumber?:0}</b>笔 总销售额：<b>${summary?.totalAmount?:0}</b>元,
             总消费金额：<b>${summary?.consumedAmount?:0}</b>元,
             总退款金额：<b>${summary?.refundAmount?:0}</b>元,
+            净销售额：<b>${summary?.netSalesAmount?:0}</b>元,
+            毛利率：<b>${(summary?.grossMargin?:0).format('#')}%</b>
             总利润：<b>${summary?.profit?:0}</b> 元</span>
     </div>
 
@@ -110,6 +112,8 @@
         <th>总销售额</th>
         <th>消费金额</th>
         <th>退款金额</th>
+        <th>刷单金额</th>
+        <th>净销售额</th>
         #{if hasSeeReportProfitRight== true}
         <th>毛利率</th>
         <th>净利润</th>
@@ -140,6 +144,16 @@
                 <a target="_blank"
                    href="${baseUrl}/coupons?condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}">
                 ${(report?.refundAmount?:0).formatCurrency('CNY')}</a>
+            </td>
+            <td>
+                <a target="_blank"
+                   href="${baseUrl}/coupons?condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}">
+                ${(report?.cheatedOrderAmount?:0).formatCurrency('CNY')}</a>
+            </td>
+            <td>
+                <a target="_blank"
+                   href="${baseUrl}/coupons?condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}">
+                ${(report?.netSalesAmount?:0).formatCurrency('CNY')}</a>
             </td>
             #{if hasSeeReportProfitRight == true}
                 <td>${(report?.grossMargin?:0).format('#')}%</td>

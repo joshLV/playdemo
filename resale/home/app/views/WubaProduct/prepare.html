@@ -125,14 +125,14 @@ ${mobileDescription?.raw()}
 
 <p>
     团购开始时间<b>*</b>
-    <input type="text" name="startTime" onfocus="WdatePicker({readOnly:true})" class="Wdate"
-           value="${new java.util.Date().format()}">
+    <input type="text" name="startTime" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" size="25px" class="Wdate"
+           value="${startTime?.format('yyyy-MM-dd HH:mm:ss')}">
     团购结束时间<b>*</b>
-    <input type="text" name="endTime" onfocus="WdatePicker({readOnly:true})" class="Wdate"
-           value="${endTime?.format()}">
+    <input type="text" name="endTime" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" size="25px" class="Wdate"
+           value="${endTime?.format('yyyy-MM-dd HH:mm:ss')}">
     券有效期<b>*</b>
-    <input type="text" name="deadline" onfocus="WdatePicker({readOnly:true})" class="Wdate"
-           value="${deadline?.format()}">
+    <input type="text" name="deadline" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" size="25px" class="Wdate"
+           value="${deadline?.format('yyyy-MM-dd HH:mm:ss')}">
 </p>
 
 <p>

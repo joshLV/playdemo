@@ -26,7 +26,6 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -108,7 +107,7 @@ public class WubaProduct extends Controller {
      * 修改团购和修改商家
      */
     public static void update(long goodsId, int prodCategory, int isSend, BigDecimal expressMoney, String[] cities,
-                              Integer[] cityIds, Integer[] travelCityIds, Date startTime, Date endTime, Date deadline,
+                              Integer[] cityIds, Integer[] travelCityIds, String startTime, String endTime, String deadline,
                               int successNum, int saleMaxNum, int buyerMaxNum, int buyerMinNum,
                               BigDecimal prodPrice, BigDecimal groupPrice, int isRefund, int shopSize, int prodTypeId) {
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
@@ -118,7 +117,7 @@ public class WubaProduct extends Controller {
             return;
         }
         Resaler user = SecureCAS.getResaler();
-        ResalerFav resalerFav = ResalerFav.findByGoodsId(user,goodsId);
+        ResalerFav resalerFav = ResalerFav.findByGoodsId(user, goodsId);
         if (resalerFav == null) {
             error("no fav found");
         }
@@ -147,8 +146,7 @@ public class WubaProduct extends Controller {
         groupbuyInfo.put("prodModelType", 1);
         groupbuyInfo.put("cityIds", cityIds);
         groupbuyInfo.put("travelCityIds", travelCityIds);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        groupbuyInfo.put("endTime", simpleDateFormat.format(endTime));
+        groupbuyInfo.put("endTime", endTime);
         groupbuyInfo.put("successNum", successNum);
         groupbuyInfo.put("buyerMaxNum", buyerMaxNum);
         groupbuyInfo.put("buyerMinNum", buyerMinNum);
@@ -160,8 +158,8 @@ public class WubaProduct extends Controller {
         prodModelJson.put("prodcode", "");
         prodModelJson.put("count", 0);
         groupbuyInfo.put("prodModelJson", "{" + new Gson().toJson(prodModelJson) + "}");
-        groupbuyInfo.put("startTime", simpleDateFormat.format(startTime));
-        groupbuyInfo.put("deadline", simpleDateFormat.format(deadline));
+        groupbuyInfo.put("startTime", startTime);
+        groupbuyInfo.put("deadline", deadline);
         groupbuyInfo.put("saleMaxNum", saleMaxNum);
         groupbuyInfo.put("groupPrice", groupPrice);
         groupbuyInfo.put("prodPrice", prodPrice);
@@ -234,7 +232,7 @@ public class WubaProduct extends Controller {
      * 新增团购信息
      */
     public static void upload(long goodsId, int prodCategory, int isSend, BigDecimal expressMoney, String[] cities,
-                              Integer[] cityIds, Integer[] travelCityIds, Date startTime, Date endTime, Date deadline,
+                              Integer[] cityIds, Integer[] travelCityIds, String startTime, String endTime, String deadline,
                               int successNum, int saleMaxNum, int buyerMaxNum, int buyerMinNum,
                               BigDecimal prodPrice, BigDecimal groupPrice, int isRefund, int shopSize, int prodTypeId) {
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
@@ -278,10 +276,9 @@ public class WubaProduct extends Controller {
         groupbuyInfo.put("expressMoney", expressMoney);
         groupbuyInfo.put("cityIds", cityIds);
         groupbuyInfo.put("travelCityIds", travelCityIds);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        groupbuyInfo.put("startTime", simpleDateFormat.format(startTime));
-        groupbuyInfo.put("endTime", simpleDateFormat.format(endTime));
-        groupbuyInfo.put("deadline", simpleDateFormat.format(deadline));
+        groupbuyInfo.put("startTime", startTime);
+        groupbuyInfo.put("endTime", endTime);
+        groupbuyInfo.put("deadline", deadline);
         groupbuyInfo.put("successNum", successNum);
         groupbuyInfo.put("saleMaxNum", saleMaxNum);
         groupbuyInfo.put("buyerMaxNum", buyerMaxNum);
@@ -361,7 +358,7 @@ public class WubaProduct extends Controller {
             return;
         }
         Resaler user = SecureCAS.getResaler();
-        ResalerFav resalerFav = ResalerFav.findByGoodsId(user,goodsId);
+        ResalerFav resalerFav = ResalerFav.findByGoodsId(user, goodsId);
         if (resalerFav == null) {
             error("no fav found");
         }
@@ -556,6 +553,7 @@ public class WubaProduct extends Controller {
         renderArgs.put("imageLargePath", goods.getImageLargePath());
         renderArgs.put("salePrice", goods.getResalePrice());
         renderArgs.put("faceValue", goods.faceValue);
+        renderArgs.put("startTime", DateUtil.getBeginOfDay());
         renderArgs.put("endTime", goods.expireAt);
         renderArgs.put("deadline", goods.expireAt);
         renderArgs.put("exhibition", goods.getExhibition());
@@ -618,11 +616,11 @@ public class WubaProduct extends Controller {
                 renderArgs.put("buyerMaxNum", groupbuyInfoAsJsonObject.get("buyerMaxNum").getAsString());
                 renderArgs.put("buyerMinNum", groupbuyInfoAsJsonObject.get("buyerMinNum").getAsString());
                 if (groupbuyInfoAsJsonObject.has("startTime")) {
-                    renderArgs.put("startTime", DateUtil.stringToDate(groupbuyInfoAsJsonObject.get("startTime").getAsString(), DATE_FORMAT));
+                    renderArgs.put("startTime", DateUtil.stringToDate(groupbuyInfoAsJsonObject.get("startTime").getAsString(), "yyyy-MM-dd HH:mm:ss"));
                 }
-                renderArgs.put("endTime", DateUtil.stringToDate(groupbuyInfoAsJsonObject.get("endTime").getAsString(), DATE_FORMAT));
+                renderArgs.put("endTime", DateUtil.stringToDate(groupbuyInfoAsJsonObject.get("endTime").getAsString(), "yyyy-MM-dd HH:mm:ss"));
                 if (groupbuyInfoAsJsonObject.has("deadline")) {
-                    renderArgs.put("deadline", DateUtil.stringToDate(groupbuyInfoAsJsonObject.get("deadline").getAsString(), DATE_FORMAT));
+                    renderArgs.put("deadline", DateUtil.stringToDate(groupbuyInfoAsJsonObject.get("deadline").getAsString(), "yyyy-MM-dd HH:mm:ss"));
                 }
                 List<Long> cityIds = new ArrayList<>();
                 JsonArray jsonArray = groupbuyInfoAsJsonObject.get("cityIds").getAsJsonArray();

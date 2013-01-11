@@ -18,6 +18,7 @@
     <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager,account"/>
     <permission key="PREPAYMENT_REPORT" text="预付款明细表" roles="manager,account"/>
     <permission key="OPERATION_REPORT" text="运营报表" roles="sales,account,manager"/>
+    <permission key="ONSALE_OFFSALE_REPORT" text="上下架报表" roles="sales,account"/>
     <permission key="SEE_OPERATION_REPORT_PROFIT" text="查看运营报表利润" roles="manager,account"/>
 
 
@@ -33,13 +34,12 @@
                         permissions="OPERATION_REPORT"/>
             <navigation key="channel_goods_reports" action="OperationReports.showChannelGoodsReport" text="渠道商品报表"
                         permissions="OPERATION_REPORT"/>
-            <navigation key="people_effect_reports" action="OperationReports.showPeopleEffectReport" text="人效报表"
-                        permissions="OPERATION_REPORT"/>
-
-            <navigation key="consumer_flow_reports" action="OperationReports.showConsumerFlowReport" text="客流报表"
-                        permissions="OPERATION_REPORT"/>
             <navigation key="people_effect_category_reports" action="OperationReports.showPeopleEffectCategoryReport"
                         text="人效大类报表"
+                        permissions="OPERATION_REPORT"/>
+            <navigation key="people_effect_reports" action="OperationReports.showPeopleEffectReport" text="人效报表"
+                        permissions="OPERATION_REPORT"/>
+            <navigation key="consumer_flow_reports" action="OperationReports.showConsumerFlowReport" text="客流报表"
                         permissions="OPERATION_REPORT"/>
         </navigation>
     </navigation>
@@ -71,7 +71,7 @@
             <navigation key="checkin_reports" action="GoldenCoinReports.checkin" text="签到报表"
                         permissions="WEB_TRACKS_REPORT"/>
             <navigation key="goods_status_reports" action="GoodsOnSaleAndOffSaleReports.index" text="商品上下架报表"
-                        permissions="WEB_TRACKS_REPORT"/>
+                        permissions="ONSALE_OFFSALE_REPORT"/>
         </navigation>
         <navigation key="sales_report_app" text="销售报表">
             <navigation key="resale_sales_reports" action="ResaleSalesReports.index" text="渠道销售汇总"
