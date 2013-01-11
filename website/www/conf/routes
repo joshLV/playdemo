@@ -33,13 +33,13 @@ GET     /topics                                 WEBApplication.list
 GET     /rebate_help                            WEBApplication.rebate
 
 # v1 (old)
-GET     /s                                      Goods.index
-GET     /s/{condition}                          Goods.list
+GET     /s                                      Goods2.index
+GET     /s/{condition}                          Goods2.search
 GET     /g/{id}                                 Goods2.show
 GET     /gh/{id}                                Goods2.showHistory
-GET     /goods                                  Goods.index
-GET     /goods/list/{condition}                 Goods.list
-GET     /goods/{id}                             Goods.show
+GET     /goods                                  Goods2.index
+GET     /goods/list/{condition}                 Goods2.search
+GET     /goods/{id}                             Goods2.show
 POST    /user-question                          UserQuestions.add
 GET     /more-questions                         UserQuestions.moreQuestions
 
