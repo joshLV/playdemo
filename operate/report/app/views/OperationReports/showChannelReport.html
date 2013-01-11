@@ -248,8 +248,10 @@
 #{/paginate.list}
 
 </table>
+#{if reportPage.getPageCount() > 1}
 <div class="pagination">
     <ul>
-    #{paginate.controls items:reportPage /}
+        #{paginate.controls items:reportPage /}
     </ul>
+#{/if}
 </div>

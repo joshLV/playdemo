@@ -327,11 +327,6 @@ public class ChannelGoodsReport {
 
         List<ChannelGoodsReport> paidResalerResultList = query.getResultList();
 
-//        for (ChannelGoodsReport c : paidResalerResultList) {
-//            System.out.println("c.loginName:" + c.loginName);
-//            System.out.println("c.totalCost:" + c.totalCost);
-//            System.out.println("");
-//        }
 
         //cheated order
         sql = "select new models.ChannelGoodsReport(r.order,r.goods,sum(r.salePrice-r.rebateValue/r.buyNumber),sum(r.buyNumber)" +
@@ -390,11 +385,6 @@ public class ChannelGoodsReport {
 
         List<ChannelGoodsReport> refundResalerResultList = query.getResultList();
 
-//        for (ChannelGoodsReport r : refundResalerResultList) {
-//            System.out.println("r.loginName:" + r.loginName);
-//            System.out.println("r.refundCost:" + r.refundCost);
-//            System.out.println("");
-//        }
 
         //consumedAt
         sql = "select new models.ChannelGoodsReport(e.order,e.orderItems.goods,sum(r.salePrice-r.rebateValue/r.buyNumber)) " +
@@ -483,13 +473,6 @@ public class ChannelGoodsReport {
                 item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
                         .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
                         .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
-//                System.out.println("item.profit:" + item.profit);
-//                System.out.println("sales>>>>" + (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount).subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount));
-//                System.out.println("item.totalAmount:" + item.totalAmount);
-//                System.out.println("item.cheatedOrderAmount:" + item.cheatedOrderAmount);
-//                System.out.println("item.refundAmount:" + item.refundAmount);
-//                System.out.println("");
-
             }
         }
 
@@ -521,14 +504,6 @@ public class ChannelGoodsReport {
                 item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
                         .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
                         .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
-//                System.out.println("sales>>>>" + (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount).subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount).subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost));
-//                System.out.println("item.totalAmount:" + item.totalAmount);
-//                System.out.println("item.cheatedOrderAmount:" + item.cheatedOrderAmount);
-//                System.out.println("item.refundAmount:" + item.refundAmount);
-//                System.out.println("item.totalCost:" + item.totalCost);
-//                System.out.println("item.cheatedOrderAmount:" + item.cheatedOrderAmount);
-//                System.out.println("item.refundCost:" + item.refundCost);
-//                System.out.println("");
             }
         }
 
@@ -577,11 +552,6 @@ public class ChannelGoodsReport {
 
         List<ChannelGoodsReport> paidResultList = query.getResultList();
 
-//        for (ChannelGoodsReport p : paidResultList) {
-//            System.out.println("p.loginName:" + p.loginName);
-//            System.out.println("p.totalCost:" + p.totalCost);
-//            System.out.println("");
-//        }
 
         //cheated order
         sql = "select new models.ChannelGoodsReport(r.order,r.goods,sum(r.salePrice-r.rebateValue/r.buyNumber),sum(r.buyNumber)" +

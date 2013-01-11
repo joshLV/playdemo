@@ -250,7 +250,6 @@ public class SalesReport {
      * @return
      */
     public static List<SalesReport> query(SalesReportCondition condition) {
-        System.out.println("condition.code:" + condition.code);
         //paidAt
         String sql = "select new models.SalesReport(r.goods,r.goods.originalPrice,sum(r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
