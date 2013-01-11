@@ -75,6 +75,12 @@ public class GoodsHistory extends Model {
     public Long goodsId;
 
     /**
+     * 供应商的GoodsId
+     */
+    @Column(name = "supplier_goods_id")
+    public Long supplierGoodsId;
+
+    /**
      * 商品短名称
      */
     @Required
@@ -217,7 +223,7 @@ public class GoodsHistory extends Model {
     /**
      * 开始上架时间
      */
-    @Column(name = "beigin_onsale_at")
+    @Column(name = "begin_onsale_at")
     @As(lang = {"*"}, value = {"yyyy-MM-dd HH:mm:ss"})
     public Date beginOnSaleAt;
 

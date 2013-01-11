@@ -11,7 +11,6 @@ import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.FileUploadUtil;
 import com.uhuila.common.util.HtmlUtil;
 import com.uhuila.common.util.PathUtil;
-import controllers.OperateRbac;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.order.ECoupon;
@@ -33,12 +32,7 @@ import org.jsoup.safety.Whitelist;
 import play.Logger;
 import play.Play;
 import play.data.binding.As;
-import play.data.validation.InFuture;
-import play.data.validation.Max;
-import play.data.validation.MaxSize;
-import play.data.validation.Min;
-import play.data.validation.MinSize;
-import play.data.validation.Required;
+import play.data.validation.*;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.i18n.Messages;
@@ -151,6 +145,7 @@ public class Goods extends Model {
      */
     @Column(name = "resale_price")
     public BigDecimal resaleAddPrice;
+
     /**
      * 给推荐者的返利金额
      */
@@ -412,6 +407,7 @@ public class Goods extends Model {
     @Lob
     @Required
     private String exhibition;
+
     /**
      * 售出数量
      * <p/>
@@ -1282,12 +1278,18 @@ public class Goods extends Model {
     }
 
     public static void delete(Long... ids) {
+        delete(null, ids);
+    }
+
+    public static void delete(String operatorName, Long... ids) {
         for (Long id : ids) {
             models.sales.Goods goods = models.sales.Goods.findById(id);
             goods.refresh();
             if (goods != null) {
                 goods.deleted = DeletedStatus.DELETED;
-                goods.updatedBy = OperateRbac.currentUser().loginName;
+                if (StringUtils.isNotBlank(operatorName)) {
+                    goods.updatedBy = operatorName;
+                }
                 goods.updatedAt = new Date();
                 goods.save();
                 String createdFrom = "Op";
@@ -1875,7 +1877,7 @@ public class Goods extends Model {
         } else {
             goodsHistory.goodsImagesList = null;
         }
-
+        goodsHistory.supplierGoodsId = this.supplierGoodsId;
         goodsHistory.save();
     }
 
