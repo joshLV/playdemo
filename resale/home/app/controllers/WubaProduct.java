@@ -548,7 +548,7 @@ public class WubaProduct extends Controller {
 
     private static void getGoodsItems(Goods goods) {
         renderArgs.put("name", goods.name);
-        renderArgs.put("title", goods.title);
+        renderArgs.put("title", goods.shortName);
         renderArgs.put("listShortTitle", goods.shortName);
         renderArgs.put("imageLargePath", goods.getImageLargePath());
         renderArgs.put("salePrice", goods.getResalePrice());
