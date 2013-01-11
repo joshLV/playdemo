@@ -1,6 +1,6 @@
 package controllers;
 
-import models.resale.ResalePartnerProduct;
+import models.resale.ResalerProduct;
 import models.sales.*;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
@@ -35,11 +35,11 @@ public class ResalePartnerProducts extends Controller {
         goodsPage.setBoundaryControlsEnabled(true);
 
         List<Supplier> supplierList = Supplier.findUnDeleted();
-        Map<String, List<ResalePartnerProduct> > partnerProducts = new HashMap<>();
+        Map<String, List<ResalerProduct> > partnerProducts = new HashMap<>();
         for(models.sales.Goods goods : goodsPage) {
-            List<ResalePartnerProduct> products = ResalePartnerProduct.find("byGoods", goods).fetch();
-            for (ResalePartnerProduct product : products) {
-                List<ResalePartnerProduct> p = partnerProducts.get(goods.id + product.partner.toString());
+            List<ResalerProduct> products = ResalerProduct.find("byGoods", goods).fetch();
+            for (ResalerProduct product : products) {
+                List<ResalerProduct> p = partnerProducts.get(goods.id + product.partner.toString());
                 if (p == null) {
                     p = new ArrayList<>();
                     partnerProducts.put(goods.id + product.partner.toString(), p);

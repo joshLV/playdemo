@@ -30,8 +30,23 @@ GET     /category/sub/{id}                      OperateCategories.showSubs
 # 外部商品
 GET     /resale-partner-products                 ResalePartnerProducts.index
 
+# 一号店
 GET     /resale-partner-products/yhd/upload/{goodsId}   resale.YHDGroupBuyProduct.showUpload
+POST    /resale-partner-products/yhd/upload             resale.YHDGroupBuyProduct.upload
 GET     /resale-partner-products/yhd/products/{goodsId} resale.YHDGroupBuyProduct.showProducts
+GET     /resale-partner-products/yhd/journal/{productId} resale.YHDGroupBuyProduct.journal
+
+*       /yhd-ztree/category                     resale.YHDGroupBuyProduct.category
+*       /yhd-ztree/merchant-category            resale.YHDGroupBuyProduct.merchantCategory
+
+# 京东
+GET     /resale-partner-products/jd/upload/{goodsId}   resale.JDGroupBuyProduct.showUpload
+POST    /resale-partner-products/jd/upload             resale.JDGroupBuyProduct.upload
+GET     /resale-partner-products/jd/products/{goodsId} resale.JDGroupBuyProduct.showProducts
+GET     /resale-partner-products/jd/journal/{productId} resale.JDGroupBuyProduct.journal
+
+*       /jd-ztree/city                          resale.JDGroupBuyProduct.city
+
 
 #渠道商品
 GET      /channel-goods                         OperateGoods.channel

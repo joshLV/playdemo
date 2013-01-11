@@ -7,8 +7,10 @@ import models.mail.MailUtil;
 import models.order.DeliveryType;
 import models.order.NotEnoughInventoryException;
 import models.order.OrderItems;
+import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.sales.Goods;
+import models.sales.GoodsDeployRelation;
 import models.sales.MaterialType;
 import models.supplier.Supplier;
 import models.yihaodian.shop.*;
@@ -236,7 +238,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
                 }else if (!hasElectronicOrderItem){
                     hasElectronicOrderItem = true;
                 }
-                Goods goods = Goods.find("byId", orderItem.outerId).first();
+                Goods goods = GoodsDeployRelation.getGoods(OuterOrderPartner.YHD, orderItem.outerId);
                 if(goods == null){
                     Logger.info("goods not found: %s", orderItem.outerId );
                     return null;

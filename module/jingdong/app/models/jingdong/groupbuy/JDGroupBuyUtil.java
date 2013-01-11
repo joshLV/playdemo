@@ -2,6 +2,7 @@ package models.jingdong.groupbuy;
 
 import cache.CacheCallBack;
 import cache.CacheHelper;
+import com.google.gson.Gson;
 import models.jingdong.groupbuy.response.*;
 import models.order.ECoupon;
 import models.order.OuterOrder;

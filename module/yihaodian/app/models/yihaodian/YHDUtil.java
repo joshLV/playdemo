@@ -23,8 +23,11 @@ public class YHDUtil {
     public static String FORMAT = "xml";
     public static String VERSION = "1.0";
 
-
     public static String sendRequest(Map<String,String> appParams, String method){
+        return sendRequest(appParams, null, method);
+    }
+
+    public static String sendRequest(Map<String,String> appParams, String[] filePaths, String method){
         // 系统级参数设置
         Map<String, String> params = sysParams();
 
@@ -33,7 +36,11 @@ public class YHDUtil {
         params.putAll(appParams);
 
         Logger.info("gateway_url: %s", GATEWAY_URL );
-        return PostClient.sendByPost(GATEWAY_URL, params, SECRET_KEY);
+        if (filePaths == null) {
+            return PostClient.sendByPost(GATEWAY_URL, params, SECRET_KEY);
+        }else{
+            return PostClient.sendByPost(GATEWAY_URL, params, filePaths, SECRET_KEY);
+        }
     }
 
     private static Map<String, String> sysParams(){
@@ -41,10 +48,10 @@ public class YHDUtil {
         // 系统级参数设置（必须）
         paramMap.put("checkCode", CHECK_CODE);
         paramMap.put("merchantId", MERCHANT_ID);
-        paramMap.put("erp", "self");
-        paramMap.put("erpVer", "1.0");
-        paramMap.put("format", "xml");
-        paramMap.put("ver", "1.0");
+        paramMap.put("erp", ERP);
+        paramMap.put("erpVer", ERP_VERSION);
+        paramMap.put("format", FORMAT);
+        paramMap.put("ver", VERSION);
         return paramMap;
     }
 
