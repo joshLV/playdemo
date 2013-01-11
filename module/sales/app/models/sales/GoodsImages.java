@@ -25,6 +25,9 @@ public class GoodsImages extends Model {
     @ManyToOne
     public Goods goods;
 
+    @ManyToOne
+    public GoodsHistory goodsHistory;
+
     public static final String IMAGE_TINY = "60x46_nw";
     public static final String IMAGE_SMALL = "172x132";
     public static final String IMAGE_MIDDLE = "234x178";

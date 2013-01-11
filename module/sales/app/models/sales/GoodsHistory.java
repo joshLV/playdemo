@@ -3,6 +3,7 @@ package models.sales;
 import cache.CacheCallBack;
 import cache.CacheHelper;
 import com.uhuila.common.util.PathUtil;
+import models.resale.ResalerFav;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
@@ -77,8 +78,9 @@ public class GoodsHistory extends Model {
      * 商品短名称
      */
     @Required
-    @MaxSize(60)
+    @MaxSize(24)
     public String shortName;
+
     /**
      * (网站标题)原来叫商品名称
      */
@@ -92,12 +94,39 @@ public class GoodsHistory extends Model {
     public String no;
 
     /**
+     * 推荐指数.
+     */
+    public Integer recommend = 0;
+
+    /**
+     * 优先指数.
+     */
+    public Integer priority = 0;
+
+    /**
+     * 收藏指数.
+     */
+    public Integer favorite = 0;
+
+    /**
+     * 是否预约商品
+     */
+    @Column(name = "is_order")
+    public Boolean isOrder = Boolean.FALSE;
+
+    /**
      * 券有效开始日
      */
     @Required
     @Column(name = "effective_at")
     @Temporal(TemporalType.TIMESTAMP)
     public Date effectiveAt;
+
+    /**
+     * 最早上架时间
+     */
+    @Column(name = "first_onsale_at")
+    public Date firstOnSaleAt;
 
     /**
      * 券有效结束日
@@ -107,6 +136,22 @@ public class GoodsHistory extends Model {
     @Column(name = "expire_at")
     @Temporal(TemporalType.TIMESTAMP)
     public Date expireAt;
+
+    /**
+     * 是否隐藏上架
+     */
+    @Column(name = "is_hide_onsale")
+    public Boolean isHideOnsale = Boolean.FALSE;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "goods_history_id")
+    public List<ResalerFav> resalerFavs;
+
+    /**
+     * 手工排序
+     */
+    @Column(name = "display_order")
+    public String displayOrder;
 
     /**
      * 商户填写的商品市场价
@@ -340,6 +385,32 @@ public class GoodsHistory extends Model {
     @Column(name = "group_code", length = 32)
     public String groupCode;
 
+
+    /**
+     * 商品流水码（至少2位 可动态扩展）
+     */
+    @Column(name = "sequence_code")
+    public String sequenceCode;
+
+    /**
+     * 商品编码 【商户类别编码（2位）+商户流水码（4位）+商品流水码（至少2位 可动态扩展）】
+     */
+    @Column(name = "code")
+    public String code;
+
+
+    /**
+     * 进货量
+     */
+    @Column(name = "income_goods_count")
+    public Long incomeGoodsCount;
+
+    /**
+     * 逻辑删除,0:未删除，1:已删除
+     */
+    @Enumerated(EnumType.ORDINAL)
+    public com.uhuila.common.constants.DeletedStatus deleted;
+
     /**
      * 温馨提示
      */
@@ -376,6 +447,9 @@ public class GoodsHistory extends Model {
      */
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY, mappedBy = "goodshistory")
     public Set<GoodsHistoryUnPublishedPlatform> unPublishedPlatforms;
+
+    @OneToMany(mappedBy = "goodsHistory")
+    public List<GoodsImages> goodsImagesList;
 
     /**
      * 大规格图片路径

@@ -4,6 +4,7 @@ import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import models.order.OuterOrderPartner;
 import models.sales.Goods;
+import models.sales.GoodsHistory;
 import models.sales.GoodsStatus;
 import models.sales.MaterialType;
 import org.apache.commons.lang.StringUtils;
@@ -31,6 +32,9 @@ public class ResalerFav extends Model {
 
     @ManyToOne
     public Goods goods;
+
+    @ManyToOne
+    public GoodsHistory goodsHistory;
 
     @Column(name = "lock_version")
     public int lockVersion;
