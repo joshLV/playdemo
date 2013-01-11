@@ -187,7 +187,7 @@
                 ￥${(report?.netSalesAmount?:0)}
             </td>
             #{if hasSeeReportProfitRight == true}
-                <td style="text-align:right;">${(report?.grossMargin?:0).format('#')}%</td>
+                <td style="text-align:right;">${(report?.grossMargin?:0).format('#0.00')}%</td>
                 <td style="text-align:right;">
                     #{if report.profit != null && report.profit!=0}
                         ￥${(report?.profit?:0).format('#0.00')}
