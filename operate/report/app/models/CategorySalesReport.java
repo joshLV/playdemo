@@ -344,7 +344,7 @@ public class CategorySalesReport {
     }
 
     public CategorySalesReport(BigDecimal summaryConsumed, BigDecimal totalAmount, BigDecimal refundAmount, BigDecimal netSalesAmount
-            , BigDecimal grossMargin, BigDecimal channelCost, BigDecimal profit) {
+            , BigDecimal grossMargin, BigDecimal channelCost, BigDecimal profit, BigDecimal cheatedOrderAmount) {
         this.summaryConsumed = summaryConsumed;
         this.totalAmount = totalAmount;
         this.netSalesAmount = netSalesAmount;
@@ -352,6 +352,7 @@ public class CategorySalesReport {
         this.grossMargin = grossMargin;
         this.channelCost = channelCost;
         this.profit = profit;
+        this.cheatedOrderAmount = cheatedOrderAmount;
     }
 
     /**
@@ -493,7 +494,7 @@ public class CategorySalesReport {
             if (item == null) {
                 Goods goods = Goods.findById(cheatedItem.goods.id);
                 cheatedItem.originalPrice = goods.originalPrice;
-                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount== null ? BigDecimal.ZERO : cheatedItem.cheatedOrderAmount);
+                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderAmount);
                 cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
                 map.put(getReportKey(cheatedItem), cheatedItem);
             } else {
@@ -858,7 +859,7 @@ public class CategorySalesReport {
             if (item == null) {
                 Goods goods = Goods.findById(cheatedItem.goods.id);
                 cheatedItem.originalPrice = goods.originalPrice;
-                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost== null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
+                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
                 cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
                 map.put(getReportKey(cheatedItem), cheatedItem);
             } else {
@@ -957,7 +958,7 @@ public class CategorySalesReport {
             }
         }
 
-                List resultList = new ArrayList();
+        List resultList = new ArrayList();
 
         List<String> tempString = new ArrayList<>();
         for (String s : map.keySet()) {
@@ -1112,7 +1113,7 @@ public class CategorySalesReport {
             if (item == null) {
                 Goods goods = Goods.findById(cheatedItem.goods.id);
                 cheatedItem.originalPrice = goods.originalPrice;
-                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost== null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
+                cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
                 cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
                 totalMap.put(getTotalReportKey(cheatedItem), cheatedItem);
             } else {
@@ -1220,6 +1221,7 @@ public class CategorySalesReport {
         BigDecimal grossMargin = BigDecimal.ZERO;
         BigDecimal profit = BigDecimal.ZERO;
         BigDecimal summaryConsumed = BigDecimal.ZERO;
+        BigDecimal cheatedOrderAmount = BigDecimal.ZERO;
 
         for (CategorySalesReport item : resultList) {
             totalAmount = totalAmount.add(item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount);
@@ -1230,12 +1232,13 @@ public class CategorySalesReport {
             channelCost = channelCost.add(item.channelCost == null ? BigDecimal.ZERO : item.channelCost);
             profit = profit.add(item.profit == null ? BigDecimal.ZERO : item.profit);
             netSalesAmount = netSalesAmount.add(item.netSalesAmount == null ? BigDecimal.ZERO : item.netSalesAmount);
+            cheatedOrderAmount = cheatedOrderAmount.add(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount);
         }
 
         if (totolSalePrice.compareTo(BigDecimal.ZERO) != 0) {
             grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
-        return new CategorySalesReport(summaryConsumed.setScale(2,4), totalAmount.setScale(2,4), refundAmount.setScale(2,4), netSalesAmount.setScale(2,4), grossMargin, channelCost.setScale(2,4), profit.setScale(2,4));
+        return new CategorySalesReport(summaryConsumed.setScale(2, 4), totalAmount.setScale(2, 4), refundAmount.setScale(2, 4), netSalesAmount.setScale(2, 4), grossMargin, channelCost.setScale(2, 4), profit.setScale(2, 4), cheatedOrderAmount.setScale(2, 4));
     }
 
 

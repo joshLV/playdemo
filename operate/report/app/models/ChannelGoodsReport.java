@@ -40,6 +40,11 @@ public class ChannelGoodsReport {
     public Long cheatedOrderNum;
 
     /**
+     * 消费金额汇总
+     */
+    public BigDecimal totalConsumed;
+
+    /**
      * 刷单看陈本
      */
     public BigDecimal cheatedOrderCost;
@@ -251,13 +256,15 @@ public class ChannelGoodsReport {
     }
 
     public ChannelGoodsReport(BigDecimal totalAmount, BigDecimal refundAmount, BigDecimal netSalesAmount
-            , BigDecimal grossMargin, BigDecimal channelCost, BigDecimal profit) {
+            , BigDecimal grossMargin, BigDecimal channelCost, BigDecimal profit, BigDecimal cheatedOrderAmount, BigDecimal totalConsumed) {
         this.totalAmount = totalAmount;
         this.netSalesAmount = netSalesAmount;
         this.refundAmount = refundAmount;
         this.grossMargin = grossMargin;
         this.channelCost = channelCost;
         this.profit = profit;
+        this.cheatedOrderAmount = cheatedOrderAmount;
+        this.totalConsumed = totalConsumed;
     }
 
     /**
@@ -721,6 +728,9 @@ public class ChannelGoodsReport {
         BigDecimal channelCost = BigDecimal.ZERO;
         BigDecimal grossMargin = BigDecimal.ZERO;
         BigDecimal profit = BigDecimal.ZERO;
+        BigDecimal cheatedOrderAmount = BigDecimal.ZERO;
+        BigDecimal totalConsumed = BigDecimal.ZERO;
+
 
         for (ChannelGoodsReport item : resultList) {
             totalAmount = totalAmount.add(item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount);
@@ -731,13 +741,15 @@ public class ChannelGoodsReport {
             totalCost = totalCost.add(item.totalCost == null ? BigDecimal.ZERO : item.totalCost);
             channelCost = channelCost.add(item.channelCost == null ? BigDecimal.ZERO : item.channelCost);
             profit = profit.add(item.profit == null ? BigDecimal.ZERO : item.profit);
+            cheatedOrderAmount = cheatedOrderAmount.add(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount);
+            totalConsumed = totalConsumed.add(item.consumedAmount == null ? BigDecimal.ZERO : item.consumedAmount);
         }
 
         if (totolSalePrice.compareTo(BigDecimal.ZERO) != 0) {
             grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
 
-        return new ChannelGoodsReport(totalAmount.setScale(2, 4), refundAmount.setScale(2, 4), netSalesAmount.setScale(2, 4), grossMargin, channelCost.setScale(2, 4), profit.setScale(2, 4));
+        return new ChannelGoodsReport(totalAmount.setScale(2, 4), refundAmount.setScale(2, 4), netSalesAmount.setScale(2, 4), grossMargin, channelCost.setScale(2, 4), profit.setScale(2, 4), cheatedOrderAmount.setScale(2, 4), totalConsumed.setScale(2, 4));
     }
 
     public static String getReportKey(ChannelGoodsReport refoundItem) {
