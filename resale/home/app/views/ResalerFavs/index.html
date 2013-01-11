@@ -112,14 +112,12 @@
                     </td>
 
                     <td class="action">
-                    %{infoList=models.sales.ChannelGoodsInfo.findByGoods(favItem.goods,resaler);
+                    %{city=new models.sales.ChannelGoodsInfo().getChannelGoodsInfo(favItem.goods,resaler);
 
-                        if (infoList.size>0){
-                        city=infoList.get(0);
-                        }
+
                         }%
                     *{#{list items:, as:'city'}}*
-                        #{if city}
+                        #{if city!=null}
                         <a href="${city?.url}" target="_blank">${city?.tag}</a> |
                         #{/if}
                     *{#{/list}}*

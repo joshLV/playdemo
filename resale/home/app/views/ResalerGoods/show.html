@@ -1,7 +1,7 @@
 #{extends 'main.html' /}
 #{set title:'券市场 - 商品详情' /}
 #{set 'moreStyles'}
-    <link href="@@{'/public/stylesheets/goods-show.css'}" rel="stylesheet" type="text/css"/>
+<link href="@@{'/public/stylesheets/goods-show.css'}" rel="stylesheet" type="text/css"/>
     #{asset.css src:['/r/base.css', '/r/goods.css'] /}
 #{/set}
 #{set 'moreScripts'}
@@ -9,316 +9,123 @@
 #{/set}
 
 #{set 'navMenu'}
-    <li><a href="/">首　页</a></li>
-    <li><a class="current" href="/goods">商品库</a></li>
-    <li><a href="/library">我的分销库</a></li>
-    <li><a href="/charge">账户充值</a></li>
-    <li><a href="/withdraw">账户提现</a></li>
+<li><a href="/">首　页</a></li>
+<li><a class="current" href="/goods">商品库</a></li>
+<li><a href="/library">我的分销库</a></li>
+<li><a href="/charge">账户充值</a></li>
+<li><a href="/withdraw">账户提现</a></li>
 #{/set}
 
 <div id="content" class="clearfix">
     <!-- <div class="aside"> -->
-        <!-- <h3>搜索该产品的用户还看过</h3> -->
-        <!-- <ul> -->
-            <!-- <li> -->
-                <!-- <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div> -->
-                <!-- <div class="name"><a href="">来伊价</a></div> -->
-                <!-- <div class="price clearfix"> -->
-                    <!-- <span class="purchass">采购价：<b>&yen; 14.8</b></span> -->
-                    <!-- <span class="market">市场价：<del>Y:20.00</del></span> -->
-                <!-- </div> -->
-            <!-- </li> -->
-            <!-- <li> -->
-                <!-- <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div> -->
-                <!-- <div class="name"><a href="">来伊价</a></div> -->
-                <!-- <div class="price clearfix"> -->
-                    <!-- <span class="purchass">采购价：<b>&yen; 14.8</b></span> -->
-                    <!-- <span class="market">市场价：<del>Y:20.00</del></span> -->
-                <!-- </div> -->
-            <!-- </li> -->
-            <!-- <li> -->
-                <!-- <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div> -->
-                <!-- <div class="name"><a href="">来伊价</a></div> -->
-                <!-- <div class="price clearfix"> -->
-                    <!-- <span class="purchass">采购价：<b>&yen; 14.8</b></span> -->
-                    <!-- <span class="market">市场价：<del>Y:20.00</del></span> -->
-                <!-- </div> -->
-            <!-- </li> -->
-            <!-- <li> -->
-                <!-- <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div> -->
-                <!-- <div class="name"><a href="">来伊价</a></div> -->
-                <!-- <div class="price clearfix"> -->
-                    <!-- <span class="purchass">采购价：<b>&yen; 14.8</b></span> -->
-                    <!-- <span class="market">市场价：<del>Y:20.00</del></span> -->
-                <!-- </div> -->
-            <!-- </li> -->
-        <!-- </ul> -->
+    <!-- <h3>搜索该产品的用户还看过</h3> -->
+    <!-- <ul> -->
+    <!-- <li> -->
+    <!-- <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div> -->
+    <!-- <div class="name"><a href="">来伊价</a></div> -->
+    <!-- <div class="price clearfix"> -->
+    <!-- <span class="purchass">采购价：<b>&yen; 14.8</b></span> -->
+    <!-- <span class="market">市场价：<del>Y:20.00</del></span> -->
+    <!-- </div> -->
+    <!-- </li> -->
+    <!-- <li> -->
+    <!-- <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div> -->
+    <!-- <div class="name"><a href="">来伊价</a></div> -->
+    <!-- <div class="price clearfix"> -->
+    <!-- <span class="purchass">采购价：<b>&yen; 14.8</b></span> -->
+    <!-- <span class="market">市场价：<del>Y:20.00</del></span> -->
+    <!-- </div> -->
+    <!-- </li> -->
+    <!-- <li> -->
+    <!-- <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div> -->
+    <!-- <div class="name"><a href="">来伊价</a></div> -->
+    <!-- <div class="price clearfix"> -->
+    <!-- <span class="purchass">采购价：<b>&yen; 14.8</b></span> -->
+    <!-- <span class="market">市场价：<del>Y:20.00</del></span> -->
+    <!-- </div> -->
+    <!-- </li> -->
+    <!-- <li> -->
+    <!-- <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div> -->
+    <!-- <div class="name"><a href="">来伊价</a></div> -->
+    <!-- <div class="price clearfix"> -->
+    <!-- <span class="purchass">采购价：<b>&yen; 14.8</b></span> -->
+    <!-- <span class="market">市场价：<del>Y:20.00</del></span> -->
+    <!-- </div> -->
+    <!-- </li> -->
+    <!-- </ul> -->
     <!-- </div>[> .aside END <] -->
-        <div class="summary clearfix">
-            <h3>${goods.name}</h3>
-            <div class="photo"><img src="${goods.imageLargePath}" width="280" height="168"/></div>
-            <ul class="property">
-                <li class="price">采 购 价：<span>&yen;${goods.getResalePrice()}</span></li>
-                <li class="cost">市 场 价：
-                    <del>&yen;${goods.faceValue}</del>
-                </li>
-                <li class="discount">折　　扣：<span>${goods.discountExpress}</span></li>
-                <li class="inventory">库　　存：<span id="inventory">${goods.getRealStocks()}</span></li>
-                <li class="deadline">有效期：<span>${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</span></li>
-                <li class="amount">购买数量：
-                    <span ><input class="num_input_bg" id="number" name="number" type="text" value="1"/> 件</span>
-                    <span id="notEnough" class="error">#{error 'number' /}</span>
-                </li>
-                <li class="action">
-                   #{if goods.isExistLibrary(resaler)}
-                       <a class="buy" href="/carts?goodsId=${goods?.id}" id="link_buy_now">立即购买</a>
-                       <span>已加入分销库</span>
-                   #{/if}
-                  #{else}
-                      <a class="add" id="link_add_cart" href="#">加入分销库</a>
-                  #{/else}
-                    <div id="add_cart_result" class="add-cart-success" style="display: none;">
-                        <h3>已成功添加到分销库！</h3>
-                        <span id="close_div" class="close-div">关闭</span>
-                        <a href="/library">查看分销库</a>
-                    </div>
-                </li>
-            </ul>
-        </div><!-- .summary END -->
-        <div class="intro">
-            <h3>温馨提示</h3>
-            <div class="intro-bd">${goods?.prompt?.raw()}</div>
-        </div>
-        <div class="intro">
-            <h3>商品详情</h3>
-            <div class="intro-bd">${goods?.details?.raw()}</div>
-        </div>
-        <div class="intro">
-            <h3>使用门店</h3>
-            <div class="intro-bd">
-                <table width="700" border="0" cellpadding="0" cellspacing="0">
+#{form @ResalerGoods.index() , id:'buy_now_form'}
+      <input type="hidden" id="goodsId" name="goodsId"
+                   value="${goods.id}">
+    <div class="summary clearfix">
+        <h3>${goods.name}</h3>
 
-                #{if goods.shops.size() > 0}
-                    #{list goods.shops, as:'shop'}
-                        <tr>
-                            <td width="120" height="30">${shop.name}</td>
-                            <td>${shop.address}</td>
-                            <td>${shop.phone}</td>
-                        </tr>
-                    #{/list}
+        <div class="photo"><img src="${goods.imageLargePath}" width="280" height="168"/></div>
+        <ul class="property">
+            <li class="price">采 购 价：<span>&yen;${goods.getResalePrice()}</span></li>
+            <li class="cost">市 场 价：
+                <del>&yen;${goods.faceValue}</del>
+            </li>
+            <li class="discount">折　　扣：<span>${goods.discountExpress}</span></li>
+            <li class="inventory">库　　存：<span id="inventory">${goods.getRealStocks()}</span></li>
+            <li class="deadline">有效期：<span>${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</span></li>
+            <li class="amount">购买数量：
+                <span><input class="num_input_bg" id="number" name="number" type="text" value="1"/> 件</span>
+                <span id="notEnough" class="error">#{error 'number' /}</span>
+            </li>
+            <li class="action">
+                #{if goods.isExistLibrary(resaler)}
+                    <a class="buy" href="/carts?goodsId=${goods?.id}" id="link_buy_now">立即购买</a>
+                    <span>已加入分销库</span>
                 #{/if}
-
-                #{if goods?.isAllShop}
-                全部门店
-                #{/if}
-
-                </table>
-            </div>
-        </div>
-    <div class="section">
-    </div><!-- .section END -->
-</div>
-
-    *{
-<div style="height:200px"></div>
-<!-- <div id="wrap_main"> -->
-    <!-- <div id="wrap_top"> -->
-    #{include "share/topNavigator.html"/}
-    <!-- </div> -->
-    <!-- <div id="wrap_top_header"> -->
-        <!-- <div id="wrap_top_header_left"><img -->
-                <!-- src="@@{'/public/images/logo.jpg'}"/></div> -->
-        <!-- <div id="wrap_top_middle">券生活-惠生活</div> -->
-    <!-- </div> -->
-    <!-- <div style="clear:both"></div> -->
-    <!-- <div class="fen_g"></div> -->
-<!-- </div> -->
-<!--主体内容部分-->
-<div id="wrap_content">
-    <div style="clear:both"></div>
-    <div id="main_content" class="clearfix">
-        <!--左侧导航部分 {{{ -->
-        <div id="left_nav">
-            <div class="left_top_one">
-                <dl class="left_one_dl">
-                    <dt>
-                    <div class="title_nav font_block">承诺/保障</div>
-                    <div></div>
-                    </dt>
-                    <dd><img src="@@{'/public/images/adv/xiaofei.jpg'}"
-                             border="0" usemap="#Map'}"/>
-                        <map name="Map" id="Map">
-                            <area shape="rect" coords="9,8,202,64" href="#'}"/>
-                            <area shape="rect" coords="10,72,204,124"
-                                  href="#'}"/>
-                            <area shape="rect" coords="11,130,206,183"
-                                  href="#'}"/>
-                        </map>
-                    </dd>
-                </dl>
-            </div>
-            <div class="left_top_two">
-                <dl class="left_one_dl">
-                    <dt>
-                    <div class="title_nav font_block">搜过该产品的用户还看过</div>
-                    <div></div>
-                    </dt>
-                    <dd class="shop_dd">
-                        <div class="img_cp"><a href="#"><img
-                                src="@@{'/public/images/chanpin/1.jpg'}"/></a>
-                        </div>
-                        <div>
-                            <a href="#"><span class="strong_gray">来伊价</span>
-                                <span class="pri_jiage">14.8</span></a>
-                        </div>
-                        <div class="text_decorat">市场价格：Y:20.00</div>
-                    </dd>
-                    <dd class="shop_dd">
-                        <div class="img_cp"><a href="#"><img
-                                src="@@{'/public/images/chanpin/1.jpg'}"/></a>
-                        </div>
-                        <div>
-                            <a href="#"><span class="strong_gray">来伊价</span>
-                                <span class="pri_jiage">14.8</span></a>
-                        </div>
-                        <div class="text_decorat">市场价格：Y:20.00</div>
-                    </dd>
-
-                    <dd class="shop_dd">
-                        <div class="img_cp"><a href="#"><img
-                                src="@@{'/public/images/chanpin/1.jpg'}"/></a>
-                        </div>
-                        <div>
-                            <a href="#"><span class="strong_gray">来伊价</span>
-                                <span class="pri_jiage">14.8</span></a>
-                        </div>
-                        <div class="text_decorat">市场价格：Y:20.00</div>
-                    </dd>
-                    <dd class="shop_dd">
-                        <div class="img_cp"><a href="#"><img
-                                src="@@{'/public/images/chanpin/1.jpg'}"/></a>
-                        </div>
-                        <div>
-                            <a href="#"><span class="strong_gray">来伊价</span>
-                                <span class="pri_jiage">14.8</span></a>
-                        </div>
-                        <div class="text_decorat">市场价格：Y:20.00</div>
-                    </dd>
-
-                </dl>
-            </div>
-        </div>
-        <!--右侧主体内容部分 }}} -->
-        <div id="right_content">
-        #{form @ResalerGoods.index() , id:'buy_now_form'}
-            <div class="right_content_show">
-                <div><h1 class="show_h1 font_block">${goods.name}</h1></div>
-                <input type="hidden" id="goodsId" name="goodsId"
-                       value="${goods.id}">
-
-                <div class="shangpin_box">
-                    <div class="left_shangpin"><img
-                            src="${goods.imageLargePath}" width="280"
-                            height="168"/></div>
-                    <div class="right_shangpin">
-                        <div class="right_shangpin_one">
-                            市场价：${goods.faceValue}元
-                        </div>
-                        <div class="right_shangpin_two">
-                            折扣：${goods.discountExpress.yesno(goods.discountExpress+'折','无优惠')}</div>
-                        <div class="right_shangpin_three">现价：<span
-                                class="font_red font_size18">${goods.getResalePrice()}</span>元
-                        </div>
-                        <div class="right_shangpin_two">有效期：<span
-                                class="right_shangpin_two">${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</span>
-                        </div>
-                        <div class="right_shangpin_two">库存：<span
-                                class="right_shangpin_two">${goods.getRealStocks()}</span>&nbsp;件
-                        </div>
-                        <div class="right_shangpin_four">购买数量:&nbsp;<input
-                                class="num_input_bg" id="number1"
-                                name="number" type="text"
-                                value="1"/>&nbsp;件 <span
-                                class="error">#{error 'number' /}</span>
-                        </div>
-                        <div class="right_shangpin_five"><a class="ligm_bg"
-                                                            href="#"
-                                                            id="link_buy_now">立即购买</a>
-                            <a class="wai_juli" id="link_add_cart1"
-                               href="#">加入分销库</a>
-                    </div>
+                #{else}
+                    <a class="add" id="link_add_cart" href="#">加入分销库</a>
+                #{/else}
+                <div id="add_cart_result" class="add-cart-success" style="display: none;">
+                    <h3>已成功添加到分销库！</h3>
+                    <span id="close_div" class="close-div">关闭</span>
+                    <a href="/library">查看分销库</a>
                 </div>
-                <div style="clear:both"></div>
-                <div id="add_cart_result2" class="buttom_dibu"
-                     style="display: none;font-size:15px">已成功添加到分销库！是否进入?
-                    <a href="/library"><span class="zi_gray">点击进入</span></a>
-                </div>
-                 <div id="add_cart_result1" class="buttom_dibu"
-                     style="display: none;font-size:15px">分销库中已存在！
-                      <a href="/library"><span class="zi_gray">查看</span></a>
-                </div>
-            </div>
-        #{/form}
-        #{if goods.prompt != null}
-            <div class="right_content_two">
-
-                <dl class="right_one_dl">
-                    <dt>
-                    <div class="title_nav">温馨提示</div>
-                    <div></div>
-                    </dt>
-                    <dd>
-                        <ul class="tishi_ul">
-                            <li class="tishi_li" id="prompt">${goods?.prompt?.raw()}</li>
-                        </ul>
-                    </dd>
-                </dl>
-            </div>
-        #{/if}
-            <div class="right_content_two">
-                <dl class="right_one_dl">
-                    <dt>
-                    <div class="title_nav">商品详情</div>
-                    <div></div>
-                    </dt>
-                    <dd>
-                        <ul class="tishi_ul">
-                            <li class="tishi_li"
-                                id="details">${goods?.details?.raw()}</li>
-                        </ul>
-                    </dd>
-                </dl>
-            </div>
-            <div class="right_content_four">
-                <dl class="right_one_dl">
-                    <dt>
-                    <div class="title_nav">使用门店</div>
-                    <div></div>
-                    </dt>
-                    <dd class="table_dd">
-                        <table width="700" border="0" cellpadding="0"
-                               cellspacing="0">
-                        #{if goods.shops.size() >0}
-                            #{list goods.shops, as:'shop'}
-                                <tr>
-                                    <td width="120" height="30"
-                                        class="table_td">${shop.name}</td>
-                                    <td class="table_td">${shop.address}</td>
-                                    <td class="table_td">${shop.phone}</td>
-                                </tr>
-                            #{/list}
-                        #{/if}
-                        </table>
-                    </dd>
-                </dl>
-
-            </div>
-        </div>
-        <div style="clear:both"></div>
+            </li>
+        </ul>
     </div>
+    <!-- .summary END -->
+#{/form}
+    <div class="intro">
+        <h3>温馨提示</h3>
+
+        <div class="intro-bd">${goods?.prompt?.raw()}</div>
+    </div>
+    <div class="intro">
+        <h3>商品详情</h3>
+
+        <div class="intro-bd">${goods?.details?.raw()}</div>
+    </div>
+    <div class="intro">
+        <h3>使用门店</h3>
+
+        <div class="intro-bd">
+            <table width="700" border="0" cellpadding="0" cellspacing="0">
+
+            #{if goods.shops.size() > 0}
+                #{list goods.shops, as:'shop'}
+                    <tr>
+                        <td width="120" height="30">${shop.name}</td>
+                        <td>${shop.address}</td>
+                        <td>${shop.phone}</td>
+                    </tr>
+                #{/list}
+            #{/if}
+
+            #{if goods?.isAllShop}
+                全部门店
+            #{/if}
+
+            </table>
+        </div>
+    </div>
+    <div class="section">
+    </div>
+    <!-- .section END -->
 </div>
-<script type="text/javascript">
-    $("#prompt").html($("#prompt").text()).text();
-    $("#details").html($("#details").text()).text();
-</script>
- }*
+
