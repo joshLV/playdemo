@@ -24,10 +24,6 @@ import java.util.List;
 @SkipCAS
 public class WEBApplication extends Controller {
 
-    public static void index() {
-        render();
-    }
-
     public static void about() {
         render();
     }
