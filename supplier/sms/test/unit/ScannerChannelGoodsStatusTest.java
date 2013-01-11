@@ -108,16 +108,4 @@ public class ScannerChannelGoodsStatusTest extends UnitTest {
         assertNotNull(channelGoodsInfo.offSaleAt);
     }
 
-    @Test
-    public void test_Job_noPage() {
-        String resultXml = "<div class=\"a\"></div>";
-        MockWebServiceClient.pushMockHttpRequest(200, resultXml);
-        assertNull(channelGoodsInfo.status);
-        assertNull(channelGoodsInfo.offSaleAt);
-
-        ScannerChannelGoodsStatusJob job = new ScannerChannelGoodsStatusJob();
-        job.doJob();
-        assertEquals(ChannelGoodsInfoStatus.PAGE_NOT_EXISTED, channelGoodsInfo.status);
-        assertNull(channelGoodsInfo.offSaleAt);
-    }
 }
