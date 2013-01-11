@@ -115,6 +115,8 @@
           name="search_form">
         商品名称：<input type="text" name="condition.shortName" class="input-medium"
                     value="${condition?.shortName}"/>
+        商品编码：<input type="text" name="condition.code" class="input-medium"
+                    value="${condition?.code}"/>
         起止日期
         <input type="text" id="condition_beginAt" class="input-medium Wdate" name="condition.beginAt"
                onfocus="WdatePicker({readOnly:true})" value="${condition?.beginAt?.format()}"> -
@@ -142,9 +144,11 @@
 
     <div class="alert alert-success">
      <span>在此期间 总销售金额：<b>￥${summary?.totalAmount?:0}</b>,
+                     刷单总额：<b>￥${summary?.cheatedOrderAmount?:0}</b>,
             总退款金额：<b>￥${summary?.refundAmount?:0}</b>,
+                     消费券总额：<b>￥${summary?.totalConsumed?:0}</b>,
             净销售金额：<b>￥${summary?.netSalesAmount?:0}</b>
-        毛利率：<b>${(summary?.grossMargin?:0).format('#')}%</b>
+        毛利率：<b>${(summary?.grossMargin?:0).format('#0.00')}%</b>
          净利润：<b>
          #{if summary.profit != null && summary.profit!=0}
              ￥${(summary?.profit?:0).format('#0.00')}
@@ -166,7 +170,9 @@
         <th>平均售价</th>
         <th>销售数量</th>
         <th>总销售额</th>
+        <th>刷单金额</th>
         <th>退款总额</th>
+        <th>消费券总额</th>
         <th>净销售额</th>
         #{if hasSeeReportProfitRight == true}
         <th>毛利率</th>
@@ -210,6 +216,12 @@
                 #{/else}
             </td>
             <td style="text-align:right;">
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}
+                &condition.goodsId=${report?.goods?.id}&condition.isCheatedOrder=true "
+                   target="_blank">${(report?.cheatedOrderAmount?:0).formatCurrency('CNY')}</a>
+            </td>
+
+            <td style="text-align:right;">
                 #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
                     <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}
                 &condition.goodsId=${report?.goods?.id}"
@@ -220,10 +232,17 @@
                 #{/else}
             </td>
             <td style="text-align:right;">
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.consumedAtBegin=${condition?.beginAt?.format()}&condition.consumedAtEnd=${condition?.endAt?.format()}
+                &condition.goodsId=${report?.goods?.id}"
+                   target="_blank">
+                ${(report?.consumedAmount?:0).formatCurrency('CNY')}
+                </a>
+            </td>
+            <td style="text-align:right;">
                 ￥${(report?.netSalesAmount?:0)}
             </td>
             #{if hasSeeReportProfitRight == true}
-                <td style="text-align:right;">${(report?.grossMargin?:0).format('#')}%</td>
+                <td style="text-align:right;">${(report?.grossMargin?:0).format('#0.00')}%</td>
                 <td style="text-align:right;">
                     #{if report.profit != null && report.profit!=0}
                         ￥${(report?.profit?:0).format('#0.00')}

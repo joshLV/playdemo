@@ -535,8 +535,8 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
             perOrderPrice = totolSalePrice.divide(BigDecimal.valueOf(orderNum), 2, RoundingMode.HALF_UP);
             grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
-        return new ConsumerFlowReport(buyCount, amount, realBuyCount, realAmount, refundPrice, refundCount, consumedPrice, consumedCount, shouldGetPrice, haveGetPrice
-                , grossMargin, channelCost, profit, perOrderPrice);
+        return new ConsumerFlowReport(buyCount, amount.setScale(2,4), realBuyCount, realAmount.setScale(2,4), refundPrice.setScale(2,4), refundCount, consumedPrice.setScale(2), consumedCount, shouldGetPrice.setScale(2,4), haveGetPrice.setScale(2,4)
+                , grossMargin, channelCost.setScale(2,4), profit.setScale(2,4), perOrderPrice.setScale(2,4));
     }
 
     private static String getReportKey(ConsumerFlowReport refoundItem) {

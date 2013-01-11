@@ -194,7 +194,6 @@ public class OperationReports extends Controller {
             channelPage.add(resaleSalesReport);
         }
 
-
         // 分页
 //        ValuePaginator<ResaleSalesReport> channelPage = PaginateUtil.wrapValuePaginator(channelList, pageNumber, PAGE_SIZE);
 
@@ -564,6 +563,21 @@ public class OperationReports extends Controller {
             if (report.profit == null) {
                 report.profit = BigDecimal.ZERO;
             }
+            if (report.avgSalesPrice == null) {
+                report.avgSalesPrice = BigDecimal.ZERO;
+            }
+            if (report.buyNumber == null) {
+                report.buyNumber = 0l;
+            }
+            if (report.totalAmount == null) {
+                report.totalAmount = BigDecimal.ZERO;
+            }
+            if (report.cheatedOrderAmount == null) {
+                report.cheatedOrderAmount = BigDecimal.ZERO;
+            }
+            if (report.consumedAmount == null) {
+                report.consumedAmount = BigDecimal.ZERO;
+            }
         }
         render(resultList);
     }
@@ -595,6 +609,21 @@ public class OperationReports extends Controller {
             }
             if (report.netSalesAmount == null) {
                 report.netSalesAmount = BigDecimal.ZERO;
+            }
+            if (report.avgSalesPrice == null) {
+                report.avgSalesPrice = BigDecimal.ZERO;
+            }
+            if (report.buyNumber == null) {
+                report.buyNumber = 0l;
+            }
+            if (report.totalAmount == null) {
+                report.totalAmount = BigDecimal.ZERO;
+            }
+            if (report.cheatedOrderAmount == null) {
+                report.cheatedOrderAmount = BigDecimal.ZERO;
+            }
+            if (report.consumedAmount == null) {
+                report.consumedAmount = BigDecimal.ZERO;
             }
 
         }

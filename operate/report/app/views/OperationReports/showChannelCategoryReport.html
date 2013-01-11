@@ -206,7 +206,7 @@
         件)
         <br/>
            &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;
-        毛利率：<b>${(channelSummary?.grossMargin?:0).format('#')}%</b>
+        毛利率：<b>${(channelSummary?.grossMargin?:0).format('#0.00')}%</b>
         渠道成本：<b>${(channelSummary?.channelCost?:0).formatCurrency('CNY')}</b>
          净利润：<b>
 
@@ -305,7 +305,8 @@
             #{/else}
         </td>
         #{if hasSeeReportProfitRight == true}
-            <td #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">${(report?.grossMargin?:0).format('#')}%</td>
+            <td #{if report?.code == "999"} bgcolor="#add8e6" #{/if}
+                                            style="text-align:right;">${(report?.grossMargin?:0).format('#0.00')}%</td>
             <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if}
                                              style="text-align:right;">${(report?.channelCost?:0).formatCurrency('CNY')}</td>
             <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
@@ -323,8 +324,10 @@
 #{/paginate.list}
 
 </table>
+#{if reportPage.getPageCount() > 1}
 <div class="pagination">
     <ul>
-    #{paginate.controls items:reportPage /}
+        #{paginate.controls items:reportPage /}
     </ul>
+#{/if}
 </div>

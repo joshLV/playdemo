@@ -37,13 +37,12 @@ public class SalesReportCondition implements Serializable {
         StringBuilder condBuilder = new StringBuilder(" where (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
 
-
         if (StringUtils.isNotBlank(shortName)) {
             condBuilder.append(" and r.goods.shortName like :shortName");
             paramMap.put("shortName", "%" + shortName + "%");
         }
         if (StringUtils.isNotBlank(code)) {
-            condBuilder.append(" and r.goods.code = :code");
+            condBuilder.append(" and r.goods.code like :code");
             paramMap.put("code", code.trim() + "%");
         }
 
@@ -74,6 +73,7 @@ public class SalesReportCondition implements Serializable {
         return condBuilder.toString();
     }
 
+
     public String getFilterCheatedOrder() {
         StringBuilder condBuilder = new StringBuilder(" r.order.status='PAID' and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
@@ -83,7 +83,7 @@ public class SalesReportCondition implements Serializable {
             paramMap.put("shortName", "%" + shortName + "%");
         }
         if (StringUtils.isNotBlank(code)) {
-            condBuilder.append(" and r.goods.code = :code");
+            condBuilder.append(" and r.goods.code like :code");
             paramMap.put("code", code.trim() + "%");
         }
 
@@ -122,7 +122,7 @@ public class SalesReportCondition implements Serializable {
             paramMap.put("shortName", "%" + shortName + "%");
         }
         if (StringUtils.isNotBlank(code)) {
-            condBuilder.append(" and r.goods.code = :code");
+            condBuilder.append(" and r.goods.code like :code");
             paramMap.put("code", code.trim() + "%");
         }
 
@@ -162,7 +162,7 @@ public class SalesReportCondition implements Serializable {
             paramMap.put("shortName", "%" + shortName + "%");
         }
         if (StringUtils.isNotBlank(code)) {
-            condBuilder.append(" and r.goods.code = :code");
+            condBuilder.append(" and r.goods.code like :code");
             paramMap.put("code", code.trim() + "%");
         }
         if (beginAt != null) {
@@ -202,7 +202,7 @@ public class SalesReportCondition implements Serializable {
             paramMap.put("shortName", "%" + shortName + "%");
         }
         if (StringUtils.isNotBlank(code)) {
-            condBuilder.append(" and r.goods.code = :code");
+            condBuilder.append(" and r.goods.code like :code");
             paramMap.put("code", code.trim() + "%");
         }
         if (beginAt != null) {
@@ -241,7 +241,7 @@ public class SalesReportCondition implements Serializable {
             paramMap1.put("shortName", "%" + shortName + "%");
         }
         if (StringUtils.isNotBlank(code)) {
-            condBuilder.append(" and e.goods.code = :code");
+            condBuilder.append(" and e.goods.code like :code");
             paramMap1.put("code", code.trim() + "%");
         }
         if (beginAt != null) {
@@ -280,7 +280,7 @@ public class SalesReportCondition implements Serializable {
             paramMap1.put("shortName", "%" + shortName + "%");
         }
         if (StringUtils.isNotBlank(code)) {
-            condBuilder.append(" and e.goods.code = :code");
+            condBuilder.append(" and e.goods.code like :code");
             paramMap1.put("code", code.trim() + "%");
         }
         if (beginAt != null) {

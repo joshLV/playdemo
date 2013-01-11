@@ -159,7 +159,7 @@
         件)
         <br/>
            &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;
-        毛利率：<b>${(summary?.grossMargin?:0).format('#')}%</b>
+        毛利率：<b>${(summary?.grossMargin?:0).format('#0.00')}%</b>
         渠道成本：<b>${(summary?.channelCost?:0).formatCurrency('CNY')}</b>
          净利润：<b>
 
@@ -232,7 +232,7 @@
                target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
         </td>
         #{if hasSeeReportProfitRight == true}
-            <td style="text-align:right;">${(report?.grossMargin?:0).format('#')}%</td>
+            <td style="text-align:right;">${(report?.grossMargin?:0).format('#0.00')}%</td>
             <td style="text-align:right;">${(report?.channelCost?:0).formatCurrency('CNY')}</td>
             <td style="text-align:right;">
                 #{if report.profit != null && report.profit!=0}
@@ -248,8 +248,10 @@
 #{/paginate.list}
 
 </table>
+#{if reportPage.getPageCount() > 1}
 <div class="pagination">
     <ul>
-    #{paginate.controls items:reportPage /}
+        #{paginate.controls items:reportPage /}
     </ul>
+#{/if}
 </div>
