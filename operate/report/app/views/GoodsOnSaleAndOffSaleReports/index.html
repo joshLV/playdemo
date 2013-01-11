@@ -15,11 +15,11 @@
     <thead>
     <th width="10px">序号</th>
     <th width="10px">编号</th>
-    <th width="100px">商品名称</th>
-
+    <th width="300px">商品名称</th>
     #{list items:resalerList, as:'resaler'}
     <th width="50px">${resaler.resalerName}</th>
     #{/list}
+    <th width="50px">操作</th>
     </thead>
 #{paginate.list items:reportPage, as:'report'}
     <tr>
@@ -29,6 +29,7 @@
         code=rowkey[1]=='null'? "":rowkey[1];
         id=rowkey[2]=='null'? "":rowkey[2];
 
+        baseUrl=play.Play.configuration.getProperty("uri.operate_business");
         wwwUrl=play.Play.configuration.getProperty("www.url");
         }%
         <td>${report_index}</td>
@@ -41,18 +42,18 @@
             }%
             <td>
                 #{if  goodsReport!=null && models.sales.ChannelGoodsInfoStatus.ONSALE==goodsReport?.status}
-                    <span style="font-size: 15px;color: green">√</span>
-                    <a href="${goodsReport?.url}" target="_blank">查看</a>
-                #{/if}
+                <a href="${goodsReport?.url}" target="_blank"><span style="font-size: 15px;color: green">√</span></a>#{/if}
                 *{#{elseif goodsReport!=null && models.sales.ChannelGoodsInfoStatus.PAGE_NOT_EXISTED==goodsReport?.status }}*
                     *{<a href="${goodsReport?.url}" target="_blank">查看</a>}*
                     *{<span style="font-size: 12px;color: #0000ff;">该页面不存在</span>}*
                 *{#{/elseif}}*
                 #{else}
-                    <span style="color: red">X</span>
+                   #{if goodsReport?.status!=null }<a href="${goodsReport?.url}" target="_blank"><span style="color: red">X</span></a>#{/if}
                 #{/else}
             </td>
+
         #{/list}
+        <td><a href="${baseUrl}/channel-goods?goodsId=${id}" target="_blank">查看</a></td>
     </tr>
 #{/paginate.list}
 </table>

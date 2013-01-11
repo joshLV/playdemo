@@ -74,11 +74,7 @@ public class SupplierUserUnitTest extends UnitTest {
 
     @Test
     public void testUpdatePassword() {
-        SupplierUser newSupplierUser = new SupplierUser();
-        newSupplierUser.encryptedPassword = "1234567";
-
-        SupplierUser.updatePassword(supplierUser, newSupplierUser);
-
+        SupplierUser.updatePassword(supplierUser, "1234567");
         SupplierUser user = SupplierUser.findById(supplierUser.id);
 
         assertEquals(DigestUtils.md5Hex("1234567" + user.passwordSalt), user.encryptedPassword);

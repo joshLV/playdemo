@@ -6,7 +6,7 @@
 #{set 'moreScripts'}
 <script>
 $(function(){
-    if ('${isOk}'== "isOk") {
+    if ('${isOk}') {
         $("#updateOk").html("密码修改成功！");
     }
 });
@@ -23,22 +23,23 @@ $(function(){
             <div class="group">
                 <label><span class="required">*</span>原密码：</label>
                 <div class="control">
-                    <input class="input" name="user.oldPassword" type="password" id="old_password" size="26" maxlength="20" value="${user?.oldPassword}"/>
+                    <input class="input" name="oldPassword" type="password" id="old_password" size="26" maxlength="20" value="${oldPassword}"/>
                     <span class="error">#{error 'user.oldPassword' /}</span>
                 </div>
             </div>
             <div class="group">
                 <label><span class="required">*</span>新密码：</label>
                 <div class="control">
-                    <input class="input" name="user.password" type="password" id="password" size="26" maxlength="20" value="${user?.password}" onkeyup="javascript:ChangeQD();"/>
+                    <input class="input" name="password" type="password" id="password" size="26" maxlength="20" value="${password}" onkeyup="javascript:ChangeQD();"/>
+                   <span style="color:#808080;">(*至少6位)</span>
                     <span class="error">#{error 'user.newPassword' /}</span>
                 </div>
             </div>
             <div class="group">
                 <label><span class="required">*</span>确认新密码：</label>
                 <div class="control">
-                    <input class="input" name="user.confirmPassword" type="password" id="confirmPassword" size="26" maxlength="20" value="${user?.confirmPassword}"/>
-                    <span class="error">#{error 'user.newConfirmPassword' /}</span>
+                    <input class="input" name="confirmPassword" type="password" id="confirmPassword" size="26" maxlength="20" value="${confirmPassword}"/>
+                    <span class="error">#{error 'user.confirmPassword' /}</span>
                 </div>
             </div>
             <div class="group">

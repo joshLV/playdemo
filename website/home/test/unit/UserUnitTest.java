@@ -24,14 +24,10 @@ public class UserUnitTest extends UnitTest {
 
     @Test
     public void testUpdatePassword() {
-        user.password = "654321";
         User newUser = User.findById(user.id);
-        String password = newUser.password;
-
-        user.updatePassword(newUser, user);
+        user.updatePassword(newUser, "654321");
 
         User updatedUser = User.findById(user.id);
-        assertNotSame(password, updatedUser.password);
         assertEquals(DigestUtils.md5Hex("654321" + updatedUser.passwordSalt), updatedUser.password);
     }
 

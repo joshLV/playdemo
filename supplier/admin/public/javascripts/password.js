@@ -68,8 +68,8 @@ function showPwRank(pwRank) {
 	}
 }
 
-function isOk(val){
-	if (val=="isOk") {
+function editSuccess(isOk){
+	if (isOk) {
 		alert("密码修改成功！");
 	}
 

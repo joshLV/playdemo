@@ -1,11 +1,13 @@
 package factory.accounts;
 
+import factory.FactoryBoy;
 import factory.ModelFactory;
 import factory.annotation.Factory;
 import models.accounts.Account;
 import models.accounts.AccountCreditable;
 import models.accounts.AccountStatus;
 import models.accounts.AccountType;
+import models.resale.Resaler;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -35,6 +37,14 @@ public class AccountFactory extends ModelFactory<Account> {
     public void defineWithBalanceAccount(Account account) {
         account.accountType = AccountType.PLATFORM;
         account.uid = Account.PLATFORM_INCOMING;
+        account.amount=BigDecimal.TEN;
+    }
+
+
+    @Factory(name = "resaler")
+    public void defineResaler(Account account) {
+        account.accountType = AccountType.RESALER;
+        account.uid = FactoryBoy.lastOrCreate(Resaler.class).id;
         account.amount=BigDecimal.TEN;
     }
 
