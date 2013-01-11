@@ -21,7 +21,6 @@ import models.wuba.AreaMapping;
 import models.wuba.WubaUtil;
 import org.apache.commons.lang.StringUtils;
 import play.cache.Cache;
-import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -39,7 +38,7 @@ import java.util.Map;
  */
 @With(SecureCAS.class)
 public class WubaProduct extends Controller {
-    public static final String DATE_FORMAT = "yyyy-MM-dd";
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String THIRD_URL = "http://t.58.com/";
 
     public static void prepare(long goodsId) {
@@ -117,6 +116,9 @@ public class WubaProduct extends Controller {
             return;
         }
         Resaler user = SecureCAS.getResaler();
+        if (!Resaler.WUBA_LOGIN_NAME.equals(user.loginName)) {
+            error("user is not 58 resaler");
+        }
         ResalerFav resalerFav = ResalerFav.findByGoodsId(user, goodsId);
         if (resalerFav == null) {
             error("no fav found");
@@ -220,14 +222,6 @@ public class WubaProduct extends Controller {
         render("WubaProduct/result.html", status, msg, goodsId);
     }
 
-    @Before
-    public static void checkUser() {
-        Resaler user = SecureCAS.getResaler();
-        if (!Resaler.WUBA_LOGIN_NAME.equals(user.loginName)) {
-            error("user is not 58 resaler");
-        }
-    }
-
     /**
      * 新增团购信息
      */
@@ -242,6 +236,9 @@ public class WubaProduct extends Controller {
             return;
         }
         Resaler user = SecureCAS.getResaler();
+        if (!Resaler.WUBA_LOGIN_NAME.equals(user.loginName)) {
+            error("user is not 58 resaler");
+        }
         ResalerFav resalerFav = ResalerFav.find("byGoodsAndResalerAndDeleted", goods, user, DeletedStatus.UN_DELETED).first();
         if (resalerFav == null) {
             error("no fav found");
@@ -450,6 +447,27 @@ public class WubaProduct extends Controller {
 //        resalerFav.thirdCity = StringUtils.join(cityNames, ",");
     }
 
+    public static void delay(Long goodsId, String deadline) {
+        //deadline > endtime
+        ResalerFav resalerFav = ResalerFav.findByGoodsId(SecureCAS.getResaler(), goodsId);
+        if (resalerFav == null) {
+            renderText("bad resalerFav");
+        }
+        Map<String, Object> requestMap = new HashMap<>();
+        requestMap.put("groupbuyId", String.valueOf(resalerFav.lastLinkId));
+        requestMap.put("deadline", deadline);
+
+        JsonObject result = WubaUtil.sendRequest(requestMap, "emc.groupbuy.delay");
+        String status = result.get("status").getAsString();
+        String msg = "";
+        if ("10000".equals(status)) {
+            msg = "有效期延长成功！";
+        } else {
+            msg = result.get("msg").getAsString();
+        }
+
+        renderText(msg);
+    }
 
     public static void getStatus(Long goodsId) {
         GoodsDeployRelation relation = GoodsDeployRelation.getLast(goodsId, OuterOrderPartner.WB);
@@ -548,7 +566,7 @@ public class WubaProduct extends Controller {
 
     private static void getGoodsItems(Goods goods) {
         renderArgs.put("name", goods.name);
-        renderArgs.put("title", goods.title);
+        renderArgs.put("title", goods.shortName);
         renderArgs.put("listShortTitle", goods.shortName);
         renderArgs.put("imageLargePath", goods.getImageLargePath());
         renderArgs.put("salePrice", goods.getResalePrice());
@@ -615,13 +633,29 @@ public class WubaProduct extends Controller {
 
                 renderArgs.put("buyerMaxNum", groupbuyInfoAsJsonObject.get("buyerMaxNum").getAsString());
                 renderArgs.put("buyerMinNum", groupbuyInfoAsJsonObject.get("buyerMinNum").getAsString());
+
+
                 if (groupbuyInfoAsJsonObject.has("startTime")) {
-                    renderArgs.put("startTime", DateUtil.stringToDate(groupbuyInfoAsJsonObject.get("startTime").getAsString(), "yyyy-MM-dd HH:mm:ss"));
+                    String startTime = groupbuyInfoAsJsonObject.get("startTime").getAsString();
+                    renderArgs.put("startTime", DateUtil.stringToDate(startTime, "yyyy-MM-dd"));
                 }
-                renderArgs.put("endTime", DateUtil.stringToDate(groupbuyInfoAsJsonObject.get("endTime").getAsString(), "yyyy-MM-dd HH:mm:ss"));
+                String endTime = groupbuyInfoAsJsonObject.get("endTime").getAsString();
+
+                renderArgs.put("endTime", DateUtil.stringToDate(endTime, DATE_FORMAT));
+                String zeroTemp = " 00:00:00";
+                String endTemp = " 23:59:59";
+                if (endTime.contains(zeroTemp)) {
+                    renderArgs.put("endTime", DateUtil.stringToDate(endTime.replace(zeroTemp, endTemp), DATE_FORMAT));
+                }
                 if (groupbuyInfoAsJsonObject.has("deadline")) {
-                    renderArgs.put("deadline", DateUtil.stringToDate(groupbuyInfoAsJsonObject.get("deadline").getAsString(), "yyyy-MM-dd HH:mm:ss"));
+                    String deadline = groupbuyInfoAsJsonObject.get("deadline").getAsString();
+                    renderArgs.put("deadline", DateUtil.stringToDate(deadline, DATE_FORMAT));
+                    if (deadline.contains(zeroTemp)) {
+                        renderArgs.put("deadline", DateUtil.stringToDate(deadline.replace(zeroTemp, endTemp), DATE_FORMAT));
+                    }
+
                 }
+
                 List<Long> cityIds = new ArrayList<>();
                 JsonArray jsonArray = groupbuyInfoAsJsonObject.get("cityIds").getAsJsonArray();
                 for (JsonElement element : jsonArray) {

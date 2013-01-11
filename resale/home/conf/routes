@@ -95,6 +95,7 @@ POST    /images                                 ResalerUploadFiles.uploadJson
 GET     /58-status/{goodsId}                    WubaProduct.getStatus
 GET     /58-status/onsale/{goodsId}             WubaProduct.onsale
 GET     /58-status/offsale/{goodsId}            WubaProduct.offsale
+GET     /58-delay                               WubaProduct.delay
 
 GET     /ecoupons                               Coupons.index
 GET     /ecoupons/refund/{id}                   Coupons.refund
