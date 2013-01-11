@@ -59,6 +59,13 @@ public class ChannelGoodsReport {
      */
     public Long refundNum;
 
+
+    /**
+     * 净成本
+     */
+    public BigDecimal netCost;
+
+
     /**
      * 总销售额佣金成本
      */
@@ -118,6 +125,7 @@ public class ChannelGoodsReport {
         this.profit = profit;
         this.netSalesAmount = netSalesAmount;
         this.totalCost = totalCost;
+        this.netCost = totalCost;
     }
 
     //from resaler
@@ -256,7 +264,7 @@ public class ChannelGoodsReport {
     }
 
     public ChannelGoodsReport(BigDecimal totalAmount, BigDecimal refundAmount, BigDecimal netSalesAmount
-            , BigDecimal grossMargin, BigDecimal channelCost, BigDecimal profit, BigDecimal cheatedOrderAmount, BigDecimal totalConsumed) {
+            , BigDecimal grossMargin, BigDecimal channelCost, BigDecimal profit, BigDecimal cheatedOrderAmount, BigDecimal totalConsumed, BigDecimal netCost) {
         this.totalAmount = totalAmount;
         this.netSalesAmount = netSalesAmount;
         this.refundAmount = refundAmount;
@@ -265,6 +273,7 @@ public class ChannelGoodsReport {
         this.profit = profit;
         this.cheatedOrderAmount = cheatedOrderAmount;
         this.totalConsumed = totalConsumed;
+        this.netCost = netCost;
     }
 
     /**
@@ -411,6 +420,7 @@ public class ChannelGoodsReport {
                 cheatedItem.originalPrice = goods.originalPrice;
                 cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderAmount);
                 cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
+                cheatedItem.netCost = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
                 map.put(getReportKey(cheatedItem), cheatedItem);
             } else {
                 item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
@@ -418,6 +428,7 @@ public class ChannelGoodsReport {
                 item.netSalesAmount = item.totalAmount.subtract(item.cheatedOrderAmount);
                 item.profit = item.totalAmount.subtract(cheatedItem.cheatedOrderAmount)
                         .subtract(item.totalCost).add(cheatedItem.cheatedOrderCost);
+                item.netCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
             }
         }
 
@@ -427,6 +438,7 @@ public class ChannelGoodsReport {
                 Goods goods = Goods.findById(refundItem.goods.id);
                 refundItem.originalPrice = goods.originalPrice;
                 refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
+                refundItem.netCost = BigDecimal.ZERO.subtract(refundItem.refundCost == null ? BigDecimal.ZERO : refundItem.refundCost);
                 map.put(getReportKey(refundItem), refundItem);
             } else {
                 item.refundAmount = refundItem.refundAmount;
@@ -434,6 +446,7 @@ public class ChannelGoodsReport {
                 item.refundCost = refundItem.refundCost;
                 item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount)
                         .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost);
+                item.netCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).subtract(item.refundCost == null ? BigDecimal.ZERO : item.refundCost);
             }
         }
 
@@ -620,6 +633,7 @@ public class ChannelGoodsReport {
                 cheatedItem.originalPrice = goods.originalPrice;
                 cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
                 cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
+                cheatedItem.netCost = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
                 map.put(getConsumerReportKey(cheatedItem), cheatedItem);
             } else {
                 item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
@@ -627,6 +641,7 @@ public class ChannelGoodsReport {
                 item.netSalesAmount = item.totalAmount.subtract(item.cheatedOrderAmount);
                 item.profit = item.totalAmount.subtract(cheatedItem.cheatedOrderAmount)
                         .subtract(item.totalCost).add(cheatedItem.cheatedOrderCost);
+                item.netCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
             }
         }
 
@@ -637,6 +652,7 @@ public class ChannelGoodsReport {
                 refundItem.originalPrice = goods.originalPrice;
                 refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
                 refundItem.profit = BigDecimal.ZERO.subtract(refundItem.refundAmount).add(refundItem.refundCost);
+                refundItem.netCost = BigDecimal.ZERO.subtract(refundItem.refundCost == null ? BigDecimal.ZERO : refundItem.refundCost);
                 map.put(getConsumerReportKey(refundItem), refundItem);
             } else {
                 item.refundAmount = refundItem.refundAmount;
@@ -644,6 +660,7 @@ public class ChannelGoodsReport {
                 item.netSalesAmount = item.totalAmount.subtract(item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderCost).setScale(2);
                 item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
                         .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
+                item.netCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).subtract(item.refundCost == null ? BigDecimal.ZERO : item.refundCost);
             }
         }
 
@@ -700,6 +717,7 @@ public class ChannelGoodsReport {
         BigDecimal profit = BigDecimal.ZERO;
         BigDecimal cheatedOrderAmount = BigDecimal.ZERO;
         BigDecimal totalConsumed = BigDecimal.ZERO;
+        BigDecimal netCost = BigDecimal.ZERO;
 
 
         for (ChannelGoodsReport item : resultList) {
@@ -713,13 +731,14 @@ public class ChannelGoodsReport {
             profit = profit.add(item.profit == null ? BigDecimal.ZERO : item.profit);
             cheatedOrderAmount = cheatedOrderAmount.add(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount);
             totalConsumed = totalConsumed.add(item.consumedAmount == null ? BigDecimal.ZERO : item.consumedAmount);
+            netCost = netCost.add(item.netCost == null ? BigDecimal.ZERO : item.netCost);
         }
 
         if (totolSalePrice.compareTo(BigDecimal.ZERO) != 0) {
             grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
 
-        return new ChannelGoodsReport(totalAmount.setScale(2, 4), refundAmount.setScale(2, 4), netSalesAmount.setScale(2, 4), grossMargin, channelCost.setScale(2, 4), profit.setScale(2, 4), cheatedOrderAmount.setScale(2, 4), totalConsumed.setScale(2, 4));
+        return new ChannelGoodsReport(totalAmount.setScale(2, 4), refundAmount.setScale(2, 4), netSalesAmount.setScale(2, 4), grossMargin, channelCost.setScale(2, 4), profit.setScale(2, 4), cheatedOrderAmount.setScale(2, 4), totalConsumed.setScale(2, 4), netCost.setScale(2, 4));
     }
 
     public static String getReportKey(ChannelGoodsReport refoundItem) {

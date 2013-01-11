@@ -578,6 +578,9 @@ public class OperationReports extends Controller {
             if (report.consumedAmount == null) {
                 report.consumedAmount = BigDecimal.ZERO;
             }
+            if (report.netCost == null) {
+                report.netCost = BigDecimal.ZERO;
+            }
         }
         render(resultList);
     }
@@ -624,6 +627,9 @@ public class OperationReports extends Controller {
             }
             if (report.consumedAmount == null) {
                 report.consumedAmount = BigDecimal.ZERO;
+            }
+            if (report.netCost == null) {
+                report.netCost = BigDecimal.ZERO;
             }
 
         }

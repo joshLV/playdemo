@@ -101,6 +101,7 @@
             总退款金额：<b>￥${summary?.refundAmount?:0}</b>,
             消费券总额：<b>￥${summary?.totalConsumed?:0}</b>,
             净销售金额：<b>￥${summary?.netSalesAmount?:0}</b>
+        #{if hasSeeReportProfitRight == true}
         毛利率：<b>${(summary?.grossMargin?:0).format('#')}%</b>
          净利润：<b>
             #{if summary.profit != null && summary.profit!=0}
@@ -110,6 +111,7 @@
                 ￥0
             #{/else}
             </b>
+            #{/if}
         </span>
     </div>
 
