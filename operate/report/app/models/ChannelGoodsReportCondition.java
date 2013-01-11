@@ -18,6 +18,7 @@ public class ChannelGoodsReportCondition {
     public Date beginAt = com.uhuila.common.util.DateUtil.getBeginOfDay();
     public Date endAt = com.uhuila.common.util.DateUtil.getEndOfDay(new Date());
     public String shortName;
+    public String code;
     public String interval = "-1d";
     private Map<String, Object> paramMap = new HashMap<>();
     private Map<String, Object> paramMap1 = new HashMap<>();
@@ -32,6 +33,10 @@ public class ChannelGoodsReportCondition {
         if (StringUtils.isNotBlank(shortName)) {
             condBuilder.append(" and r.goods.shortName like :shortName");
             paramMap.put("shortName", "%" + shortName + "%");
+        }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and r.goods.code like :code");
+            paramMap.put("code", code.trim() + "%");
         }
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
@@ -70,10 +75,10 @@ public class ChannelGoodsReportCondition {
             paramMap.put("shortName", "%" + shortName + "%");
         }
 
-//        if (StringUtils.isNotBlank(code)) {
-//            condBuilder.append(" and r.goods.code = :code");
-//            paramMap.put("code", code.trim() + "%");
-//        }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and r.goods.code like :code");
+            paramMap.put("code", code.trim() + "%");
+        }
 
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
@@ -112,10 +117,11 @@ public class ChannelGoodsReportCondition {
             condBuilder.append(" and e.goods.shortName like :shortName");
             paramMap1.put("shortName", "%" + shortName + "%");
         }
-//        if (StringUtils.isNotBlank(code)) {
-//            condBuilder.append(" and e.goods.code = :code");
-//            paramMap1.put("code", code.trim() + "%");
-//        }
+
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and e.goods.code like :code");
+            paramMap1.put("code", code.trim() + "%");
+        }
         if (beginAt != null) {
             condBuilder.append(" and e.refundAt >= :refundAtBegin");
             paramMap1.put("refundAtBegin", beginAt);
@@ -154,10 +160,10 @@ public class ChannelGoodsReportCondition {
             condBuilder.append(" and r.goods.shortName like :shortName");
             paramMap.put("shortName", "%" + shortName + "%");
         }
-//        if (StringUtils.isNotBlank(code)) {
-//            condBuilder.append(" and r.goods.code = :code");
-//            paramMap.put("code", code.trim() + "%");
-//        }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and r.goods.code like :code");
+            paramMap.put("code", code.trim() + "%");
+        }
         if (beginAt != null) {
             condBuilder.append(" and e.consumedAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);
@@ -194,10 +200,10 @@ public class ChannelGoodsReportCondition {
             condBuilder.append(" and r.goods.shortName like :shortName");
             paramMap.put("shortName", "%" + shortName + "%");
         }
-//        if (StringUtils.isNotBlank(code)) {
-//            condBuilder.append(" and r.goods.code = :code");
-//            paramMap.put("code", code.trim() + "%");
-//        }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and r.goods.code like :code");
+            paramMap.put("code", code.trim() + "%");
+        }
 
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
@@ -236,6 +242,10 @@ public class ChannelGoodsReportCondition {
             condBuilder.append(" and r.goods.shortName like :shortName");
             paramMap.put("shortName", "%" + shortName + "%");
         }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and r.goods.code like :code");
+            paramMap1.put("code", code.trim() + "%");
+        }
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);
@@ -269,6 +279,10 @@ public class ChannelGoodsReportCondition {
         if (StringUtils.isNotBlank(shortName)) {
             condBuilder.append(" and e.goods.shortName like :shortName");
             paramMap1.put("shortName", "%" + shortName + "%");
+        }
+        if (StringUtils.isNotBlank(code)) {
+            condBuilder.append(" and e.goods.code like :code");
+            paramMap1.put("code", code.trim() + "%");
         }
         if (beginAt != null) {
             condBuilder.append(" and e.refundAt >= :refundAtBegin");

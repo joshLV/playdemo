@@ -49,6 +49,7 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new SalesReportCondition();
         }
+        System.out.println("condition.code:" + condition.code);
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
         condition.operatorId = OperateRbac.currentUser().id;
