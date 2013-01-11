@@ -11,6 +11,7 @@ import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.FileUploadUtil;
 import com.uhuila.common.util.HtmlUtil;
 import com.uhuila.common.util.PathUtil;
+import controllers.OperateRbac;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.order.ECoupon;
@@ -1283,9 +1284,14 @@ public class Goods extends Model {
     public static void delete(Long... ids) {
         for (Long id : ids) {
             models.sales.Goods goods = models.sales.Goods.findById(id);
+            goods.refresh();
             if (goods != null) {
                 goods.deleted = DeletedStatus.DELETED;
+                goods.updatedBy = OperateRbac.currentUser().loginName;
+                goods.updatedAt = new Date();
                 goods.save();
+                String createdFrom = "Op";
+                goods.createHistory(createdFrom);
             }
         }
     }
@@ -1785,7 +1791,6 @@ public class Goods extends Model {
             }
         }
 
-
         goodsHistory.createdFrom = createdFrom;
         goodsHistory.goodsId = this.id;
         goodsHistory.name = StringUtils.trimToEmpty(this.name);
@@ -1842,6 +1847,35 @@ public class Goods extends Model {
         goodsHistory.useWeekDay = this.useWeekDay;
         goodsHistory.isLottery = this.isLottery;
         goodsHistory.groupCode = this.groupCode;
+        goodsHistory.sequenceCode = this.sequenceCode;
+        goodsHistory.code = this.code;
+        goodsHistory.incomeGoodsCount = this.incomeGoodsCount;
+        if (this.deleted == com.uhuila.common.constants.DeletedStatus.DELETED) {
+            goodsHistory.deleted = com.uhuila.common.constants.DeletedStatus.DELETED;
+        } else {
+            goodsHistory.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED;
+        }
+        goodsHistory.displayOrder = this.displayOrder;
+        goodsHistory.firstOnSaleAt = this.firstOnSaleAt;
+        goodsHistory.recommend = this.recommend;
+        goodsHistory.priority = this.priority;
+        goodsHistory.favorite = this.favorite;
+        goodsHistory.isOrder = this.isOrder;
+        goodsHistory.isHideOnsale = this.isHideOnsale;
+        if (this.resalerFavs != null) {
+            goodsHistory.resalerFavs = new LinkedList<>();
+            goodsHistory.resalerFavs.addAll(this.resalerFavs);
+        } else {
+            goodsHistory.resalerFavs = null;
+        }
+
+        if (this.goodsImagesList != null) {
+            goodsHistory.goodsImagesList = new LinkedList<>();
+            goodsHistory.goodsImagesList.addAll(this.goodsImagesList);
+        } else {
+            goodsHistory.goodsImagesList = null;
+        }
+
         goodsHistory.save();
     }
 

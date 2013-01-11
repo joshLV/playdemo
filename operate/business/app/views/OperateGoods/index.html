@@ -336,7 +336,6 @@ select:'condition_status',value:condition?.status/}
     </td>
     <td>${goods?.code}</td>
     <td>
-
         <a href="@{OperateGoods.show(goods.id)}">查看</a>
         /<a href="/goods/${goods.id}/edit2?page=${goodsPage.pageNumber?:'1'}&${queryString}">修改</a>
         #{if !models.sales.GoodsStatus.ONSALE.equals(goods.status) && !models.sales.GoodsStatus.APPLY
