@@ -1284,8 +1284,8 @@ public class Goods extends Model {
     public static void delete(String operatorName, Long... ids) {
         for (Long id : ids) {
             models.sales.Goods goods = models.sales.Goods.findById(id);
-            goods.refresh();
             if (goods != null) {
+                goods.refresh();
                 goods.deleted = DeletedStatus.DELETED;
                 if (StringUtils.isNotBlank(operatorName)) {
                     goods.updatedBy = operatorName;
