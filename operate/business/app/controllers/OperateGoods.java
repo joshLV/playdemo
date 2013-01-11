@@ -732,7 +732,7 @@ public class OperateGoods extends Controller {
                 index(null, "");
             }
         }
-        models.sales.Goods.delete(id);
+        models.sales.Goods.delete(OperateRbac.currentUser().loginName, id);
 
         index(null, "");
     }
