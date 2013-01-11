@@ -79,6 +79,7 @@ public class GoodsHistory extends Model {
      */
     @Required
     @MaxSize(24)
+    @Column(name = "short_name")
     public String shortName;
 
     /**
