@@ -62,7 +62,7 @@ public class Order extends Model {
     public static String EMAIL_RECEIVER = Play.configuration.getProperty("goods_not_enough.receiver", "dev@uhuila.com");
     public static final BigDecimal FREIGHT = new BigDecimal("6");
     private static final String DECIMAL_FORMAT = "0000000";
-    private static final String COUPON_EXPIRE_FORMAT = "yyyy-MM-dd";
+    public static final String COUPON_EXPIRE_FORMAT = "yyyy-MM-dd";
 
     @Column(name = "user_id")
     public long userId;                     //下单用户ID，可能是一百券用户，也可能是分销商
