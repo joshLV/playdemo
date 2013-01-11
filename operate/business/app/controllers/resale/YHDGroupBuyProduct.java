@@ -1,19 +1,30 @@
 package controllers.resale;
 
+import com.google.gson.Gson;
 import controllers.OperateRbac;
+import models.admin.OperateUser;
 import models.order.OuterOrderPartner;
-import models.resale.ResalePartnerProduct;
+import models.resale.ResalerProduct;
+import models.resale.ResalerProductJournal;
+import models.resale.ResalerProductJournalType;
 import models.sales.Goods;
+import models.sales.GoodsDeployRelation;
+import models.yihaodian.YHDResponse;
+import models.yihaodian.YHDUtil;
 import models.yihaodian.api.YHDCategoryAPI;
 import models.yihaodian.response.YHDIdName;
 import models.yihaodian.response.YHDMerchantCategory;
 import models.yihaodian.response.YHDProductCategory;
+import models.yihaodian.shop.UpdateResult;
 import operate.rbac.annotations.ActiveNavigation;
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author likang
@@ -21,54 +32,150 @@ import java.util.List;
  */
 @With(OperateRbac.class)
 @ActiveNavigation("resale_partner_product")
-public class YHDGroupBuyProduct extends Controller{
+public class YHDGroupBuyProduct extends Controller {
+    @ActiveNavigation("resale_partner_product")
     public static void showUpload(Long goodsId) {
         Goods goods = Goods.findById(goodsId);
 
-        List<YHDProductCategory> categories = YHDCategoryAPI.productCategoriesCache(0L, false);
-        List<YHDMerchantCategory> merchantCategories = YHDCategoryAPI.merchantCategoriesCache(0L, false);
-        List<YHDIdName> brands = YHDCategoryAPI.brandsCache();
+        List<YHDIdName> brands = YHDCategoryAPI.brands();
 
-        render(goods, categories, merchantCategories, brands);
+        render(goods, brands);
     }
 
     @ActiveNavigation("resale_partner_product")
+    public static void upload(Long outerId, File imgFile ) {
+        OperateUser operateUser = OperateRbac.currentUser();
+        Goods goods = Goods.findById(outerId);
+        if (goods == null) {
+            notFound();
+        }
+
+        GoodsDeployRelation relation = GoodsDeployRelation.generate(goods, OuterOrderPartner.YHD);
+
+        Map<String, String> requestParams = request.params.allSimple();
+        requestParams.remove("body");
+        requestParams.put("outerId", String.valueOf(relation.linkId));
+
+        String responseXml = YHDUtil.sendRequest(requestParams, "yhd.product.add");
+        Logger.info("yhd.product.add response %s", responseXml);
+        if (responseXml != null) {
+            YHDResponse<UpdateResult> res = new YHDResponse<>();
+            res.parseXml(responseXml, "updateCount", false, UpdateResult.parser);
+            renderArgs.put("res", res);
+            if(res.getErrorCount() == 0){
+                ResalerProduct product = new ResalerProduct();
+                product.partner = OuterOrderPartner.YHD;
+                product.partnerProductId = 0L;//对于一号店来说，这个没用的
+                product.creatorId = operateUser.id;
+                product.goods = goods;
+                product.goodsLinkId = relation.linkId;
+                product.lastModifierId = operateUser.id;
+                product.save();
+
+                //记录历史
+                ResalerProductJournal journal = new ResalerProductJournal();
+                journal.product = product;
+                journal.operatorId = operateUser.id;
+                journal.jsonData = new Gson().toJson(requestParams);
+                journal.type = ResalerProductJournalType.CREATE;
+                journal.remark = "上传商品";
+
+                //上传主图
+                if (imgFile != null) {
+                    requestParams = new HashMap<>();
+                    requestParams.put("outerId", String.valueOf(relation.linkId));
+                    requestParams.put("mainImageName", String.valueOf(relation.linkId));
+                    String[] filePaths = new String[]{imgFile.getAbsolutePath()};
+                    responseXml = YHDUtil.sendRequest(requestParams, filePaths, "yhd.product.img.upload");
+                    Logger.info("yhd.product.add response %s", responseXml);
+                    if (responseXml != null) {
+                        res = new YHDResponse<>();
+                        res.parseXml(responseXml, "updateCount", false, UpdateResult.parser);
+                        if (res.getErrorCount() > 0) {
+                            renderArgs.put("extra", "上传商品成功，但是主图上传失败");
+                            renderArgs.put("res", res);
+                        }
+                    }else {
+                        renderArgs.put("extra", "上传商品成功，但是主图上传失败");
+                    }
+                }
+
+            }
+        }
+        render("resale/YHDGroupBuyProduct/result.html");
+    }
+
+    public static void category(Long id) {
+        if (id == null) {
+            id = 0L;
+        }
+        List<YHDProductCategory> categories = YHDCategoryAPI.productCategories(id, false);
+        StringBuilder jsonString = new StringBuilder("[");
+        for (int i = 0 ; i < categories.size(); i ++) {
+            YHDProductCategory category = categories.get(i);
+            if (i != 0) {
+                jsonString.append(",");
+            }
+            jsonString.append("{id:'").append(category.id)
+                    .append("',name:'").append(category.name)
+                    .append("',isParent:").append(!category.isLeaf);
+            if (!category.isLeaf) {
+                jsonString.append(",nocheck:true");
+            }
+            jsonString.append("}");
+
+        }
+        jsonString.append("]");
+        renderJSON(jsonString.toString());
+    }
+
+    public static void merchantCategory(Long id) {
+        if (id == null) {
+            id = 0L;
+        }
+        List<YHDMerchantCategory> categories = YHDCategoryAPI.merchantCategories(id, false);
+        StringBuilder jsonString = new StringBuilder("[");
+        for (int i = 0 ; i < categories.size(); i ++) {
+            YHDMerchantCategory category = categories.get(i);
+            if (i != 0) {
+                jsonString.append(",");
+            }
+            jsonString.append("{id:'").append(category.id)
+                    .append("',name:'").append(category.name)
+                    .append("',isParent:").append(!category.isLeaf);
+            if (!category.isLeaf) {
+                jsonString.append(",nocheck:true");
+            }
+            jsonString.append("}");
+
+        }
+        jsonString.append("]");
+        renderJSON(jsonString.toString());
+    }
+
+
+    @ActiveNavigation("resale_partner_product")
     public static void showProducts(Long goodsId) {
-        request.params.allSimple();
         Goods goods = Goods.findById(goodsId);
         if (goods == null) {
             Logger.info("goods not found");
             error("商品不存在");
         }
-        List<ResalePartnerProduct> products = ResalePartnerProduct.find("byGoodsAndPartner",goods, OuterOrderPartner.YHD).fetch();
+        List<ResalerProduct> products = ResalerProduct.find("byGoodsAndPartner", goods, OuterOrderPartner.YHD).fetch();
+        for (ResalerProduct product : products) {
+            product.creator = ((OperateUser)OperateUser.findById(product.creatorId)).userName;
+            product.lastModifier = ((OperateUser)OperateUser.findById(product.lastModifierId)).userName;
+        }
         render(products);
-        /**
-         *
-         Map<String, String> params = new HashMap<>();
-         params.put("productType", String.valueOf(productType));
-         params.put("categoryId", String.valueOf(categoryId));
-         params.put("merchantCategoryId", StringUtils.join(merchantCategoryId, ","));
-         params.put("productCname", productCname);
-         params.put("brandId", String.valueOf(brandId));
-         params.put("outerId", String.valueOf(outerId));
-         params.put("productMarketPrice", productMarketPrice.toString());
-         params.put("productSalePrice",productSalePrice.toString());
-         params.put("weight", String.valueOf(weight));
-         params.put("virtualStockNum", String.valueOf(virtualStockNum));
-         params.put("productDescription", productDescription);
-         params.put("electronicCerticate", electronicCerticate);
+    }
 
-         String responseXml = YHDUtil.sendRequest(params, "yhd.product.add");
-         Logger.info("yhd.product.add response %s", responseXml);
-         if (responseXml != null) {
-         YHDResponse<UpdateResult> res = new YHDResponse<>();
-         res.parseXml(responseXml, "updateCount", false, UpdateResult.parser);
-         if(res.getErrorCount() > 0){
-         renderArgs.put("errors", res.getErrors());
-         }
-         }
-         render("YHDProduct/result.html");
-         *
-         */
+    @ActiveNavigation("resale_partner_product")
+    public static void journal(Long productId) {
+        ResalerProduct product = ResalerProduct.findById(productId);
+        List<ResalerProductJournal> journals = ResalerProductJournal.find("byProduct", product).fetch();
+        for(ResalerProductJournal journal : journals) {
+            journal.operator = ((OperateUser)OperateUser.findById(journal.operatorId)).userName;
+        }
+        render(journals);
     }
 }

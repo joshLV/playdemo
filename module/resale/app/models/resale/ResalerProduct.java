@@ -13,8 +13,8 @@ import java.util.Date;
  *         Date: 13-1-8
  */
 @Entity
-@Table(name = "resale_partner_product")
-public class ResalePartnerProduct extends Model {
+@Table(name = "resaler_product")
+public class ResalerProduct extends Model {
 
 
     @Enumerated(EnumType.STRING)
@@ -43,8 +43,14 @@ public class ResalePartnerProduct extends Model {
     @Column(name = "creator_id")
     public Long creatorId;
 
+    @Transient
+    public String creator;
+
     @Column(name = "last_modifier_id")
     public Long lastModifierId;
+
+    @Transient
+    public String lastModifier;
 
     /**
      * 第三方状态.
@@ -52,7 +58,7 @@ public class ResalePartnerProduct extends Model {
     @Column(name = "outer_status")
     public String outerStatus;
 
-    public ResalePartnerProduct() {
+    public ResalerProduct() {
         this.createdAt = new Date();
         this.partnerProductId = 0L;
     }
