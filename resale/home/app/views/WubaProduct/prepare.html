@@ -126,13 +126,17 @@ ${mobileDescription?.raw()}
 <p>
     团购开始时间<b>*</b>
     <input type="text" name="startTime" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" size="25px" class="Wdate"
-           value="${startTime?.format('yyyy-MM-dd HH:mm:ss')}">
-    团购结束时间<b>*</b>
+           value="${startTime?.format('yyyy-MM-dd HH:mm:ss')}"> </p>
+  <p>团购结束时间<b>*</b>
     <input type="text" name="endTime" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" size="25px" class="Wdate"
            value="${endTime?.format('yyyy-MM-dd HH:mm:ss')}">
     券有效期<b>*</b>
-    <input type="text" name="deadline" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" size="25px" class="Wdate"
-           value="${deadline?.format('yyyy-MM-dd HH:mm:ss')}">
+    <input type="text" name="deadline" id="deadline" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" size="25px" class="Wdate"
+           value="${deadline?.format('yyyy-MM-dd HH:mm:ss')}">(<b>*</b>券有效期>团购结束时间)
+#{if isEdit=='edit'}
+    <button type="button"id="delay" >延长有效期</button>
+<span class="error" id="delay_msg"></span>
+#{/if}
 </p>
 
 <p>
@@ -277,14 +281,14 @@ ${mobileDescription?.raw()}
 
 #{/list}
 #{/if}
-<input type="hidden" name="goodsId" value="${goodsId}">
+<input type="hidden" name="goodsId" id="goodsId" value="${goodsId}">
 <input type="hidden" name="shopSize" value="${shopList?.size()>0 ?shopList?.size():editShopList?.size()}">
 
 <p>
     <button type="submit">提交</button>
-    #{if isEdit=='edit'}
+#{if isEdit=='edit'}
     <button type="button" id="upd-shop">更新门店</button>
-    #{/if}
+#{/if}
 </p>
 </div>
 </form>
@@ -296,6 +300,17 @@ ${mobileDescription?.raw()}
             $("#form").attr("method", "POST");
             $("#form").attr("target", "_self");
             $("#form").submit();
+        })
+
+        $("#delay").click(function () {
+            var goodsId=$("#goodsId").val();
+            var deadline=$("#deadline").val();
+            $.ajax({
+                type:'GET',
+                url:'/58-delay?goodsId=' + goodsId + "&deadline=" + deadline,
+                success:function (msg) {
+                   $("#delay_msg").html(msg).css("color","red");
+                }});
         })
 
     });
