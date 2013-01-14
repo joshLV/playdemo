@@ -10,7 +10,7 @@ import models.sales.Goods;
  * @author likang
  *         Date: 13-1-11
  */
-public class ResalerProductFactory extends ModelFactory<ResalerProduct>{
+public class ResalerProductFactory extends ModelFactory<ResalerProduct> {
     @Override
     public ResalerProduct define() {
         ResalerProduct resalerProduct = new ResalerProduct();

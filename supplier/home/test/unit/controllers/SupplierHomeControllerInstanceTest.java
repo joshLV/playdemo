@@ -10,10 +10,11 @@ import play.test.UnitTest;
  */
 public class SupplierHomeControllerInstanceTest extends UnitTest {
     @Test
-    public void controllerInstanceTest(){
+    public void controllerInstanceTest() {
         assertTrue(new AccountSequences() instanceof Controller);
         assertTrue(new SupplierHome() instanceof Controller);
         assertTrue(new HomeSuppliers() instanceof Controller);
         assertTrue(new SupplierWithdraw() instanceof Controller);
+        assertTrue(new SupplierShops() instanceof Controller);
     }
 }

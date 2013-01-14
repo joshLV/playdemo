@@ -1,5 +1,6 @@
 package function;
 
+import com.google.gson.JsonArray;
 import controllers.supplier.cas.Security;
 import factory.FactoryBoy;
 import models.admin.SupplierUser;
@@ -10,13 +11,21 @@ import navigation.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import play.data.validation.*;
+import play.data.validation.Error;
 import play.mvc.Http;
+import play.mvc.Router;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.uhuila.common.constants.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 /**
  * 商户的门店管理功能测试.
@@ -52,6 +61,24 @@ public class SupplierShopsTest extends FunctionalTest {
     }
 
     @Test
+    public void testIndex() {
+        Http.Response response = GET(Router.reverse("SupplierShops.index").url);
+        assertIsOk(response);
+        assertEquals(1l, ((List<Shop>) renderArgs("shopList")).size());
+    }
+
+    @Test
+    public void testCreateInvalid() {
+        Map<String, String> params = new HashMap<>();
+        params.put("shop.address", "bbbbb");
+        params.put("shop.phone", "13212345678");
+        Http.Response response = POST("/shops", params);
+        List<Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("shop.name", errors.get(0).getKey());
+        assertStatus(200, response);
+    }
+
+    @Test
     public void testCreate() {
         List<Shop> list = Shop.findAll();
         int cnt = list.size();
@@ -66,6 +93,26 @@ public class SupplierShopsTest extends FunctionalTest {
         list = Shop.findAll();
         assertEquals(cnt + 1, list.size());
     }
+
+    @Test
+    public void testAdd() {
+        Http.Response response = GET(Router.reverse("SupplierShops.add").url + "?shop.name=" + shop.name
+                + "&shop.address=" + shop.address + "&shop.phone=" + shop.phone + "&shop.id=" + shop.id);
+        assertIsOk(response);
+        assertEquals(shop, (Shop) renderArgs("shop"));
+    }
+
+    @Test
+    public void testUpdateInvalid() {
+        Map<String, String> params = new HashMap<>();
+        params.put("shop.add`ress", "bbbbb");
+        params.put("shop.phone", "13212345678");
+        Http.Response response = POST("/shops/" + shop.id, params);
+        List<Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("shop.name", errors.get(0).getKey());
+        assertStatus(200, response);
+    }
+
 
     /**
      * 编辑门店
@@ -102,5 +149,22 @@ public class SupplierShopsTest extends FunctionalTest {
         assertEquals("021", shop.areaId);
         assertEquals("wanpingnanlu", shop.address);
     }
+
+    @Test
+    public void testDelete() {
+        assertEquals(DeletedStatus.UN_DELETED, shop.deleted);
+        Http.Response response = DELETE("/shops/" + shop.id);
+        assertStatus(302, response);
+        shop.refresh();
+        assertEquals(DeletedStatus.DELETED, shop.deleted);
+    }
+
+    @Test
+    public void testShowAreas() {
+        Http.Response response = GET(Router.reverse("SupplierShops.showAreas").url + "?areaId=" + shop.areaId);
+        assertIsOk(response);
+        assertContentType("application/json", response);
+    }
+
 }
     
