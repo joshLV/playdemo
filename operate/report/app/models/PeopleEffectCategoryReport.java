@@ -184,6 +184,7 @@ public class PeopleEffectCategoryReport {
         this.profit = profit;
     }
 
+    //refund and consumed from ecoupon
     public PeopleEffectCategoryReport(OperateUser operateUser, BigDecimal amount, Long supplierCategoryId, BigDecimal refundCost, Long number, ECouponStatus status) {
         this.operateUser = operateUser;
         if (supplierCategoryId != null) {
@@ -260,11 +261,11 @@ public class PeopleEffectCategoryReport {
     }
 
     //refund from resaler
-    public PeopleEffectCategoryReport(OperateUser operateUser, Long refundNum, BigDecimal refundCommissionAmount, BigDecimal ratio) {
+    public PeopleEffectCategoryReport(BigDecimal refundCommissionAmount,OperateUser operateUser, BigDecimal ratio) {
         this.ratio = ratio;
         this.operateUser = operateUser;
         this.refundCommissionAmount = refundCommissionAmount;
-        this.refundNumber = refundNumber;
+        this.code = "999";
 
     }
 
@@ -375,7 +376,19 @@ public class PeopleEffectCategoryReport {
                 item.totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
             }
         }
+        for (PeopleEffectCategoryReport refundItem : refundResultList) {
+            PeopleEffectCategoryReport item = map.get(getReportKey(refundItem));
+            if (item == null) {
+                map.put(getReportKey(refundItem), refundItem);
+            } else {
+                item.refundPrice = refundItem.refundPrice;
+                item.refundNumber = refundItem.refundNumber;
+                item.profit = (item.salePrice == null ? BigDecimal.ZERO : item.salePrice).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundPrice == null ? BigDecimal.ZERO : item.refundPrice)
+                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
+                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
 
+            }
+        }
         //merge other 2
         for (PeopleEffectCategoryReport consumedItem : consumedResultList) {
             PeopleEffectCategoryReport item = map.get(getReportKey(consumedItem));
@@ -388,19 +401,7 @@ public class PeopleEffectCategoryReport {
 
         }
 
-        for (PeopleEffectCategoryReport refundItem : refundResultList) {
-            PeopleEffectCategoryReport item = map.get(getReportKey(refundItem));
-            if (item == null) {
-                map.put(getReportKey(refundItem), refundItem);
-            } else {
-                item.refundPrice = refundItem.refundPrice;
-                item.refundNumber = refundItem.refundNumber;
-                item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundPrice == null ? BigDecimal.ZERO : item.refundPrice)
-                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
 
-            }
-        }
 
         //total
         List<PeopleEffectCategoryReport> totalPeopleEffectList = queryPeopleEffectData(condition);
@@ -522,7 +523,7 @@ public class PeopleEffectCategoryReport {
 
         List<PeopleEffectCategoryReport> consumedList = query.getResultList();
         //refund from resaler
-        sql = "select new models.PeopleEffectCategoryReport(ou,sum(r),sum(e.refundPrice)*b.commissionRatio/100,b.commissionRatio) " +
+        sql = "select new models.PeopleEffectCategoryReport(sum(e.refundPrice)*b.commissionRatio/100,ou,b.commissionRatio) " +
                 " from ECoupon e,OrderItems r,Resaler b ,Order o,Supplier s,OperateUser ou";
         groupBy = " group by s.salesId";
 
