@@ -79,7 +79,7 @@ public class OperationReports extends Controller {
                 orderBy = orderBy + "2";
             }
         } else {
-            orderBy = "01";
+            orderBy = "52";
         }
         List<SalesReport> resultList = SalesReport.query(condition, orderBy);
         Collections.sort(resultList);
@@ -176,7 +176,7 @@ public class OperationReports extends Controller {
                 orderBy = orderBy + "2";
             }
         } else {
-            orderBy = "01";
+            orderBy = "12";
         }
         System.out.println("22 orderBy:" + orderBy);
         List<ConsumerFlowReport> resultList = ConsumerFlowReport.query(condition, orderBy);
@@ -345,7 +345,7 @@ public class OperationReports extends Controller {
                 orderBy = orderBy + "2";
             }
         } else {
-            orderBy = "01";
+            orderBy = "52";
         }
         List<SalesReport> salesReportList = SalesReport.query(condition, orderBy);
         Collections.sort(salesReportList);
@@ -419,7 +419,7 @@ public class OperationReports extends Controller {
                 orderBy = orderBy + "2";
             }
         } else {
-            orderBy = "01";
+            orderBy = "52";
         }
         List<SalesReport> salesReportList = SalesReport.query(condition, orderBy);
         Collections.sort(salesReportList);
@@ -951,7 +951,7 @@ public class OperationReports extends Controller {
                 orderBy = orderBy + "2";
             }
         } else {
-            orderBy = "01";
+            orderBy = "12";
         }
         resultList = ConsumerFlowReport.query(condition, orderBy);
         Collections.sort(resultList);
@@ -1046,7 +1046,7 @@ public class OperationReports extends Controller {
                 orderBy = orderBy + "2";
             }
         } else {
-            orderBy = "01";
+            orderBy = "12";
         }
 
         List<ConsumerFlowReport> resultList = ConsumerFlowReport.query(condition, orderBy);
