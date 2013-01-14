@@ -140,6 +140,8 @@ public class OperationReports extends Controller {
             condition = new SalesReportCondition();
         }
         condition.salesId = OperateRbac.currentUser().id;
+        condition.setDescFields();
+
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         List<SalesReport> resultList = SalesReport.queryPeopleEffectData(condition);
         // 分页
@@ -645,6 +647,7 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new SalesReportCondition();
         }
+        condition.setDescFields();
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "人效报表_" + System.currentTimeMillis() + ".xls");
         List<SalesReport> peopleEffectReportList = SalesReport.queryPeopleEffectData(condition);
@@ -680,7 +683,7 @@ public class OperationReports extends Controller {
                 BigDecimal tempGrossMargin = report.grossMargin == null ? BigDecimal.ZERO : report.grossMargin.divide(BigDecimal.valueOf(100));
                 report.grossMargin = tempGrossMargin;
                 report.profit = report.profit == null ? BigDecimal.ZERO : report.profit.setScale(2, BigDecimal.ROUND_HALF_UP);
-                report.netProfit= report.netProfit == null ? BigDecimal.ZERO : report.netProfit.setScale(2, BigDecimal.ROUND_HALF_UP);
+                report.netProfit = report.netProfit == null ? BigDecimal.ZERO : report.netProfit.setScale(2, BigDecimal.ROUND_HALF_UP);
             }
         }
 
