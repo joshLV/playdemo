@@ -29,14 +29,22 @@ public class ResalePartnerProductsTest extends FunctionalTest {
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
-        OperateUser user = FactoryBoy.create(OperateUser.class);
+        final OperateUser user = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
 
-        FactoryBoy.create(ResalerProduct.class);
         FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
             @Override
             public void build(ResalerProduct target) {
+                target.creatorId = user.id;
+                target.lastModifierId = user.id;
+            }
+        });
+        FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
+            @Override
+            public void build(ResalerProduct target) {
+                target.creatorId = user.id;
+                target.lastModifierId = user.id;
                 target.partner = OuterOrderPartner.JD;
             }
         });

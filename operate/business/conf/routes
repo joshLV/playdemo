@@ -46,6 +46,7 @@ GET     /resale-partner-products/jd/products/{goodsId} resale.JDGroupBuyProduct.
 GET     /resale-partner-products/jd/journal/{productId} resale.JDGroupBuyProduct.journal
 
 *       /jd-ztree/city                          resale.JDGroupBuyProduct.city
+*       /jd-ztree/group                         resale.JDGroupBuyProduct.group
 
 
 #渠道商品

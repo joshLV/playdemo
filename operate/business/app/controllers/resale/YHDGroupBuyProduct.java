@@ -63,48 +63,62 @@ public class YHDGroupBuyProduct extends Controller {
             res.parseXml(responseXml, "updateCount", false, UpdateResult.parser);
             renderArgs.put("res", res);
             if(res.getErrorCount() == 0){
-                ResalerProduct product = new ResalerProduct();
-                product.partner = OuterOrderPartner.YHD;
-                product.partnerProductId = 0L;//对于一号店来说，这个没用的
-                product.creatorId = operateUser.id;
-                product.goods = goods;
-                product.goodsLinkId = relation.linkId;
-                product.lastModifierId = operateUser.id;
-                product.save();
-
-                //记录历史
-                ResalerProductJournal journal = new ResalerProductJournal();
-                journal.product = product;
-                journal.operatorId = operateUser.id;
-                journal.jsonData = new Gson().toJson(requestParams);
-                journal.type = ResalerProductJournalType.CREATE;
-                journal.remark = "上传商品";
-
+                //保存记录
+                saveProductAndJournal(goods, operateUser, requestParams);
                 //上传主图
-                if (imgFile != null) {
-                    requestParams = new HashMap<>();
-                    requestParams.put("outerId", String.valueOf(relation.linkId));
-                    requestParams.put("mainImageName", String.valueOf(relation.linkId));
-                    String[] filePaths = new String[]{imgFile.getAbsolutePath()};
-                    responseXml = YHDUtil.sendRequest(requestParams, filePaths, "yhd.product.img.upload");
-                    Logger.info("yhd.product.add response %s", responseXml);
-                    if (responseXml != null) {
-                        res = new YHDResponse<>();
-                        res.parseXml(responseXml, "updateCount", false, UpdateResult.parser);
-                        if (res.getErrorCount() > 0) {
-                            renderArgs.put("extra", "上传商品成功，但是主图上传失败");
-                            renderArgs.put("res", res);
-                        }
-                    }else {
-                        renderArgs.put("extra", "上传商品成功，但是主图上传失败");
-                    }
-                }
-
+                uploadMainImg(imgFile, relation.linkId);
             }
         }
         render("resale/YHDGroupBuyProduct/result.html");
     }
+    //保存记录
+    private static void saveProductAndJournal(Goods goods, OperateUser operateUser, Map<String, String> requestParams){
+        ResalerProduct product = new ResalerProduct();
+        product.partner = OuterOrderPartner.YHD;
+        product.partnerProductId = 0L;//对于一号店来说，这个没用的
+        product.creatorId = operateUser.id;
+        product.goods = goods;
+        product.goodsLinkId = Long.parseLong(requestParams.get("outerId"));
+        product.lastModifierId = operateUser.id;
+        product.save();
 
+        //记录历史
+        ResalerProductJournal journal = new ResalerProductJournal();
+        journal.product = product;
+        journal.operatorId = operateUser.id;
+        journal.jsonData = new Gson().toJson(requestParams);
+        journal.type = ResalerProductJournalType.CREATE;
+        journal.remark = "上传商品";
+    }
+
+    //上传主图
+    private static void uploadMainImg(File imgFile, Long goodsLinkId) {
+        if (imgFile == null) {
+            return;
+        }
+        Map<String, String> requestParams = new HashMap<>();
+        requestParams.put("outerId", String.valueOf(goodsLinkId));
+        requestParams.put("mainImageName", String.valueOf(goodsLinkId));
+        String[] filePaths = new String[]{imgFile.getAbsolutePath()};
+        String responseXml = YHDUtil.sendRequest(requestParams, filePaths, "yhd.product.img.upload");
+        Logger.info("yhd.product.add response %s", responseXml);
+        if (responseXml != null) {
+            YHDResponse<UpdateResult> res = new YHDResponse<>();
+            res.parseXml(responseXml, "updateCount", false, UpdateResult.parser);
+            if (res.getErrorCount() > 0) {
+                renderArgs.put("extra", "上传商品成功，但是主图上传失败");
+                renderArgs.put("res", res);
+            }
+        }else {
+            renderArgs.put("extra", "上传商品成功，但是主图上传失败");
+        }
+
+    }
+
+    /**
+     * 一号店分类
+     * @param id
+     */
     public static void category(Long id) {
         if (id == null) {
             id = 0L;
@@ -129,6 +143,10 @@ public class YHDGroupBuyProduct extends Controller {
         renderJSON(jsonString.toString());
     }
 
+    /**
+     * 商家分类
+     * @param id
+     */
     public static void merchantCategory(Long id) {
         if (id == null) {
             id = 0L;

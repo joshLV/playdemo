@@ -91,6 +91,13 @@ public class JDGroupBuyProduct extends Controller{
     public static void journal(Long productId) {
     }
 
+    /**
+     * 查询城市、区域和商圈
+     * @param id 不传则视为0
+     * @param type 如果为空并且id为空，返回城市列表
+     *             如果是city，返回区域,
+     *             如果是district，则返回商圈
+     */
     public static void city(Long id, String type) {
         if (id == null && type == null) {
             List<IdNameResponse> cities = JDGroupBuyUtil.cacheCities();
@@ -106,6 +113,20 @@ public class JDGroupBuyProduct extends Controller{
             List<IdNameResponse> areas = JDGroupBuyUtil.queryArea(id);
             renderJSON(jsonStr(areas, false, "area"));
         }
+
+    }
+
+    /**
+     * 查询分类
+     * @param id 如果为空，则视为0
+     */
+    public static void group(Long id) {
+        if (id == null) {
+            id = 0L;
+        }
+        List<IdNameResponse> groups = JDGroupBuyUtil.cacheCategories(id);
+        boolean isParent = id == 0L;
+        renderJSON(jsonStr(groups, isParent, ""));
 
     }
     private static String jsonStr(List<IdNameResponse> params, boolean isParent, String type) {
