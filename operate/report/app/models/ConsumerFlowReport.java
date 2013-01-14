@@ -22,7 +22,7 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
     public Long orderNum;
     public String loginName;
     public String userName;
-
+    public String orderBy;
     /**
      * 发生日期.
      */
@@ -281,7 +281,7 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
      * @return
      */
     public static List<ConsumerFlowReport> query(
-            ConsumerFlowReportCondition condition) {
+            ConsumerFlowReportCondition condition, String orderBy) {
 
         //paidAt ecoupon  resaler
         String sql = "select new models.ConsumerFlowReport(str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),count(r.order.id)" +
@@ -478,6 +478,7 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
 
         List<ConsumerFlowReport> resultList = new ArrayList();
         for (String key : map.keySet()) {
+            map.get(key).orderBy = orderBy;
             resultList.add(map.get(key));
         }
 
@@ -547,8 +548,52 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
         return com.uhuila.common.util.DateUtil.stringToDate(date, "yyyy-MM-dd");
     }
 
+    //
+//    @Override
+//    public int compareTo(ConsumerFlowReport arg) {
+//        return arg.getOrder().compareTo(this.getOrder());
+//    }
     @Override
     public int compareTo(ConsumerFlowReport arg) {
-        return arg.getOrder().compareTo(this.getOrder());
+//         后面一位：1是升序，2是降序
+        switch (this.orderBy) {
+            case "02":
+                return arg.getOrder().compareTo(this.getOrder());
+            case "01":
+                return this.getOrder().compareTo(arg.getOrder());
+            case "12":
+                return (arg.salePrice== null ? BigDecimal.ZERO : arg.salePrice).compareTo(this.salePrice== null ? BigDecimal.ZERO : this.salePrice);
+            case "11":
+                return (this.salePrice== null ? BigDecimal.ZERO : this.salePrice).compareTo(arg.salePrice== null ? BigDecimal.ZERO : arg.salePrice);
+            case "22":
+                return (arg.realAmount == null ? BigDecimal.ZERO : arg.realAmount).compareTo(this.realAmount == null ? BigDecimal.ZERO : this.realAmount);
+            case "21":
+                return (this.realAmount == null ? BigDecimal.ZERO : this.realAmount).compareTo(arg.realAmount == null ? BigDecimal.ZERO : arg.realAmount);
+            case "32":
+                return (arg.refundPrice == null ? BigDecimal.ZERO : arg.refundPrice).compareTo(this.refundPrice == null ? BigDecimal.ZERO : this.refundPrice);
+            case "31":
+                return (this.refundPrice == null ? BigDecimal.ZERO : this.refundPrice).compareTo(arg.refundPrice == null ? BigDecimal.ZERO : arg.refundPrice);
+            case "42":
+                return (arg.consumedPrice == null ? BigDecimal.ZERO : arg.consumedPrice).compareTo(this.consumedPrice == null ? BigDecimal.ZERO : this.consumedPrice);
+            case "41":
+                return (this.consumedPrice == null ? BigDecimal.ZERO : this.consumedPrice).compareTo(arg.consumedPrice == null ? BigDecimal.ZERO : arg.consumedPrice);
+            case "52":
+                return (arg.perOrderPrice == null ? BigDecimal.ZERO : arg.perOrderPrice).compareTo(this.perOrderPrice == null ? BigDecimal.ZERO : this.perOrderPrice);
+            case "51":
+                return (this.perOrderPrice == null ? BigDecimal.ZERO : this.perOrderPrice).compareTo(arg.perOrderPrice == null ? BigDecimal.ZERO : arg.perOrderPrice);
+            case "62":
+                return (arg.grossMargin == null ? BigDecimal.ZERO : arg.grossMargin).compareTo(this.grossMargin == null ? BigDecimal.ZERO : this.grossMargin);
+            case "61":
+                return (this.grossMargin == null ? BigDecimal.ZERO : this.grossMargin).compareTo(arg.grossMargin == null ? BigDecimal.ZERO : arg.grossMargin);
+            case "72":
+                return (arg.channelCost == null ? BigDecimal.ZERO : arg.channelCost).compareTo(this.channelCost == null ? BigDecimal.ZERO : this.channelCost);
+            case "71":
+                return (this.channelCost == null ? BigDecimal.ZERO : this.channelCost).compareTo(arg.channelCost == null ? BigDecimal.ZERO : arg.channelCost);
+            case "82":
+                return (arg.profit == null ? BigDecimal.ZERO : arg.profit).compareTo(this.profit == null ? BigDecimal.ZERO : this.profit);
+            case "81":
+                return (this.profit == null ? BigDecimal.ZERO : this.profit).compareTo(arg.profit == null ? BigDecimal.ZERO : arg.profit);
+        }
+        return 0;
     }
 }

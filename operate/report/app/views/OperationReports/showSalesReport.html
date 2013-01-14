@@ -64,9 +64,9 @@
         $('#search_form').submit();
     });
 
-    function salesReportExcel() {
+    function salesReportExcel(desc) {
 
-        $("#search_form").attr("action", "@{OperationReports.salesReportExcelOut()}");
+        $("#search_form").attr("action", "/sales_report_excel?desc=" + desc);
         $("#search_form").attr("method", "get");
         $("#search_form").submit();
     }
@@ -79,8 +79,8 @@
     }
     ;
 
-    function showSalesReport(desc) {
-        $("#search_form").attr("action", "/sales_report_excel?desc="+desc);
+    function showSalesReport() {
+        $("#search_form").attr("action", "@{OperationReports.showSalesReport()}");
         $("#search_form").attr("method", "get");
         $("#search_form").submit();
     }

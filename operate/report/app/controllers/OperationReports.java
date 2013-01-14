@@ -141,7 +141,8 @@ public class OperationReports extends Controller {
     }
 
     @ActiveNavigation("consumer_flow_reports")
-    public static void showConsumerFlowReport(ConsumerFlowReportCondition condition) {
+    public static void showConsumerFlowReport(ConsumerFlowReportCondition condition, String desc) {
+        System.out.println("desc:" + desc);
         int pageNumber = getPageNumber();
         if (condition == null) {
             condition = new ConsumerFlowReportCondition();
@@ -149,7 +150,36 @@ public class OperationReports extends Controller {
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
         condition.operatorId = OperateRbac.currentUser().id;
-        List<ConsumerFlowReport> resultList = ConsumerFlowReport.query(condition);
+
+        // DESC 的值表示升降序，含11位，代表11个排序字段， 1 为升序， 2 为降序， 0 为不排序
+        // 当无排序参数时，初始化 -1
+        String orderBy = "";
+        if (desc == null) {
+            desc = "-1";
+        }
+        // 获取最新的desc值
+        String[] descs = desc.split(",");
+        desc = descs[descs.length - 1].trim();
+        if (isValidDescInConsumerFlowReport(desc)) {
+            int index = 0;
+            // 定位排序属性
+            for (int i = 0; i < desc.length(); i++) {
+                if (desc.charAt(i) != '0') {
+                    index = i;
+                    orderBy = String.valueOf(i);
+                    break;
+                }
+            }
+            if (desc.charAt(index) == '1') {
+                orderBy = orderBy + "1";
+            } else {
+                orderBy = orderBy + "2";
+            }
+        } else {
+            orderBy = "01";
+        }
+        System.out.println("22 orderBy:" + orderBy);
+        List<ConsumerFlowReport> resultList = ConsumerFlowReport.query(condition, orderBy);
 
         Collections.sort(resultList);
 
@@ -159,7 +189,7 @@ public class OperationReports extends Controller {
 
         // 汇总
         ConsumerFlowReport summary = ConsumerFlowReport.summary(resultList);
-        render(condition, reportPage, hasSeeReportProfitRight, summary);
+        render(condition, reportPage, hasSeeReportProfitRight, summary, desc);
     }
 
 
@@ -884,7 +914,7 @@ public class OperationReports extends Controller {
         render(resultList);
     }
 
-    public static void consumerFlowReportWithPrivilegeExcelOut(ConsumerFlowReportCondition condition) {
+    public static void consumerFlowReportWithPrivilegeExcelOut(ConsumerFlowReportCondition condition, String desc) {
         if (condition == null) {
             condition = new ConsumerFlowReportCondition();
         }
@@ -896,8 +926,35 @@ public class OperationReports extends Controller {
         renderArgs.put("__FILE_NAME__", "客流报表_" + System.currentTimeMillis() + ".xls");
 
         List<ConsumerFlowReport> resultList = null;
-        resultList = ConsumerFlowReport.query(condition);
-
+        // DESC 的值表示升降序，含11位，代表11个排序字段， 1 为升序， 2 为降序， 0 为不排序
+        // 当无排序参数时，初始化 -1
+        String orderBy = "";
+        if (desc == null) {
+            desc = "-1";
+        }
+        // 获取最新的desc值
+        String[] descs = desc.split(",");
+        desc = descs[descs.length - 1].trim();
+        if (isValidDescInConsumerFlowReport(desc)) {
+            int index = 0;
+            // 定位排序属性
+            for (int i = 0; i < desc.length(); i++) {
+                if (desc.charAt(i) != '0') {
+                    index = i;
+                    orderBy = String.valueOf(i);
+                    break;
+                }
+            }
+            if (desc.charAt(index) == '1') {
+                orderBy = orderBy + "1";
+            } else {
+                orderBy = orderBy + "2";
+            }
+        } else {
+            orderBy = "01";
+        }
+        resultList = ConsumerFlowReport.query(condition, orderBy);
+        Collections.sort(resultList);
 
         for (ConsumerFlowReport report : resultList) {
 //            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
@@ -954,7 +1011,7 @@ public class OperationReports extends Controller {
         render(resultList);
     }
 
-    public static void consumerFlowReportExcelOut(ConsumerFlowReportCondition condition) {
+    public static void consumerFlowReportExcelOut(ConsumerFlowReportCondition condition, String desc) {
         if (condition == null) {
             condition = new ConsumerFlowReportCondition();
         }
@@ -964,8 +1021,36 @@ public class OperationReports extends Controller {
         String page = request.params.get("page");
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "客流报表_" + System.currentTimeMillis() + ".xls");
+        // DESC 的值表示升降序，含11位，代表11个排序字段， 1 为升序， 2 为降序， 0 为不排序
+        // 当无排序参数时，初始化 -1
+        String orderBy = "";
+        if (desc == null) {
+            desc = "-1";
+        }
+        // 获取最新的desc值
+        String[] descs = desc.split(",");
+        desc = descs[descs.length - 1].trim();
+        if (isValidDescInConsumerFlowReport(desc)) {
+            int index = 0;
+            // 定位排序属性
+            for (int i = 0; i < desc.length(); i++) {
+                if (desc.charAt(i) != '0') {
+                    index = i;
+                    orderBy = String.valueOf(i);
+                    break;
+                }
+            }
+            if (desc.charAt(index) == '1') {
+                orderBy = orderBy + "1";
+            } else {
+                orderBy = orderBy + "2";
+            }
+        } else {
+            orderBy = "01";
+        }
 
-        List<ConsumerFlowReport> resultList = ConsumerFlowReport.query(condition);
+        List<ConsumerFlowReport> resultList = ConsumerFlowReport.query(condition, orderBy);
+        Collections.sort(resultList);
         DecimalFormat df = new DecimalFormat("0.00");
         for (ConsumerFlowReport report : resultList) {
             if (report.refundPrice == null) {
@@ -1025,6 +1110,28 @@ public class OperationReports extends Controller {
             }
         }
         if (countZero != 11) {
+            return false;
+        }
+        for (int i = 0; i < desc.length(); i++) {
+            if (desc.charAt(i) != '0' && desc.charAt(i) != '1' && desc.charAt(i) != '2') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isValidDescInConsumerFlowReport(String desc) {
+        if (desc.length() != 9) {
+            return false;
+        }
+        int countZero = 0;
+        for (int i = 0; i < desc.length(); i++) {
+            if (desc.charAt(i) == '0') {
+                countZero++;
+            }
+        }
+
+        if (countZero != 8) {
             return false;
         }
         for (int i = 0; i < desc.length(); i++) {
