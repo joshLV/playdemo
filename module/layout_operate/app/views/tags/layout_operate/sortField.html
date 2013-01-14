@@ -1,0 +1,13 @@
+*{用来排序的标签}*
+*{name:      排序字段}*
+*{descField: 排序字段值   }*
+*{desc:  降序值   }*
+*{asc:  升序值}*
+#{field _name}
+    #{if _descField.equals(_desc) }
+    <th class="rank rank-asc"><a class="fn-rank" data-rank="${_asc}">${field.name}</a></th>#{/if}
+    #{elseif _descField.equals(_asc)}
+    <th class="rank rank-desc"><a class="fn-rank" data-rank="${_desc}">${field.name}</a></th>#{/elseif}
+    #{else}
+    <th class="rank"><a class="fn-rank" data-rank="${_asc}">${field.name}</a></th>#{/else}
+#{/field}
