@@ -249,8 +249,7 @@ public class OrderItems extends Model {
      * @return
      */
     public static List<String> getMobiles(User user) {
-        Query query = play.db.jpa.JPA.em().createQuery(
-                "select o.phone from OrderItems o where o.order.userId = :userId and o.order.userType =:userType group by o.phone order by o.order desc ");
+        Query query = play.db.jpa.JPA.em().createQuery("select o.phone from OrderItems o where o.order.userId = :userId and o.order.userType =:userType group by o.phone order by o.order desc ");
         query.setParameter("userId", user.id);
         query.setParameter("userType", AccountType.CONSUMER);
         query.setFirstResult(0);
@@ -351,15 +350,18 @@ public class OrderItems extends Model {
             summary = "";
         }
 
+        JPA.em().flush();
+
         String message = "【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
                 summary + "券号" + ecouponStr + "," +
                 "截止" + dateFormat.format(goods.expireAt) + "客服4006262166";
         // 58团
         if (AccountType.RESALER.equals(order.userType)
                 && order.getResaler().loginName.equals(Resaler.WUBA_LOGIN_NAME)) {
+
             message = "【58团】【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
-                    summary + "券号" + ecouponStr + "," +
-                    "截止" + dateFormat.format(goods.expireAt) + "客服4007895858";
+                    summary + "由58合作商家【一百券】提供,一百券号" + ecouponStr + "," +
+                    ",有效期至" + dateFormat.format(goods.expireAt) + "客服4007895858";
         }
 
         return message;
