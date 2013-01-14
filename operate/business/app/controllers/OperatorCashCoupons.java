@@ -78,7 +78,7 @@ public class OperatorCashCoupons extends Controller{
         }else if (faceValue == null
                 || faceValue.compareTo(BigDecimal.ONE) < 0
                 || faceValue.compareTo(new BigDecimal("10000")) > 0
-                || faceValue.setScale(0, RoundingMode.FLOOR).compareTo(faceValue) != 0){
+                || faceValue.setScale(2, RoundingMode.FLOOR).compareTo(faceValue) != 0){
             generator("面值不符合要求");
         }else if(count < 1 || count > 9999 ){
             generator("数量不符合要求");
