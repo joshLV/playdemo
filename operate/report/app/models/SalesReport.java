@@ -483,30 +483,6 @@ public class SalesReport {
         return resultList;
     }
 
-    public static List<SalesReport> queryPeopleEffectData1(SalesReportCondition condition) {
-        //毛利率= （总的销售额-总成本（进价*数量）/总销售额
-        //paidAt
-        String sql = "select new models.SalesReport(o,sum(r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
-                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
-                ",sum(r.originalPrice*r.buyNumber))" +
-                " from OrderItems r,Supplier s,OperateUser o";
-        String groupBy = " group by s.salesId";
-        Query query = JPA.em()
-                .createQuery(sql + condition.getFilterOfPeopleEffect() + groupBy + " order by sum(r.buyNumber) desc ");
-
-
-        for (String param : condition.getParamMap().keySet()) {
-            query.setParameter(param, condition.getParamMap().get(param));
-        }
-
-        List<SalesReport> paidResultList = query.getResultList();
-        return paidResultList;
-
-    }
-
     /**
      * 取得按销售人员统计的销售记录
      *

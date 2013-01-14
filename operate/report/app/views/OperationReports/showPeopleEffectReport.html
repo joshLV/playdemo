@@ -40,6 +40,7 @@
     });
 
     function exportReportExcel() {
+        $("#condition_hasRight").val(false);
         $("#search_form").attr("action", "@{OperationReports.peopleEffectReportExcelOut()}");
         $("#search_form").attr("method", "get");
         $("#search_form").submit();

@@ -680,6 +680,7 @@ public class OperationReports extends Controller {
                 BigDecimal tempGrossMargin = report.grossMargin == null ? BigDecimal.ZERO : report.grossMargin.divide(BigDecimal.valueOf(100));
                 report.grossMargin = tempGrossMargin;
                 report.profit = report.profit == null ? BigDecimal.ZERO : report.profit.setScale(2, BigDecimal.ROUND_HALF_UP);
+                report.netProfit= report.netProfit == null ? BigDecimal.ZERO : report.netProfit.setScale(2, BigDecimal.ROUND_HALF_UP);
             }
         }
 
