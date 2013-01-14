@@ -96,7 +96,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
     }
 
     public String getFilterRefundAt() {
-        StringBuilder condBuilder = new StringBuilder(" where e.goods.supplierId =s.id and s.deleted=0 and s.salesId=ou.id and ou.deleted=0 and e.goods.isLottery=false and e.status = models.order.ECouponStatus.REFUND");
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.goods.supplierId =s.id and s.deleted=0 and s.salesId=ou.id and ou.deleted=0 and e.goods.isLottery=false and e.status = models.order.ECouponStatus.REFUND");
 
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         if (!hasSeeReportProfitRight) {
@@ -201,7 +201,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
 
     public String getRefundFilterOfPeopleEffect(ECouponStatus status) {
         paramMap1 = new HashMap<>();
-        StringBuilder condBuilder = new StringBuilder(" where e.goods.supplierId=s.id and s.deleted=0 and s.salesId=o.id and o.deleted=0 and e.status=:status and e.goods.isLottery=false");
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and r.goods.supplierId =s.id and e.goods.supplierId=s.id and s.deleted=0 and s.salesId=o.id and o.deleted=0 and e.status=:status and e.goods.isLottery=false");
         paramMap1.put("status", status);
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         if (!hasSeeReportProfitRight) {
@@ -237,6 +237,71 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
             }
 
         }
+        return condBuilder.toString();
+    }
+
+    public String getFilterCheatedOrderOfPeopleEffect() {
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.goods.supplierId=s.id and s.deleted=0 and s.salesId=ou.id and ou.deleted=0 and r.order.status='PAID' and r.goods.isLottery=false" +
+                " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
+                " and e.isCheatedOrder = true ");
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        if (!hasSeeReportProfitRight) {
+            condBuilder.append(" and ou.id =:salesId");
+            paramMap.put("salesId", salesId);
+        }
+        if (beginAt != null) {
+            condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
+            paramMap.put("createdAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and r.order.paidAt < :createdAtEnd");
+            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+        }
+
+        return condBuilder.toString();
+    }
+
+    public String getFilterCheatedOrderResalerOfPeopleEffect() {
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.goods.supplierId=s.id and s.deleted=0 and s.salesId=ou.id and ou.deleted=0 and r.order.status='PAID' and r.goods.isLottery=false" +
+                " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
+                " and e.isCheatedOrder = true and r.order.userType=models.accounts.AccountType.RESALER and r.order=o and o.userId=b.id ");
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        if (!hasSeeReportProfitRight) {
+            condBuilder.append(" and o.id =:salesId");
+            paramMap.put("salesId", salesId);
+        }
+
+        if (beginAt != null) {
+            condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
+            paramMap.put("createdAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and r.order.paidAt < :createdAtEnd");
+            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+        }
+        return condBuilder.toString();
+    }
+
+    public String getFilterRefundResalerOfPeopleEffect() {
+        paramMap1 = new HashMap<>();
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.goods.supplierId=s.id and s.deleted=0 and s.salesId=ou.id and ou.deleted=0 and e.status=:status and e.goods.isLottery=false" +
+                " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
+                " and r.order.userType=models.accounts.AccountType.RESALER and r.order=o and o.userId=b.id ");
+        paramMap1.put("status", ECouponStatus.REFUND);
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+        if (!hasSeeReportProfitRight) {
+            condBuilder.append(" and ou.id =:salesId");
+            paramMap1.put("salesId", salesId);
+        }
+        if (beginAt != null) {
+            condBuilder.append(" and e.refundAt >= :refundAtBegin");
+            paramMap1.put("refundAtBegin", beginAt);
+        }
+        if (endAt != null) {
+            condBuilder.append(" and e.refundAt <= :refundAtEnd");
+            paramMap1.put("refundAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+        }
+
         return condBuilder.toString();
     }
 

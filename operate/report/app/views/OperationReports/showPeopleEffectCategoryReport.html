@@ -255,7 +255,8 @@
         #{else}
             <td colspan="4" style="text-align:center;background-color:#add8e6 "> 小计</td>
         #{/else}
-        <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}  style="text-align:right">
+        <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}
+                                         style="text-align:right">
             #{if report?.code == "999"}
                 <a href="${baseUrl}/coupons?condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}"
 
@@ -268,11 +269,13 @@
             ${report?.buyNumber} / ${report?.salePrice?.formatCurrency('CNY')}
             #{/else}
         </td>
-        <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}  style="text-align:right">
+        <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}
+                                         style="text-align:right">
         ${report?.realBuyNumber}
             / ${report?.realSalePrice == null ?'￥0.00':report?.realSalePrice?.formatCurrency('CNY')}
         </td>
-        <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}  style="text-align:right">
+        <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}
+                                         style="text-align:right">
             #{if report?.code == "999"}
                 <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}"
                    target="_blank">${report?.refundNumber}</a>
@@ -284,9 +287,11 @@
             ${report?.refundNumber} / ${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}
             #{/else}
         </td>
-        <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}  style="text-align:right">
+        <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}
+                                         style="text-align:right">
         </td>
-        <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}  style="text-align:right">
+        <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}
+                                         style="text-align:right">
             #{if report?.code == "999"}
                 <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}"
                    target="_blank">${report?.consumedNumber}</a>
@@ -300,14 +305,16 @@
             #{/else}
         </td>
         #{if hasSeeReportProfitRight == true}
-            <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}  style="text-align:right">
+            <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}
+                                             style="text-align:right">
             ${(report?.grossMargin?:0).format('#')}%</td>
-            <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}  style="text-align:right">
-                #{if report?.profit != null && report.profit!=0}
-                    ￥${(report?.profit?:0).format('#0.00')}
+            <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}
+                                             style="text-align:right">
+                #{if report?.code == "999"}
+                    ￥${(report?.netProfit?:0).format('#0.00')}
                 #{/if}
                 #{else}
-                    ￥0
+                    ￥${(report?.profit?:0).format('#0.00')}
                 #{/else}
             </td>
         #{/if}
@@ -320,7 +327,7 @@
 #{if reportPage.getPageCount() > 1}
 <div class="pagination">
     <ul>
-    #{paginate.controls items:reportPage /}
+        #{paginate.controls items:reportPage /}
     </ul>
-    #{/if}
+#{/if}
 </div>
