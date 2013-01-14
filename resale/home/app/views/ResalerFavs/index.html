@@ -117,7 +117,7 @@
 
                         }%
                     *{#{list items:, as:'city'}}*
-                        #{if city!=null}
+                        #{if favItem.thirdGroupbuyId && city!=null}
                         <a href="${city?.url}" target="_blank">${city?.tag}</a> |
                         #{/if}
                     *{#{/list}}*

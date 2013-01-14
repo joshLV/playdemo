@@ -4,16 +4,14 @@ import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
-import models.order.DeliveryType;
-import models.order.NotEnoughInventoryException;
-import models.order.OrderItems;
-import models.order.OuterOrderPartner;
+import models.order.*;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.GoodsDeployRelation;
 import models.sales.MaterialType;
 import models.supplier.Supplier;
 import models.yihaodian.shop.*;
+import models.yihaodian.shop.OrderStatus;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
@@ -116,6 +114,12 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
                             }
                             yihaodianOrder.ybqOrderId = ybqOrder.getId();
                             yihaodianOrder.save();
+
+                            List<ECoupon> couponList = ECoupon.find("byOrder", ybqOrder).fetch();
+                            for(ECoupon coupon : couponList) {
+                                coupon.partner = ECouponPartner.YHD;
+                                coupon.save();
+                            }
                         }
                     }else {
                         yihaodianOrder.jobFlag = JobFlag.CANCEL_SYNCED;

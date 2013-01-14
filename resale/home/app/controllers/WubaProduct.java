@@ -420,8 +420,6 @@ public class WubaProduct extends Controller {
      * @param cityIds
      */
     private static void setUrlParams(String[] cities, Integer[] cityIds, Goods goods, Resaler resaler, Long wubaGoodsId) {
-//        List<String> urls = new ArrayList<>();
-//        List<String> cityNames = new ArrayList<>();
         for (String city : cities) {
             for (int cityId : cityIds) {
                 String[] cityArr = city.split(":");
@@ -437,14 +435,9 @@ public class WubaProduct extends Controller {
                         channelGoodsInfo.tag = cityName;
                         channelGoodsInfo.save();
                     }
-//                    urls.add(url);
-//                    cityNames.add(cityName);
                 }
             }
         }
-
-//        resalerFav.thirdUrl = StringUtils.join(urls, ",");
-//        resalerFav.thirdCity = StringUtils.join(cityNames, ",");
     }
 
     public static void delay(Long goodsId, String deadline) {
