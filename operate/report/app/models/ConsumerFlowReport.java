@@ -10,11 +10,11 @@ import java.math.RoundingMode;
 import java.util.*;
 
 /**
- * Created with IntelliJ IDEA.
+ * 客流报表
+ * <p/>
  * User: wangjia
  * Date: 12-12-28
  * Time: 下午5:30
- * To change this template use File | Settings | File Templates.
  */
 public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
     public Order order;
@@ -535,8 +535,8 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
             perOrderPrice = totolSalePrice.divide(BigDecimal.valueOf(orderNum), 2, RoundingMode.HALF_UP);
             grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
-        return new ConsumerFlowReport(buyCount, amount.setScale(2,4), realBuyCount, realAmount.setScale(2,4), refundPrice.setScale(2,4), refundCount, consumedPrice.setScale(2), consumedCount, shouldGetPrice.setScale(2,4), haveGetPrice.setScale(2,4)
-                , grossMargin, channelCost.setScale(2,4), profit.setScale(2,4), perOrderPrice.setScale(2,4));
+        return new ConsumerFlowReport(buyCount, amount.setScale(2, 4), realBuyCount, realAmount.setScale(2, 4), refundPrice.setScale(2, 4), refundCount, consumedPrice.setScale(2), consumedCount, shouldGetPrice.setScale(2, 4), haveGetPrice.setScale(2, 4)
+                , grossMargin, channelCost.setScale(2, 4), profit.setScale(2, 4), perOrderPrice.setScale(2, 4));
     }
 
     private static String getReportKey(ConsumerFlowReport refoundItem) {

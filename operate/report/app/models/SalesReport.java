@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.*;
+import java.lang.*;
 
 /**
  * 销售报表
@@ -20,13 +22,14 @@ import java.util.Map;
  * Date: 12-12-11
  * Time: 下午4:54
  */
-public class SalesReport {
+public class SalesReport implements Comparable<SalesReport> {
     public Goods goods;
     /**
      * 平均售价
      */
     public BigDecimal avgSalesPrice;
 
+    public String orderBy;
 
     /**
      * 毛利率
@@ -272,7 +275,7 @@ public class SalesReport {
      * @param condition
      * @return
      */
-    public static List<SalesReport> query(SalesReportCondition condition) {
+    public static List<SalesReport> query(SalesReportCondition condition, String orderBy) {
         //paidAt
         String sql = "select new models.SalesReport(r.goods,r.goods.originalPrice,sum(r.buyNumber)" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)" +
@@ -477,6 +480,7 @@ public class SalesReport {
 
         List resultList = new ArrayList();
         for (Goods key : map.keySet()) {
+            map.get(key).orderBy = orderBy;
             resultList.add(map.get(key));
         }
 
@@ -794,5 +798,61 @@ public class SalesReport {
 
     private static OperateUser getReportKeyOfPeopleEffect(SalesReport refundItem) {
         return refundItem.operateUser;
+    }
+
+    @Override
+    public int compareTo(SalesReport arg) {
+//         后面一位：1是升序，2是降序
+        switch (this.orderBy) {
+            case "02":
+                return arg.goods.code.compareTo(this.goods.code);
+            case "01":
+                return this.goods.code.compareTo(arg.goods.code);
+            case "12":
+                return arg.goods.shortName.compareTo(this.goods.shortName);
+            case "11":
+                return this.goods.shortName.compareTo(arg.goods.shortName);
+            case "22":
+                return arg.originalPrice.compareTo(this.originalPrice);
+            case "21":
+                return this.originalPrice.compareTo(arg.originalPrice);
+            case "32":
+                return (arg.avgSalesPrice == null ? BigDecimal.ZERO : arg.avgSalesPrice).compareTo(this.avgSalesPrice == null ? BigDecimal.ZERO : this.avgSalesPrice);
+            case "31":
+                return (this.avgSalesPrice == null ? BigDecimal.ZERO : this.avgSalesPrice).compareTo(arg.avgSalesPrice == null ? BigDecimal.ZERO : arg.avgSalesPrice);
+            case "42":
+                return (arg.buyNumber == null ? BigDecimal.ZERO : BigDecimal.valueOf(arg.buyNumber)).compareTo(this.buyNumber == null ? BigDecimal.ZERO : BigDecimal.valueOf(this.buyNumber));
+            case "41":
+                return (this.buyNumber == null ? BigDecimal.ZERO : BigDecimal.valueOf(this.buyNumber)).compareTo(arg.buyNumber == null ? BigDecimal.ZERO : BigDecimal.valueOf(arg.buyNumber));
+            case "52":
+                return (arg.totalAmount == null ? BigDecimal.ZERO : arg.totalAmount).compareTo(this.totalAmount == null ? BigDecimal.ZERO : this.totalAmount);
+            case "51":
+                return (this.totalAmount == null ? BigDecimal.ZERO : this.totalAmount).compareTo(arg.totalAmount == null ? BigDecimal.ZERO : arg.totalAmount);
+            case "62":
+                return (arg.cheatedOrderAmount == null ? BigDecimal.ZERO : arg.cheatedOrderAmount).compareTo(this.cheatedOrderAmount == null ? BigDecimal.ZERO : this.cheatedOrderAmount);
+            case "61":
+                return (this.cheatedOrderAmount == null ? BigDecimal.ZERO : this.cheatedOrderAmount).compareTo(arg.cheatedOrderAmount == null ? BigDecimal.ZERO : arg.cheatedOrderAmount);
+            case "72":
+                return (arg.refundAmount == null ? BigDecimal.ZERO : arg.refundAmount).compareTo(this.refundAmount == null ? BigDecimal.ZERO : this.refundAmount);
+            case "71":
+                return (this.refundAmount == null ? BigDecimal.ZERO : this.refundAmount).compareTo(arg.refundAmount == null ? BigDecimal.ZERO : arg.refundAmount);
+            case "82":
+                return (arg.consumedAmount == null ? BigDecimal.ZERO : arg.consumedAmount).compareTo(this.consumedAmount == null ? BigDecimal.ZERO : this.consumedAmount);
+            case "81":
+                return (this.consumedAmount == null ? BigDecimal.ZERO : this.consumedAmount).compareTo(arg.consumedAmount == null ? BigDecimal.ZERO : arg.consumedAmount);
+            case "92":
+                return (arg.netSalesAmount == null ? BigDecimal.ZERO : arg.netSalesAmount).compareTo(this.netSalesAmount == null ? BigDecimal.ZERO : this.netSalesAmount);
+            case "91":
+                return (this.netSalesAmount == null ? BigDecimal.ZERO : this.netSalesAmount).compareTo(arg.netSalesAmount == null ? BigDecimal.ZERO : arg.netSalesAmount);
+            case "102":
+                return (arg.grossMargin == null ? BigDecimal.ZERO : arg.grossMargin).compareTo(this.grossMargin == null ? BigDecimal.ZERO : this.grossMargin);
+            case "101":
+                return (this.grossMargin == null ? BigDecimal.ZERO : this.grossMargin).compareTo(arg.grossMargin == null ? BigDecimal.ZERO : arg.grossMargin);
+            case "112":
+                return (arg.profit == null ? BigDecimal.ZERO : arg.profit).compareTo(this.profit == null ? BigDecimal.ZERO : this.profit);
+            case "111":
+                return (this.profit == null ? BigDecimal.ZERO : this.profit).compareTo(arg.profit == null ? BigDecimal.ZERO : arg.profit);
+        }
+        return 0;
     }
 }
