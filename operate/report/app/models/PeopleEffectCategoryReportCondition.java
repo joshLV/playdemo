@@ -38,6 +38,14 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
             condBuilder.append(" and ou.id =:salesId");
             paramMap.put("salesId", salesId);
         }
+        if (StringUtils.isNotBlank(userName)) {
+            condBuilder.append(" and ou.userName like :shortName");
+            paramMap.put("shortName", "%" + userName + "%");
+        }
+        if (StringUtils.isNotBlank(jobNumber)) {
+            condBuilder.append(" and ou.jobNumber= :jobNumber");
+            paramMap.put("jobNumber", jobNumber);
+        }
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);
@@ -61,7 +69,14 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
             condBuilder.append(" and ou.id =:salesId");
             paramMap.put("salesId", salesId);
         }
-
+        if (StringUtils.isNotBlank(userName)) {
+            condBuilder.append(" and ou.userName like :shortName");
+            paramMap.put("shortName", "%" + userName + "%");
+        }
+        if (StringUtils.isNotBlank(jobNumber)) {
+            condBuilder.append(" and ou.jobNumber= :jobNumber");
+            paramMap.put("jobNumber", jobNumber);
+        }
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);
@@ -82,7 +97,14 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
             condBuilder.append(" and ou.id =:salesId");
             paramMap.put("salesId", salesId);
         }
-
+        if (StringUtils.isNotBlank(userName)) {
+            condBuilder.append(" and ou.userName like :shortName");
+            paramMap.put("shortName", "%" + userName + "%");
+        }
+        if (StringUtils.isNotBlank(jobNumber)) {
+            condBuilder.append(" and ou.jobNumber= :jobNumber");
+            paramMap.put("jobNumber", jobNumber);
+        }
         if (beginAt != null) {
             condBuilder.append(" and e.consumedAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);
@@ -103,6 +125,14 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
             condBuilder.append(" and ou.id =:salesId");
             paramMap.put("salesId", salesId);
         }
+        if (StringUtils.isNotBlank(userName)) {
+            condBuilder.append(" and ou.userName like :shortName");
+            paramMap.put("shortName", "%" + userName + "%");
+        }
+        if (StringUtils.isNotBlank(jobNumber)) {
+            condBuilder.append(" and ou.jobNumber= :jobNumber");
+            paramMap.put("jobNumber", jobNumber);
+        }
         if (beginAt != null) {
             condBuilder.append(" and e.refundAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);
@@ -114,28 +144,6 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
 
         return condBuilder.toString();
     }
-
-    public String getFilterRealRefundAt() {
-        StringBuilder condBuilder = new StringBuilder(" where r.order.status='SENT' and r.goods.isLottery=false" +
-                " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
-
-        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
-        if (!hasSeeReportProfitRight) {
-            condBuilder.append(" and ou.id =:salesId");
-            paramMap.put("salesId", salesId);
-        }
-        if (beginAt != null) {
-            condBuilder.append(" and r.order.refundAt >= :createdAtBegin");
-            paramMap.put("createdAtBegin", beginAt);
-        }
-        if (endAt != null) {
-            condBuilder.append(" and r.order.refundAt < :createdAtEnd");
-            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
-        }
-
-        return condBuilder.toString();
-    }
-
 
     public String getFilterOfPeopleEffect() {
         StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId =s.id and s.deleted=0 and s.salesId=o.id and o.deleted=0  and (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false");
@@ -249,6 +257,14 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
             condBuilder.append(" and ou.id =:salesId");
             paramMap.put("salesId", salesId);
         }
+        if (StringUtils.isNotBlank(userName)) {
+            condBuilder.append(" and ou.userName like :shortName");
+            paramMap.put("shortName", "%" + userName + "%");
+        }
+        if (StringUtils.isNotBlank(jobNumber)) {
+            condBuilder.append(" and ou.jobNumber= :jobNumber");
+            paramMap.put("jobNumber", jobNumber);
+        }
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);
@@ -270,7 +286,14 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
             condBuilder.append(" and o.id =:salesId");
             paramMap.put("salesId", salesId);
         }
-
+        if (StringUtils.isNotBlank(userName)) {
+            condBuilder.append(" and ou.userName like :shortName");
+            paramMap.put("shortName", "%" + userName + "%");
+        }
+        if (StringUtils.isNotBlank(jobNumber)) {
+            condBuilder.append(" and ou.jobNumber= :jobNumber");
+            paramMap.put("jobNumber", jobNumber);
+        }
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", beginAt);
@@ -292,6 +315,14 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
         if (!hasSeeReportProfitRight) {
             condBuilder.append(" and ou.id =:salesId");
             paramMap1.put("salesId", salesId);
+        }
+        if (StringUtils.isNotBlank(userName)) {
+            condBuilder.append(" and ou.userName like :shortName");
+            paramMap1.put("shortName", "%" + userName + "%");
+        }
+        if (StringUtils.isNotBlank(jobNumber)) {
+            condBuilder.append(" and ou.jobNumber= :jobNumber");
+            paramMap1.put("jobNumber", jobNumber);
         }
         if (beginAt != null) {
             condBuilder.append(" and e.refundAt >= :refundAtBegin");

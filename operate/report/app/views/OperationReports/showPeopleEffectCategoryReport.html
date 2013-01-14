@@ -56,6 +56,7 @@
     });
 
     function channelCategoryReportExcel() {
+        $("#condition_hasRight").val(false);
         $("#form").attr("action", "@{OperationReports.peopleEffectCategoryReportExcelOut()}");
         $("#form").attr("method", "get");
         $("#form").submit();
@@ -169,6 +170,10 @@
 
 <form class="well form-inline" action="@{OperationReports.showPeopleEffectCategoryReport()}" method="GET" id="form"
       name="form">
+    工号：<input type="text" name="condition.jobNumber" class="input-medium"
+              value="${condition?.jobNumber}"/>
+    姓名：<input type="text" name="condition.userName" class="input-medium"
+              value="${condition?.userName}"/>
     起止日期
     <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.beginAt"
            onfocus="WdatePicker({readOnly:true})" value="${condition.beginAt?.format()}"> -
