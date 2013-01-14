@@ -40,8 +40,27 @@ public class SMSUtil {
         MQPublisher.publish(SMS2_QUEUE, new SMSMessage(content, phoneNumbers));
     }
 
+    /**
+     * 发送订单短信，包括下面所有订单项短信.
+     * @param orderId
+     */
     public static void sendOrderSms(Long orderId) {
-        MQPublisher.publish(SMS_ORDER_QUEUE, orderId);
+        MQPublisher.publish(SMS_ORDER_QUEUE, new OrderECouponMessage(orderId, null, null));
     }
-    
+
+    /**
+     * 发送订单项短信，可能有多个短信.
+     * @param orderItemId
+     */
+    public static void sendOrderItemSms(Long orderItemId) {
+        MQPublisher.publish(SMS_ORDER_QUEUE, new OrderECouponMessage(null, orderItemId, null));
+    }
+
+    /**
+     * 发送券短信。
+     * @param eCouponId
+     */
+    public static void sendECouponSms(Long eCouponId) {
+        MQPublisher.publish(SMS_ORDER_QUEUE, new OrderECouponMessage(null, null, eCouponId));
+    }
 }
