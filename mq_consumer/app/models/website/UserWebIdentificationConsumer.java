@@ -15,7 +15,7 @@ public class UserWebIdentificationConsumer extends RabbitMQConsumer<UserWebIdent
 	protected void consume(UserWebIdentificationData uwiMsg) {
 		//开启事务管理
         JPAPlugin.startTx(false);
-
+        JPA.em().flush();  // 避免出现再次插件时wui为空，但还是出现cookieId索引不唯一.
 		UserWebIdentification wui = UserWebIdentification.findOne(uwiMsg.cookieId);
 		if (wui == null) {
 			wui = uwiMsg.toUserWebIdentification();
