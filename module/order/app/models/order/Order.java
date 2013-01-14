@@ -787,7 +787,7 @@ public class Order extends Model {
                 && orderItem.order.getResaler().loginName.equals(Resaler.WUBA_LOGIN_NAME)) {
             //【58团购】“东来顺双人套餐”由58合作商家一百券提供,一百券号1484506810,有效期至2012-12-30
             SMSUtil.send("【58团】\"" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
-                    summary + "\"由58合作商家一百券提供,一百券号" + ecouponStr + ",有效期至" +
+                    summary + "\"由58合作商家【一百券】提供,一百券号" + ecouponStr + ",有效期至" +
                     dateFormat.format(goods.expireAt) + "客服4007895858",
                     orderItem.phone, replyCode);
             return;
@@ -827,7 +827,7 @@ public class Order extends Model {
         if (AccountType.RESALER.equals(orderItem.order.userType)
                 && orderItem.order.getResaler().loginName.equals(Resaler.WUBA_LOGIN_NAME)) {
             SMSUtil.send("【58团】\"" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.shortName +
-                    "[" + goods.faceValue + "元]")) + "\"由58合作商家一百券提供,一百券号" + eCoupon.eCouponSn + "," +
+                    "[" + goods.faceValue + "元]")) + "\"由58合作商家【一百券】提供,一百券号" + eCoupon.eCouponSn + "," +
                     ",有效期至" + dateFormat.format(eCoupon.expireAt) + "客服4007895858",
                     orderItem.phone, eCoupon.replyCode);
             return;
