@@ -9,20 +9,26 @@ import play.db.jpa.JPA;
 
 import javax.persistence.Query;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.*;
 
 /**
- * Created with IntelliJ IDEA.
+ * 大类销售报表
+ * <p/>
  * User: wangjia
  * Date: 12-12-28
  * Time: 上午11:52
- * To change this template use File | Settings | File Templates.
  */
-public class CategorySalesReport {
+public class CategorySalesReport implements Comparable<CategorySalesReport> {
+
 
     public Goods goods;
 
+    public BigDecimal comparedValue;
+    public String[] orderByFields = {"buyNumber", "totalAmount", "cheatedOrderAmount", "refundAmount", "consumedAmount", "netSalesAmount", "grossMargin", "profit"};
+
+    public String orderByType;
     /**
      * 商户类别
      */
@@ -435,7 +441,6 @@ public class CategorySalesReport {
         query = JPA.em()
                 .createQuery(sql + condition.getFilterCheatedOrderResaler() + groupBy + " order by sum(r.buyNumber) desc ");
 
-
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
@@ -596,13 +601,39 @@ public class CategorySalesReport {
         //total
         List<CategorySalesReport> tempTotal = queryTotal(condition);
         Map<String, CategorySalesReport> totalMap = new HashMap<>();
-
-
+        Map<String, BigDecimal> comparedMap = new HashMap<>();
         for (int i = 0; i < tempTotal.size(); i++) {
+            switch (tempTotal.get(i).orderByFields[condition.orderByIndex]) {
+                case "buyNumber":
+                    comparedMap.put((tempTotal.get(i).code == null ? "999" : tempTotal.get(i).code), (tempTotal.get(i).buyNumber == null ? BigDecimal.ZERO : BigDecimal.valueOf(tempTotal.get(i).buyNumber)));
+                    break;
+                case "totalAmount":
+                    comparedMap.put((tempTotal.get(i).code == null ? "999" : tempTotal.get(i).code), (tempTotal.get(i).totalAmount == null ? BigDecimal.ZERO : tempTotal.get(i).totalAmount));
+                    break;
+                case "cheatedOrderAmount":
+                    comparedMap.put((tempTotal.get(i).code == null ? "999" : tempTotal.get(i).code), (tempTotal.get(i).cheatedOrderAmount == null ? BigDecimal.ZERO : tempTotal.get(i).cheatedOrderAmount));
+                    break;
+                case "refundAmount":
+                    comparedMap.put((tempTotal.get(i).code == null ? "999" : tempTotal.get(i).code), (tempTotal.get(i).refundAmount == null ? BigDecimal.ZERO : tempTotal.get(i).refundAmount));
+                    break;
+                case "consumedAmount":
+                    comparedMap.put((tempTotal.get(i).code == null ? "999" : tempTotal.get(i).code), (tempTotal.get(i).consumedAmount == null ? BigDecimal.ZERO : tempTotal.get(i).consumedAmount));
+                    break;
+                case "netSalesAmount":
+                    comparedMap.put((tempTotal.get(i).code == null ? "999" : tempTotal.get(i).code), (tempTotal.get(i).netSalesAmount == null ? BigDecimal.ZERO : tempTotal.get(i).netSalesAmount));
+                    break;
+                case "grossMargin":
+                    comparedMap.put((tempTotal.get(i).code == null ? "999" : tempTotal.get(i).code), (tempTotal.get(i).grossMargin == null ? BigDecimal.ZERO : tempTotal.get(i).grossMargin));
+                    break;
+                case "profit":
+                    comparedMap.put((tempTotal.get(i).code == null ? "999" : tempTotal.get(i).code), (tempTotal.get(i).profit == null ? BigDecimal.ZERO : tempTotal.get(i).profit));
+                    break;
+            }
+
             totalMap.put(getTotalReportKey(tempTotal.get(i)), tempTotal.get(i));
         }
 
-        List resultList = new ArrayList();
+        List<CategorySalesReport> resultList = new ArrayList();
 
         List<String> tempString = new ArrayList<>();
         for (String s : map.keySet()) {
@@ -621,6 +652,12 @@ public class CategorySalesReport {
                 resultList.add(totalMap.get(key));
             }
         }
+
+        for (CategorySalesReport c : resultList) {
+            c.comparedValue = comparedMap.get(c.code);
+            c.orderByType = condition.orderByType;
+        }
+        Collections.sort(resultList);
         return resultList;
     }
 
@@ -1255,4 +1292,14 @@ public class CategorySalesReport {
     }
 
 
+    @Override
+    public int compareTo(CategorySalesReport arg) {
+        switch (this.orderByType) {
+            case "2":
+                return (arg.comparedValue == null ? BigDecimal.ZERO : arg.comparedValue).compareTo(this.comparedValue == null ? BigDecimal.ZERO : this.comparedValue);
+            case "1":
+                return (this.comparedValue == null ? BigDecimal.ZERO : this.comparedValue).compareTo(arg.comparedValue == null ? BigDecimal.ZERO : arg.comparedValue);
+        }
+        return 0;
+    }
 }
