@@ -9,6 +9,7 @@ import models.sales.GoodsHistory;
 import models.sales.MaterialType;
 import models.sales.SecKillGoods;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 
@@ -327,17 +328,38 @@ public class OrderItems extends Model {
      * 得到此订单发送购买短信的内容.
      * @return
      */
-    public String getECouponSMS() {
-        // 如果是
+    @Transient
+    public String getOrderSMSMessage() {
         if (order.status != OrderStatus.PAID) {
+            Logger.info("OrderItem(" + id + ").order Status is NOT PAID, but was:" + order.status);
             return null;  //未支付时不能发短信.
         }
 
-        List<String> ecouponSNs = new ArrayList<>();
-        for(ECoupon e : getECoupons()) {
-            ecouponSNs.add(e.eCouponSn);
+        //京东的不发短信邮件等提示，因为等会儿京东会再次主动通知我们发短信
+        if (AccountType.RESALER.equals(order.userType)
+                && order.getResaler().loginName.equals(Resaler.JD_LOGIN_NAME)) {
+            // do nothing. NOW!
+            // TODO: 修改东京接口
         }
 
+
+        if (goods.isLottery != null && goods.isLottery) {
+            //抽奖商品不发短信邮件等提示
+            Logger.info("goods(id:" + goods.id + " is Lottery!");
+            return null;
+        }
+
+        List<String> ecouponSNs = new ArrayList<>();
+        ECoupon lastECoupon = null;
+        for(ECoupon e : getECoupons()) {
+            ecouponSNs.add(e.eCouponSn);
+            lastECoupon = e;
+        }
+
+        if (lastECoupon == null) {
+            Logger.info("OrderItem(" + id + ") does NOT contains any ECoupons!");
+            return null;
+        }
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(Order.COUPON_EXPIRE_FORMAT);
 
@@ -350,18 +372,16 @@ public class OrderItems extends Model {
             summary = "";
         }
 
-        JPA.em().flush();
-
         String message = "【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
                 summary + "券号" + ecouponStr + "," +
-                "截止" + dateFormat.format(goods.expireAt) + "客服4006262166";
-        // 58团
+                "截止" + dateFormat.format(lastECoupon.expireAt) + "客服4006262166";
+        // 重定义短信格式 - 58团
         if (AccountType.RESALER.equals(order.userType)
                 && order.getResaler().loginName.equals(Resaler.WUBA_LOGIN_NAME)) {
 
             message = "【58团】【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
                     summary + "由58合作商家【一百券】提供,一百券号" + ecouponStr + "," +
-                    ",有效期至" + dateFormat.format(goods.expireAt) + "客服4007895858";
+                    ",有效期至" + dateFormat.format(lastECoupon.expireAt) + "客服4007895858";
         }
 
         return message;

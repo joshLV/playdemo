@@ -2,7 +2,11 @@ package models.order;
 
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
-import models.accounts.*;
+import models.accounts.Account;
+import models.accounts.AccountType;
+import models.accounts.PaymentSource;
+import models.accounts.TradeBill;
+import models.accounts.Voucher;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import models.admin.SupplierUser;
@@ -47,7 +51,6 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -621,17 +624,14 @@ public class Order extends Model {
     }
 
     public void payAndSendECoupon() {
-        this.payAndSendECoupon(null);
-    }
-
-    public void payAndSendECoupon(BatchCoupons batchCoupons) {
         if (this.status == OrderStatus.PAID) {
             return;
         }
 
         if (paid()) {
-            sendECoupon(batchCoupons);
+            generateECoupon();
             remindBigOrderRemark();
+            this.sendECouponSMS("订单生成券号");
         }
     }
 
@@ -702,14 +702,10 @@ public class Order extends Model {
         return true;
     }
 
-    private void sendECoupon() {
-        this.sendECoupon(null);
-    }
-
     /**
      * 发送电子券相关短信/邮件/通知
      */
-    private void sendECoupon(BatchCoupons batchCoupons) {
+    private void generateECoupon() {
         if (this.status != OrderStatus.PAID) {
             return;
         }
@@ -721,121 +717,19 @@ public class Order extends Model {
             if (goods == null) {
                 continue;
             }
-            // 用于批量发送
-            List<String> eCouponSNs = new ArrayList<>();
-            String replyCode = null;
             //如果不是电子券，跳过
             if (MaterialType.ELECTRONIC == goods.materialType) {
                 for (int i = 0; i < orderItem.buyNumber; i++) {
                     //创建电子券
-                    ECoupon eCoupon = createCoupon(goods, orderItem, batchCoupons);
+                    ECoupon eCoupon = createCoupon(goods, orderItem);
                     //记录券历史信息
                     new CouponHistory(eCoupon, AccountType.RESALER.equals(orderItem.order.userType) ? "分销商：" + orderItem.order.getResaler().loginName : "消费者:" + orderItem.order.getUser().getShowName(), "产生券号", ECouponStatus.UNCONSUMED, ECouponStatus.UNCONSUMED, null).save();
-
-                    //抽奖商品不发短信邮件等提示
-                    if (goods.isLottery != null && goods.isLottery) {
-                        continue;
-                    }
-                    //京东的不发短信邮件等提示，因为等会儿京东会再次主动通知我们发短信
-                    if (AccountType.RESALER.equals(orderItem.order.userType)
-                            && orderItem.order.getResaler().loginName.equals(Resaler.JD_LOGIN_NAME)) {
-                        continue;
-                    }
-                    if (!ECoupon.USE_PRODUCT_SERIAL_REPLYCODE) {
-                        //发短信
-                        sendEcouponSms(eCoupon, goods, orderItem);
-                    }
-                    replyCode = eCoupon.replyCode;
-                    eCouponSNs.add(eCoupon.eCouponSn);
                 }
             }
             //邮件提醒
             sendPaidMail(goods, orderItem);
-
-            // 同一产品发一个短信
-            if (ECoupon.USE_PRODUCT_SERIAL_REPLYCODE) {
-                sendGoodsEcoupons(goods, orderItem, replyCode, eCouponSNs);
-            }
-            goods.save();
         }
 
-    }
-
-    /**
-     * 发送一组同一商品的短信.
-     * @param goods
-     * @param ecoupons
-     */
-    public void sendGoodsEcoupons(Goods goods, OrderItems orderItem, String replyCode, List<String> ecoupons) {
-        if (ecoupons.size() == 0) {
-            return;
-        }
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
-
-        String ecouponStr = StringUtils.join(ecoupons, "，");
-
-        String summary;
-        if (ecoupons.size() > 1) {
-            summary = "[共" + ecoupons.size() + "张]";
-        } else {
-            summary = "";
-        }
-
-        // 58团
-        if (AccountType.RESALER.equals(orderItem.order.userType)
-                && orderItem.order.getResaler().loginName.equals(Resaler.WUBA_LOGIN_NAME)) {
-            //【58团购】“东来顺双人套餐”由58合作商家一百券提供,一百券号1484506810,有效期至2012-12-30
-            SMSUtil.send("【58团】\"" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
-                    summary + "\"由58合作商家【一百券】提供,一百券号" + ecouponStr + ",有效期至" +
-                    dateFormat.format(goods.expireAt) + "客服4007895858",
-                    orderItem.phone, replyCode);
-            return;
-        }
-        SMSUtil.send("【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
-                summary + "券号" + ecouponStr + "," +
-                "截止" + dateFormat.format(goods.expireAt) + "客服4006262166",
-                orderItem.phone, replyCode);
-    }
-
-    /**
-     * 发送半张券到消费者手机
-     * @param eCoupon
-     * @param goods
-     * @param orderItem
-     */
-    private void sendEcouponSms(ECoupon eCoupon, Goods goods, OrderItems orderItem) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
-        /*
-        TsingTuanOrder tsingTuanOrder = TsingTuanOrder.from(eCoupon);
-        if (tsingTuanOrder != null) {
-            // 清团券发送
-            String password = RandomNumberUtil.generateSerialNumber(6);
-            eCoupon.password = password;
-            eCoupon.save();
-            tsingTuanOrder.password = password;
-            SMSUtil.send("【清团】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name +
-                    "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "" +
-                    "密码" + password + ",截止" + dateFormat.format(eCoupon.expireAt) + "客服4006013975",
-                    orderItem.phone, eCoupon.replyCode);
-            //TsingTuanSendOrder.send(tsingTuanOrder);
-            return;
-        }
-        */
-
-        // 58团
-        if (AccountType.RESALER.equals(orderItem.order.userType)
-                && orderItem.order.getResaler().loginName.equals(Resaler.WUBA_LOGIN_NAME)) {
-            SMSUtil.send("【58团】\"" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.shortName +
-                    "[" + goods.faceValue + "元]")) + "\"由58合作商家【一百券】提供,一百券号" + eCoupon.eCouponSn + "," +
-                    ",有效期至" + dateFormat.format(eCoupon.expireAt) + "客服4007895858",
-                    orderItem.phone, eCoupon.replyCode);
-            return;
-        }
-        SMSUtil.send("【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.shortName +
-                    "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
-                    "截止" + dateFormat.format(eCoupon.expireAt) + "客服4006262166",
-                    orderItem.phone, eCoupon.replyCode);
     }
 
     /**
@@ -847,10 +741,8 @@ public class Order extends Model {
             return;
         }
         MailMessage mail = new MailMessage();
-        //分销商
-        if (AccountType.RESALER.equals(orderItem.order.userType)) {
-            mail.addRecipient(orderItem.order.getResaler().email);
-        } else {
+        //只有消费者才发邮件
+        if (AccountType.CONSUMER.equals(orderItem.order.userType)) {
             String email = orderItem.order.getUser().loginName;
             if (StringUtils.isNotBlank(email)) {
                 //消费者
@@ -911,7 +803,7 @@ public class Order extends Model {
      *
      * @return 一个电子券
      */
-    private ECoupon createCoupon(Goods goods, OrderItems orderItem, BatchCoupons batchCoupons) {
+    private ECoupon createCoupon(Goods goods, OrderItems orderItem) {
         ECoupon eCoupon = null;
         //支持导入券号
         if (goods.couponType == GoodsCouponType.IMPORT) {
@@ -919,7 +811,7 @@ public class Order extends Model {
             if (importedCoupon == null) {
                 throw new RuntimeException("can not find an imported coupon of goods " + goods.getId());
             } else {
-                eCoupon = new ECoupon(this, goods, orderItem, importedCoupon.coupon, batchCoupons).save();
+                eCoupon = new ECoupon(this, goods, orderItem, importedCoupon.coupon).save();
                 Supplier supplier = Supplier.findById(goods.supplierId);
                 SupplierUser supplierUser = SupplierUser.find("bySupplier", supplier).first();
                 if (supplierUser == null) {
@@ -935,7 +827,8 @@ public class Order extends Model {
                 importedCoupon.save();
             }
         } else {
-            eCoupon = new ECoupon(this, goods, orderItem, batchCoupons).save();
+            eCoupon = new ECoupon(this, goods, orderItem);
+            eCoupon.save();
         }
         return eCoupon;
     }
@@ -1231,15 +1124,12 @@ public class Order extends Model {
     }
 
     public static boolean confirmPaymentInfo(Order order, Account account, boolean useBalance, String paymentSourceCode) {
-        return confirmPaymentInfo(order, account, useBalance, paymentSourceCode, null, null);
-    }
-    public static boolean confirmPaymentInfo(Order order, Account account, boolean useBalance, String paymentSourceCode,
-                                             BatchCoupons batchCoupons) {
-        return confirmPaymentInfo(order, account, useBalance, paymentSourceCode, batchCoupons, null);
+        return confirmPaymentInfo(order, account, useBalance, paymentSourceCode, null);
     }
 
-    public static boolean confirmPaymentInfo(Order order, Account account, boolean useBalance, String paymentSourceCode,
-                                             BatchCoupons batchCoupons, List<Voucher> vouchers) {
+    public static boolean confirmPaymentInfo(Order order, Account account, boolean useBalance,
+                                             String paymentSourceCode,
+                                             List<Voucher> vouchers) {
         //使用抵用券
         order.voucherValue = BigDecimal.ZERO;
         List<Voucher> validVouchers = new ArrayList<>();
@@ -1283,7 +1173,7 @@ public class Order extends Model {
                 && order.accountPay .add(order.promotionBalancePay) .add(order.voucherValue)
                 .compareTo(order.needPay) == 0) {
             order.payMethod = PaymentSource.getBalanceSource().code;
-            order.payAndSendECoupon(batchCoupons);
+            order.payAndSendECoupon();
             useVouchers(validVouchers, order);
             return true;
         }
@@ -1413,5 +1303,14 @@ public class Order extends Model {
     public User getUserInfo() {
         User user = this.getUser();
         return user;
+    }
+
+    /**
+     * 发送此订单的所有券短信
+     */
+    public void sendECouponSMS(String remark) {
+        for (OrderItems item : this.orderItems) {
+            SMSUtil.sendOrderItemSms(item.id, remark);
+        }
     }
 }

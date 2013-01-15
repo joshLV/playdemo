@@ -41,7 +41,7 @@ public class PaymentInfo extends Controller {
         }
         //如果订单总金额是0元，就直接付款成功吧
         if (order.needPay.compareTo(BigDecimal.ZERO) == 0) {
-            if (Order.confirmPaymentInfo(order, account, false, null, null, null)){
+            if (Order.confirmPaymentInfo(order, account, false, null, null)){
                 PaymentSource paymentSource = PaymentSource.findByCode(order.payMethod);
                 //近日成交商品
                 List<models.sales.Goods> recentGoodsList = models.sales.Goods.findTradeRecently(5);
@@ -107,7 +107,7 @@ public class PaymentInfo extends Controller {
 
 
         Account account = AccountUtil.getConsumerAccount(user.getId());
-        if (Order.confirmPaymentInfo(order, account, useBalance, paymentSourceCode, null, vouchers)) {
+        if (Order.confirmPaymentInfo(order, account, useBalance, paymentSourceCode, vouchers)) {
             PaymentSource paymentSource = PaymentSource.findByCode(order.payMethod);
             //近日成交商品
             List<models.sales.Goods> recentGoodsList = models.sales.Goods.findTradeRecently(5);

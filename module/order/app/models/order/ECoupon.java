@@ -171,11 +171,18 @@ public class ECoupon extends Model {
     /** 1：冻结 0：解冻*/
     public Integer isFreeze;
 
+    /**
+     * 发送过短信的次数.
+     */
+    @Column(name="sms_sent_count")
+    public Integer smsSentCount;
+
     @Column(name = "trigger_coupon_sn")
     public String triggerCouponSn;
 
     @Column(name = "download_times")
     public Integer downloadTimes;
+
     @Enumerated(EnumType.STRING)
     public VerifyCouponType verifyType;
 
@@ -251,11 +258,7 @@ public class ECoupon extends Model {
         this(order, goods, orderItems, null);
     }
 
-    public ECoupon(Order order, Goods goods, OrderItems orderItems, BatchCoupons batchCoupons) {
-        this(order, goods, orderItems, null, batchCoupons);
-    }
-
-    public ECoupon(Order order, Goods goods, OrderItems orderItems, String couponSn, BatchCoupons batchCoupons) {
+    public ECoupon(Order order, Goods goods, OrderItems orderItems, String couponSn) {
         this.order = order;
         this.batchCoupons = batchCoupons;
 
@@ -1500,4 +1503,36 @@ public class ECoupon extends Model {
                 supplierId, models.order.ECouponStatus.CONSUMED, DateUtil.getBeginOfDay(beginAt), DateUtil.getEndOfDay(endAt)).first();
         return usedAmount == null ? BigDecimal.ZERO : usedAmount;
     }
+
+
+    /**
+     * 得到订单短信内容（单条)
+     * @return
+     */
+    @Transient
+    public String getOrderSMSMessage() {
+
+        if (status != ECouponStatus.UNCONSUMED) {
+            Logger.info("ECoupon(id:" + id + ") stats is not UNCONSUMED, but was " + status + ", cann't send SMS.");
+            return null;  //只有未支付时才能发短信
+        }
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat(Order.COUPON_EXPIRE_FORMAT);
+
+        String message = "【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
+                "券号" + eCouponSn + "," +
+                "截止" + dateFormat.format(expireAt) + "客服4006262166";
+
+        // 重定义短信格式 - 58团
+        if (AccountType.RESALER.equals(order.userType)
+                && order.getResaler().loginName.equals(Resaler.WUBA_LOGIN_NAME)) {
+
+            message = "【58团】【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
+                    "由58合作商家【一百券】提供,一百券号" + eCouponSn + "," +
+                    ",有效期至" + dateFormat.format(expireAt) + "客服4007895858";
+        }
+
+        return message;
+    }
+
 }

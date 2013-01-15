@@ -35,6 +35,18 @@ public class ZtSMSProvider implements SMSProvider {
 
     @Override
     public void send(SMSMessage message) {
+        List<String> avaiablePhoneNumbers = new ArrayList<>();
+        for (String phone : message.getPhoneNumbers()) {
+            if (phone != null && phone.length() >= 11) { // 手机号必须大于等于11位
+                avaiablePhoneNumbers.add(phone);
+            }
+        }
+
+        if (avaiablePhoneNumbers.size() == 0) {
+            Logger.info("手机号位数不足：" + message);
+            return;
+        }
+
         // 准备url
         String phoneArgs = StringUtils.join(message.getPhoneNumbers(), ",");
 
@@ -46,16 +58,10 @@ public class ZtSMSProvider implements SMSProvider {
         if (StringUtils.isNotBlank(xh)) {
             xh = xh.substring(0, 2);
         }
+
         qparams.add(new BasicNameValuePair("xh", xh));
         qparams.add(new BasicNameValuePair("productid", "887361"));
-        
-        /*
-         * try { qparams.add(new BasicNameValuePair("Content",
-         * URLEncoder.encode(message.getContent(), "GBK"))); } catch
-         * (UnsupportedEncodingException e1) { Logger.warn("发送:(" +
-         * message.getContent() + ")时转码失败"); qparams.add(new
-         * BasicNameValuePair("Content", message.getContent())); }
-         */
+
         qparams.add(new BasicNameValuePair("content", message.getContent()));
         qparams.add(new BasicNameValuePair("mobile", phoneArgs));
         String url = SEND_URL.replace(":sms_info",
