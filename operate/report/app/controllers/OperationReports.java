@@ -55,10 +55,10 @@ public class OperationReports extends Controller {
         condition.operatorId = OperateRbac.currentUser().id;
 
         // DESC 的值表示升降序，含11位，代表11个排序字段， 1 为升序， 2 为降序， 0 为不排序
-        // 当无排序参数时，初始化 -1
+        // 当无排序参数时，初始化 000002000000
         String orderBy = "";
         if (desc == null) {
-            desc = "-1";
+            desc = "000002000000";
         }
         // 获取最新的desc值
         String[] descs = desc.split(",");
@@ -152,10 +152,10 @@ public class OperationReports extends Controller {
         condition.operatorId = OperateRbac.currentUser().id;
 
         // DESC 的值表示升降序，含11位，代表11个排序字段， 1 为升序， 2 为降序， 0 为不排序
-        // 当无排序参数时，初始化 -1
+        // 当无排序参数时，初始化 020000000
         String orderBy = "";
         if (desc == null) {
-            desc = "-1";
+            desc = "020000000";
         }
         // 获取最新的desc值
         String[] descs = desc.split(",");
@@ -323,10 +323,10 @@ public class OperationReports extends Controller {
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "销售报表_" + System.currentTimeMillis() + ".xls");
         // DESC 的值表示升降序，含11位，代表11个排序字段， 1 为升序， 2 为降序， 0 为不排序
-        // 当无排序参数时，初始化 -1
+        // 当无排序参数时，初始化 000002000000
         String orderBy = "";
         if (desc == null) {
-            desc = "-1";
+            desc = "000002000000";
         }
         // 获取最新的desc值
         String[] descs = desc.split(",");
@@ -397,10 +397,10 @@ public class OperationReports extends Controller {
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "销售报表_" + System.currentTimeMillis() + ".xls");
         // DESC 的值表示升降序，含11位，代表11个排序字段， 1 为升序， 2 为降序， 0 为不排序
-        // 当无排序参数时，初始化 -1
+        // 当无排序参数时，初始化 000002000000
         String orderBy = "";
         if (desc == null) {
-            desc = "-1";
+            desc = "000002000000";
         }
         // 获取最新的desc值
         String[] descs = desc.split(",");
@@ -931,10 +931,10 @@ public class OperationReports extends Controller {
 
         List<ConsumerFlowReport> resultList = null;
         // DESC 的值表示升降序，含11位，代表11个排序字段， 1 为升序， 2 为降序， 0 为不排序
-        // 当无排序参数时，初始化 -1
+        // 当无排序参数时，初始化 020000000
         String orderBy = "";
         if (desc == null) {
-            desc = "-1";
+            desc = "020000000";
         }
         // 获取最新的desc值
         String[] descs = desc.split(",");
@@ -1026,10 +1026,10 @@ public class OperationReports extends Controller {
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "客流报表_" + System.currentTimeMillis() + ".xls");
         // DESC 的值表示升降序，含11位，代表11个排序字段， 1 为升序， 2 为降序， 0 为不排序
-        // 当无排序参数时，初始化 -1
+        // 当无排序参数时，初始化 020000000
         String orderBy = "";
         if (desc == null) {
-            desc = "-1";
+            desc = "020000000";
         }
         // 获取最新的desc值
         String[] descs = desc.split(",");
