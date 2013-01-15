@@ -56,6 +56,8 @@ public class CouponsCondition implements Serializable {
 
     public Boolean isCheatedOrder;
 
+    public Boolean isOrder;//商品是否需要预约
+
     public Long salesId;
 
 
@@ -130,6 +132,10 @@ public class CouponsCondition implements Serializable {
         if (shopId != null) {
             sql.append(" and e.shop.id = :shopId");
             paramMap.put("shopId", shopId);
+        }
+        if (isOrder != null && isOrder) {
+            sql.append(" and e.goods.isOrder = :isOrder");
+            paramMap.put("isOrder", isOrder);
         }
 
         if (QueryType.GOODS_NAME.toString().equals(searchKey) && StringUtils.isNotBlank(searchItems)) {

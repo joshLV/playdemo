@@ -208,5 +208,29 @@ public class OperateCoupons extends Controller {
 
     }
 
-
+    @ActiveNavigation("coupons_index")
+    public static void showAppointment(Long couponId) {
+        ECoupon coupon = ECoupon.findById(couponId);
+        String err = null;
+        if (coupon == null){
+            err = "找不着这个券啊";
+        }else if( coupon.status != ECouponStatus.UNCONSUMED){
+            err = "只有未消费的券才能预约啊亲";
+        } else if(!coupon.goods.isOrder) {
+            err = "这个商品不需要预约的拉";
+        }
+        render(coupon, err);
+    }
+    @ActiveNavigation("coupons_index")
+    public static void appointment(Long couponId, Date date, String remark) {
+        ECoupon coupon = ECoupon.findById(couponId);
+        if (coupon == null || coupon.status != ECouponStatus.UNCONSUMED || !coupon.goods.isOrder) {
+            notFound();return;
+        }
+        coupon.appointmentDate = date;
+        coupon.appointmentRemark = remark;
+        coupon.save();
+        boolean success = true;
+        render("OperateCoupons/showAppointment.html", coupon, success);
+    }
 }
