@@ -1,0 +1,48 @@
+#{extends 'layout_operate/layout.html' /}
+#{include 'share/nav.html' /}
+#{set title:'券预约' /}
+#{set 'moreScripts'}
+    <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+
+<div class="body">
+    #{if success}
+        <legend>预约成功：${coupon.goods.shortName}</legend>
+        <p>
+            <span style="font-weight:bold">时间：</span>
+            ${coupon.appointmentDate.format()}
+        </p>
+        <p>
+            <span style="font-weight:bold">备注：</span>
+            ${coupon.appointmentRemark}
+        </p>
+    #{/if}
+    #{else}
+        #{if err}
+            <legend>${err}</legend>
+        #{/if}
+        #{else}
+            <legend>券预约：${coupon.goods.shortName}</legend>
+            <form class="form-horizontal" method="post" action="/coupon-appointment">
+                <div class="control-group">
+                    <label class="control-label" for="inputDate" >日期</label>
+                    <div class="controls">
+                        <input type="text" id="inputDate" name="date" class="input-medium Wdate" onfocus="WdatePicker({readOnly:true})" value="${coupon.appointmentDate?.format()}">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputRemark">备注</label>
+                    <div class="controls">
+                        <input type="text" id="inputRemark" name="remark" value="${coupon.appointmentRemark}">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <input type="hidden" name="couponId" value="${coupon.id}">
+                        <button type="submit" class="btn btn-primary">预约</button>
+                    </div>
+                </div>
+            </form>
+        #{/else}
+    #{/else}
+</div>

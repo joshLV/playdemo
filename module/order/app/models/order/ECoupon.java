@@ -188,6 +188,12 @@ public class ECoupon extends Model {
     @Column(name = "partner_coupon_pwd")
     public String partnerCouponPwd;
 
+    @Column(name = "appointment_date")
+    public Date appointmentDate;
+
+    @Column(name = "appointment_remark")
+    public String appointmentRemark;
+
     @Transient
     public String verifyTypeInfo;
 
