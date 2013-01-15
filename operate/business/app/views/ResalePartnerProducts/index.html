@@ -18,7 +18,7 @@
 
             <td width="30%">商品名称：<input type="text" name="condition.shortName" class="input-medium"
                                         value="${condition?.shortName}"/></td>
-            <td width="30%">商品编号：<input type="text" name="condition.no" class="input-medium"
+            <td width="30%">商品编码：<input type="text" name="condition.no" class="input-medium"
                                         value="${condition?.no}"/></td>
             <td>
                 <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
@@ -32,7 +32,7 @@
 <table class="table table-striped table-bordered ">
 <thead>
 <tr>
-    <th>#</th>
+    <th>商品编码</th>
     <th>名称</th>
     <th style="text-align:right">一百券价</th>
     <th>京东</th>
@@ -47,7 +47,7 @@
 
 #{paginate.list items:goodsPage, as:'goods'}
 <tr>
-    <td>${goods.id}</td>
+    <td>${goods.code}</td>
     <td><a href="/goods/${goods.id}" target="_blank">${goods.shortName}</a> </td>
     <td style="text-align:right">${goods.salePrice.formatCurrency("CNY")}</td>
     %{
