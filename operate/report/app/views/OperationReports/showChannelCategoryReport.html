@@ -211,12 +211,12 @@
         渠道成本：<b>${(channelSummary?.channelCost?:0).formatCurrency('CNY')}</b>
          净利润：<b>
 
-    #{if channelSummary.profit != null && channelSummary.profit!=0}
-        ￥${(channelSummary?.profit?:0).format('#0.00')}
-    #{/if}
-    #{else}
-        ￥0
-    #{/else}
+        #{if channelSummary.profit != null && channelSummary.profit!=0}
+            ￥${(channelSummary?.profit?:0).format('#0.00')}
+        #{/if}
+        #{else}
+            ￥0
+        #{/else}
     </b>
     #{/if}
       </span>
@@ -270,14 +270,19 @@
                    target="_blank">${report?.salePrice?.formatCurrency('CNY')}</a>
             #{/if}
             #{else}
-            ${report?.buyNumber} / ${report?.salePrice?.formatCurrency('CNY')}
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
+                   target="_blank">  ${report?.buyNumber}
+                </a>/
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
+                   target="_blank">
+                ${report?.salePrice?.formatCurrency('CNY')}
+                </a>
             #{/else}
         </td>
         <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if}  style="text-align:right;">
         ${report?.realBuyNumber}
             / ${report?.realSalePrice == null ?'￥0.00':report?.realSalePrice?.formatCurrency('CNY')}
         </td>
-
 
         <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
             #{if report?.code == "999"}
@@ -288,7 +293,15 @@
                    target="_blank">${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}</a>
             #{/if}
             #{else}
-            ${report?.refundNumber} / ${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
+                   target="_blank">
+                ${report?.refundNumber}
+                </a>
+                /
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
+                   target="_blank">
+                ${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}
+                </a>
             #{/else}
         </td>
         <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
@@ -302,8 +315,14 @@
                    target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
             #{/if}
             #{else}
-            ${report?.consumedNumber}
-                / ${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
+                   target="_blank">
+                ${report?.consumedNumber}
+                </a> /
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
+                   target="_blank">
+                ${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}
+                </a>
             #{/else}
         </td>
         #{if hasSeeReportProfitRight == true}
