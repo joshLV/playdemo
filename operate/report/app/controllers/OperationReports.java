@@ -277,6 +277,8 @@ public class OperationReports extends Controller {
             resultList.add(c);
         }
 
+
+
         // 分页
         ValuePaginator<ChannelCategoryReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
 

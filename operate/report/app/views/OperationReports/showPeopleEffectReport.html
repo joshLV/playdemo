@@ -130,7 +130,7 @@
             总消费金额：<b>${summary?.consumedAmount?:0}</b>元,
             总退款金额：<b>${summary?.refundAmount?:0}</b>元,
             净销售额：<b>${summary?.netSalesAmount?:0}</b>元,
-            毛利率：<b>${(summary?.grossMargin?:0).format('#')}%</b>
+            毛利率：<b>${(summary?.grossMargin?:0).format('#0.00')}%</b>
             总利润：<b>${summary?.profit?:0}</b> 元</span>
     </div>
 

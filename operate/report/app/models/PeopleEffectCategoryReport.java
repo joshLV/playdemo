@@ -391,7 +391,7 @@ public class PeopleEffectCategoryReport {
                 }
 
                 item.profit = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice)
-                        .subtract(item.goodsCost== null ? BigDecimal.ZERO : item.goodsCost).subtract(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.goodsCost);
+                        .subtract(item.goodsCost == null ? BigDecimal.ZERO : item.goodsCost).subtract(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.goodsCost);
 
                 item.goodsCost = item.goodsCost == null ? BigDecimal.ZERO : item.goodsCost.add(paidItem.goodsCost == null ? BigDecimal.ZERO : paidItem.goodsCost);
             }
@@ -686,7 +686,7 @@ public class PeopleEffectCategoryReport {
             profit = profit.add(item.profit == null ? BigDecimal.ZERO : item.profit);
         }
         if (totalSalePrice.compareTo(BigDecimal.ZERO) != 0) {
-            grossMargin = totalSalePrice.subtract(totalCost).divide(totalSalePrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+            grossMargin = totalSalePrice.subtract(totalCost).divide(totalSalePrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
         return new PeopleEffectCategoryReport(buyCount, amount, realBuyCount, realAmount, refundPrice, refundCount, consumedPrice, consumedCount, grossMargin, profit);
     }
