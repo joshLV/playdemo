@@ -25,6 +25,7 @@ public class CategorySalesReportCondition {
     private Map<String, Object> paramMap1 = new HashMap<>();
     public Boolean hasSeeReportProfitRight;
     public Long operatorId;
+    //排序字段
     public String desc;
     public int orderByIndex;
     public String orderByType;
@@ -334,9 +335,9 @@ public class CategorySalesReportCondition {
                 }
             }
             if (desc.charAt(index) == '1') {
-                orderByType=  "1";
+                orderByType = "1";
             } else {
-                orderByType =  "2";
+                orderByType = "2";
             }
         } else {
             orderBy = "52";

@@ -29,6 +29,8 @@ public class ResaleSalesReport extends Model {
     public Order order;
     public String loginName;
     public String userName;
+
+
     /**
      * 售出券数
      */

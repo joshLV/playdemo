@@ -144,7 +144,6 @@ public class OperationReports extends Controller {
 
     @ActiveNavigation("consumer_flow_reports")
     public static void showConsumerFlowReport(ConsumerFlowReportCondition condition, String desc) {
-        System.out.println("desc:" + desc);
         int pageNumber = getPageNumber();
         if (condition == null) {
             condition = new ConsumerFlowReportCondition();
@@ -180,7 +179,6 @@ public class OperationReports extends Controller {
         } else {
             orderBy = "12";
         }
-        System.out.println("22 orderBy:" + orderBy);
         List<ConsumerFlowReport> resultList = ConsumerFlowReport.query(condition, orderBy);
 
         Collections.sort(resultList);
@@ -242,6 +240,7 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new ChannelCategoryReportCondition();
         }
+        condition.setDescFields();
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
         condition.operatorId = OperateRbac.currentUser().id;
@@ -277,6 +276,7 @@ public class OperationReports extends Controller {
             resultList.add(c);
         }
 
+        Collections.sort(resultList);
 
 
         // 分页
@@ -315,7 +315,6 @@ public class OperationReports extends Controller {
 
 
     public static void salesReportWithPrivilegeExcelOut(SalesReportCondition condition, String desc) {
-        System.out.println("desc:" + desc);
         if (condition == null) {
             condition = new SalesReportCondition();
         }

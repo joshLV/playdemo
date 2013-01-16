@@ -29,6 +29,7 @@ public class CategorySalesReport implements Comparable<CategorySalesReport> {
     public String[] orderByFields = {"buyNumber", "totalAmount", "cheatedOrderAmount", "refundAmount", "consumedAmount", "netSalesAmount", "grossMargin", "profit"};
 
     public String orderByType;
+
     /**
      * 商户类别
      */

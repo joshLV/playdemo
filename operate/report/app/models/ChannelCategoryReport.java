@@ -18,9 +18,12 @@ import java.util.*;
  * Date: 12-12-21
  * Time: 上午9:55
  */
-public class ChannelCategoryReport {
+public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> {
     public Order order;
     public OrderItems orderItems;
+    public String[] orderByFields = {"salePrice", "realSalePrice", "refundPrice", "consumedPrice", "grossMargin", "channelCost", "profit"};
+    public BigDecimal comparedValue;
+    public String orderByType;
 
     /**
      * 帐号
@@ -660,7 +663,6 @@ public class ChannelCategoryReport {
             }
         }
 
-
         for (ChannelCategoryReport refundItem : totalRefundResultList) {
             ChannelCategoryReport item = totalMap.get(getTotalReportKey(refundItem));
             if (item == null) {
@@ -677,9 +679,36 @@ public class ChannelCategoryReport {
             totalResultList.add(totalMap.get(key));
         }
 
+        for (int i = 0; i < totalResultList.size(); i++) {
+            switch (totalResultList.get(i).orderByFields[condition.orderByIndex]) {
+                case "salePrice":
+                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).salePrice == null ? BigDecimal.ZERO : totalResultList.get(i).salePrice));
+                    break;
+                case "realSalePrice":
+                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).realSalePrice == null ? BigDecimal.ZERO : totalResultList.get(i).totalAmount));
+                    break;
+                case "refundPrice":
+                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).refundPrice == null ? BigDecimal.ZERO : totalResultList.get(i).refundPrice));
+                    break;
+                case "consumedPrice":
+                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).consumedPrice == null ? BigDecimal.ZERO : totalResultList.get(i).consumedPrice));
+                    break;
+                case "grossMargin":
+                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).grossMargin == null ? BigDecimal.ZERO : totalResultList.get(i).grossMargin));
+                    break;
+                case "channelCost":
+                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).channelCost == null ? BigDecimal.ZERO : totalResultList.get(i).channelCost));
+                    break;
+                case "profit":
+                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).profit == null ? BigDecimal.ZERO : totalResultList.get(i).profit));
+                    break;
+            }
+            totalMap.put(getTotalReportKey(totalResultList.get(i)), totalResultList.get(i));
+        }
+
 
         //merge total into result
-        List resultList = new ArrayList();
+        List<ChannelCategoryReport> resultList = new ArrayList();
 
         List<String> tempString = new ArrayList<>();
         for (String s : map.keySet()) {
@@ -705,7 +734,10 @@ public class ChannelCategoryReport {
                 resultList.add(totalMap.get(key));
             }
         }
-
+        for (ChannelCategoryReport c : resultList) {
+            c.comparedValue = condition.comparedMap.get(c.loginName);
+            c.orderByType = condition.orderByType;
+        }
         return resultList;
     }
 
@@ -1028,15 +1060,45 @@ public class ChannelCategoryReport {
             totalResultList.add(result);
         }
 
-        List resultList = new ArrayList();
+        for (int i = 0; i < totalResultList.size(); i++) {
+            switch (totalResultList.get(i).orderByFields[condition.orderByIndex]) {
+                case "salePrice":
+                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).salePrice == null ? BigDecimal.ZERO : totalResultList.get(i).salePrice));
+                    break;
+                case "realSalePrice":
+                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).realSalePrice == null ? BigDecimal.ZERO : totalResultList.get(i).totalAmount));
+                    break;
+                case "refundPrice":
+                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).refundPrice == null ? BigDecimal.ZERO : totalResultList.get(i).refundPrice));
+                    break;
+                case "consumedPrice":
+                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).consumedPrice == null ? BigDecimal.ZERO : totalResultList.get(i).consumedPrice));
+                    break;
+                case "grossMargin":
+                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).grossMargin == null ? BigDecimal.ZERO : totalResultList.get(i).grossMargin));
+                    break;
+                case "channelCost":
+                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).channelCost == null ? BigDecimal.ZERO : totalResultList.get(i).channelCost));
+                    break;
+                case "profit":
+                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).profit == null ? BigDecimal.ZERO : totalResultList.get(i).profit));
+                    break;
+            }
+            map.put(getTotalReportKey(totalResultList.get(i)), totalResultList.get(i));
+        }
+
+        List<ChannelCategoryReport> resultList = new ArrayList();
 
 
         for (String key : map.keySet()) {
             resultList.add(map.get(key));
         }
-        resultList.add(totalResultList.get(0));
+//        resultList.add(totalResultList.get(0));
 
-
+        for (ChannelCategoryReport c : resultList) {
+            c.comparedValue = condition.comparedMap.get(c.loginName);
+            c.orderByType = condition.orderByType;
+        }
         return resultList;
     }
 
@@ -1155,7 +1217,6 @@ public class ChannelCategoryReport {
             resultList.add(map.get(key));
         }
 
-
         return resultList;
     }
 
@@ -1179,5 +1240,16 @@ public class ChannelCategoryReport {
 
     private static String getConsumerReportKey(ChannelCategoryReport refoundItem) {
         return refoundItem.code;
+    }
+
+    @Override
+    public int compareTo(ChannelCategoryReport arg) {
+        switch (this.orderByType) {
+            case "2":
+                return (arg.comparedValue == null ? BigDecimal.ZERO : arg.comparedValue).compareTo(this.comparedValue == null ? BigDecimal.ZERO : this.comparedValue);
+            case "1":
+                return (this.comparedValue == null ? BigDecimal.ZERO : this.comparedValue).compareTo(arg.comparedValue == null ? BigDecimal.ZERO : arg.comparedValue);
+        }
+        return 0;
     }
 }
