@@ -1,10 +1,13 @@
 package controllers.mock;
 
+import models.order.ECoupon;
+import models.order.ECouponPartner;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.sales.ChannelGoodsInfo;
 import models.sales.ChannelGoodsInfoStatus;
 import models.sales.ImportedCoupon;
+import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.libs.F;
 import play.libs.WS;
@@ -68,16 +71,43 @@ public class JingDongGroupByRequest extends Controller {
 
         String result = doPostRequestBody(url, content);
 
-        render(content, result);
+        render("mock/JingDongGroupByRequest/result.html", content, result);
     }
 
     @Get("/mock/jingdong/send-sms")
     public static void sendSMS() {
+        StringBuilder url = new StringBuilder("http://");
+        url.append(request.host);
+        url.append("/api/v1/jd/gb/send-sms?encrypt=false");
+
+        // 得到最近的京东券号
+        List<ECoupon> ecoupons = ECoupon.find("partner=? order by id desc", ECouponPartner.JD).fetch(20);
+        render(ecoupons, url);
+    }
+
+    @Post("/mock/jingdong/send-sms")
+    public static void doSendSMS(Long ecouponId, String eCouponSn, String mobile, String url) {
+        ECoupon ecoupon = null;
+        if (StringUtils.isNotEmpty(eCouponSn)) {
+            ecoupon = ECoupon.find("eCouponSn=?", eCouponSn).first();
+        } else {
+            ecoupon = ECoupon.findById(ecouponId);
+        }
+        if (ecoupon == null) {
+            sendSMS(); //找不到券.
+        }
+
+        Map<String, Object> tParams = getSendSmsParams(ecoupon, mobile);
+        String content = renderXmlTemplateContent("mock/JingDongGroupByRequest/sendSMS.xml", tParams);
+
+        String result = doPostRequestBody(url, content);
+
+        render("mock/JingDongGroupByRequest/result.html", content, result);
 
     }
 
     private static String doPostRequestBody(String url, String content) {
-        
+
         F.Promise<WS.HttpResponse> rsp = WS.url(url).body(content).postAsync();
 
         F.Promise<List<WS.HttpResponse>> promises = F.Promise.waitAll(rsp);
@@ -94,7 +124,7 @@ public class JingDongGroupByRequest extends Controller {
 
 
     private static Map<String, Object> getSenderOrderParams(Long productId, String mobile,
-                                                                     Integer buyNumber) {
+                                                            Integer buyNumber) {
         ChannelGoodsInfo product = ChannelGoodsInfo.findById(productId);
         ResalerFav fav = ResalerFav.findByGoodsId(product.resaler, product.goods.id);
 
@@ -118,6 +148,14 @@ public class JingDongGroupByRequest extends Controller {
         }
         tParams.put("coupons", coupons);
         tParams.put("ts", (new Date()).getTime()/1000);
+        return tParams;
+    }
+
+    private static Map<String, Object> getSendSmsParams(ECoupon ecoupon, String mobile) {
+        Map<String, Object> tParams = new HashMap<>();
+        tParams.put("jdCouponId", ecoupon.partnerCouponId);
+        tParams.put("eCouponSn", ecoupon.eCouponSn);
+        tParams.put("mobile", mobile);
         return tParams;
     }
 }

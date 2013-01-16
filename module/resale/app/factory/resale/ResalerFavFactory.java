@@ -18,8 +18,7 @@ public class ResalerFavFactory extends ModelFactory<ResalerFav> {
     public ResalerFav define() {
         Resaler resaler = FactoryBoy.lastOrCreate(Resaler.class);
         Goods goods = FactoryBoy.lastOrCreate(Goods.class);
-        ResalerFav resalerFav = new ResalerFav(resaler, goods);
 
-        return resalerFav;
+        return new ResalerFav(resaler, goods);
     }
 }
