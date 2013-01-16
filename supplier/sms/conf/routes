@@ -56,7 +56,7 @@ GET     /launch-qt                              QingtuanLauncher.index
 # 虚拟短信通道
 *      /vxsms                                   VxSmses.send
 
-GET   /test-mock-jd   MockJingDongGroupByRequest.sendOrder
+# GET   /test-mock-jd   MockJingDongGroupByRequest.sendOrder
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

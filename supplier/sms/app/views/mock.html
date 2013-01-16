@@ -20,6 +20,7 @@
             padding-top: 60px;
             padding-bottom: 40px;
         }
+
         .sidebar-nav {
             padding: 9px 0;
         }
@@ -30,9 +31,10 @@
     <link rel="shortcut icon" href="#{asset.url href:'/images/bootstrap/favicon.png'/}">
     <link rel="apple-touch-icon" href="#{asset.url href:'/images/bootstrap/bootstrap-apple-57x57.png'/}">
     <link rel="apple-touch-icon" sizes="72x72" href="#{asset.url href:'/images/bootstrap/bootstrap-apple-72x72.png'/}">
-    <link rel="apple-touch-icon" sizes="114x114" href="#{asset.url href:'/images/bootstrap/bootstrap-apple-114x114.png'/}">
+    <link rel="apple-touch-icon" sizes="114x114"
+          href="#{asset.url href:'/images/bootstrap/bootstrap-apple-114x114.png'/}">
 </head>
-<body >
+<body>
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container-fluid">
@@ -42,9 +44,11 @@
                 <span class="icon-bar"></span>
             </a>
             <a class="brand" href="#">API模拟测试</a>
+
             <div class="nav-collapse">
 
-            </div><!--/.nav-collapse -->
+            </div>
+            <!--/.nav-collapse -->
         </div>
     </div>
 </div>
@@ -52,12 +56,15 @@
     <div class="row-fluid">
         <div class="span2" id="content-left-side">
             <div class="well sidebar-nav">
-               <ul class="nav nav-list">
-                 <li class="nav-header">京东</li>
-                 <li>#{a @MockJingDongGroupByRequest.sendOrder()}京东订单接口#{/a}</li>
-               </ul>
-            </div><!--/.well -->
-        </div><!--/span-->
+                <ul class="nav nav-list">
+                    <li class="nav-header">京东</li>
+                    <li>#{a @mock.JingDongGroupByRequest.sendOrder()}京东订单接口#{/a}</li>
+                    <li>#{a @mock.JingDongGroupByRequest.sendSMS()}京东短信重发#{/a}</li>
+                </ul>
+            </div>
+            <!--/.well -->
+        </div>
+        <!--/span-->
         <div class="span10" id="content-right-side">
         #{doLayout /}
         </div>
@@ -69,20 +76,20 @@
 
 <!-- javascript -->
 #{asset.js src:['/bootstrap/bootstrap-transition.js', '/bootstrap/bootstrap-alert.js',
-       '/bootstrap/bootstrap-modal.js', '/bootstrap/bootstrap-dropdown.js',
-       '/bootstrap/bootstrap-scrollspy.js', '/bootstrap/bootstrap-tab.js', '/bootstrap/bootstrap-tooltip.js',
-       '/bootstrap/bootstrap-popover.js', '/bootstrap/bootstrap-button.js', '/bootstrap/bootstrap-collapse.js',
-       '/bootstrap/bootstrap-carousel.js', '/bootstrap/bootstrap-typeahead.js'] /}
+'/bootstrap/bootstrap-modal.js', '/bootstrap/bootstrap-dropdown.js',
+'/bootstrap/bootstrap-scrollspy.js', '/bootstrap/bootstrap-tab.js', '/bootstrap/bootstrap-tooltip.js',
+'/bootstrap/bootstrap-popover.js', '/bootstrap/bootstrap-button.js', '/bootstrap/bootstrap-collapse.js',
+'/bootstrap/bootstrap-carousel.js', '/bootstrap/bootstrap-typeahead.js'] /}
 <script>
-    $(function(){
-        $("#expand-sidebar").click(function(){
+    $(function () {
+        $("#expand-sidebar").click(function () {
             var ele = $(this);
-            if (ele.hasClass("icon-chevron-left")){
+            if (ele.hasClass("icon-chevron-left")) {
                 ele.removeClass("icon-chevron-left");
                 ele.addClass("icon-chevron-right");
                 $("#content-left-side").hide();
                 $("#content-right-side").removeClass("span10");
-            }else{
+            } else {
                 ele.addClass("icon-chevron-left");
                 ele.removeClass("icon-chevron-right");
                 $("#content-left-side").show();

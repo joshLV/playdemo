@@ -56,7 +56,11 @@ public class JDGroupBuy extends Controller {
     public static void baseResponse() {
         renderArgs.put("version", "1.0");
         renderArgs.put("venderId", JDGroupBuyUtil.VENDER_ID);
-        renderArgs.put("encrypt", "true");
+        if ("false".equals(params.get("encrypt"))) {
+            renderArgs.put("encrypt", "false");
+        } else {
+            renderArgs.put("encrypt", "true");
+        }
         renderArgs.put("zip", "false");
     }
 
