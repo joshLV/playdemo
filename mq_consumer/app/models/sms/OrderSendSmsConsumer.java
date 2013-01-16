@@ -3,7 +3,9 @@ package models.sms;
 import models.RabbitMQConsumerWithTx;
 import models.order.CouponHistory;
 import models.order.ECoupon;
+import models.order.ECouponStatus;
 import models.order.OrderItems;
+import models.order.OrderStatus;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
@@ -29,17 +31,40 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
 
     @Override
     public void consumeWithTx(OrderECouponMessage message) {
+        // 为保证能同步到数据库状态，先sleep一会
+        try {
+            Thread.sleep(800l);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         JPA.em().flush();  // 先强制同步hibernate缓存，避免找不到数据的情况; 如果还找不到，放异常以重试
 
         if (message.eCouponId != null) {
             ECoupon ecoupon = ECoupon.findById(message.eCouponId);
-            if (ecoupon != null) {
+            if (ecoupon != null && ecoupon.status == ECouponStatus.UNCONSUMED) {
                 sendECouponSMS(ecoupon, message);
+            } else {
+                if (ecoupon == null) {
+                    Logger.info("Can NOT found ECoupon(id:" + message.eCouponId + "), retry later.");
+                } else {
+                    Logger.info("The ECoupon(id:" + message.eCouponId + ").status is " + ecoupon.status +
+                            ", retry later.");
+                }
+                throw new RuntimeException("Retry later.");
             }
         } else if (message.orderItemId != null) {
             OrderItems orderItems = OrderItems.findById(message.orderItemId);
-            if (orderItems != null) {
+            if (orderItems != null && orderItems.order.status == OrderStatus.PAID) {
                 sendOrderItemsSMS(orderItems, message);
+            } else {
+                if (orderItems == null) {
+                    Logger.info("Can NOT found OrderItems(id:" + message.orderItemId + "), retry later.");
+                } else {
+                    Logger.info("The OrderItems(id:" + message.orderItemId + ").status is " + orderItems.order.status +
+                            ", retry later.");
+                }
+                throw new RuntimeException("Retry later.");
             }
         }
 
@@ -66,6 +91,9 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
 
             for (ECoupon ecoupon : ecoupons) {
                 // 如果没有出现异常，则记录一下发送历史
+                if (ecoupon.smsSentCount == null) {
+                    ecoupon.smsSentCount = 0;
+                }
                 ecoupon.smsSentCount += 1;
                 ecoupon.save();
                 new CouponHistory(ecoupon, "MessageQ", message.remark, ecoupon.status, ecoupon.status, null).save();
@@ -85,6 +113,9 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
         try {
             getSMSProvider(SMS_TYPE).send(new SMSMessage(msg, ecoupon.orderItems.phone, ecoupon.replyCode));
             // 如果没有出现异常，则记录一下发送历史
+            if (ecoupon.smsSentCount == null) {
+                ecoupon.smsSentCount = 0;
+            }
             ecoupon.smsSentCount += 1;
             ecoupon.save();
             new CouponHistory(ecoupon, "MessageQ", message.remark, ecoupon.status, ecoupon.status, null).save();
