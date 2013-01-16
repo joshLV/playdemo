@@ -16,9 +16,7 @@
  */
 package controllers;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import controllers.supplier.cas.Security;
 import models.admin.SupplierNavigation;
 import models.admin.SupplierPermission;
 import models.admin.SupplierRole;
@@ -39,7 +37,10 @@ import play.mvc.Http.Request;
 import play.mvc.Router;
 import play.supplier.cas.CASUtils;
 import play.supplier.cas.models.CASUser;
-import controllers.supplier.cas.Security;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class is a part of the play module secure-cas. It add the ability to check if the user have access to the
@@ -117,6 +118,8 @@ public class SupplierRbac extends Controller {
             redirect(casLoginUrl);
         }
 
+        Cache.safeAdd(SESSION_USER_KEY + userName, Boolean.TRUE, "120mn");
+
         // 得到当前菜单的名字
         String currentMenuName = getCurrentMenuName();
 
@@ -156,7 +159,6 @@ public class SupplierRbac extends Controller {
      * 得到当前菜单的名字。
      * 从Controller或method上检查 {@link ActiveNavigation} 标注，取其value为当前菜单名。
      * 优先使用Method上的名字，只能有一个值。
-     * @param methodNavigation
      * @return
      */
     private static String getCurrentMenuName() {
@@ -288,7 +290,7 @@ public class SupplierRbac extends Controller {
             if (casUser != null) {
                 isAuthenticated = Boolean.TRUE;
                 session.put(SESSION_USER_KEY, casUser.getUsername());
-                Cache.add(SESSION_USER_KEY + getDomainUserName(casUser.getUsername()), Boolean.TRUE);
+                Cache.safeAdd(SESSION_USER_KEY + getDomainUserName(casUser.getUsername()), Boolean.TRUE, "120mn");
                 // we invoke the implementation of onAuthenticate
                 Security.onAuthenticated(casUser);
             }

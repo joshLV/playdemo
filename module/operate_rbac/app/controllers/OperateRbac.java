@@ -1,9 +1,6 @@
 package controllers;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import controllers.operate.cas.Security;
 import models.admin.OperateNavigation;
 import models.admin.OperatePermission;
 import models.admin.OperateRole;
@@ -24,7 +21,11 @@ import play.mvc.Http.Request;
 import play.mvc.Router;
 import play.operate.cas.CASUtils;
 import play.operate.cas.models.CASUser;
-import controllers.operate.cas.Security;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Have a menu automatically injected in your renderArgs
@@ -105,7 +106,7 @@ public class OperateRbac extends Controller {
             if (casUser != null) {
                 isAuthenticated = Boolean.TRUE;
                 session.put(SESSION_USER_KEY, casUser.getUsername());
-                Cache.add(SESSION_USER_KEY + casUser.getUsername(), Boolean.TRUE);
+                Cache.safeAdd(SESSION_USER_KEY + casUser.getUsername(), Boolean.TRUE, "60mn");
                 // we invoke the implementation of onAuthenticate
                 Security.onAuthenticated(casUser);
             }
@@ -211,6 +212,8 @@ public class OperateRbac extends Controller {
             redirect(casLoginUrl);            
         }
 
+        Cache.safeAdd(SESSION_USER_KEY + userName, Boolean.TRUE, "60mn");
+
         // 得到当前菜单的名字
         String currentMenuName = getCurrentMenuName();
         
@@ -246,7 +249,6 @@ public class OperateRbac extends Controller {
      * 得到当前菜单的名字。
      * 从Controller或method上检查 {@link ActiveNavigation} 标注，取其value为当前菜单名。
      * 优先使用Method上的名字，只能有一个值。
-     * @param methodNavigation
      * @return
      */
     private static String getCurrentMenuName() {
