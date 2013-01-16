@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>#{get 'title' /}</title>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+#{asset.js src:['/bootstrap/jquery.js'] /}
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+#{asset.css src:['/bootstrap/bootstrap.css', '/bootstrap/bootstrap-responsive.css', '/o/main.css'] /}
+    <style type="text/css">
+        body {
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+    </style>
+#{get 'moreStyles' /}
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="#{asset.url href:'/images/bootstrap/favicon.png'/}">
+    <link rel="apple-touch-icon" href="#{asset.url href:'/images/bootstrap/bootstrap-apple-57x57.png'/}">
+    <link rel="apple-touch-icon" sizes="72x72" href="#{asset.url href:'/images/bootstrap/bootstrap-apple-72x72.png'/}">
+    <link rel="apple-touch-icon" sizes="114x114" href="#{asset.url href:'/images/bootstrap/bootstrap-apple-114x114.png'/}">
+</head>
+<body >
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container-fluid">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="#">API模拟测试</a>
+            <div class="nav-collapse">
+
+            </div><!--/.nav-collapse -->
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span2" id="content-left-side">
+            <div class="well sidebar-nav">
+               <ul class="nav nav-list">
+                 <li class="nav-header">京东</li>
+                 <li>#{a @MockJingDongGroupByRequest.sendOrder()}京东订单接口#{/a}</li>
+               </ul>
+            </div><!--/.well -->
+        </div><!--/span-->
+        <div class="span10" id="content-right-side">
+        #{doLayout /}
+        </div>
+    </div>
+</div>
+<footer>
+    <p style="text-align: right">&copy; 上海视惠信息科技有限公司 2012-2013</p>
+</footer>
+
+<!-- javascript -->
+#{asset.js src:['/bootstrap/bootstrap-transition.js', '/bootstrap/bootstrap-alert.js',
+       '/bootstrap/bootstrap-modal.js', '/bootstrap/bootstrap-dropdown.js',
+       '/bootstrap/bootstrap-scrollspy.js', '/bootstrap/bootstrap-tab.js', '/bootstrap/bootstrap-tooltip.js',
+       '/bootstrap/bootstrap-popover.js', '/bootstrap/bootstrap-button.js', '/bootstrap/bootstrap-collapse.js',
+       '/bootstrap/bootstrap-carousel.js', '/bootstrap/bootstrap-typeahead.js'] /}
+<script>
+    $(function(){
+        $("#expand-sidebar").click(function(){
+            var ele = $(this);
+            if (ele.hasClass("icon-chevron-left")){
+                ele.removeClass("icon-chevron-left");
+                ele.addClass("icon-chevron-right");
+                $("#content-left-side").hide();
+                $("#content-right-side").removeClass("span10");
+            }else{
+                ele.addClass("icon-chevron-left");
+                ele.removeClass("icon-chevron-right");
+                $("#content-left-side").show();
+                $("#content-right-side").addClass("span10");
+            }
+        });
+    });
+</script>
+#{get 'moreScripts' /}
+</body>
+</html>

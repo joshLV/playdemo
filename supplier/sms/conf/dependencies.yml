@@ -10,6 +10,7 @@ require:
     - play1 -> app-version 0.1
     - play1 -> factory-boy 1.0
     - play1 -> play-solr 0.2.27
+    - play1 -> router 1.3
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - com.taobao -> taobao-top 20121130
     - order -> order

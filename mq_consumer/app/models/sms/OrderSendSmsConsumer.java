@@ -134,4 +134,9 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
     protected String queue() {
         return SMSUtil.SMS_ORDER_QUEUE;
     }
+
+    @Override
+    protected int retries() {
+        return 10;  // 重试10次
+    }
 }
