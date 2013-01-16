@@ -5,6 +5,7 @@ import models.accounts.AccountType;
 import models.resale.Resaler;
 import models.sales.Brand;
 import models.supplier.Supplier;
+import models.supplier.SupplierCategory;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
@@ -59,6 +60,7 @@ public class CouponsCondition implements Serializable {
     public Boolean isOrder;//商品是否需要预约
 
     public Long salesId;
+    public String categoryCode;
 
 
     public String getOrderByExpress() {
@@ -280,12 +282,27 @@ public class CouponsCondition implements Serializable {
             sql.append(" and e.goods.id = :goodsId");
             paramMap.put("goodsId", goodsId);
         }
+        List<Long> supplierIds = new ArrayList<>();
+
         if (salesId != null) {
-            List<Supplier> suppliers = Supplier.find("salesId=?", salesId).fetch();
-            List<Long> supplierIds = new ArrayList<>();
+            List<Supplier> suppliers = null;
+            StringBuilder sq = new StringBuilder(" salesId= ? ");
+            List list = new ArrayList();
+            list.add(salesId);
+            SupplierCategory category = null;
+            if (StringUtils.isNotBlank(categoryCode)) {
+                category = SupplierCategory.find("code=?", categoryCode).first();
+            }
+            if (category != null) {
+                sq.append("and supplierCategory=?");
+                list.add(category);
+            }
+
+            suppliers = Supplier.find(sq.toString(), list.toArray()).fetch();
             for (Supplier s : suppliers) {
                 supplierIds.add(s.id);
             }
+
             if (supplierIds != null && supplierIds.size() > 0) {
                 sql.append(" and e.goods.supplierId in (:supplierIds)");
                 paramMap.put("supplierIds", supplierIds);

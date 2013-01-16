@@ -30,6 +30,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
     public String jobNumber;
     public AccountType accountType;
     public Long salesId;
+    public String categoryCode;
     //排序字段
     public String desc;
     public String orderBy;
@@ -190,7 +191,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
                 " and r.goods.isLottery=false and r.order=o and o.userId=b.id");
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         if (!hasSeeReportProfitRight) {
-            condBuilder.append(" and o.id =:salesId");
+            condBuilder.append(" and ou.id =:salesId");
             paramMap.put("salesId", salesId);
         }
         if (StringUtils.isNotBlank(userName)) {
@@ -291,7 +292,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
                 " and e.isCheatedOrder = true and r.order.userType=models.accounts.AccountType.RESALER and r.order=o and o.userId=b.id ");
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         if (!hasSeeReportProfitRight) {
-            condBuilder.append(" and o.id =:salesId");
+            condBuilder.append(" and ou.id =:salesId");
             paramMap.put("salesId", salesId);
         }
         if (StringUtils.isNotBlank(userName)) {
@@ -386,7 +387,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
      * @return
      */
     public static boolean isValidDesc(String desc) {
-        if (desc.length() != 9) {
+        if (desc.length() != 6) {
             return false;
         }
         int countZero = 0;
@@ -395,7 +396,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
                 countZero++;
             }
         }
-        if (countZero != 8) {
+        if (countZero != 5) {
             return false;
         }
         for (int i = 0; i < desc.length(); i++) {
@@ -410,8 +411,8 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
         Collections.sort(resultList, new Comparator<PeopleEffectCategoryReport>() {
             @Override
             public int compare(PeopleEffectCategoryReport o1, PeopleEffectCategoryReport o2) {
-                String o1_jobNumber = o1.operateUser.jobNumber;
-                String o2_jobNumber = o2.operateUser.jobNumber;
+                String o1_jobNumber = StringUtils.trimToEmpty(o1.operateUser.jobNumber);
+                String o2_jobNumber = StringUtils.trimToEmpty(o2.operateUser.jobNumber);
                 if ("jobNumber".equals(orderBy)) {
                     if ("desc".equals(orderByType)) {
                         return o1_jobNumber.compareTo(o2_jobNumber);

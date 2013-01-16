@@ -53,7 +53,7 @@ public class PeopleEffectCategoryReport {
      * 售出实物数
      */
     public long realBuyNumber = 0l;
-
+    public long totalRealBuyNumber = 0l;
     /**
      * 退款实物数
      */
@@ -75,7 +75,7 @@ public class PeopleEffectCategoryReport {
      * 售出实物金额
      */
     public BigDecimal realSalePrice = BigDecimal.ZERO;
-
+    public BigDecimal totalRealSalePrice = BigDecimal.ZERO;
     /**
      * 退款实物金额
      */
@@ -122,7 +122,7 @@ public class PeopleEffectCategoryReport {
      * 总销售额佣金成本
      */
     public BigDecimal totalAmountCommissionAmount = BigDecimal.ZERO;
-
+    public BigDecimal amountCommissionAmount = BigDecimal.ZERO;
     /**
      * 退款佣金成本
      */
@@ -184,10 +184,43 @@ public class PeopleEffectCategoryReport {
         this.goodsCost = totalCost;
     }
 
-    //from resaler
-    public PeopleEffectCategoryReport(OperateUser operateUser, BigDecimal profit) {
+    //padiAt from resaler
+    public PeopleEffectCategoryReport(Long supplierCategoryId, OperateUser operateUser, BigDecimal totalAmountCommissionAmount, BigDecimal ratio) {
         this.operateUser = operateUser;
-        this.profit = profit;
+        if (supplierCategoryId != null) {
+            SupplierCategory supplierCategory = SupplierCategory.findById(supplierCategoryId);
+            this.code = supplierCategory.code;
+            this.name = supplierCategory.name;
+        }
+        this.ratio = ratio;
+        this.operateUser = operateUser;
+        this.amountCommissionAmount = totalAmountCommissionAmount;
+    }
+
+    //cheated order
+    public PeopleEffectCategoryReport(OperateUser operateUser, Long supplierCategoryId, BigDecimal cheatedOrderAmount, Long cheatedOrderNum, BigDecimal cheatedOrderCost) {
+        this.operateUser = operateUser;
+        if (supplierCategoryId != null) {
+            SupplierCategory supplierCategory = SupplierCategory.findById(supplierCategoryId);
+            this.code = supplierCategory.code;
+            this.name = supplierCategory.name;
+        }
+        this.cheatedOrderAmount = cheatedOrderAmount;
+        this.cheatedOrderNum = cheatedOrderNum;
+        this.cheatedOrderCost = cheatedOrderCost;
+    }
+
+
+    //cheated order from resaler
+    public PeopleEffectCategoryReport(BigDecimal cheatedOrderCommissionAmount, BigDecimal ratio, OperateUser operateUser, Long supplierCategoryId) {
+        this.operateUser = operateUser;
+        if (supplierCategoryId != null) {
+            SupplierCategory supplierCategory = SupplierCategory.findById(supplierCategoryId);
+            this.code = supplierCategory.code;
+            this.name = supplierCategory.name;
+        }
+        this.ratio = ratio;
+        this.cheatedOrderCommissionAmount = cheatedOrderCommissionAmount;
     }
 
     //refund and consumed from ecoupon
@@ -207,6 +240,19 @@ public class PeopleEffectCategoryReport {
             this.consumedPrice = amount;
             this.consumedNumber = number;
         }
+    }
+
+    //refund from resaler
+    public PeopleEffectCategoryReport(BigDecimal refundCommissionAmount, OperateUser operateUser, Long supplierCategoryId, BigDecimal ratio, BigDecimal refundCost) {
+        this.operateUser = operateUser;
+        if (supplierCategoryId != null) {
+            SupplierCategory supplierCategory = SupplierCategory.findById(supplierCategoryId);
+            this.code = supplierCategory.code;
+            this.name = supplierCategory.name;
+        }
+        this.ratio = ratio;
+        this.refundCommissionAmount = refundCommissionAmount;
+        this.refundCost = refundCost;
     }
 
     public PeopleEffectCategoryReport(Long totalNumber, BigDecimal amount, long realTotalNumber, BigDecimal realAmount, BigDecimal totalRefundPrice, Long refundNumber,
@@ -229,6 +275,18 @@ public class PeopleEffectCategoryReport {
         this.operateUser = operateUser;
         this.totalNumber = buyNumber;
         this.totalAmount = totalAmount;
+        this.grossMargin = grossMargin;
+        this.netProfit = profit;
+        this.totalCost = totalCost;
+        this.code = "999";
+    }
+
+    //total ==
+    public PeopleEffectCategoryReport(Long buyNumber, OperateUser operateUser,
+                                      BigDecimal totalAmount, BigDecimal grossMargin, BigDecimal profit, BigDecimal totalCost) {
+        this.operateUser = operateUser;
+        this.totalRealBuyNumber = buyNumber;
+        this.totalRealSalePrice = totalAmount;
         this.grossMargin = grossMargin;
         this.netProfit = profit;
         this.totalCost = totalCost;
@@ -334,8 +392,53 @@ public class PeopleEffectCategoryReport {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<PeopleEffectCategoryReport> sentRealResultList = query.getResultList();
+        //cheated order
+        sql = "select new models.PeopleEffectCategoryReport(ou,s.supplierCategory.id,sum(r.salePrice-r.rebateValue/r.buyNumber),sum(r.buyNumber)" +
+                " ,sum(r.originalPrice)) " +
+                " from OrderItems r, ECoupon e,Supplier s,OperateUser ou ";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterCheatedOrderOfPeopleEffect() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<PeopleEffectCategoryReport> cheatedOrderResultList = query.getResultList();
+        //paidAt from resaler
+        sql = "select new models.PeopleEffectCategoryReport(s.supplierCategory.id,ou,sum(r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio/100,b.commissionRatio)" +
+                " from OrderItems r,Order o,Resaler b,Supplier s,OperateUser ou ";
+        groupBy = " group by s.salesId, s.supplierCategory.id,b ";
+        query = JPA.em()
+                .createQuery(sql + condition.getResalerFilterOfPeopleEffect() + groupBy + " order by sum(r.buyNumber) desc ");
 
 
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+
+        List<PeopleEffectCategoryReport> paidResalerResultList = query.getResultList();
+
+        //cheated order from resaler
+        sql = "select new models.PeopleEffectCategoryReport(sum(r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio/100,b.commissionRatio,ou,s.supplierCategory.id)" +
+                " from OrderItems r,Order o,Resaler b, ECoupon e,Supplier s,OperateUser ou ";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterCheatedOrderResalerOfPeopleEffect() + groupBy + " order by sum(r.buyNumber) desc ");
+
+
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+
+        List<PeopleEffectCategoryReport> cheatedOrderResalerResultList = query.getResultList();
+        //refund from resaler
+        sql = "select new models.PeopleEffectCategoryReport(sum(e.refundPrice)*b.commissionRatio/100,ou,s.supplierCategory.id,b.commissionRatio,sum(e.orderItems.originalPrice)) " +
+                " from ECoupon e,OrderItems r,Resaler b ,Order o,Supplier s,OperateUser ou ";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterRefundResalerOfPeopleEffect() + groupBy + " order by sum(e.refundPrice) desc");
+
+        for (String param : condition.getParamMap1().keySet()) {
+            query.setParameter(param, condition.getParamMap1().get(param));
+        }
+
+        List<PeopleEffectCategoryReport> refundResalerResultList = query.getResultList();
         //consumedAt ecoupon
         sql = "select new models.PeopleEffectCategoryReport(ou,sum(e.salePrice),s.supplierCategory.id,sum(e.originalPrice),count(e),e.status)" +
                 " from ECoupon e,Supplier s,OperateUser ou ";
@@ -357,19 +460,6 @@ public class PeopleEffectCategoryReport {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<PeopleEffectCategoryReport> refundResultList = query.getResultList();
-        // refund from resaler
-        sql = "select new models.PeopleEffectCategoryReport(sum(e.refundPrice)*b.commissionRatio/100,ou,b.commissionRatio) " +
-                " from ECoupon e,OrderItems r,Resaler b ,Order o,Supplier s,OperateUser ou";
-        groupBy = " group by s.salesId, s.supplierCategory.id";
-
-        query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundResalerOfPeopleEffect() + groupBy + " order by sum(e.refundPrice) desc");
-
-        for (String param : condition.getParamMap1().keySet()) {
-            query.setParameter(param, condition.getParamMap1().get(param));
-        }
-
-        List<PeopleEffectCategoryReport> refundResalerResultList = query.getResultList();
 
         //refundAt real need to do !!!!!
         Map<String, PeopleEffectCategoryReport> map = new HashMap<>();
@@ -384,20 +474,22 @@ public class PeopleEffectCategoryReport {
             if (item == null) {
                 map.put(getReportKey(paidItem), paidItem);
             } else {
-                item.realSalePrice = paidItem.realSalePrice;
-                item.realBuyNumber = paidItem.realBuyNumber;
-                BigDecimal totalSalesPrice = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice);
-                BigDecimal goodsCost = item.goodsCost == null ? BigDecimal.ZERO : item.goodsCost.add(paidItem.goodsCost == null ? BigDecimal.ZERO : paidItem.goodsCost);
-                if (totalSalesPrice.compareTo(BigDecimal.ZERO) != 0) {
-                    item.grossMargin = totalSalesPrice.subtract(goodsCost).divide(totalSalesPrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
-                }
-
-                item.profit = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice)
-                        .subtract(item.goodsCost == null ? BigDecimal.ZERO : item.goodsCost).subtract(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.goodsCost);
-
-                item.goodsCost = item.goodsCost == null ? BigDecimal.ZERO : item.goodsCost.add(paidItem.goodsCost == null ? BigDecimal.ZERO : paidItem.goodsCost);
+                setRealGoodsItem(paidItem, item);
             }
         }
+        for (PeopleEffectCategoryReport cheatedItem : cheatedOrderResultList) {
+            PeopleEffectCategoryReport item = map.get(getReportKey(cheatedItem));
+            if (item == null) {
+                cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
+                map.put(getReportKey(cheatedItem), cheatedItem);
+            } else {
+                item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
+                item.cheatedOrderCost = cheatedItem.cheatedOrderCost;
+                item.profit = item.salePrice.subtract(cheatedItem.cheatedOrderAmount)
+                        .subtract(item.goodsCost).add(cheatedItem.cheatedOrderCost);
+            }
+        }
+
         for (PeopleEffectCategoryReport refundItem : refundResultList) {
             PeopleEffectCategoryReport item = map.get(getReportKey(refundItem));
             if (item == null) {
@@ -407,8 +499,7 @@ public class PeopleEffectCategoryReport {
                 item.refundPrice = refundItem.refundPrice;
                 item.refundNumber = refundItem.refundNumber;
                 item.refundCost = refundItem.refundCost;
-                item.profit = (item.salePrice == null ? BigDecimal.ZERO : item.salePrice).subtract(item.refundPrice == null ? BigDecimal.ZERO : item.refundPrice).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount)
-                        .subtract(item.goodsCost == null ? BigDecimal.ZERO : item.goodsCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost);
+                setRefundItem(item);
             }
         }
         //merge other 2
@@ -421,6 +512,36 @@ public class PeopleEffectCategoryReport {
                 item.consumedNumber = consumedItem.consumedNumber;
             }
         }
+        BigDecimal totalCommission = BigDecimal.ZERO;
+        for (PeopleEffectCategoryReport resalerItem : paidResalerResultList) {
+            PeopleEffectCategoryReport item = map.get(getReportKey(resalerItem));
+
+            if (item == null) {
+                map.put(getReportKey(resalerItem), resalerItem);
+            } else {
+                setPaidResalerItem(resalerItem, item);
+            }
+        }
+
+        totalCommission = BigDecimal.ZERO;
+        for (PeopleEffectCategoryReport cheatedResalerItem : cheatedOrderResalerResultList) {
+            PeopleEffectCategoryReport item = map.get(getReportKey(cheatedResalerItem));
+            if (item == null) {
+                map.put(getReportKey(cheatedResalerItem), cheatedResalerItem);
+            } else {
+                setCheatedOrderResaler(cheatedResalerItem, item);
+
+            }
+        }
+        totalCommission = BigDecimal.ZERO;
+        for (PeopleEffectCategoryReport refundResalerItem : refundResalerResultList) {
+            PeopleEffectCategoryReport item = map.get(getReportKey(refundResalerItem));
+            if (item == null) {
+                map.put(getReportKey(refundResalerItem), refundResalerItem);
+            } else {
+                setRefundResalerItem(refundResalerItem, item);
+            }
+        }
 
         //total
         List<PeopleEffectCategoryReport> totalPeopleEffectList = queryPeopleEffectData(condition);
@@ -430,24 +551,141 @@ public class PeopleEffectCategoryReport {
                 map.put(getReportKey(totalItem), totalItem);
             }
         }
+
+        //merge total into result
+        List<PeopleEffectCategoryReport> resultList = new ArrayList();
+
+        mergeResultList(condition, map, resultList);
+
+        return resultList;
+    }
+
+    private static void setRefundResalerItem(PeopleEffectCategoryReport refundResalerItem, PeopleEffectCategoryReport item) {
+        BigDecimal refundCommissionAmount = item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount;
+        BigDecimal totalCommission = refundCommissionAmount.add(refundResalerItem.refundCommissionAmount == null ? BigDecimal.ZERO : refundResalerItem.refundCommissionAmount);
+        item.refundCommissionAmount = totalCommission;
+
+        BigDecimal salePrice = item.salePrice == null ? BigDecimal.ZERO : item.salePrice;
+        BigDecimal refundPrice = item.refundPrice == null ? BigDecimal.ZERO : item.refundPrice;
+        BigDecimal cheatedOrderAmount = item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount;
+        BigDecimal goodsCost = item.goodsCost == null ? BigDecimal.ZERO : item.goodsCost;
+        BigDecimal refundCost = item.refundCost == null ? BigDecimal.ZERO : item.refundCost;
+        BigDecimal cheatedOrderCost = item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost;
+        BigDecimal amountCommissionAmount = item.amountCommissionAmount == null ? BigDecimal.ZERO : item.amountCommissionAmount;
+        item.profit = salePrice.subtract(cheatedOrderAmount).subtract(refundPrice)
+                .subtract(amountCommissionAmount).add(totalCommission)
+                .subtract(goodsCost).add(refundCost).add(cheatedOrderCost);
+    }
+
+    /**
+     * @param resalerItem
+     * @param item
+     */
+    private static void setPaidResalerItem(PeopleEffectCategoryReport resalerItem, PeopleEffectCategoryReport item) {
+        BigDecimal amountCommissionAmount = item.amountCommissionAmount == null ? BigDecimal.ZERO : item.amountCommissionAmount;
+        BigDecimal totalCommission = amountCommissionAmount.add(resalerItem.amountCommissionAmount == null ? BigDecimal.ZERO : resalerItem.amountCommissionAmount);
+        item.amountCommissionAmount = totalCommission;
+        BigDecimal salePrice = item.salePrice == null ? BigDecimal.ZERO : item.salePrice;
+        BigDecimal cheatedOrderAmount = item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount;
+        BigDecimal refundPrice = item.refundPrice == null ? BigDecimal.ZERO : item.refundPrice;
+        BigDecimal goodsCost = item.goodsCost == null ? BigDecimal.ZERO : item.goodsCost;
+        BigDecimal refundCost = item.refundCost == null ? BigDecimal.ZERO : item.refundCost;
+        BigDecimal cheatedOrderCost = item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost;
+
+        BigDecimal refundCommissionAmount = item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount;
+        item.profit = salePrice.subtract(cheatedOrderAmount).subtract(refundPrice)
+                .subtract(totalCommission).add(refundCommissionAmount)
+                .subtract(goodsCost).add(refundCost).add(cheatedOrderCost);
+    }
+
+    private static void setRefundItem(PeopleEffectCategoryReport item) {
+        BigDecimal salePrice = item.salePrice == null ? BigDecimal.ZERO : item.salePrice;
+        BigDecimal refundPrice = item.refundPrice == null ? BigDecimal.ZERO : item.refundPrice;
+        BigDecimal goodsCost = item.goodsCost == null ? BigDecimal.ZERO : item.goodsCost;
+        BigDecimal refundCost = item.refundCost == null ? BigDecimal.ZERO : item.refundCost;
+        item.profit = salePrice.subtract(refundPrice).subtract(goodsCost).add(refundCost);
+    }
+
+
+    /**
+     * 设置大类刷单信息
+     *
+     * @param cheatedResalerItem
+     * @param item
+     */
+    private static void setCheatedOrderResaler(PeopleEffectCategoryReport cheatedResalerItem, PeopleEffectCategoryReport item) {
+        BigDecimal totalCommission;
+        totalCommission = item.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : item.cheatedOrderCommissionAmount;
+        totalCommission = totalCommission.add(cheatedResalerItem.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : cheatedResalerItem.cheatedOrderCommissionAmount);
+        item.cheatedOrderCommissionAmount = totalCommission;
+
+        BigDecimal salePrice = item.salePrice == null ? BigDecimal.ZERO : item.salePrice;
+        BigDecimal cheatedOrderAmount = item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount;
+        BigDecimal refundPrice = item.refundPrice == null ? BigDecimal.ZERO : item.refundPrice;
+        BigDecimal amountCommissionAmount = item.amountCommissionAmount == null ? BigDecimal.ZERO : item.amountCommissionAmount;
+        BigDecimal refundCommissionAmount = item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount;
+        BigDecimal goodsCost = item.goodsCost == null ? BigDecimal.ZERO : item.goodsCost;
+        BigDecimal refundCost = item.refundCost == null ? BigDecimal.ZERO : item.refundCost;
+        BigDecimal cheatedOrderCost = item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost;
+        item.profit = salePrice.subtract(cheatedOrderAmount).subtract(refundPrice)
+                .subtract(amountCommissionAmount).add(refundCommissionAmount)
+                .subtract(goodsCost).add(refundCost).add(cheatedOrderCost);
+    }
+
+    private static void mergeResultList(PeopleEffectCategoryReportCondition condition, Map<String, PeopleEffectCategoryReport> map, List<PeopleEffectCategoryReport> resultList) {
         List<String> tempString = new ArrayList<>();
         for (String s : map.keySet()) {
-            System.out.println(s + ">>>>s");
             tempString.add(s);
         }
         Collections.sort(tempString);
-        //merge total into result
-        List resultList = new ArrayList();
+
+
+        PeopleEffectCategoryReport reportItem = null;
+        Map<Long, PeopleEffectCategoryReport> sortMap = new HashMap<>();
         for (String key : tempString) {
-            if (map.get(key) != null) {
-                resultList.add(map.get(key));
+            reportItem = map.get(key);
+            if (reportItem == null) {
+                break;
+            }
+            if ("999".equals(reportItem.code)) {
+                sortMap.put(reportItem.operateUser.id, reportItem);
+            }
+            resultList.add(reportItem);
+        }
+        //指定相同的operateUser，添加排序项
+        for (PeopleEffectCategoryReport item : resultList) {
+            for (Long s : sortMap.keySet()) {
+                if (item.operateUser.id == s) {
+                    item.totalAmount = sortMap.get(s).totalAmount;
+                    item.totalConsumedPrice = sortMap.get(s).totalConsumedPrice;
+                    item.totalRefundPrice = sortMap.get(s).totalRefundPrice;
+                    item.netProfit = sortMap.get(s).netProfit;
+                    item.grossMargin = sortMap.get(s).grossMargin;
+                }
             }
         }
-        List sortList = new ArrayList();
         condition.sort(resultList);
+    }
 
+    /**
+     * 设置实物的净利润，毛利率，成本
+     *
+     * @param paidItem
+     * @param item
+     */
+    private static void setRealGoodsItem(PeopleEffectCategoryReport paidItem, PeopleEffectCategoryReport item) {
+        item.realSalePrice = paidItem.realSalePrice;
+        item.realBuyNumber = paidItem.realBuyNumber;
+        BigDecimal totalSalesPrice = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice);
+        BigDecimal goodsCost = item.goodsCost == null ? BigDecimal.ZERO : item.goodsCost.add(paidItem.goodsCost == null ? BigDecimal.ZERO : paidItem.goodsCost);
+        if (totalSalesPrice.compareTo(BigDecimal.ZERO) != 0) {
+            item.grossMargin = totalSalesPrice.subtract(goodsCost).divide(totalSalesPrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+        }
 
-        return resultList;
+        item.profit = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice)
+                .subtract(item.goodsCost == null ? BigDecimal.ZERO : item.goodsCost).subtract(paidItem.goodsCost == null ? BigDecimal.ZERO : paidItem.goodsCost);
+
+        item.goodsCost = item.goodsCost == null ? BigDecimal.ZERO : item.goodsCost.add(paidItem.goodsCost == null ? BigDecimal.ZERO : paidItem.goodsCost);
     }
 
     /**
@@ -476,6 +714,18 @@ public class PeopleEffectCategoryReport {
         }
 
         List<PeopleEffectCategoryReport> paidResultList = query.getResultList();
+        //total== sendAt real
+        sql = "select new models.PeopleEffectCategoryReport(sum(r.buyNumber),ou,sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
+                ",sum(r.originalPrice*r.buyNumber) " +
+                ") from OrderItems r,Supplier s,OperateUser ou ";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterRealSendAt() + groupBy + " order by s.supplierCategory.id desc");
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<PeopleEffectCategoryReport> sentRealResultList = query.getResultList();
 
         //total== cheated order
         sql = "select new models.PeopleEffectCategoryReport(ou,sum(r.salePrice-r.rebateValue/r.buyNumber),sum(r.buyNumber)" +
@@ -560,7 +810,14 @@ public class PeopleEffectCategoryReport {
         for (PeopleEffectCategoryReport paidItem : paidResultList) {
             map.put(getReportKeyOfPeopleEffect(paidItem), paidItem);
         }
-
+        for (PeopleEffectCategoryReport paidItem : sentRealResultList) {
+            PeopleEffectCategoryReport item = map.get(getReportKeyOfPeopleEffect(paidItem));
+            if (item == null) {
+                map.put(getReportKeyOfPeopleEffect(paidItem), paidItem);
+            } else {
+                setTotalRealGoodsItem(paidItem, item);
+            }
+        }
         for (PeopleEffectCategoryReport cheatedItem : cheatedOrderResultList) {
             PeopleEffectCategoryReport item = map.get(getReportKeyOfPeopleEffect(cheatedItem));
             if (item == null) {
@@ -580,11 +837,7 @@ public class PeopleEffectCategoryReport {
                 refundItem.netProfit = BigDecimal.ZERO.subtract(refundItem.totalRefundPrice).add(refundItem.refundCost);
                 map.put(getReportKeyOfPeopleEffect(refundItem), refundItem);
             } else {
-                item.totalRefundPrice = refundItem.totalRefundPrice;
-                item.refundNumber = refundItem.refundNumber;
-                item.refundCost = refundItem.refundCost;
-                item.netProfit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.totalRefundPrice == null ? BigDecimal.ZERO : item.totalRefundPrice).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost);
+                setTotalRefundItem(refundItem, item);
             }
         }
 
@@ -592,7 +845,7 @@ public class PeopleEffectCategoryReport {
             PeopleEffectCategoryReport item = map.get(getReportKeyOfPeopleEffect(consumedItem));
             if (item != null) {
                 item.totalConsumedPrice = consumedItem.totalConsumedPrice;
-                item.consumedNumber = consumedItem.consumedNumber;
+                item.totalConsumedNumber = consumedItem.totalConsumedNumber;
             } else {
                 map.put(getReportKeyOfPeopleEffect(consumedItem), consumedItem);
             }
@@ -605,12 +858,7 @@ public class PeopleEffectCategoryReport {
             if (item == null) {
                 map.put(getReportKeyOfPeopleEffect(resalerItem), resalerItem);
             } else {
-                totalCommission = item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount;
-                totalCommission = totalCommission.add(resalerItem.totalAmountCommissionAmount == null ? BigDecimal.ZERO : resalerItem.totalAmountCommissionAmount);
-                item.totalAmountCommissionAmount = totalCommission;
-                item.netProfit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.totalRefundPrice == null ? BigDecimal.ZERO : item.totalRefundPrice)
-                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
+                setTotalPaidResalerItem(resalerItem, item);
             }
         }
 
@@ -621,13 +869,7 @@ public class PeopleEffectCategoryReport {
             if (item == null) {
                 map.put(getReportKeyOfPeopleEffect(cheatedResalerItem), cheatedResalerItem);
             } else {
-                totalCommission = item.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : item.cheatedOrderCommissionAmount;
-                totalCommission = totalCommission.add(cheatedResalerItem.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : cheatedResalerItem.cheatedOrderCommissionAmount);
-                item.cheatedOrderCommissionAmount = totalCommission;
-
-                item.netProfit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.totalRefundPrice == null ? BigDecimal.ZERO : item.totalRefundPrice)
-                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
+                setTotalCheatedOrderItem(cheatedResalerItem, item);
 
             }
         }
@@ -637,12 +879,7 @@ public class PeopleEffectCategoryReport {
             if (item == null) {
                 map.put(getReportKeyOfPeopleEffect(refundResalerItem), refundResalerItem);
             } else {
-                totalCommission = item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount;
-                totalCommission = totalCommission.add(refundResalerItem.refundCommissionAmount == null ? BigDecimal.ZERO : refundResalerItem.refundCommissionAmount);
-                item.refundCommissionAmount = totalCommission;
-                item.netProfit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.totalRefundPrice == null ? BigDecimal.ZERO : item.totalRefundPrice)
-                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
+                setTotalRefundResalerItem(refundResalerItem, item);
             }
         }
         List resultList = new ArrayList();
@@ -653,6 +890,108 @@ public class PeopleEffectCategoryReport {
         return resultList;
     }
 
+    /**
+     * 设置实物的净利润，毛利率，成本
+     *
+     * @param paidItem
+     * @param item
+     */
+    private static void setTotalRealGoodsItem(PeopleEffectCategoryReport paidItem, PeopleEffectCategoryReport item) {
+        item.totalRealSalePrice = paidItem.totalRealSalePrice;
+        item.totalRealBuyNumber = paidItem.totalRealBuyNumber;
+        BigDecimal totalSalesPrice = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount.add(paidItem.totalRealSalePrice == null ? BigDecimal.ZERO : paidItem.totalRealSalePrice);
+        BigDecimal totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
+        if (totalSalesPrice.compareTo(BigDecimal.ZERO) != 0) {
+            item.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+        }
+        item.profit = totalSalesPrice.subtract(totalCost);
+    }
+
+    /**
+     * 小计： 设置退款的退款金额等信息
+     */
+    private static void setTotalRefundItem(PeopleEffectCategoryReport refundItem, PeopleEffectCategoryReport item) {
+        item.totalRefundPrice = refundItem.totalRefundPrice;
+        item.totalRefundNumber = refundItem.totalRefundNumber;
+        item.refundCost = refundItem.refundCost;
+        BigDecimal totalAmount = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount;
+        BigDecimal totalRefundPrice = item.totalRefundPrice == null ? BigDecimal.ZERO : item.totalRefundPrice;
+        BigDecimal cheatedOrderAmount = item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount;
+        BigDecimal totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost;
+        BigDecimal cheatedOrderCost = item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost;
+        BigDecimal refundCost = item.refundCost == null ? BigDecimal.ZERO : item.refundCost;
+        //净利润
+        item.netProfit = totalAmount.subtract(totalRefundPrice).subtract(cheatedOrderAmount)
+                .subtract(totalCost).add(cheatedOrderCost).add(refundCost);
+    }
+
+    /**
+     * 小计： 设置分销成交后，给一百券的佣金等信息
+     */
+    private static void setTotalPaidResalerItem(PeopleEffectCategoryReport resalerItem, PeopleEffectCategoryReport item) {
+        BigDecimal refundCommissionAmount = item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount;
+        BigDecimal totalCommission = refundCommissionAmount.add(resalerItem.refundCommissionAmount == null ? BigDecimal.ZERO : resalerItem.refundCommissionAmount);
+        item.refundCommissionAmount = totalCommission;
+        BigDecimal totalAmount = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount;
+        BigDecimal cheatedOrderAmount = item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount;
+        BigDecimal totalRefundPrice = item.totalRefundPrice == null ? BigDecimal.ZERO : item.totalRefundPrice;
+        BigDecimal totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost;
+        BigDecimal cheatedOrderCost = item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost;
+        BigDecimal refundCost = item.refundCost == null ? BigDecimal.ZERO : item.refundCost;
+
+        BigDecimal totalAmountCommissionAmount = item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount;
+        item.netProfit = totalAmount.subtract(cheatedOrderAmount).subtract(totalRefundPrice)
+                .subtract(totalAmountCommissionAmount).add(refundCommissionAmount)
+                .subtract(totalCost).add(refundCost).add(cheatedOrderCost);
+
+    }
+
+    /**
+     * 小计： 设置刷单的金额等信息
+     */
+    private static void setTotalCheatedOrderItem(PeopleEffectCategoryReport cheatedResalerItem, PeopleEffectCategoryReport item) {
+        BigDecimal cheatedOrderCommissionAmount = item.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : item.cheatedOrderCommissionAmount;
+        BigDecimal totalCommission = cheatedOrderCommissionAmount.add(cheatedResalerItem.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : cheatedResalerItem.cheatedOrderCommissionAmount);
+        item.cheatedOrderCommissionAmount = totalCommission;
+
+        BigDecimal totalAmount = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount;
+        BigDecimal cheatedOrderAmount = item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount;
+        BigDecimal totalRefundPrice = item.totalRefundPrice == null ? BigDecimal.ZERO : item.totalRefundPrice;
+        BigDecimal totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost;
+        BigDecimal cheatedOrderCost = item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost;
+        BigDecimal refundCost = item.refundCost == null ? BigDecimal.ZERO : item.refundCost;
+        BigDecimal totalAmountCommissionAmount = item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount;
+        item.netProfit = totalAmount.subtract(cheatedOrderAmount).subtract(totalRefundPrice)
+                .subtract(totalAmountCommissionAmount).add(cheatedOrderCommissionAmount)
+                .subtract(totalCost).add(refundCost).add(cheatedOrderCost);
+    }
+
+    /**
+     * 小计： 设置分销退款的金额等信息
+     */
+    private static void setTotalRefundResalerItem(PeopleEffectCategoryReport refundResalerItem, PeopleEffectCategoryReport item) {
+        BigDecimal refundCommissionAmount = item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount;
+        BigDecimal totalCommission = refundCommissionAmount.add(refundResalerItem.refundCommissionAmount == null ? BigDecimal.ZERO : refundResalerItem.refundCommissionAmount);
+        item.refundCommissionAmount = totalCommission;
+        BigDecimal totalAmount = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount;
+        BigDecimal cheatedOrderAmount = item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount;
+        BigDecimal totalRefundPrice = item.totalRefundPrice == null ? BigDecimal.ZERO : item.totalRefundPrice;
+        BigDecimal totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost;
+        BigDecimal cheatedOrderCost = item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost;
+        BigDecimal refundCost = item.refundCost == null ? BigDecimal.ZERO : item.refundCost;
+        BigDecimal totalAmountCommissionAmount = item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount;
+
+        item.netProfit = totalAmount.subtract(cheatedOrderAmount).subtract(totalRefundPrice)
+                .subtract(totalAmountCommissionAmount).add(refundCommissionAmount)
+                .subtract(totalCost).add(refundCost).add(cheatedOrderCost);
+    }
+
+    /**
+     * 统计大类报表
+     *
+     * @param resultList
+     * @return
+     */
     public static PeopleEffectCategoryReport summary(List<PeopleEffectCategoryReport> resultList) {
         if (resultList == null || resultList.size() == 0) {
             return new PeopleEffectCategoryReport(0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO, 0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO);
@@ -685,11 +1024,12 @@ public class PeopleEffectCategoryReport {
                 consumedPrice = consumedPrice.add(item.consumedPrice);
             }
             totalCost = totalCost.add(item.goodsCost == null ? BigDecimal.ZERO : item.goodsCost);
-            totalSalePrice = totalSalePrice.add(item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount);
+            totalSalePrice = totalSalePrice.add(item.salePrice == null ? BigDecimal.ZERO : item.salePrice);
+
             profit = profit.add(item.profit == null ? BigDecimal.ZERO : item.profit);
         }
         if (totalSalePrice.compareTo(BigDecimal.ZERO) != 0) {
-            grossMargin = totalSalePrice.subtract(totalCost).divide(totalSalePrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+            grossMargin = totalSalePrice.subtract(totalCost).divide(totalSalePrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
         return new PeopleEffectCategoryReport(buyCount, amount, realBuyCount, realAmount, refundPrice, refundCount, consumedPrice, consumedCount, grossMargin, profit);
     }
