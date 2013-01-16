@@ -47,6 +47,7 @@ public class PeopleEffectCategoryReport {
      * 退款券数
      */
     public long refundNumber = 0l;
+    public long totalRefundNumber = 0l;
 
     /**
      * 售出实物数
@@ -84,6 +85,7 @@ public class PeopleEffectCategoryReport {
      * 消费券数
      */
     public long consumedNumber = 0l;
+    public long totalConsumedNumber = 0l;
 
     /**
      * 消费金额
@@ -225,7 +227,7 @@ public class PeopleEffectCategoryReport {
     public PeopleEffectCategoryReport(OperateUser operateUser, Long buyNumber,
                                       BigDecimal totalAmount, BigDecimal grossMargin, BigDecimal profit, BigDecimal totalCost) {
         this.operateUser = operateUser;
-        this.buyNumber = buyNumber;
+        this.totalNumber = buyNumber;
         this.totalAmount = totalAmount;
         this.grossMargin = grossMargin;
         this.netProfit = profit;
@@ -256,11 +258,11 @@ public class PeopleEffectCategoryReport {
         this.operateUser = operateUser;
         if (status == ECouponStatus.REFUND) {
             this.totalRefundPrice = amount;
-            this.refundNumber = buyNumber;
+            this.totalRefundNumber = buyNumber;
             this.refundCost = refundCost;
         } else if (status == ECouponStatus.CONSUMED) {
             this.totalConsumedPrice = amount;
-            this.consumedNumber = buyNumber;
+            this.totalConsumedNumber = buyNumber;
         }
 
         this.code = "999";
@@ -391,7 +393,7 @@ public class PeopleEffectCategoryReport {
                 }
 
                 item.profit = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice)
-                        .subtract(item.goodsCost== null ? BigDecimal.ZERO : item.goodsCost).subtract(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.goodsCost);
+                        .subtract(item.goodsCost == null ? BigDecimal.ZERO : item.goodsCost).subtract(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.goodsCost);
 
                 item.goodsCost = item.goodsCost == null ? BigDecimal.ZERO : item.goodsCost.add(paidItem.goodsCost == null ? BigDecimal.ZERO : paidItem.goodsCost);
             }
@@ -428,23 +430,23 @@ public class PeopleEffectCategoryReport {
                 map.put(getReportKey(totalItem), totalItem);
             }
         }
-
-
-        //merge total into result
-        List resultList = new ArrayList();
-
         List<String> tempString = new ArrayList<>();
         for (String s : map.keySet()) {
+            System.out.println(s + ">>>>s");
             tempString.add(s);
         }
         Collections.sort(tempString);
-
-
+        //merge total into result
+        List resultList = new ArrayList();
         for (String key : tempString) {
             if (map.get(key) != null) {
                 resultList.add(map.get(key));
             }
         }
+        List sortList = new ArrayList();
+        condition.sort(resultList);
+
+
         return resultList;
     }
 
@@ -647,6 +649,7 @@ public class PeopleEffectCategoryReport {
         for (OperateUser key : map.keySet()) {
             resultList.add(map.get(key));
         }
+
         return resultList;
     }
 
@@ -695,7 +698,6 @@ public class PeopleEffectCategoryReport {
         if (refundItem.code != null) {
             return refundItem.operateUser + refundItem.code;
         } else {
-
             return String.valueOf(refundItem.operateUser) + "00";
         }
     }
