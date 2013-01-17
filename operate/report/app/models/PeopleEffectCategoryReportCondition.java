@@ -38,7 +38,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
     private Map<String, Object> paramMap = new HashMap<>();
 
     public String getFilterPaidAt() {
-        StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId = s.id and s.deleted=0 and s.salesId=ou.id and ou.deleted=0 and r.order.status='PAID' " +
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and r.goods.supplierId = s.id and s.deleted=0 and s.salesId=ou.id and ou.deleted=0 and r.order.status='PAID' " +
                 "and r.goods.isLottery=false and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED"
         );
 
@@ -155,7 +155,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
     }
 
     public String getFilterOfPeopleEffect() {
-        StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId =s.id and s.deleted=0 and s.salesId=o.id and o.deleted=0  and (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false");
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and r.goods.supplierId =s.id and s.deleted=0 and s.salesId=o.id and o.deleted=0  and (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false");
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         if (!hasSeeReportProfitRight) {
             condBuilder.append(" and o.id =:salesId");

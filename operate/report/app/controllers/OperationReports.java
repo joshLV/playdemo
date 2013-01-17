@@ -82,10 +82,8 @@ public class OperationReports extends Controller {
         }
         List<SalesReport> resultList = SalesReport.query(condition, orderBy);
         Collections.sort(resultList);
-
         // 分页
         ValuePaginator<SalesReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
-
         // 汇总
         SalesReport summary = SalesReport.getNetSummary(resultList);
         render(condition, reportPage, hasSeeReportProfitRight, summary, desc);
@@ -98,6 +96,8 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new CategorySalesReportCondition();
         }
+        condition.setDescFields();
+
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
         condition.operatorId = OperateRbac.currentUser().id;
@@ -141,7 +141,6 @@ public class OperationReports extends Controller {
 
     @ActiveNavigation("consumer_flow_reports")
     public static void showConsumerFlowReport(ConsumerFlowReportCondition condition, String desc) {
-        System.out.println("desc:" + desc);
         int pageNumber = getPageNumber();
         if (condition == null) {
             condition = new ConsumerFlowReportCondition();
@@ -177,7 +176,6 @@ public class OperationReports extends Controller {
         } else {
             orderBy = "12";
         }
-        System.out.println("22 orderBy:" + orderBy);
         List<ConsumerFlowReport> resultList = ConsumerFlowReport.query(condition, orderBy);
 
         Collections.sort(resultList);
@@ -240,6 +238,7 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new ChannelCategoryReportCondition();
         }
+        condition.setDescFields();
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
         condition.operatorId = OperateRbac.currentUser().id;
@@ -274,6 +273,9 @@ public class OperationReports extends Controller {
             }
             resultList.add(c);
         }
+
+        Collections.sort(resultList);
+
 
         // 分页
         ValuePaginator<ChannelCategoryReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
@@ -311,7 +313,6 @@ public class OperationReports extends Controller {
 
 
     public static void salesReportWithPrivilegeExcelOut(SalesReportCondition condition, String desc) {
-        System.out.println("desc:" + desc);
         if (condition == null) {
             condition = new SalesReportCondition();
         }
@@ -566,7 +567,6 @@ public class OperationReports extends Controller {
         for (ChannelCategoryReport resaleSalesReport : consumerList) {
             resultList.add(resaleSalesReport);
         }
-
 
         for (ChannelCategoryReport report : resultList) {
 //            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));

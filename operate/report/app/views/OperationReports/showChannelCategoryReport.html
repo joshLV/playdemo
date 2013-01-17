@@ -1,7 +1,21 @@
 #{extends 'layout_operate/layout.html' /}
 #{set title:'渠道大类报表' /}
 #{include '/share/nav.html' /}
+#{set 'moreStyles'}
+<style type="text/css">
+    .rank {
+        background: url(http://y1.uhcdn.com/images/2012/11/f30406611dd51bba.png) no-repeat right 10px;
+    }
 
+    .rank-asc {
+        background: url(http://y1.uhcdn.com/images/2012/11/0ab07600b7c1e671.png) no-repeat right 10px;
+    }
+
+    .rank-desc {
+        background: url(http://y1.uhcdn.com/images/2012/11/6fbd68649f111b05.png) no-repeat right 10px;
+    }
+</style>
+#{/set}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 
@@ -101,6 +115,15 @@
 
     });
 
+    $('.fn-rank').click(function (ev) {
+        ev.preventDefault();
+        var rankStr = $(this).attr('data-rank');
+        $('#J_rank').val(rankStr);
+        $("#form").attr("action", "@{OperationReports.showChannelCategoryReport()}");
+        $("#form").attr("method", "get");
+        $('#form').submit();
+    });
+
     function channelCategoryReportExcel() {
         $("#form").attr("action", "@{OperationReports.channelCategoryReportExcelOut()}");
         $("#form").attr("method", "get");
@@ -123,49 +146,6 @@
     ;
 
 </script>
-#{/set}
-
-#{set 'moreStyles'}
-<style type="text/css">
-    .form-inline ul {
-        display: inline-block;
-        margin-bottom: -15px;
-    }
-
-    .nav-tabs {
-        margin-bottom: 0px;
-    }
-
-    .tab-content {
-        border-left: 1px solid #DDD;
-        border-right: 1px solid #DDD;
-        border-bottom: 1px solid #DDD;
-        clear: both;
-    }
-
-    .tab-content .binary {
-        width: 40%;
-        float: left;
-        text-align: center;
-        margin: 5px 1%;
-    }
-
-    .seq {
-        margin-top: 20px;
-    }
-
-    .alert {
-        margin-bottom: 0px;
-    }
-
-    .seq thead tr :first {
-        background-color: #f5f5f5;
-    }
-
-    footer {
-        margin-top: 20px;
-    }
-</style>
 #{/set}
 
 <form class="well form-inline" action="@{OperationReports.showChannelCategoryReport()}" method="GET" id="form"
@@ -193,6 +173,7 @@
         <li #{if condition.interval=='0'} class="active" #{/if}  ><a start="0" href="#">全部</a></li>
     </ul>
     <input type="hidden" id="condition_interval" name="condition.interval"/>
+    <input type="hidden" id="J_rank" name="condition.desc" value="${condition?.desc}"/>
 </form>
 
 <div class="alert alert-success" style="margin-bottom: 10px;">
@@ -211,12 +192,12 @@
         渠道成本：<b>${(channelSummary?.channelCost?:0).formatCurrency('CNY')}</b>
          净利润：<b>
 
-    #{if channelSummary.profit != null && channelSummary.profit!=0}
-        ￥${(channelSummary?.profit?:0).format('#0.00')}
-    #{/if}
-    #{else}
-        ￥0
-    #{/else}
+        #{if channelSummary.profit != null && channelSummary.profit!=0}
+            ￥${(channelSummary?.profit?:0).format('#0.00')}
+        #{/if}
+        #{else}
+            ￥0
+        #{/else}
     </b>
     #{/if}
       </span>
@@ -227,15 +208,15 @@
     <th>帐号</th>
     <th>类别编码</th>
     <th>类别名称</th>
-    <th>售出券数量/金额</th>
+    #{layout_operate.sortField name:'售出券数量/金额', descField:condition?.desc, desc:'1000000',asc:'2000000'/}
     <th>售出实物数量/金额</th>
-    <th>退款券数量/金额</th>
-    <th>退款实物数量/金额</th>
-    <th>消费券数量/金额</th>
+    #{layout_operate.sortField name:'退款券数量/金额', descField:condition?.desc, desc:'0100000',asc:'0200000'/}
+    #{layout_operate.sortField name:'退款实物数量/金额', descField:condition?.desc, desc:'0010000',asc:'0020000'/}
+    #{layout_operate.sortField name:'消费券数量/金额', descField:condition?.desc, desc:'0001000',asc:'0002000'/}
     #{if hasSeeReportProfitRight == true}
-    <th>毛利率</th>
-    <th>渠道成本</th>
-    <th>净利润</th>
+        #{layout_operate.sortField name:'毛利率', descField:condition?.desc, desc:'0000100',asc:'0000200'/}
+        #{layout_operate.sortField name:'渠道成本', descField:condition?.desc, desc:'0000010',asc:'0000020'/}
+        #{layout_operate.sortField name:'净利润', descField:condition?.desc, desc:'0000001',asc:'0000002'/}
     #{/if}
     </thead>
 #{set i:0/}
@@ -270,14 +251,19 @@
                    target="_blank">${report?.salePrice?.formatCurrency('CNY')}</a>
             #{/if}
             #{else}
-            ${report?.buyNumber} / ${report?.salePrice?.formatCurrency('CNY')}
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
+                   target="_blank">  ${report?.buyNumber}
+                </a>/
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
+                   target="_blank">
+                ${report?.salePrice?.formatCurrency('CNY')}
+                </a>
             #{/else}
         </td>
         <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if}  style="text-align:right;">
         ${report?.realBuyNumber}
             / ${report?.realSalePrice == null ?'￥0.00':report?.realSalePrice?.formatCurrency('CNY')}
         </td>
-
 
         <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
             #{if report?.code == "999"}
@@ -288,7 +274,15 @@
                    target="_blank">${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}</a>
             #{/if}
             #{else}
-            ${report?.refundNumber} / ${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
+                   target="_blank">
+                ${report?.refundNumber}
+                </a>
+                /
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
+                   target="_blank">
+                ${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}
+                </a>
             #{/else}
         </td>
         <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
@@ -302,8 +296,14 @@
                    target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
             #{/if}
             #{else}
-            ${report?.consumedNumber}
-                / ${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
+                   target="_blank">
+                ${report?.consumedNumber}
+                </a> /
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
+                   target="_blank">
+                ${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}
+                </a>
             #{/else}
         </td>
         #{if hasSeeReportProfitRight == true}

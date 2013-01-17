@@ -54,6 +54,7 @@ public class CouponsCondition implements Serializable {
     public Long operatorId;
     public Boolean hasSeeAllSupplierPermission;
     public Long goodsId;
+    public String supplierCategoryCode;
 
     public Boolean isCheatedOrder;
 
@@ -252,6 +253,22 @@ public class CouponsCondition implements Serializable {
         if (supplier != null) {
             sql.append(" and e.orderItems.goods.supplierId = :supplierId");
             paramMap.put("supplierId", supplier.id);
+        }
+
+        if (StringUtils.isNotBlank(supplierCategoryCode)) {
+            SupplierCategory supplierCategory = SupplierCategory.find("byCode", supplierCategoryCode).first();
+            List<Supplier> supplierList = Supplier.find("bySupplierCategory", supplierCategory).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : supplierList) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                sql.append(" and e.goods.supplierId in (:supplierIds)");
+                paramMap.put("supplierIds", supplierIds);
+            } else {
+                sql.append(" and 5 =:supplierIds");
+                paramMap.put("supplierIds", 6);
+            }
         }
 
         if (hasSeeAllSupplierPermission != null && !hasSeeAllSupplierPermission) {

@@ -9,19 +9,26 @@ import play.db.jpa.JPA;
 
 import javax.persistence.Query;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.*;
 
 /**
- * Created with IntelliJ IDEA.
+ * 大类销售报表
+ * <p/>
  * User: wangjia
  * Date: 12-12-28
  * Time: 上午11:52
- * To change this template use File | Settings | File Templates.
  */
-public class CategorySalesReport {
+public class CategorySalesReport implements Comparable<CategorySalesReport> {
+
 
     public Goods goods;
+
+    public BigDecimal comparedValue;
+    public String[] orderByFields = {"buyNumber", "totalAmount", "cheatedOrderAmount", "refundAmount", "consumedAmount", "netSalesAmount", "grossMargin", "profit"};
+
+    public String orderByType;
 
     /**
      * 商户类别
@@ -435,7 +442,6 @@ public class CategorySalesReport {
         query = JPA.em()
                 .createQuery(sql + condition.getFilterCheatedOrderResaler() + groupBy + " order by sum(r.buyNumber) desc ");
 
-
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
@@ -445,7 +451,7 @@ public class CategorySalesReport {
 
         //consumedAt coupon
         sql = "select new models.CategorySalesReport(s.supplierCategory.id,sum(r.salePrice-r.rebateValue/r.buyNumber),r.goods) " +
-                " from OrderItems r, ECoupon e,Supplier s where e.orderItems=r and r.goods.supplierId = s ";
+                " from OrderItems r, ECoupon e,Supplier s where e.orderItems=r and r.goods.supplierId = s.id ";
         groupBy = " group by s.supplierCategory.id,r.goods.id";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterConsumedAt() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
@@ -596,13 +602,39 @@ public class CategorySalesReport {
         //total
         List<CategorySalesReport> tempTotal = queryTotal(condition);
         Map<String, CategorySalesReport> totalMap = new HashMap<>();
-
-
+        Map<String, BigDecimal> comparedMap = new HashMap<>();
         for (int i = 0; i < tempTotal.size(); i++) {
+            switch (tempTotal.get(i).orderByFields[condition.orderByIndex]) {
+                case "buyNumber":
+                    comparedMap.put((tempTotal.get(i).code == null ? "999" : tempTotal.get(i).code), (tempTotal.get(i).buyNumber == null ? BigDecimal.ZERO : BigDecimal.valueOf(tempTotal.get(i).buyNumber)));
+                    break;
+                case "totalAmount":
+                    comparedMap.put((tempTotal.get(i).code == null ? "999" : tempTotal.get(i).code), (tempTotal.get(i).totalAmount == null ? BigDecimal.ZERO : tempTotal.get(i).totalAmount));
+                    break;
+                case "cheatedOrderAmount":
+                    comparedMap.put((tempTotal.get(i).code == null ? "999" : tempTotal.get(i).code), (tempTotal.get(i).cheatedOrderAmount == null ? BigDecimal.ZERO : tempTotal.get(i).cheatedOrderAmount));
+                    break;
+                case "refundAmount":
+                    comparedMap.put((tempTotal.get(i).code == null ? "999" : tempTotal.get(i).code), (tempTotal.get(i).refundAmount == null ? BigDecimal.ZERO : tempTotal.get(i).refundAmount));
+                    break;
+                case "consumedAmount":
+                    comparedMap.put((tempTotal.get(i).code == null ? "999" : tempTotal.get(i).code), (tempTotal.get(i).consumedAmount == null ? BigDecimal.ZERO : tempTotal.get(i).consumedAmount));
+                    break;
+                case "netSalesAmount":
+                    comparedMap.put((tempTotal.get(i).code == null ? "999" : tempTotal.get(i).code), (tempTotal.get(i).netSalesAmount == null ? BigDecimal.ZERO : tempTotal.get(i).netSalesAmount));
+                    break;
+                case "grossMargin":
+                    comparedMap.put((tempTotal.get(i).code == null ? "999" : tempTotal.get(i).code), (tempTotal.get(i).grossMargin == null ? BigDecimal.ZERO : tempTotal.get(i).grossMargin));
+                    break;
+                case "profit":
+                    comparedMap.put((tempTotal.get(i).code == null ? "999" : tempTotal.get(i).code), (tempTotal.get(i).profit == null ? BigDecimal.ZERO : tempTotal.get(i).profit));
+                    break;
+            }
+
             totalMap.put(getTotalReportKey(tempTotal.get(i)), tempTotal.get(i));
         }
 
-        List resultList = new ArrayList();
+        List<CategorySalesReport> resultList = new ArrayList();
 
         List<String> tempString = new ArrayList<>();
         for (String s : map.keySet()) {
@@ -621,6 +653,12 @@ public class CategorySalesReport {
                 resultList.add(totalMap.get(key));
             }
         }
+
+        for (CategorySalesReport c : resultList) {
+            c.comparedValue = comparedMap.get(c.code);
+            c.orderByType = condition.orderByType;
+        }
+        Collections.sort(resultList);
         return resultList;
     }
 
@@ -810,7 +848,7 @@ public class CategorySalesReport {
 
         //consumedAt coupon
         sql = "select new models.CategorySalesReport(s.supplierCategory.id,sum(r.salePrice-r.rebateValue/r.buyNumber),r.goods) " +
-                " from OrderItems r, ECoupon e,Supplier s where e.orderItems=r and r.goods.supplierId = s ";
+                " from OrderItems r, ECoupon e,Supplier s where e.orderItems=r and r.goods.supplierId = s.id ";
         groupBy = " group by s.supplierCategory.id,r.goods.id";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterConsumedAt() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
@@ -1061,7 +1099,7 @@ public class CategorySalesReport {
 
         //consumedAt coupon
         sql = "select new models.CategorySalesReport(s.supplierCategory.id,r.goods,sum(r.salePrice-r.rebateValue/r.buyNumber)) " +
-                " from OrderItems r, ECoupon e,Supplier s where e.orderItems=r and r.goods.supplierId = s ";
+                " from OrderItems r, ECoupon e,Supplier s where e.orderItems=r and r.goods.supplierId = s.id ";
         groupBy = " group by s.supplierCategory.id ";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterConsumedAt() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
@@ -1236,7 +1274,7 @@ public class CategorySalesReport {
         }
 
         if (totolSalePrice.compareTo(BigDecimal.ZERO) != 0) {
-            grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+            grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
         return new CategorySalesReport(summaryConsumed.setScale(2, 4), totalAmount.setScale(2, 4), refundAmount.setScale(2, 4), netSalesAmount.setScale(2, 4), grossMargin, channelCost.setScale(2, 4), profit.setScale(2, 4), cheatedOrderAmount.setScale(2, 4));
     }
@@ -1255,4 +1293,14 @@ public class CategorySalesReport {
     }
 
 
+    @Override
+    public int compareTo(CategorySalesReport arg) {
+        switch (this.orderByType) {
+            case "2":
+                return (arg.comparedValue == null ? BigDecimal.ZERO : arg.comparedValue).compareTo(this.comparedValue == null ? BigDecimal.ZERO : this.comparedValue);
+            case "1":
+                return (this.comparedValue == null ? BigDecimal.ZERO : this.comparedValue).compareTo(arg.comparedValue == null ? BigDecimal.ZERO : arg.comparedValue);
+        }
+        return 0;
+    }
 }

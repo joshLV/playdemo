@@ -318,10 +318,10 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
 
         //sendAt real resaler
         sql = "select new models.ConsumerFlowReport(str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),count(r.order.id)" +
-                " ,sum(r.salePrice-r.rebateValue/r.buyNumber)/count(r.order.id),count(r.buyNumber),sum(r.salePrice-r.rebateValue/r.buyNumber)" +
-                ",sum(r.originalPrice),sum((r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio)/100" +
-                ",(sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
-                ",sum(r.salePrice-r.rebateValue/r.buyNumber)-sum((r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio)/100-sum(r.originalPrice)" +
+                " ,sum(r.salePrice*r.buyNumber-r.rebateValue)/count(r.order.id),sum(r.buyNumber),sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+                ",sum(r.originalPrice*r.buyNumber),sum((r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio)/100" +
+                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice-r.rebateValue)*100" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum((r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio)/100-sum(r.originalPrice*r.buyNumber)" +
                 ") from OrderItems r,Order o,Resaler b where r.order=o and o.userId=b.id and ";
         groupBy = " group by str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt))  ";
         query = JPA.em()
@@ -333,13 +333,13 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
 
         //sendAt real consumer  (order not necessary)
         sql = "select new models.ConsumerFlowReport(r.order,str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),count(r.order.id)," +
-                " sum(r.salePrice-r.rebateValue/r.buyNumber)/count(r.order.id),count(r.buyNumber),sum(r.salePrice-r.rebateValue/r.buyNumber)" +
-                ",sum(r.originalPrice)" +
-                ",(sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue/r.buyNumber)*100" +
-                ",sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice)" +
+                " sum(r.salePrice*r.buyNumber-r.rebateValue)/count(r.order.id),sum(r.buyNumber),sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+                ",sum(r.originalPrice*r.buyNumber)" +
+                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
                 ") from OrderItems r where ";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRealSendAt(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
+                .createQuery(sql + condition.getFilterRealSendAt(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
@@ -534,7 +534,7 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
         }
         if (totolSalePrice.compareTo(BigDecimal.ZERO) != 0) {
             perOrderPrice = totolSalePrice.divide(BigDecimal.valueOf(orderNum), 2, RoundingMode.HALF_UP);
-            grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+            grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
         return new ConsumerFlowReport(buyCount, amount.setScale(2, 4), realBuyCount, realAmount.setScale(2, 4), refundPrice.setScale(2, 4), refundCount, consumedPrice.setScale(2), consumedCount, shouldGetPrice.setScale(2, 4), haveGetPrice.setScale(2, 4)
                 , grossMargin, channelCost.setScale(2, 4), profit.setScale(2, 4), perOrderPrice.setScale(2, 4));
@@ -562,9 +562,9 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
             case "01":
                 return this.getOrder().compareTo(arg.getOrder());
             case "12":
-                return (arg.salePrice== null ? BigDecimal.ZERO : arg.salePrice).compareTo(this.salePrice== null ? BigDecimal.ZERO : this.salePrice);
+                return (arg.salePrice == null ? BigDecimal.ZERO : arg.salePrice).compareTo(this.salePrice == null ? BigDecimal.ZERO : this.salePrice);
             case "11":
-                return (this.salePrice== null ? BigDecimal.ZERO : this.salePrice).compareTo(arg.salePrice== null ? BigDecimal.ZERO : arg.salePrice);
+                return (this.salePrice == null ? BigDecimal.ZERO : this.salePrice).compareTo(arg.salePrice == null ? BigDecimal.ZERO : arg.salePrice);
             case "22":
                 return (arg.realAmount == null ? BigDecimal.ZERO : arg.realAmount).compareTo(this.realAmount == null ? BigDecimal.ZERO : this.realAmount);
             case "21":

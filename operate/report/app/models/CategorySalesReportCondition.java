@@ -25,9 +25,14 @@ public class CategorySalesReportCondition {
     private Map<String, Object> paramMap1 = new HashMap<>();
     public Boolean hasSeeReportProfitRight;
     public Long operatorId;
+    //排序字段
+    public String desc;
+    public int orderByIndex;
+    public String orderByType;
+
 
     public String getFilter() {
-        StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId = s and (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false" +
+        StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId = s.id and (r.order.status='PAID' or r.order.status='SENT') and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
         if (StringUtils.isNotBlank(shortName)) {
             condBuilder.append(" and r.goods.shortName like :shortName");
@@ -67,7 +72,7 @@ public class CategorySalesReportCondition {
 
 
     public String getFilterCheatedOrder() {
-        StringBuilder condBuilder = new StringBuilder(" r.goods.supplierId = s and r.order.status='PAID' and r.goods.isLottery=false" +
+        StringBuilder condBuilder = new StringBuilder(" r.goods.supplierId = s.id and r.order.status='PAID' and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
                 " and e.isCheatedOrder = true ");
         if (StringUtils.isNotBlank(shortName)) {
@@ -107,7 +112,7 @@ public class CategorySalesReportCondition {
     }
 
     public String getFilterCheatedOrderResaler() {
-        StringBuilder condBuilder = new StringBuilder(" r.goods.supplierId = s and r.order.status='PAID' and r.goods.isLottery=false" +
+        StringBuilder condBuilder = new StringBuilder(" r.goods.supplierId = s.id and r.order.status='PAID' and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
                 " and e.isCheatedOrder = true and r.order=o and o.userId=b.id and r.order.userType=models.accounts.AccountType.RESALER ");
         if (StringUtils.isNotBlank(shortName)) {
@@ -148,7 +153,7 @@ public class CategorySalesReportCondition {
 
 
     public String getResalerFilter() {
-        StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId = s and r.order.userType=models.accounts.AccountType.RESALER " +
+        StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId = s.id and r.order.userType=models.accounts.AccountType.RESALER " +
                 " and (r.order.status='PAID' or r.order.status='SENT')" +
                 " and r.goods.isLottery=false and r.order=o and o.userId=b.id" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED ");
@@ -224,7 +229,7 @@ public class CategorySalesReportCondition {
     }
 
     public String getRefundFilter() {
-        StringBuilder condBuilder = new StringBuilder(" where e.orderItems.goods.supplierId = s and e.status=:status and e.goods.isLottery=false" +
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems.goods.supplierId = s.id and e.status=:status and e.goods.isLottery=false" +
                 " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
         paramMap1.put("status", ECouponStatus.REFUND);
         if (StringUtils.isNotBlank(shortName)) {
@@ -262,7 +267,7 @@ public class CategorySalesReportCondition {
     }
 
     public String getFilterRefundResaler() {
-        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.orderItems.goods.supplierId = s and e.status=:status and e.goods.isLottery=false" +
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.orderItems.goods.supplierId = s.id and e.status=:status and e.goods.isLottery=false" +
                 " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
                 " and r.order=o and o.userId=b.id and r.order.userType=models.accounts.AccountType.RESALER ");
         paramMap1.put("status", ECouponStatus.REFUND);
@@ -307,6 +312,57 @@ public class CategorySalesReportCondition {
 
     public Map<String, Object> getParamMap1() {
         return paramMap1;
+    }
+
+    public void setDescFields() {
+        // DESC 的值表示升降序，含11位，代表11个排序字段， 1 为升序， 2 为降序， 0 为不排序
+        // 当无排序参数时，初始化 000002000000
+        String orderBy = "";
+        if (desc == null) {
+            desc = "02000000";
+        }
+        // 获取最新的desc值
+        String[] descs = desc.split(",");
+        desc = descs[descs.length - 1].trim();
+        if (isValidDesc(desc)) {
+            int index = 0;
+            // 定位排序属性
+            for (int i = 0; i < desc.length(); i++) {
+                if (desc.charAt(i) != '0') {
+                    index = i;
+                    orderByIndex = i;
+                    break;
+                }
+            }
+            if (desc.charAt(index) == '1') {
+                orderByType = "1";
+            } else {
+                orderByType = "2";
+            }
+        } else {
+            orderBy = "52";
+        }
+    }
+
+    public static boolean isValidDesc(String desc) {
+        if (desc.length() != 8) {
+            return false;
+        }
+        int countZero = 0;
+        for (int i = 0; i < desc.length(); i++) {
+            if (desc.charAt(i) == '0') {
+                countZero++;
+            }
+        }
+        if (countZero != 7) {
+            return false;
+        }
+        for (int i = 0; i < desc.length(); i++) {
+            if (desc.charAt(i) != '0' && desc.charAt(i) != '1' && desc.charAt(i) != '2') {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

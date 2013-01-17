@@ -4,6 +4,7 @@ import models.accounts.AccountType;
 import models.supplier.Supplier;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -21,6 +22,11 @@ public class ChannelCategoryReportCondition implements Serializable {
     private Map<String, Object> paramMap = new HashMap<>();
     public Boolean hasSeeReportProfitRight;
     public Long operatorId;
+    //排序字段
+    public String desc;
+    public int orderByIndex;
+    public String orderByType;
+    Map<String, BigDecimal> comparedMap = new HashMap<>();
 
     public String getFilterPaidAt(AccountType type) {
         StringBuilder condBuilder = new StringBuilder("and r.order.status='PAID' " +
@@ -189,5 +195,55 @@ public class ChannelCategoryReportCondition implements Serializable {
         return paramMap;
     }
 
+    public void setDescFields() {
+        // DESC 的值表示升降序，含11位，代表11个排序字段， 1 为升序， 2 为降序， 0 为不排序
+        // 当无排序参数时，初始化 2000000
+        String orderBy = "";
+        if (desc == null) {
+            desc = "2000000";
+        }
+        // 获取最新的desc值
+        String[] descs = desc.split(",");
+        desc = descs[descs.length - 1].trim();
+        if (isValidDesc(desc)) {
+            int index = 0;
+            // 定位排序属性
+            for (int i = 0; i < desc.length(); i++) {
+                if (desc.charAt(i) != '0') {
+                    index = i;
+                    orderByIndex = i;
+                    break;
+                }
+            }
+            if (desc.charAt(index) == '1') {
+                orderByType = "1";
+            } else {
+                orderByType = "2";
+            }
+        } else {
+            orderBy = "52";
+        }
+    }
+
+    public static boolean isValidDesc(String desc) {
+        if (desc.length() != 7) {
+            return false;
+        }
+        int countZero = 0;
+        for (int i = 0; i < desc.length(); i++) {
+            if (desc.charAt(i) == '0') {
+                countZero++;
+            }
+        }
+        if (countZero != 6) {
+            return false;
+        }
+        for (int i = 0; i < desc.length(); i++) {
+            if (desc.charAt(i) != '0' && desc.charAt(i) != '1' && desc.charAt(i) != '2') {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }

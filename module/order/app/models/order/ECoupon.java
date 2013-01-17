@@ -169,7 +169,7 @@ public class ECoupon extends Model {
 
     @Column(name = "is_freeze")
     /** 1：冻结 0：解冻*/
-    public int isFreeze;
+    public Integer isFreeze;
 
     @Column(name = "trigger_coupon_sn")
     public String triggerCouponSn;

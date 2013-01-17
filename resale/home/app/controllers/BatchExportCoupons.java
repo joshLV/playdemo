@@ -21,11 +21,11 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * Created with IntelliJ IDEA.
+ * 批量导出券
+ *
  * User: wangjia
  * Date: 12-11-21
  * Time: 上午11:24
- * To change this template use File | Settings | File Templates.
  */
 
 @With(SecureCAS.class)
