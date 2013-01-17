@@ -209,7 +209,7 @@ public class AccountSequenceUtil {
                 isChanged = true;
             }
             if (isChanged) {
-                System.out.println("----------- (" + (++i) + ") fix seq:" + accountSequence.id);
+//                System.out.println("----------- (" + (++i) + ") fix seq:" + accountSequence.id);
                 accountSequence.save();
                 if (i % 50 == 0) {
                     JPA.em().flush();

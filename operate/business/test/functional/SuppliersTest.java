@@ -12,6 +12,7 @@ import models.supplier.SupplierStatus;
 import operate.rbac.RbacLoader;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import play.Play;
 import play.data.validation.Error;
@@ -281,8 +282,13 @@ public class SuppliersTest extends FunctionalTest {
     }
 
     @Test
+    @Ignore
     public void testShowCode() {
-
+        SupplierCategory supplierCategory = FactoryBoy.create(SupplierCategory.class);
+        Http.Response response = GET("/suppliers/" + supplier.id + "/supplier_category/" + supplierCategory.id);
+        assertIsOk(response);
+        Supplier renderSupplier = (Supplier) renderArgs("supplier");
+        assertEquals(supplier.id, renderSupplier.id);
     }
 
     @Test
