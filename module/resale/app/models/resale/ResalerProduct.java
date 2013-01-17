@@ -16,7 +16,6 @@ import java.util.Date;
 @Table(name = "resaler_product")
 public class ResalerProduct extends Model {
 
-
     @Enumerated(EnumType.STRING)
     @Column(name = "partner")
     @Index(name = "partner_index")
@@ -37,9 +36,6 @@ public class ResalerProduct extends Model {
     @Column(name = "lock_version")
     public int lockVersion;
 
-    @Column(name = "created_at")
-    public Date createdAt;
-
     @Column(name = "creator_id")
     public Long creatorId;
 
@@ -52,6 +48,12 @@ public class ResalerProduct extends Model {
     @Transient
     public String lastModifier;
 
+    @Column(name = "created_at")
+    public Date createdAt;
+
+    @Column(name = "updated_at")
+    public Date updatedAt;
+
     /**
      * 第三方状态.
      */
@@ -60,6 +62,7 @@ public class ResalerProduct extends Model {
 
     public ResalerProduct() {
         this.createdAt = new Date();
+        this.updatedAt = new Date();
         this.partnerProductId = 0L;
     }
 }

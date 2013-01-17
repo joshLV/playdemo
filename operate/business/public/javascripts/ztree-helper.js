@@ -1,4 +1,6 @@
-function getAutoExpandAndSinglePathCallbacks(treeId) {
+//给定一个ztree的id 返回这个tree所对应的 构造单链条节点所需的callback函数
+//注：单链条 是指同一时间，一个tree只有一条路径是展开的
+function getSinglePathCallbacks(treeId) {
     var curExpandNode = null;
     function beforeExpand(treeId, treeNode) {
         var pNode = curExpandNode ? curExpandNode.getParentNode():null;
@@ -61,14 +63,47 @@ function getAutoExpandAndSinglePathCallbacks(treeId) {
         curExpandNode = treeNode;
     }
 
+    return {
+        beforeExpand: beforeExpand,
+        onExpand: onExpand,
+    }
+};
+//返回指定ztree所需要的单击自动展开callback函数
+function getAutoExpandCallbacks(treeId) {
     function onClick(e,treeId, treeNode) {
         var zTree = $.fn.zTree.getZTreeObj(treeId);
         zTree.expandNode(treeNode, null, null, null, true);
     }
     return {
-        beforeExpand: beforeExpand,
-        onExpand: onExpand,
         onClick: onClick
     }
-};
+}
+//传入一个node,和一个存储节点链表的数组
+function insertParentToChain(node, chain) {
+    if (!node.parentTId) return;
+    var parentNode = node.getParentNode()
+    var nodeIndex = chain.indexOf(node.id)
+    chain.splice(nodeIndex,0,parentNode.id)
+    insertParentToChain(parentNode, chain)
+}
+
+function buildTreeChain(nodes) {
+    var chain = [];
+    for(var i = 0; i < nodes.length; i ++ ) {
+        chain[chain.length] = nodes[i].id;
+        insertParentToChain(nodes[i], chain);
+    }
+    return chain;
+}
+
+function buildCheckedStr(nodes, sep) {
+    var str = "";
+    for(var i = 0; i < nodes.length; i ++ ) {
+        if (i != 0) {
+            str += sep;
+        }
+        str += nodes[i].id;
+    }
+    return str;
+}
 

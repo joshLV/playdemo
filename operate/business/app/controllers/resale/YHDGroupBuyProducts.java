@@ -32,12 +32,12 @@ import java.util.Map;
  */
 @With(OperateRbac.class)
 @ActiveNavigation("resale_partner_product")
-public class YHDGroupBuyProduct extends Controller {
+public class YHDGroupBuyProducts extends Controller {
     @ActiveNavigation("resale_partner_product")
     public static void showUpload(Long goodsId) {
         Goods goods = Goods.findById(goodsId);
 
-        List<YHDIdName> brands = YHDCategoryAPI.brands();
+        List<YHDIdName> brands = YHDCategoryAPI.brandsCache();
 
         render(goods, brands);
     }
@@ -66,13 +66,19 @@ public class YHDGroupBuyProduct extends Controller {
                 //保存记录
                 saveProductAndJournal(goods, operateUser, requestParams);
                 //上传主图
-                uploadMainImg(imgFile, relation.linkId);
+                try{
+                    uploadMainImg(imgFile, relation.linkId);
+                }catch (Exception e) {
+                    //ignore
+                    Logger.warn(e,"yihaodian upload main img failed");
+                }
             }
         }
-        render("resale/YHDGroupBuyProduct/result.html");
+        render("resale/YHDGroupBuyProducts/result.html");
     }
     //保存记录
     private static void saveProductAndJournal(Goods goods, OperateUser operateUser, Map<String, String> requestParams){
+        String jsonData = new Gson().toJson(requestParams);
         ResalerProduct product = new ResalerProduct();
         product.partner = OuterOrderPartner.YHD;
         product.partnerProductId = 0L;//对于一号店来说，这个没用的
@@ -86,9 +92,10 @@ public class YHDGroupBuyProduct extends Controller {
         ResalerProductJournal journal = new ResalerProductJournal();
         journal.product = product;
         journal.operatorId = operateUser.id;
-        journal.jsonData = new Gson().toJson(requestParams);
+        journal.jsonData = jsonData;
         journal.type = ResalerProductJournalType.CREATE;
         journal.remark = "上传商品";
+        journal.save();
     }
 
     //上传主图
@@ -123,7 +130,7 @@ public class YHDGroupBuyProduct extends Controller {
         if (id == null) {
             id = 0L;
         }
-        List<YHDProductCategory> categories = YHDCategoryAPI.productCategories(id, false);
+        List<YHDProductCategory> categories = YHDCategoryAPI.productCategoriesCache(id, false);
         StringBuilder jsonString = new StringBuilder("[");
         for (int i = 0 ; i < categories.size(); i ++) {
             YHDProductCategory category = categories.get(i);
@@ -151,7 +158,7 @@ public class YHDGroupBuyProduct extends Controller {
         if (id == null) {
             id = 0L;
         }
-        List<YHDMerchantCategory> categories = YHDCategoryAPI.merchantCategories(id, false);
+        List<YHDMerchantCategory> categories = YHDCategoryAPI.merchantCategoriesCache(id, false);
         StringBuilder jsonString = new StringBuilder("[");
         for (int i = 0 ; i < categories.size(); i ++) {
             YHDMerchantCategory category = categories.get(i);
@@ -179,7 +186,7 @@ public class YHDGroupBuyProduct extends Controller {
             Logger.info("goods not found");
             error("商品不存在");
         }
-        List<ResalerProduct> products = ResalerProduct.find("byGoodsAndPartner", goods, OuterOrderPartner.YHD).fetch();
+        List<ResalerProduct> products = ResalerProduct.find("goods = ? and partner = ? order by createdAt desc", goods, OuterOrderPartner.YHD).fetch();
         for (ResalerProduct product : products) {
             product.creator = ((OperateUser)OperateUser.findById(product.creatorId)).userName;
             product.lastModifier = ((OperateUser)OperateUser.findById(product.lastModifierId)).userName;
@@ -187,13 +194,4 @@ public class YHDGroupBuyProduct extends Controller {
         render(products);
     }
 
-    @ActiveNavigation("resale_partner_product")
-    public static void journal(Long productId) {
-        ResalerProduct product = ResalerProduct.findById(productId);
-        List<ResalerProductJournal> journals = ResalerProductJournal.find("byProduct", product).fetch();
-        for(ResalerProductJournal journal : journals) {
-            journal.operator = ((OperateUser)OperateUser.findById(journal.operatorId)).userName;
-        }
-        render(journals);
-    }
 }
