@@ -6,14 +6,12 @@ import models.admin.OperateUser;
 import models.order.ECoupon;
 import operate.rbac.RbacLoader;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -58,7 +56,7 @@ public class BatchFreezeCouponsTest extends FunctionalTest {
 
     @Test
     public void testBatchFreezeCoupons() {
-        assertEquals(0, coupon.isFreeze);
+        assertEquals(new Integer(0), coupon.isFreeze);
         Map<String, String> itemParams = new HashMap<>();
         itemParams.put("couponsFreezedId", coupon.id.toString());
         Http.Response response = POST("/coupons/batchfreeze/doing", itemParams);
@@ -68,7 +66,7 @@ public class BatchFreezeCouponsTest extends FunctionalTest {
         assertEquals(coupon.eCouponSn, couponSet.iterator().next().eCouponSn);
         assertEquals(coupon.id, couponSet.iterator().next().id);
         coupon.refresh();
-        assertEquals(1, coupon.isFreeze);
+        assertEquals(new Integer(1), coupon.isFreeze);
     }
 
 
