@@ -1,27 +1,24 @@
-SELECT MAX( id ) 
-FROM  `account_sequence`;
-
-INSERT INTO `reeb`.`account_sequence` (
-`created_at` ,
-`order_id` ,
-`remark` ,
-`sequence_flag` ,
-`serial_number` ,
-`trade_id` ,
-`account_id` ,
-`balance` ,
-`cash_balance` ,
-`change_amount` ,
-`trade_type` ,
-`uncash_balance` ,
-`promotion_balance` ,
-`promotion_change_amount` ,
-`settlement_status` ,
-`withdrawBill_id` ,
-`prepayment_id` ,
-`comment` ,
+INSERT INTO `reeb`.`account_sequence` (
+`created_at` ,
+`order_id` ,
+`remark` ,
+`sequence_flag` ,
+`serial_number` ,
+`trade_id` ,
+`account_id` ,
+`balance` ,
+`cash_balance` ,
+`change_amount` ,
+`trade_type` ,
+`uncash_balance` ,
+`promotion_balance` ,
+`promotion_change_amount` ,
+`settlement_status` ,
+`withdrawBill_id` ,
+`prepayment_id` ,
+`comment` ,
 `operated_by`)
-VALUES ('2012-05-28 10:50:50', '40', '充值', 'NOSTRO', '2012052810505098384680', '74', '48181', '-88.00', '-88.00', '-88.00', 'CHARGE', '0.00', '0.00', '0.00', 'UNCLEARED', NULL , NULL , NULL , NULL);
+VALUES ('2012-05-28 10:50:50', '40', '充值', 'NOSTRO', '2012052810505098384680', '74', '48181', '-88.00', '-88.00', '-88.00', 'CHARGE', '0.00', '0.00', '0.00', 'UNCLEARED', NULL , NULL , NULL , NULL);
 
 INSERT INTO  `reeb`.`account_sequence` (
 `created_at` ,
