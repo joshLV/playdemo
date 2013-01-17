@@ -18,7 +18,7 @@ import java.util.List;
  * Date: 12-6-20
  * Time: 上午11:09
  */
-@On("0 0 1 * * ?")  //每天凌晨执行,自动取消过期十天的未付款的订单
+@On("0 0 1 * * ?")  //每天凌晨执行,自动取消过期两天的未付款的订单
 public class CancelUnPaidOrderJob extends Job {
 
     @Override

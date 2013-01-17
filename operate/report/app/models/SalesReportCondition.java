@@ -68,8 +68,8 @@ public class SalesReportCondition implements Serializable {
                 orderByType = "desc";
             }
         } else {
-            // 一般排序，按创建时间
-            orderBy = "jobNumber";
+            // 一般排序，按总销售额
+            orderBy = "totalAmount";
         }
     }
 

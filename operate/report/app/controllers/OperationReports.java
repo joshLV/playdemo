@@ -22,7 +22,6 @@ import play.mvc.Controller;
 import play.mvc.With;
 import utils.PaginateUtil;
 
-import javax.lang.model.SourceVersion;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Collections;
@@ -223,6 +222,7 @@ public class OperationReports extends Controller {
         }
 
         condition.salesId = OperateRbac.currentUser().id;
+        condition.setDescFields();
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
 
         List<PeopleEffectCategoryReport> resultList = PeopleEffectCategoryReport.query(condition);
@@ -797,6 +797,7 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new PeopleEffectCategoryReportCondition();
         }
+        condition.setDescFields();
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "人效大类报表_" + System.currentTimeMillis() + ".xls");
         List<PeopleEffectCategoryReport> peopleEffectReportList = PeopleEffectCategoryReport.query(condition);
