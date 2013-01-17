@@ -224,7 +224,7 @@
                         coupon?.orderItems?.secKillGoods==null && coupon?.orderItems?.secKillGoodsItemId==null && coupon?.goods?.materialType== models.sales.MaterialType.ELECTRONIC}
                             <a class="red" href="javascript:applyRefund('${coupon.id}','${coupon.salePrice}','${coupon?.rebateValue}')" id="apply_${coupon.id}">申请退款</a>
                         #{/if}
-                        #{elseif coupon.status != models.order.ECouponStatus.REFUND}
+                        #{elseif coupon.status != models.order.ECouponStatus.REFUND && coupon.status != models.order.ECouponStatus.CONSUMED }
                             不可退款
                         #{/elseif}
                     </td>

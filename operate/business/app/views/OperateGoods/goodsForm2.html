@@ -46,7 +46,9 @@
                value="${goods?.noRefund}" ${goods?.noRefund?'checked':''}
             #{if !"add".equals(action)}
                onclick="return false;"
-            #{/if}/><span id="err-noRefund"></span>
+            #{/if}
+                />
+        <span id="err-noRefund"></span>
 
         不可退款&nbsp;&nbsp;
     </div>
@@ -76,10 +78,10 @@
 
     #{layout_operate.textField name:'goods.faceValue', value:goods?.faceValue?:"0", note:'元', required:true/}
     #{layout_operate.textField name:'goods.originalPrice', value:goods?.originalPrice?:"0",
-       note:'元', tip:'请严格按商务合同的采购价输入，不允许使用其它金额',
+    note:'元', tip:'请严格按商务合同的采购价输入，不允许使用其它金额',
     required:true/}
     #{layout_operate.textField name:'goods.salePrice', value:goods?.salePrice?:"0",
-        note:'元', tip:'不允许低于采购价（如有需要，请联系开发，不要自作主张去降低采购价！！)',
+    note:'元', tip:'不允许低于采购价（如有需要，请联系开发，不要自作主张去降低采购价！！)',
     required:true/}
 <div class="control-group">
     <label class="control-label"><span style="color: red; ">*</span>&{'goods.promoterPrice'}</label>
