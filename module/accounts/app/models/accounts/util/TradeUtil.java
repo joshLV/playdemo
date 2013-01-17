@@ -264,7 +264,7 @@ public class TradeUtil {
      * @param amount  提现金额
      * @return 新建的提现交易
      */
-    public static TradeBill createWithdrawTrade(Account account, BigDecimal amount) {
+    public static TradeBill createWithdrawTrade(Account account, BigDecimal amount, Long  withdrawBillId) {
         if (account == null) {
             throw new IllegalArgumentException("error while create withdraw trade: invalid account");
         }
@@ -281,6 +281,7 @@ public class TradeUtil {
         tradeBill.amount = tradeBill.balancePaymentAmount
                 .add(tradeBill.ebankPaymentAmount)
                 .add(tradeBill.uncashPaymentAmount);
+        tradeBill.withdrawBill.id = withdrawBillId;
 
         return tradeBill.save();
     }

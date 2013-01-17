@@ -1,12 +1,17 @@
 package models.accounts;
 
-import javax.persistence.*;
-import java.math.BigDecimal;
-
 import models.accounts.util.SerialNumberUtil;
 import play.db.jpa.Model;
 
-import java.util.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 交易流水
@@ -14,13 +19,13 @@ import java.util.*;
  * @author likang
  */
 @Entity
-@Table(name="trade_bill")
+@Table(name = "trade_bill")
 public class TradeBill extends Model {
 
     @Column(name = "serial_number")
     public String serialNumber;             //流水号
 
-    public BigDecimal amount;               //总金额
+    public BigDecimal amount = BigDecimal.ZERO;               //总金额
 
     @ManyToOne
     @JoinColumn(name = "from_account")
@@ -32,21 +37,25 @@ public class TradeBill extends Model {
 
     @Column(name = "order_id")
     public Long orderId;                    //订单编号，仅当付款对象是订单时有效
-    
+
+    @ManyToOne
+    @JoinColumn(name = "withdraw_bill_id")
+    public WithdrawBill withdrawBill;       //提现账单编号
+
     @Column(name = "ecoupon_sn")
-    public String eCouponSn;				//电子券券号
+    public String eCouponSn;                //电子券券号
 
     @Column(name = "balance_payment_amount")
-    public BigDecimal balancePaymentAmount; //余额支付金额
+    public BigDecimal balancePaymentAmount = BigDecimal.ZERO; //余额支付金额
 
     @Column(name = "ebank_payment_amount")
-    public BigDecimal ebankPaymentAmount;   //网银支付金额
+    public BigDecimal ebankPaymentAmount = BigDecimal.ZERO;   //网银支付金额
 
     @Column(name = "uncash_payment_amount")
-    public BigDecimal uncashPaymentAmount;  //不可支付、不可提现余额支付金额
+    public BigDecimal uncashPaymentAmount = BigDecimal.ZERO;  //不可支付、不可提现余额支付金额
 
     @Column(name = "promotion_payment_amount")
-    public BigDecimal promotionPaymentAmount;   //活动金余额支付金额
+    public BigDecimal promotionPaymentAmount = BigDecimal.ZERO;   //活动金余额支付金额
 
     @ManyToOne
     @JoinColumn(name = "payment_source")
@@ -68,24 +77,24 @@ public class TradeBill extends Model {
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_status")
     public TradeStatus tradeStatus;
-    
-    public TradeBill(){
-    	this.amount = BigDecimal.ZERO;
-    	this.balancePaymentAmount = BigDecimal.ZERO;
-    	this.ebankPaymentAmount = BigDecimal.ZERO;
+
+    public TradeBill() {
+        this.amount = BigDecimal.ZERO;
+        this.balancePaymentAmount = BigDecimal.ZERO;
+        this.ebankPaymentAmount = BigDecimal.ZERO;
         this.uncashPaymentAmount = BigDecimal.ZERO;
         this.promotionPaymentAmount = BigDecimal.ZERO;
-    	this.paymentSource = null;
-    	this.tradeType = null;
-    	this.tradeStatus = TradeStatus.UNPAID;
-    	
-    	this.fromAccount = null;
-    	this.toAccount = null;
-    	
-    	this.orderId = null;
-    	this.eCouponSn = null;
-    	
-    	
+        this.paymentSource = null;
+        this.tradeType = null;
+        this.tradeStatus = TradeStatus.UNPAID;
+
+        this.fromAccount = null;
+        this.toAccount = null;
+
+        this.orderId = null;
+        this.eCouponSn = null;
+
+
         this.createdAt = new Date();
         this.serialNumber = SerialNumberUtil.generateSerialNumber(this.createdAt);
 

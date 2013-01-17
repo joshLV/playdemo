@@ -12,11 +12,11 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
+ * 商户的商品分类.
+ *
  * User: wangjia
  * Date: 12-11-29
  * Time: 下午2:00
- * To change this template use File | Settings | File Templates.
  */
 @Entity
 @Table(name = "supplier_categories")
