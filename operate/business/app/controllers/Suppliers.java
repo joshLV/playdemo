@@ -255,7 +255,7 @@ public class Suppliers extends Controller {
         redirectUrl(page);
     }
 
-    public static void showCode(Long id, Long supplierCategoryId) {
+    public static void updateCode(Long id, Long supplierCategoryId) {
         Supplier supplier = Supplier.findById(id);
         SupplierCategory supplierCategory = SupplierCategory.findById(supplierCategoryId);
         if (supplier != null && supplierCategory != null && supplier.supplierCategory.id != supplierCategoryId) {
