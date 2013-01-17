@@ -53,6 +53,14 @@
             });
         });
 
+        $('.fn-rank').click(function (ev) {
+            ev.preventDefault();
+            var rankStr = $(this).attr('data-rank');
+            $('#J_rank').val(rankStr);
+            $("#form").attr("action", "@{OperationReports.showPeopleEffectCategoryReport()}");
+            $("#form").attr("method", "get");
+            $('#form').submit();
+        });
     });
 
     function channelCategoryReportExcel() {
@@ -165,6 +173,23 @@
         margin-top: 20px;
     }
 
+    .table td {
+        vertical-align: middle;
+    }
+
+    .rank {
+        background-image: url(http://img.uhcdn.com/images/r/rank.png);
+        background-position: right 6px;
+        background-repeat: no-repeat;
+    }
+
+    .rank-asc {
+        background-position: right -15px;
+    }
+
+    .rank-desc {
+        background-position: right -36px;
+    }
 </style>
 #{/set}
 
@@ -198,6 +223,7 @@
     </ul>
     <input type="hidden" id="condition_interval" name="condition.interval"/>
     <input type="hidden" id="condition_hasRight" name="hasRight" value="false"/>
+    <input type="hidden" id="J_rank" name="condition.desc" value="${condition?.desc}"/>
 </form>
 
 <div class="alert alert-success" style="margin-bottom: 10px;">
@@ -211,7 +237,7 @@
     件)
 <br/>
 &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;
-毛利率：<b>${(summary?.grossMargin?:0).format('#')}%</b>
+毛利率：<b>${(summary?.grossMargin?:0).format('#0.00')}%</b>
 净利润：<b>
 
 #{if summary.profit != null && summary.profit!=0}
@@ -226,18 +252,20 @@
 
 <table class="table table-striped table-bordered table-condensed" id="tab">
     <thead>
-    <th>工号</th>
+    #{layout_operate.sortField name:'工号', descField:condition?.desc, desc:'100000',asc:'200000'/}
     <th>姓名</th>
     <th>类别编码</th>
     <th>类别名称</th>
-    <th>售出券数量/金额</th>
+    #{layout_operate.sortField name:'售出券数量/金额', descField:condition?.desc, desc:'010000',asc:'020000'/}
     <th>售出实物数量/金额</th>
-    <th>退款券数量/金额</th>
-    <th>退款实物数量/金额</th>
-    <th>消费券数量/金额</th>
+    *{#{layout_operate.sortField name:'售出实物数量/金额', descField:condition?.desc, desc:'001000000',asc:'002000000'/}}*
+    #{layout_operate.sortField name:'退款券数量/金额', descField:condition?.desc, desc:'001000',asc:'002000'/}
+    *{<th>退款实物数量/金额</th>}*
+    *{#{layout_operate.sortField name:'退款实物数量/金额', descField:condition?.desc, desc:'000010000',asc:'000020000'/}}*
+    #{layout_operate.sortField name:'消费券数量/金额', descField:condition?.desc, desc:'000100',asc:'000200'/}
     #{if hasSeeReportProfitRight == true}
-    <th>毛利率</th>
-    <th>净利润</th>
+        #{layout_operate.sortField name:'毛利率', descField:condition?.desc, desc:'000010',asc:'000020'/}
+        #{layout_operate.sortField name:'净利润', descField:condition?.desc, desc:'000001',asc:'000002'/}
     #{/if}
     </thead>
 #{set i:0/}
@@ -249,8 +277,7 @@
     }%
 #{paginate.list items:reportPage, as:'report'}
 
-    <tr>#{if report?.operateUser?.jobNumber == '8807'}
-    #{/if}
+    <tr>
         #{if report?.code != "999"}
             <td>${report?.operateUser?.jobNumber}</td>
             <td>${report?.operateUser?.userName}</td>
@@ -264,55 +291,64 @@
                                          style="text-align:right">
             #{if report?.code == "999"}
                 <a href="${baseUrl}/coupons?condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}"
-
-                   target="_blank">${report?.buyNumber}</a>
+                   target="_blank">${report?.totalNumber?:0}</a>
                 /
                 <a href="${baseUrl}/coupons?condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}"
-                   target="_blank">${report?.totalAmount?.formatCurrency('CNY')}</a>
+                   target="_blank">${report?.totalAmount==null ?'￥0.00':report?.totalAmount?.formatCurrency('CNY')}</a>
             #{/if}
             #{else}
-            ${report?.buyNumber} / ${report?.salePrice?.formatCurrency('CNY')}
+                <a href="${baseUrl}/coupons?condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}&condition.categoryCode=${report?.code}"
+                   target="_blank">${report?.buyNumber} / ${report?.salePrice?.formatCurrency('CNY')}</a>
             #{/else}
         </td>
         <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}
                                          style="text-align:right">
-        ${report?.realBuyNumber}
-            / ${report?.realSalePrice == null ?'￥0.00':report?.realSalePrice?.formatCurrency('CNY')}
+            #{if report?.code == "999"}
+            ${report?.totalRealBuyNumber}
+                / ${report?.totalRealSalePrice == null ?'￥0.00':report?.totalRealSalePrice?.formatCurrency('CNY')}
+            #{/if}
+            #{else}
+            ${report?.realBuyNumber}
+                / ${report?.realSalePrice == null ?'￥0.00':report?.realSalePrice?.formatCurrency('CNY')}
+            #{/else}
         </td>
         <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}
                                          style="text-align:right">
             #{if report?.code == "999"}
-                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}"
-                   target="_blank">${report?.refundNumber}</a>
+                <a href="${baseUrl}/coupons?condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}"
+                   target="_blank">${report?.totalRefundNumber}</a>
                 /
-                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}"
+                <a href="${baseUrl}/coupons?condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}"
                    target="_blank">${report?.totalRefundPrice == null ?'￥0.00':report?.totalRefundPrice?.formatCurrency('CNY')}</a>
             #{/if}
             #{else}
-            ${report?.refundNumber} / ${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}
+                <a href="${baseUrl}/coupons?condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}&condition.categoryCode=${report?.code}"
+                   target="_blank"> ${report?.refundNumber}
+                    / ${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}</a>
             #{/else}
         </td>
-        <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}
-                                         style="text-align:right">
-        </td>
+    *{<td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}}*
+    *{style="text-align:right">}*
+    *{</td>}*
         <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}
                                          style="text-align:right">
             #{if report?.code == "999"}
-                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}"
-                   target="_blank">${report?.consumedNumber}</a>
+                <a href="${baseUrl}/coupons?condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}"
+                   target="_blank">${report?.totalConsumedNumber}</a>
                 /
-                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}"
+                <a href="${baseUrl}/coupons?condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}"
                    target="_blank">${report?.totalConsumedPrice == null ?'￥0.00':report?.totalConsumedPrice?.formatCurrency('CNY')}   </a>
             #{/if}
             #{else}
-            ${report?.consumedNumber}
-                / ${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}
+                <a href="${baseUrl}/coupons?condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}&condition.categoryCode=${report?.code}"
+                   target="_blank"> ${report?.consumedNumber}
+                    / ${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')} </a>
             #{/else}
         </td>
         #{if hasSeeReportProfitRight == true}
             <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}
                                              style="text-align:right">
-            ${(report?.grossMargin?:0).format('#')}%</td>
+            ${(report?.grossMargin?:0).format('#0.00')}%</td>
             <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}
                                              style="text-align:right">
                 #{if report?.code == "999"}

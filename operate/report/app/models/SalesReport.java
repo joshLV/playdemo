@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.*;
-import java.lang.*;
 
 /**
  * 销售报表
@@ -724,7 +722,7 @@ public class SalesReport implements Comparable<SalesReport> {
             totalSalePrice = totalSalePrice.add(item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount);
         }
         if (totalSalePrice.compareTo(BigDecimal.ZERO) != 0) {
-            grossMargin = totalSalePrice.subtract(totalCost).divide(totalSalePrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+            grossMargin = totalSalePrice.subtract(totalCost).divide(totalSalePrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
         return new SalesReport(totalAmount, refundAmount, consumedAmount, netProfit, grossMargin, totalBuyNumber, netSalesAmount);
     }
