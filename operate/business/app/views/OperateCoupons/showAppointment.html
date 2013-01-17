@@ -16,6 +16,9 @@
             <span style="font-weight:bold">备注：</span>
             ${coupon.appointmentRemark}
         </p>
+        <p>
+            <a href="/coupons?condition.status=UNCONSUMED&condition.isOrder=true" class="btn btn-large btn-primary">继续预约</a>
+        </p>
     #{/if}
     #{else}
         #{if err}
