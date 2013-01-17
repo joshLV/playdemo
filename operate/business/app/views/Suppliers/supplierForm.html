@@ -18,7 +18,7 @@ note:'.' + baseDomain + ' (只能是字母、数字、下划线，且长度限�
 *{value="${supplier?.supplierCategory?.id}">}*
 #{/if}
 #{if "edit".equals(action) && hasSupplierCodeEditPermission == true}
-    #{include '/Suppliers/showCode.html'/}
+    #{include '/Suppliers/updateCode.html'/}
 #{/if}
 
 #{layout_operate.textField name:'supplier.userName', value:supplier?.userName/}
