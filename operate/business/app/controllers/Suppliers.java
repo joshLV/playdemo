@@ -15,6 +15,7 @@ import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
+import play.data.validation.Error;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
@@ -210,6 +211,9 @@ public class Suppliers extends Controller {
     public static void withdrawAccountCreateAndUpdate(@Valid WithdrawAccount withdrawAccount, Long supplierId) {
         if (Validation.hasErrors()) {
             renderArgs.put("withdrawAccount", withdrawAccount);
+            for (Error error : Validation.errors()) {
+                System.out.println(error.getKey() + ":" + error.message());
+            }
             Validation.keep();
             edit(supplierId);
         }
@@ -225,7 +229,6 @@ public class Suppliers extends Controller {
         WithdrawAccount withdrawAccount = WithdrawAccount.findById(id);
         if (withdrawAccount != null) {
             withdrawAccount.delete();
-            System.out.println("WithdrawAccount deleted:"+id);
         }
         edit(supplierId);
     }
