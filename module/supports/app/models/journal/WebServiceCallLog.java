@@ -1,21 +1,18 @@
 package models.journal;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import com.uhuila.common.util.DateUtil;
+import org.apache.commons.lang.StringUtils;
+import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.apache.commons.lang.StringUtils;
-
-import play.db.jpa.Model;
-import play.modules.paginate.JPAExtPaginator;
-
-import com.uhuila.common.util.DateUtil;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 记录基于Http的服务调用日志.
@@ -25,6 +22,8 @@ import com.uhuila.common.util.DateUtil;
 @Entity
 @Table(name = "ws_call_logs")
 public class WebServiceCallLog extends Model {
+
+    private static final long serialVersionUID = 7063232063912330652L;
 
     @Column(name = "call_type", length = 250)
     public String callType;
