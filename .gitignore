@@ -34,3 +34,4 @@ module/sales/conf/test/solr/goods/collection1/data/
 */modules
 */lib
 .idea
+precompiled

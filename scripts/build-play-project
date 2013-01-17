@@ -86,6 +86,7 @@ cmd =<<END
   find . -name "[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*" -exec rm "{}" \\;
   #{play_home}play clean
   #{play_home}play deps --forProd --forceCopy --%prod
+  #{play_home}play precompile 
   rm -f conf/version.conf
   echo "build.time=#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}" >> conf/version.conf
   echo "version=$BUILD_VERSION" >> conf/version.conf
