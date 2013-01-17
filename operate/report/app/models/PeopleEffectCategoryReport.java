@@ -606,7 +606,6 @@ public class PeopleEffectCategoryReport {
         item.amountCommissionAmount = totalCommission;
         BigDecimal goodsCost = item.goodsCost == null ? BigDecimal.ZERO : item.goodsCost;
         BigDecimal totalSalesPrice = (item.salePrice == null ? BigDecimal.ZERO : item.salePrice).add(item.realSalePrice == null ? BigDecimal.ZERO : item.realSalePrice);
-        if (item.operateUser.jobNumber.equals("8803"))
         item.profit = totalSalesPrice.subtract(totalCommission).subtract(goodsCost);
     }
 
