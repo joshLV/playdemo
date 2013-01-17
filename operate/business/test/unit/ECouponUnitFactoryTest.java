@@ -13,7 +13,6 @@ import org.junit.Test;
 import play.test.UnitTest;
 
 /**
- * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-21
  * Time: 上午9:16

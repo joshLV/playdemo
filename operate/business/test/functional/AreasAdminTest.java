@@ -23,11 +23,9 @@ import java.util.Map;
 
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-11-9
  * Time: 下午1:53
- * To change this template use File | Settings | File Templates.
  */
 public class AreasAdminTest extends FunctionalTest {
     Area area;

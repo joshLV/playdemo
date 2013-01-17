@@ -8,11 +8,9 @@ import models.sales.Goods;
 import util.DateHelper;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-10-30
  * Time: 下午2:20
- * To change this template use File | Settings | File Templates.
  */
 public class CartFactory extends ModelFactory<Cart> {
     @Override

@@ -1,11 +1,9 @@
 package models.sales;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-9-4
  * Time: 上午10:05
- * To change this template use File | Settings | File Templates.
  */
 public enum ConsultType {
       ORDERCONSULT,     //订购咨询

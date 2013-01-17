@@ -20,11 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-8-21
  * Time: 下午3:34
- * To change this template use File | Settings | File Templates.
  */
 public class SecKillGoodsTest extends FunctionalTest {
 

@@ -10,11 +10,9 @@ import java.text.DecimalFormat;
 import java.util.Date;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-12-10
  * Time: 上午9:55
- * To change this template use File | Settings | File Templates.
  */
 public class CashCouponFactory extends ModelFactory<CashCoupon> {
 

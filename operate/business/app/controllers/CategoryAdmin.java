@@ -13,11 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-10-25
  * Time: 上午10:14
- * To change this template use File | Settings | File Templates.
  */
 @With(OperateRbac.class)
 @ActiveNavigation("category_admin_index")

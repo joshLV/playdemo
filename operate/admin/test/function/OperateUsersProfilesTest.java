@@ -19,11 +19,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-11-30
  * Time: 上午9:33
- * To change this template use File | Settings | File Templates.
  */
 public class OperateUsersProfilesTest extends FunctionalTest {
     OperateUser operateUser;

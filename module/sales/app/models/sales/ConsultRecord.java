@@ -15,11 +15,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-9-4
  * Time: 上午10:33
- * To change this template use File | Settings | File Templates.
  */
 @Entity
 @Table(name = "consult_record")

@@ -12,11 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-8
  * Time: 下午3:30
- * To change this template use File | Settings | File Templates.
  */
 public class PointGoodsOrderCondition {
     public Map<String, Object> paramsMap = new HashMap<>();

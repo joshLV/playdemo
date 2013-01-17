@@ -11,11 +11,9 @@ import java.io.File;
 import java.util.HashMap;
 
 /**
- * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-7
  * Time: 下午3:29
- * To change this template use File | Settings | File Templates.
  */
 public class PGUserQuestionFuncTest extends FunctionalTest {
     PointGoods pointGoods;

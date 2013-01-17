@@ -11,11 +11,9 @@ import java.text.DecimalFormat;
 import java.util.Date;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 13-1-5
  * Time: 上午9:45
- * To change this template use File | Settings | File Templates.
  */
 public class VoucherFactory extends ModelFactory<Voucher> {
     @Override

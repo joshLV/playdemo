@@ -6,7 +6,6 @@ import models.consumer.UserInfo;
 import java.util.Date;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-9-26
  * Time: 下午2:16

@@ -11,7 +11,6 @@ import util.DateHelper;
 import java.util.Date;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-8-23
  * Time: 上午10:06

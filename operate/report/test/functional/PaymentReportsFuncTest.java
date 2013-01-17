@@ -13,11 +13,9 @@ import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
 /**
- * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-24
  * Time: 下午4:21
- * To change this template use File | Settings | File Templates.
  */
 public class PaymentReportsFuncTest extends FunctionalTest {
 

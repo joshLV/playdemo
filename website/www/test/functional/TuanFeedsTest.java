@@ -21,11 +21,9 @@ import factory.FactoryBoy;
 import util.DateHelper;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-9-29
  * Time: 上午11:06
- * To change this template use File | Settings | File Templates.
  */
 public class TuanFeedsTest extends FunctionalTest {
     UserInfo userInfo;

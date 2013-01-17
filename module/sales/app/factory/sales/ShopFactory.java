@@ -12,7 +12,6 @@ import factory.ModelFactory;
 import factory.annotation.Factory;
 
 /**
- * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-20
  * Time: 下午5:26

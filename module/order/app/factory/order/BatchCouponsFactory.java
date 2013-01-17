@@ -11,11 +11,9 @@ import java.util.Date;
 import java.util.LinkedList;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-11-23
  * Time: 下午3:23
- * To change this template use File | Settings | File Templates.
  */
 public class BatchCouponsFactory extends ModelFactory<BatchCoupons> {
     @Override

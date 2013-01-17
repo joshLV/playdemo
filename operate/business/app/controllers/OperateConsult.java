@@ -15,11 +15,9 @@ import play.mvc.With;
 import java.text.SimpleDateFormat;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-9-24
  * Time: 下午12:37
- * To change this template use File | Settings | File Templates.
  */
 @With(OperateRbac.class)
 @ActiveNavigation("crm_search_consumers")

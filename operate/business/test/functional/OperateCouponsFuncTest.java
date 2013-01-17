@@ -26,11 +26,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-22
  * Time: 上午10:29
- * To change this template use File | Settings | File Templates.
  */
 public class OperateCouponsFuncTest extends FunctionalTest {
     OperateUser user;

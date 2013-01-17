@@ -14,11 +14,9 @@ import factory.FactoryBoy;
 
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-8-22
  * Time: 上午11:31
- * To change this template use File | Settings | File Templates.
  */
 public class SecKillGoodsControllerTest extends FunctionalTest {
 

@@ -17,11 +17,9 @@ import java.util.HashSet;
 import static util.DateHelper.afterDays;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-10-12
  * Time: 下午3:42
- * To change this template use File | Settings | File Templates.
  */
 public class GoodsHistoryFactory extends ModelFactory<GoodsHistory> {
     @Override

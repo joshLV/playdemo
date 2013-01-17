@@ -11,11 +11,9 @@ import play.libs.Mail;
 import play.test.FunctionalTest;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-10-24
  * Time: 下午1:27
- * To change this template use File | Settings | File Templates.
  */
 public class CustomerRemarkMailsTest extends FunctionalTest {
     Order order;

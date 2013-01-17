@@ -18,11 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
  * User: Juno
  * Date: 12-7-26
  * Time: 上午11:25
- * To change this template use File | Settings | File Templates.
  */
 public class FriendsLinksFunctionalTest extends FunctionalTest {
     FriendsLink friendsLink;

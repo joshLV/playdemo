@@ -29,11 +29,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
  * User:yjy
  * Date: 12-8-2
  * Time: 上午9:38
- * To change this template use File | Settings | File Templates.
  */
 public class ResaleSalesReportUnitTest extends UnitTest {
     Resaler resaler;

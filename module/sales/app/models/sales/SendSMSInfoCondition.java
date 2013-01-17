@@ -8,11 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-9-7
  * Time: 下午2:43
- * To change this template use File | Settings | File Templates.
  */
 public class SendSMSInfoCondition implements Serializable {
 

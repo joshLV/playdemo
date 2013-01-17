@@ -14,11 +14,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-10-24
  * Time: 下午2:06
- * To change this template use File | Settings | File Templates.
  */
 public class TuanCategoryMailsTest extends FunctionalTest {
 

@@ -12,11 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-10-22
  * Time: 下午7:29
- * To change this template use File | Settings | File Templates.
  */
 public class GoodsUnPublishedPlatformTest extends UnitTest {
 

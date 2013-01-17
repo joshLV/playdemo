@@ -10,11 +10,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-9-11
  * Time: 上午10:13
- * To change this template use File | Settings | File Templates.
  */
 @Entity
 @Table(name = "member_call_bind")

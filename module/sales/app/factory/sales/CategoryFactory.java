@@ -14,11 +14,9 @@ import java.util.Date;
 import static util.DateHelper.afterDays;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-8-23
  * Time: 下午12:03
- * To change this template use File | Settings | File Templates.
  */
 public class CategoryFactory extends ModelFactory<Category> {
     @Override

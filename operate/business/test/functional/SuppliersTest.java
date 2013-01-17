@@ -16,11 +16,9 @@ import play.vfs.VirtualFile;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-10-11
  * Time: 下午1:53
- * To change this template use File | Settings | File Templates.
  */
 public class SuppliersTest extends FunctionalTest {
     Supplier supplier;

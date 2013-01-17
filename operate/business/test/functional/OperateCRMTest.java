@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-9-25
  * Time: 下午3:06

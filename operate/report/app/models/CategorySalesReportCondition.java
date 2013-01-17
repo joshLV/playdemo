@@ -7,11 +7,9 @@ import org.apache.commons.lang.StringUtils;
 import java.util.*;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-12-28
  * Time: 上午11:54
- * To change this template use File | Settings | File Templates.
  */
 public class CategorySalesReportCondition {
     public Date beginAt = com.uhuila.common.util.DateUtil.getBeginOfDay();

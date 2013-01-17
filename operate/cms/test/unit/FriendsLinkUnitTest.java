@@ -10,11 +10,9 @@ import play.modules.paginate.ModelPaginator;
 import play.test.UnitTest;
 
 /**
- * Created with IntelliJ IDEA.
  * User: Juno
  * Date: 12-7-26
  * Time: 上午9:53
- * To change this template use File | Settings | File Templates.
  */
 public class FriendsLinkUnitTest extends UnitTest {
     FriendsLink friendsLink;

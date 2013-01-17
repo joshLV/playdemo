@@ -18,11 +18,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-10-23
  * Time: 下午3:34
- * To change this template use File | Settings | File Templates.
  */
 public class BatchFreezeCouponsTest extends FunctionalTest {
     ECoupon coupon;

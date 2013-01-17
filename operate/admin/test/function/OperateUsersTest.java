@@ -19,10 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
  * User:yanjy
  * Time: 上午10:37
- * To change this template use File | Settings | File Templates.
  */
 public class OperateUsersTest extends FunctionalTest {
     OperateUser operateUser;

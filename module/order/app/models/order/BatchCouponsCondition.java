@@ -9,11 +9,9 @@ import java.util.Map;
 import org.jsoup.helper.StringUtil;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-11-21
  * Time: 下午3:25
- * To change this template use File | Settings | File Templates.
  */
 public class BatchCouponsCondition implements Serializable {
     public String name;

@@ -7,11 +7,9 @@ import models.sales.SendSMSInfo;
 import java.util.Date;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-9-26
  * Time: 下午5:19
- * To change this template use File | Settings | File Templates.
  */
 public class SendSMSInfoFactory extends ModelFactory<SendSMSInfo> {
     @Override

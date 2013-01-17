@@ -43,11 +43,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-10-11
  * Time: 下午3:55
- * To change this template use File | Settings | File Templates.
  */
 
 @Entity

@@ -15,11 +15,9 @@ import play.db.jpa.Model;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-9-4
  * Time: 下午2:18
- * To change this template use File | Settings | File Templates.
  */
 
 

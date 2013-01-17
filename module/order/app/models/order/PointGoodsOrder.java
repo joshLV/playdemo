@@ -20,11 +20,9 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-8
  * Time: 下午1:59
- * To change this template use File | Settings | File Templates.
  */
 
 @Entity

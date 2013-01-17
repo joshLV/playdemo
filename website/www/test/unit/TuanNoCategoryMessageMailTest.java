@@ -20,11 +20,9 @@ import java.util.List;
 import util.mq.*;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-11-26
  * Time: 下午3:59
- * To change this template use File | Settings | File Templates.
  */
 public class TuanNoCategoryMessageMailTest extends UnitTest {
     List<Goods> goodsList;

@@ -20,11 +20,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-27
  * Time: 上午11:51
- * To change this template use File | Settings | File Templates.
  */
 public class WithdrawReportUnitTest extends UnitTest {
 

@@ -10,11 +10,9 @@ import play.Play;
 import java.util.*;
 
 /**
- * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-3
  * Time: 下午4:12
- * To change this template use File | Settings | File Templates.
  */
 
 public class JifenTitle {

@@ -13,11 +13,9 @@ import play.mvc.With;
 //import models.order.OrdersCondition;
 
 /**
- * Created with IntelliJ IDEA.
  * User: clara
  * Date: 12-8-8
  * Time: 下午2:48
- * To change this template use File | Settings | File Templates.
  */
 
 

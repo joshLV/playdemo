@@ -23,11 +23,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-22
  * Time: 下午4:35
- * To change this template use File | Settings | File Templates.
  */
 @Ignore
 public class SupplierTotalSalesReportsFuncTest extends FunctionalTest {

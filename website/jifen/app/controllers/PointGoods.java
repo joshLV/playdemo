@@ -19,11 +19,9 @@ import java.util.List;
 
 /**
  *        积分商品控制器
- * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-3
  * Time: 上午10:01
- * To change this template use File | Settings | File Templates.
  */
 
 @With({SecureCAS.class, WebsiteInjector.class})
