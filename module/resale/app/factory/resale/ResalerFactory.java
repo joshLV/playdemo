@@ -9,6 +9,7 @@ import models.resale.ResalerStatus;
 import org.apache.commons.codec.digest.DigestUtils;
 import play.libs.Images;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -32,6 +33,7 @@ public class ResalerFactory extends ModelFactory<Resaler> {
         resaler.confirmPassword = "1";
         resaler.userName = "小李";
         resaler.postCode = "200041";
+        resaler.commissionRatio = BigDecimal.ZERO;
 
         //正常
         resaler.status = ResalerStatus.APPROVED;

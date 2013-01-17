@@ -82,10 +82,8 @@ public class OperationReports extends Controller {
         }
         List<SalesReport> resultList = SalesReport.query(condition, orderBy);
         Collections.sort(resultList);
-
         // 分页
         ValuePaginator<SalesReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
-
         // 汇总
         SalesReport summary = SalesReport.getNetSummary(resultList);
         render(condition, reportPage, hasSeeReportProfitRight, summary, desc);
@@ -569,7 +567,6 @@ public class OperationReports extends Controller {
         for (ChannelCategoryReport resaleSalesReport : consumerList) {
             resultList.add(resaleSalesReport);
         }
-
 
         for (ChannelCategoryReport report : resultList) {
 //            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));

@@ -6,16 +6,16 @@ import models.supplier.Supplier;
 import java.util.*;
 
 /**
- * Created with IntelliJ IDEA.
+ * 客流报表
+ * <p/>
  * User: wangjia
  * Date: 12-12-28
  * Time: 下午5:30
- * To change this template use File | Settings | File Templates.
  */
 public class ConsumerFlowReportCondition {
-    public Date beginAt = com.uhuila.common.util.DateUtil.getBeginOfDay();
-    public Date endAt = com.uhuila.common.util.DateUtil.getEndOfDay(new Date());
-    public String interval = "-1d";
+    public Date beginAt = com.uhuila.common.util.DateUtil.getBeforeDate(new Date(), 8);
+    public Date endAt = new Date();
+    public String interval = "7d";
     private Map<String, Object> paramMap = new HashMap<>();
     private Map<String, Object> paramMap1 = new HashMap<>();
     public Boolean hasSeeReportProfitRight;

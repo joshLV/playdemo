@@ -451,7 +451,7 @@ public class CategorySalesReport implements Comparable<CategorySalesReport> {
 
         //consumedAt coupon
         sql = "select new models.CategorySalesReport(s.supplierCategory.id,sum(r.salePrice-r.rebateValue/r.buyNumber),r.goods) " +
-                " from OrderItems r, ECoupon e,Supplier s where e.orderItems=r and r.goods.supplierId = s ";
+                " from OrderItems r, ECoupon e,Supplier s where e.orderItems=r and r.goods.supplierId = s.id ";
         groupBy = " group by s.supplierCategory.id,r.goods.id";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterConsumedAt() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
@@ -848,7 +848,7 @@ public class CategorySalesReport implements Comparable<CategorySalesReport> {
 
         //consumedAt coupon
         sql = "select new models.CategorySalesReport(s.supplierCategory.id,sum(r.salePrice-r.rebateValue/r.buyNumber),r.goods) " +
-                " from OrderItems r, ECoupon e,Supplier s where e.orderItems=r and r.goods.supplierId = s ";
+                " from OrderItems r, ECoupon e,Supplier s where e.orderItems=r and r.goods.supplierId = s.id ";
         groupBy = " group by s.supplierCategory.id,r.goods.id";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterConsumedAt() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
@@ -1099,7 +1099,7 @@ public class CategorySalesReport implements Comparable<CategorySalesReport> {
 
         //consumedAt coupon
         sql = "select new models.CategorySalesReport(s.supplierCategory.id,r.goods,sum(r.salePrice-r.rebateValue/r.buyNumber)) " +
-                " from OrderItems r, ECoupon e,Supplier s where e.orderItems=r and r.goods.supplierId = s ";
+                " from OrderItems r, ECoupon e,Supplier s where e.orderItems=r and r.goods.supplierId = s.id ";
         groupBy = " group by s.supplierCategory.id ";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterConsumedAt() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");

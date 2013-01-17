@@ -318,10 +318,10 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
 
         //sendAt real resaler
         sql = "select new models.ConsumerFlowReport(str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),count(r.order.id)" +
-                " ,sum(r.salePrice*r.buyNumber-r.rebateValue)/count(r.order.id),count(r.buyNumber),sum(r.salePrice*r.buyNumber-r.rebateValue)" +
-                ",sum(r.originalPrice),sum((r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio)/100" +
-                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum((r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio)/100-sum(r.originalPrice)" +
+                " ,sum(r.salePrice*r.buyNumber-r.rebateValue)/count(r.order.id),sum(r.buyNumber),sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+                ",sum(r.originalPrice*r.buyNumber),sum((r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio)/100" +
+                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice-r.rebateValue)*100" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum((r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio)/100-sum(r.originalPrice*r.buyNumber)" +
                 ") from OrderItems r,Order o,Resaler b where r.order=o and o.userId=b.id and ";
         groupBy = " group by str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt))  ";
         query = JPA.em()
@@ -333,10 +333,10 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
 
         //sendAt real consumer  (order not necessary)
         sql = "select new models.ConsumerFlowReport(r.order,str(year(r.order.paidAt))||'-'||str(month(r.order.paidAt))||'-'||str(day(r.order.paidAt)),count(r.order.id)," +
-                " sum(r.salePrice*r.buyNumber-r.rebateValue)/count(r.order.id),count(r.buyNumber),sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+                " sum(r.salePrice*r.buyNumber-r.rebateValue)/count(r.order.id),sum(r.buyNumber),sum(r.salePrice*r.buyNumber-r.rebateValue)" +
                 ",sum(r.originalPrice*r.buyNumber)" +
-                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
-                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice)" +
+                ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
+                ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
                 ") from OrderItems r where ";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterRealSendAt(AccountType.CONSUMER) + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
