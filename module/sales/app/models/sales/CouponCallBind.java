@@ -7,11 +7,9 @@ import play.db.jpa.Model;
 import javax.persistence.*;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-9-17
  * Time: 下午2:48
- * To change this template use File | Settings | File Templates.
  */
 @Entity
 @Table(name = "coupon_call_bind")

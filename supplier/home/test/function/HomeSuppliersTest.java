@@ -10,11 +10,9 @@ import play.mvc.Http;
 import play.test.FunctionalTest;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-11-27
  * Time: 下午5:51
- * To change this template use File | Settings | File Templates.
  */
 public class HomeSuppliersTest extends FunctionalTest {
     Supplier supplier;

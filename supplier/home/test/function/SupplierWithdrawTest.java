@@ -20,11 +20,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-11-27
  * Time: 下午3:52
- * To change this template use File | Settings | File Templates.
  */
 public class SupplierWithdrawTest extends FunctionalTest {
     Account account;

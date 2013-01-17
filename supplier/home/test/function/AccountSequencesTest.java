@@ -17,11 +17,9 @@ import play.test.FunctionalTest;
 import java.math.BigDecimal;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-11-27
  * Time: 下午5:40
- * To change this template use File | Settings | File Templates.
  */
 public class AccountSequencesTest extends FunctionalTest {
     Account account;

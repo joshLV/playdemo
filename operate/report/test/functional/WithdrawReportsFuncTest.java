@@ -15,11 +15,9 @@ import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
 /**
- * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-27
  * Time: 下午1:50
- * To change this template use File | Settings | File Templates.
  */
 public class WithdrawReportsFuncTest extends FunctionalTest {
 

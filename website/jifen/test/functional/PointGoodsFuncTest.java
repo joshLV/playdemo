@@ -8,7 +8,6 @@ import play.mvc.Http;
 import play.test.FunctionalTest;
 
 /**
- * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-7
  * Time: 下午1:41

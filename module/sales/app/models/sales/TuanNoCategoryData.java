@@ -3,11 +3,9 @@ package models.sales;
 import java.io.Serializable;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-11-26
  * Time: 上午11:44
- * To change this template use File | Settings | File Templates.
  */
 public class TuanNoCategoryData implements Serializable {
     public String name;

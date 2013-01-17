@@ -7,11 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-11-29
  * Time: 下午2:06
- * To change this template use File | Settings | File Templates.
  */
 public class SupplierCategoryCondition implements Serializable {
     public Map<String, Object> paramsMap = new HashMap<>();

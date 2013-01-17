@@ -19,11 +19,9 @@ import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-11-15
  * Time: 下午2:01
- * To change this template use File | Settings | File Templates.
  */
 public class DiscountCodeOrdersTest extends FunctionalTest {
     Goods goods1;

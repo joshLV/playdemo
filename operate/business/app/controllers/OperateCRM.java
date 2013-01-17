@@ -21,11 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-8-31
  * Time: 上午9:38
- * To change this template use File | Settings | File Templates.
  */
 
 @With(OperateRbac.class)

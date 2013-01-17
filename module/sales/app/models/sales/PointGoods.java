@@ -44,11 +44,9 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Created with IntelliJ IDEA.
  * User: clara
  * Date: 12-8-2
  * Time: 下午4:37
- * To change this template use File | Settings | File Templates.
  */
 
 

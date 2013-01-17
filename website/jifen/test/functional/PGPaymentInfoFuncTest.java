@@ -15,11 +15,9 @@ import play.test.FunctionalTest;
 import java.util.HashMap;
 
 /**
- * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-15
  * Time: 下午4:16
- * To change this template use File | Settings | File Templates.
  */
 public class PGPaymentInfoFuncTest extends FunctionalTest {
     User user;

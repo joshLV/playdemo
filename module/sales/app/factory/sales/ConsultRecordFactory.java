@@ -9,11 +9,9 @@ import models.sales.ConsultType;
 import java.util.Date;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-9-25
  * Time: 上午11:47
- * To change this template use File | Settings | File Templates.
  */
 public class ConsultRecordFactory  extends ModelFactory<ConsultRecord> {
     @Override

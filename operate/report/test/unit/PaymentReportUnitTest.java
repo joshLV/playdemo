@@ -20,11 +20,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-24
  * Time: 下午3:29
- * To change this template use File | Settings | File Templates.
  */
 public class PaymentReportUnitTest extends UnitTest {
 

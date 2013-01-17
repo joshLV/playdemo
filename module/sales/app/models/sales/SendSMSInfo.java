@@ -19,11 +19,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-9-6
  * Time: 上午11:44
- * To change this template use File | Settings | File Templates.
  */
 
 @Entity

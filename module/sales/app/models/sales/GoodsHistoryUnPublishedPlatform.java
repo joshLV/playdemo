@@ -5,11 +5,9 @@ import play.db.jpa.Model;
 import javax.persistence.*;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-10-11
  * Time: 下午5:05
- * To change this template use File | Settings | File Templates.
  */
 
 @Entity

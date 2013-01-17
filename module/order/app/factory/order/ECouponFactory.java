@@ -12,7 +12,6 @@ import models.sales.Goods;
 import java.math.BigDecimal;
 
 /**
- * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-20
  * Time: 下午7:33

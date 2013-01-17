@@ -17,11 +17,9 @@ import java.util.Map;
  * 积分商品查询条件.
  *
 /**
- * Created with IntelliJ IDEA.
  * User: clara
  * Date: 12-8-6
  * Time: 下午1:09
- * To change this template use File | Settings | File Templates.
  */
 
 

@@ -20,11 +20,9 @@ import java.util.Map;
 
 
 /**
- * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-6
  * Time: 下午2:04
- * To change this template use File | Settings | File Templates.
  */
 public class PointGoodsUserQuestion extends Controller {
 

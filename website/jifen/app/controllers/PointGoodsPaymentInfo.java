@@ -22,11 +22,9 @@ import java.util.List;
 import static play.Logger.warn;
 
 /**
- * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-14
  * Time: 上午10:47
- * To change this template use File | Settings | File Templates.
  */
 
 @With({SecureCAS.class, WebsiteInjector.class})

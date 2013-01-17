@@ -6,7 +6,6 @@ import factory.FactoryBoy;
 import factory.ModelFactory;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-8-23
  * Time: 下午1:52

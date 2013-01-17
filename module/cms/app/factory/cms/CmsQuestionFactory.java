@@ -6,11 +6,9 @@ import models.cms.CmsQuestion;
 import util.DateHelper;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-10-30
  * Time: 下午4:58
- * To change this template use File | Settings | File Templates.
  */
 public class CmsQuestionFactory extends ModelFactory<CmsQuestion> {
     @Override

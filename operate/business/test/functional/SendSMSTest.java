@@ -14,11 +14,9 @@ import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-9-26
  * Time: 下午5:15
- * To change this template use File | Settings | File Templates.
  */
 public class SendSMSTest extends FunctionalTest {
     SendSMSInfo smsInfo;

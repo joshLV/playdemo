@@ -24,11 +24,9 @@ import java.util.Arrays;
 import static play.Logger.warn;
 
 /**
- * Created with IntelliJ IDEA.
  * User: clara
  * Date: 12-8-2
  * Time: 下午5:17
- * To change this template use File | Settings | File Templates.
  */
 
 @With(OperateRbac.class)

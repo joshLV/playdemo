@@ -7,11 +7,9 @@ import org.junit.Test;
 import play.test.UnitTest;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-11-30
  * Time: 上午10:45
- * To change this template use File | Settings | File Templates.
  */
 public class SupplierCalculateCodeTest extends UnitTest {
     String originalCode;

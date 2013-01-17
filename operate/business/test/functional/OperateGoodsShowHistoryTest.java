@@ -15,11 +15,9 @@ import play.vfs.VirtualFile;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-10-12
  * Time: 下午3:31
- * To change this template use File | Settings | File Templates.
  */
 public class OperateGoodsShowHistoryTest extends FunctionalTest {
     Goods goods;

@@ -21,11 +21,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-21
  * Time: 上午11:26
- * To change this template use File | Settings | File Templates.
  */
 public class OperateVerifyPhonesFuncTest extends FunctionalTest {
 

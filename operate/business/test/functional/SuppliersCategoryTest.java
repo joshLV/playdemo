@@ -16,11 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-12-3
  * Time: 上午11:26
- * To change this template use File | Settings | File Templates.
  */
 public class SuppliersCategoryTest extends FunctionalTest {
     SupplierCategory supplierCategory;

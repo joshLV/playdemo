@@ -5,11 +5,9 @@ import factory.ModelFactory;
 import models.accounts.PaymentSource;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-10-29
  * Time: 下午5:11
- * To change this template use File | Settings | File Templates.
  */
 public class PaymentSourceFactory extends ModelFactory<PaymentSource> {
     @Override

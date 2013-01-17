@@ -8,11 +8,9 @@ import models.sales.Shop;
 import java.math.BigDecimal;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-8-20
  * Time: 下午5:10
- * To change this template use File | Settings | File Templates.
  */
 public class ShopDailyReportFactory extends ModelFactory<ShopDailyReport> {
     @Override

@@ -21,11 +21,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-11-23
  * Time: 下午3:21
- * To change this template use File | Settings | File Templates.
  */
 public class BatchExportCouponsTest extends FunctionalTest {
     Goods goods;

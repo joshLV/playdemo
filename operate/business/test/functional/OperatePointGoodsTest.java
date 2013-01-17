@@ -20,8 +20,6 @@ import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 
 /**
- * Created with IntelliJ IDEA. User: clara Date: 12-8-8 Time: 上午10:58 To change
- * this template use File | Settings | File Templates.
  */
 public class OperatePointGoodsTest extends FunctionalTest {
 

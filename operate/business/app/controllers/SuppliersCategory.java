@@ -15,11 +15,9 @@ import play.mvc.With;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-11-29
  * Time: 下午1:54
- * To change this template use File | Settings | File Templates.
  */
 
 @With(OperateRbac.class)

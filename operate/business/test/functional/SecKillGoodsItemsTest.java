@@ -25,11 +25,9 @@ import static util.DateHelper.afterDays;
 
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-8-21
  * Time: 下午6:47
- * To change this template use File | Settings | File Templates.
  */
 public class SecKillGoodsItemsTest extends FunctionalTest {
 

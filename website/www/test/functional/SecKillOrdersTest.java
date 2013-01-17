@@ -31,11 +31,9 @@ import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-8-22
  * Time: 下午3:03
- * To change this template use File | Settings | File Templates.
  */
 public class SecKillOrdersTest extends FunctionalTest {
     UserInfo userInfo;

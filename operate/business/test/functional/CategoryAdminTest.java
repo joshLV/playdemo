@@ -18,11 +18,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-10-26
  * Time: 下午5:39
- * To change this template use File | Settings | File Templates.
  */
 public class CategoryAdminTest extends FunctionalTest {
     Category category;

@@ -17,11 +17,9 @@ import factory.FactoryBoy;
 import java.util.Date;
 
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-11-9
  * Time: 上午9:48
- * To change this template use File | Settings | File Templates.
  */
 public class GoodsShowHistoryTest extends FunctionalTest {
     Shop shop;

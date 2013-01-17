@@ -21,11 +21,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-1
  * Time: 下午4:43
- * To change this template use File | Settings | File Templates.
  */
 public class PurchaseTaxReportsFuncTest extends FunctionalTest {
 
