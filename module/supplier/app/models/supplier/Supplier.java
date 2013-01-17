@@ -250,7 +250,7 @@ public class Supplier extends Model {
         deleted = DeletedStatus.UN_DELETED;
         status = SupplierStatus.NORMAL;
         createdAt = new Date();
-        this.getCode(this.supplierCategory);
+        this.setCode(this.supplierCategory);
         return super.create();
     }
 
@@ -258,7 +258,7 @@ public class Supplier extends Model {
         return String.format("%0" + digits + "d", Integer.valueOf(originalCode) + 1);
     }
 
-    public void getCode(SupplierCategory supplierCategory) {
+    public void setCode(SupplierCategory supplierCategory) {
         Supplier supplier = null;
         if (supplierCategory != null) {
             supplier = Supplier.find("supplierCategory.id=? and sequenceCode is not null order by sequenceCode desc", supplierCategory.id).first();
@@ -298,7 +298,7 @@ public class Supplier extends Model {
         sp.shopEndHour = supplier.shopEndHour;
         sp.updatedAt = new Date();
         if (sp.supplierCategory == null || (sp.supplierCategory != null && supplier.supplierCategory != null && supplier.supplierCategory.id != sp.supplierCategory.id)) {
-            sp.getCode(supplier.supplierCategory);
+            sp.setCode(supplier.supplierCategory);
         }
         sp.save();
         List<Goods> goodsList = Goods.find("supplierId=? and code is not null order by code desc", sp.id).fetch();

@@ -224,7 +224,7 @@ public class SupplierGoodsTest extends FunctionalTest {
     }
     
     @Test
-    public void getOffSale() {
+    public void testGetOffSale() {
         // 修改商品状态为下架状态
         Response response = PUT("/goods/" + goods.id + "/offSale", "text/html", "");
         assertStatus(302, response);
