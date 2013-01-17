@@ -8,6 +8,9 @@
     #{asset.js src:['/ztree/jquery.ztree.all-3.5.min.js'] /}
     <script src="@{'/public/javascripts/ztree-helper.js'}" type="text/javascript" charset="UTF-8"></script>
     <script type="text/javascript">
+
+        var categoryTreeCallbacks = {}
+        $.extend(categoryTreeCallbacks,getSinglePathCallbacks("categoryTree"),getAutoExpandCallbacks("categoryTree"))
         var categoryTreeSettings = {
             async: {
                 enable: true,
@@ -29,8 +32,11 @@
                 showLine: false,
                 dblClickExpand: false
             },
-            callback: getAutoExpandAndSinglePathCallbacks("categoryTree")
+            callback: categoryTreeCallbacks
         };
+
+        var merchantCategoryTreeCallbacks = {}
+        $.extend(merchantCategoryTreeCallbacks,getSinglePathCallbacks("merchantCategoryTree"),getAutoExpandCallbacks("merchantCategoryTree"))
         var merchantCategoryTreeSettings = {
             async: {
                 enable: true,
@@ -50,7 +56,7 @@
                 showLine: false,
                 dblClickExpand: false
             },
-            callback: getAutoExpandAndSinglePathCallbacks("merchantCategoryTree")
+            callback: merchantCategoryTreeCallbacks
         };
 
         $(function(){
@@ -64,15 +70,16 @@
             });
             $("#submit").click(function(){
                 var checkedCategory = $.fn.zTree.getZTreeObj("categoryTree").getCheckedNodes(true);
+                var categoryChain = buildTreeChain(checkedCategory);
 
                 var checkedMerchantCategory = $.fn.zTree.getZTreeObj("merchantCategoryTree").getCheckedNodes(true);
-                var checkedMerchantCategoryStr = "";
-                for(var i = 0; i < checkedMerchantCategory.length; i ++ ) {
-                    checkedMerchantCategoryStr += checkedMerchantCategory[i].id + ",";
-                }
+                var checkedMerchantCategoryStr = buildCheckedStr(checkedMerchantCategory, ",")
+                var merchantCategoryChain = buildTreeChain(checkedMerchantCategory);
 
                 $("#inputCategory").val(checkedCategory[0].id);
                 $("#inputMerchantCategory").val(checkedMerchantCategoryStr);
+                $("#categoryIdChains").val(categoryChain.join(","));
+                $("#merchantCategoryIdChains").val(merchantCategoryChain.join(","));
                 return true;
             });
         });
@@ -105,6 +112,7 @@
             <div class="controls">
                 <ul id="categoryTree" class="ztree"></ul>
                 <input name="categoryId" id="inputCategory" type="hidden">
+                <input name="categoryIdChains" id="categoryIdChains" type="hidden">
             </div>
         </div>
         <div class="control-group">
@@ -112,6 +120,7 @@
             <div class="controls">
                 <ul id="merchantCategoryTree" class="ztree"></ul>
                 <input name="merchantCategoryId" id="inputMerchantCategory" type="hidden">
+                <input name="merchantCategoryIdChains" id="merchantCategoryIdChains" type="hidden">
             </div>
         </div>
         <div class="control-group">

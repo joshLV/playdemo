@@ -1,0 +1,32 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'操作历史' /}
+#{include '/share/nav.html' /}
+#{set 'moreScripts'}
+<script>
+    var jsonData = ${journal.jsonData.raw()}
+    var trs = [];
+    for (var key in jsonData) {
+        trs.push("<tr><td>" + key + "</td><td>" + jsonData[key] + "</td></tr>");
+    }
+    document.getElementById("table_body").innerHTML = trs.join('');
+</script>
+#{/set}
+#{set 'moreStyles'}
+#{/set}
+<div class="body">
+    <legend>操作详情 </legend>
+
+<table class="table table-bordered">
+<thead>
+<tr>
+    <th>项</th>
+    <th>值</th>
+</tr>
+</thead>
+
+<tbody id="table_body">
+
+</tbody>
+</table>
+</div>
+

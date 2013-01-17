@@ -1,6 +1,8 @@
 package controllers;
 
+import models.admin.OperateUser;
 import models.resale.ResalerProduct;
+import models.resale.ResalerProductJournal;
 import models.sales.*;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
@@ -44,6 +46,7 @@ public class ResalePartnerProducts extends Controller {
                     p = new ArrayList<>();
                     partnerProducts.put(goods.id + product.partner.toString(), p);
                 }
+                System.out.println(goods.id + product.partner.toString() + ":" + product.goods.shortName + ":" + product.goods.code);
                 p.add(product);
             }
         }
@@ -54,6 +57,24 @@ public class ResalePartnerProducts extends Controller {
     private static int getPage() {
         String page = request.params.get("page");
         return StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+    }
+
+    @ActiveNavigation("resale_partner_product")
+    public static void journal(Long productId) {
+        ResalerProduct product = ResalerProduct.findById(productId);
+        List<ResalerProductJournal> journals = ResalerProductJournal.find("byProduct", product).fetch();
+        for(ResalerProductJournal journal : journals) {
+            journal.operator = ((OperateUser)OperateUser.findById(journal.operatorId)).userName;
+        }
+        render(journals);
+    }
+    @ActiveNavigation("resale_partner_product")
+    public static void journalJson(Long journalId) {
+        ResalerProductJournal journal = ResalerProductJournal.findById(journalId);
+        if (journal == null) {
+            notFound();
+        }
+        render(journal);
     }
 
 }

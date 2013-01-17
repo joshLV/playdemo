@@ -5,7 +5,7 @@
     #{asset.css src:['/ztree/zTreeStyle.css'] /}
 #{/set}
 <div class="body">
-    <legend>一号店上传商品：<a href="/goods/${goods.id}" target="_blank">
+    <legend>当当上传商品：<a href="/goods/${goods.id}" target="_blank">
         ${goods.shortName}</a>
     </legend>
     <form class="form-horizontal" method="POST" action="/resale-partner-products/jd/upload">
@@ -176,6 +176,8 @@ $(function(){
         allowFileManager:false
     });
 
+    var cityTreeCallbacks = {}
+    $.extend(cityTreeCallbacks,getSinglePathCallbacks("cityTree"),getAutoExpandCallbacks("cityTree"))
 
     var cityTreeSettings = {
         async: {
@@ -195,7 +197,7 @@ $(function(){
             showLine: false,
             dblClickExpand: false
         },
-        callback: getAutoExpandAndSinglePathCallbacks("cityTree")
+        callback: cityTreeCallbacks
     };
     $.fn.zTree.init($("#cityTree"), cityTreeSettings);
     $("#submit").click(function(){

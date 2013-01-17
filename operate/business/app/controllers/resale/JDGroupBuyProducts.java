@@ -28,7 +28,7 @@ import java.util.*;
  */
 @With(OperateRbac.class)
 @ActiveNavigation("resale_partner_product")
-public class JDGroupBuyProduct extends Controller{
+public class JDGroupBuyProducts extends Controller{
     @ActiveNavigation("resale_partner_product")
     public static void showUpload(Long goodsId) {
         Goods goods = Goods.findById(goodsId);
@@ -85,10 +85,6 @@ public class JDGroupBuyProduct extends Controller{
             Logger.info("goods not found");
             error("商品不存在");
         }
-    }
-
-    @ActiveNavigation("resale_partner_product")
-    public static void journal(Long productId) {
     }
 
     /**

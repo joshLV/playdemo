@@ -26,8 +26,7 @@ import java.util.Map;
  *         Date: 12-11-23
  */
 public class WubaUtil {
-    public static final String GATEWAY_URL = Play.configuration.getProperty("wuba.gateway_url", "http://eapi.58.com:8080/api/rest");
-//    public static final String GATEWAY_URL ="http://eapi.test.58v5.cn/api/rest";
+    public static final String GATEWAY_URL = Play.configuration.getProperty("wuba.gateway_url");
     public static final String WUBA_APP_KEY = Play.configuration.getProperty("wuba.wuba_app_key");
     public static final String YBQ_APP_KEY = Play.configuration.getProperty("wuba.ybq_app_key");
     public static final String SECRET_KEY = Play.configuration.getProperty("wuba.secret_key");
