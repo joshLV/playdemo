@@ -21,7 +21,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -146,43 +145,6 @@ public class WithdrawBill extends Model {
     }
 
     /**
-     * 同意提现操作.
-     *
-     * @param comment 备注.
-     */
-    private boolean agree(BigDecimal fee, String comment) {
-        if (this.status != WithdrawBillStatus.APPLIED) {
-            Logger.error("the withdraw bill has been processed already");
-            return false;
-        }
-
-        TradeBill tradeBill = TradeUtil.createWithdrawTrade(this.account, this.amount);
-        TradeUtil.success(tradeBill, "提现成功", SettlementStatus.CLEARED);
-
-        this.status = WithdrawBillStatus.SUCCESS;
-        this.comment = comment;
-        this.processedAt = new Date();
-        this.fee = fee;
-        this.save();
-        return true;
-    }
-
-    /**
-     * 结算操作，返回结算详细记录的笔数.
-     *
-     * @param fee
-     * @param comment
-     * @param withdrawDate
-     * @return public int agree(BigDecimal fee, String comment, Date withdrawDate, Prepayment prepayment) {
-    if (agree(fee, comment) && account.accountType == AccountType.SUPPLIER) { //同意提现操作
-    //标记所有详细销售记录为已结算
-    return AccountSequence.withdraw(account, withdrawDate, this, prepayment);
-    }
-    return 0;
-    }
-     */
-
-    /**
      * 结算操作，返回结算详细记录的笔数.
      *
      * @param fee
@@ -196,10 +158,17 @@ public class WithdrawBill extends Model {
             return 0;
         }
 
+        this.status = WithdrawBillStatus.SUCCESS;
+        this.comment = comment;
+        this.processedAt = new Date();
+        this.fee = fee;
+        this.save();
+
+
         if (prepayment == null) {
-            create2TradeBill(amount, BigDecimal.ZERO);
+            create2TradeBill(amount, BigDecimal.ZERO, id);
         } else if (amount.compareTo(prepayment.getBalance()) <= 0) { //可结算金额小于或等于预付款余额时，产生一笔TradeBill，只产生预付款结算记录
-            create2TradeBill(BigDecimal.ZERO, amount);
+            create2TradeBill(BigDecimal.ZERO, amount, id);
         } else {
             //如果预付款已过期
             System.out.println("prepayment:" + prepayment);
@@ -209,28 +178,22 @@ public class WithdrawBill extends Model {
             if (withdrawDate.after(endOfPrepaymentExpireAt)) {
                 BigDecimal cashSettledAmount = AccountSequence.getVostroAmount(account, endOfPrepaymentExpireAt);
                 if (cashSettledAmount.compareTo(BigDecimal.ZERO) <= 0) {
-                    create2TradeBill(amount.subtract(prepayment.getBalance()), prepayment.getBalance());
+                    create2TradeBill(amount.subtract(prepayment.getBalance()), prepayment.getBalance(), id);
                 } else {
                     //获取过期时间之前的所有的未结算的收入总额。
                     BigDecimal moreAmount = AccountSequence.getVostroAmountTo(account, endOfPrepaymentExpireAt);
                     moreAmount = moreAmount.compareTo(prepayment.getBalance()) > 0 ? moreAmount.subtract(prepayment.getBalance()) : BigDecimal.ZERO;
-                    create2TradeBill(cashSettledAmount.add(moreAmount), amount.subtract(cashSettledAmount).subtract(moreAmount));
+                    create2TradeBill(cashSettledAmount.add(moreAmount), amount.subtract(cashSettledAmount).subtract(moreAmount), id);
                 }
             } else {
                 //预付款未过期
-                create2TradeBill(amount.subtract(prepayment.getBalance()), prepayment.getBalance());
+                create2TradeBill(amount.subtract(prepayment.getBalance()), prepayment.getBalance(), id);
             }
         }
 
-        this.status = WithdrawBillStatus.SUCCESS;
-        this.comment = comment;
-        this.processedAt = new Date();
-        this.fee = fee;
-        this.save();
-
         if (account.accountType == AccountType.SUPPLIER) { //同意提现操作
             //标记所有详细销售记录为已结算
-            return AccountSequence.withdraw(account, withdrawDate, this, prepayment);
+            return AccountSequence.settle(account, withdrawDate, this, prepayment);
         }
         return 0;
     }
@@ -241,20 +204,21 @@ public class WithdrawBill extends Model {
      * @param cashSettledAmount
      * @param prepaymentSettledAmount
      */
-    private void create2TradeBill(BigDecimal cashSettledAmount, BigDecimal prepaymentSettledAmount) {
+    private void create2TradeBill(BigDecimal cashSettledAmount, BigDecimal prepaymentSettledAmount, Long withdrawBillId) {
         if (cashSettledAmount.compareTo(BigDecimal.ZERO) > 0) {
-            TradeBill prepaymentTradeBill = TradeUtil.createWithdrawTrade(this.account, cashSettledAmount);
+            TradeBill prepaymentTradeBill = TradeUtil.createWithdrawTrade(this.account, cashSettledAmount, withdrawBillId);
+
             TradeUtil.success(prepaymentTradeBill, "现金结算", SettlementStatus.CLEARED);
         }
         if (prepaymentSettledAmount.compareTo(BigDecimal.ZERO) > 0) {
-            TradeBill cashPayTradeBill = TradeUtil.createWithdrawTrade(this.account, prepaymentSettledAmount);
+            TradeBill cashPayTradeBill = TradeUtil.createWithdrawTrade(this.account, prepaymentSettledAmount, withdrawBillId);
             TradeUtil.success(cashPayTradeBill, "预付款结算", SettlementStatus.CLEARED);
         }
     }
 
 
     /**
-     * 结算操作，返回结算详细记录的笔数.
+     * 同意提现操作，返回结算详细记录的笔数.
      *
      * @param fee
      * @param comment
@@ -267,18 +231,18 @@ public class WithdrawBill extends Model {
             return 0;
         }
 
-        TradeBill tradeBill = TradeUtil.createWithdrawTrade(this.account, this.amount);
-        TradeUtil.success(tradeBill, "提现成功", SettlementStatus.CLEARED);
-
         this.status = WithdrawBillStatus.SUCCESS;
         this.comment = comment;
         this.processedAt = new Date();
         this.fee = fee;
         this.save();
 
+        TradeBill tradeBill = TradeUtil.createWithdrawTrade(this.account, this.amount, id);
+        TradeUtil.success(tradeBill, "提现成功", SettlementStatus.CLEARED);
+
         if (account.accountType == AccountType.SUPPLIER) { //同意提现操作
             //标记所有详细销售记录为已结算
-            return AccountSequence.withdraw(account, withdrawDate, this, null);
+            return AccountSequence.withdraw(account, withdrawDate, this);
         }
         return 0;
     }
@@ -306,6 +270,31 @@ public class WithdrawBill extends Model {
         q.setParameter("account", account);
         q.setParameter("status", WithdrawBillStatus.SUCCESS);
 
-        return (BigDecimal) q.getSingleResult();
+        return q.getSingleResult() == null ? BigDecimal.ZERO : (BigDecimal) q.getSingleResult();
+    }
+
+    /**
+     * 获取待审批的提现总金额.
+     */
+    public static BigDecimal getApplyingAmount(Account account) {
+        EntityManager entityManager = JPA.em();
+        Query q = entityManager.createQuery("select sum(b.amount) from WithdrawBill b where account=:account and status=:status");
+        q.setParameter("account", account);
+        q.setParameter("status", WithdrawBillStatus.APPLIED);
+
+        return q.getSingleResult() == null ? BigDecimal.ZERO : (BigDecimal) q.getSingleResult();
+    }
+
+    /**
+     * 获取指定时间点后的待审批的提现总金额.
+     */
+    public static BigDecimal getApplyingAmountFrom(Account account, Date appliedAtAfter) {
+        EntityManager entityManager = JPA.em();
+        Query q = entityManager.createQuery("select sum(b.amount) from WithdrawBill b where account=:account and status=:status and appliedAt>:appliedAt");
+        q.setParameter("account", account);
+        q.setParameter("status", WithdrawBillStatus.APPLIED);
+        q.setParameter("appliedAt", appliedAtAfter);
+
+        return q.getSingleResult() == null ? BigDecimal.ZERO : (BigDecimal) q.getSingleResult();
     }
 }

@@ -64,9 +64,8 @@ public class DateUtil {
      * n天后的结束时间
      *
      * @return
-     * @throws ParseException
      */
-    public static Date getEndExpiredDate(int n) throws ParseException {
+    public static Date getEndExpiredDate(int n) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, +n);
         Date date = DateUtil.getEndOfDay(cal.getTime());

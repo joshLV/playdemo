@@ -8,7 +8,6 @@ import play.jobs.Job;
 import play.jobs.On;
 
 import javax.persistence.Query;
-import java.text.ParseException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,7 +21,7 @@ import java.util.List;
 public class CancelUnPaidOrderJob extends Job {
 
     @Override
-    public void doJob() throws ParseException {
+    public void doJob() throws Exception {
         String sql = "select o from Order o where o.orderNumber not in (select c.orderNumber from CancelUnpaidOrders " +
                 "c ) and o.status =:status and o.createdAt <=:createdAtEnd order by o.id";
         Query query = Order.em().createQuery(sql);

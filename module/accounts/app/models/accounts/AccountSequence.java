@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
@@ -45,22 +46,22 @@ public class AccountSequence extends Model {
     @Column(name = "trade_type")
     public TradeType tradeType;
 
-    public BigDecimal balance;                  //变动后可提现余额与不可提现余额
+    public BigDecimal balance = BigDecimal.ZERO;                  //变动后可提现余额与不可提现余额, balance=cashBalance+uncashBalance
 
     @Column(name = "cash_balance")
-    public BigDecimal cashBalance;              //变动后可提现余额
+    public BigDecimal cashBalance = BigDecimal.ZERO;              //变动后可提现余额
 
     @Column(name = "uncash_balance")
-    public BigDecimal uncashBalance;            //变动后不可提现余额
+    public BigDecimal uncashBalance = BigDecimal.ZERO;            //变动后不可提现余额
 
     @Column(name = "promotion_balance")
-    public BigDecimal promotionBalance;         //变动后活动金余额
+    public BigDecimal promotionBalance = BigDecimal.ZERO;         //变动后活动金余额
 
     @Column(name = "change_amount")
-    public BigDecimal changeAmount;             //可提现余额（包括账户余额和因提现而冻结的余额）变动发生额
+    public BigDecimal changeAmount = BigDecimal.ZERO;             //可提现余额（包括账户余额和因提现而冻结的余额）变动发生额
 
     @Column(name = "promotion_change_amount")
-    public BigDecimal promotionChangeAmount;    //不可提现余额发生额（活动金余额）
+    public BigDecimal promotionChangeAmount = BigDecimal.ZERO;    //不可提现余额发生额（活动金余额）
 
     @Column(name = "trade_id")
     public Long tradeId;                        //关联交易流水ID
@@ -87,6 +88,7 @@ public class AccountSequence extends Model {
     public SettlementStatus settlementStatus = SettlementStatus.UNCLEARED;   //结算状态
 
     @ManyToOne
+    @JoinColumn(name = "withdraw_bill_id")
     public WithdrawBill withdrawBill;
 
     @ManyToOne
@@ -186,12 +188,8 @@ public class AccountSequence extends Model {
         return result;
     }
 
-    public static BigDecimal getIncomeAmount(Account account, Date lastDate) {
-        AccountSequence accountSequence = (AccountSequence) find("account=? and createdAt<? order by createdAt DESC", account, lastDate).first();
-
-        return (accountSequence != null &&
-                accountSequence.settlementStatus == SettlementStatus.UNCLEARED) ?
-                accountSequence.balance : BigDecimal.ZERO;
+    public static AccountSequence getLastAccountSequence(Long accountId) {
+        return (AccountSequence) find("account.id=? order by id desc", accountId).first();
     }
 
     public static BigDecimal getVostroAmount(Account account, Date fromDate, Date toDate) {
@@ -216,9 +214,16 @@ public class AccountSequence extends Model {
         return amount != null ? amount.abs() : BigDecimal.ZERO;
     }
 
-
+    /**
+     * 提现处理.
+     *
+     * @param supplierAccount
+     * @param withdrawDate
+     * @param withdrawBill
+     * @return
+     */
     public static int withdraw(Account supplierAccount, Date withdrawDate, WithdrawBill withdrawBill) {
-        return withdraw(supplierAccount, withdrawDate, withdrawBill, null);
+        return settle(supplierAccount, withdrawDate, withdrawBill, null);
     }
 
     /**
@@ -229,7 +234,7 @@ public class AccountSequence extends Model {
      * @param withdrawBill    结算账单
      * @return
      */
-    public static int withdraw(Account supplierAccount, Date withdrawDate, WithdrawBill withdrawBill, Prepayment prepayment) {
+    public static int settle(Account supplierAccount, Date withdrawDate, WithdrawBill withdrawBill, Prepayment prepayment) {
         if (supplierAccount == null) {
             return 0;
         }
@@ -260,7 +265,7 @@ public class AccountSequence extends Model {
     }
 
     public static AccountSequence checkAccountAmount(Account account) {
-        List<AccountSequence> accountSequences = find("account=? order by created_at, id", account).fetch();
+        List<AccountSequence> accountSequences = find("account=? order by id", account).fetch();
 
         BigDecimal lastBalance = BigDecimal.ZERO;
         for (AccountSequence accountSequence : accountSequences) {

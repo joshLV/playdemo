@@ -127,7 +127,8 @@ public class AccountUtil {
      * 变更账户余额，同时不保存凭证相关信息.
      */
     public static Account addBalanceWithoutSavingSequence(Long accountId, BigDecimal cashAugend,
-                                                          BigDecimal uncashAugend, BigDecimal promotionAugend, Long billId, String note, Long orderId)
+                                                          BigDecimal uncashAugend, BigDecimal promotionAugend,
+                                                          Long billId, String note, Long orderId)
             throws BalanceNotEnoughException, AccountNotFoundException {
         return addBalance(accountId, cashAugend, uncashAugend, promotionAugend, billId, null, null,
                 SettlementStatus.UNCLEARED, note, orderId, false, null, null);
