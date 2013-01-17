@@ -1519,8 +1519,22 @@ public class ECoupon extends Model {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(Order.COUPON_EXPIRE_FORMAT);
 
+        String note = ",";
+        if (this.goods.isOrder) {
+            // 需要预约的产品
+            if (this.appointmentDate != null) {
+                note = ",预约于" + dateFormat.format(this.appointmentDate) + "到店消费,";
+                if (StringUtils.isNotBlank(this.appointmentRemark)) {
+                    note += this.appointmentRemark + ",";
+                }
+            }  else {
+                // 还没有预约
+                note = ",此产品需预约,";
+            }
+        }
+
         String message = "【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
-                "券号" + eCouponSn + "," +
+                "券号" + eCouponSn + note +
                 "截止" + dateFormat.format(expireAt) + "客服4006262166";
 
         // 重定义短信格式 - 58团
@@ -1528,13 +1542,21 @@ public class ECoupon extends Model {
                 && order.getResaler().loginName.equals(Resaler.WUBA_LOGIN_NAME)) {
 
             message = "【58团】【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
-                    "由58合作商家【一百券】提供,一百券号" + eCouponSn + "," +
-                    ",有效期至" + dateFormat.format(expireAt) + "客服4007895858";
+                    "由58合作商家【一百券】提供,一百券号" + eCouponSn + note +
+                    "有效期至" + dateFormat.format(expireAt) + "客服4007895858";
         }
 
         return message;
     }
 
+    /**
+     * 发送券通知短信的方法，所以渠道都应使用此方法.
+     * @param phone
+     * @param remark
+     */
+    public void sendOrderSMS(String phone, String remark) {
+        SMSUtil.sendECouponSms(this.id, phone, remark);
+    }
     public void sendOrderSMS(String remark) {
         SMSUtil.sendECouponSms(this.id, remark);
     }

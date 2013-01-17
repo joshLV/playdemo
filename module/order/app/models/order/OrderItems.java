@@ -372,16 +372,22 @@ public class OrderItems extends Model {
             summary = "";
         }
 
+        String note = ",";
+        if (this.goods.isOrder) {
+            // 需要预约的产品
+            note = ",此产品需预约,";
+        }
+
         String message = "【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
-                summary + "券号" + ecouponStr + "," +
+                summary + "券号" + ecouponStr + note +
                 "截止" + dateFormat.format(lastECoupon.expireAt) + "客服4006262166";
         // 重定义短信格式 - 58团
         if (AccountType.RESALER.equals(order.userType)
                 && order.getResaler().loginName.equals(Resaler.WUBA_LOGIN_NAME)) {
 
             message = "【58团】【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
-                    summary + "由58合作商家【一百券】提供,一百券号" + ecouponStr + "," +
-                    ",有效期至" + dateFormat.format(lastECoupon.expireAt) + "客服4007895858";
+                    summary + "由58合作商家【一百券】提供,一百券号" + ecouponStr + note +
+                    "有效期至" + dateFormat.format(lastECoupon.expireAt) + "客服4007895858";
         }
 
         return message;

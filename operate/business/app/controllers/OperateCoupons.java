@@ -221,6 +221,7 @@ public class OperateCoupons extends Controller {
         }
         render(coupon, err);
     }
+
     @ActiveNavigation("coupons_index")
     public static void appointment(Long couponId, Date date, String remark) {
         ECoupon coupon = ECoupon.findById(couponId);
@@ -230,6 +231,7 @@ public class OperateCoupons extends Controller {
         coupon.appointmentDate = date;
         coupon.appointmentRemark = remark;
         coupon.save();
+        coupon.sendOrderSMS(null, "发送预约短信");
         boolean success = true;
         render("OperateCoupons/showAppointment.html", coupon, success);
     }

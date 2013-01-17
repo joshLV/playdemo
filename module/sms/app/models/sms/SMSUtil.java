@@ -45,6 +45,9 @@ public class SMSUtil {
     public static void sendOrderItemSms(Long orderItemId, String remark) {
         MQPublisher.publish(SMS_ORDER_QUEUE, OrderECouponMessage.withOrderItemId(orderItemId, remark));
     }
+    public static void sendOrderItemSms(Long orderItemId, String phone, String remark) {
+        MQPublisher.publish(SMS_ORDER_QUEUE, OrderECouponMessage.withOrderItemIdPhone(orderItemId, phone, remark));
+    }
 
     /**
      * 发送券短信。
@@ -52,5 +55,8 @@ public class SMSUtil {
      */
     public static void sendECouponSms(Long eCouponId, String remark) {
         MQPublisher.publish(SMS_ORDER_QUEUE, OrderECouponMessage.withECouponId(eCouponId, remark));
+    }
+    public static void sendECouponSms(Long eCouponId, String phone, String remark) {
+        MQPublisher.publish(SMS_ORDER_QUEUE, OrderECouponMessage.withECouponIdPhone(eCouponId, phone, remark));
     }
 }

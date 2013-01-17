@@ -6,6 +6,7 @@ import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.OrderItems;
 import models.order.OrderStatus;
+import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
@@ -87,7 +88,15 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
                 return;
             }
 
-            getSMSProvider(SMS_TYPE).send(new SMSMessage(msg, orderItems.phone, ecoupons.get(0).replyCode));
+            //处理指定手机号的情况
+            String phone = orderItems.phone;
+            String remark = message.remark == null ? "" : message.remark;
+            if (StringUtils.isNotBlank(message.phone) && !message.phone.equals(phone)) {
+                phone = message.phone;
+                remark += " 发到新手机" + phone;
+            }
+
+            getSMSProvider(SMS_TYPE).send(new SMSMessage(msg, phone, ecoupons.get(0).replyCode));
 
             for (ECoupon ecoupon : ecoupons) {
                 // 如果没有出现异常，则记录一下发送历史
@@ -96,7 +105,7 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
                 }
                 ecoupon.smsSentCount += 1;
                 ecoupon.save();
-                new CouponHistory(ecoupon, "MessageQ", message.remark, ecoupon.status, ecoupon.status, null).save();
+                new CouponHistory(ecoupon, "MessageQ", remark, ecoupon.status, ecoupon.status, null).save();
             }
         } catch (SMSException e) {
             Logger.error("Sms2SenderConsumer: send message" + message + " failed:" + e.getMessage());
@@ -111,14 +120,22 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
             return;
         }
         try {
-            getSMSProvider(SMS_TYPE).send(new SMSMessage(msg, ecoupon.orderItems.phone, ecoupon.replyCode));
+            //处理指定手机号的情况
+            String phone = ecoupon.orderItems.phone;
+            String remark = message.remark == null ? "" : message.remark;
+            if (StringUtils.isNotBlank(message.phone) && !message.phone.equals(phone)) {
+                phone = message.phone;
+                remark += " 发到新手机" + phone;
+            }
+
+            getSMSProvider(SMS_TYPE).send(new SMSMessage(msg, phone, ecoupon.replyCode));
             // 如果没有出现异常，则记录一下发送历史
             if (ecoupon.smsSentCount == null) {
                 ecoupon.smsSentCount = 0;
             }
             ecoupon.smsSentCount += 1;
             ecoupon.save();
-            new CouponHistory(ecoupon, "MessageQ", message.remark, ecoupon.status, ecoupon.status, null).save();
+            new CouponHistory(ecoupon, "MessageQ", remark, ecoupon.status, ecoupon.status, null).save();
         } catch (SMSException e) {
             Logger.error("Sms2SenderConsumer: send message" + message + " failed:" + e.getMessage());
             throw e;
