@@ -4,9 +4,9 @@ import factory.FactoryBoy;
 import factory.ModelFactory;
 import models.supplier.SupplierCategory;
 
-import java.util.Date;
-
 /**
+ * 商户的商品分类的测试对象.
+ * .
  * User: wangjia
  * Date: 12-12-3
  * Time: 上午11:53

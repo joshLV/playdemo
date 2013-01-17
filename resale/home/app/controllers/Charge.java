@@ -19,6 +19,9 @@ import play.Logger;
 import play.mvc.Controller;
 import play.mvc.With;
 
+/**
+ * 分销商账户充值.
+ */
 @With(SecureCAS.class)
 public class Charge extends Controller{
 
@@ -30,6 +33,7 @@ public class Charge extends Controller{
         List<PaymentSource> paymentSources = PaymentSource.findAll();
         render(user, account, paymentSources);
     }
+
     public static void create(BigDecimal amount, String paymentSourceCode){
         Resaler resaler = SecureCAS.getResaler();
         PaymentSource paymentSource = PaymentSource.findByCode(paymentSourceCode);

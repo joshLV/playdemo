@@ -29,13 +29,13 @@ public class Account extends Model {
     public AccountCreditable creditable;    //是否可赊账 即账户中余额是否允许小于0, 若否, 当余额小于0时会抛异常
 
     @Column(name = "amount")
-    public BigDecimal amount;               //可支付、可提现余额
+    public BigDecimal amount = BigDecimal.ZERO;               //可支付、可提现余额，现金余额，对应account_sequence中的cash_balance
 
     @Column(name = "promotion_amount")
-    public BigDecimal promotionAmount;      //可支付、不可提现余额
+    public BigDecimal promotionAmount = BigDecimal.ZERO;      //可支付、不可提现余额，对应account_sequence中的promotion_balance
 
     @Column(name = "uncash_amount")
-    public BigDecimal uncashAmount;         //不可支付、不可提现余额,申请提现待审批的
+    public BigDecimal uncashAmount = BigDecimal.ZERO;         //不可支付、不可提现余额,申请提现待审批的，对应account_sequence中的uncash_balance
 
     @Enumerated(EnumType.STRING)
     public AccountStatus status;            //账户状态

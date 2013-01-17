@@ -1,4 +1,4 @@
-package function;
+package functional;
 
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;

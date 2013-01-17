@@ -225,6 +225,7 @@ public class Suppliers extends Controller {
         WithdrawAccount withdrawAccount = WithdrawAccount.findById(id);
         if (withdrawAccount != null) {
             withdrawAccount.delete();
+            System.out.println("WithdrawAccount deleted:"+id);
         }
         edit(supplierId);
     }

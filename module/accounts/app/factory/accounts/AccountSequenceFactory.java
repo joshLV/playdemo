@@ -2,7 +2,6 @@ package factory.accounts;
 
 import factory.FactoryBoy;
 import factory.ModelFactory;
-import factory.annotation.Factory;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.AccountSequenceFlag;
@@ -11,6 +10,7 @@ import models.accounts.TradeType;
 import java.math.BigDecimal;
 
 /**
+ * 财务明细流水的测试对象.
  * User: hejun
  * Date: 12-8-24
  * Time: 上午11:58
