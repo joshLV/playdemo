@@ -10,9 +10,6 @@ import org.apache.commons.lang.StringUtils;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author likang
  *         Date: 12-12-21
@@ -26,10 +23,6 @@ public class OperateCouponMakeUp extends Controller {
         }
 
         String[] couponList = coupon.trim().split(",");
-        if (couponList.length == 0  || StringUtils.isBlank(couponList[0])) {
-            renderText("输入coupon,用半角逗号分割"); return;
-        }
-
         StringBuilder successMessage = new StringBuilder("成功：");
         StringBuilder failMessage = new StringBuilder("失败：\n");
         for(String c : couponList) {
