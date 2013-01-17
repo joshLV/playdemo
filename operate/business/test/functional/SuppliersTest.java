@@ -222,6 +222,8 @@ public class SuppliersTest extends FunctionalTest {
 
     @Test
     public void testWithdrawAccountCreateAndUpdate() {
+        assertEquals(1, WithdrawAccount.count());
+
         Map<String, String> params = new HashMap<>();
         params.put("withdrawAccount.userName", "test-userName");
         params.put("withdrawAccount.bankCity", "test-bankCity");
@@ -233,12 +235,13 @@ public class SuppliersTest extends FunctionalTest {
         Http.Response response = POST(Router.reverse("Suppliers.withdrawAccountCreateAndUpdate").url, params);
         assertStatus(302, response);
 
-        assertEquals(1, WithdrawAccount.count());
+        assertEquals(2, WithdrawAccount.count());
     }
 
     @Test
     public void testWithdrawAccountDelete() {
         WithdrawAccount withdrawAccount = FactoryBoy.create(WithdrawAccount.class);
+        assertEquals(2, WithdrawAccount.count());
         Long withdrawAccountId = withdrawAccount.id;
         Map<String, String> params = new HashMap<>();
         params.put("id", String.valueOf(withdrawAccountId));
@@ -246,7 +249,7 @@ public class SuppliersTest extends FunctionalTest {
         Http.Response response = POST("/withdraw-account/delete", params);
         assertStatus(302, response);
 
-        assertNull(WithdrawAccount.findById(withdrawAccountId));
+        assertEquals(1, WithdrawAccount.count());
     }
 
     @Test

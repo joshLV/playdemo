@@ -200,7 +200,6 @@ public class AccountSequenceUtil {
                 }
             }
             if (accountSequence.cashBalance.compareTo(accountSequence.balance.subtract(accountSequence.uncashBalance)) != 0) {
-
                 //--------------cash_balance = lastCashBalance+change_amount
                 accountSequence.cashBalance = accountSequence.balance.subtract(accountSequence.uncashBalance);
                 isChanged = true;

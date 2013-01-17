@@ -14,7 +14,6 @@ import models.sales.Goods;
 import models.sales.Shop;
 import operate.rbac.RbacLoader;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http;
@@ -26,11 +25,11 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
+ * 运营后台券功能测试.
+ *
  * User: hejun
  * Date: 12-8-22
  * Time: 上午10:29
- * To change this template use File | Settings | File Templates.
  */
 public class OperateCouponsFuncTest extends FunctionalTest {
     OperateUser user;
@@ -115,7 +114,7 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         Http.Response response = PUT("/coupons/" + eCoupon.id.toString() + "/freeze", "text/html", "");
         assertStatus(302, response);
         eCoupon.refresh();
-        assertEquals(1, eCoupon.isFreeze);
+        assertEquals(1, eCoupon.isFreeze.intValue());
         assertEquals(1, CouponHistory.count());
         CouponHistory historyList = CouponHistory.find("coupon=? order by createdAt desc", eCoupon).first();
         assertEquals("冻结券号", historyList.remark);
@@ -129,7 +128,7 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         Http.Response response = PUT("/coupons/" + eCoupon.id.toString() + "/unfreeze", "text/html", "");
         assertStatus(302, response);
         eCoupon.refresh();
-        assertEquals(0, eCoupon.isFreeze);
+        assertEquals(0, eCoupon.isFreeze.intValue());
         assertEquals(1, CouponHistory.count());
 
         CouponHistory historyList = CouponHistory.find("coupon=? order by createdAt desc", eCoupon).first();
