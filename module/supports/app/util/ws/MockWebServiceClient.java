@@ -1,6 +1,6 @@
 package util.ws;
 
-import models.journal.WebServiceCallLog;
+import models.journal.WebServiceCallLogData;
 import org.apache.commons.io.input.ReaderInputStream;
 import play.Logger;
 import play.libs.WS.HttpResponse;
@@ -33,7 +33,7 @@ public class MockWebServiceClient extends WebServiceClient {
     }
     
     @Override
-    public HttpResponse doGet(WebServiceCallLog log, WebServiceCallback callback) {
+    public HttpResponse doGet(WebServiceCallLogData log, WebServiceCallback callback) {
         MockHttpResponse response = popMockHttpResponse();
         
         log.statusCode = response.status;
@@ -46,7 +46,7 @@ public class MockWebServiceClient extends WebServiceClient {
         return response;
     }
 
-    private final static Stack<WebServiceCallLog> _stack = new Stack<>();
+    private final static Stack<WebServiceCallLogData> _stack = new Stack<>();
     private final static Stack<MockHttpResponse> _stackResponse = new Stack<>();
     
     public static void clear() {
@@ -54,7 +54,7 @@ public class MockWebServiceClient extends WebServiceClient {
         _stackResponse.clear();
     }
     
-    public static WebServiceCallLog getLastWebServiceCallLog() {
+    public static WebServiceCallLogData getLastWebServiceCallLog() {
         return _stack.pop();
     }
     
@@ -99,7 +99,7 @@ public class MockWebServiceClient extends WebServiceClient {
     }
 
     @Override
-    protected HttpResponse doPost(WebServiceCallLog log,
+    protected HttpResponse doPost(WebServiceCallLogData log,
                     Map<String, Object> params, WebServiceCallback callback) {
         MockHttpResponse response = popMockHttpResponse();
         

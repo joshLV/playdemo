@@ -13,18 +13,22 @@ public class OrderECouponMessage implements Serializable {
 
     public Long eCouponId;
 
+    public String phone;
+
     public String remark;
 
-    public static OrderECouponMessage withOrderItemId(Long orderItemId, String remark) {
+    public static OrderECouponMessage withOrderItemId(Long orderItemId, String phone, String remark) {
         OrderECouponMessage msg = new OrderECouponMessage();
         msg.orderItemId = orderItemId;
+        msg.phone = phone;
         msg.remark = remark;
         return msg;
     }
 
-    public static OrderECouponMessage withECouponId(Long eCouponId, String remark) {
+    public static OrderECouponMessage withECouponId(Long eCouponId, String phone, String remark) {
         OrderECouponMessage msg = new OrderECouponMessage();
         msg.eCouponId = eCouponId;
+        msg.phone = phone;
         msg.remark = remark;
         return msg;
     }

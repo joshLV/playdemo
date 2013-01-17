@@ -2,16 +2,18 @@ package util.ws;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import models.journal.WebServiceCallLog;
-import models.journal.WebServiceCallType;
+import models.journal.WebServiceCallLogData;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import play.Logger;
 import play.libs.WS.HttpResponse;
+import util.mq.MQPublisher;
 
 import java.util.Map;
 
 public abstract class WebServiceClient {
+
+    public static final String MQ_KEY = "ws.call-log";
 
     public String getString(String callType, String url, String keyword, WebServiceCallback callback) {
         return getString(callType, url, keyword, null, null, callback);
@@ -242,10 +244,10 @@ public abstract class WebServiceClient {
     public HttpResponse getHttpResponse(String callType, String url, String keyword1, String keyword2, String keyword3, WebServiceCallback callback) {
         // 考虑到在MQ调用时没有打开数据库连接，这里重新开一下
         Logger.info("call " + callType + "'s get(" + url + ")...");
-        WebServiceCallLog log = createWebServiceCallLog(callType, "GET", url, keyword1, keyword2, keyword3);
+        WebServiceCallLogData log = createWebServiceCallLog(callType, "GET", url, keyword1, keyword2, keyword3);
 
+        long startTime = System.currentTimeMillis();
         try {
-            long startTime = System.currentTimeMillis();
             HttpResponse response = doGet(log, callback);
             long endTime = System.currentTimeMillis();
             log.duration = endTime - startTime; // 记录耗时
@@ -253,11 +255,20 @@ public abstract class WebServiceClient {
             log.statusCode = response.getStatus();
             log.success = Boolean.TRUE;
             if (StringUtils.isNotBlank(callType)) {
-                log.save();
+                sendToMQ(log);
             }
             return response;
         } catch (Exception e) {
-            Logger.error("getHttpResponse(callType:" + callType + ", url:" + url + "...) exception:" + e.getMessage());
+            Logger.error("getHttpResponse(callType:" + callType + ", url:" + url + "...) exception:" +
+                    e.getMessage(), e);
+            if (StringUtils.isNotBlank(callType)) {
+                long endTime = System.currentTimeMillis();
+                log.duration = endTime - startTime; // 记录耗时
+                log.exceptionText = e.getMessage();
+                log.statusCode = -1;
+                log.success = Boolean.FALSE;
+                sendToMQ(log);
+            }
             throw e;
         }
 
@@ -269,14 +280,14 @@ public abstract class WebServiceClient {
 
     public HttpResponse postHttpResponse(String callType, String url, String body, Map<String, Object> params, String keyword1, String keyword2, String keyword3, WebServiceCallback callback) {
         Logger.info("call " + callType + "'s get(" + url + ")...");
-        WebServiceCallLog log = createWebServiceCallLog(callType, "GET", url, keyword1, keyword2, keyword3);
+        WebServiceCallLogData log = createWebServiceCallLog(callType, "GET", url, keyword1, keyword2, keyword3);
         log.requestBody = body;
         if (params != null) {
             log.postParams = new Gson().toJson(params);
         }
 
+        long startTime = System.currentTimeMillis();
         try {
-            long startTime = System.currentTimeMillis();
             HttpResponse response = doPost(log, params, callback);
             long endTime = System.currentTimeMillis();
             log.duration = endTime - startTime; // 记录耗时
@@ -284,21 +295,29 @@ public abstract class WebServiceClient {
             log.statusCode = response.getStatus();
             log.success = Boolean.TRUE;
             if (StringUtils.isNotBlank(callType)) {
-                log.save();
+                sendToMQ(log);
             }
             return response;
         } catch (Exception e) {
-            Logger.error("postHttpResponse(callType:" + callType + ", url:" + url + "...) exception:" + e.getMessage());
+            Logger.error("postHttpResponse(callType:" + callType + ", url:" + url + "...) exception:" +
+                    e.getMessage(), e);
+            if (StringUtils.isNotBlank(callType)) {
+                long endTime = System.currentTimeMillis();
+                log.duration = endTime - startTime; // 记录耗时
+                log.exceptionText = e.getMessage();
+                log.statusCode = -1;
+                log.success = Boolean.FALSE;
+                sendToMQ(log);
+            }
+
             throw e;
         }
 
     }
 
-    protected WebServiceCallLog createWebServiceCallLog(String callType, String callMethod, String url, String keyword1, String keyword2, String keyword3) {
-
-        WebServiceCallType.checkOrCreate(callType);
-
-        WebServiceCallLog log = new WebServiceCallLog();
+    protected WebServiceCallLogData createWebServiceCallLog(String callType, String callMethod, String url,
+                                                         String keyword1, String keyword2, String keyword3) {
+        WebServiceCallLogData log = new WebServiceCallLogData();
 
         log.callType = callType;
         log.callMethod = callMethod;
@@ -309,8 +328,11 @@ public abstract class WebServiceClient {
         return log;
     }
 
-    protected abstract HttpResponse doGet(WebServiceCallLog log, WebServiceCallback callback);
+    protected abstract HttpResponse doGet(WebServiceCallLogData log, WebServiceCallback callback);
 
-    protected abstract HttpResponse doPost(WebServiceCallLog log, Map<String, Object> params, WebServiceCallback callback);
+    protected abstract HttpResponse doPost(WebServiceCallLogData log, Map<String, Object> params, WebServiceCallback callback);
 
+    public void sendToMQ(WebServiceCallLogData log) {
+        MQPublisher.publish(MQ_KEY, log);
+    }
 }

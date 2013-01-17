@@ -23,7 +23,7 @@ import java.util.Map;
 @Table(name = "ws_call_logs")
 public class WebServiceCallLog extends Model {
 
-    private static final long serialVersionUID = 7063232063912330652L;
+    private static final long serialVersionUID = 16993203113062L;
 
     @Column(name = "call_type", length = 250)
     public String callType;

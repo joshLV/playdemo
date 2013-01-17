@@ -631,7 +631,7 @@ public class Order extends Model {
         if (paid()) {
             generateECoupon();
             remindBigOrderRemark();
-            this.sendECouponSMS("订单生成券号");
+            this.sendOrderSMS("订单生成券号");
         }
     }
 
@@ -1306,9 +1306,9 @@ public class Order extends Model {
     }
 
     /**
-     * 发送此订单的所有券短信
+     * 发送此订单的所有券的购买通知短信
      */
-    public void sendECouponSMS(String remark) {
+    public void sendOrderSMS(String remark) {
         for (OrderItems item : this.orderItems) {
             SMSUtil.sendOrderItemSms(item.id, remark);
         }

@@ -298,9 +298,15 @@ public class JDGroupBuy extends Controller {
             Logger.info("reach the limit of download time");
             finish(302, "reach the limit of download time");
         }
-        coupon.downloadTimes = coupon.downloadTimes - 1;
+
+        //coupon.downloadTimes = coupon.downloadTimes - 1;
+
+        // 如果是刚创建的券，不再发短信，直接返回，否则发一次短信
+
         coupon.save();
         ECoupon.send(coupon, sendSmsRequest.mobile);
+
+
 
         //响应
         Template template = TemplateLoader.load("jingdong/groupbuy/response/sendSms.xml");

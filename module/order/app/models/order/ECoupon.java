@@ -1535,4 +1535,7 @@ public class ECoupon extends Model {
         return message;
     }
 
+    public void sendOrderSMS(String remark) {
+        SMSUtil.sendECouponSms(this.id, remark);
+    }
 }
