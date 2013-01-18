@@ -22,11 +22,11 @@ public class GoodsOnSaleAndOffSaleReport {
     public String url;
     public String resalerName;
     public ChannelGoodsInfoStatus status;
-    public Long id;
+    public Long resalerId;
     public static CrossTableConverter<GoodsOnSaleAndOffSaleReport, GoodsOnSaleAndOffSaleReport> converter = new CrossTableConverter<GoodsOnSaleAndOffSaleReport, GoodsOnSaleAndOffSaleReport>() {
         @Override
         public String getRowKey(GoodsOnSaleAndOffSaleReport target) {
-            return target.goods.shortName + "※" + target.goods.code+ "※" + target.goods.id;
+            return target.goods.shortName + "※" + target.goods.code + "※" + target.goods.id;
         }
 
         @Override
@@ -51,29 +51,32 @@ public class GoodsOnSaleAndOffSaleReport {
 
     public GoodsOnSaleAndOffSaleReport(Resaler resaler) {
         this.resalerName = resaler.userName;
+        this.resalerId = resaler.id;
     }
 
-    public GoodsOnSaleAndOffSaleReport(Long id, Goods goods, Resaler resaler, String url, ChannelGoodsInfoStatus status) {
+    public GoodsOnSaleAndOffSaleReport(Goods goods, Resaler resaler, String url, ChannelGoodsInfoStatus status) {
         this.goods = goods;
         this.resaler = resaler;
         this.url = url;
         this.status = status;
     }
 
-    public static List<GoodsOnSaleAndOffSaleReport> findByStatus() {
+    public static List<GoodsOnSaleAndOffSaleReport> findByStatus(GoodsOnSaleAndOffSaleCondition condition) {
         Query query = JPA.em()
                 .createQuery(
                         "select new models.GoodsOnSaleAndOffSaleReport(c.resaler) "
-                                + " from ChannelGoodsInfo c "
-                                + " group by  c.resaler order by c.resaler desc");
-
+                                + " from ChannelGoodsInfo c " + condition.filterOfResaler()
+                                + " group by c.resaler order by c.resaler desc");
+         for (Map.Entry<String, Object> param : condition.getParamMap().entrySet()) {
+            query.setParameter(param.getKey(), param.getValue());
+        }
         return query.getResultList();
     }
 
     public static List<GoodsOnSaleAndOffSaleReport> getChannelGoods(GoodsOnSaleAndOffSaleCondition condition) {
         Query query = JPA.em()
                 .createQuery(
-                        "select new models.GoodsOnSaleAndOffSaleReport(c.id,c.goods,c.resaler,c.url,c.status ) "
+                        "select new models.GoodsOnSaleAndOffSaleReport(c.goods,c.resaler,c.url,c.status ) "
                                 + " from ChannelGoodsInfo c "
                                 + condition.filter() + "  order by c.resaler desc");
 

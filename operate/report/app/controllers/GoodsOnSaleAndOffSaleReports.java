@@ -23,7 +23,7 @@ public class GoodsOnSaleAndOffSaleReports extends Controller {
         if (condition == null) {
             condition = new GoodsOnSaleAndOffSaleCondition();
         }
-        List<GoodsOnSaleAndOffSaleReport> resalerList = GoodsOnSaleAndOffSaleReport.findByStatus();
+        List<GoodsOnSaleAndOffSaleReport> resalerList = GoodsOnSaleAndOffSaleReport.findByStatus(condition);
         renderArgs.put("resalerList", resalerList);
 
         List<GoodsOnSaleAndOffSaleReport> resultList = GoodsOnSaleAndOffSaleReport.getChannelGoods(condition);
