@@ -1,6 +1,7 @@
 package models.dangdang;
 
 
+import com.uhuila.common.util.DateUtil;
 import models.accounts.AccountType;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
@@ -21,6 +22,7 @@ import play.libs.WS;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -42,6 +44,7 @@ public class DDAPIUtil {
     private static final String QUERY_CONSUME_CODE_URL = Play.configuration.getProperty("dangdang.query_consume_code_url", "http://tuanapi.dangdang.com/team_open/public/query_consume_code.php");
     private static final String VERIFY_CONSUME_URL = Play.configuration.getProperty("dangdang.verify_consume_url", "http://tuanapi.dangdang.com/team_open/public/verify_consume.php");
     private static final String PUSH_PARTNER_TEAMS = Play.configuration.getProperty("dangdang.push_partner_teams", "http://tuanapi.dangdang.com/team_inter_api/public/push_partner_teams.php");
+    private static final String GET_TEAM_LIST = Play.configuration.getProperty("dangdang.get_team_list", "http://tuanapi.dangdang.com/team_inter_api/public/get_team_list.php");
 
 
     public static HttpProxy proxy = new SimpleHttpProxy();
@@ -345,4 +348,35 @@ public class DDAPIUtil {
     }
 
 
+    /**
+     * 当当项目查询接口
+     *
+     * @param linkId
+     * @return
+     * @throws DDAPIInvokeException
+     */
+    public static String getItemList(Long linkId) throws DDAPIInvokeException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String requestItems = String.format("<data><start_date><![CDATA[%s]]></start_date>" +
+                "<end_date><![CDATA[%s]]></end_date><status><![CDATA[10]]></status></data>", dateFormat.format(DateUtil.getBeginOfDay()),
+                dateFormat.format(DateUtil.getEndOfDay()));
+        Response response = DDAPIUtil.access(GET_TEAM_LIST, requestItems, "get_team_list");
+        if (!response.success()) {
+            throw new DDAPIInvokeException("\n invoke push goods error(linkId:" + linkId + "):" +
+                    "error_code:" + response.errorCode.getValue() + ",desc:" + response.desc);
+        }
+        Element element = response.data;
+        if (response.errorCode == ErrorCode.SUCCESS && element != null) {
+            Iterator ite = element.elementIterator("row"); // 获取
+            while (ite.hasNext()) {
+                Element itemEle = (Element) ite.next();
+                String ddgid = itemEle.elementText("ddgid");
+                String spgid = itemEle.elementText("spgid");
+                if (linkId.toString().equals(spgid)) {
+                    return ddgid;
+                }
+            }
+        }
+        return "";
+    }
 }
