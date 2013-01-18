@@ -1,5 +1,8 @@
 package jobs.dadong;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import play.Play;
 import play.jobs.Job;
 import play.templates.Template;
@@ -27,16 +30,28 @@ public class ProductsSyncJob extends Job<Integer> {
         Map<String, Object> args = new HashMap<>();
         args.put("origan_code", origanCode);
         int pageIndex = 0;
-
+        boolean nextLoop = true;
         do {
             args.put("page_index", pageIndex);
             String xml = template.render(args);
-            Map<String, String> params = new HashMap<>();
+            Map<String, Object> params = new HashMap<>();
+            params.put("xml", xml);
             WebServiceClient client = WebServiceClientFactory.getClientHelper("GB2312");
 
-            client.postXml("thirdtuan.dadang.GetProducts", url, params, origanCode);
+            try {
+                Document document = client.postXml("thirdtuan.dadang.GetProducts", url, params, String.valueOf(pageIndex));
+                NodeList products = document.getElementsByTagName("products");
+                if (products == null) {
+                    break;
+                }
+                for (int i = 0; i < products.getLength(); i++) {
+                    Node node = products.item(0);
+                }
+            } catch (Exception e) {
+                nextLoop = false;
+            }
 
-        } while (pageIndex >= 100);
+        } while (nextLoop);
 
 
         return 0;
