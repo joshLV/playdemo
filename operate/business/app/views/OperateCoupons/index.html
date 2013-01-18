@@ -2,14 +2,14 @@
 #{include 'share/nav.html' /}
 #{set title:'券号列表' /}
 
+<link rel="stylesheet" href="/public/javascripts/ex_files/boxy.css" type="text/css">
+<script type="text/javascript" src="/public/javascripts/ex_files/jquery.boxy.js"></script>
+
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script type="text/javascript">
-
-    function prom() {
-
-        alert("test")
-
-    }
+    $(function () {
+        $(".boxy").boxy();
+    });
 
     function sendMessage(id) {
         $.ajax({
@@ -186,12 +186,16 @@
             <td><a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a></abbr></td>
             <td>${coupon?.orderItems?.phone}</td>
             <td>
-            *{<a href="" title="查看完整券号"}*
-            *{onclick="prom()">}*
+                <a href="#foobar"
+                   title="查看完整券号" class="boxy">
                 ${n}${coupon?.getMaskedEcouponSn()}
-
-
+                *{${coupon?.eCouponSn}}*
+                </a>
             </td>
+            <div id="foobar"
+                 style="padding:20px; display:none; background-color:#cad5eb; font-size:2em; color:#000000; font-weight:bold;">
+            ${coupon?.eCouponSn}
+            </div>
         *{<td>${coupon?.eCouponSn}</td>}*
             <td>${coupon?.goods?.shortName}</td>
             <td>${coupon?.salePrice?.formatCurrency('CNY')}</td>
@@ -244,5 +248,7 @@
         #{paginate.controls items:couponPage /}
         </ul>
     </div>
+
 </div>
+
 
