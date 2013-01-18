@@ -39,13 +39,16 @@ public class OperateTopics extends Controller {
         render();
     }
 
+    @ActiveNavigation("topics_add")
     public static void create(@Valid Topic topic) {
+        System.out.println(")))))))))         Enter OperateTopics.create");
         checkExpireAt(topic);
         if (Validation.hasErrors()) {
             render("OperateTopics/add.html", topic);
         }
         topic.deleted = DeletedStatus.UN_DELETED;
         topic.create();
+        System.out.println("topic.content:" + topic.getContent());
         index(null, null);
     }
 

@@ -255,7 +255,7 @@ public class AccountSequenceUtil {
         for (Account account : accounts) {
             AccountSequence seq = AccountSequenceUtil.checkBalance(account, from);
             if (seq == null) {
-                return;
+                continue;
             }
 
             int fixCount = fixAccountSequenceBalance(account, seq);
