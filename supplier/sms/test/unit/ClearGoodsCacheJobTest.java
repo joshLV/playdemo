@@ -28,8 +28,12 @@ public class ClearGoodsCacheJobTest extends UnitTest {
         goods.effectiveAt = DateHelper.beforeDays(2);
         goods.beginOnSaleAt = DateHelper.afterMinuts(10);
         goods.save();
+
+
+
         List<Goods> goodsList = Goods.findNewGoods(5);
         int n = goodsList.size();
+        System.out.println(goodsList.size() + ">>>>goodsList.size()");
         assertEquals(0, n);
 
         goods.beginOnSaleAt = DateHelper.beforeMinuts(1);
@@ -47,5 +51,11 @@ public class ClearGoodsCacheJobTest extends UnitTest {
         job.doJob();
         goodsList = Goods.findNewGoods(5);
         assertEquals(0, goodsList.size());
+
+//        GoodsSchedule goodsSchedule = FactoryBoy.create(GoodsSchedule.class);
+//        goodsSchedule.goods = goods;
+//        goodsSchedule.effectiveAt = new Date();
+//        goodsSchedule.save();
+
     }
 }
