@@ -50,7 +50,7 @@ public class AccountSequenceUtil {
         for (AccountSequence accountSequence : accountSequences) {
             BigDecimal correctPromotionBalance = lastPromotionBalance.add(accountSequence.promotionChangeAmount);
             if (correctPromotionBalance.compareTo(accountSequence.promotionBalance) != 0) {
-                System.out.println("error account promotionBalance(sequenceId:" + accountSequence.id + ",accountId:" + account.id + ",uid:" + account.uid
+                System.out.println("===Error account promotionBalance(sequenceId:" + accountSequence.id + ",accountId:" + account.id + ",uid:" + account.uid
                         + ",accountType:" + account.accountType + ",promotionBalance:" + accountSequence.promotionBalance);
                 return accountSequence;
             }
@@ -104,11 +104,8 @@ public class AccountSequenceUtil {
 //            account.amount = lastAccountSeq.cashBalance.subtract(applyingUncashAmount);
 //            isMatch = false;
 //        }
-        System.out.println("lastAccountSeq.promotionBalance:" + lastAccountSeq.promotionBalance);
-        System.out.println("account.promotionAmount:" + account.promotionAmount);
         if (lastAccountSeq.promotionBalance != null && account.promotionAmount != null && lastAccountSeq.promotionBalance.compareTo(account.promotionAmount) != 0) {
             account.promotionAmount = lastAccountSeq.promotionBalance;
-            System.out.println("account.promotionAmount:" + account.promotionAmount);
 
             isMatch = false;
         }
@@ -263,7 +260,7 @@ public class AccountSequenceUtil {
         for (Account account : accounts) {
             AccountSequence seq = AccountSequenceUtil.checkBalance(account, from);
             if (seq == null) {
-                return;
+                continue;
             }
 
             int fixCount = fixAccountSequenceBalance(account, seq);
