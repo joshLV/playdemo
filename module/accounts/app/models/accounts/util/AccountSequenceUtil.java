@@ -5,6 +5,7 @@ import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.TradeType;
 import models.accounts.WithdrawBill;
+import org.apache.commons.collections.CollectionUtils;
 import play.db.jpa.JPA;
 
 import javax.persistence.EntityManager;
@@ -180,9 +181,17 @@ public class AccountSequenceUtil {
         BigDecimal lastUncashBalance = BigDecimal.ZERO;
         BigDecimal lastPromotionBalance = BigDecimal.ZERO;
 
+        if (CollectionUtils.isNotEmpty(accountSequenceList)) {
+            lastBalance = accountSequenceList.get(0).balance;
+            lastUncashBalance = accountSequenceList.get(0).uncashBalance;
+            lastPromotionBalance = accountSequenceList.get(0).promotionBalance;
+        }
         boolean isChanged = false;
         int i = 0;
         for (AccountSequence accountSequence : accountSequenceList) {
+            if (i++ == 0) {
+                continue;
+            }
             isChanged = false;
             //必须先纠正balance，再修改uncashBalance,然后根据balance和uncashBalance算出cashBalance
             if (accountSequence.balance.compareTo(lastBalance.add(accountSequence.changeAmount)) != 0) {
@@ -209,7 +218,8 @@ public class AccountSequenceUtil {
                 isChanged = true;
             }
             if (isChanged) {
-//                System.out.println("----------- (" + (++i) + ") fix seq:" + accountSequence.id);
+                //如需实时显示执行进度，可打开下面的打印语句
+                //System.out.println("----------- (" + (++i) + ") fix seq:" + accountSequence.id);
                 accountSequence.save();
                 if (i % 50 == 0) {
                     JPA.em().flush();
