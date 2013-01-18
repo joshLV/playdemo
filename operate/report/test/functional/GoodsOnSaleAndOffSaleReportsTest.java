@@ -29,16 +29,14 @@ public class GoodsOnSaleAndOffSaleReportsTest extends FunctionalTest {
     public void setUp() {
 
         FactoryBoy.lazyDelete();
+        OperateUser user = FactoryBoy.create(OperateUser.class);
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
 
-        channelGoodsInfo = FactoryBoy.create(ChannelGoodsInfo.class);
-
-        OperateUser user = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
-
+        channelGoodsInfo = FactoryBoy.create(ChannelGoodsInfo.class);
     }
 
     @After
@@ -46,7 +44,6 @@ public class GoodsOnSaleAndOffSaleReportsTest extends FunctionalTest {
         // 清除登录Mock
         Security.cleanLoginUserForTest();
     }
-
     @Test
     public void testIndex_测试商品上下架_noCondition() {
         Http.Response response = GET("/reports/channel");
@@ -59,13 +56,14 @@ public class GoodsOnSaleAndOffSaleReportsTest extends FunctionalTest {
         assertEquals(1, resalerList.size());
     }
 
-
     @Test
     public void testIndex_测试商品上下架_haveCondition() {
+
         Goods goods = FactoryBoy.create(Goods.class);
         Resaler wubaResaler = FactoryBoy.create(Resaler.class, "wuba");
         ChannelGoodsInfo wuba = FactoryBoy.create(ChannelGoodsInfo.class, "wuba");
         wuba.resaler = wubaResaler;
+        wuba.goods = goods;
         wuba.save();
 
         Resaler jdResaler = FactoryBoy.create(Resaler.class, "jingdong");
@@ -77,7 +75,7 @@ public class GoodsOnSaleAndOffSaleReportsTest extends FunctionalTest {
         assertIsOk(response);
         List<ChannelGoodsInfo> channelGoodsInfoList = (List) renderArgs("reportPage");
         assertNotNull(channelGoodsInfoList);
-        assertEquals(3, channelGoodsInfoList.size());
+        assertEquals(2, channelGoodsInfoList.size());
         List<Resaler> resalerList = (List) renderArgs("resalerList");
         assertNotNull(resalerList);
         assertEquals(3, resalerList.size());
