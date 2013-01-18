@@ -19,7 +19,7 @@ import java.util.Map;
  * Date: 13-1-18
  * Time: 下午5:24
  */
-public class ProductsSyncJob extends Job<Integer> {
+public class DadongProductsSyncJob extends Job<Integer> {
     @Override
     public Integer doJobWithResult() throws Exception {
 

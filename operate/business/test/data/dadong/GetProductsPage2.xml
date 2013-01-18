@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="GB2312"?>
+<business_trans>
+    <request_type>getProduct_response</request_type>
+    <products>
+        <product_id>2320</product_id>
+        <province>北京</province>
+        <city>北京</city>
+        <aqeg>怀柔</aqeg>
+        <category>滑雪</category>
+        <product_name>2012雪季怀北国际滑雪场平日全天滑雪票</product_name>
+        <product_faceValue>240.0</product_faceValue>
+        <product_webValue>120.0</product_webValue>
+        <product_platformValue>95.0</product_platformValue>
+        <product_ticketExplain>
+            1、含门票，租用一套滑雪器材及使用缆车、拖牵和雪道平日全天的费用。2、办理租赁手续时需每人交纳300元雪具押金。3、营业时间：8:00-17:00夜场16:30-21:30.4、行车路线：京顺路至怀柔开放路环岛3号路口,沿111国道方向即可到达。如低价销售此票，将补齐差价并按照票面价格三倍进行处罚
+        </product_ticketExplain>
+        <provide_address>北京市怀柔区怀北镇河防口村548号</provide_address>
+        <product_image>http://www.ddrtty.net/product/images/2257//product_ffxtee9dqnp0jkg.jpg</product_image>
+        <product_expireTime>2013-02-28 00:00:00.0</product_expireTime>
+        <product_isSubscribe>false</product_isSubscribe>
+    </products>
+    <products>
+        <product_id>2322</product_id>
+        <province>北京</province>
+        <city>北京</city>
+        <aqeg>怀柔</aqeg>
+        <category>滑雪</category>
+        <product_name>2012雪季怀北国际滑雪场周末半天滑雪票</product_name>
+        <product_faceValue>220.0</product_faceValue>
+        <product_webValue>170.0</product_webValue>
+        <product_platformValue>140.0</product_platformValue>
+        <product_ticketExplain>
+            1、含门票，租用一套滑雪器材及使用缆车、拖牵和雪道周末4小时的费用。2、办理租赁手续时需每人交纳300元雪具押金。3、营业时间：8:00-17:00夜场16:30-21:30。4、行车路线：京顺路至怀柔开放路环岛3号路口,沿111国道方向即可到达。节假日补差价30元。如低价销售此票，将补齐差价并按照票面价格三倍进行处罚
+        </product_ticketExplain>
+        <provide_address>北京市怀柔区怀北镇河防口村548号</provide_address>
+        <product_image>http://www.ddrtty.net/product/images/2258//product_j2plj79esboarvh.jpg</product_image>
+        <product_expireTime>2013-02-28 00:00:00.0</product_expireTime>
+        <product_isSubscribe>false</product_isSubscribe>
+    </products>
+    <products>
+        <product_id>2324</product_id>
+        <province>北京</province>
+        <city>北京</city>
+        <aqeg>怀柔</aqeg>
+        <category>滑雪</category>
+        <product_name>2012雪季怀北国际滑雪场周末全天滑雪票</product_name>
+        <product_faceValue>380.0</product_faceValue>
+        <product_webValue>180.0</product_webValue>
+        <product_platformValue>150.0</product_platformValue>
+        <product_ticketExplain>
+            1、含门票，租用一套滑雪器材及使用缆车、拖牵和雪道周末全天的费用。2、办理租赁手续时需每人交纳300押金。3、营业时间：8:00-17:00夜场16:30-21:30.4、行车路线：京顺路至怀柔开放路环岛3号路口,沿111国道方向即可到达。节假日补交30差价。如低价销售此票，将补齐差价并按照票面价格三倍进行处罚
+        </product_ticketExplain>
+        <provide_address>北京市怀柔区怀北镇河防口村548号</provide_address>
+        <product_image>http://www.ddrtty.net/product/images/2259//product_ag0eqtgp9q1vzag.jpg</product_image>
+        <product_expireTime>2013-02-28 00:00:00.0</product_expireTime>
+        <product_isSubscribe>false</product_isSubscribe>
+    </products>
+    <products>
+        <product_id>2326</product_id>
+        <province>北京</province>
+        <city>北京</city>
+        <aqeg>怀柔</aqeg>
+        <category>滑雪</category>
+        <product_name>2012雪季怀北国际滑雪场晚场含餐滑雪票</product_name>
+        <product_faceValue>100.0</product_faceValue>
+        <product_webValue>90.0</product_webValue>
+        <product_platformValue>85.0</product_platformValue>
+        <product_ticketExplain>
+            1、含门票，租用一套滑雪器材及使用缆车、拖牵和雪道夜场的费用(含夜宵)。2、办理租赁手续时需每人交纳300元雪具押金。3、营业时间：8:00-17:00夜场16:30-21:30.4、行车路线：京顺路至怀柔开放路环岛3号路口,沿111国道方向即可到达。如低价销售此票，将补齐差价并按照票面价格三倍进行处罚
+        </product_ticketExplain>
+        <provide_address>北京市怀柔区怀北镇河防口村548号</provide_address>
+        <product_image>http://www.ddrtty.net/product/images/2260//product_o6nroeteyq4dagb.jpg</product_image>
+        <product_expireTime>2013-02-28 00:00:00.0</product_expireTime>
+        <product_isSubscribe>false</product_isSubscribe>
+    </products>
+    <products>
+        <product_id>2328</product_id>
+        <province>北京</province>
+        <city>北京</city>
+        <aqeg>海淀</aqeg>
+        <category>康体娱乐</category>
+        <product_name>素颜3D睫毛美容会所睫毛套餐</product_name>
+        <product_faceValue>818.0</product_faceValue>
+        <product_webValue>88.0</product_webValue>
+        <product_platformValue>80.0</product_platformValue>
+        <product_ticketExplain>
+            包含：110根睫毛（款式、长度不限），睫毛保持时间：15天-2个月左右（因人而异），如因个人原因想进行睫毛加密，需以店内价格为主，针对每位客人不同的睫毛质地、脸型、五官、个人风格提供广泛多样的选择空间，免费提供多种饮料，提供无线wifi上网服务，赠400元代金券1张（限使用110根以上的套餐使用），消费前请提前72小时电话预约，预约电话：010-51001094、010-52475671
+        </product_ticketExplain>
+        <provide_address>光华路阳光100国际公寓C座103室(吉野家后门正对面)</provide_address>
+        <product_image>http://www.ddrtty.net/product/images/2261//product_oggjb07jxhk41hu.jpg</product_image>
+        <product_expireTime>2013-01-31 00:00:00.0</product_expireTime>
+        <product_isSubscribe>false</product_isSubscribe>
+    </products>
+    <products>
+        <product_id>2368</product_id>
+        <province>北京</province>
+        <city>北京</city>
+        <aqeg>东城</aqeg>
+        <category>餐饮</category>
+        <product_name>簋街木垛餐厅木垛2-3人套餐</product_name>
+        <product_faceValue>185.0</product_faceValue>
+        <product_webValue>98.0</product_webValue>
+        <product_platformValue>94.0</product_platformValue>
+        <product_ticketExplain>青椒鱼 58元
+            碳烤扇贝 （4只） 32元
+            辣炒花蛤 22元
+            特色酱萝卜 12元
+            巧拌黑豆丝 12元
+            清炒空心菜 16元
+            什锦炒饭 15元
+            菊花茶、酸梅汤（1扎）二选一 18元,营业时间：10:30-凌晨4：00，请提前一天预约
+        </product_ticketExplain>
+        <provide_address>北京市东城区东直门内大街154-156号（簋街稻香村斜对面）</provide_address>
+        <product_image>http://www.ddrtty.net/product/images/2222//product_5da1c2ixyo5uyqw.jpg</product_image>
+        <product_expireTime>2013-01-31 00:00:00.0</product_expireTime>
+        <product_isSubscribe>false</product_isSubscribe>
+    </products>
+    <products>
+        <product_id>2369</product_id>
+        <province>北京</province>
+        <city>北京</city>
+        <aqeg>东城</aqeg>
+        <category>餐饮</category>
+        <product_name>簋街木垛餐厅木垛4-6人套餐</product_name>
+        <product_faceValue>350.0</product_faceValue>
+        <product_webValue>178.0</product_webValue>
+        <product_platformValue>170.0</product_platformValue>
+        <product_ticketExplain>馋嘴蛙 68元
+            麻辣小龙虾 20只 60元
+            碳烤扇贝（6只） 48元
+            麻辣涮肚 28元
+            辣炒花蛤 22元
+            口水鸡 29元
+            果仁菠菜 12元
+            川北凉粉 16元
+            清炒空心菜 16元
+            白灼芥兰 18元
+            什锦炒饭 15元
+            菊花茶、酸梅汤（1扎）二选一 18元，营业时间：10:30-凌晨4：00，请提前一天预约
+        </product_ticketExplain>
+        <provide_address>北京市东城区东直门内大街154-156号（簋街稻香村斜对面）</provide_address>
+        <product_image>http://www.ddrtty.net/product/images/2223//product_1asw0er3kg45adx.jpg</product_image>
+        <product_expireTime>2013-01-31 00:00:00.0</product_expireTime>
+        <product_isSubscribe>false</product_isSubscribe>
+    </products>
+    <products>
+        <product_id>2376</product_id>
+        <province>河北</province>
+        <city>张家口</city>
+        <aqeg>崇礼县</aqeg>
+        <category>滑雪</category>
+        <product_name>2012雪季万龙滑雪场第一阶段周末4小时滑雪票</product_name>
+        <product_faceValue>320.0</product_faceValue>
+        <product_webValue>304.0</product_webValue>
+        <product_platformValue>272.0</product_platformValue>
+        <product_ticketExplain>
+            1、含门票，4小时索道使用费。自带雪板。2、有效期为11月10日-11月16日；3月18日-4月7日。3、营业时间：8:30-17:00。身高1.2米-1.4米儿童享受滑雪5折优惠，身高1.2米以下(含1.2米),享受索道免费,雪具租赁5折优惠(儿童滑雪必须由成人陪同，成人需持票乘坐索道),70岁以上老人(含70岁)滑雪享受索道免费优惠,办票时需出示有效证件.请至少提前一天预订,预订电话18618233433，不预定无效.
+        </product_ticketExplain>
+        <provide_address>河北省张家口市崇礼县红花梁</provide_address>
+        <product_image>http://www.ddrtty.net/product/images/2274//product_sttzajyevmfsdmw.jpg</product_image>
+        <product_expireTime>2013-04-07 00:00:00.0</product_expireTime>
+        <product_isSubscribe>false</product_isSubscribe>
+    </products>
+</business_trans>
