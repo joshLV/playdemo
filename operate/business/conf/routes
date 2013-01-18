@@ -48,6 +48,9 @@ GET     /resale-partner-products/jd/products/{goodsId} resale.JDGroupBuyProducts
 *       /jd-ztree/city                          resale.JDGroupBuyProducts.city
 *       /jd-ztree/group                         resale.JDGroupBuyProducts.group
 
+# 58
+GET     /resale-partner-products/wb/upload/{goodsId}   resale.WubaGroupBuyProducts.showUpload
+
 
 #渠道商品
 GET      /channel-goods                         OperateGoods.channel

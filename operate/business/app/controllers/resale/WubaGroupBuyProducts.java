@@ -1,10 +1,17 @@
 package controllers.resale;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import controllers.OperateRbac;
 import models.sales.Goods;
+import models.sales.Shop;
+import models.supplier.Supplier;
+import models.wuba.WubaUtil;
 import operate.rbac.annotations.ActiveNavigation;
 import play.mvc.Controller;
 import play.mvc.With;
+
+import java.util.Collection;
 
 /**
  * @author likang
@@ -17,7 +24,12 @@ public class WubaGroupBuyProducts extends Controller {
     public static void showUpload(Long goodsId) {
         Goods goods = Goods.findById(goodsId);
 
-        render(goods);
+        String allCategoriesJson = WubaUtil.allProductTypesJsonCache();
+
+        Collection<Shop> shopList = goods.getShopList();
+        Supplier supplier = Supplier.findById(goods.supplierId);
+
+        render(goods, allCategoriesJson, shopList, supplier);
     }
 
     @ActiveNavigation("resale_partner_product")
