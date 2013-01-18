@@ -1,13 +1,16 @@
 package unit;
 
+import com.uhuila.common.util.DateUtil;
 import factory.FactoryBoy;
 import models.job.ClearGoodsCacheJob;
 import models.sales.Goods;
+import models.sales.GoodsSchedule;
 import org.junit.Before;
 import org.junit.Test;
 import play.test.UnitTest;
 import util.DateHelper;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,10 +33,8 @@ public class ClearGoodsCacheJobTest extends UnitTest {
         goods.save();
 
 
-
         List<Goods> goodsList = Goods.findNewGoods(5);
         int n = goodsList.size();
-        System.out.println(goodsList.size() + ">>>>goodsList.size()");
         assertEquals(0, n);
 
         goods.beginOnSaleAt = DateHelper.beforeMinuts(1);
@@ -52,10 +53,33 @@ public class ClearGoodsCacheJobTest extends UnitTest {
         goodsList = Goods.findNewGoods(5);
         assertEquals(0, goodsList.size());
 
-//        GoodsSchedule goodsSchedule = FactoryBoy.create(GoodsSchedule.class);
-//        goodsSchedule.goods = goods;
-//        goodsSchedule.effectiveAt = new Date();
-//        goodsSchedule.save();
+        //测试昨天有前排期的商品，但是今天不会显示
+        GoodsSchedule goodsSchedule = FactoryBoy.create(GoodsSchedule.class);
+        goodsSchedule.goods = goods;
+        goodsSchedule.effectiveAt = DateHelper.beforeDays(1);
+        goodsSchedule.save();
 
+        job.doJob();
+        Date currDate = new Date();
+        List<GoodsSchedule> goodsScheduleList = GoodsSchedule.findSchedule(goods, currDate);
+        assertEquals(0, goodsScheduleList.size());
+
+        //测试今天有前排期的商品 , 今天不会显示
+        goodsSchedule.refresh();
+        goodsSchedule.goods = goods;
+        goodsSchedule.effectiveAt = currDate;
+        goodsSchedule.expireAt = DateUtil.getEndOfDay();
+        goodsSchedule.save();
+        job.doJob();
+        goodsScheduleList = GoodsSchedule.findSchedule(goods, currDate);
+        assertEquals(1, goodsScheduleList.size());
+
+        //测试明天有前排期的商品 , 但今天不会显示
+        goodsSchedule.refresh();
+        goodsSchedule.effectiveAt = DateHelper.afterDays(1);
+        goodsSchedule.save();
+        job.doJob();
+        goodsScheduleList = GoodsSchedule.findSchedule(goods, currDate);
+        assertEquals(0, goodsScheduleList.size());
     }
 }

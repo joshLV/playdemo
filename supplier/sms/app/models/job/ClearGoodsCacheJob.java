@@ -2,9 +2,11 @@ package models.job;
 
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
 import models.sales.Goods;
 import models.sales.GoodsSchedule;
 import models.sales.GoodsStatus;
+import play.jobs.Every;
 import play.jobs.Job;
 import util.DateHelper;
 
@@ -18,7 +20,7 @@ import java.util.List;
  * Date: 12-11-19
  * Time: 上午11:22
  */
-//@Every("1mn")
+@Every("1mn")
 public class ClearGoodsCacheJob extends Job {
 
     /**
@@ -33,16 +35,15 @@ public class ClearGoodsCacheJob extends Job {
         List<Goods> offSaleList = getOffSaleList();
         clearGoodsCache(offSaleList, "offsale");
         //清除排期商品的缓存
-//        List<GoodsSchedule> scheduleList = getScheduleGoodsList();
-//        clearGoodsScheduleCache(scheduleList);
+        List<GoodsSchedule> scheduleList = getScheduleGoodsList();
+        clearGoodsScheduleCache(scheduleList);
     }
 
     private List<GoodsSchedule> getScheduleGoodsList() {
-        String sql = "select g from GoodsSchedule g where g.effectiveAt>=:beginDate and g.effectiveAt <=:endDate" +
+        String sql = "select g from GoodsSchedule g where g.effectiveAt>=:beginDate " +
                 " order by g.id";
         Query query = GoodsSchedule.em().createQuery(sql);
-        query.setParameter("beginDate", DateHelper.beforeMinuts(1));
-        query.setParameter("endDate", DateHelper.afterMinuts(1));
+        query.setParameter("beginDate", DateUtil.getBeginOfDay());
         query.setFirstResult(0);
         query.setMaxResults(200);
         return query.getResultList();
