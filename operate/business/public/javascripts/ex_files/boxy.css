@@ -17,7 +17,7 @@
 .boxy-wrapper .top-right{#background:none; #filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src=/study/image/boxy/ne.png);}
 .boxy-wrapper .bottom-right{#background:none; #filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src=/study/image/boxy/se.png);}
 .boxy-wrapper .bottom-left{#background:none; #filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src=/study/image/boxy/sw.png);}
-
+.boxy-wrapper .top,.boxy-wrapper .bottom{height:10px; background-color:black; opacity:0.6; filter:alpha(opacity=60); padding:0}
 .boxy-wrapper .left,.boxy-wrapper .right{width:10px; background-color:black; opacity:0.6; filter:alpha(opacity=60); padding:0}
 /* Title bar */
 .boxy-wrapper .title-bar{background-color:#333333; padding:6px; position:relative;}

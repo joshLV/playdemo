@@ -33,7 +33,7 @@ public class OperateCoupons extends Controller {
     @ActiveNavigation("coupons_index")
     public static void index(CouponsCondition condition) {
         Boolean hasEcouponRefundPermission = ContextedPermission.hasPermission("ECOUPON_REFUND");
-
+        Boolean hasViewEcouponSnPermission = ContextedPermission.hasPermission("VIEW_ECOUPONSN");
         if (condition == null) {
             condition = new CouponsCondition();
             condition.hidPaidAtBegin = DateHelper.beforeDays(1);
@@ -59,7 +59,7 @@ public class OperateCoupons extends Controller {
         BigDecimal amountSummary = ECoupon.summary(couponPage);
         //判断角色是否有解冻券号的权限
         boolean hasRight = ContextedPermission.hasPermission("COUPON_UNFREEZE");
-        render(couponPage, condition, amountSummary, hasRight, hasEcouponRefundPermission);
+        render(couponPage, condition, amountSummary, hasRight, hasEcouponRefundPermission, hasViewEcouponSnPermission);
     }
 
     /**
@@ -154,6 +154,21 @@ public class OperateCoupons extends Controller {
         renderJSON(sendFalg ? "0" : "1");
     }
 
+    public static void createCouponHistoryViewECouponSn(Long id) {
+        boolean sucFlag = false;
+        if (id != null) {
+            ECoupon coupon = ECoupon.findById(id);
+            if (coupon != null) {
+                new CouponHistory(coupon, OperateRbac.currentUser().userName, "查看完整券号", coupon.status, coupon.status, null).save();
+                sucFlag = true;
+            }
+            if (sucFlag) {
+                render(coupon, sucFlag);
+            }
+        }
+        render(sucFlag);
+    }
+
     @ActiveNavigation("coupons_index")
     public static void couponExcelOut(CouponsCondition condition) {
 
@@ -212,11 +227,11 @@ public class OperateCoupons extends Controller {
     public static void showAppointment(Long couponId) {
         ECoupon coupon = ECoupon.findById(couponId);
         String err = null;
-        if (coupon == null){
+        if (coupon == null) {
             err = "找不着这个券啊";
-        }else if( coupon.status != ECouponStatus.UNCONSUMED){
+        } else if (coupon.status != ECouponStatus.UNCONSUMED) {
             err = "只有未消费的券才能预约啊亲";
-        } else if(!coupon.goods.isOrder) {
+        } else if (!coupon.goods.isOrder) {
             err = "这个商品不需要预约的拉";
         }
         render(coupon, err);
@@ -226,7 +241,8 @@ public class OperateCoupons extends Controller {
     public static void appointment(Long couponId, Date date, String remark) {
         ECoupon coupon = ECoupon.findById(couponId);
         if (coupon == null || coupon.status != ECouponStatus.UNCONSUMED || !coupon.goods.isOrder) {
-            notFound();return;
+            notFound();
+            return;
         }
         coupon.appointmentDate = date;
         coupon.appointmentRemark = remark;
