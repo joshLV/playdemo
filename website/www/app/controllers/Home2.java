@@ -48,7 +48,7 @@ public class Home2 extends Controller {
                 CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_HOT_SALE4"),
                 CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_GOODS"),
                 CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_FLOOR_CATEGORIES"),
-                CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_TOPICS"),
+                CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW2_TOPICS"),
                 CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_RIGHT_SLIDES"),
                 CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SLIDES_" + dateCacheKey),
                 CacheHelper.getCacheKey(FriendsLink.CACHEKEY, "FRIENDS_LINK"),
@@ -108,7 +108,7 @@ public class Home2 extends Controller {
         final Date currentDate = new Date();
 
         //公告
-        List<Topic> topics = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_TOPICS"), new CacheCallBack<List<Topic>>() {
+        List<Topic> topics = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW2_TOPICS"), new CacheCallBack<List<Topic>>() {
             @Override
             public List<Topic> loadData() {
                 return Topic.findByType(PlatformType.UHUILA, TopicType.TOPIC, currentDate, 2);
