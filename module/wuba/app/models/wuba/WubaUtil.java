@@ -1,9 +1,8 @@
 package models.wuba;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import cache.CacheCallBack;
+import cache.CacheHelper;
+import com.google.gson.*;
 import models.order.ECoupon;
 import org.apache.commons.codec.binary.Base64;
 import play.Logger;
@@ -34,6 +33,7 @@ public class WubaUtil {
 
     public static final String CODE_CHARSET = "utf-8";
     public static final String CODE_TRANSFORMATION = "DES/ECB/PKCS5Padding";
+    private static final String CACHE_KEY = "WUBA_GROUPBUY_API";
 
     public static boolean verifyOnWuba(ECoupon eCoupon) {
         Map<String, Object> params = new HashMap<>();
@@ -48,6 +48,22 @@ public class WubaUtil {
             }
         }
         return false;
+    }
+
+    public static JsonArray allProductTypes() {
+        JsonObject categoryData = WubaUtil.sendRequest(null, "emc.groupbuy.find.allprotype", false, false);
+        return categoryData.getAsJsonArray("data");
+    }
+
+    public static String allProductTypesJsonCache() {
+        return CacheHelper.getCache(
+                CacheHelper.getCacheKey(CACHE_KEY,"ALL_PRODUCT_TYPES"),
+                new CacheCallBack<String>() {
+                    @Override
+                    public String loadData() {
+                        return allProductTypes().toString();
+                    }
+                });
     }
 
 
