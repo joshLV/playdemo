@@ -25,7 +25,8 @@ jQuery(function ($) {
 
         // 插入浮层
         if ($('#auth_box').length == 0) {
-            $('body').append('<div id="auth_box" style="position:absolute;z-index:9999;"><a id="close-auth" style="position: absolute; top: 14px; right: 11px; width: 16px; height: 16px; background: url(//img.uhcdn.com/images/y/close.png) no-repeat 0 0;" href="javascript:void(0)" title="关闭"></a><iframe scrolling="no" allowtransparency="true" marginwidth="0" marginheight="0" frameborder="0" border="0" width="275" height="60" style="overflow:hidden;" src="' + iframeSrc + '"></iframe></div>');
+            $('body').append('<div id="auth_box" style="position:absolute;z-index:9999;">' +
+                '<a id="close-auth" style="position: absolute; top: 14px; right: 11px; width: 16px; height: 16px; background: url(//img.uhcdn.com/images/y/close.png) no-repeat 0 0;" href="javascript:void(0)" title="关闭"></a><iframe scrolling="no" allowtransparency="true" marginwidth="0" marginheight="0" frameborder="0" border="0" width="475" height="120" style="overflow:hidden;" src="' + iframeSrc + '"></iframe></div>');
 
             // 只在第一次插入浮层时，绑定关闭事件
             $('#close-auth').click(function () {

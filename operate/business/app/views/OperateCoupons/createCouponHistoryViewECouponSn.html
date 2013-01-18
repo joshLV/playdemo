@@ -4,9 +4,14 @@
 <head>
     <title></title>
 </head>
-<body style="background: #add8e6;">
+<body style="background: white;">
 #{if sucFlag==true}
+<span style="font-weight: bold; font-size: 20px;">
+<center>
 ${coupon?.eCouponSn}
+</center>
+</span>
+<a href="/coupons">确定</a>
 #{/if}
 #{else}
 查看失败，请联系管理员
