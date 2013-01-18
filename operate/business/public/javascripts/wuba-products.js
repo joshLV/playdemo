@@ -100,7 +100,7 @@ function batchAddCityNode(id, name) {
     });
 
     //依次添加到各个tree中去
-    $("ul[id^='ybqCircleName']").each(function(){
+    $("ul[id^='ybqCircleName'].ztree").each(function(){
         var treeEle = $(this);
         var tree = $.fn.zTree.getZTreeObj(treeEle.attr('id'));
         tree.addNodes(null, cityNode, false);
@@ -126,7 +126,7 @@ $(function(){
     }
 
     // 初始化所有分店的商圈树
-    $("ul[id^='ybqCircleName']").each(function(){
+    $("ul[id^='ybqCircleName'].ztree").each(function(){
         var ele = $(this);
         var id = ele.attr('id');
         $.fn.zTree.init(ele, getTreeSettings(id), []);
@@ -140,7 +140,7 @@ $(function(){
             batchAddCityNode(ele.val(), ele.attr('city'));
         } else {
             //依次从各个tree中删除
-            $("ul[id^='ybqCircleName']").each(function(){
+            $("ul[id^='ybqCircleName'].ztree").each(function(){
                 var treeEle = $(this);
                 var tree = $.fn.zTree.getZTreeObj(treeEle.attr('id'));
                 var node = tree.getNodeByParam('id', ele.val(), null);

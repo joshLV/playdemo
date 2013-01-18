@@ -1,9 +1,10 @@
 package controllers.resale;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import controllers.OperateRbac;
+import models.admin.OperateUser;
+import models.order.OuterOrderPartner;
 import models.sales.Goods;
+import models.sales.GoodsDeployRelation;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import models.wuba.WubaUtil;
@@ -12,6 +13,8 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author likang
@@ -33,14 +36,31 @@ public class WubaGroupBuyProducts extends Controller {
     }
 
     @ActiveNavigation("resale_partner_product")
-    public static void upload(Long outerId ) {
+    public static void upload(Long groupbuyId, String[] cityIds ) {
+        OperateUser operateUser = OperateRbac.currentUser();
+        Goods goods = Goods.findById(groupbuyId);
+        if (goods == null) {
+            notFound();
+        }
 
+        GoodsDeployRelation relation = GoodsDeployRelation.generate(goods, OuterOrderPartner.WB);
+
+        Map<String, String> postParams = request.params.allSimple();
+        postParams.remove("body");
+        postParams.put("groupbuyId", String.valueOf(relation.linkId));
+
+        Map<String, Object> requestParams = new HashMap<>();
+
+        for(Map.Entry<String, String> entry : postParams.entrySet()) {
+
+        }
+
+        WubaUtil.sendRequest(requestParams,"emc.groupbuy.addgroupbuy");
     }
 
     @ActiveNavigation("resale_partner_product")
     public static void showProducts(Long goodsId) {
 
     }
-
 }
 

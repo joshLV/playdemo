@@ -50,6 +50,7 @@ GET     /resale-partner-products/jd/products/{goodsId} resale.JDGroupBuyProducts
 
 # 58
 GET     /resale-partner-products/wb/upload/{goodsId}   resale.WubaGroupBuyProducts.showUpload
+POST    /resale-partner-products/wb/upload             resale.WubaGroupBuyProducts.upload
 
 
 #渠道商品
