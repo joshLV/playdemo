@@ -9,6 +9,7 @@ import models.accounts.SettlementStatus;
 import models.accounts.TradeBill;
 import models.accounts.TradeStatus;
 import models.accounts.TradeType;
+import models.accounts.WithdrawBill;
 import play.Logger;
 
 import java.math.BigDecimal;
@@ -281,7 +282,7 @@ public class TradeUtil {
         tradeBill.amount = tradeBill.balancePaymentAmount
                 .add(tradeBill.ebankPaymentAmount)
                 .add(tradeBill.uncashPaymentAmount);
-        tradeBill.withdrawBill.id = withdrawBillId;
+        tradeBill.withdrawBill = WithdrawBill.findById(withdrawBillId);
 
         return tradeBill.save();
     }

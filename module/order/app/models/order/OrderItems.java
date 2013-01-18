@@ -3,10 +3,13 @@ package models.order;
 import com.uhuila.common.util.DateUtil;
 import models.accounts.AccountType;
 import models.consumer.User;
+import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.GoodsHistory;
 import models.sales.MaterialType;
 import models.sales.SecKillGoods;
+import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 
@@ -22,6 +25,8 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -207,13 +212,9 @@ public class OrderItems extends Model {
      * @return 券号
      */
     public String getEcouponSn() {
-        Query query = play.db.jpa.JPA.em().createQuery(
-                "select e from ECoupon e where e.order = :order and e.goods =:goods ");
-        query.setParameter("order", this.order);
-        query.setParameter("goods", this.goods);
-        List<ECoupon> favs = query.getResultList();
+        List<ECoupon> ecoupons = getECoupons();
         StringBuilder sn = new StringBuilder();
-        for (ECoupon e : favs) {
+        for (ECoupon e : ecoupons) {
             sn.append(e.getMaskedEcouponSn() + "\n");
         }
         return sn.toString();
@@ -225,17 +226,21 @@ public class OrderItems extends Model {
      * @return 券号
      */
     public String getWebEcouponSn() {
-        Query query = play.db.jpa.JPA.em().createQuery(
-                "select e from ECoupon e where e.order = :order and e.goods =:goods ");
-        query.setParameter("order", this.order);
-        query.setParameter("goods", this.goods);
-        List<ECoupon> favs = query.getResultList();
+        List<ECoupon> ecoupons = getECoupons();
         StringBuilder sn = new StringBuilder();
-        for (ECoupon e : favs) {
+        for (ECoupon e : ecoupons) {
             sn.append(e.eCouponSn);
             sn.append("\n");
         }
         return sn.toString();
+    }
+
+    public List<ECoupon> getECoupons() {
+        Query query = play.db.jpa.JPA.em().createQuery(
+                "select e from ECoupon e where e.order = :order and e.goods =:goods ");
+        query.setParameter("order", this.order);
+        query.setParameter("goods", this.goods);
+        return query.getResultList();
     }
 
     /**
@@ -245,8 +250,7 @@ public class OrderItems extends Model {
      * @return
      */
     public static List<String> getMobiles(User user) {
-        Query query = play.db.jpa.JPA.em().createQuery(
-                "select o.phone from OrderItems o where o.order.userId = :userId and o.order.userType =:userType group by o.phone order by o.order desc ");
+        Query query = play.db.jpa.JPA.em().createQuery("select o.phone from OrderItems o where o.order.userId = :userId and o.order.userType =:userType group by o.phone order by o.order desc ");
         query.setParameter("userId", user.id);
         query.setParameter("userType", AccountType.CONSUMER);
         query.setFirstResult(0);
@@ -317,4 +321,76 @@ public class OrderItems extends Model {
                 supplierId, OrderStatus.PAID, OrderStatus.SENT, DateUtil.getBeginOfDay(beginAt), DateUtil.getEndOfDay(endAt)).first();
         return soldAmount == null ? BigDecimal.ZERO : soldAmount;
     }
+
+
+
+    /**
+     * 得到此订单发送购买短信的内容.
+     * @return
+     */
+    @Transient
+    public String getOrderSMSMessage() {
+        if (order.status != OrderStatus.PAID) {
+            Logger.info("OrderItem(" + id + ").order Status is NOT PAID, but was:" + order.status);
+            return null;  //未支付时不能发短信.
+        }
+
+        //京东的不发短信邮件等提示，因为等会儿京东会再次主动通知我们发短信
+        if (AccountType.RESALER.equals(order.userType)
+                && order.getResaler().loginName.equals(Resaler.JD_LOGIN_NAME)) {
+            // do nothing. NOW!
+            // TODO: 修改东京接口
+        }
+
+
+        if (goods.isLottery != null && goods.isLottery) {
+            //抽奖商品不发短信邮件等提示
+            Logger.info("goods(id:" + goods.id + " is Lottery!");
+            return null;
+        }
+
+        List<String> ecouponSNs = new ArrayList<>();
+        ECoupon lastECoupon = null;
+        for(ECoupon e : getECoupons()) {
+            ecouponSNs.add(e.eCouponSn);
+            lastECoupon = e;
+        }
+
+        if (lastECoupon == null) {
+            Logger.info("OrderItem(" + id + ") does NOT contains any ECoupons!");
+            return null;
+        }
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat(Order.COUPON_EXPIRE_FORMAT);
+
+        String ecouponStr = StringUtils.join(ecouponSNs, "，");
+
+        String summary;
+        if (ecouponSNs.size() > 1) {
+            summary = "[共" + ecouponSNs.size() + "张]";
+        } else {
+            summary = "";
+        }
+
+        String note = ",";
+        if (this.goods.isOrder) {
+            // 需要预约的产品
+            note = ",此产品需预约,";
+        }
+
+        String message = "【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
+                summary + "券号" + ecouponStr + note +
+                "截止" + dateFormat.format(lastECoupon.expireAt) + "客服4006262166";
+        // 重定义短信格式 - 58团
+        if (AccountType.RESALER.equals(order.userType)
+                && order.getResaler().loginName.equals(Resaler.WUBA_LOGIN_NAME)) {
+
+            message = "【58团】【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
+                    summary + "由58合作商家【一百券】提供,一百券号" + ecouponStr + note +
+                    "有效期至" + dateFormat.format(lastECoupon.expireAt) + "客服4007895858";
+        }
+
+        return message;
+    }
+
 }

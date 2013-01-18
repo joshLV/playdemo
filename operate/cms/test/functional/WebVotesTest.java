@@ -1,6 +1,7 @@
 package functional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import models.admin.OperateUser;
@@ -11,6 +12,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import play.data.validation.*;
+import play.data.validation.Error;
 import play.modules.paginate.ModelPaginator;
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
@@ -75,23 +78,23 @@ public class WebVotesTest extends FunctionalTest {
         vote.refresh();
         assertEquals(DeletedStatus.DELETED, vote.deleted);
     }
-    
+
     /**
-#{layout_operate.selectField name:'vote.type', value:vote?.type, error:'vote.type',
-class:'span2'}
-    #{option models.cms.VoteType.QUIZ}&{'vote.QUIZ'}#{/option}
-    #{option models.cms.VoteType.INQUIRY}&{'vote.INQUIRY'}#{/option}
-#{/layout_operate.selectField}
-#{layout_operate.dateScopeField name:'vote.effective', begin:'vote.effectiveAt',end:'vote.expireAt',
-beginValue:vote?.effectiveAt?.format(), endValue:vote?.expireAt?.format(), required:true/}
-#{layout_operate.textareaField name:'vote.content', value:vote?.content, required:true/}
-#{layout_operate.textField name:'vote.answer1', value:vote?.answer1, required:true/}
-#{layout_operate.textField name:'vote.answer2', value:vote?.answer2, required:true/}
-#{layout_operate.textField name:'vote.answer3', value:vote?.answer3,required:true/}
-#{layout_operate.textField name:'vote.answer4', value:vote?.answer4,required:true/}
-#{layout_operate.textField name:'vote.correctAnswer', value:vote?.correctAnswer,required:true/}     * 
+     * #{layout_operate.selectField name:'vote.type', value:vote?.type, error:'vote.type',
+     * class:'span2'}
+     * #{option models.cms.VoteType.QUIZ}&{'vote.QUIZ'}#{/option}
+     * #{option models.cms.VoteType.INQUIRY}&{'vote.INQUIRY'}#{/option}
+     * #{/layout_operate.selectField}
+     * #{layout_operate.dateScopeField name:'vote.effective', begin:'vote.effectiveAt',end:'vote.expireAt',
+     * beginValue:vote?.effectiveAt?.format(), endValue:vote?.expireAt?.format(), required:true/}
+     * #{layout_operate.textareaField name:'vote.content', value:vote?.content, required:true/}
+     * #{layout_operate.textField name:'vote.answer1', value:vote?.answer1, required:true/}
+     * #{layout_operate.textField name:'vote.answer2', value:vote?.answer2, required:true/}
+     * #{layout_operate.textField name:'vote.answer3', value:vote?.answer3,required:true/}
+     * #{layout_operate.textField name:'vote.answer4', value:vote?.answer4,required:true/}
+     * #{layout_operate.textField name:'vote.correctAnswer', value:vote?.correctAnswer,required:true/}     *
      */
-    
+
     @Test
     public void testCreate() throws Exception {
         Map<String, String> params = new HashMap<>();
@@ -108,7 +111,7 @@ beginValue:vote?.effectiveAt?.format(), endValue:vote?.expireAt?.format(), requi
         assertStatus(302, response);
         assertEquals(2, VoteQuestion.count());
     }
-    
+
     @Test
     public void testUpdate() throws Exception {
         Map<String, String> params = new HashMap<>();
@@ -121,11 +124,71 @@ beginValue:vote?.effectiveAt?.format(), endValue:vote?.expireAt?.format(), requi
         params.put("vote.answer3", "C");
         params.put("vote.answer4", "D");
         params.put("vote.correctAnswer", "C");
-        
+
         Response response = POST("/votes/" + vote.id + "?x-http-method-override=PUT",
-                        params); //PUT
+                params); //PUT
         assertStatus(302, response);
         vote.refresh();
         assertEquals("Hi", vote.answer1);
     }
+
+    @Test
+    public void testUpdateInvalid() throws Exception {
+        Map<String, String> params = new HashMap<>();
+        params.put("vote.type", "QUIZ");
+        params.put("vote.expireAt", "2012-12-31");
+        params.put("vote.content", "Test");
+        params.put("vote.answer1", "Hi");
+        params.put("vote.answer2", "B");
+        params.put("vote.answer3", "C");
+        params.put("vote.answer4", "D");
+        params.put("vote.correctAnswer", "C");
+
+        Response response = POST("/votes/" + vote.id + "?x-http-method-override=PUT",
+                params); //PUT
+        List<play.data.validation.Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("vote.effectiveAt", errors.get(0).getKey());
+        assertStatus(200, response);
+
+    }
+
+    @Test
+    public void testCheckExpireAt() throws Exception {
+        Map<String, String> params = new HashMap<>();
+        params.put("vote.type", "QUIZ");
+        params.put("vote.effectiveAt", "2012-10-31");
+        params.put("vote.expireAt", "2012-5-31");
+        params.put("vote.content", "Test");
+        params.put("vote.answer1", "Hi");
+        params.put("vote.answer2", "B");
+        params.put("vote.answer3", "C");
+        params.put("vote.answer4", "D");
+        params.put("vote.correctAnswer", "C");
+
+        Response response = POST("/votes/" + vote.id + "?x-http-method-override=PUT",
+                params); //PUT
+        List<play.data.validation.Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("vote.expireAt", errors.get(0).getKey());
+        assertStatus(200, response);
+
+    }
+
+    @Test
+    public void testCreateInvalid() throws Exception {
+        Map<String, String> params = new HashMap<>();
+        params.put("vote.type", "QUIZ");
+        params.put("vote.expireAt", "2012-12-31");
+        params.put("vote.content", "Test");
+        params.put("vote.answer1", "A");
+        params.put("vote.answer2", "B");
+        params.put("vote.answer3", "C");
+        params.put("vote.answer4", "D");
+        params.put("vote.correctAnswer", "C");
+        Response response = POST("/votes", params);
+        List<play.data.validation.Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("vote.effectiveAt", errors.get(0).getKey());
+        assertStatus(200, response);
+    }
+
+
 }

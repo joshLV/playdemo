@@ -6,10 +6,7 @@ import models.accounts.WithdrawAccount;
 import models.accounts.WithdrawBill;
 import models.accounts.WithdrawBillCondition;
 import models.accounts.util.AccountUtil;
-import models.mail.MailMessage;
-import models.mail.MailUtil;
 import models.order.Prepayment;
-import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -98,7 +95,7 @@ public class SupplierWithdraw extends Controller {
         withdraw.amount = amount;
 
         if (withdraw.apply(SupplierRbac.currentUser().loginName, account, supplier.otherName)) {
-            sendNotification(withdraw);
+            // 不再通知 sendNotification(withdraw);
             index(null);
         } else {
             error("申请失败");
@@ -118,23 +115,4 @@ public class SupplierWithdraw extends Controller {
         render(bill);
     }
 
-    private static void sendNotification(WithdrawBill withdrawBill) {
-        // 发邮件
-        MailMessage message = new MailMessage();
-        message.addRecipient(NOTIFICATION_EMAILS);
-        message.setFrom("yibaiquan <noreplay@uhuila.com>");
-        message.setSubject("用户提现提醒");
-        message.putParam("applier", withdrawBill.applier);
-        message.putParam("amount", withdrawBill.amount);
-        message.putParam("withdraw", withdrawBill.id);
-        message.putParam("uid", withdrawBill.account.uid);
-
-        message.setTemplate("withdraw");
-        MailUtil.sendCommonMail(message);
-
-        if (NOTIFICATION_MOBILES.length > 0 && !"".equals(NOTIFICATION_MOBILES[0])) {
-            SMSUtil.send("一百券用户" + withdrawBill.applier + "申请提现" + withdrawBill.amount + "元", NOTIFICATION_MOBILES);
-        }
-
-    }
 }

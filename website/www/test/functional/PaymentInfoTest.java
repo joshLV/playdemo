@@ -9,7 +9,7 @@ import models.consumer.User;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrderStatus;
-import models.sms.SMSMessage;
+import models.sms.OrderECouponMessage;
 import models.sms.SMSUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -113,9 +113,8 @@ public class PaymentInfoTest extends FunctionalTest {
         assertEquals(order1, order);
         assertEquals(paymentSource.code, paymentSource1.code);
         assertContentMatch("恭喜您付款成功！", response);
-        SMSMessage message = (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
+        OrderECouponMessage message = (OrderECouponMessage) MockMQ.getLastMessage(SMSUtil.SMS_ORDER_QUEUE);
         assertNotNull(message);
-        assertTrue(message.getContent().startsWith("【一百券】"));
     }
 
     @Test

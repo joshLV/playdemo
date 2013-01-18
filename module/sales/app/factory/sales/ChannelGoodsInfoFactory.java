@@ -5,6 +5,7 @@ import factory.ModelFactory;
 import factory.annotation.Factory;
 import models.resale.Resaler;
 import models.sales.ChannelGoodsInfo;
+import models.sales.ChannelGoodsInfoStatus;
 import models.sales.Goods;
 
 /**
@@ -16,21 +17,20 @@ import models.sales.Goods;
 public class ChannelGoodsInfoFactory extends ModelFactory<ChannelGoodsInfo> {
     @Override
     public ChannelGoodsInfo define() {
-        Goods goods = FactoryBoy.create(Goods.class);
-        Resaler resaler = FactoryBoy.create(Resaler.class);
+        Goods goods = FactoryBoy.lastOrCreate(Goods.class);
+        Resaler resaler = FactoryBoy.lastOrCreate(Resaler.class);
         ChannelGoodsInfo channelGoodsInfo = new ChannelGoodsInfo(goods, resaler, "http://yibaiquan.com/p/3", "", "");
+        channelGoodsInfo.status = ChannelGoodsInfoStatus.ONSALE;
         return channelGoodsInfo;
     }
 
     @Factory(name = "jingdong")
-    public ChannelGoodsInfo defineWithJD(ChannelGoodsInfo goodsInfo) {
+    public void defineWithJD(ChannelGoodsInfo goodsInfo) {
         goodsInfo.url = "http://yibaiquan.com/p/1";
-        return goodsInfo;
     }
 
     @Factory(name = "wuba")
-    public ChannelGoodsInfo defineWuba(ChannelGoodsInfo goodsInfo) {
+    public void defineWuba(ChannelGoodsInfo goodsInfo) {
         goodsInfo.url = "http://yibaiquan.com/p/2";
-        return goodsInfo;
     }
 }

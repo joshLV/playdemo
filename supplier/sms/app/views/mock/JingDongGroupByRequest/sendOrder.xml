@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Request xmlns="http://tuan.360buy.com/Request">
+    <Version>1.0</Version>
+    <VenderId>100000</VenderId>
+    <!--合作伙伴Key-->
+    <VenderKey>xxxxxxxxxxxxxxxxx</VenderKey>
+    <!--是否压缩 默认不压缩-->
+    <Zip>false</Zip>
+    <!--是否加密-->
+    <Encrypt>false</Encrypt>
+    <!--提交数据-->
+    <Data>
+        <Message xmlns="http://tuan.360buy.com/SendOrderRequest">
+            <!--京东团购ID [必填]-->
+            <JdTeamId>${thirdProductId}</JdTeamId>
+            <!--合作伙伴团购ID [必填]-->
+            <VenderTeamId>${goodsId}</VenderTeamId>
+            <!--手机 [必填]-->
+            <Mobile>${mobile}</Mobile>
+            <!--下单时间 unix时间戳 [必填]-->
+            <OrderDate>${ts}</OrderDate>
+            <!--购买价 单位：分 [必填] -->
+            <TeamPrice>${price}</TeamPrice>
+            <!--订购数量 [必填]-->
+            <Count>${buyNumber}</Count>
+            <!--订单总额 单位：分  [必填]-->
+            <Origin>${amount}</Origin>
+            <!--京东订单ID [必填]-->
+            <JdOrderId>${thirdOrderId}</JdOrderId>
+            <!--付款时间 unix时间戳 [必填]-->
+            <PayTime>${ts}</PayTime>
+            <!--优惠券信息 优惠券数量=购买数量-->
+            <Coupons>
+                #{list items:coupons, as:'c'}
+                <Coupon>
+                    <!--券号(12位)-->
+                    <CouponId>${c.id}</CouponId>
+                    <!--密码(6位)-->
+                    <CouponPwd>${c.coupon}</CouponPwd>
+                </Coupon>
+                #{/list}
+            </Coupons>
+        </Message>
+    </Data>
+</Request>

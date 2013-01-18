@@ -208,7 +208,7 @@ public class SecureCAS extends Controller {
                 isAuthenticated = Boolean.TRUE;
 
                 session.put(SESSION_USER_KEY, casUser.getUsername());
-                Cache.add(SESSION_USER_KEY + casUser.getUsername(), Boolean.TRUE);
+                Cache.safeAdd(SESSION_USER_KEY + casUser.getUsername(), Boolean.TRUE, "1h");
                 // we invoke the implementation of onAuthenticate
                 Security.invoke("onAuthenticated", casUser);
 
@@ -302,6 +302,8 @@ public class SecureCAS extends Controller {
             String casLoginUrl = CASUtils.getCasLoginUrl(true);
             redirect(casLoginUrl);
         }
+        // 重新确保cache不会过期.
+        Cache.safeAdd(SESSION_USER_KEY + session.get(SESSION_USER_KEY), Boolean.TRUE, "1h");
     }
 
     /**

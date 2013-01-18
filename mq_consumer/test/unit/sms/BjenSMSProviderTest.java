@@ -1,17 +1,14 @@
 package unit.sms;
 
-import models.journal.WebServiceCallLog;
-import models.journal.WebServiceCallType;
+import factory.FactoryBoy;
+import models.journal.WebServiceCallLogData;
 import models.sms.SMSException;
 import models.sms.SMSMessage;
 import models.sms.impl.BjenSMSProvider;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.test.UnitTest;
 import util.ws.MockWebServiceClient;
-import factory.FactoryBoy;
 
 public class BjenSMSProviderTest extends UnitTest {
 
@@ -34,13 +31,9 @@ public class BjenSMSProviderTest extends UnitTest {
         MockWebServiceClient.pushMockHttpRequest(200, "0");
         SMSMessage msg = new SMSMessage("Hello,world!", "15026682165");
         provider.send(msg);
-        assertEquals(1, WebServiceCallType.count());
-        assertEquals(1, WebServiceCallLog.count());
-        WebServiceCallLog log = MockWebServiceClient.getLastWebServiceCallLog();
+        WebServiceCallLogData log = MockWebServiceClient.getLastWebServiceCallLog();
         assertEquals("ENSMS", log.callType);
         assertTrue(log.success);
-        WebServiceCallType type = WebServiceCallType.find("order by id desc").first();
-        assertEquals("ENSMS", type.callType);
     }
     
 
@@ -55,11 +48,8 @@ public class BjenSMSProviderTest extends UnitTest {
             smsException = e;
         }
         assertNotNull(smsException);
-        assertEquals(1, WebServiceCallLog.count());
-        WebServiceCallLog log = MockWebServiceClient.getLastWebServiceCallLog();
+        WebServiceCallLogData log = MockWebServiceClient.getLastWebServiceCallLog();
         assertEquals("ENSMS", log.callType);
         assertTrue(log.success);
-        WebServiceCallType type = WebServiceCallType.find("order by id desc").first();
-        assertEquals("ENSMS", type.callType);
     }
 }

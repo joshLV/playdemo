@@ -137,7 +137,7 @@ public class CouponsCondition implements Serializable {
             paramMap.put("shopId", shopId);
         }
         if (isOrder != null && isOrder) {
-            sql.append(" and e.goods.isOrder = :isOrder");
+            sql.append(" and e.goods.isOrder = :isOrder and e.appointmentDate is null");
             paramMap.put("isOrder", isOrder);
         }
 

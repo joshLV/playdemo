@@ -88,15 +88,15 @@ public class ECouponUnitTest extends UnitTest {
 
     @Test
     public void testUnFreeze() {
-        assertEquals(0, eCoupon.isFreeze);
+        assertEquals(new Integer(0), eCoupon.isFreeze);
         ECoupon.freeze(eCoupon.id, "tom");
-        assertEquals(1, eCoupon.isFreeze);
+        assertEquals(new Integer(1), eCoupon.isFreeze);
         couponHistory = CouponHistory.find("coupon=? order by createdAt desc", eCoupon).first();
         assertEquals("冻结券号", couponHistory.remark);
         assertEquals("tom", couponHistory.operator);
 
         ECoupon.unfreeze(eCoupon.id, "jan");
-        assertEquals(0, eCoupon.isFreeze);
+        assertEquals(new Integer(0), eCoupon.isFreeze);
         couponHistory.refresh();
         couponHistory = CouponHistory.find("coupon=? order by createdAt desc", eCoupon).first();
         assertEquals("解冻券号", couponHistory.remark);

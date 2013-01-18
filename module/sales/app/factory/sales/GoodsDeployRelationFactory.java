@@ -17,7 +17,7 @@ import java.util.Date;
 public class GoodsDeployRelationFactory extends ModelFactory<GoodsDeployRelation> {
     @Override
     public GoodsDeployRelation define() {
-        Goods goods = FactoryBoy.create(Goods.class);
+        Goods goods = FactoryBoy.lastOrCreate(Goods.class);
         GoodsDeployRelation deployRelation = new GoodsDeployRelation();
         deployRelation.partner = OuterOrderPartner.DD;
         deployRelation.goods = goods;

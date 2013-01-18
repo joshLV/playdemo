@@ -258,7 +258,7 @@ public class Suppliers extends Controller {
     public static void updateCode(Long id, Long supplierCategoryId) {
         Supplier supplier = Supplier.findById(id);
         SupplierCategory supplierCategory = SupplierCategory.findById(supplierCategoryId);
-        if (supplier != null && supplierCategory != null && supplier.supplierCategory.id != supplierCategoryId) {
+        if (supplier != null && supplierCategory != null && supplier.supplierCategory != null && supplier.supplierCategory.id != supplierCategoryId) {
             supplier.setCode(supplierCategory);
         }
 

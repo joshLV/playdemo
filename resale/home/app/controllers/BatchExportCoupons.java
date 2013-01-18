@@ -1,23 +1,28 @@
 package controllers;
 
-import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.RandomNumberUtil;
 import controllers.modules.resale.cas.SecureCAS;
 import models.accounts.Account;
 import models.accounts.AccountType;
-import models.accounts.PaymentSource;
 import models.accounts.util.AccountUtil;
-import models.order.*;
+import models.order.BatchCoupons;
+import models.order.BatchCouponsCondition;
+import models.order.DeliveryType;
+import models.order.ECoupon;
+import models.order.NotEnoughInventoryException;
+import models.order.Order;
+import models.order.OrderStatus;
 import models.resale.Resaler;
-import models.sales.*;
+import models.sales.GoodsCondition;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
-import play.modules.paginate.ModelPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -129,8 +134,9 @@ public class BatchExportCoupons extends Controller {
             }
 
             order.save();
-            if (Order.confirmPaymentInfo(order, account, true, "balance", batchCoupons)) {
+            if (Order.confirmPaymentInfo(order, account, true, "balance")) {
                 ECoupon coupon = ECoupon.find("order=?", order).first();
+                coupon.batchCoupons = batchCoupons;
                 coupon.eCouponSn = prefix + coupon.eCouponSn;
                 while (true) {
                     if (isNotUniqueEcouponSn(coupon.eCouponSn)) {

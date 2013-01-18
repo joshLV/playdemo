@@ -70,18 +70,12 @@
     </footer>
 
     <!-- javascript -->
-    <script src="@{'/public/assets/js/bootstrap-transition.js'}"></script>
-    <script src="@{'/public/assets/js/bootstrap-alert.js'}"></script>
-    <script src="@{'/public/assets/js/bootstrap-modal.js'}"></script>
-    <script src="@{'/public/assets/js/bootstrap-dropdown.js'}"></script>
-    <script src="@{'/public/assets/js/bootstrap-scrollspy.js'}"></script>
-    <script src="@{'/public/assets/js/bootstrap-tab.js'}"></script>
-    <script src="@{'/public/assets/js/bootstrap-tooltip.js'}"></script>
-    <script src="@{'/public/assets/js/bootstrap-popover.js'}"></script>
-    <script src="@{'/public/assets/js/bootstrap-button.js'}"></script>
-    <script src="@{'/public/assets/js/bootstrap-collapse.js'}"></script>
-    <script src="@{'/public/assets/js/bootstrap-carousel.js'}"></script>
-    <script src="@{'/public/assets/js/bootstrap-typeahead.js'}"></script>
+    #{asset.js src:['/bootstrap/bootstrap-transition.js', '/bootstrap/bootstrap-alert.js',
+    '/bootstrap/bootstrap-modal.js', '/bootstrap/bootstrap-dropdown.js',
+    '/bootstrap/bootstrap-scrollspy.js', '/bootstrap/bootstrap-tab.js', '/bootstrap/bootstrap-tooltip.js',
+    '/bootstrap/bootstrap-popover.js', '/bootstrap/bootstrap-button.js', '/bootstrap/bootstrap-collapse.js',
+    '/bootstrap/bootstrap-carousel.js', '/bootstrap/bootstrap-typeahead.js'] /}
+
     <script>
         $(function(){
             $("#expand-sidebar").click(function(){

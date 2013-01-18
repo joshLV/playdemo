@@ -1,0 +1,57 @@
+#{extends 'mock.html' /}
+#{set title:'API模拟测试 - 京东短信重发接口测试' /}
+
+#{form @mock.JingDongGroupByRequest.doSendSMS(), method:'POST', id:'orderForm', class:'form-horizontal'}
+<fieldset>
+    <div id="legend" class="">
+        <legend class="">京东短信重发接口测试</legend>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="jd-url">测试目标地址</label>
+
+        <div class="controls">
+            <input type="text" id="jd-url" name="url" class="input-xxlarge" value="${url}">
+
+            <p class="help-block">可修改为使用其它地址</p>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label">京东券</label>
+
+        <div class="controls">
+            #{select 'ecouponId', id:'ecouponId', class:'input-xxlarge'}
+                #{option 0}请选择最新的京东券#{/option}
+                #{list items: ecoupons, as:'e'}
+                    #{option e.id}${e.eCouponSn} ${e.goods.shortName}
+                        手机${e.orderItems.phone} 购于${e?.order?.paidAt?.format("MM-dd HH:mm")}#{/option}
+                #{/list}
+            #{/select}
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="jd-ecouponsn">或直接输入券号</label>
+
+        <div class="controls">
+            <input type="text" id="jd-ecouponsn" name="eCouponSn" class="input-xlarge" value="">
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="jd-mobile">手机</label>
+
+        <div class="controls">
+            <input type="text" id="jd-mobile" name="mobile" class="input-xlarge" value="15026682165">
+        </div>
+    </div>
+
+    <div class="control-group">
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-large btn-primary">提交</button>
+        </div>
+    </div>
+
+</fieldset>
+#{/form}

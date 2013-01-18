@@ -25,11 +25,9 @@ public class SupplierProfiles extends Controller {
                 roleIds += role.id + ",";
             }
         }
-
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         List shopList = Shop.findShopBySupplier(supplierId);
-        render(supplierUser, roleIds, shopList );
-
+        render(supplierUser, roleIds, shopList);
     }
 
     /**

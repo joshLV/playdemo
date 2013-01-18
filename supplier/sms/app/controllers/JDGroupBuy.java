@@ -20,8 +20,9 @@ import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
 import models.resale.Resaler;
-import models.sales.*;
 import models.sales.Goods;
+import models.sales.GoodsDeployRelation;
+import models.sales.MaterialType;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.libs.IO;
@@ -34,6 +35,7 @@ import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +58,11 @@ public class JDGroupBuy extends Controller {
     public static void baseResponse() {
         renderArgs.put("version", "1.0");
         renderArgs.put("venderId", JDGroupBuyUtil.VENDER_ID);
-        renderArgs.put("encrypt", "true");
+        if ("false".equals(params.get("encrypt"))) {
+            renderArgs.put("encrypt", "false");
+        } else {
+            renderArgs.put("encrypt", "true");
+        }
         renderArgs.put("zip", "false");
     }
 
@@ -294,9 +300,16 @@ public class JDGroupBuy extends Controller {
             Logger.info("reach the limit of download time");
             finish(302, "reach the limit of download time");
         }
-        coupon.downloadTimes = coupon.downloadTimes - 1;
-        coupon.save();
-        ECoupon.send(coupon, sendSmsRequest.mobile);
+
+        //coupon.downloadTimes = coupon.downloadTimes - 1;
+
+        // 如果是刚创建的券，不再发短信，直接返回，否则发一次短信
+        Long currentTime = (new Date()).getTime();
+        if (currentTime - coupon.createdAt.getTime() > 600000l) { //10分钟之后的请求才会重新发短信
+            coupon.sendOrderSMS(sendSmsRequest.mobile, "京东短信重发");
+        } else {
+            Logger.info("Coupon(id:" + coupon.id + ")生成于" + coupon.createdAt + ", 10分钟内不会重发短信.");
+        }
 
         //响应
         Template template = TemplateLoader.load("jingdong/groupbuy/response/sendSms.xml");
