@@ -50,7 +50,7 @@ public class AccountSequenceUtil {
         for (AccountSequence accountSequence : accountSequences) {
             BigDecimal correctPromotionBalance = lastPromotionBalance.add(accountSequence.promotionChangeAmount);
             if (correctPromotionBalance.compareTo(accountSequence.promotionBalance) != 0) {
-                System.out.println("===Error account promotionBalance(sequenceId:" + accountSequence.id + ",accountId:" + account.id + ",uid:" + account.uid
+                System.out.println("error account promotionBalance(sequenceId:" + accountSequence.id + ",accountId:" + account.id + ",uid:" + account.uid
                         + ",accountType:" + account.accountType + ",promotionBalance:" + accountSequence.promotionBalance);
                 return accountSequence;
             }
@@ -90,14 +90,10 @@ public class AccountSequenceUtil {
         boolean isMatch = true;
         if (lastAccountSeq.uncashBalance != null && lastAccountSeq.uncashBalance.add(applyingUncashAmount).compareTo(account.uncashAmount) != 0) {
             account.uncashAmount = lastAccountSeq.uncashBalance.add(applyingUncashAmount);
-            System.out.println("account.uncashAmount:" + account.uncashAmount);
-
             isMatch = false;
         }
         if (lastAccountSeq.cashBalance.subtract(applyingUncashAmount).compareTo(account.amount) != 0) {
             account.amount = lastAccountSeq.cashBalance.subtract(applyingUncashAmount);
-            System.out.println("account.amount:" + account.amount);
-
             isMatch = false;
         }
 //        if (lastAccountSeq.balance.compareTo(account.amount.add(account.uncashAmount)) != 0) {
@@ -106,7 +102,6 @@ public class AccountSequenceUtil {
 //        }
         if (lastAccountSeq.promotionBalance != null && account.promotionAmount != null && lastAccountSeq.promotionBalance.compareTo(account.promotionAmount) != 0) {
             account.promotionAmount = lastAccountSeq.promotionBalance;
-
             isMatch = false;
         }
         if (!isMatch) {
