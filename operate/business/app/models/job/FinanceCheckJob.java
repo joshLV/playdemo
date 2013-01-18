@@ -15,7 +15,7 @@ import java.util.List;
  * Date: 1/14/13
  * Time: 11:02 AM
  */
-@On("0 0 4 * * ?")  //每天凌晨执行,自动取消过期十天的未付款的订单
+@On("0 0 4 * * ?")  //每天凌晨执行
 public class FinanceCheckJob extends Job {
     @Override
     public void doJob() throws Exception {
