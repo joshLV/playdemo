@@ -15,9 +15,6 @@ import static models.accounts.util.AccountSequenceUtil.checkAccountAmount;
 import static models.accounts.util.AccountSequenceUtil.checkBalance;
 import static models.accounts.util.AccountSequenceUtil.checkBalanceConservation;
 import static models.accounts.util.AccountSequenceUtil.checkPromotionBalance;
-import static models.accounts.util.AccountSequenceUtil.checkTradeBalance;
-import static models.accounts.util.AccountSequenceUtil.checkTradePromotionBalance;
-import static models.accounts.util.AccountSequenceUtil.fixBalance;
 
 /**
  * 财务核帐并修正的定时任务.
@@ -56,9 +53,9 @@ public class FinanceCheckJob extends Job {
                     + ",accountType:" + account.accountType);
             AccountSequence lastAccountSequence = AccountSequence.getLastAccountSequence(account.id);
 
-            int fixCount = fixBalance(account);
+            int fixCount = AccountSequenceUtil.fixBalance(account);
             System.out.println("Fixed sequence count:" + fixCount);
-            boolean isOk = checkTradeBalance(account, lastAccountSequence);
+            boolean isOk = AccountSequenceUtil.checkTradeBalance(account, lastAccountSequence);
             if (!isOk) {
                 System.out.println("Fix cash balance failed.");
             } else {
@@ -75,7 +72,7 @@ public class FinanceCheckJob extends Job {
                     System.out.println("Fix Account UncashAmount.");
                 }
             }
-            boolean isPromotionOk = checkTradePromotionBalance(account, lastAccountSequence);
+            boolean isPromotionOk = AccountSequenceUtil.checkTradePromotionBalance(account, lastAccountSequence);
             if (!isPromotionOk) {
                 System.out.println("Fix promotion balance failed.");
             } else {

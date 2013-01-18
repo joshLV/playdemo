@@ -112,7 +112,7 @@ public class CouponsUnitTest extends UnitTest {
     public void testFreeze() {
         ECoupon.freeze(ecoupon.id, null);
         ECoupon e = ECoupon.findById(ecoupon.id);
-        assertEquals(1, e.isFreeze);
+        assertEquals(new Integer(1), e.isFreeze);
         assertEquals(1, CouponHistory.count());
         List<CouponHistory> historyList = CouponHistory.findAll();
         assertEquals("冻结券号", historyList.get(0).remark);
@@ -123,7 +123,7 @@ public class CouponsUnitTest extends UnitTest {
     public void testUnFreeze() {
         ECoupon.unfreeze(ecoupon.id, null);
         ECoupon e = ECoupon.findById(ecoupon.id);
-        assertEquals(0, e.isFreeze);
+        assertEquals(new Integer(0), e.isFreeze);
         assertEquals(1, CouponHistory.count());
         List<CouponHistory> historyList = CouponHistory.findAll();
         assertEquals("解冻券号", historyList.get(0).remark);

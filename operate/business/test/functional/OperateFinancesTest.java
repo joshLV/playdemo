@@ -1,9 +1,11 @@
 package functional;
 
+import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.AccountType;
+import models.admin.OperateUser;
 import models.consumer.User;
 import models.resale.Resaler;
 import models.supplier.Supplier;
@@ -49,6 +51,10 @@ public class OperateFinancesTest extends FunctionalTest {
         account.accountType = AccountType.CONSUMER;
         account.save();
         createAccountSequences();
+
+        OperateUser user = FactoryBoy.create(OperateUser.class);
+        // 设置测试登录的用户名
+        Security.setLoginUserForTest(user.loginName);
     }
 
     private void createAccountSequences() {
@@ -61,7 +67,7 @@ public class OperateFinancesTest extends FunctionalTest {
 
     @Test
     public void testIndex() {
-        Http.Response response = GET(Router.reverse("OperateFinancesTest.index").url);
+        Http.Response response = GET(Router.reverse("OperateFinances.index").url);
         assertIsOk(response);
 
         List<Supplier> supplierList = (List<Supplier>) renderArgs("supplierList");
@@ -70,7 +76,7 @@ public class OperateFinancesTest extends FunctionalTest {
 
     @Test
     public void testCheckAccountSequence_SUPPLIER() {
-        Http.Response response = GET(Router.reverse("OperateFinancesTest.checkAccountSequence").url
+        Http.Response response = GET(Router.reverse("OperateFinances.checkAccountSequence").url
                 + "?supplierId=" + supplier.id + "&accountType=SUPPLIER");
         assertIsOk(response);
 
@@ -93,7 +99,7 @@ public class OperateFinancesTest extends FunctionalTest {
 
     @Test
     public void testCheckAccountSequence_RESALER() {
-        Http.Response response = GET(Router.reverse("OperateFinancesTest.checkAccountSequence").url
+        Http.Response response = GET(Router.reverse("OperateFinances.checkAccountSequence").url
                 + "?resalerLoginName=" + resaler.loginName + "&accountType=RESALER");
         assertIsOk(response);
 
@@ -116,7 +122,7 @@ public class OperateFinancesTest extends FunctionalTest {
 
     @Test
     public void testCheckAccountSequence_CONSUMER() {
-        Http.Response response = GET(Router.reverse("OperateFinancesTest.checkAccountSequence").url
+        Http.Response response = GET(Router.reverse("OperateFinances.checkAccountSequence").url
                 + "?consumerLoginName=" + user.loginName + "&accountType=CONSUMER");
         assertIsOk(response);
 
@@ -129,7 +135,7 @@ public class OperateFinancesTest extends FunctionalTest {
         Long supplierId = (Long) renderArgs("supplierId");
         assertNull(supplierId);
         String resalerLoginName = (String) renderArgs("resalerLoginName");
-        assertEquals(resaler.loginName, resalerLoginName);
+        assertNull(resalerLoginName);
         String consumerLoginName = (String) renderArgs("consumerLoginName");
         assertEquals(user.loginName, consumerLoginName);
         AccountType accountType = (AccountType) renderArgs("accountType");

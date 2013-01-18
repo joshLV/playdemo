@@ -8,10 +8,14 @@ import models.consumer.UserInfo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import play.data.validation.Error;
+import play.modules.breadcrumbs.BreadcrumbList;
 import play.mvc.Http;
+import play.mvc.Router;
 import play.test.FunctionalTest;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,8 +49,20 @@ public class UserAddressesTest extends FunctionalTest {
     }
 
     @Test
-    public void testCreate() {
+    public void testIndex() {
+        Http.Response response = GET(Router.reverse("UserAddresses.index").url);
+        assertIsOk(response);
 
+        List<Address> addressList = (List<Address>) renderArgs("addressList");
+        BreadcrumbList breadcrumbs = (BreadcrumbList) renderArgs("breadcrumbs");
+
+        assertEquals("收货地址", breadcrumbs.get(0).desc);
+        assertEquals("/addresses", breadcrumbs.get(0).url);
+        assertEquals(1, addressList.size());
+    }
+
+    @Test
+    public void testCreate() {
         Map<String, String> params = new HashMap<>();
         params.put("address.name", "testName");
         params.put("address.province", "上海市");
@@ -61,6 +77,53 @@ public class UserAddressesTest extends FunctionalTest {
         int size = Address.findByOrder(user).size();
         assertEquals(2, size);
     }
+
+    @Test
+    public void testCreate_InvalidPhone() {
+        Map<String, String> params = new HashMap<>();
+        params.put("address.name", "testName");
+        params.put("address.province", "上海市");
+        params.put("address.city", "市辖区");
+        params.put("address.district", "黄浦区");
+        params.put("address.address", "宛平南路100号");
+        params.put("address.postcode", "200000");
+
+        Http.Response response = POST("/addresses", params);
+        List<play.data.validation.Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("address.mobile", errors.get(0).getKey());
+        assertIsOk(response);
+    }
+
+    @Test
+    public void testCreate_InvalidAddress() {
+        Map<String, String> params = new HashMap<>();
+        params.put("address.name", "testName");
+        params.put("address.province", "上海市");
+        params.put("address.city", "市辖区");
+        params.put("address.district", "黄浦区");
+        params.put("address.postcode", "200000");
+        params.put("address.mobile", "15888888888");
+
+        Http.Response response = POST("/addresses", params);
+        List<play.data.validation.Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("address.address", errors.get(0).getKey());
+        assertIsOk(response);
+    }
+
+
+    @Test
+    public void testEdit() {
+        Http.Response response = GET("/addresses/" + address.id + "/edit");
+        assertIsOk(response);
+
+        List<Address> addressList = (List<Address>) renderArgs("addressList");
+        Address renderAddress = (Address) renderArgs("address");
+
+        assertEquals(1, addressList.size());
+        assertEquals(address.id, renderAddress.id);
+        assertEquals(address.address, renderAddress.address);
+    }
+
 
     @Test
     public void testCreateAndDefault() {
