@@ -11,6 +11,7 @@ import models.order.OrderItems;
 import models.order.OrderStatus;
 import models.sms.OrderECouponMessage;
 import models.sms.SMSUtil;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Http;
@@ -57,9 +58,14 @@ public class PaymentInfoTest extends FunctionalTest {
         // 设置测试登录的用户名
 
         Security.setLoginUserForTest(user.loginName);
+    }
 
+
+    @After
+    public void tearDown() throws Exception {
         MockMQ.clear();
     }
+
 
     @Test
     public void test_展示确认支付信息页() {

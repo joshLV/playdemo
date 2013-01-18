@@ -1,24 +1,21 @@
 package unit;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.List;
-
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.job.ExpiredCouponNotice;
 import models.order.ECoupon;
 import models.order.SentCouponMessage;
 import models.sales.Goods;
 import models.sms.SMSMessage;
 import models.sms.SMSUtil;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.test.UnitTest;
 import util.DateHelper;
 import util.mq.MockMQ;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
+
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * TODO.
@@ -37,7 +34,7 @@ public class ExpiredCouponUnitTest extends UnitTest {
     }
 
     @Test
-    public void testJob() throws ParseException {
+    public void testJob() throws Exception {
         Goods goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
             @Override
             public void build(Goods g) {
@@ -66,7 +63,7 @@ public class ExpiredCouponUnitTest extends UnitTest {
     }
 
     @Test
-    public void testJobWhenNoNeedSendCouponIn8() throws ParseException {
+    public void testJobWhenNoNeedSendCouponIn8() throws Exception {
         FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
             @Override
             public void build(Goods g) {
@@ -87,7 +84,7 @@ public class ExpiredCouponUnitTest extends UnitTest {
     }
     
     @Test
-    public void testJobWhenNoNeedSendCouponIn6() throws ParseException {
+    public void testJobWhenNoNeedSendCouponIn6() throws Exception {
         FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
             @Override
             public void build(Goods g) {

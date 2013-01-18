@@ -1,23 +1,17 @@
 package unit;
 
 import factory.FactoryBoy;
-
 import factory.callback.SequenceCallback;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
-import models.sales.Category;
 import models.sales.Goods;
-import models.sales.TuanNoCategoryData;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import play.Play;
-import play.libs.Mail;
 import play.test.UnitTest;
+import util.mq.MockMQ;
 
-import java.util.LinkedList;
 import java.util.List;
-
-import util.mq.*;
 
 /**
  * User: wangjia
@@ -37,7 +31,11 @@ public class TuanNoCategoryMessageMailTest extends UnitTest {
                         target.name = "Test#" + seq;
                     }
                 });
+    }
 
+    @After
+    public void tearDown() throws Exception {
+        MockMQ.clear();
     }
 
     @Test

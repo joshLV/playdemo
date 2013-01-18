@@ -13,8 +13,6 @@ import org.junit.Test;
 import play.test.UnitTest;
 import util.DateHelper;
 
-import java.text.ParseException;
-
 /**
  * <p/>
  * User: yanjy
@@ -28,7 +26,7 @@ public class CancelOrdersUnitTest extends UnitTest {
     }
 
     @Test
-    public void testJob() throws ParseException {
+    public void testJob() throws Exception {
         final User user = FactoryBoy.create(User.class);
         Goods goods = FactoryBoy.create(Goods.class);
         Order order = FactoryBoy.create(Order.class, new BuildCallback<Order>() {

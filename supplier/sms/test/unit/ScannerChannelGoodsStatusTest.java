@@ -33,6 +33,7 @@ public class ScannerChannelGoodsStatusTest extends UnitTest {
         resaler.save();
         channelGoodsInfo = FactoryBoy.create(ChannelGoodsInfo.class);
         channelGoodsInfo.resaler = resaler;
+        channelGoodsInfo.status = null;
         channelGoodsInfo.url = "http://t.58.com/sh/65460328362500006";
         channelGoodsInfo.save();
 

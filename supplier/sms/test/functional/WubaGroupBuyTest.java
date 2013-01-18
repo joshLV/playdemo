@@ -9,9 +9,10 @@ import models.order.ECoupon;
 import models.order.Order;
 import models.resale.Resaler;
 import models.sales.GoodsDeployRelation;
-import models.sms.SMSMessage;
+import models.sms.OrderECouponMessage;
 import models.sms.SMSUtil;
 import models.wuba.WubaUtil;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Http;
@@ -41,6 +42,11 @@ public class WubaGroupBuyTest extends FunctionalTest {
         AccountUtil.getCreditableAccount(resaler.getId(), AccountType.RESALER);
     }
 
+    @After
+    public void tearDown() throws Exception {
+        MockMQ.clear();
+    }
+
     @Test
     public void testNewOrder() {
         GoodsDeployRelation goodsDeployRelation = FactoryBoy.last(GoodsDeployRelation.class);
@@ -60,9 +66,8 @@ public class WubaGroupBuyTest extends FunctionalTest {
         assertEquals(1, Order.count());
         assertEquals(1, ECoupon.count());
 
-        SMSMessage message = (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
+        OrderECouponMessage message = (OrderECouponMessage) MockMQ.getLastMessage(SMSUtil.SMS_ORDER_QUEUE);
         assertNotNull(message);
-        assertTrue(message.getContent().startsWith("【58团】"));
     }
 
     @Test
