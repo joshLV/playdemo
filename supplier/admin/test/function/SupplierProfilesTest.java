@@ -52,7 +52,6 @@ public class SupplierProfilesTest extends FunctionalTest {
         });
 
 
-
         SupplierRole roleEditor = FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
             @Override
             public void build(SupplierRole role) {
@@ -60,7 +59,6 @@ public class SupplierProfilesTest extends FunctionalTest {
                 role.key = "editor";
             }
         });
-
 
 
         SupplierRole roleAccount = FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
@@ -106,7 +104,7 @@ public class SupplierProfilesTest extends FunctionalTest {
         form.put("supplierUser.mobile", "15026682165");
         form.put("supplierUser.jobNumber", "abc");
         form.put("supplierUser.loginName", "tom");
-        Response response = POST("/profile/"+supplierUser.id, form);
+        Response response = POST("/profile/" + supplierUser.id, form);
         List<play.data.validation.Error> errors = (List<Error>) renderArgs("errors");
         assertEquals("validation.jobNumber", errors.get(0).getKey());
         assertStatus(200, response);

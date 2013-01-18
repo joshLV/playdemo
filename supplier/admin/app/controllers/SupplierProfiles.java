@@ -54,8 +54,6 @@ public class SupplierProfiles extends Controller {
         if (Validation.hasErrors()) {
             List rolesList = SupplierRole.findAll();
             String roleIds = "";
-            System.out.println(supplierUser.roles + "===supplierUser.roles>>");
-            System.out.println(supplierUser.roles.size() + "===supplierUser.roles.size()>>");
             if (supplierUser.roles != null && supplierUser.roles.size() > 0) {
                 for (SupplierRole role : supplierUser.roles) {
                     roleIds += role.id + ",";
