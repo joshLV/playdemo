@@ -1,8 +1,16 @@
 #{extends 'layout_operate/layout.html' /}
 #{include 'share/nav.html' /}
 #{set title:'券号列表' /}
+
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script type="text/javascript">
+
+    function prom() {
+
+        alert("test")
+
+    }
+
     function sendMessage(id) {
         $.ajax({
             url:"/coupons-message/" + id + "/send",
@@ -112,7 +120,7 @@
                                             class="input-medium"
                                             value="true" ${condition?.isLottery ?'checked':''}/>
                     &nbsp;&nbsp;需预约商品：<input type="checkbox" name="condition.isOrder"
-                                            value="true" ${condition?.isOrder ?'checked':''}/>
+                                             value="true" ${condition?.isOrder ?'checked':''}/>
                 </td>
             </tr>
             <tr>
@@ -177,7 +185,13 @@
         <tr>
             <td><a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a></abbr></td>
             <td>${coupon?.orderItems?.phone}</td>
-            <td>${n}${coupon?.getMaskedEcouponSn()}</td>
+            <td>
+            *{<a href="" title="查看完整券号"}*
+            *{onclick="prom()">}*
+                ${n}${coupon?.getMaskedEcouponSn()}
+
+
+            </td>
         *{<td>${coupon?.eCouponSn}</td>}*
             <td>${coupon?.goods?.shortName}</td>
             <td>${coupon?.salePrice?.formatCurrency('CNY')}</td>
