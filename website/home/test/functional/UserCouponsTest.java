@@ -38,7 +38,11 @@ import factory.callback.BuildCallback;
  * User: hejun
  * Date: 12-7-30
  */
+<<<<<<< Updated upstream:website/home/test/functional/UserCouponsTest.java
 public class UserCouponsTest extends FunctionalTest {
+=======
+public class  UserCouponsFuncTest extends FunctionalTest {
+>>>>>>> Stashed changes:website/home/test/functional/UserCouponsFuncTest.java
 
     User user;
     Goods goods;
