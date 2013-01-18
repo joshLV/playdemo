@@ -20,12 +20,27 @@ public class PlayWebServiceClient extends WebServiceClient {
         return _instance;
     }
 
+    public static WebServiceClient getInstance(String encoding) {
+        PlayWebServiceClient instance = new PlayWebServiceClient();
+        instance.encoding = encoding;
+        return instance;
+    }
+
     private PlayWebServiceClient() {
     }
 
+    public String encoding;
+
     @Override
     public HttpResponse doGet(WebServiceCallLogData log, WebServiceCallback callback) {
-        play.libs.WS.HttpResponse response = WS.url(log.url).get();
+        WSRequest wsRequest = null;
+        if (encoding != null) {
+            wsRequest = WS.withEncoding(encoding).url(log.url);
+        } else {
+            wsRequest = WS.url(log.url);
+        }
+
+        play.libs.WS.HttpResponse response = wsRequest.get();
         log.statusCode = response.getStatus();
         log.responseText = response.getString();
         if (callback != null) {
@@ -41,7 +56,12 @@ public class PlayWebServiceClient extends WebServiceClient {
 
     @Override
     protected HttpResponse doPost(WebServiceCallLogData log, Map<String, Object> params, WebServiceCallback callback) {
-        WSRequest request = WS.url(log.url);
+        WSRequest request = null;
+        if (encoding != null) {
+            request = WS.withEncoding(encoding).url(log.url);
+        } else {
+            request = WS.url(log.url);
+        }
         if (params != null && params.size() > 0) {
             request = request.params(params);
         }
@@ -56,4 +76,5 @@ public class PlayWebServiceClient extends WebServiceClient {
         }
         return response;
     }
+
 }
