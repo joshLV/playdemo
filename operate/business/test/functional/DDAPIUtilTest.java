@@ -214,4 +214,66 @@ public class DDAPIUtilTest extends FunctionalTest {
         assertEquals(ErrorCode.ECOUPON_NOT_EXITED, failureLog.errorCode);
         assertEquals(ecoupon.order.id, failureLog.orderId);
     }
+
+    @Test
+    public void 测试查询当当项目接口_正常情况() {
+
+        DDAPIUtil.proxy = new HttpProxy() {
+            @Override
+            public Response accessHttp(PostMethod postMethod) throws DDAPIInvokeException {
+                String data = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>" +
+                        "<resultObject><status_code>0</status_code>" +
+                        "<error_code>0</error_code><desc><![CDATA[成功]]></desc>" +
+                        "<data><row><name>aaaa</name><ddgid>1800495901</ddgid>" +
+                        "<spgid>15477</spgid><status>0</status></row>" +
+                        "<row><name>bbbb</name><ddgid>1800495902</ddgid>" +
+                        "<spgid>15478</spgid><status>0</status></row></data></resultObject>";
+                Response response = new Response();
+                try {
+                    response = new Response(new ByteArrayInputStream(data.getBytes()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return response;
+            }
+        };
+
+        try {
+            String ddGoodsId = DDAPIUtil.getItemList(15477l);
+            assertEquals("1800495901", ddGoodsId);
+        } catch (DDAPIInvokeException e) {
+            e.fillInStackTrace();
+        }
+    }
+
+    @Test
+    public void 测试查询当当项目接口_查询不到的情况() {
+
+        DDAPIUtil.proxy = new HttpProxy() {
+            @Override
+            public Response accessHttp(PostMethod postMethod) throws DDAPIInvokeException {
+                String data = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>" +
+                        "<resultObject><status_code>0</status_code>" +
+                        "<error_code>0</error_code><desc><![CDATA[成功]]></desc>" +
+                        "<data><row><name>aaaa</name><ddgid>1800495901</ddgid>" +
+                        "<spgid>15476</spgid><status>0</status></row>" +
+                        "<row><name>bbbb</name><ddgid>1800495902</ddgid>" +
+                        "<spgid>15478</spgid><status>0</status></row></data></resultObject>";
+                Response response = new Response();
+                try {
+                    response = new Response(new ByteArrayInputStream(data.getBytes()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return response;
+            }
+        };
+
+        try {
+            String ddGoodsId = DDAPIUtil.getItemList(15477l);
+            assertEquals("", ddGoodsId);
+        } catch (DDAPIInvokeException e) {
+            e.fillInStackTrace();
+        }
+    }
 }

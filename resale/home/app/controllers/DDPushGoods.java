@@ -10,6 +10,7 @@ import models.dangdang.DDAPIUtil;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
+import models.sales.ChannelGoodsInfo;
 import models.sales.Goods;
 import models.sales.GoodsDeployRelation;
 import models.sales.GoodsThirdSupport;
@@ -41,6 +42,7 @@ import java.util.Map;
 @With(SecureCAS.class)
 public class DDPushGoods extends Controller {
     public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String THIRD_URL = "http://tuan.dangdang.com/product.php";
 
     /**
      * 推送商品页面
@@ -54,7 +56,7 @@ public class DDPushGoods extends Controller {
         }
         //查询是否已经推送过该商品，是则直接从GoodsThirdSupport读取，不是就从goods表查询
         Goods goods = Goods.findOnSale(goodsId);
-        ResalerFav resalerFav = ResalerFav.findByGoodsId(user,goodsId);
+        ResalerFav resalerFav = ResalerFav.findByGoodsId(user, goodsId);
         if (resalerFav == null) {
             error("no goods found,请检查该商品是否已下架，或是否设置隐藏上架！");
         }
@@ -84,7 +86,7 @@ public class DDPushGoods extends Controller {
             error("user is not dangdang resaler");
         }
         Goods goods = Goods.findOnSale(goodsId);
-        ResalerFav resalerFav = ResalerFav.findByGoodsId(user,goodsId);
+        ResalerFav resalerFav = ResalerFav.findByGoodsId(user, goodsId);
         if (resalerFav == null) {
             error("no goods found,请检查该商品是否已下架，或是否设置隐藏上架！");
         }
@@ -119,9 +121,47 @@ public class DDPushGoods extends Controller {
             resalerFav.partner = OuterOrderPartner.DD;
             resalerFav.lastLinkId = goodsMapping.linkId;
             resalerFav.save();
+            getItemList(goods, resalerFav);
             Logger.info("[DDAPIPushGoods API] invoke push goods success!" + goodsId);
         }
         render("/DDPushGoods/result.html", pushFlag);
+    }
+
+    /**
+     * 项目查询接口
+     *
+     * @param goods
+     * @param resalerFav
+     */
+    private static void getItemList(Goods goods, ResalerFav resalerFav) {
+        Long linkId = resalerFav.lastLinkId;
+        try {
+            String ddGoodsId = DDAPIUtil.getItemList(linkId);
+            if (StringUtils.isBlank(ddGoodsId)) {
+                return;
+            }
+            resalerFav.thirdGroupbuyId = Long.valueOf(ddGoodsId);
+            resalerFav.save();
+            setUrlParams(goods, resalerFav.resaler, ddGoodsId);
+        } catch (DDAPIInvokeException e) {
+            Logger.info("[getItemList API] getDDGoodsId exception! linkId=" + linkId);
+        }
+    }
+
+    /**
+     * 设置新增或修改成功，显示的参数
+     */
+    private static void setUrlParams(Goods goods, Resaler resaler, String ddGoodsId) {
+
+        String url = THIRD_URL + "?product_id=" + ddGoodsId + "&type=local";
+        ChannelGoodsInfo channelGoodsInfo = ChannelGoodsInfo.findByResaler(resaler, url);
+        if (channelGoodsInfo == null) {
+            new ChannelGoodsInfo(goods, resaler, url, "当当", resaler.userName).save();
+        } else {
+            channelGoodsInfo.url = url;
+            channelGoodsInfo.tag = "当当";
+            channelGoodsInfo.save();
+        }
     }
 
     /**
