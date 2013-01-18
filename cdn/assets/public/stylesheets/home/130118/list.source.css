@@ -1,0 +1,567 @@
+.wrapper {
+    background: url(//img.uhcdn.com/home/repeat.png) repeat 0 0;
+}
+#content {
+    width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+}
+#crumbs-panel {
+    height: 43px;
+    overflow: hidden;
+}
+#crumbs-panel .crumbs {
+}
+#crumbs-panel .crumbs {
+    float: left;
+    color: #757575;
+    padding: 10px 0 15px;
+}
+#crumbs-panel .crumbs a {
+    color: #f96c0f;
+}
+#crumbs-panel .stats {
+    float: left;
+    height: 21px;
+    margin: 8px 0 0 5px;
+}
+#crumbs-panel .stats i.left {
+    float: left;
+    width: 11px;
+    height: 21px;
+    background: url(//img.uhcdn.com/home/list-2.png) no-repeat 0 -130px;
+}
+#crumbs-panel .stats i.right {
+    float: left;
+    width: 11px;
+    height: 21px;
+    background: url(//img.uhcdn.com/home/list-2.png) no-repeat -12px -130px;
+}
+#crumbs-panel .stats .center {
+    float: left;
+    width: auto;
+    padding: 1px 0;
+    font-size: 12px;
+    font-weight: 700;
+    background-color: #fff;
+    border-top: 1px solid #ffd99b;
+    border-bottom: 1px solid #ffd99b;
+}
+#crumbs-panel .stats .inner {
+    float: left;
+    height: 17px;
+    color: #707070;
+    padding: 0 20px 0 8px;
+    line-height: 17px;
+    background-color: #fff3d5;
+}
+#crumbs-panel .stats span {
+    color: #ff751a;
+}
+#section {
+    width: 750px;
+    float: left;
+}
+#sidebar {
+    width: 200px;
+    float: right;
+}
+#sorry {
+    color: #707070;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 30px 25px 30px 225px;
+    line-height: 65px;
+    margin-bottom: 10px;
+    border: 1px solid #e8e8e8;
+    background-color: #fff;
+}
+#sorry .inner {
+    padding-left: 75px;
+    background: #fff url(//img.uhcdn.com/home/list-2.png) no-repeat 0 -63px;
+}
+#sorry span {
+    color: #ff751a;
+}
+#filter {
+    padding: 12px 10px 0;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border: 1px solid #e8e8e8;
+}
+#filter dl {
+    padding: 5px 0;
+}
+#filter .cate {
+    margin-bottom: 7px;
+    border-bottom: 1px solid #f4f4f4;
+}
+#filter dt {
+    width: 40px;
+    float: left;
+    color: #898989;
+    font-weight: 700;
+    line-height: 26px;
+    line-height: 30px\9;
+    _line-height: 20px;
+    text-align: right;
+}
+#filter dd {
+    margin-left: 40px;
+}
+#filter dd li {
+    float: left;
+    width: 98px;
+    _width: 97px;
+    height: 27px;
+    overflow: hidden;
+    line-height: 27px;
+}
+#filter dd a {
+    color: #878787;
+    display: inline-block;
+    *zoom: 1;
+    white-space: nowrap;
+}
+#filter dd em {
+    color: #cbcbcb;
+    font-family: "宋体";
+}
+#filter dd .some .curr,
+#filter dd .some a:hover {
+    color: #fff;
+    text-decoration: none;
+    padding: 1px 3px 2px;
+    *padding: 2px 3px 1px;
+    _padding: 1px 3px 2px;
+    background-color: #f97311;
+}
+#filter dd .some .curr em,
+#filter dd .some a:hover em {
+    color: #fff;
+}
+#filter dd .outer {
+    margin: 5px 0 15px;
+    border: 1px solid #ffd99b;
+}
+#filter dd .outer .more {
+    padding: 1px 15px;
+    border: 1px solid #fff;
+    background-color: #fff7e2;
+}
+#filter dd .outer .more li {
+    width: 93px;
+    height: 23px;
+    line-height: 23px;
+}
+#filter dd .outer .curr,
+#filter dd .outer a:hover {
+    color: #ff6b08;
+}
+#filter dd .outer .curr em,
+#filter dd .outer a:hover em {
+    color: #ff6b08;
+}
+
+#result {
+    border-top: 3px solid #f97311;
+}
+#result .hd .sort {
+    float: left;
+}
+#result .hd .sort li {
+    float: left;
+}
+#result .hd .sort a {
+    float: left;
+    color: #707070;
+    padding: 5px 10px 5px 0;
+    height: 22px;
+    line-height: 22px;
+    display: inline-block;
+}
+#result .hd .sort a span {
+    display: block;
+    padding-right: 10px;
+}
+#result .hd .sort a:hover {
+    color: #f97310;
+    text-decoration: none;
+}
+#result .hd .sort .curr {
+    color: #f97310;
+    font-weight: 700;
+}
+#result .hd .sort .down {
+    background: url(//img.uhcdn.com/home/list-2.png) no-repeat right -205px;
+    *background-position: right -207px;
+    _background-position: right -205px;
+}
+#result .hd .sort .up {
+    background: url(//img.uhcdn.com/home/list-2.png) no-repeat right -188px;
+    *background-position: right -190px;
+    _background-position: right -188px;
+}
+#result .hd .sort .curr .down,
+#result .hd .sort a:hover .down {
+    background-position: right -169px;
+    *background-position: right -171px;
+    _background-position: right -169px;
+}
+#result .hd .sort .curr .up,
+#result .hd .sort a:hover .up {
+    background-position: right -152px;
+    *background-position: right -154px;
+    _background-position: right -152px;
+}
+#result .hd .sift {
+    float: right;
+    _margin-top: 5px;
+}
+#result .hd .sift input {
+    vertical-align: middle;
+    margin-top: -1px;
+    *margin-top: 1px;
+}
+#result .hd .sift label {
+    color: #707070;
+    margin-left: 2px;
+    margin-right: 12px;
+    font-weight: normal;
+}
+#result .bd {
+    padding: 0 5px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: solid #dcdcdc;
+    border-width: 0 1px 1px;
+}
+.goods li {
+    float: left;
+    padding: 10px 0;
+    border-bottom: 1px dashed #dbdbdb;
+}
+.goods .inner {
+    width: 199px;
+    padding: 8px 23px;
+    border-left: 1px dashed #dbdbdb;
+}
+.goods li.first .inner {
+    border-left-color: #fff;
+}
+.goods .image {
+    position: relative;
+    width: 199px;
+    height: 152px;
+    overflow: hidden;
+}
+.goods .image .region {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    color: #fff;
+    padding: 5px;
+    max-height: 70px;
+    width: 189px;
+    overflow: hidden;
+    opacity: 0;
+    filter: alpha(opacity=0); 
+    background-color: #000;
+    -moz-transition: opacity .5s ease-out;
+    -webkit-transition: opacity .5s ease-out;
+    transition: opacity .5s ease-out;
+}
+.goods .image .hover,
+.goods .image .region:hover {
+    opacity: 0.9;
+    filter: alpha(opacity=90); 
+    text-decoration: none;
+}
+.goods .title {
+    height: 36px;
+    overflow: hidden;
+    margin: 7px 0;
+}
+.goods .title a {
+    color: #767676;
+}
+.goods .title em {
+    color: #FF751A;
+}
+.goods .title a:hover {
+    color: #f97310;
+}
+.goods .attribute {
+    padding-top: 15px;
+    border-top: 1px dotted #d9d9d9;
+}
+.goods .attribute {
+    overflow: hidden;
+    *zoom: 1;
+}
+.goods .attribute .left {
+    float: left;
+    width: 100px;
+}
+.goods .attribute .price {
+    color: #f00;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 28px;
+    font-family: arial, tahoma;
+}
+.goods .attribute del {
+    color: #999;
+}
+.goods .attribute .count {
+    color: #9a9a9a;
+}
+.goods .attribute .count em {
+    color: #ff9600;
+}
+.goods .attribute .right {
+    float: right;
+    width: 72px;
+    padding-top: 17px;
+}
+.goods .attribute .right .view {
+    display: block;
+    width: 72px;
+    height: 30px;
+    overflow: hidden;
+    text-indent: -9999px;
+    background: url(//img.uhcdn.com/home/list-2.png) no-repeat 0 -33px;
+}
+.pagination-container {
+    text-align: center;
+    padding: 45px 0 40px;
+}
+.pagination-container .pagination {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+}
+.pagination-container .pagination li {
+    float: left;
+}
+.pagination-container .pagination a,
+.pagination-container .pagination span {
+    display: block;
+    margin-left: 5px;
+    padding: 2px 9px 3px;
+    color: #6e6e6e;
+    border: 1px solid #d8d8d8;
+}
+.pagination-container .pagination a:hover {
+    text-decoration: none;
+}
+.pagination-container .pagination .active {
+    color: #F8F8F8;
+    font-weight: 700;
+    background-color: #767676;
+    border: 1px solid #767676;
+}
+.pagination-container .pagination .prev,
+.pagination-container .pagination .next {
+    position: relative;
+}
+.pagination-container .pagination .prev a {
+    margin-left: 0;
+    margin-right: 6px;
+    padding-left: 14px;
+}
+.pagination-container .pagination .next a {
+    margin-left: 10px;
+    padding-right: 14px;
+}
+.pagination-container .pagination .prev i,
+.pagination-container .pagination .next i {
+    position: absolute;
+    top: 8px;
+    top: 6px\9;
+    _top: 7px;
+    width: 0;
+    height: 0;
+    font-size: 0;
+    line-height: 0;
+    border-top: 5px dashed transparent;
+    border-bottom: 5px dashed transparent;
+}
+.pagination-container .pagination .prev i {
+    left: 5px;
+    border-right: 5px solid #a5a5a5;
+}
+.pagination-container .pagination .next i {
+    right: 5px;
+    border-left: 5px solid #a5a5a5;
+}
+
+.hd {
+    height: 32px;
+    color: #f97311;
+    overflow: hidden;
+    line-height: 32px;
+    text-indent: 12px;
+    font-weight: 700;
+    border: 1px solid #e8e8e8;
+    border-top: 0;
+    background: url(//img.uhcdn.com/home/list-2.png) repeat-x 0 0;
+}
+#interest {
+    border-top: 3px solid #f97311;
+}
+#interest .bd {
+    height: 956px;
+    padding: 0 5px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: solid #dcdcdc;
+    border-width: 0 1px 1px;
+}
+
+#switch {
+    width: 200px;
+    height: 85px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 10px;
+}
+#switch .slides_container a {
+    display: block;
+    font-size: 0;
+}
+#switch .pagination {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    width: 200px;
+    height: 15px;
+    line-height: 15px;
+    text-align: right;
+}
+#switch .pagination li {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    width: 15px;
+    height: 15px;
+    margin-left: 1px;
+    opacity: 0.8;
+    filter: alpha(opacity=80);
+    background-color: #6a6a6a;
+    text-align: center;
+}
+#switch .pagination .current {
+    background-color: #f97311;
+}
+#switch .pagination a {
+    display: block;
+    color: #fff;
+    opacity: 1;
+    filter: alpha(opacity=100);
+    line-height: 15px;
+}
+#switch .pagination a:hover {
+    text-decoration: none;
+}
+#wpaqq {
+    margin-bottom: 10px;
+    border: 1px solid #ffd99b;
+}
+#wpaqq .inner {
+    padding: 5px;
+    color: #cf9849;
+    border: 1px solid #fff;
+    background-color: #fff3d5;
+    text-shadow: 0 1px 1px #fffcf4;
+}
+#wpaqq .qq {
+    height: 22px;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #fff;
+}
+#wpaqq .qq a {
+    float: left;
+    height: 22px;
+    display: inline-block;
+}
+#wpaqq .qq .faq {
+    color: #09f;
+    margin-left: 42px;
+    line-height: 28px;
+    text-decoration: underline;
+}
+.sidewrap {
+    margin-bottom: 10px;
+    border-top: 3px solid #f97311;
+}
+.sidewrap .bd {
+    padding: 12px 12px 4px;
+    background-color: #fff;
+    border: solid #dcdcdc;
+    border-width: 0 1px 1px;
+}
+.sidewrap ul {
+    padding: 0 1px;
+}
+.sidewrap li {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #dedede;
+}
+.sidewrap .image {
+    border: 1px solid #f4f4f4;
+    font-size: 0;
+}
+.sidewrap .image a {
+    font-size: 0;
+}
+.sidewrap .title {
+    overflow: hidden;
+    width: 174px;
+    height: 36px;
+    margin: 10px 0;
+}
+.sidewrap .title a {
+    color: #767676;
+    line-height: 18px;
+}
+.sidewrap .title a:hover {
+    color: #f97310;
+}
+.sidewrap .attri {
+    color: #707070;
+    overflow: hidden;
+    width: 174px;
+    height: 22px;
+}
+.sidewrap .attri del {
+    float: left;
+    width: 100px;
+    display: inline-block;
+}
+.sidewrap .price {
+    color: #7d7d7d;
+    line-height: 22px;
+}
+.sidewrap .price b {
+    color: #f00;
+    font: 700 16px arial;
+}
+.sidewrap .ft {
+    margin-top: -1px;
+    padding: 0 1px 1px;
+    height: 44px;
+    border: solid #dcdcdc;
+    border-width: 0 1px 1px;
+    background: #fafafa url(//img.uhcdn.com/home/more.png) no-repeat 1px 0;
+}
+.sidewrap .ft a {
+    display: block;
+    height: 44px;
+    font-size: 0;
+    text-indent: -9999px;
+}

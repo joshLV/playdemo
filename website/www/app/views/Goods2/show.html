@@ -6,11 +6,11 @@
 <meta name="Keywords" content="${detailKeywords}">
 #{/set}
 #{set 'moreStyles'}
-    #{asset.css src:['/home/130110/detail.css']/}
+    #{asset.css src:['/home/130118/detail.css']/}
 #{/set}
 <script src="http://maps.googleapis.com/maps/api/js?e&language=zh-CN&region=GB&key=AIzaSyCbnBNu40y5eXnL8jOey4lbS3P1vQ_HR5E&sensor=false"></script>
 #{set 'moreScripts'}
-    #{asset.js src:['/u/slides.min.js', '/home/130110/blockUI.js', '/home/130110/detail.js']/}
+    #{asset.js src:['/u/slides.min.js', '/home/130118/blockUI.js', '/home/130118/detail.js', '/home/130118/map.js']/}
 #{/set}
 
 <style type="text/css">
@@ -206,15 +206,15 @@
 <div id="outlet">
     <div class="hd">适用门店</div>
     <div class="bd clearfix">
+        <div class="outlet-gmap">
+            <div id="min-gmap" style="width: 330px; height: 225px"></div>
+        </div>
         <div class="outlet-list">
             <ul></ul>
             <div class="outlet-more">
-                <span class="outlet-total">共<em id="outlet-total-num"></em>家分店</span>
+                <span class="outlet-total">共<em id="outlet-total-num"></em>家分店 <a class="view-all-outlet" data-index="0" href="">查看全部</a></span>
                 <span id="outlet-page"></span>
             </div>
-        </div>
-        <div class="outlet-gmap">
-            <div id="min_gmap" style="width: 330px; height: 225px"></div>
         </div>
     </div>
 </div>
