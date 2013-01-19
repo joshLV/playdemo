@@ -11,29 +11,29 @@ import play.test.UnitTest;
 import util.ws.MockWebServiceClient;
 
 public class ZtSMSProviderTest extends UnitTest {
-	
+
 	ZtSMSProvider provider = new ZtSMSProvider();
-    
+
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
         MockWebServiceClient.clear();
     }
-    
+
     @Test
     public void testSendMessageSuccess() {
-        MockWebServiceClient.pushMockHttpRequest(200, "1,发送成功");
+        MockWebServiceClient.addMockHttpRequest(200, "1,发送成功");
         SMSMessage msg = new SMSMessage("Hello,world!", "15026682165");
         provider.send(msg);
         WebServiceCallLogData log = MockWebServiceClient.getLastWebServiceCallLog();
         assertEquals("ZTSMS", log.callType);
         assertTrue(log.success);
     }
-    
+
 
     @Test
     public void testSendMessageFail() {
-        MockWebServiceClient.pushMockHttpRequest(200, "3,发送失败");
+        MockWebServiceClient.addMockHttpRequest(200, "3,发送失败");
         SMSMessage msg = new SMSMessage("Hello,world!", "15026682165");
         SMSException smsException = null;
         try {

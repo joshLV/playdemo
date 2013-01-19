@@ -6,6 +6,7 @@ import models.supplier.Supplier;
 import org.junit.Before;
 import org.junit.Test;
 import play.test.FunctionalTest;
+import util.ws.MockWebServiceClient;
 
 /**
  * 大东票务接口测试.
@@ -30,7 +31,8 @@ public class DadangProductsTest extends FunctionalTest {
 
     @Test
     public void testSync() throws Exception {
-
-
+        MockWebServiceClient.addMockHttpRequestFromFile(200, "test/data/dadong/GetProductsEndPage.xml");
+        MockWebServiceClient.addMockHttpRequestFromFile(200, "test/data/dadong/GetProductsPage2.xml");
+        MockWebServiceClient.addMockHttpRequestFromFile(200, "test/data/dadong/GetProductsPage1.xml");
     }
 }

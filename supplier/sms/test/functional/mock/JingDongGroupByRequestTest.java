@@ -72,7 +72,7 @@ public class JingDongGroupByRequestTest extends FunctionalTest {
 
     @Test
     public void testDoSendOrder() throws Exception {
-        MockWebServiceClient.pushMockHttpRequest(200, "Success!");
+        MockWebServiceClient.addMockHttpRequest(200, "Success!");
 
         Map<String, String> params = new HashMap<>();
         params.put("url", "http://localhost:7402/api/v1/jd/gb/send-order");
