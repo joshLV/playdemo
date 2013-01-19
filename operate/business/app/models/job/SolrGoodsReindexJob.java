@@ -2,11 +2,13 @@ package models.job;
 
 import models.sales.Goods;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.jobs.Every;
 import play.jobs.Job;
 import play.modules.solr.Solr;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -24,19 +26,18 @@ public class SolrGoodsReindexJob extends Job {
     public void doJob() throws Exception {
         Calendar endDate = Calendar.getInstance();
         Calendar beginDate = Calendar.getInstance();
-        beginDate.add(Calendar.MINUTE, -5);
+        beginDate.add(Calendar.MINUTE, -10);
         List<Goods> updatedGoods = Goods.findUpdatedGoods(beginDate.getTime(), endDate.getTime());
         if (CollectionUtils.isEmpty(updatedGoods)) {
             return;
         }
 
-        StringBuilder goodsIds = new StringBuilder();
+        List<String> goodsIds = new ArrayList<>();
         for (Goods updatedGood : updatedGoods) {
             Solr.save(updatedGood);
-            goodsIds.append(updatedGood.id);
-            goodsIds.append(",");
+            goodsIds.add(updatedGood.id.toString());
         }
-        Logger.info("Solr Goods reindex:(id:" + goodsIds.substring(0, goodsIds.length() - 1) + ")");
+        Logger.info("Solr Goods reindex:(id:" + StringUtils.join(goodsIds, ",") + ")");
     }
 
 }
