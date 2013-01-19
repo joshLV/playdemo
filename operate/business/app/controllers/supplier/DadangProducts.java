@@ -27,4 +27,5 @@ public class DadangProducts extends Controller {
         Integer newCount = await(promise);
         render(newCount);
     }
+
 }
