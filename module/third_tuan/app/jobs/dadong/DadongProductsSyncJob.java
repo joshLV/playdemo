@@ -15,6 +15,8 @@ import java.util.Map;
 
 /**
  * 同步大东商品，返回同步商品数。
+ *
+ * 使用Job作为异步请求机制.
  * User: tanglq
  * Date: 13-1-18
  * Time: 下午5:24

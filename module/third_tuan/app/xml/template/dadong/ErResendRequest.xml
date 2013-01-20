@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="GB2312"?>
+<business_trans>
+    <request_type>er_resend_request</request_type>
+    <organization>${organCode}</organization>
+    <req_seq>${requestSN}</req_seq>
+</business_trans>
