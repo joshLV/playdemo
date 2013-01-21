@@ -78,15 +78,6 @@ public class JDGroupBuyProducts extends Controller{
 
     }
 
-    @ActiveNavigation("resale_partner_product")
-    public static void showProducts(Long goodsId) {
-        Goods goods = Goods.findById(goodsId);
-        if (goods == null) {
-            Logger.info("goods not found");
-            error("商品不存在");
-        }
-    }
-
     /**
      * 查询城市、区域和商圈
      * @param id 不传则视为0

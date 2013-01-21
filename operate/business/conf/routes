@@ -28,14 +28,14 @@ POST    /goods/filemanager                      OperateUploadFiles.fileManagerJs
 GET     /category/sub/{id}                      OperateCategories.showSubs
 
 # 外部商品
-GET     /resale-partner-products                 ResalePartnerProducts.index
-GET     /resale-partner-products/journal/json/{journalId} ResalePartnerProducts.journalJson
-GET     /resale-partner-products/journal/{productId} ResalePartnerProducts.journal
+GET     /resale-partner-products                                ResalePartnerProducts.index
+GET     /resale-partner-products/journal/json/{journalId}       ResalePartnerProducts.journalJson
+GET     /resale-partner-products/journal/{productId}            ResalePartnerProducts.journal
+GET     /resale-partner-products/products/{partner}/{goodsId}   ResalePartnerProducts.showProducts
 
 # 一号店
 GET     /resale-partner-products/yhd/upload/{goodsId}   resale.YHDGroupBuyProducts.showUpload
 POST    /resale-partner-products/yhd/upload             resale.YHDGroupBuyProducts.upload
-GET     /resale-partner-products/yhd/products/{goodsId} resale.YHDGroupBuyProducts.showProducts
 
 *       /yhd-ztree/category                     resale.YHDGroupBuyProducts.category
 *       /yhd-ztree/merchant-category            resale.YHDGroupBuyProducts.merchantCategory
@@ -50,6 +50,7 @@ GET     /resale-partner-products/jd/products/{goodsId} resale.JDGroupBuyProducts
 
 # 58
 GET     /resale-partner-products/wb/upload/{goodsId}   resale.WubaGroupBuyProducts.showUpload
+POST    /resale-partner-products/wb/upload             resale.WubaGroupBuyProducts.upload
 
 
 #渠道商品

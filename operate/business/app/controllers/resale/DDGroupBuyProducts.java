@@ -25,10 +25,5 @@ public class DDGroupBuyProducts extends Controller {
 
     }
 
-    @ActiveNavigation("resale_partner_product")
-    public static void showProducts(Long goodsId) {
-
-    }
-
 }
 
