@@ -12,6 +12,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import static play.Logger.info;
+import static play.Logger.warn;
+
+
 /**
  * 账户资金变动的工具类.
  * <p/>
@@ -50,7 +54,7 @@ public class AccountSequenceUtil {
         for (AccountSequence accountSequence : accountSequences) {
             BigDecimal correctPromotionBalance = lastPromotionBalance.add(accountSequence.promotionChangeAmount);
             if (correctPromotionBalance.compareTo(accountSequence.promotionBalance) != 0) {
-                System.out.println("error account promotionBalance(sequenceId:" + accountSequence.id + ",accountId:" + account.id + ",uid:" + account.uid
+                warn("error account promotionBalance(sequenceId:" + accountSequence.id + ",accountId:" + account.id + ",uid:" + account.uid
                         + ",accountType:" + account.accountType + ",promotionBalance:" + accountSequence.promotionBalance);
                 return accountSequence;
             }
@@ -59,10 +63,10 @@ public class AccountSequenceUtil {
             BigDecimal correctBalance = lastBalance.add(accountSequence.changeAmount);
             if (correctBalance.compareTo(accountSequence.balance) != 0) {
                 if (i++ == 0) {
-                    System.out.println(new Date() + "  Default balance account id:" + account.id + ",uid:" + account.uid
+                    warn(new Date() + "  Default balance account id:" + account.id + ",uid:" + account.uid
                             + ",balance=" + accountSequence.balance + ",accountCreatedAt:" + account.createdAt);
                 } else {
-                    System.out.println("error account balance(sequenceId:" + accountSequence.id + ",accountId:" + account.id + ",uid:" + account.uid
+                    warn("error account balance(sequenceId:" + accountSequence.id + ",accountId:" + account.id + ",uid:" + account.uid
                             + ",accountType:" + account.accountType + ",balance:" + accountSequence.balance);
                     return accountSequence;
                 }
@@ -109,11 +113,11 @@ public class AccountSequenceUtil {
             AccountSequence currLastAccountSeq = AccountSequence.getLastAccountSequence(account.id, null);
             if (currLastAccountSeq != null && currLastAccountSeq.id.equals(lastAccountSeq.id)) {
                 account.save();
-                System.out.println("Fix account amount success.==> accountId:" + account.id + ",uid:" + account.uid
+                warn("Fix account amount success.==> accountId:" + account.id + ",uid:" + account.uid
                         + ",accountType:" + account.accountType);
                 return true;
             } else {
-                System.out.println("Fix account amount failed because new sequence was inserted.==> accountId:" + account.id + ",uid:" + account.uid
+                warn("Fix account amount failed because new sequence was inserted.==> accountId:" + account.id + ",uid:" + account.uid
                         + ",accountType:" + account.accountType);
                 return false;
             }
@@ -173,7 +177,7 @@ public class AccountSequenceUtil {
      * @param account
      */
     public static int fixAccountSequenceBalance(Account account, AccountSequence errSeq) {
-        System.out.println("Begin to fix ==> accountId:" + account.id + ",uid:" + account.uid
+        warn("Begin to fix ==> accountId:" + account.id + ",uid:" + account.uid
                 + ",accountType:" + account.accountType);
         //获取错误的sequence记录的前一条
         AccountSequence fromSeq = null;
@@ -231,7 +235,7 @@ public class AccountSequenceUtil {
             }
             if (isChanged) {
                 //如需实时显示执行进度，可打开下面的打印语句
-                //System.out.println("----------- (" + i + ") fix seq:" + accountSequence.id);
+                //warn("----------- (" + i + ") fix seq:" + accountSequence.id);
                 accountSequence.save();
                 if ((++i) % 50 == 0) {
                     JPA.em().flush();
@@ -259,36 +263,36 @@ public class AccountSequenceUtil {
             }
 
             int fixCount = fixAccountSequenceBalance(account, seq);
-            System.out.println("Fixed sequence count:" + fixCount);
+            warn("Fixed sequence count:" + fixCount);
             //校验修复结果：通过TradeBill校验AccountSequence的修复结果
             AccountSequence lastAccountSequence = AccountSequence.getLastAccountSequence(account.id, null);
             boolean isOk = checkTradeBalance(account, lastAccountSequence);
             if (!isOk) {
-                System.out.println("Fix cash balance failed because it can not match trade bill.");
+                warn("Fix cash balance failed because it can not match trade bill.");
             } else {
-                System.out.println("Fix cash balance success.");
+                warn("Fix cash balance success.");
 //                AccountSequence currentLastAccountSequence = AccountSequence.getLastAccountSequence(account.id, null);
 //                if (lastAccountSequence != null && currentLastAccountSequence != null && currentLastAccountSequence.id.equals(lastAccountSequence.id)) {
 //                    //如果帐号中记的现金余额和流水表中的不一致，就修改帐号表中的值
 //                    if (account.amount.compareTo(currentLastAccountSequence.cashBalance) != 0) {
 //                        account.amount = currentLastAccountSequence.cashBalance;
 //                        account.save();
-//                        System.out.println("Fix Account Amount.");
+//                        warn("Fix Account Amount.");
 //                    }
 //                    if (account.uncashAmount.compareTo(currentLastAccountSequence.uncashBalance) != 0) {
 //                        account.uncashAmount = currentLastAccountSequence.uncashBalance;
 //                        account.save();
-//                        System.out.println("Fix Account UncashAmount.");
+//                        warn("Fix Account UncashAmount.");
 //                    }
 //                } else {
-//                    System.out.println("Account Amount didn't check and fix because new sequence was inserted.");
+//                    warn("Account Amount didn't check and fix because new sequence was inserted.");
 //                }
             }
             boolean isPromotionOk = checkTradePromotionBalance(account, lastAccountSequence);
             if (!isPromotionOk) {
-                System.out.println("Fix cash balance failed because it can not match trade bill.");
+                warn("Fix cash balance failed because it can not match trade bill.");
             } else {
-                System.out.println("Fix promotion balance success.");
+                warn("Fix promotion balance success.");
 //                //如果帐号中记的活动金余额和流水表中的不一致，就修改帐号表中的值
 //                AccountSequence currentLastAccountSequence = AccountSequence.getLastAccountSequence(account.id, null);
 //                if (lastAccountSequence != null && currentLastAccountSequence != null
@@ -296,9 +300,9 @@ public class AccountSequenceUtil {
 //                        && account.promotionAmount.compareTo(lastAccountSequence.promotionBalance) != 0) {
 //                    account.promotionAmount = lastAccountSequence.promotionBalance;
 //                    account.save();
-//                    System.out.println("Fix Account PromotionAmount.");
+//                    warn("Fix Account PromotionAmount.");
 //                } else {
-//                    System.out.println("Account PromotionAmount didn't check and fix because new sequence was inserted.");
+//                    warn("Account PromotionAmount didn't check and fix because new sequence was inserted.");
 //                }
             }
         }
@@ -325,7 +329,7 @@ public class AccountSequenceUtil {
     private static void fixAccountAmount(Account account, List<MismatchBalance> mismatchBalanceList) {
     AccountSequence lastAccountSeq = AccountSequence.getLastAccountSequence(account.id, DateUtil.getTomorrow());
     if (lastAccountSeq == null) {
-    System.out.println("lastAccountSequence is null. Do not fix:account(id:" + account.id + ",uid:" + account.uid + ",type:" + account.accountType + ")");
+    warn("lastAccountSequence is null. Do not fix:account(id:" + account.id + ",uid:" + account.uid + ",type:" + account.accountType + ")");
     return;
     }
     for (MismatchBalance mismatchBalance : mismatchBalanceList) {
