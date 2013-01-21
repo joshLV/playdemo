@@ -96,7 +96,7 @@ public class OperateCoupons extends Controller {
 
         List<CouponHistory> couponList = CouponHistory.find("coupon=?", coupon).fetch();
         String couponSn = coupon.getMaskedEcouponSn();
-        render("OperateCoupons/history.html", couponSn, couponList);
+        render("OperateCoupons/history.html", couponSn, couponList, coupon);
     }
 
     @Right("ECOUPON_REFUND")

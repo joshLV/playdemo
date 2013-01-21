@@ -4,7 +4,7 @@ jQuery(function ($) {
         winHeight = win.height(),
         docHeight = $('body').height(),
     // trigger = !!trigger ? $('.'+ trigger) : $('.j_auth'), // 默认class为j_auth
-        trigger = $('.j_auth');
+        trigger = $('.j_view_coupon');
 
     trigger.click(function (e) {
         e.preventDefault();
@@ -26,13 +26,22 @@ jQuery(function ($) {
         // 插入浮层
         if ($('#auth_box').length == 0) {
             $('body').append('<div id="auth_box" style="position:absolute;z-index:9999;">' +
-                '<a id="close-auth" style="position: absolute; top: 14px; right: 11px; width: 16px; height: 16px; background: url(//img.uhcdn.com/images/y/close.png) no-repeat 0 0;" href="javascript:void(0)" title="关闭"></a><iframe scrolling="no" allowtransparency="true" marginwidth="0" marginheight="0" frameborder="0" border="0" width="475" height="120" style="overflow:hidden;" src="' + iframeSrc + '"></iframe></div>');
+                '<a id="close-auth" style=" 0-=position: absolute; top: 14px; right: 11px; width: 16px; height: 16px; background: url(//img.uhcdn.com/images/y/close.png) no-repeat 0 0;" href="javascript:void(0)" title="关闭"></a>' +
+                '<iframe scrolling="no" allowtransparency="true" marginwidth="0" marginheight="0" frameborder="0" border="0" width="275" height="120" style="overflow:hidden;" src="' + iframeSrc + '"></iframe>' +
+                '<button style="position: absolute; top: 84px; left: 121px;" id="back">确定</button></div>');
 
             // 只在第一次插入浮层时，绑定关闭事件
             $('#close-auth').click(function () {
                 $('#auth_mask').hide();
                 $('#auth_box').hide();
-                window.location.reload();
+                //window.location.reload();
+            });
+
+            $('#back').click(function () {
+                $('#auth_mask').hide();
+                $('#auth_box').destroy
+
+                //window.location.reload();
             });
 
         } else {
