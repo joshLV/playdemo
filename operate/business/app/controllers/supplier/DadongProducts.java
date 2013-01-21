@@ -15,7 +15,7 @@ import play.mvc.With;
  * Time: 下午4:46
  */
 @With(OperateRbac.class)
-public class DadangProducts extends Controller {
+public class DadongProducts extends Controller {
 
     @ActiveNavigation("suppliers_index")
     public static void sync() {
