@@ -154,19 +154,15 @@ public class OperateCoupons extends Controller {
         renderJSON(sendFalg ? "0" : "1");
     }
 
-    public static void createCouponHistoryViewECouponSn(Long id) {
-        boolean sucFlag = false;
+    public static void viewECouponsn(Long id) {
         if (id != null) {
             ECoupon coupon = ECoupon.findById(id);
             if (coupon != null) {
                 new CouponHistory(coupon, OperateRbac.currentUser().userName, "查看完整券号", coupon.status, coupon.status, null).save();
-                sucFlag = true;
-            }
-            if (sucFlag) {
-                render(coupon, sucFlag);
+                renderText(coupon.eCouponSn);
             }
         }
-        render(sucFlag);
+        renderText("查看失败，请联系管理员");
     }
 
     @ActiveNavigation("coupons_index")

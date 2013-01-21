@@ -22,7 +22,6 @@
                 } else {
                     alert("发送失败!");
                 }
-
             }
         });
 
@@ -30,20 +29,18 @@
 
 
     function viewECoupon(id) {
-        alert("inini")
-//        $.ajax({
-//            url:"/view-conpon/" + id + "/send",
-//            type:'GET',
-//            error:function () {
-//                alert('查询失败!');
-//            },
-//            success:function (data) {
-//                // data as ecouponsn
-//                $("#ecoupon_sn").value = data;
-//                $('#myModal').modal('show');
-//            }
-//        });
-
+        $.ajax({
+            url:"/view-conpon/" + id + "/send",
+            type:'GET',
+            error:function () {
+                alert('查询失败,请联系管理员');
+            },
+            success:function (data) {
+                // data as ecouponsn
+                $('#myModal').modal('show');
+                $("#ecoupon_sn").html(data);
+            }
+        });
     }
 
     $(function () {
@@ -203,18 +200,16 @@
         <td><a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a></abbr></td>
         <td>${coupon?.orderItems?.phone}</td>
         <td>
-        *{#{if hasViewEcouponSnPermission==true}}*
-        *{<a href="#"}*
-        *{title="查看完整券号" class="view j_view_coupon" value="${coupon.id}">}*
-        *{${n}${coupon?.getMaskedEcouponSn()}}*
-        *{</a>}*
-        *{#{/if}}*
-        *{#{else}}*
-        *{${n}${coupon?.getMaskedEcouponSn()}}*
-        *{#{/else}}*
-            <a href="#" role="button" class="btn" data-toggle="modal">
+            #{if hasViewEcouponSnPermission==true}
+                <a id="view_ecoupon" href="#" role="button" class="btn" data-toggle="modal"
+                   onClick="viewECoupon(${coupon.id})" title="查看完整券号">
+                *{${n}${coupon?.getMaskedEcouponSn()}}*
+                    ${coupon?.eCouponSn}
+                </a>
+            #{/if}
+            #{else}
             ${n}${coupon?.getMaskedEcouponSn()}
-            </a>
+            #{/else}
 
         </td>
 
@@ -282,10 +277,11 @@
         <h3 id="myModalLabel">查看完整券号</h3>
     </div>
     <div class="modal-body">
-        <p id="ecoupon_sn"></p>
+        <p id="ecoupon_sn">
+        </p>
     </div>
     <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <button data-dismiss="modal" aria-hidden="true">Close</button>
     </div>
 </div>
 </div>
