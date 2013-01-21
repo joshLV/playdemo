@@ -177,6 +177,9 @@ PUT     /suppliers/{id}/freeze                  Suppliers.freeze
 PUT     /suppliers/{id}/unfreeze                Suppliers.unfreeze
 DELETE  /suppliers/{id}                         Suppliers.delete
 GET     /suppliers/{id}/supplier_category/{supplierCategoryId}  Suppliers.updateCode
+
+POST    /suppliers/dadong/sync                  supplier.DadongProducts.sync
+
 # 增加提现账户
 POST    /withdraw-account                       Suppliers.withdrawAccountCreateAndUpdate
 POST    /withdraw-account/delete                Suppliers.withdrawAccountDelete

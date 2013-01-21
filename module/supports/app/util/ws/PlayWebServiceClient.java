@@ -29,12 +29,12 @@ public class PlayWebServiceClient extends WebServiceClient {
     private PlayWebServiceClient() {
     }
 
-    public String encoding;
-
     @Override
     public HttpResponse doGet(WebServiceCallLogData log, WebServiceCallback callback) {
         WSRequest wsRequest = null;
+        System.out.println("encoding:" + encoding);
         if (encoding != null) {
+            System.out.println("do encoding.");
             wsRequest = WS.withEncoding(encoding).url(log.url);
         } else {
             wsRequest = WS.url(log.url);
@@ -57,7 +57,9 @@ public class PlayWebServiceClient extends WebServiceClient {
     @Override
     protected HttpResponse doPost(WebServiceCallLogData log, Map<String, Object> params, WebServiceCallback callback) {
         WSRequest request = null;
+        System.out.println("post encoding:" + encoding);
         if (encoding != null) {
+            System.out.println("  do encoding...");
             request = WS.withEncoding(encoding).url(log.url);
         } else {
             request = WS.url(log.url);

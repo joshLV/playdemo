@@ -118,10 +118,11 @@ public class DadongProductsSyncRequest {
             if (goods != null) {
                 continue;
             }
-            createGoods(dadong, product);
+            Goods g = createGoods(dadong, product);
+            goodsList.add(g);
         }
 
-        return dadongProductList.size();
+        return goodsList.size();
     }
 
     /**
@@ -129,7 +130,7 @@ public class DadongProductsSyncRequest {
      *
      * @param product 大东商品
      */
-    private static void createGoods(Supplier dadong, DadongProduct product) {
+    private static Goods createGoods(Supplier dadong, DadongProduct product) {
         Goods goods = new Goods();
         Brand brand = Brand.find("bySupplier", dadong).first();
 
@@ -199,6 +200,7 @@ public class DadongProductsSyncRequest {
             }
         }
         goods.save();
+        return goods;
     }
 
     private static Shop createShop(Supplier dadong, DadongProduct product) {

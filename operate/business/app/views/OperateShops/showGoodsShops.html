@@ -6,7 +6,7 @@
     #{else}
         #{vx.selectAllField listName:"goods.shops.id"/}
     #{/else}</td>
-    <td colspan="2"></td>
+    <td colspan="3"></td>
 </tr>
 <SCRIPT type=text/javascript>
     #{if shopList== null || shopList.size()==0}
@@ -22,6 +22,7 @@
                #{if shopIds?.contains(","+shop?.id+",")}checked#{/if}/> ${shop.name}</td>
     <td>${shop.address}</td>
     <td>${shop.phone}</td>
+    <td><a href="/shops/${shop.id}/edit" target="_blank">修改门店</a></td>
 </tr>
 #{/list}
 </tbody>
