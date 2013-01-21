@@ -1029,6 +1029,7 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
         List<ChannelCategoryReport> totalRefundResultList = query.getResultList();
 
         //refundAt real need to do !!!!!
+
         ChannelCategoryReport result = null;
         List<ChannelCategoryReport> totalResultList = new ArrayList<>();
         if (totalPaidResultList != null && totalPaidResultList.size() > 0) {
@@ -1090,15 +1091,25 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
 
         List<ChannelCategoryReport> resultList = new ArrayList();
 
-
-        for (String key : map.keySet()) {
+        List<String> tempString = new ArrayList<>();
+        for (String s : map.keySet()) {
+            if (s != null) {
+                tempString.add(s);
+            }
+        }
+        if (tempString.size() > 0) {
+            Collections.sort(tempString);
+        }
+        for (String key : tempString) {
             resultList.add(map.get(key));
         }
+
 //        resultList.add(totalResultList.get(0));
 
         for (ChannelCategoryReport c : resultList) {
             c.comparedValue = condition.comparedMap.get(c.loginName);
             c.orderByType = condition.orderByType;
+            c.loginName = "一百券";
         }
         return resultList;
     }
@@ -1238,7 +1249,7 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
             if (refoundItem.order != null) {
                 return String.valueOf(refoundItem.order.userId) + "999";
             } else {
-                return "999999999" + "999";
+                return "9999" + "999";
             }
         }
     }
