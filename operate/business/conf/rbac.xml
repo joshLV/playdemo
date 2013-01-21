@@ -16,7 +16,7 @@
     <permission key="SECKILL_GOODS_NEW" text="秒杀活动添加" roles="editor"/>
     <permission key="SECKILL_GOODS" text="秒杀活动管理" roles="editor,customservice"/>
     <permission key="Point_GOODS_NEW" text="积分商品添加" roles="editor"/>
-    <permission key="COUPON_UNFREEZE" text="解冻券号" roles="manager"/>
+    <permission key="COUPON_UNFREEZE" text="解冻券号" roles="customservice"/>
     <permission key="Point_GOODS" text="积分商品管理" roles="editor,customservice"/>
 
     <permission key=" Point_GOODS_ORDER" text="积分商品订单管理" roles="customservice,account"/>
@@ -25,7 +25,7 @@
     <permission key="GOODS_APPROVE_ONSALE" text="审核商品上架" roles="reviewer"/>
     <permission key="HANDLE_RESALER_COMMISSIONRATIO" text="操作分销商佣金比例" roles="manager"/>
     <permission key="ECOUPON_REFUND" text="电子券退款操作" roles="customservice"/>
-    <permission key="UNFREEZE_COUPON" text="券解冻" roles="manager"/>
+    <permission key="UNFREEZE_COUPON" text="券解冻" roles="customservice"/>
     <permission key="VIEW_ECOUPONSN" text="查看完整券号" roles="customservice"/>
 
 
