@@ -1,11 +1,25 @@
 package jobs.dadong;
 
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.FileUploadUtil;
 import models.dadong.DadongProduct;
+import models.sales.Area;
+import models.sales.Brand;
+import models.sales.Category;
 import models.sales.Goods;
+import models.sales.GoodsCouponType;
+import models.sales.GoodsStatus;
+import models.sales.MaterialType;
+import models.sales.Shop;
+import models.supplier.Supplier;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import play.Logger;
 import play.Play;
+import play.libs.IO;
+import play.libs.WS;
 import play.libs.XPath;
 import play.templates.Template;
 import play.templates.TemplateLoader;
@@ -13,8 +27,15 @@ import util.ws.WebServiceClient;
 import util.ws.WebServiceClientFactory;
 import utils.SafeParse;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +48,11 @@ import java.util.Map;
  * Time: 下午5:24
  */
 public class DadongProductsSyncRequest {
+    public static String ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
 
     public static Integer syncProducts() {
+
+        Supplier dadong = Supplier.findByDomainName("dadong");
 
         String origanCode = Play.configuration.getProperty("dadong.origin.code", "shanghaishihui_201301145784");
         String url = Play.configuration.getProperty("dadong.url", "http://www.ddrtty.net/bjskiService.action");
@@ -79,7 +103,6 @@ public class DadongProductsSyncRequest {
                     dadongProductList.add(product);
                 }
             } catch (Exception e) {
-                System.out.println(">>>>>>>>>>>>>>>>>>>>>");
                 e.printStackTrace();
                 nextLoop = false;
             }
@@ -94,14 +117,107 @@ public class DadongProductsSyncRequest {
             if(goods != null){
                 continue;
             }
-            createGoods(product);
+            createGoods(dadong, product);
         }
 
         return dadongProductList.size();
     }
 
-    private static void createGoods(DadongProduct product) {
-        
+    /**
+     * 创建一百券商品
+     * @param product 大东商品
+     */
+    private static void createGoods(Supplier dadong, DadongProduct product) {
+        Goods goods = new Goods();
+        Brand brand = Brand.find("bySupplier", dadong).first();
+
+        Shop shop = createShop(dadong, product);
+        if(shop == null){
+            Logger.error("qingtuan create goods failed: can not find the area: %s", product.address);
+            return;
+        }
+        goods.shops = new HashSet<Shop>();
+        goods.shops.add(shop);
+
+        Category category = Category.find("name like '旅游票务%'").first();
+        if(category == null){
+            Logger.error("qingtuan find category failed: 旅游票务");
+            return;
+        }
+        goods.categories = new HashSet<>();
+        goods.categories.add(category);
+
+
+        //餐饮类 6% 其他 8%
+        goods.createdAt = new Date();
+        goods.createdBy = dadong.fullName;
+        goods.deleted = DeletedStatus.UN_DELETED;
+        goods.setDetails(product.ticketExplain);
+        goods.effectiveAt = new Date();
+        goods.beginOnSaleAt = new Date();
+        goods.endOnSaleAt = product.expireTime;
+        goods.expireAt = product.expireTime;
+        goods.faceValue = product.faceValue;
+        goods.salePrice = product.webValue;
+        goods.originalPrice = product.platformValue;
+        goods.status = GoodsStatus.APPLY;
+        goods.cumulativeStocks = 9999L;
+        goods.useWeekDay = "1,2,3,4,5,6,7";
+        goods.updatedAt = new Date();
+        goods.couponType = GoodsCouponType.GENERATE;
+        goods.promoterPrice = BigDecimal.ZERO;
+        goods.isAllShop = false;
+
+        goods.setDiscount(goods.salePrice.multiply(BigDecimal.TEN).divide(goods.faceValue, RoundingMode.FLOOR).setScale(2, RoundingMode.FLOOR));
+        goods.resaleAddPrice = BigDecimal.ZERO;
+        goods.materialType = MaterialType.ELECTRONIC;
+        goods.virtualBaseSaleCount = 0l;
+
+        goods.name = product.productName;
+        goods.shortName = product.productName;
+        goods.title = goods.shortName;
+        goods.setExhibition("说明");
+        goods.setPrompt("提示");
+
+        goods.supplierGoodsId = product.productId;
+        goods.supplierId = dadong.id;
+
+        goods.brand = brand;
+        String imageUrl = product.imageUrl;
+        if(!StringUtils.isBlank(imageUrl) && !Play.runingInTestMode()){
+            InputStream is =  WS.url(imageUrl).get().getStream();
+            try {
+                File file = File.createTempFile("qingtuan", "." + FilenameUtils.getExtension(imageUrl));
+                IO.write(is, file);
+                goods.imagePath = uploadFile(file);
+            } catch (IOException e) {
+                Logger.error("upload file error:", e);
+            }
+        }
+        goods.save();
     }
 
+    private static Shop createShop(Supplier dadong, DadongProduct product) {
+        Area area = Area.find("byName", product.aqeg).first();
+        if(area == null){
+            return null;
+        }
+        Shop shop = new Shop();
+        shop.supplierId = dadong.id;
+        shop.areaId = area.id;
+        shop.cityId = area.id;
+        shop.name =  area.name;
+        shop.address = product.address;
+        return shop.save();
+    }
+
+    private static String uploadFile(File file) {
+        String targetFilePath = null;
+        try {
+            targetFilePath = FileUploadUtil.storeImage(file, ROOT_PATH);
+        } catch (IOException e) {
+            return null;
+        }
+        return targetFilePath.substring(ROOT_PATH.length(), targetFilePath.length());
+    }
 }

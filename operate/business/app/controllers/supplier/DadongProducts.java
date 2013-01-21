@@ -18,7 +18,7 @@ public class DadongProducts extends Controller {
 
     @ActiveNavigation("suppliers_index")
     public static void sync() {
-        Supplier dadong = Supplier.findByDomainName("dadang");
+        Supplier dadong = Supplier.findByDomainName("dadong");
 
         Integer newCount = DadongProductsSyncRequest.syncProducts();
         render(newCount);
