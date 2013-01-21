@@ -100,7 +100,7 @@ function batchAddCityNode(id, name) {
     });
 
     //依次添加到各个tree中去
-    $("ul[id^='ybqCircleName'].ztree").each(function(){
+    $("ul[id^='circleIdTree'].ztree").each(function(){
         var treeEle = $(this);
         var tree = $.fn.zTree.getZTreeObj(treeEle.attr('id'));
         tree.addNodes(null, cityNode, false);
@@ -126,21 +126,21 @@ $(function(){
     }
 
     // 初始化所有分店的商圈树
-    $("ul[id^='ybqCircleName'].ztree").each(function(){
+    $("ul[id^='circleIdTree'].ztree").each(function(){
         var ele = $(this);
         var id = ele.attr('id');
         $.fn.zTree.init(ele, getTreeSettings(id), []);
     });
 
     //当选择或者取消选择城市时，自动更新门店中可选的城市列表
-    $("input[name='cityIds']").click(function(){
+    $("input[city]").click(function(){
         var ele = $(this);
         if(ele.attr("checked")) {
             //添加树
             batchAddCityNode(ele.val(), ele.attr('city'));
         } else {
             //依次从各个tree中删除
-            $("ul[id^='ybqCircleName'].ztree").each(function(){
+            $("ul[id^='circleIdTree_'].ztree").each(function(){
                 var treeEle = $(this);
                 var tree = $.fn.zTree.getZTreeObj(treeEle.attr('id'));
                 var node = tree.getNodeByParam('id', ele.val(), null);
@@ -156,7 +156,7 @@ $(function(){
     batchAddCityNode('4', '上海');
 
     // 自动选择门店中的商圈
-    $("ul[id^='ybqCircleName']").each(function(){
+    $("ul[id^='circleIdTree'].ztree").each(function(){
         var treeEle = $(this);
         var tree = $.fn.zTree.getZTreeObj(treeEle.attr('id'));
         var hint = $("#hint-" + treeEle.attr('id'));
@@ -169,5 +169,27 @@ $(function(){
             hint.text(hint.text() + '(未能自动选中,请手动选择)')
             hint.css('color', 'red')
         }
+    });
+
+    $("#submit").click(function(){
+        //所选分类
+        var checkedProdType = $.fn.zTree.getZTreeObj("prodTypeTree").getCheckedNodes(true);
+        var prodTypeChain = buildTreeChain(checkedProdType);
+        $("#inputProdType").val(checkedProdType[0].id);
+        $("#inputProdTypeChain").val(prodTypeChain.join(","));
+
+        //所选城市
+        var checkedCities = [];
+        $("input[city]:checked").each(function(){checkedCities.push($(this).val())});
+        $("#cityIds").val("["+checkedCities.join(",")+"]");
+
+        //商户信息
+        $("ul[id^='circleIdTree'].ztree").each(function(){
+            var treeEle = $(this);
+            var tree = $.fn.zTree.getZTreeObj(treeEle.attr('id'));
+            var checkedCircle = tree.getCheckedNodes(true);
+            $("#input-" + treeEle.attr('id')).val(checkedCircle[0].id);
+        });
+
     });
 });
