@@ -285,4 +285,17 @@ public class DateUtil {
         calendar.set(Calendar.MILLISECOND, 0);
         return calendar.getTime();
     }
+
+    /**
+     * 获取n个小时前的时间
+     *
+     * @param i 小时数
+     * @return
+     */
+    public static Date getBeforeHour(Date date, int i) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.HOUR_OF_DAY, 0 - i);
+        return calendar.getTime();
+    }
 }
