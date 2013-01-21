@@ -153,7 +153,7 @@ public class OperationReports extends Controller {
         // 当无排序参数时，初始化 020000000
         String orderBy = "";
         if (desc == null) {
-            desc = "020000000";
+            desc = "200000000";
         }
         // 获取最新的desc值
         String[] descs = desc.split(",");
