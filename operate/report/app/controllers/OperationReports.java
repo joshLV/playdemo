@@ -177,7 +177,9 @@ public class OperationReports extends Controller {
             orderBy = "12";
         }
         List<ConsumerFlowReport> resultList = ConsumerFlowReport.query(condition, orderBy);
-
+//        for (ConsumerFlowReport c : resultList) {
+//            System.out.println(c.grossMargin + "===c.grossMargin>>");
+//        }
         Collections.sort(resultList);
 
         // 分页

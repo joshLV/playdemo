@@ -395,7 +395,7 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
                 item.orderNum = item.orderNum + paidItem.orderNum;
                 item.perOrderPrice = item.salePrice.divide(BigDecimal.valueOf(item.orderNum), 2, RoundingMode.HALF_UP);
 
-                item.grossMargin = item.salePrice.subtract(item.totalCost).divide(item.salePrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+                item.grossMargin = item.salePrice.subtract(item.totalCost).divide(item.salePrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
 
                 item.channelCost = item.channelCost.add(paidItem.channelCost == null ? BigDecimal.ZERO : paidItem.channelCost);
                 item.profit = item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(paidItem.realSalePrice == null ? BigDecimal.ZERO : paidItem.realSalePrice)
@@ -418,7 +418,7 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
                 item.perOrderPrice = totalSalePrice.divide(BigDecimal.valueOf(item.orderNum), 2, RoundingMode.HALF_UP);
 
                 if (totalSalesPrice.compareTo(BigDecimal.ZERO) != 0) {
-                    item.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+                    item.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 }
 
                 item.channelCost = item.channelCost.add(paidItem.channelCost);
@@ -444,7 +444,7 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
                 item.perOrderPrice = totalSalePrice.divide(BigDecimal.valueOf(item.orderNum), 2, RoundingMode.HALF_UP);
 
                 if (totalSalesPrice.compareTo(BigDecimal.ZERO) != 0) {
-                    item.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+                    item.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 }
 
                 item.channelCost = item.channelCost.add(paidItem.channelCost == null ? BigDecimal.ZERO : paidItem.channelCost);
