@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="GB2312"?>
 <business_trans>
     <request_type>getProduct_request</request_type>
-    <organization>${origan_code}</organization>
-    <pageIndex>${page_index}</pageIndex>
+    <organization>${organCode}</organization>
+    <pageIndex>${pageIndex}</pageIndex>
 </business_trans>

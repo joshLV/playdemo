@@ -68,4 +68,24 @@ public class DadongProduct {
     public String city;
 
     public String aqeg;
+
+    @Override
+    public String toString() {
+        return "DadongProduct{" +
+                "productId=" + productId +
+                ", category='" + category + '\'' +
+                ", productName='" + productName + '\'' +
+                ", faceValue=" + faceValue +
+                ", webValue=" + webValue +
+                ", platformValue=" + platformValue +
+                ", ticketExplain='" + ticketExplain + '\'' +
+                ", address='" + address + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", expireTime=" + expireTime +
+                ", isSubscribe=" + isSubscribe +
+                ", province='" + province + '\'' +
+                ", city='" + city + '\'' +
+                ", aqeg='" + aqeg + '\'' +
+                '}';
+    }
 }

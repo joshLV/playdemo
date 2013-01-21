@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<business_trans>
+    <response_type>consumption_response</response_type>
+    <req_seq>1</req_seq>
+    <sys_seq>876521</sys_seq>
+    <trans_time>20070405010104</trans_time>
+    <result>
+        <id>0000</id>
+        <comment>Success</comment>
+    </result>
+</business_trans>

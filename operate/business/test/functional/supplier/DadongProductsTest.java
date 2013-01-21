@@ -4,6 +4,8 @@ import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.admin.OperateUser;
+import models.sales.Brand;
+import models.sales.Category;
 import models.sales.Goods;
 import models.sales.Shop;
 import models.supplier.Supplier;
@@ -40,7 +42,14 @@ public class DadongProductsTest extends FunctionalTest {
                 target.domainName = "dadong";
             }
         });
-        // only sales role.
+
+        FactoryBoy.create(Category.class, new BuildCallback<Category>() {
+            @Override
+            public void build(Category target) {
+                target.name = "旅游票务";
+            }
+        });
+        FactoryBoy.create(Brand.class);
         operateUser = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(operateUser.loginName);
@@ -61,9 +70,9 @@ public class DadongProductsTest extends FunctionalTest {
         Http.Response response = POST(Router.reverse("supplier.DadongProducts.sync").url, params);
         assertIsOk(response);
 
-        assertEquals(10, Goods.count());
-        assertEquals(10, Shop.count());
+        assertEquals(7, Goods.count());
+        assertEquals(7, Shop.count());
         int newCount = (Integer) renderArgs("newCount");
-        assertEquals(10, newCount);
+        assertEquals(7, newCount);
     }
 }

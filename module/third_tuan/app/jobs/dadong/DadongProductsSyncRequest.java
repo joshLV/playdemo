@@ -41,7 +41,7 @@ import java.util.Map;
 
 /**
  * 同步大东商品，返回同步商品数。
- *
+ * <p/>
  * 使用Job作为异步请求机制.
  * User: tanglq
  * Date: 13-1-18
@@ -49,23 +49,24 @@ import java.util.Map;
  */
 public class DadongProductsSyncRequest {
     public static String ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
+    public static String ORGAN_CODE = Play.configuration.getProperty("dadong.origin.code",
+            "shanghaishihui_201301145784");
+    public static String URL = Play.configuration.getProperty("dadong.url", "http://www.ddrtty.net/bjskiService.action");
 
     public static Integer syncProducts() {
 
         Supplier dadong = Supplier.findByDomainName("dadong");
 
-        String origanCode = Play.configuration.getProperty("dadong.origin.code", "shanghaishihui_201301145784");
-        String url = Play.configuration.getProperty("dadong.url", "http://www.ddrtty.net/bjskiService.action");
 
         List<DadongProduct> dadongProductList = new ArrayList<>();
 
         Template template = TemplateLoader.load("app/xml/template/dadong/GetProductRequest.xml");
         Map<String, Object> args = new HashMap<>();
-        args.put("origan_code", origanCode);
+        args.put("organCode", ORGAN_CODE);
         int pageIndex = 0;
         boolean nextLoop = true;
         do {
-            args.put("page_index", pageIndex);
+            args.put("pageIndex", pageIndex);
             String xml = template.render(args);
             Map<String, Object> params = new HashMap<>();
             params.put("xml", xml);
@@ -73,7 +74,8 @@ public class DadongProductsSyncRequest {
 
             System.out.println("get result : " + pageIndex);
             try {
-                Document document = client.postXml("thirdtuan.dadang.GetProducts", url, params, String.valueOf(pageIndex));
+                Document document = client.postXml("thirdtuan.dadang.GetProducts", URL, params,
+                        String.valueOf(pageIndex));
 
                 List<Node> products = XPath.selectNodes("//products", document);
 
@@ -82,9 +84,7 @@ public class DadongProductsSyncRequest {
                     break;
                 }
                 for (Node node : products) {
-
                     String productId = XPath.selectText("product_id", node);
-                    System.out.println("productId=" + productId);
                     DadongProduct product = new DadongProduct();
                     product.productId = SafeParse.toLong(productId);
                     product.province = XPath.selectText("province", node);
@@ -100,13 +100,14 @@ public class DadongProductsSyncRequest {
                     product.imageUrl = XPath.selectText("product_image", node);
                     product.expireTime = SafeParse.toDate(XPath.selectText("product_expireTime", node));
 
+                    Logger.info("product:" + product.toString());
                     dadongProductList.add(product);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 nextLoop = false;
             }
-            pageIndex ++;
+            pageIndex++;
 
         } while (nextLoop);
 
@@ -114,7 +115,7 @@ public class DadongProductsSyncRequest {
 
         for (DadongProduct product : dadongProductList) {
             Goods goods = Goods.find("bySupplierGoodsId", product.productId).first();
-            if(goods != null){
+            if (goods != null) {
                 continue;
             }
             createGoods(dadong, product);
@@ -125,6 +126,7 @@ public class DadongProductsSyncRequest {
 
     /**
      * 创建一百券商品
+     *
      * @param product 大东商品
      */
     private static void createGoods(Supplier dadong, DadongProduct product) {
@@ -132,20 +134,22 @@ public class DadongProductsSyncRequest {
         Brand brand = Brand.find("bySupplier", dadong).first();
 
         Shop shop = createShop(dadong, product);
-        if(shop == null){
-            Logger.error("qingtuan create goods failed: can not find the area: %s", product.address);
-            return;
+        if (shop == null) {
+            Logger.error("dadong create goods failed: can not find the area: %s", product.address);
+            //return;
+        } else {
+            goods.shops = new HashSet<Shop>();
+            goods.shops.add(shop);
         }
-        goods.shops = new HashSet<Shop>();
-        goods.shops.add(shop);
 
         Category category = Category.find("name like '旅游票务%'").first();
-        if(category == null){
-            Logger.error("qingtuan find category failed: 旅游票务");
-            return;
+        if (category == null) {
+            Logger.error("dadong find category failed: 旅游票务");
+            //return;
+        } else {
+            goods.categories = new HashSet<>();
+            goods.categories.add(category);
         }
-        goods.categories = new HashSet<>();
-        goods.categories.add(category);
 
 
         //餐饮类 6% 其他 8%
@@ -184,10 +188,10 @@ public class DadongProductsSyncRequest {
 
         goods.brand = brand;
         String imageUrl = product.imageUrl;
-        if(!StringUtils.isBlank(imageUrl) && !Play.runingInTestMode()){
-            InputStream is =  WS.url(imageUrl).get().getStream();
+        if (!StringUtils.isBlank(imageUrl) && !Play.runingInTestMode()) {
+            InputStream is = WS.url(imageUrl).get().getStream();
             try {
-                File file = File.createTempFile("qingtuan", "." + FilenameUtils.getExtension(imageUrl));
+                File file = File.createTempFile("dadong", "." + FilenameUtils.getExtension(imageUrl));
                 IO.write(is, file);
                 goods.imagePath = uploadFile(file);
             } catch (IOException e) {
@@ -199,14 +203,14 @@ public class DadongProductsSyncRequest {
 
     private static Shop createShop(Supplier dadong, DadongProduct product) {
         Area area = Area.find("byName", product.aqeg).first();
-        if(area == null){
-            return null;
-        }
         Shop shop = new Shop();
+        if (area != null) {
+            shop.areaId = area.id;
+            shop.cityId = area.id;
+            shop.name = area.name;
+        }
         shop.supplierId = dadong.id;
-        shop.areaId = area.id;
-        shop.cityId = area.id;
-        shop.name =  area.name;
+        shop.transport = product.province + " " + product.city + " " + product.aqeg;
         shop.address = product.address;
         return shop.save();
     }

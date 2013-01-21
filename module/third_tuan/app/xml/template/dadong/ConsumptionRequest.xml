@@ -2,7 +2,7 @@
 <business_trans>
     <request_type>consumption_request</request_type>
     <organization>${organCode}</organization>
-    <req_seq>${requestSN}</req_seq>
+    <req_seq>${orderItemId}</req_seq>
     <product_id>${productId}</product_id>
     <count>${buyNumber}</count>
     <tel>${phone}</tel>
