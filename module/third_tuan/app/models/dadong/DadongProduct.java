@@ -56,4 +56,16 @@ public class DadongProduct {
      * 是否需要预订，对于需要预订的产品，需要在大东后台预订。
      */
     public Boolean isSubscribe;
+
+    /**
+     * 省.
+     */
+    public String province;
+
+    /**
+     * 城市.
+     */
+    public String city;
+
+    public String aqeg;
 }

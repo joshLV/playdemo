@@ -4,6 +4,8 @@ import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.admin.OperateUser;
+import models.sales.Goods;
+import models.sales.Shop;
 import models.supplier.Supplier;
 import org.junit.After;
 import org.junit.Before;
@@ -53,13 +55,15 @@ public class DadongProductsTest extends FunctionalTest {
     @Test
     public void testSync() throws Exception {
         MockWebServiceClient.addMockHttpRequestFromFile(200, "test/data/dadong/GetProductsPage1.xml");
-        MockWebServiceClient.addMockHttpRequestFromFile(200, "test/data/dadong/GetProductsPage2.xml");
         MockWebServiceClient.addMockHttpRequestFromFile(200, "test/data/dadong/GetProductsEndPage.xml");
 
         Map<String, String> params = new HashMap<>();
         Http.Response response = POST(Router.reverse("supplier.DadongProducts.sync").url, params);
         assertIsOk(response);
+
+        assertEquals(10, Goods.count());
+        assertEquals(10, Shop.count());
         int newCount = (Integer) renderArgs("newCount");
-        assertEquals(20, newCount);
+        assertEquals(10, newCount);
     }
 }

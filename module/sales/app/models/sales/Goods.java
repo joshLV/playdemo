@@ -655,7 +655,7 @@ public class Goods extends Model {
         if (salePrice != null && salePrice.compareTo(BigDecimal.ZERO) > 0) {
             return originalPrice.remainder(salePrice);
         }
-        return originalPrice;
+        return originalPrice;  // FIXME: 节省金额不能是进价
     }
 
     /**
