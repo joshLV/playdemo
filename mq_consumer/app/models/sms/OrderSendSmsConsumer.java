@@ -1,5 +1,7 @@
 package models.sms;
 
+import jobs.dadong.DadongConsumptionRequest;
+import jobs.dadong.DadongErSendToRequest;
 import models.RabbitMQConsumerWithTx;
 import models.order.CouponHistory;
 import models.order.ECoupon;
@@ -96,6 +98,15 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
                 remark += " 发到新手机" + phone;
             }
 
+            if (DadongConsumptionRequest.check(orderItems)) {
+                if (DadongConsumptionRequest.isResendTo(orderItems)) {
+                    DadongErSendToRequest.resend(orderItems, phone);
+                } else {
+                    DadongConsumptionRequest.sendOrder(orderItems);
+                }
+                return;
+            }
+
             getSMSProvider(SMS_TYPE).send(new SMSMessage(msg, phone, ecoupons.get(0).replyCode));
 
             for (ECoupon ecoupon : ecoupons) {
@@ -126,6 +137,14 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
             if (StringUtils.isNotBlank(message.phone) && !message.phone.equals(phone)) {
                 phone = message.phone;
                 remark += " 发到新手机" + phone;
+            }
+
+            if (DadongConsumptionRequest.check(ecoupon.orderItems)) {
+                if (DadongConsumptionRequest.isResendTo(ecoupon.orderItems)) {
+                    DadongErSendToRequest.resend(ecoupon.orderItems, phone);
+                } else {
+                    DadongConsumptionRequest.sendOrder(ecoupon.orderItems);
+                }
             }
 
             getSMSProvider(SMS_TYPE).send(new SMSMessage(msg, phone, ecoupon.replyCode));

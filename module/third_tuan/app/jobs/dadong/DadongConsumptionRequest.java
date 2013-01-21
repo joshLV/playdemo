@@ -4,6 +4,7 @@ import models.order.CouponHistory;
 import models.order.ECoupon;
 import models.order.OrderItems;
 import models.supplier.Supplier;
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import play.libs.XPath;
@@ -27,6 +28,10 @@ import java.util.Map;
 public class DadongConsumptionRequest {
 
     public static void sendOrder(OrderItems orderItems) {
+
+        if (!check(orderItems)) {
+            return;
+        }
 
         Supplier dadong = Supplier.findByDomainName("dadong");
 
@@ -61,4 +66,21 @@ public class DadongConsumptionRequest {
         }
     }
 
+    public static boolean check(OrderItems orderItems) {
+        Supplier dadong = Supplier.findByDomainName("dadong");
+        if (dadong != null && dadong.id.equals(orderItems.goods.supplierId)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isResendTo(OrderItems orderItems) {
+        if (orderItems.getECoupons() != null && orderItems.getECoupons().size() > 0) {
+            ECoupon ecoupon = orderItems.getECoupons().get(0);
+            if (StringUtils.isNotBlank(ecoupon.partnerCouponId)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

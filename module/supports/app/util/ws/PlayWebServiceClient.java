@@ -42,7 +42,7 @@ public class PlayWebServiceClient extends WebServiceClient {
 
         play.libs.WS.HttpResponse response = wsRequest.get();
         log.statusCode = response.getStatus();
-        log.responseText = response.getString();
+        log.responseText = (this.encoding != null) ? response.getString(this.encoding) : response.getString();
         if (callback != null) {
             callback.process(response.getStatus(), response.getString());
         }
@@ -72,7 +72,7 @@ public class PlayWebServiceClient extends WebServiceClient {
         }
         play.libs.WS.HttpResponse response = request.post();
         log.statusCode = response.getStatus();
-        log.responseText = response.getString();
+        log.responseText = (this.encoding != null) ? response.getString(this.encoding) : response.getString();
         if (callback != null) {
             callback.process(response.getStatus(), response.getString());
         }
