@@ -99,10 +99,5 @@ public class WubaGroupBuyProducts extends Controller {
 
         render("resale/WubaGroupBuyProducts/result.html", msg);
     }
-
-    @ActiveNavigation("resale_partner_product")
-    public static void showProducts(Long goodsId) {
-
-    }
 }
 

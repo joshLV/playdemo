@@ -179,19 +179,5 @@ public class YHDGroupBuyProducts extends Controller {
     }
 
 
-    @ActiveNavigation("resale_partner_product")
-    public static void showProducts(Long goodsId) {
-        Goods goods = Goods.findById(goodsId);
-        if (goods == null) {
-            Logger.info("goods not found");
-            error("商品不存在");
-        }
-        List<ResalerProduct> products = ResalerProduct.find("goods = ? and partner = ? order by createdAt desc", goods, OuterOrderPartner.YHD).fetch();
-        for (ResalerProduct product : products) {
-            product.creator = ((OperateUser)OperateUser.findById(product.creatorId)).userName;
-            product.lastModifier = ((OperateUser)OperateUser.findById(product.lastModifierId)).userName;
-        }
-        render(products);
-    }
 
 }

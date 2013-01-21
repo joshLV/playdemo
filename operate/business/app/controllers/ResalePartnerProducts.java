@@ -1,12 +1,14 @@
 package controllers;
 
 import models.admin.OperateUser;
+import models.order.OuterOrderPartner;
 import models.resale.ResalerProduct;
 import models.resale.ResalerProductJournal;
 import models.sales.*;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -75,6 +77,22 @@ public class ResalePartnerProducts extends Controller {
             notFound();
         }
         render(journal);
+    }
+
+    @ActiveNavigation("resale_partner_product")
+    public static void showProducts(String partner, Long goodsId) {
+        Goods goods = Goods.findById(goodsId);
+        if (goods == null) {
+            Logger.info("goods not found");
+            error("商品不存在");
+        }
+        List<ResalerProduct> products = ResalerProduct.find("goods = ? and partner = ? order by createdAt desc",
+                goods, OuterOrderPartner.valueOf(partner.toUpperCase())).fetch();
+        for (ResalerProduct product : products) {
+            product.creator = ((OperateUser)OperateUser.findById(product.creatorId)).userName;
+            product.lastModifier = ((OperateUser)OperateUser.findById(product.lastModifierId)).userName;
+        }
+        render(products);
     }
 
 }
