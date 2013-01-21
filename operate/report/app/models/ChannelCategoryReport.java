@@ -534,7 +534,7 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
                 BigDecimal totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
 
                 if (totalSalesPrice.compareTo(BigDecimal.ZERO) != 0) {
-                    item.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+                    item.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 }
 
                 item.channelCost = item.channelCost.add(paidItem.channelCost);
@@ -640,7 +640,7 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
                 BigDecimal totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
 
                 if (totalSalesPrice.compareTo(BigDecimal.ZERO) != 0) {
-                    item.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+                    item.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 }
 
                 item.channelCost = item.channelCost.add(paidItem.channelCost);
@@ -824,7 +824,7 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
                 BigDecimal totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
 
                 if (totalSalesPrice.compareTo(BigDecimal.ZERO) != 0) {
-                    item.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+                    item.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 }
 
                 item.channelCost = item.channelCost.add(paidItem.channelCost);
@@ -949,7 +949,7 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
                 BigDecimal totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
 
                 if (totalSalesPrice.compareTo(BigDecimal.ZERO) != 0) {
-                    item.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+                    item.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 }
 
                 item.channelCost = item.channelCost == null ? BigDecimal.ZERO : item.channelCost.add(paidItem.channelCost);
@@ -1039,7 +1039,7 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
                 BigDecimal totalSalesPrice = result.salePrice == null ? BigDecimal.ZERO : result.salePrice.add(totalSentRealResultList.get(0).realSalePrice == null ? BigDecimal.ZERO : totalSentRealResultList.get(0).realSalePrice);
                 BigDecimal totalCost = result.totalCost == null ? BigDecimal.ZERO : result.totalCost.add(totalSentRealResultList.get(0).totalCost == null ? BigDecimal.ZERO : totalSentRealResultList.get(0).totalCost);
                 if (totalSalesPrice.compareTo(BigDecimal.ZERO) != 0) {
-                    result.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+                    result.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 }
 
                 result.profit = result.salePrice == null ? BigDecimal.ZERO : result.salePrice.add(totalSentRealResultList.get(0).realSalePrice == null ? BigDecimal.ZERO : totalSentRealResultList.get(0).realSalePrice)
@@ -1178,7 +1178,7 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
                 BigDecimal totalCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.add(paidItem.totalCost == null ? BigDecimal.ZERO : paidItem.totalCost);
 
                 if (totalSalesPrice.compareTo(BigDecimal.ZERO) != 0) {
-                    item.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+                    item.grossMargin = totalSalesPrice.subtract(totalCost).divide(totalSalesPrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
                 }
 
                 item.channelCost = item.channelCost == null ? BigDecimal.ZERO : item.channelCost.add(paidItem.channelCost);
