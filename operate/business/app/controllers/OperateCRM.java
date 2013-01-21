@@ -31,6 +31,7 @@ import java.util.List;
 public class OperateCRM extends Controller {
 
     public static void index(String phone, CRMCondition condition, Long userId, Long consultId, ConsultRecord consult) {
+        System.out.println(phone + "===phone>>");
         if (condition != null && condition.userId != null) {
             userId = condition.userId;
         }
@@ -207,7 +208,9 @@ public class OperateCRM extends Controller {
         consult.city = city;
         consult.save();
         consultId = consult.id;
-        phone = callNo;
+        if (StringUtils.isNotBlank(callNo)) {
+            phone = callNo;
+        }
         index(phone, condition, userId, consultId, null);
     }
 

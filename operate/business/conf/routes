@@ -230,7 +230,7 @@ GET     /coupon_excel                           OperateCoupons.couponExcelOut
 GET     /coupon_history                         OperateCoupons.couponHistory
 GET     /coupon_refund                          OperateCoupons.refund
 GET     /coupon_refund_doing                    OperateCoupons.handleRefund
-GET     /view-ecouponsn/{id}/create-coupon-history        OperateCoupons.createCouponHistoryViewECouponSn
+GET     //view-conpon/{id}/send               OperateCoupons.viewECouponsn
 
 GET     /coupon-appointment/{couponId}          OperateCoupons.showAppointment
 POST    /coupon-appointment                     OperateCoupons.appointment

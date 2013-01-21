@@ -7,22 +7,32 @@
         <thead>
         <tr>
             <th width="10px">订单号</th>
+            <th width="10px">券号</th>
             <th width="8px">手机</th>
             <th width="90px">商品名称</th>
             <th width="30px">单价</th>
             <th width="30px">有效期</th>
             <th width="50px">付款时间</th>
+            <th width="30px">状态</th>
         </tr>
         </thead>
         <tbody>
         <tr>
             <td><a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a></abbr></td>
+            <td>  ${n}${coupon?.getMaskedEcouponSn()}</td>
             <td>${coupon?.orderItems?.phone}</td>
-            <td>${coupon?.goods?.shortName}</td>
+            <td>
+                <a href="http://${play.Play.configuration.getProperty("www.url")}/p/${coupon?.goods?.id}?preview=true"
+                   target="_blank">
+                ${coupon?.goods?.shortName}
+                </a>
+            </td>
             <td>${coupon?.salePrice?.formatCurrency('CNY')}</td>
             <td>${coupon?.effectiveAt ?.format()} /
             ${coupon?.expireAt?.format()}</td>
             <td>${coupon?.order?.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td>&{'coupon.'+coupon?.status}</td>
+
         </tr>
         </tbody>
     </table>
