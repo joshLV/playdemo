@@ -27,6 +27,7 @@ public class AccountFactory extends ModelFactory<Account> {
         account.accountType = AccountType.CONSUMER;
         account.amount = BigDecimal.ZERO;
         account.uncashAmount = BigDecimal.ZERO;
+        account.promotionAmount = BigDecimal.ZERO;
         account.status = AccountStatus.NORMAL;
         account.createdAt = new Date();
         account.creditable = AccountCreditable.NO;

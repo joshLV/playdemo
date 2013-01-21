@@ -1,12 +1,8 @@
 package functional;
 
-import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 import controllers.modules.website.cas.Security;
 import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
@@ -17,33 +13,23 @@ import models.order.OrderItems;
 import models.sales.Goods;
 import models.sales.Shop;
 import models.supplier.Supplier;
-
-import models.order.*;
-import models.sales.Category;
-import models.sales.Goods;
-import models.sales.Shop;
-import models.supplier.Supplier;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http;
 import play.test.FunctionalTest;
-import controllers.modules.website.cas.Security;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
+
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: hejun
  * Date: 12-7-30
  */
-<<<<<<< Updated upstream:website/home/test/functional/UserCouponsTest.java
 public class UserCouponsTest extends FunctionalTest {
-=======
-public class  UserCouponsFuncTest extends FunctionalTest {
->>>>>>> Stashed changes:website/home/test/functional/UserCouponsFuncTest.java
-
     User user;
     Goods goods;
     Order order;

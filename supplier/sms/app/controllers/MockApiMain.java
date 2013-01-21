@@ -1,6 +1,5 @@
 package controllers;
 
-import play.modules.router.Get;
 import play.mvc.Controller;
 
 /**
@@ -10,7 +9,6 @@ import play.mvc.Controller;
  */
 public class MockApiMain extends Controller {
 
-    @Get("/mock-api")
     public static void index() {
         render();
     }

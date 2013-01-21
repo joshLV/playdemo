@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,6 +20,7 @@ public class GoodsOnSaleAndOffSaleCondition {
     public String shortName;
     public String interval = "-1d";
     public String code;
+    public List<Long> resaleIds;
     private Map<String, Object> paramMap = new HashMap<>();
 
     public String filter() {
@@ -31,10 +33,25 @@ public class GoodsOnSaleAndOffSaleCondition {
             builder.append(" and r.goods.code = :code");
             paramMap.put("code", code);
         }
+        if (resaleIds != null) {
+            builder.append(" and c.resaler.id in( :resaleIds)");
+            paramMap.put("resaleIds", resaleIds);
+        }
         return builder.toString();
     }
 
     public Map<String, Object> getParamMap() {
         return paramMap;
+    }
+
+    public String filterOfResaler() {
+       paramMap = new HashMap<>();
+        StringBuilder builder = new StringBuilder(" where 1=1 ");
+        if (resaleIds != null) {
+            builder.append(" and c.resaler.id in (:resaleIds)");
+            paramMap.put("resaleIds", resaleIds);
+        }
+        return builder.toString();
+
     }
 }

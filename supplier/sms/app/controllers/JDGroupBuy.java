@@ -24,6 +24,7 @@ import models.sales.Goods;
 import models.sales.GoodsDeployRelation;
 import models.sales.MaterialType;
 import play.Logger;
+import play.Play;
 import play.db.jpa.JPA;
 import play.libs.IO;
 import play.mvc.Before;
@@ -51,18 +52,20 @@ public class JDGroupBuy extends Controller {
 
     public static String PHONE_REGEX = "^1\\d{10}$";
 
+    private static String canMock = Play.configuration.getProperty("mock.api.ui", "disable");
+
     /**
      * 基本相应参数
      */
     @Before
     public static void baseResponse() {
+        if (!"enabled".equals(canMock)) {
+            renderArgs.put("encrypt", "true");
+        } else {
+            renderArgs.put("encrypt", "false");
+        }
         renderArgs.put("version", "1.0");
         renderArgs.put("venderId", JDGroupBuyUtil.VENDER_ID);
-        if ("false".equals(params.get("encrypt"))) {
-            renderArgs.put("encrypt", "false");
-        } else {
-            renderArgs.put("encrypt", "true");
-        }
         renderArgs.put("zip", "false");
     }
 

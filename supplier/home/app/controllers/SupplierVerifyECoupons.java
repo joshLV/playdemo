@@ -1,7 +1,9 @@
 package controllers;
 
+import com.uhuila.common.constants.PlatformType;
 import com.uhuila.common.util.DateUtil;
 import models.admin.SupplierUser;
+import models.cms.Topic;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.VerifyCouponType;
@@ -52,6 +54,7 @@ public class SupplierVerifyECoupons extends Controller {
      * 券验证页面
      */
     public static void index() {
+        Topic topic = Topic.getTopValid(PlatformType.SUPPLIER);
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         Long supplierUserId = SupplierRbac.currentUser().id;
         SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
@@ -61,11 +64,11 @@ public class SupplierVerifyECoupons extends Controller {
             error("该商户没有添加门店信息！");
         }
         if (supplierUser.shop == null) {
-            render(shopList, supplierUser);
+            render(shopList, supplierUser, topic);
         } else {
             Shop shop = supplierUser.shop;
             //根据页面录入券号查询对应信息
-            render(shop, supplierUser);
+            render(shop, supplierUser, topic);
         }
     }
 

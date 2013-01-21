@@ -11,8 +11,6 @@ import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.libs.F;
 import play.libs.WS;
-import play.modules.router.Get;
-import play.modules.router.Post;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.templates.Template;
@@ -45,7 +43,6 @@ public class JingDongGroupByRequest extends Controller {
     /**
      * 订单生成界面.
      */
-    @Get("/mock/jingdong/send-order")
     public static void sendOrder() {
         Resaler resaler = Resaler.findOneByLoginName("jingdong");
         List<ChannelGoodsInfo> products = ChannelGoodsInfo.find("resaler=? and status=?", resaler,
@@ -64,7 +61,6 @@ public class JingDongGroupByRequest extends Controller {
      * @param mobile
      * @param buyNumber
      */
-    @Post("/mock/jingdong/send-order")
     public static void doSendOrder(String url, Long productId, String mobile, Integer buyNumber) {
         Map<String, Object> tParams = getSenderOrderParams(productId, mobile, buyNumber);
         String content = renderXmlTemplateContent("mock/JingDongGroupByRequest/sendOrder.xml", tParams);
@@ -74,7 +70,6 @@ public class JingDongGroupByRequest extends Controller {
         render("mock/JingDongGroupByRequest/result.html", content, result);
     }
 
-    @Get("/mock/jingdong/send-sms")
     public static void sendSMS() {
         StringBuilder url = new StringBuilder("http://");
         url.append(request.host);
@@ -85,7 +80,6 @@ public class JingDongGroupByRequest extends Controller {
         render(ecoupons, url);
     }
 
-    @Post("/mock/jingdong/send-sms")
     public static void doSendSMS(Long ecouponId, String eCouponSn, String mobile, String url) {
         ECoupon ecoupon = null;
         if (StringUtils.isNotEmpty(eCouponSn)) {
@@ -121,7 +115,6 @@ public class JingDongGroupByRequest extends Controller {
         Template template = TemplateLoader.load(templatePath);
         return template.render(tParams);
     }
-
 
     private static Map<String, Object> getSenderOrderParams(Long productId, String mobile,
                                                             Integer buyNumber) {

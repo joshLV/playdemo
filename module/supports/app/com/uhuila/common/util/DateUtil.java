@@ -270,4 +270,32 @@ public class DateUtil {
         return cale.getTime();
 
     }
+
+    /**
+     * 获取明天的0点的时间.
+     *
+     * @return
+     */
+    public static Date getTomorrow() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
+    }
+
+    /**
+     * 获取n个小时前的时间
+     *
+     * @param i 小时数
+     * @return
+     */
+    public static Date getBeforeHour(Date date, int i) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.HOUR_OF_DAY, 0 - i);
+        return calendar.getTime();
+    }
 }

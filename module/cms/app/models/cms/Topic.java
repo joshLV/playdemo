@@ -1,7 +1,17 @@
 package models.cms;
 
-import java.util.Date;
-import java.util.List;
+import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.constants.PlatformType;
+import org.apache.commons.lang.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
+import play.data.validation.InFuture;
+import play.data.validation.MaxSize;
+import play.data.validation.Required;
+import play.db.jpa.Model;
+import play.modules.paginate.ModelPaginator;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,19 +20,8 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import org.apache.commons.lang.StringUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
-import play.data.validation.InFuture;
-import play.data.validation.MaxSize;
-import play.data.validation.MinSize;
-import play.data.validation.Required;
-import play.db.jpa.Model;
-import play.modules.paginate.ModelPaginator;
-import cache.CacheHelper;
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.constants.PlatformType;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 公告通知.
@@ -161,7 +160,7 @@ public class Topic extends Model {
     public static List<Topic> findByType(PlatformType platformType, TopicType type, Date currentDate, int limit) {
         final String orderBy = "displayOrder, effectiveAt desc, expireAt";
 
-        List<Topic> topics = Topic.find("deleted = ? and  platformType= ? and type = ? and effectiveAt <= ? and expireAt >= ? order by " + orderBy,
+        List<Topic> topics = find("deleted = ? and  platformType= ? and type = ? and effectiveAt <= ? and expireAt >= ? order by " + orderBy,
                 DeletedStatus.UN_DELETED, platformType, type, currentDate, currentDate).fetch(limit);
 
         if (topics.size() == 0) {
@@ -175,9 +174,15 @@ public class Topic extends Model {
     public static List<Topic> findByCondition(PlatformType platformType, TopicType type) {
         final String orderBy = "displayOrder, effectiveAt desc";
 
-        List<Topic> topics = Topic.find("deleted = ? and  platformType= ? and type = ?  order by " + orderBy,
+        List<Topic> topics = find("deleted = ? and  platformType= ? and type = ?  order by " + orderBy,
                 DeletedStatus.UN_DELETED, platformType, type).fetch();
 
         return topics;
+    }
+
+    public static Topic getTopValid(PlatformType platformType) {
+        Date currentDate = new Date();
+        return find("deleted=? and platformType=? and effectiveAt<=? and expireAt>=? order by id desc",
+                DeletedStatus.UN_DELETED, platformType, currentDate, currentDate).first();
     }
 }

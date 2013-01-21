@@ -85,29 +85,17 @@ public class SalesReport implements Comparable<SalesReport> {
     /**
      * 总销售额佣金成本
      */
-<<<<<<< Updated upstream
     public BigDecimal totalAmountCommissionAmount = BigDecimal.ZERO;
-=======
-    public BigDecimal totalAmountCommissionAmount;
->>>>>>> Stashed changes
 
     /**
      * 退款佣金成本
      */
-<<<<<<< Updated upstream
     public BigDecimal refundCommissionAmount = BigDecimal.ZERO;
-=======
-    public BigDecimal refundCommissionAmount;
->>>>>>> Stashed changes
 
     /**
      * 刷单佣金成本
      */
-<<<<<<< Updated upstream
     public BigDecimal cheatedOrderCommissionAmount = BigDecimal.ZERO;
-=======
-    public BigDecimal cheatedOrderCommissionAmount;
->>>>>>> Stashed changes
 
 
     /**
@@ -222,16 +210,10 @@ public class SalesReport implements Comparable<SalesReport> {
         this.ratio = ratio;
         this.goods = goods;
         this.totalAmountCommissionAmount = totalAmountCommissionAmount;
-<<<<<<< Updated upstream
-=======
-        System.out.println("this.totalAmountCommissionAmount>>>>" + this.totalAmountCommissionAmount);
-        System.out.println("this.ratio>>>" + this.ratio);
->>>>>>> Stashed changes
     }
 
     //cheated order from resaler
     public SalesReport(BigDecimal cheatedOrderCommissionAmount, BigDecimal ratio, Goods goods) {
-<<<<<<< Updated upstream
         this.ratio = ratio;
         this.goods = goods;
         this.cheatedOrderCommissionAmount = cheatedOrderCommissionAmount;
@@ -242,18 +224,6 @@ public class SalesReport implements Comparable<SalesReport> {
         this.ratio = ratio;
         this.goods = goods;
         this.refundCommissionAmount = refundCommissionAmount;
-=======
-        this.ratio = ratio;
-        this.goods = goods;
-        this.cheatedOrderCommissionAmount = cheatedOrderCommissionAmount;
-    }
-
-    //refund from resaler
-    public SalesReport(BigDecimal totalAmountCommissionAmount, Goods goods, BigDecimal ratio, Long refundNum) {
-        this.ratio = ratio;
-        this.goods = goods;
-        this.totalAmountCommissionAmount = totalAmountCommissionAmount;
->>>>>>> Stashed changes
         this.refundNum = refundNum;
     }
 
@@ -325,13 +295,6 @@ public class SalesReport implements Comparable<SalesReport> {
 
         List<SalesReport> paidResultList = query.getResultList();
 
-<<<<<<< Updated upstream
-=======
-        for (SalesReport s : paidResultList) {
-            System.out.println("paidAt sales>>>" + s.totalAmount);
-            System.out.println("paid cost>>" + s.totalCost);
-        }
->>>>>>> Stashed changes
 
         //paidAt from resaler
         sql = "select new models.SalesReport(r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio/100,b.commissionRatio)" +
@@ -359,14 +322,6 @@ public class SalesReport implements Comparable<SalesReport> {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<SalesReport> cheatedOrderResultList = query.getResultList();
-<<<<<<< Updated upstream
-=======
-        for (SalesReport s : cheatedOrderResultList) {
-            System.out.println("");
-            System.out.println("cheated sales>>>" + s.cheatedOrderAmount);
-            System.out.println("cheated cost>>" + s.cheatedOrderCost);
-        }
->>>>>>> Stashed changes
 
         //cheated order from resaler
         sql = "select new models.SalesReport(sum(r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio/100,b.commissionRatio,r.goods)" +
@@ -396,7 +351,6 @@ public class SalesReport implements Comparable<SalesReport> {
         }
 
         List<SalesReport> refundList = query.getResultList();
-<<<<<<< Updated upstream
 
         //refund from resaler
         sql = "select new models.SalesReport(sum(e.refundPrice)*b.commissionRatio/100,r.goods,b.commissionRatio,sum(r)) " +
@@ -411,30 +365,7 @@ public class SalesReport implements Comparable<SalesReport> {
         }
 
         List<SalesReport> refundResalerResultList = query.getResultList();
-=======
-//        for (SalesReport s : refundList) {
-//            System.out.println("");
-//            System.out.println("refund sales>>>" + s.refundAmount);
-//            System.out.println("refund cost>>" + s.refundCost);
-//        }
-        System.out.println("refundList>>>>" + refundList);
 
-        //refund from resaler
-        sql = "select new models.SalesReport(sum(e.refundPrice)*b.commissionRatio/100,r.goods,b.commissionRatio,sum(r))" +
-                " from OrderItems r,Order o,Resaler b, ECoupon e where e.orderItems=r and";
-        groupBy = " group by r.goods.id,b ";
-        query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundResaler() + groupBy + " order by sum(r.buyNumber) desc ");
-
-
-        for (String param : condition.getParamMap1().keySet()) {
-            query.setParameter(param, condition.getParamMap().get(param));
-        }
->>>>>>> Stashed changes
-
-        List<SalesReport> refundResalerResultList = query.getResultList();
-
-        System.out.println("refundResalerResultList>>>>>" + refundResalerResultList.size());
         //consumedAt
         sql = "select new models.SalesReport(r.goods,sum(r.salePrice-r.rebateValue/r.buyNumber)) " +
                 " from OrderItems r, ECoupon e where e.orderItems=r";
@@ -467,18 +398,6 @@ public class SalesReport implements Comparable<SalesReport> {
                 item.netSalesAmount = item.totalAmount.subtract(item.cheatedOrderAmount);
                 item.profit = item.totalAmount.subtract(cheatedItem.cheatedOrderAmount)
                         .subtract(item.totalCost).add(cheatedItem.cheatedOrderCost);
-<<<<<<< Updated upstream
-=======
-
-                System.out.println("profit cheated>>>" + item.profit);
-
-                System.out.println("item.totalAmount>>>" + item.totalAmount);
-                System.out.println("item.cost>>>" + item.totalCost);
-                System.out.println("item.cheat>>>" + item.cheatedOrderAmount);
-                System.out.println("item.cost>>>" + item.cheatedOrderCost);
-//                System.out.println("item.refundcost>>>" + item.refundCost);
-//                System.out.println("item.cheatcost>>>" + item.cheatedOrderCost);
->>>>>>> Stashed changes
             }
         }
 
@@ -493,21 +412,9 @@ public class SalesReport implements Comparable<SalesReport> {
             } else {
                 item.refundAmount = refundItem.refundAmount;
                 item.refundCost = refundItem.refundCost;
-<<<<<<< Updated upstream
                 item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).setScale(2);
                 item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount)
                         .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost);
-=======
-                item.netSalesAmount = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount.subtract(item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).setScale(2);
-                item.profit = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount.subtract(item.refundAmount).subtract(item.cheatedOrderAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost);
-//                System.out.println("item.totalAmount>>>" + item.totalAmount);
-//                System.out.println("item.reufnd>>>" + item.refundAmount);
-//                System.out.println("item.cheat>>>" + item.cheatedOrderAmount);
-//                System.out.println("item.totalcost>>>" + item.totalCost);
-//                System.out.println("item.refundcost>>>" + item.refundCost);
-//                System.out.println("item.cheatcost>>>" + item.cheatedOrderCost);
->>>>>>> Stashed changes
             }
         }
 
@@ -529,48 +436,21 @@ public class SalesReport implements Comparable<SalesReport> {
             if (item == null) {
                 map.put(getReportKey(resalerItem), resalerItem);
             } else {
-<<<<<<< Updated upstream
                 totalCommission = item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount;
                 totalCommission = totalCommission.add(resalerItem.totalAmountCommissionAmount == null ? BigDecimal.ZERO : resalerItem.totalAmountCommissionAmount);
                 item.totalAmountCommissionAmount = totalCommission;
                 item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
-=======
-                System.out.println("item.totalAmount>>>" + item.totalAmount);
-                System.out.println("item.reufnd>>>" + item.refundAmount);
-                System.out.println("item.cheat>>>" + item.cheatedOrderAmount);
-                System.out.println("item.totalcost>>>" + item.totalCost);
-                System.out.println("item.refundcost>>>" + item.refundCost);
-                System.out.println("item.cheatcost>>>" + item.cheatedOrderCost);
-                System.out.println("ratio>>>" + resalerItem.ratio);
-//                item.profit = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount.subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).multiply(BigDecimal.ONE.subtract(resalerItem.ratio == null ? BigDecimal.ZERO : resalerItem.ratio))
-//                        .subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).multiply(resalerItem.ratio == null ? BigDecimal.ZERO : resalerItem.ratio).subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost);
-//                item.profit = item.totalAmount.subtract(item.refundAmount).subtract(item.cheatedOrderAmount)
-//                        .add(item)
-                item.totalAmountCommissionAmount = resalerItem.totalAmountCommissionAmount;
-                System.out.println(" item.totalAmountCommissionAmount >>>>" + item.totalAmountCommissionAmount);
-                System.out.println("temp>>>>" + item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount.subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount).subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount).subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost)
-                );
-                System.out.println("item.totalAmountCommissionAmount>>>>" + item.totalAmountCommissionAmount);
-                System.out.println("item.refundCommissionAmount>>>>" + item.refundCommissionAmount);
-
-                item.profit = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount.subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
->>>>>>> Stashed changes
                         .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
                         .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
             }
         }
 
-<<<<<<< Updated upstream
         totalCommission = BigDecimal.ZERO;
-=======
-
->>>>>>> Stashed changes
         for (SalesReport cheatedResalerItem : cheatedOrderResalerResultList) {
             SalesReport item = map.get(getReportKey(cheatedResalerItem));
             if (item == null) {
                 map.put(getReportKey(cheatedResalerItem), cheatedResalerItem);
             } else {
-<<<<<<< Updated upstream
                 totalCommission = item.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : item.cheatedOrderCommissionAmount;
                 totalCommission = totalCommission.add(cheatedResalerItem.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : cheatedResalerItem.cheatedOrderCommissionAmount);
                 item.cheatedOrderCommissionAmount = totalCommission;
@@ -582,37 +462,17 @@ public class SalesReport implements Comparable<SalesReport> {
             }
         }
         totalCommission = BigDecimal.ZERO;
-=======
-                item.cheatedOrderCommissionAmount = cheatedResalerItem.cheatedOrderCommissionAmount;
-                item.profit = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount.subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
-                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
-                System.out.println("cheated resutl>>>>>" + item.profit);
-            }
-        }
-
->>>>>>> Stashed changes
         for (SalesReport refundResalerItem : refundResalerResultList) {
             SalesReport item = map.get(getReportKey(refundResalerItem));
             if (item == null) {
                 map.put(getReportKey(refundResalerItem), refundResalerItem);
             } else {
-<<<<<<< Updated upstream
                 totalCommission = item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount;
                 totalCommission = totalCommission.add(refundResalerItem.refundCommissionAmount == null ? BigDecimal.ZERO : refundResalerItem.refundCommissionAmount);
                 item.refundCommissionAmount = totalCommission;
                 item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
                         .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
                         .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
-=======
-                System.out.println("inini");
-                item.refundCommissionAmount = refundResalerItem.refundCommissionAmount;
-                System.out.println("item.......refund>>>>" + item.refundCommissionAmount);
-                item.profit = item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount.subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount)
-                        .subtract(item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount).add(item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount)
-                        .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(item.refundCost == null ? BigDecimal.ZERO : item.refundCost).add(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
-
->>>>>>> Stashed changes
             }
         }
 

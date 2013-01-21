@@ -1,13 +1,11 @@
 package unit;
 
-import java.util.Calendar;
-import java.util.Date;
-
+import com.uhuila.common.util.DateUtil;
 import org.junit.Test;
-
 import play.test.UnitTest;
 
-import com.uhuila.common.util.DateUtil;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * 日期工具类的测试.
@@ -27,6 +25,23 @@ public class DateUtilTest extends UnitTest {
         assertEquals(59, c.get(Calendar.MINUTE));
         assertEquals(59, c.get(Calendar.SECOND));
         assertEquals(999, c.get(Calendar.MILLISECOND));
+    }
+
+    @Test
+    public void testGetBeforeHour() {
+        Calendar c = Calendar.getInstance();
+        c.set(2013, 1, 1, 1, 0, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+
+        Calendar c1 = Calendar.getInstance();
+        c1.set(2013, 1, 1, 3, 0, 0);
+        c1.set(Calendar.MINUTE, 0);
+        c1.set(Calendar.SECOND, 0);
+        c1.set(Calendar.MILLISECOND, 0);
+
+        assertEquals(c.getTimeInMillis(), DateUtil.getBeforeHour(c1.getTime(), 2).getTime());
     }
 
 }

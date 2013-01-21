@@ -188,8 +188,11 @@ public class AccountSequence extends Model {
         return result;
     }
 
-    public static AccountSequence getLastAccountSequence(Long accountId) {
-        return (AccountSequence) find("account.id=? order by id desc", accountId).first();
+    public static AccountSequence getLastAccountSequence(Long accountId, Date toDate) {
+        if (toDate == null) {
+            return (AccountSequence) find("account.id=? order by id desc", accountId).first();
+        }
+        return (AccountSequence) find("account.id=? and createdAt<=? order by id desc", accountId, toDate).first();
     }
 
     public static BigDecimal getVostroAmount(Account account, Date fromDate, Date toDate) {

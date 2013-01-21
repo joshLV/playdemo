@@ -26,9 +26,9 @@
             欢迎，${supplierCompany.name}(${currentUser?.loginName})!
             <a href="/logout">退出</a>
             <a href="/ui-version/to/v1">使用旧版</a>
-            *{<a href="">修改密码</a>}*
-            *{<a href="">帮助</a>}*
-            *{<a href="">反馈</a>}*
+        *{<a href="">修改密码</a>}*
+        *{<a href="">帮助</a>}*
+        *{<a href="">反馈</a>}*
         </div>
     </div>
 </div>
@@ -41,23 +41,36 @@
 </div>
 #{/if}
 #{if successInfo != null}
-<div id="success" class="message">
+<div class="message">
     <div class="success">
         <p><em>${successInfo?.raw()}</em></p>
     </div>
     <a id="success-close" class="close" href="javascript:void(0)">关闭</a>
 </div>
 #{/if}
+#{if topic != null}
+<div id="message">
+    <div class="success">
+        <p><em>${topic?.content?.raw()}</em></p>
+    </div>
+    <a id="msg-close" class="close" href="javascript:void(0)">关闭</a>
+</div>
+#{/if}
 <!-- .content -->
 <div id="content" class="clearfix">
     <div class="sidebar">
         <ul class="menu">
-        #{if navigation.ContextedPermission.hasPermission("COUPON_MULTI_VERIFY")}<li><a #{if "verify".equals(menu)}class="curr"#{/if} href="/verify">券&nbsp;&nbsp;验&nbsp;&nbsp;证</a></li>#{/if}
-        #{if navigation.ContextedPermission.hasPermission("COUPON_INDEX")} <li><a #{if "coupons".equals(menu)}class="curr"#{/if} href="/coupons">券号列表</a></li>#{/if}
+        #{if navigation.ContextedPermission.hasPermission("COUPON_MULTI_VERIFY")}
+            <li><a #{if "verify".equals(menu)}class="curr"#{/if} href="/verify">券&nbsp;&nbsp;验&nbsp;&nbsp;证</a>
+            </li>#{/if}
+        #{if navigation.ContextedPermission.hasPermission("COUPON_INDEX")}
+            <li><a #{if "coupons".equals(menu)}class="curr"#{/if} href="/coupons">券号列表</a></li>#{/if}
         *{#{if navigation.ContextedPermission.hasPermission("REPORT")} <li><a #{if "bills".equals(menu)}class="curr"#{/if} href="/bills">财务管理</a></li>#{/if}}*
         *{#{if navigation.ContextedPermission.hasPermission("TOTAL_REPORT")} <li><a #{if "reports".equals(menu)}class="curr"#{/if} href="/reports">报表一览</a></li>#{/if}}*
-        #{if navigation.ContextedPermission.hasPermission("SHOPS")} <li><a #{if "shops".equals(menu)}class="curr"#{/if} href="/shops">我的门店</a></li>#{/if}
-        #{if navigation.ContextedPermission.hasPermission("ACCOUNT")} <li><a #{if "users".equals(menu)}class="curr"#{/if} href="/users">账号管理</a></li>#{/if}
+        #{if navigation.ContextedPermission.hasPermission("SHOPS")}
+            <li><a #{if "shops".equals(menu)}class="curr"#{/if} href="/shops">我的门店</a></li>#{/if}
+        #{if navigation.ContextedPermission.hasPermission("ACCOUNT")}
+            <li><a #{if "users".equals(menu)}class="curr"#{/if} href="/users">账号管理</a></li>#{/if}
         </ul>
         <div class="sbox">
             商家电话验证请致电<br>

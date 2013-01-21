@@ -153,7 +153,7 @@ public class DDPushGoods extends Controller {
      */
     private static void setUrlParams(Goods goods, Resaler resaler, String ddGoodsId) {
 
-        String url = THIRD_URL + "?product_id=" + ddGoodsId + "&type=local";
+        String url = THIRD_URL + "?product_id=" + ddGoodsId;
         ChannelGoodsInfo channelGoodsInfo = ChannelGoodsInfo.findByResaler(resaler, url);
         if (channelGoodsInfo == null) {
             new ChannelGoodsInfo(goods, resaler, url, "当当", resaler.userName).save();

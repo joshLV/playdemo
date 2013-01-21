@@ -665,14 +665,16 @@ public class PeopleEffectCategoryReport {
         }
         //指定相同的operateUser，添加排序项
         for (PeopleEffectCategoryReport item : resultList) {
-            for (Long s : sortMap.keySet()) {
-                if (item.operateUser.id == s) {
-                    item.totalAmount = sortMap.get(s).totalAmount;
-                    item.totalConsumedPrice = sortMap.get(s).totalConsumedPrice;
-                    item.totalRefundPrice = sortMap.get(s).totalRefundPrice;
-                    item.netProfit = sortMap.get(s).netProfit;
-                    item.totalGrossMargin = sortMap.get(s).totalGrossMargin;
-                }
+            Long operateUserId = item.operateUser.id;
+            if (sortMap.keySet().contains(operateUserId)) {
+//            for (Long s : sortMap.keySet()) {
+//                if (item.operateUser.id == s) {
+                item.totalAmount = sortMap.get(operateUserId).totalAmount;
+                item.totalConsumedPrice = sortMap.get(operateUserId).totalConsumedPrice;
+                item.totalRefundPrice = sortMap.get(operateUserId).totalRefundPrice;
+                item.netProfit = sortMap.get(operateUserId).netProfit;
+                item.totalGrossMargin = sortMap.get(operateUserId).totalGrossMargin;
+//                }
             }
         }
         condition.sort(resultList);
@@ -1014,7 +1016,7 @@ public class PeopleEffectCategoryReport {
                 consumedPrice = consumedPrice.add(item.consumedPrice);
             }
             totalCost = totalCost.add(item.goodsCost == null ? BigDecimal.ZERO : item.goodsCost);
-            totalSalePrice = totalSalePrice.add(item.salePrice == null ? BigDecimal.ZERO : item.salePrice).add(item.realSalePrice==null?BigDecimal.ZERO:item.realSalePrice);
+            totalSalePrice = totalSalePrice.add(item.salePrice == null ? BigDecimal.ZERO : item.salePrice).add(item.realSalePrice == null ? BigDecimal.ZERO : item.realSalePrice);
 
             profit = profit.add(item.profit == null ? BigDecimal.ZERO : item.profit);
         }
