@@ -72,20 +72,20 @@ public class SupplierRbac extends Controller {
     @Before(unless = { "login", "logout", "fail", "authenticate", "pgtCallBack", "setLoginUserForTest" })
     public static void filterRbac() {
         Logger.debug("[SupplierRbac]: CAS Filter for URL -> " + request.url);
-        
+
         // 测试用，见 @Security.setLoginUserForTest说明
         if (Security.isTestLogined()) {
             session.put(SESSION_USER_KEY, Security.getLoginUserForTest());
         }
-        
+
         if (request.invokedMethod == null)
             return;
 
         String userName = getDomainUserName(session.get(SESSION_USER_KEY));
         String subDomain = CASUtils.getSubDomain();
 
-        Logger.info(" currentUser = " + userName + ", domain=" + subDomain 
-        		+ ", cache=" + Cache.get(SESSION_USER_KEY + userName));             
+        Logger.info(" currentUser = " + userName + ", domain=" + subDomain
+        		+ ", cache=" + Cache.get(SESSION_USER_KEY + userName));
 
         SupplierUser user = null;
         // 检查权限
@@ -103,7 +103,7 @@ public class SupplierRbac extends Controller {
                 for (SupplierRole role : user.roles) {
                     Logger.debug("user.role=" + role.key);
                 }
-            }            
+            }
             _user.set(user);
             ContextedPermission.init(user);
         }
@@ -134,7 +134,7 @@ public class SupplierRbac extends Controller {
 
         // 检查权限
         checkRight(currentMenuName);
-        
+
     }
 
     @Finally
@@ -148,10 +148,13 @@ public class SupplierRbac extends Controller {
     }
 
     public static String getDomainUserName(String fullUserName) {
-        if (fullUserName == null || fullUserName.indexOf("@") < 0) {
-            return fullUserName;
+        if (fullUserName == null) {
+            return null;
         }
-        return fullUserName.split("@", 2)[0];
+        if (!fullUserName.contains("@")) {
+            return fullUserName.trim();
+        }
+        return fullUserName.split("@", 2)[0].trim();
     }
 
 
@@ -223,8 +226,8 @@ public class SupplierRbac extends Controller {
                 renderTemplate("Defaults/index.html", message);
             }
         } // else 如果没有加上Right标注，不检查权限
-    }    
-    
+    }
+
     /**
      * Action for the login route. We simply redirect to CAS login page.
      *
@@ -299,21 +302,21 @@ public class SupplierRbac extends Controller {
         if (isAuthenticated) {
             // 登录记录
             String userName = getDomainUserName(casUser.getUsername());
-            String subDomain = CASUtils.getSubDomain();      
+            String subDomain = CASUtils.getSubDomain();
             SupplierUser user = SupplierUser.findUserByDomainName(subDomain, userName);
-            user.lastLoginIP = request.remoteAddress;
-            user.save();
-
             if (user != null) {
+                user.lastLoginIP = request.remoteAddress;
+                user.save();
+
                 SupplierUserLoginHistory history = new SupplierUserLoginHistory();
                 history.user = user;
                 history.loginAt = new Date();
                 history.loginIp = request.remoteAddress;
                 history.applicationName = Play.configuration.getProperty("application.name");
                 history.sessionId = session.getId();
-                history.save();            
+                history.save();
             }
-            
+
             // we redirect to the original URL
             String url = (String) Cache.get("url_" + session.getId());
             Cache.delete("url_" + session.getId());
