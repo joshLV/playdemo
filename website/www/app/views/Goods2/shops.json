@@ -1,6 +1,4 @@
-%{count=shops?.size();
-page= (pageNumber-1) * pageSize;
-}%
+%{count=shops?.size(); }%
 {
     "status": #{if count>0}0#{/if}#{else}-1#{/else},
     "totalOutlet": ${count},

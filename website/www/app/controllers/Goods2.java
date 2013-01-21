@@ -39,6 +39,7 @@ import play.mvc.With;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -424,9 +425,8 @@ public class Goods2 extends Controller {
      */
     public static void shops(Long id) {
         String currPage = params.get("currPage");
-        int pageNumber = StringUtils.isEmpty(currPage) ? 1 : Integer.parseInt(currPage);
         String pageSize1 = params.get("pageSize");
-        int pageSize = StringUtils.isEmpty(pageSize1) ? 1 : Integer.parseInt(pageSize1);
+
         final Long goodsId = id;
         final models.sales.Goods goods = CacheHelper.getCache(CacheHelper
                 .getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id,
@@ -436,13 +436,21 @@ public class Goods2 extends Controller {
                 return models.sales.Goods.findUnDeletedById(goodsId);
             }
         });
+        int page = 0;
+        if (StringUtils.isEmpty(currPage) || StringUtils.isEmpty(pageSize1)) {
+            Collection<Shop> shops = goods.getShopList();
+            render("Goods2/shops.json", shops, page);
+        }
 
+        int pageNumber = StringUtils.isEmpty(currPage) ? 1 : Integer.parseInt(currPage);
+        int pageSize = StringUtils.isEmpty(pageSize1) ? 1 : Integer.parseInt(pageSize1);
         ValuePaginator<Shop> shops = new ValuePaginator<>(
                 goods.getShopList());
         shops.setPageNumber(pageNumber);
         shops.setPageSize(pageSize);
+        page = (pageNumber - 1) * pageSize;
 
-        render("Goods2/shops.json", shops, pageNumber, pageSize);
+        render("Goods2/shops.json", shops, page, pageNumber, pageSize);
     }
 
     private static void showGoodsHistory(final GoodsHistory goodsHistory) {
