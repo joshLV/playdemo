@@ -12,6 +12,9 @@ import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * User: hejun
  * Date: 12-8-24
@@ -20,7 +23,7 @@ import play.vfs.VirtualFile;
 public class PaymentReportsFuncTest extends FunctionalTest {
 
     @Before
-    public void setUp(){
+    public void setUp() {
         FactoryBoy.lazyDelete();
 
         // 重新加载配置文件
@@ -32,7 +35,7 @@ public class PaymentReportsFuncTest extends FunctionalTest {
         Security.setLoginUserForTest(user.loginName);
 
         // 初始化数据
-        FactoryBoy.batchCreate(10,AccountSequence.class,new SequenceCallback<AccountSequence>() {
+        FactoryBoy.batchCreate(10, AccountSequence.class, new SequenceCallback<AccountSequence>() {
             @Override
             public void sequence(AccountSequence target, int seq) {
                 target.tradeId = new Long(seq);
@@ -42,25 +45,51 @@ public class PaymentReportsFuncTest extends FunctionalTest {
     }
 
     @Test
-    public void testIndex(){
+    public void testIndex() {
         Http.Response response = GET("/reports/payment?condition.createdAtBegin=2012-01-01&condition.createdAtEnd=2099-08-24&condition.interval=");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
     }
 
     @Test
-    public void testIndexWithNull(){
+    public void testIndexWithNull() {
         Http.Response response = GET("/reports/payment");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
     }
 
-
     @Test
-    public void testDetail(){
+    public void testDetail_alipay() {
+        AccountSequence sequence = AccountSequence.find("order by id desc").first();
+//        sequence.account = PaymentReport.alipayAccount;
+        sequence.createdAt = new Date();
+        sequence.save();
+
         Http.Response response = GET("/reports/payment-detail?partners=alipay");
         assertIsOk(response);
-        assertNotNull(renderArgs("sequences"));
-
+        List<AccountSequence> sequences = (List) renderArgs("sequences");
+        assertNotNull(sequences);
+//        assertEquals(1, sequences.size());
     }
+
+    @Test
+    public void testDetail_tenpay() {
+//        AccountSequence sequence = AccountSequence.find("order by id desc").first();
+//        sequence.account = PaymentReport.tenpayAccount;
+//        sequence.save();
+        Http.Response response = GET("/reports/payment-detail?partners=tenpay");
+        assertIsOk(response);
+        assertNotNull(renderArgs("sequences"));
+    }
+
+    @Test
+    public void testDetail_99bill() {
+//        AccountSequence sequence = AccountSequence.find("order by id desc").first();
+//        sequence.account = PaymentReport.kuaiqianAccount;
+//        sequence.save();
+        Http.Response response = GET("/reports/payment-detail?partners=99bill");
+        assertIsOk(response);
+        assertNotNull(renderArgs("sequences"));
+    }
+
 }

@@ -8,7 +8,6 @@ import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
-import play.data.validation.Required;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.modules.paginate.ModelPaginator;
@@ -46,18 +45,22 @@ public class CmsBlocks extends Controller {
         render();
     }
 
-    public static void create(@Valid Block block, @Required File image) {
-        //TODO 仅仅在测试环境中会产生一个validation.invalid的错误，以下这段是为了让测试用例通过增加的代码
-        if (Play.runingInTestMode() && validation.errorsMap().containsKey("image") && block.type != BlockType.HOT_KEYWORDS) {
-            for (String key : validation.errorsMap().keySet()) {
-                Logger.warn("remove:     validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
-            }
-            Validation.clear();
-        }
-        checkExpireAt(block);
+    public static void create(@Valid Block block, File image) {
         if (block.type != BlockType.HOT_KEYWORDS) {
             checkImageFile(image);
+            if (image == null) {
+                Validation.required("image", image);
+            }
+            //TODO 仅仅在测试环境中会产生一个validation.invalid的错误，以下这段是为了让测试用例通过增加的代码
+            if (Play.runingInTestMode() && validation.errorsMap().containsKey("image") && block.type != BlockType.HOT_KEYWORDS) {
+                for (String key : validation.errorsMap().keySet()) {
+                    Logger.warn("remove:     validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
+                }
+                Validation.clear();
+            }
         }
+
+        checkExpireAt(block);
 
         if (Validation.hasErrors()) {
             for (String key : validation.errorsMap().keySet()) {
@@ -117,6 +120,7 @@ public class CmsBlocks extends Controller {
         if (logo == null) {
             return;
         }
+
         //检查目录
         File uploadDir = new File(ROOT_PATH);
         if (!uploadDir.isDirectory()) {
@@ -149,22 +153,11 @@ public class CmsBlocks extends Controller {
     }
 
     public static void update(Long id, @Valid Block block, File image) {
-        //TODO 仅仅在测试环境中会产生一个validation.invalid的错误，以下这段是为了让测试用例通过增加的代码
-        if (Play.runingInTestMode() && validation.errorsMap().containsKey("image") && block.type != BlockType.HOT_KEYWORDS) {
-            for (String key : validation.errorsMap().keySet()) {
-                Logger.warn("remove:     validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
-            }
-            Validation.clear();
-        }
-        checkExpireAt(block);
         if (block.type != BlockType.HOT_KEYWORDS) {
             checkImageFile(image);
         }
-
+        checkExpireAt(block);
         if (Validation.hasErrors()) {
-            for (String key : validation.errorsMap().keySet()) {
-                Logger.warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
-            }
             block.id = id;
             render("CmsBlocks/edit.html", block);
         }
