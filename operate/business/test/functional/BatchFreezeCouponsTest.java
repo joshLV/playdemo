@@ -59,6 +59,7 @@ public class BatchFreezeCouponsTest extends FunctionalTest {
         assertEquals(new Integer(0), coupon.isFreeze);
         Map<String, String> itemParams = new HashMap<>();
         itemParams.put("couponsFreezedId", coupon.id.toString());
+        itemParams.put("coupon.freezedReason", "UNABLEVERIFY");
         Http.Response response = POST("/coupons/batchfreeze/doing", itemParams);
         assertStatus(200, response);
         Set<ECoupon> couponSet = (Set<ECoupon>) renderArgs("unUsedCouponsList");

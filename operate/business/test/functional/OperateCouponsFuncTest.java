@@ -112,16 +112,14 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         ECoupon eCoupon = FactoryBoy.create(ECoupon.class);
         eCoupon.isFreeze = 0;
         eCoupon.save();
-        String params = "coupon.id=" + eCoupon.id.toString() + " &coupon.eCouponSn=" + eCoupon.eCouponSn
-                + "&coupon.goods.id=" + eCoupon.goods.id + "&coupon.order.id=" + eCoupon.order.id
-                + "&coupon.order.id=" + eCoupon.order.id + "&coupon.orderItems.id=" + eCoupon.orderItems.id;
+        String params = "coupon.freezedReason=UNABLEVERIFY";
         Http.Response response = PUT("/coupons/" + eCoupon.id.toString() + "/freeze", "application/x-www-form-urlencoded", params);
         assertStatus(302, response);
         eCoupon.refresh();
         assertEquals(1, eCoupon.isFreeze.intValue());
         assertEquals(1, CouponHistory.count());
         CouponHistory historyList = CouponHistory.find("coupon=? order by createdAt desc", eCoupon).first();
-        assertEquals("冻结券号", historyList.remark);
+        assertEquals("冻结券号(无法验证)", historyList.remark);
     }
 
     @Test
