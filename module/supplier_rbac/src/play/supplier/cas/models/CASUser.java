@@ -39,9 +39,6 @@ public class CASUser implements Serializable {
     }
 
     public void setUsername(String _username) {
-        if (_username != null) {
-            _username = _username.replaceAll("\\s+", "");
-        }
         this.username = _username;
     }
 

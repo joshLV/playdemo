@@ -16,28 +16,26 @@
  */
 package play.supplier.cas;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import play.Logger;
 import play.Play;
 import play.Play.Mode;
 import play.cache.Cache;
 import play.libs.WS;
-import play.supplier.cas.models.CASUser;
 import play.mvc.Http;
 import play.mvc.Router;
+import play.supplier.cas.models.CASUser;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Utils class for CAS.
@@ -51,8 +49,6 @@ public class CASUtils {
 
     /**
      * Method that generate the CAS login page URL.
-     *
-     * @param request
      *
      * @param possibleGateway
      * @throws Throwable
@@ -238,8 +234,11 @@ public class CASUtils {
                 String pgt = (String) Cache.get(PGTIOU);
                 Cache.delete(PGTIOU);
 
+                String username = user.getUsername().replaceAll("\\s+", "");
+                Logger.info("Add cache.key=(" + "pgt_" + username + "): value=[" + pgt + "]");
+
                 // we put in cache PGT with PGT_username
-                Cache.add("pgt_" + user.getUsername(), pgt);
+                Cache.add("pgt_" + username, pgt);
             }
         }
 
@@ -249,7 +248,7 @@ public class CASUtils {
     /**
      * Method to get CAS atribut from cas response.
      *
-     * @param xml
+     * @param document
      * @return
      * @throws SAXException
      * @throws IOException

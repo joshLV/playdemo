@@ -152,8 +152,6 @@ public class DadongProductsSyncRequest {
             goods.categories.add(category);
         }
 
-
-        //餐饮类 6% 其他 8%
         goods.createdAt = new Date();
         goods.createdBy = dadong.fullName;
         goods.deleted = DeletedStatus.UN_DELETED;
@@ -184,8 +182,8 @@ public class DadongProductsSyncRequest {
         goods.name = product.productName;
         goods.shortName = product.productName;
         goods.title = goods.shortName;
-        goods.setExhibition("说明");
-        goods.setPrompt("提示");
+        goods.setExhibition("请修改提示信息以给消费者列完整的参考");
+        goods.setPrompt("请修改提示信息以给消费者更完整的参考");
 
         goods.supplierGoodsId = product.productId;
         goods.supplierId = dadong.id;
