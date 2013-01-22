@@ -173,6 +173,9 @@ public class DadongProductsSyncRequest {
         goods.promoterPrice = BigDecimal.ZERO;
         goods.isAllShop = false;
 
+        // 大东票务不可退款
+        goods.noRefund = Boolean.TRUE;
+
         goods.setDiscount(goods.salePrice.multiply(BigDecimal.TEN).divide(goods.faceValue, RoundingMode.FLOOR).setScale(2, RoundingMode.FLOOR));
         goods.resaleAddPrice = BigDecimal.ZERO;
         goods.materialType = MaterialType.ELECTRONIC;

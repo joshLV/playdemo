@@ -1,6 +1,5 @@
 package util.ws;
 
-import models.journal.WebServiceCallLog;
 import models.journal.WebServiceCallLogData;
 import org.apache.commons.lang.StringUtils;
 import play.libs.WS;
@@ -47,11 +46,6 @@ public class PlayWebServiceClient extends WebServiceClient {
             callback.process(response.getStatus(), response.getString());
         }
         return response;
-    }
-
-    public void doPost(WebServiceCallLog log, WebServiceCallback callback) {
-
-        WS.url("").post();
     }
 
     @Override
