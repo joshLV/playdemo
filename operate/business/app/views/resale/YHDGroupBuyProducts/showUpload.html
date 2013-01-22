@@ -201,12 +201,12 @@
             <div class="controls">
                 <textarea rows="8" cols="100"  name="productDescription" id="productDescription" style="width:850px;height:550px;display:hidden;">
                     <p> <span style="font-size:14px;"><img class="blogimg" src="http://d12.yihaodianimg.com/t20/2012/0918/482/491/a8cd44b5220bbbefc77fecedee40a191.jpg"></span></p>
-                    <table border="1" cellpadding="0">
+                    <table border="1" cellpadding="0" width="680px">
                         #{list items:goods.shopList, as:'shop'}
                             <tr>
                                 <td>${shop.name}</td>
                                 <td>地址：${shop.address}<br/>电话${shop.phone}</td>
-                                <td>交通：</td>
+                                <td>交通：${shop.transport}</td>
                             </tr>
                         #{/list}
                     </table>
