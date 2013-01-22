@@ -103,14 +103,7 @@
 <form class="well form-inline" action="@{NetSalesReports.index()}" method="GET" id="search_form"
       name="search_form">
     商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
-#{select 'condition.supplier.id', id:supplierId, class:'select', value:condition?.supplier?.id}
-    #{if supplierList.size()>0}
-        #{option "0"}不限#{/option}
-    #{/if}
-    #{list items:supplierList, as:'supplier'}
-        #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
-    #{/list}
-#{/select}
+#{vx.selectInputField name:"supplierName", id:"condition.supplier.id", list:supplierList, value:condition?.supplier?.id, array:"supplierArray",importJs:true/}
     起止日期
     <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.createdAtBegin"
            onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtBegin?.format()}"> -
@@ -149,7 +142,7 @@
         ou=models.admin.OperateUser.findById(report?.supplier?.salesId); }
         }%
         <td>${ou?.jobNumber}</td>
-        <td>${report?.supplier?.fullName}</td>
+        <td>${report?.supplier?.fullName}(${report?.supplier?.otherName})</td>
         <td>
             <a href="/reports/sales?condition.createdAtBegin=${condition?.createdAtBegin?.format()}&condition.createdAtEnd=${condition?.createdAtEnd?.format()}&condition.supplier.id=${report?.supplier?.id}"
                target="_blank">${(report?.salesAmount?:0).formatCurrency('CNY')}</a></td>
