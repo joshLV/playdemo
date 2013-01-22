@@ -44,6 +44,9 @@
     function freeze(id) {
         $("#setForm").attr("action", "/coupons/" + id + "/freeze?x-http-method-override=PUT");
         $('#sendModal').modal('show');
+        $("#freeze_option").val("ISCHEATEDORDER");
+        $("#textContainer").css({display:"none"});
+        $("#other_reason").val("");
     }
 
 
@@ -352,7 +355,6 @@
     <div class="modal-footer">
         <a href="#" id="sure" class="btn btn-primary">确定</a>
         <a href="#" class="btn" data-dismiss="modal">取消</a>
-    *{<button data-dismiss="modal" aria-hidden="true">Close</button>}*
     </div>
 </div>
 

@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * 运营后台券功能测试.
- *
+ * <p/>
  * User: hejun
  * Date: 12-8-22
  * Time: 上午10:29
@@ -111,7 +111,8 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         ECoupon eCoupon = FactoryBoy.create(ECoupon.class);
         eCoupon.isFreeze = 0;
         eCoupon.save();
-        Http.Response response = PUT("/coupons/" + eCoupon.id.toString() + "/freeze", "text/html", "");
+        String params = "coupon.id=" + eCoupon.id.toString()+ " &coupon.eCouponSn=" + eCoupon.eCouponSn;
+        Http.Response response = PUT("/coupons/" + eCoupon.id.toString() + "/freeze", "application/x-www-form-urlencoded", params);
         assertStatus(302, response);
         eCoupon.refresh();
         assertEquals(1, eCoupon.isFreeze.intValue());
