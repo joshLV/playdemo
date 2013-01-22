@@ -9,6 +9,8 @@
 <script type="text/javascript">
 
     $(function () {
+
+
         $("#sure").click(function () {
             var result = true;
             if ($("#freeze_option").val() == "OTHERS" && $("#other_reason").val().trim() == "") {
@@ -42,11 +44,16 @@
     }
 
     function freeze(id) {
+        $("#couponinfo").load("/coupon_info/" + id, function (data) {
+        });
+
         $("#setForm").attr("action", "/coupons/" + id + "/freeze?x-http-method-override=PUT");
-        $('#sendModal').modal('show');
+
         $("#freeze_option").val("ISCHEATEDORDER");
         $("#textContainer").css({display:"none"});
         $("#other_reason").val("");
+        $('#sendModal').modal('show');
+
     }
 
 
@@ -236,8 +243,8 @@
             #{if hasViewEcouponSnPermission==true}
                 <a id="view_ecoupon" href="#" role="button" class="btn" data-toggle="modal"
                    onClick="viewECoupon(${coupon.id})" title="查看完整券号">
-                *{${n}${coupon?.getMaskedEcouponSn()}}*
-                    ${coupon?.eCouponSn}
+                ${n}${coupon?.getMaskedEcouponSn()}
+                    *{${coupon?.eCouponSn}}*
                 </a>
             #{/if}
             #{else}
@@ -333,6 +340,7 @@
     </div>
     <div class="modal-body">
     #{form @OperateCoupons.index(), id:"setForm", name:"setForm",class:"form-horizontal",method:"PUT"}
+        <div id="couponinfo">#{include '/OperateCoupons/couponInfo.html'/}</div>
         请选择冻结此券号的原因：&nbsp;&nbsp;
         <select name="coupon.freezedReason" id="freeze_option" class="input-small"
                 value="${coupon?.freezedReason}"

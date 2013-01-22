@@ -249,4 +249,9 @@ public class OperateCoupons extends Controller {
         boolean success = true;
         render("OperateCoupons/showAppointment.html", coupon, success);
     }
+
+    public static void couponInfo(Long id) {
+        ECoupon coupon=ECoupon.findById(id);
+        render(coupon);
+    }
 }

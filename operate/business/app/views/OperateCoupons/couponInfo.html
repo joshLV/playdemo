@@ -1,0 +1,21 @@
+<table class="table table-striped table-bordered table-condensed">
+    <thead>
+    <tr>
+        <th width="10px">券号</th>
+        <th width="8px">手机</th>
+        <th width="90px">商品名称</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>  ${n}${coupon?.getMaskedEcouponSn()}</td>
+        <td>${coupon?.orderItems?.phone}</td>
+        <td>
+            <a href="http://${play.Play.configuration.getProperty("www.url")}/p/${coupon?.goods?.id}?preview=true"
+               target="_blank">
+            ${coupon?.goods?.shortName}
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
