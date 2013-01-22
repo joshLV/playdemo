@@ -4,7 +4,6 @@ import models.resale.Resaler;
 import models.sales.ChannelGoodsInfo;
 import models.sales.ChannelGoodsInfoStatus;
 import org.apache.commons.lang.StringUtils;
-import play.Logger;
 import play.db.jpa.JPA;
 import play.jobs.Every;
 import play.jobs.Job;
@@ -29,7 +28,6 @@ public class ScannerChannelGoodsStatusJob extends Job {
 
     @Override
     public void doJob() {
-        Logger.info("ScannerChannelGoodsStatusJob begin!");
         List<Resaler> resalerList = Resaler.findByStatus(null);
         for (Resaler resaler : resalerList) {
             String onSaleKey = resaler.onSaleKey;
@@ -72,6 +70,5 @@ public class ScannerChannelGoodsStatusJob extends Job {
                 }
             }
         }
-        Logger.info("ScannerChannelGoodsStatusJob end!");
     }
 }
