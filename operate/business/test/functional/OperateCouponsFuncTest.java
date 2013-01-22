@@ -93,7 +93,7 @@ public class OperateCouponsFuncTest extends FunctionalTest {
     @Test
     public void testIndexWithoutRight() {
         String condition = "?condition.status=UNCONSUMED";
-        user.roles.remove(role("manager"));
+        user.roles.remove(role("customservice"));
         user.save();
         Http.Response response = GET("/coupons" + condition);
         assertIsOk(response);

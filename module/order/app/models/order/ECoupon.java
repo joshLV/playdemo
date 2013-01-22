@@ -97,6 +97,17 @@ public class ECoupon extends Model {
     @Column(name = "is_cheated_order")
     public Boolean isCheatedOrder = false;
 
+    @Column(name = "unable_verify")
+    public Boolean unableVerify = false;
+
+    @Column(name = "other_reason")
+    public String otherReason;
+
+    /**
+     * 冻结单张券号时的选项,
+     */
+    @Enumerated(EnumType.STRING)
+    public ECouponFreezedReason freezedReason;
 
     /**
      * 部分第三方团购可能使用密码，而券市场的券不需要。
@@ -171,10 +182,11 @@ public class ECoupon extends Model {
     /** 1：冻结 0：解冻*/
     public Integer isFreeze;
 
+
     /**
      * 发送过短信的次数.
      */
-    @Column(name="sms_sent_count")
+    @Column(name = "sms_sent_count")
     public Integer smsSentCount;
 
     @Column(name = "trigger_coupon_sn")
@@ -1051,6 +1063,10 @@ public class ECoupon extends Model {
                 mobile, replyCode + "%").fetch();
     }
 
+    public static void freeze(long id, String userName, ECoupon coupon) {
+        update(id, 1, userName, coupon);
+    }
+
     /**
      * 冻结此券
      *
@@ -1079,6 +1095,32 @@ public class ECoupon extends Model {
     }
 
     /**
+     * 更新券 是否冻结
+     * 在冻结单条券号时，提供三个单选选项：刷单、无法验证、其他，选择"其他"时需要填写文本 保存此信息
+     */
+    private static void update(long id, Integer isFreeze, String userName, ECoupon coupon) {
+        ECoupon eCoupon = ECoupon.findById(id);
+        //记录券历史信息
+        eCoupon.isFreeze = isFreeze;
+        eCoupon.freezedReason = coupon.freezedReason;
+        switch (coupon.freezedReason) {
+            case ISCHEATEDORDER:
+                eCoupon.isCheatedOrder = true;
+                new CouponHistory(eCoupon, userName, isFreeze == 0 ? "解冻券号" : "冻结券号(刷单)", eCoupon.status, eCoupon.status, null).save();
+                break;
+            case UNABLEVERIFY:
+                eCoupon.unableVerify = true;
+                new CouponHistory(eCoupon, userName, isFreeze == 0 ? "解冻券号" : "冻结券号(无法验证)", eCoupon.status, eCoupon.status, null).save();
+                break;
+            case OTHERS:
+                eCoupon.otherReason = coupon.otherReason;
+                new CouponHistory(eCoupon, userName, isFreeze == 0 ? "解冻券号" : "冻结券号(其他原因:" + coupon.otherReason + ")", eCoupon.status, eCoupon.status, null).save();
+                break;
+        }
+        eCoupon.save();
+    }
+
+    /**
      * 更新券(刷单订单)是否冻结 并且标记是刷单
      */
     private static void update(long id, Integer isFreeze, String userName, Boolean isCheatedOrder) {
@@ -1098,9 +1140,11 @@ public class ECoupon extends Model {
 
         ECoupon eCoupon = ECoupon.findById(id);
         //记录券历史信息
-        new CouponHistory(eCoupon, userName, isFreeze == 0 ? "解冻券号" : "冻结券号", eCoupon.status, eCoupon.status, null).save();
-        eCoupon.isFreeze = isFreeze;
-        eCoupon.save();
+        if (eCoupon.isCheatedOrder != true) {
+            new CouponHistory(eCoupon, userName, isFreeze == 0 ? "解冻券号" : "冻结券号", eCoupon.status, eCoupon.status, null).save();
+            eCoupon.isFreeze = isFreeze;
+            eCoupon.save();
+        }
     }
 
     /**
@@ -1507,6 +1551,7 @@ public class ECoupon extends Model {
 
     /**
      * 得到订单短信内容（单条)
+     *
      * @return
      */
     @Transient
@@ -1527,7 +1572,7 @@ public class ECoupon extends Model {
                 if (StringUtils.isNotBlank(this.appointmentRemark)) {
                     note += this.appointmentRemark + ",";
                 }
-            }  else {
+            } else {
                 // 还没有预约
                 note = ",此产品需预约,";
             }
@@ -1551,12 +1596,14 @@ public class ECoupon extends Model {
 
     /**
      * 发送券通知短信的方法，所以渠道都应使用此方法.
+     *
      * @param phone
      * @param remark
      */
     public void sendOrderSMS(String phone, String remark) {
         SMSUtil.sendECouponSms(this.id, phone, remark);
     }
+
     public void sendOrderSMS(String remark) {
         SMSUtil.sendECouponSms(this.id, remark);
     }
