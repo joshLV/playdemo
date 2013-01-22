@@ -78,23 +78,11 @@ public class WubaGroupBuyProducts extends Controller {
 
         //保存历史
         if ("10000".equals(status)) {
-            ResalerProduct product = new ResalerProduct();
-            product.partner = OuterOrderPartner.WB;
-            product.partnerProductId = result.get("data").getAsJsonObject().get("groupbuyId58").getAsLong();
-            product.creatorId = operateUser.id;
-            product.goods = goods;
-            product.goodsLinkId = relation.linkId;
-            product.lastModifierId = operateUser.id;
-            product.save();
-
-            //记录历史
-            ResalerProductJournal journal = new ResalerProductJournal();
-            journal.product = product;
-            journal.operatorId = operateUser.id;
-            journal.jsonData = new Gson().toJson(wubaParams);
-            journal.type = ResalerProductJournalType.CREATE;
-            journal.remark = "上传商品";
-            journal.save();
+            ResalerProduct product =  ResalerProduct.createProduct(OuterOrderPartner.WB,
+                    result.get("data").getAsJsonObject().get("groupbuyId58").getAsLong(),
+                    operateUser.id, goods, relation.linkId);
+            ResalerProductJournal.createJournal(product, operateUser.id, new Gson().toJson(wubaParams),
+                    ResalerProductJournalType.CREATE, "上传商品");
         }
 
         render("resale/WubaGroupBuyProducts/result.html", msg);

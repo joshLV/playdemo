@@ -79,23 +79,9 @@ public class YHDGroupBuyProducts extends Controller {
     //保存记录
     private static void saveProductAndJournal(Goods goods, OperateUser operateUser, Map<String, String> requestParams){
         String jsonData = new Gson().toJson(requestParams);
-        ResalerProduct product = new ResalerProduct();
-        product.partner = OuterOrderPartner.YHD;
-        product.partnerProductId = 0L;//对于一号店来说，这个没用的
-        product.creatorId = operateUser.id;
-        product.goods = goods;
-        product.goodsLinkId = Long.parseLong(requestParams.get("outerId"));
-        product.lastModifierId = operateUser.id;
-        product.save();
-
-        //记录历史
-        ResalerProductJournal journal = new ResalerProductJournal();
-        journal.product = product;
-        journal.operatorId = operateUser.id;
-        journal.jsonData = jsonData;
-        journal.type = ResalerProductJournalType.CREATE;
-        journal.remark = "上传商品";
-        journal.save();
+        ResalerProduct product = ResalerProduct.createProduct(OuterOrderPartner.YHD, 0L, operateUser.id, goods,
+                Long.parseLong(requestParams.get("outerId")));
+        ResalerProductJournal.createJournal(product, operateUser.id, jsonData, ResalerProductJournalType.CREATE, "上传商品");
     }
 
     //上传主图
@@ -119,7 +105,6 @@ public class YHDGroupBuyProducts extends Controller {
         }else {
             renderArgs.put("extra", "上传商品成功，但是主图上传失败");
         }
-
     }
 
     /**
@@ -177,7 +162,4 @@ public class YHDGroupBuyProducts extends Controller {
         jsonString.append("]");
         renderJSON(jsonString.toString());
     }
-
-
-
 }

@@ -65,4 +65,16 @@ public class ResalerProduct extends Model {
         this.updatedAt = new Date();
         this.partnerProductId = 0L;
     }
+
+    public static ResalerProduct createProduct(OuterOrderPartner outerOrderPartner, long partnerProductId,
+                                               Long creatorId, Goods goods, Long linkId) {
+        ResalerProduct product = new ResalerProduct();
+        product.partner = outerOrderPartner;
+        product.partnerProductId =  partnerProductId;
+        product.creatorId = creatorId;
+        product.goods = goods;
+        product.goodsLinkId = linkId;
+        product.lastModifierId = creatorId;
+        return product.save();
+    }
 }

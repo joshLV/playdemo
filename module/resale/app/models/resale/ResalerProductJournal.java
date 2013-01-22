@@ -40,4 +40,15 @@ public class ResalerProductJournal extends Model {
     public ResalerProductJournal() {
         createdAt = new Date();
     }
+
+    public static ResalerProductJournal createJournal(ResalerProduct product, Long operatorId, String jsonData,
+                                                      ResalerProductJournalType type, String remark) {
+        ResalerProductJournal journal = new ResalerProductJournal();
+        journal.product = product;
+        journal.operatorId = operatorId;
+        journal.jsonData = jsonData;
+        journal.type = type;
+        journal.remark = remark;
+        return journal.save();
+    }
 }
