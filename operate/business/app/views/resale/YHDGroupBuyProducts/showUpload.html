@@ -211,10 +211,10 @@
                         #{/list}
                     </table>
 
-                    ${goods.exhibition.raw()}
+                    ${goods.exhibition?.raw()}
 
                     <p> <span style="font-size:14px;"><img class="blogimg" src="http://d11.yihaodianimg.com/t20/2012/0918/316/493/089b3c37367a0f5fc77fecedee40a191.jpg"></span></p>
-                    ${goods.prompt.raw()}
+                    ${goods.prompt?.raw()}
 
                     #{if goods.materialType == models.sales.MaterialType.ELECTRONIC}
                     <p> <img class="blogimg" src="http://d11.yihaodianimg.com/t20/2012/0918/149/494/4a78c67f6862e133c77fecedee40a191.jpg"><br/>
@@ -225,11 +225,11 @@
                         <img class="blogimg" src="http://d13.yihaodianimg.com/t20/2012/0919/53/22/acc198b608020f48c77fecedee40a191.jpg">
                     </p>
 
-                    ${goods.details.raw()}
+                    ${goods.details?.raw()}
 
                     <p> <span style="font-size:14px;"><img class="blogimg" src="http://d11.yihaodianimg.com/t20/2012/0918/261/494/41c50245eeda685bc77fecedee40a191.jpg"></span></p>
 
-                    ${goods.supplierDes.raw()}
+                    ${goods.supplierDes?.raw()}
                 </textarea>
             </div>
         </div>

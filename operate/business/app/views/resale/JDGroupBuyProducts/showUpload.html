@@ -120,24 +120,19 @@
             <label class="control-label">团购详情</label>
             <div class="controls">
                 <textarea rows="8" cols="100"  name="teamDetail" id="teamDetail" style="width:850px;height:550px;display:hidden;">
-                    #{if goods.exhibition}
-                        ${goods.exhibition.raw()}
-                        <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
-                            <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
-                        </p>
-                        ${goods.prompt.raw()}
-                        <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
-                            <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
-                        </p>
-                        ${goods.details.raw()}
-                        <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
-                            <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
-                        </p>
-                        ${goods.supplierDes.raw()}
-                    #{/if}
-                    #{else}
-                        ${goods.teamDetail?.raw()}
-                    #{/else}
+                    ${goods.exhibition?.raw()}
+                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
+                    </p>
+                    ${goods.prompt?.raw()}
+                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
+                    </p>
+                    ${goods.details?.raw()}
+                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
+                    </p>
+                    ${goods.supplierDes?.raw()}
                 </textarea>
             </div>
         </div>
