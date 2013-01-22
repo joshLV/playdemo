@@ -19,6 +19,7 @@ import play.mvc.With;
 import util.DateHelper;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -59,6 +60,7 @@ public class OperateCoupons extends Controller {
         BigDecimal amountSummary = ECoupon.summary(couponPage);
         //判断角色是否有解冻券号的权限
         boolean hasRight = ContextedPermission.hasPermission("COUPON_UNFREEZE");
+
         render(couponPage, condition, amountSummary, hasRight, hasEcouponRefundPermission, hasViewEcouponSnPermission);
     }
 
@@ -68,8 +70,8 @@ public class OperateCoupons extends Controller {
      * @param id
      */
     @ActiveNavigation("coupons_index")
-    public static void freeze(long id) {
-        ECoupon.freeze(id, OperateRbac.currentUser().userName);
+    public static void freeze(long id, ECoupon coupon) {
+        ECoupon.freeze(id, OperateRbac.currentUser().userName, coupon);
         index(null);
     }
 
@@ -246,5 +248,10 @@ public class OperateCoupons extends Controller {
         coupon.sendOrderSMS(null, "发送预约短信");
         boolean success = true;
         render("OperateCoupons/showAppointment.html", coupon, success);
+    }
+
+    public static void couponInfo(Long id) {
+        ECoupon coupon=ECoupon.findById(id);
+        render(coupon);
     }
 }

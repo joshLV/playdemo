@@ -2,12 +2,28 @@
 #{include 'share/nav.html' /}
 #{set title:'券号列表' /}
 
-<script type="text/javascript" src="/public/javascripts/view-couponsn.js"></script>
+<script type="text/javascript" xmlns="http://www.w3.org/1999/html" src="/public/javascripts/view-couponsn.js"></script>
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 
 
 <script type="text/javascript">
 
+    $(function () {
+
+
+        $("#sure").click(function () {
+            var result = true;
+            if ($("#freeze_option").val() == "OTHERS" && $("#other_reason").val().trim() == "") {
+                $("#error_other_reason").html("<span style='display: block;color: #ff0000;'>请输入原因!</span>");
+                $("#other_reason").focus();
+                result = false;
+            }
+
+            if (result) {
+                $("#setForm").submit();
+            }
+        });
+    });
 
     function sendMessage(id) {
         $.ajax({
@@ -27,6 +43,30 @@
 
     }
 
+    function freeze(id) {
+        $("#couponinfo").load("/coupon_info/" + id, function (data) {
+        });
+
+        $("#setForm").attr("action", "/coupons/" + id + "/freeze?x-http-method-override=PUT");
+
+        $("#freeze_option").val("ISCHEATEDORDER");
+        $("#textContainer").css({display:"none"});
+        $("#other_reason").val("");
+        $('#sendModal').modal('show');
+
+    }
+
+
+    function select(myObject) {
+        var selectedValue = myObject.value
+        if (selectedValue == "OTHERS") {
+            document.getElementById("mySpan").innerHTML = "请填写原因：";
+            document.getElementById("textContainer").style.display = "";
+        }
+        else {
+            document.getElementById("textContainer").style.display = "none";
+        }
+    }
 
     function viewECoupon(id) {
         $.ajax({
@@ -37,8 +77,8 @@
             },
             success:function (data) {
                 // data as ecouponsn
-                $('#myModal').modal('show');
                 $("#ecoupon_sn").html(data);
+                $('#myModal').modal('show');
             }
         });
     }
@@ -235,11 +275,16 @@
         <td>&{'coupon.'+coupon?.status}</td>
         <td>#{if  models.order.ECouponStatus.UNCONSUMED == coupon.status }
             #{if coupon.isFreeze == 0}
-                #{vx.operateLink name:"freeze_"+coupon.id,text:"冻结",url:"/coupons/"+coupon.id+"/freeze",confirm:true, targetName:coupon?.getMaskedEcouponSn(),method:"PUT"/}
+            *{#{vx.operateLink name:"freeze_"+coupon.id,text:"冻结",url:"/coupons/"+coupon.id+"/freeze",confirm:true, targetName:coupon?.getMaskedEcouponSn(),method:"PUT"/}}*
+
+                <a href="#" id="freeze_${coupon.id}"
+                   onclick="freeze('${coupon.id}')
+                           ">冻结</a>
+
                 #{if !coupon?.goods?.isLottery}
                     <a href="javascript:sendMessage(${coupon.id})">发送短信</a>#{/if}
             #{/if}
-            #{elseif hasRight}
+            #{elseif hasRight && coupon.isCheatedOrder!=true}
                 #{vx.operateLink name:"unfreeze_"+coupon.id,text:"解冻", url:"/coupons/"+coupon.id+"/unfreeze", method:"PUT"/}
             #{/elseif}
         #{/if}
@@ -286,4 +331,37 @@
 </div>
 </div>
 
+
+<div class="modal" id="sendModal" style="display: none;">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+
+        <h3>冻结券号</h3>
+    </div>
+    <div class="modal-body">
+    #{form @OperateCoupons.index(), id:"setForm", name:"setForm",class:"form-horizontal",method:"PUT"}
+        <div id="couponinfo">#{include '/OperateCoupons/couponInfo.html'/}</div>
+        请选择冻结此券号的原因：&nbsp;&nbsp;
+        <select name="coupon.freezedReason" id="freeze_option" class="input-small"
+                value="${coupon?.freezedReason}"
+                onchange="select(this);"
+                >
+            <option value="ISCHEATEDORDER">刷单</option>
+            <option value="UNABLEVERIFY">无法验证</option>
+            <option value="OTHERS">其他原因</option>
+        </select>
+
+        <div id="textContainer" style="display: none;">
+            <br>
+            <span style="color: red; ">*</span><span id="mySpan"></span>
+            <input name="coupon.otherReason" id="other_reason" type="text"/>
+            <span id="error_other_reason">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        </div>
+    #{/form}
+    </div>
+    <div class="modal-footer">
+        <a href="#" id="sure" class="btn btn-primary">确定</a>
+        <a href="#" class="btn" data-dismiss="modal">取消</a>
+    </div>
+</div>
 
