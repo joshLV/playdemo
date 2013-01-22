@@ -11,6 +11,8 @@ import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import play.data.validation.*;
+import play.data.validation.Error;
 import play.modules.paginate.ModelPaginator;
 import play.mvc.Http;
 import play.mvc.Http.Response;
@@ -161,4 +163,41 @@ public class OperateDiscountCodesTest extends FunctionalTest {
         assertEquals("QQ", discountCode.discountSn);
 
     }
+
+
+    @Test
+    public void testCreateInvalid() {
+        Goods goods = FactoryBoy.create(Goods.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("discountCode.title", "测试用折扣券");
+        params.put("discountCode.discountSn", "QQ");
+        params.put("discountCode.description", "描述");
+        params.put("discountCode.goods.id", goods.id.toString());
+        params.put("discountCode.discountAmount", "1");
+        params.put("discountCode.endAt", "2012-09-01 17:08:59");
+
+        Http.Response response = POST("/discountcodes", params);
+        List<play.data.validation.Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("discountCode.beginAt", errors.get(0).getKey());
+        assertStatus(200, response);
+
+
+    }
+
+    @Test
+    public void testUpdateInvalid() {
+
+        DiscountCode discountCode = FactoryBoy.create(DiscountCode.class);
+        Goods goods = FactoryBoy.create(Goods.class);
+
+        String params = "?discountCode.title=测试用折扣券&discountCode.discountSn=QQ" +
+                "&discountCode.goods.id=" + goods.id.toString() +
+                "&discountCode.discountAmount=1&discountCode.beginAt=2012-08-01 17:08:59";
+        Http.Response response = PUT("/discountcodes/" + discountCode.id.toString(), "application/x-www-form-urlencoded", params);
+        List<Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("discountCode.endAt", errors.get(0).getKey());
+        assertStatus(200, response);
+    }
+
 }
