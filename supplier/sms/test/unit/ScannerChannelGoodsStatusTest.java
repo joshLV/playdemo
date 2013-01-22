@@ -60,7 +60,7 @@ public class ScannerChannelGoodsStatusTest extends UnitTest {
         assertEquals(ChannelGoodsInfoStatus.ONSALE, channelGoodsInfo.status);
 
         String resultXml = "<div class=\"buy_btn b_buy\"></div>";
-        MockWebServiceClient.pushMockHttpRequest(200, resultXml);
+        MockWebServiceClient.addMockHttpRequest(200, resultXml);
         ScannerChannelGoodsStatusJob job = new ScannerChannelGoodsStatusJob();
         job.doJob();
         assertEquals(ChannelGoodsInfoStatus.ONSALE, channelGoodsInfo.status);
@@ -71,7 +71,7 @@ public class ScannerChannelGoodsStatusTest extends UnitTest {
         assertNull(channelGoodsInfo.status);
         assertNull(channelGoodsInfo.onSaleAt);
         String resultXml = "<div class=\"buy_btn b_buy\"></div>";
-        MockWebServiceClient.pushMockHttpRequest(200, resultXml);
+        MockWebServiceClient.addMockHttpRequest(200, resultXml);
         ScannerChannelGoodsStatusJob job = new ScannerChannelGoodsStatusJob();
         job.doJob();
         assertEquals(ChannelGoodsInfoStatus.ONSALE, channelGoodsInfo.status);
@@ -81,7 +81,7 @@ public class ScannerChannelGoodsStatusTest extends UnitTest {
     @Test
     public void test_Job_from_null_to_offSale() {
         String resultXml = "<div class=\"buy_btn b_end\"></div>";
-        MockWebServiceClient.pushMockHttpRequest(200, resultXml);
+        MockWebServiceClient.addMockHttpRequest(200, resultXml);
 
         assertNull(channelGoodsInfo.status);
         assertNull(channelGoodsInfo.offSaleAt);
@@ -99,7 +99,7 @@ public class ScannerChannelGoodsStatusTest extends UnitTest {
         channelGoodsInfo.offSaleAt = new Date();
         channelGoodsInfo.save();
         String resultXml = "<div class=\"buy_btn b_end\"></div>";
-        MockWebServiceClient.pushMockHttpRequest(200, resultXml);
+        MockWebServiceClient.addMockHttpRequest(200, resultXml);
         assertEquals(ChannelGoodsInfoStatus.OFFSALE, channelGoodsInfo.status);
         assertNotNull(channelGoodsInfo.offSaleAt);
 

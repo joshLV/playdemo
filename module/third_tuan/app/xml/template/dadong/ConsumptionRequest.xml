@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="GB2312"?>
+<business_trans>
+    <request_type>consumption_request</request_type>
+    <organization>${organCode}</organization>
+    <req_seq>${orderItemId}</req_seq>
+    <product_id>${productId}</product_id>
+    <count>${buyNumber}</count>
+    <tel>${phone}</tel>
+</business_trans>

@@ -26,23 +26,23 @@ public class ECouponCompensationsTest extends FunctionalTest {
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
-        
+
         FactoryBoy.create(Order.class);
     }
-    
+
     @Test
     public void testInvalidSecret() throws Exception {
         Response response = GET("/ecoupon-compensation/consumed");
         assertStatus(500, response);
     }
-    
+
     @Test
     public void testConsumed() throws Exception {
         FactoryBoy.create(OuterOrder.class);
         ECoupon ecoupon = FactoryBoy.create(ECoupon.class, new BuildCallback<ECoupon>() {
             @Override
             public void build(ECoupon target) {
-                target.partner = ECouponPartner.JD; 
+                target.partner = ECouponPartner.JD;
                 target.status = ECouponStatus.CONSUMED;
             }
         });
@@ -54,25 +54,25 @@ public class ECouponCompensationsTest extends FunctionalTest {
                 target.result = "SUCCESS";
             }
         });
-        
+
         // mock jingdong response
         String resultXml = VirtualFile.open("test/data/xml/JingDongVerifyECouponResponse.xml").contentAsString();
-        MockWebServiceClient.pushMockHttpRequest(200, resultXml);
-        
+        MockWebServiceClient.addMockHttpRequest(200, resultXml);
+
         Response response = GET("/ecoupon-compensation/consumed?secret=" + ECouponCompensations.SECRET);
         assertIsOk(response);
         Integer count = (Integer)renderArgs("count");
         assertEquals(new Integer(1), count);
         assertEquals(ecoupon.salePrice.setScale(2), ((BigDecimal)renderArgs("amount")).setScale(2));
     }
-    
+
     @Test
     public void testConsumeFailed() throws Exception {
         FactoryBoy.create(OuterOrder.class);
         FactoryBoy.create(ECoupon.class, new BuildCallback<ECoupon>() {
             @Override
             public void build(ECoupon target) {
-                target.partner = ECouponPartner.JD; 
+                target.partner = ECouponPartner.JD;
                 target.status = ECouponStatus.CONSUMED;
             }
         });
@@ -84,16 +84,16 @@ public class ECouponCompensationsTest extends FunctionalTest {
                 target.result = "SUCCESS";
             }
         });
-        
+
         // mock jingdong response
         String resultXml = VirtualFile.open("test/data/xml/JingDongVerifyECouponFailResponse.xml").contentAsString();
-        MockWebServiceClient.pushMockHttpRequest(200, resultXml);
-        
+        MockWebServiceClient.addMockHttpRequest(200, resultXml);
+
         Response response = GET("/ecoupon-compensation/consumed?secret=" + ECouponCompensations.SECRET);
         assertIsOk(response);
         Integer count = (Integer)renderArgs("count");
         assertEquals(new Integer(0), count);
         assertEquals(BigDecimal.ZERO, ((BigDecimal)renderArgs("amount")));
     }
-    
+
 }

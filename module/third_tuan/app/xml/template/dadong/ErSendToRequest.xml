@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="GB2312"?>
+<business_trans>
+    <request_type>er_sendto_request</request_type>
+    <organization>${organCode}</organization>
+    <req_seq>${orderItemId}</req_seq>
+    <tel>${phone}</tel>
+</business_trans>

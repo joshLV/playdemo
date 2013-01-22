@@ -24,8 +24,7 @@ public class ECouponFactory extends ModelFactory<ECoupon> {
         Order order = FactoryBoy.lastOrCreate(Order.class);
         OrderItems orderItems = FactoryBoy.lastOrCreate(OrderItems.class);
 
-        ECoupon eCoupon = new ECoupon(order, goods, orderItems);
-        return eCoupon;
+        return new ECoupon(order, goods, orderItems);
     }
 
     @Factory(name = "Id")

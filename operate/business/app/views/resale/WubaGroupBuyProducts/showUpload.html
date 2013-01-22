@@ -10,13 +10,14 @@
     <legend>58上传商品：<a href="/goods/${goods.id}" target="_blank">
         ${goods.shortName}</a>
     </legend>
-    <form class="form-horizontal" method="POST" action="/resale-partner-products/jd/upload">
+    <form class="form-horizontal" method="POST" action="/resale-partner-products/wb/upload">
 
         <div class="control-group">
             <label class="control-label">商品分类 *</label>
             <div class="controls">
                 <ul id="prodTypeTree" class="ztree"></ul>
-                <input name="prodType" id="inputProdTypey" type="hidden">
+                <input name="prodType" id="inputProdType" type="hidden">
+                <input name="prodTypeChain" id="inputProdTypeChain" type="hidden">
             </div>
         </div>
         <div class="control-group">
@@ -178,16 +179,17 @@
         <div class="control-group">
             <label class="control-label">发布城市 *</label>
             <div class="controls">
-                <input type="checkbox" city="北京" value="2" name="cityIds">北京
-                <input type="checkbox" city="上海" value="4" name="cityIds" checked>上海
-                <input type="checkbox" city="天津" value="5" name="cityIds">天津
-                <input type="checkbox" city="哈尔滨" value="10" name="cityIds">哈尔滨
-                <input type="checkbox" city="苏州" value="21" name="cityIds">苏州
-                <input type="checkbox" city="南京" value="29" name="cityIds">南京
-                <input type="checkbox" city="杭州" value="35" name="cityIds">杭州
-                <input type="checkbox" city="成都" value="36" name="cityIds">成都
-                <input type="checkbox" city="宁波" value="205" name="cityIds">宁波
-                <input type="checkbox" city="无锡" value="361" name="cityIds">无锡
+                <input type="checkbox" city="北京" value="2">北京
+                <input type="checkbox" city="上海" value="4" checked>上海
+                <input type="checkbox" city="天津" value="5">天津
+                <input type="checkbox" city="哈尔滨" value="10">哈尔滨
+                <input type="checkbox" city="苏州" value="21">苏州
+                <input type="checkbox" city="南京" value="29">南京
+                <input type="checkbox" city="杭州" value="35">杭州
+                <input type="checkbox" city="成都" value="36">成都
+                <input type="checkbox" city="宁波" value="205">宁波
+                <input type="checkbox" city="无锡" value="361">无锡
+                <input type="hidden" name="cityIds" id="cityIds">
             </div>
         </div>
 
@@ -239,9 +241,9 @@
                     <tr>
                         <td style="vertical-align:top">商圈 *</td>
                         <td colspan="3">
-                            <label>提示：<span id="hint-ybqCircleName${shop_index}">${shop.areaName}</span></label>
-                            <ul id="ybqCircleName${shop_index}" class="ztree" style="max-height:300px; overflow-y:scroll"></ul>
-                            <input type="hidden" name="ybqCircleName${shop_index}" id="input-ybqCircleName${shop_index}">
+                            <label>提示：<span id="hint-circleIdTree_${shop_index}">${shop.areaName}</span></label>
+                            <ul id="circleIdTree_${shop_index}" class="ztree" style="max-height:300px; overflow-y:scroll"></ul>
+                            <input type="hidden" name="circleId_${shop_index}" id="input-circleIdTree_${shop_index}">
                         </td>
                     </tr>
                 </table>
@@ -252,7 +254,8 @@
 
 
         <div class="form-actions">
-            <input type="hidden" name="venderTeamId" value="${goods.id}" >
+            <input type="hidden" name="groupbuyId" value="${goods.id}" >
+            <input type="hidden" name="shopSize" value="${shopList.size()}">
             <button type="submit" id="submit" class="btn btn-primary">发布</button>
         </div>
     </form>

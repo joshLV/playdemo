@@ -15,6 +15,8 @@ public abstract class WebServiceClient {
 
     public static final String MQ_KEY = "ws.call-log";
 
+    public String encoding;
+
     public String getString(String callType, String url, String keyword, WebServiceCallback callback) {
         return getString(callType, url, keyword, null, null, callback);
     }
@@ -50,6 +52,9 @@ public abstract class WebServiceClient {
 
     public Document getXml(String callType, String url, String keyword1, String keyword2, String keyword3, WebServiceCallback callback) {
         HttpResponse response = getHttpResponse(callType, url, keyword1, keyword2, keyword3, callback);
+        if (this.encoding != null) {
+            return response.getXml(this.encoding);
+        }
         return response.getXml();
     }
 
@@ -125,6 +130,9 @@ public abstract class WebServiceClient {
 
     public Document postXml(String callType, String url, Map<String, Object> params, String keyword1, String keyword2, String keyword3, WebServiceCallback callback) {
         HttpResponse response = postHttpResponse(callType, url, params, keyword1, keyword2, keyword3, callback);
+        if (this.encoding != null) {
+            return response.getXml(this.encoding);
+        }
         return response.getXml();
     }
 

@@ -455,4 +455,8 @@ public class Supplier extends Model {
     public static Supplier findUnDeletedById(Long id) {
         return Supplier.find("id=? and deleted=?", id, DeletedStatus.UN_DELETED).first();
     }
+
+    public static Supplier findByDomainName(String domainName) {
+        return Supplier.find("domainName=? and deleted=?", domainName, DeletedStatus.UN_DELETED).first();
+    }
 }

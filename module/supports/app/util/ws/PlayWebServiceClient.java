@@ -20,14 +20,29 @@ public class PlayWebServiceClient extends WebServiceClient {
         return _instance;
     }
 
+    public static WebServiceClient getInstance(String encoding) {
+        PlayWebServiceClient instance = new PlayWebServiceClient();
+        instance.encoding = encoding;
+        return instance;
+    }
+
     private PlayWebServiceClient() {
     }
 
     @Override
     public HttpResponse doGet(WebServiceCallLogData log, WebServiceCallback callback) {
-        play.libs.WS.HttpResponse response = WS.url(log.url).get();
+        WSRequest wsRequest = null;
+        System.out.println("encoding:" + encoding);
+        if (encoding != null) {
+            System.out.println("do encoding.");
+            wsRequest = WS.withEncoding(encoding).url(log.url);
+        } else {
+            wsRequest = WS.url(log.url);
+        }
+
+        play.libs.WS.HttpResponse response = wsRequest.get();
         log.statusCode = response.getStatus();
-        log.responseText = response.getString();
+        log.responseText = (this.encoding != null) ? response.getString(this.encoding) : response.getString();
         if (callback != null) {
             callback.process(response.getStatus(), response.getString());
         }
@@ -41,7 +56,14 @@ public class PlayWebServiceClient extends WebServiceClient {
 
     @Override
     protected HttpResponse doPost(WebServiceCallLogData log, Map<String, Object> params, WebServiceCallback callback) {
-        WSRequest request = WS.url(log.url);
+        WSRequest request = null;
+        System.out.println("post encoding:" + encoding);
+        if (encoding != null) {
+            System.out.println("  do encoding...");
+            request = WS.withEncoding(encoding).url(log.url);
+        } else {
+            request = WS.url(log.url);
+        }
         if (params != null && params.size() > 0) {
             request = request.params(params);
         }
@@ -50,10 +72,11 @@ public class PlayWebServiceClient extends WebServiceClient {
         }
         play.libs.WS.HttpResponse response = request.post();
         log.statusCode = response.getStatus();
-        log.responseText = response.getString();
+        log.responseText = (this.encoding != null) ? response.getString(this.encoding) : response.getString();
         if (callback != null) {
             callback.process(response.getStatus(), response.getString());
         }
         return response;
     }
+
 }

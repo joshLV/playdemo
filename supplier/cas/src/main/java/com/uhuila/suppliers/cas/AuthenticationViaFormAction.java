@@ -64,8 +64,6 @@ public class AuthenticationViaFormAction {
 
         final HttpServletRequest request = WebUtils.getHttpServletRequest(context);
         String serverName = request.getServerName();
-        System.err.println("serverName=" + serverName);
-        System.err.println("credentials=" + credentials.getClass().getName());
 
         UsernamePasswordCredentials usernamePasswordCredentials = (UsernamePasswordCredentials)credentials;
 
@@ -82,7 +80,6 @@ public class AuthenticationViaFormAction {
         final Service service = WebUtils.getService(context);
 
         String oldName = usernamePasswordCredentials.getUsername();
-        System.err.println("username=" + oldName);
         usernamePasswordCredentials.setUsername(oldName + "@" + DomainNameUtil.getSubdomain(serverName));
 
 

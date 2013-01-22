@@ -21,14 +21,14 @@ import java.util.Map;
 
 /**
  * CAS user object.
- * 
+ *
  * @author bsimard
- * 
+ *
  */
 public class CASUser implements Serializable {
 
     /**
-     * 
+     *
      */
     private static final long   serialVersionUID = -7063462255687685373L;
     private String              username;
@@ -38,8 +38,11 @@ public class CASUser implements Serializable {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsername(String _username) {
+        if (_username != null) {
+            _username = _username.replaceAll("\\s+", "");
+        }
+        this.username = _username;
     }
 
     public Map<String, String> getAttribut() {

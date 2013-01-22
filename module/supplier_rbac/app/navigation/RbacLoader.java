@@ -98,8 +98,6 @@ public class RbacLoader {
     /**
      * 加载权限到数据库.
      *
-     * @param object
-     * @param menus
      * @param applicationName
      * @param loadVersion
      */

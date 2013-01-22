@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="GB2312"?>
+<business_trans>
+    <request_type>getProduct_response</request_type>
+    <products>
+        <product_id>1313</product_id>
+        <province>北京</province>
+        <city>北京</city>
+        <aqeg>朝阳</aqeg>
+        <category>高尔夫</category>
+        <product_name>中慧高尔夫100粒球</product_name>
+        <product_faceValue>100.0</product_faceValue>
+        <product_webValue>25.0</product_webValue>
+        <product_platformValue>20.0</product_platformValue>
+        <product_ticketExplain>本产品包含100粒高尔夫球（另外送50粒），免打位费、停车费、租杆费和灯光费,营业时间：9:00-21:00,节假日需提前一天预约，电话：010-87331355。
+        </product_ticketExplain>
+        <provide_address>北京市朝阳区豆各庄水牛房8号</provide_address>
+        <product_image>http://www.ddrtty.net/product/images/1702/product_9zh3mq0hy5gexp9.jpg</product_image>
+        <product_expireTime>2013-10-25 00:00:00.0</product_expireTime>
+        <product_isSubscribe>false</product_isSubscribe>
+    </products>
+    <products>
+        <product_id>1545</product_id>
+        <province>北京</province>
+        <city>北京</city>
+        <aqeg>海淀</aqeg>
+        <category>景区</category>
+        <product_name>大东后台验证</product_name>
+        <product_faceValue>100.0</product_faceValue>
+        <product_webValue>100.0</product_webValue>
+        <product_platformValue>1.0</product_platformValue>
+        <product_ticketExplain>验证</product_ticketExplain>
+        <provide_address>三元桥</provide_address>
+        <product_image>http://www.ddrtty.net/product/images/1841/product_44ivhw9t4iui7n5.jpg</product_image>
+        <product_expireTime>2013-03-31 00:00:00.0</product_expireTime>
+        <product_isSubscribe>false</product_isSubscribe>
+    </products>
+    <products>
+        <product_id>1851</product_id>
+        <province>北京</province>
+        <city>北京</city>
+        <aqeg>怀柔</aqeg>
+        <category>景区</category>
+        <product_name>老爷车博物馆半价门票</product_name>
+        <product_faceValue>25.0</product_faceValue>
+        <product_webValue>23.0</product_webValue>
+        <product_platformValue>20.0</product_platformValue>
+        <product_ticketExplain>本品包含博物馆参观门票一张，如有个别特殊项目，请按规定另行付费,景区营业时间：4月1日至10月30日8：30 ?
+            17：30,11月1日至3月31日9:00--16:30,半价票适用人群：60岁以上老年人、儿童、学生、残疾人、军人（1.2米以下儿童免费参观需有成人陪同）；使用半价票时需携带有效证件.
+        </product_ticketExplain>
+        <provide_address>京承高速杨雁路出口直行，第一个红绿灯前行600米即到。 101国道至立交桥见杨宋镇路牌右转下桥向东直行，第三个红绿灯左拐300米（或中影基地十字路口红绿灯处北行600米）。
+        </provide_address>
+        <product_image>http://www.ddrtty.net/product/images/2056/product_qrgp1x9wf0diiq0.jpg</product_image>
+        <product_expireTime>2013-04-22 00:00:00.0</product_expireTime>
+        <product_isSubscribe>false</product_isSubscribe>
+    </products>
+    <products>
+        <product_id>1852</product_id>
+        <province>北京</province>
+        <city>北京</city>
+        <aqeg>怀柔</aqeg>
+        <category>景区</category>
+        <product_name>老爷车博物馆门票</product_name>
+        <product_faceValue>50.0</product_faceValue>
+        <product_webValue>45.0</product_webValue>
+        <product_platformValue>38.0</product_platformValue>
+        <product_ticketExplain>本品包含博物馆参观门票一张，如有个别特殊项目，请按规定另行付费,景区营业时间：4月1日至10月30日8：30 ? 17：30,11月1日至3月31日9:00--16:30,
+        </product_ticketExplain>
+        <provide_address>京承高速杨雁路出口直行，第一个红绿灯前行600米即到。 101国道至立交桥见杨宋镇路牌右转下桥向东直行，第三个红绿灯左拐300米（或中影基地十字路口红绿灯处北行600米）。
+        </provide_address>
+        <product_image>http://www.ddrtty.net/product/images/2057/product_5sa9icizjatdcpq.jpg</product_image>
+        <product_expireTime>2013-04-22 00:00:00.0</product_expireTime>
+        <product_isSubscribe>false</product_isSubscribe>
+    </products>
+    <products>
+        <product_id>1984</product_id>
+        <province>北京</province>
+        <city>北京</city>
+        <aqeg>海淀</aqeg>
+        <category>景区</category>
+        <product_name>京东老泉山野公园门票</product_name>
+        <product_faceValue>30.0</product_faceValue>
+        <product_webValue>18.0</product_webValue>
+        <product_platformValue>15.0</product_platformValue>
+        <product_ticketExplain>
+            含景区内全部景点！景区森林茂密、山崖陡立、百花争艳、老象天成，三十多处别具特色的景观点缀其间，奇趣盎然！十一长假来老泉山野公园享受慢享绿色氧吧！见群峰跌宕，绿荫流动，凉爽新主张，家庭欢乐共享游！营业时间：8:00-17:00，1.2米以下免费，老人和成人同价。
+        </product_ticketExplain>
+        <provide_address></provide_address>
+        <product_image>http://www.ddrtty.net/product/images/2134/product_oacxbl8oipifyym.jpg</product_image>
+        <product_expireTime>2013-05-15 00:00:00.0</product_expireTime>
+        <product_isSubscribe>false</product_isSubscribe>
+    </products>
+    <products>
+        <product_id>1985</product_id>
+        <province>北京</province>
+        <city>北京</city>
+        <aqeg>海淀</aqeg>
+        <category>景区</category>
+        <product_name>青菁顶自然风景区</product_name>
+        <product_faceValue>30.0</product_faceValue>
+        <product_webValue>22.0</product_webValue>
+        <product_platformValue>20.0</product_platformValue>
+        <product_ticketExplain>营业时间:8:00-17:30,本单适合同事和朋友聚会、三口之家、自驾游人群,儿童1.2（含）米以下是免费，1.2（含）米以上与成人同价,此票周末及国家法定节假日均可使用.
+        </product_ticketExplain>
+        <provide_address>北京青菁顶自然风景区位于密云县石城镇黑龙潭向北约1公里</provide_address>
+        <product_image>http://www.ddrtty.net/product/images/2135/product_m3sixsgf9qrfhz3.jpg</product_image>
+        <product_expireTime>2013-05-10 00:00:00.0</product_expireTime>
+        <product_isSubscribe>false</product_isSubscribe>
+    </products>
+    <products>
+        <product_id>2037</product_id>
+        <province>山东</province>
+        <city>滨州</city>
+        <aqeg>滨州市</aqeg>
+        <category>旅游线路</category>
+        <product_name>机器测试打印</product_name>
+        <product_faceValue>100.0</product_faceValue>
+        <product_webValue>100.0</product_webValue>
+        <product_platformValue>2.0</product_platformValue>
+        <product_ticketExplain>1</product_ticketExplain>
+        <provide_address>1</provide_address>
+        <product_image>http://www.ddrtty.net/product/images/2169/product_81psjh8fp4ewcsf.jpg</product_image>
+        <product_expireTime>2013-11-30 00:00:00.0</product_expireTime>
+        <product_isSubscribe>false</product_isSubscribe>
+    </products>
+</business_trans>

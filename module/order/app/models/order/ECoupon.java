@@ -189,6 +189,10 @@ public class ECoupon extends Model {
     @Column(name = "sms_sent_count")
     public Integer smsSentCount;
 
+    /**
+     * 这个是用来做什么的？多张券验证时使用？(add by likang)
+     * TODO: 感觉可以去掉。  - tangliqun
+     */
     @Column(name = "trigger_coupon_sn")
     public String triggerCouponSn;
 
@@ -201,15 +205,30 @@ public class ECoupon extends Model {
     @Enumerated(EnumType.STRING)
     public ECouponPartner partner;
 
+    /**
+     * 合作方券ID。
+     * 如果是第三方发券，记录在这里备查。
+     */
     @Column(name = "partner_coupon_id")
     public String partnerCouponId;
 
+    /**
+     * 合作方券密码。
+     * 如果是第三方发券并且需要密码，记录在这里.
+     */
     @Column(name = "partner_coupon_pwd")
     public String partnerCouponPwd;
 
+    /**
+     * 消费者预约日期。
+     */
     @Column(name = "appointment_date")
     public Date appointmentDate;
 
+    /**
+     * 消费者预约备注。
+     * 此备注信息将发送此消息者手机.
+     */
     @Column(name = "appointment_remark")
     public String appointmentRemark;
 

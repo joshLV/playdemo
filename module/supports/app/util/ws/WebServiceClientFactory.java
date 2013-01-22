@@ -10,4 +10,12 @@ public class WebServiceClientFactory {
         }
         return PlayWebServiceClient.getInstance();
     }
+
+
+    public static WebServiceClient getClientHelper(String encoding) {
+        if (Play.runingInTestMode()) {
+            return MockWebServiceClient.getInstance();
+        }
+        return PlayWebServiceClient.getInstance(encoding);
+    }
 }

@@ -13,13 +13,13 @@ import util.ws.MockWebServiceClient;
 public class BjenSMSProviderTest extends UnitTest {
 
     BjenSMSProvider provider = new BjenSMSProvider();
-    
+
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
         MockWebServiceClient.clear();
     }
-    
+
     @Test
     public void testGenerateMd5Password() {
         BjenSMSProvider sms = new BjenSMSProvider();
@@ -28,18 +28,18 @@ public class BjenSMSProviderTest extends UnitTest {
 
     @Test
     public void testSendMessageSuccess() {
-        MockWebServiceClient.pushMockHttpRequest(200, "0");
+        MockWebServiceClient.addMockHttpRequest(200, "0");
         SMSMessage msg = new SMSMessage("Hello,world!", "15026682165");
         provider.send(msg);
         WebServiceCallLogData log = MockWebServiceClient.getLastWebServiceCallLog();
         assertEquals("ENSMS", log.callType);
         assertTrue(log.success);
     }
-    
+
 
     @Test
     public void testSendMessageFail() {
-        MockWebServiceClient.pushMockHttpRequest(200, "1");
+        MockWebServiceClient.addMockHttpRequest(200, "1");
         SMSMessage msg = new SMSMessage("Hello,world!", "15026682165");
         SMSException smsException = null;
         try {
