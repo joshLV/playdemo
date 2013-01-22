@@ -207,8 +207,9 @@ public class SecureCAS extends Controller {
             if (casUser != null) {
                 isAuthenticated = Boolean.TRUE;
 
-                session.put(SESSION_USER_KEY, casUser.getUsername());
-                Cache.safeAdd(SESSION_USER_KEY + casUser.getUsername(), Boolean.TRUE, "1h");
+                String username = casUser.getUsername().replaceAll("\\s+", "");
+                session.put(SESSION_USER_KEY, username);
+                Cache.safeAdd(SESSION_USER_KEY + username, Boolean.TRUE, "1h");
                 // we invoke the implementation of onAuthenticate
                 Security.invoke("onAuthenticated", casUser);
 
@@ -218,8 +219,9 @@ public class SecureCAS extends Controller {
         if (isAuthenticated) {
             // 记录登录IP及时间
             User user = getUser();
+            String username = casUser.getUsername().replaceAll("\\s+", "");
             if (user == null) {
-                Logger.error("CAS check failed! username=(" + casUser.getUsername() + ")");
+                Logger.error("CAS check failed! username=(" + username + ")");
                 fail();
                 return;
             }
