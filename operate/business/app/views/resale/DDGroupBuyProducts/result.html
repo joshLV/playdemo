@@ -6,7 +6,7 @@
 #{set 'moreStyles'}
 #{/set}
 <div class="body">
-    #{if pushFlag}
+    #{if response.isSuccess()}
         <legend> 上传成功 </legend>
     #{/if}
     #{else}

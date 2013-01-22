@@ -8,7 +8,7 @@
     <legend>当当上传商品：<a href="/goods/${goods.id}" target="_blank">
         ${goods.shortName}</a>
     </legend>
-    <form class="form-horizontal" method="POST" action="/resale-partner-products/jd/upload">
+    <form class="form-horizontal" method="POST" action="/resale-partner-products/dd/upload">
         <div class="control-group">
             <label class="control-label">选择城市</label>
             <div class="controls">
@@ -236,24 +236,19 @@
             <label class="control-label">团购详情</label>
             <div class="controls">
                 <textarea rows="8" cols="100"  name="detail" id="detail" style="width:850px;height:550px;display:hidden;">
-                    #{if goods.exhibition}
-                        ${goods.exhibition.raw()}
-                        <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
-                            <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
-                        </p>
-                        ${goods.prompt.raw()}
-                        <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
-                            <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
-                        </p>
-                        ${goods.details.raw()}
-                        <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
-                            <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
-                        </p>
-                        ${goods.supplierDes.raw()}
-                    #{/if}
-                    #{else}
-                        ${goods.teamDetail?.raw()}
-                    #{/else}
+                    ${goods.exhibition?.raw()}
+                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
+                    </p>
+                    ${goods.prompt?.raw()}
+                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
+                    </p>
+                    ${goods.details?.raw()}
+                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
+                    </p>
+                    ${goods.supplierDes?.raw()}
                 </textarea>
             </div>
         </div>
