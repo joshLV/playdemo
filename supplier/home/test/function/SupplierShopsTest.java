@@ -1,6 +1,5 @@
 package function;
 
-import com.google.gson.JsonArray;
 import controllers.supplier.cas.Security;
 import factory.FactoryBoy;
 import models.admin.SupplierUser;
@@ -11,7 +10,6 @@ import navigation.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import play.data.validation.*;
 import play.data.validation.Error;
 import play.mvc.Http;
 import play.mvc.Router;
@@ -23,9 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.uhuila.common.constants.*;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 
 /**
  * 商户的门店管理功能测试.

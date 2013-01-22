@@ -8,7 +8,6 @@ import models.accounts.*;
 import models.admin.SupplierUser;
 import models.supplier.Supplier;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http;
@@ -16,7 +15,6 @@ import play.test.FunctionalTest;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

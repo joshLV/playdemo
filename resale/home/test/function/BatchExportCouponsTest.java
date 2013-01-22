@@ -8,7 +8,6 @@ import models.order.ECoupon;
 import models.resale.Resaler;
 import models.resale.ResalerBatchExportCoupons;
 import models.sales.Goods;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http;

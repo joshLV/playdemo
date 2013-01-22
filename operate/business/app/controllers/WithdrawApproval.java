@@ -2,6 +2,7 @@ package controllers;
 
 import com.uhuila.common.util.DateUtil;
 import models.accounts.Account;
+import models.accounts.AccountSequence;
 import models.accounts.WithdrawAccount;
 import models.accounts.WithdrawBill;
 import models.accounts.WithdrawBillCondition;
@@ -61,13 +62,12 @@ public class WithdrawApproval extends Controller {
         if (bill == null) {
             error("withdraw bill not found");
         }
-        List<WithdrawBill> withdrawBillList = WithdrawBill.find("status=? and applier=?", WithdrawBillStatus.SUCCESS, bill.applier).fetch();
+
         BigDecimal temp = BigDecimal.ZERO;
-        Double sum = 0d;
+        Account supplierAccount = AccountUtil.getSupplierAccount(uid);
+
+        Double sum = AccountSequence.getWithdrawAmount(supplierAccount, bill.appliedAt).doubleValue();
         String supplierName = "";
-        for (WithdrawBill b : withdrawBillList) {
-            sum += temp.add(b.amount).doubleValue();
-        }
         if (bill.account.accountType == SUPPLIER && uid != null) {
             Supplier supplier = Supplier.findById(uid);
             supplierName = supplier.otherName;
