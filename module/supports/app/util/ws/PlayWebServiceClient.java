@@ -42,11 +42,7 @@ public class PlayWebServiceClient extends WebServiceClient {
 
         play.libs.WS.HttpResponse response = wsRequest.get();
         log.statusCode = response.getStatus();
-        if (this.encoding != null) {
-            log.responseText = new String(response.getString(this.encoding))
-        } else {
-            log.responseText = response.getString();
-        }
+        log.responseText = response.getString();
         if (callback != null) {
             callback.process(response.getStatus(), response.getString());
         }
