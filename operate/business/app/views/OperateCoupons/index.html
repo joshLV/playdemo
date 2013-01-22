@@ -72,7 +72,6 @@
                 // data as ecouponsn
                 $("#ecoupon_sn").html(data);
                 $('#myModal').modal('show');
-
             }
         });
     }
@@ -237,8 +236,8 @@
             #{if hasViewEcouponSnPermission==true}
                 <a id="view_ecoupon" href="#" role="button" class="btn" data-toggle="modal"
                    onClick="viewECoupon(${coupon.id})" title="查看完整券号">
-                ${n}${coupon?.getMaskedEcouponSn()}
-                    *{${coupon?.eCouponSn}}*
+                *{${n}${coupon?.getMaskedEcouponSn()}}*
+                    ${coupon?.eCouponSn}
                 </a>
             #{/if}
             #{else}
@@ -278,7 +277,7 @@
                 #{if !coupon?.goods?.isLottery}
                     <a href="javascript:sendMessage(${coupon.id})">发送短信</a>#{/if}
             #{/if}
-            #{elseif hasRight}
+            #{elseif hasRight && coupon.isCheatedOrder!=true}
                 #{vx.operateLink name:"unfreeze_"+coupon.id,text:"解冻", url:"/coupons/"+coupon.id+"/unfreeze", method:"PUT"/}
             #{/elseif}
         #{/if}
@@ -346,7 +345,7 @@
 
         <div id="textContainer" style="display: none;">
             <br>
-            <span id="mySpan"></span>
+            <span style="color: red; ">*</span><span id="mySpan"></span>
             <input name="coupon.otherReason" id="other_reason" type="text"/>
             <span id="error_other_reason">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
         </div>

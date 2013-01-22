@@ -106,12 +106,15 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         return role;
     }
 
+
     @Test
     public void testFreeze() {
         ECoupon eCoupon = FactoryBoy.create(ECoupon.class);
         eCoupon.isFreeze = 0;
         eCoupon.save();
-        String params = "coupon.id=" + eCoupon.id.toString()+ " &coupon.eCouponSn=" + eCoupon.eCouponSn;
+        String params = "coupon.id=" + eCoupon.id.toString() + " &coupon.eCouponSn=" + eCoupon.eCouponSn
+                + "&coupon.goods.id=" + eCoupon.goods.id + "&coupon.order.id=" + eCoupon.order.id
+                + "&coupon.order.id=" + eCoupon.order.id + "&coupon.orderItems.id=" + eCoupon.orderItems.id;
         Http.Response response = PUT("/coupons/" + eCoupon.id.toString() + "/freeze", "application/x-www-form-urlencoded", params);
         assertStatus(302, response);
         eCoupon.refresh();
