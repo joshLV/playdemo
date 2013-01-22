@@ -27,7 +27,7 @@ public class OrderScanner extends Job{
                 OuterOrderStatus.ORDER_DONE,
                 OuterOrderStatus.REFUND_DONE).fetch();
         for (OuterOrder order : orders){
-            YHDGroupBuyMessage message = new YHDGroupBuyMessage(order.orderNumber);
+            YHDGroupBuyMessage message = new YHDGroupBuyMessage(order.orderId);
             YihaodianQueueUtil.addGroupBuyJob(message);
         }
     }
