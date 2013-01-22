@@ -84,7 +84,7 @@ public class BatchFreezeCoupons extends Controller {
         render(inExistentCoupons, usedCouponsList, freezedCouponsList, unUsedCouponsList, sumUnUsed, sumFreezed, couponsFreezedId);
     }
 
-    public static void batchFreezeCoupons(String couponsFreezedId, Boolean isCheatedOrder) {
+    public static void batchFreezeCoupons(String couponsFreezedId, ECoupon coupon) {
         Set<ECoupon> unUsedCouponsList = new HashSet<>();
         Double sumUnUsed = 0d;
         BigDecimal tempUnUsed = BigDecimal.ZERO;
@@ -93,12 +93,7 @@ public class BatchFreezeCoupons extends Controller {
             ECoupon tempCoupon = ECoupon.findById(Long.parseLong(c[i]));
             unUsedCouponsList.add(tempCoupon);
             sumUnUsed += tempUnUsed.add(tempCoupon.salePrice).doubleValue();
-            if (isCheatedOrder == null || isCheatedOrder == false) {
-                ECoupon.freeze(Long.parseLong(c[i]), OperateRbac.currentUser().userName);
-            } else {
-                ECoupon.freeze(Long.parseLong(c[i]), OperateRbac.currentUser().userName, isCheatedOrder);
-
-            }
+            ECoupon.freeze(Long.parseLong(c[i]), OperateRbac.currentUser().userName, coupon);
         }
         render(unUsedCouponsList, sumUnUsed);
     }

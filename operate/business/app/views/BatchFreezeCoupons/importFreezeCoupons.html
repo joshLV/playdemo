@@ -115,11 +115,10 @@
         &nbsp;&nbsp;
 
 
-        <button class="btn btn-primary" id="freezecoupon" type="submit" onClick="return confirmBatchFreeze();">批量冻结
+        <button class="btn btn-primary" id="freezecoupon" onClick="return confirmBatchFreeze();">批量冻结
         </button>
         <span>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            #{form @OperateCoupons.index(), id:"setForm", name:"setForm",class:"form-horizontal",method:"PUT"}
                 请选择冻结此券号的原因：&nbsp;&nbsp;
                 <select name="coupon.freezedReason" id="freeze_option" class="input-small"
                         value="${coupon?.freezedReason}"
@@ -139,7 +138,6 @@
                     <input name="coupon.otherReason" id="other_reason" type="text"/>
                     <span id="error_other_reason">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                 </div>
-            #{/form}
         </span>
         <br><br>
         <table class="table table-striped table-bordered table-condensed">
@@ -181,8 +179,15 @@
 
 <script language="JavaScript" type="text/JavaScript">
     function confirmBatchFreeze() {
-        if (confirm("确定要批量冻结未使用的所有券号吗?"))
+        if (confirm("确定要批量冻结未使用的所有券号吗?")) {
+            var result = true;
+            if ($("#freeze_option").val() == "OTHERS" && $("#other_reason").val().trim() == "") {
+                $("#error_other_reason").html("<span style='display: block;color: #ff0000;padding-left: 450px;'>请输入原因!</span>");
+                $("#other_reason").focus();
+                return false;
+            }
             return true;
+        }
         else
             return false;
     }
@@ -197,5 +202,6 @@
             document.getElementById("textContainer").style.display = "none";
         }
     }
+
 
 </script>
