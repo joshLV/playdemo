@@ -203,8 +203,8 @@
             #{if hasViewEcouponSnPermission==true}
                 <a id="view_ecoupon" href="#" role="button" class="btn" data-toggle="modal"
                    onClick="viewECoupon(${coupon.id})" title="查看完整券号">
-                *{${n}${coupon?.getMaskedEcouponSn()}}*
-                    ${coupon?.eCouponSn}
+                ${n}${coupon?.getMaskedEcouponSn()}
+                    *{${coupon?.eCouponSn}}*
                 </a>
             #{/if}
             #{else}
