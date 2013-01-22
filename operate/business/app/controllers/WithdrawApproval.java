@@ -63,10 +63,10 @@ public class WithdrawApproval extends Controller {
         }
         List<WithdrawBill> withdrawBillList = WithdrawBill.find("status=? and applier=?", WithdrawBillStatus.SUCCESS, bill.applier).fetch();
         BigDecimal temp = BigDecimal.ZERO;
-        Double sum = 0d;
+        BigDecimal sum = BigDecimal.ZERO;
         String supplierName = "";
         for (WithdrawBill b : withdrawBillList) {
-            sum += temp.add(b.amount).doubleValue();
+            sum =sum.add(temp.add(b.amount));
         }
         if (bill.account.accountType == SUPPLIER && uid != null) {
             Supplier supplier = Supplier.findById(uid);
