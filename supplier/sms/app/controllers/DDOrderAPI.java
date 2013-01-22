@@ -87,7 +87,7 @@ public class DDOrderAPI extends Controller {
         }
 
         Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
                 OuterOrderPartner.DD, kx_order_id).first();
         //outerOrder是否存在的标志
         Boolean isExisted = true;
@@ -97,7 +97,7 @@ public class DDOrderAPI extends Controller {
         if (outerOrder == null) {
             isExisted = false;
             outerOrder = new OuterOrder();
-            outerOrder.orderNumber = kx_order_id;
+            outerOrder.orderId = Long.parseLong(kx_order_id);
             outerOrder.partner = OuterOrderPartner.DD;
             outerOrder.message = gson.toJson(params);
             outerOrder.status = OuterOrderStatus.ORDER_COPY;

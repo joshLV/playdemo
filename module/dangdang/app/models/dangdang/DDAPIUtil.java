@@ -174,7 +174,7 @@ public class DDAPIUtil {
         String consumeId = dataMap.get("consume_id");
 
         //根据当当订单编号，查询订单是否存在
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
                 OuterOrderPartner.DD, orderId).first();
         if (outerOrder == null || outerOrder.ybqOrder == null) {
             response.errorCode = ErrorCode.ORDER_NOT_EXITED;
