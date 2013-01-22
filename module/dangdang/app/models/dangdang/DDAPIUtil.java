@@ -175,7 +175,7 @@ public class DDAPIUtil {
 
         //根据当当订单编号，查询订单是否存在
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
-                OuterOrderPartner.DD, orderId).first();
+                OuterOrderPartner.DD, Long.valueOf(orderId)).first();
         if (outerOrder == null || outerOrder.ybqOrder == null) {
             response.errorCode = ErrorCode.ORDER_NOT_EXITED;
             response.desc = "没找到对应的当当订单!";
