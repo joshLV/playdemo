@@ -32,7 +32,12 @@ import org.jsoup.safety.Whitelist;
 import play.Logger;
 import play.Play;
 import play.data.binding.As;
-import play.data.validation.*;
+import play.data.validation.InFuture;
+import play.data.validation.Max;
+import play.data.validation.MaxSize;
+import play.data.validation.Min;
+import play.data.validation.MinSize;
+import play.data.validation.Required;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.i18n.Messages;
@@ -2003,15 +2008,15 @@ public class Goods extends Model {
             SearchHotKeywords.addKeywords(condition.keywords);
         }
 
-
-        return search(q, condition.parentCategoryId, condition.categoryId, condition.districtId, condition.areaId,
+        return search(q, condition.parentCategoryId, condition.categoryId,
+                condition.cityId, condition.districtId, condition.areaId,
                 condition.isOrder, condition.materialType, condition.brandId,
                 condition.solrOrderBy, "asc".equals(condition.orderByType), pageNumber, pageSize, false,
                 new String[]{"goods.categoryIds_s", "goods.parentCategoryIds_s", "shop.districtId_s", "shop.areaId_s"});
     }
 
     public static List<Category> statisticCategory(long parentCategoryId) {
-        QueryResponse response = search(null, 0, 0, null, null, null, null, 0, null, false, 0, 0, true,
+        QueryResponse response = search(null, 0, 0, null, null, null, null, null, 0, null, false, 0, 0, true,
                 new String[]{"goods.categoryIds_s"});
         return getStatisticSubCategories(response, parentCategoryId);
     }
@@ -2019,7 +2024,8 @@ public class Goods extends Model {
 
     public static List<Category> statisticTopCategories(GoodsWebsiteCondition condition) {
         String q = StringUtils.isNotBlank(condition.keywords) ? "text:\"" + condition.keywords + "\"" : null;
-        QueryResponse response = search(q, 0, 0, condition.districtId, condition.areaId,
+        QueryResponse response = search(q, 0, 0,
+                condition.cityId, condition.districtId, condition.areaId,
                 condition.isOrder, condition.materialType, condition.brandId,
                 condition.solrOrderBy, "asc".equals(condition.orderByType), 0, 0, true,
                 new String[]{"goods.parentCategoryIds_s"});
@@ -2028,7 +2034,8 @@ public class Goods extends Model {
 
     public static List<Category> statisticSubCategories(GoodsWebsiteCondition condition) {
         String q = StringUtils.isNotBlank(condition.keywords) ? "text:\"" + condition.keywords + "\"" : null;
-        QueryResponse response = search(q, condition.parentCategoryId, 0, condition.districtId, condition.areaId,
+        QueryResponse response = search(q, condition.parentCategoryId, 0,
+                condition.cityId, condition.districtId, condition.areaId,
                 condition.isOrder, condition.materialType, condition.brandId,
                 condition.solrOrderBy, "asc".equals(condition.orderByType), 0, 0, true,
                 new String[]{"goods.categoryIds_s"});
@@ -2038,12 +2045,14 @@ public class Goods extends Model {
 
     /**
      * 前端按条件的全文搜索.
+     * 限制城市为上海
      *
      * @return
      */
     public static List<Area> statisticDistricts(GoodsWebsiteCondition condition) {
         String q = StringUtils.isNotBlank(condition.keywords) ? "text:\"" + condition.keywords + "\"" : null;
-        QueryResponse response = search(q, condition.parentCategoryId, condition.categoryId, null, null,
+        QueryResponse response = search(q, condition.parentCategoryId, condition.categoryId,
+                condition.cityId, null, null,
                 condition.isOrder, condition.materialType, condition.brandId,
                 condition.solrOrderBy, "asc".equals(condition.orderByType), 0, 0, true,
                 new String[]{"shop.districtId_s"});
@@ -2052,7 +2061,8 @@ public class Goods extends Model {
 
     public static List<Area> statisticAreas(GoodsWebsiteCondition condition) {
         String q = StringUtils.isNotBlank(condition.keywords) ? "text:\"" + condition.keywords + "\"" : null;
-        QueryResponse response = search(q, condition.parentCategoryId, condition.categoryId, condition.districtId, null,
+        QueryResponse response = search(q, condition.parentCategoryId, condition.categoryId,
+                condition.cityId, condition.districtId, null,
                 condition.isOrder, condition.materialType, condition.brandId,
                 condition.solrOrderBy, "asc".equals(condition.orderByType), 0, 0, true,
                 new String[]{"shop.areaId_s"});
@@ -2074,9 +2084,11 @@ public class Goods extends Model {
      * @param pageSize
      * @return
      */
-    private static QueryResponse search(String q, long parentCategoryId, long categoryId, String districtId,
-                                        String areaId, Boolean isOrder, MaterialType materialType, long brandId,
-                                        String orderBy, boolean isAsc, int pageNumber, int pageSize, boolean onlyStatistic, String[] facetFields) {
+    private static QueryResponse search(String q, long parentCategoryId, long categoryId,
+                                        String cityId, String districtId, String areaId,
+                                        Boolean isOrder, MaterialType materialType, long brandId,
+                                        String orderBy, boolean isAsc, int pageNumber, int pageSize,
+                                        boolean onlyStatistic, String[] facetFields) {
         TimeZone UTC = TimeZone.getTimeZone("UTC");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.CHINA);
         dateFormat.setTimeZone(UTC);
@@ -2096,8 +2108,11 @@ public class Goods extends Model {
         if (categoryId > 0) {
             queryStr.append(" AND goods.categoryIds_s:" + categoryId);
         }
+        if (StringUtils.isNotBlank(cityId) && !cityId.equals("0")) {
+            queryStr.append(" AND shop.cityId_s:\"" + cityId + "\"");
+        }
         if (StringUtils.isNotBlank(districtId) && !districtId.equals("0")) {
-            queryStr.append(" AND shop.districtId_s:" + districtId);
+            queryStr.append(" AND shop.districtId_s:\"" + districtId + "\"");
         }
         if (parentCategoryId > 0) {
             queryStr.append(" AND goods.parentCategoryIds_s:" + parentCategoryId);
@@ -2119,7 +2134,8 @@ public class Goods extends Model {
             query.setRows(0);
         } else {
             query.setRows(pageSize);
-            query.setFields(SOLR_ID, SOLR_GOODS_NAME, SOLR_GOODS_SALEPRICE, SOLR_GOODS_FACEVALUE, SOLR_GOODS_VIRTUALSALECOUNT, SOLR_GOODS_AREAS, SOLR_GOODS_IMAGESMALLPATH, SOLR_GOODS_IMAGEPATH);
+            query.setFields(SOLR_ID, SOLR_GOODS_NAME, SOLR_GOODS_SALEPRICE, SOLR_GOODS_FACEVALUE,
+                    SOLR_GOODS_VIRTUALSALECOUNT, SOLR_GOODS_AREAS, SOLR_GOODS_IMAGESMALLPATH, SOLR_GOODS_IMAGEPATH);
             if ((StringUtils.isNotBlank(q) && !GoodsWebsiteCondition.getSolrOrderBy(0).equals(orderBy)) ||
                     (StringUtils.isBlank(q))) {
                 query.setSortField(orderBy, isAsc ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
@@ -2129,6 +2145,7 @@ public class Goods extends Model {
         query.setFacet(true).addFacetField(facetFields);
         query.setHighlight(true).addHighlightField(SOLR_GOODS_NAME).setHighlightSimplePre("<em>").setHighlightSimplePost("</em>");
 
+        System.out.println("query:" + query.getQuery());
         return Solr.query(query);
     }
 
@@ -2280,8 +2297,8 @@ public class Goods extends Model {
             for (FacetField.Count count : countList) {
                 if (count.getCount() > 0) {
                     Area area = Area.findAreaById(count.getName());
-                    if ((area != null && districtId != null && area.parent != null && area.parent.id.equals(districtId))
-                            || (area != null && districtId == null)) {
+                    if ((area != null && districtId != null && area.parent != null && area.parent.id.equals(districtId) && area.isBelongTo(Area.SHANGHAI))
+                            || (area != null && districtId == null && area.isBelongTo(Area.SHANGHAI))) {
                         area.goodsCount = count.getCount();
                         areaList.add(area);
                     }

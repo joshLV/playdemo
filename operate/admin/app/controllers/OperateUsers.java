@@ -47,6 +47,9 @@ public class OperateUsers extends Controller {
         if (!keyList.contains("admin")) {
             redirect("/profile");
         }
+        for (String s : keyList) {
+            System.out.println("s:" + s);
+        }
 
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         JPAExtPaginator<OperateUser> operateUserPage = OperateUser.getSupplierUserList(
@@ -77,12 +80,7 @@ public class OperateUsers extends Controller {
         }
         if (Validation.hasErrors()) {
             List rolesList = OperateRole.findAll();
-            String roleIds = "";
-            if (operateUser.roles != null && !operateUser.roles.isEmpty()) {
-                for (OperateRole role : operateUser.roles) {
-                    roleIds += role.id + ",";
-                }
-            }
+            String roleIds = getRoleIds(operateUser.roles);
             render("OperateUsers/add.html", operateUser, roleIds, rolesList);
         }
         Images.Captcha captcha = Images.captcha();
@@ -119,12 +117,7 @@ public class OperateUsers extends Controller {
     @ActiveNavigation("user_add")
     public static void edit(Long id) {
         OperateUser operateUser = OperateUser.findById(id);
-        Set<Long> roleIds = new HashSet<>();
-        if (operateUser.roles != null && !operateUser.roles.isEmpty()) {
-            for (OperateRole role : operateUser.roles) {
-                roleIds.add(role.id);
-            }
-        }
+        Set<Long> roleIds = getRoleIdSet(operateUser.roles);
 
         List rolesList = OperateRole.findAll();
         operateUser.roles.addAll(rolesList);
@@ -146,12 +139,7 @@ public class OperateUsers extends Controller {
 
         if (Validation.hasErrors()) {
             List rolesList = OperateRole.findAll();
-            Set<Long> roleIds = new HashSet<>();
-            if (operateUser.roles != null && !operateUser.roles.isEmpty()) {
-                for (OperateRole role : operateUser.roles) {
-                    roleIds.add(role.id);
-                }
-            }
+            Set<Long> roleIds = getRoleIdSet(operateUser.roles);
             operateUser.id = id;
             render("OperateUsers/edit.html", operateUser, roleIds, rolesList);
         }
@@ -161,9 +149,35 @@ public class OperateUsers extends Controller {
         index();
     }
 
+
+    private static String getRoleIds(List<OperateRole> roles) {
+        String roleIds = "";
+        if (roles != null && !roles.isEmpty()) {
+            for (OperateRole role : roles) {
+                if (role != null) {
+                    roleIds += role.id + ",";
+                }
+            }
+        }
+        return roleIds;
+    }
+
+    private static Set<Long> getRoleIdSet(List<OperateRole> roles) {
+        Set<Long> roleIds = new HashSet<>();
+        if (roles != null && !roles.isEmpty()) {
+            for (OperateRole role : roles) {
+                if (role != null) {
+                    roleIds.add(role.id);
+                }
+            }
+        }
+        return roleIds;
+    }
+
     /**
      * 判断用户名和手机是否唯一
      *
+     * @param id        OperateUser的id
      * @param loginName 用户名
      * @param mobile    手机
      */

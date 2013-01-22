@@ -4,10 +4,7 @@ import org.junit.Test;
 
 import play.cache.Cache;
 import play.mvc.Http.Response;
-import play.mvc.Scope;
-import play.mvc.results.RenderXml;
 import play.test.FunctionalTest;
-import controllers.supplier.cas.MockServer;
 
 /**
  * 这个类用于测试一些在selenium中没有覆盖的Mock方法。

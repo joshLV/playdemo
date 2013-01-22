@@ -21,7 +21,7 @@ public class OperateUserFactory extends ModelFactory<OperateUser> {
         user.email = "test@uhuila.com";
         user.jobNumber = "123456";
         // 定义角色
-        user.roles = new ArrayList<OperateRole>();
+        user.roles = new ArrayList<>();
         user.roles.add(role("sales"));
         user.roles.add(role("account"));
         user.roles.add(role("customservice"));
@@ -42,7 +42,7 @@ public class OperateUserFactory extends ModelFactory<OperateUser> {
     @Factory(name = "role")
     public void defineRole(OperateUser user) {
         user.mobile = "13211111111";
-        user.roles = new ArrayList<OperateRole>();
+        user.roles = new ArrayList<>();
         user.roles.add(role("sales"));
         user.roles.add(role("customservice"));
         user.roles.add(role("editor"));
@@ -51,8 +51,7 @@ public class OperateUserFactory extends ModelFactory<OperateUser> {
 
 
     public static OperateRole role(String roleName) {
-        OperateRole role = OperateRole.find("byKey", roleName).first();
-        return role;
+        return OperateRole.find("byKey", roleName).first();
     }
 
 }

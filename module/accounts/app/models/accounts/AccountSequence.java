@@ -267,6 +267,13 @@ public class AccountSequence extends Model {
         return count("prepayment.id = ?", prepaymentId);
     }
 
+    public static BigDecimal getWithdrawAmount(Account account, Date toDate){
+        BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
+                " account=? and tradeType=? and createdAt<? group by account",
+                account, TradeType.WITHDRAW, toDate).first();
+        return amount != null ? amount.abs() : BigDecimal.ZERO;
+    }
+
     public static AccountSequence checkAccountAmount(Account account) {
         List<AccountSequence> accountSequences = find("account=? order by id", account).fetch();
 

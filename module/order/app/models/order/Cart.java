@@ -211,7 +211,7 @@ public class Cart extends Model {
     public static List<Cart> findAll(User user, String cookie,
                                      MaterialType type) {
         if (user == null && cookie == null && type == null) {
-            return new ArrayList<Cart>();
+            return new ArrayList<>();
         }
         //构建查询条件
         StringBuilder sql = new StringBuilder(
