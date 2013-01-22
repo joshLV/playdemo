@@ -10,7 +10,7 @@ import java.util.Date;
  *         Date: 12-9-18
  */
 @Entity
-@Table(name = "outer_order",uniqueConstraints = {
+@Table(name = "outer_order", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"partner", "order_id"})})        //定义两对联合唯一约束
 public class OuterOrder extends Model {
     @Enumerated(EnumType.STRING)
@@ -41,9 +41,14 @@ public class OuterOrder extends Model {
     @Column(name = "lock_version")
     public int lockVersion;         //乐观锁
 
-    public OuterOrder(){
+    public OuterOrder() {
         this.createdAt = new Date();
         this.lockVersion = 0;
+    }
+
+    public static OuterOrder getOuterOrder(Order ybqOrder) {
+        return OuterOrder.find("ybqOrder=?", ybqOrder).first();
+
     }
 
 }

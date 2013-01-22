@@ -148,8 +148,8 @@
                 #{option "RESALER"}&{'order.RESALER'}#{/option}
             #{/select}
             </td>
-            <td>外部订单号：<input type="text" name="condition.searchItems" value="${condition.searchItems}"
-                            class="input-large"/>
+            <td>外部订单号：<input type="text" name="condition.outerOrderId" value="${condition.outerOrderId}"
+                             class="input-large"/>
             </td>
         </tr>
         <tr>
@@ -202,6 +202,7 @@ select:'condition_status',value:condition?.status/}
     <thead>
     <tr>
         <th width="10">订单号</th>
+        <th width="10">外部订单号</th>
         <th width="50">商品名称</th>
 
     #{if desc.equals("1000000") }
@@ -261,6 +262,7 @@ select:'condition_status',value:condition?.status/}
     #{paginate.list items:orderList, as:'order'}
     <tr>
         <td rowspan="${order?.orderItems?.size()}">${order.orderNumber}</td>
+        <td rowspan="${order?.orderItems?.size()}">${models.order.OuterOrder.getOuterOrder(order)?.orderId}</td>
     *{有实物券时}*
         #{if order.realGoods?.size()>0}
             <td>

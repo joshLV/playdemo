@@ -35,7 +35,7 @@ public class OrdersCondition {
     public Boolean hasSeeAllSupplierPermission;
     public Date hidPaidAtBegin;
     public Date hidPaidAtEnd;
-    public String outerOrderNumber;
+    public Long outerOrderId;
 
     /**
      * 查询条件hql.
@@ -151,6 +151,13 @@ public class OrdersCondition {
                 paramsMap.put("user", resaler.id);
             }
         }
+        if (outerOrderId != null) {
+            OuterOrder outerOrder = OuterOrder.find("orderId=?", outerOrderId).first();
+            if (outerOrder != null) {
+                sql.append(" and o.id=:orderId");
+                paramsMap.put("orderId", outerOrder.ybqOrder.id);
+            }
+        }
 
         //CRM  查询订单
         if (StringUtils.isNotBlank(allSearch)) {
@@ -190,7 +197,6 @@ public class OrdersCondition {
             paramsMap.put("phone", searchItems);
         }
 
-        System.out.println("sql.toString():" + sql.toString());
 
         return sql.toString();
     }
