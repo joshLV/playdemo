@@ -10,8 +10,7 @@ import java.util.Date;
  *         Date: 12-9-18
  */
 @Entity
-@Table(name = "outer_order",uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"partner", "order_number" }),
+@Table(name = "outer_order", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"partner", "order_id"})})        //定义两对联合唯一约束
 public class OuterOrder extends Model {
     @Enumerated(EnumType.STRING)
@@ -20,9 +19,6 @@ public class OuterOrder extends Model {
 
     @Column(name = "order_id", nullable = true)
     public Long orderId;       //合作伙伴的订单ID
-
-    @Column(name = "order_number", nullable = true)
-    public String orderNumber; //合作伙伴的订单编号
 
     @Basic(fetch = FetchType.LAZY)
     @ManyToOne
@@ -45,9 +41,14 @@ public class OuterOrder extends Model {
     @Column(name = "lock_version")
     public int lockVersion;         //乐观锁
 
-    public OuterOrder(){
+    public OuterOrder() {
         this.createdAt = new Date();
         this.lockVersion = 0;
+    }
+
+    public static OuterOrder getOuterOrder(Order ybqOrder) {
+        return OuterOrder.find("ybqOrder=?", ybqOrder).first();
+
     }
 
 }

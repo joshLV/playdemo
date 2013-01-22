@@ -135,7 +135,7 @@
                                                                  value="${condition.refundAtEnd?.format()}"
                                                                  onfocus="WdatePicker({readOnly:true})"
                                                                  class="input-medium Wdate"/></td>
-            <td colspan="2">支付方式：#{select 'condition.payMethod', class:'input-medium', value:condition.payMethod}
+            <td>支付方式：#{select 'condition.payMethod', class:'input-medium', value:condition.payMethod}
                 #{option ""}不限#{/option}
                 #{option "alipay"}支付宝#{/option}
                 #{option "tenpay"}财付通#{/option}
@@ -147,6 +147,9 @@
                 #{option "CONSUMER"}&{'order.CONSUMER'}#{/option}
                 #{option "RESALER"}&{'order.RESALER'}#{/option}
             #{/select}
+            </td>
+            <td>外部订单号：<input type="text" name="condition.outerOrderId" value="${condition.outerOrderId}"
+                             class="input-large"/>
             </td>
         </tr>
         <tr>
@@ -176,17 +179,17 @@
                 #{option models.order.DeliveryType.LOGISTICS}有物流#{/option}
             #{/select}
 
-            &nbsp;&nbsp;&nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery"
-                                          class="input-medium"
-                                          value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
+                &nbsp;&nbsp;&nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery"
+                                              class="input-medium"
+                                              value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
             </td>
-            <tr align="right">
+        <tr align="right">
             <td colspan="3">
                 <button class="btn btn-primary" id="search" type="submit">搜索</button>
                 <button class="btn btn-primary" id="searchbtn" onclick="orderExcel()">导出报表</button>
             </td>
-            </tr>
-            <input type="hidden" id="J_rank" name="desc"/>
+        </tr>
+        <input type="hidden" id="J_rank" name="desc"/>
         </tr>
     </table>
 </form>
@@ -199,6 +202,7 @@ select:'condition_status',value:condition?.status/}
     <thead>
     <tr>
         <th width="10">订单号</th>
+        <th width="10">外部订单号</th>
         <th width="50">商品名称</th>
 
     #{if desc.equals("1000000") }
@@ -258,6 +262,7 @@ select:'condition_status',value:condition?.status/}
     #{paginate.list items:orderList, as:'order'}
     <tr>
         <td rowspan="${order?.orderItems?.size()}">${order.orderNumber}</td>
+        <td rowspan="${order?.orderItems?.size()}">${models.order.OuterOrder.getOuterOrder(order)?.orderId}</td>
     *{有实物券时}*
         #{if order.realGoods?.size()>0}
             <td>

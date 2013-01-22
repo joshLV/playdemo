@@ -11,7 +11,6 @@ import models.admin.SupplierUser;
 import org.junit.Before;
 import org.junit.Test;
 
-import play.data.validation.*;
 import play.data.validation.Error;
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;

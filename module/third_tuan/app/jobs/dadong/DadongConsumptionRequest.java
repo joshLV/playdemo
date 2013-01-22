@@ -59,10 +59,15 @@ public class DadongConsumptionRequest {
         System.out.println("thirdOrderId = " + thirdOrderId);
 
         for (ECoupon ecoupon : orderItems.getECoupons()) {
-            ecoupon.partnerCouponId = thirdOrderId;
-            ecoupon.save();
-            new CouponHistory(ecoupon, "MessageQ", "大东票务申请发券成功:" + resultId + resultComment,
-                    ecoupon.status, ecoupon.status, null).save();
+            if (StringUtils.isNotBlank(thirdOrderId)) {
+                ecoupon.partnerCouponId = thirdOrderId;
+                ecoupon.save();
+                new CouponHistory(ecoupon, "MessageQ", "大东票务申请发券成功:" + resultId + resultComment,
+                        ecoupon.status, ecoupon.status, null).save();
+            } else {
+                new CouponHistory(ecoupon, "MessageQ", "大东票务申请发券失败:" + resultId + resultComment,
+                        ecoupon.status, ecoupon.status, null).save();
+            }
         }
     }
 

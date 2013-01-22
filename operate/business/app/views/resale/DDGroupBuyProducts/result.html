@@ -1,0 +1,16 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'结果' /}
+#{include '/share/nav.html' /}
+#{set 'moreScripts'}
+#{/set}
+#{set 'moreStyles'}
+#{/set}
+<div class="body">
+    #{if pushFlag}
+        <legend> 上传成功 </legend>
+    #{/if}
+    #{else}
+        <legend> 上传失败 </legend>
+    #{/else}
+</div>
+

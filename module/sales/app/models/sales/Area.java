@@ -294,4 +294,8 @@ public class Area extends GenericModel {
         return Area.find("parent = ? and  ( deleted = ? or deleted is null)",
                 this, DeletedStatus.UN_DELETED).fetch();
     }
+
+    public boolean isBelongTo(String cityId) {
+        return id != null && id.startsWith(SHANGHAI);
+    }
 }

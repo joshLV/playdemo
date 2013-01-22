@@ -7,8 +7,10 @@ import models.admin.OperateRole;
 import models.admin.OperateUser;
 import operate.rbac.RbacLoader;
 import org.apache.ivy.util.StringUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import play.data.validation.Error;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http;
 import play.test.FunctionalTest;
@@ -35,6 +37,12 @@ public class OperateUsersTest extends FunctionalTest {
         operateUser = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(operateUser.loginName);
+    }
+
+    @After
+    public void tearDown() {
+        // 清除登录Mock
+        Security.cleanLoginUserForTest();
     }
 
     @Test
@@ -74,6 +82,44 @@ public class OperateUsersTest extends FunctionalTest {
         assertEquals(2, OperateUser.count());
     }
 
+    @Test
+    public void testCreate_NoRole() {
+        assertEquals(1, OperateUser.count());
+
+        Map<String, String> params = new HashMap<>();
+        params.put("operateUser.encryptedPassword", "895623");
+        params.put("operateUser.confirmPassword", "895623");
+        params.put("operateUser.userName", "jim");
+        params.put("operateUser.jobNumber", "123456");
+        params.put("operateUser.mobile", operateUser.mobile);
+        params.put("operateUser.loginName", "test-loginName");
+        params.put("operateUser.email", "11@qq.com");
+        Http.Response response = POST("/users", params);
+        List<Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("operateUser.roles", errors.get(0).getKey());
+        assertStatus(200, response);
+
+        assertEquals(1, OperateUser.count());
+
+    }
+
+    @Test
+    public void testCreate_Invalid() {
+        assertEquals(1, OperateUser.count());
+        Map<String, String> params = new HashMap<>();
+        params.put("operateUser.encryptedPassword", "895623");
+        params.put("operateUser.confirmPassword", "895623");
+        params.put("operateUser.userName", "jim");
+        params.put("operateUser.jobNumber", "123456");
+        params.put("operateUser.loginName", "test-loginName");
+        params.put("operateUser.email", "11@qq.com");
+        params.put("operateUser.roles", StringUtils.join(operateUser.roles.toArray(), ","));
+        Http.Response response = POST("/users", params);
+        List<Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("operateUser.mobile", errors.get(0).getKey());
+        assertStatus(200, response);
+        assertEquals(1, OperateUser.count());
+    }
 
     @Test
     public void testCheckLoginName() {
@@ -104,6 +150,23 @@ public class OperateUsersTest extends FunctionalTest {
         assertStatus(302, response);
         operateUser.refresh();
         assertEquals(operateUser.jobNumber, "9988");
+    }
+
+    @Test
+    public void testUpdate_Invalid() {
+        assertEquals(1, OperateUser.count());
+        Map<String, String> params = new HashMap<>();
+        params.put("operateUser.encryptedPassword", "895623");
+        params.put("operateUser.confirmPassword", "895623");
+        params.put("operateUser.userName", "jim");
+        params.put("operateUser.jobNumber", "123456");
+        params.put("operateUser.email", "11@qq.com");
+        params.put("operateUser.roles", StringUtils.join(operateUser.roles.toArray(), ","));
+        Http.Response response = POST("/users/" + operateUser.id, params);
+        List<Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("operateUser.loginName", errors.get(0).getKey());
+        assertStatus(200, response);
+        assertEquals(1, OperateUser.count());
     }
 
     @Test

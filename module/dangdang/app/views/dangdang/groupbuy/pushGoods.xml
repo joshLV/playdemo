@@ -1,16 +1,16 @@
 <data>
-    <spgid><![CDATA[${goodsMappingId}]]></spgid>
-    <source_product_ids><![CDATA[${goodsMappingId}]]></source_product_ids>
-    <team_title><![CDATA[${teamSummary.raw()}]]></team_title>
+    <spgid><![CDATA[${linkId}]]></spgid>
+    <source_product_ids><![CDATA[${linkId}]]></source_product_ids>
+    <team_title><![CDATA[${teamTitle.raw()}]]></team_title>
     <team_summary><![CDATA[${teamSummary.raw()}]]></team_summary>
-    <team_type><![CDATA[1]]></team_type>
-    <category_name1><![CDATA[${category.raw()}]]></category_name1>
-    <category_name2><![CDATA[${sub_category.raw()}]]></category_name2>
-    <city_name><![CDATA[上海市]]></city_name>
-    <town_name><![CDATA[其他区县]]></town_name>
+    <team_type><![CDATA[${teamType}]]></team_type>
+    <category_name1><![CDATA[${categoryName1.raw()}]]></category_name1>
+    <category_name2><![CDATA[${categoryName2.raw()}]]></category_name2>
+    <city_name><![CDATA[${cityName.raw()}]]></city_name>
+    <town_name><![CDATA[]]></town_name>
     <zone_name><![CDATA[]]></zone_name>
     <shop_guid><![CDATA[]]></shop_guid>
-    <service_shop_guid><![CDATA[${supplierId}]]></service_shop_guid>
+    <service_shop_guid><![CDATA[]]></service_shop_guid>
     <service_shop_info>
         <vendor_detail>
             <vendor_num>${shops?.size()}</vendor_num>
@@ -18,13 +18,13 @@
             <vendor_list>
                 #{list shops,as:'shop'}
                 <vendor_info>
-                    <vendor_branch_name><![CDATA[${shop?.name?.raw()}]]></vendor_branch_name>
-                    <address><![CDATA[${shop?.address?.raw()}]]></address>
-                    <city><![CDATA[${shop?.getAreaName(2)?.raw()}]]></city>
-                    <town><![CDATA[${shop?.getAreaName(1)?.raw()}]]></town>
-                    <zone><![CDATA[${shop?.getAreaName(0)?.raw()}]]></zone>
+                    <vendor_branch_name><![CDATA[${shop.name?.raw()}]]></vendor_branch_name>
+                    <address><![CDATA[${shop.address?.raw()}]]></address>
+                    <city><![CDATA[${shop.getAreaName(2)?.raw()}]]></city>
+                    <town><![CDATA[${shop.getAreaName(1)?.raw()}]]></town>
+                    <zone><![CDATA[${shop.getAreaName(0)?.raw()}]]></zone>
                     <map_url> <![CDATA[]]></map_url>
-                    <tel><![CDATA[${shop?.phone}]]></tel>
+                    <tel><![CDATA[${shop.phone}]]></tel>
                     <bus><![CDATA[]]></bus>
                     <busi_time><![CDATA[]]></busi_time>
                     <notes><![CDATA[]]></notes>
@@ -33,8 +33,8 @@
             </vendor_list>
         </vendor_detail>
     </service_shop_info>
-    <start_date><![CDATA[${effectiveAt}]]></start_date>
-    <end_date><![CDATA[${expireAt}]]></end_date>
+    <start_date><![CDATA[${startDate}]]></start_date>
+    <end_date><![CDATA[${endDate}]]></end_date>
     <original_price><![CDATA[${originalPrice}]]></original_price>
     <sale_price><![CDATA[${salePrice}]]></sale_price>
     <team_max_num><![CDATA[${teamMaxNum}]]></team_max_num>
@@ -47,19 +47,19 @@
     <delivery_type><![CDATA[${deliveryType}]]></delivery_type>
     <buy_times><![CDATA[${buyTimes}]]></buy_times>
     <refund_type><![CDATA[${refundType}]]></refund_type>
-    <auto_refund_flag><![CDATA[0]]></auto_refund_flag>
+    <auto_refund_flag><![CDATA[${autoRefundFlag}]]></auto_refund_flag>
     <effect_start_date><![CDATA[${effectStartDate}]]></effect_start_date>
     <effect_end_date><![CDATA[${effectEndDate}]]></effect_end_date>
-    <src_image><![CDATA[${srcImage}]]></src_image>
+    <src_image><![CDATA[${srcImage?.raw()}]]></src_image>
     <src_image1><![CDATA[]]></src_image1>
     <src_image2><![CDATA[]]></src_image2>
     <src_image3><![CDATA[]]></src_image3>
-    <detail> <![CDATA[${teamDetail.raw()}]]></detail>
-    <display_status><![CDATA[0]]></display_status>
+    <detail> <![CDATA[${detail.raw()}]]></detail>
+    <display_status><![CDATA[${displayStatus}]]></display_status>
     <sort_order><![CDATA[]]></sort_order>
-    <sms_help><![CDATA[${teamTitle.raw()}]]></sms_help>
+    <sms_help><![CDATA[${smsHelp?.raw()}]]></sms_help>
     <seo_title><![CDATA[${seoTitle?.raw()}]]></seo_title>
-    <seo_keyword><![CDATA[${keywords?.raw()}]]></seo_keyword>
-    <seo_description><![CDATA[${seoTitle?.raw()}]]></seo_description>
-    <special_tips><![CDATA[${notice.raw()}]]></special_tips>
+    <seo_keyword><![CDATA[${seoKeywords?.raw()}]]></seo_keyword>
+    <seo_description><![CDATA[${seoDescription?.raw()}]]></seo_description>
+    <special_tips><![CDATA[${specialTips?.raw()}]]></special_tips>
 </data>

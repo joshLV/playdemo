@@ -9,22 +9,22 @@ import java.io.Serializable;
 public class YHDGroupBuyMessage implements Serializable {
     private static final long serialVersionUID = -8571949059752101651L;
 
-    private String orderCode;
+    private Long orderId;
 
-    public YHDGroupBuyMessage(String orderCode){
-        this.orderCode = orderCode;
+    public YHDGroupBuyMessage(Long orderId) {
+        this.orderId = orderId;
     }
 
-    public String getOrderCode() {
-        return orderCode;
+    public Long getOrderId() {
+        return orderId;
     }
 
-    public void setOrderCode(String orderCode) {
-        this.orderCode = orderCode;
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 
     @Override
-    public String toString(){
-        return "yihaodian group buy job orderCode: " + orderCode;
+    public String toString() {
+        return "yihaodian group buy job orderId: " + orderId;
     }
 }

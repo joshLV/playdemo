@@ -5,7 +5,11 @@ import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.AccountCreditable;
 import models.accounts.util.AccountUtil;
-import models.order.*;
+import models.order.ECoupon;
+import models.order.Order;
+import models.order.OrderItems;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.resale.ResalerCreditable;
 import models.sales.Goods;
@@ -139,7 +143,7 @@ public class YHDGroupBuyTest extends FunctionalTest{
             }
         });
         TreeMap<String, String> params = new TreeMap<>();
-        params.put("orderCode", outerOrder.orderNumber);
+        params.put("orderCode", String.valueOf(outerOrder.orderId));
         params.put("partnerOrderCode", outerOrder.ybqOrder.orderNumber);
         params.put("sign", "testsign");
 
@@ -149,11 +153,11 @@ public class YHDGroupBuyTest extends FunctionalTest{
         resign(params);
 
         //测试外部订单号
-        params.put("orderCode", "testcode");
+        params.put("orderCode", "123456");
         resign(params);
         response = POST("/api/v1/yhd/gb/vouchers-get", params);
         errorCount(1, response);
-        params.put("orderCode", outerOrder.orderNumber);
+        params.put("orderCode", String.valueOf(outerOrder.orderId));
 
         //测试内部订单号
         params.put("partnerOrderCode", "testcode");
@@ -166,7 +170,6 @@ public class YHDGroupBuyTest extends FunctionalTest{
         response = POST("/api/v1/yhd/gb/vouchers-get", params);
         assertIsOk(response);
     }
-
     @Test
     public void testVoucherResend(){
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
@@ -181,7 +184,7 @@ public class YHDGroupBuyTest extends FunctionalTest{
         Order order = (Order)Order.findAll().get(0);
         OuterOrder outerOrder = (OuterOrder)OuterOrder.findAll().get(0);
         ECoupon coupon = (ECoupon)ECoupon.findAll().get(0);
-        params.put("orderCode", outerOrder.orderNumber);
+        params.put("orderCode", String.valueOf(outerOrder.orderId));
         params.put("partnerOrderCode", order.orderNumber);
         params.put("voucherCode", coupon.eCouponSn);
         params.put("receiveMobile", "13472581853");
@@ -191,14 +194,14 @@ public class YHDGroupBuyTest extends FunctionalTest{
         errorCount(0, response);
 
         //测试外部订单号
-        params.put("orderCode", "testcode");
+        params.put("orderCode", "123456789");
         resign(params);
         response = POST("/api/v1/yhd/gb/voucher-resend", params);
         errorCount(1, response);
-        params.put("orderCode", outerOrder.orderNumber);
+        params.put("orderCode", String.valueOf(outerOrder.orderId));
 
         //测试内部订单号
-        params.put("partnerOrderCode", "testcode");
+        params.put("partnerOrderCode", "12345678");
         resign(params);
         response = POST("/api/v1/yhd/gb/voucher-resend", params);
         errorCount(1, response);
@@ -248,7 +251,7 @@ public class YHDGroupBuyTest extends FunctionalTest{
         Goods goods = FactoryBoy.last(Goods.class);
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         TreeMap<String, String> params = new TreeMap<>();
-        params.put("orderCode", "abc");
+        params.put("orderCode", "12345678");
         params.put("productId", "1");
         params.put("productNum", "2");
         params.put("orderAmount", goods.salePrice.multiply(new BigDecimal("2")).toString());

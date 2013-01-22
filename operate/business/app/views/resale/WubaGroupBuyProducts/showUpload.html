@@ -115,8 +115,8 @@
             <label class="control-label" for="inputProdImg">团购主图 *</label>
             <div class="controls">
                 <input type="text" id="inputProdImg" name="prodImg" class="input-block-level" value="${goods.imageOriginalPath}">
-                <span class="help-block">http开头，图片尺寸为440*280，图片大小在100kb以内</span>
-                <img src="${goods.imageOriginalPath}" alt="" id="imgGrouponBImg">
+                <span class="help-block">http开头，图片尺寸为420*680，图片大小在300kb以内</span>
+                <img src="${goods.imageOriginalPath}" alt="" id="imgProdImg">
             </div>
         </div>
         <div class="control-group">
@@ -271,42 +271,4 @@
     var subCategoryData = ${allCategoriesJson.raw()};
 </script>
 <script src="@@{'/public/javascripts/wuba-products.js'}"></script>
-<script>
-$(function(){
-    $("#imgProdImg").blur(function(){
-        $(this).attr("src",$(this).val());
-    });
-
-    KindEditor.create('textarea[name="prodDescription"]',
-    {
-        filterMode:false,
-        allowFileManager:false
-    });
-    KindEditor.create('textarea[name="mobileDescription"]',
-    {
-        filterMode:false,
-        allowFileManager:false
-    });
-
-
-    $("#submit").click(function(){
-
-        var checkedCityNodes = $.fn.zTree.getZTreeObj("cityTree").getCheckedNodes(true);
-        var checkedCityStr = "";
-        var checkedAreaStr = "";
-        for(var i = 0; i < checkedCityNodes.length; i ++ ) {
-             var node = checkedCityNodes[i];
-             var type = node.attr("type")
-             if (type == "city") {
-                checkedCityStr = node.id;
-             }else if (type == "area") {
-                checkedAreaStr += node.id + ",";
-             }
-        }
-        var checkedGroupNodes = $.fn.zTree.getZTreeObj("groupTree").getCheckedNodes(true);
-        var checkedSubGroupStr = "";
-    });
-
-});
-</script>
 #{/set}

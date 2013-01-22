@@ -8,9 +8,11 @@
     .control-group {
         margin-left: -50px;
     }
-     .control-group, input, textarea, select {
+
+    .control-group, input, textarea, select {
         font-size: 15px;
     }
+
     .p1 {
         font-size: 15px;
         line-height: 30px;
@@ -50,6 +52,8 @@
 <SCRIPT type=text/javascript>
     $(
             function () {
+                var shopId = $("#shopId").val();
+                $("#supplierUser_shop_id").val(shopId);
                 $("#supplierName").blur(function () {
                     var found = false;
                     var m = list.length;
@@ -67,8 +71,10 @@
                     } else {
                         $("#err-supplierUser_supplier_id").html("");
                         $("#save").attr('disabled', false);
-                        $("#shop").load("/shops/" + id + "/showSupplierShops", function (data) {
-                        });
+                        if (shopId == "") {
+                            $("#shop").load("/shops/" + id + "/showSupplierShops", function (data) {
+                            });
+                        }
                     }
 
                     if ($("#supplierName").val().trim() == '') {
@@ -77,5 +83,6 @@
                         $("#supplierUser_shop_id").empty();
                     }
                 });
+
             });
 </SCRIPT>

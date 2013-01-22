@@ -1,6 +1,5 @@
 package util.ws;
 
-import models.journal.WebServiceCallLog;
 import models.journal.WebServiceCallLogData;
 import org.apache.commons.lang.StringUtils;
 import play.libs.WS;
@@ -42,16 +41,11 @@ public class PlayWebServiceClient extends WebServiceClient {
 
         play.libs.WS.HttpResponse response = wsRequest.get();
         log.statusCode = response.getStatus();
-        log.responseText = (this.encoding != null) ? response.getString(this.encoding) : response.getString();
+        log.responseText = response.getString();
         if (callback != null) {
             callback.process(response.getStatus(), response.getString());
         }
         return response;
-    }
-
-    public void doPost(WebServiceCallLog log, WebServiceCallback callback) {
-
-        WS.url("").post();
     }
 
     @Override
@@ -72,7 +66,7 @@ public class PlayWebServiceClient extends WebServiceClient {
         }
         play.libs.WS.HttpResponse response = request.post();
         log.statusCode = response.getStatus();
-        log.responseText = (this.encoding != null) ? response.getString(this.encoding) : response.getString();
+        log.responseText = response.getString();
         if (callback != null) {
             callback.process(response.getStatus(), response.getString());
         }

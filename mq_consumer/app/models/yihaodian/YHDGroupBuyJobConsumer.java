@@ -3,7 +3,6 @@ package models.yihaodian;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
-import models.yihaodian.YHDResponse;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.JPAPlugin;
@@ -27,10 +26,10 @@ public class YHDGroupBuyJobConsumer extends RabbitMQConsumer<YHDGroupBuyMessage>
         //开启事务管理
         JPAPlugin.startTx(false);
 
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
-                OuterOrderPartner.YHD,message.getOrderCode()).first();
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
+                OuterOrderPartner.YHD,message.getOrderId()).first();
         if(outerOrder == null || outerOrder.ybqOrder == null){
-            Logger.info("can not find outerOrder: %s", message.getOrderCode());
+            Logger.info("can not find outerOrder: %s", message.getOrderId());
             JPAPlugin.closeTx(true);
             return;
         }
@@ -57,7 +56,7 @@ public class YHDGroupBuyJobConsumer extends RabbitMQConsumer<YHDGroupBuyMessage>
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         Map<String, String> params = new HashMap<>();
-        params.put("orderCode", outerOrder.orderNumber);
+        params.put("orderCode", String.valueOf(outerOrder.orderId));
         params.put("partnerOrderCode", outerOrder.ybqOrder.orderNumber);
         params.put("orderAmount", outerOrder.ybqOrder.amount.toString());
         params.put("orderCreateTime", dateFormat.format(outerOrder.ybqOrder.createdAt));

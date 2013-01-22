@@ -3,21 +3,13 @@ package function;
 import controllers.modules.resale.cas.Security;
 import factory.FactoryBoy;
 import models.resale.Resaler;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import play.data.validation.*;
-import play.data.validation.Error;
 import play.mvc.Http;
-import play.mvc.Scope;
 import play.test.FunctionalTest;
-import util.DateHelper;
 
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

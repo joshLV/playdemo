@@ -44,7 +44,7 @@ public class UserCarts extends Controller {
         for (Cart cart : cartList) {
             count += cart.number;
         }
-        if (cartList.size() <= 5) {
+        if (cartList.size() <= TOP_LIMIT) {
             renderArgs.put("carts", cartList);
         } else {
             ValuePaginator<Cart> carts = new ValuePaginator<>(cartList);

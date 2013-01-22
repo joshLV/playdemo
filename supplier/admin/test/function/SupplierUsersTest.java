@@ -4,21 +4,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.sales.Shop;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
 import controllers.supplier.cas.Security;
 import factory.FactoryBoy;
-import factory.callback.BuildCallback;
-import play.vfs.VirtualFile;
 
 public class SupplierUsersTest extends FunctionalTest {
     SupplierUser supplierUser;

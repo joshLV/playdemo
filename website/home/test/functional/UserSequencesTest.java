@@ -6,27 +6,28 @@ import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.AccountType;
-import models.consumer.User;
-import models.accounts.AccountSequence;
+import models.accounts.PaymentSource;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
-import org.junit.After;
+import models.order.Order;
 import org.junit.Before;
 import org.junit.Test;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 
-import java.util.List;
-
 /**
  * 用户资金的功能测试.
  *
  * @author likang
- * Date: 12-12-7
+ *         Date: 12-12-7
  */
 public class UserSequencesTest extends FunctionalTest {
     AccountSequence sequence;
+    Order order;
+    PaymentSource source;
+
+
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
@@ -47,6 +48,12 @@ public class UserSequencesTest extends FunctionalTest {
         sequence = FactoryBoy.create(AccountSequence.class);
         sequence.account = AccountUtil.getConsumerAccount(user.getId());
 
+        source = FactoryBoy.lastOrCreate(PaymentSource.class);
+        order = FactoryBoy.lastOrCreate(Order.class);
+        order.payMethod = source.paymentCode;
+        order.save();
+
+        sequence.orderId = order.id;
         sequence.save();
     }
 
@@ -56,12 +63,13 @@ public class UserSequencesTest extends FunctionalTest {
         assertIsOk(response);
 
         User user = FactoryBoy.last(User.class);
-        assertEquals(user.id, ((User)renderArgs("user")).id);
+        assertEquals(user.id, ((User) renderArgs("user")).id);
 
-        JPAExtPaginator<AccountSequence> amountList = (JPAExtPaginator<AccountSequence>)renderArgs("amountList");
+        JPAExtPaginator<AccountSequence> amountList = (JPAExtPaginator<AccountSequence>) renderArgs("amountList");
         assertNotNull(amountList);
         assertEquals(1, amountList.size());
         assertEquals(sequence.serialNumber, amountList.get(0).serialNumber);
+        assertEquals(source.name, amountList.get(0).payMethod);
     }
 
 }
