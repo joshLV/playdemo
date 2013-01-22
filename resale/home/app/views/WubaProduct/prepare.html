@@ -319,7 +319,7 @@ ${mobileDescription?.raw()}
     var data = CITY.data;
     var city = "";
     $.each(eval(data), function (i, item) {
-        if (item.cityId == 2 || item.cityId == 4 || item.cityId == 5 || item.cityId == 21 || item.cityId == 29 || item.cityId == 361 || item.cityId == 36 || item.cityId == 10 || item.cityId == 35 || item.cityId == 205) {
+        if (item.cityId == 2 || item.cityId == 4 || item.cityId == 5 || item.cityId == 21 || item.cityId == 29 || item.cityId == 361 || item.cityId == 36 || item.cityId == 10 || item.cityId == 35 || item.cityId == 205|| item.cityId == 369) {
             city += "<td><input type='checkbox' id='city_" + item.cityId + "' value='" + item.cityId + "' name='cityIds'>"
                     + item.cityName + "&nbsp;&nbsp;&nbsp;&nbsp;<input type='hidden' name='cities' value='" + item.cityId + ":" + item.cityName + ":" + item.cityEnShortName + "'></td>";
         }
@@ -334,7 +334,7 @@ ${mobileDescription?.raw()}
     //旅游城市
     var travelCity = "";
     $.each(eval(data), function (i, item) {
-        if (item.cityId == 2 || item.cityId == 4 || item.cityId == 5 || item.cityId == 21 || item.cityId == 29 || item.cityId == 361 || item.cityId == 36 || item.cityId == 10 || item.cityId == 35 || item.cityId == 205) {
+        if (item.cityId == 2 || item.cityId == 4 || item.cityId == 5 || item.cityId == 21 || item.cityId == 29 || item.cityId == 361 || item.cityId == 36 || item.cityId == 10 || item.cityId == 35 || item.cityId == 205|| item.cityId == 369) {
             travelCity += "<td><input type='checkbox' id='travelCity_" + item.cityId + "' value='" + item.cityId + "' name='travelCityIds'>" + item.cityName + "&nbsp;&nbsp;&nbsp;&nbsp;</td>";
         }
     });
@@ -349,7 +349,7 @@ ${mobileDescription?.raw()}
     var areasData = AREA.data;
     var option = "<option value=''>---请选择---</option>";
     $.each(eval(areasData), function (i, item) {
-        if (item.cityId == 2 || item.cityId == 4 || item.cityId == 5 || item.cityId == 21 || item.cityId == 29 || item.cityId == 361 || item.cityId == 36 || item.cityId == 10 || item.cityId == 35 || item.cityId == 205) {
+        if (item.cityId == 2 || item.cityId == 4 || item.cityId == 5 || item.cityId == 21 || item.cityId == 29 || item.cityId == 361 || item.cityId == 36 || item.cityId == 10 || item.cityId == 35 || item.cityId == 205|| item.cityId == 369) {
             option += "<option value='" + item.circleId + "' t='" + item.circleName + "'>" + item.circleName + "</option>";
         }
     });
@@ -375,7 +375,7 @@ ${mobileDescription?.raw()}
     list = new Array(6);
     var listIndex = 0;
     $.each(eval(areasData), function (i, item) {
-        if (item.cityId == 2 || item.cityId == 4 || item.cityId == 5 || item.cityId == 21 || item.cityId == 29 || item.cityId == 361 || item.cityId == 36 || item.cityId == 10 || item.cityId == 35 || item.cityId == 205) {
+        if (item.cityId == 2 || item.cityId == 4 || item.cityId == 5 || item.cityId == 21 || item.cityId == 29 || item.cityId == 361 || item.cityId == 36 || item.cityId == 10 || item.cityId == 35 || item.cityId == 205|| item.cityId == 369) {
             list[listIndex++] = { firstPin:Pinyin.getWordsCode(item.circleName), allPin:Pinyin.GetQP(item.circleName), name:item.circleName, id:item.circleId };
         }
     });

@@ -100,14 +100,8 @@
 
 <form class="well form-inline" action="@{GoodsRefundReports.index()}" method="GET" id="form"
       name="form">
-    商户：#{select 'condition.supplierName', class:'input-larger', value:condition?.supplierName}
-    #{if supplierList.size()>0}
-        #{option ""}不限#{/option}
-    #{/if}
-    #{list items:supplierList, as:'supplier'}
-        #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
-    #{/list}
-#{/select}
+    商户：
+#{vx.selectInputField name:"supplierName", id:"condition.supplierId", list:supplierList, value:condition?.supplierId, array:"supplierArray",importJs:true/}
     商品名称：<input type="text" name="condition.goodsName" class="input-medium"
                 value="${condition?.goodsName}"/>
     起止日期

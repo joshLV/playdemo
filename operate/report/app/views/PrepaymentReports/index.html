@@ -61,14 +61,8 @@
 <form class="form-horizontal" name="frmlist" id="frmlist" action="@{PrepaymentReports.index()}" method="GET">
     <table width="100%">
         <tr>
-            <td width="30%">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
-                #{select 'supplierId', id:supplierId, class:'select', value:supplierId}
-                #{option "0"}不限#{/option}
-                #{list items:supplierList, as:'supplier'}
-                #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
-                #{/list}
-                #{/select}
-
+            <td width="40%">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
+            #{vx.selectInputField name:"supplierName", id:"supplierId", list:supplierList, value:condition?.supplierId, array:"supplierArray",importJs:true/}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 只显示未到期的<input type="checkbox" name="isEffective" id="isEffective" class="input-medium"
                               value="${isEffective?:1}" ${isEffective == 1 ?'checked':''}/>

@@ -18,7 +18,7 @@ public class RefundReportCondition {
     public Date refundAtEnd = DateUtil.getEndOfDay(new Date());
     public String interval = "-1d";
     public String goodsName;
-    public String supplierName;
+    public Long supplierId;
     private Map<String, Object> paramMap = new HashMap<>();
     public Long operatorId;
     public Boolean hasSeeAllSupplierPermission;
@@ -39,9 +39,9 @@ public class RefundReportCondition {
             paramMap.put("name", "%" + goodsName + "%");
         }
 
-        if (StringUtils.isNotBlank(supplierName)) {
+        if (supplierId != null && supplierId != 0) {
             condBuilder.append(" and e.orderItems.goods.supplierId = :supplierId");
-            paramMap.put("supplierId", Long.parseLong(supplierName));
+            paramMap.put("supplierId", supplierId);
         }
 
         if (hasSeeAllSupplierPermission != null && !hasSeeAllSupplierPermission) {

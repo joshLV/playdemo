@@ -76,7 +76,7 @@
     #{/set}
 <input type="text" id="${field.id}" name="${field.name}"
        value='${params[field.id]}' #{if _class!=null}class="${_class}"#{/if}><input type="hidden" id="${"id_"+field.id}" name="${_id}"
-                                          value="${_value?:params[_id]}">
+                                          value="${_value?:params[_id]?:0}">
 <script type="text/javascript">
     for (i = 0; i < ${selectArray}.length; i++) {
         if (${selectArray}[i].id == $("#${"id_"+field.id}").val()) {
