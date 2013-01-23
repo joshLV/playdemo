@@ -96,7 +96,7 @@ public class OperateCoupons extends Controller {
             return;
         }
 
-        List<CouponHistory> couponList = CouponHistory.find("coupon=?", coupon).fetch();
+        List<CouponHistory> couponList = CouponHistory.find("coupon=? order by createdAt desc", coupon).fetch();
         String couponSn = coupon.getMaskedEcouponSn();
         render("OperateCoupons/history.html", couponSn, couponList, coupon);
     }
