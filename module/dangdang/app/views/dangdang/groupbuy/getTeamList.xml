@@ -1,0 +1,5 @@
+<data>
+    <start_date><![CDATA[${startDate}]]></start_date>
+    <end_date><![CDATA[${endDate}]]></end_date>
+    <status><![CDATA[${status}]]></status>
+</data>

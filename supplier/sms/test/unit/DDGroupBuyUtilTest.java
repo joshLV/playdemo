@@ -32,7 +32,7 @@ public class DDGroupBuyUtilTest extends UnitTest {
         }
         DDResponse response = DDResponse.parseResponse(document);
         assertEquals("成功", response.desc);
-        assertTrue(response.isSuccess());
+        assertTrue(response.isOk());
         assertNotNull(response.data);
         assertEquals("256", XPath.selectText("//spgid", response.data));
     }

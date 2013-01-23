@@ -37,12 +37,8 @@
     <td>${product.createdAt}</td>
     <td>${product.creator}</td>
     <td>${product.lastModifier}</td>
-    <td>${product.partnerProductId}</td>
+    <td><a href="${product.url}" target="_blank">${product.partnerProductId}</a></td>
     <td>
-        *{
-        <a href="/resale-partner-products/yhd/upload/${product.goods.id}" class="btn btn-mini" rel="tooltip" title="再次上传"><i class="icon-share-alt"></i></a>
-        <a href="/resale-partner-products/yhd/edit/${product.goods.id}" class="btn btn-mini" rel="tooltip" title="编辑"><i class="icon-pencil"></i></a>
-        }*
         <a href="/resale-partner-products/journal/${product.id}" class="btn btn-mini" rel="tooltip" title="操作历史"><i class="icon-list-alt"></i></a>
     </td>
 </tr>
