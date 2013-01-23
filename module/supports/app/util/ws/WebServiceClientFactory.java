@@ -14,7 +14,7 @@ public class WebServiceClientFactory {
 
     public static WebServiceClient getClientHelper(String encoding) {
         if (Play.runingInTestMode()) {
-            return MockWebServiceClient.getInstance();
+            return MockWebServiceClient.getInstance(encoding);
         }
         return PlayWebServiceClient.getInstance(encoding);
     }

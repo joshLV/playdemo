@@ -3,6 +3,7 @@ package util.ws;
 import com.google.gson.JsonElement;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
+import play.Play;
 import play.libs.WS;
 
 import java.util.Map;
@@ -78,7 +79,7 @@ public class WebServiceRequest {
 
     public String getString() {
         WS.HttpResponse response = getHttpResponse();
-        if (StringUtils.isNotBlank(this.encoding)) {
+        if (hasEncoding()) {
             return response.getString(this.encoding);
         }
         return response.getString();
@@ -86,7 +87,7 @@ public class WebServiceRequest {
 
     public String postString() {
         WS.HttpResponse response = postHttpResponse();
-        if (StringUtils.isNotBlank(this.encoding)) {
+        if (hasEncoding()) {
             return response.getString(this.encoding);
         }
         return response.getString();
@@ -94,7 +95,7 @@ public class WebServiceRequest {
 
     public Document getXml() {
         WS.HttpResponse response = getHttpResponse();
-        if (StringUtils.isNotBlank(this.encoding)) {
+        if (hasEncoding()) {
             return response.getXml(this.encoding);
         }
         return response.getXml();
@@ -102,10 +103,14 @@ public class WebServiceRequest {
 
     public Document postXml() {
         WS.HttpResponse response = postHttpResponse();
-        if (StringUtils.isNotBlank(this.encoding)) {
+        if (hasEncoding()) {
             return response.getXml(this.encoding);
         }
         return response.getXml();
+    }
+
+    private boolean hasEncoding() {
+        return StringUtils.isNotBlank(this.encoding);
     }
 
     public JsonElement getJson() {
@@ -118,7 +123,7 @@ public class WebServiceRequest {
 
     private WS.HttpResponse getHttpResponse() {
         WebServiceClient client = WebServiceClientFactory.getClientHelper();
-        if (StringUtils.isNotBlank(this.encoding)) {
+        if (hasEncoding()) {
             client = WebServiceClientFactory.getClientHelper(this.encoding);
         }
         return client.getHttpResponse(this);
@@ -126,7 +131,7 @@ public class WebServiceRequest {
 
     private WS.HttpResponse postHttpResponse() {
         WebServiceClient client = WebServiceClientFactory.getClientHelper();
-        if (StringUtils.isNotBlank(this.encoding)) {
+        if (hasEncoding()) {
             client = WebServiceClientFactory.getClientHelper(this.encoding);
         }
         return client.postHttpResponse(this);
