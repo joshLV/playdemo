@@ -1,6 +1,7 @@
 package controllers;
 
 import com.uhuila.common.constants.DataConstants;
+import models.accounts.util.AccountUtil;
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.consumer.UserWebIdentification;
@@ -9,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import play.cache.Cache;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
+import play.db.jpa.JPA;
 import play.libs.Codec;
 import play.libs.Images;
 import play.mvc.Controller;
@@ -86,22 +88,21 @@ public class Register extends Controller {
         }
         user.save();
 
+        // 确保创建Account，以避免在消费时因并发而产生2个以上的Account
+        AccountUtil.getConsumerAccount(user.id);
 
         if (WebsiteInjector.getUserWebIdentification() != null) {
-            System.out.println("111");
+            JPA.em().flush();
             UserWebIdentification uwi = UserWebIdentification.findOne(WebsiteInjector.getUserWebIdentification().cookieId);
             if (uwi == null) {
-                System.out.println("2222");
                 uwi = WebsiteInjector.getUserWebIdentification();
                 uwi.save();
             }
             if (uwi.registerCount == null) {
-                System.out.println("333");
                 uwi.registerCount = 0;
             }
             uwi.registerCount += 1;
             uwi.save();
-
         }
 
         renderArgs.put("count", 0);
