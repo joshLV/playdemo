@@ -42,6 +42,10 @@ public class CouponHistory extends Model {
     @Enumerated(EnumType.STRING)
     public ECouponStatus toStatus;
 
+    public CouponHistory() {
+
+    }
+
     public CouponHistory(ECoupon coupon, String operator, String remark, ECouponStatus fromStatus, ECouponStatus toStatus, VerifyCouponType verifyType) {
         this.coupon = coupon;
         this.operator = operator;

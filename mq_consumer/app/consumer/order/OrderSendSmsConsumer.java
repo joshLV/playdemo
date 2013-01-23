@@ -1,13 +1,19 @@
-package models.sms;
+package consumer.order;
 
 import jobs.dadong.DadongConsumptionRequest;
 import jobs.dadong.DadongErSendToRequest;
 import models.RabbitMQConsumerWithTx;
-import models.order.CouponHistory;
 import models.order.ECoupon;
+import models.order.ECouponHistoryData;
 import models.order.ECouponStatus;
 import models.order.OrderItems;
 import models.order.OrderStatus;
+import models.sms.OrderECouponMessage;
+import models.sms.SMSException;
+import models.sms.SMSFactory;
+import models.sms.SMSMessage;
+import models.sms.SMSProvider;
+import models.sms.SMSUtil;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
@@ -116,7 +122,7 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
                 }
                 ecoupon.smsSentCount += 1;
                 ecoupon.save();
-                new CouponHistory(ecoupon, "MessageQ", remark, ecoupon.status, ecoupon.status, null).save();
+                ECouponHistoryData.newInstance(ecoupon).operator("MessageQ").remark(remark).sendToMQ();
             }
         } catch (SMSException e) {
             Logger.error("Sms2SenderConsumer: send message" + message + " failed:" + e.getMessage());
@@ -154,7 +160,8 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
             }
             ecoupon.smsSentCount += 1;
             ecoupon.save();
-            new CouponHistory(ecoupon, "MessageQ", remark, ecoupon.status, ecoupon.status, null).save();
+            ECouponHistoryData.newInstance(ecoupon).operator("MessageQ")
+                    .remark(remark).sendToMQ();
         } catch (SMSException e) {
             Logger.error("Sms2SenderConsumer: send message" + message + " failed:" + e.getMessage());
             throw e;
