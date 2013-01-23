@@ -12,6 +12,7 @@ import models.sales.Goods;
 import models.sales.GoodsDeployRelation;
 import models.sales.Shop;
 import models.supplier.Supplier;
+import models.wuba.WubaResponse;
 import models.wuba.WubaUtil;
 import operate.rbac.annotations.ActiveNavigation;
 import play.mvc.Controller;
@@ -52,6 +53,14 @@ public class WubaGroupBuyProducts extends Controller {
         GoodsDeployRelation relation = GoodsDeployRelation.generate(goods, OuterOrderPartner.WB);
         groupbuyInfoParams.put("groupbuyId", String.valueOf(relation.linkId));
 
+        Map<String, Object> prodModelJson = new HashMap<>();
+        prodModelJson.put("prodmodcatename", groupbuyInfoParams.get("prodName"));
+        prodModelJson.put("prodprice", groupbuyInfoParams.get("prodPrice"));
+        prodModelJson.put("groupprice", groupbuyInfoParams.get("groupPrice"));
+        prodModelJson.put("prodcode", "");
+        prodModelJson.put("count", 0);
+        groupbuyInfoParams.put("prodModelJson", "{" + new Gson().toJson(prodModelJson) + "}");
+
 
         //商家信息参数
         String[] partnerKeys = new String[] {"partnerId","title","shortTitle","telephone","webUrl","busline","mapImg",
@@ -72,20 +81,17 @@ public class WubaGroupBuyProducts extends Controller {
         wubaParams.put("partners", partnerParams);
 
         //发起请求
-        JsonObject result =  WubaUtil.sendRequest(wubaParams, "emc.groupbuy.addgroupbuy", false);
-        String status = result.get("status").getAsString();
-        String msg = result.get("msg").getAsString();
-
+        WubaResponse response =  WubaUtil.sendRequest(wubaParams, "emc.groupbuy.addgroupbuy", false);
         //保存历史
-        if ("10000".equals(status)) {
+        if (response.isOk()) {
             ResalerProduct product =  ResalerProduct.createProduct(OuterOrderPartner.WB,
-                    result.get("data").getAsJsonObject().get("groupbuyId58").getAsLong(),
+                    response.data.getAsJsonObject().get("groupbuyId58").getAsLong(),
                     operateUser.id, goods, relation.linkId);
             ResalerProductJournal.createJournal(product, operateUser.id, new Gson().toJson(wubaParams),
                     ResalerProductJournalType.CREATE, "上传商品");
         }
 
-        render("resale/WubaGroupBuyProducts/result.html", msg);
+        render("resale/WubaGroupBuyProducts/result.html", response);
     }
 }
 

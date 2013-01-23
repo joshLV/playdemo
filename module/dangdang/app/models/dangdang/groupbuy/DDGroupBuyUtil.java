@@ -1,8 +1,11 @@
 package models.dangdang.groupbuy;
 
+import com.uhuila.common.util.DateUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import play.Play;
+import play.libs.XPath;
 import play.templates.Template;
 import play.templates.TemplateLoader;
 import util.ws.WebServiceClient;
@@ -29,6 +32,52 @@ public class DDGroupBuyUtil {
     private static final String VERIFY_CONSUME_URL = Play.configuration.getProperty("dangdang.verify_consume_url", "http://tuanapi.dangdang.com/team_open/public/verify_consume.php");
     private static final String PUSH_PARTNER_TEAMS = Play.configuration.getProperty("dangdang.push_partner_teams", "http://tuanapi.dangdang.com/team_inter_api/public/push_partner_teams.php");
     private static final String GET_TEAM_LIST = Play.configuration.getProperty("dangdang.get_team_list", "http://tuanapi.dangdang.com/team_inter_api/public/get_team_list.php");
+
+    /**
+     * 查询刚刚今天上传的单个商品在当当上的信息.
+     *
+     * @param linkId 商品的linkId
+     * @return 当当的商品信息
+     */
+    public static Node getJustUploadedTeam(Long linkId) {
+        DDResponse response = getTeamList(DateUtil.getBeginOfDay(), DateUtil.getEndOfDay(),"10");
+        if (!response.isOk() || response.data == null) {
+            return null;
+        }
+        for (Node node : XPath.selectNodes("//row", response.data)) {
+            if (XPath.selectText("//spgid", node).equals(String.valueOf(linkId))) {
+                return node;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 查询当当的项目列表
+     *
+     * @param startDate 项目录入的开始时间
+     * @param endDate   项目录入的结束时间
+     * @param status    项目状态. 为空时表示全部状态，多个状态用逗号隔开
+     *                  0  : 等待处理
+     *                  10 : 预处理完成，等待审核
+     *                  11 : 预处理完成，但有问题，需要修改
+     *                  100: 审核通过
+     *                  110: 审核不通过，从未发布
+     *                  20 : 审核通过后又有修改，等待处理
+     * @return          请求结果
+     */
+    public static DDResponse getTeamList(Date startDate, Date endDate, String status) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Map<String, Object> params = new HashMap<>();
+        params.put("startDate", dateFormat.format(startDate));
+        params.put("endDate", dateFormat.format(endDate));
+        params.put("status", status);
+
+        Template template = TemplateLoader.load("dangdang/groupbuy/getTeamList.xml");
+        String xmlData = template.render(params);
+        return sendRequest(GET_TEAM_LIST, "get_team_list", xmlData);
+    }
+
 
     /**
      * 上传商品

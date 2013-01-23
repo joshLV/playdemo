@@ -40,9 +40,9 @@ public class WubaUtil {
         params.put("ticketId", eCoupon.id);
         params.put("orderId", eCoupon.order.orderNumber);
         params.put("ticketIdIndex", 0);
-        JsonObject result = sendRequest(params, "emc.groupbuy.order.ticketcheck");
-        if ("10000".equals(result.get("status").getAsString())) {
-            JsonObject data = result.get("data").getAsJsonObject();
+        WubaResponse response = sendRequest(params, "emc.groupbuy.order.ticketcheck");
+        if (response.isOk()) {
+            JsonObject data = response.data.getAsJsonObject();
             if (data.get("result").getAsInt() == 1) {
                 return true;
             }
@@ -51,8 +51,8 @@ public class WubaUtil {
     }
 
     public static JsonArray allProductTypes() {
-        JsonObject categoryData = WubaUtil.sendRequest(null, "emc.groupbuy.find.allprotype", false, false);
-        return categoryData.getAsJsonArray("data");
+        WubaResponse response = WubaUtil.sendRequest(null, "emc.groupbuy.find.allprotype", false, false);
+        return response.data.getAsJsonArray();
     }
 
     public static String allProductTypesJsonCache() {
@@ -70,14 +70,14 @@ public class WubaUtil {
     /**
      * 默认请求需要加密，响应需要解密
      */
-    public static JsonObject sendRequest(Map<String, Object> appParams, String method) {
+    public static WubaResponse sendRequest(Map<String, Object> appParams, String method) {
         return sendRequest(appParams, method, true, true);
     }
 
     /**
      * 默认响应需要解密
      */
-    public static JsonObject sendRequest(Map<String, Object> appParams, String method, boolean requestNeedEncrypt) {
+    public static WubaResponse sendRequest(Map<String, Object> appParams, String method, boolean requestNeedEncrypt) {
         return sendRequest(appParams, method, requestNeedEncrypt, true);
     }
 
@@ -90,7 +90,7 @@ public class WubaUtil {
      * @param responseNeedDecrypt 响应是否需要解密，对于部分接口不需解密的，传入false
      * @return 解析为json对象形式的58返回结果
      */
-    public static JsonObject sendRequest(Map<String, Object> appParams, String method,
+    public static WubaResponse sendRequest(Map<String, Object> appParams, String method,
                                          boolean requestNeedEncrypt, boolean responseNeedDecrypt) {
         // 系统级参数设置
         Map<String, Object> params = sysParams();
@@ -114,7 +114,7 @@ public class WubaUtil {
 
         Logger.info("wuba response: \n%s", json);
 
-        JsonObject result = parseResponse(json, responseNeedDecrypt);
+        WubaResponse result = parseResponse(json, responseNeedDecrypt);
 
         Logger.info("wuba response decrypted: \n%s", result.toString());
 
@@ -127,21 +127,26 @@ public class WubaUtil {
      * @param jsonResponse json 文本
      * @return json对象
      */
-    public static JsonObject parseResponse(String jsonResponse, boolean decrypt) {
+    public static WubaResponse parseResponse(String jsonResponse, boolean needDecrypt) {
         try {
             JsonParser jsonParser = new JsonParser();
 
-            JsonElement jsonElement = jsonParser.parse(jsonResponse);
-            JsonObject result = jsonElement.getAsJsonObject();
+            JsonObject result = jsonParser.parse(jsonResponse).getAsJsonObject();
+
+            WubaResponse response = new WubaResponse();
+
+            response.status = result.get("status").getAsString();
+            response.code = result.get("code").getAsString();
+            response.msg = result.get("msg").getAsString();
             if (result.has("data")) {
                 String data = result.get("data").getAsString();
-                if (decrypt) {
+                if (response.isOk() && needDecrypt) {
                     data = decryptMessage(data);
                 }
                 JsonElement dataElement = jsonParser.parse(data);
-                result.add("data", dataElement);
+                response.data = dataElement;
             }
-            return result;
+            return response;
         } catch (Exception e) {
             Logger.error("Bad JSON: \n%s", jsonResponse);
             throw new RuntimeException("Cannot parse JSON (check logs)", e);

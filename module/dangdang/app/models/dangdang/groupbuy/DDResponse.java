@@ -25,7 +25,7 @@ public class DDResponse {
         return response;
     }
 
-    public boolean isSuccess() {
+    public boolean isOk() {
         return errorCode != null && "0".equals(errorCode);
     }
 }
