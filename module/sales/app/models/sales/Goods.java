@@ -154,6 +154,13 @@ public class Goods extends Model {
     public BigDecimal resaleAddPrice;
 
     /**
+     * 是否免运费
+     */
+    @Column(name = "free_shipping")
+    @SolrField
+    public Boolean freeShipping = Boolean.FALSE;
+
+    /**
      * 给推荐者的返利金额
      */
     @Column(name = "promoter_price")
