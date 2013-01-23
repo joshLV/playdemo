@@ -4,6 +4,7 @@ import models.RabbitMQConsumerWithTx;
 import models.order.CouponHistory;
 import models.order.ECouponHistoryData;
 import play.db.jpa.JPA;
+import play.jobs.OnApplicationStart;
 
 /**
  * 保存ECouponHistory。
@@ -11,6 +12,7 @@ import play.db.jpa.JPA;
  * Date: 13-1-23
  * Time: 上午11:32
  */
+@OnApplicationStart(async = true)
 public class ECouponHistoryConsumer extends RabbitMQConsumerWithTx<ECouponHistoryData> {
     @Override
     public void consumeWithTx(ECouponHistoryData data) {

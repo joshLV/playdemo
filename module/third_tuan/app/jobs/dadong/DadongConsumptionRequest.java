@@ -1,7 +1,7 @@
 package jobs.dadong;
 
-import models.order.CouponHistory;
 import models.order.ECoupon;
+import models.order.ECouponHistoryData;
 import models.order.OrderItems;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
@@ -62,11 +62,13 @@ public class DadongConsumptionRequest {
             if (StringUtils.isNotBlank(thirdOrderId)) {
                 ecoupon.partnerCouponId = thirdOrderId;
                 ecoupon.save();
-                new CouponHistory(ecoupon, "MessageQ", "大东票务申请发券成功:" + resultId + resultComment,
-                        ecoupon.status, ecoupon.status, null).save();
+                ECouponHistoryData.newInstance(ecoupon).operator("MessageQ")
+                        .remark("大东票务申请发券成功:" + resultId + resultComment)
+                        .sendToMQ();
             } else {
-                new CouponHistory(ecoupon, "MessageQ", "大东票务申请发券失败:" + resultId + resultComment,
-                        ecoupon.status, ecoupon.status, null).save();
+                ECouponHistoryData.newInstance(ecoupon).operator("MessageQ")
+                        .remark("大东票务申请发券失败:" + resultId + resultComment)
+                        .sendToMQ();
             }
         }
     }

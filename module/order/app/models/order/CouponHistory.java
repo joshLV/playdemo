@@ -45,14 +45,4 @@ public class CouponHistory extends Model {
     public CouponHistory() {
 
     }
-
-    public CouponHistory(ECoupon coupon, String operator, String remark, ECouponStatus fromStatus, ECouponStatus toStatus, VerifyCouponType verifyType) {
-        this.coupon = coupon;
-        this.operator = operator;
-        this.remark = remark;
-        this.fromStatus = fromStatus;
-        this.toStatus = toStatus;
-        this.verifyType = verifyType;
-        this.createdAt = new Date();
-    }
 }

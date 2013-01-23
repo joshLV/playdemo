@@ -6,8 +6,8 @@ import models.accounts.TradeBill;
 import models.accounts.TradeType;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
-import models.order.CouponHistory;
 import models.order.ECoupon;
+import models.order.ECouponHistoryData;
 import models.order.ECouponPartner;
 import models.order.ECouponStatus;
 import models.taobao.TaobaoCouponUtil;
@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * 处理已消费券的退款。
- * 
+ *
  * @author tanglq
  *
  */
@@ -37,7 +37,7 @@ public class VerifiedECouponRefunds extends Controller {
         }
         render(eCouponSn);
     }
-    
+
     public static void refund(String eCouponSn, String refundComment, String choice) {
         String message = null;
         if (StringUtils.isBlank(eCouponSn)) {
@@ -48,9 +48,9 @@ public class VerifiedECouponRefunds extends Controller {
             message = "备注不能为空";
             render(message);
         }
-        
+
         ECoupon ecoupon = ECoupon.find("eCouponSn=?", eCouponSn).first();
-        
+
         if (ecoupon == null || ecoupon.status != ECouponStatus.CONSUMED) {
             message = "不存在的券号或券号未验证:" + eCouponSn;
             render(message);
@@ -63,7 +63,7 @@ public class VerifiedECouponRefunds extends Controller {
         } else {
             message = "请输入REFUND或UNCONSUME。";
         }
-        
+
         render(ecoupon, message);
     }
 
@@ -187,7 +187,8 @@ public class VerifiedECouponRefunds extends Controller {
         String userName = OperateRbac.currentUser().userName;
 
         //记录券历史信息
-        new CouponHistory(eCoupon, userName, "已消费券退款:" + refundComment, eCoupon.status, ECouponStatus.REFUND, null).save();
+        ECouponHistoryData.newInstance(eCoupon).operator(userName).remark("已消费券退款:" + refundComment)
+                .toStatus(ECouponStatus.REFUND).sendToMQ();
 
         // 更改订单状态
         eCoupon.status = ECouponStatus.REFUND;
@@ -290,7 +291,8 @@ public class VerifiedECouponRefunds extends Controller {
         String userName = OperateRbac.currentUser().userName;
 
         //记录券历史信息
-        new CouponHistory(eCoupon, userName, "已消费券取消验证:" + refundComment, eCoupon.status, ECouponStatus.UNCONSUMED, null).save();
+        ECouponHistoryData.newInstance(eCoupon).operator(userName).remark("已消费券取消验证:" + refundComment)
+                .fromStatus(eCoupon.status).toStatus(ECouponStatus.UNCONSUMED).sendToMQ();
 
         // 更改券状态
         eCoupon.status = ECouponStatus.UNCONSUMED;

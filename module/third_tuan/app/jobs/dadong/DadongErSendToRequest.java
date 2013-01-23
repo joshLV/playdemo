@@ -1,7 +1,7 @@
 package jobs.dadong;
 
-import models.order.CouponHistory;
 import models.order.ECoupon;
+import models.order.ECouponHistoryData;
 import models.order.OrderItems;
 import models.supplier.Supplier;
 import org.w3c.dom.Document;
@@ -46,8 +46,9 @@ public class DadongErSendToRequest {
             remark += " 发至新手机" + phone;
         }
         for (ECoupon ecoupon : orderItems.getECoupons()) {
-            new CouponHistory(ecoupon, "MessageQ", remark + ":" + resultId + resultComment,
-                    ecoupon.status, ecoupon.status, null).save();
+            ECouponHistoryData.newInstance(ecoupon).operator("MessageQ")
+                    .remark(remark + ":" + resultId + resultComment)
+                    .sendToMQ();
         }
     }
 
