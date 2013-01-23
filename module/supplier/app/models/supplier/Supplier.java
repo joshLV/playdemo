@@ -268,7 +268,7 @@ public class Supplier extends Model {
         } else {
             this.sequenceCode = calculateFormattedCode(supplier.sequenceCode, "4");
         }
-        if (supplierCategory == null || supplierCategory.code == null){
+        if (supplierCategory == null || supplierCategory.code == null) {
             return;
         }
         this.code = supplierCategory.code + this.sequenceCode;
