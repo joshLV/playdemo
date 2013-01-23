@@ -39,6 +39,21 @@
     <td>${product.lastModifier}</td>
     <td><a href="${product.url}" target="_blank">${product.partnerProductId}</a></td>
     <td>
+        %{partner = product.partner.toString().toLowerCase()}%
+        #{if partner == 'yhd' || partner == 'wb'}
+            <a href="/resale-partner-products/${partner}/edit/${product.id}" class="btn btn-mini" rel="tooltip" title="编辑"><i class="icon-pencil"></i></a>
+        #{/if}
+
+        #{if partner == 'wb'}
+            #{if product.status == ''}
+                <a href="/resale-partner-products/${partner}/onsale/${product.id}" class="btn btn-mini" rel="tooltip" title="上架"><i class="icon-upload"></i></a>
+            #{/if}
+            #{if product.status == ''}
+                <a href="/resale-partner-products/${partner}/offsale/${product.id}" class="btn btn-mini" rel="tooltip" title="下架"><i class="icon-download"></i></a>
+            #{/if}
+            <a href="/resale-partner-products/${partner}/refresh/${product.id}" class="btn btn-mini" rel="tooltip" title="刷新状态"><i class="icon-refresh"></i></a>
+        #{/if}
+
         <a href="/resale-partner-products/journal/${product.id}" class="btn btn-mini" rel="tooltip" title="操作历史"><i class="icon-list-alt"></i></a>
     </td>
 </tr>
