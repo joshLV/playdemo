@@ -293,7 +293,7 @@
 
         #{/if}
             <a href="@{OperateCoupons.couponHistory(coupon.id)}">查看历史</a>
-            #{if coupon?.status== models.order.ECouponStatus.UNCONSUMED && hasEcouponRefundPermission == true}
+            #{if coupon?.status== models.order.ECouponStatus.UNCONSUMED && hasEcouponRefundPermission == true && coupon?.isFreeze!=1}
                 <br/>
                 <a href="@{OperateCoupons.refund(coupon.id)}">退款</a>
             #{/if}
