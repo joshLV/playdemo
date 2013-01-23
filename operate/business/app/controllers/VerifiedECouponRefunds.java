@@ -7,7 +7,7 @@ import models.accounts.TradeType;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import models.order.ECoupon;
-import models.order.ECouponHistoryData;
+import models.order.ECouponHistoryMessage;
 import models.order.ECouponPartner;
 import models.order.ECouponStatus;
 import models.taobao.TaobaoCouponUtil;
@@ -187,7 +187,7 @@ public class VerifiedECouponRefunds extends Controller {
         String userName = OperateRbac.currentUser().userName;
 
         //记录券历史信息
-        ECouponHistoryData.newInstance(eCoupon).operator(userName).remark("已消费券退款:" + refundComment)
+        ECouponHistoryMessage.with(eCoupon).operator(userName).remark("已消费券退款:" + refundComment)
                 .toStatus(ECouponStatus.REFUND).sendToMQ();
 
         // 更改订单状态
@@ -291,7 +291,7 @@ public class VerifiedECouponRefunds extends Controller {
         String userName = OperateRbac.currentUser().userName;
 
         //记录券历史信息
-        ECouponHistoryData.newInstance(eCoupon).operator(userName).remark("已消费券取消验证:" + refundComment)
+        ECouponHistoryMessage.with(eCoupon).operator(userName).remark("已消费券取消验证:" + refundComment)
                 .fromStatus(eCoupon.status).toStatus(ECouponStatus.UNCONSUMED).sendToMQ();
 
         // 更改券状态

@@ -12,7 +12,7 @@ import java.util.Date;
  * Date: 13-1-23
  * Time: 上午11:25
  */
-public class ECouponHistoryData implements Serializable {
+public class ECouponHistoryMessage implements Serializable {
 
     private static final long serialVersionUID = 31693283113062L;
 
@@ -30,6 +30,8 @@ public class ECouponHistoryData implements Serializable {
 
     public String remark;
 
+    public String phone;
+
     /**
      * 验证方式
      */
@@ -45,17 +47,18 @@ public class ECouponHistoryData implements Serializable {
      */
     public ECouponStatus toStatus;
 
-    private ECouponHistoryData() {
+    private ECouponHistoryMessage() {
         // 不允许直接使用构造函数
     }
 
-    public static ECouponHistoryData newInstance(ECoupon eCoupon) {
-        ECouponHistoryData data = new ECouponHistoryData();
-        data.eCouponId = eCoupon.id;
-        data.createdAt = new Date();
-        data.fromStatus = eCoupon.status;
-        data.toStatus = eCoupon.status;
-        return data;
+    public static ECouponHistoryMessage with(ECoupon eCoupon) {
+        ECouponHistoryMessage message = new ECouponHistoryMessage();
+        message.eCouponId = eCoupon.id;
+        message.createdAt = new Date();
+        message.fromStatus = eCoupon.status;
+        message.toStatus = eCoupon.status;
+        message.phone = eCoupon.orderItems.phone;
+        return message;
     }
 
     public CouponHistory toModel() {
@@ -65,6 +68,7 @@ public class ECouponHistoryData implements Serializable {
         couponHistory.createdAt = createdAt;
         couponHistory.operator = operator;
         couponHistory.remark = remark;
+        couponHistory.phone = phone;
         couponHistory.verifyType = verifyType;
         couponHistory.fromStatus = fromStatus;
         couponHistory.toStatus = toStatus;
@@ -72,29 +76,36 @@ public class ECouponHistoryData implements Serializable {
         return couponHistory;
     }
 
-    public ECouponHistoryData remark(String remark) {
-        this.remark = remark;
+    public ECouponHistoryMessage remark(String value) {
+        this.remark = value;
         return this;
     }
 
 
-    public ECouponHistoryData fromStatus(ECouponStatus status) {
-        this.fromStatus = status;
+    public ECouponHistoryMessage fromStatus(ECouponStatus value) {
+        this.fromStatus = value;
         return this;
     }
 
-    public ECouponHistoryData toStatus(ECouponStatus status) {
-        this.fromStatus = status;
+    public ECouponHistoryMessage toStatus(ECouponStatus value) {
+        this.fromStatus = value;
         return this;
     }
 
-    public ECouponHistoryData verifyType(VerifyCouponType type) {
-        this.verifyType = type;
+    public ECouponHistoryMessage verifyType(VerifyCouponType value) {
+        this.verifyType = value;
         return this;
     }
 
-    public ECouponHistoryData operator(String operator) {
-        this.operator = operator;
+
+    public ECouponHistoryMessage phone(String value) {
+        this.phone = value;
+        return this;
+    }
+
+
+    public ECouponHistoryMessage operator(String value) {
+        this.operator = value;
         return this;
     }
 

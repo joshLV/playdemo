@@ -5,7 +5,7 @@ import models.accounts.AccountType;
 import models.consumer.User;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
-import models.order.ECouponHistoryData;
+import models.order.ECouponHistoryMessage;
 import models.sales.Shop;
 import org.apache.commons.lang.StringUtils;
 import play.modules.breadcrumbs.BreadcrumbList;
@@ -75,7 +75,7 @@ public class UserCoupons extends Controller {
         User user = SecureCAS.getUser();
         ECoupon eCoupon = ECoupon.findById(id);
         boolean sendFalg = ECoupon.sendUserMessageInfo(id,couponshopsId);
-        ECouponHistoryData.newInstance(eCoupon).operator(user.getShowName())
+        ECouponHistoryMessage.with(eCoupon).operator(user.getShowName())
                 .remark("重发短信").sendToMQ();
         renderJSON(sendFalg ? "0" : "1");
     }

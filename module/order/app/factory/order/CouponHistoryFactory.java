@@ -4,7 +4,7 @@ import factory.FactoryBoy;
 import factory.ModelFactory;
 import models.order.CouponHistory;
 import models.order.ECoupon;
-import models.order.ECouponHistoryData;
+import models.order.ECouponHistoryMessage;
 import models.order.ECouponStatus;
 
 /**
@@ -20,7 +20,7 @@ public class CouponHistoryFactory extends ModelFactory<CouponHistory> {
     @Override
     public CouponHistory define() {
         ECoupon ecoupon = FactoryBoy.create(ECoupon.class);
-        return ECouponHistoryData.newInstance(ecoupon).remark("产生券号")
+        return ECouponHistoryMessage.with(ecoupon).remark("产生券号")
                 .fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED).toModel();
     }
 }

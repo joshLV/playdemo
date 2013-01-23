@@ -10,15 +10,13 @@ import java.util.List;
  * User: likang
  */
 public class SMSUtil {
-    
+
     // 短信MQ名称
     public static final String SMS_QUEUE = Play.mode.isProd() ? "send_sms" : "send_sms_dev";
-    
+
     // 短信MQ名称，用于第二通道.
     public static final String SMS2_QUEUE = Play.mode.isProd() ? "send_sms2" : "send_sms2_dev";
 
-    public static final String SMS_ORDER_QUEUE = Play.mode.isProd() ? "send_order_sms" : "send_order_sms_dev";
-    
     public static void send(String content, String phoneNumber, String code){
         MQPublisher.publish(SMS_QUEUE, new SMSMessage(content, phoneNumber, code));
     }
@@ -26,11 +24,11 @@ public class SMSUtil {
     public static void send(String content, String phoneNumber){
         MQPublisher.publish(SMS_QUEUE, new SMSMessage(content, phoneNumber));
     }
-    
+
     public static void send(String content, String[] phoneNumbers){
         MQPublisher.publish(SMS_QUEUE, new SMSMessage(content, Arrays.asList(phoneNumbers)));
     }
-        
+
     public static void send2(String content, String phoneNumber, String code){
         MQPublisher.publish(SMS2_QUEUE, new SMSMessage(content, phoneNumber, code));
     }
@@ -38,25 +36,4 @@ public class SMSUtil {
         MQPublisher.publish(SMS2_QUEUE, new SMSMessage(content, phoneNumbers));
     }
 
-    /**
-     * 发送订单项短信，可能有多个短信.
-     * @param orderItemId
-     */
-    public static void sendOrderItemSms(Long orderItemId, String remark) {
-        MQPublisher.publish(SMS_ORDER_QUEUE, OrderECouponMessage.withOrderItemId(orderItemId, remark));
-    }
-    public static void sendOrderItemSms(Long orderItemId, String phone, String remark) {
-        MQPublisher.publish(SMS_ORDER_QUEUE, OrderECouponMessage.withOrderItemIdPhone(orderItemId, phone, remark));
-    }
-
-    /**
-     * 发送券短信。
-     * @param eCouponId
-     */
-    public static void sendECouponSms(Long eCouponId, String remark) {
-        MQPublisher.publish(SMS_ORDER_QUEUE, OrderECouponMessage.withECouponId(eCouponId, remark));
-    }
-    public static void sendECouponSms(Long eCouponId, String phone, String remark) {
-        MQPublisher.publish(SMS_ORDER_QUEUE, OrderECouponMessage.withECouponIdPhone(eCouponId, phone, remark));
-    }
 }

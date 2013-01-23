@@ -26,6 +26,12 @@ public class CouponHistory extends Model {
     public String operator;
 
     public String remark;
+
+    /**
+     * 券使用的电话
+     */
+    public String phone;
+
     /**
      * 验证方式
      */
@@ -42,7 +48,4 @@ public class CouponHistory extends Model {
     @Enumerated(EnumType.STRING)
     public ECouponStatus toStatus;
 
-    public CouponHistory() {
-
-    }
 }

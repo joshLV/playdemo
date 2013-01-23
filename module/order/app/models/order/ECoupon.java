@@ -573,7 +573,7 @@ public class ECoupon extends Model {
             promoteRebate.save();
         }
         //记录券历史信息
-        ECouponHistoryData.newInstance(this).operator(operator).remark("消费")
+        ECouponHistoryMessage.with(this).operator(operator).remark("消费")
                 .fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.CONSUMED).sendToMQ();
         return true;
     }
@@ -830,9 +830,9 @@ public class ECoupon extends Model {
         }
         //记录券历史信息
         if (refundComment == null) {
-            ECouponHistoryData.newInstance(eCoupon).operator(userName).remark("未消费券退款").toStatus(ECouponStatus.REFUND).sendToMQ();
+            ECouponHistoryMessage.with(eCoupon).operator(userName).remark("未消费券退款").toStatus(ECouponStatus.REFUND).sendToMQ();
         } else {
-            ECouponHistoryData.newInstance(eCoupon).operator(userName).remark("未消费券退款:" + refundComment).toStatus(ECouponStatus.REFUND).sendToMQ();
+            ECouponHistoryMessage.with(eCoupon).operator(userName).remark("未消费券退款:" + refundComment).toStatus(ECouponStatus.REFUND).sendToMQ();
         }
 
 
@@ -1045,16 +1045,16 @@ public class ECoupon extends Model {
         switch (coupon.freezedReason) {
             case ISCHEATEDORDER:
                 eCoupon.isCheatedOrder = true;
-                ECouponHistoryData.newInstance(eCoupon).operator(userName)
+                ECouponHistoryMessage.with(eCoupon).operator(userName)
                         .remark(isFreeze == 0 ? "解冻券号" : "冻结券号(刷单)").sendToMQ();
                 break;
             case UNABLEVERIFY:
-                ECouponHistoryData.newInstance(eCoupon).operator(userName)
+                ECouponHistoryMessage.with(eCoupon).operator(userName)
                         .remark(isFreeze == 0 ? "解冻券号" : "冻结券号(无法验证)").sendToMQ();
                 break;
             case OTHERS:
                 eCoupon.otherReason = coupon.otherReason;
-                ECouponHistoryData.newInstance(eCoupon).operator(userName)
+                ECouponHistoryMessage.with(eCoupon).operator(userName)
                         .remark(isFreeze == 0 ? "解冻券号" : "冻结券号(其他原因:" + coupon.otherReason + ")").sendToMQ();
                 break;
         }
@@ -1068,7 +1068,7 @@ public class ECoupon extends Model {
 
         ECoupon eCoupon = ECoupon.findById(id);
         //记录券历史信息
-        ECouponHistoryData.newInstance(eCoupon).operator(userName)
+        ECouponHistoryMessage.with(eCoupon).operator(userName)
                 .remark(isFreeze == 0 ? "解冻券号" : "冻结券号(刷单)").sendToMQ();
         eCoupon.isFreeze = isFreeze;
         eCoupon.isCheatedOrder = isCheatedOrder;
@@ -1083,7 +1083,7 @@ public class ECoupon extends Model {
         ECoupon eCoupon = ECoupon.findById(id);
         //记录券历史信息
         if (eCoupon.isCheatedOrder != true) {
-            ECouponHistoryData.newInstance(eCoupon).operator(userName)
+            ECouponHistoryMessage.with(eCoupon).operator(userName)
                     .remark(isFreeze == 0 ? "解冻券号" : "冻结券号").sendToMQ();
             eCoupon.isFreeze = isFreeze;
             eCoupon.save();
@@ -1516,10 +1516,10 @@ public class ECoupon extends Model {
      * @param remark
      */
     public void sendOrderSMS(String phone, String remark) {
-        SMSUtil.sendECouponSms(this.id, phone, remark);
+        OrderECouponMessage.with(this).phone(phone).remark(remark).sendToMQ();
     }
 
     public void sendOrderSMS(String remark) {
-        SMSUtil.sendECouponSms(this.id, remark);
+        OrderECouponMessage.with(this).remark(remark).sendToMQ();
     }
 }

@@ -2,7 +2,7 @@ package consumer.order;
 
 import models.RabbitMQConsumerWithTx;
 import models.order.CouponHistory;
-import models.order.ECouponHistoryData;
+import models.order.ECouponHistoryMessage;
 import play.db.jpa.JPA;
 import play.jobs.OnApplicationStart;
 
@@ -13,9 +13,9 @@ import play.jobs.OnApplicationStart;
  * Time: 上午11:32
  */
 @OnApplicationStart(async = true)
-public class ECouponHistoryConsumer extends RabbitMQConsumerWithTx<ECouponHistoryData> {
+public class ECouponHistoryConsumer extends RabbitMQConsumerWithTx<ECouponHistoryMessage> {
     @Override
-    public void consumeWithTx(ECouponHistoryData data) {
+    public void consumeWithTx(ECouponHistoryMessage data) {
         CouponHistory couponHistory = data.toModel();
         JPA.em().flush();
         couponHistory.save();
@@ -23,11 +23,11 @@ public class ECouponHistoryConsumer extends RabbitMQConsumerWithTx<ECouponHistor
 
     @Override
     protected Class getMessageType() {
-        return ECouponHistoryData.class;
+        return ECouponHistoryMessage.class;
     }
 
     @Override
     protected String queue() {
-        return ECouponHistoryData.MQ_KEY;
+        return ECouponHistoryMessage.MQ_KEY;
     }
 }

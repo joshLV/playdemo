@@ -4,16 +4,15 @@ import jobs.dadong.DadongConsumptionRequest;
 import jobs.dadong.DadongErSendToRequest;
 import models.RabbitMQConsumerWithTx;
 import models.order.ECoupon;
-import models.order.ECouponHistoryData;
+import models.order.ECouponHistoryMessage;
 import models.order.ECouponStatus;
+import models.order.OrderECouponMessage;
 import models.order.OrderItems;
 import models.order.OrderStatus;
-import models.sms.OrderECouponMessage;
 import models.sms.SMSException;
 import models.sms.SMSFactory;
 import models.sms.SMSMessage;
 import models.sms.SMSProvider;
-import models.sms.SMSUtil;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
@@ -122,7 +121,7 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
                 }
                 ecoupon.smsSentCount += 1;
                 ecoupon.save();
-                ECouponHistoryData.newInstance(ecoupon).operator("MessageQ").remark(remark).sendToMQ();
+                ECouponHistoryMessage.with(ecoupon).phone(phone).operator(message.operator).remark(remark).sendToMQ();
             }
         } catch (SMSException e) {
             Logger.error("Sms2SenderConsumer: send message" + message + " failed:" + e.getMessage());
@@ -160,7 +159,7 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
             }
             ecoupon.smsSentCount += 1;
             ecoupon.save();
-            ECouponHistoryData.newInstance(ecoupon).operator("MessageQ")
+            ECouponHistoryMessage.with(ecoupon).operator(message.operator).phone(phone)
                     .remark(remark).sendToMQ();
         } catch (SMSException e) {
             Logger.error("Sms2SenderConsumer: send message" + message + " failed:" + e.getMessage());
@@ -175,7 +174,7 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
 
     @Override
     protected String queue() {
-        return SMSUtil.SMS_ORDER_QUEUE;
+        return OrderECouponMessage.MQ_KEY;
     }
 
     @Override

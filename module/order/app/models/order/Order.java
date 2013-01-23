@@ -729,7 +729,7 @@ public class Order extends Model {
                     } else {
                         operator = "消费者:" + orderItem.order.getUser().getShowName();
                     }
-                    ECouponHistoryData.newInstance(eCoupon).operator(operator)
+                    ECouponHistoryMessage.with(eCoupon).operator(operator)
                             .remark("产生券号").fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED)
                             .sendToMQ();
                 }
@@ -1318,7 +1318,7 @@ public class Order extends Model {
      */
     public void sendOrderSMS(String remark) {
         for (OrderItems item : this.orderItems) {
-            SMSUtil.sendOrderItemSms(item.id, remark);
+            OrderECouponMessage.with(item).remark(remark).sendToMQ();
         }
     }
 }
