@@ -10,7 +10,6 @@ import models.order.Order;
 import models.order.OrderECouponMessage;
 import models.order.OrderItems;
 import models.order.OrderStatus;
-import models.sms.SMSUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -119,7 +118,7 @@ public class PaymentInfoTest extends FunctionalTest {
         assertEquals(order1, order);
         assertEquals(paymentSource.code, paymentSource1.code);
         assertContentMatch("恭喜您付款成功！", response);
-        OrderECouponMessage message = (OrderECouponMessage) MockMQ.getLastMessage(SMSUtil.SMS_ORDER_QUEUE);
+        OrderECouponMessage message = (OrderECouponMessage) MockMQ.getLastMessage(OrderECouponMessage.MQ_KEY);
         assertNotNull(message);
     }
 

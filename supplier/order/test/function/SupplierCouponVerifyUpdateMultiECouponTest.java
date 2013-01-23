@@ -6,8 +6,8 @@ import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.admin.SupplierUser;
-import models.order.CouponHistory;
 import models.order.ECoupon;
+import models.order.ECouponHistoryMessage;
 import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderItems;
@@ -47,12 +47,12 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
     Category category;
     ECoupon coupon1, coupon2, singleCoupon1;
     SupplierUser supplierUser;
-    
+
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
         MockMQ.clear();
-        
+
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
@@ -74,7 +74,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
                 g.faceValue = new BigDecimal("100");
                 g.groupCode = "GROUP1";
             }
-            
+
         });
         singleGoods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
             @Override
@@ -82,7 +82,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
                 g.faceValue = new BigDecimal("75");
             }
         });
-        
+
         // 设置测试登录的用户名
         Security.setLoginUserForTest(supplierUser.loginName);
 
@@ -96,11 +96,11 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
 
     private void generateOrder2With2Group3Single() {
         order1 = FactoryBoy.create(Order.class);
-        
+
         FactoryBoy.create(OrderItems.class);
         coupon1 = createCoupon(goods100);
         coupon2 = createCoupon(goods100);
-        
+
         FactoryBoy.create(OrderItems.class);
         singleCoupon1 = createCoupon(singleGoods);
         createCoupon(singleGoods);
@@ -109,17 +109,17 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
 
     protected void generateOrder1WithSameGroupGoods() {
         order1 = FactoryBoy.create(Order.class);
-        
+
         FactoryBoy.create(OrderItems.class);
         coupon1 = createCoupon(goods100);
         coupon2 = createCoupon(goods100);
-        
+
         FactoryBoy.create(OrderItems.class);
         createCoupon(goods50);
         createCoupon(goods50);
         createCoupon(goods50);
     }
-    
+
     public ECoupon createCoupon(final Goods goods) {
         return FactoryBoy.create(ECoupon.class, new BuildCallback<ECoupon>() {
             @Override
@@ -137,21 +137,24 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         generateOrder1WithSameGroupGoods();
 
         verifyECoupon(coupon1, "275", "250");
-        
-        assertEquals(3, CouponHistory.count());
-        
+
+        ECouponHistoryMessage lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage
+                .MQ_KEY);
+        assertNotNull(lastMessage);
+        assertEquals("消费", lastMessage.remark);
+
         // 得到此次验证前可用的总券数，包括已验证和未验证的
         List<ECoupon> ecoupons = (List<ECoupon>)renderArgs("ecoupons");
         assertNotNull(ecoupons);
         assertEquals(5, ecoupons.size());
-        
+
         // 得到还没有消费的券号列表
         List<String> availableECouponSNs = getAvaiableECouponSNs(ecoupons, 2);
-        
+
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
         assertSMSContentEquals("【一百券】您尾号" + coupon1.getLastCode(4)
                 + "共3张券(总面值250元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。您还有2张券（"
-                        + StringUtils.join(availableECouponSNs, "/") 
+                        + StringUtils.join(availableECouponSNs, "/")
                 		+ "总面值100元）未消费。如有疑问请致电：4006262166",
                 msg.getContent());
     }
@@ -165,10 +168,10 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         List<ECoupon> ecoupons = (List<ECoupon>)renderArgs("ecoupons");
         assertNotNull(ecoupons);
         assertEquals(5, ecoupons.size());
-        
+
         // 得到还没有消费的券号列表
         getAvaiableECouponSNs(ecoupons, 0);
-        
+
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
         assertSMSContentEquals("【一百券】您尾号" + coupon1.getLastCode(4)
                 + "共5张券(总面值350元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
@@ -184,10 +187,10 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         List<ECoupon> ecoupons = (List<ECoupon>)renderArgs("ecoupons");
         assertNotNull(ecoupons);
         assertEquals(5, ecoupons.size());
-        
+
         // 得到还没有消费的券号列表
         getAvaiableECouponSNs(ecoupons, 0);
-        
+
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
         assertSMSContentEquals("【一百券】您尾号" + coupon1.getLastCode(4)
                 + "共5张券(总面值350元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
@@ -198,18 +201,18 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
     public void 购买350元消费40元时验证多张券返回不能验证() {
         generateOrder1WithSameGroupGoods();
         verifyECoupon(coupon1, "40", "0");
-        
+
         List<ECoupon> ecoupons = (List<ECoupon>)renderArgs("ecoupons");
         assertNotNull(ecoupons);
         assertEquals(5, ecoupons.size());
-        
+
         // 得到还没有消费的券号列表，应还是5张
         getAvaiableECouponSNs(ecoupons, 5);
-        
+
         assertEquals(0, MockMQ.size(SMSUtil.SMS2_QUEUE));
     }
-    
-    
+
+
     // ===================== 无组商品券测试 =========================
 
     @Test
@@ -217,19 +220,19 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         generateOrder2With2Group3Single();
 
         verifyECoupon(singleCoupon1, "185", "150");
-        
+
         // 得到此次验证前可用的总券数，包括已验证和未验证的
         List<ECoupon> ecoupons = (List<ECoupon>)renderArgs("ecoupons");
         assertNotNull(ecoupons);
         assertEquals(3, ecoupons.size());
-        
+
         // 得到还没有消费的券号列表
         List<String> availableECouponSNs = getAvaiableECouponSNs(ecoupons, 1);
-        
+
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
         assertSMSContentEquals("【一百券】您尾号" + singleCoupon1.getLastCode(4)
                 + "共2张券(总面值150元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。您还有1张券（"
-                        + StringUtils.join(availableECouponSNs, "/") 
+                        + StringUtils.join(availableECouponSNs, "/")
                         + "总面值75元）未消费。如有疑问请致电：4006262166",
                 msg.getContent());
     }
@@ -243,10 +246,10 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         List<ECoupon> ecoupons = (List<ECoupon>)renderArgs("ecoupons");
         assertNotNull(ecoupons);
         assertEquals(3, ecoupons.size());
-        
+
         // 得到还没有消费的券号列表
         getAvaiableECouponSNs(ecoupons, 0);
-        
+
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
         assertSMSContentEquals("【一百券】您尾号" + singleCoupon1.getLastCode(4)
                 + "共3张券(总面值225元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
@@ -262,10 +265,10 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         List<ECoupon> ecoupons = (List<ECoupon>)renderArgs("ecoupons");
         assertNotNull(ecoupons);
         assertEquals(3, ecoupons.size());
-        
+
         // 得到还没有消费的券号列表
         getAvaiableECouponSNs(ecoupons, 0);
-        
+
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
         assertSMSContentEquals("【一百券】您尾号" + singleCoupon1.getLastCode(4)
                 + "共3张券(总面值225元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
@@ -276,17 +279,17 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
     public void 购买225元无组商品券消费50元时验证多张券返回不能验证() {
         generateOrder2With2Group3Single();
         verifyECoupon(singleCoupon1, "50", "0");
-        
+
         List<ECoupon> ecoupons = (List<ECoupon>)renderArgs("ecoupons");
         assertNotNull(ecoupons);
         assertEquals(3, ecoupons.size());
-        
+
         // 得到还没有消费的券号列表，应还是3张
         getAvaiableECouponSNs(ecoupons, 3);
-        
+
         assertEquals(0, MockMQ.size(SMSUtil.SMS2_QUEUE));
     }
-    
+
     /**
      * 验证券辅助方法。
      * @param firstEcoupon 其中一张券
@@ -305,7 +308,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
             firstEcoupon.refresh();
             assertEquals("第一张券必须已经验证", ECouponStatus.CONSUMED, firstEcoupon.status);
         }
-        
+
         BigDecimal consumedAmount = (BigDecimal)renderArgs("consumedAmount");
         assertNotNull("没有得到已验证金额", consumedAmount);
         assertEquals("已验证金额" + consumedAmount + "与期望值" + expectConsumedAmount + "不符", new BigDecimal(expectConsumedAmount).setScale(2), consumedAmount.setScale(2));
@@ -317,7 +320,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
      * @return
      */
     protected List<String> getAvaiableECouponSNs(List<ECoupon> ecoupons, int expectAvaiableECouponNumber) {
-       
+
         List<String> availableECouponSNs = new ArrayList<>();
         for (ECoupon e : ecoupons) {
             ECoupon e1 = ECoupon.findById(e.id);
@@ -327,9 +330,9 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
             }
         }
 
-        assertEquals("期望可用券数" + expectAvaiableECouponNumber + ", 实际为" + availableECouponSNs.size(), 
+        assertEquals("期望可用券数" + expectAvaiableECouponNumber + ", 实际为" + availableECouponSNs.size(),
                         expectAvaiableECouponNumber, availableECouponSNs.size());
-        
+
         return availableECouponSNs;
     }
 
