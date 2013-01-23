@@ -230,7 +230,7 @@
                                id="apply_${coupon.id}">申请退款</a>
                         #{/if}
                         #{elseif coupon.status != models.order.ECouponStatus.REFUND && coupon.status != models.order.ECouponStatus.CONSUMED && coupon?.isFreeze!=1}
-                            不可退款
+                             不可退款
                         #{/elseif}
                         #{elseif  coupon?.isFreeze==1}
                             已冻结
