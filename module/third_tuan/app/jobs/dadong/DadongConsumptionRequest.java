@@ -10,8 +10,7 @@ import org.w3c.dom.Node;
 import play.libs.XPath;
 import play.templates.Template;
 import play.templates.TemplateLoader;
-import util.ws.WebServiceClient;
-import util.ws.WebServiceClientFactory;
+import util.ws.WebServiceRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,9 +45,12 @@ public class DadongConsumptionRequest {
         String xml = template.render(args);
         Map<String, Object> params = new HashMap<>();
         params.put("xml", xml);
-        WebServiceClient client = WebServiceClientFactory.getClientHelper("GB2312");
 
-        Document document = client.postXml("thirdtuan.dadang.Consumption", DadongProductsSyncRequest.URL, params, orderItems.id.toString(), orderItems.goods.id.toString(), orderItems.phone);
+        Document document = WebServiceRequest.url(DadongProductsSyncRequest.URL)
+                .type("thirdtuan.dadong.Consumption")
+                .encoding("GB2312")
+                .params(params).addKeyword(orderItems.id).addKeyword(orderItems.goods.id).addKeyword(orderItems.phone)
+                .postXml();
 
         Node rootNode = XPath.selectNode("business_trans", document);
 

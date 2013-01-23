@@ -2,15 +2,18 @@ package models.wuba;
 
 import cache.CacheCallBack;
 import cache.CacheHelper;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import models.order.ECoupon;
 import org.apache.commons.codec.binary.Base64;
 import play.Logger;
 import play.Play;
 import play.exceptions.UnexpectedException;
 import play.libs.Codec;
-import util.ws.WebServiceClient;
-import util.ws.WebServiceClientFactory;
+import util.ws.WebServiceRequest;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -106,11 +109,10 @@ public class WubaUtil {
 
         Logger.info("wuba request: \n%s", new Gson().toJson(params));
 
-        WebServiceClient client = WebServiceClientFactory
-                .getClientHelper();
-
-        String json = client.postString("58_" + method,
-                GATEWAY_URL, params, "58");
+        String json = WebServiceRequest.url(GATEWAY_URL)
+                .type("58_" + method)
+                .params(params).addKeyword("58")
+                .postString();
 
         Logger.info("wuba response: \n%s", json);
 

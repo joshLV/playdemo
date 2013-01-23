@@ -8,8 +8,7 @@ import play.Play;
 import play.libs.XPath;
 import play.templates.Template;
 import play.templates.TemplateLoader;
-import util.ws.WebServiceClient;
-import util.ws.WebServiceClientFactory;
+import util.ws.WebServiceRequest;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -104,11 +103,9 @@ public class DDGroupBuyUtil {
         params.put("sign", sign(apiName, xmlData, (String)params.get("call_time")));
         params.put("data", xmlData);
 
-        WebServiceClient client = WebServiceClientFactory
-                .getClientHelper();
-
-        Document xml = client.postXml("dangdang_" + apiName,
-                url, params, "dangdang");
+        Document xml = WebServiceRequest.url(url).type("dangdang_" + apiName)
+                .params(params).addKeyword("dangdang")
+                .postXml();
 
         return DDResponse.parseResponse(xml);
     }

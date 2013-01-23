@@ -8,8 +8,7 @@ import org.w3c.dom.Document;
 import play.libs.XPath;
 import play.templates.Template;
 import play.templates.TemplateLoader;
-import util.ws.WebServiceClient;
-import util.ws.WebServiceClientFactory;
+import util.ws.WebServiceRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,10 +34,13 @@ public class DadongErSendToRequest {
         String xml = template.render(args);
         Map<String, Object> params = new HashMap<>();
         params.put("xml", xml);
-        WebServiceClient client = WebServiceClientFactory.getClientHelper("GB2312");
 
-        Document document = client.postXml("thirdtuan.dadang.ErSendTo", DadongProductsSyncRequest.URL, params,
-                orderItems.id.toString(), orderItems.goods.id.toString(), phone);
+        Document document = WebServiceRequest.url(DadongProductsSyncRequest.URL)
+                .type("thirdtuan.dadong.ErSendTo")
+                .encoding("GB2312")
+                .params(params).addKeyword(orderItems.id).addKeyword(orderItems.goods.id).addKeyword(phone)
+                .postXml();
+
         String resultId = XPath.selectText("business_trans/result/id", document);
         String resultComment = XPath.selectText("business_trans/result/comment", document);
         String remark = "大东票务重发券";
