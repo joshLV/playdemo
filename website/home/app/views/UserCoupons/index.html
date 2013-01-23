@@ -164,29 +164,31 @@
                 </tr>
                 </thead>
                 <tbody>
-            #{paginate.list items:couponsList, as:'coupon'}
-            %{
+                #{paginate.list items:couponsList, as:'coupon'}
+                %{
                 if (coupon.orderItems.goodsHistoryId != null) {
-                    goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" +
-                    coupon.orderItems.goods.id+ "/h/" +
-                    coupon.orderItems.goodsHistoryId;
+                goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" +
+                coupon.orderItems.goods.id+ "/h/" +
+                coupon.orderItems.goodsHistoryId;
                 } else {
-                    goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" +
-                    coupon.orderItems.goods.id;
+                goodsUrl="http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/p/" +
+                coupon.orderItems.goods.id;
                 }
-            }%
+                }%
                 <tr>
                     <td>
-                        #{if row?.goods?.isLottery}<a href="/orders/${coupon?.order?.orderNumber}">${coupon?.getMaskedEcouponSn()}</a>#{/if}
+                        #{if row?.goods?.isLottery}<a
+                                href="/orders/${coupon?.order?.orderNumber}">${coupon?.getMaskedEcouponSn()}</a>#{/if}
                         #{else}${coupon?.eCouponSn}#{/else}
                     </td>
                     <td>
-                        <a class="pic" href="${goodsUrl}" target="_blank"><img src="${coupon?.goods?.imageTinyPath}"/></a>
+                        <a class="pic" href="${goodsUrl}" target="_blank"><img
+                                src="${coupon?.goods?.imageTinyPath}"/></a>
                         <a href="${goodsUrl}" target="_blank">${coupon?.goods?.name}</a>
                     </td>
                     <td>${coupon.order.orderNumber}</td>
                     <td>
-                        ${coupon?.effectiveAt?.format()} - ${coupon?.expireAt?.format()}<br/>
+                    ${coupon?.effectiveAt?.format()} - ${coupon?.expireAt?.format()}<br/>
                         #{if coupon?.goods?.useBeginTime || coupon?.goods?.useEndTime}
                             有效时段： ${coupon?.goods?.useBeginTime} - ${coupon?.goods?.useEndTime} <br/>
                         #{/if}
@@ -197,20 +199,20 @@
                 %{
                     now = new java.util.Date();
                     isExpired = coupon.expireAt?.before(now);
-                }%
+                    }%
 
                     <td> #{if coupon?.status != models.order.ECouponStatus.CONSUMED && isExpired }<span>已过期</span>#{/if}
                         #{else}${coupon?.consumedAt?.format('yyyy-MM-dd HH:mm:ss')} #{/else}</td>
                     <td>
-                    #{if coupon?.status == models.order.ECouponStatus.CONSUMED }
-                        <span id="status_apply_${coupon.id}">已消费</span>
-                    #{/if}
-                    #{elseif coupon?.status == models.order.ECouponStatus.UNCONSUMED}
-                        <span class="green" id="status_apply_${coupon.id}">未消费</span>
-                    #{/elseif}
-                    #{elseif coupon?.status == models.order.ECouponStatus.REFUND}
-                        <span class="red" id="status_apply_${coupon.id}">已退款</span>
-                    #{/elseif}
+                        #{if coupon?.status == models.order.ECouponStatus.CONSUMED }
+                            <span id="status_apply_${coupon.id}">已消费</span>
+                        #{/if}
+                        #{elseif coupon?.status == models.order.ECouponStatus.UNCONSUMED}
+                            <span class="green" id="status_apply_${coupon.id}">未消费</span>
+                        #{/elseif}
+                        #{elseif coupon?.status == models.order.ECouponStatus.REFUND}
+                            <span class="red" id="status_apply_${coupon.id}">已退款</span>
+                        #{/elseif}
                     </td>
                     <td class="action">
                         #{if !coupon.goods.isLottery && !isExpired && coupon.status == models.order.ECouponStatus.UNCONSUMED}
@@ -221,20 +223,26 @@
                         #{/if}
                         #{if coupon.status == models.order.ECouponStatus.UNCONSUMED && (coupon.goods.noRefund==false ||coupon.goods.noRefund==null)
                         && !coupon?.goods?.isLottery && coupon?.salePrice>0 &&
-                        coupon?.orderItems?.secKillGoods==null && coupon?.orderItems?.secKillGoodsItemId==null && coupon?.goods?.materialType== models.sales.MaterialType.ELECTRONIC}
-                            <a class="red" href="javascript:applyRefund('${coupon.id}','${coupon.salePrice}','${coupon?.rebateValue}')" id="apply_${coupon.id}">申请退款</a>
+                        coupon?.orderItems?.secKillGoods==null && coupon?.orderItems?.secKillGoodsItemId==null && coupon?.goods?.materialType== models.sales.MaterialType.ELECTRONIC
+                        && coupon?.isFreeze!=1}
+                            <a class="red"
+                               href="javascript:applyRefund('${coupon.id}','${coupon.salePrice}','${coupon?.rebateValue}')"
+                               id="apply_${coupon.id}">申请退款</a>
                         #{/if}
-                        #{elseif coupon.status != models.order.ECouponStatus.REFUND && coupon.status != models.order.ECouponStatus.CONSUMED }
+                        #{elseif coupon.status != models.order.ECouponStatus.REFUND && coupon.status != models.order.ECouponStatus.CONSUMED && coupon?.isFreeze!=1}
                             不可退款
+                        #{/elseif}
+                        #{elseif  coupon?.isFreeze==1}
+                            已冻结
                         #{/elseif}
                     </td>
                 </tr>
-            #{/paginate.list}
+                #{/paginate.list}
                 </tbody>
             </table>
         </form>
         <div class="pagination">
-            #{paginate.controls items:couponsList /}
+        #{paginate.controls items:couponsList /}
         </div>
     </div>
 </div>
