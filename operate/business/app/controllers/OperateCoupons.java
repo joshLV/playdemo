@@ -251,7 +251,7 @@ public class OperateCoupons extends Controller {
     }
 
     public static void couponInfo(Long id) {
-        ECoupon coupon=ECoupon.findById(id);
+        ECoupon coupon = ECoupon.findById(id);
         render(coupon);
     }
 }

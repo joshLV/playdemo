@@ -51,6 +51,11 @@
         <span id="err-noRefund"></span>
 
         不可退款&nbsp;&nbsp;
+        <span id="free_shipping">
+        <input type="checkbox" name="goods.freeShipping" id="freeShipping" class="input-medium"
+               value="${goods?.freeShipping}" ${goods?.freeShipping?'checked':''}/><span id="err-freeShipping"></span>
+        免运费&nbsp;&nbsp;
+        </span>
     </div>
     <span id="err-isLottery"></span>
 </div>
@@ -228,6 +233,15 @@
         $("#goods_useWeekDay").val(week.join(","));
     }
 
+    if ($("#goods_materialType_2").attr("checked")) {
+        $("#free_shipping").show();
+    }
+
+    if ($("#goods_materialType_1").attr("checked")) {
+        $("#free_shipping").hide();
+        $("input[id=freeShipping]").attr("checked", false);
+    }
+
     showAddedRebate();
     function showAddedRebate() {
         var goods_salePrice = $("#goods_salePrice").val() == null ? 0 : $("#goods_salePrice").val();
@@ -307,6 +321,14 @@
         return true;
     }
 
+    $("#goods_materialType_2").click(function () {
+        $("#free_shipping").show();
+    });
+
+    $("#goods_materialType_1").click(function () {
+        $("#free_shipping").hide();
+        $("input[id=freeShipping]").attr("checked", false);
+    });
 
 </script>
 #{/else}

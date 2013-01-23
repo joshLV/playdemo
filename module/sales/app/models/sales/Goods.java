@@ -633,6 +633,13 @@ public class Goods extends Model {
     public Boolean noRefund = Boolean.FALSE;
 
     /**
+     * 是否免运费
+     */
+    @Column(name = "free_shipping")
+    @SolrField
+    public Boolean freeShipping = Boolean.FALSE;
+
+    /**
      * 是否隐藏上架
      */
     @Column(name = "is_hide_onsale")
@@ -1096,6 +1103,7 @@ public class Goods extends Model {
         updateGoods.beginOnSaleAt = goods.beginOnSaleAt;
         updateGoods.endOnSaleAt = goods.endOnSaleAt;
         updateGoods.isOrder = (goods.isOrder == null) ? Boolean.FALSE : goods.isOrder;
+        updateGoods.freeShipping = (goods.freeShipping == null) ? Boolean.FALSE : goods.freeShipping;
         updateGoods.isLottery = (goods.isLottery == null) ? Boolean.FALSE : goods.isLottery;
         updateGoods.isHideOnsale = (goods.isHideOnsale == null) ? Boolean.FALSE : goods.isHideOnsale;
         updateGoods.groupCode = (StringUtils.isEmpty(goods.groupCode)) ? null : goods.groupCode.trim();

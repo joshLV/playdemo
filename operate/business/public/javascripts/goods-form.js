@@ -93,6 +93,14 @@ $(
             }
         });
 
+        $("#freeShipping").click(function () {
+            if (this.checked) {
+                $("#freeShipping").val(true)
+            } else {
+                $("#freeShipping").val(false)
+            }
+        });
+
         $("#noRefund").click(function () {
             if (this.checked) {
                 $("#noRefund").val(true)
