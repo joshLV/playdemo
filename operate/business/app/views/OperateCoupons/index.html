@@ -287,6 +287,10 @@
             #{elseif hasRight && coupon.isCheatedOrder!=true}
                 #{vx.operateLink name:"unfreeze_"+coupon.id,text:"解冻", url:"/coupons/"+coupon.id+"/unfreeze", method:"PUT"/}
             #{/elseif}
+            #{elseif hasRight }
+                <span style="color: #808080;">解冻</span>
+            #{/elseif}
+
         #{/if}
             <a href="@{OperateCoupons.couponHistory(coupon.id)}">查看历史</a>
             #{if coupon?.status== models.order.ECouponStatus.UNCONSUMED && hasEcouponRefundPermission == true}
