@@ -4,7 +4,6 @@ import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.constants.PlatformType;
 import org.apache.commons.lang.StringUtils;
-import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 import play.data.validation.InFuture;
 import play.data.validation.MaxSize;
@@ -63,7 +62,7 @@ public class Topic extends Model {
     @Lob
     private String content;
 
-    public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
+    public final static Whitelist HTML_WHITE_TAGS = Whitelist.basicWithImages();
 
     static {
         //增加可信标签到白名单
@@ -108,11 +107,12 @@ public class Topic extends Model {
         if (StringUtils.isBlank(content) || "<br />".equals(content)) {
             return "";
         }
-        return Jsoup.clean(content, HTML_WHITE_TAGS);
+        //return Jsoup.clean(content, HTML_WHITE_TAGS);
+        return content;
     }
 
     public void setContent(String content) {
-        this.content = Jsoup.clean(content, HTML_WHITE_TAGS);
+        this.content = content; //Jsoup.clean(content, HTML_WHITE_TAGS);
     }
 
 
