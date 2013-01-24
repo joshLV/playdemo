@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  * Date: 12-12-17
  * Time: 下午3:51
  */
-@Every("2mn")
+@Every("1h")
 public class ScannerChannelGoodsStatusJob extends Job {
 
     @Override
@@ -52,11 +52,6 @@ public class ScannerChannelGoodsStatusJob extends Job {
                 ChannelGoodsInfoStatus preStatus = channelGoodsInfo.status;
                 String retResponse = WebServiceRequest.url(url)
                         .addKeyword(resaler.id).getString();
-
-                 //client.getString("", url, resaler.id.toString());
-
-
-
                 Matcher onSaleMatcher = onSalePattern.matcher(retResponse);
                 Matcher offSaleMatcher = offSalePattern.matcher(retResponse);
                 if (preStatus != ChannelGoodsInfoStatus.ONSALE && onSaleMatcher.find()) {
