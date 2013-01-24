@@ -48,7 +48,6 @@ public class ResalePartnerProducts extends Controller {
                     p = new ArrayList<>();
                     partnerProducts.put(goods.id + product.partner.toString(), p);
                 }
-                System.out.println(goods.id + product.partner.toString() + ":" + product.goods.shortName + ":" + product.goods.code);
                 p.add(product);
             }
         }
