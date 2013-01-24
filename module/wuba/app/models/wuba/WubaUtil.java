@@ -139,7 +139,7 @@ public class WubaUtil {
 
             response.status = result.get("status").getAsString();
             response.code = result.get("code").getAsString();
-            response.msg = result.get("msg").getAsString();
+            //response.msg = result.get("msg").getAsString();
             if (result.has("data")) {
                 String data = result.get("data").getAsString();
                 if (response.isOk() && needDecrypt) {

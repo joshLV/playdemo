@@ -68,7 +68,7 @@ public class Topic extends Model {
     static {
         //增加可信标签到白名单
         HTML_WHITE_TAGS.addTags("embed", "object", "param", "span", "div", "table", "tbody", "tr", "td",
-                "background-color", "width");
+                "background-color", "width", "a");
         //增加可信属性
         HTML_WHITE_TAGS.addAttributes(":all", "style", "class", "id", "name");
         HTML_WHITE_TAGS.addAttributes("table", "style", "cellpadding", "cellspacing", "border", "bordercolor", "align");
@@ -77,6 +77,7 @@ public class Topic extends Model {
         HTML_WHITE_TAGS.addAttributes("param", "name", "value");
         HTML_WHITE_TAGS.addAttributes("embed", "src", "quality", "width", "height", "allowFullScreen",
                 "allowScriptAccess", "flashvars", "name", "type", "pluginspage");
+        HTML_WHITE_TAGS.addAttributes("a", "href", "target");
     }
 
     @Enumerated(EnumType.STRING)
