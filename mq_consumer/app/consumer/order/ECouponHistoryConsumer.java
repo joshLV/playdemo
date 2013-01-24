@@ -3,6 +3,7 @@ package consumer.order;
 import models.RabbitMQConsumerWithTx;
 import models.order.CouponHistory;
 import models.order.ECouponHistoryMessage;
+import play.Logger;
 import play.db.jpa.JPA;
 import play.jobs.OnApplicationStart;
 
@@ -15,8 +16,17 @@ import play.jobs.OnApplicationStart;
 @OnApplicationStart(async = true)
 public class ECouponHistoryConsumer extends RabbitMQConsumerWithTx<ECouponHistoryMessage> {
     @Override
-    public void consumeWithTx(ECouponHistoryMessage data) {
+    public void consumeWithTx(ECouponHistoryMessage data)  {
         CouponHistory couponHistory = data.toModel();
+        if (couponHistory.coupon == null) {
+            Logger.error("ECouponHistoryMessage(eCouponId:" + data.eCouponId + ") 对象为空，暂不能保存");
+            try {
+                Thread.sleep(500l);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            throw new RuntimeException("ECouponHistoryMessage(eCouponId:" + data.eCouponId + ") 对象为空，暂不能保存");
+        }
         JPA.em().flush();
         couponHistory.save();
     }
