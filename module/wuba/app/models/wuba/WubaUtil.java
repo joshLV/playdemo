@@ -122,10 +122,10 @@ public class WubaUtil {
     }
 
     /**
-     * 解析58的返回信息为json
+     * 解析58的返回信息
      *
      * @param jsonResponse json 文本
-     * @return json对象
+     * @return 解析后的对象
      */
     public static WubaResponse parseResponse(String jsonResponse, boolean needDecrypt) {
         try {
@@ -143,8 +143,7 @@ public class WubaUtil {
                 if (response.isOk() && needDecrypt) {
                     data = decryptMessage(data);
                 }
-                JsonElement dataElement = jsonParser.parse(data);
-                response.data = dataElement;
+                response.data = jsonParser.parse(data);
             }
             return response;
         } catch (Exception e) {

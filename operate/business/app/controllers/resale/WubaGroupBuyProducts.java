@@ -93,5 +93,19 @@ public class WubaGroupBuyProducts extends Controller {
 
         render("resale/WubaGroupBuyProducts/result.html", response);
     }
+    @ActiveNavigation("resale_partner_product")
+    public static void showEdit(Long productId) {
+        ResalerProduct product = ResalerProduct.findById(productId);
+        if (product == null) {
+            notFound();
+        }
+        Goods goods = product.goods;
+        render(product, goods);
+    }
+
+    @ActiveNavigation("resale_partner_product")
+    public static void edit() {
+
+    }
 }
 
