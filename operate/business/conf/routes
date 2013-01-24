@@ -27,6 +27,17 @@ DELETE  /goods_images/{id}                      OperateGoods.deleteImage
 POST    /goods/filemanager                      OperateUploadFiles.fileManagerJson
 GET     /category/sub/{id}                      OperateCategories.showSubs
 
+# 上传合同的电子版本
+GET     /suppliers_upload_contracts                        SuppliersUploadContracts.index
+GET     /supplier_contract/{id}/edit                       SuppliersUploadContracts.edit
+PUT     /supplier_contract/{id}                            SuppliersUploadContracts.update
+
+POST    /supplier_contract_images                           SuppliersUploadFiles.uploadImages
+
+GET     /contract/p/{firstDir}/{secondDir}/{thirdDir}/{imageName}    SupplierContractImages.showImage
+GET     /contract/o/{path1}/{path2}/{path3}/{path4}      SupplierContractImages.showOriginalImage
+
+
 # 外部商品
 GET     /resale-partner-products                                ResalePartnerProducts.index
 GET     /resale-partner-products/journal/json/{journalId}       ResalePartnerProducts.journalJson

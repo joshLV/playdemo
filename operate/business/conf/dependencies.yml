@@ -42,6 +42,7 @@ require:
     - third_tuan -> third_tuan
     - com.yihaodian -> yhdclient 1.0
     - commons-httpclient -> commons-httpclient 3.1
+    - net.coobird -> thumbnailator 0.4.1
 
 repositories:
     - mavenRepository:

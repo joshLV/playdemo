@@ -183,6 +183,8 @@ public class Supplier extends Model {
     @JoinColumn(name = "supplier_category_id")
     public SupplierCategory supplierCategory;
 
+    @OneToMany(mappedBy = "supplier")
+    public List<SupplierContractImage> supplierContractImagesList;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderColumn(name = "`display_order`")

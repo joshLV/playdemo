@@ -11,7 +11,7 @@
     </div>
     <div class="controls">
         <ul class="image-view" id="J_imageView">
-            #{list _value,as:'image'}
+        #{list _value,as:'image'}
                 <li id="li_${image?.id}">
                     <div class="action">
                         #{if !image?.isDisplaySite}
@@ -29,6 +29,16 @@
     #{/ifError}
 </div>
 <script type="text/javascript">
+
+    $(function () {
+        var editorPrompt${'_'+field.id} = KindEditor.create('textarea[name="${field.name}"]',
+                {
+                    filterMode:false,
+                    uploadJson:'${_uploadImgUrl}',
+                    allowFileManager:false
+                });
+    });
+
     $(function () {
         KindEditor.ready(function (K) {
             var editor = K.editor({
@@ -42,8 +52,8 @@
                             var div = K('#J_imageView');
 //                            div.html('');
                             K.each(urlList, function (i, data) {
-                                 window.location.reload();
-                                *{div.append('<li><div class="action"><a class="set-main btn" goodsId="${_goodsId}" imageId="${data?.imageId}" href="">设为首页展示</a><a class="close btn" href="#">X</a></div><img src="' + data.url + '"></li>');}*
+                                window.location.reload();
+                            *{div.append('<li><div class="action"><a class="set-main btn" goodsId="${_goodsId}" imageId="${data?.imageId}" href="">设为首页展示</a><a class="close btn" href="#">X</a></div><img src="' + data.url + '"></li>');}*
                             });
                             editor.hideDialog();
                         }

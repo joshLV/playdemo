@@ -1,0 +1,6 @@
+%{
+imageUrl ="/supplier_contract_images?supplierId="+id;
+}%
+
+
+#{layout_operate.multiFileField name:'multiImage',note:'图片尺寸：(340*260像素)', required:true, uploadImgUrl:imageUrl,value:supplier?.supplierContractImagesList/}
