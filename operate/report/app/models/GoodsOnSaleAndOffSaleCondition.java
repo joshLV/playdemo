@@ -1,6 +1,7 @@
 package models;
 
 import com.uhuila.common.util.DateUtil;
+import models.sales.ChannelGoodsInfoStatus;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Date;
@@ -34,8 +35,9 @@ public class GoodsOnSaleAndOffSaleCondition {
             paramMap.put("code", code);
         }
         if (resaleIds != null) {
-            builder.append(" and c.resaler.id in( :resaleIds)");
+            builder.append(" and c.goods in (select g.goods from ChannelGoodsInfo g where g.resaler.id in ( :resaleIds) and status=:status)");
             paramMap.put("resaleIds", resaleIds);
+            paramMap.put("status", ChannelGoodsInfoStatus.ONSALE);
         }
         return builder.toString();
     }
@@ -44,14 +46,4 @@ public class GoodsOnSaleAndOffSaleCondition {
         return paramMap;
     }
 
-    public String filterOfResaler() {
-       paramMap = new HashMap<>();
-        StringBuilder builder = new StringBuilder(" where 1=1 ");
-        if (resaleIds != null) {
-            builder.append(" and c.resaler.id in (:resaleIds)");
-            paramMap.put("resaleIds", resaleIds);
-        }
-        return builder.toString();
-
-    }
 }

@@ -18,6 +18,7 @@
     <permission key="Point_GOODS_NEW" text="积分商品添加" roles="editor"/>
     <permission key="COUPON_UNFREEZE" text="解冻券号" roles="customservice"/>
     <permission key="Point_GOODS" text="积分商品管理" roles="editor,customservice"/>
+    <permission key="CHANNEL_GOODS" text="跟进渠道商品" roles="sales,editor"/>
 
     <permission key=" Point_GOODS_ORDER" text="积分商品订单管理" roles="customservice,account"/>
     <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager,account"/>
@@ -65,7 +66,7 @@
     <permission key="DISCOUNT_CODE" text="折扣券管理" roles="customservice,editor"/>
     <permission key="crm_app" text="CRM" roles="customservice,editor"/>
     <permission key="SOLR" text="solr加载数据" roles="solr_load"/>
-    <permission key="HOT_KEYWORDS" text="热门关键词" roles="admin,editor,customservice,sales,manager"/>
+    <permission key="HOT_KEYWORDS" text="热门关键词" roles="editor,customservice"/>
     <permission key="PREPAYMENTS" text="预付款管理" roles="account"/>
     <permission key="PREPAYMENTS_NEW" text="预付款添加" roles="account"/>
     <permission key="CHECK_ACCOUNTSEQUENCE" text="核帐" roles="account"/>
@@ -90,7 +91,7 @@
             <navigation key="supplierVerifyPhones_index" action="OperateVerifyPhones.index" text="管理电话验证机"
                         permissions="SUPPLIER_VERIFY_PHONES"/>
         </navigation>
-        <navigation key="shops" text="门店" permission="SHOPS_NEW,SHOPS">
+        <navigation key="shops" text="门店" permissions="SHOPS_NEW,SHOPS">
             <navigation key="shops_add" action="OperateShops.add" text="门店添加" permissions="SHOPS_NEW"/>
             <navigation key="shops_index" action="OperateShops.index" text="门店管理" permissions="SHOPS"/>
         </navigation>
@@ -108,13 +109,14 @@
         <navigation key="goods" text="商品">
             <navigation key="goods_add" action="OperateGoods.add" text="商品添加" permissions="GOODS_NEW"/>
             <navigation key="goods_index" action="OperateGoods.index" text="商品管理" permissions="GOODS"/>
-            <navigation key="resale_partner_product" action="ResalePartnerProducts.index" text="外部商品管理" permissions="GOODS"/>
+            <navigation key="resale_partner_product" action="ResalePartnerProducts.index" text="外部商品管理"
+                        permissions="GOODS"/>
             <navigation key="category_admin_index" action="CategoryAdmin.index" text="类别管理" permissions="GOODS"/>
             <navigation key="hot_keywords" action="OperateSearchHotKeywords.index" text="热门搜索词查询"
-                        permission="HOT_KEYWORDS"/>
+                        permissions="HOT_KEYWORDS"/>
         </navigation>
-        <navigation key="solr" text="solr加载数据" permission="SOLR">
-            <navigation key="solr_load" action="SolrLoadData.index" text="solr加载数据" permission="SOLR"/>
+        <navigation key="solr" text="solr加载数据">
+            <navigation key="solr_load" action="SolrLoadData.index" text="solr加载数据" permissions="SOLR"/>
         </navigation>
         <navigation key="point_goods" text="积分商品">
             <navigation key="point_goods_add" action="OperatePointGoods.add" text="积分商品添加"
@@ -163,9 +165,9 @@
     <navigation key="account_app" text="财务管理" action="OperateBusinessApplication.account" display-order="80">
         <navigation key="withdraw" text="提现审批">
             <navigation key="withdraw_approval_index" action="WithdrawApproval.index" text="提现申请列表"
-                        permission="WITHDRAW_APPROVAL"/>
+                        permissions="WITHDRAW_APPROVAL"/>
             <navigation key="financing_incoming_note" action="FinancingIncomingNote.add" text="记录收款"
-                        permission="FINANCING_INCOMING_NOTE"/>
+                        permissions="FINANCING_INCOMING_NOTE"/>
         </navigation>
         <navigation key="prepayments" text="预付款管理" permissions="PREPAYMENTS,PREPAYMENTS_NEW">
             <navigation key="prepayments_add" action="OperatePrepayments.add" text="预付款添加"
@@ -179,36 +181,36 @@
         </navigation>
         <navigation key="report_app" text="财务报表">
             <navigation key="consumers_account_reports" action="OperateReports.showConsumerReport" text="消费者资金明细"
-                        permission="CONSUMERS_REPORT"/>
+                        permissions="CONSUMERS_REPORT"/>
             <navigation key="resales_account_reports" action="OperateReports.showResaleReport" text="分销商资金明细"
-                        permission="RESALES_REPORT"/>
+                        permissions="RESALES_REPORT"/>
             <navigation key="suppliers_account_reports" action="OperateReports.showSupplierReport" text="商户的资金明细"
-                        permission="SUPPLIERS_REPORT"/>
+                        permissions="SUPPLIERS_REPORT"/>
             <navigation key="withdraw_account_reports" action="OperateReports.showWithdrawReport" text="提现账户资金明细"
-                        permission="WITHDRAW_REPORT"/>
+                        permissions="WITHDRAW_REPORT"/>
             <navigation key="websites_account_reports" action="OperateReports.showWebsiteReport" text="一百券佣金账户资金明细"
-                        permission="WEBSITES_REPORT"/>
+                        permissions="WEBSITES_REPORT"/>
             <navigation key="promotion_account_reports" action="OperateReports.showPromotionReport" text="活动金账户资金明细"
-                        permission="WEBSITES_REPORT"/>
+                        permissions="WEBSITES_REPORT"/>
             <navigation key="platforms_account_reports" action="OperateReports.showPlatformReport" text="券平台佣金账户资金明细"
-                        permission="PLATFORMS_REPORT"/>
+                        permissions="PLATFORMS_REPORT"/>
             <navigation key="financing_incoming_reports" action="OperateReports.showFinancingIncomingReport"
-                        text="券平台财务收款账户" permission="FINANCING_ACCOUNT_REPORT"/>
+                        text="券平台财务收款账户" permissions="FINANCING_ACCOUNT_REPORT"/>
             <navigation key="incomings_account_reports" action="OperateReports.showIncomingReport" text="收款账户资金明细"
-                        permission="INCOMINGS_REPORT"/>
+                        permissions="INCOMINGS_REPORT"/>
         </navigation>
     </navigation>
 
     <navigation key="promotion_manage" text="活动管理" action="Promotions.index" display-order="90">
         <navigation key="promotion" text="活动管理">
-            <navigation key="promotion_list" action="Promotions.index" text="活动列表" permission="PROMOTION_LIST"/>
+            <navigation key="promotion_list" action="Promotions.index" text="活动列表" permissions="PROMOTION_LIST"/>
             <navigation key="winning_index" action="OperateConsumersWinningInfo.index" text="用户参加有奖问答管理"
                         permissions="PROMOTION_LIST"/>
-            <navigation key="send_sms" action="SendSMS.index" text="发送优惠券" permission="PROMOTION_LIST"/>
+            <navigation key="send_sms" action="SendSMS.index" text="发送优惠券" permissions="PROMOTION_LIST"/>
         </navigation>
         <navigation key="discountcode" text="折扣券管理">
             <navigation key="discountcode_add" action="OperateDiscountCodes.add" text="新增折扣券"
-                        permission="DISCOUNT_CODE"/>
+                        permissions="DISCOUNT_CODE"/>
             <navigation key="discountcode_index" action="OperateDiscountCodes.index" text="折扣券管理"
                         permissions="DISCOUNT_CODE"/>
         </navigation>
@@ -232,20 +234,20 @@
             <navigation key="seckill_goods_index" action="SecKillGoods.index" text="秒杀活动管理"
                         permissions="SECKILL_GOODS"/>
         </navigation>
-        <navigation key="schedule" text="商品排期管理" permission="GOODS_SCHEDULE">
+        <navigation key="schedule" text="商品排期管理">
             <navigation key="goods_schedule_add" action="GoodsSchedules.add" text="商品排期添加"
-                        permission="GOODS_SCHEDULE_ADD"/>
+                        permissions="GOODS_SCHEDULE_ADD"/>
             <navigation key="goods_schedule_index" action="GoodsSchedules.index" text="商品排期"
-                        permission="GOODS_SCHEDULE"/>
+                        permissions="GOODS_SCHEDULE"/>
         </navigation>
     </navigation>
 
     <navigation key="question_manage" text="咨询管理" action="OperateQuestions.index" display-order="110">
-        <navigation key="question" text="咨询管理" permission="QUESTION">
-            <navigation key="questions_index" action="OperateQuestions.index" text="咨询管理" permission="QUESTION"/>
+        <navigation key="question" text="咨询管理" permissions="QUESTION">
+            <navigation key="questions_index" action="OperateQuestions.index" text="咨询管理" permissions="QUESTION"/>
         </navigation>
 
-        <navigation key="crm_app" text="CRM" permission="CONSUMERS">
+        <navigation key="crm_app" text="CRM" permissions="CONSUMERS">
             <navigation key="crm_app_consumers" action="OperateCRM.getPhone" text="话务管理" permissions="CONSUMERS"/>
             <navigation key="crm_search_consumers" action="OperateConsult.index" text="咨询查询" permissions="CONSUMERS"/>
         </navigation>

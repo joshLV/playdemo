@@ -7,5 +7,5 @@ package models.sales;
  * Time: 上午10:50
  */
 public enum ChannelGoodsInfoStatus {
-    ONSALE,OFFSALE,PAGE_NOT_EXISTED
+    CREATED,ONSALE,OFFSALE,UNKNOWN
 }
