@@ -24,7 +24,7 @@ import play.libs.XPath;
 import play.templates.Template;
 import play.templates.TemplateLoader;
 import util.ws.WebServiceRequest;
-import utils.SafeParse;
+import util.common.SafeParse;
 
 import java.io.File;
 import java.io.IOException;

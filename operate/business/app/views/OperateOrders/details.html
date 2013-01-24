@@ -106,7 +106,14 @@
                 <td>${models.admin.OperateUser.findBySalesId(supplier.salesId)?.userName}</td>
                 <td>${orderItem.salePrice?.formatCurrency('CNY')}</td>
                 <td>${orderItem.buyNumber}</td>
-                <td>${orderItem.phone}</td>
+                <td>
+                    #{if hasViewEcouponSnPermission}
+                    ${orderItem?.phone}
+                    #{/if}
+                    #{else}
+                    ${orderItem?.getMaskedPhone()}
+                    #{/else}
+                </td>
                 <td>${orderItem.goods.effectiveAt?.format("yyyy-MM-dd")}
                     - ${orderItem.goods.expireAt?.format("yyyy-MM-dd")}
                 </td>

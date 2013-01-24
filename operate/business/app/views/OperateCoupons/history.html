@@ -21,7 +21,14 @@
         <tr>
             <td><a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a></abbr></td>
             <td>  ${n}${coupon?.getMaskedEcouponSn()}</td>
-            <td>${coupon?.orderItems?.phone}</td>
+            <td>
+            #{if hasViewEcouponSnPermission}
+                ${coupon?.orderItems?.phone}
+            #{/if}
+            #{else}
+                ${coupon?.orderItems?.getMaskedPhone()}
+            #{/else}
+            </td>
             <td>
                 <a href="http://${play.Play.configuration.getProperty("www.url")}/p/${coupon?.goods?.id}?preview=true"
                    target="_blank">

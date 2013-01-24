@@ -238,9 +238,16 @@
     #{paginate.list items:couponPage, as:'coupon' }
     <tr>
         <td><a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a></abbr></td>
-        <td>${coupon?.orderItems?.phone}</td>
         <td>
-            #{if hasViewEcouponSnPermission==true}
+        #{if hasViewEcouponSnPermission}
+        ${coupon?.orderItems?.phone}
+        #{/if}
+        #{else}
+        ${coupon?.orderItems?.getMaskedPhone()}
+        #{/else}
+        </td>
+        <td>
+            #{if hasViewEcouponSnPermission}
                 <a id="view_ecoupon" href="#" role="button" class="btn" data-toggle="modal"
                    onClick="viewECoupon(${coupon.id})" title="查看完整券号">
                 ${n}${coupon?.getMaskedEcouponSn()}

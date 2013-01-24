@@ -12,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
+import util.common.InfoUtil;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -256,6 +257,14 @@ public class OrderItems extends Model {
         query.setFirstResult(0);
         query.setMaxResults(10);
         return query.getResultList();
+    }
+
+    /**
+     * 得到掩码过的手机号
+     */
+    @Transient
+    public String getMaskedPhone() {
+        return InfoUtil.getMaskedPhone(this.phone);
     }
 
     /**

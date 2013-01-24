@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET     /                                       SupplierOrders.index
+GET     /                                       SupplierCoupons.index
 # GET     /orders                                 SupplierOrders.index
 # GET     /orders/{orderNumber}                   SupplierOrders.details
 # 券列表

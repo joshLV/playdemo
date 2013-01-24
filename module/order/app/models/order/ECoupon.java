@@ -30,6 +30,7 @@ import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
 import play.modules.solr.Solr;
+import util.common.InfoUtil;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -876,16 +877,9 @@ public class ECoupon extends Model {
      *
      * @return 券号
      */
+    @Transient
     public String getMaskedEcouponSn() {
-        StringBuilder sn = new StringBuilder();
-        int len = eCouponSn.length();
-        if (len > 4) {
-            for (int i = 0; i < len - 4; i++) {
-                sn.append("*");
-            }
-            sn.append(eCouponSn.substring(len - 4, len));
-        }
-        return sn.toString();
+        return InfoUtil.getMaskedEcouponSn(eCouponSn);
     }
 
 
@@ -895,6 +889,7 @@ public class ECoupon extends Model {
      * @param count
      * @return
      */
+    @Transient
     public String getLastCode(int count) {
         return eCouponSn.substring(eCouponSn.length() - count);
     }
