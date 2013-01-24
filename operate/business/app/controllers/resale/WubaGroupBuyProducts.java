@@ -14,6 +14,7 @@ import models.supplier.Supplier;
 import models.wuba.WubaResponse;
 import models.wuba.WubaUtil;
 import operate.rbac.annotations.ActiveNavigation;
+import play.db.jpa.JPA;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -49,8 +50,8 @@ public class WubaGroupBuyProducts extends Controller {
         //先将所有的参数认为是是团购信息参数
         Map<String, String> groupbuyInfoParams = params.allSimple();
         groupbuyInfoParams.remove("body");
-        GoodsDeployRelation relation = GoodsDeployRelation.generate(goods, OuterOrderPartner.WB);
-        groupbuyInfoParams.put("groupbuyId", String.valueOf(relation.linkId));
+        ResalerProduct product = ResalerProduct.generate(operateUser.id, OuterOrderPartner.WB, goods);
+        groupbuyInfoParams.put("groupbuyId", String.valueOf(product.id));
 
         Map<String, Object> prodModelJson = new HashMap<>();
         prodModelJson.put("prodmodcatename", groupbuyInfoParams.get("prodName"));
@@ -83,9 +84,9 @@ public class WubaGroupBuyProducts extends Controller {
         WubaResponse response =  WubaUtil.sendRequest(wubaParams, "emc.groupbuy.addgroupbuy", false);
         //保存历史
         if (response.isOk()) {
-            ResalerProduct product =  ResalerProduct.createProduct(OuterOrderPartner.WB,
-                    response.data.getAsJsonObject().get("groupbuyId58").getAsLong(),
-                    operateUser.id, goods, relation.linkId);
+            Long partnerProductId = response.data.getAsJsonObject().get("groupbuyId58").getAsLong();
+            product.partnerProduct(partnerProductId).save();
+
             ResalerProductJournal.createJournal(product, operateUser.id, new Gson().toJson(wubaParams),
                     ResalerProductJournalType.CREATE, "上传商品");
         }
@@ -98,12 +99,22 @@ public class WubaGroupBuyProducts extends Controller {
         if (product == null) {
             notFound();
         }
-        Goods goods = product.goods;
-        render(product, goods);
+
+        Supplier supplier = Supplier.findById(product.goods.supplierId);
+        Set<Shop> shopList = product.goods.shops;
+        render(product, shopList, supplier);
     }
 
     @ActiveNavigation("resale_partner_product")
-    public static void edit() {
+    public static void editGroupBuyInfo() {
+
+    }
+    @ActiveNavigation("resale_partner_product")
+    public static void editPartners() {
+
+    }
+    @ActiveNavigation("resale_partner_product")
+    public static void editDeadline() {
 
     }
 }
