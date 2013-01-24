@@ -49,6 +49,8 @@ GET     /resale-partner-products/jd/products/{goodsId} resale.JDGroupBuyProducts
 # 58
 GET     /resale-partner-products/wb/upload/{goodsId}   resale.WubaGroupBuyProducts.showUpload
 POST    /resale-partner-products/wb/upload             resale.WubaGroupBuyProducts.upload
+GET     /resale-partner-products/wb/edit/{productId}   resale.WubaGroupBuyProducts.showEdit
+POST    /resale-partner-products/wb/edit               resale.WubaGroupBuyProducts.edit
 
 # 当当
 GET     /resale-partner-products/dd/upload/{goodsId}   resale.DDGroupBuyProducts.showUpload
