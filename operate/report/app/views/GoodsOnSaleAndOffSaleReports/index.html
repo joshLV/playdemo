@@ -8,10 +8,12 @@
     <input type="text" name="condition.shortName" value="${condition?.shortName}">
     商品编号：
     <input type="text" name="condition.code" value="${condition?.code}">
-#{list items:resalerList, as:'resaler'}
+#{list items:resalerList, as:'resaler1'}
     <label class="checkbox inline">
-        <input type="checkbox" id="resalerIds" name="condition.resaleIds" value="${resaler.resalerId}"
-               #{if condition?.resaleIds?.contains(resaler.resalerId)}checked="true" #{/if}>${resaler.resalerName}&nbsp;
+        <input type="checkbox" id="resalerIds" name="resaleIds${resaler1?.resalerId}"
+               value="${resaler1?.resalerId}"
+               #{if condition?.resaleIds?.contains(resaler1.resalerId)}checked="true" #{/if}>${resaler1.resalerName}
+        &nbsp;
     </label>
 #{/list}<span style="color: #808080;">(筛选各渠道在售的商品)</span>
     <button type="submit" class="btn btn-primary" id="search">搜索</button>
@@ -23,8 +25,8 @@
     <thead>
     <th width="10px">编号</th>
     <th width="260px">商品名称</th>
-    #{list items:resalerList, as:'resaler'}
-    <th width="50px">${resaler.resalerName}</th>
+    #{list items:resalerList, as:'resaler0'}
+    <th width="50px">${resaler0.resalerName}</th>
     #{/list}
     <th width="50px">操作</th>
     </thead>
@@ -50,7 +52,7 @@
             goodsReport = report?.get(resaler.resalerName);
             }%
             <td>
-                #{if  goodsReport!=null && models.sales.ChannelGoodsInfoStatus.ONSALE==goodsReport?.status}
+                #{if goodsReport!=null && models.sales.ChannelGoodsInfoStatus.ONSALE==goodsReport?.status}
                     <a href="${goodsReport?.url}" target="_blank"><span
                             style="font-size: 15px;color: green">√</span></a>#{/if}
                 #{elseif goodsReport?.status==models.sales.ChannelGoodsInfoStatus.CREATED}
