@@ -131,8 +131,7 @@ public class SalesReportCondition implements Serializable {
                 condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
                 paramMap.put("supplierIds", supplierIds);
             } else {
-                condBuilder.append(" and 5 =:supplierIds");
-                paramMap.put("supplierIds", 6);
+                condBuilder.append(" and 1=0");
             }
         }
 
@@ -172,8 +171,7 @@ public class SalesReportCondition implements Serializable {
                 condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
                 paramMap.put("supplierIds", supplierIds);
             } else {
-                condBuilder.append(" and 5 =:supplierIds");
-                paramMap.put("supplierIds", 6);
+                condBuilder.append(" and 1=0");
             }
         }
 
@@ -211,8 +209,7 @@ public class SalesReportCondition implements Serializable {
                 condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
                 paramMap.put("supplierIds", supplierIds);
             } else {
-                condBuilder.append(" and 5 =:supplierIds");
-                paramMap.put("supplierIds", 6);
+                condBuilder.append(" and 1=0");
             }
         }
 
@@ -250,8 +247,7 @@ public class SalesReportCondition implements Serializable {
                 condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
                 paramMap.put("supplierIds", supplierIds);
             } else {
-                condBuilder.append(" and 5 =:supplierIds");
-                paramMap.put("supplierIds", 6);
+                condBuilder.append(" and 1=0");
             }
         }
 
@@ -290,8 +286,7 @@ public class SalesReportCondition implements Serializable {
                 condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
                 paramMap.put("supplierIds", supplierIds);
             } else {
-                condBuilder.append(" and 5 =:supplierIds");
-                paramMap.put("supplierIds", 6);
+                condBuilder.append(" and 1=0");
             }
         }
 
@@ -329,8 +324,7 @@ public class SalesReportCondition implements Serializable {
                 condBuilder.append(" and e.goods.supplierId in (:supplierIds)");
                 paramMap1.put("supplierIds", supplierIds);
             } else {
-                condBuilder.append(" and 5 =:supplierIds");
-                paramMap1.put("supplierIds", 6);
+                condBuilder.append(" and 1=0");
             }
         }
 
@@ -523,8 +517,7 @@ public class SalesReportCondition implements Serializable {
                 condBuilder.append(" and e.goods.supplierId in (:supplierIds)");
                 paramMap1.put("supplierIds", supplierIds);
             } else {
-                condBuilder.append(" and 5 =:supplierIds");
-                paramMap1.put("supplierIds", 6);
+                condBuilder.append(" and 1=0");
             }
         }
 
