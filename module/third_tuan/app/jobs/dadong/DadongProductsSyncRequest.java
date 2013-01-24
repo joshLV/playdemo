@@ -23,8 +23,7 @@ import play.libs.WS;
 import play.libs.XPath;
 import play.templates.Template;
 import play.templates.TemplateLoader;
-import util.ws.WebServiceClient;
-import util.ws.WebServiceClientFactory;
+import util.ws.WebServiceRequest;
 import utils.SafeParse;
 
 import java.io.File;
@@ -49,8 +48,7 @@ import java.util.Map;
  */
 public class DadongProductsSyncRequest {
     public static String ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
-    public static String ORGAN_CODE = Play.configuration.getProperty("dadong.origin.code",
-            "shanghaishihui_201301145784");
+    public static String ORGAN_CODE = Play.configuration.getProperty("dadong.origin.code", "shanghaishihui_201301145784");
     public static String URL = Play.configuration.getProperty("dadong.url", "http://www.ddrtty.net/bjskiService.action");
 
     public static Integer syncProducts() {
@@ -70,12 +68,10 @@ public class DadongProductsSyncRequest {
             String xml = template.render(args);
             Map<String, Object> params = new HashMap<>();
             params.put("xml", xml);
-            WebServiceClient client = WebServiceClientFactory.getClientHelper("GB2312");
-
-            System.out.println("get result : " + pageIndex);
             try {
-                Document document = client.postXml("thirdtuan.dadang.GetProducts", URL, params,
-                        String.valueOf(pageIndex));
+                Document document = WebServiceRequest.url(URL).type("thirdtuan.dadong.GetProducts")
+                        .encoding("GB2312").params(params).addKeyword(String.valueOf(pageIndex))
+                        .postXml();
 
                 List<Node> products = XPath.selectNodes("//products", document);
 

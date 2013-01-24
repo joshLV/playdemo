@@ -48,8 +48,8 @@
 
             <td width="30%">商品名称：<input type="text" name="condition.shortName" class="input-medium"
                                         value="${condition?.shortName}"/></td>
-            <td width="30%">商品编号：<input type="text" name="condition.no" class="input-medium"
-                                        value="${condition?.no}"/></td>
+            <td width="30%">商品编码：<input type="text" name="condition.code" class="input-medium"
+                                      value="${condition?.code}"/></td>
             <td></td>
         </tr>
         <tr>
@@ -70,8 +70,9 @@
                                          value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
             </td>
 
-            <td width="30%">编码：<input type="text" name="condition.code" class="input-medium"
-                                      value="${condition?.code}"/></td>
+            <td width="30%">编号：<input type="text" name="condition.no" class="input-medium"
+                                        value="${condition?.no}"/></td>
+
 
         </tr>
         <tr>
@@ -368,7 +369,7 @@ select:'condition_status',value:condition?.status/}
     <div class="modal-header">
         <a class="close" data-dismiss="modal">×</a>
 
-        <h3>设置网布选项</h3>
+        <h3>设置网站选项</h3>
     </div>
     <div class="modal-body">
     #{form @OperateOrders.index(), id:"setForm", name:"setForm",class:"form-horizontal",method:"PUT"}

@@ -6,6 +6,12 @@
 #{set 'moreStyles'}
 #{/set}
 <div class="body">
-        <legend> ${msg} </legend>
+    #{if response.isOk()}
+        <legend> 成功 </legend>
+    #{/if}
+    #{else}
+        <legend> 失败 </legend>
+    #{/else}
+    <p>${response.msg}</p>
 </div>
 

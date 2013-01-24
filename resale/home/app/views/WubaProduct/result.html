@@ -16,8 +16,8 @@
 #{/set}
 
 <div id="content">
-    状态：${status}  (10000表示成功)<br/>
-    信息：${msg}<br>
+    状态：${response.status}  (10000表示成功)<br/>
+    信息：${response.msg}<br>
 
 #{if status=="10000"}<a href="/58-status/onsale/${goodsId}" style="color: #D72300">上架</a> | #{/if}
     <a href="/library" style="color: #D72300">进入我的分销库</a> |

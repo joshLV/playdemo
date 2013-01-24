@@ -157,7 +157,7 @@ public class OrdersCondition {
                 sql.append(" and o.id=:orderId");
                 paramsMap.put("orderId", outerOrder.ybqOrder.id);
             } else {
-                sql.append(" and 1=0");
+                sql.append(" and 1=0"); //找不到记录
             }
         }
 

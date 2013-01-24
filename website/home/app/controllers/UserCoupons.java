@@ -3,9 +3,9 @@ package controllers;
 import controllers.modules.website.cas.SecureCAS;
 import models.accounts.AccountType;
 import models.consumer.User;
-import models.order.CouponHistory;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
+import models.order.ECouponHistoryMessage;
 import models.sales.Shop;
 import org.apache.commons.lang.StringUtils;
 import play.modules.breadcrumbs.BreadcrumbList;
@@ -75,7 +75,8 @@ public class UserCoupons extends Controller {
         User user = SecureCAS.getUser();
         ECoupon eCoupon = ECoupon.findById(id);
         boolean sendFalg = ECoupon.sendUserMessageInfo(id,couponshopsId);
-        new CouponHistory(eCoupon, user.getShowName(), "重发短信", eCoupon.status, eCoupon.status, null).save();
+        ECouponHistoryMessage.with(eCoupon).operator(user.getShowName())
+                .remark("重发短信").sendToMQ();
         renderJSON(sendFalg ? "0" : "1");
     }
 }

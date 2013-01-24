@@ -2,6 +2,7 @@ package util.ws;
 
 import models.journal.WebServiceCallLogData;
 import org.apache.commons.io.input.ReaderInputStream;
+import org.w3c.dom.Document;
 import play.Logger;
 import play.libs.WS.HttpResponse;
 import play.mvc.Http.Header;
@@ -28,6 +29,17 @@ public class MockWebServiceClient extends WebServiceClient {
             _instance = new MockWebServiceClient();
         }
         return _instance;
+    }
+
+    /**
+     * 测试环境都是UTF-8.
+     * @param encoding
+     * @return
+     */
+    public static WebServiceClient getInstance(String encoding) {
+        MockWebServiceClient instance = new MockWebServiceClient();
+        instance.encoding = encoding;
+        return instance;
     }
 
     /**
@@ -94,6 +106,17 @@ public class MockWebServiceClient extends WebServiceClient {
         @Override
         public InputStream getStream() {
             return new ReaderInputStream(new StringReader(content));
+        }
+
+        // 测试时使encoding只使用UTF-8（不支持GBK)
+        @Override
+        public Document getXml(String encoding) {
+            return super.getXml("UTF-8");
+        }
+
+        @Override
+        public String getString(String encoding) {
+            return super.getString("UTF-8");
         }
 
         @Override

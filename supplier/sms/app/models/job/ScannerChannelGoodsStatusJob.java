@@ -7,8 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import play.db.jpa.JPA;
 import play.jobs.Every;
 import play.jobs.Job;
-import util.ws.WebServiceClient;
-import util.ws.WebServiceClientFactory;
+import util.ws.WebServiceRequest;
 
 import javax.persistence.Query;
 import java.util.Date;
@@ -51,9 +50,12 @@ public class ScannerChannelGoodsStatusJob extends Job {
                 String url = channelGoodsInfo.url;
                 //变更前的状态
                 ChannelGoodsInfoStatus preStatus = channelGoodsInfo.status;
-                WebServiceClient client = WebServiceClientFactory
-                        .getClientHelper();
-                String retResponse = client.getString("", url, resaler.id.toString());
+                String retResponse = WebServiceRequest.url(url)
+                        .addKeyword(resaler.id).getString();
+
+                 //client.getString("", url, resaler.id.toString());
+
+
 
                 Matcher onSaleMatcher = onSalePattern.matcher(retResponse);
                 Matcher offSaleMatcher = offSalePattern.matcher(retResponse);

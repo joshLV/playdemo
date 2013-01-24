@@ -1,29 +1,24 @@
 package models.sms.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
+import models.sms.SMSException;
+import models.sms.SMSMessage;
+import models.sms.SMSProvider;
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
+import play.Logger;
+import play.Play;
+import util.ws.WebServiceRequest;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import models.sms.SMSException;
-import models.sms.SMSMessage;
-import models.sms.SMSProvider;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
-
-import play.Logger;
-import play.Play;
-import util.ws.WebServiceClientFactory;
-import util.ws.WebServiceClient;
-
 /**
  * 上海领时网络接口.
- * 
+ *
  * @author <a href="mailto:tangliqun@uhuila.com">唐力群</a>
  */
 public class LingshiSMSProvider implements SMSProvider {
@@ -61,10 +56,7 @@ public class LingshiSMSProvider implements SMSProvider {
         String url = SEND_URL.replace(":sms_info",
                         URLEncodedUtils.format(qparams, "GBK"));
 
-        WebServiceClient client = WebServiceClientFactory
-                        .getClientHelper();
-
-        String result = client.getString("LingshiSMS", url, phoneArgs);
+        String result = WebServiceRequest.url(url).type("LingshiSMS").addKeyword(phoneArgs).getString();
 
         Logger.info("返回消息：" + result);
         Matcher m = RESULTCODE_PATTERN.matcher(result);

@@ -26,6 +26,12 @@ public class CouponHistory extends Model {
     public String operator;
 
     public String remark;
+
+    /**
+     * 券使用的电话
+     */
+    public String phone;
+
     /**
      * 验证方式
      */
@@ -42,13 +48,4 @@ public class CouponHistory extends Model {
     @Enumerated(EnumType.STRING)
     public ECouponStatus toStatus;
 
-    public CouponHistory(ECoupon coupon, String operator, String remark, ECouponStatus fromStatus, ECouponStatus toStatus, VerifyCouponType verifyType) {
-        this.coupon = coupon;
-        this.operator = operator;
-        this.remark = remark;
-        this.fromStatus = fromStatus;
-        this.toStatus = toStatus;
-        this.verifyType = verifyType;
-        this.createdAt = new Date();
-    }
 }

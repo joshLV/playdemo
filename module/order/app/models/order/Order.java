@@ -723,7 +723,15 @@ public class Order extends Model {
                     //创建电子券
                     ECoupon eCoupon = createCoupon(goods, orderItem);
                     //记录券历史信息
-                    new CouponHistory(eCoupon, AccountType.RESALER.equals(orderItem.order.userType) ? "分销商：" + orderItem.order.getResaler().loginName : "消费者:" + orderItem.order.getUser().getShowName(), "产生券号", ECouponStatus.UNCONSUMED, ECouponStatus.UNCONSUMED, null).save();
+                    String operator = null;
+                    if (AccountType.RESALER.equals(orderItem.order.userType)) {
+                        operator = "分销商：" + orderItem.order.getResaler().loginName;
+                    } else {
+                        operator = "消费者:" + orderItem.order.getUser().getShowName();
+                    }
+                    ECouponHistoryMessage.with(eCoupon).operator(operator)
+                            .remark("产生券号").fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED)
+                            .sendToMQ();
                 }
             }
             //邮件提醒
@@ -1310,7 +1318,7 @@ public class Order extends Model {
      */
     public void sendOrderSMS(String remark) {
         for (OrderItems item : this.orderItems) {
-            SMSUtil.sendOrderItemSms(item.id, remark);
+            OrderECouponMessage.with(item).remark(remark).sendToMQ();
         }
     }
 }

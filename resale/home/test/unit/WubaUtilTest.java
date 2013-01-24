@@ -1,6 +1,7 @@
 package unit;
 
 import com.google.gson.JsonObject;
+import models.wuba.WubaResponse;
 import models.wuba.WubaUtil;
 import org.junit.Test;
 import play.test.UnitTest;
@@ -27,14 +28,16 @@ public class WubaUtilTest extends UnitTest {
                 "}";
         String json = "{" +
                 "\"status\":10000," +
+                "\"code\":1000," +
                 "\"msg\": \"执行成功\"," +
                 "\"data\": \"" + WubaUtil.encryptMessage(dataJson, WubaUtil.SECRET_KEY) + "\"" +
                 "}";
 
-        JsonObject result = WubaUtil.parseResponse(json, true);
-        assertEquals(10000L, result.get("status").getAsLong());
-        assertEquals("执行成功", result.get("msg").getAsString());
-        JsonObject data = result.getAsJsonObject("data");
+        WubaResponse result = WubaUtil.parseResponse(json, true);
+        assertEquals("10000", result.status);
+        assertEquals("1000", result.code);
+        assertEquals("执行成功", result.msg);
+        JsonObject data = result.data.getAsJsonObject();
         assertEquals(123L, data.get("groupbuyId58").getAsLong());
         assertEquals(321L, data.get("groupbuyIdThirdpart").getAsLong());
     }

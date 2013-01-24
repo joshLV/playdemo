@@ -4,8 +4,7 @@ import models.RabbitMQConsumerWithTx;
 import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
 import play.Logger;
-import util.ws.WebServiceClient;
-import util.ws.WebServiceClientFactory;
+import util.ws.WebServiceRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,11 +38,11 @@ public class TsingTuanSendOrderConsumer extends RabbitMQConsumerWithTx<TsingTuan
     protected String routingKey() {
         return this.queue();
     }
-    
+
     public static final String SEND_URL = "http://www.tsingtuan.com/outer/shihui/order.php";
 
     private final Pattern RESULTCODE_PATTERN = Pattern.compile("^0\\|");
-    
+
     public void sendOrder(TsingTuanOrder order) {
         //准备url
         Map<String, Object> params = new HashMap<>();
@@ -65,9 +64,12 @@ public class TsingTuanSendOrderConsumer extends RabbitMQConsumerWithTx<TsingTuan
         params.put("pay_time", order.pay_time.toString());
         params.put("coupons", order.coupons + "," + order.password);
         params.put("sign", order.getSign());
-        
-        WebServiceClient client = WebServiceClientFactory.getClientHelper();
-        String result = client.postString("TsingTuanSendOrder", SEND_URL, params, order.orderId.toString(), order.teamId.toString());
+
+        String result = WebServiceRequest.url(SEND_URL)
+                .type("TsingTuanSendOrder").params(params)
+                .addKeyword(order.orderId).addKeyword(order.teamId)
+                .postString();
+
         Logger.info("返回消息：" + result);
         result = result.trim();
         Matcher m = RESULTCODE_PATTERN.matcher(result);

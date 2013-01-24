@@ -7,10 +7,9 @@ import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
 import models.order.ECoupon;
 import models.order.Order;
+import models.order.OrderECouponMessage;
 import models.resale.Resaler;
 import models.sales.GoodsDeployRelation;
-import models.sms.OrderECouponMessage;
-import models.sms.SMSUtil;
 import models.wuba.WubaUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -66,7 +65,7 @@ public class WubaGroupBuyTest extends FunctionalTest {
         assertEquals(1, Order.count());
         assertEquals(1, ECoupon.count());
 
-        OrderECouponMessage message = (OrderECouponMessage) MockMQ.getLastMessage(SMSUtil.SMS_ORDER_QUEUE);
+        OrderECouponMessage message = (OrderECouponMessage) MockMQ.getLastMessage(OrderECouponMessage.MQ_KEY);
         assertNotNull(message);
     }
 

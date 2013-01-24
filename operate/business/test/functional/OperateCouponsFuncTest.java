@@ -8,6 +8,7 @@ import models.admin.OperateRole;
 import models.admin.OperateUser;
 import models.order.CouponHistory;
 import models.order.ECoupon;
+import models.order.ECouponHistoryMessage;
 import models.order.ECouponStatus;
 import models.order.Order;
 import models.sales.Goods;
@@ -20,6 +21,7 @@ import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 import util.DateHelper;
+import util.mq.MockMQ;
 
 import java.util.Date;
 import java.util.List;
@@ -37,8 +39,8 @@ public class OperateCouponsFuncTest extends FunctionalTest {
 
     @Before
     public void setUp() {
-
         FactoryBoy.deleteAll();
+        MockMQ.clear();
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
@@ -68,8 +70,6 @@ public class OperateCouponsFuncTest extends FunctionalTest {
                         target.createdAt = new Date();
                     }
                 });
-
-
     }
 
     @Test
@@ -117,9 +117,9 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         assertStatus(302, response);
         eCoupon.refresh();
         assertEquals(1, eCoupon.isFreeze.intValue());
-        assertEquals(1, CouponHistory.count());
-        CouponHistory historyList = CouponHistory.find("coupon=? order by createdAt desc", eCoupon).first();
-        assertEquals("冻结券号(无法验证)", historyList.remark);
+
+        ECouponHistoryMessage lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage.MQ_KEY);
+        assertEquals("冻结券号(无法验证)", lastMessage.remark);
     }
 
     @Test
@@ -131,10 +131,9 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         assertStatus(302, response);
         eCoupon.refresh();
         assertEquals(0, eCoupon.isFreeze.intValue());
-        assertEquals(1, CouponHistory.count());
 
-        CouponHistory historyList = CouponHistory.find("coupon=? order by createdAt desc", eCoupon).first();
-        assertEquals("解冻券号", historyList.remark);
+        ECouponHistoryMessage lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage.MQ_KEY);
+        assertEquals("解冻券号", lastMessage.remark);
     }
 
     @Test
@@ -144,10 +143,9 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         eCoupon.save();
         Http.Response response = GET("/coupons-message/" + eCoupon.id.toString() + "/send");
         assertIsOk(response);
-        assertEquals(1, CouponHistory.count());
-        CouponHistory historyList = CouponHistory.find("coupon=? order by createdAt desc", eCoupon).first();
-        assertEquals("重发短信", historyList.remark);
 
+        ECouponHistoryMessage lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage.MQ_KEY);
+        assertEquals("重发短信", lastMessage.remark);
     }
 
     @Test

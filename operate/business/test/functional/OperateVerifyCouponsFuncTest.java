@@ -14,8 +14,8 @@ import models.dangdang.DDAPIUtil;
 import models.dangdang.DDOrderItem;
 import models.dangdang.HttpProxy;
 import models.dangdang.Response;
-import models.order.CouponHistory;
 import models.order.ECoupon;
+import models.order.ECouponHistoryMessage;
 import models.order.ECouponPartner;
 import models.order.ECouponStatus;
 import models.order.Order;
@@ -31,6 +31,7 @@ import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
+import util.mq.MockMQ;
 
 import java.io.ByteArrayInputStream;
 import java.math.BigDecimal;
@@ -53,6 +54,8 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
+        MockMQ.clear();
+
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
@@ -64,8 +67,6 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         FactoryBoy.create(UserInfo.class);
         promoteUser = FactoryBoy.create(User.class);
         goods = FactoryBoy.create(Goods.class);
-
-
     }
 
     @Test
@@ -144,8 +145,9 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         eCoupon.refresh();
         ECoupon eCouponConsumed = ECoupon.findById(eCoupon.id);
         assertEquals(ECouponStatus.CONSUMED, eCouponConsumed.status);
-        CouponHistory historyList = CouponHistory.find("coupon=? order by createdAt desc", eCouponConsumed).first();
-        assertEquals("消费", historyList.remark);
+
+        ECouponHistoryMessage lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage.MQ_KEY);
+        assertEquals("消费", lastMessage.remark);
     }
 
     @Test

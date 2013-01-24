@@ -29,8 +29,7 @@ import play.mvc.Controller;
 import play.mvc.With;
 import play.templates.Template;
 import play.templates.TemplateLoader;
-import util.ws.WebServiceClient;
-import util.ws.WebServiceClientFactory;
+import util.ws.WebServiceRequest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -168,11 +167,8 @@ public class JingdongUploadTeam extends Controller {
 
         String restRequest = JDGroupBuyUtil.makeRequestRest(data);
 
-        WebServiceClient client = WebServiceClientFactory
-                .getClientHelper();
-
-        String responseResult = client.postStringWithBody("jingdong_update_title", url, restRequest,
-                fav.goods.id.toString(), fav.goods.shortName);
+        String responseResult = WebServiceRequest.url(url).type("jingdong_update_title").requestBody(restRequest)
+                .addKeyword(fav.goods.id).addKeyword(fav.goods.shortName).postString();
 
         JDRest<CommonUpdateResponse> uploadTeamRest = new JDRest<>();
         if (uploadTeamRest.parse(responseResult, new CommonUpdateResponse())) {
@@ -210,11 +206,9 @@ public class JingdongUploadTeam extends Controller {
 
         String restRequest = JDGroupBuyUtil.makeRequestRest(data);
 
-        WebServiceClient client = WebServiceClientFactory
-                .getClientHelper();
-
-        String responseResult = client.postStringWithBody("jingdong_update_detail", url, restRequest,
-                fav.goods.id.toString(), fav.goods.shortName);
+        String responseResult = WebServiceRequest.url(url).type("jingdong_update_detail")
+                .requestBody(restRequest)
+                .addKeyword(fav.goods.id).addKeyword(fav.goods.shortName).postString();
 
         JDRest<CommonUpdateResponse> uploadTeamRest = new JDRest<>();
         if (uploadTeamRest.parse(responseResult, new CommonUpdateResponse())) {
@@ -241,11 +235,9 @@ public class JingdongUploadTeam extends Controller {
 
         String restRequest = JDGroupBuyUtil.makeRequestRest(data);
 
-        WebServiceClient client = WebServiceClientFactory
-                .getClientHelper();
-
-        String responseResult = client.postStringWithBody("jingdong_update_expire", url, restRequest,
-                fav.goods.id.toString(), fav.goods.shortName);
+        String responseResult = WebServiceRequest.url(url).type("jingdong_update_expire")
+                .requestBody(restRequest)
+                .addKeyword(fav.goods.id).addKeyword(fav.goods.shortName).postString();
 
         JDRest<CommonUpdateResponse> uploadTeamRest = new JDRest<>();
         if (uploadTeamRest.parse(responseResult, new CommonUpdateResponse())) {
@@ -273,11 +265,9 @@ public class JingdongUploadTeam extends Controller {
 
         String restRequest = JDGroupBuyUtil.makeRequestRest(data);
 
-        WebServiceClient client = WebServiceClientFactory
-                .getClientHelper();
-
-        String responseResult = client.postStringWithBody("jingdong_update_bigimg", url, restRequest,
-                fav.goods.id.toString(), fav.goods.shortName);
+        String responseResult = WebServiceRequest.url(url).type("jingdong_update_bigimg")
+                .requestBody(restRequest)
+                .addKeyword(fav.goods.id).addKeyword(fav.goods.shortName).postString();
 
         JDRest<CommonUpdateResponse> uploadTeamRest = new JDRest<>();
         if (uploadTeamRest.parse(responseResult, new CommonUpdateResponse())) {
@@ -312,11 +302,9 @@ public class JingdongUploadTeam extends Controller {
 
         String restRequest = JDGroupBuyUtil.makeRequestRest(data);
 
-        WebServiceClient client = WebServiceClientFactory
-                .getClientHelper();
-
-        String responseResult = client.postStringWithBody("jingdong_update_partners", url, restRequest,
-                fav.goods.id.toString(), fav.goods.shortName);
+        String responseResult = WebServiceRequest.url(url)
+                .type("jingdong_update_partners").requestBody(restRequest)
+                .addKeyword(fav.goods.id).addKeyword(fav.goods.shortName).postString();
 
         JDRest<CommonUpdateResponse> uploadTeamRest = new JDRest<>();
         if (uploadTeamRest.parse(responseResult, new CommonUpdateResponse())) {

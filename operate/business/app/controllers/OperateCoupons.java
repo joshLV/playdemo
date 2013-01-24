@@ -5,6 +5,7 @@ import models.admin.OperateUser;
 import models.order.CouponHistory;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
+import models.order.ECouponHistoryMessage;
 import models.order.ECouponStatus;
 import models.order.VerifyCouponType;
 import models.sales.Brand;
@@ -19,7 +20,6 @@ import play.mvc.With;
 import util.DateHelper;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -152,7 +152,9 @@ public class OperateCoupons extends Controller {
     public static void sendMessage(long id) {
         boolean sendFalg = ECoupon.sendMessage(id);
         ECoupon eCoupon = ECoupon.findById(id);
-        new CouponHistory(eCoupon, OperateRbac.currentUser().userName, "重发短信", eCoupon.status, eCoupon.status, null).save();
+
+        ECouponHistoryMessage.with(eCoupon).operator(OperateRbac.currentUser().userName)
+                .remark("重发短信").sendToMQ();
         renderJSON(sendFalg ? "0" : "1");
     }
 
@@ -160,7 +162,8 @@ public class OperateCoupons extends Controller {
         if (id != null) {
             ECoupon coupon = ECoupon.findById(id);
             if (coupon != null) {
-                new CouponHistory(coupon, OperateRbac.currentUser().userName, "查看完整券号", coupon.status, coupon.status, null).save();
+                ECouponHistoryMessage.with(coupon).operator(OperateRbac.currentUser().userName)
+                        .remark("查看完整券号").sendToMQ();
                 renderText(coupon.eCouponSn);
             }
         }
@@ -245,13 +248,13 @@ public class OperateCoupons extends Controller {
         coupon.appointmentDate = date;
         coupon.appointmentRemark = remark;
         coupon.save();
-        coupon.sendOrderSMS(null, "发送预约短信");
+        coupon.sendOrderSMS("发送预约短信");
         boolean success = true;
         render("OperateCoupons/showAppointment.html", coupon, success);
     }
 
     public static void couponInfo(Long id) {
-        ECoupon coupon=ECoupon.findById(id);
+        ECoupon coupon = ECoupon.findById(id);
         render(coupon);
     }
 }

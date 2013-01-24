@@ -111,6 +111,8 @@ public class Goods extends Model {
     public static final String IMAGE_ORIGINAL = "nw";
     public static final String IMAGE_DEFAULT = "";
 
+    public static final String[] value = {"99", "999", "9999", "99999", "999999"};
+
     //  ========= 不同的价格列表 =======
     /**
      * 商户填写的商品市场价
@@ -150,6 +152,13 @@ public class Goods extends Model {
      */
     @Column(name = "resale_price")
     public BigDecimal resaleAddPrice;
+
+    /**
+     * 是否免运费
+     */
+    @Column(name = "free_shipping")
+    @SolrField
+    public Boolean freeShipping = Boolean.FALSE;
 
     /**
      * 给推荐者的返利金额
@@ -1888,12 +1897,16 @@ public class Goods extends Model {
 
 
     public void resetCode() {
-        Goods goods = Goods.find("supplierId=? and sequenceCode is not null order by sequenceCode desc", this.supplierId).first();
+        Goods goods = Goods.find("supplierId=? and sequenceCode is not null order by cast(sequenceCode as int) desc", this.supplierId).first();
         Supplier supplier = Supplier.findById(this.supplierId);
         if (goods == null) {
             this.sequenceCode = "01";
         } else {
-            this.sequenceCode = Supplier.calculateFormattedCode(goods.sequenceCode, "2");
+            if (goods.sequenceCode.equals(value[goods.code.length() - 8])) {
+                this.sequenceCode = Supplier.calculateFormattedCode(goods.sequenceCode, String.valueOf(goods.code.length() - 5));
+            } else {
+                this.sequenceCode = Supplier.calculateFormattedCode(goods.sequenceCode, String.valueOf(goods.code.length() - 6));
+            }
         }
         if (supplier != null && StringUtils.isNotBlank(supplier.code)) {
             this.code = supplier.code + this.sequenceCode;
