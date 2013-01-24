@@ -26,7 +26,7 @@ public class GoodsOnSaleAndOffSaleReport {
     public static CrossTableConverter<GoodsOnSaleAndOffSaleReport, GoodsOnSaleAndOffSaleReport> converter = new CrossTableConverter<GoodsOnSaleAndOffSaleReport, GoodsOnSaleAndOffSaleReport>() {
         @Override
         public String getRowKey(GoodsOnSaleAndOffSaleReport target) {
-            return target.goods.shortName + "※" + target.goods.code + "※" + target.goods.id;
+            return target.goods.shortName + "※" + target.goods.code + "※" + target.goods.id+"※" +target.goods.getStatus() ;
         }
 
         @Override
@@ -65,7 +65,7 @@ public class GoodsOnSaleAndOffSaleReport {
         Query query = JPA.em()
                 .createQuery(
                         "select new models.GoodsOnSaleAndOffSaleReport(c.resaler) "
-                                + " from ChannelGoodsInfo c " + condition.filterOfResaler()
+                                + " from ChannelGoodsInfo c "
                                 + " group by c.resaler order by c.resaler desc");
          for (Map.Entry<String, Object> param : condition.getParamMap().entrySet()) {
             query.setParameter(param.getKey(), param.getValue());

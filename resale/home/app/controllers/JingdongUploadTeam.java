@@ -15,6 +15,7 @@ import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.sales.ChannelGoodsInfo;
+import models.sales.ChannelGoodsInfoStatus;
 import models.sales.Goods;
 import models.sales.GoodsDeployRelation;
 import models.sales.GoodsThirdSupport;
@@ -416,6 +417,7 @@ public class JingdongUploadTeam extends Controller {
             } else {
                 channelGoodsInfo.url = url;
                 channelGoodsInfo.tag = "京东";
+                channelGoodsInfo.status= ChannelGoodsInfoStatus.CREATED;
                 channelGoodsInfo.save();
             }
         }

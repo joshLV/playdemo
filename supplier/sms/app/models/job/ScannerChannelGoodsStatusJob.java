@@ -40,9 +40,10 @@ public class ScannerChannelGoodsStatusJob extends Job {
             Pattern onSalePattern = Pattern.compile(onSaleKey);
             Pattern offSalePattern = Pattern.compile(offSaleKey);
 
-            String sql = "select c from ChannelGoodsInfo c where c.deleted=0 and c.resaler=:resaler and c.status is null";
+            String sql = "select c from ChannelGoodsInfo c where c.deleted=0 and c.resaler=:resaler and c.status =:status";
             Query query = JPA.em().createQuery(sql);
             query.setParameter("resaler", resaler);
+            query.setParameter("status", ChannelGoodsInfoStatus.CREATED);
             query.setFirstResult(0);
             query.setMaxResults(200);
             List<ChannelGoodsInfo> resultList = query.getResultList();
@@ -60,14 +61,15 @@ public class ScannerChannelGoodsStatusJob extends Job {
                     channelGoodsInfo.status = ChannelGoodsInfoStatus.ONSALE;
                     channelGoodsInfo.onSaleAt = new Date();
                     channelGoodsInfo.save();
-                } else if (preStatus != ChannelGoodsInfoStatus.OFFSALE && (!onSaleMatcher.find()|| offSaleMatcher.find())) {
+                } else if (preStatus != ChannelGoodsInfoStatus.OFFSALE && (!onSaleMatcher.find() || offSaleMatcher.find())) {
                     channelGoodsInfo.status = ChannelGoodsInfoStatus.OFFSALE;
                     channelGoodsInfo.offSaleAt = new Date();
                     channelGoodsInfo.save();
                 } else if (!offSaleMatcher.find() && !onSaleMatcher.find()) {
-                    channelGoodsInfo.status = ChannelGoodsInfoStatus.PAGE_NOT_EXISTED;
+                    channelGoodsInfo.status = ChannelGoodsInfoStatus.UNKNOWN;
                     channelGoodsInfo.save();
                 }
+
             }
         }
     }

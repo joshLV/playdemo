@@ -12,6 +12,7 @@ import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.sales.ChannelGoodsInfo;
+import models.sales.ChannelGoodsInfoStatus;
 import models.sales.Goods;
 import models.sales.GoodsDeployRelation;
 import models.sales.GoodsThirdSupport;
@@ -433,6 +434,7 @@ public class WubaProduct extends Controller {
                     } else {
                         channelGoodsInfo.url = url;
                         channelGoodsInfo.tag = cityName;
+                        channelGoodsInfo.status= ChannelGoodsInfoStatus.CREATED;
                         channelGoodsInfo.save();
                     }
                 }
