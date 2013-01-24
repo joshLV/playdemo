@@ -78,7 +78,7 @@ public class GoodsOnSaleAndOffSaleReport {
                 .createQuery(
                         "select new models.GoodsOnSaleAndOffSaleReport(c.goods,c.resaler,c.url,c.status ) "
                                 + " from ChannelGoodsInfo c "
-                                + condition.filter() + "  order by c.resaler desc");
+                                + condition.filter() + " order by c.resaler desc");
 
         for (Map.Entry<String, Object> param : condition.getParamMap().entrySet()) {
             query.setParameter(param.getKey(), param.getValue());

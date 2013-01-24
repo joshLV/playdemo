@@ -26,18 +26,20 @@ public class GoodsOnSaleAndOffSaleCondition {
 
     public String filter() {
         StringBuilder builder = new StringBuilder(" where 1=1 ");
-        if (shortName != null) {
+        if (StringUtils.isNotBlank(shortName)) {
             builder.append(" and c.goods.shortName like :shortName");
             paramMap.put("shortName", "%" + shortName + "%");
         }
         if (StringUtils.isNotBlank(code)) {
-            builder.append(" and r.goods.code = :code");
+            builder.append(" and c.goods.code = :code");
             paramMap.put("code", code);
         }
         if (resaleIds != null) {
-            builder.append(" and c.goods in (select g.goods from ChannelGoodsInfo g where g.resaler.id in ( :resaleIds) and status=:status)");
-            paramMap.put("resaleIds", resaleIds);
-            paramMap.put("status", ChannelGoodsInfoStatus.ONSALE);
+            for (Long id : resaleIds) {
+                builder.append(" and c.goods in (select g.goods from ChannelGoodsInfo g where g.resaler.id = :resaleId"+id+" and status=:status)");
+                paramMap.put("resaleId"+id, id);
+                paramMap.put("status", ChannelGoodsInfoStatus.ONSALE);
+            }
         }
         return builder.toString();
     }
