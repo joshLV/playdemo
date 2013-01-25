@@ -3,3 +3,29 @@
 # For exemple, for french create a messages.fr file
 
 #cms.name=cms
+
+
+user.loginName=帐号
+user.mobile=手机
+user.lastLoginAt=最后登录时间
+user.loginIp=最后登录IP
+user.createdAt=注册时间
+user.status=状态
+user.amount=账户余额
+
+user.status.NORMAL=正常
+user.status.FREEZE=冻结
+user.status.null=
+user.openIdSource=第三方登录系统
+user.userInfo.fullName=姓名
+user.userInfo.userSex=性别
+user.userInfo.birthday=生日
+user.userInfo.phone=电话
+user.userInfo.marryState=婚否
+user.userInfo.position=职务
+user.userInfo.userqq=QQ
+user.userInfo.salary=薪水
+user.userInfo.interest=兴趣爱好
+user.userInfo.industry=行业
+user.userInfo.otherInfo=其他行业
+user.userInfo.totalPoints=积分
