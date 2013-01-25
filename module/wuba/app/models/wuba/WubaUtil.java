@@ -130,30 +130,25 @@ public class WubaUtil {
      * @return 解析后的对象
      */
     public static WubaResponse parseResponse(String jsonResponse, boolean needDecrypt) {
-        try {
-            JsonParser jsonParser = new JsonParser();
+        JsonParser jsonParser = new JsonParser();
 
-            JsonObject result = jsonParser.parse(jsonResponse).getAsJsonObject();
+        JsonObject result = jsonParser.parse(jsonResponse).getAsJsonObject();
 
-            WubaResponse response = new WubaResponse();
+        WubaResponse response = new WubaResponse();
 
-            response.status = result.get("status").getAsString();
-            response.code = result.get("code").getAsString();
-            if (result.get("msg") != null) {
-                response.msg = result.get("msg").getAsString();
-            }
-            if (result.has("data")) {
-                String data = result.get("data").getAsString();
-                if (response.isOk() && needDecrypt) {
-                    data = decryptMessage(data);
-                }
-                response.data = jsonParser.parse(data);
-            }
-            return response;
-        } catch (Exception e) {
-            Logger.error("Bad JSON: \n%s", jsonResponse);
-            throw new RuntimeException("Cannot parse JSON (check logs)", e);
+        response.status = result.get("status").getAsString();
+        response.code = result.get("code").getAsString();
+        if (!result.get("msg").isJsonNull()) {
+            response.msg = result.get("msg").getAsString();
         }
+        if (result.has("data")) {
+            String data = result.get("data").getAsString();
+            if (response.isOk() && needDecrypt) {
+                data = decryptMessage(data);
+            }
+            response.data = jsonParser.parse(data);
+        }
+        return response;
     }
 
     /**
