@@ -1,105 +1,131 @@
 <!DOCTYPE html>
 
 <html>
-  <head>
+<head>
     <title>#{get 'title' /}</title>
     <meta charset="utf-8">
     <meta name="description" content="">
     <meta name="author" content="">
 
-  #{asset.js src:['/jquery-1.7.2.min.js'] /}
+#{asset.js src:['/jquery-1.7.2.min.js'] /}
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
     <!-- Le styles -->
-    #{asset.css src:['/bootstrap/bootstrap.css', '/bootstrap/bootstrap-responsive.css',
-                    '/bootstrap/datepicker.css', '/o/main.css'] /}
+#{asset.css src:['/bootstrap/bootstrap.css', '/bootstrap/bootstrap-responsive.css',
+'/bootstrap/datepicker.css', '/o/main.css'] /}
     <style type="text/css">
-      body {
-      padding-top: 60px;
-      padding-bottom: 40px;
-      }
-      .sidebar-nav {
-      padding: 9px 0;
-      }
-    </style>
-  #{get 'moreStyles' /}
+        body {
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
 
-      <!-- Le fav and touch icons -->
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        .form-inline ul {
+            display: inline-block;
+            margin-bottom: -15px;
+        }
+
+        .rank {
+            background-image: url(http://img.uhcdn.com/images/r/rank.png);
+            background-position: right 6px;
+            background-repeat: no-repeat;
+        }
+
+        .rank-asc {
+            background-position: right -15px;
+        }
+
+        .rank-desc {
+            background-position: right -36px;
+        }
+    </style>
+#{get 'moreStyles' /}
+
+    <!-- Le fav and touch icons -->
     <link rel="shortcut icon" href="#{asset.url href:'/images/bootstrap/favicon.png'/}">
     <link rel="apple-touch-icon" href="#{asset.url href:'/images/bootstrap/bootstrap-apple-57x57.png'/}">
     <link rel="apple-touch-icon" sizes="72x72" href="#{asset.url href:'/images/bootstrap/bootstrap-apple-72x72.png'/}">
-    <link rel="apple-touch-icon" sizes="114x114" href="#{asset.url href:'/images/bootstrap/bootstrap-apple-114x114.png'/}">
-  </head>
-  <body >
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
+    <link rel="apple-touch-icon" sizes="114x114"
+          href="#{asset.url href:'/images/bootstrap/bootstrap-apple-114x114.png'/}">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
         <div class="container-fluid">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="#">运营后台</a>
-          <div class="nav-collapse">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="#">运营后台</a>
+
+            <div class="nav-collapse">
             #{navigation.topMenus topMenus /}
-            <p class="navbar-text pull-right">当前用户：
-                <a id="profile" href="http://admin.seewi.com.cn/profile">${currentUser?.loginName}</a>
-                <a href="/logout">注销</a>
-            </p>
-          </div><!--/.nav-collapse -->
+                <p class="navbar-text pull-right">当前用户：
+                    <a id="profile" href="http://admin.seewi.com.cn/profile">${currentUser?.loginName}</a>
+                    <a href="/logout">注销</a>
+                </p>
+            </div>
+            <!--/.nav-collapse -->
         </div>
-      </div>
     </div>
-    <div class="container-fluid">
-      <i class="icon icon-chevron-left" id="expand-sidebar" style="margin-top: -14px;cursor:pointer"></i>
-      <div class="row-fluid">
+</div>
+<div class="container-fluid">
+    <i class="icon icon-chevron-left" id="expand-sidebar" style="margin-top: -14px;cursor:pointer"></i>
+
+    <div class="row-fluid">
         <div class="span2" id="content-left-side">
-          <div class="well sidebar-nav">
+            <div class="well sidebar-nav">
             #{get 'sidebar-nav'/}
-          </div><!--/.well -->
-        </div><!--/span-->
-        <div class="span10" id="content-right-side">
-          #{doLayout /}
+            </div>
+            <!--/.well -->
         </div>
-      </div>
+        <!--/span-->
+        <div class="span10" id="content-right-side">
+        #{doLayout /}
+        </div>
     </div>
-    <footer>
-      <p>&copy; 上海视惠信息科技有限公司 2012</p>
-    </footer>
+</div>
+<footer>
+    <p>&copy; 上海视惠信息科技有限公司 2012</p>
+</footer>
 
-    <!-- javascript -->
-    #{asset.js src:['/bootstrap/bootstrap-transition.js', '/bootstrap/bootstrap-alert.js',
-    '/bootstrap/bootstrap-modal.js', '/bootstrap/bootstrap-dropdown.js',
-    '/bootstrap/bootstrap-scrollspy.js', '/bootstrap/bootstrap-tab.js'] /}
-    #{asset.js src:['/bootstrap/bootstrap-tooltip.js',
-    '/bootstrap/bootstrap-popover.js', '/bootstrap/bootstrap-button.js', '/bootstrap/bootstrap-collapse.js',
-    '/bootstrap/bootstrap-carousel.js', '/bootstrap/bootstrap-typeahead.js',
-    '/bootstrap/bootstrap-datepicker.js'] /}
+<!-- javascript -->
+#{asset.js src:['/bootstrap/bootstrap-transition.js', '/bootstrap/bootstrap-alert.js',
+'/bootstrap/bootstrap-modal.js', '/bootstrap/bootstrap-dropdown.js',
+'/bootstrap/bootstrap-scrollspy.js', '/bootstrap/bootstrap-tab.js'] /}
+#{asset.js src:['/bootstrap/bootstrap-tooltip.js',
+'/bootstrap/bootstrap-popover.js', '/bootstrap/bootstrap-button.js', '/bootstrap/bootstrap-collapse.js',
+'/bootstrap/bootstrap-carousel.js', '/bootstrap/bootstrap-typeahead.js',
+'/bootstrap/bootstrap-datepicker.js'] /}
 
-    <script>
-        $(function(){
-            $("#expand-sidebar").click(function(){
-                var ele = $(this);
-                if (ele.hasClass("icon-chevron-left")){
-                    ele.removeClass("icon-chevron-left");
-                    ele.addClass("icon-chevron-right");
-                    $("#content-left-side").hide();
-                    $("#content-right-side").removeClass("span10");
-                }else{
-                    ele.addClass("icon-chevron-left");
-                    ele.removeClass("icon-chevron-right");
-                    $("#content-left-side").show();
-                    $("#content-right-side").addClass("span10");
-                }
-            });
-            $('.bs-datepicker').datepicker();
+<script>
+    $(function () {
+        $("#expand-sidebar").click(function () {
+            var ele = $(this);
+            if (ele.hasClass("icon-chevron-left")) {
+                ele.removeClass("icon-chevron-left");
+                ele.addClass("icon-chevron-right");
+                $("#content-left-side").hide();
+                $("#content-right-side").removeClass("span10");
+            } else {
+                ele.addClass("icon-chevron-left");
+                ele.removeClass("icon-chevron-right");
+                $("#content-left-side").show();
+                $("#content-right-side").addClass("span10");
+            }
         });
-    </script>
+        $('.bs-datepicker').datepicker();
+    });
+</script>
 
-    #{get 'moreScripts' /}
+#{get 'moreScripts' /}
 
-  </body>
+</body>
 </html>
