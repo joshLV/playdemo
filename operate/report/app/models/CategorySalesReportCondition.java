@@ -27,6 +27,7 @@ public class CategorySalesReportCondition {
     public String desc;
     public int orderByIndex;
     public String orderByType;
+    public Long supplierId = 0l;
 
 
     public String getFilter() {
@@ -63,7 +64,10 @@ public class CategorySalesReportCondition {
                 paramMap.put("supplierIds", 6);
             }
         }
-
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap.put("supplierId", supplierId);
+        }
 
         return condBuilder.toString();
     }
@@ -104,7 +108,10 @@ public class CategorySalesReportCondition {
                 paramMap.put("supplierIds", 6);
             }
         }
-
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap.put("supplierId", supplierId);
+        }
 
         return condBuilder.toString();
     }
@@ -145,7 +152,10 @@ public class CategorySalesReportCondition {
             }
         }
 
-
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap.put("supplierId", supplierId);
+        }
         return condBuilder.toString();
     }
 
@@ -185,6 +195,10 @@ public class CategorySalesReportCondition {
                 paramMap.put("supplierIds", 6);
             }
         }
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap.put("supplierId", supplierId);
+        }
         return condBuilder.toString();
     }
 
@@ -221,6 +235,10 @@ public class CategorySalesReportCondition {
                 condBuilder.append(" and 5 =:supplierIds");
                 paramMap.put("supplierIds", 6);
             }
+        }
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap.put("supplierId", supplierId);
         }
 
         return condBuilder.toString();
@@ -259,6 +277,10 @@ public class CategorySalesReportCondition {
                 condBuilder.append(" and 5 =:supplierIds");
                 paramMap1.put("supplierIds", 6);
             }
+        }
+        if (supplierId != 0) {
+            condBuilder.append(" and e.goods.supplierId = :supplierId");
+            paramMap1.put("supplierId", supplierId);
         }
 
         return condBuilder.toString();
@@ -299,7 +321,10 @@ public class CategorySalesReportCondition {
                 paramMap1.put("supplierIds", 6);
             }
         }
-
+        if (supplierId != 0) {
+            condBuilder.append(" and e.goods.supplierId = :supplierId");
+            paramMap1.put("supplierId", supplierId);
+        }
         return condBuilder.toString();
     }
 

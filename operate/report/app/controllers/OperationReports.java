@@ -14,6 +14,7 @@ import models.ResaleSalesReport;
 import models.ResaleSalesReportCondition;
 import models.SalesReport;
 import models.SalesReportCondition;
+import models.supplier.Supplier;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -86,7 +87,9 @@ public class OperationReports extends Controller {
         ValuePaginator<SalesReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
         // 汇总
         SalesReport summary = SalesReport.getNetSummary(resultList);
-        render(condition, reportPage, hasSeeReportProfitRight, summary, desc);
+        List<Supplier> supplierList = Supplier.findUnDeleted();
+
+        render(condition, reportPage, hasSeeReportProfitRight, summary, desc, supplierList);
     }
 
 
@@ -109,7 +112,8 @@ public class OperationReports extends Controller {
         List<CategorySalesReport> totalList = CategorySalesReport.queryTotal(condition);
         // 汇总
         CategorySalesReport summary = CategorySalesReport.getNetSummary(totalList);
-        render(condition, reportPage, hasSeeReportProfitRight, summary);
+        List<Supplier> supplierList = Supplier.findUnDeleted();
+        render(condition, reportPage, hasSeeReportProfitRight, summary,supplierList);
     }
 
 
@@ -308,8 +312,8 @@ public class OperationReports extends Controller {
 
         // 汇总
         ChannelGoodsReport summary = ChannelGoodsReport.getNetSummary(resultList);
-
-        render(condition, reportPage, hasSeeReportProfitRight, summary);
+        List<Supplier> supplierList = Supplier.findUnDeleted();
+        render(condition, reportPage, hasSeeReportProfitRight, summary,supplierList);
 
     }
 

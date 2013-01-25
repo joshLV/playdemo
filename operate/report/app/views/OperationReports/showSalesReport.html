@@ -91,17 +91,23 @@
 <div class="body">
 <form action="@{OperationReports.showSalesReport()}" method="GET" id="search_form"
       name="search_form">
+    <td width="30%">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
+    #{vx.selectInputField name:"supplierName", id:"condition.supplierId", list:supplierList, value:condition?.supplierId, array:"supplierArray",importJs:true/}</td>
+
     商品名称：<input type="text" name="condition.shortName" class="input-medium"
                 value="${condition?.shortName}"/>
     商品编码：<input type="text" name="condition.code" class="input-medium"
                 value="${condition?.code}"/>
+    <br/>
+    <br/>
     起止日期
     <input type="text" id="condition_beginAt" class="input-medium Wdate" name="condition.beginAt"
            onfocus="WdatePicker({readOnly:true})" value="${condition?.beginAt?.format()}"> -
     <input type="text" id="condition_endAt" class="input-medium Wdate" name="condition.endAt"
            onfocus="WdatePicker({readOnly:true})" value="${condition?.endAt?.format()}">
+    &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp;
     <button type="submit" class="btn btn-primary" id="search" onclick="showSalesReport()">搜索</button>
-    <br/>
+
 
     <div style="float:right">
         <button class="btn btn-primary" id="searchbtn" onclick="salesReportExcel(${desc})">导出报表</button>
@@ -110,7 +116,7 @@
         </button>
     #{/if}
     </div>
-
+    <br/>
     <ul class="nav nav-pills">
         <li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">今天</a></li>
         <li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>

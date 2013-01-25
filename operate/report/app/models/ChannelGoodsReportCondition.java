@@ -22,6 +22,7 @@ public class ChannelGoodsReportCondition {
     private Map<String, Object> paramMap1 = new HashMap<>();
     public Boolean hasSeeReportProfitRight;
     public Long operatorId;
+    public Long supplierId = 0l;
 
     public String getFilter(AccountType type) {
 //               +  " and r.order.userType = models.accounts.AccountType.RESALER "
@@ -58,7 +59,10 @@ public class ChannelGoodsReportCondition {
                 paramMap.put("supplierIds", 6);
             }
         }
-
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap.put("supplierId", supplierId);
+        }
         return condBuilder.toString();
     }
 
@@ -100,7 +104,10 @@ public class ChannelGoodsReportCondition {
                 paramMap.put("supplierIds", 6);
             }
         }
-
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap.put("supplierId", supplierId);
+        }
         return condBuilder.toString();
     }
 
@@ -143,7 +150,10 @@ public class ChannelGoodsReportCondition {
                 paramMap1.put("supplierIds", 6);
             }
         }
-
+        if (supplierId != 0) {
+            condBuilder.append(" and e.goods.supplierId = :supplierId");
+            paramMap1.put("supplierId", supplierId);
+        }
         return condBuilder.toString();
     }
 
@@ -183,6 +193,10 @@ public class ChannelGoodsReportCondition {
                 condBuilder.append(" and 5 =:supplierIds");
                 paramMap.put("supplierIds", 6);
             }
+        }
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap.put("supplierId", supplierId);
         }
 
         return condBuilder.toString();
@@ -225,7 +239,10 @@ public class ChannelGoodsReportCondition {
                 paramMap.put("supplierIds", 6);
             }
         }
-
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap.put("supplierId", supplierId);
+        }
         return condBuilder.toString();
     }
 
@@ -266,6 +283,10 @@ public class ChannelGoodsReportCondition {
                 paramMap.put("supplierIds", 6);
             }
         }
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap.put("supplierId", supplierId);
+        }
         return condBuilder.toString();
     }
 
@@ -303,6 +324,10 @@ public class ChannelGoodsReportCondition {
                 condBuilder.append(" and 5 =:supplierIds");
                 paramMap1.put("supplierIds", 6);
             }
+        }
+        if (supplierId != 0) {
+            condBuilder.append(" and e.goods.supplierId = :supplierId");
+            paramMap1.put("supplierId", supplierId);
         }
         return condBuilder.toString();
     }
