@@ -14,7 +14,8 @@
     <![endif]-->
 
     <!-- Le styles -->
-    #{asset.css src:['/bootstrap/bootstrap.css', '/bootstrap/bootstrap-responsive.css', '/o/main.css'] /}
+    #{asset.css src:['/bootstrap/bootstrap.css', '/bootstrap/bootstrap-responsive.css',
+                    '/bootstrap/datepicker.css', '/o/main.css'] /}
     <style type="text/css">
       body {
       padding-top: 60px;
@@ -75,7 +76,8 @@
     '/bootstrap/bootstrap-scrollspy.js', '/bootstrap/bootstrap-tab.js'] /}
     #{asset.js src:['/bootstrap/bootstrap-tooltip.js',
     '/bootstrap/bootstrap-popover.js', '/bootstrap/bootstrap-button.js', '/bootstrap/bootstrap-collapse.js',
-    '/bootstrap/bootstrap-carousel.js', '/bootstrap/bootstrap-typeahead.js'] /}
+    '/bootstrap/bootstrap-carousel.js', '/bootstrap/bootstrap-typeahead.js',
+    '/bootstrap/bootstrap-datepicker.js'] /}
 
     <script>
         $(function(){
@@ -93,6 +95,7 @@
                     $("#content-right-side").addClass("span10");
                 }
             });
+            $('.bs-datepicker').datepicker();
         });
     </script>
 
