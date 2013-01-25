@@ -61,7 +61,7 @@ public class TaobaoCouponUtil {
             if (i != 0) {
                 verifyCodes.append(",");
             }
-            verifyCodes.append(eCoupons.get(i).eCouponSn).append(":1");
+            verifyCodes.append(eCoupons.get(i).getSafeECouponSN()).append(":1"); //1表示数量
         }
 
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, TOP_APPKEY, TOP_APPSECRET);
