@@ -53,7 +53,6 @@ public class WubaGroupBuy extends Controller {
         allParams.remove("body");
         Logger.info("wuba request: \n%s", new Gson().toJson(allParams));
         JsonObject orderJson = WubaUtil.parseRequest(param);
-        Logger.info("wuba request decrypted: \n%s", orderJson.toString());
 
         Map<String, Object> result = new HashMap<>();
         putStatusAndMsg(result, "10000", "成功");
@@ -166,7 +165,6 @@ public class WubaGroupBuy extends Controller {
         allParams.remove("body");
         Logger.info("wuba request: \n%s", new Gson().toJson(allParams));
         JsonObject refundJson = WubaUtil.parseRequest(param);
-        Logger.info("wuba request: \n%s", refundJson.toString());
 
         Long ticketId;
         String orderId;
@@ -235,7 +233,6 @@ public class WubaGroupBuy extends Controller {
         allParams.remove("body");
         Logger.info("wuba request: \n%s", new Gson().toJson(allParams));
         JsonObject refundJson = WubaUtil.parseRequest(param);
-        Logger.info("wuba request: \n%s", refundJson.toString());
 
         Map<String, Object> result = new HashMap<>();
         putStatusAndMsg(result, "10000", "成功");

@@ -22,9 +22,10 @@
 <tr>
     <th>#</th>
     <th>发布时间</th>
-    <th>上传人</th>
+    <th>发布人</th>
+    <th>最后修改时间</th>
     <th>最后修改人</th>
-    <th>外部ID</th>
+    <th>第三方ID</th>
     <th>操作</th>
 </tr>
 </thead>
@@ -36,6 +37,7 @@
     <td>${product_index}</td>
     <td>${product.createdAt}</td>
     <td>${product.creator}</td>
+    <td>${product.updatedAt}</td>
     <td>${product.lastModifier}</td>
     <td><a href="${product.url}" target="_blank">${product.partnerProductId}</a></td>
     <td>
@@ -45,10 +47,10 @@
         #{/if}
 
         #{if partner == 'wb'}
-            #{if product.status == ''}
+            #{if product.outerStatus == ''}
                 <a href="/resale-partner-products/${partner}/onsale/${product.id}" class="btn btn-mini" rel="tooltip" title="上架"><i class="icon-upload"></i></a>
             #{/if}
-            #{if product.status == ''}
+            #{if product.outerStatus == ''}
                 <a href="/resale-partner-products/${partner}/offsale/${product.id}" class="btn btn-mini" rel="tooltip" title="下架"><i class="icon-download"></i></a>
             #{/if}
             <a href="/resale-partner-products/${partner}/refresh/${product.id}" class="btn btn-mini" rel="tooltip" title="刷新状态"><i class="icon-refresh"></i></a>

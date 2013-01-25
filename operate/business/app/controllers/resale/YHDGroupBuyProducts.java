@@ -50,11 +50,11 @@ public class YHDGroupBuyProducts extends Controller {
             notFound();
         }
 
-        GoodsDeployRelation relation = GoodsDeployRelation.generate(goods, OuterOrderPartner.YHD);
+        ResalerProduct product = ResalerProduct.generate(operateUser.id, OuterOrderPartner.YHD, goods);
 
         Map<String, String> requestParams = request.params.allSimple();
         requestParams.remove("body");
-        requestParams.put("outerId", String.valueOf(relation.linkId));
+        requestParams.put("outerId", String.valueOf(product.id));
 
         String responseXml = YHDUtil.sendRequest(requestParams, "yhd.product.add");
         Logger.info("yhd.product.add response %s", responseXml);
@@ -64,10 +64,11 @@ public class YHDGroupBuyProducts extends Controller {
             renderArgs.put("res", res);
             if(res.getErrorCount() == 0){
                 //保存记录
-                saveProductAndJournal(goods, operateUser, requestParams);
+                String jsonData = new Gson().toJson(requestParams);
+                ResalerProductJournal.createJournal(product, operateUser.id, jsonData, ResalerProductJournalType.CREATE, "上传商品");
                 //上传主图
                 try{
-                    uploadMainImg(imgFile, relation.linkId);
+                    uploadMainImg(imgFile, product.id);
                 }catch (Exception e) {
                     //ignore
                     Logger.warn(e,"yihaodian upload main img failed");
@@ -76,22 +77,15 @@ public class YHDGroupBuyProducts extends Controller {
         }
         render("resale/YHDGroupBuyProducts/result.html");
     }
-    //保存记录
-    private static void saveProductAndJournal(Goods goods, OperateUser operateUser, Map<String, String> requestParams){
-        String jsonData = new Gson().toJson(requestParams);
-        ResalerProduct product = ResalerProduct.createProduct(OuterOrderPartner.YHD, 0L, operateUser.id, goods,
-                Long.parseLong(requestParams.get("outerId")));
-        ResalerProductJournal.createJournal(product, operateUser.id, jsonData, ResalerProductJournalType.CREATE, "上传商品");
-    }
 
     //上传主图
-    private static void uploadMainImg(File imgFile, Long goodsLinkId) {
+    private static void uploadMainImg(File imgFile, Long productId) {
         if (imgFile == null) {
             return;
         }
         Map<String, String> requestParams = new HashMap<>();
-        requestParams.put("outerId", String.valueOf(goodsLinkId));
-        requestParams.put("mainImageName", String.valueOf(goodsLinkId));
+        requestParams.put("outerId", String.valueOf(productId));
+        requestParams.put("mainImageName", String.valueOf(productId));
         String[] filePaths = new String[]{imgFile.getAbsolutePath()};
         String responseXml = YHDUtil.sendRequest(requestParams, filePaths, "yhd.product.img.upload");
         Logger.info("yhd.product.add response %s", responseXml);

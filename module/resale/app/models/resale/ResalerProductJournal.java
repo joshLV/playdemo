@@ -1,7 +1,5 @@
 package models.resale;
 
-import models.order.OuterOrderPartner;
-import org.hibernate.annotations.Index;
 import play.db.jpa.Model;
 
 import javax.persistence.*;

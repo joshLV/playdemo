@@ -35,9 +35,9 @@
     <th>商品编码</th>
     <th>名称</th>
     <th style="text-align:right">一百券价</th>
-    <th>京东</th>
     <th>58</th>
     <th>淘宝</th>
+    <th>京东</th>
     <th>当当</th>
     <th>一号店</th>
 </tr>
@@ -51,7 +51,7 @@
     <td><a href="/goods/${goods.id}" target="_blank">${goods.shortName}</a> </td>
     <td style="text-align:right">${goods.salePrice.formatCurrency("CNY")}</td>
     %{
-        partners = ['JD','WB','TB','DD','YHD']
+        partners = ['WB','TB','JD','DD','YHD']
     }%
     #{list items:partners, as:'partner'}
         %{

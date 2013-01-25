@@ -46,6 +46,7 @@ public class DDGroupBuyProducts extends Controller {
         if (goods == null) {
             notFound();
         }
+        OperateUser operateUser = OperateRbac.currentUser();
         //准备参数
         Map<String, String> groupbuyInfoParams = params.allSimple();
         groupbuyInfoParams.remove("body");
@@ -53,26 +54,25 @@ public class DDGroupBuyProducts extends Controller {
         Map<String, Object> templateParams = new HashMap<>();
         templateParams.putAll(groupbuyInfoParams);
 
-        GoodsDeployRelation relation = GoodsDeployRelation.generate(goods, OuterOrderPartner.DD);
-        templateParams.put("linkId", String.valueOf(relation.linkId));
+        ResalerProduct product = ResalerProduct.generate(operateUser.id, OuterOrderPartner.DD, goods);
+        templateParams.put("linkId", String.valueOf(product.id));
         String jsonData = new Gson().toJson(templateParams);//添加shop前先把参数给输出了
         Collection<Shop> shops = goods.getShopList();
         templateParams.put("shops", shops);
 
-        OperateUser operateUser = OperateRbac.currentUser();
-
         DDResponse response = DDGroupBuyUtil.pushGoods(templateParams);
         if (response.isOk()) {
             //记录历史
-            ResalerProduct product = ResalerProduct.createProduct(OuterOrderPartner.DD, 0L, operateUser.id, goods, relation.linkId);
             ResalerProductJournal.createJournal(product, operateUser.id, jsonData, ResalerProductJournalType.CREATE, "上传商品");
             //查询当当的商品ID
-            Node node = DDGroupBuyUtil.getJustUploadedTeam(relation.linkId);
+            Node node = DDGroupBuyUtil.getJustUploadedTeam(product.id);
             if (node != null) {
                 product.partnerProductId = Long.parseLong(XPath.selectText("//ddgid", node));
                 product.url = PRODUCT_URL + product.partnerProductId;
                 product.save();
             }
+        }else {
+            product.delete();
         }
         render("resale/DDGroupBuyProducts/result.html", response);
     }

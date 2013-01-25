@@ -67,7 +67,9 @@ GET     /resale-partner-products/jd/products/{goodsId} resale.JDGroupBuyProducts
 GET     /resale-partner-products/wb/upload/{goodsId}   resale.WubaGroupBuyProducts.showUpload
 POST    /resale-partner-products/wb/upload             resale.WubaGroupBuyProducts.upload
 GET     /resale-partner-products/wb/edit/{productId}   resale.WubaGroupBuyProducts.showEdit
-POST    /resale-partner-products/wb/edit               resale.WubaGroupBuyProducts.edit
+POST    /resale-partner-products/wb/edit/groupbuyinfo  resale.WubaGroupBuyProducts.editGroupBuyInfo
+POST    /resale-partner-products/wb/edit/partners      resale.WubaGroupBuyProducts.editPartners
+POST    /resale-partner-products/wb/edit/deadline      resale.WubaGroupBuyProducts.editDeadline
 
 # 当当
 GET     /resale-partner-products/dd/upload/{goodsId}   resale.DDGroupBuyProducts.showUpload
