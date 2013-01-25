@@ -1,6 +1,6 @@
 #{extends 'layout_operate/layout.html' /}
 #{include 'share/nav.html' /}
-#{set title:'券号列表' /}
+#{set title:'电子消费券' /}
 
 <script type="text/javascript" xmlns="http://www.w3.org/1999/html" src="/public/javascripts/view-couponsn.js"></script>
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
@@ -27,12 +27,12 @@
 
     function sendMessage(id) {
         $.ajax({
-            url:"/coupons-message/" + id + "/send",
-            type:'GET',
-            error:function () {
+            url: "/coupons-message/" + id + "/send",
+            type: 'GET',
+            error: function () {
                 alert('发送失败!');
             },
-            success:function (data) {
+            success: function (data) {
                 if (data == '0') {
                     alert("发送成功！");
                 } else {
@@ -50,7 +50,7 @@
         $("#setForm").attr("action", "/coupons/" + id + "/freeze?x-http-method-override=PUT");
 
         $("#freeze_option").val("ISCHEATEDORDER");
-        $("#textContainer").css({display:"none"});
+        $("#textContainer").css({display: "none"});
         $("#other_reason").val("");
         $('#sendModal').modal('show');
 
@@ -70,12 +70,12 @@
 
     function viewECoupon(id) {
         $.ajax({
-            url:"/view-conpon/" + id + "/send",
-            type:'GET',
-            error:function () {
+            url: "/view-conpon/" + id + "/send",
+            type: 'GET',
+            error: function () {
                 alert('查询失败,请联系管理员');
             },
-            success:function (data) {
+            success: function (data) {
                 // data as ecouponsn
                 $("#ecoupon_sn").html(data);
                 $('#myModal').modal('show');
@@ -113,98 +113,115 @@
         $("#frmlist").submit();
     }
 </script>
-<div class="body">
-<legend>${title}</legend>
+
 <form class="well form-inline" name="frmlist" id="frmlist" method="GET">
+    <legend>${title}</legend>
     <input type="hidden" name="condition.userName" value="${condition?.userName}">
-    <table>
-        <tbody>
-        <tr>
-            <td>关&nbsp;&nbsp;键&nbsp;&nbsp;字
-            #{select 'condition.searchKey', class:'input-medium', value:condition?.searchKey}
-                #{option ""}不限#{/option}
-                #{option "GOODS_NAME"}&{'queryType.GOODS_NAME'}#{/option}
-                #{option "ORDER_NUMBER"}&{'queryType.ORDER_NUMBER'}#{/option}
-                #{option "CLERK_JOB_NUMBER"}&{'queryType.CLERK_JOB_NUMBER'}#{/option}
-                #{option "SHOP_NAME"}&{'queryType.SHOP_NAME'}#{/option}
-                #{option "MOBILE"}&{'queryType.MOBILE'}#{/option}
-                #{option "COUPON"}&{'queryType.COUPON'}#{/option}
-                #{option "UID"}&{'queryType.UID'}#{/option}
-            #{/select}&nbsp;&nbsp;
-                <input type="text" name="condition.searchItems" value="${condition?.searchItems}"
-                       class="input-medium"/></td>
-            <td>
-                &nbsp;&nbsp;品&nbsp;&nbsp;&nbsp;&nbsp;牌
-            #{layout_operate.selectInputField name:"brandName", id:"condition.brandId", list:brandList/}
 
-                &nbsp;&nbsp;验证方式
-            #{select 'condition.verifyType', id:'condition_verifyType', class:'input-medium', value:condition?.verifyType}
-                #{option ""}不限#{/option}
-                #{option "CLERK_MESSAGE"}&{'coupon.CLERK_MESSAGE'}#{/option}
-                #{option "CONSUMER_MESSAGE"}&{'coupon.CONSUMER_MESSAGE'}#{/option}
-                #{option "SHOP"}&{'coupon.SHOP'}#{/option}
-                #{option "TELEPHONE"}&{'coupon.TELEPHONE'}#{/option}
-                #{option "OP_VERIFY"}&{'coupon.OP_VERIFY'}#{/option}
-            #{/select}
-            </td>
-        </tr>
+    <div class="control-group">
 
-        <tr>
-            <td>消费时间
-                <input type="text" id="condition_consumed_begin" class="input-medium Wdate"
-                       name="condition.consumedAtBegin"
-                       onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtBegin?.format()}"> -
-                <input type="text" id="condition_consumed_end" class="input-medium Wdate"
-                       name="condition.consumedAtEnd"
-                       onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtEnd?.format()}">
-            </td>
-            <td>&nbsp;&nbsp;状态
-            #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
-                #{option ""}不限#{/option}
-                #{option "UNCONSUMED"}&{'coupon.UNCONSUMED'}#{/option}
-                #{option "CONSUMED"}&{'coupon.CONSUMED'}#{/option}
-                #{option "REFUND"}&{'coupon.REFUND'}#{/option}
-            #{/select}
-                &nbsp;&nbsp;&nbsp;订单来源#{select 'condition.accountType', class:'input-small', value:condition.accountType}
-                #{option ""}不限#{/option}
-                #{option "CONSUMER"}&{'order.CONSUMER'}#{/option}
-                #{option "RESALER"}&{'order.RESALER'}#{/option}
-            #{/select}
-                &nbsp;&nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery"
-                                        class="input-medium"
-                                        value="true" ${condition?.isLottery ?'checked':''}/>
-                &nbsp;&nbsp;需预约商品：<input type="checkbox" name="condition.isOrder"
-                                         value="true" ${condition?.isOrder ?'checked':''}/>
-            </td>
-        </tr>
-        <tr>
-            <td>付款时间
-                <input type="text" id="condition_paid_begin" class="input-medium Wdate"
-                       name="condition.paidAtBegin"
-                       onfocus="WdatePicker({readOnly:true})" value="${condition?.paidAtBegin?.format()}"> -
-                <input type="text" id="condition_paid_end" class="input-medium Wdate" name="condition.paidAtEnd"
-                       onfocus="WdatePicker({readOnly:true})" value="${condition?.paidAtEnd?.format()}">
+        关键字：
+    #{select 'condition.searchKey', class:'input-medium', value:condition?.searchKey}
+        #{option ""}不限#{/option}
+        #{option "GOODS_NAME"}&{'queryType.GOODS_NAME'}#{/option}
+        #{option "ORDER_NUMBER"}&{'queryType.ORDER_NUMBER'}#{/option}
+        #{option "CLERK_JOB_NUMBER"}&{'queryType.CLERK_JOB_NUMBER'}#{/option}
+        #{option "SHOP_NAME"}&{'queryType.SHOP_NAME'}#{/option}
+        #{option "MOBILE"}&{'queryType.MOBILE'}#{/option}
+        #{option "COUPON"}&{'queryType.COUPON'}#{/option}
+        #{option "UID"}&{'queryType.UID'}#{/option}
+    #{/select}
+        <input type="text" name="condition.searchItems" value="${condition?.searchItems}"
+               class="input-medium"/>
 
-            </td>
-            <td>
-                &nbsp;&nbsp;退款时间&nbsp;&nbsp;
-                <input type="text" id="condition_refund_begin" class="input-medium Wdate"
-                       name="condition.refundAtBegin"
-                       onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtBegin?.format()}"> -
-                <input type="text" id="condition_refund_end" class="input-medium Wdate" name="condition.refundAtEnd"
-                       onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtEnd?.format()}">
-            </td>
+        &nbsp;&nbsp;品牌：
+    #{layout_operate.selectInputField name:"brandName", id:"condition.brandId", class:"input-medium",
+    list:brandList/}
 
-        </tr>
-        <tr align="right">
-            <td colspan="2">
-                <button class="btn btn-primary" id="search" type="submit">搜索</button>
-                <button class="btn btn-primary" id="searchbtn" onclick="couponExcel()">导出报表</button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+        &nbsp;&nbsp;验证方式：
+    #{select 'condition.verifyType', id:'condition_verifyType', class:'input-medium', value:condition?.verifyType}
+        #{option ""}不限#{/option}
+        #{option "CLERK_MESSAGE"}&{'coupon.CLERK_MESSAGE'}#{/option}
+        #{option "CONSUMER_MESSAGE"}&{'coupon.CONSUMER_MESSAGE'}#{/option}
+        #{option "SHOP"}&{'coupon.SHOP'}#{/option}
+        #{option "TELEPHONE"}&{'coupon.TELEPHONE'}#{/option}
+        #{option "OP_VERIFY"}&{'coupon.OP_VERIFY'}#{/option}
+    #{/select}
 
+    </div>
+
+    <div class="control-group">
+        付款时间：
+        <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
+            <input class="input-small" id="condition_paid_begin" name="condition.paidAtBegin" size="16" type="text"
+                   value="${condition.paidAtBegin?.format()}">
+            <span class="add-on"><i class="icon-th"></i></span>
+        </div>
+        至
+        <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
+            <input class="input-small" id="condition_paid_end" name="condition.paidAtEnd" size="16" type="text"
+                   value="${condition.paidAtEnd?.format()}">
+            <span class="add-on"><i class="icon-th"></i></span>
+        </div>
+
+        &nbsp;&nbsp;状态：
+    #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
+        #{option ""}不限#{/option}
+        #{option "UNCONSUMED"}&{'coupon.UNCONSUMED'}#{/option}
+        #{option "CONSUMED"}&{'coupon.CONSUMED'}#{/option}
+        #{option "REFUND"}&{'coupon.REFUND'}#{/option}
+    #{/select}
+
+        订单来源：
+    #{select 'condition.accountType', class:'input-small', value:condition.accountType}
+        #{option ""}不限#{/option}
+        #{option "CONSUMER"}&{'order.CONSUMER'}#{/option}
+        #{option "RESALER"}&{'order.RESALER'}#{/option}
+    #{/select}
+
+        &nbsp;&nbsp;
+        <input type="checkbox" name="condition.isLottery" id="isLottery"
+               class="input-medium"
+               value="true" ${condition?.isLottery ?'checked':''}/>
+        <label for="isLottery">抽奖商品</label>
+        &nbsp;&nbsp;
+        <input type="checkbox" name="condition.isOrder" id="isOrder"
+               value="true" ${condition?.isOrder ?'checked':''}/>
+        <label for="isOrder">需预约商品</label>
+    </div>
+
+    <div class="pull-right">
+        <button class="btn btn-info" id="searchbtn" onclick="couponExcel()">导出报表</button>
+    </div>
+    <div class="control-group">
+        消费时间：
+        <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
+            <input class="input-small" id="condition_consumed_begin" name="condition.consumedAtBegin" size="16" type="text"
+                   value="${condition.consumedAtBegin?.format()}">
+            <span class="add-on"><i class="icon-th"></i></span>
+        </div>
+        至
+        <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
+            <input class="input-small" id="condition_consumed_end" name="condition.consumedAtEnd" size="16" type="text"
+                   value="${condition.consumedAtEnd?.format()}">
+            <span class="add-on"><i class="icon-th"></i></span>
+        </div>
+
+        &nbsp;&nbsp;退款时间：
+        <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
+            <input class="input-small" id="condition_refund_begin" name="condition.refundAtBegin" size="16" type="text"
+                   value="${condition.refundAtBegin?.format()}">
+            <span class="add-on"><i class="icon-th"></i></span>
+        </div>
+        至
+        <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
+            <input class="input-small" id="condition_refund_end" name="condition.refundAtEnd" size="16" type="text"
+                   value="${condition.refundAtEnd?.format()}">
+            <span class="add-on"><i class="icon-th"></i></span>
+        </div>
+        &nbsp;&nbsp;
+        <button class="btn btn-large btn-primary" id="search" type="submit">搜索</button>
+    </div>
 
 </form>
 <div style="color:#0082CA;padding-bottom: 15px"> 总计：${couponPage.size()}
@@ -239,9 +256,9 @@
     <tr>
         <td><a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a></abbr></td>
         <td>
-        #{if hasViewEcouponSnPermission}
-        ${coupon?.orderItems?.phone}
-        #{/if}
+            #{if hasViewEcouponSnPermission}
+            ${coupon?.orderItems?.phone}
+            #{/if}
         #{else}
         ${coupon?.orderItems?.getMaskedPhone()}
         #{/else}
@@ -321,11 +338,13 @@
     #{/paginate.list}
     </tbody>
 </table>
+#{if couponPage.pageCount > 1}
 <div class="pagination" align="center">
     <ul>
-    #{paginate.controls items:couponPage /}
+        #{paginate.controls items:couponPage /}
     </ul>
 </div>
+#{/if}
 
 <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
@@ -340,8 +359,6 @@
         <button data-dismiss="modal" aria-hidden="true">Close</button>
     </div>
 </div>
-</div>
-
 
 <div class="modal" id="sendModal" style="display: none;">
     <div class="modal-header">

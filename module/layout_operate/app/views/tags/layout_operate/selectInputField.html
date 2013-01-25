@@ -63,7 +63,7 @@
         });
     </script>
     #{/set}
-<input type="text" id="${field.id}" name="${field.name}"
+<input type="text" id="${field.id}" name="${field.name}" class="${_class?:'input-medium'}"
        value='${params[field.id]}'><input type="hidden" id="${"id_"+field.id}" name="${_id}"
                                           value="${_value?:params[_id]}">
 #{/field}

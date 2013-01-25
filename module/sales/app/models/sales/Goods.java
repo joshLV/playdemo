@@ -819,7 +819,9 @@ public class Goods extends Model {
     }
 
     public void setExhibition(String exhibition) {
-        this.exhibition = Jsoup.clean(exhibition, HTML_WHITE_TAGS);
+        if (exhibition != null) {
+            this.exhibition = Jsoup.clean(exhibition, HTML_WHITE_TAGS);
+        }
     }
 
     public String getSupplierDes() {
