@@ -114,7 +114,7 @@ public class TaobaoCouponUtil {
             if (i != 0) {
                 verifyCodes.append(",");
             }
-            verifyCodes.append(coupon.eCouponSn).append(":1");
+            verifyCodes.append(coupon.getSafeECouponSN()).append(":1");
             i ++;
         }
 
@@ -160,7 +160,7 @@ public class TaobaoCouponUtil {
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, TOP_APPKEY, TOP_APPSECRET);
         VmarketEticketConsumeRequest request = new VmarketEticketConsumeRequest();
         request.setOrderId(outerOrder.orderId);
-        request.setVerifyCode(eCoupon.eCouponSn);
+        request.setVerifyCode(eCoupon.getSafeECouponSN());
         request.setConsumeNum(1L);
         request.setToken(token);
 
@@ -202,7 +202,7 @@ public class TaobaoCouponUtil {
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, TOP_APPKEY, TOP_APPSECRET);
         VmarketEticketReverseRequest request = new VmarketEticketReverseRequest();
         request.setOrderId(outerOrder.orderId);
-        request.setReverseCode(coupon.eCouponSn);
+        request.setReverseCode(coupon.getSafeECouponSN());
         request.setReverseNum(1L);
         request.setConsumeSecialNum(coupon.partnerCouponId);
         request.setToken(token);

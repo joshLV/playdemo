@@ -150,11 +150,15 @@ public class JingdongUploadTeam extends Controller {
 
         GoodsThirdSupport support = GoodsThirdSupport.getSupportGoods(fav.goods, OuterOrderPartner.JD);
 
-        JsonElement jsonElement = new JsonParser().parse(support.goodsData);
-        JsonObject jsonObject = jsonElement.getAsJsonObject();
-        jsonObject.remove("teamTitle");
-        jsonObject.addProperty("teamTitle", title);
-        support.goodsData = jsonObject.toString();
+
+        if (support != null) {
+            JsonElement jsonElement = new JsonParser().parse(support.goodsData);
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            jsonObject.remove("teamTitle");
+            jsonObject.addProperty("teamTitle", title);
+            support.goodsData = jsonObject.toString();
+            support.save();
+        }
 
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/updateTitle.action";
         Template template = TemplateLoader.load("jingdong/groupbuy/request/updateTitleRequest.xml");

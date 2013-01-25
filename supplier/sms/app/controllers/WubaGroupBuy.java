@@ -148,7 +148,7 @@ public class WubaGroupBuy extends Controller {
 
             Map<String, Object> ticket = new HashMap<>();
             ticket.put("ticketId", coupon.id);
-            ticket.put("ticketCode", coupon.eCouponSn);
+            ticket.put("ticketCode", coupon.getSafeECouponSN());
             ticket.put("ticketPass", "");
             ticket.put("ticketCount", 1);
             ticket.put("createTime", simpleDateFormat.format(coupon.createdAt));
