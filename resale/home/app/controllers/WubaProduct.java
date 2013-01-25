@@ -471,7 +471,7 @@ public class WubaProduct extends Controller {
         requestMap.put("status", -1);
 
         WubaResponse response = WubaUtil.sendRequest(requestMap, "emc.groupbuy.getstatus");
-        if (response.isOk()) {
+        if (!response.isOk()) {
             renderText("failed:" + response);
         }
         JsonArray dataArray = response.data.getAsJsonArray();
@@ -513,7 +513,7 @@ public class WubaProduct extends Controller {
         Map<String, Object> requestMap = new HashMap<>();
         requestMap.put("groupbuyId", relation.linkId);
         WubaResponse response = WubaUtil.sendRequest(requestMap, "emc.groupbuy.shangxian");
-        if (response.isOk()) {
+        if (!response.isOk()) {
             renderText("failed:" + response);
         }
         resalerFav.onsaledAt = new Date();
@@ -536,7 +536,7 @@ public class WubaProduct extends Controller {
         Map<String, Object> requestMap = new HashMap<>();
         requestMap.put("groupbuyId", relation.linkId);
         WubaResponse response = WubaUtil.sendRequest(requestMap, "emc.groupbuy.xiaxian");
-        if (response.isOk()) {
+        if (!response.isOk()) {
             renderText("failed:" + response);
         }
         resalerFav.offSaleAt = new Date();
