@@ -55,7 +55,6 @@ public class DadongProductsSyncRequest {
 
         Supplier dadong = Supplier.findByDomainName("dadong");
 
-
         List<DadongProduct> dadongProductList = new ArrayList<>();
 
         Template template = TemplateLoader.load("app/xml/template/dadong/GetProductRequest.xml");
@@ -94,6 +93,7 @@ public class DadongProductsSyncRequest {
                     product.ticketExplain = XPath.selectText("product_ticketExplain", node);
                     product.address = XPath.selectText("product_address", node);
                     product.imageUrl = XPath.selectText("product_image", node);
+                    product.introduction = XPath.selectText("product_introduction", node);
                     product.expireTime = SafeParse.toDate(XPath.selectText("product_expireTime", node));
 
                     Logger.info("product:" + product.toString());
@@ -178,7 +178,8 @@ public class DadongProductsSyncRequest {
         goods.name = product.productName;
         goods.shortName = product.productName;
         goods.title = goods.shortName;
-        goods.setExhibition("请修改提示信息以给消费者列完整的参考");
+        //详情
+        goods.setExhibition(product.introduction);
         goods.setPrompt("请修改提示信息以给消费者更完整的参考");
 
         goods.supplierGoodsId = product.productId;

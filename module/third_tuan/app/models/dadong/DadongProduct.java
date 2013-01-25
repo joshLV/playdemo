@@ -69,6 +69,8 @@ public class DadongProduct {
 
     public String aqeg;
 
+    public String introduction;
+
     @Override
     public String toString() {
         return "DadongProduct{" +
