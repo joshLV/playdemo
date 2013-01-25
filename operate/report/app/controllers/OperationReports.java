@@ -296,6 +296,7 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new ChannelGoodsReportCondition();
         }
+        condition.setDescFields();
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
         condition.operatorId = OperateRbac.currentUser().id;
@@ -305,12 +306,20 @@ public class OperationReports extends Controller {
         for (ChannelGoodsReport c : consumerList) {
             resultList.add(c);
         }
+        Collections.sort(resultList);
+        //total
+        List<ChannelGoodsReport> totalResultList = ChannelGoodsReport.queryTotal(condition);
+        List<ChannelGoodsReport> totalConsumerResultList = ChannelGoodsReport.queryConsumerTotal(condition);
+        // 查询出所有结果
+        for (ChannelGoodsReport c : totalConsumerResultList) {
+            totalResultList.add(c);
+        }
 
         // 分页
         ValuePaginator<ChannelGoodsReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
 
         // 汇总
-        ChannelGoodsReport summary = ChannelGoodsReport.getNetSummary(resultList);
+        ChannelGoodsReport summary = ChannelGoodsReport.getNetSummary(totalResultList);
         List<Supplier> supplierList = Supplier.findUnDeleted();
         render(condition, reportPage, hasSeeReportProfitRight, summary, supplierList);
 

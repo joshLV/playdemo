@@ -145,6 +145,7 @@
             <li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>
         </ul>
         <input type="hidden" id="condition_interval" name="condition.interval"/>
+        <input type="hidden" id="J_rank" name="condition.desc" value="${condition?.desc}"/>
     </form>
 
     <div class="alert alert-success">
@@ -203,18 +204,25 @@
         }%
         <tr>
             #{set i:i+1/}
-            <td>${report.userName}<br>${report?.loginName}</td>
-            <td>${report?.goods?.code}</td>
-            <td>${report?.goods?.shortName}</td>
-            <td style="text-align:right;">${(report?.originalPrice?:0).formatCurrency('CNY')}</td>
-            <td style="text-align:right;">
-                #{if report?.avgSalesPrice!=null ||report?.avgSalesPrice==0}
-                ${(report?.avgSalesPrice?:0).formatCurrency('CNY')}
-                #{/if}
-                #{else}
-                    ￥0
-                #{/else}
-            </td>
+            #{if report?.code != "999" && report?.code!=""}
+                <td>${report.userName}<br>${report?.loginName}</td>
+                <td>${report?.goods?.code}</td>
+                <td>${report?.goods?.shortName}</td>
+                <td style="text-align:right;">${(report?.originalPrice?:0).formatCurrency('CNY')}</td>
+                <td style="text-align:right;">
+                    #{if report?.avgSalesPrice!=null ||report?.avgSalesPrice==0}
+                    ${(report?.avgSalesPrice?:0).formatCurrency('CNY')}
+                    #{/if}
+                    #{else}
+                        ￥0
+                    #{/else}
+                </td>
+            #{/if}
+            #{else}
+                <td bgcolor="#add8e6">${report.userName}<br>${report?.loginName}</td>
+
+                <td colspan="4" bgcolor="#add8e6" style="text-align:center;"> 小计</td>
+            #{/else}
             <td style="text-align:right;">${report?.buyNumber?:0}</td>
             <td style="text-align:right;">
                 #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
@@ -250,7 +258,7 @@
                 </a>
             </td>
             <td style="text-align:right;">
-                ￥${(report?.netSalesAmount?:0)}
+                ￥${(report?.netSalesAmount?:0).format('#0.00')}
             </td>
             <td style="text-align:right;">
             ${(report?.netCost?:0).formatCurrency('CNY')}

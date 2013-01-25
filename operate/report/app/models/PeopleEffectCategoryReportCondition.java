@@ -263,7 +263,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
         // DESC 的值表示升降序，含n位，代表n个排序字段， 1 为升序， 2 为降序， 0 为不排序
         // 当无排序参数时，初始化 -1
         if (desc == null) {
-            desc = "100000000";
+            desc = "010000";
         }
         // 获取最新的desc值
         String[] descs = desc.split(",");

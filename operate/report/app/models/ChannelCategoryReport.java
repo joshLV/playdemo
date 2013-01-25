@@ -685,7 +685,7 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
                     condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).salePrice == null ? BigDecimal.ZERO : totalResultList.get(i).salePrice));
                     break;
                 case "realSalePrice":
-                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).realSalePrice == null ? BigDecimal.ZERO : totalResultList.get(i).totalAmount));
+                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).realSalePrice == null ? BigDecimal.ZERO : totalResultList.get(i).realSalePrice));
                     break;
                 case "refundPrice":
                     condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).refundPrice == null ? BigDecimal.ZERO : totalResultList.get(i).refundPrice));

@@ -252,20 +252,20 @@
 
 <table class="table table-striped table-bordered table-condensed" id="tab">
     <thead>
-    #{layout_operate.sortField name:'工号', descField:condition?.desc, desc:'100000',asc:'200000'/}
+    #{layout_operate.sortField name:'工号', descField:condition?.desc, desc:'200000',asc:'100000'/}
     <th>姓名</th>
     <th>类别编码</th>
     <th>类别名称</th>
-    #{layout_operate.sortField name:'售出券数量/金额', descField:condition?.desc, desc:'010000',asc:'020000'/}
+    #{layout_operate.sortField name:'售出券数量/金额', descField:condition?.desc, desc:'020000',asc:'010000'/}
     <th>售出实物数量/金额</th>
     *{#{layout_operate.sortField name:'售出实物数量/金额', descField:condition?.desc, desc:'001000000',asc:'002000000'/}}*
-    #{layout_operate.sortField name:'退款券数量/金额', descField:condition?.desc, desc:'001000',asc:'002000'/}
+    #{layout_operate.sortField name:'退款券数量/金额', descField:condition?.desc, desc:'002000',asc:'001000'/}
     *{<th>退款实物数量/金额</th>}*
     *{#{layout_operate.sortField name:'退款实物数量/金额', descField:condition?.desc, desc:'000010000',asc:'000020000'/}}*
-    #{layout_operate.sortField name:'消费券数量/金额', descField:condition?.desc, desc:'000100',asc:'000200'/}
+    #{layout_operate.sortField name:'消费券数量/金额', descField:condition?.desc, desc:'000200',asc:'000100'/}
     #{if hasSeeReportProfitRight == true}
-        #{layout_operate.sortField name:'毛利率', descField:condition?.desc, desc:'000010',asc:'000020'/}
-        #{layout_operate.sortField name:'净利润', descField:condition?.desc, desc:'000001',asc:'000002'/}
+        #{layout_operate.sortField name:'毛利率', descField:condition?.desc, desc:'000020',asc:'000010'/}
+        #{layout_operate.sortField name:'净利润', descField:condition?.desc, desc:'000002',asc:'000001'/}
     #{/if}
     </thead>
 #{set i:0/}
