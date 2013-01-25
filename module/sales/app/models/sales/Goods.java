@@ -1439,7 +1439,8 @@ public class Goods extends Model {
     @SolrField
     public Collection<Shop> getShopList() {
         if (isAllShop) {
-            return CacheHelper.getCache(CacheHelper.getCacheKey(Shop.CACHEKEY_SUPPLIERID + this.supplierId, "GOODS_SHOP_LIST"), new CacheCallBack<List<Shop>>() {
+            return CacheHelper.getCache(CacheHelper.getCacheKey(Shop.CACHEKEY_SUPPLIERID + this.supplierId,
+                    "GOODS_SHOP_LIST"), new CacheCallBack<List<Shop>>() {
                 @Override
                 public List<Shop> loadData() {
                     return Shop.findShopBySupplier(supplierId);
@@ -1448,7 +1449,11 @@ public class Goods extends Model {
         }
         final long goodsId = this.id;
 
-        return CacheHelper.getCache(CacheHelper.getCacheKey(Goods.CACHEKEY_BASEID + goodsId, "GOODS_SHOPS"), new CacheCallBack<Set<Shop>>() {
+        return CacheHelper.getCache(CacheHelper.getCacheKey(
+                new String[]{
+                        Goods.CACHEKEY_BASEID + goodsId,
+                        Shop.CACHEKEY_SUPPLIERID + this.supplierId},
+                "GOODS_SHOPS"), new CacheCallBack<Set<Shop>>() {
             @Override
             public Set<Shop> loadData() {
                 Goods goods1 = Goods.findById(goodsId);
