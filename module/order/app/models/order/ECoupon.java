@@ -882,6 +882,15 @@ public class ECoupon extends Model {
         return InfoUtil.getMaskedEcouponSn(eCouponSn);
     }
 
+    /**
+     * 得到无空格、中文的券号.
+     * 京东等平台不支持
+     * @return
+     */
+    public String getSafeECouponSN() {
+        return InfoUtil.getFirstCharSequence(this.eCouponSn);
+    }
+
 
     /**
      * 获取后n位券号.

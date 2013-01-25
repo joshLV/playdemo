@@ -1,11 +1,16 @@
 package util.common;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * User: tanglq
  * Date: 13-1-24
  * Time: 下午1:53
  */
 public class InfoUtil {
+
+    private static Pattern PATTERN_CHARSEQUENCE = Pattern.compile("([[a-zA-Z0-9]]+)");
 
     /**
      * 得到隐藏处理过的券号
@@ -36,4 +41,17 @@ public class InfoUtil {
         return sbPhone.toString();
     }
 
+    /**
+     * 返回第一段数字和字母的值
+     * @param value
+     * @return
+     */
+    public static String getFirstCharSequence(String value) {
+        Matcher matcher = PATTERN_CHARSEQUENCE.matcher(value);
+        if (matcher.find()) {
+            return matcher.group(0);
+        }
+        // 安全起见，直接返回券号
+        return value;
+    }
 }

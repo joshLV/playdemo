@@ -149,7 +149,7 @@ public class JDGroupBuy extends Controller {
         }
         //保存京东的券号密码
         List<ECoupon> coupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
-        if (outerOrder.status == OuterOrderStatus.ORDER_DONE) {
+        if (outerOrder.status == OuterOrderStatus.ORDER_DONE || outerOrder.status == OuterOrderStatus.ORDER_SYNCED) {
             if (coupons.size() != sendOrderRequest.coupons.size()) {
                 Logger.info("coupon size not matched, ybq size: %s, jd size: %s", coupons.size(), sendOrderRequest.coupons.size());
                 finish(211, "coupon size not matched, ybq size: " + coupons.size() + " jd size:" + sendOrderRequest.coupons.size());
