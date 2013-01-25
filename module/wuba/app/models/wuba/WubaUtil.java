@@ -60,7 +60,7 @@ public class WubaUtil {
 
     public static String allProductTypesJsonCache() {
         return CacheHelper.getCache(
-                CacheHelper.getCacheKey(CACHE_KEY,"ALL_PRODUCT_TYPES"),
+                CacheHelper.getCacheKey(CACHE_KEY, "ALL_PRODUCT_TYPES"),
                 new CacheCallBack<String>() {
                     @Override
                     public String loadData() {
@@ -94,7 +94,7 @@ public class WubaUtil {
      * @return 解析为json对象形式的58返回结果
      */
     public static WubaResponse sendRequest(Map<String, Object> appParams, String method,
-                                         boolean requestNeedEncrypt, boolean responseNeedDecrypt) {
+                                           boolean requestNeedEncrypt, boolean responseNeedDecrypt) {
         // 系统级参数设置
         Map<String, Object> params = sysParams();
         params.put("m", method);
@@ -139,7 +139,9 @@ public class WubaUtil {
 
             response.status = result.get("status").getAsString();
             response.code = result.get("code").getAsString();
-            //response.msg = result.get("msg").getAsString();
+            if (result.get("msg") != null) {
+                response.msg = result.get("msg").getAsString();
+            }
             if (result.has("data")) {
                 String data = result.get("data").getAsString();
                 if (response.isOk() && needDecrypt) {
