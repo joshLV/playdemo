@@ -24,13 +24,6 @@ public class ExpiredCouponNotice extends Job {
 
     @Override
     public void doJob() throws Exception {
-
-        //暂时取消发送提醒短信
-        //sendExpiredMessage();
-    }
-
-    private void sendExpiredMessage() throws Exception {
-
         String sql = "select e from ECoupon e where e.eCouponSn not in (select m.couponNumber from SentCouponMessage " +
                 "m ) and e.isFreeze=0 and e.goods.isLottery=false and status =:status and (e.expireAt > :expireBeginAt and e.expireAt <= " +
                 ":expireEndAt) order by e.id";
@@ -64,7 +57,6 @@ public class ExpiredCouponNotice extends Job {
                 new SentCouponMessage(coupon.eCouponSn, mobile, coupon.goods.name).save();
             }
         }
-
     }
 
 }
