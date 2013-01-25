@@ -150,6 +150,8 @@
 
 <form class="well form-inline" action="@{OperationReports.showChannelCategoryReport()}" method="GET" id="form"
       name="form">
+    商品编码：<input type="text" name="condition.goodsCode" class="input-medium"
+                value="${condition?.goodsCode}"/>
     起止日期
     <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.beginAt"
            onfocus="WdatePicker({readOnly:true})" value="${condition.beginAt?.format()}"> -

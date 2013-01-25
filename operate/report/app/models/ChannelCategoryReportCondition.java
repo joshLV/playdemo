@@ -2,6 +2,7 @@ package models;
 
 import models.accounts.AccountType;
 import models.supplier.Supplier;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -27,6 +28,7 @@ public class ChannelCategoryReportCondition implements Serializable {
     public int orderByIndex;
     public String orderByType;
     Map<String, BigDecimal> comparedMap = new HashMap<>();
+    public String goodsCode;
 
     public String getFilterPaidAt(AccountType type) {
         StringBuilder condBuilder = new StringBuilder("and r.order.status='PAID' " +
@@ -58,6 +60,10 @@ public class ChannelCategoryReportCondition implements Serializable {
                 condBuilder.append(" and 5 =:supplierIds");
                 paramMap.put("supplierIds", 6);
             }
+        }
+        if (StringUtils.isNotBlank(goodsCode)) {
+            condBuilder.append(" and r.goods.code like :goodsCode");
+            paramMap.put("goodsCode", goodsCode.trim() + "%");
         }
         return condBuilder.toString();
     }
@@ -93,6 +99,10 @@ public class ChannelCategoryReportCondition implements Serializable {
                 paramMap.put("supplierIds", 6);
             }
         }
+        if (StringUtils.isNotBlank(goodsCode)) {
+            condBuilder.append(" and r.goods.code like :goodsCode");
+            paramMap.put("goodsCode", goodsCode.trim() + "%");
+        }
         return condBuilder.toString();
     }
 
@@ -125,6 +135,10 @@ public class ChannelCategoryReportCondition implements Serializable {
                 paramMap.put("supplierIds", 6);
             }
         }
+        if (StringUtils.isNotBlank(goodsCode)) {
+            condBuilder.append(" and r.goods.code like :goodsCode");
+            paramMap.put("goodsCode", goodsCode.trim() + "%");
+        }
         return condBuilder.toString();
     }
 
@@ -156,6 +170,10 @@ public class ChannelCategoryReportCondition implements Serializable {
                 paramMap.put("supplierIds", 6);
             }
         }
+        if (StringUtils.isNotBlank(goodsCode)) {
+            condBuilder.append(" and r.goods.code like :goodsCode");
+            paramMap.put("goodsCode", goodsCode.trim() + "%");
+        }
         return condBuilder.toString();
     }
 
@@ -186,6 +204,10 @@ public class ChannelCategoryReportCondition implements Serializable {
                 condBuilder.append(" and 5 =:supplierIds");
                 paramMap.put("supplierIds", 6);
             }
+        }
+        if (StringUtils.isNotBlank(goodsCode)) {
+            condBuilder.append(" and r.goods.code like :goodsCode");
+            paramMap.put("goodsCode", goodsCode.trim() + "%");
         }
         return condBuilder.toString();
     }

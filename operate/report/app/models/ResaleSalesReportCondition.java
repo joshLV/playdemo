@@ -3,6 +3,7 @@ package models;
 import com.uhuila.common.util.DateUtil;
 import models.accounts.AccountType;
 import models.supplier.Supplier;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
 
@@ -20,6 +21,7 @@ public class ResaleSalesReportCondition {
     private Map<String, Object> paramMap = new HashMap<>();
     public Boolean hasSeeReportProfitRight;
     public Long operatorId;
+    public String goodsCode;
 
     public String getFilterPaidAt(AccountType type) {
         StringBuilder condBuilder = new StringBuilder("and (r.order.status='PAID' or r.order.status='SENT') " +
@@ -51,6 +53,10 @@ public class ResaleSalesReportCondition {
                 condBuilder.append(" and 5 =:supplierIds");
                 paramMap.put("supplierIds", 6);
             }
+        }
+        if (StringUtils.isNotBlank(goodsCode)) {
+            condBuilder.append(" and r.goods.code like :goodsCode");
+            paramMap.put("goodsCode", goodsCode.trim() + "%");
         }
         return condBuilder.toString();
     }
@@ -86,6 +92,10 @@ public class ResaleSalesReportCondition {
                 paramMap.put("supplierIds", 6);
             }
         }
+        if (StringUtils.isNotBlank(goodsCode)) {
+            condBuilder.append(" and r.goods.code like :goodsCode");
+            paramMap.put("goodsCode", goodsCode.trim() + "%");
+        }
 
         return condBuilder.toString();
     }
@@ -119,6 +129,10 @@ public class ResaleSalesReportCondition {
                 paramMap.put("supplierIds", 6);
             }
         }
+        if (StringUtils.isNotBlank(goodsCode)) {
+            condBuilder.append(" and r.goods.code like :goodsCode");
+            paramMap.put("goodsCode", goodsCode.trim() + "%");
+        }
 
         return condBuilder.toString();
     }
@@ -151,6 +165,10 @@ public class ResaleSalesReportCondition {
                 paramMap.put("supplierIds", 6);
             }
         }
+        if (StringUtils.isNotBlank(goodsCode)) {
+            condBuilder.append(" and r.goods.code like :goodsCode");
+            paramMap.put("goodsCode", goodsCode.trim() + "%");
+        }
 
         return condBuilder.toString();
     }
@@ -182,6 +200,10 @@ public class ResaleSalesReportCondition {
                 condBuilder.append(" and 5 =:supplierIds");
                 paramMap.put("supplierIds", 6);
             }
+        }
+        if (StringUtils.isNotBlank(goodsCode)) {
+            condBuilder.append(" and r.goods.code like :goodsCode");
+            paramMap.put("goodsCode", goodsCode.trim() + "%");
         }
 
         return condBuilder.toString();

@@ -113,7 +113,7 @@ public class OperationReports extends Controller {
         // 汇总
         CategorySalesReport summary = CategorySalesReport.getNetSummary(totalList);
         List<Supplier> supplierList = Supplier.findUnDeleted();
-        render(condition, reportPage, hasSeeReportProfitRight, summary,supplierList);
+        render(condition, reportPage, hasSeeReportProfitRight, summary, supplierList);
     }
 
 
@@ -252,7 +252,6 @@ public class OperationReports extends Controller {
         ResaleSalesReportCondition channelCondition = new ResaleSalesReportCondition();
         channelCondition.beginAt = condition.beginAt;
         channelCondition.endAt = condition.endAt;
-
         condition.accountType = null;
         channelPage = ResaleSalesReport.query(channelCondition);
         List<ResaleSalesReport> channelConsumerList = ResaleSalesReport.queryConsumer(channelCondition);
@@ -313,7 +312,7 @@ public class OperationReports extends Controller {
         // 汇总
         ChannelGoodsReport summary = ChannelGoodsReport.getNetSummary(resultList);
         List<Supplier> supplierList = Supplier.findUnDeleted();
-        render(condition, reportPage, hasSeeReportProfitRight, summary,supplierList);
+        render(condition, reportPage, hasSeeReportProfitRight, summary, supplierList);
 
     }
 
