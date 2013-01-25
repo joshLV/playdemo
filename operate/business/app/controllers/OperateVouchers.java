@@ -40,7 +40,7 @@ public class OperateVouchers extends Controller {
         }
         JPAExtPaginator<Voucher> voucherPage = Voucher.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
-        for (Voucher voucher : voucherPage) {
+        for (Voucher voucher : voucherPage.getCurrentPage()) {
             setOperatorName(voucher);
         }
         render(voucherPage, condition);

@@ -55,7 +55,7 @@ public class BatchExportCoupons extends Controller {
             JPAExtPaginator<BatchCoupons> couponPage = BatchCoupons.findByCondition(condition,
                     pageNumber, PAGE_SIZE);
 
-            for (BatchCoupons coupon : couponPage) {
+            for (BatchCoupons coupon : couponPage.getCurrentPage()) {
                 if (coupon.operatorId != null) {
                     Resaler resaler = Resaler.findById(coupon.operatorId);
                     if (user != null) {
