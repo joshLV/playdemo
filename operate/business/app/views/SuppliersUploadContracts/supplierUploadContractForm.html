@@ -1,6 +1,7 @@
 %{
-imageUrl ="/supplier_contract_images?supplierId="+id;
+imageUrl ="/supplier_contract_images/"+supplierId+"/"+contractId;
 }%
 
+#{layout_operate.multiFileField name:'multiImage',note:'图片尺寸：(340*260像素)', required:true, uploadImgUrl:imageUrl,value:supplier?.supplierContractList?.supplierContractImagesList/}
 
-#{layout_operate.multiFileField name:'multiImage',note:'图片尺寸：(340*260像素)', required:true, uploadImgUrl:imageUrl,value:supplier?.supplierContractImagesList/}
+

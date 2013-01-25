@@ -25,7 +25,7 @@ import net.coobird.thumbnailator.geometry.Positions;
 public class SupplierContractImages extends Controller {
     private static final String IMAGE_ROOT_ORIGINAL = play.Play.configuration.getProperty("image.root.original", "/nfs/images/contract/o"); //原始图根目录
     private static final String IMAGE_ROOT_GENERATED = play.Play.configuration.getProperty("image.root.generated", "/nfs/images/contract/p"); //缩略图根目录
-    public static String ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
+    public static String ROOT_PATH = Play.configuration.getProperty("upload.contractpath", "");
 
     private static final Pattern imageNamePattern = Pattern.compile("([a-z0-9]{8})_([^_]+)(_.+)*\\.((?i)(jpg|jpeg|png|gif))$");
     private static final Pattern sizePattern = Pattern.compile(".+_([0-9]+)x([0-9]+)(_.+)*\\.((?i)(jpg|jpeg|png|gif))$");
@@ -52,12 +52,13 @@ public class SupplierContractImages extends Controller {
      * @param thirdDir
      * @param imageName
      */
-    public static void showImage(String firstDir, String secondDir, String thirdDir, String imageName) {
+    public static void showImage(String firstDir, String secondDir, String imageName) {
         Matcher imageNameMatcher = imageNamePattern.matcher(imageName);
         if (!imageNameMatcher.matches()) {
             Logger.error("image not found: %s", imageName);
             notFound();
         }
+
 
         String sign = imageNameMatcher.group(1);                //图片签名
         String fileRawName = imageNameMatcher.group(2);         //纯文件名
@@ -71,8 +72,7 @@ public class SupplierContractImages extends Controller {
             notFound();
         }
 
-
-        File originImage = new File(joinPath(IMAGE_ROOT_ORIGINAL, firstDir, secondDir, thirdDir), fileRawName + "." + fileExtension);
+        File originImage = new File(joinPath(IMAGE_ROOT_ORIGINAL, firstDir, secondDir), fileRawName + "." + fileExtension);
 
         //访问的原始文件不存在时，读取默认图片作为图片源，同时修改生成文件的目录为/1/1/1/
         boolean originImageExist = true;
@@ -81,10 +81,10 @@ public class SupplierContractImages extends Controller {
             originImage = new File(Play.applicationPath, joinPath("public", "images", "default.png"));
 
             originImageExist = false;
-            firstDir = secondDir = thirdDir = "1";
+            firstDir = secondDir = "1";
         }
 
-        File targetParent = new File(joinPath(IMAGE_ROOT_GENERATED, firstDir, secondDir, thirdDir));
+        File targetParent = new File(joinPath(IMAGE_ROOT_GENERATED, firstDir, secondDir));
         //检查目标目录
         if (!targetParent.exists()) {
             if (!targetParent.mkdirs()) {
@@ -92,7 +92,6 @@ public class SupplierContractImages extends Controller {
                 error("can not mkdir on " + targetParent.getPath());
             }
         }
-
         //检查是否指定了目标大小，如果指定了大小，那么生成的默认图片的文件名也要更改
         Matcher sizeMatcher = sizePattern.matcher(imageName);
         int width = 0, height = 0;
@@ -147,6 +146,7 @@ public class SupplierContractImages extends Controller {
                 throw new RuntimeException(e);
             }
         }
+
         renderBinary(targetImage);
     }
 

@@ -1,4 +1,12 @@
 #{extends 'layout_operate/layout.html' /}
+
+<link rel="stylesheet" href="/public/javascripts2/themes/default/default.css">
+
+*{#{set 'moreStyles'}}*
+*{#{asset.css src:['/public/javascripts2/themes/default/default.css'] /}}*
+*{<script src="@{'/public/javascripts2/themes/default/default.css'}" ></script>}*
+*{#{/set}}*
+
 #{set title:'修改合同的电子版本' /}
 #{get 'moreScripts'}
 <script src="@{'/public/javascripts2/kindeditor-min.js'}" type="text/javascript" charset="UTF-8"></script>

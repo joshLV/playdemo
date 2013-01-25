@@ -32,10 +32,10 @@ GET     /suppliers_upload_contracts                        SuppliersUploadContra
 GET     /supplier_contract/{id}/edit                       SuppliersUploadContracts.edit
 PUT     /supplier_contract/{id}                            SuppliersUploadContracts.update
 
-POST    /supplier_contract_images                           SuppliersUploadFiles.uploadImages
+POST    /supplier_contract_images/{supplierId}/{contractId}         SuppliersUploadFiles.uploadImages
 
-GET     /contract/p/{firstDir}/{secondDir}/{thirdDir}/{imageName}    SupplierContractImages.showImage
-GET     /contract/o/{path1}/{path2}/{path3}/{path4}      SupplierContractImages.showOriginalImage
+GET     /contract/p/{firstDir}/{secondDir}/{imageName}    SupplierContractImages.showImage
+GET     /contract/o/{path1}/{path2}       SupplierContractImages.showOriginalImage
 
 
 # 外部商品

@@ -1,6 +1,7 @@
 package controllers;
 
 import models.supplier.Supplier;
+import models.supplier.SupplierContractImage;
 import operate.rbac.annotations.ActiveNavigation;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -28,8 +29,9 @@ public class SuppliersUploadContracts extends Controller {
     public static void edit() {
         List<Supplier> supplierList = Supplier.findAll();
         Supplier supplier = supplierList.get(0);
-        Long id = supplier.id;
-        render(id);
+        Long supplierId = supplier.id;
+        Long contractId = 1l;
+        render(supplierId, contractId);
     }
 
     public static void update(Long id, Supplier supplier) {
@@ -37,6 +39,6 @@ public class SuppliersUploadContracts extends Controller {
     }
 
     public static void create(Supplier supplier) {
-           index();
+        index();
     }
 }

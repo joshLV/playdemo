@@ -184,7 +184,7 @@ public class Supplier extends Model {
     public SupplierCategory supplierCategory;
 
     @OneToMany(mappedBy = "supplier")
-    public List<SupplierContractImage> supplierContractImagesList;
+    public List<SupplierContract> supplierContractList;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderColumn(name = "`display_order`")
