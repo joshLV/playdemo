@@ -87,9 +87,10 @@
 <form class="well form-inline" action="@{SalesTaxReports.index()}" method="GET" id="search_form"
       name="search_form">
     商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
-#{vx.selectInputField name:"supplierName", id:"condition.supplier.id", list:supplierList, value:condition?.supplier?.id, array:"supplierArray",importJs:true/}
+#{vx.selectInputField name:"supplierName", id:"condition.supplier.id", class:'input-medium', list:supplierList,
+value:condition?.supplier?.id, array:"supplierArray",importJs:true/}
     类&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;型：
-#{select 'condition.materialType', id:materialType, class:'select', value:condition?.materialType}
+#{select 'condition.materialType', id:materialType, class:'select input-small', value:condition?.materialType}
     #{option null }不限#{/option}
     #{option "REAL"}&{'goods.REAL'}#{/option}
     #{option "ELECTRONIC"}&{'goods.ELECTRONIC'}#{/option}

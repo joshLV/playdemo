@@ -37,6 +37,12 @@ DELETE  /votes/{id}                            WebVotes.delete
 GET     /votes/{id}/edit                       WebVotes.edit
 PUT     /votes/{id}                            WebVotes.update
 
+# 用户管理
+GET     /consumers                              OperateConsumers.index
+GET     /consumers/{id}                         OperateConsumers.show
+PUT     /consumers/{id}/freeze                  OperateConsumers.freeze
+PUT     /consumers/{id}/unfreeze                OperateConsumers.unfreeze
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

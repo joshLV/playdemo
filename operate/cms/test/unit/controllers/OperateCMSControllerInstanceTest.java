@@ -15,5 +15,6 @@ public class OperateCMSControllerInstanceTest extends UnitTest {
         assertTrue(new CmsBlocks() instanceof Controller);
         assertTrue(new OperateTopics() instanceof Controller);
         assertTrue(new WebVotes() instanceof Controller);
+        assertTrue(new OperateConsumers() instanceof Controller);
     }
 }

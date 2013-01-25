@@ -1,5 +1,5 @@
 /*! =========================================================
- * bootstrap-datepicker.js 
+ * bootstrap-datepicker.js
  * Original Idea: http://www.eyecon.ro/bootstrap-datepicker (Copyright 2012 Stefan Petre)
  * Updated by AymKdn (http://kodono.info - https://github.com/Aymkdn/Datepicker-for-Bootstrap)
  * =========================================================
@@ -16,11 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * ========================================================= */
- 
+
 !function( $ ) {
-	
+
 	// Picker object
-	
+
 	var Datepicker = function(element, options){
 		this.element = $(element);
 		this.format = DPGlobal.parseFormat(options.format||this.element.data('date-format')||'mm/dd/yyyy');
@@ -28,7 +28,7 @@
 
 		this.isInput = this.element.is('input') || this.element.is('textarea');
 		this.component = this.element.is('.date') ? this.element.find('.add-on') : false;
-		
+
 		if (this.isInput) {
 			this.element.on({
 				"focus.Datepicker": $.proxy(this.show, this),
@@ -44,7 +44,7 @@
 				this.element.on('click.Datepicker', $.proxy(this.show, this));
 			}
 		}
-		
+
 		this.viewMode = 0;
 		this.weekStart = options.weekStart||this.element.data('date-weekstart')||0;
 		this.scroll = (options.scroll != undefined ? options.scroll : true);
@@ -54,10 +54,10 @@
 		this.update();
 		this.showMode();
 	};
-	
+
 	Datepicker.prototype = {
 		constructor: Datepicker,
-		
+
 		show: function(e) {
 		  $('div.datepicker.dropdown-menu').hide(); //make sure to hide all other calendars
 			this.picker.show();
@@ -85,7 +85,7 @@
 			if (this.scroll && docScrollTop+winHeight<elemTop+elemHeight)
                           $(document).scrollTop(elemTop-elemHeight);
 		},
-		
+
 		setValue: function() {
 			var formated = DPGlobal.formatDate(this.date, this.format);
 			if (!this.isInput) {
@@ -97,7 +97,7 @@
 				this.element.prop('value', formated);
 			}
 		},
-		
+
 		place: function(){
 			var offset = this.component ? this.component.offset() : this.element.offset();
 			this.picker.css({
@@ -105,7 +105,7 @@
 				left: offset.left
 			});
 		},
-		
+
 		update: function(){
 		  var date = this.element.val();
 			this.date = DPGlobal.parseDate(
@@ -115,7 +115,7 @@
 			this.viewDate = new Date(this.date);
 			this.fill();
 		},
-		
+
 		fillDow: function(){
 			var dowCnt = this.weekStart;
 			var html = '<tr>';
@@ -125,7 +125,7 @@
 			html += '</tr>';
 			this.picker.find('.datepicker-days thead').append(html);
 		},
-		
+
 		fillMonths: function(){
 			var html = '';
 			var i = 0
@@ -134,7 +134,7 @@
 			}
 			this.picker.find('.datepicker-months td').append(html);
 		},
-		
+
 		fill: function() {
 			var d = new Date(this.viewDate),
 				year = d.getFullYear(),
@@ -172,7 +172,7 @@
 			}
 			this.picker.find('.datepicker-days tbody').empty().append(html.join(''));
 			var currentYear = this.date.getFullYear();
-			
+
 			var months = this.picker.find('.datepicker-months')
 						.find('th:eq(1)')
 							.text(year)
@@ -181,7 +181,7 @@
 			if (currentYear == year) {
 				months.eq(this.date.getMonth()).addClass('active');
 			}
-			
+
 			html = '';
 			year = parseInt(year/10, 10) * 10;
 			var yearCont = this.picker.find('.datepicker-years')
@@ -196,10 +196,10 @@
 			}
 			yearCont.html(html);
 		},
-		
+
 		blur:function(e) {
   	},
-		
+
 		hide: function(e){
   		this.picker.hide();
 			$(window).off('resize.Datepicker', this.place);
@@ -229,7 +229,7 @@
 							case 'next':
 								this.viewDate['set'+DPGlobal.modes[this.viewMode].navFnc].call(
 									this.viewDate,
-									this.viewDate['get'+DPGlobal.modes[this.viewMode].navFnc].call(this.viewDate) + 
+									this.viewDate['get'+DPGlobal.modes[this.viewMode].navFnc].call(this.viewDate) +
 									DPGlobal.modes[this.viewMode].navStep * (target[0].className == 'prev' ? -1 : 1)
 								);
 								this.fill();
@@ -272,20 +272,20 @@
 			}
 		},
 		keydown:function(e) {
-                  var keyCode = e.keyCode || e.which; 
+                  var keyCode = e.keyCode || e.which;
                   if (keyCode == 9) this.hide(); // when hiting TAB, for accessibility
                 },
-	
+
 		showMode: function(dir) {
 			if (dir) {
 				this.viewMode = Math.max(0, Math.min(2, this.viewMode + dir));
 			}
 			this.picker.find('>div').hide().filter('.datepicker-'+DPGlobal.modes[this.viewMode].clsName).show();
 		},
-		
+
 		destroy: function() { this.element.removeData("datepicker").off(".Datepicker"); this.picker.remove() }
 	};
-	
+
 	$.fn.datepicker = function ( option ) {
 		return this.each(function () {
 			var $this = $(this),
@@ -301,7 +301,7 @@
 	$.fn.datepicker.defaults = {
 	};
 	$.fn.datepicker.Constructor = Datepicker;
-	
+
 	var DPGlobal = {
 		modes: [
 			{
@@ -320,10 +320,10 @@
 				navStep: 10
 		}],
 		dates:{
-			days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-			daysShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-			daysMin: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
-			months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+			days: ["周日", "周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+			daysShort: ["日", "一", "二", "三", "四", "五", "六", "日"],
+			daysMin: ["日", "一", "二", "三", "四", "五", "六", "日"],
+			months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
 			monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 		},
 		isLeapYear: function (year) {
