@@ -2,8 +2,8 @@ package controllers;
 
 import models.operator.OperateUser;
 import models.order.OuterOrderPartner;
-import models.resale.ResalerProduct;
-import models.resale.ResalerProductJournal;
+import models.sales.ResalerProduct;
+import models.sales.ResalerProductJournal;
 import models.sales.*;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;

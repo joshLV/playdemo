@@ -1,4 +1,4 @@
-package models.resale;
+package models.sales;
 
 import play.db.jpa.Model;
 

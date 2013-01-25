@@ -1,9 +1,9 @@
-package factory.resale;
+package factory.sales;
 
 import factory.FactoryBoy;
 import factory.ModelFactory;
 import models.order.OuterOrderPartner;
-import models.resale.ResalerProduct;
+import models.sales.ResalerProduct;
 import models.sales.Goods;
 
 /**
@@ -16,6 +16,8 @@ public class ResalerProductFactory extends ModelFactory<ResalerProduct> {
         ResalerProduct resalerProduct = new ResalerProduct();
         resalerProduct.partner = OuterOrderPartner.TB;
         resalerProduct.goods = FactoryBoy.lastOrCreate(Goods.class);
+        resalerProduct.save();
+        resalerProduct.id = resalerProduct.id + 10000L;
 
         return resalerProduct;
     }

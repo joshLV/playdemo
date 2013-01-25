@@ -1,7 +1,6 @@
-package models.resale;
+package models.sales;
 
 import models.order.OuterOrderPartner;
-import models.sales.Goods;
 import org.hibernate.annotations.Index;
 import play.db.jpa.Model;
 

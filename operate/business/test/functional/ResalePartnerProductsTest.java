@@ -5,7 +5,7 @@ import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.operator.OperateUser;
 import models.order.OuterOrderPartner;
-import models.resale.ResalerProduct;
+import models.sales.ResalerProduct;
 import models.sales.Goods;
 import operate.rbac.RbacLoader;
 import org.junit.Before;

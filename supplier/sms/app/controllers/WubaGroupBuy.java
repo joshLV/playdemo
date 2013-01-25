@@ -18,8 +18,10 @@ import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
 import models.resale.Resaler;
+import models.sales.Goods;
 import models.sales.GoodsDeployRelation;
 import models.sales.MaterialType;
+import models.sales.ResalerProduct;
 import models.wuba.WubaUtil;
 import play.Logger;
 import play.db.jpa.JPA;
@@ -309,13 +311,7 @@ public class WubaGroupBuy extends Controller {
         Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
         ybqOrder.save();
         try {
-            GoodsDeployRelation goodsDeployRelation = GoodsDeployRelation.find("byLinkId", outerGroupId).first();
-            if (goodsDeployRelation == null || goodsDeployRelation.goods == null) {
-                Logger.info("can not find goodsDeployRelation: %s", outerGroupId);
-                putStatusAndMsg(result, "10202", "未找到商品对应关系");
-                return null;
-            }
-            models.sales.Goods goods = goodsDeployRelation.goods;
+            Goods goods = ResalerProduct.getGoods(outerGroupId);
             if (goods == null) {
                 putStatusAndMsg(result, "10100", "未找到商品");
                 Logger.info("goods not found: %s", outerGroupId);

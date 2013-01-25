@@ -1,4 +1,4 @@
-package models.resale;
+package models.sales;
 
 /**
  * @author likang
