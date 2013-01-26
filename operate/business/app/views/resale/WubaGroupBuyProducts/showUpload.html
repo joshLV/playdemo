@@ -17,7 +17,7 @@
     <legend>58上传商品：<a href="/goods/${goods.id}" target="_blank">
         ${goods.shortName}</a>
     </legend>
-    <form class="form-horizontal" method="POST" action="/resale-partner-products/wb/upload">
+    <form class="form-horizontal" method="POST" action="/resaler-products/wb/upload">
 
         <div class="control-group">
             <label class="control-label">商品分类 *</label>
@@ -271,7 +271,7 @@
                     <tr>
                         <td>商圈 *</td>
                         <td colspan="3">
-                            <input class="input" readonly id="circleId_${shop.id}-show">
+                            <input class="input" readonly id="circleId_${shop.id}-show" value="${shop.areaName}">
                             <div id="circleId_${shop.id}-treeFrame" class="menuContent" style="display:none; position: absolute;">
                                 <ul id="circleId_${shop.id}-tree" class="ztree" style="width:210px"></ul>
                             </div>

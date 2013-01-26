@@ -45,35 +45,35 @@ GET     /contract/o/{path1}/{path2}                       SupplierContractImages
 
 
 # 外部商品
-GET     /resale-partner-products                                ResalePartnerProducts.index
-GET     /resale-partner-products/journal/json/{journalId}       ResalePartnerProducts.journalJson
-GET     /resale-partner-products/journal/{productId}            ResalePartnerProducts.journal
-GET     /resale-partner-products/products/{partner}/{goodsId}   ResalePartnerProducts.showProducts
+GET     /resaler-products                                ResalerProducts.index
+GET     /resaler-products/journal/json/{journalId}       ResalerProducts.journalJson
+GET     /resaler-products/journal/{productId}            ResalerProducts.journal
+GET     /resaler-products/products/{partner}/{goodsId}   ResalerProducts.showProducts
 
 # 一号店
-GET     /resale-partner-products/yhd/upload/{goodsId}   resale.YHDGroupBuyProducts.showUpload
-POST    /resale-partner-products/yhd/upload             resale.YHDGroupBuyProducts.upload
+GET     /resaler-products/yhd/upload/{goodsId}  resale.YHDGroupBuyProducts.showUpload
+POST    /resaler-products/yhd/upload            resale.YHDGroupBuyProducts.upload
 *       /yhd-ztree/category                     resale.YHDGroupBuyProducts.category
 *       /yhd-ztree/merchant-category            resale.YHDGroupBuyProducts.merchantCategory
 
 # 京东
-GET     /resale-partner-products/jd/upload/{goodsId}   resale.JDGroupBuyProducts.showUpload
-POST    /resale-partner-products/jd/upload             resale.JDGroupBuyProducts.upload
-GET     /resale-partner-products/jd/products/{goodsId} resale.JDGroupBuyProducts.showProducts
+GET     /resaler-products/jd/upload/{goodsId}   resale.JDGroupBuyProducts.showUpload
+POST    /resaler-products/jd/upload             resale.JDGroupBuyProducts.upload
+GET     /resaler-products/jd/products/{goodsId} resale.JDGroupBuyProducts.showProducts
 *       /jd-ztree/city                          resale.JDGroupBuyProducts.city
 *       /jd-ztree/group                         resale.JDGroupBuyProducts.group
 
 # 58
-GET     /resale-partner-products/wb/upload/{goodsId}   resale.WubaGroupBuyProducts.showUpload
-POST    /resale-partner-products/wb/upload             resale.WubaGroupBuyProducts.upload
-GET     /resale-partner-products/wb/edit/{productId}   resale.WubaGroupBuyProducts.showEdit
-POST    /resale-partner-products/wb/edit/groupbuyinfo  resale.WubaGroupBuyProducts.editGroupBuyInfo
-POST    /resale-partner-products/wb/edit/partners      resale.WubaGroupBuyProducts.editPartners
-POST    /resale-partner-products/wb/edit/deadline      resale.WubaGroupBuyProducts.editDeadline
+GET     /resaler-products/wb/upload/{goodsId}   resale.WubaGroupBuyProducts.showUpload
+POST    /resaler-products/wb/upload             resale.WubaGroupBuyProducts.upload
+GET     /resaler-products/wb/edit/{productId}   resale.WubaGroupBuyProducts.showEdit
+POST    /resaler-products/wb/edit/groupbuyinfo  resale.WubaGroupBuyProducts.editGroupBuyInfo
+POST    /resaler-products/wb/edit/partners      resale.WubaGroupBuyProducts.editPartners
+POST    /resaler-products/wb/edit/deadline      resale.WubaGroupBuyProducts.editDeadline
 
 # 当当
-GET     /resale-partner-products/dd/upload/{goodsId}   resale.DDGroupBuyProducts.showUpload
-POST    /resale-partner-products/dd/upload             resale.DDGroupBuyProducts.upload
+GET     /resaler-products/dd/upload/{goodsId}   resale.DDGroupBuyProducts.showUpload
+POST    /resaler-products/dd/upload             resale.DDGroupBuyProducts.upload
 
 
 

@@ -24,7 +24,7 @@ import java.util.Map;
  */
 @With(OperateRbac.class)
 @ActiveNavigation("resale_partner_product")
-public class ResalePartnerProducts extends Controller {
+public class ResalerProducts extends Controller {
     public static int PAGE_SIZE = 20;
 
     @ActiveNavigation("resale_partner_product")

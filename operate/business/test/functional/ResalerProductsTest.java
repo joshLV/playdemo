@@ -23,7 +23,7 @@ import java.util.Map;
  * @author likang
  *         Date: 13-1-11
  */
-public class ResalePartnerProductsTest extends FunctionalTest {
+public class ResalerProductsTest extends FunctionalTest {
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
@@ -54,7 +54,7 @@ public class ResalePartnerProductsTest extends FunctionalTest {
 
     @Test
     public void testIndex() {
-        Http.Response response = GET(Router.reverse("controllers.ResalePartnerProducts.index"));
+        Http.Response response = GET(Router.reverse("controllers.ResalerProducts.index"));
         assertIsOk(response);
         JPAExtPaginator<Goods> goodsPage = (JPAExtPaginator<models.sales.Goods>)renderArgs("goodsPage");
         assertNotNull(goodsPage);

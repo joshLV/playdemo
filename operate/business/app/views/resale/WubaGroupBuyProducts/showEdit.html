@@ -13,7 +13,7 @@
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="edit-groupbuy">
-                <form class="form-horizontal" method="POST" action="/resale-partner-products/wb/edit/groupbuyinfo">
+                <form class="form-horizontal" method="POST" action="/resaler-products/wb/edit/groupbuyinfo">
 
                     <div class="control-group">
                         <label class="control-label">商品分类</label>
@@ -145,7 +145,7 @@
 
 
             <div class="tab-pane" id="edit-partners">
-                <form class="form-horizontal" method="POST" action="/resale-partner-products/wb/edit/partners">
+                <form class="form-horizontal" method="POST" action="/resaler-products/wb/edit/partners">
                     #{list items:shopList, as:'shop'}
                     <input type="hidden" name="partnerId_${shop_index}" value="${shop?.id}">
                     <div class="control-group">
@@ -212,7 +212,7 @@
 
 
             <div class="tab-pane" id="edit-deadline">
-                <form class="form-horizontal" method="POST" action="/resale-partner-products/wb/edit/deadline">
+                <form class="form-horizontal" method="POST" action="/resaler-products/wb/edit/deadline">
                     <div class="control-group">
                         <label class="control-label">团购结束时间</label>
                         <div class="controls">

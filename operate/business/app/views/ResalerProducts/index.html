@@ -10,7 +10,7 @@
 #{/set}
 <div class="body">
 <legend>外部商品管理</legend>
-<form class="form-horizontal" name="frmlist" id="frmlist" action="@{ResalePartnerProducts.index()}" method="GET">
+<form class="form-horizontal" name="frmlist" id="frmlist" action="@{ResalerProducts.index()}" method="GET">
     <table width="100%">
         <tr>
             <td width="30%">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
@@ -29,7 +29,7 @@
 
 
 
-<table class="table table-striped table-bordered ">
+<table class="table table-bordered ">
 <thead>
 <tr>
     <th>商品编码</th>
@@ -59,20 +59,22 @@
             partner = partner.toLowerCase();
         }%
         <td>
+            <div class="btn-group">
             #{if !pd}
-            <a href="/resale-partner-products/${partner}/upload/${goods.id}" class="btn btn-mini" rel="tooltip" title="上传"><i class="icon-share-alt"></i></a>
+            <a href="/resaler-products/${partner}/upload/${goods.id}" class="btn btn-mini" rel="tooltip" title="上传"><i class="icon-share-alt"></i></a>
             #{/if}
             #{if pd?.size() == 1}
-                <a href="/resale-partner-products/${partner}/upload/${goods.id}" class="btn btn-mini" rel="tooltip" title="再次上传"><i class="icon-share-alt"></i></a>
+                <a href="/resaler-products/${partner}/upload/${goods.id}" class="btn btn-mini" rel="tooltip" title="再次上传"><i class="icon-share-alt"></i></a>
                 #{if partner == 'yhd' || partner == 'wb'}
-                    <a href="/resale-partner-products/${partner}/edit/${pd.get(0).id}" class="btn btn-mini" rel="tooltip" title="编辑"><i class="icon-pencil"></i></a>
+                    <a href="/resaler-products/${partner}/edit/${pd.get(0).id}" class="btn btn-mini" rel="tooltip" title="编辑"><i class="icon-pencil"></i></a>
                 #{/if}
-                <a href="/resale-partner-products/products/${partner}/${goods.id}" class="btn btn-mini" rel="tooltip" title="详情"><i class="icon-th-list"></i></a>
+                <a href="/resaler-products/products/${partner}/${goods.id}" class="btn btn-mini" rel="tooltip" title="详情"><i class="icon-th-list"></i></a>
             #{/if}
             #{if pd?.size() > 1}
-                <a href="/resale-partner-products/${partner}/upload/${goods.id}" class="btn btn-mini" rel="tooltip" title="再次上传"><i class="icon-share-alt"></i></a>
-                <a href="/resale-partner-products/products/${partner}/${goods.id}" class="btn btn-mini" rel="tooltip" title="历史详情"><i class="icon-th-list"></i></a>
+                <a href="/resaler-products/${partner}/upload/${goods.id}" class="btn btn-mini" rel="tooltip" title="再次上传"><i class="icon-share-alt"></i></a>
+                <a href="/resaler-products/products/${partner}/${goods.id}" class="btn btn-mini" rel="tooltip" title="历史详情"><i class="icon-th-list"></i></a>
             #{/if}
+            </div>
         </td>
     #{/list}
 </tr>

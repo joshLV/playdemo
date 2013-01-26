@@ -151,6 +151,7 @@ $(function(){
     var zhongcanNode = prodTypeTree.getNodeByParam('name', '中餐', null);
     if (zhongcanNode) {
         prodTypeTree.checkNode(zhongcanNode, true,false);
+        prodTypeTree.selectNode(zhongcanNode);
         expandSinglePathToRoot(prodTypeTree, zhongcanNode);
         $("#prodType-show").val('中餐');
         $("#prodType-value").val('1');
@@ -192,16 +193,18 @@ $(function(){
     // 自动选择门店中的商圈
     $("ul[id^='circleId'].ztree").each(function(){
         var treeEle = $(this);
-        var tree = $.fn.zTree.getZTreeObj(treeEle.attr('id'));
-        var hint = $("#hint-" + treeEle.attr('id'));
-        var node = tree.getNodeByParam('name', hint.text(), null);
+        var id = treeEle.attr('id')
+        id = id.substring(0, id.indexOf("-"));
+        var tree = $.fn.zTree.getZTreeObj(id + "-tree");
+        var inputShow = $("#" + id + "-show");
+        var node = tree.getNodeByParam('name', inputShow.val(), null);
         if (node) {
             tree.checkNode(node, true,false);
-            hint.text(hint.text() + '(已自动选中)')
-            hint.css('color', '#08c')
+            tree.selectNode(node);
+            expandSinglePathToRoot(tree, node);
         }else{
-            hint.text(hint.text() + '(未能自动选中,请手动选择)')
-            hint.css('color', 'red')
+            inputShow.after("<span style='color:red'>商圈：" + inputShow.val() + " 未自动匹配成功，只能麻烦你手动选择了</span>");
+            inputShow.val('')
         }
     });
 
