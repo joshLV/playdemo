@@ -8,8 +8,10 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
+ * 发布到第三方产品的信息
+ *
  * @author likang
- *         Date: 13-1-8
+ * Date: 13-1-8
  */
 @Entity
 @Table(name = "resaler_product")
@@ -18,7 +20,6 @@ public class ResalerProduct extends Model {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "partner")
-    @Index(name = "partner_index")
     public OuterOrderPartner partner;      //合作伙伴
 
     @ManyToOne
@@ -56,11 +57,9 @@ public class ResalerProduct extends Model {
     @Column(name = "latest_json_data")
     public String latestJsonData;
 
-    /**
-     * 第三方状态.
-     */
-    @Column(name = "outer_status")
-    public String outerStatus;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    public ResalerProductStatus status;
 
     public ResalerProduct() {
         this.createdAt = new Date();
@@ -74,6 +73,7 @@ public class ResalerProduct extends Model {
         product.goods = goods;
         product.creatorId = creatorId;
         product.lastModifierId = creatorId;
+        product.status = ResalerProductStatus.STAGING;
         return product.save();
     }
 

@@ -73,7 +73,7 @@
                 var categoryChain = buildTreeChain(checkedCategory);
 
                 var checkedMerchantCategory = $.fn.zTree.getZTreeObj("merchantCategoryTree").getCheckedNodes(true);
-                var checkedMerchantCategoryStr = buildCheckedStr(checkedMerchantCategory, ",")
+                var checkedMerchantCategoryStr = buildCheckedStr(checkedMerchantCategory, ",", "id")
                 var merchantCategoryChain = buildTreeChain(checkedMerchantCategory);
 
                 $("#inputCategory").val(checkedCategory[0].id);

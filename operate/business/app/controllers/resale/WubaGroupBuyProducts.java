@@ -25,6 +25,10 @@ import java.util.*;
 @With(OperateRbac.class)
 @ActiveNavigation("resale_partner_product")
 public class WubaGroupBuyProducts extends Controller {
+    private static String[] partnerKeys = new String[] {
+            "partnerId","title","shortTitle","telephone","webUrl","busline","mapImg",
+            "mapServiceId","mapUrl","latitude","longitude","address","circleId"};
+
     @ActiveNavigation("resale_partner_product")
     public static void showUpload(Long goodsId) {
         Goods goods = Goods.findById(goodsId);
@@ -38,7 +42,7 @@ public class WubaGroupBuyProducts extends Controller {
     }
 
     @ActiveNavigation("resale_partner_product")
-    public static void upload(long groupbuyId, int shopSize) {
+    public static void upload(long groupbuyId, String[] shopIds) {
         OperateUser operateUser = OperateRbac.currentUser();
         Goods goods = Goods.findById(groupbuyId);
         if (goods == null) {
@@ -61,14 +65,12 @@ public class WubaGroupBuyProducts extends Controller {
 
 
         //商家信息参数
-        String[] partnerKeys = new String[] {"partnerId","title","shortTitle","telephone","webUrl","busline","mapImg",
-                "mapServiceId","mapUrl","latitude","longitude","address","circleId"};
         List<Map<String, String>> partnerParams = new ArrayList<>();
         //将团购信息参数中的特定key值转移出来，构建商家信息参数
-        for (int i = 1; i <= shopSize; i++) {
+        for (String id : shopIds) {
             Map<String, String> partnerParam = new HashMap<>();
             for (String key : partnerKeys) {
-                partnerParam.put(key, groupbuyInfoParams.remove(key + "_" + i));
+                partnerParam.put(key, groupbuyInfoParams.remove(key + "_" + id));
             }
             partnerParams.add(partnerParam);
         }
@@ -100,7 +102,9 @@ public class WubaGroupBuyProducts extends Controller {
 
         Supplier supplier = Supplier.findById(product.goods.supplierId);
         Set<Shop> shopList = product.goods.shops;
-        render(product, shopList, supplier);
+        Goods goods = product.goods;
+        String allCategoriesJson = WubaUtil.allProductTypesJsonCache();
+        render(product, goods, allCategoriesJson, shopList, supplier);
     }
 
     @ActiveNavigation("resale_partner_product")

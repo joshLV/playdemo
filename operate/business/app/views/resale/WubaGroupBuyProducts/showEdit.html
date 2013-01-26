@@ -26,35 +26,35 @@
                     <div class="control-group">
                         <label class="control-label" for="inputTeamTitle">团购标题名称 </label>
                         <div class="controls">
-                            <input type="text" id="inputTeamTitle" class="input-block-level" name="prodName" value="">
+                            <input type="text" id="inputTeamTitle" class="input-block-level" name="prodName" value="${goods.name}">
                             <span class="help-block">不超过200个字符</span>
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label" for="inputTitle">团购短名称 </label>
                         <div class="controls">
-                            <input type="text" id="inputTitle" name="prodShortName" class="input-xxlarge" value="">
+                            <input type="text" id="inputTitle" name="prodShortName" class="input-xxlarge" value="${goods.shortName}">
                             <span class="help-inline">不超过20个字符</span>
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label" for="inputListShortTitle">列表页短标题 </label>
                         <div class="controls">
-                            <input type="text" id="inputListShortTitle" name="listShortTitle" class="input-xxlarge" value="">
+                            <input type="text" id="inputListShortTitle" name="listShortTitle" class="input-xxlarge" value="${goods.shortName}">
                             <span class="help-inline">不超过30个字符</span>
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label" for="inputMarketPrice">市场价 </label>
                         <div class="controls">
-                            <input type="text" id="inputMarketPrice" name="prodPrice" value="">
+                            <input type="text" id="inputMarketPrice" name="prodPrice" value="${goods.faceValue}">
                             <span class="help-inline">最多两位小数</span>
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label" for="inputSalePrice">销售价 </label>
                         <div class="controls">
-                            <input type="text" id="inputSalePrice" name="groupPrice" value="">
+                            <input type="text" id="inputSalePrice" name="groupPrice" value="${goods.salePrice}">
                             <span class="help-inline">不能大于市场价，最多两位小数</span>
                         </div>
                     </div>
@@ -75,15 +75,34 @@
                     <div class="control-group">
                         <label class="control-label" for="inputProdImg">团购主图 </label>
                         <div class="controls">
-                            <input type="text" id="inputProdImg" name="prodImg" class="input-block-level" value="">
+                            <input type="text" id="inputProdImg" name="prodImg" class="input-xxlarge" value="${goods.getImageLargePath()}">
+                            <span class="btn" id="buttonProdImg" >选择图片</span>
                             <span class="help-block">http开头，图片尺寸为420*680，图片大小在300kb以内</span>
-                            <img src="" alt="" id="imgProdImg">
+                            <img src="${goods.imageOriginalPath}" alt="" id="imgProdImg">
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label">团购详情</label>
                         <div class="controls">
                             <textarea rows="8" cols="100"  name="prodDescription" id="prodDescription" style="width:850px;height:550px;display:hidden;">
+                                #{if goods.exhibition}
+                                ${goods.exhibition.raw()}
+                                <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                                    <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
+                                </p>
+                                ${goods.prompt.raw()}
+                                <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                                    <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
+                                </p>
+                                ${goods.details.raw()}
+                                <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                                    <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
+                                </p>
+                                ${goods.supplierDes.raw()}
+                                #{/if}
+                                #{else}
+                                ${goods.teamDetail?.raw()}
+                                #{/else}
                             </textarea>
                         </div>
                     </div>
@@ -91,6 +110,19 @@
                         <label class="control-label">手机端特别提示</label>
                         <div class="controls">
                             <textarea rows="8" cols="100"  name="mobileDescription" id="mobileDescription" style="width:850px;height:550px;display:hidden;">
+                                ${goods.exhibition?.raw()}
+                                <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                                    <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
+                                </p>
+                                ${goods.prompt?.raw()}
+                                <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                                    <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
+                                </p>
+                                ${goods.details?.raw()}
+                                <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                                    <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
+                                </p>
+                                ${goods.supplierDes?.raw()}
                             </textarea>
                         </div>
                     </div>
@@ -202,3 +234,15 @@
         </div>
     </div>
 </div>
+
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts2/kindeditor-min.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/lang/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{asset.js src:['/ztree/jquery.ztree.all-3.5.min.js'] /}
+<script src="@{'/public/javascripts/ztree-helper.js'}" type="text/javascript" charset="UTF-8"></script>
+<script>
+    var subCategoryData = ${allCategoriesJson.raw()};
+</script>
+<script src="@@{'/public/javascripts/wuba-products.js'}"></script>
+#{/set}
