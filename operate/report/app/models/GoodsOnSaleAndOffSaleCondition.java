@@ -24,8 +24,18 @@ public class GoodsOnSaleAndOffSaleCondition {
     public List<Long> resaleIds;
     private Map<String, Object> paramMap = new HashMap<>();
 
-    public String filter() {
-        StringBuilder builder = new StringBuilder(" where 1=1 ");
+    public String filter(Long operateUserId) {
+        StringBuilder builder = new StringBuilder(" where 1=1");
+        //暂时不加这个条件，以后可能会要
+//        List<Supplier> suppliers = Supplier.find("salesId=?", operateUserId).fetch();
+//        List<Long> supplierIds = new ArrayList<>();
+//        for (Supplier s : suppliers) {
+//            supplierIds.add(s.id);
+//        }
+//        if (supplierIds.size() > 0) {
+//            builder.append(" and c.goods.supplierId in (:supplierIds))");
+//            paramMap.put("supplierIds", supplierIds);
+//        }
         if (StringUtils.isNotBlank(shortName)) {
             builder.append(" and c.goods.shortName like :shortName");
             paramMap.put("shortName", "%" + shortName + "%");
@@ -36,8 +46,8 @@ public class GoodsOnSaleAndOffSaleCondition {
         }
         if (resaleIds != null) {
             for (Long id : resaleIds) {
-                builder.append(" and c.goods in (select g.goods from ChannelGoodsInfo g where g.resaler.id = :resaleId"+id+" and status=:status)");
-                paramMap.put("resaleId"+id, id);
+                builder.append(" and c.goods in (select g.goods from ChannelGoodsInfo g where g.resaler.id = :resaleId" + id + " and status=:status)");
+                paramMap.put("resaleId" + id, id);
                 paramMap.put("status", ChannelGoodsInfoStatus.ONSALE);
             }
         }

@@ -78,10 +78,10 @@ public class DateUtil {
      * @return
      * @throws ParseException
      */
-    public static Date getBeginExpiredDate(int n) throws ParseException {
+    public static Date getBeginExpiredDate(int n) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, +n);
-        Date date = DateUtil.getEndOfDay(cal.getTime());
+        Date date = DateUtil.getBeginOfDay(cal.getTime());
         return date;
     }
 
