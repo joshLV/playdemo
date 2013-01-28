@@ -117,6 +117,11 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
     public BigDecimal profit;
 
     /**
+     * 贡献度
+     */
+    public BigDecimal contribution;
+
+    /**
      * paidAt ecoupon  resaler
      */
     public ChannelCategoryReport(Order order, Long supplierCategoryId,

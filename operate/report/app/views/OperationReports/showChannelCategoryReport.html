@@ -215,6 +215,7 @@
     #{layout_operate.sortField name:'退款券数量/金额', descField:condition?.desc, desc:'0100000',asc:'0200000'/}
     #{layout_operate.sortField name:'退款实物数量/金额', descField:condition?.desc, desc:'0010000',asc:'0020000'/}
     #{layout_operate.sortField name:'消费券数量/金额', descField:condition?.desc, desc:'0001000',asc:'0002000'/}
+    <th>贡献度</th>
     #{if hasSeeReportProfitRight == true}
         #{layout_operate.sortField name:'毛利率', descField:condition?.desc, desc:'0000100',asc:'0000200'/}
         #{layout_operate.sortField name:'渠道成本', descField:condition?.desc, desc:'0000010',asc:'0000020'/}
@@ -308,6 +309,8 @@
                 </a>
             #{/else}
         </td>
+        <td style="text-align:right;">${(report?.contribution?:0).format('#0.00')}%</td>
+
         #{if hasSeeReportProfitRight == true}
             <td #{if report?.code == "999"} bgcolor="#add8e6" #{/if}
                                             style="text-align:right;">${(report?.grossMargin?:0).format('#0.00')}%</td>

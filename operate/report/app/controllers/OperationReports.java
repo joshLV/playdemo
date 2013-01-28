@@ -285,6 +285,9 @@ public class OperationReports extends Controller {
 
         Collections.sort(resultList);
 
+        for (ChannelCategoryReport c : resultList) {
+            c.contribution = (c.salePrice == null ? BigDecimal.ZERO : c.salePrice).divide(channelSummary.amount == null ? BigDecimal.ZERO : channelSummary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+        }
 
         // 分页
         ValuePaginator<ChannelCategoryReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
@@ -595,9 +598,26 @@ public class OperationReports extends Controller {
             resultList.add(resaleSalesReport);
         }
 
+        ResaleSalesReportCondition channelCondition = new ResaleSalesReportCondition();
+        channelCondition.beginAt = condition.beginAt;
+        channelCondition.endAt = condition.endAt;
+        condition.accountType = null;
+
+        List<ResaleSalesReport> channelPage = null;
+        channelPage = ResaleSalesReport.query(channelCondition);
+        List<ResaleSalesReport> channelConsumerList = ResaleSalesReport.queryConsumer(channelCondition);
+        // 查询出所有结果
+        for (ResaleSalesReport resaleSalesReport : channelConsumerList) {
+            channelPage.add(resaleSalesReport);
+        }
+
+        ResaleSalesReport channelSummary = ResaleSalesReport.summary(channelPage);
+
+
         for (ChannelCategoryReport report : resultList) {
 //            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
 //            report.grossMargin = tempGrossMargin;
+            report.contribution = (report.salePrice == null ? BigDecimal.ZERO : report.salePrice).divide(channelSummary.amount == null ? BigDecimal.ZERO : channelSummary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2);
             if (report.grossMargin == null) {
                 report.grossMargin = BigDecimal.ZERO;
             }
@@ -643,6 +663,21 @@ public class OperationReports extends Controller {
         resultList = ChannelCategoryReport.excelQuery(condition);
         List<ChannelCategoryReport> consumerList = ChannelCategoryReport.excelQueryConsumer(condition);
 
+        ResaleSalesReportCondition channelCondition = new ResaleSalesReportCondition();
+        channelCondition.beginAt = condition.beginAt;
+        channelCondition.endAt = condition.endAt;
+        condition.accountType = null;
+
+        List<ResaleSalesReport> channelPage = null;
+        channelPage = ResaleSalesReport.query(channelCondition);
+        List<ResaleSalesReport> channelConsumerList = ResaleSalesReport.queryConsumer(channelCondition);
+        // 查询出所有结果
+        for (ResaleSalesReport resaleSalesReport : channelConsumerList) {
+            channelPage.add(resaleSalesReport);
+        }
+
+        ResaleSalesReport channelSummary = ResaleSalesReport.summary(channelPage);
+
         // 查询出所有结果
         for (ChannelCategoryReport resaleSalesReport : consumerList) {
             resultList.add(resaleSalesReport);
@@ -650,6 +685,8 @@ public class OperationReports extends Controller {
 
 
         for (ChannelCategoryReport report : resultList) {
+            report.contribution = (report.salePrice == null ? BigDecimal.ZERO : report.salePrice).divide(channelSummary.amount == null ? BigDecimal.ZERO : channelSummary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2);
+
             if (report.refundPrice == null) {
                 report.refundPrice = BigDecimal.ZERO;
             }
