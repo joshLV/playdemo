@@ -136,11 +136,17 @@
 <div class="body">
     <form action="@{OperationReports.showCategorySalesReport()}" method="GET" id="search_form"
           name="search_form" class="well form-inline">
+        <td width="30%">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
+        #{vx.selectInputField name:"supplierName", id:"condition.supplierId", list:supplierList, value:condition?.supplierId, array:"supplierArray",importJs:true/}</td>
+
         商品名称：<input type="text" name="condition.shortName" class="input-medium"
                     value="${condition?.shortName}"/>
         商品编码：<input type="text" name="condition.code" class="input-small"
                     value="${condition?.code}"/>
+        <br>
+        <br>
         起止日期
+
 
         <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
             <input class="input-small" id="condition_begin" name="condition.beginAt" size="16" type="text"
