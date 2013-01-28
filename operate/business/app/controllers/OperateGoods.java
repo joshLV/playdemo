@@ -894,7 +894,7 @@ public class OperateGoods extends Controller {
         ChannelGoodsInfo updInfo = ChannelGoodsInfo.findById(id);
         updInfo.tag = channelGoodsInfo.tag;
         updInfo.url = channelGoodsInfo.url;
-        channelGoodsInfo.status= ChannelGoodsInfoStatus.CREATED;
+        channelGoodsInfo.status = ChannelGoodsInfoStatus.CREATED;
         updInfo.operateName = OperateRbac.currentUser().userName;
         if (channelGoodsInfo.onSaleAt != null) {
             updInfo.offSaleAt = channelGoodsInfo.offSaleAt;

@@ -1061,6 +1061,7 @@ public class Goods extends Model {
         if (updateGoods == null) {
             return;
         }
+
         updateGoods.shortName = StringUtils.trimToEmpty(goods.shortName);
         updateGoods.name = StringUtils.trimToEmpty(goods.name);
         updateGoods.title = StringUtils.trimToEmpty(goods.title);
@@ -1106,6 +1107,7 @@ public class Goods extends Model {
         updateGoods.useWeekDay = goods.useWeekDay;
         updateGoods.beginOnSaleAt = goods.beginOnSaleAt;
         updateGoods.endOnSaleAt = goods.endOnSaleAt;
+        updateGoods.freeShipping = (goods.freeShipping == null) ? Boolean.FALSE : goods.freeShipping;
         updateGoods.isOrder = (goods.isOrder == null) ? Boolean.FALSE : goods.isOrder;
         updateGoods.isLottery = (goods.isLottery == null) ? Boolean.FALSE : goods.isLottery;
         updateGoods.isHideOnsale = (goods.isHideOnsale == null) ? Boolean.FALSE : goods.isHideOnsale;
