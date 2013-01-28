@@ -116,7 +116,7 @@
         <navigation key="goods" text="商品">
             <navigation key="goods_add" action="OperateGoods.add" text="商品添加" permissions="GOODS_NEW"/>
             <navigation key="goods_index" action="OperateGoods.index" text="商品管理" permissions="GOODS"/>
-            <navigation key="resale_partner_product" action="ResalePartnerProducts.index" text="分销商品管理"
+            <navigation key="resale_partner_product" action="ResalerProducts.index" text="分销商品管理"
                         permissions="GOODS"/>
             <navigation key="category_admin_index" action="CategoryAdmin.index" text="类别管理" permissions="GOODS"/>
             <navigation key="hot_keywords" action="OperateSearchHotKeywords.index" text="热门搜索词查询"

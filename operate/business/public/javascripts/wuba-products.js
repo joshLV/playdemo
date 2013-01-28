@@ -102,7 +102,9 @@ function batchAddCityNode(id, name) {
     //依次添加到各个tree中去
     $("ul[id^='circleId'].ztree").each(function(){
         var treeEle = $(this);
-        var tree = $.fn.zTree.getZTreeObj(treeEle.attr('id'));
+        var id = treeEle.attr('id');
+        id = id.substring(0, id.indexOf("-"));
+        var tree = $.fn.zTree.getZTreeObj(id+"-tree");
         tree.addNodes(null, cityNode, false);
     });
 }
@@ -168,27 +170,32 @@ $(function(){
     });
 
     //当选择或者取消选择城市时，自动更新门店中可选的城市列表
-    $("input[city]").click(function(){
+    $("input[city]").change(function(){
         var ele = $(this);
-        if(ele.attr("checked")) {
+        if(ele.is(":checked")) {
             //添加树
             batchAddCityNode(ele.val(), ele.attr('city'));
         } else {
             //依次从各个tree中删除
-            $("ul[id^='circleIdTree_'].ztree").each(function(){
+            $("ul[id^='circleId'].ztree").each(function(){
                 var treeEle = $(this);
-                var tree = $.fn.zTree.getZTreeObj(treeEle.attr('id'));
+                var id = treeEle.attr('id');
+                id = id.substring(0, id.indexOf("-"));
+                var tree = $.fn.zTree.getZTreeObj(id + "-tree");
                 var node = tree.getNodeByParam('id', ele.val(), null);
                 if (node) {
                     tree.removeNode(node);
                 }
             });
         }
-        return true;
+        var checkedCities = [];
+        $("input[city]:checked").each(function(){checkedCities.push($(this).val())});
+        $("#cityIds").val("["+checkedCities.join(",")+"]");
     });
 
     // 所有门店的商圈tree添加上海这个城市
     batchAddCityNode('4', '上海');
+    $("#cityIds").val('[4]');
 
     // 自动选择门店中的商圈
     $("ul[id^='circleId'].ztree").each(function(){
@@ -201,10 +208,12 @@ $(function(){
         if (node) {
             tree.checkNode(node, true,false);
             tree.selectNode(node);
+            $("#" + id + "-value").val(buildCheckedStr([node,], ",", "id"))
+            $("#" + id + "-nodeChain").val(buildTreeChain([node,]));
             expandSinglePathToRoot(tree, node);
+            inputShow.css('color','');
         }else{
-            inputShow.after("<span style='color:red'>商圈：" + inputShow.val() + " 未自动匹配成功，只能麻烦你手动选择了</span>");
-            inputShow.val('')
+            inputShow.css('color', 'red');
         }
     });
 

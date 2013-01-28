@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import controllers.OperateRbac;
 import models.operator.OperateUser;
 import models.order.OuterOrderPartner;
-import models.sales.ResalerProduct;
-import models.sales.ResalerProductJournal;
-import models.sales.ResalerProductJournalType;
-import models.sales.Goods;
+import models.sales.*;
 import models.yihaodian.YHDResponse;
 import models.yihaodian.YHDUtil;
 import models.yihaodian.api.YHDCategoryAPI;
@@ -49,11 +46,12 @@ public class YHDGroupBuyProducts extends Controller {
             notFound();
         }
 
-        ResalerProduct product = ResalerProduct.generate(operateUser.id, OuterOrderPartner.YHD, goods);
+        ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.YHD, goods);
 
         Map<String, String> requestParams = request.params.allSimple();
         requestParams.remove("body");
         requestParams.put("outerId", String.valueOf(product.id));
+        product.latestJson(new Gson().toJson(requestParams)).save();
 
         String responseXml = YHDUtil.sendRequest(requestParams, "yhd.product.add");
         Logger.info("yhd.product.add response %s", responseXml);
@@ -62,9 +60,10 @@ public class YHDGroupBuyProducts extends Controller {
             res.parseXml(responseXml, "updateCount", false, UpdateResult.parser);
             renderArgs.put("res", res);
             if(res.getErrorCount() == 0){
+                product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id).save();
                 //保存记录
-                String jsonData = new Gson().toJson(requestParams);
-                ResalerProductJournal.createJournal(product, operateUser.id, jsonData, ResalerProductJournalType.CREATE, "上传商品");
+                ResalerProductJournal.createJournal(product, operateUser.id, product.latestJsonData,
+                        ResalerProductJournalType.CREATE, "上传商品");
                 //上传主图
                 try{
                     uploadMainImg(imgFile, product.id);

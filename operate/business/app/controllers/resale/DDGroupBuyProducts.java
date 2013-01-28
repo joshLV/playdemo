@@ -6,11 +6,7 @@ import models.operator.OperateUser;
 import models.dangdang.groupbuy.DDGroupBuyUtil;
 import models.dangdang.groupbuy.DDResponse;
 import models.order.OuterOrderPartner;
-import models.sales.ResalerProduct;
-import models.sales.ResalerProductJournal;
-import models.sales.ResalerProductJournalType;
-import models.sales.Goods;
-import models.sales.Shop;
+import models.sales.*;
 import operate.rbac.annotations.ActiveNavigation;
 import org.w3c.dom.Node;
 import play.libs.XPath;
@@ -53,16 +49,18 @@ public class DDGroupBuyProducts extends Controller {
         Map<String, Object> templateParams = new HashMap<>();
         templateParams.putAll(groupbuyInfoParams);
 
-        ResalerProduct product = ResalerProduct.generate(operateUser.id, OuterOrderPartner.DD, goods);
+        ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.DD, goods);
         templateParams.put("linkId", String.valueOf(product.id));
-        String jsonData = new Gson().toJson(templateParams);//添加shop前先把参数给输出了
+        product.latestJson(new Gson().toJson(templateParams)).save();//添加shop前先把参数给输出了
         Collection<Shop> shops = goods.getShopList();
         templateParams.put("shops", shops);
 
         DDResponse response = DDGroupBuyUtil.pushGoods(templateParams);
         if (response.isOk()) {
+            product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id).save();
             //记录历史
-            ResalerProductJournal.createJournal(product, operateUser.id, jsonData, ResalerProductJournalType.CREATE, "上传商品");
+            ResalerProductJournal.createJournal(product, operateUser.id, product.latestJsonData,
+                    ResalerProductJournalType.CREATE, "上传商品");
             //查询当当的商品ID
             Node node = DDGroupBuyUtil.getJustUploadedTeam(product.id);
             if (node != null) {

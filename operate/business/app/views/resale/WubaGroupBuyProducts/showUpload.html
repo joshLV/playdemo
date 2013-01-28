@@ -97,9 +97,9 @@
         <div class="control-group">
             <label class="control-label">团购开始时间 *</label>
             <div class="controls">
-                <input type="text" name="startTime" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${goods.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}">
+                <input type="text" name="startTime" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${goods.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}">
                 团购结束时间 *
-                <input type="text" name="endTime" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:ss')}">
+                <input type="text" name="endTime" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${goods.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}">
             </div>
         </div>
         <div class="control-group">
@@ -156,24 +156,19 @@
             <label class="control-label">团购详情</label>
             <div class="controls">
                 <textarea rows="8" cols="100"  name="prodDescription" id="prodDescription" style="width:850px;height:550px;display:hidden;">
-                    #{if goods.exhibition}
-                        ${goods.exhibition.raw()}
-                        <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
-                            <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
-                        </p>
-                        ${goods.prompt.raw()}
-                        <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
-                            <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
-                        </p>
-                        ${goods.details.raw()}
-                        <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
-                            <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
-                        </p>
-                        ${goods.supplierDes.raw()}
-                    #{/if}
-                    #{else}
-                        ${goods.teamDetail?.raw()}
-                    #{/else}
+                    ${goods.exhibition.raw()}
+                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
+                    </p>
+                    ${goods.prompt.raw()}
+                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
+                    </p>
+                    ${goods.details.raw()}
+                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
+                    </p>
+                    ${goods.supplierDes.raw()}
                 </textarea>
             </div>
         </div>
@@ -225,58 +220,59 @@
         %{shopIds=[]}%
         #{list items:shopList, as:'shop'}
             %{shopIds.add(shop.id)}%
-        <input type="hidden" name="partnerId_${shop_index}" value="${shop?.id}">
+        <input type="hidden" name="partnerId_${shop.id}" value="${shop?.id}">
         <div class="control-group">
             <label class="control-label">门店${shop_index}</label>
             <div class="controls">
                 <table>
                     <tr>
                         <td>商家名称 *</td>
-                        <td><input type="text" name="title_${shop_index}" value="${supplier.otherName} ${shop.name}" class="input-xlarge"></td>
+                        <td><input type="text" name="title_${shop.id}" value="${supplier.otherName} ${shop.name}" class="input-xlarge"></td>
                         <td>商家缩写 *</td>
-                        <td><input type="text" name="shortTitle_${shop_index}" value="${supplier.otherName} ${shop.name}" class="input-xlarge"></td>
+                        <td><input type="text" name="shortTitle_${shop.id}" value="${supplier.otherName} ${shop.name}" class="input-xlarge"></td>
                     </tr>
                     <tr>
                         <td>电话 *</td>
-                        <td><input type="text" name="telephone_${shop_index}" value="${shop.phone}" class="input-xlarge"></td>
+                        <td><input type="text" name="telephone_${shop.id}" value="${shop.phone}" class="input-xlarge"></td>
                         <td>网址</td>
-                        <td><input type="text" name="webUrl_${shop_index}" value="${webUrl}" class="input-xlarge"></td>
+                        <td><input type="text" name="webUrl_${shop.id}" value="${webUrl}" class="input-xlarge"></td>
                     </tr>
                     <tr>
                         <td>交通信息 *</td>
-                        <td><input type="text" name="busline_${shop_index}" value="${busline?:' '}" class="input-xlarge"></td>
+                        <td><input type="text" name="busline_${shop.id}" class="input-xlarge"></td>
                         <td>地图图片</td>
-                        <td><input type="text" name="mapImg_${shop_index}" value="${mapImg}" class="input-xlarge"></td>
+                        <td><input type="text" name="mapImg_${shop.id}" class="input-xlarge"></td>
                     </tr>
                     <tr>
                         <td>地图服务商</td>
                         <td>
-                            Google <input type="radio" name="mapServiceId_${shop_index}" value="0" checked >
-                            Baidu <input type="radio" name="mapServiceId_${shop_index}" value="1">
-                            Mapbar <input type="radio" name="mapServiceId_${shop_index}" value="2">
+                            Google <input type="radio" name="mapServiceId_${shop.id}" value="0" checked >
+                            Baidu <input type="radio" name="mapServiceId_${shop.id}" value="1">
+                            Mapbar <input type="radio" name="mapServiceId_${shop.id}" value="2">
                         </td>
                         <td>地图链接</td>
-                        <td><input type="text" name="mapUrl_${shop_index}"value="${mapUrl}" class="input-xlarge"></td>
+                        <td><input type="text" name="mapUrl_${shop.id}" class="input-xlarge"></td>
                     </tr>
                     <tr>
                         <td>地图经度</td>
-                        <td><input type="text" name="latitude_${shop_index}" value="${shop.latitude}" class="input-xlarge"></td>
+                        <td><input type="text" name="latitude_${shop.id}" value="${shop.latitude}" class="input-xlarge"></td>
                         <td>地图纬度</td>
-                        <td><input type="text" name="longitude_${shop_index}" value="${shop.longitude}" class="input-xlarge"></td>
+                        <td><input type="text" name="longitude_${shop.id}" value="${shop.longitude}" class="input-xlarge"></td>
                     </tr>
                     <tr>
                         <td>商家地址</td>
-                        <td colspan="3"><input type="text" name="address_${shop_index}" value="${shop.address}" class="input-xxlarge"></td>
+                        <td colspan="3"><input type="text" name="address_${shop.id}" value="${shop.address}" class="input-xxlarge"></td>
                     </tr>
                     <tr>
                         <td>商圈 *</td>
                         <td colspan="3">
                             <input class="input" readonly id="circleId_${shop.id}-show" value="${shop.areaName}">
-                            <div id="circleId_${shop.id}-treeFrame" class="menuContent" style="display:none; position: absolute;">
+                            <span>（如果是红色，表明未自动匹配成功，请手动选择）</span>
+                            <div id="circleId_${shop.id}-treeFrame" style="display:none; position: absolute;">
                                 <ul id="circleId_${shop.id}-tree" class="ztree" style="width:210px"></ul>
                             </div>
-                            <input name="prodTypeId" id="circleId_${shop.id}-value" type="hidden">
-                            <input name="prodTypeIdChain" id="circleId_${shop.id}-nodeChain" type="hidden">
+                            <input name="circleId_${shop.id}" id="circleId_${shop.id}-value" type="hidden">
+                            <input name="circleIdChain_${shop.id}" id="circleId_${shop.id}-nodeChain" type="hidden">
                         </td>
                     </tr>
                 </table>

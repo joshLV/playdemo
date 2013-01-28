@@ -4,15 +4,12 @@ import com.google.gson.Gson;
 import controllers.OperateRbac;
 import models.operator.OperateUser;
 import models.order.OuterOrderPartner;
-import models.sales.ResalerProduct;
-import models.sales.ResalerProductJournal;
-import models.sales.ResalerProductJournalType;
-import models.sales.Goods;
-import models.sales.Shop;
+import models.sales.*;
 import models.supplier.Supplier;
 import models.wuba.WubaResponse;
 import models.wuba.WubaUtil;
 import operate.rbac.annotations.ActiveNavigation;
+import play.data.binding.As;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -42,7 +39,7 @@ public class WubaGroupBuyProducts extends Controller {
     }
 
     @ActiveNavigation("resale_partner_product")
-    public static void upload(long groupbuyId, String[] shopIds) {
+    public static void upload(long groupbuyId,@As(",") List<String> shopIds) {
         OperateUser operateUser = OperateRbac.currentUser();
         Goods goods = Goods.findById(groupbuyId);
         if (goods == null) {
@@ -52,7 +49,7 @@ public class WubaGroupBuyProducts extends Controller {
         //先将所有的参数认为是是团购信息参数
         Map<String, String> groupbuyInfoParams = params.allSimple();
         groupbuyInfoParams.remove("body");
-        ResalerProduct product = ResalerProduct.generate(operateUser.id, OuterOrderPartner.WB, goods);
+        ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.WB, goods);
         groupbuyInfoParams.put("groupbuyId", String.valueOf(product.id));
 
         Map<String, Object> prodModelJson = new HashMap<>();
@@ -79,15 +76,17 @@ public class WubaGroupBuyProducts extends Controller {
         Map<String, Object> wubaParams = new HashMap<>();
         wubaParams.put("groupbuyInfo", groupbuyInfoParams);
         wubaParams.put("partners", partnerParams);
+        product.latestJson(new Gson().toJson(wubaParams)).save();
 
         //发起请求
         WubaResponse response =  WubaUtil.sendRequest(wubaParams, "emc.groupbuy.addgroupbuy", false);
         //保存历史
         if (response.isOk()) {
+            product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id).save();
             Long partnerProductId = response.data.getAsJsonObject().get("groupbuyId58").getAsLong();
             product.partnerProduct(partnerProductId).save();
 
-            ResalerProductJournal.createJournal(product, operateUser.id, new Gson().toJson(wubaParams),
+            ResalerProductJournal.createJournal(product, operateUser.id, product.latestJsonData,
                     ResalerProductJournalType.CREATE, "上传商品");
         }
 
@@ -108,16 +107,103 @@ public class WubaGroupBuyProducts extends Controller {
     }
 
     @ActiveNavigation("resale_partner_product")
-    public static void editGroupBuyInfo() {
+    public static void editGroupBuyInfo(Long productId) {
+        ResalerProduct product = ResalerProduct.findById(productId);
+        if (product == null) {
+            notFound();
+        }
+        Map<String, String> groupbuyInfoParams = params.allSimple();
+        groupbuyInfoParams.remove("body");
+        groupbuyInfoParams.remove("productId");
+        groupbuyInfoParams.put("groupbuyId", String.valueOf(product.id));
+        //外面包一层
+        Map<String, Object> wubaParams = new HashMap<>();
+        wubaParams.put("groupbuyInfo", groupbuyInfoParams);
+
+        //发起请求
+        WubaResponse response =  WubaUtil.sendRequest(wubaParams, "emc.groupbuy.editgroupbuyinfo", false);
+        //保存历史
+        if (response.isOk()) {
+            OperateUser operateUser = OperateRbac.currentUser();
+            product.lastModifier(operateUser.id).save();
+            ResalerProductJournal.createJournal(product, operateUser.id, new Gson().toJson(wubaParams),
+                    ResalerProductJournalType.UPDATE, "修改团购信息");
+        }
+
+        render("resale/WubaGroupBuyProducts/result.html", response);
 
     }
     @ActiveNavigation("resale_partner_product")
-    public static void editPartners() {
+    public static void editPartners(Long productId, @As(",") List<String> shopIds) {
+        ResalerProduct product = ResalerProduct.findById(productId);
+        if (product == null) {
+            notFound();
+        }
+        Map<String, String> requestParams = params.allSimple();
+        requestParams.remove("productId");
+        requestParams.remove("shopIds");
+        //商家信息参数
+        List<Map<String, String>> partnerParams = new ArrayList<>();
+        for (String id : shopIds) {
+            Map<String, String> partnerParam = new HashMap<>();
+            for (String key : partnerKeys) {
+                partnerParam.put(key, requestParams.get(key + "_" + id));
+            }
+            partnerParams.add(partnerParam);
+        }
 
+        //外面包一层
+        Map<String, Object> wubaParams = new HashMap<>();
+        wubaParams.put("partners", partnerParams);
+        Map<String, String> groupbuyInfoParams = new HashMap<>();
+        groupbuyInfoParams.put("groupbuyId", String.valueOf(product.id));
+        wubaParams.put("groupbuyInfo", groupbuyInfoParams);
+
+        //发起请求
+        WubaResponse response =  WubaUtil.sendRequest(wubaParams, "emc.groupbuy.editpartnerbygroupbuy", false);
+
+        //保存历史
+        if (response.isOk()) {
+            OperateUser operateUser = OperateRbac.currentUser();
+            product.lastModifier(operateUser.id).save();
+            ResalerProductJournal.createJournal(product, operateUser.id, new Gson().toJson(wubaParams),
+                    ResalerProductJournalType.UPDATE, "修改商户信息");
+        }
+        render("resale/WubaGroupBuyProducts/result.html", response);
     }
     @ActiveNavigation("resale_partner_product")
-    public static void editDeadline() {
+    public static void editDeadline(String endTime, String deadline, Long productId) {
+        ResalerProduct product = ResalerProduct.findById(productId);
+        if (product == null) {
+            notFound();
+        }
 
+        //延长券有效期
+        Map<String, Object> deadlineRequestMap = new HashMap<>();
+        deadlineRequestMap.put("groupbuyId", String.valueOf(product.id));
+        deadlineRequestMap.put("deadline", deadline);
+
+        WubaResponse response =  WubaUtil.sendRequest(deadlineRequestMap, "emc.groupbuy.delay", false);
+        if (response.isOk()) {
+            OperateUser operateUser = OperateRbac.currentUser();
+            product.lastModifier(operateUser.id).save();
+            ResalerProductJournal.createJournal(product, operateUser.id, new Gson().toJson(deadlineRequestMap),
+                    ResalerProductJournalType.UPDATE, "延长券有效期");
+            //延长团购有效期
+            Map<String, Object> endTimeRequestMap = new HashMap<>();
+            Map<String, String> groupbuyInfoParams = new HashMap<>();
+            groupbuyInfoParams.put("groupbuyId", String.valueOf(product.id));
+            groupbuyInfoParams.put("endTime", endTime);
+            endTimeRequestMap.put("groupbuyInfo", groupbuyInfoParams);
+
+            response = WubaUtil.sendRequest(endTimeRequestMap, "emc.groupbuy.editpartnerbygroupbuy", false);
+            if(response.isOk()) {
+                product.lastModifier(operateUser.id).save();
+                ResalerProductJournal.createJournal(product, operateUser.id, new Gson().toJson(endTimeRequestMap),
+                        ResalerProductJournalType.UPDATE, "延长团购有效期");
+            }
+        }
+        render("resale/WubaGroupBuyProducts/result.html", response);
     }
 }
 

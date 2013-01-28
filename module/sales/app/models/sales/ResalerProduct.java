@@ -1,7 +1,6 @@
 package models.sales;
 
 import models.order.OuterOrderPartner;
-import org.hibernate.annotations.Index;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
@@ -67,14 +66,21 @@ public class ResalerProduct extends Model {
         this.partnerProductId = 0L;
     }
 
-    public static ResalerProduct generate(Long creatorId, OuterOrderPartner partner, Goods goods) {
+    public static ResalerProduct generate(OuterOrderPartner partner, Goods goods) {
         ResalerProduct product = new ResalerProduct();
         product.partner = partner;
         product.goods = goods;
-        product.creatorId = creatorId;
-        product.lastModifierId = creatorId;
         product.status = ResalerProductStatus.STAGING;
         return product.save();
+    }
+
+    public static ResalerProduct alloc(OuterOrderPartner partner, Goods goods) {
+        ResalerProduct product = ResalerProduct.find("byPartnerAndGoodsAndStatus",
+                partner, goods, ResalerProductStatus.STAGING).first();
+        if (product == null) {
+            product = generate(partner, goods);
+        }
+        return product;
     }
 
     public static Goods getGoods(Long  productId) {
@@ -90,6 +96,12 @@ public class ResalerProduct extends Model {
         return this;
     }
 
+    public ResalerProduct creator(long creatorId) {
+        this.creatorId = creatorId;
+        this.lastModifierId = creatorId;
+        return this;
+    }
+
     public ResalerProduct lastModifier(Long lastModifierId) {
         this.lastModifierId = lastModifierId;
         return this;
@@ -102,6 +114,11 @@ public class ResalerProduct extends Model {
 
     public ResalerProduct latestJson(String latestJsonData) {
         this.latestJsonData = latestJsonData;
+        return this;
+    }
+
+    public ResalerProduct status(ResalerProductStatus status) {
+        this.status = status;
         return this;
     }
 }
