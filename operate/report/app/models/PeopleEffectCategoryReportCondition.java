@@ -278,7 +278,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
                     break;
                 }
             }
-            String[] orderByFields = {"jobNumber", "totalAmount", "consumedAmount", "refundAmount", "profit", "grossMargin"};
+            String[] orderByFields = {"jobNumber", "totalAmount", "refundAmount", "consumedAmount", "profit", "grossMargin"};
             // 添加排序属性
             orderBy = orderByFields[index];
             // 添加升降序方式
@@ -350,6 +350,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
                         return o2_amount.compareTo(o1_amount);
                     }
                 } else if ("refundAmount".equals(orderBy)) {
+                    System.out.println("===inini>>");
                     BigDecimal o1_amount = o1.totalRefundPrice == null ? BigDecimal.ZERO : o1.totalRefundPrice;
                     BigDecimal o2_amount = o2.totalRefundPrice == null ? BigDecimal.ZERO : o2.totalRefundPrice;
                     if ("desc".equals(orderByType)) {
