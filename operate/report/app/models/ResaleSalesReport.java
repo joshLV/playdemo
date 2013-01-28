@@ -122,6 +122,11 @@ public class ResaleSalesReport extends Model {
      */
     public BigDecimal profit;
 
+    /**
+     * 贡献度
+     */
+    public BigDecimal contribution;
+
 
     /**
      * paidAt ecoupon  resaler

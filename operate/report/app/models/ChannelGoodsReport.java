@@ -1666,7 +1666,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
         if (refoundItem.order == null) {
             return "999999999";
         } else {
-            return String.valueOf(refoundItem.order.userId)+"9999999999999";
+            return String.valueOf(refoundItem.order.userId) + "9999999999999";
         }
     }
 

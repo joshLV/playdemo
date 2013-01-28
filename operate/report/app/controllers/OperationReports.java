@@ -24,6 +24,7 @@ import play.mvc.With;
 import utils.PaginateUtil;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
@@ -140,6 +141,9 @@ public class OperationReports extends Controller {
         // 分页
         ValuePaginator<ResaleSalesReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
         ResaleSalesReport summary = ResaleSalesReport.summary(resultList);
+        for (ResaleSalesReport r : resultList) {
+            r.contribution = (r.salePrice == null ? BigDecimal.ZERO : r.salePrice).divide(summary.amount == null ? BigDecimal.ZERO : summary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+        }
         render(reportPage, condition, summary, hasSeeReportProfitRight);
     }
 
@@ -491,13 +495,18 @@ public class OperationReports extends Controller {
             resultList.add(resaleSalesReport);
         }
 
+        ResaleSalesReport summary = ResaleSalesReport.summary(resultList);
+
 
         for (ResaleSalesReport report : resultList) {
 //            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
 //            report.grossMargin = tempGrossMargin;
+            report.contribution = (report.salePrice == null ? BigDecimal.ZERO : report.salePrice).divide(summary.amount == null ? BigDecimal.ZERO : summary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2);
+
             if (report.grossMargin == null) {
                 report.grossMargin = BigDecimal.ZERO;
             }
+
 
             DecimalFormat df = new DecimalFormat("0.00");
             report.grossMargin = new BigDecimal(df.format(report.grossMargin));
@@ -545,8 +554,11 @@ public class OperationReports extends Controller {
             resultList.add(resaleSalesReport);
         }
 
+        ResaleSalesReport summary = ResaleSalesReport.summary(resultList);
 
         for (ResaleSalesReport report : resultList) {
+            report.contribution = (report.salePrice == null ? BigDecimal.ZERO : report.salePrice).divide(summary.amount == null ? BigDecimal.ZERO : summary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2);
+
             if (report.refundPrice == null) {
                 report.refundPrice = BigDecimal.ZERO;
             }

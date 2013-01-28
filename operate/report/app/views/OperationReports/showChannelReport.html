@@ -183,6 +183,7 @@
     <th>退款券数量/金额</th>
     <th>退款实物数量/金额</th>
     <th>消费券数量/金额</th>
+    <th>贡献度</th>
     #{if hasSeeReportProfitRight == true}
     <th>毛利率</th>
     <th>渠道成本</th>
@@ -233,6 +234,7 @@
             <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
                target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
         </td>
+        <td style="text-align:right;">${(report?.contribution?:0).format('#0.00')}%</td>
         #{if hasSeeReportProfitRight == true}
             <td style="text-align:right;">${(report?.grossMargin?:0).format('#0.00')}%</td>
             <td style="text-align:right;">${(report?.channelCost?:0).formatCurrency('CNY')}</td>
