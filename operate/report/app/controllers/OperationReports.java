@@ -319,7 +319,9 @@ public class OperationReports extends Controller {
         List<ChannelGoodsReport> consumerList = ChannelGoodsReport.queryConsumer(condition);
         // 查询出所有结果
         for (ChannelGoodsReport c : consumerList) {
-            resultList.add(c);
+            if (c != null) {
+                resultList.add(c);
+            }
         }
         Collections.sort(resultList);
         //total
@@ -346,7 +348,6 @@ public class OperationReports extends Controller {
         }
 
         Collections.sort(resultList);
-
 
         List<Supplier> supplierList = Supplier.findUnDeleted();
         render(condition, reportPage, hasSeeReportProfitRight, summary, supplierList);

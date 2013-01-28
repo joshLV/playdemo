@@ -1,6 +1,21 @@
 #{extends 'layout_operate/layout.html' /}
 #{set title:'渠道商品报表' /}
 #{include '/share/nav.html' /}
+#{set 'moreStyles'}
+<style type="text/css">
+    .rank {
+        background: url(http://y1.uhcdn.com/images/2012/11/f30406611dd51bba.png) no-repeat right 10px;
+    }
+
+    .rank-asc {
+        background: url(http://y1.uhcdn.com/images/2012/11/0ab07600b7c1e671.png) no-repeat right 10px;
+    }
+
+    .rank-desc {
+        background: url(http://y1.uhcdn.com/images/2012/11/6fbd68649f111b05.png) no-repeat right 10px;
+    }
+</style>
+#{/set}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script type="text/javascript" charset="utf-8">
@@ -38,6 +53,15 @@
             });
         });
 
+    });
+
+    $('.fn-rank').click(function (ev) {
+        ev.preventDefault();
+        var rankStr = $(this).attr('data-rank');
+        $('#J_rank').val(rankStr);
+        $("#search_form").attr("action", "@{OperationReports.showChannelGoodsReport()}");
+        $("#search_form").attr("method", "get");
+        $('#search_form').submit();
     });
 
     function channelGoodsReportExcel() {
@@ -179,17 +203,18 @@
     <th>商品名称</th>
     <th>进价</th>
     <th>平均售价</th>
-    <th>销售数量</th>
-    <th>总销售额</th>
-    <th>刷单金额</th>
-    <th>退款总额</th>
-    <th>消费券总额</th>
-    <th>净销售额</th>
-    <th>净成本</th>
+
+    #{layout_operate.sortField name:'销售数量', descField:condition?.desc, desc:'100000000',asc:'200000000'/}
+    #{layout_operate.sortField name:'总销售额', descField:condition?.desc, desc:'010000000',asc:'020000000'/}
+    #{layout_operate.sortField name:'刷单金额', descField:condition?.desc, desc:'001000000',asc:'002000000'/}
+    #{layout_operate.sortField name:'退款总额', descField:condition?.desc, desc:'000100000',asc:'000200000'/}
+    #{layout_operate.sortField name:'消费券总额', descField:condition?.desc, desc:'000010000',asc:'000020000'/}
+    #{layout_operate.sortField name:'净销售额', descField:condition?.desc, desc:'000001000',asc:'000002000'/}
+    #{layout_operate.sortField name:'净成本', descField:condition?.desc, desc:'000000001',asc:'000000002'/}
     <th>贡献度</th>
     #{if hasSeeReportProfitRight == true}
-    <th>毛利率</th>
-    <th>净利润</th>
+        #{layout_operate.sortField name:'毛利率', descField:condition?.desc, desc:'000000100',asc:'000000200'/}
+        #{layout_operate.sortField name:'净利润', descField:condition?.desc, desc:'000000010',asc:'000000020'/}
     #{/if}
     </thead>
 #{set i:0/}

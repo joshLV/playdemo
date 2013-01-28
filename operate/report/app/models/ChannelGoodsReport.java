@@ -26,7 +26,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
     public BigDecimal avgSalesPrice;
 
     public BigDecimal comparedValue;
-    public String[] orderByFields = {"buyNumber", "totalAmount", "cheatedOrderAmount", "refundAmount", "consumedAmount", "netSalesAmount", "netCost", "grossMargin", "profit"};
+    public String[] orderByFields = {"buyNumber", "totalAmount", "cheatedOrderAmount", "refundAmount", "consumedAmount", "netSalesAmount", "grossMargin", "profit", "netCost"};
 
     public String orderByType;
 
@@ -649,11 +649,11 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
         //merge
         for (ChannelGoodsReport paidItem : totalPaidResultList) {
             paidItem.code = "999";
-            map.put(getTotalReportKey(paidItem), paidItem);
+            totalMap.put(getTotalReportKey(paidItem), paidItem);
         }
 
         for (ChannelGoodsReport cheatedItem : totalCheatedOrderResultList) {
-            ChannelGoodsReport item = map.get(getTotalReportKey(cheatedItem));
+            ChannelGoodsReport item = totalMap.get(getTotalReportKey(cheatedItem));
             if (item == null) {
                 Goods goods = Goods.findById(cheatedItem.goods.id);
                 cheatedItem.code = "999";
@@ -661,7 +661,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderAmount);
                 cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
                 cheatedItem.netCost = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
-                map.put(getTotalReportKey(cheatedItem), cheatedItem);
+                totalMap.put(getTotalReportKey(cheatedItem), cheatedItem);
             } else {
                 item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
                 item.cheatedOrderCost = cheatedItem.cheatedOrderCost;
@@ -674,14 +674,14 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
         }
 
         for (ChannelGoodsReport refundItem : totalRefundList) {
-            ChannelGoodsReport item = map.get(getTotalReportKey(refundItem));
+            ChannelGoodsReport item = totalMap.get(getTotalReportKey(refundItem));
             if (item == null) {
                 Goods goods = Goods.findById(refundItem.goods.id);
                 refundItem.code = "999";
                 refundItem.originalPrice = goods.originalPrice;
                 refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
                 refundItem.netCost = BigDecimal.ZERO.subtract(refundItem.refundCost == null ? BigDecimal.ZERO : refundItem.refundCost);
-                map.put(getTotalReportKey(refundItem), refundItem);
+                totalMap.put(getTotalReportKey(refundItem), refundItem);
             } else {
                 item.refundAmount = refundItem.refundAmount;
                 item.netSalesAmount = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount).subtract(item.cheatedOrderAmount == null ? BigDecimal.ZERO : item.cheatedOrderAmount).setScale(2);
@@ -693,12 +693,12 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
         }
 
         for (ChannelGoodsReport consumedItem : totalConsumedResultList) {
-            ChannelGoodsReport item = map.get(getTotalReportKey(consumedItem));
+            ChannelGoodsReport item = totalMap.get(getTotalReportKey(consumedItem));
             if (item == null) {
                 Goods goods = Goods.findById(consumedItem.goods.id);
                 consumedItem.code = "999";
                 consumedItem.originalPrice = goods.originalPrice;
-                map.put(getTotalReportKey(consumedItem), consumedItem);
+                totalMap.put(getTotalReportKey(consumedItem), consumedItem);
             } else {
                 item.consumedAmount = consumedItem.consumedAmount;
             }
@@ -708,10 +708,10 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
         //merge from resaler if commissionRatio
         BigDecimal subtotalCommission = BigDecimal.ZERO;
         for (ChannelGoodsReport resalerItem : totalPaidResalerResultList) {
-            ChannelGoodsReport item = map.get(getTotalReportKey(resalerItem));
+            ChannelGoodsReport item = totalMap.get(getTotalReportKey(resalerItem));
             if (item == null) {
                 resalerItem.code = "999";
-                map.put(getTotalReportKey(resalerItem), resalerItem);
+                totalMap.put(getTotalReportKey(resalerItem), resalerItem);
             } else {
                 subtotalCommission = item.totalAmountCommissionAmount == null ? BigDecimal.ZERO : item.totalAmountCommissionAmount;
                 subtotalCommission = subtotalCommission.add(resalerItem.totalAmountCommissionAmount == null ? BigDecimal.ZERO : resalerItem.totalAmountCommissionAmount);
@@ -724,10 +724,10 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
 
         subtotalCommission = BigDecimal.ZERO;
         for (ChannelGoodsReport cheatedResalerItem : totalCheatedOrderResalerResultList) {
-            ChannelGoodsReport item = map.get(getTotalReportKey(cheatedResalerItem));
+            ChannelGoodsReport item = totalMap.get(getTotalReportKey(cheatedResalerItem));
             if (item == null) {
                 cheatedResalerItem.code = "999";
-                map.put(getTotalReportKey(cheatedResalerItem), cheatedResalerItem);
+                totalMap.put(getTotalReportKey(cheatedResalerItem), cheatedResalerItem);
             } else {
                 subtotalCommission = item.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : item.cheatedOrderCommissionAmount;
                 subtotalCommission = subtotalCommission.add(cheatedResalerItem.cheatedOrderCommissionAmount == null ? BigDecimal.ZERO : cheatedResalerItem.cheatedOrderCommissionAmount);
@@ -741,10 +741,10 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
         }
         subtotalCommission = BigDecimal.ZERO;
         for (ChannelGoodsReport refundResalerItem : totalRefundResalerResultList) {
-            ChannelGoodsReport item = map.get(getTotalReportKey(refundResalerItem));
+            ChannelGoodsReport item = totalMap.get(getTotalReportKey(refundResalerItem));
             if (item == null) {
                 refundResalerItem.code = "999";
-                map.put(getTotalReportKey(refundResalerItem), refundResalerItem);
+                totalMap.put(getTotalReportKey(refundResalerItem), refundResalerItem);
             } else {
                 subtotalCommission = item.refundCommissionAmount == null ? BigDecimal.ZERO : item.refundCommissionAmount;
                 subtotalCommission = subtotalCommission.add(refundResalerItem.refundCommissionAmount == null ? BigDecimal.ZERO : refundResalerItem.refundCommissionAmount);
@@ -759,7 +759,6 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
         for (String key : totalMap.keySet()) {
             totalResultList.add(totalMap.get(key));
         }
-
 
         for (int i = 0; i < totalResultList.size(); i++) {
             switch (totalResultList.get(i).orderByFields[condition.orderByIndex]) {
@@ -1311,11 +1310,11 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
         //merge
         for (ChannelGoodsReport paidItem : totalPaidResultList) {
             paidItem.code = "999";
-            map.put(getConsumerTotalReportKey(paidItem), paidItem);
+            totalMap.put(getConsumerTotalReportKey(paidItem), paidItem);
         }
 
         for (ChannelGoodsReport cheatedItem : totalCheatedOrderResultList) {
-            ChannelGoodsReport item = map.get(getConsumerTotalReportKey(cheatedItem));
+            ChannelGoodsReport item = totalMap.get(getConsumerTotalReportKey(cheatedItem));
             if (item == null) {
                 Goods goods = Goods.findById(cheatedItem.goods.id);
                 cheatedItem.code = "999";
@@ -1323,7 +1322,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 cheatedItem.netSalesAmount = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
                 cheatedItem.profit = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderAmount).subtract(cheatedItem.cheatedOrderCost);
                 cheatedItem.netCost = BigDecimal.ZERO.subtract(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
-                map.put(getConsumerTotalReportKey(cheatedItem), cheatedItem);
+                totalMap.put(getConsumerTotalReportKey(cheatedItem), cheatedItem);
             } else {
                 item.cheatedOrderAmount = cheatedItem.cheatedOrderAmount;
                 item.cheatedOrderCost = cheatedItem.cheatedOrderCost;
@@ -1332,13 +1331,11 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 item.profit = (item.totalAmount == null ? BigDecimal.ZERO : item.totalAmount).subtract(cheatedItem.cheatedOrderAmount == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderAmount)
                         .subtract(item.totalCost == null ? BigDecimal.ZERO : item.totalCost).add(cheatedItem.cheatedOrderCost == null ? BigDecimal.ZERO : cheatedItem.cheatedOrderCost);
                 item.netCost = item.totalCost == null ? BigDecimal.ZERO : item.totalCost.subtract(item.cheatedOrderCost == null ? BigDecimal.ZERO : item.cheatedOrderCost);
-
-
             }
         }
 
         for (ChannelGoodsReport refundItem : totalRefundList) {
-            ChannelGoodsReport item = map.get(getConsumerTotalReportKey(refundItem));
+            ChannelGoodsReport item = totalMap.get(getConsumerTotalReportKey(refundItem));
             if (item == null) {
                 Goods goods = Goods.findById(refundItem.goods.id);
                 refundItem.code = "999";
@@ -1346,7 +1343,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 refundItem.netSalesAmount = BigDecimal.ZERO.subtract(refundItem.refundAmount);
                 refundItem.profit = BigDecimal.ZERO.subtract(refundItem.refundAmount).add(refundItem.refundCost);
                 refundItem.netCost = BigDecimal.ZERO.subtract(refundItem.refundCost == null ? BigDecimal.ZERO : refundItem.refundCost);
-                map.put(getConsumerTotalReportKey(refundItem), refundItem);
+                totalMap.put(getConsumerTotalReportKey(refundItem), refundItem);
             } else {
                 item.refundAmount = refundItem.refundAmount;
                 item.refundCost = refundItem.refundCost;
@@ -1358,12 +1355,12 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
         }
 
         for (ChannelGoodsReport consumedItem : totalConsumedResultList) {
-            ChannelGoodsReport item = map.get(getConsumerTotalReportKey(consumedItem));
+            ChannelGoodsReport item = totalMap.get(getConsumerTotalReportKey(consumedItem));
             if (item == null) {
                 Goods goods = Goods.findById(consumedItem.goods.id);
                 consumedItem.code = "999";
                 consumedItem.originalPrice = goods.originalPrice;
-                map.put(getConsumerTotalReportKey(consumedItem), consumedItem);
+                totalMap.put(getConsumerTotalReportKey(consumedItem), consumedItem);
             } else {
                 item.consumedAmount = consumedItem.consumedAmount;
             }
@@ -1371,10 +1368,10 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
 
         //merge from resaler if commissionRatio
         for (ChannelGoodsReport resalerItem : totalPaidResalerResultList) {
-            ChannelGoodsReport item = map.get(getConsumerTotalReportKey(resalerItem));
+            ChannelGoodsReport item = totalMap.get(getConsumerTotalReportKey(resalerItem));
             if (item == null) {
                 resalerItem.code = "999";
-                map.put(getConsumerTotalReportKey(resalerItem), resalerItem);
+                totalMap.put(getConsumerTotalReportKey(resalerItem), resalerItem);
             } else {
                 item.profit = item.profit == null ? BigDecimal.ZERO : item.profit.subtract(resalerItem.totalAmount == null ? BigDecimal.ZERO : resalerItem.totalAmount
                         .subtract(resalerItem.totalCost == null ? BigDecimal.ZERO : resalerItem.totalCost))
@@ -1421,7 +1418,6 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
             totalMap.put(getTotalReportKey(totalResultList.get(i)), totalResultList.get(i));
         }
 
-
         List<ChannelGoodsReport> resultList = new ArrayList();
 
         List<String> tempString = new ArrayList<>();
@@ -1430,19 +1426,31 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
                 tempString.add(s);
             }
         }
+        for (String s : totalMap.keySet()) {
+            if (s.trim().equals("999999999CONSUMER")) {
+                tempString.add(s);
+            }
+        }
         if (tempString.size() > 0) {
             Collections.sort(tempString);
         }
         for (String key : tempString) {
-            resultList.add(map.get(key));
+//            resultList.add(map.get(key));
+            if (map.get(key) != null) {
+                resultList.add(map.get(key));
+            } else {
+                resultList.add(totalMap.get(key));
+            }
         }
 
 //        resultList.add(totalResultList.get(0));
 
         for (ChannelGoodsReport c : resultList) {
-            c.comparedValue = condition.comparedMap.get(c.loginName);
-            c.orderByType = condition.orderByType;
-            c.loginName = "一百券";
+            if (c != null) {
+                c.comparedValue = condition.comparedMap.get(c.loginName);
+                c.orderByType = condition.orderByType;
+                c.loginName = "一百券";
+            }
         }
 
 
@@ -1681,7 +1689,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
     }
 
     public static String getConsumerTotalReportKey(ChannelGoodsReport refoundItem) {
-        return String.valueOf(refoundItem.order.userType) + "999999999";
+        return "999999999" + String.valueOf(refoundItem.order.userType);
     }
 
     @Override
