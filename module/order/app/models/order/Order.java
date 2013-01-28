@@ -723,6 +723,7 @@ public class Order extends Model {
             }
             //如果不是电子券，跳过
             if (MaterialType.ELECTRONIC == goods.materialType) {
+                System.out.println(orderItem.buyNumber + "===orderItem.buyNumber>>");
                 for (int i = 0; i < orderItem.buyNumber; i++) {
                     //创建电子券
                     ECoupon eCoupon = createCoupon(goods, orderItem);
@@ -1145,7 +1146,7 @@ public class Order extends Model {
         //使用抵用券
         order.voucherValue = BigDecimal.ZERO;
         List<Voucher> validVouchers = new ArrayList<>();
-        if(vouchers != null) {
+        if (vouchers != null) {
             for (Voucher voucher : vouchers) {
                 if (Voucher.canAssign(account, voucher)) {
                     order.voucherValue = order.voucherValue.add(voucher.value);
@@ -1182,7 +1183,7 @@ public class Order extends Model {
         //创建订单交易
         //如果使用余额足以支付，则付款直接成功
         if (order.discountPay.compareTo(BigDecimal.ZERO) == 0
-                && order.accountPay .add(order.promotionBalancePay) .add(order.voucherValue)
+                && order.accountPay.add(order.promotionBalancePay).add(order.voucherValue)
                 .compareTo(order.needPay) == 0) {
             order.payMethod = PaymentSource.getBalanceSource().code;
             order.payAndSendECoupon();
