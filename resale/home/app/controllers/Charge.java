@@ -23,9 +23,9 @@ import play.mvc.With;
  * 分销商账户充值.
  */
 @With(SecureCAS.class)
-public class Charge extends Controller{
+public class Charge extends Controller {
 
-    public static void index(){
+    public static void index() {
         //加载用户账户信息
         Resaler user = SecureCAS.getResaler();
         Account account = AccountUtil.getResalerAccount(user.getId());
@@ -34,19 +34,19 @@ public class Charge extends Controller{
         render(user, account, paymentSources);
     }
 
-    public static void create(BigDecimal amount, String paymentSourceCode){
+    public static void create(BigDecimal amount, String paymentSourceCode) {
         Resaler resaler = SecureCAS.getResaler();
         PaymentSource paymentSource = PaymentSource.findByCode(paymentSourceCode);
 
-        if(amount == null || amount.compareTo(BigDecimal.ONE) < 0){
+        if (amount == null || amount.compareTo(BigDecimal.ONE) < 0) {
             error("invalid amount");
         }
-        if (paymentSource == null){
+        if (paymentSource == null) {
             error("invalid payment source");
         }
         amount = amount.setScale(2);
 
-        Order order = Order.createChargeOrder(resaler.getId(), AccountType.RESALER );
+        Order order = Order.createChargeOrder(resaler.getId(), AccountType.RESALER);
         order.amount = amount;
         order.needPay = amount;
         order.accountPay = BigDecimal.ZERO;
@@ -57,7 +57,7 @@ public class Charge extends Controller{
         order.save();
 
         PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow(paymentSource.paymentCode);
-        if(paymentFlow == null) {
+        if (paymentFlow == null) {
             error("payment partner not found: " + paymentSource.paymentCode);
             return;
         }

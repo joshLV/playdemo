@@ -1094,9 +1094,12 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
         List<String> tempString = new ArrayList<>();
         for (String s : map.keySet()) {
             if (s != null) {
+                System.out.println(tempString + "===tempString>>");
+                System.out.println();
                 tempString.add(s);
             }
         }
+
         if (tempString.size() > 0) {
             Collections.sort(tempString);
         }

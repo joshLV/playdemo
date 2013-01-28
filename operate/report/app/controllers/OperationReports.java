@@ -310,6 +310,7 @@ public class OperationReports extends Controller {
         //total
         List<ChannelGoodsReport> totalResultList = ChannelGoodsReport.queryTotal(condition);
         List<ChannelGoodsReport> totalConsumerResultList = ChannelGoodsReport.queryConsumerTotal(condition);
+
         // 查询出所有结果
         for (ChannelGoodsReport c : totalConsumerResultList) {
             totalResultList.add(c);

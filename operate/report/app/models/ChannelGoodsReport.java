@@ -1304,7 +1304,6 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
 
         //merge
         for (ChannelGoodsReport paidItem : totalPaidResultList) {
-            System.out.println("===>>");
             paidItem.code = "999";
             map.put(getConsumerTotalReportKey(paidItem), paidItem);
         }
@@ -1665,9 +1664,9 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
 
     public static String getTotalReportKey(ChannelGoodsReport refoundItem) {
         if (refoundItem.order == null) {
-            return String.valueOf(refoundItem.order.userId) + "999";
+            return "999999999";
         } else {
-            return String.valueOf(refoundItem.order.userId);
+            return String.valueOf(refoundItem.order.userId)+"9999999999999";
         }
     }
 
@@ -1676,7 +1675,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
     }
 
     public static String getConsumerTotalReportKey(ChannelGoodsReport refoundItem) {
-        return String.valueOf(refoundItem.order.userType) + "999";
+        return String.valueOf(refoundItem.order.userType) + "999999999";
     }
 
     @Override
