@@ -142,7 +142,11 @@ public class OperationReports extends Controller {
         ValuePaginator<ResaleSalesReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
         ResaleSalesReport summary = ResaleSalesReport.summary(resultList);
         for (ResaleSalesReport r : resultList) {
-            r.contribution = (r.salePrice == null ? BigDecimal.ZERO : r.salePrice).divide(summary.amount == null ? BigDecimal.ZERO : summary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+            if (summary.amount.compareTo(BigDecimal.ZERO) != 0) {
+                r.contribution = (r.salePrice == null ? BigDecimal.ZERO : r.salePrice).divide(summary.amount == null ? BigDecimal.ZERO : summary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+            } else {
+                r.contribution = BigDecimal.ZERO;
+            }
         }
         render(reportPage, condition, summary, hasSeeReportProfitRight);
     }
@@ -283,12 +287,16 @@ public class OperationReports extends Controller {
             resultList.add(c);
         }
 
-        Collections.sort(resultList);
 
         for (ChannelCategoryReport c : resultList) {
-            c.contribution = (c.salePrice == null ? BigDecimal.ZERO : c.salePrice).divide(channelSummary.amount == null ? BigDecimal.ZERO : channelSummary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+            if (channelSummary.amount.compareTo(BigDecimal.ZERO) != 0) {
+                c.contribution = (c.salePrice == null ? BigDecimal.ZERO : c.salePrice).divide(channelSummary.amount == null ? BigDecimal.ZERO : channelSummary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+            } else {
+                c.contribution = BigDecimal.ZERO;
+            }
         }
 
+        Collections.sort(resultList);
         // 分页
         ValuePaginator<ChannelCategoryReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
 
@@ -328,6 +336,18 @@ public class OperationReports extends Controller {
 
         // 汇总
         ChannelGoodsReport summary = ChannelGoodsReport.getNetSummary(totalResultList);
+
+        for (ChannelGoodsReport c : resultList) {
+            if (summary.netSalesAmount.compareTo(BigDecimal.ZERO) != 0) {
+                c.contribution = (c.netSalesAmount == null ? BigDecimal.ZERO : c.netSalesAmount).divide(summary.netSalesAmount == null ? BigDecimal.ZERO : summary.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+            } else {
+                c.contribution = BigDecimal.ZERO;
+            }
+        }
+
+        Collections.sort(resultList);
+
+
         List<Supplier> supplierList = Supplier.findUnDeleted();
         render(condition, reportPage, hasSeeReportProfitRight, summary, supplierList);
 
@@ -504,7 +524,11 @@ public class OperationReports extends Controller {
         for (ResaleSalesReport report : resultList) {
 //            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
 //            report.grossMargin = tempGrossMargin;
-            report.contribution = (report.salePrice == null ? BigDecimal.ZERO : report.salePrice).divide(summary.amount == null ? BigDecimal.ZERO : summary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2);
+            if (summary.amount.compareTo(BigDecimal.ZERO) != 0) {
+                report.contribution = (report.salePrice == null ? BigDecimal.ZERO : report.salePrice).divide(summary.amount == null ? BigDecimal.ZERO : summary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2);
+            } else {
+                report.contribution = BigDecimal.ZERO;
+            }
 
             if (report.grossMargin == null) {
                 report.grossMargin = BigDecimal.ZERO;
@@ -560,8 +584,11 @@ public class OperationReports extends Controller {
         ResaleSalesReport summary = ResaleSalesReport.summary(resultList);
 
         for (ResaleSalesReport report : resultList) {
-            report.contribution = (report.salePrice == null ? BigDecimal.ZERO : report.salePrice).divide(summary.amount == null ? BigDecimal.ZERO : summary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2);
-
+            if (summary.amount.compareTo(BigDecimal.ZERO) != 0) {
+                report.contribution = (report.salePrice == null ? BigDecimal.ZERO : report.salePrice).divide(summary.amount == null ? BigDecimal.ZERO : summary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2);
+            } else {
+                report.contribution = BigDecimal.ZERO;
+            }
             if (report.refundPrice == null) {
                 report.refundPrice = BigDecimal.ZERO;
             }
@@ -617,7 +644,12 @@ public class OperationReports extends Controller {
         for (ChannelCategoryReport report : resultList) {
 //            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
 //            report.grossMargin = tempGrossMargin;
-            report.contribution = (report.salePrice == null ? BigDecimal.ZERO : report.salePrice).divide(channelSummary.amount == null ? BigDecimal.ZERO : channelSummary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2);
+            if (channelSummary.amount.compareTo(BigDecimal.ZERO) != 0) {
+                report.contribution = (report.salePrice == null ? BigDecimal.ZERO : report.salePrice).divide(channelSummary.amount == null ? BigDecimal.ZERO : channelSummary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2);
+            } else {
+                report.contribution = BigDecimal.ZERO;
+            }
+
             if (report.grossMargin == null) {
                 report.grossMargin = BigDecimal.ZERO;
             }
@@ -685,8 +717,11 @@ public class OperationReports extends Controller {
 
 
         for (ChannelCategoryReport report : resultList) {
-            report.contribution = (report.salePrice == null ? BigDecimal.ZERO : report.salePrice).divide(channelSummary.amount == null ? BigDecimal.ZERO : channelSummary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2);
-
+            if (channelSummary.amount.compareTo(BigDecimal.ZERO) != 0) {
+                report.contribution = (report.salePrice == null ? BigDecimal.ZERO : report.salePrice).divide(channelSummary.amount == null ? BigDecimal.ZERO : channelSummary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2);
+            } else {
+                report.contribution = BigDecimal.ZERO;
+            }
             if (report.refundPrice == null) {
                 report.refundPrice = BigDecimal.ZERO;
             }
@@ -722,10 +757,27 @@ public class OperationReports extends Controller {
             resultList.add(resaleSalesReport);
         }
 
+        //total
+        List<ChannelGoodsReport> totalResultList = ChannelGoodsReport.queryTotal(condition);
+        List<ChannelGoodsReport> totalConsumerResultList = ChannelGoodsReport.queryConsumerTotal(condition);
+
+        // 查询出所有结果
+        for (ChannelGoodsReport c : totalConsumerResultList) {
+            totalResultList.add(c);
+        }
+
+        // 汇总
+        ChannelGoodsReport summary = ChannelGoodsReport.getNetSummary(totalResultList);
 
         for (ChannelGoodsReport report : resultList) {
 //            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
 //            report.grossMargin = tempGrossMargin;
+            if (summary.netSalesAmount.compareTo(BigDecimal.ZERO) != 0) {
+                report.contribution = (report.netSalesAmount == null ? BigDecimal.ZERO : report.netSalesAmount).divide(summary.netSalesAmount == null ? BigDecimal.ZERO : summary.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2);
+            } else {
+                report.contribution = BigDecimal.ZERO;
+            }
+
             if (report.grossMargin == null) {
                 report.grossMargin = BigDecimal.ZERO;
             }
@@ -790,8 +842,25 @@ public class OperationReports extends Controller {
             resultList.add(resaleSalesReport);
         }
 
+        //total
+        List<ChannelGoodsReport> totalResultList = ChannelGoodsReport.queryTotal(condition);
+        List<ChannelGoodsReport> totalConsumerResultList = ChannelGoodsReport.queryConsumerTotal(condition);
+
+        // 查询出所有结果
+        for (ChannelGoodsReport c : totalConsumerResultList) {
+            totalResultList.add(c);
+        }
+
+        // 汇总
+        ChannelGoodsReport summary = ChannelGoodsReport.getNetSummary(totalResultList);
 
         for (ChannelGoodsReport report : resultList) {
+            if (summary.netSalesAmount.compareTo(BigDecimal.ZERO) != 0) {
+                report.contribution = (report.netSalesAmount == null ? BigDecimal.ZERO : report.netSalesAmount).divide(summary.netSalesAmount == null ? BigDecimal.ZERO : summary.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2);
+            } else {
+                report.contribution = BigDecimal.ZERO;
+            }
+
             if (report.refundAmount == null) {
                 report.refundAmount = BigDecimal.ZERO;
             }

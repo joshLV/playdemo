@@ -186,6 +186,7 @@
     <th>消费券总额</th>
     <th>净销售额</th>
     <th>净成本</th>
+    <th>贡献度</th>
     #{if hasSeeReportProfitRight == true}
     <th>毛利率</th>
     <th>净利润</th>
@@ -305,6 +306,8 @@
         <td #{if report?.code == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
         ${(report?.netCost?:0).formatCurrency('CNY')}
         </td>
+        <td #{if report?.code == "999"} bgcolor="#add8e6" #{/if}
+                                        style="text-align:right;">${(report?.contribution?:0).format('#0.00')}%</td>
         #{if hasSeeReportProfitRight == true}
             <td #{if report?.code == "999" } bgcolor="#add8e6" #{/if}
                                              style="text-align:right;">${(report?.grossMargin?:0).format('#0.00')}%</td>

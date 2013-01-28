@@ -267,7 +267,6 @@
         ${report?.realBuyNumber}
             / ${report?.realSalePrice == null ?'￥0.00':report?.realSalePrice?.formatCurrency('CNY')}
         </td>
-
         <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
             #{if report?.code == "999"}
                 <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
@@ -309,7 +308,8 @@
                 </a>
             #{/else}
         </td>
-        <td #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">${(report?.contribution?:0).format('#0.00')}%</td>
+        <td #{if report?.code == "999"} bgcolor="#add8e6" #{/if}
+                                        style="text-align:right;">${(report?.contribution?:0).format('#0.00')}%</td>
 
         #{if hasSeeReportProfitRight == true}
             <td #{if report?.code == "999"} bgcolor="#add8e6" #{/if}

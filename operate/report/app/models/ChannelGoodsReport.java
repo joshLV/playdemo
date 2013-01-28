@@ -107,6 +107,12 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
      */
     public BigDecimal channelCost;
 
+    /**
+     * 贡献度
+     */
+    public BigDecimal contribution;
+
+
     public ChannelGoodsReport(Order order, Goods goods, BigDecimal originalPrice, Long buyNumber,
                               BigDecimal totalAmount, BigDecimal avgSalesPrice,
                               BigDecimal grossMargin, BigDecimal profit, BigDecimal netSalesAmount

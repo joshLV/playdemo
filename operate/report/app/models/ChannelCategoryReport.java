@@ -21,7 +21,7 @@ import java.util.*;
 public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> {
     public Order order;
     public OrderItems orderItems;
-    public String[] orderByFields = {"salePrice", "realSalePrice", "refundPrice", "consumedPrice", "grossMargin", "channelCost", "profit"};
+    public String[] orderByFields = {"salePrice", "realSalePrice", "refundPrice", "consumedPrice", "grossMargin", "channelCost", "profit", "contribution"};
     public BigDecimal comparedValue;
     public String orderByType;
 
@@ -707,6 +707,9 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
                 case "profit":
                     condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).profit == null ? BigDecimal.ZERO : totalResultList.get(i).profit));
                     break;
+                case "contribution":
+                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).contribution == null ? BigDecimal.ZERO : totalResultList.get(i).contribution));
+                    break;
             }
             totalMap.put(getTotalReportKey(totalResultList.get(i)), totalResultList.get(i));
         }
@@ -1090,6 +1093,10 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
                 case "profit":
                     condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).profit == null ? BigDecimal.ZERO : totalResultList.get(i).profit));
                     break;
+                case "contribution":
+                    System.out.println("===inini>>");
+                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).contribution == null ? BigDecimal.ZERO : totalResultList.get(i).contribution));
+                    break;
             }
             map.put(getTotalReportKey(totalResultList.get(i)), totalResultList.get(i));
         }
@@ -1099,8 +1106,6 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
         List<String> tempString = new ArrayList<>();
         for (String s : map.keySet()) {
             if (s != null) {
-                System.out.println(tempString + "===tempString>>");
-                System.out.println();
                 tempString.add(s);
             }
         }
