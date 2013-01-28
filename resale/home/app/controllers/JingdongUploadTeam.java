@@ -62,7 +62,6 @@ public class JingdongUploadTeam extends Controller {
 
         GoodsThirdSupport support = GoodsThirdSupport.getSupportGoods(goods, OuterOrderPartner.JD);
         if (support == null) {
-
             getGoodsItems(goods);
         } else {
             getGoodsSupportItems(support);
@@ -150,11 +149,14 @@ public class JingdongUploadTeam extends Controller {
 
         GoodsThirdSupport support = GoodsThirdSupport.getSupportGoods(fav.goods, OuterOrderPartner.JD);
 
-        JsonElement jsonElement = new JsonParser().parse(support.goodsData);
-        JsonObject jsonObject = jsonElement.getAsJsonObject();
-        jsonObject.remove("teamTitle");
-        jsonObject.addProperty("teamTitle", title);
-        support.goodsData = jsonObject.toString();
+        if (support != null) {
+            JsonElement jsonElement = new JsonParser().parse(support.goodsData);
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            jsonObject.remove("teamTitle");
+            jsonObject.addProperty("teamTitle", title);
+            support.goodsData = jsonObject.toString();
+            support.save();
+        }
 
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/updateTitle.action";
         Template template = TemplateLoader.load("jingdong/groupbuy/request/updateTitleRequest.xml");
@@ -167,8 +169,7 @@ public class JingdongUploadTeam extends Controller {
 
         String restRequest = JDGroupBuyUtil.makeRequestRest(data);
 
-        String responseResult = WebServiceRequest.url(url).type("jingdong_update_title").requestBody(restRequest)
-                .addKeyword(fav.goods.id).addKeyword(fav.goods.shortName).postString();
+        String responseResult = WebServiceRequest.url(url).type("jingdong_update_title").requestBody(restRequest).addKeyword(fav.goods.id).addKeyword(fav.goods.shortName).postString();
 
         JDRest<CommonUpdateResponse> uploadTeamRest = new JDRest<>();
         if (uploadTeamRest.parse(responseResult, new CommonUpdateResponse())) {
@@ -187,12 +188,14 @@ public class JingdongUploadTeam extends Controller {
         ResalerFav fav = ResalerFav.findById(id);
 
         GoodsThirdSupport support = GoodsThirdSupport.getSupportGoods(fav.goods, OuterOrderPartner.JD);
-
-        JsonElement jsonElement = new JsonParser().parse(support.goodsData);
-        JsonObject jsonObject = jsonElement.getAsJsonObject();
-        jsonObject.remove("teamDetail");
-        jsonObject.addProperty("teamDetail", detail);
-        support.goodsData = jsonObject.toString();
+        if (support != null) {
+            JsonElement jsonElement = new JsonParser().parse(support.goodsData);
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            jsonObject.remove("teamDetail");
+            jsonObject.addProperty("teamDetail", detail);
+            support.goodsData = jsonObject.toString();
+            support.save();
+        }
 
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/updateDetail.action";
         Template template = TemplateLoader.load("jingdong/groupbuy/request/updateDetailRequest.xml");
@@ -206,9 +209,7 @@ public class JingdongUploadTeam extends Controller {
 
         String restRequest = JDGroupBuyUtil.makeRequestRest(data);
 
-        String responseResult = WebServiceRequest.url(url).type("jingdong_update_detail")
-                .requestBody(restRequest)
-                .addKeyword(fav.goods.id).addKeyword(fav.goods.shortName).postString();
+        String responseResult = WebServiceRequest.url(url).type("jingdong_update_detail").requestBody(restRequest).addKeyword(fav.goods.id).addKeyword(fav.goods.shortName).postString();
 
         JDRest<CommonUpdateResponse> uploadTeamRest = new JDRest<>();
         if (uploadTeamRest.parse(responseResult, new CommonUpdateResponse())) {
@@ -235,9 +236,7 @@ public class JingdongUploadTeam extends Controller {
 
         String restRequest = JDGroupBuyUtil.makeRequestRest(data);
 
-        String responseResult = WebServiceRequest.url(url).type("jingdong_update_expire")
-                .requestBody(restRequest)
-                .addKeyword(fav.goods.id).addKeyword(fav.goods.shortName).postString();
+        String responseResult = WebServiceRequest.url(url).type("jingdong_update_expire").requestBody(restRequest).addKeyword(fav.goods.id).addKeyword(fav.goods.shortName).postString();
 
         JDRest<CommonUpdateResponse> uploadTeamRest = new JDRest<>();
         if (uploadTeamRest.parse(responseResult, new CommonUpdateResponse())) {
@@ -265,9 +264,7 @@ public class JingdongUploadTeam extends Controller {
 
         String restRequest = JDGroupBuyUtil.makeRequestRest(data);
 
-        String responseResult = WebServiceRequest.url(url).type("jingdong_update_bigimg")
-                .requestBody(restRequest)
-                .addKeyword(fav.goods.id).addKeyword(fav.goods.shortName).postString();
+        String responseResult = WebServiceRequest.url(url).type("jingdong_update_bigimg").requestBody(restRequest).addKeyword(fav.goods.id).addKeyword(fav.goods.shortName).postString();
 
         JDRest<CommonUpdateResponse> uploadTeamRest = new JDRest<>();
         if (uploadTeamRest.parse(responseResult, new CommonUpdateResponse())) {
@@ -302,9 +299,7 @@ public class JingdongUploadTeam extends Controller {
 
         String restRequest = JDGroupBuyUtil.makeRequestRest(data);
 
-        String responseResult = WebServiceRequest.url(url)
-                .type("jingdong_update_partners").requestBody(restRequest)
-                .addKeyword(fav.goods.id).addKeyword(fav.goods.shortName).postString();
+        String responseResult = WebServiceRequest.url(url).type("jingdong_update_partners").requestBody(restRequest).addKeyword(fav.goods.id).addKeyword(fav.goods.shortName).postString();
 
         JDRest<CommonUpdateResponse> uploadTeamRest = new JDRest<>();
         if (uploadTeamRest.parse(responseResult, new CommonUpdateResponse())) {
@@ -394,8 +389,8 @@ public class JingdongUploadTeam extends Controller {
             fav.lastLinkId = goodsMapping.linkId;
             fav.partner = OuterOrderPartner.JD;
             fav.thirdGroupbuyId = uploadTeamRest.data.jdTeamId;
-//            fav.thirdUrl = "http://tuan.360buy.com/team-" + fav.thirdGroupbuyId + ".html";
-//            fav.thirdCity = "京东";
+            //            fav.thirdUrl = "http://tuan.360buy.com/team-" + fav.thirdGroupbuyId + ".html";
+            //            fav.thirdCity = "京东";
             fav.save();
 
             url = "http://tuan.360buy.com/team-" + fav.thirdGroupbuyId + ".html";
@@ -405,7 +400,7 @@ public class JingdongUploadTeam extends Controller {
             } else {
                 channelGoodsInfo.url = url;
                 channelGoodsInfo.tag = "京东";
-                channelGoodsInfo.status= ChannelGoodsInfoStatus.CREATED;
+                channelGoodsInfo.status = ChannelGoodsInfoStatus.CREATED;
                 channelGoodsInfo.save();
             }
         }

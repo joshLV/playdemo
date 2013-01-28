@@ -14,17 +14,14 @@ import models.sales.Shop;
 import models.supplier.Supplier;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import play.Logger;
 import play.Play;
 import play.libs.IO;
 import play.libs.WS;
-import play.libs.XPath;
 import play.templates.Template;
 import play.templates.TemplateLoader;
-import util.ws.WebServiceRequest;
 import util.common.SafeParse;
+import util.ws.WebServiceRequest;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +52,6 @@ public class DadongProductsSyncRequest {
 
         Supplier dadong = Supplier.findByDomainName("dadong");
 
-
         List<DadongProduct> dadongProductList = new ArrayList<>();
 
         Template template = TemplateLoader.load("app/xml/template/dadong/GetProductRequest.xml");
@@ -69,32 +65,33 @@ public class DadongProductsSyncRequest {
             Map<String, Object> params = new HashMap<>();
             params.put("xml", xml);
             try {
-                Document document = WebServiceRequest.url(URL).type("thirdtuan.dadong.GetProducts")
+                String document = WebServiceRequest.url(URL).type("thirdtuan.dadong.GetProducts")
                         .encoding("GB2312").params(params).addKeyword(String.valueOf(pageIndex))
-                        .postXml();
+                        .postString();
 
-                List<Node> products = XPath.selectNodes("//products", document);
+                List<String> products = DadongXmlNodePath.selectNodes("products", document);
 
                 if (products == null || products.size() == 0) {
                     Logger.info("找不到products");
                     break;
                 }
-                for (Node node : products) {
-                    String productId = XPath.selectText("product_id", node);
+                for (String node : products) {
+                    String productId = DadongXmlNodePath.selectText("product_id", node);
                     DadongProduct product = new DadongProduct();
                     product.productId = SafeParse.toLong(productId);
-                    product.province = XPath.selectText("province", node);
-                    product.city = XPath.selectText("city", node);
-                    product.aqeg = XPath.selectText("aqeg", node);
-                    product.category = XPath.selectText("category", node);
-                    product.productName = XPath.selectText("product_name", node);
-                    product.faceValue = SafeParse.toBigDecimal(XPath.selectText("product_faceValue", node));
-                    product.webValue = SafeParse.toBigDecimal(XPath.selectText("product_webValue", node));
-                    product.platformValue = SafeParse.toBigDecimal(XPath.selectText("product_platformValue", node));
-                    product.ticketExplain = XPath.selectText("product_ticketExplain", node);
-                    product.address = XPath.selectText("product_address", node);
-                    product.imageUrl = XPath.selectText("product_image", node);
-                    product.expireTime = SafeParse.toDate(XPath.selectText("product_expireTime", node));
+                    product.province = DadongXmlNodePath.selectText("province", node);
+                    product.city = DadongXmlNodePath.selectText("city", node);
+                    product.aqeg = DadongXmlNodePath.selectText("aqeg", node);
+                    product.category = DadongXmlNodePath.selectText("category", node);
+                    product.productName = DadongXmlNodePath.selectText("product_name", node);
+                    product.faceValue = SafeParse.toBigDecimal(DadongXmlNodePath.selectText("product_faceValue", node));
+                    product.webValue = SafeParse.toBigDecimal(DadongXmlNodePath.selectText("product_webValue", node));
+                    product.platformValue = SafeParse.toBigDecimal(DadongXmlNodePath.selectText("product_platformValue", node));
+                    product.ticketExplain = DadongXmlNodePath.selectText("product_ticketExplain", node);
+                    product.address = DadongXmlNodePath.selectText("product_address", node);
+                    product.imageUrl = DadongXmlNodePath.selectText("product_image", node);
+                    product.introduction = DadongXmlNodePath.selectText("product_introduction", node);
+                    product.expireTime = SafeParse.toDate(DadongXmlNodePath.selectText("product_expireTime", node));
 
                     Logger.info("product:" + product.toString());
                     dadongProductList.add(product);
@@ -178,7 +175,8 @@ public class DadongProductsSyncRequest {
         goods.name = product.productName;
         goods.shortName = product.productName;
         goods.title = goods.shortName;
-        goods.setExhibition("请修改提示信息以给消费者列完整的参考");
+        //详情
+        goods.setExhibition(product.introduction);
         goods.setPrompt("请修改提示信息以给消费者更完整的参考");
 
         goods.supplierGoodsId = product.productId;

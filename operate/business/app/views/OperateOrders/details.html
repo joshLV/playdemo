@@ -72,7 +72,12 @@
                         orders.userType}:${loginName}</a>
                 #{/if}
                 </td>
-                <td></td>
+                <td>
+                #{if orders.electronicGoods?.size() > 0}
+                    查看
+                    <a href="/coupons?condition.searchKey=ORDER_NUMBER&condition.searchItems=${orders.orderNumber}">电子券清单</a>
+                #{/if}
+                </td>
                 <td></td>
             </tr>
         </table>
@@ -85,13 +90,13 @@
                 <th>商品编号</th>
                 <th>商品名称</th>
                 <th>类型</th>
-                <th>销售人员</th>
                 <th>单价</th>
                 <th>数量</th>
                 <th>手机</th>
                 <th>有效期</th>
                 <th>折扣券</th>
                 <th>需要支付金额</th>
+                <th>状态</th>
             </tr>
             </thead>
             <tbody>
@@ -101,9 +106,11 @@
                 supplier=models.supplier.Supplier.findUnDeletedById(orderItem.goods.supplierId);
                 }%
                 <td>${orderItem.goods.no}</td>
-                <td>${orderItem.goodsName}</td>
+                <td>
+                    <a href="http://www.yibaiquan.com/p/${orderItem.goods.id}">${orderItem.goodsName}</a>
+                    &nbsp;<i class="icon-user"></i>${models.admin.OperateUser.findBySalesId(supplier.salesId)?.userName}
+                </td>
                 <td>&{'goods.'+orderItem.goods.materialType}</td>
-                <td>${models.admin.OperateUser.findBySalesId(supplier.salesId)?.userName}</td>
                 <td>${orderItem.salePrice?.formatCurrency('CNY')}</td>
                 <td>${orderItem.buyNumber}</td>
                 <td>
@@ -111,8 +118,8 @@
                     ${orderItem?.phone}
                     #{/if}
                     #{else}
-                    ${orderItem?.getMaskedPhone()}
-                    #{/else}
+                ${orderItem?.getMaskedPhone()}
+                #{/else}
                 </td>
                 <td>${orderItem.goods.effectiveAt?.format("yyyy-MM-dd")}
                     - ${orderItem.goods.expireAt?.format("yyyy-MM-dd")}

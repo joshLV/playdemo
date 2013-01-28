@@ -2,7 +2,6 @@ package controllers.supplier;
 
 import controllers.OperateRbac;
 import jobs.dadong.DadongProductsSyncRequest;
-import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -18,8 +17,6 @@ public class DadongProducts extends Controller {
 
     @ActiveNavigation("suppliers_index")
     public static void sync() {
-        Supplier dadong = Supplier.findByDomainName("dadong");
-
         Integer newCount = DadongProductsSyncRequest.syncProducts();
         render(newCount);
     }

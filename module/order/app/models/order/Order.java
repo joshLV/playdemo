@@ -85,6 +85,9 @@ public class Order extends Model {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
     public List<ECoupon> eCoupons;
 
+    /**
+     * 订单号
+     */
     @Column(name = "order_no", unique = true)
     public String orderNumber;
 
@@ -691,6 +694,7 @@ public class Order extends Model {
                 this.payRequestId = tradeBill.getId();
             } catch (RuntimeException e) {
                 Logger.error("can not pay", e);
+                e.printStackTrace();
                 return false;
                 //忽略，此时订单没有支付，但余额已经保存
             }
