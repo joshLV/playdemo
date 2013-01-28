@@ -88,7 +88,7 @@ public class ECouponHistoryMessage implements Serializable {
     }
 
     public ECouponHistoryMessage toStatus(ECouponStatus value) {
-        this.fromStatus = value;
+        this.toStatus = value;
         return this;
     }
 
