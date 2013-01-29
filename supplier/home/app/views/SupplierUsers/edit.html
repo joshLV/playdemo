@@ -4,10 +4,7 @@
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/supplierUser.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
-#{set 'moreStyles'}
-    #{asset.css src:['/m/account.css'] /}
-#{/set}
-<div class="account">
+<div class="bd">
     <h2>${title}</h2>
 #{form @SupplierUsers.update(supplierUser.id) , id:'operForm',class:"form-horizontal" }
     <div class="field-group">
