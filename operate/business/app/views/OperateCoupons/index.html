@@ -92,9 +92,7 @@
             }
             $("#frmlist").submit();
         });
-        $("#search").click(function () {
-            formSubmit();
-        });
+
     });
 
     function couponExcel() {
@@ -107,11 +105,16 @@
         $("#condition_status").val(status);
         formSubmit();
     }
-    function formSubmit() {
-        $("#frmlist").attr("method", "get");
+
+
+    function search() {
         $("#frmlist").attr("action", "@{OperateCoupons.index()}");
+        $("#frmlist").attr("method", "get");
         $("#frmlist").submit();
     }
+    ;
+
+
 </script>
 
 <form class="well form-inline" name="frmlist" id="frmlist" method="GET">
@@ -221,7 +224,7 @@
             <span class="add-on"><i class="icon-th"></i></span>
         </div>
         &nbsp;&nbsp;
-        <button class="btn btn-large btn-primary" id="search" type="submit">搜索</button>
+        <button class="btn btn-large btn-primary" id="search" type="submit" onclick="search()">搜索</button>
     </div>
 
 </form>

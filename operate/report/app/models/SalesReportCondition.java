@@ -574,27 +574,27 @@ public class SalesReportCondition implements Serializable {
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         if (!hasSeeReportProfitRight) {
             condBuilder.append(" and ou.id =:salesId");
-            paramMap.put("salesId", salesId);
+            paramMap1.put("salesId", salesId);
         }
         if (StringUtils.isNotBlank(userName)) {
             condBuilder.append(" and ou.userName like :userName");
-            paramMap.put("userName", "%" + userName + "%");
+            paramMap1.put("userName", "%" + userName + "%");
         }
         if (StringUtils.isNotBlank(jobNumber)) {
             condBuilder.append(" and ou.jobNumber=:jobNumber");
-            paramMap.put("jobNumber", jobNumber);
+            paramMap1.put("jobNumber", jobNumber);
         }
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
-            paramMap.put("createdAtBegin", beginAt);
+            paramMap1.put("createdAtBegin", beginAt);
         }
         if (endAt != null) {
             condBuilder.append(" and r.order.paidAt < :createdAtEnd");
-            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+            paramMap1.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
         if (supplierId != 0) {
             condBuilder.append(" and r.goods.supplierId = :supplierId");
-            paramMap.put("supplierId", supplierId);
+            paramMap1.put("supplierId", supplierId);
         }
 
         return condBuilder.toString();
@@ -607,28 +607,28 @@ public class SalesReportCondition implements Serializable {
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         if (!hasSeeReportProfitRight) {
             condBuilder.append(" and ou.id =:salesId");
-            paramMap.put("salesId", salesId);
+            paramMap1.put("salesId", salesId);
         }
         if (StringUtils.isNotBlank(userName)) {
             condBuilder.append(" and ou.userName like :userName");
-            paramMap.put("userName", "%" + userName + "%");
+            paramMap1.put("userName", "%" + userName + "%");
         }
         if (StringUtils.isNotBlank(jobNumber)) {
             condBuilder.append(" and ou.jobNumber=:jobNumber");
-            paramMap.put("jobNumber", jobNumber);
+            paramMap1.put("jobNumber", jobNumber);
         }
 
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
-            paramMap.put("createdAtBegin", beginAt);
+            paramMap1.put("createdAtBegin", beginAt);
         }
         if (endAt != null) {
             condBuilder.append(" and r.order.paidAt < :createdAtEnd");
-            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+            paramMap1.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
         }
         if (supplierId != 0) {
             condBuilder.append(" and r.goods.supplierId = :supplierId");
-            paramMap.put("supplierId", supplierId);
+            paramMap1.put("supplierId", supplierId);
         }
 
         return condBuilder.toString();
