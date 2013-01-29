@@ -819,7 +819,9 @@ public class Goods extends Model {
     }
 
     public void setExhibition(String exhibition) {
-        this.exhibition = Jsoup.clean(exhibition, HTML_WHITE_TAGS);
+        if (exhibition != null) {
+            this.exhibition = Jsoup.clean(exhibition, HTML_WHITE_TAGS);
+        }
     }
 
     public String getSupplierDes() {
@@ -1059,6 +1061,7 @@ public class Goods extends Model {
         if (updateGoods == null) {
             return;
         }
+
         updateGoods.shortName = StringUtils.trimToEmpty(goods.shortName);
         updateGoods.name = StringUtils.trimToEmpty(goods.name);
         updateGoods.title = StringUtils.trimToEmpty(goods.title);
@@ -1104,6 +1107,7 @@ public class Goods extends Model {
         updateGoods.useWeekDay = goods.useWeekDay;
         updateGoods.beginOnSaleAt = goods.beginOnSaleAt;
         updateGoods.endOnSaleAt = goods.endOnSaleAt;
+        updateGoods.freeShipping = (goods.freeShipping == null) ? Boolean.FALSE : goods.freeShipping;
         updateGoods.isOrder = (goods.isOrder == null) ? Boolean.FALSE : goods.isOrder;
         updateGoods.isLottery = (goods.isLottery == null) ? Boolean.FALSE : goods.isLottery;
         updateGoods.isHideOnsale = (goods.isHideOnsale == null) ? Boolean.FALSE : goods.isHideOnsale;
@@ -1439,7 +1443,8 @@ public class Goods extends Model {
     @SolrField
     public Collection<Shop> getShopList() {
         if (isAllShop) {
-            return CacheHelper.getCache(CacheHelper.getCacheKey(Shop.CACHEKEY_SUPPLIERID + this.supplierId, "GOODS_SHOP_LIST"), new CacheCallBack<List<Shop>>() {
+            return CacheHelper.getCache(CacheHelper.getCacheKey(Shop.CACHEKEY_SUPPLIERID + this.supplierId,
+                    "GOODS_SHOP_LIST"), new CacheCallBack<List<Shop>>() {
                 @Override
                 public List<Shop> loadData() {
                     return Shop.findShopBySupplier(supplierId);
@@ -1448,7 +1453,11 @@ public class Goods extends Model {
         }
         final long goodsId = this.id;
 
-        return CacheHelper.getCache(CacheHelper.getCacheKey(Goods.CACHEKEY_BASEID + goodsId, "GOODS_SHOPS"), new CacheCallBack<Set<Shop>>() {
+        return CacheHelper.getCache(CacheHelper.getCacheKey(
+                new String[]{
+                        Goods.CACHEKEY_BASEID + goodsId,
+                        Shop.CACHEKEY_SUPPLIERID + this.supplierId},
+                "GOODS_SHOPS"), new CacheCallBack<Set<Shop>>() {
             @Override
             public Set<Shop> loadData() {
                 Goods goods1 = Goods.findById(goodsId);

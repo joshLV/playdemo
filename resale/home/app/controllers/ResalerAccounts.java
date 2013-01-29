@@ -43,7 +43,7 @@ public class ResalerAccounts extends Controller {
         condition.account = account;
         JPAExtPaginator<AccountSequence> seqs = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
-        for (AccountSequence seq : seqs) {
+        for (AccountSequence seq : seqs.getCurrentPage()) {
             if (StringUtils.isEmpty(seq.remark)) {
                 Order order = Order.findById(seq.orderId);
                 if (order != null && order.orderItems != null) {

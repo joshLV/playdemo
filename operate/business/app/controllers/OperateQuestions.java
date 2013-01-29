@@ -37,7 +37,7 @@ public class OperateQuestions extends Controller {
         }
         JPAExtPaginator<CmsQuestion> questions = CmsQuestion.getQuestionList(condition, pageNumber, PAGE_SIZE);
 
-        for (CmsQuestion question : questions) {
+        for (CmsQuestion question : questions.getCurrentPage()) {
             setItems(question);
         }
         render(questions, condition);

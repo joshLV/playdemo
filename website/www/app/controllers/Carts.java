@@ -82,13 +82,10 @@ public class Carts extends Controller {
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
         if (goods == null) {
             error(500, "no such goods: " + goodsId);
-            return;
         }
 
         if (user == null && cookie == null) {
             error(500, "can not identity current user");
-
-            return;
         }
 
         Cart.order(user, cookieValue, goods, increment);
@@ -100,7 +97,6 @@ public class Carts extends Controller {
             amount = amount.add(cart.goods.salePrice.multiply(new BigDecimal(cart.number)));
             count += cart.number;
         }
-
         if (Play.mode != Play.Mode.DEV && increment > 0 && WebsiteInjector.getUserWebIdentification() != null) {
             UserWebIdentification uwi = UserWebIdentification.findOne(WebsiteInjector.getUserWebIdentification().cookieId);
             if (uwi == null) {
@@ -113,7 +109,6 @@ public class Carts extends Controller {
             uwi.cartCount += increment;
             uwi.save();
         }
-
         renderJSON("{\"count\":" + count + ", \"amount\":\"" + amount + "\"}");
     }
 

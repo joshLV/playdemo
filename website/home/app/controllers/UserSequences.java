@@ -31,7 +31,7 @@ public class UserSequences extends Controller {
         condition.account = account;
 
         JPAExtPaginator<AccountSequence> amountList = AccountSequence.findByCondition(condition, pageNumber, PAGE_SIZE);
-        for (AccountSequence accountSequence : amountList) {
+        for (AccountSequence accountSequence : amountList.getCurrentPage()) {
             setOrderInfo(accountSequence);
         }
 

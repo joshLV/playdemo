@@ -3,7 +3,6 @@ package util.ws;
 import com.google.gson.JsonElement;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
-import play.Play;
 import play.libs.WS;
 
 import java.util.Map;

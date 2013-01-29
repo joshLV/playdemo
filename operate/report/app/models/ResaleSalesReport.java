@@ -122,6 +122,11 @@ public class ResaleSalesReport extends Model {
      */
     public BigDecimal profit;
 
+    /**
+     * 贡献度
+     */
+    public BigDecimal contribution;
+
 
     /**
      * paidAt ecoupon  resaler
@@ -317,7 +322,7 @@ public class ResaleSalesReport extends Model {
         //paidAt ecoupon
         String sql = "select new models.ResaleSalesReport(r.order, sum(r.salePrice-r.rebateValue/r.buyNumber),count(r.buyNumber)" +
                 ",sum(r.originalPrice),sum(r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio/100" +
-                ",(sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue)*100" +
+                ",(sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue/r.buyNumber)*100" +
                 ",sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio/100-sum(r.originalPrice)" +
                 ") from OrderItems r, ECoupon e,Order o,Resaler b,Supplier s where e.orderItems=r and r.order=o and o.userId=b.id" +
                 " and r.goods.supplierId = s ";
@@ -476,8 +481,8 @@ public class ResaleSalesReport extends Model {
         if (totolSalePrice.compareTo(BigDecimal.ZERO) != 0) {
             grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
-        return new ResaleSalesReport(buyCount, amount.setScale(2,4), realBuyCount, realAmount.setScale(2,4), refundPrice.setScale(2,4), refundCount, consumedPrice.setScale(2,4), consumedCount, shouldGetPrice.setScale(2,4), haveGetPrice.setScale(2,4)
-                , grossMargin, channelCost.setScale(2,4), profit.setScale(2,4));
+        return new ResaleSalesReport(buyCount, amount.setScale(2, 4), realBuyCount, realAmount.setScale(2, 4), refundPrice.setScale(2, 4), refundCount, consumedPrice.setScale(2, 4), consumedCount, shouldGetPrice.setScale(2, 4), haveGetPrice.setScale(2, 4)
+                , grossMargin, channelCost.setScale(2, 4), profit.setScale(2, 4));
     }
 
     /**

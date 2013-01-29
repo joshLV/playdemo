@@ -76,7 +76,7 @@ public class OperateCouponsFuncTest extends FunctionalTest {
     public void testIndex() {
         Http.Response response = GET("/coupons");
         assertIsOk(response);
-        assertContentMatch("券号列表", response);
+        assertContentMatch("电子消费券", response);
         assertEquals(10, ((JPAExtPaginator<ECoupon>) renderArgs("couponPage")).size());
     }
 

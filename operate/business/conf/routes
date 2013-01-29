@@ -326,10 +326,6 @@ GET     /withdraw/confirmSettle                 WithdrawApproval.confirmSettle
 POST    /withdraw/settle                        WithdrawApproval.settle
 
 # 用户管理
-GET     /consumers                              OperateConsumers.index
-GET     /consumers/{id}                         OperateConsumers.show
-PUT     /consumers/{id}/freeze                  OperateConsumers.freeze
-PUT     /consumers/{id}/unfreeze                OperateConsumers.unfreeze
 GET     /consumers_votes                        OperateConsumersWinningInfo.index
 DELETE  /consumers_votes/{id}                   OperateConsumersWinningInfo.delete
 # 活动管理

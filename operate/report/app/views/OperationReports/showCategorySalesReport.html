@@ -17,7 +17,6 @@
 </style>
 #{/set}
 #{set 'moreScripts'}
-<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script type="text/javascript" charset="utf-8">
     $(function () {
 
@@ -44,8 +43,8 @@
                     startDay.setFullYear(startDay.getFullYear() - count);
                 }
 
-                $("#condition_beginAt").val(startDay.getFullYear() + "-" + (startDay.getMonth() + 1) + "-" + startDay.getDate());
-                $("#condition_endAt").val(today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + endDay.getDate());
+                $("#condition_begin").val(startDay.getFullYear() + "-" + (startDay.getMonth() + 1) + "-" + startDay.getDate());
+                $("#condition_end").val(today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + endDay.getDate());
                 $("#condition_interval").val(interval);
                 $("#search_form").attr("action", "@{OperationReports.showCategorySalesReport()}");
                 $("#search_form").attr("method", "get");
@@ -136,23 +135,37 @@
 #{/set}
 <div class="body">
     <form action="@{OperationReports.showCategorySalesReport()}" method="GET" id="search_form"
-          name="search_form">
+          name="search_form" class="well form-inline">
+        <td width="30%">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
+        #{vx.selectInputField name:"supplierName", id:"condition.supplierId", list:supplierList, value:condition?.supplierId, array:"supplierArray",importJs:true/}</td>
+
         商品名称：<input type="text" name="condition.shortName" class="input-medium"
                     value="${condition?.shortName}"/>
-        商品编码：<input type="text" name="condition.code" class="input-medium"
+        商品编码：<input type="text" name="condition.code" class="input-small"
                     value="${condition?.code}"/>
+        <br>
+        <br>
         起止日期
-        <input type="text" id="condition_beginAt" class="input-medium Wdate" name="condition.beginAt"
-               onfocus="WdatePicker({readOnly:true})" value="${condition?.beginAt?.format()}"> -
-        <input type="text" id="condition_endAt" class="input-medium Wdate" name="condition.endAt"
-               onfocus="WdatePicker({readOnly:true})" value="${condition?.endAt?.format()}">
-        <button type="submit" class="btn btn-primary" id="search" onclick="showCategorySalesReport()">搜索</button>
-        <br/>
+
+
+        <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
+            <input class="input-small" id="condition_begin" name="condition.beginAt" size="16" type="text"
+                   value="${condition.beginAt?.format()}">
+            <span class="add-on"><i class="icon-th"></i></span>
+        </div>
+        -
+        <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
+            <input class="input-small" id="condition_end" name="condition.endAt" size="16" type="text"
+                   value="${condition.endAt?.format()}">
+            <span class="add-on"><i class="icon-th"></i></span>
+        </div>
+        <button type="submit" class="btn btn-large btn-primary" id="search" onclick="showCategorySalesReport()
+        ">搜索</button>
 
         <div style="float:right">
-            <button class="btn btn-primary" id="searchbtn" onclick="categorySalesReportExcel()">导出报表</button>
+            <button class="btn btn-info" id="searchbtn" onclick="categorySalesReportExcel()">导出报表</button>
         #{if hasSeeReportProfitRight == true}
-            <button class="btn btn-primary" id="searchbtn" onclick="categorySalesReportWithPrivilegeExcel()">导出报表附带利润
+            <button class="btn btn-info" id="searchbtn" onclick="categorySalesReportWithPrivilegeExcel()">导出报表附带利润
             </button>
         #{/if}
         </div>

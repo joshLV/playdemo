@@ -12,6 +12,7 @@ import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.sales.ChannelGoodsInfo;
+import models.sales.ChannelGoodsInfoStatus;
 import models.sales.Goods;
 import models.sales.GoodsDeployRelation;
 import models.sales.GoodsThirdSupport;
@@ -424,6 +425,7 @@ public class WubaProduct extends Controller {
                     } else {
                         channelGoodsInfo.url = url;
                         channelGoodsInfo.tag = cityName;
+                        channelGoodsInfo.status= ChannelGoodsInfoStatus.CREATED;
                         channelGoodsInfo.save();
                     }
                 }
@@ -469,7 +471,7 @@ public class WubaProduct extends Controller {
         requestMap.put("status", -1);
 
         WubaResponse response = WubaUtil.sendRequest(requestMap, "emc.groupbuy.getstatus");
-        if (response.isOk()) {
+        if (!response.isOk()) {
             renderText("failed:" + response);
         }
         JsonArray dataArray = response.data.getAsJsonArray();
@@ -511,7 +513,7 @@ public class WubaProduct extends Controller {
         Map<String, Object> requestMap = new HashMap<>();
         requestMap.put("groupbuyId", relation.linkId);
         WubaResponse response = WubaUtil.sendRequest(requestMap, "emc.groupbuy.shangxian");
-        if (response.isOk()) {
+        if (!response.isOk()) {
             renderText("failed:" + response);
         }
         resalerFav.onsaledAt = new Date();
@@ -534,7 +536,7 @@ public class WubaProduct extends Controller {
         Map<String, Object> requestMap = new HashMap<>();
         requestMap.put("groupbuyId", relation.linkId);
         WubaResponse response = WubaUtil.sendRequest(requestMap, "emc.groupbuy.xiaxian");
-        if (response.isOk()) {
+        if (!response.isOk()) {
             renderText("failed:" + response);
         }
         resalerFav.offSaleAt = new Date();

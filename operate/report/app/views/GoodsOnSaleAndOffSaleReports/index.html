@@ -8,54 +8,61 @@
     <input type="text" name="condition.shortName" value="${condition?.shortName}">
     商品编号：
     <input type="text" name="condition.code" value="${condition?.code}">
-    #{list items:resalerList, as:'resaler'}
+#{list items:resalerList, as:'resaler1'}
     <label class="checkbox inline">
-        <input type="checkbox" id="resalerIds" name="condition.resaleIds" value="${resaler.resalerId}"
-            #{if condition?.resaleIds?.contains(resaler.resalerId)}checked="true" #{/if}>${resaler.resalerName}&nbsp;</label>
-    #{/list}
+        <input type="checkbox" id="resalerIds" name="resaleIds${resaler1?.resalerId}"
+               value="${resaler1?.resalerId}"
+               #{if condition?.resaleIds?.contains(resaler1.resalerId)}checked="true" #{/if}>${resaler1.resalerName}
+        &nbsp;
+    </label>
+#{/list}<span style="color: #808080;">(筛选各渠道在售的商品)</span>
     <button type="submit" class="btn btn-primary" id="search">搜索</button>
 </form>
 <div class="alert alert-success">
-    <span>总计 ： <b>${reportPage?.size()}</b> 笔</span>
+    <span>总计 ： <b>${reportPage?.size()}</b> 笔,其中 √表示在售中，X表示已下线，?表示未知状态，空白表示未发布该商品，灰色字体表示商品在一百券已下架
+    </span>
 </div>
 <table class="table table-striped table-bordered table-condensed">
     <thead>
     <th width="10px">编号</th>
     <th width="260px">商品名称</th>
-    #{list items:resalerList, as:'resaler'}
-    <th width="50px">${resaler.resalerName}</th>
+    #{list items:resalerList, as:'resaler0'}
+    <th width="50px">${resaler0.resalerName}</th>
     #{/list}
     <th width="50px">操作</th>
     </thead>
 #{paginate.list items:reportPage, as:'report'}
-    <tr>
-    %{
-        rowkey=report?.get("RowKey").split("※");
-        name=rowkey[0];
-        code=rowkey[1]=='null'? "":rowkey[1];
-        id=rowkey[2]=='null'? "":rowkey[2];
+%{
+    rowkey=report?.get("RowKey").split("※");
+    name=rowkey[0];
+    code=rowkey[1]=='null'? "":rowkey[1];
+    id=rowkey[2]=='null'? "":rowkey[2];
+    goodsStatus=rowkey[3]=='null'? "":rowkey[3];
 
-        baseUrl=play.Play.configuration.getProperty("uri.operate_business");
-        wwwUrl=play.Play.configuration.getProperty("www.url");
-        }%
+    baseUrl=play.Play.configuration.getProperty("uri.operate_business");
+    wwwUrl=play.Play.configuration.getProperty("www.url");
+    }%
+    <tr #{if goodsStatus!='ONSALE'}style="color:  #808080;"#{/if} >
         <td>${code}</td>
-        <td><a href="http://${wwwUrl}/p/${id}"
-               target="_blank">${name}</a></td>
+        <td>
+            <a href="http://${wwwUrl}/p/${id}"
+               #{if goodsStatus!='ONSALE'}style="color:  #808080;"#{/if} target="_blank">${name}</a>
+        </td>
         #{list items:resalerList, as:'resaler'}
         %{
             goodsReport = report?.get(resaler.resalerName);
             }%
             <td>
-                #{if  goodsReport!=null && models.sales.ChannelGoodsInfoStatus.ONSALE==goodsReport?.status}
+                #{if goodsReport!=null && models.sales.ChannelGoodsInfoStatus.ONSALE==goodsReport?.status}
                     <a href="${goodsReport?.url}" target="_blank"><span
                             style="font-size: 15px;color: green">√</span></a>#{/if}
-            *{#{elseif goodsReport!=null && models.sales.ChannelGoodsInfoStatus.PAGE_NOT_EXISTED==goodsReport?.status }}*
-            *{<a href="${goodsReport?.url}" target="_blank">查看</a>}*
-            *{<span style="font-size: 12px;color: #0000ff;">该页面不存在</span>}*
-            *{#{/elseif}}*
+                #{elseif goodsReport?.status==models.sales.ChannelGoodsInfoStatus.CREATED}
+                    <span style="color: #808080;"><a href="${goodsReport?.url}" target="_blank">?</a></span>
+                #{/elseif}
                 #{else}
-                    #{if goodsReport?.status!=null }<a href="${goodsReport?.url}" target="_blank"><span
-                            style="color: red">X</span></a>#{/if}
+                    #{if ((goodsReport?.status!= null && goodsReport?.status!=models.sales.ChannelGoodsInfoStatus.ONSALE && goodsReport?.status!=models.sales.ChannelGoodsInfoStatus.CREATED) && !condition?.resaleIds?.contains(resaler?.resalerId)) }
+                        <a href="${goodsReport?.url}" target="_blank"><span
+                                style="color: red">X</span></a>#{/if}
                 #{/else}
             </td>
 

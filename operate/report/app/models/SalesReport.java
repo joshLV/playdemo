@@ -517,8 +517,8 @@ public class SalesReport implements Comparable<SalesReport> {
                 " from OrderItems r, ECoupon e ,Supplier s,OperateUser ou";
         query = JPA.em()
                 .createQuery(sql + condition.getFilterCheatedOrderOfPeopleEffect() + groupBy + " order by sum(r.salePrice*r.buyNumber-r.rebateValue) desc");
-        for (String param : condition.getParamMap().keySet()) {
-            query.setParameter(param, condition.getParamMap().get(param));
+        for (String param : condition.getParamMap1().keySet()) {
+            query.setParameter(param, condition.getParamMap1().get(param));
         }
         List<SalesReport> cheatedOrderResultList = query.getResultList();
 
@@ -530,8 +530,8 @@ public class SalesReport implements Comparable<SalesReport> {
                 .createQuery(sql + condition.getFilterCheatedOrderResalerOfPeopleEffect() + groupBy + " order by sum(r.buyNumber) desc ");
 
 
-        for (String param : condition.getParamMap().keySet()) {
-            query.setParameter(param, condition.getParamMap().get(param));
+        for (String param : condition.getParamMap1().keySet()) {
+            query.setParameter(param, condition.getParamMap1().get(param));
         }
 
         List<SalesReport> cheatedOrderResalerResultList = query.getResultList();

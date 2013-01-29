@@ -263,7 +263,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
         // DESC 的值表示升降序，含n位，代表n个排序字段， 1 为升序， 2 为降序， 0 为不排序
         // 当无排序参数时，初始化 -1
         if (desc == null) {
-            desc = "100000000";
+            desc = "010000";
         }
         // 获取最新的desc值
         String[] descs = desc.split(",");
@@ -278,7 +278,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
                     break;
                 }
             }
-            String[] orderByFields = {"jobNumber", "totalAmount", "consumedAmount", "refundAmount", "profit", "grossMargin"};
+            String[] orderByFields = {"jobNumber", "totalAmount", "refundAmount", "consumedAmount", "profit", "grossMargin"};
             // 添加排序属性
             orderBy = orderByFields[index];
             // 添加升降序方式
@@ -350,6 +350,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
                         return o2_amount.compareTo(o1_amount);
                     }
                 } else if ("refundAmount".equals(orderBy)) {
+                    System.out.println("===inini>>");
                     BigDecimal o1_amount = o1.totalRefundPrice == null ? BigDecimal.ZERO : o1.totalRefundPrice;
                     BigDecimal o2_amount = o2.totalRefundPrice == null ? BigDecimal.ZERO : o2.totalRefundPrice;
                     if ("desc".equals(orderByType)) {

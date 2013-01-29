@@ -40,7 +40,7 @@ public class ResalePartnerProducts extends Controller {
 
         List<Supplier> supplierList = Supplier.findUnDeleted();
         Map<String, List<ResalerProduct> > partnerProducts = new HashMap<>();
-        for(models.sales.Goods goods : goodsPage) {
+        for(models.sales.Goods goods : goodsPage.getCurrentPage()) {
             List<ResalerProduct> products = ResalerProduct.find("byGoods", goods).fetch();
             for (ResalerProduct product : products) {
                 List<ResalerProduct> p = partnerProducts.get(goods.id + product.partner.toString());

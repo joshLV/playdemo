@@ -49,7 +49,7 @@ public class OperateCoupons extends Controller {
         JPAExtPaginator<ECoupon> couponPage;
 
         couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE);
-        for (ECoupon coupon : couponPage) {
+        for (ECoupon coupon : couponPage.getCurrentPage()) {
             if (coupon.operateUserId != null) {
                 OperateUser operateUser = OperateUser.findById(coupon.operateUserId);
                 coupon.operateUserName = operateUser.userName;
@@ -96,9 +96,10 @@ public class OperateCoupons extends Controller {
             return;
         }
 
+        Boolean hasViewEcouponSnPermission = ContextedPermission.hasPermission("VIEW_ECOUPONSN");
         List<CouponHistory> couponList = CouponHistory.find("coupon=? order by createdAt desc", coupon).fetch();
         String couponSn = coupon.getMaskedEcouponSn();
-        render("OperateCoupons/history.html", couponSn, couponList, coupon);
+        render("OperateCoupons/history.html", couponSn, couponList, coupon, hasViewEcouponSnPermission);
     }
 
     @Right("ECOUPON_REFUND")
@@ -180,10 +181,7 @@ public class OperateCoupons extends Controller {
         renderArgs.put("__FILE_NAME__", "券列表_" + System.currentTimeMillis() + ".xls");
         condition.hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
         condition.operatorId = OperateRbac.currentUser().id;
-        JPAExtPaginator<ECoupon> couponsList;
-
-
-        couponsList = ECoupon.query(condition, 1, PAGE_SIZE);
+        JPAExtPaginator<ECoupon> couponsList = ECoupon.query(condition, 1, PAGE_SIZE);
 
         for (ECoupon coupon : couponsList) {
             coupon.shopName = coupon.getConsumedShop();

@@ -2,25 +2,46 @@
 
 require:
     - play 1.2.4
+    - play1 -> excel 1.2.3
     - play1 -> betterlogs 1.0
     - play1 -> appconfiguration 0.1
     - play1 -> cobertura 2.4p3
+    - play1 -> rabbitmq 0.3
     - play1 -> paginate head
     - play1 -> app-version 0.1
     - play1 -> factory-boy 1.0
-    - play1 -> rabbitmq 0.3
-    - layout_operate -> layout_operate
-    - paginate_ext -> paginate_ext
-    - view_ext -> view_ext
-    - operate_rbac -> operate_rbac
-    - supports -> supports
-    - cms -> cms
-    - org.jsoup -> jsoup 1.6.1
+    - play1 -> play-solr 0.2.28
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
+    - view_ext -> view_ext
+    - layout_operate -> layout_operate
+    - commons-lang -> commons-lang 2.6
+    - sales -> sales
+    - supplier -> supplier
+    - paginate_ext -> paginate_ext
+    - org.jsoup -> jsoup 1.6.1
+    - operate_rbac -> operate_rbac
+    - resale -> resale
+    - order -> order
+    - consumer -> consumer
+    - accounts -> accounts
+    - order -> order
+    - cms -> cms
+    - sms -> sms
     - asset_package -> asset_package
     - cache_helper -> cache_helper
     - emaillogs -> emaillogs
-
+    - report -> report
+    - yihaodian -> yihaodian
+    - dangdang -> dangdang
+    - jingdong -> jingdong
+    - wuba -> wuba
+    - oauth -> oauth
+    - taobao -> taobao
+    - com.taobao -> taobao-top 20121130
+    - supports -> supports
+    - third_tuan -> third_tuan
+    - com.yihaodian -> yhdclient 1.0
+    - commons-httpclient -> commons-httpclient 3.1
 
 repositories:
     - mavenRepository:
@@ -28,7 +49,10 @@ repositories:
         root:       "http://dev.uhuila.cn/nexus/content/groups/public"
         contains:
             - com.uhuila.utils -> *
+            - commons-lang -> *
             - org.jsoup -> *
+            - com.yihaodian -> *
+            - com.taobao -> *
         m2compatible: true
 
     - play1ContributedModules:
@@ -41,12 +65,27 @@ repositories:
         type:       local
         artifact:   "${application.path}/../../module/[module]"
         contains:
+            - view_ext -> *
             - layout_operate -> *
+            - sales -> *
+            - supplier -> *
             - paginate_ext -> *
             - operate_rbac -> *
-            - asset_package -> *
+            - resale -> *
+            - consumer -> *
+            - accounts -> *
+            - order -> *
             - cms -> *
-            - view_ext -> *
+            - sms -> *
+            - asset_package -> *
             - cache_helper -> *
             - emaillogs -> *
+            - report -> *
+            - yihaodian -> *
+            - dangdang -> *
+            - jingdong -> *
+            - wuba -> *
+            - oauth -> *
+            - taobao -> *
             - supports -> *
+            - third_tuan -> *

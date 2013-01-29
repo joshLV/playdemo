@@ -55,6 +55,7 @@ public class TestPaymentFlow extends PaymentFlow{
         result.put(VERIFY_RESULT, VERIFY_RESULT_OK);
         result.put(ORDER_NUMBER, params.get("order_no"));
         result.put(TOTAL_FEE, params.get("fee"));
+        result.put(SUCCESS_INFO, "success");
         result.put(PAYMENT_CODE, PaymentUtil.PARTNER_CODE_TESTPAY);
         return result;
     }

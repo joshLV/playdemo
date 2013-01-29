@@ -455,7 +455,7 @@ public class PeopleEffectCategoryReport {
         sql = "select new models.PeopleEffectCategoryReport(ou,sum(e.refundPrice),s.supplierCategory.id,sum(r.originalPrice),count(e),e.status)" +
                 " from ECoupon e,OrderItems r,Supplier s,OperateUser ou ";
         query = JPA.em()
-                .createQuery(sql + condition.getECouponFilterOfPeopleEffect(ECouponStatus.REFUND)  + groupBy + " order by s.supplierCategory.id desc");
+                .createQuery(sql + condition.getECouponFilterOfPeopleEffect(ECouponStatus.REFUND) + groupBy + " order by s.supplierCategory.id desc");
         for (String param : condition.getParamMap1().keySet()) {
             query.setParameter(param, condition.getParamMap1().get(param));
         }

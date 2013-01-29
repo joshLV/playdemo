@@ -6,9 +6,9 @@ import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
-import models.order.CouponHistory;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
+import models.order.ECouponHistoryMessage;
 import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderStatus;
@@ -34,12 +34,12 @@ public class ECouponUnitTest extends UnitTest {
     User user;
     Order order;
     ECoupon eCoupon;
-    CouponHistory couponHistory;
     Resaler resaler;
 
     @Before
     public void loadData() {
         FactoryBoy.deleteAll();
+        MockMQ.clear();
         user = FactoryBoy.create(User.class);
         order = FactoryBoy.create(Order.class);
         order.setUser(user.id, AccountType.CONSUMER);
@@ -91,16 +91,16 @@ public class ECouponUnitTest extends UnitTest {
         assertEquals(new Integer(0), eCoupon.isFreeze);
         ECoupon.freeze(eCoupon.id, "tom");
         assertEquals(new Integer(1), eCoupon.isFreeze);
-        couponHistory = CouponHistory.find("coupon=? order by createdAt desc", eCoupon).first();
-        assertEquals("冻结券号", couponHistory.remark);
-        assertEquals("tom", couponHistory.operator);
+
+        ECouponHistoryMessage lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage.MQ_KEY);
+        assertEquals("冻结券号", lastMessage.remark);
+        assertEquals("tom", lastMessage.operator);
 
         ECoupon.unfreeze(eCoupon.id, "jan");
         assertEquals(new Integer(0), eCoupon.isFreeze);
-        couponHistory.refresh();
-        couponHistory = CouponHistory.find("coupon=? order by createdAt desc", eCoupon).first();
-        assertEquals("解冻券号", couponHistory.remark);
-        assertEquals("jan", couponHistory.operator);
+        lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage.MQ_KEY);
+        assertEquals("解冻券号", lastMessage.remark);
+        assertEquals("jan", lastMessage.operator);
     }
 
     @Test
@@ -155,18 +155,16 @@ public class ECouponUnitTest extends UnitTest {
 
         eCoupon.order.accountPay = new BigDecimal("8.50");
         eCoupon.order.save();
-        long cnt = CouponHistory.count();
-        assertEquals(cnt, CouponHistory.count());
+
         ret = ECoupon.applyRefund(eCoupon, user.id, AccountType.CONSUMER);
         assertEquals("{\"error\":\"ok\"}", ret);
         assertEquals(ECouponStatus.REFUND, eCoupon.status);
         assertEquals(new BigDecimal("8.50"), eCoupon.refundPrice);
         assertNotNull(eCoupon.refundAt);
 
-        assertEquals(cnt + 1, CouponHistory.count());
-        couponHistory = CouponHistory.find("coupon=?", eCoupon).first();
-        assertEquals("券退款", couponHistory.remark);
-        assertEquals("消费者:" + user.getShowName(), couponHistory.operator);
+        ECouponHistoryMessage lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage.MQ_KEY);
+        assertEquals("未消费券退款", lastMessage.remark);
+        assertEquals("消费者:" + user.getShowName(), lastMessage.operator);
 
         eCoupon.refresh();
         eCoupon.status = ECouponStatus.UNCONSUMED;
@@ -181,10 +179,10 @@ public class ECouponUnitTest extends UnitTest {
         assertEquals("{\"error\":\"ok\"}", ret);
         assertEquals(ECouponStatus.REFUND, eCoupon.status);
         assertEquals(new BigDecimal("8.50"), eCoupon.refundPrice);
-        couponHistory.refresh();
-        couponHistory = CouponHistory.find("coupon=? order by createdAt desc", eCoupon).first();
-        assertEquals("券退款", couponHistory.remark);
-        assertEquals("分销商:" + resaler.loginName, couponHistory.operator);
+
+        lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage.MQ_KEY);
+        assertEquals("未消费券退款", lastMessage.remark);
+        assertEquals("分销商:" + resaler.loginName, lastMessage.operator);
     }
 
     @Test

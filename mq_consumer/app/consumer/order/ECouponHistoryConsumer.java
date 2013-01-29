@@ -15,8 +15,16 @@ import play.jobs.OnApplicationStart;
 @OnApplicationStart(async = true)
 public class ECouponHistoryConsumer extends RabbitMQConsumerWithTx<ECouponHistoryMessage> {
     @Override
-    public void consumeWithTx(ECouponHistoryMessage data) {
+    public void consumeWithTx(ECouponHistoryMessage data)  {
+        try {
+            Thread.sleep(500l);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         CouponHistory couponHistory = data.toModel();
+        if (couponHistory.coupon == null) {
+            throw new RuntimeException("ECouponHistoryMessage(eCouponId:" + data.eCouponId + ") 对象为空，暂不能保存");
+        }
         JPA.em().flush();
         couponHistory.save();
     }
