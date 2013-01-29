@@ -39,7 +39,7 @@ $(function () {
                         text: '日期'
                     },
                     tickPosition: 'inside',
-                    tickInterval:${dailyList.size()>15?(int)(dailyList.size() / 12):1},
+                    tickInterval: ${(dailyList.size()>15)?(int)(dailyList.size() / 12):1},
                     labels: {
                         align: 'right',
                         style: {
@@ -287,14 +287,14 @@ $(function () {
                 </div>
                 <div class="field-group">
                     <label>选择日期</label>
-                    <input class="input-medium Wdate" type="text" id="fromDate" name="fromDate"
+                    <input class="time" type="text" id="fromDate" name="fromDate"
                            value="${fromDate?.format('yyyy-MM-dd')}"
                            onfocus="WdatePicker({readOnly:true})"/>
                     至
-                    <input class="input-medium Wdate" type="text" id="toDate" name="toDate"
+                    <input class="time" type="text" id="toDate" name="toDate"
                            value="${toDate?.format('yyyy-MM-dd')}"
                            onfocus="WdatePicker({readOnly:true})"/>
-                    &nbsp;&nbsp;${shopEndHour?"统计时间截止至"+shopEndHour:''}
+                    &nbsp;&nbsp;<span style="font-size:12px;line-height: 36px;"><strong>${shopEndHour?"统计时间截止至"+shopEndHour:''}</strong></span>
 
                 </div>
                 <div class="field-group">

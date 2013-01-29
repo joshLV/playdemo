@@ -50,7 +50,7 @@ h2 {
     display: inline-block;
     font-size: 14px;
 }
-
+/* 公告 */
 #message {
     position: relative;
     width: 1000px;
@@ -83,6 +83,7 @@ h2 {
 #message p a {
     color: #08c;
 }
+/* 成功消息提示 */
 #success {
     position: relative;
     width: 1000px;
@@ -201,6 +202,9 @@ h2 {
     background-color: #006dcc;
     zoom: 1;
 }
+a.link {
+    color: #08c;
+}
 
 input.btn {
     width: 100px;
@@ -225,21 +229,18 @@ input.disabled {
     border-color: #d2d2d2;
     background-color: #d8d8d8;
 }
-/* 表单 */
-.field-sect {
-    background: #F6F3EA;
-    padding: 15px 20px 5px;
-}.hd a {
-     float: left;
-     display: block;
-     font-size: 18px;
-     padding: 5px 20px;
-     margin-right: 10px;
-     text-decoration: none;
-     background-color: #dcdcdc;
-     border-top-left-radius: 3px;
-     border-top-right-radius: 3px;
- }
+
+.hd a {
+    float: left;
+    display: block;
+    font-size: 18px;
+    padding: 5px 20px;
+    margin-right: 10px;
+    text-decoration: none;
+    background-color: #dcdcdc;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
 
 .hd a.curr {
     background-color: white;
@@ -249,6 +250,12 @@ input.disabled {
     padding: 20px;
     background-color: white;
 }
+
+/* 表单 */
+.field-sect {
+    background: #F6F3EA;
+    padding: 15px 20px 5px;
+}
 .field-sect {
     background: #F6F3EA;
     padding: 15px 20px 5px;
@@ -256,7 +263,7 @@ input.disabled {
 
 .field-group {
     position: relative;
-    padding-left: 90px;
+    padding-left: 110px;
     margin: 0 auto 10px;
     padding-bottom: 5px;
     font-size: 16px;
@@ -266,9 +273,17 @@ input.disabled {
     position: absolute;
     top: 0;
     left: 0;
-    width: 80px;
+    width: 100px;
     font-weight: 700;
     text-align: right;
+}
+.field-group input.text {
+    padding: 5px;
+    width: 400px;
+    height: 20px;
+    line-height: 20px;
+    vertical-align: middle;
+    border: 1px solid #CCC;
 }
 .field-group input.time {
     margin: 0 5px;
@@ -285,10 +300,18 @@ input.disabled {
     text-align: left;
     vertical-align: middle;
 }
+.field-group select {
+    width: 600px;
+    height: auto;
+    margin: 0;
+    padding: 5px;
+    border: 3px solid silver;
+    font-size: 14px;
+    vertical-align: middle;
+}
 
 
 /* 表格 */
-
 .title-table {
     width: 100%;
     margin: 5px 0;
