@@ -6,10 +6,10 @@ import models.mail.MailUtil;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
 import models.order.ECouponStatus;
-import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.jobs.Every;
 import play.jobs.Job;
+import play.jobs.On;
 
 import javax.persistence.Query;
 import java.util.ArrayList;
@@ -23,17 +23,17 @@ import java.util.Map;
  * Date: 13-1-25
  * Time: 下午1:32
  */
-//@On("0 0 1 * * ?")
+@On("0 0 1 * * ?")
 @Every("1mn")
 public class ExpiredNoRefundCouponNotice extends Job {
-    public static String MAIL_RECEIVER = Play.configuration.getProperty("mail.receiver", "yanjingyun@uhuila.com");
+    public static String MAIL_RECEIVER = Play.configuration.getProperty("mail.receiver", "dev@uhuila.com");
 
     @Override
     public void doJob() {
-        String sql = "select e from ECoupon e where e.eCouponSn not in (select m.couponNumber from SentCouponMessage " +
-                "m ) and e.isFreeze=0  and e.goods.noRefund= true and e.goods.isLottery=false and status =:status " +
+        String sql = "select e from ECoupon e where e.isFreeze=0  and e.goods.noRefund= true" +
+                " and e.goods.isLottery=false and status =:status " +
                 "and (e.expireAt >= :expireBeginAt and e.expireAt <= " +
-                ":expireEndAt) and e.partner in (:partner) order by e.id";
+                ":expireEndAt) and e.partner in (:partner) order by e.partner";
         List<ECouponPartner> partnerList = new ArrayList<>();
         partnerList.add(ECouponPartner.JD);
         partnerList.add(ECouponPartner.WB);
@@ -48,54 +48,38 @@ public class ExpiredNoRefundCouponNotice extends Job {
         String subject = "券号到期提醒";
         List<Map<String, String>> couponList = new ArrayList<>();
         Map<String, String> couponMap;
-
-        List<String> jdCoupons = new ArrayList();
-        List<String> wuCoupons = new ArrayList();
-
         Long goodsId = null;
         String p_coupon = "";
-        Map<String, String> partnerMap = new HashMap<>();
+        int i = 0;
         for (ECoupon coupon : resultList) {
             couponMap = new HashMap<>();
-            if (coupon.partner == ECouponPartner.JD) {
-                jdCoupons.add(coupon.eCouponSn);
-            }
-            if (coupon.partner == ECouponPartner.WB) {
-                wuCoupons.add(coupon.eCouponSn);
-            }
-
-            //分销商
-            couponMap.put("partner", coupon.partner.toString());
-            couponMap.put("couponSn", coupon.eCouponSn);
-
-            if (goodsId == coupon.goods.id) {
-                p_coupon += coupon.eCouponSn + ",";
-            } else {
-                p_coupon = coupon.eCouponSn;
-            }
-
-            couponMap.put("p_couponSn", p_coupon);
-            if (goodsId != coupon.goods.id) {
-                goodsId = coupon.goods.id;
-                //商品名称
-                couponMap.put("goodsName", coupon.goods.shortName);
-                couponList.add(couponMap);
+            if (coupon.partner == ECouponPartner.JD || coupon.partner == ECouponPartner.WB) {
+                if (goodsId != null && goodsId == coupon.goods.id) {
+                    p_coupon += "," + coupon.eCouponSn;
+                    couponList.get(i - 1).put("p_couponSn", p_coupon);
+                } else {
+                    p_coupon = coupon.eCouponSn;
+                    if (goodsId != null || i == 0) {
+                        //分销商
+                        couponMap.put("p_couponSn", p_coupon);
+                        couponMap.put("couponSn", coupon.eCouponSn);
+                        couponMap.put("userId", String.valueOf(coupon.order.userId));
+                        couponMap.put("partner", ECouponPartner.JD.toString());
+                        //商品名称
+                        couponMap.put("goodsName", coupon.goods.shortName);
+                        couponMap.put("goodsId", coupon.goods.id.toString());
+                        couponList.add(couponMap);
+                    }
+                    goodsId = coupon.goods.id;
+                }
+                i++;
             }
         }
-
-        partnerMap.put(ECouponPartner.JD.toString(), StringUtils.join(jdCoupons, ","));
-        partnerMap.put(ECouponPartner.WB.toString(), StringUtils.join(wuCoupons, ","));
-//        for (Map<String, String> map : couponList) {
-//            System.out.println(map.get(map.get("couponSn") + "goodsName") + ">>>>map.get" + map.get("couponSn"));
-//            System.out.println(partnerMap.get(map.get("couponSn") + map.get("partner") + ">>>>map.get"));
-//
-//        }
         if (couponList.size() > 0) {
             MailMessage mailMessage = new MailMessage();
             mailMessage.addRecipient(MAIL_RECEIVER);
             mailMessage.setSubject(Play.mode.isProd() ? subject : subject + "【测试】");
             mailMessage.putParam("subject", subject);
-            mailMessage.putParam("partnerMap", partnerMap);
             mailMessage.putParam("couponList", couponList);
             MailUtil.sendExpiredNoRefundCouponMail(mailMessage);
         }

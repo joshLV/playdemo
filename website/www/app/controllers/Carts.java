@@ -36,18 +36,17 @@ public class Carts extends Controller {
         User user = SecureCAS.getUser();
         Http.Cookie cookie = request.cookies.get("identity");
         String cookieValue = cookie == null ? null : cookie.value;
-
         List<Cart> carts = Cart.findAll(user, cookieValue);
         //显示最近浏览过的商品
         cookie = request.cookies.get("saw_goods_ids");
         String sawGoodsIds = cookie == null ? "" : cookie.value;
         List<Long> goodsIds = new ArrayList<>();
+
         for (String goodsId : sawGoodsIds.split(",")) {
             if (StringUtils.isNotEmpty(goodsId) && goodsIds.size() < 5) {
                 goodsIds.add(new Long(goodsId));
             }
         }
-
         List<models.sales.Goods> sawGoodsList = goodsIds.size() > 0 ? models.sales.Goods.findInIdList(goodsIds) : new ArrayList<models.sales.Goods>();
         //登陆的场合，判断该会员是否已经购买过此限购商品
         if (user != null) {
