@@ -145,9 +145,7 @@
                class="input-medium"/>
     </div>
 
-    <div class="pull-right">
-        <button class="btn btn-info" id="searchbtn" onclick="orderExcel()">导出报表</button>
-    </div>
+
     <div class="control-group">
         关键字：
     #{select 'condition.searchKey', class:'input-small', value:condition.searchKey}
@@ -181,6 +179,9 @@
                value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
         <label for="isLottery">抽奖商品</label>
         <button class="btn btn-large btn-primary" id="search" type="submit">搜索</button>
+        <div class="pull-right">
+            <button class="btn btn-info" id="searchbtn" onclick="orderExcel()">导出报表</button>
+        </div>
     </div>
     <input type="hidden" id="J_rank" name="desc"/>
 </form>
