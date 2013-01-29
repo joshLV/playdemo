@@ -1478,7 +1478,7 @@ public class ECoupon extends Model {
         // 重定义短信格式 - 58团
         if (AccountType.RESALER.equals(order.userType) && order.getResaler().loginName.equals(Resaler.WUBA_LOGIN_NAME)) {
 
-            message = "【58团】【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
+            message = "【58团】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
                     "由58合作商家【一百券】提供,一百券号" + eCouponSn + note +
                     "有效期至" + dateFormat.format(expireAt) + "客服4007895858";
         }

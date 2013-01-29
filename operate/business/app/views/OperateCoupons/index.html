@@ -27,12 +27,12 @@
 
     function sendMessage(id) {
         $.ajax({
-            url:"/coupons-message/" + id + "/send",
-            type:'GET',
-            error:function () {
+            url: "/coupons-message/" + id + "/send",
+            type: 'GET',
+            error: function () {
                 alert('发送失败!');
             },
-            success:function (data) {
+            success: function (data) {
                 if (data == '0') {
                     alert("发送成功！");
                 } else {
@@ -50,7 +50,7 @@
         $("#setForm").attr("action", "/coupons/" + id + "/freeze?x-http-method-override=PUT");
 
         $("#freeze_option").val("ISCHEATEDORDER");
-        $("#textContainer").css({display:"none"});
+        $("#textContainer").css({display: "none"});
         $("#other_reason").val("");
         $('#sendModal').modal('show');
 
@@ -70,12 +70,12 @@
 
     function viewECoupon(id) {
         $.ajax({
-            url:"/view-conpon/" + id + "/send",
-            type:'GET',
-            error:function () {
+            url: "/view-conpon/" + id + "/send",
+            type: 'GET',
+            error: function () {
                 alert('查询失败,请联系管理员');
             },
-            success:function (data) {
+            success: function (data) {
                 // data as ecouponsn
                 $("#ecoupon_sn").html(data);
                 $('#myModal').modal('show');
@@ -304,24 +304,24 @@
         <td>${coupon?.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
         <td>${coupon?.refundPrice}</td>
         <td>&{'coupon.'+coupon?.status}</td>
-        <td>#{if  models.order.ECouponStatus.UNCONSUMED == coupon.status }
+        <td>
+        #{if  models.order.ECouponStatus.UNCONSUMED == coupon.status }
             #{if coupon.isFreeze == 0}
             *{#{vx.operateLink name:"freeze_"+coupon.id,text:"冻结",url:"/coupons/"+coupon.id+"/freeze",confirm:true, targetName:coupon?.getMaskedEcouponSn(),method:"PUT"/}}*
 
                 <a href="#" id="freeze_${coupon.id}"
                    onclick="freeze('${coupon.id}')">冻结</a>
-
-                #{if !coupon?.canSendSMSByOperate()}
-                    <a href="javascript:sendMessage(${coupon.id})">发送短信</a>#{/if}
-                #{/if}
-            #{elseif hasRight && coupon.isCheatedOrder!=true}
-                #{vx.operateLink name:"unfreeze_"+coupon.id,text:"解冻", url:"/coupons/"+coupon.id+"/unfreeze", method:"PUT"/}
-            #{/elseif}
-            #{elseif hasRight }
-                <span style="color: #808080;">解冻</span>
-            #{/elseif}
-
+                #{elseif hasRight && coupon.isCheatedOrder!=true}
+                    #{vx.operateLink name:"unfreeze_"+coupon.id,text:"解冻", url:"/coupons/"+coupon.id+"/unfreeze", method:"PUT"/}
+                #{/elseif}
+                #{elseif hasRight }
+                    <span style="color: #808080;">解冻</span>
+                #{/elseif}
+            #{/if}
         #{/if}
+            #{if coupon?.canSendSMSByOperate()}
+                <a href="javascript:sendMessage(${coupon.id})">发送短信</a>
+            #{/if}
             <a href="@{OperateCoupons.couponHistory(coupon.id)}">查看历史</a>
             #{if coupon?.status== models.order.ECouponStatus.UNCONSUMED && hasEcouponRefundPermission == true && coupon?.isFreeze!=1}
                 <br/>
