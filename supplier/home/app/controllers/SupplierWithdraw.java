@@ -10,7 +10,6 @@ import models.order.Prepayment;
 import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
-import play.Play;
 import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
@@ -32,8 +31,8 @@ import static com.uhuila.common.util.DateUtil.getBeginOfDay;
 @With(SupplierRbac.class)
 public class SupplierWithdraw extends Controller {
     private static final int PAGE_SIZE = 20;
-    private static String[] NOTIFICATION_EMAILS = Play.configuration.getProperty("withdraw_notification.email.receiver", "jingyue.gong@seewi.com.cn").split(",");
-    private static String[] NOTIFICATION_MOBILES = Play.configuration.getProperty("withdraw_notification.mobile", "").trim().split(",");
+//    private static String[] NOTIFICATION_EMAILS = Play.configuration.getProperty("withdraw_notification.email.receiver", "tangliqun@uhuila.com").split(",");
+//    private static String[] NOTIFICATION_MOBILES = Play.configuration.getProperty("withdraw_notification.mobile", "").trim().split(",");
 
     @ActiveNavigation("account_withdraw")
     public static void index(WithdrawBillCondition condition) {

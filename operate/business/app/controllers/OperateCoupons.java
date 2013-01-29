@@ -97,7 +97,7 @@ public class OperateCoupons extends Controller {
         }
 
         Boolean hasViewEcouponSnPermission = ContextedPermission.hasPermission("VIEW_ECOUPONSN");
-        List<CouponHistory> couponList = CouponHistory.find("coupon=? order by createdAt desc", coupon).fetch();
+        List<CouponHistory> couponList = CouponHistory.find("couponId=? order by createdAt desc", coupon.id).fetch();
         String couponSn = coupon.getMaskedEcouponSn();
         render("OperateCoupons/history.html", couponSn, couponList, coupon, hasViewEcouponSnPermission);
     }

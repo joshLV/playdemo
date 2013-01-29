@@ -76,7 +76,6 @@ public class DateUtil {
      * n天后的开始时间
      *
      * @return
-     * @throws ParseException
      */
     public static Date getBeginExpiredDate(int n) {
         Calendar cal = Calendar.getInstance();
@@ -217,8 +216,8 @@ public class DateUtil {
         do {
             dateList.add(df.format(date));
             date = new Date(date.getTime() + oneDay * intervalDays);
-        } while (date.compareTo(endAt) <= 0);
-        if (DateUtil.getBeginOfDay(date).compareTo(DateUtil.getBeginOfDay(endAt)) > 0) {
+        } while (DateUtil.getBeginOfDay(date).compareTo(DateUtil.getBeginOfDay(endAt)) < 0);
+        if (DateUtil.getBeginOfDay(date).compareTo(DateUtil.getBeginOfDay(endAt)) >= 0) {
             dateList.add(df.format(endAt));
         }
         return dateList;

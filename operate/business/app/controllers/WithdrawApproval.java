@@ -237,9 +237,7 @@ public class WithdrawApproval extends Controller {
      */
     public static void confirmSettle(Long supplierId, Date withdrawDate) {
 
-        System.out.println("supplierId:" + supplierId);
         final Date endOfDay = DateUtil.getEndOfDay(withdrawDate);
-        System.out.println("endOfDay:" + endOfDay);
         List<Supplier> supplierList = getWithdrawSupplierList(endOfDay);
         Account supplierAccount = AccountUtil.getSupplierAccount(supplierId);
         Supplier supplier = Supplier.findUnDeletedById(supplierId);

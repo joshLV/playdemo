@@ -152,7 +152,7 @@ public class OperateCouponsFuncTest extends FunctionalTest {
     public void testCouponHistory() {
         ECoupon eCoupon = FactoryBoy.create(ECoupon.class);
         CouponHistory history = FactoryBoy.create(CouponHistory.class);
-        history.coupon = eCoupon;
+        history.couponId = eCoupon.id;
         history.save();
         Http.Response response = GET("/coupon_history?couponId=" + eCoupon.id);
         assertIsOk(response);

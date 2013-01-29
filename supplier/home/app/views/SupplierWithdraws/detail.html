@@ -1,0 +1,50 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set title:'提现管理' /}
+#{set menu:"withdraws"/}
+<div class="bd">
+    <h2>${title}</h2>
+    <div class="field-sect">
+        <div class="field-group">
+            <label>申请时间</label>
+            ${bill?.appliedAt.format('yyyy-MM-dd HH:mm:ss')}
+        </div>
+        <div class="field-group">
+            <label>申 请 者</label>
+            ${bill?.applier}
+        </div>
+        <div class="field-group">
+            <label>申请金额</label>
+            ${bill?.amount.formatCurrency('CNY')}
+        </div>
+        <div class="field-group">
+            <label>所在城市</label>
+            ${bill?.bankCity}
+        </div>
+        <div class="field-group">
+            <label>开户银行</label>
+            ${bill?.bankName}
+        </div>
+        <div class="field-group">
+            <label>分行名称</label>
+            ${bill?.subBankName}
+        </div>
+        <div class="field-group">
+            <label>开户姓名</label>
+            ${bill?.userName}
+        </div>
+        <div class="field-group">
+            <label>银行卡号</label>
+            ${bill?.cardNumber}
+        </div>
+        <div class="field-group">
+            <label>申请状态</label>
+            &{'withdraw.' + bill.status}
+        </div>
+        <div class="field-group">
+            <label>手续费</label>
+            ${bill?.fee?.formatCurrency('CNY')?:'无'}
+         &nbsp;&nbsp;<a href="/withdraws" class="btn btn-primary">返回</a>
+        </div>
+    </div>
+</div>
+

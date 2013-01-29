@@ -10,7 +10,6 @@ import play.jobs.Job;
 
 import javax.persistence.Query;
 import java.text.SimpleDateFormat;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -30,34 +29,31 @@ public class ExpiredCouponNotice extends Job {
         Query query = ECoupon.em().createQuery(sql);
         query.setParameter("status", ECouponStatus.UNCONSUMED);
         query.setParameter("expireBeginAt", DateUtil.getBeginExpiredDate(6));
-        query.setParameter("expireEndAt", DateUtil.getEndExpiredDate(7));
+        query.setParameter("expireEndAt", DateUtil.getEndExpiredDate(6));
         query.setFirstResult(0);
         query.setMaxResults(200);
-        ECoupon coupon = null;
         List<ECoupon> expiredCoupons = query.getResultList();
-        Iterator<ECoupon> it = expiredCoupons.iterator();
 
         String pre_phone = "";
         String pre_goodsName = "";
         String mobile = "";
         String goodsName = "";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        while (it.hasNext()) {
-            coupon = it.next();
-            if (coupon.order.userType == AccountType.CONSUMER) {
-                mobile = coupon.orderItems.phone;
-                goodsName = coupon.goods.name;
-                if (!pre_phone.equals(mobile) || !pre_goodsName.equals(goodsName)) {
-                    SMSUtil.send("【一百券】您的" + goodsName + "，将要过期，请注意消费截止日期为" + sdf.format(coupon.expireAt) + "。",
-                            mobile,
-                            coupon.replyCode);
-                    pre_goodsName = goodsName;
-                    pre_phone = mobile;
-                }
-                new SentCouponMessage(coupon.eCouponSn, mobile, coupon.goods.name).save();
+        for (ECoupon coupon : expiredCoupons) {
+            if (coupon.order.userType != AccountType.CONSUMER) {
+                break;
             }
+            mobile = coupon.orderItems.phone;
+            goodsName = coupon.goods.name;
+            if (!pre_phone.equals(mobile) || !pre_goodsName.equals(goodsName)) {
+                SMSUtil.send("【一百券】您的" + goodsName + "，将要过期，请注意消费截止日期为" + sdf.format(coupon.expireAt) + "。",
+                        mobile,
+                        coupon.replyCode);
+                pre_goodsName = goodsName;
+                pre_phone = mobile;
+            }
+            new SentCouponMessage(coupon.eCouponSn, mobile, coupon.goods.name).save();
         }
     }
-
 }
 

@@ -60,7 +60,7 @@ public class Supplier extends Model {
     public static final String IMAGE_DEFAULT = "";
     public static final String BEGIN_TIME = " 00:00";
     public static final String END_TIME = " 23:59";
-    public static final String DATE_FORMAT = "yyy-MM-dd HH:mm";
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
     /**
      * 域名
      */
@@ -195,6 +195,9 @@ public class Supplier extends Model {
         this.id = id;
     }
 
+    /**
+     * 格式:HH:mm
+     */
     @Column(name = "shop_end_hour")
     public String shopEndHour;
 

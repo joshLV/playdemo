@@ -28,6 +28,7 @@ require:
     - view_ext -> view_ext
     - cache_helper -> cache_helper
     - emaillogs -> emaillogs
+    - report -> report
     - dangdang -> dangdang
     - jingdong -> jingdong
     - supports -> supports
@@ -81,3 +82,4 @@ repositories:
             - wuba -> *
             - oauth -> *
             - taobao -> *
+            - report -> *

@@ -7,7 +7,6 @@ import models.order.ECoupon;
 import models.order.ECouponPartner;
 import models.order.ECouponStatus;
 import play.Play;
-import play.jobs.Every;
 import play.jobs.Job;
 import play.jobs.On;
 
@@ -24,7 +23,6 @@ import java.util.Map;
  * Time: 下午1:32
  */
 @On("0 0 1 * * ?")
-@Every("1mn")
 public class ExpiredNoRefundCouponNotice extends Job {
     public static String MAIL_RECEIVER = Play.configuration.getProperty("mail.receiver", "dev@uhuila.com");
 

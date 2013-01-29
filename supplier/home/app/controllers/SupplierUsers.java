@@ -1,6 +1,7 @@
 package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
+import controllers.supplier.SupplierInjector;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.sales.Shop;
@@ -21,7 +22,7 @@ import java.util.List;
  * @author yanjy
  */
 
-@With(SupplierRbac.class)
+@With({SupplierRbac.class, SupplierInjector.class})
 @ActiveNavigation("user_search")
 public class SupplierUsers extends Controller {
     public static int PAGE_SIZE = 15;

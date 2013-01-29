@@ -11,7 +11,7 @@
     <h2>${title}</h2>
     <table cellspacing="0" cellpadding="0" border="0" class="title-table">
         <tr>
-            <th width="50%">帐号总数：${supplierUserList?.size()}</th>
+            <th width="50%">帐号总数：${supplierUserList?.size()?:0}</th>
             <td width="50%"><a class="btn" href="@{SupplierUsers.add()}">新增账号</a></td>
         </tr>
     </table>
