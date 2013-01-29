@@ -152,6 +152,8 @@ public class OperateCoupons extends Controller {
     @ActiveNavigation("coupons_index")
     public static void sendMessage(long id) {
         boolean sendFalg = ECoupon.sendMessage(id);
+
+
         ECoupon eCoupon = ECoupon.findById(id);
 
         ECouponHistoryMessage.with(eCoupon).operator(OperateRbac.currentUser().userName)

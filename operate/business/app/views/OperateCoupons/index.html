@@ -309,12 +309,11 @@
             *{#{vx.operateLink name:"freeze_"+coupon.id,text:"冻结",url:"/coupons/"+coupon.id+"/freeze",confirm:true, targetName:coupon?.getMaskedEcouponSn(),method:"PUT"/}}*
 
                 <a href="#" id="freeze_${coupon.id}"
-                   onclick="freeze('${coupon.id}')
-                           ">冻结</a>
+                   onclick="freeze('${coupon.id}')">冻结</a>
 
-                #{if !coupon?.goods?.isLottery}
+                #{if !coupon?.canSendSMSByOperate()}
                     <a href="javascript:sendMessage(${coupon.id})">发送短信</a>#{/if}
-            #{/if}
+                #{/if}
             #{elseif hasRight && coupon.isCheatedOrder!=true}
                 #{vx.operateLink name:"unfreeze_"+coupon.id,text:"解冻", url:"/coupons/"+coupon.id+"/unfreeze", method:"PUT"/}
             #{/elseif}

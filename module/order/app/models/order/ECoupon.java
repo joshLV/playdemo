@@ -15,6 +15,7 @@ import models.dangdang.DDAPIUtil;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.resale.Resaler;
 import models.sales.Goods;
+import models.sales.GoodsCouponType;
 import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.taobao.TaobaoCouponUtil;
@@ -1536,5 +1537,39 @@ public class ECoupon extends Model {
 
     public void sendOrderSMS(String remark) {
         OrderECouponMessage.with(this).remark(remark).sendToMQ();
+    }
+
+    /**
+     * 判断运营人员是否可重新发送券号.
+     * @return
+     */
+    public boolean canSendSMSByOperate() {
+        if (this.goods.isLottery) {
+            return false;
+        }
+        if (this.status == ECouponStatus.UNCONSUMED) {
+            return true;
+        }
+        if (this.goods.couponType == GoodsCouponType.IMPORT && this.status == ECouponStatus.CONSUMED) {
+            // 导入券可继续发送
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 判断是否可由
+     * @return
+     */
+    public boolean canSendSMSByConsumer() {
+        if (this.status == ECouponStatus.UNCONSUMED && this.smsSentCount <= 3) {
+            return true;
+        }
+        if (this.goods.couponType == GoodsCouponType.IMPORT && this.status == ECouponStatus.CONSUMED
+                && this.smsSentCount <= 3) {
+            // 导入券可继续发送
+            return true;
+        }
+        return false;
     }
 }
