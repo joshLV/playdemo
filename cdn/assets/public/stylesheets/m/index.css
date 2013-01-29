@@ -1,6 +1,13 @@
 body {
     background: url(http://y1.uhcdn.com/images/2012/12/2525e1b30c9ea843.gif) repeat 0 0;
 }
+h2 {
+    font-size: 24px;
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+    border-bottom: 1px dashed #E3E3E3;
+}
+
 #header {
     margin-bottom: 20px;
     background-color: #1b1b1b;
@@ -25,6 +32,25 @@ body {
     color: white;
     margin-left: 10px;
 }
+/* 提示信息 */
+.success {
+    color: #169418;
+    border: 1px solid #00c807;
+    background-color: #f3f8de;
+    border-radius: 3px;
+    display: inline-block;
+    font-size: 14px;
+}
+
+.error {
+    color: #B94A48;
+    border: 1px solid #B94A48;
+    background-color: #FFFBF0;
+    border-radius: 3px;
+    display: inline-block;
+    font-size: 14px;
+}
+
 #message {
     position: relative;
     width: 1000px;
@@ -57,12 +83,46 @@ body {
 #message p a {
     color: #08c;
 }
-#message .success {
+#success {
+    position: relative;
+    width: 1000px;
+    margin: 0 auto 20px;
+}
+#success .close {
+    position: absolute;
+    top: 11px;
+    right: 10px;
+    color: #b7b7b7;
+    padding-left: 12px;
+    background: url(http://y1.uhcdn.com/images/2012/12/0a9bc329d8478889.png) no-repeat 0 6px;
+}
+#success .close:hover {
+    color: #333;
+    text-decoration: none;
+    background-position: 0 -34px;
+}
+
+#success .success {
     font-size: 22px;
-    padding: 3px 60px 4px 10px;
+    padding: 3px 100px 4px 10px;
     border: 1px solid #00c807;
     background-color: #f3f8de;
     border-radius: 3px;
+    display: block;
+}
+#success .success p em {
+    color: #00c807;
+}
+#success .success p a {
+    font-size: 22px;
+}
+#message .success {
+    font-size: 22px;
+    padding: 3px 100px 4px 10px;
+    border: 1px solid #00c807;
+    background-color: #f3f8de;
+    border-radius: 3px;
+    display: block;
 }
 #message .success p em {
     color: #00c807;
@@ -72,7 +132,7 @@ body {
 }
 #content {
     width: 1000px;
-    min-height: 600px;
+    min-height: 800px;
     margin: 0 auto 20px;
 }
 .sidebar {
@@ -141,10 +201,7 @@ body {
     background-color: #006dcc;
     zoom: 1;
 }
-.error {
-    color: #B94A48;
-    font-size: 16px;
-}
+
 input.btn {
     width: 100px;
     height: 36px;
@@ -168,7 +225,70 @@ input.disabled {
     border-color: #d2d2d2;
     background-color: #d8d8d8;
 }
+/* 表单 */
+.field-sect {
+    background: #F6F3EA;
+    padding: 15px 20px 5px;
+}.hd a {
+     float: left;
+     display: block;
+     font-size: 18px;
+     padding: 5px 20px;
+     margin-right: 10px;
+     text-decoration: none;
+     background-color: #dcdcdc;
+     border-top-left-radius: 3px;
+     border-top-right-radius: 3px;
+ }
+
+.hd a.curr {
+    background-color: white;
+}
+
+.bd {
+    padding: 20px;
+    background-color: white;
+}
+.field-sect {
+    background: #F6F3EA;
+    padding: 15px 20px 5px;
+}
+
+.field-group {
+    position: relative;
+    padding-left: 90px;
+    margin: 0 auto 10px;
+    padding-bottom: 5px;
+    font-size: 16px;
+    vertical-align: middle;
+}
+.field-group label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80px;
+    font-weight: 700;
+    text-align: right;
+}
+.field-group input.time {
+    margin: 0 5px;
+    padding: 5px;
+    width: 198px;
+    height: 20px;
+    line-height: 20px;
+    border: 1px solid #CCC;
+}
+.field-group input.radio {
+    margin: 0 5px;
+    height: 30px;
+    line-height: 30px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+
 /* 表格 */
+
 .title-table {
     width: 100%;
     margin: 5px 0;
@@ -177,9 +297,13 @@ input.disabled {
     text-align: left;
 }
 .title-table td {
-    color: #FF7B33;
     text-align: right;
 }
+/*.title-table td a {*/
+    /*color: #08c;*/
+/*}*/
+
+
 .standard-table {
     width: 100%;
     padding: 20px;
@@ -195,7 +319,7 @@ input.disabled {
 }
 .standard-table td {
     padding: 5px;
-    font-size: 14px;
+    font-size: 12px;
     border-right: 1px dotted #E3E3E3;
     border-bottom: 1px dotted #E3E3E3;
 }

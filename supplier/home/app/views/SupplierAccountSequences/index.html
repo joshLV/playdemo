@@ -1,0 +1,87 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set menu:"sequences"/}
+#{set title:'财务明细' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+<div class="bd">
+    <h2>${title}</h2>
+
+    <table cellspacing="0" cellpadding="0" border="0" class="title-table">
+        <tr>
+            <th width="80%">余额：${account?.amount?.add(account?.uncashAmount)}
+                元 = 可用余额：${account?.amount} 元 + 不可用余额：${account?.uncashAmount} 元
+                <a href="#" title="不可用余额：预付款状态为未结算、提现申请状态为待审批时均为不可用余额">(？)</a>
+            </th>
+        </tr>
+    </table>
+
+    <form name="form" action="@{SupplierAccountSequences.index()}" method="GET">
+        <div class="field-sect">
+            <div class="field-group">
+                <label>交易时间</label><input class="time"
+                                          type="text" id="createdAtBegin"
+                                          name="condition.createdAtBegin"
+                                          onfocus="WdatePicker({readOnly:true})"
+                                          value="${condition?.createdAtBegin?.format('yyyy-MM-dd')}"/> 至
+                <input class="time" type="text" id="createdAtEnd" name="condition.createdAtEnd"
+                       onfocus="WdatePicker({readOnly:true})"
+                       value="${condition?.createdAtEnd?.format('yyyy-MM-dd')}"/>
+            </div>
+            <div class="field-group"><label>资金流向</label><input type="radio" name="condition.sequenceFlag" value=""
+                                                               class="radio"
+                                                               #{if condition?.sequenceFlag == null}checked#{/if}>不限</radio>
+                <input type="radio" name="condition.sequenceFlag" value="VOSTRO" class="radio"
+                       #{if models.accounts.AccountSequenceFlag.VOSTRO.equals(condition?.sequenceFlag)}checked#{/if}/>收入
+                <input type="radio" name="condition.sequenceFlag" value="NOSTRO" class="radio"
+                       #{if models.accounts.AccountSequenceFlag.NOSTRO.equals(condition?.sequenceFlag)}checked#{/if}/>支出
+            </div>
+            <div class="field-group"><label>交易类型</label><input type="radio" name="condition.tradeType" value=""
+                                                               class="radio"
+                                                               #{if condition?.tradeType == null}checked#{/if}>不限</radio>
+                <input type="radio" name="condition.tradeType" value="WITHDRAW" class="radio"
+                       #{if models.accounts.TradeType.WITHDRAW.equals(condition?.tradeType)}checked#{/if}
+                       class="radio"/>&{'trade_type.WITHDRAW'}
+                <input type="radio" name="condition.tradeType" value="PURCHASE_COSTING" class="radio"
+                       #{if models.accounts.TradeType.PURCHASE_COSTING.equals(condition?.tradeType)}checked#{/if}/>&{'trade_type.PURCHASE_COSTING'}
+                <button class="btn btn-primary" id="search" type="submit">查询</button>
+            </div>
+        </div>
+        <br/>
+        <table class="standard-table">
+            <thead>
+            <tr>
+                <th width="3%">流水号</th>
+                <th width="25%">备注</th>
+                <th width="12%">交易时间</th>
+                <th width="10%">交易类型</th>
+                <th width="15%">收入支出(元)</th>
+                <th width="10%">账户余额(元)</th>
+                <th width="10%">结算状态</th>
+            </tr>
+            </thead>
+            <tbody>
+            #{paginate.list items:accountSequences, as:'accountSequence'}
+            <tr>
+                <td>${accountSequence?.serialNumber}</td>
+                <td>${accountSequence?.remark}#{if accountSequence?.tradeType != models.accounts.TradeType.WITHDRAW}
+                    <br/>订单号:${accountSequence?.orderNumber}
+                #{/if}</td>
+                <td>${accountSequence?.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>&{'trade_type.'+accountSequence?.tradeType}</td>
+                <td>
+                    <div #{if accountSequence?.sequenceFlag == models.accounts.AccountSequenceFlag.VOSTRO}
+                            class="success"
+                    #{/if} #{if accountSequence?.sequenceFlag == models.accounts.AccountSequenceFlag.NOSTRO}
+                            class="error"
+                    #{/if}>${accountSequence?.changeAmount}</div>
+                </td>
+                <td>${accountSequence?.balance}</td>
+                <td>&{'accountSequence.'+accountSequence?.settlementStatus?:'CLEARED'}</td>
+            </tr>
+            #{/paginate.list}
+            </tbody>
+        </table>
+    #{paginate.controls items:accountSequences /}
+    </form>
+</div>

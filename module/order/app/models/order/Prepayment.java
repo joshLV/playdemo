@@ -176,7 +176,9 @@ public class Prepayment extends Model {
     }
 
     public static BigDecimal findAmountBySupplier(Supplier supplier) {
-        BigDecimal amount = find("select sum(amount-withdrawAmount) from Prepayment where supplier=? and expireAt>? and amount>withdrawAmount", supplier, new Date()).first();
+        BigDecimal amount = find("select sum(amount-withdrawAmount) from Prepayment where supplier=? and " +
+                "amount>withdrawAmount and settlementStatus=? and deleted = ?", supplier,
+                SettlementStatus.UNCLEARED, DeletedStatus.UN_DELETED).first();
         return amount == null ? BigDecimal.ZERO : amount;
     }
 
@@ -187,7 +189,8 @@ public class Prepayment extends Model {
      * @return
      */
     public static List<Prepayment> findBySupplier(Supplier supplier) {
-        return find("supplier=? and expireAt>? and amount>withdrawAmount and settlementStatus=?", supplier, new Date(), SettlementStatus.UNCLEARED).fetch();
+        return find("supplier=? and amount>withdrawAmount and settlementStatus=? and deleted = ?",
+                supplier, SettlementStatus.UNCLEARED, DeletedStatus.UN_DELETED).fetch();
     }
 
     /**

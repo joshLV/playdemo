@@ -34,10 +34,12 @@ GET     /users/{id}/edit                        SupplierUsers.edit
 POST    /users/{id}                             SupplierUsers.update
 DELETE  /users/{id}                             SupplierUsers.delete
 
-# [v2] 财务报表
-GET     /reports/daily                          SupplierReports.showDailyReport
-GET     /reports/shop                           SupplierReports.showShopReport
-GET     /reports/goods                          SupplierReports.showGoodsReport
+# [v2] 报表
+GET     /reports                                SupplierIncomeReports.index
+POST    /reports                                SupplierIncomeReports.index
+POST    /reports/daily/export                   SupplierIncomeReports.exportDailyReport
+POST    /reports/shop/export                    SupplierIncomeReports.exportShopReport
+POST    /reports/goods/export                   SupplierIncomeReports.exportGoodsReport
 
 # [v2] 券列表
 GET     /coupons                                SupplierECoupons.index
@@ -48,8 +50,23 @@ GET     /verify                                 SupplierVerifyECoupons.index
 GET     /verify/refresh                         SupplierVerifyECoupons.refresh
 POST    /verify/{shopId}/{eCouponSn}            SupplierVerifyECoupons.singleQuery
 POST    /verify/verify                          SupplierVerifyECoupons.verify
+GET     /verify/verified-coupons                SupplierVerifyECoupons.showVerifiedCoupons
+
+# [v2] 资金帐户明细
+GET     /sequences                              SupplierAccountSequences.index
+
+# [v2] 提现申请
+GET     /withdraws                              SupplierWithdraws.index
+GET     /withdraws/detail/{id}                  SupplierWithdraws.detail
+GET     /withdraws/apply                        SupplierWithdraws.apply
+POST    /withdraws/apply                        SupplierWithdraws.create
+
+# [v2] 修改密码
+GET     /passwords                              SupplierUserPasswords.index
+POST    /passwords                              SupplierUserPasswords.update
 
 # [v2]
+POST    /close-msg                              supplier.SupplierInjector.closeMessage
 GET     /version/{number}                       SupplierVersions.change
 
 # 补偿未同步的状态
@@ -64,7 +81,6 @@ GET     /public/                                staticDir:public
 
 # change ui version
 GET    /ui-version/to/{version}                 supplier.ChangeUIVersions.execute
-
 *       /                                       module:supplier_rbac
 
 # Catch all

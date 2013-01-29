@@ -74,13 +74,17 @@ supplierUser.newPassword=新密码
 supplierUser.newConfirmPassword=确认新密码
 validation.newPassword.minSize=密码不能小于6位！
 validation.newPassword.maxSize=密码不能大于20位！
-validation.confirmPassword=两次密码输入的不一样！！
+validation.confirmPassword=两次密码输入的不一样！
 validation.oldPassword=原密码输入的不对！
-validation.newPassword.confirm=新密码和原密码一样，请重新输入！
+validation.newPassword.confirm=新密码与原密码不能相同！
 validation.jobNumber=工号只能是数字！
+validation.passwordDiff=两次密码输入的不一样！
 supplierUser.mobile=手机
 supplierUser.jobNumber=工号
 supplierUser.encryptedPassword=密码
 supplierUser.loginName=用户名
+
+
+dateScope=选择日期
 
 

@@ -1,9 +1,8 @@
 package controllers;
 
-import com.uhuila.common.constants.PlatformType;
 import com.uhuila.common.util.DateUtil;
+import controllers.supplier.SupplierInjector;
 import models.admin.SupplierUser;
-import models.cms.Topic;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.VerifyCouponType;
@@ -27,7 +26,7 @@ import java.util.List;
  * Date: 12/19/12
  * Time: 9:59 AM
  */
-@With(SupplierRbac.class)
+@With({SupplierRbac.class, SupplierInjector.class})
 @ActiveNavigation("coupons_multi_index")
 public class SupplierVerifyECoupons extends Controller {
     @Before(priority = 1000)
@@ -54,21 +53,22 @@ public class SupplierVerifyECoupons extends Controller {
      * 券验证页面
      */
     public static void index() {
-        Topic topic = Topic.getTopValid(PlatformType.SUPPLIER);
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         Long supplierUserId = SupplierRbac.currentUser().id;
         SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+        List<String> verifiedCoupons = ECoupon.getRecentVerified(supplierUser, 5);
+        renderArgs.put("verifiedCoupons", verifiedCoupons);
 
         if (shopList.size() == 0) {
             error("该商户没有添加门店信息！");
         }
         if (supplierUser.shop == null) {
-            render(shopList, supplierUser, topic);
+            render(shopList, supplierUser);
         } else {
             Shop shop = supplierUser.shop;
             //根据页面录入券号查询对应信息
-            render(shop, supplierUser, topic);
+            render(shop, supplierUser);
         }
     }
 
@@ -126,9 +126,18 @@ public class SupplierVerifyECoupons extends Controller {
         renderJSON(eCouponResult);
     }
 
+    /**
+     * 获取最近验证过的n个券号.
+     */
+    public static void showVerifiedCoupons() {
+        SupplierUser supplierUser = SupplierRbac.currentUser();
+        List<String> verifiedCoupons = ECoupon.getRecentVerified(supplierUser, 5);
+        renderJSON(verifiedCoupons);
+    }
+
     @ActiveNavigation("coupons_verify")
     public static void refresh() {
-
+        renderJSON("");
     }
 
     private static void sendVerifySMS(ECoupon eCoupon, String shopName) {

@@ -23,7 +23,7 @@ import java.util.Date;
  */
 public class ResalerRegister extends Controller {
 
-    private static String[] NOTIFICATION_EMAILS = Play.configuration.getProperty("register_notification.resaler.email.receiver", "jingyue.gong@seewi.com.cn").split(",");
+    private static String[] NOTIFICATION_EMAILS = Play.configuration.getProperty("register_notification.resaler.email.receiver", "tangliqun@uhuila.com").split(",");
     private static String[] NOTIFICATION_MOBILES = Play.configuration.getProperty("register_notification.resaler.mobile", "").trim().split(",");
 
     /**

@@ -27,7 +27,7 @@
         #{list items:shopList, as:'shop' }
         <tr>
             <td>${shop.name}</td>
-            <td>${shop.address}</td>
+            <td align="left">${shop.address}</td>
             <td>${shop.phone}</td>
             <td>
                 <a href="@{SupplierShops.edit(shop.id)}">修改</a>/#{vx.deleteLink action:"shops", id:shop.id, name:shop.name/}

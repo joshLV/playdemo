@@ -59,7 +59,8 @@ public class PrepaymentDetailReport {
     public PrepaymentDetailReport() {
     }
 
-    public PrepaymentDetailReport(Date date, BigDecimal expectedConsumedBalance, BigDecimal expectedSoldBalance, BigDecimal consumed, BigDecimal consumedBalance, BigDecimal sold, BigDecimal soldBalance) {
+    public PrepaymentDetailReport(Date date, BigDecimal expectedConsumedBalance, BigDecimal expectedSoldBalance,
+                                  BigDecimal consumed, BigDecimal consumedBalance, BigDecimal sold, BigDecimal soldBalance) {
         this.date = date;
         this.expectedConsumedBalance = expectedConsumedBalance;
         this.expectedSoldBalance = expectedSoldBalance;
@@ -87,11 +88,13 @@ public class PrepaymentDetailReport {
 
             report.date = day;
 
-            report.expectedConsumedBalance = prepayment.amount.subtract(prepayment.amount.divide(new BigDecimal(totalDayCount), 2, RoundingMode.CEILING).multiply(new BigDecimal(dayCount)));
+            report.expectedConsumedBalance = prepayment.amount.subtract(prepayment.amount.divide(
+                    new BigDecimal(totalDayCount), 2, RoundingMode.CEILING).multiply(new BigDecimal(dayCount)));
             if (report.expectedConsumedBalance.compareTo(BigDecimal.ZERO) < 0) {
                 report.expectedConsumedBalance = BigDecimal.ZERO;
             }
-            report.expectedSoldBalance = prepayment.amount.subtract(prepayment.amount.divide(new BigDecimal(expectedDayCount), 2, RoundingMode.CEILING).multiply(new BigDecimal(dayCount)));
+            report.expectedSoldBalance = prepayment.amount.subtract(prepayment.amount.divide(
+                    new BigDecimal(expectedDayCount), 2, RoundingMode.CEILING).multiply(new BigDecimal(dayCount)));
             if (report.expectedSoldBalance.compareTo(BigDecimal.ZERO) < 0) {
                 report.expectedSoldBalance = BigDecimal.ZERO;
             }

@@ -1,6 +1,6 @@
 #{extends 'layout_trader/layout2.html' /}
 #{include 'Share/nav.html' /}
-#{set title:'商户验证消费券' /}
+#{set title:'券验证' /}
 #{set menu:"verify" /}
 #{set 'moreStyles'}
     #{asset.css src:['/m/verify.css'] /}
@@ -10,6 +10,7 @@
 #{/set}
 <div class="verify">
     <div class="bd batch-verify">
+        <h2>${title}</h2>
         <form id="coupon-form" action="@{SupplierVerifyECoupons.verify()}" method="post">
             <div class="field-sect">
                 <div class="field-group">
@@ -31,6 +32,7 @@
                     <input type="text" size="12" maxlength="12" name="coupon" autofocus="true" id="enter-coupon"
                            class="enter-coupon" value=""/>
                     <a class="btn add-coupon" href="javascript:void(0);" hidefocus="true">添加</a>
+                    <span style="font-size:12px;line-height: 36px;"><strong>可批量验证，每次最多可添加10张券</strong></span>
                 </div>
             </div>
             <table cellspacing="0" cellpadding="0" border="0" class="coupons-table" id="coupons-table">
@@ -56,6 +58,13 @@
                 <li>每次最多可以添加10张券，可点击<strong>【删除】</strong>，删除不想要的券号</li>
                 <li>点击<strong>【验证并消费】</strong>后，将会验证列表中的所有券号</li>
                 <li>完成验证后，再次输入券号并点击<strong>【添加】</strong>将自动清空上一批验证的券号</li>
+            </ul>
+        </div>
+        <div class="tip">
+            <ul>
+                <li>
+                    <strong>最近验证过的券号: </strong>#{if verifiedCoupons?.size()==0}无#{/if}<span
+                        id="verifiedCoupons">#{list items:verifiedCoupons,as:'couponSn'}${couponSn}#{if !couponSn_isLast}, #{/if}#{/list}</span></li>
             </ul>
         </div>
     </div>

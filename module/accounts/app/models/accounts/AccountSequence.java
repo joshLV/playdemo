@@ -214,7 +214,15 @@ public class AccountSequence extends Model {
         BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
                 " account=? and sequenceFlag=? and settlementStatus=? and createdAt<?",
                 account, AccountSequenceFlag.VOSTRO, SettlementStatus.UNCLEARED, toDate).first();
-        return amount != null ? amount.abs() : BigDecimal.ZERO;
+        amount = (amount != null) ? amount : BigDecimal.ZERO;
+        return amount.add(getRefundAmountTo(account, toDate));
+    }
+
+    private static BigDecimal getRefundAmountTo(Account account, Date toDate) {
+        BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
+                " account=? and tradeType=? and settlementStatus=? and createdAt<?",
+                account, TradeType.REFUND, SettlementStatus.UNCLEARED, toDate).first();
+        return amount != null ? amount : BigDecimal.ZERO;
     }
 
     /**
@@ -267,7 +275,7 @@ public class AccountSequence extends Model {
         return count("prepayment.id = ?", prepaymentId);
     }
 
-    public static BigDecimal getWithdrawAmount(Account account, Date toDate){
+    public static BigDecimal getWithdrawAmount(Account account, Date toDate) {
         BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
                 " account=? and tradeType=? and createdAt<? group by account",
                 account, TradeType.WITHDRAW, toDate).first();

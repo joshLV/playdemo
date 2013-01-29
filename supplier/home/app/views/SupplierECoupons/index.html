@@ -11,60 +11,57 @@
     <h2>${title}</h2>
 
     <form class="well form-inline" name="frmlist" id="frmlist" action="@{SupplierECoupons.index()}" method="GET">
-        <div class="field-group">
-            <label>选择分店</label>
-        #{select 'condition.shopId', id:shopId, value:condition?.shopId}
-            #{option ""}全部#{/option}
-            #{list items:shopList, as:'shop'}
-                #{option shop?.id}${shop?.name}#{/option}
-            #{/list}
-        #{/select}
-        </div>
-        <div class="field-group">
-            <label>验证方式</label>
-        #{select 'condition.verifyType', id:'condition_verifyType', value:condition?.verifyType}
-            #{option ""}不限#{/option}
-            #{option "CLERK_MESSAGE"}&{'coupon.CLERK_MESSAGE'}#{/option}
-            #{option "CONSUMER_MESSAGE"}&{'coupon.CONSUMER_MESSAGE'}#{/option}
-            #{option "SHOP"}&{'coupon.SHOP'}#{/option}
-            #{option "TELEPHONE"}&{'coupon.TELEPHONE'}#{/option}
-            #{option "OP_VERIFY"}&{'coupon.OP_VERIFY'}#{/option}
-        #{/select}
-        </div>
+        <div class="field-sect">
 
-        <div class="field-group">
-            <label>消费时间</label>
-            <span>从</span>
-            <input type="text" id="condition_consumed_begin" class="Wdate"
-                   name="condition.consumedAtBegin"
-                   onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtBegin?.format()}">
-            <span>到</span>
-            <input type="text" id="condition_consumed_end" class="Wdate"
-                   name="condition.consumedAtEnd"
-                   onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtEnd?.format()}">
-        </div>
-        <div class="field-group">
-            <button class="btn" onclick="couponIndex()">查询</button>
+            <div class="field-group">
+                <label>选择分店</label>
+            #{select 'condition.shopId', id:shopId, value:condition?.shopId}
+                #{option ""}全部#{/option}
+                #{list items:shopList, as:'shop'}
+                    #{option shop?.id}${shop?.name}#{/option}
+                #{/list}
+            #{/select}
+            </div>
+            <div class="field-group">
+                <label>验证方式</label>
+            #{select 'condition.verifyType', id:'condition_verifyType', value:condition?.verifyType}
+                #{option ""}不限#{/option}
+                #{option "CLERK_MESSAGE"}&{'coupon.CLERK_MESSAGE'}#{/option}
+                #{option "CONSUMER_MESSAGE"}&{'coupon.CONSUMER_MESSAGE'}#{/option}
+                #{option "SHOP"}&{'coupon.SHOP'}#{/option}
+                #{option "TELEPHONE"}&{'coupon.TELEPHONE'}#{/option}
+                #{option "OP_VERIFY"}&{'coupon.OP_VERIFY'}#{/option}
+            #{/select}
+            </div>
+
+            <div class="field-group">
+                <label>消费时间</label>
+                <span>从</span>
+                <input type="text" id="condition_consumed_begin" class="time"
+                       name="condition.consumedAtBegin"
+                       onfocus="WdatePicker({readOnly:true})" value="${condition?.consumedAtBegin?.format()}">
+                <span>到</span>
+                <input type="text" id="condition_consumed_end" class="time"
+                       name="condition.consumedAtEnd"
+                       onfocus="WdatePicker({readOnly:true})" value="${condition?.consumedAtEnd?.format()}">
+                <button class="btn" onclick="couponIndex()">查询</button>
+            </div>
         </div>
 
         <table cellspacing="0" cellpadding="0" border="0" class="title-table">
             <tr>
-                <th wdith="50%" id="search">查询结果合计： ${couponPage.size()}</th>
+                <th wdith="50%" id="search">查询结果合计： ${couponPage?.size()?:0}条记录</th>
                 <td wdith="50%" id="output"><a href="javascript:couponExcel()">导出</a></td>
             </tr>
         </table>
     </form>
-
-*{<div style="margin-bottom: 12px">}*
-*{<button class="btn btn-primary" type="button">导出报表</button>}*
-*{</div>}*
 
     <table cellspacing="0" cellpadding="0" border="0" class="standard-table">
         <thead>
         <tr>
             <th width="50px">券号</th>
             <th width="120px">商品名称</th>
-            <th width="30px">单价</th>
+            <th width="30px">面值</th>
             <th width="50px">消费门店</th>
             <th width="40px">验证方式</th>
             <th width="50px">消费时间</th>
@@ -77,8 +74,8 @@
         #{paginate.list items:couponPage, as:'coupon'}
         <tr>
             <td>${coupon?.eCouponSn}</td>
-            <td>${coupon?.goods?.shortName}</td>
-            <td>${coupon?.salePrice?.formatCurrency('CNY')}</td>
+            <td align="left">${coupon?.goods?.shortName}</td>
+            <td align="right">${coupon?.faceValue?.formatCurrency('CNY')}</td>
             <td>${coupon?.getConsumedShop()}</td>
             <td>&{'coupon.'+coupon?.verifyType}</td>
             <td>${coupon?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
