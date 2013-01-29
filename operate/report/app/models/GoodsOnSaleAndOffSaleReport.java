@@ -26,7 +26,7 @@ public class GoodsOnSaleAndOffSaleReport {
     public static CrossTableConverter<GoodsOnSaleAndOffSaleReport, GoodsOnSaleAndOffSaleReport> converter = new CrossTableConverter<GoodsOnSaleAndOffSaleReport, GoodsOnSaleAndOffSaleReport>() {
         @Override
         public String getRowKey(GoodsOnSaleAndOffSaleReport target) {
-            return target.goods.shortName + "※" + target.goods.code + "※" + target.goods.id+"※" +target.goods.getStatus() ;
+            return target.goods.shortName + "※" + target.goods.code + "※" + target.goods.id + "※" + target.goods.getStatus();
         }
 
         @Override
@@ -67,18 +67,18 @@ public class GoodsOnSaleAndOffSaleReport {
                         "select new models.GoodsOnSaleAndOffSaleReport(c.resaler) "
                                 + " from ChannelGoodsInfo c "
                                 + " group by c.resaler order by c.resaler desc");
-         for (Map.Entry<String, Object> param : condition.getParamMap().entrySet()) {
+        for (Map.Entry<String, Object> param : condition.getParamMap().entrySet()) {
             query.setParameter(param.getKey(), param.getValue());
         }
         return query.getResultList();
     }
 
-    public static List<GoodsOnSaleAndOffSaleReport> getChannelGoods(GoodsOnSaleAndOffSaleCondition condition) {
+    public static List<GoodsOnSaleAndOffSaleReport> getChannelGoods(Long operateUserId, GoodsOnSaleAndOffSaleCondition condition) {
         Query query = JPA.em()
                 .createQuery(
                         "select new models.GoodsOnSaleAndOffSaleReport(c.goods,c.resaler,c.url,c.status ) "
                                 + " from ChannelGoodsInfo c "
-                                + condition.filter() + " order by c.resaler desc");
+                                + condition.filter(operateUserId) + " order by c.resaler desc");
 
         for (Map.Entry<String, Object> param : condition.getParamMap().entrySet()) {
             query.setParameter(param.getKey(), param.getValue());

@@ -41,7 +41,7 @@ public class GoodsOnSaleAndOffSaleReports extends Controller {
 
         renderArgs.put("resalerList", resalerList);
 
-        List<GoodsOnSaleAndOffSaleReport> resultList = GoodsOnSaleAndOffSaleReport.getChannelGoods(condition);
+        List<GoodsOnSaleAndOffSaleReport> resultList = GoodsOnSaleAndOffSaleReport.getChannelGoods(OperateRbac.currentUser().id, condition);
 
         List<Map<String, Object>> reportPage = CrossTableUtil.generateCrossTable(resultList, GoodsOnSaleAndOffSaleReport.converter);
         render(reportPage, condition);
