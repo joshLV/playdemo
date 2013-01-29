@@ -72,7 +72,7 @@
 
     function formSubmit() {
         $("#frmlist").attr("method", "get");
-        $("#frmlist").attr("action", "@{OperateCoupons.index()}");
+        $("#frmlist").attr("action", "@{OperateOrders.index()}");
         $("#frmlist").submit();
     }
 
@@ -87,8 +87,6 @@
         $("#condition_status").val(status);
         formSubmit();
     }
-
-
 
 
 </script>
@@ -182,7 +180,7 @@
                class="input-small"
                value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
         <label for="isLottery">抽奖商品</label>
-        <button class="btn btn-large btn-primary" id="search" type="submit" >搜索</button>
+        <button class="btn btn-large btn-primary" id="search" type="submit">搜索</button>
     </div>
     <input type="hidden" id="J_rank" name="desc"/>
 </form>

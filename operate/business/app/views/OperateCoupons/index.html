@@ -109,6 +109,12 @@
         formSubmit();
     }
 
+    function formSubmit() {
+        $("#frmlist").attr("method", "get");
+        $("#frmlist").attr("action", "@{OperateCoupons.index()}");
+        $("#frmlist").submit();
+    }
+
 
 </script>
 
