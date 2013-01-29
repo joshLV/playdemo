@@ -36,6 +36,8 @@ public class SuppliersUploadFiles extends Controller {
 
     private static final String EXT_IMAGE_ROOT = "p";
 
+    public static final String BASE_URL = Play.configuration.getProperty("uri.operate_business");
+
     /**
      * 上传文件
      *
@@ -70,22 +72,26 @@ public class SuppliersUploadFiles extends Controller {
         if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
             getError("上传文件扩展名仅限于：" + StringUtils.join(fileTypes) + "。");
         }
+
         //上传文件
         try {
             String targetFilePath = storeImage(imgFile, supplierId, contractId, true, ROOT_PATH);
 //            String targetFilePath = FileUploadUtil.storeImage(imgFile, ROOT_PATH);
             Map<String, Object> map = new HashMap<>();
             map.put("error", 0);
+
             String path = targetFilePath.substring(ROOT_PATH.length(), targetFilePath.length());
             if (path == null) {
                 getError("上传失败，服务器忙，请稍后再试。");
             }
+
             Supplier supplier = Supplier.findById(supplierId);
             SupplierContract contract = SupplierContract.findById(contractId);
             new SupplierContractImage(supplier, contract, imgFile.getName(), path).save();
-            System.out.println("===>>");
+
             path = PathUtil.signImgPath(path);
-            map.put("url", "/contract/p" + path);
+
+            map.put("url", BASE_URL+"/contract/p" + path);
             renderJSON(map);
         } catch (Exception e) {
             getError("上传失败，服务器忙，请稍候再试。");
@@ -108,7 +114,6 @@ public class SuppliersUploadFiles extends Controller {
 //        String storePath = rootPath + PathUtil.getPathById(supplierId);
 
         String storePath = rootPath + "/" + String.valueOf(supplierId) + "/" + String.valueOf(contractId) + "/";
-        System.out.println(imgFile.getName() + "===imgFile.getName()>>");
 
         File targetPath = new File(storePath);
         if (!(targetPath.isDirectory())) {

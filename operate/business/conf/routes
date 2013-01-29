@@ -29,8 +29,10 @@ GET     /category/sub/{id}                      OperateCategories.showSubs
 
 # 上传合同的电子版本
 GET     /suppliers_upload_contracts                        SuppliersUploadContracts.index
-GET     /supplier_contract/{id}/edit                       SuppliersUploadContracts.edit
+GET     /supplier_contract/new                             SuppliersUploadContracts.add
+GET     /supplier_contract/{contractId}/edit               SuppliersUploadContracts.edit
 PUT     /supplier_contract/{id}                            SuppliersUploadContracts.update
+DELETE  /supplier_contract_images/{id}                     SuppliersUploadContracts.deleteImage
 
 POST    /supplier_contract_images/{supplierId}/{contractId}         SuppliersUploadFiles.uploadImages
 

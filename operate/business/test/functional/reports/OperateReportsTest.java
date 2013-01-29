@@ -39,14 +39,14 @@ public class OperateReportsTest extends FunctionalTest {
     Category category;
     ECoupon ecoupon;
     SupplierUser supplierUser;
-    
+
     Account supplierAccount;
     Account promenceAccount;
     Account uhuilaAccount;
     Account platformIncomingAccount;
-    
+
     OperateUser operateUser;
-    
+
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
@@ -57,23 +57,23 @@ public class OperateReportsTest extends FunctionalTest {
         supplier = FactoryBoy.create(Supplier.class);
         shop = FactoryBoy.create(Shop.class);
         supplierUser = FactoryBoy.create(SupplierUser.class);
-        
+
         goods = FactoryBoy.create(Goods.class);
         ecoupon = FactoryBoy.create(ECoupon.class);
-        
+
         //账户初始化
         supplierAccount = AccountUtil.getAccount(supplier.id, AccountType.SUPPLIER);
         supplierAccount.amount = new BigDecimal(100);
         supplierAccount.save();
-        
+
         uhuilaAccount = AccountUtil.getUhuilaAccount();
         uhuilaAccount.amount = new BigDecimal(100);
         uhuilaAccount.save();
-        
+
         promenceAccount = AccountUtil.getPromotionAccount();
         promenceAccount.amount = new BigDecimal(100);
         promenceAccount.save();
-        
+
         platformIncomingAccount = AccountUtil.getPlatformIncomingAccount();
         platformIncomingAccount.amount = new BigDecimal(100);
         platformIncomingAccount.save();
@@ -99,7 +99,7 @@ public class OperateReportsTest extends FunctionalTest {
         JPAExtPaginator<AccountSequence> page = (JPAExtPaginator<AccountSequence>) renderArgs("accountSequencePage");
         assertEquals(0, page.getRowCount());
     }
-    
+
     @Test
     public void 测试财务收款报表() throws Exception {
         Boolean success = ecoupon.consumeAndPayCommission(shop.id, null, supplierUser, VerifyCouponType.TELEPHONE);
@@ -110,7 +110,7 @@ public class OperateReportsTest extends FunctionalTest {
         JPAExtPaginator<AccountSequence> page = (JPAExtPaginator<AccountSequence>) renderArgs("accountSequencePage");
         assertEquals(0, page.getRowCount());
     }
-    
+
     @Test
     public void 测试退款报表() throws Exception {
         Boolean success = ecoupon.consumeAndPayCommission(shop.id, null, supplierUser, VerifyCouponType.TELEPHONE);
@@ -121,7 +121,7 @@ public class OperateReportsTest extends FunctionalTest {
         JPAExtPaginator<AccountSequence> page = (JPAExtPaginator<AccountSequence>) renderArgs("accountSequencePage");
         assertEquals(0, page.getRowCount());
     }
-    
+
     @Test
     public void 测试收入账户报表() throws Exception {
         Boolean success = ecoupon.consumeAndPayCommission(shop.id, null, supplierUser, VerifyCouponType.TELEPHONE);
@@ -132,7 +132,7 @@ public class OperateReportsTest extends FunctionalTest {
         JPAExtPaginator<AccountSequence> page = (JPAExtPaginator<AccountSequence>) renderArgs("accountSequencePage");
         assertEquals(3, page.getRowCount());
     }
-    
+
     @Test
     public void 测试平台佣金报表() throws Exception {
         Boolean success = ecoupon.consumeAndPayCommission(shop.id, null, supplierUser, VerifyCouponType.TELEPHONE);
@@ -143,7 +143,7 @@ public class OperateReportsTest extends FunctionalTest {
         JPAExtPaginator<AccountSequence> page = (JPAExtPaginator<AccountSequence>) renderArgs("accountSequencePage");
         assertEquals(1, page.getRowCount());
     }
-    
+
     @Test
     public void 测试网站佣金报表() throws Exception {
         Boolean success = ecoupon.consumeAndPayCommission(shop.id, null, supplierUser, VerifyCouponType.TELEPHONE);
@@ -154,7 +154,7 @@ public class OperateReportsTest extends FunctionalTest {
         JPAExtPaginator<AccountSequence> page = (JPAExtPaginator<AccountSequence>) renderArgs("accountSequencePage");
         assertEquals(1, page.getRowCount());
     }
-    
+
     @Test
     public void 测试商户报表() throws Exception {
         Boolean success = ecoupon.consumeAndPayCommission(shop.id, null, supplierUser, VerifyCouponType.TELEPHONE);
@@ -165,7 +165,7 @@ public class OperateReportsTest extends FunctionalTest {
         JPAExtPaginator<AccountSequence> page = (JPAExtPaginator<AccountSequence>) renderArgs("accountSequencePage");
         assertEquals(1, page.getRowCount());
     }
-    
+
     @Test
     public void 测试分销报表() throws Exception {
         Boolean success = ecoupon.consumeAndPayCommission(shop.id, null, supplierUser, VerifyCouponType.TELEPHONE);
@@ -176,7 +176,7 @@ public class OperateReportsTest extends FunctionalTest {
         JPAExtPaginator<AccountSequence> page = (JPAExtPaginator<AccountSequence>) renderArgs("accountSequencePage");
         assertEquals(0, page.getRowCount());
     }
-    
+
     @Test
     public void 测试消费者报表() throws Exception {
         Boolean success = ecoupon.consumeAndPayCommission(shop.id, null, supplierUser, VerifyCouponType.TELEPHONE);
@@ -187,6 +187,6 @@ public class OperateReportsTest extends FunctionalTest {
         JPAExtPaginator<AccountSequence> page = (JPAExtPaginator<AccountSequence>) renderArgs("accountSequencePage");
         assertEquals(0, page.getRowCount());
     }
-    
-    
+
+
 }

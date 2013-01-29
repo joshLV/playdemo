@@ -1,7 +1,60 @@
+&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户   &nbsp; &nbsp;
+#{if "add".equals(action)}
+<td width="30%">
+    #{vx.selectInputField name:"supplierName", id:"contract.supplierId", list:supplierList, value:contract?.supplierId, array:"supplierArray",importJs:true/}</td>
+#{/if}
+#{else}
+&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;
+<input type="text" name="supplierName" id="supplierName" class="input-large" readonly value="${supplierName}"/>
+#{/else}
+<br/>   <br/>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+#{layout_operate.dateScopeField name:'contract.effectiveAt', begin:'contract.effectiveAt',end:'contract.expireAt',
+beginValue:contract?.effectiveAt?.format(), endValue:contract?.expireAt?.format(), required:true/}
+
+
+<br>
+
+<span style="padding-right: 100px">
+   &nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;      &nbsp;
+   合同说明     &nbsp; &nbsp;&nbsp;&nbsp;
+    <textarea rows="6" cols="30" required="required" name="contract.description"
+              id="contract.description">${contract?.description?.escape()?.raw()}</textarea>
+    <div class="error">#{error 'contract.description' /}</div>
+</span>
+
+
 %{
-imageUrl ="/supplier_contract_images/"+supplierId+"/"+contractId;
+imageUrl ="/supplier_contract_images/"+contract.supplierId+"/"+contractId;
 }%
 
-#{layout_operate.multiFileField name:'multiImage',note:'图片尺寸：(340*260像素)', required:true, uploadImgUrl:imageUrl,value:supplier?.supplierContractList?.supplierContractImagesList/}
+#{layout_operate.contractFileField name:'上传合同', uploadImgUrl:imageUrl,value:contract?.supplierContractImagesList/}
+&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+<button class="btn btn-primary" type="submit">下一步</button>
 
+
+<script type="text/javascript">
+    $(".close").click(function (ev) {
+        ev.preventDefault();
+        var imageId = $(this).attr("imageId");
+        var imageName = $(this).attr("imageName");
+        if (confirm("确定要删除" + imageName + "吗?"))
+            $.ajax({
+                type:'DELETE',
+                url:'/supplier_contract_images/' + imageId,
+                success:function () {
+//                    $("#li_" + imageId).remove();
+                    window.location.reload();
+                }});
+        else
+            return false;
+
+    })
+
+    $(document).ready(function () {
+        $(".fancybox").fancybox();
+    });
+
+</script>
 

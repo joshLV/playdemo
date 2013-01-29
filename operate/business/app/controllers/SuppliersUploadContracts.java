@@ -1,6 +1,7 @@
 package controllers;
 
 import models.supplier.Supplier;
+import models.supplier.SupplierContract;
 import models.supplier.SupplierContractImage;
 import operate.rbac.annotations.ActiveNavigation;
 import play.mvc.Controller;
@@ -26,19 +27,40 @@ public class SuppliersUploadContracts extends Controller {
         render(id);
     }
 
-    public static void edit() {
-        List<Supplier> supplierList = Supplier.findAll();
-        Supplier supplier = supplierList.get(0);
-        Long supplierId = supplier.id;
-        Long contractId = 1l;
-        render(supplierId, contractId);
+    public static void add() {
+        List<Supplier> supplierList = Supplier.findUnDeleted();
+
+        render(supplierList);
+    }
+
+    public static void edit(Long contractId) {
+//        List<Supplier> supplierList = Supplier.findAll();
+//        Supplier supplier = supplierList.get(0);
+//        Long supplierId = supplier.id;
+        SupplierContract contract = SupplierContract.findById(contractId);
+        Supplier supplier = Supplier.findById(contract.supplierId);
+        String supplierName = supplier.otherName;
+        render(contractId, supplier, contract, supplierName);
     }
 
     public static void update(Long id, Supplier supplier) {
         index();
     }
 
-    public static void create(Supplier supplier) {
+    public static void create(Supplier supplier, SupplierContract contract) {
+        contract.create();
+        contract.save();
         index();
+    }
+
+    /**
+     * 删除商户合同一个图片
+     *
+     * @param id
+     */
+    public static void deleteImage(Long id) {
+        SupplierContractImage images = SupplierContractImage.findById(id);
+        images.delete();
+        renderJSON("");
     }
 }

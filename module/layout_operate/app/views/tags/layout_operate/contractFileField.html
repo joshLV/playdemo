@@ -1,0 +1,85 @@
+*{文件上传框}*
+*{name:      文本框的名称}*
+*{_required: 文字标签前面是否要加必填项标志（选填，默认不标识必填项）}*
+#{field _name}
+<div class="control-group">
+    #{layout_operate.labelText name:_name, required:_required/}
+
+    <div class="controls">
+        <input type="button" id="J_selectImage" value="选择文件"/>
+        <span style="color: red" id="note_${_id?:field.id}">${_note}</span>
+    </div>
+    <div class="controls">
+        <ul class="image-view" id="J_imageView">
+            #{list _value,as:'image'}
+                <li id="li_${image?.id}">
+                    <div class="action">
+                        <a class="close btn" imageId="${image.id}" imageName="${image.shownName}" href="#">X</a>
+                    </div>
+                *{<span>${image?.id}</span>}*
+
+                    <a class="fancybox" rel="group"
+                       href="${image?.imageLargePath}">
+                        <img src="${image?.imageSmallPath}"/>
+                    </a>
+
+                    <div style="text-align: center">${image.shownName}</div>
+                </li>
+            #{/list}
+        </ul>
+    </div>
+    #{ifError field.name}
+        <div class="controls"><span class="error">${field.error.raw()}</span></div>
+    #{/ifError}
+</div>
+<script type="text/javascript">
+
+    $(function () {
+        KindEditor.ready(function (K) {
+            var editor = K.editor({
+                allowFileManager:true,
+                uploadJson:'${_uploadImgUrl}'
+            });
+            K('#J_selectImage').click(function () {
+                editor.loadPlugin('multiimage', function () {
+                    editor.plugin.multiImageDialog({
+                        clickFn:function (urlList) {
+                            var div = K('#J_imageView');
+//                            div.html('');
+                            K.each(urlList, function (i, data) {
+                                window.location.reload();
+                            *{div.append('<li><div class="action"><a class="set-main btn" goodsId="${_goodsId}" imageId="${data?.imageId}" href="">设为首页展示</a><a class="close btn" href="#">X</a></div><img src="' + data.url + '"></li>');}*
+                            });
+                            editor.hideDialog();
+                        }
+                    });
+                });
+            });
+        });
+    });
+
+</script>
+#{/field}
+<style>
+    .image-view li {
+        list-style: none;
+        float: left;
+        width: 234px;
+        margin-right: 3px;
+        boder: 1px solid #ccc;
+    }
+
+    .image-view .action {
+        padding: 5px 0;
+    }
+
+    .image-view .set-main {
+        float: left;
+    }
+
+    .image-view .close {
+        float: right;
+    }
+</style>
+*{<input type="file" id="imagePath" name="imagePath" class="input-file">}*
+*{<span style="color: red" id="note_imagePath">图片尺寸：(340*260像素)</span>}*

@@ -42,16 +42,23 @@ public class SupplierContract extends Model {
     @Column(name = "updated_by")
     public String updatedBy;
 
-    @OneToMany(mappedBy = "supplierContract")
+    public String description;
+
+    @OneToMany(mappedBy = "contract")
     public List<SupplierContractImage> supplierContractImagesList;
 
-    @ManyToOne
-    public Supplier supplier;
+    /**
+     * 所属商户ID
+     */
+    @Column(name = "supplier_id")
+    public Long supplierId;
+
 
     public SupplierContract(Supplier supplier) {
-        this.supplier = supplier;
+        this.supplierId = supplier.id;
         this.supplierName = supplier.otherName;
         this.supplierCompanyName = supplier.fullName;
+        this.createdAt = new Date();
     }
 
 }

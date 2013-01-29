@@ -183,7 +183,7 @@ public class Supplier extends Model {
     @JoinColumn(name = "supplier_category_id")
     public SupplierCategory supplierCategory;
 
-    @OneToMany(mappedBy = "supplier")
+    @OneToMany(mappedBy = "supplierId")
     public List<SupplierContract> supplierContractList;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -463,5 +463,10 @@ public class Supplier extends Model {
 
     public static Supplier findByDomainName(String domainName) {
         return Supplier.find("domainName=? and deleted=?", domainName, DeletedStatus.UN_DELETED).first();
+    }
+
+    public List<SupplierContract> getContract() {
+        return SupplierContract.find("supplierId=?", this.id
+        ).fetch();
     }
 }

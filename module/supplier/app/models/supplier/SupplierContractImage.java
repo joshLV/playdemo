@@ -32,7 +32,7 @@ public class SupplierContractImage extends Model {
     private static final long serialVersionUID = 4063131063912510682L;
 
     @ManyToOne
-    public SupplierContract supplierContract;
+    public SupplierContract contract;
 
     public static final String IMAGE_TINY = "60x46_nw";
     public static final String IMAGE_SMALL = "172x132";
@@ -44,11 +44,17 @@ public class SupplierContractImage extends Model {
     public static final String IMAGE_DEFAULT = "";
 
 
-    private static final Pattern IMAGE_PATTERN = Pattern.compile("^/([0-9]+)/([0-9]+)/([0-9]+)/(.+).((?i)(jpg|png|gif|jpeg))$");
-    private static final String IMAGE_ROOT_GENERATED = "/p";
+    //    private static final Pattern IMAGE_PATTERN = Pattern.compile("^/([0-9]+)/([0-9]+)/([0-9]+)/(.+).((?i)(jpg|png|gif|jpeg))$");
+    private static final Pattern IMAGE_PATTERN = Pattern.compile("^/([0-9]+)/([0-9]+)/(.+).((?i)(jpg|png|gif|jpeg))$");
+
+    private static final String IMAGE_ROOT_GENERATED = "/contract/p";
 
     private static final Pattern FILENAME_PATTERN = Pattern.compile("(.*/)*(.*)$");
     private static final String SIZE_KEY = "sJ34fds29h@d";
+
+
+    public static final String BASE_URL = Play.configuration.getProperty("uri.operate_business");
+
 
     /**
      * 图片路径
@@ -67,12 +73,14 @@ public class SupplierContractImage extends Model {
     @Column(name = "created_at")
     public Date createdAt;
 
+    public String description;
+
     /**
      * 最小规格图片路径
      */
     @Transient
     public String getImageTinyPath() {
-        return getImageUrl(imagePath, IMAGE_TINY);
+        return getImageUrl(BASE_URL, imagePath, IMAGE_TINY);
     }
 
     /**
@@ -80,7 +88,7 @@ public class SupplierContractImage extends Model {
      */
     @Transient
     public String getImageSmallPath() {
-        return getImageUrl(imagePath, IMAGE_SMALL);
+        return getImageUrl(BASE_URL, imagePath, IMAGE_SMALL);
     }
 
 
@@ -89,7 +97,7 @@ public class SupplierContractImage extends Model {
      */
     @Transient
     public String getImageMiddlePath() {
-        return getImageUrl(imagePath, IMAGE_MIDDLE);
+        return getImageUrl(BASE_URL, imagePath, IMAGE_MIDDLE);
     }
 
     /**
@@ -97,12 +105,12 @@ public class SupplierContractImage extends Model {
      */
     @Transient
     public String getImageLargePath() {
-        return getImageUrl(imagePath, IMAGE_LARGE);
+        return getImageUrl(BASE_URL, imagePath, IMAGE_LARGE);
     }
 
     @Transient
     public String getImageOriginalPath() {
-        return getImageUrl(imagePath, IMAGE_ORIGINAL);
+        return getImageUrl(BASE_URL, imagePath, IMAGE_ORIGINAL);
     }
 
     public static final String CACHEKEY = "IMAGE";
@@ -114,7 +122,7 @@ public class SupplierContractImage extends Model {
     public void _save() {
         CacheHelper.delete(CACHEKEY);
         CacheHelper.delete(CACHEKEY + this.id);
-        CacheHelper.delete(CACHEKEY_SUPPLIER_CONTRACT_ID + this.supplierContract.id);
+        CacheHelper.delete(CACHEKEY_SUPPLIER_CONTRACT_ID + this.contract.id);
         super._save();
     }
 
@@ -122,12 +130,13 @@ public class SupplierContractImage extends Model {
     public void _delete() {
         CacheHelper.delete(CACHEKEY);
         CacheHelper.delete(CACHEKEY + this.id);
-        CacheHelper.delete(CACHEKEY_SUPPLIER_CONTRACT_ID + this.supplierContract.id);
+        CacheHelper.delete(CACHEKEY_SUPPLIER_CONTRACT_ID + this.contract.id);
         super._delete();
     }
 
     public SupplierContractImage(Supplier supplier, SupplierContract contract, String shownName, String imagePath) {
-        this.supplierContract = new SupplierContract(supplier).save();
+//        this.supplierContract = new SupplierContract(supplier).save();
+        this.contract = contract;
         this.imagePath = imagePath;
         this.shownName = shownName;
         this.createdAt = new Date();
@@ -141,11 +150,15 @@ public class SupplierContractImage extends Model {
      * @param fix       图片大小规格
      * @return 完整的图片url
      */
-    public static String getImageUrl(String imagePath, String fix) {
+    public static String getImageUrl(String baseUrl, String imagePath, String fix) {
+        if (baseUrl == null || imagePath == null) {
+            return null;
+        }
 
         if (fix == null) {
             fix = "";
         }
+
         Matcher matcher = IMAGE_PATTERN.matcher(imagePath);
         if (!matcher.matches()) {
             return null;
@@ -155,8 +168,13 @@ public class SupplierContractImage extends Model {
 
 //        String newFileName = matcher.group(4) + fixName + "." + matcher.group(5);
         String newFileName = matcher.group(3) + fixName + "." + matcher.group(4);
-
-        return IMAGE_ROOT_GENERATED + signImgPath(
+        String value = IMAGE_ROOT_GENERATED + signImgPath(
+                "/" + matcher.group(1)
+                        + "/" + matcher.group(2)
+//                        + "/" + matcher.group(3)
+                        + "/" + newFileName
+        );
+        return baseUrl + IMAGE_ROOT_GENERATED + signImgPath(
                 "/" + matcher.group(1)
                         + "/" + matcher.group(2)
 //                        + "/" + matcher.group(3)
