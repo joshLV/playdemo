@@ -108,10 +108,12 @@ public class WubaUtil {
             params.put("param", jsonRequest);
         }
 
+        Logger.info("wuba request %s:\n%s", method, jsonRequest);
         String json = WebServiceRequest.url(GATEWAY_URL)
                 .type("58_" + method)
                 .params(params).addKeyword("58")
                 .postString();
+        Logger.info("wuba response:\n%s", json);
 
         WubaResponse result = parseResponse(json, responseNeedDecrypt);
 
@@ -134,7 +136,9 @@ public class WubaUtil {
 
         WubaResponse response = new WubaResponse();
 
-        response.status = result.get("status").getAsString();
+        if (result.has("status")){
+            response.status = result.get("status").getAsString();
+        }
         response.code = result.get("code").getAsString();
         if (!result.get("msg").isJsonNull()) {
             response.msg = result.get("msg").getAsString();

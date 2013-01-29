@@ -48,10 +48,10 @@
         #{/if}
 
         #{if partner == 'wb'}
-            #{if product.status == ''}
+            #{if product.status != models.sales.ResalerProductStatus.OFFSALE}
                 <a href="/resaler-products/${partner}/onsale/${product.id}" class="btn btn-mini" rel="tooltip" title="上架"><i class="icon-upload"></i></a>
             #{/if}
-            #{if product.status == ''}
+            #{if product.status != models.sales.ResalerProductStatus.OFFSALE}
                 <a href="/resaler-products/${partner}/offsale/${product.id}" class="btn btn-mini" rel="tooltip" title="下架"><i class="icon-download"></i></a>
             #{/if}
             <a href="/resaler-products/${partner}/refresh/${product.id}" class="btn btn-mini" rel="tooltip" title="刷新状态"><i class="icon-refresh"></i></a>

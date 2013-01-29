@@ -18,6 +18,7 @@ public class WubaResponse {
 
     @Override
     public String toString() {
-        return "code: " + code + "\nstatus: " + status + "\nmsg: " + msg + "\ndata:\n" + data.toString();
+        return "code: " + code + "\nstatus: " + status + "\nmsg: " + msg
+                + "\ndata:\n"  + (data == null ? "null" : data.toString());
     }
 }

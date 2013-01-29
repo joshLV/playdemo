@@ -1,6 +1,7 @@
 package controllers.resale;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import controllers.OperateRbac;
 import models.operator.OperateUser;
 import models.order.OuterOrderPartner;
@@ -9,6 +10,7 @@ import models.supplier.Supplier;
 import models.wuba.WubaResponse;
 import models.wuba.WubaUtil;
 import operate.rbac.annotations.ActiveNavigation;
+import play.Logger;
 import play.data.binding.As;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -77,6 +79,7 @@ public class WubaGroupBuyProducts extends Controller {
         wubaParams.put("groupbuyInfo", groupbuyInfoParams);
         wubaParams.put("partners", partnerParams);
         product.latestJson(new Gson().toJson(wubaParams)).save();
+        Logger.info("wuba addgroupbuy request:\n%s", product.latestJsonData);
 
         //发起请求
         WubaResponse response =  WubaUtil.sendRequest(wubaParams, "emc.groupbuy.addgroupbuy", false);
@@ -112,13 +115,18 @@ public class WubaGroupBuyProducts extends Controller {
         if (product == null) {
             notFound();
         }
-        Map<String, String> groupbuyInfoParams = params.allSimple();
-        groupbuyInfoParams.remove("body");
-        groupbuyInfoParams.remove("productId");
-        groupbuyInfoParams.put("groupbuyId", String.valueOf(product.id));
-        //外面包一层
+        Map<String, String> requestParams = params.allSimple();
+        requestParams.remove("body");
+        requestParams.remove("productId");
+
         Map<String, Object> wubaParams = new HashMap<>();
-        wubaParams.put("groupbuyInfo", groupbuyInfoParams);
+        for (Map.Entry<String, String> entry : requestParams.entrySet()) {
+            wubaParams.put(entry.getKey(), entry.getValue());
+        }
+        wubaParams.put("groupbuyId", product.id);
+
+        String requestJson = new Gson().toJson(wubaParams);
+        Logger.info("wuba editgroupbuyinfo request:\n %s", requestJson);
 
         //发起请求
         WubaResponse response =  WubaUtil.sendRequest(wubaParams, "emc.groupbuy.editgroupbuyinfo", false);
@@ -126,7 +134,7 @@ public class WubaGroupBuyProducts extends Controller {
         if (response.isOk()) {
             OperateUser operateUser = OperateRbac.currentUser();
             product.lastModifier(operateUser.id).save();
-            ResalerProductJournal.createJournal(product, operateUser.id, new Gson().toJson(wubaParams),
+            ResalerProductJournal.createJournal(product, operateUser.id, requestJson,
                     ResalerProductJournalType.UPDATE, "修改团购信息");
         }
 
@@ -191,10 +199,8 @@ public class WubaGroupBuyProducts extends Controller {
                     ResalerProductJournalType.UPDATE, "延长券有效期");
             //延长团购有效期
             Map<String, Object> endTimeRequestMap = new HashMap<>();
-            Map<String, String> groupbuyInfoParams = new HashMap<>();
-            groupbuyInfoParams.put("groupbuyId", String.valueOf(product.id));
-            groupbuyInfoParams.put("endTime", endTime);
-            endTimeRequestMap.put("groupbuyInfo", groupbuyInfoParams);
+            endTimeRequestMap.put("groupbuyId", product.id);
+            endTimeRequestMap.put("endTime", endTime);
 
             response = WubaUtil.sendRequest(endTimeRequestMap, "emc.groupbuy.editpartnerbygroupbuy", false);
             if(response.isOk()) {
@@ -205,5 +211,71 @@ public class WubaGroupBuyProducts extends Controller {
         }
         render("resale/WubaGroupBuyProducts/result.html", response);
     }
-}
+    @ActiveNavigation("resale_partner_product")
+    public static void refreshStatus(Long productId) {
+        ResalerProduct product = ResalerProduct.findById(productId);
+        if (product == null) {
+            notFound();
+        }
+        Map<String, Object> requestMap = new HashMap<>();
+        requestMap.put("groupbuyIds", "[" + product.id + "]");
+        requestMap.put("status", -1);
+        WubaResponse response = WubaUtil.sendRequest(requestMap, "emc.groupbuy.getstatus");
+        if (!response.isOk()) {
+            render("resale/WubaGroupBuyProducts/result.html", response);
+        }
 
+        JsonObject data = response.data.getAsJsonArray().get(0).getAsJsonObject();
+        int statusCode = data.get("status").getAsInt();
+        switch (statusCode) {
+            case 0:
+                product.status = ResalerProductStatus.OFFSALE;
+                break;
+            case 1:
+                product.status = ResalerProductStatus.REJECTED;
+                break;
+            case 2:
+            case 3:
+                product.status = ResalerProductStatus.OFFSALE;
+                break;
+            default:
+                product.status = ResalerProductStatus.UNKONWN;
+        }
+        product.save();
+        redirect("/resaler-products/products/wb/" + product.id);
+    }
+
+    @ActiveNavigation("resale_partner_product")
+    public static void onsale(Long productId) {
+        ResalerProduct product = ResalerProduct.findById(productId);
+        if (product == null) {
+            notFound();
+        }
+        Map<String, Object> requestMap = new HashMap<>();
+        requestMap.put("groupbuyId", product.id);
+        WubaResponse response = WubaUtil.sendRequest(requestMap, "emc.groupbuy.shangxian");
+        if (!response.isOk()) {
+            render("resale/WubaGroupBuyProducts/result.html", response);
+        }
+        product.status = ResalerProductStatus.ONSALE;
+        product.save();
+        redirect("/resaler-products/products/wb/" + product.id);
+    }
+
+    @ActiveNavigation("resale_partner_product")
+    public static void offsale(Long productId) {
+        ResalerProduct product = ResalerProduct.findById(productId);
+        if (product == null) {
+            notFound();
+        }
+        Map<String, Object> requestMap = new HashMap<>();
+        requestMap.put("groupbuyId", product.id);
+        WubaResponse response = WubaUtil.sendRequest(requestMap, "emc.groupbuy.xiaxian");
+        if (!response.isOk()) {
+            render("resale/WubaGroupBuyProducts/result.html", response);
+        }
+        product.status = ResalerProductStatus.OFFSALE;
+        product.save();
+        redirect("/resaler-products/products/wb/" + product.id);
+    }
+}

@@ -44,7 +44,7 @@ GET     /contract/p/{firstDir}/{secondDir}/{imageName}    SupplierContractImages
 GET     /contract/o/{path1}/{path2}                       SupplierContractImages.showOriginalImage
 
 
-# 外部商品
+# --------------------   分销商品  ---------------------------------------------------------
 GET     /resaler-products                                ResalerProducts.index
 GET     /resaler-products/journal/json/{journalId}       ResalerProducts.journalJson
 GET     /resaler-products/journal/{productId}            ResalerProducts.journal
@@ -70,10 +70,15 @@ GET     /resaler-products/wb/edit/{productId}   resale.WubaGroupBuyProducts.show
 POST    /resaler-products/wb/edit/groupbuyinfo  resale.WubaGroupBuyProducts.editGroupBuyInfo
 POST    /resaler-products/wb/edit/partners      resale.WubaGroupBuyProducts.editPartners
 POST    /resaler-products/wb/edit/deadline      resale.WubaGroupBuyProducts.editDeadline
+GET     /resaler-products/wb/onsale/{productId} resale.WubaGroupBuyProducts.onsale
+GET     /resaler-products/wb/offsale/{productId}    resale.WubaGroupBuyProducts.offsale
+GET     /resaler-products/wb/refresh/{productId}    resale.WubaGroupBuyProducts.refreshStatus
 
 # 当当
 GET     /resaler-products/dd/upload/{goodsId}   resale.DDGroupBuyProducts.showUpload
 POST    /resaler-products/dd/upload             resale.DDGroupBuyProducts.upload
+
+# --------------------  end of 分销商品  ---------------------------------------------------------
 
 
 
