@@ -256,10 +256,6 @@ input.disabled {
     background: #F6F3EA;
     padding: 15px 20px 5px;
 }
-.field-sect {
-    background: #F6F3EA;
-    padding: 15px 20px 5px;
-}
 
 .field-group {
     position: relative;
@@ -268,13 +264,15 @@ input.disabled {
     padding-bottom: 5px;
     font-size: 16px;
     vertical-align: middle;
+    zoom: 1;
 }
 .field-group label {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 0px;
+    left: 0px;
     width: 100px;
     font-weight: 700;
+    float: left;
     text-align: right;
 }
 .field-group input.text {
