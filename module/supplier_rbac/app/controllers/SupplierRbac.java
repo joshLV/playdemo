@@ -16,12 +16,14 @@
  */
 package controllers;
 
+import com.uhuila.common.constants.PlatformType;
 import controllers.supplier.cas.Security;
 import models.admin.SupplierNavigation;
 import models.admin.SupplierPermission;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.admin.SupplierUserLoginHistory;
+import models.cms.Topic;
 import navigation.ContextedPermission;
 import navigation.NavigationHandler;
 import navigation.annotations.ActiveNavigation;
@@ -134,7 +136,6 @@ public class SupplierRbac extends Controller {
 
         // 检查权限
         checkRight(currentMenuName);
-
     }
 
     @Finally

@@ -30,10 +30,9 @@ import java.util.Map;
 public class PrepaymentReports extends Controller {
 
     private static final int PAGE_SIZE = 30;
-    private static final int INTERVAL_Days= 7;
+    private static final int INTERVAL_DAYS= 7;
 
     /**
-     * `
      * 查询预付款金额明细表.
      */
     @ActiveNavigation("prepayment_reports")
@@ -51,7 +50,7 @@ public class PrepaymentReports extends Controller {
     public static void trends(Long id) {
         Prepayment prepayment = Prepayment.findById(id);
         //x轴：日期间隔
-        List<String> dateList = DateUtil.getDateList(prepayment.effectiveAt, prepayment.expireAt, INTERVAL_Days, "yyyy-M-dd");
+        List<String> dateList = DateUtil.getDateList(prepayment.effectiveAt, prepayment.expireAt, INTERVAL_DAYS, "yyyy-M-dd");
         //y轴：
         Map<String, PrepaymentDetailReport> chartsMap = PrepaymentDetailReport.find(prepayment, dateList);
 

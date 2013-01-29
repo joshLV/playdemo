@@ -1,0 +1,43 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set title:'提现管理' /}
+#{set menu:"withdraws"/}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+<div class="bd">
+    <h2>${title}</h2>
+
+    <table class="title-table">
+        <tr>
+            <th width="80%">余额：${account?.amount?.add(account?.uncashAmount)}
+                元 = 可用余额：${account?.amount} 元 + 不可用余额：${account?.uncashAmount} 元
+                <a href="#" title="不可用余额：预付款状态为未结算、提现申请状态为待审批时均为不可用余额">(？)</a>
+            </th>
+            <td width="20%"><a class="btn" href="/withdraws/apply">申请提现</a></td>
+        </tr>
+    </table>
+
+    <table class="standard-table">
+        <tr>
+            <th>申请时间</th>
+            <th>申请者</th>
+            <th>收款人</th>
+            <th>申请金额</th>
+            <th>申请状态</th>
+            <th>操作</th>
+        </tr>
+    #{paginate.list items:billPage, as:'withdrawBill'}
+        <tr>
+            <td>${withdrawBill.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td>${withdrawBill.applier}</td>
+            <td>${withdrawBill.userName}</td>
+            <td>${withdrawBill.amount.formatCurrency('CNY')}</td>
+            <td>&{'withdraw.' + withdrawBill.status}</td>
+            <td>
+                <a href="/withdraws/detail/${withdrawBill.id}"> 查看详情 </a>
+            </td>
+        </tr>
+    #{/paginate.list}
+    </table>
+#{paginate.controls items:billPage /}
+</div>

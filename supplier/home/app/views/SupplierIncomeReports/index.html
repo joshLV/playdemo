@@ -1,0 +1,337 @@
+#{extends 'layout_trader/layout2.html' /}
+#{include 'Share/nav.html' /}
+#{set title:'报表一览' /}
+#{set menu:"reports" /}
+#{set 'moreStyles'}
+    #{asset.css src:['/m/verify.css'] /}
+#{/set}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/verify.js'}" type="text/javascript" charset="UTF-8"></script>
+    #{asset.js src:['/charts/highcharts.js', '/charts/modules/exporting.js'] /}
+<script type="text/javascript">
+$(function () {
+    var chart1;
+    var chart2;
+    var chart3;
+    $(document).ready(function () {
+        #{if dailyChartMap?.size() > 0}
+            chart1 = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'chart1',
+                    type: 'spline',
+                    backgroundColor: {
+                        linearGradient: [0, 0, 0, 300],
+                        stops: [
+                            [0, '#FFFFFF'],
+                            [1, '#E0E0E0']
+                        ]
+                    }
+                },
+                title: {
+                    text: '每日消费'
+                },
+                subtitle: {
+                    text: '统计周期:${fromDate?.format('yyyy-MM-dd HH:mm')}-${toDate?.format('yyyy-MM-dd HH:mm')}'
+                },
+                xAxis: {
+                    title: {
+                        text: '日期'
+                    },
+                    tickPosition: 'inside',
+                    tickInterval:${dailyList.size()>15?(int)(dailyList.size() / 12):1},
+                    labels: {
+                        align: 'right',
+                        style: {
+                            fontSize: '10px'
+                        }
+                    },
+                    categories: [#{list items:dailyList, as:'d'}'${d.substring(5)}'${d_isLast ? '' : ','} #{/list}]
+                },
+                yAxis: {
+                    title: {
+                        text: '消费量(张)'
+                    },
+                    min: 0
+                },
+                tooltip: {
+                    enabled: true,
+                    formatter: function () {
+                        return '<b>' + this.series.name + '</b><br/>' +
+                                this.x + ': ' + this.y + '张';
+                    }
+                },
+
+                plotOptions: {
+                    line: {
+                        dataLabels: {
+                            enabled: false
+                        },
+                        enableMouseTracking: true
+                    }
+                },
+                series: [
+                    {
+                        name: '每日消费',
+                        data: [#{list items:dailyList, as:'d'}${dailyChartMap.get(d)?:0}${(!d_isLast) ? ',' : ''} #{/list}]
+                    }
+                ],
+                credits: {
+                    text: 'quanmx.com',
+                    href: '#'
+                },
+                exporting: {
+                    buttons: {
+                        exportButton: {
+                            menuItems: [
+                                {
+                                    text: ' 导出图片 ',
+                                    onclick: function () {
+                                        this.exportChart(); // 800px by default
+                                    }
+                                },
+                                {
+                                    text: ' 导出Excel数据 ',
+                                    onclick: function () {
+                                        $("#report-form").attr("action", "@{SupplierIncomeReports.exportDailyReport()}");
+                                        $("#report-form").submit();
+                                    }
+                                },
+                                null,
+                                null
+                            ]
+                        }
+                    }
+                }
+            });
+        #{/if}
+        #{if shopChartMap?.size() > 0}
+            chart2 = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'chart2',
+                    type: 'bar',
+                    backgroundColor: {
+                        linearGradient: [0, 0, 0, 300],
+                        stops: [
+                            [0, '#FFFFFF'],
+                            [1, '#E0E0E0']
+                        ]
+                    }},
+                title: {
+                    text: '门店消费'
+                },
+                subtitle: {
+                    text: '统计周期:${fromDate?.format('yyyy-MM-dd HH:mm')}-${toDate?.format('yyyy-MM-dd HH:mm')}'
+                },
+                xAxis: {
+                    categories: [#{list items:shopNameList, as:'d'}'${d}'${d_isLast ? '' : ','} #{/list}]
+                },
+                yAxis: {
+                    title: {
+                        text: '消费量(张)'
+                    },
+                    min: 0
+                },
+                tooltip: {
+                    enabled: true,
+                    formatter: function () {
+                        return '<b>' + this.series.name + '</b><br/>' +
+                                this.x + ': ' + this.y + '张';
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                series: [
+                    {
+                        name: '门店消费',
+                        data: [#{list items:shopNameList, as:'d'}${shopChartMap.get(d).count}${(!d_isLast) ? ',' : ''} #{/list}]
+                    },
+                ],
+                credits: {
+                    text: 'quanmx.com',
+                    href: '#'
+                },
+                exporting: {
+                    buttons: {
+                        exportButton: {
+                            menuItems: [
+                                {
+                                    text: ' 导出图片 ',
+                                    onclick: function () {
+                                        this.exportChart(); // 800px by default
+                                    }
+                                },
+                                {
+                                    text: ' 导出Excel数据 ',
+                                    onclick: function () {
+                                        $("#report-form").attr("action", "@{SupplierIncomeReports.exportShopReport()}");
+                                        $("#report-form").submit();
+                                    }
+                                },
+                                null,
+                                null
+                            ]
+                        }
+                    }
+                }
+            });
+        #{/if}
+        #{if goodsChartMap?.size() > 0}
+            chart3 = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'chart3',
+                    type: 'bar',
+                    backgroundColor: {
+                        linearGradient: [0, 0, 0, 300],
+                        stops: [
+                            [0, '#FFFFFF'],
+                            [1, '#E0E0E0']
+                        ]
+                    }},
+                title: {
+                    text: '商品消费'
+                },
+                subtitle: {
+                    text: '统计周期:${fromDate?.format('yyyy-MM-dd HH:mm')}-${toDate?.format('yyyy-MM-dd HH:mm')}'
+                },
+                xAxis: {
+                    categories: [#{list items:goodsNameList, as:'d'}'${d}'${d_isLast ? '' : ','} #{/list}]
+                },
+                yAxis: {
+                    title: {
+                        text: '消费量(张)'
+                    },
+                    min: 0
+                },
+                tooltip: {
+                    enabled: true,
+                    formatter: function () {
+                        return '<b>' + this.series.name + '</b><br/>' +
+                                this.x + ': ' + this.y + '张';
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                series: [
+                    {
+                        name: '商品消费',
+                        data: [#{list items:goodsNameList, as:'d'}${goodsChartMap.get(d).count}${(!d_isLast) ? ',' : ''} #{/list}]
+                    }
+                ],
+                credits: {
+                    text: 'quanmx.com',
+                    href: '#'
+                },
+                exporting: {
+                    buttons: {
+                        exportButton: {
+                            menuItems: [
+                                {
+                                    text: ' 导出图片 ',
+                                    onclick: function () {
+                                        this.exportChart(); // 800px by default
+                                    }
+                                },
+                                {
+                                    text: ' 导出Excel数据 ',
+                                    onclick: function () {
+                                        $("#report-form").attr("action", "@{SupplierIncomeReports.exportGoodsReport()}");
+                                        $("#report-form").submit();
+                                    }
+                                },
+                                null,
+                                null
+                            ]
+                        }
+                    }
+                }
+            });
+        #{/if}
+    });
+
+});
+</script>
+#{/set}
+<div class="verify">
+    <div class="bd batch-verify">
+        <h2>${title}</h2>
+        <form id="report-form" action="@{SupplierIncomeReports.index()}" method="post">
+            <div class="field-sect">
+                <div class="field-group">
+                    <label>选择商品</label>
+                #{select 'goodsId', id:"goodsId", value:goodsId}
+                    #{option 0}全部#{/option}
+                    #{list items:goodsList, as:'goods'}
+                        #{option goods?.id}${goods?.shortName}#{/option}
+                    #{/list}
+                #{/select}
+                </div>
+                <div class="field-group">
+                    <label>选择分店</label>
+                #{select 'shopId', id:"shopId", value:shopId}
+                    #{option 0}全部#{/option}
+                    #{list items:shopList, as:'shop'}
+                        #{option shop?.id}${shop?.name}#{/option}
+                    #{/list}
+                #{/select}
+                </div>
+                <div class="field-group">
+                    <label>选择日期</label>
+                    <input class="input-medium Wdate" type="text" id="fromDate" name="fromDate"
+                           value="${fromDate?.format('yyyy-MM-dd')}"
+                           onfocus="WdatePicker({readOnly:true})"/>
+                    至
+                    <input class="input-medium Wdate" type="text" id="toDate" name="toDate"
+                           value="${toDate?.format('yyyy-MM-dd')}"
+                           onfocus="WdatePicker({readOnly:true})"/>
+                    &nbsp;&nbsp;${shopEndHour?"统计时间截止至"+shopEndHour:''}
+
+                </div>
+                <div class="field-group">
+                    <input type="submit" class="btn" value="查询"
+                           onclick="javascript:$('#report-form').attr('action', '@{SupplierIncomeReports.index()}');return true;"/>
+                </div>
+            </div>
+            <table cellspacing="0" cellpadding="0" border="0" class="coupons-table" id="coupons-table">
+                <tr>
+                    <th>商品</th>
+                    <th width="80">消费量(张)</th>
+                    <th width="150">消费金额(元)</th>
+                </tr>
+            #{list goodsReportList, as:'report'}
+                <tr>
+                    <td align="left">${report.goodsName}</td>
+                    <td align="right">${report.count}</td>
+                    <td align="right">${report.amount.formatCurrency('CNY')}</td>
+                </tr>
+            #{/list}
+            </table>
+        </form>
+    #{if dailyChartMap?.size() > 0}
+        <div class="tip">
+            <div id="chart1" class="span12" style="height: 500px"></div>
+        </div>
+    #{/if}
+    #{if shopChartMap?.size() > 0}
+        <div class="tip">
+            <div id="chart2" class="span12" style="height: 500px"></div>
+        </div>
+    #{/if}
+    #{if goodsChartMap?.size() > 0}
+        <div class="tip">
+            <div id="chart3" class="span12" style="height: 500px"></div>
+        </div>
+    #{/if}
+    </div>
+</div>
+

@@ -40,38 +40,3 @@
     vertical-align: middle;
     border: 1px solid #CCC;
 }
-
-
-.title-table {
-    width: 100%;
-    margin: 5px 0;
-}
-.title-table th {
-    text-align: left;
-}
-.title-table td {
-    color: #FF7B33;
-    text-align: right;
-}
-.standard-table {
-    width: 100%;
-    padding: 20px;
-    text-align: center;
-    border: 1px solid #E3E3E3;
-}
-.standard-table th {
-    padding: 5px;
-    font-size: 14px;
-    background-color: #EEE;
-    border-right: 1px solid #E3E3E3;
-    border-bottom: 1px solid #E3E3E3;
-}
-.standard-table td {
-    padding: 5px;
-    font-size: 14px;
-    border-right: 1px dotted #E3E3E3;
-    border-bottom: 1px dotted #E3E3E3;
-}
-.standard-table td a {
-    color: #08c;
-}

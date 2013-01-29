@@ -125,10 +125,11 @@ jQuery(function ($) {
                     '<td>' + data.faceValue + '元</td>' +
                     '<td>' + data.expireAt + '</td>' +
                     '<td><a class="delete-coupon" href="javascript:void(0)">删除</a></td>' +
-                    '<td class="verify-result"></td>' +
+                    '<td><div class="verify-result"></div></td>' +
                     '</tr>');
                 enterCoupon.val('');
                 $('.batch-verify').removeClass("disabled");
+
             },
             error: function (data) {
                 console.log("error:" + data);
@@ -200,9 +201,13 @@ jQuery(function ($) {
                         });
                         needClearList = true;
                         $("#verify-btn").text("验证并消费");
+                        //刷新最近验证过的5张券的券号
+                        $("#verifiedCoupons").load('/verify/verified-coupons', function (data) {
+                            $(this).html(data.replace(/"|\[|\]/g,""));
+                        });
                     }
                 },
-                error: function(){
+                error: function () {
                     console.log("error:" + data);
                     window.location.href = '/verify';
                 }

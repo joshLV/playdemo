@@ -1,0 +1,43 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set title:'修改密码' /}
+#{set menu:"passwords"/}
+#{set 'moreStyles'}
+    #{asset.css src:['/m/passwords.css'] /}
+#{/set}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/password.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+<body onload="editSuccess('${isOk}')">
+<div class="outlet">
+    <h2>${title}</h2>
+
+    <form action="@{SupplierUserPasswords.update()}" method="POST">
+        <div class="field-group">
+            <label>原&nbsp;&nbsp;&nbsp;密&nbsp;&nbsp;&nbsp;码&nbsp;</label>
+            <input name="oldPassword" type="password" id="old_password" size="26"
+                   maxlength="20" class="inputBox" value="${oldPassword}"/><span
+                class="error">#{error 'supplierUser.oldPassword' /}</span>
+        </div>
+        <div class="field-group">
+            <label>新&nbsp;&nbsp;&nbsp;密&nbsp;&nbsp;&nbsp;码&nbsp;</label>
+            <input name="password" type="password" id="encryptedPassword" size="26" maxlength="20" value="${password}"
+                   class="inputBox" onkeyup="javascript:ChangeQD();"/>(至少6位)
+            <span class="error">#{error 'supplierUser.newPassword' /}</span>
+            <div class="qdbox_hongse setClose" id="qdbox">
+                <div id="pwQiangdu" class="qdhongse">很弱</div>
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label>确认新密码</label>
+            <input name="confirmPassword" type="password" id="confirmPassword" size="26" maxlength="20"
+                   class="inputBox" value="${confirmPassword}"/><span
+                class="error">#{error 'supplierUser.confirmPassword' /}</span>
+        </div>
+        <div class="field-group">
+            <button class="btn btn-primary" id="sure_submit" type="submit">确认</button>
+        </div>
+
+
+    </form>
+</div>

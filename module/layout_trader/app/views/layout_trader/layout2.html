@@ -11,8 +11,16 @@
     <script type="text/javascript">
         $(function () {
             $('.close').click(function () {
+                $.ajax({
+                    type: 'POST',
+                    url: '/close-msg',
+                    success: function (data) {
+                    }
+                });
+
                 $('#error').hide();
                 $('#success').hide();
+                $('#message').hide();
             });
         });
     </script>
@@ -26,7 +34,7 @@
             欢迎，${supplierCompany.name}(${currentUser?.loginName})!
             <a href="/logout">退出</a>
             <a href="/ui-version/to/v1">使用旧版</a>
-        *{<a href="">修改密码</a>}*
+        <a href="/passwords">修改密码</a>
         *{<a href="">帮助</a>}*
         *{<a href="">反馈</a>}*
         </div>
@@ -41,7 +49,7 @@
 </div>
 #{/if}
 #{if successInfo != null}
-<div class="message">
+<div id="success">
     <div class="success">
         <p><em>${successInfo?.raw()}</em></p>
     </div>
@@ -65,8 +73,12 @@
             </li>#{/if}
         #{if navigation.ContextedPermission.hasPermission("COUPON_INDEX")}
             <li><a #{if "coupons".equals(menu)}class="curr"#{/if} href="/coupons">券号列表</a></li>#{/if}
-        *{#{if navigation.ContextedPermission.hasPermission("REPORT")} <li><a #{if "bills".equals(menu)}class="curr"#{/if} href="/bills">财务管理</a></li>#{/if}}*
-        *{#{if navigation.ContextedPermission.hasPermission("TOTAL_REPORT")} <li><a #{if "reports".equals(menu)}class="curr"#{/if} href="/reports">报表一览</a></li>#{/if}}*
+        #{if navigation.ContextedPermission.hasPermission("ACCOUNT_REPORT")}
+            <li><a #{if "sequences".equals(menu)}class="curr"#{/if} href="/sequences">财务明细</a></li>#{/if}
+        #{if navigation.ContextedPermission.hasPermission("ACCOUNT_WITHDRAW")}
+            <li><a #{if "withdraws".equals(menu)}class="curr"#{/if} href="/withdraws">提现管理</a></li>#{/if}
+        #{if navigation.ContextedPermission.hasPermission("REPORT")}
+            <li><a #{if "reports".equals(menu)}class="curr"#{/if} href="/reports">报表一览</a></li>#{/if}
         #{if navigation.ContextedPermission.hasPermission("SHOPS")}
             <li><a #{if "shops".equals(menu)}class="curr"#{/if} href="/shops">我的门店</a></li>#{/if}
         #{if navigation.ContextedPermission.hasPermission("ACCOUNT")}

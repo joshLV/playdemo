@@ -1468,6 +1468,17 @@ public class ECoupon extends Model {
         return usedAmount == null ? BigDecimal.ZERO : usedAmount;
     }
 
+    /**
+     * 获取最近验证过的n个券号.
+     *
+     * @param supplierUser
+     * @param count
+     * @return
+     */
+    public static List<String> getRecentVerified(SupplierUser supplierUser, int count) {
+        return find("select eCouponSn from ECoupon where supplierUser=? and status=? order by consumedAt desc",
+                supplierUser, ECouponStatus.CONSUMED).fetch(count);
+    }
 
     /**
      * 得到订单短信内容（单条)

@@ -1,6 +1,7 @@
 package controllers;
 
 import com.uhuila.common.util.DateUtil;
+import controllers.supplier.SupplierInjector;
 import models.admin.SupplierUser;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
@@ -23,7 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@With(SupplierRbac.class)
+@With({SupplierRbac.class, SupplierInjector.class})
 public class SupplierECoupons extends Controller {
 
     public static int PAGE_SIZE = 10;
