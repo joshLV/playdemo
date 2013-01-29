@@ -9,7 +9,6 @@
             $(".detail").toggle();
         });
     });
-
 </script>
 #{/set}
 #{if withdrawAccounts?.size() == 0 }
@@ -60,7 +59,7 @@
                 <div class="control-value">${prepaymentBalance?.formatCurrency('CNY')}
                     <input type="hidden" name="amount"
                            value="${withdrawAmount}"/>
-                    <a id="prepaymentDetail" href="#">查看明细</a>
+                    <a id="prepaymentDetail" class="link" href="#">查看明细</a>
                 </div>
             </div>
             <div class="field-group">
@@ -81,7 +80,6 @@
             </div>
         </div>
     #{/form}
-
     <table class="standard-table detail" style="display: none;">
         <tr>
             <th>预付款金额</th>

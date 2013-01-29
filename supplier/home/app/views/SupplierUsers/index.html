@@ -1,13 +1,10 @@
 #{extends 'layout_trader/layout2.html' /}
-#{set title:'账号列表' /}
+#{set title:'账号管理' /}
 #{set menu:"users"/}
-#{set 'moreStyles'}
-    #{asset.css src:['/m/account.css'] /}
-#{/set}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/supplierUser.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
-<div class="account">
+<div class="bd">
     <h2>${title}</h2>
     <table cellspacing="0" cellpadding="0" border="0" class="title-table">
         <tr>
