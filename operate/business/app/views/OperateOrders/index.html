@@ -51,6 +51,11 @@
                 this.value = false;
             }
             $("#frmlist").submit();
+
+            $("#search").click(function () {
+                formSubmit();
+            });
+
         });
 
 //        $("#brandId").click(function(){
@@ -65,6 +70,13 @@
         });
     });
 
+    function formSubmit() {
+        $("#frmlist").attr("method", "get");
+        $("#frmlist").attr("action", "@{OperateCoupons.index()}");
+        $("#frmlist").submit();
+    }
+
+
     function orderExcel() {
         $("#frmlist").attr("action", "@{OperateOrders.orderExcelOut()}");
         $("#frmlist").attr("method", "get");
@@ -78,12 +90,7 @@
 
 
 
-    function search() {
-        $("#frmlist").attr("action", "@{OperateOrders.index()}");
-        $("#frmlist").attr("method", "get");
-        $("#frmlist").submit();
-    }
-    ;
+
 </script>
 #{/set}
 
@@ -175,7 +182,7 @@
                class="input-small"
                value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
         <label for="isLottery">抽奖商品</label>
-        <button class="btn btn-large btn-primary" id="search" type="submit" onclick="search()">搜索</button>
+        <button class="btn btn-large btn-primary" id="search" type="submit" >搜索</button>
     </div>
     <input type="hidden" id="J_rank" name="desc"/>
 </form>
