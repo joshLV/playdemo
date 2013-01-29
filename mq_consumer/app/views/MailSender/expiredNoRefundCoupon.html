@@ -1,0 +1,11 @@
+<html>
+<body>
+以下券号即将在3天后到期：
+#{list items:message.getParam("couponList"),as :'couponMap'}
+商品名称：<a href="http://www/yibaiquan.com/p/${couponMap.get("goodsId")}">${couponMap.get("goodsName")}</a>
+售出渠道：${couponMap.get("partner")}
+券号：${couponMap.get("p_couponSn")}
+<a href="http://business.qgongchang.com/coupons?condition.searchKey=UID&condition.searchItems=${couponMap.get("userId")}&condition.status=UNCONSUMED&condition.accountType=RESALER">点击查看</a>（链接到此商品在京东售出未消费的券列表）</a>
+#{/list}
+</body>
+</html>

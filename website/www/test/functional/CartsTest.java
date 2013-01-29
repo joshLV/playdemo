@@ -47,14 +47,49 @@ public class CartsTest extends FunctionalTest {
         Security.cleanLoginUserForTest();
     }
 
-    //    @Test
+    @Test
     public void testIndexIsBuyFlag() {
         auth();
-        Response response = GET("/carts");
+        FactoryBoy.batchCreate(6, Cart.class,
+                new SequenceCallback<Cart>() {
+                    @Override
+                    public void sequence(Cart target, int seq) {
+                        cart.cookieIdentity = "abcdef";
+                    }
+                });
+        Map<String, Http.Cookie> passCookie = new HashMap();
+        Http.Cookie newCookie = new Http.Cookie();
+        newCookie.name = "identity";
+        newCookie.value = "abcdef";
+        passCookie.put("identity", newCookie);
+        newCookie = new Http.Cookie();
+        newCookie.name = "saw_goods_ids";
+        newCookie.value = goods.id.toString();
+        passCookie.put("saw_goods_ids", newCookie);
+        Http.Request request = Http.Request.createRequest(
+                null,
+                "GET",
+                "/",
+                "",
+                null,
+                null,
+                null,
+                null,
+                false,
+                80,
+                "localhost",
+                false,
+                null,
+                passCookie
+        );
+
+        Response response = GET(request, "/carts");
         assertStatus(200, response);
         assertContentMatch("一百券 - 购物车", response);
         assertEquals(user, renderArgs("user"));
         assertEquals(1, ((List<Cart>) renderArgs("carts")).size());
+        assertEquals(1, ((List<Cart>) renderArgs("sawGoodsList")).size());
+        assertNull(renderArgs("limit_goodsId"));
     }
 
     @Test
@@ -136,27 +171,7 @@ public class CartsTest extends FunctionalTest {
 
     }
 
-    @Test
-    public void testTops_cartsIsLess5() {
-        auth();
-        Map<String, Http.Cookie> passCookie = new HashMap();
-        Http.Cookie newCookie = new Http.Cookie();
-        newCookie.name = "identity";
-        newCookie.value = "abcdef";
-        passCookie.put("identity", newCookie);
-        Http.Request request = FunctionalTest.newRequest();
-        request.cookies = passCookie;
-
-        Response response = GET("/carts/tops");
-        assertStatus(200, response);
-        assertEquals(1, renderArgs("count"));
-        List<Cart> cartList = (List) renderArgs("carts");
-        assertEquals(1, cartList.size());
-    }
-
-    @Test
-    public void testTops_cartsIsMoreThan5() {
-        auth();
+    private void setCookies() {
         Map<String, Http.Cookie> passCookie = new HashMap();
         Http.Cookie newCookie = new Http.Cookie();
         newCookie.name = "identity";
@@ -164,6 +179,22 @@ public class CartsTest extends FunctionalTest {
         passCookie.put("identity", newCookie);
         final Http.Request request = FunctionalTest.newRequest();
         request.cookies = passCookie;
+    }
+
+    @Test
+    public void testTops_cartsIsLess5() {
+        auth();
+        Response response = GET("/carts/tops");
+        assertStatus(200, response);
+        assertEquals(1, renderArgs("count"));
+        List<Cart> cartList = (List) renderArgs("carts");
+        assertEquals(1, cartList.size());
+    }
+//
+    @Test
+    public void testTops_cartsIsMoreThan5() {
+        auth();
+        setCookies();
         List<Goods> goodsList = FactoryBoy.batchCreate(6, Goods.class,
                 new SequenceCallback<Goods>() {
                     @Override

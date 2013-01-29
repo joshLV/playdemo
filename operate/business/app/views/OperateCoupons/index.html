@@ -92,6 +92,9 @@
             }
             $("#frmlist").submit();
         });
+        $("#search").click(function () {
+            formSubmit();
+        });
 
     });
 
@@ -106,13 +109,11 @@
         formSubmit();
     }
 
-
-    function search() {
-        $("#frmlist").attr("action", "@{OperateCoupons.index()}");
+    function formSubmit() {
         $("#frmlist").attr("method", "get");
+        $("#frmlist").attr("action", "@{OperateCoupons.index()}");
         $("#frmlist").submit();
     }
-    ;
 
 
 </script>
@@ -224,7 +225,7 @@
             <span class="add-on"><i class="icon-th"></i></span>
         </div>
         &nbsp;&nbsp;
-        <button class="btn btn-large btn-primary" id="search" type="submit" onclick="search()">搜索</button>
+        <button class="btn btn-large btn-primary" id="search" type="submit">搜索</button>
     </div>
 
 </form>
