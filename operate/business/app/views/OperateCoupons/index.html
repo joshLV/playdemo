@@ -92,9 +92,7 @@
             }
             $("#frmlist").submit();
         });
-        $("#search").click(function () {
-            formSubmit();
-        });
+
     });
 
     function couponExcel() {
@@ -107,11 +105,7 @@
         $("#condition_status").val(status);
         formSubmit();
     }
-    function formSubmit() {
-        $("#frmlist").attr("method", "get");
-        $("#frmlist").attr("action", "@{OperateCoupons.index()}");
-        $("#frmlist").submit();
-    }
+
 
     function search() {
         $("#frmlist").attr("action", "@{OperateCoupons.index()}");
