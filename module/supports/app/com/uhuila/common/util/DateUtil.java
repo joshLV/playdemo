@@ -76,7 +76,6 @@ public class DateUtil {
      * n天后的开始时间
      *
      * @return
-     * @throws ParseException
      */
     public static Date getBeginExpiredDate(int n) {
         Calendar cal = Calendar.getInstance();
