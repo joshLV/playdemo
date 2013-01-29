@@ -234,7 +234,7 @@ public class DDAPIUtil {
             return response;
         }
         //最多发送三次短信
-        if (coupon.downloadTimes == 0) {
+        if (coupon.smsSentCount >= 3) {
             response.errorCode = ErrorCode.MESSAGE_SEND_FAILED;
             response.desc = "重发短信超过三次！";
             Logger.info("[DDAPIUtil.sendSMS]" + response.desc);
@@ -242,7 +242,8 @@ public class DDAPIUtil {
         }
 
         //发送短信并返回成功
-        ECoupon.sendUserMessageWithoutCheck(receiveMobile, coupon);
+        coupon.sendOrderSMS(receiveMobile, "当当重发短信");
+
         response.errorCode = ErrorCode.SUCCESS;
         response.desc = "success";
         response.addAttribute("consumeId", coupon.eCouponSn);

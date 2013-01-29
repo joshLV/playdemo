@@ -7,6 +7,7 @@ import models.accounts.AccountCreditable;
 import models.accounts.util.AccountUtil;
 import models.order.ECoupon;
 import models.order.Order;
+import models.order.OrderECouponMessage;
 import models.order.OrderItems;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
@@ -21,6 +22,7 @@ import org.junit.Test;
 import play.db.jpa.JPA;
 import play.mvc.Http;
 import play.test.FunctionalTest;
+import util.mq.MockMQ;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -229,7 +231,7 @@ public class YHDGroupBuyTest extends FunctionalTest{
         params.put("receiveMobile", "13472581853");
 
         coupon.refresh();
-        coupon.downloadTimes = 0;
+        coupon.smsSentCount = 3;
         coupon.save();
         JPA.em().flush();
         resign(params);
@@ -237,14 +239,16 @@ public class YHDGroupBuyTest extends FunctionalTest{
         errorCount(1, response);
 
         coupon.refresh();
-        coupon.downloadTimes = 3;
+        coupon.smsSentCount = 2;
         coupon.save();
         JPA.em().flush();
         resign(params);
         response = POST("/api/v1/yhd/gb/voucher-resend", params);
         errorCount(0, response);
-        coupon.refresh();
-        assertEquals(new Integer("2"), coupon.downloadTimes);
+
+        // 能发出短信
+        OrderECouponMessage msg = (OrderECouponMessage) MockMQ.getLastMessage(OrderECouponMessage.MQ_KEY);
+        assertEquals(coupon.id, msg.eCouponId);
     }
 
     private TreeMap<String, String> orderInformParams() {

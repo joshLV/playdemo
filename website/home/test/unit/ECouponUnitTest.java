@@ -104,13 +104,6 @@ public class ECouponUnitTest extends UnitTest {
     }
 
     @Test
-    public void testSendUserMessage_不包含门店的信息发送() {
-        assertTrue(ECoupon.sendUserMessage(eCoupon.id, "13712345678"));
-        SMSMessage checkMsg = (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
-        assertEquals("【一百券】" + eCoupon.goods.title + "券号" + eCoupon.eCouponSn + ",截止" + DateUtil.dateToString(eCoupon.goods.expireAt, 0) + ",客服：4006262166", checkMsg.getContent());
-    }
-
-    @Test
     public void testSendUserMessageInfoWithoutCheck_包含门店的信息发送() {
         eCoupon.shop = eCoupon.goods.getShopList().iterator().next();
         eCoupon.save();
@@ -118,14 +111,6 @@ public class ECouponUnitTest extends UnitTest {
         SMSMessage checkMsg = (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
         assertEquals("【一百券】" + eCoupon.goods.title + "券号" + eCoupon.eCouponSn + ",截止" + DateUtil.dateToString(eCoupon.goods.expireAt, 0) + ",[" +
                 eCoupon.shop.name + "]" + eCoupon.shop.address + " " + eCoupon.shop.phone + ";客服：4006262166", checkMsg.getContent());
-    }
-
-    @Test
-    public void testSendMessage_运营后台重发短信() {
-        assertTrue(ECoupon.sendMessage(eCoupon.id));
-        SMSMessage checkMsg = (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
-        assertEquals("【一百券】" + eCoupon.goods.title + "券号" + eCoupon.eCouponSn + ",截止" + DateUtil.dateToString(eCoupon.goods.expireAt, 0) + ",客服：4006262166", checkMsg.getContent());
-
     }
 
     /**

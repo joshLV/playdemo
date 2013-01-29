@@ -192,6 +192,9 @@ public class ECoupon extends Model {
     @Column(name = "trigger_coupon_sn")
     public String triggerCouponSn;
 
+    /**
+     * 不再使用，使用smsSendCount代替.
+     */
     @Column(name = "download_times")
     public Integer downloadTimes;
 
@@ -315,7 +318,7 @@ public class ECoupon extends Model {
             this.createType = ECouponCreateType.IMPORT;
         }
         this.orderItems = orderItems;
-        this.downloadTimes = 3;
+        this.smsSentCount = 0;
         this.isFreeze = 0;
         this.lockVersion = 0;
         this.autoConsumed = DeletedStatus.UN_DELETED;
@@ -1137,53 +1140,11 @@ public class ECoupon extends Model {
                 "截止" + dateFormat.format(eCoupon.expireAt) + content + "客服：4006262166", phone, eCoupon.replyCode);
     }
 
-
-    /**
-     * 运营后台发送短信
-     *
-     * @param id
-     * @return
-     */
-    public static boolean sendMessage(long id) {
-        ECoupon eCoupon = ECoupon.findById(id);
-        boolean sendFalg = false;
-        if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED) {
-            send(eCoupon, null);
-            sendFalg = true;
-        }
-        return sendFalg;
-    }
-
-    /**
-     * 当当重发短信
-     *
-     * @param id
-     * @param phone
-     * @return
-     */
-    public static boolean sendUserMessage(long id, String phone) {
-        ECoupon eCoupon = ECoupon.findById(id);
-
-        boolean sendFlag = false;
-        if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED && eCoupon.downloadTimes > 0 && eCoupon.downloadTimes < 4) {
-            sendUserMessageWithoutCheck(phone, eCoupon);
-            sendFlag = true;
-        }
-        return sendFlag;
-    }
-
     public static void sendUserMessageInfoWithoutCheck(String phone, ECoupon eCoupon, String couponshopsId) {
         sendInfo(eCoupon, phone, couponshopsId);
-        eCoupon.downloadTimes--;
+        eCoupon.smsSentCount++;
         eCoupon.save();
     }
-
-    public static void sendUserMessageWithoutCheck(String phone, ECoupon eCoupon) {
-        send(eCoupon, phone);
-        eCoupon.downloadTimes--;
-        eCoupon.save();
-    }
-
 
     /**
      * 会员中心发送短信
@@ -1194,7 +1155,7 @@ public class ECoupon extends Model {
     public static boolean sendUserMessageInfo(long id, String couponshopsId) {
         ECoupon eCoupon = ECoupon.findById(id);
         boolean sendFlag = false;
-        if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED && eCoupon.downloadTimes > 0 && eCoupon.downloadTimes < 4) {
+        if (eCoupon != null && eCoupon.canSendSMSByConsumer()) {
             sendUserMessageInfoWithoutCheck(null, eCoupon, couponshopsId);
             sendFlag = true;
         }
@@ -1558,16 +1519,11 @@ public class ECoupon extends Model {
     }
 
     /**
-     * 判断是否可由
+     * 判断是否可由消费者发送短信
      * @return
      */
     public boolean canSendSMSByConsumer() {
-        if (this.status == ECouponStatus.UNCONSUMED && this.smsSentCount <= 3) {
-            return true;
-        }
-        if (this.goods.couponType == GoodsCouponType.IMPORT && this.status == ECouponStatus.CONSUMED
-                && this.smsSentCount <= 3) {
-            // 导入券可继续发送
+        if (canSendSMSByOperate() && this.smsSentCount <= 3) {
             return true;
         }
         return false;

@@ -3,10 +3,14 @@ package functional;
 import com.google.gson.Gson;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
-import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
-import models.order.*;
+import models.order.ECoupon;
+import models.order.Order;
+import models.order.OrderItems;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
+import models.order.OuterOrderStatus;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.taobao.TaobaoCouponConsumer;
@@ -91,18 +95,19 @@ public class TaobaoCouponConsumerTest extends FunctionalTest {
      * 测试重新发送测试
      */
     @Test
-    public void testResend() {
+    public void testResend() throws Exception {
         outerOrder.status = OuterOrderStatus.RESEND_COPY;
         outerOrder.save();
 
-        int downloadTime = ((ECoupon)ECoupon.findAll().get(0)).downloadTimes;
+        int smsSendCount = ((ECoupon)ECoupon.findAll().get(0)).smsSentCount;
 
         TaobaoCouponMessage taobaoCouponMessage = new TaobaoCouponMessage(outerOrder.id);
 
         TaobaoCouponConsumer taobaoCouponConsumer = new TaobaoCouponConsumer();
         taobaoCouponConsumer.consumeWithTx(taobaoCouponMessage);
 
-        assertEquals(downloadTime -1, (int)((ECoupon)ECoupon.findAll().get(0)).downloadTimes);
+        Thread.sleep(2000l); //等待消息处理完成
+        assertEquals(smsSendCount + 1, (int) ((ECoupon) ECoupon.findAll().get(0)).smsSentCount);
 
         outerOrder.refresh();
         assertEquals(OuterOrderStatus.RESEND_SYNCED, outerOrder.status);

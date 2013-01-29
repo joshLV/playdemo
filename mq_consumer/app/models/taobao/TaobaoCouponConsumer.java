@@ -5,10 +5,16 @@ import com.google.gson.JsonParser;
 import models.RabbitMQConsumerWithTx;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
-import models.order.*;
+import models.order.DeliveryType;
+import models.order.ECoupon;
+import models.order.ECouponPartner;
+import models.order.NotEnoughInventoryException;
+import models.order.Order;
+import models.order.OrderItems;
+import models.order.OuterOrder;
+import models.order.OuterOrderStatus;
 import models.resale.Resaler;
 import models.sales.Goods;
-import models.sales.GoodsDeployRelation;
 import models.sales.MaterialType;
 import play.Logger;
 import play.db.jpa.JPA;
@@ -68,17 +74,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             Logger.info("start taobao coupon consumer resend order");
             //重新发货的请求接收到，并先告诉淘宝我们要重新发货，然后再重新发货
             if(TaobaoCouponUtil.tellTaobaoCouponResend(outerOrder)) {
-                List<ECoupon> eCoupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
-                for(ECoupon eCoupon: eCoupons) {
-                    if (eCoupon.status != ECouponStatus.UNCONSUMED) {
-                        continue;
-                    }
-                    if (eCoupon.downloadTimes > 0) {
-                        ECoupon.send(eCoupon, eCoupon.orderItems.phone);
-                        eCoupon.downloadTimes -= 1;
-                        eCoupon.save();
-                    }
-                }
+                outerOrder.ybqOrder.sendOrderSMS("淘宝重发短信");
                 outerOrder.status = OuterOrderStatus.RESEND_SYNCED;
                 outerOrder.save();
             }else {
