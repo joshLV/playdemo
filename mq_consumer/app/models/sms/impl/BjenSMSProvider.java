@@ -1,36 +1,24 @@
 package models.sms.impl;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-
 import models.sms.SMSException;
 import models.sms.SMSMessage;
 import models.sms.SMSProvider;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.impl.client.AbstractHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-
-import play.Logger;
 import play.Play;
-import util.ws.WebServiceCallback;
-import util.ws.WebServiceClientFactory;
-import util.ws.WebServiceClient;
+import util.ws.WebServiceRequest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 北京奥软短信接口实现
- * 
+ *
  * @author <a href="mailto:tangliqun@uhuila.com">唐力群</a>
- * 
+ *
  */
 public class BjenSMSProvider implements SMSProvider {
 
@@ -58,10 +46,7 @@ public class BjenSMSProvider implements SMSProvider {
         String url = SEND_URL.replace(":sms_info",
                         URLEncodedUtils.format(qparams, "UTF-8"));
 
-        WebServiceClient client = WebServiceClientFactory
-                        .getClientHelper();
-
-        String line = client.getString("ENSMS", url, phoneArgs);
+        String line = WebServiceRequest.url(url).type("ENSMS").addKeyword(phoneArgs).getString();
         if (!line.equals("0")) {
             // 发送失败
             throw new SMSException("发送失败");
@@ -77,7 +62,7 @@ public class BjenSMSProvider implements SMSProvider {
     /**
      * 生成小写的密码串。 用户密码md5(用户名+密码+时间戳) 比如用户名为wang 密码为
      * qiqi那密码为：md5(wangqiqi1319873904) url传送密码为5a1a023fd486e2f0edbc595854c0d808
-     * 
+     *
      * @param username
      * @param password
      * @param dt

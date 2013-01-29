@@ -41,7 +41,6 @@ public class OperateTopics extends Controller {
 
     @ActiveNavigation("topics_add")
     public static void create(@Valid Topic topic) {
-        System.out.println(")))))))))         Enter OperateTopics.create");
         checkExpireAt(topic);
         if (Validation.hasErrors()) {
             render("OperateTopics/add.html", topic);

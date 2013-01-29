@@ -60,4 +60,14 @@ $(function(){
     });
     //初始化分类tree
     $.fn.zTree.init($("#categoryTree"), getTreeSettings("categoryTree"), buildZTreeSource(categories));
+    $("#submit").click(function(){
+        var categoryTree = $.fn.zTree.getZTreeObj('categoryTree');
+        var checkedNodes = categoryTree.getCheckedNodes(true)
+        if (checkedNodes.length==0) {
+            alert('请选择分类');return false;
+        }
+        $("#input-category_name1").val(checkedNodes[0].name);
+        $("#input-category_name2").val(checkedNodes[0].getParentNode().name);
+
+    });
 });

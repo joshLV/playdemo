@@ -233,7 +233,8 @@ public class CASUtils {
                 Cache.delete(PGTIOU);
 
                 // we put in cache PGT with PGT_username
-                Cache.add("pgt_" + user.getUsername(), pgt);
+                String username = user.getUsername().replaceAll("\\s+", "");
+                Cache.add("pgt_" + username, pgt);
             }
         }
 
@@ -243,7 +244,7 @@ public class CASUtils {
     /**
      * Method to get CAS atribut from cas response.
      *
-     * @param xml
+     * @param document
      * @return
      * @throws SAXException
      * @throws IOException

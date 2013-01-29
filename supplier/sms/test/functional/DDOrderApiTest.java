@@ -138,7 +138,7 @@ public class DDOrderApiTest extends FunctionalTest {
 
         assertNotNull(order);
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
-                OuterOrderPartner.DD, kx_order_id).first();
+                OuterOrderPartner.DD, Long.valueOf(kx_order_id)).first();
         assertEquals(order.orderNumber, outerOrder.ybqOrder.orderNumber);
         List<ECoupon> eCouponList = ECoupon.findByOrder(order);
         assertEquals(1, eCouponList.size());

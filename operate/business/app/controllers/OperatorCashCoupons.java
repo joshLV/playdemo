@@ -13,7 +13,6 @@ import play.mvc.With;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.List;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -52,7 +51,7 @@ public class OperatorCashCoupons extends Controller{
         JPAExtPaginator<CashCoupon> couponPage = CashCoupon.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
 
-        for(CashCoupon coupon: couponPage) {
+        for(CashCoupon coupon: couponPage.getCurrentPage()) {
             if(coupon.operatorId != null) {
                 OperateUser user = OperateUser.findById(coupon.operatorId);
                 if (user != null) {

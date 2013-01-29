@@ -16,6 +16,7 @@ import models.resale.ResalerLevel;
 import models.sales.Brand;
 import models.sales.Category;
 import models.sales.ChannelGoodsInfo;
+import models.sales.ChannelGoodsInfoStatus;
 import models.sales.Goods;
 import models.sales.GoodsCondition;
 import models.sales.GoodsHistory;
@@ -27,6 +28,7 @@ import models.sales.Shop;
 import models.supplier.Supplier;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
+import operate.rbac.annotations.Right;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.data.binding.As;
@@ -800,6 +802,7 @@ public class OperateGoods extends Controller {
      *
      * @param goodsId
      */
+    @Right("CHANNEL_GOODS")
     public static void channel(Long goodsId) {
         Goods goods = Goods.findUnDeletedById(goodsId);
         initInfo(goods);
@@ -891,6 +894,7 @@ public class OperateGoods extends Controller {
         ChannelGoodsInfo updInfo = ChannelGoodsInfo.findById(id);
         updInfo.tag = channelGoodsInfo.tag;
         updInfo.url = channelGoodsInfo.url;
+        channelGoodsInfo.status = ChannelGoodsInfoStatus.CREATED;
         updInfo.operateName = OperateRbac.currentUser().userName;
         if (channelGoodsInfo.onSaleAt != null) {
             updInfo.offSaleAt = channelGoodsInfo.offSaleAt;

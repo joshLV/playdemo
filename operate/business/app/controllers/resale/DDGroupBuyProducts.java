@@ -3,8 +3,8 @@ package controllers.resale;
 import com.google.gson.Gson;
 import controllers.OperateRbac;
 import models.admin.OperateUser;
-import models.dangdang.DDAPIInvokeException;
-import models.dangdang.DDAPIUtil;
+import models.dangdang.groupbuy.DDGroupBuyUtil;
+import models.dangdang.groupbuy.DDResponse;
 import models.order.OuterOrderPartner;
 import models.resale.ResalerProduct;
 import models.resale.ResalerProductJournal;
@@ -13,11 +13,10 @@ import models.sales.Goods;
 import models.sales.GoodsDeployRelation;
 import models.sales.Shop;
 import operate.rbac.annotations.ActiveNavigation;
-import play.Logger;
+import org.w3c.dom.Node;
+import play.libs.XPath;
 import play.mvc.Controller;
 import play.mvc.With;
-import play.templates.Template;
-import play.templates.TemplateLoader;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,6 +29,8 @@ import java.util.Map;
 @With(OperateRbac.class)
 @ActiveNavigation("resale_partner_product")
 public class DDGroupBuyProducts extends Controller {
+    public static final String PRODUCT_URL = "http://tuan.dangdang.com/product.php?product_id=";
+
     @ActiveNavigation("resale_partner_product")
     public static void showUpload(Long goodsId) {
         Goods goods = Goods.findById(goodsId);
@@ -48,32 +49,32 @@ public class DDGroupBuyProducts extends Controller {
         //准备参数
         Map<String, String> groupbuyInfoParams = params.allSimple();
         groupbuyInfoParams.remove("body");
+        groupbuyInfoParams.remove("goodsId");
         Map<String, Object> templateParams = new HashMap<>();
         templateParams.putAll(groupbuyInfoParams);
 
         GoodsDeployRelation relation = GoodsDeployRelation.generate(goods, OuterOrderPartner.DD);
         templateParams.put("linkId", String.valueOf(relation.linkId));
-        String jsonData = new Gson().toJson(templateParams);//添加shop前先把参数给添加了
+        String jsonData = new Gson().toJson(templateParams);//添加shop前先把参数给输出了
         Collection<Shop> shops = goods.getShopList();
         templateParams.put("shops", shops);
 
-        //渲染模板
-        Template template = TemplateLoader.load("dangdang/groupbuy/pushGoods.xml");
-        String requestParams = template.render(templateParams);
-
-        boolean pushFlag = false;
-        try {
-            pushFlag = DDAPIUtil.pushGoods(relation.linkId, requestParams);
-        } catch (DDAPIInvokeException e) {
-            Logger.info("[DDAPIPushGoods API] invoke push goods fail! goodsId=" + goodsId);
-        }
         OperateUser operateUser = OperateRbac.currentUser();
-        if (pushFlag) {
+
+        DDResponse response = DDGroupBuyUtil.pushGoods(templateParams);
+        if (response.isOk()) {
             //记录历史
             ResalerProduct product = ResalerProduct.createProduct(OuterOrderPartner.DD, 0L, operateUser.id, goods, relation.linkId);
             ResalerProductJournal.createJournal(product, operateUser.id, jsonData, ResalerProductJournalType.CREATE, "上传商品");
+            //查询当当的商品ID
+            Node node = DDGroupBuyUtil.getJustUploadedTeam(relation.linkId);
+            if (node != null) {
+                product.partnerProductId = Long.parseLong(XPath.selectText("//ddgid", node));
+                product.url = PRODUCT_URL + product.partnerProductId;
+                product.save();
+            }
         }
-        render("resale/DDGroupBuyProducts/result.html", pushFlag);
+        render("resale/DDGroupBuyProducts/result.html", response);
     }
 }
 

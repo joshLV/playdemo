@@ -44,8 +44,8 @@ public class BatchFreezeCoupons extends Controller {
         Set<ECoupon> unUsedCouponsList = new HashSet<>();
         BigDecimal tempUnUsed = BigDecimal.ZERO;
         BigDecimal tempFreezed = BigDecimal.ZERO;
-        Double sumUnUsed = 0d;
-        Double sumFreezed = 0d;
+        BigDecimal sumUnUsed = BigDecimal.ZERO;
+        BigDecimal sumFreezed = BigDecimal.ZERO;
         String couponsFreezedId = "";
         for (int i = 0; i < couponSns.length; i++) {
             //不存在的券号
@@ -64,14 +64,14 @@ public class BatchFreezeCoupons extends Controller {
             tempCoupon = ECoupon.find("eCouponSn=? and isFreeze=?", couponSns[i], 1).first();
             if (tempCoupon != null) {
                 freezedCouponsList.add(tempCoupon);
-                sumFreezed += tempFreezed.add(tempCoupon.salePrice).doubleValue();
+                sumFreezed = sumFreezed.add(tempFreezed.add(tempCoupon.salePrice));
                 continue;
             }
             //未消费的券号
             tempCoupon = ECoupon.find("eCouponSn=? and status=?", couponSns[i], ECouponStatus.UNCONSUMED).first();
             if (tempCoupon != null) {
                 unUsedCouponsList.add(tempCoupon);
-                sumUnUsed += tempUnUsed.add(tempCoupon.salePrice).doubleValue();
+                sumUnUsed = sumUnUsed.add(tempUnUsed.add(tempCoupon.salePrice));
                 continue;
             }
 
@@ -84,21 +84,16 @@ public class BatchFreezeCoupons extends Controller {
         render(inExistentCoupons, usedCouponsList, freezedCouponsList, unUsedCouponsList, sumUnUsed, sumFreezed, couponsFreezedId);
     }
 
-    public static void batchFreezeCoupons(String couponsFreezedId, Boolean isCheatedOrder) {
+    public static void batchFreezeCoupons(String couponsFreezedId, ECoupon coupon) {
         Set<ECoupon> unUsedCouponsList = new HashSet<>();
-        Double sumUnUsed = 0d;
+        BigDecimal sumUnUsed = BigDecimal.ZERO;
         BigDecimal tempUnUsed = BigDecimal.ZERO;
         String c[] = couponsFreezedId.split(",");
         for (int i = 0; i < c.length; i++) {
             ECoupon tempCoupon = ECoupon.findById(Long.parseLong(c[i]));
             unUsedCouponsList.add(tempCoupon);
-            sumUnUsed += tempUnUsed.add(tempCoupon.salePrice).doubleValue();
-            if (isCheatedOrder == null || isCheatedOrder == false) {
-                ECoupon.freeze(Long.parseLong(c[i]), OperateRbac.currentUser().userName);
-            } else {
-                ECoupon.freeze(Long.parseLong(c[i]), OperateRbac.currentUser().userName, isCheatedOrder);
-
-            }
+            sumUnUsed = sumUnUsed.add(tempUnUsed.add(tempCoupon.salePrice));
+            ECoupon.freeze(Long.parseLong(c[i]), OperateRbac.currentUser().userName, coupon);
         }
         render(unUsedCouponsList, sumUnUsed);
     }

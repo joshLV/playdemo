@@ -56,7 +56,7 @@ public class OperateReports extends Controller {
         condition.accountType = AccountType.CONSUMER;
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
-        for (AccountSequence accountSequence : accountSequencePage) {
+        for (AccountSequence accountSequence : accountSequencePage.getCurrentPage()) {
             User consumer = User.findById(accountSequence.account.uid);
             if (consumer != null) {
                 accountSequence.accountName = consumer.loginName;
@@ -105,7 +105,7 @@ public class OperateReports extends Controller {
         condition.accountType = AccountType.RESALER;
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
-        for (AccountSequence accountSequence : accountSequencePage) {
+        for (AccountSequence accountSequence : accountSequencePage.getCurrentPage()) {
             Resaler resaler = Resaler.findById(accountSequence.account.uid);
             if (resaler != null) {
                 accountSequence.accountName = resaler.loginName;
@@ -148,7 +148,7 @@ public class OperateReports extends Controller {
         condition.accountType = AccountType.SUPPLIER;
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
-        for (AccountSequence accountSequence : accountSequencePage) {
+        for (AccountSequence accountSequence : accountSequencePage.getCurrentPage()) {
             if (accountSequence.account != null) {
                 Supplier supplier = Supplier.findById(accountSequence.account.uid);
                 if (supplier != null) {
@@ -177,7 +177,7 @@ public class OperateReports extends Controller {
 
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
-        for (AccountSequence accountSequence : accountSequencePage) {
+        for (AccountSequence accountSequence : accountSequencePage.getCurrentPage()) {
             setOrderInfo(accountSequence);
         }
 
@@ -199,7 +199,7 @@ public class OperateReports extends Controller {
         condition.account = AccountUtil.getUhuilaAccount();
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
-        for (AccountSequence accountSequence : accountSequencePage) {
+        for (AccountSequence accountSequence : accountSequencePage.getCurrentPage()) {
             setOrderInfo(accountSequence);
         }
 
@@ -239,7 +239,7 @@ public class OperateReports extends Controller {
         condition.account = AccountUtil.getPlatformCommissionAccount();
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
-        for (AccountSequence accountSequence : accountSequencePage) {
+        for (AccountSequence accountSequence : accountSequencePage.getCurrentPage()) {
             setOrderInfo(accountSequence);
             setPlatform(accountSequence);
         }
@@ -262,7 +262,7 @@ public class OperateReports extends Controller {
         condition.account = AccountUtil.getPlatformIncomingAccount();
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
-        for (AccountSequence accountSequence : accountSequencePage) {
+        for (AccountSequence accountSequence : accountSequencePage.getCurrentPage()) {
             setOrderInfo(accountSequence);
             setPlatform(accountSequence);
         }
@@ -282,7 +282,7 @@ public class OperateReports extends Controller {
         condition.account = AccountUtil.getPlatformWithdrawAccount();
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
-        for (AccountSequence accountSequence : accountSequencePage) {
+        for (AccountSequence accountSequence : accountSequencePage.getCurrentPage()) {
             setOrderInfo(accountSequence);
             setPlatform(accountSequence);
         }
@@ -301,7 +301,7 @@ public class OperateReports extends Controller {
         condition.account = AccountUtil.getFinancingIncomingAccount();
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
-        for (AccountSequence accountSequence : accountSequencePage) {
+        for (AccountSequence accountSequence : accountSequencePage.getCurrentPage()) {
             setOrderInfo(accountSequence);
             setPlatform(accountSequence);
         }

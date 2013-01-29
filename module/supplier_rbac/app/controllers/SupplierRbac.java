@@ -255,6 +255,7 @@ public class SupplierRbac extends Controller {
 
         String username = session.get(SESSION_USER_KEY);
 
+        Logger.info("SupplierRbac.logout username=[" + username + "]");
         // we clear cache
         Cache.delete("pgt_" + username);
         Cache.delete(SESSION_USER_KEY + username);
@@ -293,8 +294,10 @@ public class SupplierRbac extends Controller {
             casUser = CASUtils.valideCasTicket(ticket);
             if (casUser != null) {
                 isAuthenticated = Boolean.TRUE;
-                session.put(SESSION_USER_KEY, casUser.getUsername());
-                Cache.safeAdd(SESSION_USER_KEY + getDomainUserName(casUser.getUsername()), Boolean.TRUE, "120mn");
+                String username = casUser.getUsername().replaceAll("\\s+", "");
+                Logger.info("casUser.getUsername()=[" + username + "]");
+                session.put(SESSION_USER_KEY, username);
+                Cache.safeAdd(SESSION_USER_KEY + getDomainUserName(username), Boolean.TRUE, "120mn");
                 // we invoke the implementation of onAuthenticate
                 Security.onAuthenticated(casUser);
             }
@@ -303,6 +306,7 @@ public class SupplierRbac extends Controller {
         if (isAuthenticated) {
             // 登录记录
             String userName = getDomainUserName(casUser.getUsername());
+            Logger.info("getDomainUserName=[" + userName + "]");
             String subDomain = CASUtils.getSubDomain();
             SupplierUser user = SupplierUser.findUserByDomainName(subDomain, userName);
             if (user != null) {

@@ -4,6 +4,7 @@ import factory.FactoryBoy;
 import factory.ModelFactory;
 import models.order.CouponHistory;
 import models.order.ECoupon;
+import models.order.ECouponHistoryMessage;
 import models.order.ECouponStatus;
 
 /**
@@ -18,10 +19,8 @@ public class CouponHistoryFactory extends ModelFactory<CouponHistory> {
      */
     @Override
     public CouponHistory define() {
-
-        //记录券历史信息
-        CouponHistory history = new CouponHistory(FactoryBoy.create(ECoupon.class),
-                null, "产生券号", ECouponStatus.UNCONSUMED, ECouponStatus.UNCONSUMED, null);
-        return history;
+        ECoupon ecoupon = FactoryBoy.create(ECoupon.class);
+        return ECouponHistoryMessage.with(ecoupon).remark("产生券号")
+                .fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED).toModel();
     }
 }

@@ -85,6 +85,9 @@ public class Order extends Model {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
     public List<ECoupon> eCoupons;
 
+    /**
+     * 订单号
+     */
     @Column(name = "order_no", unique = true)
     public String orderNumber;
 
@@ -691,6 +694,7 @@ public class Order extends Model {
                 this.payRequestId = tradeBill.getId();
             } catch (RuntimeException e) {
                 Logger.error("can not pay", e);
+                e.printStackTrace();
                 return false;
                 //忽略，此时订单没有支付，但余额已经保存
             }
@@ -719,11 +723,20 @@ public class Order extends Model {
             }
             //如果不是电子券，跳过
             if (MaterialType.ELECTRONIC == goods.materialType) {
+                System.out.println(orderItem.buyNumber + "===orderItem.buyNumber>>");
                 for (int i = 0; i < orderItem.buyNumber; i++) {
                     //创建电子券
                     ECoupon eCoupon = createCoupon(goods, orderItem);
                     //记录券历史信息
-                    new CouponHistory(eCoupon, AccountType.RESALER.equals(orderItem.order.userType) ? "分销商：" + orderItem.order.getResaler().loginName : "消费者:" + orderItem.order.getUser().getShowName(), "产生券号", ECouponStatus.UNCONSUMED, ECouponStatus.UNCONSUMED, null).save();
+                    String operator = null;
+                    if (AccountType.RESALER.equals(orderItem.order.userType)) {
+                        operator = "分销商：" + orderItem.order.getResaler().loginName;
+                    } else {
+                        operator = "消费者:" + orderItem.order.getUser().getShowName();
+                    }
+                    ECouponHistoryMessage.with(eCoupon).operator(operator)
+                            .remark("产生券号").fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED)
+                            .sendToMQ();
                 }
             }
             //邮件提醒
@@ -1133,7 +1146,7 @@ public class Order extends Model {
         //使用抵用券
         order.voucherValue = BigDecimal.ZERO;
         List<Voucher> validVouchers = new ArrayList<>();
-        if(vouchers != null) {
+        if (vouchers != null) {
             for (Voucher voucher : vouchers) {
                 if (Voucher.canAssign(account, voucher)) {
                     order.voucherValue = order.voucherValue.add(voucher.value);
@@ -1170,7 +1183,7 @@ public class Order extends Model {
         //创建订单交易
         //如果使用余额足以支付，则付款直接成功
         if (order.discountPay.compareTo(BigDecimal.ZERO) == 0
-                && order.accountPay .add(order.promotionBalancePay) .add(order.voucherValue)
+                && order.accountPay.add(order.promotionBalancePay).add(order.voucherValue)
                 .compareTo(order.needPay) == 0) {
             order.payMethod = PaymentSource.getBalanceSource().code;
             order.payAndSendECoupon();
@@ -1310,7 +1323,7 @@ public class Order extends Model {
      */
     public void sendOrderSMS(String remark) {
         for (OrderItems item : this.orderItems) {
-            SMSUtil.sendOrderItemSms(item.id, remark);
+            OrderECouponMessage.with(item).remark(remark).sendToMQ();
         }
     }
 }

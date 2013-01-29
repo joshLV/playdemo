@@ -1,5 +1,7 @@
 package controllers;
 
+import play.Play;
+import play.mvc.Before;
 import play.mvc.Controller;
 
 /**
@@ -9,7 +11,17 @@ import play.mvc.Controller;
  */
 public class MockApiMain extends Controller {
 
+    @Before
+    public static void checkMockSwitch() {
+        String canMock = Play.configuration.getProperty("mock.api.ui", "disable");
+
+        if (!"enabled".equals(canMock)) {
+            error(404, "Can't use.");
+        }
+    }
+
     public static void index() {
         render();
     }
+
 }

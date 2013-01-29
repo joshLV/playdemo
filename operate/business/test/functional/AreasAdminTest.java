@@ -11,6 +11,8 @@ import operate.rbac.RbacLoader;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import play.data.validation.*;
+import play.data.validation.Error;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import factory.FactoryBoy;
@@ -20,7 +22,6 @@ import factory.callback.BuildCallback;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 /**
  * User: wangjia
@@ -56,6 +57,15 @@ public class AreasAdminTest extends FunctionalTest {
     }
 
     @Test
+    public void testIndexAreaNoParent() {
+        Http.Response response = GET("/areas");
+        assertStatus(200, response);
+        List<Area> areaList = (List<Area>) renderArgs("areaList");
+        assertEquals(1, areaList.size());
+        assertEquals(null, renderArgs("parentId"));
+    }
+
+    @Test
     public void testEdit() {
         Http.Response response = GET("/areas/" + area.id + "/edit?parentId=" + area.parent.id);
         assertStatus(200, response);
@@ -74,12 +84,17 @@ public class AreasAdminTest extends FunctionalTest {
     }
 
     @Test
-    public void testAdd() {
-        Http.Response response = GET("/category/new");
+    public void testAddAreaNoParent() {
+        Http.Response response = GET("/areas/new");
         assertStatus(200, response);
         assertEquals(null, renderArgs("parentId"));
+    }
 
-
+    @Test
+    public void testAdd() {
+        Http.Response response = GET("/areas/new?parentId=" + area.parent.id);
+        assertStatus(200, response);
+        assertEquals(area.parent.id.toString(), (String) renderArgs("parentId"));
     }
 
     @Test
@@ -96,6 +111,8 @@ public class AreasAdminTest extends FunctionalTest {
         assertStatus(302, response);
         assertEquals(4, Area.count());
     }
+
+
 
     @Test
     public void testDelete() {

@@ -3,14 +3,13 @@ package unit.supplier;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import jobs.dadong.DadongErSendToRequest;
-import models.order.CouponHistory;
 import models.order.ECoupon;
+import models.order.ECouponHistoryMessage;
 import models.order.OrderItems;
 import models.sales.Brand;
 import models.sales.Category;
 import models.sales.Goods;
 import models.supplier.Supplier;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import play.test.UnitTest;
@@ -33,6 +32,7 @@ public class DadongErSendToRequestTest extends UnitTest {
     @Before
     public void setUp() throws Exception {
         FactoryBoy.deleteAll();
+        MockMQ.clear();
 
         MockWebServiceClient.clear();
         dadong = FactoryBoy.create(Supplier.class, new BuildCallback<Supplier>() {
@@ -54,11 +54,6 @@ public class DadongErSendToRequestTest extends UnitTest {
         ecoupon = FactoryBoy.create(ECoupon.class);
     }
 
-    @After
-    public void tearDown() {
-        MockMQ.clear();
-    }
-
     @Test
     public void testSendToOldPhone() throws Exception {
         MockWebServiceClient.addMockHttpRequestFromFile(200, "test/data/dadong/ErSendToResponse1.xml");
@@ -66,9 +61,8 @@ public class DadongErSendToRequestTest extends UnitTest {
         DadongErSendToRequest.resend(orderItems, orderItems.phone);
         ecoupon.refresh();
 
-        assertEquals(1, CouponHistory.count());
-        CouponHistory couponHistory = CouponHistory.find("order by id desc").first();
-        assertEquals("大东票务重发券:0000Success", couponHistory.remark);
+        ECouponHistoryMessage lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage.MQ_KEY);
+        assertEquals("大东票务重发券:0000Success", lastMessage.remark);
     }
 
     @Test
@@ -78,8 +72,7 @@ public class DadongErSendToRequestTest extends UnitTest {
         DadongErSendToRequest.resend(orderItems, "13188188818");
         ecoupon.refresh();
 
-        assertEquals(1, CouponHistory.count());
-        CouponHistory couponHistory = CouponHistory.find("order by id desc").first();
-        assertEquals("大东票务重发券 发至新手机13188188818:0000Success", couponHistory.remark);
+        ECouponHistoryMessage lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage.MQ_KEY);
+        assertEquals("大东票务重发券 发至新手机13188188818:0000Success", lastMessage.remark);
     }
 }

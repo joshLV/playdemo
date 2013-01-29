@@ -5,6 +5,7 @@ import models.admin.OperateUser;
 import models.order.CouponHistory;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
+import models.order.ECouponHistoryMessage;
 import models.order.ECouponStatus;
 import models.order.VerifyCouponType;
 import models.sales.Brand;
@@ -48,7 +49,7 @@ public class OperateCoupons extends Controller {
         JPAExtPaginator<ECoupon> couponPage;
 
         couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE);
-        for (ECoupon coupon : couponPage) {
+        for (ECoupon coupon : couponPage.getCurrentPage()) {
             if (coupon.operateUserId != null) {
                 OperateUser operateUser = OperateUser.findById(coupon.operateUserId);
                 coupon.operateUserName = operateUser.userName;
@@ -59,6 +60,7 @@ public class OperateCoupons extends Controller {
         BigDecimal amountSummary = ECoupon.summary(couponPage);
         //判断角色是否有解冻券号的权限
         boolean hasRight = ContextedPermission.hasPermission("COUPON_UNFREEZE");
+
         render(couponPage, condition, amountSummary, hasRight, hasEcouponRefundPermission, hasViewEcouponSnPermission);
     }
 
@@ -68,8 +70,8 @@ public class OperateCoupons extends Controller {
      * @param id
      */
     @ActiveNavigation("coupons_index")
-    public static void freeze(long id) {
-        ECoupon.freeze(id, OperateRbac.currentUser().userName);
+    public static void freeze(long id, ECoupon coupon) {
+        ECoupon.freeze(id, OperateRbac.currentUser().userName, coupon);
         index(null);
     }
 
@@ -94,9 +96,10 @@ public class OperateCoupons extends Controller {
             return;
         }
 
-        List<CouponHistory> couponList = CouponHistory.find("coupon=?", coupon).fetch();
+        Boolean hasViewEcouponSnPermission = ContextedPermission.hasPermission("VIEW_ECOUPONSN");
+        List<CouponHistory> couponList = CouponHistory.find("coupon=? order by createdAt desc", coupon).fetch();
         String couponSn = coupon.getMaskedEcouponSn();
-        render("OperateCoupons/history.html", couponSn, couponList, coupon);
+        render("OperateCoupons/history.html", couponSn, couponList, coupon, hasViewEcouponSnPermission);
     }
 
     @Right("ECOUPON_REFUND")
@@ -150,7 +153,9 @@ public class OperateCoupons extends Controller {
     public static void sendMessage(long id) {
         boolean sendFalg = ECoupon.sendMessage(id);
         ECoupon eCoupon = ECoupon.findById(id);
-        new CouponHistory(eCoupon, OperateRbac.currentUser().userName, "重发短信", eCoupon.status, eCoupon.status, null).save();
+
+        ECouponHistoryMessage.with(eCoupon).operator(OperateRbac.currentUser().userName)
+                .remark("重发短信").sendToMQ();
         renderJSON(sendFalg ? "0" : "1");
     }
 
@@ -158,7 +163,8 @@ public class OperateCoupons extends Controller {
         if (id != null) {
             ECoupon coupon = ECoupon.findById(id);
             if (coupon != null) {
-                new CouponHistory(coupon, OperateRbac.currentUser().userName, "查看完整券号", coupon.status, coupon.status, null).save();
+                ECouponHistoryMessage.with(coupon).operator(OperateRbac.currentUser().userName)
+                        .remark("查看完整券号").sendToMQ();
                 renderText(coupon.eCouponSn);
             }
         }
@@ -175,10 +181,7 @@ public class OperateCoupons extends Controller {
         renderArgs.put("__FILE_NAME__", "券列表_" + System.currentTimeMillis() + ".xls");
         condition.hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
         condition.operatorId = OperateRbac.currentUser().id;
-        JPAExtPaginator<ECoupon> couponsList;
-
-
-        couponsList = ECoupon.query(condition, 1, PAGE_SIZE);
+        JPAExtPaginator<ECoupon> couponsList = ECoupon.query(condition, 1, PAGE_SIZE);
 
         for (ECoupon coupon : couponsList) {
             coupon.shopName = coupon.getConsumedShop();
@@ -243,8 +246,13 @@ public class OperateCoupons extends Controller {
         coupon.appointmentDate = date;
         coupon.appointmentRemark = remark;
         coupon.save();
-        coupon.sendOrderSMS(null, "发送预约短信");
+        coupon.sendOrderSMS("发送预约短信");
         boolean success = true;
         render("OperateCoupons/showAppointment.html", coupon, success);
+    }
+
+    public static void couponInfo(Long id) {
+        ECoupon coupon = ECoupon.findById(id);
+        render(coupon);
     }
 }

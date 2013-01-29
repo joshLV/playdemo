@@ -44,7 +44,7 @@ public class AccountSequences extends Controller {
         JPAExtPaginator<AccountSequence> accountSequences = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
         //account_sequence记录的备注是订单的首个商品名，为避免出现显示别家商户的商品名，在此重新查一遍
-        for (AccountSequence sequence : accountSequences) {
+        for (AccountSequence sequence : accountSequences.getCurrentPage()) {
             if (sequence.tradeType != TradeType.PURCHASE_COSTING) {
                 continue;
             }

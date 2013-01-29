@@ -10,6 +10,7 @@ import models.sms.SMSUtil;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Validation;
+import play.db.jpa.JPA;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -99,6 +100,8 @@ public class SupplierVerifySingleCoupons extends Controller {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         Long shopId = Long.valueOf(request.params.get("shopId"));
         String eCouponSn = request.params.get("eCouponSn");
+        JPA.em().flush();
+
         SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
         ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);

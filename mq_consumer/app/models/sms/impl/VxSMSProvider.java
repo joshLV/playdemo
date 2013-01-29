@@ -1,25 +1,22 @@
 package models.sms.impl;
 
+import models.sms.SMSException;
+import models.sms.SMSMessage;
+import models.sms.SMSProvider;
+import org.apache.commons.lang.StringUtils;
+import play.Logger;
+import play.Play;
+import util.ws.WebServiceRequest;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import models.sms.SMSException;
-import models.sms.SMSMessage;
-import models.sms.SMSProvider;
-
-import org.apache.commons.lang.StringUtils;
-
-import play.Logger;
-import play.Play;
-import util.ws.WebServiceClient;
-import util.ws.WebServiceClientFactory;
-
 /**
  * 虚拟短信网络接口.
  * 用于内部测试使用的通道，不会发短信，而是保存到数据库表vx_sms中.
- * 
+ *
  * @author <a href="mailto:tangliqun@uhuila.com">唐力群</a>
  */
 public class VxSMSProvider implements SMSProvider {
@@ -39,10 +36,10 @@ public class VxSMSProvider implements SMSProvider {
         qparams.put("content", message.getContent());
         qparams.put("mobiles", phoneArgs);
 
-        WebServiceClient client = WebServiceClientFactory
-                        .getClientHelper();
+        String result = WebServiceRequest.url(SEND_URL).type("VXSMS")
+                .params(qparams)
+                .addKeyword(phoneArgs).postString();
 
-        String result = client.postString("VXSMS", SEND_URL, qparams, phoneArgs);
         Logger.info("返回消息：" + result);
         result = result.trim();
         Matcher m = RESULTCODE_PATTERN.matcher(result);

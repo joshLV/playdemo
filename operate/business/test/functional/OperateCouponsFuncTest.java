@@ -8,6 +8,7 @@ import models.admin.OperateRole;
 import models.admin.OperateUser;
 import models.order.CouponHistory;
 import models.order.ECoupon;
+import models.order.ECouponHistoryMessage;
 import models.order.ECouponStatus;
 import models.order.Order;
 import models.sales.Goods;
@@ -20,13 +21,14 @@ import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 import util.DateHelper;
+import util.mq.MockMQ;
 
 import java.util.Date;
 import java.util.List;
 
 /**
  * 运营后台券功能测试.
- *
+ * <p/>
  * User: hejun
  * Date: 12-8-22
  * Time: 上午10:29
@@ -37,8 +39,8 @@ public class OperateCouponsFuncTest extends FunctionalTest {
 
     @Before
     public void setUp() {
-
         FactoryBoy.deleteAll();
+        MockMQ.clear();
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
@@ -68,15 +70,13 @@ public class OperateCouponsFuncTest extends FunctionalTest {
                         target.createdAt = new Date();
                     }
                 });
-
-
     }
 
     @Test
     public void testIndex() {
         Http.Response response = GET("/coupons");
         assertIsOk(response);
-        assertContentMatch("券号列表", response);
+        assertContentMatch("电子消费券", response);
         assertEquals(10, ((JPAExtPaginator<ECoupon>) renderArgs("couponPage")).size());
     }
 
@@ -93,7 +93,7 @@ public class OperateCouponsFuncTest extends FunctionalTest {
     @Test
     public void testIndexWithoutRight() {
         String condition = "?condition.status=UNCONSUMED";
-        user.roles.remove(role("manager"));
+        user.roles.remove(role("customservice"));
         user.save();
         Http.Response response = GET("/coupons" + condition);
         assertIsOk(response);
@@ -106,18 +106,20 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         return role;
     }
 
+
     @Test
     public void testFreeze() {
         ECoupon eCoupon = FactoryBoy.create(ECoupon.class);
         eCoupon.isFreeze = 0;
         eCoupon.save();
-        Http.Response response = PUT("/coupons/" + eCoupon.id.toString() + "/freeze", "text/html", "");
+        String params = "coupon.freezedReason=UNABLEVERIFY";
+        Http.Response response = PUT("/coupons/" + eCoupon.id.toString() + "/freeze", "application/x-www-form-urlencoded", params);
         assertStatus(302, response);
         eCoupon.refresh();
         assertEquals(1, eCoupon.isFreeze.intValue());
-        assertEquals(1, CouponHistory.count());
-        CouponHistory historyList = CouponHistory.find("coupon=? order by createdAt desc", eCoupon).first();
-        assertEquals("冻结券号", historyList.remark);
+
+        ECouponHistoryMessage lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage.MQ_KEY);
+        assertEquals("冻结券号(无法验证)", lastMessage.remark);
     }
 
     @Test
@@ -129,10 +131,9 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         assertStatus(302, response);
         eCoupon.refresh();
         assertEquals(0, eCoupon.isFreeze.intValue());
-        assertEquals(1, CouponHistory.count());
 
-        CouponHistory historyList = CouponHistory.find("coupon=? order by createdAt desc", eCoupon).first();
-        assertEquals("解冻券号", historyList.remark);
+        ECouponHistoryMessage lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage.MQ_KEY);
+        assertEquals("解冻券号", lastMessage.remark);
     }
 
     @Test
@@ -142,10 +143,9 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         eCoupon.save();
         Http.Response response = GET("/coupons-message/" + eCoupon.id.toString() + "/send");
         assertIsOk(response);
-        assertEquals(1, CouponHistory.count());
-        CouponHistory historyList = CouponHistory.find("coupon=? order by createdAt desc", eCoupon).first();
-        assertEquals("重发短信", historyList.remark);
 
+        ECouponHistoryMessage lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage.MQ_KEY);
+        assertEquals("重发短信", lastMessage.remark);
     }
 
     @Test

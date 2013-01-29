@@ -8,7 +8,7 @@
     <legend>当当上传商品：<a href="/goods/${goods.id}" target="_blank">
         ${goods.shortName}</a>
     </legend>
-    <form class="form-horizontal" method="POST" action="/resale-partner-products/jd/upload">
+    <form class="form-horizontal" method="POST" action="/resale-partner-products/dd/upload">
         <div class="control-group">
             <label class="control-label">选择城市</label>
             <div class="controls">
@@ -71,17 +71,16 @@
         </div>
 
         <div class="control-group">
-            <label class="control-label" for="inputTeamTitle">团购标题名称 *</label>
+            <label class="control-label" for="inputTeamTitle">团购短标题 *</label>
             <div class="controls">
-                <input type="text" id="inputTeamTitle" class="input-block-level" name="teamSummary" value="${goods.name}">
+                <input type="text" id="inputTeamTitle" class="input-block-level" name="teamTitle" value="${goods.name}">
                 <span class="help-block">不超过280个字符</span>
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="inputTitle">团购产品标题 *</label>
+            <label class="control-label" for="inputSummary">团购单品页长标题 *</label>
             <div class="controls">
-                <input type="text" id="inputTitle" name="teamShortName" class="input-xxlarge" value="${goods.shortName}">
-                <span class="help-inline">不超过12个字符</span>
+                <input type="text" id="inputSummary" name="teamSummary" class="input-block-level" value="${goods.shortName}">
             </div>
         </div>
         <div class="control-group">
@@ -129,17 +128,17 @@
         <div class="control-group">
             <label class="control-label">团购开始时间 *</label>
             <div class="controls">
-                <input type="text" name="tartDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH'})" class="Wdate" value="${goods.effectiveAt?.format('yyyy-MM-dd HH:mm')}">
+                <input type="text" name="startDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${goods.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}">
                 团购结束时间 *
-                <input type="text" name="Date onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm'})"  class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm')}">
+                <input type="text" name="endDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"  class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:ss')}">
             </div>
         </div>
         <div class="control-group">
             <label class="control-label">券生效日期 *</label>
             <div class="controls">
-                <input type="text" name="effectStartDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm'})"  class="Wdate" value="${goods.effectiveAt?.format('yyyy-MM-dd HH:mm')}">
+                <input type="text" name="effectStartDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"  class="Wdate" value="${goods.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}">
                 券&nbsp;截止&nbsp;日&nbsp;期 *
-                <input type="text" name="effectEndDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm'})"  class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm')}">
+                <input type="text" name="effectEndDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"  class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:ss')}">
             </div>
         </div>
         <div class="control-group">
@@ -236,24 +235,19 @@
             <label class="control-label">团购详情</label>
             <div class="controls">
                 <textarea rows="8" cols="100"  name="detail" id="detail" style="width:850px;height:550px;display:hidden;">
-                    #{if goods.exhibition}
-                        ${goods.exhibition.raw()}
-                        <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
-                            <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
-                        </p>
-                        ${goods.prompt.raw()}
-                        <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
-                            <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
-                        </p>
-                        ${goods.details.raw()}
-                        <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
-                            <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
-                        </p>
-                        ${goods.supplierDes.raw()}
-                    #{/if}
-                    #{else}
-                        ${goods.teamDetail?.raw()}
-                    #{/else}
+                    ${goods.exhibition?.raw()}
+                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
+                    </p>
+                    ${goods.prompt?.raw()}
+                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
+                    </p>
+                    ${goods.details?.raw()}
+                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
+                    </p>
+                    ${goods.supplierDes?.raw()}
                 </textarea>
             </div>
         </div>

@@ -11,20 +11,20 @@
             var discount = $.trim($('#discount_sn').val());
             var mobile = $.trim($('#ecart_mobile').val());
             var orderItems = '';
-            $('.num-ipt').each(function(){
+            $('.num-ipt').each(function () {
                 var ele = $(this);
                 var goods_id = ele.attr('goods_id');
                 var num = ele.val();
                 orderItems += 'gid=' + goods_id + '&g' + goods_id + '=' + num + '&'
             });
 
-            window.location.replace( '/orders?' + orderItems +  'discountSN=' + discount + '&mobile=' + mobile);
+            window.location.replace('/orders?' + orderItems + 'discountSN=' + discount + '&mobile=' + mobile);
         }
 
         $('#discount-btn').click(function () {
             if ($("#discount_sn").val()) {
                 reloadOrder();
-            }else{
+            } else {
                 $('.discount-error').html('优惠码为空，请输入优惠码');
             }
             return false;
@@ -50,7 +50,7 @@
             return false;
         });
 
-        $(".num-ipt").blur(function(){
+        $(".num-ipt").blur(function () {
             var ele = $(this);
             var ele_id = ele.attr("id");
             var last_ele_num = $("#last_" + ele_id);
@@ -108,22 +108,28 @@
                     <td style="text-align:left"><a href="/g/${rCart.goods.id}">${rCart.goods.name}</a></td>
                     <td>${rCart.goods.salePrice}</td>
                     <td>
-                        <a href="#" class="reduce-btn" goods_id="${rCart.goods.id}" add_value="-1" hidefocus="true">-</a>
-                        <input class="num-ipt" type="text" value="${rCart.number}" goods_id="${rCart.goods.id}" id="num_${rCart.goods.id}"/>
+                        <a href="#" class="reduce-btn" goods_id="${rCart.goods.id}" add_value="-1"
+                           hidefocus="true">-</a>
+                        <input class="num-ipt" type="text" value="${rCart.number}" goods_id="${rCart.goods.id}"
+                               id="num_${rCart.goods.id}"/>
                         <input type="hidden" value="${rCart.number}" id="last_num_${rCart.goods.id}"/>
                         <a href="#" class="add-btn" goods_id="${rCart.goods.id}" add_value="1" hidefocus="true">+</a>
                     </td>
                     <td valign="middle">
-                        ${(rCart.goods.salePrice*rCart.number).formatCurrency('CNY').raw()}<br/>
+                    ${(rCart.goods.salePrice*rCart.number).formatCurrency('CNY').raw()}<br/>
                     </td>
                 </tr>
                 #{/list}
                 #{set i:0} #{/set}
             <tbody>
         </table>
-        <div class="freight" style="border-top: 1px solid #7A7F89">
-            运费：${models.order.Order.FREIGHT.formatCurrency('CNY').raw()}元
-        </div>
+        #{list rCartList, as:'rCart'}
+            #{if rCart.goods.freeShipping!=true}
+                <div class="freight" style="border-top: 1px solid #7A7F89">
+                    运费：${models.order.Order.FREIGHT.formatCurrency('CNY').raw()}元
+                </div>
+            #{/if}
+        #{/list}
         <div class="subtotal">商品共${rCartList?.size()}件，合计：<em>${rCartAmount?.formatCurrency("CNY")}</em>元</div>
     </div>
     <!-- .order -->
@@ -137,7 +143,8 @@
                 <div class="mobi-bd">
                     <div class="receive-mobi"><em>*</em>接收手机：<input type="text" class="mobi-num" name="mobile"
                                                                     maxlength="11" value="${mobile}" id="ecart_mobile"/>
-                        <span style="display: inline;color: #ff0000;" id="limit">#{error 'mobile'/}#{error 'mobile_limit_num'/}</span></div>
+                        <span style="display: inline;color: #ff0000;"
+                              id="limit">#{error 'mobile'/}#{error 'mobile_limit_num'/}</span></div>
                     #{if orderItems_mobiles?.size()>0}
                         <dl>
                             <dt>历史手机：</dt>
@@ -174,9 +181,11 @@
                         <td>${eCart.goods.salePrice.formatCurrency('CNY').raw()}</td>
                         <td>
                             <a href="#" class="reduce-btn" goods_id="${eCart.goods.id}" add_value="-1" hidefocus="true">-</a>
-                            <input class="num-ipt" type="text" value="${eCart.number}" goods_id="${eCart.goods.id}" id="num_${eCart.goods.id}"/>
+                            <input class="num-ipt" type="text" value="${eCart.number}" goods_id="${eCart.goods.id}"
+                                   id="num_${eCart.goods.id}"/>
                             <input type="hidden" value="${eCart.number}" id="last_num_${eCart.goods.id}"/>
-                            <a href="#" class="add-btn" goods_id="${eCart.goods.id}" add_value="1" hidefocus="true">+</a>
+                            <a href="#" class="add-btn" goods_id="${eCart.goods.id}" add_value="1"
+                               hidefocus="true">+</a>
                         </td>
 
                         <td style="color:red">#{if eCart.rebateValue?.compareTo(java.math.BigDecimal.ZERO) > 0}${eCart.rebateValue?.negate()?.formatCurrency('CNY')}#{/if}</td>

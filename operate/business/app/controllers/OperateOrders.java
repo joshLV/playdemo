@@ -1,8 +1,7 @@
 package controllers;
 
-import models.accounts.Voucher;
-import models.consumer.User;
 import models.accounts.AccountType;
+import models.consumer.User;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrdersCondition;
@@ -123,7 +122,9 @@ public class OperateOrders extends Controller {
                 loginName = user.loginName;
             }
         }
-        render(orders, orderItems, loginName);
+        // 用于查看手机号的权限
+        Boolean hasViewEcouponSnPermission = ContextedPermission.hasPermission("VIEW_ECOUPONSN");
+        render(orders, orderItems, loginName, hasViewEcouponSnPermission);
     }
 
 

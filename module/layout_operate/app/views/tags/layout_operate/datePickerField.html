@@ -1,0 +1,17 @@
+*{时间范围输入框}*
+*{name:      字段名称，仅用于显示标签}*
+*{value:     日期的值}*
+*{_required: 文字标签前面是否要加必填项标志（选填，默认不标识必填项）}*
+#{layout_operate.labelText name:_name, required:_required/}
+#{field _name}
+<div class="input-append date bs-datepicker" id="${field.id}" name="${field.name}"
+     data-date="${params[field.name]?.escape()?.raw() ?: field.error?.message ==
+     'validation.required' ? '' :_value?.escape()?.raw()}"
+     data-date-format="yyyy-mm-dd">
+    <input class="span2" size="16" type="text" value="${params[field.name]?.escape()?.raw() ?: field.error?.message ==
+    'validation.required' ? '' :_value?.escape()?.raw()}">
+    <span class="add-on"><i class="icon-th"></i></span>
+    <span class="error">${field?.error?.raw()}</span>
+</div>
+#{/field}
+

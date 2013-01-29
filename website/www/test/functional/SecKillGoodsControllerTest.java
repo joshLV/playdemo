@@ -23,7 +23,7 @@ public class SecKillGoodsControllerTest extends FunctionalTest {
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
-        UserInfo userInfo=FactoryBoy.create(UserInfo.class);
+        UserInfo userInfo = FactoryBoy.create(UserInfo.class);
         User user = FactoryBoy.create(User.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
@@ -36,6 +36,12 @@ public class SecKillGoodsControllerTest extends FunctionalTest {
         assertStatus(200, response);
         assertContentType("text/html", response);
         assertContentMatch("秒杀", response);
+    }
+
+    @Test
+    public void testIndexNoGoods() {
+        Http.Response response = GET("/seckill-goods");
+        assertStatus(302, response);
     }
 
 

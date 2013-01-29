@@ -49,6 +49,8 @@ GET     /resale-partner-products/jd/products/{goodsId} resale.JDGroupBuyProducts
 # 58
 GET     /resale-partner-products/wb/upload/{goodsId}   resale.WubaGroupBuyProducts.showUpload
 POST    /resale-partner-products/wb/upload             resale.WubaGroupBuyProducts.upload
+GET     /resale-partner-products/wb/edit/{productId}   resale.WubaGroupBuyProducts.showEdit
+POST    /resale-partner-products/wb/edit               resale.WubaGroupBuyProducts.edit
 
 # 当当
 GET     /resale-partner-products/dd/upload/{goodsId}   resale.DDGroupBuyProducts.showUpload
@@ -237,7 +239,8 @@ GET     /coupon_excel                           OperateCoupons.couponExcelOut
 GET     /coupon_history                         OperateCoupons.couponHistory
 GET     /coupon_refund                          OperateCoupons.refund
 GET     /coupon_refund_doing                    OperateCoupons.handleRefund
-GET     //view-conpon/{id}/send               OperateCoupons.viewECouponsn
+GET     /view-conpon/{id}/send                 OperateCoupons.viewECouponsn
+GET     /coupon_info/{id}                      OperateCoupons.couponInfo
 
 GET     /coupon-appointment/{couponId}          OperateCoupons.showAppointment
 POST    /coupon-appointment                     OperateCoupons.appointment
@@ -312,10 +315,6 @@ GET     /withdraw/confirmSettle                 WithdrawApproval.confirmSettle
 POST    /withdraw/settle                        WithdrawApproval.settle
 
 # 用户管理
-GET     /consumers                              OperateConsumers.index
-GET     /consumers/{id}                         OperateConsumers.show
-PUT     /consumers/{id}/freeze                  OperateConsumers.freeze
-PUT     /consumers/{id}/unfreeze                OperateConsumers.unfreeze
 GET     /consumers_votes                        OperateConsumersWinningInfo.index
 DELETE  /consumers_votes/{id}                   OperateConsumersWinningInfo.delete
 # 活动管理

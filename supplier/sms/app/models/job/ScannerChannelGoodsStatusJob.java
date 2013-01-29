@@ -4,12 +4,10 @@ import models.resale.Resaler;
 import models.sales.ChannelGoodsInfo;
 import models.sales.ChannelGoodsInfoStatus;
 import org.apache.commons.lang.StringUtils;
-import play.Logger;
 import play.db.jpa.JPA;
 import play.jobs.Every;
 import play.jobs.Job;
-import util.ws.WebServiceClient;
-import util.ws.WebServiceClientFactory;
+import util.ws.WebServiceRequest;
 
 import javax.persistence.Query;
 import java.util.Date;
@@ -24,12 +22,11 @@ import java.util.regex.Pattern;
  * Date: 12-12-17
  * Time: 下午3:51
  */
-@Every("2mn")
+@Every("1h")
 public class ScannerChannelGoodsStatusJob extends Job {
 
     @Override
     public void doJob() {
-        Logger.info("ScannerChannelGoodsStatusJob begin!");
         List<Resaler> resalerList = Resaler.findByStatus(null);
         for (Resaler resaler : resalerList) {
             String onSaleKey = resaler.onSaleKey;
@@ -42,9 +39,10 @@ public class ScannerChannelGoodsStatusJob extends Job {
             Pattern onSalePattern = Pattern.compile(onSaleKey);
             Pattern offSalePattern = Pattern.compile(offSaleKey);
 
-            String sql = "select c from ChannelGoodsInfo c where c.deleted=0 and c.resaler=:resaler and c.status is null";
+            String sql = "select c from ChannelGoodsInfo c where c.deleted=0 and c.resaler=:resaler and c.status =:status";
             Query query = JPA.em().createQuery(sql);
             query.setParameter("resaler", resaler);
+            query.setParameter("status", ChannelGoodsInfoStatus.CREATED);
             query.setFirstResult(0);
             query.setMaxResults(200);
             List<ChannelGoodsInfo> resultList = query.getResultList();
@@ -52,26 +50,24 @@ public class ScannerChannelGoodsStatusJob extends Job {
                 String url = channelGoodsInfo.url;
                 //变更前的状态
                 ChannelGoodsInfoStatus preStatus = channelGoodsInfo.status;
-                WebServiceClient client = WebServiceClientFactory
-                        .getClientHelper();
-                String retResponse = client.getString("", url, resaler.id.toString());
-
+                String retResponse = WebServiceRequest.url(url)
+                        .addKeyword(resaler.id).getString();
                 Matcher onSaleMatcher = onSalePattern.matcher(retResponse);
                 Matcher offSaleMatcher = offSalePattern.matcher(retResponse);
                 if (preStatus != ChannelGoodsInfoStatus.ONSALE && onSaleMatcher.find()) {
                     channelGoodsInfo.status = ChannelGoodsInfoStatus.ONSALE;
                     channelGoodsInfo.onSaleAt = new Date();
                     channelGoodsInfo.save();
-                } else if (preStatus != ChannelGoodsInfoStatus.OFFSALE && (!onSaleMatcher.find()|| offSaleMatcher.find())) {
+                } else if (preStatus != ChannelGoodsInfoStatus.OFFSALE && (!onSaleMatcher.find() || offSaleMatcher.find())) {
                     channelGoodsInfo.status = ChannelGoodsInfoStatus.OFFSALE;
                     channelGoodsInfo.offSaleAt = new Date();
                     channelGoodsInfo.save();
                 } else if (!offSaleMatcher.find() && !onSaleMatcher.find()) {
-                    channelGoodsInfo.status = ChannelGoodsInfoStatus.PAGE_NOT_EXISTED;
+                    channelGoodsInfo.status = ChannelGoodsInfoStatus.UNKNOWN;
                     channelGoodsInfo.save();
                 }
+
             }
         }
-        Logger.info("ScannerChannelGoodsStatusJob end!");
     }
 }

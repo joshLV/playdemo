@@ -6,8 +6,8 @@ import models.accounts.TradeBill;
 import models.accounts.TradeType;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
-import models.order.CouponHistory;
 import models.order.ECoupon;
+import models.order.ECouponHistoryMessage;
 import models.order.ECouponPartner;
 import models.order.ECouponStatus;
 import models.taobao.TaobaoCouponUtil;
@@ -22,9 +22,8 @@ import java.util.List;
 
 /**
  * 处理已消费券的退款。
- * 
- * @author tanglq
  *
+ * @author tanglq
  */
 @With(OperateRbac.class)
 @ActiveNavigation("verified_ecoupon_refund")
@@ -37,7 +36,7 @@ public class VerifiedECouponRefunds extends Controller {
         }
         render(eCouponSn);
     }
-    
+
     public static void refund(String eCouponSn, String refundComment, String choice) {
         String message = null;
         if (StringUtils.isBlank(eCouponSn)) {
@@ -48,9 +47,9 @@ public class VerifiedECouponRefunds extends Controller {
             message = "备注不能为空";
             render(message);
         }
-        
+
         ECoupon ecoupon = ECoupon.find("eCouponSn=?", eCouponSn).first();
-        
+
         if (ecoupon == null || ecoupon.status != ECouponStatus.CONSUMED) {
             message = "不存在的券号或券号未验证:" + eCouponSn;
             render(message);
@@ -63,12 +62,13 @@ public class VerifiedECouponRefunds extends Controller {
         } else {
             message = "请输入REFUND或UNCONSUME。";
         }
-        
+
         render(ecoupon, message);
     }
 
     /**
      * 直接退款，券状态为『已退款』。
+     *
      * @param eCoupon
      * @param refundComment
      * @return
@@ -116,7 +116,7 @@ public class VerifiedECouponRefunds extends Controller {
         if (refundOrderTotalPromotionAmount.compareTo(onTheBottom) > 0) {
             //如果该订单的活动金大于垫底资金
             refundOrderTotalPromotionAmount = refundOrderTotalPromotionAmount.subtract(onTheBottom);
-        }else{
+        } else {
             refundOrderTotalCashAmount = refundOrderTotalCashAmount
                     .add(refundOrderTotalPromotionAmount)
                     .subtract(onTheBottom);
@@ -129,7 +129,7 @@ public class VerifiedECouponRefunds extends Controller {
         System.out.println("===refundOrderTotalCashAmount" + refundOrderTotalCashAmount);
         System.out.println("===refundOrderTotalPromotionAmount" + refundOrderTotalPromotionAmount);
         //用户为此券实际支付的金额,也就是从用户为该券付的钱来看，最多能退多少
-        BigDecimal refundAtMostCouponAmount =  ECoupon.getLintRefundPrice(eCoupon);
+        BigDecimal refundAtMostCouponAmount = ECoupon.getLintRefundPrice(eCoupon);
         System.out.println("===refundAtMostCouponAmount" + refundAtMostCouponAmount);
 
         //最后我们来看看最终能退多少
@@ -138,7 +138,7 @@ public class VerifiedECouponRefunds extends Controller {
 
         if (refundOrderTotalPromotionAmount.compareTo(refundAtMostCouponAmount) > 0) {
             refundPromotionAmount = refundOrderTotalPromotionAmount.subtract(refundAtMostCouponAmount);
-        }else {
+        } else {
             refundPromotionAmount = refundOrderTotalPromotionAmount;
             refundCashAmount = refundAtMostCouponAmount.subtract(refundPromotionAmount);
             refundCashAmount = refundCashAmount.min(refundOrderTotalCashAmount);
@@ -149,15 +149,15 @@ public class VerifiedECouponRefunds extends Controller {
         Account supplierAccount = AccountUtil.getSupplierAccount(eCoupon.goods.supplierId);
 
         TradeBill tradeBill = new TradeBill();
-        tradeBill.fromAccount           = supplierAccount; //付款方为商户账户
-        tradeBill.toAccount             = AccountUtil.getPlatformCommissionAccount();                                  //收款方为指定账户
-        tradeBill.balancePaymentAmount  = eCoupon.originalPrice;                                   //使用可提现余额来支付退款的金额
-        tradeBill.ebankPaymentAmount    = BigDecimal.ZERO;                          //不使用网银支付
-        tradeBill.uncashPaymentAmount   = BigDecimal.ZERO;                          //不使用不可提现余额支付
-        tradeBill.promotionPaymentAmount= refundPromotionAmount;                          //使用活动金余额来支付退款的金额
-        tradeBill.tradeType             = TradeType.REFUND;                         //交易类型为退款
-        tradeBill.orderId               = eCoupon.order.id;                                  //冗余订单ID
-        tradeBill.eCouponSn             = eCoupon.eCouponSn;                                //冗余券编号
+        tradeBill.fromAccount = supplierAccount; //付款方为商户账户
+        tradeBill.toAccount = AccountUtil.getPlatformCommissionAccount();                                  //收款方为指定账户
+        tradeBill.balancePaymentAmount = eCoupon.originalPrice;                                   //使用可提现余额来支付退款的金额
+        tradeBill.ebankPaymentAmount = BigDecimal.ZERO;                          //不使用网银支付
+        tradeBill.uncashPaymentAmount = BigDecimal.ZERO;                          //不使用不可提现余额支付
+        tradeBill.promotionPaymentAmount = refundPromotionAmount;                          //使用活动金余额来支付退款的金额
+        tradeBill.tradeType = TradeType.REFUND;                         //交易类型为退款
+        tradeBill.orderId = eCoupon.order.id;                                  //冗余订单ID
+        tradeBill.eCouponSn = eCoupon.eCouponSn;                                //冗余券编号
         tradeBill.amount = tradeBill.balancePaymentAmount
                 .add(tradeBill.ebankPaymentAmount)
                 .add(tradeBill.uncashPaymentAmount)
@@ -187,7 +187,8 @@ public class VerifiedECouponRefunds extends Controller {
         String userName = OperateRbac.currentUser().userName;
 
         //记录券历史信息
-        new CouponHistory(eCoupon, userName, "已消费券退款:" + refundComment, eCoupon.status, ECouponStatus.REFUND, null).save();
+        ECouponHistoryMessage.with(eCoupon).operator(userName).remark("已消费券退款:" + refundComment)
+                .toStatus(ECouponStatus.REFUND).sendToMQ();
 
         // 更改订单状态
         eCoupon.status = ECouponStatus.REFUND;
@@ -200,6 +201,7 @@ public class VerifiedECouponRefunds extends Controller {
 
     /**
      * 取消验证，状态返回为『未消费』.
+     *
      * @param eCoupon
      * @param refundComment
      * @return
@@ -248,7 +250,7 @@ public class VerifiedECouponRefunds extends Controller {
                                 AccountUtil.getUhuilaAccount(),
                                 eCoupon.salePrice.subtract(eCoupon.resalerPrice),
                                 eCoupon.eCouponSn,
-                                eCoupon.order.getId(),reverse);
+                                eCoupon.order.getId(), reverse);
 
                 TradeUtil.success(uhuilaCommissionTrade, "已消费退款：" + refundComment + "。" + eCoupon.order.description);
             }
@@ -261,8 +263,8 @@ public class VerifiedECouponRefunds extends Controller {
                             AccountUtil.getPlatformCommissionAccount(),
                             platformCommission,
                             eCoupon.eCouponSn,
-                            eCoupon.order.getId(),reverse);
-            TradeUtil.success(platformCommissionTrade,"已消费退款：" + refundComment + "。" + eCoupon.order.description);
+                            eCoupon.order.getId(), reverse);
+            TradeUtil.success(platformCommissionTrade, "已消费退款：" + refundComment + "。" + eCoupon.order.description);
         }
 
         if (eCoupon.rebateValue != null && eCoupon.rebateValue.compareTo(BigDecimal.ZERO) > 0) {
@@ -280,7 +282,7 @@ public class VerifiedECouponRefunds extends Controller {
                     AccountUtil.getPromotionAccount(),
                     detaPrice, BigDecimal.ZERO);
             rabateTrade.orderId = eCoupon.order.id;
-            TradeUtil.success(rabateTrade, "已消费退款：" + refundComment +  "。低价销售补贴" + detaPrice);
+            TradeUtil.success(rabateTrade, "已消费退款：" + refundComment + "。低价销售补贴" + detaPrice);
         }
         /**
          * 后面还有推荐返利的暂时不弄
@@ -290,7 +292,8 @@ public class VerifiedECouponRefunds extends Controller {
         String userName = OperateRbac.currentUser().userName;
 
         //记录券历史信息
-        new CouponHistory(eCoupon, userName, "已消费券取消验证:" + refundComment, eCoupon.status, ECouponStatus.UNCONSUMED, null).save();
+        ECouponHistoryMessage.with(eCoupon).operator(userName).remark("已消费券取消验证:" + refundComment)
+                .fromStatus(eCoupon.status).toStatus(ECouponStatus.UNCONSUMED).sendToMQ();
 
         // 更改券状态
         eCoupon.status = ECouponStatus.UNCONSUMED;

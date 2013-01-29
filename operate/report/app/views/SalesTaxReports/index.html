@@ -3,7 +3,6 @@
 #{include '/share/nav.html' /}
 
 #{set 'moreScripts'}
-<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script type="text/javascript" charset="utf-8">
     $(function () {
 
@@ -88,16 +87,10 @@
 <form class="well form-inline" action="@{SalesTaxReports.index()}" method="GET" id="search_form"
       name="search_form">
     商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
-#{select 'condition.supplier.id', id:supplierId, class:'select', value:condition?.supplier?.id}
-    #{if supplierList.size()>0}
-        #{option "0"}不限#{/option}
-    #{/if}
-    #{list items:supplierList, as:'supplier'}
-        #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
-    #{/list}
-#{/select}
+#{vx.selectInputField name:"supplierName", id:"condition.supplier.id", class:'input-medium', list:supplierList,
+value:condition?.supplier?.id, array:"supplierArray",importJs:true/}
     类&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;型：
-#{select 'condition.materialType', id:materialType, class:'select', value:condition?.materialType}
+#{select 'condition.materialType', id:materialType, class:'select input-small', value:condition?.materialType}
     #{option null }不限#{/option}
     #{option "REAL"}&{'goods.REAL'}#{/option}
     #{option "ELECTRONIC"}&{'goods.ELECTRONIC'}#{/option}
@@ -105,10 +98,17 @@
     商品名称：<input type="text" name="condition.goodsLike" class="input-medium"
                 value="${condition?.goodsLike}"/>
     起止日期
-    <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.createdAtBegin"
-           onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtBegin?.format()}"> -
-    <input type="text" id="condition_end" class="input-medium Wdate" name="condition.createdAtEnd"
-           onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtEnd?.format()}">
+    <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
+        <input class="input-small" id="condition_begin" name="condition.createdAtBegin" size="16" type="text"
+               value="${condition.createdAtBegin?.format()}">
+        <span class="add-on"><i class="icon-th"></i></span>
+    </div>
+    -
+    <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
+        <input class="input-small" id="condition_end" name="condition.createdAtEnd" size="16" type="text"
+               value="${condition.createdAtEnd?.format()}">
+        <span class="add-on"><i class="icon-th"></i></span>
+    </div>
     <button type="submit" class="btn btn-primary" id="search">搜索</button>
     <ul class="nav nav-pills">
         <li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">昨天</a></li>
@@ -145,7 +145,7 @@
     <tr>
         #{set i:i+1/}
         <td>${(reportPage.pageNumber-1)*reportPage.pageSize+i}</td>
-        <td>${report?.supplier?.fullName}</td>
+        <td>${report?.supplier?.otherName==null?report?.supplier?.fullName:report?.supplier?.otherName}</td>
         <td><a href="http://${play.Play.configuration.getProperty("www.url")}/p/${report?.goods?.id}"
                target="_blank"><img src="${report?.goods?.imageTinyPath}"/>${report?.goods?.shortName}</a></td>
         <td>&{'goods.'+report?.goods?.materialType}</td>

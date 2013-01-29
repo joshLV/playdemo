@@ -13,7 +13,7 @@
     #{list items:coupons, as:'coupon'}
         <Coupon>
             *{ 券号 }*
-            <CouponId>${coupon.eCouponSn}</CouponId>
+            <CouponId>${coupon.getSafeECouponSN()}</CouponId>
             *{ 密码 }*
             <CouponPwd/>
         </Coupon>

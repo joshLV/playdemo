@@ -83,7 +83,7 @@ public class Orders extends Controller {
                 }
                 long realStock = goods.getRealStocks();
                 if (number > realStock) {
-                    number = (int)realStock;
+                    number = (int) realStock;
                 }
             }
             paramsList.add(goodsId + "-" + number);
@@ -192,7 +192,12 @@ public class Orders extends Controller {
 
         //如果有实物商品，加上运费
         if (rCartList.size() > 0) {
-            rCartAmount = rCartAmount.add(Order.FREIGHT);
+            for (Cart c : rCartList) {
+                if (c.goods.freeShipping != true) {
+                    rCartAmount = rCartAmount.add(Order.FREIGHT);
+                    break;
+                }
+            }
         }
 
         // 整单折扣，注意只折扣电子券产品，实物券不参与折扣.

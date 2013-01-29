@@ -9,8 +9,7 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import play.Logger;
 import play.Play;
-import util.ws.WebServiceClient;
-import util.ws.WebServiceClientFactory;
+import util.ws.WebServiceRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.regex.Pattern;
 
 /**
  * 上海助通网络接口.
- * 
+ *
  * @author <a href="mailto:tangliqun@uhuila.com">唐力群</a>
  */
 public class ZtSMSProvider implements SMSProvider {
@@ -54,7 +53,7 @@ public class ZtSMSProvider implements SMSProvider {
         qparams.add(new BasicNameValuePair("username", USERNAME));
         qparams.add(new BasicNameValuePair("password", PASSWORD));
         // FIXME: 助通要求xh只能2位
-        String xh = message.getCode(); 
+        String xh = message.getCode();
         if (StringUtils.isNotBlank(xh)) {
             xh = xh.substring(0, 2);
         }
@@ -67,10 +66,8 @@ public class ZtSMSProvider implements SMSProvider {
         String url = SEND_URL.replace(":sms_info",
                         URLEncodedUtils.format(qparams, "UTF-8"));
 
-        WebServiceClient client = WebServiceClientFactory
-                        .getClientHelper();
+        String result = WebServiceRequest.url(url).type("ZTSMS").addKeyword(phoneArgs).getString();
 
-        String result = client.getString("ZTSMS", url, phoneArgs);
         Logger.info("返回消息：" + result);
         result = result.trim();
         Matcher m = RESULTCODE_PATTERN.matcher(result);

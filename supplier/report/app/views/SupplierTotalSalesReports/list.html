@@ -70,8 +70,8 @@
     #{list items:ecoupons, as:'coupon'}
     <tr>
          <td>${coupon?.order?.orderNumber}</td>
-         <td>${coupon?.orderItems?.phone}</td>
-        <td>${coupon?.getMaskedEcouponSn()}</td>
+         <td>${coupon?.orderItems?.getMaskedPhone()}</td>
+        <td>${coupon?.eCouponSn}</td>
         <td>${coupon?.goods?.shortName}</td>
         <td>${coupon?.getConsumedShop()}</td>
         <td>${coupon?.goods?.effectiveAt ?.format()} /

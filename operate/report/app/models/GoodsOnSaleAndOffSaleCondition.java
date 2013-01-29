@@ -1,6 +1,7 @@
 package models;
 
 import com.uhuila.common.util.DateUtil;
+import models.sales.ChannelGoodsInfoStatus;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Date;
@@ -25,17 +26,20 @@ public class GoodsOnSaleAndOffSaleCondition {
 
     public String filter() {
         StringBuilder builder = new StringBuilder(" where 1=1 ");
-        if (shortName != null) {
+        if (StringUtils.isNotBlank(shortName)) {
             builder.append(" and c.goods.shortName like :shortName");
             paramMap.put("shortName", "%" + shortName + "%");
         }
         if (StringUtils.isNotBlank(code)) {
-            builder.append(" and r.goods.code = :code");
+            builder.append(" and c.goods.code = :code");
             paramMap.put("code", code);
         }
         if (resaleIds != null) {
-            builder.append(" and c.resaler.id in( :resaleIds)");
-            paramMap.put("resaleIds", resaleIds);
+            for (Long id : resaleIds) {
+                builder.append(" and c.goods in (select g.goods from ChannelGoodsInfo g where g.resaler.id = :resaleId"+id+" and status=:status)");
+                paramMap.put("resaleId"+id, id);
+                paramMap.put("status", ChannelGoodsInfoStatus.ONSALE);
+            }
         }
         return builder.toString();
     }
@@ -44,14 +48,4 @@ public class GoodsOnSaleAndOffSaleCondition {
         return paramMap;
     }
 
-    public String filterOfResaler() {
-       paramMap = new HashMap<>();
-        StringBuilder builder = new StringBuilder(" where 1=1 ");
-        if (resaleIds != null) {
-            builder.append(" and c.resaler.id in (:resaleIds)");
-            paramMap.put("resaleIds", resaleIds);
-        }
-        return builder.toString();
-
-    }
 }

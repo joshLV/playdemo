@@ -5,9 +5,9 @@ import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
 import models.accounts.AccountType;
 import models.consumer.User;
-import models.order.CouponHistory;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
+import models.order.ECouponHistoryMessage;
 import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderItems;
@@ -18,6 +18,7 @@ import org.junit.Test;
 import play.modules.paginate.JPAExtPaginator;
 import play.test.UnitTest;
 import util.DateHelper;
+import util.mq.MockMQ;
 
 import java.text.ParseException;
 import java.util.List;
@@ -32,6 +33,8 @@ public class CouponsUnitTest extends UnitTest {
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
+        MockMQ.clear();
+
         supplier = FactoryBoy.create(Supplier.class);
         user = FactoryBoy.create(User.class);
         goods = FactoryBoy.create(Goods.class);
@@ -113,9 +116,10 @@ public class CouponsUnitTest extends UnitTest {
         ECoupon.freeze(ecoupon.id, null);
         ECoupon e = ECoupon.findById(ecoupon.id);
         assertEquals(new Integer(1), e.isFreeze);
-        assertEquals(1, CouponHistory.count());
-        List<CouponHistory> historyList = CouponHistory.findAll();
-        assertEquals("冻结券号", historyList.get(0).remark);
+
+        ECouponHistoryMessage lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage.MQ_KEY);
+        assertEquals(ecoupon.id, lastMessage.eCouponId);
+        assertEquals("冻结券号", lastMessage.remark);
     }
 
 
@@ -124,9 +128,10 @@ public class CouponsUnitTest extends UnitTest {
         ECoupon.unfreeze(ecoupon.id, null);
         ECoupon e = ECoupon.findById(ecoupon.id);
         assertEquals(new Integer(0), e.isFreeze);
-        assertEquals(1, CouponHistory.count());
-        List<CouponHistory> historyList = CouponHistory.findAll();
-        assertEquals("解冻券号", historyList.get(0).remark);
+
+        ECouponHistoryMessage lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage.MQ_KEY);
+        assertEquals(ecoupon.id, lastMessage.eCouponId);
+        assertEquals("解冻券号", lastMessage.remark);
     }
 
     @Test
@@ -142,7 +147,6 @@ public class CouponsUnitTest extends UnitTest {
         assertEquals(1, eCoupon.downloadTimes.intValue());
         ECoupon.sendUserMessage(ecoupon.id, phone);
         assertEquals(0, eCoupon.downloadTimes.intValue());
-
     }
 
 

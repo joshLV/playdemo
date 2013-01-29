@@ -13,8 +13,7 @@ import play.exceptions.UnexpectedException;
 import play.libs.WS;
 import play.templates.Template;
 import play.templates.TemplateLoader;
-import util.ws.WebServiceClient;
-import util.ws.WebServiceClientFactory;
+import util.ws.WebServiceRequest;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -117,11 +116,10 @@ public class JDGroupBuyUtil {
         params.put("coupon", eCoupon);
         String restRequestBody = makeRequestRest(template.render(params));
 
-
-        WebServiceClient client = WebServiceClientFactory
-                .getClientHelper();
-
-        String responseResult = client.postStringWithBody("jingdong_verify_order", url, restRequestBody, "" + outerOrder.orderId, "" + eCoupon.id);
+        String responseResult = WebServiceRequest.url(url).type("jingdong_verify_order")
+                .requestBody(restRequestBody)
+                .addKeyword(outerOrder.orderId).addKeyword(eCoupon.id)
+                .postString();
 
         //解析请求
         JDRest<VerifyCouponResponse> sendOrderJDRest = new JDRest<>();

@@ -3,8 +3,6 @@
 #{include '/share/nav.html' /}
 #{set 'moreStyles'}
     #{asset.css src:['/ztree/zTreeStyle.css'] /}
-        <style type="text/css">
-        </style>
 #{/set}
 <div class="body">
     <legend>58上传商品：<a href="/goods/${goods.id}" target="_blank">
@@ -16,8 +14,8 @@
             <label class="control-label">商品分类 *</label>
             <div class="controls">
                 <ul id="prodTypeTree" class="ztree"></ul>
-                <input name="prodType" id="inputProdType" type="hidden">
-                <input name="prodTypeChain" id="inputProdTypeChain" type="hidden">
+                <input name="prodTypeId" id="inputProdType" type="hidden">
+                <input name="prodTypeIdChain" id="inputProdTypeChain" type="hidden">
             </div>
         </div>
         <div class="control-group">
@@ -49,6 +47,28 @@
             </div>
         </div>
         <div class="control-group">
+            <label class="control-label">是否需要配送 *</label>
+            <div class="controls">
+                <input type="radio" name="isSend" value="0" checked> 不配送
+                <input type="radio" name="isSend" value="1"> 配送
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">产品范畴 *</label>
+            <div class="controls">
+                <input type="radio" name="prodModelType" value="1" checked>单型号
+                <input type="radio" name="prodModelType" value="2"> 多型号
+                <input type="radio" name="prodModelType" value="3"> 多重型号
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">是否支持退款 *</label>
+            <div class="controls">
+                <input type="radio" name="isRefund" value="1" checked> 支持
+                <input type="radio" name="isRefund" value="0"> 不支持
+            </div>
+        </div>
+        <div class="control-group">
             <label class="control-label" for="inputMarketPrice">市场价 *</label>
             <div class="controls">
                 <input type="text" id="inputMarketPrice" name="prodPrice" value="${goods.faceValue}">
@@ -63,24 +83,17 @@
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label">是否支持退款 *</label>
-            <div class="controls">
-                <input type="radio" name="isRefund" value="1" checked> 支持
-                <input type="radio" name="isRefund" value="0"> 不支持
-            </div>
-        </div>
-        <div class="control-group">
             <label class="control-label">团购开始时间 *</label>
             <div class="controls">
-                <input type="text" name="startTime" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${goods.effectiveAt?.format('yyyy-MM-dd HH:mm:s')}">
+                <input type="text" name="startTime" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${goods.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}">
                 团购结束时间 *
-                <input type="text" name="endTime" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:s')}">
+                <input type="text" name="endTime" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:ss')}">
             </div>
         </div>
         <div class="control-group">
             <label class="control-label">券截止日期 *</label>
             <div class="controls">
-                <input type="text" name="deadline" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:s')}">
+                <input type="text" name="deadline" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:ss')}">
             </div>
         </div>
         <div class="control-group">
@@ -109,6 +122,13 @@
             <div class="controls">
                 <input type="text" id="inputPerMinNumber" name="buyerMinNum" value="1">
                 <span class="help-inline">大于等于1</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputMobileImg">团购主图 *</label>
+            <div class="controls">
+                <input type="text" id="inputMobileImg" name="mobileImg" class="input-block-level">
+                <span class="help-block">http开头，尺寸 622*194,图片大小 30k 以内</span>
             </div>
         </div>
         <div class="control-group">
@@ -148,24 +168,19 @@
             <label class="control-label">手机端特别提示</label>
             <div class="controls">
                 <textarea rows="8" cols="100"  name="mobileDescription" id="mobileDescription" style="width:850px;height:550px;display:hidden;">
-                    #{if goods.exhibition}
-                    ${goods.exhibition.raw()}
+                    ${goods.exhibition?.raw()}
                     <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
                         <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
                     </p>
-                    ${goods.prompt.raw()}
+                    ${goods.prompt?.raw()}
                     <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
                         <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
                     </p>
-                    ${goods.details.raw()}
+                    ${goods.details?.raw()}
                     <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
                         <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
                     </p>
-                    ${goods.supplierDes.raw()}
-                    #{/if}
-                    #{else}
-                    ${goods.teamDetail?.raw()}
-                    #{/else}
+                    ${goods.supplierDes?.raw()}
                 </textarea>
             </div>
         </div>
@@ -221,7 +236,7 @@
                     <tr>
                         <td>地图服务商</td>
                         <td>
-                            Google <input type="radio" name="mapServiceId_${shop_index}" value="0" >
+                            Google <input type="radio" name="mapServiceId_${shop_index}" value="0" checked >
                             Baidu <input type="radio" name="mapServiceId_${shop_index}" value="1">
                             Mapbar <input type="radio" name="mapServiceId_${shop_index}" value="2">
                         </td>

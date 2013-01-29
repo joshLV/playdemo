@@ -29,6 +29,7 @@ public class SalesReportCondition implements Serializable {
     public String userName;
     public Long salesId;
     public String jobNumber;
+    public Long supplierId = 0l;
     private Map<String, Object> paramMap = new HashMap<>();
     private Map<String, Object> paramMap1 = new HashMap<>();
     public Boolean hasSeeReportProfitRight;
@@ -58,7 +59,7 @@ public class SalesReportCondition implements Serializable {
                     break;
                 }
             }
-            String[] orderByFields = {"jobNumber", "totalAmount", "consumedAmount", "refundAmount", "cheatedOrderAmount", "netSalesAmount", "profit","buyNumber", "grossMargin"};
+            String[] orderByFields = {"jobNumber", "totalAmount", "consumedAmount", "refundAmount", "cheatedOrderAmount", "netSalesAmount", "profit", "buyNumber", "grossMargin"};
             // 添加排序属性
             orderBy = orderByFields[index];
             // 添加升降序方式
@@ -131,11 +132,14 @@ public class SalesReportCondition implements Serializable {
                 condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
                 paramMap.put("supplierIds", supplierIds);
             } else {
-                condBuilder.append(" and 5 =:supplierIds");
-                paramMap.put("supplierIds", 6);
+                condBuilder.append(" and 1=0");
             }
         }
 
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap.put("supplierId", supplierId);
+        }
 
         return condBuilder.toString();
     }
@@ -172,9 +176,12 @@ public class SalesReportCondition implements Serializable {
                 condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
                 paramMap.put("supplierIds", supplierIds);
             } else {
-                condBuilder.append(" and 5 =:supplierIds");
-                paramMap.put("supplierIds", 6);
+                condBuilder.append(" and 1=0");
             }
+        }
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap.put("supplierId", supplierId);
         }
 
         return condBuilder.toString();
@@ -211,9 +218,12 @@ public class SalesReportCondition implements Serializable {
                 condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
                 paramMap.put("supplierIds", supplierIds);
             } else {
-                condBuilder.append(" and 5 =:supplierIds");
-                paramMap.put("supplierIds", 6);
+                condBuilder.append(" and 1=0");
             }
+        }
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap.put("supplierId", supplierId);
         }
 
         return condBuilder.toString();
@@ -250,9 +260,12 @@ public class SalesReportCondition implements Serializable {
                 condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
                 paramMap.put("supplierIds", supplierIds);
             } else {
-                condBuilder.append(" and 5 =:supplierIds");
-                paramMap.put("supplierIds", 6);
+                condBuilder.append(" and 1=0");
             }
+        }
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap.put("supplierId", supplierId);
         }
 
         return condBuilder.toString();
@@ -290,9 +303,12 @@ public class SalesReportCondition implements Serializable {
                 condBuilder.append(" and r.goods.supplierId in (:supplierIds)");
                 paramMap.put("supplierIds", supplierIds);
             } else {
-                condBuilder.append(" and 5 =:supplierIds");
-                paramMap.put("supplierIds", 6);
+                condBuilder.append(" and 1=0");
             }
+        }
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap.put("supplierId", supplierId);
         }
 
         return condBuilder.toString();
@@ -329,9 +345,12 @@ public class SalesReportCondition implements Serializable {
                 condBuilder.append(" and e.goods.supplierId in (:supplierIds)");
                 paramMap1.put("supplierIds", supplierIds);
             } else {
-                condBuilder.append(" and 5 =:supplierIds");
-                paramMap1.put("supplierIds", 6);
+                condBuilder.append(" and 1=0");
             }
+        }
+        if (supplierId != 0) {
+            condBuilder.append(" and e.goods.supplierId = :supplierId");
+            paramMap1.put("supplierId", supplierId);
         }
 
         return condBuilder.toString();
@@ -372,6 +391,10 @@ public class SalesReportCondition implements Serializable {
                 paramMap1.put("supplierIds", 6);
             }
         }
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap1.put("supplierId", supplierId);
+        }
 
         return condBuilder.toString();
     }
@@ -409,7 +432,10 @@ public class SalesReportCondition implements Serializable {
             condBuilder.append(" and r.order.paidAt < :createdAtEnd");
             paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
         }
-
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap.put("supplierId", supplierId);
+        }
 
         return condBuilder.toString();
 
@@ -441,7 +467,10 @@ public class SalesReportCondition implements Serializable {
             condBuilder.append(" and r.order.paidAt < :createdAtEnd");
             paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
         }
-
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap.put("supplierId", supplierId);
+        }
         return condBuilder.toString();
     }
 
@@ -481,6 +510,10 @@ public class SalesReportCondition implements Serializable {
                 condBuilder.append(" and e.consumedAt <= :consumedAtEnd");
                 paramMap1.put("consumedAtEnd", DateUtil.getEndOfDay(endAt));
             }
+        }
+        if (supplierId != 0) {
+            condBuilder.append(" and e.goods.supplierId = :supplierId");
+            paramMap1.put("supplierId", supplierId);
         }
         return condBuilder.toString();
     }
@@ -523,9 +556,12 @@ public class SalesReportCondition implements Serializable {
                 condBuilder.append(" and e.goods.supplierId in (:supplierIds)");
                 paramMap1.put("supplierIds", supplierIds);
             } else {
-                condBuilder.append(" and 5 =:supplierIds");
-                paramMap1.put("supplierIds", 6);
+                condBuilder.append(" and 1=0");
             }
+        }
+        if (supplierId != 0) {
+            condBuilder.append(" and e.goods.supplierId = :supplierId");
+            paramMap1.put("supplierId", supplierId);
         }
 
         return condBuilder.toString();
@@ -538,23 +574,27 @@ public class SalesReportCondition implements Serializable {
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         if (!hasSeeReportProfitRight) {
             condBuilder.append(" and ou.id =:salesId");
-            paramMap.put("salesId", salesId);
+            paramMap1.put("salesId", salesId);
         }
         if (StringUtils.isNotBlank(userName)) {
             condBuilder.append(" and ou.userName like :userName");
-            paramMap.put("userName", "%" + userName + "%");
+            paramMap1.put("userName", "%" + userName + "%");
         }
         if (StringUtils.isNotBlank(jobNumber)) {
             condBuilder.append(" and ou.jobNumber=:jobNumber");
-            paramMap.put("jobNumber", jobNumber);
+            paramMap1.put("jobNumber", jobNumber);
         }
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
-            paramMap.put("createdAtBegin", beginAt);
+            paramMap1.put("createdAtBegin", beginAt);
         }
         if (endAt != null) {
             condBuilder.append(" and r.order.paidAt < :createdAtEnd");
-            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+            paramMap1.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+        }
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap1.put("supplierId", supplierId);
         }
 
         return condBuilder.toString();
@@ -567,24 +607,28 @@ public class SalesReportCondition implements Serializable {
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         if (!hasSeeReportProfitRight) {
             condBuilder.append(" and ou.id =:salesId");
-            paramMap.put("salesId", salesId);
+            paramMap1.put("salesId", salesId);
         }
         if (StringUtils.isNotBlank(userName)) {
             condBuilder.append(" and ou.userName like :userName");
-            paramMap.put("userName", "%" + userName + "%");
+            paramMap1.put("userName", "%" + userName + "%");
         }
         if (StringUtils.isNotBlank(jobNumber)) {
             condBuilder.append(" and ou.jobNumber=:jobNumber");
-            paramMap.put("jobNumber", jobNumber);
+            paramMap1.put("jobNumber", jobNumber);
         }
 
         if (beginAt != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
-            paramMap.put("createdAtBegin", beginAt);
+            paramMap1.put("createdAtBegin", beginAt);
         }
         if (endAt != null) {
             condBuilder.append(" and r.order.paidAt < :createdAtEnd");
-            paramMap.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+            paramMap1.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(endAt));
+        }
+        if (supplierId != 0) {
+            condBuilder.append(" and r.goods.supplierId = :supplierId");
+            paramMap1.put("supplierId", supplierId);
         }
 
         return condBuilder.toString();

@@ -275,7 +275,7 @@ public class OperationReportsTest extends FunctionalTest {
     public void testShowChannelGoodsReport() {
         Http.Response response = GET(Router.reverse("OperationReports.showChannelGoodsReport").url);
         assertIsOk(response);
-        assertEquals(1l, ((ValuePaginator<ChannelGoodsReport>) renderArgs("reportPage")).size());
+        assertEquals(2l, ((ValuePaginator<ChannelGoodsReport>) renderArgs("reportPage")).size());
         assertEquals(BigDecimal.valueOf(20).setScale(2), ((ValuePaginator<ChannelGoodsReport>) renderArgs("reportPage")).get(0).grossMargin.setScale(2));
         assertEquals(BigDecimal.valueOf(2).setScale(2), ((ValuePaginator<ChannelGoodsReport>) renderArgs("reportPage")).get(0).profit.setScale(2));
     }
@@ -284,7 +284,7 @@ public class OperationReportsTest extends FunctionalTest {
     public void testChannelGoodsReportWithPrivilegeExcelOut() {
         Http.Response response = GET(Router.reverse("OperationReports.channelGoodsReportWithPrivilegeExcelOut").url);
         assertIsOk(response);
-        assertEquals(1l, ((List<ChannelGoodsReport>) renderArgs("resultList")).size());
+        assertEquals(2l, ((List<ChannelGoodsReport>) renderArgs("resultList")).size());
         assertEquals(BigDecimal.valueOf(8).setScale(2), ((List<ChannelGoodsReport>) renderArgs("resultList")).get(0).originalPrice.setScale(2));
         assertEquals(BigDecimal.valueOf(2).setScale(2), ((List<ChannelGoodsReport>) renderArgs("resultList")).get(0).profit.setScale(2));
     }
@@ -293,7 +293,7 @@ public class OperationReportsTest extends FunctionalTest {
     public void testChannelGoodsReportExcelOut() {
         Http.Response response = GET(Router.reverse("OperationReports.channelGoodsReportExcelOut").url);
         assertIsOk(response);
-        assertEquals(1l, ((List<ChannelGoodsReport>) renderArgs("resultList")).size());
+        assertEquals(2l, ((List<ChannelGoodsReport>) renderArgs("resultList")).size());
         assertEquals(BigDecimal.valueOf(8).setScale(2), ((List<ChannelGoodsReport>) renderArgs("resultList")).get(0).originalPrice.setScale(2));
     }
 

@@ -3,23 +3,24 @@
  */
 package functional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.SequenceCallback;
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.order.Cart;
 import models.sales.Goods;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
+import play.mvc.Http;
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
-import controllers.modules.website.cas.Security;
-import factory.FactoryBoy;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author wangjia
@@ -46,7 +47,7 @@ public class CartsTest extends FunctionalTest {
         Security.cleanLoginUserForTest();
     }
 
-    @Test
+    //    @Test
     public void testIndexIsBuyFlag() {
         auth();
         Response response = GET("/carts");
@@ -69,7 +70,8 @@ public class CartsTest extends FunctionalTest {
     }
 
     @Test
-    public void testOrderUserNull() {
+    public void testOrderUserAndCookiesNull() {
+        Security.cleanLoginUserForTest();
         Map<String, String> orderParams = new HashMap<>();
         cart.number = 2;
         cart.save();
@@ -78,6 +80,28 @@ public class CartsTest extends FunctionalTest {
         Response response = POST("/carts", orderParams);
         assertStatus(500, response);
         assertContentMatch("can not identity current user", response);
+    }
+
+
+    @Test
+    public void testOrderUserNormal() {
+        Map<String, String> orderParams = new HashMap<>();
+        cart.cookieIdentity = "abcde";
+        cart.number = 2;
+        cart.save();
+        Map<String, Http.Cookie> passCookie = new HashMap();
+        Http.Cookie newCookie = new Http.Cookie();
+        newCookie.name = "identity";
+        newCookie.value = "abcdef";
+        passCookie.put("identity", newCookie);
+        Http.Request request = FunctionalTest.newRequest();
+        request.cookies = passCookie;
+        orderParams.put("goodsId", String.valueOf(goods.id));
+        orderParams.put("increment", "1");
+        Response response = POST(request, "/carts", orderParams, new HashMap<String, File>());
+        assertStatus(200, response);
+        assertContentType("application/json", response);
+        assertEquals("{\"count\":1, \"amount\":\"8.50\"}", response.out.toString());
     }
 
     @Test
@@ -113,12 +137,58 @@ public class CartsTest extends FunctionalTest {
     }
 
     @Test
-    public void testTops() {
+    public void testTops_cartsIsLess5() {
         auth();
+        Map<String, Http.Cookie> passCookie = new HashMap();
+        Http.Cookie newCookie = new Http.Cookie();
+        newCookie.name = "identity";
+        newCookie.value = "abcdef";
+        passCookie.put("identity", newCookie);
+        Http.Request request = FunctionalTest.newRequest();
+        request.cookies = passCookie;
+
         Response response = GET("/carts/tops");
         assertStatus(200, response);
         assertEquals(1, renderArgs("count"));
+        List<Cart> cartList = (List) renderArgs("carts");
+        assertEquals(1, cartList.size());
+    }
 
+    @Test
+    public void testTops_cartsIsMoreThan5() {
+        auth();
+        Map<String, Http.Cookie> passCookie = new HashMap();
+        Http.Cookie newCookie = new Http.Cookie();
+        newCookie.name = "identity";
+        newCookie.value = "abcdef";
+        passCookie.put("identity", newCookie);
+        final Http.Request request = FunctionalTest.newRequest();
+        request.cookies = passCookie;
+        List<Goods> goodsList = FactoryBoy.batchCreate(6, Goods.class,
+                new SequenceCallback<Goods>() {
+                    @Override
+                    public void sequence(Goods target, int seq) {
+                    }
+                });
+        List<Cart> carts = FactoryBoy.batchCreate(6, Cart.class,
+                new SequenceCallback<Cart>() {
+                    @Override
+                    public void sequence(Cart target, int seq) {
+                        cart.cookieIdentity = "abcdef";
+                    }
+                });
+
+        int i = 0;
+        for (Cart cart1 : carts) {
+            cart1.number = 1l;
+            cart1.goods = goodsList.get(i++);
+            cart1.save();
+        }
+        Response response = GET("/carts/tops");
+        assertStatus(200, response);
+        assertEquals(7, renderArgs("count"));
+        List<Cart> cartList = (List) renderArgs("carts");
+        assertEquals(7, cartList.size());
     }
 
     private void auth() {

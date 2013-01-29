@@ -1,4 +1,4 @@
-package utils;
+package util.common;
 
 import org.apache.commons.lang.StringUtils;
 

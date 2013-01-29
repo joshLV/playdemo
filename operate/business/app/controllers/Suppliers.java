@@ -4,6 +4,7 @@ import com.uhuila.common.util.FileUploadUtil;
 import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.AccountType;
 import models.accounts.WithdrawAccount;
+import models.accounts.util.AccountUtil;
 import models.admin.OperateUser;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
@@ -106,6 +107,9 @@ public class Suppliers extends Controller {
             error("supplier.image_upload_failed");
         }
         admin.create(supplier.id);
+
+        // 确保创建商户Account，以避免并发时产生2个accounts
+        AccountUtil.getSupplierAccount(supplier.id);
 
         //发送密码给商户管理员手机
         String comment = Play.configuration.getProperty("message.comment", "【券市场】 恭喜您已开通券市场账号，用户名：username，密码：password。（请及时修改密码）客服热线：400-6262-166");

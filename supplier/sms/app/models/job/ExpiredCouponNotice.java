@@ -9,7 +9,6 @@ import models.sms.SMSUtil;
 import play.jobs.Job;
 
 import javax.persistence.Query;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;

@@ -1,23 +1,20 @@
 package models.sms.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import models.sms.SMSException;
 import models.sms.SMSMessage;
 import models.sms.SMSProvider;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
-
 import play.Logger;
 import play.Play;
-import util.ws.WebServiceClientFactory;
-import util.ws.WebServiceClient;
+import util.ws.WebServiceRequest;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Tui3SMSProvider implements SMSProvider {
 
@@ -44,10 +41,7 @@ public class Tui3SMSProvider implements SMSProvider {
         String url = SEND_URL.replace(":sms_info",
                         URLEncodedUtils.format(qparams, "UTF-8"));
 
-        WebServiceClient client = WebServiceClientFactory
-                        .getClientHelper();
-
-        String result = client.getString("Tui3SMS", url, phoneArgs);
+        String result = WebServiceRequest.url(url).type("Tui3SMS").addKeyword(phoneArgs).getString();
 
         Logger.info("返回消息：" + result);
         Matcher m = RESULTCODE_PATTERN.matcher(result);
