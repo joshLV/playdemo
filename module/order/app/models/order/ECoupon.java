@@ -174,7 +174,7 @@ public class ECoupon extends Model {
     /**
      * 发送过短信的次数.
      */
-    @Column(name="sms_sent_count")
+    @Column(name = "sms_sent_count")
     public Integer smsSentCount;
 
     /**
@@ -1523,9 +1523,21 @@ public class ECoupon extends Model {
         return usedAmount == null ? BigDecimal.ZERO : usedAmount;
     }
 
+    /**
+     * 获取最近验证过的n个券号.
+     *
+     * @param supplierUser
+     * @param count
+     * @return
+     */
+    public static List<String> getRecentVerified(SupplierUser supplierUser, int count) {
+        return find("select eCouponSn from ECoupon where supplierUser=? and status=? order by consumedAt desc",
+                supplierUser, ECouponStatus.CONSUMED).fetch(count);
+    }
 
     /**
      * 得到订单短信内容（单条)
+     *
      * @return
      */
     @Transient
@@ -1546,7 +1558,7 @@ public class ECoupon extends Model {
                 if (StringUtils.isNotBlank(this.appointmentRemark)) {
                     note += this.appointmentRemark + ",";
                 }
-            }  else {
+            } else {
                 // 还没有预约
                 note = ",此产品需预约,";
             }
@@ -1570,12 +1582,14 @@ public class ECoupon extends Model {
 
     /**
      * 发送券通知短信的方法，所以渠道都应使用此方法.
+     *
      * @param phone
      * @param remark
      */
     public void sendOrderSMS(String phone, String remark) {
         SMSUtil.sendECouponSms(this.id, phone, remark);
     }
+
     public void sendOrderSMS(String remark) {
         SMSUtil.sendECouponSms(this.id, remark);
     }

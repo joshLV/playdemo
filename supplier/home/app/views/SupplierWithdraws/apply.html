@@ -1,0 +1,108 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set title:'申请提现' /}
+#{set menu:"withdraws"/}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#prepaymentDetail").click(function () {
+            $(".detail").toggle();
+        });
+    });
+
+</script>
+#{/set}
+#{if withdrawAccounts?.size() == 0 }
+暂无收款账户,请联系管理员添加.
+#{/if}
+#{else}
+<div class="bd">
+    <h2>${title}</h2>
+    #{form @SupplierWithdraws.create(), class:'form-horizontal'}
+        <div class="field-group">
+            <label>收款账户</label>
+
+            <table class="standard-table">
+                <tr>
+                    <th>#</th>
+                    <th>开户名</th>
+                    <th>银行名称</th>
+                    <th>所在城市</th>
+                    <th>支行名称</th>
+                    <th>银行卡号</th>
+                </tr>
+                #{list withdrawAccounts, as:'withdrawAccount'}
+                    <tr>
+                        <td>
+                            <input type="radio" name="withdrawAccountId" value="${withdrawAccount.getId()}"
+                                #{if withdrawAccount_index == 1} checked #{/if} >
+                        </td>
+                        <td>${withdrawAccount.userName}</td>
+                        <td>${withdrawAccount.bankName}</td>
+                        <td>${withdrawAccount.bankCity}</td>
+                        <td>${withdrawAccount.subBankName}</td>
+                        <td>${withdrawAccount.cardNumber}</td>
+                    </tr>
+                #{/list}
+            </table>
+            #{error 'withdrawAccountId'/}
+        </div>
+        <div class="field-sect">
+            <div class="field-group">
+                <label>账户余额</label>
+
+                <div class="control-value">${account?.amount?.formatCurrency('CNY')}
+                </div>
+            </div>
+            <div class="field-group">
+                <label>预付款余额</label>
+
+                <div class="control-value">${prepaymentBalance?.formatCurrency('CNY')}
+                    <input type="hidden" name="amount"
+                           value="${withdrawAmount}"/>
+                    <a id="prepaymentDetail" href="#">查看明细</a>
+                </div>
+            </div>
+            <div class="field-group">
+                <label>可提现金额</label>
+
+                <div class="control-value">
+                ${supplierWithdrawAmount?.formatCurrency('CNY')}
+                    <input type="hidden" name="amount" value="${withdrawAmount}"/>
+                    (统计截止日期: ${com.uhuila.common.util.DateUtil.getYesterday().format('yyyy-MM-dd')})
+                </div>
+            </div>
+            <div class="form-actions">
+                #{if account?.getSupplierWithdrawAmount(prepaymentBalance,
+                com.uhuila.common.util.DateUtil.getBeginOfDay())?.compareTo(BigDecimal.ZERO)>0}
+                    <button type="submit" class="btn btn-primary">提交申请</button>
+                #{/if}
+                <a class="btn" href="/withdraws">取消</a>
+            </div>
+        </div>
+    #{/form}
+
+    <table class="standard-table detail" style="display: none;">
+        <tr>
+            <th>预付款金额</th>
+            <th>有效期开始</th>
+            <th>有效期结束</th>
+            <th>已结算金额</th>
+            <th>结算时间</th>
+            <th>结算者</th>
+        </tr>
+        #{list items:prepayments, as:'prepayment'}
+            <tr>
+                <td>${prepayment.amount?.formatCurrency('CNY')}</td>
+                <td>${prepayment.effectiveAt}</td>
+                <td>${prepayment.expireAt}</td>
+                <td>${prepayment.withdrawAmount.formatCurrency('CNY')}</td>
+                <td>${prepayment.updatedAt}</td>
+                <td>${prepayment.updatedBy}</td>
+            </tr>
+        #{/list}
+    </table>
+</div>
+
+#{/else}
+

@@ -1,13 +1,13 @@
 package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
+import controllers.supplier.SupplierInjector;
 import models.sales.Area;
 import models.sales.Shop;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
-import play.modules.paginate.ModelPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -21,7 +21,7 @@ import java.util.List;
  * Date: 12/18/12
  * Time: 10:41 AM
  */
-@With(SupplierRbac.class)
+@With({SupplierRbac.class, SupplierInjector.class})
 @ActiveNavigation("shops_index")
 public class SupplierShops extends Controller {
 

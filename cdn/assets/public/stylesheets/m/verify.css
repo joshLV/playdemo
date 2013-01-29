@@ -98,12 +98,25 @@
     border: 1px solid #ccc;
 }
 
-.batch-verify .coupons-table td.success {
-    color: #468847;
+.batch-verify .coupons-table td div.success {
+    color: #00c807;
+    border: 1px solid #00c807;
+    background-color: #f3f8de;
+    padding: 2px;
+    border-radius: 3px;
+    display: inline-block;
+    font-size: 14px;
 }
 
-.batch-verify .coupons-table td.error {
+.batch-verify .coupons-table td div.error {
     color: #B94A48;
+    border: 1px solid #B94A48;
+    background-color: #FFFBF0;
+    padding: 2px;
+    border-radius: 3px;
+    display: inline-block;
+    font-size: 14px;
+
 }
 
 .batch-verify .coupons-table tr.odd td {

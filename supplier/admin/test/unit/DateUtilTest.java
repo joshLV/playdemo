@@ -6,6 +6,7 @@ import play.test.UnitTest;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 日期工具类的测试.
@@ -44,4 +45,55 @@ public class DateUtilTest extends UnitTest {
         assertEquals(c.getTimeInMillis(), DateUtil.getBeforeHour(c1.getTime(), 2).getTime());
     }
 
+    @Test
+    public void testGetDateList_interval1() {
+        Date from = DateUtil.stringToDate("2012-01-02 00:00:00", "yyyy-MM-dd HH:mm:ss");
+        Date to = DateUtil.stringToDate("2012-01-05 23:59:59", "yyyy-MM-dd HH:mm:ss");
+
+        List<String> dateList = DateUtil.getDateList(from, to, 1, "yyyy-MM-dd");
+
+        assertEquals(4, dateList.size());
+        assertEquals("2012-01-02", dateList.get(0));
+        assertEquals("2012-01-03", dateList.get(1));
+        assertEquals("2012-01-04", dateList.get(2));
+        assertEquals("2012-01-05", dateList.get(3));
+    }
+
+    @Test
+    public void testGetDateList_beginDay() {
+        Date from = DateUtil.stringToDate("2012-01-02 00:00:00", "yyyy-MM-dd HH:mm:ss");
+        Date to = DateUtil.stringToDate("2012-01-05 00:00:00", "yyyy-MM-dd HH:mm:ss");
+
+        List<String> dateList = DateUtil.getDateList(from, to, 1, "yyyy-MM-dd");
+
+        assertEquals(4, dateList.size());
+        assertEquals("2012-01-02", dateList.get(0));
+        assertEquals("2012-01-03", dateList.get(1));
+        assertEquals("2012-01-04", dateList.get(2));
+        assertEquals("2012-01-05", dateList.get(3));
+    }
+
+    @Test
+    public void testGetDateList_interval3() {
+        Date from = DateUtil.stringToDate("2012-01-02 00:00:00", "yyyy-MM-dd HH:mm:ss");
+        Date to = DateUtil.stringToDate("2012-01-05 00:00:00", "yyyy-MM-dd HH:mm:ss");
+
+        List<String> dateList = DateUtil.getDateList(from, to, 3, "yyyy-MM-dd");
+
+        assertEquals(2, dateList.size());
+        assertEquals("2012-01-02", dateList.get(0));
+        assertEquals("2012-01-05", dateList.get(1));
+    }
+
+    @Test
+    public void testGetDateList_interval5() {
+        Date from = DateUtil.stringToDate("2012-01-02 00:00:00", "yyyy-MM-dd HH:mm:ss");
+        Date to = DateUtil.stringToDate("2012-01-05 23:59:59", "yyyy-MM-dd HH:mm:ss");
+
+        List<String> dateList = DateUtil.getDateList(from, to, 5, "yyyy-MM-dd");
+
+        assertEquals(2, dateList.size());
+        assertEquals("2012-01-02", dateList.get(0));
+        assertEquals("2012-01-05", dateList.get(1));
+    }
 }
