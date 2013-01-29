@@ -19,7 +19,7 @@ public class CouponHistoryFactory extends ModelFactory<CouponHistory> {
      */
     @Override
     public CouponHistory define() {
-        ECoupon ecoupon = FactoryBoy.create(ECoupon.class);
+        ECoupon ecoupon = FactoryBoy.lastOrCreate(ECoupon.class);
         return ECouponHistoryMessage.with(ecoupon).remark("产生券号")
                 .fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED).toModel();
     }

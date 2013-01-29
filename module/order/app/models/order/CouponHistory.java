@@ -14,9 +14,9 @@ import java.util.Date;
 @Entity
 @Table(name = "coupon_history")
 public class CouponHistory extends Model {
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "coupon_id", nullable = false)
-    public ECoupon coupon;
+
+    @Column(name = "coupon_id", nullable = false)
+    public Long couponId;
 
     @Column(name = "created_at")
     public Date createdAt;

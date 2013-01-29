@@ -64,7 +64,7 @@ public class ECouponHistoryMessage implements Serializable {
     public CouponHistory toModel() {
         CouponHistory couponHistory = new CouponHistory();
 
-        couponHistory.coupon = ECoupon.findById(eCouponId);
+        couponHistory.couponId = eCouponId;
         couponHistory.createdAt = createdAt;
         couponHistory.operator = operator;
         couponHistory.remark = remark;

@@ -22,9 +22,6 @@ public class ECouponHistoryConsumer extends RabbitMQConsumerWithTx<ECouponHistor
             e.printStackTrace();
         }
         CouponHistory couponHistory = data.toModel();
-        if (couponHistory.coupon == null) {
-            throw new RuntimeException("ECouponHistoryMessage(eCouponId:" + data.eCouponId + ") 对象为空，暂不能保存");
-        }
         JPA.em().flush();
         couponHistory.save();
     }
