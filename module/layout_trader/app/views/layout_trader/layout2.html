@@ -10,7 +10,7 @@
 #{get 'moreScripts' /}
     <script type="text/javascript">
         $(function () {
-            $('.close').click(function () {
+            closeMsg = function (msgType) {
                 $.ajax({
                     type: 'POST',
                     url: '/close-msg',
@@ -18,10 +18,8 @@
                     }
                 });
 
-                $('#error').hide();
-                $('#success').hide();
-                $('#message').hide();
-            });
+                $('#' + msgType).hide();
+            };
         });
     </script>
 </head>
@@ -34,7 +32,7 @@
             欢迎，${supplierCompany.name}(${currentUser?.loginName})!
             <a href="/logout">退出</a>
             <a href="/ui-version/to/v1">使用旧版</a>
-        <a href="/passwords">修改密码</a>
+            <a href="/passwords">修改密码</a>
         *{<a href="">帮助</a>}*
         *{<a href="">反馈</a>}*
         </div>
@@ -45,7 +43,7 @@
     <div class="normal">
         <p><em>温馨提示：</em>${errorInfo?.raw()}</p>
     </div>
-    <a id="error-close" class="close" href="javascript:void(0)">关闭</a>
+    <a id="error-close" class="close" href="javascript:closeMsg('error')">关闭</a>
 </div>
 #{/if}
 #{if successInfo != null}
@@ -53,7 +51,7 @@
     <div class="success">
         <p><em>${successInfo?.raw()}</em></p>
     </div>
-    <a id="success-close" class="close" href="javascript:void(0)">关闭</a>
+    <a id="success-close" class="close" href="javascript:closeMsg('success')">关闭</a>
 </div>
 #{/if}
 #{if topic != null}
@@ -61,7 +59,7 @@
     <div class="success">
         <p><em>${topic?.content?.raw()}</em></p>
     </div>
-    <a id="msg-close" class="close" href="javascript:void(0)">关闭</a>
+    <a id="msg-close" class="close" href="javascript:closeMsg('message')">关闭</a>
 </div>
 #{/if}
 <!-- .content -->

@@ -13,7 +13,7 @@
             <div class="field-group">
                 <label>选择分店</label>
             #{select 'condition.shopId', id:shopId, value:condition?.shopId}
-                #{option ""}全部#{/option}
+                #{if shopList?.size()>1}#{option ""}全部#{/option}#{/if}
                 #{list items:shopList, as:'shop'}
                     #{option shop?.id}${shop?.name}#{/option}
                 #{/list}
@@ -33,8 +33,9 @@
 
             <div class="field-group">
                 <label>消费时间</label><input type="text" id="condition_consumed_begin" class="time"
-                       name="condition.consumedAtBegin"
-                       onfocus="WdatePicker({readOnly:true})" value="${condition?.consumedAtBegin?.format()}">
+                                          name="condition.consumedAtBegin"
+                                          onfocus="WdatePicker({readOnly:true})"
+                                          value="${condition?.consumedAtBegin?.format()}">
                 <span>到</span>
                 <input type="text" id="condition_consumed_end" class="time"
                        name="condition.consumedAtEnd"

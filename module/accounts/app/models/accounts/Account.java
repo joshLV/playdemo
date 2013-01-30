@@ -94,6 +94,7 @@ public class Account extends Model {
      */
     public BigDecimal getSupplierWithdrawAmount(BigDecimal prepaymentBalance, Date date) {
         BigDecimal withdrawAmount = getWithdrawAmount(date);
+        System.out.println("withdrawAmount:" + withdrawAmount);
         if (prepaymentBalance.compareTo(withdrawAmount) > 0) {
             return BigDecimal.ZERO;
         }
