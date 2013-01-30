@@ -39,7 +39,7 @@ public class SuppliersUploadFiles extends Controller {
     public static final String BASE_URL = Play.configuration.getProperty("uri.operate_business");
 
     /**
-     * 上传文件
+     * 编辑商户合同时 上传文件   编辑商户合同时
      *
      * @param imgFile
      */
@@ -48,17 +48,22 @@ public class SuppliersUploadFiles extends Controller {
         if (imgFile == null) {
             getError("请选择文件。");
         }
+        System.out.println(supplierId + "===supplierId>>");
+        System.out.println(contractId + "===contractId>>");
+        System.out.println("111111===>>");
         //检查目录
         File uploadDir = new File(ROOT_PATH);
 
         if (!uploadDir.isDirectory()) {
             getError("上传目录不存在。");
         }
+        System.out.println("2222===>>");
 
         //检查目录写权限
         if (!uploadDir.canWrite()) {
             getError("上传目录没有写权限。");
         }
+        System.out.println("333===>>");
 
         //检查文件大小
         if (imgFile.length() > MAX_SIZE) {
@@ -91,12 +96,13 @@ public class SuppliersUploadFiles extends Controller {
 
             path = PathUtil.signImgPath(path);
 
-            map.put("url", BASE_URL+"/contract/p" + path);
+            map.put("url", BASE_URL + "/contract/p" + path);
             renderJSON(map);
         } catch (Exception e) {
             getError("上传失败，服务器忙，请稍候再试。");
         }
     }
+
 
     private static void getError(String message) {
         Map map = new HashMap();

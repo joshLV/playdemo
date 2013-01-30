@@ -1,5 +1,6 @@
 package models.supplier;
 
+
 import org.apache.commons.codec.digest.DigestUtils;
 import play.db.jpa.Model;
 

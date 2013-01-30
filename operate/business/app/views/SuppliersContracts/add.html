@@ -8,9 +8,9 @@
 #{/set}
 #{include '/share/nav.html' /}
 <div class="body">
-#{form @SuppliersUploadContracts.create() , id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
+#{form @SuppliersContracts.create() , id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
     <legend>${title}</legend>
     #{set action:"add"/}
-    #{include '/SuppliersUploadContracts/supplierUploadContractForm.html'/}
+    #{include '/SuppliersContracts/supplierUploadContractForm.html'/}
 #{/form}
 </div>

@@ -1,9 +1,15 @@
 package models.supplier;
 
+import org.apache.commons.lang.StringUtils;
+import play.data.validation.InFuture;
+import play.data.validation.Required;
 import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -24,10 +30,15 @@ public class SupplierContract extends Model {
     @Column(name = "supplier_company_name")
     public String supplierCompanyName;
 
+    @Required
     @Column(name = "effective_at")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date effectiveAt;
 
+    @Required
+    @InFuture
     @Column(name = "expire_at")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date expireAt;
 
     @Column(name = "created_at")
@@ -53,12 +64,47 @@ public class SupplierContract extends Model {
     @Column(name = "supplier_id")
     public Long supplierId;
 
+    /**
+     * 逻辑删除,0:未删除，1:已删除
+     */
+    @Enumerated(EnumType.ORDINAL)
+    public com.uhuila.common.constants.DeletedStatus deleted;
+
 
     public SupplierContract(Supplier supplier) {
         this.supplierId = supplier.id;
         this.supplierName = supplier.otherName;
         this.supplierCompanyName = supplier.fullName;
         this.createdAt = new Date();
+    }
+
+    public static void update(Long id, SupplierContract contract) {
+        SupplierContract sourceContract = SupplierContract.findById(id);
+        sourceContract.effectiveAt = contract.effectiveAt;
+        sourceContract.expireAt = contract.expireAt;
+        sourceContract.description = contract.description;
+        sourceContract.updatedAt = new Date();
+        sourceContract.updatedBy = contract.updatedBy;
+    }
+
+    @Override
+    public boolean create() {
+        deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED;
+        createdAt = new Date();
+        return super.create();
+    }
+
+    public static JPAExtPaginator<SupplierContract> findByCondition(SupplierContractCondition condition,
+                                                                    int pageNumber, int pageSize) {
+
+        JPAExtPaginator<SupplierContract> goodsPage = new JPAExtPaginator<>
+                ("SupplierContract c", "c", SupplierContract.class, condition.getFilter(),
+                        condition.getParamMap())
+                .orderBy(condition.getOrderByExpress());
+        goodsPage.setPageNumber(pageNumber);
+        goodsPage.setPageSize(pageSize);
+        goodsPage.setBoundaryControlsEnabled(false);
+        return goodsPage;
     }
 
 }

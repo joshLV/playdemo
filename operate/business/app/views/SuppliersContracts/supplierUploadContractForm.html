@@ -1,0 +1,35 @@
+&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color: red; ">*</span> 商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户   &nbsp; &nbsp;
+#{if "add".equals(action)}
+
+    #{vx.selectInputField name:"supplierName", id:"contract.supplierId", list:supplierList, value:contract?.supplierId, array:"supplierArray",importJs:true/}
+<span class="error">#{error 'contract.supplierId'/}</span>
+
+#{/if}
+#{else}
+&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;
+<input type="text" name="supplierName" id="supplierName" class="input-large" readonly value="${supplierName}"/>
+#{/else}
+<br/>   <br/>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+#{layout_operate.dateScopeField name:'contract.effectiveAt', begin:'contract.effectiveAt',end:'contract.expireAt',
+beginValue:contract?.effectiveAt?.format(), endValue:contract?.expireAt?.format(), required:true/}
+
+<br>
+<span style="padding-right: 100px">
+   &nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;      &nbsp;
+   <span style="color: red; ">*</span> 合同说明     &nbsp; &nbsp;&nbsp;&nbsp;
+    <textarea rows="6" cols="30" required="required" name="contract.description"
+              id="contract.description">${contract?.description?.escape()?.raw()}</textarea>
+    <div class="error">#{error 'contract.description' /}</div>
+</span>
+<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<button class="btn btn-primary" type="submit">下一步</button>
+
+
+
+

@@ -18,6 +18,9 @@ goods.TAOBAO=淘宝网
 goods.YIHAODIAN=一号店
 goods.DANGDANG=当当网
 
+contract.supplierId= 商户
+contract.description=商户说明
+
 validation.unique=此类别名称已存在
 validation.required=请输入%s!
 validation.match=无效的%s!
@@ -54,6 +57,7 @@ validation.noShop=该商户没有门店，请先为商户添加门店！
 validation.existed=%s已经存在！
 validation.useWeekDay=请选择%s!
 validation.selected=请选择%s!
+validation.selectExisted=请选择存在的%s!
 
 validation.valid=%s不符合规范!
 
@@ -142,6 +146,9 @@ pointGoods.details=详情
 
 pointGoods.effectiveAt=开始时间
 pointGoods.expireAt=到期时间
+
+contract.expireAt=合同到期时间
+contract.effectiveAt=合同生效日期
 
 goods.title=短信标题
 goods.category=分类
@@ -544,4 +551,4 @@ channel.PAGE_NOT_EXISTED=页面不存在
 channel.null=
 
 
-contract.effectiveAt=合同生效日期
+

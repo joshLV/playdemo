@@ -28,11 +28,12 @@ POST    /goods/filemanager                      OperateUploadFiles.fileManagerJs
 GET     /category/sub/{id}                      OperateCategories.showSubs
 
 # 上传合同的电子版本
-GET     /suppliers_upload_contracts                        SuppliersUploadContracts.index
-GET     /supplier_contract/new                             SuppliersUploadContracts.add
-GET     /supplier_contract/{contractId}/edit               SuppliersUploadContracts.edit
-PUT     /supplier_contract/{id}                            SuppliersUploadContracts.update
-DELETE  /supplier_contract_images/{id}                     SuppliersUploadContracts.deleteImage
+GET     /suppliers_contracts                               SuppliersContracts.index
+GET     /supplier_contract/new                             SuppliersContracts.add
+GET     /supplier_contract/{contractId}/edit               SuppliersContracts.edit
+GET     /supplier_contract/{contractId}/view               SuppliersContracts.view
+PUT     /supplier_contract/{contractId}                    SuppliersContracts.update
+DELETE  /supplier_contract_images/{id}                     SuppliersContracts.deleteImage
 
 POST    /supplier_contract_images/{supplierId}/{contractId}         SuppliersUploadFiles.uploadImages
 
