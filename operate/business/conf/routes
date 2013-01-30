@@ -78,6 +78,10 @@ GET     /resaler-products/wb/refresh/{productId}    resale.WubaGroupBuyProducts.
 GET     /resaler-products/dd/upload/{goodsId}   resale.DDGroupBuyProducts.showUpload
 POST    /resaler-products/dd/upload             resale.DDGroupBuyProducts.upload
 
+# 淘宝
+GET     /resaler-products/tb/upload/{goodsId}   resale.TaobaoGroupBuyProducts.showUpload
+POST    /resaler-products/tb/upload             resale.TaobaoGroupBuyProducts.upload
+
 # --------------------  end of 分销商品  ---------------------------------------------------------
 
 

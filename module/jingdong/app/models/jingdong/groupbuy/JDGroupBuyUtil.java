@@ -8,6 +8,7 @@ import models.jingdong.groupbuy.response.VerifyCouponResponse;
 import models.order.ECoupon;
 import models.order.OuterOrder;
 import org.apache.commons.codec.binary.Base64;
+import play.Logger;
 import play.Play;
 import play.exceptions.UnexpectedException;
 import play.libs.WS;
@@ -116,6 +117,7 @@ public class JDGroupBuyUtil {
         params.put("coupon", eCoupon);
         String restRequestBody = makeRequestRest(template.render(params));
 
+        Logger.info("jingdong request verifyCoupon:\n%s", restRequestBody);
         String responseResult = WebServiceRequest.url(url).type("jingdong_verify_order")
                 .requestBody(restRequestBody)
                 .addKeyword(outerOrder.orderId).addKeyword(eCoupon.id)
@@ -138,6 +140,7 @@ public class JDGroupBuyUtil {
 
         Template template = TemplateLoader.load("jingdong/groupbuy/request/queryCity.xml");
         String restRequest = makeRequestRest(template.render());
+        Logger.info("jingdong request queryCity:\n%s", restRequest);
         WS.HttpResponse response = WS.url(url).body(restRequest).post();
 
         JDRest<QueryIdNameResponse> queryCityRest = new JDRest<>();
@@ -169,6 +172,7 @@ public class JDGroupBuyUtil {
         Map<String, Object> params = new HashMap<>();
         params.put("categoryId", categoryId);
         String restRequest = makeRequestRest(template.render(params));
+        Logger.info("jingdong request queryCategory:\n%s", restRequest);
         WS.HttpResponse response = WS.url(url).body(restRequest).post();
 
         JDRest<QueryIdNameResponse> queryCategoryRest = new JDRest<>();
@@ -203,6 +207,7 @@ public class JDGroupBuyUtil {
         Map<String, Object> params = new HashMap<>();
         params.put("cityId", cityId);
         String restRequest = makeRequestRest(template.render(params));
+        Logger.info("jingdong request queryDistrict:\n%s", restRequest);
         WS.HttpResponse response = WS.url(url).body(restRequest).post();
 
         JDRest<QueryIdNameResponse> queryDistrictRest = new JDRest<>();
@@ -236,6 +241,7 @@ public class JDGroupBuyUtil {
         Map<String, Object> params = new HashMap<>();
         params.put("districtId", districtId);
         String restRequest = makeRequestRest(template.render(params));
+        Logger.info("jingdong request queryArea:\n%s", restRequest);
         WS.HttpResponse response = WS.url(url).body(restRequest).post();
 
         JDRest<QueryIdNameResponse> queryDistrictRest = new JDRest<>();

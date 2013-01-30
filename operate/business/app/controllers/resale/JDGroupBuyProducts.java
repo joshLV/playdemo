@@ -87,7 +87,7 @@ public class JDGroupBuyProducts extends Controller{
      */
     public static void city(Long id, String type) {
         if (id == null && type == null) {
-            List<IdNameResponse> cities = JDGroupBuyUtil.cacheCities();
+            List<IdNameResponse> cities = JDGroupBuyUtil.queryCity();
             renderJSON(jsonStr(cities, true, "city"));
         }
         if (id == null || type == null) {
