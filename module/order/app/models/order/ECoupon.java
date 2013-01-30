@@ -889,6 +889,7 @@ public class ECoupon extends Model {
     /**
      * 得到无空格、中文的券号.
      * 京东等平台不支持
+     *
      * @return
      */
     public String getSafeECouponSN() {
@@ -1502,6 +1503,7 @@ public class ECoupon extends Model {
 
     /**
      * 判断运营人员是否可重新发送券号.
+     *
      * @return
      */
     public boolean canSendSMSByOperate() {
@@ -1520,6 +1522,7 @@ public class ECoupon extends Model {
 
     /**
      * 判断是否可由消费者发送短信
+     *
      * @return
      */
     public boolean canSendSMSByConsumer() {
@@ -1527,5 +1530,24 @@ public class ECoupon extends Model {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 查询三天后京东，WB未消费不可退款的券
+     * @return
+     */
+    public static List<ECoupon> findVirtualCoupons() {
+        String sql = "select e from ECoupon e where e.isFreeze=0  and e.goods.noRefund= true" +
+                " and e.goods.isLottery=false and status =:status and (e.expireAt >= :expireBeginAt and e.expireAt <= " +
+                ":expireEndAt) and e.partner in (:partner) order by e.partner";
+        List<ECouponPartner> partnerList = new ArrayList<>();
+        partnerList.add(ECouponPartner.JD);
+        partnerList.add(ECouponPartner.WB);
+        Query query = ECoupon.em().createQuery(sql);
+        query.setParameter("status", ECouponStatus.UNCONSUMED);
+        query.setParameter("expireBeginAt", DateUtil.getBeginExpiredDate(3));
+        query.setParameter("expireEndAt", DateUtil.getEndExpiredDate(3));
+        query.setParameter("partner", partnerList);
+        return query.getResultList();
     }
 }

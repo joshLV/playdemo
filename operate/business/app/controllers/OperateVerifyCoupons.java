@@ -9,6 +9,7 @@ import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
+import play.data.binding.As;
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -121,5 +122,25 @@ public class OperateVerifyCoupons extends Controller {
         }
         renderArgs.put("success_info", "true");
         render("OperateVerifyCoupons/index.html", shop, ecoupon, shopList);
+    }
+
+    /**
+     * 虚拟验证页面
+     */
+    @ActiveNavigation("virtual_verify_index")
+    public static void virtual() {
+        List<ECoupon> couponList = ECoupon.findVirtualCoupons();
+        render(couponList);
+
+    }
+
+    public static void virtualCoupons(@As List<ECoupon> coupons) {
+        System.out.println(coupons + ">>>>coupons");
+        List<ECoupon> couponList = ECoupon.findVirtualCoupons();
+        render("OperateVerifyCoupons/virtual.html", couponList);
+    }
+
+    public static void virtualVerify() {
+        render();
     }
 }
