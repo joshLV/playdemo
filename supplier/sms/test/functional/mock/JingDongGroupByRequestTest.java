@@ -49,6 +49,7 @@ public class JingDongGroupByRequestTest extends FunctionalTest {
             @Override
             public void build(ResalerFav target) {
                 target.lastLinkId = goodsDeployRelation.linkId;
+                target.thirdGroupbuyId = 1234l;
             }
         });
         product = FactoryBoy.create(ChannelGoodsInfo.class);
