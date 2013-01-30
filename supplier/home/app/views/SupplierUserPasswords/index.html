@@ -8,18 +8,18 @@
 <script src="@{'/public/javascripts/password.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 <body onload="editSuccess('${isOk}')">
-<div class="outlet">
+<div class="bd">
     <h2>${title}</h2>
 
     <form action="@{SupplierUserPasswords.update()}" method="POST">
         <div class="field-group">
-            <label>原&nbsp;&nbsp;&nbsp;密&nbsp;&nbsp;&nbsp;码&nbsp;</label>
+            <label>原&nbsp;&nbsp;&nbsp;密&nbsp;&nbsp;码</label>
             <input name="oldPassword" type="password" id="old_password" size="26"
                    maxlength="20" class="inputBox" value="${oldPassword}"/><span
                 class="error">#{error 'supplierUser.oldPassword' /}</span>
         </div>
         <div class="field-group">
-            <label>新&nbsp;&nbsp;&nbsp;密&nbsp;&nbsp;&nbsp;码&nbsp;</label>
+            <label>新&nbsp;&nbsp;&nbsp;密&nbsp;&nbsp;码</label>
             <input name="password" type="password" id="encryptedPassword" size="26" maxlength="20" value="${password}"
                    class="inputBox" onkeyup="javascript:ChangeQD();"/>(至少6位)
             <span class="error">#{error 'supplierUser.newPassword' /}</span>

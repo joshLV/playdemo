@@ -42,7 +42,8 @@ h2 {
     font-size: 14px;
 }
 
-.error {
+/*form表单提示*/
+.red {
     color: #B94A48;
     border: 1px solid #B94A48;
     background-color: #FFFBF0;
@@ -50,6 +51,11 @@ h2 {
     display: inline-block;
     font-size: 14px;
 }
+
+.error {
+    color: #B94A48;
+}
+
 /* 公告 */
 #message {
     position: relative;

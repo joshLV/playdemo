@@ -55,7 +55,6 @@ public class SupplierRbac extends Controller {
 
     public static final String SESSION_USER_KEY = "supplier_login";
 
-
     private static ThreadLocal<SupplierUser> _user = new ThreadLocal<>();
 
     public static void injectDefaultMenus() {
