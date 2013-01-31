@@ -15,14 +15,17 @@ import play.jobs.OnApplicationStart;
 @OnApplicationStart(async = true)
 public class ECouponHistoryConsumer extends RabbitMQConsumerWithTx<ECouponHistoryMessage> {
     @Override
-    public void consumeWithTx(ECouponHistoryMessage data)  {
+    public void consumeWithTx(ECouponHistoryMessage data) {
+        System.out.println(  "inini===>>");
         try {
             Thread.sleep(500l);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        System.out.println("jere===>>");
         CouponHistory couponHistory = data.toModel();
         JPA.em().flush();
+        System.out.println("jere1111===>>");
         couponHistory.save();
     }
 

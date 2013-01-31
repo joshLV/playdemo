@@ -889,6 +889,7 @@ public class ECoupon extends Model {
     /**
      * 得到无空格、中文的券号.
      * 京东等平台不支持
+     *
      * @return
      */
     public String getSafeECouponSN() {
@@ -1502,6 +1503,7 @@ public class ECoupon extends Model {
 
     /**
      * 判断运营人员是否可重新发送券号.
+     *
      * @return
      */
     public boolean canSendSMSByOperate() {
@@ -1520,6 +1522,7 @@ public class ECoupon extends Model {
 
     /**
      * 判断是否可由消费者发送短信
+     *
      * @return
      */
     public boolean canSendSMSByConsumer() {

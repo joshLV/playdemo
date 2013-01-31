@@ -904,7 +904,6 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
         }
         List<ChannelCategoryReport> paidResultList = query.getResultList();
 
-
         //sendAt real
         sql = "select new models.ChannelCategoryReport(min(r.order), s.supplierCategory.id, sum(r.buyNumber),sum(r.salePrice*r.buyNumber-r.rebateValue)" +
                 ",sum(r.originalPrice*r.buyNumber)" +
@@ -940,7 +939,6 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
         //refundAt real need to do !!!!!
 
         Map<String, ChannelCategoryReport> map = new HashMap<>();
-
         //merge ecoupon and real when sales
         for (ChannelCategoryReport paidItem : paidResultList) {
             map.put(getConsumerReportKey(paidItem), paidItem);
@@ -969,7 +967,6 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
             }
         }
 
-
         //merge other 2
         for (ChannelCategoryReport consumedItem : consumedResultList) {
             ChannelCategoryReport item = map.get(getConsumerReportKey(consumedItem));
@@ -980,7 +977,6 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
                 item.consumedNumber = consumedItem.consumedNumber;
             }
         }
-
         for (ChannelCategoryReport refundItem : refundResultList) {
             ChannelCategoryReport item = map.get(getConsumerReportKey(refundItem));
             if (item == null) {
@@ -1042,6 +1038,7 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
         List<ChannelCategoryReport> totalResultList = new ArrayList<>();
         if (totalPaidResultList != null && totalPaidResultList.size() > 0) {
             result = totalPaidResultList.get(0);
+
             if (totalSentRealResultList != null && totalSentRealResultList.size() > 0 && totalSentRealResultList.get(0).realBuyNumber > 0) {
                 result.realSalePrice = totalSentRealResultList.get(0).realSalePrice;
                 result.realBuyNumber = totalSentRealResultList.get(0).realBuyNumber;
@@ -1069,36 +1066,36 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
             }
             totalResultList.add(result);
         }
-
-        for (int i = 0; i < totalResultList.size(); i++) {
-            switch (totalResultList.get(i).orderByFields[condition.orderByIndex]) {
-                case "salePrice":
-                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).salePrice == null ? BigDecimal.ZERO : totalResultList.get(i).salePrice));
-                    break;
-                case "realSalePrice":
-                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).realSalePrice == null ? BigDecimal.ZERO : totalResultList.get(i).totalAmount));
-                    break;
-                case "refundPrice":
-                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).refundPrice == null ? BigDecimal.ZERO : totalResultList.get(i).refundPrice));
-                    break;
-                case "consumedPrice":
-                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).consumedPrice == null ? BigDecimal.ZERO : totalResultList.get(i).consumedPrice));
-                    break;
-                case "grossMargin":
-                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).grossMargin == null ? BigDecimal.ZERO : totalResultList.get(i).grossMargin));
-                    break;
-                case "channelCost":
-                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).channelCost == null ? BigDecimal.ZERO : totalResultList.get(i).channelCost));
-                    break;
-                case "profit":
-                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).profit == null ? BigDecimal.ZERO : totalResultList.get(i).profit));
-                    break;
-                case "contribution":
-                    System.out.println("===inini>>");
-                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).contribution == null ? BigDecimal.ZERO : totalResultList.get(i).contribution));
-                    break;
+        if (map.size() > 0) {
+            for (int i = 0; i < totalResultList.size(); i++) {
+                switch (totalResultList.get(i).orderByFields[condition.orderByIndex]) {
+                    case "salePrice":
+                        condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).salePrice == null ? BigDecimal.ZERO : totalResultList.get(i).salePrice));
+                        break;
+                    case "realSalePrice":
+                        condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).realSalePrice == null ? BigDecimal.ZERO : totalResultList.get(i).totalAmount));
+                        break;
+                    case "refundPrice":
+                        condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).refundPrice == null ? BigDecimal.ZERO : totalResultList.get(i).refundPrice));
+                        break;
+                    case "consumedPrice":
+                        condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).consumedPrice == null ? BigDecimal.ZERO : totalResultList.get(i).consumedPrice));
+                        break;
+                    case "grossMargin":
+                        condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).grossMargin == null ? BigDecimal.ZERO : totalResultList.get(i).grossMargin));
+                        break;
+                    case "channelCost":
+                        condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).channelCost == null ? BigDecimal.ZERO : totalResultList.get(i).channelCost));
+                        break;
+                    case "profit":
+                        condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).profit == null ? BigDecimal.ZERO : totalResultList.get(i).profit));
+                        break;
+                    case "contribution":
+                        condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).contribution == null ? BigDecimal.ZERO : totalResultList.get(i).contribution));
+                        break;
+                }
+                map.put(getTotalReportKey(totalResultList.get(i)), totalResultList.get(i));
             }
-            map.put(getTotalReportKey(totalResultList.get(i)), totalResultList.get(i));
         }
 
         List<ChannelCategoryReport> resultList = new ArrayList();
@@ -1118,7 +1115,6 @@ public class ChannelCategoryReport implements Comparable<ChannelCategoryReport> 
         }
 
 //        resultList.add(totalResultList.get(0));
-
         for (ChannelCategoryReport c : resultList) {
             c.comparedValue = condition.comparedMap.get(c.loginName);
             c.orderByType = condition.orderByType;
