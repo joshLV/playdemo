@@ -33,6 +33,7 @@ GET     /supplier_contract/new                             SuppliersContracts.ad
 GET     /supplier_contract/{contractId}/edit               SuppliersContracts.edit
 GET     /supplier_contract/{contractId}/view               SuppliersContracts.view
 PUT     /supplier_contract/{contractId}                    SuppliersContracts.update
+DELETE  /supplier_contract/{id}                            SuppliersContracts.delete
 DELETE  /supplier_contract_images/{id}                     SuppliersContracts.deleteImage
 
 POST    /supplier_contract_images/{supplierId}/{contractId}         SuppliersUploadFiles.uploadImages

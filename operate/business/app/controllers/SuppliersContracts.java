@@ -117,6 +117,11 @@ public class SuppliersContracts extends Controller {
         }
     }
 
+    public static void delete(long id) {
+        SupplierContract.delete(id);
+        index(null);
+    }
+
     /**
      * 删除商户合同一个图片
      *

@@ -57,7 +57,8 @@
                 <a href="@{SuppliersContracts.view(contract.id)}">查看合同</a>
                 /
                 <a href="@{SuppliersContracts.edit(contract.id)}">修改</a>
-
+                /
+                #{vx.deleteLink id:contract?.id,  action:"/supplier_contract"/}
             </td>
         </tr>
         #{/paginate.list}

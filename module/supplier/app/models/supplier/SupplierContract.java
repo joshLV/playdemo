@@ -105,6 +105,17 @@ public class SupplierContract extends Model {
         return super.create();
     }
 
+    public static void delete(long id) {
+        SupplierContract contract = SupplierContract.findById(id);
+        if (contract == null) {
+            return;
+        }
+        if (!com.uhuila.common.constants.DeletedStatus.DELETED.equals(contract.deleted)) {
+            contract.deleted = com.uhuila.common.constants.DeletedStatus.DELETED;
+            contract.save();
+        }
+    }
+
     public static JPAExtPaginator<SupplierContract> findByCondition(SupplierContractCondition condition,
                                                                     int pageNumber, int pageSize) {
 
