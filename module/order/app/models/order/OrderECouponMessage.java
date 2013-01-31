@@ -1,5 +1,6 @@
 package models.order;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import play.Play;
 import util.mq.MQPublisher;
 
@@ -94,5 +95,16 @@ public class OrderECouponMessage implements Serializable {
 
     public static OrderECouponMessage withECouponId(Long eCouponId, String remark) {
         return new OrderECouponMessage(null, eCouponId, null, remark);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).
+                append("orderItemId", orderItemId).
+                append("eCouponId", eCouponId).
+                append("phone", phone).
+                append("remark", remark).
+                append("operator", operator).
+                toString();
     }
 }

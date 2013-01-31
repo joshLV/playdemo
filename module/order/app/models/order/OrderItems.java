@@ -9,6 +9,8 @@ import models.sales.GoodsHistory;
 import models.sales.MaterialType;
 import models.sales.SecKillGoods;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
@@ -348,7 +350,6 @@ public class OrderItems extends Model {
         if (AccountType.RESALER.equals(order.userType)
                 && order.getResaler().loginName.equals(Resaler.JD_LOGIN_NAME)) {
             // do nothing. NOW!
-            // TODO: 修改东京接口
         }
 
 
@@ -402,4 +403,22 @@ public class OrderItems extends Model {
         return message;
     }
 
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().appendSuper(super.hashCode()).append(this.order).append(this.goods)
+                .append(this.id).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final OrderItems other = (OrderItems) obj;
+        return new EqualsBuilder().appendSuper(super.equals(obj)).append(this.order, other.order)
+                .append(this.goods, other.goods).append(this.id, other.id).isEquals();
+    }
 }
