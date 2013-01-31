@@ -39,9 +39,8 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.endOnSaleAt = afterDays(30);
         goods.faceValue = new BigDecimal("10.00");
         goods.materialType = MaterialType.ELECTRONIC;
-        goods.cumulativeStocks = 100L;  //库存
         goods.virtualBaseSaleCount = 10l; //虚拟销量
-        goods.cumulativeStocks=10l;
+        goods.cumulativeStocks=10l;   //库存
         goods.useWeekDay = "1,2,3,4,5,6,7";
         goods.originalPrice = new BigDecimal("5");
         goods.categories = new HashSet<>();

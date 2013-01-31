@@ -558,6 +558,8 @@ public class Order extends Model {
 
             orderItem.status = OrderStatus.CANCELED;
             orderItem.save();
+            orderItem.goods.refreshSaleCount();
+
             //更新在搜索服务器中goods的销量
             Solr.save(orderItem.goods);
 
