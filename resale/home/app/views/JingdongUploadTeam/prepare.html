@@ -89,7 +89,7 @@
     <p><input type="text" name="endTime" onfocus="WdatePicker({readOnly:true})"  class="Wdate" value="${expireAt?.format()}"></p>
 
     <p>券截止效期<b>[必填]</b></p>
-    <p><input type="text" name="couponExpireTime" onfocus="WdatePicker({readOnly:true})"  class="Wdate" value="${couponExpireTime?.format()}"></p>
+    <p><input type="text" name="couponExpireTime"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"  class="Wdate" value="${couponExpireTime?.format('yyyy-MM-dd HH:mm:ss')}"></p>
 
     <p>最低成团人数 仅数字，必须大于等于1 <b>[必填]</b> </p>
     <p><input type="text" name="minNumber" value="1"></p>
