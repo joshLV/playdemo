@@ -15,7 +15,7 @@ import java.util.Date;
 @Table(name = "coupon_history")
 public class CouponHistory extends Model {
 
-    @Column(name = "coupon_id", nullable = false)
+    @Column(name = "coupon_id")
     public Long couponId;
 
     @Column(name = "created_at")
@@ -47,5 +47,11 @@ public class CouponHistory extends Model {
      */
     @Enumerated(EnumType.STRING)
     public ECouponStatus toStatus;
+
+    @Column(name="order_id")
+    public Long orderId;
+
+    @Column(name="item_id")
+    public Long itemId;
 
 }
