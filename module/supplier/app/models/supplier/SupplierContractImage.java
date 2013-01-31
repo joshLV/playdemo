@@ -76,6 +76,8 @@ public class SupplierContractImage extends Model implements Comparable<SupplierC
 
     public String description;
 
+    public String size;
+
     /**
      * 最小规格图片路径
      */
@@ -90,6 +92,11 @@ public class SupplierContractImage extends Model implements Comparable<SupplierC
     @Transient
     public String getImageSmallPath() {
         return getImageUrl(BASE_URL, imagePath, IMAGE_SMALL);
+    }
+
+    @Transient
+    public String getImageOwnPath() {
+        return getImageUrl(BASE_URL, imagePath, this.size);
     }
 
 
@@ -135,8 +142,9 @@ public class SupplierContractImage extends Model implements Comparable<SupplierC
         super._delete();
     }
 
-    public SupplierContractImage(Supplier supplier, SupplierContract contract, String shownName, String imagePath) {
+    public SupplierContractImage(Supplier supplier, SupplierContract contract, String shownName, String imagePath, String size) {
 //        this.supplierContract = new SupplierContract(supplier).save();
+        this.size = size;
         this.contract = contract;
         this.imagePath = imagePath;
         this.shownName = shownName;

@@ -40,7 +40,7 @@ K.extend(KSWFUpload, {
 
 		function showError(itemDiv, msg) {
 			K('.ke-status > div', itemDiv).hide();
-			K('.ke-message', itemDiv).addClass('ke-error').show().html(K.escape(msg));
+			K('.ke-message', itemDiv).addClass('ke-error').show().htK.escape(msg));
 		}
 
 		var settings = {

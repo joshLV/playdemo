@@ -11,6 +11,8 @@ import play.Play;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -48,27 +50,22 @@ public class SuppliersUploadFiles extends Controller {
         if (imgFile == null) {
             getError("请选择文件。");
         }
-        System.out.println(supplierId + "===supplierId>>");
-        System.out.println(contractId + "===contractId>>");
-        System.out.println("111111===>>");
         //检查目录
         File uploadDir = new File(ROOT_PATH);
 
         if (!uploadDir.isDirectory()) {
             getError("上传目录不存在。");
         }
-        System.out.println("2222===>>");
 
         //检查目录写权限
         if (!uploadDir.canWrite()) {
             getError("上传目录没有写权限。");
         }
-        System.out.println("333===>>");
 
         //检查文件大小
-        if (imgFile.length() > MAX_SIZE) {
-            getError("上传文件大小超过限制。");
-        }
+//        if (imgFile.length() > MAX_SIZE) {
+//            getError("上传文件大小超过限制。");
+//        }
 
         //检查扩展名
         //定义允许上传的文件扩展名
@@ -92,7 +89,11 @@ public class SuppliersUploadFiles extends Controller {
 
             Supplier supplier = Supplier.findById(supplierId);
             SupplierContract contract = SupplierContract.findById(contractId);
-            new SupplierContractImage(supplier, contract, imgFile.getName(), path).save();
+
+            BufferedImage buff = ImageIO.read(imgFile);
+            System.out.println(buff.getWidth() + "===buff.getWidth()>>");
+            String size= String.valueOf(buff.getWidth())+"x"+String.valueOf(buff.getHeight());
+            new SupplierContractImage(supplier, contract, imgFile.getName(), path,size).save();
 
             path = PathUtil.signImgPath(path);
 
