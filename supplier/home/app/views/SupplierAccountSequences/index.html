@@ -73,7 +73,7 @@
                     <div #{if accountSequence?.sequenceFlag == models.accounts.AccountSequenceFlag.VOSTRO}
                             class="success"
                     #{/if} #{if accountSequence?.sequenceFlag == models.accounts.AccountSequenceFlag.NOSTRO}
-                            class="error"
+                            class="red"
                     #{/if}>${accountSequence?.changeAmount}</div>
                 </td>
                 <td>${accountSequence?.balance}</td>

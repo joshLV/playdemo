@@ -137,7 +137,7 @@ public class SupplierVerifyECoupons extends Controller {
 
     @ActiveNavigation("coupons_verify")
     public static void refresh() {
-        renderJSON("");
+
     }
 
     private static void sendVerifySMS(ECoupon eCoupon, String shopName) {

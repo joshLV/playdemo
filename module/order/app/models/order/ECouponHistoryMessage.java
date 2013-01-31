@@ -47,6 +47,10 @@ public class ECouponHistoryMessage implements Serializable {
      */
     public ECouponStatus toStatus;
 
+    public Long orderId;
+
+    public Long itemId;
+
     private ECouponHistoryMessage() {
         // 不允许直接使用构造函数
     }
@@ -54,6 +58,8 @@ public class ECouponHistoryMessage implements Serializable {
     public static ECouponHistoryMessage with(ECoupon eCoupon) {
         ECouponHistoryMessage message = new ECouponHistoryMessage();
         message.eCouponId = eCoupon.id;
+        message.orderId = eCoupon.order.id;
+        message.itemId = eCoupon.orderItems.id;
         message.createdAt = new Date();
         message.fromStatus = eCoupon.status;
         message.toStatus = eCoupon.status;
@@ -65,6 +71,8 @@ public class ECouponHistoryMessage implements Serializable {
         CouponHistory couponHistory = new CouponHistory();
 
         couponHistory.couponId = eCouponId;
+        couponHistory.orderId = orderId;
+        couponHistory.itemId = itemId;
         couponHistory.createdAt = createdAt;
         couponHistory.operator = operator;
         couponHistory.remark = remark;
@@ -111,5 +119,21 @@ public class ECouponHistoryMessage implements Serializable {
 
     public void sendToMQ() {
         MQPublisher.publish(MQ_KEY, this);
+    }
+
+    @Override
+    public String toString() {
+        return "ECouponHistoryMessage{" +
+                "eCouponId=" + eCouponId +
+                ", createdAt=" + createdAt +
+                ", operator='" + operator + '\'' +
+                ", remark='" + remark + '\'' +
+                ", phone='" + phone + '\'' +
+                ", verifyType=" + verifyType +
+                ", fromStatus=" + fromStatus +
+                ", toStatus=" + toStatus +
+                ", orderId=" + orderId +
+                ", itemId=" + itemId +
+                '}';
     }
 }

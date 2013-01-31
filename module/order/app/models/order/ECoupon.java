@@ -15,6 +15,7 @@ import models.dangdang.DDAPIUtil;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.resale.Resaler;
 import models.sales.Goods;
+import models.sales.GoodsCouponType;
 import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.taobao.TaobaoCouponUtil;
@@ -191,6 +192,9 @@ public class ECoupon extends Model {
     @Column(name = "trigger_coupon_sn")
     public String triggerCouponSn;
 
+    /**
+     * 不再使用，使用smsSendCount代替.
+     */
     @Column(name = "download_times")
     public Integer downloadTimes;
 
@@ -314,7 +318,7 @@ public class ECoupon extends Model {
             this.createType = ECouponCreateType.IMPORT;
         }
         this.orderItems = orderItems;
-        this.downloadTimes = 3;
+        this.smsSentCount = 0;
         this.isFreeze = 0;
         this.lockVersion = 0;
         this.autoConsumed = DeletedStatus.UN_DELETED;
@@ -885,6 +889,7 @@ public class ECoupon extends Model {
     /**
      * 得到无空格、中文的券号.
      * 京东等平台不支持
+     *
      * @return
      */
     public String getSafeECouponSN() {
@@ -1136,53 +1141,11 @@ public class ECoupon extends Model {
                 "截止" + dateFormat.format(eCoupon.expireAt) + content + "客服：4006262166", phone, eCoupon.replyCode);
     }
 
-
-    /**
-     * 运营后台发送短信
-     *
-     * @param id
-     * @return
-     */
-    public static boolean sendMessage(long id) {
-        ECoupon eCoupon = ECoupon.findById(id);
-        boolean sendFalg = false;
-        if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED) {
-            send(eCoupon, null);
-            sendFalg = true;
-        }
-        return sendFalg;
-    }
-
-    /**
-     * 当当重发短信
-     *
-     * @param id
-     * @param phone
-     * @return
-     */
-    public static boolean sendUserMessage(long id, String phone) {
-        ECoupon eCoupon = ECoupon.findById(id);
-
-        boolean sendFlag = false;
-        if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED && eCoupon.downloadTimes > 0 && eCoupon.downloadTimes < 4) {
-            sendUserMessageWithoutCheck(phone, eCoupon);
-            sendFlag = true;
-        }
-        return sendFlag;
-    }
-
     public static void sendUserMessageInfoWithoutCheck(String phone, ECoupon eCoupon, String couponshopsId) {
         sendInfo(eCoupon, phone, couponshopsId);
-        eCoupon.downloadTimes--;
+        eCoupon.smsSentCount++;
         eCoupon.save();
     }
-
-    public static void sendUserMessageWithoutCheck(String phone, ECoupon eCoupon) {
-        send(eCoupon, phone);
-        eCoupon.downloadTimes--;
-        eCoupon.save();
-    }
-
 
     /**
      * 会员中心发送短信
@@ -1193,7 +1156,7 @@ public class ECoupon extends Model {
     public static boolean sendUserMessageInfo(long id, String couponshopsId) {
         ECoupon eCoupon = ECoupon.findById(id);
         boolean sendFlag = false;
-        if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED && eCoupon.downloadTimes > 0 && eCoupon.downloadTimes < 4) {
+        if (eCoupon != null && eCoupon.canSendSMSByConsumer()) {
             sendUserMessageInfoWithoutCheck(null, eCoupon, couponshopsId);
             sendFlag = true;
         }
@@ -1516,7 +1479,7 @@ public class ECoupon extends Model {
         // 重定义短信格式 - 58团
         if (AccountType.RESALER.equals(order.userType) && order.getResaler().loginName.equals(Resaler.WUBA_LOGIN_NAME)) {
 
-            message = "【58团】【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
+            message = "【58团】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
                     "由58合作商家【一百券】提供,一百券号" + eCouponSn + note +
                     "有效期至" + dateFormat.format(expireAt) + "客服4007895858";
         }
@@ -1536,5 +1499,36 @@ public class ECoupon extends Model {
 
     public void sendOrderSMS(String remark) {
         OrderECouponMessage.with(this).remark(remark).sendToMQ();
+    }
+
+    /**
+     * 判断运营人员是否可重新发送券号.
+     *
+     * @return
+     */
+    public boolean canSendSMSByOperate() {
+        if (this.goods.isLottery) {
+            return false;
+        }
+        if (this.status == ECouponStatus.UNCONSUMED) {
+            return true;
+        }
+        if (this.goods.couponType == GoodsCouponType.IMPORT && this.status == ECouponStatus.CONSUMED) {
+            // 导入券可继续发送
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 判断是否可由消费者发送短信
+     *
+     * @return
+     */
+    public boolean canSendSMSByConsumer() {
+        if (canSendSMSByOperate() && this.smsSentCount <= 3) {
+            return true;
+        }
+        return false;
     }
 }

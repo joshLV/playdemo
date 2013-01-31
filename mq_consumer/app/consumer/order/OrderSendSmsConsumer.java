@@ -5,7 +5,6 @@ import jobs.dadong.DadongErSendToRequest;
 import models.RabbitMQConsumerWithTx;
 import models.order.ECoupon;
 import models.order.ECouponHistoryMessage;
-import models.order.ECouponStatus;
 import models.order.OrderECouponMessage;
 import models.order.OrderItems;
 import models.order.OrderStatus;
@@ -50,7 +49,7 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
 
         if (message.eCouponId != null) {
             ECoupon ecoupon = ECoupon.findById(message.eCouponId);
-            if (ecoupon != null && ecoupon.status == ECouponStatus.UNCONSUMED) {
+            if (ecoupon != null && ecoupon.canSendSMSByOperate()) {
                 sendECouponSMS(ecoupon, message);
             } else {
                 if (ecoupon == null) {
@@ -103,6 +102,7 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
                 remark += " 发到新手机" + phone;
             }
 
+            // 大东票务券发送
             if (DadongConsumptionRequest.check(orderItems)) {
                 if (DadongConsumptionRequest.isResendTo(orderItems)) {
                     DadongErSendToRequest.resend(orderItems, phone);

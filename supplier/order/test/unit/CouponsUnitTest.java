@@ -134,20 +134,4 @@ public class CouponsUnitTest extends UnitTest {
         assertEquals("解冻券号", lastMessage.remark);
     }
 
-    @Test
-    public void testSendMessage() {
-        boolean sendFlag = ECoupon.sendMessage(ecoupon.id);
-        assertTrue(sendFlag);
-
-        String phone = user.mobile;
-        ECoupon.sendUserMessage(ecoupon.id, phone);
-        ECoupon eCoupon = ECoupon.findById(ecoupon.id);
-        assertEquals(2, eCoupon.downloadTimes.intValue());
-        ECoupon.sendUserMessage(ecoupon.id, phone);
-        assertEquals(1, eCoupon.downloadTimes.intValue());
-        ECoupon.sendUserMessage(ecoupon.id, phone);
-        assertEquals(0, eCoupon.downloadTimes.intValue());
-    }
-
-
 }

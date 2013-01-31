@@ -299,7 +299,7 @@ public class JDGroupBuy extends Controller {
             Logger.info("coupon refunded");
             finish(301, "coupon refunded");
         }
-        if (coupon.downloadTimes <= 0) {
+        if (coupon.smsSentCount >= 3) {
             Logger.info("reach the limit of download time");
             finish(302, "reach the limit of download time");
         }

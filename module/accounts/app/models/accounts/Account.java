@@ -79,9 +79,6 @@ public class Account extends Model {
      */
     public BigDecimal getWithdrawAmount(Date date) {
         BigDecimal vostroAmount = AccountSequence.getVostroAmountTo(this, date);
-        if (id == 49562l){
-            System.out.println("vostroAmount:" + vostroAmount);
-        }
         if (uncashAmount == null) {
             return vostroAmount == null ? BigDecimal.ZERO : vostroAmount;
         }
@@ -97,6 +94,7 @@ public class Account extends Model {
      */
     public BigDecimal getSupplierWithdrawAmount(BigDecimal prepaymentBalance, Date date) {
         BigDecimal withdrawAmount = getWithdrawAmount(date);
+        System.out.println("withdrawAmount:" + withdrawAmount);
         if (prepaymentBalance.compareTo(withdrawAmount) > 0) {
             return BigDecimal.ZERO;
         }

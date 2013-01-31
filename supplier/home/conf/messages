@@ -71,7 +71,7 @@ shop.areaId=商圈
 
 supplierUser.oldPassword=原密码
 supplierUser.newPassword=新密码
-supplierUser.newConfirmPassword=确认新密码
+supplierUser.confirmPassword=确认新密码
 validation.newPassword.minSize=密码不能小于6位！
 validation.newPassword.maxSize=密码不能大于20位！
 validation.confirmPassword=两次密码输入的不一样！

@@ -1,21 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <application text="商品管理">
-    <role key="editor" text="商品编辑"/>
     <role key="account" text="财务人员"/>
     <role key="sales" text="商务销售"/>
 
-    <permission key="GOODS_MANAGE" text="商品库">
-        <permission key="GOODS" text="商品管理" roles="editor"/>
-        <permission key="GOODS_NEW" text="商品添加" roles="editor"/>
+    <permission key="GOODS_MANAGE" text="门店">
         <permission key="SHOPS" text="门店管理" roles="editor"/>
         <permission key="SHOPS_NEW" text="门店添加" roles="editor"/>
     </permission>
 
-    <navigation key="goods_app" text="商品发布" action="SupplierGoods.index" display-order="20">
-        <navigation key="goods" text="商品">
-            <navigation key="goods_add" action="SupplierGoods.add" text="商品添加" permissions="GOODS_NEW"/>
-            <navigation key="goods_index" action="SupplierGoods.index" text="商品管理" permissions="GOODS"/>
-        </navigation>
+    <navigation key="shops_index" text="门店" action="Shops.index" display-order="20">
         <navigation key="shops" text="门店">
             <navigation key="shops_add" action="Shops.add" text="门店添加" permissions="SHOPS_NEW"/>
             <navigation key="shops_index" action="Shops.index" text="门店管理" permissions="SHOPS"/>

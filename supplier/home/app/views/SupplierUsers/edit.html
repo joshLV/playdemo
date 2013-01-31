@@ -4,10 +4,7 @@
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/supplierUser.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
-#{set 'moreStyles'}
-    #{asset.css src:['/m/account.css'] /}
-#{/set}
-<div class="account">
+<div class="bd">
     <h2>${title}</h2>
 #{form @SupplierUsers.update(supplierUser.id) , id:'operForm',class:"form-horizontal" }
     <div class="field-group">
@@ -72,14 +69,18 @@
         </tr>
         </thead>
         <tbody>
-        #{list items:rolesList, as:'role'}
-        <tr>
-            <td>${role.text}</td>
-            <td>
-                #{list items:role.getSortedPermissions(), as:'perm'} ${perm.text} #{/list}
-            </td>
-        </tr>
-        #{/list}
+        <tr><td>商务销售</td><td>报表一览</td></tr>
+        <tr><td>收款店员</td><td>券验证 券号列表</td></tr>
+        <tr><td>财务人员</td><td>财务明细 提现管理</td></tr>
+        <tr><td>系统管理员</td><td>我的门店 账号管理</td></tr>
+        *{#{list items:rolesList, as:'role'}}*
+        *{<tr>}*
+        *{<td>${role.text}</td>}*
+        *{<td>}*
+        *{#{list items:role.getSortedPermissions(), as:'perm'} ${perm.text} #{/list}}*
+        *{</td>}*
+        *{</tr>}*
+        *{#{/list}}*
         </tbody>
     </table>
 </div>

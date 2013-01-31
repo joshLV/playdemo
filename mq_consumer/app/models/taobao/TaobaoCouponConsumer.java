@@ -5,10 +5,16 @@ import com.google.gson.JsonParser;
 import models.RabbitMQConsumerWithTx;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
-import models.order.*;
+import models.order.DeliveryType;
+import models.order.ECoupon;
+import models.order.ECouponPartner;
+import models.order.NotEnoughInventoryException;
+import models.order.Order;
+import models.order.OrderItems;
+import models.order.OuterOrder;
+import models.order.OuterOrderStatus;
 import models.resale.Resaler;
 import models.sales.Goods;
-import models.sales.GoodsDeployRelation;
 import models.sales.MaterialType;
 import play.Logger;
 import play.db.jpa.JPA;
@@ -30,7 +36,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
     public static String PHONE_REGEX = "^1\\d{10}$";
 
     @Override
-    protected int retries(){
+    protected int retries() {
         return 0;//抛异常不重试
     }
 
@@ -42,21 +48,21 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             Logger.info("start taobao coupon consumer send order");
             if (outerOrder.ybqOrder != null) {
                 Logger.info("our order already created");
-            }else if (send(outerOrder)) {
+            } else if (send(outerOrder)) {
                 List<ECoupon> couponList = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
-                for(ECoupon coupon : couponList) {
+                for (ECoupon coupon : couponList) {
                     coupon.partner = ECouponPartner.TB;
                     coupon.save();
                 }
                 outerOrder.status = OuterOrderStatus.ORDER_DONE;
                 //通知淘宝我发货了
-                try{
-                    if(TaobaoCouponUtil.tellTaobaoCouponSend(outerOrder)) {
+                try {
+                    if (TaobaoCouponUtil.tellTaobaoCouponSend(outerOrder)) {
                         outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
-                    }else {
+                    } else {
                         Logger.info("taobao coupon job failed: tell taobao coupon send failed %s", taobaoCouponMessage.outerOrderId);
                     }
-                }catch (Exception e) {
+                } catch (Exception e) {
                     Logger.info("taobao coupon job failed: tell taobao coupon send failed %s", taobaoCouponMessage.outerOrderId);
                 }
                 outerOrder.save();
@@ -64,32 +70,22 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                 Logger.info("taobao coupon job failed: create our order failed %s", taobaoCouponMessage.outerOrderId);
                 throw new RuntimeException("taobao coupon job failed: create our order failed " + taobaoCouponMessage.outerOrderId);
             }
-        }else if (outerOrder.status == OuterOrderStatus.RESEND_COPY) {
+        } else if (outerOrder.status == OuterOrderStatus.RESEND_COPY) {
             Logger.info("start taobao coupon consumer resend order");
             //重新发货的请求接收到，并先告诉淘宝我们要重新发货，然后再重新发货
-            if(TaobaoCouponUtil.tellTaobaoCouponResend(outerOrder)) {
-                List<ECoupon> eCoupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
-                for(ECoupon eCoupon: eCoupons) {
-                    if (eCoupon.status != ECouponStatus.UNCONSUMED) {
-                        continue;
-                    }
-                    if (eCoupon.downloadTimes > 0) {
-                        ECoupon.send(eCoupon, eCoupon.orderItems.phone);
-                        eCoupon.downloadTimes -= 1;
-                        eCoupon.save();
-                    }
-                }
+            if (TaobaoCouponUtil.tellTaobaoCouponResend(outerOrder)) {
+                outerOrder.ybqOrder.sendOrderSMS("淘宝重发短信");
                 outerOrder.status = OuterOrderStatus.RESEND_SYNCED;
                 outerOrder.save();
-            }else {
+            } else {
                 Logger.info("taobao coupon job failed: tell taobao coupon resend failed %s", taobaoCouponMessage.outerOrderId);
             }
-        }else if (outerOrder.status == OuterOrderStatus.ORDER_DONE) {
+        } else if (outerOrder.status == OuterOrderStatus.ORDER_DONE) {
             Logger.info("start taobao coupon consumer tell taobao order done");
             //我们发货了，但还没有通知淘宝成功，于是继续通知
-            if(TaobaoCouponUtil.tellTaobaoCouponSend(outerOrder)) {
+            if (TaobaoCouponUtil.tellTaobaoCouponSend(outerOrder)) {
                 outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
-            }else {
+            } else {
                 Logger.info("taobao coupon job failed: tell taobao coupon send failed %s", taobaoCouponMessage.outerOrderId);
             }
             outerOrder.save();
@@ -106,13 +102,13 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
             num = jsonObject.get("num").getAsInt();//购买的数量
             sellerNick = jsonObject.get("seller_nick").getAsString();//淘宝卖家用户名（旺旺号）
             if (!jsonObject.has("outer_iid")) {
-                if (jsonObject.get("item_title").getAsString().equals("【5店通用】健康煮海鲜自助火锅：海鲜+肉类+蔬菜类+牛肉！畅吃")){
+                if (jsonObject.get("item_title").getAsString().equals("【5店通用】健康煮海鲜自助火锅：海鲜+肉类+蔬菜类+牛肉！畅吃")) {
                     outerIid = 288L;
-                }else {
+                } else {
                     Logger.error("没有设置外部商品ID，也不是我们说的那个健康煮");
                     return false;
                 }
-            }else {
+            } else {
                 outerIid = jsonObject.get("outer_iid").getAsLong();//商家发布商品时填写的外部商品ID
             }
         } catch (Exception e) {
@@ -172,8 +168,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                 return null;
             }
 
-            OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(
-                    goods, productNum, userPhone, goods.getResalePrice(), goods.getResalePrice());
+            OrderItems uhuilaOrderItem = ybqOrder.addOrderItem(goods, productNum, userPhone, goods.getResalePrice(), goods.getResalePrice());
 
             uhuilaOrderItem.save();
             if (goods.materialType.equals(MaterialType.REAL)) {

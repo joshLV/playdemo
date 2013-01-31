@@ -1,13 +1,10 @@
 #{extends 'layout_trader/layout2.html' /}
 #{set title:'券号列表' /}
 #{set menu:"coupons" /}
-#{set 'moreStyles'}
-    #{asset.css src:['/m/coupons.css'] /}
-#{/set}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
-<div class="coupons">
+<div class="bd">
     <h2>${title}</h2>
 
     <form class="well form-inline" name="frmlist" id="frmlist" action="@{SupplierECoupons.index()}" method="GET">
@@ -16,7 +13,7 @@
             <div class="field-group">
                 <label>选择分店</label>
             #{select 'condition.shopId', id:shopId, value:condition?.shopId}
-                #{option ""}全部#{/option}
+                #{if shopList?.size()>1}#{option ""}全部#{/option}#{/if}
                 #{list items:shopList, as:'shop'}
                     #{option shop?.id}${shop?.name}#{/option}
                 #{/list}
@@ -35,11 +32,10 @@
             </div>
 
             <div class="field-group">
-                <label>消费时间</label>
-                <span>从</span>
-                <input type="text" id="condition_consumed_begin" class="time"
-                       name="condition.consumedAtBegin"
-                       onfocus="WdatePicker({readOnly:true})" value="${condition?.consumedAtBegin?.format()}">
+                <label>消费时间</label><input type="text" id="condition_consumed_begin" class="time"
+                                          name="condition.consumedAtBegin"
+                                          onfocus="WdatePicker({readOnly:true})"
+                                          value="${condition?.consumedAtBegin?.format()}">
                 <span>到</span>
                 <input type="text" id="condition_consumed_end" class="time"
                        name="condition.consumedAtEnd"
@@ -51,7 +47,7 @@
         <table cellspacing="0" cellpadding="0" border="0" class="title-table">
             <tr>
                 <th wdith="50%" id="search">查询结果合计： ${couponPage?.size()?:0}条记录</th>
-                <td wdith="50%" id="output"><a href="javascript:couponExcel()">导出</a></td>
+                <td wdith="50%" id="output"><a class="link" href="javascript:couponExcel()">导出</a></td>
             </tr>
         </table>
     </form>

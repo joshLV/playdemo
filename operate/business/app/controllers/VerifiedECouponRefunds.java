@@ -185,10 +185,11 @@ public class VerifiedECouponRefunds extends Controller {
         eCoupon.order.save();
 
         String userName = OperateRbac.currentUser().userName;
-
+        System.out.println(  "1111===>>");
         //记录券历史信息
         ECouponHistoryMessage.with(eCoupon).operator(userName).remark("已消费券退款:" + refundComment)
                 .toStatus(ECouponStatus.REFUND).sendToMQ();
+        System.out.println(  "22222===>>");
 
         // 更改订单状态
         eCoupon.status = ECouponStatus.REFUND;

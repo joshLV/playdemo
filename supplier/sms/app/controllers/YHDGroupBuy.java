@@ -197,17 +197,23 @@ public class YHDGroupBuy extends Controller {
             eCoupon = ECoupon.find("byOrderAndECouponSn", outerOrder.ybqOrder, params.get("voucherCode")).first();
             if (eCoupon == null) {
                 errorInfoList.add(new YHDErrorInfo("yhd.group.buy.voucher.resend_voucherCode_invalid", "消费券不存在", null));
+                finish(errorInfoList, totalCount);
+                return;
             }
+        } else {
+            finish(errorInfoList, totalCount);
+            return;
         }
         // 检查券的发送次数
         if (errorInfoList.size() == 0) {
-            if (eCoupon.downloadTimes <= 0) {
+            if (eCoupon.smsSentCount >= 3) {
                 errorInfoList.add(new YHDErrorInfo("yhd.group.buy.voucher.resend_requestNumber_invalid", "券发送次数已经到达3次上限", null));
             }
         }
         // 检查手机号
+        String receiveMobile = params.get("receiveMobile");
         if (errorInfoList.size() == 0) {
-            if (!checkPhone(params.get("receiveMobile"))) {
+            if (!checkPhone(receiveMobile)) {
                 errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "手机号码格式错误", null));
             }
         }
@@ -216,9 +222,7 @@ public class YHDGroupBuy extends Controller {
             finish(errorInfoList, totalCount);
         }
 
-        eCoupon.downloadTimes = eCoupon.downloadTimes - 1;
-        eCoupon.save();
-        ECoupon.send(eCoupon, params.get("receiveMobile"));
+        eCoupon.sendOrderSMS(receiveMobile, "一号店重新发送券");
 
         totalCount = 1;
         finish(errorInfoList, totalCount);

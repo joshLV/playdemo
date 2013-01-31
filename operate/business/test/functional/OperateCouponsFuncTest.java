@@ -11,6 +11,7 @@ import models.order.ECoupon;
 import models.order.ECouponHistoryMessage;
 import models.order.ECouponStatus;
 import models.order.Order;
+import models.order.OrderECouponMessage;
 import models.sales.Goods;
 import models.sales.Shop;
 import operate.rbac.RbacLoader;
@@ -141,10 +142,10 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         ECoupon eCoupon = FactoryBoy.create(ECoupon.class);
         eCoupon.status = ECouponStatus.UNCONSUMED;
         eCoupon.save();
-        Http.Response response = GET("/coupons-message/" + eCoupon.id.toString() + "/send");
+        Http.Response response = GET("/coupons-message/" + eCoupon.id + "/send");
         assertIsOk(response);
 
-        ECouponHistoryMessage lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage.MQ_KEY);
+        OrderECouponMessage lastMessage = (OrderECouponMessage) MockMQ.getLastMessage(OrderECouponMessage.MQ_KEY);
         assertEquals("重发短信", lastMessage.remark);
     }
 

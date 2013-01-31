@@ -7,6 +7,7 @@ import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.order.ECouponHistoryMessage;
 import models.order.ECouponStatus;
+import models.order.OrderECouponMessage;
 import models.order.VerifyCouponType;
 import models.sales.Brand;
 import operate.rbac.ContextedPermission;
@@ -151,11 +152,15 @@ public class OperateCoupons extends Controller {
      */
     @ActiveNavigation("coupons_index")
     public static void sendMessage(long id) {
-        boolean sendFalg = ECoupon.sendMessage(id);
+        boolean sendFalg = false;
         ECoupon eCoupon = ECoupon.findById(id);
+        if (eCoupon.canSendSMSByOperate()) {
+            sendFalg = true;
 
-        ECouponHistoryMessage.with(eCoupon).operator(OperateRbac.currentUser().userName)
-                .remark("重发短信").sendToMQ();
+            OrderECouponMessage.with(eCoupon).operator(OperateRbac.currentUser().userName)
+                 .remark("重发短信").sendToMQ();
+        }
+
         renderJSON(sendFalg ? "0" : "1");
     }
 

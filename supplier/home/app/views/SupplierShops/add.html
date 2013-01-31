@@ -4,10 +4,7 @@
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/shops-add.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
-#{set 'moreStyles'}
-    #{asset.css src:['/m/outlet.css'] /}
-#{/set}
-<div class="outlet">
+<div class="bd">
     <h2>${title}</h2>
     <form class="form-horizontal" id="shopForm" action="@{SupplierShops.create()}" method="post">
     #{include '/SupplierShops/shopForm.html' /}

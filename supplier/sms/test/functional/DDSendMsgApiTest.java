@@ -260,17 +260,5 @@ public class DDSendMsgApiTest extends FunctionalTest {
         assertEquals("0159300520", res.getAttribute("consumeId"));
         assertEquals("12345678", res.getAttribute("ddOrderId"));
         assertEquals(order.id, res.getAttribute("ybqOrderId"));
-
-        response = POST("/api/v1/dangdang/send-msg", params);
-        assertStatus(200, response);
-
-        response = POST("/api/v1/dangdang/send-msg", params);
-        assertStatus(200, response);
-
-        response = POST("/api/v1/dangdang/send-msg", params);
-        assertStatus(200, response);
-        res = (Response) renderArgs("response");
-        assertEquals("重发短信超过三次！", res.desc);
-        assertEquals(ErrorCode.MESSAGE_SEND_FAILED, res.errorCode);
     }
 }
