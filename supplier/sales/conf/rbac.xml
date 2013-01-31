@@ -8,7 +8,7 @@
         <permission key="SHOPS_NEW" text="门店添加" roles="editor"/>
     </permission>
 
-    <navigation key="shops_index" text="门店" action="Shops.index" display-order="20">
+    <navigation key="shops_app" text="门店" action="Shops.index" display-order="20">
         <navigation key="shops" text="门店">
             <navigation key="shops_add" action="Shops.add" text="门店添加" permissions="SHOPS_NEW"/>
             <navigation key="shops_index" action="Shops.index" text="门店管理" permissions="SHOPS"/>
