@@ -72,14 +72,14 @@ public class SuppliersContracts extends Controller {
         if (StringUtils.isBlank(contract.description)) {
             Validation.addError("contract.description", "validation.required");
         }
-        Supplier supplier = Supplier.findById(contract.supplierId);
+        SupplierContract currentContract = SupplierContract.findById(contractId);
+        Supplier supplier = Supplier.findById(currentContract.supplierId);
         String supplierName = supplier.otherName;
         if (Validation.hasErrors()) {
             render("SuppliersContracts/edit.html", contractId, supplier, contract, supplierName);
         }
         contract.updatedBy = OperateRbac.currentUser().loginName;
         SupplierContract.update(contractId, contract);
-        SupplierContract currentContract = SupplierContract.findById(contractId);
         uploadContract(currentContract.supplierId, contractId);
     }
 

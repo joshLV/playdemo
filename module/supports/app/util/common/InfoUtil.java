@@ -1,5 +1,7 @@
 package util.common;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,6 +31,14 @@ public class InfoUtil {
         return sn.toString();
     }
 
+    public static String getSpecifiedLengthDescription(int length, String description) {
+        if (StringUtils.isNotBlank(description)) {
+            return description.length() >= length ? new String(description.substring(0, length)) + "......" : description;
+        } else {
+            return "";
+        }
+    }
+
     public static String getMaskedPhone(String phone) {
         StringBuilder sbPhone = new StringBuilder();
         sbPhone.append(phone.substring(0, 3));
@@ -43,6 +53,7 @@ public class InfoUtil {
 
     /**
      * 返回第一段数字和字母的值
+     *
      * @param value
      * @return
      */

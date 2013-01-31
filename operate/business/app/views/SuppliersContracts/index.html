@@ -2,6 +2,8 @@
 #{set title:'商户合同管理' /}
 
 #{include '/share/nav.html' /}
+
+
 <div class="body">
     <legend>${title}</legend>
     <form class="form-horizontal" name="frmlist" id="frmlist" action="@{SuppliersContracts.index()}" method="GET">
@@ -40,7 +42,15 @@
             <td>${contract?.supplierCompanyName}</td>
             <td>${contract?.effectiveAt?.format('yyyy-MM-dd')}</td>
             <td>${contract?.expireAt?.format('yyyy-MM-dd')}</td>
-            <td>${contract?.description}</td>
+            <td>
+                #{if contract?.description?.length()>10}
+                    <a style="color: black;" href="#" rel="tooltip" data-placement="right"
+                       data-original-title=${contract?.description}>${contract?.getSpecifiedLengthDescription()}</a>
+                #{/if}
+                #{else}
+                ${contract?.description}
+                #{/else}
+            </td>
             <td>${contract?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
             <td>${contract?.updatedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
             <td>
@@ -59,6 +69,9 @@
     $("#add_contract").click(function () {
         $("#frmlist").attr("action", "/supplier_contract/new");
         $("#frmlist").submit();
+    });
+    $(function () {
+        $("[rel='tooltip']").tooltip();
     });
 
 

@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import util.common.InfoUtil;
+
 /**
  * 商户合同
  * <p/>
@@ -36,7 +38,6 @@ public class SupplierContract extends Model {
     public Date effectiveAt;
 
     @Required
-    @InFuture
     @Column(name = "expire_at")
     @Temporal(TemporalType.TIMESTAMP)
     public Date expireAt;
@@ -70,6 +71,15 @@ public class SupplierContract extends Model {
     @Enumerated(EnumType.ORDINAL)
     public com.uhuila.common.constants.DeletedStatus deleted;
 
+    /**
+     * 得到隐藏处理过的券号
+     *
+     * @return 券号
+     */
+    @Transient
+    public String getSpecifiedLengthDescription() {
+        return util.common.InfoUtil.getSpecifiedLengthDescription(10, description);
+    }
 
     public SupplierContract(Supplier supplier) {
         this.supplierId = supplier.id;
@@ -85,6 +95,7 @@ public class SupplierContract extends Model {
         sourceContract.description = contract.description;
         sourceContract.updatedAt = new Date();
         sourceContract.updatedBy = contract.updatedBy;
+        sourceContract.save();
     }
 
     @Override
