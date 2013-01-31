@@ -6,12 +6,25 @@
 #{set 'moreStyles'}
 #{/set}
 <div class="body">
-    #{if response.isOk()}
-        <legend> 成功 </legend>
+    #{if addResponse && !addResponse.getErrorCode()}
+        <legend> 上传商品 成功 </legend>
     #{/if}
     #{else}
-        <legend> 失败 </legend>
+        <legend> 上传商品 失败 </legend>
     #{/else}
-    <p>${response.msg}</p>
+    <p>${addResponse?.getMsg()}</p>
+    <p>${addResponse?.getSubMsg()}</p>
+
+    #{if imgUploadResponse && !imgUploadResponse.getErrorCode()}
+    <legend> 上传主图 成功 </legend>
+    #{/if}
+    #{else}
+    <legend> 上传主图 失败 </legend>
+    #{/else}
+
+    <p>${imgUploadResponse?.getMsg()}</p>
+    <p>${imgUploadResponse?.getSubMsg()}</p>
+
+
 </div>
 

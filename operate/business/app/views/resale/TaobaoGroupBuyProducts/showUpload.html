@@ -17,21 +17,43 @@
     <legend>淘宝上传商品：<a href="/goods/${goods.id}" target="_blank">
         ${goods.shortName}</a>
     </legend>
-    <form class="form-horizontal" method="POST" action="/resaler-products/wb/upload">
+    <form class="form-horizontal" method="POST" action="/resaler-products/tb/upload">
 
         <div class="control-group">
             <label class="control-label" for="inputTeamTitle">标题名称 *</label>
             <div class="controls">
-                <input type="text" id="inputTeamTitle" class="input-block-level" name="prodName" maxlength="60" value="${goods.title}">
+                <input type="text" id="inputTeamTitle" class="input-block-level" name="title" maxlength="60" value="${goods.title}">
                 <span class="help-block">不超过60个字符</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">店铺类目 *</label>
+            <div class="controls">
+                <label class="checkbox">
+                    <input type="checkbox" value="510052565" name="sellerCids">餐饮美食
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" value="510052569" name="sellerCids">休闲娱乐
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" value="643248925" name="sellerCids">生活服务
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" value="510052572" name="sellerCids">丽人写真
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" value="643248924" name="sellerCids">酒店旅游
+                </label>
             </div>
         </div>
         <div class="control-group">
             <label class="control-label">券生效时间 *</label>
             <div class="controls">
-                <input type="text" name="startTime" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${goods.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}">
+                <input type="text" name="startDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd'})" class="Wdate"
+                       value="${goods.beginOnSaleAt.before(new java.util.Date())?(new java.util.Date()).format('yyyy-MM-dd'):goods.beginOnSaleAt.format('yyyy-MM-dd')}">
                 券截止时间 *
-                <input type="text" name="endTime" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${goods.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}">
+                <input type="text" name="endDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd'})" class="Wdate"
+                       value="${goods.endOnSaleAt?.format('yyyy-MM-dd')}">
             </div>
         </div>
         <div class="control-group">
@@ -44,25 +66,7 @@
         <div class="control-group">
             <label class="control-label" for="inputSalePrice">销售价 *</label>
             <div class="controls">
-                <input type="text" id="inputSalePrice" name="groupPrice" value="${goods.salePrice}" readonly>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label">宝贝类型 *</label>
-            <div class="controls">
-                <input type="radio" name="stuffStatus" value="new" checked> 全新
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label">价格类型 *</label>
-            <div class="controls">
-                <input type="radio" name="type" value="fixed" checked> 一口价
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label">上架类型 *</label>
-            <div class="controls">
-                <input type="radio" name="approveStatus" value="instock" checked> 下架
+                <input type="text" id="inputSalePrice" name="price" value="${goods.salePrice}" readonly>
             </div>
         </div>
         <div class="control-group">
@@ -86,14 +90,14 @@
         <div class="control-group">
             <label class="control-label" for="inputPros">其他属性 *</label>
             <div class="controls">
-                <input type="text" id="inputPros" name="pros" value="${goods.getRealStocks()}">
+                <input type="text" id="inputPros" name="props" value="2001943:3262426;3816036:3871548;8648185:29423;8648373:29423;" class="input-xxlarge">
                 <span class="help-inline">编辑勿动，开发人员可酌情修改此参数</span>
             </div>
         </div>
         <div class="control-group">
             <label class="control-label">商品详情</label>
             <div class="controls">
-                <textarea rows="8" cols="100"  name="prodDescription" id="prodDescription" style="width:850px;height:550px;display:hidden;">
+                <textarea rows="8" cols="100"  name="desc" id="prodDescription" style="width:850px;height:550px;display:hidden;">
                     <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
                         <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品详情</span>
                     </p>
@@ -138,7 +142,11 @@
         </div>
 
         <div class="form-actions">
-            <input type="hidden" name="groupbuyId" value="${goods.id}" >
+            <input type="hidden" name="goodsId" value="${goods.id}" >
+            <input type="hidden" name="stuffStatus" value="new" >
+            <input type="hidden" name="type" value="fixed" >
+            <input type="hidden" name="approveStatus" value="instock" >
+            <input type="hidden" name="cid" value="50015759" >
             <button type="submit" id="submit" class="btn btn-primary">发布</button>
         </div>
     </form>
