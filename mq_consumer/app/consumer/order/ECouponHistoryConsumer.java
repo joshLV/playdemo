@@ -31,7 +31,7 @@ public class ECouponHistoryConsumer extends RabbitMQConsumerWithTx<ECouponHistor
     protected Class getMessageType() {
         return ECouponHistoryMessage.class;
     }
-
+    
     @Override
     protected String queue() {
         return ECouponHistoryMessage.MQ_KEY;
