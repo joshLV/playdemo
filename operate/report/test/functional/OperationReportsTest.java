@@ -248,7 +248,7 @@ public class OperationReportsTest extends FunctionalTest {
     public void testShowChannelCategoryReport() {
         Http.Response response = GET(Router.reverse("OperationReports.showChannelCategoryReport").url);
         assertIsOk(response);
-        assertEquals(3l, ((ValuePaginator<ChannelCategoryReport>) renderArgs("reportPage")).size());
+        assertEquals(2l, ((ValuePaginator<ChannelCategoryReport>) renderArgs("reportPage")).size());
         assertEquals(BigDecimal.valueOf(20).setScale(2), ((ValuePaginator<ChannelCategoryReport>) renderArgs("reportPage")).get(0).grossMargin.setScale(2));
         assertEquals(BigDecimal.valueOf(2).setScale(2), ((ValuePaginator<ChannelCategoryReport>) renderArgs("reportPage")).get(0).profit.setScale(2));
     }

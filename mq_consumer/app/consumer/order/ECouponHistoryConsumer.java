@@ -15,7 +15,7 @@ import play.jobs.OnApplicationStart;
 @OnApplicationStart(async = true)
 public class ECouponHistoryConsumer extends RabbitMQConsumerWithTx<ECouponHistoryMessage> {
     @Override
-    public void consumeWithTx(ECouponHistoryMessage data)  {
+    public void consumeWithTx(ECouponHistoryMessage data) {
         try {
             Thread.sleep(500l);
         } catch (InterruptedException e) {
