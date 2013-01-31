@@ -931,6 +931,14 @@ public class ECoupon extends Model {
         return query.getResultList();
     }
 
+    @Transient
+    public Integer getAvaiableSendSMsCount() {
+        if (smsSentCount > 3) {
+            return 0;
+        }
+        return 3 - smsSentCount;
+    }
+
     /**
      * 得到可以消费的门店
      *

@@ -376,6 +376,8 @@ POST     /verified-ecoupon-do-refund            VerifiedECouponRefunds.refund
 
 GET     /makeup                                 OperateCouponMakeUp.index
 
+# 快速查询券号、手机号或订单号
+GET      /quick-search                          QuickSearchs.query
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
