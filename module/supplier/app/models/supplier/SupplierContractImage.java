@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 
 @Table(name = "supplier_contract_image")
 @Entity
-public class SupplierContractImage extends Model {
+public class SupplierContractImage extends Model implements Comparable<SupplierContractImage> {
     private static final long serialVersionUID = 4063131063912510682L;
 
     @ManyToOne
@@ -203,4 +203,8 @@ public class SupplierContractImage extends Model {
         return DigestUtils.md5Hex(fileName + "-" + SIZE_KEY).substring(24);
     }
 
+    @Override
+    public int compareTo(SupplierContractImage arg) {
+        return this.shownName.compareTo(arg.shownName);
+    }
 }

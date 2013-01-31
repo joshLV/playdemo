@@ -13,6 +13,7 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -64,6 +65,7 @@ public class SuppliersContracts extends Controller {
 
     public static void view(Long contractId) {
         SupplierContract contract = SupplierContract.findById(contractId);
+        Collections.sort(contract.supplierContractImagesList);
         render(contract);
     }
 
