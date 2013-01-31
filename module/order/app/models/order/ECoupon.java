@@ -501,37 +501,37 @@ public class ECoupon extends Model {
 
     public boolean consumeAndPayCommission(Long shopId, Long operateUserId, SupplierUser supplierUser, VerifyCouponType type, String triggerCouponSn) {
 
-        //===================判断是否当当订单产生的券=============================
-        if (this.partner == ECouponPartner.DD) {
-            try {
-                if (DDAPIUtil.isRefund(this)) {//如果券在当当上已经退款，则不允许券的消费。
+        //===================判断是否第三方订单产生的券=并且不是导入券============================
+        if (this.createType != ECouponCreateType.IMPORT) {
+            if (this.partner == ECouponPartner.DD) {
+                try {
+                    if (DDAPIUtil.isRefund(this)) {//如果券在当当上已经退款，则不允许券的消费。
+                        return false;
+                    }
+                } catch (DDAPIInvokeException e) {
+                    //当当接口调用失败，目前仅记录日志。不阻止券的消费。以便保证用户体验。
+                    Logger.error(e.getMessage(), e);
                     return false;
                 }
-            } catch (DDAPIInvokeException e) {
-                //当当接口调用失败，目前仅记录日志。不阻止券的消费。以便保证用户体验。
-                Logger.error(e.getMessage(), e);
-                return false;
+            }
+
+            if (this.partner == ECouponPartner.JD) {
+                if (!JDGroupBuyUtil.verifyOnJingdong(this)) {
+                    Logger.info("verify on jingdong failed");
+                    return false;
+                }
+            } else if (this.partner == ECouponPartner.WB) {
+                if (!WubaUtil.verifyOnWuba(this)) {
+                    Logger.info("verify on wuba failed");
+                    return false;
+                }
+            } else if (this.partner == ECouponPartner.TB) {
+                if (!TaobaoCouponUtil.verifyOnTaobao(this)) {
+                    Logger.info("verify on taobao failed");
+                    return false;
+                }
             }
         }
-
-        if (this.partner == ECouponPartner.JD) {
-            if (!JDGroupBuyUtil.verifyOnJingdong(this)) {
-                Logger.info("verify on jingdong failed");
-                return false;
-            }
-        } else if (this.partner == ECouponPartner.WB) {
-            if (!WubaUtil.verifyOnWuba(this)) {
-                Logger.info("verify on wuba failed");
-                return false;
-            }
-        } else if (this.partner == ECouponPartner.TB) {
-            if (!TaobaoCouponUtil.verifyOnTaobao(this)) {
-                Logger.info("verify on taobao failed");
-                return false;
-            }
-
-        }
-
         //===================券消费处理开始=====================================
         if (consumed(shopId, operateUserId, supplierUser, type)) {
             payCommission();
@@ -1565,10 +1565,9 @@ public class ECoupon extends Model {
     /**
      * 虚拟验证券号
      *
-     * @param eCouponSn
      * @return
      */
-    public boolean virtualVerify(String eCouponSn, Long operateUserId) {
+    public boolean virtualVerify(Long operateUserId) {
         if (this.partner == ECouponPartner.JD) {
             if (!JDGroupBuyUtil.verifyOnJingdong(this)) {
                 Logger.info("virtual verify on jingdong failed");

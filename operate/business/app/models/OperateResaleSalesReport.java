@@ -2,14 +2,17 @@ package models;
 
 
 import models.accounts.AccountType;
+import models.order.ECouponStatus;
 import models.order.Order;
 import play.db.jpa.JPA;
-import play.db.jpa.Model;
 
-import javax.persistence.*;
+import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p/>
@@ -17,12 +20,7 @@ import java.util.*;
  * Date: 12-7-18
  * Time: 下午4:51
  */
-@Entity
-@Table(name = "resale_sales_report")
-public class ResaleSalesReport extends Model {
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = true)
+public class OperateResaleSalesReport {
     public Order order;
     public String loginName;
     public String userName;
@@ -78,7 +76,15 @@ public class ResaleSalesReport extends Model {
      * 消费金额
      */
     public BigDecimal consumedPrice = BigDecimal.ZERO;
+    /**
+     * 虚拟验证券数
+     */
+    public long virtualVerifyNumber = 0l;
 
+    /**
+     * 虚拟验证金额
+     */
+    public BigDecimal virtualVerifyPrice = BigDecimal.ZERO;
     /**
      * 应收款金额
      */
@@ -128,7 +134,7 @@ public class ResaleSalesReport extends Model {
     /**
      * paidAt ecoupon  resaler
      */
-    public ResaleSalesReport(Order order, BigDecimal salePrice, Long buyNumber, BigDecimal totalCost
+    public OperateResaleSalesReport(Order order, BigDecimal salePrice, Long buyNumber, BigDecimal totalCost
             , BigDecimal channelCost, BigDecimal grossMargin, BigDecimal profit) {
         this.order = order;
         if (order != null) {
@@ -154,7 +160,7 @@ public class ResaleSalesReport extends Model {
     /**
      * paidAt ecoupon   consumer
      */
-    public ResaleSalesReport(Order order, BigDecimal salePrice, Long buyNumber, BigDecimal totalCost
+    public OperateResaleSalesReport(Order order, BigDecimal salePrice, Long buyNumber, BigDecimal totalCost
             , BigDecimal grossMargin, BigDecimal profit) {
         this.order = order;
         if (order != null) {
@@ -178,7 +184,7 @@ public class ResaleSalesReport extends Model {
 
 
     //sendAt real   resaler
-    public ResaleSalesReport(Order order, Long buyNumber, BigDecimal salePrice, BigDecimal totalCost
+    public OperateResaleSalesReport(Order order, Long buyNumber, BigDecimal salePrice, BigDecimal totalCost
             , BigDecimal channelCost, BigDecimal grossMargin, BigDecimal profit) {
         this.order = order;
         if (order != null) {
@@ -199,7 +205,7 @@ public class ResaleSalesReport extends Model {
     }
 
     //sendAt real consumer
-    public ResaleSalesReport(Order order, Long buyNumber, BigDecimal salePrice, BigDecimal totalCost
+    public OperateResaleSalesReport(Order order, Long buyNumber, BigDecimal salePrice, BigDecimal totalCost
             , BigDecimal grossMargin, BigDecimal profit) {
         this.order = order;
         if (order != null) {
@@ -219,7 +225,7 @@ public class ResaleSalesReport extends Model {
     }
 
 
-    public ResaleSalesReport(BigDecimal consumedPrice, Order order, Long consumedNumber) {
+    public OperateResaleSalesReport(BigDecimal virtualVerifyPrice, Long virtualVerifyNumber, Order order, boolean virtualVerify) {
         this.order = order;
         if (order != null) {
             if (order.userType == AccountType.CONSUMER) {
@@ -230,11 +236,11 @@ public class ResaleSalesReport extends Model {
             }
         }
 
-        this.consumedPrice = consumedPrice;
-        this.consumedNumber = consumedNumber;
+        this.virtualVerifyNumber = virtualVerifyNumber;
+        this.virtualVerifyPrice = virtualVerifyPrice;
     }
 
-    public ResaleSalesReport(BigDecimal refundPrice, Long refundNumber, Order order) {
+    public OperateResaleSalesReport(BigDecimal refundPrice, Long refundNumber, Order order) {
         this.order = order;
         if (order != null) {
             if (order.userType == AccountType.CONSUMER) {
@@ -249,7 +255,22 @@ public class ResaleSalesReport extends Model {
         this.refundNumber = refundNumber;
     }
 
-    public ResaleSalesReport(Long refundNumber, BigDecimal refundPrice, Order order) {
+    public OperateResaleSalesReport(BigDecimal consumedPrice, Order order, Long consumedNumber) {
+        this.order = order;
+        if (order != null) {
+            if (order.userType == AccountType.CONSUMER) {
+                this.loginName = "一百券";
+            } else {
+                this.loginName = order.getResaler().loginName;
+                this.userName = order.getResaler().userName;
+            }
+        }
+
+        this.consumedPrice = consumedPrice;
+        this.consumedNumber = consumedNumber;
+    }
+
+    public OperateResaleSalesReport(Long refundNumber, BigDecimal refundPrice, Order order) {
         this.order = order;
         if (order != null) {
             if (order.userType == AccountType.CONSUMER) {
@@ -265,7 +286,7 @@ public class ResaleSalesReport extends Model {
     }
 
 
-    public ResaleSalesReport(BigDecimal salePrice, Long buyNumber, BigDecimal refundPrice, Long refundCount, BigDecimal consumedPrice, Long consumedCount) {
+    public OperateResaleSalesReport(BigDecimal salePrice, Long buyNumber, BigDecimal refundPrice, Long refundCount, BigDecimal consumedPrice, Long consumedCount) {
         this.userName = "一百券";
         this.salePrice = salePrice;
         this.buyNumber = buyNumber;
@@ -276,8 +297,8 @@ public class ResaleSalesReport extends Model {
 
     }
 
-    public ResaleSalesReport(long totalNumber, BigDecimal amount, BigDecimal totalRefundPrice, Long refundNumber,
-                             BigDecimal consumedPrice, Long consumedNumber, BigDecimal shouldGetPrice, BigDecimal haveGetPrice) {
+    public OperateResaleSalesReport(long totalNumber, BigDecimal amount, BigDecimal totalRefundPrice, Long refundNumber,
+                                    BigDecimal consumedPrice, Long consumedNumber, BigDecimal shouldGetPrice, BigDecimal haveGetPrice) {
         this.totalNumber = totalNumber;
         this.amount = amount;
         this.totalRefundPrice = totalRefundPrice;
@@ -287,9 +308,16 @@ public class ResaleSalesReport extends Model {
         this.shouldGetPrice = shouldGetPrice;
         this.haveGetPrice = haveGetPrice;
     }
-
-    public ResaleSalesReport(long totalNumber, BigDecimal amount, long realTotalNumber, BigDecimal realAmount, BigDecimal totalRefundPrice, Long refundNumber,
-                             BigDecimal consumedPrice, Long consumedNumber, BigDecimal shouldGetPrice, BigDecimal haveGetPrice
+    public OperateResaleSalesReport virtualVerifyPrice(BigDecimal virtualVerifyPrice) {
+        this.virtualVerifyPrice= virtualVerifyPrice;
+        return this;
+    }
+     public OperateResaleSalesReport virtualVerifyNumber(Long virtualVerifyNumber) {
+        this.virtualVerifyNumber= virtualVerifyNumber;
+        return this;
+    }
+    public OperateResaleSalesReport(long totalNumber, BigDecimal amount, long realTotalNumber, BigDecimal realAmount, BigDecimal totalRefundPrice, Long refundNumber,
+                                    BigDecimal consumedPrice, Long consumedNumber, BigDecimal shouldGetPrice, BigDecimal haveGetPrice
             , BigDecimal grossMargin, BigDecimal channelCost, BigDecimal profit) {
         this.totalNumber = totalNumber;
         this.amount = amount;
@@ -317,7 +345,7 @@ public class ResaleSalesReport extends Model {
             OperateResaleSalesReportCondition condition) {
 
         //paidAt ecoupon
-        String sql = "select new models.ResaleSalesReport(r.order, sum(r.salePrice-r.rebateValue/r.buyNumber),count(r.buyNumber)" +
+        String sql = "select new models.OperateResaleSalesReport(r.order, sum(r.salePrice-r.rebateValue/r.buyNumber),count(r.buyNumber)" +
                 ",sum(r.originalPrice),sum(r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio/100" +
                 ",(sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue/r.buyNumber)*100" +
                 ",sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.salePrice-r.rebateValue/r.buyNumber)*b.commissionRatio/100-sum(r.originalPrice)" +
@@ -333,7 +361,7 @@ public class ResaleSalesReport extends Model {
 
 
         //sendAt real
-        sql = "select new models.ResaleSalesReport(r.order,sum(r.buyNumber),sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+        sql = "select new models.OperateResaleSalesReport(r.order,sum(r.buyNumber),sum(r.salePrice*r.buyNumber-r.rebateValue)" +
                 ",sum(r.originalPrice*r.buyNumber),sum(r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio/100" +
                 ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice-r.rebateValue)*100" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio/100-sum(r.originalPrice*r.buyNumber)" +
@@ -347,26 +375,34 @@ public class ResaleSalesReport extends Model {
 
 
         //consumedAt ecoupon
-        sql = "select new models.ResaleSalesReport(sum(r.salePrice-r.rebateValue/r.buyNumber),r.order,count(e)) from OrderItems r, ECoupon e where e.orderItems=r";
+        sql = "select new models.OperateResaleSalesReport(sum(r.salePrice-r.rebateValue/r.buyNumber),r.order,count(e)) from OrderItems r, ECoupon e where e.orderItems=r";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterConsumedAt(AccountType.RESALER) + groupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
+                .createQuery(sql + condition.getFilterOfECoupon(AccountType.RESALER, ECouponStatus.CONSUMED) + groupBy + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<OperateResaleSalesReport> consumedResultList = query.getResultList();
 
         //refundAt ecoupon
-        sql = "select new models.ResaleSalesReport(sum(e.refundPrice),count(e),r.order) from OrderItems r, ECoupon e where e.orderItems=r";
+        sql = "select new models.OperateResaleSalesReport(sum(e.refundPrice),count(e),r.order) from OrderItems r, ECoupon e where e.orderItems=r";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundAt(AccountType.RESALER) + groupBy + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilterOfECoupon(AccountType.RESALER, ECouponStatus.REFUND) + groupBy + " order by sum(e.refundPrice) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<OperateResaleSalesReport> refundResultList = query.getResultList();
 
+        //virtualVerify ecoupon
+        sql = "select new models.OperateResaleSalesReport(sum(e.salePrice),count(e),e.order,e.virtualVerify) from ECoupon e ";
+        groupBy = " group by e.order.userId";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterVirtualVerfiyAt(AccountType.RESALER) + groupBy + " order by sum(e.salePrice) desc");
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        List<OperateResaleSalesReport> virtualList = query.getResultList();
+
         //refundAt real need to do !!!!!
-
-
         Map<Long, OperateResaleSalesReport> map = new HashMap<>();
 
         //merge ecoupon and real when sales
@@ -417,7 +453,15 @@ public class ResaleSalesReport extends Model {
                 item.refundNumber = refundItem.refundNumber;
             }
         }
-
+        for (OperateResaleSalesReport virtualItem : virtualList) {
+            OperateResaleSalesReport item = map.get(getReportKey(virtualItem));
+            if (item == null) {
+                map.put(getReportKey(virtualItem), virtualItem);
+            } else {
+                item.virtualVerifyPrice = virtualItem.virtualVerifyPrice;
+                item.virtualVerifyNumber = virtualItem.virtualVerifyNumber;
+            }
+        }
         List resultList = new ArrayList();
         for (Long key : map.keySet()) {
             resultList.add(map.get(key));
@@ -452,8 +496,11 @@ public class ResaleSalesReport extends Model {
         BigDecimal grossMargin = BigDecimal.ZERO;
         BigDecimal channelCost = BigDecimal.ZERO;
         BigDecimal profit = BigDecimal.ZERO;
-        BigDecimal totolSalePrice = BigDecimal.ZERO;
+        BigDecimal totalSalePrice = BigDecimal.ZERO;
         BigDecimal totalCost = BigDecimal.ZERO;
+        BigDecimal totalVirtualPrice = BigDecimal.ZERO;
+        long totalVirtualNumber = 0;
+
         for (OperateResaleSalesReport item : resultList) {
 
             buyCount += item.buyNumber;
@@ -464,22 +511,24 @@ public class ResaleSalesReport extends Model {
             refundPrice = refundPrice.add(totRefundPrice);
             refundCount += item.refundNumber;
             consumedCount += item.consumedNumber;
-
+            totalVirtualNumber += item.virtualVerifyNumber;
+            totalVirtualPrice = totalVirtualPrice.add(item.virtualVerifyPrice == null ? BigDecimal.ZERO : item.virtualVerifyPrice);
             if (item.consumedPrice != null) {
                 consumedPrice = consumedPrice.add(item.consumedPrice);
             }
             shouldGetPrice = amount.subtract(refundPrice);
             haveGetPrice = BigDecimal.ZERO;
-            totolSalePrice = totolSalePrice.add(item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(item.realSalePrice == null ? BigDecimal.ZERO : item.realSalePrice));
+            totalSalePrice = totalSalePrice.add(item.salePrice == null ? BigDecimal.ZERO : item.salePrice.add(item.realSalePrice == null ? BigDecimal.ZERO : item.realSalePrice));
             totalCost = totalCost.add(item.totalCost == null ? BigDecimal.ZERO : item.totalCost);
             channelCost = channelCost.add(item.channelCost == null ? BigDecimal.ZERO : item.channelCost);
             profit = profit.add(item.profit == null ? BigDecimal.ZERO : item.profit);
+
         }
-        if (totolSalePrice.compareTo(BigDecimal.ZERO) != 0) {
-            grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+        if (totalSalePrice.compareTo(BigDecimal.ZERO) != 0) {
+            grossMargin = totalSalePrice.subtract(totalCost).divide(totalSalePrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
         return new OperateResaleSalesReport(buyCount, amount.setScale(2, 4), realBuyCount, realAmount.setScale(2, 4), refundPrice.setScale(2, 4), refundCount, consumedPrice.setScale(2, 4), consumedCount, shouldGetPrice.setScale(2, 4), haveGetPrice.setScale(2, 4)
-                , grossMargin, channelCost.setScale(2, 4), profit.setScale(2, 4));
+                , grossMargin, channelCost.setScale(2, 4), profit.setScale(2, 4)).virtualVerifyNumber(totalVirtualNumber).virtualVerifyPrice(totalVirtualPrice.setScale(2, 4));
     }
 
     /**
@@ -490,7 +539,7 @@ public class ResaleSalesReport extends Model {
      */
     public static List<OperateResaleSalesReport> queryConsumer(OperateResaleSalesReportCondition condition) {
         //paidAt ecoupon
-        String sql = "select new models.ResaleSalesReport(min(r.order), sum(r.salePrice-r.rebateValue/r.buyNumber),count(r.buyNumber)" +
+        String sql = "select new models.OperateResaleSalesReport(min(r.order), sum(r.salePrice-r.rebateValue/r.buyNumber),count(r.buyNumber)" +
                 ",sum(r.originalPrice)" +
                 ",(sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice))/sum(r.salePrice-r.rebateValue/r.buyNumber)*100" +
                 ",sum(r.salePrice-r.rebateValue/r.buyNumber)-sum(r.originalPrice)" +
@@ -503,7 +552,7 @@ public class ResaleSalesReport extends Model {
         List<OperateResaleSalesReport> paidResultList = query.getResultList();
 
         //sendAt real
-        sql = "select new models.ResaleSalesReport(min(r.order),sum(r.buyNumber),sum(r.salePrice*r.buyNumber-r.rebateValue)" +
+        sql = "select new models.OperateResaleSalesReport(min(r.order),sum(r.buyNumber),sum(r.salePrice*r.buyNumber-r.rebateValue)" +
                 ",sum(r.originalPrice*r.buyNumber)" +
                 ",(sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber))/sum(r.salePrice*r.buyNumber-r.rebateValue)*100" +
                 ",sum(r.salePrice*r.buyNumber-r.rebateValue)-sum(r.originalPrice*r.buyNumber)" +
@@ -517,18 +566,18 @@ public class ResaleSalesReport extends Model {
 
 
         //consumedAt ecoupon
-        sql = "select new models.ResaleSalesReport(sum(r.salePrice-r.rebateValue/r.buyNumber),min(r.order),count(e)) from OrderItems r, ECoupon e where e.orderItems=r";
+        sql = "select new models.OperateResaleSalesReport(sum(r.salePrice-r.rebateValue/r.buyNumber),min(r.order),count(e)) from OrderItems r, ECoupon e where e.orderItems=r";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterConsumedAt(AccountType.CONSUMER) + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
+                .createQuery(sql + condition.getFilterOfECoupon(AccountType.CONSUMER, ECouponStatus.CONSUMED) + " order by sum(r.salePrice-r.rebateValue/r.buyNumber) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<OperateResaleSalesReport> consumedResultList = query.getResultList();
 
         //refundAt ecoupon
-        sql = "select new models.ResaleSalesReport(sum(e.refundPrice),count(e),min(r.order)) from OrderItems r, ECoupon e where e.orderItems=r";
+        sql = "select new models.OperateResaleSalesReport(sum(e.refundPrice),count(e),min(r.order)) from OrderItems r, ECoupon e where e.orderItems=r";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterRefundAt(AccountType.CONSUMER) + " order by sum(e.refundPrice) desc");
+                .createQuery(sql + condition.getFilterOfECoupon(AccountType.CONSUMER, ECouponStatus.REFUND) + " order by sum(e.refundPrice) desc");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }

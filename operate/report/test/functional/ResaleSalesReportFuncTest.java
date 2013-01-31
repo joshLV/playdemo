@@ -3,7 +3,7 @@ package functional;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
-import models.ResaleSalesReport;
+import models.OperateResaleSalesReport;
 import models.accounts.AccountType;
 import models.admin.OperateUser;
 import models.order.ECoupon;
@@ -77,7 +77,7 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
                 "&condition.interval=");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
-        ValuePaginator<ResaleSalesReport> reportPage = (ValuePaginator<ResaleSalesReport>) renderArgs("reportPage");
+        ValuePaginator<OperateResaleSalesReport> reportPage = (ValuePaginator<OperateResaleSalesReport>) renderArgs("reportPage");
         assertEquals(1, reportPage.getRowCount());
     }
 
@@ -101,7 +101,7 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
                 "&condition.interval=");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
-        ValuePaginator<ResaleSalesReport> reportPage = (ValuePaginator<ResaleSalesReport>) renderArgs("reportPage");
+        ValuePaginator<OperateResaleSalesReport> reportPage = (ValuePaginator<OperateResaleSalesReport>) renderArgs("reportPage");
         assertEquals(1, reportPage.getRowCount());
     }
 
@@ -125,7 +125,7 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
                 "&condition.interval=");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
-        ValuePaginator<ResaleSalesReport> reportPage = (ValuePaginator<ResaleSalesReport>) renderArgs("reportPage");
+        ValuePaginator<OperateResaleSalesReport> reportPage = (ValuePaginator<OperateResaleSalesReport>) renderArgs("reportPage");
         assertEquals(1, reportPage.getRowCount());
     }
 
@@ -149,7 +149,7 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
                 "&condition.interval=");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
-        ValuePaginator<ResaleSalesReport> reportPage = (ValuePaginator<ResaleSalesReport>) renderArgs("reportPage");
+        ValuePaginator<OperateResaleSalesReport> reportPage = (ValuePaginator<OperateResaleSalesReport>) renderArgs("reportPage");
         assertEquals(1, reportPage.getRowCount());
     }
 }

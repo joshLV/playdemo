@@ -25,6 +25,10 @@ public class CouponsCondition implements Serializable {
     public Date consumedAtBegin;
     public Date consumedAtEnd;
 
+    public Date virtualVerifyAtBegin;
+    public Date virtualVerifyAtEnd;
+    public boolean virtualVerify;
+
     public Date refundAtBegin;
     public Date refundAtEnd;
     public Long brandId = 0l;
@@ -111,6 +115,18 @@ public class CouponsCondition implements Serializable {
         if (refundAtEnd != null) {
             sql.append(" and e.refundAt <= :refundAtEnd");
             paramMap.put("refundAtEnd", DateUtil.getEndOfDay(refundAtEnd));
+        }
+        if (virtualVerifyAtBegin != null) {
+            sql.append(" and e.virtualVerifyAt >= :virtualVerifyAtBegin");
+            paramMap.put("virtualVerifyAtBegin", virtualVerifyAtBegin);
+        }
+
+        if (virtualVerifyAtEnd != null) {
+            sql.append(" and e.virtualVerifyAt <= :virtualVerifyAtEnd");
+            paramMap.put("virtualVerifyAtEnd", DateUtil.getEndOfDay(virtualVerifyAtEnd));
+        }
+        if (virtualVerify) {
+            sql.append(" and e.virtualVerify =true");
         }
         if (paidAtBegin != null) {
             sql.append(" and e.order.paidAt>= :paidAtBegin");

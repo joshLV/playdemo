@@ -148,7 +148,7 @@ public class OperateVerifyCoupons extends Controller {
         boolean verifyFlag = false;
         if (ecoupon.status == ECouponStatus.UNCONSUMED && ecoupon.isFreeze == 0 && ecoupon.goods.noRefund
                 && ecoupon.expireAt.compareTo(DateUtil.getBeginExpiredDate(3)) > 0 && ecoupon.expireAt.compareTo(DateUtil.getEndExpiredDate(3)) < 0) {
-            verifyFlag = ecoupon.virtualVerify(ecoupon.eCouponSn, OperateRbac.currentUser().id);
+            verifyFlag = ecoupon.virtualVerify(OperateRbac.currentUser().id);
 
         }
         if (!verifyFlag) {

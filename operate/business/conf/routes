@@ -300,7 +300,8 @@ GET     /reports/incoming                       OperateReports.showIncomingRepor
 GET     /reports/withdraw                       OperateReports.showWithdrawReport
 GET     /reports/financing_incoming             OperateReports.showFinancingIncomingReport
 GET     /reports/promotion                      OperateReports.showPromotionReport
-
+#分销销售报表
+GET     /reports/resale_sales                   OperateResaleSalesReports.index
 GET     /financing_incoming_add                 FinancingIncomingNote.add
 POST    /financing_incoming                     FinancingIncomingNote.create
 

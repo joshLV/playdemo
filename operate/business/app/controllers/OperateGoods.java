@@ -800,7 +800,7 @@ public class OperateGoods extends Controller {
     /**
      * 各个渠道分销商品信息
      *
-     * @param goodsId
+     * @param id
      */
     @Right("CHANNEL_GOODS")
     public static void channel(Long id) {
