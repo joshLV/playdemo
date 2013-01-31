@@ -9,7 +9,6 @@ import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
-import play.data.binding.As;
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -134,13 +133,31 @@ public class OperateVerifyCoupons extends Controller {
 
     }
 
-    public static void virtualCoupons(@As List<ECoupon> coupons) {
-        System.out.println(coupons + ">>>>coupons");
+    /**
+     * 验证
+     *
+     * @param id
+     */
+    public static void virtualVerify(Long id) {
         List<ECoupon> couponList = ECoupon.findVirtualCoupons();
-        render("OperateVerifyCoupons/virtual.html", couponList);
-    }
+        ECoupon ecoupon = ECoupon.findById(id);
+        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, 0l);
+        if (ecouponStatusDescription != null) {
+            renderText(ecouponStatusDescription);
+        }
+        boolean verifyFlag = false;
+        if (ecoupon.status == ECouponStatus.UNCONSUMED && ecoupon.isFreeze == 0 && ecoupon.goods.noRefund
+                && ecoupon.expireAt.compareTo(DateUtil.getBeginExpiredDate(3)) > 0 && ecoupon.expireAt.compareTo(DateUtil.getEndExpiredDate(3)) < 0) {
+            verifyFlag = ecoupon.virtualVerify(ecoupon.eCouponSn, OperateRbac.currentUser().id);
 
-    public static void virtualVerify() {
-        render();
+        }
+        if (!verifyFlag) {
+            Validation.addError("verify-error-info" + id, "虚拟验证失败！");
+        }
+        if (Validation.hasErrors()) {
+            render("OperateVerifyCoupons/virtual.html", couponList, id);
+        }
+
+        render("OperateVerifyCoupons/virtual.html", couponList);
     }
 }

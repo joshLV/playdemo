@@ -258,8 +258,7 @@ GET     /coupons/verify                         OperateVerifyCoupons.verify
 POST    /coupons/verify                         OperateVerifyCoupons.update
 #虚拟验证券号
 GET     /coupons/virtual_verify                 OperateVerifyCoupons.virtual
-GET     /coupons/virtual_coupons                OperateVerifyCoupons.virtualCoupons
-POST    /coupons/virtual_verify                 OperateVerifyCoupons.virtualVerify
+PUT    /coupons/{id}/virtual_verify             OperateVerifyCoupons.virtualVerify
 
 # 预购券管理
 GET     /import-coupons                         ImportCoupons.index
