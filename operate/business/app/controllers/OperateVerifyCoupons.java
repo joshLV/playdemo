@@ -122,4 +122,42 @@ public class OperateVerifyCoupons extends Controller {
         renderArgs.put("success_info", "true");
         render("OperateVerifyCoupons/index.html", shop, ecoupon, shopList);
     }
+
+    /**
+     * 虚拟验证页面
+     */
+    @ActiveNavigation("virtual_verify_index")
+    public static void virtual() {
+        List<ECoupon> couponList = ECoupon.findVirtualCoupons();
+        render(couponList);
+
+    }
+
+    /**
+     * 验证
+     *
+     * @param id
+     */
+    public static void virtualVerify(Long id) {
+        List<ECoupon> couponList = ECoupon.findVirtualCoupons();
+        ECoupon ecoupon = ECoupon.findById(id);
+        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, 0l);
+        if (ecouponStatusDescription != null) {
+            renderText(ecouponStatusDescription);
+        }
+        boolean verifyFlag = false;
+        if (ecoupon.status == ECouponStatus.UNCONSUMED && ecoupon.isFreeze == 0 && ecoupon.goods.noRefund
+                && ecoupon.expireAt.compareTo(DateUtil.getBeginExpiredDate(3)) > 0 && ecoupon.expireAt.compareTo(DateUtil.getEndExpiredDate(3)) < 0) {
+            verifyFlag = ecoupon.virtualVerify(OperateRbac.currentUser().id);
+
+        }
+        if (!verifyFlag) {
+            Validation.addError("verify-error-info" + id, "虚拟验证失败！");
+        }
+        if (Validation.hasErrors()) {
+            render("OperateVerifyCoupons/virtual.html", couponList, id);
+        }
+
+        render("OperateVerifyCoupons/virtual.html", couponList);
+    }
 }

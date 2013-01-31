@@ -258,6 +258,15 @@ public class ECoupon extends Model {
     @Column(name = "reply_code")
     public String replyCode;
 
+    /**
+     * 第三方（JD，WB）虚拟验证标志和虚拟验证时间（即财务对帐时间）
+     */
+    @Column(name = "virtual_verify")
+    public Boolean virtualVerify = Boolean.FALSE;
+    @Column(name = "virtual_verify_at")
+    public Date virtualVerifyAt;
+
+
     @ManyToOne
     @JoinColumn(name = "shop_id", nullable = true)
     public Shop shop;
@@ -281,6 +290,7 @@ public class ECoupon extends Model {
      */
     @Column(name = "operate_user_id")
     public Long operateUserId;
+
     @Transient
     public String operateUserName;
 
@@ -491,37 +501,37 @@ public class ECoupon extends Model {
 
     public boolean consumeAndPayCommission(Long shopId, Long operateUserId, SupplierUser supplierUser, VerifyCouponType type, String triggerCouponSn) {
 
-        //===================判断是否当当订单产生的券=============================
-        if (this.partner == ECouponPartner.DD) {
-            try {
-                if (DDAPIUtil.isRefund(this)) {//如果券在当当上已经退款，则不允许券的消费。
+        //===================判断是否第三方订单产生的券=并且不是导入券============================
+        if (this.createType != ECouponCreateType.IMPORT) {
+            if (this.partner == ECouponPartner.DD) {
+                try {
+                    if (DDAPIUtil.isRefund(this)) {//如果券在当当上已经退款，则不允许券的消费。
+                        return false;
+                    }
+                } catch (DDAPIInvokeException e) {
+                    //当当接口调用失败，目前仅记录日志。不阻止券的消费。以便保证用户体验。
+                    Logger.error(e.getMessage(), e);
                     return false;
                 }
-            } catch (DDAPIInvokeException e) {
-                //当当接口调用失败，目前仅记录日志。不阻止券的消费。以便保证用户体验。
-                Logger.error(e.getMessage(), e);
-                return false;
+            }
+
+            if (this.partner == ECouponPartner.JD) {
+                if (!JDGroupBuyUtil.verifyOnJingdong(this)) {
+                    Logger.info("verify on jingdong failed");
+                    return false;
+                }
+            } else if (this.partner == ECouponPartner.WB) {
+                if (!WubaUtil.verifyOnWuba(this)) {
+                    Logger.info("verify on wuba failed");
+                    return false;
+                }
+            } else if (this.partner == ECouponPartner.TB) {
+                if (!TaobaoCouponUtil.verifyOnTaobao(this)) {
+                    Logger.info("verify on taobao failed");
+                    return false;
+                }
             }
         }
-
-        if (this.partner == ECouponPartner.JD) {
-            if (!JDGroupBuyUtil.verifyOnJingdong(this)) {
-                Logger.info("verify on jingdong failed");
-                return false;
-            }
-        } else if (this.partner == ECouponPartner.WB) {
-            if (!WubaUtil.verifyOnWuba(this)) {
-                Logger.info("verify on wuba failed");
-                return false;
-            }
-        } else if (this.partner == ECouponPartner.TB) {
-            if (!TaobaoCouponUtil.verifyOnTaobao(this)) {
-                Logger.info("verify on taobao failed");
-                return false;
-            }
-
-        }
-
         //===================券消费处理开始=====================================
         if (consumed(shopId, operateUserId, supplierUser, type)) {
             payCommission();
@@ -1530,5 +1540,55 @@ public class ECoupon extends Model {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 查询三天后京东，WB未消费并且是不可退款的券
+     *
+     * @return
+     */
+    public static List<ECoupon> findVirtualCoupons() {
+        String sql = "select e from ECoupon e where e.isFreeze=0  and e.goods.noRefund= true and e.virtualVerify=0 " +
+                " and e.goods.isLottery=false and status =:status and (e.expireAt >= :expireBeginAt and e.expireAt <= " +
+                ":expireEndAt) and e.partner in (:partner) order by e.partner";
+        List<ECouponPartner> partnerList = new ArrayList<>();
+        partnerList.add(ECouponPartner.JD);
+        partnerList.add(ECouponPartner.WB);
+        Query query = ECoupon.em().createQuery(sql);
+        query.setParameter("status", ECouponStatus.UNCONSUMED);
+        query.setParameter("expireBeginAt", DateUtil.getBeginExpiredDate(3));
+        query.setParameter("expireEndAt", DateUtil.getEndExpiredDate(3));
+        query.setParameter("partner", partnerList);
+        return query.getResultList();
+    }
+
+    /**
+     * 虚拟验证券号
+     *
+     * @return
+     */
+    public boolean virtualVerify(Long operateUserId) {
+        if (this.partner == ECouponPartner.JD) {
+            if (!JDGroupBuyUtil.verifyOnJingdong(this)) {
+                Logger.info("virtual verify on jingdong failed");
+                return false;
+            }
+        } else if (this.partner == ECouponPartner.WB) {
+            if (!WubaUtil.verifyOnWuba(this)) {
+                Logger.info("virtual verify on wuba failed");
+                return false;
+            }
+        }
+        this.virtualVerify = true;
+        this.virtualVerifyAt = new Date();
+
+        String operator = "";
+        if (operateUserId != null) {
+            this.operateUserId = operateUserId;
+            operator = "操作员ID:" + operateUserId.toString();
+        }
+        this.save();
+        ECouponHistoryMessage.with(this).operator(operator).remark("虚拟验证").sendToMQ();
+        return true;
     }
 }

@@ -97,7 +97,7 @@
 </style>
 #{/set}
 
-<form class="well form-inline" action="@{ResaleSalesReports.index()}" method="GET" id="form"
+<form class="well form-inline" action="@{OperateResaleSalesReports.index()}" method="GET" id="form"
       name="form">
     渠道来源：#{select 'condition.accountType', class:'input-small', value:condition?.accountType}
     #{option "null"}不限#{/option}
@@ -138,7 +138,8 @@
     <th width="200px">售出实物数量/金额</th>
     <th width="180px">退款券数量/金额</th>
     <th width="180px">退款实物数量/金额</th>
-    <th width="200px">消费券数量/金额</th>
+    <th>消费券数量/金额</th>
+    <th>虚拟验证数量/金额</th>
     </thead>
 #{set i:0/}
 %{
@@ -186,7 +187,13 @@
             <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
                target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
         </td>
-
+        <td>
+            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.searchKey=UID&condition.searchItems=${report?.order.userId}&condition.status=UNCONSUMED&condition.virtualVerify=true&condition.virtualVerifyAtBegin=${beginAt}&condition.virtualVerifyAtEnd=${endAt}"
+               target="_blank">${report?.virtualVerifyNumber}</a>
+            /
+            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.searchKey=UID&condition.searchItems=${report?.order.userId}&condition.status=UNCONSUMED&condition.virtualVerify=true&condition.virtualVerifyAtBegin=${beginAt}&condition.virtualVerifyAtEnd=${endAt}"
+               target="_blank">${report?.virtualVerifyPrice== null ?'￥0.00':report?.virtualVerifyPrice?.formatCurrency('CNY')}   </a>
+        </td>
     </tr>
 #{/paginate.list}
     <tr>
@@ -219,11 +226,26 @@
             <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
                target="_blank">${summary?.consumedPrice?.formatCurrency("CNY")}</a>
         </td>
-
+        <td>
+            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.status=UNCONSUMED&condition.virtualVerify=true&condition.virtualVerifyAtBegin=${beginAt}&condition.virtualVerifyAtEnd=${endAt}"
+               target="_blank">${summary?.virtualVerifyNumber}</a>
+            /
+            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.status=UNCONSUMED&condition.virtualVerify=true&condition.virtualVerifyAtBegin=${beginAt}&condition.virtualVerifyAtEnd=${endAt}"
+               target="_blank">${summary?.virtualVerifyPrice?.formatCurrency("CNY")}</a>
+        </td>
     </tr>
 </table>
+
 <div class="pagination">
     <ul>
     #{paginate.controls items:reportPage /}
     </ul>
+</div>
+<br>  <br><br>
+<div class=" well">
+    当当对账金额=售出券金额<br>
+    58对账金额&nbsp;=消费券金额+虚拟验证券金额<br>
+    京东对账金额=消费券金额+虚拟验证券金额<br>
+    一号店对账金额=售出券金额<br>
+    淘宝网对账金额=已售出券金额（需等买家确认收货才能到账）
 </div>

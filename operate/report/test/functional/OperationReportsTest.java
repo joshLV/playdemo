@@ -3,7 +3,6 @@ package functional;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
-import factory.callback.SequenceCallback;
 import models.*;
 import models.accounts.AccountType;
 import models.admin.OperateUser;
@@ -24,7 +23,6 @@ import play.vfs.VirtualFile;
 import util.DateHelper;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -155,26 +153,26 @@ public class OperationReportsTest extends FunctionalTest {
     public void testShowChannelReport() {
         Http.Response response = GET(Router.reverse("OperationReports.showChannelReport").url);
         assertIsOk(response);
-        assertEquals(2l, ((ValuePaginator<ResaleSalesReport>) renderArgs("reportPage")).size());
-        assertEquals(BigDecimal.valueOf(10).setScale(2), ((ValuePaginator<ResaleSalesReport>) renderArgs("reportPage")).get(0).salePrice.setScale(2));
-        assertEquals(BigDecimal.valueOf(2).setScale(2), ((ValuePaginator<ResaleSalesReport>) renderArgs("reportPage")).get(0).profit.setScale(2));
+        assertEquals(2l, ((ValuePaginator<OperateResaleSalesReport>) renderArgs("reportPage")).size());
+        assertEquals(BigDecimal.valueOf(10).setScale(2), ((ValuePaginator<OperateResaleSalesReport>) renderArgs("reportPage")).get(0).salePrice.setScale(2));
+        assertEquals(BigDecimal.valueOf(2).setScale(2), ((ValuePaginator<OperateResaleSalesReport>) renderArgs("reportPage")).get(0).profit.setScale(2));
     }
 
     @Test
     public void testChannelReportExcelOut() {
         Http.Response response = GET(Router.reverse("OperationReports.channelReportExcelOut").url);
         assertIsOk(response);
-        assertEquals(2l, ((List<ResaleSalesReport>) renderArgs("resultList")).size());
-        assertEquals(BigDecimal.valueOf(10).setScale(2), ((List<ResaleSalesReport>) renderArgs("resultList")).get(0).salePrice.setScale(2));
+        assertEquals(2l, ((List<OperateResaleSalesReport>) renderArgs("resultList")).size());
+        assertEquals(BigDecimal.valueOf(10).setScale(2), ((List<OperateResaleSalesReport>) renderArgs("resultList")).get(0).salePrice.setScale(2));
     }
 
     @Test
     public void testChannelReportWithPrivilegeExcelOut() {
         Http.Response response = GET(Router.reverse("OperationReports.channelReportWithPrivilegeExcelOut").url);
         assertIsOk(response);
-        assertEquals(2l, ((List<ResaleSalesReport>) renderArgs("resultList")).size());
-        assertEquals(BigDecimal.valueOf(10).setScale(2), ((List<ResaleSalesReport>) renderArgs("resultList")).get(0).salePrice.setScale(2));
-        assertEquals(BigDecimal.valueOf(2).setScale(2), ((List<ResaleSalesReport>) renderArgs("resultList")).get(0).profit.setScale(2));
+        assertEquals(2l, ((List<OperateResaleSalesReport>) renderArgs("resultList")).size());
+        assertEquals(BigDecimal.valueOf(10).setScale(2), ((List<OperateResaleSalesReport>) renderArgs("resultList")).get(0).salePrice.setScale(2));
+        assertEquals(BigDecimal.valueOf(2).setScale(2), ((List<OperateResaleSalesReport>) renderArgs("resultList")).get(0).profit.setScale(2));
     }
 
     //

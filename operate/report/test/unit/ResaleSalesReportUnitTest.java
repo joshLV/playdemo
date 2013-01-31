@@ -4,8 +4,8 @@ import com.uhuila.common.util.DateUtil;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
-import models.ResaleSalesReport;
-import models.ResaleSalesReportCondition;
+import models.OperateResaleSalesReport;
+import models.OperateResaleSalesReportCondition;
 import models.accounts.AccountType;
 import models.admin.OperateUser;
 import models.order.ECoupon;
@@ -101,22 +101,22 @@ public class ResaleSalesReportUnitTest extends UnitTest {
     @Test
     public void testQueryConsumer() {
         System.out.println("esize()>>>>" + ECoupon.count());
-        ResaleSalesReportCondition condition = new ResaleSalesReportCondition();
-        List<ResaleSalesReport> list = ResaleSalesReport.queryConsumer(condition);
+        OperateResaleSalesReportCondition condition = new OperateResaleSalesReportCondition();
+        List<OperateResaleSalesReport> list = OperateResaleSalesReport.queryConsumer(condition);
 //        assertEquals(1, list.size());
     }
 
     @Ignore
     @Test
     public void testQueryResaler() {
-        ResaleSalesReportCondition condition = new ResaleSalesReportCondition();
-        List<ResaleSalesReport> list = ResaleSalesReport.query(condition);
+        OperateResaleSalesReportCondition condition = new OperateResaleSalesReportCondition();
+        List<OperateResaleSalesReport> list = OperateResaleSalesReport.query(condition);
         condition.endAt = new Date();
         condition.beginAt = DateHelper.beforeDays(1);
         condition.accountType = AccountType.RESALER;
         assertEquals(1, list.size());
 
-        ResaleSalesReport report = ResaleSalesReport.summary(list);
+        OperateResaleSalesReport report = OperateResaleSalesReport.summary(list);
         assertEquals(10, report.totalNumber.intValue());
         assertEquals(50, report.totalRefundPrice.intValue());
         assertEquals(85, report.amount.intValue());

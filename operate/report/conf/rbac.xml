@@ -74,8 +74,6 @@
                         permissions="ONSALE_OFFSALE_REPORT"/>
         </navigation>
         <navigation key="sales_report_app" text="销售报表">
-            <navigation key="resale_sales_reports" action="ResaleSalesReports.index" text="渠道销售汇总"
-                        permissions="SALES_REPORT"/>
             <navigation key="supplier_sales_ratios_reports" action="TotalSalesReports.ratios" text="券消费汇总报表"
                         permissions="CONSUMER_REPORT"/>
             <navigation key="supplier_sales_trends_reports" action="TotalSalesReports.trends" text="券消费趋势报表"

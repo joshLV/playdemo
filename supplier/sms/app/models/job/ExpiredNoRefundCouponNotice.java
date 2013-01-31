@@ -1,16 +1,13 @@
 package models.job;
 
-import com.uhuila.common.util.DateUtil;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
-import models.order.ECouponStatus;
 import play.Play;
 import play.jobs.Job;
 import play.jobs.On;
 
-import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,21 +25,7 @@ public class ExpiredNoRefundCouponNotice extends Job {
 
     @Override
     public void doJob() {
-        String sql = "select e from ECoupon e where e.isFreeze=0  and e.goods.noRefund= true" +
-                " and e.goods.isLottery=false and status =:status " +
-                "and (e.expireAt >= :expireBeginAt and e.expireAt <= " +
-                ":expireEndAt) and e.partner in (:partner) order by e.partner";
-        List<ECouponPartner> partnerList = new ArrayList<>();
-        partnerList.add(ECouponPartner.JD);
-        partnerList.add(ECouponPartner.WB);
-        Query query = ECoupon.em().createQuery(sql);
-        query.setParameter("status", ECouponStatus.UNCONSUMED);
-        query.setParameter("expireBeginAt", DateUtil.getBeginExpiredDate(3));
-        query.setParameter("expireEndAt", DateUtil.getEndExpiredDate(3));
-        query.setParameter("partner", partnerList);
-        query.setFirstResult(0);
-        query.setMaxResults(200);
-        List<ECoupon> resultList = query.getResultList();
+        List<ECoupon> resultList = ECoupon.findVirtualCoupons();
         String subject = "券号到期提醒";
         List<Map<String, String>> couponList = new ArrayList<>();
         Map<String, String> couponMap;
