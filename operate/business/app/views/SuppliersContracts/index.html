@@ -54,11 +54,15 @@
             <td>${contract?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
             <td>${contract?.updatedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
             <td>
-                <a href="@{SuppliersContracts.view(contract.id)}">查看合同</a>
-                /
-                <a href="@{SuppliersContracts.edit(contract.id)}">修改</a>
-                /
-                #{vx.deleteLink id:contract?.id, name:"该合同", action:"/supplier_contract"/}
+                #{if hasViewContractPermission == true}
+                    <a href="@{SuppliersContracts.view(contract.id)}">查看合同</a>
+                #{/if}
+                #{if hasContractManagementPermission == true}
+                    /
+                    <a href="@{SuppliersContracts.edit(contract.id)}">修改</a>
+                    /
+                    #{vx.deleteLink id:contract?.id, name:"该合同", action:"/supplier_contract"/}
+                #{/if}
             </td>
         </tr>
         #{/paginate.list}

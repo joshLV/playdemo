@@ -1,18 +1,24 @@
 package controllers;
 
 import com.uhuila.common.util.PathUtil;
+import models.supplier.Supplier;
+import operate.rbac.ContextedPermission;
 import play.Logger;
 import play.Play;
+import play.mvc.Before;
 import play.mvc.Controller;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
+import play.mvc.With;
 
 
 /**
@@ -22,6 +28,7 @@ import net.coobird.thumbnailator.geometry.Positions;
  * Date: 13-1-24
  * Time: 下午1:48
  */
+@With(OperateRbac.class)
 public class SupplierContractImages extends Controller {
     private static final String IMAGE_ROOT_ORIGINAL = play.Play.configuration.getProperty("image.root.original", "/nfs/images/contract/o"); //原始图根目录
     private static final String IMAGE_ROOT_GENERATED = play.Play.configuration.getProperty("image.root.generated", "/nfs/images/contract/p"); //缩略图根目录
@@ -30,6 +37,7 @@ public class SupplierContractImages extends Controller {
     private static final Pattern imageNamePattern = Pattern.compile("([a-z0-9]{8})_([^_]+)(_.+)*\\.((?i)(jpg|jpeg|png|gif))$");
     private static final Pattern sizePattern = Pattern.compile(".+_([0-9]+)x([0-9]+)(_.+)*\\.((?i)(jpg|jpeg|png|gif))$");
     private static final Pattern waterPattern = Pattern.compile(".+_nw(_.+)*\\.((?i)(jpg|jpeg|png|gif))$");
+
 
     public static void showOriginalImage(String path1, String path2, String path3, String path4) {
         String targetImagePath = joinPath(ROOT_PATH, path1, path2, path3, path4);
@@ -49,16 +57,28 @@ public class SupplierContractImages extends Controller {
      *
      * @param firstDir
      * @param secondDir
-     * @param thirdDir
      * @param imageName
      */
     public static void showImage(String firstDir, String secondDir, String imageName) {
+        Boolean hasManagerViewContractPermission = ContextedPermission.hasPermission("MANAGER_VIEW_SUPPLIER_CONTRACT");
+        Boolean hasViewContractPermission = ContextedPermission.hasPermission("VIEW_SUPPLIER_CONTRACT");
+        Long operatorId = OperateRbac.currentUser().id;
+        if (hasManagerViewContractPermission != null && !hasManagerViewContractPermission) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (!supplierIds.contains(operatorId)) {
+                renderText("你没有权限查看此图片");
+            }
+        }
+
         Matcher imageNameMatcher = imageNamePattern.matcher(imageName);
         if (!imageNameMatcher.matches()) {
             Logger.error("image not found: %s", imageName);
             notFound();
         }
-
 
         String sign = imageNameMatcher.group(1);                //图片签名
         String fileRawName = imageNameMatcher.group(2);         //纯文件名

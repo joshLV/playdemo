@@ -1,7 +1,9 @@
 package models.supplier;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.uhuila.common.constants.DeletedStatus;
@@ -19,6 +21,8 @@ public class SupplierContractCondition implements Serializable {
     public long supplierId = 0;
     public String orderByType = "DESC";
     public String orderBy = getOrderBy(0);
+    public Boolean hasManagerViewContractPermission;
+    public Long operatorId;
 
     private Map<String, Object> paramMap = new HashMap<>();
 
@@ -34,6 +38,20 @@ public class SupplierContractCondition implements Serializable {
             condBuilder.append(" and c.supplierId = :supplierId");
             paramMap.put("supplierId", supplierId);
         }
+        if (hasManagerViewContractPermission != null && !hasManagerViewContractPermission) {
+            List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
+            List<Long> supplierIds = new ArrayList<>();
+            for (Supplier s : suppliers) {
+                supplierIds.add(s.id);
+            }
+            if (supplierIds != null && supplierIds.size() > 0) {
+                condBuilder.append(" and c.supplierId in (:supplierIds)");
+                paramMap.put("supplierIds", supplierIds);
+            } else {
+                condBuilder.append(" and 1=0");
+            }
+        }
+
         return condBuilder.toString();
     }
 

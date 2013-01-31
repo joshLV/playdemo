@@ -9,6 +9,7 @@
     <role key="solr_load" text="solr加载数据"/>
     <role key="developer" text="开发人员"/>
     <role key="reviewer" text="产品审核"/>
+    <role key="contractadminister" text="合同管理"/>
 
     <permission key="GOODS_NEW" text="商品添加" roles="editor"/>
     <permission key="GOODS" text="商品管理" roles="editor,customservice"/>
@@ -19,8 +20,12 @@
     <permission key="COUPON_UNFREEZE" text="解冻券号" roles="customservice"/>
     <permission key="Point_GOODS" text="积分商品管理" roles="editor,customservice"/>
     <permission key="CHANNEL_GOODS" text="跟进渠道商品" roles="sales,editor"/>
+    <permission key="VIEW_SUPPLIER_CONTRACT" text="查看合同" roles="sales,account,editor,contractadminister"/>
+    <permission key="MANAGER_VIEW_SUPPLIER_CONTRACT" text="经理查看合同" roles="manager"/>
+    <permission key="SUPPLIER_CONTRACT_MANAGEMENT" text="合同管理" roles="contractadminister"/>
 
-    <permission key=" Point_GOODS_ORDER" text="积分商品订单管理" roles="customservice,account"/>
+
+    <permission key="Point_GOODS_ORDER" text="积分商品订单管理" roles="customservice,account"/>
     <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager,account"/>
     <permission key="SUPPLIER_CODE_EDIT" text="修改商户编码" roles="developer"/>
     <permission key="GOODS_APPROVE_ONSALE" text="审核商品上架" roles="reviewer"/>
@@ -28,7 +33,6 @@
     <permission key="ECOUPON_REFUND" text="电子券退款操作" roles="customservice"/>
     <permission key="UNFREEZE_COUPON" text="券解冻" roles="customservice"/>
     <permission key="VIEW_ECOUPONSN" text="查看完整券号" roles="customservice"/>
-
 
     <permission key="SUPPLIERS_NEW" text="商户添加" roles="editor"/>
     <permission key="SUPPLIERS" text="商户管理" roles="editor,customservice,sales"/>
@@ -78,7 +82,7 @@
             <navigation key="suppliers_category_index" action="SuppliersCategory.index" text="商户类别"
                         permissions="SUPPLIERS"/>
             <navigation key="suppliers_contracts" action="SuppliersContracts.index" text="商户合同管理"
-                        permissions="SUPPLIERS"/>
+                        permissions="VIEW_SUPPLIER_CONTRACT"/>
         </navigation>
         <navigation key="supplierUsers" text="商户操作员" permissions="SUPPLIER_USERS_NEW,SUPPLIER_USERS">
             <navigation key="supplierUsers_add" action="OperateSupplierUsers.add" text="商户操作员添加"
