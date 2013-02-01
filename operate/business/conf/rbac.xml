@@ -42,7 +42,7 @@
     <permission key="ORDERS" text="运营订单管理" roles="customservice,account,sales,manager"/>
     <permission key="COUPONS" text="券查询" roles="sales,customservice,account,manager"/>
     <permission key="COUPONS_MANAGE" text="券管理" roles="customservice,account,manager"/>
-    <permission key="SALES_REPORT" text="销售表" roles="account"/>
+    <permission key="RESALE_SALES_REPORT" text="渠道销售汇总" roles="account"/>
     <permission key="CONSUMERS_REPORT" text="消费者资金明细" roles="account"/>
     <permission key="RESALES_REPORT" text="分销商资金明细" roles="account"/>
     <permission key="SUPPLIERS_REPORT" text="商户资金明细" roles="account"/>
@@ -147,7 +147,7 @@
 
         </navigation>
         <!--<navigation key="yihaodian_api" text="一号店">-->
-            <!--<navigation key="yihaodian_api_index" action="YihaodianAPI.index" text="API" permissions="ORDERS"/>-->
+        <!--<navigation key="yihaodian_api_index" action="YihaodianAPI.index" text="API" permissions="ORDERS"/>-->
         <!--</navigation>-->
     </navigation>
 
@@ -194,7 +194,7 @@
             <navigation key="incomings_account_reports" action="OperateReports.showIncomingReport" text="收款账户资金明细"
                         permissions="INCOMINGS_REPORT"/>
             <navigation key="resale_sales_reports" action="OperateResaleSalesReports.index" text="渠道销售汇总"
-                        permissions="SALES_REPORT"/>
+                        permissions="RESALE_SALES_REPORT"/>
         </navigation>
     </navigation>
 
