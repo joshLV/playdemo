@@ -274,6 +274,32 @@ public class JingdongUploadTeam extends Controller {
 
     }
 
+    public static void teamRestart(Long id, Date beginTime, Date endTime) {
+        ResalerFav fav = ResalerFav.findById(id);
+
+        String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/teamRestart.action";
+        Template template = TemplateLoader.load("jingdong/groupbuy/request/teamRestartRequest.xml");
+        Map<String, Object> params = new HashMap<>();
+        params.put("venderTeamId", fav.lastLinkId.toString());
+        params.put("jdTeamId", fav.thirdGroupbuyId.toString());
+        params.put("beginTime", beginTime);
+        params.put("endTime", endTime);
+
+        String data = template.render(params);
+
+        String restRequest = JDGroupBuyUtil.makeRequestRest(data);
+
+        String responseResult = WebServiceRequest.url(url).type("jingdong_update_restart")
+                .requestBody(restRequest).addKeyword(fav.goods.id).addKeyword(fav.goods.shortName).postString();
+
+        JDRest<CommonUpdateResponse> uploadTeamRest = new JDRest<>();
+        if (uploadTeamRest.parse(responseResult, new CommonUpdateResponse())) {
+            Logger.info("update jingdong fav restart:" + id + " beginTime:" + beginTime + ";endTime:" + endTime + " success.");
+        }
+        render("JingdongUploadTeam/result.html", uploadTeamRest);
+
+    }
+
     /**
      * 修改主图
      */
