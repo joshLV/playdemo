@@ -315,13 +315,13 @@
 
                     <a href="#" id="freeze_${coupon.id}"
                        onclick="freeze('${coupon.id}')">冻结</a>
-                    #{elseif hasRight && coupon.isCheatedOrder!=true}
-                        #{vx.operateLink name:"unfreeze_"+coupon.id,text:"解冻", url:"/coupons/"+coupon.id+"/unfreeze", method:"PUT"/}
-                    #{/elseif}
-                    #{elseif hasRight }
-                        <span style="color: #808080;">解冻</span>
-                    #{/elseif}
                 #{/if}
+                #{elseif hasRight && coupon.isCheatedOrder!=true}
+                    #{vx.operateLink name:"unfreeze_"+coupon.id,text:"解冻", url:"/coupons/"+coupon.id+"/unfreeze", method:"PUT"/}
+                #{/elseif}
+                #{elseif hasRight }
+                    <span style="color: #808080;">刷单不可解冻</span>
+                #{/elseif}
             #{/if}
             #{if coupon?.canSendSMSByOperate()}
                 <a href="javascript:sendMessage(${coupon.id})">发送短信</a>
