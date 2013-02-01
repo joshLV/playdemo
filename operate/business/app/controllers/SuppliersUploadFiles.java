@@ -91,9 +91,8 @@ public class SuppliersUploadFiles extends Controller {
             SupplierContract contract = SupplierContract.findById(contractId);
 
             BufferedImage buff = ImageIO.read(imgFile);
-            System.out.println(buff.getWidth() + "===buff.getWidth()>>");
-            String size= String.valueOf(buff.getWidth())+"x"+String.valueOf(buff.getHeight());
-            new SupplierContractImage(supplier, contract, imgFile.getName(), path,size).save();
+            String size = String.valueOf(buff.getWidth()) + "x" + String.valueOf(buff.getHeight());
+            new SupplierContractImage(supplier, contract, imgFile.getName(), path, size).save();
 
             path = PathUtil.signImgPath(path);
 
