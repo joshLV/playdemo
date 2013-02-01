@@ -8,16 +8,23 @@ import models.jingdong.groupbuy.response.VerifyCouponResponse;
 import models.order.ECoupon;
 import models.order.OuterOrder;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 import play.Logger;
 import play.Play;
 import play.exceptions.UnexpectedException;
 import play.libs.WS;
+import play.libs.XPath;
 import play.templates.Template;
 import play.templates.TemplateLoader;
 import util.ws.WebServiceRequest;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -265,6 +272,74 @@ public class JDGroupBuyUtil {
                     }
                 }
         );
+    }
+
+
+    /**
+     * 向京东发起请求.
+     *
+     * @param tag           请求标识，一般使用接口名称
+     * @param url           接口URL
+     * @param templatePath  使用的模板地址
+     * @param params        模板参数
+     * @param keywords      关键词
+     * @return              解析后的京东响应消息
+     */
+    public static JingdongMessage sendRequest(String tag, String url, String templatePath, Map<String, Object> params,
+                                              String ... keywords) {
+        Template template = TemplateLoader.load(templatePath);
+        String data = template.render(params);
+
+        String restRequest = JDGroupBuyUtil.makeRequestRest(data);
+
+        WebServiceRequest request = WebServiceRequest.url(url).type(tag) .requestBody(restRequest);
+        for (String keyword : keywords) {
+            request = request.addKeyword(keyword);
+        }
+
+        Document response = request.postXml();
+        return parseMessage(response);
+    }
+
+    /**
+     * 解析京东的消息。包括我们请求京东的接口后京东的响应，以及京东主动通知我们的信息.
+     *
+     * @param document  xml形式的京东消息
+     * @return          解析后的京东消息
+     */
+    public static JingdongMessage parseMessage(Document document) {
+        JingdongMessage message = new JingdongMessage();
+        message.version = XPath.selectText("//Version", document);
+        message.venderId = Long.parseLong(XPath.selectText("//VenderId", document));
+        message.zip = Boolean.parseBoolean(XPath.selectText("//Zip", document));
+        message.encrypt = Boolean.parseBoolean(XPath.selectText("//Encrypt", document));
+
+        // 只有作为京东的响应的时候， resultCode 和 resultMessage 才有用
+        message.resultCode = XPath.selectText("//ResultCode", document);
+        message.resultMessage = XPath.selectText("//ResultMessage", document);
+        if(StringUtils.isNotEmpty(message.resultCode) && !"200".equals(message.resultCode)){
+            Logger.info("jingdong resultCode is not 200");
+        }
+
+        if(message.encrypt){
+            String rawMessage = XPath.selectText("//Data", document);
+            //解析加密字符串
+            String decryptedMessage = JDGroupBuyUtil.decryptMessage(rawMessage);
+            Logger.info("jingdong decryptedMessage:\n%s", decryptedMessage);
+
+            try{
+                DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                StringReader stringReader = new StringReader(decryptedMessage);
+                message.message = builder.parse(new InputSource(stringReader)).getParentNode();
+            }catch (Exception e) {
+                Logger.info("jingdong parse message error: not xml document");
+                //ignore
+            }
+
+        } else{
+            message.message = XPath.selectNode("//Data//Message", document);
+        }
+        return message;
     }
 
 
