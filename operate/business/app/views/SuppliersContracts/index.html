@@ -44,8 +44,9 @@
             <td>${contract?.expireAt?.format('yyyy-MM-dd')}</td>
             <td>
                 #{if contract?.description?.length()>10}
-                    <a style="color: black;" href="#" rel="tooltip" data-placement="right"
-                       data-original-title=${contract?.description}>${contract?.getSpecifiedLengthDescription()}</a>
+                    <span rel="tooltip" data-placement="right"
+                          data-original-title=${contract?.description}>
+                    ${contract?.getSpecifiedLengthDescription()}</span>
                 #{/if}
                 #{else}
                 ${contract?.description}

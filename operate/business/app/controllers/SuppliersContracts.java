@@ -112,6 +112,29 @@ public class SuppliersContracts extends Controller {
     }
 
     @Right("SUPPLIER_CONTRACT_MANAGEMENT")
+    public static void updateDescription(Long imageId, String description) {
+        System.out.println(imageId + "===imageId>>");
+        System.out.println(description + "===description>>");
+        System.out.println("here");
+        Boolean hasContractManagementPermission = ContextedPermission.hasPermission("SUPPLIER_CONTRACT_MANAGEMENT");
+        if (hasContractManagementPermission == true) {
+            SupplierContractImage image = SupplierContractImage.findById(imageId);
+            if (image != null) {
+                image.description = description;
+                image.save();
+//                renderJSON("1");
+//                uploadContract(image.contract.supplierId, image.contract.id);
+            } else {
+//                renderJSON("0");
+                index(null);
+            }
+        } else {
+            index(null);
+        }
+    }
+
+
+    @Right("SUPPLIER_CONTRACT_MANAGEMENT")
     public static void create(@Valid SupplierContract contract) {
         Boolean hasContractManagementPermission = ContextedPermission.hasPermission("SUPPLIER_CONTRACT_MANAGEMENT");
         if (hasContractManagementPermission == true) {
@@ -151,9 +174,10 @@ public class SuppliersContracts extends Controller {
         }
     }
 
+
     private static void checkExpireAt(SupplierContract contract) {
         if (contract.effectiveAt == null || contract.expireAt == null || contract.expireAt.before(contract.effectiveAt)) {
-            Validation.addError("contract.expireAt", "validation.beforeThanEffectiveAt");
+            Validation.addError("contract.expireAt", "validation.beforeThanContractEffectiveAt");
         }
     }
 

@@ -41,6 +41,7 @@ validation.moreThanFaceValue=%s不能超过原价!
 validation.lessThanOriginalPrice=%s不能低于采购价!
 validation.moreThanLastLevel=%s不能超过前一级别的VIP加价!
 validation.beforeThanEffectiveAt=%s不能早于有效期开始时间!
+validation.beforeThanContractEffectiveAt=%s不能早于合同生效日期!
 validation.beforeThanOnSaleAt=%s不能早于上架时间!
 validation.beforeThanBeginOnSaleAt=%s不能早于上架开始时间!
 validation.afterThanExpireAt=%s不能晚于过期时间!

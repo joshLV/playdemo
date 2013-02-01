@@ -35,11 +35,12 @@ GET     /supplier_contract/{contractId}/view               SuppliersContracts.vi
 PUT     /supplier_contract/{contractId}                    SuppliersContracts.update
 DELETE  /supplier_contract/{id}                            SuppliersContracts.delete
 DELETE  /supplier_contract_images/{id}                     SuppliersContracts.deleteImage
+GET     /supplier_contract/{imageId}                       SuppliersContracts.updateDescription
 
 POST    /supplier_contract_images/{supplierId}/{contractId}         SuppliersUploadFiles.uploadImages
 
 GET     /contract/p/{firstDir}/{secondDir}/{imageName}    SupplierContractImages.showImage
-GET     /contract/o/{path1}/{path2}       SupplierContractImages.showOriginalImage
+GET     /contract/o/{path1}/{path2}                       SupplierContractImages.showOriginalImage
 
 
 # 外部商品
