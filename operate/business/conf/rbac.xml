@@ -42,7 +42,6 @@
     <permission key="ORDERS" text="运营订单管理" roles="customservice,account,sales,manager"/>
     <permission key="COUPONS" text="券查询" roles="sales,customservice,account,manager"/>
     <permission key="COUPONS_MANAGE" text="券管理" roles="customservice,account,manager"/>
-    <permission key="RESALE_SALES_REPORT" text="渠道销售汇总" roles="account"/>
     <permission key="CONSUMERS_REPORT" text="消费者资金明细" roles="account"/>
     <permission key="RESALES_REPORT" text="分销商资金明细" roles="account"/>
     <permission key="SUPPLIERS_REPORT" text="商户资金明细" roles="account"/>
@@ -71,6 +70,7 @@
     <permission key="PREPAYMENTS" text="预付款管理" roles="account"/>
     <permission key="PREPAYMENTS_NEW" text="预付款添加" roles="account"/>
     <permission key="CHECK_ACCOUNTSEQUENCE" text="核帐" roles="account"/>
+    <permission key="RESALE_SALES_REPORT" text="渠道销售汇总" roles="account"/>
 
     <navigation key="supplier_app" text="商户管理" action="Suppliers.index" display-order="20">
         <navigation key="suppliers" text="商户" permissions="SUPPLIERS_NEW,SUPPLIERS">
