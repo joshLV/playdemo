@@ -4,12 +4,14 @@ package models;
 import models.accounts.AccountType;
 import models.order.Order;
 import play.db.jpa.JPA;
-import play.db.jpa.Model;
 
-import javax.persistence.*;
+import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p/>
@@ -17,12 +19,8 @@ import java.util.*;
  * Date: 12-7-18
  * Time: 下午4:51
  */
-@Entity
-@Table(name = "resale_sales_report")
-public class ResaleSalesReport extends Model {
+public class ResaleSalesReport {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = true)
     public Order order;
     public String loginName;
     public String userName;
@@ -313,8 +311,8 @@ public class ResaleSalesReport extends Model {
      * @param condition
      * @return
      */
-    public static List<OperateResaleSalesReport> query(
-            OperateResaleSalesReportCondition condition) {
+    public static List<ResaleSalesReport> query(
+            ResaleSalesReportCondition condition) {
 
         //paidAt ecoupon
         String sql = "select new models.ResaleSalesReport(r.order, sum(r.salePrice-r.rebateValue/r.buyNumber),count(r.buyNumber)" +
@@ -329,7 +327,7 @@ public class ResaleSalesReport extends Model {
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
-        List<OperateResaleSalesReport> paidResultList = query.getResultList();
+        List<ResaleSalesReport> paidResultList = query.getResultList();
 
 
         //sendAt real
@@ -343,7 +341,7 @@ public class ResaleSalesReport extends Model {
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
-        List<OperateResaleSalesReport> sentRealResultList = query.getResultList();
+        List<ResaleSalesReport> sentRealResultList = query.getResultList();
 
 
         //consumedAt ecoupon
@@ -353,7 +351,7 @@ public class ResaleSalesReport extends Model {
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
-        List<OperateResaleSalesReport> consumedResultList = query.getResultList();
+        List<ResaleSalesReport> consumedResultList = query.getResultList();
 
         //refundAt ecoupon
         sql = "select new models.ResaleSalesReport(sum(e.refundPrice),count(e),r.order) from OrderItems r, ECoupon e where e.orderItems=r";
@@ -362,20 +360,20 @@ public class ResaleSalesReport extends Model {
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
-        List<OperateResaleSalesReport> refundResultList = query.getResultList();
+        List<ResaleSalesReport> refundResultList = query.getResultList();
 
         //refundAt real need to do !!!!!
 
 
-        Map<Long, OperateResaleSalesReport> map = new HashMap<>();
+        Map<Long, ResaleSalesReport> map = new HashMap<>();
 
         //merge ecoupon and real when sales
-        for (OperateResaleSalesReport paidItem : paidResultList) {
+        for (ResaleSalesReport paidItem : paidResultList) {
             map.put(getReportKey(paidItem), paidItem);
         }
 
-        for (OperateResaleSalesReport paidItem : sentRealResultList) {
-            OperateResaleSalesReport item = map.get(getReportKey(paidItem));
+        for (ResaleSalesReport paidItem : sentRealResultList) {
+            ResaleSalesReport item = map.get(getReportKey(paidItem));
             if (item == null) {
                 map.put(getReportKey(paidItem), paidItem);
             } else {
@@ -398,8 +396,8 @@ public class ResaleSalesReport extends Model {
 
 
         //merge other 2
-        for (OperateResaleSalesReport consumedItem : consumedResultList) {
-            OperateResaleSalesReport item = map.get(getReportKey(consumedItem));
+        for (ResaleSalesReport consumedItem : consumedResultList) {
+            ResaleSalesReport item = map.get(getReportKey(consumedItem));
             if (item == null) {
                 map.put(getReportKey(consumedItem), consumedItem);
             } else {
@@ -408,8 +406,8 @@ public class ResaleSalesReport extends Model {
             }
         }
 
-        for (OperateResaleSalesReport refundItem : refundResultList) {
-            OperateResaleSalesReport item = map.get(getReportKey(refundItem));
+        for (ResaleSalesReport refundItem : refundResultList) {
+            ResaleSalesReport item = map.get(getReportKey(refundItem));
             if (item == null) {
                 map.put(getReportKey(refundItem), refundItem);
             } else {
@@ -433,9 +431,9 @@ public class ResaleSalesReport extends Model {
      * @return
      */
 
-    public static OperateResaleSalesReport summary(List<OperateResaleSalesReport> resultList) {
+    public static ResaleSalesReport summary(List<ResaleSalesReport> resultList) {
         if (resultList == null || resultList.size() == 0) {
-            return new OperateResaleSalesReport(0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO, 0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO
+            return new ResaleSalesReport(0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO, 0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO
                     , BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
         }
         long refundCount = 0l;
@@ -454,7 +452,7 @@ public class ResaleSalesReport extends Model {
         BigDecimal profit = BigDecimal.ZERO;
         BigDecimal totolSalePrice = BigDecimal.ZERO;
         BigDecimal totalCost = BigDecimal.ZERO;
-        for (OperateResaleSalesReport item : resultList) {
+        for (ResaleSalesReport item : resultList) {
 
             buyCount += item.buyNumber;
             amount = amount.add(item.salePrice == null ? BigDecimal.ZERO : item.salePrice);
@@ -478,7 +476,7 @@ public class ResaleSalesReport extends Model {
         if (totolSalePrice.compareTo(BigDecimal.ZERO) != 0) {
             grossMargin = totolSalePrice.subtract(totalCost).divide(totolSalePrice, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
         }
-        return new OperateResaleSalesReport(buyCount, amount.setScale(2, 4), realBuyCount, realAmount.setScale(2, 4), refundPrice.setScale(2, 4), refundCount, consumedPrice.setScale(2, 4), consumedCount, shouldGetPrice.setScale(2, 4), haveGetPrice.setScale(2, 4)
+        return new ResaleSalesReport(buyCount, amount.setScale(2, 4), realBuyCount, realAmount.setScale(2, 4), refundPrice.setScale(2, 4), refundCount, consumedPrice.setScale(2, 4), consumedCount, shouldGetPrice.setScale(2, 4), haveGetPrice.setScale(2, 4)
                 , grossMargin, channelCost.setScale(2, 4), profit.setScale(2, 4));
     }
 
@@ -488,7 +486,7 @@ public class ResaleSalesReport extends Model {
      * @param condition
      * @return
      */
-    public static List<OperateResaleSalesReport> queryConsumer(OperateResaleSalesReportCondition condition) {
+    public static List<ResaleSalesReport> queryConsumer(ResaleSalesReportCondition condition) {
         //paidAt ecoupon
         String sql = "select new models.ResaleSalesReport(min(r.order), sum(r.salePrice-r.rebateValue/r.buyNumber),count(r.buyNumber)" +
                 ",sum(r.originalPrice)" +
@@ -500,7 +498,7 @@ public class ResaleSalesReport extends Model {
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
-        List<OperateResaleSalesReport> paidResultList = query.getResultList();
+        List<ResaleSalesReport> paidResultList = query.getResultList();
 
         //sendAt real
         sql = "select new models.ResaleSalesReport(min(r.order),sum(r.buyNumber),sum(r.salePrice*r.buyNumber-r.rebateValue)" +
@@ -513,7 +511,7 @@ public class ResaleSalesReport extends Model {
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
-        List<OperateResaleSalesReport> sentRealResultList = query.getResultList();
+        List<ResaleSalesReport> sentRealResultList = query.getResultList();
 
 
         //consumedAt ecoupon
@@ -523,7 +521,7 @@ public class ResaleSalesReport extends Model {
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
-        List<OperateResaleSalesReport> consumedResultList = query.getResultList();
+        List<ResaleSalesReport> consumedResultList = query.getResultList();
 
         //refundAt ecoupon
         sql = "select new models.ResaleSalesReport(sum(e.refundPrice),count(e),min(r.order)) from OrderItems r, ECoupon e where e.orderItems=r";
@@ -532,11 +530,11 @@ public class ResaleSalesReport extends Model {
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
-        List<OperateResaleSalesReport> refundResultList = query.getResultList();
+        List<ResaleSalesReport> refundResultList = query.getResultList();
 
         //refundAt real need to do !!!!!
-        OperateResaleSalesReport result = null;
-        List<OperateResaleSalesReport> resultList = new ArrayList<>();
+        ResaleSalesReport result = null;
+        List<ResaleSalesReport> resultList = new ArrayList<>();
         if (paidResultList != null && paidResultList.size() > 0) {
             result = paidResultList.get(0);
             if (sentRealResultList != null && sentRealResultList.size() > 0 && sentRealResultList.get(0).realBuyNumber > 0) {
@@ -574,7 +572,7 @@ public class ResaleSalesReport extends Model {
         return resultList;
     }
 
-    private static Long getReportKey(OperateResaleSalesReport refoundItem) {
+    private static Long getReportKey(ResaleSalesReport refoundItem) {
         return refoundItem.order.userId;
     }
 

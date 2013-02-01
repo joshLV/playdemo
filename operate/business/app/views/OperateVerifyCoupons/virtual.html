@@ -43,14 +43,6 @@
             <tbody>
             #{list items:couponList, as:'coupon'}
             <tr>
-            *{<td>}*
-            *{#{if coupon?.virtualVerify}}*
-            *{<input type="checkbox" disabled/>}*
-            *{#{/if}}*
-            *{#{else}}*
-            *{<input type="checkbox" name="couponIds[]" value="${coupon?.id}"/>}*
-            *{#{/else}}*
-            *{</td>}*
                 <td>
                     <a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a></abbr>
                 </td>

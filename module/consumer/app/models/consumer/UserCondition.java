@@ -18,7 +18,6 @@ public class UserCondition {
 
     public String pointNumber;
     public int tradeType;
-    public boolean isExchange;
     public Map<String, Object> paramsMap = new HashMap<>();
 
     public String getCoinsCondition(User user) {
@@ -28,6 +27,7 @@ public class UserCondition {
             sql.append(" and u.user = :user");
             paramsMap.put("user", user);
         }
+        System.out.println(createdAtBegin + ">>>>createdAtBegin"+createdAtEnd);
         if (createdAtBegin != null) {
             sql.append(" and u.createdAt >= :createdAtBegin");
             paramsMap.put("createdAtBegin", createdAtBegin);
@@ -36,7 +36,6 @@ public class UserCondition {
             sql.append(" and u.createdAt <= :createdAtEnd");
             paramsMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
         }
-
         if (tradeType != 0) {
             if (tradeType > 0) {
                 sql.append(" and number>0");
