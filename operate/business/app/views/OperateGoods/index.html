@@ -54,7 +54,7 @@
         </tr>
         <tr>
             <td width="30%">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
-            #{vx.selectInputField name:"brandName", id:"condition.brandId", list:brandList, array:"brandArray",importJs:false/}</td>
+            #{vx.selectInputField name:"brandName", id:"condition.brandId", list:brandList, array:"brandArray"/}</td>
             <td width="30%">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：
             #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
                 #{option ""}不限#{/option}
