@@ -24,7 +24,7 @@ import java.util.List;
 public class OperateResaleSalesReports extends Controller {
     private static final int PAGE_SIZE = 30;
 
-    @ActiveNavigation("resale_sales_reports")
+//    @ActiveNavigation("resale_sales_reports")
     public static void index(OperateResaleSalesReportCondition condition) {
         int pageNumber = getPageNumber();
 
