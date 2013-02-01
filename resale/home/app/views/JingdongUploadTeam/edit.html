@@ -60,6 +60,20 @@
 
         <input type="submit" value="延长团购有效期">
     </form>
+    <form action="/jd-update/restart" method="POST">
+        <input type="hidden" name="id" value="${fav.id}">
+        <h3>下架的团购重新上架</h3>
+        <p>
+            团购开始时间
+            <input type="text" name="beginTime" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+                  class="Wdate" value="${fav.goods.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}" size="30"></p>
+        <p>
+            团购结束时间
+            <input type="text" name="endTime" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+                   class="Wdate" value="${fav.goods.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}" size="30"></p>
+
+        <input type="submit" value="重新上架">
+    </form>
 
     <form action="/jd-update/big-img" method="POST">
         <input type="hidden" name="id" value="${fav.id}">

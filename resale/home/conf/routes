@@ -85,6 +85,7 @@ POST    /jd-update/expire                       JingdongUploadTeam.updateExpire
 POST    /jd-update/big-img                      JingdongUploadTeam.updateBigImg
 POST    /jd-update/partners                     JingdongUploadTeam.updatePartners
 POST    /jd-update/end-date                     JingdongUploadTeam.updateEndDate
+POST    /jd-update/restart                      JingdongUploadTeam.teamRestart
 
 GET     /58-add/{goodsId}                       WubaProduct.prepare
 GET     /58-edit/{goodsId}                      WubaProduct.edit
