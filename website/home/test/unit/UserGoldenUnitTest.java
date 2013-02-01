@@ -14,6 +14,8 @@ import play.modules.paginate.JPAExtPaginator;
 import play.test.UnitTest;
 import util.DateHelper;
 
+import java.util.Date;
+
 /**
  * <p/>
  * User: yanjy
@@ -49,9 +51,12 @@ public class UserGoldenUnitTest extends UnitTest {
 
     @Test
     public void testList() {
-        JPAExtPaginator<UserGoldenCoin> reportPage = UserGoldenCoin.find(user, new UserCondition(), 1, 15);
+        UserCondition condition = new UserCondition();
+        condition.createdAtBegin = DateHelper.beforeDays(2);
+        condition.createdAtEnd = new Date();
+        JPAExtPaginator<UserGoldenCoin> reportPage = UserGoldenCoin.find(user, condition, 1, 15);
         assertEquals(21, reportPage.size());
-        assertEquals(21, UserGoldenCoin.getCheckinNumber(user).intValue());
+        assertEquals(1, UserGoldenCoin.getCheckinNumber(user).intValue());
         assertEquals(105, UserGoldenCoin.getTotalCoins(user).intValue());
     }
 

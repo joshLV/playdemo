@@ -359,7 +359,6 @@ public class OperateResaleSalesReport {
         }
         List<OperateResaleSalesReport> paidResultList = query.getResultList();
 
-
         //sendAt real
         sql = "select new models.OperateResaleSalesReport(r.order,sum(r.buyNumber),sum(r.salePrice*r.buyNumber-r.rebateValue)" +
                 ",sum(r.originalPrice*r.buyNumber),sum(r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio/100" +
@@ -401,6 +400,7 @@ public class OperateResaleSalesReport {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<OperateResaleSalesReport> virtualList = query.getResultList();
+        System.out.println(virtualList.size() + ">>>>paidResultList.size()");
 
         //refundAt real need to do !!!!!
         Map<Long, OperateResaleSalesReport> map = new HashMap<>();

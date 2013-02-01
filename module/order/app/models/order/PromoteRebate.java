@@ -190,7 +190,7 @@ public class PromoteRebate extends Model {
                                 " and (p.status=:status or p.status=:status1)  " +
                                 " group by p.promoteUser.id order by sum(e.promoterRebateValue) desc");
         query.setParameter("e_status", ECouponStatus.CONSUMED);
-        query.setParameter("consumedBeginAt", DateUtil.getMonthFirstDay());
+        query.setParameter("consumedBeginAt", DateUtil.firstDayOfMonth());
         query.setParameter("consumedEndAt", DateUtil.lastDayOfMonth(new Date()));
         query.setParameter("status", RebateStatus.ALREADY_REBATE);
         query.setParameter("status1", RebateStatus.PART_REBATE);

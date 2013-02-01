@@ -128,10 +128,9 @@
     </ul>
     <input type="hidden" id="condition_interval" name="condition.interval"/>
 </form>
-
+#{if reportPage.size()>0}
 <table class="table table-striped table-bordered table-condensed">
     <thead>
-    <th width="10px">序号</th>
     <th width="80px">渠道来源</th>
     <th width="70px">帐号</th>
     <th width="200px">售出券数量/金额</th>
@@ -154,8 +153,6 @@
     userName="condition.userName="+report?.loginName;
     }%
     <tr>
-        #{set i:i+1/}
-        <td>${(reportPage.pageNumber-1)*reportPage.pageSize+i}</td>
         <td>${report?.order?.userType==models.accounts.AccountType.RESALER ? '分销商':'消费者'}</td>
         <td>${report.userName}<br>${report?.loginName}</td>
         <td>
@@ -188,16 +185,16 @@
                target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
         </td>
         <td>
-            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.searchKey=UID&condition.searchItems=${report?.order.userId}&condition.status=UNCONSUMED&condition.virtualVerify=true&condition.virtualVerifyAtBegin=${beginAt}&condition.virtualVerifyAtEnd=${endAt}"
+            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.searchKey=UID&condition.searchItems=${report?.order?.userId}&condition.status=UNCONSUMED&condition.virtualVerify=true&condition.virtualVerifyAtBegin=${beginAt}&condition.virtualVerifyAtEnd=${endAt}"
                target="_blank">${report?.virtualVerifyNumber}</a>
             /
-            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.searchKey=UID&condition.searchItems=${report?.order.userId}&condition.status=UNCONSUMED&condition.virtualVerify=true&condition.virtualVerifyAtBegin=${beginAt}&condition.virtualVerifyAtEnd=${endAt}"
+            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.searchKey=UID&condition.searchItems=${report?.order?.userId}&condition.status=UNCONSUMED&condition.virtualVerify=true&condition.virtualVerifyAtBegin=${beginAt}&condition.virtualVerifyAtEnd=${endAt}"
                target="_blank">${report?.virtualVerifyPrice== null ?'￥0.00':report?.virtualVerifyPrice?.formatCurrency('CNY')}   </a>
         </td>
     </tr>
 #{/paginate.list}
     <tr>
-        <td colspan="3">汇总</td>
+        <td colspan="2">汇总</td>
         <td>
             <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
                target="_blank">${summary?.totalNumber}</a>
@@ -249,3 +246,4 @@
     一号店对账金额=售出券金额<br>
     淘宝网对账金额=已售出券金额（需等买家确认收货才能到账）
 </div>
+#{/if}

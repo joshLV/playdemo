@@ -8,8 +8,8 @@ import models.ChannelGoodsReport;
 import models.ChannelGoodsReportCondition;
 import models.ConsumerFlowReport;
 import models.ConsumerFlowReportCondition;
-import models.OperateResaleSalesReport;
-import models.OperateResaleSalesReportCondition;
+import models.ResaleSalesReport;
+import models.ResaleSalesReportCondition;
 import models.PeopleEffectCategoryReport;
 import models.PeopleEffectCategoryReportCondition;
 import models.SalesReport;
@@ -119,29 +119,29 @@ public class OperationReports extends Controller {
 
 
     @ActiveNavigation("channel_reports")
-    public static void showChannelReport(OperateResaleSalesReportCondition condition) {
+    public static void showChannelReport(ResaleSalesReportCondition condition) {
         int pageNumber = getPageNumber();
 
         if (condition == null) {
-            condition = new OperateResaleSalesReportCondition();
+            condition = new ResaleSalesReportCondition();
         }
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
         condition.operatorId = OperateRbac.currentUser().id;
-        List<OperateResaleSalesReport> resultList = null;
+        List<ResaleSalesReport> resultList = null;
         condition.accountType = null;
-        resultList = OperateResaleSalesReport.query(condition);
-        List<OperateResaleSalesReport> consumerList = OperateResaleSalesReport.queryConsumer(condition);
+        resultList = ResaleSalesReport.query(condition);
+        List<ResaleSalesReport> consumerList = ResaleSalesReport.queryConsumer(condition);
 
         // 查询出所有结果
-        for (OperateResaleSalesReport resaleSalesReport : consumerList) {
+        for (ResaleSalesReport resaleSalesReport : consumerList) {
             resultList.add(resaleSalesReport);
         }
 
         // 分页
-        ValuePaginator<OperateResaleSalesReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
-        OperateResaleSalesReport summary = OperateResaleSalesReport.summary(resultList);
-        for (OperateResaleSalesReport r : resultList) {
+        ValuePaginator<ResaleSalesReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
+        ResaleSalesReport summary = ResaleSalesReport.summary(resultList);
+        for (ResaleSalesReport r : resultList) {
             if (summary.amount.compareTo(BigDecimal.ZERO) != 0) {
                 r.contribution = (r.salePrice == null ? BigDecimal.ZERO : r.salePrice).divide(summary.amount == null ? BigDecimal.ZERO : summary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
             } else {
@@ -256,22 +256,22 @@ public class OperationReports extends Controller {
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
         condition.operatorId = OperateRbac.currentUser().id;
-        List<OperateResaleSalesReport> channelPage = null;
-        OperateResaleSalesReportCondition channelCondition = new OperateResaleSalesReportCondition();
+        List<ResaleSalesReport> channelPage = null;
+        ResaleSalesReportCondition channelCondition = new ResaleSalesReportCondition();
         channelCondition.beginAt = condition.beginAt;
         channelCondition.endAt = condition.endAt;
         condition.accountType = null;
-        channelPage = OperateResaleSalesReport.query(channelCondition);
-        List<OperateResaleSalesReport> channelConsumerList = OperateResaleSalesReport.queryConsumer(channelCondition);
+        channelPage = ResaleSalesReport.query(channelCondition);
+        List<ResaleSalesReport> channelConsumerList = ResaleSalesReport.queryConsumer(channelCondition);
         // 查询出所有结果
-        for (OperateResaleSalesReport resaleSalesReport : channelConsumerList) {
+        for (ResaleSalesReport resaleSalesReport : channelConsumerList) {
             channelPage.add(resaleSalesReport);
         }
 
         // 分页
 //        ValuePaginator<ResaleSalesReport> channelPage = PaginateUtil.wrapValuePaginator(channelList, pageNumber, PAGE_SIZE);
 
-        OperateResaleSalesReport channelSummary = OperateResaleSalesReport.summary(channelPage);
+        ResaleSalesReport channelSummary = ResaleSalesReport.summary(channelPage);
 
 
         List<ChannelCategoryReport> resultList = ChannelCategoryReport.query(condition);
@@ -498,9 +498,9 @@ public class OperationReports extends Controller {
     }
 
 
-    public static void channelReportWithPrivilegeExcelOut(OperateResaleSalesReportCondition condition) {
+    public static void channelReportWithPrivilegeExcelOut(ResaleSalesReportCondition condition) {
         if (condition == null) {
-            condition = new OperateResaleSalesReportCondition();
+            condition = new ResaleSalesReportCondition();
         }
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
@@ -509,20 +509,20 @@ public class OperationReports extends Controller {
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "渠道汇总报表_" + System.currentTimeMillis() + ".xls");
 
-        List<OperateResaleSalesReport> resultList = null;
+        List<ResaleSalesReport> resultList = null;
         condition.accountType = null;
-        resultList = OperateResaleSalesReport.query(condition);
-        List<OperateResaleSalesReport> consumerList = OperateResaleSalesReport.queryConsumer(condition);
+        resultList = ResaleSalesReport.query(condition);
+        List<ResaleSalesReport> consumerList = ResaleSalesReport.queryConsumer(condition);
 
         // 查询出所有结果
-        for (OperateResaleSalesReport resaleSalesReport : consumerList) {
+        for (ResaleSalesReport resaleSalesReport : consumerList) {
             resultList.add(resaleSalesReport);
         }
 
-        OperateResaleSalesReport summary = OperateResaleSalesReport.summary(resultList);
+        ResaleSalesReport summary = ResaleSalesReport.summary(resultList);
 
 
-        for (OperateResaleSalesReport report : resultList) {
+        for (ResaleSalesReport report : resultList) {
 //            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
 //            report.grossMargin = tempGrossMargin;
             if (summary.amount.compareTo(BigDecimal.ZERO) != 0) {
@@ -561,9 +561,9 @@ public class OperationReports extends Controller {
         render(resultList);
     }
 
-    public static void channelReportExcelOut(OperateResaleSalesReportCondition condition) {
+    public static void channelReportExcelOut(ResaleSalesReportCondition condition) {
         if (condition == null) {
-            condition = new OperateResaleSalesReportCondition();
+            condition = new ResaleSalesReportCondition();
         }
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         condition.hasSeeReportProfitRight = hasSeeReportProfitRight;
@@ -572,19 +572,19 @@ public class OperationReports extends Controller {
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "渠道汇总报表_" + System.currentTimeMillis() + ".xls");
 
-        List<OperateResaleSalesReport> resultList = null;
+        List<ResaleSalesReport> resultList = null;
         condition.accountType = null;
-        resultList = OperateResaleSalesReport.query(condition);
-        List<OperateResaleSalesReport> consumerList = OperateResaleSalesReport.queryConsumer(condition);
+        resultList = ResaleSalesReport.query(condition);
+        List<ResaleSalesReport> consumerList = ResaleSalesReport.queryConsumer(condition);
 
         // 查询出所有结果
-        for (OperateResaleSalesReport resaleSalesReport : consumerList) {
+        for (ResaleSalesReport resaleSalesReport : consumerList) {
             resultList.add(resaleSalesReport);
         }
 
-        OperateResaleSalesReport summary = OperateResaleSalesReport.summary(resultList);
+        ResaleSalesReport summary =ResaleSalesReport.summary(resultList);
 
-        for (OperateResaleSalesReport report : resultList) {
+        for (ResaleSalesReport report : resultList) {
             if (summary.amount.compareTo(BigDecimal.ZERO) != 0) {
                 report.contribution = (report.salePrice == null ? BigDecimal.ZERO : report.salePrice).divide(summary.amount == null ? BigDecimal.ZERO : summary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2);
             } else {
@@ -626,20 +626,20 @@ public class OperationReports extends Controller {
             resultList.add(resaleSalesReport);
         }
 
-        OperateResaleSalesReportCondition channelCondition = new OperateResaleSalesReportCondition();
+        ResaleSalesReportCondition channelCondition = new ResaleSalesReportCondition();
         channelCondition.beginAt = condition.beginAt;
         channelCondition.endAt = condition.endAt;
         condition.accountType = null;
 
-        List<OperateResaleSalesReport> channelPage = null;
-        channelPage = OperateResaleSalesReport.query(channelCondition);
-        List<OperateResaleSalesReport> channelConsumerList = OperateResaleSalesReport.queryConsumer(channelCondition);
+        List<ResaleSalesReport> channelPage = null;
+        channelPage = ResaleSalesReport.query(channelCondition);
+        List<ResaleSalesReport> channelConsumerList = ResaleSalesReport.queryConsumer(channelCondition);
         // 查询出所有结果
-        for (OperateResaleSalesReport resaleSalesReport : channelConsumerList) {
+        for (ResaleSalesReport resaleSalesReport : channelConsumerList) {
             channelPage.add(resaleSalesReport);
         }
 
-        OperateResaleSalesReport channelSummary = OperateResaleSalesReport.summary(channelPage);
+        ResaleSalesReport channelSummary = ResaleSalesReport.summary(channelPage);
 
 
         for (ChannelCategoryReport report : resultList) {
@@ -696,20 +696,20 @@ public class OperationReports extends Controller {
         resultList = ChannelCategoryReport.excelQuery(condition);
         List<ChannelCategoryReport> consumerList = ChannelCategoryReport.excelQueryConsumer(condition);
 
-        OperateResaleSalesReportCondition channelCondition = new OperateResaleSalesReportCondition();
+        ResaleSalesReportCondition channelCondition = new ResaleSalesReportCondition();
         channelCondition.beginAt = condition.beginAt;
         channelCondition.endAt = condition.endAt;
         condition.accountType = null;
 
-        List<OperateResaleSalesReport> channelPage = null;
-        channelPage = OperateResaleSalesReport.query(channelCondition);
-        List<OperateResaleSalesReport> channelConsumerList = OperateResaleSalesReport.queryConsumer(channelCondition);
+        List<ResaleSalesReport> channelPage = null;
+        channelPage = ResaleSalesReport.query(channelCondition);
+        List<ResaleSalesReport> channelConsumerList = ResaleSalesReport.queryConsumer(channelCondition);
         // 查询出所有结果
-        for (OperateResaleSalesReport resaleSalesReport : channelConsumerList) {
+        for (ResaleSalesReport resaleSalesReport : channelConsumerList) {
             channelPage.add(resaleSalesReport);
         }
 
-        OperateResaleSalesReport channelSummary = OperateResaleSalesReport.summary(channelPage);
+        ResaleSalesReport channelSummary = ResaleSalesReport.summary(channelPage);
 
         // 查询出所有结果
         for (ChannelCategoryReport resaleSalesReport : consumerList) {

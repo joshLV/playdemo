@@ -15,7 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.util.Date;
 
 /**
@@ -88,7 +87,7 @@ public class UserGoldenCoin extends Model {
         Query q = entityManager.createQuery(sql);
 
         q.setParameter("user", user);
-        q.setParameter("beginDate", DateUtil.getMonthFirstDay());
+        q.setParameter("beginDate", DateUtil.firstDayOfMonth());
         q.setParameter("endDate", DateUtil.getEndOfDay());
         Object result = q.getSingleResult();
         return result == null ? 0 : (Long) result;
