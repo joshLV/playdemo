@@ -28,7 +28,7 @@ import java.util.Map;
  */
 @With(OperateRbac.class)
 @ActiveNavigation("resale_partner_product")
-public class YHDGroupBuyProducts extends Controller {
+public class YHDProducts extends Controller {
     @ActiveNavigation("resale_partner_product")
     public static void showUpload(Long goodsId) {
         Goods goods = Goods.findById(goodsId);
@@ -73,7 +73,7 @@ public class YHDGroupBuyProducts extends Controller {
                 }
             }
         }
-        render("resale/YHDGroupBuyProducts/result.html");
+        render("resale/YHDProducts/result.html");
     }
 
     //上传主图

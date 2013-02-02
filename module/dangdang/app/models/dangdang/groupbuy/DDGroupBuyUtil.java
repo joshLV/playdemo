@@ -1,9 +1,11 @@
 package models.dangdang.groupbuy;
 
 import com.uhuila.common.util.DateUtil;
+import models.sales.ResalerProduct;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import play.Logger;
 import play.Play;
 import play.libs.XPath;
 import play.templates.Template;
@@ -51,6 +53,17 @@ public class DDGroupBuyUtil {
         return null;
     }
 
+    public static boolean pushTeamStock(ResalerProduct product) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("spgid", product.id);
+        params.put("sellcount", product.goods.getRealSaleCount());
+
+        String templatePath = "dangdang/groupbuy/getTeamList.xml";
+        String apiName = "get_team_list";
+        DDResponse response = sendRequest(apiName, GET_TEAM_LIST, templatePath, params);
+        return response.isOk();
+    }
+
     /**
      * 查询当当的项目列表
      *
@@ -72,9 +85,9 @@ public class DDGroupBuyUtil {
         params.put("endDate", dateFormat.format(endDate));
         params.put("status", status);
 
-        Template template = TemplateLoader.load("dangdang/groupbuy/getTeamList.xml");
-        String xmlData = template.render(params);
-        return sendRequest(GET_TEAM_LIST, "get_team_list", xmlData);
+        String templatePath = "dangdang/groupbuy/getTeamList.xml";
+        String apiName = "get_team_list";
+        return sendRequest(apiName, GET_TEAM_LIST, templatePath, params);
     }
 
 
@@ -85,9 +98,9 @@ public class DDGroupBuyUtil {
      * @return 请求结果
      */
     public static DDResponse pushGoods(Map<String, Object> params) {
-        Template template = TemplateLoader.load("dangdang/groupbuy/pushGoods.xml");
-        String xmlData = template.render(params);
-        return sendRequest(PUSH_PARTNER_TEAMS, "push_partner_teams", xmlData);
+        String templatePath = "dangdang/groupbuy/pushGoods.xml";
+        String apiName = "push_partner_teams";
+        return sendRequest(apiName, PUSH_PARTNER_TEAMS, templatePath, params);
     }
 
     /**
@@ -95,17 +108,27 @@ public class DDGroupBuyUtil {
      *
      * @param url       请求的url
      * @param apiName   请求的api名称
-     * @param xmlData   xml形式的请求内容(不包含xml声明)
      * @return 解析后的响应
      */
-    public static DDResponse sendRequest(String url, String apiName, String xmlData) {
-        Map<String, Object> params = sysParams();
-        params.put("sign", sign(apiName, xmlData, (String)params.get("call_time")));
-        params.put("data", xmlData);
+    public static DDResponse sendRequest(String apiName, String url, String templatePath, Map<String, Object> params,
+                                         String ... keywords) {
 
-        Document xml = WebServiceRequest.url(url).type("dangdang_" + apiName)
-                .params(params).addKeyword("dangdang")
-                .postXml();
+        Template template = TemplateLoader.load(templatePath);
+        String xmlData = template.render(params);
+
+        Map<String, Object> requestParams = sysParams();
+        requestParams.put("sign", sign(apiName, xmlData, (String) params.get("call_time")));
+        requestParams.put("data", xmlData);
+
+        Logger.info("dangdang request %s:\n%s", apiName, xmlData);
+        WebServiceRequest request = WebServiceRequest.url(url).type("dangdang_" + apiName)
+                .params(params);
+        for (String keyword : keywords) {
+            request.addKeyword(keyword);
+        }
+
+        Document xml = request.postXml();
+        Logger.info("dangdang response %s:\n%s", apiName, xml.toString());
 
         return DDResponse.parseResponse(xml);
     }
@@ -134,7 +157,7 @@ public class DDGroupBuyUtil {
         paramMap.put("result_format", RESULT_FORMAT);
         paramMap.put("ver", VER);
         paramMap.put("sign_method", SIGN_METHOD);
-        paramMap.put("call_time", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) );
+        paramMap.put("call_time", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         return paramMap;
     }
 }

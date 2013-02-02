@@ -288,16 +288,17 @@ public class JDGroupBuyUtil {
     public static JingdongMessage sendRequest(String tag, String url, String templatePath, Map<String, Object> params,
                                               String ... keywords) {
         Template template = TemplateLoader.load(templatePath);
-        String data = template.render(params);
+        String data = (params != null) ? template.render(params) : template.render();
 
         String restRequest = JDGroupBuyUtil.makeRequestRest(data);
+        Logger.info("jingdong request %s:\n%s", tag, restRequest);
 
-        WebServiceRequest request = WebServiceRequest.url(url).type(tag) .requestBody(restRequest);
+        WebServiceRequest request = WebServiceRequest.url(url).type("jingdong."+tag).requestBody(restRequest);
         for (String keyword : keywords) {
             request = request.addKeyword(keyword);
         }
-
         Document response = request.postXml();
+        Logger.info("jingdong response %s:\n%s", tag, response.toString());
         return parseMessage(response);
     }
 
@@ -317,23 +318,19 @@ public class JDGroupBuyUtil {
         // 只有作为京东的响应的时候， resultCode 和 resultMessage 才有用
         message.resultCode = XPath.selectText("//ResultCode", document);
         message.resultMessage = XPath.selectText("//ResultMessage", document);
-        if(StringUtils.isNotEmpty(message.resultCode) && !"200".equals(message.resultCode)){
-            Logger.info("jingdong resultCode is not 200");
-        }
 
         if(message.encrypt){
             String rawMessage = XPath.selectText("//Data", document);
             //解析加密字符串
             String decryptedMessage = JDGroupBuyUtil.decryptMessage(rawMessage);
-            Logger.info("jingdong decryptedMessage:\n%s", decryptedMessage);
+            Logger.info("jingdong response decrypted:\n%s", decryptedMessage);
 
             try{
                 DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
                 StringReader stringReader = new StringReader(decryptedMessage);
-                message.message = builder.parse(new InputSource(stringReader)).getParentNode();
+                message.message = XPath.selectNode("/",  builder.parse(new InputSource(stringReader)));
             }catch (Exception e) {
-                Logger.info("jingdong parse message error: not xml document");
-                //ignore
+                Logger.info(e, "jingdong parse message error: not xml document");
             }
 
         } else{
@@ -357,7 +354,7 @@ public class JDGroupBuyUtil {
         params.put("venderKey", VENDER_KEY);
         params.put("encrypt", "true");
         params.put("zip", false);
-        params.put("data", data);
+        params.put("data", encryptMessage(data));
 
         return template.render(params);
     }

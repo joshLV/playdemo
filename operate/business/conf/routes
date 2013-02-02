@@ -45,42 +45,42 @@ GET     /contract/o/{path1}/{path2}                       SupplierContractImages
 
 
 # --------------------   分销商品  ---------------------------------------------------------
-GET     /resaler-products                                ResalerProducts.index
-GET     /resaler-products/journal/json/{journalId}       ResalerProducts.journalJson
-GET     /resaler-products/journal/{productId}            ResalerProducts.journal
-GET     /resaler-products/products/{partner}/{goodsId}   ResalerProducts.showProducts
+GET     /resaler-products                               ResalerProducts.index
+GET     /resaler-products/journal/json/{journalId}      ResalerProducts.journalJson
+GET     /resaler-products/journal/{productId}           ResalerProducts.journal
+GET     /resaler-products/products/{partner}/{goodsId}  ResalerProducts.showProducts
 
 # 一号店
-GET     /resaler-products/yhd/upload/{goodsId}  resale.YHDGroupBuyProducts.showUpload
-POST    /resaler-products/yhd/upload            resale.YHDGroupBuyProducts.upload
-*       /yhd-ztree/category                     resale.YHDGroupBuyProducts.category
-*       /yhd-ztree/merchant-category            resale.YHDGroupBuyProducts.merchantCategory
+GET     /resaler-products/yhd/upload/{goodsId}          resale.YHDProducts.showUpload
+POST    /resaler-products/yhd/upload                    resale.YHDProducts.upload
+*       /yhd-ztree/category                             resale.YHDProducts.category
+*       /yhd-ztree/merchant-category                    resale.YHDProducts.merchantCategory
 
 # 京东
-GET     /resaler-products/jd/upload/{goodsId}   resale.JDGroupBuyProducts.showUpload
-POST    /resaler-products/jd/upload             resale.JDGroupBuyProducts.upload
-GET     /resaler-products/jd/products/{goodsId} resale.JDGroupBuyProducts.showProducts
-*       /jd-ztree/city                          resale.JDGroupBuyProducts.city
-*       /jd-ztree/group                         resale.JDGroupBuyProducts.group
+GET     /resaler-products/jd/upload/{goodsId}           resale.JDGroupBuyProducts.showUpload
+POST    /resaler-products/jd/upload                     resale.JDGroupBuyProducts.upload
+GET     /resaler-products/jd/products/{goodsId}         resale.JDGroupBuyProducts.showProducts
+*       /jd-ztree/city                                  resale.JDGroupBuyProducts.city
+*       /jd-ztree/group                                 resale.JDGroupBuyProducts.group
 
 # 58
-GET     /resaler-products/wb/upload/{goodsId}   resale.WubaGroupBuyProducts.showUpload
-POST    /resaler-products/wb/upload             resale.WubaGroupBuyProducts.upload
-GET     /resaler-products/wb/edit/{productId}   resale.WubaGroupBuyProducts.showEdit
-POST    /resaler-products/wb/edit/groupbuyinfo  resale.WubaGroupBuyProducts.editGroupBuyInfo
-POST    /resaler-products/wb/edit/partners      resale.WubaGroupBuyProducts.editPartners
-POST    /resaler-products/wb/edit/deadline      resale.WubaGroupBuyProducts.editDeadline
-GET     /resaler-products/wb/onsale/{productId} resale.WubaGroupBuyProducts.onsale
-GET     /resaler-products/wb/offsale/{productId}    resale.WubaGroupBuyProducts.offsale
-GET     /resaler-products/wb/refresh/{productId}    resale.WubaGroupBuyProducts.refreshStatus
+GET     /resaler-products/wb/upload/{goodsId}           resale.WubaGroupBuyProducts.showUpload
+POST    /resaler-products/wb/upload                     resale.WubaGroupBuyProducts.upload
+GET     /resaler-products/wb/edit/{productId}           resale.WubaGroupBuyProducts.showEdit
+POST    /resaler-products/wb/edit/groupbuyinfo          resale.WubaGroupBuyProducts.editGroupBuyInfo
+POST    /resaler-products/wb/edit/partners              resale.WubaGroupBuyProducts.editPartners
+POST    /resaler-products/wb/edit/deadline              resale.WubaGroupBuyProducts.editDeadline
+GET     /resaler-products/wb/onsale/{productId}         resale.WubaGroupBuyProducts.onsale
+GET     /resaler-products/wb/offsale/{productId}        resale.WubaGroupBuyProducts.offsale
+GET     /resaler-products/wb/refresh/{productId}        resale.WubaGroupBuyProducts.refreshStatus
 
 # 当当
-GET     /resaler-products/dd/upload/{goodsId}   resale.DDGroupBuyProducts.showUpload
-POST    /resaler-products/dd/upload             resale.DDGroupBuyProducts.upload
+GET     /resaler-products/dd/upload/{goodsId}           resale.DDGroupBuyProducts.showUpload
+POST    /resaler-products/dd/upload                     resale.DDGroupBuyProducts.upload
 
 # 淘宝
-GET     /resaler-products/tb/upload/{goodsId}   resale.TaobaoGroupBuyProducts.showUpload
-POST    /resaler-products/tb/upload             resale.TaobaoGroupBuyProducts.upload
+GET     /resaler-products/tb/upload/{goodsId}           resale.TaobaoProducts.showUpload
+POST    /resaler-products/tb/upload                     resale.TaobaoProducts.upload
 
 # --------------------  end of 分销商品  ---------------------------------------------------------
 

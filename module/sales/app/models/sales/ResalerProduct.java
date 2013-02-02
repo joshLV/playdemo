@@ -1,6 +1,7 @@
 package models.sales;
 
 import models.order.OuterOrderPartner;
+import org.hibernate.annotations.Index;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
@@ -23,6 +24,10 @@ public class ResalerProduct extends Model {
 
     @ManyToOne
     public Goods goods;
+
+    @Column(name = "goods_link_id")
+    @Index(name = "goods_link_id_index")
+    public Long goodsLinkId;
 
     @Column(name = "partner_product_id")
     public Long partnerProductId;//第三方的产品ID

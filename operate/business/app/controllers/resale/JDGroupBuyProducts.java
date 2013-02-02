@@ -1,20 +1,22 @@
 package controllers.resale;
 
+import com.google.gson.Gson;
 import controllers.OperateRbac;
+import models.admin.OperateUser;
+import models.jingdong.groupbuy.JDGroupBuyHelper;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.jingdong.groupbuy.JDRest;
+import models.jingdong.groupbuy.JingdongMessage;
 import models.jingdong.groupbuy.response.IdNameResponse;
 import models.jingdong.groupbuy.response.UploadTeamResponse;
 import models.order.OuterOrderPartner;
-import models.sales.ResalerProduct;
-import models.sales.ResalerProductJournal;
-import models.sales.ResalerProductJournalType;
-import models.sales.Goods;
-import models.sales.Shop;
+import models.sales.*;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
+import org.w3c.dom.Node;
 import play.Logger;
 import play.libs.WS;
+import play.libs.XPath;
 import play.mvc.Controller;
 import play.mvc.With;
 import play.templates.Template;
@@ -29,10 +31,12 @@ import java.util.*;
 @With(OperateRbac.class)
 @ActiveNavigation("resale_partner_product")
 public class JDGroupBuyProducts extends Controller{
+    /**
+     * 显示上传商品的界面
+     */
     @ActiveNavigation("resale_partner_product")
     public static void showUpload(Long goodsId) {
         Goods goods = Goods.findById(goodsId);
-        refreshGoods(goods);
 
         List<Shop> shops = Arrays.asList(goods.getShopList().toArray(new Shop[]{}));
         Supplier supplier = Supplier.findById(goods.supplierId);
@@ -41,41 +45,42 @@ public class JDGroupBuyProducts extends Controller{
     }
 
     /**
-     * 更新goods的信息为上次使用的信息
+     * 上传商品
      */
-    private static void refreshGoods(Goods goods) {
-        //查找最后一次上传的信息
-        ResalerProduct product = ResalerProduct .find("goods = ? and partner = ? order by createdAt desc",
-                goods, OuterOrderPartner.JD).first();
-        if (product == null) {
-            return;
-        }
-        ResalerProductJournal journal = ResalerProductJournal.find("product = ? and type = ? order by createdAt desc",
-                product, ResalerProductJournalType.CREATE).first();
-        if (journal == null) {
-            Logger.info("journal not found");
-            error();
-        }
-        //todo refresh
-
-    }
-
     @ActiveNavigation("resale_partner_product")
     public static void upload(Long venderTeamId) {
-        String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/uploadTeam.action";
-        Template template = TemplateLoader.load("jingdong/groupbuy/request/uploadTeam.xml");
-        Map<String, Object> params = new HashMap<>();
-        String data = template.render(params);
-        Logger.info("request, %s", data);
-
-        String restRequest = JDGroupBuyUtil.makeRequestRest(data);
-        WS.HttpResponse response = WS.url(url).body(restRequest).post();
-
-        JDRest<UploadTeamResponse> uploadTeamRest = new JDRest<>();
-        if (uploadTeamRest.parse(response.getString(), new UploadTeamResponse())) {
-
+        //查找商品
+        Goods goods = Goods.findById(venderTeamId);
+        if (goods == null) {
+            notFound();
         }
 
+        //申请商品ID并准备参数
+        ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.DD, goods);
+        Map<String, Object> params = new HashMap<>();
+        for (Map.Entry<String, String> entry : request.params.allSimple().entrySet()) {
+            params.put(entry.getKey(), entry.getValue());
+        }
+        params.remove("body");
+        params.put("venderTeamId", product.id);
+
+        //提交请求
+        String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/uploadTeam.action";
+        String templatePath = "jingdong/groupbuy/request/uploadTeam.xml";
+        JingdongMessage response = JDGroupBuyUtil.sendRequest("uploadTeam", url, templatePath, params);
+
+        //保存历史
+        if(response.isOk()) {
+            OperateUser operateUser = OperateRbac.currentUser();
+            product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id)
+                    .partnerProduct(Long.parseLong(response.selectText("//JdTeamId")))
+                    .latestJson(new Gson().toJson(params))
+                    .save();
+            //记录历史
+            ResalerProductJournal.createJournal(product, operateUser.id, product.latestJsonData,
+                    ResalerProductJournalType.CREATE, "上传商品");
+        }
+        render("resale/JDGroupBuyProducts/result.html", response);
     }
 
     /**
@@ -87,17 +92,17 @@ public class JDGroupBuyProducts extends Controller{
      */
     public static void city(Long id, String type) {
         if (id == null && type == null) {
-            List<IdNameResponse> cities = JDGroupBuyUtil.queryCity();
+            List<Node> cities = JDGroupBuyHelper.cacheCities();
             renderJSON(jsonStr(cities, true, "city"));
         }
         if (id == null || type == null) {
             error();
         }
         if ("city".equals(type)) {
-            List<IdNameResponse> districts = JDGroupBuyUtil.cacheDistricts(id);
+            List<Node> districts = JDGroupBuyHelper.cacheCities();
             renderJSON(jsonStr(districts, true, "district"));
         }else if ("district".equals(type)) {
-            List<IdNameResponse> areas = JDGroupBuyUtil.queryArea(id);
+            List<Node> areas = JDGroupBuyHelper.cacheCities();
             renderJSON(jsonStr(areas, false, "area"));
         }
 
@@ -111,21 +116,20 @@ public class JDGroupBuyProducts extends Controller{
         if (id == null) {
             id = 0L;
         }
-        List<IdNameResponse> groups = JDGroupBuyUtil.cacheCategories(id);
+        List<Node> groups = JDGroupBuyHelper.cacheCategories(id);
         boolean isParent = id == 0L;
         renderJSON(jsonStr(groups, isParent, ""));
-
     }
-    private static String jsonStr(List<IdNameResponse> params, boolean isParent, String type) {
 
+    private static String jsonStr(List<Node> params, boolean isParent, String type) {
         StringBuilder jsonString = new StringBuilder("[");
         for (int i = 0 ; i < params.size(); i ++) {
-            IdNameResponse city = params.get(i);
+            Node city = params.get(i);
             if (i != 0) {
                 jsonString.append(",");
             }
-            jsonString.append("{id:'").append(city.id)
-                    .append("',name:'").append(city.name)
+            jsonString.append("{id:'").append(XPath.selectText("//Id", city))
+                    .append("',name:'").append(XPath.selectText("//Name", city))
                     .append("',isParent:").append(isParent)
                     .append(",type:'").append(type)
                     .append("'}");
