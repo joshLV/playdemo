@@ -60,6 +60,7 @@ POST    /resaler-products/yhd/upload                    resale.YHDProducts.uploa
 GET     /resaler-products/jd/upload/{goodsId}           resale.JDGroupBuyProducts.showUpload
 POST    /resaler-products/jd/upload                     resale.JDGroupBuyProducts.upload
 GET     /resaler-products/jd/products/{goodsId}         resale.JDGroupBuyProducts.showProducts
+GET     /resaler-products/jd/edit/{productId}           resale.JDGroupBuyProducts.showEdit
 *       /jd-ztree/city                                  resale.JDGroupBuyProducts.city
 *       /jd-ztree/group                                 resale.JDGroupBuyProducts.group
 

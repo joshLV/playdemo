@@ -4,6 +4,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import play.libs.XPath;
 
+import java.util.List;
+
 /**
  * @author likang
  *         Date: 13-1-22
@@ -27,5 +29,23 @@ public class DDResponse {
 
     public boolean isOk() {
         return errorCode != null && "0".equals(errorCode);
+    }
+
+    public Node selectNode(String path) {
+        return XPath.selectNode(path, data);
+    }
+
+    public List<Node> selectNodes(String path) {
+        return XPath.selectNodes(path, data);
+    }
+
+    public String selectText(String path) {
+        return XPath.selectText(path, data);
+    }
+
+    @Override
+    public String toString() {
+        return "errorCode: " + errorCode + "\ndesc: " + desc
+                + "\ndata:\n" + ((data == null) ? "null" : data.toString());
     }
 }

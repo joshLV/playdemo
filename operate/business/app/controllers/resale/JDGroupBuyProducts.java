@@ -84,6 +84,20 @@ public class JDGroupBuyProducts extends Controller{
     }
 
     /**
+     * 修改商品
+     */
+    @ActiveNavigation("resale_partner_product")
+    public static void showEdit(Long productId) {
+        ResalerProduct product = ResalerProduct.findById(productId);
+        if (product == null) {
+            notFound();
+        }
+
+        Goods goods = product.goods;
+        render(product, goods);
+    }
+
+    /**
      * 查询城市、区域和商圈
      * @param id 不传则视为0
      * @param type 如果为空并且id为空，返回城市列表

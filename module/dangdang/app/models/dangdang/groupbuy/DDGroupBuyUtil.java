@@ -1,6 +1,11 @@
 package models.dangdang.groupbuy;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.uhuila.common.util.DateUtil;
+import models.dangdang.DDECouponStatus;
+import models.order.ECoupon;
+import models.order.OuterOrder;
 import models.sales.ResalerProduct;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.w3c.dom.Document;
@@ -53,15 +58,75 @@ public class DDGroupBuyUtil {
         return null;
     }
 
-    public static boolean pushTeamStock(ResalerProduct product) {
+    /**
+     * 在当当上验证券.
+     *
+     * @param coupon 一百券自家券
+     * @return 是否验证成功
+     */
+    public static boolean verifyOnDangdang(ECoupon coupon) {
+        OuterOrder outerOrder = OuterOrder.find("byYbqOrder", coupon.order).first();
+        if (outerOrder == null) {
+            Logger.info("dangdang verifyOnDangDang failed: outerOrder not found; couponId: " + coupon.id);
+            return false;
+        }
+
+        JsonObject jsonObject = new JsonParser().parse(outerOrder.message).getAsJsonObject();
+        Map<String, Object> params = new HashMap<>();
+        params.put("ddgid", jsonObject.get("team_id").getAsLong());
+        params.put("consumeCode", coupon.eCouponSn);
+        params.put("verifyCode", coupon.eCouponSn);
+
+        String templatePath = "dangdang/groupbuy/verifyConsume.xml";
+        String apiName = "verify_consume";
+        DDResponse response = sendRequest(apiName, VERIFY_CONSUME_URL, templatePath, params);
+        if (!response.isOk()) {
+            Logger.info("verify on dangdang failed. couponId: %s; response: %s.", coupon.id, response);
+        }
+        return response.isOk();
+    }
+
+    /**
+     * 将最新的销量同步到当当.
+     *
+     * @param product 分销产品
+     * @return 同步是否成功
+     */
+    public static boolean syncSellCount(ResalerProduct product) {
         Map<String, Object> params = new HashMap<>();
         params.put("spgid", product.id);
         params.put("sellcount", product.goods.getRealSaleCount());
 
         String templatePath = "dangdang/groupbuy/getTeamList.xml";
         String apiName = "get_team_list";
-        DDResponse response = sendRequest(apiName, GET_TEAM_LIST, templatePath, params);
+        DDResponse response = sendRequest(apiName, SYNC_URL, templatePath, params);
         return response.isOk();
+    }
+
+    /**
+     * 查询券在当当的状态.
+     *
+     * @param coupon 一百券自家的券
+     * @return 券状态. 0: 未使用; 1: 已使用; 2: 已作废
+     */
+    public static int couponStatus(ECoupon coupon) {
+        OuterOrder outerOrder = OuterOrder.find("byYbqOrder", coupon.order).first();
+        if (outerOrder == null) {
+            Logger.info("dangdang couponStatus failed: outerOrder not found; couponId: " + coupon.id);
+            return -1;
+        }
+        JsonObject jsonObject = new JsonParser().parse(outerOrder.message).getAsJsonObject();
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("ddgid", jsonObject.get("team_id").getAsLong());
+        params.put("type", 1);
+        params.put("code", coupon.eCouponSn);
+
+        String templatePath = "dangdang/groupbuy/queryConsumeCode.xml";
+        String apiName = "query_consume_code";
+        DDResponse response = sendRequest(apiName, QUERY_CONSUME_CODE_URL, templatePath, params);
+
+        return Integer.parseInt(response.selectText("//state"));
     }
 
     /**

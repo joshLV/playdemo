@@ -1,0 +1,7 @@
+<data>
+    <row>
+        <ddgid><![CDATA[${ddgid}]]></ddgid>
+        <consume_code><![CDATA[${consumeCode}]]></consume_code>
+        <verifycode><![CDATA[${verifyCode}]]></verifycode>
+    </row>
+</data>
