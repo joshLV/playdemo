@@ -159,6 +159,32 @@ public class TelephoneVerifyTest extends FunctionalTest{
     }
 
     @Test
+    public void test少一位也能验证(){
+        ECoupon eCoupon = FactoryBoy.last(ECoupon.class);
+
+        String caller = FactoryBoy.last(SupplierUser.class).loginName;
+        String coupon = eCoupon.eCouponSn.substring(1);
+        Long timestamp = System.currentTimeMillis()/1000;
+        String sign = getSign(timestamp);
+
+        Http.Response response = GET("/tel-verify?caller=" + caller + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
+        assertContentEquals("0", response);//;消费成功，价值" + eCoupon.faceValue + "元"
+    }
+
+    @Test
+    public void test少两位就不能验证了(){
+        ECoupon eCoupon = FactoryBoy.last(ECoupon.class);
+
+        String caller = FactoryBoy.last(SupplierUser.class).loginName;
+        String coupon = eCoupon.eCouponSn.substring(2);
+        Long timestamp = System.currentTimeMillis()/1000;
+        String sign = getSign(timestamp);
+
+        Http.Response response = GET("/tel-verify?caller=" + caller + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
+        assertContentEquals("8", response);
+    }
+
+    @Test
     public void testFaceValueParams(){
         String coupon = FactoryBoy.last(ECoupon.class).eCouponSn;
         Long timestamp = System.currentTimeMillis()/1000;
@@ -190,6 +216,20 @@ public class TelephoneVerifyTest extends FunctionalTest{
         eCoupon.save();
 
         String coupon = eCoupon.eCouponSn;
+        Long timestamp = System.currentTimeMillis()/1000;
+        String sign = getSign(timestamp);
+
+        Http.Response response = GET("/tel-verify/face-value?coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
+        assertContentEquals("" + eCoupon.faceValue.intValue(), response);//
+    }
+
+    @Test
+    public void test查询面值时少一位(){
+        ECoupon eCoupon = FactoryBoy.last(ECoupon.class);
+        eCoupon.triggerCouponSn = eCoupon.eCouponSn;
+        eCoupon.save();
+
+        String coupon = eCoupon.eCouponSn.substring(1);
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
@@ -236,6 +276,24 @@ public class TelephoneVerifyTest extends FunctionalTest{
         eCoupon.save();
 
         Http.Response response = GET("/tel-verify/consumed-at?coupon=" + eCoupon.eCouponSn + "&timestamp=" + timestamp + "&sign=" + sign);
+        assertContentEquals(new SimpleDateFormat("M月d日H点m分").format(consumedAt) + ",消费门店 " + shop.name,
+                response);//;该券无法重复消费。消费时间为" + new SimpleDateFormat("yyyy年MM月dd日hh点mm分").format(eCoupon.consumedAt)
+    }
+
+    @Test
+    public void test查询消费时间时少一位(){
+        ECoupon eCoupon = FactoryBoy.last(ECoupon.class);
+
+        Long timestamp = System.currentTimeMillis()/1000;
+        String sign = getSign(timestamp);
+
+        Date consumedAt = new Date();
+        eCoupon.status = ECouponStatus.CONSUMED;
+        eCoupon.consumedAt = consumedAt;
+        eCoupon.shop = shop;
+        eCoupon.save();
+
+        Http.Response response = GET("/tel-verify/consumed-at?coupon=" + eCoupon.eCouponSn.substring(1) + "&timestamp=" + timestamp + "&sign=" + sign);
         assertContentEquals(new SimpleDateFormat("M月d日H点m分").format(consumedAt) + ",消费门店 " + shop.name,
                 response);//;该券无法重复消费。消费时间为" + new SimpleDateFormat("yyyy年MM月dd日hh点mm分").format(eCoupon.consumedAt)
     }
