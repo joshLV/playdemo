@@ -16,6 +16,7 @@ import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
+import util.ws.MockWebServiceClient;
 
 import java.util.Date;
 
@@ -99,36 +100,20 @@ public class OperateCouponMakeUpTest extends FunctionalTest {
         assertContentMatch("在第三方消费失败", response);
     }
 
-    /*
     @Test
     public void testIndex_Consumed_DDCoupon() {
         eCoupon.status = ECouponStatus.CONSUMED;
         eCoupon.partner = ECouponPartner.DD;
         eCoupon.save();
-        DDOrderItem item = FactoryBoy.create(DDOrderItem.class);
-        item.ybqOrderItems = eCoupon.orderItems;
-        item.save();
-        DDAPIUtil.proxy = new HttpProxy() {
-            @Override
-            public Response accessHttp(PostMethod postMethod) throws DDAPIInvokeException {
-                String data = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>" +
-                        "<resultObject><ver>1.0</ver><spid>1</spid><error_code>0</error_code>" +
-                        "<desc>success</desc><data><ddgid>100</ddgid><spgid>100</spgid>" +
-                        "<ddsn>1344555</ddsn></data></resultObject>";
-                Response response = new Response();
-                try {
-                    response = new Response(new ByteArrayInputStream(data.getBytes()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return response;
-            }
-        };
+        String data = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>" +
+                "<resultObject><ver>1.0</ver><spid>1</spid><error_code>0</error_code>" +
+                "<desc>success</desc><data><ddgid>100</ddgid><spgid>100</spgid>" +
+                "<ddsn>1344555</ddsn></data></resultObject>";
+        MockWebServiceClient.addMockHttpRequest(200, data);
 
         Http.Response response = GET("/makeup?partner=dangdang&coupon=" + eCoupon.eCouponSn);
         assertIsOk(response);
 
         assertContentMatch("输入：" + eCoupon.eCouponSn, response);
     }
-    */
 }

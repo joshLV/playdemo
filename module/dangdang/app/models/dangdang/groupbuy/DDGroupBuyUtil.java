@@ -123,6 +123,10 @@ public class DDGroupBuyUtil {
         String templatePath = "dangdang/groupbuy/queryConsumeCode.xml";
         String apiName = "query_consume_code";
         DDResponse response = sendRequest(apiName, QUERY_CONSUME_CODE_URL, templatePath, params);
+        if (!response.isOk()) {
+            Logger.info("dangdang couponStatus failed: \n%s" + response);
+            return -1;
+        }
 
         return Integer.parseInt(response.selectText("//state"));
     }

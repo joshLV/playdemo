@@ -22,6 +22,7 @@ import play.vfs.VirtualFile;
 import util.DateHelper;
 import util.mq.MockMQ;
 import play.data.validation.Error;
+import util.ws.MockWebServiceClient;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -59,6 +60,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         FactoryBoy.create(UserInfo.class);
         promoteUser = FactoryBoy.create(User.class);
         goods = FactoryBoy.create(Goods.class);
+        MockWebServiceClient.clear();
     }
 
     @Test
@@ -183,7 +185,6 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         assertContentMatch("对不起，该券已过期", response);
     }
 
-    /*
     @Test
     public void testUpdate_测试当当券已退款的情况() {
         // 生产 电子券 测试数据
@@ -208,26 +209,12 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
                 target.effectiveAt = goods.effectiveAt;
             }
         });
-        DDOrderItem item = FactoryBoy.create(DDOrderItem.class);
-        item.ybqOrderItems = eCoupon.orderItems;
-        item.save();
 
-        DDAPIUtil.proxy = new HttpProxy() {
-            @Override
-            public Response accessHttp(PostMethod postMethod) throws DDAPIInvokeException {
-                String data = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>" +
-                        "<resultObject><status_code>0</status_code><error_code>0</error_code>" +
-                        "<desc><![CDATA[成功]]></desc><spid>3000003</spid><ver>1.0</ver>" +
-                        "<data><ddgid>256</ddgid><spgid>256</spgid><state>2</state></data></resultObject>";
-                Response response = new Response();
-                try {
-                    response = new Response(new ByteArrayInputStream(data.getBytes()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return response;
-            }
-        };
+        String data = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>" +
+                "<resultObject><status_code>0</status_code><error_code>0</error_code>" +
+                "<desc><![CDATA[成功]]></desc><spid>3000003</spid><ver>1.0</ver>" +
+                "<data><ddgid>256</ddgid><spgid>256</spgid><state>2</state></data></resultObject>";
+        MockWebServiceClient.addMockHttpRequest(200, data);
 
         // 设置 平台付款账户 金额，已完成向商户付款
         Account account = AccountUtil.getPlatformIncomingAccount();
@@ -249,7 +236,6 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         assertNull(info);
         assertContentMatch("第三方DD券验证失败！", response);
     }
-    */
 
     @Test
     public void test_消费验证后给推荐人返利() {
