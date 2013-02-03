@@ -3,7 +3,6 @@ package models.dangdang.groupbuy;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.uhuila.common.util.DateUtil;
-import models.dangdang.DDECouponStatus;
 import models.order.ECoupon;
 import models.order.OuterOrder;
 import models.sales.ResalerProduct;
@@ -12,15 +11,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import play.Logger;
 import play.Play;
+import play.libs.WS;
 import play.libs.XPath;
 import play.templates.Template;
 import play.templates.TemplateLoader;
 import util.ws.WebServiceRequest;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author likang
@@ -224,5 +222,25 @@ public class DDGroupBuyUtil {
         paramMap.put("sign_method", SIGN_METHOD);
         paramMap.put("call_time", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         return paramMap;
+    }
+
+    public static SortedMap<String, String> filterPlayParams(Map<String, String> params) {
+        TreeMap<String, String> r = new TreeMap<>(params);
+        r.remove("body");
+        r.remove("format");
+        return r;
+    }
+
+    public static String signParams(SortedMap<String, String> params) {
+        StringBuilder signStr = new StringBuilder();
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            if ("body".equals(entry.getKey()) || "sign".equals(entry.getKey())) {
+                continue;
+            }
+            signStr.append(entry.getKey()).append("=").append(WS.encode(entry.getValue())).append("&");
+        }
+
+        signStr.append("sn=").append(SECRET_KEY);
+        return DigestUtils.md5Hex(signStr.toString());
     }
 }

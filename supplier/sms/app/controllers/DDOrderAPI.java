@@ -1,33 +1,12 @@
 package controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import models.accounts.AccountType;
-import models.accounts.PaymentSource;
-import models.dangdang.DDAPIUtil;
-import models.dangdang.DDOrderItem;
-import models.dangdang.ErrorCode;
-import models.dangdang.ErrorInfo;
-import models.order.DeliveryType;
-import models.order.ECoupon;
-import models.order.ECouponPartner;
-import models.order.NotEnoughInventoryException;
-import models.order.Order;
-import models.order.OrderItems;
-import models.order.OuterOrder;
-import models.order.OuterOrderPartner;
-import models.order.OuterOrderStatus;
-import models.resale.Resaler;
-import models.resale.ResalerStatus;
-import models.sales.Goods;
-import models.sales.GoodsDeployRelation;
+import models.dangdang.groupbuy.DDGroupBuyUtil;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
-import play.db.jpa.JPA;
+import play.mvc.Before;
 import play.mvc.Controller;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.SortedMap;
 
 /**
@@ -39,38 +18,39 @@ import java.util.SortedMap;
 public class DDOrderAPI extends Controller {
     public static final String DATE_FORMAT = "yyy-MM-dd HH:mm:ss";
 
-    public static void order() {
+    /**
+     * 基本相应参数
+     */
+    @Before
+    public static void baseResponse() {
+        renderArgs.put("version", "1.0");
+        renderArgs.put("zip", "false");
+    }
+
+    public static void order(String id, String ddgid, String user_mobile, String options, String express_memo,
+                             String user_id, String kx_order_id, BigDecimal amount) {
         Logger.info("[DDOrderAPI] begin ");
         //取得参数信息 必填信息
-        SortedMap<String, String> params = DDAPIUtil.filterPlayParameter(request.params.all());
-        String id = StringUtils.trimToEmpty(params.get("id")); // 一百券的商品ID
-        String ddgid = StringUtils.trimToEmpty(params.get("team_id"));//当当商品编号（对应一百券的商品ID）
-        String user_mobile = StringUtils.trimToEmpty(params.get("user_mobile"));
-        String options = StringUtils.trimToEmpty(params.get("options"));
-        String express_memo = StringUtils.trimToEmpty(params.get("express_memo"));
-        String user_id = StringUtils.trimToEmpty(params.get("user_id"));
-        String kx_order_id = StringUtils.trimToEmpty(params.get("kx_order_id"));
-        BigDecimal amount = BigDecimal.ZERO;
-        if (StringUtils.isNotBlank(params.get("amount"))) {
-            amount = new BigDecimal(StringUtils.trimToEmpty(params.get("amount")));
-        }
+        SortedMap<String, String> params = DDGroupBuyUtil.filterPlayParams(request.params.allSimple());
+
         String sign = StringUtils.trimToEmpty(params.get("sign")).toLowerCase();
+        /*
         ErrorInfo errorInfo = new ErrorInfo();
         //检查参数
         if (StringUtils.isBlank(user_mobile) || StringUtils.isBlank(user_id)) {
-            errorInfo.errorCode = ErrorCode.USER_NOT_EXITED;
+            errorInfo.errorCode = DDErrorCode.USER_NOT_EXITED;
             errorInfo.errorDes = "用户或手机不存在！";
             render("/DDOrderAPI/error.xml", errorInfo);
         }
 
         if (StringUtils.isBlank(kx_order_id)) {
-            errorInfo.errorCode = ErrorCode.ORDER_NOT_EXITED;
+            errorInfo.errorCode = DDErrorCode.ORDER_NOT_EXITED;
             errorInfo.errorDes = "订单不存在！";
             render("/DDOrderAPI/error.xml", errorInfo);
         }
         //校验参数
-        if (StringUtils.isBlank(sign) || !DDAPIUtil.validSign(params, sign)) {
-            errorInfo.errorCode = ErrorCode.VERIFY_FAILED;
+        if (StringUtils.isBlank(sign) || !sign.equals(DDGroupBuyUtil.signParams(params))) {
+            errorInfo.errorCode = DDErrorCode.VERIFY_FAILED;
             errorInfo.errorDes = "sign验证失败！";
             render("/DDOrderAPI/error.xml", errorInfo);
         }
@@ -79,7 +59,7 @@ public class DDOrderAPI extends Controller {
         Resaler resaler = Resaler.find("loginName=? and status=?", Resaler.DD_LOGIN_NAME, ResalerStatus.APPROVED).first();
         Long resalerId = null;
         if (resaler == null) {
-            errorInfo.errorCode = ErrorCode.USER_NOT_EXITED;
+            errorInfo.errorCode = DDErrorCode.USER_NOT_EXITED;
             errorInfo.errorDes = "当当分销商用户不存在！";
             render("/DDOrderAPI/error.xml", errorInfo);
         } else {
@@ -142,7 +122,7 @@ public class DDOrderAPI extends Controller {
                     //创建一百券订单Items
                     order.addOrderItem(goods, number.intValue(), user_mobile, resalerPrice, resalerPrice);
                 } catch (NotEnoughInventoryException e) {
-                    errorInfo.errorCode = ErrorCode.INVENTORY_NOT_ENOUGH;
+                    errorInfo.errorCode = DDErrorCode.INVENTORY_NOT_ENOUGH;
                     errorInfo.errorDes = "库存不足！";
                     render(errorInfo);
                 }
@@ -161,7 +141,7 @@ public class DDOrderAPI extends Controller {
         for (OrderItems ybqItem : order.orderItems) {
             Integer number = ybqItem.buyNumber.intValue();
             if (number > 0 && ybqItem.goods != null) {
-                new DDOrderItem(Long.valueOf(kx_order_id), ddgid, ybqItem.goods, ybqItem.buyNumber, ybqItem).save();
+//                new DDOrderItem(Long.valueOf(kx_order_id), ddgid, ybqItem.goods, ybqItem.buyNumber, ybqItem).save();
             }
         }
         outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
@@ -173,6 +153,112 @@ public class DDOrderAPI extends Controller {
         }
         Logger.info("\n [DDOrderAPI] end ");
         render(order, id, kx_order_id, eCouponList);
+    }
+
+    public static void sendSms() {
+        /*
+        Logger.info("[DDAPIUtil.sendSMS] sendMsg begin]" + data);
+        Response response = new Response();
+        Request request = new Request();
+        response.ver = VER;
+        response.spid = SPID;
+        try {
+            request.parse(data);
+        } catch (Exception e) {
+            response = new Response();
+            response.spid = SPID;
+            response.ver = VER;
+            response.errorCode = DDErrorCode.PARSE_XML_FAILED;
+            response.desc = "xml解析失败！";
+            return response;
+        }
+        //取得data节点中的数据信息
+        Map<String, String> dataMap = request.params;
+        String orderId = dataMap.get("order_id");
+        Long spgid = Long.parseLong(dataMap.get("spgid"));
+        String receiveMobile = dataMap.get("receiver_mobile_tel");
+        String consumeId = dataMap.get("consume_id");
+
+        //根据当当订单编号，查询订单是否存在
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
+                OuterOrderPartner.DD, Long.valueOf(orderId)).first();
+        if (outerOrder == null || outerOrder.ybqOrder == null) {
+            response.errorCode = DDErrorCode.ORDER_NOT_EXITED;
+            response.desc = "没找到对应的当当订单!";
+            Logger.info("[DDAPIUtil.sendSMS]" + response.desc);
+            return response;
+        }
+        Resaler resaler = Resaler.find("loginName=? and status=?", Resaler.DD_LOGIN_NAME, ResalerStatus.APPROVED).first();
+
+        if (resaler == null) {
+            response.errorCode = DDErrorCode.USER_NOT_EXITED;
+            response.desc = "当当用户不存在！";
+            Logger.info("[DDAPIUtil.sendSMS]" + response.desc);
+            return response;
+        }
+
+
+        Order ybqOrder = Order.find("orderNumber= ? and userId=? and userType=?", outerOrder.ybqOrder.orderNumber, resaler.id, AccountType.RESALER).first();
+        if (ybqOrder == null) {
+            response.errorCode = DDErrorCode.ORDER_NOT_EXITED;
+            response.desc = "没找到对应的订单!";
+            Logger.info("[DDAPIUtil.sendSMS]" + response.desc);
+            return response;
+        }
+
+        //从对应商品关系表中取得商品
+        Goods goods = GoodsDeployRelation.getGoods(OuterOrderPartner.DD, spgid);
+        if (goods == null) {
+            goods = Goods.findById(spgid);
+        }
+        ECoupon coupon = ECoupon.find("order=? and eCouponSn=? and goods=?", ybqOrder, consumeId, goods).first();
+        if (coupon == null) {
+            response.errorCode = DDErrorCode.COUPON_SN_NOT_EXISTED;
+            response.desc = "没找到对应的券号!";
+            Logger.info("[DDAPIUtil.sendSMS]" + response.desc);
+            return response;
+        }
+        //券已消费
+        if (coupon.status == ECouponStatus.CONSUMED) {
+            response.errorCode = DDErrorCode.COUPON_CONSUMED;
+            response.desc = "对不起该券已消费，不能重发短信！";
+            Logger.info("[DDAPIUtil.sendSMS]" + response.desc);
+            return response;
+        }
+        //券已退款
+        if (coupon.status == ECouponStatus.REFUND) {
+            response.errorCode = DDErrorCode.COUPON_REFUND;
+            response.desc = "对不起该券已退款，不能重发短信！";
+            Logger.info("[DDAPIUtil.sendSMS]" + response.desc);
+            return response;
+        }
+        //券已过期
+        if (coupon.expireAt.before(new Date())) {
+            response.errorCode = DDErrorCode.COUPON_EXPIRED;
+            response.desc = "对不起该券已过期，不能重发短信！";
+            Logger.info("[DDAPIUtil.sendSMS]" + response.desc);
+            return response;
+        }
+        //最多发送三次短信
+        if (coupon.smsSentCount >= 3) {
+            response.errorCode = DDErrorCode.MESSAGE_SEND_FAILED;
+            response.desc = "重发短信超过三次！";
+            Logger.info("[DDAPIUtil.sendSMS]" + response.desc);
+            return response;
+        }
+
+        //发送短信并返回成功
+        coupon.sendOrderSMS(receiveMobile, "当当重发短信");
+
+        response.errorCode = DDErrorCode.SUCCESS;
+        response.desc = "success";
+        response.addAttribute("consumeId", coupon.eCouponSn);
+        response.addAttribute("ddOrderId", orderId);
+        response.addAttribute("ybqOrderId", coupon.order.id);
+
+        return response;
+        */
+
     }
 }
 

@@ -9,24 +9,11 @@ import models.accounts.util.AccountUtil;
 import models.operator.OperateUser;
 import models.consumer.User;
 import models.consumer.UserInfo;
-import models.dangdang.DDAPIInvokeException;
-import models.dangdang.DDAPIUtil;
-import models.dangdang.DDOrderItem;
-import models.dangdang.HttpProxy;
-import models.dangdang.Response;
-import models.order.CouponsCondition;
-import models.order.ECoupon;
-import models.order.ECouponHistoryMessage;
-import models.order.ECouponPartner;
-import models.order.ECouponStatus;
-import models.order.Order;
-import models.order.PromoteRebate;
-import models.order.RebateStatus;
+import models.order.*;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sales.Shop;
 import operate.rbac.RbacLoader;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Http;
@@ -36,7 +23,6 @@ import util.DateHelper;
 import util.mq.MockMQ;
 import play.data.validation.Error;
 
-import java.io.ByteArrayInputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -197,6 +183,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         assertContentMatch("对不起，该券已过期", response);
     }
 
+    /*
     @Test
     public void testUpdate_测试当当券已退款的情况() {
         // 生产 电子券 测试数据
@@ -262,6 +249,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         assertNull(info);
         assertContentMatch("第三方DD券验证失败！", response);
     }
+    */
 
     @Test
     public void test_消费验证后给推荐人返利() {

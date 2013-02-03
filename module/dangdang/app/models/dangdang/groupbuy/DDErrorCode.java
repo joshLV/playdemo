@@ -1,4 +1,4 @@
-package models.dangdang;
+package models.dangdang.groupbuy;
 
 /**
  * 当当错误码.
@@ -7,7 +7,7 @@ package models.dangdang;
  * Date: 12-9-15
  * Time: 下午7:20
  */
-public enum ErrorCode {
+public enum DDErrorCode {
 
     SUCCESS(0),
 
@@ -29,7 +29,7 @@ public enum ErrorCode {
 
     private int value;
 
-    ErrorCode(int value) {
+    DDErrorCode(int value) {
         this.value = value;
     }
 
@@ -37,7 +37,7 @@ public enum ErrorCode {
         return value;
     }
 
-    public static ErrorCode getErrorCode(int code) {
+    public static DDErrorCode getErrorCode(int code) {
         switch (code) {
             case 0:
                 return SUCCESS;

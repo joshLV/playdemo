@@ -4,11 +4,6 @@ import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
 import models.operator.OperateUser;
-import models.dangdang.DDAPIInvokeException;
-import models.dangdang.DDAPIUtil;
-import models.dangdang.DDOrderItem;
-import models.dangdang.HttpProxy;
-import models.dangdang.Response;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
 import models.order.ECouponStatus;
@@ -16,14 +11,12 @@ import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.Shop;
 import operate.rbac.RbacLoader;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
-import java.io.ByteArrayInputStream;
 import java.util.Date;
 
 /**
@@ -106,6 +99,7 @@ public class OperateCouponMakeUpTest extends FunctionalTest {
         assertContentMatch("在第三方消费失败", response);
     }
 
+    /*
     @Test
     public void testIndex_Consumed_DDCoupon() {
         eCoupon.status = ECouponStatus.CONSUMED;
@@ -136,4 +130,5 @@ public class OperateCouponMakeUpTest extends FunctionalTest {
 
         assertContentMatch("输入：" + eCoupon.eCouponSn, response);
     }
+    */
 }

@@ -11,8 +11,7 @@ import models.accounts.util.TradeUtil;
 import models.operator.OperateUser;
 import models.admin.SupplierUser;
 import models.consumer.User;
-import models.dangdang.DDAPIInvokeException;
-import models.dangdang.DDAPIUtil;
+import models.dangdang.groupbuy.DDGroupBuyUtil;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.resale.Resaler;
 import models.sales.Goods;
@@ -511,13 +510,8 @@ public class ECoupon extends Model {
         //===================判断是否第三方订单产生的券=并且不是导入券============================
         if (this.createType != ECouponCreateType.IMPORT) {
             if (this.partner == ECouponPartner.DD) {
-                try {
-                    if (DDAPIUtil.isRefund(this)) {//如果券在当当上已经退款，则不允许券的消费。
-                        return false;
-                    }
-                } catch (DDAPIInvokeException e) {
-                    //当当接口调用失败，目前仅记录日志。不阻止券的消费。以便保证用户体验。
-                    Logger.error(e.getMessage(), e);
+                if (!DDGroupBuyUtil.verifyOnDangdang(this)) {
+                    Logger.info("verify on dangdang failed");
                     return false;
                 }
             }
@@ -545,12 +539,7 @@ public class ECoupon extends Model {
             this.triggerCouponSn = triggerCouponSn;
             this.save();
         }
-        //===================券消费处理完毕=====================================
 
-        //=========通知当当该券已经使用,如果通知失败会记录到表dd_failure_log中======
-        if (this.partner == ECouponPartner.DD) {
-            DDAPIUtil.notifyVerified(this);
-        }
         return true;
 
     }
