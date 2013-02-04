@@ -10,25 +10,17 @@ import models.order.*;
 import models.resale.Resaler;
 import models.resale.ResalerStatus;
 import models.sales.Goods;
-import models.sales.GoodsDeployRelation;
 import models.sales.ResalerProduct;
 import org.apache.commons.lang.StringUtils;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
-import play.libs.XPath;
 import play.mvc.Before;
 import play.mvc.Controller;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedMap;
 
 /**
@@ -37,7 +29,7 @@ import java.util.SortedMap;
  * Date: 12-9-13
  * Time: 下午3:59
  */
-public class DDOrderAPI extends Controller {
+public class DDGroupBuy extends Controller {
     public static final String DATE_FORMAT = "yyy-MM-dd HH:mm:ss";
 
     private static final String VER = Play.configuration.getProperty("dangdang.version");
@@ -55,10 +47,10 @@ public class DDOrderAPI extends Controller {
     /**
      * 当当新订单请求.
      *
-     * @param id
-     * @param ddgid
-     * @param user_mobile
-     * @param options
+     * @param id            当当团购唯一标识符
+     * @param ddgid         当当商品ID
+     * @param user_mobile   用户手机号
+     * @param options       商品及数量信息
      * @param express_memo
      * @param user_id
      * @param kx_order_id
@@ -67,7 +59,6 @@ public class DDOrderAPI extends Controller {
      */
     public static void order(String id, String ddgid, String user_mobile, String options, String express_memo,
                              String user_id, String kx_order_id, BigDecimal amount, String sign) {
-        Logger.info("[DDOrderAPI] begin ");
         //取得参数信息 必填信息
         SortedMap<String, String> params = DDGroupBuyUtil.filterPlayParams(request.params.allSimple());
 
@@ -119,7 +110,6 @@ public class DDOrderAPI extends Controller {
         if (isExisted) {
             order = Order.findOneByUser(outerOrder.ybqOrder.orderNumber, resalerId, AccountType.RESALER);
             if (order != null) {
-                Logger.info("[DDOrderAPI] order has existed,and render xml");
                 List<ECoupon> eCouponList = ECoupon.findByOrder(order);
                 render(order, id, kx_order_id, eCouponList);
             }
@@ -168,12 +158,15 @@ public class DDOrderAPI extends Controller {
             coupon.partner = ECouponPartner.DD;
             coupon.save();
         }
-        render(order, id, kx_order_id, eCouponList);
+        render("dangdang/groupbuy/response/order.xml", order, id, kx_order_id, eCouponList);
     }
 
+    /**
+     * 当当请我们发送短信.
+     *
+     */
     public static void sendSms(String sign, String data, String time, String order_id, Long spgid,
                                String receiver_mobile_tel, String consume_id) {
-        Logger.info("[DDSendMessageAPI] begin ");
         //取得参数信息
         String verifySign = DDGroupBuyUtil.sign("send_msg", data, time);
         if (StringUtils.isBlank(sign) || !sign.equals(verifySign)) {
@@ -228,15 +221,8 @@ public class DDOrderAPI extends Controller {
 
         //发送短信并返回成功
         coupon.sendOrderSMS(receiver_mobile_tel, "当当重发短信");
-
-        /*
-        response.desc = "success";
-        response.addAttribute("consumeId", coupon.eCouponSn);
-        response.addAttribute("ddOrderId", orderId);
-        response.addAttribute("ybqOrderId", coupon.order.id);
-
-        return response;
-        */
+        String desc = "success";
+        render("dangdang/groupbuy/response/sendMessage.xml", desc, coupon, order_id);
     }
 
     private static void renderError(DDErrorCode errorCode, String errorDesc) {

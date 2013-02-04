@@ -231,10 +231,12 @@ public class DDGroupBuyUtil {
     public static SortedMap<String, String> filterPlayParams(Map<String, String> params) {
         TreeMap<String, String> r = new TreeMap<>(params);
         r.remove("body");
-        r.remove("format");
         return r;
     }
 
+    /**
+     * 此加密算法目前只用于 当当通知我们订单生成
+     */
     public static String signParams(SortedMap<String, String> params) {
         StringBuilder signStr = new StringBuilder();
         for (Map.Entry<String, String> entry : params.entrySet()) {

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resultObject>
+    <ver>ver</ver>
+    <spid>spid</spid>
+    <error_code>0</error_code>
+    <desc>
+        <![CDATA[ ${desc.raw()} ]]>
+    </desc>
+    <data>
+        <consume_id><![CDATA[ ${coupon.eCouponSn} ]]></consume_id>
+        <order_id><![CDATA[ ${order_id} ]]></order_id>
+        <send_status><![CDATA[ ${coupon.order.id} ]]></send_status>
+    </data>
+</resultObject>

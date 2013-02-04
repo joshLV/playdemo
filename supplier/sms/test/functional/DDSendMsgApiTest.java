@@ -3,6 +3,7 @@ package functional;
 import com.uhuila.common.util.DateUtil;
 import factory.FactoryBoy;
 import models.accounts.AccountType;
+import models.dangdang.groupbuy.DDErrorCode;
 import models.dangdang.groupbuy.DDGroupBuyUtil;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
@@ -69,12 +70,16 @@ public class DDSendMsgApiTest extends FunctionalTest {
         Map<String, String> params = new HashMap<>();
         params.put("call_time", "1348217629");
         String data = "<data><order><order_id><![CDATA[12345678]]></order_id><ddgid><![CDATA[" + deployRelation.linkId + "]]></ddgid><spgid><![CDATA[" + deployRelation.linkId + "]]></spgid><user_code><![CDATA[159300520]]></user_code><receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel><consume_id><![CDATA[0159300520]]></consume_id></order></data>";
-        String sign = DDGroupBuyUtil.sign(data, "1348217629", "send_msg");
+        String sign = DDGroupBuyUtil.sign("send_msg", data, "1348217629");
         params.put("data", data);
         params.put("sign", sign);
 
         Http.Response response = POST("/api/v1/dangdang/send-msg", params);
         assertStatus(200, response);
+
+        assertContentType("text/xml", response);
+        String desc = (String)renderArgs("desc");
+        assertNotNull(desc);
     }
 
     @Test
@@ -91,37 +96,27 @@ public class DDSendMsgApiTest extends FunctionalTest {
         params.put("sign", "beefdebebef85f55ecba47d54d8308e8");
         response = POST("/api/v1/dangdang/send-msg", params);
         assertStatus(200, response);
+        assertContentType("text/xml", response);
+        DDErrorCode errorCode = (DDErrorCode) renderArgs("errorCode");
+        assertEquals(DDErrorCode.VERIFY_FAILED, errorCode);
     }
 
-    @Test
-    @Ignore
-    public void 测试发送短信_xml解析失败() {
-        String data = "<data><order><order_id><![CDATA[12345678]]></order_id><ddgid><![CDATA[1]]></ddgid><spgid><![CDATA[1]]></spgid><user_code><![CDATA[159300520]]></user_code><receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel><consume_id><![CDATA[0159300520]]></consume_id></order></data>";
-
-
-        Map<String, String> params = new HashMap<>();
-        params.put("call_time", "1348217629");
-
-        params.put("data", data.replace("<order>", "order1"));
-        params.put("sign", "f7032ef81047b3a2fcee60b6656f04ae");
-        Http.Response response = POST("/api/v1/dangdang/send-msg", params);
-        assertStatus(200, response);
-        assertEquals("xml解析失败！", null);
-    }
 
     @Test
     public void 测试发送短信_没找到对应的当当订单() {
         Map<String, String> params = new HashMap<>();
         params.put("call_time", "1348217629");
         String data = "<data><order><order_id><![CDATA[1]]></order_id><ddgid><![CDATA[1]]></ddgid><spgid><![CDATA[1]]></spgid><user_code><![CDATA[159300520]]></user_code><receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel><consume_id><![CDATA[0159300520]]></consume_id></order></data>";
-        String sign = DDGroupBuyUtil.sign(data, "1348217629", "send_msg");
+        String sign = DDGroupBuyUtil.sign("send_msg", data, "1348217629");
         params.put("data", data);
         params.put("sign", sign);
 
 
         Http.Response response = POST("/api/v1/dangdang/send-msg", params);
         assertStatus(200, response);
-        assertEquals("没找到对应的当当订单!", "");
+        assertContentType("text/xml", response);
+        DDErrorCode errorCode = (DDErrorCode) renderArgs("errorCode");
+        assertEquals(DDErrorCode.ORDER_NOT_EXITED, errorCode);
     }
 
     @Test
@@ -138,11 +133,13 @@ public class DDSendMsgApiTest extends FunctionalTest {
         resaler.status = ResalerStatus.FREEZE;
         resaler.save();
         params.put("data", data);
-        String sign = DDGroupBuyUtil.sign(data, "1348217629", "send_msg");
+        String sign = DDGroupBuyUtil.sign("send_msg", data, "1348217629");
         params.put("sign", sign);
         Http.Response response = POST("/api/v1/dangdang/send-msg", params);
         assertStatus(200, response);
-        assertEquals("当当用户不存在！", null);
+        assertContentType("text/xml", response);
+        DDErrorCode errorCode = (DDErrorCode) renderArgs("errorCode");
+        assertEquals(DDErrorCode.USER_NOT_EXITED, errorCode);
     }
 
     @Test
@@ -161,12 +158,14 @@ public class DDSendMsgApiTest extends FunctionalTest {
         order.save();
 
         data = "<data><order><order_id><![CDATA[12345678]]></order_id><ddgid><![CDATA[" + deployRelation.linkId + "]]></ddgid><spgid><![CDATA[" + deployRelation.linkId + "]]></spgid><user_code><![CDATA[159300520]]></user_code><receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel><consume_id><![CDATA[0159300520]]></consume_id></order></data>";
-        String sign = DDGroupBuyUtil.sign(data, "1348217629", "send_msg");
+        String sign = DDGroupBuyUtil.sign("send_msg", data, "1348217629");
         params.put("data", data);
         params.put("sign", sign);
         Http.Response response = POST("/api/v1/dangdang/send-msg", params);
         assertStatus(200, response);
-        assertEquals("没找到对应的订单!", "");
+        assertContentType("text/xml", response);
+        DDErrorCode errorCode = (DDErrorCode) renderArgs("errorCode");
+        assertEquals(DDErrorCode.ORDER_NOT_EXITED, errorCode);
     }
 
     @Test
@@ -178,11 +177,13 @@ public class DDSendMsgApiTest extends FunctionalTest {
         order.orderNumber = "987654321";
         order.save();
         params.put("data", data);
-        String sign = DDGroupBuyUtil.sign(data, "1348217629", "send_msg");
+        String sign = DDGroupBuyUtil.sign("send_msg", data, "1348217629");
         params.put("sign", sign);
         Http.Response response = POST("/api/v1/dangdang/send-msg", params);
         assertStatus(200, response);
-        assertEquals("没找到对应的券号!", null);
+        assertContentType("text/xml", response);
+        DDErrorCode errorCode = (DDErrorCode) renderArgs("errorCode");
+        assertEquals(DDErrorCode.COUPON_SN_NOT_EXISTED, errorCode);
     }
 
     @Test
@@ -193,10 +194,12 @@ public class DDSendMsgApiTest extends FunctionalTest {
         Map<String, String> params = new HashMap<>();
         params.put("call_time", "1348217629");
         params.put("data", data);
-        params.put("sign", DDGroupBuyUtil.sign(data, "1348217629", "send_msg"));
+        params.put("sign", DDGroupBuyUtil.sign("send_msg", data, "1348217629"));
         Http.Response response = POST("/api/v1/dangdang/send-msg", params);
         assertStatus(200, response);
-        assertEquals("对不起该券已过期，不能重发短信！", null);
+        assertContentType("text/xml", response);
+        DDErrorCode errorCode = (DDErrorCode) renderArgs("errorCode");
+        assertEquals(DDErrorCode.COUPON_EXPIRED, errorCode);
     }
 
     @Test
@@ -209,10 +212,12 @@ public class DDSendMsgApiTest extends FunctionalTest {
         params.put("call_time", "1348217629");
 
         params.put("data", data);
-        params.put("sign", DDGroupBuyUtil.sign(data, "1348217629", "send_msg"));
+        params.put("sign", DDGroupBuyUtil.sign("send_msg",data, "1348217629"));
         Http.Response response = POST("/api/v1/dangdang/send-msg", params);
         assertStatus(200, response);
-        assertEquals("对不起该券已退款，不能重发短信！", null);
+        assertContentType("text/xml", response);
+        DDErrorCode errorCode = (DDErrorCode) renderArgs("errorCode");
+        assertEquals(DDErrorCode.COUPON_REFUND, errorCode);
     }
 
     @Test
@@ -223,18 +228,17 @@ public class DDSendMsgApiTest extends FunctionalTest {
         Map<String, String> params = new HashMap<>();
         params.put("call_time", "1348217629");
         String data = "<data><order><order_id><![CDATA[12345678]]></order_id><ddgid><![CDATA[" + deployRelation.linkId + "]]></ddgid><spgid><![CDATA[" + deployRelation.linkId + "]]></spgid><user_code><![CDATA[159300520]]></user_code><receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel><consume_id><![CDATA[0159300520]]></consume_id></order></data>";
-        String sign = DDGroupBuyUtil.sign(data, "1348217629", "send_msg");
+        String sign = DDGroupBuyUtil.sign("send_msg", data, "1348217629");
         params.put("data", data);
         params.put("sign", sign);
 
         Http.Response response = POST("/api/v1/dangdang/send-msg", params);
         assertStatus(200, response);
-        /*
-        assertEquals("success", res.desc);
 
-        assertEquals("0159300520", res.getAttribute("consumeId"));
-        assertEquals("12345678", res.getAttribute("ddOrderId"));
-        assertEquals(order.id, res.getAttribute("ybqOrderId"));
-        */
+        assertContentType("text/xml", response);
+        DDErrorCode errorCode = (DDErrorCode) renderArgs("errorCode");
+        assertEquals(DDErrorCode.MESSAGE_SEND_FAILED, errorCode);
+        String errorDesc = (String)renderArgs("errorDesc");
+        assertEquals("当当短信超过三次！", errorDesc);
     }
 }

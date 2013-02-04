@@ -10,8 +10,8 @@ GET     /                                       SmsApplication.index
 *       /api/order/refund                       OrderAPI.refund
 *       /api/order/resend                       OrderAPI.resend
 # 当当API
-*       /api/v1/dangdang/send-msg               DDSendMessageAPI.sendMessage(format:'xml')
-*       /api/v1/dangdang/order                  DDOrderAPI.order(format:'xml')
+*       /api/v1/dangdang/send-msg               DDGroupBuy.sendSms(format:'xml')
+*       /api/v1/dangdang/order                  DDGroupBuy.order(format:'xml')
 
 # 一号店API
 *       /api/v1/yhd/gb/order-inform             YHDGroupBuy.orderInform

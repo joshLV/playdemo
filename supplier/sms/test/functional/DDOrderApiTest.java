@@ -45,10 +45,9 @@ public class DDOrderApiTest extends FunctionalTest {
         params.put("deal_type_name", "code_mine");
         Http.Response response = POST("/api/v1/dangdang/order", params);
         assertStatus(200, response);
-        /*
-        ErrorInfo error = (ErrorInfo) renderArgs("errorInfo");
-        assertEquals("用户或手机不存在！", error.errorDes);
-        */
+        assertContentType("text/xml", response);
+        DDErrorCode errorCode = (DDErrorCode) renderArgs("errorCode");
+        assertEquals(errorCode, DDErrorCode.USER_NOT_EXITED);
     }
 
     @Test
@@ -60,11 +59,9 @@ public class DDOrderApiTest extends FunctionalTest {
         params.put("user_mobile", "code_mine");
         Http.Response response = POST("/api/v1/dangdang/order", params);
         assertStatus(200, response);
-        /*
-        ErrorInfo error = (ErrorInfo) renderArgs("errorInfo");
-        assertEquals("订单不存在！", error.errorDes);
-        assertEquals(DDErrorCode.ORDER_NOT_EXITED, error.errorCode);
-        */
+        assertContentType("text/xml", response);
+        DDErrorCode errorCode = (DDErrorCode) renderArgs("errorCode");
+        assertEquals(errorCode, DDErrorCode.ORDER_NOT_EXITED);
     }
 
     @Test
@@ -79,22 +76,18 @@ public class DDOrderApiTest extends FunctionalTest {
         params.put("options", goods.id + ":" + "1");
         Http.Response response = POST("/api/v1/dangdang/order", params);
         assertStatus(200, response);
-        /*
-        ErrorInfo error = (ErrorInfo) renderArgs("errorInfo");
-        assertEquals("sign验证失败！", error.errorDes);
-        assertEquals(DDErrorCode.VERIFY_FAILED, error.errorCode);
-        */
+        assertContentType("text/xml", response);
+        DDErrorCode errorCode = (DDErrorCode) renderArgs("errorCode");
+        assertEquals(errorCode, DDErrorCode.VERIFY_FAILED);
 
         params.put("sign", "beefdebebef85f55ecba47d54d8308e8");
         params.put("ctime", String.valueOf(System.currentTimeMillis() / 1000));
         response = POST("/api/v1/dangdang/order", params);
         assertStatus(200, response);
-        /*
-        error = (ErrorInfo) renderArgs("errorInfo");
 
-        assertEquals("sign验证失败！", error.errorDes);
-        assertEquals(DDErrorCode.VERIFY_FAILED, error.errorCode);
-        */
+        assertContentType("text/xml", response);
+        errorCode = (DDErrorCode) renderArgs("errorCode");
+        assertEquals(errorCode, DDErrorCode.VERIFY_FAILED);
     }
 
 

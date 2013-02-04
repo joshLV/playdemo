@@ -16,9 +16,6 @@ public class ResalerProductFactory extends ModelFactory<ResalerProduct> {
         ResalerProduct resalerProduct = new ResalerProduct();
         resalerProduct.partner = OuterOrderPartner.TB;
         resalerProduct.goods = FactoryBoy.lastOrCreate(Goods.class);
-        resalerProduct.save();
-        resalerProduct.id = resalerProduct.id + 10000L;
-
-        return resalerProduct;
+        return resalerProduct.save();
     }
 }
