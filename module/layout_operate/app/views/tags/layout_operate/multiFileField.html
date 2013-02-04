@@ -29,6 +29,7 @@
     #{/ifError}
 </div>
 <script type="text/javascript">
+
     $(function () {
         KindEditor.ready(function (K) {
             var editor = K.editor({
@@ -42,8 +43,8 @@
                             var div = K('#J_imageView');
 //                            div.html('');
                             K.each(urlList, function (i, data) {
-                                 window.location.reload();
-                                *{div.append('<li><div class="action"><a class="set-main btn" goodsId="${_goodsId}" imageId="${data?.imageId}" href="">设为首页展示</a><a class="close btn" href="#">X</a></div><img src="' + data.url + '"></li>');}*
+                                window.location.reload();
+                            *{div.append('<li><div class="action"><a class="set-main btn" goodsId="${_goodsId}" imageId="${data?.imageId}" href="">设为首页展示</a><a class="close btn" href="#">X</a></div><img src="' + data.url + '"></li>');}*
                             });
                             editor.hideDialog();
                         }

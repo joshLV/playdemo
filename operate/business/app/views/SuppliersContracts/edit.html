@@ -1,5 +1,13 @@
 #{extends 'layout_operate/layout.html' /}
-#{set title:'修改商品' /}
+
+<link rel="stylesheet" href="/public/javascripts2/themes/default/default.css">
+
+*{#{set 'moreStyles'}}*
+*{#{asset.css src:['/public/javascripts2/themes/default/default.css'] /}}*
+*{<script src="@{'/public/javascripts2/themes/default/default.css'}" ></script>}*
+*{#{/set}}*
+
+#{set title:'修改合同' /}
 #{get 'moreScripts'}
 <script src="@{'/public/javascripts2/kindeditor-min.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/lang/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
@@ -7,14 +15,11 @@
 #{/get}
 #{include '/share/nav.html' /}
 <div class="body">
-#{form @OperateGoods.update2(id), id:'form',enctype:'multipart/form-data',
+#{form @SuppliersContracts.update(contractId), id:'form',enctype:'multipart/form-data',
 class:"form-horizontal", method:'PUT' }
     <legend>${title}</legend>
     #{set action:"edit"/}
-
-    #{include '/OperateGoods/goodsForm2.html'/}
-    <input type="hidden" id="page" name="page" value="${page}">
-    <input type="hidden" id="queryString" name="queryString" value="${queryString}"/>
+    #{include '/SuppliersContracts/supplierUploadContractForm.html'/}
 #{/form}
 </div>
 
