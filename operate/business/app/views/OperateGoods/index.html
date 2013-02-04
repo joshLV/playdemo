@@ -88,6 +88,9 @@
                 至 <input type="text" name="condition.saleCountEnd" class="input-medium"
                          value="#{if condition?.saleCountEnd >=0}${condition?.saleCountEnd}#{/if}"/>
             </td>
+            <td width="30%">销售专员工号：<input type="text" name="condition.jobNumber" class="input-medium"
+                                          value="${condition?.jobNumber}"/>
+            </td>
             <td>
                 <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
             </td>

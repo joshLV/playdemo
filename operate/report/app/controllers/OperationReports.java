@@ -241,17 +241,6 @@ public class OperationReports extends Controller {
         }
         condition.sort(fianlResultList);
 
-//        for (SalesReport s : noContributionResultList) {
-//            for (SalesReport r : resultList) {
-//                System.out.println(r.operateUser.id + "===r.operateUser.id>>");
-//                System.out.println(s.operateUser.id + "===s.operateUser.id>>");
-//
-//                if (!r.operateUser.loginName.equals(s.operateUser.loginName)) {
-//                    resultList.add(s);
-//                }
-//            }
-//        }
-//        }
 
         // 分页
         ValuePaginator<SalesReport> reportPage = utils.PaginateUtil.wrapValuePaginator(fianlResultList, pageNumber, PAGE_SIZE);
