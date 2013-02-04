@@ -128,19 +128,19 @@
 
     <table class="table table-striped table-bordered table-condensed">
         <thead>
-        #{layout_operate.sortField name:'工号', descField:condition?.desc, desc:'100000000',asc:'200000000'/}
+        #{layout_operate.sortField name:'工号', descField:condition?.desc, desc:'200000000',asc:'100000000'/}
         *{<th>工号</th>}*
         <th>姓名（销售专员）</th>
-        #{layout_operate.sortField name:'售出数量', descField:condition?.desc, desc:'000000010',asc:'000000020'/}
-        #{layout_operate.sortField name:'总销售额', descField:condition?.desc, desc:'010000000',asc:'020000000'/}
-        #{layout_operate.sortField name:'消费金额', descField:condition?.desc, desc:'001000000',asc:'002000000'/}
-        #{layout_operate.sortField name:'退款金额', descField:condition?.desc, desc:'000100000',asc:'000200000'/}
-        #{layout_operate.sortField name:'刷单金额', descField:condition?.desc, desc:'000010000',asc:'000020000'/}
-        #{layout_operate.sortField name:'净销售额', descField:condition?.desc, desc:'000001000',asc:'000002000'/}
+        #{layout_operate.sortField name:'售出数量', descField:condition?.desc, desc:'000000020',asc:'000000010'/}
+        #{layout_operate.sortField name:'总销售额', descField:condition?.desc, desc:'020000000',asc:'010000000'/}
+        #{layout_operate.sortField name:'消费金额', descField:condition?.desc, desc:'002000000',asc:'001000000'/}
+        #{layout_operate.sortField name:'退款金额', descField:condition?.desc, desc:'000200000',asc:'000100000'/}
+        #{layout_operate.sortField name:'刷单金额', descField:condition?.desc, desc:'000020000',asc:'000010000'/}
+        #{layout_operate.sortField name:'净销售额', descField:condition?.desc, desc:'000002000',asc:'000001000'/}
         #{if hasSeeReportProfitRight== true}
-            #{layout_operate.sortField name:'毛利率', descField:condition?.desc, desc:'000000001',asc:'000000002'/}
+            #{layout_operate.sortField name:'毛利率', descField:condition?.desc, desc:'000000002',asc:'000000001'/}
         #{/if}
-        #{layout_operate.sortField name:'净利润', descField:condition?.desc, desc:'000000100',asc:'000000200'/}
+        #{layout_operate.sortField name:'净利润', descField:condition?.desc, desc:'000000200',asc:'000000100'/}
         </thead>
     #{set i:0/}
     %{
