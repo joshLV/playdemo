@@ -131,6 +131,19 @@ public class SalesReport implements Comparable<SalesReport> {
         this.totalCost = totalCost;
     }
 
+    public SalesReport(OperateUser operateUser) {
+        this.operateUser = operateUser;
+        this.buyNumber = 0l;
+        this.totalAmount = BigDecimal.ZERO;
+        this.consumedAmount = BigDecimal.ZERO;
+        this.refundAmount = BigDecimal.ZERO;
+        this.cheatedOrderAmount = BigDecimal.ZERO;
+        this.grossMargin = BigDecimal.ZERO;
+        this.profit = BigDecimal.ZERO;
+        this.netSalesAmount = BigDecimal.ZERO;
+        this.totalCost = BigDecimal.ZERO;
+    }
+
     //from resaler
     public SalesReport(BigDecimal totalAmountCommissionAmount, BigDecimal ratio, OperateUser operateUser) {
         this.ratio = ratio;
@@ -640,7 +653,6 @@ public class SalesReport implements Comparable<SalesReport> {
         BigDecimal totalCommission = BigDecimal.ZERO;
         //merge from resaler if commissionRatio
         for (SalesReport resalerItem : paidResalerResultList) {
-
             SalesReport item = map.get(getReportKeyOfPeopleEffect(resalerItem));
             if (item == null) {
                 map.put(getReportKeyOfPeopleEffect(resalerItem), resalerItem);
@@ -691,6 +703,24 @@ public class SalesReport implements Comparable<SalesReport> {
         condition.sort(resultList);
         return resultList;
     }
+
+
+    public static List<SalesReport> queryNoContributionPeopleEffectData(SalesReportCondition condition) {
+
+        String sql = "select new models.SalesReport(o)" +
+                " from OrderItems r,Supplier s,OperateUser o" +
+                "  where r.goods.supplierId =s.id and s.deleted=0 and s.salesId=o.id and o.deleted=0  and r.goods.isLottery=false ";
+        String groupBy = " group by s.salesId";
+        Query query = JPA.em()
+                .createQuery(sql + groupBy);
+
+
+        List<SalesReport> resultList = query.getResultList();
+
+
+        return resultList;
+    }
+
 
     /**
      * 取得人效报表的金额总计

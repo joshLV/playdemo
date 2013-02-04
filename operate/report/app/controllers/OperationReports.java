@@ -14,6 +14,7 @@ import models.PeopleEffectCategoryReport;
 import models.PeopleEffectCategoryReportCondition;
 import models.SalesReport;
 import models.SalesReportCondition;
+import models.admin.OperateUser;
 import models.supplier.Supplier;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
@@ -26,8 +27,7 @@ import utils.PaginateUtil;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * 运营报表
@@ -206,20 +206,58 @@ public class OperationReports extends Controller {
 
     @ActiveNavigation("people_effect_reports")
     public static void showPeopleEffectReport(SalesReportCondition condition) {
+        Boolean flagWithCondition = true;
         int pageNumber = getPageNumber();
         if (condition == null) {
+
             condition = new SalesReportCondition();
+        }
+        if (StringUtils.isBlank(condition.jobNumber) || StringUtils.isBlank(condition.userName)) {
+            flagWithCondition = false;
         }
         condition.salesId = OperateRbac.currentUser().id;
         condition.setDescFields();
 
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         List<SalesReport> resultList = SalesReport.queryPeopleEffectData(condition);
+//        if (flagWithCondition) {
+        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition);
+
+        Map<OperateUser, SalesReport> map = new HashMap<>();
+
+        for (SalesReport resultItem : resultList) {
+            map.put(getReportKeyOfPeopleEffect(resultItem), resultItem);
+        }
+        for (SalesReport noContributionItem : noContributionResultList) {
+            SalesReport item = map.get(getReportKeyOfPeopleEffect(noContributionItem));
+            if (item == null) {
+                map.put(getReportKeyOfPeopleEffect(noContributionItem), noContributionItem);
+            }
+        }
+
+        List fianlResultList = new ArrayList();
+        for (OperateUser key : map.keySet()) {
+            fianlResultList.add(map.get(key));
+        }
+        condition.sort(fianlResultList);
+
+//        for (SalesReport s : noContributionResultList) {
+//            for (SalesReport r : resultList) {
+//                System.out.println(r.operateUser.id + "===r.operateUser.id>>");
+//                System.out.println(s.operateUser.id + "===s.operateUser.id>>");
+//
+//                if (!r.operateUser.loginName.equals(s.operateUser.loginName)) {
+//                    resultList.add(s);
+//                }
+//            }
+//        }
+//        }
+
         // 分页
-        ValuePaginator<SalesReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
+        ValuePaginator<SalesReport> reportPage = utils.PaginateUtil.wrapValuePaginator(fianlResultList, pageNumber, PAGE_SIZE);
 
         // 汇总
-        SalesReport summary = SalesReport.getPeopleEffectSummary(resultList);
+        SalesReport summary = SalesReport.getPeopleEffectSummary(fianlResultList);
 
         render(condition, reportPage, hasSeeReportProfitRight, summary);
 
@@ -582,7 +620,7 @@ public class OperationReports extends Controller {
             resultList.add(resaleSalesReport);
         }
 
-        ResaleSalesReport summary =ResaleSalesReport.summary(resultList);
+        ResaleSalesReport summary = ResaleSalesReport.summary(resultList);
 
         for (ResaleSalesReport report : resultList) {
             if (summary.amount.compareTo(BigDecimal.ZERO) != 0) {
@@ -1279,6 +1317,10 @@ public class OperationReports extends Controller {
             }
         }
         return true;
+    }
+
+    private static OperateUser getReportKeyOfPeopleEffect(SalesReport item) {
+        return item.operateUser;
     }
 
 }
