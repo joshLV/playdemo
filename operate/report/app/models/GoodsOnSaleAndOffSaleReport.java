@@ -65,7 +65,7 @@ public class GoodsOnSaleAndOffSaleReport {
         Query query = JPA.em()
                 .createQuery(
                         "select new models.GoodsOnSaleAndOffSaleReport(c.resaler) "
-                                + " from ChannelGoodsInfo c "
+                                + " from ChannelGoodsInfo c  "
                                 + " group by c.resaler order by c.resaler desc");
         for (Map.Entry<String, Object> param : condition.getParamMap().entrySet()) {
             query.setParameter(param.getKey(), param.getValue());

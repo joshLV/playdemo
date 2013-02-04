@@ -8,6 +8,9 @@
     <input type="text" name="condition.shortName" value="${condition?.shortName}">
     商品编号：
     <input type="text" name="condition.code" value="${condition?.code}">
+    销售专员工号：<input type="text" name="condition.jobNumber" class="input-medium"
+                  value="${condition?.jobNumber}"/>
+
 #{list items:resalerList, as:'resaler1'}
     <label class="checkbox inline">
         <input type="checkbox" id="resalerIds" name="resaleIds${resaler1?.resalerId}"

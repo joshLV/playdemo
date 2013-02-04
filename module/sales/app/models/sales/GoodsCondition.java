@@ -44,6 +44,7 @@ public class GoodsCondition implements Serializable {
     public String shortName;
     public String no;
     public String code;
+    public String jobNumber;
 
 
     public BigDecimal pointPriceBegin;
@@ -137,6 +138,13 @@ public class GoodsCondition implements Serializable {
                     " g.id in (select g.id from g.shops s where s.areaId like :areaId)))");
             paramMap.put("areaId", searchAreaId + "%");
         }
+
+        if (StringUtils.isNotBlank(jobNumber)) {
+            condBuilder.append(" and g.supplierId in (select s.id from Supplier s where s.salesId in ( " +
+                    " select o.id from OperateUser o where o.jobNumber =:jobNumber))");
+            paramMap.put("jobNumber", jobNumber);
+        }
+
 
         if (supplierId != 0) {
             condBuilder.append(" and g.supplierId = :supplierId");
