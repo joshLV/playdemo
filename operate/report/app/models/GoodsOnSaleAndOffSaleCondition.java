@@ -23,6 +23,7 @@ public class GoodsOnSaleAndOffSaleCondition {
     public String code;
     public List<Long> resaleIds;
     private Map<String, Object> paramMap = new HashMap<>();
+    public String jobNumber;
 
     public String filter(Long operateUserId) {
         StringBuilder builder = new StringBuilder(" where 1=1");
@@ -44,6 +45,13 @@ public class GoodsOnSaleAndOffSaleCondition {
             builder.append(" and c.goods.code = :code");
             paramMap.put("code", code);
         }
+
+        if (StringUtils.isNotBlank(jobNumber)) {
+            builder.append(" and c.goods.supplierId in (select s.id from Supplier s where s.salesId in ( " +
+                    " select o.id from OperateUser o where o.jobNumber =:jobNumber))");
+            paramMap.put("jobNumber", jobNumber);
+        }
+
         if (resaleIds != null) {
             for (Long id : resaleIds) {
                 builder.append(" and c.goods in (select g.goods from ChannelGoodsInfo g where g.resaler.id = :resaleId" + id + " and status=:status)");
