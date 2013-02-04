@@ -1,0 +1,496 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>一号店开放平台 - API详情 - 查询类别属性</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="../css/global-min.css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/tbsp.css" />
+<link rel="stylesheet" href="../css/reset.css" />
+<link rel="stylesheet" href="../css/common.css" />
+<link rel="stylesheet" href="../css/header.css" />
+<link rel="stylesheet" href="../css/docmtCenter.css" />
+<script type="text/javascript" src="../js/kissy.js"></script>
+<script type="text/javascript" src="../js/judge.js"></script>
+<script type="text/javascript" src="../js/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="../js/doc.js"></script>
+<script type="text/javascript" src="../js/sh.js"></script>
+<link rel="stylesheet" href="../css/sh.css" />
+<script type="text/javascript" src="../js/grade.js"></script>
+</head>
+<body>
+	<div class="seller">
+		<div id="page">
+			<div class="clearfix" id="pageNav">
+				<h1 id="toplogo">
+					<a href="http://www.yihaodian.com"><img class="pngfilter"
+						title="一号店开放平台" src="../img/logo.png" alt="1号店"> </a>
+				</h1>
+				<h1 id="topmenu" align="center">
+					<a class="selected" href="#"
+						style="font-size: 20px; text-align: center;">———只为更美好的生活</a>
+					<!-- 去掉选中小三角 <s></s> -->
+				</h1>
+			</div>
+		</div>
+	</div>
+	<div class="crumbs">
+		<a href="apiHomePage.html">API文档</a> <a href="categoryApi.html">类目API</a>
+		<a class="last" href="yhd.category.attribute.get.html">yhd.category.attribute.get</a>
+		<!--class with "last"-->
+	</div>
+
+	<div class='container grid-s165m0 layout'>
+		<!--正文区 begin-->
+		<div class="col-main bg_line">
+			<div class="main-wrap">
+				<div class="title-wrap">
+					<h1 class="open-bg title">yhd.category.attribute.get 查询类别属性(不包含系列属性)</h1>
+
+					<ul class="api-sub-title layout clearfix">
+						<li class="sub-title"><a class="link" href="#authorize">API接口描述</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#systemParameter">系统级输入参数</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#api-param">应用级输入参数</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#result">返回结果</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#example">返回示例</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#error-code">错误码</a>
+						</li>
+					</ul>
+				</div>
+
+				<div class="api-detail-bd" id="bd">
+					<!-- 评分-->
+					<!-- 左侧弹框效果 -->
+					<div class="judeApi hidden" id="judeApi"></div>
+					<script>
+						KISSY.use("starGrade", function(S) {
+							S.grade.init();
+						});
+					</script>
+					<!-- 左侧弹框效果end -->
+
+					<div class="content-first">
+						<h2 class="head-title" id="authorize">API接口描述</h2>
+						<p class="introduction">根据类别编码和属性编码查询类别属性值。查询成功，
+							则返回成功记录数及相应的类别属性信息。查询失败，则返回查询失败记录数及相应的错误描述信息</p>
+					</div>
+
+
+					<div>
+						<iframe id="systemParameter" src="systemInputParameters.html"
+							frameborder="no" border="0" marginwidth="80px" marginheight="0"
+							scrolling="no" allowtransparency="yes"> </iframe>
+					</div>
+					<div>
+						<h2 class="head-title" id="api-param">应用级输入参数</h2>
+						<table class="api-table" cellspacing='0'>
+							<thead>
+								<tr>
+									<th width="15%" class="middle">名称</th>
+									<th width="10%" class="middle">类型</th>
+									<th width="10%" class="middle">是否必须</th>
+									<th width="15%" class="left">示例值</th>
+									<th width="10%" class="left">默认值</th>
+									<th width="40%" class="left">描述</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="odd">
+									<td class="middle">categoryId</td>
+									<td class="middle"><a href="parameterStyle.html#Long">Long</a>
+									</td>
+									<td class="middle">是</td>
+									<td class="left"></td>
+									<td class="left"></td>
+									<td class="left">类别ID</td>
+								</tr>
+								<tr class="even">
+									<td class="middle">attributeId</td>
+									<td class="middle"><a href="parameterStyle.html#Long">Long</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="left"></td>
+									<td class="left"></td>
+									<td class="left">属性ID</td>
+								</tr>
+
+							</tbody>
+						</table>
+					</div>
+					<div>
+						<h2 class="head-title" id="result">返回结果</h2>
+						<table class="api-table" cellspacing='0'>
+							<thead>
+								<tr>
+									<th width="20%" class="left">名称</th>
+									<th width="20%" class="middle">类型</th>
+									<th width="15%" class="middle">是否必须</th>
+									<th width="15%" class="middle">示例值</th>
+									<th width="30%" class="left">描述</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="odd">
+									<td class="left">totalCount</td>
+									<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+									</td>
+									<td class="middle">是</td>
+									<td class="middle">1</td>
+									<td class="left">查询成功记录数</td>
+								</tr>
+								<tr class="even">
+									<td class="left">errorCount</td>
+									<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+									</td>
+									<td class="middle">是</td>
+									<td class="middle">0</td>
+									<td class="left">更新失败记录数</td>
+								</tr>
+								<tr class="odd">
+									<td class="left">categoryAttributeInfoList</td>
+									<td class="middle"><a href="categoryAttributeInfoObject.html">CategoryAttributeInfo[]</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">属性信息列表</td>
+								</tr>
+								<tr class="even">
+									<td class="left">errInfoList</td>
+									<td class="middle"><a href="errDetailInfoObject.html">ErrDetailInfo[]</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">错误信息列表</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div>
+						<h2 class="head-title " id="example">返回示例</h2>
+						<p class="data-format">XML数据格式:</p>
+						<div class="img-wrap">
+							<!-- xml刷-->
+							<pre class="brush: xml;">
+								&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt
+&lt;response&gt
+	&lt;errorCount&gt0&lt;/errorCount&gt
+	&lt;categoryAttributeInfoList&gt
+		&lt;categoryAttributeInfo&gt
+			&lt;attributeId&gt2891&lt;/attributeId&gt
+			&lt;attributeItemInfoList&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10735&lt;/itemId&gt
+					&lt;itemLabel&gt5&quot;&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10742&lt;/itemId&gt
+					&lt;itemLabel&gt7&quot;&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10752&lt;/itemId&gt
+					&lt;itemLabel&gt8&quot;&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10757&lt;/itemId&gt
+					&lt;itemLabel&gt9.7&quot;&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10760&lt;/itemId&gt
+					&lt;itemLabel&gt10.1&quot;&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+			&lt;/attributeItemInfoList&gt
+			&lt;attributeName&gt尺寸&lt;/attributeName&gt
+			&lt;editType&gt1&lt;/editType&gt
+			&lt;isDescribeAttribute&gt0&lt;/isDescribeAttribute&gt
+			&lt;isGuideAttribute&gt1&lt;/isGuideAttribute&gt
+			&lt;isMustEnter&gt0&lt;/isMustEnter&gt
+			&lt;isSeriesAttribute&gt0&lt;/isSeriesAttribute&gt
+			&lt;type&gt1&lt;/type&gt
+			&lt;unit&gt
+			&lt;/unit&gt
+			&lt;valueType&gt0&lt;/valueType&gt
+		&lt;/categoryAttributeInfo&gt
+		&lt;categoryAttributeInfo&gt
+			&lt;attributeId&gt2892&lt;/attributeId&gt
+			&lt;attributeItemInfoList&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10736&lt;/itemId&gt
+					&lt;itemLabel&gtWindows7&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10741&lt;/itemId&gt
+					&lt;itemLabel&gtQNX&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10747&lt;/itemId&gt
+					&lt;itemLabel&gtRIM&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10754&lt;/itemId&gt
+					&lt;itemLabel&gt乐OS&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10756&lt;/itemId&gt
+					&lt;itemLabel&gtiOS&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10759&lt;/itemId&gt
+					&lt;itemLabel&gtWebOS&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10761&lt;/itemId&gt
+					&lt;itemLabel&gtAndroid&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+			&lt;/attributeItemInfoList&gt
+			&lt;attributeName&gt操作系统&lt;/attributeName&gt
+			&lt;editType&gt2&lt;/editType&gt
+			&lt;isDescribeAttribute&gt0&lt;/isDescribeAttribute&gt
+			&lt;isGuideAttribute&gt1&lt;/isGuideAttribute&gt
+			&lt;isMustEnter&gt0&lt;/isMustEnter&gt
+			&lt;isSeriesAttribute&gt0&lt;/isSeriesAttribute&gt
+			&lt;type&gt1&lt;/type&gt
+			&lt;unit&gt
+			&lt;/unit&gt
+			&lt;valueType&gt0&lt;/valueType&gt
+		&lt;/categoryAttributeInfo&gt
+		&lt;categoryAttributeInfo&gt
+			&lt;attributeId&gt2893&lt;/attributeId&gt
+			&lt;attributeItemInfoList&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10737&lt;/itemId&gt
+					&lt;itemLabel&gt64G&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10745&lt;/itemId&gt
+					&lt;itemLabel&gt16G&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10750&lt;/itemId&gt
+					&lt;itemLabel&gt32G&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+			&lt;/attributeItemInfoList&gt
+			&lt;attributeName&gt存储容量&lt;/attributeName&gt
+			&lt;editType&gt1&lt;/editType&gt
+			&lt;isDescribeAttribute&gt0&lt;/isDescribeAttribute&gt
+			&lt;isGuideAttribute&gt1&lt;/isGuideAttribute&gt
+			&lt;isMustEnter&gt0&lt;/isMustEnter&gt
+			&lt;isSeriesAttribute&gt0&lt;/isSeriesAttribute&gt
+			&lt;type&gt1&lt;/type&gt
+			&lt;unit&gt
+			&lt;/unit&gt
+			&lt;valueType&gt0&lt;/valueType&gt
+		&lt;/categoryAttributeInfo&gt
+		&lt;categoryAttributeInfo&gt
+			&lt;attributeId&gt2894&lt;/attributeId&gt
+			&lt;attributeItemInfoList&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10738&lt;/itemId&gt
+					&lt;itemLabel&gt无&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10743&lt;/itemId&gt
+					&lt;itemLabel&gtEVDO&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10748&lt;/itemId&gt
+					&lt;itemLabel&gtWCDMA&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10751&lt;/itemId&gt
+					&lt;itemLabel&gtTD－SCDMA&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+			&lt;/attributeItemInfoList&gt
+			&lt;attributeName&gt3G网络&lt;/attributeName&gt
+			&lt;editType&gt2&lt;/editType&gt
+			&lt;isDescribeAttribute&gt0&lt;/isDescribeAttribute&gt
+			&lt;isGuideAttribute&gt1&lt;/isGuideAttribute&gt
+			&lt;isMustEnter&gt0&lt;/isMustEnter&gt
+			&lt;isSeriesAttribute&gt0&lt;/isSeriesAttribute&gt
+			&lt;type&gt1&lt;/type&gt
+			&lt;unit&gt
+			&lt;/unit&gt
+			&lt;valueType&gt0&lt;/valueType&gt
+		&lt;/categoryAttributeInfo&gt
+		&lt;categoryAttributeInfo&gt
+			&lt;attributeId&gt2895&lt;/attributeId&gt
+			&lt;attributeItemInfoList&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10739&lt;/itemId&gt
+					&lt;itemLabel&gt有&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10744&lt;/itemId&gt
+					&lt;itemLabel&gt无&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+			&lt;/attributeItemInfoList&gt
+			&lt;attributeName&gt蓝牙&lt;/attributeName&gt
+			&lt;editType&gt1&lt;/editType&gt
+			&lt;isDescribeAttribute&gt0&lt;/isDescribeAttribute&gt
+			&lt;isGuideAttribute&gt1&lt;/isGuideAttribute&gt
+			&lt;isMustEnter&gt0&lt;/isMustEnter&gt
+			&lt;isSeriesAttribute&gt0&lt;/isSeriesAttribute&gt
+			&lt;type&gt1&lt;/type&gt
+			&lt;unit&gt
+			&lt;/unit&gt
+			&lt;valueType&gt0&lt;/valueType&gt
+		&lt;/categoryAttributeInfo&gt
+		&lt;categoryAttributeInfo&gt
+			&lt;attributeId&gt2896&lt;/attributeId&gt
+			&lt;attributeItemInfoList&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10740&lt;/itemId&gt
+					&lt;itemLabel&gt无&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10746&lt;/itemId&gt
+					&lt;itemLabel&gt500万以上&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10749&lt;/itemId&gt
+					&lt;itemLabel&gt200万&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10753&lt;/itemId&gt
+					&lt;itemLabel&gt300万&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10755&lt;/itemId&gt
+					&lt;itemLabel&gt100万&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+				&lt;attributeItemInfo&gt
+					&lt;itemId&gt10758&lt;/itemId&gt
+					&lt;itemLabel&gt100万以下&lt;/itemLabel&gt
+				&lt;/attributeItemInfo&gt
+			&lt;/attributeItemInfoList&gt
+			&lt;attributeName&gt摄像头&lt;/attributeName&gt
+			&lt;editType&gt1&lt;/editType&gt
+			&lt;isDescribeAttribute&gt0&lt;/isDescribeAttribute&gt
+			&lt;isGuideAttribute&gt1&lt;/isGuideAttribute&gt
+			&lt;isMustEnter&gt0&lt;/isMustEnter&gt
+			&lt;isSeriesAttribute&gt0&lt;/isSeriesAttribute&gt
+			&lt;type&gt1&lt;/type&gt
+			&lt;unit&gt
+			&lt;/unit&gt
+			&lt;valueType&gt0&lt;/valueType&gt
+		&lt;/categoryAttributeInfo&gt
+	&lt;/categoryAttributeInfoList&gt
+	&lt;totalCount&gt6&lt;/totalCount&gt
+&lt;/response&gt
+
+
+</pre>
+						</div>
+
+						<p class="data-format">JSON数据格式:</p>
+						<div class="img-wrap">
+							<!-- JS刷-->
+							<pre class="brush: js;">{&quot;response&quot;:{&quot;categoryAttributeInfoList&quot;:{&quot;categoryAttributeInfo&quot;:[{&quot;attributeId&quot;:2891,&quot;attributeItemInfoList&quot;:{&quot;attributeItemInfo&quot;:[{&quot;itemId&quot;:10735,&quot;itemLabel&quot;:&quot;5\&quot;&quot;},{&quot;itemId&quot;:10742,&quot;itemLabel&quot;:&quot;7\&quot;&quot;},{&quot;itemId&quot;:10752,&quot;itemLabel&quot;:&quot;8\&quot;&quot;},{&quot;itemId&quot;:10757,&quot;itemLabel&quot;:&quot;9.7\&quot;&quot;},{&quot;itemId&quot;:10760,&quot;itemLabel&quot;:&quot;10.1\&quot;&quot;}]},&quot;attributeName&quot;:&quot;尺寸&quot;,&quot;editType&quot;:1,&quot;isDescribeAttribute&quot;:0,&quot;isGuideAttribute&quot;:1,&quot;isMustEnter&quot;:0,&quot;isSeriesAttribute&quot;:0,&quot;type&quot;:1,&quot;unit&quot;:&quot; &quot;,&quot;valueType&quot;:0},{&quot;attributeId&quot;:2892,&quot;attributeItemInfoList&quot;:{&quot;attributeItemInfo&quot;:[{&quot;itemId&quot;:10736,&quot;itemLabel&quot;:&quot;Windows7&quot;},{&quot;itemId&quot;:10741,&quot;itemLabel&quot;:&quot;QNX&quot;},{&quot;itemId&quot;:10747,&quot;itemLabel&quot;:&quot;RIM&quot;},{&quot;itemId&quot;:10754,&quot;itemLabel&quot;:&quot;乐OS&quot;},{&quot;itemId&quot;:10756,&quot;itemLabel&quot;:&quot;iOS&quot;},{&quot;itemId&quot;:10759,&quot;itemLabel&quot;:&quot;WebOS&quot;},{&quot;itemId&quot;:10761,&quot;itemLabel&quot;:&quot;Android&quot;}]},&quot;attributeName&quot;:&quot;操作系统&quot;,&quot;editType&quot;:2,&quot;isDescribeAttribute&quot;:0,&quot;isGuideAttribute&quot;:1,&quot;isMustEnter&quot;:0,&quot;isSeriesAttribute&quot;:0,&quot;type&quot;:1,&quot;unit&quot;:&quot; &quot;,&quot;valueType&quot;:0},{&quot;attributeId&quot;:2893,&quot;attributeItemInfoList&quot;:{&quot;attributeItemInfo&quot;:[{&quot;itemId&quot;:10737,&quot;itemLabel&quot;:&quot;64G&quot;},{&quot;itemId&quot;:10745,&quot;itemLabel&quot;:&quot;16G&quot;},{&quot;itemId&quot;:10750,&quot;itemLabel&quot;:&quot;32G&quot;}]},&quot;attributeName&quot;:&quot;存储容量&quot;,&quot;editType&quot;:1,&quot;isDescribeAttribute&quot;:0,&quot;isGuideAttribute&quot;:1,&quot;isMustEnter&quot;:0,&quot;isSeriesAttribute&quot;:0,&quot;type&quot;:1,&quot;unit&quot;:&quot; &quot;,&quot;valueType&quot;:0},{&quot;attributeId&quot;:2894,&quot;attributeItemInfoList&quot;:{&quot;attributeItemInfo&quot;:[{&quot;itemId&quot;:10738,&quot;itemLabel&quot;:&quot;无&quot;},{&quot;itemId&quot;:10743,&quot;itemLabel&quot;:&quot;EVDO&quot;},{&quot;itemId&quot;:10748,&quot;itemLabel&quot;:&quot;WCDMA&quot;},{&quot;itemId&quot;:10751,&quot;itemLabel&quot;:&quot;TD－SCDMA&quot;}]},&quot;attributeName&quot;:&quot;3G网络&quot;,&quot;editType&quot;:2,&quot;isDescribeAttribute&quot;:0,&quot;isGuideAttribute&quot;:1,&quot;isMustEnter&quot;:0,&quot;isSeriesAttribute&quot;:0,&quot;type&quot;:1,&quot;unit&quot;:&quot; &quot;,&quot;valueType&quot;:0},{&quot;attributeId&quot;:2895,&quot;attributeItemInfoList&quot;:{&quot;attributeItemInfo&quot;:[{&quot;itemId&quot;:10739,&quot;itemLabel&quot;:&quot;有&quot;},{&quot;itemId&quot;:10744,&quot;itemLabel&quot;:&quot;无&quot;}]},&quot;attributeName&quot;:&quot;蓝牙&quot;,&quot;editType&quot;:1,&quot;isDescribeAttribute&quot;:0,&quot;isGuideAttribute&quot;:1,&quot;isMustEnter&quot;:0,&quot;isSeriesAttribute&quot;:0,&quot;type&quot;:1,&quot;unit&quot;:&quot; &quot;,&quot;valueType&quot;:0},{&quot;attributeId&quot;:2896,&quot;attributeItemInfoList&quot;:{&quot;attributeItemInfo&quot;:[{&quot;itemId&quot;:10740,&quot;itemLabel&quot;:&quot;无&quot;},{&quot;itemId&quot;:10746,&quot;itemLabel&quot;:&quot;500万以上&quot;},{&quot;itemId&quot;:10749,&quot;itemLabel&quot;:&quot;200万&quot;},{&quot;itemId&quot;:10753,&quot;itemLabel&quot;:&quot;300万&quot;},{&quot;itemId&quot;:10755,&quot;itemLabel&quot;:&quot;100万&quot;},{&quot;itemId&quot;:10758,&quot;itemLabel&quot;:&quot;100万以下&quot;}]},&quot;attributeName&quot;:&quot;摄像头&quot;,&quot;editType&quot;:1,&quot;isDescribeAttribute&quot;:0,&quot;isGuideAttribute&quot;:1,&quot;isMustEnter&quot;:0,&quot;isSeriesAttribute&quot;:0,&quot;type&quot;:1,&quot;unit&quot;:&quot; &quot;,&quot;valueType&quot;:0}]},&quot;errorCount&quot;:0,&quot;totalCount&quot;:6}}
+</pre>
+						</div>
+					</div>
+					<div>
+						<h2 class="head-title" id="error-code">错误码</h2>
+
+						<table class="api-table" cellspacing='0'>
+							<thead>
+								<tr>
+									<th class="left" width="40%">错误码</th>
+									<th class="left" width="25%">错误描述</th>
+									<th class="left" width="35%">解决方案</th>
+								</tr>
+							</thead>
+							<tbody>								
+								<tr class="odd">
+									<td class="left">yhd.category.attribute.get.param_invaild</td>
+									<td class="left">参数{0}类型错误或为空</td>
+									<td class="left">检查传入的参数是否正确</td>
+								</tr>
+								<tr class="even">
+									<td class="left">yhd.category.attribute.get.attr_not_found</td>
+									<td class="left">通过指定的参数无法查询到相应的类别属性信息</td>
+									<td class="left">检查传入的参数是否正确</td>
+								</tr>
+								<tr class="odd">
+									<td class="left">yhd.category.attribute.get.error</td>
+									<td class="left">查询类别属性信息失败</td>
+									<td class="left">系统运行异常，请稍后再试</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<!-- ued div end-->
+				</div>
+			</div>
+		</div>
+		<!--正文区 end-->
+		<!--左侧导航栏 begin-->
+		<div class="col-sub">
+			<div class="APIgory">
+				<ul>
+					<li>
+						<div class="APIgory-title">
+							<a href="categoryApi.html">返回&nbsp;<span
+								class="APIgory-sub-title"> 类目API</span> </a>
+						</div>
+					</li>
+				<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.category.products.get.html"
+									title="yhd.category.products.get">yhd.category.products.get
+								</a>
+								<p class="APIgory-intro info-overflow">查询商家被授权产品类别列表</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.category.merchant.products.get.html"
+									title="yhd.category.merchant.products.get">yhd.category.merchant.products.get</a>
+								<p class="APIgory-intro info-overflow">查询商家产品类别列表（店铺类别）</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.category.brands.get.html"
+									title="yhd.category.brands.get">yhd.category.brands.get</a>
+								<p class="APIgory-intro info-overflow">查询商家被授权品牌列表</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li class="list-last">
+						<div class="APIgory-list focus">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.category.attribute.get.html"
+									title="yhd.category.attribute.get">yhd.category.attribute.get</a>
+								<p class="APIgory-intro info-overflow">查询类别属性(不包含系列属性)</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+				</ul>
+				<div class="quick-api">
+					<a href="apiHomePage.html">API文档</a>
+				</div>
+			</div>
+		</div>
+		<!--左侧导航栏 end-->
+	</div>
+</body>
+</html>

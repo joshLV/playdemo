@@ -1,0 +1,31 @@
+<!-- 更新团购本单详情的接口 请求 合作伙伴请求-->
+<?xml version="1.0" encoding="utf-8"?>
+<Request xmlns="http://tuan.360buy.com/Request">
+	<!--版本-->
+	<Version>1.0</Version>
+	<!--合作伙伴ID-->
+	<VenderId>100000</VenderId>
+	<!--合作伙伴Key-->
+	<VenderKey>xxxxxxxxxxxxxxxxx</VenderKey>
+	<!--是否压缩 默认不压缩-->
+	<Zip>false</Zip>
+	<!--是否加密-->
+	<Encrypt>true</Encrypt>
+	<!--提交数据-->
+	<Data>
+		<Message xmlns="http://tuan.360buy.com/UpdateDetailRequest">
+			<!--合作伙伴方团购ID 必须大于0 [必填] -->
+			<VenderTeamId>432243</VenderTeamId>
+			<!--京东团购ID 必须大于0 [必填] -->
+			<JdTeamId>10003943</JdTeamId>
+			<!--团购本单详情更新说明。长度小于100 [必填]-->
+			<Notes>更新项目套餐说明</Notes>
+			<!--团购详情 富文本数据，为保证验证通过，请讲内容放到<![CDATA[]]>  [必填]-->
+			<TeamDetail>
+				<![CDATA[
+				<p>这里是团购详情</p> 
+				]]>			
+			</TeamDetail>
+		</Message>
+	</Data>
+</Request>

@@ -1,0 +1,332 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>一号店开放平台 - API详情 - 获取单个订单详情</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="../css/global-min.css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/tbsp.css" />
+<link rel="stylesheet" href="../css/reset.css" />
+<link rel="stylesheet" href="../css/common.css" />
+<link rel="stylesheet" href="../css/header.css" />
+<link rel="stylesheet" href="../css/docmtCenter.css" />
+<script type="text/javascript" src="../js/kissy.js"></script>
+<script type="text/javascript" src="../js/judge.js"></script>
+<script type="text/javascript" src="../js/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="../js/doc.js"></script>
+<script type="text/javascript" src="../js/sh.js"></script>
+<link rel="stylesheet" href="../css/sh.css" />
+<script type="text/javascript" src="../js/grade.js"></script>
+</head>
+<body>
+	<div class="seller">
+		<div id="page">
+			<div class="clearfix" id="pageNav">
+				<h1 id="toplogo">
+					<a href="http://www.yihaodian.com"><img class="pngfilter"
+						title="一号店开放平台" src="../img/logo.png" alt="1号店"> </a>
+				</h1>
+				<h1 id="topmenu" align="center">
+					<a class="selected" href="#"
+						style="font-size: 20px; text-align: center;">———只为更美好的生活</a>
+					<!-- 去掉选中小三角 <s></s> -->
+				</h1>
+			</div>
+		</div>
+	</div>
+	<div class="crumbs">
+		<a href="apiHomePage.html">API文档</a> <a href="orderApi.html">订单API</a>
+		<a class="last" href="yhd.order.detail.get.html">yhd.order.detail.get</a>
+		<!--class with "last"-->
+	</div>
+
+	<div class='container grid-s165m0 layout'>
+		<!--正文区 begin-->
+		<div class="col-main bg_line">
+			<div class="main-wrap">
+				<div class="title-wrap">
+					<h1 class="open-bg title">yhd.order.detail.get
+						获取单个订单详情（含基本订单信息、产品信息、收货信息、优惠信息等）</h1>
+
+					<ul class="api-sub-title layout clearfix">
+						<li class="sub-title"><a class="link" href="#authorize">API接口描述</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#systemParameter">系统级输入参数</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#api-param">应用级输入参数</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#result">返回结果</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#example">返回示例</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#error-code">错误码</a>
+						</li>
+					</ul>
+				</div>
+
+				<div class="api-detail-bd" id="bd">
+					<!-- 评分-->
+					<!-- 左侧弹框效果 -->
+					<div class="judeApi hidden" id="judeApi"></div>
+					<script>
+						KISSY.use("starGrade", function(S) {
+							S.grade.init();
+						});
+					</script>
+					<!-- 左侧弹框效果end -->
+
+
+					<div class="content-first">
+						<h2 class="head-title" id="authorize">API接口描述</h2>
+						<p class="introduction">通过指定订单编码来获取订单详细信息，查询成功，则返回查询成功记录数及相应的订单详细信息。
+							查询失败，则返回查询失败记录数及相应的错误信息描述</p>
+					</div>
+
+
+					<div>
+						<iframe id="systemParameter" src="systemInputParameters.html"
+							frameborder="no" border="0" marginwidth="80px" marginheight="0"
+							scrolling="no" allowtransparency="yes"> </iframe>
+					</div>
+					<div>
+						<h2 class="head-title" id="api-param">应用级输入参数</h2>
+						<table class="api-table" cellspacing='0'>
+							<thead>
+								<tr>
+									<th width="15%" class="middle">名称</th>
+									<th width="10%" class="middle">类型</th>
+									<th width="10%" class="middle">是否必须</th>
+									<th width="15%" class="left">示例值</th>
+									<th width="10%" class="left">默认值</th>
+									<th width="40%" class="left">描述</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="odd">
+									<td class="middle">orderCode</td>
+									<td class="middle"><a href="parameterStyle.html#String">String</a>
+									</td>
+									<td class="middle">是</td>
+									<td class="left"></td>
+									<td class="left"></td>
+									<td class="left">订单编码</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div>
+						<h2 class="head-title" id="result">返回结果</h2>
+						<table class="api-table" cellspacing='0'>
+							<thead>
+								<tr>
+									<th width="20%" class="left">名称</th>
+									<th width="15%" class="middle">类型</th>
+									<th width="15%" class="middle">是否必须</th>
+									<th width="20%" class="middle">示例值</th>
+									<th width="30%" class="left">描述</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="odd">
+									<td class="left">totalCount</td>
+									<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+									</td>
+									<td class="middle">是</td>
+									<td class="middle">1</td>
+									<td class="left">查询成功记录数</td>
+								</tr>
+								<tr class="even">
+									<td class="left">errorCount</td>
+									<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+									</td>
+									<td class="middle">是</td>
+									<td class="middle">1</td>
+									<td class="left">查询失败记录数</td>
+								</tr>
+								<tr class="odd">
+									<td class="left">orderInfo</td>
+									<td class="middle"><a href="orderInfoObject.html">OrderInfo</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">订单详情</td>
+								</tr>
+								<tr class="even">
+									<td class="left">errInfoList</td>
+									<td class="middle"><a href="errDetailInfoObject.html">ErrDetailInfo[]</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">错误信息列表</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div>
+						<h2 class="head-title " id="example">返回示例</h2>
+						<p class="data-format">XML数据格式:</p>
+						<div class="img-wrap">
+							<!-- xml刷-->
+							<pre class="brush: xml;">
+								&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+&lt;response&gt;
+	&lt;errorCount&gt;0&lt;/errorCount&gt;
+	&lt;orderInfo&gt;
+		&lt;orderDetail&gt;
+			&lt;deliveryMethodType&gt;30002&lt;/deliveryMethodType&gt;
+			&lt;deliverySupplierId&gt;1757&lt;/deliverySupplierId&gt;
+			&lt;goodReceiverPostCode&gt;200125&lt;/goodReceiverPostCode&gt;
+			&lt;merchantExpressNbr&gt;368519531278&lt;/merchantExpressNbr&gt;
+			&lt;merchantRemark&gt; 客户说不要了，已拒收。 9-11 304&lt;/merchantRemark&gt;
+			&lt;orderAmount&gt;328.0&lt;/orderAmount&gt;
+			&lt;orderCode&gt;109042523669&lt;/orderCode&gt;
+			&lt;orderCreatePayTime&gt;2011-09-04 22:32:27&lt;/orderCreatePayTime&gt;
+			&lt;orderCreateTime&gt;2011-06-01 00:00:00&lt;/orderCreateTime&gt;
+			&lt;orderDeliveryFee&gt;0.0&lt;/orderDeliveryFee&gt;
+			&lt;orderFostRebate&gt;0.0&lt;/orderFostRebate&gt;
+			&lt;orderId&gt;16430903&lt;/orderId&gt;
+			&lt;orderNeedInvoice&gt;0&lt;/orderNeedInvoice&gt;
+			&lt;orderPaymentConfirmDate&gt;2011-09-05 16:00:53
+			&lt;/orderPaymentConfirmDate&gt;
+			&lt;orderPromotionDiscount&gt;0.0&lt;/orderPromotionDiscount&gt;
+			&lt;orderStatus&gt;ORDER_TRUNED_TO_DO&lt;/orderStatus&gt;
+			&lt;payServiceType&gt;4&lt;/payServiceType&gt;
+			&lt;productAmount&gt;328.0&lt;/productAmount&gt;
+			&lt;receiveDate&gt;2011-09-23 00:03:07&lt;/receiveDate&gt;
+			&lt;recompensPoints&gt;0.0&lt;/recompensPoints&gt;
+			&lt;updateTime&gt;2012-06-04 17:26:35&lt;/updateTime&gt;
+		&lt;/orderDetail&gt;
+		&lt;orderItemList&gt;
+			&lt;orderItem&gt;
+				&lt;id&gt;41509827&lt;/id&gt;
+				&lt;isItemLeaf&gt;1&lt;/isItemLeaf&gt;
+				&lt;merchantId&gt;1668&lt;/merchantId&gt;
+				&lt;orderId&gt;16430903&lt;/orderId&gt;
+				&lt;orderItemAmount&gt;328.0&lt;/orderItemAmount&gt;
+				&lt;orderItemNum&gt;1&lt;/orderItemNum&gt;
+				&lt;orderItemPrice&gt;328.0&lt;/orderItemPrice&gt;
+				&lt;originalPrice&gt;328.0&lt;/originalPrice&gt;
+				&lt;outerId&gt;w91020202100&lt;/outerId&gt;
+				&lt;productCName&gt;【博洋家纺】床上用品 被芯 馨雅型大豆纤维春秋被 实物拍摄1.5米床适用&lt;/productCName&gt;
+				&lt;productId&gt;1381643&lt;/productId&gt;
+				&lt;promoteType&gt;0&lt;/promoteType&gt;
+				&lt;taxRate&gt;0.0&lt;/taxRate&gt;
+				&lt;updateTime&gt;2012-03-23 04:55:16&lt;/updateTime&gt;
+			&lt;/orderItem&gt;
+		&lt;/orderItemList&gt;
+	&lt;/orderInfo&gt;
+	&lt;totalCount&gt;1&lt;/totalCount&gt;
+&lt;/response&gt;
+
+</pre>
+						</div>
+
+						<p class="data-format">JSON数据格式:</p>
+						<div class="img-wrap">
+							<!-- JS刷-->
+							<pre class="brush: js;">
+{&quot;response&quot;:{&quot;errorCount&quot;:0,&quot;orderInfo&quot;:{&quot;orderDetail&quot;:{&quot;deliveryMethodType&quot;:30002,&quot;deliverySupplierId&quot;:1757,&quot;goodReceiverPostCode&quot;:&quot;200125&quot;,&quot;merchantExpressNbr&quot;:&quot;368519531278&quot;,&quot;merchantRemark&quot;:&quot; 客户说不要了，已拒收。 9-11 304&quot;,&quot;orderAmount&quot;:328,&quot;orderCode&quot;:&quot;109042523669&quot;,&quot;orderCreatePayTime&quot;:&quot;2011-09-04 22:32:27&quot;,&quot;orderCreateTime&quot;:&quot;2011-06-01 00:00:00&quot;,&quot;orderDeliveryFee&quot;:0,&quot;orderFostRebate&quot;:0,&quot;orderId&quot;:16430903,&quot;orderNeedInvoice&quot;:0,&quot;orderPaymentConfirmDate&quot;:&quot;2011-09-05 16:00:53&quot;,&quot;orderPromotionDiscount&quot;:0,&quot;orderStatus&quot;:&quot;ORDER_TRUNED_TO_DO&quot;,&quot;payServiceType&quot;:4,&quot;productAmount&quot;:328,&quot;receiveDate&quot;:&quot;2011-09-23 00:03:07&quot;,&quot;recompensPoints&quot;:0,&quot;updateTime&quot;:&quot;2012-06-04 17:26:35&quot;},&quot;orderItemList&quot;:{&quot;orderItem&quot;:[{&quot;id&quot;:41509827,&quot;isItemLeaf&quot;:1,&quot;merchantId&quot;:1668,&quot;orderId&quot;:16430903,&quot;orderItemAmount&quot;:328,&quot;orderItemNum&quot;:1,&quot;orderItemPrice&quot;:328,&quot;originalPrice&quot;:328,&quot;outerId&quot;:&quot;w91020202100&quot;,&quot;productCName&quot;:&quot;【博洋家纺】床上用品 被芯 馨雅型大豆纤维春秋被 实物拍摄1.5米床适用&quot;,&quot;productId&quot;:1381643,&quot;promoteType&quot;:0,&quot;taxRate&quot;:0,&quot;updateTime&quot;:&quot;2012-03-23 04:55:16&quot;}]}},&quot;totalCount&quot;:1}}
+</pre>
+						</div>
+					</div>
+					<div>
+						<h2 class="head-title" id="error-code">错误码</h2>
+
+						<table class="api-table" cellspacing='0'>
+							<thead>
+								<tr>
+									<th class="left" width="30%">错误码</th>
+									<th class="left" width="30%">错误描述</th>
+									<th class="left" width="40%">解决方案</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="odd">
+									<td class="left">yhd.order.detail.get.param_missing</td>
+									<td class="left">订单编码为空</td>
+									<td class="left">输入订单编码信息</td>
+								</tr>
+								<tr class="even">
+									<td class="left">yhd.order.detail.get.not_found</td>
+									<td class="left">订单编码{0}不存在</td>
+									<td class="left">检查订单编码是否输入有误</td>
+								</tr>
+								<tr class="odd">
+									<td class="left">yhd.order.detail.get.error</td>
+									<td class="left">获取单个订单的详细信息失败</td>
+									<td class="left">系统运行异常，请稍后再试</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<!-- ued div end-->
+				</div>
+			</div>
+		</div>
+		<!--正文区 end-->
+		<!--左侧导航栏 begin-->
+		<div class="col-sub">
+			<div class="APIgory">
+				<ul>
+					<li>
+						<div class="APIgory-title">
+							<a href="orderApi.html">返回&nbsp;<span
+								class="APIgory-sub-title"> 订单API</span> </a>
+						</div></li>
+					<li>
+						<div class="APIgory-list  ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.orders.get.html" title="yhd.orders.get">yhd.orders.get</a>
+								<p class="APIgory-intro info-overflow">获取订单列表</p>
+							</div>
+							<s></s>
+						</div></li>
+					<li>
+						<div class="APIgory-list focus ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.order.detail.get.html" title="yhd.order.detail.get">yhd.order.detail.get</a>
+								<p class="APIgory-intro info-overflow">获取单个订单的详细信息</p>
+							</div>
+							<s></s>
+						</div></li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.orders.detail.get.html" title="yhd.orders.detail.get">yhd.orders.detail.get</a>
+								<p class="APIgory-intro info-overflow">批量获取订单详情</p>
+							</div>
+							<s></s>
+						</div></li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.invoices.get.html" title="yhd.invoices.get">yhd.invoices.get</a>
+								<p class="APIgory-intro info-overflow">查询发票信息</p>
+							</div>
+							<s></s>
+						</div></li>
+					<li class="list-last">
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.order.merchant.remark.update.html"
+									title="yhd.invoices.get">yhd.order.merchant.remark.update</a>
+								<p class="APIgory-intro info-overflow">更新单个订单的卖家备注信息</p>
+							</div>
+							<s></s>
+						</div></li>
+				</ul>
+				<div class="quick-api">
+					<a href="apiHomePage.html">API文档</a>
+				</div>
+			</div>
+		</div>
+		<!--左侧导航栏 end-->
+	</div>
+</body>
+</html>

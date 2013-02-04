@@ -1,0 +1,21 @@
+<!--获取城市区域下商圈列表 请求 合作伙伴请求-->
+<?xml version="1.0" encoding="utf-8"?>
+<Request xmlns="http://tuan.360buy.com/Request">
+	<!--版本-->
+	<Version>1.0</Version>
+	<!--合作伙伴ID-->
+	<VenderId>100000</VenderId>
+	<!--合作伙伴Key-->
+	<VenderKey>xxxxxxxxxxxxxxxxx</VenderKey>
+	<!--是否压缩 默认不压缩-->
+	<Zip>false</Zip>
+	<!--是否加密-->
+	<Encrypt>true</Encrypt>
+	<!--提交数据-->
+	<Data>
+		<Message xmlns="http://tuan.360buy.com/QueryAreaRequest">
+			<!--区域ID 必须为数字 必填-->
+			<DistrictId>25</DistrictId>
+		</Message>
+	</Data>
+</Request>

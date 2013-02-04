@@ -1,0 +1,23 @@
+<!--下架团购产品 请求 合作伙伴请求-->
+<?xml version="1.0" encoding="utf-8"?>
+<Request xmlns="http://tuan.360buy.com/Request">
+	<!--版本-->
+	<Version>1.0</Version>
+	<!--合作伙伴ID-->
+	<VenderId>100000</VenderId>
+	<!--合作伙伴Key-->
+	<VenderKey>xxxxxxxxxxxxxxxxx</VenderKey>
+	<!--是否压缩 默认不压缩-->
+	<Zip>false</Zip>
+	<!--是否加密-->
+	<Encrypt>true</Encrypt>
+    <!--提交数据-->
+    <Data>
+		<Message xmlns="http://tuan.360buy.com/CancelTeamRequest">
+			<!--京东团购ID [必填]-->
+			<JdTeamId>12232</JdTeamId>
+			<!--合作伙伴团购ID [必填]-->
+			<VenderTeamId>343234</VenderTeamId>
+		</Message>
+	</Data>
+</Request>

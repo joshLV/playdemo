@@ -1,0 +1,75 @@
+body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, dl, dt, dd, ul, ol, li, pre, form, fieldset, legend, button, input, textarea, th, td {
+    margin: 0;
+    padding: 0;
+}
+body, button, input, select, textarea {
+    font: 12px/1.5 tahoma,arial,宋体,sans-serif;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-size: 100%;
+}
+address, cite, dfn, em, var {
+    font-style: normal;
+}
+code, kbd, pre, samp {
+    font-family: courier new,courier,monospace;
+}
+small {
+    font-size: 12px;
+}
+ul, ol {
+    list-style: none outside none;
+}
+a {
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+sup {
+    vertical-align: text-top;
+}
+sub {
+    vertical-align: text-bottom;
+}
+legend {
+    color: #000000;
+}
+fieldset, img {
+    border: 0 none;
+}
+button, input, select, textarea {
+    font-size: 100%;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary, time, mark, audio, video {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+mark {
+    background: none repeat scroll 0 0 #FFFF00;
+}
+#header, #content, #footer {
+    margin-left: auto;
+    margin-right: auto;
+}
+.col-main {
+    float: left;
+    min-height: 1px;
+    width: 100%;
+}
+.col-sub, .col-extra {
+    float: left;
+}
+.layout:after, .main-wrap:after, .col-sub:after, .col-extra:after {
+    clear: both;
+    content: " ";
+    display: block;
+    height: 0;
+}
+.layout, .main-wrap, .col-sub, .col-extra {
+}

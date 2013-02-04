@@ -1,0 +1,399 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>一号店开放平台 - API详情 - 批量获取订单详情</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="../css/global-min.css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/tbsp.css" />
+<link rel="stylesheet" href="../css/reset.css" />
+<link rel="stylesheet" href="../css/common.css" />
+<link rel="stylesheet" href="../css/header.css" />
+<link rel="stylesheet" href="../css/docmtCenter.css" />
+<script type="text/javascript" src="../js/kissy.js"></script>
+<script type="text/javascript" src="../js/judge.js"></script>
+<script type="text/javascript" src="../js/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="../js/doc.js"></script>
+<script type="text/javascript" src="../js/sh.js"></script>
+<link rel="stylesheet" href="../css/sh.css" />
+<script type="text/javascript" src="../js/grade.js"></script>
+</head>
+<body>
+	<div class="seller">
+		<div id="page">
+			<div class="clearfix" id="pageNav">
+				<h1 id="toplogo">
+					<a href="http://www.yihaodian.com"><img class="pngfilter"
+						title="一号店开放平台" src="../img/logo.png" alt="1号店"> </a>
+				</h1>
+				<h1 id="topmenu" align="center">
+					<a class="selected" href="#"
+						style="font-size: 20px; text-align: center;">———只为更美好的生活</a>
+					<!-- 去掉选中小三角 <s></s> -->
+				</h1>
+			</div>
+		</div>
+	</div>
+	<div class="crumbs">
+		<a href="apiHomePage.html">API文档</a> <a href="orderApi.html">订单API</a>
+		<a class="last" href="yhd.orders.detail.get.html">yhd.orders.detail.get</a>
+		<!--class with "last"-->
+	</div>
+
+	<div class='container grid-s165m0 layout'>
+		<!--正文区 begin-->
+		<div class="col-main bg_line">
+			<div class="main-wrap">
+				<div class="title-wrap">
+					<h1 class="open-bg title">yhd.orders.detail.get 批量获取订单详情</h1>
+
+					<ul class="api-sub-title layout clearfix">
+						<li class="sub-title"><a class="link" href="#authorize">API接口描述</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#systemParameter">系统级输入参数</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#api-param">应用级输入参数</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#result">返回结果</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#example">返回示例</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#error-code">错误码</a>
+						</li>
+					</ul>
+				</div>
+
+				<div class="api-detail-bd" id="bd">
+					<!-- 评分-->
+					<!-- 左侧弹框效果 -->
+					<div class="judeApi hidden" id="judeApi"></div>
+					<script>
+						KISSY.use("starGrade", function(S) {
+							S.grade.init();
+						});
+					</script>
+					<!-- 左侧弹框效果end -->
+
+					<div class="content-first">
+						<h2 class="head-title" id="authorize">API接口描述</h2>
+						<p class="introduction">通过指定订单编码来批量获取订单详细信息，查询成功，则返回查询成功记录数及相应的订单详细信息。
+						查询失败，则返回查询失败记录数及相应的错误信息描述</p>
+					</div>
+
+
+					<div>
+						<iframe id="systemParameter" src="systemInputParameters.html"
+							frameborder="no" border="0" marginwidth="80px" marginheight="0"
+							scrolling="no" allowtransparency="yes"> </iframe>
+					</div>
+					<div>
+						<h2 class="head-title" id="api-param">应用级输入参数</h2>
+						<table class="api-table" cellspacing='0'>
+							<thead>
+								<tr>
+									<th width="15%" class="middle">名称</th>
+									<th width="10%" class="middle">类型</th>
+									<th width="10%" class="middle">是否必须</th>
+									<th width="15%" class="left">示例值</th>
+									<th width="10%" class="left">默认值</th>
+									<th width="40%" class="left">描述</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="odd">
+									<td class="middle">orderCodeList</td>
+									<td class="middle"><a href="parameterStyle.html#String[]">String[]</a>
+									</td>
+									<td class="middle">是</td>
+									<td class="left"></td>
+									<td class="left"></td>
+									<td class="left">订单编码列表（逗号分隔）,最大长度为50</td>
+
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div>
+						<h2 class="head-title" id="result">返回结果</h2>
+						<table class="api-table" cellspacing='0'>
+							<thead>
+								<tr>
+									<th width="20%" class="left">名称</th>
+									<th width="15%" class="middle">类型</th>
+									<th width="15%" class="middle">是否必须</th>
+									<th width="20%" class="middle">示例值</th>
+									<th width="30%" class="left">描述</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="odd">
+									<td class="left">totalCount</td>
+									<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle">1</td>
+									<td class="left">查询成功记录数</td>
+								</tr>
+								<tr class="even">
+									<td class="left">errorCount</td>
+									<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle">1</td>
+									<td class="left">查询失败记录数</td>
+								</tr>
+								<tr class="odd">
+									<td class="left">orderInfoList</td>
+									<td class="middle"><a href="orderInfoObject.html">OrderInfo[]</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">订单详情列表</td>
+								</tr>
+								<tr class="even">
+									<td class="left">errInfoList</td>
+									<td class="middle"><a href="errDetailInfoObject.html">ErrDetailInfo[]</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">错误信息列表</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div>
+						<h2 class="head-title " id="example">返回示例</h2>
+						<p class="data-format">XML数据格式:</p>
+						<div class="img-wrap">
+							<!-- xml刷-->
+							<pre class="brush: xml;">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;response&gt;
+	&lt;errorCount&gt;0&lt;/errorCount&gt;
+	&lt;orderInfoList&gt;
+		&lt;orderInfo&gt;
+			&lt;orderDetail&gt;
+				&lt;deliveryMethodType&gt;30002&lt;/deliveryMethodType&gt;
+				&lt;goodReceiverPostCode&gt;200124&lt;/goodReceiverPostCode&gt;
+				&lt;orderAmount&gt;898.0&lt;/orderAmount&gt;
+				&lt;orderCode&gt;109082538DU4&lt;/orderCode&gt;
+				&lt;orderCreatePayTime&gt;2011-09-08 17:09:05&lt;/orderCreatePayTime&gt;
+				&lt;orderCreateTime&gt;2011-06-01 00:00:00&lt;/orderCreateTime&gt;
+				&lt;orderDeliveryFee&gt;0.0&lt;/orderDeliveryFee&gt;
+				&lt;orderFostRebate&gt;0.0&lt;/orderFostRebate&gt;
+				&lt;orderId&gt;16674114&lt;/orderId&gt;
+				&lt;orderNeedInvoice&gt;0&lt;/orderNeedInvoice&gt;
+				&lt;orderPromotionDiscount&gt;0.0&lt;/orderPromotionDiscount&gt;
+				&lt;orderStatus&gt;ORDER_TRUNED_TO_DO&lt;/orderStatus&gt;
+				&lt;payServiceType&gt;1&lt;/payServiceType&gt;
+				&lt;productAmount&gt;898.0&lt;/productAmount&gt;
+				&lt;recompensPoints&gt;0.0&lt;/recompensPoints&gt;
+				&lt;updateTime&gt;2012-06-04 17:27:05&lt;/updateTime&gt;
+			&lt;/orderDetail&gt;
+			&lt;orderItemList&gt;
+				&lt;orderItem&gt;
+					&lt;id&gt;42027668&lt;/id&gt;
+					&lt;isItemLeaf&gt;1&lt;/isItemLeaf&gt;
+					&lt;merchantId&gt;1668&lt;/merchantId&gt;
+					&lt;orderId&gt;16674114&lt;/orderId&gt;
+					&lt;orderItemAmount&gt;399.0&lt;/orderItemAmount&gt;
+					&lt;orderItemNum&gt;1&lt;/orderItemNum&gt;
+					&lt;orderItemPrice&gt;399.0&lt;/orderItemPrice&gt;
+					&lt;originalPrice&gt;399.0&lt;/originalPrice&gt;
+					&lt;outerId&gt;w91104060109&lt;/outerId&gt;
+					&lt;productCName&gt;【博洋家纺】床上用品 全棉贡缎活性印花床单四件套 幸福花季幸福花季1.5米床适用
+					&lt;/productCName&gt;
+					&lt;productId&gt;1381560&lt;/productId&gt;
+					&lt;promoteType&gt;1&lt;/promoteType&gt;
+					&lt;taxRate&gt;0.0&lt;/taxRate&gt;
+					&lt;updateTime&gt;2012-03-22 23:30:33&lt;/updateTime&gt;
+				&lt;/orderItem&gt;
+				&lt;orderItem&gt;
+					&lt;id&gt;42027669&lt;/id&gt;
+					&lt;isItemLeaf&gt;1&lt;/isItemLeaf&gt;
+					&lt;merchantId&gt;1668&lt;/merchantId&gt;
+					&lt;orderId&gt;16674114&lt;/orderId&gt;
+					&lt;orderItemAmount&gt;499.0&lt;/orderItemAmount&gt;
+					&lt;orderItemNum&gt;1&lt;/orderItemNum&gt;
+					&lt;orderItemPrice&gt;499.0&lt;/orderItemPrice&gt;
+					&lt;originalPrice&gt;499.0&lt;/originalPrice&gt;
+					&lt;outerId&gt;w91104040103&lt;/outerId&gt;
+					&lt;productCName&gt;【博洋家纺】床上用品 高密全棉长绒棉印花床单四件套 情牵今生实物拍摄1.5米床适用
+					&lt;/productCName&gt;
+					&lt;productId&gt;1392583&lt;/productId&gt;
+					&lt;promoteType&gt;1&lt;/promoteType&gt;
+					&lt;taxRate&gt;0.0&lt;/taxRate&gt;
+					&lt;updateTime&gt;2012-03-22 23:30:33&lt;/updateTime&gt;
+				&lt;/orderItem&gt;
+			&lt;/orderItemList&gt;
+		&lt;/orderInfo&gt;
+		&lt;orderInfo&gt;
+			&lt;orderDetail&gt;
+				&lt;deliveryMethodType&gt;30002&lt;/deliveryMethodType&gt;
+				&lt;deliverySupplierId&gt;3443&lt;/deliverySupplierId&gt;
+				&lt;goodReceiverPostCode&gt;300131&lt;/goodReceiverPostCode&gt;
+				&lt;merchantExpressNbr&gt;test0006&lt;/merchantExpressNbr&gt;
+				&lt;orderAmount&gt;124.0&lt;/orderAmount&gt;
+				&lt;orderCode&gt;10918094L5C4&lt;/orderCode&gt;
+				&lt;orderCreatePayTime&gt;2011-09-18 02:59:32&lt;/orderCreatePayTime&gt;
+				&lt;orderCreateTime&gt;2011-06-01 00:00:00&lt;/orderCreateTime&gt;
+				&lt;orderDeliveryFee&gt;0.0&lt;/orderDeliveryFee&gt;
+				&lt;orderFostRebate&gt;0.0&lt;/orderFostRebate&gt;
+				&lt;orderId&gt;17269626&lt;/orderId&gt;
+				&lt;orderNeedInvoice&gt;1&lt;/orderNeedInvoice&gt;
+				&lt;orderPaymentConfirmDate&gt;2011-09-18 01:02:49
+				&lt;/orderPaymentConfirmDate&gt;
+				&lt;orderPromotionDiscount&gt;0.0&lt;/orderPromotionDiscount&gt;
+				&lt;orderStatus&gt;ORDER_OUT_OF_WH&lt;/orderStatus&gt;
+				&lt;payServiceType&gt;1&lt;/payServiceType&gt;
+				&lt;productAmount&gt;124.0&lt;/productAmount&gt;
+				&lt;receiveDate&gt;2011-10-03 00:03:08&lt;/receiveDate&gt;
+				&lt;recompensPoints&gt;0.0&lt;/recompensPoints&gt;
+				&lt;updateTime&gt;2012-06-04 17:12:12&lt;/updateTime&gt;
+			&lt;/orderDetail&gt;
+			&lt;orderItemList&gt;
+				&lt;orderItem&gt;
+					&lt;id&gt;43381516&lt;/id&gt;
+					&lt;isItemLeaf&gt;1&lt;/isItemLeaf&gt;
+					&lt;merchantId&gt;1668&lt;/merchantId&gt;
+					&lt;orderId&gt;17269626&lt;/orderId&gt;
+					&lt;orderItemAmount&gt;124.0&lt;/orderItemAmount&gt;
+					&lt;orderItemNum&gt;1&lt;/orderItemNum&gt;
+					&lt;orderItemPrice&gt;124.0&lt;/orderItemPrice&gt;
+					&lt;originalPrice&gt;124.0&lt;/originalPrice&gt;
+					&lt;outerId&gt;w91032105107&lt;/outerId&gt;
+					&lt;productCName&gt;【博洋家纺】床上用品 蝶型太空记忆枕咖啡均码&lt;/productCName&gt;
+					&lt;productId&gt;1386822&lt;/productId&gt;
+					&lt;promoteType&gt;1&lt;/promoteType&gt;
+					&lt;taxRate&gt;0.0&lt;/taxRate&gt;
+					&lt;updateTime&gt;2012-03-22 23:13:18&lt;/updateTime&gt;
+				&lt;/orderItem&gt;
+			&lt;/orderItemList&gt;
+		&lt;/orderInfo&gt;
+	&lt;/orderInfoList&gt;
+	&lt;totalCount&gt;2&lt;/totalCount&gt;
+&lt;/response&gt;
+
+</pre>
+						</div>
+
+						<p class="data-format">JSON数据格式:</p>
+						<div class="img-wrap">
+							<!-- JS刷-->
+							<pre class="brush: js;">
+{&quot;response&quot;:{&quot;errorCount&quot;:0,&quot;orderInfoList&quot;:{&quot;orderInfo&quot;:[{&quot;orderDetail&quot;:{&quot;deliveryMethodType&quot;:30002,&quot;goodReceiverPostCode&quot;:&quot;200124&quot;,&quot;orderAmount&quot;:898,&quot;orderCode&quot;:&quot;109082538DU4&quot;,&quot;orderCreatePayTime&quot;:&quot;2011-09-08 17:09:05&quot;,&quot;orderCreateTime&quot;:&quot;2011-06-01 00:00:00&quot;,&quot;orderDeliveryFee&quot;:0,&quot;orderFostRebate&quot;:0,&quot;orderId&quot;:16674114,&quot;orderNeedInvoice&quot;:0,&quot;orderPromotionDiscount&quot;:0,&quot;orderStatus&quot;:&quot;ORDER_TRUNED_TO_DO&quot;,&quot;payServiceType&quot;:1,&quot;productAmount&quot;:898,&quot;recompensPoints&quot;:0,&quot;updateTime&quot;:&quot;2012-06-04 17:27:05&quot;},&quot;orderItemList&quot;:{&quot;orderItem&quot;:[{&quot;id&quot;:42027668,&quot;isItemLeaf&quot;:1,&quot;merchantId&quot;:1668,&quot;orderId&quot;:16674114,&quot;orderItemAmount&quot;:399,&quot;orderItemNum&quot;:1,&quot;orderItemPrice&quot;:399,&quot;originalPrice&quot;:399,&quot;outerId&quot;:&quot;w91104060109&quot;,&quot;productCName&quot;:&quot;【博洋家纺】床上用品 全棉贡缎活性印花床单四件套 幸福花季幸福花季1.5米床适用&quot;,&quot;productId&quot;:1381560,&quot;promoteType&quot;:1,&quot;taxRate&quot;:0,&quot;updateTime&quot;:&quot;2012-03-22 23:30:33&quot;},{&quot;id&quot;:42027669,&quot;isItemLeaf&quot;:1,&quot;merchantId&quot;:1668,&quot;orderId&quot;:16674114,&quot;orderItemAmount&quot;:499,&quot;orderItemNum&quot;:1,&quot;orderItemPrice&quot;:499,&quot;originalPrice&quot;:499,&quot;outerId&quot;:&quot;w91104040103&quot;,&quot;productCName&quot;:&quot;【博洋家纺】床上用品 高密全棉长绒棉印花床单四件套  情牵今生实物拍摄1.5米床适用&quot;,&quot;productId&quot;:1392583,&quot;promoteType&quot;:1,&quot;taxRate&quot;:0,&quot;updateTime&quot;:&quot;2012-03-22 23:30:33&quot;}]}},{&quot;orderDetail&quot;:{&quot;deliveryMethodType&quot;:30002,&quot;deliverySupplierId&quot;:3443,&quot;goodReceiverPostCode&quot;:&quot;300131&quot;,&quot;merchantExpressNbr&quot;:&quot;test0006&quot;,&quot;orderAmount&quot;:124,&quot;orderCode&quot;:&quot;10918094L5C4&quot;,&quot;orderCreatePayTime&quot;:&quot;2011-09-18 02:59:32&quot;,&quot;orderCreateTime&quot;:&quot;2011-06-01 00:00:00&quot;,&quot;orderDeliveryFee&quot;:0,&quot;orderFostRebate&quot;:0,&quot;orderId&quot;:17269626,&quot;orderNeedInvoice&quot;:1,&quot;orderPaymentConfirmDate&quot;:&quot;2011-09-18 01:02:49&quot;,&quot;orderPromotionDiscount&quot;:0,&quot;orderStatus&quot;:&quot;ORDER_OUT_OF_WH&quot;,&quot;payServiceType&quot;:1,&quot;productAmount&quot;:124,&quot;receiveDate&quot;:&quot;2011-10-03 00:03:08&quot;,&quot;recompensPoints&quot;:0,&quot;updateTime&quot;:&quot;2012-06-04 17:12:12&quot;},&quot;orderItemList&quot;:{&quot;orderItem&quot;:[{&quot;id&quot;:43381516,&quot;isItemLeaf&quot;:1,&quot;merchantId&quot;:1668,&quot;orderId&quot;:17269626,&quot;orderItemAmount&quot;:124,&quot;orderItemNum&quot;:1,&quot;orderItemPrice&quot;:124,&quot;originalPrice&quot;:124,&quot;outerId&quot;:&quot;w91032105107&quot;,&quot;productCName&quot;:&quot;【博洋家纺】床上用品 蝶型太空记忆枕咖啡均码&quot;,&quot;productId&quot;:1386822,&quot;promoteType&quot;:1,&quot;taxRate&quot;:0,&quot;updateTime&quot;:&quot;2012-03-22 23:13:18&quot;}]}}]},&quot;totalCount&quot;:2}}
+</pre>
+						</div>
+					</div>
+					<div>
+						<h2 class="head-title" id="error-code">错误码</h2>
+
+						<table class="api-table" cellspacing='0'>
+							<thead>
+								<tr>
+									<th class="left" width="35%">错误码</th>
+									<th class="left" width="30%">错误描述</th>
+									<th class="left" width="35%">解决方案</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="odd">
+									<td class="left">yhd.order.detail.list.get.param_missing</td>
+									<td class="left">订单编码列表为空</td>
+									<td class="left">输入参数 orderCodeList</td>
+								</tr>
+								<tr class="even">
+									<td class="left">yhd.order.detail.list.get.param_size_invaild</td>
+									<td class="left">订单编码列表超长</td>
+									<td class="left">列表最大长度为50</td>
+								</tr>
+								<tr class="odd">
+									<td class="left">yhd.order.detail.list.get.this.not_found</td>
+									<td class="left">订单编码{0}不存在</td>
+									<td class="left">检查输入的orderCode是否正确</td>
+								</tr>
+								<tr class="even">
+									<td class="left">yhd.order.detail.list.get.not_found</td>
+									<td class="left">订单信息列表{0}不存在</td>
+									<td class="left">检查输入的orderCodeList是否正确</td>
+								</tr>
+								<tr class="odd">
+									<td class="left">yhd.order.detail.list.get.error</td>
+									<td class="left">获取订单列表失败</td>
+									<td class="left">系统运行异常，请稍后再试</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<!-- ued div end-->
+				</div>
+			</div>
+		</div>
+		<!--正文区 end-->
+		<!--左侧导航栏 begin-->
+		<div class="col-sub">
+			<div class="APIgory">
+				<ul>
+					<li>
+						<div class="APIgory-title">
+							<a
+								href="orderApi.html">返回&nbsp;<span
+								class="APIgory-sub-title"> 订单API</span> </a>
+						</div></li>
+					<li>
+						<div class="APIgory-list  ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.orders.get.html" title="yhd.orders.get">yhd.orders.get</a>
+								<p class="APIgory-intro info-overflow">获取订单列表</p>
+							</div>
+							<s></s>
+						</div></li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.order.detail.get.html" title="yhd.order.detail.get">yhd.order.detail.get</a>
+								<p class="APIgory-intro info-overflow">获取单个订单的详细信息</p>
+							</div>
+							<s></s>
+						</div></li>
+					<li>
+						<div class="APIgory-list focus">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.orders.detail.get.html" title="yhd.orders.detail.get">yhd.orders.detail.get</a>
+								<p class="APIgory-intro info-overflow">批量获取订单详情	</p>
+							</div>
+							<s></s>
+						</div></li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.invoices.get.html" title="yhd.invoices.get">yhd.invoices.get</a>
+								<p class="APIgory-intro info-overflow">查询发票信息</p>
+							</div>
+							<s></s>
+						</div></li>
+						<li class="list-last">
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.order.merchant.remark.update.html"
+									title="yhd.invoices.get">yhd.order.merchant.remark.update</a>
+								<p class="APIgory-intro info-overflow">更新单个订单的卖家备注信息</p>
+							</div>
+							<s></s>
+						</div></li>
+				</ul>
+				<div class="quick-api">
+					<a href="apiHomePage.html">API文档</a>
+				</div>
+			</div>
+		</div>
+		<!--左侧导航栏 end-->
+	</div>
+</body>
+</html>

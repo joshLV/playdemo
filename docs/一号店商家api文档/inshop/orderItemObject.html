@@ -1,0 +1,284 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>一号店开放平台 - API详情</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="../css/global-min.css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/tbsp.css" />
+<link rel="stylesheet" href="../css/reset.css" />
+<link rel="stylesheet" href="../css/common.css" />
+<link rel="stylesheet" href="../css/header.css" />
+<link rel="stylesheet" href="../css/docmtCenter.css" />
+<script type="text/javascript" src="../js/kissy.js"></script>
+<script type="text/javascript" src="../js/judge.js"></script>
+<script type="text/javascript" src="../js/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="../js/doc.js"></script>
+<script type="text/javascript" src="../js/sh.js"></script>
+<link rel="stylesheet" href="../css/sh.css" />
+<script type="text/javascript" src="../js/grade.js"></script>
+</head>
+<body>
+	<div class="seller">
+		<div id="page">
+			<div class="clearfix" id="pageNav">
+				<h1 id="toplogo">
+					<a href="http://www.yihaodian.com"><img class="pngfilter"
+						title="一号店开放平台" src="../img/logo.png" alt="1号店"> </a>
+				</h1>
+				<h1 id="topmenu" align="center">
+					<a class="selected" href="#"
+						style="font-size: 20px; text-align: center;">———只为更美好的生活</a>
+					<!-- 去掉选中小三角 <s></s> -->
+				</h1>
+			</div>
+		</div>
+	</div>
+<div class="crumbs">
+		<a href="apiHomePage.html">API文档</a> <a href="productApi.html">订单API</a>
+		<a class="last" href="orderItemObject.html">OrderItem</a>
+		<!--class with "last"-->
+	</div>
+
+	<div class='container grid-s165m0 layout'>
+		<!--正文区 begin-->
+		<div class="col-main bg_line">
+			<div class="main-wrap">
+				<div class="title-wrap">
+					<h1 class="title">OrderItem</h1>
+				</div>
+
+				<div class="api-detail-bd" id="bd">
+					<!-- ued div start 不知何用-->
+					<!-- 左侧弹框效果 -->
+					<div class="judeApi hidden" id="judeApi"></div>
+					<script>
+						KISSY.use("starGrade", function(S) {
+							S.grade.init();
+						});
+					</script>
+					<!-- 左侧弹框效果end -->
+					<div>
+
+						<div class="content-first">
+							<h2 class="head-title" id="">简要描述</h2>
+							<p class="introduction">订单明细</p>
+						</div>
+						<h2 class="api-content-title">
+							<a name="testtool"></a>
+						</h2>
+
+
+
+						<div>
+							<h2 class="head-title" id="">属性</h2>
+							<table class="api-table" cellspacing='0'>
+								<thead>
+									<tr>
+										<th class="left" width="20%">名称</th>
+										<th class="middle" width="10%">类型</th>
+										<th class="middle" width="10%">是否隐私</th>
+										<th class="middle" width="20%">示例值</th>
+										<th class="left" width="40%">描述</th>
+									</tr>
+								</thead>
+								<tbody>
+								<tr class="odd">
+									<td class="left">id</td>
+									<td class="middle"><a href="parameterStyle.html#Long">Long</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">订单明细ID</td>
+								</tr>
+								<tr class="even">
+									<td class="left">orderId</td>
+									<td class="middle"><a href="parameterStyle.html#Long">Long</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">订单ID</td>
+								</tr>
+                                <tr class="odd">
+									<td class="left">productCName</td>
+									<td class="middle"><a href="parameterStyle.html#String">String</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">产品名称 </td>
+								</tr>								
+								<tr class="even">
+									<td class="left">orderItemAmount</td>
+									<td class="middle"><a href="parameterStyle.html#Double">Double</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">金额</td>
+								</tr>
+								<tr class="odd">
+									<td class="left">orderItemNum</td>
+									<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">数量</td>
+								</tr>								
+								<tr class="even">
+									<td class="left">orderItemPrice</td>
+									<td class="middle"><a href="parameterStyle.html#Double">Double</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">单价</td>
+								</tr>	
+								<tr class="odd">
+									<td class="left">originalPrice</td>
+									<td class="middle"><a href="parameterStyle.html#Double">Double</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">产品原价  </td>
+								</tr>								
+								<tr class="evem">
+									<td class="left">taxRate</td>
+									<td class="middle"><a href="parameterStyle.html#Double">Double</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">销项税 </td>
+								</tr>								
+								<tr class="odd">
+									<td class="left">productId</td>
+									<td class="middle"><a href="parameterStyle.html#Long">Long</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">产品id </td>
+								</tr>
+								<tr class="even">
+									<td class="left">isItemLeaf</td>
+									<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">是否是叶子节点：1是；2否 </td>
+								</tr>
+								<tr class="odd">
+									<td class="left">merchantId</td>
+									<td class="middle"><a href="parameterStyle.html#Long">Long</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">商家id </td>
+								</tr>
+								<tr class="even">
+									<td class="left">promoteType</td>
+									<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">促销类型 "0:不促销 1:无数量限制促销 2:限制每个订单购买数量 
+									3:限制每个会员购买数量 4:限制产品总共购买数量" </td>
+								</tr>
+								<tr class="odd">
+									<td class="left">processFinishDate</td>
+									<td class="middle"><a href="parameterStyle.html#Date">Date</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">退换货完成时间  </td>
+								</tr>
+								<tr class="even">
+									<td class="left">updateTime</td>
+									<td class="middle"><a href="parameterStyle.html#Date">Date</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">更新时间  </td>
+								</tr>	
+								<tr class="odd">
+									<td class="left">outerId</td>
+									<td class="middle"><a href="parameterStyle.html#String">String</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">产品外部编码 </td>
+								</tr>								
+							</tbody>
+							</table>
+						</div>
+					</div>
+					<!-- ued div end-->
+				</div>
+			</div>
+		</div>
+		<!--正文区 end-->
+		<!--左侧导航栏 begin-->
+	<div class="col-sub">
+			<div class="APIgory">
+								<ul>
+					<li>
+						<div class="APIgory-title">
+							<a href="orderApi.html">返回&nbsp;<span
+								class="APIgory-sub-title"> 订单API</span> </a>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.orders.get.html" title="yhd.orders.get">yhd.orders.get</a>
+								<p class="APIgory-intro info-overflow">获取订单列表</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.order.detail.get.html" title="yhd.order.detail.get">yhd.order.detail.get</a>
+								<p class="APIgory-intro info-overflow">获取单个订单的详细信息</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.orders.detail.get.html" title="yhd.orders.detail.get">yhd.orders.detail.get</a>
+								<p class="APIgory-intro info-overflow">批量获取订单详情</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.invoices.get.html" title="yhd.invoices.get">yhd.invoices.get</a>
+								<p class="APIgory-intro info-overflow">查询发票信息</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li class="list-last">
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.order.merchant.remark.update.html"
+									title="yhd.invoices.get">yhd.order.merchant.remark.update</a>
+								<p class="APIgory-intro info-overflow">更新单个订单的卖家备注信息</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+				</ul>
+				<div class="quick-api">
+					<a href="apiHomePage.html">API文档</a>
+				</div>
+			</div>
+		</div>
+</body>
+</html>

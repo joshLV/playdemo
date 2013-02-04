@@ -1,0 +1,25 @@
+<!-- 更新团购标题的接口 请求 合作伙伴请求-->
+<?xml version="1.0" encoding="utf-8"?>
+<Request xmlns="http://tuan.360buy.com/Request">
+	<!--版本-->
+	<Version>1.0</Version>
+	<!--合作伙伴ID-->
+	<VenderId>100000</VenderId>
+	<!--合作伙伴Key-->
+	<VenderKey>xxxxxxxxxxxxxxxxx</VenderKey>
+	<!--是否压缩 默认不压缩-->
+	<Zip>false</Zip>
+	<!--是否加密-->
+	<Encrypt>true</Encrypt>
+	<!--提交数据-->
+	<Data>
+		<Message xmlns="http://tuan.360buy.com/UpdateTitleRequest">
+			<!--合作伙伴方团购ID 必须大于0 [必填] -->
+			<VenderTeamId>432243</VenderTeamId>
+			<!--京东团购ID 必须大于0 [必填] -->
+			<JdTeamId>10003943</JdTeamId>
+			<!--团购标题名称  最长200个[必填]-->
+			<TeamTitle>和“它”来个亲密接触吧！仅59元，即享原价90元的八达岭野生动物园成人票一张，可免费乘园内游览车1次。中国最大的山地野生动物园，在世界闻名的八达岭脚下，观看中国最大的非洲狮群，有珍稀的白虎等待您的光临，还等什么。 </TeamTitle>
+		</Message>
+	</Data>
+</Request>

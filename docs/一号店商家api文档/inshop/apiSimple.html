@@ -1,0 +1,236 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>API文档 - 产品API</title>
+<link href="../css/global-min.css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/main.css" />
+<link rel="stylesheet" href="../css/tbsp.css" />
+<link rel="stylesheet" href="../css/reset.css" />
+<link rel="stylesheet" href="../css/common.css" />
+<link rel="stylesheet" href="../css/header.css" />
+<link rel="stylesheet" href="../css/docmtCenter.css" />
+<script type="text/javascript" src="../js/kissy.js"></script>
+<script type="text/javascript" src="../js/judge.js"></script>
+</head>
+<body>
+
+	<div class="seller">
+		<div id="page">
+			<div class="clearfix" id="pageNav">
+				<h1 id="toplogo">
+					<a href="http://www.yihaodian.com"><img class="pngfilter"
+						title="一号店开放平台" src="../img/logo.png" alt="1号店"> </a>
+				</h1>
+				<h1 id="topmenu" align="center">
+					<a class="selected" href="#"
+						style="font-size: 20px; text-align: center;">———只为更美好的生活</a>
+					<!-- 去掉选中小三角 <s></s> -->
+				</h1>
+			</div>
+		</div>
+	</div>
+	<!--api list-->
+	<div class="crumbs">
+		<a class="last" href="apiHomePage.html">API文档首页</a>
+	</div>
+	<div class="container grid-s165m0 layout">
+		<div class="col-main bg_line">
+			<div class="main-wrap ">
+				<h1 class="title">示例代码</h1>
+				<div class="contentlist-api">
+					<ul class="layout">
+						<li><h2>
+								<span class="mw-headline">示例代码</span>
+							</h2>
+
+							<div>
+								<table class="desc_table">
+									<tbody>
+										<tr>
+											<td>
+												<dl>
+													<pre>
+
+
+	/**
+	 * xml格式的测试代码
+	 * 
+	 */
+	public void testForXml() {
+		//测试环境URL
+		String routerUrl = "http://211.144.198.140:7070/router/api/rest/router";
+		//测试环境密钥
+		String secretKey = "1234567890";
+		
+		Map&lt;String, String&gt; paramMap = new HashMap&lt;String, String&gt;();
+		// 系统级参数设置（必须）
+		paramMap.put("checkCode", "11351-8414112-109759918-112-5555-123-20-21-93");
+		paramMap.put("merchantId", "423");
+		paramMap.put("erp", "cloudshops");
+		paramMap.put("erpVer", "1.0");
+		paramMap.put("format", "xml");
+		paramMap.put("method", "yhd.general.products.search");
+		paramMap.put("ver", "1.0");
+
+		// 应用级参数设置
+		paramMap.put("pageRows", "100");
+
+		String response = PostClient.sendByPost(paramMap, secretKey, routerUrl);
+
+		System.out.println(response);
+
+	}
+	
+
+
+	//**********************************
+	//		发送请求客户端代码
+	//**********************************
+
+	package com.yhd.openapi.client;
+	
+	import java.io.BufferedReader;
+	import java.io.InputStream;
+	import java.io.InputStreamReader;
+	import java.util.ArrayList;
+	import java.util.Iterator;
+	import java.util.List;
+	import java.util.Map;
+	import java.util.TreeMap;
+	import org.apache.http.HttpEntity;
+	import org.apache.http.HttpResponse;
+	import org.apache.http.NameValuePair;
+	import org.apache.http.client.HttpClient;
+	import org.apache.http.client.entity.UrlEncodedFormEntity;
+	import org.apache.http.client.methods.HttpPost;
+	import org.apache.http.impl.client.DefaultHttpClient;
+	import org.apache.http.message.BasicNameValuePair;
+	import com.yihaodian.merchant.common.util.Md5Util;
+	
+	public class PostClient {
+	
+		private static String POST_URL = "http://openapi.yihaodian.com/forward/api/rest/router";
+		
+		public static String sendByPost(Map&lt;String, String&gt; appParamMap, String secretKey, String urlStr ) {
+			try {
+	
+				HttpClient httpClient = new DefaultHttpClient();
+				if(urlStr == null || urlStr.trim().length() == 0){
+					urlStr = POST_URL ;
+				}
+				
+				HttpPost httpPost = new HttpPost(urlStr);
+	
+				TreeMap&lt;String, String&gt; treeMap = new TreeMap&lt;String, String&gt;();
+				if (appParamMap != null) {
+					treeMap.putAll(appParamMap);
+				}
+	
+				String sign = Md5Util.md5Signature(treeMap, secretKey);
+				treeMap.put("sign", sign);
+				Iterator&lt;String&gt; iterator = treeMap.keySet().iterator();
+				
+				List&lt;NameValuePair&gt; params = new ArrayList&lt;NameValuePair&gt;();
+				
+				while (iterator.hasNext()) {
+					String key = iterator.next();
+					params.add(new BasicNameValuePair(key, treeMap.get(key)));
+				}
+	
+				UrlEncodedFormEntity uefEntity = new UrlEncodedFormEntity(params, "UTF-8");
+				httpPost.setEntity(uefEntity);
+	
+				HttpResponse response = httpClient.execute(httpPost);
+				HttpEntity httpEntity = response.getEntity();
+				InputStream inputStream = httpEntity.getContent();
+	
+				//获取返回的数据信息
+				StringBuffer postResult = new StringBuffer();
+				String readLine = null ;
+				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+				while ((readLine = reader.readLine()) != null) {
+					postResult.append(readLine);
+				}
+	
+				httpClient.getConnectionManager().shutdown();
+	
+				return postResult.toString();
+	
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+	}
+
+</pre>
+
+												</dl></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!--正文区 end-->
+		<!--左侧导航栏 begin-->
+		<div class="col-sub">
+			<div class="category">
+				<ul class="level-one">
+					<li class="last selected">
+						<p class="category-item first title-overflow  hasSub showSub">
+							<span></span> <a class="link" href="#" title="开发文档">开发文档</a>
+						</p>
+						<ul class="level-two ">
+							<li class="">
+								<p class="category-item second title-overflow  hasSub ">
+									<span></span> <a class="link" href="#" title="API文档">API文档</a>
+								</p>
+								<ul class="level-three category-hide">
+									<li class="">
+										<p class="category-item title-overflow ">
+											<a class="link" href="apiHomePage.html" title="API文档列表">API文档列表</a>
+										</p></li>
+									<li class="">
+										<p class="category-item title-overflow ">
+											<a class="link" href="parameterStyle.html" title="参数类型说明">参数类型说明</a>
+										</p></li>
+								</ul></li>
+							<li class="selected">
+								<p class="category-item second title-overflow showSub ">
+									<span></span> <a class="link" href="#" title="入门指南">入门指南</a>
+								</p>
+								<ul class="level-three ">
+									<li class="selected">
+										<p class="category-item title-overflow ">
+											<a class="link" href="apiSign.html" title="API签名算法">API签名算法</a>
+										</p></li>
+									<li class="">
+										<p class="category-item title-overflow focus ">
+											<a class="link" href="apiSimple.html" title="示例代码">示例代码</a>
+										</p></li>
+									<li class="">
+										<p class="category-item title-overflow ">
+											<a class="link" href="attentionMatters.html" title="注意事项">注意事项</a>
+										</p></li>
+									<li class="">
+										<p class="category-item title-overflow  ">
+											<a class="link" href="resourceDownLoad.html" title="SDK下载">SDK下载</a>
+										</p>
+									</li>
+								</ul></li>
+
+						</ul>
+					</li>
+				</ul>
+			</div>
+
+		</div>
+		<!--左侧导航栏 end-->
+</body>
+</html>

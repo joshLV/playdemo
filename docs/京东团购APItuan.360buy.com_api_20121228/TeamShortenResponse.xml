@@ -1,0 +1,25 @@
+<!--团购项目缩短的接口响应 京东响应-->
+<?xml version="1.0" encoding="utf-8"?>
+<Response xmlns="http://tuan.360buy.com/Response">
+	<!--版本-->
+	<Version>1.0</Version>
+	<!--合作伙伴ID-->
+	<VenderId>100000</VenderId>
+	<!--是否压缩 默认不压缩-->
+	<Zip>false</Zip>
+	<!--是否加密-->
+	<Encrypt>true</Encrypt>
+	<!--返回结果 200:成功 0:延期失败 10:项目没有审核通过 20:产品已下架，无法缩短 30:缩短日期大于上线日期-->
+	<ResultCode>200</ResultCode>
+	<!--响应信息-->
+	<ResultMessage>success</ResultMessage>
+	<!--提交数据-->
+	<Data>
+		<Message xmlns="http://tuan.360buy.com/TeamTeamShortenResponse">
+			<!--京东产品[必填]-->
+			<JdTeamId>12232</JdTeamId>
+			<!--外团产品ID[必填]-->
+			<VenderTeamId>242351</VenderTeamId>
+		</Message>
+	</Data>
+</Response>

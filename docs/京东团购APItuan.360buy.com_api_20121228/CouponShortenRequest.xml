@@ -1,0 +1,25 @@
+<!--团购优惠券有效期缩短的接口 请求 合作伙伴请求-->
+<?xml version="1.0" encoding="utf-8"?>
+<Request xmlns="http://tuan.360buy.com/Request">
+	<!--版本-->
+	<Version>1.0</Version>
+	<!--合作伙伴ID-->
+	<VenderId>100000</VenderId>
+	<!--合作伙伴Key-->
+	<VenderKey>xxxxxxxxxxxxxxxxx</VenderKey>
+	<!--是否压缩 默认不压缩-->
+	<Zip>false</Zip>
+	<!--是否加密-->
+	<Encrypt>true</Encrypt>
+    <!--提交数据-->
+    <Data>
+      <Message xmlns="http://tuan.360buy.com/CouponShortenRequest">
+        <!--京东产品[必填]-->
+        <JdTeamId>12232</JdTeamId>
+		<!--外团产品ID[必填]-->
+		<VenderTeamId>242351</VenderTeamId>
+        <!--优惠券截至日期时间 格式：2010-10-11 23:59:59,表示产品延期至2010年10月11日23点59分59秒 若不填写时分秒信息，则默认缩短至00点00分00秒[必填]-->
+        <ExpireTime>2010-10-11 23:59:59</ExpireTime>
+      </Message>
+    </Data>
+</Request>
