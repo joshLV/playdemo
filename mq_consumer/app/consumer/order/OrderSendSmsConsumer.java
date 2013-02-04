@@ -26,6 +26,7 @@ import java.util.List;
 @OnApplicationStart(async = true)
 public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMessage> {
     private final String SMS_TYPE = Play.configuration.getProperty("sms.type");
+    private final String SMS_TYPE2 = Play.configuration.getProperty("sms2.type");
 
     private SMSProvider smsProvider = null;
 
@@ -112,7 +113,12 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
                 return;
             }
 
-            getSMSProvider(SMS_TYPE).send(new SMSMessage(msg, phone, ecoupons.get(0).replyCode));
+            try {
+                getSMSProvider(SMS_TYPE).send(new SMSMessage(msg, phone, ecoupons.get(0).replyCode));
+            } catch (SMSException e1) {
+                Logger.info("Send SMS failed use " + SMS_TYPE + ", try " + SMS_TYPE2);
+                getSMSProvider(SMS_TYPE2).send(new SMSMessage(msg, phone, ecoupons.get(0).replyCode));
+            }
 
             for (ECoupon ecoupon : ecoupons) {
                 // 如果没有出现异常，则记录一下发送历史
@@ -152,7 +158,12 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
                 }
             }
 
-            getSMSProvider(SMS_TYPE).send(new SMSMessage(msg, phone, ecoupon.replyCode));
+            try {
+                getSMSProvider(SMS_TYPE).send(new SMSMessage(msg, phone, ecoupon.replyCode));
+            } catch (SMSException e1) {
+                Logger.info("Send SMS failed use " + SMS_TYPE + ", try " + SMS_TYPE2);
+                getSMSProvider(SMS_TYPE2).send(new SMSMessage(msg, phone, ecoupon.replyCode));
+            }
             // 如果没有出现异常，则记录一下发送历史
             if (ecoupon.smsSentCount == null) {
                 ecoupon.smsSentCount = 0;
