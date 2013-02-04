@@ -3,7 +3,7 @@ package functional;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
-import models.ResaleSalesReport;
+import models.OperateResaleSalesReport;
 import models.accounts.AccountType;
 import models.admin.OperateUser;
 import models.order.ECoupon;
@@ -24,8 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * User: hejun
- * Date: 12-8-2
+ * User: yanjy
  */
 public class ResaleSalesReportFuncTest extends FunctionalTest {
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -50,12 +49,11 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
     @Ignore
     @Test
     public void testIndexDefault() {
-        Http.Response response = GET("/reports/resale");
+        Http.Response response = GET("/reports/resale_sales");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
     }
 
-    @Ignore
     @Test
     public void testSearchWithRightConditionNullTypeResaler() {
         //创建分销商订单
@@ -70,18 +68,17 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
         });
         FactoryBoy.create(ECoupon.class);
 
-        Http.Response response = GET("/reports/resale" +
+        Http.Response response = GET("/reports/resale_sales" +
                 "?condition.accountType=RESALER" +
                 "&condition.paidAtBegin=" + simpleDateFormat.format(new Date(System.currentTimeMillis() - 60000L * 60 * 24 * 2)) +
                 "&condition.paidAtEnd=" + simpleDateFormat.format(new Date(System.currentTimeMillis() + 60000L * 60 * 24 * 2)) +
                 "&condition.interval=");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
-        ValuePaginator<ResaleSalesReport> reportPage = (ValuePaginator<ResaleSalesReport>) renderArgs("reportPage");
+        ValuePaginator<OperateResaleSalesReport> reportPage = (ValuePaginator<OperateResaleSalesReport>) renderArgs("reportPage");
         assertEquals(1, reportPage.getRowCount());
     }
 
-    @Ignore
     @Test
     public void testSearchWithRightConditionNullTypeConsumer() {
         //创建分销商订单
@@ -94,18 +91,17 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
         });
         FactoryBoy.create(ECoupon.class);
 
-        Http.Response response = GET("/reports/resale" +
+        Http.Response response = GET("/reports/resale_sales" +
                 "?condition.accountType=" +
                 "&condition.paidAtBegin=" + simpleDateFormat.format(new Date(System.currentTimeMillis() - 60000L * 60 * 24 * 2)) +
                 "&condition.paidAtEnd=" + simpleDateFormat.format(new Date(System.currentTimeMillis() + 60000L * 60 * 24 * 2)) +
                 "&condition.interval=");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
-        ValuePaginator<ResaleSalesReport> reportPage = (ValuePaginator<ResaleSalesReport>) renderArgs("reportPage");
+        ValuePaginator<OperateResaleSalesReport> reportPage = (ValuePaginator<OperateResaleSalesReport>) renderArgs("reportPage");
         assertEquals(1, reportPage.getRowCount());
     }
 
-    @Ignore
     @Test
     public void testSearchWithRightConditionConsumer() {
         //创建分销商订单
@@ -118,14 +114,14 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
         });
         FactoryBoy.create(ECoupon.class);
 
-        Http.Response response = GET("/reports/resale" +
+        Http.Response response = GET("/reports/resale_sales" +
                 "?condition.accountType=CONSUMER" +
                 "&condition.beginAt=" + simpleDateFormat.format(new Date(System.currentTimeMillis() - 60000L * 60 * 24 * 2)) +
                 "&condition.endAt=" + simpleDateFormat.format(new Date(System.currentTimeMillis() + 60000L * 60 * 24 * 2)) +
                 "&condition.interval=");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
-        ValuePaginator<ResaleSalesReport> reportPage = (ValuePaginator<ResaleSalesReport>) renderArgs("reportPage");
+        ValuePaginator<OperateResaleSalesReport> reportPage = (ValuePaginator<OperateResaleSalesReport>) renderArgs("reportPage");
         assertEquals(1, reportPage.getRowCount());
     }
 
@@ -142,14 +138,14 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
             }
         });
         FactoryBoy.create(ECoupon.class);
-        Http.Response response = GET("/reports/resale" +
+        Http.Response response = GET("/reports/resale_sales" +
                 "?condition.accountType=RESALER" +
                 "&condition.beginAt=" + simpleDateFormat.format(new Date(System.currentTimeMillis() - 60000L * 60 * 24 * 2)) +
                 "&condition.endAt=" + simpleDateFormat.format(new Date(System.currentTimeMillis() + 60000L * 60 * 24 * 2)) +
                 "&condition.interval=");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
-        ValuePaginator<ResaleSalesReport> reportPage = (ValuePaginator<ResaleSalesReport>) renderArgs("reportPage");
+        ValuePaginator<OperateResaleSalesReport> reportPage = (ValuePaginator<OperateResaleSalesReport>) renderArgs("reportPage");
         assertEquals(1, reportPage.getRowCount());
     }
 }

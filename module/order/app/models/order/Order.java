@@ -28,6 +28,8 @@ import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.Index;
 import play.Logger;
 import play.Play;
@@ -556,6 +558,8 @@ public class Order extends Model {
 
             orderItem.status = OrderStatus.CANCELED;
             orderItem.save();
+            orderItem.goods.refreshSaleCount();
+
             //更新在搜索服务器中goods的销量
             Solr.save(orderItem.goods);
 
@@ -1325,5 +1329,24 @@ public class Order extends Model {
         for (OrderItems item : this.orderItems) {
             OrderECouponMessage.with(item).remark(remark).sendToMQ();
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().appendSuper(super.hashCode()).append(this.userId)
+                .append(this.status).append(this.id).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Order other = (Order) obj;
+        return new EqualsBuilder().appendSuper(super.equals(obj)).append(this.userId, other.userId)
+                .append(this.status, other.status).append(this.id, other.id).isEquals();
     }
 }

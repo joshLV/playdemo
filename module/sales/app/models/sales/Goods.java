@@ -22,6 +22,8 @@ import models.supplier.Supplier;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -255,15 +257,13 @@ public class Goods extends Model {
     public String code;
 
     @ManyToMany(cascade = CascadeType.REFRESH)
-    @JoinTable(name = "goods_shops", inverseJoinColumns = @JoinColumn(name
-            = "shop_id"), joinColumns = @JoinColumn(name = "goods_id"))
+    @JoinTable(name = "goods_shops", inverseJoinColumns = @JoinColumn(name = "shop_id"), joinColumns = @JoinColumn(name = "goods_id"))
     public Set<Shop> shops;
 
     @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    @JoinTable(name = "goods_categories", inverseJoinColumns = @JoinColumn(name
-            = "category_id"), joinColumns = @JoinColumn(name = "goods_id"))
+    @JoinTable(name = "goods_categories", inverseJoinColumns = @JoinColumn(name = "category_id"), joinColumns = @JoinColumn(name = "goods_id"))
     @Required
-//    @SolrEmbedded
+    //    @SolrEmbedded
     public Set<Category> categories;
 
     @Transient
@@ -438,7 +438,7 @@ public class Goods extends Model {
      * 已作废
      */
     @Deprecated
-//    @Required
+    //    @Required
     @Min(0)
     @Max(999999)
     @Column(name = "base_sale")
@@ -536,7 +536,7 @@ public class Goods extends Model {
     public int saleCountEnd = -1;
 
     @Transient
-//    @SolrEmbedded
+    //    @SolrEmbedded
     public GoodsStatistics statistics;
 
     /**
@@ -567,8 +567,7 @@ public class Goods extends Model {
             fetch = FetchType.LAZY, mappedBy = "goods")
     public Set<GoodsUnPublishedPlatform> unPublishedPlatforms;
 
-    public static final String IMAGE_SERVER = Play.configuration.getProperty
-            ("image.server", "img0.uhcdn.com");
+    public static final String IMAGE_SERVER = Play.configuration.getProperty("image.server", "img0.uhcdn.com");
     public static String ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
     //    private static final String IMAGE_ROOT_GENERATED = Play.configuration
     //            .getProperty("image.root", "/p");
@@ -583,16 +582,14 @@ public class Goods extends Model {
 
     static {
         //增加可信标签到白名单
-        HTML_WHITE_TAGS.addTags("embed", "object", "param", "span", "div", "table", "tbody", "tr", "td",
-                "background-color", "width", "figure", "figcaption", "strong", "p", "dl", "dt", "dd");
+        HTML_WHITE_TAGS.addTags("embed", "object", "param", "span", "div", "table", "tbody", "tr", "td", "background-color", "width", "figure", "figcaption", "strong", "p", "dl", "dt", "dd");
         //增加可信属性
         HTML_WHITE_TAGS.addAttributes(":all", "style", "class", "id", "name");
         HTML_WHITE_TAGS.addAttributes("table", "style", "cellpadding", "cellspacing", "border", "bordercolor", "align");
         HTML_WHITE_TAGS.addAttributes("span", "style", "border", "align");
         HTML_WHITE_TAGS.addAttributes("object", "width", "height", "classid", "codebase");
         HTML_WHITE_TAGS.addAttributes("param", "name", "value");
-        HTML_WHITE_TAGS.addAttributes("embed", "src", "quality", "width", "height", "allowFullScreen",
-                "allowScriptAccess", "flashvars", "name", "type", "pluginspage");
+        HTML_WHITE_TAGS.addAttributes("embed", "src", "quality", "width", "height", "allowFullScreen", "allowScriptAccess", "flashvars", "name", "type", "pluginspage");
     }
 
 
@@ -979,8 +976,7 @@ public class Goods extends Model {
     @SolrField
     public GoodsStatus getStatus() {
         if (status != null && GoodsStatus.ONSALE.equals(status) &&
-                (endOnSaleAt != null && endOnSaleAt.before(new Date()))
-                || (getRealStocks() != null && getRealStocks() <= 0)) {
+                (endOnSaleAt != null && endOnSaleAt.before(new Date())) || (getRealStocks() != null && getRealStocks() <= 0)) {
             status = GoodsStatus.OFFSALE;
         }
         return this.status;
@@ -1017,18 +1013,18 @@ public class Goods extends Model {
     @Transient
     public String highLightName;
 
-//    public String getHighLightName(String words) {
-//        String highLight = name;
-//        if (words != null) {
-//            String[] wordArray = words.split(" |,|;|，");
-//            if (wordArray != null) {
-//                for (String word : wordArray) {
-//                    highLight = highLight.replaceAll(word, "<em>" + word + "</em>");
-//                }
-//            }
-//        }
-//        return highLight;
-//    }
+    //    public String getHighLightName(String words) {
+    //        String highLight = name;
+    //        if (words != null) {
+    //            String[] wordArray = words.split(" |,|;|，");
+    //            if (wordArray != null) {
+    //                for (String word : wordArray) {
+    //                    highLight = highLight.replaceAll(word, "<em>" + word + "</em>");
+    //                }
+    //            }
+    //        }
+    //        return highLight;
+    //    }
 
     @Transient
     public String getWwwUrl() {
@@ -1151,10 +1147,7 @@ public class Goods extends Model {
      */
     public static List<Goods> findTop(int limit) {
         Date nowDate = new Date();
-        return find("status=? and deleted=? and isHideOnsale = false and beginOnSaleAt <=? and endOnSaleAt > ? order by priority DESC,createdAt DESC",
-                GoodsStatus.ONSALE,
-                DeletedStatus.UN_DELETED,
-                nowDate, nowDate).fetch(limit);
+        return find("status=? and deleted=? and isHideOnsale = false and beginOnSaleAt <=? and endOnSaleAt > ? order by priority DESC,createdAt DESC", GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, nowDate, nowDate).fetch(limit);
     }
 
     /**
@@ -1166,8 +1159,7 @@ public class Goods extends Model {
     public static long countOnSaleByTopCategory(long categoryId) {
         Date nowDate = new Date();
         EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
-                "and g.isHideOnsale = false and g.beginOnSaleAt <= :beginOnSaleAt and g.endOnSaleAt > :endOnSaleAt and g.id in (select g.id from g.categories c where c.parentCategory.id = :categoryId) ");
+        Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " + "and g.isHideOnsale = false and g.beginOnSaleAt <= :beginOnSaleAt and g.endOnSaleAt > :endOnSaleAt and g.id in (select g.id from g.categories c where c.parentCategory.id = :categoryId) ");
         q.setParameter("status", GoodsStatus.ONSALE);
         q.setParameter("deleted", DeletedStatus.UN_DELETED);
         q.setParameter("beginOnSaleAt", nowDate);
@@ -1185,8 +1177,7 @@ public class Goods extends Model {
     public static long countOnSaleByCategory(long categoryId) {
         Date nowDate = new Date();
         EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
-                "and g.isHideOnsale = false and g.beginOnSaleAt <= :beginOnSaleAt and g.endOnSaleAt > :endOnSaleAt and g.id in (select g.id from g.categories c where c.id = :categoryId) ");
+        Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " + "and g.isHideOnsale = false and g.beginOnSaleAt <= :beginOnSaleAt and g.endOnSaleAt > :endOnSaleAt and g.id in (select g.id from g.categories c where c.id = :categoryId) ");
         q.setParameter("status", GoodsStatus.ONSALE);
         q.setParameter("deleted", DeletedStatus.UN_DELETED);
         q.setParameter("beginOnSaleAt", nowDate);
@@ -1232,8 +1223,7 @@ public class Goods extends Model {
             return new ArrayList<>();
         }
         EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
-                "and g.id in :ids");
+        Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " + "and g.id in :ids");
         q.setParameter("status", GoodsStatus.ONSALE);
         q.setParameter("deleted", DeletedStatus.UN_DELETED);
         q.setParameter("ids", goodsIds);
@@ -1245,23 +1235,17 @@ public class Goods extends Model {
     }
 
     public static Goods findOnSale(long id) {
-        return find("id=? and deleted=? and status=? and expireAt > ?", id,
-                DeletedStatus.UN_DELETED, GoodsStatus.ONSALE, new Date()).first();
+        return find("id=? and deleted=? and status=? and expireAt > ?", id, DeletedStatus.UN_DELETED, GoodsStatus.ONSALE, new Date()).first();
     }
 
 
     public static List<Goods> findBySupplierId(Long supplierId) {
-        return find("supplierId=? and deleted=? and isLottery=?", supplierId,
-                DeletedStatus.UN_DELETED, Boolean.FALSE).fetch();
+        return find("supplierId=? and deleted=? and isLottery=?", supplierId, DeletedStatus.UN_DELETED, Boolean.FALSE).fetch();
     }
 
-    public static JPAExtPaginator<Goods> findByCondition(GoodsCondition condition,
-                                                         int pageNumber, int pageSize) {
+    public static JPAExtPaginator<Goods> findByCondition(GoodsCondition condition, int pageNumber, int pageSize) {
 
-        JPAExtPaginator<Goods> goodsPage = new JPAExtPaginator<>
-                ("Goods g", "g", Goods.class, condition.getFilter(),
-                        condition.getParamMap())
-                .orderBy(condition.getOrderByExpress());
+        JPAExtPaginator<Goods> goodsPage = new JPAExtPaginator<>("Goods g", "g", Goods.class, condition.getFilter(), condition.getParamMap()).orderBy(condition.getOrderByExpress());
         goodsPage.setPageNumber(pageNumber);
         goodsPage.setPageSize(pageSize);
         goodsPage.setBoundaryControlsEnabled(false);
@@ -1325,8 +1309,10 @@ public class Goods extends Model {
             Date onSaleDate = new Date();
 
             if (status == GoodsStatus.ONSALE) {
-                if (goods.firstOnSaleAt == null) goods.firstOnSaleAt = onSaleDate;
-                if (goods.beginOnSaleAt == null) goods.beginOnSaleAt = onSaleDate;
+                if (goods.firstOnSaleAt == null)
+                    goods.firstOnSaleAt = onSaleDate;
+                if (goods.beginOnSaleAt == null)
+                    goods.beginOnSaleAt = onSaleDate;
             }
 
             goods.save();
@@ -1388,12 +1374,8 @@ public class Goods extends Model {
      * @param pageSize   记录数
      * @return
      */
-    public static JPAExtPaginator<Goods> findByResaleCondition(Resaler resaler,
-                                                               GoodsCondition condition, int pageNumber, int pageSize) {
-        JPAExtPaginator<Goods> goodsPage = new JPAExtPaginator<>
-                ("Goods g", "g", Goods.class, condition.getResaleFilter(resaler),
-                        condition.getParamMap())
-                .orderBy(condition.getOrderByExpress());
+    public static JPAExtPaginator<Goods> findByResaleCondition(Resaler resaler, GoodsCondition condition, int pageNumber, int pageSize) {
+        JPAExtPaginator<Goods> goodsPage = new JPAExtPaginator<>("Goods g", "g", Goods.class, condition.getResaleFilter(resaler), condition.getParamMap()).orderBy(condition.getOrderByExpress());
         goodsPage.setPageNumber(pageNumber);
         goodsPage.setPageSize(pageSize);
         goodsPage.setBoundaryControlsEnabled(false);
@@ -1425,8 +1407,7 @@ public class Goods extends Model {
     @Transient
     public boolean isExistLibrary(Resaler resaler) {
         boolean isExist = false;
-        Query query = play.db.jpa.JPA.em().createQuery(
-                "select r from ResalerFav r where r.deleted=:deleted and r.resaler = :resaler and r.goods =:goods");
+        Query query = play.db.jpa.JPA.em().createQuery("select r from ResalerFav r where r.deleted=:deleted and r.resaler = :resaler and r.goods =:goods");
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
         query.setParameter("resaler", resaler);
         query.setParameter("goods", this);
@@ -1443,8 +1424,7 @@ public class Goods extends Model {
     @SolrField
     public Collection<Shop> getShopList() {
         if (isAllShop) {
-            return CacheHelper.getCache(CacheHelper.getCacheKey(Shop.CACHEKEY_SUPPLIERID + this.supplierId,
-                    "GOODS_SHOP_LIST"), new CacheCallBack<List<Shop>>() {
+            return CacheHelper.getCache(CacheHelper.getCacheKey(Shop.CACHEKEY_SUPPLIERID + this.supplierId, "GOODS_SHOP_LIST"), new CacheCallBack<List<Shop>>() {
                 @Override
                 public List<Shop> loadData() {
                     return Shop.findShopBySupplier(supplierId);
@@ -1453,11 +1433,7 @@ public class Goods extends Model {
         }
         final long goodsId = this.id;
 
-        return CacheHelper.getCache(CacheHelper.getCacheKey(
-                new String[]{
-                        Goods.CACHEKEY_BASEID + goodsId,
-                        Shop.CACHEKEY_SUPPLIERID + this.supplierId},
-                "GOODS_SHOPS"), new CacheCallBack<Set<Shop>>() {
+        return CacheHelper.getCache(CacheHelper.getCacheKey(new String[]{Goods.CACHEKEY_BASEID + goodsId, Shop.CACHEKEY_SUPPLIERID + this.supplierId}, "GOODS_SHOPS"), new CacheCallBack<Set<Shop>>() {
             @Override
             public Set<Shop> loadData() {
                 Goods goods1 = Goods.findById(goodsId);
@@ -1540,8 +1516,7 @@ public class Goods extends Model {
      */
     public static List<Goods> findTopRecommend(int limit) {
         Date nowDate = new Date();
-        String sql = "select g from Goods g,GoodsStatistics s  where g.id =s.goodsId " +
-                " and g.status =:status and g.deleted =:deleted and g.beginOnSaleAt<= :beginOnSaleAt and g.endOnSaleAt >:endOnSaleAt and g.isHideOnsale is false and g.isLottery is false order by s.summaryCount desc";
+        String sql = "select g from Goods g,GoodsStatistics s  where g.id =s.goodsId " + " and g.status =:status and g.deleted =:deleted and g.beginOnSaleAt<= :beginOnSaleAt and g.endOnSaleAt >:endOnSaleAt and g.isHideOnsale is false and g.isLottery is false order by s.summaryCount desc";
         Query query = Goods.em().createQuery(sql);
         query.setParameter("status", GoodsStatus.ONSALE);
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
@@ -1645,8 +1620,7 @@ public class Goods extends Model {
     public static List<Goods> findNewGoods(int limit) {
         Date nowDate = new Date();
         // 找出5倍需要的商品，然后手工过滤
-        List<Goods> allGoods = Goods.find("status = ? and deleted = ? and isHideOnsale = false and beginOnSaleAt<=? and endOnSaleAt > ? order by createdAt DESC",
-                GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, nowDate, nowDate).fetch(limit * 10);
+        List<Goods> allGoods = Goods.find("status = ? and deleted = ? and isHideOnsale = false and beginOnSaleAt<=? and endOnSaleAt > ? order by createdAt DESC", GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, nowDate, nowDate).fetch(limit * 10);
         Set<Long> supplierSet = new HashSet<>();
         List<Goods> goods = new ArrayList<>();
         for (Goods g : allGoods) {
@@ -1679,8 +1653,7 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findPopGoods(int limit) {
-        return Goods.find(" status = ? and deleted = ? and isHideOnsale = false and expireAt > ? order by virtualBaseSaleCount DESC",
-                GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit);
+        return Goods.find(" status = ? and deleted = ? and isHideOnsale = false and expireAt > ? order by virtualBaseSaleCount DESC", GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit);
     }
 
     public void setPublishedPlatforms(List<GoodsPublishedPlatformType> publishedPlatforms) {
@@ -1713,8 +1686,7 @@ public class Goods extends Model {
     }
 
     public boolean onSale() {
-        return (GoodsStatus.ONSALE.equals(status) && endOnSaleAt.after(new Date())
-                && getRealStocks() > 0 && DeletedStatus.UN_DELETED.equals(deleted));
+        return (GoodsStatus.ONSALE.equals(status) && endOnSaleAt.after(new Date()) && getRealStocks() > 0 && DeletedStatus.UN_DELETED.equals(deleted));
     }
 
     public Long summaryCount() {
@@ -1770,8 +1742,7 @@ public class Goods extends Model {
         List<models.sales.Goods> goodsList = new ArrayList<>();
         List<TuanNoCategoryData> noTuanCategoryMessageList = new LinkedList<>();
         for (models.sales.Goods g : allGoods) {
-            if (g.categories != null && g.categories.size() > 0
-                    && g.categories.iterator() != null && g.categories.iterator().hasNext()) {
+            if (g.categories != null && g.categories.size() > 0 && g.categories.iterator() != null && g.categories.iterator().hasNext()) {
                 Category category = g.categories.iterator().next();
                 if (Messages.get(tuanCategory + "." + category.id).contains(tuanCategory)) {
                     noTuanCategoryMessageList.add(TuanNoCategoryData.from(category));
@@ -1923,30 +1894,6 @@ public class Goods extends Model {
     }
 
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        Goods goods = (Goods) o;
-
-        if (id != goods.id) return false;
-        if (name != null ? !name.equals(goods.name) : goods.name != null) return false;
-        if (title != null ? !title.equals(goods.title) : goods.title != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (title != null ? title.hashCode() : 0);
-        result = 31 * result + (id != null ? id.hashCode() : 0);
-        return result;
-    }
-
     /**
      * 查找新创建或修改过的商品
      * 用于solr更新索引
@@ -2030,37 +1977,24 @@ public class Goods extends Model {
             SearchHotKeywords.addKeywords(condition.keywords);
         }
 
-        return search(q, condition.parentCategoryId, condition.categoryId,
-                condition.cityId, condition.districtId, condition.areaId,
-                condition.isOrder, condition.materialType, condition.brandId,
-                condition.solrOrderBy, "asc".equals(condition.orderByType), pageNumber, pageSize, false,
-                new String[]{"goods.categoryIds_s", "goods.parentCategoryIds_s", "shop.districtId_s", "shop.areaId_s"});
+        return search(q, condition.parentCategoryId, condition.categoryId, condition.cityId, condition.districtId, condition.areaId, condition.isOrder, condition.materialType, condition.brandId, condition.solrOrderBy, "asc".equals(condition.orderByType), pageNumber, pageSize, false, new String[]{"goods.categoryIds_s", "goods.parentCategoryIds_s", "shop.districtId_s", "shop.areaId_s"});
     }
 
     public static List<Category> statisticCategory(long parentCategoryId) {
-        QueryResponse response = search(null, 0, 0, null, null, null, null, null, 0, null, false, 0, 0, true,
-                new String[]{"goods.categoryIds_s"});
+        QueryResponse response = search(null, 0, 0, null, null, null, null, null, 0, null, false, 0, 0, true, new String[]{"goods.categoryIds_s"});
         return getStatisticSubCategories(response, parentCategoryId);
     }
 
 
     public static List<Category> statisticTopCategories(GoodsWebsiteCondition condition) {
         String q = StringUtils.isNotBlank(condition.keywords) ? "text:\"" + condition.keywords + "\"" : null;
-        QueryResponse response = search(q, 0, 0,
-                condition.cityId, condition.districtId, condition.areaId,
-                condition.isOrder, condition.materialType, condition.brandId,
-                condition.solrOrderBy, "asc".equals(condition.orderByType), 0, 0, true,
-                new String[]{"goods.parentCategoryIds_s"});
+        QueryResponse response = search(q, 0, 0, condition.cityId, condition.districtId, condition.areaId, condition.isOrder, condition.materialType, condition.brandId, condition.solrOrderBy, "asc".equals(condition.orderByType), 0, 0, true, new String[]{"goods.parentCategoryIds_s"});
         return getStatisticTopCategories(response);
     }
 
     public static List<Category> statisticSubCategories(GoodsWebsiteCondition condition) {
         String q = StringUtils.isNotBlank(condition.keywords) ? "text:\"" + condition.keywords + "\"" : null;
-        QueryResponse response = search(q, condition.parentCategoryId, 0,
-                condition.cityId, condition.districtId, condition.areaId,
-                condition.isOrder, condition.materialType, condition.brandId,
-                condition.solrOrderBy, "asc".equals(condition.orderByType), 0, 0, true,
-                new String[]{"goods.categoryIds_s"});
+        QueryResponse response = search(q, condition.parentCategoryId, 0, condition.cityId, condition.districtId, condition.areaId, condition.isOrder, condition.materialType, condition.brandId, condition.solrOrderBy, "asc".equals(condition.orderByType), 0, 0, true, new String[]{"goods.categoryIds_s"});
         Category category = Category.findCategoryById(condition.categoryId);
         return getStatisticSubCategories(response, category.parentCategory.id);
     }
@@ -2073,21 +2007,13 @@ public class Goods extends Model {
      */
     public static List<Area> statisticDistricts(GoodsWebsiteCondition condition) {
         String q = StringUtils.isNotBlank(condition.keywords) ? "text:\"" + condition.keywords + "\"" : null;
-        QueryResponse response = search(q, condition.parentCategoryId, condition.categoryId,
-                condition.cityId, null, null,
-                condition.isOrder, condition.materialType, condition.brandId,
-                condition.solrOrderBy, "asc".equals(condition.orderByType), 0, 0, true,
-                new String[]{"shop.districtId_s"});
+        QueryResponse response = search(q, condition.parentCategoryId, condition.categoryId, condition.cityId, null, null, condition.isOrder, condition.materialType, condition.brandId, condition.solrOrderBy, "asc".equals(condition.orderByType), 0, 0, true, new String[]{"shop.districtId_s"});
         return getStatisticDistricts(response);
     }
 
     public static List<Area> statisticAreas(GoodsWebsiteCondition condition) {
         String q = StringUtils.isNotBlank(condition.keywords) ? "text:\"" + condition.keywords + "\"" : null;
-        QueryResponse response = search(q, condition.parentCategoryId, condition.categoryId,
-                condition.cityId, condition.districtId, null,
-                condition.isOrder, condition.materialType, condition.brandId,
-                condition.solrOrderBy, "asc".equals(condition.orderByType), 0, 0, true,
-                new String[]{"shop.areaId_s"});
+        QueryResponse response = search(q, condition.parentCategoryId, condition.categoryId, condition.cityId, condition.districtId, null, condition.isOrder, condition.materialType, condition.brandId, condition.solrOrderBy, "asc".equals(condition.orderByType), 0, 0, true, new String[]{"shop.areaId_s"});
         return getStatisticAreas(response, condition.districtId);
     }
 
@@ -2106,11 +2032,7 @@ public class Goods extends Model {
      * @param pageSize
      * @return
      */
-    private static QueryResponse search(String q, long parentCategoryId, long categoryId,
-                                        String cityId, String districtId, String areaId,
-                                        Boolean isOrder, MaterialType materialType, long brandId,
-                                        String orderBy, boolean isAsc, int pageNumber, int pageSize,
-                                        boolean onlyStatistic, String[] facetFields) {
+    private static QueryResponse search(String q, long parentCategoryId, long categoryId, String cityId, String districtId, String areaId, Boolean isOrder, MaterialType materialType, long brandId, String orderBy, boolean isAsc, int pageNumber, int pageSize, boolean onlyStatistic, String[] facetFields) {
         TimeZone UTC = TimeZone.getTimeZone("UTC");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.CHINA);
         dateFormat.setTimeZone(UTC);
@@ -2156,10 +2078,8 @@ public class Goods extends Model {
             query.setRows(0);
         } else {
             query.setRows(pageSize);
-            query.setFields(SOLR_ID, SOLR_GOODS_NAME, SOLR_GOODS_SALEPRICE, SOLR_GOODS_FACEVALUE,
-                    SOLR_GOODS_VIRTUALSALECOUNT, SOLR_GOODS_AREAS, SOLR_GOODS_IMAGESMALLPATH, SOLR_GOODS_IMAGEPATH);
-            if ((StringUtils.isNotBlank(q) && !GoodsWebsiteCondition.getSolrOrderBy(0).equals(orderBy)) ||
-                    (StringUtils.isBlank(q))) {
+            query.setFields(SOLR_ID, SOLR_GOODS_NAME, SOLR_GOODS_SALEPRICE, SOLR_GOODS_FACEVALUE, SOLR_GOODS_VIRTUALSALECOUNT, SOLR_GOODS_AREAS, SOLR_GOODS_IMAGESMALLPATH, SOLR_GOODS_IMAGEPATH);
+            if ((StringUtils.isNotBlank(q) && !GoodsWebsiteCondition.getSolrOrderBy(0).equals(orderBy)) || (StringUtils.isBlank(q))) {
                 query.setSortField(orderBy, isAsc ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
             }
             query.setStart(pageNumber * pageSize - pageSize);
@@ -2272,8 +2192,7 @@ public class Goods extends Model {
                 if (count.getCount() > 0) {
                     Category category = Category.findCategoryById(Long.parseLong((StringUtils.isBlank(count.getName())) ? "0" : count.getName()));
 
-                    if ((category != null && parentCategoryId != null && category.parentCategory != null && category.parentCategory.id.equals(parentCategoryId)) ||
-                            (category != null && parentCategoryId == null)) {
+                    if ((category != null && parentCategoryId != null && category.parentCategory != null && category.parentCategory.id.equals(parentCategoryId)) || (category != null && parentCategoryId == null)) {
                         category.goodsCount = count.getCount();
                         categoryList.add(category);
                     }
@@ -2319,8 +2238,7 @@ public class Goods extends Model {
             for (FacetField.Count count : countList) {
                 if (count.getCount() > 0) {
                     Area area = Area.findAreaById(count.getName());
-                    if ((area != null && districtId != null && area.parent != null && area.parent.id.equals(districtId) && area.isBelongTo(Area.SHANGHAI))
-                            || (area != null && districtId == null && area.isBelongTo(Area.SHANGHAI))) {
+                    if ((area != null && districtId != null && area.parent != null && area.parent.id.equals(districtId) && area.isBelongTo(Area.SHANGHAI)) || (area != null && districtId == null && area.isBelongTo(Area.SHANGHAI))) {
                         area.goodsCount = count.getCount();
                         areaList.add(area);
                     }
@@ -2367,4 +2285,20 @@ public class Goods extends Model {
     }
     //------------------------------------------- 使用solr服务进行搜索的方法 (End) ----------------------------------------
 
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().appendSuper(super.hashCode()).append(this.id).append(this.name).append(this.title).append(this.code).append(this.status).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Goods other = (Goods) obj;
+        return new EqualsBuilder().appendSuper(super.equals(obj)).append(this.id, other.id).append(this.name, other.name).append(this.title, other.title).append(this.code, other.code).append(this.status, other.status).isEquals();
+    }
 }

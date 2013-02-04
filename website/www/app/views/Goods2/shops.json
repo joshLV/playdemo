@@ -4,9 +4,9 @@
     "totalOutlet": ${count},
     "outletList":
     [#{paginate.list1 items:shops, as:'shop'}#{if shop_index > 1 && (page+1)% shop_index  !=0},#{/if}{
-        "name": "${shop.name}",
-        "addr": "${shop.address.escapeJavaScript()}",
-        "tel": "${shop.phone.escapeJavaScript()}",
+        "name": "${shop?.name}",
+        "addr": "${shop?.address?.escapeJavaScript()}",
+        "tel": "${shop?.phone?.escapeJavaScript()}",
         "latlng": "#{if shop?.latitude && shop?.longitude && shop?.latitude!='0' && shop?.longitude!='0'}${shop?.latitude},${shop?.longitude}#{/if}"}
     #{/paginate.list1}]
 }

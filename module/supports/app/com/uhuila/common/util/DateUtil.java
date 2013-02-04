@@ -99,11 +99,14 @@ public class DateUtil {
      *
      * @return
      */
-    public static Date getMonthFirstDay() {
+    public static Date firstDayOfMonth() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_MONTH, calendar
                 .getActualMinimum(Calendar.DAY_OF_MONTH));
-
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 000);
         return calendar.getTime();
     }
 

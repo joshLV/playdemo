@@ -1,7 +1,7 @@
 package controllers;
 
-import models.ResaleSalesReport;
-import models.ResaleSalesReportCondition;
+import models.OperateResaleSalesReport;
+import models.OperateResaleSalesReportCondition;
 import models.accounts.AccountType;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -20,36 +20,37 @@ import java.util.List;
  */
 
 @With(OperateRbac.class)
-public class ResaleSalesReports extends Controller {
+@ActiveNavigation("resale_sales_reports")
+public class OperateResaleSalesReports extends Controller {
     private static final int PAGE_SIZE = 30;
 
-    @ActiveNavigation("resale_sales_reports")
-    public static void index(ResaleSalesReportCondition condition) {
+//    @ActiveNavigation("resale_sales_reports")
+    public static void index(OperateResaleSalesReportCondition condition) {
         int pageNumber = getPageNumber();
 
         if (condition == null) {
-            condition = new ResaleSalesReportCondition();
+            condition = new OperateResaleSalesReportCondition();
         }
-        List<ResaleSalesReport> resultList = null;
+        List<OperateResaleSalesReport> resultList = null;
         // 查询出分销的所有结果
         if (condition.accountType == AccountType.RESALER) {
-            resultList = ResaleSalesReport.query(condition);
+            resultList = OperateResaleSalesReport.query(condition);
         } else if (condition.accountType == AccountType.CONSUMER) {
-            resultList = ResaleSalesReport.queryConsumer(condition);
+            resultList = OperateResaleSalesReport.queryConsumer(condition);
 
         } else {
-            resultList = ResaleSalesReport.query(condition);
-            List<ResaleSalesReport> consumerList = ResaleSalesReport.queryConsumer(condition);
+            resultList = OperateResaleSalesReport.query(condition);
+            List<OperateResaleSalesReport> consumerList = OperateResaleSalesReport.queryConsumer(condition);
 
             // 查询出所有结果
-            for (ResaleSalesReport resaleSalesReport : consumerList) {
+            for (OperateResaleSalesReport resaleSalesReport : consumerList) {
                 resultList.add(resaleSalesReport);
             }
         }
 
         // 分页
-        ValuePaginator<ResaleSalesReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
-        ResaleSalesReport summary = ResaleSalesReport.summary(resultList);
+        ValuePaginator<OperateResaleSalesReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
+        OperateResaleSalesReport summary = OperateResaleSalesReport.summary(resultList);
         render(reportPage, condition, summary);
     }
 

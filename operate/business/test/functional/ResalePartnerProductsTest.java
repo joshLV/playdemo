@@ -26,6 +26,7 @@ import java.util.Map;
 public class ResalePartnerProductsTest extends FunctionalTest {
     @Before
     public void setup() {
+        FactoryBoy.deleteAll();
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);

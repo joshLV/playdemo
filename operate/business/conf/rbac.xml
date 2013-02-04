@@ -74,6 +74,7 @@
     <permission key="PREPAYMENTS" text="预付款管理" roles="account"/>
     <permission key="PREPAYMENTS_NEW" text="预付款添加" roles="account"/>
     <permission key="CHECK_ACCOUNTSEQUENCE" text="核帐" roles="account"/>
+    <permission key="RESALE_SALES_REPORT" text="渠道销售汇总" roles="account"/>
 
     <navigation key="supplier_app" text="商户管理" action="Suppliers.index" display-order="20">
         <navigation key="suppliers" text="商户" permissions="SUPPLIERS_NEW,SUPPLIERS">
@@ -142,6 +143,8 @@
             <navigation key="coupons_index" action="OperateCoupons.index" text="消费券管理" permissions="COUPONS"/>
             <navigation key="verify_index" action="OperateVerifyCoupons.index" text="验证消费券"
                         permissions="COUPONS_MANAGE"/>
+            <navigation key="virtual_verify_index" action="OperateVerifyCoupons.virtual" text="虚拟验证第三方券号"
+                        permissions="COUPONS_MANAGE"/>
             <navigation key="pre_coupons" action="ImportCoupons.index" text="预购券管理" permissions="COUPONS_MANAGE"/>
             <navigation key="freeze_coupons" action="BatchFreezeCoupons.index" text="批量冻结券号"
                         permissions="COUPONS_MANAGE"/>
@@ -196,6 +199,8 @@
                         text="券平台财务收款账户" permissions="FINANCING_ACCOUNT_REPORT"/>
             <navigation key="incomings_account_reports" action="OperateReports.showIncomingReport" text="收款账户资金明细"
                         permissions="INCOMINGS_REPORT"/>
+            <navigation key="resale_sales_reports" action="OperateResaleSalesReports.index" text="渠道销售汇总"
+                        permissions="RESALE_SALES_REPORT"/>
         </navigation>
     </navigation>
 

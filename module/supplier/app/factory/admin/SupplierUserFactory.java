@@ -37,7 +37,6 @@ public class SupplierUserFactory extends ModelFactory<SupplierUser> {
         supplierUser.roles = new ArrayList<>();
         supplierUser.roles.add(role("sales"));
         supplierUser.roles.add(role("clerk"));
-        supplierUser.roles.add(role("editor"));
         supplierUser.roles.add(role("admin"));
         supplierUser.roles.add(role("account"));
         supplierUser.permissions = new HashSet<>();

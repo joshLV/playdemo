@@ -8,10 +8,10 @@ import models.ChannelGoodsReport;
 import models.ChannelGoodsReportCondition;
 import models.ConsumerFlowReport;
 import models.ConsumerFlowReportCondition;
-import models.PeopleEffectCategoryReport;
-import models.PeopleEffectCategoryReportCondition;
 import models.ResaleSalesReport;
 import models.ResaleSalesReportCondition;
+import models.PeopleEffectCategoryReport;
+import models.PeopleEffectCategoryReportCondition;
 import models.SalesReport;
 import models.SalesReportCondition;
 import models.supplier.Supplier;
@@ -582,7 +582,7 @@ public class OperationReports extends Controller {
             resultList.add(resaleSalesReport);
         }
 
-        ResaleSalesReport summary = ResaleSalesReport.summary(resultList);
+        ResaleSalesReport summary =ResaleSalesReport.summary(resultList);
 
         for (ResaleSalesReport report : resultList) {
             if (summary.amount.compareTo(BigDecimal.ZERO) != 0) {

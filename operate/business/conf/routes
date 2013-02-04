@@ -75,8 +75,8 @@ POST    /resale-partner-products/dd/upload             resale.DDGroupBuyProducts
 
 
 #渠道商品
-GET      /channel-goods                         OperateGoods.channel
-POST     /channel-goods                         OperateGoods.createChannel
+GET      /channel-goods/{id}                          OperateGoods.channel
+POST     /channel-goods/{id}                          OperateGoods.createChannel
 GET      /channel-goods/{id}/edit               OperateGoods.editChannel
 PUT     /channel-goods/{id}                     OperateGoods.updateChannel
 DELETE   /channel-goods/{id}                    OperateGoods.deleteChannel
@@ -272,6 +272,9 @@ POST    /coupons/batchfreeze/doing             BatchFreezeCoupons.batchFreezeCou
 GET     /coupons/index                          OperateVerifyCoupons.index
 GET     /coupons/verify                         OperateVerifyCoupons.verify
 POST    /coupons/verify                         OperateVerifyCoupons.update
+#虚拟验证券号
+GET     /coupons/virtual_verify                 OperateVerifyCoupons.virtual
+PUT    /coupons/{id}/virtual_verify             OperateVerifyCoupons.virtualVerify
 
 # 预购券管理
 GET     /import-coupons                         ImportCoupons.index
@@ -313,7 +316,8 @@ GET     /reports/incoming                       OperateReports.showIncomingRepor
 GET     /reports/withdraw                       OperateReports.showWithdrawReport
 GET     /reports/financing_incoming             OperateReports.showFinancingIncomingReport
 GET     /reports/promotion                      OperateReports.showPromotionReport
-
+#分销销售报表
+GET     /reports/resale_sales                   OperateResaleSalesReports.index
 GET     /financing_incoming_add                 FinancingIncomingNote.add
 POST    /financing_incoming                     FinancingIncomingNote.create
 
@@ -388,6 +392,8 @@ POST     /verified-ecoupon-do-refund            VerifiedECouponRefunds.refund
 
 GET     /makeup                                 OperateCouponMakeUp.index
 
+# 快速查询券号、手机号或订单号
+GET      /quick-search                          QuickSearchs.query
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

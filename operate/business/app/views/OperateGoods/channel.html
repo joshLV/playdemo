@@ -41,7 +41,7 @@
                 <td>
                     #{if channel.resaler?.salesId==operateUserId}
                         <a href="#" onclick="edit(${channel.id})"> 修改 </a>
-                        / #{vx.deleteLink action:"channel-goods", id:channel.id/}
+                        / #{vx.deleteLink action:"/channel-goods", id:channel.id/}
                     #{/if}
             </tr>
             #{/paginate.list}

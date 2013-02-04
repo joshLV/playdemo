@@ -4,21 +4,21 @@ import com.uhuila.common.util.DateUtil;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
-import models.ResaleSalesReport;
-import models.ResaleSalesReportCondition;
+import models.OperateResaleSalesReport;
+import models.OperateResaleSalesReportCondition;
 import models.accounts.AccountType;
 import models.admin.OperateUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderItems;
+import models.order.OrderStatus;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.supplier.Supplier;
 import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.test.UnitTest;
 import play.vfs.VirtualFile;
@@ -39,7 +39,7 @@ public class ResaleSalesReportUnitTest extends UnitTest {
     Goods goods;
     Order order;
     OrderItems orderItem;
-
+    Goods goods1;
 
     @Before
     public void setup() {
@@ -51,18 +51,20 @@ public class ResaleSalesReportUnitTest extends UnitTest {
 
         // 设置测试登录的用户名
         Security.setLoginUserForTest(operateUser.loginName);
-
         goods = FactoryBoy.create(Goods.class);
+        goods1 = FactoryBoy.create(Goods.class);
+        goods.isLottery = false;
+        goods.save();
         supplier = FactoryBoy.create(Supplier.class);
         orderItem = FactoryBoy.create(OrderItems.class);
         order = FactoryBoy.create(Order.class);
         resaler = FactoryBoy.create(Resaler.class);
 
-
+        order.status = OrderStatus.PAID;
         order.userId = resaler.id;
         order.userType = AccountType.RESALER;
         order.paidAt = DateUtil.getBeginOfDay();
-
+        order.paidAt = new Date();
         order.save();
         orderItem.goods = goods;
         orderItem.order = order;
@@ -72,11 +74,13 @@ public class ResaleSalesReportUnitTest extends UnitTest {
             public void sequence(ECoupon e, int seq) {
                 e.order = order;
                 e.goods = goods;
+                e.consumedAt = new Date();
                 e.orderItems = orderItem;
                 e.status = ECouponStatus.CONSUMED;
             }
 
         });
+
         FactoryBoy.batchCreate(5, ECoupon.class, new SequenceCallback<ECoupon>() {
             @Override
             public void sequence(ECoupon e, int seq) {
@@ -97,31 +101,40 @@ public class ResaleSalesReportUnitTest extends UnitTest {
         Security.cleanLoginUserForTest();
     }
 
-    @Ignore
     @Test
     public void testQueryConsumer() {
-        System.out.println("esize()>>>>" + ECoupon.count());
-        ResaleSalesReportCondition condition = new ResaleSalesReportCondition();
-        List<ResaleSalesReport> list = ResaleSalesReport.queryConsumer(condition);
-//        assertEquals(1, list.size());
+        OperateResaleSalesReportCondition condition = new OperateResaleSalesReportCondition();
+        List<OperateResaleSalesReport> list = OperateResaleSalesReport.queryConsumer(condition);
+        assertEquals(1, list.size());
     }
 
-    @Ignore
     @Test
     public void testQueryResaler() {
-        ResaleSalesReportCondition condition = new ResaleSalesReportCondition();
-        List<ResaleSalesReport> list = ResaleSalesReport.query(condition);
-        condition.endAt = new Date();
+        goods1.noRefund = true;
+        goods1.isLottery = false;
+        goods1.save();
+        ECoupon coupon = FactoryBoy.create(ECoupon.class);
+        coupon.goods = goods1;
+        coupon.order = order;
+        coupon.status = ECouponStatus.UNCONSUMED;
+        coupon.salePrice = BigDecimal.TEN;
+        coupon.virtualVerifyAt = new Date();
+        coupon.virtualVerify = true;
+        coupon.save();
+        OperateResaleSalesReportCondition condition = new OperateResaleSalesReportCondition();
         condition.beginAt = DateHelper.beforeDays(1);
+        condition.endAt = DateHelper.afterDays(1);
         condition.accountType = AccountType.RESALER;
+        List<OperateResaleSalesReport> list = OperateResaleSalesReport.query(condition);
+
         assertEquals(1, list.size());
 
-        ResaleSalesReport report = ResaleSalesReport.summary(list);
-        assertEquals(10, report.totalNumber.intValue());
-        assertEquals(50, report.totalRefundPrice.intValue());
-        assertEquals(85, report.amount.intValue());
+        OperateResaleSalesReport report = OperateResaleSalesReport.summary(list);
+        assertEquals(11, report.totalNumber.intValue());
+        assertEquals(0, report.totalRefundPrice.intValue());
+        assertEquals(93, report.amount.intValue());
         assertEquals(42, report.consumedPrice.intValue());
-
+        assertEquals(10, report.virtualVerifyPrice.intValue());
     }
 
 }

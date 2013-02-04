@@ -41,7 +41,8 @@ public class CancelOrdersUnitTest extends UnitTest {
         orderItems.save();
         
         order.refresh();
-     
+        goods.refreshSaleCount();
+
         long realStocks = goods.getRealStocks();
         long realSaleCount = goods.getRealSaleCount();
         
@@ -50,6 +51,7 @@ public class CancelOrdersUnitTest extends UnitTest {
         CancelUnPaidOrderJob job = new CancelUnPaidOrderJob();
         job.doJob();
 
+        goods.refreshSaleCount();
         assertEquals(1, CancelUnpaidOrders.count());
         assertEquals(new Long(realStocks + 1), goods.getRealStocks());
         assertEquals(new Long(realSaleCount - 1), goods.getRealSaleCount());

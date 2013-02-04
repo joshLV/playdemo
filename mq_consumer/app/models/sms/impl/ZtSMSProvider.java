@@ -74,6 +74,8 @@ public class ZtSMSProvider implements SMSProvider {
         if (!m.find()) {
             if (result.startsWith("13")) {
                 Logger.info("忽略13：30分钟内重复发送.");
+            } else if ("3".equals(result.trim())) {
+                Logger.info("忽略3：黑词审核中");
             } else {
                 // 发送失败
                 throw new SMSException("发送助通短信不成功:" + result);

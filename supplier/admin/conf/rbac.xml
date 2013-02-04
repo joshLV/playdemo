@@ -4,7 +4,7 @@
         <role key="clerk" text="收银人员" />
 
         <permission key="SYSTEM_HOME" text="系统管理主页" roles="admin" />
-        <permission key="USER" text="员工管理" roles="admin,clerk,editor,manager,account">
+        <permission key="USER" text="员工管理" roles="admin">
                 <permission key="USER_ADD" text="新增员工" roles="admin" />
                 <permission key="USER_EDIT" text="修改员工" roles="admin" />
         </permission>

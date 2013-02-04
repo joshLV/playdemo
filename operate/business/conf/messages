@@ -549,8 +549,9 @@ channelGoodsInfo.url=URL
 channelGoodsInfo.tag=标签
 channel.ONSALE=已上架
 channel.OFFSALE=已下架
-channel.PAGE_NOT_EXISTED=页面不存在
+channel.UNKNOWN=页面不存在
 channel.null=
 
 
-
+report.CONSUMER=消费者
+report.RESALER=分销商

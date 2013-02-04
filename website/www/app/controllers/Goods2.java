@@ -354,7 +354,6 @@ public class Goods2 extends Controller {
                         return GoodsSchedule.findSchedule(goods, currentDate);
                     }
                 });
-        System.out.println(scheduleList.size() + "--------");
         //判断该商品是否签到商品
         boolean isCheckinGoods = scheduleList.size() > 0;
 

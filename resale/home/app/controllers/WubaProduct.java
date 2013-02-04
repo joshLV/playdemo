@@ -425,7 +425,7 @@ public class WubaProduct extends Controller {
                     } else {
                         channelGoodsInfo.url = url;
                         channelGoodsInfo.tag = cityName;
-                        channelGoodsInfo.status= ChannelGoodsInfoStatus.CREATED;
+                        channelGoodsInfo.status = ChannelGoodsInfoStatus.CREATED;
                         channelGoodsInfo.save();
                     }
                 }
@@ -475,24 +475,29 @@ public class WubaProduct extends Controller {
             renderText("failed:" + response);
         }
         JsonArray dataArray = response.data.getAsJsonArray();
-        JsonObject data = dataArray.get(0).getAsJsonObject();
-        int statusCode = data.get("status").getAsInt();
+        if (!dataArray.isJsonNull()) {
+            JsonObject data = dataArray.get(0).getAsJsonObject();
+            int statusCode = data.get("status").getAsInt();
 
-        switch (statusCode) {
-            case 0:
-                resalerFav.outerStatus = "在售中";
-                break;
-            case 1:
-                resalerFav.outerStatus = "审核拒绝";
-                break;
-            case 2:
-                resalerFav.outerStatus = "售完下架";
-                break;
-            case 3:
-                resalerFav.outerStatus = "强制下架";
-                break;
-            default:
-                resalerFav.outerStatus = "未知状态" + statusCode;
+            switch (statusCode) {
+                case 0:
+                    resalerFav.outerStatus = "在售中";
+                    break;
+                case 1:
+                    resalerFav.outerStatus = "审核拒绝";
+                    break;
+                case 2:
+                    resalerFav.outerStatus = "售完下架";
+                    break;
+                case 3:
+                    resalerFav.outerStatus = "强制下架";
+                    break;
+                default:
+                    resalerFav.outerStatus = "未知状态" + statusCode;
+            }
+
+        } else {
+            resalerFav.outerStatus = "同步失败！";
         }
         resalerFav.save();
         // flash("message" + goodsId, "状态更新成功");

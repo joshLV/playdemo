@@ -115,7 +115,7 @@ public class PaymentInfoTest extends FunctionalTest {
         assertStatus(200, response);
         Order order1 = (Order) renderArgs("order");
         PaymentSource paymentSource1 = (PaymentSource) renderArgs("paymentSource");
-        assertEquals(order1, order);
+        assertEquals(order1.id, order.id);
         assertEquals(paymentSource.code, paymentSource1.code);
         assertContentMatch("恭喜您付款成功！", response);
         OrderECouponMessage message = (OrderECouponMessage) MockMQ.getLastMessage(OrderECouponMessage.MQ_KEY);

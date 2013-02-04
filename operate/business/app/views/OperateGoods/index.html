@@ -54,7 +54,7 @@
         </tr>
         <tr>
             <td width="30%">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
-            #{vx.selectInputField name:"brandName", id:"condition.brandId", list:brandList, array:"brandArray",importJs:false/}</td>
+            #{vx.selectInputField name:"brandName", id:"condition.brandId", list:brandList, array:"brandArray"/}</td>
             <td width="30%">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：
             #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
                 #{option ""}不限#{/option}
@@ -349,7 +349,7 @@ select:'condition_status',value:condition?.status/}
                         ">网站选项</a>
 
         #{/if}/<a href="@{OperateGoods.copy(goods.id)}">复制</a>/<a
-            href="@{OperateGoods.channel(goods.id)}" target="_blank">渠道跟进</a>
+            href="/channel-goods/${goods.id}" target="_blank">渠道跟进</a>
         /
 
         <a href="@{OperateGoods.showHistory(goods.id)}" target="_blank">查看历史记录</a>

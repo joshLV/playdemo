@@ -80,7 +80,8 @@ public class TelephoneVerify extends Controller {
         }
 
         //开始验证
-        ECoupon ecoupon = ECoupon.query(coupon, null);
+        ECoupon ecoupon = missTitleFind(coupon);
+
         if (ecoupon == null) {
             Logger.info("telephone verify failed: coupon not found");
             renderText("8");//对不起，未找到此券
@@ -219,7 +220,7 @@ public class TelephoneVerify extends Controller {
             renderText("券号无效");//券号无效
         }
 
-        ECoupon ecoupon = ECoupon.query(coupon, null);
+        ECoupon ecoupon = missTitleFind(coupon);
 
         if (ecoupon == null) {
             Logger.info("query face value failed: coupon not found");
@@ -273,7 +274,7 @@ public class TelephoneVerify extends Controller {
         }
 
         //开始验证
-        ECoupon ecoupon = ECoupon.query(coupon, null);
+        ECoupon ecoupon = missTitleFind(coupon);
 
         if (ecoupon == null) {
             Logger.info("query face value failed: coupon not found");
@@ -400,6 +401,16 @@ public class TelephoneVerify extends Controller {
             }
         }
         return results;
+    }
+
+    private static ECoupon missTitleFind(String couponSn) {
+        ECoupon coupon = ECoupon.find("eCouponSn like ? ", "%" + couponSn).first();
+        if (coupon != null) {
+            if (coupon.eCouponSn.length() - couponSn.length() > 1) {
+                coupon = null;
+            }
+        }
+        return coupon;
     }
 
     private static BigDecimal summaryECouponsAmount(List<ECoupon> ecoupons) {
