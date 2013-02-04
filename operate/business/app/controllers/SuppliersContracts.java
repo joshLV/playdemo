@@ -113,9 +113,9 @@ public class SuppliersContracts extends Controller {
 
     @Right("SUPPLIER_CONTRACT_MANAGEMENT")
     public static void updateDescription(Long imageId, String description) {
+
         System.out.println(imageId + "===imageId>>");
         System.out.println(description + "===description>>");
-        System.out.println("here");
         Boolean hasContractManagementPermission = ContextedPermission.hasPermission("SUPPLIER_CONTRACT_MANAGEMENT");
         if (hasContractManagementPermission == true) {
             SupplierContractImage image = SupplierContractImage.findById(imageId);

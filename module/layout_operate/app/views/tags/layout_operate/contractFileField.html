@@ -16,35 +16,28 @@
                     <div class="action">
                         <a class="close btn" imageId="${image.id}" imageName="${image.shownName}" href="#">X</a>
                     </div>
-                *{<span>${image?.id}</span>}*
-
                     <a class="fancybox" rel="group"
                        href="${image?.imageLargePath}">
                         <img src="${image?.imageSmallPath}"/>
                     </a>
 
                     <div style="tweext-align: center; color: grey; font-size: 30%;">${image.shownName}</div>
-
-                <span id="description_info_${image?.id}" style="position: relative; top: 0; left: 0;">
-                ${image.description}
-                    <input id="description_${image?.id}"
-                           style="display:none;border:0;background:transparent; height:15px; width: 150px;
-                             position: absolute;top: 0;left: 0;"
-                           type="text"
-                           name="contract.description"
-                           value="${image.description}">
-                </span>
-
-                    <i id="edit_${image?.id}"
-                       style="visibility:visible;"
-                       class="icon-pencil" rel="tooltip"
-                       data-placement="right"
-                       data-original-title="点击编辑合同说明" onClick="editContractDescription(${image?.id})"></i>
-
-                    <i id="confirm_${image?.id}" style="visibility:hidden; padding-top:-20px;
-                    margin-left:-14px; "
-                       class="icon-ok"
-                       onClick="confrimContractDescription('${image?.id}')"></i>
+                    <div style="width: 170px; word-break:break-all;-webkit-user-select: none;  ">
+                        <span style="position: relative; top: 0; left: 0;">
+                            <span id="des_info_${image?.id}">
+                                ${image.description}
+                            </span>
+                            <input id="edit_description_${image?.id}"
+                                   style="display:none;height:8px; width: 140px;
+                                         position: absolute;top: 0;left: 0; -webkit-user-select: auto; "
+                                   type="text"
+                                   value="${image.description}" maxlength="25"/>
+                        </span>
+                        <i style="visibility:visible; float: right;"
+                           class="icon-pencil" rel="tooltip"
+                           data-placement="right" did="${image.id}"
+                           data-original-title="点击编辑合同说明"></i>
+                    </div>
                 </li>
             #{/list}
         </ul>
@@ -59,42 +52,31 @@
         $("[rel='tooltip']").tooltip();
     });
 
-    function editContractDescription(id) {
-        $("#edit_" + id).hide();
-        $("#description_" + id).show()
-        $("#description_info_" + id).hide();
-    }
-
-    function confrimContractDescription(id) {
-        if ($("#description_" + id).val() != "") {
+    $("i[did]").click(function () {
+        var ele = $(this);
+        var id = ele.attr('did');
+        if (ele.attr('class') == 'icon-pencil') {
+            ele.attr('data-original-title', '');
+            ele.attr('class', 'icon-ok');
+            $("#edit_description_" + id).show();
+        } else {
             $.ajax({
-                url:"/supplier_contract/" + id + "?description=" + $("#description_" + id).val(),
+                url:"/supplier_contract/" + id + "?description=" + $("#edit_description_" + id).val(),
                 type:'GET',
                 error:function () {
                     alert('操作失败,请联系管理员');
                 },
                 success:function (data) {
-                    $("#description_" + id).prop("readonly", true);
-                    $("#description_" + id).css({border:"0"});
-                    $("#description_" + id).css({background:"transparent"});
-
-
-                    $("#confirm_" + id).css({visibility:"hidden"});
-                    $("#description_" + id).css({visibility:"visible"});
-                    $("#description_" + id).html($("#description_" + id).val());
-                    $("#edit_" + id).css({visibility:"visible"});
+                    ele.attr('data-original-title', '点击编辑合同说明');
+                    ele.attr('class', 'icon-pencil');
+                    $("#edit_description_" + id).hide();
+                    $("#des_info_" + id).text($("#edit_description_" + id).val());
                 }
             });
-        }
-        else {
-            $("#description_" + id).css({visibility:"hidden"});
-            $("#show_description_" + id).css({visibility:"visible"});
-            $("#confirm_" + id).css({visibility:"hidden"});
-            $("#edit_" + id).css({visibility:"visible"});
 
-            $("#description_" + id).html("");
         }
-    }
+    });
+
 
     $(function () {
         KindEditor.ready(function (K) {
