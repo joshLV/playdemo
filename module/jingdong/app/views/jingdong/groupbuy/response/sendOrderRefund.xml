@@ -1,12 +1,12 @@
 <Message xmlns="http://tuan.360buy.com/SendOrderRefundResponse">
     *{ 京东订单ID [必填] }*
-    <JdOrderId>${sendOrderRefundRequest.jdOrderId}</JdOrderId>
+    <JdOrderId>${jdOrderId}</JdOrderId>
     *{ 合作伙伴订单ID [必填] }*
-    <VenderOrderId>${sendOrderRefundRequest.venderOrderId}</VenderOrderId>
+    <VenderOrderId>${venderOrderId}</VenderOrderId>
     *{ 受理退款的京东券号列表，可填写多个[必填] }*
     <Coupons>
     #{list items:coupons, as:'coupon'}
-        <Coupon>${coupon.couponId}</Coupon>
+        <Coupon>${coupon}</Coupon>
     #{/list}
     </Coupons>
 </Message>

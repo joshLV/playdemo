@@ -61,6 +61,7 @@ public class DDGroupBuy extends Controller {
                              String user_id, String kx_order_id, BigDecimal amount, String sign) {
         //取得参数信息 必填信息
         SortedMap<String, String> params = DDGroupBuyUtil.filterPlayParams(request.params.allSimple());
+        Logger.info("dangdang new order request:\n%s", new Gson().toJson(params));
 
         //检查参数
         if (StringUtils.isBlank(user_mobile) || StringUtils.isBlank(user_id)) {
@@ -111,7 +112,7 @@ public class DDGroupBuy extends Controller {
             order = Order.findOneByUser(outerOrder.ybqOrder.orderNumber, resalerId, AccountType.RESALER);
             if (order != null) {
                 List<ECoupon> eCouponList = ECoupon.findByOrder(order);
-                render(order, id, kx_order_id, eCouponList);
+                render("dangdang/groupbuy/response/order.xml", order, id, kx_order_id, eCouponList);
             }
         }
 

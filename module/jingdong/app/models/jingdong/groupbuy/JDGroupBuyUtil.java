@@ -302,6 +302,17 @@ public class JDGroupBuyUtil {
         return parseMessage(response);
     }
 
+    public static JingdongMessage parseMessage(String document) {
+        try{
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            StringReader stringReader = new StringReader(document);
+            return parseMessage(builder.parse(new InputSource(stringReader)));
+        }catch (Exception e) {
+            Logger.info(e, "jingdong parse message error: not xml document");
+            return new JingdongMessage();
+        }
+    }
+
     /**
      * 解析京东的消息。包括我们请求京东的接口后京东的响应，以及京东主动通知我们的信息.
      *

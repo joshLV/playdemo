@@ -84,7 +84,7 @@ public class JDGroupBuyProducts extends Controller{
     }
 
     /**
-     * 修改商品
+     * 显示修改商品界面
      */
     @ActiveNavigation("resale_partner_product")
     public static void showEdit(Long productId) {
@@ -95,6 +95,24 @@ public class JDGroupBuyProducts extends Controller{
 
         Goods goods = product.goods;
         render(product, goods);
+    }
+
+    /**
+     * 修改商品
+     */
+    @ActiveNavigation("resale_partner_product")
+    public static void edit(String action, String templatePath) {
+        Map<String, Object> params = new HashMap<>();
+        for(Map.Entry<String, String> entry : request.params.allSimple().entrySet()) {
+            params.put(entry.getKey(), entry.getValue());
+        }
+        params.remove("body");
+
+
+        String url = JDGroupBuyUtil.GATEWAY_URL + action;
+        JingdongMessage response = JDGroupBuyUtil.sendRequest("uploadTeam", url, templatePath, params);
+
+        render("resale/JDGroupBuyProducts/result.html", response);
     }
 
     /**
