@@ -64,8 +64,8 @@ public class TotalSalesCondition {
         paramMap.put("status", ECouponStatus.CONSUMED);
         if (beginAt != null) {
             Date beginDate = Supplier.getShopHour(beginAt, shopEndHour, false);
-            condBuilder.append(" and e.consumedAt > :beginAt");
-            paramMap.put("beginAt", beginDate);
+            condBuilder.append(" and e.consumedAt >= :beginAt");
+            paramMap.put("beginAt", beginAt);
         }
 
         if (endAt != null) {
