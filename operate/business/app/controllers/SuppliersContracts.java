@@ -57,7 +57,7 @@ public class SuppliersContracts extends Controller {
     @Right("SUPPLIER_CONTRACT_MANAGEMENT")
     public static void add(SupplierContract contract) {
         Boolean hasContractManagementPermission = ContextedPermission.hasPermission("SUPPLIER_CONTRACT_MANAGEMENT");
-        if (hasContractManagementPermission == true) {
+        if (hasContractManagementPermission) {
             List<Supplier> supplierList = Supplier.findUnDeleted();
             render(supplierList, contract);
         } else {

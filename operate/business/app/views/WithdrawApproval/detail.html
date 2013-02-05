@@ -124,7 +124,7 @@
         <a href="#" class="btn" data-dismiss="modal">关闭</a>
         <input type="hidden" name="id" value="${bill.id}">
         <input type="hidden" name="action" value="agree">
-        <button class="btn btn-primary" type="submit">通过</button>
+        <button id="pass" class="btn btn-primary" type="submit">通过</button>
     </div>
 #{/form}
 </div>
@@ -151,7 +151,7 @@
         <a href="#" class="btn" data-dismiss="modal">关闭</a>
         <input type="hidden" name="id" value="${bill.id}">
         <input type="hidden" name="action" value="reject">
-        <button class="btn btn-danger" type="submit">拒绝</button>
+        <button id="fail" class="btn btn-danger" type="submit">拒绝</button>
     </div>
 #{/form}
 </div>
@@ -165,4 +165,5 @@
             return false;
         }
     }
+
 </script>
