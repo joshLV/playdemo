@@ -82,6 +82,8 @@ public class Account extends Model {
         if (uncashAmount == null) {
             return vostroAmount == null ? BigDecimal.ZERO : vostroAmount;
         }
+        System.out.println("vostroAmount:" + vostroAmount);
+        System.out.println("uncashAmount:" + uncashAmount);
         return vostroAmount.subtract(uncashAmount);
     }
 

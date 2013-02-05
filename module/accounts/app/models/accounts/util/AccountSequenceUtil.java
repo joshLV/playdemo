@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import static play.Logger.info;
 import static play.Logger.warn;
 
 
@@ -62,7 +61,7 @@ public class AccountSequenceUtil {
 
             BigDecimal correctBalance = lastBalance.add(accountSequence.changeAmount);
             if (correctBalance.compareTo(accountSequence.balance) != 0) {
-                if (i++ == 0) {
+                if (i == 0) {
                     warn(new Date() + "  Default balance account id:" + account.id + ",uid:" + account.uid
                             + ",balance=" + accountSequence.balance + ",accountCreatedAt:" + account.createdAt);
                 } else {
@@ -72,6 +71,7 @@ public class AccountSequenceUtil {
                 }
             }
             lastBalance = accountSequence.balance;
+            i++;
         }
 
         return null;
