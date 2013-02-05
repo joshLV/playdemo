@@ -19,11 +19,11 @@ public class DDResponse {
 
     public static DDResponse parseResponse(Document document) {
         DDResponse response = new DDResponse();
-        response.ver = XPath.selectText("//ver", document);
-        response.spid = XPath.selectText("//spid", document);
-        response.errorCode = XPath.selectText("//error_code", document);
-        response.desc = XPath.selectText("//desc", document);
-        response.data = XPath.selectNode("//data", document);
+        response.ver = XPath.selectText("/resultObject/ver", document);
+        response.spid = XPath.selectText("/resultObject/spid", document);
+        response.errorCode = XPath.selectText("/resultObject/error_code", document);
+        response.desc = XPath.selectText("/resultObject/desc", document);
+        response.data = XPath.selectNode("/resultObject/data", document);
         return response;
     }
 

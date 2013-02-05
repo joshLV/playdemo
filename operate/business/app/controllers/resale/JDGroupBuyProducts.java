@@ -73,7 +73,7 @@ public class JDGroupBuyProducts extends Controller{
         if(response.isOk()) {
             OperateUser operateUser = OperateRbac.currentUser();
             product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id)
-                    .partnerProduct(Long.parseLong(response.selectText("//JdTeamId")))
+                    .partnerProduct(Long.parseLong(response.selectText("JdTeamId")))
                     .latestJson(new Gson().toJson(params))
                     .save();
             //记录历史
@@ -160,8 +160,8 @@ public class JDGroupBuyProducts extends Controller{
             if (i != 0) {
                 jsonString.append(",");
             }
-            jsonString.append("{id:'").append(XPath.selectText("//Id", city))
-                    .append("',name:'").append(XPath.selectText("//Name", city))
+            jsonString.append("{id:'").append(XPath.selectText("Id", city))
+                    .append("',name:'").append(XPath.selectText("Name", city))
                     .append("',isParent:").append(isParent)
                     .append(",type:'").append(type)
                     .append("'}");

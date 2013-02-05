@@ -43,8 +43,8 @@ public class JDGroupBuyUtilTest extends UnitTest {
         JingdongMessage message = JDGroupBuyUtil.parseMessage(document);
         assertTrue(message.encrypt);
         assertNotNull(message.message);
-        assertNotNull(XPath.selectNode("//Cities", message.message));
-        assertNull(XPath.selectNode("//abc", message.message));
+        assertNotNull(XPath.selectNode("Cities", message.message));
+        assertNull(XPath.selectNode("abc", message.message));
     }
 
     @Test
@@ -76,8 +76,8 @@ public class JDGroupBuyUtilTest extends UnitTest {
         JingdongMessage message = JDGroupBuyUtil.parseMessage(document);
         assertFalse(message.encrypt);
         assertNotNull(message.message);
-        assertNotNull(XPath.selectNode("//Cities", message.message));
-        assertEquals(3, message.selectNodes("//Cities//City").size());
-        assertNull(XPath.selectNode("//abc", message.message));
+        assertNotNull(XPath.selectNode("Cities", message.message));
+        assertEquals(3, message.selectNodes("Cities/City").size());
+        assertNull(XPath.selectNode("abc", message.message));
     }
 }

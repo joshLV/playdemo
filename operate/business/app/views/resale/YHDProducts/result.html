@@ -15,8 +15,8 @@
         </legend>
     #{/if}
 
-    #{if res}
-        #{if res.getErrorCount() == 0}
+    #{if response}
+        #{if response.isOk()}
             <legend>
                 成功
             </legend>
@@ -25,14 +25,15 @@
             <legend>
                 失败
             </legend>
-            #{list res.getErrors(), as:'error'}
-                错误编号：${error.errorCode} 详情：${error.errorDes}<br/>
+            #{list response.errors(), as:'error'}
+                错误编号：${play.libs.XPath.selectText("errorCode", error)}
+                详情：   ${play.libs.XPath.selectText("errorDes", error)}<br/>
             #{/list}
         #{/else}
     #{/if}
     #{else}
         <legend>
-            上传失败，解析京东返回值出错
+            上传失败，解析一号店返回值出错
         </legend>
     #{/else}
 </div>

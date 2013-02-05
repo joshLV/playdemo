@@ -149,7 +149,8 @@
             <div class="controls">
                 #{list items:brands, as:'brand'}
                     <label class="radio">
-                        <input type="radio" name="brandId" value="${brand.id}"> ${brand.name}
+                        <input type="radio" name="brandId" value="${play.libs.XPath.selectText('//brandId', brand)}">
+                        ${play.libs.XPath.selectText('brandName', brand)}
                     </label>
                 #{/list}
             </div>

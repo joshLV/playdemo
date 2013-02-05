@@ -1,10 +1,21 @@
 package models.yihaodian;
 
+import com.google.gson.Gson;
 import com.yhd.openapi.client.PostClient;
 import org.apache.commons.lang.StringUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 import play.Logger;
 import play.Play;
+import play.libs.XPath;
+import util.ws.WebServiceClient;
+import util.ws.WebServiceRequest;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
+import java.io.StringReader;
 import java.security.MessageDigest;
 import java.util.*;
 
@@ -23,24 +34,57 @@ public class YHDUtil {
     public static String FORMAT = "xml";
     public static String VERSION = "1.0";
 
-    public static String sendRequest(Map<String,String> appParams, String method){
-        return sendRequest(appParams, null, method);
+    public static YHDResponse sendRequest(Map<String,String> appParams, String method, String dataElementName){
+        return sendRequest(appParams, null, method, dataElementName);
     }
 
-    public static String sendRequest(Map<String,String> appParams, String[] filePaths, String method){
+    public static YHDResponse sendRequest(Map<String,String> appParams, File[] files, String method, String dataElementName){
         // 系统级参数设置
         Map<String, String> params = sysParams();
-
         params.put("method", method);
         // 应用级参数设置
         params.putAll(appParams);
 
-        Logger.info("gateway_url: %s", GATEWAY_URL );
-        if (filePaths == null) {
-            return PostClient.sendByPost(GATEWAY_URL, params, SECRET_KEY);
-        }else{
-            return PostClient.sendByPost(GATEWAY_URL, params, filePaths, SECRET_KEY);
+
+        String sign = md5Signature(new TreeMap<>(params), SECRET_KEY);
+        params.put("sign", sign);
+
+
+        Map<String, Object> requestParams = new HashMap<>();
+        for(Map.Entry<String, String> entry : params.entrySet()) {
+            requestParams.put(entry.getKey(), entry.getValue());
         }
+
+        Logger.info("yihaodian gateway_url: %s", GATEWAY_URL);
+        Logger.info("yihaodian request %s:\n%s", method, new Gson().toJson(params));
+
+        WebServiceRequest request = WebServiceRequest.url(GATEWAY_URL).type("yihaodian." + method).params(requestParams).encoding("UTF-8");
+        if (files != null) {
+            //todo
+        }
+        String documentStr = request.postString();
+        Logger.info("yihaodian response:\n%s", documentStr);
+        Document document;
+        try{
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            StringReader stringReader = new StringReader(documentStr);
+            document = builder.parse(new InputSource(stringReader));
+        }catch (Exception e) {
+            throw new RuntimeException("message of yihaodian parse error", e);
+        }
+
+        return parseMessage(document, dataElementName);
+    }
+
+    public static YHDResponse parseMessage(Document document, String dataElementName) {
+        YHDResponse response = new YHDResponse();
+        response.errorCount = Integer.parseInt(XPath.selectText("/response/errorCount", document));
+
+        if (response.errorCount > 0) {
+            response.errors = XPath.selectNodes("/response/errInfoList/errDetailInfo", document);
+        }
+        response.data = XPath.selectNode("/response/" + dataElementName , document);
+        return response;
     }
 
     private static Map<String, String> sysParams(){
@@ -63,9 +107,13 @@ public class YHDUtil {
      */
     public static String md5Signature(TreeMap<String, String> params, String secret) {
         String result = null;
-        StringBuffer origin = getBeforeSign(params, new StringBuffer(secret));
-        if (origin == null)
-            return result;
+
+        StringBuilder origin = new StringBuilder(secret);
+        Map<String, String> treeMap = new TreeMap<>();
+        treeMap.putAll(params);
+        for (String name : treeMap.keySet()) {
+            origin.append(name).append(params.get(name));
+        }
         // secret last
         origin.append(secret);
         try {
@@ -90,22 +138,6 @@ public class YHDUtil {
                 hs.append(stmp);
         }
         return hs.toString();
-    }
-    /**
-     * 添加参数的封装方法
-     * @param params
-     * @param orgin
-     * @return
-     */
-    private static StringBuffer getBeforeSign(TreeMap<String, String> params, StringBuffer orgin) {
-        if (params == null)
-            return null;
-        Map<String, String> treeMap = new TreeMap<>();
-        treeMap.putAll(params);
-        for (String name : treeMap.keySet()) {
-            orgin.append(name).append(params.get(name));
-        }
-        return orgin;
     }
 
     public static TreeMap<String, String> filterPlayParams(Map<String, String> params){

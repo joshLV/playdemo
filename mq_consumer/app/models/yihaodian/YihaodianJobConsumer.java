@@ -7,16 +7,16 @@ import models.mail.MailUtil;
 import models.order.*;
 import models.resale.Resaler;
 import models.sales.Goods;
-import models.sales.GoodsDeployRelation;
 import models.sales.MaterialType;
-import models.supplier.Supplier;
-import models.yihaodian.shop.*;
-import models.yihaodian.shop.OrderStatus;
+import models.sales.ResalerProduct;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
 import play.db.jpa.JPAPlugin;
 import play.jobs.OnApplicationStart;
+import play.libs.XPath;
 import play.modules.rabbitmq.consumer.RabbitMQConsumer;
 
 import javax.persistence.LockModeType;
@@ -38,103 +38,91 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
     protected void consume(YihaodianJobMessage message) {
         //开启事务管理
         JPAPlugin.startTx(false);
-        YihaodianOrder yihaodianOrder = YihaodianOrder.find("byOrderId", message.getOrderId()).first();
-        if(yihaodianOrder == null){
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                Logger.info("can not sleep");
-                JPAPlugin.closeTx(true);
-                return;
-            }
-            yihaodianOrder = YihaodianOrder.find("byOrderId", message.getOrderId()).first();
-            if (yihaodianOrder == null) {
-                Logger.info("order not found: %s, maybe processed by other MQ.", message.getOrderId());
-                JPAPlugin.closeTx(true);
-                return;
-            }
-        }
-
-        if(yihaodianOrder.jobFlag == JobFlag.SEND_SYNCED){
-            Logger.info("job synced");
+        OuterOrder outerOrder = OuterOrder.find("byOrderIdAndPartner", message.getOrderId(), OuterOrderPartner.YHD).first();
+        if(outerOrder == null){
             JPAPlugin.closeTx(true);
             return;
         }
 
-        //查看是否有实体券，如果全部都是的话就直接将此订单置为忽略状态，并结束任务
+        Document yihaodianOrder = outerOrder.getMessageAsXmlDocument();
+        List<Node> orderItems = XPath.selectNodes("orderItemList/orderItem", yihaodianOrder);
+
         int realItems =0;
-        for (OrderItem orderItem : yihaodianOrder.orderItems) {
-            if (orderItem.outerId == null) {
-                realItems += 1;
+        for (Node orderItem : orderItems) {
+            String outerId = XPath.selectText("outerId", orderItem);
+            if (outerId != null) {
+                Goods goods = ResalerProduct.getGoods(Long.parseLong(outerId));
+                if (goods != null && goods.materialType == MaterialType.REAL) {
+                    realItems += 1;
+                }
             }
         }
-        if (realItems == yihaodianOrder.orderItems.size()) {
-            yihaodianOrder.jobFlag = JobFlag.IGNORE;
-            yihaodianOrder.save();
+        if (realItems == orderItems.size()) {
+            outerOrder.status = OuterOrderStatus.ORDER_IGNORE;
+            outerOrder.save();
             JPAPlugin.closeTx(false);
             return;
         }
 
         try{
-            YihaodianOrder.em().refresh(yihaodianOrder, LockModeType.PESSIMISTIC_WRITE);
+            OuterOrder.em().refresh(outerOrder, LockModeType.PESSIMISTIC_WRITE);
         }catch (PersistenceException e){
             //拿不到锁就放弃
-            Logger.info("can not lock yihaodian order %s", yihaodianOrder.orderCode);
+            Logger.info("can not lock yihaodian order %s", message.getOrderId());
             JPAPlugin.closeTx(true);
             return;
         }
-        if(yihaodianOrder.jobFlag == JobFlag.SEND_COPY){
+        String orderCode = XPath.selectText("orderDetail/orderCode", yihaodianOrder);
+        if(outerOrder.status == OuterOrderStatus.ORDER_COPY){
             //等 1 分钟再发货
-            if(yihaodianOrder.createdAt.getTime() < (System.currentTimeMillis() - 60000)){
+            if(outerOrder.createdAt.getTime() < (System.currentTimeMillis() - 60000)){
                 //如果用户没有取消订单再发货
                 //首先刷新最新的订单
-                YihaodianOrder refreshOrder = refreshYihaodianOrder(yihaodianOrder);
+                Node refreshOrder = refreshYihaodianOrder(orderCode);
                 if(refreshOrder != null){
-                    if (refreshOrder.orderStatus != OrderStatus.ORDER_CANCEL) {
-                        models.order.Order ybqOrder = null;
-                        if(yihaodianOrder.ybqOrderId == null) {
-                            ybqOrder = buildYibaiquanOrder(yihaodianOrder);
-                        } else {
-                            ybqOrder = models.order.Order.findById(yihaodianOrder.ybqOrderId);
+                    YHDOrderStatus orderStatus = YHDOrderStatus.valueOf(XPath.selectText("orderDetail/orderStatus", yihaodianOrder));
+                    if (YHDOrderStatus.ORDER_CANCEL != orderStatus) {
+                        if(outerOrder.ybqOrder == null) {
+                            String goodsReceiverMobile = XPath.selectText("orderDetail/goodReceiverMoblie", yihaodianOrder);
+                            outerOrder.ybqOrder = buildYibaiquanOrder(orderItems, goodsReceiverMobile);
                         }
-                        if( ybqOrder != null){
+                        if( outerOrder.ybqOrder != null){
                             if (realItems > 0) {
-                                yihaodianOrder.jobFlag = JobFlag.IGNORE;
+                                outerOrder.status = OuterOrderStatus.ORDER_IGNORE;
 
                                 MailMessage mailMessage = new MailMessage();
                                 mailMessage.addRecipient("op@uhuila.com");
                                 mailMessage.setSubject("一号店实体券订单");
-                                mailMessage.putParam("yhdOrderId", yihaodianOrder.orderId);
+                                mailMessage.putParam("yhdOrderId", message.getOrderId());
                                 mailMessage.setTemplate("yihaodianRealGoods");
                                 MailUtil.sendCommonMail(mailMessage);
                             }else {
-                                yihaodianOrder.jobFlag = JobFlag.SEND_DONE;
-                                YihaodianJobMessage syncMessage = new YihaodianJobMessage(yihaodianOrder.orderId);
+                                outerOrder.status = OuterOrderStatus.ORDER_DONE;
+                                YihaodianJobMessage syncMessage = new YihaodianJobMessage(message.getOrderId());
                                 YihaodianQueueUtil.addJob(syncMessage);
                             }
-                            yihaodianOrder.ybqOrderId = ybqOrder.getId();
-                            yihaodianOrder.save();
+                            outerOrder.save();
 
-                            List<ECoupon> couponList = ECoupon.find("byOrder", ybqOrder).fetch();
+                            List<ECoupon> couponList = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
                             for(ECoupon coupon : couponList) {
                                 coupon.partner = ECouponPartner.YHD;
                                 coupon.save();
                             }
                         }
                     }else {
-                        yihaodianOrder.jobFlag = JobFlag.CANCEL_SYNCED;
-                        yihaodianOrder.save();
+                        outerOrder.status = OuterOrderStatus.ORDER_CANCELED;
+                        outerOrder.save();
                     }
                 }
             }
-        }else if(yihaodianOrder.jobFlag == JobFlag.SEND_DONE){
+        }else if(outerOrder.status == OuterOrderStatus.ORDER_DONE){
             if (realItems > 0) {
-                yihaodianOrder.jobFlag = JobFlag.IGNORE;
-                yihaodianOrder.save();
+                outerOrder.status = OuterOrderStatus.ORDER_IGNORE;
+                outerOrder.save();
             }else {
-                if(syncWithYihaodian(yihaodianOrder)){
-                    yihaodianOrder.jobFlag = JobFlag.SEND_SYNCED;
-                    yihaodianOrder.save();
+                if(syncWithYihaodian(orderCode)){
+                    outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
+                    outerOrder.save();
                 }
             }
         }
@@ -151,79 +139,45 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
         }
     }
 
-    private boolean syncWithYihaodian(YihaodianOrder yihaodianOrder) {
+    private boolean syncWithYihaodian(String orderCode) {
         Map<String, String> params = new HashMap<>();
-        params.put("orderCode", yihaodianOrder.orderCode);
+        params.put("orderCode", orderCode);
         params.put("deliverySupplierId", DELIVERY_SUPPLIER);//测试公司
-        params.put("expressNbr", yihaodianOrder.orderCode);
-        Logger.info("yhd.logistics.order.shipments.update orderCode %s", params.get("orderCode"));
-        Logger.info("yhd.logistics.order.shipments.update deliverySupplierId %s", params.get("deliverySupplierId"));
-        Logger.info("yhd.logistics.order.shipments.update expressNbr", params.get("expressNbr"));
+        params.put("expressNbr", orderCode);
 
-        String responseXml = YHDUtil.sendRequest(params, "yhd.logistics.order.shipments.update");
-        Logger.info("yhd.logistics.order.shipments.update response %s", responseXml);
-        if (responseXml != null) {
-            YHDResponse<UpdateResult> res = new YHDResponse<>();
-            res.parseXml(responseXml, "updateCount", false, UpdateResult.parser);
-            if(res.getErrorCount() == 0){
-                return true;
-            }else {
-                Logger.info("sync With yihaodian error");
-                return checkYihaodianSent(yihaodianOrder);
-            }
-        }
-        return false;
+        YHDResponse response = YHDUtil.sendRequest(params, "yhd.logistics.order.shipments.update", "updateCount");
+        return response.isOk() || checkYihaodianSent(orderCode);
     }
 
-    private YihaodianOrder refreshYihaodianOrder(YihaodianOrder yihaodianOrder){
-        Logger.info("start check yihaodian sent %s" , yihaodianOrder.orderCode);
+    private Node refreshYihaodianOrder(String orderCode){
         Map<String, String> params = new HashMap<>();
-        params.put("orderCodeList", yihaodianOrder.orderCode);
-        Logger.info("yhd.orders.detail.get orderCodeList %s", params.get("orderCodeList"));
+        params.put("orderCodeList", orderCode);
 
-        String responseXml = YHDUtil.sendRequest(params, "yhd.orders.detail.get");
-        Logger.info("yhd.orders.detail.get response %s", responseXml);
-        if (responseXml != null) {
-            YHDResponse<YihaodianOrder> res = new YHDResponse<>();
-            res.parseXml(responseXml, "orderInfoList", true, YihaodianOrder.fullParser);
-            if(res.getErrorCount() == 0){
-                List<YihaodianOrder> orders = res.getVs();
-                if (orders.size() > 0){
-                    return orders.get(0);
-                }
-            }
+        YHDResponse response = YHDUtil.sendRequest(params, "yhd.order.detail.get", "orderInfo");
+        if (response.isOk()) {
+            return response.data;
         }
         return null;
     }
 
-    private boolean checkYihaodianSent(YihaodianOrder yihaodianOrder) {
-        Logger.info("start check yihaodian sent %s" , yihaodianOrder.orderCode);
+    private boolean checkYihaodianSent(String orderCode) {
         Map<String, String> params = new HashMap<>();
-        params.put("orderCodeList", yihaodianOrder.orderCode);
-        Logger.info("yhd.orders.detail.get orderCodeList %s", params.get("orderCodeList"));
+        params.put("orderCodeList", orderCode);
 
-        String responseXml = YHDUtil.sendRequest(params, "yhd.orders.detail.get");
-        Logger.info("yhd.orders.detail.get response %s", responseXml);
-        if (responseXml != null) {
-            YHDResponse<YihaodianOrder> res = new YHDResponse<>();
-            res.parseXml(responseXml, "orderInfoList", true, YihaodianOrder.fullParser);
-            if(res.getErrorCount() == 0){
-                List<YihaodianOrder> orders = res.getVs();
-                if (orders.size() > 0){
-                    YihaodianOrder order = orders.get(0);
-                    if (order.orderStatus != OrderStatus.ORDER_PAYED
-                            && order.orderStatus != OrderStatus.ORDER_WAIT_PAY
-                            && order.orderStatus != OrderStatus.ORDER_CANCEL) {
-                        //只要不是待付款、已付款或取消状态状态，就说明我们已经以某种渠道发过货了
-                        return true;
-                    }
-                }
+        YHDResponse response = YHDUtil.sendRequest(params, "yhd.order.detail.get", "orderInfo");
+        if (response.isOk()) {
+            YHDOrderStatus orderStatus = YHDOrderStatus.valueOf(XPath.selectText("orderDetail/orderStatus", response.data));
+            if (orderStatus != YHDOrderStatus.ORDER_PAYED
+                    && orderStatus != YHDOrderStatus.ORDER_WAIT_PAY
+                    && orderStatus != YHDOrderStatus.ORDER_CANCEL) {
+                //只要不是待付款、已付款或取消状态状态，就说明我们已经以某种渠道发过货了
+                return true;
             }
         }
         return false;
     }
 
-    private models.order.Order buildYibaiquanOrder(YihaodianOrder order) {
+    private models.order.Order buildYibaiquanOrder(List<Node> orderItems, String goodReceiverMobile) {
         Logger.info("build uhuila order");
         Resaler resaler = Resaler.findOneByLoginName(YHD_LOGIN_NAME);
         if (resaler == null){
@@ -236,24 +190,27 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
         boolean containsReal = false;
         try {
             boolean hasElectronicOrderItem = false;
-            for (OrderItem orderItem : order.orderItems){
-                if (orderItem.outerId == null) {
-                    continue;//实体券无视
-                }else if (!hasElectronicOrderItem){
-                    hasElectronicOrderItem = true;
+            for (Node orderItem : orderItems){
+
+                String outerId = XPath.selectText("outerId", orderItem);
+                Goods goods = null;
+                if (outerId != null) {
+                    goods = ResalerProduct.getGoods(Long.parseLong(outerId));
+                }else {
+                    continue;
                 }
-                Goods goods = GoodsDeployRelation.getGoods(OuterOrderPartner.YHD, orderItem.outerId);
-                if(goods == null){
-                    Logger.info("goods not found: %s", orderItem.outerId );
+                if (goods == null) {
+                    Logger.info("yihaodian order error: goods not found: %s", outerId );
                     return null;
                 }
 
+                BigDecimal orderItemPrice = new BigDecimal(XPath.selectText("orderItemPrice", orderItem));
                 OrderItems uhuilaOrderItem  = uhuilaOrder.addOrderItem(
                         goods,
-                        orderItem.orderItemNum,
-                        order.goodReceiverMobile,
-                        orderItem.orderItemPrice,
-                        orderItem.orderItemPrice
+                        Integer.parseInt(XPath.selectText("orderItemNum", orderItem)),
+                        goodReceiverMobile,
+                        orderItemPrice,
+                        orderItemPrice
                 );
                 uhuilaOrderItem.save();
                 if(goods.materialType.equals(MaterialType.REAL)){
@@ -261,10 +218,6 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
                 }else if (goods.materialType.equals(MaterialType.ELECTRONIC)) {
                     containsElectronic = true;
                 }
-            }
-            if(!hasElectronicOrderItem) {
-                Logger.info("has no electronic order item");
-                return null;
             }
         } catch (NotEnoughInventoryException e) {
             Logger.info("enventory not enough");

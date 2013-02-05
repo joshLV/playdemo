@@ -1,140 +1,22 @@
 package models.yihaodian;
 
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
+import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * @author likang
  *         Date: 12-8-30
  */
-public class YHDResponse<V> {
-    private List<V> vs;
-    private int totalCount;
+public class YHDResponse {
+    public int errorCount = 1;
+    public List<Node> errors = new ArrayList<>(); // errorCode errorDes pkInfo
 
-    private int errorCount;
-    private List<YHDErrorInfo> errors;
+    public Node data;
 
-    public YHDResponse(){
-        totalCount = 0;
-        errorCount = 0;
-        errors = new ArrayList<>();
-        vs = new ArrayList<>();
+    public boolean isOk() {
+        return errorCount == 0;
     }
-
-    /**
-     * 解析一号店返回的XML
-     * @param xml   一号店的返回内容
-     */
-    public void parseXml(String xml, String contentNodeName, boolean isList, YHDParser<V> parser){
-        Document document = null;
-
-        try{
-            document = DocumentHelper.parseText(xml);
-        }catch (DocumentException e){
-            errorCount = 1;
-            YHDErrorInfo errorInfo = new YHDErrorInfo();
-            errorInfo.errorCode = "0";
-            errorInfo.errorDes = "parse xml error";
-            errorInfo.pkInfo = "";
-            errors.add(errorInfo);
-            return;
-        }
-
-        Element root = document.getRootElement();
-
-        //解析 errorCount
-        errorCount = parseIntValue(root, "errorCount");
-        //解析 totalCount
-        totalCount = parseIntValue(root, "totalCount");
-        //解析错误信息
-        if(errorCount > 0) {
-            parseErrors(root);
-        }
-        //解析内容
-        if(contentNodeName != null && !contentNodeName.equals("")){
-            parseContent(root, contentNodeName, isList, parser);
-        }
-    }
-
-    private void parseContent(Element root, String contentNodeName, boolean isList, YHDParser<V> parser) {
-        Element node = root.element(contentNodeName);
-        if(node == null){
-            return;
-        }
-        //解析对象
-        if(isList) {
-            for(Object o : node.elements()){
-                parseOneContent((Element)o, parser);
-            }
-        }else {
-            parseOneContent(node, parser);
-        }
-    }
-
-    private void parseOneContent(Element e, YHDParser<V> parser){
-        V v = parser.parse(e);
-        if(v != null){
-            vs.add(v);
-        }
-    }
-
-    private void parseErrors(Element root) {
-        Element errorInfoElement = root.element("errInfoList");
-        for (Object o : errorInfoElement.elements()) {
-            Element e = (Element) o;
-            YHDErrorInfo errorInfo = new YHDErrorInfo();
-            errorInfo.errorCode = e.elementText("errorCode");
-            errorInfo.errorDes = e.elementText("errorDes");
-            errorInfo.pkInfo = e.elementText("pkInfo");
-            errors.add(errorInfo);
-        }
-    }
-
-    private int parseIntValue(Element element, String nodeName){
-        String nodeValue = element.elementText(nodeName);
-        if(nodeValue == null) {
-            return 0;
-        }else {
-            return Integer.parseInt(nodeValue);
-        }
-    }
-
-    public List<V> getVs() {
-        return vs;
-    }
-
-    public void setVs(List<V> vs) {
-        this.vs = vs;
-    }
-
-    public int getTotalCount() {
-        return totalCount;
-    }
-
-    public void setTotalCount(int totalCount) {
-        this.totalCount = totalCount;
-    }
-
-    public int getErrorCount() {
-        return errorCount;
-    }
-
-    public void setErrorCount(int errorCount) {
-        this.errorCount = errorCount;
-    }
-
-    public List<YHDErrorInfo> getErrors() {
-        return errors;
-    }
-
-    public void setErrors(List<YHDErrorInfo> errors) {
-        this.errors = errors;
-    }
-
-
 }

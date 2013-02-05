@@ -65,7 +65,7 @@ public class TaobaoCouponUtil {
         }
 
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, TOP_APPKEY, TOP_APPSECRET);
-        JsonObject jsonObject = new JsonParser().parse(outerOrder.message).getAsJsonObject();
+        JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
         String token = jsonObject.get("token").getAsString();
 
         VmarketEticketSendRequest request = new VmarketEticketSendRequest();
@@ -100,7 +100,7 @@ public class TaobaoCouponUtil {
             return true;
         }
         OAuthToken oAuthToken = getToken();
-        JsonObject jsonObject = new JsonParser().parse(outerOrder.message).getAsJsonObject();
+        JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
         String token = jsonObject.get("token").getAsString();
 
         // 组合券
@@ -154,7 +154,7 @@ public class TaobaoCouponUtil {
             Logger.info("consume on taobao failed: outerOrder not found");
             return false;
         }
-        JsonObject jsonObject = new JsonParser().parse(outerOrder.message).getAsJsonObject();
+        JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
         String token = jsonObject.get("token").getAsString();
 
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, TOP_APPKEY, TOP_APPSECRET);
@@ -196,7 +196,7 @@ public class TaobaoCouponUtil {
             Logger.info("consume on taobao failed: outerOrder not found");
             return false;
         }
-        JsonObject jsonObject = new JsonParser().parse(outerOrder.message).getAsJsonObject();
+        JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
         String token = jsonObject.get("token").getAsString();
 
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, TOP_APPKEY, TOP_APPSECRET);

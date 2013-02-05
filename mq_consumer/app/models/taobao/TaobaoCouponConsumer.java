@@ -97,7 +97,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         String mobile, sellerNick;
         Integer num;
         try {
-            JsonObject jsonObject = new JsonParser().parse(outerOrder.message).getAsJsonObject();
+            JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
             mobile = jsonObject.get("mobile").getAsString(); //买家手机号
             num = jsonObject.get("num").getAsInt();//购买的数量
             sellerNick = jsonObject.get("seller_nick").getAsString();//淘宝卖家用户名（旺旺号）

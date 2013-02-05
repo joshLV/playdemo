@@ -59,7 +59,7 @@ public class JDGroupBuyHelper {
         Map<String, Object> params = new HashMap<>();
         params.put("categoryId", categoryId);
         JingdongMessage response = JDGroupBuyUtil.sendRequest("queryCategory", url, templatePath, params);
-        return response.selectNodes("//Categories//Category");
+        return response.selectNodes("Categories/Category");
     }
 
     public static List<Node> cacheCategories(final Long categoryId) {
@@ -81,7 +81,7 @@ public class JDGroupBuyHelper {
         String url = GATEWAY_URL + "/platform/normal/queryCityList.action";
         String templatePath = "jingdong/groupbuy/request/queryCity.xml";
         JingdongMessage response = JDGroupBuyUtil.sendRequest("queryCityList", url, templatePath, null);
-        return response.selectNodes("//Cities//City");
+        return response.selectNodes("Cities/City");
     }
 
     public static List<Node> cacheCities() {
@@ -110,7 +110,7 @@ public class JDGroupBuyHelper {
         params.put("cityId", cityId);
 
         JingdongMessage response = JDGroupBuyUtil.sendRequest("queryDistrict", url, templatePath, params);
-        return response.selectNodes("//Districts//District");
+        return response.selectNodes("Districts/District");
     }
 
     public static List<Node> cacheDistricts(final Long cityId) {
@@ -139,7 +139,7 @@ public class JDGroupBuyHelper {
         params.put("districtId", districtId);
 
         JingdongMessage response = JDGroupBuyUtil.sendRequest("queryArea", url, templatePath, params);
-        return response.selectNodes("//Areas//Area");
+        return response.selectNodes("Areas/Area");
     }
 
     public static List<Node> cacheAreas(final Long districtId) {

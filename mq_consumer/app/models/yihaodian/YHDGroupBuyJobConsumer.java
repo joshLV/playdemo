@@ -27,7 +27,7 @@ public class YHDGroupBuyJobConsumer extends RabbitMQConsumer<YHDGroupBuyMessage>
         JPAPlugin.startTx(false);
 
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
-                OuterOrderPartner.YHD,message.getOrderId()).first();
+                OuterOrderPartner.YHD, message.getOrderId()).first();
         if(outerOrder == null || outerOrder.ybqOrder == null){
             Logger.info("can not find outerOrder: %s", message.getOrderId());
             JPAPlugin.closeTx(true);
@@ -60,23 +60,9 @@ public class YHDGroupBuyJobConsumer extends RabbitMQConsumer<YHDGroupBuyMessage>
         params.put("partnerOrderCode", outerOrder.ybqOrder.orderNumber);
         params.put("orderAmount", outerOrder.ybqOrder.amount.toString());
         params.put("orderCreateTime", dateFormat.format(outerOrder.ybqOrder.createdAt));
-        Logger.info("yhd.group.buy.order.verify orderCode %s", params.get("orderCode"));
-        Logger.info("yhd.group.buy.order.verify partnerOrderCode %s", params.get("partnerOrderCode"));
-        Logger.info("yhd.group.buy.order.verify orderAmount %s", params.get("orderAmount"));
-        Logger.info("yhd.group.buy.order.verify orderCreateTime %s", params.get("orderCreateTime"));
 
-        String responseXml = YHDUtil.sendRequest(params, "yhd.group.buy.order.verify");
-        Logger.info("yhd.group.buy.order.verify response %s", responseXml);
-        if (responseXml != null) {
-            YHDResponse res = new YHDResponse();
-            res.parseXml(responseXml, null, false, null);
-            if(res.getErrorCount() == 0){
-                return true;
-            }else {
-                Logger.info("yhd.group.buy.order.verify error");
-            }
-        }
-        return false;
+        YHDResponse response = YHDUtil.sendRequest(params, "yhd.group.buy.order.verify", "//totalCount");
+        return response.isOk();
     }
 
     @Override

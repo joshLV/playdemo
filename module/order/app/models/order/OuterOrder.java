@@ -1,8 +1,18 @@
 package models.order;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 import play.db.jpa.Model;
+import play.libs.XPath;
 
 import javax.persistence.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.StringReader;
 import java.util.Date;
 
 /**
@@ -51,4 +61,21 @@ public class OuterOrder extends Model {
 
     }
 
+    public JsonObject getMessageAsJsonObject() {
+        return new JsonParser().parse(message).getAsJsonObject();
+    }
+
+    public JsonArray getMessageAsJsonArray() {
+        return new JsonParser().parse(message).getAsJsonArray();
+    }
+
+    public Document getMessageAsXmlDocument() {
+        try{
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            StringReader stringReader = new StringReader(message);
+            return builder.parse(new InputSource(stringReader));
+        }catch (Exception e) {
+            throw new RuntimeException("message of outerorder parse error", e);
+        }
+    }
 }

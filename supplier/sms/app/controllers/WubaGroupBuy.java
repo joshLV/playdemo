@@ -267,8 +267,7 @@ public class WubaGroupBuy extends Controller {
                 continue;
             }
 
-            JsonElement jsonElement = new JsonParser().parse(outerOrder.message);
-            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
             Map<String, Object> ticket = new HashMap<>();
             ticket.put("ticketIdThirdpart", coupon.id);
             ticket.put("orderIdThirdpart", coupon.order.orderNumber);

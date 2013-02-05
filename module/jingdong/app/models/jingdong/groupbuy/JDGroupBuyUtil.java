@@ -147,7 +147,9 @@ public class JDGroupBuyUtil {
 
         Template template = TemplateLoader.load("jingdong/groupbuy/request/queryCity.xml");
         String restRequest = makeRequestRest(template.render());
+        Logger.info("jingdong request queryCity: %s", url);
         Logger.info("jingdong request queryCity:\n%s", restRequest);
+
         WS.HttpResponse response = WS.url(url).body(restRequest).post();
 
         JDRest<QueryIdNameResponse> queryCityRest = new JDRest<>();
@@ -321,17 +323,21 @@ public class JDGroupBuyUtil {
      */
     public static JingdongMessage parseMessage(Document document) {
         JingdongMessage message = new JingdongMessage();
-        message.version = XPath.selectText("//Version", document);
-        message.venderId = Long.parseLong(XPath.selectText("//VenderId", document));
-        message.zip = Boolean.parseBoolean(XPath.selectText("//Zip", document));
-        message.encrypt = Boolean.parseBoolean(XPath.selectText("//Encrypt", document));
+        message.version = XPath.selectText("/Response/Version", document);
+        try{
+            message.venderId = Long.parseLong(XPath.selectText("/Response/VenderId", document));
+            message.zip = Boolean.parseBoolean(XPath.selectText("/Response/Zip", document));
+            message.encrypt = Boolean.parseBoolean(XPath.selectText("/Response/Encrypt", document));
+        }catch (Exception e) {
+            return message;
+        }
 
         // 只有作为京东的响应的时候， resultCode 和 resultMessage 才有用
-        message.resultCode = XPath.selectText("//ResultCode", document);
-        message.resultMessage = XPath.selectText("//ResultMessage", document);
+        message.resultCode = XPath.selectText("/Response/ResultCode", document);
+        message.resultMessage = XPath.selectText("/Response/ResultMessage", document);
 
         if(message.encrypt){
-            String rawMessage = XPath.selectText("//Data", document);
+            String rawMessage = XPath.selectText("/Response/Data", document);
             //解析加密字符串
             String decryptedMessage = JDGroupBuyUtil.decryptMessage(rawMessage);
             Logger.info("jingdong response decrypted:\n%s", decryptedMessage);
@@ -345,7 +351,7 @@ public class JDGroupBuyUtil {
             }
 
         } else{
-            message.message = XPath.selectNode("//Data//Message", document);
+            message.message = XPath.selectNode("/Response/Data/Message", document);
         }
         return message;
     }

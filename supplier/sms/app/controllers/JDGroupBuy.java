@@ -106,7 +106,7 @@ public class JDGroupBuy extends Controller {
         }
 
         Long jdOrderId = Long.parseLong(message.selectText("JdOrderId"));
-        Long venderTeamId = Long.parseLong(message.selectText("//VenderTeamId"));
+        Long venderTeamId = Long.parseLong(message.selectText("VenderTeamId"));
 
         //检查并保存此新请求
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", OuterOrderPartner.JD, jdOrderId).first();
@@ -148,7 +148,7 @@ public class JDGroupBuy extends Controller {
             outerOrder.message = restXml;
             outerOrder.save();
         }
-        NodeList jdCoupons = message.selectNode("//Coupons").getChildNodes();
+        NodeList jdCoupons = message.selectNode("Coupons").getChildNodes();
         //保存京东的券号密码
         List<ECoupon> coupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
         if (outerOrder.status == OuterOrderStatus.ORDER_DONE || outerOrder.status == OuterOrderStatus.ORDER_SYNCED) {
@@ -162,8 +162,8 @@ public class JDGroupBuy extends Controller {
                 Node jdCoupon = jdCoupons.item(i);
 
                 coupon.partner = ECouponPartner.JD;
-                coupon.partnerCouponId = XPath.selectText("//CouponId", jdCoupon);
-                coupon.partnerCouponPwd = XPath.selectText("//CouponPwd", jdCoupon);
+                coupon.partnerCouponId = XPath.selectText("CouponId", jdCoupon);
+                coupon.partnerCouponPwd = XPath.selectText("CouponPwd", jdCoupon);
                 coupon.save();
             }
             outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
@@ -171,7 +171,7 @@ public class JDGroupBuy extends Controller {
         }
 
         if (outerOrder.status == OuterOrderStatus.ORDER_SYNCED){
-            String jdTeamId = message.selectText("//JdTeamId");
+            String jdTeamId = message.selectText("JdTeamId");
 
             Template template = TemplateLoader.load("jingdong/groupbuy/response/sendOrder.xml");
             Goods goods = GoodsDeployRelation.getGoods(OuterOrderPartner.JD, venderTeamId);
@@ -203,7 +203,7 @@ public class JDGroupBuy extends Controller {
             finish(201, "parse query_team_sell_count request xml error");
             return;
         }
-        Long venderTeamId = Long.parseLong(message.selectText("//VenderTeamId"));
+        Long venderTeamId = Long.parseLong(message.selectText("VenderTeamId"));
 
         //查询商品
         Goods goods = GoodsDeployRelation.getGoods(OuterOrderPartner.JD, venderTeamId);
@@ -243,8 +243,8 @@ public class JDGroupBuy extends Controller {
             return;
         }
 
-        Long venderOrderId = Long.parseLong(message.selectText("//VenderOrderId"));
-        Long jdOrderId = Long.parseLong(message.selectText("//JdOrderId"));
+        Long venderOrderId = Long.parseLong(message.selectText("VenderOrderId"));
+        Long jdOrderId = Long.parseLong(message.selectText("JdOrderId"));
 
         Order order = Order.find("byOrderNumber", venderOrderId).first();
         if (order == null) {
@@ -253,7 +253,7 @@ public class JDGroupBuy extends Controller {
             return;
         }
 
-        NodeList jdCoupons = message.selectNode("//Coupons").getChildNodes();
+        NodeList jdCoupons = message.selectNode("Coupons").getChildNodes();
 
         //处理退款
         List<String> refundedCoupons = new ArrayList<>();
@@ -291,9 +291,9 @@ public class JDGroupBuy extends Controller {
             finish(201, "parse send_sms_request request xml error");
             return;
         }
-        String mobile = message.selectText("//Mobile");
-        String venderCouponId = message.selectText("//VenderCouponId");
-        String jdCouponId = message.selectText("//JdCouponId");
+        String mobile = message.selectText("Mobile");
+        String venderCouponId = message.selectText("VenderCouponId");
+        String jdCouponId = message.selectText("JdCouponId");
 
         if (!checkPhone(mobile)) {
             Logger.info("invalid mobile");

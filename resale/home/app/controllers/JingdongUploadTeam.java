@@ -69,7 +69,7 @@ public class JingdongUploadTeam extends Controller {
         List<Shop> shops = Arrays.asList(goods.getShopList().toArray(new Shop[]{}));
         Supplier supplier = Supplier.findById(goods.supplierId);
         //查询城市
-        List<IdNameResponse> cities = JDGroupBuyUtil.cacheCities();
+        List<IdNameResponse> cities = JDGroupBuyUtil.queryCity();
         //只使用默认城市:上海
         IdNameResponse city = null;
         for (IdNameResponse c : cities) {
@@ -84,7 +84,7 @@ public class JingdongUploadTeam extends Controller {
 
         //查询区域
         if (city != null) {
-            List<IdNameResponse> districts = JDGroupBuyUtil.cacheDistricts(city.id);
+            List<IdNameResponse> districts = JDGroupBuyUtil.queryDistrict(city.id);
             renderArgs.put("districts", districts);
             //查询商圈
             Map<Long, List<IdNameResponse>> areas = JDGroupBuyUtil.cacheAreas(city.id);

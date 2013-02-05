@@ -8,8 +8,7 @@ public class YHDErrorInfo {
     public String errorCode;
     public String errorDes;
     public String pkInfo;
-    public YHDErrorInfo(){
-    }
+
     public YHDErrorInfo(String errorCode, String errorDes, String pkInfo){
         this.errorCode = errorCode;
         this.errorDes = errorDes;

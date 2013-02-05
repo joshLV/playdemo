@@ -1,10 +1,10 @@
-package models.yihaodian.shop;
+package models.yihaodian;
 
 /**
  * @author likang
  *         Date: 12-8-30
  */
-public enum OrderStatus {
+public enum YHDOrderStatus {
     ORDER_WAIT_PAY,             //已下单（货款未全收）
     ORDER_PAYED,                //已下单（货款已收）
     ORDER_TRUNED_TO_DO,         //可以发货（已送仓库）

@@ -377,10 +377,6 @@ GET     /discountcodes/{id}/edit                    OperateDiscountCodes.edit
 PUT     /discountcodes/{id}                         OperateDiscountCodes.update
 GET     /discountcodes/{id}/show                    OperateDiscountCodes.show
 
-# 一号店API
-GET     /yihaodian-api                          YihaodianAPI.index
-POST    /yihaodian-api                          YihaodianAPI.request
-
 # 热门关键词
 GET     /keywords                               OperateSearchHotKeywords.index
 

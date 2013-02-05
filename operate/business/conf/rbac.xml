@@ -152,9 +152,6 @@
                         permissions="VERIFIED_ECOUPON_REFUND"/>
 
         </navigation>
-        <!--<navigation key="yihaodian_api" text="一号店">-->
-        <!--<navigation key="yihaodian_api_index" action="YihaodianAPI.index" text="API" permissions="ORDERS"/>-->
-        <!--</navigation>-->
     </navigation>
 
     <navigation key="resale_app" text="分销商管理" action="Resalers.index" display-order="70" permissions="RESALERS">

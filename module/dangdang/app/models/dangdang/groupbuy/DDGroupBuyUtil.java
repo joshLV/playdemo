@@ -48,8 +48,8 @@ public class DDGroupBuyUtil {
         if (!response.isOk() || response.data == null) {
             return null;
         }
-        for (Node node : XPath.selectNodes("//row", response.data)) {
-            if (XPath.selectText("//spgid", node).equals(String.valueOf(linkId))) {
+        for (Node node : XPath.selectNodes("row", response.data)) {
+            if (XPath.selectText("spgid", node).equals(String.valueOf(linkId))) {
                 return node;
             }
         }
@@ -69,7 +69,7 @@ public class DDGroupBuyUtil {
             return false;
         }
 
-        JsonObject jsonObject = new JsonParser().parse(outerOrder.message).getAsJsonObject();
+        JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
         Map<String, Object> params = new HashMap<>();
         params.put("ddgid", jsonObject.get("team_id").getAsLong());
         params.put("consumeCode", coupon.eCouponSn);
@@ -113,7 +113,7 @@ public class DDGroupBuyUtil {
             Logger.info("dangdang couponStatus failed: outerOrder not found; couponId: " + coupon.id);
             return -1;
         }
-        JsonObject jsonObject = new JsonParser().parse(outerOrder.message).getAsJsonObject();
+        JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
 
         Map<String, Object> params = new HashMap<>();
         params.put("ddgid", jsonObject.get("team_id").getAsLong());
@@ -128,7 +128,7 @@ public class DDGroupBuyUtil {
             return -1;
         }
 
-        return Integer.parseInt(response.selectText("//state"));
+        return Integer.parseInt(response.selectText("state"));
     }
 
     /**

@@ -7,13 +7,11 @@ import models.order.OuterOrderPartner;
 import models.sales.*;
 import models.yihaodian.YHDResponse;
 import models.yihaodian.YHDUtil;
-import models.yihaodian.api.YHDCategoryAPI;
-import models.yihaodian.response.YHDIdName;
-import models.yihaodian.response.YHDMerchantCategory;
-import models.yihaodian.response.YHDProductCategory;
-import models.yihaodian.shop.UpdateResult;
+import models.yihaodian.YHDCategoryAPI;
 import operate.rbac.annotations.ActiveNavigation;
+import org.w3c.dom.Node;
 import play.Logger;
+import play.libs.XPath;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -33,7 +31,7 @@ public class YHDProducts extends Controller {
     public static void showUpload(Long goodsId) {
         Goods goods = Goods.findById(goodsId);
 
-        List<YHDIdName> brands = YHDCategoryAPI.brandsCache();
+        List<Node> brands = YHDCategoryAPI.brandsCache();
 
         render(goods, brands);
     }
@@ -53,24 +51,18 @@ public class YHDProducts extends Controller {
         requestParams.put("outerId", String.valueOf(product.id));
         product.latestJson(new Gson().toJson(requestParams)).save();
 
-        String responseXml = YHDUtil.sendRequest(requestParams, "yhd.product.add");
-        Logger.info("yhd.product.add response %s", responseXml);
-        if (responseXml != null) {
-            YHDResponse<UpdateResult> res = new YHDResponse<>();
-            res.parseXml(responseXml, "updateCount", false, UpdateResult.parser);
-            renderArgs.put("res", res);
-            if(res.getErrorCount() == 0){
-                product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id).save();
-                //保存记录
-                ResalerProductJournal.createJournal(product, operateUser.id, product.latestJsonData,
-                        ResalerProductJournalType.CREATE, "上传商品");
-                //上传主图
-                try{
-                    uploadMainImg(imgFile, product.id);
-                }catch (Exception e) {
-                    //ignore
-                    Logger.warn(e,"yihaodian upload main img failed");
-                }
+        YHDResponse response = YHDUtil.sendRequest(requestParams, "yhd.product.add", "updateCount");
+        if (response.isOk()) {
+            product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id).save();
+            //保存记录
+            ResalerProductJournal.createJournal(product, operateUser.id, product.latestJsonData,
+                    ResalerProductJournalType.CREATE, "上传商品");
+            //上传主图
+            try{
+                uploadMainImg(imgFile, product.id);
+            }catch (Exception e) {
+                //ignore
+                Logger.warn(e,"yihaodian upload main img failed");
             }
         }
         render("resale/YHDProducts/result.html");
@@ -84,18 +76,13 @@ public class YHDProducts extends Controller {
         Map<String, String> requestParams = new HashMap<>();
         requestParams.put("outerId", String.valueOf(productId));
         requestParams.put("mainImageName", String.valueOf(productId));
-        String[] filePaths = new String[]{imgFile.getAbsolutePath()};
-        String responseXml = YHDUtil.sendRequest(requestParams, filePaths, "yhd.product.img.upload");
-        Logger.info("yhd.product.add response %s", responseXml);
-        if (responseXml != null) {
-            YHDResponse<UpdateResult> res = new YHDResponse<>();
-            res.parseXml(responseXml, "updateCount", false, UpdateResult.parser);
-            if (res.getErrorCount() > 0) {
-                renderArgs.put("extra", "上传商品成功，但是主图上传失败");
-                renderArgs.put("res", res);
-            }
-        }else {
+        File[] files = new File[]{ new File(imgFile.getAbsolutePath())};
+        YHDResponse response = YHDUtil.sendRequest(requestParams, files, "yhd.product.img.upload", "updateCount");
+        if (!response.isOk()) {
             renderArgs.put("extra", "上传商品成功，但是主图上传失败");
+            renderArgs.put("res", response);
+        }else {
+            renderArgs.put("extra", "上传商品成功，上传主图成功");
         }
     }
 
@@ -107,17 +94,18 @@ public class YHDProducts extends Controller {
         if (id == null) {
             id = 0L;
         }
-        List<YHDProductCategory> categories = YHDCategoryAPI.productCategoriesCache(id, false);
+        List<Node> categories = YHDCategoryAPI.productCategoriesCache(id);
         StringBuilder jsonString = new StringBuilder("[");
         for (int i = 0 ; i < categories.size(); i ++) {
-            YHDProductCategory category = categories.get(i);
+            Node category = categories.get(i);
             if (i != 0) {
                 jsonString.append(",");
             }
-            jsonString.append("{id:'").append(category.id)
-                    .append("',name:'").append(category.name)
-                    .append("',isParent:").append(!category.isLeaf);
-            if (!category.isLeaf) {
+            boolean isParent = "0".equals(XPath.selectText("categoryIsLeaf", category));
+            jsonString.append("{id:'").append(XPath.selectText("categoryId", category))
+                    .append("',name:'").append(XPath.selectText("categoryName", category))
+                    .append("',isParent:").append(isParent);
+            if (isParent) {
                 jsonString.append(",nocheck:true");
             }
             jsonString.append("}");
@@ -135,21 +123,21 @@ public class YHDProducts extends Controller {
         if (id == null) {
             id = 0L;
         }
-        List<YHDMerchantCategory> categories = YHDCategoryAPI.merchantCategoriesCache(id, false);
+        List<Node> categories = YHDCategoryAPI.merchantCategories(id);
         StringBuilder jsonString = new StringBuilder("[");
         for (int i = 0 ; i < categories.size(); i ++) {
-            YHDMerchantCategory category = categories.get(i);
+            Node category = categories.get(i);
             if (i != 0) {
                 jsonString.append(",");
             }
-            jsonString.append("{id:'").append(category.id)
-                    .append("',name:'").append(category.name)
-                    .append("',isParent:").append(!category.isLeaf);
-            if (!category.isLeaf) {
+            boolean isParent = "0".equals(XPath.selectText("categoryIsLeaf", category));
+            jsonString.append("{id:'").append(XPath.selectText("merchantCategoryId", category))
+                    .append("',name:'").append(XPath.selectText("categoryName", category))
+                    .append("',isParent:").append(isParent);
+            if (isParent) {
                 jsonString.append(",nocheck:true");
             }
             jsonString.append("}");
-
         }
         jsonString.append("]");
         renderJSON(jsonString.toString());

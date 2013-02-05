@@ -19,9 +19,6 @@ import java.util.List;
 public class OrderScanner extends Job{
     @Override
     public void doJob() {
-        if(Play.runingInTestMode()){
-            return;
-        }
         List<OuterOrder> orders = OuterOrder.find("partner = ? and (status = ? or status = ?)",
                 OuterOrderPartner.YHD,
                 OuterOrderStatus.ORDER_DONE,
