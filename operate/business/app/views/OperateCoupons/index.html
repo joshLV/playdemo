@@ -261,14 +261,15 @@
     <tbody>
     #{paginate.list items:couponPage, as:'coupon' }
     <tr>
-        <td><a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a></abbr></td>
-        <td>
+        <td><a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a></td>
+        <td#{if coupon?.smsSentCount == 0} class="error"#{/if}>
             #{if hasViewEcouponSnPermission}
             ${coupon?.orderItems?.phone}
             #{/if}
         #{else}
         ${coupon?.orderItems?.getMaskedPhone()}
         #{/else}
+            <i class="icon-envelope"></i>${coupon?.smsSentCount}
         </td>
         <td>
             #{if hasViewEcouponSnPermission}
