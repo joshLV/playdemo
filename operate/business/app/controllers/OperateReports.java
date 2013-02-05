@@ -136,7 +136,7 @@ public class OperateReports extends Controller {
             condition = getDefaultAccountSequenceCondition();
         }
 
-        if (condition.accountUid != null) {
+        if (condition.accountUid != null && !condition.accountUid.equals(0l)) {
             Supplier supplier = Supplier.findById(condition.accountUid);
             if (supplier != null) {
                 condition.account = AccountUtil.getSupplierAccount(supplier.id);

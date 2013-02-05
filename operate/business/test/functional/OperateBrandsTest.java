@@ -86,7 +86,7 @@ public class OperateBrandsTest extends FunctionalTest {
     @Test
     public void testUpdateInvalid() {
         String params = "brand.description=test-update&brand.logo=abc" +
-                "&brand.supplier=Supplier1&brand.deleted=UN_DELETED&brand.introduce=0&brand.logo="+brand.logo;
+                "&brand.supplier=Supplier1&brand.deleted=UN_DELETED&brand.introduce=0&brand.logo=" + brand.logo;
         Map<String, Object> urlMap = new HashMap<>();
         urlMap.put("id", brand.id);
         Http.Response response = PUT(Router.reverse("OperateBrands.update", urlMap).url, "application/x-www-form-urlencoded", params);
@@ -114,7 +114,7 @@ public class OperateBrandsTest extends FunctionalTest {
 
         Map<String, Object> urlMap = new HashMap<>();
         urlMap.put("id", brand.id);
-        Http.Response response = POST("/brands/"+brand.id+"?x-http-method-override=PUT", params, fileParams);
+        Http.Response response = POST("/brands/" + brand.id + "?x-http-method-override=PUT", params, fileParams);
         assertStatus(302, response);
 
         brand.refresh();

@@ -86,19 +86,19 @@
 <div class="body">
     <form class="well form-inline" action="@{OperateReports.showSupplierReport()}" method="GET" id="form" name="form">
         商户
-        #{vx.selectInputField name:"supplierName", id:"condition.accountUid", list:supplierList, value: condition?.accountUid/}
+    #{vx.selectInputField name:"supplierName", id:"condition.accountUid", list:supplierList, value: condition?.accountUid/}
         起止日期
         <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.createdAtBegin"
                onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtBegin?.format()}"> -
         <input type="text" id="condition_end" class="input-medium Wdate" name="condition.createdAtEnd"
                onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtEnd?.format()}">
         <label class="control-label">交易类型:</label>
-        #{select 'condition.tradeType', value:condition.tradeType, id:'condition_trade_type', class:"input-small"}
-            #{option ""}不限#{/option}
-            #{option "WITHDRAW"}&{'trade_type.WITHDRAW'}#{/option}
-            #{option "PURCHASE_COSTING"}&{'trade_type.PURCHASE_COSTING'}#{/option}
-            #{option "REFUND"}&{'trade_type.REFUND'}#{/option}
-        #{/select}
+    #{select 'condition.tradeType', value:condition.tradeType, id:'condition_trade_type', class:"input-small"}
+        #{option ""}不限#{/option}
+        #{option "WITHDRAW"}&{'trade_type.WITHDRAW'}#{/option}
+        #{option "PURCHASE_COSTING"}&{'trade_type.PURCHASE_COSTING'}#{/option}
+        #{option "REFUND"}&{'trade_type.REFUND'}#{/option}
+    #{/select}
         <button type="submit" class="btn btn-primary">搜索</button>
         <ul class="nav nav-pills">
             <li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">今天</a></li>
@@ -152,16 +152,17 @@ select:'condition_trade_type',value:condition.tradeType,form:'form'/}
                 <td>&{'trade_type.'+ accountSequence.tradeType}</td>
                 <td>${accountSequence.remark}
                     #{if accountSequence.tradeType?.isOrder()} <br/>
-                    订单号：<a href="/orders/${accountSequence.orderId}" target="_blank">${accountSequence .orderNumber}</a>
+                        订单号：<a href="/orders/${accountSequence.orderId}"
+                               target="_blank">${accountSequence .orderNumber}</a>
                     #{/if}
                 </td>
                 <td>
                     #{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.NOSTRO}
-                    <div class="alert alert-success">${accountSequence.changeAmount?.formatCurrency('CNY')}</div>
+                        <div class="alert alert-success">${accountSequence.changeAmount?.formatCurrency('CNY')}</div>
                     #{/if}</td>
                 <td>
                     #{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.VOSTRO}
-                    <div class="alert alert-info">${accountSequence.changeAmount?.formatCurrency('CNY')}</div>
+                        <div class="alert alert-info">${accountSequence.changeAmount?.formatCurrency('CNY')}</div>
                     #{/if}
                 </td>
                 <td>&{'accountSequence.'+accountSequence?.settlementStatus?:'CLEARED'}</td>
