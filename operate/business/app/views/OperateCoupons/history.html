@@ -8,13 +8,14 @@
         <thead>
         <tr>
             <th width="10px">订单号</th>
-            <th width="10px">券号</th>
+            <th width="12px">券号</th>
             <th width="8px">手机</th>
-            <th width="90px">商品名称</th>
-            <th width="30px">单价</th>
-            <th width="30px">有效期</th>
-            <th width="50px">付款时间</th>
-            <th width="30px">状态</th>
+            <th width="35px">已发短信数</th>
+            <th width="70px">商品名称</th>
+            <th width="12px">单价</th>
+            <th width="25px">有效期</th>
+            <th width="25px">付款时间</th>
+            <th width="12px">状态</th>
             <th width="30px">操作</th>
         </tr>
         </thead>
@@ -42,6 +43,7 @@
             ${coupon?.orderItems?.getMaskedPhone()}
             #{/else}
             </td>
+            <td>${coupon?.smsSentCount}</td>
             <td>
                 <a href="http://${play.Play.configuration.getProperty("www.url")}/p/${coupon?.goods?.id}?preview=true"
                    target="_blank">

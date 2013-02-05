@@ -3,6 +3,7 @@ package controllers;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.AccountType;
+import models.accounts.util.AccountSequenceUtil;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
 import models.resale.Resaler;
@@ -11,7 +12,10 @@ import operate.rbac.annotations.ActiveNavigation;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static play.Logger.info;
 
 /**
  * 财务核帐.
@@ -59,4 +63,23 @@ public class OperateFinances extends Controller {
         render("OperateFinances/index.html", supplierList, isOk, accountSequence, supplierId, resalerLoginName, consumerLoginName, accountType);
     }
 
+    public static void fixAccountSequence(Long accountId) {
+        List<Account> accounts = new ArrayList<>();
+        Account account = Account.findById(accountId);
+        if (account != null) {
+            accounts.add(account);
+        }
+        //检查并修复财务流水
+        info("=====Begin to check and fix sequence balance");
+        AccountSequenceUtil.checkAndFixBalance(accounts, null);
+        info("=====End to check and fix sequence balance");
+
+        //修复后再次检查并修复帐号的余额
+        info("=====Begin to check and fix account amount");
+        AccountSequenceUtil.checkAndFixAccountAmount(accounts);
+        info("=====End to check and fix account amount");
+
+        List<Supplier> supplierList = Supplier.findUnDeleted();
+        render("OperateFinances/index.html", supplierList, account);
+    }
 }

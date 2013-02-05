@@ -6,13 +6,19 @@
     <div class="alert">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         <strong>核帐失败!</strong>资金明细ID${accountSequence?.id},发生额：${accountSequence?.changeAmount}
-        ,余额：${accountSequence?.balance}.
+        ,余额：${accountSequence?.balance}.<a href="@{OperateFinances.fixAccountSequence(accountSequence?.account?.id)}">立即修复</a>
     </div>
 #{/if}
 #{elseif isOk!=null}
     <div class="alert">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         <strong>核帐成功.</strong>
+    </div>
+#{/elseif}
+#{elseif account!=null}
+    <div class="alert">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>帐号资金明细修复完成，帐号可提现余额为：${account?.amount},不可提现余额为:${account?.uncashAmount},活动金余额为:${account?.promotionAmount}.</strong>
     </div>
 #{/elseif}
 #{form @OperateFinances.checkAccountSequence() , id:'form',enctype:'multipart/form-data',class:"form-horizontal" }

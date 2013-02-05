@@ -50,7 +50,7 @@ public class JingDongGroupByRequest extends Controller {
 
         StringBuilder url = new StringBuilder("http://");
         url.append(request.host);
-        url.append("/api/v1/jd/gb/send-order?encrypt=false");
+        url.append("/api/v1/jd/gb/send-order");
 
         render(products, url);
     }

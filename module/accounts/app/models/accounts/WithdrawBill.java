@@ -171,8 +171,6 @@ public class WithdrawBill extends Model {
             create2TradeBill(BigDecimal.ZERO, amount, id);
         } else {
             //如果预付款已过期
-            System.out.println("prepayment:" + prepayment);
-            System.out.println("withdrawDate:" + withdrawDate);
             final Date endOfPrepaymentExpireAt = DateUtil.getEndOfDay(prepayment.expireAt);
 
             if (withdrawDate.after(endOfPrepaymentExpireAt)) {

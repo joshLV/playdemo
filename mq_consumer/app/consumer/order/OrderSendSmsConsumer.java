@@ -115,7 +115,7 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
 
             try {
                 getSMSProvider(SMS_TYPE).send(new SMSMessage(msg, phone, ecoupons.get(0).replyCode));
-            } catch (SMSException e1) {
+            } catch (Exception e1) {
                 Logger.info("Send SMS failed use " + SMS_TYPE + ", try " + SMS_TYPE2);
                 getSMSProvider(SMS_TYPE2).send(new SMSMessage(msg, phone, ecoupons.get(0).replyCode));
             }
@@ -160,7 +160,7 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
 
             try {
                 getSMSProvider(SMS_TYPE).send(new SMSMessage(msg, phone, ecoupon.replyCode));
-            } catch (SMSException e1) {
+            } catch (Exception e1) {
                 Logger.info("Send SMS failed use " + SMS_TYPE + ", try " + SMS_TYPE2);
                 getSMSProvider(SMS_TYPE2).send(new SMSMessage(msg, phone, ecoupon.replyCode));
             }

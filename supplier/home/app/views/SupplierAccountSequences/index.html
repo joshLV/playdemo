@@ -44,6 +44,8 @@
                        class="radio"/>&{'trade_type.WITHDRAW'}
                 <input type="radio" name="condition.tradeType" value="PURCHASE_COSTING" class="radio"
                        #{if models.accounts.TradeType.PURCHASE_COSTING.equals(condition?.tradeType)}checked#{/if}/>&{'trade_type.PURCHASE_COSTING'}
+                <input type="radio" name="condition.tradeType" value="REFUND" class="radio"
+                       #{if models.accounts.TradeType.REFUND.equals(condition?.tradeType)}checked#{/if}/>&{'trade_type.REFUND'}
                 <button class="btn btn-primary" id="search" type="submit">查询</button>
             </div>
         </div>
