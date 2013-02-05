@@ -37,7 +37,7 @@ public class VerifiedECouponUnConsumeTest extends FunctionalTest {
     ECoupon ecoupon;
     Account supplierAccount;
     Account platformCommissionAccount;
-    
+
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
@@ -63,7 +63,7 @@ public class VerifiedECouponUnConsumeTest extends FunctionalTest {
         supplierAccount = AccountUtil.getSupplierAccount(supplier.id);
         supplierAccount.amount = baseAmount;
         supplierAccount.save();
-        
+
         goods = FactoryBoy.create(Goods.class);
         order = FactoryBoy.create(Order.class);
         ecoupon = FactoryBoy.create(ECoupon.class, new BuildCallback<ECoupon>() {
@@ -74,7 +74,7 @@ public class VerifiedECouponUnConsumeTest extends FunctionalTest {
                 ecoupon.status = ECouponStatus.CONSUMED;
             }
         });
-        
+
         platformCommissionAccount = AccountUtil.getPlatformCommissionAccount();
         platformCommissionAccount.amount = new BigDecimal(1000);
         platformCommissionAccount.save();
@@ -109,7 +109,7 @@ public class VerifiedECouponUnConsumeTest extends FunctionalTest {
         assertContentMatch("备注不能为空", response);
         assertNull(renderArgs("ecoupon"));
     }
-    
+
     @Test
     public void 输入不存在的券号() throws Exception {
         Response response = POST("/verified-ecoupon-do-refund", getECouponSnParams("11234"));
@@ -117,7 +117,7 @@ public class VerifiedECouponUnConsumeTest extends FunctionalTest {
         assertContentMatch("不存在的券号或券号未验证", response);
         assertNull(renderArgs("ecoupon"));
     }
-    
+
     @Test
     public void 输入未验证的券号() throws Exception {
         ecoupon.status = ECouponStatus.UNCONSUMED;
@@ -139,7 +139,7 @@ public class VerifiedECouponUnConsumeTest extends FunctionalTest {
         assertContentMatch("不支持的券类别，请检查", response);
         assertNotNull(renderArgs("ecoupon"));
     }
-    
+
     @Test
     public void 输入已验证的一百券券号并完成退款() throws Exception {
         User user = FactoryBoy.create(User.class);
@@ -159,7 +159,7 @@ public class VerifiedECouponUnConsumeTest extends FunctionalTest {
         ECoupon checkECoupon = ECoupon.findById(e.id);
         checkECoupon.refresh();
         assertEquals(ECouponStatus.UNCONSUMED, checkECoupon.status);
-        
+
         // 检查余额
         Account userAccount = AccountUtil.getAccount(user.id, AccountType.CONSUMER);
 //        assertEquals(ecoupon.salePrice.setScale(2), userAccount.amount.setScale(2));
@@ -193,7 +193,7 @@ public class VerifiedECouponUnConsumeTest extends FunctionalTest {
         ECoupon checkECoupon = ECoupon.findById(e.id);
         checkECoupon.refresh();
         assertEquals(ECouponStatus.UNCONSUMED, checkECoupon.status);
-        
+
         // 检查余额
         // 商户少了oritinPrice
 //        Account resalerAccount = AccountUtil.getAccount(resaler.id, AccountType.RESALER);
@@ -204,7 +204,7 @@ public class VerifiedECouponUnConsumeTest extends FunctionalTest {
         platformCommissionAccount.refresh();
         assertEquals((new BigDecimal(1000)).subtract(ecoupon.salePrice.subtract(ecoupon.originalPrice)).setScale(2), platformCommissionAccount.amount.setScale(2));
     }
-    
+
     private Map<String, String> getECouponSnParams(String eCouponSn) {
         Map<String, String> map = new HashMap<>();
         map.put("eCouponSn", eCouponSn);

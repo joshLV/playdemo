@@ -1,0 +1,166 @@
+#{if  models.order.ECouponStatus.UNCONSUMED == coupon.status }
+    #{if coupon.isFreeze == 0}
+    *{#{vx.operateLink name:"freeze_"+coupon.id,text:"冻结",url:"/coupons/"+coupon.id+"/freeze",confirm:true, targetName:coupon?.getMaskedEcouponSn(),method:"PUT"/}}*
+
+    <a href="#" id="freeze_${coupon.id}"
+       onclick="freeze('${coupon.id}')">冻结</a>
+    #{/if}
+    #{elseif hasRight && coupon.isCheatedOrder!=true}
+        #{if "history".equals(action)}
+            #{vx.operateLink name:"unfreeze_"+coupon.id,text:"解冻", url:"/coupons_in_history/"+coupon.id+"/unfreeze", method:"PUT"/}
+        #{/if}
+        #{else}
+            #{vx.operateLink name:"unfreeze_"+coupon.id,text:"解冻", url:"/coupons/"+coupon.id+"/unfreeze", method:"PUT"/}
+        #{/else}
+    #{/elseif}
+    #{elseif hasRight }
+    <span style="color: #808080;">刷单不可解冻</span>
+    #{/elseif}
+#{/if}
+#{if coupon?.canSendSMSByOperate()}
+<a href="javascript:sendMessage(${coupon.id})">发送短信</a>
+#{/if}
+<a href="@{OperateCoupons.couponHistory(coupon.id)}">查看历史</a>
+#{if coupon?.status== models.order.ECouponStatus.UNCONSUMED && hasEcouponRefundPermission == true && coupon?.isFreeze!=1}
+<br/>
+<a href="@{OperateCoupons.refund(coupon.id,action)}">退款</a>
+#{/if}
+
+#{if coupon.goods.isOrder && coupon.status== models.order.ECouponStatus.UNCONSUMED}
+<a href="@{OperateCoupons.showAppointment(coupon.id)}">
+    #{if coupon.appointmentDate}
+        修改预约
+    #{/if}
+    #{else}
+        预约
+    #{/else}
+</a>
+#{/if}
+
+<div class="modal" id="sendModal" style="display: none;">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+
+        <h3>冻结券号</h3>
+    </div>
+    <div class="modal-body">
+
+    #{form @OperateCoupons.index(), id:"setForm", name:"setForm",class:"form-horizontal",method:"PUT"}
+        <div id="couponinfo">#{include '/OperateCoupons/couponInfo.html'/}</div>
+        请选择冻结此券号的原因：&nbsp;&nbsp;
+        <select name="coupon.freezedReason" id="freeze_option" class="input-small"
+                value="${coupon?.freezedReason}"
+                onchange="select(this);"
+                >
+            <option value="ISCHEATEDORDER">刷单</option>
+            <option value="UNABLEVERIFY">无法验证</option>
+            <option value="OTHERS">其他原因</option>
+        </select>
+
+        <div id="textContainer" style="display: none;">
+            <br>
+            <span style="color: red; ">*</span><span id="mySpan"></span>
+            <input name="coupon.otherReason" id="other_reason" type="text"/>
+            <span id="error_other_reason">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        </div>
+    #{/form}
+    </div>
+    <div class="modal-footer">
+        <a href="#" id="sure" class="btn btn-primary">确定</a>
+        <a href="#" class="btn" data-dismiss="modal">取消</a>
+    </div>
+</div>
+
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">查看完整券号</h3>
+    </div>
+    <div class="modal-body">
+        <p id="ecoupon_sn">
+        </p>
+    </div>
+    <div class="modal-footer">
+        <button data-dismiss="modal" aria-hidden="true">Close</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#sure").click(function () {
+            var result = true;
+            if ($("#freeze_option").val() == "OTHERS" && $("#other_reason").val().trim() == "") {
+                $("#error_other_reason").html("<span style='display: block;color: #ff0000;'>请输入原因!</span>");
+                $("#other_reason").focus();
+                result = false;
+            }
+
+            if (result) {
+                $("#setForm").submit();
+            }
+        });
+    });
+
+    function sendMessage(id) {
+        $.ajax({
+            url:"/coupons-message/" + id + "/send",
+            type:'GET',
+            error:function () {
+                alert('发送失败!');
+            },
+            success:function (data) {
+                if (data == '0') {
+                    alert("发送成功！");
+                } else {
+                    alert("发送失败!");
+                }
+            }
+        });
+
+    }
+
+    function freeze(id) {
+        $("#couponinfo").load("/coupon_info/" + id, function (data) {
+        });
+
+        var action = $("#action").val();
+        if ("history" == action) {
+            $("#setForm").attr("action", "/coupons_in_history/" + id + "/freeze?x-http-method-override=PUT");
+        }
+        else {
+            $("#setForm").attr("action", "/coupons/" + id + "/freeze?x-http-method-override=PUT");
+        }
+        $("#freeze_option").val("ISCHEATEDORDER");
+        $("#textContainer").css({display:"none"});
+        $("#other_reason").val("");
+        $('#sendModal').modal('show');
+
+    }
+
+    function select(myObject) {
+        var selectedValue = myObject.value
+        if (selectedValue == "OTHERS") {
+            document.getElementById("mySpan").innerHTML = "请填写原因：";
+            document.getElementById("textContainer").style.display = "";
+        }
+        else {
+            document.getElementById("textContainer").style.display = "none";
+        }
+    }
+
+    function viewECoupon(id) {
+        $.ajax({
+            url:"/view-conpon/" + id + "/send",
+            type:'GET',
+            error:function () {
+                alert('查询失败,请联系管理员');
+            },
+            success:function (data) {
+                // data as ecouponsn
+                $("#ecoupon_sn").html(data);
+                $('#myModal').modal('show');
+            }
+        });
+    }
+
+</script>

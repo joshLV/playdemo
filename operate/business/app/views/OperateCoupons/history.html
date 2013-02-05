@@ -3,7 +3,7 @@
 #{set title:'券号操作历史列表' /}
 <div class="body">
     <legend>${title}</legend>
-
+#{set action:"history"/}
     <table class="table table-striped table-bordered table-condensed">
         <thead>
         <tr>
@@ -15,18 +15,31 @@
             <th width="30px">有效期</th>
             <th width="50px">付款时间</th>
             <th width="30px">状态</th>
+            <th width="30px">操作</th>
         </tr>
         </thead>
         <tbody>
         <tr>
             <td><a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a></abbr></td>
-            <td>  ${n}${coupon?.getMaskedEcouponSn()}</td>
+        *{<td>  ${n}${coupon?.getMaskedEcouponSn()}</td>}*
             <td>
             #{if hasViewEcouponSnPermission}
-                ${coupon?.orderItems?.phone}
+                <a id="view_ecoupon" href="#" role="button" class="btn" data-toggle="modal"
+                   onClick="viewECoupon(${coupon.id})" title="查看完整券号">
+                ${n}${coupon?.getMaskedEcouponSn()}
+                    *{${coupon?.eCouponSn}}*
+                </a>
             #{/if}
             #{else}
-                ${coupon?.orderItems?.getMaskedPhone()}
+            ${n}${coupon?.getMaskedEcouponSn()}
+            #{/else}
+            </td>
+            <td>
+            #{if hasViewEcouponSnPermission}
+            ${coupon?.orderItems?.phone}
+            #{/if}
+            #{else}
+            ${coupon?.orderItems?.getMaskedPhone()}
             #{/else}
             </td>
             <td>
@@ -40,9 +53,14 @@
             ${coupon?.expireAt?.format()}</td>
             <td>${coupon?.order?.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
             <td>&{'coupon.'+coupon?.status}</td>
+            <td>
+            #{include '/OperateCoupons/operateLink.html'/}
+            </td>
         </tr>
         </tbody>
     </table>
+    <input type="hidden" id="couponId" name="couponId" value="${coupon.id}"/>
+    <input type="hidden" id="action" name="action" value="${action}"/>
 
 
     <table class="table table-striped table-bordered table-condensed">
@@ -74,3 +92,4 @@
         </tbody>
     </table>
 </div>
+
