@@ -249,14 +249,16 @@ PUT     /orders/{id}/send                       OperateOrders.send
 GET     /order_excel                            OperateOrders.orderExcelOut
 GET     /coupons                                OperateCoupons.index
 PUT     /coupons/{id}/freeze                    OperateCoupons.freeze
+PUT     /coupons_in_history/{id}/freeze         OperateCoupons.freezeInCouponHistory
 PUT     /coupons/{id}/unfreeze                  OperateCoupons.unfreeze
+PUT     /coupons_in_history/{id}/unfreeze       OperateCoupons.unfreezeInCouponHistory
 GET     /coupons-message/{id}/send              OperateCoupons.sendMessage
 GET     /coupon_excel                           OperateCoupons.couponExcelOut
 GET     /coupon_history                         OperateCoupons.couponHistory
 GET     /coupon_refund                          OperateCoupons.refund
 GET     /coupon_refund_doing                    OperateCoupons.handleRefund
-GET     /view-conpon/{id}/send                 OperateCoupons.viewECouponsn
-GET     /coupon_info/{id}                      OperateCoupons.couponInfo
+GET     /view-conpon/{id}/send                  OperateCoupons.viewECouponsn
+GET     /coupon_info/{id}                       OperateCoupons.couponInfo
 
 GET     /coupon-appointment/{couponId}          OperateCoupons.showAppointment
 POST    /coupon-appointment                     OperateCoupons.appointment

@@ -97,6 +97,7 @@
             #{option ""}不限#{/option}
             #{option "WITHDRAW"}&{'trade_type.WITHDRAW'}#{/option}
             #{option "PURCHASE_COSTING"}&{'trade_type.PURCHASE_COSTING'}#{/option}
+            #{option "REFUND"}&{'trade_type.REFUND'}#{/option}
         #{/select}
         <button type="submit" class="btn btn-primary">搜索</button>
         <ul class="nav nav-pills">
@@ -122,7 +123,7 @@
         </div>
     </div>
 
-#{vx.tab name:'trade_type',enumItems: [ models.accounts.TradeType.WITHDRAW, models.accounts.TradeType.PURCHASE_COSTING],
+#{vx.tab name:'trade_type',enumItems: [ models.accounts.TradeType.WITHDRAW, models.accounts.TradeType.PURCHASE_COSTING,models.accounts.TradeType.REFUND],
 select:'condition_trade_type',value:condition.tradeType,form:'form'/}
     <div class="tab-content">
         <table class="table table-striped seq">
