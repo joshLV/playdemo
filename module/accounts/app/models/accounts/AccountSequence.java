@@ -215,6 +215,8 @@ public class AccountSequence extends Model {
                 " account=? and sequenceFlag=? and settlementStatus=? and createdAt<?",
                 account, AccountSequenceFlag.VOSTRO, SettlementStatus.UNCLEARED, toDate).first();
         amount = (amount != null) ? amount : BigDecimal.ZERO;
+        System.out.println("amount:" + amount);
+        System.out.println("toDate:" + toDate);
         BigDecimal refundAmount = getRefundAmountTo(account, toDate);
         return amount.add(refundAmount);
     }

@@ -39,7 +39,6 @@ public class SupplierDailyReport {
         }
         sql.append(" and consumedAt>=:fromDate and consumedAt<=:toDate group by date(consumedAt) order by date(consumedAt)");
 
-        System.out.println("sql.toString():" + sql.toString());
         Query q = entityManager.createQuery(sql.toString());
         q.setParameter("fromDate", fromDate);
         q.setParameter("toDate", toDate);
