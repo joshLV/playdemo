@@ -1469,7 +1469,7 @@ public class ECoupon extends Model {
     @Transient
     public String getOrderSMSMessage() {
 
-        if (status != ECouponStatus.UNCONSUMED) {
+        if (!this.canSendSMSByOperate()) {
             Logger.info("ECoupon(id:" + id + ") stats is not UNCONSUMED, but was " + status + ", cann't send SMS.");
             return null;  //只有未支付时才能发短信
         }
