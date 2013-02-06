@@ -101,7 +101,7 @@
         <h3>同意提现申请</h3>
     </div>
 
-#{form @WithdrawApproval.approve(), class:'form-horizontal'}
+#{form @WithdrawApproval.approve(), class:'form-horizontal',onsubmit:'return disableButton()'}
     <div class="modal-body">
         <fieldset>
             <div class="control-group">
@@ -152,6 +152,7 @@
         <input type="hidden" name="id" value="${bill.id}">
         <input type="hidden" name="action" value="reject">
         <button id="fail" class="btn btn-danger" type="submit">拒绝</button>
+        </button>
     </div>
 #{/form}
 </div>
@@ -164,6 +165,19 @@
             form.reject_comment.focus();
             return false;
         }
+        else {
+            $('#fail').attr('disabled', "true");
+            $("#fail").html("正在提交");
+            $('#fail').attr('class', "btn disabled");
+            return true;
+        }
+    }
+
+    function disableButton() {
+        $('#pass').attr('disabled', "true");
+        $("#pass").html("正在提交");
+        $('#pass').attr('class', "btn disabled");
+        return true;
     }
 
 </script>
