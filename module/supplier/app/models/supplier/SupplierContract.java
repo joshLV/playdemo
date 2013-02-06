@@ -32,12 +32,10 @@ public class SupplierContract extends Model {
     @Column(name = "supplier_company_name")
     public String supplierCompanyName;
 
-    @Required
     @Column(name = "effective_at")
     @Temporal(TemporalType.TIMESTAMP)
     public Date effectiveAt;
 
-    @Required
     @Column(name = "expire_at")
     @Temporal(TemporalType.TIMESTAMP)
     public Date expireAt;

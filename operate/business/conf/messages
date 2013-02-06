@@ -56,6 +56,7 @@ validation.beforeThanUseTime=%s要大于开始时间!
 validation.allRequiredUseTime=请把可用时段输入完整!
 validation.noShop=该商户没有门店，请先为商户添加门店！
 validation.existed=%s已经存在！
+validation.notExisted=%s不存在！
 validation.useWeekDay=请选择%s!
 validation.selected=请选择%s!
 validation.selectExisted=请选择存在的%s!
