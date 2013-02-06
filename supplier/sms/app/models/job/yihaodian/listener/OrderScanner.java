@@ -19,11 +19,10 @@ import java.util.List;
 public class OrderScanner extends Job {
     @Override
     public void doJob() {
-        List<OuterOrder> orders = OuterOrder.find("parnter = ? and ( status = ? or status = ?)",
+        List<OuterOrder> orders = OuterOrder.find("partner = ? and ( status = ? or status = ?)",
                 OuterOrderPartner.YHD, OuterOrderStatus.ORDER_COPY, OuterOrderStatus.ORDER_DONE).fetch();
         for (OuterOrder order : orders){
-            YihaodianJobMessage message = new YihaodianJobMessage(order.orderId);
-            YihaodianQueueUtil.addJob(message);
+            YihaodianQueueUtil.addJob(order.orderId);
         }
     }
 }

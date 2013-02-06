@@ -30,11 +30,11 @@ public class TaobaoCouponAPI extends Controller {
             renderJSON("{\"code\":501}");
             return;//签名错误
         }
-        Long orderId;
+        String orderId;
         String sellerNick;
         try {
-            orderId = Long.parseLong(params.get("order_id"));//淘宝订单交易号
-            sellerNick = params.get("seller_nick");//淘宝卖家用户名（旺旺号）
+            orderId = params.get("order_id").trim();//淘宝订单交易号
+            sellerNick = params.get("seller_nick").trim();//淘宝卖家用户名（旺旺号）
         } catch (Exception e) {
             Logger.warn("taobao coupon request error: param invalid");
             renderJSON("{\"code\":502}");
@@ -46,8 +46,7 @@ public class TaobaoCouponAPI extends Controller {
             return;//暂时只发我们自己的店
         }
 
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
-                OuterOrderPartner.TB, orderId).first();
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", OuterOrderPartner.TB, orderId).first();
 
         switch (method) {
             case "send":
@@ -74,7 +73,7 @@ public class TaobaoCouponAPI extends Controller {
      * 接收发码通知
      * 此处只接收、记录请求内容，并立即返回，具体工作由 TaobaoCouponConsumer 来做
      */
-    private static void send(Map<String, String> params, Long orderId, OuterOrder outerOrder) {
+    private static void send(Map<String, String> params, String orderId, OuterOrder outerOrder) {
         //如果找不到该orderCode的订单，说明还没有新建，则新建一个
         if (outerOrder == null) {
             outerOrder = new OuterOrder();

@@ -30,15 +30,15 @@ import java.util.Map;
  * @author likang
  */
 @OnApplicationStart(async = true)
-public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
+public class YihaodianJobConsumer extends RabbitMQConsumer<String>{
     public static String YHD_LOGIN_NAME = Resaler.YHD_LOGIN_NAME;
     public static String DELIVERY_SUPPLIER = Play.configuration.getProperty("yihaodian.delivery_supplier");
 
     @Override
-    protected void consume(YihaodianJobMessage message) {
+    protected void consume(String orderId) {
         //开启事务管理
         JPAPlugin.startTx(false);
-        OuterOrder outerOrder = OuterOrder.find("byOrderIdAndPartner", message.getOrderId(), OuterOrderPartner.YHD).first();
+        OuterOrder outerOrder = OuterOrder.find("byOrderIdAndPartner", orderId, OuterOrderPartner.YHD).first();
         if(outerOrder == null){
             JPAPlugin.closeTx(true);
             return;
@@ -68,17 +68,16 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
             OuterOrder.em().refresh(outerOrder, LockModeType.PESSIMISTIC_WRITE);
         }catch (PersistenceException e){
             //拿不到锁就放弃
-            Logger.info("can not lock yihaodian order %s", message.getOrderId());
+            Logger.info("can not lock yihaodian order %s", orderId);
             JPAPlugin.closeTx(true);
             return;
         }
-        String orderCode = XPath.selectText("orderDetail/orderCode", yihaodianOrder);
         if(outerOrder.status == OuterOrderStatus.ORDER_COPY){
             //等 1 分钟再发货
             if(outerOrder.createdAt.getTime() < (System.currentTimeMillis() - 60000)){
                 //如果用户没有取消订单再发货
                 //首先刷新最新的订单
-                Node refreshOrder = refreshYihaodianOrder(orderCode);
+                Node refreshOrder = refreshYihaodianOrder(orderId);
                 if(refreshOrder != null){
                     YHDOrderStatus orderStatus = YHDOrderStatus.valueOf(XPath.selectText("orderDetail/orderStatus", yihaodianOrder));
                     if (YHDOrderStatus.ORDER_CANCEL != orderStatus) {
@@ -93,13 +92,12 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
                                 MailMessage mailMessage = new MailMessage();
                                 mailMessage.addRecipient("op@uhuila.com");
                                 mailMessage.setSubject("一号店实体券订单");
-                                mailMessage.putParam("yhdOrderId", message.getOrderId());
+                                mailMessage.putParam("yhdOrderId", orderId);
                                 mailMessage.setTemplate("yihaodianRealGoods");
                                 MailUtil.sendCommonMail(mailMessage);
                             }else {
                                 outerOrder.status = OuterOrderStatus.ORDER_DONE;
-                                YihaodianJobMessage syncMessage = new YihaodianJobMessage(message.getOrderId());
-                                YihaodianQueueUtil.addJob(syncMessage);
+                                YihaodianQueueUtil.addJob(orderId);
                             }
                             outerOrder.save();
 
@@ -120,7 +118,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
                 outerOrder.status = OuterOrderStatus.ORDER_IGNORE;
                 outerOrder.save();
             }else {
-                if(syncWithYihaodian(orderCode)){
+                if(syncWithYihaodian(orderId)){
                     outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
                     outerOrder.save();
                 }
@@ -241,7 +239,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
 
     @Override
     protected Class getMessageType() {
-        return YihaodianJobMessage.class;
+        return String.class;
     }
 
     @Override

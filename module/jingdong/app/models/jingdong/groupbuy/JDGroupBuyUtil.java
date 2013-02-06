@@ -15,6 +15,7 @@ import play.Logger;
 import play.Play;
 import play.exceptions.UnexpectedException;
 import play.libs.WS;
+import play.libs.XML;
 import play.libs.XPath;
 import play.templates.Template;
 import play.templates.TemplateLoader;
@@ -342,13 +343,7 @@ public class JDGroupBuyUtil {
             String decryptedMessage = JDGroupBuyUtil.decryptMessage(rawMessage);
             Logger.info("jingdong response decrypted:\n%s", decryptedMessage);
 
-            try{
-                DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-                StringReader stringReader = new StringReader(decryptedMessage);
-                message.message = XPath.selectNode("/",  builder.parse(new InputSource(stringReader)));
-            }catch (Exception e) {
-                Logger.info(e, "jingdong parse message error: not xml document");
-            }
+            message.message = XPath.selectNode("/Message", XML.getDocument(decryptedMessage));
 
         } else{
             message.message = XPath.selectNode("/Response/Data/Message", document);

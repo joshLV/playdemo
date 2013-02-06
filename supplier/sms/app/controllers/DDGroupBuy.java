@@ -84,8 +84,7 @@ public class DDGroupBuy extends Controller {
         }
 
         Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
-                OuterOrderPartner.DD, Long.valueOf(kx_order_id)).first();
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", OuterOrderPartner.DD, kx_order_id).first();
         //outerOrder是否存在的标志
         Boolean isExisted = true;
         Order order;
@@ -94,7 +93,7 @@ public class DDGroupBuy extends Controller {
         if (outerOrder == null) {
             isExisted = false;
             outerOrder = new OuterOrder();
-            outerOrder.orderId = Long.parseLong(kx_order_id);
+            outerOrder.orderId = kx_order_id;
             outerOrder.partner = OuterOrderPartner.DD;
             outerOrder.message = gson.toJson(params);
             outerOrder.status = OuterOrderStatus.ORDER_COPY;
@@ -178,8 +177,7 @@ public class DDGroupBuy extends Controller {
         //取得data节点中的数据信息
 
         //根据当当订单编号，查询订单是否存在
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
-                OuterOrderPartner.DD, Long.parseLong(order_id)).first();
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", OuterOrderPartner.DD, order_id).first();
         if (outerOrder == null || outerOrder.ybqOrder == null) {
             renderError(DDErrorCode.ORDER_NOT_EXITED, "没找到对应的当当订单!");
         }

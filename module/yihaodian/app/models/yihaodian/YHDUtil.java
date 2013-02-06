@@ -8,6 +8,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import play.Logger;
 import play.Play;
+import play.libs.XML;
 import play.libs.XPath;
 import util.ws.WebServiceClient;
 import util.ws.WebServiceRequest;
@@ -58,27 +59,20 @@ public class YHDUtil {
         Logger.info("yihaodian gateway_url: %s", GATEWAY_URL);
         Logger.info("yihaodian request %s:\n%s", method, new Gson().toJson(params));
 
-        WebServiceRequest request = WebServiceRequest.url(GATEWAY_URL).type("yihaodian." + method).params(requestParams).encoding("UTF-8");
+        WebServiceRequest request = WebServiceRequest.url(GATEWAY_URL).type("yihaodian." + method).params(requestParams);
         if (files != null) {
             //todo
         }
         String documentStr = request.postString();
         Logger.info("yihaodian response:\n%s", documentStr);
-        Document document;
-        try{
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            StringReader stringReader = new StringReader(documentStr);
-            document = builder.parse(new InputSource(stringReader));
-        }catch (Exception e) {
-            throw new RuntimeException("message of yihaodian parse error", e);
-        }
+        Document document = XML.getDocument(documentStr);
 
         return parseMessage(document, dataElementName);
     }
 
     public static YHDResponse parseMessage(Document document, String dataElementName) {
         YHDResponse response = new YHDResponse();
-        response.errorCount = Integer.parseInt(XPath.selectText("/response/errorCount", document));
+        response.errorCount = Integer.parseInt(XPath.selectText("/response/errorCount", document).trim());
 
         if (response.errorCount > 0) {
             response.errors = XPath.selectNodes("/response/errInfoList/errDetailInfo", document);

@@ -69,7 +69,7 @@ public class TaobaoCouponUtil {
         String token = jsonObject.get("token").getAsString();
 
         VmarketEticketSendRequest request = new VmarketEticketSendRequest();
-        request.setOrderId(outerOrder.orderId);
+        request.setOrderId(Long.parseLong(outerOrder.orderId));
         request.setVerifyCodes(verifyCodes.toString());
         request.setToken(token);
         Logger.info("tell taobao coupon send request. orderId: %s, verifyCodes: %s, token: %s",
@@ -120,7 +120,7 @@ public class TaobaoCouponUtil {
 
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, TOP_APPKEY, TOP_APPSECRET);
         VmarketEticketResendRequest request = new VmarketEticketResendRequest();
-        request.setOrderId(outerOrder.orderId);
+        request.setOrderId(Long.parseLong(outerOrder.orderId));
         request.setVerifyCodes(verifyCodes.toString());
         request.setToken(token);
 
@@ -159,7 +159,7 @@ public class TaobaoCouponUtil {
 
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, TOP_APPKEY, TOP_APPSECRET);
         VmarketEticketConsumeRequest request = new VmarketEticketConsumeRequest();
-        request.setOrderId(outerOrder.orderId);
+        request.setOrderId(Long.parseLong(outerOrder.orderId));
         request.setVerifyCode(eCoupon.getSafeECouponSN());
         request.setConsumeNum(1L);
         request.setToken(token);
@@ -201,7 +201,7 @@ public class TaobaoCouponUtil {
 
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, TOP_APPKEY, TOP_APPSECRET);
         VmarketEticketReverseRequest request = new VmarketEticketReverseRequest();
-        request.setOrderId(outerOrder.orderId);
+        request.setOrderId(Long.parseLong(outerOrder.orderId));
         request.setReverseCode(coupon.getSafeECouponSN());
         request.setReverseNum(1L);
         request.setConsumeSecialNum(coupon.partnerCouponId);

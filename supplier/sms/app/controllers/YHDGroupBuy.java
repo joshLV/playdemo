@@ -38,7 +38,7 @@ public class YHDGroupBuy extends Controller {
     /**
      * 接收一号店的新订单通知
      */
-    public static void orderInform(Long orderCode, Long productId, Integer productNum, BigDecimal orderAmount,
+    public static void orderInform(String orderCode, Long productId, Integer productNum, BigDecimal orderAmount,
                                    Date createTime, Date paidTime, String userPhone, BigDecimal productPrice,
                                    String outerGroupId) {
         TreeMap<String, String> params = YHDUtil.filterPlayParams(request.params.allSimple());
@@ -51,8 +51,7 @@ public class YHDGroupBuy extends Controller {
 
         Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();
 
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
-                OuterOrderPartner.YHD, orderCode).first();
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", OuterOrderPartner.YHD, orderCode).first();
         //如果找不到该orderCode的订单，说明还没有新建，则新建一个
         if (outerOrder == null) {
             outerOrder = new OuterOrder();
@@ -138,8 +137,7 @@ public class YHDGroupBuy extends Controller {
             finish(errorInfoList, totalCount);
         }
 
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
-                OuterOrderPartner.YHD, Long.valueOf(params.get("orderCode"))).first();
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", OuterOrderPartner.YHD, params.get("orderCode")).first();
         if (outerOrder == null || outerOrder.ybqOrder == null) {
             errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.get_orderCode_invalid", "订单不存在,请检查 orderCode", null));
         } else if (!outerOrder.ybqOrder.orderNumber.equals(params.get("partnerOrderCode"))) {
@@ -171,8 +169,7 @@ public class YHDGroupBuy extends Controller {
             finish(errorInfoList, totalCount);
         }
 
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
-                OuterOrderPartner.YHD, Long.valueOf(params.get("orderCode"))).first();
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", OuterOrderPartner.YHD, params.get("orderCode")).first();
         ECoupon eCoupon = null;
         //检查订单存在与否
         if (outerOrder == null || outerOrder.ybqOrder == null) {

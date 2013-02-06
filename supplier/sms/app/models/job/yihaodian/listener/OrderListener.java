@@ -6,7 +6,7 @@ import models.order.OuterOrderStatus;
 import models.yihaodian.*;
 import models.yihaodian.YHDUtil;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import play.Logger;
 import play.Play;
 import play.jobs.Every;
 import play.jobs.Job;
@@ -25,31 +25,29 @@ import java.util.*;
 @Every("1mn")
 public class OrderListener extends Job{
     private static String ORDER_DATE = "yyyy-MM-dd HH:mm:ss";
-    public static final boolean ON = Play.configuration.getProperty("yihaodian.listener", "on").toLowerCase().equals("on");
+    public static final boolean ON = Play.configuration.getProperty("yihaodian.listener", "off").toLowerCase().equals("on");
 
     @Override
     public void doJob(){
-        if (!ON){
+        if (!ON && !Play.runingInTestMode()){
+            Logger.info("yihaodian order listener aborted");
             return;
         }
         //从一号店拉取订单列表
-        NodeList orders = newOrders();
-        if (orders == null || orders.getLength() == 0) {
+        List<Node> orders = newOrders();
+        if (orders == null || orders.size() == 0) {
             return;
         }
         //筛选出我们没有处理过的
         StringBuilder orderCodes = new StringBuilder();
-        for(int i = 0; i < orders.getLength(); i++ ){
-            Node order = orders.item(i);
-            Long orderId = Long.parseLong(XPath.selectText("//orderId", order));
-            String orderCode = XPath.selectText("//orderCode", order);
+        for(Node order : orders ){
+            String orderCode = XPath.selectText("orderCode", order).trim();
 
-            if(OuterOrder.find("byOrderId", orderId).first() == null){
+            if(OuterOrder.find("byOrderId", orderCode).first() == null){
                 orderCodes.append(orderCode).append(",");
             }else {
                 //发送消息队列
-                YihaodianJobMessage message = new YihaodianJobMessage(orderId);
-                YihaodianQueueUtil.addJob(message);
+                YihaodianQueueUtil.addJob(orderCode);
             }
         }
 
@@ -60,20 +58,18 @@ public class OrderListener extends Job{
             YHDResponse response = YHDUtil.sendRequest(params, "yhd.orders.detail.get", "orderInfoList");
 
             if (response.isOk()) {
-                NodeList fullOrders = response.data.getChildNodes();
-                for(int i =0; i< fullOrders.getLength(); i++) {
-                    Node fullOrder = fullOrders.item(i);
+                List<Node> fullOrders = XPath.selectNodes("orderInfo", response.data);
+                for(Node fullOrder : fullOrders) {
 
                     OuterOrder outerOrder = new OuterOrder();
-                    outerOrder.message = fullOrder.toString();
+                    outerOrder.message = fullOrder.getTextContent();
                     outerOrder.status = OuterOrderStatus.ORDER_COPY;
                     outerOrder.partner = OuterOrderPartner.YHD;
-                    outerOrder.orderId = Long.parseLong(XPath.selectText("//orderDetail//orderId", fullOrder));
+                    outerOrder.orderId = XPath.selectText("orderDetail/orderCode", fullOrder).trim();
                     outerOrder.save();
 
                     //发送消息队列
-                    YihaodianJobMessage message = new YihaodianJobMessage(outerOrder.orderId);
-                    YihaodianQueueUtil.addJob(message);
+                    YihaodianQueueUtil.addJob(outerOrder.orderId);
                 }
             }
         }
@@ -84,7 +80,7 @@ public class OrderListener extends Job{
      *
      * @return 已付款未发货的订单摘要
      */
-    public NodeList newOrders(){
+    public List<Node> newOrders(){
         Date end = new Date(System.currentTimeMillis() + 600000);//当前时间往后10分钟
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(end);
@@ -101,7 +97,7 @@ public class OrderListener extends Job{
         YHDResponse response = YHDUtil.sendRequest(params, "yhd.orders.get", "orderList");
 
         if(response.isOk()) {
-            return response.data.getChildNodes();
+            return XPath.selectNodes("order", response.data);
         }
         return null;
     }

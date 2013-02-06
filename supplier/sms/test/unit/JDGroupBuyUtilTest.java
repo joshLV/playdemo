@@ -5,6 +5,7 @@ import models.jingdong.groupbuy.JingdongMessage;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
+import play.libs.XML;
 import play.libs.XPath;
 import play.test.UnitTest;
 
@@ -32,14 +33,7 @@ public class JDGroupBuyUtilTest extends UnitTest {
                 "    <Data>" + JDGroupBuyUtil.encryptMessage(messageXml) + "</Data>\n" +
                 "</Response>";
 
-        Document document;
-        try{
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            StringReader stringReader = new StringReader(encryptedResponse);
-            document = builder.parse(new InputSource(stringReader));
-        }catch (Exception e) {
-            fail();return;
-        }
+        Document document = XML.getDocument(encryptedResponse);
         JingdongMessage message = JDGroupBuyUtil.parseMessage(document);
         assertTrue(message.encrypt);
         assertNotNull(message.message);
@@ -65,14 +59,8 @@ public class JDGroupBuyUtilTest extends UnitTest {
                 "    <ResultMessage>failure</ResultMessage>\n" +
                 "    <Data>" + messageXml + "</Data>\n" +
                 "</Response>";
-        Document document;
-        try{
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            StringReader stringReader = new StringReader(plainResponse);
-            document = builder.parse(new InputSource(stringReader));
-        }catch (Exception e) {
-            fail();return;
-        }
+
+        Document document = XML.getDocument(plainResponse);
         JingdongMessage message = JDGroupBuyUtil.parseMessage(document);
         assertFalse(message.encrypt);
         assertNotNull(message.message);

@@ -1,18 +1,13 @@
 package models.order;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 import play.db.jpa.Model;
-import play.libs.XPath;
+import play.libs.XML;
 
 import javax.persistence.*;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.StringReader;
 import java.util.Date;
 
 /**
@@ -28,7 +23,7 @@ public class OuterOrder extends Model {
     public OuterOrderPartner partner;      //合作伙伴
 
     @Column(name = "order_id", nullable = true)
-    public Long orderId;       //合作伙伴的订单ID
+    public String orderId;       //合作伙伴的订单ID
 
     @Basic(fetch = FetchType.LAZY)
     @ManyToOne
@@ -70,12 +65,6 @@ public class OuterOrder extends Model {
     }
 
     public Document getMessageAsXmlDocument() {
-        try{
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            StringReader stringReader = new StringReader(message);
-            return builder.parse(new InputSource(stringReader));
-        }catch (Exception e) {
-            throw new RuntimeException("message of outerorder parse error", e);
-        }
+        return XML.getDocument(message);
     }
 }

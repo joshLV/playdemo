@@ -105,8 +105,8 @@ public class JDGroupBuy extends Controller {
             finish(204, "invalid mobile");
         }
 
-        Long jdOrderId = Long.parseLong(message.selectText("JdOrderId"));
-        Long venderTeamId = Long.parseLong(message.selectText("VenderTeamId"));
+        String jdOrderId = message.selectText("JdOrderId").trim();
+        Long venderTeamId = Long.parseLong(message.selectText("VenderTeamId").trim());
 
         //检查并保存此新请求
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", OuterOrderPartner.JD, jdOrderId).first();

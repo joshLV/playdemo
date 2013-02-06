@@ -34,7 +34,7 @@ public class TaobaoCouponAPITest extends FunctionalTest{
             @Override
             public void build(OuterOrder target) {
                 target.partner = OuterOrderPartner.TB;
-                target.orderId = TAOBAO_ORDER_ID;
+                target.orderId = String.valueOf(TAOBAO_ORDER_ID);
             }
         });
         FactoryBoy.create(ECoupon.class);

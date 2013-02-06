@@ -18,18 +18,18 @@ import java.util.Map;
  *         Date: 12-9-15
  */
 @OnApplicationStart(async = true)
-public class YHDGroupBuyJobConsumer extends RabbitMQConsumer<YHDGroupBuyMessage> {
+public class YHDGroupBuyJobConsumer extends RabbitMQConsumer<String> {
     public static String DATE_FORMAT = "yyy-MM-dd HH:mm:ss";
 
     @Override
-    protected void consume(YHDGroupBuyMessage message) {
+    protected void consume(String orderId) {
         //开启事务管理
         JPAPlugin.startTx(false);
 
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
-                OuterOrderPartner.YHD, message.getOrderId()).first();
+                OuterOrderPartner.YHD, orderId).first();
         if(outerOrder == null || outerOrder.ybqOrder == null){
-            Logger.info("can not find outerOrder: %s", message.getOrderId());
+            Logger.info("can not find outerOrder: %s", orderId);
             JPAPlugin.closeTx(true);
             return;
         }
@@ -56,7 +56,7 @@ public class YHDGroupBuyJobConsumer extends RabbitMQConsumer<YHDGroupBuyMessage>
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         Map<String, String> params = new HashMap<>();
-        params.put("orderCode", String.valueOf(outerOrder.orderId));
+        params.put("orderCode", outerOrder.orderId);
         params.put("partnerOrderCode", outerOrder.ybqOrder.orderNumber);
         params.put("orderAmount", outerOrder.ybqOrder.amount.toString());
         params.put("orderCreateTime", dateFormat.format(outerOrder.ybqOrder.createdAt));
@@ -67,7 +67,7 @@ public class YHDGroupBuyJobConsumer extends RabbitMQConsumer<YHDGroupBuyMessage>
 
     @Override
     protected Class getMessageType() {
-        return YHDGroupBuyMessage.class;
+        return String.class;
     }
 
     @Override

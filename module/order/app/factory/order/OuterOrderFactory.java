@@ -18,7 +18,7 @@ public class OuterOrderFactory extends ModelFactory<OuterOrder> {
     public OuterOrder define() {
         OuterOrder order = new OuterOrder();
         order.ybqOrder = FactoryBoy.lastOrCreate(Order.class);
-        order.orderId= 12345678L;
+        order.orderId= "12345678";
         order.message = "";
         order.partner = OuterOrderPartner.DD;
         order.status = OuterOrderStatus.ORDER_COPY;

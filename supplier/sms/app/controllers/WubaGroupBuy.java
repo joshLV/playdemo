@@ -58,13 +58,14 @@ public class WubaGroupBuy extends Controller {
 
         Map<String, Object> result = new HashMap<>();
         putStatusAndMsg(result, "10000", "成功");
-        Long orderId, outerGroupId;
+        String orderId;
+        Long outerGroupId;
         BigDecimal productPrize;
         int productNum;
         String userPhone;
 
         try {
-            orderId = orderJson.get("orderId").getAsLong();
+            orderId = orderJson.get("orderId").getAsString();
             productPrize = orderJson.get("prodPrice").getAsBigDecimal();
             productNum = orderJson.get("prodCount").getAsInt();
             userPhone = orderJson.get("mobile").getAsString();
@@ -77,8 +78,7 @@ public class WubaGroupBuy extends Controller {
         }
 
 
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
-                OuterOrderPartner.WB, orderId).first();
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", OuterOrderPartner.WB, orderId).first();
         //如果找不到该orderCode的订单，说明还没有新建，则新建一个
         if (outerOrder == null) {
             outerOrder = new OuterOrder();
