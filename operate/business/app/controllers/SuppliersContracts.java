@@ -113,9 +113,6 @@ public class SuppliersContracts extends Controller {
 
     @Right("SUPPLIER_CONTRACT_MANAGEMENT")
     public static void updateDescription(Long imageId, String description) {
-
-        System.out.println(imageId + "===imageId>>");
-        System.out.println(description + "===description>>");
         Boolean hasContractManagementPermission = ContextedPermission.hasPermission("SUPPLIER_CONTRACT_MANAGEMENT");
         if (hasContractManagementPermission == true) {
             SupplierContractImage image = SupplierContractImage.findById(imageId);
@@ -139,6 +136,7 @@ public class SuppliersContracts extends Controller {
         Boolean hasContractManagementPermission = ContextedPermission.hasPermission("SUPPLIER_CONTRACT_MANAGEMENT");
         if (hasContractManagementPermission == true) {
             checkExpireAt(contract);
+            checkSupplier(contract);
             if (contract.supplierId == 0 || contract.supplierId == null) {
                 Validation.addError("contract.supplierId", "validation.selectExisted");
             }
@@ -176,8 +174,25 @@ public class SuppliersContracts extends Controller {
 
 
     private static void checkExpireAt(SupplierContract contract) {
-        if (contract.effectiveAt == null || contract.expireAt == null || contract.expireAt.before(contract.effectiveAt)) {
+        if (contract.effectiveAt == null) {
+            Validation.addError("contract.effectiveAt", "validation.required");
+        }
+        if (contract.expireAt == null) {
+            Validation.addError("contract.expireAt", "validation.required");
+        }
+        if (contract.effectiveAt != null && contract.expireAt != null && contract.expireAt.before(contract.effectiveAt)) {
             Validation.addError("contract.expireAt", "validation.beforeThanContractEffectiveAt");
+        }
+    }
+
+    private static void checkSupplier(SupplierContract contract) {
+        if (contract.supplierId == 0) {
+            Validation.addError("contract.supplierId", "validation.selected");
+            return;
+        }
+        Supplier supplier = Supplier.findById(contract.supplierId);
+        if (supplier == null) {
+            Validation.addError("contract.supplierId", "validation.notExisted");
         }
     }
 
