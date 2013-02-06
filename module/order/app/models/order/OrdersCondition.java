@@ -122,7 +122,7 @@ public class OrdersCondition {
             sql.append(" and o.payMethod = :payMethod");
             paramsMap.put("payMethod", payMethod);
         }
-        if (brandId != 0) {
+        if (brandId != 0 && brandId != -1) {
             sql.append("and o.id in (select o.id from o.orderItems oi where oi.goods.brand =:brand)");
             Brand brand = new Brand();
             brand.id = brandId;

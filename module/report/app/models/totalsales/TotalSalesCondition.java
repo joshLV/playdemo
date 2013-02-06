@@ -45,7 +45,7 @@ public class TotalSalesCondition {
     /**
      * 开始时间.
      */
-    public Date beginAt = DateUtil.getYesterday();
+    public Date beginAt = new Date();
 
     /**
      * 结束时间.
