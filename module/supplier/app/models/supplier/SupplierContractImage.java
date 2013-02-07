@@ -54,7 +54,8 @@ public class SupplierContractImage extends Model implements Comparable<SupplierC
     private static final String SIZE_KEY = "sJ34fds29h@d";
 
 
-    public static final String BASE_URL = Play.configuration.getProperty("uri.operate_business");
+    //    public static final String BASE_URL = Play.configuration.getProperty("uri.operate_business");
+    public static final String BASE_URL = "";
 
 
     /**
