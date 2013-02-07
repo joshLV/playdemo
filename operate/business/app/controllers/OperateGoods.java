@@ -85,7 +85,7 @@ public class OperateGoods extends Controller {
         desc = descs[descs.length - 1].trim();
 
         if (condition.priority == 1) {
-            //有优先指数，按优先指数排
+            //有优先指数，按优先指  数排
             condition.orderBy = "g.priority";
         } else {
             if (condition.priority != 1 && isValidDesc(desc)) {
@@ -114,7 +114,6 @@ public class OperateGoods extends Controller {
             }
 
         }
-
         JPAExtPaginator<models.sales.Goods> goodsPage = models.sales.Goods.findByCondition(condition, pageNumber,
                 PAGE_SIZE);
         goodsPage.setBoundaryControlsEnabled(true);
