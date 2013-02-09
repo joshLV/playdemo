@@ -38,7 +38,7 @@ public class JingdongMessage {
         return XPath.selectNodes(path, message);
     }
 
-    public String selectText(String path) {
-        return XPath.selectText(path, message);
+    public String selectTextTrim(String path) {
+        return XPath.selectText(path, message).trim();
     }
 }

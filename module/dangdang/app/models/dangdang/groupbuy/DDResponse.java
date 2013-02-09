@@ -19,10 +19,10 @@ public class DDResponse {
 
     public static DDResponse parseResponse(Document document) {
         DDResponse response = new DDResponse();
-        response.ver = XPath.selectText("/resultObject/ver", document);
-        response.spid = XPath.selectText("/resultObject/spid", document);
-        response.errorCode = XPath.selectText("/resultObject/error_code", document);
-        response.desc = XPath.selectText("/resultObject/desc", document);
+        response.ver = XPath.selectText("/resultObject/ver", document).trim();
+        response.spid = XPath.selectText("/resultObject/spid", document).trim();
+        response.errorCode = XPath.selectText("/resultObject/error_code", document).trim();
+        response.desc = XPath.selectText("/resultObject/desc", document).trim();
         response.data = XPath.selectNode("/resultObject/data", document);
         return response;
     }
@@ -41,6 +41,10 @@ public class DDResponse {
 
     public String selectText(String path) {
         return XPath.selectText(path, data);
+    }
+
+    public String selectTextTrim(String path) {
+        return XPath.selectText(path, data).trim();
     }
 
     @Override

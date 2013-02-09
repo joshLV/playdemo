@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+    <errorCount>0</errorCount>
+    <orderInfo>
+        <orderDetail>
+            <deliveryMethodType>30002</deliveryMethodType>
+            <deliverySupplierId>1757</deliverySupplierId>
+            <goodReceiverPostCode>200125</goodReceiverPostCode>
+            <merchantExpressNbr>368519531278</merchantExpressNbr>
+            <merchantRemark>客户说不要了，已拒收。 9-11 304</merchantRemark>
+            <orderAmount>328.0</orderAmount>
+            <orderCode>109042523669</orderCode>
+            <orderCreatePayTime>2011-09-04 22:32:27</orderCreatePayTime>
+            <orderCreateTime>2011-06-01 00:00:00</orderCreateTime>
+            <orderDeliveryFee>0.0</orderDeliveryFee>
+            <orderFostRebate>0.0</orderFostRebate>
+            <orderId>16430903</orderId>
+            <orderNeedInvoice>0</orderNeedInvoice>
+            <orderPaymentConfirmDate>2011-09-05 16:00:53</orderPaymentConfirmDate>
+            <orderPromotionDiscount>0.0</orderPromotionDiscount>
+            <orderStatus>ORDER_TRUNED_TO_DO</orderStatus>
+            <payServiceType>4</payServiceType>
+            <productAmount>328.0</productAmount>
+            <receiveDate>2011-09-23 00:03:07</receiveDate>
+            <recompensPoints>0.0</recompensPoints>
+            <updateTime>2012-06-04 17:26:35</updateTime>
+            <siteType>2</siteType>
+        </orderDetail>
+        <orderItemList>
+            <orderItem>
+                <id>41509827</id>
+                <isItemLeaf>1</isItemLeaf>
+                <merchantId>1668</merchantId>
+                <orderId>16430903</orderId>
+                <orderItemAmount>328.0</orderItemAmount>
+                <orderItemNum>1</orderItemNum>
+                <orderItemPrice>328.0</orderItemPrice>
+                <originalPrice>328.0</originalPrice>
+                <outerId>w91020202100</outerId>
+                <productCName>【博洋家纺】床上用品 被芯 馨雅型大豆纤维春秋被 实物拍摄1.5米床适用</productCName>
+                <productId>1381643</productId>
+                <promoteType>0</promoteType>
+                <taxRate>0.0</taxRate>
+                <updateTime>2012-03-23 04:55:16</updateTime>
+            </orderItem>
+        </orderItemList>
+    </orderInfo>
+    <totalCount>1</totalCount>
+</response>

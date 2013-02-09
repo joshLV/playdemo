@@ -80,7 +80,7 @@ public class JDGroupBuy extends Controller {
             finish(201, "parse send_order request xml error");
             return;
         }
-        Integer count = Integer.parseInt(message.selectText("//Count"));
+        Integer count = Integer.parseInt(message.selectTextTrim("//Count"));
 
         //检查购买数量
         if (count <= 0) {
@@ -88,8 +88,8 @@ public class JDGroupBuy extends Controller {
             finish(202, "the buy number must be a positive one");
             return;
         }
-        BigDecimal teamPrice = new BigDecimal(message.selectText("TeamPrice")).divide(new BigDecimal("100"));
-        BigDecimal origin = new BigDecimal(message.selectText("Origin")).divide(new BigDecimal("100"));
+        BigDecimal teamPrice = new BigDecimal(message.selectTextTrim("TeamPrice")).divide(new BigDecimal("100"));
+        BigDecimal origin = new BigDecimal(message.selectTextTrim("Origin")).divide(new BigDecimal("100"));
 
         //检查订单总额是否匹配
         if (teamPrice.multiply(new BigDecimal(count)).compareTo(origin) != 0) {
@@ -98,15 +98,15 @@ public class JDGroupBuy extends Controller {
             return;
         }
 
-        String mobile = message.selectText("Mobile");
+        String mobile = message.selectTextTrim("Mobile");
         //检查手机号
         if (!checkPhone(mobile)) {
             Logger.info("invalid mobile: %s", mobile);
             finish(204, "invalid mobile");
         }
 
-        String jdOrderId = message.selectText("JdOrderId").trim();
-        Long venderTeamId = Long.parseLong(message.selectText("VenderTeamId").trim());
+        String jdOrderId = message.selectTextTrim("JdOrderId").trim();
+        Long venderTeamId = Long.parseLong(message.selectTextTrim("VenderTeamId").trim());
 
         //检查并保存此新请求
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", OuterOrderPartner.JD, jdOrderId).first();
@@ -162,8 +162,8 @@ public class JDGroupBuy extends Controller {
                 Node jdCoupon = jdCoupons.item(i);
 
                 coupon.partner = ECouponPartner.JD;
-                coupon.partnerCouponId = XPath.selectText("CouponId", jdCoupon);
-                coupon.partnerCouponPwd = XPath.selectText("CouponPwd", jdCoupon);
+                coupon.partnerCouponId = XPath.selectText("CouponId", jdCoupon).trim();
+                coupon.partnerCouponPwd = XPath.selectText("CouponPwd", jdCoupon).trim();
                 coupon.save();
             }
             outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
@@ -171,7 +171,7 @@ public class JDGroupBuy extends Controller {
         }
 
         if (outerOrder.status == OuterOrderStatus.ORDER_SYNCED){
-            String jdTeamId = message.selectText("JdTeamId");
+            String jdTeamId = message.selectTextTrim("JdTeamId");
 
             Template template = TemplateLoader.load("jingdong/groupbuy/response/sendOrder.xml");
             Goods goods = GoodsDeployRelation.getGoods(OuterOrderPartner.JD, venderTeamId);
@@ -203,7 +203,7 @@ public class JDGroupBuy extends Controller {
             finish(201, "parse query_team_sell_count request xml error");
             return;
         }
-        Long venderTeamId = Long.parseLong(message.selectText("VenderTeamId"));
+        Long venderTeamId = Long.parseLong(message.selectTextTrim("VenderTeamId"));
 
         //查询商品
         Goods goods = GoodsDeployRelation.getGoods(OuterOrderPartner.JD, venderTeamId);
@@ -243,8 +243,8 @@ public class JDGroupBuy extends Controller {
             return;
         }
 
-        Long venderOrderId = Long.parseLong(message.selectText("VenderOrderId"));
-        Long jdOrderId = Long.parseLong(message.selectText("JdOrderId"));
+        Long venderOrderId = Long.parseLong(message.selectTextTrim("VenderOrderId"));
+        Long jdOrderId = Long.parseLong(message.selectTextTrim("JdOrderId"));
 
         Order order = Order.find("byOrderNumber", venderOrderId).first();
         if (order == null) {
@@ -291,9 +291,9 @@ public class JDGroupBuy extends Controller {
             finish(201, "parse send_sms_request request xml error");
             return;
         }
-        String mobile = message.selectText("Mobile");
-        String venderCouponId = message.selectText("VenderCouponId");
-        String jdCouponId = message.selectText("JdCouponId");
+        String mobile = message.selectTextTrim("Mobile");
+        String venderCouponId = message.selectTextTrim("VenderCouponId");
+        String jdCouponId = message.selectTextTrim("JdCouponId");
 
         if (!checkPhone(mobile)) {
             Logger.info("invalid mobile");

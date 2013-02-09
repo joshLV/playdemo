@@ -5,22 +5,15 @@ import controllers.OperateRbac;
 import models.admin.OperateUser;
 import models.jingdong.groupbuy.JDGroupBuyHelper;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
-import models.jingdong.groupbuy.JDRest;
 import models.jingdong.groupbuy.JingdongMessage;
-import models.jingdong.groupbuy.response.IdNameResponse;
-import models.jingdong.groupbuy.response.UploadTeamResponse;
 import models.order.OuterOrderPartner;
 import models.sales.*;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.w3c.dom.Node;
-import play.Logger;
-import play.libs.WS;
 import play.libs.XPath;
 import play.mvc.Controller;
 import play.mvc.With;
-import play.templates.Template;
-import play.templates.TemplateLoader;
 
 import java.util.*;
 
@@ -73,7 +66,7 @@ public class JDGroupBuyProducts extends Controller{
         if(response.isOk()) {
             OperateUser operateUser = OperateRbac.currentUser();
             product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id)
-                    .partnerProduct(Long.parseLong(response.selectText("JdTeamId")))
+                    .partnerProduct(Long.parseLong(response.selectTextTrim("JdTeamId").trim()))
                     .latestJson(new Gson().toJson(params))
                     .save();
             //记录历史
@@ -160,8 +153,8 @@ public class JDGroupBuyProducts extends Controller{
             if (i != 0) {
                 jsonString.append(",");
             }
-            jsonString.append("{id:'").append(XPath.selectText("Id", city))
-                    .append("',name:'").append(XPath.selectText("Name", city))
+            jsonString.append("{id:'").append(XPath.selectText("Id", city).trim())
+                    .append("',name:'").append(XPath.selectText("Name", city).trim())
                     .append("',isParent:").append(isParent)
                     .append(",type:'").append(type)
                     .append("'}");

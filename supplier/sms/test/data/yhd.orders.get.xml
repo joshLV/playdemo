@@ -1,69 +1,29 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <response>
-    <errorCount>
-        0
-    </errorCount>
+    <errorCount>0</errorCount>
     <orderList>
         <order>
-            <orderAmount>
-                168.0
-            </orderAmount>
-            <orderCode>
-                10605033K73V
-            </orderCode>
-            <orderCreateTime>
-                2011-06-01 00:00:00
-            </orderCreateTime>
-            <orderDeliveryFee>
-                6.0
-            </orderDeliveryFee>
-            <orderId>
-                10693429
-            </orderId>
-            <orderNeedInvoice>
-                0
-            </orderNeedInvoice>
-            <orderStatus>
-                ORDER_TRUNED_TO_DO
-            </orderStatus>
-            <productAmount>
-                162.0
-            </productAmount>
-            <updateTime>
-                2012-06-04 16:58:14
-            </updateTime>
+            <orderAmount>168.0</orderAmount>
+            <orderCode>10605033K73V</orderCode>
+            <orderCreateTime>2011-06-01 00:00:00</orderCreateTime>
+            <orderDeliveryFee>6.0</orderDeliveryFee>
+            <orderId>10693429</orderId>
+            <orderNeedInvoice>0</orderNeedInvoice>
+            <orderStatus>ORDER_TRUNED_TO_DO</orderStatus>
+            <productAmount>162.0</productAmount>
+            <updateTime>2012-06-04 16:58:14</updateTime>
         </order>
         <order>
-            <orderAmount>
-                179.0
-            </orderAmount>
-            <orderCode>
-                10607083LVSE
-            </orderCode>
-            <orderCreateTime>
-                2011-06-01 00:00:00
-            </orderCreateTime>
-            <orderDeliveryFee>
-                11.0
-            </orderDeliveryFee>
-            <orderId>
-                10772072
-            </orderId>
-            <orderNeedInvoice>
-                0
-            </orderNeedInvoice>
-            <orderStatus>
-                ORDER_TRUNED_TO_DO
-            </orderStatus>
-            <productAmount>
-                168.0
-            </productAmount>
-            <updateTime>
-                2012-06-04 17:05:22
-            </updateTime>
+            <orderAmount>179.0</orderAmount>
+            <orderCode>10607083LVSE</orderCode>
+            <orderCreateTime>2011-06-01 00:00:00</orderCreateTime>
+            <orderDeliveryFee>11.0</orderDeliveryFee>
+            <orderId>10772072</orderId>
+            <orderNeedInvoice>0</orderNeedInvoice>
+            <orderStatus>ORDER_TRUNED_TO_DO</orderStatus>
+            <productAmount>168.0</productAmount>
+            <updateTime>2012-06-04 17:05:22</updateTime>
         </order>
     </orderList>
-    <totalCount>
-        1595
-    </totalCount>
+    <totalCount>1595</totalCount>
 </response>

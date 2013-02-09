@@ -3,9 +3,7 @@ package models.job.yihaodian.listener;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
-import models.yihaodian.YihaodianJobMessage;
 import models.yihaodian.YihaodianQueueUtil;
-import play.Play;
 import play.jobs.Every;
 import play.jobs.Job;
 

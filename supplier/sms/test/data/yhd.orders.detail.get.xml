@@ -1,269 +1,105 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <response>
-    <errorCount>
-        0
-    </errorCount>
+    <errorCount>0</errorCount>
     <orderInfoList>
         <orderInfo>
             <orderDetail>
-                <deliveryMethodType>
-                    30002
-                </deliveryMethodType>
-                <goodReceiverPostCode>
-                    200124
-                </goodReceiverPostCode>
-                <orderAmount>
-                    898.0
-                </orderAmount>
-                <orderCode>
-                    109082538DU4
-                </orderCode>
-                <orderCreatePayTime>
-                    2011-09-08 17:09:05
-                </orderCreatePayTime>
-                <orderCreateTime>
-                    2011-06-01 00:00:00
-                </orderCreateTime>
-                <orderDeliveryFee>
-                    0.0
-                </orderDeliveryFee>
-                <orderFostRebate>
-                    0.0
-                </orderFostRebate>
-                <orderId>
-                    16674114
-                </orderId>
-                <orderNeedInvoice>
-                    0
-                </orderNeedInvoice>
-                <orderPromotionDiscount>
-                    0.0
-                </orderPromotionDiscount>
-                <orderStatus>
-                    ORDER_TRUNED_TO_DO
-                </orderStatus>
-                <payServiceType>
-                    1
-                </payServiceType>
-                <productAmount>
-                    898.0
-                </productAmount>
-                <recompensPoints>
-                    0.0
-                </recompensPoints>
-                <updateTime>
-                    2012-06-04 17:27:05
-                </updateTime>
-                <siteType>
-                    2
-                </siteType>
+                <deliveryMethodType>30002</deliveryMethodType>
+                <goodReceiverPostCode>200124</goodReceiverPostCode>
+                <orderAmount>898.0</orderAmount>
+                <orderCode>109082538DU4</orderCode>
+                <orderCreatePayTime>2011-09-08 17:09:05</orderCreatePayTime>
+                <orderCreateTime>2011-06-01 00:00:00</orderCreateTime>
+                <orderDeliveryFee>0.0</orderDeliveryFee>
+                <orderFostRebate>0.0</orderFostRebate>
+                <orderId>16674114</orderId>
+                <orderNeedInvoice>0</orderNeedInvoice>
+                <orderPromotionDiscount>0.0</orderPromotionDiscount>
+                <orderStatus>ORDER_TRUNED_TO_DO</orderStatus>
+                <payServiceType>1</payServiceType>
+                <productAmount>898.0</productAmount>
+                <recompensPoints>0.0</recompensPoints>
+                <updateTime>2012-06-04 17:27:05</updateTime>
+                <siteType>2</siteType>
             </orderDetail>
             <orderItemList>
                 <orderItem>
-                    <id>
-                        42027668
-                    </id>
-                    <isItemLeaf>
-                        1
-                    </isItemLeaf>
-                    <merchantId>
-                        1668
-                    </merchantId>
-                    <orderId>
-                        16674114
-                    </orderId>
-                    <orderItemAmount>
-                        399.0
-                    </orderItemAmount>
-                    <orderItemNum>
-                        1
-                    </orderItemNum>
-                    <orderItemPrice>
-                        399.0
-                    </orderItemPrice>
-                    <originalPrice>
-                        399.0
-                    </originalPrice>
-                    <outerId>
-                        w91104060109
-                    </outerId>
-                    <productCName>
-                        【博洋家纺】床上用品 全棉贡缎活性印花床单四件套 幸福花季幸福花季1.5米床适用
-                    </productCName>
-                    <productId>
-                        1381560
-                    </productId>
-                    <promoteType>
-                        1
-                    </promoteType>
-                    <taxRate>
-                        0.0
-                    </taxRate>
-                    <updateTime>
-                        2012-03-22 23:30:33
-                    </updateTime>
+                    <id>42027668</id>
+                    <isItemLeaf>1</isItemLeaf>
+                    <merchantId>1668</merchantId>
+                    <orderId>16674114</orderId>
+                    <orderItemAmount>399.0</orderItemAmount>
+                    <orderItemNum>1</orderItemNum>
+                    <orderItemPrice>399.0</orderItemPrice>
+                    <originalPrice>399.0</originalPrice>
+                    <outerId>w91104060109</outerId>
+                    <productCName>【博洋家纺】床上用品 全棉贡缎活性印花床单四件套 幸福花季幸福花季1.5米床适用</productCName>
+                    <productId>1381560</productId>
+                    <promoteType>1</promoteType>
+                    <taxRate>0.0</taxRate>
+                    <updateTime>2012-03-22 23:30:33</updateTime>
                 </orderItem>
                 <orderItem>
-                    <id>
-                        42027669
-                    </id>
-                    <isItemLeaf>
-                        1
-                    </isItemLeaf>
-                    <merchantId>
-                        1668
-                    </merchantId>
-                    <orderId>
-                        16674114
-                    </orderId>
-                    <orderItemAmount>
-                        499.0
-                    </orderItemAmount>
-                    <orderItemNum>
-                        1
-                    </orderItemNum>
-                    <orderItemPrice>
-                        499.0
-                    </orderItemPrice>
-                    <originalPrice>
-                        499.0
-                    </originalPrice>
-                    <outerId>
-                        w91104040103
-                    </outerId>
-                    <productCName>
-                        【博洋家纺】床上用品 高密全棉长绒棉印花床单四件套 情牵今生实物拍摄1.5米床适用
-                    </productCName>
-                    <productId>
-                        1392583
-                    </productId>
-                    <promoteType>
-                        1
-                    </promoteType>
-                    <taxRate>
-                        0.0
-                    </taxRate>
-                    <updateTime>
-                        2012-03-22 23:30:33
-                    </updateTime>
+                    <id>42027669</id>
+                    <isItemLeaf>1</isItemLeaf>
+                    <merchantId>1668</merchantId>
+                    <orderId>16674114</orderId>
+                    <orderItemAmount>499.0</orderItemAmount>
+                    <orderItemNum>1</orderItemNum>
+                    <orderItemPrice>499.0</orderItemPrice>
+                    <originalPrice>499.0</originalPrice>
+                    <outerId>w91104040103</outerId>
+                    <productCName>【博洋家纺】床上用品 高密全棉长绒棉印花床单四件套 情牵今生实物拍摄1.5米床适用</productCName>
+                    <productId>1392583</productId>
+                    <promoteType>1</promoteType>
+                    <taxRate>0.0</taxRate>
+                    <updateTime>2012-03-22 23:30:33</updateTime>
                 </orderItem>
             </orderItemList>
         </orderInfo>
         <orderInfo>
             <orderDetail>
-                <deliveryMethodType>
-                    30002
-                </deliveryMethodType>
-                <deliverySupplierId>
-                    3443
-                </deliverySupplierId>
-                <goodReceiverPostCode>
-                    300131
-                </goodReceiverPostCode>
-                <merchantExpressNbr>
-                    test0006
-                </merchantExpressNbr>
-                <orderAmount>
-                    124.0
-                </orderAmount>
-                <orderCode>
-                    10918094L5C4
-                </orderCode>
-                <orderCreatePayTime>
-                    2011-09-18 02:59:32
-                </orderCreatePayTime>
-                <orderCreateTime>
-                    2011-06-01 00:00:00
-                </orderCreateTime>
-                <orderDeliveryFee>
-                    0.0
-                </orderDeliveryFee>
-                <orderFostRebate>
-                    0.0
-                </orderFostRebate>
-                <orderId>
-                    17269626
-                </orderId>
-                <orderNeedInvoice>
-                    1
-                </orderNeedInvoice>
-                <orderPaymentConfirmDate>
-                    2011-09-18 01:02:49
-                </orderPaymentConfirmDate>
-                <orderPromotionDiscount>
-                    0.0
-                </orderPromotionDiscount>
-                <orderStatus>
-                    ORDER_OUT_OF_WH
-                </orderStatus>
-                <payServiceType>
-                    1
-                </payServiceType>
-                <productAmount>
-                    124.0
-                </productAmount>
-                <receiveDate>
-                    2011-10-03 00:03:08
-                </receiveDate>
-                <recompensPoints>
-                    0.0
-                </recompensPoints>
-                <updateTime>
-                    2012-06-04 17:12:12
-                </updateTime>
-                <siteType>
-                    2
-                </siteType>
+                <deliveryMethodType>30002</deliveryMethodType>
+                <deliverySupplierId>3443</deliverySupplierId>
+                <goodReceiverPostCode>300131</goodReceiverPostCode>
+                <merchantExpressNbr>test0006</merchantExpressNbr>
+                <orderAmount>124.0</orderAmount>
+                <orderCode>10918094L5C4</orderCode>
+                <orderCreatePayTime>2011-09-18 02:59:32</orderCreatePayTime>
+                <orderCreateTime>2011-06-01 00:00:00</orderCreateTime>
+                <orderDeliveryFee>0.0</orderDeliveryFee>
+                <orderFostRebate>0.0</orderFostRebate>
+                <orderId>17269626</orderId>
+                <orderNeedInvoice>1</orderNeedInvoice>
+                <orderPaymentConfirmDate>2011-09-18 01:02:49</orderPaymentConfirmDate>
+                <orderPromotionDiscount>0.0</orderPromotionDiscount>
+                <orderStatus>ORDER_OUT_OF_WH</orderStatus>
+                <payServiceType>1</payServiceType>
+                <productAmount>124.0</productAmount>
+                <receiveDate>2011-10-03 00:03:08</receiveDate>
+                <recompensPoints>0.0</recompensPoints>
+                <updateTime>2012-06-04 17:12:12</updateTime>
+                <siteType>2</siteType>
             </orderDetail>
             <orderItemList>
                 <orderItem>
-                    <id>
-                        43381516
-                    </id>
-                    <isItemLeaf>
-                        1
-                    </isItemLeaf>
-                    <merchantId>
-                        1668
-                    </merchantId>
-                    <orderId>
-                        17269626
-                    </orderId>
-                    <orderItemAmount>
-                        124.0
-                    </orderItemAmount>
-                    <orderItemNum>
-                        1
-                    </orderItemNum>
-                    <orderItemPrice>
-                        124.0
-                    </orderItemPrice>
-                    <originalPrice>
-                        124.0
-                    </originalPrice>
-                    <outerId>
-                        w91032105107
-                    </outerId>
-                    <productCName>
-                        【博洋家纺】床上用品 蝶型太空记忆枕咖啡均码
-                    </productCName>
-                    <productId>
-                        1386822
-                    </productId>
-                    <promoteType>
-                        1
-                    </promoteType>
-                    <taxRate>
-                        0.0
-                    </taxRate>
-                    <updateTime>
-                        2012-03-22 23:13:18
-                    </updateTime>
+                    <id>43381516</id>
+                    <isItemLeaf>1</isItemLeaf>
+                    <merchantId>1668</merchantId>
+                    <orderId>17269626</orderId>
+                    <orderItemAmount>124.0</orderItemAmount>
+                    <orderItemNum>1</orderItemNum>
+                    <orderItemPrice>124.0</orderItemPrice>
+                    <originalPrice>124.0</originalPrice>
+                    <outerId>w91032105107</outerId>
+                    <productCName>【博洋家纺】床上用品 蝶型太空记忆枕咖啡均码</productCName>
+                    <productId>1386822</productId>
+                    <promoteType>1</promoteType>
+                    <taxRate>0.0</taxRate>
+                    <updateTime>2012-03-22 23:13:18</updateTime>
                 </orderItem>
             </orderItemList>
         </orderInfo>
     </orderInfoList>
-    <totalCount>
-        2
-    </totalCount>
+    <totalCount>2</totalCount>
 </response>

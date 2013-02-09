@@ -12,13 +12,19 @@ import play.jobs.Every;
 import play.jobs.Job;
 import play.libs.XPath;
 
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * @author likang
  *
- * 拉取新的订单，与本地比较，若从未记录，则记录下来，并发起一个处理请求放队列里
+ * 拉取新的订单，与本地比较，若从未记录，则记录下来
  *
  * Date: 12-8-29
  */
@@ -39,38 +45,15 @@ public class OrderListener extends Job{
             return;
         }
         //筛选出我们没有处理过的
-        StringBuilder orderCodes = new StringBuilder();
         for(Node order : orders ){
             String orderCode = XPath.selectText("orderCode", order).trim();
-
-            if(OuterOrder.find("byOrderId", orderCode).first() == null){
-                orderCodes.append(orderCode).append(",");
-            }else {
-                //发送消息队列
-                YihaodianQueueUtil.addJob(orderCode);
-            }
-        }
-
-        //保存新订单以待处理
-        if(orderCodes.length() > 0){
-            Map<String, String> params = new HashMap<>();
-            params.put("orderCodeList", orderCodes.toString());
-            YHDResponse response = YHDUtil.sendRequest(params, "yhd.orders.detail.get", "orderInfoList");
-
-            if (response.isOk()) {
-                List<Node> fullOrders = XPath.selectNodes("orderInfo", response.data);
-                for(Node fullOrder : fullOrders) {
-
-                    OuterOrder outerOrder = new OuterOrder();
-                    outerOrder.message = fullOrder.getTextContent();
-                    outerOrder.status = OuterOrderStatus.ORDER_COPY;
-                    outerOrder.partner = OuterOrderPartner.YHD;
-                    outerOrder.orderId = XPath.selectText("orderDetail/orderCode", fullOrder).trim();
-                    outerOrder.save();
-
-                    //发送消息队列
-                    YihaodianQueueUtil.addJob(outerOrder.orderId);
-                }
+            if(OuterOrder.find("byOrderIdAndPartner", orderCode, OuterOrderPartner.YHD).first() == null){
+                OuterOrder outerOrder = new OuterOrder();
+                //此处不保存outerOrder的message，等处理的时候会再去一号店拉取最新的订单信息并保存
+                outerOrder.status = OuterOrderStatus.ORDER_COPY;
+                outerOrder.partner = OuterOrderPartner.YHD;
+                outerOrder.orderId = orderCode;
+                outerOrder.save();
             }
         }
     }

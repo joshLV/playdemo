@@ -49,7 +49,7 @@ public class DDGroupBuyUtil {
             return null;
         }
         for (Node node : XPath.selectNodes("row", response.data)) {
-            if (XPath.selectText("spgid", node).equals(String.valueOf(linkId))) {
+            if (XPath.selectText("spgid", node).trim().equals(String.valueOf(linkId))) {
                 return node;
             }
         }
@@ -128,7 +128,7 @@ public class DDGroupBuyUtil {
             return -1;
         }
 
-        return Integer.parseInt(response.selectText("state"));
+        return Integer.parseInt(response.selectTextTrim("state"));
     }
 
     /**

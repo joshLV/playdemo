@@ -324,21 +324,21 @@ public class JDGroupBuyUtil {
      */
     public static JingdongMessage parseMessage(Document document) {
         JingdongMessage message = new JingdongMessage();
-        message.version = XPath.selectText("/Response/Version", document);
+        message.version = XPath.selectText("/Response/Version", document).trim();
         try{
-            message.venderId = Long.parseLong(XPath.selectText("/Response/VenderId", document));
-            message.zip = Boolean.parseBoolean(XPath.selectText("/Response/Zip", document));
-            message.encrypt = Boolean.parseBoolean(XPath.selectText("/Response/Encrypt", document));
+            message.venderId = Long.parseLong(XPath.selectText("/Response/VenderId", document).trim());
+            message.zip = Boolean.parseBoolean(XPath.selectText("/Response/Zip", document).trim());
+            message.encrypt = Boolean.parseBoolean(XPath.selectText("/Response/Encrypt", document).trim());
         }catch (Exception e) {
             return message;
         }
 
         // 只有作为京东的响应的时候， resultCode 和 resultMessage 才有用
-        message.resultCode = XPath.selectText("/Response/ResultCode", document);
-        message.resultMessage = XPath.selectText("/Response/ResultMessage", document);
+        message.resultCode = XPath.selectText("/Response/ResultCode", document).trim();
+        message.resultMessage = XPath.selectText("/Response/ResultMessage", document).trim();
 
         if(message.encrypt){
-            String rawMessage = XPath.selectText("/Response/Data", document);
+            String rawMessage = XPath.selectText("/Response/Data", document).trim();
             //解析加密字符串
             String decryptedMessage = JDGroupBuyUtil.decryptMessage(rawMessage);
             Logger.info("jingdong response decrypted:\n%s", decryptedMessage);

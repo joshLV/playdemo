@@ -1,6 +1,8 @@
 package models.yihaodian;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import play.libs.XPath;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,5 +20,13 @@ public class YHDResponse {
 
     public boolean isOk() {
         return errorCount == 0;
+    }
+
+    public String selectTextTrim(String path) {
+        return XPath.selectText(path, data).trim();
+    }
+
+    public List<Node> selectNodes(String path) {
+        return XPath.selectNodes(path, data);
     }
 }

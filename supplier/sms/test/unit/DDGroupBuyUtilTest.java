@@ -29,6 +29,6 @@ public class DDGroupBuyUtilTest extends UnitTest {
         assertEquals("成功", response.desc);
         assertTrue(response.isOk());
         assertNotNull(response.data);
-        assertEquals("256", XPath.selectText("//spgid", response.data));
+        assertEquals("256", response.selectTextTrim("//spgid"));
     }
 }
