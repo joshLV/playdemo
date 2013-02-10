@@ -50,7 +50,7 @@ public class DDGroupBuyProducts extends Controller {
         templateParams.putAll(groupbuyInfoParams);
 
         ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.DD, goods);
-        templateParams.put("linkId", String.valueOf(product.id));
+        templateParams.put("linkId", String.valueOf(product.goodsLinkId));
         product.latestJson(new Gson().toJson(templateParams)).save();//添加shop前先把参数给输出了
         Collection<Shop> shops = goods.getShopList();
         templateParams.put("shops", shops);
@@ -62,7 +62,7 @@ public class DDGroupBuyProducts extends Controller {
             ResalerProductJournal.createJournal(product, operateUser.id, product.latestJsonData,
                     ResalerProductJournalType.CREATE, "上传商品");
             //查询当当的商品ID
-            Node node = DDGroupBuyUtil.getJustUploadedTeam(product.id);
+            Node node = DDGroupBuyUtil.getJustUploadedTeam(product.goodsLinkId);
             if (node != null) {
                 product.partnerProductId = Long.parseLong(XPath.selectText("//ddgid", node).trim());
                 product.url = PRODUCT_URL + product.partnerProductId;

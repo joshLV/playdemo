@@ -310,7 +310,7 @@ public class WubaGroupBuy extends Controller {
         Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
         ybqOrder.save();
         try {
-            Goods goods = ResalerProduct.getGoods(outerGroupId);
+            Goods goods = ResalerProduct.getGoods(outerGroupId, OuterOrderPartner.WB);
             if (goods == null) {
                 putStatusAndMsg(result, "10100", "未找到商品");
                 Logger.info("goods not found: %s", outerGroupId);

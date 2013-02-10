@@ -52,7 +52,7 @@ public class WubaGroupBuyProducts extends Controller {
         Map<String, String> groupbuyInfoParams = params.allSimple();
         groupbuyInfoParams.remove("body");
         ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.WB, goods);
-        groupbuyInfoParams.put("groupbuyId", String.valueOf(product.id));
+        groupbuyInfoParams.put("groupbuyId", String.valueOf(product.goodsLinkId));
 
         Map<String, Object> prodModelJson = new HashMap<>();
         prodModelJson.put("prodmodcatename", groupbuyInfoParams.get("prodName"));
@@ -123,7 +123,7 @@ public class WubaGroupBuyProducts extends Controller {
         for (Map.Entry<String, String> entry : requestParams.entrySet()) {
             wubaParams.put(entry.getKey(), entry.getValue());
         }
-        wubaParams.put("groupbuyId", product.id);
+        wubaParams.put("groupbuyId", product.goodsLinkId);
 
         String requestJson = new Gson().toJson(wubaParams);
         Logger.info("wuba editgroupbuyinfo request:\n %s", requestJson);
@@ -164,7 +164,7 @@ public class WubaGroupBuyProducts extends Controller {
         Map<String, Object> wubaParams = new HashMap<>();
         wubaParams.put("partners", partnerParams);
         Map<String, String> groupbuyInfoParams = new HashMap<>();
-        groupbuyInfoParams.put("groupbuyId", String.valueOf(product.id));
+        groupbuyInfoParams.put("groupbuyId", String.valueOf(product.goodsLinkId));
         wubaParams.put("groupbuyInfo", groupbuyInfoParams);
 
         //发起请求
@@ -188,7 +188,7 @@ public class WubaGroupBuyProducts extends Controller {
 
         //延长券有效期
         Map<String, Object> deadlineRequestMap = new HashMap<>();
-        deadlineRequestMap.put("groupbuyId", String.valueOf(product.id));
+        deadlineRequestMap.put("groupbuyId", String.valueOf(product.goodsLinkId));
         deadlineRequestMap.put("deadline", deadline);
 
         WubaResponse response =  WubaUtil.sendRequest(deadlineRequestMap, "emc.groupbuy.delay", false);
@@ -199,7 +199,7 @@ public class WubaGroupBuyProducts extends Controller {
                     ResalerProductJournalType.UPDATE, "延长券有效期");
             //延长团购有效期
             Map<String, Object> endTimeRequestMap = new HashMap<>();
-            endTimeRequestMap.put("groupbuyId", product.id);
+            endTimeRequestMap.put("groupbuyId", product.goodsLinkId);
             endTimeRequestMap.put("endTime", endTime);
 
             response = WubaUtil.sendRequest(endTimeRequestMap, "emc.groupbuy.editpartnerbygroupbuy", false);
@@ -218,7 +218,7 @@ public class WubaGroupBuyProducts extends Controller {
             notFound();
         }
         Map<String, Object> requestMap = new HashMap<>();
-        requestMap.put("groupbuyIds", "[" + product.id + "]");
+        requestMap.put("groupbuyIds", "[" + product.goodsLinkId + "]");
         requestMap.put("status", -1);
         WubaResponse response = WubaUtil.sendRequest(requestMap, "emc.groupbuy.getstatus");
         if (!response.isOk()) {
@@ -242,7 +242,7 @@ public class WubaGroupBuyProducts extends Controller {
                 product.status = ResalerProductStatus.UNKONWN;
         }
         product.save();
-        redirect("/resaler-products/products/wb/" + product.id);
+        redirect("/resaler-products/products/wb/" + product.goodsLinkId);
     }
 
     @ActiveNavigation("resale_partner_product")
@@ -252,14 +252,14 @@ public class WubaGroupBuyProducts extends Controller {
             notFound();
         }
         Map<String, Object> requestMap = new HashMap<>();
-        requestMap.put("groupbuyId", product.id);
+        requestMap.put("groupbuyId", product.goodsLinkId);
         WubaResponse response = WubaUtil.sendRequest(requestMap, "emc.groupbuy.shangxian");
         if (!response.isOk()) {
             render("resale/WubaGroupBuyProducts/result.html", response);
         }
         product.status = ResalerProductStatus.ONSALE;
         product.save();
-        redirect("/resaler-products/products/wb/" + product.id);
+        redirect("/resaler-products/products/wb/" + product.goodsLinkId);
     }
 
     @ActiveNavigation("resale_partner_product")
@@ -269,13 +269,13 @@ public class WubaGroupBuyProducts extends Controller {
             notFound();
         }
         Map<String, Object> requestMap = new HashMap<>();
-        requestMap.put("groupbuyId", product.id);
+        requestMap.put("groupbuyId", product.goodsLinkId);
         WubaResponse response = WubaUtil.sendRequest(requestMap, "emc.groupbuy.xiaxian");
         if (!response.isOk()) {
             render("resale/WubaGroupBuyProducts/result.html", response);
         }
         product.status = ResalerProductStatus.OFFSALE;
         product.save();
-        redirect("/resaler-products/products/wb/" + product.id);
+        redirect("/resaler-products/products/wb/" + product.goodsLinkId);
     }
 }

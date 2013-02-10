@@ -77,7 +77,7 @@ public class JingDongGroupByRequestTest extends FunctionalTest {
 
         Map<String, String> params = new HashMap<>();
         params.put("url", "http://localhost:7402/api/v1/jd/gb/send-order");
-        params.put("productId", product.id.toString());
+        params.put("productId", String.valueOf(product.id));
         params.put("mobile", "15028812881");
         params.put("buyNumber", "1");
         Http.Response response = POST(Router.reverse("mock.JingDongGroupByRequest.sendOrder").url, params);

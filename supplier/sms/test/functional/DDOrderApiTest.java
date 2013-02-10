@@ -118,7 +118,7 @@ public class DDOrderApiTest extends FunctionalTest {
         params.put("amount", "5.0");
         params.put("user_mobile", "13764081569");
         params.put("user_id", resaler.id.toString());
-        params.put("options", product.id + ":" + "1");
+        params.put("options", product.goodsLinkId + ":" + "1");
         String sign = DDGroupBuyUtil.signParams(params);
 
         params.put("sign", sign);

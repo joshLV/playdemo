@@ -125,7 +125,7 @@ public class DDGroupBuy extends Controller {
         for (String goodsItem : arrGoods) {
             arrGoodsItem = goodsItem.split(":");
             if (arrGoodsItem != null) {
-                Goods goods = ResalerProduct.getGoods(Long.parseLong(arrGoodsItem[0]));
+                Goods goods = ResalerProduct.getGoods(Long.parseLong(arrGoodsItem[0]), OuterOrderPartner.DD);
                 BigDecimal resalerPrice = goods.getResalePrice();
                 BigDecimal number = new BigDecimal(arrGoodsItem[1]);
                 ybqPrice = ybqPrice.add(resalerPrice.multiply(number));
@@ -193,7 +193,7 @@ public class DDGroupBuy extends Controller {
         }
 
         //从对应商品关系表中取得商品
-        Goods goods = ResalerProduct.getGoods(spgid);
+        Goods goods = ResalerProduct.getGoods(spgid, OuterOrderPartner.DD);
         if (goods == null) {
             goods = Goods.findById(spgid);
         }

@@ -55,7 +55,7 @@ public class JDGroupBuyProducts extends Controller{
             params.put(entry.getKey(), entry.getValue());
         }
         params.remove("body");
-        params.put("venderTeamId", product.id);
+        params.put("venderTeamId", product.goodsLinkId);
 
         //提交请求
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/uploadTeam.action";

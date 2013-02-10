@@ -48,7 +48,7 @@ public class YHDProducts extends Controller {
 
         Map<String, String> requestParams = request.params.allSimple();
         requestParams.remove("body");
-        requestParams.put("outerId", String.valueOf(product.id));
+        requestParams.put("outerId", String.valueOf(product.goodsLinkId));
         product.latestJson(new Gson().toJson(requestParams)).save();
 
         YHDResponse response = YHDUtil.sendRequest(requestParams, "yhd.product.add", "updateCount");
@@ -59,7 +59,7 @@ public class YHDProducts extends Controller {
                     ResalerProductJournalType.CREATE, "上传商品");
             //上传主图
             try{
-                uploadMainImg(imgFile, product.id);
+                uploadMainImg(imgFile, product.goodsLinkId);
             }catch (Exception e) {
                 //ignore
                 Logger.warn(e,"yihaodian upload main img failed");

@@ -92,7 +92,7 @@ public class DDGroupBuyUtil {
      */
     public static boolean syncSellCount(ResalerProduct product) {
         Map<String, Object> params = new HashMap<>();
-        params.put("spgid", product.id);
+        params.put("spgid", product.goodsLinkId);
         params.put("sellcount", product.goods.getRealSaleCount());
 
         String templatePath = "dangdang/groupbuy/getTeamList.xml";

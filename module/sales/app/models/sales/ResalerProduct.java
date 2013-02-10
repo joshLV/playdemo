@@ -88,11 +88,11 @@ public class ResalerProduct extends Model {
         return product;
     }
 
-    public static Goods getGoods(Long  productId) {
-        if (productId <= BASE_LINK_ID) {
-            return Goods.findById(productId);
+    public static Goods getGoods(Long  goodsLinkId, OuterOrderPartner partner) {
+        ResalerProduct product = ResalerProduct.find("byGoodsLinkIdAndPartner", goodsLinkId, partner).first();
+        if (product == null && goodsLinkId < BASE_LINK_ID) {
+            return Goods.findById(goodsLinkId);
         }
-        ResalerProduct product = ResalerProduct.findById(productId);
         return product == null ? null : product.goods;
     }
 

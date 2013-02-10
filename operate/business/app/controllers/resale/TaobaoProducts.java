@@ -77,7 +77,7 @@ public class TaobaoProducts extends Controller{
         addRequest.setInputStr(faceValue.setScale(0).toString()); //面值value
         addRequest.setInputPids("5392163");//面值key
         addRequest.setApproveStatus(approveStatus);//初始为下架的，在淘宝仓库中
-        addRequest.setOuterId(String.valueOf(product.id));
+        addRequest.setOuterId(String.valueOf(product.goodsLinkId));
         addRequest.setLocalityLifeExpirydate(startDate+ "," + endDate);
         addRequest.setSellerCids(StringUtils.join(sellerCids));
 

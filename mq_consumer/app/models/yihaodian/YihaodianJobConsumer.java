@@ -67,7 +67,6 @@ public class YihaodianJobConsumer extends RabbitMQConsumerWithTx<String> {
                 return;
             }
 
-            //如果用户没有取消订单再发货
             //首先刷新最新的订单信息
             Map<String, String> params = new HashMap<>();
             params.put("orderCode", orderId);
@@ -91,7 +90,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumerWithTx<String> {
             for (Node orderItem : orderItems) {
                 String outerId = XPath.selectText("outerId", orderItem).trim();
                 if (outerId != null) {
-                    Goods goods = ResalerProduct.getGoods(Long.parseLong(outerId));
+                    Goods goods = ResalerProduct.getGoods(Long.parseLong(outerId), OuterOrderPartner.YHD);
                     if (goods != null && goods.materialType == MaterialType.ELECTRONIC) {
                         couponItems.add(orderItem);
                     }else {
@@ -175,7 +174,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumerWithTx<String> {
         try {
             for (Node orderItem : couponItems){
                 String outerId = XPath.selectText("outerId", orderItem).trim();
-                Goods goods = ResalerProduct.getGoods(Long.parseLong(outerId));
+                Goods goods = ResalerProduct.getGoods(Long.parseLong(outerId), OuterOrderPartner.YHD);
 
                 BigDecimal orderItemPrice = new BigDecimal(XPath.selectText("orderItemPrice", orderItem).trim());
                 OrderItems uhuilaOrderItem  = uhuilaOrder.addOrderItem(
