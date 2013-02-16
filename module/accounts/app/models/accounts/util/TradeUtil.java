@@ -177,6 +177,7 @@ public class TradeUtil {
                 .add(tradeBill.uncashPaymentAmount);
         tradeBill.orderId = orderId;
 
+        Logger.info("try to save tradeBill:" + tradeBill);
         return tradeBill.save();
     }
 

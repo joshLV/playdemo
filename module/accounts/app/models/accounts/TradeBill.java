@@ -1,6 +1,7 @@
 package models.accounts;
 
 import models.accounts.util.SerialNumberUtil;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import play.db.jpa.Model;
 
 import javax.persistence.Column;
@@ -100,6 +101,29 @@ public class TradeBill extends Model {
 
         this.returnCode = null;
         this.returnNote = null;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).
+                append("serialNumber", serialNumber).
+                append("amount", amount).
+                append("fromAccount", fromAccount).
+                append("toAccount", toAccount).
+                append("orderId", orderId).
+                append("withdrawBill", withdrawBill).
+                append("eCouponSn", eCouponSn).
+                append("balancePaymentAmount", balancePaymentAmount).
+                append("ebankPaymentAmount", ebankPaymentAmount).
+                append("uncashPaymentAmount", uncashPaymentAmount).
+                append("promotionPaymentAmount", promotionPaymentAmount).
+                append("paymentSource", paymentSource).
+                append("createdAt", createdAt).
+                append("tradeType", tradeType).
+                append("returnCode", returnCode).
+                append("returnNote", returnNote).
+                append("tradeStatus", tradeStatus).
+                toString();
     }
 }
 
