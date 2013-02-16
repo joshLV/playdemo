@@ -3,7 +3,6 @@ package models.sales;
 import cache.CacheCallBack;
 import cache.CacheHelper;
 import com.uhuila.common.util.PathUtil;
-import models.resale.ResalerFav;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
@@ -147,10 +146,6 @@ public class GoodsHistory extends Model {
      */
     @Column(name = "is_hide_onsale")
     public Boolean isHideOnsale = Boolean.FALSE;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "goods_history_id")
-    public List<ResalerFav> resalerFavs;
 
     /**
      * 手工排序

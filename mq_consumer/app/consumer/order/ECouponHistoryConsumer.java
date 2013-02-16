@@ -2,6 +2,7 @@ package consumer.order;
 
 import models.RabbitMQConsumerWithTx;
 import models.order.CouponHistory;
+import models.order.ECoupon;
 import models.order.ECouponHistoryMessage;
 import play.Logger;
 import play.jobs.OnApplicationStart;
@@ -16,14 +17,20 @@ import play.jobs.OnApplicationStart;
 public class ECouponHistoryConsumer extends RabbitMQConsumerWithTx<ECouponHistoryMessage> {
     @Override
     public void consumeWithTx(ECouponHistoryMessage data) {
-        try {
-            Thread.sleep(500l);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        ECoupon coupon = ECoupon.findById(data.eCouponId);
+        if (coupon == null) {
+            try {
+                Thread.sleep(500l);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Logger.info("Not fund coupon(id:" + data.eCouponId + ")，稍后自动重试.");
+            throw new RuntimeException("Not fund coupon(id:" + data.eCouponId + ")，it will auto try later.");
         }
         Logger.info("process ECouponHistoryMessage:" + data);
         CouponHistory couponHistory = data.toModel();
-        //JPA.em().flush();
+
+        // JPA.em().flush();
         couponHistory.save();
     }
 
