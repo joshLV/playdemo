@@ -1858,12 +1858,6 @@ public class Goods extends Model {
         goodsHistory.favorite = this.favorite;
         goodsHistory.isOrder = this.isOrder;
         goodsHistory.isHideOnsale = this.isHideOnsale;
-        if (this.resalerFavs != null) {
-            goodsHistory.resalerFavs = new LinkedList<>();
-            goodsHistory.resalerFavs.addAll(this.resalerFavs);
-        } else {
-            goodsHistory.resalerFavs = null;
-        }
 
         if (this.goodsImagesList != null) {
             goodsHistory.goodsImagesList = new LinkedList<>();
