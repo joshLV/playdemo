@@ -65,16 +65,28 @@ public class WithdrawApproval extends Controller {
 
         BigDecimal temp = BigDecimal.ZERO;
 
-        Account supplierAccount = AccountUtil.getSupplierAccount(uid);
+        Account account = null;
+        switch (bill.account.accountType) {
+            case SUPPLIER:
+                account = AccountUtil.getSupplierAccount(uid);
+                break;
+            case RESALER:
+                account = AccountUtil.getResalerAccount(uid);
+                break;
+            case CONSUMER:
+                account = AccountUtil.getConsumerAccount(uid);
+                break;
+        }
 
-        BigDecimal sum = AccountSequence.getWithdrawAmount(supplierAccount, bill.appliedAt);
-        String supplierName = "";
+        BigDecimal sum = AccountSequence.getWithdrawAmount(account, bill.appliedAt);
 
         if (bill.account.accountType == SUPPLIER && uid != null) {
+            String supplierName = "";
             Supplier supplier = Supplier.findById(uid);
             supplierName = supplier.otherName;
+            renderArgs.put("supplierName", supplierName);
         }
-        render(bill, uid, sum, supplierName);
+        render(bill, uid, sum);
     }
 
     /**
