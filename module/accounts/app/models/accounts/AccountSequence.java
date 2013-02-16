@@ -215,16 +215,16 @@ public class AccountSequence extends Model {
                 " account=? and sequenceFlag=? and settlementStatus=? and createdAt<?",
                 account, AccountSequenceFlag.VOSTRO, SettlementStatus.UNCLEARED, toDate).first();
         amount = (amount != null) ? amount : BigDecimal.ZERO;
-        System.out.println("amount:" + amount);
-        System.out.println("toDate:" + toDate);
+//        System.out.println("amount:" + amount);
+//        System.out.println("toDate:" + toDate);
         BigDecimal refundAmount = getRefundAmountTo(account, toDate);
         return amount.add(refundAmount);
     }
 
     private static BigDecimal getRefundAmountTo(Account account, Date toDate) {
         BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
-                " account=? and tradeType=? and settlementStatus=? and createdAt<?",
-                account, TradeType.REFUND, SettlementStatus.UNCLEARED, toDate).first();
+                " account=? and tradeType<>? and settlementStatus=? and createdAt<?",
+                account, TradeType.WITHDRAW, SettlementStatus.UNCLEARED, toDate).first();
         return amount != null ? amount : BigDecimal.ZERO;
     }
 
