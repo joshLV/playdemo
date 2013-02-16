@@ -53,7 +53,10 @@ public class OuterOrder extends Model {
 
     public static OuterOrder getOuterOrder(Order ybqOrder) {
         return OuterOrder.find("ybqOrder=?", ybqOrder).first();
+    }
 
+    public static OuterOrder getOuterOrder(String orderId, OuterOrderPartner partner) {
+        return OuterOrder.find("byOrderIdAndPartner", orderId, partner).first();
     }
 
     public JsonObject getMessageAsJsonObject() {

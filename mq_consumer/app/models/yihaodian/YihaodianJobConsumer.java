@@ -52,7 +52,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumerWithTx<String> {
             OuterOrder.em().refresh(outerOrder, LockModeType.PESSIMISTIC_WRITE);
         }catch (PersistenceException e){
             //拿不到锁就放弃
-            Logger.info("can not lock yihaodian order %s", orderId);
+            Logger.info("yihaodian job consume failed: can not lock yihaodian order %s", orderId);
             return;
         }
 
@@ -77,24 +77,26 @@ public class YihaodianJobConsumer extends RabbitMQConsumerWithTx<String> {
             outerOrder.message = XML.serialize(response.data.getOwnerDocument());//保存订单信息
 
             //订单已取消的话不处理
-            YHDOrderStatus orderStatus = YHDOrderStatus.valueOf(response.selectTextTrim("orderDetail/orderStatus"));
+            YHDOrderStatus orderStatus = YHDOrderStatus.valueOf(response.selectTextTrim("./orderDetail/orderStatus"));
             if (YHDOrderStatus.ORDER_CANCEL == orderStatus) {
+                Logger.error("yihaodian job consume warning: order is canceled");
                 outerOrder.status = OuterOrderStatus.ORDER_CANCELED;
                 outerOrder.save();
                 return;
             }
 
             //挑选出电子券的orderItem
-            List<Node> orderItems = response.selectNodes("orderItemList/orderItem");
+            List<Node> orderItems = response.selectNodes("./orderItemList/orderItem");
             List<Node> couponItems = new ArrayList<>();
             for (Node orderItem : orderItems) {
-                String outerId = XPath.selectText("outerId", orderItem).trim();
+                String outerId = XPath.selectText("./outerId", orderItem).trim();
+                System.out.println("abcdefg " + outerId);
                 if (outerId != null) {
                     Goods goods = ResalerProduct.getGoods(Long.parseLong(outerId), OuterOrderPartner.YHD);
                     if (goods != null && goods.materialType == MaterialType.ELECTRONIC) {
                         couponItems.add(orderItem);
                     }else {
-                        Logger.error("build yihaodian order warning: goods not found " + outerId);
+                        Logger.error("yihaodian job consume warning: goods not found " + outerId);
                     }
                 }
             }
@@ -102,15 +104,17 @@ public class YihaodianJobConsumer extends RabbitMQConsumerWithTx<String> {
             if (couponItems.size() == 0) {
                 outerOrder.status = OuterOrderStatus.ORDER_IGNORE;
                 outerOrder.save();
+                Logger.info("yihaodian job consume failed: no electronic goods");
                 return;
             }
 
             //如果没有生成一百券的订单，生成一下
             if(outerOrder.ybqOrder == null) {
-                String goodsReceiverMobile = response.selectTextTrim("orderDetail/goodReceiverMoblie");
+                String goodsReceiverMobile = response.selectTextTrim("./orderDetail/goodReceiverMoblie");
                 outerOrder.ybqOrder = buildYibaiquanOrder(couponItems, goodsReceiverMobile);
             }
             if (outerOrder.ybqOrder == null) {
+                Logger.error("yihaodian job consume failed: build our order failed");
                 outerOrder.save();
                 return;
             }else {
@@ -148,11 +152,11 @@ public class YihaodianJobConsumer extends RabbitMQConsumerWithTx<String> {
 
     private boolean checkYihaodianSent(String orderCode) {
         Map<String, String> params = new HashMap<>();
-        params.put("orderCodeList", orderCode);
+        params.put("orderCode", orderCode);
 
         YHDResponse response = YHDUtil.sendRequest(params, "yhd.order.detail.get", "orderInfo");
         if (response.isOk()) {
-            YHDOrderStatus orderStatus = YHDOrderStatus.valueOf(response.selectTextTrim("orderDetail/orderStatus"));
+            YHDOrderStatus orderStatus = YHDOrderStatus.valueOf(response.selectTextTrim("./orderDetail/orderStatus"));
             if (orderStatus != YHDOrderStatus.ORDER_PAYED
                     && orderStatus != YHDOrderStatus.ORDER_WAIT_PAY
                     && orderStatus != YHDOrderStatus.ORDER_CANCEL) {
@@ -173,13 +177,13 @@ public class YihaodianJobConsumer extends RabbitMQConsumerWithTx<String> {
         uhuilaOrder.save();
         try {
             for (Node orderItem : couponItems){
-                String outerId = XPath.selectText("outerId", orderItem).trim();
+                String outerId = XPath.selectText("./outerId", orderItem).trim();
                 Goods goods = ResalerProduct.getGoods(Long.parseLong(outerId), OuterOrderPartner.YHD);
 
-                BigDecimal orderItemPrice = new BigDecimal(XPath.selectText("orderItemPrice", orderItem).trim());
+                BigDecimal orderItemPrice = new BigDecimal(XPath.selectText("./orderItemPrice", orderItem).trim());
                 OrderItems uhuilaOrderItem  = uhuilaOrder.addOrderItem(
                         goods,
-                        Integer.parseInt(XPath.selectText("orderItemNum", orderItem).trim()),
+                        Integer.parseInt(XPath.selectText("./orderItemNum", orderItem).trim()),
                         goodReceiverMobile,
                         orderItemPrice,
                         orderItemPrice

@@ -46,7 +46,7 @@ public class OrderListener extends Job{
         }
         //筛选出我们没有处理过的
         for(Node order : orders ){
-            String orderCode = XPath.selectText("orderCode", order).trim();
+            String orderCode = XPath.selectText("./orderCode", order).trim();
             if(OuterOrder.find("byOrderIdAndPartner", orderCode, OuterOrderPartner.YHD).first() == null){
                 OuterOrder outerOrder = new OuterOrder();
                 //此处不保存outerOrder的message，等处理的时候会再去一号店拉取最新的订单信息并保存
@@ -80,7 +80,7 @@ public class OrderListener extends Job{
         YHDResponse response = YHDUtil.sendRequest(params, "yhd.orders.get", "orderList");
 
         if(response.isOk()) {
-            return XPath.selectNodes("order", response.data);
+            return XPath.selectNodes("./order", response.data);
         }
         return null;
     }

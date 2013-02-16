@@ -4,10 +4,8 @@ import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
-import models.resale.ResalerFav;
-import models.sales.ChannelGoodsInfo;
 import models.sales.Goods;
-import models.sales.GoodsDeployRelation;
+import models.sales.ResalerProduct;
 import org.junit.Before;
 import org.junit.Test;
 import play.Play;
@@ -26,7 +24,7 @@ import java.util.Map;
  * Time: 下午6:24
  */
 public class JingDongGroupByRequestTest extends FunctionalTest {
-    ChannelGoodsInfo product;
+    ResalerProduct product;
     @Before
     public void setUp() throws Exception {
         FactoryBoy.deleteAll();
@@ -36,23 +34,15 @@ public class JingDongGroupByRequestTest extends FunctionalTest {
                 target.loginName = "jingdong";
             }
         });
-        final GoodsDeployRelation goodsDeployRelation = FactoryBoy.create(GoodsDeployRelation.class,
-                new BuildCallback<GoodsDeployRelation>() {
+        product = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
             @Override
-            public void build(GoodsDeployRelation target) {
+            public void build(ResalerProduct target) {
                 target.partner = OuterOrderPartner.JD;
+                target.partnerProductId = 1234L;
             }
         });
 
-        FactoryBoy.create(Goods.class);
-        FactoryBoy.create(ResalerFav.class, new BuildCallback<ResalerFav>() {
-            @Override
-            public void build(ResalerFav target) {
-                target.lastLinkId = goodsDeployRelation.linkId;
-                target.thirdGroupbuyId = 1234l;
-            }
-        });
-        product = FactoryBoy.create(ChannelGoodsInfo.class);
+        MockWebServiceClient.clear();
     }
 
     @Test
@@ -67,7 +57,7 @@ public class JingDongGroupByRequestTest extends FunctionalTest {
     public void testSendOrder() throws Exception {
         Http.Response response = GET(Router.reverse("mock.JingDongGroupByRequest.sendOrder").url);
         assertIsOk(response);
-        List<ChannelGoodsInfo> products = (List<ChannelGoodsInfo>) renderArgs("products");
+        List<ResalerProduct> products = (List<ResalerProduct>) renderArgs("products");
         assertEquals(1, products.size());
     }
 
@@ -77,7 +67,7 @@ public class JingDongGroupByRequestTest extends FunctionalTest {
 
         Map<String, String> params = new HashMap<>();
         params.put("url", "http://localhost:7402/api/v1/jd/gb/send-order");
-        params.put("productId", String.valueOf(product.id));
+        params.put("productId", String.valueOf(product.goodsLinkId));
         params.put("mobile", "15028812881");
         params.put("buyNumber", "1");
         Http.Response response = POST(Router.reverse("mock.JingDongGroupByRequest.sendOrder").url, params);

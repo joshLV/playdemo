@@ -27,6 +27,7 @@ public class DDAPIUtilTest extends FunctionalTest {
         FactoryBoy.deleteAll();
         product = FactoryBoy.create(ResalerProduct.class);
         goods = product.goods;
+        MockWebServiceClient.clear();
     }
 
     @Test

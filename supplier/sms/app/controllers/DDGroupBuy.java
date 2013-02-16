@@ -6,15 +6,19 @@ import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.dangdang.groupbuy.DDErrorCode;
 import models.dangdang.groupbuy.DDGroupBuyUtil;
+import models.dangdang.groupbuy.DDResponse;
 import models.order.*;
 import models.resale.Resaler;
 import models.resale.ResalerStatus;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
 import org.apache.commons.lang.StringUtils;
+import org.w3c.dom.Document;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
+import play.libs.XML;
+import play.libs.XPath;
 import play.mvc.Before;
 import play.mvc.Controller;
 
@@ -165,19 +169,24 @@ public class DDGroupBuy extends Controller {
      * 当当请我们发送短信.
      *
      */
-    public static void sendSms(String sign, String data, String time, String order_id, Long spgid,
-                               String receiver_mobile_tel, String consume_id) {
-        //取得参数信息
-        String verifySign = DDGroupBuyUtil.sign("send_msg", data, time);
+    public static void sendSms(String sign, String data, String call_time) {
+        String verifySign = DDGroupBuyUtil.sign("send_msg", data, call_time);
         if (StringUtils.isBlank(sign) || !sign.equals(verifySign)) {
             renderError(DDErrorCode.VERIFY_FAILED, "sign验证失败！");
         }
+
+        Document dataXml = XML.getDocument(data);
+        String orderId = XPath.selectText("/data/order/order_id", dataXml).trim();
+        Long spgid = Long.parseLong(XPath.selectText("/data/order/spgid", dataXml).trim());
+        String receiverMobileTel = XPath.selectText("/data/order/receiver_mobile_tel", dataXml).trim();
+        String consumeId = XPath.selectText("/data/order/consume_id", dataXml).trim();
+
 
 
         //取得data节点中的数据信息
 
         //根据当当订单编号，查询订单是否存在
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", OuterOrderPartner.DD, order_id).first();
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", OuterOrderPartner.DD, orderId).first();
         if (outerOrder == null || outerOrder.ybqOrder == null) {
             renderError(DDErrorCode.ORDER_NOT_EXITED, "没找到对应的当当订单!");
         }
@@ -197,7 +206,7 @@ public class DDGroupBuy extends Controller {
         if (goods == null) {
             goods = Goods.findById(spgid);
         }
-        ECoupon coupon = ECoupon.find("order=? and eCouponSn=? and goods=?", ybqOrder, consume_id, goods).first();
+        ECoupon coupon = ECoupon.find("order=? and eCouponSn=? and goods=?", ybqOrder, consumeId, goods).first();
         if (coupon == null) {
             renderError(DDErrorCode.COUPON_SN_NOT_EXISTED, "没找到对应的券号!");
         }
@@ -219,9 +228,9 @@ public class DDGroupBuy extends Controller {
         }
 
         //发送短信并返回成功
-        coupon.sendOrderSMS(receiver_mobile_tel, "当当重发短信");
+        coupon.sendOrderSMS(receiverMobileTel, "当当重发短信");
         String desc = "success";
-        render("dangdang/groupbuy/response/sendMessage.xml", desc, coupon, order_id);
+        render("dangdang/groupbuy/response/sendMessage.xml", desc, coupon, orderId);
     }
 
     private static void renderError(DDErrorCode errorCode, String errorDesc) {

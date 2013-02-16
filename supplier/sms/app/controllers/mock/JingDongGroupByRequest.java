@@ -2,11 +2,10 @@ package controllers.mock;
 
 import models.order.ECoupon;
 import models.order.ECouponPartner;
+import models.order.OuterOrderPartner;
 import models.resale.Resaler;
-import models.resale.ResalerFav;
-import models.sales.ChannelGoodsInfo;
-import models.sales.ChannelGoodsInfoStatus;
 import models.sales.ImportedCoupon;
+import models.sales.ResalerProduct;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.libs.F;
@@ -45,8 +44,7 @@ public class JingDongGroupByRequest extends Controller {
      */
     public static void sendOrder() {
         Resaler resaler = Resaler.findOneByLoginName("jingdong");
-        List<ChannelGoodsInfo> products = ChannelGoodsInfo.find("resaler=? and status=?", resaler,
-                ChannelGoodsInfoStatus.ONSALE).fetch();
+        List<ResalerProduct> products = ResalerProduct.find("byPartner", OuterOrderPartner.JD).fetch();
 
         StringBuilder url = new StringBuilder("http://");
         url.append(request.host);
@@ -118,13 +116,12 @@ public class JingDongGroupByRequest extends Controller {
 
     private static Map<String, Object> getSenderOrderParams(Long productId, String mobile,
                                                             Integer buyNumber) {
-        ChannelGoodsInfo product = ChannelGoodsInfo.findById(productId);
-        ResalerFav fav = ResalerFav.findByGoodsId(product.resaler, product.goods.id);
+        ResalerProduct product = ResalerProduct.find("byGoodsLinkIdAndPartner", productId, OuterOrderPartner.JD).first();
 
         Map<String, Object> tParams = new HashMap<>();
         tParams.put("thirdOrderId", System.currentTimeMillis());
-        tParams.put("thirdProductId", fav.thirdGroupbuyId);
-        tParams.put("goodsId", fav.lastLinkId);
+        tParams.put("thirdProductId", product.partnerProductId);
+        tParams.put("goodsId", product.goodsLinkId);
         tParams.put("mobile", mobile);
         tParams.put("buyNumber", buyNumber);
         tParams.put("price", product.goods.salePrice.multiply(new BigDecimal(100)).setScale(0));

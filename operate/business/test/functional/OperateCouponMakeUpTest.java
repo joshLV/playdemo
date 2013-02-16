@@ -66,6 +66,7 @@ public class OperateCouponMakeUpTest extends FunctionalTest {
         eCoupon = FactoryBoy.create(ECoupon.class);
         eCoupon.partner = ECouponPartner.TB;
         eCoupon.save();
+        MockWebServiceClient.clear();
     }
 
     @Test

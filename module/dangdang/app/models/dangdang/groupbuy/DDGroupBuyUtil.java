@@ -48,8 +48,8 @@ public class DDGroupBuyUtil {
         if (!response.isOk() || response.data == null) {
             return null;
         }
-        for (Node node : XPath.selectNodes("row", response.data)) {
-            if (XPath.selectText("spgid", node).trim().equals(String.valueOf(linkId))) {
+        for (Node node : XPath.selectNodes("/data/row", response.data)) {
+            if (XPath.selectText("/row/spgid", node).trim().equals(String.valueOf(linkId))) {
                 return node;
             }
         }

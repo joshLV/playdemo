@@ -54,7 +54,7 @@ public class TaobaoCouponAPITest extends FunctionalTest{
     @Test
     public void testParams() {
         Map<String, String> params = prepareParams();
-        params.put("order_id", "abc");
+        params.remove("order_id");
         resign(params);
 
         Http.Response response = POST2("/api/v1/taobao/coupon", params);

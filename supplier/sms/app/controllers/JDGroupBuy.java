@@ -16,8 +16,8 @@ import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
 import models.resale.Resaler;
 import models.sales.Goods;
-import models.sales.GoodsDeployRelation;
 import models.sales.MaterialType;
+import models.sales.ResalerProduct;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import play.Logger;
@@ -72,41 +72,34 @@ public class JDGroupBuy extends Controller {
      */
     public static void sendOrder() {
         String restXml = IO.readContentAsString(request.body);
+        Logger.info("jingdong sendOrder request:\n%s", restXml);
         JingdongMessage message = JDGroupBuyUtil.parseMessage(restXml);
         //解析请求
         if (!message.isOk()) {
-            //解析失败
-            Logger.info("parse send_order request xml error");
             finish(201, "parse send_order request xml error");
-            return;
         }
-        Integer count = Integer.parseInt(message.selectTextTrim("//Count"));
+        Integer count = Integer.parseInt(message.selectTextTrim("./Count"));
 
         //检查购买数量
         if (count <= 0) {
-            Logger.info("the buy number must be a positive one");
             finish(202, "the buy number must be a positive one");
-            return;
         }
         BigDecimal teamPrice = new BigDecimal(message.selectTextTrim("TeamPrice")).divide(new BigDecimal("100"));
         BigDecimal origin = new BigDecimal(message.selectTextTrim("Origin")).divide(new BigDecimal("100"));
 
         //检查订单总额是否匹配
         if (teamPrice.multiply(new BigDecimal(count)).compareTo(origin) != 0) {
-            Logger.info("the total amount does not match the team price and count");
             finish(203, "the total amount does not match the team price and count");
-            return;
         }
 
         String mobile = message.selectTextTrim("Mobile");
         //检查手机号
         if (!checkPhone(mobile)) {
-            Logger.info("invalid mobile: %s", mobile);
-            finish(204, "invalid mobile");
+            finish(204, "invalid mobile: " + mobile);
         }
 
-        String jdOrderId = message.selectTextTrim("JdOrderId").trim();
-        Long venderTeamId = Long.parseLong(message.selectTextTrim("VenderTeamId").trim());
+        String jdOrderId = message.selectTextTrim("./JdOrderId").trim();
+        Long venderTeamId = Long.parseLong(message.selectTextTrim("./VenderTeamId").trim());
 
         //检查并保存此新请求
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", OuterOrderPartner.JD, jdOrderId).first();
@@ -121,9 +114,7 @@ public class JDGroupBuy extends Controller {
             try { // 将订单写入数据库
                 JPA.em().flush();
             } catch (Exception e) { // 如果写入失败，说明 已经存在一个相同的orderId 的订单，则放弃
-                Logger.info("flush failed");
                 finish(205, "there is another parallel request");
-                return;
             }
         }
 
@@ -133,9 +124,7 @@ public class JDGroupBuy extends Controller {
             JPA.em().refresh(outerOrder, LockModeType.PESSIMISTIC_WRITE);
         } catch (PersistenceException e) {
             //没拿到锁 放弃
-            Logger.info("failed to request persistence lock");
             finish(206, "there is another parallel request");
-            return;
         }
         //生成一百券订单
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
@@ -148,22 +137,21 @@ public class JDGroupBuy extends Controller {
             outerOrder.message = restXml;
             outerOrder.save();
         }
-        NodeList jdCoupons = message.selectNode("Coupons").getChildNodes();
+        List<Node> jdCoupons = message.selectNodes("./Coupons/Coupon");
         //保存京东的券号密码
         List<ECoupon> coupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
         if (outerOrder.status == OuterOrderStatus.ORDER_DONE || outerOrder.status == OuterOrderStatus.ORDER_SYNCED) {
-            if (coupons.size() != jdCoupons.getLength()) {
-                Logger.info("coupon size not matched, ybq size: %s, jd size: %s", coupons.size(), jdCoupons.getLength());
-                finish(211, "coupon size not matched, ybq size: " + coupons.size() + " jd size:" + jdCoupons.getLength());
+            if (coupons.size() != jdCoupons.size()) {
+                finish(211, "coupon size not matched, ybq size: " + coupons.size() + " jd size:" + jdCoupons.size());
             }
             // 保存京东的券号密码
             for (int i = 0; i < coupons.size(); i++) {
                 ECoupon coupon = coupons.get(i);
-                Node jdCoupon = jdCoupons.item(i);
+                Node jdCoupon = jdCoupons.get(i);
 
                 coupon.partner = ECouponPartner.JD;
-                coupon.partnerCouponId = XPath.selectText("CouponId", jdCoupon).trim();
-                coupon.partnerCouponPwd = XPath.selectText("CouponPwd", jdCoupon).trim();
+                coupon.partnerCouponId = XPath.selectText("./CouponId", jdCoupon).trim();
+                coupon.partnerCouponPwd = XPath.selectText("./CouponPwd", jdCoupon).trim();
                 coupon.save();
             }
             outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
@@ -174,7 +162,7 @@ public class JDGroupBuy extends Controller {
             String jdTeamId = message.selectTextTrim("JdTeamId");
 
             Template template = TemplateLoader.load("jingdong/groupbuy/response/sendOrder.xml");
-            Goods goods = GoodsDeployRelation.getGoods(OuterOrderPartner.JD, venderTeamId);
+            Goods goods = ResalerProduct.getGoods(venderTeamId, OuterOrderPartner.JD);
             Map<String, Object> params = new HashMap<>();
             params.put("jdTeamId", jdTeamId);
             params.put("venderTeamId", venderTeamId);
@@ -185,7 +173,6 @@ public class JDGroupBuy extends Controller {
             Logger.info("jd send order success: %s", outerOrder.ybqOrder.getId());
             finish(200, "success");
         } else {
-            Logger.info("order status is not ORDER_DONE, instead it's %s", outerOrder.status);
             finish(212, "the order has been processed");
         }
     }
@@ -195,30 +182,27 @@ public class JDGroupBuy extends Controller {
      */
     public static void queryTeamSellCount() {
         String restXml = IO.readContentAsString(request.body);
+        Logger.info("jingdong queryTeamSellCount request:\n%s", restXml);
         JingdongMessage message = JDGroupBuyUtil.parseMessage(restXml);
 
         //解析请求
         if (!message.isOk()) {
-            Logger.info("parse query_team_sell_count xml error");
             finish(201, "parse query_team_sell_count request xml error");
-            return;
         }
-        Long venderTeamId = Long.parseLong(message.selectTextTrim("VenderTeamId"));
+        Long venderTeamId = Long.parseLong(message.selectTextTrim("./VenderTeamId"));
 
         //查询商品
-        Goods goods = GoodsDeployRelation.getGoods(OuterOrderPartner.JD, venderTeamId);
+        Goods goods = ResalerProduct.getGoods(venderTeamId, OuterOrderPartner.JD);
         if (goods == null) {
-            Logger.info("goods not found");
             finish(202, "goods not found");
-            return;
         }
 
         //响应
         Template template = TemplateLoader.load("jingdong/groupbuy/response/queryTeamSellCount.xml");
         Map<String, Object> params = new HashMap<>();
-        params.put("goods", goods);
+        params.put("venderTeamId", venderTeamId);
+        params.put("sellCount", goods.getVirtualSaleCount());
         renderArgs.put("data", template.render(params));
-        Logger.info("queryTeamSellCount success");
         finish(200, "success");
     }
 
@@ -227,38 +211,32 @@ public class JDGroupBuy extends Controller {
      */
     public static void sendOrderRefund() {
         String restXml = IO.readContentAsString(request.body);
+        Logger.info("jingdong sendOrderRefund request:\n%s", restXml);
         JingdongMessage message = JDGroupBuyUtil.parseMessage(restXml);
 
         if (!message.isOk()) {
-            Logger.info("parse sendOrderRefund xml error");
             finish(201, "parse send_order_refund request xml error");
-            return;
         }
 
         //以京东分销商的身份申请退款
         Resaler resaler = Resaler.findOneByLoginName(Resaler.JD_LOGIN_NAME);
         if (resaler == null) {
-            Logger.error("can not find the resaler by login name: %s", Resaler.JD_LOGIN_NAME);
             finish(202, "can not find the jingdong resaler");
-            return;
         }
 
-        Long venderOrderId = Long.parseLong(message.selectTextTrim("VenderOrderId"));
-        Long jdOrderId = Long.parseLong(message.selectTextTrim("JdOrderId"));
+        String venderOrderId = message.selectTextTrim("./VenderOrderId");
+        Long jdOrderId = Long.parseLong(message.selectTextTrim("./JdOrderId"));
 
         Order order = Order.find("byOrderNumber", venderOrderId).first();
         if (order == null) {
-            Logger.error("can not find the ybq_order: %s", venderOrderId);
             finish(203, "can not find ybq_order: " + venderOrderId);
-            return;
         }
 
-        NodeList jdCoupons = message.selectNode("Coupons").getChildNodes();
+        List<Node> jdCoupons = message.selectNodes("./Coupons/Coupon");
 
         //处理退款
         List<String> refundedCoupons = new ArrayList<>();
-        for (int i = 0; i < jdCoupons.getLength(); i ++) {
-            Node coupon = jdCoupons.item(i);
+        for (Node coupon : jdCoupons) {
             ECoupon eCoupon = ECoupon.find("byOrderAndPartnerAndPartnerCouponId",
                     order, ECouponPartner.JD, coupon.getTextContent()).first();
             if (eCoupon != null) {
@@ -277,26 +255,21 @@ public class JDGroupBuy extends Controller {
         params.put("venderOrderId", venderOrderId);
         params.put("coupons", refundedCoupons);
         renderArgs.put("data", template.render(params));
-        Logger.info("send order refund success");
         finish(200, "success");
     }
 
     public static void sendSms() {
-        Logger.info("start send sms on jingdong groupbuy");
         String restXml = IO.readContentAsString(request.body);
-        //解析请求
+        Logger.info("jingdong sendSms request:\n%s", restXml);
         JingdongMessage message = JDGroupBuyUtil.parseMessage(restXml);
         if (!message.isOk()) {
-            Logger.info("parse send_sms_request xml error");
             finish(201, "parse send_sms_request request xml error");
-            return;
         }
-        String mobile = message.selectTextTrim("Mobile");
-        String venderCouponId = message.selectTextTrim("VenderCouponId");
-        String jdCouponId = message.selectTextTrim("JdCouponId");
+        String mobile = message.selectTextTrim("./Mobile");
+        String venderCouponId = message.selectTextTrim("./VenderCouponId");
+        String jdCouponId = message.selectTextTrim("./JdCouponId");
 
         if (!checkPhone(mobile)) {
-            Logger.info("invalid mobile");
             finish(202, "invalid mobile");
         }
 
@@ -304,16 +277,12 @@ public class JDGroupBuy extends Controller {
         ECoupon coupon = ECoupon.find("byECouponSnAndPartnerAndPartnerCouponId",
                 venderCouponId, ECouponPartner.JD, jdCouponId).first();
         if (coupon == null) {
-            Logger.info("coupon not found");
             finish(300, "coupon not found");
-            return;
         }
         if (coupon.status == ECouponStatus.REFUND) {
-            Logger.info("coupon refunded");
             finish(301, "coupon refunded");
         }
         if (coupon.smsSentCount >= 3) {
-            Logger.info("reach the limit of download time");
             finish(302, "reach the limit of download time");
         }
 
@@ -324,7 +293,7 @@ public class JDGroupBuy extends Controller {
         if (currentTime - coupon.createdAt.getTime() > 600000l) { //10分钟之后的请求才会重新发短信
             coupon.sendOrderSMS(mobile, "京东短信重发");
         } else {
-            Logger.info("Coupon(id:" + coupon.id + ")生成于" + coupon.createdAt + ", 10分钟内不会重发短信.");
+            Logger.info("Coupon(%s)生成于%s, 10分钟内不会重发短信.", coupon.id, coupon.createdAt);
         }
 
         //响应
@@ -334,7 +303,6 @@ public class JDGroupBuy extends Controller {
         params.put("venderCouponId", venderCouponId);
         params.put("mobile", mobile);
         renderArgs.put("data", template.render(params));
-        Logger.info("jingdong sms send success");
         finish(200, "success");
     }
 
@@ -344,25 +312,17 @@ public class JDGroupBuy extends Controller {
         Resaler resaler = Resaler.findOneByLoginName(Resaler.JD_LOGIN_NAME);
         Logger.info("create ybq order");
         if (resaler == null) {
-            Logger.error("can not find the resaler by login name: %s", Resaler.JD_LOGIN_NAME);
             finish(207, "can not find the jingdong resaler");
-            return null;
         }
         Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
         ybqOrder.save();
         try {
-
-
-            Goods goods = GoodsDeployRelation.getGoods(OuterOrderPartner.JD, venderTeamId);
+            Goods goods = ResalerProduct.getGoods(venderTeamId, OuterOrderPartner.JD);
             if (goods == null) {
-                Logger.info("goods not found: %s", venderTeamId);
                 finish(208, "can not find goods: " + venderTeamId);
-                return null;
             }
             if (goods.originalPrice.compareTo(teamPrice) > 0) {
-                Logger.info("invalid yhd productPrice: %s", teamPrice);
                 finish(209, "invalid product price: " + teamPrice);
-                return null;
             }
 
             OrderItems uhuilaOrderItem = ybqOrder.addOrderItem( goods, count, mobile, teamPrice, teamPrice);
@@ -373,10 +333,8 @@ public class JDGroupBuy extends Controller {
                 ybqOrder.deliveryType = DeliveryType.SMS;
             }
         } catch (NotEnoughInventoryException e) {
-            Logger.info("inventory not enough");
             JPA.em().getTransaction().rollback();
             finish(210, "inventory not enough");
-            return null;
         }
 
         ybqOrder.createAndUpdateInventory();
@@ -390,6 +348,7 @@ public class JDGroupBuy extends Controller {
     }
 
     private static void finish(int resultCode, String resultMessage) {
+        Logger.info("jingdong groupbuy api: %s %s", resultCode, resultMessage);
         renderArgs.put("resultCode", resultCode);
         renderArgs.put("resultMessage", resultMessage);
         renderTemplate("jingdong/groupbuy/response/main.xml");

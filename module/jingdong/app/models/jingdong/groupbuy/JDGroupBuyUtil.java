@@ -300,20 +300,13 @@ public class JDGroupBuyUtil {
         for (String keyword : keywords) {
             request = request.addKeyword(keyword);
         }
-        Document response = request.postXml();
-        Logger.info("jingdong response %s:\n%s", tag, response.toString());
+        String response = request.postString();
+        Logger.info("jingdong response %s:\n%s", tag, response);
         return parseMessage(response);
     }
 
     public static JingdongMessage parseMessage(String document) {
-        try{
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            StringReader stringReader = new StringReader(document);
-            return parseMessage(builder.parse(new InputSource(stringReader)));
-        }catch (Exception e) {
-            Logger.info(e, "jingdong parse message error: not xml document");
-            return new JingdongMessage();
-        }
+        return parseMessage(XML.getDocument(document));
     }
 
     /**
@@ -324,21 +317,23 @@ public class JDGroupBuyUtil {
      */
     public static JingdongMessage parseMessage(Document document) {
         JingdongMessage message = new JingdongMessage();
-        message.version = XPath.selectText("/Response/Version", document).trim();
+        message.version = XPath.selectText("/*/Version", document).trim();
         try{
-            message.venderId = Long.parseLong(XPath.selectText("/Response/VenderId", document).trim());
-            message.zip = Boolean.parseBoolean(XPath.selectText("/Response/Zip", document).trim());
-            message.encrypt = Boolean.parseBoolean(XPath.selectText("/Response/Encrypt", document).trim());
+            message.venderId = Long.parseLong(XPath.selectText("/*/VenderId", document).trim());
+            message.zip = Boolean.parseBoolean(XPath.selectText("/*/Zip", document).trim());
+            message.encrypt = Boolean.parseBoolean(XPath.selectText("/*/Encrypt", document).trim());
         }catch (Exception e) {
             return message;
         }
 
         // 只有作为京东的响应的时候， resultCode 和 resultMessage 才有用
-        message.resultCode = XPath.selectText("/Response/ResultCode", document).trim();
-        message.resultMessage = XPath.selectText("/Response/ResultMessage", document).trim();
+        message.resultCode = XPath.selectText("/*/ResultCode", document);
+        if (message.resultCode != null) message.resultCode = message.resultCode.trim();
+        message.resultMessage = XPath.selectText("/*/ResultMessage", document);
+        if (message.resultMessage != null) message.resultMessage = message.resultMessage.trim();
 
         if(message.encrypt){
-            String rawMessage = XPath.selectText("/Response/Data", document).trim();
+            String rawMessage = XPath.selectText("/*/Data", document).trim();
             //解析加密字符串
             String decryptedMessage = JDGroupBuyUtil.decryptMessage(rawMessage);
             Logger.info("jingdong response decrypted:\n%s", decryptedMessage);
@@ -346,7 +341,7 @@ public class JDGroupBuyUtil {
             message.message = XPath.selectNode("/Message", XML.getDocument(decryptedMessage));
 
         } else{
-            message.message = XPath.selectNode("/Response/Data/Message", document);
+            message.message = XPath.selectNode("/*/Data/Message", document);
         }
         return message;
     }

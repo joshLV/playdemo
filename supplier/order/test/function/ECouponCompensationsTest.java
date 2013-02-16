@@ -28,6 +28,7 @@ public class ECouponCompensationsTest extends FunctionalTest {
         FactoryBoy.deleteAll();
 
         FactoryBoy.create(Order.class);
+        MockWebServiceClient.clear();
     }
 
     @Test

@@ -2,19 +2,16 @@ package functional;
 
 import com.uhuila.common.util.DateUtil;
 import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.accounts.AccountType;
 import models.dangdang.groupbuy.DDErrorCode;
 import models.dangdang.groupbuy.DDGroupBuyUtil;
-import models.order.ECoupon;
-import models.order.ECouponStatus;
-import models.order.Order;
-import models.order.OuterOrder;
+import models.order.*;
 import models.resale.Resaler;
 import models.resale.ResalerStatus;
 import models.sales.Goods;
-import models.sales.GoodsDeployRelation;
+import models.sales.ResalerProduct;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;
@@ -36,29 +33,49 @@ public class DDSendMsgApiTest extends FunctionalTest {
     ECoupon coupon;
     Goods g;
     OuterOrder outerOrder;
-    GoodsDeployRelation deployRelation;
+    ResalerProduct product;
 
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
 
-        resaler = FactoryBoy.create(Resaler.class);
-        order = FactoryBoy.create(Order.class);
-        order.userId = resaler.id;
-        order.userType = AccountType.RESALER;
-        order.save();
-        deployRelation = FactoryBoy.create(GoodsDeployRelation.class);
-        g = deployRelation.goods;
-        coupon = FactoryBoy.create(ECoupon.class);
-        coupon.order = order;
-        coupon.eCouponSn = "0159300520";
-        coupon.expireAt = DateUtil.getYesterday();
-        coupon.goods = g;
-        coupon.save();
+        resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
+            @Override
+            public void build(Resaler target) {
+                target.loginName = Resaler.DD_LOGIN_NAME;
+            }
+        });
+        order = FactoryBoy.create(Order.class, new BuildCallback<Order>() {
+            @Override
+            public void build(Order target) {
+                target.userId = resaler.id;
+                target.userType = AccountType.RESALER;
+            }
+        });
+        product = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
+            @Override
+            public void build(ResalerProduct target) {
+                target.partner = OuterOrderPartner.DD;
+            }
+        });
+        g = product.goods;
+        coupon = FactoryBoy.create(ECoupon.class, new BuildCallback<ECoupon>() {
+            @Override
+            public void build(ECoupon target) {
+                target.order = order;
+                target.eCouponSn = "0159300520";
+                target.expireAt = DateUtil.getYesterday();
+                target.goods = g;
+            }
+        });
 
-        outerOrder = FactoryBoy.create(OuterOrder.class);
-        outerOrder.ybqOrder = order;
-        outerOrder.save();
+        outerOrder = FactoryBoy.create(OuterOrder.class, new BuildCallback<OuterOrder>() {
+            @Override
+            public void build(OuterOrder target) {
+                target.ybqOrder = order;
+                target.partner = OuterOrderPartner.DD;
+            }
+        });
 
     }
 
@@ -69,7 +86,13 @@ public class DDSendMsgApiTest extends FunctionalTest {
 
         Map<String, String> params = new HashMap<>();
         params.put("call_time", "1348217629");
-        String data = "<data><order><order_id><![CDATA[12345678]]></order_id><ddgid><![CDATA[" + deployRelation.linkId + "]]></ddgid><spgid><![CDATA[" + deployRelation.linkId + "]]></spgid><user_code><![CDATA[159300520]]></user_code><receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel><consume_id><![CDATA[0159300520]]></consume_id></order></data>";
+        String data = "<data>" +
+                "<order><order_id><![CDATA[12345678]]></order_id>" +
+                "<ddgid><![CDATA[" + product.goodsLinkId + "]]></ddgid>" +
+                "<spgid><![CDATA[" + product.goodsLinkId + "]]></spgid>" +
+                "<user_code><![CDATA[159300520]]></user_code>" +
+                "<receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel>" +
+                "<consume_id><![CDATA[0159300520]]></consume_id></order></data>";
         String sign = DDGroupBuyUtil.sign("send_msg", data, "1348217629");
         params.put("data", data);
         params.put("sign", sign);
@@ -84,7 +107,13 @@ public class DDSendMsgApiTest extends FunctionalTest {
 
     @Test
     public void 测试发送短信_sign出错() {
-        String data = "<data><order><order_id><![CDATA[12345678]]></order_id><ddgid><![CDATA[1]]></ddgid><spgid><![CDATA[1]]></spgid><user_code><![CDATA[159300520]]></user_code><receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel><consume_id><![CDATA[0159300520]]></consume_id></order></data>";
+        String data = "<data><order>" +
+                "<order_id><![CDATA[12345678]]></order_id>" +
+                "<ddgid><![CDATA[1]]></ddgid>" +
+                "<spgid><![CDATA[1]]></spgid>" +
+                "<user_code><![CDATA[159300520]]></user_code>" +
+                "<receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel>" +
+                "<consume_id><![CDATA[0159300520]]></consume_id></order></data>";
 
         Map<String, String> params = new HashMap<>();
         params.put("data", data);
@@ -106,7 +135,13 @@ public class DDSendMsgApiTest extends FunctionalTest {
     public void 测试发送短信_没找到对应的当当订单() {
         Map<String, String> params = new HashMap<>();
         params.put("call_time", "1348217629");
-        String data = "<data><order><order_id><![CDATA[1]]></order_id><ddgid><![CDATA[1]]></ddgid><spgid><![CDATA[1]]></spgid><user_code><![CDATA[159300520]]></user_code><receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel><consume_id><![CDATA[0159300520]]></consume_id></order></data>";
+        String data = "<data><order>" +
+                "<order_id><![CDATA[1]]></order_id>" +
+                "<ddgid><![CDATA[1]]></ddgid>" +
+                "<spgid><![CDATA[1]]></spgid>" +
+                "<user_code><![CDATA[159300520]]></user_code>" +
+                "<receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel>" +
+                "<consume_id><![CDATA[0159300520]]></consume_id></order></data>";
         String sign = DDGroupBuyUtil.sign("send_msg", data, "1348217629");
         params.put("data", data);
         params.put("sign", sign);
@@ -121,8 +156,13 @@ public class DDSendMsgApiTest extends FunctionalTest {
 
     @Test
     public void 测试发送短信_当当用户不存在() {
-        String data = "<data><order><order_id><![CDATA[12345678]]></order_id><ddgid><![CDATA[1]]></ddgid><spgid><![CDATA[1]]></spgid><user_code><![CDATA[159300520]]></user_code><receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel><consume_id><![CDATA[0159300520]]></consume_id></order></data>";
-
+        String data = "<data><order>" +
+                "<order_id><![CDATA[12345678]]></order_id>" +
+                "<ddgid><![CDATA[1]]></ddgid>" +
+                "<spgid><![CDATA[1]]></spgid>" +
+                "<user_code><![CDATA[159300520]]></user_code>" +
+                "<receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel>" +
+                "<consume_id><![CDATA[0159300520]]></consume_id></order></data>";
 
         Map<String, String> params = new HashMap<>();
         params.put("call_time", "1348217629");
@@ -144,7 +184,6 @@ public class DDSendMsgApiTest extends FunctionalTest {
 
     @Test
     public void 测试发送短信_没找到对应的订单() {
-        String data = "<data><order><order_id><![CDATA[12345678]]></order_id><ddgid><![CDATA[1]]></ddgid><spgid><![CDATA[1]]></spgid><user_code><![CDATA[159300520]]></user_code><receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel><consume_id><![CDATA[0159300520]]></consume_id></order></data>";
 
         Map<String, String> params = new HashMap<>();
         params.put("call_time", "1348217629");
@@ -157,7 +196,14 @@ public class DDSendMsgApiTest extends FunctionalTest {
         order.userId = 9999l;
         order.save();
 
-        data = "<data><order><order_id><![CDATA[12345678]]></order_id><ddgid><![CDATA[" + deployRelation.linkId + "]]></ddgid><spgid><![CDATA[" + deployRelation.linkId + "]]></spgid><user_code><![CDATA[159300520]]></user_code><receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel><consume_id><![CDATA[0159300520]]></consume_id></order></data>";
+        String data = "<data><order>" +
+                "<order_id><![CDATA[12345678]]></order_id>" +
+                "<ddgid><![CDATA[" + product.goodsLinkId + "]]></ddgid>" +
+                "<spgid><![CDATA[" + product.goodsLinkId + "]]></spgid>" +
+                "<user_code><![CDATA[159300520]]></user_code>" +
+                "<receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel>" +
+                "<consume_id><![CDATA[0159300520]]></consume_id></order></data>";
+
         String sign = DDGroupBuyUtil.sign("send_msg", data, "1348217629");
         params.put("data", data);
         params.put("sign", sign);
@@ -170,7 +216,13 @@ public class DDSendMsgApiTest extends FunctionalTest {
 
     @Test
     public void 测试发送短信_没找到对应的券号() {
-        String data = "<data><order><order_id><![CDATA[12345678]]></order_id><ddgid><![CDATA[1]]></ddgid><spgid><![CDATA[1]]></spgid><user_code><![CDATA[159300520]]></user_code><receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel><consume_id><![CDATA[0159300520]]></consume_id></order></data>";
+        String data = "<data><order>" +
+                "<order_id><![CDATA[12345678]]></order_id>" +
+                "<ddgid><![CDATA[1]]></ddgid>" +
+                "<spgid><![CDATA[1]]></spgid>" +
+                "<user_code><![CDATA[159300520]]></user_code>" +
+                "<receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel>" +
+                "<consume_id><![CDATA[0159300520]]></consume_id></order></data>";
         Map<String, String> params = new HashMap<>();
         params.put("call_time", "1348217629");
 
@@ -189,7 +241,13 @@ public class DDSendMsgApiTest extends FunctionalTest {
     @Test
     public void 测试发送短信_券已过期() {
 
-        String data = "<data><order><order_id><![CDATA[12345678]]></order_id><ddgid><![CDATA[1]]></ddgid><spgid><![CDATA[" + deployRelation.linkId + "]]></spgid><user_code><![CDATA[159300520]]></user_code><receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel><consume_id><![CDATA[0159300520]]></consume_id></order></data>";
+        String data = "<data><order>" +
+                "<order_id><![CDATA[12345678]]></order_id>" +
+                "<ddgid><![CDATA[1]]></ddgid>" +
+                "<spgid><![CDATA[" + product.goodsLinkId + "]]></spgid>" +
+                "<user_code><![CDATA[159300520]]></user_code>" +
+                "<receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel>" +
+                "<consume_id><![CDATA[0159300520]]></consume_id></order></data>";
 
         Map<String, String> params = new HashMap<>();
         params.put("call_time", "1348217629");
@@ -207,7 +265,14 @@ public class DDSendMsgApiTest extends FunctionalTest {
         coupon.status = ECouponStatus.REFUND;
         coupon.save();
 
-        String data = "<data><order><order_id><![CDATA[12345678]]></order_id><ddgid><![CDATA[1]]></ddgid><spgid><![CDATA[" + deployRelation.linkId + "]]></spgid><user_code><![CDATA[159300520]]></user_code><receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel><consume_id><![CDATA[0159300520]]></consume_id></order></data>";
+        String data = "<data><order>" +
+                "<order_id><![CDATA[12345678]]></order_id>" +
+                "<ddgid><![CDATA[1]]></ddgid>" +
+                "<spgid><![CDATA[" + product.goodsLinkId + "]]></spgid>" +
+                "<user_code><![CDATA[159300520]]></user_code>" +
+                "<receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel>" +
+                "<consume_id><![CDATA[0159300520]]></consume_id></order></data>";
+
         Map<String, String> params = new HashMap<>();
         params.put("call_time", "1348217629");
 
@@ -223,11 +288,19 @@ public class DDSendMsgApiTest extends FunctionalTest {
     @Test
     public void 测试发送短信_券已发送短信三次() {
         coupon.expireAt = DateHelper.afterDays(new Date(), 1);
+        coupon.smsSentCount = 3;
         coupon.save();
 
         Map<String, String> params = new HashMap<>();
         params.put("call_time", "1348217629");
-        String data = "<data><order><order_id><![CDATA[12345678]]></order_id><ddgid><![CDATA[" + deployRelation.linkId + "]]></ddgid><spgid><![CDATA[" + deployRelation.linkId + "]]></spgid><user_code><![CDATA[159300520]]></user_code><receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel><consume_id><![CDATA[0159300520]]></consume_id></order></data>";
+        String data = "<data><order>" +
+                "<order_id><![CDATA[12345678]]></order_id>" +
+                "<ddgid><![CDATA[" + product.goodsLinkId + "]]></ddgid>" +
+                "<spgid><![CDATA[" + product.goodsLinkId + "]]></spgid>" +
+                "<user_code><![CDATA[159300520]]></user_code>" +
+                "<receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel>" +
+                "<consume_id><![CDATA[0159300520]]></consume_id></order></data>";
+
         String sign = DDGroupBuyUtil.sign("send_msg", data, "1348217629");
         params.put("data", data);
         params.put("sign", sign);
@@ -239,6 +312,6 @@ public class DDSendMsgApiTest extends FunctionalTest {
         DDErrorCode errorCode = (DDErrorCode) renderArgs("errorCode");
         assertEquals(DDErrorCode.MESSAGE_SEND_FAILED, errorCode);
         String errorDesc = (String)renderArgs("errorDesc");
-        assertEquals("当当短信超过三次！", errorDesc);
+        assertEquals("重发短信超过三次！", errorDesc);
     }
 }

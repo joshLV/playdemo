@@ -1,6 +1,7 @@
 package functional;
 
 import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.AccountCreditable;
 import models.accounts.AccountType;
@@ -35,7 +36,12 @@ public class DDOrderApiTest extends FunctionalTest {
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
-        product = FactoryBoy.create(ResalerProduct.class);
+        product = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
+            @Override
+            public void build(ResalerProduct target) {
+                target.partner = OuterOrderPartner.DD;
+            }
+        });
     }
 
     @Test

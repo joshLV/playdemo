@@ -33,8 +33,7 @@ public class JDGroupBuyUtilTest extends UnitTest {
                 "    <Data>" + JDGroupBuyUtil.encryptMessage(messageXml) + "</Data>\n" +
                 "</Response>";
 
-        Document document = XML.getDocument(encryptedResponse);
-        JingdongMessage message = JDGroupBuyUtil.parseMessage(document);
+        JingdongMessage message = JDGroupBuyUtil.parseMessage(encryptedResponse);
         assertTrue(message.encrypt);
         assertNotNull(message.message);
         assertNotNull(XPath.selectNode("Cities", message.message));
@@ -60,8 +59,7 @@ public class JDGroupBuyUtilTest extends UnitTest {
                 "    <Data>" + messageXml + "</Data>\n" +
                 "</Response>";
 
-        Document document = XML.getDocument(plainResponse);
-        JingdongMessage message = JDGroupBuyUtil.parseMessage(document);
+        JingdongMessage message = JDGroupBuyUtil.parseMessage(plainResponse);
         assertFalse(message.encrypt);
         assertNotNull(message.message);
         assertNotNull(XPath.selectNode("Cities", message.message));
