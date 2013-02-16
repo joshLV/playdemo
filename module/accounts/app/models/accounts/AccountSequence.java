@@ -223,8 +223,8 @@ public class AccountSequence extends Model {
 
     private static BigDecimal getRefundAmountTo(Account account, Date toDate) {
         BigDecimal amount = (BigDecimal) find("select sum(changeAmount) from AccountSequence where" +
-                " account=? and tradeType<>? and settlementStatus=? and createdAt<?",
-                account, TradeType.WITHDRAW, SettlementStatus.UNCLEARED, toDate).first();
+                " account=? and tradeType<>? and sequenceFlag=? and settlementStatus=? and createdAt<?",
+                account, TradeType.WITHDRAW, AccountSequenceFlag.NOSTRO, SettlementStatus.UNCLEARED, toDate).first();
         return amount != null ? amount : BigDecimal.ZERO;
     }
 
