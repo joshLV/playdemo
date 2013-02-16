@@ -400,7 +400,7 @@ baseUrl=play.Play.configuration.getProperty("uri.operate_business");
         </a>
     </td>
     <td style="text-align:right;">
-        ￥${(report?.netSalesAmount?:0)}
+        ￥${(report?.netSalesAmount?:0).format('#0.00')}
     </td>
     #{if hasSeeReportProfitRight == true}
         <td style="text-align:right;">${(report?.grossMargin?:0).format('#0.00')}%</td>
