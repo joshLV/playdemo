@@ -1469,9 +1469,9 @@ public class ECoupon extends Model {
     @Transient
     public String getOrderSMSMessage() {
 
-        if (!this.canSendSMSByOperate()) {
+        if (!this.canSendSMSByOperate()) {  //检查是否可发短信
             Logger.info("ECoupon(id:" + id + ") stats is not UNCONSUMED, but was " + status + ", cann't send SMS.");
-            return null;  //只有未支付时才能发短信
+            return null;
         }
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(Order.COUPON_EXPIRE_FORMAT);

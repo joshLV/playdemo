@@ -8,6 +8,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -45,6 +46,10 @@ public class Account extends Model {
 
     @Transient
     public String info;
+
+    @Version
+    @Column(name = "lock_version")
+    public int lockVersion;
 
     public static final long PLATFORM_INCOMING = 1L;   //券平台收款账户
     public static final long PLATFORM_COMMISSION = 2L;   //券平台佣金账户

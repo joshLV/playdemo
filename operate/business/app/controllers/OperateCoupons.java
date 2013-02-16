@@ -264,6 +264,7 @@ public class OperateCoupons extends Controller {
         coupon.appointmentDate = date;
         coupon.appointmentRemark = remark;
         coupon.save();
+        ECouponHistoryMessage.with(coupon).operator(OperateRbac.currentUser().userName).remark("记录预约").sendToMQ();
         coupon.sendOrderSMS("发送预约短信");
         boolean success = true;
         render("OperateCoupons/showAppointment.html", coupon, success);
