@@ -38,6 +38,7 @@ DELETE  /supplier_contract_images/{id}                     SuppliersContracts.de
 GET     /supplier_contract/{imageId}                       SuppliersContracts.updateDescription
 
 POST    /supplier_contract_images/{supplierId}/{contractId}         SuppliersUploadFiles.uploadImages
+GET    /supplier_contract_images/{supplierId}/{contractId}         SuppliersUploadFiles.uploadImages
 
 GET     /contract/p/{firstDir}/{secondDir}/{imageName}    SupplierContractImages.showImage
 GET     /contract/o/{path1}/{path2}                       SupplierContractImages.showOriginalImage

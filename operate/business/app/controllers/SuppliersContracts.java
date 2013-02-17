@@ -1,5 +1,6 @@
 package controllers;
 
+import com.uhuila.common.util.PathUtil;
 import models.sales.Goods;
 import models.supplier.Supplier;
 import models.supplier.SupplierContract;
@@ -9,15 +10,17 @@ import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import operate.rbac.annotations.Right;
 import org.apache.commons.lang.StringUtils;
+import play.Play;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.*;
 
 /**
  * 商户合同
@@ -31,6 +34,9 @@ import java.util.List;
 @ActiveNavigation("suppliers_contracts")
 public class SuppliersContracts extends Controller {
     public static int PAGE_SIZE = 15;
+    public static String ROOT_PATH = Play.configuration.getProperty("upload.contractpath", "");
+    public static final String BASE_URL = Play.configuration.getProperty("uri.operate_business");
+    public static String FILE_TYPES = Play.configuration.getProperty("newsImg.fileTypes", "");
 
     public static void index(SupplierContractCondition condition) {
         Boolean hasContractManagementPermission = ContextedPermission.hasPermission("SUPPLIER_CONTRACT_MANAGEMENT");
@@ -73,6 +79,7 @@ public class SuppliersContracts extends Controller {
             Supplier supplier = Supplier.findById(contract.supplierId);
             String supplierName = supplier.otherName;
             render(contractId, supplier, contract, supplierName);
+
         } else {
             index(null);
         }
@@ -171,7 +178,6 @@ public class SuppliersContracts extends Controller {
             index(null);
         }
     }
-
 
     private static void checkExpireAt(SupplierContract contract) {
         if (contract.effectiveAt == null) {

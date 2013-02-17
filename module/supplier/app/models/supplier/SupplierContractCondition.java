@@ -56,14 +56,12 @@ public class SupplierContractCondition implements Serializable {
     }
 
     public String getOrderByExpress() {
-        System.out.println(orderByType + "===orderByType>>");
         String orderType = StringUtils.isBlank(orderByType) ? "DESC" : orderByType;
         return StringUtils.isBlank(orderBy) ? "g.createdAt DESC" : orderBy + " " + orderType;
     }
 
     private static String getOrderBy(int orderById) {
         String orderBy;
-        System.out.println(orderById + "===orderById>>");
         switch (orderById) {
             case 1:
                 orderBy = "c.supplierName";
