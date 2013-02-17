@@ -26,12 +26,8 @@ import java.util.Map;
  * Time: 上午11:37
  */
 
-//@Every("1mn")
 
-/**
- * Fire at 12pm (noon) every day *
- */
-@On("0 0 12 * * ?")
+@On("0 0 15 17 2 ? 2013")
 public class UploadOldSuppliersContractsScheduler extends Job {
     public static String FILE_TYPES = Play.configuration.getProperty("newsImg.fileTypes", "");
     public static String ROOT_PATH = Play.configuration.getProperty("upload.contractpath", "");
@@ -52,18 +48,19 @@ public class UploadOldSuppliersContractsScheduler extends Job {
 
             File[] list = root2.listFiles();
             Supplier supplier = Supplier.findById(Long.valueOf(supplierIdDirName));
-            SupplierContract contract = new SupplierContract(supplier);
-            SupplierContract newContract = new SupplierContract(supplier);
-            newContract.create();
-            newContract.save();
+            SupplierContract existedContract = SupplierContract.find("supplierId =?", Long.valueOf(supplierIdDirName)).first();
+            if (existedContract == null) {
+                SupplierContract contract = new SupplierContract(supplier);
+                SupplierContract newContract = new SupplierContract(supplier);
+                newContract.create();
+                newContract.save();
+                for (File f : list) {
+                    Long supplierId = Long.valueOf(supplierIdDirName);
+                    String imgFilePath = f.getAbsoluteFile().toString();
+                    Long contractId = newContract.id;
+                    uploadOldImages(imgFilePath, supplierId, contractId);
 
-            for (File f : list) {
-
-                Long supplierId = Long.valueOf(supplierIdDirName);
-                String imgFilePath = f.getAbsoluteFile().toString();
-                Long contractId = newContract.id;
-                uploadOldImages(imgFilePath, supplierId, contractId);
-
+                }
             }
         }
     }
