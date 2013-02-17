@@ -4,7 +4,7 @@
     *{ 合作方团购ID [必填] }*
     <VenderTeamId>${venderTeamId}</VenderTeamId>
     *{ 团购开始时间 unix时间戳 解析后为 yyyy-MM-dd hh:mm:ss[必填] }*
-    <BeginTime>${beginTime.getTime()/1000}</BeginTime>
+    <BeginTime>${new java.text.SimpleDateFormat('yyyy-MM-dd HH:mm:ss').parse(beginTime).getTime()/1000}</BeginTime>
     *{ 团购结束时间 unix时间戳 解析后为 yyyy-MM-dd hh:mm:ss[必填] }*
-    <EndTime>${endTime.getTime()/1000}</EndTime>
+    <EndTime>${new java.text.SimpleDateFormat('yyyy-MM-dd HH:mm:ss').parse(endTime).getTime()/1000}</EndTime>
 </Message>
