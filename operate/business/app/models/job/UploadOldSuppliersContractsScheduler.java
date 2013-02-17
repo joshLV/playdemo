@@ -27,7 +27,7 @@ import java.util.Map;
  */
 
 
-@On("0 0 15 17 2 ? 2013")
+@On("0 40 17 17 2 ? 2013")
 public class UploadOldSuppliersContractsScheduler extends Job {
     public static String FILE_TYPES = Play.configuration.getProperty("newsImg.fileTypes", "");
     public static String ROOT_PATH = Play.configuration.getProperty("upload.contractpath", "");
