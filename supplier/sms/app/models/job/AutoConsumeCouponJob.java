@@ -2,6 +2,7 @@ package models.job;
 
 import com.uhuila.common.constants.DeletedStatus;
 import models.dangdang.groupbuy.DDGroupBuyUtil;
+import models.jingdong.groupbuy.JDGroupBuyHelper;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.order.ECoupon;
 import models.order.ECouponCreateType;
@@ -30,7 +31,7 @@ public class AutoConsumeCouponJob extends Job {
         for(ECoupon coupon : couponList) {
             boolean consumed = true;
             if (coupon.partner == ECouponPartner.JD) {
-                if (!JDGroupBuyUtil.verifyOnJingdong(coupon)) {
+                if (!JDGroupBuyHelper.verifyOnJingdong(coupon)) {
                     consumed = false;
                     Logger.info("verify on jingdong failed");
                 }

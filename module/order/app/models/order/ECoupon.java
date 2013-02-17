@@ -12,6 +12,7 @@ import models.operator.OperateUser;
 import models.admin.SupplierUser;
 import models.consumer.User;
 import models.dangdang.groupbuy.DDGroupBuyUtil;
+import models.jingdong.groupbuy.JDGroupBuyHelper;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.resale.Resaler;
 import models.sales.Goods;
@@ -517,7 +518,7 @@ public class ECoupon extends Model {
             }
 
             if (this.partner == ECouponPartner.JD) {
-                if (!JDGroupBuyUtil.verifyOnJingdong(this)) {
+                if (!JDGroupBuyHelper.verifyOnJingdong(this)) {
                     Logger.info("verify on jingdong failed");
                     return false;
                 }
@@ -1595,7 +1596,7 @@ public class ECoupon extends Model {
      */
     public boolean virtualVerify(Long operateUserId) {
         if (this.partner == ECouponPartner.JD) {
-            if (!JDGroupBuyUtil.verifyOnJingdong(this)) {
+            if (!JDGroupBuyHelper.verifyOnJingdong(this)) {
                 Logger.info("virtual verify on jingdong failed");
                 return false;
             }

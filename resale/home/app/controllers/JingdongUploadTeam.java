@@ -1,44 +1,18 @@
 package controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.uhuila.common.util.DateUtil;
 import controllers.modules.resale.cas.SecureCAS;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
-import models.jingdong.groupbuy.JDRest;
-import models.jingdong.groupbuy.response.CommonUpdateResponse;
-import models.jingdong.groupbuy.response.IdNameResponse;
-import models.jingdong.groupbuy.response.UploadTeamResponse;
-import models.order.OuterOrderPartner;
 import models.resale.Resaler;
-import models.resale.ResalerFav;
-import models.sales.ChannelGoodsInfo;
-import models.sales.ChannelGoodsInfoStatus;
 import models.sales.Goods;
-import models.sales.GoodsDeployRelation;
-import models.sales.GoodsThirdSupport;
-import models.sales.Shop;
-import models.supplier.Supplier;
-import org.apache.commons.lang.StringUtils;
 import play.Logger;
-import play.libs.WS;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.With;
-import play.templates.Template;
-import play.templates.TemplateLoader;
-import util.ws.WebServiceRequest;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author likang
@@ -508,6 +482,7 @@ public class JingdongUploadTeam extends Controller {
      *
      * @param support
      */
+    /*
     private static void getGoodsSupportItems(GoodsThirdSupport support) {
         JsonElement jsonElement = new JsonParser().parse(support.goodsData);
         JsonObject jsonObject = jsonElement.getAsJsonObject();
@@ -526,6 +501,7 @@ public class JingdongUploadTeam extends Controller {
         renderArgs.put("areas", jsonObject.get("areas").getAsString());
         renderArgs.put("subGroupIds", jsonObject.get("subGroupIds").getAsString());
     }
+    */
 
     public static void showTest() {
         render();

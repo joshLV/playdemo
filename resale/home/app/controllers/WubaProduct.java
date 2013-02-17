@@ -1,38 +1,18 @@
 package controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import controllers.modules.resale.cas.SecureCAS;
-import models.order.OuterOrderPartner;
 import models.resale.Resaler;
-import models.resale.ResalerFav;
 import models.sales.ChannelGoodsInfo;
 import models.sales.ChannelGoodsInfoStatus;
 import models.sales.Goods;
-import models.sales.GoodsDeployRelation;
-import models.sales.GoodsThirdSupport;
-import models.sales.Shop;
-import models.supplier.Supplier;
-import models.wuba.AreaMapping;
 import models.wuba.WubaResponse;
 import models.wuba.WubaUtil;
-import org.apache.commons.lang.StringUtils;
 import play.cache.Cache;
 import play.mvc.Controller;
 import play.mvc.With;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author likang
@@ -444,6 +424,7 @@ public class WubaProduct extends Controller {
     }
 
     public static void delay(Long goodsId, String deadline) {
+        /*
         //deadline > endtime
         ResalerFav resalerFav = ResalerFav.findByGoodsId(SecureCAS.getResaler(), goodsId);
         if (resalerFav == null) {
@@ -462,9 +443,11 @@ public class WubaProduct extends Controller {
         }
 
         renderText(msg);
+        */
     }
 
     public static void getStatus(Long goodsId) {
+        /*
         GoodsDeployRelation relation = GoodsDeployRelation.getLast(goodsId, OuterOrderPartner.WB);
         ResalerFav resalerFav = ResalerFav.findByGoodsId(SecureCAS.getResaler(), goodsId);
 
@@ -512,10 +495,12 @@ public class WubaProduct extends Controller {
         resalerFav.save();
         // flash("message" + goodsId, "状态更新成功");
         redirect("/library?goodsId=" + goodsId);
+        */
     }
 
 
     public static void onsale(Long goodsId) {
+        /*
         GoodsDeployRelation relation = GoodsDeployRelation.getLast(goodsId, OuterOrderPartner.WB);
         ResalerFav resalerFav = ResalerFav.findByGoodsId(SecureCAS.getResaler(), goodsId);
 
@@ -535,10 +520,12 @@ public class WubaProduct extends Controller {
         resalerFav.save();
         // flash("message" + goodsId, "状态更新成功");
         redirect("/58-status/" + goodsId);
+        */
     }
 
 
     public static void offsale(Long goodsId) {
+        /*
         GoodsDeployRelation relation = GoodsDeployRelation.getLast(goodsId, OuterOrderPartner.WB);
         ResalerFav resalerFav = ResalerFav.findByGoodsId(SecureCAS.getResaler(), goodsId);
 
@@ -558,6 +545,7 @@ public class WubaProduct extends Controller {
         resalerFav.save();
         // flash("message" + goodsId, "状态更新成功");
         redirect("/58-status/" + goodsId);
+        */
     }
 
 
@@ -591,6 +579,7 @@ public class WubaProduct extends Controller {
      *
      * @param support
      */
+    /*
     private static void getGoodsSupportItems(GoodsThirdSupport support, Goods goods) {
         JsonElement jsonElement = new JsonParser().parse(support.goodsData);
         JsonObject jsonObject = jsonElement.getAsJsonObject();
@@ -729,4 +718,5 @@ public class WubaProduct extends Controller {
         renderArgs.put("goodsId", support.goods.id);
 
     }
+    */
 }

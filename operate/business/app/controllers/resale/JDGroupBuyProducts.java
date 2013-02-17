@@ -56,6 +56,7 @@ public class JDGroupBuyProducts extends Controller{
         }
         params.remove("body");
         params.put("venderTeamId", product.goodsLinkId);
+        params.put("shops", goods.getShopList());
 
         //提交请求
         JingdongMessage response = JDGroupBuyUtil.sendRequest("uploadTeam", params);
