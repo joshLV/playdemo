@@ -11,14 +11,19 @@ import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
 import play.mvc.Controller;
+import util.transaction.TransactionCallback;
+import util.transaction.TransactionRetryUtil;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author likang
@@ -38,7 +43,8 @@ public class TelephoneVerify extends Controller {
      * @param timestamp 时间戳，UTC时间1970年1月1日零点至今的秒数，允许5分钟的上下浮动
      * @param sign      请求签名，由 分配的app_key+timestamp 拼接后进行MD5编码组成
      */
-    public static void verify(String caller, String coupon, Long timestamp, String sign, BigDecimal value) {
+    public static void verify(final String caller, final String coupon, Long timestamp, String sign,
+                              BigDecimal value) {
         Logger.info("telephone verify start");
         Logger.info(new Gson().toJson(request.params.allSimple()));
         if (caller == null || caller.trim().equals("")) {
@@ -70,7 +76,7 @@ public class TelephoneVerify extends Controller {
         }
 
         //查找店员
-        SupplierUser supplierUser = SupplierUser.find("byLoginName", caller).first();
+        final SupplierUser supplierUser = SupplierUser.find("byLoginName", caller).first();
         if (supplierUser == null || supplierUser.shop == null
                 || supplierUser.supplier == null
                 || supplierUser.supplier.deleted == DeletedStatus.DELETED
@@ -80,7 +86,7 @@ public class TelephoneVerify extends Controller {
         }
 
         //开始验证
-        ECoupon ecoupon = missTitleFind(coupon);
+        final ECoupon ecoupon = missTitleFind(coupon);
 
         if (ecoupon == null) {
             Logger.info("telephone verify failed: coupon not found");
@@ -178,30 +184,41 @@ public class TelephoneVerify extends Controller {
                 }
             }
             */
+            String resultCode = TransactionRetryUtil.run(new TransactionCallback<String>() {
+                @Override
+                public String doInTransaction() {
+                    return doVerify(caller, supplierUser, ecoupon);
+                }
+            });
 
-            if (!ecoupon.consumeAndPayCommission(supplierUser.shop.id, supplierUser, VerifyCouponType.CLERK_MESSAGE)){
-                Logger.info("telephone verify failed: coupon has been refunded");
-                renderText("11");//对不起，该券无法消费
-                return;
-            }
-
-            String eCouponNumber = ecoupon.getMaskedEcouponSn();
-            eCouponNumber = eCouponNumber.substring(eCouponNumber.lastIndexOf("*") + 1);
-
-            String dateTime = DateUtil.getNowTime();
-
-            // 发给消费者
-            if (Play.mode.isProd()) {
-                SMSUtil.send("您尾号" + eCouponNumber + "的券号于" + dateTime
-                        + "已成功消费，使用门店：" + supplierUser.shop.name + "。如有疑问请致电：4006262166", ecoupon.orderItems.phone, ecoupon.replyCode);
-            }
-            ecoupon.verifyType = VerifyCouponType.TELEPHONE;
-            ecoupon.verifyTel = caller;
-            ecoupon.save();
-
-            Logger.info("telephone verify success");
-            renderText("0");//消费成功，价值" + ecoupon.faceValue + "元
+            renderText(resultCode);
         }
+    }
+
+    private static String doVerify(String caller, SupplierUser supplierUser, ECoupon ecoupon) {
+        String resultCode;
+        if (!ecoupon.consumeAndPayCommission(supplierUser.shop.id, supplierUser, VerifyCouponType.CLERK_MESSAGE)){
+            Logger.info("telephone verify failed: coupon has been refunded");
+            resultCode = "11";//对不起，该券无法消费
+        }
+
+        String eCouponNumber = ecoupon.getMaskedEcouponSn();
+        eCouponNumber = eCouponNumber.substring(eCouponNumber.lastIndexOf("*") + 1);
+
+        String dateTime = DateUtil.getNowTime();
+
+        // 发给消费者
+        if (Play.mode.isProd()) {
+            SMSUtil.send("您尾号" + eCouponNumber + "的券号于" + dateTime
+                    + "已成功消费，使用门店：" + supplierUser.shop.name + "。如有疑问请致电：4006262166", ecoupon.orderItems.phone, ecoupon.replyCode);
+        }
+        ecoupon.verifyType = VerifyCouponType.TELEPHONE;
+        ecoupon.verifyTel = caller;
+        ecoupon.save();
+
+        Logger.info("telephone verify success");
+        resultCode = "0";//消费成功，价值" + ecoupon.faceValue + "元
+        return resultCode;
     }
 
     /**

@@ -29,9 +29,9 @@ import play.mvc.Before;
 import play.mvc.Controller;
 import play.templates.Template;
 import play.templates.TemplateLoader;
+import util.transaction.TransactionCallback;
+import util.transaction.TransactionRetryUtil;
 
-import javax.persistence.LockModeType;
-import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -117,7 +117,7 @@ public class JDGroupBuy extends Controller {
                 finish(205, "there is another parallel request");
             }
         }
-
+        /*
         //申请行锁后处理订单
         try {
             // 尝试申请一个行锁
@@ -126,6 +126,7 @@ public class JDGroupBuy extends Controller {
             //没拿到锁 放弃
             finish(206, "there is another parallel request");
         }
+        */
         //生成一百券订单
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
             Order ybqOrder = outerOrder.ybqOrder;
@@ -171,7 +172,7 @@ public class JDGroupBuy extends Controller {
             params.put("goods", goods);
             renderArgs.put("data", template.render(params));
             Logger.info("jd send order success: %s", outerOrder.ybqOrder.getId());
-            finish(200, "success");
+            recordResultMessage(200, "success");
         } else {
             finish(212, "the order has been processed");
         }
@@ -352,6 +353,11 @@ public class JDGroupBuy extends Controller {
         renderArgs.put("resultCode", resultCode);
         renderArgs.put("resultMessage", resultMessage);
         renderTemplate("jingdong/groupbuy/response/main.xml");
+    }
+
+    private static void recordResultMessage(int resultCode, String resultMessage) {
+        renderArgs.put("resultCode", resultCode);
+        renderArgs.put("resultMessage", resultMessage);
     }
 
     private static boolean checkPhone(String phone) {
