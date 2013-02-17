@@ -39,13 +39,11 @@ public class JDGroupBuyHelper {
             return false;
         }
 
-        String url = GATEWAY_URL + "/platform/normal/verifyCode.action";
-        String templatePath = "jingdong/groupbuy/request/verifyCoupon.xml";
         Map<String, Object> params = new HashMap<>();
         params.put("outerOrder", outerOrder);
         params.put("coupon", coupon);
 
-        JingdongMessage response = JDGroupBuyUtil.sendRequest("verifyCoupon", url, templatePath, params);
+        JingdongMessage response = JDGroupBuyUtil.sendRequest("verifyCode", params);
         return response.isOk();
     }
 
@@ -54,12 +52,10 @@ public class JDGroupBuyHelper {
      * @param categoryId 父类别ID， 0代表查询根目录
      */
     public static List<Node> queryCategory(Long categoryId) {
-        String url = GATEWAY_URL + "/platform/normal/queryCategoryList.action";
-        String templatePath = "jingdong/groupbuy/request/queryCategory.xml";
         Map<String, Object> params = new HashMap<>();
         params.put("categoryId", categoryId);
-        JingdongMessage response = JDGroupBuyUtil.sendRequest("queryCategory", url, templatePath, params);
-        return response.selectNodes("Categories/Category");
+        JingdongMessage response = JDGroupBuyUtil.sendRequest("queryCategoryList", params);
+        return response.selectNodes("./Categories/Category");
     }
 
     public static List<Node> cacheCategories(final Long categoryId) {
@@ -78,10 +74,8 @@ public class JDGroupBuyHelper {
      * 查询上传商品时可选城市.
      */
     public static List<Node> queryCity() {
-        String url = GATEWAY_URL + "/platform/normal/queryCityList.action";
-        String templatePath = "jingdong/groupbuy/request/queryCity.xml";
-        JingdongMessage response = JDGroupBuyUtil.sendRequest("queryCityList", url, templatePath, null);
-        return response.selectNodes("Cities/City");
+        JingdongMessage response = JDGroupBuyUtil.sendRequest("queryCityList", null);
+        return response.selectNodes("./Cities/City");
     }
 
     public static List<Node> cacheCities() {
@@ -109,8 +103,8 @@ public class JDGroupBuyHelper {
         Map<String, Object> params = new HashMap<>();
         params.put("cityId", cityId);
 
-        JingdongMessage response = JDGroupBuyUtil.sendRequest("queryDistrict", url, templatePath, params);
-        return response.selectNodes("Districts/District");
+        JingdongMessage response = JDGroupBuyUtil.sendRequest("queryDistrictList", params);
+        return response.selectNodes("./Districts/District");
     }
 
     public static List<Node> cacheDistricts(final Long cityId) {
@@ -133,13 +127,11 @@ public class JDGroupBuyHelper {
      * @return 商圈列表
      */
     public static List<Node> queryArea(Long districtId) {
-        String url = GATEWAY_URL + "/platform/normal/queryAreaList.action";
-        String templatePath = "jingdong/groupbuy/request/queryArea.xml";
         Map<String, Object> params = new HashMap<>();
         params.put("districtId", districtId);
 
-        JingdongMessage response = JDGroupBuyUtil.sendRequest("queryArea", url, templatePath, params);
-        return response.selectNodes("Areas/Area");
+        JingdongMessage response = JDGroupBuyUtil.sendRequest("queryAreaList", params);
+        return response.selectNodes("./Areas/Area");
     }
 
     public static List<Node> cacheAreas(final Long districtId) {

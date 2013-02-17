@@ -48,8 +48,8 @@ public class DDGroupBuyUtil {
         if (!response.isOk() || response.data == null) {
             return null;
         }
-        for (Node node : XPath.selectNodes("/data/row", response.data)) {
-            if (XPath.selectText("/row/spgid", node).trim().equals(String.valueOf(linkId))) {
+        for (Node node : response.selectNodes("./row")) {
+            if (XPath.selectText("./spgid", node).trim().equals(String.valueOf(linkId))) {
                 return node;
             }
         }
@@ -128,7 +128,7 @@ public class DDGroupBuyUtil {
             return -1;
         }
 
-        return Integer.parseInt(response.selectTextTrim("state"));
+        return Integer.parseInt(response.selectTextTrim("./state"));
     }
 
     /**

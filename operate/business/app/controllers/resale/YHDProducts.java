@@ -101,9 +101,9 @@ public class YHDProducts extends Controller {
             if (i != 0) {
                 jsonString.append(",");
             }
-            boolean isParent = "0".equals(XPath.selectText("categoryIsLeaf", category).trim());
-            jsonString.append("{id:'").append(XPath.selectText("categoryId", category).trim())
-                    .append("',name:'").append(XPath.selectText("categoryName", category).trim())
+            boolean isParent = "0".equals(XPath.selectText("./categoryIsLeaf", category).trim());
+            jsonString.append("{id:'").append(XPath.selectText("./categoryId", category).trim())
+                    .append("',name:'").append(XPath.selectText("./categoryName", category).trim())
                     .append("',isParent:").append(isParent);
             if (isParent) {
                 jsonString.append(",nocheck:true");
@@ -130,9 +130,9 @@ public class YHDProducts extends Controller {
             if (i != 0) {
                 jsonString.append(",");
             }
-            boolean isParent = "0".equals(XPath.selectText("categoryIsLeaf", category));
-            jsonString.append("{id:'").append(XPath.selectText("merchantCategoryId", category))
-                    .append("',name:'").append(XPath.selectText("categoryName", category))
+            boolean isParent = "0".equals(XPath.selectText("./categoryIsLeaf", category));
+            jsonString.append("{id:'").append(XPath.selectText("./merchantCategoryId", category))
+                    .append("',name:'").append(XPath.selectText("./categoryName", category))
                     .append("',isParent:").append(isParent);
             if (isParent) {
                 jsonString.append(",nocheck:true");

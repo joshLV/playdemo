@@ -64,7 +64,7 @@ public class DDGroupBuyProducts extends Controller {
             //查询当当的商品ID
             Node node = DDGroupBuyUtil.getJustUploadedTeam(product.goodsLinkId);
             if (node != null) {
-                product.partnerProductId = Long.parseLong(XPath.selectText("/row/ddgid", node).trim());
+                product.partnerProductId = Long.parseLong(XPath.selectText("./ddgid", node).trim());
                 product.url = PRODUCT_URL + product.partnerProductId;
                 product.save();
             }

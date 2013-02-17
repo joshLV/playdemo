@@ -8,9 +8,7 @@ import models.jingdong.groupbuy.response.VerifyCouponResponse;
 import models.order.ECoupon;
 import models.order.OuterOrder;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 import play.Logger;
 import play.Play;
 import play.exceptions.UnexpectedException;
@@ -23,9 +21,6 @@ import util.ws.WebServiceRequest;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -281,27 +276,30 @@ public class JDGroupBuyUtil {
     /**
      * 向京东发起请求.
      *
-     * @param tag           请求标识，一般使用接口名称
-     * @param url           接口URL
-     * @param templatePath  使用的模板地址
+     * 请保证 action 为接口的URL中的标识
+     * 同时在 jingdong/groupbuy/request 包下又同名的xml模板文件
+     *
+     * @param action        请求标识，请使用接口URL中的名称
      * @param params        模板参数
      * @param keywords      关键词
      * @return              解析后的京东响应消息
      */
-    public static JingdongMessage sendRequest(String tag, String url, String templatePath, Map<String, Object> params,
-                                              String ... keywords) {
+    public static JingdongMessage sendRequest(String action, Map<String, Object> params, String ... keywords) {
+        String url = GATEWAY_URL + "/platform/normal/" + action + ".action";
+        String templatePath = "jingdong/groupbuy/request/" + action + ".xml";
+
         Template template = TemplateLoader.load(templatePath);
         String data = (params != null) ? template.render(params) : template.render();
 
         String restRequest = JDGroupBuyUtil.makeRequestRest(data);
-        Logger.info("jingdong request %s:\n%s", tag, restRequest);
+        Logger.info("jingdong request %s:\n%s", action, restRequest);
 
-        WebServiceRequest request = WebServiceRequest.url(url).type("jingdong."+tag).requestBody(restRequest);
+        WebServiceRequest request = WebServiceRequest.url(url).type("jingdong."+action).requestBody(restRequest);
         for (String keyword : keywords) {
             request = request.addKeyword(keyword);
         }
         String response = request.postString();
-        Logger.info("jingdong response %s:\n%s", tag, response);
+        Logger.info("jingdong response %s:\n%s", action, response);
         return parseMessage(response);
     }
 

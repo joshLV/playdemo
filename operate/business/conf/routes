@@ -61,6 +61,7 @@ GET     /resaler-products/jd/upload/{goodsId}           resale.JDGroupBuyProduct
 POST    /resaler-products/jd/upload                     resale.JDGroupBuyProducts.upload
 GET     /resaler-products/jd/products/{goodsId}         resale.JDGroupBuyProducts.showProducts
 GET     /resaler-products/jd/edit/{productId}           resale.JDGroupBuyProducts.showEdit
+POST    /resaler-products/jd/edit                       resale.JDGroupBuyProducts.edit
 *       /jd-ztree/city                                  resale.JDGroupBuyProducts.city
 *       /jd-ztree/group                                 resale.JDGroupBuyProducts.group
 

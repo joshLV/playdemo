@@ -74,7 +74,7 @@ public class TaobaoProducts extends Controller{
         addRequest.setCid(cid);//分类类别：餐饮
         //类别：品牌：城市
         addRequest.setProps(props);
-        addRequest.setInputStr(faceValue.setScale(0).toString()); //面值value
+        addRequest.setInputStr(faceValue.toString()); //面值value
         addRequest.setInputPids("5392163");//面值key
         addRequest.setApproveStatus(approveStatus);//初始为下架的，在淘宝仓库中
         addRequest.setOuterId(String.valueOf(product.goodsLinkId));

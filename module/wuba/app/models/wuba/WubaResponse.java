@@ -7,13 +7,13 @@ import com.google.gson.JsonElement;
  *         Date: 13-1-23
  */
 public class WubaResponse {
-    public String status;
+    public String status = "10000";
     public String msg;
     public String code;
     public JsonElement data;
 
     public boolean isOk() {
-        return status != null && "10000".equals(status);
+        return "10000".equals(status);
     }
 
     @Override

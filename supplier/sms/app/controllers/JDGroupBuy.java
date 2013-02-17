@@ -84,15 +84,15 @@ public class JDGroupBuy extends Controller {
         if (count <= 0) {
             finish(202, "the buy number must be a positive one");
         }
-        BigDecimal teamPrice = new BigDecimal(message.selectTextTrim("TeamPrice")).divide(new BigDecimal("100"));
-        BigDecimal origin = new BigDecimal(message.selectTextTrim("Origin")).divide(new BigDecimal("100"));
+        BigDecimal teamPrice = new BigDecimal(message.selectTextTrim("./TeamPrice")).divide(new BigDecimal("100"));
+        BigDecimal origin = new BigDecimal(message.selectTextTrim("./Origin")).divide(new BigDecimal("100"));
 
         //检查订单总额是否匹配
         if (teamPrice.multiply(new BigDecimal(count)).compareTo(origin) != 0) {
             finish(203, "the total amount does not match the team price and count");
         }
 
-        String mobile = message.selectTextTrim("Mobile");
+        String mobile = message.selectTextTrim("./Mobile");
         //检查手机号
         if (!checkPhone(mobile)) {
             finish(204, "invalid mobile: " + mobile);
@@ -159,7 +159,7 @@ public class JDGroupBuy extends Controller {
         }
 
         if (outerOrder.status == OuterOrderStatus.ORDER_SYNCED){
-            String jdTeamId = message.selectTextTrim("JdTeamId");
+            String jdTeamId = message.selectTextTrim("./JdTeamId");
 
             Template template = TemplateLoader.load("jingdong/groupbuy/response/sendOrder.xml");
             Goods goods = ResalerProduct.getGoods(venderTeamId, OuterOrderPartner.JD);

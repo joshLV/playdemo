@@ -69,13 +69,14 @@ public class ResalerProduct extends Model {
         this.createdAt = new Date();
         this.updatedAt = new Date();
         this.partnerProductId = 0L;
+        this.status = ResalerProductStatus.STAGING;
     }
 
     public static ResalerProduct generate(OuterOrderPartner partner, Goods goods) {
-        ResalerProduct product = new ResalerProduct();
+        ResalerProduct product = new ResalerProduct().save();
         product.partner = partner;
         product.goods = goods;
-        product.status = ResalerProductStatus.STAGING;
+        product.goodsLinkId = product.id + 20000;
         return product.save();
     }
 

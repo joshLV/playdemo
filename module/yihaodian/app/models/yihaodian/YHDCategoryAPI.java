@@ -27,7 +27,7 @@ public class YHDCategoryAPI {
 
         YHDResponse response = YHDUtil.sendRequest(params, "yhd.category.products.get", "categoryInfoList");
         if (response.isOk()) {
-            return XPath.selectNodes("categoryInfo", response.data);
+            return response.selectNodes("./categoryInfo");
         }
         return new ArrayList<>();
     }
@@ -54,7 +54,7 @@ public class YHDCategoryAPI {
 
         YHDResponse response = YHDUtil.sendRequest(params, "yhd.category.merchant.products.get", "merchantCategoryInfoList");
         if (response.isOk()) {
-            return XPath.selectNodes("merchantCategoryInfo", response.data);
+            return response.selectNodes("./merchantCategoryInfo");
         }
         return new ArrayList<>();
     }
@@ -80,7 +80,7 @@ public class YHDCategoryAPI {
 
         YHDResponse response = YHDUtil.sendRequest(params, "yhd.category.brands.get", "brandInfoList");
         if (response.isOk()) {
-            return XPath.selectNodes("brandInfo", response.data);
+            return response.selectNodes("./brandInfo");
         }
         return new ArrayList<>();
     }

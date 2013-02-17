@@ -44,6 +44,7 @@ public class WubaProduct extends Controller {
     public static final String THIRD_URL = "http://t.58.com/";
 
     public static void prepare(long goodsId) {
+        /*
         Object categoryArr = getWUBACategory();
         models.sales.Goods goods = models.sales.Goods.findOnSale(goodsId);
         getGoodsItems(goods);
@@ -69,6 +70,7 @@ public class WubaProduct extends Controller {
         renderArgs.put("editShopList", new ArrayList<>());
         Supplier supplier = Supplier.findById(goods.supplierId);
         render(supplier, shopList, jsonArray, categoryArr);
+        */
     }
 
     /**
@@ -87,6 +89,7 @@ public class WubaProduct extends Controller {
     }
 
     public static void edit(long goodsId) {
+        /*
         Resaler resaler = SecureCAS.getResaler();
         if (!Resaler.WUBA_LOGIN_NAME.equals(resaler.loginName)) {
             error("there is nothing you can do");
@@ -102,6 +105,7 @@ public class WubaProduct extends Controller {
         }
         renderArgs.put("isEdit", "edit");
         render("WubaProduct/prepare.html", categoryArr);
+        */
     }
 
     /**
@@ -111,6 +115,7 @@ public class WubaProduct extends Controller {
                               Integer[] cityIds, Integer[] travelCityIds, String startTime, String endTime, String deadline,
                               int successNum, int saleMaxNum, int buyerMaxNum, int buyerMinNum,
                               BigDecimal prodPrice, BigDecimal groupPrice, int isRefund, int shopSize, int prodTypeId) {
+        /*
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
 
         if (goods == null) {
@@ -218,6 +223,7 @@ public class WubaProduct extends Controller {
             redirect("/58-status/" + goodsId);
         }
         render("WubaProduct/result.html", response);
+        */
     }
 
     /**
@@ -227,6 +233,7 @@ public class WubaProduct extends Controller {
                               Integer[] cityIds, Integer[] travelCityIds, String startTime, String endTime, String deadline,
                               int successNum, int saleMaxNum, int buyerMaxNum, int buyerMinNum,
                               BigDecimal prodPrice, BigDecimal groupPrice, int isRefund, int shopSize, int prodTypeId) {
+        /*
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
 
         if (goods == null) {
@@ -335,12 +342,14 @@ public class WubaProduct extends Controller {
             redirect("/58-status/" + goodsId);
         }
         render("WubaProduct/result.html", response, goodsId);
+        */
     }
 
     /**
      * 更新商家门店信息
      */
     public static void updateShop(long goodsId, int shopSize) {
+        /*
 
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
 
@@ -402,6 +411,7 @@ public class WubaProduct extends Controller {
             redirect("/58-status/" + goodsId);
         }
         render("WubaProduct/result.html", response, goodsId);
+        */
 
     }
 

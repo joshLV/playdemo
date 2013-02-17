@@ -58,6 +58,7 @@ public class JingdongUploadTeam extends Controller {
     }
 
     public static void prepare(Long goodsId) {
+        /*
         Goods goods = Goods.findById(goodsId);
 
         GoodsThirdSupport support = GoodsThirdSupport.getSupportGoods(goods, OuterOrderPartner.JD);
@@ -114,6 +115,7 @@ public class JingdongUploadTeam extends Controller {
         }
 
         render(supplier, city, categories, subCategories, areaNames, shops);
+        */
     }
 
     /**
@@ -122,6 +124,7 @@ public class JingdongUploadTeam extends Controller {
      * @param goodsId
      */
     public static void edit(Long goodsId) {
+        /*
         Resaler resaler = SecureCAS.getResaler();
 
         Goods goods = Goods.findOnSale(goodsId);
@@ -136,6 +139,7 @@ public class JingdongUploadTeam extends Controller {
         ResalerFav fav = ResalerFav.findByGoodsId(resaler, goods.id);
 
         render(goods, fav);
+        */
     }
 
     /**
@@ -145,6 +149,7 @@ public class JingdongUploadTeam extends Controller {
      * @param title
      */
     public static void updateTitle(Long id, String title) {
+        /*
         ResalerFav fav = ResalerFav.findById(id);
 
         GoodsThirdSupport support = GoodsThirdSupport.getSupportGoods(fav.goods, OuterOrderPartner.JD);
@@ -176,6 +181,7 @@ public class JingdongUploadTeam extends Controller {
             Logger.info("update jingdong fav:" + id + " title:" + title + " success.");
         }
         render("JingdongUploadTeam/result.html", uploadTeamRest);
+        */
     }
 
     /**
@@ -185,6 +191,7 @@ public class JingdongUploadTeam extends Controller {
      * @param detail
      */
     public static void updateDetail(Long id, String detail) {
+        /*
         ResalerFav fav = ResalerFav.findById(id);
 
         GoodsThirdSupport support = GoodsThirdSupport.getSupportGoods(fav.goods, OuterOrderPartner.JD);
@@ -216,12 +223,14 @@ public class JingdongUploadTeam extends Controller {
             Logger.info("update jingdong fav:" + id + " detail:" + detail + " success.");
         }
         render("JingdongUploadTeam/result.html", uploadTeamRest);
+        */
     }
 
     /**
      * 延长有效期
      */
     public static void updateExpire(Long id, Date expireTime) {
+        /*
         ResalerFav fav = ResalerFav.findById(id);
 
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/couponExtension.action";
@@ -243,6 +252,7 @@ public class JingdongUploadTeam extends Controller {
             Logger.info("update jingdong fav:" + id + " expire:" + expireTime + " success.");
         }
         render("JingdongUploadTeam/result.html", uploadTeamRest);
+        */
 
     }
 
@@ -250,6 +260,7 @@ public class JingdongUploadTeam extends Controller {
      * 延长有效期
      */
     public static void updateEndDate(Long id, Date saleEndDate) {
+        /*
         ResalerFav fav = ResalerFav.findById(id);
 
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/teamExtension.action";
@@ -271,10 +282,12 @@ public class JingdongUploadTeam extends Controller {
             Logger.info("update jingdong fav:" + id + " endDate:" + saleEndDate + " success.");
         }
         render("JingdongUploadTeam/result.html", uploadTeamRest);
+        */
 
     }
 
     public static void teamRestart(Long id, Date beginTime, Date endTime) {
+        /*
         ResalerFav fav = ResalerFav.findById(id);
 
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/teamRestart.action";
@@ -297,6 +310,7 @@ public class JingdongUploadTeam extends Controller {
             Logger.info("update jingdong fav restart:" + id + " beginTime:" + beginTime + ";endTime:" + endTime + " success.");
         }
         render("JingdongUploadTeam/result.html", uploadTeamRest);
+        */
 
     }
 
@@ -304,6 +318,7 @@ public class JingdongUploadTeam extends Controller {
      * 修改主图
      */
     public static void updateBigImg(Long id, String bigImg) {
+        /*
         ResalerFav fav = ResalerFav.findById(id);
 
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/updateBImage.action";
@@ -325,12 +340,14 @@ public class JingdongUploadTeam extends Controller {
             Logger.info("update jingdong fav:" + id + " bigimg:" + bigImg + " success.");
         }
         render("JingdongUploadTeam/result.html", uploadTeamRest);
+        */
     }
 
     /**
      * 修改商家信息
      */
     public static void updatePartners(Long id) {
+        /*
         ResalerFav fav = ResalerFav.findById(id);
 
         Collection<Shop> shops = fav.goods.getShopList();
@@ -360,10 +377,12 @@ public class JingdongUploadTeam extends Controller {
             Logger.info("update jingdong fav:" + id + " partners success.");
         }
         render("JingdongUploadTeam/result.html", uploadTeamRest);
+        */
     }
 
 
     public static void upload(Long venderTeamId, List<String> areas, List<String> subGroupIds) {
+        /*
         Map<String, String> allParams = request.params.allSimple();
         allParams.remove("body");
         Map<String, Object> params = new HashMap<>();
@@ -459,6 +478,7 @@ public class JingdongUploadTeam extends Controller {
             }
         }
         render("JingdongUploadTeam/result.html", uploadTeamRest);
+        */
     }
 
     private static void getGoodsItems(Goods goods) {

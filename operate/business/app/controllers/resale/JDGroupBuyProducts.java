@@ -58,15 +58,13 @@ public class JDGroupBuyProducts extends Controller{
         params.put("venderTeamId", product.goodsLinkId);
 
         //提交请求
-        String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/uploadTeam.action";
-        String templatePath = "jingdong/groupbuy/request/uploadTeam.xml";
-        JingdongMessage response = JDGroupBuyUtil.sendRequest("uploadTeam", url, templatePath, params);
+        JingdongMessage response = JDGroupBuyUtil.sendRequest("uploadTeam", params);
 
         //保存历史
         if(response.isOk()) {
             OperateUser operateUser = OperateRbac.currentUser();
             product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id)
-                    .partnerProduct(Long.parseLong(response.selectTextTrim("JdTeamId").trim()))
+                    .partnerProduct(Long.parseLong(response.selectTextTrim("./JdTeamId").trim()))
                     .latestJson(new Gson().toJson(params))
                     .save();
             //记录历史
@@ -94,16 +92,13 @@ public class JDGroupBuyProducts extends Controller{
      * 修改商品
      */
     @ActiveNavigation("resale_partner_product")
-    public static void edit(String action, String templatePath) {
+    public static void edit(String action) {
         Map<String, Object> params = new HashMap<>();
         for(Map.Entry<String, String> entry : request.params.allSimple().entrySet()) {
             params.put(entry.getKey(), entry.getValue());
         }
-        params.remove("body");
 
-
-        String url = JDGroupBuyUtil.GATEWAY_URL + action;
-        JingdongMessage response = JDGroupBuyUtil.sendRequest("uploadTeam", url, templatePath, params);
+        JingdongMessage response = JDGroupBuyUtil.sendRequest(action, params);
 
         render("resale/JDGroupBuyProducts/result.html", response);
     }
@@ -153,8 +148,8 @@ public class JDGroupBuyProducts extends Controller{
             if (i != 0) {
                 jsonString.append(",");
             }
-            jsonString.append("{id:'").append(XPath.selectText("Id", city).trim())
-                    .append("',name:'").append(XPath.selectText("Name", city).trim())
+            jsonString.append("{id:'").append(XPath.selectText("./Id", city).trim())
+                    .append("',name:'").append(XPath.selectText("./Name", city).trim())
                     .append("',isParent:").append(isParent)
                     .append(",type:'").append(type)
                     .append("'}");
