@@ -6,7 +6,7 @@ require:
     - play1 -> appconfiguration 0.1
     - play1 -> cobertura 2.4p3
     - play1 -> paginate head
-    - play1 -> rabbitmq 0.3
+    - play1 -> rabbitmq 0.4
     - play1 -> app-version 0.1
     - play1 -> factory-boy 1.0
     - play1 -> play-solr 0.2.28
