@@ -21,6 +21,8 @@ public class TotalSalesCondition {
     public static final int BY_SHOP = 1;
     public static final int BY_GOODS = 2;
     public static final int BY_VERIFY_TYPE = 3;
+    public static final String END_TIME = " 23:59";
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 
     public int type = BY_SUPPLIER;
 
@@ -67,11 +69,11 @@ public class TotalSalesCondition {
             condBuilder.append(" and e.consumedAt >= :beginAt");
             paramMap.put("beginAt", beginAt);
         }
-
         if (endAt != null) {
             Date endDate = Supplier.getShopHour(endAt, shopEndHour, true);
             condBuilder.append(" and e.consumedAt <= :endAt");
-            paramMap.put("endAt", endDate);
+            String dateStr = DateUtil.dateToString(endAt, 0) + (StringUtils.isBlank(shopEndHour) ? END_TIME : " " + shopEndHour);
+            paramMap.put("endAt", DateUtil.stringToDate(dateStr, DATE_FORMAT));
         }
 
         if (supplierId != null && supplierId != 0) {

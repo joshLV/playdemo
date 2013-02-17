@@ -147,7 +147,7 @@
             <a href="/reports/sales?condition.createdAtBegin=${condition?.createdAtBegin?.format()}&condition.createdAtEnd=${condition?.createdAtEnd?.format()}&condition.supplier.id=${report?.supplier?.id}"
                target="_blank">${(report?.salesAmount?:0).formatCurrency('CNY')}</a></td>
         <td>
-            <a href="/reports/refund?condition.refundAtBegin=${condition?.createdAtBegin?.format()}&condition.refundAtEnd=${condition?.createdAtEnd?.format()}&condition.supplierName=${report?.supplier?.id}"
+            <a href="/reports/refund?condition.refundAtBegin=${condition?.createdAtBegin?.format()}&condition.refundAtEnd=${condition?.createdAtEnd?.format()}&condition.supplierId=${report?.supplier?.id}"
                target="_blank">${(report?.refundAmount?:0).formatCurrency('CNY')}</a></td>
         <td>${(report?.netSalesAmount?:0).formatCurrency('CNY')}</td>
     </tr>

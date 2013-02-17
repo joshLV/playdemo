@@ -193,7 +193,6 @@ public class SalesOrderItemReport {
             salesAmount = salesAmount.add(item.salesAmount);
             netSalesAmount = netSalesAmount.add(item.netSalesAmount == null ? BigDecimal.ZERO : item.netSalesAmount);
             refundAmount = refundAmount.add(item.refundAmount == null ? BigDecimal.ZERO : item.refundAmount);
-
         }
         return new SalesOrderItemReport(salesAmount, refundAmount, netSalesAmount);
     }
@@ -218,7 +217,7 @@ public class SalesOrderItemReport {
         List<SalesOrderItemReport> salesList = query.getResultList();
 
         //取得退款的数据
-        String sql = "select new models.SalesOrderItemReport(sum(e.refundPrice),e.orderItems.goods.supplierId) from ECoupon e ";
+        String sql = "select new models.SalesOrderItemReport(sum(e.refundPrice),e.orderItems.goods.supplierId) from ECoupon e ,OrderItems r,Supplier s";
         String groupBy = " group by e.orderItems.goods.supplierId";
 
         query = JPA.em()
@@ -230,10 +229,11 @@ public class SalesOrderItemReport {
 
         List<SalesOrderItemReport> refundList = query.getResultList();
 
+
         for (SalesOrderItemReport sales : salesList) {
             Boolean flag = false;
             for (SalesOrderItemReport refund : refundList) {
-                if (sales.supplier.id == refund.supplier.id) {
+                if (sales.supplier.id.equals(refund.supplier.id)) {
                     flag = true;
                     sales.refundAmount = refund.salesAmount == null ? BigDecimal.ZERO : refund.salesAmount;
                     sales.netSalesAmount = sales.salesAmount.subtract(refund.salesAmount == null ? BigDecimal.ZERO :

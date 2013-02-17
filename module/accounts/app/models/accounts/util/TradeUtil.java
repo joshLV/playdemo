@@ -170,7 +170,7 @@ public class TradeUtil {
         tradeBill.balancePaymentAmount = amount;                                    //全部使用平台收款账户的余额支付
         tradeBill.ebankPaymentAmount = BigDecimal.ZERO;                           //不使用网银支付
         tradeBill.uncashPaymentAmount = BigDecimal.ZERO;                           //不使用不可提现余额支付
-        tradeBill.tradeType = TradeType.PURCHASE_COSTING;                //交易类型为佣金
+        tradeBill.tradeType = TradeType.REFUND;                //交易类型为佣金
         tradeBill.eCouponSn = eCouponSn;                                 //保存对应的券号，以便核查
         tradeBill.amount = tradeBill.balancePaymentAmount
                 .add(tradeBill.ebankPaymentAmount)
@@ -266,7 +266,7 @@ public class TradeUtil {
      * @param amount  提现金额
      * @return 新建的提现交易
      */
-    public static TradeBill createWithdrawTrade(Account account, BigDecimal amount, Long  withdrawBillId) {
+    public static TradeBill createWithdrawTrade(Account account, BigDecimal amount, Long withdrawBillId) {
         if (account == null) {
             throw new IllegalArgumentException("error while create withdraw trade: invalid account");
         }
