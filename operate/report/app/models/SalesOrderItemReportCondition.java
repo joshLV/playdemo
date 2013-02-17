@@ -126,7 +126,7 @@ public class SalesOrderItemReportCondition implements Serializable {
     }
 
     public String getRefundFilter() {
-        StringBuilder condBuilder = new StringBuilder(" where e.status=:status and e.goods.isLottery=false");
+        StringBuilder condBuilder = new StringBuilder(" where e.status=:status and e.goods.isLottery=false and s.id=r.goods.supplierId and e.orderItems.id=r.id ");
         paramMap1.put("status", ECouponStatus.REFUND);
         if (createdAtBegin != null) {
             condBuilder.append(" and e.refundAt >= :refundAtBegin");
@@ -135,6 +135,10 @@ public class SalesOrderItemReportCondition implements Serializable {
         if (createdAtEnd != null) {
             condBuilder.append(" and e.refundAt <= :refundAtEnd");
             paramMap1.put("refundAtEnd", DateUtil.getEndOfDay(createdAtEnd));
+        }
+        if (supplier != null && supplier.id != 0) {
+            condBuilder.append(" and s = :supplier");
+            paramMap1.put("supplier", supplier);
         }
 
         return condBuilder.toString();
