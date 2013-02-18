@@ -2,6 +2,7 @@ package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.constants.PlatformType;
+import com.uhuila.common.util.DateUtil;
 import models.cms.Topic;
 import models.cms.TopicType;
 import operate.rbac.annotations.ActiveNavigation;
@@ -46,13 +47,14 @@ public class OperateTopics extends Controller {
             render("OperateTopics/add.html", topic);
         }
         topic.deleted = DeletedStatus.UN_DELETED;
+        topic.expireAt = DateUtil.getEndOfDay(topic.expireAt);
+
         topic.create();
-        System.out.println("topic.content:" + topic.getContent());
         index(null, null);
     }
 
     private static void checkExpireAt(Topic topic) {
-        if (topic.effectiveAt != null && topic.expireAt != null && topic.expireAt.before(topic.effectiveAt)) {
+        if (topic.effectiveAt != null && DateUtil.getEndOfDay(topic.expireAt) != null && DateUtil.getEndOfDay(topic.expireAt).before(topic.effectiveAt)) {
             Validation.addError("topic.expireAt", "validation.beforeThanEffectiveAt");
         }
     }
@@ -71,6 +73,8 @@ public class OperateTopics extends Controller {
             topic.id = id;
             render("OperateTopics/edit.html", topic);
         }
+
+        topic.expireAt = DateUtil.getEndOfDay(topic.expireAt);
 
         Topic.update(id, topic);
 
