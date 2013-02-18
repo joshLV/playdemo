@@ -35,7 +35,7 @@ import java.util.*;
 public class SuppliersContracts extends Controller {
     public static int PAGE_SIZE = 15;
     public static String ROOT_PATH = Play.configuration.getProperty("upload.contractpath", "");
-    public static final String BASE_URL = Play.configuration.getProperty("uri.operate_business");
+//    public static final String BASE_URL = Play.configuration.getProperty("uri.operate_business");
     public static String FILE_TYPES = Play.configuration.getProperty("newsImg.fileTypes", "");
 
     public static void index(SupplierContractCondition condition) {
