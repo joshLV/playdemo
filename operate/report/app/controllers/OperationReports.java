@@ -274,7 +274,6 @@ public class OperationReports extends Controller {
         }
         List<Supplier> supplierList;
         condition.hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
-        System.out.println(condition.hasSeeAllSupplierPermission + "===condition.hasSeeAllSupplierPermission>>");
         if (condition.hasSeeAllSupplierPermission) {
             supplierList = Supplier.findUnDeleted();
         } else {

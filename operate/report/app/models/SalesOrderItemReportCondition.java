@@ -31,6 +31,7 @@ public class SalesOrderItemReportCondition implements Serializable {
     public String interval = "-1d";
     public Long operatorId;
     public Boolean hasSeeAllSupplierPermission;
+    public String supplierCode;
 
     private Map<String, Object> paramMap = new HashMap<>();
     private Map<String, Object> paramMap1 = new HashMap<>();
@@ -101,6 +102,10 @@ public class SalesOrderItemReportCondition implements Serializable {
             condBuilder.append(" and s.salesId = :salesId");
             paramMap.put("salesId", operatorId);
         }
+        if (StringUtils.isNotBlank(supplierCode)) {
+            condBuilder.append(" and s.code = :supplierCode");
+            paramMap.put("supplierCode", supplierCode);
+        }
 
 
         if (materialType != null) {
@@ -139,6 +144,10 @@ public class SalesOrderItemReportCondition implements Serializable {
         if (supplier != null && supplier.id != 0) {
             condBuilder.append(" and s = :supplier");
             paramMap1.put("supplier", supplier);
+        }
+        if (StringUtils.isNotBlank(supplierCode)) {
+            condBuilder.append(" and s.code = :supplierCode");
+            paramMap1.put("supplierCode", supplierCode);
         }
 
         return condBuilder.toString();

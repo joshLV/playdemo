@@ -104,6 +104,9 @@
       name="search_form">
     商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
 #{vx.selectInputField name:"supplierName", id:"condition.supplier.id", list:supplierList, value:condition?.supplier?.id, array:"supplierArray",importJs:true/}
+    商户编码：<input type="text" name="condition.supplierCode" class="input-medium"
+                value="${condition?.supplierCode}"/>
+
     起止日期
     <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.createdAtBegin"
            onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtBegin?.format()}"> -
