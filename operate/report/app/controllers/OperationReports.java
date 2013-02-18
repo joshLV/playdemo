@@ -1,19 +1,6 @@
 package controllers;
 
-import models.CategorySalesReport;
-import models.CategorySalesReportCondition;
-import models.ChannelCategoryReport;
-import models.ChannelCategoryReportCondition;
-import models.ChannelGoodsReport;
-import models.ChannelGoodsReportCondition;
-import models.ConsumerFlowReport;
-import models.ConsumerFlowReportCondition;
-import models.ResaleSalesReport;
-import models.ResaleSalesReportCondition;
-import models.PeopleEffectCategoryReport;
-import models.PeopleEffectCategoryReportCondition;
-import models.SalesReport;
-import models.SalesReportCondition;
+import models.*;
 import models.admin.OperateUser;
 import models.supplier.Supplier;
 import operate.rbac.ContextedPermission;
@@ -270,6 +257,46 @@ public class OperationReports extends Controller {
 
         PeopleEffectCategoryReport summary = PeopleEffectCategoryReport.summary(reportPage);
         render(condition, reportPage, hasSeeReportProfitRight, summary);
+    }
+
+    /**
+     * `
+     * 查询净销售报表信息.
+     *
+     * @param condition
+     */
+    @ActiveNavigation("net_sales_reports")
+    public static void showNetSalesReports(SalesOrderItemReportCondition condition) {
+        int pageNumber = getPageNumber();
+
+        if (condition == null) {
+            condition = new SalesOrderItemReportCondition();
+        }
+        List<Supplier> supplierList;
+        condition.hasSeeAllSupplierPermission = ContextedPermission.hasPermission("SEE_ALL_SUPPLIER");
+        System.out.println(condition.hasSeeAllSupplierPermission + "===condition.hasSeeAllSupplierPermission>>");
+        if (condition.hasSeeAllSupplierPermission) {
+            supplierList = Supplier.findUnDeleted();
+        } else {
+            supplierList = Supplier.find(
+                    "deleted=? and salesId=? order by createdAt DESC",
+                    com.uhuila.common.constants.DeletedStatus.UN_DELETED,
+                    OperateRbac.currentUser().id).fetch();
+        }
+
+        condition.operatorId = OperateRbac.currentUser().id;
+
+        // 查询出所有结果
+        List<SalesOrderItemReport> resultList = SalesOrderItemReport.getNetSales(condition);
+        // 分页
+        ValuePaginator<SalesOrderItemReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
+
+        // 汇总
+        SalesOrderItemReport summary = SalesOrderItemReport.getNetSummary(resultList);
+
+        render(reportPage, summary, condition, supplierList);
+
+
     }
 
     @ActiveNavigation("channel_category_reports")

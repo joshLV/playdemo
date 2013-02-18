@@ -100,7 +100,7 @@
 </style>
 #{/set}
 
-<form class="well form-inline" action="@{NetSalesReports.index()}" method="GET" id="search_form"
+<form class="well form-inline" action="@{OperationReports.showNetSalesReports()}" method="GET" id="search_form"
       name="search_form">
     商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
 #{vx.selectInputField name:"supplierName", id:"condition.supplier.id", list:supplierList, value:condition?.supplier?.id, array:"supplierArray",importJs:true/}
