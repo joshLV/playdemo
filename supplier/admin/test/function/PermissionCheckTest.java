@@ -56,13 +56,13 @@ public class PermissionCheckTest extends FunctionalTest {
             }
         });
 
-        FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
-            @Override
-            public void build(SupplierRole role) {
-                role.text = "商品编辑";
-                role.key = "editor";
-            }
-        });
+//        FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
+//            @Override
+//            public void build(SupplierRole role) {
+//                role.text = "商品编辑";
+//                role.key = "editor";
+//            }
+//        });
 
         FactoryBoy.create(SupplierRole.class, new BuildCallback<SupplierRole>() {
             @Override
