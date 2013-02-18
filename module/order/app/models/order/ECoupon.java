@@ -1555,18 +1555,14 @@ public class ECoupon extends Model {
      *
      * @return
      */
-    public static List<ECoupon> findVirtualCoupons() {
+    public static List<ECoupon> findVirtualCoupons(CouponsCondition condition) {
+
         String sql = "select e from ECoupon e where e.isFreeze=0  and e.goods.noRefund= true and e.virtualVerify=0 " +
-                " and e.goods.isLottery=false and status =:status and (e.expireAt >= :expireBeginAt and e.expireAt <= " +
-                ":expireEndAt) and e.partner in (:partner) order by e.partner";
-        List<ECouponPartner> partnerList = new ArrayList<>();
-        partnerList.add(ECouponPartner.JD);
-        partnerList.add(ECouponPartner.WB);
-        Query query = ECoupon.em().createQuery(sql);
-        query.setParameter("status", ECouponStatus.UNCONSUMED);
-        query.setParameter("expireBeginAt", DateUtil.getBeginExpiredDate(3));
-        query.setParameter("expireEndAt", DateUtil.getEndExpiredDate(3));
-        query.setParameter("partner", partnerList);
+                " and e.goods.isLottery=false";
+        Query query = ECoupon.em().createQuery(sql + condition.getQueryFitter() + " order by e.partner");
+        for (Map.Entry<String, Object> entry : condition.getParamMap().entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
         return query.getResultList();
     }
 

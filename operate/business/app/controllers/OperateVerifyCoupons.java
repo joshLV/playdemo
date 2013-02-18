@@ -2,6 +2,7 @@ package controllers;
 
 import com.uhuila.common.util.DateUtil;
 import models.admin.OperateUser;
+import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.VerifyCouponType;
@@ -127,10 +128,22 @@ public class OperateVerifyCoupons extends Controller {
      * 虚拟验证页面
      */
     @ActiveNavigation("virtual_verify_index")
-    public static void virtual() {
-        List<ECoupon> couponList = ECoupon.findVirtualCoupons();
-        render(couponList);
+    public static void virtual(CouponsCondition condition) {
+        condition = setConditionValue(condition);
+        List<ECoupon> couponList = ECoupon.findVirtualCoupons(condition);
+        render(couponList, condition);
 
+    }
+
+    private static CouponsCondition setConditionValue(CouponsCondition condition) {
+        if (condition == null) {
+            condition = new CouponsCondition();
+            condition.expiredAtBegin = DateUtil.getBeginExpiredDate(3);
+            condition.expiredAtEnd = DateUtil.getEndExpiredDate(3);
+        } else {
+            condition.expiredAtEnd = DateUtil.getEndOfDay(condition.expiredAtEnd);
+        }
+        return condition;
     }
 
     /**
@@ -138,26 +151,28 @@ public class OperateVerifyCoupons extends Controller {
      *
      * @param id
      */
-    public static void virtualVerify(Long id) {
-        List<ECoupon> couponList = ECoupon.findVirtualCoupons();
+    @ActiveNavigation("virtual_verify_index")
+    public static void virtualVerify(Long id, CouponsCondition condition) {
+        condition = setConditionValue(condition);
+        List<ECoupon> couponList = ECoupon.findVirtualCoupons(condition);
         ECoupon ecoupon = ECoupon.findById(id);
         String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, 0l);
         if (ecouponStatusDescription != null) {
             renderText(ecouponStatusDescription);
         }
+
         boolean verifyFlag = false;
-        if (ecoupon.status == ECouponStatus.UNCONSUMED && ecoupon.isFreeze == 0 && ecoupon.goods.noRefund
-                && ecoupon.expireAt.compareTo(DateUtil.getBeginExpiredDate(3)) > 0 && ecoupon.expireAt.compareTo(DateUtil.getEndExpiredDate(3)) < 0) {
+        if (ecoupon.status == ECouponStatus.UNCONSUMED && ecoupon.goods.noRefund) {
             verifyFlag = ecoupon.virtualVerify(OperateRbac.currentUser().id);
 
         }
         if (!verifyFlag) {
-            Validation.addError("verify-error-info" + id, "虚拟验证失败！");
+            Validation.addError("verify-error-info", "虚拟验证失败！");
         }
         if (Validation.hasErrors()) {
-            render("OperateVerifyCoupons/virtual.html", couponList, id);
+            render("OperateVerifyCoupons/virtual.html", couponList, id, condition);
         }
 
-        render("OperateVerifyCoupons/virtual.html", couponList);
+        render("OperateVerifyCoupons/virtual.html", couponList, condition);
     }
 }
