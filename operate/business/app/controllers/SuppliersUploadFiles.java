@@ -47,21 +47,24 @@ public class SuppliersUploadFiles extends Controller {
      */
     public static void uploadImages(File imgFile, Long supplierId, Long contractId) {
         //文件保存目录路径
+        System.out.println("uploadSupplierContractImages");
         if (imgFile == null) {
             getError("请选择文件。");
         }
-
+        System.out.println("selectedFileSuc");
         //检查目录
         File uploadDir = new File(ROOT_PATH);
 
         if (!uploadDir.isDirectory()) {
             getError("上传目录不存在。");
         }
+        System.out.println("UploadDirectoryExist");
 
         //检查目录写权限
         if (!uploadDir.canWrite()) {
             getError("上传目录没有写权限。");
         }
+        System.out.println("WithWriteRight");
 
         //检查文件大小
 //        if (imgFile.length() > MAX_SIZE) {
@@ -75,18 +78,22 @@ public class SuppliersUploadFiles extends Controller {
         if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
             getError("上传文件扩展名仅限于：" + StringUtils.join(fileTypes) + "。");
         }
+        System.out.println("UploadFileExtensionNameSuc");
 
         //上传文件
         try {
+            System.out.println("StarttoUploadFile");
             String targetFilePath = storeImage(imgFile, supplierId, contractId, true, ROOT_PATH);
 //            String targetFilePath = FileUploadUtil.storeImage(imgFile, ROOT_PATH);
             Map<String, Object> map = new HashMap<>();
             map.put("error", 0);
+            System.out.println("StarttoUploadFileAfterPutError");
 
             String path = targetFilePath.substring(ROOT_PATH.length(), targetFilePath.length());
             if (path == null) {
                 getError("上传失败，服务器忙，请稍后再试。");
             }
+            System.out.println("StarttoUploadFileSuc");
 
             Supplier supplier = Supplier.findById(supplierId);
             SupplierContract contract = SupplierContract.findById(contractId);
@@ -96,8 +103,10 @@ public class SuppliersUploadFiles extends Controller {
             new SupplierContractImage(supplier, contract, imgFile.getName(), path, size).save();
 
             path = PathUtil.signImgPath(path);
+            System.out.println(path + "===path>>");
 
             map.put("url", BASE_URL + "/contract/p" + path);
+            System.out.println(BASE_URL + "/contract/p" + path + "===>url");
             renderJSON(map);
         } catch (Exception e) {
             getError("上传失败，服务器忙，请稍候再试。");
@@ -174,7 +183,7 @@ public class SuppliersUploadFiles extends Controller {
     }
 
     public static String storeImage(File imgFile, long supplierId, long contractId, boolean needNewName,
-                                     String rootPath) throws IOException {
+                                    String rootPath) throws IOException {
 
         //取得文件
         FileInputStream in = new FileInputStream(imgFile);
