@@ -66,7 +66,8 @@ public class CouponsCondition implements Serializable {
 
     public Long salesId;
     public String categoryCode;
-
+    public Date expiredAtBegin;
+    public Date expiredAtEnd;
 
     public String getOrderByExpress() {
         return "e.createdAt desc";
@@ -357,4 +358,33 @@ public class CouponsCondition implements Serializable {
     public Map<String, Object> getParamMap() {
         return paramMap;
     }
+
+    public String getQueryFitter() {
+        StringBuilder sql = new StringBuilder("  and status =:status and (e.expireAt >= :expireBeginAt and e.expireAt <= " +
+                ":expireEndAt) and e.partner in (:partner) ");
+        paramMap.put("status", ECouponStatus.UNCONSUMED);
+        paramMap.put("expireBeginAt", expiredAtBegin);
+        paramMap.put("expireEndAt", expiredAtEnd);
+        List<ECouponPartner> partnerList = new ArrayList<>();
+
+        partnerList.add(ECouponPartner.JD);
+        partnerList.add(ECouponPartner.WB);
+        paramMap.put("partner", partnerList);
+
+        if (StringUtils.isNotBlank(eCouponSn)) {
+            sql.append(" and e.eCouponSn like :eCouponSn");
+            paramMap.put("eCouponSn", "%" + eCouponSn + "%");
+        }
+        if (StringUtils.isNotBlank(goodsName)) {
+            sql.append(" and e.goods.name like :name");
+            paramMap.put("name", "%" + goodsName.trim() + "%");
+        }
+        if (StringUtils.isNotBlank(phone)) {
+            sql.append(" and e.orderItems.phone like :phone");
+            paramMap.put("phone", "%" + phone.trim() + "%");
+        }
+        return sql.toString();
+    }
+
+
 }
