@@ -361,7 +361,7 @@ public class CouponsCondition implements Serializable {
 
     public String getQueryFitter() {
         StringBuilder sql = new StringBuilder("  and status =:status and (e.expireAt >= :expireBeginAt and e.expireAt <= " +
-                ":expireEndAt) and e.partner in (:partner) ");
+                ":expireEndAt) and (e.partner in (:partner) or (e.partner='TB' and e.isCheatedOrder = true ))");
         paramMap.put("status", ECouponStatus.UNCONSUMED);
         paramMap.put("expireBeginAt", expiredAtBegin);
         paramMap.put("expireEndAt", expiredAtEnd);
