@@ -25,9 +25,9 @@ public class SalesOrderItemReport  {
 
     public Goods goods;
 
-    public long buyCount;
+    public Long buyCount;
 
-    public long orderCount;
+    public Long orderCount;
 
     public String supplierSalesJobNumber;
 
@@ -52,7 +52,7 @@ public class SalesOrderItemReport  {
     public BigDecimal refundAmount;
 
     public SalesOrderItemReport(Supplier supplier, Goods goods, BigDecimal salePrice,
-                                long buyCount, long orderCount, BigDecimal originalAmount,
+                                Long buyCount, Long orderCount, BigDecimal originalAmount,
                                 BigDecimal tax, BigDecimal noTaxAmount) {
         this.supplier = supplier;
         this.goods = goods;
@@ -66,7 +66,7 @@ public class SalesOrderItemReport  {
 
 
     public SalesOrderItemReport(Goods goods, BigDecimal salePrice, BigDecimal faceValue,
-                                long buyCount, BigDecimal originalAmount) {
+                                Long buyCount, BigDecimal originalAmount) {
         this.supplier = goods.getSupplier();
         this.goods = goods;
         this.faceValue = faceValue;
@@ -163,7 +163,7 @@ public class SalesOrderItemReport  {
         if (resultList == null || resultList.size() == 0) {
             return new SalesOrderItemReport(0l, BigDecimal.ZERO);
         }
-        long buyCount = 0l;
+        Long buyCount = 0l;
         BigDecimal amount = BigDecimal.ZERO;
         for (SalesOrderItemReport item : resultList) {
             buyCount += item.buyCount;

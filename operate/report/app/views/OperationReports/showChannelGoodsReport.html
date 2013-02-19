@@ -189,12 +189,8 @@
          &nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
         毛利率：<b>${(summary?.grossMargin?:0).format('#0.00')}%</b> ,
          净利润：<b>
-         #{if summary.profit != null && summary.profit!=0}
              ￥${(summary?.profit?:0).format('#0.00')}
-         #{/if}
-         #{else}
-             ￥0
-         #{/else}
+
      </b>
      #{/if}
         </span>
@@ -243,12 +239,8 @@
             <td #{if report?.code == "999" } bgcolor="#add8e6" #{/if}
                                              style="text-align:right;">${(report?.originalPrice?:0).formatCurrency('CNY')}</td>
             <td #{if report?.code == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
-                #{if report?.avgSalesPrice!=null ||report?.avgSalesPrice==0}
                 ${(report?.avgSalesPrice?:0).formatCurrency('CNY')}
-                #{/if}
-                #{else}
-                    ￥0
-                #{/else}
+
             </td>
         #{/if}
         #{else}
@@ -342,12 +334,8 @@
             <td #{if report?.code == "999" } bgcolor="#add8e6" #{/if}
                                              style="text-align:right;">${(report?.grossMargin?:0).format('#0.00')}%</td>
             <td #{if report?.code == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
-                #{if report.profit != null && report.profit!=0}
                     ￥${(report?.profit?:0).format('#0.00')}
-                #{/if}
-                #{else}
-                    ￥0
-                #{/else}
+
             </td>
         #{/if}
     </tr>
