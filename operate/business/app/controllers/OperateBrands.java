@@ -143,7 +143,7 @@ public class OperateBrands extends Controller {
             renderArgs.put("imageLogoPath", brand.getShowLogo());
             for (String key : validation.errorsMap().keySet()) {
                 warn("update: validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
-                System.out.println("update: validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));;
+//                System.out.println("update: validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));;
             }
             render("OperateBrands/edit.html", brand, id);
         }
@@ -167,7 +167,6 @@ public class OperateBrands extends Controller {
         }
         Brand.update(id, brand);
 
-        System.out.println("updated:");
         index(null);
     }
 

@@ -2,12 +2,15 @@ package helper;
 
 import cache.CacheCallBack;
 import cache.CacheHelper;
-import models.sales.Category;
 import models.sales.PointGoods;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User: hejun
