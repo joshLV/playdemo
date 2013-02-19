@@ -5,29 +5,24 @@
 #{field _name}
     #{if _importJs!=null?_importJs:true}
         #{set 'moreStyles'}
-            #{get 'moreStyles'/}
+         #{get 'moreStyles'/}
         <link type="text/css" rel="stylesheet" href="@{'/public/stylesheets/jquery.autocomplete.css'}">
         #{/set}
-        #{set 'moreScripts'}
-            #{get 'moreScripts'/}
         <script src="@{'/public/javascripts/jquery.autocomplete.min.js'}" type="text/javascript"
                 charset="UTF-8"></script>
         <script src="@{'/public/javascripts/ChinesePY.js'}" type="text/javascript" charset="UTF-8"></script>
             #{set selectArray:_array?:"list"/}
         <script type="text/javascript">
-            var ${selectArray} = [
+            var ${selectArray} =[
                 #{list items:_list, as:'row'}
                     { firstPin:Pinyin.getWordsCode("${row.name}"), allPin:Pinyin.GetQP("${row.name}"), name:"${row.name}", id:"${row.id}" }#{if !row_isLast},#{/if}
                 #{/list}
             ];
         </script>
-        #{/set}
 
     #{/if}
 
 
-    #{set 'moreScripts'}
-        #{get 'moreScripts'/}
     <script type="text/javascript">
         $(function () {
             $("#${field.id}").autocomplete(${selectArray}, {
@@ -73,7 +68,6 @@
             });
         });
     </script>
-    #{/set}
 <input type="text" id="${field.id}" name="${field.name}"
        value='${params[field.id]}' #{if _class!=null}class="${_class}"#{/if}><input type="hidden" id="${"id_"+field.id}" name="${_id}"
                                           value="${_value?:params[_id]?:0}">
