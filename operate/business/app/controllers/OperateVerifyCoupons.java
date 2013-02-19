@@ -131,7 +131,6 @@ public class OperateVerifyCoupons extends Controller {
     public static void virtual(CouponsCondition condition) {
         condition = setConditionValue(condition);
         List<ECoupon> couponList = ECoupon.findVirtualCoupons(condition);
-        System.out.println(couponList.size() + ">>>>couponList.size()");
         render(couponList, condition);
 
     }
