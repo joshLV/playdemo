@@ -38,13 +38,17 @@ public class SupplierECoupons extends Controller {
             condition = new CouponsCondition();
         }
 
-        condition.supplier = SupplierRbac.currentUser().supplier;
+        SupplierUser supplierUser = SupplierRbac.currentUser();
+        if (supplierUser.shop!= null){
+            condition.shopId = supplierUser.shop.id;
+        }
+        condition.supplier = supplierUser.supplier;
 
         condition.status = ECouponStatus.CONSUMED;
 
         int pageNumber = getPageNumber();
 
-        Long supplierId = SupplierRbac.currentUser().supplier.id;
+        Long supplierId = supplierUser.supplier.id;
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
 
         JPAExtPaginator<ECoupon> couponPage = ECoupon.findByCondition(condition, pageNumber, PAGE_SIZE);
