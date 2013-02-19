@@ -22,6 +22,7 @@ public class SupplierContractCondition implements Serializable {
     public String orderByType = "DESC";
     public String orderBy = getOrderBy(0);
     public Boolean hasManagerViewContractPermission;
+    public Boolean hasContractManagementPermission;
     public Long operatorId;
 
     private Map<String, Object> paramMap = new HashMap<>();
@@ -38,7 +39,8 @@ public class SupplierContractCondition implements Serializable {
             condBuilder.append(" and c.supplierId = :supplierId");
             paramMap.put("supplierId", supplierId);
         }
-        if (hasManagerViewContractPermission != null && !hasManagerViewContractPermission) {
+        if ((hasManagerViewContractPermission != null && !hasManagerViewContractPermission)
+                && (hasContractManagementPermission != null && !hasContractManagementPermission)) {
             List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
             List<Long> supplierIds = new ArrayList<>();
             for (Supplier s : suppliers) {
