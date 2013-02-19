@@ -15,6 +15,7 @@ beginValue:goodsSchedule?.effectiveAt?.format(), endValue:goodsSchedule?.expireA
     #{vx.cancelButton url:'/goods-schedule', class:'btn btn-primary'/}
 #{/if}
 </div>
+#{set 'moreScripts'}
 <script type="text/javascript">
     $(function () {
         $("#goodsSchedule_goods_id").blur(function () {
@@ -58,3 +59,4 @@ beginValue:goodsSchedule?.effectiveAt?.format(), endValue:goodsSchedule?.expireA
 
     }
 </script>
+#{/set}

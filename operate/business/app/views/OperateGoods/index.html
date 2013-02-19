@@ -387,6 +387,7 @@ select:'condition_status',value:condition?.status/}
     </div>
 </div>
 
+#{set 'moreScripts'}
 <script type="text/javascript">
     function prepareSend(id, priority, keywords) {
         $("#setForm").attr("action", "/goods/" + id + "/priority?x-http-method-override=PUT");
@@ -440,3 +441,4 @@ select:'condition_status',value:condition?.status/}
         });
     });
 </script>
+#{/set}
