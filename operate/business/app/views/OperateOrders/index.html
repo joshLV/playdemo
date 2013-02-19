@@ -251,7 +251,7 @@ select:'condition_status',value:condition?.status/}
 
     <tbody>
     #{paginate.list items:orderList, as:'order'}
-    %{ outerOrder = models.order.OuterOrder.getOuterOrder(order) %}
+    %{ outerOrder = models.order.OuterOrder.getOuterOrder(order) }%
     <tr>
         <td rowspan="${order?.orderItems?.size()}">
             #{a @OperateOrders.details(order.id)}${order.orderNumber}#{/a}

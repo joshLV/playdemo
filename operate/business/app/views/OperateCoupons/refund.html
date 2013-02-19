@@ -18,8 +18,13 @@
         </thead>
         <tbody>
         <tr>
-            <td><a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a></abbr></td>
-            <td>  ${n}${coupon?.getMaskedEcouponSn()}</td>
+            <td>%{ outerOrder = models.order.OuterOrder.getOuterOrder(coupon?.order) }%
+                <a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a>
+            #{if outerOrder != null}
+                <br>外:${outerOrder.orderId}
+            #{/if}
+            </td>
+            <td> ${coupon?.getMaskedEcouponSn()}</td>
             <td>${coupon?.orderItems?.phone}</td>
             <td>
                 <a href="http://${play.Play.configuration.getProperty("www.url")}/p/${coupon?.goods?.id}?preview=true"

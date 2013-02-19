@@ -52,7 +52,7 @@
         <li class="active"><a href="#"> 基本信息</a></li>
         <table class="table table-bordered">
             <tr>
-                <td>订 单 号：${orders.orderNumber}</td>
+                <td>订 单 号：<a href="/coupons?condition.searchKey=ORDER_NUMBER&condition.searchItems=${orders.orderNumber}">${orders.orderNumber}</a></td>
                 <td>成交时间：${orders.createdAt == null ?'':orders.createdAt.format("yyyy-MM-dd HH:mm:ss")}</td>
                 <td>付款时间：${orders.paidAt == null ?'':orders.paidAt.format("yyyy-MM-dd HH:mm:ss")}</td>
             </tr>
@@ -78,7 +78,12 @@
                     <a href="/coupons?condition.searchKey=ORDER_NUMBER&condition.searchItems=${orders.orderNumber}">电子券清单</a>
                 #{/if}
                 </td>
-                <td></td>
+                %{ outerOrder = models.order.OuterOrder.getOuterOrder(orders) }%
+                <td>
+                #{if outerOrder != null}
+                    外部订单号：${outerOrder.orderId}
+                #{/if}</td>
+
             </tr>
         </table>
     </ul>

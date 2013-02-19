@@ -1,5 +1,6 @@
 package controllers;
 
+import com.uhuila.common.constants.DeletedStatus;
 import models.sales.GoodsCouponType;
 import models.sales.ImportedCoupon;
 import models.sales.ImportedCouponStatus;
@@ -29,7 +30,7 @@ import java.util.List;
 public class ImportCoupons extends Controller{
     @ActiveNavigation("pre_coupons")
     public static void index(String errmsg, String d1, String d2){
-        List<models.sales.Goods> goodsList = models.sales.Goods.find("byCouponType",GoodsCouponType.IMPORT).fetch();
+        List<models.sales.Goods> goodsList = models.sales.Goods.find("byCouponTypeAndDeleted",GoodsCouponType.IMPORT, DeletedStatus.UN_DELETED).fetch();
         render(goodsList, errmsg, d1, d2);
     }
 
