@@ -41,23 +41,23 @@ public class PeopleEffectCategoryReport {
     /**
      * 售出券数
      */
-    public long buyNumber = 0l;
+    public Long buyNumber = 0l;
 
     /**
      * 退款券数
      */
-    public long refundNumber = 0l;
-    public long totalRefundNumber = 0l;
+    public Long refundNumber = 0l;
+    public Long totalRefundNumber = 0l;
 
     /**
      * 售出实物数
      */
-    public long realBuyNumber = 0l;
-    public long totalRealBuyNumber = 0l;
+    public Long realBuyNumber = 0l;
+    public Long totalRealBuyNumber = 0l;
     /**
      * 退款实物数
      */
-    public long realRefundNumber = 0l;
+    public Long realRefundNumber = 0l;
 
 
     /**
@@ -84,8 +84,8 @@ public class PeopleEffectCategoryReport {
     /**
      * 消费券数
      */
-    public long consumedNumber = 0l;
-    public long totalConsumedNumber = 0l;
+    public Long consumedNumber = 0l;
+    public Long totalConsumedNumber = 0l;
 
     /**
      * 消费金额
@@ -255,7 +255,7 @@ public class PeopleEffectCategoryReport {
         this.refundCost = refundCost;
     }
 
-    public PeopleEffectCategoryReport(Long totalNumber, BigDecimal amount, long realTotalNumber, BigDecimal realAmount, BigDecimal totalRefundPrice, Long refundNumber,
+    public PeopleEffectCategoryReport(Long totalNumber, BigDecimal amount, Long realTotalNumber, BigDecimal realAmount, BigDecimal totalRefundPrice, Long refundNumber,
                                       BigDecimal consumedPrice, Long consumedNumber, BigDecimal grossMargin, BigDecimal profit) {
         this.totalNumber = totalNumber;
         this.totalAmount = amount;
@@ -982,11 +982,11 @@ public class PeopleEffectCategoryReport {
         if (resultList == null || resultList.size() == 0) {
             return new PeopleEffectCategoryReport(0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO, 0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO);
         }
-        long refundCount = 0l;
-        long consumedCount = 0l;
+        Long refundCount = 0l;
+        Long consumedCount = 0l;
         BigDecimal consumedPrice = BigDecimal.ZERO;
-        long buyCount = 0l;
-        long realBuyCount = 0l;
+        Long buyCount = 0l;
+        Long realBuyCount = 0l;
         BigDecimal amount = BigDecimal.ZERO;
         BigDecimal realAmount = BigDecimal.ZERO;
         BigDecimal refundPrice = BigDecimal.ZERO;

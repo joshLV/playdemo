@@ -201,12 +201,8 @@
         渠道成本：<b>${(channelSummary?.channelCost?:0).formatCurrency('CNY')}</b>
          净利润：<b>
 
-        #{if channelSummary.profit != null && channelSummary.profit!=0}
             ￥${(channelSummary?.profit?:0).format('#0.00')}
-        #{/if}
-        #{else}
-            ￥0
-        #{/else}
+
     </b>
     #{/if}
       </span>
@@ -324,12 +320,8 @@
             <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if}
                                              style="text-align:right;">${(report?.channelCost?:0).formatCurrency('CNY')}</td>
             <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
-                #{if report?.profit != null && report.profit!=0}
                     ￥${(report?.profit?:0).format('#0.00')}
-                #{/if}
-                #{else}
-                    ￥0
-                #{/else}
+
             </td>
         #{/if}
 

@@ -156,12 +156,8 @@
         毛利率：<b>${(summary?.grossMargin?:0).format('#0.00')}%</b>
         渠道成本：<b>${(summary?.channelCost?:0).formatCurrency('CNY')}</b>
          净利润：<b>
-        #{if summary.profit != null && summary.profit!=0}
             ￥${(summary?.profit?:0).format('#0.00')}
-        #{/if}
-        #{else}
-            ￥0
-        #{/else}
+
     </b>
     #{/if}
       </span>
@@ -365,12 +361,8 @@ userName="condition.userName="+report?.loginName;
         <td style="text-align:right;">${(report?.grossMargin?:0).format('#0.00')}%</td>
         <td style="text-align:right;">${(report?.channelCost?:0).formatCurrency('CNY')}</td>
         <td style="text-align:right;">
-            #{if report.profit != null && report.profit!=0}
                 ￥${(report?.profit?:0).format('#0.00')}
-            #{/if}
-            #{else}
-                ￥0
-            #{/else}
+
         </td>
     #{/if}
 

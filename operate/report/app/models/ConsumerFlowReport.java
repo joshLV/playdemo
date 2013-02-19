@@ -32,22 +32,22 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
     /**
      * 售出券数
      */
-    public long buyNumber = 0l;
+    public Long buyNumber = 0l;
 
     /**
      * 退款券数
      */
-    public long refundNumber = 0l;
+    public Long refundNumber = 0l;
 
     /**
      * 售出实物数
      */
-    public long realBuyNumber = 0l;
+    public Long realBuyNumber = 0l;
 
     /**
      * 退款实物数
      */
-    public long realRefundNumber = 0l;
+    public Long realRefundNumber = 0l;
 
 
     /**
@@ -73,7 +73,7 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
     /**
      * 消费券数
      */
-    public long consumedNumber = 0l;
+    public Long consumedNumber = 0l;
 
     /**
      * 消费金额
@@ -243,7 +243,7 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
 
     }
 
-    public ConsumerFlowReport(long totalNumber, BigDecimal amount, BigDecimal totalRefundPrice, Long refundNumber,
+    public ConsumerFlowReport(Long totalNumber, BigDecimal amount, BigDecimal totalRefundPrice, Long refundNumber,
                               BigDecimal consumedPrice, Long consumedNumber, BigDecimal shouldGetPrice, BigDecimal haveGetPrice) {
         this.totalNumber = totalNumber;
         this.amount = amount;
@@ -255,7 +255,7 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
         this.haveGetPrice = haveGetPrice;
     }
 
-    public ConsumerFlowReport(long totalNumber, BigDecimal amount, long realTotalNumber, BigDecimal realAmount, BigDecimal totalRefundPrice, Long refundNumber,
+    public ConsumerFlowReport(Long totalNumber, BigDecimal amount, Long realTotalNumber, BigDecimal realAmount, BigDecimal totalRefundPrice, Long refundNumber,
                               BigDecimal consumedPrice, Long consumedNumber, BigDecimal shouldGetPrice, BigDecimal haveGetPrice
             , BigDecimal grossMargin, BigDecimal channelCost, BigDecimal profit, BigDecimal perOrderPrice) {
         this.totalNumber = totalNumber;
@@ -490,11 +490,11 @@ public class ConsumerFlowReport implements Comparable<ConsumerFlowReport> {
             return new ConsumerFlowReport(0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO, 0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO
                     , BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
         }
-        long refundCount = 0l;
-        long consumedCount = 0l;
+        Long refundCount = 0l;
+        Long consumedCount = 0l;
         BigDecimal consumedPrice = BigDecimal.ZERO;
-        long buyCount = 0l;
-        long realBuyCount = 0l;
+        Long buyCount = 0l;
+        Long realBuyCount = 0l;
         BigDecimal amount = BigDecimal.ZERO;
         BigDecimal realAmount = BigDecimal.ZERO;
         BigDecimal refundPrice = BigDecimal.ZERO;
