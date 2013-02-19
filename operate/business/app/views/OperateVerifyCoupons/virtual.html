@@ -60,7 +60,7 @@
                     <a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a></abbr>
                 </td>
                 <td #{if coupon.isCheatedOrder==true}style="color: #b3dbdb;" #{/if}>${coupon?.orderItems?.phone}</td>
-                <td>${coupon?.eCouponSn} </td>
+                <td>${coupon?.getMaskedEcouponSn()} </td>
                 <td>${coupon?.goods?.shortName}</td>
                 <td>${coupon?.salePrice?.formatCurrency('CNY')}</td>
                 <td>&{'coupon.'+coupon?.partner}</td>
