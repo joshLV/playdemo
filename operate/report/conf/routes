@@ -81,7 +81,7 @@ GET     /people_effect_category_report_excel    OperationReports.peopleEffectCat
 
 #净销售报表
 GET     /net_sales_report                       OperationReports.showNetSalesReports
-
+GET     /net_sales_report_excel                 OperationReports.netSalesReportExcelOut
 
 # Home page
 GET     /                                       OperateReportApplication.index

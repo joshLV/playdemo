@@ -55,6 +55,13 @@
 
     });
 
+    function netSalesReportExcel(desc) {
+        $("#search_form").attr("action", "/net_sales_report_excel?desc=" + desc);
+        $("#search_form").attr("method", "get");
+        $("#search_form").submit();
+    }
+    ;
+
     $('.fn-rank').click(function (ev) {
         ev.preventDefault();
         var rankStr = $(this).attr('data-rank');
@@ -123,6 +130,7 @@
     <input type="text" id="condition_end" class="input-medium Wdate" name="condition.createdAtEnd"
            onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtEnd?.format()}">
     <button type="submit" class="btn btn-primary" id="search">搜索</button>
+    <button class="btn btn-info" id="searchbtn" onclick="netSalesReportExcel(${desc})">导出报表</button>
     <ul class="nav nav-pills">
         <li #{if condition.interval=='-1d'} class="active" #{/if}  ><a start="-1d" href="#">今天</a></li>
         <li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>

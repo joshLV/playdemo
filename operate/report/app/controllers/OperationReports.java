@@ -1001,6 +1001,41 @@ public class OperationReports extends Controller {
         render(peopleEffectReportList);
     }
 
+
+    public static void netSalesReportExcelOut(SalesOrderItemReportCondition condition, String desc) {
+        if (condition == null) {
+            condition = new SalesOrderItemReportCondition();
+        }
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "净销售报表_" + System.currentTimeMillis() + ".xls");
+        condition.setDescFields();
+
+        // 查询出所有结果
+        List<SalesOrderItemReport> resultList = SalesOrderItemReport.getNetSales(condition);
+        condition.sort(resultList);
+
+
+        for (SalesOrderItemReport report : resultList) {
+            OperateUser ou = OperateUser.findById(report.supplier.salesId);
+            report.supplierSalesJobNumber = ou.jobNumber;
+            report.supplierName = report.supplier.fullName + "(" + report.supplier.otherName + ")";
+
+            if (report.refundAmount == null) {
+                report.refundAmount = BigDecimal.ZERO;
+            }
+            if (report.salesAmount == null) {
+                report.salesAmount = BigDecimal.ZERO;
+            }
+            if (report.refundAmount == null) {
+                report.refundAmount = BigDecimal.ZERO;
+            }
+            if (report.netSalesAmount == null) {
+                report.netSalesAmount = BigDecimal.ZERO;
+            }
+        }
+        render(resultList);
+    }
+
     public static void categorySalesReportWithPrivilegeExcelOut(CategorySalesReportCondition condition) {
         if (condition == null) {
             condition = new CategorySalesReportCondition();

@@ -29,6 +29,9 @@ public class SalesOrderItemReport  {
 
     public long orderCount;
 
+    public String supplierSalesJobNumber;
+
+    public String supplierName;
 
     /**
      * 原单价
