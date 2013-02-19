@@ -231,11 +231,7 @@
         <td>&{'coupon.'+coupon?.verifyType}</td>
         <td>${coupon?.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
         <td>${coupon?.refundPrice}</td>
-        <td>&{'coupon.'+coupon?.status}
-            #{if coupon.virtualVerify}
-                <span style="color: #808080;">(虚拟验证)</span>
-            #{/if}
-        </td>
+        <td>&{'coupon.'+coupon?.status}</td>
         <td>
             #{include '/OperateCoupons/operateLink.html'/}
         </td>

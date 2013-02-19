@@ -133,8 +133,8 @@ public class OperateResaleSalesReportCondition {
 
     public String getFilterVirtualVerfiyAt(AccountType type) {
         paramMap = new HashMap<>();
-        StringBuilder condBuilder = new StringBuilder(" where e.order.status='PAID' and e.isFreeze=0 and e.order.userType = :userType and e.goods.isLottery=false and e.status = :status" +
-                " and e.virtualVerify =true and e.goods.noRefund=true and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
+        StringBuilder condBuilder = new StringBuilder(" where e.order.status='PAID' and e.order.userType = :userType and e.goods.isLottery=false and e.status = :status" +
+                " and e.virtualVerify =true and (e.goods.noRefund = true or e.isCheatedOrder = true) and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
         paramMap.put("userType", type);
         paramMap.put("status", ECouponStatus.UNCONSUMED);
         if (beginAt != null) {
