@@ -1,7 +1,9 @@
 package models.job;
 
+import com.uhuila.common.util.DateUtil;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
+import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
 import play.Play;
@@ -25,7 +27,10 @@ public class ExpiredNoRefundCouponNotice extends Job {
 
     @Override
     public void doJob() {
-        List<ECoupon> resultList = ECoupon.findVirtualCoupons();
+        CouponsCondition condition = new CouponsCondition();
+        condition.expiredAtBegin = DateUtil.getBeginExpiredDate(3);
+        condition.expiredAtEnd = DateUtil.getEndExpiredDate(3);
+        List<ECoupon> resultList = ECoupon.findVirtualCoupons(condition);
         String subject = "券号到期提醒";
         List<Map<String, String>> couponList = new ArrayList<>();
         Map<String, String> couponMap;
