@@ -40,14 +40,15 @@ public class SupplierECouponsTest extends FunctionalTest {
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
-        SupplierUser supplierUser = FactoryBoy.create(SupplierUser.class);
         shop = FactoryBoy.create(Shop.class);
         goods = FactoryBoy.create(Goods.class);
+        SupplierUser supplierUser = FactoryBoy.create(SupplierUser.class);
 
         // 设置测试登录的用户名
         Security.setLoginUserForTest(supplierUser.loginName);
         coupon = FactoryBoy.create(ECoupon.class);
         coupon.status = ECouponStatus.CONSUMED;
+        coupon.shop = shop;
         coupon.order.paidAt= DateHelper.beforeDays(1);
         coupon.order.save();
         coupon.save();
