@@ -27,6 +27,9 @@ import java.util.Map;
 public class ResalerProducts extends Controller {
     public static int PAGE_SIZE = 20;
 
+    /**
+     * 分销商品列表
+     */
     @ActiveNavigation("resale_partner_product")
     public static void index(GoodsCondition condition) {
         int pageNumber = getPage();
@@ -60,6 +63,9 @@ public class ResalerProducts extends Controller {
         return StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
     }
 
+    /**
+     * 查看该分销商品的编辑历史
+     */
     @ActiveNavigation("resale_partner_product")
     public static void journal(Long productId) {
         ResalerProduct product = ResalerProduct.findById(productId);
@@ -69,6 +75,10 @@ public class ResalerProducts extends Controller {
         }
         render(journals);
     }
+
+    /**
+     * 查看某一次具体编辑动作
+     */
     @ActiveNavigation("resale_partner_product")
     public static void journalJson(Long journalId) {
         ResalerProductJournal journal = ResalerProductJournal.findById(journalId);
@@ -94,4 +104,27 @@ public class ResalerProducts extends Controller {
         render(products);
     }
 
+    /**
+     * 显示创建或者编辑分销商品的页面
+     */
+    public static void showEnter(Long id) {
+        if (id != null) {
+            renderArgs.put("product", ResalerProduct.findById(id));
+        }
+        render();
+    }
+
+    /**
+     * 修改或者创建分销商品
+     */
+    public static void enter(Long id) {
+        ResalerProduct product;
+        if (id == null) {
+            product = new ResalerProduct();
+        } else {
+            product = ResalerProduct.findById(id);
+        }
+        product.save();
+        String msg = "保存成功";
+    }
 }

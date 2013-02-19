@@ -45,10 +45,16 @@ GET     /contract/o/{path1}/{path2}                       SupplierContractImages
 
 
 # --------------------   分销商品  ---------------------------------------------------------
+# 分销商品展示
 GET     /resaler-products                               ResalerProducts.index
 GET     /resaler-products/journal/json/{journalId}      ResalerProducts.journalJson
 GET     /resaler-products/journal/{productId}           ResalerProducts.journal
 GET     /resaler-products/products/{partner}/{goodsId}  ResalerProducts.showProducts
+
+# 分销商品记录
+GET     /resaler-products/enter                         ResalerProducts.showEnter
+GET     /resaler-products/edit/{id}                     ResalerProducts.showEnter
+POST    /resaler-products/enter                         ResalerProducts.enter
 
 # 一号店
 GET     /resaler-products/yhd/upload/{goodsId}          resale.YHDProducts.showUpload
@@ -86,14 +92,6 @@ POST    /resaler-products/tb/upload                     resale.TaobaoProducts.up
 
 # --------------------  end of 分销商品  ---------------------------------------------------------
 
-
-
-#渠道商品
-GET      /channel-goods/{id}                          OperateGoods.channel
-POST     /channel-goods/{id}                          OperateGoods.createChannel
-GET      /channel-goods/{id}/edit               OperateGoods.editChannel
-PUT     /channel-goods/{id}                     OperateGoods.updateChannel
-DELETE   /channel-goods/{id}                    OperateGoods.deleteChannel
 
 #类别管理
 GET     /category                               CategoryAdmin.index
