@@ -295,4 +295,26 @@ public class OperationReportsTest extends FunctionalTest {
         assertEquals(BigDecimal.valueOf(8).setScale(2), ((List<ChannelGoodsReport>) renderArgs("resultList")).get(0).originalPrice.setScale(2));
     }
 
+    @Test
+    public void testNetSalesReport() {
+        Http.Response response = GET("/net_sales_report");
+        assertIsOk(response);
+        assertNotNull(renderArgs("reportPage"));
+        play.modules.paginate.ValuePaginator<SalesOrderItemReport> reportPage = (play.modules.paginate.ValuePaginator<SalesOrderItemReport>) renderArgs("reportPage");
+        assertNotNull(reportPage);
+        SalesOrderItemReport summary = (SalesOrderItemReport) renderArgs("summary");
+        assertEquals(10, summary.salesAmount.intValue());
+        assertEquals(0, summary.refundAmount.intValue());
+        assertEquals(10, summary.netSalesAmount.intValue());
+    }
+
+    @Test
+    public void testNetSalesReportExcelOut() {
+        Http.Response response = GET(Router.reverse("OperationReports.netSalesReportExcelOut").url);
+        assertIsOk(response);
+        assertEquals(1l, ((List<ChannelGoodsReport>) renderArgs("resultList")).size());
+        assertEquals(BigDecimal.valueOf(10).setScale(2), ((List<SalesOrderItemReport>) renderArgs("resultList")).get(0).salesAmount.setScale(2));
+    }
+
+
 }
