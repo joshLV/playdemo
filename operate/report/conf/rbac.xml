@@ -39,6 +39,8 @@
                         permissions="OPERATION_REPORT"/>
             <navigation key="people_effect_reports" action="OperationReports.showPeopleEffectReport" text="人效报表"
                         permissions="OPERATION_REPORT"/>
+            <navigation key="net_sales_reports" action="OperationReports.showNetSalesReports" text="净销售报表"
+                        permissions="SALES_REPORT"/>
             <navigation key="consumer_flow_reports" action="OperationReports.showConsumerFlowReport" text="客流报表"
                         permissions="OPERATION_REPORT"/>
         </navigation>
@@ -82,8 +84,7 @@
                         permissions="CONSUMER_REPORT"/>
             <navigation key="consumer_refund_reports" action="ConsumerRefundReports.index" text="消费者退款报表"
                         permissions="CONSUMER_REPORT"/>
-            <navigation key="net_sales_reports" action="NetSalesReports.index" text="净销售报表"
-                        permissions="SALES_REPORT"/>
+
 
         </navigation>
     </navigation>

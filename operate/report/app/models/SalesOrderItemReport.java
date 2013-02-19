@@ -18,7 +18,7 @@ import java.util.*;
  * Date: 5/31/12
  * Time: 10:44 AM
  */
-public class SalesOrderItemReport {
+public class SalesOrderItemReport  {
     public Supplier supplier;
 
     public Date createdAt;
@@ -28,6 +28,10 @@ public class SalesOrderItemReport {
     public long buyCount;
 
     public long orderCount;
+
+    public String supplierSalesJobNumber;
+
+    public String supplierName;
 
     /**
      * 原单价
@@ -247,4 +251,6 @@ public class SalesOrderItemReport {
 
         return salesList;
     }
+
+
 }

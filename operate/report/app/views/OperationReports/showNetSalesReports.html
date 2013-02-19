@@ -54,6 +54,23 @@
         });
 
     });
+
+    function netSalesReportExcel(desc) {
+        $("#search_form").attr("action", "/net_sales_report_excel?desc=" + desc);
+        $("#search_form").attr("method", "get");
+        $("#search_form").submit();
+    }
+    ;
+
+    $('.fn-rank').click(function (ev) {
+        ev.preventDefault();
+        var rankStr = $(this).attr('data-rank');
+        $('#J_rank').val(rankStr);
+        $("#search_form").attr("action", "@{OperationReports.showNetSalesReports()}");
+        $("#search_form").attr("method", "get");
+        $('#search_form').submit();
+    });
+
 </script>
 #{/set}
 
@@ -100,16 +117,20 @@
 </style>
 #{/set}
 
-<form class="well form-inline" action="@{NetSalesReports.index()}" method="GET" id="search_form"
+<form class="well form-inline" action="@{OperationReports.showNetSalesReports()}" method="GET" id="search_form"
       name="search_form">
     商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
 #{vx.selectInputField name:"supplierName", id:"condition.supplier.id", list:supplierList, value:condition?.supplier?.id, array:"supplierArray",importJs:true/}
+    商户编码：<input type="text" name="condition.supplierCode" class="input-medium"
+                value="${condition?.supplierCode}"/>
+
     起止日期
     <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.createdAtBegin"
            onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtBegin?.format()}"> -
     <input type="text" id="condition_end" class="input-medium Wdate" name="condition.createdAtEnd"
            onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtEnd?.format()}">
     <button type="submit" class="btn btn-primary" id="search">搜索</button>
+    <button class="btn btn-info" id="searchbtn" onclick="netSalesReportExcel(${desc})">导出报表</button>
     <ul class="nav nav-pills">
         <li #{if condition.interval=='-1d'} class="active" #{/if}  ><a start="-1d" href="#">今天</a></li>
         <li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>
@@ -118,6 +139,7 @@
         <li #{if condition.interval=='0'} class="active" #{/if}  ><a start="0" href="#">全部</a></li>
     </ul>
     <input type="hidden" id="condition_interval" name="condition.interval"/>
+    <input type="hidden" id="J_rank" name="condition.desc" value="${condition?.desc}"/>
 </form>
 
 <div class="alert alert-success">
@@ -126,11 +148,12 @@
 <table class="table table-striped table-bordered table-condensed">
     <thead>
     *{<th width="10px">序号</th>}*
-    <th width="10px">工号</th>
-    <th width="80px">商户</th>
-    <th width="50px">销售总金额</th>
-    <th width="50px">退款总金额</th>
-    <th width="50px">净销售金额</th>
+    #{layout_operate.sortField name:'工号', descField:condition?.desc, desc:'200000',asc:'100000'/}
+    #{layout_operate.sortField name:'商户', descField:condition?.desc, desc:'020000',asc:'010000'/}
+    #{layout_operate.sortField name:'商户编码', descField:condition?.desc, desc:'002000',asc:'001000'/}
+    #{layout_operate.sortField name:'销售总金额', descField:condition?.desc, desc:'000200',asc:'000100'/}
+    #{layout_operate.sortField name:'退款总金额', descField:condition?.desc, desc:'000020',asc:'000010'/}
+    #{layout_operate.sortField name:'净销售金额', descField:condition?.desc, desc:'000002',asc:'000001'/}
     </thead>
 #{set i:0/}
 #{paginate.list items:reportPage, as:'report'}
@@ -143,6 +166,7 @@
         }%
         <td>${ou?.jobNumber}</td>
         <td>${report?.supplier?.fullName}(${report?.supplier?.otherName})</td>
+        <td>${report?.supplier?.code}</td>
         <td>
             <a href="/reports/sales?condition.createdAtBegin=${condition?.createdAtBegin?.format()}&condition.createdAtEnd=${condition?.createdAtEnd?.format()}&condition.supplier.id=${report?.supplier?.id}"
                target="_blank">${(report?.salesAmount?:0).formatCurrency('CNY')}</a></td>
