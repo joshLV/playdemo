@@ -78,11 +78,13 @@
        value='${params[field.id]}' #{if _class!=null}class="${_class}"#{/if}><input type="hidden" id="${"id_"+field.id}" name="${_id}"
                                           value="${_value?:params[_id]?:0}">
 <script type="text/javascript">
+    $(function(){
     for (i = 0; i < ${selectArray}.length; i++) {
         if (${selectArray}[i].id == $("#${"id_"+field.id}").val()) {
 
             $("#${field.id}").val(${selectArray}[i].name);
         }
     }
+    });
 </script>
 #{/field}
