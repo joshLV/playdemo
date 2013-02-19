@@ -196,7 +196,6 @@ public class OperationReports extends Controller {
         Boolean flagWithCondition = true;
         int pageNumber = getPageNumber();
         if (condition == null) {
-
             condition = new SalesReportCondition();
         }
         if (StringUtils.isBlank(condition.jobNumber) || StringUtils.isBlank(condition.userName)) {
@@ -282,17 +281,18 @@ public class OperationReports extends Controller {
                     com.uhuila.common.constants.DeletedStatus.UN_DELETED,
                     OperateRbac.currentUser().id).fetch();
         }
-
+        condition.setDescFields();
         condition.operatorId = OperateRbac.currentUser().id;
 
         // 查询出所有结果
         List<SalesOrderItemReport> resultList = SalesOrderItemReport.getNetSales(condition);
+        condition.sort(resultList);
+
         // 分页
         ValuePaginator<SalesOrderItemReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
 
         // 汇总
         SalesOrderItemReport summary = SalesOrderItemReport.getNetSummary(resultList);
-
         render(reportPage, summary, condition, supplierList);
 
 

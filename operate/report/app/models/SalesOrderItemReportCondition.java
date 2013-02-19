@@ -1,15 +1,15 @@
 package models;
 
 import com.uhuila.common.util.DateUtil;
+import models.admin.OperateUser;
 import models.order.ECouponStatus;
 import models.sales.MaterialType;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * 报表查询条件.
@@ -35,6 +35,74 @@ public class SalesOrderItemReportCondition implements Serializable {
 
     private Map<String, Object> paramMap = new HashMap<>();
     private Map<String, Object> paramMap1 = new HashMap<>();
+
+    //排序字段
+    public String desc;
+
+    public void setDescFields() {
+
+        // DESC 的值表示升降序，含n位，代表n个排序字段（不含订单编号,商品名称）， 1 为升序， 2 为降序， 0 为不排序
+        // 当无排序参数时，初始化 -1
+        if (desc == null) {
+            desc = "000100";
+        }
+        // 获取最新的desc值
+        String[] descs = desc.split(",");
+        desc = descs[descs.length - 1].trim();
+
+        if (isValidDesc(desc)) {
+            //排序合法且没有优先指数，添加到condition 中
+            int index = 0;
+            // 定位排序属性
+            for (int i = 0; i < desc.length(); i++) {
+                if (desc.charAt(i) != '0') {
+                    index = i;
+                    break;
+                }
+            }
+            String[] orderByFields = {"jobNumber", "fullName", "code", "salesAmount", "refundAmount", "netSalesAmount"};
+            // 添加排序属性
+            orderBy = orderByFields[index];
+            // 添加升降序方式
+            if (desc.charAt(index) == '1') {
+                orderByType = "desc";
+            } else {
+                orderByType = "asc";
+            }
+        } else {
+            // 一般排序，按总销售额
+            orderBy = "salesAmount";
+        }
+    }
+
+
+    /**
+     * 判断排序字符串的合法性
+     *
+     * @param desc 排序字符串
+     * @return
+     */
+    public static boolean isValidDesc(String desc) {
+        if (desc.length() != 6) {
+            return false;
+        }
+        int countZero = 0;
+        for (int i = 0; i < desc.length(); i++) {
+            if (desc.charAt(i) == '0') {
+                countZero++;
+            }
+        }
+        if (countZero != 5) {
+            return false;
+        }
+
+        for (int i = 0; i < desc.length(); i++) {
+            if (desc.charAt(i) != '0' && desc.charAt(i) != '1' && desc.charAt(i) != '2') {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public String getFilter() {
         StringBuilder condBuilder = new StringBuilder("(r.order.status='PAID' or r.order.status='SENT') and s.id=r.goods.supplierId and r.goods.isLottery=false");
@@ -164,5 +232,68 @@ public class SalesOrderItemReportCondition implements Serializable {
 
     public Map<String, Object> getParamMap1() {
         return paramMap1;
+    }
+
+    public void sort(List resultList) {
+        Collections.sort(resultList, new Comparator<SalesOrderItemReport>() {
+            @Override
+            public int compare(SalesOrderItemReport o1, SalesOrderItemReport o2) {
+                OperateUser ou1 = OperateUser.findById(o1.supplier.salesId);
+                OperateUser ou2 = OperateUser.findById(o2.supplier.salesId);
+                String o1_jobNumber = ou1.jobNumber;
+                String o2_jobNumber = ou2.jobNumber;
+                if ("jobNumber".equals(orderBy)) {
+                    if ("desc".equals(orderByType)) {
+                        return o2_jobNumber.compareTo(o1_jobNumber);
+                    } else {
+                        return o1_jobNumber.compareTo(o2_jobNumber);
+                    }
+                } else if ("fullName".equals(orderBy)) {
+                    String o1_fullName = o1.supplier.fullName;
+                    String o2_fullName = o2.supplier.fullName;
+                    if ("desc".equals(orderByType)) {
+                        return o2_fullName.compareTo(o1_fullName);
+                    } else {
+                        return o1_fullName.compareTo(o2_fullName);
+                    }
+                } else if ("code".equals(orderBy)) {
+                    String o1_code = o1.supplier.code;
+                    String o2_code = o2.supplier.code;
+                    if ("desc".equals(orderByType)) {
+                        return o2_code.compareTo(o1_code);
+                    } else {
+                        return o1_code.compareTo(o2_code);
+                    }
+                } else if ("salesAmount".equals(orderBy)) {
+                    BigDecimal o1_salesAmount = o1.salesAmount == null ? BigDecimal.ZERO : o1.salesAmount;
+                    BigDecimal o2_salesAmount = o2.salesAmount == null ? BigDecimal.ZERO : o2.salesAmount;
+                    if ("desc".equals(orderByType)) {
+                        return o2_salesAmount.compareTo(o1_salesAmount);
+                    } else {
+                        return o1_salesAmount.compareTo(o2_salesAmount);
+                    }
+                } else if ("refundAmount".equals(orderBy)) {
+                    BigDecimal o1_refundAmount = o1.refundAmount == null ? BigDecimal.ZERO : o1.refundAmount;
+                    BigDecimal o2_refundAmount = o2.refundAmount == null ? BigDecimal.ZERO : o2.refundAmount;
+                    if ("desc".equals(orderByType)) {
+                        return o2_refundAmount.compareTo(o1_refundAmount);
+                    } else {
+                        return o1_refundAmount.compareTo(o2_refundAmount);
+                    }
+                } else if ("netSalesAmount".equals(orderBy)) {
+                    BigDecimal o1_netSalesAmount = o1.netSalesAmount == null ? BigDecimal.ZERO : o1.netSalesAmount;
+                    BigDecimal o2_netSalesAmount = o2.netSalesAmount == null ? BigDecimal.ZERO : o2.netSalesAmount;
+                    if ("desc".equals(orderByType)) {
+                        return o2_netSalesAmount.compareTo(o1_netSalesAmount);
+                    } else {
+                        return o1_netSalesAmount.compareTo(o2_netSalesAmount);
+                    }
+                }
+
+                return o1_jobNumber.compareTo(o2_jobNumber);
+            }
+        }
+
+        );
     }
 }

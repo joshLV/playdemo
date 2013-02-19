@@ -54,6 +54,16 @@
         });
 
     });
+
+    $('.fn-rank').click(function (ev) {
+        ev.preventDefault();
+        var rankStr = $(this).attr('data-rank');
+        $('#J_rank').val(rankStr);
+        $("#search_form").attr("action", "@{OperationReports.showNetSalesReports()}");
+        $("#search_form").attr("method", "get");
+        $('#search_form').submit();
+    });
+
 </script>
 #{/set}
 
@@ -121,6 +131,7 @@
         <li #{if condition.interval=='0'} class="active" #{/if}  ><a start="0" href="#">全部</a></li>
     </ul>
     <input type="hidden" id="condition_interval" name="condition.interval"/>
+    <input type="hidden" id="J_rank" name="condition.desc" value="${condition?.desc}"/>
 </form>
 
 <div class="alert alert-success">
@@ -129,11 +140,12 @@
 <table class="table table-striped table-bordered table-condensed">
     <thead>
     *{<th width="10px">序号</th>}*
-    <th width="10px">工号</th>
-    <th width="80px">商户</th>
-    <th width="50px">销售总金额</th>
-    <th width="50px">退款总金额</th>
-    <th width="50px">净销售金额</th>
+    #{layout_operate.sortField name:'工号', descField:condition?.desc, desc:'200000',asc:'100000'/}
+    #{layout_operate.sortField name:'商户', descField:condition?.desc, desc:'020000',asc:'010000'/}
+    #{layout_operate.sortField name:'商户编码', descField:condition?.desc, desc:'002000',asc:'001000'/}
+    #{layout_operate.sortField name:'销售总金额', descField:condition?.desc, desc:'000200',asc:'000100'/}
+    #{layout_operate.sortField name:'退款总金额', descField:condition?.desc, desc:'000020',asc:'000010'/}
+    #{layout_operate.sortField name:'净销售金额', descField:condition?.desc, desc:'000002',asc:'000001'/}
     </thead>
 #{set i:0/}
 #{paginate.list items:reportPage, as:'report'}
@@ -146,6 +158,7 @@
         }%
         <td>${ou?.jobNumber}</td>
         <td>${report?.supplier?.fullName}(${report?.supplier?.otherName})</td>
+        <td>${report?.supplier?.code}</td>
         <td>
             <a href="/reports/sales?condition.createdAtBegin=${condition?.createdAtBegin?.format()}&condition.createdAtEnd=${condition?.createdAtEnd?.format()}&condition.supplier.id=${report?.supplier?.id}"
                target="_blank">${(report?.salesAmount?:0).formatCurrency('CNY')}</a></td>
