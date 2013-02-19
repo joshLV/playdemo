@@ -6,9 +6,6 @@
     <link href="@@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css"/>
     <link href="@@{'/public/stylesheets/lanrentuku.css'}" rel="stylesheet" type="text/css"/>
 #{get 'moreStyles' /}
-    <script src="@@{'/public/javascripts/jquery-1.6.4.min.js'}" type="text/javascript"
-            charset="${_response_encoding}"></script>
-#{get 'moreScripts' /}
     <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.css'}">
 </head>
 
@@ -36,6 +33,10 @@
 </div>
 <div id="bottom_footer"><img src="@@{'/public/images/footer/footer_two.jpg'}"/><img
         src="@@{'/public/images/footer/footer_one.jpg'}"/></div>
+
+<!-- javascript -->
+#{asset.js src:['/jquery-1.7.2.min.js', '/bootstrap/bootstrap.min.js', '/bootstrap/bootstrap-datepicker.js'] /}
+#{get 'moreScripts' /}
 
 </body>
 </html>

@@ -4,24 +4,8 @@
 #{set menu:menu?:"verify" /}
     <meta charset="UTF-8">
     <title>#{get 'title' /}</title>
-    <script src="@{'/public/assets/js/jquery.js'}"></script>
 #{asset.css src:['/m/reset.css', '/m/index.css'] /}
 #{get 'moreStyles' /}
-#{get 'moreScripts' /}
-    <script type="text/javascript">
-        $(function () {
-            closeMsg = function (msgType) {
-                $.ajax({
-                    type: 'POST',
-                    url: '/close-msg',
-                    success: function (data) {
-                    }
-                });
-
-                $('#' + msgType).hide();
-            };
-        });
-    </script>
 </head>
 <body>
 <div id="header" class="clearfix">
@@ -94,5 +78,23 @@
 <div id="footer">
     ©2012 上海视惠信息科技有限公司
 </div>
+<!-- javascript -->
+#{asset.js src:['/jquery-1.7.2.min.js', '/bootstrap/bootstrap.min.js', '/bootstrap/bootstrap-datepicker.js'] /}
+#{get 'moreScripts' /}
+<script type="text/javascript">
+    $(function () {
+    closeMsg = function (msgType) {
+    $.ajax({
+    type: 'POST',
+    url: '/close-msg',
+    success: function (data) {
+    }
+    });
+
+    $('#' + msgType).hide();
+    };
+    });
+</script>
+#{get 'moreScripts' /}
 </body>
 </html>
