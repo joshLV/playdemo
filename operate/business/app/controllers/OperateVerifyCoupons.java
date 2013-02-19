@@ -131,6 +131,7 @@ public class OperateVerifyCoupons extends Controller {
     public static void virtual(CouponsCondition condition) {
         condition = setConditionValue(condition);
         List<ECoupon> couponList = ECoupon.findVirtualCoupons(condition);
+        System.out.println(couponList.size() + ">>>>couponList.size()");
         render(couponList, condition);
 
     }
@@ -156,7 +157,7 @@ public class OperateVerifyCoupons extends Controller {
         condition = setConditionValue(condition);
         List<ECoupon> couponList = ECoupon.findVirtualCoupons(condition);
         ECoupon ecoupon = ECoupon.findById(id);
-        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, 0l);
+        String ecouponStatusDescription = ECoupon.checkOtherECouponInfo(ecoupon);
         if (ecouponStatusDescription != null) {
             renderText(ecouponStatusDescription);
         }
@@ -164,7 +165,6 @@ public class OperateVerifyCoupons extends Controller {
         boolean verifyFlag = false;
         if (ecoupon.status == ECouponStatus.UNCONSUMED && ecoupon.goods.noRefund) {
             verifyFlag = ecoupon.virtualVerify(OperateRbac.currentUser().id);
-
         }
         if (!verifyFlag) {
             Validation.addError("verify-error-info", "虚拟验证失败！");

@@ -1432,6 +1432,31 @@ public class ECoupon extends Model {
         //        }
         return null;
     }
+     /**
+     * 得到券的可虚拟验证状态信息，如果为null，则可验证，否则不允许验证
+     *
+     * @param ecoupon
+     * @return
+     */
+    public static String checkOtherECouponInfo(ECoupon ecoupon) {
+        if (ecoupon == null) {
+            return "对不起，未找到此券!";
+        }
+        if (ecoupon.status == models.order.ECouponStatus.CONSUMED) {
+            return "对不起，该券已使用过。";
+        }
+        if (ecoupon.status == models.order.ECouponStatus.REFUND) {
+            return "对不起，该券已退款!";
+        }
+        final Date now = new Date();
+        if (ecoupon.expireAt != null && ecoupon.expireAt.before(now)) {
+            return "对不起，该券已过期!";
+        }
+        if (ecoupon.effectiveAt != null && ecoupon.effectiveAt.after(now)) {
+            return "对不起，该券有效期还没开始！";
+        }
+        return null;
+    }
 
     /**
      * 获取预付款的已消费总额.
@@ -1557,8 +1582,7 @@ public class ECoupon extends Model {
      */
     public static List<ECoupon> findVirtualCoupons(CouponsCondition condition) {
 
-        String sql = "select e from ECoupon e where e.isFreeze=0  and e.goods.noRefund= true and e.virtualVerify=0 " +
-                " and e.goods.isLottery=false";
+        String sql = "select e from ECoupon e where e.virtualVerify=0 and e.goods.isLottery=false";
         Query query = ECoupon.em().createQuery(sql + condition.getQueryFitter() + " order by e.partner");
         for (Map.Entry<String, Object> entry : condition.getParamMap().entrySet()) {
             query.setParameter(entry.getKey(), entry.getValue());
