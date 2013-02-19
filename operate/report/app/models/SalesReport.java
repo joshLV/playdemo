@@ -308,7 +308,6 @@ public class SalesReport implements Comparable<SalesReport> {
 
         List<SalesReport> paidResultList = query.getResultList();
 
-
         //paidAt from resaler
         sql = "select new models.SalesReport(r.goods,sum(r.salePrice*r.buyNumber-r.rebateValue)*b.commissionRatio/100,b.commissionRatio)" +
                 " from OrderItems r,Order o,Resaler b";
@@ -322,7 +321,6 @@ public class SalesReport implements Comparable<SalesReport> {
         }
 
         List<SalesReport> paidResalerResultList = query.getResultList();
-
 
         //cheated order
         sql = "select new models.SalesReport(r.goods,sum(r.salePrice-r.rebateValue/r.buyNumber),sum(r.buyNumber)" +
@@ -396,7 +394,6 @@ public class SalesReport implements Comparable<SalesReport> {
         for (SalesReport paidItem : paidResultList) {
             map.put(getReportKey(paidItem), paidItem);
         }
-
         for (SalesReport cheatedItem : cheatedOrderResultList) {
             SalesReport item = map.get(getReportKey(cheatedItem));
             if (item == null) {
@@ -413,7 +410,6 @@ public class SalesReport implements Comparable<SalesReport> {
                         .subtract(item.totalCost).add(cheatedItem.cheatedOrderCost);
             }
         }
-
         for (SalesReport refundItem : refundList) {
             SalesReport item = map.get(getReportKey(refundItem));
             if (item == null) {
@@ -494,7 +490,6 @@ public class SalesReport implements Comparable<SalesReport> {
             map.get(key).orderBy = orderBy;
             resultList.add(map.get(key));
         }
-
         return resultList;
     }
 
