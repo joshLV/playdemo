@@ -261,8 +261,7 @@
             #{/if}
             #{else}
                 #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
-                    <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}
-                &condition.goodsId=${report?.goods?.id}"
+                    <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}"
                        target="_blank">${(report?.totalAmount?:0).formatCurrency('CNY')}</a>
                 #{/if}
                 #{else}
@@ -272,13 +271,11 @@
         </td>
         <td #{if report?.code == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
             #{if report?.code == "999"}
-                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}
-                &condition.isCheatedOrder=true "
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}&condition.isCheatedOrder=true "
                    target="_blank">${(report?.cheatedOrderAmount?:0).formatCurrency('CNY')}</a>
             #{/if}
             #{else}
-                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}
-                &condition.goodsId=${report?.goods?.id}&condition.isCheatedOrder=true "
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}&condition.isCheatedOrder=true "
                    target="_blank">${(report?.cheatedOrderAmount?:0).formatCurrency('CNY')}</a>
             #{/else}
 
@@ -286,8 +283,7 @@
             <td #{if report?.code == "999" } bgcolor="#add8e6" #{/if} ="text-align:right;">
         #{if report?.code == "999"}
             #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
-                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}
-                "
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}"
                    target="_blank"> ${(report?.refundAmount?:0).formatCurrency('CNY')}</a>
             #{/if}
             #{else}
@@ -296,8 +292,7 @@
         #{/if}
         #{else}
             #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
-                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}
-                &condition.goodsId=${report?.goods?.id}"
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}"
                    target="_blank"> ${(report?.refundAmount?:0).formatCurrency('CNY')}</a>
             #{/if}
             #{else}
@@ -307,15 +302,13 @@
         </td>
         <td #{if report?.code == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
             #{if report?.code == "999"}
-                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.consumedAtBegin=${condition?.beginAt?.format()}&condition.consumedAtEnd=${condition?.endAt?.format()}
-                "
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.consumedAtBegin=${condition?.beginAt?.format()}&condition.consumedAtEnd=${condition?.endAt?.format()}"
                    target="_blank">
                 ${(report?.consumedAmount?:0).formatCurrency('CNY')}
                 </a>
             #{/if}
             #{else}
-                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.consumedAtBegin=${condition?.beginAt?.format()}&condition.consumedAtEnd=${condition?.endAt?.format()}
-                &condition.goodsId=${report?.goods?.id}"
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.consumedAtBegin=${condition?.beginAt?.format()}&condition.consumedAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}"
                    target="_blank">
                 ${(report?.consumedAmount?:0).formatCurrency('CNY')}
                 </a>

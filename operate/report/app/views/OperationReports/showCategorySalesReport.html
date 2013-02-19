@@ -242,8 +242,7 @@
 
             <td #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
                 #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC && report?.name != "999" }
-                    <a href="${baseUrl}/coupons?condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}
-                &condition.goodsId=${report?.goods?.id}"
+                    <a href="${baseUrl}/coupons?condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}"
                        target="_blank">${(report?.totalAmount?:0).formatCurrency('CNY')}</a>
                 #{/if}
                 #{else}
@@ -252,8 +251,7 @@
             </td>
             <td  #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
                 #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC && report?.name != "999"}
-                    <a href="${baseUrl}/coupons?condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}
-                &condition.goodsId=${report?.goods?.id}&condition.isCheatedOrder=true"
+                    <a href="${baseUrl}/coupons?condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}&condition.isCheatedOrder=true"
                        target="_blank"> ${(report?.cheatedOrderAmount?:0).formatCurrency('CNY')}</a>
                 #{/if}
                 #{else}
@@ -262,8 +260,7 @@
             </td>
             <td  #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
                 #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC && report?.name != "999"}
-                    <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}
-                &condition.goodsId=${report?.goods?.id}"
+                    <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}"
                        target="_blank"> ${(report?.refundAmount?:0).formatCurrency('CNY')}</a>
                 #{/if}
                 #{else}
@@ -273,8 +270,7 @@
             <td  #{if report?.name == "999" } bgcolor="#add8e6" #{/if} style="text-align:right;">
                 #{if report?.name != "999"}
 
-                    <a href="${baseUrl}/coupons?condition.consumedAtBegin=${condition?.beginAt?.format()}&condition.consumedAtEnd=${condition?.endAt?.format()}
-                &condition.goodsId=${report?.goods?.id}"
+                    <a href="${baseUrl}/coupons?condition.consumedAtBegin=${condition?.beginAt?.format()}&condition.consumedAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}"
                        target="_blank">
                     ${(report?.consumedAmount?:0).formatCurrency('CNY')}
                     </a>

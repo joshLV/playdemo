@@ -360,9 +360,7 @@ baseUrl=play.Play.configuration.getProperty("uri.operate_business");
     <td style="text-align:right;">${report?.buyNumber?:0}</td>
     <td style="text-align:right;">
         #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
-            <a href="${baseUrl}/coupons?condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}
-                &condition.goodsId=${report?.goods?.id}"
-               target="_blank">${(report?.totalAmount?:0).formatCurrency('CNY')}</a>
+            <a href="${baseUrl}/coupons?condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}" target="_blank">${(report?.totalAmount?:0).formatCurrency('CNY')}</a>
         #{/if}
         #{else}
         ${(report?.totalAmount?:0).formatCurrency('CNY')}
@@ -370,9 +368,7 @@ baseUrl=play.Play.configuration.getProperty("uri.operate_business");
     </td>
     <td style="text-align:right;">
         #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
-            <a href="${baseUrl}/coupons?condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}
-                &condition.goodsId=${report?.goods?.id}&condition.isCheatedOrder=true"
-               target="_blank">${(report?.cheatedOrderAmount?:0).formatCurrency('CNY')}</a>
+            <a href="${baseUrl}/coupons?condition.paidAtBegin=${condition?.beginAt?.format()}&condition.paidAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}&condition.isCheatedOrder=true" target="_blank">${(report?.cheatedOrderAmount?:0).formatCurrency('CNY')}</a>
         #{/if}
         #{else}
         ${(report?.cheatedOrderAmount?:0).formatCurrency('CNY')}
@@ -380,8 +376,7 @@ baseUrl=play.Play.configuration.getProperty("uri.operate_business");
     </td>
     <td style="text-align:right;">
         #{if report?.goods?.materialType == models.sales.MaterialType.ELECTRONIC}
-            <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}
-                &condition.goodsId=${report?.goods?.id}"
+            <a href="${baseUrl}/coupons?condition.refundAtBegin=${condition?.beginAt?.format()}&condition.refundAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}"
                target="_blank"> ${(report?.refundAmount?:0).formatCurrency('CNY')}</a>
         #{/if}
         #{else}
@@ -389,8 +384,7 @@ baseUrl=play.Play.configuration.getProperty("uri.operate_business");
         #{/else}
     </td>
     <td style="text-align:right;">
-        <a href="${baseUrl}/coupons?condition.consumedAtBegin=${condition?.beginAt?.format()}&condition.consumedAtEnd=${condition?.endAt?.format()}
-                &condition.goodsId=${report?.goods?.id}"
+        <a href="${baseUrl}/coupons?condition.consumedAtBegin=${condition?.beginAt?.format()}&condition.consumedAtEnd=${condition?.endAt?.format()}&condition.goodsId=${report?.goods?.id}"
            target="_blank">
         ${(report?.consumedAmount?:0).formatCurrency('CNY')}
         </a>
