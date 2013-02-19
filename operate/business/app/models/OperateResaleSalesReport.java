@@ -400,7 +400,6 @@ public class OperateResaleSalesReport {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<OperateResaleSalesReport> virtualList = query.getResultList();
-        System.out.println(virtualList.size() + ">>>>paidResultList.size()");
 
         //refundAt real need to do !!!!!
         Map<Long, OperateResaleSalesReport> map = new HashMap<>();

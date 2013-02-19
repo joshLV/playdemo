@@ -162,7 +162,7 @@ public class OperateVerifyCoupons extends Controller {
         }
 
         boolean verifyFlag = false;
-        if (ecoupon.status == ECouponStatus.UNCONSUMED && ecoupon.goods.noRefund) {
+        if (ecoupon.status == ECouponStatus.UNCONSUMED) {
             verifyFlag = ecoupon.virtualVerify(OperateRbac.currentUser().id);
         }
         if (!verifyFlag) {

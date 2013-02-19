@@ -1432,7 +1432,8 @@ public class ECoupon extends Model {
         //        }
         return null;
     }
-     /**
+
+    /**
      * 得到券的可虚拟验证状态信息，如果为null，则可验证，否则不允许验证
      *
      * @param ecoupon
@@ -1581,7 +1582,6 @@ public class ECoupon extends Model {
      * @return
      */
     public static List<ECoupon> findVirtualCoupons(CouponsCondition condition) {
-
         String sql = "select e from ECoupon e where e.virtualVerify=0 and e.goods.isLottery=false";
         Query query = ECoupon.em().createQuery(sql + condition.getQueryFitter() + " order by e.partner");
         for (Map.Entry<String, Object> entry : condition.getParamMap().entrySet()) {
@@ -1604,6 +1604,11 @@ public class ECoupon extends Model {
         } else if (this.partner == ECouponPartner.WB) {
             if (!WubaUtil.verifyOnWuba(this)) {
                 Logger.info("virtual verify on wuba failed");
+                return false;
+            }
+        } else if (this.partner == ECouponPartner.TB) {
+            if (!TaobaoCouponUtil.verifyOnTaobao(this)) {
+                Logger.info("verify on taobao failed");
                 return false;
             }
         }
