@@ -6,6 +6,7 @@
     <link href="@@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css"/>
     <link href="@@{'/public/stylesheets/lanrentuku.css'}" rel="stylesheet" type="text/css"/>
 #{get 'moreStyles' /}
+    #{asset.js src:['/jquery-1.7.2.min.js'] /}
     <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.css'}">
 </head>
 
@@ -35,7 +36,7 @@
         src="@@{'/public/images/footer/footer_one.jpg'}"/></div>
 
 <!-- javascript -->
-#{asset.js src:['/jquery-1.7.2.min.js', '/bootstrap/bootstrap.min.js', '/bootstrap/bootstrap-datepicker.js'] /}
+#{asset.js src:['/bootstrap/bootstrap.min.js', '/bootstrap/bootstrap-datepicker.js'] /}
 #{get 'moreScripts' /}
 
 </body>

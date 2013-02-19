@@ -6,13 +6,14 @@
         <meta charset="${_response_encoding}">
         <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.css'}">
         #{get 'moreStyles' /}
+        #{asset.js src:['/jquery-1.7.2.min.js'] /}
         <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
     </head>
     <body>
         #{doLayout /}
 
         <!-- javascript -->
-        #{asset.js src:['/jquery-1.7.2.min.js', '/bootstrap/bootstrap.min.js', '/bootstrap/bootstrap-datepicker.js'] /}
+        #{asset.js src:['/bootstrap/bootstrap.min.js', '/bootstrap/bootstrap-datepicker.js'] /}
         #{get 'moreScripts' /}
     </body>
 </html>
