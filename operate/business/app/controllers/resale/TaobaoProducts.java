@@ -95,7 +95,7 @@ public class TaobaoProducts extends Controller{
                 Long taobaoItemId = addResponse.getItem().getNumIid();
 
                 //保存商品状态
-                product.creator(operateUser.id).partnerProduct(taobaoItemId)
+                product.creator(operateUser.id).partnerProduct(String.valueOf(taobaoItemId))
                         .status(ResalerProductStatus.UPLOADED).save();
 
                 ItemImgUploadRequest imgUploadRequest = new ItemImgUploadRequest();

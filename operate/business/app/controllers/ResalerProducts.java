@@ -105,26 +105,14 @@ public class ResalerProducts extends Controller {
     }
 
     /**
-     * 显示创建或者编辑分销商品的页面
-     */
-    public static void showEnter(Long id) {
-        if (id != null) {
-            renderArgs.put("product", ResalerProduct.findById(id));
-        }
-        render();
-    }
-
-    /**
      * 修改或者创建分销商品
      */
-    public static void enter(Long id) {
-        ResalerProduct product;
-        if (id == null) {
-            product = new ResalerProduct();
-        } else {
-            product = ResalerProduct.findById(id);
-        }
+    public static void enter(Long productId, String partnerPid, String url) {
+        ResalerProduct product = ResalerProduct.findById(productId);
+        product.partnerProductId = partnerPid;
+        product.url = url;
         product.save();
-        String msg = "保存成功";
+
+        showProducts(product.partner.toString().toLowerCase(), product.goods.id);
     }
 }

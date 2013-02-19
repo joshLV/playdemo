@@ -52,8 +52,6 @@ GET     /resaler-products/journal/{productId}           ResalerProducts.journal
 GET     /resaler-products/products/{partner}/{goodsId}  ResalerProducts.showProducts
 
 # 分销商品记录
-GET     /resaler-products/enter                         ResalerProducts.showEnter
-GET     /resaler-products/edit/{id}                     ResalerProducts.showEnter
 POST    /resaler-products/enter                         ResalerProducts.enter
 
 # 一号店

@@ -38,7 +38,7 @@ public class JingDongGroupByRequestTest extends FunctionalTest {
             @Override
             public void build(ResalerProduct target) {
                 target.partner = OuterOrderPartner.JD;
-                target.partnerProductId = 1234L;
+                target.partnerProductId = "1234";
             }
         });
 

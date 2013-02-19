@@ -30,7 +30,7 @@ public class ResalerProduct extends Model {
     public Long goodsLinkId;
 
     @Column(name = "partner_product_id")
-    public Long partnerProductId;//第三方的产品ID
+    public String partnerProductId;//第三方的产品ID
 
     @Column(name = "url")
     public String url;          //第三方的url
@@ -68,7 +68,6 @@ public class ResalerProduct extends Model {
     public ResalerProduct() {
         this.createdAt = new Date();
         this.updatedAt = new Date();
-        this.partnerProductId = 0L;
         this.status = ResalerProductStatus.STAGING;
     }
 
@@ -113,7 +112,7 @@ public class ResalerProduct extends Model {
         return this;
     }
 
-    public ResalerProduct partnerProduct(Long partnerProductId) {
+    public ResalerProduct partnerProduct(String partnerProductId) {
         this.partnerProductId = partnerProductId;
         return this;
     }

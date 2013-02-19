@@ -86,7 +86,7 @@ public class WubaGroupBuyProducts extends Controller {
         //保存历史
         if (response.isOk()) {
             product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id).save();
-            Long partnerProductId = response.data.getAsJsonObject().get("groupbuyId58").getAsLong();
+            String partnerProductId = response.data.getAsJsonObject().get("groupbuyId58").getAsString();
             product.partnerProduct(partnerProductId).save();
 
             ResalerProductJournal.createJournal(product, operateUser.id, product.latestJsonData,

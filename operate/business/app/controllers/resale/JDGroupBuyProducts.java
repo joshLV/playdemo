@@ -65,7 +65,7 @@ public class JDGroupBuyProducts extends Controller{
         if(response.isOk()) {
             OperateUser operateUser = OperateRbac.currentUser();
             product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id)
-                    .partnerProduct(Long.parseLong(response.selectTextTrim("./JdTeamId").trim()))
+                    .partnerProduct(response.selectTextTrim("./JdTeamId").trim())
                     .latestJson(new Gson().toJson(params))
                     .save();
             //记录历史
