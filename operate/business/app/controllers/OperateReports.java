@@ -2,6 +2,7 @@ package controllers;
 
 import models.accounts.Account;
 import models.accounts.AccountSequence;
+import models.accounts.AccountSequenceStatistic;
 import models.accounts.AccountSequenceCondition;
 import models.accounts.AccountSequenceSummary;
 import models.accounts.AccountType;
@@ -308,6 +309,31 @@ public class OperateReports extends Controller {
 
         AccountSequenceSummary summary = AccountSequence.findSummaryByCondition(condition);
         render(accountSequencePage, summary, condition);
+    }
+
+    /**
+     * 商户资金明细的统计
+     */
+    @ActiveNavigation("suppliers_account_reports")
+    public static void statisticSupplierReport(AccountSequenceCondition condition) {
+        if (condition == null) {
+            condition = getDefaultAccountSequenceCondition();
+        }
+
+        if (condition.accountUid != null && !condition.accountUid.equals(0l)) {
+            Supplier supplier = Supplier.findById(condition.accountUid);
+            if (supplier != null) {
+                condition.account = AccountUtil.getSupplierAccount(supplier.id);
+            } else {
+                condition.account = new Account();
+                condition.account.id = -1L;
+            }
+        }
+        condition.accountType = AccountType.SUPPLIER;
+        List<AccountSequenceStatistic> statisticList = AccountSequence.statisticByCondition(condition);
+        AccountSequenceSummary summary = AccountSequence.findSummaryByCondition(condition);
+        List<Supplier> supplierList = Supplier.findUnDeleted();
+        render("OperateReports/showSupplierReport.html", statisticList, summary, supplierList, condition);
     }
 }
 

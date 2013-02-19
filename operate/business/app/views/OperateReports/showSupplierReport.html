@@ -36,7 +36,23 @@
             });
         });
 
+        $("#statistic").click(function () {
+            $("#action").val("statistic");
+            $("#form").attr("action", "@{OperateReports.statisticSupplierReport()}");
+            $("#form").submit();
+        });
     });
+
+    function showStatisticSequences(tradeType, price) {
+        window.location = '@{OperateReports.showSupplierReport()}?supplierName=' + '${params['supplierName']}' +
+                '&condition.accountUid=' + '${params['condition.accountUid']}' +
+                '&condition.createdAtBegin=' + '${params['condition.createdAtBegin']}' +
+                '&condition.createdAtEnd=' + '${params['condition.createdAtEnd']}' +
+                '&condition.tradeType=' + tradeType +
+                '&condition.changeAmount=' + price +
+                '&condition.interval=' + '${params['condition.interval']}';
+    }
+    ;
 </script>
 #{/set}
 
@@ -84,7 +100,7 @@
 #{/set}
 
 <div class="body">
-    <form class="well form-inline" action="@{OperateReports.showSupplierReport()}" method="GET" id="form" name="form">
+    <form class="well form-inline" action="@{OperateReports.showSupplierReport()}" method="GET" id="form">
         商户
     #{vx.selectInputField name:"supplierName", id:"condition.accountUid", list:supplierList, value: condition?.accountUid/}
         起止日期
@@ -100,6 +116,7 @@
         #{option "REFUND"}&{'trade_type.REFUND'}#{/option}
     #{/select}
         <button type="submit" class="btn btn-primary">搜索</button>
+        <button type="button" class="btn btn-primary" id="statistic">统计搜索结果</button>
         <ul class="nav nav-pills">
             <li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">今天</a></li>
             <li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>
@@ -108,11 +125,11 @@
             <li #{if condition.interval=='1y'} class="active" #{/if}  ><a start="1y" href="#">1年内</a></li>
         </ul>
         <input type="hidden" id="condition_interval" name="condition.interval"/>
+        <input type="hidden" id="action" name="action" value="search"/>
     </form>
 
     <ul class="nav nav-tabs">
         <li class="active"><a href="#">统计金额</a></li>
-    *{<li><a href="#">下载查询结果</a></li>}*
     </ul>
     <div class="tab-content" style="margin-bottom: 10px">
         <div class="alert alert-success binary">
@@ -122,9 +139,33 @@
             一共收入 ${summary.vostroCount} 笔 / ${summary.vostroAmount} 元
         </div>
     </div>
-
-#{vx.tab name:'trade_type',enumItems: [ models.accounts.TradeType.WITHDRAW, models.accounts.TradeType.PURCHASE_COSTING,models.accounts.TradeType.REFUND],
-select:'condition_trade_type',value:condition.tradeType,form:'form'/}
+#{if "statistic".equals(params['action'])}
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#">统计结果</a></li>
+    </ul>
+    <div class="tab-content">
+        <table class="table table-striped seq">
+            <tr>
+                <th width="8%">类型</th>
+                <th width="6%">提现金额/单价</th>
+                <th width="5%">笔数</th>
+                <th width="15%">总计</th>
+            </tr>
+            #{list items:statisticList, as:'result'}
+                <tr>
+                    <td>&{'trade_type.'+ result.tradeType}</td>
+                    <td>${result.price?.formatCurrency('CNY')}</td>
+                    <td>${result.count}</td>
+                    <td><a href="#" onclick="showStatisticSequences('${result.tradeType}','${result.price}')"
+                           target="_self">${result.amount?.formatCurrency('CNY')}</a>
+                </tr>
+            #{/list}
+        </table>
+    </div>
+#{/if}
+#{else}
+    #{vx.tab name:'trade_type',enumItems: [ models.accounts.TradeType.WITHDRAW, models.accounts.TradeType.PURCHASE_COSTING,models.accounts.TradeType.REFUND],
+    select:'condition_trade_type',value:condition.tradeType,form:'form'/}
     <div class="tab-content">
         <table class="table table-striped seq">
             <tr>
@@ -139,41 +180,42 @@ select:'condition_trade_type',value:condition.tradeType,form:'form'/}
                 <th width="5%">收入</th>
                 <th width="5%">结算状态</th>
             </tr>
-        #{paginate.list items:accountSequencePage, as:'accountSequence'}
-            <tr>
-                <td>${accountSequence.serialNumber}</td>
-                <td>${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
-                <td>${accountSequence.accountName}</td>
-                <td>${accountSequence.supplierName}</td>
-                <td>${accountSequence.balance?.formatCurrency('CNY')}
+            #{paginate.list items:accountSequencePage, as:'accountSequence'}
+                <tr>
+                    <td>${accountSequence.serialNumber}</td>
+                    <td>${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+                    <td>${accountSequence.accountName}</td>
+                    <td>${accountSequence.supplierName}</td>
+                    <td>${accountSequence.balance?.formatCurrency('CNY')}
                     *{<br/>}*
                     *{(不可提现余额:${accountSequence.uncashBalance?.formatCurrency('CNY')})}*
-                </td>
-                <td>&{'trade_type.'+ accountSequence.tradeType}</td>
-                <td>${accountSequence.remark}
-                    #{if accountSequence.tradeType?.isOrder()} <br/>
-                        订单号：<a href="/orders/${accountSequence.orderId}"
-                               target="_blank">${accountSequence .orderNumber}</a>
-                    #{/if}
-                </td>
-                <td>
-                    #{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.NOSTRO}
-                        <div class="alert alert-success">${accountSequence.changeAmount?.formatCurrency('CNY')}</div>
-                    #{/if}</td>
-                <td>
-                    #{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.VOSTRO}
-                        <div class="alert alert-info">${accountSequence.changeAmount?.formatCurrency('CNY')}</div>
-                    #{/if}
-                </td>
-                <td>&{'accountSequence.'+accountSequence?.settlementStatus?:'CLEARED'}</td>
-            </tr>
-        #{/paginate.list}
+                    </td>
+                    <td>&{'trade_type.'+ accountSequence.tradeType}</td>
+                    <td>${accountSequence.remark}
+                        #{if accountSequence.tradeType?.isOrder()} <br/>
+                            订单号：<a href="/orders/${accountSequence.orderId}"
+                                   target="_blank">${accountSequence .orderNumber}</a>
+                        #{/if}
+                    </td>
+                    <td>
+                        #{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.NOSTRO}
+                            <div class="alert alert-success">${accountSequence.changeAmount?.formatCurrency('CNY')}</div>
+                        #{/if}</td>
+                    <td>
+                        #{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.VOSTRO}
+                            <div class="alert alert-info">${accountSequence.changeAmount?.formatCurrency('CNY')}</div>
+                        #{/if}
+                    </td>
+                    <td>&{'accountSequence.'+accountSequence?.settlementStatus?:'CLEARED'}</td>
+                </tr>
+            #{/paginate.list}
         </table>
     </div>
     <div class="pagination">
         <ul>
-        #{paginate.controls items:accountSequencePage /}
+            #{paginate.controls items:accountSequencePage /}
         </ul>
     </div>
 
 </div>
+#{/else}

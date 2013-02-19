@@ -3,6 +3,7 @@ package models.accounts;
 import com.uhuila.common.util.DateUtil;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,7 @@ public class AccountSequenceCondition implements Serializable {
     public Date createdAtBegin;
     public Date createdAtEnd;
     public String interval;
+    public BigDecimal changeAmount;
 
     //用于保存界面的查询条件
     public String accountName;
@@ -58,6 +60,10 @@ public class AccountSequenceCondition implements Serializable {
         if (tradeType != null) {
             filter.append(" and tradeType = :tradeType");
             params.put("tradeType", tradeType);
+        }
+        if (changeAmount != null) {
+            filter.append(" and changeAmount = :changeAmount");
+            params.put("changeAmount", changeAmount);
         }
         return filter.toString();
     }

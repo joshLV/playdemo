@@ -114,12 +114,12 @@ public class WebsiteInjector extends Controller {
 
         final Date currentDate = new Date();
         //搜索框下面的热门搜索词
-       List <Block> hotKeywords = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_TOP_HOT_KEYWORDS"), new CacheCallBack<List<Block>>() {
-           @Override
-           public List<Block> loadData() {
-               return Block.findByType(BlockType.HOT_KEYWORDS,currentDate);
-           }
-       });
+        List<Block> hotKeywords = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_TOP_HOT_KEYWORDS"), new CacheCallBack<List<Block>>() {
+            @Override
+            public List<Block> loadData() {
+                return Block.findByType(BlockType.HOT_KEYWORDS, currentDate);
+            }
+        });
 
         //首页分类的公告1
         Topic categoryTopic1 = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "CATEGORY1_TOPICS"), new CacheCallBack<Topic>() {

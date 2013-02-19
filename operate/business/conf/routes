@@ -313,6 +313,7 @@ GET     /reports                                OperateReports.showSystemReport
 GET     /reports/consumer                       OperateReports.showConsumerReport
 GET     /reports/resale                         OperateReports.showResaleReport
 GET     /reports/supplier                       OperateReports.showSupplierReport
+GET     /reports/supplier/statistic             OperateReports.statisticSupplierReport
 GET     /reports/website                        OperateReports.showWebsiteReport
 GET     /reports/platform                       OperateReports.showPlatformReport
 GET     /reports/incoming                       OperateReports.showIncomingReport

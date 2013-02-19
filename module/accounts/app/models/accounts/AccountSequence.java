@@ -299,4 +299,18 @@ public class AccountSequence extends Model {
 
         return null;
     }
+
+
+
+    public static List<AccountSequenceStatistic> statisticByCondition(AccountSequenceCondition condition) {
+        EntityManager entityManager = JPA.em();
+        Query query = entityManager.createQuery("SELECT new models.accounts.AccountSequenceStatistic(" +
+                "tradeType, changeAmount, count(changeAmount), sum(changeAmount)) " +
+                "FROM AccountSequence WHERE " + condition.getFilter() +
+                " group by tradeType, changeAmount");
+        for (String key : condition.getParams().keySet()) {
+            query.setParameter(key, condition.getParams().get(key));
+        }
+        return query.getResultList();
+    }
 }
