@@ -3,7 +3,7 @@
 #{include '/share/nav.html' /}
 #{set 'moreScripts'}
     <script>
-     $("a[rel='tooltip']").tooltip();
+     $("a[rel='tooltip']").tooltip({container:'body'});
     </script>
 #{/set}
 #{set 'moreStyles'}
@@ -18,8 +18,8 @@
 
             <td width="30%">商品名称：<input type="text" name="condition.shortName" class="input-medium"
                                         value="${condition?.shortName}"/></td>
-            <td width="30%">商品编码：<input type="text" name="condition.no" class="input-medium"
-                                        value="${condition?.no}"/></td>
+            <td width="30%">商品编码：<input type="text" name="condition.code" class="input-medium"
+                                        value="${condition?.code}"/></td>
             <td>
                 <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
             </td>

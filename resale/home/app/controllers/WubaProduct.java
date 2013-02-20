@@ -3,8 +3,6 @@ package controllers;
 import com.uhuila.common.util.DateUtil;
 import controllers.modules.resale.cas.SecureCAS;
 import models.resale.Resaler;
-import models.sales.ChannelGoodsInfo;
-import models.sales.ChannelGoodsInfoStatus;
 import models.sales.Goods;
 import models.wuba.WubaResponse;
 import models.wuba.WubaUtil;
@@ -402,6 +400,7 @@ public class WubaProduct extends Controller {
      * @param cityIds
      */
     private static void setUrlParams(String[] cities, Integer[] cityIds, Goods goods, Resaler resaler, Long wubaGoodsId) {
+        /*
         for (String city : cities) {
             for (int cityId : cityIds) {
                 String[] cityArr = city.split(":");
@@ -421,6 +420,7 @@ public class WubaProduct extends Controller {
                 }
             }
         }
+        */
     }
 
     public static void delay(Long goodsId, String deadline) {

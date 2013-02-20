@@ -1,16 +1,16 @@
 package unit;
 
 import factory.FactoryBoy;
-import models.job.ScannerChannelGoodsStatusJob;
+import factory.callback.BuildCallback;
+import models.job.ScannerResalerProductStatusJob;
 import models.resale.Resaler;
-import models.sales.ChannelGoodsInfo;
-import models.sales.ChannelGoodsInfoStatus;
+import models.sales.ResalerProduct;
+import models.sales.ResalerProductStatus;
 import org.junit.Before;
 import org.junit.Test;
 import play.test.UnitTest;
 import util.ws.MockWebServiceClient;
 
-import java.util.Date;
 import java.util.regex.Pattern;
 
 /**
@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  * Time: 下午4:08
  */
 public class ScannerChannelGoodsStatusTest extends UnitTest {
-    ChannelGoodsInfo channelGoodsInfo;
+    ResalerProduct product;
     Resaler resaler;
 
     @Before
@@ -31,19 +31,19 @@ public class ScannerChannelGoodsStatusTest extends UnitTest {
         resaler.onSaleKey = "class=\"buy_btn b_buy\"";
         resaler.offSaleKey = "class=\"buy_btn b_end\"";
         resaler.save();
-        channelGoodsInfo = FactoryBoy.create(ChannelGoodsInfo.class);
-        channelGoodsInfo.resaler = resaler;
-        channelGoodsInfo.status = null;
-        channelGoodsInfo.url = "http://t.58.com/sh/65460328362500006";
-        channelGoodsInfo.save();
-        MockWebServiceClient.clear();
-
+        product = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
+            @Override
+            public void build(ResalerProduct target) {
+                target.status = ResalerProductStatus.UPLOADED;
+                target.url = "http://t.58.com/sh/65460328362500006";
+            }
+        });
     }
 
     @Test
     public void test_Job() {
-        channelGoodsInfo.url = "http://tuan.360buy.com/team-10515352.html";
-        channelGoodsInfo.save();
+        product.url = "http://tuan.360buy.com/team-10515352.html";
+        product.save();
 
         String succTxt = "<a href=\"/team/buy.php";
         Pattern onSalePattern = Pattern.compile("href=\"/team/buy.php");
@@ -52,64 +52,55 @@ public class ScannerChannelGoodsStatusTest extends UnitTest {
         String endTxt = "<div class=\"buy_btn b_end\">";
         Pattern offSalePattern = Pattern.compile(resaler.offSaleKey);
         assertTrue(offSalePattern.matcher(endTxt).find());
+
+        MockWebServiceClient.clear();
     }
 
     @Test
     public void test_Job_from_onsale_to_onSale() {
-        channelGoodsInfo.status = ChannelGoodsInfoStatus.ONSALE;
-        channelGoodsInfo.save();
-        assertEquals(ChannelGoodsInfoStatus.ONSALE, channelGoodsInfo.status);
+        product.status = ResalerProductStatus.ONSALE;
+        product.save();
+        assertEquals(ResalerProductStatus.ONSALE, product.status);
 
         String resultXml = "<div class=\"buy_btn b_buy\"></div>";
         MockWebServiceClient.addMockHttpRequest(200, resultXml);
-        ScannerChannelGoodsStatusJob job = new ScannerChannelGoodsStatusJob();
+        ScannerResalerProductStatusJob job = new ScannerResalerProductStatusJob();
         job.doJob();
-        assertEquals(ChannelGoodsInfoStatus.ONSALE, channelGoodsInfo.status);
+        assertEquals(ResalerProductStatus.ONSALE, product.status);
     }
 
     @Test
     public void test_Job_from_null_to_onSale() {
-        assertNull(channelGoodsInfo.status);
-        assertNull(channelGoodsInfo.onSaleAt);
         String resultXml = "<div class=\"buy_btn b_buy\"></div>";
         MockWebServiceClient.addMockHttpRequest(200, resultXml);
-        ScannerChannelGoodsStatusJob job = new ScannerChannelGoodsStatusJob();
+        ScannerResalerProductStatusJob job = new ScannerResalerProductStatusJob();
         job.doJob();
-        channelGoodsInfo.refresh();
-//        assertEquals(ChannelGoodsInfoStatus.ONSALE, channelGoodsInfo.status);
-//        assertNotNull(channelGoodsInfo.onSaleAt);
+        product.refresh();
+        assertEquals(ResalerProductStatus.ONSALE, product.status);
     }
 
     @Test
     public void test_Job_from_null_to_offSale() {
-        channelGoodsInfo.save();
         String resultXml = "<div class=\"buy_btn b_end\"></div>";
         MockWebServiceClient.addMockHttpRequest(200, resultXml);
 
-        assertNull(channelGoodsInfo.status);
-        assertNull(channelGoodsInfo.offSaleAt);
-        ScannerChannelGoodsStatusJob job = new ScannerChannelGoodsStatusJob();
+        ScannerResalerProductStatusJob job = new ScannerResalerProductStatusJob();
         job.doJob();
-        channelGoodsInfo.refresh();
-//        assertEquals(ChannelGoodsInfoStatus.OFFSALE, channelGoodsInfo.status);
-//        assertNotNull(channelGoodsInfo.offSaleAt);
+        product.refresh();
+        assertEquals(ResalerProductStatus.OFFSALE, product.status);
     }
 
 
     @Test
     public void test_Job_from_offsale_to_offSale() {
-        channelGoodsInfo.status = ChannelGoodsInfoStatus.OFFSALE;
-        channelGoodsInfo.offSaleAt = new Date();
-        channelGoodsInfo.save();
+        product.status = ResalerProductStatus.OFFSALE;
+        product.save();
         String resultXml = "<div class=\"buy_btn b_end\"></div>";
         MockWebServiceClient.addMockHttpRequest(200, resultXml);
-        assertEquals(ChannelGoodsInfoStatus.OFFSALE, channelGoodsInfo.status);
-        assertNotNull(channelGoodsInfo.offSaleAt);
+        assertEquals(ResalerProductStatus.OFFSALE, product.status);
 
-        ScannerChannelGoodsStatusJob job = new ScannerChannelGoodsStatusJob();
+        ScannerResalerProductStatusJob job = new ScannerResalerProductStatusJob();
         job.doJob();
-        assertEquals(ChannelGoodsInfoStatus.OFFSALE, channelGoodsInfo.status);
-        assertNotNull(channelGoodsInfo.offSaleAt);
+        assertEquals(ResalerProductStatus.OFFSALE, product.status);
     }
-
 }

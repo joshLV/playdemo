@@ -9,5 +9,29 @@ public enum OuterOrderPartner {
     YHD,    // 一号店
     JD,     // 京东
     WB,     // 58
-    TB,     // 淘宝电子凭证
+    TB;     // 淘宝电子凭证
+
+    public String partnerName() {
+        switch (this){
+            case DD: return "当当";
+            case YHD: return "一号店";
+            case JD: return "京东";
+            case WB: return "58";
+            case TB: return "淘宝";
+            default:
+                return "未知";
+        }
+    }
+
+    public String partnerLoginName() {
+        switch (this){
+            case DD: return "dangdang";
+            case YHD: return "yihaodian";
+            case JD: return "jingdong";
+            case WB: return "wuba";
+            case TB: return "taobao";
+            default:
+                return null;
+        }
+    }
 }

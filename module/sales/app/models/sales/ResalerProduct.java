@@ -1,5 +1,6 @@
 package models.sales;
 
+import com.uhuila.common.constants.DeletedStatus;
 import models.order.OuterOrderPartner;
 import org.hibernate.annotations.Index;
 import play.db.jpa.Model;
@@ -65,10 +66,14 @@ public class ResalerProduct extends Model {
     @Column(name = "status")
     public ResalerProductStatus status;
 
+    @Enumerated(EnumType.ORDINAL)
+    public DeletedStatus deleted;
+
     public ResalerProduct() {
         this.createdAt = new Date();
         this.updatedAt = new Date();
         this.status = ResalerProductStatus.STAGING;
+        this.deleted = DeletedStatus.UN_DELETED;
     }
 
     public static ResalerProduct generate(OuterOrderPartner partner, Goods goods) {

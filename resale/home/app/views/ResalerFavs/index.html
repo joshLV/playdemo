@@ -112,15 +112,6 @@
                     </td>
 
                     <td class="action">
-                    %{city=new models.sales.ChannelGoodsInfo().getChannelGoodsInfo(favItem.goods,resaler);
-
-
-                        }%
-                    *{#{list items:, as:'city'}}*
-                        #{if favItem.thirdGroupbuyId && city!=null}
-                        <a href="${city?.url}" target="_blank">${city?.tag}</a> |
-                        #{/if}
-                    *{#{/list}}*
                     </td>
                     <td class="action">
                         <a href="#" id="del_${favItem.id}" name="${favItem.goods.id}" class="delete_gift">删除</a>

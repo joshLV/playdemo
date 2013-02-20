@@ -1,6 +1,7 @@
 package controllers;
 
 import models.operator.OperateUser;
+import com.uhuila.common.constants.DeletedStatus;
 import models.order.OuterOrderPartner;
 import models.sales.ResalerProduct;
 import models.sales.ResalerProductJournal;
@@ -36,7 +37,6 @@ public class ResalerProducts extends Controller {
         if (condition == null) {
             condition = new GoodsCondition();
         }
-
         JPAExtPaginator<models.sales.Goods> goodsPage = models.sales.Goods.findByCondition(condition, pageNumber,
                 PAGE_SIZE);
         goodsPage.setBoundaryControlsEnabled(true);
@@ -44,7 +44,7 @@ public class ResalerProducts extends Controller {
         List<Supplier> supplierList = Supplier.findUnDeleted();
         Map<String, List<ResalerProduct> > partnerProducts = new HashMap<>();
         for(models.sales.Goods goods : goodsPage.getCurrentPage()) {
-            List<ResalerProduct> products = ResalerProduct.find("byGoods", goods).fetch();
+            List<ResalerProduct> products = ResalerProduct.find("byGoodsAndDeleted", goods, DeletedStatus.UN_DELETED).fetch();
             for (ResalerProduct product : products) {
                 List<ResalerProduct> p = partnerProducts.get(goods.id + product.partner.toString());
                 if (p == null) {
@@ -105,12 +105,13 @@ public class ResalerProducts extends Controller {
     }
 
     /**
-     * 修改或者创建分销商品
+     * 创建分销商品
      */
     public static void enter(Long productId, String partnerPid, String url) {
         ResalerProduct product = ResalerProduct.findById(productId);
         product.partnerProductId = partnerPid;
         product.url = url;
+        product.status = ResalerProductStatus.ONSALE;
         product.save();
 
         showProducts(product.partner.toString().toLowerCase(), product.goods.id);

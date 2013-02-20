@@ -239,7 +239,7 @@ public class WubaGroupBuyProducts extends Controller {
                 product.status = ResalerProductStatus.OFFSALE;
                 break;
             default:
-                product.status = ResalerProductStatus.UNKONWN;
+                product.status = ResalerProductStatus.UNKNOWN;
         }
         product.save();
         redirect("/resaler-products/products/wb/" + product.goodsLinkId);

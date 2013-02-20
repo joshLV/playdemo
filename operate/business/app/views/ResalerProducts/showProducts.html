@@ -3,8 +3,8 @@
 #{include '/share/nav.html' /}
 #{set 'moreScripts'}
 <script>
-    $("a[rel='tooltip']").tooltip();
-    $("a[data-toggle='popover']").popover();
+    $("a[rel='tooltip']").tooltip({container:'body'});
+    $("a[data-toggle='popover']").popover({container:'body'});
 </script>
 #{/set}
 #{set 'moreStyles'}
@@ -59,22 +59,25 @@
     <td>
         <div class="btn-group">
         %{partner = product.partner.toString().toLowerCase()}%
-        #{if partner == 'yhd' || partner == 'wb'}
-            <a href="/resaler-products/${partner}/edit/${product.id}" class="btn btn-mini" rel="tooltip" title="编辑"><i class="icon-pencil"></i></a>
-        #{/if}
+        #{if product.deleted != com.uhuila.common.constants.DeletedStatus.DELETED}
+            #{if partner == 'yhd' || partner == 'wb'}
+                <a href="/resaler-products/${partner}/edit/${product.id}" class="btn btn-mini" rel="tooltip" title="编辑"><i class="icon-pencil"></i></a>
+            #{/if}
 
-        #{if partner == 'wb'}
-            #{if product.status != models.sales.ResalerProductStatus.OFFSALE}
-                <a href="/resaler-products/${partner}/onsale/${product.id}" class="btn btn-mini" rel="tooltip" title="上架"><i class="icon-upload"></i></a>
+            #{if partner == 'wb'}
+                #{if product.status != models.sales.ResalerProductStatus.OFFSALE}
+                    <a href="/resaler-products/${partner}/onsale/${product.id}" class="btn btn-mini" rel="tooltip" title="上架"><i class="icon-upload"></i></a>
+                #{/if}
+                #{if product.status != models.sales.ResalerProductStatus.OFFSALE}
+                    <a href="/resaler-products/${partner}/offsale/${product.id}" class="btn btn-mini" rel="tooltip" title="下架"><i class="icon-download"></i></a>
+                #{/if}
+                <a href="/resaler-products/${partner}/refresh/${product.id}" class="btn btn-mini" rel="tooltip" title="刷新状态"><i class="icon-refresh"></i></a>
             #{/if}
-            #{if product.status != models.sales.ResalerProductStatus.OFFSALE}
-                <a href="/resaler-products/${partner}/offsale/${product.id}" class="btn btn-mini" rel="tooltip" title="下架"><i class="icon-download"></i></a>
-            #{/if}
-            <a href="/resaler-products/${partner}/refresh/${product.id}" class="btn btn-mini" rel="tooltip" title="刷新状态"><i class="icon-refresh"></i></a>
         #{/if}
 
         <a href="/resaler-products/journal/${product.id}" class="btn btn-mini" rel="tooltip" title="操作历史"><i class="icon-list-alt"></i></a>
         </div>
+        <a href="/resaler-products/journal/${product.id}" class="btn btn-mini" rel="tooltip" title="删除"><i class="icon-remove"></i></a>
     </td>
 </tr>
 #{/paginate.list}

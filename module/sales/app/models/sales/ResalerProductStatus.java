@@ -10,5 +10,5 @@ public enum  ResalerProductStatus {
     REJECTED,   //审核失败
     ONSALE,     //已知为上架状态
     OFFSALE,    //已知为下架状态
-    UNKONWN,    //某种原因未知（欢迎在此补充原因）
+    UNKNOWN,    //某种原因未知（欢迎在此补充原因）
 }
