@@ -44,7 +44,42 @@ public class JDGroupBuyHelper {
         params.put("coupon", coupon);
 
         JingdongMessage response = JDGroupBuyUtil.sendRequest("verifyCode", params);
-        return response.isOk();
+        if (!response.isOk()) {
+            response = JDGroupBuyUtil.sendRequest("queryCode", params);
+            return Integer.parseInt(response.selectTextTrim("./CouponStatus")) == 10;
+        }
+        return true;
+    }
+
+    /**
+     * 查询京东的券状态.
+     *
+     * @param coupon 想要查询的一百券的券
+     * @return 京东券状态
+     *          -100    身份验证失败
+     *          -1      优惠券不存在
+     *          10      已验证使用过
+     *          20      优惠券已过期
+     *          30      优惠券已退款，优惠券退款处理中
+     *          40      优惠券使用后退款
+     */
+    public static int couponStatus(ECoupon coupon) {
+        if (coupon.partner != ECouponPartner.JD) {
+            return -1;
+        }
+
+        OuterOrder outerOrder = OuterOrder.find("byYbqOrder", coupon.order).first();
+        if (outerOrder == null) {
+            Logger.info("jingdong couponStatus failed: outerOrder not found, couponId: " + coupon.id);
+            return -1;
+        }
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("outerOrder", outerOrder);
+        params.put("coupon", coupon);
+
+        JingdongMessage response = JDGroupBuyUtil.sendRequest("queryCode", params);
+        return Integer.parseInt(response.selectTextTrim("./CouponStatus"));
     }
 
     /**

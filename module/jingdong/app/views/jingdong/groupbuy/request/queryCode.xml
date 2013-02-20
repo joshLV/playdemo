@@ -1,0 +1,8 @@
+<Message xmlns="http://tuan.360buy.com/QueryCouponRequest">
+    *{ 京东订单ID [必填] }*
+    <JdOrderId>${outerOrder.orderId}</JdOrderId>
+    *{ 券号12位 [必填] }*
+    <CouponId>${coupon.partnerCouponId}</CouponId>
+    *{ 密码6位 [必填]  }*
+    <CouponPwd>${coupon.partnerCouponPwd}</CouponPwd>
+</Message>
