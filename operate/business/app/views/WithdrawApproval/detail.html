@@ -27,7 +27,12 @@
         </div>
         <div class="control-group">
             <label class="control-label">账户类型</label>
-            <label class="control-value"> &{'account.type.' + bill.account.accountType} </label>
+            <label class="control-value"> &{'account.type.' + bill.account.accountType}
+            #{if bill?.account?.accountType ==  models.accounts.AccountType.SUPPLIER && contract?.id!=null}
+                <a href="/supplier_contract/${contract?.id}/view" target="_blank">查看合同</a>
+            #{/if}
+            </label>
+
         </div>
         <div class="control-group">
             <label class="control-label">申 请 者</label>

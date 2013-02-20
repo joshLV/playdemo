@@ -59,11 +59,22 @@
     <legend>${title}</legend>
     #{set action:"view"/}
 
-    <span style="font-size: 120%;">商&nbsp;&nbsp;&nbsp;户：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${contract?.supplierName}</span>
+    <span style="font-size: 120%;">商&nbsp;&nbsp;&nbsp;户：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    ${contract?.supplierName}
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        (共 ${contract?.getSuppliersContracts().size()} 份合同)
+         &nbsp;
+<a href="/suppliers_contracts?condition.supplierId=${contract?.supplierId}"
+   target="_blank"> 查看全部合同
+</a>
+    </span>
     <br>
     <br>
-<span style="font-size: 120%;">合同生效日期: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${contract?.effectiveAt?.format('yyyy-MM-dd')}
-    至${contract?.expireAt?.format('yyyy-MM-dd')}</span>
+<span style="font-size: 120%;">合同生效日期:
+    #{if contract?.expireAt!=null || contract?.expireAt!=null}
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${contract?.effectiveAt?.format('yyyy-MM-dd')}
+        至${contract?.expireAt?.format('yyyy-MM-dd')}</span>
+    #{/if}
     <br>
     <br>
     <span style="font-size: 120%;"> 合同说明:${contract?.description}   </span>

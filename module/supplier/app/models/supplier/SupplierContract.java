@@ -127,4 +127,8 @@ public class SupplierContract extends Model {
         return goodsPage;
     }
 
+    public List<SupplierContract> getSuppliersContracts() {
+        return SupplierContract.find("supplierId=?", this.supplierId
+        ).fetch();
+    }
 }
