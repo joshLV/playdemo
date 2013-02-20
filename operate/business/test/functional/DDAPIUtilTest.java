@@ -1,8 +1,10 @@
 package functional;
 
 import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.dangdang.groupbuy.DDGroupBuyUtil;
 import models.order.ECoupon;
+import models.order.OuterOrder;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
 import org.junit.Before;
@@ -42,7 +44,14 @@ public class DDAPIUtilTest extends FunctionalTest {
 
     @Test
     public void 测试针对在当当退款的券验证券状态的当当接口() throws Exception {
-        ECoupon ecoupon = FactoryBoy.create(ECoupon.class);
+        final ECoupon ecoupon = FactoryBoy.create(ECoupon.class);
+        FactoryBoy.create(OuterOrder.class, new BuildCallback<OuterOrder>() {
+            @Override
+            public void build(OuterOrder target) {
+                target.ybqOrder = ecoupon.order;
+                target.message="{\"team_id\":123}";
+            }
+        });
         String data = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>" +
                 "<resultObject><status_code>0</status_code><error_code>0</error_code>" +
                 "<desc><![CDATA[成功]]></desc><spid>3000003</spid><ver>1.0</ver>" +
@@ -63,7 +72,14 @@ public class DDAPIUtilTest extends FunctionalTest {
 
     @Test
     public void 测试验证券后通知当当的接口() {
-        ECoupon ecoupon = FactoryBoy.create(ECoupon.class);
+        final ECoupon ecoupon = FactoryBoy.create(ECoupon.class);
+        FactoryBoy.create(OuterOrder.class, new BuildCallback<OuterOrder>() {
+            @Override
+            public void build(OuterOrder target) {
+                target.ybqOrder = ecoupon.order;
+                target.message="{\"team_id\":123}";
+            }
+        });
         String data = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>" +
                 "<resultObject><ver>1.0</ver><spid>1</spid><error_code>0</error_code>" +
                 "<desc>success</desc><data><ddgid>100</ddgid><spgid>100</spgid>" +
@@ -87,6 +103,7 @@ public class DDAPIUtilTest extends FunctionalTest {
     public void 测试查询当当项目接口_正常情况() {
         String data = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>" +
                 "<resultObject><status_code>0</status_code>" +
+                "<ver>1.0</ver><spid>3000003</spid>" +
                 "<error_code>0</error_code><desc><![CDATA[成功]]></desc>" +
                 "<data><row><name>aaaa</name><ddgid>1800495901</ddgid>" +
                 "<spgid>15477</spgid><status>0</status></row>" +

@@ -10,6 +10,7 @@ public enum OuterOrderPartner {
     JD,     // 京东
     WB,     // 58
     TB;     // 淘宝电子凭证
+    //添加条目的话要在下面两个方法中也设置一下
 
     public String partnerName() {
         switch (this){
@@ -19,7 +20,7 @@ public enum OuterOrderPartner {
             case WB: return "58";
             case TB: return "淘宝";
             default:
-                return "未知";
+                return this.toString();
         }
     }
 

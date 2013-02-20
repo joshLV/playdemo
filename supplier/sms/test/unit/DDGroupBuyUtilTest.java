@@ -1,5 +1,6 @@
 package unit;
 
+import models.dangdang.groupbuy.DDGroupBuyUtil;
 import models.dangdang.groupbuy.DDResponse;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -23,9 +24,8 @@ public class DDGroupBuyUtilTest extends UnitTest {
                 "<resultObject><status_code>0</status_code><error_code>0</error_code>" +
                 "<desc><![CDATA[成功]]></desc><spid>3000003</spid><ver>1.0</ver>" +
                 "<data><ddgid>256</ddgid><spgid>256</spgid><state>0</state></data></resultObject>";
-        Document document = XML.getDocument(data);
 
-        DDResponse response = DDResponse.parseResponse(document);
+        DDResponse response = DDGroupBuyUtil.parseResponse(data);
         assertEquals("成功", response.desc);
         assertTrue(response.isOk());
         assertNotNull(response.data);

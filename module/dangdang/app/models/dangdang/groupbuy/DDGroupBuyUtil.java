@@ -12,6 +12,7 @@ import org.w3c.dom.Node;
 import play.Logger;
 import play.Play;
 import play.libs.WS;
+import play.libs.XML;
 import play.libs.XPath;
 import play.templates.Template;
 import play.templates.TemplateLoader;
@@ -194,10 +195,24 @@ public class DDGroupBuyUtil {
             request.addKeyword(keyword);
         }
 
-        Document xml = request.postXml();
-        Logger.info("dangdang response %s:\n%s", apiName, xml.toString());
+        String xml = request.postString();
+        Logger.info("dangdang response %s:\n%s", apiName, xml);
 
-        return DDResponse.parseResponse(xml);
+        return parseResponse(xml);
+    }
+
+    public static DDResponse parseResponse(String xml) {
+        return parseResponse(XML.getDocument(xml));
+    }
+
+    public static DDResponse parseResponse(Document document) {
+        DDResponse response = new DDResponse();
+        response.ver = XPath.selectText("/resultObject/ver", document).trim();
+        response.spid = XPath.selectText("/resultObject/spid", document).trim();
+        response.errorCode = XPath.selectText("/resultObject/error_code", document).trim();
+        response.desc = XPath.selectText("/resultObject/desc", document).trim();
+        response.data = XPath.selectNode("/resultObject/data", document);
+        return response;
     }
 
     /**

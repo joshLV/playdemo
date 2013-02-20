@@ -17,15 +17,6 @@ public class DDResponse {
     public String desc;
     public Node data;
 
-    public static DDResponse parseResponse(Document document) {
-        DDResponse response = new DDResponse();
-        response.ver = XPath.selectText("/resultObject/ver", document).trim();
-        response.spid = XPath.selectText("/resultObject/spid", document).trim();
-        response.errorCode = XPath.selectText("/resultObject/error_code", document).trim();
-        response.desc = XPath.selectText("/resultObject/desc", document).trim();
-        response.data = XPath.selectNode("/resultObject/data", document);
-        return response;
-    }
 
     public boolean isOk() {
         return errorCode != null && "0".equals(errorCode);
