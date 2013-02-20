@@ -196,10 +196,9 @@ public class TelephoneVerify extends Controller {
     }
 
     private static String doVerify(String caller, SupplierUser supplierUser, ECoupon ecoupon) {
-        String resultCode;
         if (!ecoupon.consumeAndPayCommission(supplierUser.shop.id, supplierUser, VerifyCouponType.CLERK_MESSAGE)){
             Logger.info("telephone verify failed: coupon has been refunded");
-            resultCode = "11";//对不起，该券无法消费
+            return "11";  //对不起，该券无法消费
         }
 
         String eCouponNumber = ecoupon.getMaskedEcouponSn();
@@ -217,8 +216,7 @@ public class TelephoneVerify extends Controller {
         ecoupon.save();
 
         Logger.info("telephone verify success");
-        resultCode = "0";//消费成功，价值" + ecoupon.faceValue + "元
-        return resultCode;
+        return "0";//消费成功，价值" + ecoupon.faceValue + "元
     }
 
     /**
