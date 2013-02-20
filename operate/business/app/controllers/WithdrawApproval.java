@@ -15,6 +15,7 @@ import models.order.Prepayment;
 import models.resale.Resaler;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
+import models.supplier.SupplierContract;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -69,6 +70,8 @@ public class WithdrawApproval extends Controller {
         switch (bill.account.accountType) {
             case SUPPLIER:
                 account = AccountUtil.getSupplierAccount(uid);
+                SupplierContract contract = SupplierContract.find("supplierId=? order by createdAt desc ", uid).first();
+                renderArgs.put("contract", contract);
                 break;
             case RESALER:
                 account = AccountUtil.getResalerAccount(uid);
