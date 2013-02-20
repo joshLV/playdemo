@@ -22,6 +22,8 @@ beginValue:contract?.effectiveAt?.format(), endValue:contract?.expireAt?.format(
     <textarea rows="6" cols="30" required="required" name="contract.description"
               id="contract.description">${contract?.description?.escape()?.raw()}</textarea>
     <div class="error">#{error 'contract.description' /}</div>
+        <input type="hidden" name="condition.supplierId" value="${condition?.supplierId}">
+
 </span>
 <br>
 <br>

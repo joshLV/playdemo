@@ -62,11 +62,11 @@ public class SuppliersContracts extends Controller {
     }
 
     @Right("SUPPLIER_CONTRACT_MANAGEMENT")
-    public static void add(SupplierContract contract) {
+    public static void add(SupplierContract contract, SupplierContractCondition condition) {
         Boolean hasContractManagementPermission = ContextedPermission.hasPermission("SUPPLIER_CONTRACT_MANAGEMENT");
         if (hasContractManagementPermission) {
             List<Supplier> supplierList = Supplier.findUnDeleted();
-            render(supplierList, contract);
+            render(supplierList, contract, condition);
         } else {
             index(null);
         }
@@ -140,7 +140,11 @@ public class SuppliersContracts extends Controller {
 
 
     @Right("SUPPLIER_CONTRACT_MANAGEMENT")
-    public static void create(@Valid SupplierContract contract) {
+    public static void create(@Valid SupplierContract contract, SupplierContractCondition condition) {
+        System.out.println(condition.supplierId + "===condition.supplierId>>");
+        if (condition.supplierId != 0 && contract.supplierId == 0) {
+            contract.supplierId = condition.supplierId;
+        }
         Boolean hasContractManagementPermission = ContextedPermission.hasPermission("SUPPLIER_CONTRACT_MANAGEMENT");
         if (hasContractManagementPermission == true) {
             checkExpireAt(contract);
@@ -153,7 +157,8 @@ public class SuppliersContracts extends Controller {
             }
             List<Supplier> supplierList = Supplier.findUnDeleted();
             if (Validation.hasErrors()) {
-                render("SuppliersContracts/add.html", supplierList, contract);
+                System.out.println(contract.supplierId + "===contract.supplierId>>");
+                render("SuppliersContracts/add.html", supplierList, contract, condition);
             }
             Supplier supplier = Supplier.findById(contract.supplierId);
             SupplierContract newContract = new SupplierContract(supplier);
