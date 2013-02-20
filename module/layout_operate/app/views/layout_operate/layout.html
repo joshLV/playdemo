@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    #{asset.js src:['/jquery-1.7.2.min.js'] /}
+#{asset.js src:['/jquery-1.7.2.min.js'] /}
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -30,9 +30,11 @@
             display: inline-block;
             margin-bottom: -15px;
         }
+
         .table td {
             vertical-align: middle;
         }
+
         .rank {
             background-image: url(http://img.uhcdn.com/images/r/rank.png);
             background-position: right 6px;
@@ -60,6 +62,7 @@
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container-fluid">
+
             <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -67,20 +70,21 @@
             </a>
             <a class="brand" href="#">运营后台</a>
 
-            <div class="nav-collapse">
+            <div class="nav-collapse collapse"><p class="navbar-text pull-right">
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;当前用户： </span>
+                <a id="profile" href="http://admin.seewi.com.cn/profile">${currentUser?.loginName}</a>
+                <a href="/logout">注销</a></p>
+            </div>
+
+            <div class="navbar-form">
             #{navigation.topMenus topMenus /}
                 <form class="form-inline pull-right" method="GET" target="_blank"
                       action="http://business.${play.Play.configuration.getProperty("application.baseDomain")}/quick-search"
                       style="margin: 0 0 0 0">
-                        <input type="text" class="input-small" placeholder="券号/手机/订单号" name="q">
-                        <button type="submit" class="btn btn-small btn-primary">走!</button>
-                当前用户：
-                <a id="profile" href="http://admin.seewi.com.cn/profile">${currentUser?.loginName}</a>
-                <a href="/logout">注销</a>
+                    <input type="text"class="input-medium" placeholder="券号/手机/订单号" name="q">
+                    <button type="submit" class="btn btn-small btn-primary">走!</button>
                 </form>
-
             </div>
-            <!--/.nav-collapse -->
         </div>
     </div>
 </div>
