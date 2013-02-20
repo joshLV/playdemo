@@ -14,6 +14,7 @@ import models.dangdang.DDAPIUtil;
 import models.dangdang.DDOrderItem;
 import models.dangdang.HttpProxy;
 import models.dangdang.Response;
+import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.order.ECouponHistoryMessage;
 import models.order.ECouponPartner;
@@ -31,16 +32,21 @@ import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
+import util.DateHelper;
 import util.mq.MockMQ;
+import play.data.validation.Error;
 
 import java.io.ByteArrayInputStream;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * 运营后台券验证功能测试.
- *
+ * <p/>
  * User: hejun
  * Date: 12-8-20
  * Time: 下午4:12
@@ -211,7 +217,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
                 target.originalPrice = new BigDecimal(100);
                 target.salePrice = new BigDecimal(100);
                 target.faceValue = new BigDecimal(150);
-                target.partner=ECouponPartner.DD;
+                target.partner = ECouponPartner.DD;
                 target.effectiveAt = goods.effectiveAt;
             }
         });
@@ -252,7 +258,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         // 检测测试结果
         Http.Response response = POST("/coupons/verify", params);
         assertIsOk(response);
-        String info=(String)renderArgs("ecouponStatusDescription");
+        String info = (String) renderArgs("ecouponStatusDescription");
         assertNull(info);
         assertContentMatch("第三方DD券验证失败！", response);
     }
@@ -332,6 +338,81 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         assertEquals(new BigDecimal("2.50"), promoteRebate.rebateAmount);
         assertEquals(eCouponConsumed.promoterRebateValue, promoteRebate.partAmount);
         assertEquals(RebateStatus.ALREADY_REBATE, promoteRebate.status);
+    }
+
+    @Test
+    public void test_虚拟验证初始页面_conditionIsNull() {
+
+        ECoupon eCoupon = FactoryBoy.create(ECoupon.class, "Id", new BuildCallback<ECoupon>() {
+            @Override
+            public void build(ECoupon target) {
+                target.goods = goods;
+                target.expireAt = DateHelper.afterDays(3);
+                target.partner = ECouponPartner.JD;
+                target.isCheatedOrder = true;
+                target.isFreeze = 1;
+            }
+        });
+        Http.Response response = GET("/coupons/virtual_verify");
+        assertIsOk(response);
+        assertContentType("text/html", response);
+        List<ECoupon> couponList = (List) renderArgs("couponList");
+        CouponsCondition condition = (CouponsCondition) renderArgs("condition");
+        assertNotNull(couponList);
+        assertNotNull(condition);
+
+        assertEquals(1, couponList.size());
+        assertEquals(DateUtil.getBeginExpiredDate(3), condition.expiredAtBegin);
+        assertEquals(DateUtil.getEndExpiredDate(3), condition.expiredAtEnd);
+    }
+
+    @Test
+    public void test_虚拟验证初始页面_conditionIsNotNull() {
+        goods.noRefund = true;
+        goods.save();
+
+        ECoupon eCoupon = FactoryBoy.create(ECoupon.class, "Id", new BuildCallback<ECoupon>() {
+            @Override
+            public void build(ECoupon target) {
+                target.goods = goods;
+                target.expireAt = DateHelper.afterDays(10);
+                target.partner = ECouponPartner.JD;
+                target.isFreeze = 0;
+            }
+        });
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Http.Response response = GET("/coupons/virtual_verify?condition.expiredAtBegin=" + simpleDateFormat.format(new Date()) + "&condition.expiredAtEnd=" + simpleDateFormat.format(DateHelper.afterDays(11)));
+        assertIsOk(response);
+        assertContentType("text/html", response);
+        List<ECoupon> couponList = (List) renderArgs("couponList");
+        CouponsCondition condition = (CouponsCondition) renderArgs("condition");
+        assertNotNull(couponList);
+        assertNotNull(condition);
+
+        assertEquals(1, couponList.size());
+
+    }
+
+    @Test
+    public void test_虚拟验证() {
+        goods.noRefund = true;
+        goods.save();
+
+        ECoupon eCoupon = FactoryBoy.create(ECoupon.class, "Id", new BuildCallback<ECoupon>() {
+            @Override
+            public void build(ECoupon target) {
+                target.goods = goods;
+                target.expireAt = DateHelper.afterDays(3);
+                target.partner = ECouponPartner.JD;
+                target.isFreeze = 0;
+            }
+        });
+
+        Http.Response response = PUT("/coupons/" + eCoupon.id + "/virtual_verify","","");
+        assertIsOk(response);
+        assertContentType("text/html", response);
+        List<Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("虚拟验证失败！", errors.get(0).message());
     }
 
 }
