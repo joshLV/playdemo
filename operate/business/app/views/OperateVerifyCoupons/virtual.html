@@ -4,11 +4,6 @@
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
-#{set 'moreStyles'}
-<style type="text/css">
-</style>
-#{/set}
-
 
 <div class="body">
     <legend>${title}</legend>
@@ -40,7 +35,6 @@
         <table class="table table-striped table-bordered table-condensed">
             <thead>
             <tr>
-            *{<th width="18px"><input type="checkbox" id="selectall" name="selectall">全选</th>}*
                 <th width="8px">订单号</th>
                 <th width="8px">手机</th>
                 <th width="8px">券号</th>
@@ -59,7 +53,7 @@
                 <td>
                     <a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a></abbr>
                 </td>
-                <td #{if coupon.isCheatedOrder==true}style="color: #b3dbdb;" #{/if}>${coupon?.orderItems?.phone}</td>
+                <td #{if coupon.isCheatedOrder==true}style="color: #b25a1f;" #{/if}>${coupon?.orderItems?.phone}</td>
                 <td>${coupon?.getMaskedEcouponSn()} </td>
                 <td>${coupon?.goods?.shortName}</td>
                 <td>${coupon?.salePrice?.formatCurrency('CNY')}</td>
@@ -78,19 +72,4 @@
     </form>
 </div>
 <div>
-
 </div>
-<script type="text/javascript">
-    $(function () {
-        $("#selectall").click(function () {
-            var obj = $("[name='couponIds[]']");
-            if (this.checked) {
-                if (!obj.attr("disabled")) {
-                    obj.attr("checked", 'true');//全选
-                }
-            } else {
-                $("[name='couponIds[]']").removeAttr("checked");//取消
-            }
-        });
-    });
-</script>
