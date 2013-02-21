@@ -20,6 +20,7 @@ require:
     - supplier -> supplier
     - paginate_ext -> paginate_ext
     - org.jsoup -> jsoup 1.6.1
+    - operator -> operator
     - operate_rbac -> operate_rbac
     - resale -> resale
     - consumer -> consumer
@@ -68,6 +69,7 @@ repositories:
             - resale -> *
             - supplier -> *
             - paginate_ext -> *
+            - operator -> *
             - operate_rbac -> *
             - consumer -> *
             - order -> *

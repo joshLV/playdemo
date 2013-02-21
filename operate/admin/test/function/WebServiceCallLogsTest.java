@@ -2,7 +2,7 @@ package function;
 
 import java.util.List;
 
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.journal.WebServiceCallLog;
 
 import operate.rbac.RbacLoader;

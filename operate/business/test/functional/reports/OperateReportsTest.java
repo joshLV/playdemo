@@ -6,7 +6,7 @@ import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.Order;

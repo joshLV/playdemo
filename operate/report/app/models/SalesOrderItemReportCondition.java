@@ -1,7 +1,7 @@
 package models;
 
 import com.uhuila.common.util.DateUtil;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.order.ECouponStatus;
 import models.sales.MaterialType;
 import models.supplier.Supplier;

@@ -1,6 +1,6 @@
 package controllers;
 
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.resale.Resaler;
 import models.resale.ResalerCondition;
 import models.resale.ResalerStatus;

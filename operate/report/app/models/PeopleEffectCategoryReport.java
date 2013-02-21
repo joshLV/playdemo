@@ -1,6 +1,6 @@
 package models;
 
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderItems;

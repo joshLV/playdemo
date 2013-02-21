@@ -1,11 +1,11 @@
 package controllers;
 
 import controllers.operate.cas.Security;
-import models.admin.OperateNavigation;
-import models.admin.OperatePermission;
-import models.admin.OperateRole;
-import models.admin.OperateUser;
-import models.admin.OperateUserLoginHistory;
+import models.operator.OperateNavigation;
+import models.operator.OperatePermission;
+import models.operator.OperateRole;
+import models.operator.OperateUser;
+import models.operator.OperateUserLoginHistory;
 import operate.rbac.ContextedPermission;
 import operate.rbac.NavigationHandler;
 import operate.rbac.annotations.ActiveNavigation;

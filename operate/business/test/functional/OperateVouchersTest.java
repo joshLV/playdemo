@@ -2,14 +2,12 @@ package functional;
 
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
-import factory.callback.BuildCallback;
 import models.accounts.Voucher;
 import models.accounts.VoucherType;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.consumer.User;
 import operate.rbac.RbacLoader;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http;
@@ -17,7 +15,6 @@ import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 import util.DateHelper;
 
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 

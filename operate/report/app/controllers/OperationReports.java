@@ -1,7 +1,7 @@
 package controllers;
 
 import models.*;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.supplier.Supplier;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;

@@ -2,7 +2,7 @@ package controllers.resale;
 
 import com.google.gson.Gson;
 import controllers.OperateRbac;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.dangdang.groupbuy.DDGroupBuyUtil;
 import models.dangdang.groupbuy.DDResponse;
 import models.order.OuterOrderPartner;

@@ -6,7 +6,7 @@ import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.dangdang.DDAPIInvokeException;

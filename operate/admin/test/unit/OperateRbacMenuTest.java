@@ -1,7 +1,7 @@
 package unit;
 
 import factory.FactoryBoy;
-import models.admin.OperateNavigation;
+import models.operator.OperateNavigation;
 import operate.rbac.Application;
 import operate.rbac.ContextedMenu;
 import operate.rbac.Menu;

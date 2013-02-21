@@ -19,9 +19,11 @@ require:
     - consumer -> consumer
     - sms -> sms
     - cms -> cms
+    - operator -> operator
     - order -> order
     - supplier -> supplier
     - resale -> resale
+    - operator -> operator
     - supplier_rbac -> supplier_rbac
     - asset_package -> asset_package
     - org.jsoup -> jsoup 1.6.1
@@ -62,6 +64,7 @@ repositories:
         contains:
             - layout_trader -> *
             - paginate_ext -> *
+            - operator -> *
             - sales -> *
             - accounts -> *
             - supplier -> *
@@ -69,6 +72,7 @@ repositories:
             - supplier_rbac -> *
             - view_ext -> *
             - cache_helper -> *
+            - operator -> *
             - order -> *
             - consumer -> *
             - sms -> *

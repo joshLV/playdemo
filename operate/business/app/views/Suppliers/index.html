@@ -47,16 +47,16 @@
             </td>
             <td>${supplier?.remark}</td>
             <td>
-            %{ operatorUser=null;
+                %{ operatorUser=null;
                 if(supplier.salesId!=null){
-                operatorUser=models.admin.OperateUser.findById(supplier?.salesId); }
-                }%
-                #{if operatorUser?.userName !=null && operatorUser?.userName!=""}
-                ${operatorUser?.userName}
-                #{/if}
-                #{else}
-                ${operatorUser?.loginName}
-                #{/else}
+                operatorUser=models.operator.OperateUser.findById(supplier?.salesId); }
+                    }%
+                    #{if operatorUser?.userName !=null &amp;&amp; operatorUser?.userName!=&quot;&quot;}
+                    ${operatorUser?.userName}
+                    #{/if}
+                    #{else}
+                    ${operatorUser?.loginName}
+                    #{/else}
             </td>
             <td>${supplier?.createdAt?.format()}</td>
             <td>${supplier?.updatedAt?.format()}</td>

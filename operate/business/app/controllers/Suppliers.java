@@ -5,7 +5,7 @@ import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.AccountType;
 import models.accounts.WithdrawAccount;
 import models.accounts.util.AccountUtil;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.admin.SupplierUserType;

@@ -49,7 +49,7 @@ jQuery(function ($) {
                 eCouponInput.val(value.substring(0, 7) + ' ' + value.substring(7, value.length));
             }
         }
-    }
+    };
 
     var serial = 0, coupons = [], needClearList = false;
 
@@ -132,7 +132,6 @@ jQuery(function ($) {
 
             },
             error: function (data) {
-                console.log("error:" + data);
                 window.location.href = '/verify';
             }
         });
@@ -174,6 +173,7 @@ jQuery(function ($) {
             }
             //批量验证的添加券号的按钮点击事件，点击后验证当前输入的券号.
         } else if (_this.hasClass('add-coupon')) {
+            console.log("from delegate!" + _this.text());
             addMultiVerifyCoupon();
             // 批量验证
         } else if (_this.hasClass('batch-verify')) {
@@ -203,12 +203,11 @@ jQuery(function ($) {
                         $("#verify-btn").text("验证并消费");
                         //刷新最近验证过的5张券的券号
                         $("#verifiedCoupons").load('/verify/verified-coupons', function (data) {
-                            $(this).html(data.replace(/"|\[|\]/g,""));
+                            $(this).html(data.replace(/"|\[|\]/g, ""));
                         });
                     }
                 },
                 error: function () {
-                    console.log("error:" + data);
                     window.location.href = '/verify';
                 }
 

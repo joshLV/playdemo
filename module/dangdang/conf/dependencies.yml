@@ -11,9 +11,9 @@ require:
     - commons-lang -> commons-lang 2.6
     - sales -> sales
     - paginate_ext -> paginate_ext
-    - order -> order
     - consumer -> consumer
     - accounts -> accounts
+    - operator -> operator
     - order -> order
     - sms -> sms
     - commons-httpclient -> commons-httpclient 3.1
@@ -41,5 +41,6 @@ repositories:
             - paginate_ext -> *
             - consumer -> *
             - accounts -> *
+            - operator -> *
             - order -> *
 

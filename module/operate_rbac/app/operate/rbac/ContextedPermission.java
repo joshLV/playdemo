@@ -3,9 +3,10 @@ package operate.rbac;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import models.operator.OperatePermission;
+import models.operator.OperateUser;
 import play.Logger;
-import models.admin.OperatePermission;
-import models.admin.OperateUser;
 
 public class ContextedPermission {
     
@@ -34,7 +35,7 @@ public class ContextedPermission {
      * 初始化用户的权限数据.
      * @param userName
      */
-    public static void init(OperateUser user) {        
+    public static void init(OperateUser user) {
         if (user == null) {
             return;
         }

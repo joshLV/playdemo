@@ -12,7 +12,7 @@ import models.accounts.WithdrawAccount;
 import models.accounts.WithdrawBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;

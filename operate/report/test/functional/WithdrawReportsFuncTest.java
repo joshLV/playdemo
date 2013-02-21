@@ -4,7 +4,7 @@ import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
 import models.accounts.AccountSequence;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.consumer.User;
 import operate.rbac.RbacLoader;
 import org.junit.Before;

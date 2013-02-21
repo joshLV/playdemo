@@ -5,7 +5,7 @@ import factory.FactoryBoy;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.AccountType;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.consumer.User;
 import models.resale.Resaler;
 import models.supplier.Supplier;

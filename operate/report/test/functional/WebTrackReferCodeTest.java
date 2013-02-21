@@ -2,7 +2,7 @@ package functional;
 
 import java.util.regex.Pattern;
 
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.consumer.UserWebIdentification;
 import models.webop.WebTrackRefererReport;
 import operate.rbac.RbacLoader;

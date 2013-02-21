@@ -8,7 +8,7 @@ import models.accounts.AccountType;
 import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.admin.SupplierUser;
 import models.consumer.User;
 import models.dangdang.DDAPIInvokeException;
@@ -24,7 +24,6 @@ import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
 import models.wuba.WubaUtil;
 import org.apache.commons.lang.StringUtils;
-import org.jsoup.helper.StringUtil;
 import play.Logger;
 import play.Play;
 import play.data.validation.Required;
@@ -597,7 +596,7 @@ public class ECoupon extends Model {
             promoteRebate.save();
         }
         //记录券历史信息
-        String historyRemark = StringUtil.isBlank(remark) ? "消费" : remark;
+        String historyRemark = StringUtils.isBlank(remark) ? "消费" : remark;
         ECouponHistoryMessage.with(this).operator(operator).remark(historyRemark)
                 .fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.CONSUMED).sendToMQ();
         return true;

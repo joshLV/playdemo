@@ -1,9 +1,8 @@
 package controllers.resale;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import controllers.OperateRbac;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.order.OuterOrderPartner;
 import models.resale.ResalerProduct;
 import models.resale.ResalerProductJournal;

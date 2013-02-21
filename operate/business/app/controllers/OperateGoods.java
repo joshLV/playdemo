@@ -7,7 +7,7 @@ package controllers;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.FileUploadUtil;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.resale.Resaler;

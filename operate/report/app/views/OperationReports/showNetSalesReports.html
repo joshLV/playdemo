@@ -162,7 +162,7 @@
     *{<td>${(reportPage.pageNumber-1)*reportPage.pageSize+i}</td>}*
     %{
         if(report?.supplier?.salesId!=null){
-        ou=models.admin.OperateUser.findById(report?.supplier?.salesId); }
+        ou=models.operator.OperateUser.findById(report?.supplier?.salesId); }
         }%
         <td>${ou?.jobNumber}</td>
         <td>${report?.supplier?.fullName}(${report?.supplier?.otherName})</td>

@@ -1,7 +1,7 @@
-package factory.admin;
+package factory.operator;
 
 import factory.ModelFactory;
-import models.admin.OperateRole;
+import models.operator.OperateRole;
 
 import java.util.Date;
 import java.util.HashSet;
