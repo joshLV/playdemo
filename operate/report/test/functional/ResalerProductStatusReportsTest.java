@@ -24,7 +24,7 @@ import java.util.List;
  * Date: 13-1-5
  * Time: 下午5:42
  */
-public class GoodsOnSaleAndOffSaleReportsTest extends FunctionalTest {
+public class ResalerProductStatusReportsTest extends FunctionalTest {
     ResalerProduct product;
 
     @Before
@@ -48,14 +48,11 @@ public class GoodsOnSaleAndOffSaleReportsTest extends FunctionalTest {
     }
     @Test
     public void testIndex_测试商品上下架_noCondition() {
-        Http.Response response = GET("/reports/channel");
+        Http.Response response = GET("/reports/resaler-product");
         assertIsOk(response);
         List<ResalerProduct> resalerProductList = (List) renderArgs("reportPage");
         assertNotNull(resalerProductList);
         assertEquals(1, resalerProductList.size());
-        List<Resaler> resalerList = (List) renderArgs("resalerList");
-        assertNotNull(resalerList);
-        assertEquals(1, resalerList.size());
     }
 
     @Test
@@ -92,14 +89,11 @@ public class GoodsOnSaleAndOffSaleReportsTest extends FunctionalTest {
             }
         });
 
-        Http.Response response = GET("/reports/channel");
+        Http.Response response = GET("/reports/resaler-product");
         assertIsOk(response);
         List<ResalerProduct> resalerProductList = (List) renderArgs("reportPage");
         assertNotNull(resalerProductList);
         assertEquals(2, resalerProductList.size());
-        List<Resaler> resalerList = (List) renderArgs("resalerList");
-        assertNotNull(resalerList);
-        assertEquals(3, resalerList.size());
     }
 
 }
