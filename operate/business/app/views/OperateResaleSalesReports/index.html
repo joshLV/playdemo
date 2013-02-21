@@ -142,7 +142,7 @@
     </thead>
 #{set i:0/}
 %{
-    baseUrl=play.Play.configuration.getProperty("uri.operate_business");
+    baseUrl=play.Play.configuration.getProperty("application.baseUrl");
 
     }%
 #{paginate.list items:reportPage, as:'report'}
