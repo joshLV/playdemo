@@ -2,7 +2,7 @@ package controllers.resale;
 
 import com.google.gson.Gson;
 import controllers.OperateRbac;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.jingdong.groupbuy.JDGroupBuyHelper;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.jingdong.groupbuy.JingdongMessage;

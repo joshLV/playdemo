@@ -51,7 +51,7 @@
                 if(supplier.salesId!=null){
                 operatorUser=models.operator.OperateUser.findById(supplier?.salesId); }
                     }%
-                    #{if operatorUser?.userName !=null &amp;&amp; operatorUser?.userName!=&quot;&quot;}
+                    #{if operatorUser?.userName !=null && operatorUser?.userName!=''}
                     ${operatorUser?.userName}
                     #{/if}
                     #{else}

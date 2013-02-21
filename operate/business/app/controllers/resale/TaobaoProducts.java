@@ -10,7 +10,7 @@ import com.taobao.api.response.ItemAddResponse;
 import com.taobao.api.response.ItemImgUploadResponse;
 import controllers.OperateRbac;
 import models.accounts.AccountType;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.oauth.OAuthToken;
 import models.oauth.WebSite;
 import models.order.OuterOrderPartner;

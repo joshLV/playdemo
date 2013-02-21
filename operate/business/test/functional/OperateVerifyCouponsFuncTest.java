@@ -132,6 +132,8 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         params.put("supplierId", goods.supplierId.toString());
         params.put("eCouponSn", eCoupon.eCouponSn.toString());
         params.put("shopName", shop.name);
+        params.put("remark", "test");
+
 
         // 检测测试结果
         Http.Response response = POST("/coupons/verify", params);
@@ -141,7 +143,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         assertEquals(ECouponStatus.CONSUMED, eCouponConsumed.status);
 
         ECouponHistoryMessage lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage.MQ_KEY);
-        assertEquals("消费", lastMessage.remark);
+        assertEquals("运营平台代理验证，原因:test", lastMessage.remark);
     }
 
     @Test
