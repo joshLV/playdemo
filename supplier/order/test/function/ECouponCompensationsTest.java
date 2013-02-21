@@ -89,6 +89,8 @@ public class ECouponCompensationsTest extends FunctionalTest {
         // mock jingdong response
         String resultXml = VirtualFile.open("test/data/xml/JingDongVerifyECouponFailResponse.xml").contentAsString();
         MockWebServiceClient.addMockHttpRequest(200, resultXml);
+        resultXml = VirtualFile.open("test/data/xml/JingDongVerifyECouponStatusResponse.xml").contentAsString();
+        MockWebServiceClient.addMockHttpRequest(200, resultXml);
 
         Response response = GET("/ecoupon-compensation/consumed?secret=" + ECouponCompensations.SECRET);
         assertIsOk(response);

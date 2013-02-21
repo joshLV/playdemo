@@ -45,7 +45,7 @@ public class JDGroupBuyHelper {
         params.put("coupon", coupon);
 
         JingdongMessage response = JDGroupBuyUtil.sendRequest("verifyCode", params);
-        if (!response.isOk()) {
+        if (!response.isOk() || Integer.parseInt(response.selectTextTrim("./VerifyResult")) != 200) {
             response = JDGroupBuyUtil.sendRequest("queryCode", params);
             return response.isOk() && Integer.parseInt(response.selectTextTrim("./CouponStatus")) == 10;
         }
