@@ -67,12 +67,6 @@ public class OperateOrdersTest extends FunctionalTest {
     }
 
     @Test
-    public void testCoupons() {
-        Response response = GET("/coupons");
-        assertStatus(200, response);
-    }
-
-    @Test
     public void testDetails() {
         Response response = GET("/orders/" + order.id);
         assertStatus(200, response);

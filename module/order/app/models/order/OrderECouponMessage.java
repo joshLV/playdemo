@@ -223,7 +223,7 @@ public class OrderECouponMessage implements Serializable {
 
             message = "【58团】" + (StringUtils.isNotEmpty(orderItems.goods.title) ? orderItems.goods.title : orderItems.goods.shortName) +
                     summary + "由58合作商家【一百券】提供,一百券号" + ecouponStr + note +
-                    "有效期至" + dateFormat.format(lastECoupon.expireAt) + "客服4007895858";
+                    "有效期至" + dateFormat.format(lastECoupon.expireAt) + "客服4007895858【一百券】";
         }
 
         return message;

@@ -74,7 +74,7 @@ public class UserInfos extends Controller {
         if (Play.runingInTestMode()) {
             validCode = "123456";
         }
-        String comment = "【一百券】您的验证码是" + validCode + ", 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码";
+        String comment = "您的验证码是" + validCode + ", 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码";
         SMSUtil.send(comment, mobile, "0000");
         //保存手机和验证码
         Cache.set("validCode_", validCode, "10mn");

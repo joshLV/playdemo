@@ -46,7 +46,7 @@ public class ExpiredCouponNotice extends Job {
             mobile = coupon.orderItems.phone;
             goodsName = coupon.goods.name;
             if (!pre_phone.equals(mobile) || !pre_goodsName.equals(goodsName)) {
-                SMSUtil.send("【一百券】您的" + goodsName + "，将要过期，请注意消费截止日期为" + sdf.format(coupon.expireAt) + "。",
+                SMSUtil.send("您的" + goodsName + "，将要过期，请注意消费截止日期为" + sdf.format(coupon.expireAt) + "。",
                         mobile,
                         coupon.replyCode);
                 pre_goodsName = goodsName;

@@ -127,14 +127,14 @@ public class TsingTuans extends Controller {
             }
             
             // 发给消费者
-            sendSmsToConsumer("【一百券】您尾号" + couponLastCode + "券于" + dateTime
+            sendSmsToConsumer("您尾号" + couponLastCode + "券于" + dateTime
                     + "成功消费。客服4006262166", ecoupon.orderItems.phone, ecoupon.replyCode);
             renderText("0|成功");
         } else if (ecoupon.status == ECouponStatus.CONSUMED) {
             String couponLastCode = ecoupon.getLastCode(4);
             SimpleDateFormat df = new SimpleDateFormat("MM-dd HH:mm");
             // 发给消费者
-            sendSmsToConsumer("【一百券】您尾号" + couponLastCode + "券不能重复消费，已于" + df.format(ecoupon.consumedAt)
+            sendSmsToConsumer("您尾号" + couponLastCode + "券不能重复消费，已于" + df.format(ecoupon.consumedAt)
                     + "消费过", ecoupon.orderItems.phone, ecoupon.replyCode);
 
             renderText("2|已验证不能重复验证");

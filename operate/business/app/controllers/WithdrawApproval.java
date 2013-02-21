@@ -210,7 +210,7 @@ public class WithdrawApproval extends Controller {
         if (StringUtils.isBlank(mobile) || StringUtils.isBlank(title)) {
             return;
         }
-        sendContent = "【一百券】" + title + ", " + sendContent;
+        sendContent = title + ", " + sendContent ;
         SMSUtil.send(sendContent, mobile);
 
     }

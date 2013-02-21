@@ -138,7 +138,7 @@ public class ExpiredCouponUnitTest extends UnitTest {
         assertEquals(1, sentList.size());
 
         SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
-        assertEquals("【一百券】您的" + goods.name + "，将要过期，请注意消费截止日期为" + sdf.format(coupon.expireAt) + "。", msg.getContent());
+        assertEquals("您的" + goods.name + "，将要过期，请注意消费截止日期为" + sdf.format(coupon.expireAt) + "。【一百券】", msg.getContent());
 
         job.doJob();
 

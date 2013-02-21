@@ -1139,7 +1139,7 @@ public class ECoupon extends Model {
         if (StringUtils.isBlank(phone)) {
             phone = eCoupon.orderItems.phone;
         }
-        SMSUtil.send("【一百券】" + (StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
+        SMSUtil.send( (StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
                 "截止" + dateFormat.format(eCoupon.expireAt) + ",客服：4006262166", phone, eCoupon.replyCode);
     }
 
@@ -1169,7 +1169,7 @@ public class ECoupon extends Model {
         }
         //        send(eCoupon, phone);
 
-        SMSUtil.send("【一百券】" + (StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]")) + "券号"
+        SMSUtil.send( (StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]")) + "券号"
                 + eCoupon.eCouponSn + "," +
                 "截止" + dateFormat.format(eCoupon.expireAt) + content + "客服：4006262166", phone, eCoupon.replyCode);
     }

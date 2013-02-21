@@ -192,7 +192,7 @@ public class TelephoneVerify extends Controller {
 
             // 发给消费者
             if (Play.mode.isProd()) {
-                SMSUtil.send("【一百券】您尾号" + eCouponNumber + "的券号于" + dateTime
+                SMSUtil.send("您尾号" + eCouponNumber + "的券号于" + dateTime
                         + "已成功消费，使用门店：" + supplierUser.shop.name + "。如有疑问请致电：4006262166", ecoupon.orderItems.phone, ecoupon.replyCode);
             }
             ecoupon.verifyType = VerifyCouponType.TELEPHONE;

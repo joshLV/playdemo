@@ -109,8 +109,8 @@ public class ECouponUnitTest extends UnitTest {
         eCoupon.save();
         ECoupon.sendUserMessageInfoWithoutCheck("13712345678", eCoupon, eCoupon.shop.id.toString());
         SMSMessage checkMsg = (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
-        assertEquals("【一百券】" + eCoupon.goods.title + "券号" + eCoupon.eCouponSn + ",截止" + DateUtil.dateToString(eCoupon.goods.expireAt, 0) + ",[" +
-                eCoupon.shop.name + "]" + eCoupon.shop.address + " " + eCoupon.shop.phone + ";客服：4006262166", checkMsg.getContent());
+        assertEquals(eCoupon.goods.title + "券号" + eCoupon.eCouponSn + ",截止" + DateUtil.dateToString(eCoupon.goods.expireAt, 0) + ",[" +
+                eCoupon.shop.name + "]" + eCoupon.shop.address + " " + eCoupon.shop.phone + ";客服：4006262166【一百券】", checkMsg.getContent());
     }
 
     /**

@@ -48,17 +48,17 @@ import factory.callback.BuildCallback;
  */
 public class ClerkSmsVerifyBaseTest extends FunctionalTest {
 
-	User kfcUser;
+    User kfcUser;
     Goods kfcGoods;
-	Supplier kfc;
-	SupplierUser kfcClerk;
-	Brand kfcBrand;
-	Shop kfcShop;
-	Order kfcOrder;
-	OrderItems kfcOrderItem;
-	ECoupon kfcECoupon;
+    Supplier kfc;
+    SupplierUser kfcClerk;
+    Brand kfcBrand;
+    Shop kfcShop;
+    Order kfcOrder;
+    OrderItems kfcOrderItem;
+    ECoupon kfcECoupon;
 
-	@Test
+    @Test
     public void 类型检查() {
         assertTrue(new EnSmsReceivers() instanceof Controller);
     }
@@ -73,7 +73,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         assertSMSContentLength(content);
         Pattern ptn = Pattern.compile(pattern);
         boolean ok = ptn.matcher(content).find();
-        assertTrue("The content (" + content + ") does not match '" + pattern + "'", ok);
+        assertTrue("The content (" + content + ") does not match '" + pattern + "'【一百券】", ok);
     }
 
     protected static void assertSMSContentLength(String content) {
@@ -81,13 +81,13 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
     }
 
     protected SMSMessage getLastClerkSMSMessage() {
-        return (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
+        return (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
     }
 
     protected SMSMessage getLastConsumerSMSMessage() {
-        return (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
+        return (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS_QUEUE);
     }
-    
+
     /**
      * 执行特定消息发送代码的接口.
      *
@@ -105,28 +105,28 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
      * 准备测试数据的公共方法。
      */
     protected void setupTestData() {
-    	FactoryBoy.deleteAll();
-    	kfcUser = FactoryBoy.create(User.class);
-    	kfc = FactoryBoy.create(Supplier.class, "KFC");
-    	kfcShop = FactoryBoy.create(Shop.class);
-    	kfcBrand = FactoryBoy.create(Brand.class, new BuildCallback<Brand>() {
-			@Override
-			public void build(Brand brand) {
-				brand.name = "肯德基";
-			}
-		});
-    	kfcClerk = FactoryBoy.create(SupplierUser.class);
-    	
-    	kfcGoods = FactoryBoy.create(Goods.class);
-    	kfcOrder = FactoryBoy.create(Order.class);
-    	kfcOrderItem = FactoryBoy.create(OrderItems.class);
-    	kfcECoupon = FactoryBoy.create(ECoupon.class);
-    	
-    	// 测试验证涉及金额转账，所以要有初始资金.
+        FactoryBoy.deleteAll();
+        kfcUser = FactoryBoy.create(User.class);
+        kfc = FactoryBoy.create(Supplier.class, "KFC");
+        kfcShop = FactoryBoy.create(Shop.class);
+        kfcBrand = FactoryBoy.create(Brand.class, new BuildCallback<Brand>() {
+            @Override
+            public void build(Brand brand) {
+                brand.name = "肯德基";
+            }
+        });
+        kfcClerk = FactoryBoy.create(SupplierUser.class);
+
+        kfcGoods = FactoryBoy.create(Goods.class);
+        kfcOrder = FactoryBoy.create(Order.class);
+        kfcOrderItem = FactoryBoy.create(OrderItems.class);
+        kfcECoupon = FactoryBoy.create(ECoupon.class);
+
+        // 测试验证涉及金额转账，所以要有初始资金.
         Account account = AccountUtil.getPlatformIncomingAccount();
         account.amount = new BigDecimal("10000");
         account.save();
-        
+
         MockMQ.clear();
     }
 
@@ -137,7 +137,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
      */
     public void testNormalClerkCheck(MessageSender messageSender) {
         assertEquals(ECouponStatus.UNCONSUMED, kfcECoupon.status);
-        
+
         Http.Response response = messageSender.doMessageSend(kfcClerk.mobile, kfcECoupon);
 
         assertStatus(200, response);
@@ -148,11 +148,11 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
 
         // 消费者短信
         SMSMessage msg = getLastConsumerSMSMessage();
-        assertSMSContentMatch("【一百券】您尾号" + getLastString(ecoupon.eCouponSn, 4) + "券于\\d+月\\d+日\\d+时\\d+分成功消费，门店：" + kfcShop.name + "。客服4006262166",
+        assertSMSContentMatch("您尾号" + getLastString(ecoupon.eCouponSn, 4) + "券于\\d+月\\d+日\\d+时\\d+分成功消费，门店：" + kfcShop.name + "。客服4006262166",
                 msg.getContent());
         // 店员短信
         msg = getLastClerkSMSMessage();
-        assertSMSContentMatch("【一百券】" + getBeginString(ecoupon.orderItems.phone, 3) + "\\*\\*\\*\\*\\*" +
+        assertSMSContentMatch(getBeginString(ecoupon.orderItems.phone, 3) + "\\*\\*\\*\\*\\*" +
                 getLastString(ecoupon.orderItems.phone, 3) + "尾号" + getLastString(ecoupon.eCouponSn, 4) + "券（面值" +
                 ecoupon.faceValue + "元）于\\d+月\\d+日\\d+时\\d+分在" + kfcShop.name + "验证成功。客服4006262166", msg.getContent());
     }
@@ -188,7 +188,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         day = kfcECoupon.getWeek();
         // 消费者短信
         SMSMessage msg = getLastClerkSMSMessage();
-        assertSMSContentMatch("【一百券】对不起，该券只能在" + day.substring(0, day.length() - 1) + "的" + kfcGoods.useBeginTime + "~" + kfcGoods.useEndTime + "时间内使用！如有疑问请致电：4006262166", msg.getContent());
+        assertSMSContentMatch("对不起，该券只能在" + day.substring(0, day.length() - 1) + "的" + kfcGoods.useBeginTime + "~" + kfcGoods.useEndTime + "时间内使用！如有疑问请致电：4006262166", msg.getContent());
 
         Goods goods = Goods.findById(kfcGoods.id);
         ca = Calendar.getInstance();
@@ -199,12 +199,12 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         ca.set(Calendar.HOUR_OF_DAY, 2);
         goods.useEndTime = df.format(ca.getTime());
         goods.save();
-        
+
         response = messageSender.doMessageSend(kfcClerk.mobile, kfcECoupon);
         day = kfcECoupon.getWeek();
         assertStatus(200, response);
         msg = getLastClerkSMSMessage();
-        assertSMSContentMatch("【一百券】对不起，该券只能在" + day.substring(0, day.length() - 1) + "的" + goods.useBeginTime + "~次日" + goods.useEndTime + "时间内使用！如有疑问请致电：4006262166", msg.getContent());
+        assertSMSContentMatch("对不起，该券只能在" + day.substring(0, day.length() - 1) + "的" + goods.useBeginTime + "~次日" + goods.useEndTime + "时间内使用！如有疑问请致电：4006262166", msg.getContent());
 
 
         goods = Goods.findById(kfcGoods.id);
@@ -218,15 +218,15 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
 
         assertStatus(200, response);
         msg = getLastClerkSMSMessage();
-        assertSMSContentMatch("【一百券】对不起，该券只能在每天的" + goods.useBeginTime + "~" + goods.useEndTime + "时间内使用！如有疑问请致电：4006262166", msg.getContent());
+        assertSMSContentMatch("对不起，该券只能在每天的" + goods.useBeginTime + "~" + goods.useEndTime + "时间内使用！如有疑问请致电：4006262166", msg.getContent());
     }
 
-    private int getWeek(int w){
-        if (w == 1){
+    private int getWeek(int w) {
+        if (w == 1) {
             return 7;
-        }else if(w >1 && w < 8){
-            return w -1;
-        }else {
+        } else if (w > 1 && w < 8) {
+            return w - 1;
+        } else {
             return -1;
         }
     }
@@ -237,13 +237,13 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
      * @param messageSender
      */
     public void testInvalidFormatMessage(InvalidMessageSender messageSender) {
-    	kfcClerk.mobile = "15900002342";
-    	kfcClerk.save();
-    	
+        kfcClerk.mobile = "15900002342";
+        kfcClerk.save();
+
         Http.Response response = messageSender.doMessageSend("abc");
         assertEquals("Unsupport Message", response.out.toString());
         SMSMessage msg = getLastConsumerSMSMessage();
-        assertSMSContentMatch("【一百券】券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：4006262166",
+        assertSMSContentMatch("券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：4006262166",
                 msg.getContent());
     }
 
@@ -256,11 +256,11 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         kfcECoupon.isFreeze = 1;
         kfcECoupon.save();
         Response response = messageSender.doMessageSend(kfcClerk.mobile, kfcECoupon);
-        assertContentEquals("【一百券】该券已被冻结", response);
+        assertContentEquals("该券已被冻结", response);
 
         SMSMessage msg = getLastClerkSMSMessage();
         assertSMSContentLength(msg.getContent());
-        assertEquals("【一百券】该券已被冻结,如有疑问请致电：4006262166", msg.getContent());
+        assertEquals("该券已被冻结,如有疑问请致电：4006262166【一百券】", msg.getContent());
     }
 
     /**
@@ -269,15 +269,15 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
      * @param messageSender
      */
     public void testEcouponNotExists(InvalidMessageSender messageSender) {
-    	kfcClerk.mobile = "15900002342";
-    	kfcClerk.save();
-    	
+        kfcClerk.mobile = "15900002342";
+        kfcClerk.save();
+
         String couponNumber = "1123456700";
         Http.Response response = messageSender.doMessageSend("#" + couponNumber);
-        assertContentEquals("【一百券】您输入的券号" + couponNumber + "不存在，请确认！", response);
+        assertContentEquals("您输入的券号" + couponNumber + "不存在，请确认！", response);
 
         SMSMessage msg = getLastClerkSMSMessage();
-        assertSMSContentMatch("【一百券】您输入的券号" + couponNumber + "不存在，请与顾客确认，如有疑问请致电：4006262166",
+        assertSMSContentMatch("您输入的券号" + couponNumber + "不存在，请与顾客确认，如有疑问请致电：4006262166",
                 msg.getContent());
     }
 
@@ -289,12 +289,12 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
     public void testInvalidSupplier(MessageSender messageSender) {
         kfc.deleted = DeletedStatus.DELETED;
         kfc.save();
-        
+
         Response response = messageSender.doMessageSend(kfcClerk.mobile, kfcECoupon);
-        assertContentEquals("【一百券】" + kfc.fullName + "未在一百券登记使用", response);
+        assertContentEquals(kfc.fullName + "未在一百券登记使用", response);
 
         SMSMessage msg = getLastClerkSMSMessage();
-        assertSMSContentMatch("【一百券】" + kfc.fullName + "未在一百券登记使用，如有疑问请致电：4006262166",
+        assertSMSContentMatch(kfc.fullName + "未在一百券登记使用，如有疑问请致电：4006262166",
                 msg.getContent());
     }
 
@@ -307,10 +307,10 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         kfc.save();
 
         Response response = messageSender.doMessageSend(kfcClerk.mobile, kfcECoupon);
-        assertContentEquals("【一百券】" + kfc.fullName + "已被一百券锁定", response);
+        assertContentEquals( kfc.fullName + "已被一百券锁定", response);
 
         SMSMessage msg = getLastClerkSMSMessage();
-        assertSMSContentMatch("【一百券】" + kfc.fullName + "已被一百券锁定，如有疑问请致电：4006262166",
+        assertSMSContentMatch(kfc.fullName + "已被一百券锁定，如有疑问请致电：4006262166",
                 msg.getContent());
     }
 
@@ -320,13 +320,13 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
     public void testInvalidClerk(MessageSender messageSender) {
         kfcClerk.deleted = DeletedStatus.DELETED;
         kfcClerk.save();
-        
+
         Response response = messageSender.doMessageSend(kfcClerk.mobile, kfcECoupon);
-        assertContentEquals("【一百券】请确认券号" + kfcECoupon.eCouponSn + "(" + kfc.fullName + ")是否本店商品，或店号手机号是否已在一百券登记", response);
+        assertContentEquals("请确认券号" + kfcECoupon.eCouponSn + "(" + kfc.fullName + ")是否本店商品，或店号手机号是否已在一百券登记【一百券】", response);
 
         SMSMessage msg = getLastConsumerSMSMessage();
         assertSMSContentLength(msg.getContent());
-        assertEquals("【一百券】请确认券号" + kfcECoupon.eCouponSn + "(" + kfc.fullName + ")是否本店商品，或店号手机号是否已在一百券登记。如有疑问请致电：4006262166", msg.getContent());
+        assertEquals("请确认券号" + kfcECoupon.eCouponSn + "(" + kfc.fullName + ")是否本店商品，或店号手机号是否已在一百券登记。如有疑问请致电：4006262166【一百券】", msg.getContent());
     }
 
     /**
@@ -337,40 +337,40 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
      */
     public void testTheGoodsFromOtherSupplier(MessageSender messageSender) {
         final Supplier mcdonalds = FactoryBoy.create(Supplier.class);
-    	final Shop mcdonaldsShop = FactoryBoy.create(Shop.class);
-    	FactoryBoy.create(Brand.class, new BuildCallback<Brand>() {
-			@Override
-			public void build(Brand brand) {
-				brand.name = "麦当劳";
-			}
-		});
-    	SupplierUser mcdonaldsClerk = FactoryBoy.create(SupplierUser.class, new BuildCallback<SupplierUser>() {
-			@Override
-			public void build(SupplierUser supplierUser) {
-				supplierUser.supplier = mcdonalds;
-				supplierUser.mobile = "13800010002";  //指定另一手机号
-				supplierUser.shop = mcdonaldsShop;
-			}
-		});
-        
+        final Shop mcdonaldsShop = FactoryBoy.create(Shop.class);
+        FactoryBoy.create(Brand.class, new BuildCallback<Brand>() {
+            @Override
+            public void build(Brand brand) {
+                brand.name = "麦当劳";
+            }
+        });
+        SupplierUser mcdonaldsClerk = FactoryBoy.create(SupplierUser.class, new BuildCallback<SupplierUser>() {
+            @Override
+            public void build(SupplierUser supplierUser) {
+                supplierUser.supplier = mcdonalds;
+                supplierUser.mobile = "13800010002";  //指定另一手机号
+                supplierUser.shop = mcdonaldsShop;
+            }
+        });
+
         Response response = messageSender.doMessageSend(mcdonaldsClerk.mobile, kfcECoupon);
-        assertContentEquals("【一百券】请确认券号" + kfcECoupon.eCouponSn + "(" + kfc.fullName + ")是否本店商品，或店号手机号是否已在一百券登记", response);
+        assertContentEquals("请确认券号" + kfcECoupon.eCouponSn + "(" + kfc.fullName + ")是否本店商品，或店号手机号是否已在一百券登记", response);
 
         SMSMessage msg = getLastClerkSMSMessage();
         assertSMSContentLength(msg.getContent());
-        assertEquals("【一百券】请确认券号" + kfcECoupon.eCouponSn + "(" + kfc.fullName + ")是否本店商品，或店号手机号是否已在一百券登记。如有疑问请致电：4006262166", msg.getContent());
+        assertEquals("请确认券号" + kfcECoupon.eCouponSn + "(" + kfc.fullName + ")是否本店商品，或店号手机号是否已在一百券登记。如有疑问请致电：4006262166【一百券】", msg.getContent());
     }
 
     /**
      * 测试已经消费的券重复验证
      */
     public void testConsumeredECoupon(MessageSender messageSender) {
-    	kfcECoupon.status = ECouponStatus.CONSUMED;
-    	kfcECoupon.consumedAt = DateHelper.beforeDays(1);
-    	kfcECoupon.save();
+        kfcECoupon.status = ECouponStatus.CONSUMED;
+        kfcECoupon.consumedAt = DateHelper.beforeDays(1);
+        kfcECoupon.save();
 
         Http.Response response = messageSender.doMessageSend(kfcClerk.mobile, kfcECoupon);
-        assertContentEquals("【一百券】券号" + kfcECoupon.eCouponSn + "已消费，无法再次消费", response);
+        assertContentEquals("券号" + kfcECoupon.eCouponSn + "已消费，无法再次消费", response);
 
         SimpleDateFormat df = new SimpleDateFormat("MM-dd HH:mm");
         ECoupon ecoupon = ECoupon.findById(kfcECoupon.id);
@@ -378,8 +378,8 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         assertEquals(ECouponStatus.CONSUMED, ecoupon.status);
         SMSMessage msg = getLastConsumerSMSMessage();
         assertSMSContentLength(msg.getContent());
-        assertEquals("【一百券】" + SmsReceiverUtil.getMaskedMobile(kfcUser.mobile) + "尾号" + getLastString(ecoupon.eCouponSn, 4) + "券（" + ecoupon
-                .faceValue + "元）不能重复消费，已于" + df.format(ecoupon.consumedAt) + "在" + kfcShop.name + "消费过", msg.getContent());
+        assertEquals("" + SmsReceiverUtil.getMaskedMobile(kfcUser.mobile) + "尾号" + getLastString(ecoupon.eCouponSn, 4) + "券（" + ecoupon
+                .faceValue + "元）不能重复消费，已于" + df.format(ecoupon.consumedAt) + "在" + kfcShop.name + "消费过【一百券】", msg.getContent());
     }
 
     /**
@@ -391,11 +391,11 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         kfcECoupon.save();
 
         Http.Response response = messageSender.doMessageSend(kfcClerk.mobile, kfcECoupon);
-        assertContentEquals("【一百券】券号" + kfcECoupon.eCouponSn + "已过期，无法进行消费", response);
+        assertContentEquals("券号" + kfcECoupon.eCouponSn + "已过期，无法进行消费", response);
 
         SMSMessage msg = getLastClerkSMSMessage();
         assertSMSContentLength(msg.getContent());
-        assertEquals("【一百券】券号" + kfcECoupon.eCouponSn + "已过期，无法进行消费。如有疑问请致电：4006262166", msg.getContent());
+        assertEquals("券号" + kfcECoupon.eCouponSn + "已过期，无法进行消费。如有疑问请致电：4006262166【一百券】", msg.getContent());
     }
 
 

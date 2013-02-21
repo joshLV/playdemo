@@ -137,7 +137,7 @@ public class SupplierCoupons extends Controller {
                     renderJSON("{\"code\":\"5\"}");
                 }
                 // 发给消费者
-                SMSUtil.send2("【一百券】您尾号" + ecouponSNLast4Code + "的券号于" + dateTime
+                SMSUtil.send2("您尾号" + ecouponSNLast4Code + "的券号于" + dateTime
                         + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：400-6262-166", eCoupon.orderItems.phone, eCoupon.replyCode);
             } else {
                 // 多张券验证
@@ -174,14 +174,14 @@ public class SupplierCoupons extends Controller {
                 }
                 
                 if (availableECoupons.size() > 0) {
-                    SMSUtil.send2("【一百券】您尾号" + ecouponSNLast4Code
+                    SMSUtil.send2("您尾号" + ecouponSNLast4Code
                                     + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(0) + "元)于" 
                                     + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。您还有" + availableECouponSNs.size() + "张券（"
                                     + StringUtils.join(availableECouponSNs, "/") 
                                     + "总面值" + availableAmount.setScale(0) + "元）未消费。如有疑问请致电：4006262166",
                                     eCoupon.orderItems.phone, eCoupon.replyCode);
                 } else {
-                    SMSUtil.send2("【一百券】您尾号" + ecouponSNLast4Code
+                    SMSUtil.send2("您尾号" + ecouponSNLast4Code
                                     + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(0) + "元)于" 
                                     + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
                                     eCoupon.orderItems.phone, eCoupon.replyCode);

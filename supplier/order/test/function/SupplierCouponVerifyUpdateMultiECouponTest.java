@@ -152,10 +152,10 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         List<String> availableECouponSNs = getAvaiableECouponSNs(ecoupons, 2);
 
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
-        assertSMSContentEquals("【一百券】您尾号" + coupon1.getLastCode(4)
+        assertSMSContentEquals("您尾号" + coupon1.getLastCode(4)
                 + "共3张券(总面值250元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。您还有2张券（"
-                        + StringUtils.join(availableECouponSNs, "/")
-                		+ "总面值100元）未消费。如有疑问请致电：4006262166",
+                + StringUtils.join(availableECouponSNs, "/")
+                + "总面值100元）未消费。如有疑问请致电：4006262166",
                 msg.getContent());
     }
 
@@ -173,7 +173,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         getAvaiableECouponSNs(ecoupons, 0);
 
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
-        assertSMSContentEquals("【一百券】您尾号" + coupon1.getLastCode(4)
+        assertSMSContentEquals("您尾号" + coupon1.getLastCode(4)
                 + "共5张券(总面值350元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
                 msg.getContent());
     }
@@ -192,7 +192,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         getAvaiableECouponSNs(ecoupons, 0);
 
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
-        assertSMSContentEquals("【一百券】您尾号" + coupon1.getLastCode(4)
+        assertSMSContentEquals("您尾号" + coupon1.getLastCode(4)
                 + "共5张券(总面值350元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
                 msg.getContent());
     }
@@ -230,10 +230,10 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         List<String> availableECouponSNs = getAvaiableECouponSNs(ecoupons, 1);
 
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
-        assertSMSContentEquals("【一百券】您尾号" + singleCoupon1.getLastCode(4)
+        assertSMSContentEquals("您尾号" + singleCoupon1.getLastCode(4)
                 + "共2张券(总面值150元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。您还有1张券（"
-                        + StringUtils.join(availableECouponSNs, "/")
-                        + "总面值75元）未消费。如有疑问请致电：4006262166",
+                + StringUtils.join(availableECouponSNs, "/")
+                + "总面值75元）未消费。如有疑问请致电：4006262166",
                 msg.getContent());
     }
 
@@ -251,7 +251,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         getAvaiableECouponSNs(ecoupons, 0);
 
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
-        assertSMSContentEquals("【一百券】您尾号" + singleCoupon1.getLastCode(4)
+        assertSMSContentEquals("您尾号" + singleCoupon1.getLastCode(4)
                 + "共3张券(总面值225元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
                 msg.getContent());
     }
@@ -270,7 +270,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         getAvaiableECouponSNs(ecoupons, 0);
 
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
-        assertSMSContentEquals("【一百券】您尾号" + singleCoupon1.getLastCode(4)
+        assertSMSContentEquals("您尾号" + singleCoupon1.getLastCode(4)
                 + "共3张券(总面值225元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
                 msg.getContent());
     }
@@ -331,7 +331,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
         }
 
         assertEquals("期望可用券数" + expectAvaiableECouponNumber + ", 实际为" + availableECouponSNs.size(),
-                        expectAvaiableECouponNumber, availableECouponSNs.size());
+                expectAvaiableECouponNumber, availableECouponSNs.size());
 
         return availableECouponSNs;
     }
@@ -344,6 +344,6 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
      */
     public static void assertSMSContentEquals(String pattern, String content) {
         assertEquals("The content (" + content + ") does not match (" + pattern
-                + ")", pattern, content);
+                + ")", pattern+"【一百券】", content);
     }
 }
