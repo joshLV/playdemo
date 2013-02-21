@@ -95,13 +95,7 @@ function getOnclickCallback(id) {
         if(treeNode.isParent){
             zTree.expandNode(treeNode, null, null, null, true);
         }else{
-            if (treeNode.checked) {
-                //点击了checkbox
-                zTree.selectNode(treeNode);
-            }else{
-                //选择文字或者取消选择（撤销取消选择的行为）
-                zTree.checkNode(treeNode);
-            }
+            zTree.checkNode(treeNode, !treeNode.checked);
             var checkedNodes = zTree.getCheckedNodes();
             $("#" + id + "-show").val(buildCheckedStr(checkedNodes, ",", "name"))
             $("#" + id + "-value").val(buildCheckedStr(checkedNodes, ",", "id"))

@@ -153,6 +153,7 @@ public class JDGroupBuyProducts extends Controller{
             jsonString.append("{id:'").append(XPath.selectText("./Id", city).trim())
                     .append("',name:'").append(XPath.selectText("./Name", city).trim())
                     .append("',isParent:").append(isParent)
+                    .append(",nocheck:").append(isParent)
                     .append(",type:'").append(type)
                     .append("'}");
         }
