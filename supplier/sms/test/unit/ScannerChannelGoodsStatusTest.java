@@ -3,6 +3,7 @@ package unit;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.job.ScannerResalerProductStatusJob;
+import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.sales.ResalerProduct;
 import models.sales.ResalerProductStatus;
@@ -26,18 +27,23 @@ public class ScannerChannelGoodsStatusTest extends UnitTest {
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
-        resaler = FactoryBoy.create(Resaler.class);
-        resaler.loginName = "wuba";
-        resaler.onSaleKey = "class=\"buy_btn b_buy\"";
-        resaler.offSaleKey = "class=\"buy_btn b_end\"";
-        resaler.save();
+        resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
+            @Override
+            public void build(Resaler target) {
+                target.loginName = Resaler.WUBA_LOGIN_NAME;
+                target.onSaleKey = "class=\"buy_btn b_buy\"";
+                target.offSaleKey = "class=\"buy_btn b_end\"";
+            }
+        });
         product = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
             @Override
             public void build(ResalerProduct target) {
                 target.status = ResalerProductStatus.UPLOADED;
+                target.partner = OuterOrderPartner.WB;
                 target.url = "http://t.58.com/sh/65460328362500006";
             }
         });
+        MockWebServiceClient.clear();
     }
 
     @Test
@@ -66,6 +72,7 @@ public class ScannerChannelGoodsStatusTest extends UnitTest {
         MockWebServiceClient.addMockHttpRequest(200, resultXml);
         ScannerResalerProductStatusJob job = new ScannerResalerProductStatusJob();
         job.doJob();
+        product.refresh();
         assertEquals(ResalerProductStatus.ONSALE, product.status);
     }
 

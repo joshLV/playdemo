@@ -36,7 +36,7 @@ public class ScannerResalerProductStatusJob extends Job {
         resalers.put(OuterOrderPartner.JD, Resaler.findOneByLoginName(Resaler.JD_LOGIN_NAME));
 
         for (Map.Entry<OuterOrderPartner, Resaler> entry : resalers.entrySet()) {
-            if (entry.getKey() == null) {
+            if (entry.getValue() == null) {
                 continue;
             }
             String onSaleKey = entry.getValue().onSaleKey;
@@ -56,13 +56,14 @@ public class ScannerResalerProductStatusJob extends Job {
                 //变更前的状态
                 ResalerProductStatus preStatus = product.status;
                 String retResponse = WebServiceRequest.url(url).getString();
-                Matcher onSaleMatcher = onSalePattern.matcher(retResponse);
-                Matcher offSaleMatcher = offSalePattern.matcher(retResponse);
-                if (preStatus != ResalerProductStatus.ONSALE && onSaleMatcher.find()) {
+                boolean onSale = onSalePattern.matcher(retResponse).find();
+                boolean offSale = offSalePattern.matcher(retResponse).find();
+
+                if (onSale) {
                     product.status = ResalerProductStatus.ONSALE;
-                } else if (preStatus != ResalerProductStatus.OFFSALE && (!onSaleMatcher.find() || offSaleMatcher.find())) {
+                } else if (offSale) {
                     product.status = ResalerProductStatus.OFFSALE;
-                } else if (!offSaleMatcher.find() && !onSaleMatcher.find()) {
+                } else {
                     product.status = ResalerProductStatus.UNKNOWN;
                 }
                 product.save();

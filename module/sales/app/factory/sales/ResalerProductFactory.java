@@ -1,5 +1,6 @@
 package factory.sales;
 
+import com.uhuila.common.constants.DeletedStatus;
 import factory.FactoryBoy;
 import factory.ModelFactory;
 import models.order.OuterOrderPartner;
@@ -18,6 +19,9 @@ public class ResalerProductFactory extends ModelFactory<ResalerProduct> {
         resalerProduct.goods = FactoryBoy.lastOrCreate(Goods.class);
         resalerProduct.save();
         resalerProduct.goodsLinkId =  resalerProduct.id + 10000;
+        resalerProduct.deleted = DeletedStatus.UN_DELETED;
+        resalerProduct.partnerProductId = "12321";
+        resalerProduct.url = "http://www.yibaiquan.com/p/12321";
         return resalerProduct.save();
     }
 }
