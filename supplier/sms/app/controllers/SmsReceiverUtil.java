@@ -108,7 +108,7 @@ public class SmsReceiverUtil {
                                     + "至" + dateFormat.format(ecoupon.goods.useEndTime) + "时间段内消费，现在不能消费");
                         }
 
-                        if (!ecoupon.consumeAndPayCommission(shopId, null, supplierUser, VerifyCouponType.CLERK_MESSAGE)){
+                        if (!ecoupon.consumeAndPayCommission(shopId, supplierUser, VerifyCouponType.CLERK_MESSAGE)){
                             return ("【一百券】您尾号" + getMaskedMobile(consumerPhone) + "的" + coupon + "券已经退款，现在不能消费");
                         }
 
@@ -252,7 +252,7 @@ public class SmsReceiverUtil {
                             + "至" + dateFormat.format(ecoupon.goods.useEndTime) + "时间段内消费，现在不能消费");
                 }
 
-                if(!ecoupon.consumeAndPayCommission(shopId, null, supplierUser, VerifyCouponType.CONSUMER_MESSAGE)){
+                if(!ecoupon.consumeAndPayCommission(shopId, supplierUser, VerifyCouponType.CONSUMER_MESSAGE)){
                     return ("【一百券】您尾号" + couponLastCode + "的券已经退款，现在不能消费");
                 }
 

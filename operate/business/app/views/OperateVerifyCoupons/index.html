@@ -2,6 +2,7 @@
 #{include 'share/nav.html' /}
 #{set title:'验证消费券' /}
 #{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/coupons.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 <style type="text/css">
@@ -12,17 +13,11 @@
     .control-group, input, textarea, select {
         font-size: 15px;
     }
-
-    .p1 {
-        font-size: 15px;
-        line-height: 30px;
-        padding-left: 100px;
-    }
 </style>
 <form action="@{OperateVerifyCoupons.verify()}" class="form-horizontal" id='form'>
     <legend>验证消费券</legend>
     <div class="control-group">
-        <label class="control-label"><span style="color: red; ">*</span>商户</label>
+        <label class="control-label"><span style="color: red; ">*</span> 商户</label>
 
         <div class="controls">
         #{layout_operate.selectInputField name:"supplierName", id:"supplierId", list:supplierList/}
@@ -32,57 +27,77 @@
 
     <div id="shop">#{include '/OperateShops/showSupplierShops.html'/}</div>
     <div class="control-group">
-        <label for="eCouponSn" class="control-label">券号:</label>
+        <label for="eCouponSn" class="control-label"><span style="color: red; ">*</span> 券号</label>
 
         <div class="controls">
             <input type="text" name="eCouponSn" id="eCouponSn" value="${ecoupon?.eCouponSn}" class="input-large"/>
-            <span class="error" id="checksn"></span>
+            <span class="error" id="err-eCouponSn"></span>
         </div>
     </div>
+    <div class="control-group" id="div-consumedAt" style="display: none">
+        <label for="eCouponSn" class="control-label"><span style="color: red; ">*</span> 实际消费时间</label>
 
+        <div class="controls">
+            <input type="text" name="consumedAt" id="consumedAt" class="input-large Wdate"
+                   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+                   value="${new java.util.Date()?.format("yyyy-MM-dd HH:mm:ss")}">
+            <span class="error" id="err-consumedAt"></span>
+        </div>
+    </div>
+    <div class="control-group" id="div-remark" style="display: none">
+        <label for="eCouponSn" class="control-label"><span style="color: red; ">*</span> 代理验证原因</label>
+
+        <div class="controls">
+            <select name="remarkSelect" id="remarkSelect">
+                <option>商家无法验证</option>
+                <option>其他</option>
+            </select>
+            <input type="text" name="remark" id="remark" class="input-xlarge" style="display: none" value="商家无法验证"/>
+            <span class="error" id="err-remark"></span>
+        </div>
+    </div>
     <div class="form-actions" style="padding-left: 80px">
         <button class="btn btn-primary" id="query" type="submit">查询</button>
         <button class="btn btn-primary" id="sure" type="submit" disabled>验证</button>
     </div>
-    <span style="font-size:15px;color:#ff0000;line-height: 2;padding-left: 100px">#{error 'error-info' /}</span>
-
+#{if errors?.size()>0}
+    <span style="border:1px solid #ff0000;color:#ff0000;line-height: 2;margin-left: 80px;">#{error 'error-info' /}</span>
+#{/if}
     <div class="control-group">#{include 'OperateVerifyCoupons/verify.html' /}</div>
-    <input type="hidden" name="shopId" id="shopId" value="${shop?.id}" class="input-large"/>
+    <input type="hidden" name="shopId" id="shopId" value="${shop?.id}"/>
 </form>
 <SCRIPT type=text/javascript>
-    $(
-            function () {
-                var shopId = $("#shopId").val();
-                $("#supplierUser_shop_id").val(shopId);
-                $("#supplierName").blur(function () {
-                    var found = false;
-                    var m = list.length;
-                    var id = null;
-                    for (i = 0; i < m; i++) {
-                        if (list[i].name == $("#supplierName").val()) {
-                            found = true;
-                            id = list[i].id;
-                        }
-                    }
-                    if (!found) {
-                        $("#id_supplierName").val(-1);
-                        $("#save").attr('disabled', true);
-                        $("#supplierUser_shop_id").empty();
-                    } else {
-                        $("#err-supplierUser_supplier_id").html("");
-                        $("#save").attr('disabled', false);
-                        if (shopId == "") {
-                            $("#shop").load("/shops/" + id + "/showSupplierShops", function (data) {
-                            });
-                        }
-                    }
+    $(function () {
+        var shopId = $("#shopId").val();
+        $("#supplierUser_shop_id").val(shopId);
+        $("#supplierName").blur(function () {
+            var found = false;
+            var m = list.length;
+            var id = null;
+            for (i = 0; i < m; i++) {
+                if (list[i].name == $("#supplierName").val()) {
+                    found = true;
+                    id = list[i].id;
+                }
+            }
+            if (!found) {
+                $("#id_supplierName").val(-1);
+                $("#save").attr('disabled', true);
+                $("#supplierUser_shop_id").empty();
+            } else {
+                $("#err-supplierUser_supplier_id").html("");
+                $("#save").attr('disabled', false);
+                if (shopId == "") {
+                    $("#shop").load("/shops/" + id + "/showSupplierShops", function (data) {
+                    });
+                }
+            }
 
-                    if ($("#supplierName").val().trim() == '') {
-                        $("#id_supplierName").val(0);
-                        $("#save").attr('disabled', true);
-                        $("#supplierUser_shop_id").empty();
-                    }
-                });
-
-            });
+            if ($("#supplierName").val().trim() == '') {
+                $("#id_supplierName").val(0);
+                $("#save").attr('disabled', true);
+                $("#supplierUser_shop_id").empty();
+            }
+        });
+    });
 </SCRIPT>

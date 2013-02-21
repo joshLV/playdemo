@@ -112,7 +112,7 @@ public class SupplierVerifyECoupons extends Controller {
                     continue;
                 }
                 if (ecoupon.status == ECouponStatus.UNCONSUMED) {
-                    if (!ecoupon.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
+                    if (!ecoupon.consumeAndPayCommission(shopId, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
                         eCouponResult.add("第三方" + ecoupon.partner + "券验证失败！请确认券状态(是否过期或退款等)！");
                         continue;
                     }

@@ -84,7 +84,7 @@ public class ECouponLowPriceGoodsConsumeTest extends UnitTest {
     public void 测试一百券销售的低价产品() throws Exception {
 //        public boolean consumeAndPayCommission(Long shopId, Long operateUserId,
 //                        SupplierUser supplierUser, VerifyCouponType type) {
-        Boolean success = ecoupon.consumeAndPayCommission(shop.id, null, supplierUser, VerifyCouponType.TELEPHONE);
+        Boolean success = ecoupon.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.TELEPHONE);
         assertTrue(success);
         
         // 平台收款帐户减少10元
