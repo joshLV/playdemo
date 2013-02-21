@@ -2,11 +2,10 @@ package controllers;
 
 import models.order.ECoupon;
 import models.order.Order;
-import org.jsoup.helper.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.mvc.Controller;
 import play.mvc.With;
-
 /**
  * User: tanglq
  * Date: 13-1-31
@@ -18,7 +17,7 @@ public class QuickSearchs extends Controller {
     public static final String BASE_URL = Play.configuration.getProperty("application.baseUrl");
 
     public static void query(String q) {
-        if (StringUtil.isBlank(q)) {
+        if (StringUtils.isBlank(q)) {
             renderText("请输入搜索参数");
         }
         String value = q.trim();
