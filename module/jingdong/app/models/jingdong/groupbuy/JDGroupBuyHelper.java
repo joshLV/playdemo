@@ -9,6 +9,7 @@ import org.w3c.dom.Node;
 import play.Logger;
 import play.Play;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class JDGroupBuyHelper {
         JingdongMessage response = JDGroupBuyUtil.sendRequest("verifyCode", params);
         if (!response.isOk()) {
             response = JDGroupBuyUtil.sendRequest("queryCode", params);
-            return Integer.parseInt(response.selectTextTrim("./CouponStatus")) == 10;
+            return response.isOk() && Integer.parseInt(response.selectTextTrim("./CouponStatus")) == 10;
         }
         return true;
     }
@@ -79,7 +80,10 @@ public class JDGroupBuyHelper {
         params.put("coupon", coupon);
 
         JingdongMessage response = JDGroupBuyUtil.sendRequest("queryCode", params);
-        return Integer.parseInt(response.selectTextTrim("./CouponStatus"));
+        if(!response.isOk()) {
+            return -1;
+        }
+        return  Integer.parseInt(response.selectTextTrim("./CouponStatus"));
     }
 
     /**
@@ -110,7 +114,10 @@ public class JDGroupBuyHelper {
      */
     public static List<Node> queryCity() {
         JingdongMessage response = JDGroupBuyUtil.sendRequest("queryCityList", null);
-        return response.selectNodes("./Cities/City");
+        if (response.isOk()) {
+            return response.selectNodes("./Cities/City");
+        }
+        return new ArrayList<>();
     }
 
     public static List<Node> cacheCities() {
@@ -133,13 +140,14 @@ public class JDGroupBuyHelper {
      * @return 城市区域列表
      */
     public static List<Node> queryDistrict(Long cityId) {
-        String url = GATEWAY_URL + "/platform/normal/queryDistrictList.action";
-        String templatePath = "jingdong/groupbuy/request/queryDistrict.xml";
         Map<String, Object> params = new HashMap<>();
         params.put("cityId", cityId);
 
         JingdongMessage response = JDGroupBuyUtil.sendRequest("queryDistrictList", params);
-        return response.selectNodes("./Districts/District");
+        if (response.isOk()) {
+            return response.selectNodes("./Districts/District");
+        }
+        return new ArrayList<>();
     }
 
     public static List<Node> cacheDistricts(final Long cityId) {
@@ -166,7 +174,10 @@ public class JDGroupBuyHelper {
         params.put("districtId", districtId);
 
         JingdongMessage response = JDGroupBuyUtil.sendRequest("queryAreaList", params);
-        return response.selectNodes("./Areas/Area");
+        if (response.isOk()) {
+            return response.selectNodes("./Areas/Area");
+        }
+        return new ArrayList<>();
     }
 
     public static List<Node> cacheAreas(final Long districtId) {

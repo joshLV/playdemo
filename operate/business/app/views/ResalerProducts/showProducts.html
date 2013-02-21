@@ -65,7 +65,7 @@
             #{/if}
 
             #{if partner == 'wb'}
-                #{if product.status != models.sales.ResalerProductStatus.OFFSALE}
+                #{if product.status != models.sales.ResalerProductStatus.ONSALE}
                     <a href="/resaler-products/${partner}/onsale/${product.id}" class="btn btn-mini" rel="tooltip" title="上架"><i class="icon-upload"></i></a>
                 #{/if}
                 #{if product.status != models.sales.ResalerProductStatus.OFFSALE}
@@ -77,7 +77,6 @@
 
         <a href="/resaler-products/journal/${product.id}" class="btn btn-mini" rel="tooltip" title="操作历史"><i class="icon-list-alt"></i></a>
         </div>
-        <a href="/resaler-products/journal/${product.id}" class="btn btn-mini" rel="tooltip" title="删除"><i class="icon-remove"></i></a>
     </td>
 </tr>
 #{/paginate.list}

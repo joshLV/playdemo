@@ -96,8 +96,8 @@
         <div class="control-group">
             <label class="control-label">是否电子凭证 *</label>
             <div class="controls">
-                <input type="radio" name="electronicCerticate" value="是" checked>是
-                <input type="radio" name="electronicCerticate" value="否">否
+                <input type="radio" name="electronicCerticate" value="是" #{if goods.materialType == models.sales.MaterialType.ELECTRONIC} checked #{/if}>是
+                <input type="radio" name="electronicCerticate" value="否" #{if goods.materialType == models.sales.MaterialType.REAL} checked #{/if}>否
             </div>
         </div>
         <div class="control-group">

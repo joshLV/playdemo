@@ -16,6 +16,7 @@ import models.oauth.WebSite;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.sales.Goods;
+import models.sales.MaterialType;
 import models.sales.ResalerProduct;
 import models.sales.ResalerProductStatus;
 import operate.rbac.annotations.ActiveNavigation;
@@ -78,7 +79,11 @@ public class TaobaoProducts extends Controller{
         addRequest.setInputPids("5392163");//面值key
         addRequest.setApproveStatus(approveStatus);//初始为下架的，在淘宝仓库中
         addRequest.setOuterId(String.valueOf(product.goodsLinkId));
-        addRequest.setLocalityLifeExpirydate(startDate+ "," + endDate);
+        if (goods.materialType == MaterialType.ELECTRONIC) {
+            addRequest.setLocalityLifeExpirydate(startDate+ "," + endDate);//电子券设置有效期
+        }else {
+            addRequest.setLocalityLifeChooseLogis("1");//非电子券设置提取方式为邮寄
+        }
         addRequest.setSellerCids(StringUtils.join(sellerCids));
 
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, APPKEY, APPSECRET);

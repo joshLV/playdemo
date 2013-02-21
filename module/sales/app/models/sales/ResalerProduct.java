@@ -1,5 +1,6 @@
 package models.sales;
 
+import com.google.gson.Gson;
 import com.uhuila.common.constants.DeletedStatus;
 import models.order.OuterOrderPartner;
 import org.hibernate.annotations.Index;
@@ -7,6 +8,8 @@ import play.db.jpa.Model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 发布到第三方产品的信息
@@ -57,10 +60,6 @@ public class ResalerProduct extends Model {
 
     @Column(name = "updated_at")
     public Date updatedAt;
-
-    @Lob
-    @Column(name = "latest_json_data")
-    public String latestJsonData;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -119,11 +118,25 @@ public class ResalerProduct extends Model {
 
     public ResalerProduct partnerProduct(String partnerProductId) {
         this.partnerProductId = partnerProductId;
+        switch (partner) {
+            case JD:
+                this.url = "http://tuan.360buy.com/team-" + partnerProductId + ".html"; break;
+            case DD:
+                this.url = "http://tuan.dangdang.com/product.php?product_id=" + partnerProductId; break;
+            case TB:
+                this.url = "http://item.taobao.com/item.htm?id=" + partnerProductId; break;
+            case YHD:
+                this.url = "http://www.1mall.com/item/" + partnerProductId; break;
+            case WB:
+                this.url = "http://t.58.com/sh/" + partnerProductId + "/"; break;
+            default:
+                break;
+        }
         return this;
     }
 
-    public ResalerProduct latestJson(String latestJsonData) {
-        this.latestJsonData = latestJsonData;
+    public ResalerProduct url(String url) {
+        this.url = url;
         return this;
     }
 

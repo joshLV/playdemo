@@ -100,7 +100,7 @@ public class WubaUtil {
         params.put("m", method);
 
         String jsonRequest = new Gson().toJson(appParams);
-        Logger.info("wuba request.jsonRequest=" + jsonRequest);
+        Logger.info("wuba request.%s:\n%s",method, jsonRequest);
         // 应用级参数设置
         if (requestNeedEncrypt) {
             params.put("param", encryptMessage(jsonRequest, SECRET_KEY));

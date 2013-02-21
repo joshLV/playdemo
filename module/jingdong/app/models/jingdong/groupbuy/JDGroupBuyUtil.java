@@ -49,8 +49,9 @@ public class JDGroupBuyUtil {
         String data = (params != null) ? template.render(params) : template.render();
 
         //生成rest请求内容
+        Logger.info("jingdong request %s:\n%s", action, data);
         String restRequest = JDGroupBuyUtil.makeRequestRest(data);
-        Logger.info("jingdong request %s:\n%s", action, restRequest);
+        Logger.info("jingdong request %s encrypted:\n%s", action, restRequest);
 
         //发起请求
         WebServiceRequest request = WebServiceRequest.url(url).type("jingdong."+action).requestBody(restRequest);
@@ -86,7 +87,14 @@ public class JDGroupBuyUtil {
 
         // 只有作为京东的响应的时候， resultCode 和 resultMessage 才有用
         message.resultCode = XPath.selectText("/*/ResultCode", document);
-        if (message.resultCode != null) message.resultCode = message.resultCode.trim();
+        if (message.resultCode != null) {
+            message.resultCode = message.resultCode.trim();
+            if (!message.resultCode.equals("200")) {
+                Logger.info("jingdong message is not ok");
+                return message;
+            }
+        }
+
         message.resultMessage = XPath.selectText("/*/ResultMessage", document);
         if (message.resultMessage != null) message.resultMessage = message.resultMessage.trim();
 
@@ -101,6 +109,10 @@ public class JDGroupBuyUtil {
         } else{
             message.message = XPath.selectNode("/*/Data/Message", document);
         }
+        if (!message.isOk()) {
+            Logger.info("jingdong message failed");
+        }
+
         return message;
     }
 

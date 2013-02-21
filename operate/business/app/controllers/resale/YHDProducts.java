@@ -49,13 +49,12 @@ public class YHDProducts extends Controller {
         Map<String, String> requestParams = request.params.allSimple();
         requestParams.remove("body");
         requestParams.put("outerId", String.valueOf(product.goodsLinkId));
-        product.latestJson(new Gson().toJson(requestParams)).save();
 
         YHDResponse response = YHDUtil.sendRequest(requestParams, "yhd.product.add", "updateCount");
         if (response.isOk()) {
             product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id).save();
             //保存记录
-            ResalerProductJournal.createJournal(product, operateUser.id, product.latestJsonData,
+            ResalerProductJournal.createJournal(product, operateUser.id, new Gson().toJson(requestParams),
                     ResalerProductJournalType.CREATE, "上传商品");
             //上传主图
             try{

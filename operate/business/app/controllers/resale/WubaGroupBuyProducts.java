@@ -78,8 +78,6 @@ public class WubaGroupBuyProducts extends Controller {
         Map<String, Object> wubaParams = new HashMap<>();
         wubaParams.put("groupbuyInfo", groupbuyInfoParams);
         wubaParams.put("partners", partnerParams);
-        product.latestJson(new Gson().toJson(wubaParams)).save();
-        Logger.info("wuba addgroupbuy request:\n%s", product.latestJsonData);
 
         //发起请求
         WubaResponse response =  WubaUtil.sendRequest(wubaParams, "emc.groupbuy.addgroupbuy", false);
@@ -89,7 +87,7 @@ public class WubaGroupBuyProducts extends Controller {
             String partnerProductId = response.data.getAsJsonObject().get("groupbuyId58").getAsString();
             product.partnerProduct(partnerProductId).save();
 
-            ResalerProductJournal.createJournal(product, operateUser.id, product.latestJsonData,
+            ResalerProductJournal.createJournal(product, operateUser.id, new Gson().toJson(wubaParams),
                     ResalerProductJournalType.CREATE, "上传商品");
         }
 

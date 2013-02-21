@@ -56,6 +56,8 @@ public class JDGroupBuyProducts extends Controller{
         }
         params.remove("body");
         params.put("venderTeamId", product.goodsLinkId);
+        String jsonData =  new Gson().toJson(params);//添加shop前先把参数给输出了
+
         params.put("shops", goods.getShopList());
 
         //提交请求
@@ -66,10 +68,9 @@ public class JDGroupBuyProducts extends Controller{
             OperateUser operateUser = OperateRbac.currentUser();
             product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id)
                     .partnerProduct(response.selectTextTrim("./JdTeamId").trim())
-                    .latestJson(new Gson().toJson(params))
                     .save();
             //记录历史
-            ResalerProductJournal.createJournal(product, operateUser.id, product.latestJsonData,
+            ResalerProductJournal.createJournal(product, operateUser.id, jsonData,
                     ResalerProductJournalType.CREATE, "上传商品");
         }
         render("resale/JDGroupBuyProducts/result.html", response);
@@ -113,17 +114,17 @@ public class JDGroupBuyProducts extends Controller{
      */
     public static void city(Long id, String type) {
         if (id == null && type == null) {
-            List<Node> cities = JDGroupBuyHelper.cacheCities();
+            List<Node> cities = JDGroupBuyHelper.queryCity();
             renderJSON(jsonStr(cities, true, "city"));
         }
         if (id == null || type == null) {
             error();
         }
         if ("city".equals(type)) {
-            List<Node> districts = JDGroupBuyHelper.cacheCities();
+            List<Node> districts = JDGroupBuyHelper.queryDistrict(id);
             renderJSON(jsonStr(districts, true, "district"));
         }else if ("district".equals(type)) {
-            List<Node> areas = JDGroupBuyHelper.cacheCities();
+            List<Node> areas = JDGroupBuyHelper.queryArea(id);
             renderJSON(jsonStr(areas, false, "area"));
         }
 

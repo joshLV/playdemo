@@ -24,7 +24,6 @@ import java.util.Map;
 @With(OperateRbac.class)
 @ActiveNavigation("resale_partner_product")
 public class DDGroupBuyProducts extends Controller {
-    public static final String PRODUCT_URL = "http://tuan.dangdang.com/product.php?product_id=";
 
     @ActiveNavigation("resale_partner_product")
     public static void showUpload(Long goodsId) {
@@ -51,7 +50,8 @@ public class DDGroupBuyProducts extends Controller {
 
         ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.DD, goods);
         templateParams.put("linkId", String.valueOf(product.goodsLinkId));
-        product.latestJson(new Gson().toJson(templateParams)).save();//添加shop前先把参数给输出了
+        String jsonData =  new Gson().toJson(templateParams);//添加shop前先把参数给输出了
+
         Collection<Shop> shops = goods.getShopList();
         templateParams.put("shops", shops);
 
@@ -59,17 +59,13 @@ public class DDGroupBuyProducts extends Controller {
         if (response.isOk()) {
             product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id).save();
             //记录历史
-            ResalerProductJournal.createJournal(product, operateUser.id, product.latestJsonData,
+            ResalerProductJournal.createJournal(product, operateUser.id, jsonData,
                     ResalerProductJournalType.CREATE, "上传商品");
             //查询当当的商品ID
             Node node = DDGroupBuyUtil.getJustUploadedTeam(product.goodsLinkId);
             if (node != null) {
-                product.partnerProductId = XPath.selectText("./ddgid", node).trim();
-                product.url = PRODUCT_URL + product.partnerProductId;
-                product.save();
+                product.partnerProduct(XPath.selectText("./ddgid", node).trim()).save();
             }
-        }else {
-            product.delete();
         }
         render("resale/DDGroupBuyProducts/result.html", response);
     }

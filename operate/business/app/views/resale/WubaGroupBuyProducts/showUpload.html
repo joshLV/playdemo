@@ -54,8 +54,8 @@
         <div class="control-group">
             <label class="control-label">产品范畴 *</label>
             <div class="controls">
-                <input type="radio" name="prodCategory" value="0" checked> 消费类
-                <input type="radio" name="prodCategory" value="1"> 快递类
+                <input type="radio" name="prodCategory" value="0" #{if goods.materialType == models.sales.MaterialType.ELECTRONIC} checked #{/if}> 消费类
+                <input type="radio" name="prodCategory" value="1" #{if goods.materialType == models.sales.MaterialType.REAL} checked #{/if}> 快递类
             </div>
         </div>
         <div class="control-group">
