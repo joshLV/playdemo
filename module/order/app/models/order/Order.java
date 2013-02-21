@@ -56,7 +56,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 
@@ -980,29 +979,6 @@ public class Order extends Model {
         }
 
         return status == null ? this.status : status;
-    }
-
-    /**
-     * 查询条件
-     *
-     * @param monthMap 当月和上月
-     * @param status   状态
-     * @return
-     */
-    private static String getCondition(Resaler resaler, Map monthMap, OrderStatus status) {
-        StringBuilder buider = new StringBuilder();
-        buider.append(" where userType ='" + AccountType.RESALER + "'");
-        buider.append(" and userId =" + resaler.id);
-        if (monthMap.get("fromDay") != null) {
-            buider.append(" and createdAt >='" + monthMap.get("fromDay") + "'");
-        }
-        if (monthMap.get("toDay") != null) {
-            buider.append(" and createdAt <='" + monthMap.get("toDay") + "'");
-        }
-        if (status != null) {
-            buider.append(" and status = '" + status + "'");
-        }
-        return buider.toString();
     }
 
     public static void sendRealGoodsAndPayCommissions(long id, String deliveryCompany, String deliveryNo) {
