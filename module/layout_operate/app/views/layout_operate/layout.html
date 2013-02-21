@@ -81,8 +81,10 @@
                 <form class="form-inline pull-right" method="GET" target="_blank"
                       action="http://business.${play.Play.configuration.getProperty("application.baseDomain")}/quick-search"
                       style="margin: 0 0 0 0">
-                    <input type="text"class="input-medium" placeholder="券号/手机/订单号" name="q">
-                    <button type="submit" class="btn btn-small btn-primary">走!</button>
+                    <div class=" input-append">
+                    <input type="text" class="input-medium" placeholder="券号/手机/订单号" name="q">
+                    <button type="submit" class="btn btn-primary">走!</button>
+                    </div>
                 </form>
             </div>
         </div>

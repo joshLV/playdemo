@@ -1,10 +1,17 @@
+<style type="text/css">
+    .p1 {
+        font-size: 15px;
+        line-height: 30px;
+        padding-left: 130px;
+    }
+</style>
 #{if ecoupon != null}
     #{if ecouponStatusDescription != null }
-    <span style="color:#ff0000;line-height: 2;padding-left: 100px">${ecouponStatusDescription}<br></span>
+    <span style="border:1px solid #ff0000;color:#ff0000;line-height: 2;margin-left: 130px;">${ecouponStatusDescription}</span>
     <script type="text/javascript">
         $("#sure").attr("disabled", true);
     </script>
-    <p class="p1">券编号: ${ecoupon.eCouponSn}<br/>
+    <div class="p1">券编号: ${ecoupon.eCouponSn}<br/>
         商品名称: ${ecoupon.goods.title}<br/>
         #{if ecoupon.consumedAt != null}
             消费日期：${ecoupon.consumedAt?.format('yyyy-MM-dd HH:mm:ss')}<br/>
@@ -18,15 +25,11 @@
         #{if ecoupon.expireAt != null}
             截止日期：${ecoupon.expireAt?.format('yyyy-MM-dd HH:mm:ss')}
         #{/if}
-    </p>
+    </div>
     #{/if}
     #{else}
-    <script type="text/javascript">
-        $("#sure").attr("disabled", false);
-    </script>
-    <p class="p1">
+    <div class="p1">
         #{if success_info}
-
             <span style="border:1px solid #090;color:#009900;">验证成功！</span>
             <script type="text/javascript">
                 $("#sure").attr("disabled", true);
@@ -34,12 +37,17 @@
         #{/if}
         #{else}
             <span style="border:1px solid #090;color:#009900;">该券未消费！</span>
+            <script type="text/javascript">
+                $("#sure").attr("disabled", false);
+                $("#div-consumedAt").show();
+                $("#div-remark").show();
+            </script>
         #{/else}
         <br/>
         券编号：${ecoupon.eCouponSn}<br/>
         商品名称：${ecoupon.goods.title} <br/>
         截止日期：${ecoupon.expireAt?.format('yyyy-MM-dd HH:mm:ss')}
-    </p>
+    </div>
     #{/else}
 #{/if}
 

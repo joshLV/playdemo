@@ -14,6 +14,7 @@ import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -93,7 +94,7 @@ public class OperateVerifyCoupons extends Controller {
      *
      * @param eCouponSn 券号
      */
-    public static void update(Long shopId, Long supplierId, String eCouponSn) {
+    public static void update(Long shopId, Long supplierId, String eCouponSn, Date consumedAt, String remark) {
         List<Supplier> supplierList = Supplier.findUnDeleted();
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
         ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
@@ -108,7 +109,9 @@ public class OperateVerifyCoupons extends Controller {
         }
         Shop shop = Shop.findById(shopId);
         if (ecoupon.status == ECouponStatus.UNCONSUMED) {
-            if (!ecoupon.consumeAndPayCommission(shopId, OperateRbac.currentUser().id, null, VerifyCouponType.OP_VERIFY)) {
+            String historyRemark = "运营平台代理验证，原因:" + remark;
+            if (!ecoupon.consumeAndPayCommission(shopId, OperateRbac.currentUser(), null, VerifyCouponType.OP_VERIFY,
+                    ecoupon.eCouponSn, consumedAt, historyRemark)) {
                 Validation.addError("error-info", "第三方" + ecoupon.partner + "券验证失败！请确认券状态(是否过期或退款等)！");
             }
             if (Validation.hasErrors()) {

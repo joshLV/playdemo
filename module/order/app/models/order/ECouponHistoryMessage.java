@@ -28,6 +28,9 @@ public class ECouponHistoryMessage implements Serializable {
      */
     public String operator;
 
+    /**
+     * 备注，操作说明
+     */
     public String remark;
 
     public String phone;
@@ -47,8 +50,14 @@ public class ECouponHistoryMessage implements Serializable {
      */
     public ECouponStatus toStatus;
 
+    /**
+     * 订单ID.
+     */
     public Long orderId;
 
+    /**
+     * 订单项ID.
+     */
     public Long itemId;
 
     private ECouponHistoryMessage() {
@@ -110,7 +119,6 @@ public class ECouponHistoryMessage implements Serializable {
         this.phone = value;
         return this;
     }
-
 
     public ECouponHistoryMessage operator(String value) {
         this.operator = value;

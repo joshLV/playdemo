@@ -838,7 +838,7 @@ public class Order extends Model {
                 if (supplierUser.shop == null) {
                     shop = Shop.findShopBySupplier(supplier.id).get(0);
                 }
-                eCoupon.consumeAndPayCommission(shop.id, null, supplierUser, VerifyCouponType.IMPORT_VERIFY);
+                eCoupon.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.IMPORT_VERIFY);
                 eCoupon.save();
                 importedCoupon.status = ImportedCouponStatus.USED;
                 importedCoupon.save();
