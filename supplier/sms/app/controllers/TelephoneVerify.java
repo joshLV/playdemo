@@ -15,7 +15,7 @@ import play.Logger;
 import play.Play;
 import play.mvc.Controller;
 import util.transaction.TransactionCallback;
-import util.transaction.TransactionRetryUtil;
+import util.transaction.TransactionRetry;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -184,7 +184,7 @@ public class TelephoneVerify extends Controller {
                 }
             }
             */
-            String resultCode = TransactionRetryUtil.run(new TransactionCallback<String>() {
+            String resultCode = TransactionRetry.run(new TransactionCallback<String>() {
                 @Override
                 public String doInTransaction() {
                     return doVerify(caller, supplierUser, ecoupon);

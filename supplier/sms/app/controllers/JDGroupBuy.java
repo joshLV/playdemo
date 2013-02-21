@@ -30,7 +30,7 @@ import play.mvc.Controller;
 import play.templates.Template;
 import play.templates.TemplateLoader;
 import util.transaction.TransactionCallback;
-import util.transaction.TransactionRetryUtil;
+import util.transaction.TransactionRetry;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
