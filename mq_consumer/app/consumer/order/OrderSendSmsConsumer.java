@@ -79,7 +79,7 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
     }
 
     private void sendOrderItemsSMS(OrderItems orderItems, OrderECouponMessage message) {
-        String msg = orderItems.getOrderSMSMessage();
+        String msg = OrderECouponMessage.getOrderSMSMessage(orderItems);
 
         if (msg == null) {
             Logger.info("OrderItems(id:" + orderItems.id + ").getOrderSMSMessage() == null, " +
@@ -136,7 +136,9 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
     }
 
     private void sendECouponSMS(ECoupon ecoupon, OrderECouponMessage message) {
-        String msg = ecoupon.getOrderSMSMessage();
+        String msg = OrderECouponMessage.getOrderSMSMessage(ecoupon);
+
+
         if (msg == null) {
             Logger.info("ECoupon(id:" + ecoupon.id + ").getOrderSMSMessage() == null, Will NOT Send SMS.");
             return;

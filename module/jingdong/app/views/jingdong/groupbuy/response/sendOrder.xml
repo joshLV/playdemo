@@ -8,15 +8,19 @@
     *{ 合作伙伴方订单ID [必填] }*
     <VenderOrderId>${ybqOrder.orderNumber}</VenderOrderId>
     *{ 合作方优惠券信息 若上报团购中 CouponGrantMode选择2或者3（发放合作方的优惠券），则此节点为必填。
-        若CouponBindMode选择2（一个优惠券对应多份产品），则Coupons节点下所有Coupon中的CouponId是相同的，且数量等于购买数量 }*
+    若CouponBindMode选择2（一个优惠券对应多份产品），则Coupons节点下所有Coupon中的CouponId是相同的，且数量等于购买数量 }*
     <Coupons>
-    #{list items:coupons, as:'coupon'}
+        #{list items:coupons, as:'coupon'}
         <Coupon>
             *{ 券号 }*
             <CouponId>${coupon.getSafeECouponSN()}</CouponId>
             *{ 密码 }*
-            <CouponPwd/>
+            <CouponPwd>
+                #{if coupon.eCouponPassword}
+                ${coupon.eCouponPassword}
+                #{/if}
+            </CouponPwd>
         </Coupon>
-    #{/list}
+        #{/list}
     </Coupons>
 </Message>

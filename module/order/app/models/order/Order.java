@@ -727,7 +727,6 @@ public class Order extends Model {
             }
             //如果不是电子券，跳过
             if (MaterialType.ELECTRONIC == goods.materialType) {
-                System.out.println(orderItem.buyNumber + "===orderItem.buyNumber>>");
                 for (int i = 0; i < orderItem.buyNumber; i++) {
                     //创建电子券
                     ECoupon eCoupon = createCoupon(goods, orderItem);
@@ -828,7 +827,7 @@ public class Order extends Model {
             if (importedCoupon == null) {
                 throw new RuntimeException("can not find an imported coupon of goods " + goods.getId());
             } else {
-                eCoupon = new ECoupon(this, goods, orderItem, importedCoupon.coupon).save();
+                eCoupon = new ECoupon(this, goods, orderItem, importedCoupon.coupon, importedCoupon.password).save();
                 Supplier supplier = Supplier.findById(goods.supplierId);
                 SupplierUser supplierUser = SupplierUser.find("bySupplier", supplier).first();
                 if (supplierUser == null) {

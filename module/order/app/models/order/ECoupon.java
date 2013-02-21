@@ -90,8 +90,14 @@ public class ECoupon extends Model {
     public OrderItems orderItems;
 
     @Required
-    @Column(name = "e_coupon_sn", unique = true)
+    @Column(name = "e_coupon_sn")
     public String eCouponSn;
+
+    /**
+     * 导入券的密码
+     */
+    @Column(name = "e_coupon_password")
+    public String eCouponPassword;
 
     @Column(name = "is_cheated_order")
     public Boolean isCheatedOrder = false;
@@ -295,10 +301,10 @@ public class ECoupon extends Model {
     public String operateUserName;
 
     public ECoupon(Order order, Goods goods, OrderItems orderItems) {
-        this(order, goods, orderItems, null);
+        this(order, goods, orderItems, null, "");
     }
 
-    public ECoupon(Order order, Goods goods, OrderItems orderItems, String couponSn) {
+    public ECoupon(Order order, Goods goods, OrderItems orderItems, String couponSn, String password) {
         this.order = order;
         this.batchCoupons = batchCoupons;
 
@@ -324,7 +330,12 @@ public class ECoupon extends Model {
             this.eCouponSn = generateAvailableEcouponSn();
             this.createType = ECouponCreateType.GENERATE;
         } else {
-            this.eCouponSn = couponSn;
+            if (StringUtils.isNotBlank(password)) {
+                this.eCouponSn = couponSn;
+                this.eCouponPassword = password;
+            } else {
+                this.eCouponSn = couponSn;
+            }
             this.createType = ECouponCreateType.IMPORT;
         }
         this.orderItems = orderItems;
@@ -906,6 +917,9 @@ public class ECoupon extends Model {
         return InfoUtil.getFirstCharSequence(this.eCouponSn);
     }
 
+    public String getSafeECouponPassword() {
+        return InfoUtil.getFirstCharSequence(this.eCouponPassword);
+    }
 
     /**
      * 获取后n位券号.
@@ -1155,7 +1169,8 @@ public class ECoupon extends Model {
         }
         //        send(eCoupon, phone);
 
-        SMSUtil.send("【一百券】" + (StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
+        SMSUtil.send("【一百券】" + (StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]")) + "券号"
+                + eCoupon.eCouponSn + "," +
                 "截止" + dateFormat.format(eCoupon.expireAt) + content + "客服：4006262166", phone, eCoupon.replyCode);
     }
 
@@ -1487,49 +1502,6 @@ public class ECoupon extends Model {
                 supplierUser, ECouponStatus.CONSUMED).fetch(count);
     }
 
-    /**
-     * 得到订单短信内容（单条)
-     *
-     * @return
-     */
-    @Transient
-    public String getOrderSMSMessage() {
-
-        if (!this.canSendSMSByOperate()) {  //检查是否可发短信
-            Logger.info("ECoupon(id:" + id + ") stats is not UNCONSUMED, but was " + status + ", cann't send SMS.");
-            return null;
-        }
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat(Order.COUPON_EXPIRE_FORMAT);
-
-        String note = ",";
-        if (this.goods.isOrder) {
-            // 需要预约的产品
-            if (this.appointmentDate != null) {
-                note = ",预约于" + dateFormat.format(this.appointmentDate) + "到店消费,";
-                if (StringUtils.isNotBlank(this.appointmentRemark)) {
-                    note += this.appointmentRemark + ",";
-                }
-            } else {
-                // 还没有预约
-                note = ",此产品需预约,";
-            }
-        }
-
-        String message = "【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
-                "券号" + eCouponSn + note +
-                "截止" + dateFormat.format(expireAt) + "客服4006262166";
-
-        // 重定义短信格式 - 58团
-        if (AccountType.RESALER.equals(order.userType) && order.getResaler().loginName.equals(Resaler.WUBA_LOGIN_NAME)) {
-
-            message = "【58团】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.shortName) +
-                    "由58合作商家【一百券】提供,一百券号" + eCouponSn + note +
-                    "有效期至" + dateFormat.format(expireAt) + "客服4007895858";
-        }
-
-        return message;
-    }
 
     /**
      * 发送券通知短信的方法，所以渠道都应使用此方法.

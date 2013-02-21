@@ -48,10 +48,10 @@ public class CouponHistory extends Model {
     @Enumerated(EnumType.STRING)
     public ECouponStatus toStatus;
 
-    @Column(name="order_id")
+    @Column(name = "order_id")
     public Long orderId;
 
-    @Column(name="item_id")
+    @Column(name = "item_id")
     public Long itemId;
 
 }

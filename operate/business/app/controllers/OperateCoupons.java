@@ -62,6 +62,8 @@ public class OperateCoupons extends Controller {
         //判断角色是否有解冻券号的权限
         boolean hasRight = ContextedPermission.hasPermission("COUPON_UNFREEZE");
 
+        System.out.println(couponPage.get(0).getSafeECouponSN() + "===couponPage.get(0).getSafeECouponSN()>>");
+
         render(couponPage, condition, amountSummary, hasRight, hasEcouponRefundPermission, hasViewEcouponSnPermission);
     }
 
@@ -183,7 +185,11 @@ public class OperateCoupons extends Controller {
             if (coupon != null) {
                 ECouponHistoryMessage.with(coupon).operator(OperateRbac.currentUser().userName)
                         .remark("查看完整券号").sendToMQ();
-                renderText(coupon.eCouponSn);
+                if (StringUtils.isNotBlank(coupon.eCouponPassword)) {
+                    renderText("券号:" + coupon.eCouponSn + " 密码:" + coupon.eCouponPassword);
+                } else {
+                    renderText(coupon.eCouponSn);
+                }
             }
         }
         renderText("查看失败，请联系管理员");
