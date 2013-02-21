@@ -16,6 +16,7 @@
  */
 package controllers.modules.website.cas;
 
+import cache.CacheHelper;
 import controllers.modules.website.cas.annotations.SkipCAS;
 import models.consumer.OpenIdSource;
 import models.consumer.User;
@@ -27,6 +28,7 @@ import play.cache.Cache;
 import play.modules.website.cas.CASUtils;
 import play.modules.website.cas.annotation.Check;
 import play.modules.website.cas.models.CASUser;
+import play.mvc.After;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -323,4 +325,8 @@ public class SecureCAS extends Controller {
         }
     }
 
+    @After
+    public static void cleanCacheHelper() {
+        CacheHelper.cleanPreRead();
+    }
 }

@@ -1,5 +1,6 @@
 package controllers;
 
+import cache.CacheHelper;
 import controllers.operate.cas.Security;
 import models.operator.OperateNavigation;
 import models.operator.OperatePermission;
@@ -14,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
 import play.cache.Cache;
+import play.mvc.After;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Finally;
@@ -313,5 +315,10 @@ public class OperateRbac extends Controller {
                 renderTemplate("Defaults/index.html", message);
             }
         } // else 如果没有加上Right标注，不检查权限
+    }
+
+    @After
+    public static void cleanCacheHelper() {
+        CacheHelper.cleanPreRead();
     }
 }

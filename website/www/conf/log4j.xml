@@ -15,16 +15,7 @@
         </layout>
     </appender>
 
-    <appender name="GMAIL" class="play.modules.emaillogs.EmailLoggerAppender">
-        <param name="SMTPProtocol" value="smtps" />
-        <param name="SMTPHost" value="smtp.gmail.com" />
-        <param name="SMTPPort" value="465" />
-        <param name="SMTPUsername" value="uhuila.notify@gmail.com"/>
-        <param name="SMTPPassword" value="1qaz@WSX#EDC"/>
-        <param name="From" value="yibaiquan &lt;noreplay@uhuila.com&gt;" />
-        <param name="To" value="likang@uhuila.com" />
-        <param name="Subject" value="Exception Occurred" />
-        <param name="BufferSize" value="1" />
+    <appender name="MQMailLog" class="play.modules.emaillogs.EmailLoggerAppender">
         <param name="threshold" value="ERROR" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{ABSOLUTE} %5p %c{1}:%L - %m%n" />
@@ -32,7 +23,7 @@
     </appender>
 
     <appender name="EMAIL" class="org.apache.log4j.AsyncAppender">
-        <appender-ref ref="GMAIL"/>
+        <appender-ref ref="MQMailLog"/>
     </appender>
 
     <logger name="play">
