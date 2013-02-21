@@ -6,7 +6,7 @@ import java.util.List;
 
 import models.SalesOrderItemReport;
 import models.SalesOrderItemReportCondition;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;

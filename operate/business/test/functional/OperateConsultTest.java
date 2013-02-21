@@ -2,10 +2,8 @@ package functional;
 
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.sales.ConsultRecord;
-import models.sales.ConsultResultCondition;
-import models.sales.ConsultType;
 import operate.rbac.RbacLoader;
 import org.junit.Before;
 import org.junit.Test;

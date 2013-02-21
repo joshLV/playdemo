@@ -1,6 +1,6 @@
 package controllers;
 
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.order.OuterOrderPartner;
 import models.resale.ResalerProduct;
 import models.resale.ResalerProductJournal;

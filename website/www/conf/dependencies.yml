@@ -19,6 +19,7 @@ require:
     - supplier -> supplier
     - resale -> resale
     - consumer -> consumer
+    - operator -> operator
     - order -> order
     - payment -> payment
     - commons-lang -> commons-lang 2.6
@@ -75,6 +76,7 @@ repositories:
             - supplier -> *
             - resale -> *
             - consumer -> *
+            - operator -> *
             - order -> *
             - payment -> *
             - website_cas -> *

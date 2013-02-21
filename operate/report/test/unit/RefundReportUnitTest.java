@@ -5,7 +5,7 @@ import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
 import models.RefundReport;
 import models.RefundReportCondition;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;

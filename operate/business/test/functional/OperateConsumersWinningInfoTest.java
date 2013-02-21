@@ -8,7 +8,7 @@ package functional;
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.cms.VoteQuestion;
 import models.consumer.User;
 import models.consumer.UserVote;

@@ -3,7 +3,7 @@ package functional;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.dangdang.DDAPIInvokeException;
 import models.dangdang.DDAPIUtil;
 import models.dangdang.DDOrderItem;

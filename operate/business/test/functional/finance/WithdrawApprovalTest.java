@@ -1,7 +1,7 @@
 package functional.finance;
 
 import models.accounts.WithdrawBill;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import operate.rbac.RbacLoader;
 
 import org.junit.Before;

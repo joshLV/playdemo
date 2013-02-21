@@ -3,7 +3,7 @@ package functional;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.admin.SupplierUser;
 import models.resale.AccountType;
 import models.resale.Resaler;

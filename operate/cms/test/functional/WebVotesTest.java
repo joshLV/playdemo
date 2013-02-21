@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.cms.VoteQuestion;
 import operate.rbac.RbacLoader;
 
@@ -12,7 +12,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import play.data.validation.*;
 import play.data.validation.Error;
 import play.modules.paginate.ModelPaginator;
 import play.mvc.Http.Response;

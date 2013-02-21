@@ -11,6 +11,7 @@ require:
     - play1 -> factory-boy 1.0
     - layout_operate -> layout_operate
     - paginate_ext -> paginate_ext
+    - operator -> operator
     - operate_rbac -> operate_rbac
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - asset_package -> asset_package
@@ -38,6 +39,7 @@ repositories:
         contains:
             - layout_operate -> *
             - paginate_ext -> *
+            - operator -> *
             - operate_rbac -> *
             - asset_package -> *
             - cache_helper -> *

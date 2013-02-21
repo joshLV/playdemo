@@ -1,4 +1,4 @@
-package models.admin;
+package models.operator;
 
 import java.util.Date;
 import java.util.List;

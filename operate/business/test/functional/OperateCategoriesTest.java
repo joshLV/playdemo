@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.sales.Category;
 import org.junit.Test;
 import play.mvc.Http;

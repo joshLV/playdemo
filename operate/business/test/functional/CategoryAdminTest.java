@@ -2,11 +2,10 @@ package functional;
 
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.operate.cas.Security;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.sales.Category;
 import operate.rbac.RbacLoader;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;

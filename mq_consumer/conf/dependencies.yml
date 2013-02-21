@@ -20,6 +20,7 @@ require:
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - paginate_ext -> paginate_ext
     - oauth -> oauth
+    - operator -> operator
     - order -> order
     - sales -> sales
     - consumer -> consumer
@@ -60,6 +61,7 @@ repositories:
             - resale -> *
             - accounts  -> *
             - oauth -> *
+            - operator -> *
             - order -> *
             - sales -> *
             - paginate_ext -> *

@@ -3,7 +3,7 @@ package functional;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.sales.SearchHotKeywords;
 import org.junit.Test;
 import play.modules.paginate.ModelPaginator;

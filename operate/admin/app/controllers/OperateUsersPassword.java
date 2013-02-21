@@ -1,6 +1,6 @@
 package controllers;
 
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Validation;

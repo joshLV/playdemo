@@ -1,4 +1,4 @@
-package models.admin;
+package models.operator;
 
 import com.uhuila.common.constants.DeletedStatus;
 import org.apache.commons.codec.digest.DigestUtils;

@@ -2,13 +2,13 @@ package functional.order;
 
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
-import factory.admin.OperateUserFactory;
+import factory.operator.OperateUserFactory;
 import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
-import models.admin.OperateRole;
-import models.admin.OperateUser;
+import models.operator.OperateRole;
+import models.operator.OperateUser;
 import models.consumer.User;
 import models.order.ECoupon;
 import models.order.ECouponStatus;

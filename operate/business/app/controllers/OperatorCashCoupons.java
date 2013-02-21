@@ -3,7 +3,7 @@ package controllers;
 import com.uhuila.common.constants.DeletedStatus;
 import models.accounts.CashCoupon;
 import models.accounts.CashCouponCondition;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;

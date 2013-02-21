@@ -3,7 +3,7 @@ package functional;
 import controllers.YihaodianAPI;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Controller;

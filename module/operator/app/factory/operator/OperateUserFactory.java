@@ -1,11 +1,11 @@
-package factory.admin;
+package factory.operator;
 
 import com.uhuila.common.constants.DeletedStatus;
 import factory.FactoryBoy;
 import factory.ModelFactory;
 import factory.annotation.Factory;
-import models.admin.OperateRole;
-import models.admin.OperateUser;
+import models.operator.OperateRole;
+import models.operator.OperateUser;
 
 import java.util.ArrayList;
 

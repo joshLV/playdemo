@@ -4,7 +4,7 @@ import controllers.ImportCoupons;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.sales.Goods;
 import models.sales.GoodsCouponType;
 import models.sales.ImportedCoupon;

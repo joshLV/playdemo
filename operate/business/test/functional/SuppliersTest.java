@@ -4,7 +4,7 @@ import com.uhuila.common.constants.DeletedStatus;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import models.accounts.WithdrawAccount;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.admin.SupplierUser;
 import models.supplier.Supplier;
 import models.supplier.SupplierCategory;

@@ -1,7 +1,7 @@
-package factory.admin;
+package factory.operator;
 
 import factory.ModelFactory;
-import models.admin.OperateNavigation;
+import models.operator.OperateNavigation;
 
 import java.util.Date;
 

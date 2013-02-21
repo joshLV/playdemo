@@ -2,7 +2,7 @@ package functional;
 
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import operate.rbac.RbacLoader;
 import org.junit.Before;
 import org.junit.Ignore;

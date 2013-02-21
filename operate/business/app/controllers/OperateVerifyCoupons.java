@@ -1,7 +1,7 @@
 package controllers;
 
 import com.uhuila.common.util.DateUtil;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.order.ECouponStatus;

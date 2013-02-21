@@ -1,0 +1,4 @@
+self: play -> operator 0.1
+
+require:
+    - play

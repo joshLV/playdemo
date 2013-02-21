@@ -1,4 +1,4 @@
-package models.admin;
+package models.operator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +19,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Query;
 import javax.persistence.Table;
-import operate.rbac.annotations.ActiveNavigation;
+
 import play.db.jpa.Model;
 
 @Entity

@@ -2,8 +2,8 @@ package unit;
 
 import java.util.List;
 
-import models.admin.OperateNavigation;
-import models.admin.OperateRole;
+import models.operator.OperateNavigation;
+import models.operator.OperateRole;
 import operate.rbac.RbacLoader;
 
 import org.junit.Before;

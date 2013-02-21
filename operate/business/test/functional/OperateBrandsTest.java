@@ -3,7 +3,7 @@ package functional;
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.sales.Brand;
 import models.supplier.Supplier;
 import operate.rbac.RbacLoader;

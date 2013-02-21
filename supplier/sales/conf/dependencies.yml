@@ -24,6 +24,7 @@ require:
     - asset_package -> asset_package
     - resale -> resale
     - consumer -> consumer
+    - operator -> operator
     - order -> order
     - accounts -> accounts
     - sms -> sms
@@ -68,6 +69,7 @@ repositories:
             - paginate_ext -> *
             - supplier_rbac -> *
             - consumer -> *
+            - operator -> *
             - order -> *
             - accounts -> *
             - sms -> *

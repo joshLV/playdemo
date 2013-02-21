@@ -1,15 +1,12 @@
 package models;
 
-import models.admin.OperateUser;
-import models.order.ECouponStatus;
+import models.operator.OperateUser;
 import models.sales.Goods;
 import models.supplier.SupplierCategory;
-import org.apache.commons.collections.IterableMap;
 import play.db.jpa.JPA;
 
 import javax.persistence.Query;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.*;
 

@@ -6,7 +6,7 @@ import models.accounts.Voucher;
 import models.accounts.VoucherCondition;
 import models.accounts.VoucherType;
 import models.accounts.util.AccountUtil;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.consumer.User;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;

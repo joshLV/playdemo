@@ -1,8 +1,8 @@
 package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
-import models.admin.OperateRole;
-import models.admin.OperateUser;
+import models.operator.OperateRole;
+import models.operator.OperateUser;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
