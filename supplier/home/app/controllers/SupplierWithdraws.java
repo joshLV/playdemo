@@ -64,6 +64,7 @@ public class SupplierWithdraws extends Controller {
         List<Prepayment> prepayments = Prepayment.findBySupplier(supplier);
 
         BigDecimal withdrawAmount = account.getWithdrawAmount(getBeginOfDay());
+        //商户可提现金额
         BigDecimal supplierWithdrawAmount = account.getSupplierWithdrawAmount(prepaymentBalance, getBeginOfDay());
         render(account, withdrawAccounts, prepaymentBalance, prepayments, withdrawAmount, supplierWithdrawAmount);
     }
