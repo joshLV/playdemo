@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Request xmlns="http://tuan.360buy.com/Request">
+    <!--发送优惠券短信 请求 京东请求-->
+	<!--版本-->
+	<Version>1.0</Version>
+	<!--合作伙伴ID-->
+	<VenderId>100000</VenderId>
+	<!--合作伙伴Key-->
+	<VenderKey>xxxxxxxxxxxxxxxxx</VenderKey>
+	<!--是否压缩 默认不压缩-->
+	<Zip>false</Zip>
+	<!--是否加密-->
+	<Encrypt>false</Encrypt>
+	<!--提交数据-->
+	<Data>
+		<Message xmlns="http://tuan.360buy.com/SendSmsRequest">
+			<!--京东优惠券号 [必填]-->
+			<JdCouponId>${jdCouponId}</JdCouponId>
+			<!--合作伙伴优惠券号 [必填]-->
+			<VenderCouponId>${venderCouponId}</VenderCouponId>
+			<!--发送手机号 [必填]-->
+			<Mobile>13911111111</Mobile>
+		</Message>
+	</Data>
+</Request>

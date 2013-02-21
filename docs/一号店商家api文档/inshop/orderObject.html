@@ -1,0 +1,251 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>一号店开放平台 - API详情</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="../css/global-min.css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/tbsp.css" />
+<link rel="stylesheet" href="../css/reset.css" />
+<link rel="stylesheet" href="../css/common.css" />
+<link rel="stylesheet" href="../css/header.css" />
+<link rel="stylesheet" href="../css/docmtCenter.css" />
+<script type="text/javascript" src="../js/kissy.js"></script>
+<script type="text/javascript" src="../js/judge.js"></script>
+<script type="text/javascript" src="../js/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="../js/doc.js"></script>
+<script type="text/javascript" src="../js/sh.js"></script>
+<link rel="stylesheet" href="../css/sh.css" />
+<script type="text/javascript" src="../js/grade.js"></script>
+</head>
+<body>
+	<div class="seller">
+		<div id="page">
+			<div class="clearfix" id="pageNav">
+				<h1 id="toplogo">
+					<a href="http://www.yihaodian.com"><img class="pngfilter"
+						title="一号店开放平台" src="../img/logo.png" alt="1号店"> </a>
+				</h1>
+				<h1 id="topmenu" align="center">
+					<a class="selected" href="#"
+						style="font-size: 20px; text-align: center;">———只为更美好的生活</a>
+					<!-- 去掉选中小三角 <s></s> -->
+				</h1>
+			</div>
+		</div>
+	</div>
+	<div class="crumbs">
+		<a href="apiHomePage.html">API文档</a> <a href="orderApi.html">订单API</a>
+		<a class="last" href="orderObject.html">Order</a>
+		<!--class with "last"-->
+	</div>
+
+	<div class='container grid-s165m0 layout'>
+		<!--正文区 begin-->
+		<div class="col-main bg_line">
+			<div class="main-wrap">
+				<div class="title-wrap">
+					<h1 class="title">Order</h1>
+				</div>
+
+				<div class="api-detail-bd" id="bd">
+					<!-- ued div start 不知何用-->
+					<!-- 左侧弹框效果 -->
+					<div class="judeApi hidden" id="judeApi"></div>
+					<script>
+						KISSY.use("starGrade", function(S) {
+							S.grade.init();
+						});
+					</script>
+					<!-- 左侧弹框效果end -->
+					<div>
+
+						<div class="content-first">
+							<h2 class="head-title" id="">简要描述</h2>
+							<p class="introduction">订单</p>
+						</div>
+						<h2 class="api-content-title">
+							<a name="testtool"></a>
+						</h2>
+
+
+
+						<div>
+							<h2 class="head-title" id="">属性</h2>
+							<table class="api-table" cellspacing='0'>
+								<thead>
+									<tr>
+										<th class="left" width="20%">名称</th>
+										<th class="middle" width="10%">类型</th>
+										<th class="middle" width="10%">是否隐私</th>
+										<th class="middle" width="15%">示例值</th>
+										<th class="left" width="45%">描述</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class="odd">
+										<td class="left">orderId</td>
+										<td class="middle"><a href="parameterStyle.html#Long">Long</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">订单ID</td>
+									</tr>
+									<tr class="even">
+										<td class="left">orderCode</td>
+										<td class="middle"><a href="parameterStyle.html#String">String</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">订单编码</td>
+									</tr>
+									<tr class="odd">
+										<td class="left">orderStatus</td>
+										<td class="middle"><a href="parameterStyle.html#String">String</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">订单状态:
+										    <br>ORDER_WAIT_PAY：已下单（货款未全收）
+											<br>ORDER_PAYED：已下单（货款已收）
+											<br>ORDER_TRUNED_TO_DO：可以发货（已送仓库）
+											<br>ORDER_CAN_OUT_OF_WH：可出库
+											<br>ORDER_OUT_OF_WH：已出库（货在途）
+											<br>ORDER_SENDED_TO_LOGITSIC：已发送物流
+											<br>ORDER_RECEIVED：货物用户已收到
+											<br>ORDER_FINISH：订单完成
+											<br>ORDER_CUSTOM_CALLTO_RETURN：用户要求退货
+										    <br>ORDER_CUSTOM_CALLTO_CHANGE：用户要求换货
+										    <br>ORDER_RETURNED：退货完成
+										    <br>ORDER_CHANGE_FINISHED：换货完成 
+										    <br>ORDER_CANCEL：订单取消
+										</td>
+									</tr>
+									<tr class="even">
+										<td class="left">orderAmount</td>
+										<td class="middle"><a href="parameterStyle.html#Double">Double</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">订购金额(实际支付金额,包括运费)</td>
+									</tr>
+									<tr class="odd">
+										<td class="left">productAmount</td>
+										<td class="middle"><a href="parameterStyle.html#Double">Double</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">产品总额</td>
+									</tr>
+									<tr class="even">
+										<td class="left">orderCreateTime</td>
+										<td class="middle"><a href="parameterStyle.html#Date">Date</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">订单创建日期</td>
+									</tr>
+									<tr class="odd">
+										<td class="left">orderDeliveryFee</td>
+										<td class="middle"><a href="parameterStyle.html#Double">Double</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">运费</td>
+									</tr>
+									<tr class="even">
+										<td class="left">orderNeedInvoice</td>
+										<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">发票需要情况: 0 不需要，1旧版普通，2新版普通，3增值税发票</td>
+									</tr>
+									<tr class="odd">
+										<td class="left">updateTime</td>
+										<td class="middle"><a href="parameterStyle.html#Date">Date</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">更新时间</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<!-- ued div end-->
+				</div>
+			</div>
+		</div>
+		<!--正文区 end-->
+		<!--左侧导航栏 begin-->
+		<div class="col-sub">
+			<div class="APIgory">
+				<ul>
+					<li>
+						<div class="APIgory-title">
+							<a href="orderApi.html">返回&nbsp;<span
+								class="APIgory-sub-title"> 订单API</span> </a>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.orders.get.html" title="yhd.orders.get">yhd.orders.get</a>
+								<p class="APIgory-intro info-overflow">获取订单列表</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.order.detail.get.html" title="yhd.order.detail.get">yhd.order.detail.get</a>
+								<p class="APIgory-intro info-overflow">获取单个订单的详细信息</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.orders.detail.get.html" title="yhd.orders.detail.get">yhd.orders.detail.get</a>
+								<p class="APIgory-intro info-overflow">批量获取订单详情</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.invoices.get.html" title="yhd.invoices.get">yhd.invoices.get</a>
+								<p class="APIgory-intro info-overflow">查询发票信息</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li class="list-last">
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.order.merchant.remark.update.html"
+									title="yhd.invoices.get">yhd.order.merchant.remark.update</a>
+								<p class="APIgory-intro info-overflow">更新单个订单的卖家备注信息</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+				</ul>
+				<div class="quick-api">
+					<a href="apiHomePage.html">API文档</a>
+				</div>
+			</div>
+		</div>
+		<!--左侧导航栏 end-->
+	</div>
+</body>
+</html>

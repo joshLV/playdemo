@@ -1,6 +1,11 @@
 package models.order;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import org.w3c.dom.Document;
 import play.db.jpa.Model;
+import play.libs.XML;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -18,7 +23,7 @@ public class OuterOrder extends Model {
     public OuterOrderPartner partner;      //合作伙伴
 
     @Column(name = "order_id", nullable = true)
-    public Long orderId;       //合作伙伴的订单ID
+    public String orderId;       //合作伙伴的订单ID
 
     @Basic(fetch = FetchType.LAZY)
     @ManyToOne
@@ -48,7 +53,21 @@ public class OuterOrder extends Model {
 
     public static OuterOrder getOuterOrder(Order ybqOrder) {
         return OuterOrder.find("ybqOrder=?", ybqOrder).first();
-
     }
 
+    public static OuterOrder getOuterOrder(String orderId, OuterOrderPartner partner) {
+        return OuterOrder.find("byOrderIdAndPartner", orderId, partner).first();
+    }
+
+    public JsonObject getMessageAsJsonObject() {
+        return new JsonParser().parse(message).getAsJsonObject();
+    }
+
+    public JsonArray getMessageAsJsonArray() {
+        return new JsonParser().parse(message).getAsJsonArray();
+    }
+
+    public Document getMessageAsXmlDocument() {
+        return XML.getDocument(message);
+    }
 }

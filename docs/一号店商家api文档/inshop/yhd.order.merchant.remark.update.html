@@ -1,0 +1,290 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>一号店开放平台 - API详情 - 更新单个订单的卖家备注信息</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="../css/global-min.css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/tbsp.css" />
+<link rel="stylesheet" href="../css/reset.css" />
+<link rel="stylesheet" href="../css/common.css" />
+<link rel="stylesheet" href="../css/header.css" />
+<link rel="stylesheet" href="../css/docmtCenter.css" />
+<script type="text/javascript" src="../js/kissy.js"></script>
+<script type="text/javascript" src="../js/judge.js"></script>
+<script type="text/javascript" src="../js/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="../js/doc.js"></script>
+<script type="text/javascript" src="../js/sh.js"></script>
+<link rel="stylesheet" href="../css/sh.css" />
+<script type="text/javascript" src="../js/grade.js"></script>
+</head>
+<body>
+	<div class="seller">
+		<div id="page">
+			<div class="clearfix" id="pageNav">
+				<h1 id="toplogo">
+					<a href="http://www.yihaodian.com"><img class="pngfilter"
+						title="一号店开放平台" src="../img/logo.png" alt="1号店"> </a>
+				</h1>
+				<h1 id="topmenu" align="center">
+					<a class="selected" href="#"
+						style="font-size: 20px; text-align: center;">———只为更美好的生活</a>
+					<!-- 去掉选中小三角 <s></s> -->
+				</h1>
+			</div>
+		</div>
+	</div>
+	<div class="crumbs">
+		<a href="apiHomePage.html">API文档</a> <a href="orderApi.html">订单API</a>
+		<a class="last" href="yhd.order.merchant.remark.update.html">yhd.order.merchant.remark.update</a>
+		<!--class with "last"-->
+	</div>
+
+	<div class='container grid-s165m0 layout'>
+		<!--正文区 begin-->
+		<div class="col-main bg_line">
+			<div class="main-wrap">
+				<div class="title-wrap">
+					<h1 class="open-bg title">yhd.order.merchant.remark.update
+						更新单个订单的卖家备注信息</h1>
+
+					<ul class="api-sub-title layout clearfix">
+						<li class="sub-title"><a class="link" href="#authorize">API接口描述</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#systemParameter">系统级输入参数</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#api-param">应用级输入参数</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#result">返回结果</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#example">返回示例</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#error-code">错误码</a>
+						</li>
+					</ul>
+				</div>
+
+				<div class="api-detail-bd" id="bd">
+					<!-- 评分-->
+					<!-- 左侧弹框效果 -->
+					<div class="judeApi hidden" id="judeApi"></div>
+					<script>
+						KISSY.use("starGrade", function(S) {
+							S.grade.init();
+						});
+					</script>
+					<!-- 左侧弹框效果end -->
+
+					<div class="content-first">
+						<h2 class="head-title" id="authorize">API接口描述</h2>
+						<p class="introduction">根据订单编码，订单卖家备注，更新单个订单的卖家备注信息，更新成功，返回更新成功记录数，更新失败，则返回更新失败记录数
+						及相应的错误信息描述</p>
+					</div>
+
+
+					<div>
+						<iframe id="systemParameter" src="systemInputParameters.html"
+							frameborder="no" border="0" marginwidth="80px" marginheight="0"
+							scrolling="no" allowtransparency="yes"> </iframe>
+					</div>
+					<div>
+						<h2 class="head-title" id="api-param">应用级输入参数</h2>
+						<table class="api-table" cellspacing='0'>
+							<thead>
+								<tr>
+									<th width="15%" class="middle">名称</th>
+									<th width="10%" class="middle">类型</th>
+									<th width="10%" class="middle">是否必须</th>
+									<th width="15%" class="left">示例值</th>
+									<th width="10%" class="left">默认值</th>
+									<th width="40%" class="left">描述</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="odd">
+									<td class="middle">orderCode</td>
+									<td class="middle"><a href="parameterStyle.html#String">String</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="left"></td>
+									<td class="left"></td>
+									<td class="left">订单编码</td>
+								</tr>
+								<tr class="even">
+									<td class="middle">remark</td>
+									<td class="middle"><a href="parameterStyle.html#String">String</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="left"></td>
+									<td class="left"></td>
+									<td class="left">订单卖家备注,最大长度为500</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div>
+						<h2 class="head-title" id="result">返回结果</h2>
+						<table class="api-table" cellspacing='0'>
+							<thead>
+								<tr>
+									<th width="20%" class="left">名称</th>
+									<th width="15%" class="middle">类型</th>
+									<th width="15%" class="middle">是否必须</th>
+									<th width="20%" class="middle">示例值</th>
+									<th width="30%" class="left">描述</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="odd">
+									<td class="left">updateCount</td>
+									<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle">10</td>
+									<td class="left">更新成功记录数</td>
+								</tr>
+								<tr class="even">
+									<td class="left">errorCount</td>
+									<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle">1</td>
+									<td class="left">更新失败记录数</td>
+								</tr>
+								<tr class="odd">
+									<td class="left">errInfoList</td>
+									<td class="middle"><a href="errDetailInfoObject.html">ErrDetailInfo[]</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">错误信息列表</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div>
+						<h2 class="head-title " id="example">返回示例</h2>
+						<p class="data-format">XML数据格式:</p>
+						<div class="img-wrap">
+							<!-- xml刷-->
+							<pre class="brush: xml;">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+&lt;response&gt;
+	&lt;errorCount&gt;0&lt;/errorCount&gt;
+	&lt;updateCount&gt;1&lt;/updateCount&gt;
+&lt;/response&gt;
+</pre>
+
+						</div>
+
+						<p class="data-format">JSON数据格式:</p>
+						<div class="img-wrap">
+							<!-- JS刷-->
+							<pre class="brush: js;">{&quot;response&quot;:{&quot;errorCount&quot;:0,&quot;updateCount&quot;:1}}</pre>
+						</div>
+					</div>
+					<div>
+						<h2 class="head-title" id="error-code">错误码</h2>
+
+						<table class="api-table" cellspacing='0'>
+							<thead>
+								<tr>
+									<th class="left" width="42%">错误码</th>
+									<th class="left" width="30%">错误描述</th>
+									<th class="left" width="28%">解决方案</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="odd">
+									<td class="left">yhd.order.merchant.remark.update.param_missing</td>
+									<td class="left">参数orderCode和remark没有输入</td>
+									<td class="left">输入参数</td>
+								</tr>															
+								<tr class="even">
+									<td class="left">yhd.order.merchant.remark.update.error</td>
+									<td class="left">更新订单卖家备注失败</td>
+									<td class="left">根据具体错误信息修改</td>
+								</tr>
+								<tr class="odd">
+									<td class="left">yhd.order.merchant.remark.update.param_remark_over</td>
+									<td class="left">备注信息超长(最大长度为500)</td>
+									<td class="left">修改备注信息</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<!-- ued div end-->
+				</div>
+			</div>
+		</div>
+		<!--正文区 end-->
+		<!--左侧导航栏 begin-->
+		<div class="col-sub">
+				<div class="APIgory">
+						<ul>
+					<li>
+						<div class="APIgory-title">
+							<a href="orderApi.html">返回&nbsp;<span
+								class="APIgory-sub-title"> 订单API</span> </a>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list  ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.orders.get.html" title="yhd.orders.get">yhd.orders.get</a>
+								<p class="APIgory-intro info-overflow">获取订单列表</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.order.detail.get.html" title="yhd.order.detail.get">yhd.order.detail.get</a>
+								<p class="APIgory-intro info-overflow">获取单个订单的详细信息</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.orders.detail.get.html" title="yhd.orders.detail.get">yhd.orders.detail.get</a>
+								<p class="APIgory-intro info-overflow">批量获取订单详情</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.invoices.get.html" title="yhd.invoices.get">yhd.invoices.get</a>
+								<p class="APIgory-intro info-overflow">查询发票信息</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li class="list-last">
+						<div class="APIgory-list  focus">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.order.merchant.remark.update.html"
+									title="yhd.invoices.get">yhd.order.merchant.remark.update</a>
+								<p class="APIgory-intro info-overflow">更新单个订单的卖家备注信息</p>
+							</div>
+							<s></s>
+						</div></li>
+				</ul>
+				<div class="quick-api">
+					<a href="apiHomePage.html">API文档</a>
+				</div>
+			</div>
+		</div>
+		<!--左侧导航栏 end-->
+	</div>
+</body>
+</html>

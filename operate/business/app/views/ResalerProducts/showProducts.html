@@ -1,0 +1,91 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'发布历史' /}
+#{include '/share/nav.html' /}
+#{set 'moreScripts'}
+<script>
+    $("a[rel='tooltip']").tooltip({container:'body'});
+    $("a[data-toggle='popover']").popover({container:'body'});
+</script>
+#{/set}
+#{set 'moreStyles'}
+#{/set}
+<div class="body">
+    #{if products}
+        <legend>发布历史：<a href="/goods/${products.get(0).goods.id}" target="_blank">
+            ${products.get(0).goods.shortName}</a>
+        </legend>
+    #{/if}
+
+
+
+<table class="table table-striped table-bordered">
+<thead>
+<tr>
+    <th>#</th>
+    <th>发布时间</th>
+    <th>发布人</th>
+    <th>最后修改时间</th>
+    <th>最后修改人</th>
+    <th>第三方ID</th>
+    <th>状态</th>
+    <th>操作</th>
+</tr>
+</thead>
+
+<tbody>
+
+#{paginate.list items:products, as:'product'}
+<tr>
+    <td>${product_index}</td>
+    <td>${product.createdAt}</td>
+    <td>${product.creator}</td>
+    <td>${product.updatedAt}</td>
+    <td>${product.lastModifier}</td>
+    <td>
+        #{if !product.partnerProductId}
+            <a class="btn" data-html="true" data-toggle="popover" data-placement="bottom" href="#"
+               data-content="<form action='/resaler-products/enter' method='post'> <fieldset>
+               <input type='text' placeholder='第三方产品ID' name='partnerPid'>
+               <input type='text' placeholder='第三方产品URL' name='partnerUrl'>
+               <input type='hidden' name='productId' value='${product.id}'>
+               <button type='submit' class='btn'>提交</button> </fieldset> </form>"
+            >添加</a>
+        #{/if}
+        #{else}
+            <a href="${product.url}" target="_blank">${product.partnerProductId}</a>
+        #{/else}
+    </td>
+    <td>&{'resaler.product.status.' + product.status}</td>
+    <td>
+        <div class="btn-group">
+        %{partner = product.partner.toString().toLowerCase()}%
+        #{if product.deleted != com.uhuila.common.constants.DeletedStatus.DELETED}
+            #{if partner == 'yhd' || partner == 'wb'}
+                <a href="/resaler-products/${partner}/edit/${product.id}" class="btn btn-mini" rel="tooltip" title="编辑"><i class="icon-pencil"></i></a>
+            #{/if}
+
+            #{if partner == 'wb'}
+                #{if product.status != models.sales.ResalerProductStatus.ONSALE}
+                    <a href="/resaler-products/${partner}/onsale/${product.id}" class="btn btn-mini" rel="tooltip" title="上架"><i class="icon-upload"></i></a>
+                #{/if}
+                #{if product.status != models.sales.ResalerProductStatus.OFFSALE}
+                    <a href="/resaler-products/${partner}/offsale/${product.id}" class="btn btn-mini" rel="tooltip" title="下架"><i class="icon-download"></i></a>
+                #{/if}
+                <a href="/resaler-products/${partner}/refresh/${product.id}" class="btn btn-mini" rel="tooltip" title="刷新状态"><i class="icon-refresh"></i></a>
+            #{/if}
+        #{/if}
+
+        <a href="/resaler-products/journal/${product.id}" class="btn btn-mini" rel="tooltip" title="操作历史"><i class="icon-list-alt"></i></a>
+        </div>
+    </td>
+</tr>
+#{/paginate.list}
+</tbody>
+</table>
+<div class="pagination" align="center">
+    <ul>
+    #{paginate.controls items:products /}
+    </ul>
+</div>
+</div>
+

@@ -1,0 +1,45 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'操作历史' /}
+#{include '/share/nav.html' /}
+#{set 'moreScripts'}
+<script>
+    $("a[rel='tooltip']").tooltip();
+</script>
+#{/set}
+#{set 'moreStyles'}
+#{/set}
+<div class="body">
+    #{if journals}
+        <legend>操作历史：<a href="/goods/${journals.get(0).product.goods.id}" target="_blank">
+            ${journals.get(0).product.goods.shortName}</a>
+        </legend>
+    #{/if}
+
+<table class="table table-striped table-bordered">
+<thead>
+<tr>
+    <th>#</th>
+    <th>日期</th>
+    <th>操作人</th>
+    <th>备注</th>
+    <th>详情</th>
+</tr>
+</thead>
+
+<tbody>
+
+#{paginate.list items:journals, as:'journal'}
+<tr>
+    <td>${journal_index}</td>
+    <td>${journal.createdAt}</td>
+    <td>${journal.operator}</td>
+    <td>${journal.remark}</td>
+    <td>
+        <a href="/resaler-products/journal/json/${journal.id}">点击查看详情</a>
+    </td>
+</tr>
+#{/paginate.list}
+</tbody>
+</table>
+</div>
+

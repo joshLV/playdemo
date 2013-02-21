@@ -1,8 +1,8 @@
 <Message xmlns="http://tuan.360buy.com/SendSmsResponse">
     *{ 京东优惠券号 [必填] }*
-    <JdCouponId>${sendSmsRequest.jdCouponId}</JdCouponId>
+    <JdCouponId>${jdCouponId}</JdCouponId>
     *{ 合作伙伴优惠券号 [必填] }*
-    <VenderCouponId>${sendSmsRequest.venderCouponId}</VenderCouponId>
+    <VenderCouponId>${venderCouponId}</VenderCouponId>
     *{ 发送手机号 [必填] }*
-    <Mobile>${sendSmsRequest.mobile}</Mobile>
+    <Mobile>${mobile}</Mobile>
 </Message>

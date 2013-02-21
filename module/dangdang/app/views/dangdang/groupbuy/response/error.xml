@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resultObject>
+    <error_code>${errorCode.getValue()}</error_code>
+    <desc>
+        <![CDATA[ ${errorDesc.raw()} ]]>
+    </desc>
+    <spid>${spid}</spid>
+    <ver>${ver}</ver>
+</resultObject>

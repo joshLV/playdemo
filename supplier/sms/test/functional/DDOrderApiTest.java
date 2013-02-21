@@ -1,32 +1,27 @@
 package functional;
 
 import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.AccountCreditable;
 import models.accounts.AccountType;
-import models.dangdang.ErrorCode;
-import models.dangdang.ErrorInfo;
+import models.dangdang.groupbuy.DDErrorCode;
+import models.dangdang.groupbuy.DDGroupBuyUtil;
 import models.order.ECoupon;
 import models.order.Order;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.sales.Goods;
-import models.sales.GoodsDeployRelation;
 import models.sales.MaterialType;
-import org.apache.commons.codec.digest.DigestUtils;
+import models.sales.ResalerProduct;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 
 import java.math.BigDecimal;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * <p/>
@@ -35,13 +30,18 @@ import java.util.TreeMap;
  * Time: 下午2:23
  */
 public class DDOrderApiTest extends FunctionalTest {
-    GoodsDeployRelation deployRelation;
+    ResalerProduct product;
 
 
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
-        deployRelation = FactoryBoy.create(GoodsDeployRelation.class);
+        product = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
+            @Override
+            public void build(ResalerProduct target) {
+                target.partner = OuterOrderPartner.DD;
+            }
+        });
     }
 
     @Test
@@ -51,9 +51,9 @@ public class DDOrderApiTest extends FunctionalTest {
         params.put("deal_type_name", "code_mine");
         Http.Response response = POST("/api/v1/dangdang/order", params);
         assertStatus(200, response);
-        ErrorInfo error = (ErrorInfo) renderArgs("errorInfo");
-        assertEquals("用户或手机不存在！", error.errorDes);
-        assertEquals(ErrorCode.USER_NOT_EXITED, error.errorCode);
+        assertContentType("text/xml", response);
+        DDErrorCode errorCode = (DDErrorCode) renderArgs("errorCode");
+        assertEquals(errorCode, DDErrorCode.USER_NOT_EXITED);
     }
 
     @Test
@@ -65,15 +65,15 @@ public class DDOrderApiTest extends FunctionalTest {
         params.put("user_mobile", "code_mine");
         Http.Response response = POST("/api/v1/dangdang/order", params);
         assertStatus(200, response);
-        ErrorInfo error = (ErrorInfo) renderArgs("errorInfo");
-        assertEquals("订单不存在！", error.errorDes);
-        assertEquals(ErrorCode.ORDER_NOT_EXITED, error.errorCode);
+        assertContentType("text/xml", response);
+        DDErrorCode errorCode = (DDErrorCode) renderArgs("errorCode");
+        assertEquals(errorCode, DDErrorCode.ORDER_NOT_EXITED);
     }
 
     @Test
     public void 测试创建当当订单_验证失败() {
         Map<String, String> params = new HashMap<>();
-        Goods goods = deployRelation.goods;
+        Goods goods = product.goods;
         params.put("id", "abcde");
         params.put("deal_type_name", "code_mine");
         params.put("user_id", "asdf");
@@ -82,24 +82,24 @@ public class DDOrderApiTest extends FunctionalTest {
         params.put("options", goods.id + ":" + "1");
         Http.Response response = POST("/api/v1/dangdang/order", params);
         assertStatus(200, response);
-        ErrorInfo error = (ErrorInfo) renderArgs("errorInfo");
-        assertEquals("sign验证失败！", error.errorDes);
-        assertEquals(ErrorCode.VERIFY_FAILED, error.errorCode);
+        assertContentType("text/xml", response);
+        DDErrorCode errorCode = (DDErrorCode) renderArgs("errorCode");
+        assertEquals(errorCode, DDErrorCode.VERIFY_FAILED);
 
         params.put("sign", "beefdebebef85f55ecba47d54d8308e8");
         params.put("ctime", String.valueOf(System.currentTimeMillis() / 1000));
         response = POST("/api/v1/dangdang/order", params);
         assertStatus(200, response);
-        error = (ErrorInfo) renderArgs("errorInfo");
 
-        assertEquals("sign验证失败！", error.errorDes);
-        assertEquals(ErrorCode.VERIFY_FAILED, error.errorCode);
+        assertContentType("text/xml", response);
+        errorCode = (DDErrorCode) renderArgs("errorCode");
+        assertEquals(errorCode, DDErrorCode.VERIFY_FAILED);
     }
 
 
     @Test
     public void 测试创建订单() {
-        Goods goods = deployRelation.goods;
+        Goods goods = product.goods;
         goods.materialType = MaterialType.ELECTRONIC;
         goods.save();
         Resaler resaler = FactoryBoy.create(Resaler.class);
@@ -124,8 +124,8 @@ public class DDOrderApiTest extends FunctionalTest {
         params.put("amount", "5.0");
         params.put("user_mobile", "13764081569");
         params.put("user_id", resaler.id.toString());
-        params.put("options", deployRelation.linkId + ":" + "1");
-        String sign = getSign(params);
+        params.put("options", product.goodsLinkId + ":" + "1");
+        String sign = DDGroupBuyUtil.signParams(params);
 
         params.put("sign", sign);
         Http.Response response = POST("/api/v1/dangdang/order", params);
@@ -137,22 +137,9 @@ public class DDOrderApiTest extends FunctionalTest {
         assertEquals("12345678", kx_order_id);
 
         assertNotNull(order);
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
-                OuterOrderPartner.DD, Long.valueOf(kx_order_id)).first();
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", OuterOrderPartner.DD, kx_order_id).first();
         assertEquals(order.orderNumber, outerOrder.ybqOrder.orderNumber);
         List<ECoupon> eCouponList = ECoupon.findByOrder(order);
         assertEquals(1, eCouponList.size());
-    }
-
-    private String getSign(SortedMap<String, String> params) {
-        StringBuilder signStr = new StringBuilder();
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            if ("body".equals(entry.getKey()) || "format".equals(entry.getKey())) {
-                continue;
-            }
-            signStr.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue())).append("&");
-        }
-        signStr.append("sn=").append("x8765d9yj72wevshn");
-        return DigestUtils.md5Hex(signStr.toString());
     }
 }

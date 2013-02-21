@@ -145,7 +145,7 @@ public class YHDGroupBuyTest extends FunctionalTest{
             }
         });
         TreeMap<String, String> params = new TreeMap<>();
-        params.put("orderCode", String.valueOf(outerOrder.orderId));
+        params.put("orderCode", outerOrder.orderId);
         params.put("partnerOrderCode", outerOrder.ybqOrder.orderNumber);
         params.put("sign", "testsign");
 
@@ -159,7 +159,7 @@ public class YHDGroupBuyTest extends FunctionalTest{
         resign(params);
         response = POST("/api/v1/yhd/gb/vouchers-get", params);
         errorCount(1, response);
-        params.put("orderCode", String.valueOf(outerOrder.orderId));
+        params.put("orderCode", outerOrder.orderId);
 
         //测试内部订单号
         params.put("partnerOrderCode", "testcode");
@@ -186,7 +186,7 @@ public class YHDGroupBuyTest extends FunctionalTest{
         Order order = (Order)Order.findAll().get(0);
         OuterOrder outerOrder = (OuterOrder)OuterOrder.findAll().get(0);
         ECoupon coupon = (ECoupon)ECoupon.findAll().get(0);
-        params.put("orderCode", String.valueOf(outerOrder.orderId));
+        params.put("orderCode", outerOrder.orderId);
         params.put("partnerOrderCode", order.orderNumber);
         params.put("voucherCode", coupon.eCouponSn);
         params.put("receiveMobile", "13472581853");
@@ -200,7 +200,7 @@ public class YHDGroupBuyTest extends FunctionalTest{
         resign(params);
         response = POST("/api/v1/yhd/gb/voucher-resend", params);
         errorCount(1, response);
-        params.put("orderCode", String.valueOf(outerOrder.orderId));
+        params.put("orderCode", outerOrder.orderId);
 
         //测试内部订单号
         params.put("partnerOrderCode", "12345678");

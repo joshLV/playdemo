@@ -1,10 +1,9 @@
 package models.job.yihaodian.listener;
 
-import models.yihaodian.shop.JobFlag;
-import models.yihaodian.YihaodianJobMessage;
-import models.yihaodian.shop.YihaodianOrder;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
+import models.order.OuterOrderStatus;
 import models.yihaodian.YihaodianQueueUtil;
-import play.Play;
 import play.jobs.Every;
 import play.jobs.Job;
 
@@ -18,14 +17,10 @@ import java.util.List;
 public class OrderScanner extends Job {
     @Override
     public void doJob() {
-        if(Play.runingInTestMode()){
-            return;
-        }
-        List<YihaodianOrder> orders = YihaodianOrder.find("jobFlag = ? or jobFlag = ?",
-                JobFlag.SEND_COPY, JobFlag.SEND_DONE).fetch();
-        for (YihaodianOrder order : orders){
-            YihaodianJobMessage message = new YihaodianJobMessage(order.orderId);
-            YihaodianQueueUtil.addJob(message);
+        List<OuterOrder> orders = OuterOrder.find("partner = ? and ( status = ? or status = ?)",
+                OuterOrderPartner.YHD, OuterOrderStatus.ORDER_COPY, OuterOrderStatus.ORDER_DONE).fetch();
+        for (OuterOrder order : orders){
+            YihaodianQueueUtil.addJob(order.orderId);
         }
     }
 }

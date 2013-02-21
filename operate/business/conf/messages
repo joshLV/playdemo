@@ -560,3 +560,12 @@ coupon.JD=京东
 coupon.TB=淘宝
 coupon.WB=58团
 coupon.DD=当当
+
+
+
+resaler.product.status.STAGING=暂存
+resaler.product.status.UPLOADED=上传成功
+resaler.product.status.REJECTED=审核核失败
+resaler.product.status.ONSALE=已上架
+resaler.product.status.OFFSALE=已下架
+resaler.product.status.UNKONWN=未知

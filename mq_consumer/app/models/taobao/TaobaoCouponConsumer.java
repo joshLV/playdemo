@@ -97,20 +97,11 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         String mobile, sellerNick;
         Integer num;
         try {
-            JsonObject jsonObject = new JsonParser().parse(outerOrder.message).getAsJsonObject();
+            JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
             mobile = jsonObject.get("mobile").getAsString(); //买家手机号
             num = jsonObject.get("num").getAsInt();//购买的数量
             sellerNick = jsonObject.get("seller_nick").getAsString();//淘宝卖家用户名（旺旺号）
-            if (!jsonObject.has("outer_iid")) {
-                if (jsonObject.get("item_title").getAsString().equals("【5店通用】健康煮海鲜自助火锅：海鲜+肉类+蔬菜类+牛肉！畅吃")) {
-                    outerIid = 288L;
-                } else {
-                    Logger.error("没有设置外部商品ID，也不是我们说的那个健康煮");
-                    return false;
-                }
-            } else {
-                outerIid = jsonObject.get("outer_iid").getAsLong();//商家发布商品时填写的外部商品ID
-            }
+            outerIid = jsonObject.get("outer_iid").getAsLong();//商家发布商品时填写的外部商品ID
         } catch (Exception e) {
             Logger.error(e, "taobao coupon request failed: invalid params");
             return false;

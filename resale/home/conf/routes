@@ -68,9 +68,6 @@ GET     /account_seq                            ResalerAccounts.index
 
 GET     /top-oauth-callback                     TaobaoOauthCallback.index
 
-GET     /dangdang-add/{goodsId}                 DDPushGoods.prepare
-POST    /dangdang-add                           DDPushGoods.push
-
 GET     /top-add                                TaobaoAPIClient.add
 POST    /batch-top-add                          TaobaoAPIClient.batchAdd
 

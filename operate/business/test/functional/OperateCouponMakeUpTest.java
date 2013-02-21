@@ -4,11 +4,6 @@ import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
 import models.operator.OperateUser;
-import models.dangdang.DDAPIInvokeException;
-import models.dangdang.DDAPIUtil;
-import models.dangdang.DDOrderItem;
-import models.dangdang.HttpProxy;
-import models.dangdang.Response;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
 import models.order.ECouponStatus;
@@ -16,14 +11,13 @@ import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.Shop;
 import operate.rbac.RbacLoader;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
+import util.ws.MockWebServiceClient;
 
-import java.io.ByteArrayInputStream;
 import java.util.Date;
 
 /**
@@ -72,6 +66,7 @@ public class OperateCouponMakeUpTest extends FunctionalTest {
         eCoupon = FactoryBoy.create(ECoupon.class);
         eCoupon.partner = ECouponPartner.TB;
         eCoupon.save();
+        MockWebServiceClient.clear();
     }
 
     @Test
@@ -111,25 +106,11 @@ public class OperateCouponMakeUpTest extends FunctionalTest {
         eCoupon.status = ECouponStatus.CONSUMED;
         eCoupon.partner = ECouponPartner.DD;
         eCoupon.save();
-        DDOrderItem item = FactoryBoy.create(DDOrderItem.class);
-        item.ybqOrderItems = eCoupon.orderItems;
-        item.save();
-        DDAPIUtil.proxy = new HttpProxy() {
-            @Override
-            public Response accessHttp(PostMethod postMethod) throws DDAPIInvokeException {
-                String data = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>" +
-                        "<resultObject><ver>1.0</ver><spid>1</spid><error_code>0</error_code>" +
-                        "<desc>success</desc><data><ddgid>100</ddgid><spgid>100</spgid>" +
-                        "<ddsn>1344555</ddsn></data></resultObject>";
-                Response response = new Response();
-                try {
-                    response = new Response(new ByteArrayInputStream(data.getBytes()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return response;
-            }
-        };
+        String data = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>" +
+                "<resultObject><ver>1.0</ver><spid>1</spid><error_code>0</error_code>" +
+                "<desc>success</desc><data><ddgid>100</ddgid><spgid>100</spgid>" +
+                "<ddsn>1344555</ddsn></data></resultObject>";
+        MockWebServiceClient.addMockHttpRequest(200, data);
 
         Http.Response response = GET("/makeup?partner=dangdang&coupon=" + eCoupon.eCouponSn);
         assertIsOk(response);

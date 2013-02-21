@@ -1,9 +1,0 @@
-<Message xmlns="http://tuan.360buy.com/CouponExtensionRequest">
-    *{ 团购优惠券有效期延期的接口请求 合作伙伴请求 }*
-    *{ 京东产品[必填] }*
-    <JdTeamId>${jdTeamId}</JdTeamId>
-    *{ 外团产品ID[必填] }*
-    <VenderTeamId>${venderTeamId}</VenderTeamId>
-    *{ 优惠券截至日期时间 格式：2010-10-11 23:59:59,表示产品延期至2010年10月11日23点59分59秒 若不填写时分秒信息，则默认延期至00点00分00秒[必填] }*
-    <ExpireTime>${expireTime.format('yyyy-MM-dd HH:mm:ss')}</ExpireTime>
-</Message>

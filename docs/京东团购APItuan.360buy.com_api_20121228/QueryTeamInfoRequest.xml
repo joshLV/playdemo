@@ -1,0 +1,23 @@
+<!-- 查询团购信息接口 请求 合作伙伴请求-->
+<?xml version="1.0" encoding="utf-8"?>
+<Request xmlns="http://tuan.360buy.com/Request">
+	<!--版本-->
+	<Version>1.0</Version>
+	<!--合作伙伴ID-->
+	<VenderId>100000</VenderId>
+	<!--合作伙伴Key-->
+	<VenderKey>xxxxxxxxxxxxxxxxx</VenderKey>
+	<!--是否压缩 默认不压缩-->
+	<Zip>false</Zip>
+	<!--是否加密-->
+	<Encrypt>true</Encrypt>
+	<!--提交数据-->
+	<Data>
+		<Message xmlns="http://tuan.360buy.com/QueryTeamInfoRequest">
+			<!--合作伙伴方团购ID 必须大于0 [必填] -->
+			<VenderTeamId>432243</VenderTeamId>
+			<!--京东团购ID 必须大于0 [必填] -->
+			<JdTeamId>10003943</JdTeamId>
+		</Message>
+	</Data>
+</Request>

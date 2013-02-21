@@ -1,0 +1,317 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>一号店开放平台 - API详情</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="../css/global-min.css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/tbsp.css" />
+<link rel="stylesheet" href="../css/reset.css" />
+<link rel="stylesheet" href="../css/common.css" />
+<link rel="stylesheet" href="../css/header.css" />
+<link rel="stylesheet" href="../css/docmtCenter.css" />
+<script type="text/javascript" src="../js/kissy.js"></script>
+<script type="text/javascript" src="../js/judge.js"></script>
+<script type="text/javascript" src="../js/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="../js/doc.js"></script>
+<script type="text/javascript" src="../js/sh.js"></script>
+<script type="text/javascript" src="../js/grade.js"></script>
+<link rel="stylesheet" href="../css/sh.css" />
+</head>
+<body>
+	<div class="seller">
+		<div id="page">
+			<div class="clearfix" id="pageNav">
+				<h1 id="toplogo">
+					<a href="http://www.yihaodian.com"><img class="pngfilter"
+						title="一号店开放平台" src="../img/logo.png" alt="1号店"> </a>
+				</h1>
+				<h1 id="topmenu" align="center">
+					<a class="selected" href="#"
+						style="font-size: 20px; text-align: center;">———只为更美好的生活</a>
+					<!-- 去掉选中小三角 <s></s> -->
+				</h1>
+			</div>
+		</div>
+	</div>
+	<div class="crumbs">
+		<a href="apiHomePage.html">API文档</a> <a href="categoryApi.html">类目API</a>
+		<a class="last" href="merchantCategoryInfoObject.html">MerchantCategoryInfo</a>
+		<!--class with "last"-->
+	</div>
+
+	<div class='container grid-s165m0 layout'>
+		<!--正文区 begin-->
+		<div class="col-main bg_line">
+			<div class="main-wrap">
+				<div class="title-wrap">
+					<h1 class="title">MerchantCategoryInfo</h1>
+				</div>
+
+				<div class="api-detail-bd" id="bd">
+					<!-- ued div start 不知何用-->
+					<div>
+						<div class="judeApi hidden" id="judeApi"></div>
+						<script>
+							KISSY.use("starGrade", function(S) {
+								S.grade.init();
+							});
+						</script>
+
+
+						<div class="content-first">
+							<h2 class="head-title" id="">简要描述</h2>
+							<p class="introduction">商家产品类别信息</p>
+						</div>
+						<h2 class="api-content-title">
+							<a name="testtool"></a>
+						</h2>
+
+
+
+						<div>
+							<h2 class="head-title" id="">属性</h2>
+							<table class="api-table" cellspacing='0'>
+								<thead>
+									<tr>
+										<th class="left" width="20%">名称</th>
+										<th class="middle" width="10%">类型</th>
+										<th class="middle" width="10%">是否隐私</th>
+										<th class="left" width="20%">示例值</th>
+										<th class="left" width="40%">描述</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class="odd">
+										<td class="left">merchantCategoryId</td>
+										<td class="middle"><a href="parameterStyle.html#Long">Long</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">商家类别id</td>
+									</tr>
+									<tr class="even">
+										<td class="left">categoryCode</td>
+										<td class="middle"><a href="parameterStyle.html#String">String</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">1号店的类别ID,号码从0000到ZZZZ</td>
+									</tr>
+									<tr class="odd">
+										<td class="left">categoryName</td>
+										<td class="middle"><a href="parameterStyle.html#String">String</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">商家类别名称</td>
+									</tr>
+									<tr class="even">
+										<td class="left">categoryParentId</td>
+										<td class="middle"><a href="parameterStyle.html#Long">Long</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">父商家类别id</td>
+									</tr>
+									<tr class="odd">
+										<td class="left">categoryDescription</td>
+										<td class="middle"><a href="parameterStyle.html#String">String</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">商家类别描述</td>
+									</tr>
+									<tr class="even">
+										<td class="left">categoryKeyword</td>
+										<td class="middle"><a href="parameterStyle.html#String">String</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">商家类别关键词</td>
+									</tr>
+									<tr class="odd">
+										<td class="left">categoryIsLeaf</td>
+										<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">0:no 1:yes, leaf category</td>
+									</tr>
+
+									<tr class="even">
+										<td class="left">backOperatorId</td>
+										<td class="middle"><a href="parameterStyle.html#String">String</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">操作者id</td>
+									</tr>
+									<tr class="odd">
+										<td class="left">categoryLevel</td>
+										<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">类别层次</td>
+									</tr>
+									<tr class="even">
+										<td class="left">listOrder</td>
+										<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">顺序</td>
+									</tr>
+									<tr class="odd">
+										<td class="left">categorySearchName</td>
+										<td class="middle"><a href="parameterStyle.html#String">String</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">搜索名称:0-c1id-c2id-c3id-c4id:c1name-c2name-c3name-c4name
+										</td>
+									</tr>
+									<tr class="even">
+										<td class="left">categorySeoTitle</td>
+										<td class="middle"><a href="parameterStyle.html#String">String</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">搜索标题</td>
+									</tr>
+									<tr class="odd">
+										<td class="left">categorySeoKeyword</td>
+										<td class="middle"><a href="parameterStyle.html#String">String</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">搜索关键字</td>
+									</tr>
+									<tr class="even">
+										<td class="left">categorySeoDescription</td>
+										<td class="middle"><a href="parameterStyle.html#String">String</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">搜索描述</td>
+									</tr>
+									<tr class="odd">
+										<td class="left">isDelete</td>
+										<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">0否1是</td>
+									</tr>
+									<tr class="even">
+										<td class="left">forumId</td>
+										<td class="middle"><a href="parameterStyle.html#Long">Long</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">论坛id</td>
+									</tr>
+									<tr class="odd">
+										<td class="left">isVisible</td>
+										<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">是否可见 0 否 1是</td>
+									</tr>
+									<tr class="even">
+										<td class="left">dataExchangeFlag</td>
+										<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">是否导入WMS系统：0：未导入 1：已导入</td>
+									</tr>
+									<tr class="odd">
+										<td class="left">picId</td>
+										<td class="middle"><a href="parameterStyle.html#Long">Long</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">商家分类图片id</td>
+									</tr>
+									<tr class="even">
+										<td class="left">picUrl</td>
+										<td class="middle"><a href="parameterStyle.html#String">String</a>
+										</td>
+										<td class="middle">否</td>
+										<td class="middle"></td>
+										<td class="left">商家分类图片URL</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<!-- ued div end-->
+				</div>
+			</div>
+		</div>
+		<!--正文区 end-->
+		<!--左侧导航栏 begin-->
+		<div class="col-sub">
+			<div class="APIgory">
+				<ul>
+					<li>
+						<div class="APIgory-title">
+							<a href="categoryApi.html">返回&nbsp;<span
+								class="APIgory-sub-title"> 类目API</span> </a>
+						</div></li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.category.products.get.html"
+									title="yhd.category.products.get">yhd.category.products.get
+								</a>
+								<p class="APIgory-intro info-overflow">查询商家被授权产品类别列表</p>
+							</div>
+							<s></s>
+						</div></li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.category.merchant.products.get.html"
+									title="yhd.category.merchant.products.get">yhd.category.merchant.products.get</a>
+								<p class="APIgory-intro info-overflow">查询商家产品类别列表（店铺类别）</p>
+							</div>
+							<s></s>
+						</div></li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.category.brands.get.html"
+									title="yhd.category.brands.get">yhd.category.brands.get</a>
+								<p class="APIgory-intro info-overflow">查询商家被授权品牌列表</p>
+							</div>
+							<s></s>
+						</div></li>
+						<li  class="list-last">
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd. category. attribute.get.html"
+									title="yhd. category. attribute.get">yhd. category. attribute.get</a>
+								<p class="APIgory-intro info-overflow">查询类别属性(不包含系列属性)</p>
+							</div>
+							<s></s>
+						</div></li>
+
+
+				</ul>
+				<div class="quick-api">
+					<a href="apiHomePage.html">API文档</a>
+				</div>
+			</div>
+		</div>
+		<!--左侧导航栏 end-->
+	</div>
+</body>
+</html>

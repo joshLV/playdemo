@@ -1,0 +1,7 @@
+<data>
+    <row>
+        <ddgid><![CDATA[${ddgid}]]></ddgid>
+        <type><![CDATA[${type}]]></type>
+        <code><![CDATA[${code}]]></code>
+    </row>
+</data>

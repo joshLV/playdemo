@@ -1,12 +1,11 @@
 package models.job.dangdang.listener;
 
 import com.uhuila.common.constants.DeletedStatus;
-import models.dangdang.DDAPIInvokeException;
-import models.dangdang.DDAPIUtil;
-import models.resale.Resaler;
-import models.resale.ResalerFav;
+import models.dangdang.groupbuy.DDGroupBuyUtil;
+import models.order.OuterOrderPartner;
 import models.sales.GoodsStatus;
 import models.sales.MaterialType;
+import models.sales.ResalerProduct;
 import play.Logger;
 import play.Play;
 import play.jobs.Every;
@@ -30,30 +29,16 @@ public class DDSyncSellGoodsCountJob extends Job {
         if(Play.runingInTestMode()){
             return;
         }
-        Logger.info("\n--------------Start syncSellCount job----");
-        //定位请求者
-        models.resale.Resaler resaler = models.resale.Resaler.find("loginName=? and status='APPROVED'", Resaler.DD_LOGIN_NAME).first();
-        if (resaler == null) {
-            Logger.info("dangdang resaler is not existed!");
-            return;
-        }
+        Logger.info("\n--------------Start dangdang syncSellCount job----");
+
         //取得dangdang分销商商品库中在售的商品（不包含抽奖商品）
-        List<ResalerFav> favs = ResalerFav.find("resaler=? and goods.materialType = ? and " +
-                "goods.deleted=? and goods.status=? and goods.expireAt >=? and goods.isLottery = false order by createdAt DESC", resaler,
-                MaterialType.ELECTRONIC, DeletedStatus.UN_DELETED, GoodsStatus.ONSALE, new Date()).fetch();
-        if (favs.size() == 0) {
-            Logger.info("dangdang resaler no library goods!");
-            return;
+        List<ResalerProduct> products = ResalerProduct.find("partner=? and goods.materialType = ? and " +
+                "goods.deleted=? and goods.status=? and goods.expireAt >=? and goods.isLottery = false order by createdAt DESC",
+                OuterOrderPartner.DD , MaterialType.ELECTRONIC, DeletedStatus.UN_DELETED, GoodsStatus.ONSALE, new Date()).fetch();
+        for (ResalerProduct product : products) {
+            DDGroupBuyUtil.syncSellCount(product);
         }
-        for (ResalerFav resalerGoods : favs) {
-            try {
-                //更新当当商品的售出数量
-                DDAPIUtil.syncSellCount(resalerGoods.goods);
-            } catch (DDAPIInvokeException e) {
-                //调用出错后打印错误日志
-                Logger.info(e.getMessage());
-            }
-        }
-        Logger.info("\n--------------End syncSellCount job.");
+
+        Logger.info("\n--------------End dangdang syncSellCount job.");
     }
 }

@@ -1,0 +1,165 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'淘宝上传商品:'+ goods.shortName /}
+#{include '/share/nav.html' /}
+#{set 'moreStyles'}
+    #{asset.css src:['/ztree/zTreeStyle.css'] /}
+    <style type="text/css">
+        ul.ztree{
+            margin-top: 1px;
+            border: 1px solid #ccc;
+            background: #f5f5f5;
+            overflow-y: scroll;
+            overflow-x: auto;
+        }
+    </style>
+#{/set}
+<div class="body">
+    <legend>淘宝上传商品：<a href="/goods/${goods.id}" target="_blank">
+        ${goods.shortName}</a>
+    </legend>
+    <form class="form-horizontal" method="POST" action="/resaler-products/tb/upload">
+
+        <div class="control-group">
+            <label class="control-label" for="inputTeamTitle">标题名称 *</label>
+            <div class="controls">
+                <input type="text" id="inputTeamTitle" class="input-block-level" name="title" maxlength="60" value="${goods.title}">
+                <span class="help-block">不超过60个字符</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">店铺类目 *</label>
+            <div class="controls">
+                <label class="checkbox">
+                    <input type="checkbox" value="510052565" name="sellerCids">餐饮美食
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" value="510052569" name="sellerCids">休闲娱乐
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" value="643248925" name="sellerCids">生活服务
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" value="510052572" name="sellerCids">丽人写真
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" value="643248924" name="sellerCids">酒店旅游
+                </label>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">券生效时间 *</label>
+            <div class="controls">
+                <input type="text" name="startDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd'})" class="Wdate"
+                       value="${goods.beginOnSaleAt.before(new java.util.Date())?(new java.util.Date()).format('yyyy-MM-dd'):goods.beginOnSaleAt.format('yyyy-MM-dd')}">
+                券截止时间 *
+                <input type="text" name="endDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd'})" class="Wdate"
+                       value="${goods.endOnSaleAt?.format('yyyy-MM-dd')}">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputMarketPrice">面值 *</label>
+            <div class="controls">
+                <input type="text" id="inputMarketPrice" name="faceValue" value="${goods.faceValue}">
+                <span class="help-inline">最多两位小数</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputSalePrice">销售价 *</label>
+            <div class="controls">
+                <input type="text" id="inputSalePrice" name="price" value="${goods.salePrice}" readonly>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputProvince">省份 *</label>
+            <div class="controls">
+                <input type="text" id="inputProvince" name="locationState" value="上海">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputCity">城市 *</label>
+            <div class="controls">
+                <input type="text" id="inputCity" name="locationCity" value="上海">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputMaxNumber">商品总库存 *</label>
+            <div class="controls">
+                <input type="text" id="inputMaxNumber" name="num" value="${goods.getRealStocks()}">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputPros">其他属性 *</label>
+            <div class="controls">
+                <input type="text" id="inputPros" name="props" value="3816036:40454301;16651034:137887611;8648185:29423;8648373:29423;" class="input-xxlarge">
+                <span class="help-inline">编辑勿动，开发人员可酌情修改此参数</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">商品详情</label>
+            <div class="controls">
+                <textarea rows="8" cols="100"  name="desc" id="prodDescription" style="width:850px;height:550px;display:hidden;">
+                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品详情</span>
+                    </p>
+                    ${goods.exhibition.raw()}
+                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
+                    </p>
+                    ${goods.prompt.raw()}
+                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">小贴士</span>
+                    </p>
+
+                    <p>·本商品为电子券，购买后会以短信形式发送一串数字到您的手机</p>
+                    <p>·如果您不小心遗失了您的电子券，请拨打一百券客服热线</p>
+                    <p>·发票由最终服务提供商开具 用户跟商家索取发票</p>
+                    <p>·本产品由【一百券】提供，客服热线：400-6262-166 </p>
+
+                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
+                    </p>
+                    ${goods.details.raw()}
+                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
+                    </p>
+                    ${goods.supplierDes.raw()}
+
+                    <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                        <span style="font-family:SimSun;font-size:small;color:#ffffff;">适用门店</span>
+                    </p>
+
+                    <table border="1" cellpadding="4" cellspacing="0">
+                    #{list items:goods.getShopList(), as:'shop'}
+                    <tr>
+                        <td width="150px">${shop.name}</td>
+                        <td width="380px">地址：${shop.address}<br/> 电话：${shop.phone}</td>
+                        <td width="200px">交通：${shop.transport}</td>
+                    </tr>
+                    #{/list}
+                    </table>
+                </textarea>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <input type="hidden" name="goodsId" value="${goods.id}" >
+            <input type="hidden" name="stuffStatus" value="new" >
+            <input type="hidden" name="type" value="fixed" >
+            <input type="hidden" name="approveStatus" value="instock" >
+            <input type="hidden" name="cid" value="50015759" >
+            <button type="submit" id="submit" class="btn btn-primary">发布</button>
+        </div>
+    </form>
+</div>
+
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts2/kindeditor-min.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/lang/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{asset.js src:['/ztree/jquery.ztree.all-3.5.min.js'] /}
+<script src="@{'/public/javascripts/ztree-helper.js'}" type="text/javascript" charset="UTF-8"></script>
+<script>
+    var subCategoryData = ${allCategoriesJson.raw()};
+</script>
+<script src="@@{'/public/javascripts/wuba-products.js'}"></script>
+#{/set}

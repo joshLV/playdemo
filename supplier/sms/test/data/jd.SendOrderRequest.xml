@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--同步订单 请求 京东请求-->
+<Request xmlns="http://tuan.360buy.com/Request">
+	<!--版本-->
+	<Version>1.0</Version>
+	<!--合作伙伴ID-->
+	<VenderId>100000</VenderId>
+	<!--合作伙伴Key-->
+	<VenderKey>xxxxxxxxxxxxxxxxx</VenderKey>
+	<!--是否压缩 默认不压缩-->
+	<Zip>false</Zip>
+	<!--是否加密-->
+	<Encrypt>false</Encrypt>
+	<!--提交数据-->
+	<Data>
+		<Message xmlns="http://tuan.360buy.com/SendOrderRequest">
+			<!--京东团购ID [必填]-->
+			<JdTeamId>12232</JdTeamId>
+			<!--合作伙伴团购ID [必填]-->
+			<VenderTeamId>${venderTeamId}</VenderTeamId>
+			<!--手机 [必填]-->
+			<Mobile>13911111111</Mobile>
+			<!--下单时间 unix时间戳 [必填]-->
+			<OrderDate>1314428400</OrderDate>
+			<!--购买价 单位：分 [必填] -->
+			<TeamPrice>10000</TeamPrice>
+			<!--订购数量 [必填]-->
+			<Count>2</Count>
+			<!--订单总额 单位：分  [必填]-->
+			<Origin>20000</Origin>
+			<!--京东订单ID [必填]-->
+			<JdOrderId>2323</JdOrderId>
+			<!--付款时间 unix时间戳 [必填]-->
+			<PayTime>1315012200</PayTime>
+			<!--优惠券信息 优惠券数量=购买数量-->
+			<Coupons>
+			  <Coupon>
+				<!--券号(12位)-->
+				<CouponId>123</CouponId>
+				<!--密码(6位)-->
+				<CouponPwd>xxxxxx</CouponPwd>
+			  </Coupon>
+                <Coupon>
+                    <!--券号(12位)-->
+                    <CouponId>456</CouponId>
+                    <!--密码(6位)-->
+                    <CouponPwd>xxxxxx</CouponPwd>
+                </Coupon>
+			</Coupons>
+		</Message>
+	</Data>
+</Request>

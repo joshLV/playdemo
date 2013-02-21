@@ -1,0 +1,29 @@
+<!--查询优惠券状态的接口 响应 京东应答-->
+<?xml version="1.0" encoding="utf-8"?>
+<Response xmlns="http://tuan.360buy.com/Response">
+	<!--版本-->
+	<Version>1.0</Version>
+	<!--合作伙伴ID-->
+	<VenderId>100000</VenderId>
+	<!--是否压缩 默认不压缩-->
+	<Zip>false</Zip>
+	<!--是否加密-->
+	<Encrypt>true</Encrypt>
+	<!--返回结果 (200成功 非200失败)-->
+	<ResultCode>200</ResultCode>
+	<!--响应信息-->
+	<ResultMessage>success</ResultMessage>
+	<!--提交数据-->
+	<Data>
+		<Message xmlns="http://tuan.360buy.com/QueryCouponResponse">
+			<!--京东订单ID [必填] -->
+			<JdOrderId>12345</JdOrderId>
+			<!--券号 [必填]-->
+			<CouponId>xxxxxxxxxxxxxxxxx</CouponId>
+			<!--优惠券状态 -1:不存在 0:成功 10:已验证使用过 20:已过期 30:已退款 40:已经使用后的退款 50:优惠券未发放 [必填]-->
+			<CouponStatus>0</CouponStatus>
+			<!--优惠券验证时间 unix时间戳 若等于0说明没有验证过 [必填] -->
+			<VerifyTime>1317090426</VerifyTime>
+		</Message>
+	</Data>
+</Response>

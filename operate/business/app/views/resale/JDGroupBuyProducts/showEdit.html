@@ -1,0 +1,278 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'京东修改商品:' + goods.shortName /}
+#{include '/share/nav.html' /}
+<div class="body">
+    <legend style="border-bottom:none">京东修改商品：<a href="/goods/${goods.id}" target="_blank"> ${goods.shortName}</a> </legend>
+    <div class="tabbable">
+        <ul class="nav nav-tabs ">
+            <li class="active"><a href="#edit-team-extension" data-toggle="tab">产品延期</a></li>
+            <li><a href="#edit-coupon-extension" data-toggle="tab">券延期</a></li>
+            <li><a href="#edit-team-restart" data-toggle="tab">重新上架</a></li>
+            <li><a href="#edit-update-detail" data-toggle="tab">更新详情</a></li>
+            <li><a href="#edit-update-b-image" data-toggle="tab">更新主图</a></li>
+            <li><a href="#edit-update-title" data-toggle="tab">更新标题</a></li>
+            <li><a href="#edit-update-team-partner" data-toggle="tab">更新商户</a></li>
+            <li><a href="#edit-cancel" data-toggle="tab">下架</a></li>
+        </ul>
+        <div class="tab-content">
+            <!-- 产品延期 -->
+            <div class="tab-pane active" id="edit-team-extension">
+                <form action="/resaler-products/jd/edit" method="post" class="form-horizontal">
+                    <div class="control-group">
+                        <label class="control-label">销售截止日期</label>
+                        <div class="controls">
+                            <input type="text" name="saleEndDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${goods.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" class="btn btn-primary">产品延期</button>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="venderTeamId" value="${product.goodsLinkId}">
+                    <input type="hidden" name="jdTeamId" value="${product.partnerProductId}">
+                    <input type="hidden" name="action" value="teamExtension">
+                </form>
+            </div>
+
+            <!-- 券延期 -->
+            <div class="tab-pane" id="edit-coupon-extension">
+                <form action="/resaler-products/jd/edit" method="post" class="form-horizontal">
+                    <div class="control-group">
+                        <label class="control-label">优惠券截止日期</label>
+                        <div class="controls">
+                            <input type="text" name="expireTime" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:ss')}">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" class="btn btn-primary">券延期</button>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="venderTeamId" value="${product.goodsLinkId}">
+                    <input type="hidden" name="jdTeamId" value="${product.partnerProductId}">
+                    <input type="hidden" name="action" value="couponExtension">
+                </form>
+            </div>
+
+            <!-- 重新上架 -->
+            <div class="tab-pane" id="edit-team-restart">
+                <form action="/resaler-products/jd/edit" method="post" class="form-horizontal">
+                    <div class="control-group">
+                        <label class="control-label">团购开始时间</label>
+                        <div class="controls">
+                            <input type="text" name="beginTime" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${goods.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">团购结束时间</label>
+                        <div class="controls">
+                            <input type="text" name="endTime" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${goods.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" class="btn btn-primary">重新上架</button>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="venderTeamId" value="${product.goodsLinkId}">
+                    <input type="hidden" name="jdTeamId" value="${product.partnerProductId}">
+                    <input type="hidden" name="action" value="teamRestart">
+                </form>
+            </div>
+
+            <!-- 更新详情 -->
+            <div class="tab-pane" id="edit-update-detail">
+                <form action="/resaler-products/jd/edit" method="post" class="form-horizontal">
+                    <div class="control-group">
+                        <label class="control-label">更新说明 *</label>
+                        <div class="controls">
+                            <input type="text" name="notes" class="input-xxlarge" value="更新">
+                            <label class="help-inline">小于100字</label>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">团购详情 *</label>
+                        <div class="controls">
+                            <textarea rows="8" cols="100"  name="teamDetail" id="teamDetail" style="width:850px;height:550px;display:hidden;">
+                                ${goods.exhibition?.raw()}
+                                <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                                    <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
+                                </p>
+                                ${goods.prompt?.raw()}
+                                <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                                    <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
+                                </p>
+                                ${goods.details?.raw()}
+                                <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                                    <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
+                                </p>
+                                ${goods.supplierDes?.raw()}
+                            </textarea>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" class="btn btn-primary">更新详情</button>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="venderTeamId" value="${product.goodsLinkId}">
+                    <input type="hidden" name="jdTeamId" value="${product.partnerProductId}">
+                    <input type="hidden" name="action" value="updateDetail">
+                </form>
+            </div>
+
+            <!-- 更新主图 -->
+            <div class="tab-pane" id="edit-update-b-image">
+                <form action="/resaler-products/jd/edit" method="post" class="form-horizontal">
+                    <div class="control-group">
+                        <label class="control-label">团购主图</label>
+                        <div class="controls">
+                            <input type="text" id="inputProdImg" name="imgUrl" class="input-xxlarge" value="${goods.getImageLargePath()}">
+                            <span class="btn" id="buttonProdImg" >选择图片</span>
+                            <span class="help-block">http开头，图片尺寸为440*280，图片大小在100kb以内</span>
+                            <img src="${goods.imageOriginalPath}" alt="" id="imgProdImg">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" class="btn btn-primary">更新主图</button>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="venderTeamId" value="${product.goodsLinkId}">
+                    <input type="hidden" name="jdTeamId" value="${product.partnerProductId}">
+                    <input type="hidden" name="action" value="updateBImage">
+                </form>
+            </div>
+
+            <!-- 更新标题 -->
+            <div class="tab-pane" id="edit-update-title">
+                <form action="/resaler-products/jd/edit" method="post" class="form-horizontal">
+                    <div class="control-group">
+                        <label class="control-label">团购标题 *</label>
+                        <div class="controls">
+                            <input type="text" class="input-block-level" name="teamTitle" value="${goods.name}">
+                            <span class="help-block">不超过100个字符</span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" class="btn btn-primary">更新标题</button>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="venderTeamId" value="${product.goodsLinkId}">
+                    <input type="hidden" name="jdTeamId" value="${product.partnerProductId}">
+                    <input type="hidden" name="action" value="updateTitle">
+                </form>
+            </div>
+
+            <!-- 更新商户信息 -->
+            <div class="tab-pane" id="edit-update-team-partner">
+                <form action="/resaler-products/jd/edit" method="post" class="form-horizontal">
+                    <div class="control-group">
+                        <div class="controls">
+                            将目前最新的商户信息更新上去
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" class="btn btn-primary">更新商户</button>
+                        </div>
+                    </div>
+
+                    <textarea style="display:none" name="partners">
+                        #{list items:goods.getShopList(), as:'shop'}
+                        #{if shop.deleted != com.uhuila.common.constants.DeletedStatus.DELETED}
+                        <Partner>
+                            *{ 商家名称 最长40个字符 [必填] }*
+                            <Name>${shop.name.raw()}</Name>
+                            *{ 商家地址 最长80个字符 [必填] }*
+                            <Address>${shop.address.raw()}</Address>
+                            *{ 地图连接，填写地图的URL，必须以http开头。此字段可以为空。若链接过长超过100个字符请使用加密过的url短链接 此字段可以为空。 }*
+                            <Map/>
+                            *{ 商家联系人 最长30个字符 此字段可以为空。 }*
+                            <Contact/>
+                            *{ 商家电话。最长40个字符 [必填] }*
+                            <Tel>${shop.phone}</Tel>
+                            *{ 商家手机信息。最长12个字符，只能是数字。此字段可以为空。 }*
+                            <Mobile/>
+                            *{ 交通信息，位置信息。最长400个字符。此字段可以为空。 }*
+                            <Location/>
+                        </Partner>
+                        #{/if}
+                        #{/list}
+
+                    </textarea>
+                    <input type="hidden" name="venderTeamId" value="${product.goodsLinkId}">
+                    <input type="hidden" name="jdTeamId" value="${product.partnerProductId}">
+                    <input type="hidden" name="action" value="updateTeamPartner">
+                </form>
+            </div>
+
+            <!-- 下架 -->
+            <div class="tab-pane" id="edit-cancel">
+                <form action="/resaler-products/jd/edit" method="post" class="form-horizontal">
+                    <div class="control-group">
+                        <div class="controls">
+                            下架后可重新上架
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" class="btn btn-primary">立即下架</button>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="venderTeamId" value="${product.goodsLinkId}">
+                    <input type="hidden" name="jdTeamId" value="${product.partnerProductId}">
+                    <input type="hidden" name="action" value="cancel">
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts2/kindeditor-min.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/lang/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<script>
+$(function(){
+    //上传图片
+    KindEditor.ready(function (K) {
+        var editor = K.editor({
+            allowFileManager:true,
+            uploadJson:'/goods/images'
+        });
+
+        K('#buttonProdImg').click(function () {
+            editor.loadPlugin('image', function () {
+                editor.plugin.imageDialog({
+                    showRemote:false,
+                    imageUrl:K('#inputProdImg').val(),
+                    clickFn:function (url, title, width, height, border, align) {
+                        K('#inputProdImg').val(url);
+                        K('#imgProdImg').attr("src", url);
+                        editor.hideDialog();
+                    }
+                });
+            });
+        });
+    });
+
+    KindEditor.create('textarea[name="teamDetail"]',
+    {
+        filterMode:false,
+        allowFileManager:false
+    });
+
+});
+</script>
+#{/set}
