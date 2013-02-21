@@ -36,6 +36,9 @@ public class ScannerResalerProductStatusJob extends Job {
         resalers.put(OuterOrderPartner.JD, Resaler.findOneByLoginName(Resaler.JD_LOGIN_NAME));
 
         for (Map.Entry<OuterOrderPartner, Resaler> entry : resalers.entrySet()) {
+            if (entry.getKey() == null) {
+                continue;
+            }
             String onSaleKey = entry.getValue().onSaleKey;
             String offSaleKey = entry.getValue().offSaleKey;
 

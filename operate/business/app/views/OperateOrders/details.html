@@ -113,7 +113,7 @@
                 <td>${orderItem.goods.no}</td>
                 <td>
                     <a href="http://www.yibaiquan.com/p/${orderItem.goods.id}">${orderItem.goodsName}</a>
-                    &nbsp;<i class="icon-user"></i>${models.admin.OperateUser.findBySalesId(supplier.salesId)?.userName}
+                    &nbsp;<i class="icon-user"></i>${models.operator.OperateUser.findBySalesId(supplier.salesId)?.userName}
                 </td>
                 <td>&{'goods.'+orderItem.goods.materialType}</td>
                 <td>${orderItem.salePrice?.formatCurrency('CNY')}</td>

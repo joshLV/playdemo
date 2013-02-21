@@ -19,8 +19,6 @@ import java.util.Map;
  *         Date: 13-2-2
  */
 public class JDGroupBuyHelper {
-    public static String GATEWAY_URL = Play.configuration.getProperty("jingdong.gateway.url", "http://gw.tuan.360buy.net");
-
     public static final String CACHE_KEY = "JINGDGONG_API_HELPER";
 
     /**
@@ -94,7 +92,10 @@ public class JDGroupBuyHelper {
         Map<String, Object> params = new HashMap<>();
         params.put("categoryId", categoryId);
         JingdongMessage response = JDGroupBuyUtil.sendRequest("queryCategoryList", params);
-        return response.selectNodes("./Categories/Category");
+        if (response.isOk()) {
+            return response.selectNodes("./Categories/Category");
+        }
+        return new ArrayList<>();
     }
 
     public static List<Node> cacheCategories(final Long categoryId) {

@@ -28,12 +28,13 @@ public class JDGroupBuyUtilTest extends UnitTest {
                 "    <VenderId>1022</VenderId>\n" +
                 "    <Zip>false</Zip>\n" +
                 "    <Encrypt>true</Encrypt>\n" +
-                "    <ResultCode>304</ResultCode>\n" +
+                "    <ResultCode>200</ResultCode>\n" +
                 "    <ResultMessage>failure</ResultMessage>\n" +
                 "    <Data>" + JDGroupBuyUtil.encryptMessage(messageXml) + "</Data>\n" +
                 "</Response>";
 
         JingdongMessage message = JDGroupBuyUtil.parseMessage(encryptedResponse);
+        assertTrue(message.isOk());
         assertTrue(message.encrypt);
         assertNotNull(message.message);
         assertNotNull(message.selectNode("./Cities"));
@@ -54,12 +55,13 @@ public class JDGroupBuyUtilTest extends UnitTest {
                 "    <VenderId>1022</VenderId>\n" +
                 "    <Zip>false</Zip>\n" +
                 "    <Encrypt>false</Encrypt>\n" +
-                "    <ResultCode>304</ResultCode>\n" +
+                "    <ResultCode>200</ResultCode>\n" +
                 "    <ResultMessage>failure</ResultMessage>\n" +
                 "    <Data>" + messageXml + "</Data>\n" +
                 "</Response>";
 
         JingdongMessage message = JDGroupBuyUtil.parseMessage(plainResponse);
+        assertTrue(message.isOk());
         assertFalse(message.encrypt);
         assertNotNull(message.message);
         assertNotNull(message.selectNode("./Cities"));
