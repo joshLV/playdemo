@@ -21,6 +21,10 @@ public class ImportedCoupon extends Model {
     @Column(name = "coupon")
     public String coupon;
 
+    @Column(name = "password")
+    public String password;
+
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     public ImportedCouponStatus status;
@@ -38,9 +42,10 @@ public class ImportedCoupon extends Model {
         this.lockVersion = 1;
     }
 
-    public ImportedCoupon(Goods goods, String coupon){
+    public ImportedCoupon(Goods goods, String coupon,String password){
         this();
         this.goods = goods;
         this.coupon = coupon;
+        this.password=password;
     }
 }

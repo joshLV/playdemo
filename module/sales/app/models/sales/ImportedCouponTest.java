@@ -7,11 +7,14 @@ import java.util.Date;
 
 /**
  * @author likang
- *         Date: 12-9-11
+ *         Date: 12-9-8
  */
 @Entity
-@Table(name = "imported_coupon_temp")
-public class ImportedCouponTemp extends Model {
+@Table(name = "imported_coupons_test")
+/*,
+uniqueConstraints = {
+@UniqueConstraint( columnNames = {"goods_id", "coupon"})})*/
+public class ImportedCouponTest extends Model {
     @ManyToOne
     @JoinColumn(name = "goods_id")
     public Goods goods;
@@ -21,6 +24,7 @@ public class ImportedCouponTemp extends Model {
 
     @Column(name = "password")
     public String password;
+
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
@@ -33,22 +37,16 @@ public class ImportedCouponTemp extends Model {
     @Column(name = "imported_at")
     public Date importedAt;
 
-    public ImportedCouponTemp() {
+    public ImportedCouponTest() {
         this.status = ImportedCouponStatus.UNUSED;
         this.importedAt = new Date();
         this.lockVersion = 1;
     }
 
-    public ImportedCouponTemp(Goods goods, String coupon) {
-        this(goods, coupon, "");
-    }
-
-    public ImportedCouponTemp(Goods goods, String coupon, String password) {
+    public ImportedCouponTest(Goods goods, String coupon, String password) {
         this();
         this.goods = goods;
         this.coupon = coupon;
         this.password = password;
     }
-
-
 }
