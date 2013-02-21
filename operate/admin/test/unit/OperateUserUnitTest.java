@@ -2,7 +2,7 @@ package unit;
 
 import com.uhuila.common.constants.DeletedStatus;
 import factory.FactoryBoy;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Test;
 import play.libs.Images;

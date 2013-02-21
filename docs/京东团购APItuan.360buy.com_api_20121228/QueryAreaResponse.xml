@@ -1,0 +1,31 @@
+<!--获取城市区域下商圈列表 应答 京东应答-->
+<?xml version="1.0" encoding="utf-8"?>
+<Response xmlns="http://tuan.360buy.com/Response">
+	<!--版本-->
+	<Version>1.0</Version>
+	<!--合作伙伴ID-->
+	<VenderId>100000</VenderId>
+	<!--是否压缩 默认不压缩-->
+	<Zip>false</Zip>
+	<!--是否加密-->
+	<Encrypt>true</Encrypt>
+	<!--返回结果(200-成功 非200失败) 510 - 没有传递区域ID -->
+	<ResultCode>200</ResultCode>
+	<!--响应信息-->
+	<ResultMessage>success</ResultMessage>
+	<!--提交数据-->
+	<Data>
+		<Message xmlns="http://tuan.360buy.com/QueryAreaResponse">
+			<Areas>
+				<Area>
+					<Id>1</Id>
+					<Name>西单</Name>
+				</Area>
+				<Area>
+					<Id>2</Id>
+					<Name>西四</Name>
+				</Area>
+			</Areas>
+		</Message>
+	</Data>
+</Response>

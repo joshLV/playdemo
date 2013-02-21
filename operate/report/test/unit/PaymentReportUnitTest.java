@@ -1,13 +1,12 @@
 package unit;
 
-import com.uhuila.common.util.DateUtil;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.AccountSequenceCondition;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.webop.PaymentReport;
 import operate.rbac.RbacLoader;
 import org.junit.Before;

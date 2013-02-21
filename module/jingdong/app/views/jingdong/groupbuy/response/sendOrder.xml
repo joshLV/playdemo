@@ -1,8 +1,8 @@
 <Message xmlns="http://tuan.360buy.com/SendOrderResponse">
     *{ 京东团购ID [必填] }*
-    <JdTeamId>${sendOrderRequest.jdTeamId}</JdTeamId>
+    <JdTeamId>${jdTeamId}</JdTeamId>
     *{ 合作伙伴团购ID [必填] }*
-    <VenderTeamId>${sendOrderRequest.venderTeamId}</VenderTeamId>
+    <VenderTeamId>${venderTeamId}</VenderTeamId>
     *{ 购买数量(目前合作伙伴提供团购项目在各个平台销售数量总和) [必填] }*
     <SellCount>${goods.saleCount}</SellCount>
     *{ 合作伙伴方订单ID [必填] }*

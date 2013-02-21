@@ -35,7 +35,7 @@ public class OrdersCondition {
     public Boolean hasSeeAllSupplierPermission;
     public Date hidPaidAtBegin;
     public Date hidPaidAtEnd;
-    public Long outerOrderId;
+    public String outerOrderId;
 
     /**
      * 查询条件hql.

@@ -16,8 +16,8 @@
  */
 package controllers.modules.resale.cas;
 
-import java.util.Date;
-
+import cache.CacheHelper;
+import controllers.modules.resale.cas.annotations.SkipCAS;
 import models.resale.Resaler;
 import models.resale.ResalerLoginHistory;
 import play.Logger;
@@ -26,10 +26,12 @@ import play.cache.Cache;
 import play.modules.resale.cas.CASUtils;
 import play.modules.resale.cas.annotation.Check;
 import play.modules.resale.cas.models.CASUser;
+import play.mvc.After;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Router;
-import controllers.modules.resale.cas.annotations.SkipCAS;
+
+import java.util.Date;
 
 /**
  * This class is a part of the play module secure-cas. It add the ability to check if the user have access to the
@@ -230,6 +232,12 @@ public class SecureCAS extends Controller {
                 Security.invoke("onCheckFailed", profile);
             }
         }
+    }
+
+
+    @After
+    public static void cleanCacheHelper() {
+        CacheHelper.cleanPreRead();
     }
 
 }

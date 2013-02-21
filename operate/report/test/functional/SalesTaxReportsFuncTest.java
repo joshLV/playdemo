@@ -4,7 +4,7 @@ import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.SalesOrderItemReport;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.order.ECoupon;
 import models.order.Order;
 import models.order.OrderStatus;

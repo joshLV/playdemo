@@ -1,44 +1,18 @@
 package controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.uhuila.common.util.DateUtil;
 import controllers.modules.resale.cas.SecureCAS;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
-import models.jingdong.groupbuy.JDRest;
-import models.jingdong.groupbuy.response.CommonUpdateResponse;
-import models.jingdong.groupbuy.response.IdNameResponse;
-import models.jingdong.groupbuy.response.UploadTeamResponse;
-import models.order.OuterOrderPartner;
 import models.resale.Resaler;
-import models.resale.ResalerFav;
-import models.sales.ChannelGoodsInfo;
-import models.sales.ChannelGoodsInfoStatus;
 import models.sales.Goods;
-import models.sales.GoodsDeployRelation;
-import models.sales.GoodsThirdSupport;
-import models.sales.Shop;
-import models.supplier.Supplier;
-import org.apache.commons.lang.StringUtils;
 import play.Logger;
-import play.libs.WS;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.With;
-import play.templates.Template;
-import play.templates.TemplateLoader;
-import util.ws.WebServiceRequest;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author likang
@@ -58,6 +32,7 @@ public class JingdongUploadTeam extends Controller {
     }
 
     public static void prepare(Long goodsId) {
+        /*
         Goods goods = Goods.findById(goodsId);
 
         GoodsThirdSupport support = GoodsThirdSupport.getSupportGoods(goods, OuterOrderPartner.JD);
@@ -69,7 +44,7 @@ public class JingdongUploadTeam extends Controller {
         List<Shop> shops = Arrays.asList(goods.getShopList().toArray(new Shop[]{}));
         Supplier supplier = Supplier.findById(goods.supplierId);
         //查询城市
-        List<IdNameResponse> cities = JDGroupBuyUtil.cacheCities();
+        List<IdNameResponse> cities = JDGroupBuyUtil.queryCity();
         //只使用默认城市:上海
         IdNameResponse city = null;
         for (IdNameResponse c : cities) {
@@ -84,7 +59,7 @@ public class JingdongUploadTeam extends Controller {
 
         //查询区域
         if (city != null) {
-            List<IdNameResponse> districts = JDGroupBuyUtil.cacheDistricts(city.id);
+            List<IdNameResponse> districts = JDGroupBuyUtil.queryDistrict(city.id);
             renderArgs.put("districts", districts);
             //查询商圈
             Map<Long, List<IdNameResponse>> areas = JDGroupBuyUtil.cacheAreas(city.id);
@@ -114,6 +89,7 @@ public class JingdongUploadTeam extends Controller {
         }
 
         render(supplier, city, categories, subCategories, areaNames, shops);
+        */
     }
 
     /**
@@ -122,6 +98,7 @@ public class JingdongUploadTeam extends Controller {
      * @param goodsId
      */
     public static void edit(Long goodsId) {
+        /*
         Resaler resaler = SecureCAS.getResaler();
 
         Goods goods = Goods.findOnSale(goodsId);
@@ -136,6 +113,7 @@ public class JingdongUploadTeam extends Controller {
         ResalerFav fav = ResalerFav.findByGoodsId(resaler, goods.id);
 
         render(goods, fav);
+        */
     }
 
     /**
@@ -145,6 +123,7 @@ public class JingdongUploadTeam extends Controller {
      * @param title
      */
     public static void updateTitle(Long id, String title) {
+        /*
         ResalerFav fav = ResalerFav.findById(id);
 
         GoodsThirdSupport support = GoodsThirdSupport.getSupportGoods(fav.goods, OuterOrderPartner.JD);
@@ -176,6 +155,7 @@ public class JingdongUploadTeam extends Controller {
             Logger.info("update jingdong fav:" + id + " title:" + title + " success.");
         }
         render("JingdongUploadTeam/result.html", uploadTeamRest);
+        */
     }
 
     /**
@@ -185,6 +165,7 @@ public class JingdongUploadTeam extends Controller {
      * @param detail
      */
     public static void updateDetail(Long id, String detail) {
+        /*
         ResalerFav fav = ResalerFav.findById(id);
 
         GoodsThirdSupport support = GoodsThirdSupport.getSupportGoods(fav.goods, OuterOrderPartner.JD);
@@ -216,12 +197,14 @@ public class JingdongUploadTeam extends Controller {
             Logger.info("update jingdong fav:" + id + " detail:" + detail + " success.");
         }
         render("JingdongUploadTeam/result.html", uploadTeamRest);
+        */
     }
 
     /**
      * 延长有效期
      */
     public static void updateExpire(Long id, Date expireTime) {
+        /*
         ResalerFav fav = ResalerFav.findById(id);
 
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/couponExtension.action";
@@ -243,6 +226,7 @@ public class JingdongUploadTeam extends Controller {
             Logger.info("update jingdong fav:" + id + " expire:" + expireTime + " success.");
         }
         render("JingdongUploadTeam/result.html", uploadTeamRest);
+        */
 
     }
 
@@ -250,6 +234,7 @@ public class JingdongUploadTeam extends Controller {
      * 延长有效期
      */
     public static void updateEndDate(Long id, Date saleEndDate) {
+        /*
         ResalerFav fav = ResalerFav.findById(id);
 
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/teamExtension.action";
@@ -271,10 +256,12 @@ public class JingdongUploadTeam extends Controller {
             Logger.info("update jingdong fav:" + id + " endDate:" + saleEndDate + " success.");
         }
         render("JingdongUploadTeam/result.html", uploadTeamRest);
+        */
 
     }
 
     public static void teamRestart(Long id, Date beginTime, Date endTime) {
+        /*
         ResalerFav fav = ResalerFav.findById(id);
 
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/teamRestart.action";
@@ -297,6 +284,7 @@ public class JingdongUploadTeam extends Controller {
             Logger.info("update jingdong fav restart:" + id + " beginTime:" + beginTime + ";endTime:" + endTime + " success.");
         }
         render("JingdongUploadTeam/result.html", uploadTeamRest);
+        */
 
     }
 
@@ -304,6 +292,7 @@ public class JingdongUploadTeam extends Controller {
      * 修改主图
      */
     public static void updateBigImg(Long id, String bigImg) {
+        /*
         ResalerFav fav = ResalerFav.findById(id);
 
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/updateBImage.action";
@@ -325,12 +314,14 @@ public class JingdongUploadTeam extends Controller {
             Logger.info("update jingdong fav:" + id + " bigimg:" + bigImg + " success.");
         }
         render("JingdongUploadTeam/result.html", uploadTeamRest);
+        */
     }
 
     /**
      * 修改商家信息
      */
     public static void updatePartners(Long id) {
+        /*
         ResalerFav fav = ResalerFav.findById(id);
 
         Collection<Shop> shops = fav.goods.getShopList();
@@ -360,10 +351,12 @@ public class JingdongUploadTeam extends Controller {
             Logger.info("update jingdong fav:" + id + " partners success.");
         }
         render("JingdongUploadTeam/result.html", uploadTeamRest);
+        */
     }
 
 
     public static void upload(Long venderTeamId, List<String> areas, List<String> subGroupIds) {
+        /*
         Map<String, String> allParams = request.params.allSimple();
         allParams.remove("body");
         Map<String, Object> params = new HashMap<>();
@@ -459,6 +452,7 @@ public class JingdongUploadTeam extends Controller {
             }
         }
         render("JingdongUploadTeam/result.html", uploadTeamRest);
+        */
     }
 
     private static void getGoodsItems(Goods goods) {
@@ -488,6 +482,7 @@ public class JingdongUploadTeam extends Controller {
      *
      * @param support
      */
+    /*
     private static void getGoodsSupportItems(GoodsThirdSupport support) {
         JsonElement jsonElement = new JsonParser().parse(support.goodsData);
         JsonObject jsonObject = jsonElement.getAsJsonObject();
@@ -506,6 +501,7 @@ public class JingdongUploadTeam extends Controller {
         renderArgs.put("areas", jsonObject.get("areas").getAsString());
         renderArgs.put("subGroupIds", jsonObject.get("subGroupIds").getAsString());
     }
+    */
 
     public static void showTest() {
         render();

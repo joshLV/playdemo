@@ -1,5 +1,6 @@
 package models.yihaodian;
 
+import models.RabbitMQConsumerWithTx;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.mail.MailMessage;
@@ -7,21 +8,20 @@ import models.mail.MailUtil;
 import models.order.*;
 import models.resale.Resaler;
 import models.sales.Goods;
-import models.sales.GoodsDeployRelation;
 import models.sales.MaterialType;
-import models.supplier.Supplier;
-import models.yihaodian.shop.*;
-import models.yihaodian.shop.OrderStatus;
+import models.sales.ResalerProduct;
+import org.w3c.dom.Node;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
-import play.db.jpa.JPAPlugin;
 import play.jobs.OnApplicationStart;
-import play.modules.rabbitmq.consumer.RabbitMQConsumer;
+import play.libs.XML;
+import play.libs.XPath;
 
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,201 +30,144 @@ import java.util.Map;
  * @author likang
  */
 @OnApplicationStart(async = true)
-public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
+public class YihaodianJobConsumer extends RabbitMQConsumerWithTx<String> {
     public static String YHD_LOGIN_NAME = Resaler.YHD_LOGIN_NAME;
     public static String DELIVERY_SUPPLIER = Play.configuration.getProperty("yihaodian.delivery_supplier");
 
     @Override
-    protected void consume(YihaodianJobMessage message) {
+    protected int retries() {
+        return 0;//抛异常不重试
+    }
+
+    @Override
+    public void consumeWithTx(String orderId) {
         //开启事务管理
-        JPAPlugin.startTx(false);
-        YihaodianOrder yihaodianOrder = YihaodianOrder.find("byOrderId", message.getOrderId()).first();
-        if(yihaodianOrder == null){
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                Logger.info("can not sleep");
-                JPAPlugin.closeTx(true);
-                return;
-            }
-            yihaodianOrder = YihaodianOrder.find("byOrderId", message.getOrderId()).first();
-            if (yihaodianOrder == null) {
-                Logger.info("order not found: %s, maybe processed by other MQ.", message.getOrderId());
-                JPAPlugin.closeTx(true);
-                return;
-            }
-        }
-
-        if(yihaodianOrder.jobFlag == JobFlag.SEND_SYNCED){
-            Logger.info("job synced");
-            JPAPlugin.closeTx(true);
-            return;
-        }
-
-        //查看是否有实体券，如果全部都是的话就直接将此订单置为忽略状态，并结束任务
-        int realItems =0;
-        for (OrderItem orderItem : yihaodianOrder.orderItems) {
-            if (orderItem.outerId == null) {
-                realItems += 1;
-            }
-        }
-        if (realItems == yihaodianOrder.orderItems.size()) {
-            yihaodianOrder.jobFlag = JobFlag.IGNORE;
-            yihaodianOrder.save();
-            JPAPlugin.closeTx(false);
+        OuterOrder outerOrder = OuterOrder.find("byOrderIdAndPartner", orderId, OuterOrderPartner.YHD).first();
+        if(outerOrder == null){
+            Logger.info("yihaodidan job consume failed: can not find orderId " + orderId);
             return;
         }
 
         try{
-            YihaodianOrder.em().refresh(yihaodianOrder, LockModeType.PESSIMISTIC_WRITE);
+            OuterOrder.em().refresh(outerOrder, LockModeType.PESSIMISTIC_WRITE);
         }catch (PersistenceException e){
             //拿不到锁就放弃
-            Logger.info("can not lock yihaodian order %s", yihaodianOrder.orderCode);
-            JPAPlugin.closeTx(true);
+            Logger.info("yihaodian job consume failed: can not lock yihaodian order %s", orderId);
             return;
         }
-        if(yihaodianOrder.jobFlag == JobFlag.SEND_COPY){
+
+        if(outerOrder.status == OuterOrderStatus.ORDER_DONE){
+            if(syncWithYihaodian(orderId)){
+                outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
+                outerOrder.save();
+            }
+        }else if(outerOrder.status == OuterOrderStatus.ORDER_COPY){
             //等 1 分钟再发货
-            if(yihaodianOrder.createdAt.getTime() < (System.currentTimeMillis() - 60000)){
-                //如果用户没有取消订单再发货
-                //首先刷新最新的订单
-                YihaodianOrder refreshOrder = refreshYihaodianOrder(yihaodianOrder);
-                if(refreshOrder != null){
-                    if (refreshOrder.orderStatus != OrderStatus.ORDER_CANCEL) {
-                        models.order.Order ybqOrder = null;
-                        if(yihaodianOrder.ybqOrderId == null) {
-                            ybqOrder = buildYibaiquanOrder(yihaodianOrder);
-                        } else {
-                            ybqOrder = models.order.Order.findById(yihaodianOrder.ybqOrderId);
-                        }
-                        if( ybqOrder != null){
-                            if (realItems > 0) {
-                                yihaodianOrder.jobFlag = JobFlag.IGNORE;
+            if(outerOrder.createdAt.getTime() >= (System.currentTimeMillis() - 60000)){
+                return;
+            }
 
-                                MailMessage mailMessage = new MailMessage();
-                                mailMessage.addRecipient("op@uhuila.com");
-                                mailMessage.setSubject("一号店实体券订单");
-                                mailMessage.putParam("yhdOrderId", yihaodianOrder.orderId);
-                                mailMessage.setTemplate("yihaodianRealGoods");
-                                MailUtil.sendCommonMail(mailMessage);
-                            }else {
-                                yihaodianOrder.jobFlag = JobFlag.SEND_DONE;
-                                YihaodianJobMessage syncMessage = new YihaodianJobMessage(yihaodianOrder.orderId);
-                                YihaodianQueueUtil.addJob(syncMessage);
-                            }
-                            yihaodianOrder.ybqOrderId = ybqOrder.getId();
-                            yihaodianOrder.save();
+            //首先刷新最新的订单信息
+            Map<String, String> params = new HashMap<>();
+            params.put("orderCode", orderId);
+            YHDResponse response = YHDUtil.sendRequest(params, "yhd.order.detail.get", "orderInfo");
+            if(!response.isOk()){
+                return;
+            }
+            outerOrder.message = XML.serialize(response.data.getOwnerDocument());//保存订单信息
 
-                            List<ECoupon> couponList = ECoupon.find("byOrder", ybqOrder).fetch();
-                            for(ECoupon coupon : couponList) {
-                                coupon.partner = ECouponPartner.YHD;
-                                coupon.save();
-                            }
-                        }
+            //订单已取消的话不处理
+            YHDOrderStatus orderStatus = YHDOrderStatus.valueOf(response.selectTextTrim("./orderDetail/orderStatus"));
+            if (YHDOrderStatus.ORDER_CANCEL == orderStatus) {
+                Logger.error("yihaodian job consume warning: order is canceled");
+                outerOrder.status = OuterOrderStatus.ORDER_CANCELED;
+                outerOrder.save();
+                return;
+            }
+
+            //挑选出电子券的orderItem
+            List<Node> orderItems = response.selectNodes("./orderItemList/orderItem");
+            List<Node> couponItems = new ArrayList<>();
+            for (Node orderItem : orderItems) {
+                String outerId = XPath.selectText("./outerId", orderItem).trim();
+                System.out.println("abcdefg " + outerId);
+                if (outerId != null) {
+                    Goods goods = ResalerProduct.getGoods(Long.parseLong(outerId), OuterOrderPartner.YHD);
+                    if (goods != null && goods.materialType == MaterialType.ELECTRONIC) {
+                        couponItems.add(orderItem);
                     }else {
-                        yihaodianOrder.jobFlag = JobFlag.CANCEL_SYNCED;
-                        yihaodianOrder.save();
+                        Logger.error("yihaodian job consume warning: goods not found " + outerId);
                     }
                 }
             }
-        }else if(yihaodianOrder.jobFlag == JobFlag.SEND_DONE){
-            if (realItems > 0) {
-                yihaodianOrder.jobFlag = JobFlag.IGNORE;
-                yihaodianOrder.save();
-            }else {
-                if(syncWithYihaodian(yihaodianOrder)){
-                    yihaodianOrder.jobFlag = JobFlag.SEND_SYNCED;
-                    yihaodianOrder.save();
-                }
+            //如果没有电子券的订单项 忽略此订单
+            if (couponItems.size() == 0) {
+                outerOrder.status = OuterOrderStatus.ORDER_IGNORE;
+                outerOrder.save();
+                Logger.info("yihaodian job consume failed: no electronic goods");
+                return;
             }
-        }
 
-        boolean rollBack = false;
-        try {
-            JPA.em().flush();
-        } catch (RuntimeException e) {
-            rollBack = true;
-            Logger.info("update yihaodian order status failed, will roll back", e);
-            //不抛异常 不让mq重试
-        } finally {
-            JPAPlugin.closeTx(rollBack);
+            //如果没有生成一百券的订单，生成一下
+            if(outerOrder.ybqOrder == null) {
+                String goodsReceiverMobile = response.selectTextTrim("./orderDetail/goodReceiverMoblie");
+                outerOrder.ybqOrder = buildYibaiquanOrder(couponItems, goodsReceiverMobile);
+            }
+            if (outerOrder.ybqOrder == null) {
+                Logger.error("yihaodian job consume failed: build our order failed");
+                outerOrder.save();
+                return;
+            }else {
+                outerOrder.status = OuterOrderStatus.ORDER_DONE;
+            }
+            outerOrder.save();
+
+            if (couponItems.size() < orderItems.size()) {
+                MailMessage mailMessage = new MailMessage();
+                mailMessage.addRecipient("op@uhuila.com");
+                mailMessage.setSubject("一号店实体券订单");
+                mailMessage.putParam("yhdOrderId", orderId);
+                mailMessage.setTemplate("yihaodianRealGoods");
+                MailUtil.sendCommonMail(mailMessage);
+            }
+
+            //设置券为一号店生成的
+            List<ECoupon> couponList = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
+            for(ECoupon coupon : couponList) {
+                coupon.partner = ECouponPartner.YHD;
+                coupon.save();
+            }
         }
     }
 
-    private boolean syncWithYihaodian(YihaodianOrder yihaodianOrder) {
+    private boolean syncWithYihaodian(String orderCode) {
         Map<String, String> params = new HashMap<>();
-        params.put("orderCode", yihaodianOrder.orderCode);
+        params.put("orderCode", orderCode);
         params.put("deliverySupplierId", DELIVERY_SUPPLIER);//测试公司
-        params.put("expressNbr", yihaodianOrder.orderCode);
-        Logger.info("yhd.logistics.order.shipments.update orderCode %s", params.get("orderCode"));
-        Logger.info("yhd.logistics.order.shipments.update deliverySupplierId %s", params.get("deliverySupplierId"));
-        Logger.info("yhd.logistics.order.shipments.update expressNbr", params.get("expressNbr"));
+        params.put("expressNbr", orderCode);
 
-        String responseXml = YHDUtil.sendRequest(params, "yhd.logistics.order.shipments.update");
-        Logger.info("yhd.logistics.order.shipments.update response %s", responseXml);
-        if (responseXml != null) {
-            YHDResponse<UpdateResult> res = new YHDResponse<>();
-            res.parseXml(responseXml, "updateCount", false, UpdateResult.parser);
-            if(res.getErrorCount() == 0){
+        YHDResponse response = YHDUtil.sendRequest(params, "yhd.logistics.order.shipments.update", "updateCount");
+        return response.isOk() || checkYihaodianSent(orderCode);
+    }
+
+    private boolean checkYihaodianSent(String orderCode) {
+        Map<String, String> params = new HashMap<>();
+        params.put("orderCode", orderCode);
+
+        YHDResponse response = YHDUtil.sendRequest(params, "yhd.order.detail.get", "orderInfo");
+        if (response.isOk()) {
+            YHDOrderStatus orderStatus = YHDOrderStatus.valueOf(response.selectTextTrim("./orderDetail/orderStatus"));
+            if (orderStatus != YHDOrderStatus.ORDER_PAYED
+                    && orderStatus != YHDOrderStatus.ORDER_WAIT_PAY
+                    && orderStatus != YHDOrderStatus.ORDER_CANCEL) {
+                //只要不是待付款、已付款或取消状态状态，就说明我们已经以某种渠道发过货了
                 return true;
-            }else {
-                Logger.info("sync With yihaodian error");
-                return checkYihaodianSent(yihaodianOrder);
             }
         }
         return false;
     }
 
-    private YihaodianOrder refreshYihaodianOrder(YihaodianOrder yihaodianOrder){
-        Logger.info("start check yihaodian sent %s" , yihaodianOrder.orderCode);
-        Map<String, String> params = new HashMap<>();
-        params.put("orderCodeList", yihaodianOrder.orderCode);
-        Logger.info("yhd.orders.detail.get orderCodeList %s", params.get("orderCodeList"));
-
-        String responseXml = YHDUtil.sendRequest(params, "yhd.orders.detail.get");
-        Logger.info("yhd.orders.detail.get response %s", responseXml);
-        if (responseXml != null) {
-            YHDResponse<YihaodianOrder> res = new YHDResponse<>();
-            res.parseXml(responseXml, "orderInfoList", true, YihaodianOrder.fullParser);
-            if(res.getErrorCount() == 0){
-                List<YihaodianOrder> orders = res.getVs();
-                if (orders.size() > 0){
-                    return orders.get(0);
-                }
-            }
-        }
-        return null;
-    }
-
-    private boolean checkYihaodianSent(YihaodianOrder yihaodianOrder) {
-        Logger.info("start check yihaodian sent %s" , yihaodianOrder.orderCode);
-        Map<String, String> params = new HashMap<>();
-        params.put("orderCodeList", yihaodianOrder.orderCode);
-        Logger.info("yhd.orders.detail.get orderCodeList %s", params.get("orderCodeList"));
-
-        String responseXml = YHDUtil.sendRequest(params, "yhd.orders.detail.get");
-        Logger.info("yhd.orders.detail.get response %s", responseXml);
-        if (responseXml != null) {
-            YHDResponse<YihaodianOrder> res = new YHDResponse<>();
-            res.parseXml(responseXml, "orderInfoList", true, YihaodianOrder.fullParser);
-            if(res.getErrorCount() == 0){
-                List<YihaodianOrder> orders = res.getVs();
-                if (orders.size() > 0){
-                    YihaodianOrder order = orders.get(0);
-                    if (order.orderStatus != OrderStatus.ORDER_PAYED
-                            && order.orderStatus != OrderStatus.ORDER_WAIT_PAY
-                            && order.orderStatus != OrderStatus.ORDER_CANCEL) {
-                        //只要不是待付款、已付款或取消状态状态，就说明我们已经以某种渠道发过货了
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    private models.order.Order buildYibaiquanOrder(YihaodianOrder order) {
-        Logger.info("build uhuila order");
+    private models.order.Order buildYibaiquanOrder(List<Node> couponItems, String goodReceiverMobile) {
         Resaler resaler = Resaler.findOneByLoginName(YHD_LOGIN_NAME);
         if (resaler == null){
             Logger.error("can not find the resaler by login name: %s", YHD_LOGIN_NAME);
@@ -232,49 +175,25 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
         }
         models.order.Order uhuilaOrder = models.order.Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
         uhuilaOrder.save();
-        boolean containsElectronic = false;
-        boolean containsReal = false;
         try {
-            boolean hasElectronicOrderItem = false;
-            for (OrderItem orderItem : order.orderItems){
-                if (orderItem.outerId == null) {
-                    continue;//实体券无视
-                }else if (!hasElectronicOrderItem){
-                    hasElectronicOrderItem = true;
-                }
-                Goods goods = GoodsDeployRelation.getGoods(OuterOrderPartner.YHD, orderItem.outerId);
-                if(goods == null){
-                    Logger.info("goods not found: %s", orderItem.outerId );
-                    return null;
-                }
+            for (Node orderItem : couponItems){
+                String outerId = XPath.selectText("./outerId", orderItem).trim();
+                Goods goods = ResalerProduct.getGoods(Long.parseLong(outerId), OuterOrderPartner.YHD);
 
+                BigDecimal orderItemPrice = new BigDecimal(XPath.selectText("./orderItemPrice", orderItem).trim());
                 OrderItems uhuilaOrderItem  = uhuilaOrder.addOrderItem(
                         goods,
-                        orderItem.orderItemNum,
-                        order.goodReceiverMobile,
-                        orderItem.orderItemPrice,
-                        orderItem.orderItemPrice
+                        Integer.parseInt(XPath.selectText("./orderItemNum", orderItem).trim()),
+                        goodReceiverMobile,
+                        orderItemPrice,
+                        orderItemPrice
                 );
                 uhuilaOrderItem.save();
-                if(goods.materialType.equals(MaterialType.REAL)){
-                    containsReal = true;
-                }else if (goods.materialType.equals(MaterialType.ELECTRONIC)) {
-                    containsElectronic = true;
-                }
-            }
-            if(!hasElectronicOrderItem) {
-                Logger.info("has no electronic order item");
-                return null;
             }
         } catch (NotEnoughInventoryException e) {
-            Logger.info("enventory not enough");
+            Logger.info("yihaodian order build failed: inventory not enough");
             JPA.em().getTransaction().rollback();
             return null;
-        }
-        if (containsElectronic) {
-            uhuilaOrder.deliveryType = DeliveryType.SMS;
-        } else if (containsReal) {
-            uhuilaOrder.deliveryType = DeliveryType.LOGISTICS;
         }
 
         uhuilaOrder.createAndUpdateInventory();
@@ -288,7 +207,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
 
     @Override
     protected Class getMessageType() {
-        return YihaodianJobMessage.class;
+        return String.class;
     }
 
     @Override

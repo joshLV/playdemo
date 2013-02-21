@@ -3,7 +3,7 @@ package unit;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.consumer.User;
 import models.consumer.UserCondition;
 import models.consumer.UserGoldenCoin;

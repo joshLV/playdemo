@@ -15,6 +15,7 @@ require:
     - sales -> sales
     - supplier -> supplier
     - resale -> resale
+    - operator -> operator
     - order -> order
     - consumer -> consumer
     - website_cas -> website_cas 3.1
@@ -67,6 +68,7 @@ repositories:
             - sales -> *
             - supplier -> *
             - resale -> *
+            - operator -> *
             - order -> *
             - consumer -> *
             - website_cas -> *

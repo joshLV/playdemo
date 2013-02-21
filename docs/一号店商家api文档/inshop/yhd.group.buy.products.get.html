@@ -1,0 +1,411 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>一号店开放平台 - API详情 - 团购报名查询</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="../css/global-min.css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/tbsp.css" />
+<link rel="stylesheet" href="../css/reset.css" />
+<link rel="stylesheet" href="../css/common.css" />
+<link rel="stylesheet" href="../css/header.css" />
+<link rel="stylesheet" href="../css/docmtCenter.css" />
+<script type="text/javascript" src="../js/kissy.js"></script>
+<script type="text/javascript" src="../js/judge.js"></script>
+<script type="text/javascript" src="../js/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="../js/doc.js"></script>
+<script type="text/javascript" src="../js/sh.js"></script>
+<script type="text/javascript" src="../js/grade.js"></script>
+<link rel="stylesheet" href="../css/sh.css" />
+</head>
+<body>
+	<div class="seller">
+		<div id="page">
+			<div class="clearfix" id="pageNav">
+				<h1 id="toplogo">
+					<a href="http://www.yihaodian.com"><img class="pngfilter"
+						title="一号店开放平台" src="../img/logo.png" alt="1号店"> </a>
+				</h1>
+				<h1 id="topmenu" align="center">
+					<a class="selected" href="#"
+						style="font-size: 20px; text-align: center;">———只为更美好的生活</a>
+					<!-- 去掉选中小三角 <s></s> -->
+				</h1>
+			</div>
+		</div>
+	</div>
+	<div class="crumbs">
+		<a href="apiHomePage.html">API文档</a> <a href="groupApi.html">团购API</a>
+		<a class="last" href="yhd.group.buy.products.get.html">yhd.group.buy.products.get</a>
+		<!--class with "last"-->
+	</div>
+
+	<div class='container grid-s165m0 layout'>
+		<!--正文区 begin-->
+		<div class="col-main bg_line">
+			<div class="main-wrap">
+				<div class="title-wrap">
+					<h1 class="open-bg title">yhd.group.buy.products.get
+						团购报名查询</h1>
+
+					<ul class="api-sub-title layout clearfix">
+						<li class="sub-title"><a class="link" href="#authorize">API接口描述</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#systemParameter">系统级输入参数</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#api-param">应用级输入参数</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#result">返回结果</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#example">返回示例</a>
+						</li>
+						<li class="sub-title"><a class="link" href="#error-code">错误码</a>
+						</li>
+					</ul>
+				</div>
+
+				<div class="api-detail-bd" id="bd">
+					<!-- 评分-->
+					<div class="judeApi hidden" id="judeApi"></div>
+					<script>
+						KISSY.use("starGrade", function(S) {
+							S.grade.init();
+						});
+					</script>
+
+
+
+					<div class="content-first">
+						<h2 class="head-title" id="authorize">API接口描述</h2>
+						<p class="introduction">
+							获取团购报名的产品信息,查询成功，则返回查询成功记录数及相应的团购产品信息， 查询失败，则返回查询失败记录数，及相应的错误信息描述
+							。
+						</p>
+					</div>
+
+
+					<div>
+						<iframe id="systemParameter" src="systemInputParameters.html"
+							frameborder="no" border="0" marginwidth="80px" marginheight="0"
+							scrolling="no" allowtransparency="yes"> </iframe>
+					</div>
+					<div>
+						<h2 class="head-title" id="api-param">应用级输入参数</h2>
+						<table class="api-table" cellspacing='0'>
+							<thead>
+								<tr>
+									<th width="23%" class="middle">名称</th>
+									<th width="17%" class="middle">类型</th>
+									<th width="8%" class="middle">是否必须</th>
+									<th width="8%" class="left">示例值</th>
+									<th width="8%" class="left">默认值</th>
+									<th width="38%" class="left">描述</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="odd">
+									<td class="middle">curPage</td>
+									<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="left">1</td>
+									<td class="left">1</td>
+									<td class="left">当前页数</td>
+								</tr>
+								<tr class="even">
+									<td class="middle">pageRows</td>
+									<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="left">20</td>
+									<td class="left">50</td>
+									<td class="left">每页显示记录数，默认50，最大100</td>
+								</tr>
+								<tr class="odd">
+									<td class="middle">startTime</td>
+									<td class="middle"><a href="parameterStyle.html#String">String</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="left"></td>
+									<td class="left"></td>
+									<td class="left">团购开始时间(yyyy-MM-dd HH:mm:ss格式)</td>
+
+								</tr>
+								<tr class="even">
+									<td class="middle">endTime</td>
+									<td class="middle"><a href="parameterStyle.html#String">String</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="left"></td>
+									<td class="left"></td>
+									<td class="left">团购结束时间(yyyy-MM-dd HH:mm:ss格式)</td>
+
+								</tr>
+								<tr class="odd">
+									<td class="middle">groupStatus</td>
+									<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="left"></td>
+									<td class="left"></td>
+									<td class="left">团购状态</td>
+
+								</tr>
+								
+							</tbody>
+						</table>
+					</div>
+					<div>
+						<h2 class="head-title" id="result">返回结果</h2>
+						<table class="api-table" cellspacing='0'>
+							<thead>
+								<tr>
+									<th width="20%" class="left">名称</th>
+									<th width="15%" class="middle">类型</th>
+									<th width="15%" class="middle">是否必须</th>
+									<th width="20%" class="middle">示例值</th>
+									<th width="30%" class="left">描述</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="odd">
+									<td class="left">totalCount</td>
+									<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+									</td>
+									<td class="middle">是</td>
+									<td class="middle">10</td>
+									<td class="left">查询成功记录数</td>
+								</tr>
+								<tr class="even">
+									<td class="left">errorCount</td>
+									<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+									</td>
+									<td class="middle">是</td>
+									<td class="middle">1</td>
+									<td class="left">查询失败记录数</td>
+								</tr>
+								<tr class="odd">
+									<td class="left">groupProdInfoList</td>
+									<td class="middle"><a href="groupProdInfoObject.html">groupProdInfo[]</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">团购报名信息</td>
+								</tr>
+								<tr class="even">
+									<td class="left">errInfoList</td>
+									<td class="middle"><a href="errDetailInfoObject.html">ErrDetailInfo[]</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">错误信息列表</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div>
+						<h2 class="head-title " id="example">返回示例</h2>
+						<p class="data-format">XML数据格式:</p>
+						<div class="img-wrap">
+							<!-- xml刷-->
+							<pre class="brush: xml;">
+								&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+								&lt;response&gt;
+									&lt;errInfoList&gt;
+										&lt;errDetailInfo&gt;
+											&lt;errorCode&gt;yhd.product.add.error&lt;/errorCode&gt;
+											&lt;errorDes&gt;新增产品失败(产品 API新增单品Test001 已存在)&lt;/errorDes&gt;
+										&lt;/errDetailInfo&gt;
+									&lt;/errInfoList&gt;
+									&lt;errorCount&gt;1&lt;/errorCount&gt;
+									&lt;updateCount&gt;0&lt;/updateCount&gt;
+								&lt;/response&gt;
+							</pre>
+						</div>
+
+						<p class="data-format">JSON数据格式:</p>
+						<div class="img-wrap">
+							<!-- JS刷-->
+							<pre class="brush: js;">{&quot;response&quot;:{&quot;errorCount&quot;:0,&quot;updateCount&quot;:1}}</pre>
+						</div>
+					</div>
+					<div>
+						<h2 class="head-title" id="error-code">错误码</h2>
+
+						<table class="api-table" cellspacing='0'>
+							<thead>
+								<tr>
+									<th class="left" width="30%">错误码</th>
+									<th class="left" width="30%">错误描述</th>
+									<th class="left" width="40%">解决方案</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="odd">
+									<td class="left">yhd.product.add.params_missing</td>
+									<td class="left">输入的参数和产品类型不相符</td>
+									<td class="left">检查是否输入了图书产品信息</td>
+								</tr>
+								<tr class="even">
+									<td class="left">yhd.product.add.param_missing</td>
+									<td class="left">参数{0}类型错误或为空</td>
+									<td class="left">输入指定参数</td>
+								</tr>
+								<tr class="odd">
+									<td class="left">yhd.product.add.param_invalid</td>
+									<td class="left">参数{0}有误</td>
+									<td class="left">该参数不存在,检查对应参数是否正确</td>
+								</tr>
+								<tr class="even">
+									<td class="left">yhd.product.add.param_list_missing</td>
+									<td class="left">参数列表{0}格式或数据类型有误</td>
+									<td class="left">检查对应参数列表格式、数据类型是否正确</td>
+								</tr>
+								<tr class="odd">
+									<td class="left">yhd.product.add.error</td>
+									<td class="left">新增产品失败({0})</td>
+									<td class="left">根据对应原因调整相应参数</td>
+								</tr>
+								<tr class="even">
+									<td class="left">yhd.product.add.system_error</td>
+									<td class="left">系统运行异常</td>
+									<td class="left">系统错误,请稍后再试</td>
+								</tr>
+								<tr class="odd">
+									<td class="left">yhd.product.add.param_list_invalid</td>
+									<td class="left">参数列表:{0}中的参数{1}有误</td>
+									<td class="left">对应值不存在(或检查数字类型的是否填写错误,编辑类型是否正确)</td>
+								</tr>
+								<tr class="even">
+									<td class="left">yhd.product.add.param_outerid_is_existed</td>
+									<td class="left">外部产品编码已经存在</td>
+									<td class="left">更换外部产品编码</td>
+								</tr>
+								<tr class="odd">
+									<td class="left">yhd.product.add.others</td>
+									<td class="left">其它:{0}</td>
+									<td class="left">根据相应提示做出相应调整</td>
+								</tr>
+								<tr class="even">
+									<td class="left">yhd.product.add.param_length_over</td>
+									<td class="left">参数:{0}超长(最大长度为{1})</td>
+									<td class="left">检查指定参数的长度</td>
+								</tr>
+								<tr class="odd">
+									<td class="left">yhd.product.add.param_missed</td>
+									<td class="left">必须属性:{0}没有输入</td>
+									<td class="left">请在属性列表或属性项列表中输入指定的属性</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<!-- ued div end-->
+				</div>
+			</div>
+		</div>
+		<!--正文区 end-->
+		<!--左侧导航栏 begin-->
+		<div class="col-sub">
+			<div class="APIgory">
+				<ul>
+					<li>
+						<div class="APIgory-title">
+							<a href="groupApi.html">返回&nbsp;<span
+								class="APIgory-sub-title">团购API</span> </a>
+						</div></li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.group.buy.product.add.html"
+									title="yhd.group.buy.product.add">yhd.group.buy.product.add
+								</a>
+								<p class="APIgory-intro info-overflow">团购报名信息上传</p>
+							</div>
+							<s></s>
+						</div></li>
+					<li>
+						<div class="APIgory-list focus">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.group.buy.products.get.html"
+									title="yhd.group.buy.products.get">yhd.group.buy.products.get</a>
+								<p class="APIgory-intro info-overflow">团购报名查询</p>
+							</div>
+							<s></s>
+						</div></li>
+
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.group.buy.order.verify.html"
+									title="yhd.group.buy.order.verify">yhd.group.buy.order.verify</a>
+								<p class="APIgory-intro info-overflow">团购订单信息确认</p>
+							</div>
+							<s></s>
+						</div></li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="group.buy.refund.confirm.html"
+									title="group.buy.refund.confirm">yhd.
+									group.buy.refund.confirm</a>
+								<p class="APIgory-intro info-overflow">消费券退款确认</p>
+							</div>
+							<s></s>
+						</div></li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.group.buy.order.inform.html"
+									title="yhd.group.buy.order.inform">yhd.group.buy.order.inform</a>
+								<p class="APIgory-intro info-overflow">团购订单信息通知</p>
+							</div>
+							<s></s>
+						</div></li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.group.buy.vouchers.get.html"
+									title="yhd.group.buy.vouchers.get">yhd.group.buy.vouchers.get</a>
+								<p class="APIgory-intro info-overflow">查询消费券信息</p>
+							</div>
+							<s></s>
+						</div></li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.group.buy.voucher.resend.html"
+									title="yhd.group.buy.voucher.resend">yhd.group.buy.voucher.resend</a>
+								<p class="APIgory-intro info-overflow">消费券短信重新发送</p>
+							</div>
+							<s></s>
+						</div></li>
+
+					<li class="list-last">
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.group.buy.refund.request.html"
+									title="yhd.group.buy.refund.request">yhd.group.buy.refund.request</a>
+								<p class="APIgory-intro info-overflow">消费券退款申请</p>
+							</div>
+							<s></s>
+						</div>
+					</li>				
+
+				</ul>
+				<div class="quick-api">
+					<a href="apiHomePage.html">API文档</a>
+				</div>
+			</div>
+		</div>
+		<!--左侧导航栏 end-->
+</body>
+</html>

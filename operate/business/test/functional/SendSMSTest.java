@@ -2,13 +2,11 @@ package functional;
 
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.sales.SendSMSInfo;
 import models.sales.SendSMSTask;
 import operate.rbac.RbacLoader;
-import org.junit.Ignore;
 import org.junit.Test;
-import play.mvc.Before;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;

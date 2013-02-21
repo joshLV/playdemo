@@ -15,11 +15,11 @@ public class YihaodianQueueUtil {
     private YihaodianQueueUtil() {
     }
 
-    public static void addJob(YihaodianJobMessage message) {
-        RabbitMQPublisher.publish(QUEUE_NAME, message);
+    public static void addJob(String orderId) {
+        RabbitMQPublisher.publish(QUEUE_NAME, orderId);
     }
 
-    public static void addGroupBuyJob(YHDGroupBuyMessage message) {
-        RabbitMQPublisher.publish(GROUP_BUY_QUEUE_NAME, message);
+    public static void addGroupBuyJob(String orderId) {
+        RabbitMQPublisher.publish(GROUP_BUY_QUEUE_NAME, orderId);
     }
 }

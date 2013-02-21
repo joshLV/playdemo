@@ -179,7 +179,7 @@ public class TelephoneVerify extends Controller {
             }
             */
 
-            if (!ecoupon.consumeAndPayCommission(supplierUser.shop.id, null, supplierUser, VerifyCouponType.CLERK_MESSAGE)){
+            if (!ecoupon.consumeAndPayCommission(supplierUser.shop.id, supplierUser, VerifyCouponType.CLERK_MESSAGE)){
                 Logger.info("telephone verify failed: coupon has been refunded");
                 renderText("11");//对不起，该券无法消费
                 return;

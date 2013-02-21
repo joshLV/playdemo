@@ -72,12 +72,69 @@ function getSinglePathCallbacks(treeId) {
 function getAutoExpandCallbacks(treeId) {
     function onClick(e,treeId, treeNode) {
         var zTree = $.fn.zTree.getZTreeObj(treeId);
-        zTree.expandNode(treeNode, null, null, null, true);
+        if(treeNode.isParent){
+            zTree.expandNode(treeNode, null, null, null, true);
+        }else{
+            zTree.checkNode(treeNode);
+        }
     }
     return {
         onClick: onClick
     }
 }
+/**
+ * 返回点击时的callback函数,拥有以下功能
+ * 选择父节点时自动展开，选择叶子节点时自动选中/取消选中 radio/checkbox
+ * 自动更新显示给用户的输入框的值
+ * 自动更新隐藏input的值
+ * 自动更新用来保存选择路径（从root到所选节点的每一个节点）的隐藏input的值
+**/
+function getOnclickCallback(id) {
+    function onClick(e,treeId, treeNode) {
+        var zTree = $.fn.zTree.getZTreeObj(treeId);
+        if(treeNode.isParent){
+            zTree.expandNode(treeNode, null, null, null, true);
+        }else{
+            zTree.checkNode(treeNode, !treeNode.checked);
+            var checkedNodes = zTree.getCheckedNodes();
+            $("#" + id + "-show").val(buildCheckedStr(checkedNodes, ",", "name"))
+            $("#" + id + "-value").val(buildCheckedStr(checkedNodes, ",", "id"))
+            var nodeChain = $("#" + id + "-nodeChain");
+            if (nodeChain) {
+                nodeChain.val(buildTreeChain(checkedNodes));
+            }
+        }
+    }
+    return {
+        onCheck: onClick,
+        onClick: onClick
+    }
+}
+
+function showTreeFunc(id) {
+    var inputShow = $("#" + id + "-show");
+    var treeFrame = $("#" + id + "-treeFrame");
+    function showTree() {
+        var inputShowOffset = inputShow.offset();
+        treeFrame.css( {
+            left:inputShowOffset.left + "px",
+            top:inputShowOffset.top + inputShow.outerHeight() + "px"})
+        .slideDown("fast");
+
+        $("body").bind("mousedown", onBodyDown);
+    }
+    function hideTree() {
+        treeFrame.fadeOut("fast");
+        $("body").unbind("mousedown", onBodyDown);
+    }
+    function onBodyDown(event) {
+        if (!(event.target.id == (id +"-treeFrame") || $(event.target).parents("#" + id + "-treeFrame").length>0)) {
+            hideTree();
+        }
+    }
+    return showTree;
+}
+
 //传入一个node,和一个存储节点链表的数组
 function insertParentToChain(node, chain) {
     if (!node.parentTId) return;
@@ -96,13 +153,13 @@ function buildTreeChain(nodes) {
     return chain;
 }
 
-function buildCheckedStr(nodes, sep) {
+function buildCheckedStr(nodes, sep, property) {
     var str = "";
     for(var i = 0; i < nodes.length; i ++ ) {
         if (i != 0) {
             str += sep;
         }
-        str += nodes[i].id;
+        str += nodes[i][property];
     }
     return str;
 }

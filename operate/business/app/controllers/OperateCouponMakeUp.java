@@ -1,6 +1,7 @@
 package controllers;
 
-import models.dangdang.DDAPIUtil;
+import models.dangdang.groupbuy.DDGroupBuyUtil;
+import models.jingdong.groupbuy.JDGroupBuyHelper;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
@@ -40,12 +41,11 @@ public class OperateCouponMakeUp extends Controller {
             if (partner.equalsIgnoreCase("taobao"))
                 success = TaobaoCouponUtil.verifyOnTaobao(eCoupon);
             else if (partner.equalsIgnoreCase("jingdong"))
-                success = JDGroupBuyUtil.verifyOnJingdong(eCoupon);
+                success = JDGroupBuyHelper.verifyOnJingdong(eCoupon);
             else if (partner.equalsIgnoreCase("wuba"))
                 success = WubaUtil.verifyOnWuba(eCoupon);
             else if (partner.equalsIgnoreCase("dangdang")){
-                    DDAPIUtil.notifyVerified(eCoupon);
-                    success = true;
+                success = DDGroupBuyUtil.verifyOnDangdang(eCoupon);
             }
             if (success) {
                 successMessage.append(c).append(",");

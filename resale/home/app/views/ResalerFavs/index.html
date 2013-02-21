@@ -112,27 +112,10 @@
                     </td>
 
                     <td class="action">
-                    %{city=new models.sales.ChannelGoodsInfo().getChannelGoodsInfo(favItem.goods,resaler);
-
-
-                        }%
-                    *{#{list items:, as:'city'}}*
-                        #{if favItem.thirdGroupbuyId && city!=null}
-                        <a href="${city?.url}" target="_blank">${city?.tag}</a> |
-                        #{/if}
-                    *{#{/list}}*
                     </td>
                     <td class="action">
                         <a href="#" id="del_${favItem.id}" name="${favItem.goods.id}" class="delete_gift">删除</a>
 
-                        #{if resaler.loginName=='dangdang'}
-                            #{if favItem.partner==models.order.OuterOrderPartner.DD}
-                                <a href="/dangdang-add/${favItem.goods.id}">重新发布到当当</a>
-                            #{/if}
-                            #{else}
-                                <a href="/dangdang-add/${favItem.goods.id}">发布到当当</a>
-                            #{/else}
-                        #{/if}
                         #{elseif resaler.loginName == 'jingdong'}
                             #{if favItem.partner==models.order.OuterOrderPartner.JD}
                                 | <a href="/jd-add/${favItem.goods.id}">重新发布到京东</a>

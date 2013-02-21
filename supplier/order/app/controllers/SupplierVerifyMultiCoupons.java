@@ -156,8 +156,7 @@ public class SupplierVerifyMultiCoupons extends Controller {
             int checkedCount = 0;
             List<ECoupon> realCheckECoupon = new ArrayList<>();  //可能验证失败，所以要有一个实际真正验证成功的ecoupons
             for (ECoupon e : checkECoupons) {
-                if (e.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(),
-                        VerifyCouponType.SHOP, e.eCouponSn)) {
+                if (e.consumeAndPayCommission(shopId, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
                     checkedCount += 1;
                     consumedAmount = consumedAmount.add(e.faceValue);
                     realCheckECoupon.add(e);

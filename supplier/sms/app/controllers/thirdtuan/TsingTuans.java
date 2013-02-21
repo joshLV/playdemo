@@ -122,7 +122,7 @@ public class TsingTuans extends Controller {
             for (Shop shop : shops) {
                 shopId = shop.id;
             }
-            if(!ecoupon.consumeAndPayCommission(shopId, null, null, VerifyCouponType.CONSUMER_MESSAGE)){
+            if(!ecoupon.consumeAndPayCommission(shopId, null, VerifyCouponType.CONSUMER_MESSAGE)){
                 renderText("1|已退款不能消费");
             }
             

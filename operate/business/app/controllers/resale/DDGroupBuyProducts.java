@@ -2,16 +2,11 @@ package controllers.resale;
 
 import com.google.gson.Gson;
 import controllers.OperateRbac;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.dangdang.groupbuy.DDGroupBuyUtil;
 import models.dangdang.groupbuy.DDResponse;
 import models.order.OuterOrderPartner;
-import models.resale.ResalerProduct;
-import models.resale.ResalerProductJournal;
-import models.resale.ResalerProductJournalType;
-import models.sales.Goods;
-import models.sales.GoodsDeployRelation;
-import models.sales.Shop;
+import models.sales.*;
 import operate.rbac.annotations.ActiveNavigation;
 import org.w3c.dom.Node;
 import play.libs.XPath;
@@ -29,7 +24,6 @@ import java.util.Map;
 @With(OperateRbac.class)
 @ActiveNavigation("resale_partner_product")
 public class DDGroupBuyProducts extends Controller {
-    public static final String PRODUCT_URL = "http://tuan.dangdang.com/product.php?product_id=";
 
     @ActiveNavigation("resale_partner_product")
     public static void showUpload(Long goodsId) {
@@ -46,6 +40,7 @@ public class DDGroupBuyProducts extends Controller {
         if (goods == null) {
             notFound();
         }
+        OperateUser operateUser = OperateRbac.currentUser();
         //准备参数
         Map<String, String> groupbuyInfoParams = params.allSimple();
         groupbuyInfoParams.remove("body");
@@ -53,25 +48,23 @@ public class DDGroupBuyProducts extends Controller {
         Map<String, Object> templateParams = new HashMap<>();
         templateParams.putAll(groupbuyInfoParams);
 
-        GoodsDeployRelation relation = GoodsDeployRelation.generate(goods, OuterOrderPartner.DD);
-        templateParams.put("linkId", String.valueOf(relation.linkId));
-        String jsonData = new Gson().toJson(templateParams);//添加shop前先把参数给输出了
+        ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.DD, goods);
+        templateParams.put("linkId", String.valueOf(product.goodsLinkId));
+        String jsonData =  new Gson().toJson(templateParams);//添加shop前先把参数给输出了
+
         Collection<Shop> shops = goods.getShopList();
         templateParams.put("shops", shops);
 
-        OperateUser operateUser = OperateRbac.currentUser();
-
         DDResponse response = DDGroupBuyUtil.pushGoods(templateParams);
         if (response.isOk()) {
+            product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id).save();
             //记录历史
-            ResalerProduct product = ResalerProduct.createProduct(OuterOrderPartner.DD, 0L, operateUser.id, goods, relation.linkId);
-            ResalerProductJournal.createJournal(product, operateUser.id, jsonData, ResalerProductJournalType.CREATE, "上传商品");
+            ResalerProductJournal.createJournal(product, operateUser.id, jsonData,
+                    ResalerProductJournalType.CREATE, "上传商品");
             //查询当当的商品ID
-            Node node = DDGroupBuyUtil.getJustUploadedTeam(relation.linkId);
+            Node node = DDGroupBuyUtil.getJustUploadedTeam(product.goodsLinkId);
             if (node != null) {
-                product.partnerProductId = Long.parseLong(XPath.selectText("//ddgid", node));
-                product.url = PRODUCT_URL + product.partnerProductId;
-                product.save();
+                product.partnerProduct(XPath.selectText("./ddgid", node).trim()).save();
             }
         }
         render("resale/DDGroupBuyProducts/result.html", response);

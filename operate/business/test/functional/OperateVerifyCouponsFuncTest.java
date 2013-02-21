@@ -6,41 +6,34 @@ import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.consumer.User;
 import models.consumer.UserInfo;
-import models.dangdang.DDAPIInvokeException;
-import models.dangdang.DDAPIUtil;
-import models.dangdang.DDOrderItem;
-import models.dangdang.HttpProxy;
-import models.dangdang.Response;
-import models.order.ECoupon;
-import models.order.ECouponHistoryMessage;
-import models.order.ECouponPartner;
-import models.order.ECouponStatus;
-import models.order.Order;
-import models.order.PromoteRebate;
-import models.order.RebateStatus;
+import models.order.*;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sales.Shop;
 import operate.rbac.RbacLoader;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
+import util.DateHelper;
 import util.mq.MockMQ;
+import play.data.validation.Error;
+import util.ws.MockWebServiceClient;
 
-import java.io.ByteArrayInputStream;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * 运营后台券验证功能测试.
- *
+ * <p/>
  * User: hejun
  * Date: 12-8-20
  * Time: 下午4:12
@@ -67,6 +60,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         FactoryBoy.create(UserInfo.class);
         promoteUser = FactoryBoy.create(User.class);
         goods = FactoryBoy.create(Goods.class);
+        MockWebServiceClient.clear();
     }
 
     @Test
@@ -138,6 +132,8 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         params.put("supplierId", goods.supplierId.toString());
         params.put("eCouponSn", eCoupon.eCouponSn.toString());
         params.put("shopName", shop.name);
+        params.put("remark", "test");
+
 
         // 检测测试结果
         Http.Response response = POST("/coupons/verify", params);
@@ -147,7 +143,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         assertEquals(ECouponStatus.CONSUMED, eCouponConsumed.status);
 
         ECouponHistoryMessage lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage.MQ_KEY);
-        assertEquals("消费", lastMessage.remark);
+        assertEquals("运营平台代理验证，原因:test", lastMessage.remark);
     }
 
     @Test
@@ -211,30 +207,16 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
                 target.originalPrice = new BigDecimal(100);
                 target.salePrice = new BigDecimal(100);
                 target.faceValue = new BigDecimal(150);
-                target.partner=ECouponPartner.DD;
+                target.partner = ECouponPartner.DD;
                 target.effectiveAt = goods.effectiveAt;
             }
         });
-        DDOrderItem item = FactoryBoy.create(DDOrderItem.class);
-        item.ybqOrderItems = eCoupon.orderItems;
-        item.save();
 
-        DDAPIUtil.proxy = new HttpProxy() {
-            @Override
-            public Response accessHttp(PostMethod postMethod) throws DDAPIInvokeException {
-                String data = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>" +
-                        "<resultObject><status_code>0</status_code><error_code>0</error_code>" +
-                        "<desc><![CDATA[成功]]></desc><spid>3000003</spid><ver>1.0</ver>" +
-                        "<data><ddgid>256</ddgid><spgid>256</spgid><state>2</state></data></resultObject>";
-                Response response = new Response();
-                try {
-                    response = new Response(new ByteArrayInputStream(data.getBytes()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return response;
-            }
-        };
+        String data = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>" +
+                "<resultObject><status_code>0</status_code><error_code>0</error_code>" +
+                "<desc><![CDATA[成功]]></desc><spid>3000003</spid><ver>1.0</ver>" +
+                "<data><ddgid>256</ddgid><spgid>256</spgid><state>2</state></data></resultObject>";
+        MockWebServiceClient.addMockHttpRequest(200, data);
 
         // 设置 平台付款账户 金额，已完成向商户付款
         Account account = AccountUtil.getPlatformIncomingAccount();
@@ -252,7 +234,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         // 检测测试结果
         Http.Response response = POST("/coupons/verify", params);
         assertIsOk(response);
-        String info=(String)renderArgs("ecouponStatusDescription");
+        String info = (String) renderArgs("ecouponStatusDescription");
         assertNull(info);
         assertContentMatch("第三方DD券验证失败！", response);
     }
@@ -332,6 +314,81 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         assertEquals(new BigDecimal("2.50"), promoteRebate.rebateAmount);
         assertEquals(eCouponConsumed.promoterRebateValue, promoteRebate.partAmount);
         assertEquals(RebateStatus.ALREADY_REBATE, promoteRebate.status);
+    }
+
+    @Test
+    public void test_虚拟验证初始页面_conditionIsNull() {
+
+        ECoupon eCoupon = FactoryBoy.create(ECoupon.class, "Id", new BuildCallback<ECoupon>() {
+            @Override
+            public void build(ECoupon target) {
+                target.goods = goods;
+                target.expireAt = DateHelper.afterDays(3);
+                target.partner = ECouponPartner.JD;
+                target.isCheatedOrder = true;
+                target.isFreeze = 1;
+            }
+        });
+        Http.Response response = GET("/coupons/virtual_verify");
+        assertIsOk(response);
+        assertContentType("text/html", response);
+        List<ECoupon> couponList = (List) renderArgs("couponList");
+        CouponsCondition condition = (CouponsCondition) renderArgs("condition");
+        assertNotNull(couponList);
+        assertNotNull(condition);
+
+        assertEquals(1, couponList.size());
+        assertEquals(DateUtil.getBeginExpiredDate(3), condition.expiredAtBegin);
+        assertEquals(DateUtil.getEndExpiredDate(3), condition.expiredAtEnd);
+    }
+
+    @Test
+    public void test_虚拟验证初始页面_conditionIsNotNull() {
+        goods.noRefund = true;
+        goods.save();
+
+        ECoupon eCoupon = FactoryBoy.create(ECoupon.class, "Id", new BuildCallback<ECoupon>() {
+            @Override
+            public void build(ECoupon target) {
+                target.goods = goods;
+                target.expireAt = DateHelper.afterDays(10);
+                target.partner = ECouponPartner.JD;
+                target.isFreeze = 0;
+            }
+        });
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Http.Response response = GET("/coupons/virtual_verify?condition.expiredAtBegin=" + simpleDateFormat.format(new Date()) + "&condition.expiredAtEnd=" + simpleDateFormat.format(DateHelper.afterDays(11)));
+        assertIsOk(response);
+        assertContentType("text/html", response);
+        List<ECoupon> couponList = (List) renderArgs("couponList");
+        CouponsCondition condition = (CouponsCondition) renderArgs("condition");
+        assertNotNull(couponList);
+        assertNotNull(condition);
+
+        assertEquals(1, couponList.size());
+
+    }
+
+    @Test
+    public void test_虚拟验证() {
+        goods.noRefund = true;
+        goods.save();
+
+        ECoupon eCoupon = FactoryBoy.create(ECoupon.class, "Id", new BuildCallback<ECoupon>() {
+            @Override
+            public void build(ECoupon target) {
+                target.goods = goods;
+                target.expireAt = DateHelper.afterDays(3);
+                target.partner = ECouponPartner.JD;
+                target.isFreeze = 0;
+            }
+        });
+
+        Http.Response response = PUT("/coupons/" + eCoupon.id + "/virtual_verify","","");
+        assertIsOk(response);
+        assertContentType("text/html", response);
+        List<Error> errors = (List<Error>) renderArgs("errors");
+        assertEquals("虚拟验证失败！", errors.get(0).message());
     }
 
 }

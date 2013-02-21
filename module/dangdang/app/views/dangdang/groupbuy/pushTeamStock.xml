@@ -1,0 +1,6 @@
+<data>
+    <row>
+        <spgid><![CDATA[${spgid}]]></spgid>
+        <sellcount><![CDATA[${sellcount}]]></sellcount>
+    </row>
+</data>

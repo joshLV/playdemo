@@ -8,8 +8,9 @@ import models.accounts.util.AccountUtil;
 import models.order.ECoupon;
 import models.order.Order;
 import models.order.OrderECouponMessage;
+import models.order.OuterOrderPartner;
 import models.resale.Resaler;
-import models.sales.GoodsDeployRelation;
+import models.sales.ResalerProduct;
 import models.wuba.WubaUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -28,10 +29,16 @@ import java.util.Map;
  *         Date: 12-11-27
  */
 public class WubaGroupBuyTest extends FunctionalTest {
+    ResalerProduct product;
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
-        FactoryBoy.create(GoodsDeployRelation.class);
+        product = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
+            @Override
+            public void build(ResalerProduct target) {
+                target.partner = OuterOrderPartner.WB;
+            }
+        });
         Resaler resaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
             @Override
             public void build(Resaler target) {
@@ -48,12 +55,11 @@ public class WubaGroupBuyTest extends FunctionalTest {
 
     @Test
     public void testNewOrder() {
-        GoodsDeployRelation goodsDeployRelation = FactoryBoy.last(GoodsDeployRelation.class);
 
 
         Map<String, Object> params = new HashMap<>();
         params.put("orderId", System.currentTimeMillis());
-        params.put("groupbuyIdThirdpart", goodsDeployRelation.linkId);
+        params.put("groupbuyIdThirdpart", product.goodsLinkId);
         params.put("mobile", "13472581853");
         params.put("prodCount", 1);
         params.put("prodPrice", 20);

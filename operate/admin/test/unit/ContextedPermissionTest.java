@@ -1,7 +1,7 @@
 package unit;
 
 import factory.FactoryBoy;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import operate.rbac.ContextedPermission;
 import operate.rbac.RbacLoader;
 import org.junit.After;

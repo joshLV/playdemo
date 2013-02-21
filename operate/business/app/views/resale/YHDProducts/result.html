@@ -1,0 +1,40 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'结果' /}
+#{include '/share/nav.html' /}
+#{set 'moreScripts'}
+<script>
+    $("a[rel='tooltip']").tooltip();
+</script>
+#{/set}
+#{set 'moreStyles'}
+#{/set}
+<div class="body">
+    #{if extra}
+        <legend>
+            ${extra}
+        </legend>
+    #{/if}
+
+    #{if response}
+        #{if response.isOk()}
+            <legend>
+                成功
+            </legend>
+        #{/if}
+        #{else}
+            <legend>
+                失败
+            </legend>
+            #{list response.errors(), as:'error'}
+                错误编号：${play.libs.XPath.selectText("errorCode", error)}
+                详情：   ${play.libs.XPath.selectText("errorDes", error)}<br/>
+            #{/list}
+        #{/else}
+    #{/if}
+    #{else}
+        <legend>
+            上传失败，解析一号店返回值出错
+        </legend>
+    #{/else}
+</div>
+

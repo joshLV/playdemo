@@ -3,7 +3,7 @@ package functional;
 import com.uhuila.common.util.DateUtil;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.sales.Goods;
 import models.sales.GoodsSchedule;
 import operate.rbac.RbacLoader;

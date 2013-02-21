@@ -12,6 +12,7 @@ require:
     - play1 -> play-solr 0.2.27
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - com.taobao -> taobao-top 20121130
+    - operator -> operator
     - order -> order
     - consumer -> consumer
     - paginate_ext -> paginate_ext
@@ -62,6 +63,7 @@ repositories:
         type:       local
         artifact:   "${application.path}/../../module/[module]"
         contains:
+            - operator -> *
             - order -> *
             - consumer -> *
             - sales -> *

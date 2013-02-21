@@ -4,9 +4,8 @@ import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.admin.SupplierUser;
-import models.resale.Resaler;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import operate.rbac.RbacLoader;
@@ -17,7 +16,6 @@ import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

@@ -1,19 +1,25 @@
 package models.dangdang.groupbuy;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.uhuila.common.util.DateUtil;
+import models.order.ECoupon;
+import models.order.OuterOrder;
+import models.sales.ResalerProduct;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import play.Logger;
 import play.Play;
+import play.libs.WS;
+import play.libs.XML;
 import play.libs.XPath;
 import play.templates.Template;
 import play.templates.TemplateLoader;
 import util.ws.WebServiceRequest;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author likang
@@ -43,12 +49,87 @@ public class DDGroupBuyUtil {
         if (!response.isOk() || response.data == null) {
             return null;
         }
-        for (Node node : XPath.selectNodes("//row", response.data)) {
-            if (XPath.selectText("//spgid", node).equals(String.valueOf(linkId))) {
+        for (Node node : response.selectNodes("./row")) {
+            if (XPath.selectText("./spgid", node).trim().equals(String.valueOf(linkId))) {
                 return node;
             }
         }
         return null;
+    }
+
+    /**
+     * 在当当上验证券.
+     *
+     * @param coupon 一百券自家券
+     * @return 是否验证成功
+     */
+    public static boolean verifyOnDangdang(ECoupon coupon) {
+        OuterOrder outerOrder = OuterOrder.find("byYbqOrder", coupon.order).first();
+        if (outerOrder == null) {
+            Logger.info("dangdang verifyOnDangDang failed: outerOrder not found; couponId: " + coupon.id);
+            return false;
+        }
+
+        JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
+        Map<String, Object> params = new HashMap<>();
+        params.put("ddgid", jsonObject.get("team_id").getAsLong());
+        params.put("consumeCode", coupon.eCouponSn);
+        params.put("verifyCode", coupon.eCouponSn);
+
+        String templatePath = "dangdang/groupbuy/verifyConsume.xml";
+        String apiName = "verify_consume";
+        DDResponse response = sendRequest(apiName, VERIFY_CONSUME_URL, templatePath, params);
+        if (!response.isOk()) {
+            Logger.info("verify on dangdang failed. couponId: %s; response: %s.", coupon.id, response);
+        }
+        return response.isOk();
+    }
+
+    /**
+     * 将最新的销量同步到当当.
+     *
+     * @param product 分销产品
+     * @return 同步是否成功
+     */
+    public static boolean syncSellCount(ResalerProduct product) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("spgid", product.goodsLinkId);
+        params.put("sellcount", product.goods.getRealSaleCount());
+
+        String templatePath = "dangdang/groupbuy/getTeamList.xml";
+        String apiName = "get_team_list";
+        DDResponse response = sendRequest(apiName, SYNC_URL, templatePath, params);
+        return response.isOk();
+    }
+
+    /**
+     * 查询券在当当的状态.
+     *
+     * @param coupon 一百券自家的券
+     * @return 券状态. 0: 未使用; 1: 已使用; 2: 已作废
+     */
+    public static int couponStatus(ECoupon coupon) {
+        OuterOrder outerOrder = OuterOrder.find("byYbqOrder", coupon.order).first();
+        if (outerOrder == null) {
+            Logger.info("dangdang couponStatus failed: outerOrder not found; couponId: " + coupon.id);
+            return -1;
+        }
+        JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("ddgid", jsonObject.get("team_id").getAsLong());
+        params.put("type", 1);
+        params.put("code", coupon.eCouponSn);
+
+        String templatePath = "dangdang/groupbuy/queryConsumeCode.xml";
+        String apiName = "query_consume_code";
+        DDResponse response = sendRequest(apiName, QUERY_CONSUME_CODE_URL, templatePath, params);
+        if (!response.isOk()) {
+            Logger.info("dangdang couponStatus failed: \n%s" + response);
+            return -1;
+        }
+
+        return Integer.parseInt(response.selectTextTrim("./state"));
     }
 
     /**
@@ -72,9 +153,9 @@ public class DDGroupBuyUtil {
         params.put("endDate", dateFormat.format(endDate));
         params.put("status", status);
 
-        Template template = TemplateLoader.load("dangdang/groupbuy/getTeamList.xml");
-        String xmlData = template.render(params);
-        return sendRequest(GET_TEAM_LIST, "get_team_list", xmlData);
+        String templatePath = "dangdang/groupbuy/getTeamList.xml";
+        String apiName = "get_team_list";
+        return sendRequest(apiName, GET_TEAM_LIST, templatePath, params);
     }
 
 
@@ -85,9 +166,9 @@ public class DDGroupBuyUtil {
      * @return 请求结果
      */
     public static DDResponse pushGoods(Map<String, Object> params) {
-        Template template = TemplateLoader.load("dangdang/groupbuy/pushGoods.xml");
-        String xmlData = template.render(params);
-        return sendRequest(PUSH_PARTNER_TEAMS, "push_partner_teams", xmlData);
+        String templatePath = "dangdang/groupbuy/pushGoods.xml";
+        String apiName = "push_partner_teams";
+        return sendRequest(apiName, PUSH_PARTNER_TEAMS, templatePath, params);
     }
 
     /**
@@ -95,19 +176,43 @@ public class DDGroupBuyUtil {
      *
      * @param url       请求的url
      * @param apiName   请求的api名称
-     * @param xmlData   xml形式的请求内容(不包含xml声明)
      * @return 解析后的响应
      */
-    public static DDResponse sendRequest(String url, String apiName, String xmlData) {
-        Map<String, Object> params = sysParams();
-        params.put("sign", sign(apiName, xmlData, (String)params.get("call_time")));
-        params.put("data", xmlData);
+    public static DDResponse sendRequest(String apiName, String url, String templatePath, Map<String, Object> params,
+                                         String ... keywords) {
 
-        Document xml = WebServiceRequest.url(url).type("dangdang_" + apiName)
-                .params(params).addKeyword("dangdang")
-                .postXml();
+        Template template = TemplateLoader.load(templatePath);
+        String xmlData = template.render(params);
 
-        return DDResponse.parseResponse(xml);
+        Map<String, Object> requestParams = sysParams();
+        requestParams.put("sign", sign(apiName, xmlData, (String) params.get("call_time")));
+        requestParams.put("data", xmlData);
+
+        Logger.info("dangdang request %s:\n%s", apiName, xmlData);
+        WebServiceRequest request = WebServiceRequest.url(url).type("dangdang_" + apiName)
+                .params(params);
+        for (String keyword : keywords) {
+            request.addKeyword(keyword);
+        }
+
+        String xml = request.postString();
+        Logger.info("dangdang response %s:\n%s", apiName, xml);
+
+        return parseResponse(xml);
+    }
+
+    public static DDResponse parseResponse(String xml) {
+        return parseResponse(XML.getDocument(xml));
+    }
+
+    public static DDResponse parseResponse(Document document) {
+        DDResponse response = new DDResponse();
+        response.ver = XPath.selectText("/resultObject/ver", document).trim();
+        response.spid = XPath.selectText("/resultObject/spid", document).trim();
+        response.errorCode = XPath.selectText("/resultObject/error_code", document).trim();
+        response.desc = XPath.selectText("/resultObject/desc", document).trim();
+        response.data = XPath.selectNode("/resultObject/data", document);
+        return response;
     }
 
     /**
@@ -134,7 +239,29 @@ public class DDGroupBuyUtil {
         paramMap.put("result_format", RESULT_FORMAT);
         paramMap.put("ver", VER);
         paramMap.put("sign_method", SIGN_METHOD);
-        paramMap.put("call_time", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) );
+        paramMap.put("call_time", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         return paramMap;
+    }
+
+    public static SortedMap<String, String> filterPlayParams(Map<String, String> params) {
+        TreeMap<String, String> r = new TreeMap<>(params);
+        r.remove("body");
+        return r;
+    }
+
+    /**
+     * 此加密算法目前只用于 当当通知我们订单生成
+     */
+    public static String signParams(SortedMap<String, String> params) {
+        StringBuilder signStr = new StringBuilder();
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            if ("body".equals(entry.getKey()) || "sign".equals(entry.getKey())) {
+                continue;
+            }
+            signStr.append(entry.getKey()).append("=").append(WS.encode(entry.getValue())).append("&");
+        }
+
+        signStr.append("sn=").append(SECRET_KEY);
+        return DigestUtils.md5Hex(signStr.toString());
     }
 }

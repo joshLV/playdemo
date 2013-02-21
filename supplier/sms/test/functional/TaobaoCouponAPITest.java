@@ -34,7 +34,7 @@ public class TaobaoCouponAPITest extends FunctionalTest{
             @Override
             public void build(OuterOrder target) {
                 target.partner = OuterOrderPartner.TB;
-                target.orderId = TAOBAO_ORDER_ID;
+                target.orderId = String.valueOf(TAOBAO_ORDER_ID);
             }
         });
         FactoryBoy.create(ECoupon.class);
@@ -54,7 +54,7 @@ public class TaobaoCouponAPITest extends FunctionalTest{
     @Test
     public void testParams() {
         Map<String, String> params = prepareParams();
-        params.put("order_id", "abc");
+        params.remove("order_id");
         resign(params);
 
         Http.Response response = POST2("/api/v1/taobao/coupon", params);

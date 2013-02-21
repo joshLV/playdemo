@@ -6,7 +6,7 @@ import factory.callback.SequenceCallback;
 import models.accounts.AccountSequence;
 import models.accounts.AccountSequenceCondition;
 import models.accounts.AccountType;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.consumer.User;
 import models.webop.WithdrawReport;
 import operate.rbac.RbacLoader;

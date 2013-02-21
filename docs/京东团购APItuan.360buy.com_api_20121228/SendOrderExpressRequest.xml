@@ -1,0 +1,43 @@
+<!--同步快递类订单 请求 京东请求-->
+<?xml version="1.0" encoding="utf-8"?>
+<Request xmlns="http://tuan.360buy.com/Request">
+	<!--版本-->
+	<Version>1.0</Version>
+	<!--合作伙伴ID-->
+	<VenderId>100000</VenderId>
+	<!--合作伙伴Key-->
+	<VenderKey>xxxxxxxxxxxxxxxxx</VenderKey>
+	<!--是否压缩 默认不压缩-->
+	<Zip>false</Zip>
+	<!--是否加密-->
+	<Encrypt>true</Encrypt>
+	<!--提交数据-->
+	<Data>
+		<Message xmlns="http://tuan.360buy.com/SendOrderExpressRequest">
+			<!--京东团购ID [必填]-->
+			<JdTeamId>12232</JdTeamId>
+			<!--合作伙伴团购ID [必填]-->
+			<VenderTeamId>343234</VenderTeamId>
+			<!--手机 [必填]-->
+			<Mobile>13911111111</Mobile>
+			<!--下单时间 unix时间戳 [必填]-->
+			<OrderDate>1314428400</OrderDate>
+			<!--购买价 单位：分 [必填] -->
+			<TeamPrice>10000</TeamPrice>        
+			<!--订购数量 [必填]-->
+			<Count>2</Count>
+			<!--订单总额 单位：分  [必填]-->
+			<Origin>20000</Origin>
+			<!--京东订单ID [必填]-->
+			<JdOrderId>2323</JdOrderId>
+			<!--付款时间 unix时间戳 [必填]-->
+			<PayTime>1315012200</PayTime>
+		    <!--收件人姓名 [必填]-->
+           	<RealName>张三</RealName>
+			<!--收件人地址 [必填]-->
+           	<Address>北京市朝阳区xxxxxxxx</Address>
+			<!--收件人邮编 [选填]-->
+           	<ZipCode>100101</ZipCode>
+		</Message>
+	</Data>
+</Request>

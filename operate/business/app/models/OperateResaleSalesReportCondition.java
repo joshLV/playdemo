@@ -114,11 +114,11 @@ public class OperateResaleSalesReportCondition {
             }
         } else if (status == ECouponStatus.REFUND) {
             if (beginAt != null) {
-                condBuilder.append(" and e.consumedAt >= :createdAtBegin");
+                condBuilder.append(" and e.refundAt>= :createdAtBegin");
                 paramMap.put("createdAtBegin", beginAt);
             }
             if (endAt != null) {
-                condBuilder.append(" and e.consumedAt < :createdAtEnd");
+                condBuilder.append(" and e.refundAt< :createdAtEnd");
                 paramMap.put("createdAtEnd", DateUtil.getEndOfDay(endAt));
             }
         }

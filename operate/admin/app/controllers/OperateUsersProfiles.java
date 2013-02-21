@@ -1,13 +1,12 @@
 package controllers;
 
-import models.admin.OperateRole;
-import models.admin.OperateUser;
+import models.operator.OperateRole;
+import models.operator.OperateUser;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import java.sql.SQLOutput;
 import java.util.List;
 
 /**

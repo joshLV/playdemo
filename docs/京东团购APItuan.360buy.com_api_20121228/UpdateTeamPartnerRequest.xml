@@ -1,0 +1,42 @@
+<!-- 更新团购商户的接口 请求 合作伙伴请求-->
+<?xml version="1.0" encoding="utf-8"?>
+<Request xmlns="http://tuan.360buy.com/Request">
+	<!--版本-->
+	<Version>1.0</Version>
+	<!--合作伙伴ID-->
+	<VenderId>100000</VenderId>
+	<!--合作伙伴Key-->
+	<VenderKey>xxxxxxxxxxxxxxxxx</VenderKey>
+	<!--是否压缩 默认不压缩-->
+	<Zip>false</Zip>
+	<!--是否加密-->
+	<Encrypt>true</Encrypt>
+	<!--提交数据-->
+	<Data>
+		<Message xmlns="http://tuan.360buy.com/UpdateTeamPartnerRequest">
+			<!--合作伙伴方团购ID 必须大于0 [必填] -->
+			<VenderTeamId>432243</VenderTeamId>
+			<!--京东团购ID 必须大于0 [必填] -->
+			<JdTeamId>10003943</JdTeamId>
+			<!--团购所在的商家信息，支持多商家，至少填写一个商家信息-->
+			<Partners>
+				<Partner>
+					<!--商家名称 最长40个字符 [必填]-->
+					<Name>商家名称</Name>
+					<!--商家地址 最长80个字符 [必填]-->
+					<Address>商家详细地址</Address>
+					<!--地图连接，填写地图的URL，必须以http开头。此字段可以为空。若链接过长超过100个字符请使用加密过的url短链接 此字段可以为空。-->
+					<Map></Map>
+					<!--商家联系人 最长30个字符 此字段可以为空。-->
+					<Contact></Contact>
+					<!--商家电话。最长40个字符 [必填]-->
+					<Tel></Tel>
+					<!--商家手机信息。最长12个字符，只能是数字。此字段可以为空。-->
+					<Mobile></Mobile>
+					<!--交通信息，位置信息。最长400个字符。此字段可以为空。-->
+					<Location></Location>
+				</Partner>
+			<Partners>
+		</Message>
+	</Data>
+</Request>

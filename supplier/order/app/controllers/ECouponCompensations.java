@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import models.jingdong.groupbuy.JDGroupBuyHelper;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.order.ECoupon;
 import models.order.ECouponCompensation;
@@ -37,7 +38,7 @@ public class ECouponCompensations extends Controller {
             // 只有已消费的才需要补偿
             if (ecoupon.status == ECouponStatus.CONSUMED) {
                 if (ecoupon.partner == ECouponPartner.JD) {
-                    if (JDGroupBuyUtil.verifyOnJingdong(ecoupon)) {
+                    if (JDGroupBuyHelper.verifyOnJingdong(ecoupon)) {
                         ec.compensatedAt = new Date();
                         ec.result = "360Buy.com verify SUCCESS";
                         count += 1;

@@ -23,6 +23,7 @@ require:
     - org.jsoup -> jsoup 1.6.1
     - supplier_rbac -> supplier_rbac
     - consumer -> consumer
+    - operator -> operator
     - order -> order
     - asset_package -> asset_package
     - accounts -> accounts
@@ -69,6 +70,7 @@ repositories:
             - paginate_ext -> *
             - supplier_rbac -> *
             - consumer -> *
+            - operator -> *
             - order -> *
             - accounts -> *
             - report -> *

@@ -3,8 +3,7 @@ package functional;
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
-import models.admin.OperateRole;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.sales.Brand;
 import models.sales.Category;
 import models.sales.Goods;
@@ -15,7 +14,6 @@ import models.sales.Shop;
 import models.supplier.Supplier;
 import operate.rbac.RbacLoader;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.Play;
 import play.mvc.Http;
@@ -26,8 +24,6 @@ import util.DateHelper;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.io.File;
-import java.math.BigDecimal;
 import java.util.HashMap;
 
 public class OperateGoodsTest extends FunctionalTest {

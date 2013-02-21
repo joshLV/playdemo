@@ -32,7 +32,7 @@ GET     /reports/rank                           RebateRankReports.index
 GET     /favicon.ico                            404
 
 GET     /reports                                PurchaseTaxReports.index
-GET     /reports/channel                        GoodsOnSaleAndOffSaleReports.index
+GET     /reports/resaler-product                ResalerProductStatusReports.index
 
 # 商户销售汇总表
 GET     /totalsales/trends                      TotalSalesReports.trends

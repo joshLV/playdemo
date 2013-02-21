@@ -1,0 +1,10 @@
+<Message xmlns="http://tuan.360buy.com/TeamRestartRequest">
+    *{ 京东团购ID [必填] }*
+    <JdTeamId>${jdTeamId}</JdTeamId>
+    *{ 合作方团购ID [必填] }*
+    <VenderTeamId>${venderTeamId}</VenderTeamId>
+    *{ 团购开始时间 unix时间戳 解析后为 yyyy-MM-dd hh:mm:ss[必填] }*
+    <BeginTime>${new java.text.SimpleDateFormat('yyyy-MM-dd HH:mm:ss').parse(beginTime).getTime()/1000}</BeginTime>
+    *{ 团购结束时间 unix时间戳 解析后为 yyyy-MM-dd hh:mm:ss[必填] }*
+    <EndTime>${new java.text.SimpleDateFormat('yyyy-MM-dd HH:mm:ss').parse(endTime).getTime()/1000}</EndTime>
+</Message>

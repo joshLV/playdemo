@@ -1,20 +1,30 @@
 package models.job.yihaodian.listener;
 
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
+import models.order.OuterOrderStatus;
 import models.yihaodian.*;
-import models.yihaodian.shop.*;
 import models.yihaodian.YHDUtil;
+import org.w3c.dom.Node;
 import play.Logger;
 import play.Play;
 import play.jobs.Every;
 import play.jobs.Job;
+import play.libs.XPath;
 
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * @author likang
  *
- * 拉取新的订单，与本地比较，若从未记录，则记录下来，并发起一个处理请求放队列里
+ * 拉取新的订单，与本地比较，若从未记录，则记录下来
  *
  * Date: 12-8-29
  */
@@ -25,40 +35,25 @@ public class OrderListener extends Job{
 
     @Override
     public void doJob(){
-        if (!ON || Play.runingInTestMode()){
+        if (!ON && !Play.runingInTestMode()){
+            Logger.info("yihaodian order listener aborted");
             return;
         }
-        Logger.info("start yihaodian job");
         //从一号店拉取订单列表
-        List<YihaodianOrder> orders = newOrders();
-        if (orders != null && orders.size() > 0) {
-            //筛选出我们没有处理过的
-            StringBuilder orderCodes = new StringBuilder();
-            for(YihaodianOrder order : orders){
-                if(YihaodianOrder.find("byOrderId", order.orderId).first() == null){
-                    orderCodes.append(order.orderCode).append(",");
-                }else {
-                    //发送消息队列
-                    YihaodianJobMessage message = new YihaodianJobMessage(order.orderId);
-                    YihaodianQueueUtil.addJob(message);
-                }
-            }
-
-            if(orderCodes.length() > 0){
-                //拉取订单的全部信息
-                List<YihaodianOrder> fullOrders = fullOrders(orderCodes.toString());
-                if(fullOrders != null && fullOrders.size() > 0) {
-                    for(YihaodianOrder order: fullOrders) {
-                        order.save();
-                        for(OrderItem orderItem : order.orderItems) {
-                            orderItem.order = order;
-                            orderItem.save();
-                        }
-                        //发送消息队列
-                        YihaodianJobMessage message = new YihaodianJobMessage(order.orderId);
-                        YihaodianQueueUtil.addJob(message);
-                    }
-                }
+        List<Node> orders = newOrders();
+        if (orders == null || orders.size() == 0) {
+            return;
+        }
+        //筛选出我们没有处理过的
+        for(Node order : orders ){
+            String orderCode = XPath.selectText("./orderCode", order).trim();
+            if(OuterOrder.find("byOrderIdAndPartner", orderCode, OuterOrderPartner.YHD).first() == null){
+                OuterOrder outerOrder = new OuterOrder();
+                //此处不保存outerOrder的message，等处理的时候会再去一号店拉取最新的订单信息并保存
+                outerOrder.status = OuterOrderStatus.ORDER_COPY;
+                outerOrder.partner = OuterOrderPartner.YHD;
+                outerOrder.orderId = orderCode;
+                outerOrder.save();
             }
         }
     }
@@ -68,7 +63,7 @@ public class OrderListener extends Job{
      *
      * @return 已付款未发货的订单摘要
      */
-    public List<YihaodianOrder> newOrders(){
+    public List<Node> newOrders(){
         Date end = new Date(System.currentTimeMillis() + 600000);//当前时间往后10分钟
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(end);
@@ -81,44 +76,11 @@ public class OrderListener extends Job{
         params.put("dateType", "1");//按付款时间查询
         params.put("startTime", new SimpleDateFormat(ORDER_DATE).format(start));
         params.put("endTime", new SimpleDateFormat(ORDER_DATE).format(end));
-        Logger.info("yhd.orders.get orderStatusList %s", params.get("orderStatusList"));
-        Logger.info("yhd.orders.get dateType %s", params.get("dateType"));
-        Logger.info("yhd.orders.get startTime %s", params.get("startTime"));
-        Logger.info("yhd.orders.get endTime %s", params.get("endTime"));
 
-        String responseXml = YHDUtil.sendRequest(params, "yhd.orders.get");
+        YHDResponse response = YHDUtil.sendRequest(params, "yhd.orders.get", "orderList");
 
-        Logger.info("yhd.orders.get response %s", responseXml);
-        if(responseXml != null) {
-            YHDResponse<YihaodianOrder> res = new YHDResponse<>();
-            res.parseXml(responseXml, "orderList", true, YihaodianOrder.parser);
-            if(res.getErrorCount() == 0){
-                return res.getVs();
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 订单的详细信息
-     * http://openapi.yihaodian.com/forward/inshop/yhd.orders.detail.get.html
-     *
-     * @param orderCodes 订单编号列表，以逗号分隔
-     * @return 订单的详细信息
-     */
-    public List<YihaodianOrder> fullOrders(String orderCodes){
-        Map<String, String> params = new HashMap<>();
-        params.put("orderCodeList", orderCodes);
-        Logger.info("yhd.orders.detail.get orderCodeList %s", params.get("orderCodeList"));
-
-        String responseXml = YHDUtil.sendRequest(params, "yhd.orders.detail.get");
-        Logger.info("yhd.orders.detail.get response %s", responseXml);
-        if (responseXml != null) {
-            YHDResponse<YihaodianOrder> res = new YHDResponse<>();
-            res.parseXml(responseXml, "orderInfoList", true, YihaodianOrder.fullParser);
-            if(res.getErrorCount() == 0){
-                return res.getVs();
-            }
+        if(response.isOk()) {
+            return XPath.selectNodes("./order", response.data);
         }
         return null;
     }

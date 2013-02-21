@@ -8,7 +8,7 @@
     <legend>当当上传商品：<a href="/goods/${goods.id}" target="_blank">
         ${goods.shortName}</a>
     </legend>
-    <form class="form-horizontal" method="POST" action="/resale-partner-products/dd/upload">
+    <form class="form-horizontal" method="POST" action="/resaler-products/dd/upload">
         <div class="control-group">
             <label class="control-label">选择城市</label>
             <div class="controls">
@@ -86,15 +86,15 @@
         <div class="control-group">
             <label class="control-label">团购类型 *</label>
             <div class="controls">
-                <input type="radio" name="teamType" value="1" checked> 虚拟商品
-                <input type="radio" name="teamType" value="2"> 实物商品
+                <input type="radio" name="teamType" value="1" #{if goods.materialType == models.sales.MaterialType.ELECTRONIC} checked #{/if}> 虚拟商品
+                <input type="radio" name="teamType" value="2"#{if goods.materialType == models.sales.MaterialType.REAL} checked #{/if}> 实物商品
             </div>
         </div>
         <div class="control-group">
             <label class="control-label">送货类型 *</label>
             <div class="controls">
-                <input type="radio" name="deliveryType" value="1" checked>手机验证码
-                <input type="radio" name="deliveryType" value="2"> 快递
+                <input type="radio" name="deliveryType" value="1" #{if goods.materialType == models.sales.MaterialType.ELECTRONIC} checked #{/if}>手机验证码
+                <input type="radio" name="deliveryType" value="2" #{if goods.materialType == models.sales.MaterialType.REAL} checked #{/if}> 快递
             </div>
         </div>
         <div class="control-group">

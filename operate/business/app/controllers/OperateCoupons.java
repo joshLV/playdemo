@@ -1,7 +1,7 @@
 package controllers;
 
 import models.accounts.AccountType;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.order.CouponHistory;
 import models.order.CouponsCondition;
 import models.order.ECoupon;

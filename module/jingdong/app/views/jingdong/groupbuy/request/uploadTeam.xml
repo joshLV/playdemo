@@ -2,7 +2,7 @@
     *{ 合作伙伴团购产品ID [必填] }*
     <VenderTeamId>${venderTeamId}</VenderTeamId>
     *{ 团购标题名称  最长200个[必填] }*
-    <TeamTitle>${teamTitle.raw()}</TeamTitle>
+    <TeamTitle><![CDATA[${teamTitle.raw().trim()}]]></TeamTitle>
     *{ 团购所在城市ID [必填] }*
     <CityId>${cityId}</CityId>
     *{ 团购所属区域商圈ID列表 商圈ID总数不可超过20个(含20个) 非必填 }*
@@ -31,7 +31,7 @@
         #{/list}
     </Group2List>
     *{ 团购产品名称 最长12个字符[必填] }*
-    <Title>${title.raw()}</Title>
+    <Title><![CDATA[${title.raw()}]]></Title>
     *{ 团购主图  此为图片链接地址http开头，图片尺寸为440*280，图片大小在100kb以内 [必填] }*
     <GrouponBImg>${grouponBImg}</GrouponBImg>
     *{ 团购原价 仅数字，精确到分（小数点后2位），必须大于0并且大于团购现价 e.g:58元传递5800 [必填] }*
@@ -63,16 +63,16 @@
     *{ 团购简介 富文本数据，为保证验证通过，请讲内容放到<![CDATA[]]>  [必填]  }*
     <Summary><![CDATA[ ${summary.raw()} ]]></Summary>
     *{ 团购详情 富文本数据，为保证验证通过，请讲内容放到<![CDATA[]]>  [必填] }*
-    <TeamDetail><![CDATA[ ${teamDetail.raw()} ]]> </TeamDetail>
+    <TeamDetail><![CDATA[${teamDetail.raw()}]]> </TeamDetail>
     *{ 团购所在的商家信息，支持多商家，至少填写一个商家信息 }*
     <Partners>
     #{list items:shops, as:'shop'}
     #{if shop.deleted != com.uhuila.common.constants.DeletedStatus.DELETED}
     <Partner>
         *{ 商家名称 最长40个字符 [必填] }*
-        <Name>${shop.name.raw()}</Name>
+        <Name><![CDATA[${shop.name.raw()}]]></Name>
         *{ 商家地址 最长80个字符 [必填] }*
-        <Address>${shop.address.raw()}</Address>
+        <Address><![CDATA[${shop.address.raw()}]]></Address>
         *{ 地图连接，填写地图的URL，必须以http开头。此字段可以为空。若链接过长超过100个字符请使用加密过的url短链接 此字段可以为空。 }*
         <Map/>
         *{ 商家联系人 最长30个字符 此字段可以为空。 }*

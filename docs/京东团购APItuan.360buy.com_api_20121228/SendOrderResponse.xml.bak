@@ -1,0 +1,38 @@
+<!--同步订单 应答 合作伙伴应答-->
+<?xml version="1.0" encoding="utf-8"?>
+<Response xmlns="http://tuan.360buy.com/Response">
+	<!--版本-->
+	<Version>1.0</Version>
+	<!--合作伙伴ID-->
+	<VenderId>100000</VenderId>
+	<!--是否压缩 默认不压缩-->
+	<Zip>false</Zip>
+	<!--是否加密-->
+	<Encrypt>true</Encrypt>
+	<!--返回结果(200-成功 非200失败)-->
+	<ResultCode>200</ResultCode>
+	<!--响应信息-->
+	<ResultMessage>success</ResultMessage>
+	<!--提交数据-->
+	<Data>
+		<Message xmlns="http://tuan.360buy.com/SendOrderResponse">
+			<!--京东团购ID [必填]-->
+			<JdTeamId>12232</JdTeamId>
+			<!--合作伙伴团购ID [必填]-->
+			<VenderTeamId>343234</VenderTeamId>
+			<!--购买数量(目前合作伙伴提供团购项目在各个平台销售数量总和) [必填]-->
+			<SellCount>100</SellCount>
+			<!--合作伙伴方订单ID [必填]-->
+			<VenderOrderId>234234324</VenderOrderId>
+			<!--合作方优惠券信息 若上报团购中 CouponGrantMode选择2或者3（发放合作方的优惠券），则此节点为必填。若CouponBindMode选择2（一个优惠券对应多份产品），则Coupons节点下所有Coupon中的CouponId是相同的，且数量等于购买数量 -->
+			<Coupons>
+			  <Coupon>
+				<!--券号 券号最长不得超过20位-->
+				<CouponId>xxxxxxxxxx</CouponId>
+				<!--密码-->
+				<CouponPwd>xxxxxx</CouponPwd>
+			  </Coupon>
+			</Coupons>
+		</Message>
+	</Data>
+</Response>

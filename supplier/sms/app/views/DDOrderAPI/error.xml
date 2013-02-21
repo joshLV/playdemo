@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<resultObject>
-    <error_code>${errorInfo?.errorCode}</error_code>
-    <desc>
-        <![CDATA[ ${errorInfo?.errorDes?.raw()} ]]>
-    </desc>
-    <spid>${errorInfo?.spid}</spid>
-    <ver>${errorInfo?.ver}</ver>
-</resultObject>

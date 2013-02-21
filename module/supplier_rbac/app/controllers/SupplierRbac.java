@@ -16,14 +16,13 @@
  */
 package controllers;
 
-import com.uhuila.common.constants.PlatformType;
+import cache.CacheHelper;
 import controllers.supplier.cas.Security;
 import models.admin.SupplierNavigation;
 import models.admin.SupplierPermission;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.admin.SupplierUserLoginHistory;
-import models.cms.Topic;
 import navigation.ContextedPermission;
 import navigation.NavigationHandler;
 import navigation.annotations.ActiveNavigation;
@@ -32,6 +31,7 @@ import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
 import play.cache.Cache;
+import play.mvc.After;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Finally;
@@ -349,4 +349,8 @@ public class SupplierRbac extends Controller {
         }
     }
 
+    @After
+    public static void cleanCacheHelper() {
+        CacheHelper.cleanPreRead();
+    }
 }

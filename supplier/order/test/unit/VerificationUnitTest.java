@@ -57,7 +57,7 @@ public class VerificationUnitTest extends UnitTest {
         ECoupon eCoupon = ECoupon.query(eCouponSn, supplier.id);
         assertNotNull(eCoupon);
 
-        eCoupon.consumeAndPayCommission(shop.id, null, supplierUser, VerifyCouponType.SHOP);
+        eCoupon.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.SHOP);
         List<ECoupon> couponList = ECoupon.find("byECouponSn", eCouponSn).fetch();
         assertEquals(ECouponStatus.CONSUMED, couponList.get(0).status);
         assertEquals(shop.id, couponList.get(0).shop.id);

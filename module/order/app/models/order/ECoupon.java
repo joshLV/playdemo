@@ -8,10 +8,11 @@ import models.accounts.AccountType;
 import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
+import models.operator.OperateUser;
 import models.admin.SupplierUser;
 import models.consumer.User;
-import models.dangdang.DDAPIInvokeException;
-import models.dangdang.DDAPIUtil;
+import models.dangdang.groupbuy.DDGroupBuyUtil;
+import models.jingdong.groupbuy.JDGroupBuyHelper;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.resale.Resaler;
 import models.sales.Goods;
@@ -506,28 +507,29 @@ public class ECoupon extends Model {
         return false;
     }
 
-    public boolean consumeAndPayCommission(Long shopId, Long operateUserId, SupplierUser supplierUser, VerifyCouponType type) {
-        return consumeAndPayCommission(shopId, operateUserId, supplierUser, type, this.eCouponSn);
+    public boolean consumeAndPayCommission(Long shopId, SupplierUser supplierUser, VerifyCouponType type) {
+        return consumeAndPayCommission(shopId, supplierUser, type, this.eCouponSn);
     }
 
-    public boolean consumeAndPayCommission(Long shopId, Long operateUserId, SupplierUser supplierUser, VerifyCouponType type, String triggerCouponSn) {
+    public boolean consumeAndPayCommission(Long shopId, SupplierUser supplierUser, VerifyCouponType type,
+                                           String triggerCouponSn) {
+        return consumeAndPayCommission(shopId, null, supplierUser, type, triggerCouponSn, null, null);
+    }
+
+    public boolean consumeAndPayCommission(Long shopId, OperateUser operateUser, SupplierUser supplierUser, VerifyCouponType type,
+                                           String triggerCouponSn, Date consumedAt, String remark) {
 
         //===================判断是否第三方订单产生的券=并且不是导入券============================
         if (this.createType != ECouponCreateType.IMPORT) {
             if (this.partner == ECouponPartner.DD) {
-                try {
-                    if (DDAPIUtil.isRefund(this)) {//如果券在当当上已经退款，则不允许券的消费。
-                        return false;
-                    }
-                } catch (DDAPIInvokeException e) {
-                    //当当接口调用失败，目前仅记录日志。不阻止券的消费。以便保证用户体验。
-                    Logger.error(e.getMessage(), e);
+                if (!DDGroupBuyUtil.verifyOnDangdang(this)) {
+                    Logger.info("verify on dangdang failed");
                     return false;
                 }
             }
 
             if (this.partner == ECouponPartner.JD) {
-                if (!JDGroupBuyUtil.verifyOnJingdong(this)) {
+                if (!JDGroupBuyHelper.verifyOnJingdong(this)) {
                     Logger.info("verify on jingdong failed");
                     return false;
                 }
@@ -544,17 +546,12 @@ public class ECoupon extends Model {
             }
         }
         //===================券消费处理开始=====================================
-        if (consumed(shopId, operateUserId, supplierUser, type)) {
+        if (consumed(shopId, operateUser, supplierUser, type, consumedAt, remark)) {
             payCommission();
             this.triggerCouponSn = triggerCouponSn;
             this.save();
         }
-        //===================券消费处理完毕=====================================
 
-        //=========通知当当该券已经使用,如果通知失败会记录到表dd_failure_log中======
-        if (this.partner == ECouponPartner.DD) {
-            DDAPIUtil.notifyVerified(this);
-        }
         return true;
 
     }
@@ -564,7 +561,8 @@ public class ECoupon extends Model {
      *
      * @return
      */
-    private boolean consumed(Long shopId, Long operateUserId, SupplierUser supplierUser, VerifyCouponType type) {
+    private boolean consumed(Long shopId, OperateUser operateUser, SupplierUser supplierUser, VerifyCouponType type,
+                             Date consumedAt, String remark) {
         if (this.status != ECouponStatus.UNCONSUMED) {
             return false;
         }
@@ -572,15 +570,15 @@ public class ECoupon extends Model {
             this.shop = Shop.findById(shopId);
         }
         this.status = ECouponStatus.CONSUMED;
-        this.consumedAt = new Date();
+        this.consumedAt = consumedAt == null ? new Date() : consumedAt;
         String operator = "";
         if (supplierUser != null) {
             this.supplierUser = supplierUser;
             operator = supplierUser.loginName;
         }
-        if (operateUserId != null) {
-            this.operateUserId = operateUserId;
-            operator = "操作员ID:" + operateUserId.toString();
+        else if (operateUser != null) {
+            this.operateUserId = operateUser.id;
+            operator = "运营人员:" + operateUser.userName;
         }
         this.verifyType = type;
         this.save();
@@ -599,7 +597,8 @@ public class ECoupon extends Model {
             promoteRebate.save();
         }
         //记录券历史信息
-        ECouponHistoryMessage.with(this).operator(operator).remark("消费")
+        String historyRemark = StringUtils.isBlank(remark) ? "消费" : remark;
+        ECouponHistoryMessage.with(this).operator(operator).remark(historyRemark)
                 .fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.CONSUMED).sendToMQ();
         return true;
     }
@@ -1569,7 +1568,7 @@ public class ECoupon extends Model {
      */
     public boolean virtualVerify(Long operateUserId) {
         if (this.partner == ECouponPartner.JD) {
-            if (!JDGroupBuyUtil.verifyOnJingdong(this)) {
+            if (!JDGroupBuyHelper.verifyOnJingdong(this)) {
                 Logger.info("virtual verify on jingdong failed");
                 return false;
             }

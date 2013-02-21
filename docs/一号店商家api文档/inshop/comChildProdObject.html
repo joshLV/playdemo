@@ -1,0 +1,406 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>一号店开放平台 - API详情</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="../css/global-min.css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/tbsp.css" />
+<link rel="stylesheet" href="../css/reset.css" />
+<link rel="stylesheet" href="../css/common.css" />
+<link rel="stylesheet" href="../css/header.css" />
+<link rel="stylesheet" href="../css/docmtCenter.css" />
+<script type="text/javascript" src="../js/kissy.js"></script>
+<script type="text/javascript" src="../js/judge.js"></script>
+<script type="text/javascript" src="../js/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="../js/doc.js"></script>
+<script type="text/javascript" src="../js/sh.js"></script>
+<script type="text/javascript" src="../js/grade.js"></script>
+<link rel="stylesheet" href="../css/sh.css" />
+</head>
+<body>
+	<div class="seller">
+		<div id="page">
+			<div class="clearfix" id="pageNav">
+				<h1 id="toplogo">
+					<a href="http://www.yihaodian.com"><img class="pngfilter"
+						title="一号店开放平台" src="../img/logo.png" alt="1号店"> </a>
+				</h1>
+				<h1 id="topmenu" align="center">
+					<a class="selected" href="#"
+						style="font-size: 20px; text-align: center;">———只为更美好的生活</a>
+					<!-- 去掉选中小三角 <s></s> -->
+				</h1>
+			</div>
+		</div>
+	</div>
+<div class="crumbs">
+		<a href="apiHomePage.html">API文档</a> <a href="productApi.html">产品API</a>
+		<a class="last" href="comChildProdObject.html">ComChildProd</a>
+		<!--class with "last"-->
+	</div>
+
+	<div class='container grid-s165m0 layout'>
+		<!--正文区 begin-->
+		<div class="col-main bg_line">
+			<div class="main-wrap">
+				<div class="title-wrap">
+					<h1 class="title">ComChildProd</h1>
+				</div>
+
+				<div class="api-detail-bd" id="bd">
+					<!-- ued div start 不知何用-->
+					<div>
+					<div class="judeApi hidden" id="judeApi"></div>
+					<script>
+						KISSY.use("starGrade", function(S) {
+							S.grade.init();
+						});
+					</script>
+					
+
+						<div class="content-first">
+							<h2 class="head-title" id="">简要描述</h2>
+							<p class="introduction">套餐子产品</p>
+						</div>
+						<h2 class="api-content-title">
+							<a name="testtool"></a>
+						</h2>
+
+
+
+						<div>
+							<h2 class="head-title" id="">属性</h2>
+							<table class="api-table" cellspacing='0'>
+								<thead>
+									<tr>
+										<th class="left" width="20%">名称</th>
+										<th class="middle" width="10%">类型</th>
+										<th class="middle" width="10%">是否隐私</th>
+										<th class="left" width="20%">示例值</th>
+										<th class="left" width="40%">描述</th>
+									</tr>
+								</thead>
+								<tbody>
+								<tr class="odd">
+									<td class="left">productCode</td>
+									<td class="middle"><a href="parameterStyle.html#String">String</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">商家产品编码</td>
+								</tr>
+								<tr class="even">
+									<td class="left">productCname</td>
+									<td class="middle"><a href="parameterStyle.html#String">String</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">商家产品中文名称</td>
+								</tr>
+								<tr class="odd">
+									<td class="left">productId</td>
+									<td class="middle"><a href="parameterStyle.html#Long">Long</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">产品ID</td>
+								</tr>
+								<tr class="even">
+									<td class="left">ean13</td>
+									<td class="middle"><a href="parameterStyle.html#String">String</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">产品条形码</td>
+								</tr>
+								<tr class="odd">
+									<td class="left">categoryId</td>
+									<td class="middle"><a href="parameterStyle.html#Long">Long</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">产品类目ID</td>
+								</tr>								
+									<tr class="even">
+									<td class="left">canSale</td>
+									<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">上下架状态0：下架，1：上架</td>
+								</tr>
+								<tr class="odd">
+									<td class="left">stockStatus</td>
+									<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">产品库存状态</td>
+								</tr>
+								
+								<tr class="even">
+									<td class="left">outerId</td>
+									<td class="middle"><a href="parameterStyle.html#String">String</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">外部产品ID</td>
+								</tr>
+								<tr class="odd">
+									<td class="left">canShow</td>
+									<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">是否可见(强制'上'下架),1是0否</td>
+								</tr>			
+								<tr class="even">
+									<td class="left">productNum</td>
+									<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">产品的数量</td>
+								</tr>	
+									<tr class="odd">
+									<td class="left">isMainProduct</td>
+									<td class="middle"><a href="parameterStyle.html#Integer">Integer</a>
+									</td>
+									<td class="middle">否</td>
+									<td class="middle"></td>
+									<td class="left">是否为主打产品（1：是、 0：否）</td>
+								</tr>																														
+							</tbody>
+							</table>
+						</div>
+					</div>
+					<!-- ued div end-->
+				</div>
+			</div>
+		</div>
+		<!--正文区 end-->
+		<!--左侧导航栏 begin-->
+		<div class="col-sub">
+			<div class="APIgory">
+				<ul>
+					<li>
+						<div class="APIgory-title">
+							<a href="productApi.html">返回&nbsp;<span
+								class="APIgory-sub-title"> 产品API</span> </a>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.general.products.search.html"
+									title="yhd.general.products.search">yhd.general.products.search
+								</a>
+								<p class="APIgory-intro info-overflow">查询普通产品的信息</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.serial.products.search.html"
+									title="yhd.serial.products.search">yhd.serial.products.search</a>
+								<p class="APIgory-intro info-overflow">查询系列产品信息</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.serial.product.get.html"
+									title="yhd.serial.product.get">yhd.serial.product.get</a>
+								<p class="APIgory-intro info-overflow">查询系列子产品信息</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.combine.products.search.html"
+									title="yhd.combine.products.search">yhd.combine.products.search</a>
+								<p class="APIgory-intro info-overflow">查询套餐产品信息</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.combine.product.get.html"
+									title="yhd.combine.product.get">yhd.combine.product.get</a>
+								<p class="APIgory-intro info-overflow">查询套餐子品信息</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.products.stock.get.html"
+									title="yhd.products.stock.get">yhd.products.stock.get</a>
+								<p class="APIgory-intro info-overflow">批量获取产品库存信息</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.products.price.get.html"
+									title="yhd.products.price.get">yhd.products.price.get</a>
+								<p class="APIgory-intro info-overflow">批量获取产品价格信息</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.product.stock.update.html"
+									title="yhd.product.stock.update">yhd.product.stock.update</a>
+								<p class="APIgory-intro info-overflow">更新单个产品库存信息</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.product.price.update.html"
+									title="yhd.product.price.update">yhd.product.price.update</a>
+								<p class="APIgory-intro info-overflow">更新单个产品价格信息</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.product.shelvesup.update.html"
+									title="yhd.product.shelvesup.update">yhd.product.shelvesup.update</a>
+								<p class="APIgory-intro info-overflow">上架单个产品</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.product.shelvesdown.update.html"
+									title="yhd.product.shelvesdown.update">yhd.product.shelvesdown.update</a>
+								<p class="APIgory-intro info-overflow">下架单个产品</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+
+					<li class="list-last">
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.product.outerid.update.html"
+									title="yhd.product.outerid.update">yhd.product.outerid.update</a>
+								<p class="APIgory-intro info-overflow">更新单个产品外部编码id</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li>
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.product.attribute.get.html"
+									title="yhd.product.attribute.get">yhd.product.attribute.get</a>
+								<p class="APIgory-intro info-overflow">获取商品属性</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+
+					<li class="list-last">
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.product.description.get.html"
+									title="yhd.product.description.get">yhd.product.description.get</a>
+								<p class="APIgory-intro info-overflow">获取商品文描</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li class="list-last">
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.products.verify.submit.html"
+									title="yhd.products.verify.submit">yhd.products.verify.submit</a>
+								<p class="APIgory-intro info-overflow">提交商品审核（批量）</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li class="list-last">
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.product.add.html"
+									title="yhd.product.add">yhd.product.add</a>
+								<p class="APIgory-intro info-overflow">新增产品（单品）</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li class="list-last">
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.product.update.html"
+									title="yhd.product.update">yhd.product.update</a>
+								<p class="APIgory-intro info-overflow">更新产品（单品）</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+					<li class="list-last">
+						<div class="APIgory-list ">
+							<div class="APIgory-content">
+								<a class="link APIgoryItem title-overflow"
+									href="yhd.product.img.upload.html"
+									title="yhd.product.img.upload">yhd.product.img.upload</a>
+								<p class="APIgory-intro info-overflow">添加商品图片</p>
+							</div>
+							<s></s>
+						</div>
+					</li>
+				</ul>
+				<div class="quick-api">
+					<a href="apiHomePage.html">API文档</a>
+				</div>
+			</div>
+		</div>
+		<!--左侧导航栏 end-->
+	</div>
+</body>
+</html>

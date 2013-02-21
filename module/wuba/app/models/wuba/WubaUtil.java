@@ -100,7 +100,7 @@ public class WubaUtil {
         params.put("m", method);
 
         String jsonRequest = new Gson().toJson(appParams);
-        Logger.info("wuba request.jsonRequest=" + jsonRequest);
+        Logger.info("wuba request.%s:\n%s",method, jsonRequest);
         // 应用级参数设置
         if (requestNeedEncrypt) {
             params.put("param", encryptMessage(jsonRequest, SECRET_KEY));
@@ -108,18 +108,17 @@ public class WubaUtil {
             params.put("param", jsonRequest);
         }
 
-        Logger.info("wuba request: \n%s", new Gson().toJson(params));
-
+        Logger.info("wuba request %s:\n%s", method, jsonRequest);
         String json = WebServiceRequest.url(GATEWAY_URL)
                 .type("58_" + method)
                 .params(params).addKeyword("58")
                 .postString();
-
-        Logger.info("wuba response: \n%s", json);
+        Logger.info("wuba response:\n%s", json);
 
         WubaResponse result = parseResponse(json, responseNeedDecrypt);
 
-        Logger.info("wuba response decrypted: \n%s", result.toString());
+        if (responseNeedDecrypt)
+            Logger.info("wuba response decrypted: \n%s", result.toString());
 
         return result;
     }
@@ -137,7 +136,9 @@ public class WubaUtil {
 
         WubaResponse response = new WubaResponse();
 
-        response.status = result.get("status").getAsString();
+        if (result.has("status")){
+            response.status = result.get("status").getAsString();
+        }
         response.code = result.get("code").getAsString();
         if (!result.get("msg").isJsonNull()) {
             response.msg = result.get("msg").getAsString();

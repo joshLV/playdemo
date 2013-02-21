@@ -2,7 +2,7 @@ package unit;
 
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
-import models.admin.OperateNavigation;
+import models.operator.OperateNavigation;
 import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;

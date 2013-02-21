@@ -3,21 +3,16 @@ package functional;
 
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.operate.cas.Security;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.sales.Area;
-import models.sales.AreaType;
 import models.sales.Category;
 import operate.rbac.RbacLoader;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import play.data.validation.*;
-import play.data.validation.Error;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import factory.FactoryBoy;
 import play.vfs.VirtualFile;
-import factory.callback.BuildCallback;
 
 import java.util.HashMap;
 import java.util.List;

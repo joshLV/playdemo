@@ -133,7 +133,7 @@ public class SupplierCoupons extends Controller {
             
             // 如果只有一张券.
             if (ecoupons.size() == 1) {
-                if (!eCoupon.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
+                if (!eCoupon.consumeAndPayCommission(shopId, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
                     renderJSON("{\"code\":\"5\"}");
                 }
                 // 发给消费者
@@ -149,9 +149,9 @@ public class SupplierCoupons extends Controller {
                 BigDecimal consumedAmount = BigDecimal.ZERO;
                 
                 int checkedCount = 0;
-                List<ECoupon> realCheckECoupon = new ArrayList<>();  //可能验证失败，所以要有一个实际真正验证成功的ecouponse
+                List<ECoupon> realCheckECoupon = new ArrayList<>();  //可能验证失败，所以要有一个实际真正验证成功的ecoupons
                 for (ECoupon e : checkECoupons) {
-                    if (e.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(),
+                    if (e.consumeAndPayCommission(shopId, SupplierRbac.currentUser(),
                             VerifyCouponType.SHOP, eCoupon.eCouponSn)) {
                         checkedCount += 1;
                         consumedAmount = consumedAmount.add(e.faceValue);

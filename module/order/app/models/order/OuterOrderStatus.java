@@ -20,5 +20,6 @@ public enum OuterOrderStatus {
     RESEND_DONE,
     RESEND_SYNCED,
 
-    ORDER_CANCELED
+    ORDER_CANCELED,
+    ORDER_IGNORE,
 }

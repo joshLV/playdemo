@@ -1,0 +1,251 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'58修改商品:'+ product.goods.shortName /}
+#{include '/share/nav.html' /}
+#{set 'moreStyles'}
+    #{asset.css src:['/ztree/zTreeStyle.css'] /}
+    <style type="text/css">
+        ul.ztree{
+        margin-top: 1px;
+        border: 1px solid #ccc;
+        background: #f5f5f5;
+        overflow-y: scroll;
+        overflow-x: auto;
+        }
+    </style>
+#{/set}
+<div class="body">
+<legend>58修改商品：<a href="/goods/${goods.id}" target="_blank">
+    ${goods.shortName}</a>
+</legend>
+    <div class="tabbable">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#edit-groupbuy" data-toggle="tab">修改团购信息</a></li>
+            <li><a href="#edit-partners" data-toggle="tab">修改商户信息</a></li>
+            <li><a href="#edit-deadline" data-toggle="tab">延长团购日期</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="edit-groupbuy">
+                <form class="form-horizontal" method="POST" action="/resaler-products/wb/edit/groupbuyinfo">
+
+                <div class="control-group">
+                    <label class="control-label">商品分类 *</label>
+                    <div class="controls">
+                        <input class="input" readonly id="prodType-show">
+                        <div id="prodType-treeFrame" class="menuContent" style="display:none; position: absolute;">
+                            <ul id="prodType-tree" class="ztree" style="width:210px"></ul>
+                        </div>
+                        <input name="prodTypeId" id="prodType-value" type="hidden">
+                        <input name="prodTypeIdChain" id="prodType-nodeChain" type="hidden">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputTeamTitle">团购标题名称 *</label>
+                    <div class="controls">
+                        <input type="text" id="inputTeamTitle" class="input-block-level" name="prodName" value="${goods.name}">
+                        <span class="help-block">不超过200个字符</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputTitle">团购短名称 *</label>
+                    <div class="controls">
+                        <input type="text" id="inputTitle" name="prodShortName" class="input-xxlarge" value="${goods.shortName}">
+                        <span class="help-inline">不超过20个字符</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputListShortTitle">列表页短标题 *</label>
+                    <div class="controls">
+                        <input type="text" id="inputListShortTitle" name="listShortTitle" class="input-xxlarge" value="${goods.shortName}">
+                        <span class="help-inline">不超过20个字符</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputMarketPrice">市场价 *</label>
+                    <div class="controls">
+                        <input type="text" id="inputMarketPrice" name="prodPrice" value="${goods.faceValue}">
+                        <span class="help-inline">最多两位小数</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputSalePrice">销售价 *</label>
+                    <div class="controls">
+                        <input type="text" id="inputSalePrice" name="groupPrice" value="${goods.salePrice}">
+                        <span class="help-inline">不能大于市场价，最多两位小数</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputProdImg">团购主图 *</label>
+                    <div class="controls">
+                        <input type="text" id="inputProdImg" name="prodImg" class="input-xxlarge" value="${goods.getImageLargePath()}">
+                        <span class="btn" id="buttonProdImg" >选择图片</span>
+                        <span class="help-block">http开头，图片尺寸为420*680，图片大小在300kb以内</span>
+                        <img src="${goods.imageOriginalPath}" alt="" id="imgProdImg">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">团购详情</label>
+                    <div class="controls">
+                        <textarea rows="8" cols="100"  name="prodDescription" id="prodDescription" style="width:850px;height:550px;display:hidden;">
+                            ${goods.exhibition.raw()}
+                            <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                                <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
+                            </p>
+                            ${goods.prompt.raw()}
+                            <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                                <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
+                            </p>
+                            ${goods.details.raw()}
+                            <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                                <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
+                            </p>
+                            ${goods.supplierDes.raw()}
+                        </textarea>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">手机端特别提示</label>
+                    <div class="controls">
+                        <textarea rows="8" cols="100"  name="mobileDescription" id="mobileDescription" style="width:850px;height:550px;display:hidden;">
+                            ${goods.exhibition?.raw()}
+                            <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                                <span style="font-family:SimSun;font-size:small;color:#ffffff;">温馨提示</span>
+                            </p>
+                            ${goods.prompt?.raw()}
+                            <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                                <span style="font-family:SimSun;font-size:small;color:#ffffff;">商品介绍</span>
+                            </p>
+                            ${goods.details?.raw()}
+                            <p style="BACKGROUND-COLOR: rgb(204,0,0); FONT-WEIGHT: bold">
+                                <span style="font-family:SimSun;font-size:small;color:#ffffff;">商户介绍</span>
+                            </p>
+                            ${goods.supplierDes?.raw()}
+                        </textarea>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">特别提示 *</label>
+                    <div class="controls">
+                        <textarea rows="8" cols="100"  name="specialmessage" id="specialmessage" style="width:850px;height:150px;display:hidden;">
+                        </textarea>
+                    </div>
+                </div>
+                    <div class="form-actions">
+                        <input type="hidden" name="productId" value="${product.goodsLinkId}" >
+                        <button type="submit" id="groupinfo-submit" class="btn btn-primary">修改团购信息</button>
+                    </div>
+                </form>
+
+
+            </div>
+
+
+
+            <div class="tab-pane" id="edit-partners">
+                <form class="form-horizontal" method="POST" action="/resaler-products/wb/edit/partners">
+                    %{shopIds=[]}%
+                    #{list items:shopList, as:'shop'}
+                        %{shopIds.add(shop.id)}%
+                    <input type="hidden" name="partnerId_${shop.id}" value="${shop?.id}">
+                    <div class="control-group">
+                        <label class="control-label">门店${shop_index}</label>
+                        <div class="controls">
+                            <table>
+                                <tr>
+                                    <td>商家名称 *</td>
+                                    <td><input type="text" name="title_${shop.id}" value="${supplier.otherName} ${shop.name}" class="input-xlarge"></td>
+                                    <td>商家缩写 *</td>
+                                    <td><input type="text" name="shortTitle_${shop.id}" value="${supplier.otherName} ${shop.name}" class="input-xlarge"></td>
+                                </tr>
+                                <tr>
+                                    <td>电话 *</td>
+                                    <td><input type="text" name="telephone_${shop.id}" value="${shop.phone}" class="input-xlarge"></td>
+                                    <td>网址</td>
+                                    <td><input type="text" name="webUrl_${shop.id}" value="${webUrl}" class="input-xlarge"></td>
+                                </tr>
+                                <tr>
+                                    <td>交通信息 *</td>
+                                    <td><input type="text" name="busline_${shop.id}" value="${busline?:' '}" class="input-xlarge"></td>
+                                    <td>地图图片</td>
+                                    <td><input type="text" name="mapImg_${shop.id}" value="${mapImg}" class="input-xlarge"></td>
+                                </tr>
+                                <tr>
+                                    <td>地图服务商</td>
+                                    <td>
+                                        Google <input type="radio" name="mapServiceId_${shop.id}" value="0" checked >
+                                        Baidu <input type="radio" name="mapServiceId_${shop.id}" value="1">
+                                        Mapbar <input type="radio" name="mapServiceId_${shop.id}" value="2">
+                                    </td>
+                                    <td>地图链接</td>
+                                    <td><input type="text" name="mapUrl_${shop.id}"value="${mapUrl}" class="input-xlarge"></td>
+                                </tr>
+                                <tr>
+                                    <td>地图经度</td>
+                                    <td><input type="text" name="latitude_${shop.id}" value="${shop.latitude}" class="input-xlarge"></td>
+                                    <td>地图纬度</td>
+                                    <td><input type="text" name="longitude_${shop.id}" value="${shop.longitude}" class="input-xlarge"></td>
+                                </tr>
+                                <tr>
+                                    <td>商家地址</td>
+                                    <td colspan="3"><input type="text" name="address_${shop.id}" value="${shop.address}" class="input-xxlarge"></td>
+                                </tr>
+                                <tr>
+                                    <td >商圈 *</td>
+                                    <td colspan="3">
+                                        <input class="input" readonly id="circleId_${shop.id}-show" value="${shop.areaName}">
+                                        <span>（如果是红色，表明未自动匹配成功，请手动选择）</span>
+                                        <div id="circleId_${shop.id}-treeFrame" style="display:none; position: absolute;">
+                                            <ul id="circleId_${shop.id}-tree" class="ztree" style="width:210px"></ul>
+                                        </div>
+                                        <input name="circleId_${shop.id}" id="circleId_${shop.id}-value" type="hidden">
+                                        <input name="circleIdChain_${shop.id}" id="circleId_${shop.id}-nodeChain" type="hidden">
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    #{/list}
+                    <input type="hidden" value="${shopIds.join(',')}" name="shopIds">
+
+                    <div class="form-actions">
+                        <input type="hidden" name="productId" value="${product.goodsLinkId}" >
+                        <button type="submit" id="partners-submit" class="btn btn-primary">修改商家信息</button>
+                    </div>
+                </form>
+            </div>
+
+
+            <div class="tab-pane" id="edit-deadline">
+                <form class="form-horizontal" method="POST" action="/resaler-products/wb/edit/deadline">
+                    <div class="control-group">
+                        <label class="control-label">团购结束时间</label>
+                        <div class="controls">
+                            <input type="text" name="endTime" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${goods.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">券有效期</label>
+                        <div class="controls">
+                            <input type="text" name="deadline" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:ss')}">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <input type="hidden" name="productId" value="${product.goodsLinkId}" >
+                        <button type="submit" id="deadline-submit" class="btn btn-primary">修改团购时间</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts2/kindeditor-min.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/lang/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{asset.js src:['/ztree/jquery.ztree.all-3.5.min.js'] /}
+<script src="@{'/public/javascripts/ztree-helper.js'}" type="text/javascript" charset="UTF-8"></script>
+<script>
+    var subCategoryData = ${allCategoriesJson.raw()};
+</script>
+<script src="@@{'/public/javascripts/wuba-products.js'}"></script>
+#{/set}

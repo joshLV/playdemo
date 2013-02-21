@@ -4,7 +4,7 @@ import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.RefundReport;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import operate.rbac.RbacLoader;

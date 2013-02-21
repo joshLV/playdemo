@@ -11,9 +11,9 @@ require:
     - commons-lang -> commons-lang 2.6
     - sales -> sales
     - paginate_ext -> paginate_ext
-    - order -> order
     - consumer -> consumer
     - accounts -> accounts
+    - operator -> operator
     - order -> order
     - dangdang -> dangdang
     - sms -> sms
@@ -43,6 +43,7 @@ repositories:
             - paginate_ext -> *
             - consumer -> *
             - accounts -> *
+            - operator -> *
             - order -> *
             - dangdang -> *
             - wuba -> *

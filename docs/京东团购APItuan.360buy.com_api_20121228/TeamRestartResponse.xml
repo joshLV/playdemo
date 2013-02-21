@@ -1,0 +1,29 @@
+<!--已下架团购重新上架接口 响应 京东应答-->
+<?xml version="1.0" encoding="utf-8"?>
+<Response xmlns="http://tuan.360buy.com/Response">
+	<!--版本-->
+	<Version>1.0</Version>
+	<!--合作伙伴ID-->
+	<VenderId>100000</VenderId>
+	<!--是否压缩 默认不压缩-->
+	<Zip>false</Zip>
+	<!--是否加密-->
+	<Encrypt>true</Encrypt>
+	<!--返回结果 (200成功 非200失败 301-团购结束时间早于当前时间 302-团购开始时间晚于团购结束时间 303-团购项目不存在)-->
+	<ResultCode>200</ResultCode>
+	<!--响应信息-->
+	<ResultMessage>success</ResultMessage>
+	<!--提交数据-->
+	<Data>
+		<Message xmlns="http://tuan.360buy.com/TeamRestartResponse">
+			<!--京东团购ID [必填]---->
+			<JdTeamId>12345</JdTeamId>
+			<!--合作方团购ID [必填]-->
+			<VenderTeamId>123456</VenderTeamId>
+			<!--重置后的团购开始时间 unix时间戳 解析后为 yyyy-MM-dd hh:mm:ss[必填] -->
+			<BeginTime>1320595200</BeginTime>
+			<!--重置后的团购结束时间 unix时间戳 解析后为 yyyy-MM-dd hh:mm:ss[必填] -->
+			<EndTime>1320940800</EndTime>
+		</Message>
+	</Data>
+</Response>

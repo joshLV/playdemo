@@ -1,12 +1,12 @@
 package functional.reports;
 
-import java.math.BigDecimal;
-
+import controllers.operate.cas.Security;
+import factory.FactoryBoy;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.Order;
@@ -17,17 +17,15 @@ import models.sales.Goods;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import operate.rbac.RbacLoader;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-import controllers.operate.cas.Security;
-import factory.FactoryBoy;
+
+import java.math.BigDecimal;
 
 public class OperateReportsTest extends FunctionalTest {
 
@@ -91,7 +89,7 @@ public class OperateReportsTest extends FunctionalTest {
 
     @Test
     public void 测试活动金报表() throws Exception {
-        Boolean success = ecoupon.consumeAndPayCommission(shop.id, null, supplierUser, VerifyCouponType.TELEPHONE);
+        Boolean success = ecoupon.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.TELEPHONE);
         assertTrue(success);
 
         Response response = GET("/reports/promotion");
@@ -102,7 +100,7 @@ public class OperateReportsTest extends FunctionalTest {
 
     @Test
     public void 测试财务收款报表() throws Exception {
-        Boolean success = ecoupon.consumeAndPayCommission(shop.id, null, supplierUser, VerifyCouponType.TELEPHONE);
+        Boolean success = ecoupon.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.TELEPHONE);
         assertTrue(success);
 
         Response response = GET("/reports/financing_incoming");
@@ -113,7 +111,7 @@ public class OperateReportsTest extends FunctionalTest {
 
     @Test
     public void 测试退款报表() throws Exception {
-        Boolean success = ecoupon.consumeAndPayCommission(shop.id, null, supplierUser, VerifyCouponType.TELEPHONE);
+        Boolean success = ecoupon.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.TELEPHONE);
         assertTrue(success);
 
         Response response = GET("/reports/withdraw");
@@ -124,7 +122,7 @@ public class OperateReportsTest extends FunctionalTest {
 
     @Test
     public void 测试收入账户报表() throws Exception {
-        Boolean success = ecoupon.consumeAndPayCommission(shop.id, null, supplierUser, VerifyCouponType.TELEPHONE);
+        Boolean success = ecoupon.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.TELEPHONE);
         assertTrue(success);
 
         Response response = GET("/reports/incoming");
@@ -135,7 +133,7 @@ public class OperateReportsTest extends FunctionalTest {
 
     @Test
     public void 测试平台佣金报表() throws Exception {
-        Boolean success = ecoupon.consumeAndPayCommission(shop.id, null, supplierUser, VerifyCouponType.TELEPHONE);
+        Boolean success = ecoupon.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.TELEPHONE);
         assertTrue(success);
 
         Response response = GET("/reports/platform");
@@ -146,7 +144,7 @@ public class OperateReportsTest extends FunctionalTest {
 
     @Test
     public void 测试网站佣金报表() throws Exception {
-        Boolean success = ecoupon.consumeAndPayCommission(shop.id, null, supplierUser, VerifyCouponType.TELEPHONE);
+        Boolean success = ecoupon.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.TELEPHONE);
         assertTrue(success);
 
         Response response = GET("/reports/website");
@@ -157,7 +155,7 @@ public class OperateReportsTest extends FunctionalTest {
 
     @Test
     public void 测试商户报表() throws Exception {
-        Boolean success = ecoupon.consumeAndPayCommission(shop.id, null, supplierUser, VerifyCouponType.TELEPHONE);
+        Boolean success = ecoupon.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.TELEPHONE);
         assertTrue(success);
 
         Response response = GET("/reports/supplier");
@@ -168,7 +166,7 @@ public class OperateReportsTest extends FunctionalTest {
 
     @Test
     public void 测试分销报表() throws Exception {
-        Boolean success = ecoupon.consumeAndPayCommission(shop.id, null, supplierUser, VerifyCouponType.TELEPHONE);
+        Boolean success = ecoupon.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.TELEPHONE);
         assertTrue(success);
 
         Response response = GET("/reports/resale");
@@ -179,7 +177,7 @@ public class OperateReportsTest extends FunctionalTest {
 
     @Test
     public void 测试消费者报表() throws Exception {
-        Boolean success = ecoupon.consumeAndPayCommission(shop.id, null, supplierUser, VerifyCouponType.TELEPHONE);
+        Boolean success = ecoupon.consumeAndPayCommission(shop.id, supplierUser, VerifyCouponType.TELEPHONE);
         assertTrue(success);
 
         Response response = GET("/reports/consumer");

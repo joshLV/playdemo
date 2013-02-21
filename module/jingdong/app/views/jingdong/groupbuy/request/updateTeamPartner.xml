@@ -1,0 +1,11 @@
+<Message xmlns="http://tuan.360buy.com/UpdateTeamPartnerRequest">
+    *{ 更新团购商户的接口 请求 合作伙伴请求 }*
+    *{ 合作伙伴方团购ID 必须大于0 [必填]  }*
+    <VenderTeamId>${venderTeamId}</VenderTeamId>
+    *{ 京东团购ID 必须大于0 [必填]  }*
+    <JdTeamId>${jdTeamId}</JdTeamId>
+    *{ 团购所在的商家信息，支持多商家，至少填写一个商家信息 }*
+    <Partners>
+        ${partners.raw()}
+    </Partners>
+</Message>

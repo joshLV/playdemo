@@ -1,0 +1,8 @@
+<Message xmlns="http://tuan.360buy.com/TeamExtensionRequest">
+    *{ 京东产品[必填] }*
+    <JdTeamId>${jdTeamId}</JdTeamId>
+    *{ 外团产品ID[必填] }*
+    <VenderTeamId>${venderTeamId}</VenderTeamId>
+    *{ 产品销售截止时间 格式：2010-10-11 23:59:59,表示产品延期至2010年10月11日23点59分59秒 若不填写时分秒信息，则默认延期至00点00分00秒 产品下架后不能修改 [必填] *}
+    <SaleEndDate>${saleEndDate}</SaleEndDate>
+</Message>

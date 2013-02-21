@@ -9,7 +9,7 @@ import models.accounts.AccountStatus;
 import models.accounts.AccountType;
 import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.resale.Resaler;
 import operate.rbac.RbacLoader;
 import org.junit.Before;

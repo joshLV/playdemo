@@ -18,18 +18,18 @@ import java.util.Map;
  *         Date: 12-9-15
  */
 @OnApplicationStart(async = true)
-public class YHDGroupBuyJobConsumer extends RabbitMQConsumer<YHDGroupBuyMessage> {
+public class YHDGroupBuyJobConsumer extends RabbitMQConsumer<String> {
     public static String DATE_FORMAT = "yyy-MM-dd HH:mm:ss";
 
     @Override
-    protected void consume(YHDGroupBuyMessage message) {
+    protected void consume(String orderId) {
         //开启事务管理
         JPAPlugin.startTx(false);
 
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
-                OuterOrderPartner.YHD,message.getOrderId()).first();
+                OuterOrderPartner.YHD, orderId).first();
         if(outerOrder == null || outerOrder.ybqOrder == null){
-            Logger.info("can not find outerOrder: %s", message.getOrderId());
+            Logger.info("can not find outerOrder: %s", orderId);
             JPAPlugin.closeTx(true);
             return;
         }
@@ -56,32 +56,18 @@ public class YHDGroupBuyJobConsumer extends RabbitMQConsumer<YHDGroupBuyMessage>
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         Map<String, String> params = new HashMap<>();
-        params.put("orderCode", String.valueOf(outerOrder.orderId));
+        params.put("orderCode", outerOrder.orderId);
         params.put("partnerOrderCode", outerOrder.ybqOrder.orderNumber);
         params.put("orderAmount", outerOrder.ybqOrder.amount.toString());
         params.put("orderCreateTime", dateFormat.format(outerOrder.ybqOrder.createdAt));
-        Logger.info("yhd.group.buy.order.verify orderCode %s", params.get("orderCode"));
-        Logger.info("yhd.group.buy.order.verify partnerOrderCode %s", params.get("partnerOrderCode"));
-        Logger.info("yhd.group.buy.order.verify orderAmount %s", params.get("orderAmount"));
-        Logger.info("yhd.group.buy.order.verify orderCreateTime %s", params.get("orderCreateTime"));
 
-        String responseXml = YHDUtil.sendRequest(params, "yhd.group.buy.order.verify");
-        Logger.info("yhd.group.buy.order.verify response %s", responseXml);
-        if (responseXml != null) {
-            YHDResponse res = new YHDResponse();
-            res.parseXml(responseXml, null, false, null);
-            if(res.getErrorCount() == 0){
-                return true;
-            }else {
-                Logger.info("yhd.group.buy.order.verify error");
-            }
-        }
-        return false;
+        YHDResponse response = YHDUtil.sendRequest(params, "yhd.group.buy.order.verify", "//totalCount");
+        return response.isOk();
     }
 
     @Override
     protected Class getMessageType() {
-        return YHDGroupBuyMessage.class;
+        return String.class;
     }
 
     @Override

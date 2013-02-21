@@ -2,10 +2,12 @@ package functional;
 
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
+import factory.callback.BuildCallback;
+import models.order.OuterOrderPartner;
 import models.resale.Resaler;
-import models.sales.ChannelGoodsInfo;
 import models.sales.Goods;
+import models.sales.ResalerProduct;
 import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
@@ -23,7 +25,7 @@ import java.util.List;
  * Time: 下午5:42
  */
 public class GoodsOnSaleAndOffSaleReportsTest extends FunctionalTest {
-    ChannelGoodsInfo channelGoodsInfo;
+    ResalerProduct product;
 
     @Before
     public void setUp() {
@@ -36,7 +38,7 @@ public class GoodsOnSaleAndOffSaleReportsTest extends FunctionalTest {
 
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
-        channelGoodsInfo = FactoryBoy.create(ChannelGoodsInfo.class);
+        product = FactoryBoy.create(ResalerProduct.class);
     }
 
     @After
@@ -48,9 +50,9 @@ public class GoodsOnSaleAndOffSaleReportsTest extends FunctionalTest {
     public void testIndex_测试商品上下架_noCondition() {
         Http.Response response = GET("/reports/channel");
         assertIsOk(response);
-        List<ChannelGoodsInfo> channelGoodsInfoList = (List) renderArgs("reportPage");
-        assertNotNull(channelGoodsInfoList);
-        assertEquals(1, channelGoodsInfoList.size());
+        List<ResalerProduct> resalerProductList = (List) renderArgs("reportPage");
+        assertNotNull(resalerProductList);
+        assertEquals(1, resalerProductList.size());
         List<Resaler> resalerList = (List) renderArgs("resalerList");
         assertNotNull(resalerList);
         assertEquals(1, resalerList.size());
@@ -59,23 +61,42 @@ public class GoodsOnSaleAndOffSaleReportsTest extends FunctionalTest {
     @Test
     public void testIndex_测试商品上下架_haveCondition() {
 
-        Goods goods = FactoryBoy.create(Goods.class);
-        Resaler wubaResaler = FactoryBoy.create(Resaler.class, "wuba");
-        ChannelGoodsInfo wuba = FactoryBoy.create(ChannelGoodsInfo.class, "wuba");
-        wuba.resaler = wubaResaler;
-        wuba.goods = goods;
-        wuba.save();
+        final Goods goods = FactoryBoy.create(Goods.class);
+        Resaler wubaResaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
+            @Override
+            public void build(Resaler target) {
+                target.loginName = Resaler.WUBA_LOGIN_NAME;
+            }
+        });
 
-        Resaler jdResaler = FactoryBoy.create(Resaler.class, "jingdong");
-        ChannelGoodsInfo jd = FactoryBoy.create(ChannelGoodsInfo.class, "jingdong");
-        jd.resaler = jdResaler;
-        jd.save();
+        ResalerProduct wubaProduct = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
+            @Override
+            public void build(ResalerProduct target) {
+                //To change body of implemented methods use File | Settings | File Templates.
+                target.partner = OuterOrderPartner.WB;
+                target.goods = goods;
+                target.url = "http://yibaiquan.com/p/2";
+            }
+        });
+
+        Resaler jdResaler = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
+            @Override
+            public void build(Resaler target) {
+                target.loginName = Resaler.JD_LOGIN_NAME;
+            }
+        });
+        ResalerProduct jingdongProduct = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
+            @Override
+            public void build(ResalerProduct target) {
+                target.partner = OuterOrderPartner.JD;
+            }
+        });
 
         Http.Response response = GET("/reports/channel");
         assertIsOk(response);
-        List<ChannelGoodsInfo> channelGoodsInfoList = (List) renderArgs("reportPage");
-        assertNotNull(channelGoodsInfoList);
-        assertEquals(2, channelGoodsInfoList.size());
+        List<ResalerProduct> resalerProductList = (List) renderArgs("reportPage");
+        assertNotNull(resalerProductList);
+        assertEquals(2, resalerProductList.size());
         List<Resaler> resalerList = (List) renderArgs("resalerList");
         assertNotNull(resalerList);
         assertEquals(3, resalerList.size());

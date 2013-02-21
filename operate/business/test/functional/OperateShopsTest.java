@@ -4,7 +4,7 @@ import com.uhuila.common.constants.DeletedStatus;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.sales.Area;
 import models.sales.Shop;
 import models.supplier.Supplier;

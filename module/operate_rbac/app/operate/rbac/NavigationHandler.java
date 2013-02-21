@@ -1,6 +1,6 @@
 package operate.rbac;
 
-import models.admin.OperateNavigation;
+import models.operator.OperateNavigation;
 import play.Play;
 import play.mvc.Http.Request;
 

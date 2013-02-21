@@ -1,6 +1,6 @@
 package controllers;
 
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.cms.CmsQuestion;
 import models.cms.GoodsType;
 import models.cms.QuestionCondition;

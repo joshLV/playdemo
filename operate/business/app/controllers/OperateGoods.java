@@ -7,15 +7,12 @@ package controllers;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.FileUploadUtil;
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
-import models.resale.Resaler;
 import models.resale.ResalerLevel;
 import models.sales.Brand;
 import models.sales.Category;
-import models.sales.ChannelGoodsInfo;
-import models.sales.ChannelGoodsInfoStatus;
 import models.sales.Goods;
 import models.sales.GoodsCondition;
 import models.sales.GoodsHistory;
@@ -27,7 +24,6 @@ import models.sales.Shop;
 import models.supplier.Supplier;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
-import operate.rbac.annotations.Right;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.data.binding.As;
@@ -766,8 +762,6 @@ public class OperateGoods extends Controller {
 
     /**
      * 删除商品相册一个图片
-     *
-     * @param id
      */
     public static void deleteImage(Long id) {
         GoodsImages images = GoodsImages.findById(id);
@@ -785,132 +779,9 @@ public class OperateGoods extends Controller {
         List<GoodsImages> imagesList = GoodsImages.find("goods=?", goods).fetch();
         for (GoodsImages image : imagesList) {
             //把指定的作为首页展示
-            if (image.id == id) {
-                image.isDisplaySite = true;
-            } else {
-                image.isDisplaySite = false;
-            }
+            image.isDisplaySite = image.id.equals(id);
             image.save();
         }
         renderJSON("");
-    }
-
-    /**
-     * 各个渠道分销商品信息
-     *
-     * @param id
-     */
-    @Right("CHANNEL_GOODS")
-    public static void channel(Long id) {
-        Goods goods = Goods.findUnDeletedById(id);
-        initInfo(goods);
-        if (Validation.hasErrors()) {
-            render("OperateGoods/channel.html", goods);
-        }
-        render(goods);
-
-    }
-
-    private static void initInfo(Goods goods) {
-        Long operateUserId = OperateRbac.currentUser().id;
-        List<Resaler> resalerList = Resaler.findByStatus(operateUserId);
-        if (resalerList.size() == 0) {
-            Validation.addError("channelGoodsInfo.resaler.id", "你不是分销负责专员！");
-        }
-        renderArgs.put("operateUserId", operateUserId);
-        List<ChannelGoodsInfo> channelGoodsInfoList = ChannelGoodsInfo.findByGoods(goods, null);
-        renderArgs.put("resalerList", resalerList);
-        renderArgs.put("channelGoodsInfoList", channelGoodsInfoList);
-    }
-
-    /**
-     * 创建渠道的商品
-     *
-     * @param goodsId
-     * @param channelGoodsInfo
-     */
-    public static void createChannel(Long goodsId, @Valid ChannelGoodsInfo channelGoodsInfo) {
-        checkExpireAt(channelGoodsInfo);
-        Goods goods = Goods.findUnDeletedById(goodsId);
-        if (channelGoodsInfo.resaler == null) {
-            Validation.addError("channelGoodsInfo.resaler.id", "请选择分销商！");
-        }
-        initInfo(goods);
-
-
-        ChannelGoodsInfo goodsInfo = ChannelGoodsInfo.findByResaler(channelGoodsInfo.resaler, channelGoodsInfo.url);
-        if (goodsInfo != null) {
-            Validation.addError("channelGoodsInfo.url", "该分销的url已经存在！");
-        }
-        if (Validation.hasErrors()) {
-            render("OperateGoods/channel.html", goods, channelGoodsInfo);
-        }
-        channelGoodsInfo.deleted = DeletedStatus.UN_DELETED;
-        channelGoodsInfo.goods = goods;
-        channelGoodsInfo.operateName = OperateRbac.currentUser().userName;
-        channelGoodsInfo.createdAt = new Date();
-        channelGoodsInfo.create();
-        channel(goodsId);
-    }
-
-
-    private static void checkExpireAt(ChannelGoodsInfo channelGoodsInfo) {
-        if (channelGoodsInfo.onSaleAt != null && channelGoodsInfo.offSaleAt != null && channelGoodsInfo.offSaleAt.before(channelGoodsInfo.onSaleAt)) {
-            Validation.addError("channelGoodsInfo.onSaleAt", "validation.beforeThanOnSaleAt");
-        }
-    }
-
-    /**
-     * 修改渠道的信息
-     *
-     * @param id
-     */
-    public static void editChannel(Long id) {
-        setEditInfo(id);
-        render("OperateGoods/channelForm.html");
-    }
-
-    private static void setEditInfo(Long id) {
-        ChannelGoodsInfo channelGoodsInfo = ChannelGoodsInfo.findById(id);
-        Long operateUserId = OperateRbac.currentUser().id;
-        List<Resaler> resalerList = Resaler.findByStatus(operateUserId);
-        renderArgs.put("resalerList", resalerList);
-        renderArgs.put("channelGoodsInfo", channelGoodsInfo);
-    }
-
-    /**
-     * 修改渠道的信息
-     *
-     * @param id
-     */
-    public static void updateChannel(Long id, @Valid ChannelGoodsInfo channelGoodsInfo) {
-        setEditInfo(id);
-        if (Validation.hasErrors()) {
-            render("OperateGoods/channelForm.html");
-        }
-
-        ChannelGoodsInfo updInfo = ChannelGoodsInfo.findById(id);
-        updInfo.tag = channelGoodsInfo.tag;
-        updInfo.url = channelGoodsInfo.url;
-        channelGoodsInfo.status = ChannelGoodsInfoStatus.CREATED;
-        updInfo.operateName = OperateRbac.currentUser().userName;
-        if (channelGoodsInfo.onSaleAt != null) {
-            updInfo.offSaleAt = channelGoodsInfo.offSaleAt;
-            updInfo.onSaleAt = channelGoodsInfo.onSaleAt;
-        }
-        updInfo.save();
-        channel(updInfo.goods.id);
-    }
-
-    /**
-     * 删除渠道商品信息
-     *
-     * @param id
-     */
-    public static void deleteChannel(Long id) {
-        ChannelGoodsInfo updInfo = ChannelGoodsInfo.findById(id);
-        updInfo.deleted = DeletedStatus.DELETED;
-        updInfo.save();
-        channel(updInfo.goods.id);
     }
 }

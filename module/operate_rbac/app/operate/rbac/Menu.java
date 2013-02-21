@@ -1,7 +1,7 @@
 package operate.rbac;
 
-import models.admin.OperateNavigation;
-import models.admin.OperatePermission;
+import models.operator.OperateNavigation;
+import models.operator.OperatePermission;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 

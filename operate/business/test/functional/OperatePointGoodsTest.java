@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import models.admin.OperateUser;
+import models.operator.OperateUser;
 import models.sales.PointGoods;
 import operate.rbac.RbacLoader;
 

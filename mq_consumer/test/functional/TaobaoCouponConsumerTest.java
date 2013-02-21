@@ -65,7 +65,7 @@ public class TaobaoCouponConsumerTest extends FunctionalTest {
                 target.partner = OuterOrderPartner.TB;
                 target.status = OuterOrderStatus.ORDER_COPY;
                 target.message = new Gson().toJson(params);
-                target.orderId = taobaoOrderId;
+                target.orderId = String.valueOf(taobaoOrderId);
             }
         });
 

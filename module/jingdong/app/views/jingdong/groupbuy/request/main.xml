@@ -4,17 +4,12 @@
     <Version>${version}</Version>
     *{ 合作伙伴ID }*
     <VenderId>${venderId}</VenderId>
-    <!--合作伙伴Key-->
+    *{ 合作伙伴Key }*
     <VenderKey>${venderKey}</VenderKey>
     *{ 是否压缩 默认不压缩 }*
     <Zip>${zip}</Zip>
     *{ 是否加密 }*
     <Encrypt>${encrypt}</Encrypt>
     *{ 提交数据 }*
-    #{if encrypt == 'true'}
-        <Data>${models.jingdong.groupbuy.JDGroupBuyUtil.encryptMessage(data).raw()}</Data>
-    #{/if}
-    #{else}
-        <Data>${data.raw()}</Data>
-    #{/else}
+    <Data>${data.raw()}</Data>
 </Request>

@@ -3,25 +3,43 @@
 #{include '/share/nav.html' /}
 #{set 'moreStyles'}
     #{asset.css src:['/ztree/zTreeStyle.css'] /}
+    <style type="text/css">
+        ul.ztree{
+        margin-top: 1px;
+        border: 1px solid #ccc;
+        background: #f5f5f5;
+        overflow-y: scroll;
+        overflow-x: auto;
+        }
+    </style>
 #{/set}
 <div class="body">
     <legend>京东上传商品：<a href="/goods/${goods.id}" target="_blank">
         ${goods.shortName}</a>
     </legend>
-    <form class="form-horizontal" method="POST" action="/resale-partner-products/jd/upload">
+    <form class="form-horizontal" method="POST" action="/resaler-products/jd/upload">
         <div class="control-group">
             <label class="control-label">选择城市/区域/商圈 *</label>
             <div class="controls">
-                <ul id="cityTree" class="ztree"></ul>
-                <input name="cityId" id="inputCityId" type="hidden">
+                <input class="input" readonly id="city-show">
+                <div id="city-treeFrame" class="menuContent" style="display:none; position: absolute;">
+                    <ul id="city-tree" class="ztree" style="width:210px"></ul>
+                </div>
+                <input name="cityId" id="city-value" type="hidden">
+                <input name="cityIdChain" id="city-nodeChain" type="hidden">
+
                 <input name="areas" id="inputAreas" type="hidden">
             </div>
         </div>
         <div class="control-group">
             <label class="control-label">选择分类 *</label>
             <div class="controls">
-                <ul id="groupTree" class="ztree"></ul>
-                <input name="subGroupIds" id="inputSubGroupIds" type="hidden">
+                <input class="input" readonly id="group-show">
+                <div id="group-treeFrame" class="menuContent" style="display:none; position: absolute;">
+                    <ul id="group-tree" class="ztree" style="width:210px"></ul>
+                </div>
+                <input name="groupId" id="group-value" type="hidden">
+                <input name="groupIdChain" id="group-nodeChain" type="hidden">
             </div>
         </div>
 
@@ -149,31 +167,10 @@
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 #{asset.js src:['/ztree/jquery.ztree.all-3.5.min.js'] /}
 <script src="@{'/public/javascripts/ztree-helper.js'}" type="text/javascript" charset="UTF-8"></script>
-<script>
-$(function(){
-    $("#inputGrouponBImg").blur(function(){
-        $("#imgGrouponBImg").attr("src",$(this).val());
-    });
-
-    KindEditor.create('textarea[name="notice"]',
-    {
-        filterMode:false,
-        allowFileManager:false
-    });
-    KindEditor.create('textarea[name="summary"]',
-    {
-        filterMode:false,
-        allowFileManager:false
-    });
-    KindEditor.create('textarea[name="teamDetail"]',
-    {
-        filterMode:false,
-        allowFileManager:false
-    });
+<script type="text/javascript">
 
     var cityTreeCallbacks = {}
-    $.extend(cityTreeCallbacks,getSinglePathCallbacks("cityTree"),getAutoExpandCallbacks("cityTree"))
-
+    $.extend(cityTreeCallbacks,getSinglePathCallbacks("city-tree"),getOnclickCallback("city"))
     var cityTreeSettings = {
         async: {
             enable: true,
@@ -181,38 +178,82 @@ $(function(){
             autoParam:["id", "type"]
         },
         check:{
-            enable:true,
+            enable:true
         },
         data: {
             simpleDate:{
-                enable: true
+                enable: false
             }
         },
         view: {
+            showIcon: false,
             showLine: false,
             dblClickExpand: false
         },
         callback: cityTreeCallbacks
     };
-    $.fn.zTree.init($("#cityTree"), cityTreeSettings);
-    $("#submit").click(function(){
 
-        var checkedCityNodes = $.fn.zTree.getZTreeObj("cityTree").getCheckedNodes(true);
-        var checkedCityStr = "";
-        var checkedAreaStr = "";
-        for(var i = 0; i < checkedCityNodes.length; i ++ ) {
-             var node = checkedCityNodes[i];
-             var type = node.attr("type")
-             if (type == "city") {
-                checkedCityStr = node.id;
-             }else if (type == "area") {
-                checkedAreaStr += node.id + ",";
-             }
-        }
-        var checkedGroupNodes = $.fn.zTree.getZTreeObj("groupTree").getCheckedNodes(true);
-        var checkedSubGroupStr = "";
+    var groupTreeCallbacks = {}
+    $.extend(groupTreeCallbacks,getSinglePathCallbacks("group-tree"),getOnclickCallback("group"))
+    var groupTreeSettings = {
+        async: {
+            enable: true,
+            url:"/jd-ztree/group",
+            autoParam:["id"]
+        },
+        check:{
+            enable:true,
+            chkStyle:"radio",
+            radioType:"all"
+        },
+        data: {
+            simpleDate:{
+                enable: false
+            }
+        },
+        view: {
+            showIcon: false,
+            showLine: false,
+            dblClickExpand: false
+        },
+        callback: groupTreeCallbacks
+    };
+
+    var defaultCityData =[
+            {
+                name:"上海",
+                id: 34,
+                type: "city",
+                nocheck: true,
+                isParent:true
+            }
+    ];
+
+    $(function(){
+        $.fn.zTree.init($("#city-tree"), cityTreeSettings, defaultCityData);
+        $("#city-show").click(showTreeFunc('city'));
+        $.fn.zTree.init($("#group-tree"), groupTreeSettings);
+        $("#group-show").click(showTreeFunc('group'));
+
+        KindEditor.create('textarea',
+        {
+            filterMode:false,
+            allowFileManager:false
+        });
+        $("#submit").click(function(){
+            var checkedCategory = $.fn.zTree.getZTreeObj("categoryTree").getCheckedNodes(true);
+            var categoryChain = buildTreeChain(checkedCategory);
+
+            var checkedMerchantCategory = $.fn.zTree.getZTreeObj("merchantCategoryTree").getCheckedNodes(true);
+            var checkedMerchantCategoryStr = buildCheckedStr(checkedMerchantCategory, ",", "id")
+            var merchantCategoryChain = buildTreeChain(checkedMerchantCategory);
+
+            $("#inputCategory").val(checkedCategory[0].id);
+            $("#inputMerchantCategory").val(checkedMerchantCategoryStr);
+            $("#categoryIdChains").val(categoryChain.join(","));
+            $("#merchantCategoryIdChains").val(merchantCategoryChain.join(","));
+            return true;
+        });
     });
-
-});
 </script>
 #{/set}

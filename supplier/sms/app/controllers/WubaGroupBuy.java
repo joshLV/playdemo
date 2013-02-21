@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.order.DeliveryType;
@@ -18,8 +17,9 @@ import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
 import models.resale.Resaler;
-import models.sales.GoodsDeployRelation;
+import models.sales.Goods;
 import models.sales.MaterialType;
+import models.sales.ResalerProduct;
 import models.wuba.WubaUtil;
 import play.Logger;
 import play.db.jpa.JPA;
@@ -53,17 +53,17 @@ public class WubaGroupBuy extends Controller {
         allParams.remove("body");
         Logger.info("wuba request: \n%s", new Gson().toJson(allParams));
         JsonObject orderJson = WubaUtil.parseRequest(param);
-        Logger.info("wuba request decrypted: \n%s", orderJson.toString());
 
         Map<String, Object> result = new HashMap<>();
         putStatusAndMsg(result, "10000", "成功");
-        Long orderId, outerGroupId;
+        String orderId;
+        Long outerGroupId;
         BigDecimal productPrize;
         int productNum;
         String userPhone;
 
         try {
-            orderId = orderJson.get("orderId").getAsLong();
+            orderId = orderJson.get("orderId").getAsString();
             productPrize = orderJson.get("prodPrice").getAsBigDecimal();
             productNum = orderJson.get("prodCount").getAsInt();
             userPhone = orderJson.get("mobile").getAsString();
@@ -76,8 +76,7 @@ public class WubaGroupBuy extends Controller {
         }
 
 
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
-                OuterOrderPartner.WB, orderId).first();
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", OuterOrderPartner.WB, orderId).first();
         //如果找不到该orderCode的订单，说明还没有新建，则新建一个
         if (outerOrder == null) {
             outerOrder = new OuterOrder();
@@ -166,7 +165,6 @@ public class WubaGroupBuy extends Controller {
         allParams.remove("body");
         Logger.info("wuba request: \n%s", new Gson().toJson(allParams));
         JsonObject refundJson = WubaUtil.parseRequest(param);
-        Logger.info("wuba request: \n%s", refundJson.toString());
 
         Long ticketId;
         String orderId;
@@ -235,7 +233,6 @@ public class WubaGroupBuy extends Controller {
         allParams.remove("body");
         Logger.info("wuba request: \n%s", new Gson().toJson(allParams));
         JsonObject refundJson = WubaUtil.parseRequest(param);
-        Logger.info("wuba request: \n%s", refundJson.toString());
 
         Map<String, Object> result = new HashMap<>();
         putStatusAndMsg(result, "10000", "成功");
@@ -268,8 +265,7 @@ public class WubaGroupBuy extends Controller {
                 continue;
             }
 
-            JsonElement jsonElement = new JsonParser().parse(outerOrder.message);
-            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
             Map<String, Object> ticket = new HashMap<>();
             ticket.put("ticketIdThirdpart", coupon.id);
             ticket.put("orderIdThirdpart", coupon.order.orderNumber);
@@ -312,13 +308,7 @@ public class WubaGroupBuy extends Controller {
         Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
         ybqOrder.save();
         try {
-            GoodsDeployRelation goodsDeployRelation = GoodsDeployRelation.find("byLinkId", outerGroupId).first();
-            if (goodsDeployRelation == null || goodsDeployRelation.goods == null) {
-                Logger.info("can not find goodsDeployRelation: %s", outerGroupId);
-                putStatusAndMsg(result, "10202", "未找到商品对应关系");
-                return null;
-            }
-            models.sales.Goods goods = goodsDeployRelation.goods;
+            Goods goods = ResalerProduct.getGoods(outerGroupId, OuterOrderPartner.WB);
             if (goods == null) {
                 putStatusAndMsg(result, "10100", "未找到商品");
                 Logger.info("goods not found: %s", outerGroupId);

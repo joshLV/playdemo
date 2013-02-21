@@ -19,7 +19,7 @@
             <div class="controls">
                 #{select 'productId', id:'select1'}
                     #{list items: products, as:'product'}
-                    #{option product.id}${product.goods.shortName}#{/option}
+                    #{option product.goodsLinkId}${product.goods.shortName}#{/option}
                 #{/list}
                 #{/select}
             </div>
