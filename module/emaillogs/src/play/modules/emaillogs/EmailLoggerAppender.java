@@ -40,8 +40,6 @@ public class EmailLoggerAppender extends AppenderSkeleton {
 
         if (publishToMQ && !Play.runingInTestMode()) {
             RabbitMQPublisher.publish(EmailLogMessage.MQ_KEY, emailLogMessage);
-        } else {
-            System.out.println("没有输出到邮件日志:" + event.getMessage());
         }
 
     }
