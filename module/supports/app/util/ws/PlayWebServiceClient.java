@@ -6,7 +6,7 @@ import play.libs.WS;
 import play.libs.WS.HttpResponse;
 import play.libs.WS.WSRequest;
 
-import java.util.Map;
+import java.io.File;
 
 public class PlayWebServiceClient extends WebServiceClient {
 
@@ -29,7 +29,7 @@ public class PlayWebServiceClient extends WebServiceClient {
     }
 
     @Override
-    public HttpResponse doGet(WebServiceCallLogData log, WebServiceCallback callback) {
+    public HttpResponse doGet(WebServiceRequest webServiceRequest, WebServiceCallLogData log) {
         WSRequest wsRequest = null;
         System.out.println("encoding:" + encoding);
         if (encoding != null) {
@@ -42,14 +42,14 @@ public class PlayWebServiceClient extends WebServiceClient {
         play.libs.WS.HttpResponse response = wsRequest.get();
         log.statusCode = response.getStatus();
         log.responseText = response.getString();
-        if (callback != null) {
-            callback.process(response.getStatus(), response.getString());
+        if (webServiceRequest.callback != null) {
+            webServiceRequest.callback.process(response.getStatus(), response.getString());
         }
         return response;
     }
 
     @Override
-    protected HttpResponse doPost(WebServiceCallLogData log, Map<String, Object> params, WebServiceCallback callback) {
+    protected HttpResponse doPost(WebServiceRequest webServiceRequest, WebServiceCallLogData log) {
         WSRequest request = null;
         System.out.println("post encoding:" + encoding);
         if (encoding != null) {
@@ -58,17 +58,25 @@ public class PlayWebServiceClient extends WebServiceClient {
         } else {
             request = WS.url(log.url);
         }
-        if (params != null && params.size() > 0) {
-            request = request.params(params);
-        }
+
         if (StringUtils.isNotBlank(log.requestBody)) {
+            // 如果有requestBody，则不能使用params和uploadFile.
             request = request.body(log.requestBody);
+        } else {
+            if (webServiceRequest.params != null && webServiceRequest.params.size() > 0) {
+                request = request.params(webServiceRequest.params);
+            }
+            if (webServiceRequest.uploadFiles != null && webServiceRequest.uploadFiles.size() > 0) {
+                request = request.files(webServiceRequest.uploadFiles.toArray(new File[webServiceRequest.uploadFiles.size()]));
+                log.setFilesName(webServiceRequest.uploadFiles);
+            }
         }
+
         play.libs.WS.HttpResponse response = request.post();
         log.statusCode = response.getStatus();
         log.responseText = response.getString();
-        if (callback != null) {
-            callback.process(response.getStatus(), response.getString());
+        if (webServiceRequest.callback != null) {
+            webServiceRequest.callback.process(response.getStatus(), response.getString());
         }
         return response;
     }

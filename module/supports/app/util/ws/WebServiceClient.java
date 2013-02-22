@@ -7,8 +7,6 @@ import play.Logger;
 import play.libs.WS.HttpResponse;
 import util.mq.MQPublisher;
 
-import java.util.Map;
-
 public abstract class WebServiceClient {
 
     public static final String MQ_KEY = "ws.call-log";
@@ -22,7 +20,7 @@ public abstract class WebServiceClient {
 
         long startTime = System.currentTimeMillis();
         try {
-            HttpResponse response = doGet(log, webServiceRequest.callback);
+            HttpResponse response = doGet(webServiceRequest, log);
             long endTime = System.currentTimeMillis();
             log.duration = endTime - startTime; // 记录耗时
             log.responseText = response.getString();
@@ -60,7 +58,7 @@ public abstract class WebServiceClient {
 
         long startTime = System.currentTimeMillis();
         try {
-            HttpResponse response = doPost(log, webServiceRequest.params, webServiceRequest.callback);
+            HttpResponse response = doPost(webServiceRequest, log);
             long endTime = System.currentTimeMillis();
             log.duration = endTime - startTime; // 记录耗时
             log.responseText = response.getString();
@@ -100,9 +98,9 @@ public abstract class WebServiceClient {
         return log;
     }
 
-    protected abstract HttpResponse doGet(WebServiceCallLogData log, WebServiceCallback callback);
+    protected abstract HttpResponse doGet(WebServiceRequest webServiceRequest, WebServiceCallLogData log);
 
-    protected abstract HttpResponse doPost(WebServiceCallLogData log, Map<String, Object> params, WebServiceCallback callback);
+    protected abstract HttpResponse doPost( WebServiceRequest webServiceRequest, WebServiceCallLogData log);
 
     protected void sendLogToMQ(WebServiceCallLogData log) {
         MQPublisher.publish(MQ_KEY, log);

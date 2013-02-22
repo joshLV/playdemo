@@ -79,6 +79,9 @@ public class WebServiceCallLog extends Model {
     @Column(name = "created_at")
     public Date createdAt = new Date();
 
+    @Column(length = 1024)
+    public String files;
+
     public Long duration;
 
     /**

@@ -5,6 +5,9 @@ import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import play.libs.WS;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,6 +28,8 @@ public class WebServiceRequest {
     public String keyword1;
     public String keyword2;
     public String keyword3;
+
+    public List<File> uploadFiles;
 
     public WebServiceCallback callback;
 
@@ -56,6 +61,19 @@ public class WebServiceRequest {
 
     public WebServiceRequest encoding(String value) {
         this.encoding = value;
+        return this;
+    }
+
+    public WebServiceRequest uploadFiles(List<File> value) {
+        this.uploadFiles = value;
+        return this;
+    }
+
+    public WebServiceRequest addFile(File value) {
+        if (this.uploadFiles == null) {
+            this.uploadFiles = new ArrayList<>();
+        }
+        this.uploadFiles.add(value);
         return this;
     }
 
