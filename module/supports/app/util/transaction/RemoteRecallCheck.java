@@ -25,18 +25,28 @@ public class RemoteRecallCheck {
     private static ThreadLocal<Boolean> _needRecall = new ThreadLocal<>();
 
     public <T> T call(final String callPrefix, final RemoteCallback<T> callback) {
-        String cacheKey = "REMRECALL_" + callPrefix + _callId.get();
-        Boolean needRecall = CacheHelper.getCache(cacheKey, "3h", new CacheCallBack<Boolean>() {
+        if (getCallId() == null) {
+            // 调用前没有设置callId，认为是不需要CallRecallCheck（兼容旧的调用者）
+            return callback.doCall();
+        }
+        String cacheNeedRecallKey = "REMRECALL_" + callPrefix + getCallId();
+        String cacheResultKey = "REMCALLRESULT_" + callPrefix + getCallId();
+        Boolean needRecall = CacheHelper.getCache(cacheNeedRecallKey, "3h", new CacheCallBack<Boolean>() {
             @Override
             public Boolean loadData() {
                 return Boolean.TRUE; //默认为需要重
             }
         });
 
-        T t = null;
+        T t;
         if (needRecall) {
-
+            t = callback.doCall();
+            CacheHelper.setCache(cacheResultKey, t, "3h");
+        } else {
+            t = CacheHelper.getCache(cacheResultKey);
         }
+
+        CacheHelper.setCache(cacheNeedRecallKey, getNeedRecall(), "3h");
 
         _needRecall.remove(); //清除needRecall作用域
         return t;
@@ -47,8 +57,8 @@ public class RemoteRecallCheck {
     }
     public static String getCallId() {
         if (_callId.get() == null) {
-            // 没有设置过callId是不被允许的
-            throw new RuntimeException("请先调用RemoteRecallCheck.setCallId(callId)方法设置一个业务唯一的ID.");
+            // 没有设置过callId，则return null，以实现不支持RecallCheck的功能
+            return null;
         }
         return _callId.get();
     }
