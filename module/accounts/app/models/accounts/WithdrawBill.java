@@ -76,6 +76,12 @@ public class WithdrawBill extends Model {
     @Column(name = "processed_at")
     public Date processedAt;
 
+
+    /**
+     * 操作人
+     */
+    public String operator;
+
     public String comment;
 
     @Column(name = "account_name")
@@ -115,12 +121,17 @@ public class WithdrawBill extends Model {
                 id, userId, accountType).first();
     }
 
+    public boolean reject(String comment) {
+        return reject(comment,null);
+    }
+
+
     /**
      * 提现申请被拒绝
      *
      * @param comment 拒绝理由.
      */
-    public boolean reject(String comment) {
+    public boolean reject(String comment, String operator) {
         if (this.status != WithdrawBillStatus.APPLIED) {
             Logger.error("the withdraw bill has been processed already");
             return false;
@@ -140,6 +151,7 @@ public class WithdrawBill extends Model {
         this.comment = comment;
         this.status = WithdrawBillStatus.REJECTED;
         this.processedAt = new Date();
+        this.operator = operator;
         this.save();
         return true;
     }
@@ -214,6 +226,9 @@ public class WithdrawBill extends Model {
         }
     }
 
+    public int agree(BigDecimal fee, String comment, Date withdrawDate) {
+        return agree(fee, comment, withdrawDate, null);
+    }
 
     /**
      * 同意提现操作，返回结算详细记录的笔数.
@@ -223,7 +238,7 @@ public class WithdrawBill extends Model {
      * @param withdrawDate
      * @return
      */
-    public int agree(BigDecimal fee, String comment, Date withdrawDate) {
+    public int agree(BigDecimal fee, String comment, Date withdrawDate, String operator) {
         if (this.status != WithdrawBillStatus.APPLIED) {
             Logger.error("the withdraw bill has been processed already");
             return 0;
@@ -233,6 +248,7 @@ public class WithdrawBill extends Model {
         this.comment = comment;
         this.processedAt = new Date();
         this.fee = fee;
+        this.operator = operator;
         this.save();
 
         TradeBill tradeBill = TradeUtil.createWithdrawTrade(this.account, this.amount, id);

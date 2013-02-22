@@ -20,6 +20,7 @@ public class CouponHistory extends Model {
 
     @Column(name = "created_at")
     public Date createdAt;
+
     /**
      * 操作人
      */
