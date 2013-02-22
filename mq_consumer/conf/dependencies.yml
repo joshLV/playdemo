@@ -26,18 +26,12 @@ require:
     - consumer -> consumer
     - view_ext -> view_ext
     - supplier -> supplier
-    - dangdang -> dangdang
-    - third_tuan -> third_tuan
     - org.jsoup -> jsoup 1.6.1
     - cache_helper -> cache_helper
     - emaillogs -> emaillogs
-    - yihaodian -> yihaodian
-    - dangdang -> dangdang
-    - jingdong -> jingdong
-    - wuba -> wuba
-    - taobao -> taobao
+    - resale_api -> resale_api
+    - supplier_api -> supplier_api
     - supports -> supports
-    - com.yihaodian -> yhdclient 1.0
     - commons-httpclient -> commons-httpclient 3.1
 
 repositories:
@@ -49,7 +43,6 @@ repositories:
             - com.taobao -> *
             - com.uhuila.utils -> *
             - org.jsoup -> *
-            - com.yihaodian -> *
         m2compatible: true
 
     - customModules:
@@ -70,13 +63,9 @@ repositories:
             - supplier -> *
             - cache_helper -> *
             - emaillogs -> *
-            - yihaodian -> *
-            - dangdang -> *
-            - jingdong -> *
             - supports -> *
-            - third_tuan -> *
-            - taobao -> *
-            - wuba -> *
+            - resale_api -> *
+            - supplier_api -> *
 
     - play1ContributedModules:
         type: http

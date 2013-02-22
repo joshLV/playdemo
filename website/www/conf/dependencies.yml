@@ -39,13 +39,10 @@ require:
     - cms -> cms
     - emaillogs -> emaillogs
     - cache_helper -> cache_helper
-    - dangdang -> dangdang
-    - jingdong -> jingdong
-    - wuba -> wuba
     - oauth -> oauth
-    - taobao -> taobao
     - supports -> supports
-    - third_tuan -> third_tuan
+    - resale_api -> resale_api
+    - supplier_api -> supplier_api
     - commons-httpclient -> commons-httpclient 3.1
 
 repositories:
@@ -89,10 +86,7 @@ repositories:
             - cms -> *
             - emaillogs -> *
             - cache_helper -> *
-            - dangdang -> *
-            - jingdong -> *
             - supports -> *
-            - third_tuan -> *
-            - wuba -> *
             - oauth -> *
-            - taobao -> *
+            - resale_api -> *
+            - supplier_api -> *

@@ -31,14 +31,11 @@ require:
     - cache_helper -> cache_helper
     - emaillogs -> emaillogs
     - report -> report
-    - dangdang -> dangdang
-    - jingdong -> jingdong
     - supports -> supports
-    - third_tuan -> third_tuan
     - commons-httpclient -> commons-httpclient 3.1
-    - wuba -> wuba
     - oauth -> oauth
-    - taobao -> taobao
+    - resale_api -> resale_api
+    - supplier_api -> supplier_api
     - com.taobao -> taobao-top 20121130
 
 repositories:
@@ -79,11 +76,8 @@ repositories:
             - asset_package -> *
             - cms -> *
             - emaillogs -> *
-            - dangdang -> *
-            - jingdong -> *
             - supports -> *
-            - third_tuan -> *
-            - wuba -> *
             - oauth -> *
-            - taobao -> *
+            - resale_api -> *
+            - supplier_api -> *
             - report -> *

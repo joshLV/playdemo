@@ -1553,7 +1553,7 @@ public class ECoupon extends Model {
      * @return
      */
     public static List<ECoupon> findVirtualCoupons(CouponsCondition condition) {
-        String sql = "select e from ECoupon e where e.virtualVerify=0 or and e.goods.isLottery=false";
+        String sql = "select e from ECoupon e where e.virtualVerify=0 and e.goods.isLottery=false ";
         Query query = ECoupon.em().createQuery(sql + condition.getQueryFitter() + " order by e.partner");
         for (Map.Entry<String, Object> entry : condition.getParamMap().entrySet()) {
             query.setParameter(entry.getKey(), entry.getValue());

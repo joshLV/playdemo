@@ -27,17 +27,14 @@ require:
     - com.taobao -> taobao-top 20121130
     - sms -> sms
     - cms -> cms
-    - dangdang -> dangdang
-    - jingdong -> jingdong
     - supports -> supports
-    - third_tuan -> third_tuan
     - emaillogs -> emaillogs
     - view_ext -> view_ext
     - cache_helper -> cache_helper
     - commons-httpclient -> commons-httpclient 3.1
-    - wuba -> wuba
     - oauth -> oauth
-    - taobao -> taobao
+    - resale_api -> resale_api
+    - supplier_api -> supplier_api
 
 repositories:
     - mavenRepository:
@@ -72,14 +69,11 @@ repositories:
             - supplier_rbac -> *
             - sms -> *
             - cms -> *
-            - dangdang -> *
-            - jingdong -> *
             - supports -> *
-            - third_tuan -> *
             - emaillogs -> *
             - asset_package -> *
             - view_ext -> *
             - cache_helper -> *
-            - wuba -> *
             - oauth -> *
-            - taobao -> *
+            - resale_api -> *
+            - supplier_api -> *
