@@ -75,7 +75,6 @@ public class TaobaoCouponConsumerTest extends FunctionalTest {
     /**
      * 测试创建订单
      */
-    @Ignore
     @Test
     public void testBuildOrder() {
         outerOrder.ybqOrder = null;
@@ -123,7 +122,6 @@ public class TaobaoCouponConsumerTest extends FunctionalTest {
         assertEquals(OuterOrderStatus.RESEND_SYNCED, outerOrder.status);
     }
 
-    @Ignore
     @Test
     public void testSyncOrder() {
         outerOrder.status = OuterOrderStatus.ORDER_DONE;

@@ -32,12 +32,6 @@ public class DDGroupBuyUtil {
     private static final String SECRET_KEY = Play.configuration.getProperty("dangdang.groupbuy.secret_key", "x8765d9yj72wevshn");
     private static final String SPID = Play.configuration.getProperty("dangdang.groupbuy.spid", "3000003");
 
-    private static final String SYNC_URL = Play.configuration.getProperty("dangdang.sync_url", "http://tuanapi.dangdang.com/team_open/public/push_team_stock.php");
-    private static final String QUERY_CONSUME_CODE_URL = Play.configuration.getProperty("dangdang.query_consume_code_url", "http://tuanapi.dangdang.com/team_open/public/query_consume_code.php");
-    private static final String VERIFY_CONSUME_URL = Play.configuration.getProperty("dangdang.verify_consume_url", "http://tuanapi.dangdang.com/team_open/public/verify_consume.php");
-    private static final String PUSH_PARTNER_TEAMS = Play.configuration.getProperty("dangdang.push_partner_teams", "http://tuanapi.dangdang.com/team_inter_api/public/push_partner_teams.php");
-    private static final String GET_TEAM_LIST = Play.configuration.getProperty("dangdang.get_team_list", "http://tuanapi.dangdang.com/team_inter_api/public/get_team_list.php");
-
     /**
      * 查询刚刚今天上传的单个商品在当当上的信息.
      *
@@ -66,7 +60,7 @@ public class DDGroupBuyUtil {
     public static boolean verifyOnDangdang(ECoupon coupon) {
         OuterOrder outerOrder = OuterOrder.find("byYbqOrder", coupon.order).first();
         if (outerOrder == null) {
-            Logger.info("dangdang verifyOnDangDang failed: outerOrder not found; couponId: " + coupon.id);
+            Logger.info("verify on dangdang failed: outerOrder not found; couponId: " + coupon.id);
             return false;
         }
 
@@ -76,9 +70,7 @@ public class DDGroupBuyUtil {
         params.put("consumeCode", coupon.eCouponSn);
         params.put("verifyCode", coupon.eCouponSn);
 
-        String templatePath = "dangdang/groupbuy/verifyConsume.xml";
-        String apiName = "verify_consume";
-        DDResponse response = sendRequest(apiName, VERIFY_CONSUME_URL, templatePath, params);
+        DDResponse response = sendRequest("verify_consume", params);
         if (!response.isOk()) {
             Logger.info("verify on dangdang failed. couponId: %s; response: %s.", coupon.id, response);
         }
@@ -96,9 +88,7 @@ public class DDGroupBuyUtil {
         params.put("spgid", product.goodsLinkId);
         params.put("sellcount", product.goods.getRealSaleCount());
 
-        String templatePath = "dangdang/groupbuy/getTeamList.xml";
-        String apiName = "get_team_list";
-        DDResponse response = sendRequest(apiName, SYNC_URL, templatePath, params);
+        DDResponse response = sendRequest("push_team_stock", params);
         return response.isOk();
     }
 
@@ -121,9 +111,7 @@ public class DDGroupBuyUtil {
         params.put("type", 1);
         params.put("code", coupon.eCouponSn);
 
-        String templatePath = "dangdang/groupbuy/queryConsumeCode.xml";
-        String apiName = "query_consume_code";
-        DDResponse response = sendRequest(apiName, QUERY_CONSUME_CODE_URL, templatePath, params);
+        DDResponse response = sendRequest("query_consume_code", params);
         if (!response.isOk()) {
             Logger.info("dangdang couponStatus failed: \n%s" + response);
             return -1;
@@ -153,9 +141,7 @@ public class DDGroupBuyUtil {
         params.put("endDate", dateFormat.format(endDate));
         params.put("status", status);
 
-        String templatePath = "dangdang/groupbuy/getTeamList.xml";
-        String apiName = "get_team_list";
-        return sendRequest(apiName, GET_TEAM_LIST, templatePath, params);
+        return sendRequest("get_team_list", params);
     }
 
 
@@ -166,26 +152,24 @@ public class DDGroupBuyUtil {
      * @return 请求结果
      */
     public static DDResponse pushGoods(Map<String, Object> params) {
-        String templatePath = "dangdang/groupbuy/pushGoods.xml";
-        String apiName = "push_partner_teams";
-        return sendRequest(apiName, PUSH_PARTNER_TEAMS, templatePath, params);
+        return sendRequest("push_partner_teams", params);
     }
 
     /**
      * 向当当发起请求
      *
-     * @param url       请求的url
      * @param apiName   请求的api名称
      * @return 解析后的响应
      */
-    public static DDResponse sendRequest(String apiName, String url, String templatePath, Map<String, Object> params,
-                                         String ... keywords) {
+    public static DDResponse sendRequest(String apiName, Map<String, Object> params, String ... keywords) {
+        String templatePath = "dangdang/groupbuy/" + apiName + ".xml";
+        String url =Play.configuration.getProperty("dangdang.url." + apiName);
 
         Template template = TemplateLoader.load(templatePath);
         String xmlData = template.render(params);
 
         Map<String, Object> requestParams = sysParams();
-        requestParams.put("sign", sign(apiName, xmlData, (String) params.get("call_time")));
+        requestParams.put("sign", sign(apiName, xmlData, (String) requestParams.get("call_time")));
         requestParams.put("data", xmlData);
 
         Logger.info("dangdang request %s:\n%s", apiName, xmlData);
