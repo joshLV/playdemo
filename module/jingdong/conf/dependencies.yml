@@ -1,4 +1,0 @@
-self: play -> jingdong 0.1
-
-require:
-    - play

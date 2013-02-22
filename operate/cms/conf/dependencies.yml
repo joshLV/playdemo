@@ -32,16 +32,11 @@ require:
     - cache_helper -> cache_helper
     - emaillogs -> emaillogs
     - report -> report
-    - yihaodian -> yihaodian
-    - dangdang -> dangdang
-    - jingdong -> jingdong
-    - wuba -> wuba
+    - resale_api -> resale_api
+    - supplier_api -> supplier_api
     - oauth -> oauth
-    - taobao -> taobao
     - com.taobao -> taobao-top 20121130
     - supports -> supports
-    - third_tuan -> third_tuan
-    - com.yihaodian -> yhdclient 1.0
     - commons-httpclient -> commons-httpclient 3.1
 
 repositories:
@@ -52,7 +47,6 @@ repositories:
             - com.uhuila.utils -> *
             - commons-lang -> *
             - org.jsoup -> *
-            - com.yihaodian -> *
             - com.taobao -> *
         m2compatible: true
 
@@ -83,11 +77,7 @@ repositories:
             - cache_helper -> *
             - emaillogs -> *
             - report -> *
-            - yihaodian -> *
-            - dangdang -> *
-            - jingdong -> *
-            - wuba -> *
             - oauth -> *
-            - taobao -> *
             - supports -> *
-            - third_tuan -> *
+            - resale_api -> *
+            - supplier_api -> *

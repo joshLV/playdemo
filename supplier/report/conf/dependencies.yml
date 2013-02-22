@@ -32,13 +32,10 @@ require:
     - cms -> cms
     - emaillogs -> emaillogs
     - cache_helper -> cache_helper
-    - dangdang -> dangdang
-    - jingdong -> jingdong
     - supports -> supports
-    - third_tuan -> third_tuan
-    - wuba -> wuba
     - oauth -> oauth
-    - taobao -> taobao
+    - resale_api -> resale_api
+    - supplier_api -> supplier_api
 
 repositories:
     - mavenRepository:
@@ -79,10 +76,7 @@ repositories:
             - cms -> *
             - cache_helper -> *
             - emaillogs -> *
-            - dangdang -> *
-            - jingdong -> *
             - supports -> *
-            - third_tuan -> *
-            - wuba -> *
             - oauth -> *
-            - taobao -> *
+            - resale_api -> *
+            - supplier_api -> *

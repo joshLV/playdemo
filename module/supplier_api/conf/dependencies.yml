@@ -1,0 +1,4 @@
+self: play -> supplier_api 0.1
+
+require:
+    - play
