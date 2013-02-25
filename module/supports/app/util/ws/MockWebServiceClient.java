@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -63,13 +62,13 @@ public class MockWebServiceClient extends WebServiceClient {
     }
 
     @Override
-    public HttpResponse doGet(WebServiceCallLogData log, WebServiceCallback callback) {
+    public HttpResponse doGet( WebServiceRequest webServiceRequest, WebServiceCallLogData log) {
         MockHttpResponse response = pollMockHttpResponse();
 
         log.statusCode = response.status;
         log.responseText = response.content;
-        if (callback != null) {
-            callback.process(response.status, response.content);
+        if (webServiceRequest.callback != null) {
+            webServiceRequest.callback.process(response.status, response.content);
         }
 
         _stackCallLogs.push(log);
@@ -140,16 +139,15 @@ public class MockWebServiceClient extends WebServiceClient {
     }
 
     @Override
-    protected HttpResponse doPost(WebServiceCallLogData log,
-                    Map<String, Object> params, WebServiceCallback callback) {
+    protected HttpResponse doPost( WebServiceRequest webServiceRequest, WebServiceCallLogData log) {
         MockHttpResponse response = pollMockHttpResponse();
 
         Logger.info("返回mock request(status:" + response.status + "):" + response.content);
         log.statusCode = response.status;
         log.responseText = response.content;
 
-        if (callback != null) {
-            callback.process(response.status, response.content);
+        if (webServiceRequest.callback != null) {
+            webServiceRequest.callback.process(response.status, response.content);
         }
 
         _stackCallLogs.push(log);

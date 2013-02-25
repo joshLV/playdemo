@@ -29,14 +29,9 @@ require:
     - emaillogs -> emaillogs
     - view_ext -> view_ext
     - cache_helper -> cache_helper
-    - yihaodian -> yihaodian
-    - dangdang -> dangdang
-    - jingdong -> jingdong
-    - wuba -> wuba
-    - taobao -> taobao
+    - resale_api -> resale_api
+    - supplier_api -> supplier_api
     - supports -> supports
-    - third_tuan -> third_tuan
-    - com.yihaodian -> yhdclient 1.0
     - commons-lang -> commons-lang 2.6
     - commons-httpclient -> commons-httpclient 3.1
 
@@ -50,7 +45,6 @@ repositories:
             - com.uhuila.utils -> *
             - org.jsoup -> *
             - org.json -> *
-            - com.yihaodian -> *
         m2compatible: true
 
     - play1ContributedModules:
@@ -78,10 +72,6 @@ repositories:
             - emaillogs -> *
             - asset_package -> *
             - cache_helper -> *
-            - yihaodian -> *
-            - dangdang -> *
-            - jingdong -> *
+            - resale_api -> *
+            - supplier_api -> *
             - supports -> *
-            - third_tuan -> *
-            - wuba -> *
-            - taobao -> *

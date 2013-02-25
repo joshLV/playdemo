@@ -218,7 +218,7 @@
                         #{if !coupon.goods.isLottery && !isExpired && coupon.status == models.order.ECouponStatus.UNCONSUMED}
                             <a class="send-sms" href="javascript:void(0)" id="send_${coupon.id}"
                                onclick="sendMessage('${coupon.id}', '${coupon.orderItems.phone}')">发送短信</a>
-                            <input type="hidden" id="times_${coupon.id}" value="${coupon.getAvaiableSendSMsCount()}"/>
+                            <input type="hidden" id="times_${coupon.id}" value="${coupon.getAvailableSendSMsCount()}"/>
                             <br>
                         #{/if}
                         #{if coupon.status == models.order.ECouponStatus.UNCONSUMED && (coupon.goods.noRefund==false ||coupon.goods.noRefund==null)

@@ -117,11 +117,11 @@ public class WithdrawApproval extends Controller {
             cal.add(Calendar.DAY_OF_MONTH, -1);
             Date withdrawDate = cal.getTime();
 
-            bill.agree(fee, comment, withdrawDate);
+            bill.agree(fee, comment, withdrawDate, OperateRbac.currentUser().userName);
 
             sendAgreedSMS(bill, comment);
         } else if (action.equals("reject")) {
-            bill.reject(comment);
+            bill.reject(comment, OperateRbac.currentUser().userName);
 
             sendRejectedSMS(bill, comment);
         }
@@ -210,7 +210,7 @@ public class WithdrawApproval extends Controller {
         if (StringUtils.isBlank(mobile) || StringUtils.isBlank(title)) {
             return;
         }
-        sendContent = title + ", " + sendContent ;
+        sendContent = title + ", " + sendContent;
         SMSUtil.send(sendContent, mobile);
 
     }

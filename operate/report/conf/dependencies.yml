@@ -27,19 +27,16 @@ require:
     - order -> order
     - accounts -> accounts
     - report -> report
-    - third_tuan -> third_tuan
+    - resale_api -> resale_api
+    - supplier_api -> supplier_api
     - sms -> sms
     - cms -> cms
     - asset_package -> asset_package
     - cache_helper -> cache_helper
     - emaillogs -> emaillogs
-    - dangdang -> dangdang
-    - jingdong -> jingdong
     - oauth -> oauth
-    - taobao -> taobao
     - com.taobao -> taobao-top 20121130
     - supports -> supports
-    - wuba -> wuba
 
 repositories:
     - mavenRepository:
@@ -80,10 +77,7 @@ repositories:
             - asset_package -> *
             - cache_helper -> *
             - emaillogs -> *
-            - dangdang -> *
-            - jingdong -> *
+            - resale_api -> *
+            - supplier_api -> *
             - oauth -> *
-            - taobao -> *
             - supports -> *
-            - third_tuan -> *
-            - wuba -> *

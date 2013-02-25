@@ -34,14 +34,9 @@ require:
     - oauth -> oauth
     - cache_helper -> cache_helper
     - emaillogs -> emaillogs
-    - dangdang -> dangdang
-    - jingdong -> jingdong
+    - resale_api -> resale_api
+    - supplier_api -> supplier_api
     - supports -> supports
-    - third_tuan -> third_tuan
-    - yihaodian -> yihaodian
-    - wuba -> wuba
-    - taobao -> taobao
-    - com.yihaodian -> yhdclient 1.0
 
 repositories:
     - mavenRepository:
@@ -54,7 +49,6 @@ repositories:
             - dom4j -> *
             - org.apache.httpcomponents -> *
             - org.jsoup -> *
-            - com.yihaodian -> *
         m2compatible: true
 
     - play1ContributedModules:
@@ -85,10 +79,6 @@ repositories:
             - oauth -> *
             - cache_helper -> *
             - emaillogs -> *
-            - dangdang -> *
-            - jingdong -> *
             - supports -> *
-            - yihaodian -> *
-            - third_tuan -> *
-            - wuba -> *
-            - taobao -> *
+            - resale_api -> *
+            - supplier_api -> *

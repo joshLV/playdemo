@@ -150,6 +150,7 @@
             <th>申请金额</th>
             <th>申请状态</th>
             <th>审批时间</th>
+            <th>审批人</th>
             <th>操作</th>
         </tr>
         #{paginate.list items:billPage, as:'withdrawBill'}
@@ -160,6 +161,7 @@
                 <td>${withdrawBill.amount.formatCurrency('CNY')}</td>
                 <td>&{'withdraw.' + withdrawBill.status}</td>
                 <td>${withdrawBill.processedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>${withdrawBill?.operator}</td>
                 <td>
                     <a href="/withdraw/${withdrawBill.id}/detail?uid=${withdrawBill.account.uid}">查看详情 </a>
                 </td>

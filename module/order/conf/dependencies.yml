@@ -15,10 +15,10 @@ require:
     - accounts -> accounts
     - operator -> operator
     - order -> order
-    - dangdang -> dangdang
+    - resale_api -> resale_api
+    - supplier_api -> supplier_api
     - sms -> sms
     - commons-httpclient -> commons-httpclient 3.1
-    - wuba -> wuba
 
 repositories:
     - mavenRepository:
@@ -45,7 +45,7 @@ repositories:
             - accounts -> *
             - operator -> *
             - order -> *
-            - dangdang -> *
-            - wuba -> *
+            - resale_api -> *
+            - supplier_api -> *
 
 

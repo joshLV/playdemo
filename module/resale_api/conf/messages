@@ -1,0 +1,5 @@
+# Default resale_api messages
+# You can specialize this file for each language.
+# For exemple, for french create a messages.fr file
+
+#resale_api.name=resale_api

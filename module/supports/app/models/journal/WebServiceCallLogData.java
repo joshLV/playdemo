@@ -1,7 +1,12 @@
 package models.journal;
 
+import org.apache.commons.lang.StringUtils;
+
+import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * User: tanglq
@@ -56,7 +61,19 @@ public class WebServiceCallLogData implements Serializable {
 
     public Long duration;
 
+    public String files;
+
     public Boolean success;
+
+    public void setFilesName(List<File> fileList) {
+        if (fileList != null && fileList.size() > 0) {
+            List<String> fileNames = new ArrayList<>();
+            for (File file : fileList) {
+                fileNames.add(file.getName());
+            }
+            this.files = StringUtils.join(fileNames, ",");
+        }
+    }
 
     public WebServiceCallLog toModel() {
         WebServiceCallLog log = new WebServiceCallLog();
@@ -73,6 +90,7 @@ public class WebServiceCallLogData implements Serializable {
         log.createdAt = this.createdAt;
         log.duration = this.duration;
         log.success = this.success;
+        log.files = this.files;
 
         return log;
     }

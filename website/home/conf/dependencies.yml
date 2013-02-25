@@ -32,13 +32,10 @@ require:
     - cache_helper -> cache_helper
     - commons-httpclient -> commons-httpclient 3.1
     - com.taobao -> taobao-top 20121130
-    - dangdang -> dangdang
-    - jingdong -> jingdong
-    - wuba -> wuba
     - oauth -> oauth
-    - taobao -> taobao
     - supports -> supports
-    - third_tuan -> third_tuan
+    - resale_api -> resale_api
+    - supplier_api -> supplier_api
 
 repositories:
     - mavenRepository:
@@ -81,10 +78,7 @@ repositories:
             - layout_website -> *
             - cms -> *
             - emaillogs -> *
-            - dangdang -> *
-            - jingdong -> *
-            - third_tuan -> *
+            - resale_api -> *
+            - supplier_api -> *
             - supports -> *
-            - wuba -> *
             - oauth -> *
-            - taobao -> *
