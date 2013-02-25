@@ -523,7 +523,9 @@ public class ECoupon extends Model {
 
         //===================判断是否第三方订单产生的券=并且不是导入券============================
         if (this.createType != ECouponCreateType.IMPORT) {
-            if (verifyAndCheckOnPartnerResaler()) return false;
+            if (verifyAndCheckOnPartnerResaler()) {
+                return false;
+            }
         }
         //===================券消费处理开始=====================================
         if (consumed(shopId, operateUser, supplierUser, type, consumedAt, remark)) {
@@ -545,6 +547,8 @@ public class ECoupon extends Model {
             @Override
             public Boolean doCall() {
                 Boolean result = verifyOnPartnerResaler();
+                // 记录日志验证失败
+                Logger.info("verifyAndCheckOnPartnerResaler: SN:" + eCouponSn + ", result:" + result);
                 // 需要重试.
                 RemoteRecallCheck.setNeedRecall(result);
                 return result;

@@ -2,6 +2,7 @@ package util.transaction;
 
 import cache.CacheCallBack;
 import cache.CacheHelper;
+import play.Logger;
 
 /**
  * 记录远程调用的成功状态，以防止同一条件下重试已经成功的消息。
@@ -39,12 +40,15 @@ public class RemoteRecallCheck {
         });
 
         T t;
+
         if (needRecall) {
             t = callback.doCall();
             CacheHelper.setCache(cacheResultKey, t, "3h");
         } else {
             t = CacheHelper.getCache(cacheResultKey);
         }
+        Logger.info("RemoteRecallCheck.call: cacheNeedRecallKey=" + cacheNeedRecallKey + ", value=" + needRecall +
+                ", t=" + t);
 
         CacheHelper.setCache(cacheNeedRecallKey, getNeedRecall(), "3h"); //记录是否要重试
 

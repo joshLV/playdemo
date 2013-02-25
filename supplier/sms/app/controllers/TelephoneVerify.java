@@ -219,7 +219,8 @@ public class TelephoneVerify extends Controller {
         ecoupon.save();
 
         Logger.info("telephone verify success");
-        return "0";//消费成功，价值" + ecoupon.faceValue + "元
+        //消费成功，价值" + ecoupon.faceValue + "元
+        return "0";
     }
 
     /**
