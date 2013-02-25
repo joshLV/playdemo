@@ -110,23 +110,7 @@ public class TelephoneVerify extends Controller {
             renderText("11");//对不起，该券无法消费
         }
         // 指定门店才能消费
-
-        if (ecoupon.status == ECouponStatus.CONSUMED) {
-            Logger.info("telephone verify failed: coupon consumed");
-            renderText("10");//该券无法重复消费。消费时间为
-        } else if (ecoupon.status != ECouponStatus.UNCONSUMED) {
-            Logger.info("telephone verify failed: coupon status invalid. %s", ecoupon.status);
-            renderText("11");//对不起，该券无法消费
-        } else if (ecoupon.expireAt != null && ecoupon.expireAt.before(new Date())) {
-            Logger.info("telephone verify failed: coupon expired. expiredAt: %s", new SimpleDateFormat(COUPON_DATE).format(ecoupon.expireAt));
-            renderText("12");//对不起，该券已过期
-        } else if (ecoupon.effectiveAt != null && ecoupon.effectiveAt.after(new Date())) {
-            Logger.info("telephone verify failed: coupon not been activated. effectiveAt: %s", new SimpleDateFormat(COUPON_DATE).format(ecoupon.effectiveAt));
-            renderText("11");//对不起，该券无法消费
-        } else if (!ecoupon.checkVerifyTimeRegion(new Date())) {
-            Logger.info("telephone verify failed: coupon not been activated. effectiveAt: %s", new SimpleDateFormat(COUPON_DATE).format(ecoupon.effectiveAt));
-            renderText("11");//对不起，该券无法消费
-        } else {
+        // else {
             //批量验证
             /*
             if(value != null && value.compareTo(BigDecimal.ZERO) > 0){
@@ -186,19 +170,38 @@ public class TelephoneVerify extends Controller {
             }
             */
             // 设置RemoteRecallCheck所使用的标识ID，下次调用时不会再重试.
-            RemoteRecallCheck.setCallId("COUPON_" + ecoupon.id);
-            String resultCode = TransactionRetry.run(new TransactionCallback<String>() {
-                @Override
-                public String doInTransaction() {
-                    return doVerify(caller, supplierUser, ecoupon);
-                }
-            });
+        RemoteRecallCheck.setCallId("COUPON_" + ecoupon.id);
+        String resultCode = TransactionRetry.run(new TransactionCallback<String>() {
+            @Override
+            public String doInTransaction() {
+                return doVerify(caller, supplierUser, ecoupon);
+            }
+        });
 
-            renderText(resultCode);
-        }
+        renderText(resultCode);
+
     }
 
-    private static String doVerify(String caller, SupplierUser supplierUser, ECoupon ecoupon) {
+    private static String doVerify(String caller, SupplierUser supplierUser, ECoupon eCoupon) {
+        ECoupon ecoupon = ECoupon.findById(eCoupon.id); //因为是重试，重新得到券ID
+
+        if (ecoupon.status == ECouponStatus.CONSUMED) {
+            Logger.info("telephone verify failed: coupon consumed");
+            return "10";//该券无法重复消费。消费时间为
+        } else if (ecoupon.status != ECouponStatus.UNCONSUMED) {
+            Logger.info("telephone verify failed: coupon status invalid. %s", ecoupon.status);
+            return "11";//对不起，该券无法消费
+        } else if (ecoupon.expireAt != null && ecoupon.expireAt.before(new Date())) {
+            Logger.info("telephone verify failed: coupon expired. expiredAt: %s", new SimpleDateFormat(COUPON_DATE).format(ecoupon.expireAt));
+            return "12";//对不起，该券已过期
+        } else if (ecoupon.effectiveAt != null && ecoupon.effectiveAt.after(new Date())) {
+            Logger.info("telephone verify failed: coupon not been activated. effectiveAt: %s", new SimpleDateFormat(COUPON_DATE).format(ecoupon.effectiveAt));
+            return "11";//对不起，该券无法消费
+        } else if (!ecoupon.checkVerifyTimeRegion(new Date())) {
+            Logger.info("telephone verify failed: coupon not been activated. effectiveAt: %s", new SimpleDateFormat(COUPON_DATE).format(ecoupon.effectiveAt));
+            return "11";//对不起，该券无法消费
+        }
+
         if (!ecoupon.consumeAndPayCommission(supplierUser.shop.id, supplierUser, VerifyCouponType.CLERK_MESSAGE)){
             Logger.info("telephone verify failed: coupon has been refunded");
             return "11";  //对不起，该券无法消费
