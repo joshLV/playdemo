@@ -33,6 +33,8 @@ import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
 import play.modules.solr.Solr;
 import util.common.InfoUtil;
+import util.transaction.RemoteCallback;
+import util.transaction.RemoteRecallCheck;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -521,39 +523,64 @@ public class ECoupon extends Model {
 
         //===================判断是否第三方订单产生的券=并且不是导入券============================
         if (this.createType != ECouponCreateType.IMPORT) {
-            if (this.partner == ECouponPartner.DD) {
-                if (!DDGroupBuyUtil.verifyOnDangdang(this)) {
-                    Logger.info("verify on dangdang failed");
-                    return false;
-                }
-            }
-
-            if (this.partner == ECouponPartner.JD) {
-                if (!JDGroupBuyHelper.verifyOnJingdong(this)) {
-                    Logger.info("verify on jingdong failed");
-                    return false;
-                }
-            } else if (this.partner == ECouponPartner.WB) {
-                if (!WubaUtil.verifyOnWuba(this)) {
-                    Logger.info("verify on wuba failed");
-                    return false;
-                }
-            } else if (this.partner == ECouponPartner.TB) {
-                if (!TaobaoCouponUtil.verifyOnTaobao(this)) {
-                    Logger.info("verify on taobao failed");
-                    return false;
-                }
-            }
+            if (verifyAndCheckOnPartnerResaler()) return false;
         }
         //===================券消费处理开始=====================================
         if (consumed(shopId, operateUser, supplierUser, type, consumedAt, remark)) {
             payCommission();
-            this.triggerCouponSn = triggerCouponSn;
+            this.triggerCouponSn = triggerCouponSn; //记录批量验证时所使用的券号
             this.save();
         }
 
         return true;
 
+    }
+
+    /**
+     * 使用RemoteRecallCheck.call包装一下，这样在下次进来时会检查是否成功过，如果成功过就不再调用verifyOnPartnerResaler.
+     * @return 如果返回true，表示调用失败.
+     */
+    private Boolean verifyAndCheckOnPartnerResaler() {
+        return RemoteRecallCheck.call("verify_coupon", new RemoteCallback<Boolean>() {
+            @Override
+            public Boolean doCall() {
+                Boolean result = verifyOnPartnerResaler();
+                // 需要重试.
+                RemoteRecallCheck.setNeedRecall(result);
+                return result;
+            }
+        });
+    }
+
+    /**
+     * 调用第三方渠道券验证，并返回是否失败的标识。
+     * @return TRUE表示验证失败；FALSE表示验证成功
+     */
+    private Boolean verifyOnPartnerResaler() {
+        if (this.partner == ECouponPartner.DD) {
+            if (!DDGroupBuyUtil.verifyOnDangdang(this)) {
+                Logger.info("verify on dangdang failed");
+                return true;
+            }
+        }
+
+        if (this.partner == ECouponPartner.JD) {
+            if (!JDGroupBuyHelper.verifyOnJingdong(this)) {
+                Logger.info("verify on jingdong failed");
+                return true;
+            }
+        } else if (this.partner == ECouponPartner.WB) {
+            if (!WubaUtil.verifyOnWuba(this)) {
+                Logger.info("verify on wuba failed");
+                return true;
+            }
+        } else if (this.partner == ECouponPartner.TB) {
+            if (!TaobaoCouponUtil.verifyOnTaobao(this)) {
+                Logger.info("verify on taobao failed");
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -599,7 +626,7 @@ public class ECoupon extends Model {
         //记录券历史信息
         String historyRemark = StringUtils.isBlank(remark) ? "消费" : remark;
         ECouponHistoryMessage.with(this).operator(operator).remark(historyRemark)
-                .fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.CONSUMED).sendToMQ();
+                .fromStatus(this.status).toStatus(ECouponStatus.CONSUMED).sendToMQ();
         return true;
     }
 

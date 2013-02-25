@@ -14,6 +14,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import play.Logger;
 import play.Play;
 import play.mvc.Controller;
+import util.transaction.RemoteRecallCheck;
 import util.transaction.TransactionCallback;
 import util.transaction.TransactionRetry;
 
@@ -184,6 +185,8 @@ public class TelephoneVerify extends Controller {
                 }
             }
             */
+            // 设置RemoteRecallCheck所使用的标识ID，下次调用时不会再重试.
+            RemoteRecallCheck.setCallId("COUPON_" + ecoupon.id);
             String resultCode = TransactionRetry.run(new TransactionCallback<String>() {
                 @Override
                 public String doInTransaction() {

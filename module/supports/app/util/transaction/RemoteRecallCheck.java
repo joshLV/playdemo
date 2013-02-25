@@ -24,7 +24,7 @@ public class RemoteRecallCheck {
      */
     private static ThreadLocal<Boolean> _needRecall = new ThreadLocal<>();
 
-    public <T> T call(final String callPrefix, final RemoteCallback<T> callback) {
+    public static <T> T call(final String callPrefix, final RemoteCallback<T> callback) {
         if (getCallId() == null) {
             // 调用前没有设置callId，认为是不需要CallRecallCheck（兼容旧的调用者）
             return callback.doCall();
@@ -34,7 +34,7 @@ public class RemoteRecallCheck {
         Boolean needRecall = CacheHelper.getCache(cacheNeedRecallKey, "3h", new CacheCallBack<Boolean>() {
             @Override
             public Boolean loadData() {
-                return Boolean.TRUE; //默认为需要重
+                return Boolean.TRUE; //默认为需要重试
             }
         });
 
@@ -46,7 +46,7 @@ public class RemoteRecallCheck {
             t = CacheHelper.getCache(cacheResultKey);
         }
 
-        CacheHelper.setCache(cacheNeedRecallKey, getNeedRecall(), "3h");
+        CacheHelper.setCache(cacheNeedRecallKey, getNeedRecall(), "3h"); //记录是否要重试
 
         _needRecall.remove(); //清除needRecall作用域
         return t;
