@@ -53,7 +53,6 @@ public class OrdersCondition {
             paramsMap.put("supplierId", supplierId);
         }
 
-
         if (hasSeeAllSupplierPermission != null && !hasSeeAllSupplierPermission) {
             List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
             List<Long> supplierIds = new ArrayList<>();

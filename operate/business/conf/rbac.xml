@@ -4,6 +4,7 @@
     <role key="editor" text="编辑人员"/>
     <role key="customservice" text="客服人员"/>
     <role key="account" text="财务人员"/>
+    <role key="webop" text="网站运营"/>
     <role key="sales" text="商务销售"/>
     <role key="manager" text="经理"/>
     <role key="solr_load" text="solr加载数据"/>
@@ -26,13 +27,13 @@
 
 
     <permission key="Point_GOODS_ORDER" text="积分商品订单管理" roles="customservice,account"/>
-    <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager,account,customservice"/>
+    <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager,account,customservice,webop"/>
     <permission key="SUPPLIER_CODE_EDIT" text="修改商户编码" roles="developer"/>
     <permission key="GOODS_APPROVE_ONSALE" text="审核商品上架" roles="reviewer"/>
     <permission key="HANDLE_RESALER_COMMISSIONRATIO" text="操作分销商佣金比例" roles="manager"/>
     <permission key="ECOUPON_REFUND" text="电子券退款操作" roles="customservice"/>
     <permission key="UNFREEZE_COUPON" text="券解冻" roles="customservice"/>
-    <permission key="VIEW_ECOUPONSN" text="查看完整券号" roles="customservice"/>
+    <permission key="VIEW_ECOUPONSN" text="查看完整券号" roles="customservice,webop"/>
 
     <permission key="SUPPLIERS_NEW" text="商户添加" roles="editor"/>
     <permission key="SUPPLIERS" text="商户管理" roles="editor,customservice,sales"/>
@@ -43,7 +44,7 @@
     <permission key="SHOPS_NEW" text="门店添加" roles="editor"/>
     <permission key="SHOPS" text="门店管理" roles="editor,customservice"/>
     <permission key="RESALERS" text="分销商管理" roles="customservice"/>
-    <permission key="ORDERS" text="运营订单管理" roles="customservice,account,sales,manager"/>
+    <permission key="ORDERS" text="运营订单管理" roles="customservice,webop,account,sales,manager"/>
     <permission key="COUPONS" text="券查询" roles="sales,customservice,account,manager"/>
     <permission key="COUPONS_MANAGE" text="券管理" roles="customservice,account,manager"/>
     <permission key="CONSUMERS_REPORT" text="消费者资金明细" roles="account"/>

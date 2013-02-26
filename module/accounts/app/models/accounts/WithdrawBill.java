@@ -122,7 +122,7 @@ public class WithdrawBill extends Model {
     }
 
     public boolean reject(String comment) {
-        return reject(comment,null);
+        return reject(comment, null);
     }
 
 
