@@ -5,63 +5,69 @@
 #{/set}
 
 <div id="content" class="clearfix">
-    #{include "share/left.html"/}
+#{include "share/left.html"/}
     <div class="section">
-        #{breadcrumbs/breadcrumb breadcrumbs/}
+    #{breadcrumbs/breadcrumb breadcrumbs/}
         <h3>提现详情</h3>
         <table class="table">
             <tr>
                 <td align="right" width="100px">申请时间：</td>
                 <td align="left">
-                    ${bill?.appliedAt.format('yyyy-MM-dd HH:mm:ss')}
+                ${bill?.appliedAt.format('yyyy-MM-dd HH:mm:ss')}
                 </td>
             </tr>
             <tr>
                 <td align="right" width="100px">申请金额：</td>
                 <td align="left">
-                    ${bill?.amount.formatCurrency('CNY')}
+                ${bill?.amount.formatCurrency('CNY')}
                 </td>
             </tr>
             <tr>
                 <td align="right" width="100px">所在城市：</td>
                 <td align="left">
-                    ${bill?.bankCity}
+                ${bill?.bankCity}
                 </td>
             </tr>
             <tr>
                 <td align="right" width="100px">开户银行：</td>
                 <td align="left">
-                    ${bill?.bankName}
+                ${bill?.bankName}
                 </td>
             </tr>
             <tr>
                 <td align="right" width="100px">分行名称：</td>
                 <td align="left">
-                    ${bill?.subBankName}
+                ${bill?.subBankName}
                 </td>
             </tr>
             <tr>
                 <td align="right" width="100px">开户姓名：</td>
                 <td align="left">
-                    ${bill?.userName}
+                ${bill?.userName}
                 </td>
             </tr>
             <tr>
                 <td align="right" width="100px">银行卡号：</td>
                 <td align="left">
-                    ${bill?.cardNumber}
+                ${bill?.cardNumber}
                 </td>
             </tr>
             <tr>
                 <td align="right" width="100px">申请状态：</td>
                 <td align="left">
-                    &{'withdraw.' + bill.status}
+                &{'withdraw.' + bill.status}
+                </td>
+            </tr>
+            <tr>
+                <td align="right" width="100px">备注：</td>
+                <td align="left">
+                ${bill?.comment}
                 </td>
             </tr>
             <tr>
                 <td align="right" width="100px">手 续 费：</td>
                 <td align="left">
-                    ${bill.fee?.formatCurrency('CNY')}
+                ${bill.fee?.formatCurrency('CNY')}
                 </td>
             </tr>
             <tr>

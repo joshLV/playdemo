@@ -3,14 +3,16 @@
 #{include 'Share/nav.html' /}
 #{set 'moreStyles'}
 <style type="text/css">
-    .control-label{
+    .control-label {
         font-weight: bold;
     }
-    .control-value{
+
+    .control-value {
         line-height: 28px;
         margin-left: 160px;
     }
-    .form-horizontal .control-group{
+
+    .form-horizontal .control-group {
         margin-bottom: 4px;
     }
 </style>
@@ -56,11 +58,15 @@
             <label class="control-value">&{'withdraw.' + bill.status}</label>
         </div>
         <div class="control-group">
+            <label class="control-label">备注</label>
+            <label class="control-value">${bill?.comment}</label>
+        </div>
+        <div class="control-group">
             <label class="control-label">手续费</label>
             <label class="control-value">${bill.fee?.formatCurrency('CNY')}</label>
         </div>
         <div class="form-actions">
-                <a href="/withdraw" class="btn btn-primary">返回</a>
+            <a href="/withdraw" class="btn btn-primary">返回</a>
         </div>
     </div>
 </div>
