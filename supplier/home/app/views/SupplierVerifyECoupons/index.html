@@ -8,65 +8,65 @@
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/verify.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
-<div class="verify">
-    <div class="bd batch-verify">
-        <h2>${title}</h2>
-        <form id="coupon-form" action="@{SupplierVerifyECoupons.verify()}" method="post">
-            <div class="field-sect">
-                <div class="field-group">
-                    <label>选择分店</label>
-                #{if shop == null}
-                    #{select 'shopId', id:"shopId", value:shopId}
-                        #{list items:shopList, as:'shop'}
-                            #{option shop?.id}${shop?.name}#{/option}
-                        #{/list}
-                    #{/select}
-                #{/if}
-                #{else}
-                    <p>${shop?.name}</p>
-                    <input type="hidden" name="shopId" id="shopId" value="${shop?.id}" class="input-large"/>
-                #{/else}
-                </div>
-                <div class="field-group">
-                    <label class="coupon-label" for="enter-coupon">输入券号</label>
-                    <input type="text" size="12" maxlength="12" name="coupon" autofocus="true" id="enter-coupon"
-                           class="enter-coupon" value=""/>
-                    <a class="btn add-coupon" href="javascript:void(0);" hidefocus="true">添加</a>
-                    <span style="font-size:12px;line-height: 36px;"><strong>可批量验证，每次最多可添加10张</strong></span>
-                </div>
+<div class="bd batch-verify">
+    <h2>${title}</h2>
+
+    <form id="coupon-form" action="@{SupplierVerifyECoupons.verify()}" method="post">
+        <div class="field-sect">
+            <div class="field-group">
+                <label>选择分店</label>
+            #{if shop == null}
+                #{select 'shopId', id:"shopId", value:shopId}
+                    #{list items:shopList, as:'shop'}
+                        #{option shop?.id}${shop?.name}#{/option}
+                    #{/list}
+                #{/select}
+            #{/if}
+            #{else}
+                <p>${shop?.name}</p>
+                <input type="hidden" name="shopId" id="shopId" value="${shop?.id}"/>
+            #{/else}
             </div>
-            <table cellspacing="0" cellpadding="0" border="0" class="coupons-table" id="coupons-table">
-                <tr>
-                    <th width="30">序号</th>
-                    <th width="110">输入的券号</th>
-                    <th width="100">商品名称</th>
-                    <th width="70">面值</th>
-                    <th width="85">有效期</th>
-                    <th width="30" class="code">操作</th>
-                    <th width="auto">验证消费提示</th>
-                </tr>
-            </table>
-            <div class="verify-sect">
-                <a id="verify-btn" class="btn batch-verify disabled" href="javascript:void(0);"
-                   hidefocus="true">验证并消费</a>
+            <div class="field-group">
+                <label class="coupon-label" for="enter-coupon">输入券号</label>
+                <input type="text" size="12" maxlength="12" name="coupon" autofocus="true" id="enter-coupon"
+                       class="enter-coupon" value=""/>
+                <a class="btn add-coupon" href="javascript:void(0);" hidefocus="true">添加</a>
+                <span style="font-size:12px;line-height: 36px;"><strong>可批量验证，每次最多可添加10张</strong></span>
             </div>
-        </form>
-        <div class="tip">
-            <h5>怎样验证券？</h5>
-            <ul>
-                <li>输入券号后回车或者点击<strong>【添加】</strong>即可将券号添加到列表中</li>
-                <li>每次最多可以添加10张券，可点击<strong>【删除】</strong>，删除不想要的券号</li>
-                <li>点击<strong>【验证并消费】</strong>后，将会验证列表中的所有券号</li>
-                <li>完成验证后，再次输入券号并点击<strong>【添加】</strong>将自动清空上一批验证的券号</li>
-            </ul>
         </div>
-        <div class="tip">
-            <ul>
-                <li>
-                    <strong>最近验证过的券号: </strong>#{if verifiedCoupons?.size()==0}无#{/if}<span
-                        id="verifiedCoupons">#{list items:verifiedCoupons,as:'couponSn'}${couponSn}#{if !couponSn_isLast}, #{/if}#{/list}</span></li>
-            </ul>
+        <table cellspacing="0" cellpadding="0" border="0" class="coupons-table" id="coupons-table">
+            <tr>
+                <th width="30">序号</th>
+                <th width="110">输入的券号</th>
+                <th width="100">商品名称</th>
+                <th width="70">面值</th>
+                <th width="85">有效期</th>
+                <th width="30" class="code">操作</th>
+                <th width="auto">验证消费提示</th>
+            </tr>
+        </table>
+        <div class="verify-sect">
+            <a id="verify-btn" class="btn batch-verify disabled" href="javascript:void(0);"
+               hidefocus="true">验证并消费</a>
         </div>
+    </form>
+    <div class="tip">
+        <h5>怎样验证券？</h5>
+        <ul>
+            <li>输入券号后回车或者点击<strong>【添加】</strong>即可将券号添加到列表中</li>
+            <li>每次最多可以添加10张券，可点击<strong>【删除】</strong>，删除不想要的券号</li>
+            <li>点击<strong>【验证并消费】</strong>后，将会验证列表中的所有券号</li>
+            <li>完成验证后，再次输入券号并点击<strong>【添加】</strong>将自动清空上一批验证的券号</li>
+        </ul>
+    </div>
+    <div class="tip">
+        <ul>
+            <li>
+                <strong>最近验证过的券号: </strong>#{if verifiedCoupons?.size()==0}无#{/if}<span
+                    id="verifiedCoupons">#{list items:verifiedCoupons,as:'couponSn'}${couponSn}#{if !couponSn_isLast}
+                , #{/if}#{/list}</span></li>
+        </ul>
     </div>
 </div>
 <iframe width=0 height=0 name="refresh-frame" src="/verify/refresh"></iframe>

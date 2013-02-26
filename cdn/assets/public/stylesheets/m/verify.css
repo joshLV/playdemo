@@ -10,38 +10,7 @@
     border-top-right-radius: 3px;
 }
 
-.verify .hd a.curr {
-    background-color: white;
-}
-
-.verify .bd {
-    padding: 20px;
-    background-color: white;
-}
-
 /* 批量验证 {{{ */
-.batch-verify .field-sect {
-    background: #F6F3EA;
-    padding: 15px 20px 5px;
-}
-
-.batch-verify .field-group {
-    position: relative;
-    padding: 5px 10px 5px 100px;
-    margin: 0 auto 10px;
-    overflow: hidden;
-    zoom: 1;
-}
-
-.batch-verify .field-group label {
-    position: absolute;
-    left: 0;
-    width: 80px;
-    font-size: 16px;
-    font-weight: 700;
-    text-align: right;
-}
-
 .batch-verify .field-group select {
     width: 600px;
     height: auto;
