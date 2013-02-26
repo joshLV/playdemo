@@ -95,7 +95,15 @@ function getOnclickCallback(id) {
         if(treeNode.isParent){
             zTree.expandNode(treeNode, null, null, null, true);
         }else{
-            zTree.checkNode(treeNode, !treeNode.checked);
+        /*
+            var id = e.target.id;
+            if (id.indexOf('check', id.length - 'check'.length) !== -1) {
+                //点击的是check
+                zTree.selectNode(treeNode, treeNode.checked);
+            }else {
+                zTree.checkNode(treeNode, !treeNode.checked);
+            }
+        */
             var checkedNodes = zTree.getCheckedNodes();
             $("#" + id + "-show").val(buildCheckedStr(checkedNodes, ",", "name"))
             $("#" + id + "-value").val(buildCheckedStr(checkedNodes, ",", "id"))
@@ -162,5 +170,13 @@ function buildCheckedStr(nodes, sep, property) {
         str += nodes[i][property];
     }
     return str;
+}
+
+
+function  expandSinglePathToRoot(tree, node) {
+    while(node.getParentNode()) {
+        node = node.getParentNode();
+        tree.expandNode(node, true,false)
+    }
 }
 

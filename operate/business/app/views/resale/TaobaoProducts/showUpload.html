@@ -22,8 +22,8 @@
         <div class="control-group">
             <label class="control-label" for="inputTeamTitle">标题名称 *</label>
             <div class="controls">
-                <input type="text" id="inputTeamTitle" class="input-block-level" name="title" maxlength="60" value="${goods.title}">
-                <span class="help-block">不超过60个字符</span>
+                <input type="text" id="inputTeamTitle" class="input-block-level" name="title" data-max-length="60" value="${goods.name}">
+                <span class="help-block">不超过60个字符<span id="inputTeamTitle-monitor"></span></span>
             </div>
         </div>
         <div class="control-group">
@@ -159,7 +159,21 @@
 #{asset.js src:['/ztree/jquery.ztree.all-3.5.min.js'] /}
 <script src="@{'/public/javascripts/ztree-helper.js'}" type="text/javascript" charset="UTF-8"></script>
 <script>
-    var subCategoryData = ${allCategoriesJson.raw()};
+    $("#inputTeamTitle").each(function(){
+        var ele = $(this);
+        var maxLength = parseInt(ele.attr('data-max-length'));
+        var monitor = $('#' + ele.attr('id') + '-monitor');
+        ele.keyup(function (){
+            var length =  ele.val().length;
+            monitor.text('(' + length + '/' + maxLength + ')');
+            monitor.css('color', length > maxLength ? 'red' : 'green');
+        });
+        ele.keyup();
+    });
+    KindEditor.create('textarea',
+    {
+        filterMode:false,
+        allowFileManager:false
+    });
 </script>
-<script src="@@{'/public/javascripts/wuba-products.js'}"></script>
 #{/set}

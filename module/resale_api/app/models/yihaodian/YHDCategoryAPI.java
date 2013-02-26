@@ -3,6 +3,7 @@ package models.yihaodian;
 import cache.CacheCallBack;
 import cache.CacheHelper;
 import org.w3c.dom.Node;
+import play.Play;
 import play.libs.XPath;
 
 import java.util.ArrayList;
@@ -33,6 +34,9 @@ public class YHDCategoryAPI {
     }
 
     public static List<Node> productCategoriesCache(final Long parentId){
+        if (Play.mode.isDev()) {
+            return productCategories(parentId);
+        }
         return CacheHelper.getCache(
                 CacheHelper.getCacheKey(CACHE_KEY, "PRODUCT_CATEGORY_" + parentId ),
                 new CacheCallBack<List<Node>>() {
@@ -60,6 +64,9 @@ public class YHDCategoryAPI {
     }
 
     public static List<Node> merchantCategoriesCache(final Long parentId){
+        if (Play.mode.isDev()) {
+            return merchantCategories(parentId);
+        }
         return CacheHelper.getCache(
                 CacheHelper.getCacheKey(CACHE_KEY, "MERCHANT_CATEGORY_" + parentId),
                 new CacheCallBack<List<Node>>() {
@@ -86,6 +93,9 @@ public class YHDCategoryAPI {
     }
 
     public static List<Node> brandsCache(){
+        if (Play.mode.isDev()) {
+            return brands();
+        }
         return CacheHelper.getCache(
                 CacheHelper.getCacheKey(CACHE_KEY, "BRANDS"),
                 new CacheCallBack<List<Node>>() {

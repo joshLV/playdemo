@@ -2,7 +2,7 @@
     *{ 合作伙伴团购产品ID [必填] }*
     <VenderTeamId>${venderTeamId}</VenderTeamId>
     *{ 团购标题名称  最长200个[必填] }*
-    <TeamTitle><![CDATA[${teamTitle.raw().trim()}]]></TeamTitle>
+    <TeamTitle><![CDATA[${teamTitle.trim().raw()}]]></TeamTitle>
     *{ 团购所在城市ID [必填] }*
     <CityId>${cityId}</CityId>
     *{ 团购所属区域商圈ID列表 商圈ID总数不可超过20个(含20个) 非必填 }*
@@ -26,12 +26,10 @@
     <GroupId>${groupId}</GroupId>
     *{ 团购所属二级分类ID列表 二级分类最多填写3个 所有二级分类ID需同属一个一级分类 非必填 }*
     <Group2List>
-        #{list items:group2List, as:'group'}
-        <GroupId>${group}</GroupId>
-        #{/list}
+        <GroupId>${group2}</GroupId>
     </Group2List>
     *{ 团购产品名称 最长12个字符[必填] }*
-    <Title><![CDATA[${title.raw()}]]></Title>
+    <Title><![CDATA[${title.trim().raw()}]]></Title>
     *{ 团购主图  此为图片链接地址http开头，图片尺寸为440*280，图片大小在100kb以内 [必填] }*
     <GrouponBImg>${grouponBImg}</GrouponBImg>
     *{ 团购原价 仅数字，精确到分（小数点后2位），必须大于0并且大于团购现价 e.g:58元传递5800 [必填] }*

@@ -108,13 +108,6 @@ function batchAddCityNode(id, name) {
         tree.addNodes(null, cityNode, false);
     });
 }
-function  expandSinglePathToRoot(tree, node) {
-    while(node.getParentNode()) {
-        node = node.getParentNode();
-        tree.expandNode(node, true,false)
-    }
-}
-
 $(function(){
     //上传图片
     KindEditor.ready(function (K) {
@@ -142,6 +135,17 @@ $(function(){
     {
         filterMode:false,
         allowFileManager:false
+    });
+    $("#inputTeamTitle, #inputTitle, #inputListShortTitle").each(function(){
+        var ele = $(this);
+        var maxLength = parseInt(ele.attr('data-max-length'));
+        var monitor = $('#' + ele.attr('id') + '-monitor');
+        ele.keyup(function (){
+            var length =  ele.val().length;
+            monitor.text('(' + length + '/' + maxLength + ')');
+            monitor.css('color', length > maxLength ? 'red' : 'green');
+        });
+        ele.keyup();
     });
 
     // 初始化分类树

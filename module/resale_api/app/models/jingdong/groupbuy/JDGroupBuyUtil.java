@@ -86,25 +86,22 @@ public class JDGroupBuyUtil {
         }
 
         // 只有作为京东的响应的时候， resultCode 和 resultMessage 才有用
-        message.resultCode = XPath.selectText("/*/ResultCode", document);
-        if (message.resultCode != null) {
-            message.resultCode = message.resultCode.trim();
-            if (!message.resultCode.equals("200")) {
-                Logger.info("jingdong message is not ok");
-                return message;
-            }
-        }
-
         message.resultMessage = XPath.selectText("/*/ResultMessage", document);
         if (message.resultMessage != null) message.resultMessage = message.resultMessage.trim();
 
-        if(message.encrypt){
-            String rawMessage = XPath.selectText("/*/Data", document).trim();
-            //解析加密字符串
-            String decryptedMessage = JDGroupBuyUtil.decryptMessage(rawMessage);
-            Logger.info("jingdong response decrypted:\n%s", decryptedMessage);
+        message.resultCode = XPath.selectText("/*/ResultCode", document);
+        if (message.resultCode != null)  message.resultCode = message.resultCode.trim();
 
-            message.message = XPath.selectNode("/Message", XML.getDocument(decryptedMessage));
+
+        if(message.encrypt){
+            String rawMessage = XPath.selectText("/*/Data", document);
+            if (rawMessage != null) {
+                //解析加密字符串
+                String decryptedMessage = JDGroupBuyUtil.decryptMessage(rawMessage);
+                Logger.info("jingdong response decrypted:\n%s", decryptedMessage);
+
+                message.message = XPath.selectNode("/Message", XML.getDocument(decryptedMessage));
+            }
 
         } else{
             message.message = XPath.selectNode("/*/Data/Message", document);
