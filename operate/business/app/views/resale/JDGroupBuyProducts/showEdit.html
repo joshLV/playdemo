@@ -156,8 +156,8 @@
                     <div class="control-group">
                         <label class="control-label">团购标题 *</label>
                         <div class="controls">
-                            <input type="text" class="input-block-level" name="teamTitle" value="${goods.name}">
-                            <span class="help-block">不超过100个字符</span>
+                            <input type="text" class="input-block-level" name="teamTitle" value="${goods.name}" id="inputTeamTitle" data-max-length="100">
+                            <span class="help-block">不超过100个字符<span id="inputTeamTitle-monitor"></span></span>
                         </div>
                     </div>
                     <div class="control-group">
@@ -271,6 +271,17 @@ $(function(){
     {
         filterMode:false,
         allowFileManager:false
+    });
+    $("#inputTeamTitle").each(function(){
+        var ele = $(this);
+        var maxLength = parseInt(ele.attr('data-max-length'));
+        var monitor = $('#' + ele.attr('id') + '-monitor');
+        ele.keyup(function (){
+            var length =  ele.val().length;
+            monitor.text('(' + length + '/' + maxLength + ')');
+            monitor.css('color', length > maxLength ? 'red' : 'green');
+        });
+        ele.keyup();
     });
 
 });

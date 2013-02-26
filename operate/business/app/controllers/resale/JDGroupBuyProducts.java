@@ -133,17 +133,17 @@ public class JDGroupBuyProducts extends Controller{
      */
     public static void city(Long id, String type) {
         if (id == null && type == null) {
-            List<Node> cities = JDGroupBuyHelper.queryCity();
+            List<Node> cities = JDGroupBuyHelper.cacheCities();
             renderJSON(jsonStr(cities, true, "city"));
         }
         if (id == null || type == null) {
             error();
         }
         if ("city".equals(type)) {
-            List<Node> districts = JDGroupBuyHelper.queryDistrict(id);
+            List<Node> districts = JDGroupBuyHelper.cacheDistricts(id);
             renderJSON(jsonStr(districts, true, "district"));
         }else if ("district".equals(type)) {
-            List<Node> areas = JDGroupBuyHelper.queryArea(id);
+            List<Node> areas = JDGroupBuyHelper.cacheAreas(id);
             renderJSON(jsonStr(areas, false, "area"));
         }
 
