@@ -14,79 +14,82 @@
 #{/set}
 
 #{set 'navMenu'}
-    <li><a href="/">首　页</a></li>
-    <li><a href="/goods">商品库</a></li>
-    <li><a class="current" href="/library">我的分销库</a></li>
-    <li><a href="/charge">账户充值</a></li>
-    <li><a href="/withdraw">账户提现</a></li>
+<li><a href="/">首　页</a></li>
+<li><a href="/goods">商品库</a></li>
+<li><a class="current" href="/library">我的分销库</a></li>
+<li><a href="/charge">账户充值</a></li>
+<li><a href="/withdraw">账户提现</a></li>
 #{/set}
 
 <div id="content">
-    #{breadcrumbs/breadcrumb breadcrumbs/}
+#{breadcrumbs/breadcrumb breadcrumbs/}
     <div class="main clearfix">
-        #{include "share/left.html"/}
+    #{include "share/left.html"/}
         <div class="section">
             <h3>券订单列表</h3>
+
             <form class="form-horizontal" id="couponsFrm" action="@{Coupons.index()}" method="GET">
                 成交时间：
-                <input class="short-input Wdate" type="text" name="condition.createdAtBegin" value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
-                <input class="short-input Wdate" type="text" name="condition.createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
+                <input class="short-input Wdate" type="text" name="condition.createdAtBegin"
+                       value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"/> -
+                <input class="short-input Wdate" type="text" name="condition.createdAtEnd"
+                       value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})"/>
                 商品名称：
                 <input class="medium-input" type="text" name="condition.goodsName" value="${goodsName}"/>
                 券号：
                 <input class="medium-input" type="text" name="condition.eCouponSn" value="${eCouponSn}"/>
                 订单状态：
-                #{select 'condition.status', id:'status', class:'dingdan_stauts_bg', value:status}
-                    #{option ""}不限#{/option}
-                    #{option "CONSUMED"}&{'coupon.CONSUMED'}#{/option}
-                    #{option "UNCONSUMED"}&{'coupon.UNCONSUMED'}#{/option}
-                    #{option "REFUND"}&{'coupon.REFUND'}#{/option}
-                #{/select}
+            #{select 'condition.status', id:'status', class:'dingdan_stauts_bg', value:status}
+                #{option ""}不限#{/option}
+                #{option "CONSUMED"}&{'coupon.CONSUMED'}#{/option}
+                #{option "UNCONSUMED"}&{'coupon.UNCONSUMED'}#{/option}
+                #{option "REFUND"}&{'coupon.REFUND'}#{/option}
+            #{/select}
 
                 <input type="submit" class="search-btn" value="搜索"/>
             </form>
             <table class="order-tab">
                 <thead>
-                    <tr class="col-name">
-                        <th width="220">商品名称</th>
-                        <th width="120">劵号</th>
-                        <th width="60">价格</th>
-                        <th width="100">消费时间</th>
-                        <th width="100">过期时间</th>
-                        <th width="80">状态</th>
-                        <th width="90">操作</th>
-                    </tr>
+                <tr class="col-name">
+                    <th width="220">商品名称</th>
+                    <th width="120">劵号</th>
+                    <th width="60">价格</th>
+                    <th width="100">消费时间</th>
+                    <th width="100">过期时间</th>
+                    <th width="80">状态</th>
+                    <th width="90">操作</th>
+                </tr>
                 </thead>
-                #{paginate.list items:couponsList, as:'coupon'}
+            #{paginate.list items:couponsList, as:'coupon'}
                 <tbody>
-                    <tr class="sep-row">
-                        <td colspan="7"></td>
-                    </tr>
-                    <tr class="order-hd">
-                        <td colspan="7">
-                            <span class="order-no">订单号：${coupon.order.orderNumber}</span>
-                            <span class="order-time">成交时间：${coupon.createdAt}</span>
-                        </td>
-                    </tr>
-                    <tr class="order-bd">
-                        <td>${coupon.goods.name}</td>
-                        <td>${coupon?.getMaskedEcouponSn()}</td>
-                        <td id="price_${coupon.id}">${coupon.salePrice?.formatCurrency('CNY').raw()}</td>
-                        <td>${coupon.consumedAt}</td>
-                        <td>${coupon.expireAt?.format()}</td>
-                        <td><span id="status_apply_${coupon.id}">&{'coupon.'+coupon.status}</span></td>
-                        <td class="action">
-                            #{if coupon.status == models.order.ECouponStatus.UNCONSUMED }
+                <tr class="sep-row">
+                    <td colspan="7"></td>
+                </tr>
+                <tr class="order-hd">
+                    <td colspan="7">
+                        <span class="order-no">订单号：${coupon.order.orderNumber}</span>
+                        <span class="order-time">成交时间：${coupon.createdAt}</span>
+                    </td>
+                </tr>
+                <tr class="order-bd">
+                    <td>${coupon.goods.name}</td>
+                    <td>${coupon?.getMaskedEcouponSn()}</td>
+                    <td id="price_${coupon.id}">${coupon.salePrice?.formatCurrency('CNY').raw()}</td>
+                    <td>${coupon.consumedAt}</td>
+                    <td>${coupon.expireAt?.format()}</td>
+                    <td><span id="status_apply_${coupon.id}">&{'coupon.'+coupon.status}</span></td>
+                    <td class="action">
+                        #{if coupon.status == models.order.ECouponStatus.UNCONSUMED  && coupon?.isFreeze!=1}
                             <a href="/ecoupons/refund/${coupon.id}" name="apply_refund" id="apply_${coupon.id}">申请退款</a>
-                            #{/if}
-                        </td>
-                    </tr>
+                        #{/if}
+                    </td>
+                </tr>
                 </tbody>
-                #{/paginate.list}
+            #{/paginate.list}
             </table>
             <div class="pagination">
                 <ul>
-                    #{paginate.controls items:couponsList /}
+                #{paginate.controls items:couponsList /}
                 </ul>
             </div>
         </div>

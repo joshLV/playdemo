@@ -151,7 +151,8 @@ public class OrdersCondition {
                 paramsMap.put("user", resaler.id);
             }
         }
-        if (outerOrderId != null) {
+
+        if (StringUtils.isNotBlank(outerOrderId)) {
             OuterOrder outerOrder = OuterOrder.find("orderId=?", outerOrderId).first();
             if (outerOrder != null) {
                 sql.append(" and o.id=:orderId");
@@ -163,10 +164,7 @@ public class OrdersCondition {
 
         //CRM  查询订单
         if (StringUtils.isNotBlank(allSearch)) {
-
-
             sql.append(" and o.userType = models.accounts.AccountType.CONSUMER");
-
 
             sql.append(" and o.orderNumber = :allSearch");
             paramsMap.put("allSearch", allSearch);
@@ -190,7 +188,6 @@ public class OrdersCondition {
             sql.append(" or o.userId in (select u.id from User u where o.userId = u.id and u.mobile=:allSearch )");
             paramsMap.put("allSearch", allSearch);
 
-
         }
 
         //按照手机检索
@@ -198,7 +195,6 @@ public class OrdersCondition {
             sql.append(" and o.id in (select o.id from o.orderItems oi where oi.phone =:phone)");
             paramsMap.put("phone", searchItems);
         }
-
 
         return sql.toString();
     }
