@@ -1,0 +1,14 @@
+#{if "add".equals(action)}
+<div class="control-group">
+    <label class="control-label"><span style="color: red; ">*</span>商户</label>
+
+    <div class="controls">
+        #{layout_operate.selectInputField name:"supplierName", id:"sku.supplierId", list:supplierList/}
+        <span class="error">#{error 'sku.supplierId'/}</span>
+    </div>
+</div>
+#{/if}
+#{else}
+<input type="hidden" name="sku.supplierId" value="${sku?.supplierId}">
+    #{layout_operate.textField name:'sku.supplierId', value:sku?.supplierId, disabled:true/}
+#{/else}
