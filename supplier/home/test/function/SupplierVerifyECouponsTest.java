@@ -96,8 +96,7 @@ public class SupplierVerifyECouponsTest extends FunctionalTest {
         assertEquals("[\"消费成功.\"]", getContent(response));
 
         SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
-        assertSMSContentMatch("您尾号" + coupon.getLastCode(4)
-                + "的券号于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：400-6262-166",
+        assertSMSContentMatch("已成功消费，使用门店：" + shop.name + "。如有疑问请致电：400-6262-166",
                 msg.getContent());
 
     }
@@ -138,6 +137,6 @@ public class SupplierVerifyECouponsTest extends FunctionalTest {
 
     protected static void assertSMSContentLength(String content) {
         assertTrue("短信内容(" + content + ")超过67字符, size:" + content.length(),
-                content.length() <= 67);
+                content.length() <= 200);
     }
 }

@@ -13,6 +13,9 @@ import operate.rbac.annotations.ActiveNavigation;
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
+import util.transaction.RemoteRecallCheck;
+import util.transaction.TransactionCallback;
+import util.transaction.TransactionRetry;
 
 import java.util.Date;
 import java.util.List;
@@ -83,9 +86,8 @@ public class OperateVerifyCoupons extends Controller {
             Validation.addError("error-info", "对不起，该券不能在此门店使用!");
         }
 
-        Shop shop = Shop.findById(shopId);
         if (Validation.hasErrors()) {
-            render("OperateVerifyCoupons/index.html", shop, ecoupon, supplierId, shopList);
+            render("OperateVerifyCoupons/index.html", ecoupon, supplierId, shopList);
         }
     }
 
@@ -94,12 +96,38 @@ public class OperateVerifyCoupons extends Controller {
      *
      * @param eCouponSn 券号
      */
-    public static void update(Long shopId, Long supplierId, String eCouponSn, Date consumedAt, String remark) {
+    public static void update(final Long shopId, final Long supplierId, final String eCouponSn, final Date consumedAt, final String remark) {
         List<Supplier> supplierList = Supplier.findUnDeleted();
-        List<Shop> shopList = Shop.findShopBySupplier(supplierId);
-        ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
+        final List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+
         renderArgs.put("supplierList", supplierList);
         renderArgs.put("supplierId", supplierId);
+        renderArgs.put("shopList", shopList);
+
+        // 设置RemoteRecallCheck所使用的标识ID，下次调用时不会再重试.
+        RemoteRecallCheck.setId("COUPON_" + eCouponSn);
+        Boolean result = TransactionRetry.run(new TransactionCallback<Boolean>() {
+            @Override
+            public Boolean doInTransaction() {
+                return doUpdateVerify(shopId, supplierId, eCouponSn, consumedAt, remark, shopList);
+            }
+        });
+
+        if (result != null && result) {
+            renderArgs.put("success_info", "true");
+            // 成功验证券，发短信给消费者
+            Shop shop = Shop.findById(shopId);
+            ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
+            String dateTime = DateUtil.getNowTime();
+            String coupon = ecoupon.getLastCode(4);
+            SMSUtil.send("您尾号" + coupon + "券于" + dateTime
+                    + "成功消费，门店：" + shop.name + "。客服4006262166", ecoupon.orderItems.phone, ecoupon.replyCode);
+        }
+        render("OperateVerifyCoupons/index.html");
+    }
+
+    private static Boolean doUpdateVerify(Long shopId, Long supplierId, String eCouponSn, Date consumedAt, String remark, List<Shop> shopList) {
+        ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
         //check券和门店
         checkCoupon(ecoupon, shopId, supplierId, shopList);
 
@@ -108,6 +136,8 @@ public class OperateVerifyCoupons extends Controller {
             Validation.addError("error-info", ecouponStatusDescription);
         }
         Shop shop = Shop.findById(shopId);
+        renderArgs.put("shop", shop);
+        renderArgs.put("ecoupon", ecoupon);
         if (ecoupon.status == ECouponStatus.UNCONSUMED) {
             String historyRemark = "运营平台代理验证，原因:" + remark;
             if (!ecoupon.consumeAndPayCommission(shopId, OperateRbac.currentUser(), null, VerifyCouponType.OP_VERIFY,
@@ -115,16 +145,11 @@ public class OperateVerifyCoupons extends Controller {
                 Validation.addError("error-info", "第三方" + ecoupon.partner + "券验证失败！请确认券状态(是否过期或退款等)！");
             }
             if (Validation.hasErrors()) {
-                render("OperateVerifyCoupons/index.html", shop, ecoupon, shopList);
+                return Boolean.FALSE;
             }
-            // 发给消费者
-            String dateTime = DateUtil.getNowTime();
-            String coupon = ecoupon.getLastCode(4);
-            SMSUtil.send("您尾号" + coupon + "券于" + dateTime
-                    + "成功消费，门店：" + shop.name + "。客服4006262166", ecoupon.orderItems.phone, ecoupon.replyCode);
+            return Boolean.TRUE;
         }
-        renderArgs.put("success_info", "true");
-        render("OperateVerifyCoupons/index.html", shop, ecoupon, shopList);
+        return Boolean.FALSE; //这里不应该出现
     }
 
     /**

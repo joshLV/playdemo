@@ -204,6 +204,18 @@ public class DateUtil {
     }
 
     /**
+     * 字符串转化成日期
+     *
+     * @param date         日期字符串
+     * @param formatPattern 转化格式
+     * @return
+     */
+    public static String dateToString(Date date, String formatPattern) {
+        SimpleDateFormat formatDate = new SimpleDateFormat(formatPattern);
+        return formatDate.format(date);
+    }
+
+    /**
      * 根据给定时间段和间隔天数，返回指定时间字符串列表
      *
      * @param beginAt

@@ -14,7 +14,11 @@ import org.apache.commons.lang.StringUtils;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.With;
+import util.transaction.RemoteRecallCheck;
+import util.transaction.TransactionCallback;
+import util.transaction.TransactionRetry;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,32 +102,47 @@ public class SupplierVerifyECoupons extends Controller {
     /**
      * 验证多个券
      */
-    public static void verify(Long shopId, String[] eCouponSns) {
-        Long supplierId = SupplierRbac.currentUser().supplier.id;
-        Shop shop = Shop.findById(shopId);
-
-        List<String> eCouponResult = new ArrayList<>();
+    public static void verify(final Long shopId, String[] eCouponSns) {
+        final Long supplierId = SupplierRbac.currentUser().supplier.id;
+        final List<String> eCouponResult = new ArrayList<>();
+        final List<ECoupon> needSmsECoupons = new ArrayList<>();
         if (ArrayUtils.isNotEmpty(eCouponSns)) {
             for (String eCouponSn : eCouponSns) {
-                ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
-                String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
-                if (StringUtils.isNotEmpty(ecouponStatusDescription)) {
-                    eCouponResult.add(ecouponStatusDescription);
-                    continue;
-                }
-                if (ecoupon.status == ECouponStatus.UNCONSUMED) {
-                    if (!ecoupon.consumeAndPayCommission(shopId, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
-                        eCouponResult.add("第三方" + ecoupon.partner + "券验证失败！请确认券状态(是否过期或退款等)！");
-                        continue;
+                final String stripedECouponSN = StringUtils.strip(eCouponSn);
+                // 设置RemoteRecallCheck所使用的标识ID，下次调用时不会再重试.
+                RemoteRecallCheck.setId("COUPON_" + eCouponSn);
+                // 使用事务重试
+                String result = TransactionRetry.run(new TransactionCallback<String>() {
+                    @Override
+                    public String doInTransaction() {
+                        return doVerify(shopId, supplierId, stripedECouponSN, needSmsECoupons);
                     }
+                });
+                eCouponResult.add(result != null ? result : "调用失败");
 
-                    sendVerifySMS(ecoupon, shop.name);
-                    eCouponResult.add("消费成功.");
-                }
             }
         }
+        sendVerifySMS(needSmsECoupons, shopId);
 
         renderJSON(eCouponResult);
+    }
+
+    private static String doVerify(Long shopId, Long supplierId,
+                                String eCouponSn, List<ECoupon> needSmsECoupons) {
+        ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
+        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
+        if (StringUtils.isNotEmpty(ecouponStatusDescription)) {
+            return ecouponStatusDescription;
+        }
+        if (ecoupon.status == ECouponStatus.UNCONSUMED) {
+            if (!ecoupon.consumeAndPayCommission(shopId, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
+                return "第三方" + ecoupon.partner + "券验证失败！请确认券状态(是否过期或退款等)！";
+            }
+
+            needSmsECoupons.add(ecoupon);
+            return "消费成功.";
+        }
+        return "此券状态" + ecoupon.status + "非法！请联系客服";
     }
 
     /**
@@ -140,11 +159,23 @@ public class SupplierVerifyECoupons extends Controller {
 
     }
 
-    private static void sendVerifySMS(ECoupon eCoupon, String shopName) {
+    private static void sendVerifySMS(List<ECoupon> eCoupons, Long shopId) {
+        if (eCoupons.size() == 0) {
+            return; //没有需要发的短信
+        }
+        final Shop shop = Shop.findById(shopId);
+        ECoupon eCoupon = eCoupons.get(0);
+        BigDecimal sumFaceValue = BigDecimal.ZERO;
+        List<String> availableECouponSNs = new ArrayList<>();
+        for (ECoupon ae : eCoupons) {
+            availableECouponSNs.add(ae.eCouponSn);
+            sumFaceValue = sumFaceValue.add(ae.faceValue);
+        }
+
         String dateTime = DateUtil.getNowTime();
-        String ecouponSNLast4Code = eCoupon.getLastCode(4);
+
         // 发给消费者
-        SMSUtil.send2("您尾号" + ecouponSNLast4Code + "的券号于" + dateTime
-                + "已成功消费，使用门店：" + shopName + "。如有疑问请致电：400-6262-166", eCoupon.orderItems.phone, eCoupon.replyCode);
+        SMSUtil.send2("您的券" + StringUtils.join(availableECouponSNs, "/") + "(共" + eCoupons.size() + "张面值" + sumFaceValue.setScale(0) + ")于" + dateTime
+                + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：400-6262-166", eCoupon.orderItems.phone, eCoupon.replyCode);
     }
 }
