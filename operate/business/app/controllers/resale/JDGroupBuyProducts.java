@@ -1,6 +1,7 @@
 package controllers.resale;
 
 import com.google.gson.Gson;
+import com.thoughtworks.xstream.mapper.ArrayMapper;
 import controllers.OperateRbac;
 import models.operator.OperateUser;
 import models.jingdong.groupbuy.JDGroupBuyHelper;
@@ -41,7 +42,7 @@ public class JDGroupBuyProducts extends Controller{
      * 上传商品
      */
     @ActiveNavigation("resale_partner_product")
-    public static void upload(Long venderTeamId) {
+    public static void upload(Long venderTeamId, String areas) {
         //查找商品
         Goods goods = Goods.findById(venderTeamId);
         if (goods == null) {
@@ -56,8 +57,26 @@ public class JDGroupBuyProducts extends Controller{
         }
         params.remove("body");
         params.put("venderTeamId", product.goodsLinkId);
-        String jsonData =  new Gson().toJson(params);//添加shop前先把参数给输出了
 
+        String areasArray[] = areas.split(",");
+        Map<String, List<String>> areaMap = new HashMap<>();
+        for (String area: areasArray) {
+            String tmp[] = area.split("-");
+            List<String> t = areaMap.get(tmp[0]);
+            if (t == null) {
+                t = new ArrayList<>();
+                t.add(tmp[1]);
+                areaMap.put(tmp[0], t);
+            }else {
+                t.add(tmp[1]);
+            }
+
+        }
+        params.remove("areas");
+        params.put("areaMap", areaMap);
+
+
+        String jsonData =  new Gson().toJson(params);//添加shop前先把参数给输出了
         params.put("shops", goods.getShopList());
 
         //提交请求

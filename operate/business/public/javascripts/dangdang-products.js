@@ -31,7 +31,7 @@ function buildZTreeSource(categories) {
 }
 function getTreeSettings(treeId) {
     var treeCallbacks = {}
-    $.extend(treeCallbacks,getSinglePathCallbacks(treeId),getAutoExpandCallbacks(treeId))
+    $.extend(treeCallbacks,getSinglePathCallbacks(treeId+"-tree"),getOnclickCallback(treeId))
 
     return {
         check:{
@@ -59,9 +59,11 @@ $(function(){
         allowFileManager:false
     });
     //初始化分类tree
-    $.fn.zTree.init($("#categoryTree"), getTreeSettings("categoryTree"), buildZTreeSource(categories));
+    $.fn.zTree.init($("#category-tree"), getTreeSettings("category"), buildZTreeSource(categories));
+    $("#category-show").click(showTreeFunc('category'));
+
     $("#submit").click(function(){
-        var categoryTree = $.fn.zTree.getZTreeObj('categoryTree');
+        var categoryTree = $.fn.zTree.getZTreeObj('category-tree');
         var checkedNodes = categoryTree.getCheckedNodes(true)
         if (checkedNodes.length==0) {
             alert('请选择分类');return false;
