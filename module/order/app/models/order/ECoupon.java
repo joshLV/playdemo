@@ -575,8 +575,7 @@ public class ECoupon extends Model {
         if (supplierUser != null) {
             this.supplierUser = supplierUser;
             operator = supplierUser.loginName;
-        }
-        else if (operateUser != null) {
+        } else if (operateUser != null) {
             this.operateUserId = operateUser.id;
             operator = "运营人员:" + operateUser.userName;
         }
@@ -762,7 +761,11 @@ public class ECoupon extends Model {
             returnFlg = "{\"error\":\"no such eCoupon\"}";
             return returnFlg;
         }
-
+        //刷单的不可退款
+        if (eCoupon.isCheatedOrder) {
+            returnFlg = "{\"error\":\"cheated order can't refund\"}";
+            return returnFlg;
+        }
         if (eCoupon.status == ECouponStatus.CONSUMED || eCoupon.status == ECouponStatus.REFUND) {
             returnFlg = "{\"error\":\"can not apply refund with this goods\"}";
             return returnFlg;
@@ -1138,7 +1141,7 @@ public class ECoupon extends Model {
         if (StringUtils.isBlank(phone)) {
             phone = eCoupon.orderItems.phone;
         }
-        SMSUtil.send( (StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
+        SMSUtil.send((StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
                 "截止" + dateFormat.format(eCoupon.expireAt) + ",客服：4006262166", phone, eCoupon.replyCode);
     }
 
@@ -1168,7 +1171,7 @@ public class ECoupon extends Model {
         }
         //        send(eCoupon, phone);
 
-        SMSUtil.send( (StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]")) + "券号"
+        SMSUtil.send((StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name + "[" + eCoupon.goods.faceValue + "元]")) + "券号"
                 + eCoupon.eCouponSn + "," +
                 "截止" + dateFormat.format(eCoupon.expireAt) + content + "客服：4006262166", phone, eCoupon.replyCode);
     }
