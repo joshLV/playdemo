@@ -26,12 +26,12 @@ public class RemoteRecallCheck {
     private static ThreadLocal<Boolean> _needRecall = new ThreadLocal<>();
 
     public static <T> T call(final String callPrefix, final RemoteCallback<T> callback) {
-        if (getCallId() == null) {
+        if (getId() == null) {
             // 调用前没有设置callId，认为是不需要CallRecallCheck（兼容旧的调用者）
             return callback.doCall();
         }
-        String cacheNeedRecallKey = "REMRECALL_" + callPrefix + getCallId();
-        String cacheResultKey = "REMCALLRESULT_" + callPrefix + getCallId();
+        String cacheNeedRecallKey = "REMRECALL_" + callPrefix + getId();
+        String cacheResultKey = "REMCALLRESULT_" + callPrefix + getId();
         Boolean needRecall = CacheHelper.getCache(cacheNeedRecallKey, "3h", new CacheCallBack<Boolean>() {
             @Override
             public Boolean loadData() {
@@ -59,7 +59,7 @@ public class RemoteRecallCheck {
     public static void setId(String callId) {
         _callId.set(callId);
     }
-    public static String getCallId() {
+    public static String getId() {
         if (_callId.get() == null) {
             // 没有设置过callId，则return null，以实现不支持RecallCheck的功能
             return null;
