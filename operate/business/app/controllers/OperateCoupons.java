@@ -61,9 +61,6 @@ public class OperateCoupons extends Controller {
         BigDecimal amountSummary = ECoupon.summary(couponPage);
         //判断角色是否有解冻券号的权限
         boolean hasRight = ContextedPermission.hasPermission("COUPON_UNFREEZE");
-
-        System.out.println(couponPage.get(0).getSafeECouponSN() + "===couponPage.get(0).getSafeECouponSN()>>");
-
         render(couponPage, condition, amountSummary, hasRight, hasEcouponRefundPermission, hasViewEcouponSnPermission);
     }
 
@@ -143,11 +140,8 @@ public class OperateCoupons extends Controller {
             render("OperateCoupons/refund.html", action, couponNoRefund, coupon, couponId, refundComment);
         }
         String returnFlg = "";
-        if (ecoupon.status == ECouponStatus.UNCONSUMED && ecoupon.order.userType == AccountType.CONSUMER) {
-            returnFlg = ECoupon.applyRefund(ecoupon, ecoupon.order.userId, AccountType.CONSUMER, OperateRbac.currentUser().userName, refundComment);
-        }
-        if (ecoupon.status == ECouponStatus.UNCONSUMED && ecoupon.order.userType == AccountType.RESALER) {
-            returnFlg = ECoupon.applyRefund(ecoupon, ecoupon.order.userId, AccountType.RESALER, OperateRbac.currentUser().userName, refundComment);
+        if (ecoupon.status == ECouponStatus.UNCONSUMED && (ecoupon.order.userType == AccountType.CONSUMER || ecoupon.order.userType == AccountType.RESALER)) {
+            returnFlg = ECoupon.applyRefund(ecoupon, ecoupon.order.userId, ecoupon.order.userType, OperateRbac.currentUser().userName, refundComment);
         }
         String message = "";
         if (returnFlg == "{\"error\":\"ok\"}") {
