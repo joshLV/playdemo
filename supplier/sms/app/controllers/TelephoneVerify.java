@@ -170,7 +170,7 @@ public class TelephoneVerify extends Controller {
             }
             */
             // 设置RemoteRecallCheck所使用的标识ID，下次调用时不会再重试.
-        RemoteRecallCheck.setCallId("COUPON_" + ecoupon.id);
+        RemoteRecallCheck.setId("COUPON_" + ecoupon.eCouponSn);
         String resultCode = TransactionRetry.run(new TransactionCallback<String>() {
             @Override
             public String doInTransaction() {

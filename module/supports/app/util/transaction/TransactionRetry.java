@@ -9,7 +9,7 @@ import play.db.jpa.JPA;
  * Time: 下午3:58
  */
 public class TransactionRetry {
-    private static final int MAX_TRIED_TIMES = 10;
+    private static final int MAX_TRIED_TIMES = 15;
     public static <T> T run(TransactionCallback<T> callback) {
         for (int i = 0; i < MAX_TRIED_TIMES; i++) {
             try {

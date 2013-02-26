@@ -47,8 +47,8 @@ public class RemoteRecallCheck {
         } else {
             t = CacheHelper.getCache(cacheResultKey);
         }
-        Logger.info("RemoteRecallCheck.call: cacheNeedRecallKey=" + cacheNeedRecallKey + ", value=" + needRecall +
-                ", t=" + t);
+        Logger.info("RemoteRecallCheck.call: cacheNeedRecallKey=" + cacheNeedRecallKey +
+                ", value=" + needRecall + ", t=" + t);
 
         CacheHelper.setCache(cacheNeedRecallKey, getNeedRecall(), "3h"); //记录是否要重试
 
@@ -56,7 +56,7 @@ public class RemoteRecallCheck {
         return t;
     }
 
-    public static void setCallId(String callId) {
+    public static void setId(String callId) {
         _callId.set(callId);
     }
     public static String getCallId() {
@@ -67,9 +67,21 @@ public class RemoteRecallCheck {
         return _callId.get();
     }
 
-    public static void setNeedRecall(Boolean value) {
+    private static void setNeedRecall(Boolean value) {
         _needRecall.set(value);
     }
+
+    public static void signAsNeedRecall() {
+        _needRecall.set(Boolean.TRUE);
+    }
+
+    /**
+     * 声明为调用成功，下次不再调用
+     */
+    public static void singAsSuccess() {
+        _needRecall.set(Boolean.FALSE);
+    }
+
     public static Boolean getNeedRecall() {
         if (_needRecall.get() == null) {
             // 没有设置过needRecall，则默认为truee，需要重调用。

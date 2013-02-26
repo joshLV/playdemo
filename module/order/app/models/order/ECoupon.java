@@ -519,7 +519,7 @@ public class ECoupon extends Model {
     }
 
     public boolean consumeAndPayCommission(Long shopId, OperateUser operateUser, SupplierUser supplierUser, VerifyCouponType type,
-                                           String triggerCouponSn, Date consumedAt, String remark) {
+                                           String triggerCouponSn, Date realConsumedAt, String remark) {
 
         //===================判断是否第三方订单产生的券=并且不是导入券============================
         if (this.createType != ECouponCreateType.IMPORT) {
@@ -528,7 +528,7 @@ public class ECoupon extends Model {
             }
         }
         //===================券消费处理开始=====================================
-        if (consumed(shopId, operateUser, supplierUser, type, consumedAt, remark)) {
+        if (consumed(shopId, operateUser, supplierUser, type, realConsumedAt, remark)) {
             payCommission();
             this.triggerCouponSn = triggerCouponSn; //记录批量验证时所使用的券号
             this.save();
@@ -546,12 +546,14 @@ public class ECoupon extends Model {
         return RemoteRecallCheck.call("verify_coupon", new RemoteCallback<Boolean>() {
             @Override
             public Boolean doCall() {
-                Boolean result = verifyOnPartnerResaler();
+                Boolean failed = verifyOnPartnerResaler();
                 // 记录日志验证失败
-                Logger.info("verifyAndCheckOnPartnerResaler: SN:" + eCouponSn + ", result:" + result);
-                // 需要重试.
-                RemoteRecallCheck.setNeedRecall(result);
-                return result;
+                Logger.info("verifyAndCheckOnPartnerResaler: SN:" + eCouponSn + ", result:" + failed);
+                if (!failed) {
+                    // 不需要重试.
+                    RemoteRecallCheck.singAsSuccess();
+                }
+                return failed;
             }
         });
     }
@@ -561,30 +563,32 @@ public class ECoupon extends Model {
      * @return TRUE表示验证失败；FALSE表示验证成功
      */
     private Boolean verifyOnPartnerResaler() {
+        Boolean failed = Boolean.TRUE;
+        Boolean success = Boolean.FALSE;
         if (this.partner == ECouponPartner.DD) {
             if (!DDGroupBuyUtil.verifyOnDangdang(this)) {
                 Logger.info("verify on dangdang failed");
-                return true;
+                return failed;
             }
         }
 
         if (this.partner == ECouponPartner.JD) {
             if (!JDGroupBuyHelper.verifyOnJingdong(this)) {
                 Logger.info("verify on jingdong failed");
-                return true;
+                return failed;
             }
         } else if (this.partner == ECouponPartner.WB) {
             if (!WubaUtil.verifyOnWuba(this)) {
                 Logger.info("verify on wuba failed");
-                return true;
+                return failed;
             }
         } else if (this.partner == ECouponPartner.TB) {
             if (!TaobaoCouponUtil.verifyOnTaobao(this)) {
                 Logger.info("verify on taobao failed");
-                return true;
+                return failed;
             }
         }
-        return false;
+        return success;
     }
 
     /**
@@ -593,7 +597,7 @@ public class ECoupon extends Model {
      * @return
      */
     private boolean consumed(Long shopId, OperateUser operateUser, SupplierUser supplierUser, VerifyCouponType type,
-                             Date consumedAt, String remark) {
+                             Date realConsumedAt, String remark) {
         if (this.status != ECouponStatus.UNCONSUMED) {
             return false;
         }
@@ -601,7 +605,7 @@ public class ECoupon extends Model {
             this.shop = Shop.findById(shopId);
         }
         this.status = ECouponStatus.CONSUMED;
-        this.consumedAt = consumedAt == null ? new Date() : consumedAt;
+        this.consumedAt = new Date();
         String operator = "";
         if (supplierUser != null) {
             this.supplierUser = supplierUser;
@@ -629,6 +633,10 @@ public class ECoupon extends Model {
         }
         //记录券历史信息
         String historyRemark = StringUtils.isBlank(remark) ? "消费" : remark;
+        if (realConsumedAt != null) {
+            Logger.info("实现消费时间" + realConsumedAt);
+            historyRemark += ",实际消费时间" + DateUtil.dateToString(realConsumedAt, "yyyy-MM-dd");
+        }
         ECouponHistoryMessage.with(this).operator(operator).remark(historyRemark)
                 .fromStatus(this.status).toStatus(ECouponStatus.CONSUMED).sendToMQ();
         return true;
