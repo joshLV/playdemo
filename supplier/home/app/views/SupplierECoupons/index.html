@@ -9,15 +9,19 @@
 
     <form class="well form-inline" name="frmlist" id="frmlist" action="@{SupplierECoupons.index()}" method="GET">
         <div class="field-sect">
-
             <div class="field-group">
                 <label>选择分店</label>
-            #{select 'condition.shopId', id:shopId, value:condition?.shopId}
-                #{if shopList?.size()>1}#{option ""}全部#{/option}#{/if}
+            #{if shopList?.size()>1}#{select 'condition.shopId', id:shopId, value:condition?.shopId}
+                #{option ""}全部#{/option}
                 #{list items:shopList, as:'shop'}
                     #{option shop?.id}${shop?.name}#{/option}
                 #{/list}
             #{/select}
+            #{/if}
+            #{else}
+                <p>${shopList?.get(0)?.name}</p>
+                <input type="hidden" name="condition.shopId" id="condition_shopId" value="${shopList?.get(0)?.id}"/>
+            #{/else}
             </div>
             <div class="field-group">
                 <label>验证方式</label>
