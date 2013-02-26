@@ -6,6 +6,7 @@ import models.order.OuterOrderPartner;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Http;
 import play.mvc.Router;
@@ -19,6 +20,7 @@ import java.util.Map;
  * @author likang
  *         Date: 13-2-22
  */
+@Ignore
 public class DDGroupBuyProductsTest extends FunctionalTest{
     Goods goods;
     @Before
