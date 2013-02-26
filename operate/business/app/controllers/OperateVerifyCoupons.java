@@ -113,7 +113,7 @@ public class OperateVerifyCoupons extends Controller {
             }
         });
 
-        if (result) {
+        if (result != null && result) {
             renderArgs.put("success_info", "true");
             // 成功验证券，发短信给消费者
             Shop shop = Shop.findById(shopId);

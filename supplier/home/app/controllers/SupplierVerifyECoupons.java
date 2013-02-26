@@ -118,7 +118,8 @@ public class SupplierVerifyECoupons extends Controller {
                         return doVerify(shopId, supplierId, stripedECouponSN, needSmsECoupons);
                     }
                 });
-                eCouponResult.add(result);
+                eCouponResult.add(result != null ? result : "调用失败");
+
             }
         }
         sendVerifySMS(needSmsECoupons, shopId);
@@ -174,7 +175,7 @@ public class SupplierVerifyECoupons extends Controller {
         String dateTime = DateUtil.getNowTime();
 
         // 发给消费者
-        SMSUtil.send2("您的" + eCoupons.size() + "券" + StringUtils.join(availableECouponSNs, "/") + "(面值" + sumFaceValue.setScale(0) + ")于" + dateTime
+        SMSUtil.send2("您的券" + StringUtils.join(availableECouponSNs, "/") + "(共" + eCoupons.size() + "张面值" + sumFaceValue.setScale(0) + ")于" + dateTime
                 + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：400-6262-166", eCoupon.orderItems.phone, eCoupon.replyCode);
     }
 }

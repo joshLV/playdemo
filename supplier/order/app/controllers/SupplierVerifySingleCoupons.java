@@ -111,7 +111,7 @@ public class SupplierVerifySingleCoupons extends Controller {
             }
         });
 
-        if (success) {
+        if (success != null && success) {
             String dateTime = DateUtil.getNowTime();
             Shop shop = Shop.findById(shopId);
             ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
