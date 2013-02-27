@@ -170,6 +170,7 @@ public class DDGroupBuy extends Controller {
      *
      */
     public static void sendSms(String sign, String data, String call_time) {
+        Logger.info("dangdang sendSms request:\n%s", new Gson().toJson(params));
         String verifySign = DDGroupBuyUtil.sign("send_msg", data, call_time);
         if (StringUtils.isBlank(sign) || !sign.equals(verifySign)) {
             renderError(DDErrorCode.VERIFY_FAILED, "sign验证失败！");
