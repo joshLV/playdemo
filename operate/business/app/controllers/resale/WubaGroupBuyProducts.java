@@ -200,7 +200,7 @@ public class WubaGroupBuyProducts extends Controller {
             endTimeRequestMap.put("groupbuyId", product.goodsLinkId);
             endTimeRequestMap.put("endTime", endTime);
 
-            response = WubaUtil.sendRequest(endTimeRequestMap, "emc.groupbuy.editpartnerbygroupbuy", false);
+            response = WubaUtil.sendRequest(endTimeRequestMap, "emc.groupbuy.editgroupbuyinfo", false);
             if(response.isOk()) {
                 product.lastModifier(operateUser.id).save();
                 ResalerProductJournal.createJournal(product, operateUser.id, new Gson().toJson(endTimeRequestMap),
@@ -240,7 +240,7 @@ public class WubaGroupBuyProducts extends Controller {
                 product.status = ResalerProductStatus.UNKNOWN;
         }
         product.save();
-        redirect("/resaler-products/products/wb/" + product.goodsLinkId);
+        redirect("/resaler-products/products/wb/" + product.goods.id);
     }
 
     @ActiveNavigation("resale_partner_product")
@@ -257,7 +257,7 @@ public class WubaGroupBuyProducts extends Controller {
         }
         product.status = ResalerProductStatus.ONSALE;
         product.save();
-        redirect("/resaler-products/products/wb/" + product.goodsLinkId);
+        redirect("/resaler-products/products/wb/" + product.goods.id);
     }
 
     @ActiveNavigation("resale_partner_product")
@@ -274,6 +274,6 @@ public class WubaGroupBuyProducts extends Controller {
         }
         product.status = ResalerProductStatus.OFFSALE;
         product.save();
-        redirect("/resaler-products/products/wb/" + product.goodsLinkId);
+        redirect("/resaler-products/products/wb/" + product.goods.id);
     }
 }
