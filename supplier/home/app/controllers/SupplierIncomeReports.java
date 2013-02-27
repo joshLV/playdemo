@@ -61,6 +61,7 @@ public class SupplierIncomeReports extends Controller {
         //商品报表
         List<SupplierGoodsReport> goodsReportList = SupplierGoodsReport.getSupplierGoodsReport(supplier.id,
                 goodsId, shopId, fromDate, toDate);
+        //商品销量图
         if ((goodsId == null || goodsId == 0l) && goodsList.size() > 1) {
             List<String> goodsNameList = new ArrayList<>();
             for (SupplierGoodsReport goodsReport : goodsReportList) {
@@ -70,7 +71,13 @@ public class SupplierIncomeReports extends Controller {
             renderArgs.put("goodsNameList", goodsNameList);
             renderArgs.put("goodsChartMap", goodsChartMap);
         }
-        //门店报表
+
+        boolean showSellingState =false;
+        if (supplier.showSellingState!= null && supplier.showSellingState) {
+            goodsReportList = SupplierGoodsReport.getGoodsSellingReport(supplier.id, goodsId, shopId, fromDate, toDate);
+            showSellingState=true;
+        }
+        //门店报表图
         if ((shopId == null || shopId == 0l) && shopList.size() > 1) {
             List<SupplierShopReport> shopChartList = SupplierShopReport.getChartList(supplier.id, goodsId, fromDate, toDate);
             List<String> shopNameList = new ArrayList<>();
@@ -81,7 +88,7 @@ public class SupplierIncomeReports extends Controller {
             renderArgs.put("shopNameList", shopNameList);
             renderArgs.put("shopChartMap", shopChartMap);
         }
-        //每日报表
+        //每日报表图
         List<SupplierDailyReport> dailyChartList = SupplierDailyReport.getChartList(supplier.id, goodsId, shopId, fromDate, toDate);
         Map<String, Long> dailyChartMap = SupplierDailyReport.getChartMap(dailyChartList);
         List<String> dailyList = DateUtil.getDateList(fromDate, toDate, 1, "yyyy-MM-dd");
@@ -90,7 +97,7 @@ public class SupplierIncomeReports extends Controller {
         renderArgs.put("dailyChartMap", dailyChartMap);
 
         renderArgs.put("shopEndHour", StringUtils.isNotEmpty(supplier.shopEndHour) ? supplier.shopEndHour : "23:59");
-        render(goodsId, shopId, fromDate, toDate, shopList, goodsList, goodsReportList);
+        render(goodsId, shopId, fromDate, toDate, shopList, goodsList, goodsReportList,showSellingState);
     }
 
     /**

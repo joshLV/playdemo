@@ -259,12 +259,13 @@ $(function () {
         #{/if}
     });
 
-    });
+});
 </script>
 #{/set}
 <div class="verify">
     <div class="bd batch-verify">
         <h2>${title}</h2>
+
         <form id="report-form" action="@{SupplierIncomeReports.index()}" method="post">
             <div class="field-sect">
                 <div class="field-group">
@@ -294,7 +295,8 @@ $(function () {
                     <input class="time" type="text" id="toDate" name="toDate"
                            value="${toDate?.format('yyyy-MM-dd')}"
                            onfocus="WdatePicker({readOnly:true})"/>
-                    &nbsp;&nbsp;<span style="font-size:12px;line-height: 36px;"><strong>${shopEndHour?"统计时间截止至"+shopEndHour:''}</strong></span>
+                    &nbsp;&nbsp;<span
+                        style="font-size:12px;line-height: 36px;"><strong>${shopEndHour?"统计时间截止至"+shopEndHour:''}</strong></span>
 
                 </div>
                 <div class="field-group">
@@ -305,13 +307,21 @@ $(function () {
             <table cellspacing="0" cellpadding="0" border="0" class="coupons-table" id="coupons-table">
                 <tr>
                     <th>商品</th>
-                    <th width="80">消费量(张)</th>
+                    <th width="80" align="right">消费量(张)</th>
+                #{if showSellingState}
+                    <th width="80" align="right">销售量(张)</th>
+                    <th width="80" align="right">退款量(张)</th>
+                #{/if}
                     <th width="150">消费金额(元)</th>
                 </tr>
             #{list goodsReportList, as:'report'}
                 <tr>
                     <td align="left">${report.goodsName}</td>
                     <td align="right">${report.count}</td>
+                    #{if showSellingState}
+                        <td align="right">${report.soldCount}</td>
+                        <td align="right">${report.refundCount}</td>
+                    #{/if}
                     <td align="right">${report.amount.formatCurrency('CNY')}</td>
                 </tr>
             #{/list}
