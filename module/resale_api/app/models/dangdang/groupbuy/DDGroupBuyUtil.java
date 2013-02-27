@@ -230,6 +230,7 @@ public class DDGroupBuyUtil {
     public static SortedMap<String, String> filterPlayParams(Map<String, String> params) {
         TreeMap<String, String> r = new TreeMap<>(params);
         r.remove("body");
+        r.remove("format");
         return r;
     }
 
