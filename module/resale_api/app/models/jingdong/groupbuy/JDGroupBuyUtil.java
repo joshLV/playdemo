@@ -1,6 +1,7 @@
 package models.jingdong.groupbuy;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import play.Logger;
 import play.Play;
@@ -65,6 +66,9 @@ public class JDGroupBuyUtil {
     }
 
     public static JingdongMessage parseMessage(String document) {
+        if (StringUtils.isBlank(document)) {
+            return new JingdongMessage();
+        }
         Document xmlDocument;
         try{
             xmlDocument = XML.getDocument(document);
