@@ -217,26 +217,25 @@ public class WithdrawApproval extends Controller {
 
     }
 
-    public static void paymentExcelOut(WithdrawBillCondition condition, List<Long> withdrawIds) {
+    public static void paymentExcelOut(List<Long> withdrawIds, WithdrawBillCondition condition) {
         System.out.println(withdrawIds + "===withdrawIds>>");
-//        if (withdrawIds == null || withdrawIds.size() == 0) {
-//            index(condition);
-//        }
+        if (withdrawIds == null || withdrawIds.size() == 0) {
+            index(condition);
+        }
         if (condition == null) {
             condition = new WithdrawBillCondition();
         }
+        condition.ids = withdrawIds;
         String page = request.params.get("page");
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "付款申请单_" + System.currentTimeMillis() + ".xls");
-        JPAExtPaginator<WithdrawBill> billPage = WithdrawBill.findByCondition(condition,
-                1, PAGE_SIZE);
+        JPAExtPaginator<WithdrawBill> billPage = WithdrawBill.findByCondition(condition, 1, PAGE_SIZE);
         for (WithdrawBill bill : billPage) {
             bill.paymentExcelOutAt = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
             bill.operator = OperateRbac.currentUser().userName;
             bill.RMB = toRMB(bill.amount.toString());
 
-            // 结果
-            String result = "";
+            //人民币大写 单独 用一位位阿拉伯数字显示，并在之前加上人民币符号
 
             // 将待转换的数字分解成整数及小数2部分
             String integer = divide(bill.amount.toString(), true);
@@ -371,10 +370,9 @@ public class WithdrawApproval extends Controller {
                 }
 
             }
-
-
         }
         render(billPage);
+//        render();
     }
 
     /**

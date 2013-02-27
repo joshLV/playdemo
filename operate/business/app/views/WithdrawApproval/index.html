@@ -103,10 +103,11 @@
             alert("请选择一条数据！");
             return false;
         }
-        if (confirm("确定要导出付款申请单吗？")) {
+        else {
+            $("#form").attr("action", "@{WithdrawApproval.paymentExcelOut()}");
+            $("#form").attr("method", "get");
+            $("#form").submit();
             return true;
-        } else {
-            return false;
         }
     });
 
@@ -202,16 +203,22 @@
         <li #{if condition.interval=='1y'} class="active" #{/if}  ><a start="1y" href="#">1年内</a></li>
     </ul>
     <input type="hidden" id="condition_interval" name="condition.interval"/>
+
+
     <div class="clearfix">
         <br>
         <a class="btn btn-primary pull-left" href="/withdraw/settle">结算</a>
         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        <a class="btn btn-primary" style="display: none;" href="/withdraw_payment_excel" id="payment_excel">导出付款申请单</a>
+        <button class="btn btn-primary" style="display: none;" type="submit" id="payment_excel">导出付款申请单</button>
+
     </div>
-</form>
 
 
-<br/>
+    <span>
+    *{<a class="btn btn-primary" style="display: none;" href="/withdraw_payment_excel" id="payment_excel">导出付款申请单</a>}*
+    </span>
+
+    <br/>
 #{vx.tab
 name:'withdraw',
 enumItems: [models.accounts.WithdrawBillStatus.APPLIED,
@@ -220,48 +227,48 @@ models.accounts.WithdrawBillStatus.SUCCESS],
 select:'condition_status',
 value:condition.status,
 form:'form'/}
-<div class="row-fluid">
+    <div class="row-fluid">
 
-    <table class="table table-striped">
-        <tr>
-            <th width="50"><input class="select-all" type="checkbox" name="select_all_checkbox"/>全选</th>
-            <th>申请时间</th>
-            <th>账户</th>
-            <th>申 请 者</th>
-            <th>申请金额</th>
-            <th>申请状态</th>
-            <th>审批时间</th>
-            <th>审批人</th>
-            <th>操作</th>
-        </tr>
-    #{paginate.list items:billPage, as:'withdrawBill'}
-        <tr>
-            <td>
-                #{if withdrawBill?.status == models.accounts.WithdrawBillStatus.APPLIED && withdrawBill.account.accountType == models.accounts.AccountType.SUPPLIER }
-                    <input class="select-item" type="checkbox" id="check_withdraw_${withdrawBill.id}"
-                           value="${withdrawBill.id}"
-                           name="withdrawIds"/>
-                #{/if}
-            </td>
-            <td>${withdrawBill.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</td>
-            <td>&{'account.type.' + withdrawBill.account.accountType}#{if org.apache.commons.lang.StringUtils.isNotBlank(withdrawBill.accountName)}
-                (${withdrawBill.accountName})#{/if}</td>
-            <td>${withdrawBill.applier}</td>
-            <td>${withdrawBill.amount.formatCurrency('CNY')}</td>
-            <td>&{'withdraw.' + withdrawBill.status}</td>
-            <td>${withdrawBill.processedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-            <td>${withdrawBill?.operator}</td>
-            <td>
-                <a href="/withdraw/${withdrawBill.id}/detail?uid=${withdrawBill.account.uid}">查看详情 </a>
-            </td>
-        </tr>
-    #{/paginate.list}
-    </table>
-</div>
-<div class="pagination">
-    <ul>
-    #{paginate.controls items:billPage /}
-    </ul>
-</div>
- 
- 
+        <table class="table table-striped">
+            <tr>
+                <th width="50"><input class="select-all" type="checkbox" name="select_all_checkbox"/>全选</th>
+                <th>申请时间</th>
+                <th>账户</th>
+                <th>申 请 者</th>
+                <th>申请金额</th>
+                <th>申请状态</th>
+                <th>审批时间</th>
+                <th>审批人</th>
+                <th>操作</th>
+            </tr>
+        #{paginate.list items:billPage, as:'withdrawBill'}
+            <tr>
+                <td>
+                    #{if withdrawBill?.status == models.accounts.WithdrawBillStatus.APPLIED && withdrawBill.account.accountType == models.accounts.AccountType.SUPPLIER }
+                        <input class="select-item" type="checkbox" id="check_withdraw_${withdrawBill.id}"
+                               value="${withdrawBill.id}"
+                               name="withdrawIds"/>
+                    #{/if}
+                </td>
+                <td>${withdrawBill.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>&{'account.type.' + withdrawBill.account.accountType}#{if org.apache.commons.lang.StringUtils.isNotBlank(withdrawBill.accountName)}
+                    (${withdrawBill.accountName})#{/if}</td>
+                <td>${withdrawBill.applier}</td>
+                <td>${withdrawBill.amount.formatCurrency('CNY')}</td>
+                <td>&{'withdraw.' + withdrawBill.status}</td>
+                <td>${withdrawBill.processedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>${withdrawBill?.operator}</td>
+                <td>
+                    <a href="/withdraw/${withdrawBill.id}/detail?uid=${withdrawBill.account.uid}">查看详情 </a>
+                </td>
+            </tr>
+
+        #{/paginate.list}
+        </table>
+    </div>
+    <div class="pagination">
+        <ul>
+        #{paginate.controls items:billPage /}
+        </ul>
+    </div>
+</form>

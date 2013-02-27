@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,8 +25,8 @@ public class WithdrawBillCondition implements Serializable {
 
     public String searchUser;
 
-
     public String interval;
+    public List<Long> ids;
 
     private Map<String, Object> params = new HashMap<>();
 
@@ -88,6 +89,10 @@ public class WithdrawBillCondition implements Serializable {
             params.put("searchUser", searchUser);
         }
 
+        if (ids != null && ids.size() != 0) {
+            filter.append(" and id in :ids");
+            params.put("ids", ids);
+        }
         return filter.toString();
     }
 
