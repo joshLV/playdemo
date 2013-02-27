@@ -32,7 +32,8 @@
                     <tr class="order-bd">
                         <td align="center">
                             #{if coupon.status == models.order.ECouponStatus.UNCONSUMED }
-                                <input class="select-item" type="checkbox" id="check_coupon_${coupon.id}" value="${coupon.id}" name="couponIds"
+                                <input class="select-item" type="checkbox" id="check_coupon_${coupon.id}"
+                                       value="${coupon.id}" name="couponIds"
                                        #{if coupon?.salePrice <=0 || ( coupon?.orderItems?.secKillGoods!=null )}disabled="true" #{/if}/>
                             #{/if}
                         </td>
