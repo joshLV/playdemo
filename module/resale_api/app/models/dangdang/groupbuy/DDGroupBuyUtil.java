@@ -240,7 +240,7 @@ public class DDGroupBuyUtil {
     public static String signParams(SortedMap<String, String> params) {
         StringBuilder signStr = new StringBuilder();
         for (Map.Entry<String, String> entry : params.entrySet()) {
-            if ("body".equals(entry.getKey()) || "sign".equals(entry.getKey())) {
+            if ("body".equals(entry.getKey()) || "sign".equals(entry.getKey()) || "format".equals(entry.getKey()) ) {
                 continue;
             }
             signStr.append(entry.getKey()).append("=").append(WS.encode(entry.getValue())).append("&");
