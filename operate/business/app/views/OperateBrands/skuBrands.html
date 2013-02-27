@@ -1,0 +1,5 @@
+#{layout_operate.selectField name:'sku.brand.id', value:sku?.brand?.id, error:'sku.brand', required:true}
+    #{list items:brandList, as:'brand'}
+        #{option brand?.id}${brand?.name}#{/option}
+    #{/list}
+#{/layout_operate.selectField}

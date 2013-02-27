@@ -1,5 +1,5 @@
 #{extends 'layout_operate/layout.html' /}
-#{set title:'sku管理' /}
+#{set title:'SKU管理' /}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
@@ -7,6 +7,52 @@
 <div class="body">
 #{form @SkuManage.index() , id:'form',class:"form-horizontal" }
     <legend>${title}</legend>
-
+    <div>SKU名称:<input type="text" name="condition.name" id="skuName" value="${condition?.name}" class="input-medium"/>
+        编码:<input type="text" name="condition.code" id="code" value="${condition?.code}" class="input-medium"/>
+        商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
+            #{vx.selectInputField name:"supplierName", id:"condition.supplierId", list:supplierList, value:condition?.supplierId, array:"supplierArray",importJs:true/}
+        品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
+        #{vx.selectInputField name:"brandName", id:"condition.brandId", list:brandList, array:"brandArray"/}
+        <button class="btn btn-primary" id="search" type="submit">搜索</button>
+    </div>
 #{/form}
+    <table class="table table-striped table-bordered table-condensed">
+        <thead>
+        <tr>
+            <th width="298px">SKU名称</th>
+            <th width="200px">编码</th>
+            <th width="100px">市场价</th>
+            <th width="50px">库存</th>
+            <th width="150px">类别</th>
+            <th width="100px">商户</th>
+            <th width="100px">品牌</th>
+            <th width="150px">创建时间</th>
+            <th width="150px">操 作</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        #{paginate.list items:skuList, as:'sku'}
+        <tr>
+            <td>${sku.name}</td>
+            <td>${sku.code}</td>
+            <td>${sku.marketPrice}</td>
+            <td>${sku.stock}</td>
+            <td>${sku.supplierCategory.name}</td>
+            <td>${sku?.getSupplier()?.otherName}</td>
+            <td>${sku.brand.name}</td>
+            <td>${sku.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td><a href="/sku/${sku.id}/edit?page=${page?:1}">修改</a>
+                / #{vx.deleteLink id:sku?.id, name:sku?.name, action:"/sku"/}
+            </td>
+        </tr>
+        #{/paginate.list}
+        </tbody>
+    </table>
+    <div class="pagination" align="center">
+        <ul>
+        #{paginate.controls items:skuList /}
+        </ul>
+    </div>
 </div>

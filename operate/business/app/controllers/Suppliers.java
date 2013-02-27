@@ -63,8 +63,8 @@ public class Suppliers extends Controller {
         render(operateUserList, supplierCategoryList);
     }
 
-    private static int getPage() {
-        String page = request.params.get("page");
+   private static int getPage() {
+         String page = request.params.get("page");
         if (StringUtils.isNotEmpty(page) && (page.contains("?x-http-method-override=PUT") || page.contains("x-http-method-override=PUT"))) {
             page = page.replace("x-http-method-override=PUT", "").replace("?", "");
         }

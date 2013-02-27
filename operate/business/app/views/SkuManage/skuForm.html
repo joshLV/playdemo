@@ -1,4 +1,12 @@
 #{if "add".equals(action)}
+    #{layout_operate.selectField name:'sku.supplierCategory.id', class:'span2', value:sku?.supplierCategory?.id,
+    error:'sku.supplierCategory', required:true}
+        #{list items:supplierCategoryList, as:'supplierCategory' }
+            #{option supplierCategory?.id}
+            ${supplierCategory?.name}
+            #{/option}
+        #{/list}
+    #{/layout_operate.selectField}
 <div class="control-group">
     <label class="control-label"><span style="color: red; ">*</span>商户</label>
 
@@ -7,8 +15,53 @@
         <span class="error">#{error 'sku.supplierId'/}</span>
     </div>
 </div>
+<div id="brand">
+    #{include '/OperateBrands/skuBrands.html'/}
+</div>
 #{/if}
 #{else}
 <input type="hidden" name="sku.supplierId" value="${sku?.supplierId}">
-    #{layout_operate.textField name:'sku.supplierId', value:sku?.supplierId, disabled:true/}
+<input type="hidden" name="sku.brand.id" value="${sku?.brand?.id}">
+<input type="hidden" name="sku.supplierCategory.id" value="${sku?.supplierCategory?.id}">
+    #{layout_operate.textField name:'sku.supplierCategoryName', value:sku?.supplierCategory.name, disabled:true/}
+    #{layout_operate.textField name:'sku.supplierName', value:sku?.getSupplier()?.otherName, disabled:true/}
+    #{layout_operate.textField name:'sku.brandName', value:sku?.brand?.name, disabled:true/}
 #{/else}
+#{layout_operate.textField name:'sku.name', value:sku?.name, required:true/}
+#{layout_operate.textField name:'sku.marketPrice', value:sku?.marketPrice?:"0", note:'元', required:true/}
+#{layout_operate.textField name:'sku.stock', value:sku?.stock, note:'个', required:true/}
+
+<div class="form-actions">
+    <input class="btn btn-primary" id="save" type="submit" value="保存" #{if "add".equals(action)}disabled#{/if}>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("#supplierName").blur(function () {
+            var found = false;
+            var m = list.length;
+            var id = null;
+            for (i = 0; i < m; i++) {
+                if (list[i].name == $("#supplierName").val()) {
+                    found = true;
+                    id = list[i].id;
+                }
+            }
+            if (!found) {
+                $("#id_supplierName").val(-1);
+                $("#save").attr('disabled', true);
+                $("#goods_brand_id").empty();
+            } else {
+                $("#err-supplierUser_supplier_id").html("");
+                $("#save").attr('disabled', false);
+                $("#brand").load("/sku_brands/" + id + "?skuBrand=skuBrand", function (data) {
+                });
+            }
+
+            if ($("#supplierName").val().trim() == '') {
+                $("#id_supplierName").val(0);
+                $("#save").attr('disabled', true);
+                $("#goods_brand_id").empty();
+            }
+        });
+    });
+</script>

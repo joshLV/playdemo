@@ -307,6 +307,7 @@ POST    /voucher/assign                         OperateVouchers.assign
 
 
 GET     /goods_brands/{id}                      OperateBrands.goodsBrands
+GET     /sku_brands/{id}                        OperateBrands.goodsBrands
 
 # 品牌管理
 GET     /brands                                 OperateBrands.index
@@ -406,11 +407,11 @@ GET      /quick-search                          QuickSearchs.query
 
 #sku管理
 GET     /sku                            SkuManage.index
-POST    /sku                            SkuMange.create
+POST    /sku                            SkuManage.create
 GET     /sku/new                        SkuManage.add
-DELETE  /sku/{id}                       SkuManege.delete
+DELETE  /sku/{id}                       SkuManage.delete
 GET     /sku/{id}/edit                  SkuManage.edit
-PUT     /sku/{id}                       SkuManege.update
+PUT     /sku/{id}                       SkuManage.update
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

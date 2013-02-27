@@ -6,7 +6,6 @@ import models.sales.Brand;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
-import play.Play;
 import play.data.validation.Required;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
@@ -187,6 +186,11 @@ public class OperateBrands extends Controller {
         Long loginUserId = OperateRbac.currentUser().id;
         List<Brand> brandList = Brand.findByOrder(supplier, loginUserId);
 
+        String skuBrand = request.params.get("skuBrand");
+        System.out.println(skuBrand + ">>>>skuBrand");
+        if (StringUtils.isNotBlank(skuBrand)) {
+            render("OperateBrands/skuBrands.html",brandList);
+        }
         render(brandList);
     }
 }
