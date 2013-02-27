@@ -91,6 +91,7 @@ $(function(){
 
     KindEditor.create('textarea',
     {
+        uploadJson:'/goods/images',
         filterMode:false,
         allowFileManager:false
     });

@@ -55,6 +55,7 @@ $(function(){
 
     KindEditor.create('textarea[name="detail"]',
     {
+        uploadJson:'/goods/images',
         filterMode:false,
         allowFileManager:false
     });
