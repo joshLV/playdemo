@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  * Date: 13-1-5
  * Time: 下午4:08
  */
-public class ScannerChannelGoodsStatusTest extends UnitTest {
+public class ScannerResalerProductStatusTest extends UnitTest {
     ResalerProduct product;
     Resaler resaler;
 
