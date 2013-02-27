@@ -65,7 +65,13 @@ public class JDGroupBuyUtil {
     }
 
     public static JingdongMessage parseMessage(String document) {
-        return parseMessage(XML.getDocument(document));
+        Document xmlDocument;
+        try{
+            xmlDocument = XML.getDocument(document);
+        }catch (Exception e) {
+            return new JingdongMessage();
+        }
+        return parseMessage(xmlDocument);
     }
 
     /**

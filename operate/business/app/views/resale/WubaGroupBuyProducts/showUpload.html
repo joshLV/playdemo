@@ -151,7 +151,7 @@
             <div class="controls">
                 <input type="text" id="inputProdImg" name="prodImg" class="input-xxlarge" value="${goods.getImageLargePath()}">
                 <span class="btn" id="buttonProdImg" >选择图片</span>
-                <span class="help-block">http开头，图片尺寸为420*680，图片大小在300kb以内</span>
+                <span class="help-block">http开头，图片尺寸为680*425</span>
                 <img src="${goods.imageOriginalPath}" alt="" id="imgProdImg">
             </div>
         </div>
@@ -222,6 +222,7 @@
 
         %{shopIds=[]}%
         #{list items:shopList, as:'shop'}
+        #{if shop.deleted != com.uhuila.common.constants.DeletedStatus.DELETED}
             %{shopIds.add(shop.id)}%
         <input type="hidden" name="partnerId_${shop.id}" value="${shop?.id}">
         <div class="control-group">
@@ -270,7 +271,7 @@
                         <td>商圈 *</td>
                         <td colspan="3">
                             <input class="input" readonly id="circleId_${shop.id}-show" value="${shop.areaName}">
-                            <span>（如果是红色，表明未自动匹配成功，请手动选择）</span>
+                            <span>（一百券商圈：${shop.getAreaName()}。如果是红色，表明未自动匹配成功，请手动选择）</span>
                             <div id="circleId_${shop.id}-treeFrame" style="display:none; position: absolute;">
                                 <ul id="circleId_${shop.id}-tree" class="ztree" style="width:210px"></ul>
                             </div>
@@ -281,7 +282,7 @@
                 </table>
             </div>
         </div>
-
+        #{/if}
         #{/list}
         <input type="hidden" value="${shopIds.join(',')}" name="shopIds">
 
