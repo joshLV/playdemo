@@ -29,7 +29,7 @@ import java.util.List;
 @ActiveNavigation("coupons_single_index")
 public class SupplierVerifySingleCoupons extends Controller {
 
-    @Before(priority=1000)
+    @Before(priority = 1000)
     public static void storeShopIp() {
         SupplierUser supplierUser = SupplierRbac.currentUser();
         String strShopId = request.params.get("shopId");
@@ -81,17 +81,21 @@ public class SupplierVerifySingleCoupons extends Controller {
         Long supplierUserId = SupplierRbac.currentUser().id;
         SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+        Shop shop = Shop.findById(shopId);
 
         eCouponSn = StringUtils.trim(eCouponSn);
-        //根据页面录入券号查询对应信息
-        ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
-        Shop shop = Shop.findById(shopId);
-        //check券和门店
-        checkCoupon(ecoupon, shopId, shopList, supplierUser);
+        if (StringUtils.isNotBlank(eCouponSn)) {
+            //根据页面录入券号查询对应信息
+            ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
 
-        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
+            //check券和门店
+            checkCoupon(ecoupon, shopId, shopList, supplierUser);
 
-        render("SupplierVerifySingleCoupons/index.html", ecoupon, shop, supplierUser, shopList, ecouponStatusDescription);
+            String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
+
+            render("SupplierVerifySingleCoupons/index.html", ecoupon, shop, supplierUser, shopList, ecouponStatusDescription);
+        }
+        render("SupplierVerifySingleCoupons/index.html", shop, supplierUser, shopList);
     }
 
     /**
@@ -128,6 +132,7 @@ public class SupplierVerifySingleCoupons extends Controller {
 
     /**
      * 执行验证，如果失败返回FALSE
+     *
      * @param supplierUserId
      * @param supplierId
      * @param shopId
@@ -140,6 +145,10 @@ public class SupplierVerifySingleCoupons extends Controller {
         ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
         //check券和门店
         checkCoupon(ecoupon, shopId, shopList, supplierUser);
+
+        if (StringUtils.isBlank(eCouponSn)) {
+            Validation.addError("error-info", "券号不能为空！");
+        }
 
         String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
         if (ecouponStatusDescription != null) {

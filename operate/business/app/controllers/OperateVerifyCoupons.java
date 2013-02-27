@@ -10,6 +10,7 @@ import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
+import org.apache.commons.lang.StringUtils;
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -58,9 +59,15 @@ public class OperateVerifyCoupons extends Controller {
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
         List<Supplier> supplierList = Supplier.findUnDeleted();
         //根据页面录入券号查询对应信息
-        ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
+        ECoupon ecoupon = null;
         renderArgs.put("supplierList", supplierList);
         renderArgs.put("supplierId", supplierId);
+
+        if (StringUtils.isBlank(eCouponSn)) {
+            Validation.addError("error-info", "对不起，券号非法！");
+        } else {
+            ecoupon = ECoupon.query(eCouponSn, supplierId);
+        }
 
         //check券和门店
         checkCoupon(ecoupon, shopId, supplierId, shopList);
@@ -127,6 +134,10 @@ public class OperateVerifyCoupons extends Controller {
     }
 
     private static Boolean doUpdateVerify(Long shopId, Long supplierId, String eCouponSn, Date consumedAt, String remark, List<Shop> shopList) {
+        if (StringUtils.isBlank(eCouponSn)) {
+            Validation.addError("error-info", "券号非法！");
+            return Boolean.FALSE;
+        }
         ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
         //check券和门店
         checkCoupon(ecoupon, shopId, supplierId, shopList);
@@ -134,6 +145,7 @@ public class OperateVerifyCoupons extends Controller {
         String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
         if (ecouponStatusDescription != null) {
             Validation.addError("error-info", ecouponStatusDescription);
+            return Boolean.FALSE;
         }
         Shop shop = Shop.findById(shopId);
         renderArgs.put("shop", shop);

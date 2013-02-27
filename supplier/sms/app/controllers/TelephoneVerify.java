@@ -11,6 +11,7 @@ import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
 import play.mvc.Controller;
@@ -346,7 +347,7 @@ public class TelephoneVerify extends Controller {
         Logger.info("query batch info");
         Logger.info(new Gson().toJson(request.params.allSimple()));
 
-        if (coupon == null || coupon.trim().equals("")) {
+        if (coupon == null || StringUtils.isBlank(coupon)) {
             Logger.info("query face value failed: invalid coupon");
             renderText("券号无效");//券号无效
         }
