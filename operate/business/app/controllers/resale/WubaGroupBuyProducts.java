@@ -216,7 +216,7 @@ public class WubaGroupBuyProducts extends Controller {
             notFound();
         }
         Map<String, Object> requestMap = new HashMap<>();
-        requestMap.put("groupbuyIds", "[" + product.goodsLinkId + "]");
+        requestMap.put("groupbuyIds", "['" + product.goodsLinkId + "']");
         requestMap.put("status", -1);
         WubaResponse response = WubaUtil.sendRequest(requestMap, "emc.groupbuy.getstatus");
         if (!response.isOk()) {

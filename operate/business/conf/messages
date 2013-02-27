@@ -568,4 +568,4 @@ resaler.product.status.UPLOADED=上传成功
 resaler.product.status.REJECTED=审核核失败
 resaler.product.status.ONSALE=已上架
 resaler.product.status.OFFSALE=已下架
-resaler.product.status.UNKONWN=未知
+resaler.product.status.UNKNOWN=未知
