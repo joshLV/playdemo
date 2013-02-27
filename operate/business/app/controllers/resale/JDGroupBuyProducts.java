@@ -50,7 +50,7 @@ public class JDGroupBuyProducts extends Controller{
         }
 
         //申请商品ID并准备参数
-        ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.DD, goods);
+        ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.JD, goods);
         Map<String, Object> params = new HashMap<>();
         for (Map.Entry<String, String> entry : request.params.allSimple().entrySet()) {
             params.put(entry.getKey(), entry.getValue());
