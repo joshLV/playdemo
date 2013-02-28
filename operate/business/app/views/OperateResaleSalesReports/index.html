@@ -140,59 +140,59 @@
     <th>消费券数量/金额</th>
     <th>虚拟验证数量/金额</th>
     </thead>
-#{set i:0/}
+    #{set i:0/}
 %{
     baseUrl=play.Play.configuration.getProperty("application.baseUrl");
 
     }%
-#{paginate.list items:reportPage, as:'report'}
-%{
-    userType=report?.order?.userType== null ? 'CONSUMER':report?.order?.userType;
-    beginAt=condition?.beginAt?.format();
-    endAt=condition?.endAt?.format();
-    userName="condition.userName="+report?.loginName;
-    }%
-    <tr>
-        <td>${report?.order?.userType==models.accounts.AccountType.RESALER ? '分销商':'消费者'}</td>
-        <td>${report.userName}<br>${report?.loginName}</td>
-        <td>
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
-               target="_blank">${report?.buyNumber}</a>
-            /
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
-               target="_blank">${report?.salePrice?.formatCurrency('CNY')}</a>
-        </td>
-        <td>
-        ${report?.realBuyNumber}
-            / ${report?.realSalePrice == null ?'￥0.00':report?.realSalePrice?.formatCurrency('CNY')}
-        </td>
+    #{paginate.list items:reportPage, as:'report'}
+    %{
+        userType=report?.order?.userType== null ? 'CONSUMER':report?.order?.userType;
+        beginAt=condition?.beginAt?.format();
+        endAt=condition?.endAt?.format();
+        userName="condition.userName="+report?.loginName;
+        }%
+        <tr>
+            <td>${report?.order?.userType==models.accounts.AccountType.RESALER ? '分销商':'消费者'}</td>
+            <td>${report.userName}<br>${report?.loginName}</td>
+            <td>
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
+                   target="_blank">${report?.buyNumber}</a>
+                /
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
+                   target="_blank">${report?.salePrice?.formatCurrency('CNY')}</a>
+            </td>
+            <td>
+            ${report?.realBuyNumber}
+                / ${report?.realSalePrice == null ?'￥0.00':report?.realSalePrice?.formatCurrency('CNY')}
+            </td>
 
 
-        <td>
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
-               target="_blank">${report?.refundNumber}</a>
-            /
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
-               target="_blank">${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}</a>
-        </td>
-        <td>
-        </td>
-        <td>
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
-               target="_blank">${report?.consumedNumber}</a>
-            /
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
-               target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
-        </td>
-        <td>
-            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.searchKey=UID&condition.searchItems=${report?.order?.userId}&condition.status=UNCONSUMED&condition.virtualVerify=true&condition.virtualVerifyAtBegin=${beginAt}&condition.virtualVerifyAtEnd=${endAt}"
-               target="_blank">${report?.virtualVerifyNumber}</a>
-            /
-            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.searchKey=UID&condition.searchItems=${report?.order?.userId}&condition.status=UNCONSUMED&condition.virtualVerify=true&condition.virtualVerifyAtBegin=${beginAt}&condition.virtualVerifyAtEnd=${endAt}"
-               target="_blank">${report?.virtualVerifyPrice== null ?'￥0.00':report?.virtualVerifyPrice?.formatCurrency('CNY')}   </a>
-        </td>
-    </tr>
-#{/paginate.list}
+            <td>
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
+                   target="_blank">${report?.refundNumber}</a>
+                /
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
+                   target="_blank">${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}</a>
+            </td>
+            <td>
+            </td>
+            <td>
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
+                   target="_blank">${report?.consumedNumber}</a>
+                /
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
+                   target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
+            </td>
+            <td>
+                <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.searchKey=UID&condition.searchItems=${report?.order?.userId}&condition.status=UNCONSUMED&condition.virtualVerify=true&condition.virtualVerifyAtBegin=${beginAt}&condition.virtualVerifyAtEnd=${endAt}"
+                   target="_blank">${report?.virtualVerifyNumber}</a>
+                /
+                <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.searchKey=UID&condition.searchItems=${report?.order?.userId}&condition.status=UNCONSUMED&condition.virtualVerify=true&condition.virtualVerifyAtBegin=${beginAt}&condition.virtualVerifyAtEnd=${endAt}"
+                   target="_blank">${report?.virtualVerifyPrice== null ?'￥0.00':report?.virtualVerifyPrice?.formatCurrency('CNY')}   </a>
+            </td>
+        </tr>
+    #{/paginate.list}
     <tr>
         <td colspan="2">汇总</td>
         <td>
@@ -235,15 +235,16 @@
 
 <div class="pagination">
     <ul>
-    #{paginate.controls items:reportPage /}
+        #{paginate.controls items:reportPage /}
     </ul>
 </div>
 <br>  <br><br>
 <div class=" well">
-    当当对账金额=售出券金额<br>
-    58对账金额&nbsp;=消费券金额+虚拟验证券金额<br>
-    京东对账金额=消费券金额+虚拟验证券金额<br>
-    一号店对账金额=售出券金额<br>
-    淘宝网对账金额=已售出券金额（需等买家确认收货才能到账）
+    当当对账金额=售出券金额-退款金额<br>
+    一号店对账金额=售出券金额-退款金额<br>
+    京东对账金额=消费券金额+虚拟验证券金额-已消费券退款金额（需在退款金额中筛选）<br>
+    58对账金额&nbsp;=消费券金额+虚拟验证券金额-已消费券退款金额（需在退款金额中筛选）<br>
+    淘宝网对账金额=已售出券金额（需等买家确认收货才能到账）-退款金额<br>
+    注：运营后台统计金额除了一百券，其余渠道均为电子券汇总金额
 </div>
 #{/if}

@@ -383,7 +383,6 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
                 target.isFreeze = 0;
             }
         });
-
         Http.Response response = PUT("/coupons/" + eCoupon.id + "/virtual_verify","","");
         assertIsOk(response);
         assertContentType("text/html", response);
