@@ -19,7 +19,7 @@ public class DDResponse {
 
 
     public boolean isOk() {
-        return errorCode != null && "0".equals(errorCode);
+        return "0".equals(errorCode);
     }
 
     public Node selectNode(String path) {

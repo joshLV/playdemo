@@ -7,6 +7,7 @@ import models.order.ECoupon;
 import models.order.OuterOrder;
 import models.sales.ResalerProduct;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import play.Logger;
@@ -191,10 +192,10 @@ public class DDGroupBuyUtil {
 
     public static DDResponse parseResponse(Document document) {
         DDResponse response = new DDResponse();
-        response.ver = XPath.selectText("/resultObject/ver", document).trim();
-        response.spid = XPath.selectText("/resultObject/spid", document).trim();
-        response.errorCode = XPath.selectText("/resultObject/error_code", document).trim();
-        response.desc = XPath.selectText("/resultObject/desc", document).trim();
+        response.ver = StringUtils.trimToNull(XPath.selectText("/resultObject/ver", document));
+        response.spid = StringUtils.trimToNull(XPath.selectText("/resultObject/spid", document));
+        response.errorCode = StringUtils.trimToNull(XPath.selectText("/resultObject/error_code", document));
+        response.desc = StringUtils.trimToNull(XPath.selectText("/resultObject/desc", document));
         response.data = XPath.selectNode("/resultObject/data", document);
         return response;
     }
