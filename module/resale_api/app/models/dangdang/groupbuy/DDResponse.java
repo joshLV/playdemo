@@ -1,6 +1,5 @@
 package models.dangdang.groupbuy;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import play.libs.XPath;
 
