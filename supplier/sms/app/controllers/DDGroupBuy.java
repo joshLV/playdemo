@@ -75,7 +75,7 @@ public class DDGroupBuy extends Controller {
             renderError(DDErrorCode.ORDER_NOT_EXITED, "订单不存在！");
         }
         //校验参数
-        if (StringUtils.isBlank(sign) || !sign.equals(DDGroupBuyUtil.signParams(params))) {
+        if (StringUtils.isBlank(sign) || !sign.toLowerCase().equals(DDGroupBuyUtil.signParams(params))) {
             renderError(DDErrorCode.VERIFY_FAILED, "sign验证失败！");
         }
         //定位请求者
@@ -174,10 +174,6 @@ public class DDGroupBuy extends Controller {
         data = StringUtils.trimToEmpty(data);
         call_time = StringUtils.trimToEmpty(call_time);
         sign = StringUtils.trimToEmpty(sign).toLowerCase();
-        Logger.info("dangdang sendSms data:%s", data);
-        Logger.info("dangdang sendSms call_time:%s", call_time);
-        Logger.info("dangdang sendSms sign:%s", sign);
-        Logger.info("dangdang sendSms our sign:%s", DDGroupBuyUtil.sign("send_msg", data, call_time));
 
         String verifySign = DDGroupBuyUtil.sign("send_msg", data, call_time);
         if (StringUtils.isBlank(sign) || !sign.equals(verifySign)) {
