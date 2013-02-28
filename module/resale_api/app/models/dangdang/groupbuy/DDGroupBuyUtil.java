@@ -174,7 +174,7 @@ public class DDGroupBuyUtil {
 
         Logger.info("dangdang request %s:\n%s", apiName, xmlData);
         WebServiceRequest request = WebServiceRequest.url(url).type("dangdang_" + apiName)
-                .params(params);
+                .params(requestParams);
         for (String keyword : keywords) {
             request.addKeyword(keyword);
         }
