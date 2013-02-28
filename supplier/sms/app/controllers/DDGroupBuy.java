@@ -77,11 +77,9 @@ public class DDGroupBuy extends Controller {
             renderError(DDErrorCode.ORDER_NOT_EXITED, "订单不存在！");
         }
         //校验参数
-        /*
         if (StringUtils.isBlank(sign) || !sign.toLowerCase().equals(DDGroupBuyUtil.signParams(params))) {
             renderError(DDErrorCode.VERIFY_FAILED, "sign验证失败！");
         }
-        */
         //定位请求者
         Resaler resaler = Resaler.find("loginName=? and status=?", Resaler.DD_LOGIN_NAME, ResalerStatus.APPROVED).first();
         Long resalerId = null;
@@ -180,11 +178,9 @@ public class DDGroupBuy extends Controller {
         sign = StringUtils.trimToEmpty(sign).toLowerCase();
 
         String verifySign = DDGroupBuyUtil.sign("send_msg", data, call_time);
-        /*
         if (StringUtils.isBlank(sign) || !sign.equals(verifySign)) {
             renderError(DDErrorCode.VERIFY_FAILED, "sign验证失败！");
         }
-        */
 
         Document dataXml = XML.getDocument(data);
         String orderId = XPath.selectText("/data/order/order_id", dataXml).trim();
