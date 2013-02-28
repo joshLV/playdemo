@@ -1511,9 +1511,7 @@ public class ECoupon extends Model {
         if (ecoupon.expireAt != null && ecoupon.expireAt.before(now)) {
             return "对不起，该券已过期!";
         }
-        if (ecoupon.effectiveAt != null && ecoupon.effectiveAt.after(now)) {
-            return "对不起，该券有效期还没开始！";
-        }
+
         return null;
     }
 
