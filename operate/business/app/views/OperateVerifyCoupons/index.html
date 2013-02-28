@@ -57,8 +57,8 @@
         </div>
     </div>
     <div class="form-actions" style="padding-left: 80px">
-        <button class="btn btn-primary" id="query" type="submit">查询</button>
-        <button class="btn btn-primary" id="sure" type="submit" disabled>验证</button>
+        <button class="btn btn-primary" id="query" type="submit" onclick="clickQuery()">查询</button>
+        <button class="btn btn-primary" id="sure" type="submit" onclick="clickVerify()" disabled>验证</button>
     </div>
 #{if errors?.size()>0}
     <span style="border:1px solid #ff0000;color:#ff0000;line-height: 2;margin-left: 80px;">#{error 'error-info' /}</span>
@@ -101,25 +101,37 @@
         });
     });
 
+
+    function clickQuery() {
+        $("#query").val("query");
+        $("#sure").val("null");
+    }
+
+    function clickVerify() {
+        $("#sure").val("sure");
+        $("#query").val("null");
+    }
+
+
     function disableButton() {
-        alert("1111")
-        $("#sure").click(function () {
+        if ($("#sure").val() == "sure") {
             $('#sure').attr('disabled', "true");
             $("#sure").html("正在提交");
             $('#sure').attr('class', "btn disabled");
+            $('#query').attr('disabled', "true");
+            $('#query').attr('class', "btn disabled");
             return true;
-        });
-        alert("2222")
+        }
 
-        $("#query").click(function () {
+        if ($("#query").val() == "query") {
+
             $('#query').attr('disabled', "true");
             $("#query").html("正在查询");
             $('#query').attr('class', "btn disabled");
+            $('#sure').attr('disabled', "true");
+            $('#sure').attr('class', "btn disabled");
             return true;
-        });
-        alert("333")
-
-
+        }
     }
 
 
