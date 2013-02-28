@@ -28,9 +28,9 @@ import java.util.*;
 public class DDGroupBuyUtil {
     private static final String RESULT_FORMAT = "xml";
     private static final String SIGN_METHOD = "1";
-    private static final String VER = Play.configuration.getProperty("dangdang.groupbuy.version", "1.0");
-    private static final String SECRET_KEY = Play.configuration.getProperty("dangdang.groupbuy.secret_key", "x8765d9yj72wevshn");
-    private static final String SPID = Play.configuration.getProperty("dangdang.groupbuy.spid", "3000003");
+    private static final String VER = Play.configuration.getProperty("dangdang.version", "1.0");
+    private static final String SECRET_KEY = Play.configuration.getProperty("dangdang.secret_key", "x8765d9yj72wevshn");
+    private static final String SPID = Play.configuration.getProperty("dangdang.spid", "3000003");
 
     /**
      * 查询刚刚今天上传的单个商品在当当上的信息.
