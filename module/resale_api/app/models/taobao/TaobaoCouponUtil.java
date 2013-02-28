@@ -79,6 +79,10 @@ public class TaobaoCouponUtil {
             VmarketEticketSendResponse response = taobaoClient.execute(request, oAuthToken.accessToken);
             if (response != null) {
                 Logger.info("tell taobao coupon send response. ret code: %s", response.getRetCode());
+                if ("isv.eticket-send-error:code-alreay-send".equals(response.getSubCode())) {
+                    //如果报错为已发送 那就不用再发了
+                    return true;
+                }
                 return response.getRetCode() != null && response.getRetCode() == 1;
             }else {
                 Logger.info("tell taobao coupon send response. no response");
