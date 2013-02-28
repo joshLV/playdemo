@@ -237,14 +237,21 @@ public class Brand extends Model {
         return brands;
     }
 
-    public static ModelPaginator getBrandPage(int pageNumber, int pageSize, Long supplierId) {
+    public static ModelPaginator getBrandPage(int pageNumber, int pageSize, Long supplierId, Long brandId) {
         ModelPaginator page;
+        StringBuilder sq = new StringBuilder();
+        sq.append("deleted = ?");
+        List list = new ArrayList();
+        list.add(DeletedStatus.UN_DELETED);
         if (supplierId != null && supplierId.longValue() != 0) {
-            page = new ModelPaginator(Brand.class, "deleted = ? and supplier.id=?", DeletedStatus.UN_DELETED,
-                    supplierId).orderBy("displayOrder,name");
-        } else {
-            page = new ModelPaginator(Brand.class, "deleted = ? ", DeletedStatus.UN_DELETED).orderBy("displayOrder desc,name");
+            sq.append("and supplier.id=?");
+            list.add(supplierId);
         }
+        if (brandId != null && brandId.longValue() != 0) {
+            sq.append(" and id=?");
+            list.add(brandId);
+        }
+        page = new ModelPaginator(Brand.class, sq.toString(), list.toArray()).orderBy("displayOrder desc,name");
         page.setPageNumber(pageNumber);
         page.setPageSize(pageSize);
         return page;

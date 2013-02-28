@@ -1,22 +1,16 @@
 package unit;
 
-import java.util.List;
-
-
+import com.uhuila.common.util.PathUtil;
+import factory.FactoryBoy;
 import models.sales.Brand;
 import models.supplier.Supplier;
-
-import operate.rbac.ContextedPermission;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.Play;
 import play.modules.paginate.ModelPaginator;
 import play.test.UnitTest;
 
-import com.uhuila.common.util.PathUtil;
-
-import factory.FactoryBoy;
+import java.util.List;
 
 /**
  * 品牌的单元测试.
@@ -59,7 +53,7 @@ public class BrandUnitTest extends UnitTest {
 
     @Test
     public void testGetBrandPage() {
-        ModelPaginator brandPage = Brand.getBrandPage(1, 15, brand.supplier.id);
+        ModelPaginator brandPage = Brand.getBrandPage(1, 15, brand.supplier.id,null);
         assertEquals(1, brandPage.size());
 
         Brand firstBrand = (Brand) brandPage.get(0);

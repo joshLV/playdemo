@@ -1609,22 +1609,22 @@ public class ECoupon extends Model {
      * @return
      */
     public boolean virtualVerify(Long operateUserId) {
-//        if (this.partner == ECouponPartner.JD) {
-//            if (!JDGroupBuyHelper.verifyOnJingdong(this)) {
-//                Logger.info("virtual verify on jingdong failed");
-//                return false;
-//            }
-//        } else if (this.partner == ECouponPartner.WB) {
-//            if (!WubaUtil.verifyOnWuba(this)) {
-//                Logger.info("virtual verify on wuba failed");
-//                return false;
-//            }
-//        } else if (this.partner == ECouponPartner.TB) {
-//            if (!TaobaoCouponUtil.verifyOnTaobao(this)) {
-//                Logger.info("verify on taobao failed");
-//                return false;
-//            }
-//        }
+        if (this.partner == ECouponPartner.JD) {
+            if (!JDGroupBuyHelper.verifyOnJingdong(this)) {
+                Logger.info("virtual verify on jingdong failed");
+                return false;
+            }
+        } else if (this.partner == ECouponPartner.WB) {
+            if (!WubaUtil.verifyOnWuba(this)) {
+                Logger.info("virtual verify on wuba failed");
+                return false;
+            }
+        } else if (this.partner == ECouponPartner.TB) {
+            if (!TaobaoCouponUtil.verifyOnTaobao(this)) {
+                Logger.info("verify on taobao failed");
+                return false;
+            }
+        }
         this.virtualVerify = true;
         this.virtualVerifyAt = new Date();
 

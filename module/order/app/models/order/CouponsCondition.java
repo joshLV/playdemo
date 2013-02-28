@@ -66,8 +66,8 @@ public class CouponsCondition implements Serializable {
 
     public Long salesId;
     public String categoryCode;
-    public Date expiredAtBegin;
-    public Date expiredAtEnd;
+    public Date expiredAtBegin = DateUtil.getBeginExpiredDate(3);
+    public Date expiredAtEnd = DateUtil.getEndExpiredDate(3);
 
     public String getOrderByExpress() {
         return "e.createdAt desc";

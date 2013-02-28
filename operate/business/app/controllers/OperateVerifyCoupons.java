@@ -173,8 +173,6 @@ public class OperateVerifyCoupons extends Controller {
     public static void virtual(CouponsCondition condition) {
         if (condition == null) {
             condition = new CouponsCondition();
-            condition.expiredAtBegin = DateUtil.getBeginExpiredDate(3);
-            condition.expiredAtEnd = DateUtil.getEndExpiredDate(3);
         }
         List<ECoupon> couponList = ECoupon.findVirtualCoupons(condition);
         BigDecimal totalSalePrice = calculateSalePrice(couponList);
@@ -197,6 +195,9 @@ public class OperateVerifyCoupons extends Controller {
      */
     @ActiveNavigation("virtual_verify_index")
     public static void virtualVerify(Long id, CouponsCondition condition) {
+        if (condition == null) {
+            condition = new CouponsCondition();
+        }
         ECoupon ecoupon = ECoupon.findById(id);
         String ecouponStatusDescription = ECoupon.checkOtherECouponInfo(ecoupon);
         if (ecouponStatusDescription != null) {
