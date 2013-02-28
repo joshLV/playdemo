@@ -112,6 +112,9 @@ public class WithdrawBill extends Model {
      */
     public String operator;
 
+    /**
+     * 备注，拒绝时填写拒绝理由
+     */
     public String comment;
 
     @Column(name = "account_name")

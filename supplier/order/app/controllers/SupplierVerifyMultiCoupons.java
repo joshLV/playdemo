@@ -84,7 +84,7 @@ public class SupplierVerifyMultiCoupons extends Controller {
         List shopList = Shop.findShopBySupplier(supplierId);
         //根据页面录入券号查询对应信息
         ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
-        if (ecoupon == null) {
+        if (StringUtils.isBlank(eCouponSn) || ecoupon == null) {
             Validation.addError("error-info", "对不起，没有该券的信息！");
         }
         if (shopId == null) {
@@ -125,7 +125,7 @@ public class SupplierVerifyMultiCoupons extends Controller {
         List shopList = Shop.findShopBySupplier(supplierId);
 
         ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
-        if (ecoupon == null) {
+        if (StringUtils.isBlank(eCouponSn) || ecoupon == null) {
             Validation.addError("error-info", "对不起，没有该券的信息！");
         }
         if (shopId == null) {

@@ -4,7 +4,7 @@
 #{set menu:menu?:"verify" /}
     <meta charset="UTF-8">
     <title>#{get 'title' /}</title>
-    #{asset.js src:['/jquery-1.7.2.min.js'] /}
+#{asset.js src:['/jquery-1.7.2.min.js'] /}
 #{asset.css src:['/m/reset.css', '/m/index.css'] /}
 #{get 'moreStyles' /}
 </head>
@@ -83,16 +83,16 @@
 #{asset.js src:['/bootstrap/bootstrap.min.js', '/bootstrap/bootstrap-datepicker.js'] /}
 <script type="text/javascript">
     $(function () {
-    closeMsg = function (msgType) {
-    $.ajax({
-    type: 'POST',
-    url: '/close-msg',
-    success: function (data) {
-    }
-    });
+        closeMsg = function (msgType) {
+            $.ajax({
+                type: 'POST',
+                url: '/close-msg',
+                success: function (data) {
+                }
+            });
 
-    $('#' + msgType).hide();
-    };
+            $('#' + msgType).hide();
+        };
     });
 </script>
 #{get 'moreScripts' /}

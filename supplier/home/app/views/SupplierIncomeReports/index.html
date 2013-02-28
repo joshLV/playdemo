@@ -149,8 +149,8 @@ $(function () {
                 series: [
                     {
                         name: '门店消费',
-                        data: [#{list items:shopNameList, as:'d'}${shopChartMap.get(d).count}${(!d_isLast) ? ',' : ''} #{/list}]
-                    },
+                        data: [#{list items:shopNameList, as:'d'}${shopChartMap.get(d).count}${(!d_isLast) ? ',' : ''}#{/list}]
+                    }
                 ],
                 credits: {
                     text: 'quanmx.com',
@@ -225,7 +225,7 @@ $(function () {
                 series: [
                     {
                         name: '商品消费',
-                        data: [#{list items:goodsNameList, as:'d'}${goodsChartMap.get(d).count}${(!d_isLast) ? ',' : ''} #{/list}]
+                        data: [#{list items:goodsNameList, as:'d'}${goodsChartMap.get(d).count}${(!d_isLast) ? ',' : ''}#{/list}]
                     }
                 ],
                 credits: {
@@ -259,7 +259,7 @@ $(function () {
         #{/if}
     });
 
-});
+    });
 </script>
 #{/set}
 <div class="verify">

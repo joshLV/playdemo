@@ -28,9 +28,9 @@ import java.util.*;
 public class DDGroupBuyUtil {
     private static final String RESULT_FORMAT = "xml";
     private static final String SIGN_METHOD = "1";
-    private static final String VER = Play.configuration.getProperty("dangdang.groupbuy.version", "1.0");
-    private static final String SECRET_KEY = Play.configuration.getProperty("dangdang.groupbuy.secret_key", "x8765d9yj72wevshn");
-    private static final String SPID = Play.configuration.getProperty("dangdang.groupbuy.spid", "3000003");
+    private static final String VER = Play.configuration.getProperty("dangdang.version", "1.0");
+    private static final String SECRET_KEY = Play.configuration.getProperty("dangdang.secret_key", "x8765d9yj72wevshn");
+    private static final String SPID = Play.configuration.getProperty("dangdang.spid", "3000003");
 
     /**
      * 查询刚刚今天上传的单个商品在当当上的信息.
@@ -230,6 +230,7 @@ public class DDGroupBuyUtil {
     public static SortedMap<String, String> filterPlayParams(Map<String, String> params) {
         TreeMap<String, String> r = new TreeMap<>(params);
         r.remove("body");
+        r.remove("format");
         return r;
     }
 
@@ -239,7 +240,7 @@ public class DDGroupBuyUtil {
     public static String signParams(SortedMap<String, String> params) {
         StringBuilder signStr = new StringBuilder();
         for (Map.Entry<String, String> entry : params.entrySet()) {
-            if ("body".equals(entry.getKey()) || "sign".equals(entry.getKey())) {
+            if ("body".equals(entry.getKey()) || "sign".equals(entry.getKey()) || "format".equals(entry.getKey()) ) {
                 continue;
             }
             signStr.append(entry.getKey()).append("=").append(WS.encode(entry.getValue())).append("&");

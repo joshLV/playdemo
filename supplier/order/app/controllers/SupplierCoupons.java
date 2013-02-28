@@ -64,16 +64,18 @@ public class SupplierCoupons extends Controller {
 
         Long supplierId = SupplierRbac.currentUser().supplier.id;
 
-        //根据页面录入券号查询对应信息
-        ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
-        
-        String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
-        
-        List<ECoupon> ecoupons = ECoupon.queryUnconsumedCouponsWithSameGoodsGroups(ecoupon);
-        
-        BigDecimal amount = summaryECouponsAmount(ecoupons);
+        if (StringUtils.isNotBlank(eCouponSn)) {
+            //根据页面录入券号查询对应信息
+            ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
 
-        render("/SupplierCoupons/consume.html", ecoupon, ecoupons, amount, ecouponStatusDescription);
+            String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
+
+            List<ECoupon> ecoupons = ECoupon.queryUnconsumedCouponsWithSameGoodsGroups(ecoupon);
+
+            BigDecimal amount = summaryECouponsAmount(ecoupons);
+
+            render("/SupplierCoupons/consume.html", ecoupon, ecoupons, amount, ecouponStatusDescription);
+        }
     }
 
     private static BigDecimal summaryECouponsAmount(List<ECoupon> ecoupons) {
@@ -104,11 +106,11 @@ public class SupplierCoupons extends Controller {
         }
         ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
         //根据页面录入券号查询对应信息,并产生消费交易记录
-        if (eCoupon == null) {
+        if (StringUtils.isBlank(eCouponSn) || eCoupon == null) {
             renderJSON("{\"code\":\"err\"");
         }
-        
-        if (eCoupon.status == ECouponStatus.UNCONSUMED) {            
+
+        if (eCoupon.status == ECouponStatus.UNCONSUMED) {
             //冻结的券
             if (eCoupon.isFreeze == 1) {
                 renderJSON("{\"code\":\"3\"}");
@@ -124,13 +126,13 @@ public class SupplierCoupons extends Controller {
                 String info = eCoupon.getCheckInfo();
                 renderJSON("{\"code\":\"2\",\"info\":\"" + info + "\"}");
             }
-            
+
             String dateTime = DateUtil.getNowTime();
             String ecouponSNLast4Code = eCoupon.getLastCode(4);
 
             List<ECoupon> ecoupons = ECoupon.queryUnconsumedCouponsWithSameGoodsGroups(eCoupon);
             renderArgs.put("ecoupons", ecoupons);
-            
+
             // 如果只有一张券.
             if (ecoupons.size() == 1) {
                 if (!eCoupon.consumeAndPayCommission(shopId, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
@@ -147,7 +149,7 @@ public class SupplierCoupons extends Controller {
                 List<ECoupon> checkECoupons = ECoupon.selectCheckECoupons(verifyAmount, ecoupons, eCoupon);
 
                 BigDecimal consumedAmount = BigDecimal.ZERO;
-                
+
                 int checkedCount = 0;
                 List<ECoupon> realCheckECoupon = new ArrayList<>();  //可能验证失败，所以要有一个实际真正验证成功的ecoupons
                 for (ECoupon e : checkECoupons) {
@@ -166,27 +168,27 @@ public class SupplierCoupons extends Controller {
                 for (ECoupon ae : availableECoupons) {
                     availableECouponSNs.add(ae.eCouponSn);
                 }
-                
-                
+
+
                 if (consumedAmount.compareTo(BigDecimal.ZERO) == 0) {
                     // 没有验证到券
                     renderJSON("{\"code\":\"7\",\"info\":\"没有验证任何券，可能是输入金额小于最小面值的券\"}");
                 }
-                
+
                 if (availableECoupons.size() > 0) {
                     SMSUtil.send2("您尾号" + ecouponSNLast4Code
-                                    + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(0) + "元)于" 
-                                    + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。您还有" + availableECouponSNs.size() + "张券（"
-                                    + StringUtils.join(availableECouponSNs, "/") 
-                                    + "总面值" + availableAmount.setScale(0) + "元）未消费。如有疑问请致电：4006262166",
-                                    eCoupon.orderItems.phone, eCoupon.replyCode);
+                            + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(0) + "元)于"
+                            + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。您还有" + availableECouponSNs.size() + "张券（"
+                            + StringUtils.join(availableECouponSNs, "/")
+                            + "总面值" + availableAmount.setScale(0) + "元）未消费。如有疑问请致电：4006262166",
+                            eCoupon.orderItems.phone, eCoupon.replyCode);
                 } else {
                     SMSUtil.send2("您尾号" + ecouponSNLast4Code
-                                    + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(0) + "元)于" 
-                                    + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
-                                    eCoupon.orderItems.phone, eCoupon.replyCode);
+                            + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(0) + "元)于"
+                            + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
+                            eCoupon.orderItems.phone, eCoupon.replyCode);
                 }
-                
+
                 if (verifyAmount.compareTo(consumedAmount) == 0) {
                     renderJSON("{\"code\":\"7\",\"info\":\"成功验证" + consumedAmount + "元\"}");
                 } else {
@@ -202,14 +204,15 @@ public class SupplierCoupons extends Controller {
 
     /**
      * 得到sourceECoupons - checkECoupons的数组.
+     *
      * @param sourceECoupons
      * @param checkECoupons
      * @return
      */
     private static List<ECoupon> substractECouponList(List<ECoupon> sourceECoupons,
-                    List<ECoupon> checkECoupons) {
+                                                      List<ECoupon> checkECoupons) {
         Set<Long> checkECouponIdSet = new HashSet<>();
-        for (ECoupon e :checkECoupons) {
+        for (ECoupon e : checkECoupons) {
             checkECouponIdSet.add(e.id);
         }
         List<ECoupon> results = new ArrayList<>();

@@ -274,7 +274,7 @@ input.disabled {
 }
 .field-group label {
     position: absolute;
-    top: 0px;
+    top: 3px;
     left: 0px;
     width: 100px;
     font-weight: 700;

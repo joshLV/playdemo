@@ -38,7 +38,7 @@
         </div>
         <div class="field-group">
             <label>申请状态</label>
-            &{'withdraw.' + bill.status}
+            &{'withdraw.' + bill.status}#{if bill?.status==models.accounts.WithdrawBillStatus.REJECTED}${', 原因: '+bill?.comment}#{/if}
         </div>
         <div class="field-group">
             <label>手续费</label>

@@ -19,7 +19,6 @@ import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sales.ResalerProduct;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
@@ -29,9 +28,9 @@ import play.mvc.Before;
 import play.mvc.Controller;
 import play.templates.Template;
 import play.templates.TemplateLoader;
+import util.transaction.TransactionCallback;
+import util.transaction.TransactionRetry;
 
-import javax.persistence.LockModeType;
-import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -71,35 +70,52 @@ public class JDGroupBuy extends Controller {
      * 订单
      */
     public static void sendOrder() {
-        String restXml = IO.readContentAsString(request.body);
+        final String restXml = IO.readContentAsString(request.body);
         Logger.info("jingdong sendOrder request:\n%s", restXml);
-        JingdongMessage message = JDGroupBuyUtil.parseMessage(restXml);
+        final JingdongMessage message = JDGroupBuyUtil.parseMessage(restXml);
         //解析请求
         if (!message.isOk()) {
             finish(201, "parse send_order request xml error");
         }
+
+        // 事务重试.
+        TransactionRetry.run(new TransactionCallback<Boolean>() {
+            @Override
+            public Boolean doInTransaction() {
+                return doSendOrder(restXml, message);
+            }
+        });
+
+        renderTemplate("jingdong/groupbuy/response/main.xml");
+    }
+
+    private static Boolean doSendOrder(String restXml, JingdongMessage message) {
         Integer count = Integer.parseInt(message.selectTextTrim("./Count"));
 
         //检查购买数量
         if (count <= 0) {
-            finish(202, "the buy number must be a positive one");
+            recordResultMessage(202, "the buy number must be a positive one");
+            return Boolean.FALSE;
         }
         BigDecimal teamPrice = new BigDecimal(message.selectTextTrim("./TeamPrice")).divide(new BigDecimal("100"));
         BigDecimal origin = new BigDecimal(message.selectTextTrim("./Origin")).divide(new BigDecimal("100"));
 
         //检查订单总额是否匹配
         if (teamPrice.multiply(new BigDecimal(count)).compareTo(origin) != 0) {
-            finish(203, "the total amount does not match the team price and count");
+            recordResultMessage(203, "the total amount does not match the team price and count");
+            return Boolean.FALSE;
         }
 
         String mobile = message.selectTextTrim("./Mobile");
         //检查手机号
         if (!checkPhone(mobile)) {
-            finish(204, "invalid mobile: " + mobile);
+            recordResultMessage(204, "invalid mobile: " + mobile);
+            return Boolean.FALSE;
         }
 
         String jdOrderId = message.selectTextTrim("./JdOrderId").trim();
         Long venderTeamId = Long.parseLong(message.selectTextTrim("./VenderTeamId").trim());
+        List<Node> jdCoupons = message.selectNodes("./Coupons/Coupon");
 
         //检查并保存此新请求
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", OuterOrderPartner.JD, jdOrderId).first();
@@ -114,18 +130,21 @@ public class JDGroupBuy extends Controller {
             try { // 将订单写入数据库
                 JPA.em().flush();
             } catch (Exception e) { // 如果写入失败，说明 已经存在一个相同的orderId 的订单，则放弃
-                finish(205, "there is another parallel request");
+                recordResultMessage(205, "there is another parallel request");
+                return Boolean.FALSE;
             }
         }
-
+        /*
         //申请行锁后处理订单
         try {
             // 尝试申请一个行锁
             JPA.em().refresh(outerOrder, LockModeType.PESSIMISTIC_WRITE);
         } catch (PersistenceException e) {
             //没拿到锁 放弃
-            finish(206, "there is another parallel request");
+            recordResultMessage(206, "there is another parallel request");
+            return Boolean.FALSE;
         }
+        */
         //生成一百券订单
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY) {
             Order ybqOrder = outerOrder.ybqOrder;
@@ -137,12 +156,12 @@ public class JDGroupBuy extends Controller {
             outerOrder.message = restXml;
             outerOrder.save();
         }
-        List<Node> jdCoupons = message.selectNodes("./Coupons/Coupon");
         //保存京东的券号密码
         List<ECoupon> coupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
         if (outerOrder.status == OuterOrderStatus.ORDER_DONE || outerOrder.status == OuterOrderStatus.ORDER_SYNCED) {
             if (coupons.size() != jdCoupons.size()) {
-                finish(211, "coupon size not matched, ybq size: " + coupons.size() + " jd size:" + jdCoupons.size());
+                recordResultMessage(211, "coupon size not matched, ybq size: " + coupons.size() + " jd size:" + jdCoupons.size());
+                return Boolean.FALSE;
             }
             // 保存京东的券号密码
             for (int i = 0; i < coupons.size(); i++) {
@@ -171,10 +190,11 @@ public class JDGroupBuy extends Controller {
             params.put("goods", goods);
             renderArgs.put("data", template.render(params));
             Logger.info("jd send order success: %s", outerOrder.ybqOrder.getId());
-            finish(200, "success");
+            recordResultMessage(200, "success");
         } else {
-            finish(212, "the order has been processed");
+            recordResultMessage(212, "the order has been processed");
         }
+        return Boolean.TRUE;
     }
 
     /**
@@ -352,6 +372,11 @@ public class JDGroupBuy extends Controller {
         renderArgs.put("resultCode", resultCode);
         renderArgs.put("resultMessage", resultMessage);
         renderTemplate("jingdong/groupbuy/response/main.xml");
+    }
+
+    private static void recordResultMessage(int resultCode, String resultMessage) {
+        renderArgs.put("resultCode", resultCode);
+        renderArgs.put("resultMessage", resultMessage);
     }
 
     private static boolean checkPhone(String phone) {
