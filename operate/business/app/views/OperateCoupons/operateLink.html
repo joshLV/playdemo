@@ -45,16 +45,16 @@
     </div>
     <div class="modal-body">
 
-    #{form @OperateCoupons.index(), id:"setForm", name:"setForm",class:"form-horizontal",method:"PUT"}
+    #{form @OperateCoupons.index(), id:"setForm", name:"setForm",class:"form-horizontal",method:"PUT",onsubmit:'return disableButton()'}
         <div id="couponinfo">#{include '/OperateCoupons/couponInfo.html'/}</div>
         请选择冻结此券号的原因：&nbsp;&nbsp;
         <select name="coupon.freezedReason" id="freeze_option" class="input-small"
                 value="${coupon?.freezedReason}"
                 onchange="select(this);"
                 >
-            <option value="ISCHEATEDORDER">刷单</option>
-            <option value="UNABLEVERIFY">无法验证</option>
             <option value="OTHERS">其他原因</option>
+            <option value="UNABLEVERIFY">无法验证</option>
+            <option value="ISCHEATEDORDER">刷单</option>
         </select>
 
         <div id="textContainer" style="display: none;">
@@ -67,7 +67,7 @@
     </div>
     <div class="modal-footer">
         <a href="#" id="sure" class="btn btn-primary">确定</a>
-        <a href="#" class="btn" data-dismiss="modal">取消</a>
+        <a href="#" class="btn" data-dismiss="modal" id="cancel">取消</a>
     </div>
 </div>
 
@@ -130,10 +130,12 @@
         else {
             $("#setForm").attr("action", "/coupons/" + id + "/freeze?x-http-method-override=PUT");
         }
-        $("#freeze_option").val("ISCHEATEDORDER");
+        $("#freeze_option").val("OTHERS");
         $("#textContainer").css({display:"none"});
         $("#other_reason").val("");
         $('#sendModal').modal('show');
+        document.getElementById("mySpan").innerHTML = "请填写原因：";
+        document.getElementById("textContainer").style.display = "";
 
     }
 
@@ -161,6 +163,14 @@
                 $('#myModal').modal('show');
             }
         });
+    }
+
+    function disableButton() {
+        $('#sure').attr('disabled', "true");
+        $("#sure").html("正在提交");
+        $('#sure').attr('class', "btn disabled");
+        $("#cancel").hide();
+        return true;
     }
 
 </script>

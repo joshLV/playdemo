@@ -346,6 +346,8 @@ POST    /withdraw/approve                       WithdrawApproval.approve
 GET     /withdraw/settle                        WithdrawApproval.initSettle
 GET     /withdraw/confirmSettle                 WithdrawApproval.confirmSettle
 POST    /withdraw/settle                        WithdrawApproval.settle
+GET     /withdraw_payment_excel                 WithdrawApproval.paymentExcelOut
+
 
 # 用户管理
 GET     /consumers_votes                        OperateConsumersWinningInfo.index

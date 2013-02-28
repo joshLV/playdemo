@@ -5,79 +5,154 @@
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script type="text/javascript" charset="utf-8">
     $(function () {
+        $("[start]").each(function () {
+            $(this).click(function () {
+                if ($(this).parent().attr("class") == 'active') {
+                    return false;
+                }
+                var tomorrow = new Date();
+                var startDay = new Date();
 
-    $("[start]").each(function () {
-    $(this).click(function () {
-    if ($(this).parent().attr("class") == 'active') {
-    return false;
-    }
-    var tomorrow = new Date();
-    var startDay = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1)
 
-    tomorrow.setDate(tomorrow.getDate() + 1)
+                var interval = $(this).attr("start");
+                var sig = interval.charAt(interval.length - 1);
+                var count = parseInt(interval.substring(0, interval.length - 1));
+                if (sig == 'd') {
+                    startDay.setDate(startDay.getDate() - count);
+                } else if (sig == 'm') {
+                    startDay.setMonth(startDay.getMonth() - count);
+                } else if (sig == 'y') {
+                    startDay.setFullYear(startDay.getFullYear() - count);
+                }
 
-    var interval = $(this).attr("start");
-    var sig = interval.charAt(interval.length - 1);
-    var count = parseInt(interval.substring(0, interval.length - 1));
-    if (sig == 'd') {
-    startDay.setDate(startDay.getDate() - count);
-    } else if (sig == 'm') {
-    startDay.setMonth(startDay.getMonth() - count);
-    } else if (sig == 'y') {
-    startDay.setFullYear(startDay.getFullYear() - count);
-    }
+                $("#condition_begin").val(startDay.getFullYear() + "-" + (startDay.getMonth() + 1) + "-" + startDay.getDate());
+                $("#condition_end").val(tomorrow.getFullYear() + "-" + (tomorrow.getMonth() + 1) + "-" + tomorrow.getDate());
+                $("#condition_interval").val(interval);
+                $("#form").submit();
+                return false;
+            });
+        });
 
-    $("#condition_begin").val(startDay.getFullYear() + "-" + (startDay.getMonth() + 1) + "-" + startDay.getDate());
-    $("#condition_end").val(tomorrow.getFullYear() + "-" + (tomorrow.getMonth() + 1) + "-" + tomorrow.getDate());
-    $("#condition_interval").val(interval);
-    $("#form").submit();
-    return false;
     });
+
+    var set_all_select_all_checkbox = function (checked) {
+        $("input[name=select_all_checkbox]").each(function () {
+            this.checked = checked
+        });
+    };
+
+    var set_all_withdraw_checkbox = function (checked) {
+        $("input[id^=check_withdraw_]").each(function () {
+            this.checked = checked
+        });
+    };
+
+    var all_checked = function () {
+        var all_check = true;
+        $("input[id^=check_withdraw_]").each(function () {
+            if (this.checked) {
+                return true;
+            } else {
+                all_check = false;
+                return false;
+            }
+        });
+
+        return all_check;
+    };
+
+    $(function () {
+        //点击全选
+        $("input[name=select_all_checkbox]").each(function () {
+            $(this).click(function () {
+                if (this.checked) {
+                    set_all_select_all_checkbox(true);
+                    set_all_withdraw_checkbox(true);
+                    $("#payment_excel").show();
+                } else {
+                    set_all_select_all_checkbox(false);
+                    set_all_withdraw_checkbox(false);
+                    $("#payment_excel").hide();
+                }
+            });
+        });
+
+        //点击单个复选框
+        $("input[id^=check_withdraw_]").each(function () {
+            $(this).click(function () {
+                if (all_checked()) {
+                    set_all_select_all_checkbox(true);
+                    $("#payment_excel").show();
+                } else {
+                    set_all_select_all_checkbox(false);
+                    $("#payment_excel").show();
+                }
+            });
+        });
     });
 
+    $("#payment_excel").click(function () {
+        var cnt = 0;
+        $("input[id^=check_withdraw_]").each(function () {
+            if (this.checked == true) {
+                cnt++;
+            }
+        });
+        if (cnt == 0) {
+            alert("请选择一条数据！");
+            return false;
+        }
+        else {
+            $("#form").attr("action", "@{WithdrawApproval.paymentExcelOut()}");
+            $("#form").attr("method", "get");
+            $("#form").submit();
+            return true;
+        }
     });
+
 </script>
 #{/set}
 
 #{set 'moreStyles'}
 <style type="text/css">
     .form-inline ul {
-    display: inline-block;
-    margin-bottom: -15px;
+        display: inline-block;
+        margin-bottom: -15px;
     }
 
     .nav-tabs {
-    margin-bottom: 0px;
+        margin-bottom: 0px;
     }
 
     .tab-content {
-    border-left: 1px solid #DDD;
-    border-right: 1px solid #DDD;
-    border-bottom: 1px solid #DDD;
-    clear: both;
+        border-left: 1px solid #DDD;
+        border-right: 1px solid #DDD;
+        border-bottom: 1px solid #DDD;
+        clear: both;
     }
 
     .tab-content .binary {
-    width: 40%;
-    float: left;
-    text-align: center;
-    margin: 5px 1%;
+        width: 40%;
+        float: left;
+        text-align: center;
+        margin: 5px 1%;
     }
 
     .seq {
-    margin-top: 20px;
+        margin-top: 20px;
     }
 
     .alert {
-    margin-bottom: 0px;
+        margin-bottom: 0px;
     }
 
     .seq thead tr :first {
-    background-color: #f5f5f5;
+        background-color: #f5f5f5;
     }
 
     footer {
-    margin-top: 20px;
+        margin-top: 20px;
     }
 </style>
 #{/set}
@@ -96,28 +171,27 @@
     <br/>
     <label class="control-label">状态</label>
 
-    #{select 'condition.status',id:'condition_status',value:condition?.status}
+#{select 'condition.status',id:'condition_status',value:condition?.status}
     #{option ""}全部#{/option}
     #{option "APPLIED"}&{'withdraw.APPLIED'}#{/option}
     #{option "REJECTED"}&{'withdraw.REJECTED'}#{/option}
     #{option "SUCCESS"}&{'withdraw.SUCCESS'}#{/option}
-    #{/select}
+#{/select}
 
     <label class="control-label">账户类型</label>
 
 
-    #{select 'condition.accountType',id:'condition_account_type',value:condition?.accountType}
+#{select 'condition.accountType',id:'condition_account_type',value:condition?.accountType}
     #{option ""}全部#{/option}
     #{option "CONSUMER"}&{'account.type.CONSUMER'}#{/option}
     #{option "SUPPLIER"}&{'account.type.SUPPLIER'}#{/option}
     #{option "RESALER"}&{'account.type.RESALER'}#{/option}
-    #{/select}
+#{/select}
 
     <label class="control-label"> 手机或帐号</label>
 
     <input type="text" name="condition.searchUser" class="input-medium"
            value="${condition?.searchUser}"/>
-
 
 
     <button type="submit" class="btn btn-primary">搜索</button>
@@ -129,34 +203,56 @@
         <li #{if condition.interval=='1y'} class="active" #{/if}  ><a start="1y" href="#">1年内</a></li>
     </ul>
     <input type="hidden" id="condition_interval" name="condition.interval"/>
-</form>
-<div class="clearfix"><a class="btn btn-primary pull-left" href="/withdraw/settle">结算</a></div>
-<br/>
-#{vx.tab
-    name:'withdraw',
-    enumItems: [models.accounts.WithdrawBillStatus.APPLIED,
-                models.accounts.WithdrawBillStatus.REJECTED,
-                models.accounts.WithdrawBillStatus.SUCCESS],
-    select:'condition_status',
-    value:condition.status,
-    form:'form'/}
-<div class="row-fluid">
 
-    <table class="table table-striped">
-        <tr>
-            <th>申请时间</th>
-            <th>账户</th>
-            <th>申 请 者</th>
-            <th>申请金额</th>
-            <th>申请状态</th>
-            <th>审批时间</th>
-            <th>审批人</th>
-            <th>操作</th>
-        </tr>
+
+    <div class="clearfix">
+        <br>
+        <a class="btn btn-primary pull-left" href="/withdraw/settle">结算</a>
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        <button class="btn btn-primary" style="display: none;" type="submit" id="payment_excel">导出付款申请单</button>
+
+    </div>
+
+
+    <span>
+    *{<a class="btn btn-primary" style="display: none;" href="/withdraw_payment_excel" id="payment_excel">导出付款申请单</a>}*
+    </span>
+
+    <br/>
+#{vx.tab
+name:'withdraw',
+enumItems: [models.accounts.WithdrawBillStatus.APPLIED,
+models.accounts.WithdrawBillStatus.REJECTED,
+models.accounts.WithdrawBillStatus.SUCCESS],
+select:'condition_status',
+value:condition.status,
+form:'form'/}
+    <div class="row-fluid">
+
+        <table class="table table-striped">
+            <tr>
+                <th width="50"><input class="select-all" type="checkbox" name="select_all_checkbox"/>全选</th>
+                <th>申请时间</th>
+                <th>账户</th>
+                <th>申 请 者</th>
+                <th>申请金额</th>
+                <th>申请状态</th>
+                <th>审批时间</th>
+                <th>审批人</th>
+                <th>操作</th>
+            </tr>
         #{paginate.list items:billPage, as:'withdrawBill'}
             <tr>
+                <td>
+                    #{if withdrawBill?.status == models.accounts.WithdrawBillStatus.APPLIED && withdrawBill.account.accountType == models.accounts.AccountType.SUPPLIER }
+                        <input class="select-item" type="checkbox" id="check_withdraw_${withdrawBill.id}"
+                               value="${withdrawBill.id}"
+                               name="withdrawIds"/>
+                    #{/if}
+                </td>
                 <td>${withdrawBill.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</td>
-                <td>&{'account.type.' + withdrawBill.account.accountType}#{if org.apache.commons.lang.StringUtils.isNotBlank(withdrawBill.accountName)}(${withdrawBill.accountName})#{/if}</td>
+                <td>&{'account.type.' + withdrawBill.account.accountType}#{if org.apache.commons.lang.StringUtils.isNotBlank(withdrawBill.accountName)}
+                    (${withdrawBill.accountName})#{/if}</td>
                 <td>${withdrawBill.applier}</td>
                 <td>${withdrawBill.amount.formatCurrency('CNY')}</td>
                 <td>&{'withdraw.' + withdrawBill.status}</td>
@@ -166,13 +262,13 @@
                     <a href="/withdraw/${withdrawBill.id}/detail?uid=${withdrawBill.account.uid}">查看详情 </a>
                 </td>
             </tr>
+
         #{/paginate.list}
-    </table>
-</div>
-<div class="pagination">
-    <ul>
+        </table>
+    </div>
+    <div class="pagination">
+        <ul>
         #{paginate.controls items:billPage /}
-    </ul>
-</div>
- 
- 
+        </ul>
+    </div>
+</form>

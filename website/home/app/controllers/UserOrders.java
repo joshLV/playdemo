@@ -23,7 +23,7 @@ public class UserOrders extends Controller {
     public static void goIndex() {
         index(null);
     }
-    
+
     /**
      * 我的订单
      */
@@ -95,6 +95,7 @@ public class UserOrders extends Controller {
      * @param orderNumber 订单编号
      */
     public static void batchRefund(List<Long> couponIds, String orderNumber) {
+        System.out.println(couponIds + "===couponIds>>");
         User user = SecureCAS.getUser();
         if (couponIds == null || couponIds.size() == 0) {
             refund(orderNumber);

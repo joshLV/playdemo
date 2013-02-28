@@ -7,12 +7,13 @@
 
     <div class="controls">
         <input type="button" id="J_selectImage" value="选择文件"/>
+        <span>可批量上传，文件为图片格式，文件名称根据合同页码命名</span>
         <span style="color: red" id="note_${_id?:field.id}">${_note}</span>
     </div>
     <div class="controls">
         <ul class="image-view" id="J_imageView">
             #{list _value,as:'image'}
-                <li id="li_${image?.id}">
+                <li style="height: 200px" id="li_${image?.id}">
                     <div class="action">
                         <a class="close btn" imageId="${image.id}" imageName="${image.shownName}" href="#">X</a>
                     </div>
@@ -28,7 +29,7 @@
                                 ${image.description}
                             </span>
                             <input id="edit_description_${image?.id}"
-                                   style="display:none;height:8px; width: 140px;
+                                   style="display:none;height:12px; width: 140px;
                                          position: absolute;top: 0;left: 0; -webkit-user-select: auto; "
                                    type="text"
                                    value="${image.description}" maxlength="25"/>
