@@ -35,7 +35,7 @@ public class Sku extends Model {
     @ManyToOne
     public Goods goods;
 
-    //SKU名称
+    //货品名称
     @Required
     @MaxSize(value = 500)
     public String name;
@@ -54,7 +54,7 @@ public class Sku extends Model {
     public String sequenceCode;
 
 
-    // SKU编码 【2位类别编码+4位商户编码+2位品牌编码+2位流水码】
+    // 货品（SKU）编码 【2位类别编码+4位商户编码+2位品牌编码+2位流水码】
     @Column(name = "code")
     public String code;
     // 发货商户
@@ -99,7 +99,7 @@ public class Sku extends Model {
     public boolean create() {
         this.createdAt = new Date();
         this.deleted = DeletedStatus.UN_DELETED;
-        setSkuCode(this.supplierCategory);
+        setSkuCode();
         return super.create();
     }
 
@@ -108,7 +108,7 @@ public class Sku extends Model {
     }
 
     // SKU编码 【2位类别编码+4位商户编码+2位流水码】
-    public void setSkuCode(SupplierCategory supplierCategory) {
+    public void setSkuCode() {
         Sku sku = Sku.find("supplierId=? and brand=? and supplierCategory=? and sequenceCode is not null order by cast(sequenceCode as int) desc", this.supplierId, this.brand, this.supplierCategory).first();
         if (sku == null || StringUtils.isBlank(sku.sequenceCode)) {
             this.sequenceCode = "01";
@@ -119,6 +119,7 @@ public class Sku extends Model {
                 this.sequenceCode = calculateFormattedCode(sku.sequenceCode, String.valueOf(sku.code.length() - 7));
             }
         }
+
         Supplier supplier = Supplier.findUnDeletedById(this.supplierId);
         if (supplier != null && StringUtils.isNotBlank(supplier.code)) {
             this.code = "S" + supplierCategory.code + supplier.sequenceCode + this.sequenceCode;

@@ -23,7 +23,7 @@
 <input type="hidden" name="sku.supplierId" value="${sku?.supplierId}">
 <input type="hidden" name="sku.brand.id" value="${sku?.brand?.id}">
 <input type="hidden" name="sku.supplierCategory.id" value="${sku?.supplierCategory?.id}">
-    #{layout_operate.textField name:'sku.supplierCategoryName', value:sku?.supplierCategory.name, disabled:true/}
+    #{layout_operate.textField name:'sku.supplierCategoryName', value:sku?.supplierCategory?.name, disabled:true/}
     #{layout_operate.textField name:'sku.supplierName', value:sku?.getSupplier()?.otherName, disabled:true/}
     #{layout_operate.textField name:'sku.brandName', value:sku?.brand?.name, disabled:true/}
 #{/else}

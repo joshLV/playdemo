@@ -36,7 +36,6 @@ public class SkuManage extends Controller {
                 PAGE_SIZE);
         skuList.setBoundaryControlsEnabled(true);
         List<Supplier> supplierList = Supplier.findUnDeleted();
-
         Long id = OperateRbac.currentUser().id;
         List<Brand> brandList = Brand.findByOrder(null, id);
         render(skuList, brandList, supplierList, pageNumber, condition);
@@ -89,10 +88,9 @@ public class SkuManage extends Controller {
     }
 
     public static void edit(Long id) {
-        List<Supplier> supplierList = Supplier.findUnDeleted();
-        List<SupplierCategory> supplierCategoryList = SupplierCategory.findAll();
         Sku sku = Sku.findById(id);
-        render(sku, supplierList, supplierCategoryList);
+        setInitParams();
+        render(sku);
     }
 
     public static void update(Long id, @Valid Sku sku) {
@@ -105,8 +103,6 @@ public class SkuManage extends Controller {
     }
 
     public static void delete(Long id) {
-        System.out.println(id + ">>>>id");
-
         Sku.delete(id);
         index(null);
     }
