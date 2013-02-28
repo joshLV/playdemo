@@ -12,7 +12,6 @@ import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Validation;
-import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 import util.transaction.RemoteRecallCheck;
@@ -177,17 +176,18 @@ public class OperateVerifyCoupons extends Controller {
             condition.expiredAtBegin = DateUtil.getBeginExpiredDate(3);
             condition.expiredAtEnd = DateUtil.getEndExpiredDate(3);
         }
-        String page = request.params.get("page");
-        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        JPAExtPaginator<ECoupon> couponList = ECoupon.findVirtualCoupons(condition, pageNumber,
-                PAGE_SIZE);
-        couponList.setBoundaryControlsEnabled(true);
-        BigDecimal totalSalePrice = BigDecimal.ZERO;
-        for (ECoupon coupon : couponList.getCurrentPage()) {
-            totalSalePrice = totalSalePrice.add(coupon.salePrice);
-        }
+        List<ECoupon> couponList = ECoupon.findVirtualCoupons(condition);
+        BigDecimal totalSalePrice = calculateSalePrice(couponList);
         render(couponList, condition, totalSalePrice);
 
+    }
+
+    private static BigDecimal calculateSalePrice(List<ECoupon> couponList) {
+        BigDecimal totalSalePrice = BigDecimal.ZERO;
+        for (ECoupon coupon : couponList) {
+            totalSalePrice = totalSalePrice.add(coupon.salePrice);
+        }
+        return totalSalePrice;
     }
 
     /**
@@ -197,7 +197,6 @@ public class OperateVerifyCoupons extends Controller {
      */
     @ActiveNavigation("virtual_verify_index")
     public static void virtualVerify(Long id, CouponsCondition condition) {
-        List<ECoupon> couponList = ECoupon.findVirtualCoupons(condition);
         ECoupon ecoupon = ECoupon.findById(id);
         String ecouponStatusDescription = ECoupon.checkOtherECouponInfo(ecoupon);
         if (ecouponStatusDescription != null) {
@@ -211,9 +210,12 @@ public class OperateVerifyCoupons extends Controller {
         if (!verifyFlag) {
             Validation.addError("verify-error-info", "虚拟验证失败！");
         }
+        List<ECoupon> couponList = ECoupon.findVirtualCoupons(condition);
+        BigDecimal totalSalePrice = calculateSalePrice(couponList);
         if (Validation.hasErrors()) {
-            render("OperateVerifyCoupons/virtual.html", couponList, id, condition);
+            render("OperateVerifyCoupons/virtual.html", couponList, id, condition, totalSalePrice);
         }
-        render("OperateVerifyCoupons/virtual.html", couponList, condition);
+
+        render("OperateVerifyCoupons/virtual.html", couponList, condition, totalSalePrice);
     }
 }

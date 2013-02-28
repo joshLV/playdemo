@@ -1595,7 +1595,7 @@ public class ECoupon extends Model {
      * @return
      */
     public static List<ECoupon> findVirtualCoupons(CouponsCondition condition) {
-        String sql = "select e from ECoupon e where ";
+        String sql = "select e from ECoupon e ";
         Query query = ECoupon.em().createQuery(sql + condition.getQueryFitter() + " order by e.expireAt, e.partner");
         for (Map.Entry<String, Object> entry : condition.getParamMap().entrySet()) {
             query.setParameter(entry.getKey(), entry.getValue());
@@ -1609,22 +1609,22 @@ public class ECoupon extends Model {
      * @return
      */
     public boolean virtualVerify(Long operateUserId) {
-        if (this.partner == ECouponPartner.JD) {
-            if (!JDGroupBuyHelper.verifyOnJingdong(this)) {
-                Logger.info("virtual verify on jingdong failed");
-                return false;
-            }
-        } else if (this.partner == ECouponPartner.WB) {
-            if (!WubaUtil.verifyOnWuba(this)) {
-                Logger.info("virtual verify on wuba failed");
-                return false;
-            }
-        } else if (this.partner == ECouponPartner.TB) {
-            if (!TaobaoCouponUtil.verifyOnTaobao(this)) {
-                Logger.info("verify on taobao failed");
-                return false;
-            }
-        }
+//        if (this.partner == ECouponPartner.JD) {
+//            if (!JDGroupBuyHelper.verifyOnJingdong(this)) {
+//                Logger.info("virtual verify on jingdong failed");
+//                return false;
+//            }
+//        } else if (this.partner == ECouponPartner.WB) {
+//            if (!WubaUtil.verifyOnWuba(this)) {
+//                Logger.info("virtual verify on wuba failed");
+//                return false;
+//            }
+//        } else if (this.partner == ECouponPartner.TB) {
+//            if (!TaobaoCouponUtil.verifyOnTaobao(this)) {
+//                Logger.info("verify on taobao failed");
+//                return false;
+//            }
+//        }
         this.virtualVerify = true;
         this.virtualVerifyAt = new Date();
 
@@ -1638,12 +1638,4 @@ public class ECoupon extends Model {
         return true;
     }
 
-    public static JPAExtPaginator<ECoupon> findVirtualCoupons(CouponsCondition condition, int pageNumber, int pageSize) {
-        JPAExtPaginator<ECoupon> coupons = new JPAExtPaginator<>
-                ("ECoupon e", "e", ECoupon.class, condition.getQueryFitter(), condition.getParamMap())
-                .orderBy("e.expireAt,e.partner ");
-        coupons.setPageNumber(pageNumber);
-        coupons.setPageSize(pageSize);
-        return coupons;
-    }
 }

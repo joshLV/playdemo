@@ -10,11 +10,11 @@
     <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateVerifyCoupons.virtual()}"
           method="GET">
         券号：<input type="text" name="condition.eCouponSn" class="input-medium"
-                  value="${condition?.eCouponSn}"/>
+                  value="${condition?.eCouponSn?:''}"/>
         商品名称：<input type="text" name="condition.goodsName" class="input-medium"
-                    value="${condition?.goodsName}"/>
+                    value="${condition?.goodsName?:''}"/>
         手机：<input type="text" name="condition.phone" class="input-medium"
-                  value="${condition?.phone}"/>
+                  value="${condition?.phone?:''}"/>
         券结束日期：
         <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
             <input class="input-small" id="refundAtBegin" name="condition.expiredAtBegin" size="16" type="text"
@@ -65,7 +65,7 @@
                     <td>${coupon?.order?.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
                     <td>${coupon.virtualVerify?coupon?.virtualVerifyAt?.format("yyyy-MM-dd HH:mm:ss"):''}</td>
                     <td>
-                        #{vx.operateLink text:"验证", url:"/coupons/"+coupon?.id+"/virtual_verify?condition.eCouponSn="+condition.eCouponSn+"&condition.goodsName="+condition.goodsName+"&condition.phone="+condition.phone+"&condition.expiredAtBegin="+condition?.expiredAtBegin?.format()+"&condition.expiredAtEnd="+condition?.expiredAtEnd?.format(), method:"PUT"/}
+                        #{vx.operateLink text:"验证", url:"/coupons/"+coupon?.id+"/virtual_verify?condition.eCouponSn="+(condition?.eCouponSn?:'')+"&condition.goodsName="+(condition?.goodsName?:'')+"&condition.phone="+(condition?.phone?:'')+"&condition.expiredAtBegin="+condition?.expiredAtBegin?.format()+"&condition.expiredAtEnd="+condition?.expiredAtEnd?.format(), method:"PUT"/}
                         <span style="font-size:10px;color:#ff0000;padding-left: 5px">#{if coupon.id==id}#{error 'verify-error-info' /}#{/if}</span>
                     </td>
                 </tr>
