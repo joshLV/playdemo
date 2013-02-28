@@ -704,7 +704,7 @@ public class SalesReport implements Comparable<SalesReport> {
 
         String sql = "select new models.SalesReport(o)" +
                 " from OrderItems r,Supplier s,OperateUser o" +
-                "  where r.goods.supplierId =s.id and s.deleted=0 and s.salesId=o.id and o.deleted=0  and r.goods.isLottery=false ";
+                "  where r.goods.supplierId =s.id and s.deleted=0 and s.salesId=o.id and r.goods.isLottery=false ";
         String groupBy = " group by s.salesId";
         Query query = JPA.em()
                 .createQuery(sql + groupBy);
