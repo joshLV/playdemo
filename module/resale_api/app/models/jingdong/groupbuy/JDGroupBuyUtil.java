@@ -88,20 +88,16 @@ public class JDGroupBuyUtil {
         JingdongMessage message = new JingdongMessage();
         message.version = XPath.selectText("/*/Version", document).trim();
         try{
-            message.venderId = Long.parseLong(XPath.selectText("/*/VenderId", document).trim());
-            message.zip = Boolean.parseBoolean(XPath.selectText("/*/Zip", document).trim());
-            message.encrypt = Boolean.parseBoolean(XPath.selectText("/*/Encrypt", document).trim());
+            message.venderId = Long.parseLong(StringUtils.trimToNull(XPath.selectText("/*/VenderId", document)));
+            message.zip = Boolean.parseBoolean(StringUtils.trimToNull(XPath.selectText("/*/Zip", document)));
+            message.encrypt = Boolean.parseBoolean(StringUtils.trimToNull(XPath.selectText("/*/Encrypt", document)));
         }catch (Exception e) {
             return message;
         }
 
         // 只有作为京东的响应的时候， resultCode 和 resultMessage 才有用
-        message.resultMessage = XPath.selectText("/*/ResultMessage", document);
-        if (message.resultMessage != null) message.resultMessage = message.resultMessage.trim();
-
-        message.resultCode = XPath.selectText("/*/ResultCode", document);
-        if (message.resultCode != null)  message.resultCode = message.resultCode.trim();
-
+        message.resultMessage = StringUtils.trimToNull(XPath.selectText("/*/ResultMessage", document));
+        message.resultCode = StringUtils.trimToNull(XPath.selectText("/*/ResultCode", document));
 
         if(message.encrypt){
             String rawMessage = XPath.selectText("/*/Data", document);
