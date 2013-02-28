@@ -1,6 +1,6 @@
 <Message xmlns="http://tuan.360buy.com/CancelTeamRequest">
     <!--京东团购ID [必填]-->
-    <JdTeamId>12232</JdTeamId>
+    <JdTeamId>${jdTeamId}</JdTeamId>
     <!--合作伙伴团购ID [必填]-->
-    <VenderTeamId>343234</VenderTeamId>
+    <VenderTeamId>${venderTeamId}</VenderTeamId>
 </Message>
