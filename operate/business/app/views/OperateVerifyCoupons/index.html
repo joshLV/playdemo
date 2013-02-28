@@ -14,7 +14,7 @@
         font-size: 15px;
     }
 </style>
-<form action="@{OperateVerifyCoupons.verify()}" class="form-horizontal" id='form'>
+<form action="@{OperateVerifyCoupons.verify()}" class="form-horizontal" id='form' onsubmit='return disableButton()'>
     <legend>验证消费券</legend>
     <div class="control-group">
         <label class="control-label"><span style="color: red; ">*</span> 商户</label>
@@ -100,4 +100,27 @@
             }
         });
     });
+
+    function disableButton() {
+        alert("1111")
+        $("#sure").click(function () {
+            $('#sure').attr('disabled', "true");
+            $("#sure").html("正在提交");
+            $('#sure').attr('class', "btn disabled");
+            return true;
+        });
+        alert("2222")
+
+        $("#query").click(function () {
+            $('#query').attr('disabled', "true");
+            $("#query").html("正在查询");
+            $('#query').attr('class', "btn disabled");
+            return true;
+        });
+        alert("333")
+
+
+    }
+
+
 </SCRIPT>

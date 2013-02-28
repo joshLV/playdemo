@@ -108,7 +108,7 @@
             #{list items:orderItems, as:'orderItem' }
             <tr>
             %{
-                supplier=models.supplier.Supplier.findUnDeletedById(orderItem.goods.supplierId);
+                supplier=models.supplier.Supplier.findById(orderItem.goods.supplierId);
                 }%
                 <td>${orderItem.goods.no}</td>
                 <td>

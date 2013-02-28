@@ -30,6 +30,8 @@
     <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager,account,customservice,webop"/>
     <permission key="SUPPLIER_CODE_EDIT" text="修改商户编码" roles="developer"/>
     <permission key="GOODS_APPROVE_ONSALE" text="审核商品上架" roles="reviewer"/>
+    <permission key="APPROVE_WITHDRAW" text="提现审核" roles="account"/>
+
     <permission key="HANDLE_RESALER_COMMISSIONRATIO" text="操作分销商佣金比例" roles="manager"/>
     <permission key="ECOUPON_REFUND" text="电子券退款操作" roles="customservice"/>
     <permission key="UNFREEZE_COUPON" text="券解冻" roles="customservice"/>
@@ -54,7 +56,7 @@
     <permission key="PLATFORMS_REPORT" text="券平台佣金账户资金明细" roles="account"/>
     <permission key="INCOMINGS_REPORT" text="收款账户资金明细" roles="account"/>
     <permission key="WITHDRAW_REPORT" text="提现账户资金明细" roles="account"/>
-    <permission key="WITHDRAW_APPROVAL" text="审批提现申请" roles="account"/>
+    <permission key="WITHDRAW_APPROVAL" text="审批提现申请" roles="editor,sales,account"/>
     <permission key="FINANCING_INCOMING_NOTE" text="记录收款" roles="account"/>
     <permission key="FINANCING_ACCOUNT_REPORT" text="券平台财务收款账户资金明细" roles="account"/>
     <permission key="BRANDS_NEW" text="品牌添加" roles="editor"/>

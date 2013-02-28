@@ -16,6 +16,7 @@ import models.resale.Resaler;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierContract;
+import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -47,6 +48,8 @@ public class WithdrawApproval extends Controller {
     private static final int PAGE_SIZE = 20;
 
     public static void index(WithdrawBillCondition condition) {
+        Boolean hasApproveWithdrawPermission = ContextedPermission.hasPermission("WITHDRAW_APPROVAL");
+
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         if (condition == null) {
@@ -61,6 +64,7 @@ public class WithdrawApproval extends Controller {
     }
 
     public static void detail(Long id, Long uid) {
+        Boolean hasApproveWithdrawPermission = ContextedPermission.hasPermission("APPROVE_WITHDRAW");
         WithdrawBill bill = WithdrawBill.findById(id);
         if (bill == null) {
             error("withdraw bill not found");
@@ -91,7 +95,7 @@ public class WithdrawApproval extends Controller {
             supplierName = supplier.otherName;
             renderArgs.put("supplierName", supplierName);
         }
-        render(bill, uid, sum);
+        render(bill, uid, sum, hasApproveWithdrawPermission);
     }
 
     /**
@@ -218,7 +222,6 @@ public class WithdrawApproval extends Controller {
     }
 
     public static void paymentExcelOut(List<Long> withdrawIds, WithdrawBillCondition condition) {
-        System.out.println(withdrawIds + "===withdrawIds>>");
         if (withdrawIds == null || withdrawIds.size() == 0) {
             index(condition);
         }

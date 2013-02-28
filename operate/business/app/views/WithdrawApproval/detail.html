@@ -89,7 +89,7 @@
             <label class="control-value">${bill?.comment}</label>
         </div>
         <div class="form-actions">
-        #{if bill.status == models.accounts.WithdrawBillStatus.APPLIED}
+        #{if bill.status == models.accounts.WithdrawBillStatus.APPLIED && hasApproveWithdrawPermission}
             <a data-toggle="modal" href="#agree-modal" class="btn btn-primary">通过</a>
             <a data-toggle="modal" href="#reject-modal" class="btn btn-danger">拒绝</a>
         #{/if}
