@@ -12,12 +12,14 @@ import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Validation;
+import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 import util.transaction.RemoteRecallCheck;
 import util.transaction.TransactionCallback;
 import util.transaction.TransactionRetry;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +32,7 @@ import java.util.List;
 @With(OperateRbac.class)
 @ActiveNavigation("verify_index")
 public class OperateVerifyCoupons extends Controller {
+    public static int PAGE_SIZE = 15;
 
     /**
      * 验证页面
@@ -169,21 +172,22 @@ public class OperateVerifyCoupons extends Controller {
      */
     @ActiveNavigation("virtual_verify_index")
     public static void virtual(CouponsCondition condition) {
-        condition = setConditionValue(condition);
-        List<ECoupon> couponList = ECoupon.findVirtualCoupons(condition);
-        render(couponList, condition);
-
-    }
-
-    private static CouponsCondition setConditionValue(CouponsCondition condition) {
         if (condition == null) {
             condition = new CouponsCondition();
             condition.expiredAtBegin = DateUtil.getBeginExpiredDate(3);
             condition.expiredAtEnd = DateUtil.getEndExpiredDate(3);
-        } else {
-            condition.expiredAtEnd = DateUtil.getEndOfDay(condition.expiredAtEnd);
         }
-        return condition;
+        String page = request.params.get("page");
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+        JPAExtPaginator<ECoupon> couponList = ECoupon.findVirtualCoupons(condition, pageNumber,
+                PAGE_SIZE);
+        couponList.setBoundaryControlsEnabled(true);
+        BigDecimal totalSalePrice = BigDecimal.ZERO;
+        for (ECoupon coupon : couponList.getCurrentPage()) {
+            totalSalePrice = totalSalePrice.add(coupon.salePrice);
+        }
+        render(couponList, condition, totalSalePrice);
+
     }
 
     /**
@@ -193,7 +197,6 @@ public class OperateVerifyCoupons extends Controller {
      */
     @ActiveNavigation("virtual_verify_index")
     public static void virtualVerify(Long id, CouponsCondition condition) {
-        condition = setConditionValue(condition);
         List<ECoupon> couponList = ECoupon.findVirtualCoupons(condition);
         ECoupon ecoupon = ECoupon.findById(id);
         String ecouponStatusDescription = ECoupon.checkOtherECouponInfo(ecoupon);
@@ -211,7 +214,6 @@ public class OperateVerifyCoupons extends Controller {
         if (Validation.hasErrors()) {
             render("OperateVerifyCoupons/virtual.html", couponList, id, condition);
         }
-
         render("OperateVerifyCoupons/virtual.html", couponList, condition);
     }
 }

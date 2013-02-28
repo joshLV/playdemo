@@ -540,6 +540,7 @@ public class ECoupon extends Model {
 
     /**
      * 使用RemoteRecallCheck.call包装一下，这样在下次进来时会检查是否成功过，如果成功过就不再调用verifyOnPartnerResaler.
+     *
      * @return 如果返回true，表示调用失败.
      */
     private Boolean verifyAndCheckOnPartnerResaler() {
@@ -560,6 +561,7 @@ public class ECoupon extends Model {
 
     /**
      * 调用第三方渠道券验证，并返回是否失败的标识。
+     *
      * @return TRUE表示验证失败；FALSE表示验证成功
      */
     private Boolean verifyOnPartnerResaler() {
@@ -1595,8 +1597,8 @@ public class ECoupon extends Model {
      * @return
      */
     public static List<ECoupon> findVirtualCoupons(CouponsCondition condition) {
-        String sql = "select e from ECoupon e where e.virtualVerify=0 and e.goods.isLottery=false ";
-        Query query = ECoupon.em().createQuery(sql + condition.getQueryFitter() + " order by e.partner");
+        String sql = "select e from ECoupon e where ";
+        Query query = ECoupon.em().createQuery(sql + condition.getQueryFitter() + " order by e.expireAt, e.partner");
         for (Map.Entry<String, Object> entry : condition.getParamMap().entrySet()) {
             query.setParameter(entry.getKey(), entry.getValue());
         }
@@ -1636,5 +1638,14 @@ public class ECoupon extends Model {
         this.save();
         ECouponHistoryMessage.with(this).operator(operator).remark("虚拟验证").sendToMQ();
         return true;
+    }
+
+    public static JPAExtPaginator<ECoupon> findVirtualCoupons(CouponsCondition condition, int pageNumber, int pageSize) {
+        JPAExtPaginator<ECoupon> coupons = new JPAExtPaginator<>
+                ("ECoupon e", "e", ECoupon.class, condition.getQueryFitter(), condition.getParamMap())
+                .orderBy("e.expireAt,e.partner ");
+        coupons.setPageNumber(pageNumber);
+        coupons.setPageSize(pageSize);
+        return coupons;
     }
 }

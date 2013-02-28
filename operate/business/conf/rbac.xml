@@ -8,6 +8,7 @@
     <role key="sales" text="商务销售"/>
     <role key="manager" text="经理"/>
     <role key="solr_load" text="solr加载数据"/>
+    <role key="virtual_verify" text="虚拟验证"/>
     <role key="developer" text="开发人员"/>
     <role key="reviewer" text="产品审核"/>
     <role key="contractadminister" text="合同管理"/>
@@ -47,6 +48,7 @@
     <permission key="ORDERS" text="运营订单管理" roles="customservice,webop,account,sales,manager"/>
     <permission key="COUPONS" text="券查询" roles="sales,customservice,account,manager"/>
     <permission key="COUPONS_MANAGE" text="券管理" roles="customservice,account,manager"/>
+    <permission key="VIRTUAL_VERIFY_COUPON" text="虚拟验证券" roles="virtual_verify"/>
     <permission key="CONSUMERS_REPORT" text="消费者资金明细" roles="account"/>
     <permission key="RESALES_REPORT" text="分销商资金明细" roles="account"/>
     <permission key="SUPPLIERS_REPORT" text="商户资金明细" roles="account"/>
@@ -145,7 +147,7 @@
             <navigation key="verify_index" action="OperateVerifyCoupons.index" text="验证消费券"
                         permissions="COUPONS_MANAGE"/>
             <navigation key="virtual_verify_index" action="OperateVerifyCoupons.virtual" text="虚拟验证第三方券号"
-                        permissions="COUPONS_MANAGE"/>
+                        permissions="VIRTUAL_VERIFY_COUPON"/>
             <navigation key="pre_coupons" action="ImportCoupons.index" text="预购券管理" permissions="COUPONS_MANAGE"/>
             <navigation key="freeze_coupons" action="BatchFreezeCoupons.index" text="批量冻结券号"
                         permissions="COUPONS_MANAGE"/>
