@@ -94,7 +94,13 @@ public class OperateUsersProfilesTest extends FunctionalTest {
                 role.key = "account";
             }
         });
-
+        OperateRole virtualVerify = FactoryBoy.create(OperateRole.class, new BuildCallback<OperateRole>() {
+            @Override
+            public void build(OperateRole role) {
+                role.text = "虚拟验证";
+                role.key = "virtual_verify";
+            }
+        });
         operateUser = FactoryBoy.create(OperateUser.class, new BuildCallback<OperateUser>() {
             @Override
             public void build(OperateUser ou) {
