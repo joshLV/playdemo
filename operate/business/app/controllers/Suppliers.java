@@ -5,10 +5,11 @@ import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.AccountType;
 import models.accounts.WithdrawAccount;
 import models.accounts.util.AccountUtil;
-import models.operator.OperateUser;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.admin.SupplierUserType;
+import models.operator.OperateUser;
+import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierCategory;
@@ -16,7 +17,6 @@ import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
-import play.data.validation.Error;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
@@ -204,26 +204,31 @@ public class Suppliers extends Controller {
         Supplier supplier = Supplier.findById(id);
         SupplierUser admin = SupplierUser.findAdmin(id, supplier.loginName);
         List<WithdrawAccount> withdrawAccounts =
-                WithdrawAccount.find("byUserIdAndAccountType", supplier.getId(), AccountType.SUPPLIER).fetch();
+                WithdrawAccount.findAllBySupplier(supplier.getId());
         List<OperateUser> operateUserList = OperateUser.getSales(SALES_ROLE);
         List<SupplierCategory> supplierCategoryList = SupplierCategory.findAll();
         renderArgs.put("baseDomain", SUPPLIER_BASE_DOMAIN);
+
+        List<Shop> independentShopList = Shop.findIndependentList(supplier.id);
         Boolean hasSupplierCodeEditPermission = ContextedPermission.hasPermission("SUPPLIER_CODE_EDIT");
-        render(supplier, supplierCategoryList, hasSupplierCodeEditPermission, admin, id, withdrawAccounts, operateUserList, page);
+        render(supplier, supplierCategoryList, independentShopList, hasSupplierCodeEditPermission, admin, id, withdrawAccounts, operateUserList, page);
     }
 
     public static void withdrawAccountCreateAndUpdate(@Valid WithdrawAccount withdrawAccount, Long supplierId) {
         if (Validation.hasErrors()) {
             renderArgs.put("withdrawAccount", withdrawAccount);
-            for (Error error : Validation.errors()) {
-                System.out.println(error.getKey() + ":" + error.message());
-            }
             Validation.keep();
             edit(supplierId);
         }
         Supplier supplier = Supplier.findById(supplierId);
-        withdrawAccount.userId = supplier.getId();
-        withdrawAccount.accountType = AccountType.SUPPLIER;
+        if (withdrawAccount.shopId == null) {
+            withdrawAccount.userId = supplier.getId();
+            withdrawAccount.accountType = AccountType.SUPPLIER;
+        } else {
+            withdrawAccount.userId = withdrawAccount.shopId;
+            withdrawAccount.accountType = AccountType.SHOP;
+            withdrawAccount.supplierId = supplierId;
+        }
         withdrawAccount.save();
 
         edit(supplierId);

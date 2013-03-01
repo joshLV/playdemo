@@ -109,6 +109,22 @@
             $("#form").submit();
             return true;
         }
+
+        $("#condition_account_type").change(function () {
+            if ($(this).val() == 'CONSUMER' || $(this).val() == '') {
+                $("#l-searchUser").html("消费者手机或帐号")
+            }
+            else if ($(this).val() == 'SUPPLIER') {
+                $("#l-searchUser").html("商户名")
+            }
+            else if ($(this).val() == 'SHOP') {
+                $("#l-searchUser").html("门店名")
+            }
+            else if ($(this).val() == 'RESALER') {
+                $("#l-searchUser").html("分销商名")
+            }
+        });
+
     });
 
 </script>
@@ -158,51 +174,63 @@
 #{/set}
 
 <form class="well form-inline" action="@{WithdrawApproval.index()}" method="GET" id="form" name="form">
-    申请起止日期
-    <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.appliedAtBegin"
-           onfocus="WdatePicker({readOnly:true})" value="${condition.appliedAtBegin?.format()}"> -
-    <input type="text" id="condition_end" class="input-medium Wdate" name="condition.appliedAtEnd"
-           onfocus="WdatePicker({readOnly:true})" value="${condition.appliedAtEnd?.format()}">
-    审批起止日期
-    <input type="text" id="approval_condition_begin" class="input-medium Wdate" name="condition.processedAtBegin"
-           onfocus="WdatePicker({readOnly:true})" value="${condition.processedAtBegin?.format()}"> -
-    <input type="text" id="approval_condition_end" class="input-medium Wdate" name="condition.processedAtEnd"
-           onfocus="WdatePicker({readOnly:true})" value="${condition.processedAtEnd?.format()}">
-    <br/>
-    <label class="control-label">状态</label>
+    <table class="form-inline">
+        <tbody>
+        <tr>
+            <td>申请日期</td>
+            <td><input type="text" id="condition_begin" class="input-medium Wdate" name="condition.appliedAtBegin"
+                       onfocus="WdatePicker({readOnly:true})" value="${condition.appliedAtBegin?.format()}"> -
+                <input type="text" id="condition_end" class="input-medium Wdate" name="condition.appliedAtEnd"
+                       onfocus="WdatePicker({readOnly:true})" value="${condition.appliedAtEnd?.format()}">
+            </td>
+            <td width="120px">&nbsp;审批日期</td>
+            <td><input type="text" id="approval_condition_begin" class="input-medium Wdate"
+                       name="condition.processedAtBegin"
+                       onfocus="WdatePicker({readOnly:true})" value="${condition.processedAtBegin?.format()}"> -
+                <input type="text" id="approval_condition_end" class="input-medium Wdate"
+                       name="condition.processedAtEnd"
+                       onfocus="WdatePicker({readOnly:true})" value="${condition.processedAtEnd?.format()}">
+            </td>
+            <td>&nbsp;状态</td>
+            <td>#{select 'condition.status',id:'condition_status',value:condition?.status}
+                #{option ""}全部#{/option}
+                #{option "APPLIED"}&{'withdraw.APPLIED'}#{/option}
+                #{option "REJECTED"}&{'withdraw.REJECTED'}#{/option}
+                #{option "SUCCESS"}&{'withdraw.SUCCESS'}#{/option}
+            #{/select}
+            </td>
+        </tr>
+        <tr>
+            <td>账户类型</td>
+            <td>#{select 'condition.accountType',id:'condition_account_type',value:condition?.accountType}
+                #{option ""}全部#{/option}
+                #{option "CONSUMER"}&{'account.type.CONSUMER'}#{/option}
+                #{option "SUPPLIER"}&{'account.type.SUPPLIER'}#{/option}
+                #{option "RESALER"}&{'account.type.RESALER'}#{/option}
+                #{option "SHOP"}&{'account.type.SHOP'}#{/option}
+            #{/select}</td>
 
-#{select 'condition.status',id:'condition_status',value:condition?.status}
-    #{option ""}全部#{/option}
-    #{option "APPLIED"}&{'withdraw.APPLIED'}#{/option}
-    #{option "REJECTED"}&{'withdraw.REJECTED'}#{/option}
-    #{option "SUCCESS"}&{'withdraw.SUCCESS'}#{/option}
-#{/select}
+            <td><label class="control-label" id="l-searchUser">&nbsp;消费者手机或帐号</label></td>
+            <td><input type="text" name="condition.searchUser" class="input-medium"
+                       value="${condition?.searchUser}"/>
+            </td>
 
-    <label class="control-label">账户类型</label>
-
-
-#{select 'condition.accountType',id:'condition_account_type',value:condition?.accountType}
-    #{option ""}全部#{/option}
-    #{option "CONSUMER"}&{'account.type.CONSUMER'}#{/option}
-    #{option "SUPPLIER"}&{'account.type.SUPPLIER'}#{/option}
-    #{option "RESALER"}&{'account.type.RESALER'}#{/option}
-#{/select}
-
-    <label class="control-label"> 手机或帐号</label>
-
-    <input type="text" name="condition.searchUser" class="input-medium"
-           value="${condition?.searchUser}"/>
-
-
-    <button type="submit" class="btn btn-primary">搜索</button>
-    <ul class="nav nav-pills">
-        <li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">今天</a></li>
-        <li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>
-        <li #{if condition.interval=='1m'} class="active" #{/if}  ><a start="1m" href="#">1个月</a></li>
-        <li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>
-        <li #{if condition.interval=='1y'} class="active" #{/if}  ><a start="1y" href="#">1年内</a></li>
-    </ul>
-    <input type="hidden" id="condition_interval" name="condition.interval"/>
+            <td>
+                <button type="submit" class="btn btn-primary">搜索</button>
+            </td>
+            <td>
+                <ul class="nav nav-pills">
+                    <li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">今天</a></li>
+                    <li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>
+                    <li #{if condition.interval=='1m'} class="active" #{/if}  ><a start="1m" href="#">1个月</a></li>
+                    <li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>
+                    <li #{if condition.interval=='1y'} class="active" #{/if}  ><a start="1y" href="#">1年内</a></li>
+                </ul>
+                <input type="hidden" id="condition_interval" name="condition.interval"/>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
 
     <div class="clearfix">
@@ -212,13 +240,7 @@
         <button class="btn btn-primary" style="display: none;" type="submit" id="payment_excel">导出付款申请单</button>
 
     </div>
-
-
-    <span>
-    *{<a class="btn btn-primary" style="display: none;" href="/withdraw_payment_excel" id="payment_excel">导出付款申请单</a>}*
-    </span>
-
-    <br/>
+<br/>
 #{vx.tab
 name:'withdraw',
 enumItems: [models.accounts.WithdrawBillStatus.APPLIED,

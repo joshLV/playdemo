@@ -8,12 +8,11 @@ import models.accounts.AccountType;
 import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
-import models.operator.OperateUser;
 import models.admin.SupplierUser;
 import models.consumer.User;
 import models.dangdang.groupbuy.DDGroupBuyUtil;
 import models.jingdong.groupbuy.JDGroupBuyHelper;
-import models.jingdong.groupbuy.JDGroupBuyUtil;
+import models.operator.OperateUser;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.GoodsCouponType;
@@ -644,10 +643,8 @@ public class ECoupon extends Model {
     }
 
     public void payCommission() {
-        Account supplierAccount = AccountUtil.getSupplierAccount(orderItems.goods.supplierId);
-
         // 给商户打钱
-        TradeBill consumeTrade = TradeUtil.createConsumeTrade(eCouponSn, supplierAccount, originalPrice, order.getId());
+        TradeBill consumeTrade = TradeUtil.createConsumeTrade(eCouponSn, getSupplierAccount(), originalPrice, order.getId());
         TradeUtil.success(consumeTrade, "券消费(" + order.description + ")");
 
         BigDecimal platformCommission = BigDecimal.ZERO;
@@ -921,6 +918,20 @@ public class ECoupon extends Model {
         Solr.save(eCoupon.goods);
 
         return returnFlg;
+    }
+
+    /**
+     * 对于独立核算的门店，返回门店帐号，否则返回商户帐号.
+     *
+     * @param eCoupon
+     * @return
+     */
+    @Transient
+    public Account getSupplierAccount() {
+        if (status == ECouponStatus.CONSUMED && shop != null && shop.independentClearing) {
+            return AccountUtil.getShopAccount(shop.id);
+        }
+        return AccountUtil.getSupplierAccount(goods.supplierId);
     }
 
     /**

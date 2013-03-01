@@ -23,20 +23,20 @@
     <div class="form-horizontal">
         <div class="control-group">
             <label class="control-label">申请时间</label>
-            <label class="control-value">${bill?.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</label>
+           <label class="controls control-value">${bill?.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</label>
         </div>
         <div class="control-group">
-            <label class="control-label">账户类型</label>
-            <label class="control-value"> &{'account.type.' + bill.account.accountType}
+            <label class="control-label">账&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户</label>
+            <label class="controls control-value">&{'account.type.' + bill.account.accountType}#{if org.apache.commons.lang.StringUtils.isNotBlank(bill.accountName)}
+                (${bill.accountName})#{/if}
             #{if bill?.account?.accountType ==  models.accounts.AccountType.SUPPLIER && contract?.id!=null}
                 <a href="/supplier_contract/${contract?.id}/view" target="_blank">查看合同</a>
             #{/if}
             </label>
-
         </div>
         <div class="control-group">
             <label class="control-label">申 请 者</label>
-            <label class="control-value">${bill?.applier}
+            <label class="controls control-value">${bill?.applier}
                 &nbsp;&nbsp; (&nbsp;uid:${uid}&nbsp;) &nbsp;&nbsp;
             #{if  bill.account.accountType==models.accounts.AccountType.CONSUMER }
                 <a href="/coupons?condition.searchKey=UID&condition.searchItems=${uid}&condition.status=REFUND"
@@ -50,43 +50,43 @@
         </div>
         <div class="control-group">
             <label class="control-label">申请金额</label>
-            <label class="control-value">${bill?.amount.formatCurrency('CNY')}</label>
+            <label class="controls control-value">${bill?.amount.formatCurrency('CNY')}</label>
         </div>
         <div class="control-group">
             <label class="control-label">已通过提现金额 </label>
-            <label class="control-value">${sum.formatCurrency('CNY')}</label>
+            <label class="controls control-value">${sum.formatCurrency('CNY')}</label>
         </div>
         <div class="control-group">
             <label class="control-label">所在城市</label>
-            <label class="control-value">${bill?.bankCity}</label>
+            <label class="controls control-value">${bill?.bankCity}</label>
         </div>
         <div class="control-group">
             <label class="control-label">开户银行</label>
-            <label class="control-value">${bill?.bankName}</label>
+            <label class="controls control-value">${bill?.bankName}</label>
         </div>
         <div class="control-group">
             <label class="control-label">分行名称</label>
-            <label class="control-value">${bill?.subBankName}</label>
+            <label class="controls control-value">${bill?.subBankName}</label>
         </div>
         <div class="control-group">
             <label class="control-label">开户姓名</label>
-            <label class="control-value">${bill?.userName}</label>
+            <label class="controls control-value">${bill?.userName}</label>
         </div>
         <div class="control-group">
             <label class="control-label">银行卡号</label>
-            <label class="control-value">${bill?.cardNumber}</label>
+            <label class="controls control-value">${bill?.cardNumber}</label>
         </div>
         <div class="control-group">
             <label class="control-label">申请状态</label>
-            <label class="control-value">&{'withdraw.' + bill.status}</label>
+            <label class="controls control-value">&{'withdraw.' + bill.status}</label>
         </div>
         <div class="control-group">
             <label class="control-label">手续费</label>
-            <label class="control-value">${bill?.fee?.formatCurrency('CNY')}</label>
+            <label class="controls control-value">${bill?.fee?.formatCurrency('CNY')}</label>
         </div>
         <div class="control-group">
             <label class="control-label">备注</label>
-            <label class="control-value">${bill?.comment}</label>
+            <label class="controls control-value">${bill?.comment}</label>
         </div>
         <div class="form-actions">
         #{if bill.status == models.accounts.WithdrawBillStatus.APPLIED && hasApproveWithdrawPermission}

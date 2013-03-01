@@ -29,6 +29,7 @@
             <th>门店名称</th>
             <th>门店地址</th>
             <th>门店电话</th>
+            <th>按门店提现</th>
             <th>操 作</th>
         </tr>
         </thead>
@@ -41,6 +42,7 @@
             <td>${shop.address} #{if shop?.hasMap()}<a href="@{OperateShops.edit(shop.id)}"><img
                     src="@@{'/public/images/map-logo.png'}" alt="点击修改地图位置" height="10px" weight="10px"></a>#{/if}</td>
             <td>${shop.phone}</td>
+            <td>&{'shop.independentClearing.'+shop.independentClearing}</td>
             <td>
                 <a href="/shops/${shop.id}/edit?page=${shopPage.pageNumber?:1}">修改</a>
                 /#{vx.deleteLink action:"shops", id:shop.id, name:shop.name/}

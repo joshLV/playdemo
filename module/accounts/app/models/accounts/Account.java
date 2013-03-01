@@ -22,6 +22,13 @@ import java.util.Date;
 public class Account extends Model {
     public long uid;                        //用户ID, 与accountType 一起可做唯一约束
 
+    /**
+     * 商户标识.
+     * 仅当帐号是按门店结算的帐号时该字段不为空
+     */
+    @Column(name = "supplier_id")
+    public Long supplierId;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "account_type")
     public AccountType accountType;         //账户类型
