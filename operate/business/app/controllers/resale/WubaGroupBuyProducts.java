@@ -101,7 +101,7 @@ public class WubaGroupBuyProducts extends Controller {
         }
 
         Supplier supplier = Supplier.findById(product.goods.supplierId);
-        Set<Shop> shopList = product.goods.shops;
+        Collection<Shop> shopList = product.goods.getShopList();
         Goods goods = product.goods;
         String allCategoriesJson = WubaUtil.allProductTypesJsonCache();
         render(product, goods, allCategoriesJson, shopList, supplier);
