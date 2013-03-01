@@ -21,6 +21,13 @@
             padding-top: 60px;
             padding-bottom: 40px;
         }
+        @media (max-width: 979px)
+        {
+            /* Remove any padding from the body */
+            body {
+                padding-top: 0;
+            }
+        }
 
         .sidebar-nav {
             padding: 9px 0;
@@ -76,33 +83,33 @@
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container-fluid">
-
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
-            </a>
+            </button>
             <a class="brand" href="#">运营后台</a>
+            <div class="nav-collapse collapse">
 
-            <div class="nav-collapse collapse"><p class="navbar-text pull-right">
-                <span>&nbsp;&nbsp;&nbsp;&nbsp;当前用户： </span>
-                <a id="profile" href="http://admin.seewi.com.cn/profile">${currentUser?.loginName}</a>
-                <a href="/logout">注销</a></p>
-            </div>
+                #{navigation.topMenus topMenus /}
 
-            <div class="navbar-form">
-            #{navigation.topMenus topMenus /}
-                <form class="form-search pull-right" method="GET" target="_blank"
-                action="http://business.${play.Play.configuration.getProperty("application.baseDomain")}/quick-search"
-                      style="margin: 0 0 0 0" id="quick_search_form">
+                <div class="navbar-text pull-right">
+                    <span>&nbsp;&nbsp;&nbsp;&nbsp;当前用户： </span>
+                    <a id="profile" href="http://admin.seewi.com.cn/profile">${currentUser?.loginName}</a>
+                    <a href="/logout">注销</a>
+                </div>
+
+                <div class="navbar-text pull-right">
+                    <form class="form-search " method="GET" target="_blank"
+                          action="http://business.${play.Play.configuration.getProperty("application.baseDomain")}/quick-search"
+                    style="margin: 0 0 0 0" id="quick_search_form">
                     <input rel="tooltip"
                            data-placement="bottom"
                            data-original-title='券号/手机/订单号<br>外部订单号(数字之前加上WD)<br>外部券号(数字之前加上WQ)'
                            type="text" class="input-small search-query" placeholder="快速搜索" name="q"
-                            id="quick_search">
-
-
-                </form>
+                           id="quick_search">
+                    </form>
+                </div>
             </div>
         </div>
     </div>
