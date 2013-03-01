@@ -69,6 +69,12 @@
     </div>
 </div>
 <div id="brand">#{include '/OperateBrands/goodsBrands.html'/}</div>
+    #{if "edit".equals(action) }
+    <div id="sku">#{include '/SkuManage/goodsSku.html'/}
+       #{layout_operate.textField name:'goods.skuNumber', value:goods?.skuNumber, note:'件', required:true/}
+    </div>
+
+    #{/if}
     #{layout_operate.textField name:'goods.no', value:goods?.no/}
     #{layout_operate.nameField name:'goods.shortName', value:goods?.shortName, required:true, length:12/}
     #{layout_operate.nameField name:'goods.name', value:goods?.name, required:true, length:300/}
@@ -234,11 +240,13 @@
     }
 
     if ($("#goods_materialType_2").attr("checked")) {
+        $("#sku").show();
         $("#free_shipping").show();
     }
 
     if ($("#goods_materialType_1").attr("checked")) {
         $("#free_shipping").hide();
+        $("#sku").hide();
         $("input[id=freeShipping]").attr("checked", false);
     }
 
@@ -323,12 +331,13 @@
 
     $("#goods_materialType_2").click(function () {
         $("#free_shipping").show();
+        $("#sku").show();
     });
 
     $("#goods_materialType_1").click(function () {
         $("#free_shipping").hide();
+        $("#sku").hide();
         $("input[id=freeShipping]").attr("checked", false);
     });
-
 </script>
 #{/else}
