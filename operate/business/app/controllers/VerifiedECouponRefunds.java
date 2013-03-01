@@ -185,11 +185,11 @@ public class VerifiedECouponRefunds extends Controller {
         eCoupon.order.save();
 
         String userName = OperateRbac.currentUser().userName;
-        System.out.println(  "1111===>>");
+        System.out.println("1111===>>");
         //记录券历史信息
         ECouponHistoryMessage.with(eCoupon).operator(userName).remark("已消费券退款:" + refundComment)
                 .toStatus(ECouponStatus.REFUND).sendToMQ();
-        System.out.println(  "22222===>>");
+        System.out.println("22222===>>");
 
         // 更改订单状态
         eCoupon.status = ECouponStatus.REFUND;
@@ -233,6 +233,8 @@ public class VerifiedECouponRefunds extends Controller {
         // 给商户打钱
         TradeBill consumeTrade = TradeUtil.createConsumeTrade(eCoupon.eCouponSn,
                 supplierAccount, eCoupon.originalPrice, eCoupon.order.getId(), reverse);
+        consumeTrade.tradeType = TradeType.REFUND;
+        consumeTrade.save();
         TradeUtil.success(consumeTrade, "已消费退款：" + refundComment + "。" + eCoupon.order.description);
 
         BigDecimal platformCommission = BigDecimal.ZERO;

@@ -69,6 +69,8 @@ public class CouponsCondition implements Serializable {
     public Date expiredAtBegin;
     public Date expiredAtEnd;
 
+    public String partnerCouponId;
+
     public String getOrderByExpress() {
         return "e.createdAt desc";
     }
@@ -301,6 +303,11 @@ public class CouponsCondition implements Serializable {
                 sql.append(" and 5 =:supplierIds");
                 paramMap.put("supplierIds", 6);
             }
+        }
+
+        if (StringUtils.isNotBlank(partnerCouponId)) {
+            sql.append(" and e.partnerCouponId = :partnerCouponId");
+            paramMap.put("partnerCouponId", partnerCouponId);
         }
 
         //按照帐号检索
