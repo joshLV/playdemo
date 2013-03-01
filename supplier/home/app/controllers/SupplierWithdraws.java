@@ -7,6 +7,7 @@ import models.accounts.WithdrawAccount;
 import models.accounts.WithdrawBill;
 import models.accounts.WithdrawBillCondition;
 import models.accounts.util.AccountUtil;
+import models.admin.SupplierUser;
 import models.order.Prepayment;
 import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
@@ -37,9 +38,10 @@ public class SupplierWithdraws extends Controller {
 
     @ActiveNavigation("account_withdraw")
     public static void index(WithdrawBillCondition condition) {
-        Long supplierId = SupplierRbac.currentUser().supplier.id;
+        SupplierUser supplierUser = SupplierRbac.currentUser();
+        Long supplierId = supplierUser.supplier.id;
         Supplier supplier = Supplier.findById(supplierId);
-        Account account = AccountUtil.getSupplierAccount(supplier.getId());
+        Account account = supplierUser.getSupplierAccount();
 
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
@@ -55,12 +57,15 @@ public class SupplierWithdraws extends Controller {
 
     @ActiveNavigation("account_withdraw")
     public static void apply() {
-        Long supplierId = SupplierRbac.currentUser().supplier.id;
+        SupplierUser supplierUser = SupplierRbac.currentUser();
+        Long supplierId = supplierUser.supplier.id;
         Supplier supplier = Supplier.findById(supplierId);
-        Account account = AccountUtil.getSupplierAccount(supplier.getId());
+        Account account = supplierUser.getSupplierAccount();
         BigDecimal prepaymentBalance = Prepayment.findAmountBySupplier(supplier);
 
-        List<WithdrawAccount> withdrawAccounts = WithdrawAccount.findByUser(supplier.getId(), AccountType.SUPPLIER);
+
+        List<WithdrawAccount> withdrawAccounts = account.accountType == AccountType.SHOP ? WithdrawAccount.findByShop(supplierUser.shop.id) :
+                WithdrawAccount.findByUser(supplier.getId(), AccountType.SUPPLIER);
         List<Prepayment> prepayments = Prepayment.findBySupplier(supplier);
 
         BigDecimal withdrawAmount = account.getWithdrawAmount(getBeginOfDay());
@@ -71,11 +76,13 @@ public class SupplierWithdraws extends Controller {
 
     @ActiveNavigation("account_withdraw")
     public static void create(Long withdrawAccountId, BigDecimal amount) {
-        Long supplierId = SupplierRbac.currentUser().supplier.id;
+        SupplierUser supplierUser = SupplierRbac.currentUser();
+        Long supplierId = supplierUser.supplier.id;
         Supplier supplier = Supplier.findById(supplierId);
-        Account account = AccountUtil.getSupplierAccount(supplier.getId());
-        WithdrawAccount withdrawAccount = WithdrawAccount.findByIdAndUser(
-                withdrawAccountId, supplier.getId(), AccountType.SUPPLIER);
+        Account account = supplierUser.getSupplierAccount();
+        WithdrawAccount withdrawAccount = account.accountType == AccountType.SHOP ?
+                WithdrawAccount.findByIdAndUser(withdrawAccountId, supplierUser.shop.id, AccountType.SHOP) :
+                WithdrawAccount.findByIdAndUser(withdrawAccountId, supplier.getId(), AccountType.SUPPLIER);
         if (withdrawAccount == null) {
             error("invalid withdraw account");
         }
@@ -95,7 +102,8 @@ public class SupplierWithdraws extends Controller {
         withdraw.cardNumber = withdrawAccount.cardNumber;
         withdraw.amount = amount;
 
-        if (withdraw.apply(SupplierRbac.currentUser().loginName, account, supplier.otherName)) {
+        String accountName = account.accountType == AccountType.SHOP ? supplier.otherName + ":" + supplierUser.shop.name : supplier.otherName;
+        if (withdraw.apply(SupplierRbac.currentUser().loginName, account, accountName)) {
             // 不再通知 sendNotification(withdraw);
             index(null);
         } else {
@@ -106,10 +114,14 @@ public class SupplierWithdraws extends Controller {
 
     @ActiveNavigation("account_withdraw")
     public static void detail(Long id) {
-        Long supplierId = SupplierRbac.currentUser().supplier.id;
+        SupplierUser supplierUser = SupplierRbac.currentUser();
+        Long supplierId = supplierUser.supplier.id;
         Supplier supplier = Supplier.findById(supplierId);
+        Account account = supplierUser.getSupplierAccount();
 
-        WithdrawBill bill = WithdrawBill.findByIdAndUser(id, supplier.getId(), AccountType.SUPPLIER);
+        WithdrawBill bill = account.accountType == AccountType.SHOP ?
+                WithdrawBill.findByIdAndUser(id, supplierUser.shop.id, AccountType.SHOP) :
+                WithdrawBill.findByIdAndUser(id, supplier.getId(), AccountType.SUPPLIER);
         if (bill == null) {
             error("withdraw bill not found");
         }

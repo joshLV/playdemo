@@ -49,7 +49,6 @@ import java.util.Set;
  * request. If the user is note logged, it redirect the user to the CAS login page and authenticate it.
  *
  * @author bsimard
- *
  */
 public class SupplierRbac extends Controller {
 
@@ -58,8 +57,8 @@ public class SupplierRbac extends Controller {
     private static ThreadLocal<SupplierUser> _user = new ThreadLocal<>();
 
     public static void injectDefaultMenus() {
-        for(String menuName : Play.configuration.getProperty("navigation.defaultMenus", "main").toString().split(",")) {
-            if(!StringUtils.isBlank(menuName)) {
+        for (String menuName : Play.configuration.getProperty("navigation.defaultMenus", "main").toString().split(",")) {
+            if (!StringUtils.isBlank(menuName)) {
                 renderArgs.put(menuName + "Menu", NavigationHandler.getMenu(StringUtils.trim(menuName)));
             }
         }
@@ -70,7 +69,7 @@ public class SupplierRbac extends Controller {
      *
      * @throws Throwable
      */
-    @Before(unless = { "login", "logout", "fail", "authenticate", "pgtCallBack", "setLoginUserForTest" })
+    @Before(unless = {"login", "logout", "fail", "authenticate", "pgtCallBack", "setLoginUserForTest"})
     public static void filterRbac() {
         Logger.debug("[SupplierRbac]: CAS Filter for URL -> " + request.url);
 
@@ -86,7 +85,7 @@ public class SupplierRbac extends Controller {
         String subDomain = CASUtils.getSubDomain();
 
         Logger.info(" currentUser = " + userName + ", domain=" + subDomain
-        		+ ", cache=" + Cache.get(SESSION_USER_KEY + userName));
+                + ", cache=" + Cache.get(SESSION_USER_KEY + userName));
 
         SupplierUser user = null;
         // 检查权限
@@ -132,7 +131,9 @@ public class SupplierRbac extends Controller {
         renderArgs.put("operatorProfileUrl", NavigationHandler.getOperatorProfileUrl());
         renderArgs.put("supplierInfoUrl", NavigationHandler.getSupplierInfoUrl());
         renderArgs.put("supplierCompany", user.supplier);
-
+        if (user.shop != null) {
+            renderArgs.put("supplierShop", user.shop.name);
+        }
         // 检查权限
         checkRight(currentMenuName);
     }
@@ -162,6 +163,7 @@ public class SupplierRbac extends Controller {
      * 得到当前菜单的名字。
      * 从Controller或method上检查 {@link ActiveNavigation} 标注，取其value为当前菜单名。
      * 优先使用Method上的名字，只能有一个值。
+     *
      * @return
      */
     private static String getCurrentMenuName() {
@@ -329,8 +331,7 @@ public class SupplierRbac extends Controller {
             }
             Logger.debug("[SupplierRbac]: redirect to url -> " + url);
             redirect(url);
-        }
-        else {
+        } else {
             fail();
         }
     }

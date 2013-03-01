@@ -1,6 +1,8 @@
 package models.admin;
 
 import com.uhuila.common.constants.DeletedStatus;
+import models.accounts.Account;
+import models.accounts.util.AccountUtil;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -410,5 +412,15 @@ public class SupplierUser extends Model {
         SupplierUser supplierUser = SupplierUser.find("deleted = ? and id = ?",
                 DeletedStatus.UN_DELETED, id).first();
         return supplierUser;
+    }
+
+    public Account getSupplierAccount() {
+        if (shop != null && shop.independentClearing) {
+            return AccountUtil.getShopAccount(shop.id);
+        }
+        if (supplier != null) {
+            return AccountUtil.getSupplierAccount(supplier.id);
+        }
+        return null;
     }
 }

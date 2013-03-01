@@ -118,7 +118,7 @@ public class WithdrawBill extends Model {
     public String comment;
 
     @Column(name = "account_name")
-    public String accountName;        //帐户名称，如果是商户，则为商户的短名称
+    public String accountName;        //帐户名称，如果是商户，则为商户的短名称,如果是门店，则为门店的名称
 
     /**
      * 申请提现.

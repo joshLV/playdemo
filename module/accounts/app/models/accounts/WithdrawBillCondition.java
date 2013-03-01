@@ -43,6 +43,44 @@ public class WithdrawBillCondition implements Serializable {
         if (accountType != null) {
             filter.append(" and account.accountType = :accountType");
             params.put("accountType", accountType);
+
+            if (StringUtils.isNotBlank(searchUser)) {
+
+                switch (accountType) {
+                    case SUPPLIER:
+                        filter.append(" and accountName in (select s.otherName from Supplier s where s.fullName like :searchUser or s.otherName like :searchUser) ");
+                        params.put("searchUser", "%" + searchUser + "%");
+                        break;
+
+                    case SHOP:
+                        filter.append(" and accountName in (select s.name from Shop s where s.name like :searchUser)");
+                        params.put("searchUser", "%" + searchUser + "%");
+                        break;
+
+                    case RESALER:
+                        filter.append(" and accountName in (select s.userName from Resaler r where r.loginName like :searchUser or r.userName like :searchUser)");
+                        params.put("searchUser", "%" + searchUser + "%");
+                        break;
+
+                    case CONSUMER:
+                        filter.append(" and applier in (select loginName from User u where u.mobile=:searchUser) ");
+                        filter.append(" or applier in (select loginName from User u where u.loginName=:searchUser)");
+                        filter.append(" or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.receiverMobile=:searchUser)");
+                        filter.append(" or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.buyerMobile=:searchUser)");
+                        filter.append("or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.id in (select oi.order.id from o.orderItems oi where oi.phone =:searchUser)))");
+                        params.put("searchUser", searchUser);
+                        break;
+                }
+            }
+        } else {
+            if (StringUtils.isNotBlank(searchUser)) {
+                filter.append(" and applier in (select loginName from User u where u.mobile=:searchUser) ");
+                filter.append(" or applier in (select loginName from User u where u.loginName=:searchUser)");
+                filter.append(" or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.receiverMobile=:searchUser)");
+                filter.append(" or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.buyerMobile=:searchUser)");
+                filter.append("or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.id in (select oi.order.id from o.orderItems oi where oi.phone =:searchUser)))");
+                params.put("searchUser", searchUser);
+            }
         }
         if (appliedAtBegin != null) {
             filter.append(" and appliedAt >= :appliedAtBegin");
@@ -89,10 +127,6 @@ public class WithdrawBillCondition implements Serializable {
             params.put("searchUser", searchUser);
         }
 
-        if (ids != null && ids.size() != 0) {
-            filter.append(" and id in :ids");
-            params.put("ids", ids);
-        }
         return filter.toString();
     }
 
