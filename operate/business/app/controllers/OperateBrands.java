@@ -37,13 +37,14 @@ public class OperateBrands extends Controller {
     /**
      * 获取券号列表页.
      */
-    public static void index(Long supplierId) {
+    public static void index(Long supplierId, Long brandId) {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        ModelPaginator brandPage = Brand.getBrandPage(pageNumber, PAGE_SIZE, supplierId);
-
+        ModelPaginator brandPage = Brand.getBrandPage(pageNumber, PAGE_SIZE, supplierId, brandId);
+        Long id = OperateRbac.currentUser().id;
+        List<Brand> brandList = Brand.findByOrder(null, id);
         List<Supplier> supplierList = Supplier.findUnDeleted();
-        render(brandPage, supplierList);
+        render(brandPage, supplierList,brandList);
     }
 
     /**
@@ -77,7 +78,7 @@ public class OperateBrands extends Controller {
         brand.deleted = DeletedStatus.UN_DELETED;
         brand.create();
 
-        index(null);
+        index(null, null);
     }
 
     /**
@@ -166,7 +167,7 @@ public class OperateBrands extends Controller {
         }
         Brand.update(id, brand);
 
-        index(null);
+        index(null, null);
     }
 
     public static void delete(Long id) {
@@ -175,7 +176,7 @@ public class OperateBrands extends Controller {
             brand.deleted = DeletedStatus.DELETED;
             brand.save();
         }
-        index(null);
+        index(null, null);
     }
 
 

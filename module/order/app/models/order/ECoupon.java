@@ -540,6 +540,7 @@ public class ECoupon extends Model {
 
     /**
      * 使用RemoteRecallCheck.call包装一下，这样在下次进来时会检查是否成功过，如果成功过就不再调用verifyOnPartnerResaler.
+     *
      * @return 如果返回true，表示调用失败.
      */
     private Boolean verifyAndCheckOnPartnerResaler() {
@@ -560,6 +561,7 @@ public class ECoupon extends Model {
 
     /**
      * 调用第三方渠道券验证，并返回是否失败的标识。
+     *
      * @return TRUE表示验证失败；FALSE表示验证成功
      */
     private Boolean verifyOnPartnerResaler() {
@@ -1509,9 +1511,7 @@ public class ECoupon extends Model {
         if (ecoupon.expireAt != null && ecoupon.expireAt.before(now)) {
             return "对不起，该券已过期!";
         }
-        if (ecoupon.effectiveAt != null && ecoupon.effectiveAt.after(now)) {
-            return "对不起，该券有效期还没开始！";
-        }
+
         return null;
     }
 
@@ -1595,8 +1595,8 @@ public class ECoupon extends Model {
      * @return
      */
     public static List<ECoupon> findVirtualCoupons(CouponsCondition condition) {
-        String sql = "select e from ECoupon e where e.virtualVerify=0 and e.goods.isLottery=false ";
-        Query query = ECoupon.em().createQuery(sql + condition.getQueryFitter() + " order by e.partner");
+        String sql = "select e from ECoupon e ";
+        Query query = ECoupon.em().createQuery(sql + condition.getQueryFitter() + " order by e.expireAt, e.partner");
         for (Map.Entry<String, Object> entry : condition.getParamMap().entrySet()) {
             query.setParameter(entry.getKey(), entry.getValue());
         }
@@ -1637,4 +1637,5 @@ public class ECoupon extends Model {
         ECouponHistoryMessage.with(this).operator(operator).remark("虚拟验证").sendToMQ();
         return true;
     }
+
 }

@@ -18,7 +18,7 @@ import java.util.*;
  * Date: 5/31/12
  * Time: 10:44 AM
  */
-public class SalesOrderItemReport  {
+public class SalesOrderItemReport {
     public Supplier supplier;
 
     public Date createdAt;
@@ -233,7 +233,6 @@ public class SalesOrderItemReport  {
 
         List<SalesOrderItemReport> refundList = query.getResultList();
 
-
         for (SalesOrderItemReport sales : salesList) {
             Boolean flag = false;
             for (SalesOrderItemReport refund : refundList) {
@@ -248,8 +247,11 @@ public class SalesOrderItemReport  {
                 sales.netSalesAmount = sales.salesAmount;
             }
         }
-
-        return salesList;
+        if (salesList.size() == 0) {
+            return refundList;
+        } else {
+            return salesList;
+        }
     }
 
 

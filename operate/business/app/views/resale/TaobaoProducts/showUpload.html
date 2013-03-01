@@ -22,8 +22,8 @@
         <div class="control-group">
             <label class="control-label" for="inputTeamTitle">标题名称 *</label>
             <div class="controls">
-                <input type="text" id="inputTeamTitle" class="input-block-level" name="title" data-max-length="60" value="${goods.name}">
-                <span class="help-block">不超过60个字符<span id="inputTeamTitle-monitor"></span></span>
+                <input type="text" id="inputTeamTitle" class="input-block-level" name="title" data-max-length="30" value="${goods.name}">
+                <span class="help-block">不超过30个字符<span id="inputTeamTitle-monitor"></span></span>
             </div>
         </div>
         <div class="control-group">
@@ -47,20 +47,10 @@
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label">券生效时间 *</label>
-            <div class="controls">
-                <input type="text" name="startDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd'})" class="Wdate"
-                       value="${goods.beginOnSaleAt.before(new java.util.Date())?(new java.util.Date()).format('yyyy-MM-dd'):goods.beginOnSaleAt.format('yyyy-MM-dd')}">
-                券截止时间 *
-                <input type="text" name="endDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd'})" class="Wdate"
-                       value="${goods.endOnSaleAt?.format('yyyy-MM-dd')}">
-            </div>
-        </div>
-        <div class="control-group">
             <label class="control-label" for="inputMarketPrice">面值 *</label>
             <div class="controls">
-                <input type="text" id="inputMarketPrice" name="faceValue" value="${goods.faceValue}">
-                <span class="help-inline">最多两位小数</span>
+                <input type="text" id="inputMarketPrice" name="faceValue" value="${goods.faceValue.setScale(0, java.math.BigDecimal.ROUND_UP)}">
+                <span class="help-inline">只能是整数</span>
             </div>
         </div>
         <div class="control-group">
@@ -146,7 +136,7 @@
             <input type="hidden" name="stuffStatus" value="new" >
             <input type="hidden" name="type" value="fixed" >
             <input type="hidden" name="approveStatus" value="instock" >
-            <input type="hidden" name="cid" value="50015759" >
+            <input type="hidden" name="cid" value="50015757" >
             <button type="submit" id="submit" class="btn btn-primary">发布</button>
         </div>
     </form>
@@ -172,6 +162,7 @@
     });
     KindEditor.create('textarea',
     {
+        uploadJson:'/goods/images',
         filterMode:false,
         allowFileManager:false
     });

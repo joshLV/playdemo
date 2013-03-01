@@ -86,6 +86,10 @@ public class SupplierVerifyECoupons extends Controller {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
 
         eCouponSn = StringUtils.trim(eCouponSn);
+
+        if (StringUtils.isBlank(eCouponSn)) {
+            renderJSON("{\"errorInfo\":\"券号不能为空！\"}");
+        }
         //根据页面录入券号查询对应信息
         ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
 

@@ -31,10 +31,17 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
     private final String SMS_TYPE2 = Play.configuration.getProperty("sms2.type");
 
     private SMSProvider smsProvider = null;
+    private SMSProvider smsProvider2 = null;
 
-    public SMSProvider getSMSProvider(String smsType) {
+    public SMSProvider getSMSProvider() {
         if (smsProvider == null) {
-            smsProvider = SMSFactory.getSMSProvider(smsType);
+            smsProvider = SMSFactory.getSMSProvider(SMS_TYPE);
+        }
+        return smsProvider;
+    }
+    public SMSProvider getSMSProvider2() {
+        if (smsProvider == null) {
+            smsProvider = SMSFactory.getSMSProvider(SMS_TYPE2);
         }
         return smsProvider;
     }
@@ -125,10 +132,10 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
             }
 
             try {
-                getSMSProvider(SMS_TYPE).send(new SMSMessage(msg, phone, ecoupons.get(0).replyCode));
+                getSMSProvider().send(new SMSMessage(msg, phone, ecoupons.get(0).replyCode));
             } catch (Exception e1) {
                 Logger.info("Send SMS failed use " + SMS_TYPE + ", try " + SMS_TYPE2);
-                getSMSProvider(SMS_TYPE2).send(new SMSMessage(msg, phone, ecoupons.get(0).replyCode));
+                getSMSProvider2().send(new SMSMessage(msg, phone, ecoupons.get(0).replyCode));
             }
 
             for (ECoupon ecoupon : ecoupons) {
@@ -172,10 +179,10 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
             }
 
             try {
-                getSMSProvider(SMS_TYPE).send(new SMSMessage(msg, phone, ecoupon.replyCode));
+                getSMSProvider().send(new SMSMessage(msg, phone, ecoupon.replyCode));
             } catch (Exception e1) {
                 Logger.info("Send SMS failed use " + SMS_TYPE + ", try " + SMS_TYPE2);
-                getSMSProvider(SMS_TYPE2).send(new SMSMessage(msg, phone, ecoupon.replyCode));
+                getSMSProvider2().send(new SMSMessage(msg, phone, ecoupon.replyCode));
             }
             // 如果没有出现异常，则记录一下发送历史
             if (ecoupon.smsSentCount == null) {

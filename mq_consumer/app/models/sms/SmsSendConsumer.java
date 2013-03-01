@@ -12,13 +12,22 @@ import play.modules.rabbitmq.RabbitMQPlugin;
  */
 @OnApplicationStart(async = true)
 public class SmsSendConsumer extends RabbitMQConsumerWithTx<SMSMessage> {
+
     private final String SMS_TYPE = Play.configuration.getProperty("sms.type");
-    
+    private final String SMS_TYPE2 = Play.configuration.getProperty("sms2.type");
+
     private SMSProvider smsProvider = null;
-    
-    public SMSProvider getSMSProvider(String smsType) {
+    private SMSProvider smsProvider2 = null;
+
+    public SMSProvider getSMSProvider() {
         if (smsProvider == null) {
-            smsProvider = SMSFactory.getSMSProvider(smsType);
+            smsProvider = SMSFactory.getSMSProvider(SMS_TYPE);
+        }
+        return smsProvider;
+    }
+    public SMSProvider getSMSProvider2() {
+        if (smsProvider == null) {
+            smsProvider = SMSFactory.getSMSProvider(SMS_TYPE2);
         }
         return smsProvider;
     }
@@ -31,10 +40,10 @@ public class SmsSendConsumer extends RabbitMQConsumerWithTx<SMSMessage> {
         }
         
         try {
-            getSMSProvider(SMS_TYPE).send(message);
+            getSMSProvider().send(message);
         } catch (SMSException e) {
-            Logger.error("SmsSenderConsumer: send message" + message + " failed:" + e.getMessage());
-            throw e;
+            Logger.info("SmsSendConsumer: Send SMS failed use " + SMS_TYPE + ", try " + SMS_TYPE2);
+            getSMSProvider2().send(message);
         }
     }
 

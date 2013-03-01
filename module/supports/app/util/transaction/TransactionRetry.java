@@ -18,6 +18,7 @@ public class TransactionRetry {
                     JPA.em().getTransaction().begin();
                     Logger.info("......开始事务" + RemoteRecallCheck.getId());
                 }
+                Logger.info("   " + RemoteRecallCheck.getId() + " callback:" + callback.getClass().getName());
                 T result = callback.doInTransaction();
                 if (JPA.em().getTransaction().isActive()) {
                     JPA.em().getTransaction().commit();

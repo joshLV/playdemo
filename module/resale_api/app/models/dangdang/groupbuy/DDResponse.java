@@ -1,6 +1,5 @@
 package models.dangdang.groupbuy;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import play.libs.XPath;
 
@@ -19,7 +18,7 @@ public class DDResponse {
 
 
     public boolean isOk() {
-        return errorCode != null && "0".equals(errorCode);
+        return "0".equals(errorCode);
     }
 
     public Node selectNode(String path) {

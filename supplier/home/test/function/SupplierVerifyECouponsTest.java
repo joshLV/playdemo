@@ -96,7 +96,7 @@ public class SupplierVerifyECouponsTest extends FunctionalTest {
         assertEquals("[\"消费成功.\"]", getContent(response));
 
         SMSMessage msg = (SMSMessage) MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
-        assertSMSContentMatch("已成功消费，使用门店：" + shop.name + "。如有疑问请致电：400-6262-166",
+        assertSMSContentMatch("已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
                 msg.getContent());
 
     }

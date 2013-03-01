@@ -10,11 +10,11 @@
     <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateVerifyCoupons.virtual()}"
           method="GET">
         券号：<input type="text" name="condition.eCouponSn" class="input-medium"
-                  value="${condition?.eCouponSn}"/>
+                  value="${condition?.eCouponSn?:''}"/>
         商品名称：<input type="text" name="condition.goodsName" class="input-medium"
-                    value="${condition?.goodsName}"/>
+                    value="${condition?.goodsName?:''}"/>
         手机：<input type="text" name="condition.phone" class="input-medium"
-                  value="${condition?.phone}"/>
+                  value="${condition?.phone?:''}"/>
         券结束日期：
         <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
             <input class="input-small" id="refundAtBegin" name="condition.expiredAtBegin" size="16" type="text"
@@ -30,6 +30,8 @@
         <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
         </table>
     </form>
+
+    <div style="color:#0082CA;padding-bottom: 15px"> 总计：${couponList.size()} 条记录，共计：${totalSalePrice?.formatCurrency('CNY')}元</div>
     <form class="form-horizontal" name="form" id="form" action="@{OperateVerifyCoupons.virtualVerify()}"
           method="POST">
         <table class="table table-striped table-bordered table-condensed">
@@ -49,26 +51,33 @@
             </thead>
             <tbody>
             #{list items:couponList, as:'coupon'}
-            <tr>
-                <td>
-                    <a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a></abbr>
-                </td>
-                <td #{if coupon.isCheatedOrder==true}style="color: #b25a1f;" #{/if}>${coupon?.orderItems?.phone}</td>
-                <td>${coupon?.getMaskedEcouponSn()} </td>
-                <td>${coupon?.goods?.shortName}</td>
-                <td>${coupon?.salePrice?.formatCurrency('CNY')}</td>
-                <td>&{'coupon.'+coupon?.partner}</td>
-                <td>${coupon?.expireAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-                <td>${coupon?.order?.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-                <td>${coupon.virtualVerify?coupon?.virtualVerifyAt?.format("yyyy-MM-dd HH:mm:ss"):''}</td>
-                <td>
-                    #{vx.operateLink text:"验证", url:"/coupons/"+coupon?.id+"/virtual_verify?condition.expiredAtBegin="+condition?.expiredAtBegin?.format()+"&condition.expiredAtEnd="+condition?.expiredAtEnd?.format(), method:"PUT"/}
-                    <span style="font-size:10px;color:#ff0000;padding-left: 5px">#{if coupon.id==id}#{error 'verify-error-info' /}#{/if}</span>
-                </td>
-            </tr>
+                #{if coupon?.virtualVerifyAt ==null}
+                <tr>
+                    <td>
+                        <a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a></abbr>
+                    </td>
+                    <td #{if coupon.isCheatedOrder==true}style="color: #b25a1f;" #{/if}>${coupon?.orderItems?.phone}</td>
+                    <td>${coupon?.getMaskedEcouponSn()} </td>
+                    <td>${coupon?.goods?.shortName}</td>
+                    <td>${coupon?.salePrice?.formatCurrency('CNY')}</td>
+                    <td>&{'coupon.'+coupon?.partner}</td>
+                    <td>${coupon?.expireAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+                    <td>${coupon?.order?.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+                    <td>${coupon.virtualVerify?coupon?.virtualVerifyAt?.format("yyyy-MM-dd HH:mm:ss"):''}</td>
+                    <td>
+                        #{vx.operateLink text:"验证", url:"/coupons/"+coupon?.id+"/virtual_verify?condition.eCouponSn="+(condition?.eCouponSn?:'')+"&condition.goodsName="+(condition?.goodsName?:'')+"&condition.phone="+(condition?.phone?:'')+"&condition.expiredAtBegin="+condition?.expiredAtBegin?.format()+"&condition.expiredAtEnd="+condition?.expiredAtEnd?.format(), method:"PUT"/}
+                        <span style="font-size:10px;color:#ff0000;padding-left: 5px">#{if coupon.id==id}#{error 'verify-error-info' /}#{/if}</span>
+                    </td>
+                </tr>
+                #{/if}
             #{/list}
             </tbody>
         </table>
+        <div class="pagination" align="center">
+            <ul>
+            #{paginate.controls items:couponList /}
+            </ul>
+        </div>
     </form>
 </div>
 <div>

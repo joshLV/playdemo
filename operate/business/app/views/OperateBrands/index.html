@@ -7,9 +7,10 @@
         <table width="100%">
             <tr>
                 <td width="30%"> 商 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
-                #{layout_operate.selectInputField name:"supplierName", id:"supplierId", list:supplierList/}
-
-                    <button class="btn btn-primary" id="searchbtn" type="submit"> 搜索</button>
+                #{layout_operate.selectInputField name:"supplierName", id:"supplierId", list:supplierList, array:"supplierArray",importJs:true/}
+                    品 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
+                #{vx.selectInputField name:"brandName", id:"brandId", list:brandList, array:"brandArray"/}
+                <button class="btn btn-primary" id="searchbtn" type="submit"> 搜索</button>
                 </td>
             </tr>
         </table>

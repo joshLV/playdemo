@@ -66,8 +66,10 @@ public class CouponsCondition implements Serializable {
 
     public Long salesId;
     public String categoryCode;
-    public Date expiredAtBegin;
-    public Date expiredAtEnd;
+    public Date expiredAtBegin = DateUtil.getBeginExpiredDate(3);
+    public Date expiredAtEnd = DateUtil.getEndExpiredDate(3);
+
+    public String partnerCouponId;
 
     public String getOrderByExpress() {
         return "e.createdAt desc";
@@ -303,6 +305,11 @@ public class CouponsCondition implements Serializable {
             }
         }
 
+        if (StringUtils.isNotBlank(partnerCouponId)) {
+            sql.append(" and e.partnerCouponId = :partnerCouponId");
+            paramMap.put("partnerCouponId", partnerCouponId);
+        }
+
         //按照帐号检索
         if (userName != null) {
             Resaler resaler = Resaler.findOneByLoginName(userName.trim());
@@ -360,11 +367,11 @@ public class CouponsCondition implements Serializable {
     }
 
     public String getQueryFitter() {
-        StringBuilder sql = new StringBuilder("  and status =:status and (e.expireAt >= :expireBeginAt and e.expireAt <= " +
+        StringBuilder sql = new StringBuilder(" where e.virtualVerify=0 and e.goods.isLottery=false and e.status =:status and (e.expireAt >= :expireBeginAt and e.expireAt <= " +
                 ":expireEndAt) and e.partner in (:partner) and (e.goods.noRefund = true or e.isCheatedOrder = true )");
         paramMap.put("status", ECouponStatus.UNCONSUMED);
         paramMap.put("expireBeginAt", expiredAtBegin);
-        paramMap.put("expireEndAt", expiredAtEnd);
+        paramMap.put("expireEndAt", DateUtil.getEndOfDay(expiredAtEnd));
         List<ECouponPartner> partnerList = new ArrayList<>();
 
         partnerList.add(ECouponPartner.JD);

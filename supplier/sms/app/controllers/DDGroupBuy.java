@@ -25,6 +25,7 @@ import play.mvc.Controller;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 
 /**
@@ -63,9 +64,10 @@ public class DDGroupBuy extends Controller {
      */
     public static void order(String id, String ddgid, String user_mobile, String options, String express_memo,
                              String user_id, String kx_order_id, BigDecimal amount, String sign) {
+        Map<String, String > allParams = params.allSimple();
+        Logger.info("dangdang new order request:\n%s", new Gson().toJson(allParams));
         //取得参数信息 必填信息
-        SortedMap<String, String> params = DDGroupBuyUtil.filterPlayParams(request.params.allSimple());
-        Logger.info("dangdang new order request:\n%s", new Gson().toJson(params));
+        SortedMap<String, String> params = DDGroupBuyUtil.filterPlayParams(allParams);
 
         //检查参数
         if (StringUtils.isBlank(user_mobile) || StringUtils.isBlank(user_id)) {
@@ -75,7 +77,7 @@ public class DDGroupBuy extends Controller {
             renderError(DDErrorCode.ORDER_NOT_EXITED, "订单不存在！");
         }
         //校验参数
-        if (StringUtils.isBlank(sign) || !sign.equals(DDGroupBuyUtil.signParams(params))) {
+        if (StringUtils.isBlank(sign) || !sign.toLowerCase().equals(DDGroupBuyUtil.signParams(params))) {
             renderError(DDErrorCode.VERIFY_FAILED, "sign验证失败！");
         }
         //定位请求者
@@ -170,6 +172,11 @@ public class DDGroupBuy extends Controller {
      *
      */
     public static void sendSms(String sign, String data, String call_time) {
+        Logger.info("dangdang sendSms request:\n%s", new Gson().toJson(params.allSimple()));
+        data = StringUtils.trimToEmpty(data);
+        call_time = StringUtils.trimToEmpty(call_time);
+        sign = StringUtils.trimToEmpty(sign).toLowerCase();
+
         String verifySign = DDGroupBuyUtil.sign("send_msg", data, call_time);
         if (StringUtils.isBlank(sign) || !sign.equals(verifySign)) {
             renderError(DDErrorCode.VERIFY_FAILED, "sign验证失败！");

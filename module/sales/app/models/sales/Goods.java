@@ -13,6 +13,7 @@ import com.uhuila.common.util.HtmlUtil;
 import com.uhuila.common.util.PathUtil;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
+import models.operator.OperateUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.OrderStatus;
@@ -2213,6 +2214,21 @@ public class Goods extends Model {
     public static List<Area> getStatisticDistricts(QueryResponse response) {
         return getStatisticAreas(response, null);
     }
+
+    public String getSupplierSalesUserName() {
+        Supplier supplier = Supplier.findById(this.supplierId);
+        if (supplier.salesId != null) {
+            OperateUser operateUser = OperateUser.findById(supplier.salesId);
+            if (operateUser != null) {
+                return operateUser.userName;
+            } else {
+                return "";
+            }
+        } else {
+            return "";
+        }
+    }
+
 
     /**
      * 从solr的返回结果中获取商圈的统计结果.
