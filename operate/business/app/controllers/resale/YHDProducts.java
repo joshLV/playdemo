@@ -50,8 +50,9 @@ public class YHDProducts extends Controller {
         requestParams.remove("body");
         requestParams.put("outerId", String.valueOf(product.goodsLinkId));
 
-        YHDResponse response = YHDUtil.sendRequest(requestParams, "yhd.product.add", "updateCount");
-        if (response.isOk()) {
+        YHDResponse productResponse = YHDUtil.sendRequest(requestParams, "yhd.product.add", "updateCount");
+        renderArgs.put("productResponse", productResponse);
+        if (productResponse.isOk()) {
             product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id).save();
             //保存记录
             ResalerProductJournal.createJournal(product, operateUser.id, new Gson().toJson(requestParams),
@@ -75,14 +76,8 @@ public class YHDProducts extends Controller {
         Map<String, String> requestParams = new HashMap<>();
         requestParams.put("outerId", String.valueOf(productId));
         requestParams.put("mainImageName", String.valueOf(productId));
-        File[] files = new File[]{ new File(imgFile.getAbsolutePath())};
-        YHDResponse response = YHDUtil.sendRequest(requestParams, files, "yhd.product.img.upload", "updateCount");
-        if (!response.isOk()) {
-            renderArgs.put("extra", "上传商品成功，但是主图上传失败");
-            renderArgs.put("res", response);
-        }else {
-            renderArgs.put("extra", "上传商品成功，上传主图成功");
-        }
+        YHDResponse response = YHDUtil.sendRequestWithFiles(requestParams, "yhd.product.img.upload", "updateCount", new File[]{imgFile});
+        renderArgs.put("imgResponse", response);
     }
 
     /**

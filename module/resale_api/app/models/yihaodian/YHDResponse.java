@@ -1,5 +1,6 @@
 package models.yihaodian;
 
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import play.libs.XPath;
@@ -23,7 +24,21 @@ public class YHDResponse {
     }
 
     public String selectTextTrim(String path) {
-        return XPath.selectText(path, data).trim();
+        return StringUtils.trimToNull(XPath.selectText(path, data));
+    }
+
+    public String firstErrorCode() {
+        if (errors.size() == 0) {
+            return null;
+        }
+        return StringUtils.trimToNull(XPath.selectText("./errorCode", errors.get(0)));
+    }
+
+    public String firstErrorDes() {
+        if (errors.size() == 0) {
+            return null;
+        }
+        return StringUtils.trimToNull(XPath.selectText("./errorDes", errors.get(0)));
     }
 
     public List<Node> selectNodes(String path) {
