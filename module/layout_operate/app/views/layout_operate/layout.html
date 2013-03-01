@@ -94,7 +94,7 @@
             #{navigation.topMenus topMenus /}
                 <form class="form-search pull-right" method="GET" target="_blank"
                 action="http://business.${play.Play.configuration.getProperty("application.baseDomain")}/quick-search"
-                      style="margin: 0 0 0 0" id="form">
+                      style="margin: 0 0 0 0" id="quick_search_form">
                     <input rel="tooltip"
                            data-placement="bottom"
                            data-original-title='券号/手机/订单号<br>外部订单号(数字之前加上WD)<br>外部券号(数字之前加上WQ)'
@@ -159,9 +159,8 @@
     });
 
     $("#quick_search").keydown(function(event){
-        if (event.keyCode == 13)
-        {
-            $("#form").submit();
+        if (event.keyCode == 13) {
+            $("#quick_search_form").submit();
         }
     });
 

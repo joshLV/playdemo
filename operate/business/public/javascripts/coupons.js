@@ -37,11 +37,11 @@ $(function () {
         $("#err-eCouponSn").html("");
     });
 
-    $("#remarkSelect").focus(function() {
+    $("#remarkSelect").focus(function () {
         $("#err-remark").html("");
     });
 
-    $("#remark").focus(function() {
+    $("#remark").focus(function () {
         $("#err-remark").html("");
     });
 
@@ -49,12 +49,23 @@ $(function () {
         if (!checkForm()) {
             return false;
         }
+        $('#query').attr('disabled', "true");
+        $("#query").html("正在查询");
+        $('#query').attr('class', "btn disabled");
+        $('#sure').attr('disabled', "true");
+        $('#sure').attr('class', "btn disabled");
+        $("#form").submit();
     });
 
     $("#sure").click(function () {
         if (!checkForm()) {
             return false;
         }
+        $('#sure').attr('disabled', "true");
+        $("#sure").html("正在提交");
+        $('#sure').attr('class', "btn disabled");
+        $('#query').attr('disabled', "true");
+        $('#query').attr('class', "btn disabled");
         $("#form").attr("target", "_self");
         $("#form").attr("action", "/coupons/verify");
         $("#form").attr("method", "POST");

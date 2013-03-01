@@ -64,7 +64,6 @@ public class OperateVerifyCoupons extends Controller {
         ECoupon ecoupon = null;
         renderArgs.put("supplierList", supplierList);
         renderArgs.put("supplierId", supplierId);
-
         if (StringUtils.isBlank(eCouponSn)) {
             Validation.addError("error-info", "对不起，券号非法！");
         } else {
