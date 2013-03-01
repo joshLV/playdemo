@@ -8,12 +8,15 @@
     <role key="sales" text="商务销售"/>
     <role key="manager" text="经理"/>
     <role key="solr_load" text="solr加载数据"/>
+    <role key="virtual_verify" text="虚拟验证"/>
     <role key="developer" text="开发人员"/>
     <role key="reviewer" text="产品审核"/>
     <role key="contractadminister" text="合同管理"/>
 
     <permission key="GOODS_NEW" text="商品添加" roles="editor"/>
     <permission key="GOODS" text="商品管理" roles="editor,customservice"/>
+    <permission key="SKU" text="SKU管理" roles="editor,customservice"/>
+    <permission key="SKU_NEW" text="SKU添加" roles="editor"/>
     <permission key="GOODS_SCHEDULE" text="商品排期" roles="editor,customservice"/>
     <permission key="SECKILL_GOODS_NEW" text="秒杀活动添加" roles="editor"/>
     <permission key="SECKILL_GOODS" text="秒杀活动管理" roles="editor,customservice"/>
@@ -30,6 +33,8 @@
     <permission key="SEE_ALL_SUPPLIER" text="所有商户报表" roles="manager,account,customservice,webop"/>
     <permission key="SUPPLIER_CODE_EDIT" text="修改商户编码" roles="developer"/>
     <permission key="GOODS_APPROVE_ONSALE" text="审核商品上架" roles="reviewer"/>
+    <permission key="APPROVE_WITHDRAW" text="提现审核" roles="account"/>
+
     <permission key="HANDLE_RESALER_COMMISSIONRATIO" text="操作分销商佣金比例" roles="manager"/>
     <permission key="ECOUPON_REFUND" text="电子券退款操作" roles="customservice"/>
     <permission key="UNFREEZE_COUPON" text="券解冻" roles="customservice"/>
@@ -47,6 +52,7 @@
     <permission key="ORDERS" text="运营订单管理" roles="customservice,webop,account,sales,manager"/>
     <permission key="COUPONS" text="券查询" roles="sales,customservice,account,manager"/>
     <permission key="COUPONS_MANAGE" text="券管理" roles="customservice,account,manager"/>
+    <permission key="VIRTUAL_VERIFY_COUPON" text="虚拟验证券" roles="virtual_verify"/>
     <permission key="CONSUMERS_REPORT" text="消费者资金明细" roles="account"/>
     <permission key="RESALES_REPORT" text="分销商资金明细" roles="account"/>
     <permission key="SUPPLIERS_REPORT" text="商户资金明细" roles="account"/>
@@ -54,7 +60,7 @@
     <permission key="PLATFORMS_REPORT" text="券平台佣金账户资金明细" roles="account"/>
     <permission key="INCOMINGS_REPORT" text="收款账户资金明细" roles="account"/>
     <permission key="WITHDRAW_REPORT" text="提现账户资金明细" roles="account"/>
-    <permission key="WITHDRAW_APPROVAL" text="审批提现申请" roles="account"/>
+    <permission key="WITHDRAW_APPROVAL" text="审批提现申请" roles="customservice,sales,account"/>
     <permission key="FINANCING_INCOMING_NOTE" text="记录收款" roles="account"/>
     <permission key="FINANCING_ACCOUNT_REPORT" text="券平台财务收款账户资金明细" roles="account"/>
     <permission key="BRANDS_NEW" text="品牌添加" roles="editor"/>
@@ -123,6 +129,10 @@
             <navigation key="hot_keywords" action="OperateSearchHotKeywords.index" text="热门搜索词查询"
                         permissions="HOT_KEYWORDS"/>
         </navigation>
+        <navigation key="sku" text="SKU">
+            <navigation key="sku_add" action="SkuManage.add" text="SKU添加" permissions="SKU_NEW"/>
+            <navigation key="sku_index" action="SkuManage.index" text="SKU管理" permissions="SKU"/>
+        </navigation>
         <navigation key="solr" text="solr加载数据">
             <navigation key="solr_load" action="SolrLoadData.index" text="solr加载数据" permissions="SOLR"/>
         </navigation>
@@ -145,7 +155,7 @@
             <navigation key="verify_index" action="OperateVerifyCoupons.index" text="验证消费券"
                         permissions="COUPONS_MANAGE"/>
             <navigation key="virtual_verify_index" action="OperateVerifyCoupons.virtual" text="虚拟验证第三方券号"
-                        permissions="COUPONS_MANAGE"/>
+                        permissions="VIRTUAL_VERIFY_COUPON"/>
             <navigation key="pre_coupons" action="ImportCoupons.index" text="预购券管理" permissions="COUPONS_MANAGE"/>
             <navigation key="freeze_coupons" action="BatchFreezeCoupons.index" text="批量冻结券号"
                         permissions="COUPONS_MANAGE"/>

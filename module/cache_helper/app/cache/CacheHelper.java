@@ -255,9 +255,9 @@ public class CacheHelper {
         if (StringUtils.isBlank(key)) {
             throw new IllegalArgumentException("key不能为空");
         }
+        deleteToPreReadMap(key);
         try {
             Cache.delete(key);
-            deleteToPreReadMap(key);
         } catch (Exception e1) {
             Logger.warn("When delete cache[key:" + key + "] found exception.", e1);
         }

@@ -9,6 +9,9 @@ import play.modules.paginate.ModelPaginator;
 import play.modules.solr.SolrField;
 import play.modules.solr.SolrSearchable;
 
+import models.accounts.Account;
+import models.accounts.AccountType;
+import models.accounts.util.AccountUtil;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -92,6 +95,12 @@ public class Shop extends Model {
     @SolrField
     public String cityId = Area.SHANGHAI;
 
+    /**
+     * 是否独立结算.
+     */
+    @Column(name = "independent_clearing")
+    public Boolean independentClearing = false;
+
     private String districtId;
 
     public Shop() {
@@ -146,13 +155,22 @@ public class Shop extends Model {
     /**
      * 读取某商户的全部门店记录
      *
-     * @param supplierId
-     * @return
+     * @param supplierId 商户标识
+     * @return 门店列表
      */
     public static List<Shop> findShopBySupplier(Long supplierId) {
         return Shop.find("bySupplierIdAndDeleted", supplierId, DeletedStatus.UN_DELETED).fetch();
     }
 
+    /**
+     * 获取指定商户的所有的独立提现结算的门店.
+     *
+     * @param supplierId 商户标识
+     * @return 门店列表
+     */
+    public static List<Shop> findIndependentList(Long supplierId) {
+        return find("bySupplierIdAndIndependentClearing", supplierId, true).fetch();
+    }
 
     public static boolean containsShop(Long supplierId) {
         return Shop.count("bySupplierIdAndDeleted", supplierId, DeletedStatus.UN_DELETED) > 0;
@@ -194,9 +212,21 @@ public class Shop extends Model {
         if (shop != null) {
             shop.deleted = DeletedStatus.DELETED;
             shop.save();
+            AccountUtil.cancelAccount(shop.id, AccountType.SHOP);
             return true;
         }
         return false;
+    }
+
+    /**
+     * 对于需要独立提现的门店，需要建立商户门店的帐号
+     * 但如果门店帐号已经存在则不创建
+     */
+    public void createAccountsIfNeeded() {
+        if (!AccountUtil.accountExist(id, AccountType.SHOP)) {
+            Account account = new Account(id, AccountType.SHOP);
+            account.save();
+        }
     }
 
     @Transient
@@ -244,6 +274,7 @@ public class Shop extends Model {
         }
         return "";
     }
+
 
     @Override
     public boolean equals(Object o) {

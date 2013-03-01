@@ -7,11 +7,13 @@ import models.accounts.AccountNotFoundException;
 import models.accounts.AccountSequence;
 import models.accounts.AccountSequenceFlag;
 import models.accounts.AccountType;
+import models.accounts.AccountStatus;
 import models.accounts.BalanceNotEnoughException;
 import models.accounts.SettlementStatus;
 import models.accounts.TradeType;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 账户资金变动流水工具.
@@ -70,6 +72,20 @@ public class AccountUtil {
     }
 
 
+    /**
+     * 将门店对应的帐号的状态设置为CANCEL
+     */
+    public static boolean cancelAccount(long uid, AccountType type) {
+        Account account = getAccount(uid, type);
+        if (account == null) {
+            return false;
+        }
+        account.status = AccountStatus.CANCEL;
+        account.save();
+        return true;
+    }
+
+
     public static Account getConsumerAccount(long uid) {
         return getAccount(uid, AccountType.CONSUMER, false);
     }
@@ -80,6 +96,20 @@ public class AccountUtil {
 
     public static Account getSupplierAccount(long uid) {
         return getAccount(uid, AccountType.SUPPLIER, false);
+    }
+
+    public static Account getShopAccount(long uid) {
+        return getAccount(uid, AccountType.SHOP, false);
+    }
+
+    /**
+     * 获取商户的所有独立结算的门店账户.
+     *
+     * @param supplierId
+     * @return
+     */
+    public static List<Account> getSupplierShopAccounts(long supplierId) {
+        return Account.find("byAccountTypeAndSupplierIdAndStatus", AccountType.SHOP, supplierId, AccountStatus.CANCEL).fetch();
     }
 
     /**

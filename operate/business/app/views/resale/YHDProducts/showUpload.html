@@ -1,92 +1,17 @@
 #{extends 'layout_operate/layout.html' /}
 #{set title:'一号店上传商品:' + goods.shortName /}
 #{include '/share/nav.html' /}
-#{set 'moreScripts'}
-    <script src="@{'/public/javascripts/kindeditor-min.js'}" type="text/javascript" charset="UTF-8"></script>
-    <script src="@{'/public/javascripts/lang/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
-    <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
-    #{asset.js src:['/ztree/jquery.ztree.all-3.5.min.js'] /}
-    <script src="@{'/public/javascripts/ztree-helper.js'}" type="text/javascript" charset="UTF-8"></script>
-    <script type="text/javascript">
-
-        var categoryTreeCallbacks = {}
-        $.extend(categoryTreeCallbacks,getSinglePathCallbacks("categoryTree"),getAutoExpandCallbacks("categoryTree"))
-        var categoryTreeSettings = {
-            async: {
-                enable: true,
-                url:"/yhd-ztree/category",
-                autoParam:["id"]
-            },
-            check:{
-                enable:true,
-                chkStyle:"radio",
-                radioType:"all"
-            },
-            data: {
-                simpleDate:{
-                    enable: true
-                }
-            },
-            view: {
-                showIcon: false,
-                showLine: false,
-                dblClickExpand: false
-            },
-            callback: categoryTreeCallbacks
-        };
-
-        var merchantCategoryTreeCallbacks = {}
-        $.extend(merchantCategoryTreeCallbacks,getSinglePathCallbacks("merchantCategoryTree"),getAutoExpandCallbacks("merchantCategoryTree"))
-        var merchantCategoryTreeSettings = {
-            async: {
-                enable: true,
-                url:"/yhd-ztree/merchant-category",
-                autoParam:["id"]
-            },
-            check:{
-                enable:true,
-            },
-            data: {
-                simpleDate:{
-                    enable: true
-                }
-            },
-            view: {
-                showIcon: false,
-                showLine: false,
-                dblClickExpand: false
-            },
-            callback: merchantCategoryTreeCallbacks
-        };
-
-        $(function(){
-            $.fn.zTree.init($("#categoryTree"), categoryTreeSettings);
-            $.fn.zTree.init($("#merchantCategoryTree"), merchantCategoryTreeSettings);
-
-            KindEditor.create('textarea[name="productDescription"]',
-                {
-                    filterMode:false,
-                    allowFileManager:false
-            });
-            $("#submit").click(function(){
-                var checkedCategory = $.fn.zTree.getZTreeObj("categoryTree").getCheckedNodes(true);
-                var categoryChain = buildTreeChain(checkedCategory);
-
-                var checkedMerchantCategory = $.fn.zTree.getZTreeObj("merchantCategoryTree").getCheckedNodes(true);
-                var checkedMerchantCategoryStr = buildCheckedStr(checkedMerchantCategory, ",", "id")
-                var merchantCategoryChain = buildTreeChain(checkedMerchantCategory);
-
-                $("#inputCategory").val(checkedCategory[0].id);
-                $("#inputMerchantCategory").val(checkedMerchantCategoryStr);
-                $("#categoryIdChains").val(categoryChain.join(","));
-                $("#merchantCategoryIdChains").val(merchantCategoryChain.join(","));
-                return true;
-            });
-        });
-    </script>
-#{/set}
 #{set 'moreStyles'}
     #{asset.css src:['/ztree/zTreeStyle.css'] /}
+    <style type="text/css">
+        ul.ztree{
+        margin-top: 1px;
+        border: 1px solid #ccc;
+        background: #f5f5f5;
+        overflow-y: scroll;
+        overflow-x: auto;
+        }
+    </style>
 #{/set}
 <div class="body">
     <legend>一号店上传商品：<a href="/goods/${goods.id}" target="_blank">
@@ -110,38 +35,42 @@
         <div class="control-group">
             <label class="control-label">产品类别 *</label>
             <div class="controls">
-                <ul id="categoryTree" class="ztree"></ul>
-                <input name="categoryId" id="inputCategory" type="hidden">
-                <input name="categoryIdChains" id="categoryIdChains" type="hidden">
+                <input class="input" readonly id="category-show" value="请选择">
+                <div id="category-treeFrame" class="menuContent" style="display:none; position: absolute;">
+                    <ul id="category-tree" class="ztree" style="width:210px"></ul>
+                </div>
+                <input name="categoryId" id="category-value" type="hidden">
+                <input name="categoryIdChains" id="category-nodeChain" type="hidden">
+
             </div>
         </div>
         <div class="control-group">
             <label class="control-label">商家产品类别 *</label>
             <div class="controls">
-                <ul id="merchantCategoryTree" class="ztree"></ul>
-                <input name="merchantCategoryId" id="inputMerchantCategory" type="hidden">
-                <input name="merchantCategoryIdChains" id="merchantCategoryIdChains" type="hidden">
+                <ul id="merchantCategory-tree" class="ztree"></ul>
+                <input name="merchantCategoryId" id="merchantCategory-value" type="hidden">
+                <input name="merchantCategoryIdChains" id="merchantCategory-nodeChain" type="hidden">
             </div>
         </div>
         <div class="control-group">
             <label class="control-label" for="inputProductCname">产品名称 *</label>
             <div class="controls">
-                <input type="text" id="inputProductCname" class="input-block-level" name="productCname" value="${goods.name}">
-                <span class="help-block">不超过100个字符</span>
+                <input type="text" id="inputProductCname" class="input-block-level" name="productCname" value="${goods.name}" data-max-length="100">
+                <span class="help-block">不超过100个字符<span id="inputProductCname-monitor"></span>
             </div>
         </div>
         <div class="control-group">
             <label class="control-label" for="inputProductSubTitle">产品名称副标题&nbsp;&nbsp;</label>
             <div class="controls">
-                <input type="text" id="inputProductSubTitle" name="productSubTitle" class="input-block-level">
-                <span class="help-block">不超过100个字符</span>
+                <input type="text" id="inputProductSubTitle" name="productSubTitle" class="input-block-level" data-max-length="100">
+                <span class="help-block">不超过100个字符<span id="inputProductSubTitle-monitor"></span>
             </div>
         </div>
         <div class="control-group">
             <label class="control-label" for="inputProductNamePrefix">产品名称前缀&nbsp;&nbsp;</label>
             <div class="controls">
-                <input type="text" id="inputProductNamePrefix" name="productNamePrefix">
-                <span class="help-inline">不超过10个字符</span>
+                <input type="text" id="inputProductNamePrefix" name="productNamePrefix" data-max-length="10">
+                <span class="help-inline">不超过10个字符<span id="inputProductNamePrefix-monitor"></span>
             </div>
         </div>
         <div class="control-group">
@@ -241,3 +170,88 @@
         </div>
     </form>
 </div>
+
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts2/kindeditor-min.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/lang/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{asset.js src:['/ztree/jquery.ztree.all-3.5.min.js'] /}
+<script src="@{'/public/javascripts/ztree-helper.js'}" type="text/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+
+    var categoryTreeCallbacks = {}
+    $.extend(categoryTreeCallbacks,getSinglePathCallbacks("category-tree"),getOnclickCallback("category"))
+    var categoryTreeSettings = {
+        async: {
+            enable: true,
+            url:"/yhd-ztree/category",
+            autoParam:["id"]
+        },
+        check:{
+            enable:true,
+            chkStyle:"radio",
+            radioType:"all"
+        },
+        data: {
+            simpleDate:{
+                enable: true
+            }
+        },
+        view: {
+            showIcon: false,
+            showLine: false,
+            dblClickExpand: false
+        },
+        callback: categoryTreeCallbacks
+    };
+
+    var merchantCategoryTreeCallbacks = {}
+    $.extend(merchantCategoryTreeCallbacks,getSinglePathCallbacks("merchantCategory-tree"),getOnclickCallback("merchantCategory"))
+    var merchantCategoryTreeSettings = {
+        async: {
+            enable: true,
+            url:"/yhd-ztree/merchant-category",
+            autoParam:["id"]
+        },
+        check:{
+            enable:true,
+        },
+        data: {
+            simpleDate:{
+                enable: true
+            }
+        },
+        view: {
+            showIcon: false,
+            showLine: false,
+            dblClickExpand: false
+        },
+        callback: merchantCategoryTreeCallbacks
+    };
+
+    $(function(){
+        $.fn.zTree.init($("#category-tree"), categoryTreeSettings);
+        $("#category-show").click(showTreeFunc('category'));
+        $.fn.zTree.init($("#merchantCategory-tree"), merchantCategoryTreeSettings);
+
+        KindEditor.create('textarea[name="productDescription"]',
+        {
+            uploadJson:'/goods/images',
+            filterMode:false,
+            allowFileManager:false
+        });
+
+        $("#inputProductCname, #inputProductSubTitle, #inputProductNamePrefix").each(function(){
+            var ele = $(this);
+            var maxLength = parseInt(ele.attr('data-max-length'));
+            var monitor = $('#' + ele.attr('id') + '-monitor');
+            ele.keyup(function (){
+                var length =  ele.val().length;
+                monitor.text('(' + length + '/' + maxLength + ')');
+                monitor.css('color', length > maxLength ? 'red' : 'green');
+            });
+            ele.keyup();
+        });
+    });
+</script>
+#{/set}

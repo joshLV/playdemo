@@ -15,8 +15,10 @@ import models.sms.SMSProvider;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
-import play.db.jpa.JPA;
 import play.jobs.OnApplicationStart;
+import util.transaction.RemoteRecallCheck;
+import util.transaction.TransactionCallback;
+import util.transaction.TransactionRetry;
 
 import java.util.List;
 
@@ -29,25 +31,41 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
     private final String SMS_TYPE2 = Play.configuration.getProperty("sms2.type");
 
     private SMSProvider smsProvider = null;
+    private SMSProvider smsProvider2 = null;
 
-    public SMSProvider getSMSProvider(String smsType) {
+    public SMSProvider getSMSProvider() {
         if (smsProvider == null) {
-            smsProvider = SMSFactory.getSMSProvider(smsType);
+            smsProvider = SMSFactory.getSMSProvider(SMS_TYPE);
+        }
+        return smsProvider;
+    }
+    public SMSProvider getSMSProvider2() {
+        if (smsProvider == null) {
+            smsProvider = SMSFactory.getSMSProvider(SMS_TYPE2);
         }
         return smsProvider;
     }
 
     @Override
-    public void consumeWithTx(OrderECouponMessage message) {
-        // 为保证能同步到数据库状态，先sleep一会
-        try {
-            Thread.sleep(800l);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    public void consumeWithTx(final OrderECouponMessage message) {
+        if (message.eCouponId != null) {
+            RemoteRecallCheck.setId("OrderSMS_ECoupon_" + message.eCouponId);
+        } else {
+            RemoteRecallCheck.setId("OrderSMS_OrderItem_" + message.orderItemId);
         }
+        // 使用事务重试
+        Boolean success = TransactionRetry.run(new TransactionCallback<Boolean>() {
+            @Override
+            public Boolean doInTransaction() {
+                return doSendSms(message);
+            }
+        });
+        if (success == null || !success) {
+            throw new RuntimeException("Retry later.");
+        }
+    }
 
-        JPA.em().flush();  // 先强制同步hibernate缓存，避免找不到数据的情况; 如果还找不到，放异常以重试
-
+    private Boolean doSendSms(OrderECouponMessage message) {
         if (message.eCouponId != null) {
             ECoupon ecoupon = ECoupon.findById(message.eCouponId);
             if (ecoupon != null && ecoupon.canSendSMSByOperate()) {
@@ -75,7 +93,7 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
                 throw new RuntimeException("Retry later.");
             }
         }
-
+        return Boolean.TRUE;
     }
 
     private void sendOrderItemsSMS(OrderItems orderItems, OrderECouponMessage message) {
@@ -114,10 +132,10 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
             }
 
             try {
-                getSMSProvider(SMS_TYPE).send(new SMSMessage(msg, phone, ecoupons.get(0).replyCode));
+                getSMSProvider().send(new SMSMessage(msg, phone, ecoupons.get(0).replyCode));
             } catch (Exception e1) {
                 Logger.info("Send SMS failed use " + SMS_TYPE + ", try " + SMS_TYPE2);
-                getSMSProvider(SMS_TYPE2).send(new SMSMessage(msg, phone, ecoupons.get(0).replyCode));
+                getSMSProvider2().send(new SMSMessage(msg, phone, ecoupons.get(0).replyCode));
             }
 
             for (ECoupon ecoupon : ecoupons) {
@@ -161,10 +179,10 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
             }
 
             try {
-                getSMSProvider(SMS_TYPE).send(new SMSMessage(msg, phone, ecoupon.replyCode));
+                getSMSProvider().send(new SMSMessage(msg, phone, ecoupon.replyCode));
             } catch (Exception e1) {
                 Logger.info("Send SMS failed use " + SMS_TYPE + ", try " + SMS_TYPE2);
-                getSMSProvider(SMS_TYPE2).send(new SMSMessage(msg, phone, ecoupon.replyCode));
+                getSMSProvider2().send(new SMSMessage(msg, phone, ecoupon.replyCode));
             }
             // 如果没有出现异常，则记录一下发送历史
             if (ecoupon.smsSentCount == null) {

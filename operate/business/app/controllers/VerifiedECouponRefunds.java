@@ -90,11 +90,11 @@ public class VerifiedECouponRefunds extends Controller {
         // 查找原订单信息 可能是分销账户，也可能是消费者账户
         Account userAccount = AccountUtil.getAccount(userId, accountType);
 
-        System.out.println("===coupon.salePrice" + eCoupon.salePrice);
-        System.out.println("===coupon.rebate" + eCoupon.rebateValue);
-        System.out.println("===order.account" + eCoupon.order.accountPay);
-        System.out.println("===order.disaccount" + eCoupon.order.discountPay);
-        System.out.println("===order.promotion" + eCoupon.order.promotionBalancePay);
+//        System.out.println("===coupon.salePrice" + eCoupon.salePrice);
+//        System.out.println("===coupon.rebate" + eCoupon.rebateValue);
+//        System.out.println("===order.account" + eCoupon.order.accountPay);
+//        System.out.println("===order.disaccount" + eCoupon.order.discountPay);
+//        System.out.println("===order.promotion" + eCoupon.order.promotionBalancePay);
 
         //先计算已消费的金额(此处应去除本券)
         BigDecimal consumedAmount = BigDecimal.ZERO;
@@ -105,11 +105,11 @@ public class VerifiedECouponRefunds extends Controller {
                 consumedAmount = consumedAmount.add(ECoupon.getLintRefundPrice(c));
         }
 
-        System.out.println("===consumedAmount" + consumedAmount);
+//        System.out.println("===consumedAmount" + consumedAmount);
         //已消费的金额加上已退款的金额作为垫底
         BigDecimal onTheBottom = consumedAmount.add(eCoupon.order.refundedAmount);
 
-        System.out.println("===onTheBottom" + onTheBottom);
+//        System.out.println("===onTheBottom" + onTheBottom);
         //再来看看去掉垫底的资金后，此订单还能退多少活动金和可提现余额
         BigDecimal refundOrderTotalCashAmount = eCoupon.order.accountPay.add(eCoupon.order.discountPay);
         BigDecimal refundOrderTotalPromotionAmount = eCoupon.order.promotionBalancePay;
@@ -126,11 +126,11 @@ public class VerifiedECouponRefunds extends Controller {
             }
         }
 
-        System.out.println("===refundOrderTotalCashAmount" + refundOrderTotalCashAmount);
-        System.out.println("===refundOrderTotalPromotionAmount" + refundOrderTotalPromotionAmount);
+//        System.out.println("===refundOrderTotalCashAmount" + refundOrderTotalCashAmount);
+//        System.out.println("===refundOrderTotalPromotionAmount" + refundOrderTotalPromotionAmount);
         //用户为此券实际支付的金额,也就是从用户为该券付的钱来看，最多能退多少
         BigDecimal refundAtMostCouponAmount = ECoupon.getLintRefundPrice(eCoupon);
-        System.out.println("===refundAtMostCouponAmount" + refundAtMostCouponAmount);
+//        System.out.println("===refundAtMostCouponAmount" + refundAtMostCouponAmount);
 
         //最后我们来看看最终能退多少
         BigDecimal refundPromotionAmount = BigDecimal.ZERO;
@@ -143,13 +143,11 @@ public class VerifiedECouponRefunds extends Controller {
             refundCashAmount = refundAtMostCouponAmount.subtract(refundPromotionAmount);
             refundCashAmount = refundCashAmount.min(refundOrderTotalCashAmount);
         }
-        System.out.println("===refundCashAmount" + refundCashAmount);
-        System.out.println("===refundPromotionAmount" + refundPromotionAmount);
-
-        Account supplierAccount = AccountUtil.getSupplierAccount(eCoupon.goods.supplierId);
+//        System.out.println("===refundCashAmount" + refundCashAmount);
+//        System.out.println("===refundPromotionAmount" + refundPromotionAmount);
 
         TradeBill tradeBill = new TradeBill();
-        tradeBill.fromAccount = supplierAccount; //付款方为商户账户
+        tradeBill.fromAccount = eCoupon.getSupplierAccount(); //付款方为商户账户
         tradeBill.toAccount = AccountUtil.getPlatformCommissionAccount();                                  //收款方为指定账户
         tradeBill.balancePaymentAmount = eCoupon.originalPrice;                                   //使用可提现余额来支付退款的金额
         tradeBill.ebankPaymentAmount = BigDecimal.ZERO;                          //不使用网银支付
@@ -180,16 +178,13 @@ public class VerifiedECouponRefunds extends Controller {
         }
 
         // 更新已退款的活动金金额
-        // 更新已退款的活动金金额
         eCoupon.order.refundedAmount = eCoupon.order.refundedAmount.add(refundCashAmount).add(refundPromotionAmount);
         eCoupon.order.save();
 
         String userName = OperateRbac.currentUser().userName;
-        System.out.println(  "1111===>>");
         //记录券历史信息
         ECouponHistoryMessage.with(eCoupon).operator(userName).remark("已消费券退款:" + refundComment)
                 .toStatus(ECouponStatus.REFUND).sendToMQ();
-        System.out.println(  "22222===>>");
 
         // 更改订单状态
         eCoupon.status = ECouponStatus.REFUND;
@@ -228,11 +223,11 @@ public class VerifiedECouponRefunds extends Controller {
          */
         boolean reverse = true;
 
-        Account supplierAccount = AccountUtil
-                .getSupplierAccount(eCoupon.orderItems.goods.supplierId);
         // 给商户打钱
         TradeBill consumeTrade = TradeUtil.createConsumeTrade(eCoupon.eCouponSn,
-                supplierAccount, eCoupon.originalPrice, eCoupon.order.getId(), reverse);
+                eCoupon.getSupplierAccount(), eCoupon.originalPrice, eCoupon.order.getId(), reverse);
+        consumeTrade.tradeType = TradeType.REFUND;
+        consumeTrade.save();
         TradeUtil.success(consumeTrade, "已消费退款：" + refundComment + "。" + eCoupon.order.description);
 
         BigDecimal platformCommission = BigDecimal.ZERO;

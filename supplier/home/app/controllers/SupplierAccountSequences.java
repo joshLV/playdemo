@@ -6,7 +6,9 @@ import models.accounts.AccountSequence;
 import models.accounts.AccountSequenceCondition;
 import models.accounts.TradeType;
 import models.accounts.util.AccountUtil;
+import models.admin.SupplierUser;
 import models.order.OrderItems;
+import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
@@ -29,11 +31,14 @@ public class SupplierAccountSequences extends Controller {
 
     @ActiveNavigation("account_sequence")
     public static void index(AccountSequenceCondition condition) {
-        Long accountId = SupplierRbac.currentUser().supplier.id;
+        SupplierUser supplierUser = SupplierRbac.currentUser();
+        Long supplierId = supplierUser.supplier.id;
+        Supplier supplier = Supplier.findById(supplierId);
+        Account account = supplierUser.getSupplierAccount();
+
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
-        Account account = AccountUtil.getSupplierAccount(accountId);
         if (condition == null) {
             condition = new AccountSequenceCondition();
         }
@@ -46,7 +51,7 @@ public class SupplierAccountSequences extends Controller {
             if (sequence.tradeType != TradeType.PURCHASE_COSTING) {
                 continue;
             }
-            List<OrderItems> orderItems = OrderItems.findBySupplierOrder(accountId, sequence.orderId);
+            List<OrderItems> orderItems = OrderItems.findBySupplierOrder(account.id, sequence.orderId);
             if (orderItems.size() > 0) {
                 sequence.orderNumber = orderItems.get(0).order.orderNumber;
                 String postfix = orderItems.size() > 1 ? "等" + orderItems.size() + "个商品" : "";

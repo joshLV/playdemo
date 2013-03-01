@@ -122,7 +122,7 @@ public class YHDProducts extends Controller {
         if (id == null) {
             id = 0L;
         }
-        List<Node> categories = YHDCategoryAPI.merchantCategories(id);
+        List<Node> categories = YHDCategoryAPI.merchantCategoriesCache(id);
         StringBuilder jsonString = new StringBuilder("[");
         for (int i = 0 ; i < categories.size(); i ++) {
             Node category = categories.get(i);

@@ -17,6 +17,7 @@
 #{layout_operate.selectField name:'shop.districtId', class:'span2', value:shop?.districtId, error:'shop.districtId',list:districts/}
 #{layout_operate.selectField name:'shop.areaId', class:'span2', value:shop?.areaId, error:'shop.areaId',list:areas/}
 #{layout_operate.textField name:'shop.name', class:'span2', value:shop?.name, required:true/}
+#{layout_operate.radioField name:'shop.independentClearing', value:shop?.independentClearing?:false/}
 #{layout_operate.textField name:'shop.address', value:shop?.address, required:true/}
 #{layout_operate.textField name:'shop.transport', value:shop?.transport/}
 <!------------------------ 地图 --------------------->

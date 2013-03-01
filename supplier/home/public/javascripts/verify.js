@@ -173,7 +173,6 @@ jQuery(function ($) {
             }
             //批量验证的添加券号的按钮点击事件，点击后验证当前输入的券号.
         } else if (_this.hasClass('add-coupon')) {
-            console.log("from delegate!" + _this.text());
             addMultiVerifyCoupon();
             // 批量验证
         } else if (_this.hasClass('batch-verify')) {

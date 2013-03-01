@@ -7,6 +7,7 @@ import models.order.ECoupon;
 import models.order.OuterOrder;
 import models.sales.ResalerProduct;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import play.Logger;
@@ -28,9 +29,9 @@ import java.util.*;
 public class DDGroupBuyUtil {
     private static final String RESULT_FORMAT = "xml";
     private static final String SIGN_METHOD = "1";
-    private static final String VER = Play.configuration.getProperty("dangdang.groupbuy.version", "1.0");
-    private static final String SECRET_KEY = Play.configuration.getProperty("dangdang.groupbuy.secret_key", "x8765d9yj72wevshn");
-    private static final String SPID = Play.configuration.getProperty("dangdang.groupbuy.spid", "3000003");
+    private static final String VER = Play.configuration.getProperty("dangdang.version", "1.0");
+    private static final String SECRET_KEY = Play.configuration.getProperty("dangdang.secret_key", "x8765d9yj72wevshn");
+    private static final String SPID = Play.configuration.getProperty("dangdang.spid", "3000003");
 
     /**
      * 查询刚刚今天上传的单个商品在当当上的信息.
@@ -174,7 +175,7 @@ public class DDGroupBuyUtil {
 
         Logger.info("dangdang request %s:\n%s", apiName, xmlData);
         WebServiceRequest request = WebServiceRequest.url(url).type("dangdang_" + apiName)
-                .params(params);
+                .params(requestParams);
         for (String keyword : keywords) {
             request.addKeyword(keyword);
         }
@@ -191,10 +192,10 @@ public class DDGroupBuyUtil {
 
     public static DDResponse parseResponse(Document document) {
         DDResponse response = new DDResponse();
-        response.ver = XPath.selectText("/resultObject/ver", document).trim();
-        response.spid = XPath.selectText("/resultObject/spid", document).trim();
-        response.errorCode = XPath.selectText("/resultObject/error_code", document).trim();
-        response.desc = XPath.selectText("/resultObject/desc", document).trim();
+        response.ver = StringUtils.trimToNull(XPath.selectText("/resultObject/ver", document));
+        response.spid = StringUtils.trimToNull(XPath.selectText("/resultObject/spid", document));
+        response.errorCode = StringUtils.trimToNull(XPath.selectText("/resultObject/error_code", document));
+        response.desc = StringUtils.trimToNull(XPath.selectText("/resultObject/desc", document));
         response.data = XPath.selectNode("/resultObject/data", document);
         return response;
     }
@@ -230,6 +231,7 @@ public class DDGroupBuyUtil {
     public static SortedMap<String, String> filterPlayParams(Map<String, String> params) {
         TreeMap<String, String> r = new TreeMap<>(params);
         r.remove("body");
+        r.remove("format");
         return r;
     }
 
@@ -239,7 +241,7 @@ public class DDGroupBuyUtil {
     public static String signParams(SortedMap<String, String> params) {
         StringBuilder signStr = new StringBuilder();
         for (Map.Entry<String, String> entry : params.entrySet()) {
-            if ("body".equals(entry.getKey()) || "sign".equals(entry.getKey())) {
+            if ("body".equals(entry.getKey()) || "sign".equals(entry.getKey()) || "format".equals(entry.getKey()) ) {
                 continue;
             }
             signStr.append(entry.getKey()).append("=").append(WS.encode(entry.getValue())).append("&");

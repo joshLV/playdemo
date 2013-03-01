@@ -97,7 +97,7 @@ public class Supplier extends Model {
     /**
      * 负责人手机号
      */
-    @Mobile
+//    @Mobile
     public String mobile;
 
     /**

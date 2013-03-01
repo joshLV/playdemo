@@ -38,7 +38,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
     private Map<String, Object> paramMap = new HashMap<>();
 
     public String getFilterPaidAt() {
-        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and r.goods.supplierId = s.id and s.deleted=0 and s.salesId=ou.id and ou.deleted=0 and r.order.status='PAID' " +
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and r.goods.supplierId = s.id and s.deleted=0 and s.salesId=ou.id and r.order.status='PAID' " +
                 "and r.goods.isLottery=false and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED"
         );
 
@@ -68,7 +68,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
     }
 
     public String getFilterRealSendAt() {
-        StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId =s.id and s.deleted=0 and s.salesId=ou.id and ou.deleted=0 and (r.order.status='PAID' or r.order.status='SENT')  " +
+        StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId =s.id and s.deleted=0 and s.salesId=ou.id and (r.order.status='PAID' or r.order.status='SENT')  " +
                 "and r.goods.isLottery=false and r.goods.materialType=models.sales.MaterialType.REAL" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
                 " and r.order.deliveryType=models.order.DeliveryType.LOGISTICS");
@@ -99,7 +99,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
     }
 
     public String getResalerFilterOfPeopleEffect() {
-        StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId =s.id and s.deleted=0 and s.salesId=ou.id and ou.deleted=0 and r.order.userType=models.accounts.AccountType.RESALER " +
+        StringBuilder condBuilder = new StringBuilder(" where r.goods.supplierId =s.id and s.deleted=0 and s.salesId=ou.id and r.order.userType=models.accounts.AccountType.RESALER " +
                 " and (r.order.status='PAID' or r.order.status='SENT')" +
                 " and r.goods.isLottery=false and r.order=o and o.userId=b.id");
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
@@ -131,7 +131,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
 
     public String getECouponFilterOfPeopleEffect(ECouponStatus status) {
         paramMap1 = new HashMap<>();
-        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and r.goods.supplierId =s.id and e.goods.supplierId=s.id and s.deleted=0 and s.salesId=ou.id and ou.deleted=0 and e.status=:status and e.goods.isLottery=false");
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and r.goods.supplierId =s.id and e.goods.supplierId=s.id and s.deleted=0 and s.salesId=ou.id and e.status=:status and e.goods.isLottery=false");
         paramMap1.put("status", status);
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         if (!hasSeeReportProfitRight) {
@@ -171,7 +171,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
     }
 
     public String getFilterCheatedOrderOfPeopleEffect() {
-        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.goods.supplierId=s.id and s.deleted=0 and s.salesId=ou.id and ou.deleted=0 and r.order.status='PAID' and r.goods.isLottery=false" +
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.goods.supplierId=s.id and s.deleted=0 and s.salesId=ou.id and r.order.status='PAID' and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
                 " and e.isCheatedOrder = true ");
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
@@ -200,7 +200,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
     }
 
     public String getFilterCheatedOrderResalerOfPeopleEffect() {
-        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.goods.supplierId=s.id and s.deleted=0 and s.salesId=ou.id and ou.deleted=0 and r.order.status='PAID' and r.goods.isLottery=false" +
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.goods.supplierId=s.id and s.deleted=0 and s.salesId=ou.id and r.order.status='PAID' and r.goods.isLottery=false" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
                 " and e.isCheatedOrder = true and r.order.userType=models.accounts.AccountType.RESALER and r.order=o and o.userId=b.id ");
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
@@ -229,7 +229,7 @@ public class PeopleEffectCategoryReportCondition implements Serializable {
 
     public String getFilterRefundResalerOfPeopleEffect() {
         paramMap1 = new HashMap<>();
-        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.goods.supplierId=s.id and s.deleted=0 and s.salesId=ou.id and ou.deleted=0 and e.status=:status and e.goods.isLottery=false" +
+        StringBuilder condBuilder = new StringBuilder(" where e.orderItems=r and e.goods.supplierId=s.id and s.deleted=0 and s.salesId=ou.id and e.status=:status and e.goods.isLottery=false" +
                 " and e.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED" +
                 " and r.order.userType=models.accounts.AccountType.RESALER and r.order=o and o.userId=b.id ");
         paramMap1.put("status", ECouponStatus.REFUND);

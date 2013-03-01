@@ -55,6 +55,12 @@
             <span class="error">#{error 'withdrawAccount.cardNumber'/}</span>
         </div>
     </div>
+    #{layout_operate.selectField name:'withdrawAccount.shopId', value:withdrawAccount?.shopId, error:'withdrawAccount.shopId', required:true}
+        #{option ""}---全部---#{/option}
+        #{list items:independentShopList, as:'shop'}
+            #{option shop?.id}${shop?.name}-${shop?.address}#{/option}
+        #{/list}
+    #{/layout_operate.selectField}
     <div class="form-actions">
         <input type="hidden" name="supplierId" value="${supplier?.getId()}"/>
         <button class="btn btn-primary" type="submit">新 建</button>
@@ -72,6 +78,7 @@
             <th>城市</th>
             <th>分行</th>
             <th>银行卡号</th>
+            <th>门店</th>
             <th>操作</th>
         </tr>
         #{list items:withdrawAccounts, as:'account'}
@@ -85,6 +92,12 @@
                                value="${account?.bankCity}"></td>
                     <td><input type="text" name="withdrawAccount.subBankName" value="${account?.subBankName}"></td>
                     <td><input type="text" name="withdrawAccount.cardNumber" value="${account?.cardNumber}"></td>
+                    <td>#{select "withdrawAccount.shopId", value:"${account?.shopId}", class:"input-large"}
+                        #{option ""}---全部---#{/option}
+                        #{if independentShopList?.size()>0}#{list items:independentShopList, as:'shop'}
+                            #{option shop?.id}${shop?.name}-${shop?.address}#{/option}
+                        #{/list}#{/if}
+                #{/select}</td>
                 <td>
                     <input type="hidden" name="supplierId" value="${supplier.getId()}"/>
                     <input type="hidden" name="withdrawAccount.id" value="${account?.id}">

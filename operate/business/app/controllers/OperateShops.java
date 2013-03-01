@@ -163,7 +163,9 @@ public class OperateShops extends Controller {
         sp.updatedAt = new Date();
         sp.longitude = shop.longitude;
         sp.latitude = shop.latitude;
+        sp.independentClearing = shop.independentClearing;
         sp.save();
+        sp.createAccountsIfNeeded();
         redirectUrl(page);
     }
 

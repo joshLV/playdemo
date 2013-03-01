@@ -82,7 +82,6 @@ public class AccountSequence extends Model {
     @Column(name = "operated_by")
     public String operatedBy;
 
-
     @Enumerated(EnumType.STRING)
     @Column(name = "settlement_status")
     public SettlementStatus settlementStatus = SettlementStatus.UNCLEARED;   //结算状态
@@ -299,8 +298,6 @@ public class AccountSequence extends Model {
 
         return null;
     }
-
-
 
     public static List<AccountSequenceStatistic> statisticByCondition(AccountSequenceCondition condition) {
         EntityManager entityManager = JPA.em();

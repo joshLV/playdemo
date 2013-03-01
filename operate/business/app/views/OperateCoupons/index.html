@@ -154,6 +154,9 @@
             <span class="add-on"><i class="icon-th"></i></span>
         </div>
         &nbsp;&nbsp;
+        外部券号：
+        <input type="text" name="condition.partnerCouponId" value="${condition.partnerCouponId}"
+               class="input-medium"/>
 
         <button class="btn btn-large btn-primary" id="search" type="submit">搜索</button>
         <div class="pull-right">
@@ -207,13 +210,19 @@
             #{/else}
             <i class="icon-envelope"></i>${coupon?.smsSentCount}
         </td>
-        <td>
+        <td width="120">
             #{if hasViewEcouponSnPermission}
-                <a id="view_ecoupon" href="#" role="button" class="btn" data-toggle="modal"
-                   onClick="viewECoupon(${coupon.id})" title="查看完整券号">
-                ${coupon?.getMaskedEcouponSn()}
+                <center>
+                    <a id="view_ecoupon" href="#" role="button" class="btn" data-toggle="modal"
+                       onClick="viewECoupon(${coupon.id})" title="查看完整券号">
+                    ${coupon?.getMaskedEcouponSn()}
                     *{${coupon?.eCouponSn}}*
-                </a>
+
+                    </a>
+                </center>
+                #{if coupon?.partnerCouponId !=null}
+                    <br>外: ${coupon?.partnerCouponId}
+                #{/if}
             #{/if}
             #{else}
             ${n}${coupon?.getMaskedEcouponSn()}

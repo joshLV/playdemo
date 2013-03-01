@@ -12,14 +12,7 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -77,6 +70,43 @@ public class WithdrawBill extends Model {
     public Date processedAt;
 
 
+    @Transient
+    public String paymentExcelOutAt;
+
+    @Transient
+    public String RMB;            //人民币大写
+
+    @Transient
+    public String thousandWan;    //千万
+
+    @Transient
+    public String hundredWan;     //百万
+
+    @Transient
+    public String tenWan;         //十万
+
+    @Transient
+    public String wan;            //万
+
+    @Transient
+    public String thousand;       //千
+
+    @Transient
+    public String hundred;        //百
+
+    @Transient
+    public String ten;            //十
+
+    @Transient
+    public String yuan;           //元
+
+    @Transient
+    public String jiao;           //角
+
+    @Transient
+    public String fen;            //分
+
+
     /**
      * 操作人
      */
@@ -88,7 +118,7 @@ public class WithdrawBill extends Model {
     public String comment;
 
     @Column(name = "account_name")
-    public String accountName;        //帐户名称，如果是商户，则为商户的短名称
+    public String accountName;        //帐户名称，如果是商户，则为商户的短名称,如果是门店，则为门店的名称
 
     /**
      * 申请提现.
@@ -314,4 +344,6 @@ public class WithdrawBill extends Model {
 
         return q.getSingleResult() == null ? BigDecimal.ZERO : (BigDecimal) q.getSingleResult();
     }
+
+
 }

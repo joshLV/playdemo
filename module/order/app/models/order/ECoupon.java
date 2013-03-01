@@ -8,12 +8,11 @@ import models.accounts.AccountType;
 import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
-import models.operator.OperateUser;
 import models.admin.SupplierUser;
 import models.consumer.User;
 import models.dangdang.groupbuy.DDGroupBuyUtil;
 import models.jingdong.groupbuy.JDGroupBuyHelper;
-import models.jingdong.groupbuy.JDGroupBuyUtil;
+import models.operator.OperateUser;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.GoodsCouponType;
@@ -33,6 +32,8 @@ import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
 import play.modules.solr.Solr;
 import util.common.InfoUtil;
+import util.transaction.RemoteCallback;
+import util.transaction.RemoteRecallCheck;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -517,38 +518,18 @@ public class ECoupon extends Model {
     }
 
     public boolean consumeAndPayCommission(Long shopId, OperateUser operateUser, SupplierUser supplierUser, VerifyCouponType type,
-                                           String triggerCouponSn, Date consumedAt, String remark) {
+                                           String triggerCouponSn, Date realConsumedAt, String remark) {
 
         //===================判断是否第三方订单产生的券=并且不是导入券============================
         if (this.createType != ECouponCreateType.IMPORT) {
-            if (this.partner == ECouponPartner.DD) {
-                if (!DDGroupBuyUtil.verifyOnDangdang(this)) {
-                    Logger.info("verify on dangdang failed");
-                    return false;
-                }
-            }
-
-            if (this.partner == ECouponPartner.JD) {
-                if (!JDGroupBuyHelper.verifyOnJingdong(this)) {
-                    Logger.info("verify on jingdong failed");
-                    return false;
-                }
-            } else if (this.partner == ECouponPartner.WB) {
-                if (!WubaUtil.verifyOnWuba(this)) {
-                    Logger.info("verify on wuba failed");
-                    return false;
-                }
-            } else if (this.partner == ECouponPartner.TB) {
-                if (!TaobaoCouponUtil.verifyOnTaobao(this)) {
-                    Logger.info("verify on taobao failed");
-                    return false;
-                }
+            if (verifyAndCheckOnPartnerResaler()) {
+                return false;
             }
         }
         //===================券消费处理开始=====================================
-        if (consumed(shopId, operateUser, supplierUser, type, consumedAt, remark)) {
+        if (consumed(shopId, operateUser, supplierUser, type, realConsumedAt, remark)) {
             payCommission();
-            this.triggerCouponSn = triggerCouponSn;
+            this.triggerCouponSn = triggerCouponSn; //记录批量验证时所使用的券号
             this.save();
         }
 
@@ -557,12 +538,67 @@ public class ECoupon extends Model {
     }
 
     /**
+     * 使用RemoteRecallCheck.call包装一下，这样在下次进来时会检查是否成功过，如果成功过就不再调用verifyOnPartnerResaler.
+     *
+     * @return 如果返回true，表示调用失败.
+     */
+    private Boolean verifyAndCheckOnPartnerResaler() {
+        return RemoteRecallCheck.call("verify_coupon", new RemoteCallback<Boolean>() {
+            @Override
+            public Boolean doCall() {
+                Boolean failed = verifyOnPartnerResaler();
+                // 记录日志验证失败
+                Logger.info("verifyAndCheckOnPartnerResaler: SN:" + eCouponSn + ", result:" + failed);
+                if (!failed) {
+                    // 不需要重试.
+                    RemoteRecallCheck.singAsSuccess();
+                }
+                return failed;
+            }
+        });
+    }
+
+    /**
+     * 调用第三方渠道券验证，并返回是否失败的标识。
+     *
+     * @return TRUE表示验证失败；FALSE表示验证成功
+     */
+    private Boolean verifyOnPartnerResaler() {
+        Boolean failed = Boolean.TRUE;
+        Boolean success = Boolean.FALSE;
+        if (this.partner == ECouponPartner.DD) {
+            if (!DDGroupBuyUtil.verifyOnDangdang(this)) {
+                Logger.info("verify on dangdang failed");
+                return failed;
+            }
+        }
+
+        if (this.partner == ECouponPartner.JD) {
+            if (!JDGroupBuyHelper.verifyOnJingdong(this)) {
+                Logger.info("verify on jingdong failed");
+                return failed;
+            }
+        } else if (this.partner == ECouponPartner.WB) {
+            if (!WubaUtil.verifyOnWuba(this)) {
+                Logger.info("verify on wuba failed");
+                return failed;
+            }
+        } else if (this.partner == ECouponPartner.TB) {
+            if (!TaobaoCouponUtil.verifyOnTaobao(this)) {
+                Logger.info("verify on taobao failed");
+                return failed;
+            }
+        }
+        return success;
+    }
+
+    /**
      * 优惠券被消费。 修改优惠券状态、发佣金、给商户打钱
      *
      * @return
      */
     private boolean consumed(Long shopId, OperateUser operateUser, SupplierUser supplierUser, VerifyCouponType type,
-                             Date consumedAt, String remark) {
+                             Date realConsumedAt, String remark) {
         if (this.status != ECouponStatus.UNCONSUMED) {
             return false;
         }
@@ -570,7 +606,7 @@ public class ECoupon extends Model {
             this.shop = Shop.findById(shopId);
         }
         this.status = ECouponStatus.CONSUMED;
-        this.consumedAt = consumedAt == null ? new Date() : consumedAt;
+        this.consumedAt = new Date();
         String operator = "";
         if (supplierUser != null) {
             this.supplierUser = supplierUser;
@@ -597,16 +633,18 @@ public class ECoupon extends Model {
         }
         //记录券历史信息
         String historyRemark = StringUtils.isBlank(remark) ? "消费" : remark;
+        if (realConsumedAt != null) {
+            Logger.info("实现消费时间" + realConsumedAt);
+            historyRemark += ",实际消费时间" + DateUtil.dateToString(realConsumedAt, "yyyy-MM-dd");
+        }
         ECouponHistoryMessage.with(this).operator(operator).remark(historyRemark)
-                .fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.CONSUMED).sendToMQ();
+                .fromStatus(this.status).toStatus(ECouponStatus.CONSUMED).sendToMQ();
         return true;
     }
 
     public void payCommission() {
-        Account supplierAccount = AccountUtil.getSupplierAccount(orderItems.goods.supplierId);
-
         // 给商户打钱
-        TradeBill consumeTrade = TradeUtil.createConsumeTrade(eCouponSn, supplierAccount, originalPrice, order.getId());
+        TradeBill consumeTrade = TradeUtil.createConsumeTrade(eCouponSn, getSupplierAccount(), originalPrice, order.getId());
         TradeUtil.success(consumeTrade, "券消费(" + order.description + ")");
 
         BigDecimal platformCommission = BigDecimal.ZERO;
@@ -880,6 +918,20 @@ public class ECoupon extends Model {
         Solr.save(eCoupon.goods);
 
         return returnFlg;
+    }
+
+    /**
+     * 对于独立核算的门店，返回门店帐号，否则返回商户帐号.
+     *
+     * @param eCoupon
+     * @return
+     */
+    @Transient
+    public Account getSupplierAccount() {
+        if (status == ECouponStatus.CONSUMED && shop != null && shop.independentClearing) {
+            return AccountUtil.getShopAccount(shop.id);
+        }
+        return AccountUtil.getSupplierAccount(goods.supplierId);
     }
 
     /**
@@ -1470,9 +1522,7 @@ public class ECoupon extends Model {
         if (ecoupon.expireAt != null && ecoupon.expireAt.before(now)) {
             return "对不起，该券已过期!";
         }
-        if (ecoupon.effectiveAt != null && ecoupon.effectiveAt.after(now)) {
-            return "对不起，该券有效期还没开始！";
-        }
+
         return null;
     }
 
@@ -1556,8 +1606,8 @@ public class ECoupon extends Model {
      * @return
      */
     public static List<ECoupon> findVirtualCoupons(CouponsCondition condition) {
-        String sql = "select e from ECoupon e where e.virtualVerify=0 and e.goods.isLottery=false ";
-        Query query = ECoupon.em().createQuery(sql + condition.getQueryFitter() + " order by e.partner");
+        String sql = "select e from ECoupon e ";
+        Query query = ECoupon.em().createQuery(sql + condition.getQueryFitter() + " order by e.expireAt, e.partner");
         for (Map.Entry<String, Object> entry : condition.getParamMap().entrySet()) {
             query.setParameter(entry.getKey(), entry.getValue());
         }
@@ -1598,4 +1648,5 @@ public class ECoupon extends Model {
         ECouponHistoryMessage.with(this).operator(operator).remark("虚拟验证").sendToMQ();
         return true;
     }
+
 }

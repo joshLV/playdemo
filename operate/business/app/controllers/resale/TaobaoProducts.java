@@ -54,7 +54,7 @@ public class TaobaoProducts extends Controller{
     public static void upload(Long num, Long goodsId, BigDecimal price, BigDecimal faceValue, String type,
                               String stuffStatus,String title, String desc, String locationState,
                               String locationCity, Long cid, String props, String approveStatus,
-                              String startDate, String endDate, String[] sellerCids) {
+                              String[] sellerCids) {
         OperateUser operateUser = OperateRbac.currentUser();
         Goods goods = Goods.findById(goodsId);
         if (goods == null) {
@@ -65,7 +65,7 @@ public class TaobaoProducts extends Controller{
 
         ItemAddRequest addRequest = new ItemAddRequest();
         addRequest.setNum(num > 999999 ? 999999 : num);// 商品数量
-        addRequest.setPrice(price.setScale(2, BigDecimal.ROUND_UP).toString());
+        addRequest.setPrice(price.setScale(0, BigDecimal.ROUND_UP).toString());
         addRequest.setType(type);
         addRequest.setStuffStatus(stuffStatus);
         addRequest.setTitle(title);
@@ -79,11 +79,6 @@ public class TaobaoProducts extends Controller{
         addRequest.setInputPids("5392163");//面值key
         addRequest.setApproveStatus(approveStatus);//初始为下架的，在淘宝仓库中
         addRequest.setOuterId(String.valueOf(product.goodsLinkId));
-        if (goods.materialType == MaterialType.ELECTRONIC) {
-            addRequest.setLocalityLifeExpirydate(startDate+ "," + endDate);//电子券设置有效期
-        }else {
-            addRequest.setLocalityLifeChooseLogis("1");//非电子券设置提取方式为邮寄
-        }
         addRequest.setSellerCids(StringUtils.join(sellerCids));
 
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, APPKEY, APPSECRET);
@@ -95,8 +90,8 @@ public class TaobaoProducts extends Controller{
 
         try {
             ItemAddResponse addResponse = taobaoClient.execute(addRequest, token.accessToken);
+            renderArgs.put("addResponse", addResponse);
             if (addResponse != null && addResponse.getErrorCode() == null) {
-                renderArgs.put("addResponse", addResponse);
                 Long taobaoItemId = addResponse.getItem().getNumIid();
 
                 //保存商品状态

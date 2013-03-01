@@ -99,6 +99,9 @@ public class JDGroupBuyHelper {
     }
 
     public static List<Node> cacheCategories(final Long categoryId) {
+        if (Play.mode.isDev()) {
+            return queryCategory(categoryId);
+        }
         return CacheHelper.getCache(
                 CacheHelper.getCacheKey(CACHE_KEY, "CATEGORIES_" + categoryId),
                 new CacheCallBack<List<Node>>() {
@@ -122,6 +125,9 @@ public class JDGroupBuyHelper {
     }
 
     public static List<Node> cacheCities() {
+        if (Play.mode.isDev()) {
+            return queryCity();
+        }
         return CacheHelper.getCache(
                 CacheHelper.getCacheKey(CACHE_KEY, "CITIES"),
                 new CacheCallBack<List<Node>>() {
@@ -152,6 +158,9 @@ public class JDGroupBuyHelper {
     }
 
     public static List<Node> cacheDistricts(final Long cityId) {
+        if (Play.mode.isDev()) {
+            return queryDistrict(cityId);
+        }
         return CacheHelper.getCache(
                 CacheHelper.getCacheKey(CACHE_KEY, "CITY_" + cityId + "_DISTRICTS"),
                 new CacheCallBack<List<Node>>() {

@@ -89,9 +89,9 @@ public class YihaodianJobConsumer extends RabbitMQConsumerWithTx<String> {
             List<Node> orderItems = response.selectNodes("./orderItemList/orderItem");
             List<Node> couponItems = new ArrayList<>();
             for (Node orderItem : orderItems) {
-                String outerId = XPath.selectText("./outerId", orderItem).trim();
-                System.out.println("abcdefg " + outerId);
+                String outerId = XPath.selectText("./outerId", orderItem);
                 if (outerId != null) {
+                    outerId = outerId.trim();
                     Goods goods = ResalerProduct.getGoods(Long.parseLong(outerId), OuterOrderPartner.YHD);
                     if (goods != null && goods.materialType == MaterialType.ELECTRONIC) {
                         couponItems.add(orderItem);

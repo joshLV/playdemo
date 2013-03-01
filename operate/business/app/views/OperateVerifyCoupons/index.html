@@ -14,7 +14,7 @@
         font-size: 15px;
     }
 </style>
-<form action="@{OperateVerifyCoupons.verify()}" class="form-horizontal" id='form'>
+<form action="@{OperateVerifyCoupons.verify()}" class="form-horizontal" id='form' onsubmit='return disableButton()'>
     <legend>验证消费券</legend>
     <div class="control-group">
         <label class="control-label"><span style="color: red; ">*</span> 商户</label>
@@ -39,8 +39,8 @@
 
         <div class="controls">
             <input type="text" name="consumedAt" id="consumedAt" class="input-large Wdate"
-                   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"
-                   value="${new java.util.Date()?.format("yyyy-MM-dd HH:mm:ss")}">
+                   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})"
+                   value="${new java.util.Date()?.format("yyyy-MM-dd")}">
             <span class="error" id="err-consumedAt"></span>
         </div>
     </div>
@@ -57,8 +57,8 @@
         </div>
     </div>
     <div class="form-actions" style="padding-left: 80px">
-        <button class="btn btn-primary" id="query" type="submit">查询</button>
-        <button class="btn btn-primary" id="sure" type="submit" disabled>验证</button>
+        <button class="btn btn-primary" id="query" type="submit" onclick="clickQuery()">查询</button>
+        <button class="btn btn-primary" id="sure" type="submit" onclick="clickVerify()" disabled>验证</button>
     </div>
 #{if errors?.size()>0}
     <span style="border:1px solid #ff0000;color:#ff0000;line-height: 2;margin-left: 80px;">#{error 'error-info' /}</span>
@@ -100,4 +100,39 @@
             }
         });
     });
+
+
+    function clickQuery() {
+        $("#query").val("query");
+        $("#sure").val("null");
+    }
+
+    function clickVerify() {
+        $("#sure").val("sure");
+        $("#query").val("null");
+    }
+
+
+    function disableButton() {
+        if ($("#sure").val() == "sure") {
+            $('#sure').attr('disabled', "true");
+            $("#sure").html("正在提交");
+            $('#sure').attr('class', "btn disabled");
+            $('#query').attr('disabled', "true");
+            $('#query').attr('class', "btn disabled");
+            return true;
+        }
+
+        if ($("#query").val() == "query") {
+
+            $('#query').attr('disabled', "true");
+            $("#query").html("正在查询");
+            $('#query').attr('class', "btn disabled");
+            $('#sure').attr('disabled', "true");
+            $('#sure').attr('class', "btn disabled");
+            return true;
+        }
+    }
+
+
 </SCRIPT>
