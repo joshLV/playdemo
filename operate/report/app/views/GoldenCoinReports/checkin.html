@@ -100,6 +100,7 @@
 
 <form class="well form-inline" action="@{GoldenCoinReports.checkin()}" method="GET" id="form"
       name="form">
+    账户：<input type="text" name="condition.loginName" class="input-medium" value="${condition?.loginName}"/>
     起止日期
     <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.createdAtBegin"
            onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtBegin?.format()}"> -
@@ -132,8 +133,8 @@
     <tr>
         <td>${report_index}</td>
         <td>${report?.goods?.shortName}</td>
-        <td>${report?.number}</td>
-        <td>${report?.checkinNumber}</td>
+        <td>${report?.checkinTimes}</td>
+        <td>${report?.coinsNumber}</td>
         <td>${report?.user?.getShowName()}</td>
     </tr>
 #{/paginate.list}
