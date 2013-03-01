@@ -1,0 +1,32 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'分销商品管理 - 手动添加' /}
+#{include '/share/nav.html' /}
+#{set 'moreScripts'}
+<script>
+    $("a[rel='tooltip']").tooltip({container:'body'});
+</script>
+#{/set}
+#{set 'moreStyles'}
+#{/set}
+<div class="body">
+    <legend>手动添加分销商品</legend>
+    <form class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label" for="inputEmail">Email</label>
+            <div class="controls">
+                <input type="text" id="inputEmail" placeholder="Email">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputPassword">Password</label>
+            <div class="controls">
+                <input type="password" id="inputPassword" placeholder="Password">
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn">Sign in</button>
+            </div>
+        </div>
+    </form>
+</div>

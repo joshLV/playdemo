@@ -27,12 +27,11 @@ public class YHDUtil {
     public static String ERP_VERSION = "1.0";
     public static String FORMAT = "xml";
     public static String VERSION = "1.0";
-
     public static YHDResponse sendRequest(Map<String,String> appParams, String method, String dataElementName){
-        return sendRequest(appParams, null, method, dataElementName);
+        return sendRequestWithFiles(appParams, method, dataElementName, null);
     }
 
-    public static YHDResponse sendRequest(Map<String,String> appParams, File[] files, String method, String dataElementName){
+    public static YHDResponse sendRequestWithFiles(Map<String,String> appParams, String method, String dataElementName, File [] files){
         // 系统级参数设置
         Map<String, String> params = sysParams();
         params.put("method", method);
@@ -54,7 +53,9 @@ public class YHDUtil {
 
         WebServiceRequest request = WebServiceRequest.url(GATEWAY_URL).type("yihaodian." + method).params(requestParams);
         if (files != null) {
-            //todo
+            for (File file : files) {
+                request = request.addFile(file);
+            }
         }
         String documentStr = request.postString();
         Logger.info("yihaodian response:\n%s", documentStr);

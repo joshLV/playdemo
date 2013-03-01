@@ -1,5 +1,6 @@
 package models.jingdong.groupbuy;
 
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Node;
 import play.libs.XPath;
 
@@ -39,6 +40,6 @@ public class JingdongMessage {
     }
 
     public String selectTextTrim(String path) {
-        return XPath.selectText(path, message).trim();
+        return StringUtils.trimToNull(XPath.selectText(path, message));
     }
 }
