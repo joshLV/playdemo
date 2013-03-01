@@ -141,7 +141,7 @@ public class WithdrawApproval extends Controller {
      * @param comment
      */
     private static void sendRejectedSMS(WithdrawBill bill, String comment) {
-        sendWithdrawnSMS(bill, comment, "申请提现:" + bill.amount + " 未通过.");
+        sendWithdrawnSMS(bill, comment, "申请提现:" + bill.amount + " 未通过，如有疑问，可联系视惠财务54276001-8003。");
 
     }
 

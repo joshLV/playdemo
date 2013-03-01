@@ -201,6 +201,13 @@ public class Supplier extends Model {
     @Column(name = "shop_end_hour")
     public String shopEndHour;
 
+    /**
+     * 是否可查看销售量和退款量
+     */
+    @Column(name = "show_selling_state")
+    public Boolean showSellingState = false;
+    //=================================================以上是全部数据库相关属性================================================
+
     @Transient
     public String getName() {
         return StringUtils.isBlank(otherName) ? fullName : otherName;
@@ -302,6 +309,7 @@ public class Supplier extends Model {
         sp.salesId = supplier.salesId;
         sp.shopEndHour = supplier.shopEndHour;
         sp.updatedAt = new Date();
+        sp.showSellingState = supplier.showSellingState == null ? false : supplier.showSellingState;
         if (sp.supplierCategory == null || (sp.supplierCategory != null && supplier.supplierCategory != null && supplier.supplierCategory.id != sp.supplierCategory.id)) {
             sp.setCode(supplier.supplierCategory);
         }
@@ -341,27 +349,23 @@ public class Supplier extends Model {
         }
     }
 
-    public static List<Supplier> findByCondition(String otherName) {
-        return findByCondition(otherName, null);
-    }
-
-    public static List<Supplier> findByCondition(String otherName, String code) {
+    public static List<Supplier> findByCondition(Long supplierId, String code, String domainName) {
         StringBuilder sql = new StringBuilder("deleted=?");
         List params = new ArrayList();
         params.add(DeletedStatus.UN_DELETED);
-        if (StringUtils.isNotBlank(otherName)) {
-            sql.append(" and otherName like ?");
-            params.add("%" + otherName + "%");
-        }
-
-        if (StringUtils.isNotBlank(otherName)) {
-            sql.append("or fullName like ?");
-            params.add("%" + otherName + "%");
+        if (supplierId != null && supplierId > 0) {
+            sql.append(" and id = ?");
+            params.add(supplierId);
         }
 
         if (StringUtils.isNotBlank(code)) {
             sql.append("and code like ?");
             params.add(code + "%");
+        }
+
+        if (StringUtils.isNotBlank(domainName)) {
+            sql.append("and domainName like ?");
+            params.add("%" + domainName + "%");
         }
 
         sql.append(" order by createdAt DESC");
@@ -388,7 +392,6 @@ public class Supplier extends Model {
         supplier.status = status;
         supplier.save();
     }
-
 
     @Override
     public String toString() {

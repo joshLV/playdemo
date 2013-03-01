@@ -46,13 +46,13 @@ public class Suppliers extends Controller {
     public static final String SUPPLIER_BASE_DOMAIN = Play.configuration.getProperty("application.supplierDomain");
     public static final String BASE_URL = Play.configuration.getProperty("application.baseUrl", "");
 
-    public static void index() {
+    public static void index(Long supplierId, String code, String domainName) {
         int page = getPage();
 
-        String otherName = request.params.get("otherName");
-        String code = request.params.get("code");
-        List<Supplier> suppliers = Supplier.findByCondition(otherName, code);
-        render(suppliers, otherName, page);
+//        String otherName = request.params.get("otherName");
+//        String code = request.params.get("code");
+        List<Supplier> suppliers = Supplier.findByCondition(supplierId, code, domainName);
+        render(suppliers, page, supplierId, code, domainName);
     }
 
     @ActiveNavigation("suppliers_add")
@@ -116,7 +116,7 @@ public class Suppliers extends Controller {
         comment = comment.replace("username", admin.loginName);
         comment = comment.replace("password", password);
         SMSUtil.send(comment, admin.mobile, "0000");
-        index();
+        index(null, null, null);
     }
 
     private static void redirectUrl(int page) {
@@ -286,7 +286,7 @@ public class Suppliers extends Controller {
 
     public static void delete(long id) {
         Supplier.delete(id);
-        index();
+        index(null, null, null);
     }
 
     public static void exportMaterial(long supplierId, String supplierDomainName) {

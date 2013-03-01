@@ -8,25 +8,35 @@
 <div class="body">
     <legend>商户一览</legend>
 #{form @Suppliers.index() , id:'operForm',class:"form-horizontal" }
-    <div>名称:<input type="text" name="otherName" id="otherName" value="${otherName}" class="input-medium"/>
-        编码:<input type="text" name="code" id="code" value="${code}" class="input-medium"/>
-        <button class="btn btn-primary" id="search" type="submit">搜索</button>
-    </div>
+    <table width="100%">
+        <tr>
+            <td width="15%">商户 #{layout_operate.selectInputField name:"supplierName", id:"supplierId", list:suppliers/}
+            </td>
+
+            <td width="15%">编码 <input type="text" name="code" id="code" value="${code}" class="input-medium"/></td>
+            <td width="15%">域名 <input type="text" name="domainName" id="domainName" value="${domainName}"
+                                     class="input-medium"/></td>
+            <td width="55%">
+                <button class="btn btn-primary" id="search" type="submit">搜索</button>
+            </td>
+        </tr>
+    </table>
 #{/form}
     <table class="table table-striped table-bordered table-condensed">
         <thead>
         <tr>
-            <th width="298px">公司名称</th>
+            <th width="318px">公司名称</th>
             <th width="150px">短名称</th>
             <th width="200px">域名</th>
             <th width="50px">状态</th>
             <th width="50px">编码</th>
-            <th width="50px">商品数</th>
-            <th width="400px">备注</th>
-            <th width="400px">销售专员</th>
+            <th width="60px">商品数</th>
+            <th width="120px">可查看销售量</th>
+            <th width="200px">销售专员</th>
             <th width="100px">创建时间</th>
             <th width="100px">修改时间</th>
-            <th width="150px">操 作</th>
+            <th width="250px">备注</th>
+            <th width="180px">操 作</th>
         </tr>
         </thead>
 
@@ -42,24 +52,25 @@
             <td>
                 <a href="/?condition.supplierId=${supplier?.id}">${supplier?.getGoods().size()}个</a>
                 #{if supplier?.domainName == "dadong"}
-                <br/>#{a @supplier.DadongProducts.sync()}导入#{/a}
+                    <br/>#{a @supplier.DadongProducts.sync()}导入#{/a}
                 #{/if}
             </td>
-            <td>${supplier?.remark}</td>
+            <td>&{'supplier.showSellingState.'+supplier.showSellingState}</td>
             <td>
-                %{ operatorUser=null;
+            %{ operatorUser=null;
                 if(supplier.salesId!=null){
                 operatorUser=models.operator.OperateUser.findById(supplier?.salesId); }
-                    }%
-                    #{if operatorUser?.userName !=null && operatorUser?.userName!=''}
-                    ${operatorUser?.userName}
-                    #{/if}
-                    #{else}
-                    ${operatorUser?.loginName}
-                    #{/else}
+                }%
+                #{if operatorUser?.userName !=null && operatorUser?.userName!=''}
+                ${operatorUser?.userName}
+                #{/if}
+                #{else}
+                ${operatorUser?.loginName}
+                #{/else}
             </td>
             <td>${supplier?.createdAt?.format()}</td>
             <td>${supplier?.updatedAt?.format()}</td>
+            <td>${supplier?.remark}</td>
             <td><a href="/suppliers/${supplier.id}/edit?page=${page?:1}">修改</a>
                 / #{vx.deleteLink id:supplier?.id, name:supplier?.fullName, action:"/suppliers"/}
                 #{if models.supplier.SupplierStatus.NORMAL.equals(supplier.status)}

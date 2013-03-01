@@ -21,7 +21,7 @@
 
     .control-value {
         line-height: 28px;
-        margin-left: 160px;
+        margin-left: 180px;
     }
 
     .form-horizontal .control-group {
@@ -73,22 +73,22 @@
             #{if supplier!=null}
                 <div class="control-group">
                     <label class="control-label">商户名称</label>
-                    <label class="control-value">${supplier?.fullName}
+                    <p class="control-value">${supplier?.fullName}
                         &nbsp;&nbsp; #{if supplier?.otherName!=null}&nbsp;--&nbsp;${supplier?.otherName}#{/if} &nbsp;&nbsp;
                         <a href="/reports/supplier?supplierName=${supplier?.name}&condition.accountUid=${supplierId}&condition.tradeType=PURCHASE_COSTING"
                            target="_blank">账户资金明细</a>
-                    </label>
+                    </p>
                 </div>
             #{/if}
             <div class="control-group">
                 <label class="control-label">结算金额 </label>
-                <label class="control-value">${amount.formatCurrency('CNY')}</label>
+                <p class="control-value">${amount.formatCurrency('CNY')}</p>
             </div>
             <div class="control-group">
                 <label class="control-label">预付款余额 </label>
-                <label class="control-value">#{if prepaymentId!=null}<a href="/prepayments/${prepaymentId}"
+                <p class="control-value">#{if prepaymentId!=null}<a href="/prepayments/${prepaymentId}"
                                                                         target="_blank">${prepaymentBalance.formatCurrency('CNY')}</a>#{/if}#{else}${prepaymentBalance.formatCurrency('CNY')}#{/else}
-                </label>
+                </span>
             </div>
             #{if needPay?.compareTo(java.math.BigDecimal.ZERO)>0}
                 <div class="control-group">
@@ -102,57 +102,65 @@
             #{/if}
             <div class="control-group">
                 <label class="control-label">实际需打款金额 </label>
-                <label class="control-value"><span id="needPay"
-                                                   class="label label-important">${needPay.formatCurrency('CNY')}</span></label>
+                <p class="control-value"><span id="needPay"
+                                                   class="label label-important">${needPay.formatCurrency('CNY')}</span></p>
             </div>
             #{if org.apache.commons.collections.CollectionUtils.isEmpty(withdrawAccountList)
             && prepaymentBalance?.compareTo(java.math.BigDecimal.ZERO)>0}
                 <div class="control-group">
-                    <label class="control-label" for="agree-comment">备注</label>
+                    <label class="control-label">备注</label>
 
                     <div class="controls">
-                        <textarea rows="3" class="input-xlarge" id="agree-comment" name="comment">无</textarea>
+                        <textarea rows="3" class="input-xlarge" name="comment">无</textarea>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label"></label>
-                    <label class="control-value">
+                    <p class="control-value">
                         <button class="btn btn-primary" id="settle"
                                 onclick="settle(null)">结算
                         </button>
-                    </label>
+                    </p>
                 </div>
             #{/if}
             #{else}
                 #{list items:withdrawAccountList, as:'withdrawAccount'}
                     <div class="control-group">
                         <label class="control-label">所在城市</label>
-                        <label class="control-value">${withdrawAccount?.bankCity}</label>
+                        <p class="control-value">${withdrawAccount?.bankCity}</p>
                     </div>
                     <div class="control-group">
                         <label class="control-label">开户银行</label>
-                        <label class="control-value">${withdrawAccount?.bankName}</label>
+                        <p class="control-value">${withdrawAccount?.bankName}</p>
                     </div>
                     <div class="control-group">
                         <label class="control-label">分行名称</label>
-                        <label class="control-value">${withdrawAccount?.subBankName}</label>
+                        <p class="control-value">${withdrawAccount?.subBankName}</p>
                     </div>
                     <div class="control-group">
                         <label class="control-label">开户姓名</label>
-                        <label class="control-value">${withdrawAccount?.userName}</label>
+                        <p class="control-value">${withdrawAccount?.userName}</p>
                     </div>
                     <div class="control-group">
                         <label class="control-label">银行卡号</label>
-                        <label class="control-value">${withdrawAccount?.cardNumber}</label>
+                        <p class="control-value">${withdrawAccount?.cardNumber}</p>
                     </div>
+                    <div class="control-group">
+                        <label class="control-label">备注</label>
+
+                        <div class="controls">
+                            <textarea rows="3" class="input-xlarge" name="comment">无</textarea>
+                        </div>
+                    </div>
+
                     #{if amount?.compareTo(java.math.BigDecimal.ZERO)>0}
                         <div class="control-group">
                             <label class="control-label"></label>
-                            <label class="control-value">
+                            <p class="control-value">
                                 <button class="btn btn-primary" id="settle_${withdrawAccount?.id}"
                                         onclick="settle(${withdrawAccount?.id})">结算
                                 </button>
-                            </label>
+                            </p>
                         </div>
                     #{/if}
                 #{/list}

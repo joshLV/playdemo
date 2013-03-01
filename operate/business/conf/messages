@@ -243,6 +243,12 @@ admin.mobile=管理员手机
 validation.jobNumber=工号只能是数字！
 admin.jobNumber=工号
 supplier.shopHour=营业截止时间
+supplier.showSellingState=查看销售量和退款量
+supplier.showSellingState_1=是
+supplier.showSellingState_2=否
+supplier.showSellingState.null=不允许
+supplier.showSellingState.true=允许
+supplier.showSellingState.false=不允许
 #supplier.shopBeginHour=营业开始时间
 #supplier.shopEndHour=结束时间
 
