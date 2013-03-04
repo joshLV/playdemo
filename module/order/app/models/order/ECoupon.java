@@ -519,7 +519,6 @@ public class ECoupon extends Model {
 
     public boolean consumeAndPayCommission(Long shopId, OperateUser operateUser, SupplierUser supplierUser, VerifyCouponType type,
                                            String triggerCouponSn, Date realConsumedAt, String remark) {
-
         //===================判断是否第三方订单产生的券=并且不是导入券============================
         if (this.createType != ECouponCreateType.IMPORT) {
             if (!verifyAndCheckOnPartnerResaler()) {
@@ -532,10 +531,9 @@ public class ECoupon extends Model {
             payCommission();
             this.triggerCouponSn = triggerCouponSn; //记录批量验证时所使用的券号
             this.save();
+            return true;
         }
-
-        return true;
-
+        return false;
     }
 
     /**
@@ -569,24 +567,24 @@ public class ECoupon extends Model {
         Boolean success = Boolean.TRUE;
         if (this.partner == ECouponPartner.DD) {
             if (!DDGroupBuyUtil.verifyOnDangdang(this)) {
-                Logger.info("verify on dangdang failed");
+                Logger.info("verify on dangdang failed. coupon sn: %s", eCouponSn);
                 return failed;
             }
         }
 
         if (this.partner == ECouponPartner.JD) {
             if (!JDGroupBuyHelper.verifyOnJingdong(this)) {
-                Logger.info("verify on jingdong failed");
+                Logger.info("verify on jingdong failed. coupon sn: %s", eCouponSn);
                 return failed;
             }
         } else if (this.partner == ECouponPartner.WB) {
             if (!WubaUtil.verifyOnWuba(this)) {
-                Logger.info("verify on wuba failed");
+                Logger.info("verify on wuba failed. coupon sn: %s", eCouponSn);
                 return failed;
             }
         } else if (this.partner == ECouponPartner.TB) {
             if (!TaobaoCouponUtil.verifyOnTaobao(this)) {
-                Logger.info("verify on taobao failed");
+                Logger.info("verify on taobao failed. coupon sn: %s", eCouponSn);
                 return failed;
             }
         }
