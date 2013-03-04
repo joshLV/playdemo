@@ -4,6 +4,7 @@ import cache.CacheCallBack;
 import cache.CacheHelper;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
+import models.order.ECouponStatus;
 import models.order.OuterOrder;
 import org.w3c.dom.Node;
 import play.Logger;
@@ -23,12 +24,13 @@ public class JDGroupBuyHelper {
 
     /**
      * 在京东上验证.
+     * 如果验证失败，则查询券信息，如果是已验证的则返回成功.
      *
      * @param coupon 想要验证的一百券的券.
      * @return 验证结果.
      */
     public static boolean verifyOnJingdong(ECoupon coupon){
-        if (coupon.partner != ECouponPartner.JD) {
+        if (coupon.status != ECouponStatus.UNCONSUMED || coupon.partner != ECouponPartner.JD) {
             return false;
         }
 

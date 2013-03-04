@@ -16,7 +16,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "outer_order", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"partner", "order_id"})})        //定义两对联合唯一约束
+        @UniqueConstraint(columnNames = {"partner", "order_id"})})        //定义联合唯一约束
 public class OuterOrder extends Model {
     @Enumerated(EnumType.STRING)
     @Column(name = "partner")
@@ -51,22 +51,27 @@ public class OuterOrder extends Model {
         this.lockVersion = 0;
     }
 
+    @Transient
     public static OuterOrder getOuterOrder(Order ybqOrder) {
         return OuterOrder.find("ybqOrder=?", ybqOrder).first();
     }
 
+    @Transient
     public static OuterOrder getOuterOrder(String orderId, OuterOrderPartner partner) {
         return OuterOrder.find("byOrderIdAndPartner", orderId, partner).first();
     }
 
+    @Transient
     public JsonObject getMessageAsJsonObject() {
         return new JsonParser().parse(message).getAsJsonObject();
     }
 
+    @Transient
     public JsonArray getMessageAsJsonArray() {
         return new JsonParser().parse(message).getAsJsonArray();
     }
 
+    @Transient
     public Document getMessageAsXmlDocument() {
         return XML.getDocument(message);
     }

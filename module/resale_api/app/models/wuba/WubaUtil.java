@@ -8,6 +8,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import models.order.ECoupon;
+import models.order.ECouponPartner;
+import models.order.ECouponStatus;
 import org.apache.commons.codec.binary.Base64;
 import play.Logger;
 import play.Play;
@@ -38,10 +40,20 @@ public class WubaUtil {
     public static final String CODE_TRANSFORMATION = "DES/ECB/PKCS5Padding";
     private static final String CACHE_KEY = "WUBA_GROUPBUY_API";
 
-    public static boolean verifyOnWuba(ECoupon eCoupon) {
+    /**
+     * 在58上验证.
+     * 在58那边，如果券是已经验证掉的，他们会直接返回成功.
+     *
+     * @param coupon 一百券自家券
+     * @return 是否验证成功
+     */
+    public static boolean verifyOnWuba(ECoupon coupon) {
+        if (coupon.status != ECouponStatus.UNCONSUMED || coupon.partner != ECouponPartner.WB) {
+            return false;
+        }
         Map<String, Object> params = new HashMap<>();
-        params.put("ticketId", eCoupon.id);
-        params.put("orderId", eCoupon.order.orderNumber);
+        params.put("ticketId", coupon.id);
+        params.put("orderId", coupon.order.orderNumber);
         params.put("ticketIdIndex", 0);
         WubaResponse response = sendRequest(params, "emc.groupbuy.order.ticketcheck");
         if (response.isOk()) {
