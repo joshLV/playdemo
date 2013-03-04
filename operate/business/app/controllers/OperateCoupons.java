@@ -203,7 +203,6 @@ public class OperateCoupons extends Controller {
 
         for (ECoupon coupon : couponsList) {
             coupon.shopName = coupon.getConsumedShop();
-
             String clerkInfo = "";
             if (coupon.supplierUser != null) {
                 if (coupon.supplierUser.userName != null) {
