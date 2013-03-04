@@ -41,7 +41,7 @@ public class UserGoldenTest extends FunctionalTest {
                         target.goods = goods;
                         target.user = user;
                         target.remarks = "签到20天";
-                        target.number = 5L;
+                        target.checkinTimes = 5L;
                         target.createdAt = DateHelper.beforeDays(1);
                     }
                 });
@@ -64,7 +64,7 @@ public class UserGoldenTest extends FunctionalTest {
 
     @Test
     public void testExchange() {
-        goldenCoin.number = 1000l;
+        goldenCoin.checkinTimes = 1000l;
         goldenCoin.save();
         Map<String, String> params = new HashMap();
         params.put("exNumber", "1");

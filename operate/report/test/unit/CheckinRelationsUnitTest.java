@@ -3,12 +3,11 @@ package unit;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
-import models.operator.OperateUser;
 import models.consumer.User;
 import models.consumer.UserCondition;
 import models.consumer.UserGoldenCoin;
+import models.operator.OperateUser;
 import models.sales.CheckinRelations;
-import models.sales.GoldenCoinReportCondition;
 import models.sales.Goods;
 import operate.rbac.RbacLoader;
 import org.junit.Before;
@@ -48,7 +47,7 @@ public class CheckinRelationsUnitTest extends UnitTest {
                         target.goods = goods;
                         target.user = user;
                         target.remarks = "签到20天";
-                        target.number = 5L;
+                        target.checkinTimes = 5L;
                         target.createdAt = new Date();
                     }
                 });
@@ -59,7 +58,7 @@ public class CheckinRelationsUnitTest extends UnitTest {
 
     @Test
     public void testGetCheckinList() {
-        GoldenCoinReportCondition condition = new GoldenCoinReportCondition();
+        UserCondition condition = new UserCondition();
         List<CheckinRelations> relationsList = CheckinRelations.getCheckinList(condition);
         assertEquals(2, relationsList.size());
 
@@ -71,7 +70,7 @@ public class CheckinRelationsUnitTest extends UnitTest {
     public void testGetsummary() {
         JPAExtPaginator<UserGoldenCoin> reportPage = UserGoldenCoin.find(null, new UserCondition(), 1, 15);
         CheckinRelations relations = CheckinRelations.summary(reportPage);
-        assertEquals(-1000, relations.number.intValue());
+        assertEquals(-1000, relations.checkinTimes.intValue());
         assertEquals(105, relations.unUseNumber.intValue());
     }
 }

@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import java.util.Date;
 
 /**
@@ -35,7 +36,11 @@ public class UserGoldenCoin extends Model {
     public Goods goods;
 
     @Column(name = "number")
-    public Long number;
+    public Long checkinNumber;
+
+    @Version
+    @Column(name = "lock_version")
+    public int lockVersion;
 
     /**
      * 备注
@@ -55,18 +60,19 @@ public class UserGoldenCoin extends Model {
     public UserGoldenCoin() {
     }
 
-    public UserGoldenCoin(User user, Long number, Goods goods, String remarks, boolean isPresent) {
-        this.number = number;
+    public UserGoldenCoin(User user, Long checkinTimes, Goods goods, String remarks, boolean isPresent) {
+        this.checkinNumber = checkinTimes;
         this.user = user;
         this.goods = goods;
         this.remarks = remarks;
         this.isPresent = isPresent;
         this.createdAt = new Date();
+        this.lockVersion = 0;
     }
 
     public static JPAExtPaginator<UserGoldenCoin> find(User user, UserCondition condition, int pageNumber, int pageSize) {
         JPAExtPaginator<UserGoldenCoin> coinsPage = new JPAExtPaginator<>
-                ("UserGoldenCoin u", "u", UserGoldenCoin.class, condition.getCoinsCondition(user),
+                ("UserGoldenCoin u", "u", UserGoldenCoin.class, condition.getCoinsReportCondition(user),
                         condition.paramsMap)
                 .orderBy("u.createdAt desc");
         coinsPage.setPageNumber(pageNumber);
@@ -81,7 +87,7 @@ public class UserGoldenCoin extends Model {
      * @param user
      * @return
      */
-    public static Long getCheckinNumber(User user) {
+    public static Long getCheckinTimes(User user) {
         EntityManager entityManager = JPA.em();
         String sql = "SELECT count( id ) FROM UserGoldenCoin WHERE user = :user and createdAt >=:beginDate and createdAt <=:endDate";
         Query q = entityManager.createQuery(sql);
@@ -102,7 +108,7 @@ public class UserGoldenCoin extends Model {
      */
     public static Long getTotalCoins(User user) {
         EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("SELECT sum( number ) FROM UserGoldenCoin WHERE user = :user ");
+        Query q = entityManager.createQuery("SELECT sum( checkinNumber ) FROM UserGoldenCoin WHERE user = :user ");
         q.setParameter("user", user);
         Object result = q.getSingleResult();
         return result == null ? 0 : (Long) result;
@@ -117,6 +123,7 @@ public class UserGoldenCoin extends Model {
     public static UserGoldenCoin getCheckinInfo(User user, boolean isPresent) {
         return UserGoldenCoin.find("user=? and isPresent = ? and createdAt >=? and createdAt <=? ", user, isPresent, DateUtil.getBeginOfDay(), DateUtil.getEndOfDay()).first();
     }
+
 
     /**
      * 签到
@@ -141,5 +148,12 @@ public class UserGoldenCoin extends Model {
      */
     public static Long getPresentOfCoins(Long coinsNumber) {
         return coinsNumber / 500;
+    }
+
+    public static void createAwardIfNotExist(User user, Long coinsNumber) {
+        UserGoldenCoin coin = UserGoldenCoin.find("user=? and isPresent = ? and number=? and  createdAt >=? and createdAt <=? ", user, true, coinsNumber, DateUtil.getBeginOfDay(), DateUtil.getEndOfDay()).first();
+        if (coin == null) {
+            new UserGoldenCoin(user, coinsNumber, null, "奖励：" + coinsNumber + "金币", true).save();
+        }
     }
 }

@@ -100,6 +100,7 @@
 
 <form class="well form-inline" action="@{GoldenCoinReports.index()}" method="GET" id="form"
       name="form">
+    账户：<input type="text" name="condition.loginName" class="input-medium" value="${condition?.loginName}"/>
     明细分类：
 #{select 'condition.tradeType',class:'input-small', value:condition?.tradeType}
     #{option 0}--全部--#{/option}
@@ -111,7 +112,6 @@
            onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtBegin?.format()}"> -
     <input type="text" id="condition_end" class="input-medium Wdate" name="condition.createdAtEnd"
            onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtEnd?.format()}">
-
     <button type="submit" class="btn btn-primary" id="search">搜索</button>
     <ul class="nav nav-pills">
         <li #{if condition.interval=='-1d'} class="active" #{/if}  ><a start="-1d" href="#">今天</a></li>
@@ -123,8 +123,8 @@
     <input type="hidden" id="condition_interval" name="condition.interval"/>
 </form>
 <div class="alert alert-success">
-    <span>总计 未使用金币数： <b>${summary?.unUseNumber}</b> 枚</span>
-    <span>已使用金币数 <b>${summary?.number}</b> 枚</span>
+    <span>总计 未使用金币数： <b>${summary.unUseNumber}</b> 枚</span>
+    <span>已使用金币数 <b>${summary.coinsNumber}</b> 枚</span>
 </div>
 <table class="table table-striped table-bordered table-condensed">
     <thead>
@@ -138,10 +138,10 @@
 #{paginate.list items:reportPage, as:'report'}
     <tr>
         <td>${report_index}</td>
-        <td>${report?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+        <td>${report.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
         <td>${report.remarks}</td>
-        <td #{if report?.number<0}style="color: red" #{/if}>${report?.number}</td>
-        <td>${report?.user?.getShowName()}</td>
+        <td #{if report.checkinNumber<0}style="color: red" #{/if}>${report.checkinNumber}</td>
+        <td>${report.user.getShowName()}</td>
     </tr>
 #{/paginate.list}
 </table>

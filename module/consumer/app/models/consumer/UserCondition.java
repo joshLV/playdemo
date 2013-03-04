@@ -20,14 +20,13 @@ public class UserCondition {
     public int tradeType;
     public Map<String, Object> paramsMap = new HashMap<>();
 
-    public String getCoinsCondition(User user) {
+    public String getCoinsReportCondition(User user) {
 
-        StringBuilder sql = new StringBuilder("1=1");
+        StringBuilder sql = new StringBuilder(" 1=1");
         if (user != null) {
             sql.append(" and u.user = :user");
             paramsMap.put("user", user);
         }
-        System.out.println(createdAtBegin + ">>>>createdAtBegin"+createdAtEnd);
         if (createdAtBegin != null) {
             sql.append(" and u.createdAt >= :createdAtBegin");
             paramsMap.put("createdAtBegin", createdAtBegin);
@@ -35,6 +34,19 @@ public class UserCondition {
         if (createdAtEnd != null) {
             sql.append(" and u.createdAt <= :createdAtEnd");
             paramsMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
+        }
+         if (StringUtils.isNotBlank(loginName)) {
+            String name = loginName.trim();
+            if (User.isOpenIdExpress(name)) {
+                OpenIdSource source = User.getOpenSourceFromName(name);
+                name = User.getOpenIdFromName(name);
+                sql.append(" and (u.user.loginName like :loginName or (u.user.openIdSource =:openIdSource and u.user.openId like :loginName))");
+                paramsMap.put("openIdSource", source);
+                paramsMap.put("name", name);
+            } else {
+                sql.append(" and (u.user.loginName like :loginName )");
+                paramsMap.put("loginName", "%" + name + "%");
+            }
         }
         if (tradeType != 0) {
             if (tradeType > 0) {
