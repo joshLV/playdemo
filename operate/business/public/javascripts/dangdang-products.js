@@ -66,8 +66,7 @@ $(function(){
         if (checkedNodes.length==0) {
             alert('请选择分类');return false;
         }
-        $("#input-category_name1").val(checkedNodes[0].name);
-        $("#input-category_name2").val(checkedNodes[0].getParentNode().name);
-
+        $("#input-category_name1").val(checkedNodes[0].getParentNode().name);
+        $("#input-category_name2").val(checkedNodes[0].name);
     });
 });
