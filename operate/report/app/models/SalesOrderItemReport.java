@@ -233,25 +233,38 @@ public class SalesOrderItemReport {
 
         List<SalesOrderItemReport> refundList = query.getResultList();
 
-        for (SalesOrderItemReport sales : salesList) {
-            Boolean flag = false;
-            for (SalesOrderItemReport refund : refundList) {
-                if (sales.supplier.id.equals(refund.supplier.id)) {
-                    flag = true;
-                    sales.refundAmount = refund.salesAmount == null ? BigDecimal.ZERO : refund.salesAmount;
-                    sales.netSalesAmount = sales.salesAmount.subtract(refund.salesAmount == null ? BigDecimal.ZERO :
-                            refund.salesAmount);
-                }
-            }
-            if (!flag) {
-                sales.netSalesAmount = sales.salesAmount;
+        Map<Supplier, SalesOrderItemReport> map = new HashMap<>();
+
+
+        //merge
+        for (SalesOrderItemReport paidItem : salesList) {
+            paidItem.netSalesAmount = paidItem.salesAmount;
+            map.put(getReportKeyInNetSales(paidItem), paidItem);
+        }
+
+        for (SalesOrderItemReport refundItem : refundList) {
+            SalesOrderItemReport item = map.get(getReportKeyInNetSales(refundItem));
+            if (item == null) {
+                refundItem.refundAmount=refundItem.salesAmount;
+                map.put(getReportKeyInNetSales(refundItem), refundItem);
+            } else {
+                item.refundAmount=refundItem.salesAmount == null ? BigDecimal.ZERO : refundItem.salesAmount;
+                item.netSalesAmount = item.salesAmount.subtract(refundItem.salesAmount == null ? BigDecimal.ZERO :
+                        refundItem.salesAmount);
             }
         }
-        if (salesList.size() == 0) {
-            return refundList;
-        } else {
-            return salesList;
+
+        List resultList = new ArrayList();
+        for (Supplier key : map.keySet()) {
+            resultList.add(map.get(key));
         }
+        return resultList;
+
+    }
+
+
+    private static Supplier getReportKeyInNetSales(SalesOrderItemReport refundItem) {
+        return refundItem.supplier;
     }
 
 
