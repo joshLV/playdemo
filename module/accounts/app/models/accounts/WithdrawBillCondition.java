@@ -126,6 +126,10 @@ public class WithdrawBillCondition implements Serializable {
             filter.append("or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.id in (select oi.order.id from o.orderItems oi where oi.phone =:searchUser)))");
             params.put("searchUser", searchUser);
         }
+        if (ids != null && ids.size() != 0) {
+            filter.append(" and id in :ids");
+            params.put("ids", ids);
+        }
 
         return filter.toString();
     }
