@@ -60,6 +60,7 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
                 return doSendSms(message);
             }
         });
+        RemoteRecallCheck.cleanUp();
         if (success == null || !success) {
             throw new RuntimeException("Retry later.");
         }

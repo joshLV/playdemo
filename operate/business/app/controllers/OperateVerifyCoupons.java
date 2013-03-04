@@ -131,6 +131,7 @@ public class OperateVerifyCoupons extends Controller {
             SMSUtil.send("您尾号" + coupon + "券于" + dateTime
                     + "成功消费，门店：" + shop.name + "。客服4006262166", ecoupon.orderItems.phone, ecoupon.replyCode);
         }
+        RemoteRecallCheck.cleanUp();
         render("OperateVerifyCoupons/index.html");
     }
 

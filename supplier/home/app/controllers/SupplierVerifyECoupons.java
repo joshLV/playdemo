@@ -123,7 +123,7 @@ public class SupplierVerifyECoupons extends Controller {
                     }
                 });
                 eCouponResult.add(result != null ? result : "调用失败");
-
+                RemoteRecallCheck.cleanUp();
             }
         }
         sendVerifySMS(needSmsECoupons, shopId);

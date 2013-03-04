@@ -114,6 +114,7 @@ public class SupplierVerifySingleCoupons extends Controller {
                 return doSingleVerify(supplierUserId, supplierId, shopId, eCouponSn);
             }
         });
+        RemoteRecallCheck.cleanUp();
 
         if (success != null && success) {
             String dateTime = DateUtil.getNowTime();

@@ -87,6 +87,10 @@ public class CacheHelper {
         setCache(key, value, defaultExpireSeconds);
     }
 
+    public static boolean exists(String key) {
+        return Cache.get(key) != null;
+    }
+
     public static void setCache(String key, Object value, String expireSeconds) {
         if (StringUtils.isBlank(key)) {
             throw new IllegalArgumentException("key不能为空");

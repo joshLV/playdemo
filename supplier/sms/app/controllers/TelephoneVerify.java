@@ -178,9 +178,9 @@ public class TelephoneVerify extends Controller {
                 return doVerify(caller, supplierUser, ecoupon);
             }
         });
+        RemoteRecallCheck.cleanUp();
 
         renderText(resultCode);
-
     }
 
     private static String doVerify(String caller, SupplierUser supplierUser, ECoupon eCoupon) {
