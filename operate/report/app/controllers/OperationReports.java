@@ -289,7 +289,7 @@ public class OperationReports extends Controller {
         condition.sort(resultList);
 
         // 分页
-        ValuePaginator<SalesOrderItemReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
+        ValuePaginator<SalesOrderItemReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, 1000);
 
         // 汇总
         SalesOrderItemReport summary = SalesOrderItemReport.getNetSummary(resultList);
