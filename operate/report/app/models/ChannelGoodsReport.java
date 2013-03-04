@@ -763,7 +763,7 @@ public class ChannelGoodsReport implements Comparable<ChannelGoodsReport> {
         for (int i = 0; i < totalResultList.size(); i++) {
             switch (totalResultList.get(i).orderByFields[condition.orderByIndex]) {
                 case "buyNumber":
-                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (BigDecimal.valueOf(totalResultList.get(i).buyNumber) == null ? BigDecimal.ZERO : BigDecimal.valueOf(totalResultList.get(i).buyNumber)));
+                    condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), totalResultList.get(i).buyNumber == null ? BigDecimal.ZERO : BigDecimal.valueOf(totalResultList.get(i).buyNumber));
                     break;
                 case "totalAmount":
                     condition.comparedMap.put((totalResultList.get(i).loginName == null ? "999" : totalResultList.get(i).loginName), (totalResultList.get(i).totalAmount == null ? BigDecimal.ZERO : totalResultList.get(i).totalAmount));
