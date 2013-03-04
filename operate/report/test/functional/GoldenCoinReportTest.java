@@ -57,7 +57,7 @@ public class GoldenCoinReportTest extends FunctionalTest {
                     public void sequence(UserGoldenCoin target, int seq) {
                         target.user = user;
                         target.remarks = "签到20天";
-                        target.checkinTimes = 5L;
+                        target.checkinNumber = 5L;
                         target.createdAt = new Date();
                     }
                 });
@@ -71,7 +71,7 @@ public class GoldenCoinReportTest extends FunctionalTest {
         assertNotNull(reportPage);
         assertEquals(22, reportPage.size());
         CheckinRelations summary = (CheckinRelations) renderArgs("summary");
-        assertEquals(-1000, summary.checkinTimes.intValue());
+        assertEquals(-1000, summary.coinsNumber.intValue());
         assertEquals(200, summary.unUseNumber.intValue());
 
     }
@@ -88,7 +88,7 @@ public class GoldenCoinReportTest extends FunctionalTest {
                         target.goods = goods;
                         target.user = user;
                         target.remarks = "签到4天";
-                        target.checkinTimes = 5L;
+                        target.checkinNumber = 5L;
                         target.createdAt = new Date();
                     }
                 });
@@ -100,7 +100,7 @@ public class GoldenCoinReportTest extends FunctionalTest {
                         target.user = user3;
                         target.goods = goods;
                         target.remarks = "签到10天";
-                        target.checkinTimes = 5L;
+                        target.checkinNumber = 5L;
                         target.createdAt = new Date();
                     }
                 });

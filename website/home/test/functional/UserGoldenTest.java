@@ -56,7 +56,7 @@ public class UserGoldenTest extends FunctionalTest {
         List<UserGoldenCoin> coinList = (List) renderArgs("coinList");
         assertEquals(21, coinList.size());
         Long coinsNumber = (Long) renderArgs("coinsNumber");
-        Long num = (Long) renderArgs("checkinNumber");
+        Long num = (Long) renderArgs("number");
         assertNull(renderArgs("isExchange"));
         assertEquals(105, coinsNumber.intValue());
         assertEquals(0, num.intValue());
@@ -76,7 +76,7 @@ public class UserGoldenTest extends FunctionalTest {
         List<UserGoldenCoin> coinList = (List) renderArgs("coinList");
         assertEquals(22, coinList.size());
         Long coinsNumber = (Long) renderArgs("coinsNumber");
-        Long num = (Long) renderArgs("checkinNumber");
+        Long num = (Long) renderArgs("number");
         assertEquals(600, coinsNumber.intValue());
         assertEquals(1, num.intValue());
     }
