@@ -451,17 +451,13 @@ public class OperationReports extends Controller {
 
 
         for (SalesReport report : salesReportList) {
-//            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
-//            report.grossMargin = tempGrossMargin;
-            if (report.grossMargin == null) {
-                report.grossMargin = BigDecimal.ZERO;
-            }
+
+            BigDecimal tempGrossMargin = report.grossMargin == null ? BigDecimal.ZERO : report.grossMargin.divide(BigDecimal.valueOf(100));
+            report.grossMargin = tempGrossMargin;
             if (report.consumedAmount == null) {
                 report.consumedAmount = BigDecimal.ZERO;
             }
 
-            DecimalFormat df = new DecimalFormat("0.00");
-            report.grossMargin = new BigDecimal(df.format(report.grossMargin));
             if (report.refundAmount == null) {
                 report.refundAmount = BigDecimal.ZERO;
             }
@@ -576,21 +572,14 @@ public class OperationReports extends Controller {
 
 
         for (ResaleSalesReport report : resultList) {
-//            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
-//            report.grossMargin = tempGrossMargin;
+            BigDecimal tempGrossMargin = report.grossMargin == null ? BigDecimal.ZERO : report.grossMargin.divide(BigDecimal.valueOf(100));
+            report.grossMargin = tempGrossMargin;
             if (summary.amount.compareTo(BigDecimal.ZERO) != 0) {
-                report.contribution = (report.salePrice == null ? BigDecimal.ZERO : report.salePrice).divide(summary.amount == null ? BigDecimal.ZERO : summary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2);
+                report.contribution = (report.salePrice == null ? BigDecimal.ZERO : report.salePrice).divide(summary.amount == null ? BigDecimal.ZERO : summary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2).divide(BigDecimal.valueOf(100));
             } else {
                 report.contribution = BigDecimal.ZERO;
             }
 
-            if (report.grossMargin == null) {
-                report.grossMargin = BigDecimal.ZERO;
-            }
-
-
-            DecimalFormat df = new DecimalFormat("0.00");
-            report.grossMargin = new BigDecimal(df.format(report.grossMargin));
             if (report.refundPrice == null) {
                 report.refundPrice = BigDecimal.ZERO;
             }
@@ -639,7 +628,7 @@ public class OperationReports extends Controller {
 
         for (ResaleSalesReport report : resultList) {
             if (summary.amount.compareTo(BigDecimal.ZERO) != 0) {
-                report.contribution = (report.salePrice == null ? BigDecimal.ZERO : report.salePrice).divide(summary.amount == null ? BigDecimal.ZERO : summary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2);
+                report.contribution = (report.salePrice == null ? BigDecimal.ZERO : report.salePrice).divide(summary.amount == null ? BigDecimal.ZERO : summary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2).divide(BigDecimal.valueOf(100));
             } else {
                 report.contribution = BigDecimal.ZERO;
             }
@@ -696,19 +685,14 @@ public class OperationReports extends Controller {
 
 
         for (ChannelCategoryReport report : resultList) {
-//            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
-//            report.grossMargin = tempGrossMargin;
+            BigDecimal tempGrossMargin = report.grossMargin == null ? BigDecimal.ZERO : report.grossMargin.divide(BigDecimal.valueOf(100));
+            report.grossMargin = tempGrossMargin;
             if (channelSummary.amount.compareTo(BigDecimal.ZERO) != 0) {
-                report.contribution = (report.salePrice == null ? BigDecimal.ZERO : report.salePrice).divide(channelSummary.amount == null ? BigDecimal.ZERO : channelSummary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2);
+                report.contribution = (report.salePrice == null ? BigDecimal.ZERO : report.salePrice).divide(channelSummary.amount == null ? BigDecimal.ZERO : channelSummary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2).divide(BigDecimal.valueOf(100));
             } else {
                 report.contribution = BigDecimal.ZERO;
             }
 
-            if (report.grossMargin == null) {
-                report.grossMargin = BigDecimal.ZERO;
-            }
-            DecimalFormat df = new DecimalFormat("0.00");
-            report.grossMargin = new BigDecimal(df.format(report.grossMargin));
 
             if (report.refundPrice == null) {
                 report.refundPrice = BigDecimal.ZERO;
@@ -772,7 +756,7 @@ public class OperationReports extends Controller {
 
         for (ChannelCategoryReport report : resultList) {
             if (channelSummary.amount.compareTo(BigDecimal.ZERO) != 0) {
-                report.contribution = (report.salePrice == null ? BigDecimal.ZERO : report.salePrice).divide(channelSummary.amount == null ? BigDecimal.ZERO : channelSummary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2);
+                report.contribution = (report.salePrice == null ? BigDecimal.ZERO : report.salePrice).divide(channelSummary.amount == null ? BigDecimal.ZERO : channelSummary.amount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2).divide(BigDecimal.valueOf(100));
             } else {
                 report.contribution = BigDecimal.ZERO;
             }
@@ -824,8 +808,6 @@ public class OperationReports extends Controller {
         ChannelGoodsReport summary = ChannelGoodsReport.getNetSummary(totalResultList);
 
         for (ChannelGoodsReport report : resultList) {
-//            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
-//            report.grossMargin = tempGrossMargin;
             if (summary.netSalesAmount.compareTo(BigDecimal.ZERO) != 0) {
                 report.contribution = (report.netSalesAmount == null ? BigDecimal.ZERO : report.netSalesAmount).divide(summary.netSalesAmount == null ? BigDecimal.ZERO : summary.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2);
             } else {
@@ -838,6 +820,7 @@ public class OperationReports extends Controller {
 
             DecimalFormat df = new DecimalFormat("0.00");
             report.grossMargin = new BigDecimal(df.format(report.grossMargin));
+
             if (report.refundAmount == null) {
                 report.refundAmount = BigDecimal.ZERO;
             }
@@ -910,7 +893,7 @@ public class OperationReports extends Controller {
 
         for (ChannelGoodsReport report : resultList) {
             if (summary.netSalesAmount.compareTo(BigDecimal.ZERO) != 0) {
-                report.contribution = (report.netSalesAmount == null ? BigDecimal.ZERO : report.netSalesAmount).divide(summary.netSalesAmount == null ? BigDecimal.ZERO : summary.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2);
+                report.contribution = (report.netSalesAmount == null ? BigDecimal.ZERO : report.netSalesAmount).divide(summary.netSalesAmount == null ? BigDecimal.ZERO : summary.netSalesAmount, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(2).divide(BigDecimal.valueOf(100));
             } else {
                 report.contribution = BigDecimal.ZERO;
             }
@@ -1051,13 +1034,8 @@ public class OperationReports extends Controller {
         resultList = CategorySalesReport.excelQuery(condition);
 
         for (CategorySalesReport report : resultList) {
-//            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
-//            report.grossMargin = tempGrossMargin;
-            if (report.grossMargin == null) {
-                report.grossMargin = BigDecimal.ZERO;
-            }
-            DecimalFormat df = new DecimalFormat("0.00");
-            report.grossMargin = new BigDecimal(df.format(report.grossMargin));
+            BigDecimal tempGrossMargin = report.grossMargin == null ? BigDecimal.ZERO : report.grossMargin.divide(BigDecimal.valueOf(100));
+            report.grossMargin = tempGrossMargin;
 
             if (report.refundAmount == null) {
                 report.refundAmount = BigDecimal.ZERO;
@@ -1184,14 +1162,9 @@ public class OperationReports extends Controller {
         Collections.sort(resultList);
 
         for (ConsumerFlowReport report : resultList) {
-//            BigDecimal tempGrossMargin = report.grossMargin.divide(BigDecimal.valueOf(100));
-//            report.grossMargin = tempGrossMargin;
-            if (report.grossMargin == null) {
-                report.grossMargin = BigDecimal.ZERO;
-            }
-
+            BigDecimal tempGrossMargin = report.grossMargin == null ? BigDecimal.ZERO : report.grossMargin.divide(BigDecimal.valueOf(100));
+            report.grossMargin = tempGrossMargin;
             DecimalFormat df = new DecimalFormat("0.00");
-            report.grossMargin = new BigDecimal(df.format(report.grossMargin));
             if (report.refundPrice == null) {
                 report.refundPrice = BigDecimal.ZERO;
             } else {

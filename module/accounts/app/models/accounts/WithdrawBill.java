@@ -106,6 +106,8 @@ public class WithdrawBill extends Model {
     @Transient
     public String fen;            //分
 
+    @Transient
+    public String applierName;
 
     /**
      * 操作人
