@@ -241,7 +241,7 @@ public class Brand extends Model {
         ModelPaginator page;
         StringBuilder sq = new StringBuilder();
         sq.append("deleted = ?");
-        List list = new ArrayList();
+        List<Object> list = new ArrayList<Object>();
         list.add(DeletedStatus.UN_DELETED);
         if (supplierId != null && supplierId.longValue() != 0) {
             sq.append("and supplier.id=?");

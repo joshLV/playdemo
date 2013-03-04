@@ -16,7 +16,7 @@
     <permission key="GOODS_NEW" text="商品添加" roles="editor"/>
     <permission key="GOODS" text="商品管理" roles="editor,customservice"/>
     <permission key="SKU" text="SKU管理" roles="editor,customservice"/>
-    <permission key="SKU_NEW" text="SKU添加" roles="editor"/>
+    <permission key="SKU_NEW" text="货品添加" roles="editor"/>
     <permission key="GOODS_SCHEDULE" text="商品排期" roles="editor,customservice"/>
     <permission key="SECKILL_GOODS_NEW" text="秒杀活动添加" roles="editor"/>
     <permission key="SECKILL_GOODS" text="秒杀活动管理" roles="editor,customservice"/>
@@ -83,7 +83,7 @@
     <permission key="CHECK_ACCOUNTSEQUENCE" text="核帐" roles="account"/>
     <permission key="RESALE_SALES_REPORT" text="渠道销售汇总" roles="account"/>
 
-    <navigation key="supplier_app" text="商户管理" action="Suppliers.index" display-order="20">
+    <navigation key="supplier_app" text="合作伙伴" action="Suppliers.index" display-order="20">
         <navigation key="suppliers" text="商户" permissions="SUPPLIERS_NEW,SUPPLIERS">
             <navigation key="suppliers_add" action="Suppliers.add" text="商户添加" permissions="SUPPLIERS_NEW"/>
             <navigation key="suppliers_index" action="Suppliers.index" text="商户管理" permissions="SUPPLIERS"/>
@@ -97,9 +97,6 @@
                         permissions="SUPPLIER_USERS_NEW"/>
             <navigation key="supplierUsers_index" action="OperateSupplierUsers.index" text="商户操作员管理"
                         permissions="SUPPLIER_USERS"/>
-        </navigation>
-        <navigation key="supplierVerifyPhones" text="电话验证机"
-                    permissions="SUPPLIER_VERIFY_PHONES_NEW,SUPPLIER_VERIFY_PHONES">
             <navigation key="supplierVerifyPhones_add" action="OperateVerifyPhones.add" text="添加电话验证机"
                         permissions="SUPPLIER_VERIFY_PHONES_NEW"/>
             <navigation key="supplierVerifyPhones_index" action="OperateVerifyPhones.index" text="管理电话验证机"
@@ -117,6 +114,10 @@
             <navigation key="areas_index" action="AreasAdmin.index" text="区域管理" permissions="AREAS"/>
         </navigation>
 
+        <navigation key="resaler" text="分销商" permissions="RESALERS">
+            <navigation key="resalers_index" action="Resalers.index" text="分销商管理" permissions="RESALERS"/>
+        </navigation>
+
     </navigation>
 
     <navigation key="goods_app" text="商品管理" action="OperateGoods.index" display-order="30">
@@ -130,8 +131,8 @@
                         permissions="HOT_KEYWORDS"/>
         </navigation>
         <navigation key="sku" text="SKU">
-            <navigation key="sku_add" action="SkuManage.add" text="SKU添加" permissions="SKU_NEW"/>
-            <navigation key="sku_index" action="SkuManage.index" text="SKU管理" permissions="SKU"/>
+            <navigation key="sku_add" action="SkuManage.add" text="货品添加" permissions="SKU_NEW"/>
+            <navigation key="sku_index" action="SkuManage.index" text="货品管理" permissions="SKU"/>
         </navigation>
         <navigation key="solr" text="solr加载数据">
             <navigation key="solr_load" action="SolrLoadData.index" text="solr加载数据" permissions="SOLR"/>
@@ -162,12 +163,6 @@
             <navigation key="verified_ecoupon_refund" action="VerifiedECouponRefunds.index" text="已消费券退款"
                         permissions="VERIFIED_ECOUPON_REFUND"/>
 
-        </navigation>
-    </navigation>
-
-    <navigation key="resale_app" text="分销商管理" action="Resalers.index" display-order="70" permissions="RESALERS">
-        <navigation key="resaler" text="分销商" permissions="RESALERS">
-            <navigation key="resalers_index" action="Resalers.index" text="分销商管理" permissions="RESALERS"/>
         </navigation>
     </navigation>
 

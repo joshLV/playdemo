@@ -9,32 +9,12 @@
 #{set 'moreStyles'}
 #{/set}
 <div class="body">
-    #{if extra}
-        <legend>
-            ${extra}
-        </legend>
-    #{/if}
+    <legend>上传商品：#{if productResponse?.isOk() } 成功 #{/if} #{else} 失败 #{/else}</legend>
+   <p>错误码：${productResponse?.firstErrorCode()}</p>
+   <p>错误描述：${productResponse?.firstErrorDes()}</p>
 
-    #{if response}
-        #{if response.isOk()}
-            <legend>
-                成功
-            </legend>
-        #{/if}
-        #{else}
-            <legend>
-                失败
-            </legend>
-            #{list response.errors(), as:'error'}
-                错误编号：${play.libs.XPath.selectText("errorCode", error)}
-                详情：   ${play.libs.XPath.selectText("errorDes", error)}<br/>
-            #{/list}
-        #{/else}
-    #{/if}
-    #{else}
-        <legend>
-            上传失败，解析一号店返回值出错
-        </legend>
-    #{/else}
+    <legend>上传主图：#{if imgResponse?.isOk() } 成功 #{/if} #{else} 失败 #{/else}</legend>
+    <p>错误码：${imgResponse?.firstErrorCode()}</p>
+    <p>错误描述：${imgResponse?.firstErrorDes()}</p>
 </div>
 

@@ -4,7 +4,6 @@ import com.uhuila.common.util.DateUtil;
 import models.consumer.UserCondition;
 import models.consumer.UserGoldenCoin;
 import models.sales.CheckinRelations;
-import models.sales.GoldenCoinReportCondition;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
@@ -39,7 +38,7 @@ public class GoldenCoinReports extends Controller {
             condition.createdAtBegin = DateUtil.getBeginOfDay();
             condition.createdAtEnd = DateUtil.getEndOfDay(new Date());
         }
-        JPAExtPaginator<UserGoldenCoin> reportPage = UserGoldenCoin.find(null,condition, pageNumber, PAGE_SIZE);
+        JPAExtPaginator<UserGoldenCoin> reportPage = UserGoldenCoin.find(null, condition, pageNumber, PAGE_SIZE);
         CheckinRelations summary = CheckinRelations.summary(reportPage);
 
         render(reportPage, condition, summary);
@@ -50,11 +49,13 @@ public class GoldenCoinReports extends Controller {
      * 签到记录
      */
     @ActiveNavigation("checkin_reports")
-    public static void checkin(GoldenCoinReportCondition condition) {
+    public static void checkin(UserCondition condition) {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         if (condition == null) {
-            condition = new GoldenCoinReportCondition();
+            condition = new UserCondition();
+            condition.createdAtBegin = DateUtil.getBeginOfDay();
+            condition.createdAtEnd = DateUtil.getEndOfDay(new Date());
         }
         // 查询出所有结果
         List<CheckinRelations> resultList = CheckinRelations.getCheckinList(condition);

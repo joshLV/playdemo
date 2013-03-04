@@ -1,6 +1,7 @@
 package models.sales;
 
 import models.consumer.User;
+import models.consumer.UserCondition;
 import models.consumer.UserGoldenCoin;
 import play.db.jpa.JPA;
 import play.modules.paginate.JPAExtPaginator;
@@ -15,30 +16,30 @@ import java.util.List;
  * Time: 下午6:19
  */
 public class CheckinRelations {
-    public Long number;
+    public Long checkinTimes;
     public User user;
     public String remarks;
     public Goods goods;
     public Long unUseNumber;
-    public Long checkinNumber;
+    public Long coinsNumber;
 
     public CheckinRelations() {
     }
 
-    public CheckinRelations(Long number, User user) {
-        this.number = number;
+    public CheckinRelations(Long checkinTimes, User user) {
+        this.checkinTimes = checkinTimes;
         this.user = user;
     }
 
-    public CheckinRelations(Long number, User user, Goods goods, Long checkinNumber) {
-        this.number = number;
+    public CheckinRelations(Long checkinTimes, User user, Goods goods, Long coinsNumber) {
+        this.checkinTimes = checkinTimes;
         this.user = user;
         this.goods = goods;
-        this.checkinNumber = checkinNumber;
+        this.coinsNumber = coinsNumber;
     }
 
-    public CheckinRelations(Long number, Long unUseNumber) {
-        this.number = number;
+    public CheckinRelations(Long coinsNumber, Long unUseNumber) {
+        this.coinsNumber = coinsNumber;
         this.unUseNumber = unUseNumber;
     }
 
@@ -55,10 +56,10 @@ public class CheckinRelations {
         Long unused = 0L;
         Long used = 0L;
         for (UserGoldenCoin goldenCoin : reportPage) {
-            if (goldenCoin.number > 0) {
-                used += goldenCoin.number;
+            if (goldenCoin.checkinNumber> 0) {
+                used += goldenCoin.checkinNumber;
             } else {
-                unused += goldenCoin.number;
+                unused += goldenCoin.checkinNumber;
             }
         }
         return new CheckinRelations(unused, used);
@@ -72,11 +73,11 @@ public class CheckinRelations {
      * @return
      */
     public static Long checkinSummary(List<CheckinRelations> resultList) {
-        Long checkinNumber = 0l;
+        Long coinsNumber = 0l;
         for (CheckinRelations checkinRelations : resultList) {
-            checkinNumber += checkinRelations.number;
+            coinsNumber += checkinRelations.checkinTimes;
         }
-        return checkinNumber;
+        return coinsNumber;
     }
 
     /**
@@ -85,8 +86,8 @@ public class CheckinRelations {
      * @param condition
      * @return
      */
-    public static List<CheckinRelations> getCheckinList(GoldenCoinReportCondition condition) {
-        String sql = "select new models.sales.CheckinRelations(count(u.id),u.user,u.goods,sum(u.number)) from UserGoldenCoin u" + condition.getFilter() + " group by u.user,u.goods";
+    public static List<CheckinRelations> getCheckinList(UserCondition condition) {
+        String sql = "select new models.sales.CheckinRelations(count(u.id),u.user,u.goods,sum(u.checkinNumber)) from UserGoldenCoin u where u.isPresent = false and u.checkinNumber>0 and" + condition.getCoinsReportCondition(null) + " group by u.user,u.goods";
         Query query = JPA.em().createQuery(sql);
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));

@@ -414,6 +414,7 @@ GET     /sku/new                        SkuManage.add
 DELETE  /sku/{id}                       SkuManage.delete
 GET     /sku/{id}/edit                  SkuManage.edit
 PUT     /sku/{id}                       SkuManage.update
+GET     /goods_sku/{brandId}            SkuManage.goodsSku
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

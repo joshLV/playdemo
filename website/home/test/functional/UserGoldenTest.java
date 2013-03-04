@@ -41,7 +41,7 @@ public class UserGoldenTest extends FunctionalTest {
                         target.goods = goods;
                         target.user = user;
                         target.remarks = "签到20天";
-                        target.number = 5L;
+                        target.checkinNumber = 5L;
                         target.createdAt = DateHelper.beforeDays(1);
                     }
                 });
@@ -56,7 +56,7 @@ public class UserGoldenTest extends FunctionalTest {
         List<UserGoldenCoin> coinList = (List) renderArgs("coinList");
         assertEquals(21, coinList.size());
         Long coinsNumber = (Long) renderArgs("coinsNumber");
-        Long num = (Long) renderArgs("number");
+        Long num = (Long) renderArgs("checkinNumber");
         assertNull(renderArgs("isExchange"));
         assertEquals(105, coinsNumber.intValue());
         assertEquals(0, num.intValue());
@@ -64,7 +64,7 @@ public class UserGoldenTest extends FunctionalTest {
 
     @Test
     public void testExchange() {
-        goldenCoin.number = 1000l;
+        goldenCoin.checkinNumber = 1000l;
         goldenCoin.save();
         Map<String, String> params = new HashMap();
         params.put("exNumber", "1");
@@ -76,7 +76,7 @@ public class UserGoldenTest extends FunctionalTest {
         List<UserGoldenCoin> coinList = (List) renderArgs("coinList");
         assertEquals(22, coinList.size());
         Long coinsNumber = (Long) renderArgs("coinsNumber");
-        Long num = (Long) renderArgs("number");
+        Long num = (Long) renderArgs("checkinNumber");
         assertEquals(600, coinsNumber.intValue());
         assertEquals(1, num.intValue());
     }

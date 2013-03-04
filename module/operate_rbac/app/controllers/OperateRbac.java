@@ -71,7 +71,6 @@ public class OperateRbac extends Controller {
 
         // we clear cache
         Cache.delete("pgt_" + username);
-        Cache.delete(SESSION_USER_KEY + username);
 
         // we clear session
         session.clear();
@@ -108,7 +107,6 @@ public class OperateRbac extends Controller {
             if (casUser != null) {
                 isAuthenticated = Boolean.TRUE;
                 session.put(SESSION_USER_KEY, casUser.getUsername());
-                Cache.safeAdd(SESSION_USER_KEY + casUser.getUsername(), Boolean.TRUE, "60mn");
                 // we invoke the implementation of onAuthenticate
                 Security.onAuthenticated(casUser);
             }
@@ -186,7 +184,7 @@ public class OperateRbac extends Controller {
         }
         
         // 检查权限
-        if (userName != null && Cache.get(SESSION_USER_KEY + userName) != null) {
+        if (userName != null) {
             // 查出当前用户的所有权限
             user = OperateUser.findUser(userName);
             Logger.debug(" ---------------------------- user : " + user);
@@ -213,8 +211,6 @@ public class OperateRbac extends Controller {
             String casLoginUrl = CASUtils.getCasLoginUrl(true);
             redirect(casLoginUrl);            
         }
-
-        Cache.safeAdd(SESSION_USER_KEY + userName, Boolean.TRUE, "60mn");
 
         // 得到当前菜单的名字
         String currentMenuName = getCurrentMenuName();

@@ -1,5 +1,6 @@
 package models.dangdang.groupbuy;
 
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Node;
 import play.libs.XPath;
 
@@ -34,7 +35,7 @@ public class DDResponse {
     }
 
     public String selectTextTrim(String path) {
-        return XPath.selectText(path, data).trim();
+        return StringUtils.trimToNull(XPath.selectText(path, data));
     }
 
     @Override

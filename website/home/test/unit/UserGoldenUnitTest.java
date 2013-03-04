@@ -41,7 +41,7 @@ public class UserGoldenUnitTest extends UnitTest {
                         target.goods = goods;
                         target.user = user;
                         target.remarks = "签到20天";
-                        target.number = 5L;
+                        target.checkinTimes = 5L;
                         target.createdAt = DateHelper.beforeMinuts(5);
                     }
                 });
@@ -56,7 +56,7 @@ public class UserGoldenUnitTest extends UnitTest {
         condition.createdAtEnd = new Date();
         JPAExtPaginator<UserGoldenCoin> reportPage = UserGoldenCoin.find(user, condition, 1, 15);
         assertEquals(21, reportPage.size());
-        assertEquals(21, UserGoldenCoin.getCheckinNumber(user).intValue());
+        assertEquals(21, UserGoldenCoin.getCheckinTimes(user).intValue());
         assertEquals(105, UserGoldenCoin.getTotalCoins(user).intValue());
     }
 

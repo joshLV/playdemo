@@ -105,7 +105,7 @@ public class ResalerProducts extends Controller {
     }
 
     /**
-     * 创建分销商品
+     * 录入分销商品的第三方ID和url
      */
     public static void enter(Long productId, String partnerPid, String url) {
         ResalerProduct product = ResalerProduct.findById(productId);
@@ -116,4 +116,15 @@ public class ResalerProducts extends Controller {
 
         showProducts(product.partner.toString().toLowerCase(), product.goods.id);
     }
+    /**
+     * 完整录入分销商品
+     */
+    public static void showAdd() {
+        render();
+    }
+
+    public static void add() {
+
+    }
+
 }

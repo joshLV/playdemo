@@ -72,11 +72,11 @@
                 <td class="time">${coin?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td class="text">${coin?.remarks?.raw()}</td>
                 <td class="digit">
-                    #{if coin?.number<0}
-                        <span class="red">${coin?.number}</span>
+                    #{if coin?.checkinNumber<0}
+                        <span class="red">${coin?.checkinNumber}</span>
                     #{/if}
                     #{else}
-                        <span class="green">+${coin?.number}</span>
+                        <span class="green">+${coin?.checkinNumber}</span>
                     #{/else} 枚
                 </td>
             </tr>

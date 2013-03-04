@@ -386,6 +386,11 @@ public class Goods extends Model {
     @Transient
     public String useWeekDayAll;
 
+    @Column(name = "sku_id")
+    public Long skuId;
+
+    @Column(name = "sku_number")
+    public Integer skuNumber;
 
     private BigDecimal discount;
 
@@ -1109,6 +1114,12 @@ public class Goods extends Model {
         updateGoods.isLottery = (goods.isLottery == null) ? Boolean.FALSE : goods.isLottery;
         updateGoods.isHideOnsale = (goods.isHideOnsale == null) ? Boolean.FALSE : goods.isHideOnsale;
         updateGoods.groupCode = (StringUtils.isEmpty(goods.groupCode)) ? null : goods.groupCode.trim();
+        if (goods.materialType == MaterialType.REAL) {
+            updateGoods.skuId = goods.skuId;
+            updateGoods.skuNumber = goods.skuNumber;
+            updateGoods.cumulativeStocks = goods.cumulativeStocks + goods.skuNumber;
+        }
+
         updateGoods.save();
 
     }

@@ -7,9 +7,9 @@ package controllers;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.FileUploadUtil;
-import models.operator.OperateUser;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
+import models.operator.OperateUser;
 import models.resale.ResalerLevel;
 import models.sales.Brand;
 import models.sales.Category;
@@ -21,6 +21,7 @@ import models.sales.GoodsStatus;
 import models.sales.GoodsUnPublishedPlatform;
 import models.sales.MaterialType;
 import models.sales.Shop;
+import models.sales.Sku;
 import models.supplier.Supplier;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
@@ -196,6 +197,10 @@ public class OperateGoods extends Controller {
             renderArgs.put("brandList", brandList);
         }
 
+        if (goods.brand != null) {
+            List<Sku> skuList = Sku.findByBrand(goods.brand.id);
+            renderArgs.put("skuList", skuList);
+        }
         List<Category> categoryList = Category.findByParent(0);//获取顶层分类
         List<Category> subCategoryList = new ArrayList<>();
         Long categoryId = 0L;
@@ -552,6 +557,7 @@ public class OperateGoods extends Controller {
         checkSalePrice(goods);
         checkShops(goods.supplierId);
         checkUseWeekDay(goods);
+
         if (Validation.hasErrors()) {
             renderArgs.put("imageLargePath", imageLargePath);
             renderInit(goods);
