@@ -23,20 +23,19 @@ public class QuickSearchs extends Controller {
             renderText("请输入搜索参数");
         }
         String value = q.trim();
-        System.out.println(value.substring(2, value.length() - 1) + "===>>");
 
-        if (value.length() == 11) {
+        if (value.length() == 11 && checkNotOuterEcouponSNAndOrder(value, "ecouponSn") && checkNotOuterEcouponSNAndOrder(value, "orderNum")) {
             // 手机
             redirect(BASE_URL + "/orders?condition.searchKey=MOBILE&condition.searchItems=" + value);
         }
-        if (value.length() == 10) {
+        if (value.length() == 10 && checkNotOuterEcouponSNAndOrder(value, "ecouponSn") && checkNotOuterEcouponSNAndOrder(value, "orderNum")) {
             // 券号
             ECoupon eCoupon = ECoupon.find("eCouponSn=?", value).first();
             if (eCoupon != null) {
                 redirect(BASE_URL + "/coupon_history?couponId=" + eCoupon.id);
             }
         }
-        if (value.length() == 8) {
+        if (value.length() == 8 && checkNotOuterEcouponSNAndOrder(value, "ecouponSn") && checkNotOuterEcouponSNAndOrder(value, "orderNum")) {
             // 订单号
             Order order = Order.find("orderNumber=?", value).first();
             if (order != null) {
@@ -54,5 +53,14 @@ public class QuickSearchs extends Controller {
         }
 
         renderText("没有找到" + value + "相关的信息，请关闭重试.");
+    }
+
+
+    public static boolean checkNotOuterEcouponSNAndOrder(String value, String type) {
+        if (type.equals("ecouponSn")) {
+            return !value.contains("WQ") && !value.contains("wq") && !value.contains("wQ") && !value.contains("Wq");
+        } else {
+            return !value.contains("WD") && !value.contains("wd") && !value.contains("wD") && !value.contains("Wd");
+        }
     }
 }

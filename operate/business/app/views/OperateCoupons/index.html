@@ -212,14 +212,12 @@
         </td>
         <td width="120">
             #{if hasViewEcouponSnPermission}
-                <center>
                     <a id="view_ecoupon" href="#" role="button" class="btn" data-toggle="modal"
                        onClick="viewECoupon(${coupon.id})" title="查看完整券号">
                     ${coupon?.getMaskedEcouponSn()}
                     *{${coupon?.eCouponSn}}*
 
                     </a>
-                </center>
                 #{if coupon?.partnerCouponId !=null}
                     <br>外: ${coupon?.partnerCouponId}
                 #{/if}
