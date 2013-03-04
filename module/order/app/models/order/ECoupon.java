@@ -634,7 +634,7 @@ public class ECoupon extends Model {
         //记录券历史信息
         String historyRemark = StringUtils.isBlank(remark) ? "消费" : remark;
         if (realConsumedAt != null) {
-            Logger.info("实现消费时间" + realConsumedAt);
+            Logger.info("实际消费时间" + realConsumedAt);
             historyRemark += ",实际消费时间" + DateUtil.dateToString(realConsumedAt, "yyyy-MM-dd");
         }
         ECouponHistoryMessage.with(this).operator(operator).remark(historyRemark)
