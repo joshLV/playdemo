@@ -522,7 +522,7 @@ public class ECoupon extends Model {
 
         //===================判断是否第三方订单产生的券=并且不是导入券============================
         if (this.createType != ECouponCreateType.IMPORT) {
-            if (verifyAndCheckOnPartnerResaler()) {
+            if (!verifyAndCheckOnPartnerResaler()) {
                 return false;
             }
         }
@@ -543,17 +543,17 @@ public class ECoupon extends Model {
      * @return 如果返回true，表示调用失败.
      */
     private Boolean verifyAndCheckOnPartnerResaler() {
-        return RemoteRecallCheck.call("verify_coupon", new RemoteCallback<Boolean>() {
+        return RemoteRecallCheck.call("coupon_verify_check", new RemoteCallback<Boolean>() {
             @Override
             public Boolean doCall() {
-                Boolean failed = verifyOnPartnerResaler();
+                Boolean success = verifyOnPartnerResaler();
                 // 记录日志验证失败
-                Logger.info("verifyAndCheckOnPartnerResaler: SN:" + eCouponSn + ", result:" + failed);
-                if (!failed) {
+                Logger.info("verifyAndCheckOnPartnerResaler: SN:" + eCouponSn + ", success:" + success);
+                if (!success) {
                     // 不需要重试.
                     RemoteRecallCheck.singAsSuccess();
                 }
-                return failed;
+                return success;
             }
         });
     }
@@ -564,8 +564,8 @@ public class ECoupon extends Model {
      * @return TRUE表示验证失败；FALSE表示验证成功
      */
     private Boolean verifyOnPartnerResaler() {
-        Boolean failed = Boolean.TRUE;
-        Boolean success = Boolean.FALSE;
+        Boolean failed = Boolean.FALSE;
+        Boolean success = Boolean.TRUE;
         if (this.partner == ECouponPartner.DD) {
             if (!DDGroupBuyUtil.verifyOnDangdang(this)) {
                 Logger.info("verify on dangdang failed");

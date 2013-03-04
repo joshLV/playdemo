@@ -73,12 +73,12 @@ $(function () {
     });
 
     $("#remarkSelect").change(function () {
-        if ($("#remarkSelect").val() == "商家无法验证") {
-            $("#remark").val("商家无法验证");
-            $("#remark").hide();
-        } else {
+        $("#remark").val($("#remarkSelect").val());
+        if ($("#remarkSelect").val() == "其他") {
             $("#remark").val("");
             $("#remark").show();
+        } else {
+            $("#remark").hide()
         }
     })
 
