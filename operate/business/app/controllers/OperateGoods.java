@@ -64,7 +64,7 @@ public class OperateGoods extends Controller {
      * 展示商品一览页面
      */
     @ActiveNavigation("goods_index")
-    public static void index(models.sales.GoodsCondition condition, String desc) {
+    public static void index(models.sales.GoodsCondition condition) {
         Boolean hasApproveGoodsPermission = ContextedPermission.hasPermission("GOODS_APPROVE_ONSALE");
         int pageNumber = getPage();
         if (condition == null) {
@@ -72,45 +72,8 @@ public class OperateGoods extends Controller {
             condition.status = GoodsStatus.ONSALE;
         }
 
-        // DESC 的值表示升降序，含11位，代表11个排序字段， 1 为升序， 2 为降序， 0 为不排序
-        // 当无排序参数时，初始化 -1
-        if (desc == null) {
-            desc = "-1";
-        }
-        // 获取最新的desc值
-        String[] descs = desc.split(",");
-        desc = descs[descs.length - 1].trim();
+        condition.setDescFields();
 
-        if (condition.priority == 1) {
-            //有优先指数，按优先指  数排
-            condition.orderBy = "g.priority";
-        } else {
-            if (condition.priority != 1 && isValidDesc(desc)) {
-                //排序合法且没有优先指数，添加到condition 中
-                int index = 0;
-                // 定位排序属性
-                for (int i = 0; i < desc.length(); i++) {
-                    if (desc.charAt(i) != '0') {
-                        index = i;
-                        break;
-                    }
-                }
-                String[] orderBy = {"g.supplierId", "g.no", "g.name", "g.faceValue", "g.originalPrice", "g.salePrice", "g.baseSale", "g.saleCount", "g.expireAt", "g.updatedAt", "g.materialType", "g.beginOnSaleAt", "g.endOnSaleAt"};
-                // 添加排序属性
-                condition.orderBy = orderBy[index];
-                // 添加升降序方式
-                if (desc.charAt(index) == '1') {
-                    condition.orderByType = "ASC";
-                } else {
-                    condition.orderByType = "DESC";
-                }
-
-            } else {
-                // 一般排序，按创建时间
-                condition.orderBy = "g.createdAt";
-            }
-
-        }
         JPAExtPaginator<models.sales.Goods> goodsPage = models.sales.Goods.findByCondition(condition, pageNumber,
                 PAGE_SIZE);
         goodsPage.setBoundaryControlsEnabled(true);
@@ -121,7 +84,7 @@ public class OperateGoods extends Controller {
 
         renderArgs.put("brandList", brandList);
         String queryString = StringUtils.trimToEmpty(getQueryString());
-        render(goodsPage, supplierList, condition, desc, queryString, hasApproveGoodsPermission);
+        render(goodsPage, supplierList, condition, queryString, hasApproveGoodsPermission);
     }
 
     private static String getQueryString() {
@@ -296,7 +259,7 @@ public class OperateGoods extends Controller {
         goods.save();
         String createdFrom = "Op";
         goods.createHistory(createdFrom);
-        index(null, "");
+        index(null);
     }
 
     private static void checkUseWeekDay(models.sales.Goods goods) {
@@ -539,7 +502,7 @@ public class OperateGoods extends Controller {
         Goods goodsItem = models.sales.Goods.findById(id);
         String createdFrom = "Op";
         goodsItem.createHistory(createdFrom);
-        index(null, "");
+        index(null);
     }
 
     /**
@@ -671,7 +634,7 @@ public class OperateGoods extends Controller {
         String createdFrom = "Op";
         updateGoods.createHistory(createdFrom);
         updateGoods.save();
-        index(null, "");
+        index(null);
     }
 
     /**
@@ -731,39 +694,12 @@ public class OperateGoods extends Controller {
         for (Long goodsId : id) {        //已上架的商品不可以删除
             models.sales.Goods goods = models.sales.Goods.findById(goodsId);
             if (GoodsStatus.ONSALE.equals(goods.status)) {
-                index(null, "");
+                index(null);
             }
         }
         models.sales.Goods.delete(OperateRbac.currentUser().loginName, id);
 
-        index(null, "");
-    }
-
-    /**
-     * 判断排序字符串的合法性
-     *
-     * @param desc 排序字符串
-     * @return
-     */
-    public static boolean isValidDesc(String desc) {
-        if (desc.length() != 13) {
-            return false;
-        }
-        int countZero = 0;
-        for (int i = 0; i < desc.length(); i++) {
-            if (desc.charAt(i) == '0') {
-                countZero++;
-            }
-        }
-        if (countZero != 12) {
-            return false;
-        }
-        for (int i = 0; i < desc.length(); i++) {
-            if (desc.charAt(i) != '0' && desc.charAt(i) != '1' && desc.charAt(i) != '2') {
-                return false;
-            }
-        }
-        return true;
+        index(null);
     }
 
     /**

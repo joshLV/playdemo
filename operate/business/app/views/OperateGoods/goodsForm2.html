@@ -200,20 +200,20 @@
 </div>
     #{layout_operate.textField name:'goods.keywords', value:goods?.keywords /}
 <div class="form-actions">
-    <input class="btn btn-primary" id="save" type="submit" value="保存"
+    <input class="btn btn-primary" id="save" type="submit" value="保存" data-status="OFFSALE"
            #{if "edit".equals(action) && goods?.status == models.sales.GoodsStatus.ONSALE}disabled #{/if}/>
     &nbsp;
     #{if goods?.status != models.sales.GoodsStatus.APPLY}
-        <input class="btn btn-primary" id="apply" type="submit" value="申请上架"/>
+        <input class="btn btn-primary" id="apply" type="submit" data-status="APPLY" value="申请上架"/>
         &nbsp;
     #{/if}
     #{if  hasApproveGoodsPermission == true }
-        <input class="btn btn-primary" id="onsale" type="submit" value="同意上架"/>
+        <input class="btn btn-primary" id="onsale" data-status="ONSALE" type="submit" value="同意上架"/>
         &nbsp;
     #{/if}
 
     #{if  hasApproveGoodsPermission == true }
-        <input class="btn btn-primary" id="reject" type="submit" value="拒绝上架"/>
+        <input class="btn btn-primary" id="reject" data-status="REJECT" type="submit" value="拒绝上架"/>
         &nbsp;
     #{/if}
 

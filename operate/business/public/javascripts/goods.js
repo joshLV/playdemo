@@ -38,29 +38,10 @@ $(function () {
             }
         }
     });
-
-    $("#onsales").click(function () {
-        var checkedGoods = [];
-        $("input[name='id']").each(function () {
-            if (this.checked) {
-                checkedcnt++;
-                checkedGoods.push($(this).attr("value"));
-            }
-        });
-        if (checkedcnt == 0) {
-            alert("请至少选择一条记录！");
-        } else {
-            var url = "/goods/" + checkedGoods.join(",") + "/onSale?x-http-method-override=PUT";
-            $("#deletefrm").attr("method", "POST");
-            $("#deletefrm").attr("action", url);
-            $("#deletefrm").submit();
-        }
-    });
-
     /**
-     * 批量下架
+     * 批量上下架
      */
-    $("#offsales").click(function () {
+    $("#onsales,#offsales").click(function () {
         var checkedGoods = [];
         $("input[name='id']").each(function () {
             if (this.checked) {
@@ -71,11 +52,10 @@ $(function () {
         if (checkedcnt == 0) {
             alert("请至少选择一条记录！");
         } else {
-            var url = "/goods/" + checkedGoods.join(",") + "/offSale?x-http-method-override=PUT";
+            var url = "/goods/" + checkedGoods.join(",") + $(this).attr("data-url") + "?x-http-method-override=PUT";
             $("#deletefrm").attr("method", "POST");
             $("#deletefrm").attr("action", url);
             $("#deletefrm").submit();
         }
     });
-
 });
