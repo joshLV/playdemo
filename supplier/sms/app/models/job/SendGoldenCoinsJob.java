@@ -33,9 +33,9 @@ public class SendGoldenCoinsJob extends Job {
                 continue;
             }
             if (goldenCoins.checkinTimes >= 30) {
-                UserGoldenCoin.createAwardIfNotExist(goldenCoins.user, Long.valueOf("350"));
+                UserGoldenCoin.createAwardIfNotExist(goldenCoins.user, 350L);
             } else if (goldenCoins.checkinTimes >= 20) {
-                UserGoldenCoin.createAwardIfNotExist(goldenCoins.user, Long.valueOf("100"));
+                UserGoldenCoin.createAwardIfNotExist(goldenCoins.user, 100L);
             }
         }
     }

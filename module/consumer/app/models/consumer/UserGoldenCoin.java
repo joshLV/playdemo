@@ -151,7 +151,7 @@ public class UserGoldenCoin extends Model {
     }
 
     public static void createAwardIfNotExist(User user, Long coinsNumber) {
-        UserGoldenCoin coin = UserGoldenCoin.find("user=? and isPresent = ? and number=? and  createdAt >=? and createdAt <=? ", user, true, coinsNumber, DateUtil.getBeginOfDay(), DateUtil.getEndOfDay()).first();
+        UserGoldenCoin coin = UserGoldenCoin.find("user=? and isPresent = ? and checkinNumber=? and  createdAt >=? and createdAt <=? ", user, true, coinsNumber, DateUtil.getBeginOfDay(), DateUtil.getEndOfDay()).first();
         if (coin == null) {
             new UserGoldenCoin(user, coinsNumber, null, "奖励：" + coinsNumber + "金币", true).save();
         }
