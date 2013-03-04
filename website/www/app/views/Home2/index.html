@@ -81,20 +81,20 @@
 
 <div id="tabbar">
     <ul class="tab-hd clearfix">
-        <li class="first"><a class="active" href="">猜你喜欢</a></li>
+        <li class="first"><a class="active" href="">最新上架</a></li>
         <li><a href="">推荐商品</a></li>
         <li><a href="">热卖商品</a></li>
-        <li class="last"><a href="">最新上架</a></li>
+        <li class="last"><a href="">猜你喜欢</a></li>
     </ul>
     <div class="tab-bd clearfix">
         <ul class="goods">
-        #{list recommendGoodsList, as:'aGoods'}
+        #{list newGoodsList, as:'aGoods'}
             <li
                 #{if aGoods_index==1}class="first"#{/if}>
 
                 <div class="image">
                     <a href="${aGoods.wwwUrl}" target="_blank"><img
-                            src="${aGoods.imageSmallPath}"
+                            src="${aGoods.imageSmall2Path}"
                             width="199"
                             height="152"/></a>
                     #{if aGoods.areaNames?.size()>0}<a class="region" href="${aGoods?.wwwUrl}"
@@ -108,7 +108,7 @@
                     <div class="left">&yen;${aGoods.salePrice}</div>
                     <div class="right">
                         <del>原价：${aGoods.faceValue}</del>
-                        <div>已售出<em>${aGoods?.virtualSaleCount}</em>件</div>
+                        <div>已售出<em>${aGoods.virtualSaleCount}</em>件</div>
                     </div>
                 </div>
             </li>
@@ -169,13 +169,13 @@
         #{/list}
         </ul>
         <ul class="goods" style="display:none">
-        #{list newGoodsList, as:'aGoods'}
+        #{list recommendGoodsList, as:'aGoods'}
             <li
                 #{if aGoods_index==1}class="first"#{/if}>
 
                 <div class="image">
                     <a href="${aGoods.wwwUrl}" target="_blank"><img
-                            src="${aGoods.imageSmall2Path}"
+                            src="${aGoods.imageSmallPath}"
                             width="199"
                             height="152"/></a>
                     #{if aGoods.areaNames?.size()>0}<a class="region" href="${aGoods?.wwwUrl}"
@@ -189,7 +189,7 @@
                     <div class="left">&yen;${aGoods.salePrice}</div>
                     <div class="right">
                         <del>原价：${aGoods.faceValue}</del>
-                        <div>已售出<em>${aGoods.virtualSaleCount}</em>件</div>
+                        <div>已售出<em>${aGoods?.virtualSaleCount}</em>件</div>
                     </div>
                 </div>
             </li>
