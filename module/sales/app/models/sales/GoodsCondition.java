@@ -45,7 +45,8 @@ public class GoodsCondition implements Serializable {
     public String no;
     public String code;
     public String jobNumber;
-
+    //排序字段
+    public String desc;
 
     public BigDecimal pointPriceBegin;
     public BigDecimal pointPriceEnd;
@@ -70,6 +71,75 @@ public class GoodsCondition implements Serializable {
 
     public GoodsCondition() {
 
+    }
+
+    public void setDescFields() {
+
+        // DESC 的值表示升降序，含11位，代表11个排序字段， 1 为升序， 2 为降序， 0 为不排序
+        // 当无排序参数时，初始化 -1
+        if (desc == null) {
+            desc = "-1";
+        }
+        // 获取最新的desc值
+        String[] descs = desc.split(",");
+        desc = descs[descs.length - 1].trim();
+        if (priority == 1) {
+            //有优先指数，按优先指  数排
+            orderBy = "g.priority";
+        } else {
+            if (isValidDesc(desc)) {
+                //排序合法且没有优先指数，添加到condition 中
+                int index = 0;
+                // 定位排序属性
+                for (int i = 0; i < desc.length(); i++) {
+                    if (desc.charAt(i) != '0') {
+                        index = i;
+                        break;
+                    }
+                }
+                String[] orderByAttr = {"g.supplierId", "g.no", "g.name", "g.faceValue", "g.originalPrice", "g.salePrice", "g.baseSale", "g.saleCount", "g.expireAt", "g.updatedAt", "g.materialType", "g.beginOnSaleAt", "g.endOnSaleAt"};
+                // 添加排序属性
+                orderBy = orderByAttr[index];
+                // 添加升降序方式
+                if (desc.charAt(index) == '1') {
+                    orderByType = "ASC";
+                } else {
+                    orderByType = "DESC";
+                }
+
+            } else {
+                // 一般排序，按创建时间
+                orderBy = "g.createdAt desc ";
+            }
+
+        }
+    }
+
+    /**
+     * 判断排序字符串的合法性
+     *
+     * @param desc 排序字符串
+     * @return
+     */
+    public static boolean isValidDesc(String desc) {
+        if (desc.length() != 13) {
+            return false;
+        }
+        int countZero = 0;
+        for (int i = 0; i < desc.length(); i++) {
+            if (desc.charAt(i) == '0') {
+                countZero++;
+            }
+        }
+        if (countZero != 12) {
+            return false;
+        }
+        for (int i = 0; i < desc.length(); i++) {
+            if (desc.charAt(i) != '0' && desc.charAt(i) != '1' && desc.charAt(i) != '2') {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

@@ -43,22 +43,9 @@ $(
         $("#goods_isAllShop_1").click(function () {
             $("#shop").hide();//隐藏门店列表
         });
-        $("#save").click(function () {
-            $("#status").val("OFFSALE");
-            $("#form").attr("target", "_self");
-        });
-        $("#onsale").click(function () {
-            $("#status").val("ONSALE");
-            $("#form").attr("target", "_self");
-        });
 
-        $("#reject").click(function () {
-            $("#status").val("REJECT");
-            $("#form").attr("target", "_self");
-        });
-
-        $("#apply").click(function () {
-            $("#status").val("APPLY");
+        $("#save,#onsale,#apply,#reject").click(function () {
+            $("#status").val($(this).attr("data-status"));
             $("#form").attr("target", "_self");
         });
 

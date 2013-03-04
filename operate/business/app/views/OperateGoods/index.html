@@ -1,9 +1,6 @@
 #{extends 'layout_operate/layout.html' /}
 #{set title:'商品一览' /}
 #{include '/share/nav.html' /}
-#{set 'moreScripts'}
-<script src="@{'/public/javascripts/goods.js'}" type="text/javascript" charset="UTF-8"></script>
-#{/set}
 #{set 'moreStyles'}
 <style type="text/css">
     .table-striped tbody .tr-offsale {
@@ -94,271 +91,148 @@
             <td>
                 <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
             </td>
-            <input type="hidden" id="J_rank" name="desc"/>
+            <input type="hidden" id="J_rank" name="condition.desc" value=${condition?.desc}/>
             <input type="hidden" name="queryString" value="${queryString}"/>
         </tr>
     </table>
 </form>
 <form class="form-horizontal" name="deletefrm" id="deletefrm">
-<input type="hidden" name="queryString" value="${queryString}"/>
-<input type="hidden" name="page" value="${goodsPage.pageNumber}">
+    <input type="hidden" name="queryString" value="${queryString}"/>
+    <input type="hidden" name="page" value="${goodsPage.pageNumber}">
 
-<div style="margin-bottom: 12px">
-    <button class="btn btn-primary" id="onsales" type="button">同意上架</button>
-*{<button class="btn btn-primary" id="offsales" type="button">批量下架</button>}*
-    <button class="btn btn-primary" id="deletebtn" type="button">删除</button>
-</div>
+    <div style="margin-bottom: 12px">
+        <button class="btn btn-primary" id="onsales" type="button" data-url="/onSale">同意上架</button>
+    *{<button class="btn btn-primary" id="offsales" type="button" data-url="/offSale">批量下架</button>}*
+        <button class="btn btn-primary" id="deletebtn" type="button">删除</button>
+    </div>
 
 
 #{vx.tab name:'goods',enumItems: [models.sales.GoodsStatus.ONSALE,models.sales.GoodsStatus.OFFSALE,
 models.sales.GoodsStatus.APPLY,models.sales.GoodsStatus.REJECT],
 select:'condition_status',value:condition?.status/}
-<table class="table table-striped table-bordered table-condensed">
-<thead>
-<tr>
-    <th width="35px"><input type="checkbox" id="selectall" name="selectall">全选</th>
+    <table class="table table-striped table-bordered table-condensed">
+        <thead>
+        <tr>
+            <th width="35px"><input type="checkbox" id="selectall" name="selectall">全选</th>
 
-#{if desc.equals("1000000000000") }
-    <th width="50px" class="rank rank-asc"><a class="fn-rank" data-rank="2000000000000">&{'goods.supplierId'}</a>
-    </th>#{/if}
-#{elseif desc.equals("2000000000000")}
-    <th width="50px" class="rank rank-desc"><a class="fn-rank" data-rank="1000000000000">&{'goods.supplierId'}</a>
-    </th>#{/elseif}
-#{else}
-    <th width="50px" class="rank"><a class="fn-rank" data-rank="2000000000000">&{'goods.supplierId'}</a>
-    </th>#{/else}
+        #{layout_operate.sortField name:'商户', descField:condition?.desc, desc:'2000000000000',asc:'1000000000000'/}
+        *{#{layout_operate.sortField name:'编号', descField:condition?.desc, desc:'0200000000000',asc:'0100000000000'/}}*
+        #{layout_operate.sortField name:'名称', descField:condition?.desc, desc:'0020000000000',asc:'0010000000000'/}
+        #{layout_operate.sortField name:'原价', descField:condition?.desc, desc:'0002000000000',asc:'0001000000000'/}
+        #{layout_operate.sortField name:'采购价', descField:condition?.desc, desc:'0000200000000',asc:'0000100000000'/}
+        #{layout_operate.sortField name:'售价', descField:condition?.desc, desc:'0000020000000',asc:'0000010000000'/}
+        #{layout_operate.sortField name:'剩余库存', descField:condition?.desc, desc:'0000002000000',asc:'0000001000000'/}
+        #{layout_operate.sortField name:'虚拟销量', descField:condition?.desc, desc:'0000000200000',asc:'0000000100000'/}
+        #{layout_operate.sortField name:'上架时间', descField:condition?.desc, desc:'0000000000020',asc:'0000000000010'/}
+        #{layout_operate.sortField name:'下架时间', descField:condition?.desc, desc:'0000000000002',asc:'0000000000001'/}
+        #{layout_operate.sortField name:'到期时间', descField:condition?.desc, desc:'0000000020000',asc:'0000000010000'/}
+        #{layout_operate.sortField name:'最后修改', descField:condition?.desc, desc:'0000000002000',asc:'0000000001000'/}
+        #{layout_operate.sortField name:'类型', descField:condition?.desc, desc:'0000000000200',asc:'0000000000100'/}
+            <th width="80px">&{'goods.status'}</th>
+            <th width="80px">编码</th>
+            <th width="100px">操 作</th>
+        </tr>
+        </thead>
 
-#{if desc.equals("0100000000000") }
-    <th width="50px" class="rank rank-asc"><a class="fn-rank" data-rank="0200000000000">&{'goods.no'}</a>
-    </th>#{/if}
-#{elseif desc.equals("0200000000000")}
-    <th width="50px" class="rank rank-desc"><a class="fn-rank" data-rank="0100000000000">&{'goods.no'}</a>
-    </th>#{/elseif}
-#{else}
-    <th width="30px" class="rank"><a class="fn-rank" data-rank="0200000000000">&{'goods.no'}</a></th>#{/else}
+        <tbody>
 
-#{if desc.equals("0010000000000") }
-    <th width="220px" class="rank rank-asc"><a class="fn-rank" data-rank="0020000000000">&{'goods.shortName'}</a>
-    </th>#{/if}
-#{elseif desc.equals("0020000000000")}
-    <th width="220px" class="rank rank-desc"><a class="fn-rank" data-rank="0010000000000">&{'goods.shortName'}</a>
-    </th>#{/elseif}
-#{else}
-    <th width="220px" class="rank"><a class="fn-rank" data-rank="0020000000000">&{'goods.shortName'}</a>
-    </th>#{/else}
+        #{paginate.list items:goodsPage, as:'goods'}
+        <tr class="#{if goods.isExpired() || goods.getRealStocks() == 0}tr-offsale#{/if} transparent">
+            <td style="text-align:center"><input type="checkbox" id="checkoption" value="${goods.id}" name="id"/></td>
+            <td>${goods?.getSupplier()?.otherName}</td>
+        *{<td>${goods?.no}</td>}*
+            <td>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <a href="http://${play.Play.configuration.getProperty("www.url")}/p/${goods.id}?preview=true"><img
+                                    src="${goods?.imageTinyPath}"/></a></td>
+                        <td>
+                            <a href="http://${play.Play.configuration.getProperty("www.url")}/p/${goods.id}?preview=true">${goods?.shortName}
+                            </a>
+                            #{if goods.priority != null && goods.priority >0}
+                                &nbsp;<span style="color: #ff0000;">&{'goods.priority'}:${goods.priority}</span>#{/if}
+                            #{if goods.keywords != null}
+                                <br/>SEO关键字: ${goods.keywords}
+                            #{/if}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td class="amount">${goods?.faceValue?.formatCurrency('CNY')}</td>
+            <td class="amount">${goods?.originalPrice?.formatCurrency('CNY')}</td>
+            <td class="amount">${goods?.salePrice?.formatCurrency('CNY')}</td>
+            <td class="amount">${goods?.getRealStocks()}</td>
+            <td class="amount">${goods?.virtualBaseSaleCount}</td>
 
-#{if desc.equals("0001000000000") }
-    <th width="50px" class="rank rank-asc"><a class="fn-rank" data-rank="0002000000000">&{'goods.faceValue'}</a>
-    </th>#{/if}
-#{elseif desc.equals("0002000000000")}
-    <th width="50px" class="rank rank-desc"><a class="fn-rank" data-rank="0001000000000">&{'goods.faceValue'}</a>
-    </th>#{/elseif}
-#{else}
-    <th width="50px" class="rank"><a class="fn-rank" data-rank="0002000000000">&{'goods.faceValue'}</a>
-    </th>#{/else}
+            #{if goods?.beginOnSaleAt?.compareTo(new java.util.Date())<0 && goods?.status == models.sales.GoodsStatus.APPLY}
+                <td style="color:red;">${goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+            #{/if}
+            #{else}
+                <td>${goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+            #{/else}
 
-#{if desc.equals("0000100000000") }
-    <th width="50px" class="rank rank-asc"><a class="fn-rank"
-                                              data-rank="0000200000000">&{'goods.originalPrice'}</a></th>#{/if}
-#{elseif desc.equals("0000200000000")}
-    <th width="50px" class="rank rank-desc"><a class="fn-rank"
-                                               data-rank="0000100000000">&{'goods.originalPrice'}</a>
-    </th>#{/elseif}
-#{else}
-    <th width="50px" class="rank"><a class="fn-rank" data-rank="0000200000000">&{'goods.originalPrice'}</a>
-    </th>#{/else}
+            #{if goods?.endOnSaleAt?.compareTo(new java.util.Date())<0 && goods?.status == models.sales.GoodsStatus.APPLY}
+                <td style="color:red;">${goods?.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+            #{/if}
+            #{else}
+                <td>${goods?.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+            #{/else}
 
-#{if desc.equals("0000010000000") }
-    <th width="70px" class="rank rank-asc"><a class="fn-rank" data-rank="0000020000000">&{'goods.salePrice'}</a>
-    </th>#{/if}
-#{elseif desc.equals("0000020000000")}
-    <th width="70px" class="rank rank-desc"><a class="fn-rank" data-rank="0000010000000">&{'goods.salePrice'}</a>
-    </th>#{/elseif}
-#{else}
-    <th width="70px" class="rank"><a class="fn-rank" data-rank="0000020000000">&{'goods.salePrice'}</a>
-    </th>#{/else}
-
-#{if desc.equals("0000001000000") }
-    <th width="50px" class="rank rank-asc"><a class="fn-rank"
-                                              data-rank="0000002000000">&{'goods.cumulativeStocks'}</a>
-    </th>#{/if}
-#{elseif desc.equals("0000002000000")}
-    <th width="50px" class="rank rank-desc"><a class="fn-rank"
-                                               data-rank="0000001000000">&{'goods.cumulativeStocks'}</a>
-    </th>#{/elseif}
-#{else}
-    <th width="30px" class="rank"><a class="fn-rank" data-rank="0000002000000">&{'goods.cumulativeStocks'}</a>
-    </th>#{/else}
-
-#{if desc.equals("0000000100000") }
-    <th width="60px" class="rank rank-asc"><a class="fn-rank"
-                                              data-rank="0000000200000">&{'goods.virtualBaseSaleCount'}</a>
-    </th>#{/if}
-#{elseif desc.equals("0000000200000")}
-    <th width="60px" class="rank rank-desc"><a class="fn-rank"
-                                               data-rank="0000000100000">&{'goods.virtualBaseSaleCount'}</a>
-    </th>#{/elseif}
-#{else}
-    <th width="50px" class="rank"><a class="fn-rank" data-rank="0000000200000">&{'goods.virtualBaseSaleCount'}</a>
-    </th>#{/else}
-
-#{if desc.equals("0000000000010") }
-    <th width="80px" class="rank rank-asc"><a class="fn-rank" data-rank="0000000000020">&{'goods.beginOnSaleAt'}</a>
-    </th>#{/if}
-#{elseif desc.equals("0000000000020")}
-    <th width="80px" class="rank rank-desc"><a class="fn-rank" data-rank="0000000000010">&{'goods.beginOnSaleAt'}</a>
-    </th>#{/elseif}
-#{else}
-    <th width="80px" class="rank"><a class="fn-rank" data-rank="0000000000020">&{'goods.beginOnSaleAt'}</a>
-    </th>#{/else}
-
-#{if desc.equals("0000000000001") }
-    <th width="80px" class="rank rank-asc"><a class="fn-rank" data-rank="0000000000002">&{'goods.endOnSaleAt'}</a>
-    </th>#{/if}
-#{elseif desc.equals("0000000000002")}
-    <th width="80px" class="rank rank-desc"><a class="fn-rank" data-rank="0000000000001">&{'goods.endOnSaleAt'}</a>
-    </th>#{/elseif}
-#{else}
-    <th width="80px" class="rank"><a class="fn-rank" data-rank="0000000000002">&{'goods.endOnSaleAt'}</a>
-    </th>#{/else}
-
-#{if desc.equals("0000000010000") }
-    <th width="80px" class="rank rank-asc"><a class="fn-rank"
-                                              data-rank="0000000020000">&{'goods.expireAt'}</a></th>#{/if}
-#{elseif desc.equals("0000000020000")}
-    <th width="80px" class="rank rank-desc"><a class="fn-rank"
-                                               data-rank="0000000010000">&{'goods.expireAt'}</a>
-    </th>#{/elseif}
-#{else}
-    <th width="80px" class="rank"><a class="fn-rank" data-rank="0000000020000">&{'goods.expireAt'}</a>
-    </th>#{/else}
-
-#{if desc.equals("0000000001000") }
-    <th width="80px" class="rank rank-asc"><a class="fn-rank" data-rank="0000000002000">&{'goods.updatedAt'}</a>
-    </th>#{/if}
-#{elseif desc.equals("0000000002000")}
-    <th width="80px" class="rank rank-desc"><a class="fn-rank" data-rank="0000000001000">&{'goods.updatedAt'}</a>
-    </th>#{/elseif}
-#{else}
-    <th width="80px" class="rank"><a class="fn-rank" data-rank="0000000002000">&{'goods.updatedAt'}</a>
-    </th>#{/else}
-
-#{if desc.equals("0000000000100") }
-    <th width="50px" class="rank rank-asc"><a class="fn-rank"
-                                              data-rank="0000000000200">&{'goods.materialType'}</a></th>#{/if}
-#{elseif desc.equals("0000000000200")}
-    <th width="50px" class="rank rank-desc"><a class="fn-rank"
-                                               data-rank="0000000000100">&{'goods.materialType'}</a>
-    </th>#{/elseif}
-#{else}
-    <th width="50px" class="rank"><a class="fn-rank" data-rank="0000000000200">&{'goods.materialType'}</a>
-    </th>#{/else}
-
-    <th width="80px">&{'goods.status'}</th>
-    <th width="80px">编码</th>
-    <th width="100px">操 作</th>
-</tr>
-</thead>
-
-<tbody>
-
-#{paginate.list items:goodsPage, as:'goods'}
-<tr class="#{if goods.isExpired() || goods.getRealStocks() == 0}tr-offsale#{/if} transparent">
-    <td style="text-align:center"><input type="checkbox" id="checkoption" value="${goods.id}" name="id"/></td>
-    <td>${goods?.getSupplier()?.otherName}</td>
-    <td>${goods?.no}</td>
-    <td>
-        <table>
-            <tbody>
-            <tr>
-                <td>
-                    <a href="http://${play.Play.configuration.getProperty("www.url")}/p/${goods.id}?preview=true"><img
-                            src="${goods?.imageTinyPath}"/></a></td>
-                <td>
-                    <a href="http://${play.Play.configuration.getProperty("www.url")}/p/${goods.id}?preview=true">${goods?.shortName}
-                    </a>
-                    #{if goods.priority != null && goods.priority >0}
-                        &nbsp;<span style="color: #ff0000;">&{'goods.priority'}:${goods.priority}</span>#{/if}
-                    #{if goods.keywords != null}
-                        <br/>SEO关键字: ${goods.keywords}
+            <td>${goods?.expireAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td>${goods?.updatedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td>&{'goods.'+goods?.materialType}</td>
+            <td> #{if goods.isExpired()}<span class="expired">已过期</span><br/>#{/if}
+                #{if goods?.getRealStocks() == 0}<span class="zeroBaseSale">零库存</span><br/>#{/if}
+            &{'goods.'+goods?.getStatus()}
+                #{if  hasApproveGoodsPermission == true }
+                    #{if models.sales.GoodsStatus.APPLY.equals(goods.status)}
+                        #{if goods?.endOnSaleAt.compareTo(new java.util.Date())>0 && !goods?.getRealStocks() == 0 }
+                            <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
+                        #{/if}
+                        <br/>#{vx.operateLink text:"拒绝上架", url:"/goods/"+goods?.id+"/reject?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
                     #{/if}
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </td>
-    <td class="amount">${goods?.faceValue?.formatCurrency('CNY')}</td>
-    <td class="amount">${goods?.originalPrice?.formatCurrency('CNY')}</td>
-    <td class="amount">${goods?.salePrice?.formatCurrency('CNY')}</td>
-    <td class="amount">${goods?.cumulativeStocks}</td>
-    <td class="amount">${goods?.virtualBaseSaleCount}</td>
+                    #{if models.sales.GoodsStatus.ONSALE.equals(goods.status) || goods?.getRealStocks() == 0}
+                    %{url="/goods/"+goods.id+"/offSale?page="+(goodsPage.pageNumber?:1) + "&"+queryString}%
+                        <br/>#{vx.operateLink text:"强制下架", url:url,method:"PUT"/}#{/if}
+                    #{if models.sales.GoodsStatus.REJECT.equals(goods.status) && !goods.isExpired()}
+                        <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
+                    #{/if}
+                    #{if models.sales.GoodsStatus.OFFSALE.equals(goods.status) && !goods.isExpired() && !goods?.getRealStocks() == 0}
+                        <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
+                    #{/if}
+                    #{if models.sales.GoodsStatus.OFFSALE.equals(goods.status) && !goods.isExpired() && goods?.getRealStocks() != 0}
+                        <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
+                    #{/if}
+                    #{if models.sales.GoodsStatus.APPLY.equals(goods.status) && !goods.isExpired() && goods?.getRealStocks() != 0 && goods?.endOnSaleAt.compareTo(new java.util.Date())>0 }
+                        <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
+                    #{/if}
 
-    #{if goods?.beginOnSaleAt?.compareTo(new java.util.Date())<0 && goods?.status == models.sales.GoodsStatus.APPLY}
-        <td style="color:red;">${goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-    #{/if}
-    #{else}
-        <td>${goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-    #{/else}
-
-    #{if goods?.endOnSaleAt?.compareTo(new java.util.Date())<0 && goods?.status == models.sales.GoodsStatus.APPLY}
-        <td style="color:red;">${goods?.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-    #{/if}
-    #{else}
-        <td>${goods?.endOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-    #{/else}
-
-    <td>${goods?.expireAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-    <td>${goods?.updatedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-    <td>&{'goods.'+goods?.materialType}</td>
-    <td> #{if goods.isExpired()}<span class="expired">已过期</span><br/>#{/if}
-        #{if goods?.getRealStocks() == 0}<span class="zeroBaseSale">零库存</span><br/>#{/if}
-    &{'goods.'+goods?.getStatus()}
-        #{if  hasApproveGoodsPermission == true }
-            #{if models.sales.GoodsStatus.APPLY.equals(goods.status)}
-                #{if goods?.endOnSaleAt.compareTo(new java.util.Date())>0 && !goods?.getRealStocks() == 0 }
-                    <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
                 #{/if}
-                <br/>#{vx.operateLink text:"拒绝上架", url:"/goods/"+goods?.id+"/reject?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
-            #{/if}
-            #{if models.sales.GoodsStatus.ONSALE.equals(goods.status) || goods?.getRealStocks() == 0}
-            %{url="/goods/"+goods.id+"/offSale?page="+(goodsPage.pageNumber?:1) + "&"+queryString}%
-                <br/>#{vx.operateLink text:"强制下架", url:url,method:"PUT"/}#{/if}
-            #{if models.sales.GoodsStatus.REJECT.equals(goods.status) && !goods.isExpired()}
-                <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
-            #{/if}
-            #{if models.sales.GoodsStatus.OFFSALE.equals(goods.status) && !goods.isExpired() && !goods?.getRealStocks() == 0}
-                <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
-            #{/if}
-            #{if models.sales.GoodsStatus.OFFSALE.equals(goods.status) && !goods.isExpired() && goods?.getRealStocks() != 0}
-                <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
-            #{/if}
-            #{if models.sales.GoodsStatus.APPLY.equals(goods.status) && !goods.isExpired() && goods?.getRealStocks() != 0 && goods?.endOnSaleAt.compareTo(new java.util.Date())>0 }
-                <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
-            #{/if}
+            </td>
+            <td>${goods?.code}</td>
+            <td>
+                <a href="@{OperateGoods.show(goods.id)}">查看</a>
+                /<a href="/goods/${goods.id}/edit2?page=${goodsPage.pageNumber?:'1'}&${queryString}">修改</a>
+                #{if !models.sales.GoodsStatus.ONSALE.equals(goods.status) && !models.sales.GoodsStatus.APPLY
+                .equals(goods.status)}
+                    / #{vx.deleteLink action:"goods", id:goods.id, name:goods.shortName/}
+                #{/if}
+                #{if models.sales.GoodsStatus.ONSALE.equals(goods.status) }
+                    /<a href="#" id="linkSend_${goods.id}"
+                        onclick="prepareSend('${goods.id}','${goods.priority}','${goods.keywords}')
+                                ">网站选项</a>
 
-        #{/if}
-    </td>
-    <td>${goods?.code}</td>
-    <td>
-        <a href="@{OperateGoods.show(goods.id)}">查看</a>
-        /<a href="/goods/${goods.id}/edit2?page=${goodsPage.pageNumber?:'1'}&${queryString}">修改</a>
-        #{if !models.sales.GoodsStatus.ONSALE.equals(goods.status) && !models.sales.GoodsStatus.APPLY
-        .equals(goods.status)}
-            / #{vx.deleteLink action:"goods", id:goods.id, name:goods.shortName/}
-        #{/if}
-        #{if models.sales.GoodsStatus.ONSALE.equals(goods.status) }
-            /<a href="#" id="linkSend_${goods.id}"
-                onclick="prepareSend('${goods.id}','${goods.priority}','${goods.keywords}')
-                        ">网站选项</a>
+                #{/if}/<a href="@{OperateGoods.copy(goods.id)}">复制</a>/
 
-        #{/if}/<a href="@{OperateGoods.copy(goods.id)}">复制</a>/
-
-        <a href="@{OperateGoods.showHistory(goods.id)}" target="_blank">查看历史记录</a>
-    </td>
-</tr>
-#{/paginate.list}
-</tbody>
-</table>
+                <a href="@{OperateGoods.showHistory(goods.id)}" target="_blank">查看历史记录</a>
+            </td>
+        </tr>
+        #{/paginate.list}
+        </tbody>
+    </table>
 </form>
 <div class="pagination" align="center">
     <ul>
@@ -386,6 +260,7 @@ select:'condition_status',value:condition?.status/}
 </div>
 
 #{set 'moreScripts'}
+<script src="@{'/public/javascripts/goods.js'}" type="text/javascript" charset="UTF-8"></script>
 <script type="text/javascript">
     function prepareSend(id, priority, keywords) {
         $("#setForm").attr("action", "/goods/" + id + "/priority?x-http-method-override=PUT");
