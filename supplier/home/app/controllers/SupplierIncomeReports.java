@@ -51,7 +51,7 @@ public class SupplierIncomeReports extends Controller {
         } else if (StringUtils.isNotEmpty(supplier.shopEndHour)) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(toDate);
-            cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(supplier.shopEndHour.substring(2)));
+            cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(supplier.shopEndHour.substring(0,2)));
             cal.set(Calendar.MINUTE, Integer.parseInt(supplier.shopEndHour.substring(3, 5)));
             toDate = cal.getTime();
         } else {
