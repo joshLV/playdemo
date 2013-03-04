@@ -266,7 +266,7 @@ form:'form'/}
         #{paginate.list items:billPage, as:'withdrawBill'}
             <tr>
                 <td>
-                    #{if withdrawBill?.status == models.accounts.WithdrawBillStatus.APPLIED && withdrawBill.account.accountType == models.accounts.AccountType.SUPPLIER }
+                    #{if withdrawBill?.status == models.accounts.WithdrawBillStatus.APPLIED }
                         <input class="select-item" type="checkbox" id="check_withdraw_${withdrawBill.id}"
                                value="${withdrawBill.id}"
                                name="withdrawIds"/>

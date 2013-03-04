@@ -1,12 +1,7 @@
 package controllers;
 
 import com.uhuila.common.util.DateUtil;
-import models.accounts.Account;
-import models.accounts.AccountSequence;
-import models.accounts.WithdrawAccount;
-import models.accounts.WithdrawBill;
-import models.accounts.WithdrawBillCondition;
-import models.accounts.WithdrawBillStatus;
+import models.accounts.*;
 import models.accounts.util.AccountUtil;
 import models.admin.SupplierUser;
 import models.consumer.User;
@@ -238,6 +233,13 @@ public class WithdrawApproval extends Controller {
             bill.operator = OperateRbac.currentUser().userName;
             bill.RMB = toRMB(bill.amount.toString());
 
+            if (bill.account.accountType == AccountType.SUPPLIER) {
+                bill.applierName = "商户(" + bill.accountName + ")";
+            } else if (bill.account.accountType == AccountType.SUPPLIER) {
+                bill.applierName = "消费者(" + bill.accountName + ")";
+            } else if (bill.account.accountType == AccountType.RESALER) {
+                bill.applierName = "分销商(" + bill.accountName + ")";
+            }
             //人民币大写 单独 用一位位阿拉伯数字显示，并在之前加上人民币符号
 
             // 将待转换的数字分解成整数及小数2部分
