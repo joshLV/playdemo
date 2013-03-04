@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.uhuila.common.util.DateUtil;
 import models.order.ECoupon;
+import models.order.ECouponPartner;
+import models.order.ECouponStatus;
 import models.order.OuterOrder;
 import models.sales.ResalerProduct;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -54,11 +56,15 @@ public class DDGroupBuyUtil {
 
     /**
      * 在当当上验证券.
+     * 如果验证失败，则查询券信息，若已验证则返回验证成功.
      *
      * @param coupon 一百券自家券
      * @return 是否验证成功
      */
     public static boolean verifyOnDangdang(ECoupon coupon) {
+        if (coupon.status != ECouponStatus.UNCONSUMED || coupon.partner != ECouponPartner.DD) {
+            return false;
+        }
         OuterOrder outerOrder = OuterOrder.find("byYbqOrder", coupon.order).first();
         if (outerOrder == null) {
             Logger.info("verify on dangdang failed: outerOrder not found; couponId: " + coupon.id);
@@ -73,9 +79,10 @@ public class DDGroupBuyUtil {
 
         DDResponse response = sendRequest("verify_consume", params);
         if (!response.isOk()) {
-            Logger.info("verify on dangdang failed. couponId: %s; response: %s.", coupon.id, response);
+            Logger.info("verify on dangdang failed. couponId: %s; response: %s. Try to query coupon status", coupon.id, response);
+            return couponStatus(coupon) == 1;
         }
-        return response.isOk();
+        return true;
     }
 
     /**
@@ -157,7 +164,11 @@ public class DDGroupBuyUtil {
     }
 
     /**
-     * 向当当发起请求
+     * 向当当发起请求.
+     *
+     * 请保证 配置了 dangdang.url.[apiName]
+     * 同时在 dangdang/groupbuy 包下有同名的xml模板文件
+     *
      *
      * @param apiName   请求的api名称
      * @return 解析后的响应

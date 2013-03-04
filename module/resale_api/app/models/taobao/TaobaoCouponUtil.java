@@ -15,10 +15,7 @@ import com.taobao.api.response.VmarketEticketReverseResponse;
 import com.taobao.api.response.VmarketEticketSendResponse;
 import models.accounts.AccountType;
 import models.oauth.OAuthToken;
-import models.order.ECoupon;
-import models.order.ECouponStatus;
-import models.order.OuterOrder;
-import models.order.OuterOrderPartner;
+import models.order.*;
 import models.resale.Resaler;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
@@ -146,14 +143,19 @@ public class TaobaoCouponUtil {
     }
 
     /**
-     * 在淘宝上验证
+     * 在淘宝上验证.
+     * 如果验证失败，则尝试撤销验证（可能是因为之前已经验证了），撤销成功的话重试。
      *
-     * @param eCoupon 券
+     * @param coupon 券
      * @return 是否验证通过
      */
-    public static boolean verifyOnTaobao(ECoupon eCoupon) {
+    public static boolean verifyOnTaobao(ECoupon coupon) {
+        if (coupon.status != ECouponStatus.UNCONSUMED || coupon.partner != ECouponPartner.TB) {
+            return false;
+        }
+
         OAuthToken oAuthToken = getToken();
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndYbqOrder", OuterOrderPartner.TB, eCoupon.order).first();
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndYbqOrder", OuterOrderPartner.TB, coupon.order).first();
         if (outerOrder == null) {
             Logger.info("consume on taobao failed: outerOrder not found");
             return false;
@@ -164,7 +166,7 @@ public class TaobaoCouponUtil {
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, TOP_APPKEY, TOP_APPSECRET);
         VmarketEticketConsumeRequest request = new VmarketEticketConsumeRequest();
         request.setOrderId(Long.parseLong(outerOrder.orderId));
-        request.setVerifyCode(eCoupon.getSafeECouponSN());
+        request.setVerifyCode(coupon.getSafeECouponSN());
         request.setConsumeNum(1L);
         request.setToken(token);
 
@@ -177,9 +179,14 @@ public class TaobaoCouponUtil {
                 Logger.info("tell taobao coupon verify response. ret code: %s", response.getRetCode());
 
                 if (response.getRetCode() != null && response.getRetCode() == 1L) {
-                    eCoupon.partnerCouponId = response.getConsumeSecialNum();
-                    eCoupon.save();
+                    coupon.partnerCouponId = response.getConsumeSecialNum();
+                    coupon.save();
                     return true;
+                }{
+                    //如果验证失败，首先尝试撤销验证，撤销成功的话继续验证。
+                    if(reverseOnTaobao(coupon)) {
+                        return verifyOnTaobao(coupon);
+                    }
                 }
             }else {
                 Logger.info("tell taobao coupon verify response. no response");
