@@ -528,6 +528,7 @@ public class ECoupon extends Model {
         }
         //===================券消费处理开始=====================================
         if (consumed(shopId, operateUser, supplierUser, type, realConsumedAt, remark)) {
+            Logger.info("ECoupon.consumeAndPayCommission: consumed success.");
             payCommission();
             this.triggerCouponSn = triggerCouponSn; //记录批量验证时所使用的券号
             this.save();
@@ -599,6 +600,8 @@ public class ECoupon extends Model {
      */
     private boolean consumed(Long shopId, OperateUser operateUser, SupplierUser supplierUser, VerifyCouponType type,
                              Date realConsumedAt, String remark) {
+        Logger.info("ECoupon.consumed(shopId:" + shopId + ", operateUser:" + operateUser + ", supplierUser:" + supplierUser
+                 + ", type:" + type + ", realConsumedAt:" + realConsumedAt + ", remark:" + remark);
         if (this.status != ECouponStatus.UNCONSUMED) {
             return false;
         }
@@ -699,6 +702,7 @@ public class ECoupon extends Model {
             }
 
         }
+        Logger.info("ECoupon.payCommission done: eCoupon.id=" + this.id);
     }
 
     /**
