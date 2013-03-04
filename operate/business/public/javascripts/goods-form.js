@@ -18,7 +18,17 @@ $(
                 });
             });
         });
-
+        if ($("#goods_materialType_2").attr("checked")) {
+            $("#brand").change(function () {
+                $("#sku").load("/goods_sku/" + $("#goods_brand_id").val(), function (data) {
+                    var skuList = $.parseJSON(data);
+                    $("#sku").empty();
+                    $.each(skuList, function (i, sku) {
+                        $("#sku").append("<option value='" + sku.id + "'>" + sku.name + "</option>");
+                    });
+                });
+            });
+        }
         $("#onsales").click(function () {
 //            if ($("#baseSale").val() > 0) {
 
@@ -125,9 +135,9 @@ $(
             ev.preventDefault();
             var imageId = $(this).attr("imageId");
             $.ajax({
-                type: 'DELETE',
-                url: '/goods_images/' + imageId,
-                success: function () {
+                type:'DELETE',
+                url:'/goods_images/' + imageId,
+                success:function () {
 //                    $("#li_" + imageId).remove();
                     window.location.reload();
                 }});
@@ -138,9 +148,9 @@ $(
             var imageId = $(this).attr("imageId");
             var goodsId = $(this).attr("goodsId");
             $.ajax({
-                type: 'POST',
-                url: '/goods_images/' + imageId + "?goodsId=" + goodsId,
-                success: function () {
+                type:'POST',
+                url:'/goods_images/' + imageId + "?goodsId=" + goodsId,
+                success:function () {
                     window.location.reload();
                 }});
         })

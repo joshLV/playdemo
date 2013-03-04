@@ -1,0 +1,15 @@
+#{layout_operate.selectField name:'goods.skuId', value:goods?.skuId, error:'goods.skuId', required:true}
+    #{list items:skuList, as:'sku'}
+        #{option sku?.id}${sku?.name}#{/option}
+    #{/list}
+#{/layout_operate.selectField}
+<SCRIPT type=text/javascript>
+    #{if skuList== null || skuList.size()==0}
+    $("#err-goods_skuId").html("该品牌没有对应的货品，请添加货品！");
+    $("#save").attr('disabled', true);
+    #{/if}
+    #{else}
+    $("#err-goods_skuId").html("");
+    $("#save").attr('disabled', false);
+    #{/else}
+</SCRIPT>

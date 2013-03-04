@@ -106,4 +106,9 @@ public class SkuManage extends Controller {
         Sku.delete(id);
         index(null);
     }
+
+    public static void goodsSku(Long brandId) {
+        List<Sku> skuList = Sku.findByBrand(brandId);
+        render(skuList);
+    }
 }

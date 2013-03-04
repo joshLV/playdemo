@@ -32,9 +32,6 @@ import java.util.List;
 public class Sku extends Model {
     public static final String[] CODE_VALUE = {"99", "999", "9999", "99999", "999999"};
 
-    @ManyToOne
-    public Goods goods;
-
     //货品名称
     @Required
     @MaxSize(value = 500)
@@ -155,5 +152,9 @@ public class Sku extends Model {
         skuPage.setPageSize(pageSize);
         skuPage.setBoundaryControlsEnabled(false);
         return skuPage;
+    }
+
+    public static List<Sku> findByBrand(Long brandId) {
+        return Sku.find("deleted=? and brand.id=?", DeletedStatus.UN_DELETED, brandId).fetch();
     }
 }
