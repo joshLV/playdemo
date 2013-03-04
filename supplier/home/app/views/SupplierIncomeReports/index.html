@@ -304,16 +304,21 @@ $(function () {
                            onclick="javascript:$('#report-form').attr('action', '@{SupplierIncomeReports.index()}');return true;"/>
                 </div>
             </div>
-            <table cellspacing="0" cellpadding="0" border="0" class="coupons-table" id="coupons-table">
-                <tr>
-                    <th>商品</th>
-                    <th width="80" align="right">消费量(张)</th>
+        </form>
+    #{if goodsReportList?.size()==0}
+        <div>暂无数据</div>
+    #{/if}
+    #{else}
+        <table cellspacing="0" cellpadding="0" border="0" class="coupons-table" id="coupons-table">
+            <tr>
+                <th>商品</th>
+                <th width="80" align="right">消费量(张)</th>
                 #{if showSellingState}
                     <th width="80" align="right">销售量(张)</th>
                     <th width="80" align="right">退款量(张)</th>
                 #{/if}
-                    <th width="150">消费金额(元)</th>
-                </tr>
+                <th width="150">消费金额(元)</th>
+            </tr>
             #{list goodsReportList, as:'report'}
                 <tr>
                     <td align="left">${report.goodsName}</td>
@@ -325,23 +330,23 @@ $(function () {
                     <td align="right">${report.amount.formatCurrency('CNY')}</td>
                 </tr>
             #{/list}
-            </table>
-        </form>
-    #{if dailyChartMap?.size() > 0}
-        <div class="tip">
-            <div id="chart1" class="span12" style="height: 500px"></div>
-        </div>
-    #{/if}
-    #{if shopChartMap?.size() > 0}
-        <div class="tip">
-            <div id="chart2" class="span12" style="height: 500px"></div>
-        </div>
-    #{/if}
-    #{if goodsChartMap?.size() > 0}
-        <div class="tip">
-            <div id="chart3" class="span12" style="height: 500px"></div>
-        </div>
-    #{/if}
+        </table>
+        #{if dailyChartMap?.size() > 0}
+            <div class="tip">
+                <div id="chart1" class="span12" style="height: 500px"></div>
+            </div>
+        #{/if}
+        #{if shopChartMap?.size() > 0}
+            <div class="tip">
+                <div id="chart2" class="span12" style="height: 500px"></div>
+            </div>
+        #{/if}
+        #{if goodsChartMap?.size() > 0}
+            <div class="tip">
+                <div id="chart3" class="span12" style="height: 500px"></div>
+            </div>
+        #{/if}
+    #{/else}
     </div>
 </div>
 
