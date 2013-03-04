@@ -35,7 +35,7 @@ public class SendGoldenCoinsJobTest extends UnitTest {
                     public void sequence(UserGoldenCoin target, int seq) {
                         target.user = user;
                         target.remarks = "签到10天";
-                        target.checkinTimes = 5L;
+                        target.checkinNumber = 5L;
                         target.createdAt = DateUtil.lastDayOfMonth(new Date());
                     }
                 });
@@ -55,7 +55,7 @@ public class SendGoldenCoinsJobTest extends UnitTest {
                     public void sequence(UserGoldenCoin target, int seq) {
                         target.user = user3;
                         target.remarks = "签到21天";
-                        target.checkinTimes = 5L;
+                        target.checkinNumber = 5L;
                         target.createdAt = DateHelper.afterDays(DateUtil.lastMonthOfFirstDay(), 1);
                     }
                 });
@@ -68,7 +68,7 @@ public class SendGoldenCoinsJobTest extends UnitTest {
 
         UserGoldenCoin goldenCoin = UserGoldenCoin.find("user=? order by createdAt desc", user3).first();
         assertEquals(22, UserGoldenCoin.count());
-        assertEquals(100, goldenCoin.checkinTimes.intValue());
+        assertEquals(100, goldenCoin.checkinNumber.intValue());
     }
 
     @Test
@@ -80,7 +80,7 @@ public class SendGoldenCoinsJobTest extends UnitTest {
                     public void sequence(UserGoldenCoin target, int seq) {
                         target.user = user3;
                         target.remarks = "签到20天";
-                        target.checkinTimes = 5L;
+                        target.checkinNumber = 5L;
                         target.createdAt = DateHelper.afterDays(DateUtil.lastMonthOfFirstDay(), 1);
 
                     }
@@ -93,7 +93,7 @@ public class SendGoldenCoinsJobTest extends UnitTest {
         UserGoldenCoin goldenCoin = UserGoldenCoin.find("user=? order by createdAt desc", user3).first();
 
         assertEquals(21, UserGoldenCoin.count());
-        assertEquals(100, goldenCoin.checkinTimes.intValue());
+        assertEquals(100, goldenCoin.checkinNumber.intValue());
     }
 
     @Test
@@ -105,7 +105,7 @@ public class SendGoldenCoinsJobTest extends UnitTest {
                     public void sequence(UserGoldenCoin target, int seq) {
                         target.user = user2;
                         target.remarks = "签到31天";
-                        target.checkinTimes = 5L;
+                        target.checkinNumber = 5L;
                         target.createdAt = DateHelper.afterDays(DateUtil.lastMonthOfFirstDay(), 1);
                     }
                 });
@@ -117,7 +117,7 @@ public class SendGoldenCoinsJobTest extends UnitTest {
         UserGoldenCoin goldenCoin = UserGoldenCoin.find("user=? order by createdAt desc", user2).first();
 
         assertEquals(32, UserGoldenCoin.count());
-        assertEquals(350, goldenCoin.checkinTimes.intValue());
+        assertEquals(350, goldenCoin.checkinNumber.intValue());
     }
 
     @Test
@@ -129,7 +129,7 @@ public class SendGoldenCoinsJobTest extends UnitTest {
                     public void sequence(UserGoldenCoin target, int seq) {
                         target.user = user1;
                         target.remarks = "签到30天";
-                        target.checkinTimes = 5L;
+                        target.checkinNumber = 5L;
                         target.createdAt = DateHelper.afterDays(DateUtil.lastMonthOfFirstDay(), 1);
                     }
                 });
@@ -142,7 +142,7 @@ public class SendGoldenCoinsJobTest extends UnitTest {
         UserGoldenCoin goldenCoin = UserGoldenCoin.find("user=? order by createdAt desc", user1).first();
 
         assertEquals(31, UserGoldenCoin.count());
-        assertEquals(350, goldenCoin.checkinTimes.intValue());
+        assertEquals(350, goldenCoin.checkinNumber.intValue());
 
     }
 
