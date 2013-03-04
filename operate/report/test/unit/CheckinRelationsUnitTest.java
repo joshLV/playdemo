@@ -70,7 +70,7 @@ public class CheckinRelationsUnitTest extends UnitTest {
     public void testGetsummary() {
         JPAExtPaginator<UserGoldenCoin> reportPage = UserGoldenCoin.find(null, new UserCondition(), 1, 15);
         CheckinRelations relations = CheckinRelations.summary(reportPage);
-        assertEquals(-1000, relations.checkinTimes.intValue());
+        assertEquals(-1000, relations.coinsNumber.intValue());
         assertEquals(105, relations.unUseNumber.intValue());
     }
 }

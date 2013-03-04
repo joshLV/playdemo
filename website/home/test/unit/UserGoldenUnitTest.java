@@ -41,7 +41,7 @@ public class UserGoldenUnitTest extends UnitTest {
                         target.goods = goods;
                         target.user = user;
                         target.remarks = "签到20天";
-                        target.checkinTimes = 5L;
+                        target.checkinNumber = 5L;
                         target.createdAt = DateHelper.beforeMinuts(5);
                     }
                 });
