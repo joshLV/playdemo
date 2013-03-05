@@ -1,9 +1,8 @@
-package app.controllers.support;
+package controllers.support;
 
 import play.mvc.Controller;
 import util.extension.ExtensionInvocation;
 import util.extension.ExtensionInvoker;
-import util.extension.annotation.ExtensionPoint;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,11 +17,13 @@ public class ExtensionInvocations extends Controller {
         Map<Class<?>,List<ExtensionInvocation>> extensionMap = ExtensionInvoker.extensionMap;
         Map<String, List<ExtensionInvocation>> extensions = new HashMap<>();
         for (Class<?> extensionCategoryClazz : extensionMap.keySet()) {
-            String key = extensionCategoryClazz.getName();
+            String key = extensionCategoryClazz.getSimpleName();
+            /*  暂不显示ID名，无意义
             if (extensionCategoryClazz.isAnnotationPresent(ExtensionPoint.class)) {
                 ExtensionPoint extensionPoint = extensionCategoryClazz.getAnnotation(ExtensionPoint.class);
-                key = extensionPoint.value() + ":" + extensionCategoryClazz.getName();
+                key = extensionPoint.value() + ": " + extensionCategoryClazz.getSimpleName();
             }
+            */
             extensions.put(key, extensionMap.get(extensionCategoryClazz));
         }
         render(extensions);

@@ -26,7 +26,7 @@ public class RemoteRecallCheck {
     private static ThreadLocal<Boolean> _needRecall = new ThreadLocal<>();
 
     public static <T> T call(final String callPrefix, final RemoteCallback<T> callback) {
-        if (getId() == null || true) { //暂先不使用recall机制
+        if (getId() == null) { //暂先不使用recall机制
             // 调用前没有设置callId，认为是不需要CallRecallCheck（兼容旧的调用者）
             return callback.doCall();
         }

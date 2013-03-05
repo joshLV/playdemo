@@ -84,7 +84,7 @@ public class ExtensionInvoker {
         }
         Logger.info("Not Found Any " + extensionPointName.getName()
                 + " or DefaultAction to run!");
-        return ExtensionResult.build().code(0).message("Not Found Any Invocation");
+        return ExtensionResult.code(0).message("Not Found Any Invocation");
     }
 
 }

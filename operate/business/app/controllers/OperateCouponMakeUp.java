@@ -1,15 +1,11 @@
 package controllers;
 
-import models.dangdang.groupbuy.DDGroupBuyUtil;
-import models.jingdong.groupbuy.JDGroupBuyHelper;
-import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
-import models.taobao.TaobaoCouponUtil;
-import models.wuba.WubaUtil;
 import org.apache.commons.lang.StringUtils;
 import play.mvc.Controller;
 import play.mvc.With;
+import util.extension.ExtensionResult;
 
 /**
  * @author likang
@@ -37,20 +33,12 @@ public class OperateCouponMakeUp extends Controller {
                 continue;
             }
 
-            boolean success = false;
-            if (partner.equalsIgnoreCase("taobao"))
-                success = TaobaoCouponUtil.verifyOnTaobao(eCoupon);
-            else if (partner.equalsIgnoreCase("jingdong"))
-                success = JDGroupBuyHelper.verifyOnJingdong(eCoupon);
-            else if (partner.equalsIgnoreCase("wuba"))
-                success = WubaUtil.verifyOnWuba(eCoupon);
-            else if (partner.equalsIgnoreCase("dangdang")){
-                success = DDGroupBuyUtil.verifyOnDangdang(eCoupon);
-            }
-            if (success) {
+            ExtensionResult result = eCoupon.verifyAndCheckOnPartnerResaler();
+
+            if (result.code == 0) {
                 successMessage.append(c).append(",");
             }else {
-                failMessage.append(c).append(" 在第三方消费失败\n");
+                failMessage.append(c).append(" 在第三方消费失败-").append(result.toString()).append("\n");
             }
         }
 

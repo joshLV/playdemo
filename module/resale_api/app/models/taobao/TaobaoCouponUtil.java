@@ -1,7 +1,6 @@
 package models.taobao;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
@@ -15,13 +14,18 @@ import com.taobao.api.response.VmarketEticketReverseResponse;
 import com.taobao.api.response.VmarketEticketSendResponse;
 import models.accounts.AccountType;
 import models.oauth.OAuthToken;
-import models.order.*;
+import models.order.ECoupon;
+import models.order.ECouponPartner;
+import models.order.ECouponStatus;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
 import play.exceptions.UnexpectedException;
+import util.extension.ExtensionResult;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -54,7 +58,7 @@ public class TaobaoCouponUtil {
         // 组合券
         List<ECoupon> eCoupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
         StringBuilder verifyCodes = new StringBuilder();
-        for (int i = 0 ;i < eCoupons.size(); i++) {
+        for (int i = 0; i < eCoupons.size(); i++) {
             if (i != 0) {
                 verifyCodes.append(",");
             }
@@ -81,7 +85,7 @@ public class TaobaoCouponUtil {
                     return true;
                 }
                 return response.getRetCode() != null && response.getRetCode() == 1;
-            }else {
+            } else {
                 Logger.info("tell taobao coupon send response. no response");
             }
         } catch (ApiException e) {
@@ -107,7 +111,7 @@ public class TaobaoCouponUtil {
         // 组合券
         List<ECoupon> eCoupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
         StringBuilder verifyCodes = new StringBuilder();
-        int i =0;
+        int i = 0;
         for (ECoupon coupon : eCoupons) {
             if (coupon.status != ECouponStatus.UNCONSUMED) {
                 continue;
@@ -116,7 +120,7 @@ public class TaobaoCouponUtil {
                 verifyCodes.append(",");
             }
             verifyCodes.append(coupon.getSafeECouponSN()).append(":1");
-            i ++;
+            i++;
         }
 
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, TOP_APPKEY, TOP_APPSECRET);
@@ -133,7 +137,7 @@ public class TaobaoCouponUtil {
             if (response != null) {
                 Logger.info("tell taobao coupon resend response. ret code: %s", response.getRetCode());
                 return response.getRetCode() != null && response.getRetCode() == 1;
-            }else {
+            } else {
                 Logger.info("tell taobao coupon resend response. no response");
             }
         } catch (ApiException e) {
@@ -149,16 +153,16 @@ public class TaobaoCouponUtil {
      * @param coupon 券
      * @return 是否验证通过
      */
-    public static boolean verifyOnTaobao(ECoupon coupon) {
+    public static ExtensionResult verifyOnTaobao(ECoupon coupon) {
         if (coupon.partner != ECouponPartner.TB) {
-            return false;
+            return ExtensionResult.INVALID_CALL;
         }
 
         OAuthToken oAuthToken = getToken();
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndYbqOrder", OuterOrderPartner.TB, coupon.order).first();
         if (outerOrder == null) {
             Logger.info("consume on taobao failed: outerOrder not found");
-            return false;
+            return ExtensionResult.code(100).message("没有找到对应当当订单号（couponId:%d)", coupon.id);
         }
         JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
         String token = jsonObject.get("token").getAsString();
@@ -174,27 +178,28 @@ public class TaobaoCouponUtil {
                 request.getOrderId(), request.getVerifyCode(), request.getToken());
 
         try {
-            VmarketEticketConsumeResponse response = taobaoClient.execute(request,oAuthToken.accessToken);
-            if (response != null){
+            VmarketEticketConsumeResponse response = taobaoClient.execute(request, oAuthToken.accessToken);
+            if (response != null) {
                 Logger.info("tell taobao coupon verify response. ret code: %s", response.getRetCode());
 
                 if (response.getRetCode() != null && response.getRetCode() == 1L) {
                     coupon.partnerCouponId = response.getConsumeSecialNum();
                     coupon.save();
-                    return true;
-                }{
+                    return ExtensionResult.SUCCESS;
+                } else {
                     //如果验证失败，首先尝试撤销验证，撤销成功的话继续验证。
-                    if(reverseOnTaobao(coupon)) {
+                    if (reverseOnTaobao(coupon)) {
                         return verifyOnTaobao(coupon);
                     }
                 }
-            }else {
+            } else {
                 Logger.info("tell taobao coupon verify response. no response");
+                return ExtensionResult.code(101).message("调用淘宝接口无响应");
             }
         } catch (ApiException e) {
             Logger.info("tell taobao coupon verify response raise exception. ", e);
         }
-        return false;
+        return ExtensionResult.code(102).message("调用淘宝接口出现异常");
     }
 
     /**
@@ -218,7 +223,7 @@ public class TaobaoCouponUtil {
         request.setConsumeSecialNum(coupon.partnerCouponId);
         request.setToken(token);
         try {
-            VmarketEticketReverseResponse response = taobaoClient.execute(request,oAuthToken.accessToken);
+            VmarketEticketReverseResponse response = taobaoClient.execute(request, oAuthToken.accessToken);
             if (response != null) {
                 Logger.info("tell taobao coupon reverse response. ret code: %s", response.getRetCode());
                 return response.getRetCode() != null && response.getRetCode() == 1L;
@@ -229,7 +234,6 @@ public class TaobaoCouponUtil {
 
         return false;
     }
-
 
 
     public static OAuthToken getToken() {

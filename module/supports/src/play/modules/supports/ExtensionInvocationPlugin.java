@@ -24,6 +24,6 @@ public class ExtensionInvocationPlugin extends PlayPlugin {
     @Override
     public void onRoutesLoaded() {
         Logger.debug("adding routes for yabo.Support:" + ExtensionInvocationPlugin.class.getName());
-        Router.addRoute("GET", "/@extensions", "operate.cas.MockServer.login");
+        Router.addRoute("GET", "/@extensions", "controllers.support.ExtensionInvocations.index");
     }
 }

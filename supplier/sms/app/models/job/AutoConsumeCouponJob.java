@@ -1,17 +1,11 @@
 package models.job;
 
 import com.uhuila.common.constants.DeletedStatus;
-import models.dangdang.groupbuy.DDGroupBuyUtil;
-import models.jingdong.groupbuy.JDGroupBuyHelper;
-import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.order.ECoupon;
 import models.order.ECouponCreateType;
-import models.order.ECouponPartner;
-import models.taobao.TaobaoCouponUtil;
-import models.wuba.WubaUtil;
-import play.Logger;
 import play.jobs.Every;
 import play.jobs.Job;
+import util.extension.ExtensionResult;
 
 import java.util.Date;
 import java.util.List;
@@ -29,31 +23,8 @@ public class AutoConsumeCouponJob extends Job {
                 new Date(System.currentTimeMillis() - 2*24*60*60*1000), new Date(System.currentTimeMillis() - 5*60*1000),
                 ECouponCreateType.IMPORT, DeletedStatus.UN_DELETED).fetch(20);
         for(ECoupon coupon : couponList) {
-            boolean consumed = true;
-            if (coupon.partner == ECouponPartner.JD) {
-                if (!JDGroupBuyHelper.verifyOnJingdong(coupon)) {
-                    consumed = false;
-                    Logger.info("verify on jingdong failed");
-                }
-            } else if (coupon.partner == ECouponPartner.WB) {
-                if (!WubaUtil.verifyOnWuba(coupon)) {
-                    consumed = false;
-                    Logger.info("verify on wuba failed");
-                }
-            } else if (coupon.partner == ECouponPartner.TB) {
-                if (!TaobaoCouponUtil.verifyOnTaobao(coupon)) {
-                    consumed = false;
-                    Logger.info("verify on taobao failed");
-                }
-            } else if (coupon.partner == ECouponPartner.DD) {
-                if (!DDGroupBuyUtil.verifyOnDangdang(coupon)) {
-                    consumed = false;
-                    Logger.info("verify on dangdang failed");
-                }
-            }else {
-                consumed = false;
-            }
-            if (consumed) {
+            ExtensionResult result = coupon.verifyAndCheckOnPartnerResaler();
+            if (result.code == 0) { //验证成功
                 coupon.autoConsumed = DeletedStatus.DELETED;
                 coupon.save();
             }

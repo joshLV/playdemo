@@ -92,29 +92,30 @@ public class JDGroupBuy extends Controller {
     private static Boolean doSendOrder(String restXml, JingdongMessage message) {
         Integer count = Integer.parseInt(message.selectTextTrim("./Count"));
 
+        BigDecimal teamPrice = new BigDecimal(message.selectTextTrim("./TeamPrice")).divide(new BigDecimal("100"));
+        BigDecimal origin = new BigDecimal(message.selectTextTrim("./Origin")).divide(new BigDecimal("100"));
+
+        String mobile = message.selectTextTrim("./Mobile");
+        String jdOrderId = message.selectTextTrim("./JdOrderId").trim();
+        Long venderTeamId = Long.parseLong(message.selectTextTrim("./VenderTeamId").trim());
+
         //检查购买数量
         if (count <= 0) {
             recordResultMessage(202, "the buy number must be a positive one");
             return Boolean.FALSE;
         }
-        BigDecimal teamPrice = new BigDecimal(message.selectTextTrim("./TeamPrice")).divide(new BigDecimal("100"));
-        BigDecimal origin = new BigDecimal(message.selectTextTrim("./Origin")).divide(new BigDecimal("100"));
-
         //检查订单总额是否匹配
         if (teamPrice.multiply(new BigDecimal(count)).compareTo(origin) != 0) {
             recordResultMessage(203, "the total amount does not match the team price and count");
             return Boolean.FALSE;
         }
 
-        String mobile = message.selectTextTrim("./Mobile");
         //检查手机号
         if (!checkPhone(mobile)) {
             recordResultMessage(204, "invalid mobile: " + mobile);
             return Boolean.FALSE;
         }
 
-        String jdOrderId = message.selectTextTrim("./JdOrderId").trim();
-        Long venderTeamId = Long.parseLong(message.selectTextTrim("./VenderTeamId").trim());
         List<Node> jdCoupons = message.selectNodes("./Coupons/Coupon");
 
         //检查并保存此新请求

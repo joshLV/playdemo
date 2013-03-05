@@ -1,11 +1,9 @@
 package models.dangdang.groupbuy;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.uhuila.common.util.DateUtil;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
-import models.order.ECouponStatus;
 import models.order.OuterOrder;
 import models.sales.ResalerProduct;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -19,10 +17,15 @@ import play.libs.XML;
 import play.libs.XPath;
 import play.templates.Template;
 import play.templates.TemplateLoader;
+import util.extension.ExtensionResult;
 import util.ws.WebServiceRequest;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * @author likang
@@ -61,14 +64,14 @@ public class DDGroupBuyUtil {
      * @param coupon 一百券自家券
      * @return 是否验证成功
      */
-    public static boolean verifyOnDangdang(ECoupon coupon) {
+    public static ExtensionResult verifyOnDangdang(ECoupon coupon) {
         if (coupon.partner != ECouponPartner.DD) {
-            return false;
+            return ExtensionResult.INVALID_CALL;
         }
         OuterOrder outerOrder = OuterOrder.find("byYbqOrder", coupon.order).first();
         if (outerOrder == null) {
             Logger.info("verify on dangdang failed: outerOrder not found; couponId: " + coupon.id);
-            return false;
+            return ExtensionResult.code(100).message("没有找到对应当当订单号（couponId:%d)", coupon.id);
         }
 
         JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
@@ -80,9 +83,26 @@ public class DDGroupBuyUtil {
         DDResponse response = sendRequest("verify_consume", params);
         if (!response.isOk()) {
             Logger.info("verify on dangdang failed. couponId: %s; response: %s. Try to query coupon status", coupon.id, response);
-            return couponStatus(coupon) == 1;
+            // -1: 调用失败 0：未使用；1：已使用；2：已过期；30：已退款；40：已经使用后的退款。
+            int ddCouponStatus = couponStatus(coupon);
+            switch(ddCouponStatus) {
+                case -1:
+                    return ExtensionResult.code(2).message("调用失败");
+                case 0:
+                    return ExtensionResult.code(2).message("调用失败，券状态为未使用");
+                case 1:
+                    return ExtensionResult.SUCCESS; //已使用，状态检查通过
+                case 2:
+                    return ExtensionResult.code(2).message("已过期");
+                case 30:
+                    return ExtensionResult.code(2).message("已退款");
+                case 40:
+                    return ExtensionResult.code(2).message("已经使用后的退款");
+                default:
+                    return ExtensionResult.code(ddCouponStatus).message("未知当当接口返回代码: %d", ddCouponStatus); //未知状态认为是失败
+            }
         }
-        return true;
+        return ExtensionResult.SUCCESS;
     }
 
     /**
