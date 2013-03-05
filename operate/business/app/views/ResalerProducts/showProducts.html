@@ -4,7 +4,7 @@
 #{set 'moreScripts'}
 <script>
     $("a[rel='tooltip']").tooltip({container:'body'});
-    $("a[data-toggle='popover']").popover({container:'body'});
+    $("button[data-toggle='popover']").popover({container:'body'});
 </script>
 #{/set}
 #{set 'moreStyles'}
@@ -43,13 +43,13 @@
     <td>${product.lastModifier}</td>
     <td>
         #{if !product.partnerProductId}
-            <a class="btn" data-html="true" data-toggle="popover" data-placement="bottom" href="#"
+            <button class="btn" data-html="true" data-toggle="popover" data-placement="bottom" type="button"
                data-content="<form action='/resaler-products/enter' method='post'> <fieldset>
                <input type='text' placeholder='第三方产品ID' name='partnerPid'>
                <input type='text' placeholder='第三方产品URL' name='partnerUrl'>
                <input type='hidden' name='productId' value='${product.id}'>
                <button type='submit' class='btn'>提交</button> </fieldset> </form>"
-            >添加</a>
+            >添加</button>
         #{/if}
         #{else}
             <a href="${product.url}" target="_blank">${product.partnerProductId}</a>
