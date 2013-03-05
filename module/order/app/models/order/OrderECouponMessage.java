@@ -8,7 +8,6 @@ import play.Logger;
 import play.Play;
 import util.mq.MQPublisher;
 
-import javax.persistence.Transient;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -139,7 +138,7 @@ public class OrderECouponMessage implements Serializable {
         } else {
             message += coupon.eCouponSn;
         }
-        message += note + "截止" + dateFormat.format(coupon.expireAt) + "客服4006262166";
+        message += note + "截止" + dateFormat.format(coupon.expireAt) + "客服4006262166【一百券】";
         // 重定义短信格式 - 58团
         if (AccountType.RESALER.equals(coupon.order.userType) && coupon.order.getResaler().loginName.equals(Resaler.WUBA_LOGIN_NAME)) {
 
@@ -178,9 +177,22 @@ public class OrderECouponMessage implements Serializable {
         List<String> ecouponSNs = new ArrayList<>();
         List<String> ecouponPasswords = new ArrayList<>();
         ECoupon lastECoupon = null;
+        boolean isFirst = true;
         for (ECoupon e : orderItems.getECoupons()) {
-            ecouponSNs.add(e.eCouponSn);
-            ecouponPasswords.add(e.eCouponPassword);
+            if (StringUtils.isNotBlank(e.eCouponPassword)) {
+                StringBuilder sb = new StringBuilder();
+                if (isFirst) {
+                    sb.append("");
+                    isFirst = false;
+                } else {
+                    sb.append("券号");
+                }
+                sb.append(e.eCouponSn).append("密码").append(e.eCouponPassword);
+
+                ecouponSNs.add(sb.toString());
+            } else {
+                ecouponSNs.add(e.eCouponSn);
+            }
             lastECoupon = e;
         }
 
@@ -207,13 +219,7 @@ public class OrderECouponMessage implements Serializable {
         }
         String message = (StringUtils.isNotEmpty(orderItems.goods.title) ? orderItems.goods.title : orderItems.goods.shortName) +
                 summary;
-        if (ecouponPasswords.size() == 0) {
-            message += "券号" + ecouponStr;
-        } else {
-            for (int i = 0; i < ecouponPasswords.size(); i++) {
-                message += "券号" + ecouponSNs.get(i) + " 密码" + ecouponPasswords.get(i);
-            }
-        }
+        message += "券号" + ecouponStr;
         message += note + "截止" + dateFormat.format(lastECoupon.expireAt) + "客服4006262166【一百券】";
 
 
