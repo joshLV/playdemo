@@ -24,49 +24,52 @@ public class ResalerProduct extends Model {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "partner")
-    public OuterOrderPartner partner;      //合作伙伴
+    public OuterOrderPartner partner;       //合作伙伴
 
     @ManyToOne
-    public Goods goods;
+    public Goods goods;                     //关联的一百券商品
 
     @Column(name = "goods_link_id")
     @Index(name = "goods_link_id_index")
-    public Long goodsLinkId;
+    public Long goodsLinkId;                //商品link_id
 
     @Column(name = "partner_product_id")
-    public String partnerProductId;//第三方的产品ID
+    public String partnerProductId;         //第三方的产品ID
 
     @Column(name = "url")
-    public String url;          //第三方的url
+    public String url;                      //第三方的url
 
     @Column(name = "lock_version")
     @Version
     public int lockVersion;
 
     @Column(name = "creator_id")
-    public Long creatorId;
+    public Long creatorId;                  //创建人ID
 
     @Transient
     public String creator;
 
     @Column(name = "last_modifier_id")
-    public Long lastModifierId;
+    public Long lastModifierId;             //最后修改人ID
 
     @Transient
     public String lastModifier;
 
     @Column(name = "created_at")
-    public Date createdAt;
+    public Date createdAt;                  //创建时间
 
     @Column(name = "updated_at")
-    public Date updatedAt;
+    public Date updatedAt;                  //最后修改时间
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    public ResalerProductStatus status;
+    public ResalerProductStatus status;     //状态
 
     @Enumerated(EnumType.ORDINAL)
-    public DeletedStatus deleted;
+    public DeletedStatus deleted;           //是否删除，0 未删除， 1 已删除
+
+    @Column(name = "end_sale")
+    public Date endSale;                    //下架时间
 
     public ResalerProduct() {
         this.createdAt = new Date();

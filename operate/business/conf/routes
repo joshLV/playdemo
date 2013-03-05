@@ -50,7 +50,6 @@ GET     /resaler-products                               ResalerProducts.index
 GET     /resaler-products/journal/json/{journalId}      ResalerProducts.journalJson
 GET     /resaler-products/journal/{productId}           ResalerProducts.journal
 GET     /resaler-products/products/{partner}/{goodsId}  ResalerProducts.showProducts
-GET     /resaler-products/add                           ResalerProducts.showAdd
 POST    /resaler-products/add                           ResalerProducts.add
 
 # 分销商品记录
