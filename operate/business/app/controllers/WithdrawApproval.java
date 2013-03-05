@@ -173,10 +173,8 @@ public class WithdrawApproval extends Controller {
                     mobile = supplierUser.mobile;
                     title = arrayName[0];
                 }
-                sendContent += "如有疑问请致电4006262166";
-                if (StringUtils.isNotBlank(OperateRbac.currentUser().mobile)) {
-                    sendContent += "或致电" + OperateRbac.currentUser().mobile;
-                }
+                sendContent += ".如有疑问请致电一百券财务54276001-8003【一百券】";
+
                 if (supplier != null && StringUtils.isNotBlank(supplier.accountLeaderMobile) && supplierUser != null && !supplier.accountLeaderMobile.equals(supplierUser.mobile)) {
                     SMSUtil.send(sendContent, supplier.accountLeaderMobile);
                 }
@@ -193,7 +191,7 @@ public class WithdrawApproval extends Controller {
                 } else if (StringUtils.isNotBlank(user.loginName)) {
                     title = user.loginName;
                 }
-                sendContent += "如有疑问请致电4006262166";
+                sendContent += ".如有疑问请致电4006262166【一百券】";
                 break;
             case RESALER:
                 Resaler resaler = Resaler.findById(bill.account.uid);
@@ -202,10 +200,7 @@ public class WithdrawApproval extends Controller {
                 }
                 mobile = resaler.mobile;
                 title = bill.applier;
-                sendContent += "如有疑问请致电4006262166";
-                if (StringUtils.isNotBlank(OperateRbac.currentUser().mobile)) {
-                    sendContent += "或致电" + OperateRbac.currentUser().mobile;
-                }
+                sendContent += ".如有疑问请致电4006262166【一百券】";
                 break;
         }
         if (StringUtils.isBlank(mobile) || StringUtils.isBlank(title)) {
