@@ -5,7 +5,6 @@ package yabo.extension.base;
  *
  * 具体业务扩展需要实现此接口，并定义自己的业务扩展方法。
  *
- * 我们约定，
  */
 public interface BusinessExtension<T extends BusinessContext> {
 

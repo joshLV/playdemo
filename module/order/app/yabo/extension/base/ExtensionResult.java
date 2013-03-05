@@ -10,4 +10,18 @@ public class ExtensionResult {
     public int code;
 
     public String message;
+
+    public static ExtensionResult build() {
+        return new ExtensionResult();
+    }
+
+    public ExtensionResult code(int value) {
+        this.code = value;
+        return this;
+    }
+
+    public ExtensionResult message(String value) {
+        this.message = value;
+        return this;
+    }
 }
