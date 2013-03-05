@@ -182,7 +182,6 @@ public class OrderECouponMessage implements Serializable {
             if (StringUtils.isNotBlank(e.eCouponPassword)) {
                 StringBuilder sb = new StringBuilder();
                 if (isFirst) {
-                    sb.append("");
                     isFirst = false;
                 } else {
                     sb.append("券号");
