@@ -34,6 +34,12 @@ public class ECouponFactory extends ModelFactory<ECoupon> {
         return eCoupon;
     }
 
+    @Factory(name = "password")
+    public ECoupon defineWithPassword(ECoupon eCoupon) {
+        eCoupon.eCouponPassword = "12234" + FactoryBoy.sequence(ECoupon.class);
+        return eCoupon;
+    }
+
     @Factory(name = "couponForCommissionsTest")
     public ECoupon defineCouponForCommissionsTest(ECoupon eCoupon) {
         eCoupon.eCouponSn = "1234566001";
