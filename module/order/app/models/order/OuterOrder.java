@@ -46,6 +46,11 @@ public class OuterOrder extends Model {
     @Column(name = "lock_version")
     public int lockVersion;         //乐观锁
 
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_type")
+    public OuterOrderType orderType; //此订单的产生类型
+
     public OuterOrder() {
         this.createdAt = new Date();
         this.lockVersion = 0;

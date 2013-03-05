@@ -417,6 +417,10 @@ GET     /sku/{id}/edit                  SkuManage.edit
 PUT     /sku/{id}                       SkuManage.update
 GET     /goods_sku/{brandId}            SkuManage.goodsSku
 
+#导入渠道订单
+GET     /import_partner_orders                    ImportPartnerOrders.index
+POST    /import_partner_orders                    ImportPartnerOrders.upload
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
