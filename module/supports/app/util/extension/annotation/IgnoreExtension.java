@@ -1,4 +1,4 @@
-package yabo.extension.annotation;
+package util.extension.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,10 +8,9 @@ import java.lang.annotation.Target;
 /**
  * User: tanglq
  * Date: 13-3-4
- * Time: 下午11:10
+ * Time: 下午11:09
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-public @interface ExtensionPoint {
-    String value();
+public @interface IgnoreExtension {
 }

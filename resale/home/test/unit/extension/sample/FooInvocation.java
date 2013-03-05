@@ -1,9 +1,8 @@
-package unit.yabo.extension.sample;
+package unit.extension.sample;
 
 import play.Logger;
-import yabo.extension.annotation.ExtensionPoint;
-import yabo.extension.base.BusinessExtension;
-import yabo.extension.base.ExtensionResult;
+import util.extension.ExtensionResult;
+import util.extension.annotation.ExtensionPoint;
 
 /**
  * User: tanglq
@@ -11,7 +10,7 @@ import yabo.extension.base.ExtensionResult;
  * Time: 下午10:28
  */
 @ExtensionPoint("Sample")
-public class FooExtension implements BusinessExtension<SampleContext> {
+public class FooInvocation extends SampleInvocation {
 
     @Override
     public ExtensionResult execute(SampleContext context) {
@@ -21,7 +20,7 @@ public class FooExtension implements BusinessExtension<SampleContext> {
     }
 
     @Override
-    public boolean canUse(SampleContext context) {
+    public boolean match(SampleContext context) {
         Logger.info("check foo");
         return "foo".equals(context.type);
     }

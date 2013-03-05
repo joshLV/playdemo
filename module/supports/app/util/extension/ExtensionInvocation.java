@@ -1,4 +1,4 @@
-package yabo.extension.base;
+package util.extension;
 
 /**
  * 业务扩展统一抽象接口.
@@ -6,7 +6,7 @@ package yabo.extension.base;
  * 具体业务扩展需要实现此接口，并定义自己的业务扩展方法。
  *
  */
-public interface BusinessExtension<T extends BusinessContext> {
+public interface ExtensionInvocation<T extends ExtensionContext> {
 
     ExtensionResult execute(T context);
 
@@ -15,5 +15,5 @@ public interface BusinessExtension<T extends BusinessContext> {
      * @param context
      * @return 如果返回True，表示适用，会
      */
-    boolean canUse(T context);
+    boolean match(T context);
 }

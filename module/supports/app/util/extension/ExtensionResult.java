@@ -1,4 +1,4 @@
-package yabo.extension.base;
+package util.extension;
 
 /**
  * 业务扩展返回值。
