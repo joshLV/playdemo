@@ -135,7 +135,10 @@ public class ImportCoupons extends Controller {
         ImportedCouponTemp.deleteAll();
 
         goods.refresh();
+//        List<ImportCoupons> importCouponsList = ImportedCoupon.find("goods=? ", goods).fetch();
         goods.cumulativeStocks += insertCount;
+//        goods.cumulativeStocks = Long.valueOf(importCouponsList.size());
+
         goods.save();
         index("无", StringUtils.join(duplicateCouponsInTemp, ";  "), StringUtils.join(duplicateCouponsWithIC, ";  "));
     }
