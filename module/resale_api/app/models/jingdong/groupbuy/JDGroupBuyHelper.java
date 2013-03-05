@@ -30,7 +30,7 @@ public class JDGroupBuyHelper {
      * @return 验证结果.
      */
     public static boolean verifyOnJingdong(ECoupon coupon){
-        if (coupon.status != ECouponStatus.UNCONSUMED || coupon.partner != ECouponPartner.JD) {
+        if (coupon.partner != ECouponPartner.JD) {
             return false;
         }
 

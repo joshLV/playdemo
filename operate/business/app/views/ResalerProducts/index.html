@@ -9,22 +9,14 @@
 #{set 'moreStyles'}
 #{/set}
 <div class="body">
-<legend>分销商品管理</legend>
-<form class="form-horizontal" name="frmlist" id="frmlist" action="@{ResalerProducts.index()}" method="GET">
-    <table width="100%">
-        <tr>
-            <td width="30%">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
-            #{vx.selectInputField name:"supplierName", id:"condition.supplierId", list:supplierList, value:condition?.supplierId, array:"supplierArray",importJs:true/}</td>
-
-            <td width="30%">商品名称：<input type="text" name="condition.shortName" class="input-medium"
-                                        value="${condition?.shortName}"/></td>
-            <td width="30%">商品编码：<input type="text" name="condition.code" class="input-medium"
-                                        value="${condition?.code}"/></td>
-            <td>
-                <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
-            </td>
-        </tr>
-    </table>
+<legend>分销商品管理 </legend>
+<form class="form-inline" name="frmlist" id="frmlist" action="@{ResalerProducts.index()}" method="GET">
+    商户：#{vx.selectInputField name:"supplierName", id:"condition.supplierId", list:supplierList,
+    value:condition?.supplierId, array:"supplierArray",importJs:true/}
+    商品名称：<input type="text" name="condition.shortName" class="input-medium" value="${condition?.shortName}"/>
+    商品编码：<input type="text" name="condition.code" class="input-medium" value="${condition?.code}"/>
+    <button class="btn btn-primary" id="searchbtn" type="submit"> 搜索 </button>
+    <a class="btn" href="@{ResalerProducts.showAdd}">手动添加</a>
 </form>
 
 
