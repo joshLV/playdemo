@@ -35,7 +35,7 @@ public class OperateCouponMakeUp extends Controller {
 
             ExtensionResult result = eCoupon.verifyAndCheckOnPartnerResaler();
 
-            if (result.code == 0) {
+            if (result.isOk()) {
                 successMessage.append(c).append(",");
             }else {
                 failMessage.append(c).append(" 在第三方消费失败-").append(result.toString()).append("\n");

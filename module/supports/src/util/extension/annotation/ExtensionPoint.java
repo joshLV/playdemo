@@ -6,9 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * User: tanglq
- * Date: 13-3-4
- * Time: 下午11:10
+ * 扩展点标注。
+ *
+ * 用于标注一类扩展点，ExtensionInvoker基于标注类的子类进行扩展。
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})

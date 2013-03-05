@@ -4,9 +4,8 @@ import util.extension.ExtensionInvocation;
 import util.extension.annotation.ExtensionPoint;
 
 /**
- * User: tanglq
- * Date: 13-3-5
- * Time: 下午5:34
+ * 券验证Invocation.
+ * 用于扩展券验证时的行为。
  */
 @ExtensionPoint("ECouponVerifyCheck")
 public abstract class ECouponVerifyInvocation implements ExtensionInvocation<ECouponVerifyContext> {

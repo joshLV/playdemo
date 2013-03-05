@@ -2,14 +2,12 @@ package extension.order;
 
 import models.order.ECoupon;
 import models.order.ECouponPartner;
-import util.extension.ExtensionContext;
+import util.extension.InvocationContext;
 
 /**
- * User: tanglq
- * Date: 13-3-5
- * Time: 下午5:35
+ * 券验证检查上下文.
  */
-public class ECouponVerifyContext implements ExtensionContext {
+public class ECouponVerifyContext implements InvocationContext {
 
     public ECoupon eCoupon;
 

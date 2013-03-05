@@ -6,7 +6,7 @@ package util.extension;
  * 具体业务扩展需要实现此接口，并定义自己的业务扩展方法。
  *
  */
-public interface ExtensionInvocation<T extends ExtensionContext> {
+public interface ExtensionInvocation<T extends InvocationContext> {
 
     ExtensionResult execute(T context);
 

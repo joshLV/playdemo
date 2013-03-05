@@ -32,6 +32,10 @@ public class ExtensionResult {
         return this;
     }
 
+    public boolean isOk() {
+        return this.code == 0;
+    }
+
     @Override
     public String toString() {
         return String.format("Result[%d: %s]", this.code, this.message);

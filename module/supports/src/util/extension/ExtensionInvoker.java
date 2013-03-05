@@ -3,7 +3,7 @@ package util.extension;
 import play.Logger;
 import play.Play;
 import util.extension.annotation.ExtensionPoint;
-import util.extension.annotation.IgnoreExtension;
+import util.extension.annotation.IgnoreInvocation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +40,7 @@ public class ExtensionInvoker {
                                 extensionInvocationList = new ArrayList<>();
                                 extensionMap.put(categoryClazz, extensionInvocationList);
                             }
-                            if (!categoryClazz.isAnnotationPresent(IgnoreExtension.class)) {
+                            if (!categoryClazz.isAnnotationPresent(IgnoreInvocation.class)) {
                                 // 只加入没有Ingore的类
                                 ExtensionInvocation invocation = (ExtensionInvocation) invocationClazz.newInstance();
                                 extensionInvocationList.add(invocation);
@@ -56,7 +56,7 @@ public class ExtensionInvoker {
 
     // TODO: public static List<ExtensionResult> runMatchs(...)
 
-    public static ExtensionResult run(Class<?> extensionPointName, ExtensionContext context) {
+    public static ExtensionResult run(Class<?> extensionPointName, InvocationContext context) {
         return run(extensionPointName, context, null);
     }
 
@@ -67,7 +67,7 @@ public class ExtensionInvoker {
      * @return
      */
     public static ExtensionResult run(Class<?> extensionPointName,
-                                      ExtensionContext context, DefaultAction defaultAction) {
+                                      InvocationContext context, DefaultAction defaultAction) {
         List<ExtensionInvocation> extensionList = extensionMap.get(extensionPointName);
 
         if (extensionList != null) { //无配置时会出现NullPointException

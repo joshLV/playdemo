@@ -6,11 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * User: tanglq
- * Date: 13-3-4
- * Time: 下午11:09
+ * 使用此标注，可以禁用掉一个ExtensionINvocation.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-public @interface IgnoreExtension {
+public @interface IgnoreInvocation {
 }

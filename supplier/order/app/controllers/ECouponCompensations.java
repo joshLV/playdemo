@@ -35,7 +35,7 @@ public class ECouponCompensations extends Controller {
             // 只有已消费的才需要补偿
             if (ecoupon.status == ECouponStatus.CONSUMED) {
                 ExtensionResult result = ecoupon.verifyAndCheckOnPartnerResaler();
-                if (result.code == 0) {
+                if (result.isOk()) {
                     ec.compensatedAt = new Date();
                     ec.result = ecoupon.partner + " verify SUCCESS";
                     count += 1;

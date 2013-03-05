@@ -24,7 +24,7 @@ public class AutoConsumeCouponJob extends Job {
                 ECouponCreateType.IMPORT, DeletedStatus.UN_DELETED).fetch(20);
         for(ECoupon coupon : couponList) {
             ExtensionResult result = coupon.verifyAndCheckOnPartnerResaler();
-            if (result.code == 0) { //验证成功
+            if (result.isOk()) { //验证成功
                 coupon.autoConsumed = DeletedStatus.DELETED;
                 coupon.save();
             }
