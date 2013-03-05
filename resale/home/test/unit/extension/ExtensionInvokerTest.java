@@ -43,12 +43,14 @@ public class ExtensionInvokerTest extends UnitTest {
         assertEquals(-100, barContext.result);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testNotsupportInvocation() throws Exception {
         SampleContext barContext = new SampleContext();
         barContext.id = 1l;
         barContext.type = "bar";
 
-        ExtensionInvoker.run(NotsupportedInvocation.class, barContext);
+        ExtensionResult result = ExtensionInvoker.run(NotsupportedInvocation.class, barContext);
+        assertEquals(0, result.code);
+        assertEquals("Not Found Any Invocation", result.message);
     }
 }

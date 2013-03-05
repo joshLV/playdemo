@@ -1,5 +1,6 @@
 package util.extension;
 
+import play.Logger;
 import play.Play;
 import util.extension.annotation.ExtensionPoint;
 import util.extension.annotation.IgnoreExtension;
@@ -28,7 +29,8 @@ public class ExtensionInvoker {
                     ExtensionPoint extensionPoint = categoryClazz.getAnnotation(ExtensionPoint.class);
                     if (extensionPoint != null) {
 
-                        // String pointName = extensionPoint.value();
+                        String pointName = extensionPoint.value();
+                        Logger.info("Found " + pointName + ":" + categoryClazz.getName());
                         // 得到此类别的所有子类，作为具体的执行子类
                         List<Class> invocationClazzList = Play.classloader.getAssignableClasses(categoryClazz);
 
@@ -40,7 +42,7 @@ public class ExtensionInvoker {
                             }
                             if (!categoryClazz.isAnnotationPresent(IgnoreExtension.class)) {
                                 // 只加入没有Ingore的类
-                                ExtensionInvocation invocation = (ExtensionInvocation) categoryClazz.newInstance();
+                                ExtensionInvocation invocation = (ExtensionInvocation) invocationClazz.newInstance();
                                 extensionInvocationList.add(invocation);
                             }
                         }
@@ -50,7 +52,6 @@ public class ExtensionInvoker {
                 e.printStackTrace();
             }
         }
-        // extensionMap.put(extensionClass, businessExtensionList);
     }
 
     // TODO: public static List<ExtensionResult> runMatchs(...)
@@ -60,19 +61,20 @@ public class ExtensionInvoker {
     }
 
     /**
-     *
      * @param extensionPointName
      * @param context
-     * @param defaultAction //TODO: 这个需要有一个专门接口，不要用BusinessExtension
+     * @param defaultAction      //TODO: 这个需要有一个专门接口，不要用BusinessExtension
      * @return
      */
     public static ExtensionResult run(Class<?> extensionPointName,
                                       ExtensionContext context, DefaultAction defaultAction) {
         List<ExtensionInvocation> extensionList = extensionMap.get(extensionPointName);
 
-        for (ExtensionInvocation extension : extensionList) {
-            if (extension.match(context)) {
-                return extension.execute(context);
+        if (extensionList != null) { //无配置时会出现NullPointException
+            for (ExtensionInvocation extension : extensionList) {
+                if (extension.match(context)) {
+                    return extension.execute(context);
+                }
             }
         }
 
@@ -80,7 +82,9 @@ public class ExtensionInvoker {
         if (defaultAction != null) {
             return defaultAction.execute(context);
         }
-        throw new UnsupportedOperationException("Not Found Any " + extensionPointName.getName() + " to run!");
+        Logger.info("Not Found Any " + extensionPointName.getName()
+                + " or DefaultAction to run!");
+        return ExtensionResult.build().code(0).message("Not Found Any Invocation");
     }
 
 }
