@@ -39,6 +39,7 @@ require:
     - supports -> supports
     - commons-httpclient -> commons-httpclient 3.1
     - net.coobird -> thumbnailator 0.4.1
+    - org.apache.poi -> ooxml-schemas 1.0
 
 repositories:
     - mavenRepository:
@@ -49,6 +50,7 @@ repositories:
             - commons-lang -> *
             - org.jsoup -> *
             - com.taobao -> *
+            - org.apache.poi -> *
         m2compatible: true
 
     - play1ContributedModules:
