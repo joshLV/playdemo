@@ -1,10 +1,12 @@
 package controllers;
 
+import com.google.gson.Gson;
 import models.order.PartnerOrderView;
 import net.sf.jxls.reader.ReaderBuilder;
 import net.sf.jxls.reader.XLSReadStatus;
 import net.sf.jxls.reader.XLSReader;
 import operate.rbac.annotations.ActiveNavigation;
+import play.Logger;
 import play.mvc.Controller;
 import play.mvc.With;
 import play.vfs.VirtualFile;
@@ -44,24 +46,28 @@ public class ImportPartnerOrders extends Controller {
             String errorInfo = "请先选择文件！";
             render("ImportPartnerOrders/index.html", errorInfo);
         }
+        List<PartnerOrderView> partnerOrderViews = new ArrayList<>();
         try {
-            InputStream inputXML = VirtualFile.fromRelativePath("app/views/ImportPartnerOrders/" + partner + "Transfer.xml").inputstream();
-            List<PartnerOrderView> partnerOrderViews = new ArrayList<>();
+            //准备转换器
+            InputStream inputXML = VirtualFile.fromRelativePath(
+                    "app/views/ImportPartnerOrders/" + partner + "Transfer.xml").inputstream();
+            XLSReader mainReader = ReaderBuilder.buildFromXML(inputXML);
+
+            //准备javabean
             Map<String, Object> beans = new HashMap<>();
             beans.put("partnerOrderViews", partnerOrderViews);
 
-            XLSReader mainReader = ReaderBuilder.buildFromXML(inputXML);
-            InputStream inputXLS = new FileInputStream(orderFile);
-            XLSReadStatus readStatus = mainReader.read(inputXLS, beans);
+            //转换
+            XLSReadStatus readStatus = mainReader.read(new FileInputStream(orderFile), beans);
+
             if (!readStatus.isStatusOK()) {
-                error("转换失败.");
-            } else {
-                for (PartnerOrderView view : partnerOrderViews) {
-                    System.out.println(view.zipCode+ ">>>>view.outerGoodsNo" + view.address);
-                }
+                String errorInfo = "转换出错，请检查文件格式！";
+                render("ImportPartnerOrders/index.html", errorInfo);
             }
         } catch (Exception e) {
-            error(e);
+            String errorInfo = "转换出现异常，请检查文件格式！";
+            render("ImportPartnerOrders/index.html", errorInfo);
         }
+        Logger.info("partnerOrderViews:\n%s",new Gson().toJson(partnerOrderViews));
     }
 }

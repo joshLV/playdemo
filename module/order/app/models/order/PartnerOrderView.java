@@ -56,6 +56,25 @@ public class PartnerOrderView {
      */
     public String phone;
 
+    /**
+     * 付款时间
+     */
+    public Date paidAt;
+
+    /**
+     * 创建时间
+     */
+    public Date createdAt;
+
+    /**
+     * 收货地址
+     */
+    public String address;
+    /**
+     * 邮政
+     */
+    public String zipCode;
+
     public Long getOuterGoodsNo() {
         return outerGoodsNo;
     }
@@ -152,14 +171,6 @@ public class PartnerOrderView {
         this.createdAt = createdAt;
     }
 
-    /**
-     * 收货地址
-     */
-    public String address;
-    /**
-     * 邮政
-     */
-    public String zipCode;
 
     public String getReceiver() {
         return receiver;
@@ -168,16 +179,4 @@ public class PartnerOrderView {
     public void setReceiver(String receiver) {
         this.receiver = receiver;
     }
-
-
-    /**
-     * 付款时间
-     */
-    public Date paidAt;
-
-
-    /**
-     * 创建时间
-     */
-    public Date createdAt;
 }
