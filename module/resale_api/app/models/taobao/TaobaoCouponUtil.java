@@ -150,7 +150,7 @@ public class TaobaoCouponUtil {
      * @return 是否验证通过
      */
     public static boolean verifyOnTaobao(ECoupon coupon) {
-        if (coupon.status != ECouponStatus.UNCONSUMED || coupon.partner != ECouponPartner.TB) {
+        if (coupon.partner != ECouponPartner.TB) {
             return false;
         }
 

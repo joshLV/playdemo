@@ -48,7 +48,7 @@ public class WubaUtil {
      * @return 是否验证成功
      */
     public static boolean verifyOnWuba(ECoupon coupon) {
-        if (coupon.status != ECouponStatus.UNCONSUMED || coupon.partner != ECouponPartner.WB) {
+        if (coupon.partner != ECouponPartner.WB) {
             return false;
         }
         Map<String, Object> params = new HashMap<>();

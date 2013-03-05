@@ -62,7 +62,7 @@ public class DDGroupBuyUtil {
      * @return 是否验证成功
      */
     public static boolean verifyOnDangdang(ECoupon coupon) {
-        if (coupon.status != ECouponStatus.UNCONSUMED || coupon.partner != ECouponPartner.DD) {
+        if (coupon.partner != ECouponPartner.DD) {
             return false;
         }
         OuterOrder outerOrder = OuterOrder.find("byYbqOrder", coupon.order).first();

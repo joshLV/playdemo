@@ -4,6 +4,7 @@ import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.dangdang.groupbuy.DDGroupBuyUtil;
 import models.order.ECoupon;
+import models.order.ECouponPartner;
 import models.order.OuterOrder;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
@@ -44,7 +45,12 @@ public class DDAPIUtilTest extends FunctionalTest {
 
     @Test
     public void 测试针对在当当退款的券验证券状态的当当接口() throws Exception {
-        final ECoupon ecoupon = FactoryBoy.create(ECoupon.class);
+        final ECoupon ecoupon = FactoryBoy.create(ECoupon.class, new BuildCallback<ECoupon>() {
+            @Override
+            public void build(ECoupon target) {
+                target.partner = ECouponPartner.DD;
+            }
+        });
         FactoryBoy.create(OuterOrder.class, new BuildCallback<OuterOrder>() {
             @Override
             public void build(OuterOrder target) {
@@ -62,7 +68,12 @@ public class DDAPIUtilTest extends FunctionalTest {
 
     @Test
     public void 测试验证券状态的当当接口返回调用失败的情况() throws Exception {
-        ECoupon ecoupon = FactoryBoy.create(ECoupon.class);
+        final ECoupon ecoupon = FactoryBoy.create(ECoupon.class, new BuildCallback<ECoupon>() {
+            @Override
+            public void build(ECoupon target) {
+                target.partner = ECouponPartner.DD;
+            }
+        });
         String data = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>" +
                 "<resultObject><status_code>0</status_code><error_code>3003</error_code>" +
                 "<desc><![CDATA[序列号或验证码不存在，请检查序列号或验证码是否输入正确]]></desc></resultObject>";
@@ -72,7 +83,12 @@ public class DDAPIUtilTest extends FunctionalTest {
 
     @Test
     public void 测试验证券后通知当当的接口() {
-        final ECoupon ecoupon = FactoryBoy.create(ECoupon.class);
+        final ECoupon ecoupon = FactoryBoy.create(ECoupon.class, new BuildCallback<ECoupon>() {
+            @Override
+            public void build(ECoupon target) {
+                target.partner = ECouponPartner.DD;
+            }
+        });
         FactoryBoy.create(OuterOrder.class, new BuildCallback<OuterOrder>() {
             @Override
             public void build(OuterOrder target) {
@@ -90,7 +106,12 @@ public class DDAPIUtilTest extends FunctionalTest {
 
     @Test
     public void 测试验证券后通知当当的接口出错的情况() {
-        ECoupon ecoupon = FactoryBoy.create(ECoupon.class);
+        final ECoupon ecoupon = FactoryBoy.create(ECoupon.class, new BuildCallback<ECoupon>() {
+            @Override
+            public void build(ECoupon target) {
+                target.partner = ECouponPartner.DD;
+            }
+        });
         String data = "<?xml version=\"1.0\" encoding=\"utf8\" standalone=\"yes\" ?>" +
                 "<resultObject><ver>1.0</ver><spid>3000003</spid><status_code>0</status_code>" +
                 "<error_code>3003</error_code><desc><![CDATA[您输入的验证码不存在，请检查输入是否正确]]></desc>" +
