@@ -141,24 +141,27 @@
         <div class="control-group">
             <label class="control-label">团购开始时间 *</label>
             <div class="controls">
-                <input type="text" name="startDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="${goods.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}">
+                <input type="text" name="startDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+                       class="Wdate" value="${goods.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}">
                 团购结束时间 *
-                <input type="text" name="endDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"  class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:ss')}">
+                <input type="text" name="endDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+                       class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:ss')}">
             </div>
         </div>
         <div class="control-group">
             <label class="control-label">券生效日期 *</label>
             <div class="controls">
-                <input type="text" name="effectStartDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"  class="Wdate" value="${goods.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}">
+                <input type="text" name="effectStartDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+                       class="Wdate" value="${goods.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}">
                 券&nbsp;截止&nbsp;日&nbsp;期 *
-                <input type="text" name="effectEndDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"  class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:ss')}">
+                <input type="text" name="effectEndDate" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+                       class="Wdate" value="${goods.expireAt?.format('yyyy-MM-dd HH:mm:ss')}">
             </div>
         </div>
         <div class="control-group">
             <label class="control-label" for="inputMaxNumber">商品总量上限 </label>
             <div class="controls">
-                <input type="text" id="inputMaxNumber" name="teamMaxNum" value="">
-                <span class="help-inline">可为空</span>
+                <input type="text" id="inputMaxNumber" name="teamMaxNum" value="${goods.getRealStocks()}">
             </div>
         </div>
         <div class="control-group">
