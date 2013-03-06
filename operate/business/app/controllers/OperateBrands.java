@@ -188,7 +188,6 @@ public class OperateBrands extends Controller {
         List<Brand> brandList = Brand.findByOrder(supplier, loginUserId);
 
         String skuBrand = request.params.get("skuBrand");
-        System.out.println(skuBrand + ">>>>skuBrand");
         if (StringUtils.isNotBlank(skuBrand)) {
             render("OperateBrands/skuBrands.html",brandList);
         }
