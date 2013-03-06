@@ -41,11 +41,13 @@ public class RemoteRecallCheck {
 
         T t;
 
-        if (needRecall && CacheHelper.exists(cacheResultKey)) {
+        if (needRecall && !CacheHelper.exists(cacheResultKey)) {
             t = callback.doCall();
             CacheHelper.setCache(cacheResultKey, t, "3h");
+            Logger.info("RemoteRecallCheck.call: doCall: t=" + t);
         } else {
             t = CacheHelper.getCache(cacheResultKey);
+            Logger.info("RemoteRecallCheck.call: getFromCache: t=" + t);
         }
         Logger.info("RemoteRecallCheck.call: cacheNeedRecallKey=" + cacheNeedRecallKey +
                 ", value=" + needRecall + ", t=" + t);

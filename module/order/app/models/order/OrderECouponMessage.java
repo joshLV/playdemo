@@ -142,6 +142,7 @@ public class OrderECouponMessage implements Serializable {
         if (StringUtils.isNotBlank(coupon.eCouponPassword)) {
             couponInfo += "," + "密码" + coupon.eCouponPassword;
         }
+
         String expiredDate = dateFormat.format(coupon.expireAt);
         OrderECouponSMSContext context = new OrderECouponSMSContext(coupon.order, coupon.goods, couponInfo, note, expiredDate);
 

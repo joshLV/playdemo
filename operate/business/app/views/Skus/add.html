@@ -5,9 +5,9 @@
 #{/set}
 #{include '/share/nav.html' /}
 <div class="body">
-#{form @SkuManage.create() , id:'form',class:"form-horizontal" }
+#{form @Skus.create() , id:'form',class:"form-horizontal" }
     <legend>${title}</legend>
     #{set action:"add"/}
-    #{include '/SkuManage/skuForm.html'/}
+    #{include '/Skus/skuForm.html'/}
 #{/form}
 </div>

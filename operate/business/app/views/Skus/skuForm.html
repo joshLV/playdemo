@@ -11,7 +11,7 @@
     <label class="control-label"><span style="color: red; ">*</span>商户</label>
 
     <div class="controls">
-        #{layout_operate.selectInputField name:"supplierName", id:"sku.supplierId", list:supplierList/}
+        #{layout_operate.selectInputField name:"supplierName", id:"sku.supplier.id", list:supplierList/}
         <span class="error">#{error 'sku.supplierId'/}</span>
     </div>
 </div>
@@ -20,16 +20,16 @@
 </div>
 #{/if}
 #{else}
-<input type="hidden" name="sku.supplierId" value="${sku?.supplierId}">
+<input type="hidden" name="sku.supplier.id" value="${sku?.supplier?.id}">
 <input type="hidden" name="sku.brand.id" value="${sku?.brand?.id}">
 <input type="hidden" name="sku.supplierCategory.id" value="${sku?.supplierCategory?.id}">
     #{layout_operate.textField name:'sku.supplierCategoryName', value:sku?.supplierCategory?.name, disabled:true/}
-    #{layout_operate.textField name:'sku.supplierName', value:sku?.getSupplier()?.otherName, disabled:true/}
+    #{layout_operate.textField name:'sku.supplierName', value:sku?.supplier?.otherName, disabled:true/}
     #{layout_operate.textField name:'sku.brandName', value:sku?.brand?.name, disabled:true/}
 #{/else}
 #{layout_operate.textField name:'sku.name', value:sku?.name, required:true/}
 #{layout_operate.textField name:'sku.marketPrice', value:sku?.marketPrice?:"0", note:'元', required:true/}
-#{layout_operate.textField name:'sku.stock', value:sku?.stock, note:'个', required:true/}
+*{#{layout_operate.textField name:'sku.stock', value:sku?.stock, note:'个', required:true/}}*
 
 <div class="form-actions">
     <input class="btn btn-primary" id="save" type="submit" value="保存" #{if "add".equals(action)}disabled#{/if}>

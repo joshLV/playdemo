@@ -1,11 +1,6 @@
 #{extends 'layout_operate/layout.html' /}
 #{set title:'分销商品管理' /}
 #{include '/share/nav.html' /}
-#{set 'moreScripts'}
-    <script>
-     $("a[rel='tooltip']").tooltip({container:'body'});
-    </script>
-#{/set}
 #{set 'moreStyles'}
 #{/set}
 <div class="body">
@@ -16,7 +11,19 @@
     商品名称：<input type="text" name="condition.shortName" class="input-medium" value="${condition?.shortName}"/>
     商品编码：<input type="text" name="condition.code" class="input-medium" value="${condition?.code}"/>
     <button class="btn btn-primary" id="searchbtn" type="submit"> 搜索 </button>
-    <a class="btn" href="@{ResalerProducts.showAdd}">手动添加</a>
+
+    <button class="btn" data-html="true" data-toggle="popover" data-placement="bottom" type="button"
+       data-content="<form action='@{ResalerProducts.add}' method='post'> <fieldset>
+               <select name='product.partner'>
+                 #{list items:models.order.OuterOrderPartner.values(), as:'partner'}
+                 <option value = '${partner}'> ${partner.partnerName()}</option>
+                 #{/list}
+               </select>
+               <input type='text' placeholder='一百券商品ID' name='product.goods.id'>
+               <input type='text' placeholder='第三方产品ID' name='product.partnerProductId'>
+               <input type='text' placeholder='第三方产品URL' name='product.url'>
+               <button type='submit' class='btn' id='add-rp'>添加</button> </fieldset> </form>"
+            >手动添加</button>
 </form>
 
 
@@ -80,3 +87,12 @@
 </div>
 </div>
 
+#{set 'moreScripts'}
+<script>
+    $("a[rel='tooltip']").tooltip({container:'body'});
+    $("button[data-toggle='popover']").popover({container:'body'});
+    $("#add-rp").click(function(){
+
+    });
+</script>
+#{/set}

@@ -122,8 +122,8 @@ public class SupplierVerifyECoupons extends Controller {
                         return doVerify(shopId, supplierId, stripedECouponSN, needSmsECoupons);
                     }
                 });
-                eCouponResult.add(result != null ? result : "调用失败");
                 RemoteRecallCheck.cleanUp();
+                eCouponResult.add(result != null ? result : "调用失败");
             }
         }
         sendVerifySMS(needSmsECoupons, shopId);
