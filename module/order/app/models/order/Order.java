@@ -206,10 +206,6 @@ public class Order extends Model {
     @Column(name = "delivery_company")
     public String deliveryCompany;
 
-    @Index(name = "ext_request_sn")
-    @Column(name = "ext_request_sn")
-    public String extRequestSN;
-
     @Column(name = "voucher_value")
     public BigDecimal voucherValue;
 

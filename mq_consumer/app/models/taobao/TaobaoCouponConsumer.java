@@ -5,17 +5,11 @@ import com.google.gson.JsonParser;
 import models.RabbitMQConsumerWithTx;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
-import models.order.DeliveryType;
-import models.order.ECoupon;
-import models.order.ECouponPartner;
-import models.order.NotEnoughInventoryException;
-import models.order.Order;
-import models.order.OrderItems;
-import models.order.OuterOrder;
-import models.order.OuterOrderStatus;
+import models.order.*;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.MaterialType;
+import models.sales.ResalerProduct;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.jobs.OnApplicationStart;
@@ -153,7 +147,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
         Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
         ybqOrder.save();
         try {
-            Goods goods = Goods.findById(outerGroupId);
+            Goods goods = ResalerProduct.getGoods(outerGroupId, OuterOrderPartner.TB);
             if (goods == null) {
                 Logger.info("goods not found: %s", outerGroupId);
                 return null;
