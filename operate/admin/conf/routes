@@ -20,6 +20,13 @@ POST    /edit-password                          OperateUsersPassword.update
 
 GET     /ws-logs                                WebServiceCallLogs.index
 
+# sql executor
+GET     /sql/executor                           WebSqlExcutors.index
+POST    /sql/executor                           WebSqlExcutors.run
+GET     /sql/secret                             WebSqlExcutors.secret
+POST    /sql/secret                             WebSqlExcutors.secret
+GET     /sql/history                            WebSqlExcutors.history
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
