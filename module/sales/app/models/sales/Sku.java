@@ -36,6 +36,7 @@ public class Sku extends Model {
     @Required
     @MaxSize(value = 500)
     public String name;
+
     //市场价
     @Required
     @Column(name = "market_price")

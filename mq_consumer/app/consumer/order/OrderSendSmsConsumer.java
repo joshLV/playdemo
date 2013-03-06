@@ -39,6 +39,7 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
         }
         return smsProvider;
     }
+
     public SMSProvider getSMSProvider2() {
         if (smsProvider == null) {
             smsProvider = SMSFactory.getSMSProvider(SMS_TYPE2);

@@ -5,10 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 短信对象.
+ *
  * User: likang
  */
 public class SMSMessage implements Serializable {
     private static final long serialVersionUID = -8170943259282104651L;
+    private static final String SIGN = "【一百券】";
+
     private String content;
     /**
      * 端口参数。
@@ -17,28 +21,32 @@ public class SMSMessage implements Serializable {
     private String code = "0000";
     private List<String> phoneNumbers;
 
-    public SMSMessage(String content, String phoneNumber, String code){
-        this.content = content;
+    public SMSMessage(String content, String phoneNumber, String code) {
+        this.setContent(content);
         this.phoneNumbers = new ArrayList<>();
         this.code = code;
         this.phoneNumbers.add(phoneNumber);
     }
-    
-    public SMSMessage(String content, String phoneNumber){
+
+    public SMSMessage(String content, String phoneNumber) {
         this(content, phoneNumber, "0000");
     }
 
     public SMSMessage(String content, List<String> phoneNumbers) {
-        this.content = content;
+        this.setContent(content);
         this.phoneNumbers = phoneNumbers;
     }
-    
+
     public String getContent() {
         return content;
     }
 
     public void setContent(String content) {
-        this.content = content;
+        if (content != null && content.endWith(SIGN)) {
+            this.content = content;
+            return;
+        }
+        this.content = content + SIGN;
     }
 
     public List<String> getPhoneNumbers() {
@@ -58,9 +66,9 @@ public class SMSMessage implements Serializable {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder str = new StringBuilder("SMSMessage [content=" + content + ",code=" + code + ",phones=");
-        for(String phone : phoneNumbers){
+        for (String phone : phoneNumbers) {
             str.append(phone).append(",");
         }
         str.append("]");
