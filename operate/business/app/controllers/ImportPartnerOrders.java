@@ -1,7 +1,16 @@
 package controllers;
 
 import com.google.gson.Gson;
+<<<<<<<Updated upstream
+        =======
+import models.accounts.AccountType;
+import models.order.Order;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
+import models.order.OuterOrderStatus;
+>>>>>>>Stashed changes
 import models.order.PartnerOrderView;
+import models.resale.Resaler;
 import net.sf.jxls.reader.ReaderBuilder;
 import net.sf.jxls.reader.XLSReadStatus;
 import net.sf.jxls.reader.XLSReader;
@@ -40,11 +49,11 @@ public class ImportPartnerOrders extends Controller {
      * @param orderFile
      * @param partner
      */
-    public static void upload(File orderFile, String partner) {
-
+    public static void upload(File orderFile, OuterOrderPartner partner) {
+        String msgInfo = "";
         if (orderFile == null) {
-            String errorInfo = "请先选择文件！";
-            render("ImportPartnerOrders/index.html", errorInfo);
+            msgInfo = "请先选择文件！";
+            render("ImportPartnerOrders/index.html", msgInfo);
         }
         List<PartnerOrderView> partnerOrderViews = new ArrayList<>();
         try {
@@ -59,15 +68,35 @@ public class ImportPartnerOrders extends Controller {
 
             //转换
             XLSReadStatus readStatus = mainReader.read(new FileInputStream(orderFile), beans);
-
             if (!readStatus.isStatusOK()) {
-                String errorInfo = "转换出错，请检查文件格式！";
-                render("ImportPartnerOrders/index.html", errorInfo);
+                msgInfo = "转换出错，请检查文件格式！";
+                render("ImportPartnerOrders/index.html", msgInfo);
             }
         } catch (Exception e) {
-            String errorInfo = "转换出现异常，请检查文件格式！";
-            render("ImportPartnerOrders/index.html", errorInfo);
+            msgInfo = "转换出现异常，请检查文件格式！";
+            render("ImportPartnerOrders/index.html", msgInfo);
         }
-        Logger.info("partnerOrderViews:\n%s",new Gson().toJson(partnerOrderViews));
+
+
+        int duplicateCount = 0;
+        List<String> orderList = new ArrayList<>();
+        for (PartnerOrderView view : partnerOrderViews) {
+            OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", partner, view.outerOrderNo).first();
+            if (outerOrder == null) {
+                outerOrder = new OuterOrder();
+                outerOrder.orderId = view.outerOrderNo;
+                outerOrder.partner = OuterOrderPartner.DD;
+                outerOrder.message = new Gson().toJson(view);
+                outerOrder.status = OuterOrderStatus.ORDER_COPY;
+                outerOrder.save();
+                view.toYbqOrder(partner);
+            } else {
+                duplicateCount++;
+                orderList.add(view.outerOrderNo);
+            }
+        }
+        msgInfo = "外部订单导入完毕！";
+        render("ImportPartnerOrders/index.html", msgInfo, duplicateCount);
     }
+
 }

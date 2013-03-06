@@ -1,5 +1,11 @@
 package models.order;
 
+import models.accounts.AccountType;
+import models.resale.Resaler;
+import models.sales.Goods;
+import models.sales.ResalerProduct;
+import play.Logger;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -19,7 +25,7 @@ public class PartnerOrderView {
     /**
      * 第三方订单编号
      */
-    public Long outerOrderNo;
+    public String outerOrderNo;
 
     /**
      * 单价
@@ -83,11 +89,11 @@ public class PartnerOrderView {
         this.outerGoodsNo = outerGoodsNo;
     }
 
-    public Long getOuterOrderNo() {
+    public String getOuterOrderNo() {
         return outerOrderNo;
     }
 
-    public void setOuterOrderNo(Long outerOrderNo) {
+    public void setOuterOrderNo(String outerOrderNo) {
         this.outerOrderNo = outerOrderNo;
     }
 
@@ -178,5 +184,26 @@ public class PartnerOrderView {
 
     public void setReceiver(String receiver) {
         this.receiver = receiver;
+    }
+
+    /**
+     * 创建一百券订单
+     *
+     * @param partner
+     */
+    public void toYbqOrder(OuterOrderPartner partner) {
+        Resaler resaler = Resaler.findOneByLoginName(partner.partnerLoginName());
+        if (resaler == null) {
+            Logger.error("can not find the resaler by login name: %s", partner.partnerLoginName());
+            return;
+        }
+        Order ybqOrder = Order.createConsumeOrder(resaler.id, AccountType.RESALER).save();
+        Goods goods = ResalerProduct.getGoods(outerGoodsNo, OuterOrderPartner.WB);
+        if (goods == null) {
+            Logger.info("goods not found: %s", outerGoodsNo);
+            return;
+        }
+
+
     }
 }
