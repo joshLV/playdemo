@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * 库存变动单.
@@ -81,6 +82,7 @@ public class InventoryStock extends Model {
      * @return
      */
     public static Map<Sku, Long> statisticOutCount(Date toDate) {
-
+        //todo
+        return null;
     }
 }

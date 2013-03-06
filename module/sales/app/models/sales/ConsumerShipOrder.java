@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import models.order.OrderItems;
 
 /**
  * 消费者的发货单.

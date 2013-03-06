@@ -42,7 +42,7 @@ public class SMSMessage implements Serializable {
     }
 
     public void setContent(String content) {
-        if (content != null && content.endWith(SIGN)) {
+        if (content != null && content.endsWith(SIGN)) {
             this.content = content;
             return;
         }
