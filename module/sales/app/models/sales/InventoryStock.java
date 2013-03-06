@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * 库存变动单.
@@ -73,4 +74,15 @@ public class InventoryStock extends Model {
      */
     public String remark;
 
+
+    /**
+     * 统计到指定时间之前的所有未出库实物订单的Sku出库数量.
+     *
+     * @param toDate
+     * @return
+     */
+    public static Map<Sku, Long> statisticOutCount(Date toDate) {
+        //todo
+        return null;
+    }
 }
