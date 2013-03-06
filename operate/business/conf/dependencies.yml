@@ -12,6 +12,9 @@ require:
     - play1 -> factory-boy 1.0
     - play1 -> play-solr 0.2.28
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
+    - commons-httpclient -> commons-httpclient 3.1
+    - net.coobird -> thumbnailator 0.4.1
+    - org.apache.poi -> ooxml-schemas 1.0
     - view_ext -> view_ext
     - layout_operate -> layout_operate
     - commons-lang -> commons-lang 2.6
@@ -37,9 +40,6 @@ require:
     - supplier_api -> supplier_api
     - com.taobao -> taobao-top 20121130
     - supports -> supports
-    - commons-httpclient -> commons-httpclient 3.1
-    - net.coobird -> thumbnailator 0.4.1
-    - org.apache.poi -> ooxml-schemas 1.0
 
 repositories:
     - mavenRepository:
@@ -50,7 +50,6 @@ repositories:
             - commons-lang -> *
             - org.jsoup -> *
             - com.taobao -> *
-            - org.apache.poi -> *
         m2compatible: true
 
     - play1ContributedModules:
