@@ -157,6 +157,7 @@ public class OrderECouponMessage implements Serializable {
      */
     public static String getOrderSMSMessage(OrderItems orderItems) {
         if (orderItems.order.status != OrderStatus.PAID) {
+
             Logger.info("OrderItem(" + orderItems.id + ").order Status is NOT PAID, but was:" + orderItems.order.status);
             return null;  //未支付时不能发短信.
         }
@@ -167,7 +168,6 @@ public class OrderECouponMessage implements Serializable {
             // do nothing. NOW!
         }
 
-
         if (orderItems.goods.isLottery != null && orderItems.goods.isLottery) {
             //抽奖商品不发短信邮件等提示
             Logger.info("goods(id:" + orderItems.goods.id + " is Lottery!");
@@ -175,22 +175,15 @@ public class OrderECouponMessage implements Serializable {
         }
 
         List<String> ecouponSNs = new ArrayList<>();
-        List<String> ecouponPasswords = new ArrayList<>();
         ECoupon lastECoupon = null;
-        boolean isFirst = true;
+
         for (ECoupon e : orderItems.getECoupons()) {
             if (StringUtils.isNotBlank(e.eCouponPassword)) {
                 StringBuilder sb = new StringBuilder();
-                if (isFirst) {
-                    isFirst = false;
-                } else {
-                    sb.append("券号");
-                }
-                sb.append(e.eCouponSn).append("密码").append(e.eCouponPassword);
-
+                sb.append("券号" + e.eCouponSn).append("密码").append(e.eCouponPassword);
                 ecouponSNs.add(sb.toString());
             } else {
-                ecouponSNs.add(e.eCouponSn);
+                ecouponSNs.add("券号" + e.eCouponSn);
             }
             lastECoupon = e;
         }
@@ -220,7 +213,6 @@ public class OrderECouponMessage implements Serializable {
                 summary;
         message += "券号" + ecouponStr;
         message += note + "截止" + dateFormat.format(lastECoupon.expireAt) + "客服4006262166";
-
 
         // 重定义短信格式 - 58团
         if (AccountType.RESALER.equals(orderItems.order.userType)

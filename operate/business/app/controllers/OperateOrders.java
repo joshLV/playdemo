@@ -5,6 +5,7 @@ import models.consumer.User;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrdersCondition;
+import models.order.OuterOrder;
 import models.resale.Resaler;
 import models.sales.Brand;
 import operate.rbac.ContextedPermission;
@@ -143,6 +144,13 @@ public class OperateOrders extends Controller {
         orderList = models.order.Order.query(condition, null, 1, PAGE_SIZE);
 
         for (Order order : orderList) {
+            OuterOrder outerOrder = OuterOrder.getOuterOrder(order);
+            if (outerOrder != null) {
+                order.outerOrderNumber = outerOrder.orderId;
+            } else {
+                order.outerOrderNumber = "";
+            }
+
             if (order.userType == AccountType.CONSUMER) {
                 order.accountEmail = order.getUser().loginName;
             } else if (order.userType == AccountType.RESALER) {

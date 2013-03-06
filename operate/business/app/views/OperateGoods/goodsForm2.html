@@ -41,16 +41,20 @@
         <input type="checkbox" name="goods.isOrder" id="isOrder" class="input-medium"
                value="${goods?.isOrder}" ${goods?.isOrder?'checked':''}/><span id="err-isOrder"></span>
         预约商品&nbsp;&nbsp;
-
-        <input type="checkbox" name="goods.noRefund" id="noRefund" class="input-medium"
-               value="${goods?.noRefund}" ${goods?.noRefund?'checked':''}
-            #{if !"add".equals(action)}
-               onclick="return false;"
-            #{/if}
-                />
+            <span id="no_refund">
+            <input type="checkbox" name="goods.noRefund" id="noRefund" class="input-medium"
+                   value="${goods?.noRefund}" ${goods?.noRefund?'checked':''}
+                    />
         <span id="err-noRefund"></span>
-
         不可退款&nbsp;&nbsp;
+            </span>
+        <span id="display_no_refund" style="display: none;">
+<i class="icon-ok"></i>
+           不可退款&nbsp;&nbsp;
+        </span>
+
+
+
         <span id="free_shipping">
         <input type="checkbox" name="goods.freeShipping" id="freeShipping" class="input-medium"
                value="${goods?.freeShipping}" ${goods?.freeShipping?'checked':''}/><span id="err-freeShipping"></span>
@@ -124,7 +128,25 @@
         <span class="error">#{error 'goods.invitedUserPrice'/}</span>
     </div>
 </div>
+<div class="control-group" id="goods_coupon_type">
+    <label class="control-label">券类型
+    </label>
+
+    <div class="controls">
+        <label class="radio inline">
+            <input id="coupon_type_generate" type="radio" name="goods.couponType"
+                   value="GENERATE" #{if goods.couponType == null || goods.couponType ==  models.sales.GoodsCouponType.GENERATE}
+                   checked #{/if}> 自动生成
+        </label>
+        <label class="radio inline">
+            <input id="coupon_type_import" type="radio" name="goods.couponType"
+                   value="IMPORT" #{if goods.couponType ==  models.sales.GoodsCouponType.IMPORT} checked #{/if} /> 导入
+        </label>
+    </div>
+</div>
+<span id="goods_cumulative_stock">
     #{layout_operate.textField name:'goods.cumulativeStocks', value:goods?.cumulativeStocks, note:'件', required:true/}
+</span>
     #{layout_operate.textField name:'goods.virtualBaseSaleCount', value:goods?.virtualBaseSaleCount?:'0', note:'件'/}
     #{layout_operate.textField name:'goods.limitNumber', value:goods?.limitNumber, note:'个'/}
 <div class="control-group">
@@ -152,22 +174,7 @@
 </div>
     #{layout_operate.timeScopeField name:'goods.useTime', begin:'goods.useBeginTime',end:'goods.useEndTime',
     beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
-<div class="control-group">
-    <label class="control-label">券类型
-    </label>
 
-    <div class="controls">
-        <label class="radio inline">
-            <input type="radio" name="goods.couponType"
-                   value="GENERATE" #{if goods.couponType == null || goods.couponType ==  models.sales.GoodsCouponType.GENERATE}
-                   checked #{/if}> 自动生成
-        </label>
-        <label class="radio inline">
-            <input type="radio" name="goods.couponType"
-                   value="IMPORT" #{if goods.couponType ==  models.sales.GoodsCouponType.IMPORT} checked #{/if} /> 导入
-        </label>
-    </div>
-</div>
     #{if "add".equals(action)}
         #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)'/}
     #{/if}
@@ -227,7 +234,41 @@
 </div>
 
 <script type="text/javascript">
+        #{if "edit".equals(action)}
+        $("#goods_coupon_type").hide();
+        if ($("#noRefund").val() == 'false') {
+            $("#no_refund").hide();
+        }
+        else {
+            $("#no_refund").hide();
+            $("#display_no_refund").show();
+        }
+        #{/if}
+
+
+    if ($("#coupon_type_import").attr("checked")) {
+        $("#goods_coupon_type").hide();
+        $("#goods_cumulative_stock").hide();
+    }
+
+    $(function () {
+        var checkedFuc = function () {
+            if ($("#coupon_type_generate").is(":checked")) {
+                $("#goods_cumulativeStocks").attr("readonly", false);
+
+            }
+            if ($("#coupon_type_import").is(":checked")) {
+                $("#goods_cumulativeStocks").attr("readonly", true);
+                $("#goods_cumulativeStocks").attr("value", '0');//填充内容
+            }
+        }
+        $("#coupon_type_generate").click(checkedFuc);
+        $("#coupon_type_import").click(checkedFuc);
+
+    });
+
     $("input[name='goods.isAllShop']:checked").val() == 'false' ? $("#shop").show() : $("#shop").hide();
+
     if ($("#selectWeekDayAll").attr("checked")) {
         $("[name='useWeekDay[]']").attr("checked", 'true');//全选
         var week = [];
@@ -311,6 +352,7 @@
         });
 
     });
+
 
     function limitMoneyFormat(obj, value) {
         if (value != null && value != '') {

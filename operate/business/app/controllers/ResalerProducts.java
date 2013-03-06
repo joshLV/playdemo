@@ -14,10 +14,7 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author likang
@@ -107,11 +104,11 @@ public class ResalerProducts extends Controller {
     /**
      * 录入分销商品的第三方ID和url
      */
+    @ActiveNavigation("resale_partner_product")
     public static void enter(Long productId, String partnerPid, String url) {
         ResalerProduct product = ResalerProduct.findById(productId);
         product.partnerProductId = partnerPid;
         product.url = url;
-        product.status = ResalerProductStatus.ONSALE;
         product.save();
 
         showProducts(product.partner.toString().toLowerCase(), product.goods.id);
@@ -119,12 +116,19 @@ public class ResalerProducts extends Controller {
     /**
      * 完整录入分销商品
      */
-    public static void showAdd() {
-        render();
+    @ActiveNavigation("resale_partner_product")
+    public static void add(ResalerProduct product) {
+        if (product.goods == null) {
+            error("一百券商品不存在，请重新填写一百券商品ID");
+        }
+        product.goodsLinkId = product.goods.id;
+        product.createdAt = new Date();
+        product.updatedAt = new Date();
+        product.status = ResalerProductStatus.UPLOADED;
+        product.deleted = DeletedStatus.UN_DELETED;
+        product.creator(OperateRbac.currentUser().id);
+        product.save();
+
+        showProducts(product.partner.toString().toLowerCase(), product.goods.id);
     }
-
-    public static void add() {
-
-    }
-
 }

@@ -226,6 +226,9 @@ public class Order extends Model {
     @Transient
     public String accountEmail;
 
+    @Transient
+    public String outerOrderNumber;
+
     public Order() {
     }
 
@@ -365,6 +368,8 @@ public class Order extends Model {
         BigDecimal discountValue = getDiscountValueOfGoodsAmount(g, number, discountCode);
         return amount.subtract(discountValue);
     }
+
+
 
     /**
      * 单品折扣

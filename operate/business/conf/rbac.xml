@@ -130,7 +130,7 @@
             <navigation key="hot_keywords" action="OperateSearchHotKeywords.index" text="热门搜索词查询"
                         permissions="HOT_KEYWORDS"/>
         </navigation>
-        <navigation key="sku" text="SKU">
+        <navigation key="sku" text="货品">
             <navigation key="sku_add" action="SkuManage.add" text="货品添加" permissions="SKU_NEW"/>
             <navigation key="sku_index" action="SkuManage.index" text="货品管理" permissions="SKU"/>
         </navigation>
@@ -150,6 +150,9 @@
     <navigation key="order_main" text="订单销售" action="OperateOrders.index" display-order="50">
         <navigation key="order_app" text="订单">
             <navigation key="order_index" action="OperateOrders.index" text="运营订单管理" permissions="ORDERS"/>
+        </navigation>
+        <navigation key="import_order_app" text="实体订单">
+            <navigation key="import_order_index" action="ImportPartnerOrders.index" text="导入渠道订单" permissions="ORDERS"/>
         </navigation>
         <navigation key="coupon_app" text="消费券">
             <navigation key="coupons_index" action="OperateCoupons.index" text="消费券管理" permissions="COUPONS"/>

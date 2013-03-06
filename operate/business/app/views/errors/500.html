@@ -30,17 +30,24 @@
     </style>
 </head>
 <body>
-<div id="err404">
-    <h2>很抱歉，系统发生错误 ^_^ </h2>
-    <ul>
-    #{if play.mode.name() == 'DEV'}
+#{if play.mode.name() == 'DEV'}
+    #{500 exception /}
+#{/if}
+#{else}
+    <div id="err404">
+        <h2>很抱歉，系统发生错误 :( </h2>
+        #{if exception instanceof play.mvc.results.Error}
+            <p>${exception.getMessage()}</p>
+        #{/if}
+        <p></p>
+        <ul>
+            <li>请尝试刷新这个页面</li>
+            <li>或者向我们报告错误: support@quanMX.com，谢谢!</li>
+        </ul>
+    </div>
+    <div style="display:none">
         #{500 exception /}
-    #{/if}
-    #{else}
-        <li>请尝试刷新这个页面</li>
-        <li>或者向我们报告错误: support@quanMX.com，谢谢!</li>
-    #{/else}
-    </ul>
-</div>
+    </div>
+#{/else}
 </body>
 </html>
