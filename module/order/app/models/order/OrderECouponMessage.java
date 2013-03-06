@@ -143,7 +143,7 @@ public class OrderECouponMessage implements Serializable {
         if (AccountType.RESALER.equals(coupon.order.userType) && coupon.order.getResaler().loginName.equals(Resaler.WUBA_LOGIN_NAME)) {
 
             message = "【58团】" + (StringUtils.isNotEmpty(coupon.goods.title) ? coupon.goods.title : coupon.goods.shortName) +
-                    "由58合作商家【一百券】提供,一百券号" + coupon.eCouponSn + note +
+                    "由58合作商家【一百券】提供,一百" + coupon.eCouponSn + note +
                     "有效期至" + dateFormat.format(coupon.expireAt) + "客服4007895858";
         }
 
@@ -211,7 +211,7 @@ public class OrderECouponMessage implements Serializable {
         }
         String message = (StringUtils.isNotEmpty(orderItems.goods.title) ? orderItems.goods.title : orderItems.goods.shortName) +
                 summary;
-        message += "券号" + ecouponStr;
+        message += ecouponStr;
         message += note + "截止" + dateFormat.format(lastECoupon.expireAt) + "客服4006262166";
 
         // 重定义短信格式 - 58团
