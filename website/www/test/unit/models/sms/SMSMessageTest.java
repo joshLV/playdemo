@@ -1,13 +1,11 @@
 package unit.models.sms;
 
+import models.sms.SMSMessage;
+import org.junit.Test;
+import play.test.UnitTest;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import models.sms.SMSMessage;
-
-import org.junit.Test;
-
-import play.test.UnitTest;
 
 /**
  * User: likang
@@ -20,7 +18,7 @@ public class SMSMessageTest extends UnitTest{
         String phoneNumber = "123456";
         SMSMessage message = new SMSMessage(content, phoneNumber, "0000");
         
-        assertEquals(content, message.getContent());
+        assertEquals(content + "【一百券】", message.getContent());
         assertEquals(1, message.getPhoneNumbers().size());
         assertEquals(phoneNumber, message.getPhoneNumbers().get(0));
         
@@ -32,11 +30,11 @@ public class SMSMessageTest extends UnitTest{
         message.setContent(newContent);
         message.setPhoneNumbers(newPhones);
 
-        assertEquals(newContent, message.getContent());
+        assertEquals(newContent + "【一百券】", message.getContent());
         assertEquals(1, message.getPhoneNumbers().size());
         assertEquals(newPhoneNumber, message.getPhoneNumbers().get(0));
         
-        String toString = "SMSMessage [content=" + newContent + ",code=0000,phones="+newPhoneNumber+",]";
+        String toString = "SMSMessage [content=" + newContent + "【一百券】,code=0000,phones="+newPhoneNumber+",]";
         assertEquals(toString, message.toString());
     }
     

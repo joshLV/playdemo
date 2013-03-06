@@ -29,7 +29,7 @@ public class JDGroupBuyUtil {
     public static final String CODE_TRANSFORMATION = "AES/ECB/PKCS5Padding";
     public static final String CODE_CHARSET = "utf-8";
 
-    public static String GATEWAY_URL = Play.configuration.getProperty("jingdong.gateway.url", "http://gw.tuan.360buy.net");
+    public static String GATEWAY_URL = Play.configuration.getProperty("jingdong.gateway.url", "http://gw.tuan.jd.net");
 
     /**
      * 向京东发起请求.
@@ -66,13 +66,11 @@ public class JDGroupBuyUtil {
     }
 
     public static JingdongMessage parseMessage(String document) {
-        if (StringUtils.isBlank(document)) {
-            return new JingdongMessage();
-        }
         Document xmlDocument;
         try{
             xmlDocument = XML.getDocument(document);
         }catch (Exception e) {
+            Logger.info("jingdong message failed: xml parse error.");
             return new JingdongMessage();
         }
         return parseMessage(xmlDocument);
@@ -86,6 +84,10 @@ public class JDGroupBuyUtil {
      */
     public static JingdongMessage parseMessage(Document document) {
         JingdongMessage message = new JingdongMessage();
+        if (document == null) {
+            Logger.info("jingdong message failed: empty document.");
+            return message;
+        }
         message.version = XPath.selectText("/*/Version", document).trim();
         try{
             message.venderId = Long.parseLong(StringUtils.trimToNull(XPath.selectText("/*/VenderId", document)));

@@ -59,7 +59,7 @@ public class WubaGroupBuyProducts extends Controller {
         prodModelJson.put("prodprice", groupbuyInfoParams.get("prodPrice"));
         prodModelJson.put("groupprice", groupbuyInfoParams.get("groupPrice"));
         prodModelJson.put("prodcode", "");
-        prodModelJson.put("count", 0);
+        prodModelJson.put("count",groupbuyInfoParams.get("saleMaxNum"));
         groupbuyInfoParams.put("prodModelJson", "{" + new Gson().toJson(prodModelJson) + "}");
 
 

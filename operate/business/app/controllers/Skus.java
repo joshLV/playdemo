@@ -23,7 +23,7 @@ import java.util.List;
  */
 @With(OperateRbac.class)
 @ActiveNavigation("sku_index")
-public class SkuManage extends Controller {
+public class Skus extends Controller {
     public static int PAGE_SIZE = 15;
 
     @ActiveNavigation("sku_index")
@@ -60,7 +60,7 @@ public class SkuManage extends Controller {
     public static void create(@Valid Sku sku) {
         if (Validation.hasErrors()) {
             savePageParams(sku);
-            render("SkuManage/add.html");
+            render("Skus/add.html");
         }
         sku.create();
         index(null);
@@ -73,9 +73,9 @@ public class SkuManage extends Controller {
      */
     private static void savePageParams(Sku sku) {
         setInitParams();
-        if (sku.supplierId != null) {
+        if (sku.supplier != null) {
             Long id = OperateRbac.currentUser().id;
-            List<Brand> brandList = Brand.findByOrder(new Supplier(sku.supplierId), id);
+            List<Brand> brandList = Brand.findByOrder(sku.supplier, id);
             renderArgs.put("brandList", brandList);
         }
     }
@@ -96,7 +96,7 @@ public class SkuManage extends Controller {
     public static void update(Long id, @Valid Sku sku) {
         if (Validation.hasErrors()) {
             savePageParams(sku);
-            render("SkuManage/edit.html", sku);
+            render("Skus/edit.html", sku);
         }
         Sku.update(id, sku);
         index(null);

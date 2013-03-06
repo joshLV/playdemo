@@ -18,22 +18,22 @@ public class SMSUtil {
     public static final String SMS2_QUEUE = Play.mode.isProd() ? "send_sms2" : "send_sms2_dev";
 
     public static void send(String content, String phoneNumber, String code){
-        MQPublisher.publish(SMS_QUEUE, new SMSMessage(content+"【一百券】", phoneNumber, code));
+        MQPublisher.publish(SMS_QUEUE, new SMSMessage(content, phoneNumber, code));
     }
 
     public static void send(String content, String phoneNumber){
-        MQPublisher.publish(SMS_QUEUE, new SMSMessage(content+"【一百券】", phoneNumber));
+        MQPublisher.publish(SMS_QUEUE, new SMSMessage(content, phoneNumber));
     }
 
     public static void send(String content, String[] phoneNumbers){
-        MQPublisher.publish(SMS_QUEUE, new SMSMessage(content+"【一百券】", Arrays.asList(phoneNumbers)));
+        MQPublisher.publish(SMS_QUEUE, new SMSMessage(content, Arrays.asList(phoneNumbers)));
     }
 
     public static void send2(String content, String phoneNumber, String code){
-        MQPublisher.publish(SMS2_QUEUE, new SMSMessage(content+"【一百券】", phoneNumber, code));
+        MQPublisher.publish(SMS2_QUEUE, new SMSMessage(content, phoneNumber, code));
     }
     public static void send2(String content, List<String> phoneNumbers){
-        MQPublisher.publish(SMS2_QUEUE, new SMSMessage(content+"【一百券】", phoneNumbers));
+        MQPublisher.publish(SMS2_QUEUE, new SMSMessage(content, phoneNumbers));
     }
 
 }

@@ -22,7 +22,7 @@ public class SkuFactory extends ModelFactory<Sku> {
         sku.name = "test";
         Supplier supplier = FactoryBoy.lastOrCreate(Supplier.class);
         sku.sequenceCode = "01";
-        sku.supplierId = supplier.id;
+        sku.supplier = supplier;
         sku.brand = FactoryBoy.lastOrCreate(Brand.class);
         sku.supplierCategory = FactoryBoy.lastOrCreate(SupplierCategory.class);
         sku.deleted = DeletedStatus.UN_DELETED;

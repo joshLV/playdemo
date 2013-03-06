@@ -1,4 +1,4 @@
-#{layout_operate.selectField name:'goods.skuId', value:goods?.skuId, error:'goods.skuId', required:true}
+#{layout_operate.selectField name:'goods.sku.id', value:goods?.sku?.id, error:'goods.sku', required:true}
     #{list items:skuList, as:'sku'}
         #{option sku?.id}${sku?.name}#{/option}
     #{/list}
