@@ -28,12 +28,12 @@ public class ECouponHistoryConsumer extends RabbitMQConsumerWithTx<ECouponHistor
                 return doCouponHistorySave(data);
             }
         });
+        RemoteRecallCheck.cleanUp();
 
         if (success == null || !success) {
             // 下次重试
             throw new RuntimeException("Not fund coupon(id:" + data.eCouponId + ")，it will auto try later.");
         }
-        RemoteRecallCheck.cleanUp();
     }
 
     private Boolean doCouponHistorySave(ECouponHistoryMessage data) {
