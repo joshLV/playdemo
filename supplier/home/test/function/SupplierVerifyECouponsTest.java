@@ -91,6 +91,7 @@ public class SupplierVerifyECouponsTest extends FunctionalTest {
         Map<String, String> params = new HashMap<>();
         params.put("shopId", shop.id.toString());
         params.put("eCouponSns", coupon.eCouponSn);
+        System.out.println("eCouponSN:" + coupon.eCouponSn + ", status:" + coupon.status);
         Http.Response response = POST("/verify/verify", params);
 
         assertEquals("[\"消费成功.\"]", getContent(response));
