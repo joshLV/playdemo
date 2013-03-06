@@ -8,14 +8,24 @@ import util.extension.InvocationContext;
  * 订单券短信内容上下文.
  */
 public class OrderECouponSMSContext implements InvocationContext {
+
     public Order order;
 
     public Goods goods;
 
+    /**
+     * 券内容
+     */
     public String couponInfo;
 
+    /**
+     * 注意事项
+     */
     public String notes;
 
+    /**
+     * 有效期截止日期
+     */
     public String expiredDate;
 
     private String smsContent;

@@ -11,7 +11,6 @@ import play.Play;
 import util.extension.DefaultAction;
 import util.extension.ExtensionInvoker;
 import util.extension.ExtensionResult;
-import util.extension.InvocationContext;
 import util.mq.MQPublisher;
 
 import java.io.Serializable;
@@ -29,14 +28,13 @@ public class OrderECouponMessage implements Serializable {
     public static final String MQ_KEY = Play.mode.isProd() ? "send_order_sms" : "send_order_sms_dev";
 
     // 默认的生成券短信格式.
-    private static DefaultAction defaultSmsAction = new DefaultAction() {
+    private static DefaultAction<OrderECouponSMSContext> defaultSmsAction = new DefaultAction<OrderECouponSMSContext>() {
         @Override
-        public ExtensionResult execute(InvocationContext invocationContext) {
-            OrderECouponSMSContext ctx = (OrderECouponSMSContext) invocationContext;
+        public ExtensionResult execute(OrderECouponSMSContext ctx) {
             if (ctx.getSmsContent() == null) {
                 StringBuilder sb = new StringBuilder();
                 sb.append(StringUtils.isNotEmpty(ctx.goods.title) ? ctx.goods.title : ctx.goods.shortName)
-                        .append("券号").append(ctx.couponInfo)
+                        .append(ctx.couponInfo)
                         .append(ctx.notes)
                         .append("截止").append(ctx.expiredDate)
                         .append("客服4006262166");
@@ -140,7 +138,7 @@ public class OrderECouponMessage implements Serializable {
             }
         }
 
-        String couponInfo = coupon.eCouponSn;
+        String couponInfo = "券号" + coupon.eCouponSn;
         if (StringUtils.isNotBlank(coupon.eCouponPassword)) {
             couponInfo += "," + "密码" + coupon.eCouponPassword;
         }
@@ -183,10 +181,10 @@ public class OrderECouponMessage implements Serializable {
         for (ECoupon e : orderItems.getECoupons()) {
             if (StringUtils.isNotBlank(e.eCouponPassword)) {
                 StringBuilder sb = new StringBuilder();
-                sb.append(e.eCouponSn).append("密码").append(e.eCouponPassword);
+                sb.append("券号").append(e.eCouponSn).append("密码").append(e.eCouponPassword);
                 ecouponSNs.add(sb.toString());
             } else {
-                ecouponSNs.add(e.eCouponSn);
+                ecouponSNs.add("券号" + e.eCouponSn);
             }
             lastECoupon = e;
         }
