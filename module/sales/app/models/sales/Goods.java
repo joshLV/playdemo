@@ -887,10 +887,15 @@ public class Goods extends Model {
     @Transient
     @SolrField
     public Long getRealStocks() {
-        if (cumulativeStocks != null) {
-            return cumulativeStocks - getRealSaleCount();
+        if (materialType == MaterialType.ELECTRONIC) { //电子券的库存计算方法
+            if (cumulativeStocks != null) {
+                return cumulativeStocks - getRealSaleCount();
+            }
+            return getRealSaleCount();
+        } else { //实物的库存计算方法
+            //(sku实际库存-(待发货销量*skuCount))/skuCount
+
         }
-        return getRealSaleCount();
     }
 
     /**
@@ -918,9 +923,16 @@ public class Goods extends Model {
             @Override
             public Long loadData() {
                 // 先找出OrderItems中的已销售数量
-                Query query = JPA.em().createQuery("SELECT SUM(oi.buyNumber) FROM OrderItems oi where oi.goods.id= :goodsId and oi.order.status != :orderStatus");
+                String sql = "SELECT SUM(oi.buyNumber) FROM OrderItems oi where oi.goods.id= :goodsId and oi.order.status != :orderStatus";
+                if (materialType == MaterialType.REAL) {
+                    sql += "and oi.order.status != :realGoodsOrderStatus";
+                }
+                Query query = JPA.em().createQuery(sql);
                 query.setParameter("goodsId", id);
                 query.setParameter("orderStatus", OrderStatus.CANCELED);
+                if (materialType == MaterialType.REAL) {
+                    query.setParameter("realGoodsOrderStatus", OrderStatus.SENT);
+                }
 
                 // 减去已退款的数量, 不需要考虑实体券问题.
                 Long orderItemsBuyCount = (Long) query.getSingleResult();

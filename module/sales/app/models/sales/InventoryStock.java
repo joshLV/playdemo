@@ -92,7 +92,7 @@ public class InventoryStock extends Model {
      * @return
      */
     public static Map<Sku, Long> statisticOutCount(Date toDate) {
-        //todo
+
         return null;
     }
 }

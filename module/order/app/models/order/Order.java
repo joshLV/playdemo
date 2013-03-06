@@ -589,7 +589,7 @@ public class Order extends Model {
     public void createAndUpdateInventory() {
         generateOrderDescription();
         save();
-        boolean haveFreight = false;
+        boolean haveFreight = false;  //是否有物流
         for (OrderItems orderItem : orderItems) {
             // fix: org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: models.sales.GoodsLevelPrice
             // Goods goods = Goods.findById(orderItem.goods.id);
