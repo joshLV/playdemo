@@ -22,7 +22,7 @@
                <input type='text' placeholder='一百券商品ID' name='product.goods.id'>
                <input type='text' placeholder='第三方产品ID' name='product.partnerProductId'>
                <input type='text' placeholder='第三方产品URL' name='product.url'>
-               <button type='submit' class='btn'>添加</button> </fieldset> </form>"
+               <button type='submit' class='btn' id='add-rp'>添加</button> </fieldset> </form>"
             >手动添加</button>
 </form>
 
@@ -91,5 +91,8 @@
 <script>
     $("a[rel='tooltip']").tooltip({container:'body'});
     $("button[data-toggle='popover']").popover({container:'body'});
+    $("#add-rp").click(function(){
+
+    });
 </script>
 #{/set}

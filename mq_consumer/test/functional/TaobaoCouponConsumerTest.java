@@ -14,6 +14,7 @@ import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
 import models.resale.Resaler;
 import models.sales.Goods;
+import models.sales.ResalerProduct;
 import models.taobao.TaobaoCouponConsumer;
 import models.taobao.TaobaoCouponMessage;
 import org.junit.Before;
@@ -31,7 +32,7 @@ import java.util.Map;
  */
 public class TaobaoCouponConsumerTest extends FunctionalTest {
     OuterOrder outerOrder = null;
-    Goods goods = null;
+    ResalerProduct product = null;
     Long taobaoOrderId = 123456L;
     ECoupon ecoupon;
 
@@ -49,7 +50,7 @@ public class TaobaoCouponConsumerTest extends FunctionalTest {
 
         AccountUtil.getCreditableAccount(resaler.id, AccountType.RESALER);
 
-        goods = FactoryBoy.create(Goods.class);
+        product = FactoryBoy.create(ResalerProduct.class);
         ecoupon = FactoryBoy.create(ECoupon.class);
 
         outerOrder = FactoryBoy.create(OuterOrder.class, new BuildCallback<OuterOrder>() {
@@ -59,7 +60,7 @@ public class TaobaoCouponConsumerTest extends FunctionalTest {
                 params.put("mobile", "13472581853");
                 params.put("num", "2");
                 params.put("seller_nick", "券生活8");
-                params.put("outer_iid", String.valueOf(goods.id));
+                params.put("outer_iid", String.valueOf(product.goodsLinkId));
 
                 target.ybqOrder = ecoupon.order;
                 target.partner = OuterOrderPartner.TB;
