@@ -1,7 +1,6 @@
 package models.taobao;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
@@ -15,7 +14,11 @@ import com.taobao.api.response.VmarketEticketReverseResponse;
 import com.taobao.api.response.VmarketEticketSendResponse;
 import models.accounts.AccountType;
 import models.oauth.OAuthToken;
-import models.order.*;
+import models.order.ECoupon;
+import models.order.ECouponPartner;
+import models.order.ECouponStatus;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
@@ -182,7 +185,7 @@ public class TaobaoCouponUtil {
                     coupon.partnerCouponId = response.getConsumeSecialNum();
                     coupon.save();
                     return true;
-                }{
+                } else {
                     //如果验证失败，首先尝试撤销验证，撤销成功的话继续验证。
                     if(reverseOnTaobao(coupon)) {
                         return verifyOnTaobao(coupon);
