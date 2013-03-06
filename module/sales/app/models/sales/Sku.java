@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * 货品
  * <p/>
  * User: yanjy
  * Date: 13-2-26

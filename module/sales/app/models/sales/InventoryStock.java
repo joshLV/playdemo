@@ -1,11 +1,15 @@
 package models.sales;
 
+import com.uhuila.common.constants.DeletedStatus;
+import models.supplier.Supplier;
 import play.data.validation.Required;
 import play.db.jpa.Model;
-import models.supplier.Supplier;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.Date;
@@ -40,6 +44,7 @@ public class InventoryStock extends Model {
      * 商户
      */
     @ManyToOne
+    @JoinColumn(name = "supplier_id")
     public Supplier supplier;
 
     /**
@@ -73,4 +78,9 @@ public class InventoryStock extends Model {
      */
     public String remark;
 
+    /**
+     * 逻辑删除,0:未删除，1:已删除
+     */
+    @Enumerated(EnumType.ORDINAL)
+    public DeletedStatus deleted;
 }

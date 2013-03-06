@@ -1,11 +1,15 @@
 package models.sales;
 
+import com.uhuila.common.constants.DeletedStatus;
 import play.data.validation.InFuture;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -25,6 +29,7 @@ import java.util.Date;
 public class InventoryStockItem extends Model {
 
     @ManyToOne
+    @JoinColumn(name = "inventory_stock_id")
     public InventoryStock inventoryStock;
 
     @ManyToOne
@@ -75,4 +80,11 @@ public class InventoryStockItem extends Model {
     @Column(name = "expire_at")
     @Temporal(TemporalType.TIMESTAMP)
     public Date expireAt;
+
+
+    /**
+     * 逻辑删除,0:未删除，1:已删除
+     */
+    @Enumerated(EnumType.ORDINAL)
+    public DeletedStatus deleted;
 }
