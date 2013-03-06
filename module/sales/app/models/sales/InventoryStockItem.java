@@ -25,6 +25,9 @@ import java.util.Date;
 public class InventoryStockItem extends Model {
 
     @ManyToOne
+    public InventoryStock inventoryStock;
+
+    @ManyToOne
     public Sku sku;
 
     /**
@@ -49,6 +52,13 @@ public class InventoryStockItem extends Model {
     @Required
     @Column(name = "price")
     public BigDecimal price;
+
+    /**
+     * 创建时间
+     * 出入库时间
+     */
+    @Column(name = "created_at")
+    public Date createdAt;
 
     /**
      * 券有效开始日
