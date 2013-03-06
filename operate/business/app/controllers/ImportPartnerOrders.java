@@ -1,21 +1,14 @@
 package controllers;
 
-import com.google.gson.Gson;
-<<<<<<<Updated upstream
-        =======
-import models.accounts.AccountType;
 import models.order.Order;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
-import models.order.OuterOrderStatus;
->>>>>>>Stashed changes
 import models.order.PartnerOrderView;
-import models.resale.Resaler;
 import net.sf.jxls.reader.ReaderBuilder;
 import net.sf.jxls.reader.XLSReadStatus;
 import net.sf.jxls.reader.XLSReader;
 import operate.rbac.annotations.ActiveNavigation;
-import play.Logger;
+import org.apache.commons.lang.StringUtils;
 import play.mvc.Controller;
 import play.mvc.With;
 import play.vfs.VirtualFile;
@@ -49,7 +42,7 @@ public class ImportPartnerOrders extends Controller {
      * @param orderFile
      * @param partner
      */
-    public static void upload(File orderFile, OuterOrderPartner partner) {
+    public static void upload(File orderFile, String partner) {
         String msgInfo = "";
         if (orderFile == null) {
             msgInfo = "请先选择文件！";
@@ -61,7 +54,6 @@ public class ImportPartnerOrders extends Controller {
             InputStream inputXML = VirtualFile.fromRelativePath(
                     "app/views/ImportPartnerOrders/" + partner + "Transfer.xml").inputstream();
             XLSReader mainReader = ReaderBuilder.buildFromXML(inputXML);
-
             //准备javabean
             Map<String, Object> beans = new HashMap<>();
             beans.put("partnerOrderViews", partnerOrderViews);
@@ -77,26 +69,31 @@ public class ImportPartnerOrders extends Controller {
             render("ImportPartnerOrders/index.html", msgInfo);
         }
 
-
         int duplicateCount = 0;
         List<String> orderList = new ArrayList<>();
+        List<String> goodsList = new ArrayList<>();
+        String existedOrders = "";
+        String notExistGoods = "";
         for (PartnerOrderView view : partnerOrderViews) {
-            OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", partner, view.outerOrderNo).first();
-            if (outerOrder == null) {
-                outerOrder = new OuterOrder();
-                outerOrder.orderId = view.outerOrderNo;
-                outerOrder.partner = OuterOrderPartner.DD;
-                outerOrder.message = new Gson().toJson(view);
-                outerOrder.status = OuterOrderStatus.ORDER_COPY;
-                outerOrder.save();
-                view.toYbqOrder(partner);
-            } else {
-                duplicateCount++;
+            try {
+                OuterOrder outerOrder = view.toOuterOrder(OuterOrderPartner.valueOf(partner.toUpperCase()));
+                Order ybqOrder = view.toYbqOrder(OuterOrderPartner.valueOf(partner.toUpperCase()));
+                if (ybqOrder != null) {
+                    outerOrder.ybqOrder = ybqOrder;
+                    outerOrder.save();
+                    msgInfo = "外部订单导入完毕！";
+                } else {
+                    msgInfo = "请检查以下渠道商品ID是否已映射一百券商品ID！";
+                    goodsList.add(view.outerGoodsNo);
+                    notExistGoods = StringUtils.join(goodsList, ",");
+                }
+            } catch (Exception e) {
                 orderList.add(view.outerOrderNo);
+                msgInfo = "重复订单：" + duplicateCount++ + "个,";
+                existedOrders = StringUtils.join(orderList, ",");
             }
         }
-        msgInfo = "外部订单导入完毕！";
-        render("ImportPartnerOrders/index.html", msgInfo, duplicateCount);
+        render("ImportPartnerOrders/index.html", msgInfo, duplicateCount, existedOrders, notExistGoods);
     }
 
 }

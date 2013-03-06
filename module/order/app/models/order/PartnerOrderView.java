@@ -1,6 +1,8 @@
 package models.order;
 
+import com.google.gson.Gson;
 import models.accounts.AccountType;
+import models.accounts.PaymentSource;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
@@ -20,7 +22,7 @@ public class PartnerOrderView {
     /**
      * 第三方商品NO
      */
-    public Long outerGoodsNo;
+    public String outerGoodsNo;
 
     /**
      * 第三方订单编号
@@ -35,7 +37,7 @@ public class PartnerOrderView {
     /**
      * 购买数量
      */
-    public Long buyNumber;
+    public Integer buyNumber;
 
 
     /**
@@ -65,7 +67,7 @@ public class PartnerOrderView {
     /**
      * 付款时间
      */
-    public Date paidAt;
+    public String paidAt;
 
     /**
      * 创建时间
@@ -81,11 +83,11 @@ public class PartnerOrderView {
      */
     public String zipCode;
 
-    public Long getOuterGoodsNo() {
+    public String getOuterGoodsNo() {
         return outerGoodsNo;
     }
 
-    public void setOuterGoodsNo(Long outerGoodsNo) {
+    public void setOuterGoodsNo(String outerGoodsNo) {
         this.outerGoodsNo = outerGoodsNo;
     }
 
@@ -105,11 +107,11 @@ public class PartnerOrderView {
         this.salesPrice = salesPrice;
     }
 
-    public Long getBuyNumber() {
+    public Integer getBuyNumber() {
         return buyNumber;
     }
 
-    public void setBuyNumber(Long buyNumber) {
+    public void setBuyNumber(Integer buyNumber) {
         this.buyNumber = buyNumber;
     }
 
@@ -161,11 +163,11 @@ public class PartnerOrderView {
         this.zipCode = zipCode;
     }
 
-    public Date getPaidAt() {
+    public String getPaidAt() {
         return paidAt;
     }
 
-    public void setPaidAt(Date paidAt) {
+    public void setPaidAt(String paidAt) {
         this.paidAt = paidAt;
     }
 
@@ -187,23 +189,55 @@ public class PartnerOrderView {
     }
 
     /**
-     * 创建一百券订单
+     * 转换为 OuterOrder
      *
-     * @param partner
+     * @param partner 分销伙伴
+     * @return OuterOrder
      */
-    public void toYbqOrder(OuterOrderPartner partner) {
+    public OuterOrder toOuterOrder(OuterOrderPartner partner) throws Exception {
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", partner, this.outerOrderNo).first();
+        if (outerOrder != null) {
+            throw new Exception();
+        }
+
+        outerOrder = new OuterOrder();
+        outerOrder.orderId = outerOrderNo;
+        outerOrder.partner = partner;
+        outerOrder.message = new Gson().toJson(this);
+        outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
+        outerOrder.orderType = OuterOrderType.IMPORT;
+        return outerOrder;
+    }
+
+    /**
+     * 转换为一百券订单
+     *
+     * @param partner 分销伙伴
+     */
+    public Order toYbqOrder(OuterOrderPartner partner) {
         Resaler resaler = Resaler.findOneByLoginName(partner.partnerLoginName());
         if (resaler == null) {
             Logger.error("can not find the resaler by login name: %s", partner.partnerLoginName());
-            return;
+            return null;
         }
         Order ybqOrder = Order.createConsumeOrder(resaler.id, AccountType.RESALER).save();
-        Goods goods = ResalerProduct.getGoods(outerGoodsNo, OuterOrderPartner.WB);
+        Goods goods = ResalerProduct.getGoodsByPartnerProductId(Long.valueOf(outerGoodsNo), partner);
         if (goods == null) {
-            Logger.info("goods not found: %s", outerGoodsNo);
-            return;
+            Logger.info("goods not found: %s,", outerGoodsNo);
+            return null;
         }
-
+        try {
+            ybqOrder.addOrderItem(goods, buyNumber, phone, salesPrice, salesPrice).save();
+        } catch (NotEnoughInventoryException e) {
+        }
+        ybqOrder.deliveryType = DeliveryType.LOGISTICS;
+        ybqOrder.createAndUpdateInventory();
+        ybqOrder.accountPay = ybqOrder.needPay;
+        ybqOrder.discountPay = BigDecimal.ZERO;
+        ybqOrder.payMethod = PaymentSource.getBalanceSource().code;
+        ybqOrder.paid();
+        ybqOrder.save();
+        return ybqOrder;
 
     }
 }
