@@ -131,8 +131,8 @@
                         permissions="HOT_KEYWORDS"/>
         </navigation>
         <navigation key="sku" text="货品">
-            <navigation key="sku_add" action="SkuManage.add" text="货品添加" permissions="SKU_NEW"/>
-            <navigation key="sku_index" action="SkuManage.index" text="货品管理" permissions="SKU"/>
+            <navigation key="sku_add" action="Skus.add" text="货品添加" permissions="SKU_NEW"/>
+            <navigation key="sku_index" action="Skus.index" text="货品管理" permissions="SKU"/>
         </navigation>
         <navigation key="solr" text="solr加载数据">
             <navigation key="solr_load" action="SolrLoadData.index" text="solr加载数据" permissions="SOLR"/>
