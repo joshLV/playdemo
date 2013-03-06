@@ -5,7 +5,12 @@ import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
 import models.consumer.User;
 import models.operator.OperateUser;
-import models.order.*;
+import models.order.ECoupon;
+import models.order.ECouponStatus;
+import models.order.Order;
+import models.order.OrderECouponMessage;
+import models.order.OrderItems;
+import models.order.OrderStatus;
 import models.sales.Goods;
 import models.sales.Shop;
 import org.junit.Before;
@@ -16,8 +21,6 @@ import util.DateHelper;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-import static util.DateHelper.afterDays;
 
 /**
  * TODO.
@@ -88,7 +91,7 @@ public class OrderECouponMessageTest extends UnitTest {
 
     @Test
     public void testEcouponGetOrderSMSMessage() {
-        assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + ",截止" + dateFormat.format(couponList.get(0).expireAt) + "客服4006262166【一百券】", OrderECouponMessage.getOrderSMSMessage(couponList.get(0)));
+        assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + ",截止" + dateFormat.format(couponList.get(0).expireAt) + "客服4006262166", OrderECouponMessage.getOrderSMSMessage(couponList.get(0)));
     }
 
     @Test
@@ -96,7 +99,7 @@ public class OrderECouponMessageTest extends UnitTest {
         System.out.println(OrderECouponMessage.getOrderSMSMessage(orderItems));
         assertEquals(orderItemsCouponsList.get(0).goods.title + "[共2张]券号" + orderItemsCouponsList.get(0).eCouponSn + "密码"
                 + orderItemsCouponsList.get(0).eCouponPassword + "，券号" + orderItemsCouponsList.get(1).eCouponSn + "密码" +
-                orderItemsCouponsList.get(1).eCouponPassword + ",截止" + dateFormat.format(orderItemsCouponsList.get(1).expireAt) + "客服4006262166【一百券】",
+                orderItemsCouponsList.get(1).eCouponPassword + ",截止" + dateFormat.format(orderItemsCouponsList.get(1).expireAt) + "客服4006262166",
                 OrderECouponMessage.getOrderSMSMessage(orderItems));
 
 
