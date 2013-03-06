@@ -478,7 +478,7 @@ public class Goods extends Model {
      */
     @Enumerated(EnumType.ORDINAL)
     @SolrField
-    public Status deleted;
+    public DeletedStatus deleted;
     /**
      * 乐观锁
      */
