@@ -95,8 +95,8 @@ public class ResalerProducts extends Controller {
         List<ResalerProduct> products = ResalerProduct.find("goods = ? and partner = ? order by createdAt desc",
                 goods, OuterOrderPartner.valueOf(partner.toUpperCase())).fetch();
         for (ResalerProduct product : products) {
-            product.creator = ((OperateUser)OperateUser.findById(product.creatorId)).userName;
-            product.lastModifier = ((OperateUser)OperateUser.findById(product.lastModifierId)).userName;
+            if (product.creatorId != null) product.creator = ((OperateUser)OperateUser.findById(product.creatorId)).userName;
+            if (product.lastModifierId != null) product.lastModifier = ((OperateUser)OperateUser.findById(product.lastModifierId)).userName;
         }
         render(products);
     }
