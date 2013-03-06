@@ -238,15 +238,14 @@ public class JDGroupBuy extends Controller {
         if (!message.isOk()) {
             finish(201, "parse send_order_refund request xml error");
         }
+        String venderOrderId = message.selectTextTrim("./VenderOrderId");
+        Long jdOrderId = Long.parseLong(message.selectTextTrim("./JdOrderId"));
 
         //以京东分销商的身份申请退款
         Resaler resaler = Resaler.findOneByLoginName(Resaler.JD_LOGIN_NAME);
         if (resaler == null) {
             finish(202, "can not find the jingdong resaler");
         }
-
-        String venderOrderId = message.selectTextTrim("./VenderOrderId");
-        Long jdOrderId = Long.parseLong(message.selectTextTrim("./JdOrderId"));
 
         Order order = Order.find("byOrderNumber", venderOrderId).first();
         if (order == null) {
