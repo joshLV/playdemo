@@ -38,7 +38,7 @@ public class SkuUnitTest extends UnitTest {
         supplier.sequenceCode = "0001";
         supplier.supplierCategory = sku.supplierCategory;
         supplier.save();
-        sku1.supplierId = supplier.id;
+        sku1.supplier = supplier;
         sku1.brand = FactoryBoy.lastOrCreate(Brand.class);
         sku1.supplierCategory = FactoryBoy.lastOrCreate(SupplierCategory.class);
         sku1.create();
@@ -58,7 +58,7 @@ public class SkuUnitTest extends UnitTest {
         supplier.sequenceCode = "0001";
         supplier.supplierCategory = sku.supplierCategory;
         supplier.save();
-        sku1.supplierId = supplier.id;
+        sku1.supplier = supplier;
         sku1.brand = FactoryBoy.lastOrCreate(Brand.class);
         sku1.supplierCategory = FactoryBoy.lastOrCreate(SupplierCategory.class);
         sku1.create();
@@ -78,7 +78,7 @@ public class SkuUnitTest extends UnitTest {
         supplier.sequenceCode = "0001";
         supplier.supplierCategory = sku.supplierCategory;
         supplier.save();
-        sku1.supplierId = supplier.id;
+        sku1.supplier = supplier;
         sku1.brand = FactoryBoy.lastOrCreate(Brand.class);
         sku1.supplierCategory = FactoryBoy.lastOrCreate(SupplierCategory.class);
         sku1.create();

@@ -74,8 +74,8 @@
 </div>
 <div id="brand">#{include '/OperateBrands/goodsBrands.html'/}</div>
     #{if "edit".equals(action) }
-    <div id="sku">#{include '/SkuManage/goodsSku.html'/}
-       #{layout_operate.textField name:'goods.skuNumber', value:goods?.skuNumber, note:'件', required:true/}
+    <div id="sku">#{include '/Skus/goodsSku.html'/}
+       #{layout_operate.textField name:'goods.skuCount', value:goods?.skuCount, note:'件', required:true/}
     </div>
 
     #{/if}

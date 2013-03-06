@@ -5,7 +5,7 @@
 #{/set}
 #{include '/share/nav.html' /}
 <div class="body">
-#{form @SkuManage.index() , id:'form',class:"form-horizontal" }
+#{form @Skus.index() , id:'form',class:"form-horizontal" }
     <legend>${title}</legend>
     <div>货品名称:<input type="text" name="condition.name" id="skuName" value="${condition?.name}" class="input-medium"/>
         编码:<input type="text" name="condition.code" id="code" value="${condition?.code}" class="input-medium"/>
@@ -40,7 +40,7 @@
             <td>${sku.marketPrice}</td>
             <td>${sku.stock}</td>
             <td>${sku.supplierCategory.name}</td>
-            <td>${sku?.getSupplier()?.otherName}</td>
+            <td>${sku?.supplier.otherName}</td>
             <td>${sku.brand.name}</td>
             <td>${sku?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
             <td><a href="/sku/${sku.id}/edit?page=${page?:1}">修改</a>
