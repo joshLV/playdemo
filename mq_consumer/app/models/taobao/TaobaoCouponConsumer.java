@@ -49,16 +49,6 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                     coupon.save();
                 }
                 outerOrder.status = OuterOrderStatus.ORDER_DONE;
-                //通知淘宝我发货了
-                try {
-                    if (TaobaoCouponUtil.tellTaobaoCouponSend(outerOrder)) {
-                        outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
-                    } else {
-                        Logger.info("taobao coupon job failed: tell taobao coupon send failed %s", taobaoCouponMessage.outerOrderId);
-                    }
-                } catch (Exception e) {
-                    Logger.info("taobao coupon job failed: tell taobao coupon send failed %s", taobaoCouponMessage.outerOrderId);
-                }
                 outerOrder.save();
             } else {
                 Logger.info("taobao coupon job failed: create our order failed %s", taobaoCouponMessage.outerOrderId);
@@ -75,13 +65,8 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                 Logger.info("taobao coupon job failed: tell taobao coupon resend failed %s", taobaoCouponMessage.outerOrderId);
             }
         } else if (outerOrder.status == OuterOrderStatus.ORDER_DONE) {
-            Logger.info("start taobao coupon consumer tell taobao order done");
             //我们发货了，但还没有通知淘宝成功，于是继续通知
-            if (TaobaoCouponUtil.tellTaobaoCouponSend(outerOrder)) {
-                outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
-            } else {
-                Logger.info("taobao coupon job failed: tell taobao coupon send failed %s", taobaoCouponMessage.outerOrderId);
-            }
+            TaobaoCouponUtil.tellTaobaoCouponSend(outerOrder);
             outerOrder.save();
         }
     }

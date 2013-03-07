@@ -1,6 +1,7 @@
 package controllers.resale;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import controllers.OperateRbac;
 import models.operator.OperateUser;
@@ -223,23 +224,25 @@ public class WubaGroupBuyProducts extends Controller {
             render("resale/WubaGroupBuyProducts/result.html", response);
         }
 
-        JsonObject data = response.data.getAsJsonArray().get(0).getAsJsonObject();
-        int statusCode = data.get("status").getAsInt();
-        switch (statusCode) {
-            case 0:
-                product.status = ResalerProductStatus.OFFSALE;
-                break;
-            case 1:
-                product.status = ResalerProductStatus.REJECTED;
-                break;
-            case 2:
-            case 3:
-                product.status = ResalerProductStatus.OFFSALE;
-                break;
-            default:
-                product.status = ResalerProductStatus.UNKNOWN;
+        if (response.data.getAsJsonArray().size() > 0) {
+            JsonObject data = response.data.getAsJsonArray().get(0).getAsJsonObject();
+            int statusCode = data.get("status").getAsInt();
+            switch (statusCode) {
+                case 0:
+                    product.status = ResalerProductStatus.OFFSALE;
+                    break;
+                case 1:
+                    product.status = ResalerProductStatus.REJECTED;
+                    break;
+                case 2:
+                case 3:
+                    product.status = ResalerProductStatus.OFFSALE;
+                    break;
+                default:
+                    product.status = ResalerProductStatus.UNKNOWN;
+            }
+            product.save();
         }
-        product.save();
         redirect("/resaler-products/products/wb/" + product.goods.id);
     }
 

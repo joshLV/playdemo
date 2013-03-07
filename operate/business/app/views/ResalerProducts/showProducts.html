@@ -2,6 +2,7 @@
 #{set title:'发布历史' /}
 #{include '/share/nav.html' /}
 #{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script>
     $("a[rel='tooltip']").tooltip({container:'body'});
     $("button[data-toggle='popover']").popover({container:'body'});
@@ -26,6 +27,7 @@
     <th>发布人</th>
     <th>最后修改时间</th>
     <th>最后修改人</th>
+    <th>团购结束日期</th>
     <th>第三方ID</th>
     <th>状态</th>
     <th>操作</th>
@@ -41,6 +43,19 @@
     <td>${product.creator}</td>
     <td>${product.updatedAt}</td>
     <td>${product.lastModifier}</td>
+    <td>
+        #{if !product.endSale}
+            <button class="btn" data-html="true" data-toggle="popover" data-placement="bottom" type="button"
+                    data-content="<form action='/resaler-products/enter' method='post'> <fieldset>
+                   <input type='text' name='endSale' onfocus='WdatePicker({readOnly:true})' class='Wdate'>
+                   <input type='hidden' name='productId' value='${product.id}'>
+                   <button type='submit' class='btn'>提交</button>(时间自动设为23:59:59) </fieldset> </form>"
+                    >添加</button>
+        #{/if}
+        #{else}
+            ${product.endSale}
+        #{/else}
+    </td>
     <td>
         #{if !product.partnerProductId}
             <button class="btn" data-html="true" data-toggle="popover" data-placement="bottom" type="button"
@@ -77,6 +92,7 @@
 
         <a href="/resaler-products/journal/${product.id}" class="btn btn-mini" rel="tooltip" title="操作历史"><i class="icon-list-alt"></i></a>
         </div>
+        #{a @ResalerProducts.delete(product.id), class:"btn btn-mini", rel:'tooltip', title:'删除'}<i class="icon-remove"></i>#{/a}
     </td>
 </tr>
 #{/paginate.list}

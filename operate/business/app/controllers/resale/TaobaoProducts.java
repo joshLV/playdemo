@@ -41,6 +41,8 @@ public class TaobaoProducts extends Controller{
     private static final String APPSECRET = Play.configuration.getProperty("taobao.top.appsecret", "1781d22a1f06c4f25f1f679ae0633400");
 
     public static String IMG_ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
+    public static String TAOBAO_TOP_OAUTH_URL = Play.configuration.getProperty("taobao.top.oauth_url",
+            "http://container.api.taobao.com/container?appkey=21293912&encode=utf-8");
 
     @ActiveNavigation("resale_partner_product")
     public static void showUpload(Long goodsId) {
