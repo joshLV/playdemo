@@ -1,0 +1,54 @@
+<div class="control-group">
+    <label class="control-label"><span style="color: red; ">*</span>商户</label>
+
+    <div class="controls">
+    #{layout_operate.selectInputField name:"supplierName", id:"stock.supplier.id", list:supplierList/}
+        <span class="error">#{error 'stock.supplier.id'/}</span>
+    </div>
+</div>
+<div id="brand">
+#{layout_operate.selectField name:'stock.brand.id', class:'span2', value:stock?.brand?.id, error:'stock.brand.id',list:brandList/}
+</div>
+
+<div id="sku">
+#{layout_operate.selectField name:'stock.sku.id', value:stock?.sku?.id, error:'stock.sku.id', required:true}
+    #{list items:skuList, as:'sku'}
+    #{option stock?.sku?.id}${stock?.sku?.name}#{/option}
+#{/list}
+#{/layout_operate.selectField}
+</div>
+<div class="control-group">
+    <label class="control-label">剩余库存</label>
+
+    <div class="controls" id="remain_count">
+    </div>
+</div>
+<span id="stock_in_count">
+#{layout_operate.textField name:'stock.stockInCount', value:stock?.stockInCount, note:'件', required:true/}
+</span>
+#{layout_operate.textField name:'stock.originalPrice', value:stock?.originalPrice?:"0",
+note:'元',
+required:true/}
+
+#{layout_operate.dateScopeField name:'stock.effective', begin:'stock.effectiveAt',end:'stock.expireAt',
+beginValue:stock?.effectiveAt?.format(), endValue:stock?.expireAt?.format()/}
+
+#{layout_operate.textField name:'stock.remark', value:stock?.remark/}
+#{layout_operate.textField name:'stock.saler', value:stock?.saler/}
+#{layout_operate.textField name:'stock.storekeeper', value:stock?.storekeeper/}
+<div class="control-group">
+    <label class="control-label">制单员</label>
+
+    <div class="controls" id="created_by">
+    ${createdBy}
+    </div>
+</div>
+
+<div class="form-actions">
+    <input class="btn btn-primary" id="save" type="submit" value="保存" #{if "add".equals(action)}disabled#{/if}>
+#{vx.cancelButton url:'', class:'btn btn-primary'/}
+</div>
+<input type="hidden" id="status" name="stock.actionType" value="IN"/>
+
+
+

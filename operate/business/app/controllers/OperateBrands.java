@@ -1,5 +1,6 @@
 package controllers;
 
+import com.google.gson.Gson;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.FileUploadUtil;
 import models.sales.Brand;
@@ -44,7 +45,7 @@ public class OperateBrands extends Controller {
         Long id = OperateRbac.currentUser().id;
         List<Brand> brandList = Brand.findByOrder(null, id);
         List<Supplier> supplierList = Supplier.findUnDeleted();
-        render(brandPage, supplierList,brandList);
+        render(brandPage, supplierList, brandList);
     }
 
     /**
@@ -189,7 +190,13 @@ public class OperateBrands extends Controller {
 
         String skuBrand = request.params.get("skuBrand");
         if (StringUtils.isNotBlank(skuBrand)) {
-            render("OperateBrands/skuBrands.html",brandList);
+            render("OperateBrands/skuBrands.html", brandList);
+        }
+        String stockBrand = request.params.get("stockBrand");
+        if (StringUtils.isNotBlank(stockBrand)) {
+//            renderJSON(brandList);
+            System.out.println(brandList.size() + "===brandList.size()>>");
+            render("OperateBrands/stockBrands.html", brandList);
         }
         render(brandList);
     }

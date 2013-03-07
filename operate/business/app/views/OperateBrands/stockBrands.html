@@ -1,0 +1,4 @@
+#{list items:brandList, as:'brand'}
+<option value="${brand?.id}">${brand.name}</option>
+    *{#{option brand?.id}${brand?.name}#{/option}}*
+#{/list}

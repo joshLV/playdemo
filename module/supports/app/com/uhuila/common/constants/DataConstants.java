@@ -5,7 +5,7 @@ public enum DataConstants {
 	ONE(1),
 	TWO(2),
 	THREE(3), 
-	FOUR(4);;
+	FOUR(4);
 	private int value;
 
 	DataConstants(int value) {

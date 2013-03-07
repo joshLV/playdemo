@@ -5,15 +5,7 @@ import play.data.validation.InFuture;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -28,12 +20,14 @@ import java.util.Date;
 @Table(name = "inventory_stock_item")
 public class InventoryStockItem extends Model {
 
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "inventory_stock_id")
     public InventoryStock inventoryStock;
 
     @ManyToOne
     public Sku sku;
+
 
     /**
      * 出入库数量.
@@ -65,17 +59,19 @@ public class InventoryStockItem extends Model {
     @Column(name = "created_at")
     public Date createdAt;
 
+    @Column(name = "created_by")
+    public String createdBy;
+
     /**
      * 券有效开始日
      */
-    @Required
     @Column(name = "effective_at")
     @Temporal(TemporalType.TIMESTAMP)
     public Date effectiveAt;
+
     /**
      * 券有效结束日
      */
-    @Required
     @InFuture
     @Column(name = "expire_at")
     @Temporal(TemporalType.TIMESTAMP)
@@ -87,4 +83,28 @@ public class InventoryStockItem extends Model {
      */
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
+
+    public InventoryStockItem(InventoryStock stock) {
+        this.inventoryStock = stock;
+        this.sku = stock.sku;
+        System.out.println("===>>");
+        System.out.println();
+        System.out.println(stock.stockInCount + "===stock.stockInCount>>");
+        System.out.println(stock.originalPrice + "===stock.originalPrice>>");
+        System.out.println(stock.effectiveAt + "===stock.effectiveAt>>");
+        System.out.println(stock.expireAt + "===stock.expireAt>>");
+
+        if (stock.actionType == StockActionType.IN) {
+            this.changeCount = stock.stockInCount;
+            this.remainCount = stock.stockInCount;
+            this.price = stock.originalPrice;
+        } else {
+
+        }
+        this.effectiveAt = stock.effectiveAt;
+        this.expireAt = stock.expireAt;
+        this.createdAt = new Date();
+        this.createdBy = stock.createdBy;
+        this.deleted = DeletedStatus.UN_DELETED;
+    }
 }
