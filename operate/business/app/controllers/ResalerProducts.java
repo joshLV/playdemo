@@ -174,7 +174,21 @@ public class ResalerProducts extends Controller {
             renderJSON("{\"error\":\"商品不存在\"}");
         }
         boolean success = false;
-        Date endSale = new Date();
+        //首先算下月最后一天
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, 1);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        Date endSale = calendar.getTime();
+
+        //然后算券过期前5天
+        calendar.setTime(product.goods.expireAt);
+        calendar.add(Calendar.DAY_OF_MONTH, -5);
+
+        if (calendar.before(endSale)) {
+            endSale = calendar.getTime();
+        }
+
+
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (product.partner == OuterOrderPartner.JD) {
