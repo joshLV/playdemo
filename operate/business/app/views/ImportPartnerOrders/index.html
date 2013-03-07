@@ -9,7 +9,7 @@
     <label class="control-label">选择渠道</label>
 
     <div class="controls">
-        #{select 'partner', class:'input-medium' }
+        #{select 'partner',id:'partner', class:'input-medium',value:partner}
             #{list items:models.order.OuterOrderPartner.values(), as:'partner'}
             #{option partner.toString().toLowerCase()}${partner.partnerName()}#{/option}
         #{/list}
@@ -21,7 +21,8 @@
 
     <div class="controls">
         <input type="file" name="orderFile">
-        <span class="help-block" style="color: red;">${msgInfo}${existedOrders}${notExistGoods}</span>
+        <span class="help-block" style="color: red;" id="info">${duplicateInfo}${existedOrders}
+            <br>${msgInfo}${notExistGoods}</span>
         <span class="help-block">注意：上传时，保证数据放在Sheet1.</span>
     </div>
 </div>
@@ -32,3 +33,10 @@
     </div>
 </div>
 #{/form}
+<script type="text/javascript">
+    $("#partner").blur(function () {
+        $("#info").html("");
+    })
+
+
+</script>

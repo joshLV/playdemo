@@ -103,7 +103,7 @@ public class ResalerProduct extends Model {
         return product == null ? null : product.goods;
     }
 
-    public static Goods getGoodsByPartnerProductId(Long partnerProductId, OuterOrderPartner partner) {
+    public static Goods getGoodsByPartnerProductId(String partnerProductId, OuterOrderPartner partner) {
         ResalerProduct product = ResalerProduct.find("byPartnerProductIdAndPartner", partnerProductId, partner).first();
         return product == null ? null : product.goods;
     }

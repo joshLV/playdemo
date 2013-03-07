@@ -63,6 +63,10 @@ public class PartnerOrderView {
      * 手机
      */
     public String phone;
+    /**
+     * 固定电话
+     */
+    public String tel;
 
     /**
      * 付款时间
@@ -83,6 +87,12 @@ public class PartnerOrderView {
      */
     public String zipCode;
 
+    /**
+     * 发票抬头
+     */
+    public String invoiceContent;
+
+
     public String getOuterGoodsNo() {
         return outerGoodsNo;
     }
@@ -101,6 +111,22 @@ public class PartnerOrderView {
 
     public BigDecimal getSalesPrice() {
         return salesPrice;
+    }
+
+    public String getInvoiceContent() {
+        return invoiceContent;
+    }
+
+    public void setInvoiceContent(String invoiceContent) {
+        this.invoiceContent = invoiceContent;
+    }
+
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
     }
 
     public void setSalesPrice(BigDecimal salesPrice) {
@@ -221,7 +247,8 @@ public class PartnerOrderView {
             return null;
         }
         Order ybqOrder = Order.createConsumeOrder(resaler.id, AccountType.RESALER).save();
-        Goods goods = ResalerProduct.getGoodsByPartnerProductId(Long.valueOf(outerGoodsNo), partner);
+        Goods goods = ResalerProduct.getGoodsByPartnerProductId(outerGoodsNo, partner);
+
         if (goods == null) {
             Logger.info("goods not found: %s,", outerGoodsNo);
             return null;

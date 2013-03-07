@@ -74,6 +74,8 @@ public class ImportPartnerOrders extends Controller {
         List<String> goodsList = new ArrayList<>();
         String existedOrders = "";
         String notExistGoods = "";
+        String preGoodsNo = "";
+        String duplicateInfo = "";
         for (PartnerOrderView view : partnerOrderViews) {
             try {
                 OuterOrder outerOrder = view.toOuterOrder(OuterOrderPartner.valueOf(partner.toUpperCase()));
@@ -83,17 +85,20 @@ public class ImportPartnerOrders extends Controller {
                     outerOrder.save();
                     msgInfo = "外部订单导入完毕！";
                 } else {
+                    if (!preGoodsNo.equals(view.outerGoodsNo)) {
+                        goodsList.add(view.outerGoodsNo);
+                        notExistGoods = StringUtils.join(goodsList, ",");
+                        preGoodsNo = view.outerGoodsNo;
+                    }
                     msgInfo = "请检查以下渠道商品ID是否已映射一百券商品ID！";
-                    goodsList.add(view.outerGoodsNo);
-                    notExistGoods = StringUtils.join(goodsList, ",");
                 }
             } catch (Exception e) {
                 orderList.add(view.outerOrderNo);
-                msgInfo = "重复订单：" + duplicateCount++ + "个,";
+                duplicateInfo = "重复订单:" + duplicateCount++ + "个,";
                 existedOrders = StringUtils.join(orderList, ",");
             }
         }
-        render("ImportPartnerOrders/index.html", msgInfo, duplicateCount, existedOrders, notExistGoods);
+        render("ImportPartnerOrders/index.html", partner, duplicateInfo, msgInfo, duplicateCount, existedOrders, notExistGoods);
     }
 
 }
