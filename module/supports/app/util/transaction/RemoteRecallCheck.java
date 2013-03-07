@@ -69,18 +69,10 @@ public class RemoteRecallCheck {
         return _callId.get();
     }
 
-    private static void setNeedRecallRemote(Boolean value) {
-        _needRecallRemote.set(value);
-    }
-
-    public static void signAsNeedRecall() {
-        _needRecallRemote.set(Boolean.TRUE);
-    }
-
     /**
      * 声明为调用成功，下次不再调用
      */
-    public static void singAsSuccess() {
+    public static void signAsSuccess() {
         _needRecallRemote.set(Boolean.FALSE);
     }
 

@@ -551,7 +551,7 @@ public class ECoupon extends Model {
                 Logger.info("verifyAndCheckOnPartnerResaler: SN:" + eCouponSn + ", result:" + result);
                 if (result.isOk()) {
                     // 不需要重试.
-                    RemoteRecallCheck.singAsSuccess();
+                    RemoteRecallCheck.signAsSuccess();
                 }
                 return result;
             }
