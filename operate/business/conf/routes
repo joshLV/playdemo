@@ -415,11 +415,11 @@ GET     /sku/new                        Skus.add
 DELETE  /sku/{id}                       Skus.delete
 GET     /sku/{id}/edit                  Skus.edit
 PUT     /sku/{id}                       Skus.update
-GET     /goods_sku/{brandId}            Skus.goodsSku
+GET     /goods-sku/{brandId}            Skus.goodsSku
 
 #导入渠道订单
-GET     /import_partner_orders                    ImportPartnerOrders.index
-POST    /import_partner_orders                    ImportPartnerOrders.upload
+GET     /import-partner-orders                    ImportPartnerOrders.index
+POST    /import-partner-orders                    ImportPartnerOrders.upload
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

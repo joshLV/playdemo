@@ -49,7 +49,7 @@ public class SkuTest extends FunctionalTest {
         params.put("sku.name", "test");
         params.put("sku.marketPrice", "10.0");
         params.put("sku.stock", "100");
-        params.put("sku.supplierId", sku.supplier.id.toString());
+        params.put("sku.supplier.id", sku.supplier.id.toString());
         params.put("sku.brand.id", sku.brand.id.toString());
         params.put("sku.supplierCategory.id", sku.supplierCategory.id.toString());
 
@@ -83,7 +83,7 @@ public class SkuTest extends FunctionalTest {
 
     @Test
     public void testUpdate() {
-        String params = "sku.stock=100&sku.marketPrice=100&sku.name=edit_sku&sku.supplierId=" + sku.supplier.id.toString() + "&sku.brand.id=" + sku.brand.id + "&sku.supplierCategory.id=" + sku.supplierCategory.id;
+        String params = "sku.stock=100&sku.marketPrice=100&sku.name=edit_sku&sku.supplier.id=" + sku.supplier.id.toString() + "&sku.brand.id=" + sku.brand.id + "&sku.supplierCategory.id=" + sku.supplierCategory.id;
         Http.Response response = PUT("/sku/" + sku.id, "application/x-www-form-urlencoded", params);
         assertStatus(302, response);
 
