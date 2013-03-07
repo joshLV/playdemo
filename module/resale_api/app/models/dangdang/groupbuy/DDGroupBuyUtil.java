@@ -1,11 +1,9 @@
 package models.dangdang.groupbuy;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.uhuila.common.util.DateUtil;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
-import models.order.ECouponStatus;
 import models.order.OuterOrder;
 import models.sales.ResalerProduct;
 import org.apache.commons.codec.digest.DigestUtils;

@@ -2,14 +2,9 @@ package models.wuba;
 
 import cache.CacheCallBack;
 import cache.CacheHelper;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
-import models.order.ECouponStatus;
 import org.apache.commons.codec.binary.Base64;
 import play.Logger;
 import play.Play;

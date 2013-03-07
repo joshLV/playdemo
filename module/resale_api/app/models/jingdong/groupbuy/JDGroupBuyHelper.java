@@ -4,7 +4,6 @@ import cache.CacheCallBack;
 import cache.CacheHelper;
 import models.order.ECoupon;
 import models.order.ECouponPartner;
-import models.order.ECouponStatus;
 import models.order.OuterOrder;
 import org.w3c.dom.Node;
 import play.Logger;

@@ -1,0 +1,73 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'分销商品管理 - 即将过期的商品' /}
+#{include '/share/nav.html' /}
+#{set 'moreStyles'}
+#{/set}
+<div class="body">
+    <legend>即将过期的商品</legend>
+    <div>
+        <ul>
+            <li>此处只列出【京东】的即将过期商品，过期时间在三天之内</li>
+            <li>自动延期到【次月月底】和【券过期前5天】中比较早的一个日期</li>
+        </ul>
+    </div>
+
+    <table class="table table-bordered ">
+        <thead>
+        <tr>
+            <th>商品编码</th>
+            <th>名称</th>
+            <th style="text-align:right">一百券价</th>
+            <th>分销商</th>
+            <th>外部团购过期时间</th>
+            <th>券截止日期</th>
+            <th>延期结果</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        #{list items:products, as:'product'}
+        <tr>
+            <td>${product.goods.code}</td>
+            <td><a href="/goods/${product.goods.id}" target="_blank">${product.goods.shortName}</a> </td>
+            <td style="text-align:right">${product.goods.salePrice.formatCurrency("CNY")}</td>
+            <td>${product.partner.partnerName()}</td>
+            <td>${product.endSale}</td>
+            <td>${product.goods.expireAt}</td>
+            <td data-id='${product.id}'></td>
+        </tr>
+        #{/list}
+        </tbody>
+    </table>
+    <button class="btn btn-primary" id="batch-delay" type="button">批量延期</button>
+    <div class="alert alert-success" id="processing" style="display:none">正在处理…… </div>
+
+</div>
+
+#{set 'moreScripts'}
+<script>
+$("#batch-delay").click(function(){
+  $(this).hide();
+  $("#processing").show();
+  $("td[data-id]").each(function(){
+        var ele = $(this);
+        var pid = ele.attr('data-id');
+
+        $.ajax({
+            url: '/resaler-products/auto-delay/' + pid,
+            type: 'PUT',
+            async: false,
+            success: function(result) {
+                if (result.error){
+                    ele.html('<span style="color:red">' + result.error + '</span> ');
+                }else{
+                    ele.html('<span style="color:green">' + result.endSale + '</span> ');
+                }
+            }
+        });
+  });
+  $("#processing").text('处理完毕');
+});
+</script>
+#{/set}

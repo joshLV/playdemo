@@ -1,5 +1,8 @@
 package controllers;
 
+import models.jingdong.groupbuy.JDGroupBuyHelper;
+import models.jingdong.groupbuy.JDGroupBuyUtil;
+import models.jingdong.groupbuy.JingdongMessage;
 import models.operator.OperateUser;
 import com.uhuila.common.constants.DeletedStatus;
 import models.order.OuterOrderPartner;
@@ -14,6 +17,7 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -101,14 +105,30 @@ public class ResalerProducts extends Controller {
         render(products);
     }
 
+    @ActiveNavigation("resale_partner_product")
+    public static void delete(Long id) {
+        ResalerProduct product = ResalerProduct.findById(id);
+        if (product == null) {
+            error("分销商品不存在");
+        }
+        product.deleted = DeletedStatus.DELETED;
+        product.updatedAt = new Date();
+        product.lastModifier(OperateRbac.currentUser().id).save();
+        showProducts(product.partner.toString().toLowerCase(), product.goods.id);
+    }
+
     /**
      * 录入分销商品的第三方ID和url
      */
     @ActiveNavigation("resale_partner_product")
-    public static void enter(Long productId, String partnerPid, String url) {
+    public static void enter(Long productId, String partnerPid, String url, Date endSale) {
         ResalerProduct product = ResalerProduct.findById(productId);
-        product.partnerProductId = partnerPid;
-        product.url = url;
+        if (!StringUtils.isBlank(partnerPid)) product.partnerProductId = partnerPid;
+        if (!StringUtils.isBlank(url)) product.url = url;
+        if (endSale != null) {
+            endSale = new Date(endSale.getTime() + 24*60*60*1000 - 1000);
+            product.endSale = endSale;
+        }
         product.save();
 
         showProducts(product.partner.toString().toLowerCase(), product.goods.id);
@@ -130,5 +150,49 @@ public class ResalerProducts extends Controller {
         product.save();
 
         showProducts(product.partner.toString().toLowerCase(), product.goods.id);
+    }
+
+    /**
+     * 查看即将过期的商品
+     */
+    @ActiveNavigation("resale_partner_product")
+    public static void expiringGoods() {
+        List<ResalerProduct> products = ResalerProduct.find("deleted = ? and endSale is not null and (partner = ?) order by endSale",
+                DeletedStatus.UN_DELETED, OuterOrderPartner.JD).fetch();
+        render(products);
+    }
+
+    /**
+     * 延期一个商品 并返回延期结果
+     * 自动延期到【次月月底】和【券过期前5天】中比较早的一个日期.
+     *
+     * @param id 分销商品ID
+     */
+    public static void autoDelay(Long id) {
+        ResalerProduct product = ResalerProduct.findById(id);
+        if (product == null) {
+            renderJSON("{\"error\":\"商品不存在\"}");
+        }
+        boolean success = false;
+        Date endSale = new Date();
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (product.partner == OuterOrderPartner.JD) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("venderTeamId", product.goodsLinkId);
+            params.put("jdTeamId", product.partnerProductId);
+            params.put("saleEndDate", format.format(endSale));
+            JingdongMessage response = JDGroupBuyUtil.sendRequest("teamExtension", params);
+            success = response.isOk();
+
+        }else {
+            renderJSON("{\"error\":\"不支持\"}");
+        }
+
+        if (success) {
+            renderJSON("{\"endSale\":\"" + format.format(endSale) +  "\"}");
+        }else {
+            renderJSON("{\"error\":\"延期失败\"}");
+        }
     }
 }
