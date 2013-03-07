@@ -20,7 +20,7 @@
         <label class="control-label">用户帐号</label>
         <div class="controls">
             #{if question.userId}
-                <a href="/consumers/${question.userId}" target="_blank">${question.userName}</a>
+                <a href="http://cms.${play.Play.configuration.getProperty("application.baseDomain")}/consumers/${question.userId}" target="_blank">${question.userName}</a>
             #{/if}
             #{else}
                 ${question?.userName}: ${question?.mobile}
