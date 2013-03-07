@@ -123,7 +123,14 @@ public class ResalerProducts extends Controller {
     @ActiveNavigation("resale_partner_product")
     public static void enter(Long productId, String partnerPid, String url, Date endSale) {
         ResalerProduct product = ResalerProduct.findById(productId);
-        if (!StringUtils.isBlank(partnerPid)) product.partnerProductId = partnerPid;
+        if (!StringUtils.isBlank(partnerPid)){
+            ResalerProduct t = ResalerProduct.find("byPartnerAndPartnerProductId", product.partner, partnerPid).first();
+            if(t != null) {
+                error("该分销商品ID已存在");
+            }
+
+            product.partnerProductId = partnerPid;
+        }
         if (!StringUtils.isBlank(url)) product.url = url;
         if (endSale != null) {
             endSale = new Date(endSale.getTime() + 24*60*60*1000 - 1000);
@@ -141,6 +148,12 @@ public class ResalerProducts extends Controller {
         if (product.goods == null) {
             error("一百券商品不存在，请重新填写一百券商品ID");
         }
+
+        ResalerProduct t = ResalerProduct.find("byPartnerAndPartnerProductId", product.partner, product.partnerProductId).first();
+        if(t != null) {
+            error("该分销商品ID已存在");
+        }
+
         product.goodsLinkId = product.goods.id;
         product.createdAt = new Date();
         product.updatedAt = new Date();
