@@ -10,6 +10,7 @@ import play.Logger;
 import play.Play;
 import play.exceptions.UnexpectedException;
 import play.libs.Codec;
+import util.extension.ExtensionResult;
 import util.ws.WebServiceRequest;
 
 import javax.crypto.Cipher;
@@ -42,9 +43,9 @@ public class WubaUtil {
      * @param coupon 一百券自家券
      * @return 是否验证成功
      */
-    public static boolean verifyOnWuba(ECoupon coupon) {
+    public static ExtensionResult verifyOnWuba(ECoupon coupon) {
         if (coupon.partner != ECouponPartner.WB) {
-            return false;
+            return ExtensionResult.INVALID_CALL;
         }
         Map<String, Object> params = new HashMap<>();
         params.put("ticketId", coupon.id);
@@ -53,11 +54,26 @@ public class WubaUtil {
         WubaResponse response = sendRequest(params, "emc.groupbuy.order.ticketcheck");
         if (response.isOk()) {
             JsonObject data = response.data.getAsJsonObject();
-            if (data.get("result").getAsInt() == 1) {
-                return true;
+            int resultCode = data.get("result").getAsInt();
+            switch (resultCode) {
+                // 1 已使用 10 未使 用退款, 11 已过 期退款, 12 已消 费退款 (58 责 任),13 已消费退 款(商家 责任) 99 用户 锁定
+                case 1:
+                    return ExtensionResult.SUCCESS;
+                case 10:
+                    return ExtensionResult.code(110).message("已退款（未使用）");
+                case 11:
+                    return ExtensionResult.code(111).message("已退款（券过期）");
+                case 12:
+                    return ExtensionResult.code(112).message("已退款（已消费-58责任）");
+                case 13:
+                    return ExtensionResult.code(113).message("已退款（已消费-商家责任）");
+                case 99:
+                    return ExtensionResult.code(110).message("用户锁定");
+                default:
+                    return ExtensionResult.code(resultCode).message("未知58同城接口返回代码: %d", resultCode);
             }
         }
-        return false;
+        return ExtensionResult.code(1).message("58同城接口调用失败");
     }
 
     public static JsonArray allProductTypes() {

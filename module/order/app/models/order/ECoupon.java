@@ -3,6 +3,8 @@ package models.order;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.RandomNumberUtil;
+import extension.order.ECouponVerifyContext;
+import extension.order.ECouponVerifyInvocation;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.TradeBill;
@@ -10,18 +12,14 @@ import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import models.admin.SupplierUser;
 import models.consumer.User;
-import models.dangdang.groupbuy.DDGroupBuyUtil;
-import models.jingdong.groupbuy.JDGroupBuyHelper;
 import models.operator.OperateUser;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.GoodsCouponType;
 import models.sales.Shop;
 import models.sms.SMSUtil;
-import models.taobao.TaobaoCouponUtil;
 import models.tsingtuan.TsingTuanOrder;
 import models.tsingtuan.TsingTuanSendOrder;
-import models.wuba.WubaUtil;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
@@ -32,6 +30,8 @@ import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
 import play.modules.solr.Solr;
 import util.common.InfoUtil;
+import util.extension.ExtensionInvoker;
+import util.extension.ExtensionResult;
 import util.transaction.RemoteCallback;
 import util.transaction.RemoteRecallCheck;
 
@@ -521,7 +521,8 @@ public class ECoupon extends Model {
                                            String triggerCouponSn, Date realConsumedAt, String remark) {
         //===================判断是否第三方订单产生的券=并且不是导入券============================
         if (this.createType != ECouponCreateType.IMPORT) {
-            if (!verifyAndCheckOnPartnerResaler()) {
+            ExtensionResult result = verifyAndCheckOnPartnerResaler();
+            if (result.code != 0) {
                 return false;
             }
         }
@@ -539,56 +540,29 @@ public class ECoupon extends Model {
     /**
      * 使用RemoteRecallCheck.call包装一下，这样在下次进来时会检查是否成功过，如果成功过就不再调用verifyOnPartnerResaler.
      *
-     * @return 如果返回true，表示调用失败.
+     * @return 如果返回false，表示调用失败.
      */
-    private Boolean verifyAndCheckOnPartnerResaler() {
-        return RemoteRecallCheck.call("coupon_verify_check", new RemoteCallback<Boolean>() {
+    public ExtensionResult verifyAndCheckOnPartnerResaler() {
+        return RemoteRecallCheck.call("coupon_verify_check", new RemoteCallback<ExtensionResult>() {
             @Override
-            public Boolean doCall() {
-                Boolean success = verifyOnPartnerResaler();
+            public ExtensionResult doCall() {
+                ExtensionResult result = verifyOnPartnerResaler();
                 // 记录日志验证失败
-                Logger.info("verifyAndCheckOnPartnerResaler: SN:" + eCouponSn + ", success:" + success);
-                if (!success) {
+                Logger.info("verifyAndCheckOnPartnerResaler: SN:" + eCouponSn + ", result:" + result);
+                if (result.isOk()) {
                     // 不需要重试.
-                    RemoteRecallCheck.singAsSuccess();
+                    RemoteRecallCheck.signAsSuccess();
                 }
-                return success;
+                return result;
             }
         });
     }
 
     /**
-     * 调用第三方渠道券验证，并返回是否失败的标识。
-     *
-     * @return TRUE表示验证失败；FALSE表示验证成功
+     * 调用第三方渠道券验证，并返回是否失败的结果。
      */
-    private Boolean verifyOnPartnerResaler() {
-        Boolean failed = Boolean.FALSE;
-        Boolean success = Boolean.TRUE;
-        if (this.partner == ECouponPartner.DD) {
-            if (!DDGroupBuyUtil.verifyOnDangdang(this)) {
-                Logger.info("verify on dangdang failed. coupon sn: %s", eCouponSn);
-                return failed;
-            }
-        }
-
-        if (this.partner == ECouponPartner.JD) {
-            if (!JDGroupBuyHelper.verifyOnJingdong(this)) {
-                Logger.info("verify on jingdong failed. coupon sn: %s", eCouponSn);
-                return failed;
-            }
-        } else if (this.partner == ECouponPartner.WB) {
-            if (!WubaUtil.verifyOnWuba(this)) {
-                Logger.info("verify on wuba failed. coupon sn: %s", eCouponSn);
-                return failed;
-            }
-        } else if (this.partner == ECouponPartner.TB) {
-            if (!TaobaoCouponUtil.verifyOnTaobao(this)) {
-                Logger.info("verify on taobao failed. coupon sn: %s", eCouponSn);
-                return failed;
-            }
-        }
-        return success;
+    private ExtensionResult verifyOnPartnerResaler() {
+        return ExtensionInvoker.run(ECouponVerifyInvocation.class, ECouponVerifyContext.build(this));
     }
 
     /**
@@ -925,7 +899,6 @@ public class ECoupon extends Model {
     /**
      * 对于独立核算的门店，返回门店帐号，否则返回商户帐号.
      *
-     * @param eCoupon
      * @return
      */
     @Transient
@@ -1414,7 +1387,7 @@ public class ECoupon extends Model {
      * @return
      */
     public static BigDecimal getSavedMoney(Long userId, AccountType userType) {
-        Query q = JPA.em().createQuery("select sum(e.faceValue - e.salePrice) from ECoupon e " +
+        Query q = JPA.em().createQuery("select sum(e.faceValue)-(e.salePrice) from ECoupon e " +
                 "where e.order.userId = :userId and e.order.userType = :userType and e.goods.isLottery = :isLottery " +
                 "and (e.status = :unconsumed or e.status = :consumed)");
         q.setParameter("isLottery", false);
@@ -1622,21 +1595,9 @@ public class ECoupon extends Model {
      * @return
      */
     public boolean virtualVerify(Long operateUserId) {
-        if (this.partner == ECouponPartner.JD) {
-            if (!JDGroupBuyHelper.verifyOnJingdong(this)) {
-                Logger.info("virtual verify on jingdong failed");
-                return false;
-            }
-        } else if (this.partner == ECouponPartner.WB) {
-            if (!WubaUtil.verifyOnWuba(this)) {
-                Logger.info("virtual verify on wuba failed");
-                return false;
-            }
-        } else if (this.partner == ECouponPartner.TB) {
-            if (!TaobaoCouponUtil.verifyOnTaobao(this)) {
-                Logger.info("verify on taobao failed");
-                return false;
-            }
+        ExtensionResult result = verifyAndCheckOnPartnerResaler();
+        if (result.code != 0) {
+            return false;
         }
         this.virtualVerify = true;
         this.virtualVerifyAt = new Date();

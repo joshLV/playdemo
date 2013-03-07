@@ -5,9 +5,9 @@
 #{/set}
 #{include '/share/nav.html' /}
 <div class="body">
-#{form @SkuManage.update(sku?.id) , id:'form',class:"form-horizontal" }
+#{form @Skus.update(sku?.id) , id:'form',class:"form-horizontal" }
     <legend>${title}</legend>
     #{set action:"edit"/}
-    #{include '/SkuManage/skuForm.html'/}
+    #{include '/Skus/skuForm.html'/}
 #{/form}
 </div>

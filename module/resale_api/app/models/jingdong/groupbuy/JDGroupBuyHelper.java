@@ -8,6 +8,7 @@ import models.order.OuterOrder;
 import org.w3c.dom.Node;
 import play.Logger;
 import play.Play;
+import util.extension.ExtensionResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,15 +29,15 @@ public class JDGroupBuyHelper {
      * @param coupon 想要验证的一百券的券.
      * @return 验证结果.
      */
-    public static boolean verifyOnJingdong(ECoupon coupon){
+    public static ExtensionResult verifyOnJingdong(ECoupon coupon){
         if (coupon.partner != ECouponPartner.JD) {
-            return false;
+            return ExtensionResult.INVALID_CALL;
         }
 
         OuterOrder outerOrder = OuterOrder.find("byYbqOrder", coupon.order).first();
         if (outerOrder == null) {
             Logger.info("jingdong verify failed: outerOrder not found, couponId: " + coupon.id);
-            return false;
+            return ExtensionResult.code(100).message("没有找到对应京东订单号（couponId:%d)", coupon.id);
         }
 
         Map<String, Object> params = new HashMap<>();
@@ -46,9 +47,27 @@ public class JDGroupBuyHelper {
         JingdongMessage response = JDGroupBuyUtil.sendRequest("verifyCode", params);
         if (!response.isOk() || Integer.parseInt(response.selectTextTrim("./VerifyResult")) != 200) {
             response = JDGroupBuyUtil.sendRequest("queryCode", params);
-            return response.isOk() && Integer.parseInt(response.selectTextTrim("./CouponStatus")) == 10;
+            int jdCouonStatus = Integer.parseInt(response.selectTextTrim("./CouponStatus"));
+            if (response.isOk() && jdCouonStatus == 10) {
+                return ExtensionResult.SUCCESS;
+            }
+            // -1:不存在 0:成功 10:已验证使用过 20:已过期 30:已退款 40:已经使用后的退款 50:优惠券未发放 [必填]-->
+            switch(jdCouonStatus) {
+                case -1:
+                    return ExtensionResult.code(101).message("券不存在");
+                case 20:
+                    return ExtensionResult.code(120).message("已过期");
+                case 30:
+                    return ExtensionResult.code(130).message("已退款");
+                case 40:
+                    return ExtensionResult.code(140).message("已使用后的退款");
+                case 50:
+                    return ExtensionResult.code(150).message("优惠券未发放");
+                default:
+                    return ExtensionResult.code(jdCouonStatus).message("未知京东接口返回代码: %d", jdCouonStatus);
+            }
         }
-        return true;
+        return ExtensionResult.SUCCESS;
     }
 
     /**

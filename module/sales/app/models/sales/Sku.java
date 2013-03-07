@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * 货品
  * <p/>
  * User: yanjy
  * Date: 13-2-26
@@ -32,17 +33,23 @@ import java.util.List;
 public class Sku extends Model {
     public static final String[] CODE_VALUE = {"99", "999", "9999", "99999", "999999"};
 
-    //货品名称
+    /**
+     * 货品名称
+     */
     @Required
     @MaxSize(value = 500)
     public String name;
 
-    //市场价
+    /**
+     * 市场价
+     */
     @Required
     @Column(name = "market_price")
     public BigDecimal marketPrice;
 
-    // 库存（初始0）
+    /**
+     * 库存（初始0）
+     */
     public Long stock = 0L;
 
     /**
@@ -52,20 +59,28 @@ public class Sku extends Model {
     public String sequenceCode;
 
 
-    // 货品（SKU）编码 【2位类别编码+4位商户编码+2位品牌编码+2位流水码】
+    /**
+     * 货品（SKU）编码 【2位类别编码+4位商户编码+2位品牌编码+2位流水码】
+     */
     @Column(name = "code")
     public String code;
-    // 发货商户
+    /**
+     * 发货商户
+     */
     @Required
-    @Column(name = "supplier_id")
-    public Long supplierId;
+    @ManyToOne
+    public Supplier supplier;
 
-    // 品牌
+    /**
+     * 品牌
+     */
     @Required
     @ManyToOne
     public Brand brand;
 
-    // 类别
+    /**
+     * 类别
+     */
     @Required
     @ManyToOne
     @JoinColumn(name = "supplier_category_id")
@@ -80,19 +95,6 @@ public class Sku extends Model {
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
 
-    /**
-     * 获取商品所属的商户信息.
-     *
-     * @return
-     */
-    @Transient
-    public Supplier getSupplier() {
-        if (supplierId == null) {
-            return null;
-        }
-        return Supplier.findUnDeletedById(supplierId);
-    }
-
     @Override
     public boolean create() {
         this.createdAt = new Date();
@@ -105,9 +107,11 @@ public class Sku extends Model {
         return String.format("%0" + digits + "d", Integer.valueOf(originalCode) + 1);
     }
 
-    // SKU编码 【2位类别编码+4位商户编码+2位流水码】
+    /**
+     * 计算SKU编码 【2位类别编码+4位商户编码+2位流水码】
+     */
     public void setSkuCode() {
-        Sku sku = Sku.find("supplierId=? and brand=? and supplierCategory=? and sequenceCode is not null order by cast(sequenceCode as int) desc", this.supplierId, this.brand, this.supplierCategory).first();
+        Sku sku = Sku.find("supplier.id=? and brand=? and supplierCategory=? and sequenceCode is not null order by cast(sequenceCode as int) desc", this.supplier.id, this.brand, this.supplierCategory).first();
         if (sku == null || StringUtils.isBlank(sku.sequenceCode)) {
             this.sequenceCode = "01";
         } else {
@@ -118,16 +122,21 @@ public class Sku extends Model {
             }
         }
 
-        Supplier supplier = Supplier.findUnDeletedById(this.supplierId);
+        Supplier supplier = Supplier.findUnDeletedById(this.supplier.id);
         if (supplier != null && StringUtils.isNotBlank(supplier.code)) {
             this.code = "S" + supplierCategory.code + supplier.sequenceCode + this.sequenceCode;
         }
     }
 
+    /**
+     * 货品更新
+     *
+     * @param id
+     * @param sku
+     */
     public static void update(Long id, Sku sku) {
         Sku updSku = findById(id);
         updSku.marketPrice = sku.marketPrice;
-        updSku.stock = sku.stock;
         updSku.name = sku.name;
         updSku.save();
     }
@@ -146,7 +155,14 @@ public class Sku extends Model {
         sku.save();
     }
 
-
+    /**
+     * 货品查询
+     *
+     * @param condition
+     * @param pageNumber
+     * @param pageSize
+     * @return
+     */
     public static JPAExtPaginator<Sku> findByCondition(SkuCondition condition, int pageNumber, int pageSize) {
         JPAExtPaginator<Sku> skuPage = new JPAExtPaginator<>("Sku s", "s", Sku.class, condition.getFilter(), condition.getParamMap());
         skuPage.setPageNumber(pageNumber);

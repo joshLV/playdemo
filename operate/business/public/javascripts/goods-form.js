@@ -20,7 +20,7 @@ $(
         });
         if ($("#goods_materialType_2").attr("checked")) {
             $("#brand").change(function () {
-                $("#sku").load("/goods_sku/" + $("#goods_brand_id").val(), function (data) {
+                $("#sku").load("/goods-sku/" + $("#goods_brand_id").val(), function (data) {
                     var skuList = $.parseJSON(data);
                     $("#sku").empty();
                     $.each(skuList, function (i, sku) {
