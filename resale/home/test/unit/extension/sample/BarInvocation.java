@@ -13,7 +13,9 @@ public class BarInvocation extends SampleInvocation {
     public ExtensionResult execute(SampleContext context) {
         context.result -= 100;
         Logger.info("bar execute");
-        return ExtensionResult.build().code(1).message("Bar Error!");
+//        return ExtensionResult.build().code(1).message("Bar Error!");
+        return ExtensionResult.code(1).message("Bar Error!");
+
     }
 
     @Override

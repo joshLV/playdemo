@@ -16,7 +16,8 @@ public class FooInvocation extends SampleInvocation {
     public ExtensionResult execute(SampleContext context) {
         context.result += 100;
         Logger.info("foo execute");
-        return ExtensionResult.build().code(0);
+//        return ExtensionResult.build().code(0);
+        return ExtensionResult.code(0);
     }
 
     @Override
