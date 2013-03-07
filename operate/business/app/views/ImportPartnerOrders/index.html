@@ -1,8 +1,6 @@
 #{extends 'layout_operate/layout.html' /}
 #{include 'share/nav.html' /}
 #{set title:'导入渠道订单' /}
-<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
-
 <legend>${title}</legend>
 #{form @ImportPartnerOrders.upload(), method:'POST', class:'well form-horizontal', enctype:'multipart/form-data'}
 <div class="control-group">
