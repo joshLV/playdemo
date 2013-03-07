@@ -5,6 +5,8 @@
 # Home page
 GET     /                                       MqApplication.index
 
+GET    /sms/send                               SmsSenders.send
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
