@@ -36,9 +36,4 @@ public class HaduoHttpSMSProvider implements SMSProvider {
         }
     }
 
-    @Override
-    public String getProviderName() {
-        return "HaduoHttp";
-    }
-
 }

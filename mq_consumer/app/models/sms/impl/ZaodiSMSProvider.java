@@ -17,18 +17,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 上海助通网络接口.
- *
- * @author <a href="mailto:tangliqun@uhuila.com">唐力群</a>
+ * User: tanglq
+ * Date: 13-3-7
+ * Time: 下午5:03
  */
-public class ZtSMSProvider implements SMSProvider {
+public class ZaodiSMSProvider implements SMSProvider {
 
     private final String SEND_URL = Play.configuration
-                    .getProperty("ztsms.http.send_url");
+            .getProperty("zaodisms.http.send_url");
     private final String USERNAME = Play.configuration
-                    .getProperty("ztsms.http.username");
+            .getProperty("zaodisms.http.username");
     private final String PASSWORD = Play.configuration
-                    .getProperty("ztsms.http.password");
+            .getProperty("zaodisms.http.password");
 
     private final Pattern RESULTCODE_PATTERN = Pattern.compile("^1,");
 
@@ -64,7 +64,7 @@ public class ZtSMSProvider implements SMSProvider {
         qparams.add(new BasicNameValuePair("content", message.getContent()));
         qparams.add(new BasicNameValuePair("mobile", phoneArgs));
         String url = SEND_URL.replace(":sms_info",
-                        URLEncodedUtils.format(qparams, "UTF-8"));
+                URLEncodedUtils.format(qparams, "UTF-8"));
 
         String result = WebServiceRequest.url(url).type("ZTSMS").addKeyword(phoneArgs).getString();
 
@@ -78,8 +78,10 @@ public class ZtSMSProvider implements SMSProvider {
                 Logger.info("忽略3：黑词审核中");
             } else {
                 // 发送失败
-                throw new SMSException("发送助通短信不成功:" + result);
+                throw new SMSException("发送兆帝短信不成功:" + result);
             }
         }
+
     }
+
 }
