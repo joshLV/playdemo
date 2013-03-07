@@ -548,7 +548,7 @@ public class ECoupon extends Model {
                 Boolean success = verifyOnPartnerResaler();
                 // 记录日志验证失败
                 Logger.info("verifyAndCheckOnPartnerResaler: SN:" + eCouponSn + ", success:" + success);
-                if (!success) {
+                if (success) {
                     // 不需要重试.
                     RemoteRecallCheck.singAsSuccess();
                 }
