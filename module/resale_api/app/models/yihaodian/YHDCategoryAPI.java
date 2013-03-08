@@ -4,7 +4,6 @@ import cache.CacheCallBack;
 import cache.CacheHelper;
 import org.w3c.dom.Node;
 import play.Play;
-import play.libs.XPath;
 
 import java.util.ArrayList;
 import java.util.HashMap;
