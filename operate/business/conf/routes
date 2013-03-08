@@ -428,12 +428,6 @@ GET     /stock-sku-remain-count/{id}    InventoryStocks.stockSkuRemainCount
 
 
 
-
-
-
-
-
-
 #导入渠道订单
 GET     /import_partner_orders                    ImportPartnerOrders.index
 POST    /import_partner_orders                    ImportPartnerOrders.upload

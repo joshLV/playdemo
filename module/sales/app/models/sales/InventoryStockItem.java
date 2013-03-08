@@ -87,12 +87,6 @@ public class InventoryStockItem extends Model {
     public InventoryStockItem(InventoryStock stock) {
         this.inventoryStock = stock;
         this.sku = stock.sku;
-//        System.out.println("===>>");
-//        System.out.println();
-//        System.out.println(stock.stockInCount + "===stock.stockInCount>>");
-//        System.out.println(stock.originalPrice + "===stock.originalPrice>>");
-//        System.out.println(stock.effectiveAt + "===stock.effectiveAt>>");
-//        System.out.println(stock.expireAt + "===stock.expireAt>>");
 
         if (stock.actionType == StockActionType.IN) {
             this.changeCount = stock.stockInCount;

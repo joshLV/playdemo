@@ -45,8 +45,8 @@ validation.beforeThanContractEffectiveAt=%s不能早于合同生效日期!
 validation.beforeThanOnSaleAt=%s不能早于上架时间!
 validation.beforeThanBeginOnSaleAt=%s不能早于上架开始时间!
 validation.afterThanExpireAt=%s不能晚于过期时间!
-
-
+validation.moreThanStockCount=%s不能大于剩余库存
+validation.moreThanZero=%s不能等于零
 validation.beforeThanSecKillBeginAt=%s不能早于秒杀开始时间!
 validation.phone=无效的电话!
 validation.useEndTime=使用结束时间要在06：00之前！

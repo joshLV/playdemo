@@ -18,14 +18,9 @@ function stockSkuChange(brandId) {
                     alert('取得失败!');
                 },
                 success:function (data) {
-                    console.log('here')
-                    console.log(data)
                     if (data != null && data != '') {
-                        console.log('111')
-
                         $("#remain_count").html(data + "件");
                     } else {
-                        console.log('222')
                         $("#remain_count").html("0件");
                     }
                 }
@@ -50,7 +45,6 @@ function brandChange(supplierId) {
 }
 
 function remainCountChange(skuId) {
-    console.log('inin')
     $("#remain_count").empty();
     $.ajax({
         url:'/stock-sku-remain-count/' + skuId,
@@ -60,14 +54,9 @@ function remainCountChange(skuId) {
             alert('取得失败!');
         },
         success:function (data) {
-            console.log('here')
-            console.log(data)
             if (data != null && data != '') {
-                console.log('111')
-
                 $("#remain_count").html(data + "件");
             } else {
-                console.log('222')
                 $("#remain_count").html("0件");
             }
         }

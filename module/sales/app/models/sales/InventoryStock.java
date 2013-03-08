@@ -104,21 +104,25 @@ public class InventoryStock extends Model {
     public DeletedStatus deleted;
 
     @Transient
+    @Required
     @Min(0)
     @Match(value = "^[0-9]*$", message = "入库数量格式不对!(纯数字)")
     public Long stockInCount;
 
     @Transient
+    @Required
     @Min(0)
     @Money
     public BigDecimal originalPrice;
 
     @Transient
+    @Required
     @Min(0)
     @Match(value = "^[0-9]*$", message = "出库数量格式不对!(纯数字)")
     public Long stockOutCount;
 
     @Transient
+    @Required
     @Min(0)
     @Money
     public BigDecimal salePrice;
@@ -131,6 +135,9 @@ public class InventoryStock extends Model {
 
     @Transient
     public Sku sku;
+
+    @Transient
+    public Brand brand;
 
     /**
      * 统计到指定时间之前的所有未出库实物订单的Sku出库数量.
