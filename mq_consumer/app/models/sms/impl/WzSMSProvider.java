@@ -32,7 +32,7 @@ public class WzSMSProvider implements SMSProvider {
     private final String API_KEY = Play.configuration
             .getProperty("wzsms.http.apikey");
 
-    private final Pattern RESULTCODE_PATTERN = Pattern.compile("$\\d{6}");
+    private final Pattern RESULTCODE_PATTERN = Pattern.compile("$\\d{1,3}");
 
     @Override
     public void send(SMSMessage message) {
@@ -84,7 +84,7 @@ onethenone string 【选填项】1表示按组提交，每组的号码个数由�
         Logger.info("返回消息：" + result);
         result = result.trim();
         Matcher m = RESULTCODE_PATTERN.matcher(result);
-        if (!m.find()) {
+        if (m.find()) {
             throw new SMSException("发送威智短信不成功:" + result);
         }
     }

@@ -23,8 +23,8 @@ public class SmsSenders extends Controller {
 
         SMSProvider smsProvider = SMSFactory.getSMSProvider(sp);
 
-        //String[] mobiles = {"15026682165", "18016488329", "15618096151", "18918816923", "13564652596"};
-        String[] mobiles = {"15026682165"};
+        String[] mobiles = {"15026682165", "18016488329", "15618096151", "18918816923", "13564652596"};
+        //String[] mobiles = {"15026682165"};
 
         for (String mob : mobiles) {
             smsProvider.send(new SMSMessage(content, mob));
