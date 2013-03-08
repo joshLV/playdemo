@@ -18,7 +18,7 @@
     <permission key="GOODS" text="商品管理" roles="editor,customservice"/>
     <permission key="SKU" text="SKU管理" roles="editor,customservice"/>
     <permission key="SKU_NEW" text="货品添加" roles="editor"/>
-    <permission key="INVENTORY" text="添加入库记录" roles="inventory_manager"/>
+    <permission key="INVENTORY" text="库存管理" roles="inventory_manager"/>
     <permission key="GOODS_SCHEDULE" text="商品排期" roles="editor,customservice"/>
     <permission key="SECKILL_GOODS_NEW" text="秒杀活动添加" roles="editor"/>
     <permission key="SECKILL_GOODS" text="秒杀活动管理" roles="editor,customservice"/>
@@ -142,7 +142,6 @@
             <navigation key="inventory_stockIn" action="InventoryStocks.stockIn" text="添加入库记录" permissions="INVENTORY"/>
             <navigation key="inventory_stockOut" action="InventoryStocks.stockOut" text="添加出库记录"
                         permissions="INVENTORY"/>
-
         </navigation>
         <navigation key="solr" text="solr加载数据">
             <navigation key="solr_load" action="SolrLoadData.index" text="solr加载数据" permissions="SOLR"/>
