@@ -45,8 +45,8 @@ validation.beforeThanContractEffectiveAt=%s不能早于合同生效日期!
 validation.beforeThanOnSaleAt=%s不能早于上架时间!
 validation.beforeThanBeginOnSaleAt=%s不能早于上架开始时间!
 validation.afterThanExpireAt=%s不能晚于过期时间!
-
-
+validation.moreThanStockCount=%s不能大于剩余库存
+validation.moreThanZero=%s不能等于零
 validation.beforeThanSecKillBeginAt=%s不能早于秒杀开始时间!
 validation.phone=无效的电话!
 validation.useEndTime=使用结束时间要在06：00之前！
@@ -201,6 +201,16 @@ goods.isOrder=是否预约商品
 goods.exhibition=商品详情
 goods.sku.id=货品
 goods.skuCount=货品数量
+stock.sku.id=货品
+stock.stockInCount=入库数量
+stock.originalPrice=进价
+stock.stockOutCount=出库数量
+stock.salePrice=售价
+stock.effective=有效期
+stock.remark=备注
+stock.saler=业务员
+stock.storekeeper=保管员
+stock.createdBy=制单员
 imagePath=图片
 shop.name=门店名称
 shop.address=门店地址
@@ -594,3 +604,5 @@ sku.marketPrice=市场价
 sku.brand.id=品牌
 sku.brandName=品牌
 sku.supplierName=商户
+
+stock.brand.id=品牌
