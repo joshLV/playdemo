@@ -48,11 +48,11 @@ public class InventoryStocks extends Controller {
 
     @ActiveNavigation("inventory_stockOut")
     public static void createStockOut(@Valid InventoryStock stock) {
+        checkStockOutCountAndPrice(stock);
         checkStockOutCount(stock);
         if (Validation.hasErrors()) {
             renderArgs.put("stock.id_supplierName", stock.supplier.id);
             renderArgs.put("stock.brand.id", stock.brand.id);
-            System.out.println(stock.sku.id + "===stock.sku.id>>");
             renderArgs.put("stock.sku.id", stock.sku.id);
             savePageParams(stock);
             render("InventoryStocks/stockOut.html");
@@ -83,6 +83,7 @@ public class InventoryStocks extends Controller {
 
     @ActiveNavigation("inventory_stockIn")
     public static void createStockIn(@Valid InventoryStock stock) {
+        checkStockInCountAndPrice(stock);
         if (Validation.hasErrors()) {
             savePageParams(stock);
             render("InventoryStocks/stockIn.html");
@@ -155,7 +156,6 @@ public class InventoryStocks extends Controller {
 
         Long stockItemRemainCount = (Long) query.getSingleResult();
         renderJSON(stockItemRemainCount);
-
     }
 
     private static void checkStockOutCount(InventoryStock stock) {
@@ -169,6 +169,24 @@ public class InventoryStocks extends Controller {
             Validation.addError("stock.stockOutCount", "validation.moreThanStockCount");
         } else if (stock.stockOutCount == 0) {
             Validation.addError("stock.stockOutCount", "validation.moreThanZero");
+        }
+    }
+
+    private static void checkStockOutCountAndPrice(InventoryStock stock) {
+        if (stock.stockOutCount == null) {
+            Validation.addError("stock.stockOutCount", "validation.required");
+        }
+        if (stock.salePrice == null) {
+            Validation.addError("stock.salePrice", "validation.required");
+        }
+    }
+
+    private static void checkStockInCountAndPrice(InventoryStock stock) {
+        if (stock.stockInCount == null) {
+            Validation.addError("stock.stockInCount", "validation.required");
+        }
+        if (stock.originalPrice == null) {
+            Validation.addError("stock.originalPrice", "validation.required");
         }
     }
 
