@@ -5,6 +5,7 @@ import models.sms.impl.C123HttpSMSProvider;
 import models.sms.impl.HaduoHttpSMSProvider;
 import models.sms.impl.LingshiSMSProvider;
 import models.sms.impl.VxSMSProvider;
+import models.sms.impl.WzSMSProvider;
 import models.sms.impl.ZaodiSMSProvider;
 import models.sms.impl.ZtSMSProvider;
 import play.Logger;
@@ -21,6 +22,8 @@ public class SMSFactory {
 
         if ("zaodisms".equalsIgnoreCase(smsType)) {
             smsProvider = new ZaodiSMSProvider();
+        } else if ("wzsms".equalsIgnoreCase(smsType)) {
+            smsProvider = new WzSMSProvider();
         } else if ("ensms".equalsIgnoreCase(smsType)) {
             smsProvider = new BjenSMSProvider();
         } else if ("ztsms".endsWith(smsType)) {
