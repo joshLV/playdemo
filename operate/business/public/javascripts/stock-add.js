@@ -9,6 +9,27 @@ function stockSkuChange(brandId) {
             $("#err-stock_sku_id").html("");
             $("#save").attr('disabled', false);
             sku = true;
+            $("#remain_count").empty();
+            $.ajax({
+                url:'/stock-sku-remain-count/' + $("#stock_sku_id").val(),
+                type:'GET',
+                datatype:'text',
+                error:function () {
+                    alert('取得失败!');
+                },
+                success:function (data) {
+                    console.log('here')
+                    console.log(data)
+                    if (data != null && data != '') {
+                        console.log('111')
+
+                        $("#remain_count").html(data + "件");
+                    } else {
+                        console.log('222')
+                        $("#remain_count").html("0件");
+                    }
+                }
+            });
         });
         if (!sku) {
             $("#err-stock_sku_id").html("该品牌没有对应的货品，请添加货品！");

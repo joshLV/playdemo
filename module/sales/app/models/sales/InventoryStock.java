@@ -159,7 +159,14 @@ public class InventoryStock extends Model {
 
     public void setStockSerialNo() {
         SimpleDateFormat dateFormat = new SimpleDateFormat(SERIAL_NO_DATE_FORMAT);
-        InventoryStock stock = InventoryStock.find("dateOfSerialNo=? order by cast(sequenceCode as int) desc", dateFormat.format(new Date())).first();
+        InventoryStock stock;
+        if (this.actionType == StockActionType.IN) {
+            stock = InventoryStock.find("dateOfSerialNo=? and actionType =? order by cast(sequenceCode as int) desc", dateFormat.format(new Date()), StockActionType.IN).first();
+            this.serialNo = this.actionType.getCode();
+        } else {
+            stock = InventoryStock.find("dateOfSerialNo=? and actionType =? order by cast(sequenceCode as int) desc", dateFormat.format(new Date()), StockActionType.OUT).first();
+            this.serialNo = this.actionType.getCode();
+        }
         if (stock == null) {
             this.sequenceCode = "01";
         } else {
@@ -171,7 +178,7 @@ public class InventoryStock extends Model {
         }
 
         this.dateOfSerialNo = dateFormat.format(new Date());
-        this.serialNo = this.actionType.getCode() + dateFormat.format(new Date()) + this.sequenceCode;
+        this.serialNo += dateFormat.format(new Date()) + this.sequenceCode;
 
         System.out.println(this.serialNo + "===this.serialNo>>");
     }
