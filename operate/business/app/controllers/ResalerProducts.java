@@ -1,6 +1,5 @@
 package controllers;
 
-import models.jingdong.groupbuy.JDGroupBuyHelper;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.jingdong.groupbuy.JingdongMessage;
 import models.operator.OperateUser;
