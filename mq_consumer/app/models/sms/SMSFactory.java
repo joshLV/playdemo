@@ -2,7 +2,6 @@ package models.sms;
 
 import models.sms.impl.BjenSMSProvider;
 import models.sms.impl.C123HttpSMSProvider;
-import models.sms.impl.HaduoHttpSMSProvider;
 import models.sms.impl.LingshiSMSProvider;
 import models.sms.impl.VxSMSProvider;
 import models.sms.impl.WzSMSProvider;
@@ -30,8 +29,6 @@ public class SMSFactory {
             smsProvider = new ZtSMSProvider();
         } else if ("c123".endsWith(smsType)) {
             smsProvider = new C123HttpSMSProvider();
-        } else if ("haduo".endsWith(smsType)) {
-            smsProvider = new HaduoHttpSMSProvider();
         } else if ("lingshi".endsWith(smsType)) {
             smsProvider = new LingshiSMSProvider();
         } else if ("vxsms".endsWith(smsType)) {
