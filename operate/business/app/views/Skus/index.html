@@ -40,8 +40,8 @@
             <td>${sku?.supplier.otherName}</td>
             <td>${sku.brand.name}</td>
             <td>${sku?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-            <td><a href="/sku/${sku.id}/edit?page=${page?:1}">修改</a>
-                / #{vx.deleteLink id:sku?.id, name:sku?.name, action:"/sku"/}
+            <td><a href="/skus/${sku.id}/edit?page=${page?:1}">修改</a>
+                / #{vx.deleteLink id:sku?.id, name:sku?.name, action:"/skus"/}
             </td>
         </tr>
         #{/paginate.list}
