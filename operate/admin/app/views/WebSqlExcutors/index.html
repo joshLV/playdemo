@@ -1,0 +1,63 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'SQL命令执行器' /}
+#{set 'topbar-nav'}
+
+#{/set}
+#{set 'sidebar-nav'}
+    #{include 'share/sidebar-nav.html'/}
+#{/set}
+
+#{if message != null}
+<div class="alert">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <strong>提示信息：</strong>${message}
+</div>
+#{/if}
+
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a href="@{WebSqlExcutors.index(null)}">SQL命令执行器</a>
+    </li>
+    <li><a href="@{WebSqlExcutors.history()}">历史</a></li>
+</ul>
+
+<div class="span8 well">
+    <form action="@{WebSqlExcutors.run()}" method="POST">
+        <div class="span10">
+            <div class="controls">
+                <textarea id="sqlCommand" name="sql" class="span12 input-large"
+                          placeholder="请输入SQL"
+                          rows="5">${sql}</textarea>
+            </div>
+            <div class="controls controls-row">
+                <input id="remark" name="remark" type="text" class="span12 input-large"
+                       value="${remark}"
+                       placeholder="请输入备注，INSERT/UPDATE/DELETE语句必须填写">
+            </div>
+        </div>
+        <div class="span2">
+            <div class="controls controls-row">
+                <button id="contact-submit" type="submit" class="btn btn-primary input-medium">执行</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+#{if columnNames != null}
+<table class="table table-striped table-bordered table-condensed">
+    <thead>
+    <tr>
+     #{list items:columnNames, as:'col'}
+        <th>${col}</th>
+     #{/list}
+    </tr>
+    </thead>
+#{list items:resultMaps, as:'row'}
+    <tr>
+        #{list items:columnNames, as:'col'}
+            <td>${row.get(col)}</td>
+        #{/list}
+    </tr>
+#{/list}
+</table>
+#{/if}
