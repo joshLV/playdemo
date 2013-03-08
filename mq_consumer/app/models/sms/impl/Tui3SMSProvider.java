@@ -59,9 +59,4 @@ public class Tui3SMSProvider implements SMSProvider {
 
     }
 
-    @Override
-    public String getProviderName() {
-        return "Tui3SMSProvider";
-    }
-
 }

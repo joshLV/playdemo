@@ -1,6 +1,7 @@
 package models.journal;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import play.db.jpa.Model;
 
 import javax.persistence.Column;
@@ -41,5 +42,16 @@ public class WebServiceCallType extends Model {
             type.callType = callType2;
             type.save();
         }
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).
+                append("callType", callType).
+                append("description", description).
+                append("key1Name", key1Name).
+                append("key2Name", key2Name).
+                append("key3Name", key3Name).
+                toString();
     }
 }

@@ -73,9 +73,4 @@ public class LingshiSMSProvider implements SMSProvider {
         }
     }
 
-    @Override
-    public String getProviderName() {
-        return "LingshiSMSProvider";
-    }
-
 }

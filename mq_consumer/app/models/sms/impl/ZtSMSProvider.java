@@ -81,12 +81,5 @@ public class ZtSMSProvider implements SMSProvider {
                 throw new SMSException("发送助通短信不成功:" + result);
             }
         }
-
     }
-
-    @Override
-    public String getProviderName() {
-        return "ZtSMSProvider";
-    }
-
 }

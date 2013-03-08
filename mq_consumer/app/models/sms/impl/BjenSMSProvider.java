@@ -54,11 +54,6 @@ public class BjenSMSProvider implements SMSProvider {
 
     }
 
-    @Override
-    public String getProviderName() {
-        return "BjenSMSProvider";
-    }
-
     /**
      * 生成小写的密码串。 用户密码md5(用户名+密码+时间戳) 比如用户名为wang 密码为
      * qiqi那密码为：md5(wangqiqi1319873904) url传送密码为5a1a023fd486e2f0edbc595854c0d808

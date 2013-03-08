@@ -48,12 +48,6 @@ public class C123HttpSMSProvider implements SMSProvider {
 
     }
 
-    @Override
-    public String getProviderName() {
-        return "C123SMSProvider";
-    }
-
-
     /**
      * 生成小写的密码串。
      * 用户密码md5(用户名+密码+时间戳)
