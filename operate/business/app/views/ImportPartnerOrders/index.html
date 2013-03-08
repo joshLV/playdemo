@@ -19,9 +19,10 @@
 
     <div class="controls">
         <input type="file" name="orderFile">
-        <span class="help-block" style="color: red;" id="info">${duplicateInfo}${existedOrders}
-            <br>${msgInfo}${notExistGoods}</span>
         <span class="help-block">注意：上传时，保证数据放在Sheet1.</span>
+        <span class="help-block" style="color: red;"
+              id="info">${errorInfo}${successInfo}${duplicateInfo}${existedOrders}
+            <br>${notExistGoodsInfo}${notExistGoods} </span>
     </div>
 </div>
 

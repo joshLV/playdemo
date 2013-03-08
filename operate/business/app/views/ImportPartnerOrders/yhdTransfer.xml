@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workbook>
-    <worksheet name="1">
+    <worksheet name="Sheet1">
         <section startRow="0" endRow="0"/>
         <loop startRow="1" endRow="1" items="partnerOrderViews" var="partnerOrderView"
               varType="models.order.PartnerOrderView">
@@ -9,7 +9,7 @@
                 <mapping row="1" col="0">partnerOrderView.outerOrderNo</mapping>
                 <mapping row="1" col="6">partnerOrderView.salesPrice</mapping>
                 <mapping row="1" col="5">partnerOrderView.buyNumber</mapping>
-                <mapping row="1" col="9">partnerOrderView.paidAt</mapping>
+                <mapping row="1" col="9">partnerOrderView.paidAtStr</mapping>
                 <mapping row="1" col="3">partnerOrderView.options</mapping>
                 <mapping row="1" col="13">partnerOrderView.remarks</mapping>
                 <mapping row="1" col="10">partnerOrderView.receiver</mapping>

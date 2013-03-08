@@ -6,9 +6,13 @@ import models.accounts.PaymentSource;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
+import org.apache.commons.lang.StringUtils;
 import play.Logger;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -18,7 +22,21 @@ import java.util.Date;
  * Time: 上午11:27
  */
 public class PartnerOrderView {
+    enum DateFormat {
+        TB_FORMAT("yyyy-MM-dd HH:mm"), JD_FORMAT("yyyy/MM/dd HH:mm");
 
+        private String format;
+
+        DateFormat(String format) {
+            this.format = format;
+        }
+
+        public String getValue() {
+            return format;
+        }
+    }
+
+    ;
     /**
      * 第三方商品NO
      */
@@ -71,13 +89,15 @@ public class PartnerOrderView {
     /**
      * 付款时间
      */
-    public String paidAt;
+    public String paidAtStr;
+
+    public Date paidAt;
 
     /**
      * 创建时间
      */
     public Date createdAt;
-
+    public String createdAtStr;
     /**
      * 收货地址
      */
@@ -189,12 +209,25 @@ public class PartnerOrderView {
         this.zipCode = zipCode;
     }
 
-    public String getPaidAt() {
+    public Date getPaidAt() {
         return paidAt;
     }
 
-    public void setPaidAt(String paidAt) {
+    public void setPaidAt(Date paidAt) {
         this.paidAt = paidAt;
+    }
+
+    public String getPaidAtStr() {
+        return paidAtStr;
+    }
+
+    public void setPaidAtStr(String paidAtStr) {
+        if (paidAtStr.indexOf("结:") > -1) {
+            paidAtStr = paidAtStr.substring(paidAtStr.indexOf("结") + 2);
+        }
+
+        this.paidAtStr = paidAtStr;
+        this.paidAt = guessDate(paidAtStr);
     }
 
     public Date getCreatedAt() {
@@ -205,13 +238,58 @@ public class PartnerOrderView {
         this.createdAt = createdAt;
     }
 
-
     public String getReceiver() {
         return receiver;
     }
 
     public void setReceiver(String receiver) {
         this.receiver = receiver;
+    }
+
+    private Date guessDate(String date) {
+        if (StringUtils.isBlank(date)) {
+            return null;
+        }
+        Double dateNumber = -1D;
+        boolean isDouble = true;
+        try {
+            dateNumber = Double.parseDouble(date);
+        } catch (NumberFormatException e) {
+            isDouble = false;
+        }
+
+        if (isDouble) {
+            return convertExcelDate(dateNumber);
+        } else {
+            for (DateFormat format : DateFormat.values()) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat(format.getValue());
+                try {
+                    return dateFormat.parse(date);
+                } catch (ParseException e) {
+                    continue;
+                }
+            }
+            return null;
+        }
+    }
+
+    private Date convertExcelDate(Double dateNumber) {
+        //如果是double类型的，就看作是excel中格式化为日期的数字
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(0);
+        calendar.set(Calendar.YEAR, 1900);
+
+        //excel中，数字1 代表 1900年1月1日，并且，excel认为1900年2月有29天，其实没有。所以我们在这里减2
+        calendar.add(Calendar.DAY_OF_YEAR, dateNumber.intValue() - 2);
+        dateNumber = (dateNumber - dateNumber.intValue()) * 24;
+        calendar.set(Calendar.HOUR_OF_DAY, dateNumber.intValue());
+        dateNumber = (dateNumber - dateNumber.intValue()) * 60;
+        calendar.set(Calendar.MINUTE, dateNumber.intValue());
+
+        dateNumber = (dateNumber - dateNumber.intValue()) * 60;
+        calendar.set(Calendar.SECOND, (int) Math.round(dateNumber));
+
+        return calendar.getTime();
     }
 
     /**
