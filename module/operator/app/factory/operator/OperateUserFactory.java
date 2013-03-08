@@ -31,6 +31,7 @@ public class OperateUserFactory extends ModelFactory<OperateUser> {
         user.roles.add(role("manager"));
         user.roles.add(role("virtual_verify"));
         user.roles.add(role("test"));
+        user.roles.add(role("developer"));
         return user;
     }
 

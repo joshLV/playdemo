@@ -84,13 +84,25 @@ public class WebSqlExcutors extends Controller {
         renderArgs.put("sql", command.sql);
         renderArgs.put("remark", command.remark);
 
+        if (StringUtils.isBlank(command.remark) && !"SELECT".equals(command.sqlType)) {
+            String message = "修改数据库的操作需要输入『备注』信息。";
+            render("WebSqlExcutors/index.html", message);
+        }
+
+        if (checkIfOperateWebSqlCommandTable(command)) {
+            String message = "不允许操作『web_sql_commands』表。";
+            render("WebSqlExcutors/index.html", message);
+        }
+
         Connection conn = null;
         try {
             conn = DB.getConnection();
 
 
             Statement stmt = conn.createStatement();
-            stmt.executeUpdate("SET SQL_SAFE_UPDATES=1"); //打开安全模式
+            if (!Play.runingInTestMode()) {
+                stmt.executeUpdate("SET SQL_SAFE_UPDATES=1"); //mysql要打开安全模式
+            }
 
             List<String> columnNames = new ArrayList<>();
             List<Map<String, Object>> resultMaps = new ArrayList<>();
@@ -100,10 +112,12 @@ public class WebSqlExcutors extends Controller {
                 ResultSetMetaData rsMeta = rs.getMetaData();
 
                 command.executedAt = new Date();
-
-                rs.last();
-                command.resultCount = rs.getRow();
-                rs.beforeFirst();
+                if (!Play.runingInTestMode()) {
+                    // HSQL不支持
+                    rs.last();
+                    command.resultCount = rs.getRow();
+                    rs.beforeFirst();
+                }
 
                 for (int i = 0; i < rsMeta.getColumnCount(); ++i) {
                     String columnName = rsMeta.getColumnName(i + 1);
@@ -118,8 +132,8 @@ public class WebSqlExcutors extends Controller {
                         row.put(columnName, value);
                     }
                     resultMaps.add(row);
-                    if (resultMaps.size() >= 100) {
-                        break;  //最多只返回100行记录，以避免导库
+                    if (resultMaps.size() >= 200) {
+                        break;  //最多只返回200行记录，以避免导库
                     }
                 }
                 renderArgs.put("columnNames", columnNames);
@@ -132,10 +146,16 @@ public class WebSqlExcutors extends Controller {
                 command.resultCount = resultCount;
                 String message = "执行" + command.sqlType + "操作，影响" + resultCount + "条记录。";
                 renderArgs.put("message", message);
+                conn.commit();
             }
 
         } catch (Exception e) {
             e.printStackTrace();
+            try {
+                conn.rollback();
+            } catch (SQLException e1) {
+                // I don't care.
+            }
             renderArgs.put("message", e.getMessage());
         } finally {
             MQPublisher.publish(WebSqlCommandMessage.MQ_KEY, command);
@@ -146,6 +166,11 @@ public class WebSqlExcutors extends Controller {
             }
         }
         render("WebSqlExcutors/index.html");
+    }
+
+    private static boolean checkIfOperateWebSqlCommandTable(WebSqlCommandMessage command) {
+        String tmpSQL = command.sql.toUpperCase();
+        return tmpSQL.contains("WEB_SQL_COMMANDS");
     }
 
     private static List<WebSqlCommandMessage> splitSql(final String inputSQL, String remark) {
@@ -174,7 +199,7 @@ public class WebSqlExcutors extends Controller {
 
 
     private static String getSqlType(String upcaseSQL) {
-        if (upcaseSQL.startsWith("SELECT")) {
+        if (upcaseSQL.startsWith("SELECT") || upcaseSQL.startsWith("DESC") || upcaseSQL.startsWith("SHOW")) {
             return "SELECT";
         }
         if (upcaseSQL.startsWith("INSERT")) {
@@ -185,6 +210,9 @@ public class WebSqlExcutors extends Controller {
         }
         if (upcaseSQL.startsWith("DELETE")) {
             return "DELETE";
+        }
+        if (upcaseSQL.startsWith("ALTER TABLE")) {
+            return "ALTER";
         }
         return null;
     }
