@@ -96,8 +96,8 @@ public class ResalerProducts extends Controller {
             Logger.info("goods not found");
             error("商品不存在");
         }
-        List<ResalerProduct> products = ResalerProduct.find("goods = ? and partner = ? order by createdAt desc",
-                goods, OuterOrderPartner.valueOf(partner.toUpperCase())).fetch();
+        List<ResalerProduct> products = ResalerProduct.find("goods = ? and partner = ? and deleted = ? order by createdAt desc",
+                goods, OuterOrderPartner.valueOf(partner.toUpperCase()), DeletedStatus.UN_DELETED).fetch();
         for (ResalerProduct product : products) {
             if (product.creatorId != null) product.creator = ((OperateUser)OperateUser.findById(product.creatorId)).userName;
             if (product.lastModifierId != null) product.lastModifier = ((OperateUser)OperateUser.findById(product.lastModifierId)).userName;
