@@ -43,16 +43,36 @@
             <td width="30%">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
             #{vx.selectInputField name:"supplierName", id:"condition.supplierId", list:supplierList, value:condition?.supplierId, array:"supplierArray",importJs:true/}</td>
 
-            <td width="30%">商品名称：<input type="text" name="condition.shortName" class="input-medium"
+            <td width="20%">商品名称：<input type="text" name="condition.shortName" class="input-medium"
                                         value="${condition?.shortName}"/></td>
-            <td width="30%">商品编码：<input type="text" name="condition.code" class="input-medium"
+            <td>商品编码：<input type="text" name="condition.code" class="input-medium"
                                         value="${condition?.code}"/></td>
             <td></td>
         </tr>
         <tr>
             <td width="30%">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
             #{vx.selectInputField name:"brandName", id:"condition.brandId", list:brandList, array:"brandArray"/}</td>
-            <td width="30%">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：
+            <td width="20%">销售专员工号：<input type="text" name="condition.jobNumber" class="input-medium"
+                              value="${condition?.jobNumber}"/>
+            </td>
+        *{<td width="30%">编号：<input type="text" name="condition.no" class="input-medium"}*
+        *{value="${condition?.no}"/></td>}*
+
+
+        *{</tr>}*
+        *{<tr>}*
+        *{<td width="30%">现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价：<input type="text" name="condition.salePriceBegin"}*
+        *{class="input-medium"}*
+        *{value="${condition?.salePriceBegin}"/>}*
+        *{至 <input type="text" name="condition.salePriceEnd" class="input-medium"}*
+        *{value="${condition?.salePriceEnd}"/>}*
+        *{</td>}*
+        *{<td>剩余库存：<input type="text" name="condition.saleCountBegin" class="input-small"}*
+        *{value="#{if condition?.saleCountBegin >=0}${condition?.saleCountBegin}#{/if}"/>}*
+        *{至 <input type="text" name="condition.saleCountEnd" class="input-small"}*
+        *{value="#{if condition?.saleCountEnd >=0}${condition?.saleCountEnd}#{/if}"/>}*
+        *{</td>}*
+            <td>状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：
             #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
                 #{option ""}不限#{/option}
                 #{option "ONSALE"}&{'goods.ONSALE'}#{/option}
@@ -60,35 +80,10 @@
                 #{option "APPLY"}&{'goods.APPLY'}#{/option}
                 #{option "REJECT"}&{'goods.REJECT'}#{/option}
             #{/select}
-                &nbsp; &nbsp;
-                设置精选：<input type="checkbox" name="condition.priority" id="priority" class="input-medium"
+           设置精选：<input type="checkbox" name="condition.priority" id="priority" class="input-medium"
                             value="${condition?.priority}" ${condition?.priority == 1 ?'checked':''}/>
                 &nbsp; &nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery" class="input-medium"
                                          value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
-            </td>
-
-            <td width="30%">编号：<input type="text" name="condition.no" class="input-medium"
-                                      value="${condition?.no}"/></td>
-
-
-        </tr>
-        <tr>
-            <td width="30%">现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价：<input type="text" name="condition.salePriceBegin"
-                                                                          class="input-medium"
-                                                                          value="${condition?.salePriceBegin}"/>
-                至 <input type="text" name="condition.salePriceEnd" class="input-medium"
-                         value="${condition?.salePriceEnd}"/>
-            </td>
-            <td>销&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量：<input type="text" name="condition.saleCountBegin"
-                                                              class="input-medium"
-                                                              value="#{if condition?.saleCountBegin >=0}${condition?.saleCountBegin}#{/if}"/>
-                至 <input type="text" name="condition.saleCountEnd" class="input-medium"
-                         value="#{if condition?.saleCountEnd >=0}${condition?.saleCountEnd}#{/if}"/>
-            </td>
-            <td width="30%">销售专员工号：<input type="text" name="condition.jobNumber" class="input-medium"
-                                          value="${condition?.jobNumber}"/>
-            </td>
-            <td>
                 <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
             </td>
             <input type="hidden" id="J_rank" name="condition.desc" value=${condition?.desc}/>
@@ -122,14 +117,14 @@ select:'condition_status',value:condition?.status/}
         #{layout_operate.sortField name:'采购价', descField:condition?.desc, desc:'0000200000000',asc:'0000100000000'/}
         #{layout_operate.sortField name:'售价', descField:condition?.desc, desc:'0000020000000',asc:'0000010000000'/}
         #{layout_operate.sortField name:'剩余库存', descField:condition?.desc, desc:'0000002000000',asc:'0000001000000'/}
-        #{layout_operate.sortField name:'虚拟销量', descField:condition?.desc, desc:'0000000200000',asc:'0000000100000'/}
+        *{#{layout_operate.sortField name:'销量', descField:condition?.desc, desc:'0000000200000',asc:'0000000100000'/}}*
         #{layout_operate.sortField name:'上架时间', descField:condition?.desc, desc:'0000000000020',asc:'0000000000010'/}
         #{layout_operate.sortField name:'下架时间', descField:condition?.desc, desc:'0000000000002',asc:'0000000000001'/}
         #{layout_operate.sortField name:'到期时间', descField:condition?.desc, desc:'0000000020000',asc:'0000000010000'/}
-        #{layout_operate.sortField name:'最后修改', descField:condition?.desc, desc:'0000000002000',asc:'0000000001000'/}
+        *{#{layout_operate.sortField name:'最后修改', descField:condition?.desc, desc:'0000000002000',asc:'0000000001000'/}}*
         #{layout_operate.sortField name:'类型', descField:condition?.desc, desc:'0000000000200',asc:'0000000000100'/}
-            <th width="80px">&{'goods.status'}</th>
-            <th width="80px">编码</th>
+            <th width="60px">&{'goods.status'}</th>
+            <th width="70px">编码</th>
             <th width="100px">操 作</th>
         </tr>
         </thead>
@@ -165,7 +160,7 @@ select:'condition_status',value:condition?.status/}
             <td class="amount">${goods?.originalPrice?.formatCurrency('CNY')}</td>
             <td class="amount">${goods?.salePrice?.formatCurrency('CNY')}</td>
             <td class="amount">${goods?.getRealStocks()}</td>
-            <td class="amount">${goods?.virtualBaseSaleCount}</td>
+        *{<td class="amount">${goods?.getRealSaleCount()}</td>}*
 
             #{if goods?.beginOnSaleAt?.compareTo(new java.util.Date())<0 && goods?.status == models.sales.GoodsStatus.APPLY}
                 <td style="color:red;">${goods?.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
@@ -182,7 +177,7 @@ select:'condition_status',value:condition?.status/}
             #{/else}
 
             <td>${goods?.expireAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-            <td>${goods?.updatedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+        *{<td>${goods?.updatedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>}*
             <td>&{'goods.'+goods?.materialType}</td>
             <td> #{if goods.isExpired()}<span class="expired">已过期</span><br/>#{/if}
                 #{if goods?.getRealStocks() == 0}<span class="zeroBaseSale">零库存</span><br/>#{/if}
