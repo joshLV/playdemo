@@ -88,6 +88,12 @@ public class InventoryStock extends Model {
     @Column(name = "sequence_code")
     public String sequenceCode;
 
+    /**
+     * stock进货单号中的组成：日期(8位)
+     */
+    @Column(name = "date_of_serial_no")
+    public String dateOfSerialNo;
+
     @OneToMany(mappedBy = "inventoryStock")
     public List<InventoryStockItem> inventoryStockItemList;
 
@@ -99,13 +105,23 @@ public class InventoryStock extends Model {
 
     @Transient
     @Min(0)
-    @Match(value = "^[0-9]*$", message = "入库数量格式不对!(i纯数字)")
+    @Match(value = "^[0-9]*$", message = "入库数量格式不对!(纯数字)")
     public Long stockInCount;
 
     @Transient
     @Min(0)
     @Money
     public BigDecimal originalPrice;
+
+    @Transient
+    @Min(0)
+    @Match(value = "^[0-9]*$", message = "出库数量格式不对!(纯数字)")
+    public Long stockOutCount;
+
+    @Transient
+    @Min(0)
+    @Money
+    public BigDecimal salePrice;
 
     @Transient
     public Date effectiveAt;
@@ -131,7 +147,7 @@ public class InventoryStock extends Model {
     public boolean create() {
         this.createdAt = new Date();
         this.deleted = DeletedStatus.UN_DELETED;
-//        setStockSerialNo();
+        setStockSerialNo();
         System.out.println(this.serialNo + "===this.serialNo>>");
         this.save();
         return super.create();
@@ -141,30 +157,22 @@ public class InventoryStock extends Model {
         return String.format("%0" + digits + "d", Integer.valueOf(originalCode) + 1);
     }
 
-//    public void setStockSerialNo() {
-//        List<InventoryStockItem> stockItemList = InventoryStockItem.find("sku=? ", this.sku).fetch();
-//        System.out.println(stockItemList.size() + "===stockItem.size()>>");
-//        if (stockItemList.size() == 0) {
-//            this.sequenceCode = "01";
-//        } else {
-//            InventoryStock stock = InventoryStock.find("inventoryStockItemList in ? and sequenceCode is not null order by cast(sequenceCode as int) desc ", stockItemList).first();
-//            if (stock == null || StringUtils.isBlank(stock.sequenceCode)) {
-//                this.sequenceCode = "01";
-//            } else {
-//                if (stock.sequenceCode.equals(CODE_VALUE[stock.serialNo.length() - 9])) {
-//                    System.out.println(stock.sequenceCode + "===111stock.sequenceCode>>");
-//                    this.sequenceCode = calculateFormattedCode(stock.sequenceCode, String.valueOf(stock.serialNo.length() - 6));
-//                } else {
-//                    System.out.println(stock.sequenceCode + "===2222stock.sequenceCode>>");
-//
-//                    this.sequenceCode = calculateFormattedCode(stock.sequenceCode, String.valueOf(stock.serialNo.length() - 7));
-//                }
-//            }
-//        }
-//
-//        SimpleDateFormat dateFormat = new SimpleDateFormat(SERIAL_NO_DATE_FORMAT);
-//        this.serialNo = this.actionType.getCode() + dateFormat.format(new Date()) + this.sequenceCode;
-//
-//        System.out.println(this.serialNo + "===this.serialNo>>");
-//    }
+    public void setStockSerialNo() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(SERIAL_NO_DATE_FORMAT);
+        InventoryStock stock = InventoryStock.find("dateOfSerialNo=? order by cast(sequenceCode as int) desc", dateFormat.format(new Date())).first();
+        if (stock == null) {
+            this.sequenceCode = "01";
+        } else {
+            if (stock.sequenceCode.equals(CODE_VALUE[stock.serialNo.length() - 9])) {
+                this.sequenceCode = calculateFormattedCode(stock.sequenceCode, String.valueOf(stock.serialNo.length() - 8));
+            } else {
+                this.sequenceCode = calculateFormattedCode(stock.sequenceCode, String.valueOf(stock.serialNo.length() - 9));
+            }
+        }
+
+        this.dateOfSerialNo = dateFormat.format(new Date());
+        this.serialNo = this.actionType.getCode() + dateFormat.format(new Date()) + this.sequenceCode;
+
+        System.out.println(this.serialNo + "===this.serialNo>>");
+    }
 }

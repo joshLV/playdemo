@@ -23,12 +23,21 @@
     <div class="controls" id="remain_count">
     </div>
 </div>
+#{if "stockIn".equals(action)}
 <span id="stock_in_count">
-#{layout_operate.textField name:'stock.stockInCount', value:stock?.stockInCount, note:'件', required:true/}
+    #{layout_operate.textField name:'stock.stockInCount', value:stock?.stockInCount, note:'件', required:true/}
 </span>
-#{layout_operate.textField name:'stock.originalPrice', value:stock?.originalPrice?:"0",
-note:'元',
-required:true/}
+    #{layout_operate.textField name:'stock.originalPrice', value:stock?.originalPrice?:"0",
+    note:'元',
+    required:true/}
+#{/if}
+#{else}
+    #{layout_operate.textField name:'stock.stockOutCount', value:stock?.stockOutCount, note:'件', required:true/}
+</span>
+    #{layout_operate.textField name:'stock.salePrice', value:stock?.salePrice?:"0",
+    note:'元',
+    required:true/}
+#{/else}
 
 #{layout_operate.dateScopeField name:'stock.effective', begin:'stock.effectiveAt',end:'stock.expireAt',
 beginValue:stock?.effectiveAt?.format(), endValue:stock?.expireAt?.format()/}
@@ -45,7 +54,8 @@ beginValue:stock?.effectiveAt?.format(), endValue:stock?.expireAt?.format()/}
 </div>
 
 <div class="form-actions">
-    <input class="btn btn-primary" id="save" type="submit" value="保存" #{if "add".equals(action)}disabled#{/if}>
+    <input class="btn btn-primary" id="save" type="submit" value="保存"
+           #{if "stockIn".equals(action) || "stockOut".equals(action) }disabled#{/if}>
 #{vx.cancelButton url:'', class:'btn btn-primary'/}
 </div>
 <input type="hidden" id="status" name="stock.actionType" value="IN"/>

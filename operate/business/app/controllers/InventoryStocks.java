@@ -34,14 +34,58 @@ public class InventoryStocks extends Controller {
         render();
     }
 
-    @ActiveNavigation("inventory_add")
-    public static void add() {
+    @ActiveNavigation("inventory_stockIn")
+    public static void stockIn() {
         setInitParams();
         render();
     }
 
-    @ActiveNavigation("inventory_add")
-    public static void create(@Valid InventoryStock stock) {
+    @ActiveNavigation("inventory_stockOut")
+    public static void stockOut() {
+        setInitParams();
+        render();
+    }
+
+    @ActiveNavigation("inventory_stockOut")
+    public static void createStockOut(@Valid InventoryStock stock) {
+        System.out.println(stock.supplier.id + "===stock.supplier.id>>");
+        System.out.println(stock.remark + "===stock.remark>>");
+        System.out.println(stock.saler + "===stock.saler>>");
+        System.out.println(stock.storekeeper + "===stock.storekeeper>>");
+        System.out.println(stock.actionType + "===stock.actionType>>");
+        System.out.println(stock.effectiveAt + "===stock.effectiveAt>>");
+        System.out.println(stock.expireAt + "===stock.expireAt>>");
+        System.out.println(stock.stockInCount + "===stock.stockInCount>>");
+        System.out.println(stock.originalPrice + "===stock.originalPrice>>");
+        System.out.println(stock.sku.id + "===stock.sku.id>>");
+        System.out.println(stock.sku + "===stock.sku>>");
+        System.out.println(stock.salePrice + "===stock.salePrice>>");
+        System.out.println(stock.stockOutCount + "===stock.stockOutCount>>");
+        if (Validation.hasErrors()) {
+            System.out.println(validation.errorsMap() + "===validation.errorsMap()>>");
+            savePageParams(stock);
+            render("InventoryStocks/stockOut.html");
+        }
+        stock.createdBy = OperateRbac.currentUser().userName;
+        stock.actionType = StockActionType.OUT;
+
+        InventoryStockItem stockItem = new InventoryStockItem(stock);
+        stockItem.save();
+        stockItem.create();
+        System.out.println(stockItem + "===stockItem>>");
+//        stockItem.save();
+        stock.inventoryStockItemList = new LinkedList<>();
+        stock.inventoryStockItemList.add(stockItem);
+        stock.createdBy = OperateRbac.currentUser().loginName;
+        System.out.println(stock.sku + "===111stock.sku>>");
+        stock.save();
+        stock.create();
+        index();
+    }
+
+
+    @ActiveNavigation("inventory_stockIn")
+    public static void createStockIn(@Valid InventoryStock stock) {
         System.out.println(stock.supplier.id + "===stock.supplier.id>>");
         System.out.println(stock.remark + "===stock.remark>>");
         System.out.println(stock.saler + "===stock.saler>>");
@@ -56,9 +100,10 @@ public class InventoryStocks extends Controller {
         if (Validation.hasErrors()) {
             System.out.println(validation.errorsMap() + "===validation.errorsMap()>>");
             savePageParams(stock);
-            render("InventoryStocks/add.html");
+            render("InventoryStocks/stockIn.html");
         }
         stock.createdBy = OperateRbac.currentUser().userName;
+        stock.actionType = StockActionType.IN;
 
         InventoryStockItem stockItem = new InventoryStockItem(stock);
         stockItem.save();
@@ -68,7 +113,6 @@ public class InventoryStocks extends Controller {
         stock.inventoryStockItemList = new LinkedList<>();
         stock.inventoryStockItemList.add(stockItem);
         stock.createdBy = OperateRbac.currentUser().loginName;
-        stock.actionType = StockActionType.IN;
         System.out.println(stock.sku + "===111stock.sku>>");
         stock.save();
         stock.create();

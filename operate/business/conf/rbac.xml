@@ -139,7 +139,10 @@
         <navigation key="inventory_management" text="库存管理">
             <navigation key="inventory_details" action="InventoryStocks.index" text="库存变动明细"
                         permissions="INVENTORY"/>
-            <navigation key="inventory_add" action="InventoryStocks.add" text="添加入库记录" permissions="INVENTORY"/>
+            <navigation key="inventory_stockIn" action="InventoryStocks.stockIn" text="添加入库记录" permissions="INVENTORY"/>
+            <navigation key="inventory_stockOut" action="InventoryStocks.stockOut" text="添加出库记录"
+                        permissions="INVENTORY"/>
+
         </navigation>
         <navigation key="solr" text="solr加载数据">
             <navigation key="solr_load" action="SolrLoadData.index" text="solr加载数据" permissions="SOLR"/>

@@ -99,7 +99,6 @@ public class InventoryStockItem extends Model {
             this.remainCount = stock.stockInCount;
             this.price = stock.originalPrice;
         } else {
-
         }
         this.effectiveAt = stock.effectiveAt;
         this.expireAt = stock.expireAt;
