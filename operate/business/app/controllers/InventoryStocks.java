@@ -145,11 +145,11 @@ public class InventoryStocks extends Controller {
     }
 
     public static void stockSkuRemainCount(Long id) {
-        renderJSON(InventoryStockItem.getStockSkuRemainCount(id));
+        renderJSON(Sku.getRemainCount(id));
     }
 
     private static void checkStockOutCount(InventoryStock stock) {
-        Long stockItemRemainCount = InventoryStockItem.getStockSkuRemainCount(stock.sku.id);
+        Long stockItemRemainCount = Sku.getRemainCount(stock.sku.id);
         if (stock.stockOutCount == null) {
             Validation.addError("stock.stockOutCount", "validation.required");
         } else if (stockItemRemainCount == null || stock.stockOutCount < 0 || stockItemRemainCount < stock.stockOutCount) {
