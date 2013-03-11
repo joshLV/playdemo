@@ -30,7 +30,6 @@ import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.hibernate.annotations.Index;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
@@ -368,7 +367,6 @@ public class Order extends Model {
         BigDecimal discountValue = getDiscountValueOfGoodsAmount(g, number, discountCode);
         return amount.subtract(discountValue);
     }
-
 
 
     /**

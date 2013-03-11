@@ -3,15 +3,13 @@ package models.order;
 import com.uhuila.common.util.DateUtil;
 import models.accounts.AccountType;
 import models.consumer.User;
-import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.GoodsHistory;
 import models.sales.MaterialType;
 import models.sales.SecKillGoods;
-import org.apache.commons.lang.StringUtils;
+import models.sales.Sku;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import util.common.InfoUtil;
@@ -28,10 +26,11 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "order_items")
@@ -312,6 +311,102 @@ public class OrderItems extends Model {
         query.setParameter("order", Order.findById(orderId));
         query.setParameter("supplier", supplierId);
         return query.getResultList();
+    }
+
+    /**
+     * 查询待发货的指定sku缺货的订单项.
+     *
+     * @param skuMap
+     * @param toDate
+     * @return
+     */
+    public static List<OrderItems> findPaid(Map<Sku, Long> skuMap, Date toDate) {
+        final String sql = "select o from OrderItems o where " +
+                "goods.materialType=:materialType and o.createdAt <= :toDate and o.goods.sku in (";
+        for (int i = 0; i < skuMap.size(); i++) {
+            sql.append(":sku").append(i);
+            if (i != sku.size() - 1) {
+                sql.append(",");
+            }
+        }
+        sql.append(") order by createdAt desc");
+        Query query = OrderItems.em().createQuery(sql);
+        query.setParameter("materialType", MaterialType.REAL);
+        query.setParameter("toDate", toDate);
+        for (int i = 0; i < skuMap.keySet().size(); i++) {
+            query.setParameter("sku" + i, skuMap.keySet().iterator().next());
+        }
+
+        Map<Sku, Long> skuCountMap = new HashMap<>();   //存放已经计算过的缺货的sku及数量
+
+        List<OrderItems> allOrderItems = query.getResultList();
+
+        List<OrderItems> stockoutOrderItems = new ArrayList<>();
+        for (OrderItems orderItem : allOrderItems) {
+            final Long count = skuCountMap.get(orderItem.goods.sku);
+            if (count != null && count >= skuMap.get(orderItem.goods.sku)) {
+                continue;
+            }
+            stockoutOrderItems.add(orderItem);
+            skuCountMap.put(orderItem.goods.sku, count + orderItem.buyNumber);
+        }
+        return stockoutOrderItems;
+    }
+
+    public static long countPaidOrders(Date toDate) {
+        Long count = count("order.orderType=? and status=? " +
+                "and createdAt<=? group by order", OrderType.CONSUME, OrderStatus.PAID, toDate);
+        return count == null ? 0 : count;
+    }
+
+    public static List<Order> findPaidOrders(Date toDate) {
+        return find("select distinct(order) from OrderItems where order.orderType=? and status=? " +
+                "and createdAt<=? group by order", OrderType.CONSUME, OrderStatus.PAID, toDate).fetch();
+    }
+
+
+    public static List<Order> getStockOutOrders(List<Order> allPaidOrders, List<Order> deficientOrders) {
+        Map<Long, Order> deficientOrderMap = new HashMap<>();
+        for (Order deficientOrder : deficientOrders) {
+            deficientOrderMap.put(deficientOrder.id, deficientOrder);
+        }
+        List<Order> stockoutOrders = new ArrayList<>();
+        for (Order paidOrder : allPaidOrders) {
+            if (!deficientOrderMap.containsKey(paidOrder.id)) {
+                stockoutOrders.add(paidOrder);
+            }
+        }
+
+        return stockoutOrders;
+    }
+
+    /**
+     * 查询指定时间之前的sku出库表.
+     */
+    public static Map<Sku, Long> findTakeout(Date toDate) {
+        List<TakeoutItem> takeoutItems = find("select new models.order.OrderItems.TakeoutItem(distinct(goods.sku),sum(buyNumber)) " +
+                "from OrderItems where status=? and createdAt = ? and goods.materialType=? " +
+                "group by goods.sku", OrderStatus.PAID, toDate, MaterialType.REAL).fetch();
+        Map<Sku, Long> takeoutMap = new HashMap<Sku, Long>();
+        for (TakeoutItem takeoutItem : takeoutItems) {
+            if (takeoutItem.count > 0) {
+                takeout.put(takeoutItem.sku, takeoutItem.count);
+            }
+        }
+        return takeoutMap;
+    }
+
+    /**
+     * 出库表
+     */
+    class TakeoutItem {
+        Sku sku;
+        Long count;
+
+        TakeoutItem(Sku sku, Long count) {
+            this.sku = sku;
+            this.count = count;
+        }
     }
 
     /**
