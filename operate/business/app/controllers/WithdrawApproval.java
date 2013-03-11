@@ -13,6 +13,7 @@ import models.supplier.Supplier;
 import models.supplier.SupplierContract;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
+import operate.rbac.annotations.Right;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -101,6 +102,7 @@ public class WithdrawApproval extends Controller {
      * @param fee
      * @param comment
      */
+    @Right("APPROVE_WITHDRAW")
     public static void approve(Long id, String action, BigDecimal fee, String comment) {
         WithdrawBill bill = WithdrawBill.findById(id);
         if (bill.status != WithdrawBillStatus.APPLIED) {
