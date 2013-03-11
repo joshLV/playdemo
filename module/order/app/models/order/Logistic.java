@@ -7,6 +7,7 @@ import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import play.Logger;
 import play.db.jpa.Model;
 
@@ -37,6 +38,7 @@ public class Logistic extends Model {
             "yyyy/MM/dd HH:mm",// 京东
     };
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_item_id", nullable = false)
     public OrderItems orderItems;
@@ -56,7 +58,7 @@ public class Logistic extends Model {
     /**
      * 单价
      */
-    @Column(name = "sales_price")
+    @Column(name = "sale_price")
     public BigDecimal salePrice;
 
     /**

@@ -7,7 +7,7 @@
             <section startRow="1" endRow="1">
                 <mapping row="1" col="0">logistic.outerGoodsNo</mapping>
                 <mapping row="1" col="1">logistic.outerOrderNo</mapping>
-                <mapping row="1" col="2">logistic.salesPrice</mapping>
+                <mapping row="1" col="2">logistic.salePrice</mapping>
                 <mapping row="1" col="3">logistic.buyNumber</mapping>
                 <mapping row="1" col="4">logistic.paidAtStr</mapping>
                 <mapping row="1" col="5">logistic.options</mapping>

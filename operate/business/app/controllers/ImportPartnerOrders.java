@@ -74,19 +74,19 @@ public class ImportPartnerOrders extends Controller {
         List<String> importSuccessOrderList = new ArrayList<>();
 
         String preGoodsNo = "";
-        for (Logistic view : logistics) {
-            OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", partner, view.outerOrderNo).first();
+        for (Logistic logistic : logistics) {
+            OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", partner, logistic.outerOrderNo).first();
             if (outerOrder != null) {
-                existedOrderList.add(view.outerOrderNo);
+                existedOrderList.add(logistic.outerOrderNo);
                 continue;
             } else {
-                outerOrder = view.toOuterOrder(partner);
+                outerOrder = logistic.toOuterOrder(partner);
             }
             Order ybqOrder = null;
             try {
-                ybqOrder = view.toYbqOrder(partner);
+                ybqOrder = logistic.toYbqOrder(partner);
             } catch (NotEnoughInventoryException e) {
-                notEnoughInventoryGoodsList.add(view.outerGoodsNo);
+                notEnoughInventoryGoodsList.add(logistic.outerGoodsNo);
                 JPA.em().getTransaction().rollback();
                 importSuccessOrderList.clear();
                 break;
@@ -94,14 +94,17 @@ public class ImportPartnerOrders extends Controller {
             if (ybqOrder != null) {
                 outerOrder.ybqOrder = ybqOrder;
                 outerOrder.save();
-                ybqOrder.paidAt = view.paidAt;
-                ybqOrder.createdAt = view.paidAt;
+                ybqOrder.paidAt = logistic.paidAt;
+                ybqOrder.createdAt = logistic.paidAt;
                 ybqOrder.save();
-                importSuccessOrderList.add(view.outerOrderNo);
+
+                logistic.orderItems = ybqOrder.orderItems.get(0);
+                logistic.save();
+                importSuccessOrderList.add(logistic.outerOrderNo);
             } else {
-                if (!preGoodsNo.equals(view.outerGoodsNo)) {
-                    unBindGoodsList.add(view.outerGoodsNo);
-                    preGoodsNo = view.outerGoodsNo;
+                if (!preGoodsNo.equals(logistic.outerGoodsNo)) {
+                    unBindGoodsList.add(logistic.outerGoodsNo);
+                    preGoodsNo = logistic.outerGoodsNo;
                 }
             }
         }
