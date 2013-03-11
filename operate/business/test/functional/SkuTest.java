@@ -86,8 +86,8 @@ public class SkuTest extends FunctionalTest {
         String params = "sku.stock=100&sku.marketPrice=100&sku.name=edit_sku&sku.supplier.id=" + sku.supplier.id.toString() + "&sku.brand.id=" + sku.brand.id + "&sku.supplierCategory.id=" + sku.supplierCategory.id;
         Http.Response response = PUT("/skus/" + sku.id, "application/x-www-form-urlencoded", params);
         assertStatus(302, response);
-
         sku.refresh();
+
         assertEquals("edit_sku", sku.name);
         assertEquals(100, sku.stock.intValue());
     }

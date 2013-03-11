@@ -17,7 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * TODO.
+ * 库存管理
  * <p/>
  * User: wangjia
  * Date: 13-3-4
@@ -69,14 +69,14 @@ public class InventoryStocks extends Controller {
             }
             item.save();
         }
-        InventoryStockItem stockItem = new InventoryStockItem(stock);
-        stockItem.save();
-        stockItem.create();
         stock.inventoryStockItemList = new LinkedList<>();
-        stock.inventoryStockItemList.add(stockItem);
+//        stock.inventoryStockItemList.add(stockItem);
         stock.createdBy = OperateRbac.currentUser().loginName;
-        stock.save();
         stock.create();
+        InventoryStockItem stockItem = new InventoryStockItem(stock);
+        stockItem.create();
+
+
         index();
     }
 
@@ -90,15 +90,10 @@ public class InventoryStocks extends Controller {
         }
         stock.createdBy = OperateRbac.currentUser().userName;
         stock.actionType = StockActionType.IN;
-
-        InventoryStockItem stockItem = new InventoryStockItem(stock);
-        stockItem.save();
-        stockItem.create();
         stock.inventoryStockItemList = new LinkedList<>();
-        stock.inventoryStockItemList.add(stockItem);
-        stock.createdBy = OperateRbac.currentUser().loginName;
-        stock.save();
         stock.create();
+        InventoryStockItem stockItem = new InventoryStockItem(stock);
+        stockItem.create();
         index();
     }
 
@@ -150,22 +145,14 @@ public class InventoryStocks extends Controller {
     }
 
     public static void stockSkuRemainCount(Long id) {
-        Query query = JPA.em().createQuery("SELECT SUM(st.remainCount) FROM InventoryStockItem st where st.sku.id= :skuId and st.deleted!= :deleted");
-        query.setParameter("skuId", id);
-        query.setParameter("deleted", com.uhuila.common.constants.DeletedStatus.DELETED);
-
-        Long stockItemRemainCount = (Long) query.getSingleResult();
-        renderJSON(stockItemRemainCount);
+        renderJSON(Sku.getRemainCount(id));
     }
 
     private static void checkStockOutCount(InventoryStock stock) {
-        Query query = JPA.em().createQuery("SELECT SUM(st.remainCount) FROM InventoryStockItem st where st.sku.id= :skuId and st.deleted!= :deleted");
-        query.setParameter("skuId", stock.sku.id);
-        query.setParameter("deleted", com.uhuila.common.constants.DeletedStatus.DELETED);
-        Long stockItemRemainCount = (Long) query.getSingleResult();
+        Long stockItemRemainCount = Sku.getRemainCount(stock.sku.id);
         if (stock.stockOutCount == null) {
             Validation.addError("stock.stockOutCount", "validation.required");
-        } else if (stock == null || stockItemRemainCount == null || stock.stockOutCount < 0 || stockItemRemainCount < stock.stockOutCount) {
+        } else if (stockItemRemainCount == null || stock.stockOutCount < 0 || stockItemRemainCount < stock.stockOutCount) {
             Validation.addError("stock.stockOutCount", "validation.moreThanStockCount");
         } else if (stock.stockOutCount == 0) {
             Validation.addError("stock.stockOutCount", "validation.moreThanZero");

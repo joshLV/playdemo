@@ -2,21 +2,21 @@
 <workbook>
     <worksheet name="Sheet1">
         <section startRow="0" endRow="0"/>
-        <loop startRow="1" endRow="1" items="partnerOrderViews" var="partnerOrderView"
-              varType="models.order.PartnerOrderView">
+        <loop startRow="1" endRow="1" items="logistics" var="logistic"
+              varType="models.order.Logistic">
             <section startRow="1" endRow="1">
-                <mapping row="1" col="0">partnerOrderView.outerGoodsNo</mapping>
-                <mapping row="1" col="1">partnerOrderView.outerOrderNo</mapping>
-                <mapping row="1" col="2">partnerOrderView.salesPrice</mapping>
-                <mapping row="1" col="3">partnerOrderView.buyNumber</mapping>
-                <mapping row="1" col="4">partnerOrderView.paidAtStr</mapping>
-                <mapping row="1" col="5">partnerOrderView.options</mapping>
-                <mapping row="1" col="6">partnerOrderView.remarks</mapping>
-                <mapping row="1" col="7">partnerOrderView.expressInfo</mapping>
-                <mapping row="1" col="8">partnerOrderView.receiver</mapping>
-                <mapping row="1" col="9">partnerOrderView.phone</mapping>
-                <mapping row="1" col="10">partnerOrderView.zipCode</mapping>
-                <mapping row="1" col="11">partnerOrderView.address</mapping>
+                <mapping row="1" col="0">logistic.outerGoodsNo</mapping>
+                <mapping row="1" col="1">logistic.outerOrderNo</mapping>
+                <mapping row="1" col="2">logistic.salePrice</mapping>
+                <mapping row="1" col="3">logistic.buyNumber</mapping>
+                <mapping row="1" col="4">logistic.paidAtStr</mapping>
+                <mapping row="1" col="5">logistic.options</mapping>
+                <mapping row="1" col="6">logistic.remarks</mapping>
+                <mapping row="1" col="7">logistic.expressInfo</mapping>
+                <mapping row="1" col="8">logistic.receiver</mapping>
+                <mapping row="1" col="9">logistic.phone</mapping>
+                <mapping row="1" col="10">logistic.zipCode</mapping>
+                <mapping row="1" col="11">logistic.address</mapping>
             </section>
             <loopbreakcondition>
                 <rowcheck offset="0"/>

@@ -272,8 +272,9 @@ public class InventoryStock extends Model {
     public boolean create() {
         this.createdAt = new Date();
         this.deleted = DeletedStatus.UN_DELETED;
-        setStockSerialNo();
-//        this.save();
+        if (this.serialNo == null) {
+            setStockSerialNo();
+        }
         return super.create();
     }
 
@@ -282,15 +283,10 @@ public class InventoryStock extends Model {
     }
 
     public void setStockSerialNo() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(SERIAL_NO_DATE_FORMAT);
-        InventoryStock stock;
-        if (this.actionType == StockActionType.IN) {
-            stock = InventoryStock.find("dateOfSerialNo=? and actionType =? order by cast(sequenceCode as int) desc", dateFormat.format(new Date()), StockActionType.IN).first();
-            this.serialNo = this.actionType.getCode();
-        } else {
-            stock = InventoryStock.find("dateOfSerialNo=? and actionType =? order by cast(sequenceCode as int) desc", dateFormat.format(new Date()), StockActionType.OUT).first();
-            this.serialNo = this.actionType.getCode();
-        }
+        this.dateOfSerialNo = com.uhuila.common.util.DateUtil.dateToString(new Date(), SERIAL_NO_DATE_FORMAT);
+
+        InventoryStock stock = InventoryStock.find("dateOfSerialNo=? and actionType =? order by cast(sequenceCode as int) desc", this.dateOfSerialNo, this.actionType).first();
+        this.serialNo = this.actionType.getCode();
         if (stock == null) {
             this.sequenceCode = "01";
         } else {
@@ -300,8 +296,8 @@ public class InventoryStock extends Model {
                 this.sequenceCode = calculateFormattedCode(stock.sequenceCode, String.valueOf(stock.serialNo.length() - 9));
             }
         }
-
-        this.dateOfSerialNo = dateFormat.format(new Date());
-        this.serialNo += dateFormat.format(new Date()) + this.sequenceCode;
+        this.serialNo += this.dateOfSerialNo + this.sequenceCode;
     }
+
+
 }

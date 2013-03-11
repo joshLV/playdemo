@@ -1,15 +1,15 @@
 package controllers;
 
+import models.order.Logistic;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
-import models.order.PartnerOrderView;
 import net.sf.jxls.reader.ReaderBuilder;
 import net.sf.jxls.reader.XLSReadStatus;
 import net.sf.jxls.reader.XLSReader;
 import operate.rbac.annotations.ActiveNavigation;
-import org.apache.commons.lang.StringUtils;
+import play.db.jpa.JPA;
 import play.mvc.Controller;
 import play.mvc.With;
 import play.vfs.VirtualFile;
@@ -48,15 +48,15 @@ public class ImportPartnerOrders extends Controller {
             errorInfo = "请先选择文件！";
             render("ImportPartnerOrders/index.html", errorInfo, partner);
         }
-        List<PartnerOrderView> partnerOrderViews = new ArrayList<>();
+        List<Logistic> logistics = new ArrayList<>();
         try {
             //准备转换器
             InputStream inputXML = VirtualFile.fromRelativePath(
-                    "app/views/ImportPartnerOrders/" + partner + "Transfer.xml").inputstream();
+                    "app/views/ImportPartnerOrders/" + partner.toString().toLowerCase() + "Transfer.xml").inputstream();
             XLSReader mainReader = ReaderBuilder.buildFromXML(inputXML);
             //准备javabean
             Map<String, Object> beans = new HashMap<>();
-            beans.put("partnerOrderViews", partnerOrderViews);
+            beans.put("logistics", logistics);
 
             XLSReadStatus readStatus = mainReader.read(new FileInputStream(orderFile), beans);
             if (!readStatus.isStatusOK()) {
@@ -68,39 +68,51 @@ public class ImportPartnerOrders extends Controller {
             render("ImportPartnerOrders/index.html", errorInfo, partner);
         }
 
-        List<String> orderList = new ArrayList<>();
-        List<String> goodsList = new ArrayList<>();
+        List<String> existedOrderList = new ArrayList<>();
+        List<String> unBindGoodsList = new ArrayList<>();
+        List<String> notEnoughInventoryGoodsList = new ArrayList<>();
+        List<String> importSuccessOrderList = new ArrayList<>();
+
         String preGoodsNo = "";
-        for (PartnerOrderView view : partnerOrderViews) {
-            OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", partner, view.outerOrderNo).first();
+        for (Logistic logistic : logistics) {
+            OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", partner, logistic.outerOrderNo).first();
             if (outerOrder != null) {
-                orderList.add(view.outerOrderNo);
+                existedOrderList.add(logistic.outerOrderNo);
                 continue;
             } else {
-                outerOrder = view.toOuterOrder(partner);
+                outerOrder = logistic.toOuterOrder(partner);
             }
             Order ybqOrder = null;
             try {
-                ybqOrder = view.toYbqOrder(partner);
+                ybqOrder = logistic.toYbqOrder(partner);
             } catch (NotEnoughInventoryException e) {
-
+                notEnoughInventoryGoodsList.add(logistic.outerGoodsNo);
+                JPA.em().getTransaction().rollback();
+                importSuccessOrderList.clear();
+                break;
             }
             if (ybqOrder != null) {
                 outerOrder.ybqOrder = ybqOrder;
                 outerOrder.save();
-                ybqOrder.paidAt = view.paidAt;
-                ybqOrder.createdAt = view.paidAt;
+                ybqOrder.paidAt = logistic.paidAt;
+                ybqOrder.createdAt = logistic.paidAt;
                 ybqOrder.save();
+
+                logistic.orderItems = ybqOrder.orderItems.get(0);
+                logistic.save();
+                importSuccessOrderList.add(logistic.outerOrderNo);
             } else {
-                if (!preGoodsNo.equals(view.outerGoodsNo)) {
-                    goodsList.add(view.outerGoodsNo);
-                    preGoodsNo = view.outerGoodsNo;
+                if (!preGoodsNo.equals(logistic.outerGoodsNo)) {
+                    unBindGoodsList.add(logistic.outerGoodsNo);
+                    preGoodsNo = logistic.outerGoodsNo;
                 }
             }
         }
 
-        renderArgs.put("notExistGoods", StringUtils.join(goodsList, ","));
-        renderArgs.put("existedOrders", StringUtils.join(orderList, ","));
+        renderArgs.put("unBindGoodsList", unBindGoodsList);
+        renderArgs.put("importSuccessOrderList", importSuccessOrderList);
+        renderArgs.put("notEnoughInventoryGoodsList", notEnoughInventoryGoodsList);
+        renderArgs.put("existedOrderList", existedOrderList);
         render("ImportPartnerOrders/index.html", partner, errorInfo);
     }
 }

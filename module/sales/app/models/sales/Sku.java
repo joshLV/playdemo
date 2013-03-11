@@ -6,17 +6,11 @@ import models.supplier.SupplierCategory;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
+import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -138,6 +132,7 @@ public class Sku extends Model {
         Sku updSku = findById(id);
         updSku.marketPrice = sku.marketPrice;
         updSku.name = sku.name;
+        updSku.stock = sku.stock;
         updSku.save();
     }
 
@@ -173,5 +168,18 @@ public class Sku extends Model {
 
     public static List<Sku> findByBrand(Long brandId) {
         return Sku.find("deleted=? and brand.id=?", DeletedStatus.UN_DELETED, brandId).fetch();
+    }
+
+    /**
+     * 获取货品的剩余数量.
+     *
+     * @return
+     */
+    @Transient
+    public static Long getRemainCount(Long skuId) {
+        Query query = JPA.em().createQuery("SELECT SUM(st.remainCount) FROM InventoryStockItem st where st.sku.id= :skuId and st.deleted!= :deleted");
+        query.setParameter("skuId", skuId);
+        query.setParameter("deleted", com.uhuila.common.constants.DeletedStatus.DELETED);
+        return (Long) query.getSingleResult();
     }
 }

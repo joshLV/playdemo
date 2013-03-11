@@ -27,7 +27,7 @@
     <permission key="Point_GOODS" text="积分商品管理" roles="editor,customservice"/>
     <permission key="CHANNEL_GOODS" text="跟进渠道商品" roles="sales,editor"/>
     <permission key="VIEW_SUPPLIER_CONTRACT" text="查看合同" roles="sales,account,editor,contractadminister"/>
-    <permission key="MANAGER_VIEW_SUPPLIER_CONTRACT" text="经理查看合同" roles="manager"/>
+    <permission key="MANAGER_VIEW_SUPPLIER_CONTRACT" text="经理查看合同" roles="manager,account"/>
     <permission key="SUPPLIER_CONTRACT_MANAGEMENT" text="合同管理" roles="contractadminister"/>
 
 

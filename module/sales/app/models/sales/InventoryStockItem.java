@@ -3,11 +3,13 @@ package models.sales;
 import com.uhuila.common.constants.DeletedStatus;
 import play.data.validation.InFuture;
 import play.data.validation.Required;
+import play.db.jpa.JPA;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 库存变动明细.
@@ -59,8 +61,6 @@ public class InventoryStockItem extends Model {
     @Column(name = "created_at")
     public Date createdAt;
 
-    @Column(name = "created_by")
-    public String createdBy;
 
     /**
      * 券有效开始日
@@ -99,7 +99,9 @@ public class InventoryStockItem extends Model {
         this.effectiveAt = stock.effectiveAt;
         this.expireAt = stock.expireAt;
         this.createdAt = new Date();
-        this.createdBy = stock.createdBy;
         this.deleted = DeletedStatus.UN_DELETED;
     }
+
+
+
 }

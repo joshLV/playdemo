@@ -7,8 +7,17 @@ import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import play.Logger;
+import play.db.jpa.Model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,96 +30,120 @@ import java.util.Date;
  * Date: 13-3-5
  * Time: 上午11:27
  */
-public class PartnerOrderView {
-    enum DateFormat {
-        TB_FORMAT("yyyy-MM-dd HH:mm"), JD_FORMAT("yyyy/MM/dd HH:mm");
+@Entity
+@Table(name = "logistic")
+public class Logistic extends Model {
+    static String [] dateFormats = new String[] {
+            "yyyy-MM-dd HH:mm",// 淘宝
+            "yyyy/MM/dd HH:mm",// 京东
+    };
 
-        private String format;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_item_id", nullable = false)
+    public OrderItems orderItems;
 
-        DateFormat(String format) {
-            this.format = format;
-        }
-
-        public String getValue() {
-            return format;
-        }
-    }
-
-    ;
     /**
      * 第三方商品NO
      */
+    @Transient
     public String outerGoodsNo;
 
     /**
      * 第三方订单编号
      */
+    @Transient
     public String outerOrderNo;
 
     /**
      * 单价
      */
-    public BigDecimal salesPrice;
+    @Column(name = "sale_price")
+    public BigDecimal salePrice;
 
     /**
      * 购买数量
      */
+    @Column(name = "buy_number")
     public Integer buyNumber;
 
 
     /**
      * 选项
      */
+    @Column(name = "options")
     public String options;
 
     /**
      * 备注
      */
+    @Column(name = "remarks")
     public String remarks;
 
     /**
      * 快递信息
      */
+    @Column(name = "express_info")
     public String expressInfo;
     /**
      * 收件人
      */
+    @Column(name = "receiver")
     public String receiver;
 
     /**
      * 手机
      */
+    @Column(name = "phone")
     public String phone;
     /**
      * 固定电话
      */
+    @Column(name = "tel")
     public String tel;
 
     /**
      * 付款时间
      */
+    @Transient
     public String paidAtStr;
 
+    @Transient
     public Date paidAt;
 
     /**
      * 创建时间
      */
+    @Column(name = "created_at")
     public Date createdAt;
-    public String createdAtStr;
     /**
      * 收货地址
      */
+    @Column(name = "address")
     public String address;
     /**
      * 邮政
      */
+    @Column(name = "zip_code")
     public String zipCode;
 
     /**
      * 发票抬头
      */
+    @Column(name = "invoice_content")
     public String invoiceContent;
+
+    /**
+     * 物流公司
+     */
+    @Column(name = "express_company")
+    public String expressCompany;
+
+    /**
+     * 物流单号
+     */
+    @Column(name = "express_number")
+    public String expressNumber;
 
 
     public String getOuterGoodsNo() {
@@ -129,8 +162,8 @@ public class PartnerOrderView {
         this.outerOrderNo = outerOrderNo;
     }
 
-    public BigDecimal getSalesPrice() {
-        return salesPrice;
+    public BigDecimal getSalePrice() {
+        return salePrice;
     }
 
     public String getInvoiceContent() {
@@ -149,8 +182,8 @@ public class PartnerOrderView {
         this.tel = tel;
     }
 
-    public void setSalesPrice(BigDecimal salesPrice) {
-        this.salesPrice = salesPrice;
+    public void setSalePrice(BigDecimal salesPrice) {
+        this.salePrice = salesPrice;
     }
 
     public Integer getBuyNumber() {
@@ -263,8 +296,8 @@ public class PartnerOrderView {
             return convertExcelDate(dateNumber);
         } else {
             //否则猜测是正常的日期，只是格式各有不同，因此猜一下
-            for (DateFormat format : DateFormat.values()) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat(format.getValue());
+            for (String format : dateFormats) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat(format);
                 try {
                     return dateFormat.parse(date);
                 } catch (ParseException e) {
@@ -320,14 +353,13 @@ public class PartnerOrderView {
             Logger.error("can not find the resaler by login name: %s", partner.partnerLoginName());
             return null;
         }
-        Order ybqOrder = Order.createConsumeOrder(resaler.id, AccountType.RESALER).save();
         Goods goods = ResalerProduct.getGoodsByPartnerProductId(outerGoodsNo, partner);
-
         if (goods == null) {
             Logger.info("goods not found: %s,", outerGoodsNo);
             return null;
         }
-        ybqOrder.addOrderItem(goods, buyNumber, phone, salesPrice, salesPrice).save();
+        Order ybqOrder = Order.createConsumeOrder(resaler.id, AccountType.RESALER).save();
+        ybqOrder.addOrderItem(goods, buyNumber, phone, salePrice, salePrice).save();
         ybqOrder.deliveryType = DeliveryType.LOGISTICS;
         ybqOrder.createAndUpdateInventory();
         ybqOrder.accountPay = ybqOrder.needPay;
