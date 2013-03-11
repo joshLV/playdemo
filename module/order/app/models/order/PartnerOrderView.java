@@ -259,8 +259,10 @@ public class PartnerOrderView {
         }
 
         if (isDouble) {
+            //如果是double类型的，就看作是excel中格式化为日期的数字
             return convertExcelDate(dateNumber);
         } else {
+            //否则猜测是正常的日期，只是格式各有不同，因此猜一下
             for (DateFormat format : DateFormat.values()) {
                 SimpleDateFormat dateFormat = new SimpleDateFormat(format.getValue());
                 try {
@@ -274,7 +276,6 @@ public class PartnerOrderView {
     }
 
     private Date convertExcelDate(Double dateNumber) {
-        //如果是double类型的，就看作是excel中格式化为日期的数字
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(0);
         calendar.set(Calendar.YEAR, 1900);
@@ -282,12 +283,12 @@ public class PartnerOrderView {
         //excel中，数字1 代表 1900年1月1日，并且，excel认为1900年2月有29天，其实没有。所以我们在这里减2
         calendar.add(Calendar.DAY_OF_YEAR, dateNumber.intValue() - 2);
         dateNumber = (dateNumber - dateNumber.intValue()) * 24;
-        calendar.set(Calendar.HOUR_OF_DAY, dateNumber.intValue());
+        calendar.add(Calendar.HOUR_OF_DAY, dateNumber.intValue());
         dateNumber = (dateNumber - dateNumber.intValue()) * 60;
-        calendar.set(Calendar.MINUTE, dateNumber.intValue());
+        calendar.add(Calendar.MINUTE, dateNumber.intValue());
 
         dateNumber = (dateNumber - dateNumber.intValue()) * 60;
-        calendar.set(Calendar.SECOND, (int) Math.round(dateNumber));
+        calendar.add(Calendar.SECOND, (int) Math.round(dateNumber));
 
         return calendar.getTime();
     }
