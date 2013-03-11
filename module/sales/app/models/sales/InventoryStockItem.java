@@ -3,11 +3,13 @@ package models.sales;
 import com.uhuila.common.constants.DeletedStatus;
 import play.data.validation.InFuture;
 import play.data.validation.Required;
+import play.db.jpa.JPA;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 库存变动明细.
@@ -99,4 +101,12 @@ public class InventoryStockItem extends Model {
         this.createdAt = new Date();
         this.deleted = DeletedStatus.UN_DELETED;
     }
+
+    public static Long getStockSkuRemainCount(Long skuId) {
+        Query query = JPA.em().createQuery("SELECT SUM(st.remainCount) FROM InventoryStockItem st where st.sku.id= :skuId and st.deleted!= :deleted");
+        query.setParameter("skuId", skuId);
+        query.setParameter("deleted", com.uhuila.common.constants.DeletedStatus.DELETED);
+        return (Long) query.getSingleResult();
+    }
+
 }
