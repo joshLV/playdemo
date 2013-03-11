@@ -162,9 +162,7 @@ public class InventoryStock extends Model {
     }
 
     public void setStockSerialNo() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(SERIAL_NO_DATE_FORMAT);
-        InventoryStock stock;
-        stock = InventoryStock.find("dateOfSerialNo=? and actionType =? order by cast(sequenceCode as int) desc", dateFormat.format(new Date()), this.actionType).first();
+        InventoryStock stock = InventoryStock.find("dateOfSerialNo=? and actionType =? order by cast(sequenceCode as int) desc", dateFormat.format(new Date()), this.actionType).first();
         this.serialNo = this.actionType.getCode();
         if (stock == null) {
             this.sequenceCode = "01";
@@ -175,8 +173,9 @@ public class InventoryStock extends Model {
                 this.sequenceCode = calculateFormattedCode(stock.sequenceCode, String.valueOf(stock.serialNo.length() - 9));
             }
         }
-
         this.dateOfSerialNo = com.uhuila.common.util.DateUtil.dateToString(new Date(), SERIAL_NO_DATE_FORMAT);
-        this.serialNo += com.uhuila.common.util.DateUtil.dateToString(new Date(), SERIAL_NO_DATE_FORMAT) + this.sequenceCode;
+        this.serialNo += this.dateOfSerialNo + this.sequenceCode;
     }
+
+
 }
