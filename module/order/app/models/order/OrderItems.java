@@ -6,6 +6,7 @@ import models.consumer.User;
 import models.sales.Goods;
 import models.sales.GoodsHistory;
 import models.sales.MaterialType;
+import models.sales.OrderBatch;
 import models.sales.SecKillGoods;
 import models.sales.Sku;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -63,6 +64,13 @@ public class OrderItems extends Model {
      */
     @Column(name = "rebate_value")
     public BigDecimal rebateValue;
+
+    /**
+     * 实物订单的发货批次.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_batch_id", nullable = true)
+    public OrderBatch orderBatch;
 
     /**
      * 当前订单项总费用：
@@ -321,16 +329,16 @@ public class OrderItems extends Model {
      * @return
      */
     public static List<OrderItems> findPaid(Map<Sku, Long> skuMap, Date toDate) {
-        final String sql = "select o from OrderItems o where " +
-                "goods.materialType=:materialType and o.createdAt <= :toDate and o.goods.sku in (";
+         StringBuilder sql = new StringBuilder("select o from OrderItems o where " +
+                 "goods.materialType=:materialType and o.createdAt <= :toDate and o.goods.sku in (");
         for (int i = 0; i < skuMap.size(); i++) {
             sql.append(":sku").append(i);
-            if (i != sku.size() - 1) {
+            if (i != skuMap.size() - 1) {
                 sql.append(",");
             }
         }
         sql.append(") order by createdAt desc");
-        Query query = OrderItems.em().createQuery(sql);
+        Query query = OrderItems.em().createQuery(sql.toString());
         query.setParameter("materialType", MaterialType.REAL);
         query.setParameter("toDate", toDate);
         for (int i = 0; i < skuMap.keySet().size(); i++) {
@@ -390,7 +398,7 @@ public class OrderItems extends Model {
         Map<Sku, Long> takeoutMap = new HashMap<Sku, Long>();
         for (TakeoutItem takeoutItem : takeoutItems) {
             if (takeoutItem.count > 0) {
-                takeout.put(takeoutItem.sku, takeoutItem.count);
+                takeoutMap.put(takeoutItem.sku, takeoutItem.count);
             }
         }
         return takeoutMap;

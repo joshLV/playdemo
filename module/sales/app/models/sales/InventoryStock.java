@@ -1,12 +1,13 @@
 package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
-import controllers.OperateRbac;
 import models.order.Order;
 import models.order.OrderItems;
 import models.supplier.Supplier;
-import org.apache.commons.lang.StringUtils;
-import play.data.validation.*;
+import play.data.validation.Match;
+import play.data.validation.MaxSize;
+import play.data.validation.Min;
+import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.view_ext.annotation.Money;
 
@@ -16,14 +17,14 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -210,7 +211,7 @@ public class InventoryStock extends Model {
     /**
      * 根据缺货商品数，返回相应的因缺货而无法发货的待发货订单.
      *
-     * @param toDate        截止时间
+     * @param toDate 截止时间
      * @return
      */
     public static List<Order> getDeficientOrderList(Date toDate) {
@@ -245,13 +246,17 @@ public class InventoryStock extends Model {
 
     private static final String SYSTEM_USER = "system"; //系统自动创建的用户
 
-    public static void createInventoryStock(Sku sku, Long count) {
+    public static InventoryStock createInventoryStock(Supplier supplier, String storekeeper) {
         InventoryStock stock = new InventoryStock();
         stock.actionType = StockActionType.OUT;
-        stock.storekeeper = OperateRbac.currentUser().loginName;
-        stock.supplier = sku.supplier;
+        stock.storekeeper = storekeeper;
+        stock.supplier = supplier;
         stock.createdBy = SYSTEM_USER;
         stock.create();
+        return stock;
+    }
+
+    public static void createInventoryStockItem(Sku sku, Long count, InventoryStock stock) {
         InventoryStockItem stockItem = new InventoryStockItem(stock);
         stockItem.changeCount = count;
         stockItem.inventoryStock = stock;
@@ -268,7 +273,7 @@ public class InventoryStock extends Model {
         this.createdAt = new Date();
         this.deleted = DeletedStatus.UN_DELETED;
         setStockSerialNo();
-        this.save();
+//        this.save();
         return super.create();
     }
 

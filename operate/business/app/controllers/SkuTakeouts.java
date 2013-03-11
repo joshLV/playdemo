@@ -4,7 +4,9 @@ import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrderStatus;
 import models.sales.InventoryStock;
+import models.sales.OrderBatch;
 import models.sales.Sku;
+import models.supplier.Supplier;
 import play.mvc.Controller;
 
 import java.util.Date;
@@ -19,8 +21,6 @@ import java.util.Map;
  * Time: 11:27 AM
  */
 public class SkuTakeouts extends Controller {
-
-
     /**
      * 显示出库汇总信息
      */
@@ -50,20 +50,33 @@ public class SkuTakeouts extends Controller {
      * 出库
      */
     public static void stockOut(Date toDate, Order... stockoutOrderList) {
+        String operatorName = OperateRbac.currentUser().userName;
         //统计总的待出库货品及数量
         Map<Sku, Long> takeoutSkuMap = OrderItems.findTakeout(toDate);
         //统计实际出库货品及数量
         Map<Sku, List<Order>> deficientOrderMap = InventoryStock.getDeficientOrders(takeoutSkuMap, toDate);
         Map<Sku, Long> deficientSkuMap = InventoryStock.statisticOutCount(takeoutSkuMap, deficientOrderMap);
+
+        //创建总出库单
+        InventoryStock stock = InventoryStock.createInventoryStock(Supplier.getShihui(), operatorName);
+
+        //按商品创建出库单明细
         for (Sku sku : takeoutSkuMap.keySet()) {
             Long deficientCount = deficientSkuMap.get(sku);
             if (deficientCount == null) {
-                //创建出库单
-                InventoryStock.createInventoryStock(sku, takeoutSkuMap.get(sku));
+                //创建出库详单信息
+                InventoryStock.createInventoryStockItem(sku, takeoutSkuMap.get(sku), stock);
                 //修改入库的剩余库存
                 InventoryStock.updateInventoryStockRemainCount(sku, takeoutSkuMap.get(sku));
             }
         }
+
+        //创建出库单对应的批次
+        OrderBatch orderBatch = new OrderBatch();
+        orderBatch.createdBy = operatorName;
+        orderBatch.supplier = Supplier.getShihui();
+        orderBatch.stock = stock;
+        orderBatch.save();
 
         //标记出库订单的状态为代打包状态
         for (Order order : stockoutOrderList) {
@@ -71,6 +84,7 @@ public class SkuTakeouts extends Controller {
             order.save();
             for (OrderItems orderItem : order.orderItems) {
                 orderItem.status = OrderStatus.PREPARED;
+                orderItem.orderBatch = orderBatch;
                 orderItem.save();
             }
         }
