@@ -472,4 +472,13 @@ public class Supplier extends Model {
         return SupplierContract.find("supplierId=?", this.id
         ).fetch();
     }
+
+    /**
+     * 获取视惠商户对象.
+     *
+     * @return
+     */
+    public static Supplier getShihui() {
+        return find("fullName='上海视惠信息科技有限公司'").first();
+    }
 }

@@ -30,7 +30,6 @@ import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.hibernate.annotations.Index;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
@@ -370,7 +369,6 @@ public class Order extends Model {
     }
 
 
-
     /**
      * 单品折扣
      *
@@ -589,7 +587,7 @@ public class Order extends Model {
     public void createAndUpdateInventory() {
         generateOrderDescription();
         save();
-        boolean haveFreight = false;
+        boolean haveFreight = false;  //是否有物流
         for (OrderItems orderItem : orderItems) {
             // fix: org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: models.sales.GoodsLevelPrice
             // Goods goods = Goods.findById(orderItem.goods.id);
