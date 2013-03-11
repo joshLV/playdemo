@@ -1,5 +1,6 @@
 package controllers;
 
+import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
@@ -73,26 +74,32 @@ public class ImportPartnerOrders extends Controller {
         String preGoodsNo = "";
         String duplicateInfo = "";
         for (PartnerOrderView view : partnerOrderViews) {
-            try {
-                OuterOrder outerOrder = view.toOuterOrder(OuterOrderPartner.valueOf(partner.toUpperCase()));
-                Order ybqOrder = view.toYbqOrder(OuterOrderPartner.valueOf(partner.toUpperCase()));
-                if (ybqOrder != null) {
-                    outerOrder.ybqOrder = ybqOrder;
-                    outerOrder.save();
-                    ybqOrder.paidAt = view.paidAt;
-                    ybqOrder.createdAt = view.paidAt;
-                    ybqOrder.save();
-                    renderArgs.put("successInfo", "外部订单导入完毕！");
-                } else {
-                    if (!preGoodsNo.equals(view.outerGoodsNo)) {
-                        goodsList.add(view.outerGoodsNo);
-                        preGoodsNo = view.outerGoodsNo;
-                    }
-                    renderArgs.put("notExistGoodsInfo", "请检查以下渠道商品ID是否已映射一百券商品ID！");
-                }
-            } catch (Exception e) {
+            OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", OuterOrderPartner.valueOf(partner.toUpperCase()), view.outerOrderNo).first();
+            if (outerOrder != null) {
                 orderList.add(view.outerOrderNo);
                 duplicateInfo = "重复订单:" + (duplicateCount++) + "个,";
+            } else {
+                outerOrder = view.toOuterOrder(OuterOrderPartner.valueOf(partner.toUpperCase()));
+            }
+            Order ybqOrder = null;
+            try {
+                ybqOrder = view.toYbqOrder(OuterOrderPartner.valueOf(partner.toUpperCase()));
+            } catch (NotEnoughInventoryException e) {
+
+            }
+            if (ybqOrder != null) {
+                outerOrder.ybqOrder = ybqOrder;
+                outerOrder.save();
+                ybqOrder.paidAt = view.paidAt;
+                ybqOrder.createdAt = view.paidAt;
+                ybqOrder.save();
+                renderArgs.put("successInfo", "外部订单导入完毕！");
+            } else {
+                if (!preGoodsNo.equals(view.outerGoodsNo)) {
+                    goodsList.add(view.outerGoodsNo);
+                    preGoodsNo = view.outerGoodsNo;
+                }
+                renderArgs.put("notExistGoodsInfo", "请检查以下渠道商品ID是否已映射一百券商品ID！");
             }
         }
 
