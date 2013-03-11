@@ -50,7 +50,7 @@ public class ImportCoupons extends Controller {
             return;
         }
         if ("overwrite".equals(action)) {
-            goods.cumulativeStocks -= ImportedCoupon.delete("goods = ? and status = ?",
+            ImportedCoupon.delete("goods = ? and status = ?",
                     goods, ImportedCouponStatus.UNUSED);
         }
 
@@ -135,9 +135,11 @@ public class ImportCoupons extends Controller {
         ImportedCouponTemp.deleteAll();
 
         goods.refresh();
-//        List<ImportCoupons> importCouponsList = ImportedCoupon.find("goods=? ", goods).fetch();
-        goods.cumulativeStocks += insertCount;
-//        goods.cumulativeStocks = Long.valueOf(importCouponsList.size());
+        if ("overwrite".equals(action)) {
+            goods.cumulativeStocks = insertCount + goods.getRealSaleCount();
+        } else {
+            goods.cumulativeStocks += insertCount;
+        }
 
         goods.save();
         index("无", StringUtils.join(duplicateCouponsInTemp, ";  "), StringUtils.join(duplicateCouponsWithIC, ";  "));
