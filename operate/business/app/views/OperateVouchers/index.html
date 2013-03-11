@@ -105,7 +105,7 @@
         <td>${voucher.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
         <td>${voucher.expiredAt.format('yyyy-MM-dd HH:mm:ss')}</td>
         <td>${voucher.chargeCode}</td>
-        <td><a href="/consumers/${voucher.account?.uid}" target="_blank">${voucher.account?.uid}</a></td>
+        <td><a href="http://cms.${play.Play.configuration.getProperty("application.baseDomain")}/consumers/${voucher.account?.uid}" target="_blank">${voucher.account?.uid}</a></td>
         <td>${voucher.assignedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
         <td>${voucher.usedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
         <td width="180">${voucher.operatorName}</td>

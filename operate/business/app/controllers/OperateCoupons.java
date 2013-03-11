@@ -2,13 +2,7 @@ package controllers;
 
 import models.accounts.AccountType;
 import models.operator.OperateUser;
-import models.order.CouponHistory;
-import models.order.CouponsCondition;
-import models.order.ECoupon;
-import models.order.ECouponHistoryMessage;
-import models.order.ECouponStatus;
-import models.order.OrderECouponMessage;
-import models.order.VerifyCouponType;
+import models.order.*;
 import models.sales.Brand;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
@@ -202,6 +196,10 @@ public class OperateCoupons extends Controller {
         JPAExtPaginator<ECoupon> couponsList = ECoupon.query(condition, 1, PAGE_SIZE);
 
         for (ECoupon coupon : couponsList) {
+            OuterOrder outerOrder = OuterOrder.getOuterOrder(coupon.order);
+            if (outerOrder != null) {
+                coupon.outerOrderId = outerOrder.orderId;
+            }
             coupon.shopName = coupon.getConsumedShop();
             String clerkInfo = "";
             if (coupon.supplierUser != null) {

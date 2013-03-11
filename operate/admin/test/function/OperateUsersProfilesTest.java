@@ -79,6 +79,14 @@ public class OperateUsersProfilesTest extends FunctionalTest {
             }
         });
 
+        OperateRole roleDevelop = FactoryBoy.create(OperateRole.class, new BuildCallback<OperateRole>() {
+            @Override
+            public void build(OperateRole role) {
+                role.text = "开发人员";
+                role.key = "developer";
+            }
+        });
+
         OperateRole roleManager = FactoryBoy.create(OperateRole.class, new BuildCallback<OperateRole>() {
             @Override
             public void build(OperateRole role) {

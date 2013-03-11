@@ -10,7 +10,7 @@ import play.test.FunctionalTest;
  *
  * @author <a href="mailto:tangliqun@snda.com">唐力群</a>
  */
-public class MockServerTest extends FunctionalTest {
+public class OperateMockServerTest extends FunctionalTest {
 
     @Test
     public void testProxy() {

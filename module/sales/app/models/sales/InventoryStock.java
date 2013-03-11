@@ -5,8 +5,10 @@ import controllers.OperateRbac;
 import models.order.Order;
 import models.order.OrderItems;
 import models.supplier.Supplier;
-import play.data.validation.Required;
+import org.apache.commons.lang.StringUtils;
+import play.data.validation.*;
 import play.db.jpa.Model;
+import play.modules.view_ext.annotation.Money;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +20,10 @@ import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +37,10 @@ import java.util.Map;
 @Entity
 @Table(name = "inventory_stock")
 public class InventoryStock extends Model {
+    public static final String SERIAL_NO_DATE_FORMAT = "yyyyMMdd";
+    public static final String[] CODE_VALUE = {"99", "999", "9999", "99999", "999999"};
+
+
     /**
      * 单号
      * 入库时表示入库单号，出库时表示出库单号
@@ -83,13 +93,61 @@ public class InventoryStock extends Model {
     /**
      * 备注
      */
+    @MaxSize(50)
     public String remark;
+
+    /**
+     * stock流水码（2位）
+     */
+    @Column(name = "sequence_code")
+    public String sequenceCode;
+
+    /**
+     * stock进货单号中的组成：日期(8位)
+     */
+    @Column(name = "date_of_serial_no")
+    public String dateOfSerialNo;
+
+    @OneToMany(mappedBy = "inventoryStock")
+    public List<InventoryStockItem> inventoryStockItemList;
 
     /**
      * 逻辑删除,0:未删除，1:已删除
      */
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted = DeletedStatus.UN_DELETED;
+
+    @Transient
+    @Min(0)
+    @Match(value = "^[0-9]*$", message = "入库数量格式不对!(纯数字)")
+    public Long stockInCount;
+
+    @Transient
+    @Min(0)
+    @Money
+    public BigDecimal originalPrice;
+
+    @Transient
+    @Min(0)
+    @Match(value = "^[0-9]*$", message = "出库数量格式不对!(纯数字)")
+    public Long stockOutCount;
+
+    @Transient
+    @Min(0)
+    @Money
+    public BigDecimal salePrice;
+
+    @Transient
+    public Date effectiveAt;
+
+    @Transient
+    public Date expireAt;
+
+    @Transient
+    public Sku sku;
+
+    @Transient
+    public Brand brand;
 
     /**
      * 统计到指定时间之前的所有未出库实物订单的Sku出库数量.
@@ -194,7 +252,7 @@ public class InventoryStock extends Model {
         stock.supplier = sku.supplier;
         stock.createdBy = SYSTEM_USER;
         stock.create();
-        InventoryStockItem stockItem = new InventoryStockItem();
+        InventoryStockItem stockItem = new InventoryStockItem(stock);
         stockItem.changeCount = count;
         stockItem.inventoryStock = stock;
         stockItem.sku = sku;
@@ -203,5 +261,42 @@ public class InventoryStock extends Model {
 
     public static void updateInventoryStockRemainCount(Sku sku, Long aLong) {
 
+    }
+
+    @Override
+    public boolean create() {
+        this.createdAt = new Date();
+        this.deleted = DeletedStatus.UN_DELETED;
+        setStockSerialNo();
+        this.save();
+        return super.create();
+    }
+
+    private String calculateFormattedCode(String originalCode, String digits) {
+        return String.format("%0" + digits + "d", Integer.valueOf(originalCode) + 1);
+    }
+
+    public void setStockSerialNo() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(SERIAL_NO_DATE_FORMAT);
+        InventoryStock stock;
+        if (this.actionType == StockActionType.IN) {
+            stock = InventoryStock.find("dateOfSerialNo=? and actionType =? order by cast(sequenceCode as int) desc", dateFormat.format(new Date()), StockActionType.IN).first();
+            this.serialNo = this.actionType.getCode();
+        } else {
+            stock = InventoryStock.find("dateOfSerialNo=? and actionType =? order by cast(sequenceCode as int) desc", dateFormat.format(new Date()), StockActionType.OUT).first();
+            this.serialNo = this.actionType.getCode();
+        }
+        if (stock == null) {
+            this.sequenceCode = "01";
+        } else {
+            if (stock.sequenceCode.equals(CODE_VALUE[stock.serialNo.length() - 9])) {
+                this.sequenceCode = calculateFormattedCode(stock.sequenceCode, String.valueOf(stock.serialNo.length() - 8));
+            } else {
+                this.sequenceCode = calculateFormattedCode(stock.sequenceCode, String.valueOf(stock.serialNo.length() - 9));
+            }
+        }
+
+        this.dateOfSerialNo = dateFormat.format(new Date());
+        this.serialNo += dateFormat.format(new Date()) + this.sequenceCode;
     }
 }

@@ -1,18 +1,16 @@
 #{extends 'layout_operate/layout.html' /}
 #{include 'share/nav.html' /}
 #{set title:'导入渠道订单' /}
-<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
-
 <legend>${title}</legend>
 #{form @ImportPartnerOrders.upload(), method:'POST', class:'well form-horizontal', enctype:'multipart/form-data'}
 <div class="control-group">
     <label class="control-label">选择渠道</label>
 
     <div class="controls">
-        #{select 'partner', class:'input-medium' }
+        #{select 'partner',id:'partner', class:'input-medium',value:partner}
             #{list items:models.order.OuterOrderPartner.values(), as:'partner'}
-            #{option partner.toString().toLowerCase()}${partner.partnerName()}#{/option}
-        #{/list}
+                #{option partner}${partner.partnerName()}#{/option}
+            #{/list}
         #{/select}
     </div>
 </div>
@@ -21,8 +19,10 @@
 
     <div class="controls">
         <input type="file" name="orderFile">
-        <span class="help-block" style="color: red;">${errorInfo}</span>
         <span class="help-block">注意：上传时，保证数据放在Sheet1.</span>
+        <span class="help-block" style="color: red;"
+              id="info">${errorInfo}${successInfo}${duplicateInfo}${existedOrders}
+            <br>${notExistGoodsInfo}${notExistGoods} </span>
     </div>
 </div>
 
@@ -32,3 +32,10 @@
     </div>
 </div>
 #{/form}
+<script type="text/javascript">
+    $("#partner").blur(function () {
+        $("#info").html("");
+    })
+
+
+</script>

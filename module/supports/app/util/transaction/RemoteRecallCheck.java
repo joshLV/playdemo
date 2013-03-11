@@ -23,7 +23,7 @@ public class RemoteRecallCheck {
      *
      * 这个线程变量只在一个远程调用RemoteCallback.doCall()作用域有效。完成调用后，call方法会把这个值写入到Cache中。
      */
-    private static ThreadLocal<Boolean> _needRecall = new ThreadLocal<>();
+    private static ThreadLocal<Boolean> _needRecallRemote = new ThreadLocal<>();
 
     public static <T> T call(final String callPrefix, final RemoteCallback<T> callback) {
         if (getId() == null) { //暂先不使用recall机制
@@ -52,9 +52,9 @@ public class RemoteRecallCheck {
         Logger.info("RemoteRecallCheck.call: cacheNeedRecallKey=" + cacheNeedRecallKey +
                 ", value=" + needRecall + ", t=" + t);
 
-        CacheHelper.setCache(cacheNeedRecallKey, getNeedRecall(), "3h"); //记录是否要重试
+        CacheHelper.setCache(cacheNeedRecallKey, getNeedRecallRemote(), "3h"); //记录是否要远程调用重试
 
-        _needRecall.remove(); //清除needRecall作用域
+        _needRecallRemote.remove(); //清除needRecall作用域
         return t;
     }
 
@@ -69,27 +69,19 @@ public class RemoteRecallCheck {
         return _callId.get();
     }
 
-    private static void setNeedRecall(Boolean value) {
-        _needRecall.set(value);
-    }
-
-    public static void signAsNeedRecall() {
-        _needRecall.set(Boolean.TRUE);
-    }
-
     /**
      * 声明为调用成功，下次不再调用
      */
-    public static void singAsSuccess() {
-        _needRecall.set(Boolean.FALSE);
+    public static void signAsSuccess() {
+        _needRecallRemote.set(Boolean.FALSE);
     }
 
-    public static Boolean getNeedRecall() {
-        if (_needRecall.get() == null) {
+    public static Boolean getNeedRecallRemote() {
+        if (_needRecallRemote.get() == null) {
             // 没有设置过needRecall，则默认为truee，需要重调用。
             return Boolean.TRUE;
         }
-        return _needRecall.get();
+        return _needRecallRemote.get();
     }
 
     public static void cleanUp() {

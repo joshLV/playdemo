@@ -14,17 +14,14 @@ import com.taobao.api.response.VmarketEticketReverseResponse;
 import com.taobao.api.response.VmarketEticketSendResponse;
 import models.accounts.AccountType;
 import models.oauth.OAuthToken;
-import models.order.ECoupon;
-import models.order.ECouponPartner;
-import models.order.ECouponStatus;
-import models.order.OuterOrder;
-import models.order.OuterOrderPartner;
+import models.order.*;
 import models.resale.Resaler;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
 import play.exceptions.UnexpectedException;
+import util.extension.ExtensionResult;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -43,21 +40,21 @@ public class TaobaoCouponUtil {
     public static final String URL = Play.configuration.getProperty("taobao.top.url", "http://gw.api.taobao.com/router/rest");
 
     /**
-     * 告诉淘宝我券已经发过了
+     * 告诉淘宝我券已经发过了.
+     * 并设置outerOrder的status为恰当的值（但未保存，需要保存的话手动调用save()）
      *
      * @param outerOrder 淘宝的订单
-     * @return 是否告诉成功
      */
-    public static boolean tellTaobaoCouponSend(OuterOrder outerOrder) {
+    public static void tellTaobaoCouponSend(OuterOrder outerOrder) {
         if (Play.runingInTestMode()) {
-            return true;
+            return;
         }
         OAuthToken oAuthToken = getToken();
 
         // 组合券
         List<ECoupon> eCoupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
         StringBuilder verifyCodes = new StringBuilder();
-        for (int i = 0 ;i < eCoupons.size(); i++) {
+        for (int i = 0; i < eCoupons.size(); i++) {
             if (i != 0) {
                 verifyCodes.append(",");
             }
@@ -75,22 +72,42 @@ public class TaobaoCouponUtil {
         Logger.info("tell taobao coupon send request. orderId: %s, verifyCodes: %s, token: %s",
                 request.getOrderId(), request.getVerifyCodes(), request.getToken());
 
+        VmarketEticketSendResponse response;
         try {
-            VmarketEticketSendResponse response = taobaoClient.execute(request, oAuthToken.accessToken);
-            if (response != null) {
-                Logger.info("tell taobao coupon send response. ret code: %s", response.getRetCode());
-                if ("isv.eticket-send-error:code-alreay-send".equals(response.getSubCode())) {
-                    //如果报错为已发送 那就不用再发了
-                    return true;
-                }
-                return response.getRetCode() != null && response.getRetCode() == 1;
-            }else {
-                Logger.info("tell taobao coupon send response. no response");
-            }
+            response = taobaoClient.execute(request, oAuthToken.accessToken);
         } catch (ApiException e) {
-            Logger.info("tell taobao coupon send response raise exception. ", e);
+            Logger.info("tell taobao coupon send request exception. %s \n%s", outerOrder.id, e);
+            return;//请求出错，忽略，等待下次重试
         }
-        return false;
+        if (response == null) {
+            Logger.info("tell taobao coupon send response. no response. %s", outerOrder.id);
+            return;//请求出错，忽略，等待下次重试
+        }
+
+        if(response.getRetCode() != null && response.getRetCode() == 1) {
+            outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
+            Logger.info("tell taobao coupon send response. success. %s", outerOrder.id);
+            return;//成功，设置为ORDER_SYNCED
+        }
+
+        Logger.info("tell taobao coupon send. outerOrderId:%s, sub_code:%s", outerOrder.id, response.getSubCode());
+
+        if ("isv.eticket-send-error:code-alreay-send".equals(response.getSubCode())){
+            outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
+            return;//如果错误是此订单已处理，那么也当做成功
+        }
+
+        if ("isv.eticket-service-unavailable:op-failed".equals(response.getSubCode())
+         || "isv.eticket-service-unavailable:order-is-processing".equals(response.getSubCode())) {
+            return;//淘宝操作失败，或者订单正在处理。这两种情况等会儿继续重试
+        }
+
+        if ("isv.eticket-order-status-error:invalid-order-status".equals(response.getSubCode())) {
+            outerOrder.status = OuterOrderStatus.ORDER_IGNORE;
+            return;//如果错误为淘宝订单状态异常，那么设置状态为忽略.
+        }
+        //剩余的错误都报警，将继续重试
+        Logger.error("tell taobao coupon send. outerOrderId:%s, sub_code:%s", outerOrder.id, response.getSubCode());
     }
 
     /**
@@ -110,7 +127,7 @@ public class TaobaoCouponUtil {
         // 组合券
         List<ECoupon> eCoupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
         StringBuilder verifyCodes = new StringBuilder();
-        int i =0;
+        int i = 0;
         for (ECoupon coupon : eCoupons) {
             if (coupon.status != ECouponStatus.UNCONSUMED) {
                 continue;
@@ -119,7 +136,7 @@ public class TaobaoCouponUtil {
                 verifyCodes.append(",");
             }
             verifyCodes.append(coupon.getSafeECouponSN()).append(":1");
-            i ++;
+            i++;
         }
 
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, TOP_APPKEY, TOP_APPSECRET);
@@ -136,7 +153,7 @@ public class TaobaoCouponUtil {
             if (response != null) {
                 Logger.info("tell taobao coupon resend response. ret code: %s", response.getRetCode());
                 return response.getRetCode() != null && response.getRetCode() == 1;
-            }else {
+            } else {
                 Logger.info("tell taobao coupon resend response. no response");
             }
         } catch (ApiException e) {
@@ -152,16 +169,16 @@ public class TaobaoCouponUtil {
      * @param coupon 券
      * @return 是否验证通过
      */
-    public static boolean verifyOnTaobao(ECoupon coupon) {
+    public static ExtensionResult verifyOnTaobao(ECoupon coupon) {
         if (coupon.partner != ECouponPartner.TB) {
-            return false;
+            return ExtensionResult.INVALID_CALL;
         }
 
         OAuthToken oAuthToken = getToken();
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndYbqOrder", OuterOrderPartner.TB, coupon.order).first();
         if (outerOrder == null) {
             Logger.info("consume on taobao failed: outerOrder not found");
-            return false;
+            return ExtensionResult.code(100).message("没有找到对应当当订单号（couponId:%d)", coupon.id);
         }
         JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
         String token = jsonObject.get("token").getAsString();
@@ -177,27 +194,28 @@ public class TaobaoCouponUtil {
                 request.getOrderId(), request.getVerifyCode(), request.getToken());
 
         try {
-            VmarketEticketConsumeResponse response = taobaoClient.execute(request,oAuthToken.accessToken);
-            if (response != null){
+            VmarketEticketConsumeResponse response = taobaoClient.execute(request, oAuthToken.accessToken);
+            if (response != null) {
                 Logger.info("tell taobao coupon verify response. ret code: %s", response.getRetCode());
 
                 if (response.getRetCode() != null && response.getRetCode() == 1L) {
                     coupon.partnerCouponId = response.getConsumeSecialNum();
                     coupon.save();
-                    return true;
+                    return ExtensionResult.SUCCESS;
                 } else {
                     //如果验证失败，首先尝试撤销验证，撤销成功的话继续验证。
-                    if(reverseOnTaobao(coupon)) {
+                    if (reverseOnTaobao(coupon)) {
                         return verifyOnTaobao(coupon);
                     }
                 }
-            }else {
+            } else {
                 Logger.info("tell taobao coupon verify response. no response");
+                return ExtensionResult.code(101).message("调用淘宝接口无响应");
             }
         } catch (ApiException e) {
             Logger.info("tell taobao coupon verify response raise exception. ", e);
         }
-        return false;
+        return ExtensionResult.code(102).message("调用淘宝接口出现异常");
     }
 
     /**
@@ -221,7 +239,7 @@ public class TaobaoCouponUtil {
         request.setConsumeSecialNum(coupon.partnerCouponId);
         request.setToken(token);
         try {
-            VmarketEticketReverseResponse response = taobaoClient.execute(request,oAuthToken.accessToken);
+            VmarketEticketReverseResponse response = taobaoClient.execute(request, oAuthToken.accessToken);
             if (response != null) {
                 Logger.info("tell taobao coupon reverse response. ret code: %s", response.getRetCode());
                 return response.getRetCode() != null && response.getRetCode() == 1L;
@@ -232,7 +250,6 @@ public class TaobaoCouponUtil {
 
         return false;
     }
-
 
 
     public static OAuthToken getToken() {

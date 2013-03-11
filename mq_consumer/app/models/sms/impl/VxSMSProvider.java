@@ -50,9 +50,4 @@ public class VxSMSProvider implements SMSProvider {
 
     }
 
-    @Override
-    public String getProviderName() {
-        return "VxSMSProvider";
-    }
-
 }

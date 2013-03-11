@@ -15,7 +15,7 @@ import java.util.Map;
  * 发布到第三方产品的信息
  *
  * @author likang
- * Date: 13-1-8
+ *         Date: 13-1-8
  */
 @Entity
 @Table(name = "resaler_product")
@@ -95,11 +95,16 @@ public class ResalerProduct extends Model {
         return product;
     }
 
-    public static Goods getGoods(Long  goodsLinkId, OuterOrderPartner partner) {
+    public static Goods getGoods(Long goodsLinkId, OuterOrderPartner partner) {
         ResalerProduct product = ResalerProduct.find("byGoodsLinkIdAndPartner", goodsLinkId, partner).first();
         if (product == null && goodsLinkId < BASE_LINK_ID) {
             return Goods.findById(goodsLinkId);
         }
+        return product == null ? null : product.goods;
+    }
+
+    public static Goods getGoodsByPartnerProductId(String partnerProductId, OuterOrderPartner partner) {
+        ResalerProduct product = ResalerProduct.find("byPartnerProductIdAndPartner", partnerProductId, partner).first();
         return product == null ? null : product.goods;
     }
 
@@ -123,15 +128,20 @@ public class ResalerProduct extends Model {
         this.partnerProductId = partnerProductId;
         switch (partner) {
             case JD:
-                this.url = "http://tuan.360buy.com/team-" + partnerProductId + ".html"; break;
+                this.url = "http://tuan.360buy.com/team-" + partnerProductId + ".html";
+                break;
             case DD:
-                this.url = "http://tuan.dangdang.com/product.php?product_id=" + partnerProductId; break;
+                this.url = "http://tuan.dangdang.com/product.php?product_id=" + partnerProductId;
+                break;
             case TB:
-                this.url = "http://item.taobao.com/item.htm?id=" + partnerProductId; break;
+                this.url = "http://item.taobao.com/item.htm?id=" + partnerProductId;
+                break;
             case YHD:
-                this.url = "http://www.1mall.com/item/" + partnerProductId; break;
+                this.url = "http://www.1mall.com/item/" + partnerProductId;
+                break;
             case WB:
-                this.url = "http://t.58.com/sh/" + partnerProductId + "/"; break;
+                this.url = "http://t.58.com/sh/" + partnerProductId + "/";
+                break;
             default:
                 break;
         }

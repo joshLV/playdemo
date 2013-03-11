@@ -57,7 +57,7 @@ public class OperateUsersTest extends FunctionalTest {
     public void testAdd() {
         Http.Response response = GET("/users/new");
         assertStatus(200, response);
-        assertEquals(1, ((List<OperateRole>) renderArgs("rolesList")).size());
+        assertEquals(2, ((List<OperateRole>) renderArgs("rolesList")).size());
     }
 
     public static OperateRole role(String roleName) {

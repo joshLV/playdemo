@@ -1,5 +1,4 @@
 /**
- * Created with IntelliJ IDEA.
  * User: wangjia
  * Date: 12-11-30
  * Time: 下午2:12

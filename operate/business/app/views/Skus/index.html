@@ -1,8 +1,5 @@
 #{extends 'layout_operate/layout.html' /}
 #{set title:'货品管理' /}
-#{set 'moreScripts'}
-<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
-#{/set}
 #{include '/share/nav.html' /}
 <div class="body">
 #{form @Skus.index() , id:'form',class:"form-horizontal" }
@@ -43,8 +40,8 @@
             <td>${sku?.supplier.otherName}</td>
             <td>${sku.brand.name}</td>
             <td>${sku?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-            <td><a href="/sku/${sku.id}/edit?page=${page?:1}">修改</a>
-                / #{vx.deleteLink id:sku?.id, name:sku?.name, action:"/sku"/}
+            <td><a href="/skus/${sku.id}/edit?page=${page?:1}">修改</a>
+                / #{vx.deleteLink id:sku?.id, name:sku?.name, action:"/skus"/}
             </td>
         </tr>
         #{/paginate.list}

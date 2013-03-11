@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Node;
 import play.test.FunctionalTest;
+import util.extension.ExtensionResult;
 import util.ws.MockWebServiceClient;
 
 /**
@@ -101,7 +102,8 @@ public class DDAPIUtilTest extends FunctionalTest {
                 "<desc>success</desc><data><ddgid>100</ddgid><spgid>100</spgid>" +
                 "<ddsn>1344555</ddsn></data></resultObject>";
         MockWebServiceClient.addMockHttpRequest(200, data);
-        assertTrue(DDGroupBuyUtil.verifyOnDangdang(ecoupon));
+        ExtensionResult result = DDGroupBuyUtil.verifyOnDangdang(ecoupon);
+        assertEquals(0, result.code);
     }
 
     @Test
@@ -117,7 +119,8 @@ public class DDAPIUtilTest extends FunctionalTest {
                 "<error_code>3003</error_code><desc><![CDATA[您输入的验证码不存在，请检查输入是否正确]]></desc>" +
                 "<data><ddgid>57</ddgid><spgid><![CDATA[]]></spgid><ddsn><![CDATA[]]></ddsn></data></resultObject>";
         MockWebServiceClient.addMockHttpRequest(200, data);
-        assertFalse(DDGroupBuyUtil.verifyOnDangdang(ecoupon));
+        ExtensionResult result = DDGroupBuyUtil.verifyOnDangdang(ecoupon);
+        assertEquals(100, result.code);
     }
 
     @Test

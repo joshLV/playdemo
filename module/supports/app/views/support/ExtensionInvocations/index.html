@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>List All Extend Invocations</title>
+</head>
+
+<body>
+<h1>List All Extend Invocations</h1>
+<table border="1">
+    <thead>
+    <tr>
+        <th>扩展点</th>
+        <th>扩展实现类</th>
+        <th>备注</th>
+    </tr>
+    </thead>
+    <tbody>
+    #{list items: extensions.keySet(), as: 'key'}
+    <tr>
+        <td rowspan="${extensions.get(key)?.size()}">${key.raw()}</td>
+    #{list items: extensions.get(key), as: 'ext'}
+        <td>${ext?.getClass().getSimpleName()}</td>
+        <td>&nbsp;</td>
+        #{if !ext_isLast}
+    </tr><tr>
+        #{/if}
+    #{/list}
+    </tr>
+    #{/list}
+
+    </tbody>
+</table>
+</body>
+</html>

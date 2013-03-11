@@ -4,16 +4,9 @@
 #{set 'moreStyles'}
 #{/set}
 <div class="body">
-<legend>分销商品管理 </legend>
-<form class="form-inline" name="frmlist" id="frmlist" action="@{ResalerProducts.index()}" method="GET">
-    商户：#{vx.selectInputField name:"supplierName", id:"condition.supplierId", list:supplierList,
-    value:condition?.supplierId, array:"supplierArray",importJs:true/}
-    商品名称：<input type="text" name="condition.shortName" class="input-medium" value="${condition?.shortName}"/>
-    商品编码：<input type="text" name="condition.code" class="input-medium" value="${condition?.code}"/>
-    <button class="btn btn-primary" id="searchbtn" type="submit"> 搜索 </button>
-
+<legend>分销商品管理 |
     <button class="btn" data-html="true" data-toggle="popover" data-placement="bottom" type="button"
-       data-content="<form action='@{ResalerProducts.add}' method='post'> <fieldset>
+            data-content="<form action='@{ResalerProducts.add}' method='post' id='add-form'> <fieldset>
                <select name='product.partner'>
                  #{list items:models.order.OuterOrderPartner.values(), as:'partner'}
                  <option value = '${partner}'> ${partner.partnerName()}</option>
@@ -24,9 +17,16 @@
                <input type='text' placeholder='第三方产品URL' name='product.url'>
                <button type='submit' class='btn' id='add-rp'>添加</button> </fieldset> </form>"
             >手动添加</button>
+    #{a @ResalerProducts.expiringGoods(), class:"btn", rel:'tooltip', title:'查看即将过期的商品'}即将过期#{/a}
+</legend>
+<form class="form-inline" name="frmlist" id="frmlist" action="@{ResalerProducts.index()}" method="GET">
+    商户：#{vx.selectInputField name:"supplierName", id:"condition.supplierId", list:supplierList,
+    value:condition?.supplierId, array:"supplierArray",importJs:true/}
+    商品名称：<input type="text" name="condition.shortName" class="input-medium" value="${condition?.shortName}"/>
+    商品编码：<input type="text" name="condition.code" class="input-medium" value="${condition?.code}"/>
+    <button class="btn btn-primary" id="searchbtn" type="submit"> 搜索 </button>
+
 </form>
-
-
 
 <table class="table table-bordered ">
 <thead>
@@ -91,8 +91,19 @@
 <script>
     $("a[rel='tooltip']").tooltip({container:'body'});
     $("button[data-toggle='popover']").popover({container:'body'});
-    $("#add-rp").click(function(){
-
+    $("button[data-toggle='popover']").click(function(){
+        $("#add-form").submit(function(){
+            var ok = true;
+            $("input[name^='product']").each(function(){
+                var ele = $(this);
+                if (!ele.val()){
+                    alert(ele.attr('placeholder')+' 不能为空');
+                    ok = false;
+                    return false;
+                }
+            });
+            return ok;
+        });
     });
 </script>
 #{/set}

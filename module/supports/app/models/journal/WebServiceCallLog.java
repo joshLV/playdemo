@@ -2,6 +2,7 @@ package models.journal;
 
 import com.uhuila.common.util.DateUtil;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
@@ -183,4 +184,27 @@ public class WebServiceCallLog extends Model {
         return getWebServiceCallType().key3Name + ":" + key3;
     }
 
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).
+                append("callType", callType).
+                append("callMethod", callMethod).
+                append("url", url).
+                append("postParams", postParams).
+                append("key1", key1).
+                append("key2", key2).
+                append("key3", key3).
+                append("statusCode", statusCode).
+                append("requestBody", requestBody).
+                append("responseText", responseText).
+                append("exceptionText", exceptionText).
+                append("createdAt", createdAt).
+                append("files", files).
+                append("duration", duration).
+                append("createdAtBegin", createdAtBegin).
+                append("createdAtEnd", createdAtEnd).
+                append("success", success).
+                append("webServiceCallType", webServiceCallType).
+                toString();
+    }
 }

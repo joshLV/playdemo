@@ -64,7 +64,7 @@
             <tr>
                 <td>付款账号详情：
                 #{if orders.userType == models.accounts.AccountType.CONSUMER}
-                    <a href="/consumers/${orders.userId}" target="_blank">&{'account.type.'+
+                    <a href="http://cms.${play.Play.configuration.getProperty("application.baseDomain")}/consumers/${orders.userId}" target="_blank">&{'account.type.'+
                         orders.userType}:${loginName}</a>
                 #{/if}
                 #{if orders.userType == models.accounts.AccountType.RESALER}
