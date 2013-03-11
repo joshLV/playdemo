@@ -298,13 +298,8 @@ public class PartnerOrderView {
      * @param partner 分销伙伴
      * @return OuterOrder
      */
-    public OuterOrder toOuterOrder(OuterOrderPartner partner) throws Exception {
-        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", partner, this.outerOrderNo).first();
-        if (outerOrder != null) {
-            throw new Exception();
-        }
-
-        outerOrder = new OuterOrder();
+    public OuterOrder toOuterOrder(OuterOrderPartner partner) {
+        OuterOrder outerOrder = new OuterOrder();
         outerOrder.orderId = outerOrderNo;
         outerOrder.partner = partner;
         outerOrder.message = new Gson().toJson(this);
@@ -318,7 +313,7 @@ public class PartnerOrderView {
      *
      * @param partner 分销伙伴
      */
-    public Order toYbqOrder(OuterOrderPartner partner) {
+    public Order toYbqOrder(OuterOrderPartner partner) throws NotEnoughInventoryException {
         Resaler resaler = Resaler.findOneByLoginName(partner.partnerLoginName());
         if (resaler == null) {
             Logger.error("can not find the resaler by login name: %s", partner.partnerLoginName());
@@ -331,10 +326,7 @@ public class PartnerOrderView {
             Logger.info("goods not found: %s,", outerGoodsNo);
             return null;
         }
-        try {
-            ybqOrder.addOrderItem(goods, buyNumber, phone, salesPrice, salesPrice).save();
-        } catch (NotEnoughInventoryException e) {
-        }
+        ybqOrder.addOrderItem(goods, buyNumber, phone, salesPrice, salesPrice).save();
         ybqOrder.deliveryType = DeliveryType.LOGISTICS;
         ybqOrder.createAndUpdateInventory();
         ybqOrder.accountPay = ybqOrder.needPay;
