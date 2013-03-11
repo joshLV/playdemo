@@ -102,11 +102,6 @@ public class InventoryStockItem extends Model {
         this.deleted = DeletedStatus.UN_DELETED;
     }
 
-    public static Long getStockSkuRemainCount(Long skuId) {
-        Query query = JPA.em().createQuery("SELECT SUM(st.remainCount) FROM InventoryStockItem st where st.sku.id= :skuId and st.deleted!= :deleted");
-        query.setParameter("skuId", skuId);
-        query.setParameter("deleted", com.uhuila.common.constants.DeletedStatus.DELETED);
-        return (Long) query.getSingleResult();
-    }
+
 
 }
