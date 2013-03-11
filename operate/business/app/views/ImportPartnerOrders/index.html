@@ -9,8 +9,8 @@
     <div class="controls">
         #{select 'partner',id:'partner', class:'input-medium',value:partner}
             #{list items:models.order.OuterOrderPartner.values(), as:'partner'}
-            #{option partner.toString().toLowerCase()}${partner.partnerName()}#{/option}
-        #{/list}
+                #{option partner}${partner.partnerName()}#{/option}
+            #{/list}
         #{/select}
     </div>
 </div>
