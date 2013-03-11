@@ -9,8 +9,8 @@
     <div class="controls">
         #{select 'partner',id:'partner', class:'input-medium',value:partner}
             #{list items:models.order.OuterOrderPartner.values(), as:'partner'}
-                #{option partner}${partner.partnerName()}#{/option}
-            #{/list}
+            #{option partner}${partner.partnerName()}#{/option}
+        #{/list}
         #{/select}
     </div>
 </div>
@@ -20,9 +20,13 @@
     <div class="controls">
         <input type="file" name="orderFile">
         <span class="help-block">注意：上传时，保证数据放在Sheet1.</span>
-        <span class="help-block" style="color: red;"
-              id="info">${errorInfo}${successInfo}${duplicateInfo}${existedOrders}
-            <br>${notExistGoodsInfo}${notExistGoods} </span>
+        <span class="help-block" style="color: red;" id="info">
+        ${errorInfo}
+            #{if unBindGoodsList?.size()>0}未映射关系的商品ID【${unBindGoodsList?.size()}】个：${unBindGoodsList?.join(",")}<br>#{/if}
+            #{if notEnoughInventoryGoodsList?.size()>0}请先解决渠道商品ID：${notEnoughInventoryGoodsList?.join(",")}对应的一百券商品库存不足的问题！<br>#{/if}
+            #{if existedOrderList?.size()>0}重复订单【${existedOrderList?.size()}】个：${existedOrderList?.join(",")}<br>#{/if}
+            #{if importSuccessOrderList?.size()>0}外部订单导入成功【${importSuccessOrderList?.size()}】个:${importSuccessOrderList?.join(",")}#{/if}
+        </span>
     </div>
 </div>
 
@@ -36,6 +40,5 @@
     $("#partner").blur(function () {
         $("#info").html("");
     })
-
 
 </script>
