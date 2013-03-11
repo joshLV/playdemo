@@ -138,6 +138,7 @@ public class Sku extends Model {
         Sku updSku = findById(id);
         updSku.marketPrice = sku.marketPrice;
         updSku.name = sku.name;
+        updSku.stock = sku.stock;
         updSku.save();
     }
 

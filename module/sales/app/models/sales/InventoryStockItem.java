@@ -59,8 +59,6 @@ public class InventoryStockItem extends Model {
     @Column(name = "created_at")
     public Date createdAt;
 
-    @Column(name = "created_by")
-    public String createdBy;
 
     /**
      * 券有效开始日
@@ -99,7 +97,6 @@ public class InventoryStockItem extends Model {
         this.effectiveAt = stock.effectiveAt;
         this.expireAt = stock.expireAt;
         this.createdAt = new Date();
-        this.createdBy = stock.createdBy;
         this.deleted = DeletedStatus.UN_DELETED;
     }
 }

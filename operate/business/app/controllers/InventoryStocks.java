@@ -70,13 +70,13 @@ public class InventoryStocks extends Controller {
             item.save();
         }
         InventoryStockItem stockItem = new InventoryStockItem(stock);
-        stockItem.save();
         stockItem.create();
         stock.inventoryStockItemList = new LinkedList<>();
         stock.inventoryStockItemList.add(stockItem);
         stock.createdBy = OperateRbac.currentUser().loginName;
-        stock.save();
         stock.create();
+        stock.save();
+
         index();
     }
 
@@ -92,13 +92,13 @@ public class InventoryStocks extends Controller {
         stock.actionType = StockActionType.IN;
 
         InventoryStockItem stockItem = new InventoryStockItem(stock);
-        stockItem.save();
         stockItem.create();
         stock.inventoryStockItemList = new LinkedList<>();
         stock.inventoryStockItemList.add(stockItem);
         stock.createdBy = OperateRbac.currentUser().loginName;
-        stock.save();
+
         stock.create();
+        stock.save();
         index();
     }
 
