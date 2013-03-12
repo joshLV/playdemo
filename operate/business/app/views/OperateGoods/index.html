@@ -84,7 +84,10 @@
                             value="${condition?.priority}" ${condition?.priority == 1 ?'checked':''}/>
                 &nbsp; &nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery" class="input-medium"
                                          value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
-                <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
+                <button class="btn btn-large btn-primary" id="searchbtn" type="submit">搜索</button>
+
+
+
             </td>
             <input type="hidden" id="J_rank" name="condition.desc" value=${condition?.desc}/>
             <input type="hidden" name="queryString" value="${queryString}"/>

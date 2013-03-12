@@ -33,5 +33,6 @@ public class InventoryStocksTest {
     @Test
     public void testIndex() {
 
+
     }
 }

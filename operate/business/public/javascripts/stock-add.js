@@ -5,7 +5,7 @@ function remainCountChange(skuId) {
         type:'GET',
         datatype:'text',
         error:function () {
-//            alert('请重新操作!');
+            alert('请重新操作!');
         },
         success:function (data) {
             if (data != null && data != '') {
@@ -20,9 +20,11 @@ function remainCountChange(skuId) {
 
 $(function () {
     $("#skuName").blur(function () {
-        remainCountChange($("#id_skuName").val());
+        var skuId = $("#id_skuName").val();
+        if (skuId) {
+            remainCountChange(skuId);
+        }
     });
-
 });
 
 
