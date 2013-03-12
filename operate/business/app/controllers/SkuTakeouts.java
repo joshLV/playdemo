@@ -7,7 +7,9 @@ import models.sales.InventoryStock;
 import models.sales.OrderBatch;
 import models.sales.Sku;
 import models.supplier.Supplier;
+import operate.rbac.annotations.ActiveNavigation;
 import play.mvc.Controller;
+import play.mvc.With;
 
 import java.util.Date;
 import java.util.List;
@@ -20,6 +22,8 @@ import java.util.Map;
  * Date: 3/8/13
  * Time: 11:27 AM
  */
+@With(OperateRbac.class)
+@ActiveNavigation("sku_takeouts_index")
 public class SkuTakeouts extends Controller {
     /**
      * 显示出库汇总信息
@@ -29,21 +33,25 @@ public class SkuTakeouts extends Controller {
         final Date toDate = new Date();
         //统计总的待出库货品及数量
         Map<Sku, Long> takeoutSkuMap = OrderItems.findTakeout(toDate);
+        System.out.println("takeoutSkuMap.size():" + takeoutSkuMap.size());
         //统计实际出库货品及数量
         Map<Sku, List<Order>> deficientOrderMap = InventoryStock.getDeficientOrders(takeoutSkuMap, toDate);
         Map<Sku, Long> deficientSkuMap = InventoryStock.statisticOutCount(takeoutSkuMap, deficientOrderMap);
 
         //待出库订单数
         long paidOrderCount = OrderItems.countPaidOrders(toDate);
+        System.out.println("paidOrderCount:" + paidOrderCount);
         List<Order> allPaidOrders = OrderItems.findPaidOrders(toDate);
+        //无法出库订单项
+        List<OrderItems> deficientOrderItemList = InventoryStock.getDeficientOrderItemList(toDate);
         //无法出库订单
-        List<Order> deficientOrderList = InventoryStock.getDeficientOrderList(toDate);
+        List<Order> deficientOrderList = InventoryStock.getOrderListByItem(deficientOrderItemList);
         //可出库订单
-        List<Order> stockoutOrderList = OrderItems.getStockOutOrders(allPaidOrders, deficientOrderList);
+//        List<Order> stockoutOrderList = OrderItems.getStockOutOrders(allPaidOrders, deficientOrderList);
 
         //无法出库的订单数
-        long deficientOrderCount = stockoutOrderList.size();
-        render(paidOrderCount, deficientOrderCount, takeoutSkuMap, deficientSkuMap, deficientOrderList, stockoutOrderList, toDate);
+        long deficientOrderCount = deficientOrderList.size();
+        render(paidOrderCount, deficientOrderCount, takeoutSkuMap, deficientSkuMap, deficientOrderList, toDate);
     }
 
     /**

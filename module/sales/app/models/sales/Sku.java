@@ -10,7 +10,15 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +48,7 @@ public class Sku extends Model {
     @Required
     @Column(name = "market_price")
     public BigDecimal marketPrice;
+
 
     /**
      * 库存（初始0）
@@ -94,6 +103,7 @@ public class Sku extends Model {
         this.createdAt = new Date();
         this.deleted = DeletedStatus.UN_DELETED;
         setSkuCode();
+
         return super.create();
     }
 
@@ -176,10 +186,21 @@ public class Sku extends Model {
      * @return
      */
     @Transient
-    public static Long getRemainCount(Long skuId) {
+    public Long getRemainCount() {
         Query query = JPA.em().createQuery("SELECT SUM(st.remainCount) FROM InventoryStockItem st where st.sku.id= :skuId and st.deleted!= :deleted");
-        query.setParameter("skuId", skuId);
+        query.setParameter("skuId", id);
         query.setParameter("deleted", com.uhuila.common.constants.DeletedStatus.DELETED);
         return (Long) query.getSingleResult();
+    }
+
+    /**
+     * 获取平均售价.
+     *
+     * @return
+     */
+    @Transient
+    public BigDecimal getAverageSalePrice() {
+        //todo
+        return BigDecimal.ZERO;
     }
 }

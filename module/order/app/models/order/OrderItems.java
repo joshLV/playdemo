@@ -303,8 +303,7 @@ public class OrderItems extends Model {
      * 获取未付款笔数
      */
     public static long getUnpaidOrderCount(Long userId, AccountType userType) {
-        EntityManager entityManager = JPA.em();
-        Query query = entityManager.createQuery("select o from OrderItems o where o.order.userId=:userId " +
+        Query query = OrderItems.em().createQuery("select o from OrderItems o where o.order.userId=:userId " +
                 "and o.order.userType=:userType and o.status=:status group by o.order");
 
         query.setParameter("userId", userId);
@@ -329,8 +328,8 @@ public class OrderItems extends Model {
      * @return
      */
     public static List<OrderItems> findPaid(Map<Sku, Long> skuMap, Date toDate) {
-         StringBuilder sql = new StringBuilder("select o from OrderItems o where " +
-                 "goods.materialType=:materialType and o.createdAt <= :toDate and o.goods.sku in (");
+        StringBuilder sql = new StringBuilder("select o from OrderItems o where " +
+                "goods.materialType=:materialType and o.createdAt <= :toDate and o.goods.sku in (");
         for (int i = 0; i < skuMap.size(); i++) {
             sql.append(":sku").append(i);
             if (i != skuMap.size() - 1) {
@@ -362,14 +361,20 @@ public class OrderItems extends Model {
     }
 
     public static long countPaidOrders(Date toDate) {
-        Long count = count("order.orderType=? and status=? " +
-                "and createdAt<=? group by order", OrderType.CONSUME, OrderStatus.PAID, toDate);
+        Long count = count("goods.materialType=? and order.orderType=? and status=? " +
+                "and createdAt<=? group by order", MaterialType.REAL, OrderType.CONSUME, OrderStatus.PAID, toDate);
         return count == null ? 0 : count;
     }
 
     public static List<Order> findPaidOrders(Date toDate) {
-        return find("select distinct(order) from OrderItems where order.orderType=? and status=? " +
-                "and createdAt<=? group by order", OrderType.CONSUME, OrderStatus.PAID, toDate).fetch();
+        Query q = OrderItems.em().createQuery("select o.order from OrderItems o where o.goods.materialType=:materialType " +
+                "and o.order.orderType=:orderType and o.status=:status " +
+                "and o.createdAt<=:createdAt group by o.order");
+        q.setParameter("materialType", MaterialType.REAL);
+        q.setParameter("orderType", OrderType.CONSUME);
+        q.setParameter("status", OrderStatus.PAID);
+        q.setParameter("createdAt", toDate);
+        return q.getResultList();
     }
 
 
@@ -392,29 +397,16 @@ public class OrderItems extends Model {
      * 查询指定时间之前的sku出库表.
      */
     public static Map<Sku, Long> findTakeout(Date toDate) {
-        List<TakeoutItem> takeoutItems = find("select new models.order.OrderItems.TakeoutItem(distinct(goods.sku),sum(buyNumber)) " +
-                "from OrderItems where status=? and createdAt = ? and goods.materialType=? " +
-                "group by goods.sku", OrderStatus.PAID, toDate, MaterialType.REAL).fetch();
+        List<TakeoutItem> takeoutItems = find("select new models.order.TakeoutItem(goods,sum(o.buyNumber)) " +
+                "from OrderItems o where o.status=? and o.createdAt <= ? and o.goods.materialType=? " +
+                "group by o.goods", OrderStatus.PAID, toDate, MaterialType.REAL).fetch();
         Map<Sku, Long> takeoutMap = new HashMap<Sku, Long>();
         for (TakeoutItem takeoutItem : takeoutItems) {
-            if (takeoutItem.count > 0) {
+            if (takeoutItem.sku != null && takeoutItem.count != null && takeoutItem.count.longValue() > 0) {
                 takeoutMap.put(takeoutItem.sku, takeoutItem.count);
             }
         }
         return takeoutMap;
-    }
-
-    /**
-     * 出库表
-     */
-    class TakeoutItem {
-        Sku sku;
-        Long count;
-
-        TakeoutItem(Sku sku, Long count) {
-            this.sku = sku;
-            this.count = count;
-        }
     }
 
     /**

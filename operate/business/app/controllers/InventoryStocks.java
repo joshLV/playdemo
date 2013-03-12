@@ -1,18 +1,18 @@
 package controllers;
 
-import models.sales.*;
+import models.sales.Brand;
+import models.sales.InventoryStock;
+import models.sales.InventoryStockItem;
+import models.sales.Sku;
+import models.sales.StockActionType;
 import models.supplier.Supplier;
-import models.supplier.SupplierCategory;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
-import play.db.jpa.JPA;
-import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import javax.persistence.Query;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -145,11 +145,12 @@ public class InventoryStocks extends Controller {
     }
 
     public static void stockSkuRemainCount(Long id) {
-        renderJSON(Sku.getRemainCount(id));
+        Sku sku = Sku.findById(id);
+        renderJSON(sku.getRemainCount());
     }
 
     private static void checkStockOutCount(InventoryStock stock) {
-        Long stockItemRemainCount = Sku.getRemainCount(stock.sku.id);
+        Long stockItemRemainCount = stock.sku.getRemainCount();
         if (stock.stockOutCount == null) {
             Validation.addError("stock.stockOutCount", "validation.required");
         } else if (stockItemRemainCount == null || stock.stockOutCount < 0 || stockItemRemainCount < stock.stockOutCount) {

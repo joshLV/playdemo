@@ -21,7 +21,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -180,7 +179,7 @@ public class InventoryStock extends Model {
      * @return
      */
     public static Map<Sku, List<Order>> getDeficientOrders(Map<Sku, Long> takeoutSkuMap, Date toDate) {
-        Map<Sku, List<Order>> stockOrderMap = new HashMap<>(); //因缺货而无法发货的待发货订单
+        Map<Sku, List<Order>> deficientOrderMap = new HashMap<>(); //因缺货而无法发货的待发货订单
         Map<Sku, Long> stockout = new HashMap<>(); //缺货的货品及数量
         //检查缺货情况
         for (Sku sku : takeoutSkuMap.keySet()) {
@@ -190,22 +189,22 @@ public class InventoryStock extends Model {
             }
         }
         if (stockout.size() == 0) {
-            return stockOrderMap;
+            return deficientOrderMap;
         }
         //提取缺货货品对应的所有需发货的订单项
         List<OrderItems> orderItems = OrderItems.findPaid(stockout, toDate);
         //提取因缺货而无法发货的订单
         for (OrderItems orderItem : orderItems) {
-            List<Order> orderList = stockOrderMap.get(orderItem.goods.sku);
+            List<Order> orderList = deficientOrderMap.get(orderItem.goods.sku);
             if (orderList == null) {
                 List<Order> orders = new ArrayList<>();
                 orders.add(orderItem.order);
-                stockOrderMap.put(orderItem.goods.sku, orders);
+                deficientOrderMap.put(orderItem.goods.sku, orders);
             } else {
                 orderList.add(orderItem.order);
             }
         }
-        return stockOrderMap;
+        return deficientOrderMap;
     }
 
     /**
@@ -214,9 +213,7 @@ public class InventoryStock extends Model {
      * @param toDate 截止时间
      * @return
      */
-    public static List<Order> getDeficientOrderList(Date toDate) {
-        List<Order> orderList = new ArrayList<>();
-
+    public static List<OrderItems> getDeficientOrderItemList(Date toDate) {
         //统计总的待出库货品及数量
         Map<Sku, Long> takeoutSkuMap = OrderItems.findTakeout(toDate);
         Map<Sku, Long> stockout = new HashMap<>(); //缺货的货品及数量
@@ -231,7 +228,10 @@ public class InventoryStock extends Model {
             return new ArrayList<>();
         }
         //提取缺货货品对应的所有需发货的订单项
-        List<OrderItems> orderItems = OrderItems.findPaid(stockout, toDate);
+        return OrderItems.findPaid(stockout, toDate);
+    }
+    public static List<Order> getOrderListByItem(List<OrderItems> orderItems) {
+        List<Order> orderList = new ArrayList<>();
         //提取因缺货而无法发货的订单
         Map<Long, Order> orderMap = new HashMap<>();
         for (OrderItems orderItem : orderItems) {

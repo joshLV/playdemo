@@ -1,7 +1,6 @@
 #{extends 'layout_operate/layout.html' /}
 #{set title:'修改品牌' /}
-#{get 'moreScripts'}
-#{/get}
+#{get 'moreScripts'/}
 #{include '/share/nav.html' /}
 <div class="body">
 #{form @OperateBrands.update(id), id:'form',enctype:'multipart/form-data',
