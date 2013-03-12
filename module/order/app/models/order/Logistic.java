@@ -1,44 +1,33 @@
 package models.order;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import javax.persistence.Column;
+
 import play.db.jpa.Model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p/>
  * User: yanjy
  * Date: 13-3-5
  * Time: 上午11:27
+ * <p/>
+ * TODO: 将重构为OrderShippingInfo
  */
 @Entity
-@Table(name = "logistic")
+@Table(name = "logistic_info")
 public class Logistic extends Model {
-
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_item_id", nullable = false)
-    public OrderItems orderItems;
-
-    /**
-     * 第三方商品NO
-     */
-    @Transient
-    public String outerGoodsNo;
-
-    /**
-     * 第三方订单编号
-     */
-    @Transient
-    public String outerOrderNo;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+    @OrderBy("id")
+    public List<OrderItems> orderItems;
 
     /**
      * 单价
@@ -52,13 +41,6 @@ public class Logistic extends Model {
     @Column(name = "buy_number")
     public Integer buyNumber;
 
-
-    /**
-     * 选项
-     */
-    @Column(name = "options")
-    public String options;
-
     /**
      * 备注
      */
@@ -70,6 +52,7 @@ public class Logistic extends Model {
      */
     @Column(name = "express_info")
     public String expressInfo;
+
     /**
      * 收件人
      */
@@ -81,6 +64,7 @@ public class Logistic extends Model {
      */
     @Column(name = "phone")
     public String phone;
+
     /**
      * 固定电话
      */

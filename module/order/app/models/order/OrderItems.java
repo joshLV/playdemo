@@ -98,6 +98,19 @@ public class OrderItems extends Model {
     @Column(name = "buy_number")
     public Long buyNumber;
 
+    /**
+     * 对应实物发货信息
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shipping_info_id", nullable = true)
+    public Logistic shippingInfo;
+
+    /**
+     * 商品选项，用于实物类订单导入时的商品选项属性，如尺寸，颜色等
+     */
+    @Column(name = "options")
+    public String options;
+
     @Column(name = "seckill_goods_item_id", nullable = true)
     public Long secKillGoodsItemId;
 

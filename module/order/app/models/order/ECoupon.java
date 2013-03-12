@@ -950,10 +950,6 @@ public class ECoupon extends Model {
         return InfoUtil.getFirstCharSequence(this.eCouponSn);
     }
 
-    public String getSafeECouponPassword() {
-        return InfoUtil.getFirstCharSequence(this.eCouponPassword);
-    }
-
     /**
      * 获取后n位券号.
      *
