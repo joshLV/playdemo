@@ -30,9 +30,18 @@ public class InventoryStocks extends Controller {
     public static int PAGE_SIZE = 15;
 
     @ActiveNavigation("inventory_details")
-    public static void index() {
+    public static void index(InventoryStockItemCondition condition) {
         int pageNumber = getPage();
-        render();
+        if (condition == null) {
+            condition = new InventoryStockItemCondition();
+        }
+        JPAExtPaginator<InventoryStockItem> stockItemList = InventoryStockItem.findByCondition(condition, pageNumber,
+                PAGE_SIZE);
+        stockItemList.setBoundaryControlsEnabled(true);
+        Long id = OperateRbac.currentUser().id;
+        List<Brand> brandList = Brand.findByOrder(null, id);
+        List<Sku> skuList = Sku.findUnDeleted();
+        render(stockItemList, skuList, brandList, pageNumber, condition);
     }
 
     @ActiveNavigation("inventory_stockIn")
@@ -77,7 +86,7 @@ public class InventoryStocks extends Controller {
                 break;
             }
         }
-        index();
+        index(null);
     }
 
 
@@ -98,7 +107,7 @@ public class InventoryStocks extends Controller {
         stockItem.createdAt = new Date();
         stockItem.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED;
         stockItem.save();
-        index();
+        index(null);
     }
 
     private static void setInitParams() {
