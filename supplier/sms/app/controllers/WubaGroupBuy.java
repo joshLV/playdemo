@@ -21,6 +21,7 @@ import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sales.ResalerProduct;
 import models.wuba.WubaUtil;
+import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.mvc.Controller;
@@ -148,7 +149,8 @@ public class WubaGroupBuy extends Controller {
             Map<String, Object> ticket = new HashMap<>();
             ticket.put("ticketId", coupon.id);
             ticket.put("ticketCode", coupon.getSafeECouponSN());
-            ticket.put("ticketPass", "");
+            // 如果有密码就写进去
+            ticket.put("ticketPass", StringUtils.isBlank(coupon.eCouponPassword) ? "" : coupon.eCouponPassword);
             ticket.put("ticketCount", 1);
             ticket.put("createTime", simpleDateFormat.format(coupon.createdAt));
             ticket.put("endTime", simpleDateFormat.format(coupon.expireAt));
