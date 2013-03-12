@@ -1,0 +1,19 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'下载渠道运单号上报文件' /}
+#{include '/share/nav.html' /}
+
+
+<div class="body">
+    <legend>请选择渠道</legend>
+    <ul class="nav nav-tabs">
+        <li #{if models.order.OuterOrderPartner.JD == partner} class="active"#{/if}>
+            <a href="@{real.DownloadTrackNos.index(models.order.OuterOrderPartner.JD)}">京东</a>
+        </li>
+        <li #{if models.order.OuterOrderPartner.YHD == partner} class="active"#{/if}>
+            <a href="@{real.DownloadTrackNos.index(models.order.OuterOrderPartner.YHD)}">一号店</a>
+        </li>
+        <li #{if models.order.OuterOrderPartner.TB == partner} class="active"#{/if}>
+            <a href="@{real.DownloadTrackNos.index(models.order.OuterOrderPartner.TB)}">淘宝</a>
+        </li>
+    </ul>
+</div>

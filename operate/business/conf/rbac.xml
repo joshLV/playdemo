@@ -162,6 +162,8 @@
         </navigation>
         <navigation key="import_order_app" text="实体订单">
             <navigation key="import_order_index" action="ImportPartnerOrders.index" text="导入渠道订单" permissions="ORDERS"/>
+            <navigation key="download_track_no_for_resaler" action="real.DownloadTrackNos.index" text="下载渠道运单上报文件"
+                        permissions="ORDERS"/>
         </navigation>
         <navigation key="coupon_app" text="消费券">
             <navigation key="coupons_index" action="OperateCoupons.index" text="消费券管理" permissions="COUPONS"/>
