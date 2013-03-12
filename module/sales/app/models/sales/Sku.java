@@ -176,9 +176,9 @@ public class Sku extends Model {
      * @return
      */
     @Transient
-    public static Long getRemainCount(Long skuId) {
+    public Long getRemainCount() {
         Query query = JPA.em().createQuery("SELECT SUM(st.remainCount) FROM InventoryStockItem st where st.sku.id= :skuId and st.deleted!= :deleted");
-        query.setParameter("skuId", skuId);
+        query.setParameter("skuId", id);
         query.setParameter("deleted", com.uhuila.common.constants.DeletedStatus.DELETED);
         return (Long) query.getSingleResult();
     }
