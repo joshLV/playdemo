@@ -1,0 +1,141 @@
+package functional;
+
+import controllers.operate.cas.Security;
+import factory.FactoryBoy;
+import models.accounts.Account;
+import models.accounts.AccountCreditable;
+import models.accounts.AccountStatus;
+import models.accounts.AccountType;
+import models.accounts.util.AccountUtil;
+import models.operator.OperateUser;
+import models.order.Order;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
+import models.resale.Resaler;
+import models.sales.ResalerProduct;
+import operate.rbac.RbacLoader;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import play.Play;
+import play.mvc.Http;
+import play.test.FunctionalTest;
+import play.vfs.VirtualFile;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * <p/>
+ * User: yanjy
+ * Date: 13-3-12
+ * Time: 上午10:05
+ */
+public class ImportPartnerOrdersTest extends FunctionalTest {
+    ResalerProduct resalerProduct;
+    Account account;
+    Resaler resaler;
+
+    @BeforeClass
+    public static void setUpClass() {
+        Play.tmpDir = new File("/tmp");
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        Play.tmpDir = null;
+    }
+
+
+    /**
+     * 测试数据准备
+     */
+    @Before
+    public void setup() {
+        // 重新加载配置文件
+        FactoryBoy.deleteAll();
+        // 重新加载配置文件
+        VirtualFile file = VirtualFile.open("conf/rbac.xml");
+        RbacLoader.init(file);
+
+        OperateUser user = FactoryBoy.create(OperateUser.class);
+        // 设置测试登录的用户名
+        Security.setLoginUserForTest(user.loginName);
+        resaler = FactoryBoy.create(Resaler.class);
+        resalerProduct = FactoryBoy.create(ResalerProduct.class);
+
+        account = AccountUtil.getAccount(resaler.id, AccountType.RESALER);
+        account.creditable = AccountCreditable.YES;
+        account.status = AccountStatus.NORMAL;
+        account.save();
+
+    }
+
+    @Test
+    public void testImpOrder_JD() {
+        resaler.loginName = Resaler.JD_LOGIN_NAME;
+        resaler.save();
+
+        resalerProduct.partnerProductId = "10528592";
+        resalerProduct.partner = OuterOrderPartner.JD;
+        resalerProduct.save();
+        VirtualFile vfImage = VirtualFile.fromRelativePath("test/data/partnerOrder/JD_Orders.xlsx");
+        Map<String, File> fileParams = new HashMap<>();
+        fileParams.put("orderFile", vfImage.getRealFile());
+        Map<String, String> params = new HashMap<>();
+        params.put("partner", OuterOrderPartner.JD.toString());
+        Http.Response response = POST("/import-partner-orders", params, fileParams);
+        assertIsOk(response);
+        assertContentType("text/html", response);
+
+        assertEquals(6, OuterOrder.count());
+        assertEquals(6, Order.count());
+
+    }
+
+    @Test
+    public void testImpOrder_TB() {
+        resaler.loginName = Resaler.TAOBAO_LOGIN_NAME;
+        resaler.save();
+
+        resalerProduct.partnerProductId = "23020076246";
+        resalerProduct.partner = OuterOrderPartner.TB;
+        resalerProduct.save();
+        VirtualFile vfImage = VirtualFile.fromRelativePath("test/data/partnerOrder/TB_Orders.xlsx");
+        Map<String, File> fileParams = new HashMap<>();
+        fileParams.put("orderFile", vfImage.getRealFile());
+        Map<String, String> params = new HashMap<>();
+        params.put("partner", OuterOrderPartner.JD.toString());
+        Http.Response response = POST("/import-partner-orders", params, fileParams);
+        assertIsOk(response);
+        assertContentType("text/html", response);
+
+        assertEquals(1, OuterOrder.count());
+        assertEquals(1, Order.count());
+
+    }
+
+    @Test
+    public void testImpOrder_YHD() {
+        resaler.loginName = Resaler.YHD_LOGIN_NAME;
+        resaler.save();
+
+        resalerProduct.partnerProductId = "0057930822";
+        resalerProduct.partner = OuterOrderPartner.YHD;
+        resalerProduct.save();
+        VirtualFile vfImage = VirtualFile.fromRelativePath("test/data/partnerOrder/YHD_Orders.xlsx");
+        Map<String, File> fileParams = new HashMap<>();
+        fileParams.put("orderFile", vfImage.getRealFile());
+        Map<String, String> params = new HashMap<>();
+        params.put("partner", OuterOrderPartner.JD.toString());
+        Http.Response response = POST("/import-partner-orders", params, fileParams);
+        assertIsOk(response);
+        assertContentType("text/html", response);
+
+        assertEquals(7, OuterOrder.count());
+        assertEquals(7, Order.count());
+
+    }
+}

@@ -66,6 +66,8 @@
             <li><a #{if "shops".equals(menu)}class="curr"#{/if} href="/shops">我的门店</a></li>#{/if}
         #{if navigation.ContextedPermission.hasPermission("ACCOUNT")}
             <li><a #{if "users".equals(menu)}class="curr"#{/if} href="/users">账号管理</a></li>#{/if}
+        #{if navigation.ContextedPermission.hasPermission("LOGISTIC")}
+            <li><a #{if "logistic".equals(menu)}class="curr"#{/if} href="/logistic">发货管理</a></li>#{/if}
         </ul>
         <div class="sbox">
             商家电话验证请致电<br>

@@ -61,6 +61,10 @@ GET     /withdraws/detail/{id}                  SupplierWithdraws.detail
 GET     /withdraws/apply                        SupplierWithdraws.apply
 POST    /withdraws/apply                        SupplierWithdraws.create
 
+# [v2] 发货管理
+GET     /logistic                               SupplierLogistics.index
+GET     /logistic/export                        SupplierLogistics.exportLogistics
+
 # [v2] 修改密码
 GET     /passwords                              SupplierUserPasswords.index
 POST    /passwords                              SupplierUserPasswords.update

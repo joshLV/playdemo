@@ -72,10 +72,11 @@ public class ImportPartnerOrders extends Controller {
         List<String> unBindGoodsList = new ArrayList<>();
         List<String> notEnoughInventoryGoodsList = new ArrayList<>();
         List<String> importSuccessOrderList = new ArrayList<>();
-
         String preGoodsNo = "";
-        for (Logistic logistic : logistics) {
-            OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", partner, logistic.outerOrderNo).first();
+
+        for (Logistic view : logistics) {
+            OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", partner, view.outerOrderNo).first();
+
             if (outerOrder != null) {
                 existedOrderList.add(logistic.outerOrderNo);
                 continue;
@@ -108,7 +109,6 @@ public class ImportPartnerOrders extends Controller {
                 }
             }
         }
-
         renderArgs.put("unBindGoodsList", unBindGoodsList);
         renderArgs.put("importSuccessOrderList", importSuccessOrderList);
         renderArgs.put("notEnoughInventoryGoodsList", notEnoughInventoryGoodsList);

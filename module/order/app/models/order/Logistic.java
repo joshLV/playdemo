@@ -1,9 +1,8 @@
 package models.order;
 
-import javax.persistence.Column;
-
 import play.db.jpa.Model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
