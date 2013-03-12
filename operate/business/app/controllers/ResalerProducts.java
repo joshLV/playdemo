@@ -11,6 +11,7 @@ import models.sales.*;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import play.Logger;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
@@ -169,8 +170,12 @@ public class ResalerProducts extends Controller {
      */
     @ActiveNavigation("resale_partner_product")
     public static void expiringGoods() {
-        List<ResalerProduct> products = ResalerProduct.find("deleted = ? and endSale is not null and (partner = ?) order by endSale",
-                DeletedStatus.UN_DELETED, OuterOrderPartner.JD).fetch();
+        Date startOfToday = DateUtils.truncate(new Date(), Calendar.DATE);
+        Date fourDaysLater = DateUtils.addDays(startOfToday, 4);
+
+        List<ResalerProduct> products = ResalerProduct.find(
+                "deleted = ? and endSale is not null and endSale < ? and (partner = ?) order by endSale",
+                DeletedStatus.UN_DELETED, fourDaysLater, OuterOrderPartner.JD).fetch();
         render(products);
     }
 
