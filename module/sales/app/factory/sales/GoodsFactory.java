@@ -9,6 +9,7 @@ import models.sales.Goods;
 import models.sales.GoodsStatus;
 import models.sales.MaterialType;
 import models.sales.Shop;
+import models.sales.Sku;
 import models.supplier.Supplier;
 import util.DateHelper;
 
@@ -94,6 +95,8 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.originalPrice = BigDecimal.valueOf(8);
         goods.salePrice = BigDecimal.valueOf(15);
         goods.supplierId = 1l;
+        goods.sku = FactoryBoy.lastOrCreate(Sku.class);
+        goods.skuCount = 2;
         return goods;
     }
 

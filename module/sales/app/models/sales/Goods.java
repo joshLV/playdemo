@@ -895,7 +895,7 @@ public class Goods extends Model {
             return getRealSaleCount();
         } else { //实物的库存计算方法
             //(sku实际库存-(待发货销量*skuCount))/skuCount
-            if (sku.stock == 0){
+            if (sku == null || sku.stock == 0){
                 return 0l;
             }
             return (sku.stock - (getRealSaleCount() * skuCount)) / skuCount;
