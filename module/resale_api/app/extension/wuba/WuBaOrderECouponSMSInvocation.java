@@ -25,7 +25,7 @@ public class WuBaOrderECouponSMSInvocation extends OrderECouponSMSInvocation {
                 .append(context.couponInfo)
                 .append(context.notes)
                 .append("有效期至").append(context.expiredDate)
-                .append("客服4007895858");
+                .append("58客服4007895858");
         context.setSmsContent(sb.toString());
         return ExtensionResult.SUCCESS;
     }

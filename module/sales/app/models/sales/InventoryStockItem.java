@@ -2,14 +2,16 @@ package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
 import play.data.validation.InFuture;
+import play.data.validation.Match;
+import play.data.validation.Min;
 import play.data.validation.Required;
-import play.db.jpa.JPA;
 import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
+import play.modules.view_ext.annotation.Money;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 /**
  * 库存变动明细.
@@ -25,7 +27,7 @@ public class InventoryStockItem extends Model {
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "inventory_stock_id")
-    public InventoryStock inventoryStock;
+    public InventoryStock stock;
 
     @ManyToOne
     public Sku sku;
@@ -36,6 +38,8 @@ public class InventoryStockItem extends Model {
      * 入库为正，出库为负
      */
     @Required
+    @Min(0)
+    @Match(value = "^[0-9]*$", message = "数量格式不对!(纯数字)")
     @Column(name = "change_count")
     public Long changeCount;
 
@@ -51,6 +55,8 @@ public class InventoryStockItem extends Model {
      * 出库时表示售价
      */
     @Required
+    @Min(0)
+    @Money
     @Column(name = "price")
     public BigDecimal price;
 
@@ -85,23 +91,25 @@ public class InventoryStockItem extends Model {
     public DeletedStatus deleted;
 
     public InventoryStockItem(InventoryStock stock) {
-        this.inventoryStock = stock;
-        this.sku = stock.sku;
-
-        if (stock.actionType == StockActionType.IN) {
-            this.changeCount = stock.stockInCount;
-            this.remainCount = stock.stockInCount;
-            this.price = stock.originalPrice;
-        } else {
-            this.changeCount = stock.stockOutCount;
-            this.price = stock.salePrice;
-        }
-        this.effectiveAt = stock.effectiveAt;
-        this.expireAt = stock.expireAt;
+        this.stock = stock;
         this.createdAt = new Date();
         this.deleted = DeletedStatus.UN_DELETED;
     }
 
-
+    /**
+     * 库存明细查询
+     *
+     * @param condition
+     * @param pageNumber
+     * @param pageSize
+     * @return
+     */
+    public static JPAExtPaginator<InventoryStockItem> findByCondition(InventoryStockItemCondition condition, int pageNumber, int pageSize) {
+        JPAExtPaginator<InventoryStockItem> stockItemPage = new JPAExtPaginator<>("InventoryStockItem i", "i", InventoryStockItem.class, condition.getFilter(), condition.getParamMap());
+        stockItemPage.setPageNumber(pageNumber);
+        stockItemPage.setPageSize(pageSize);
+        stockItemPage.setBoundaryControlsEnabled(false);
+        return stockItemPage;
+    }
 
 }

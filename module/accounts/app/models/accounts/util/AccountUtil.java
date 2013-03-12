@@ -220,7 +220,7 @@ public class AccountUtil {
         if (account.amount.add(cashAugend).compareTo(BigDecimal.ZERO) >= 0 || account.isCreditable()) {
             account.amount = account.amount.add(cashAugend);
         } else {
-            throw new BalanceNotEnoughException("error while add cash to account: balance not enough");
+            throw new BalanceNotEnoughException("error while add cash to account:account(uid:" + account.uid + ",isCreditable:" + account.isCreditable() + ",amount:" + account.amount + "),cashAugend:" + cashAugend + " balance not enough");
         }
         if (account.uncashAmount.add(uncashAugend).compareTo(BigDecimal.ZERO) >= 0 || account.isCreditable()) {
             account.uncashAmount = account.uncashAmount.add(uncashAugend);

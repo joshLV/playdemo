@@ -3,7 +3,7 @@
     <worksheet name="Sheet1">
         <section startRow="0" endRow="0"/>
         <loop startRow="1" endRow="1" items="logistics" var="logistic"
-              varType="models.order.Logistic">
+              varType="models.order.LogisticImportData">
             <section startRow="1" endRow="1">
                 <mapping row="1" col="0">logistic.outerGoodsNo</mapping>
                 <mapping row="1" col="1">logistic.outerOrderNo</mapping>

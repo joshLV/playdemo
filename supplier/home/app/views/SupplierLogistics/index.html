@@ -1,0 +1,38 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set title:'发货单下载' /}
+#{set menu:"logistic" /}
+
+<div class="bd">
+    <h2>${title}</h2>
+    <table cellspacing="0" cellpadding="0" border="0" class="title-table">
+        <tr>
+            <th wdith="50%">发货单总数：${orderItemsList?.size()}</th>
+            <td wdith="50%" align="left">
+                <a class="btn" href="@{SupplierLogistics.index()}">下载</a></td>
+            </td>
+        </tr>
+    </table>
+
+    <table cellspacing="0" cellpadding="0" border="0" class="standard-table">
+        <thead>
+        <tr>
+            <th>生成人</th>
+            <th>生成时间</th>
+            <th>操 作</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        *{#{list items:logisticList, as:'logistic' }}*
+        *{<tr>}*
+            *{<td></td>}*
+            *{<td align="left">${shop.address}</td>}*
+            *{<td>${shop.phone}</td>}*
+            *{<td>}*
+                *{<a href="@{SupplierShops.edit(shop.id)}">修改</a>/#{vx.deleteLink action:"shops", id:shop.id, name:shop.name/}}*
+            *{</td>}*
+        *{</tr>}*
+        *{#{/list}}*
+        </tbody>
+    </table>
+</div>

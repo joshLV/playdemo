@@ -37,7 +37,7 @@ public class OrderECouponMessage implements Serializable {
                         .append(ctx.couponInfo)
                         .append(ctx.notes)
                         .append("截止").append(ctx.expiredDate)
-                        .append("客服4006262166");
+                        .append("一百券客服4006262166");
                 ctx.setSmsContent(sb.toString());
             }
             return ExtensionResult.SUCCESS;
@@ -206,7 +206,7 @@ public class OrderECouponMessage implements Serializable {
         String note = ",";
         if (orderItems.goods.isOrder) {
             // 需要预约的产品
-            note = ",此产品需预约,";
+            note = ",此产品需预约,预约电话见商品详情,";
         }
 
         String expiredDate = dateFormat.format(lastECoupon.expireAt);

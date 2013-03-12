@@ -13,8 +13,12 @@ import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import java.util.LinkedList;
+import java.util.Date;
 import java.util.List;
+
+<<<<<<<HEAD
+        =======
+        >>>>>>>develop
 
 /**
  * 库存管理
@@ -29,9 +33,18 @@ public class InventoryStocks extends Controller {
     public static int PAGE_SIZE = 15;
 
     @ActiveNavigation("inventory_details")
-    public static void index() {
+    public static void index(InventoryStockItemCondition condition) {
         int pageNumber = getPage();
-        render();
+        if (condition == null) {
+            condition = new InventoryStockItemCondition();
+        }
+        JPAExtPaginator<InventoryStockItem> stockItemList = InventoryStockItem.findByCondition(condition, pageNumber,
+                PAGE_SIZE);
+        stockItemList.setBoundaryControlsEnabled(true);
+        Long id = OperateRbac.currentUser().id;
+        List<Brand> brandList = Brand.findByOrder(null, id);
+        List<Sku> skuList = Sku.findUnDeleted();
+        render(stockItemList, skuList, brandList, pageNumber, condition);
     }
 
     @ActiveNavigation("inventory_stockIn")
@@ -47,72 +60,65 @@ public class InventoryStocks extends Controller {
     }
 
     @ActiveNavigation("inventory_stockOut")
-    public static void createStockOut(@Valid InventoryStock stock) {
-        checkStockOutCountAndPrice(stock);
-        checkStockOutCount(stock);
+    public static void createStockOut(@Valid InventoryStockItem stockItem) {
+        checkStockOutCount(stockItem);
         if (Validation.hasErrors()) {
-            renderArgs.put("stock.id_supplierName", stock.supplier.id);
-            renderArgs.put("stock.brand.id", stock.brand.id);
-            renderArgs.put("stock.sku.id", stock.sku.id);
-            savePageParams(stock);
+            setInitParams();
             render("InventoryStocks/stockOut.html");
         }
+        InventoryStock stock = stockItem.stock;
+        Sku sku = Sku.findById(stockItem.sku.id);
+        stock.supplier = sku.supplier;
         stock.createdBy = OperateRbac.currentUser().userName;
         stock.actionType = StockActionType.OUT;
-        List<InventoryStockItem> stockInItemList = InventoryStockItem.find("sku=? and remainCount>0 order by createdAt", stock.sku).fetch();
-        Long totalStockOutCount = stock.stockOutCount;
+        stock.create();
+        stockItem.stock = stock;
+        stockItem.createdAt = new Date();
+        stockItem.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED;
+        stockItem.save();
+        List<InventoryStockItem> stockInItemList = InventoryStockItem.find("sku=? and remainCount>0 order by createdAt", stockItem.sku).fetch();
+        Long totalStockOutCount = stockItem.changeCount;
         for (InventoryStockItem item : stockInItemList) {
             item.remainCount -= totalStockOutCount;
             if (item.remainCount < 0) {
                 totalStockOutCount = -item.remainCount;
                 item.remainCount = 0l;
+                item.save();
+            } else {
+                item.save();
+                break;
             }
-            item.save();
         }
-        stock.inventoryStockItemList = new LinkedList<>();
-//        stock.inventoryStockItemList.add(stockItem);
-        stock.createdBy = OperateRbac.currentUser().loginName;
-        stock.create();
-        InventoryStockItem stockItem = new InventoryStockItem(stock);
-        stockItem.create();
-
-
-        index();
+        index(null);
     }
 
 
     @ActiveNavigation("inventory_stockIn")
-    public static void createStockIn(@Valid InventoryStock stock) {
-        checkStockInCountAndPrice(stock);
+    public static void createStockIn(@Valid InventoryStockItem stockItem) {
         if (Validation.hasErrors()) {
-            savePageParams(stock);
+            setInitParams();
             render("InventoryStocks/stockIn.html");
         }
+        InventoryStock stock = stockItem.stock;
+        Sku sku = Sku.findById(stockItem.sku.id);
+        stock.supplier = sku.supplier;
         stock.createdBy = OperateRbac.currentUser().userName;
         stock.actionType = StockActionType.IN;
-        stock.inventoryStockItemList = new LinkedList<>();
         stock.create();
-        InventoryStockItem stockItem = new InventoryStockItem(stock);
-        stockItem.create();
-        index();
+        stockItem.stock = stock;
+        stockItem.remainCount = stockItem.changeCount;
+        stockItem.createdAt = new Date();
+        stockItem.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED;
+        stockItem.save();
+        index(null);
     }
 
     private static void setInitParams() {
-        List<Supplier> supplierList = Supplier.findUnDeleted();
-        List<Brand> brandList = null;
+        List<Sku> skuList = Sku.findUnDeleted();
+        renderArgs.put("skuList", skuList);
         renderArgs.put("createdBy", OperateRbac.currentUser().userName);
-        renderArgs.put("supplierList", supplierList);
-        renderArgs.put("brandList", brandList);
     }
 
-    private static void savePageParams(InventoryStock stock) {
-        setInitParams();
-        if (stock.supplier != null) {
-            Long id = OperateRbac.currentUser().id;
-            List<Brand> brandList = Brand.findByOrder(new Supplier(stock.supplier.id), id);
-            renderArgs.put("brandList", brandList);
-        }
-    }
 
     private static int getPage() {
         String page = request.params.get("page");
