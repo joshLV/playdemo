@@ -2,14 +2,23 @@ package functional;
 
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
+import factory.callback.SequenceCallback;
 import models.operator.OperateUser;
 import models.sales.InventoryStock;
+import models.sales.InventoryStockItem;
 import models.sales.Sku;
 import models.supplier.Supplier;
 import org.junit.Before;
 import org.junit.Test;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http;
+import play.mvc.Router;
+import play.test.FunctionalTest;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 库存管理的测试用例
@@ -18,13 +27,17 @@ import play.mvc.Http;
  * Date: 13-3-12
  * Time: 上午10:54
  */
-public class InventoryStocksTest {
+public class InventoryStocksTest extends FunctionalTest {
+    Sku sku;
     InventoryStock stock;
+    InventoryStockItem stockItem;
 
     @Before
     public void setUp() {
-        FactoryBoy.delete(InventoryStock.class);
+        FactoryBoy.deleteAll();
+        sku = FactoryBoy.create(Sku.class);
         stock = FactoryBoy.create(InventoryStock.class);
+        stockItem = FactoryBoy.create(InventoryStockItem.class);
         OperateUser user = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
@@ -32,7 +45,81 @@ public class InventoryStocksTest {
 
     @Test
     public void testIndex() {
+        Http.Response response = GET(Router.reverse("InventoryStocks.index").url);
+        assertIsOk(response);
+        JPAExtPaginator<InventoryStockItem> stockItemList = (JPAExtPaginator) renderArgs("stockItemList");
+        assertEquals(1, stockItemList.size());
+        assertEquals(stockItem.changeCount, stockItemList.get(0).changeCount);
+    }
 
+    @Test
+    public void testStockIn() {
+        Http.Response response = GET(Router.reverse("InventoryStocks.stockIn").url);
+        assertIsOk(response);
+        List<Sku> skuList = (List) renderArgs("skuList");
+        assertEquals(1, skuList.size());
+    }
+
+    @Test
+    public void testStockOut() {
+        Http.Response response = GET(Router.reverse("InventoryStocks.stockOut").url);
+        assertIsOk(response);
+        List<Sku> skuList = (List) renderArgs("skuList");
+        assertEquals(1, skuList.size());
+    }
+
+    @Test
+    public void testCreateStockIn() {
+        long stockItemCount = InventoryStockItem.count();
+        Map<String, String> params = new HashMap<>();
+        params.put("stockItem.sku.name", sku.name);
+        params.put("stockItem.sku.id", sku.id.toString());
+        params.put("stockItem.stock.id", stockItem.stock.id.toString());
+        params.put("stockItem.changeCount", "10");
+        params.put("stockItem.price", "10.0");
+        Http.Response response = POST("/stock-in", params);
+        assertStatus(302, response);
+        assertEquals(stockItemCount + 1, InventoryStockItem.count());
+    }
+
+    @Test
+    public void testCreateStockOut() {
+        long stockItemCount = InventoryStockItem.count();
+        assertEquals(Long.valueOf(10), sku.getRemainCount());
+        Map<String, String> params = new HashMap<>();
+        params.put("stockItem.sku.name", sku.name);
+        params.put("stockItem.sku.id", sku.id.toString());
+        params.put("stockItem.stock.id", stockItem.stock.id.toString());
+        params.put("stockItem.changeCount", "1");
+        params.put("stockItem.price", "10.0");
+        Http.Response response = POST("/stock-out", params);
+        assertStatus(302, response);
+        assertEquals(stockItemCount + 1, InventoryStockItem.count());
+        assertEquals(Long.valueOf(9), sku.getRemainCount());
+    }
+
+    @Test
+    public void testStockInOutCalculation() {
+        Sku currentSku = FactoryBoy.create(Sku.class);
+        List<InventoryStockItem> stockItemList = FactoryBoy.batchCreate(6, InventoryStockItem.class,
+                new SequenceCallback<InventoryStockItem>() {
+                    public void sequence(InventoryStockItem target, int seq) {
+                    }
+                });
+        long stockItemCount = InventoryStockItem.count();
+        assertEquals(Long.valueOf(60), currentSku.getRemainCount());
+        Map<String, String> params = new HashMap<>();
+        params.put("stockItem.sku.name", currentSku.name);
+        params.put("stockItem.sku.id", currentSku.id.toString());
+        params.put("stockItem.stock.id", stockItem.stock.id.toString());
+        params.put("stockItem.changeCount", "25");
+        params.put("stockItem.price", "10.0");
+        Http.Response response = POST("/stock-out", params);
+        assertStatus(302, response);
+        assertEquals(stockItemCount + 1, InventoryStockItem.count());
+        assertEquals(Long.valueOf(35), currentSku.getRemainCount());
 
     }
+
+
 }

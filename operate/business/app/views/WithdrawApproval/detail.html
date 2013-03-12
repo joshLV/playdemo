@@ -23,7 +23,7 @@
     <div class="form-horizontal">
         <div class="control-group">
             <label class="control-label">申请时间</label>
-           <label class="controls control-value">${bill?.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</label>
+            <label class="controls control-value">${bill?.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</label>
         </div>
         <div class="control-group">
             <label class="control-label">账&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户</label>
@@ -41,8 +41,9 @@
             #{if  bill.account.accountType==models.accounts.AccountType.CONSUMER }
                 <a href="/coupons?condition.searchKey=UID&condition.searchItems=${uid}&condition.status=REFUND"
                    target="_blank">查看相关券</a>
-                &nbsp;<a href="/reports/consumer?condition.accountName=${bill.accountName}&condition.tradeType=REFUND"
-                   target="_blank">账户资金明细</a>
+                &nbsp;<a
+                    href="/reports/consumer?condition.accountName=${bill.accountName}&condition.tradeType=REFUND&condition.accountUid=${uid}"
+                    target="_blank">账户资金明细</a>
             #{/if}
             #{if  bill.account.accountType==models.accounts.AccountType.SUPPLIER }
                 <a href="/reports/supplier?supplierName=${supplierName}&condition.accountUid=${uid}&condition.tradeType=PURCHASE_COSTING"
