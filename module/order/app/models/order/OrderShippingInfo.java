@@ -14,17 +14,19 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * <p/>
+ * 订单发货信息表.
  * User: yanjy
  * Date: 13-3-5
  * Time: 上午11:27
  * <p/>
- * TODO: 将重构为OrderShippingInfo
  */
 @Entity
-@Table(name = "logistic_info")
-public class Logistic extends Model {
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+@Table(name = "order_shipping_info")
+public class OrderShippingInfo extends Model {
+    /**
+     * 一个发货信息可能会有多个订单商品.
+     */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "shippingInfo")
     @OrderBy("id")
     public List<OrderItems> orderItems;
 
@@ -98,8 +100,8 @@ public class Logistic extends Model {
     /**
      * 发票抬头
      */
-    @Column(name = "invoice_content")
-    public String invoiceContent;
+    @Column(name = "invoice_title")
+    public String invoiceTitle;
 
     /**
      * 物流公司

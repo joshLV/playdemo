@@ -1,7 +1,7 @@
 package controllers;
 
 import controllers.supplier.SupplierInjector;
-import models.order.Logistic;
+import models.order.OrderShippingInfo;
 import models.order.OrderItems;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -27,15 +27,15 @@ public class SupplierLogistics extends Controller {
      */
     public static void exportLogistics() {
         List<OrderItems> orderItemsList = OrderItems.find("goods.supplierId=? and orderBatch is not null", SupplierRbac.currentUser().supplier.id).fetch();
-        List<Logistic> logisticList = new ArrayList<>();
+        List<OrderShippingInfo> orderShippingInfoList = new ArrayList<>();
         for (OrderItems orderItem : orderItemsList) {
-            Logistic logistic = Logistic.find("orderItems=?", orderItem).first();
-            logisticList.add(logistic);
+            OrderShippingInfo orderShippingInfo = OrderShippingInfo.find("orderItems=?", orderItem).first();
+            orderShippingInfoList.add(orderShippingInfo);
         }
 
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "发货单导出_" + System.currentTimeMillis() + ".xls");
-        render(logisticList);
+        render(orderShippingInfoList);
     }
 
 }

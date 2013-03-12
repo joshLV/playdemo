@@ -2,6 +2,7 @@ package functional;
 
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.AccountCreditable;
 import models.accounts.AccountStatus;
@@ -12,6 +13,7 @@ import models.order.Order;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.resale.Resaler;
+import models.sales.Goods;
 import models.sales.ResalerProduct;
 import operate.rbac.RbacLoader;
 import org.junit.AfterClass;
@@ -20,6 +22,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import play.Play;
 import play.mvc.Http;
+import play.mvc.Router;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
@@ -37,10 +40,11 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
     ResalerProduct resalerProduct;
     Account account;
     Resaler resaler;
+    Goods goods;
 
     @BeforeClass
     public static void setUpClass() {
-        Play.tmpDir = new File("/tmp");
+        Play.tmpDir = new File("/tmp"); //解决测试时上传失败的问题
     }
 
     @AfterClass
@@ -63,6 +67,12 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
         OperateUser user = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
+        goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+            @Override
+            public void build(Goods target) {
+                target.cumulativeStocks = 10000l;
+            }
+        });
         resaler = FactoryBoy.create(Resaler.class);
         resalerProduct = FactoryBoy.create(ResalerProduct.class);
 
@@ -86,12 +96,12 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
         fileParams.put("orderFile", vfImage.getRealFile());
         Map<String, String> params = new HashMap<>();
         params.put("partner", OuterOrderPartner.JD.toString());
-        Http.Response response = POST("/import-partner-orders", params, fileParams);
+        Http.Response response = POST(Router.reverse("ImportPartnerOrders.upload").url, params, fileParams);
         assertIsOk(response);
         assertContentType("text/html", response);
 
-        assertEquals(6, OuterOrder.count());
-        assertEquals(6, Order.count());
+        assertEquals(7, OuterOrder.count());
+        assertEquals(7, Order.count());
 
     }
 
@@ -107,8 +117,8 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
         Map<String, File> fileParams = new HashMap<>();
         fileParams.put("orderFile", vfImage.getRealFile());
         Map<String, String> params = new HashMap<>();
-        params.put("partner", OuterOrderPartner.JD.toString());
-        Http.Response response = POST("/import-partner-orders", params, fileParams);
+        params.put("partner", OuterOrderPartner.TB.toString());
+        Http.Response response = POST(Router.reverse("ImportPartnerOrders.upload").url, params, fileParams);
         assertIsOk(response);
         assertContentType("text/html", response);
 
@@ -129,8 +139,9 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
         Map<String, File> fileParams = new HashMap<>();
         fileParams.put("orderFile", vfImage.getRealFile());
         Map<String, String> params = new HashMap<>();
-        params.put("partner", OuterOrderPartner.JD.toString());
-        Http.Response response = POST("/import-partner-orders", params, fileParams);
+        params.put("partner", OuterOrderPartner.YHD.toString());
+
+        Http.Response response = POST(Router.reverse("ImportPartnerOrders.upload").url, params, fileParams);
         assertIsOk(response);
         assertContentType("text/html", response);
 

@@ -1,6 +1,6 @@
 package controllers;
 
-import models.order.Logistic;
+import models.order.LogisticImportData;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OuterOrder;
@@ -9,6 +9,7 @@ import net.sf.jxls.reader.ReaderBuilder;
 import net.sf.jxls.reader.XLSReadStatus;
 import net.sf.jxls.reader.XLSReader;
 import operate.rbac.annotations.ActiveNavigation;
+import play.Logger;
 import play.db.jpa.JPA;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -48,7 +49,7 @@ public class ImportPartnerOrders extends Controller {
             errorInfo = "请先选择文件！";
             render("ImportPartnerOrders/index.html", errorInfo, partner);
         }
-        List<Logistic> logistics = new ArrayList<>();
+        List<LogisticImportData> logistics = new ArrayList<>();
         try {
             //准备转换器
             InputStream inputXML = VirtualFile.fromRelativePath(
@@ -61,10 +62,12 @@ public class ImportPartnerOrders extends Controller {
             XLSReadStatus readStatus = mainReader.read(new FileInputStream(orderFile), beans);
             if (!readStatus.isStatusOK()) {
                 errorInfo = "转换出错，请检查文件格式！";
+                Logger.info(errorInfo);
                 render("ImportPartnerOrders/index.html", errorInfo, partner);
             }
         } catch (Exception e) {
-            errorInfo = "转换出现异常，请检查文件格式！";
+            errorInfo = "转换出现异常，请检查文件格式！" + e.getMessage();
+            e.printStackTrace();
             render("ImportPartnerOrders/index.html", errorInfo, partner);
         }
 
@@ -74,8 +77,9 @@ public class ImportPartnerOrders extends Controller {
         List<String> importSuccessOrderList = new ArrayList<>();
         String preGoodsNo = "";
 
-        for (Logistic view : logistics) {
-            OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", partner, view.outerOrderNo).first();
+        for (LogisticImportData logistic : logistics) {
+            Logger.info("Process OrderNO: %s", logistic.outerOrderNo);
+            OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", partner, logistic.outerOrderNo).first();
 
             if (outerOrder != null) {
                 existedOrderList.add(logistic.outerOrderNo);
@@ -87,12 +91,14 @@ public class ImportPartnerOrders extends Controller {
             try {
                 ybqOrder = logistic.toYbqOrder(partner);
             } catch (NotEnoughInventoryException e) {
+                e.printStackTrace();
                 notEnoughInventoryGoodsList.add(logistic.outerGoodsNo);
                 JPA.em().getTransaction().rollback();
                 importSuccessOrderList.clear();
                 break;
             }
             if (ybqOrder != null) {
+                Logger.info("ybqOrder.id=" + ybqOrder.id);
                 outerOrder.ybqOrder = ybqOrder;
                 outerOrder.save();
                 ybqOrder.paidAt = logistic.paidAt;
@@ -100,9 +106,10 @@ public class ImportPartnerOrders extends Controller {
                 ybqOrder.save();
 
                 logistic.orderItems = ybqOrder.orderItems.get(0);
-                logistic.save();
+                // TODO: logistic.save();
                 importSuccessOrderList.add(logistic.outerOrderNo);
             } else {
+                Logger.info("preGoodsNo=" + logistic.outerGoodsNo + " NOT Found!");
                 if (!preGoodsNo.equals(logistic.outerGoodsNo)) {
                     unBindGoodsList.add(logistic.outerGoodsNo);
                     preGoodsNo = logistic.outerGoodsNo;

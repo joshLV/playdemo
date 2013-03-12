@@ -103,7 +103,7 @@ public class OrderItems extends Model {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shipping_info_id", nullable = true)
-    public Logistic shippingInfo;
+    public OrderShippingInfo shippingInfo;
 
     /**
      * 商品选项，用于实物类订单导入时的商品选项属性，如尺寸，颜色等
