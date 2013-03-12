@@ -22,7 +22,7 @@ import java.util.Map;
  * Date: 13-2-28
  * Time: 上午11:56
  */
-public class SkuTest extends FunctionalTest {
+public class SkusTest extends FunctionalTest {
     Sku sku;
 
     @Before
@@ -97,4 +97,6 @@ public class SkuTest extends FunctionalTest {
         Http.Response response = DELETE("/skus/" + sku.id);
         assertStatus(302, response);
     }
+
+
 }

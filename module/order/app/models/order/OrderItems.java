@@ -342,8 +342,8 @@ public class OrderItems extends Model {
      * @return
      */
     public static List<OrderItems> findPaid(Map<Sku, Long> skuMap, Date toDate) {
-         StringBuilder sql = new StringBuilder("select o from OrderItems o where " +
-                 "goods.materialType=:materialType and o.createdAt <= :toDate and o.goods.sku in (");
+        StringBuilder sql = new StringBuilder("select o from OrderItems o where " +
+                "goods.materialType=:materialType and o.createdAt <= :toDate and o.goods.sku in (");
         for (int i = 0; i < skuMap.size(); i++) {
             sql.append(":sku").append(i);
             if (i != skuMap.size() - 1) {
