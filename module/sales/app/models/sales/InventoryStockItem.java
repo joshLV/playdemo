@@ -6,6 +6,7 @@ import play.data.validation.Match;
 import play.data.validation.Min;
 import play.data.validation.Required;
 import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Money;
 
 import javax.persistence.*;
@@ -93,6 +94,22 @@ public class InventoryStockItem extends Model {
         this.stock = stock;
         this.createdAt = new Date();
         this.deleted = DeletedStatus.UN_DELETED;
+    }
+
+    /**
+     * 库存明细查询
+     *
+     * @param condition
+     * @param pageNumber
+     * @param pageSize
+     * @return
+     */
+    public static JPAExtPaginator<InventoryStockItem> findByCondition(InventoryStockItemCondition condition, int pageNumber, int pageSize) {
+        JPAExtPaginator<InventoryStockItem> stockItemPage = new JPAExtPaginator<>("InventoryStockItem i", "i", InventoryStockItem.class, condition.getFilter(), condition.getParamMap());
+        stockItemPage.setPageNumber(pageNumber);
+        stockItemPage.setPageSize(pageSize);
+        stockItemPage.setBoundaryControlsEnabled(false);
+        return stockItemPage;
     }
 
 }
