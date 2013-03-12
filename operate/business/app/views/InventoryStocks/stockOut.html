@@ -6,7 +6,7 @@
 #{/set}
 #{include '/share/nav.html' /}
 <div class="body">
-#{form @InventoryStocks.createStockOut() , id:'form',class:"form-horizontal" }
+#{form @InventoryStocks.createStockOut() , id:'stock_form',class:"form-horizontal",onsubmit:'return disableButton()' }
     <legend>${title}</legend>
     #{set action:"stockOut"/}
     #{include '/InventoryStocks/stockForm.html'/}

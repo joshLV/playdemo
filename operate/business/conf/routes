@@ -424,10 +424,10 @@ GET     /goods-skus/{brandId}            Skus.goodsSku
 
 #库存管理
 GET     /inventory                      InventoryStocks.index
-GET     /stock_in                       InventoryStocks.stockIn
-GET     /stock_out                      InventoryStocks.stockOut
-GET     /stock_brands/{id}              InventoryStocks.stockBrands
-GET     /stock_sku/{brandId}            InventoryStocks.stockSku
+GET     /stock-in                       InventoryStocks.stockIn
+GET     /stock-out                      InventoryStocks.stockOut
+GET     /stock-brands/{id}              InventoryStocks.stockBrands
+GET     /stock-sku/{brandId}            InventoryStocks.stockSku
 GET     /stock-sku-remain-count/{id}    InventoryStocks.stockSkuRemainCount
 
 

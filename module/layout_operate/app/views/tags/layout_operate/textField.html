@@ -6,8 +6,12 @@
 *{required:  文字标签前面是否要加必填项标志（选填，默认不标识必填项）}*
 *{disabled:  是否不可修改（选填，默认是可以修改状态，即false）}*
 <div class="control-group">
-#{layout_operate.labelText name:_label?:_name, required:_required/}
-
+#{if _labelName!=null}
+    #{layout_operate.labelText name:_label?:_labelName, required:_required/}
+#{/if}
+#{else}
+    #{layout_operate.labelText name:_label?:_name, required:_required/}
+#{/else}
     <div class="controls">
     #{field _name}
         <input type="text" id="${_id?:field.id}" name="${field.name}" class="input-xlarge" #{if

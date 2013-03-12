@@ -1,22 +1,12 @@
 <div class="control-group">
-    <label class="control-label"><span style="color: red; ">*</span>商户</label>
+    <label class="control-label"><span style="color: red; ">*</span>货品</label>
 
     <div class="controls">
-    #{layout_operate.selectInputField name:"supplierName", id:"stock.supplier.id", list:supplierList/}
-        <span class="error">#{error 'stock.supplier.id'/}</span>
+    #{layout_operate.selectInputField name:"skuName", id:"stockItem.sku.id", list:skuList/}
+        <span class="error">#{error 'stockItem.sku.id'/}</span>
     </div>
 </div>
-<div id="brand">
-#{layout_operate.selectField name:'stock.brand.id', class:'span2', value:stock?.brand?.id, error:'stock.brand.id',list:brandList/}
-</div>
 
-<div id="sku">
-#{layout_operate.selectField name:'stock.sku.id', value:stock?.sku?.id, error:'stock.sku.id', required:true}
-    #{list items:skuList, as:'sku'}
-    #{option stock?.sku?.id}${stock?.sku?.name}#{/option}
-#{/list}
-#{/layout_operate.selectField}
-</div>
 <div class="control-group">
     <label class="control-label">剩余库存</label>
 
@@ -24,27 +14,37 @@
     </div>
 </div>
 #{if "stockIn".equals(action)}
-<span id="stock_in_count">
-    #{layout_operate.textField name:'stock.stockInCount', value:stock?.stockInCount, note:'件', required:true/}
+    #{layout_operate.textField labelName:'入库数量',name:'stockItem.changeCount', value:stockItem?.changeCount, note:'件', required:true/}
+#{/if}
+#{else}
+    #{layout_operate.textField labelName:'出库数量',name:'stockItem.changeCount', value:stockItem?.changeCount, note:'件', required:true/}
+#{/else}
+
 </span>
-    #{layout_operate.textField name:'stock.originalPrice', value:stock?.originalPrice?:"0",
+#{if "stockIn".equals(action)}
+    #{layout_operate.textField  labelName:'进价',name:'stockItem.price', value:stockItem?.price?:"0",
     note:'元',
     required:true/}
 #{/if}
 #{else}
-    #{layout_operate.textField name:'stock.stockOutCount', value:stock?.stockOutCount, note:'件', required:true/}
-</span>
-    #{layout_operate.textField name:'stock.salePrice', value:stock?.salePrice?:"0",
+    #{layout_operate.textField labelName:'售价',name:'stockItem.price', value:stockItem?.price?:"0",
     note:'元',
     required:true/}
 #{/else}
+#{if "stockIn".equals(action)}
+    #{layout_operate.dateScopeField name:'stockItem.effective', begin:'stockItem.effectiveAt',end:'stockItem.expireAt',
+    beginValue:stockItem?.effectiveAt?.format(), endValue:stockItem?.expireAt?.format()/}
+#{/if}
 
-#{layout_operate.dateScopeField name:'stock.effective', begin:'stock.effectiveAt',end:'stock.expireAt',
-beginValue:stock?.effectiveAt?.format(), endValue:stock?.expireAt?.format()/}
+#{layout_operate.textField name:'stockItem.stock.remark', value:stockItem?.stock?.remark,note:'(50字以内)'/}
+#{if "stockIn".equals(action)}
+    #{layout_operate.textField labelName:'采购员',name:'stockItem.stock.saler', value:stockItem?.stock?.saler/}
+#{/if}
+#{else}
+    #{layout_operate.textField labelName:'销售员',name:'stockItem.stock.saler', value:stockItem?.stock?.saler/}
+#{/else}
 
-#{layout_operate.textField name:'stock.remark', value:stock?.remark,note:'(50字以内)'/}
-#{layout_operate.textField name:'stock.saler', value:stock?.saler/}
-#{layout_operate.textField name:'stock.storekeeper', value:stock?.storekeeper/}
+#{layout_operate.textField name:'stockItem.stock.storekeeper', value:stockItem?.stock?.storekeeper/}
 <div class="control-group">
     <label class="control-label">制单员</label>
 

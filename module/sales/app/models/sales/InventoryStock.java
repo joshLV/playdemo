@@ -21,7 +21,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -109,7 +108,7 @@ public class InventoryStock extends Model {
     @Column(name = "date_of_serial_no")
     public String dateOfSerialNo;
 
-    @OneToMany(mappedBy = "inventoryStock")
+    @OneToMany(mappedBy = "stock")
     public List<InventoryStockItem> inventoryStockItemList;
 
     /**
@@ -118,37 +117,6 @@ public class InventoryStock extends Model {
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted = DeletedStatus.UN_DELETED;
 
-    @Transient
-    @Min(0)
-    @Match(value = "^[0-9]*$", message = "入库数量格式不对!(纯数字)")
-    public Long stockInCount;
-
-    @Transient
-    @Min(0)
-    @Money
-    public BigDecimal originalPrice;
-
-    @Transient
-    @Min(0)
-    @Match(value = "^[0-9]*$", message = "出库数量格式不对!(纯数字)")
-    public Long stockOutCount;
-
-    @Transient
-    @Min(0)
-    @Money
-    public BigDecimal salePrice;
-
-    @Transient
-    public Date effectiveAt;
-
-    @Transient
-    public Date expireAt;
-
-    @Transient
-    public Sku sku;
-
-    @Transient
-    public Brand brand;
 
     /**
      * 统计到指定时间之前的所有未出库实物订单的Sku出库数量.
@@ -259,7 +227,7 @@ public class InventoryStock extends Model {
     public static void createInventoryStockItem(Sku sku, Long count, InventoryStock stock) {
         InventoryStockItem stockItem = new InventoryStockItem(stock);
         stockItem.changeCount = count;
-        stockItem.inventoryStock = stock;
+        stockItem.stock = stock;
         stockItem.sku = sku;
         stockItem.create();
     }
