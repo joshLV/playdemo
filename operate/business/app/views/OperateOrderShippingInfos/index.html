@@ -1,0 +1,71 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'发货单下载' /}
+#{include '/share/nav.html' /}
+
+<div>
+    <legend>${title}</legend>
+    <form class="form-inline" name="frmlist" id="frmlist" action="@{OperateOrderShippingInfos.index()}" method="GET"
+          style="display: inline-block;">
+        <label style="margin: 0 5px">商户:</label>
+    #{select 'supplierId',id:'supplierId', class:'input-large', value:supplierId}
+        #{list items:supplierList, as:'supplier' }
+            #{option supplier.id}${supplier.name}#{/option}
+        #{/list}
+    #{/select}
+    </form>
+
+#{if orderItemsList.size()}
+    <span style="margin: 0 5px">待发货清单:${orderItemsList.size()}条</span>
+
+    <form action="@{OperateOrderShippingInfos.exportOrderShipping()}" method="POST" style="display: inline-block;">
+        <input type="hidden" name="supplierId" value="${supplierId}">
+        #{if supplierId!=5}
+            <button class="btn btn-primary" id="download" type="submit">下载</button>
+        #{/if}
+    </form>
+#{/if}
+#{else }
+    <span style="margin: 0 5px">无待发货清单.</span>
+#{/else}
+
+
+    <table class="table table-striped table-bordered table-condensed">
+        <thead>
+        <tr>
+            <th>生成人</th>
+            <th>生成时间</th>
+            <th>操 作</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        #{paginate.list items:orderBatchList, as:'orderBatch' }
+        <tr>
+            <td>${orderBatch.createdBy}</td>
+            <td align="left">${orderBatch.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td>
+                #{a @OperateOrderShippingInfos.exportOrderShipping(orderBatch.id, supplierId)}下载 #{/a}
+            </td>
+        </tr>
+        #{/paginate.list}
+        </tbody>
+    </table>
+    <div class="pagination" align="center">
+        <ul>
+        #{paginate.controls items:orderBatchList /}
+        </ul>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("#supplierId").change(function () {
+            if ($("#supplierId").val() != 5) {
+                $("#download").attr("disabled", false);
+            } else {
+                $("#download").attr("disabled", true);
+            }
+            $("#frmlist").submit();
+        });
+
+    })
+</script>

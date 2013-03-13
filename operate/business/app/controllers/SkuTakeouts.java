@@ -71,7 +71,7 @@ public class SkuTakeouts extends Controller {
             }
         }
 
-        // 创建出库单对应的批次
+        //创建出库单对应的批次
         OrderBatch orderBatch = new OrderBatch(Supplier.getShihui(), operatorName);
         orderBatch.stock = stock;
         orderBatch.save();
