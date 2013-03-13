@@ -8,7 +8,6 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +28,9 @@ public class OrderShippingInfo extends Model {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "shippingInfo")
     @OrderBy("id")
     public List<OrderItems> orderItems;
+
+    @Column(name = "outer_order_id")
+    public String outerOrderId;
 
     /**
      * 单价
@@ -75,10 +77,7 @@ public class OrderShippingInfo extends Model {
     /**
      * 付款时间
      */
-    @Transient
-    public String paidAtStr;
-
-    @Transient
+    @Column(name = "paid_at")
     public Date paidAt;
 
     /**
@@ -104,6 +103,12 @@ public class OrderShippingInfo extends Model {
     public String invoiceTitle;
 
     /**
+     * 发货时间
+     */
+    @Column(name = "sent_at")
+    public Date sentAt;
+
+    /**
      * 物流公司
      */
     @Column(name = "express_company")
@@ -114,5 +119,10 @@ public class OrderShippingInfo extends Model {
      */
     @Column(name = "express_number")
     public String expressNumber;
+
+    /**
+     * 已发货文件上传渠道时间，这里认为是下载渠道已发货文件的时间。
+     */
+    public Date uploadedAt;
 
 }
