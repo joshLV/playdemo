@@ -1,7 +1,6 @@
 package unit.models.accounts;
 
-import java.math.BigDecimal;
-
+import factory.FactoryBoy;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.AccountType;
@@ -12,12 +11,12 @@ import models.order.ECoupon;
 import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Goods;
-
+import models.supplier.Supplier;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.test.UnitTest;
-import factory.FactoryBoy;
+
+import java.math.BigDecimal;
 
 /**
  * @author likang
@@ -33,6 +32,7 @@ public class CommissionsTest extends UnitTest {
     TradeBill tradeBill;
     ECoupon coupon;
     AccountSequence as;
+    Supplier supplier;
 
     private static final BigDecimal BALANCE = new BigDecimal("1000000");
 
@@ -47,6 +47,7 @@ public class CommissionsTest extends UnitTest {
     @Before
     public void setup() {
         FactoryBoy.deleteAll();
+        supplier = FactoryBoy.create(Supplier.class);
         realGoods = FactoryBoy.create(Goods.class, "Real");
         order = FactoryBoy.create(Order.class, "orderForAccountsTest");
         orderItemReal = FactoryBoy.create(OrderItems.class, "orderItemReal");
@@ -69,7 +70,7 @@ public class CommissionsTest extends UnitTest {
 
     @Test
     public void testRealGoodsCommission() {
-        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getSupplierAccount(1L).amount));//供应商余额为0
+        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getSupplierAccount(supplier.id).amount));//供应商余额为0
         assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getUhuilaAccount().amount));//一百券余额为0
         assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPlatformCommissionAccount().amount)); //券平台佣金账户为0
         assertEquals(0, BALANCE.compareTo(AccountUtil.getPlatformIncomingAccount().amount));//平台收款账户
@@ -84,7 +85,7 @@ public class CommissionsTest extends UnitTest {
         assertEquals(0,
                 realOrderItem.originalPrice
                         .multiply(new BigDecimal(realOrderItem.buyNumber))
-                        .compareTo(AccountUtil.getSupplierAccount(1L).amount));//供应商余额
+                        .compareTo(AccountUtil.getSupplierAccount(supplier.id).amount));//供应商余额
 
         assertEquals(0,
                 realOrderItem.resalerPrice
@@ -110,7 +111,7 @@ public class CommissionsTest extends UnitTest {
     @Test
     public void testECouponCommission() {
 
-        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getSupplierAccount(1L).amount));//供应商余额为0
+        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getSupplierAccount(supplier.id).amount));//供应商余额为0
         assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getUhuilaAccount().amount));//一百券余额为0
         assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPlatformCommissionAccount().amount)); //券平台佣金账户为0
         assertEquals(0, BALANCE.compareTo(AccountUtil.getPlatformIncomingAccount().amount));//平台收款账户
@@ -123,7 +124,7 @@ public class CommissionsTest extends UnitTest {
 
         assertEquals(0,
                 eCoupon.originalPrice
-                        .compareTo(AccountUtil.getSupplierAccount(1L).amount));//供应商余额
+                        .compareTo(AccountUtil.getSupplierAccount(supplier.id).amount));//供应商余额
 
         assertEquals(0,
                 eCoupon.resalerPrice
