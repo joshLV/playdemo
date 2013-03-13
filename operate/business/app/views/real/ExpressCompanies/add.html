@@ -1,0 +1,10 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'添加快递公司' /}
+#{include '/share/nav.html' /}
+<div class="body">
+#{form @ExpressCompanies.create() , id:'express_company_form',enctype:'multipart/form-data',class:"form-horizontal" }
+    <legend>${title}</legend>
+    #{set action:"add"/}
+    #{include '/ExpressCompanies/expressForm.html'/}
+#{/form}
+</div>

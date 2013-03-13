@@ -51,6 +51,7 @@
     <permission key="SHOPS_NEW" text="门店添加" roles="editor"/>
     <permission key="SHOPS" text="门店管理" roles="editor,customservice"/>
     <permission key="RESALERS" text="分销商管理" roles="customservice"/>
+    <permission key="EXPRESS" text="快递公司管理" roles="developer,editor"/>
     <permission key="ORDERS" text="运营订单管理" roles="customservice,webop,account,sales,manager"/>
     <permission key="COUPONS" text="券查询" roles="sales,customservice,account,manager"/>
     <permission key="COUPONS_MANAGE" text="券管理" roles="customservice,account,manager"/>
@@ -118,6 +119,12 @@
 
         <navigation key="resaler" text="分销商" permissions="RESALERS">
             <navigation key="resalers_index" action="Resalers.index" text="分销商管理" permissions="RESALERS"/>
+        </navigation>
+        <navigation key="express" text="快递公司" permissions="EXPRESS">
+            <navigation key="express_company_index" action="ExpressCompanies.index" text="快递公司管理"
+                        permissions="EXPRESS"/>
+            <navigation key="express_company_add" action="ExpressCompanies.add" text="快递公司增加"
+                        permissions="EXPRESS"/>
         </navigation>
 
     </navigation>
