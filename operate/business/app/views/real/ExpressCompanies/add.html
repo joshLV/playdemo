@@ -1,10 +1,13 @@
 #{extends 'layout_operate/layout.html' /}
 #{set title:'添加快递公司' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/express-form.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
 #{include '/share/nav.html' /}
 <div class="body">
-#{form @ExpressCompanies.create() , id:'express_company_form',enctype:'multipart/form-data',class:"form-horizontal" }
+#{form @real.ExpressCompanies.create() , id:'express_company_form',enctype:'multipart/form-data',class:"form-horizontal" , method:'POST'}
     <legend>${title}</legend>
     #{set action:"add"/}
-    #{include '/ExpressCompanies/expressForm.html'/}
+    #{include 'real/ExpressCompanies/expressForm.html'/}
 #{/form}
 </div>

@@ -11,6 +11,8 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.util.List;
+
 /**
  * 快递公司管理
  * User: wangjia
@@ -20,33 +22,40 @@ import play.mvc.With;
 @With(OperateRbac.class)
 @ActiveNavigation("express_company_index")
 public class ExpressCompanies extends Controller {
+    public static int PAGE_SIZE = 15;
+
+    @ActiveNavigation("express_company_index")
     public static void index() {
         int pageNumber = getPage();
-
-//        JPAExtPaginator<ExpressCompany> stockItemList = InventoryStockItem.findByCondition(condition, pageNumber,
-//                PAGE_SIZE);
-//        stockItemList.setBoundaryControlsEnabled(true);
-//        Long id = OperateRbac.currentUser().id;
-//        List<Brand> brandList = Brand.findByOrder(null, id);
-//        List<Sku> skuList = Sku.findUnDeleted();
-//        render(stockItemList, skuList, brandList, pageNumber, condition);
-
+        List<ExpressCompany> expressList = ExpressCompany.findAll();
+        render(expressList);
     }
 
     @ActiveNavigation("express_company_add")
     public static void add() {
-//        setInitParams();
         render();
     }
 
     @ActiveNavigation("express_company_add")
     public static void create(@Valid ExpressCompany express) {
         if (Validation.hasErrors()) {
-//            savePageParams(sku);
-            render("Skus/add.html");
+            render("real/ExpressCompanies/add.html");
         }
-//        sku.create();
-//        index(null);
+        express.create();
+        index();
+    }
+
+    public static void edit(Long id) {
+        ExpressCompany express = ExpressCompany.findById(id);
+        render(express);
+    }
+
+    public static void update(Long id, @Valid ExpressCompany express) {
+        if (Validation.hasErrors()) {
+            render("real/ExpressCompanies/edit.html", express);
+        }
+        express.update(id, express);
+        index();
     }
 
     private static int getPage() {

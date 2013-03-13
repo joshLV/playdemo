@@ -213,7 +213,9 @@ stockItem.changeCount=数量
 stockItem.stock.remark=备注
 stock.IN=入库
 stock.OUT=出库
-
+express.code=编号
+express.name=名称
+express.resalerMapping=渠道对应关系
 imagePath=图片
 shop.name=门店名称
 shop.address=门店地址

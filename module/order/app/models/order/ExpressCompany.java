@@ -5,6 +5,7 @@ import play.db.jpa.Model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 
 /**
@@ -29,8 +30,17 @@ public class ExpressCompany extends Model {
       渠道方与对应的码的映射关系  eg:JD：63
     */
     @Column(name = "resaler_mapping")
+    @Required
+    @Lob
     public String resalerMapping;
 
+    public static void update(Long id, ExpressCompany express) {
+        ExpressCompany updatedExpress = findById(id);
+        updatedExpress.code = express.code;
+        updatedExpress.name = express.name;
+        updatedExpress.resalerMapping = express.resalerMapping;
+        updatedExpress.save();
+    }
 
     /**
      * 取得快递公司名称
