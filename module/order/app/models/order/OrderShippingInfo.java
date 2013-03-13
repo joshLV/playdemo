@@ -112,7 +112,7 @@ public class OrderShippingInfo extends Model {
      * 物流公司
      */
     @Column(name = "express_company")
-    public String expressCompany;
+    public ExpressCompany expressCompany;
 
     /**
      * 物流单号

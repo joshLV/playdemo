@@ -130,9 +130,26 @@ public class LogisticImportData {
         this.expressNumber = expressNumber;
     }
 
+    public String getGoodsId() {
+        return goodsId;
+    }
+
+    public void setGoodsId(String goodsId) {
+        this.goodsId = goodsId;
+    }
+
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
     /**
      * 发票抬头
      */
+
     public String invoiceTitle;
 
     /**
@@ -365,8 +382,6 @@ public class LogisticImportData {
         orderShippingInfo.address = this.address;
         orderShippingInfo.zipCode = this.zipCode;
         orderShippingInfo.invoiceTitle = this.invoiceTitle;
-        orderShippingInfo.expressCompany = this.expressCompany;
-        orderShippingInfo.expressNumber = this.expressNumber;
         orderShippingInfo.save();
 
         OrderItems orderItems = ybqOrder.addOrderItem(goods, buyNumber, phone, salePrice, salePrice);

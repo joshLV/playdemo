@@ -32,4 +32,13 @@ public class ExpressCompany extends Model {
     public String resalerMapping;
 
 
+    /**
+     * 取得快递公司名称
+     *
+     * @param code
+     * @return
+     */
+    public static ExpressCompany getCompanyNameByCode(String code) {
+        return ExpressCompany.find("code=?", code).first();
+    }
 }
