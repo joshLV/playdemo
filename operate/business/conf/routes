@@ -435,9 +435,11 @@ GET     /stock-sku/{brandId}            InventoryStocks.stockSku
 GET     /stock-sku-remain-count/{id}    InventoryStocks.stockSkuRemainCount
 
 #快递公司管理
-GET     /express-company                 ExpressCompanies.index
-GET     /express-company/new             ExpressCompanies.add
-POST    /express-company                 ExpressCompanies.create
+GET     /express-companies                 real.ExpressCompanies.index
+GET     /express-companies/new             real.ExpressCompanies.add
+POST    /express-companies                 real.ExpressCompanies.create
+GET     /express-companies/{id}/edit       real.ExpressCompanies.edit
+
 
 
 

@@ -121,9 +121,9 @@
             <navigation key="resalers_index" action="Resalers.index" text="分销商管理" permissions="RESALERS"/>
         </navigation>
         <navigation key="express" text="快递公司" permissions="EXPRESS">
-            <navigation key="express_company_index" action="ExpressCompanies.index" text="快递公司管理"
+            <navigation key="express_company_index" action="real.ExpressCompanies.index" text="快递公司管理"
                         permissions="EXPRESS"/>
-            <navigation key="express_company_add" action="ExpressCompanies.add" text="快递公司增加"
+            <navigation key="express_company_add" action="real.ExpressCompanies.add" text="快递公司增加"
                         permissions="EXPRESS"/>
         </navigation>
 
