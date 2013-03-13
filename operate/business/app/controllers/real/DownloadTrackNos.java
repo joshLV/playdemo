@@ -18,6 +18,7 @@ public class DownloadTrackNos extends Controller {
 
     /**
      * 选择一个渠道，然后出现下载列表.
+     *
      * @param partner
      */
     public static void index(OuterOrderPartner partner) {
@@ -30,6 +31,7 @@ public class DownloadTrackNos extends Controller {
 
     /**
      * 通过下载链接下载对应的excel文件.
+     *
      * @param partner
      * @param outGoodsId
      */

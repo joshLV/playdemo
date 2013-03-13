@@ -426,13 +426,19 @@ GET     /goods-skus/{brandId}            Skus.goodsSku
 GET     /inventory                      InventoryStocks.index
 GET     /stock-in                       InventoryStocks.stockIn
 GET     /stock-out                      InventoryStocks.stockOut
-POST     /stock-in                       InventoryStocks.createStockIn
-POST     /stock-out                      InventoryStocks.createStockOut
+POST     /stock-in                      InventoryStocks.createStockIn
+POST     /stock-out                     InventoryStocks.createStockOut
 
 
 GET     /stock-brands/{id}              InventoryStocks.stockBrands
 GET     /stock-sku/{brandId}            InventoryStocks.stockSku
 GET     /stock-sku-remain-count/{id}    InventoryStocks.stockSkuRemainCount
+
+#快递公司管理
+GET     /express-company                 ExpressCompanies.index
+GET     /express-company/new             ExpressCompanies.add
+POST    /express-company                 ExpressCompanies.create
+
 
 
 
