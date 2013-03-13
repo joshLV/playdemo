@@ -9,7 +9,7 @@
         <permission key="ACCOUNT_REPORT" text="账户明细" roles="account"/>
         <permission key="ACCOUNT_WITHDRAW" text="账户提现" roles="account"/>
     </permission>
-    <permission key="LOGISTIC" text="发货管理" roles="admin"/>
+    <permission key="ORDER_SHIPPING" text="发货管理" roles="admin"/>
 
     <permission key="FINANCE" text="报表" roles="account,sales">
         <permission key="REPORT" text="财务报表" roles="account,sales"/>

@@ -75,10 +75,7 @@ public class OrderShippingInfo extends Model {
     /**
      * 付款时间
      */
-    @Transient
-    public String paidAtStr;
-
-    @Transient
+    @Column(name = "paid_at")
     public Date paidAt;
 
     /**

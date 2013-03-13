@@ -98,6 +98,30 @@ public class LogisticImportData {
      */
     public String zipCode;
 
+    public String getInvoiceTitle() {
+        return invoiceTitle;
+    }
+
+    public void setInvoiceTitle(String invoiceTitle) {
+        this.invoiceTitle = invoiceTitle;
+    }
+
+    public String getExpressCompany() {
+        return expressCompany;
+    }
+
+    public void setExpressCompany(String expressCompany) {
+        this.expressCompany = expressCompany;
+    }
+
+    public String getExpressNumber() {
+        return expressNumber;
+    }
+
+    public void setExpressNumber(String expressNumber) {
+        this.expressNumber = expressNumber;
+    }
+
     /**
      * 发票抬头
      */
