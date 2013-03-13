@@ -15,11 +15,7 @@
             *{ 券号 }*
             <CouponId>${coupon.getSafeECouponSN()}</CouponId>
             *{ 密码 }*
-            <CouponPwd>
-                #{if coupon.eCouponPassword}
-                ${coupon.eCouponPassword}
-                #{/if}
-            </CouponPwd>
+            <CouponPwd>#{if coupon.eCouponPassword != null}${coupon.eCouponPassword}#{/if}</CouponPwd>
         </Coupon>
         #{/list}
     </Coupons>
