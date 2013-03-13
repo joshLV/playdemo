@@ -1,19 +1,32 @@
 #{extends 'layout_operate/layout.html' /}
 #{set title:'下载渠道运单号上报文件' /}
 #{include '/share/nav.html' /}
-
-
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
 <div class="body">
-    <legend>请选择渠道</legend>
-    <ul class="nav nav-tabs">
-        <li #{if models.order.OuterOrderPartner.JD == partner} class="active"#{/if}>
-            <a href="@{real.DownloadTrackNos.index(models.order.OuterOrderPartner.JD)}">京东</a>
-        </li>
-        <li #{if models.order.OuterOrderPartner.YHD == partner} class="active"#{/if}>
-            <a href="@{real.DownloadTrackNos.index(models.order.OuterOrderPartner.YHD)}">一号店</a>
-        </li>
-        <li #{if models.order.OuterOrderPartner.TB == partner} class="active"#{/if}>
-            <a href="@{real.DownloadTrackNos.index(models.order.OuterOrderPartner.TB)}">淘宝</a>
-        </li>
-    </ul>
+    <form class="well form-inline" action="@{real.DownloadTrackNos.index()}" method="GET" id="form">
+        <label class="control-label">渠道:</label>
+    #{select 'condition.outerOrderPartner', value:condition.outerOrderPartner, id:'condition_outer_order_partner_type', class:"input-small"}
+        #{option "JD"}京东#{/option}
+        #{option "TB"}淘宝#{/option}
+        #{option "YHD"}一号店#{/option}
+    #{/select}
+
+        付款时间
+        <input type="text" id="condition_paid_begin_at" class="input-medium Wdate" name="condition.paidBeginAt"
+               onfocus="WdatePicker({readOnly:true})" value="${condition.paidBeginAt?.format()}"> -
+        <input type="text" id="condition_paid_end_at" class="input-medium Wdate" name="condition.paidEndAt"
+               onfocus="WdatePicker({readOnly:true})" value="${condition.paidEndAt?.format()}">
+
+        发货时间
+        <input type="text" id="condition_sent_begin_at" class="input-medium Wdate" name="condition.sentBeginAt"
+               onfocus="WdatePicker({readOnly:true})" value="${condition.sentBeginAt?.format()}"> -
+        <input type="text" id="condition_sent_end_at" class="input-medium Wdate" name="condition.sentEndAt"
+               onfocus="WdatePicker({readOnly:true})" value="${condition.sentEndAt?.format()}">
+        <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
+
+    </form>
+
+
 </div>

@@ -1,10 +1,14 @@
 package controllers.real;
 
 import controllers.OperateRbac;
+import models.order.DownloadTrackNoCondition;
 import models.order.OuterOrderPartner;
 import operate.rbac.annotations.ActiveNavigation;
 import play.mvc.Controller;
 import play.mvc.With;
+import util.DateHelper;
+
+import java.util.Date;
 
 /**
  * 下载带运单号的跟踪表文件，供上传到不同.
@@ -19,14 +23,13 @@ public class DownloadTrackNos extends Controller {
     /**
      * 选择一个渠道，然后出现下载列表.
      *
-     * @param partner
+     * @param
      */
-    public static void index(OuterOrderPartner partner) {
-        if (partner == null) {
-            //默认京东
-            partner = OuterOrderPartner.JD;
+    public static void index(DownloadTrackNoCondition condition) {
+        if (condition == null) {
+            condition = new DownloadTrackNoCondition();
         }
-        render(partner);
+        render(condition);
     }
 
     /**
