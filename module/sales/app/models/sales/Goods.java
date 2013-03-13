@@ -929,7 +929,7 @@ public class Goods extends Model {
                 // 先找出OrderItems中的已销售数量
                 String sql = "SELECT SUM(oi.buyNumber) FROM OrderItems oi where oi.goods.id= :goodsId and oi.order.status != :orderStatus";
                 if (materialType == MaterialType.REAL) {
-                    sql += "and oi.order.status != :realGoodsOrderStatus";
+                    sql += " and oi.order.status != :realGoodsOrderStatus";
                 }
                 Query query = JPA.em().createQuery(sql);
                 query.setParameter("goodsId", id);

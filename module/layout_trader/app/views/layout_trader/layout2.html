@@ -66,7 +66,7 @@
             <li><a #{if "shops".equals(menu)}class="curr"#{/if} href="/shops">我的门店</a></li>#{/if}
         #{if navigation.ContextedPermission.hasPermission("ACCOUNT")}
             <li><a #{if "users".equals(menu)}class="curr"#{/if} href="/users">账号管理</a></li>#{/if}
-        #{if navigation.ContextedPermission.hasPermission("ORDER_SHIPPING")}
+        #{if navigation.ContextedPermission.hasPermission("ORDER_SHIPPING") && currentUser?.supplier?.canSaleReal}
             <li><a #{if "order-shipping".equals(menu)}class="curr"#{/if} href="/order-shipping">发货管理</a></li>#{/if}
         </ul>
         <div class="sbox">

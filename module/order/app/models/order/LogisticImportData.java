@@ -20,12 +20,10 @@ import java.util.Date;
  */
 public class LogisticImportData {
 
-    static String [] dateFormats = new String[] {
+    static String[] dateFormats = new String[]{
             "yyyy-MM-dd HH:mm",// 淘宝
             "yyyy/MM/dd HH:mm",// 京东
     };
-
-    public OrderItems orderItems;
 
     /**
      * 第三方商品NO
@@ -36,6 +34,16 @@ public class LogisticImportData {
      * 第三方订单编号
      */
     public String outerOrderNo;
+
+    /**
+     * 商品ID
+     */
+    public String goodsId;
+
+    /**
+     * 一百券orderNumber
+     */
+    public String orderNumber;
 
     /**
      * 单价
@@ -122,9 +130,26 @@ public class LogisticImportData {
         this.expressNumber = expressNumber;
     }
 
+    public String getGoodsId() {
+        return goodsId;
+    }
+
+    public void setGoodsId(String goodsId) {
+        this.goodsId = goodsId;
+    }
+
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
     /**
      * 发票抬头
      */
+
     public String invoiceTitle;
 
     /**
@@ -345,20 +370,18 @@ public class LogisticImportData {
 
         // 生成OrderShippingInfo
         OrderShippingInfo orderShippingInfo = new OrderShippingInfo();
-        orderShippingInfo.salePrice=this.salePrice;
-        orderShippingInfo.buyNumber=this.buyNumber;
-        orderShippingInfo.remarks=this.remarks;
-        orderShippingInfo.expressInfo=this.expressInfo;
-        orderShippingInfo.receiver=this.receiver;
-        orderShippingInfo.phone=this.phone;
-        orderShippingInfo.tel=this.tel;
-        orderShippingInfo.paidAt=this.paidAt;
-        orderShippingInfo.createdAt=this.createdAt;
-        orderShippingInfo.address=this.address;
-        orderShippingInfo.zipCode=this.zipCode;
-        orderShippingInfo.invoiceTitle=this.invoiceTitle;
-        orderShippingInfo.expressCompany=this.expressCompany;
-        orderShippingInfo.expressNumber=this.expressNumber;
+        orderShippingInfo.salePrice = this.salePrice;
+        orderShippingInfo.buyNumber = this.buyNumber;
+        orderShippingInfo.remarks = this.remarks;
+        orderShippingInfo.expressInfo = this.expressInfo;
+        orderShippingInfo.receiver = this.receiver;
+        orderShippingInfo.phone = this.phone;
+        orderShippingInfo.tel = this.tel;
+        orderShippingInfo.paidAt = this.paidAt;
+        orderShippingInfo.createdAt = this.createdAt;
+        orderShippingInfo.address = this.address;
+        orderShippingInfo.zipCode = this.zipCode;
+        orderShippingInfo.invoiceTitle = this.invoiceTitle;
         orderShippingInfo.save();
 
         OrderItems orderItems = ybqOrder.addOrderItem(goods, buyNumber, phone, salePrice, salePrice);

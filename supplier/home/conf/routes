@@ -62,8 +62,8 @@ GET     /withdraws/apply                        SupplierWithdraws.apply
 POST    /withdraws/apply                        SupplierWithdraws.create
 
 # [v2] 发货管理
-GET     /order-shipping                         SupplierOrderShippingInfos.index
-GET     /order-shipping/{id}/export                  SupplierOrderShippingInfos.exportOrderShipping
+GET     /real/download-order-shipping                    SupplierOrderShippingInfos.index
+GET     /real/download-order-shipping/{id}/export        SupplierOrderShippingInfos.exportOrderShipping
 
 # [v2] 修改密码
 GET     /passwords                              SupplierUserPasswords.index

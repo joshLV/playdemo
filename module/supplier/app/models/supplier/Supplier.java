@@ -176,6 +176,12 @@ public class Supplier extends Model {
     public String code;
 
     /**
+     * 是否销售实体商品
+     */
+    @Column(name = "can_sale_real")
+    public Boolean canSaleReal = false;
+
+    /**
      * 商户类别
      */
 
@@ -306,6 +312,7 @@ public class Supplier extends Model {
         sp.email = supplier.email;
         sp.accountLeaderMobile = supplier.accountLeaderMobile;
 //        sp.salesEmail = supplier.salesEmail;
+        sp.canSaleReal = supplier.canSaleReal;
         sp.salesId = supplier.salesId;
         sp.shopEndHour = supplier.shopEndHour;
         sp.updatedAt = new Date();
@@ -372,6 +379,10 @@ public class Supplier extends Model {
         return find(sql.toString(), params.toArray()).fetch();
     }
 
+    public static List<Supplier> findSuppliersByCanSaleReal() {
+        return find("deleted=? and canSaleReal=? order by createdAt DESC", DeletedStatus.UN_DELETED, true).fetch();
+    }
+
     public static List<Supplier> findUnDeleted() {
         return find("deleted=? order by createdAt DESC", DeletedStatus.UN_DELETED).fetch();
     }
@@ -429,8 +440,7 @@ public class Supplier extends Model {
     }
 
     public List<Goods> getGoods() {
-        return Goods.find("supplierId=?", this.id
-        ).fetch();
+        return Goods.find("supplierId=?", this.id).fetch();
     }
 
     /**
