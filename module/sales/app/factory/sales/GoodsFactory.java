@@ -82,7 +82,7 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.faceValue = BigDecimal.valueOf(15);
         goods.originalPrice = BigDecimal.valueOf(5);
         goods.salePrice = BigDecimal.valueOf(10);
-        goods.supplierId = 1l;
+        goods.supplierId = FactoryBoy.lastOrCreate(Supplier.class).id;
         return goods;
     }
 
@@ -94,7 +94,7 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.faceValue = BigDecimal.valueOf(20);
         goods.originalPrice = BigDecimal.valueOf(8);
         goods.salePrice = BigDecimal.valueOf(15);
-        goods.supplierId = 1l;
+        goods.supplierId = FactoryBoy.lastOrCreate(Supplier.class).id;
         goods.sku = FactoryBoy.lastOrCreate(Sku.class);
         goods.skuCount = 2;
         return goods;
@@ -110,7 +110,7 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.createdAt = DateHelper.t("2012-02-27");
         goods.status = GoodsStatus.ONSALE;
         goods.deleted = DeletedStatus.UN_DELETED;
-        goods.supplierId = 1l;
+        goods.supplierId = FactoryBoy.lastOrCreate(Supplier.class).id;
         goods.materialType = MaterialType.REAL;
         goods.effectiveAt = DateHelper.t("2012-02-01");
         goods.expireAt = DateHelper.t("2092-02-02");
