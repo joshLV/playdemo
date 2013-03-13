@@ -25,7 +25,6 @@ public class ResaleHomeControllerInstancesTest extends UnitTest{
         assertTrue(new ResalerPassword() instanceof Controller);
         assertTrue(new ResalerRegister() instanceof Controller);
         assertTrue(new ResalerWithdraw() instanceof Controller);
-        assertTrue(new TaobaoAPIClient() instanceof Controller);
         assertTrue(new TaobaoOauthCallback() instanceof Controller);
     }
 }

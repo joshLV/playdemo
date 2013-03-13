@@ -20,8 +20,10 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * <p/>
@@ -72,22 +74,22 @@ public class ImportPartnerOrders extends Controller {
         }
 
         List<String> existedOrderList = new ArrayList<>();
-        List<String> unBindGoodsList = new ArrayList<>();
         List<String> notEnoughInventoryGoodsList = new ArrayList<>();
         List<String> importSuccessOrderList = new ArrayList<>();
-        String preGoodsNo = "";
+        Set<String> unBindGoodsSet = new HashSet<>();
 
         for (LogisticImportData logistic : logistics) {
             Logger.info("Process OrderNO: %s", logistic.outerOrderNo);
             OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId", partner, logistic.outerOrderNo).first();
 
+            //TODO 相同订单,不同item的暂时先不作处理
             if (outerOrder != null) {
                 existedOrderList.add(logistic.outerOrderNo);
                 continue;
             } else {
                 outerOrder = logistic.toOuterOrder(partner);
             }
-            Order ybqOrder = null;
+            Order ybqOrder;
             try {
                 ybqOrder = logistic.toYbqOrder(partner);
             } catch (NotEnoughInventoryException e) {
@@ -97,26 +99,21 @@ public class ImportPartnerOrders extends Controller {
                 importSuccessOrderList.clear();
                 break;
             }
+            //save ybqOrder info
             if (ybqOrder != null) {
-                Logger.info("ybqOrder.id=" + ybqOrder.id);
                 outerOrder.ybqOrder = ybqOrder;
                 outerOrder.save();
                 ybqOrder.paidAt = logistic.paidAt;
                 ybqOrder.createdAt = logistic.paidAt;
                 ybqOrder.save();
-
-                logistic.orderItems = ybqOrder.orderItems.get(0);
-                // TODO: logistic.save();
                 importSuccessOrderList.add(logistic.outerOrderNo);
             } else {
-                Logger.info("preGoodsNo=" + logistic.outerGoodsNo + " NOT Found!");
-                if (!preGoodsNo.equals(logistic.outerGoodsNo)) {
-                    unBindGoodsList.add(logistic.outerGoodsNo);
-                    preGoodsNo = logistic.outerGoodsNo;
-                }
+                //未映射商品
+                Logger.info("未映射商品NO=" + logistic.outerGoodsNo + " NOT Found!");
+                unBindGoodsSet.add(logistic.outerGoodsNo);
             }
         }
-        renderArgs.put("unBindGoodsList", unBindGoodsList);
+        renderArgs.put("unBindGoodsList", unBindGoodsSet);
         renderArgs.put("importSuccessOrderList", importSuccessOrderList);
         renderArgs.put("notEnoughInventoryGoodsList", notEnoughInventoryGoodsList);
         renderArgs.put("existedOrderList", existedOrderList);

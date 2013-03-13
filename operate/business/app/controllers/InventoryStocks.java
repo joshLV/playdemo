@@ -62,6 +62,7 @@ public class InventoryStocks extends Controller {
     public static void createStockOut(@Valid InventoryStockItem stockItem) {
         checkStockOutCount(stockItem);
         if (Validation.hasErrors()) {
+            System.out.println(validation.errorsMap() + "===validation.errorsMap()>>");
             setInitParams();
             render("InventoryStocks/stockOut.html");
         }

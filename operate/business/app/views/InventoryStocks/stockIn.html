@@ -5,6 +5,11 @@
 <script src="@{'/public/javascripts/stock-add.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 #{include '/share/nav.html' /}
+<style type="text/css">
+    .controls {
+        padding-top: 5px;
+    }
+</style>
 <div class="body">
 #{form @InventoryStocks.createStockIn() , id:'stock_form',class:"form-horizontal" ,onsubmit:'return disableButton()'}
     <legend>${title}</legend>

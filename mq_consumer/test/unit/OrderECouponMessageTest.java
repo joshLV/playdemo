@@ -101,7 +101,7 @@ public class OrderECouponMessageTest extends UnitTest {
 
     @Test
     public void testEcouponGetOrderSMSMessage() {
-        assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + ",截止" + dateFormat.format(couponList.get(0).expireAt) + "客服4006262166", OrderECouponMessage.getOrderSMSMessage(couponList.get(0)));
+        assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + ",截止" + dateFormat.format(couponList.get(0).expireAt) + "一百券客服4006262166", OrderECouponMessage.getOrderSMSMessage(couponList.get(0)));
     }
 
     @Test
@@ -109,7 +109,8 @@ public class OrderECouponMessageTest extends UnitTest {
         System.out.println(OrderECouponMessage.getOrderSMSMessage(orderItems));
         assertEquals(orderItemsCouponsList.get(0).goods.title + "券号" + orderItemsCouponsList.get(0).eCouponSn + "密码"
                 + orderItemsCouponsList.get(0).eCouponPassword + "，券号" + orderItemsCouponsList.get(1).eCouponSn + "密码" +
-                orderItemsCouponsList.get(1).eCouponPassword + "[共2张],截止" + dateFormat.format(orderItemsCouponsList.get(1).expireAt) + "客服4006262166",
+                orderItemsCouponsList.get(1).eCouponPassword + "[共2张],截止" +
+                dateFormat.format(orderItemsCouponsList.get(1).expireAt) + "一百券客服4006262166",
                 OrderECouponMessage.getOrderSMSMessage(orderItems));
     }
 
@@ -123,7 +124,7 @@ public class OrderECouponMessageTest extends UnitTest {
                 .append(couponList.get(0).goods.title)
                 .append("由58合作商家【一百券】提供,一百券号").append(couponList.get(0).eCouponSn)
                 .append(",有效期至").append(dateFormat.format(couponList.get(0).expireAt))
-                .append("客服4007895858");
+                .append("58客服4007895858");
 
         assertEquals(sb.toString(), OrderECouponMessage.getOrderSMSMessage(couponList.get(0)));
     }
@@ -145,7 +146,7 @@ public class OrderECouponMessageTest extends UnitTest {
                 .append("密码").append(orderItemsCouponsList.get(1).eCouponPassword)
                 .append("[共2张]")
                 .append(",有效期至").append(dateFormat.format(orderItemsCouponsList.get(1).expireAt))
-                .append("客服4007895858");
+                .append("58客服4007895858");
         assertEquals(sb.toString(), OrderECouponMessage.getOrderSMSMessage(orderItems));
     }
 

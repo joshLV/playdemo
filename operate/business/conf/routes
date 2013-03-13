@@ -426,6 +426,10 @@ GET     /goods-skus/{brandId}            Skus.goodsSku
 GET     /inventory                      InventoryStocks.index
 GET     /stock-in                       InventoryStocks.stockIn
 GET     /stock-out                      InventoryStocks.stockOut
+POST     /stock-in                       InventoryStocks.createStockIn
+POST     /stock-out                      InventoryStocks.createStockOut
+
+
 GET     /stock-brands/{id}              InventoryStocks.stockBrands
 GET     /stock-sku/{brandId}            InventoryStocks.stockSku
 GET     /stock-sku-remain-count/{id}    InventoryStocks.stockSkuRemainCount
@@ -436,6 +440,10 @@ POST    /sku-takeouts                   SkuTakeouts.stockOut
 #导入渠道订单
 GET     /import-partner-orders                    ImportPartnerOrders.index
 POST    /import-partner-orders                    ImportPartnerOrders.upload
+
+# 下载渠道运单号上报文件
+GET     /real/partner/download-track-nos          real.DownloadTrackNos.index
+GET     /real/partner/download-track-nos/{partner} real.DownloadTrackNos.download
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

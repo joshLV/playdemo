@@ -1,11 +1,9 @@
 package functional;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
+import factory.callback.SequenceCallback;
 import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
@@ -18,17 +16,18 @@ import models.sales.MaterialType;
 import models.sales.SecKillGoods;
 import models.sales.SecKillGoodsItem;
 import models.sales.SecKillGoodsStatus;
-
+import models.supplier.Supplier;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import util.DateHelper;
-import controllers.modules.website.cas.Security;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
-import factory.callback.SequenceCallback;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User: wangjia
@@ -55,7 +54,7 @@ public class SecKillOrdersTest extends FunctionalTest {
                 a.user = user;
             }
         });
-
+        FactoryBoy.create(Supplier.class);
     }
 
     // ===================== Preview Order  =========================

@@ -65,6 +65,10 @@ public class AccountSequenceCondition implements Serializable {
             filter.append(" and changeAmount = :changeAmount");
             params.put("changeAmount", changeAmount);
         }
+        if (accountUid != null) {
+            filter.append(" and account.uid = :accountUid");
+            params.put("accountUid", accountUid);
+        }
         return filter.toString();
     }
 
