@@ -29,6 +29,7 @@ import play.vfs.VirtualFile;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * <p/>
@@ -41,6 +42,7 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
     Account account;
     Resaler resaler;
     Goods goods;
+    OuterOrder outerOrder;
 
     @BeforeClass
     public static void setUpClass() {
@@ -84,7 +86,34 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
     }
 
     @Test
-    public void testImpOrder_JD() {
+    public void testImpOrder_JD_测试重复订单不会重复导入() {
+        outerOrder = FactoryBoy.create(OuterOrder.class);
+        outerOrder.orderId = "453172893";
+        outerOrder.partner = OuterOrderPartner.JD;
+        outerOrder.save();
+
+        assertEquals(1, OuterOrder.count());
+        resaler.loginName = Resaler.JD_LOGIN_NAME;
+        resaler.save();
+
+        resalerProduct.partnerProductId = "10494286";
+        resalerProduct.partner = OuterOrderPartner.JD;
+        resalerProduct.save();
+        VirtualFile vfImage = VirtualFile.fromRelativePath("test/data/partnerOrder/JD_Orders.xlsx");
+        Map<String, File> fileParams = new HashMap<>();
+        fileParams.put("orderFile", vfImage.getRealFile());
+        Map<String, String> params = new HashMap<>();
+        params.put("partner", OuterOrderPartner.JD.toString());
+        Http.Response response = POST(Router.reverse("ImportPartnerOrders.upload").url, params, fileParams);
+        assertIsOk(response);
+        assertContentType("text/html", response);
+
+        assertEquals(1, OuterOrder.count());
+
+    }
+
+    @Test
+    public void testImpOrder_JD_Success7AndUnbindGoods5() {
         resaler.loginName = Resaler.JD_LOGIN_NAME;
         resaler.save();
 
@@ -102,6 +131,9 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
 
         assertEquals(7, OuterOrder.count());
         assertEquals(7, Order.count());
+        //未映射商品
+        Set<String> unBindGoods = (Set<String>) renderArgs("unBindGoodsList");
+        assertEquals(5, unBindGoods.size());
 
     }
 

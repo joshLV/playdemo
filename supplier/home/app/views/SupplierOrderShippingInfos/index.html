@@ -8,7 +8,7 @@
         <tr>
             <th wdith="50%">发货单总数：${orderItemsList?.size()}</th>
             <td wdith="50%" align="left">
-                <a class="btn" href="@{SupplierLogistics.index()}">下载</a></td>
+                <a class="btn" href="@{SupplierOrderShippingInfos.exportOrderShipping()}">下载</a></td>
             </td>
         </tr>
     </table>
@@ -23,16 +23,15 @@
         </thead>
 
         <tbody>
-        *{#{list items:logisticList, as:'logistic' }}*
-        *{<tr>}*
-            *{<td></td>}*
-            *{<td align="left">${shop.address}</td>}*
-            *{<td>${shop.phone}</td>}*
-            *{<td>}*
-                *{<a href="@{SupplierShops.edit(shop.id)}">修改</a>/#{vx.deleteLink action:"shops", id:shop.id, name:shop.name/}}*
-            *{</td>}*
-        *{</tr>}*
-        *{#{/list}}*
+        #{list items:orderBatchList, as:'orderBatch' }
+        <tr>
+            <td>${orderBatch.createdBy}</td>
+            <td align="left">${orderBatch.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td>
+                <a href="@{SupplierOrderShippingInfos.exportOrderShipping(orderBatch.id)}">下载</a>
+            </td>
+        </tr>
+        #{/list}
         </tbody>
     </table>
 </div>

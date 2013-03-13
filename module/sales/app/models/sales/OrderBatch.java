@@ -49,10 +49,15 @@ public class OrderBatch extends Model {
     @JoinColumn(name = "stock_id", nullable = true)
     public InventoryStock stock;
 
+    public OrderBatch(Supplier supplier, String createdBy) {
+        this.supplier = supplier;
+        this.createdBy = createdBy;
+    }
+
     /**
      * 获取指定商户的订单批次列表.
      */
-    public ModelPaginator<OrderBatch> findBySupplier(Supplier supplier, int pageNumber, int pageSize) {
+    public static ModelPaginator<OrderBatch> findBySupplier(Supplier supplier, int pageNumber, int pageSize) {
         ModelPaginator<OrderBatch> page = new ModelPaginator<>(OrderBatch.class, "supplier=? order by createdAt desc", supplier);
         page.setPageNumber(pageNumber);
         page.setPageSize(pageSize);
