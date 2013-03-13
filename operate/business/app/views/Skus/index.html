@@ -7,7 +7,7 @@
     <div>货品名称:<input type="text" name="condition.name" id="skuName" value="${condition?.name}" class="input-medium"/>
         编码:<input type="text" name="condition.code" id="code" value="${condition?.code}" class="input-medium"/>
         商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
-            #{vx.selectInputField name:"supplierName", id:"condition.supplierId", list:supplierList, value:condition?.supplierId, array:"supplierArray",importJs:true/}
+        #{vx.selectInputField name:"supplierName", id:"condition.supplierId", list:supplierList, value:condition?.supplierId, array:"supplierArray",importJs:true/}
         品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
         #{vx.selectInputField name:"brandName", id:"condition.brandId", list:brandList, array:"brandArray"/}
         <button class="btn btn-primary" id="search" type="submit">搜索</button>
@@ -35,7 +35,14 @@
             <td>${sku.name}</td>
             <td>${sku.code}</td>
             <td>${sku.marketPrice}</td>
-            <td>${sku.stock}</td>
+            <td>
+                #{if sku?.getRemainCount()}
+                ${sku?.getRemainCount()}
+                #{/if}
+                #{else}
+                    0
+                #{/else}
+            </td>
             <td>${sku.supplierCategory.name}</td>
             <td>${sku?.supplier.otherName}</td>
             <td>${sku.brand.name}</td>

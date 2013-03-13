@@ -72,22 +72,22 @@ public class SkuTakeouts extends Controller {
         }
 
         //创建出库单对应的批次
-        OrderBatch orderBatch = new OrderBatch();
-        orderBatch.createdBy = operatorName;
-        orderBatch.supplier = Supplier.getShihui();
-        orderBatch.stock = stock;
-        orderBatch.save();
-
-        //标记出库订单的状态为代打包状态
-        for (Order order : stockoutOrderList) {
-            order.status = OrderStatus.PREPARED;
-            order.save();
-            for (OrderItems orderItem : order.orderItems) {
-                orderItem.status = OrderStatus.PREPARED;
-                orderItem.orderBatch = orderBatch;
-                orderItem.save();
-            }
-        }
+//        OrderBatch orderBatch = new OrderBatch();
+//        orderBatch.createdBy = operatorName;
+//        orderBatch.supplier = Supplier.getShihui();
+//        orderBatch.stock = stock;
+//        orderBatch.save();
+//
+//        //标记出库订单的状态为代打包状态
+//        for (Order order : stockoutOrderList) {
+//            order.status = OrderStatus.PREPARED;
+//            order.save();
+//            for (OrderItems orderItem : order.orderItems) {
+//                orderItem.status = OrderStatus.PREPARED;
+//                orderItem.orderBatch = orderBatch;
+//                orderItem.save();
+//            }
+//        }
         render();
     }
 }
