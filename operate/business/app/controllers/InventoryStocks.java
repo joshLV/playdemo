@@ -3,6 +3,7 @@ package controllers;
 import models.sales.Brand;
 import models.sales.InventoryStock;
 import models.sales.InventoryStockItem;
+import models.sales.InventoryStockItemCondition;
 import models.sales.Sku;
 import models.sales.StockActionType;
 import models.supplier.Supplier;
@@ -10,15 +11,13 @@ import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
+import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
 import java.util.Date;
 import java.util.List;
 
-<<<<<<<HEAD
-        =======
-        >>>>>>>develop
 
 /**
  * 库存管理
@@ -155,32 +154,13 @@ public class InventoryStocks extends Controller {
         renderJSON(sku.getRemainCount());
     }
 
-    private static void checkStockOutCount(InventoryStock stock) {
-        Long stockItemRemainCount = stock.sku.getRemainCount();
-        if (stock.stockOutCount == null) {
-            Validation.addError("stock.stockOutCount", "validation.required");
-        } else if (stockItemRemainCount == null || stock.stockOutCount < 0 || stockItemRemainCount < stock.stockOutCount) {
-            Validation.addError("stock.stockOutCount", "validation.moreThanStockCount");
-        } else if (stock.stockOutCount == 0) {
-            Validation.addError("stock.stockOutCount", "validation.moreThanZero");
-        }
-    }
 
-    private static void checkStockOutCountAndPrice(InventoryStock stock) {
-        if (stock.stockOutCount == null) {
-            Validation.addError("stock.stockOutCount", "validation.required");
-        }
-        if (stock.salePrice == null) {
-            Validation.addError("stock.salePrice", "validation.required");
-        }
-    }
-
-    private static void checkStockInCountAndPrice(InventoryStock stock) {
-        if (stock.stockInCount == null) {
-            Validation.addError("stock.stockInCount", "validation.required");
-        }
-        if (stock.originalPrice == null) {
-            Validation.addError("stock.originalPrice", "validation.required");
+    private static void checkStockOutCount(InventoryStockItem stockItem) {
+        Long stockItemRemainCount = stockItem.sku.getRemainCount();
+        if (stockItemRemainCount == null || stockItem.changeCount < 0 || stockItemRemainCount < stockItem.changeCount) {
+            Validation.addError("stockItem.changeCount", "validation.moreThanStockCount");
+        } else if (stockItem.changeCount == 0) {
+            Validation.addError("stockItem.changeCount", "validation.moreThanZero");
         }
     }
 

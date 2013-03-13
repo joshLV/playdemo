@@ -1,0 +1,11 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'根据订单出库' /}
+#{include '/share/nav.html' /}
+<div class="body">
+    <legend>${title}</legend>
+    <span class="error">#{error 'stockoutOrderId'/}</span>
+#{if errors.size()==0}<span class="info">订单出库成功！</span>#{/if}
+    <br/>
+    <br/>
+    <a href="/sku-takeouts" class="btn btn-primary">返回</a>
+</div>

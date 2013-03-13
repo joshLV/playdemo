@@ -882,24 +882,37 @@ public class Goods extends Model {
         return supplierDes.replaceAll("&nbsp;", " ");
     }
 
+
+    private Long realStock;
+
     /**
      * 得到实际的库存数量.
      */
     @Transient
     @SolrField
     public Long getRealStocks() {
+        if (realStock != null) {
+            return realStock;
+        }
+        Long realSaleCount = getRealSaleCount();
         if (materialType == MaterialType.ELECTRONIC) { //电子券的库存计算方法
             if (cumulativeStocks != null) {
-                return cumulativeStocks - getRealSaleCount();
+                return cumulativeStocks - realSaleCount;
             }
-            return getRealSaleCount();
+            realStock = realSaleCount;
         } else { //实物的库存计算方法
             //(sku实际库存-(待发货销量*skuCount))/skuCount
-            if (sku == null || sku.stock == 0) {
-                return 0l;
+            if (sku == null) {
+                realStock = 0L;
+                return realStock;
             }
-            return (sku.stock - (getRealSaleCount() * skuCount)) / skuCount;
+
+            long remainCount = sku.getRemainCount();
+
+            realStock = (remainCount - (realSaleCount * skuCount)) / skuCount;
         }
+        realStock = realStock == null ? 0L : realStock;
+        return realStock;
     }
 
     /**
@@ -929,7 +942,7 @@ public class Goods extends Model {
                 // 先找出OrderItems中的已销售数量
                 String sql = "SELECT SUM(oi.buyNumber) FROM OrderItems oi where oi.goods.id= :goodsId and oi.order.status != :orderStatus";
                 if (materialType == MaterialType.REAL) {
-                    sql += "and oi.order.status != :realGoodsOrderStatus";
+                    sql += " and oi.order.status != :realGoodsOrderStatus";
                 }
                 Query query = JPA.em().createQuery(sql);
                 query.setParameter("goodsId", id);

@@ -372,12 +372,14 @@ public class OrderItems extends Model {
         }
         return stockoutOrderItems;
     }
+/*
 
     public static long countPaidOrders(Date toDate) {
         Long count = count("goods.materialType=? and order.orderType=? and status=? " +
                 "and createdAt<=? group by order", MaterialType.REAL, OrderType.CONSUME, OrderStatus.PAID, toDate);
         return count == null ? 0 : count;
     }
+*/
 
     public static List<Order> findPaidOrders(Date toDate) {
         Query q = OrderItems.em().createQuery("select o.order from OrderItems o where o.goods.materialType=:materialType " +
@@ -410,11 +412,12 @@ public class OrderItems extends Model {
      * 查询指定时间之前的sku出库表.
      */
     public static Map<Sku, Long> findTakeout(Date toDate) {
-        List<TakeoutItem> takeoutItems = find("select new models.order.TakeoutItem(goods,sum(o.buyNumber)) " +
+        List<TakeoutItem> takeoutItems = find("select new models.order.TakeoutItem(o.goods, sum(o.buyNumber)) " +
                 "from OrderItems o where o.status=? and o.createdAt <= ? and o.goods.materialType=? " +
                 "group by o.goods", OrderStatus.PAID, toDate, MaterialType.REAL).fetch();
         Map<Sku, Long> takeoutMap = new HashMap<Sku, Long>();
         for (TakeoutItem takeoutItem : takeoutItems) {
+            System.out.println("takeoutItem.sku:" + takeoutItem.sku);
             if (takeoutItem.sku != null && takeoutItem.count != null && takeoutItem.count.longValue() > 0) {
                 takeoutMap.put(takeoutItem.sku, takeoutItem.count);
             }
@@ -439,6 +442,22 @@ public class OrderItems extends Model {
                 "where goods.supplierId=? and (status=? or status=?) and createdAt>=? and createdAt <?",
                 supplierId, OrderStatus.PAID, OrderStatus.SENT, DateUtil.getBeginOfDay(beginAt), DateUtil.getEndOfDay(endAt)).first();
         return soldAmount == null ? BigDecimal.ZERO : soldAmount;
+    }
+
+    /**
+     * 检查订单中的实物商品是否有对应的sku.
+     *
+     * @param orderId
+     * @return
+     */
+    public static Goods findNoSkuGoods(Long orderId) {
+        List<OrderItems> orderItemsList = find("order.id=? and goods.materialType=?", orderId, MaterialType.REAL).fetch();
+        for (OrderItems orderItems : orderItemsList) {
+            if (orderItems.goods.sku == null) {
+                return orderItems.goods;
+            }
+        }
+        return null;
     }
 
     @Override

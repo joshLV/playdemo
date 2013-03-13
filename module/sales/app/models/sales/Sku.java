@@ -49,12 +49,6 @@ public class Sku extends Model {
     @Column(name = "market_price")
     public BigDecimal marketPrice;
 
-
-    /**
-     * 库存（初始0）
-     */
-    public Long stock = 0L;
-
     /**
      * sku流水码（2位）
      */
@@ -142,7 +136,6 @@ public class Sku extends Model {
         Sku updSku = findById(id);
         updSku.marketPrice = sku.marketPrice;
         updSku.name = sku.name;
-        updSku.stock = sku.stock;
         updSku.save();
     }
 
@@ -186,11 +179,12 @@ public class Sku extends Model {
      * @return
      */
     @Transient
-    public Long getRemainCount() {
+    public long getRemainCount() {
         Query query = JPA.em().createQuery("SELECT SUM(st.remainCount) FROM InventoryStockItem st where st.sku.id= :skuId and st.deleted!= :deleted");
         query.setParameter("skuId", id);
         query.setParameter("deleted", com.uhuila.common.constants.DeletedStatus.DELETED);
-        return (Long) query.getSingleResult();
+        Long count = (Long) query.getSingleResult();
+        return count == null ? 0L : count;
     }
 
     /**

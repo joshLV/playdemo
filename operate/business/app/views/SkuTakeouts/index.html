@@ -6,7 +6,11 @@
 #{/set}
 <div class="body">
     <legend>${title}</legend>
-    #{form @SkuTakeouts.stockOut(), id:'stockoutForm',enctype:'multipart/form-data',class:"form-horizontal" }
+    #{form @SkuTakeouts.stockOut(), id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
+    <input type="hidden" name="toDate" value="${toDate}" />
+    #{list stockoutOrderList, as:'stockoutOrder'}
+        <input type="hidden" name="stockoutOrderId" value="${stockoutOrder.id}" />
+    #{/list}
     <table width="100%">
         <tr>
             <td width="100%">总计: ${paidOrderCount}个待处理订单 #{if

@@ -4,12 +4,9 @@ import com.uhuila.common.constants.DeletedStatus;
 import models.order.Order;
 import models.order.OrderItems;
 import models.supplier.Supplier;
-import play.data.validation.Match;
 import play.data.validation.MaxSize;
-import play.data.validation.Min;
 import play.data.validation.Required;
 import play.db.jpa.Model;
-import play.modules.view_ext.annotation.Money;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,8 +16,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -54,6 +49,7 @@ public class InventoryStock extends Model {
      * 库存变动行为类型
      */
     @Required
+    @Enumerated(EnumType.STRING)
     @Column(name = "action_type")
     public StockActionType actionType;
 
@@ -153,8 +149,9 @@ public class InventoryStock extends Model {
         //检查缺货情况
         for (Sku sku : takeoutSkuMap.keySet()) {
             Long outCount = takeoutSkuMap.get(sku);  //待出库数量
-            if (outCount != null && outCount > 0 && sku.stock < outCount) {
-                stockout.put(sku, outCount - sku.stock);
+            long remainCount = sku.getRemainCount();
+            if (outCount != null && outCount > 0 && remainCount < outCount) {
+                stockout.put(sku, outCount - remainCount);
             }
         }
         if (stockout.size() == 0) {
@@ -189,8 +186,10 @@ public class InventoryStock extends Model {
         //检查缺货情况
         for (Sku sku : takeoutSkuMap.keySet()) {
             Long outCount = takeoutSkuMap.get(sku);  //待出库数量
-            if (outCount != null && outCount > 0 && sku.stock < outCount) {
-                stockout.put(sku, outCount - sku.stock);
+            long remainCount = sku.getRemainCount();
+
+            if (outCount != null && outCount > 0 && remainCount < outCount) {
+                stockout.put(sku, outCount - remainCount);
             }
         }
         if (stockout.size() == 0) {
@@ -199,6 +198,7 @@ public class InventoryStock extends Model {
         //提取缺货货品对应的所有需发货的订单项
         return OrderItems.findPaid(stockout, toDate);
     }
+
     public static List<Order> getOrderListByItem(List<OrderItems> orderItems) {
         List<Order> orderList = new ArrayList<>();
         //提取因缺货而无法发货的订单
