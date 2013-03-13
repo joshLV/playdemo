@@ -383,6 +383,7 @@ public class Goods extends Model {
     @Column(name = "use_week_day")
     @SolrField
     public String useWeekDay;
+
     @Transient
     public String useWeekDayAll;
 

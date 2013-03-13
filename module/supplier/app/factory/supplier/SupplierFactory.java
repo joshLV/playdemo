@@ -43,6 +43,11 @@ public class SupplierFactory extends ModelFactory<Supplier> {
         supplier.fullName = "肯德基";
     }
 
+    @Factory(name = "seewi")
+    public void defineSeewi(Supplier supplier) {
+        supplier.fullName = "上海视惠信息科技有限公司";
+    }
+
     @Factory(name = "qingtuan")
     public void defineQT(Supplier supplier) {
         supplier.domainName = "tsingtuan";

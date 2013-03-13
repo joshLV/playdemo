@@ -263,6 +263,8 @@ public class OperateGoods extends Controller {
     }
 
     private static void checkUseWeekDay(models.sales.Goods goods) {
+        /*
+        // 不再需要检查
         if (StringUtils.isBlank(goods.useWeekDay)) {
             Validation.addError("goods.useWeekDayAll", "validation.useWeekDay");
             renderArgs.put("noUseWeekDayAll", "true");
@@ -270,6 +272,7 @@ public class OperateGoods extends Controller {
                 && goods.useBeginTime.compareTo(goods.useEndTime) > 0 && goods.useEndTime.compareTo("06:00") > 0) {
             Validation.addError("goods.useEndTime", "validation.useEndTime");
         }
+        */
     }
 
     private static void checkShops(Long supplierId) {
