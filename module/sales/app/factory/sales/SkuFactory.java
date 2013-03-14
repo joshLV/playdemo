@@ -21,6 +21,8 @@ public class SkuFactory extends ModelFactory<Sku> {
         sku.code = "S01000101";
         sku.name = "test";
         Supplier supplier = FactoryBoy.lastOrCreate(Supplier.class);
+        supplier.canSaleReal = true;
+        supplier.save();
         sku.sequenceCode = "01";
         sku.supplier = supplier;
         sku.brand = FactoryBoy.lastOrCreate(Brand.class);
