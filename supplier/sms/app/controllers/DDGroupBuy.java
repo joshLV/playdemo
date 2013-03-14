@@ -141,7 +141,7 @@ public class DDGroupBuy extends Controller {
                 }
                 try {
                     //创建一百券订单Items
-                    order.addOrderItem(goods, number.intValue(), user_mobile, resalerPrice, resalerPrice);
+                    order.addOrderItem(goods, number.longValue(), user_mobile, resalerPrice, resalerPrice);
                 } catch (NotEnoughInventoryException e) {
                     renderError(DDErrorCode.INVENTORY_NOT_ENOUGH, "库存不足！");
                 }

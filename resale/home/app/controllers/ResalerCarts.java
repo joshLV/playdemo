@@ -70,7 +70,7 @@ public class ResalerCarts extends Controller {
         boolean containsReal = false;
         for(Object[] fav : favs){
             Goods goods = (Goods)fav[0];
-            int number = (Integer)fav[1];
+            long number = (Long)fav[1];
             String phone = (String)fav[2];
             BigDecimal resalerPrice = goods.getResalePrice();
             order.addOrderItem(goods, number, phone,

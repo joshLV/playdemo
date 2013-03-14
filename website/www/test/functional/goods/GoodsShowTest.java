@@ -77,7 +77,7 @@ public class GoodsShowTest extends FunctionalTest {
     @Ignore
     @Test
     public void 限购商品() throws Exception {
-        goods.limitNumber = 1;
+        goods.limitNumber = 1L;
         goods.save();
 
         Response response = GET("/p/" + goods.id);
@@ -88,7 +88,7 @@ public class GoodsShowTest extends FunctionalTest {
     @Ignore
     @Test
     public void 已经购买过限购商品() throws Exception {
-        goods.limitNumber = 1;
+        goods.limitNumber = 1L;
         goods.save();
         //设置虚拟登录
         final User user = FactoryBoy.create(User.class);

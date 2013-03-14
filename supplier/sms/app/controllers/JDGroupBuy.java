@@ -328,7 +328,7 @@ public class JDGroupBuy extends Controller {
 
 
     // 创建一百券订单
-    private static Order createYbqOrder(Long venderTeamId, BigDecimal teamPrice, int count, String mobile) {
+    private static Order createYbqOrder(Long venderTeamId, BigDecimal teamPrice, long count, String mobile) {
         Resaler resaler = Resaler.findOneByLoginName(Resaler.JD_LOGIN_NAME);
         Logger.info("create ybq order");
         if (resaler == null) {

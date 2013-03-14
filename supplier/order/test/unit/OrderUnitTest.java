@@ -129,7 +129,7 @@ public class OrderUnitTest extends UnitTest {
         long saleCount = oldGoods.getRealSaleCount();
         Order order = Order.createConsumeOrder(user.id, AccountType.CONSUMER);
 
-        order.addOrderItem(oldGoods, 20, mobile, oldGoods.salePrice, resalePrice);
+        order.addOrderItem(oldGoods, 20L, mobile, oldGoods.salePrice, resalePrice);
         
         assertEquals(1, order.orderItems.size());
         OrderItems orderItems1 = order.orderItems.get(0);
@@ -144,7 +144,7 @@ public class OrderUnitTest extends UnitTest {
 
         try {
             //异常情况: 超售
-            order.addOrderItem(goods, 200000, mobile, goods.salePrice, resalePrice);
+            order.addOrderItem(goods, 200000L, mobile, goods.salePrice, resalePrice);
         } catch (NotEnoughInventoryException e) {
             isOk = true;
         }

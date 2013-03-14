@@ -123,7 +123,7 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
     }
 
     // 创建一百券订单
-    private Order createYbqOrder(Long outerGroupId, Integer productNum, String userPhone) {
+    private Order createYbqOrder(Long outerGroupId, Long productNum, String userPhone) {
         Resaler resaler = Resaler.findOneByLoginName(Resaler.TAOBAO_LOGIN_NAME);
         if (resaler == null) {
             Logger.error("can not find the resaler by login name: %s", Resaler.TAOBAO_LOGIN_NAME);

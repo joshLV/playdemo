@@ -146,7 +146,7 @@ public class Orders extends Controller {
 
         //解析提交的商品及数量
         List<Long> goodsIds = new ArrayList<>();
-        Map<Long, Integer> itemsMap = new HashMap<>();
+        Map<Long, Long> itemsMap = new HashMap<>();
         parseItems(items, goodsIds, itemsMap);
 
         //计算电子商品列表和非电子商品列表
@@ -157,7 +157,7 @@ public class Orders extends Controller {
         List<models.sales.Goods> goods = models.sales.Goods.findInIdList(goodsIds);
         for (models.sales.Goods g : goods) {
 
-            Integer number = itemsMap.get(g.getId());
+            Long number = itemsMap.get(g.getId());
             Http.Cookie cookie = request.cookies.get(PROMOTER_COOKIE);
             Cart cart = new Cart(g, number);
             //这里用于判断是否是通过推荐过来的用户
@@ -235,7 +235,7 @@ public class Orders extends Controller {
 
         //解析提交的商品及数量
         List<Long> goodsIds = new ArrayList<>();
-        Map<Long, Integer> itemsMap = new HashMap<>();
+        Map<Long, Long> itemsMap = new HashMap<>();
         parseItems(items, goodsIds, itemsMap);
         List<models.sales.Goods> goodsList = models.sales.Goods.findInIdList(goodsIds);
         boolean containsElectronic = containsMaterialType(goodsList, MaterialType.ELECTRONIC);
@@ -306,7 +306,7 @@ public class Orders extends Controller {
             boolean isPromoteFlag = isByPromoteUser(user, discountSN, tj_cookie);
 
             for (models.sales.Goods goodsItem : goodsList) {
-                Integer number = itemsMap.get(goodsItem.getId());
+                Long number = itemsMap.get(goodsItem.getId());
                 if (goodsItem.materialType == models.sales.MaterialType.REAL) {
                     if (isPromoteFlag) {
                         rCartAmount = rCartAmount.add(Order.getPromoteRebateOfTotalGoodsAmount(goodsItem, number));
@@ -433,14 +433,14 @@ public class Orders extends Controller {
         return containsMaterialType;
     }
 
-    private static void parseItems(String items, List<Long> goodsIds, Map<Long, Integer> itemsMap) {
+    private static void parseItems(String items, List<Long> goodsIds, Map<Long, Long> itemsMap) {
         User user = SecureCAS.getUser();
         String[] itemSplits = items.split(",");
         for (String split : itemSplits) {
 
             String[] goodsItem = split.split("-");
             if (goodsItem.length == 2) {
-                Integer number = Integer.parseInt(goodsItem[1]);
+                long number = Long.parseLong(goodsItem[1]);
                 if (number > 0) {
                     Long goodsId = Long.parseLong(goodsItem[0]);
                     Long boughtNumber = OrderItems.itemsNumber(user, goodsId);
@@ -451,12 +451,12 @@ public class Orders extends Controller {
                     }
                     //取出商品的限购数量
                     Goods goods = Goods.findById(goodsId);
-                    int limitNumber = 0;
+                    long limitNumber = 0L;
                     if (goods.limitNumber != null) {
                         limitNumber = goods.limitNumber;
                     }
                     if ((limitNumber > boughtNumber) && number > (limitNumber - boughtNumber.intValue())) {
-                        number = limitNumber - boughtNumber.intValue();
+                        number = limitNumber - boughtNumber;
                     }
                     goodsIds.add(goodsId);
                     itemsMap.put(goodsId, number);

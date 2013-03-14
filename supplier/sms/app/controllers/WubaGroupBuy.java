@@ -300,7 +300,7 @@ public class WubaGroupBuy extends Controller {
 
     // 创建一百券订单
     private static Order createYbqOrder(Long outerGroupId, BigDecimal productPrize,
-                                        Integer productNum, String userPhone, Map<String, Object> result) {
+                                        Long productNum, String userPhone, Map<String, Object> result) {
         Resaler resaler = Resaler.findOneByLoginName(Resaler.WUBA_LOGIN_NAME);
         if (resaler == null) {
             Logger.error("can not find the resaler by login name: %s", Resaler.WUBA_LOGIN_NAME);
