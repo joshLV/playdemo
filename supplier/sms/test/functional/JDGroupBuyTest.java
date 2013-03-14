@@ -10,6 +10,7 @@ import models.sales.ResalerProduct;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
+import play.Logger;
 import play.libs.XML;
 import play.libs.XPath;
 import play.mvc.Http;
@@ -124,6 +125,7 @@ public class JDGroupBuyTest extends FunctionalTest {
     private void assertLogicalOk(Http.Response response) {
         String responseContent = getContent(response);
         try {
+            Logger.info("Content=%s", responseContent);
             Document resXml = XML.getDocument(responseContent);
             assertEquals("200", XPath.selectText("/*/ResultCode", resXml));
         }catch (Exception e) {

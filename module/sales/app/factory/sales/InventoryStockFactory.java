@@ -18,8 +18,6 @@ public class InventoryStockFactory extends ModelFactory<InventoryStock> {
     public InventoryStock define() {
         InventoryStock stock = new InventoryStock();
         stock.serialNo = "J2013022601";
-        stock.dateOfSerialNo = "20130226";
-        stock.sequenceCode = "01";
         stock.supplier = FactoryBoy.lastOrCreate(Supplier.class);
         stock.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED;
         stock.createdBy = "test-person";

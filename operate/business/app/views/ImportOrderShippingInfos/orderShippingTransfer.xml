@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workbook>
+    <worksheet name="Sheet1">
+        <section startRow="0" endRow="0"/>
+        <loop startRow="1" endRow="1" items="logistics" var="logistic"
+              varType="models.order.LogisticImportData">
+            <section startRow="1" endRow="1">
+                <mapping row="1" col="0">logistic.goodsId</mapping>
+                <mapping row="1" col="1">logistic.orderNumber</mapping>
+                <mapping row="1" col="12">logistic.expressCompany</mapping>
+                <mapping row="1" col="14">logistic.expressNumber</mapping>
+            </section>
+            <loopbreakcondition>
+                <rowcheck offset="0"/>
+            </loopbreakcondition>
+        </loop>
+    </worksheet>
+</workbook>

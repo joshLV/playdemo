@@ -93,17 +93,6 @@ public class InventoryStock extends Model {
     @MaxSize(50)
     public String remark;
 
-    /**
-     * stock流水码（2位）
-     */
-    @Column(name = "sequence_code")
-    public String sequenceCode;
-
-    /**
-     * stock进货单号中的组成：日期(8位)
-     */
-    @Column(name = "date_of_serial_no")
-    public String dateOfSerialNo;
 
     @OneToMany(mappedBy = "stock")
     public List<InventoryStockItem> inventoryStockItemList;
@@ -240,20 +229,19 @@ public class InventoryStock extends Model {
     }
 
     public void setStockSerialNo() {
-        this.dateOfSerialNo = com.uhuila.common.util.DateUtil.dateToString(new Date(), SERIAL_NO_DATE_FORMAT);
-
-        InventoryStock stock = InventoryStock.find("dateOfSerialNo=? and actionType =? order by cast(sequenceCode as int) desc", this.dateOfSerialNo, this.actionType).first();
-        this.serialNo = this.actionType.getCode();
+        String dateOfSerialNo = com.uhuila.common.util.DateUtil.dateToString(new Date(), SERIAL_NO_DATE_FORMAT);
+        String sequenceCode;
+        InventoryStock stock = InventoryStock.find("serialNo like ? and actionType =? order by id desc", "_" + dateOfSerialNo + "__", this.actionType).first();
         if (stock == null) {
-            this.sequenceCode = "01";
+            sequenceCode = "01";
         } else {
-            if (stock.sequenceCode.equals(CODE_VALUE[stock.serialNo.length() - 9])) {
-                this.sequenceCode = calculateFormattedCode(stock.sequenceCode, String.valueOf(stock.serialNo.length() - 8));
+            if (stock.serialNo.substring(9, stock.serialNo.length()).equals(CODE_VALUE[stock.serialNo.length() - 9])) {
+                sequenceCode = calculateFormattedCode(stock.serialNo.substring(9, stock.serialNo.length()), String.valueOf(stock.serialNo.length() - 8));
             } else {
-                this.sequenceCode = calculateFormattedCode(stock.sequenceCode, String.valueOf(stock.serialNo.length() - 9));
+                sequenceCode = calculateFormattedCode(stock.serialNo.substring(9, stock.serialNo.length()), String.valueOf(stock.serialNo.length() - 9));
             }
         }
-        this.serialNo += this.dateOfSerialNo + this.sequenceCode;
+        this.serialNo = this.actionType.getCode() + dateOfSerialNo + sequenceCode;
     }
 
 

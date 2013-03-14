@@ -1,11 +1,11 @@
 package controllers;
 
-import controllers.supplier.SupplierInjector;
-import models.admin.SupplierUser;
+import models.operator.OperateUser;
 import models.order.OrderItems;
 import models.order.OrderStatus;
 import models.sales.OrderBatch;
 import models.supplier.Supplier;
+import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.ModelPaginator;
 import play.mvc.Controller;
@@ -15,24 +15,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 待发货清单下载
  * <p/>
  * User: yanjy
- * Date: 13-3-11
- * Time: 下午3:49
+ * Date: 13-3-13
+ * Time: 上午11:14
  */
-@With({SupplierRbac.class, SupplierInjector.class})
-public class SupplierOrderShippingInfos extends Controller {
+@With(OperateRbac.class)
+@ActiveNavigation("order_shipping_index")
+public class OperateOrderShippingInfos extends Controller {
     public static int PAGE_SIZE = 10;
 
-    public static void index() {
+    @ActiveNavigation("order_shipping_index")
+    public static void index(Long supplierId) {
         int pageNumber = getPageNumber();
-        Supplier supplier = SupplierRbac.currentUser().supplier;
+        List<Supplier> supplierList = Supplier.findSuppliersByCanSaleReal();
+        if (supplierId == null && supplierList.size() > 0) {
+            supplierId = 5L;
+        }
+        Supplier supplier = Supplier.findById(supplierId);
         if (supplier.canSaleReal == null || !supplier.canSaleReal) {
             error("have no real goods!");
         }
-        List<OrderItems> orderItemsList = getPreparedItems(null);
-        ModelPaginator<OrderBatch> orderBatchList = OrderBatch.findBySupplier(supplier.id, pageNumber, PAGE_SIZE);
-        render(orderItemsList, orderBatchList);
+        List<OrderItems> orderItemsList = getPreparedItems(null, supplierId);
+        ModelPaginator<OrderBatch> orderBatchList = OrderBatch.findBySupplier(supplierId, pageNumber, PAGE_SIZE);
+        render(orderItemsList, orderBatchList, supplierList, supplierId);
     }
 
     /**
@@ -40,14 +47,14 @@ public class SupplierOrderShippingInfos extends Controller {
      *
      * @return
      */
-    private static List<OrderItems> getPreparedItems(Long orderBatchId) {
+    private static List<OrderItems> getPreparedItems(Long orderBatchId, Long supplierId) {
         StringBuilder sql = new StringBuilder("goods.supplierId=? and goods.sku is not null ");
         List<Object> params = new ArrayList();
-        params.add(SupplierRbac.currentUser().supplier.id);
+        params.add(supplierId);
         if (orderBatchId == null) {
             sql.append(" and orderBatch is null");
         } else {
-            sql.append(" and orderBatch.id = ?");
+            sql.append(" and orderBatch.id= ?");
             params.add(orderBatchId);
         }
         return OrderItems.find(sql.toString(), params.toArray()).fetch();
@@ -56,13 +63,15 @@ public class SupplierOrderShippingInfos extends Controller {
     /**
      * 导出发货单
      */
-    public static void exportOrderShipping(Long id) {
-        SupplierUser supplierUser = SupplierRbac.currentUser();
-        List<OrderItems> orderItemsList = getPreparedItems(id);
+    public static void exportOrderShipping(Long id, Long supplierId) {
+        OperateUser operateUser = OperateRbac.currentUser();
+        List<OrderItems> orderItemsList = getPreparedItems(id, supplierId);
         request.format = "xlsx";
         renderArgs.put("__FILE_NAME__", "发货单导出_" + System.currentTimeMillis() + ".xlsx");
         if (id == null) {
-            OrderBatch orderBatch = new OrderBatch(supplierUser.supplier, supplierUser.userName).save();
+            Supplier supplier = Supplier.findUnDeletedById(supplierId);
+            OrderBatch orderBatch = new OrderBatch(supplier, operateUser.userName).save();
+
             //更新orderItems的状态为：代打包
             for (OrderItems orderItems : orderItemsList) {
                 orderItems.status = OrderStatus.PREPARED;

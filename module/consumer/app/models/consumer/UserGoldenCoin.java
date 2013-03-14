@@ -40,7 +40,7 @@ public class UserGoldenCoin extends Model {
 
     @Version
     @Column(name = "lock_version")
-    public int lockVersion;
+    public Integer lockVersion = 0;
 
     /**
      * 备注

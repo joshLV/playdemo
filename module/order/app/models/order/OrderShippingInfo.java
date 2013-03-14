@@ -34,12 +34,14 @@ public class OrderShippingInfo extends Model {
 
     /**
      * 单价
+     * TODO: 删除这一属性，值放orderItems中了
      */
     @Column(name = "sale_price")
     public BigDecimal salePrice;
 
     /**
      * 购买数量
+     * TODO: 删除这一属性，值放orderItems中了
      */
     @Column(name = "buy_number")
     public Integer buyNumber;
@@ -112,7 +114,7 @@ public class OrderShippingInfo extends Model {
      * 物流公司
      */
     @Column(name = "express_company")
-    public String expressCompany;
+    public ExpressCompany expressCompany;
 
     /**
      * 物流单号

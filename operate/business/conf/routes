@@ -426,8 +426,8 @@ GET     /goods-skus/{brandId}            Skus.goodsSku
 GET     /inventory                      InventoryStocks.index
 GET     /stock-in                       InventoryStocks.stockIn
 GET     /stock-out                      InventoryStocks.stockOut
-POST     /stock-in                       InventoryStocks.createStockIn
-POST     /stock-out                      InventoryStocks.createStockOut
+POST     /stock-in                      InventoryStocks.createStockIn
+POST     /stock-out                     InventoryStocks.createStockOut
 
 
 GET     /stock-brands/{id}              InventoryStocks.stockBrands
@@ -436,10 +436,23 @@ GET     /stock-sku-remain-count/{id}    InventoryStocks.stockSkuRemainCount
 GET     /sku-takeouts                   SkuTakeouts.index
 POST    /sku-takeouts                   SkuTakeouts.stockOut
 
+#快递公司管理
+GET     /express-companies                 real.ExpressCompanies.index
+GET     /express-companies/new             real.ExpressCompanies.add
+POST    /express-companies                 real.ExpressCompanies.create
+GET     /express-companies/{id}/edit       real.ExpressCompanies.edit
 
 #导入渠道订单
 GET     /import-partner-orders                    ImportPartnerOrders.index
 POST    /import-partner-orders                    ImportPartnerOrders.upload
+
+#上传发货单
+GET     /real/import-order-shipping             ImportOrderShippingInfos.index
+POST    /real/import-order-shipping             ImportOrderShippingInfos.upload
+
+#下载发货单
+GET     /real/download-order-shipping             OperateOrderShippingInfos.index
+POST    /real/download-order-shipping/export      OperateOrderShippingInfos.exportOrderShipping
 
 # 下载渠道运单号上报文件
 GET     /real/partner/download-track-nos          real.DownloadTrackNos.index

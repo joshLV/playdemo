@@ -48,6 +48,7 @@ public class InventoryStocks extends Controller {
 
     @ActiveNavigation("inventory_stockIn")
     public static void stockIn() {
+
         setInitParams();
         render();
     }
