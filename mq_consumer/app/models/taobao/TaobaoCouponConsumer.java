@@ -1,11 +1,18 @@
 package models.taobao;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import models.RabbitMQConsumerWithTx;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
-import models.order.*;
+import models.order.DeliveryType;
+import models.order.ECoupon;
+import models.order.ECouponPartner;
+import models.order.NotEnoughInventoryException;
+import models.order.Order;
+import models.order.OrderItems;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
+import models.order.OuterOrderStatus;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.MaterialType;
@@ -74,11 +81,11 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
     private boolean send(OuterOrder outerOrder) {
         Long outerIid;
         String mobile, sellerNick;
-        Integer num;
+        Long num;
         try {
             JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
             mobile = jsonObject.get("mobile").getAsString(); //买家手机号
-            num = jsonObject.get("num").getAsInt();//购买的数量
+            num = jsonObject.get("num").getAsLong();//购买的数量
             sellerNick = jsonObject.get("seller_nick").getAsString();//淘宝卖家用户名（旺旺号）
             outerIid = jsonObject.get("outer_iid").getAsLong();//商家发布商品时填写的外部商品ID
         } catch (Exception e) {
