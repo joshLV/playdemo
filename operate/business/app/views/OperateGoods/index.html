@@ -135,7 +135,8 @@ select:'condition_status',value:condition?.status/}
         <tbody>
 
         #{paginate.list items:goodsPage, as:'goods'}
-        <tr class="#{if goods.isExpired() || goods.getRealStocks() == 0}tr-offsale#{/if} transparent">
+        #{set realStock:goods.realStocks/}
+        <tr class="#{if goods.isExpired() || realStock == 0}tr-offsale#{/if} transparent">
             <td style="text-align:center"><input type="checkbox" id="checkoption" value="${goods.id}" name="id"/></td>
             <td>${goods?.getSupplier()?.otherName}</td>
         *{<td>${goods?.no}</td>}*
@@ -162,7 +163,7 @@ select:'condition_status',value:condition?.status/}
             <td class="amount">${goods?.faceValue?.formatCurrency('CNY')}</td>
             <td class="amount">${goods?.originalPrice?.formatCurrency('CNY')}</td>
             <td class="amount">${goods?.salePrice?.formatCurrency('CNY')}</td>
-            <td class="amount">${goods?.getRealStocks()}</td>
+            <td class="amount">${realStock}</td>
         *{<td class="amount">${goods?.getRealSaleCount()}</td>}*
 
             #{if goods?.beginOnSaleAt?.compareTo(new java.util.Date())<0 && goods?.status == models.sales.GoodsStatus.APPLY}
@@ -183,28 +184,25 @@ select:'condition_status',value:condition?.status/}
         *{<td>${goods?.updatedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>}*
             <td>&{'goods.'+goods?.materialType}</td>
             <td> #{if goods.isExpired()}<span class="expired">已过期</span><br/>#{/if}
-                #{if goods?.getRealStocks() == 0}<span class="zeroBaseSale">零库存</span><br/>#{/if}
+                #{if realStock == 0}<span class="zeroBaseSale">零库存</span><br/>#{/if}
             &{'goods.'+goods?.getStatus()}
                 #{if  hasApproveGoodsPermission == true }
                     #{if models.sales.GoodsStatus.APPLY.equals(goods.status)}
-                        #{if goods?.endOnSaleAt.compareTo(new java.util.Date())>0 && !goods?.getRealStocks() == 0 }
+                        #{if goods?.endOnSaleAt.compareTo(new java.util.Date())>0 && realStock != 0 }
                             <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
                         #{/if}
                         <br/>#{vx.operateLink text:"拒绝上架", url:"/goods/"+goods?.id+"/reject?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
                     #{/if}
-                    #{if models.sales.GoodsStatus.ONSALE.equals(goods.status) || goods?.getRealStocks() == 0}
+                    #{if models.sales.GoodsStatus.ONSALE.equals(goods.status) || realStock == 0}
                     %{url="/goods/"+goods.id+"/offSale?page="+(goodsPage.pageNumber?:1) + "&"+queryString}%
                         <br/>#{vx.operateLink text:"强制下架", url:url,method:"PUT"/}#{/if}
                     #{if models.sales.GoodsStatus.REJECT.equals(goods.status) && !goods.isExpired()}
                         <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
                     #{/if}
-                    #{if models.sales.GoodsStatus.OFFSALE.equals(goods.status) && !goods.isExpired() && !goods?.getRealStocks() == 0}
+                    #{if models.sales.GoodsStatus.OFFSALE.equals(goods.status) && !goods.isExpired() && realStock != 0}
                         <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
                     #{/if}
-                    #{if models.sales.GoodsStatus.OFFSALE.equals(goods.status) && !goods.isExpired() && goods?.getRealStocks() != 0}
-                        <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
-                    #{/if}
-                    #{if models.sales.GoodsStatus.APPLY.equals(goods.status) && !goods.isExpired() && goods?.getRealStocks() != 0 && goods?.endOnSaleAt.compareTo(new java.util.Date())>0 }
+                    #{if models.sales.GoodsStatus.APPLY.equals(goods.status) && !goods.isExpired() && realStock != 0 && goods?.endOnSaleAt.compareTo(new java.util.Date())>0 }
                         <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale?page="+(goodsPage.pageNumber?:1)+"&"+queryString,method:"PUT"/}
                     #{/if}
 

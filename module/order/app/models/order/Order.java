@@ -1323,4 +1323,5 @@ public class Order extends Model {
         return new EqualsBuilder().appendSuper(super.equals(obj)).append(this.userId, other.userId)
                 .append(this.status, other.status).append(this.id, other.id).isEquals();
     }
+
 }

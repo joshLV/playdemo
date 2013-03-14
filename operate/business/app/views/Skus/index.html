@@ -35,18 +35,11 @@
             <td>${sku.name}</td>
             <td>${sku.code}</td>
             <td>${sku.marketPrice}</td>
-            <td>
-                #{if sku?.getRemainCount()}
-                ${sku?.getRemainCount()}
-                #{/if}
-                #{else}
-                    0
-                #{/else}
-            </td>
+            <td>${sku.remainCount?:0}</td>
             <td>${sku.supplierCategory.name}</td>
-            <td>${sku?.supplier.otherName}</td>
+            <td>${sku.supplier.otherName}</td>
             <td>${sku.brand.name}</td>
-            <td>${sku?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td>${sku.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
             <td><a href="/skus/${sku.id}/edit?page=${page?:1}">修改</a>
                 / #{vx.deleteLink id:sku?.id, name:sku?.name, action:"/skus"/}
             </td>

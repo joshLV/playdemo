@@ -433,16 +433,14 @@ POST     /stock-out                     InventoryStocks.createStockOut
 GET     /stock-brands/{id}              InventoryStocks.stockBrands
 GET     /stock-sku/{brandId}            InventoryStocks.stockSku
 GET     /stock-sku-remain-count/{id}    InventoryStocks.stockSkuRemainCount
+GET     /sku-takeouts                   SkuTakeouts.index
+POST    /sku-takeouts                   SkuTakeouts.stockOut
 
 #快递公司管理
 GET     /express-companies                 real.ExpressCompanies.index
 GET     /express-companies/new             real.ExpressCompanies.add
 POST    /express-companies                 real.ExpressCompanies.create
 GET     /express-companies/{id}/edit       real.ExpressCompanies.edit
-
-
-
-
 
 #导入渠道订单
 GET     /import-partner-orders                    ImportPartnerOrders.index

@@ -286,9 +286,9 @@ select:'condition_status',value:condition?.status/}
                     &{'order.'+ order.realGoodsStatus}</a>
                 #{/if}
                 #{else}&{'order.'+order.realGoodsStatus}#{/else}
-                #{if models.order.OrderStatus.PAID.equals(order.realGoodsStatus)}
+                *{#{if models.order.OrderStatus.PAID.equals(order.realGoodsStatus)}
                     <br/><a href="#" id="linkSend_${order.id}" onclick="prepareSend(${order.id})">发货</a>
-                #{/if}
+                #{/if}}*
             </td>
         #{/if}
 

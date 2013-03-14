@@ -316,8 +316,7 @@ public class OrderItems extends Model {
      * 获取未付款笔数
      */
     public static long getUnpaidOrderCount(Long userId, AccountType userType) {
-        EntityManager entityManager = JPA.em();
-        Query query = entityManager.createQuery("select o from OrderItems o where o.order.userId=:userId " +
+        Query query = OrderItems.em().createQuery("select o from OrderItems o where o.order.userId=:userId " +
                 "and o.order.userType=:userType and o.status=:status group by o.order");
 
         query.setParameter("userId", userId);
@@ -373,16 +372,24 @@ public class OrderItems extends Model {
         }
         return stockoutOrderItems;
     }
+/*
 
     public static long countPaidOrders(Date toDate) {
-        Long count = count("order.orderType=? and status=? " +
-                "and createdAt<=? group by order", OrderType.CONSUME, OrderStatus.PAID, toDate);
+        Long count = count("goods.materialType=? and order.orderType=? and status=? " +
+                "and createdAt<=? group by order", MaterialType.REAL, OrderType.CONSUME, OrderStatus.PAID, toDate);
         return count == null ? 0 : count;
     }
+*/
 
-    public static List<Order> findPaidOrders(Date toDate) {
-        return find("select distinct(order) from OrderItems where order.orderType=? and status=? " +
-                "and createdAt<=? group by order", OrderType.CONSUME, OrderStatus.PAID, toDate).fetch();
+    public static List<Order> findPaidRealGoodsOrders(Date toDate) {
+        Query q = OrderItems.em().createQuery("select o.order from OrderItems o where o.goods.materialType=:materialType " +
+                "and o.order.orderType=:orderType and o.status=:status " +
+                "and o.createdAt<=:createdAt group by o.order");
+        q.setParameter("materialType", MaterialType.REAL);
+        q.setParameter("orderType", OrderType.CONSUME);
+        q.setParameter("status", OrderStatus.PAID);
+        q.setParameter("createdAt", toDate);
+        return q.getResultList();
     }
 
 
@@ -405,29 +412,16 @@ public class OrderItems extends Model {
      * 查询指定时间之前的sku出库表.
      */
     public static Map<Sku, Long> findTakeout(Date toDate) {
-        List<TakeoutItem> takeoutItems = find("select new models.order.OrderItems.TakeoutItem(distinct(goods.sku),sum(buyNumber)) " +
-                "from OrderItems where status=? and createdAt = ? and goods.materialType=? " +
-                "group by goods.sku", OrderStatus.PAID, toDate, MaterialType.REAL).fetch();
+        List<TakeoutItem> takeoutItems = find("select new models.order.TakeoutItem(o.goods, sum(o.buyNumber)) " +
+                "from OrderItems o where o.status=? and o.createdAt <= ? and o.goods.materialType=? " +
+                "group by o.goods", OrderStatus.PAID, toDate, MaterialType.REAL).fetch();
         Map<Sku, Long> takeoutMap = new HashMap<Sku, Long>();
         for (TakeoutItem takeoutItem : takeoutItems) {
-            if (takeoutItem.count > 0) {
+            if (takeoutItem.sku != null && takeoutItem.count != null && takeoutItem.count.longValue() > 0) {
                 takeoutMap.put(takeoutItem.sku, takeoutItem.count);
             }
         }
         return takeoutMap;
-    }
-
-    /**
-     * 出库表
-     */
-    class TakeoutItem {
-        Sku sku;
-        Long count;
-
-        TakeoutItem(Sku sku, Long count) {
-            this.sku = sku;
-            this.count = count;
-        }
     }
 
     /**
@@ -449,6 +443,22 @@ public class OrderItems extends Model {
         return soldAmount == null ? BigDecimal.ZERO : soldAmount;
     }
 
+    /**
+     * 检查订单中的实物商品是否有对应的sku.
+     *
+     * @param orderId
+     * @return
+     */
+    public static Goods findNoSkuGoods(Long orderId) {
+        List<OrderItems> orderItemsList = find("order.id=? and goods.materialType=?", orderId, MaterialType.REAL).fetch();
+        for (OrderItems orderItems : orderItemsList) {
+            if (orderItems.goods.sku == null) {
+                return orderItems.goods;
+            }
+        }
+        return null;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder().appendSuper(super.hashCode()).append(this.order).append(this.goods)
@@ -466,5 +476,38 @@ public class OrderItems extends Model {
         final OrderItems other = (OrderItems) obj;
         return new EqualsBuilder().appendSuper(super.equals(obj)).append(this.order, other.order)
                 .append(this.goods, other.goods).append(this.id, other.id).isEquals();
+    }
+
+    /**
+     * 计算平均售价.
+     *
+     * @param stockoutOrderList
+     * @param takeoutSkuMap
+     * @return
+     */
+    public static Map<Sku, BigDecimal> getSkuAveragePriceMap(List<Order> stockoutOrderList, Map<Sku, Long> takeoutSkuMap) {
+        Map<Sku, BigDecimal> averagePriceMap = new HashMap<>();
+        Map<Sku, BigDecimal> amountMap = new HashMap<>();
+
+        for (Order order : stockoutOrderList) {
+            for (OrderItems orderItem : order.orderItems) {
+                BigDecimal amount = amountMap.get(orderItem.goods.sku);
+                final BigDecimal sum = orderItem.salePrice.multiply(BigDecimal.valueOf(orderItem.buyNumber));
+                if (amount == null) {
+                    amount = sum;
+                } else {
+                    amount.add(sum);
+                }
+                amountMap.put(orderItem.goods.sku, amount);
+            }
+        }
+
+        BigDecimal average = BigDecimal.ZERO;
+        for (Sku sku : amountMap.keySet()) {
+            average = amountMap.get(sku).divide(BigDecimal.valueOf(takeoutSkuMap.get(sku)), 2, BigDecimal.ROUND_HALF_UP);
+            averagePriceMap.put(sku, average);
+        }
+
+        return averagePriceMap;
     }
 }

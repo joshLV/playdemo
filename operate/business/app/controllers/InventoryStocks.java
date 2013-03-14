@@ -1,21 +1,23 @@
 package controllers;
 
-import models.sales.*;
+import models.sales.Brand;
+import models.sales.InventoryStock;
+import models.sales.InventoryStockItem;
+import models.sales.InventoryStockItemCondition;
+import models.sales.Sku;
+import models.sales.StockActionType;
 import models.supplier.Supplier;
-import models.supplier.SupplierCategory;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
-import play.db.jpa.JPA;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import javax.persistence.Query;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
+
 
 /**
  * 库存管理
@@ -153,6 +155,7 @@ public class InventoryStocks extends Controller {
         Sku sku = Sku.findById(id);
         renderJSON(sku.getRemainCount());
     }
+
 
     private static void checkStockOutCount(InventoryStockItem stockItem) {
         Long stockItemRemainCount = stockItem.sku.getRemainCount();
