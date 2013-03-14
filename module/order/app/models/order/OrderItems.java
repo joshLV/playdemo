@@ -111,6 +111,12 @@ public class OrderItems extends Model {
     @Column(name = "options")
     public String options;
 
+    /**
+     * 导入订单的渠道商品编码，如：京东订单表中的商品ID
+     */
+    @Column(name = "outer_goods_no")
+    public String outerGoodsNo;
+
     @Column(name = "seckill_goods_item_id", nullable = true)
     public Long secKillGoodsItemId;
 
