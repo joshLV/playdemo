@@ -16,8 +16,8 @@ public class OrderShippingInfoFactory extends ModelFactory<OrderShippingInfo> {
     public OrderShippingInfo define() {
         OrderItems orderItems = FactoryBoy.lastOrCreate(OrderItems.class);
         OrderShippingInfo shippingInfo = new OrderShippingInfo();
-        shippingInfo.address   = "上海市徐汇区测试地址" + FactoryBoy.sequence(OrderShippingInfo.class) + "号";
-        shippingInfo.buyNumber = orderItems.buyNumber;
+        shippingInfo.address = "上海市徐汇区测试地址" + FactoryBoy.sequence(OrderShippingInfo.class) + "号";
+        shippingInfo.buyNumber = orderItems.buyNumber.intValue();
         shippingInfo.salePrice = orderItems.salePrice;
         shippingInfo.paidAt = orderItems.order.paidAt;
         shippingInfo.tel = "021-31343113";
