@@ -258,6 +258,17 @@ public class Order extends Model {
         super._delete();
     }
 
+    @Transient
+    public long getRealGoodsOrderItemCount() {
+        long count = 0L;
+        for (OrderItems orderItem : orderItems) {
+            if (orderItem.goods.materialType == MaterialType.REAL) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     private Order(long userId, AccountType userType) {
         this.userId = userId;
         this.userType = userType;

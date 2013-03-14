@@ -36,26 +36,21 @@ public class SkuTakeouts extends Controller {
         //1 统计总的待出库货品及数量
         Map<Sku, Long> preparingTakeoutSkuMap = OrderItems.findTakeout(toDate);
         //2 获取无法出库订单项
-        List<OrderItems> deficientOrderItemList = InventoryStock.getDeficientOrderItemList(toDate);
-        //3 统计缺货订单
-        Map<Sku, List<Order>> deficientOrderMap = InventoryStock.getDeficientOrders(deficientOrderItemList);
-        //4 无法出库订单
+        List<OrderItems> deficientOrderItemList = InventoryStock.getDeficientOrderItemList(preparingTakeoutSkuMap,toDate);
+        //3 无法出库订单
         List<Order> deficientOrderList = InventoryStock.getOrderListByItem(deficientOrderItemList);
-        //5 统计应该出库货品及数量
+        //4 统计应该出库货品及数量
         Map<Sku, Long> takeoutSkuMap = InventoryStock.statisticOutCount(preparingTakeoutSkuMap, deficientOrderList);
-        //6 获取待出库订单
+        //5 获取待出库订单
         List<Order> allPaidOrders = OrderItems.findPaidRealGoodsOrders(toDate);
-        for (Order allPaidOrder : allPaidOrders) {
-            System.out.println("allPaidOrder.id:" + allPaidOrder.id);
-        }
-        //7 获取待出库订单数
+        //6 获取待出库订单数
         long paidOrderCount = allPaidOrders.size();
-        //8 可出库订单
+        //7 可出库订单
         List<Order> stockoutOrderList = OrderItems.getStockOutOrders(allPaidOrders, deficientOrderList);
-        //9 获取可出库订单计算出的货品平均售价
+        //8 获取可出库订单计算出的货品平均售价
         Map<Sku, BigDecimal> skuAveragePriceMap = OrderItems.getSkuAveragePriceMap(stockoutOrderList, takeoutSkuMap);
 
-        render(paidOrderCount, takeoutSkuMap, skuAveragePriceMap, stockoutOrderList, deficientOrderList, toDate);
+        render(paidOrderCount, preparingTakeoutSkuMap, takeoutSkuMap, skuAveragePriceMap, stockoutOrderList, deficientOrderList, toDate);
     }
 
     /**
@@ -66,19 +61,17 @@ public class SkuTakeouts extends Controller {
         //1 统计总的待出库货品及数量
         Map<Sku, Long> preparingTakeoutSkuMap = OrderItems.findTakeout(toDate);
         //2 获取无法出库订单项
-        List<OrderItems> deficientOrderItemList = InventoryStock.getDeficientOrderItemList(toDate);
-        //3 统计缺货订单
-        Map<Sku, List<Order>> deficientOrderMap = InventoryStock.getDeficientOrders(deficientOrderItemList);
-        //4 无法出库订单
+        List<OrderItems> deficientOrderItemList = InventoryStock.getDeficientOrderItemList(preparingTakeoutSkuMap, toDate);
+        //3 无法出库订单
         List<Order> deficientOrderList = InventoryStock.getOrderListByItem(deficientOrderItemList);
-        //5 统计应该出库货品及数量
+        //4 统计应该出库货品及数量
         Map<Sku, Long> takeoutSkuMap = InventoryStock.statisticOutCount(preparingTakeoutSkuMap, deficientOrderList);
-        //6 获取待出库订单
+        //5 获取待出库订单
         List<Order> allPaidOrders = OrderItems.findPaidRealGoodsOrders(toDate);
-        //7 可出库订单
+        //6 可出库订单
         List<Order> stockoutOrderList = OrderItems.getStockOutOrders(allPaidOrders, deficientOrderList);
 
-        //8 标记出库订单的状态为待打包状态
+        //7 标记出库订单的状态为待打包状态
         for (Order dbOrder : stockoutOrderList) {
             final Goods noSkuGoods = OrderItems.findNoSkuGoods(dbOrder.id);
             if (dbOrder.containsRealGoods() && noSkuGoods != null) {
@@ -86,10 +79,10 @@ public class SkuTakeouts extends Controller {
                 render("SkuTakeouts/result.html");
             }
         }
-        //9 创建总出库单
+        //8 创建总出库单
         InventoryStock stock = InventoryStock.createInventoryStock(Supplier.getShihui(), operatorName);
 
-        //10 创建出库单对应的批次
+        //9 创建出库单对应的批次
         OrderBatch orderBatch = new OrderBatch(Supplier.getShihui(), operatorName);
         orderBatch.stock = stock;
         orderBatch.save();
@@ -104,10 +97,10 @@ public class SkuTakeouts extends Controller {
             }
         }
 
-        //11 获取可出库订单计算出的货品平均售价
+        //10 获取可出库订单计算出的货品平均售价
         Map<Sku, BigDecimal> skuAveragePriceMap = OrderItems.getSkuAveragePriceMap(stockoutOrderList, takeoutSkuMap);
 
-        //12 按商品创建出库单明细
+        //11 按商品创建出库单明细
         for (Sku sku : takeoutSkuMap.keySet()) {
             //创建出库详单信息
             InventoryStock.createInventoryStockItem(sku, takeoutSkuMap.get(sku), stock, skuAveragePriceMap.get(sku));
