@@ -1,8 +1,7 @@
 package unit;
 
-import java.math.BigDecimal;
-import java.util.List;
-
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.accounts.AccountType;
 import models.admin.SupplierUser;
 import models.consumer.User;
@@ -13,14 +12,13 @@ import models.sales.Category;
 import models.sales.Goods;
 import models.sales.Shop;
 import models.supplier.Supplier;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.Play;
 import play.test.UnitTest;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 用于优惠券合并产生相同replayCode的测试
@@ -241,7 +239,7 @@ public class ECouponSmsMergeTest extends UnitTest {
      * @throws Exception
      */
     private void generateECoupon(Order order, Goods goods, User consumer,
-                    int number) throws Exception {
+                    long number) throws Exception {
         OrderItems item = order.addOrderItem(goods, number, consumer.mobile,
                         groupedGoods1.salePrice, // 最终成交价
                         groupedGoods1.getResalerPriceOfUhuila()// 一百券作为分销商的成本价

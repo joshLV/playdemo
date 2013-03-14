@@ -54,7 +54,7 @@ public class LogisticImportData {
     /**
      * 购买数量
      */
-    public Integer buyNumber;
+    public Long buyNumber;
 
 
     /**
@@ -195,11 +195,11 @@ public class LogisticImportData {
         this.salePrice = salesPrice;
     }
 
-    public Integer getBuyNumber() {
+    public Long getBuyNumber() {
         return buyNumber;
     }
 
-    public void setBuyNumber(Integer buyNumber) {
+    public void setBuyNumber(Long buyNumber) {
         this.buyNumber = buyNumber;
     }
 

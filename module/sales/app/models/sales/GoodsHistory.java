@@ -337,7 +337,7 @@ public class GoodsHistory extends Model {
      * 限购数量
      */
     @Column(name = "limit_number")
-    public Integer limitNumber = 0;
+    public Long limitNumber = 0L;
 
     @Column(name = "coupon_type")
     @Enumerated(EnumType.STRING)

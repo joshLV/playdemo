@@ -513,7 +513,7 @@ public class Goods extends Model {
      */
     @Column(name = "limit_number")
     @SolrField
-    public Integer limitNumber = 0;
+    public Long limitNumber = 0L;
 
     /**
      * 推荐指数.
