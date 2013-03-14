@@ -4,7 +4,7 @@
 
 <div>
     <legend>${title}</legend>
-    <form class="form-inline" name="frmlist" id="frmlist" action="@{OperateOrderShippingInfos.index()}" method="GET"
+    <form class="form-inline" name="frmlist" id="frmlist" action="@{DownloadOrderShippingInfos.index()}" method="GET"
           style="display: inline-block;">
         <label style="margin: 0 5px">商户:</label>
     #{select 'supplierId',id:'supplierId', class:'input-large', value:supplierId}
@@ -17,7 +17,7 @@
 #{if orderItemsList.size()}
     <span style="margin: 0 5px">待发货清单:${orderItemsList.size()}条</span>
 
-    <form action="@{OperateOrderShippingInfos.exportOrderShipping()}" method="POST" style="display: inline-block;">
+    <form action="@{DownloadOrderShippingInfos.exportOrderShipping()}" method="POST" style="display: inline-block;">
         <input type="hidden" name="supplierId" value="${supplierId}">
         #{if supplierId!=5}
             <button class="btn btn-primary" id="download" type="submit">下载</button>
@@ -44,7 +44,7 @@
             <td>${orderBatch.createdBy}</td>
             <td align="left">${orderBatch.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
             <td>
-                #{a @OperateOrderShippingInfos.exportOrderShipping(orderBatch.id, supplierId)}下载 #{/a}
+                #{a @DownloadOrderShippingInfos.exportOrderShipping(orderBatch.id, supplierId)}下载 #{/a}
             </td>
         </tr>
         #{/paginate.list}

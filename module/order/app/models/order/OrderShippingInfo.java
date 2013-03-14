@@ -5,6 +5,8 @@ import play.db.jpa.Model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -113,7 +115,8 @@ public class OrderShippingInfo extends Model {
     /**
      * 物流公司
      */
-    @Column(name = "express_company")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "express_company_id")
     public ExpressCompany expressCompany;
 
     /**

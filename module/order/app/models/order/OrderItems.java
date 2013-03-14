@@ -378,14 +378,12 @@ public class OrderItems extends Model {
         }
         return stockoutOrderItems;
     }
-/*
 
-    public static long countPaidOrders(Date toDate) {
-        Long count = count("goods.materialType=? and order.orderType=? and status=? " +
-                "and createdAt<=? group by order", MaterialType.REAL, OrderType.CONSUME, OrderStatus.PAID, toDate);
+    public static long countPaidOrders(Goods goods) {
+        Long count = find("select sum(buyNumber) from OrderItems where goods.materialType=? and order.orderType=? and status=? " +
+                "and goods=? and goods.skuCount is not null", MaterialType.REAL, OrderType.CONSUME, OrderStatus.PAID, goods).first();
         return count == null ? 0 : count;
     }
-*/
 
     public static List<Order> findPaidRealGoodsOrders(Date toDate) {
         Query q = OrderItems.em().createQuery("select o.order from OrderItems o where o.goods.materialType=:materialType " +

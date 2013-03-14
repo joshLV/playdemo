@@ -35,7 +35,7 @@ public class Skus extends Controller {
         JPAExtPaginator<Sku> skuList = Sku.findByCondition(condition, pageNumber,
                 PAGE_SIZE);
         skuList.setBoundaryControlsEnabled(true);
-        List<Supplier> supplierList = Supplier.findUnDeleted();
+        List<Supplier> supplierList = Supplier.findSuppliersByCanSaleReal();
         Long id = OperateRbac.currentUser().id;
         List<Brand> brandList = Brand.findByOrder(null, id);
         render(skuList, brandList, supplierList, pageNumber, condition);
@@ -81,7 +81,7 @@ public class Skus extends Controller {
     }
 
     private static void setInitParams() {
-        List<Supplier> supplierList = Supplier.findUnDeleted();
+        List<Supplier> supplierList = Supplier.findSuppliersByCanSaleReal();
         List<SupplierCategory> supplierCategoryList = SupplierCategory.findAll();
         renderArgs.put("supplierList", supplierList);
         renderArgs.put("supplierCategoryList", supplierCategoryList);

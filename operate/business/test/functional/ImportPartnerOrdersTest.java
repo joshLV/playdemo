@@ -129,6 +129,8 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
         assertIsOk(response);
         assertContentType("text/html", response);
 
+        OuterOrder o= (OuterOrder) OuterOrder.findAll().get(0);
+        System.out.println(o.message + ">>>>OuterOrder.findAll().get(0)");
         assertEquals(7, OuterOrder.count());
         assertEquals(7, Order.count());
         //未映射商品

@@ -372,7 +372,7 @@ public class LogisticImportData {
         // 生成OrderShippingInfo
         OrderShippingInfo orderShippingInfo = new OrderShippingInfo();
         orderShippingInfo.salePrice = this.salePrice;
-        orderShippingInfo.buyNumber = this.buyNumber;
+//        orderShippingInfo.buyNumber = this.buyNumber;
         orderShippingInfo.remarks = this.remarks;
         orderShippingInfo.expressInfo = this.expressInfo;
         orderShippingInfo.receiver = this.receiver;
