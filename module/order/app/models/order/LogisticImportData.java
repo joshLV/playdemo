@@ -37,6 +37,7 @@ public class LogisticImportData {
 
     /**
      * 商品ID
+     * FIXME: 这个goodsId貌似没有用，如果是外部goodsId是指outerGoodsNo。因为这是一个中间对象，不需要保存我们自己的goodsId
      */
     public String goodsId;
 
@@ -387,6 +388,7 @@ public class LogisticImportData {
         OrderItems orderItems = ybqOrder.addOrderItem(goods, buyNumber, phone, salePrice, salePrice);
         orderItems.shippingInfo = orderShippingInfo;
         orderItems.options = this.options;
+        orderItems.outerGoodsNo = this.outerGoodsNo;
         orderItems.save();
 
         ybqOrder.deliveryType = DeliveryType.LOGISTICS;
