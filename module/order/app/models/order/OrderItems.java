@@ -381,7 +381,7 @@ public class OrderItems extends Model {
     }
 */
 
-    public static List<Order> findPaidOrders(Date toDate) {
+    public static List<Order> findPaidRealGoodsOrders(Date toDate) {
         Query q = OrderItems.em().createQuery("select o.order from OrderItems o where o.goods.materialType=:materialType " +
                 "and o.order.orderType=:orderType and o.status=:status " +
                 "and o.createdAt<=:createdAt group by o.order");
@@ -417,7 +417,6 @@ public class OrderItems extends Model {
                 "group by o.goods", OrderStatus.PAID, toDate, MaterialType.REAL).fetch();
         Map<Sku, Long> takeoutMap = new HashMap<Sku, Long>();
         for (TakeoutItem takeoutItem : takeoutItems) {
-            System.out.println("takeoutItem.sku:" + takeoutItem.sku);
             if (takeoutItem.sku != null && takeoutItem.count != null && takeoutItem.count.longValue() > 0) {
                 takeoutMap.put(takeoutItem.sku, takeoutItem.count);
             }
@@ -477,5 +476,38 @@ public class OrderItems extends Model {
         final OrderItems other = (OrderItems) obj;
         return new EqualsBuilder().appendSuper(super.equals(obj)).append(this.order, other.order)
                 .append(this.goods, other.goods).append(this.id, other.id).isEquals();
+    }
+
+    /**
+     * 计算平均售价.
+     *
+     * @param stockoutOrderList
+     * @param takeoutSkuMap
+     * @return
+     */
+    public static Map<Sku, BigDecimal> getSkuAveragePriceMap(List<Order> stockoutOrderList, Map<Sku, Long> takeoutSkuMap) {
+        Map<Sku, BigDecimal> averagePriceMap = new HashMap<>();
+        Map<Sku, BigDecimal> amountMap = new HashMap<>();
+
+        for (Order order : stockoutOrderList) {
+            for (OrderItems orderItem : order.orderItems) {
+                BigDecimal amount = amountMap.get(orderItem.goods.sku);
+                final BigDecimal sum = orderItem.salePrice.multiply(BigDecimal.valueOf(orderItem.buyNumber));
+                if (amount == null) {
+                    amount = sum;
+                } else {
+                    amount.add(sum);
+                }
+                amountMap.put(orderItem.goods.sku, amount);
+            }
+        }
+
+        BigDecimal average = BigDecimal.ZERO;
+        for (Sku sku : amountMap.keySet()) {
+            average = amountMap.get(sku).divide(BigDecimal.valueOf(takeoutSkuMap.get(sku)), 2, BigDecimal.ROUND_HALF_UP);
+            averagePriceMap.put(sku, average);
+        }
+
+        return averagePriceMap;
     }
 }

@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -50,7 +51,7 @@ public class InventoryStock extends Model {
      */
     @Required
     @Enumerated(EnumType.STRING)
-    @Column(name = "action_type")
+    @Column(name = "action")
     public StockActionType actionType;
 
     /**
@@ -117,20 +118,18 @@ public class InventoryStock extends Model {
     /**
      * 统计到指定时间之前的所有未出库实物订单的Sku出库数量.
      *
-     * @param takeoutSkuMap 待出库sku及数量
-     * @param stockOrderMap 因缺货而无法发货的待发货订单
+     * @param takeoutSkuMap     待出库sku及数量
+     * @param deficientOrderMap 因缺货而无法发货的待发货订单
      * @return
      */
-    public static Map<Sku, Long> statisticOutCount(Map<Sku, Long> takeoutSkuMap, Map<Sku, List<Order>> stockOrderMap) {
-        for (List<Order> orders : stockOrderMap.values()) {
-            for (Order order : orders) {
-                //减少出库数量
-                for (OrderItems orderItem : order.orderItems) {
-                    Long count = takeoutSkuMap.get(orderItem.goods.sku);
-                    takeoutSkuMap.put(orderItem.goods.sku, count - orderItem.buyNumber);
-                }
-
+    public static Map<Sku, Long> statisticOutCount(Map<Sku, Long> takeoutSkuMap, List<Order> deficientOrders) {
+        for (Order deficientOrder : deficientOrders) {
+            //减少出库数量
+            for (OrderItems orderItem : deficientOrder.orderItems) {
+                Long count = takeoutSkuMap.get(orderItem.goods.sku);
+                takeoutSkuMap.put(orderItem.goods.sku, count - orderItem.buyNumber);
             }
+
         }
 
         return takeoutSkuMap;
@@ -139,34 +138,22 @@ public class InventoryStock extends Model {
     /**
      * 根据缺货商品数，返回相应的因缺货而无法发货的待发货订单.
      *
-     * @param takeoutSkuMap 待出库sku及数量
-     * @param toDate        截止时间
+     * @param takeoutSkuMap          待出库sku及数量
+     * @param deficientOrderItemList 缺货货品对应的订单项
+     * @param toDate                 截止时间
      * @return
      */
-    public static Map<Sku, List<Order>> getDeficientOrders(Map<Sku, Long> takeoutSkuMap, Date toDate) {
+    public static Map<Sku, List<Order>> getDeficientOrders(List<OrderItems> deficientOrderItemList) {
         Map<Sku, List<Order>> deficientOrderMap = new HashMap<>(); //因缺货而无法发货的待发货订单
-        Map<Sku, Long> stockout = new HashMap<>(); //缺货的货品及数量
-        //检查缺货情况
-        for (Sku sku : takeoutSkuMap.keySet()) {
-            Long outCount = takeoutSkuMap.get(sku);  //待出库数量
-            long remainCount = sku.getRemainCount();
-            if (outCount != null && outCount > 0 && remainCount < outCount) {
-                stockout.put(sku, outCount - remainCount);
-            }
-        }
-        if (stockout.size() == 0) {
-            return deficientOrderMap;
-        }
-        //提取缺货货品对应的所有需发货的订单项
-        List<OrderItems> orderItems = OrderItems.findPaid(stockout, toDate);
+
         //提取因缺货而无法发货的订单
-        for (OrderItems orderItem : orderItems) {
+        for (OrderItems orderItem : deficientOrderItemList) {
             List<Order> orderList = deficientOrderMap.get(orderItem.goods.sku);
             if (orderList == null) {
                 List<Order> orders = new ArrayList<>();
                 orders.add(orderItem.order);
                 deficientOrderMap.put(orderItem.goods.sku, orders);
-            } else {
+            } else if (!orderList.contains(orderItem.order)) {
                 orderList.add(orderItem.order);
             }
         }
@@ -225,10 +212,11 @@ public class InventoryStock extends Model {
         return stock;
     }
 
-    public static void createInventoryStockItem(Sku sku, Long count, InventoryStock stock) {
+    public static void createInventoryStockItem(Sku sku, Long count, InventoryStock stock, BigDecimal price) {
         InventoryStockItem stockItem = new InventoryStockItem(stock);
         stockItem.changeCount = count;
         stockItem.stock = stock;
+        stockItem.price = price;
         stockItem.sku = sku;
         stockItem.create();
     }

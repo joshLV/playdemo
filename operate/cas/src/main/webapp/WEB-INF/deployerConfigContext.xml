@@ -67,7 +67,7 @@
         + -->
     <bean id="authenticationManager" class="org.jasig.cas.authentication.AuthenticationManagerImpl">
         <!-- | This is the List of CredentialToPrincipalResolvers that identify what Principal is trying to authenticate.
-            | The AuthenticationManagerImpl considers them in order, finding a CredentialToPrincipalResolver which | supports the presented
+            | The AuthenticationManagerImpl considers them in deficientOrder, finding a CredentialToPrincipalResolver which | supports the presented
             credentials. | | AuthenticationManagerImpl uses these resolvers for two purposes. First, it uses them to identify the Principal
             | attempting to authenticate to CAS /login . In the default configuration, it is the DefaultCredentialsToPrincipalResolver
             | that fills this role. If you are using some other kind of credentials than UsernamePasswordCredentials, you will need to
@@ -126,7 +126,7 @@
 
     <!-- This bean defines the security roles for the Services Management application. Simple deployments can use the in-memory
         version. More robust deployments will want to use another option, such as the Jdbc version. The name of this should remain
-        "userDetailsService" in order for Spring Security to find it. -->
+        "userDetailsService" in deficientOrder for Spring Security to find it. -->
     <!-- <sec:user name="@@THIS SHOULD BE REPLACED@@" password="notused" authorities="ROLE_ADMIN" /> -->
 
     <sec:user-service id="userDetailsService">

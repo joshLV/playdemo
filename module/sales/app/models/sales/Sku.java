@@ -180,21 +180,10 @@ public class Sku extends Model {
      */
     @Transient
     public long getRemainCount() {
-        Query query = JPA.em().createQuery("SELECT SUM(st.remainCount) FROM InventoryStockItem st where st.sku.id= :skuId and st.deleted!= :deleted");
+        Query query = JPA.em().createQuery("SELECT SUM(st.remainCount) FROM InventoryStockItem st where st.sku.id= :skuId and st.deleted != :deleted");
         query.setParameter("skuId", id);
-        query.setParameter("deleted", com.uhuila.common.constants.DeletedStatus.DELETED);
+        query.setParameter("deleted", DeletedStatus.DELETED);
         Long count = (Long) query.getSingleResult();
         return count == null ? 0L : count;
-    }
-
-    /**
-     * 获取平均售价.
-     *
-     * @return
-     */
-    @Transient
-    public BigDecimal getAverageSalePrice() {
-        //todo
-        return BigDecimal.ZERO;
     }
 }

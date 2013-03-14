@@ -6,17 +6,17 @@
 #{/set}
 <div class="body">
     <legend>${title}</legend>
-    #{form @SkuTakeouts.stockOut(), id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
-    <input type="hidden" name="toDate" value="${toDate}" />
+#{form @SkuTakeouts.stockOut(), id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
+    <input type="hidden" name="toDate" value="${toDate.format('yyyy-MM-dd HH:mm:ss.sss')}"/>
     #{list stockoutOrderList, as:'stockoutOrder'}
-        <input type="hidden" name="stockoutOrderId" value="${stockoutOrder.id}" />
+        <input type="hidden" name="stockoutOrderId" value="${stockoutOrder.id}"/>
     #{/list}
     <table width="100%">
         <tr>
             <td width="100%">总计: ${paidOrderCount}个待处理订单 #{if
-                deficientOrderList?.size()>0}其中${deficientOrderCount}个订单因库存不足无法出库，<a id="show_order"
-                                                                                     href="#"
-                                                                                     target="_blank">查看无法出库的订单</a>#{/if}
+            deficientOrderList?.size()>0}其中${deficientOrderList.size()}个订单因库存不足无法出库，<a id="show_order"
+                                                                                       href="#"
+                                                                                       target="_blank">查看无法出库的订单</a>#{/if}
             </td>
         </tr>
     </table>
@@ -32,25 +32,25 @@
         </thead>
 
         <tbody>
-        #{set i:0/}
-        #{list items:takeoutSkuMap.keySet(), as:'sku'}
-        <tr>
-            <td align="center">${++i}</td>
-            <td>${sku?.name}</td>
-            <td>${sku?.averageSalePrice}</td>
-            <td>${sku?.remainCount}</td>
-            <td>${takeoutSkuMap.get(sku)}</td>
-        </tr>
-        #{/list}
+            #{set i:0/}
+            #{list items:takeoutSkuMap.keySet(), as:'sku'}
+            <tr>
+                <td align="center">${++i}</td>
+                <td>${sku?.name}</td>
+                <td>${skuAveragePriceMap.get(sku)}</td>
+                <td>${sku?.remainCount}</td>
+                <td>${takeoutSkuMap.get(sku)}</td>
+            </tr>
+            #{/list}
         </tbody>
     </table>
     <div class="form-actions">
         <button class="btn btn-primary" id="stock-out-btn" type="submit">确认出库</button>
-        <button class="btn btn-primary" id="refresh-btn" type="submit">重新计算</button>
+        <a href="/sku-takeouts" class="btn btn-info">重新计算</a>
     </div>
-    #{/form}
+#{/form}
 
-    <div id="order_list" style="display: none" >
+    <div id="order_list" style="display: none">
         <ul class="nav nav-tabs" style="margin-bottom:-1px;">
             <li class="active"><a href="#" data-toggle="tab">缺货订单</a></li>
         </ul>
@@ -67,19 +67,19 @@
             <tbody>
 
             #{list items:deficientOrderList, as:'deficientOrder'}
-            #{list items:deficientOrder.orderItems, as:'orderItem'}
-            <tr>
-                #{if orderItem_isFirst}
-                <td align="center" colspan="${orderItems.size()}">${deficientOrder.orderNumber}</td>
-                #{/if}
-                <td>${orderItem.goods.sku.name}</td>
-                <td>${orderItem.buyNumber}</td>
-                <td>#{if orderItem_isFirst}${orderItem.goods.sku.remainCount
+                #{list items:deficientOrder.orderItems, as:'orderItem'}
+                <tr>
+                    #{if orderItem_isFirst}
+                        <td align="center" colspan="${orderItems.size()}">${deficientOrder.orderNumber}</td>
+                    #{/if}
+                    <td>${orderItem.goods.sku.name}</td>
+                    <td>${orderItem.buyNumber}</td>
+                    <td>#{if orderItem_isFirst}${orderItem.goods.sku.remainCount
                     .subtract(takeoutSkuMap.get(orderItem.goods.sku))}#{/if}
-                    #{else}0#{/else}
-                </td>
-            </tr>
-            #{/list}
+                        #{else}0#{/else}
+                    </td>
+                </tr>
+                #{/list}
             #{/list}
             </tbody>
         </table>
