@@ -44,7 +44,7 @@ public class OrderShippingInfo extends Model {
      * TODO: 删除这一属性，值放orderItems中了
      */
     @Column(name = "buy_number")
-    public Long buyNumber;
+    public Integer buyNumber;
 
     /**
      * 备注
