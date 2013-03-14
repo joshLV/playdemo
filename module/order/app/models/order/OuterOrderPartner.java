@@ -12,6 +12,7 @@ public enum OuterOrderPartner {
     TB;     // 淘宝电子凭证
     //添加条目的话要在下面两个方法中也设置一下
 
+
     public String partnerName() {
         switch (this){
             case DD: return "当当";

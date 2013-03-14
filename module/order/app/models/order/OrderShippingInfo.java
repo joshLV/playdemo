@@ -1,6 +1,8 @@
 package models.order;
 
+import models.sales.InventoryStockItem;
 import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -104,11 +106,6 @@ public class OrderShippingInfo extends Model {
     @Column(name = "invoice_title")
     public String invoiceTitle;
 
-    /**
-     * 发货时间
-     */
-    @Column(name = "sent_at")
-    public Date sentAt;
 
     /**
      * 物流公司
@@ -127,4 +124,19 @@ public class OrderShippingInfo extends Model {
      */
     public Date uploadedAt;
 
+    /**
+     * 查询下载渠道带运单
+     *
+     * @param condition
+     * @param pageNumber
+     * @param pageSize
+     * @return
+     */
+    public static JPAExtPaginator<OrderShippingInfo> findByCondition(DownloadTrackNoCondition condition, int pageNumber, int pageSize) {
+        JPAExtPaginator<OrderShippingInfo> shippingPage = new JPAExtPaginator<>("OrderShippingInfo s", "s", OrderShippingInfo.class, condition.getFilter(), condition.getParams());
+        shippingPage.setPageNumber(pageNumber);
+        shippingPage.setPageSize(pageSize);
+        shippingPage.setBoundaryControlsEnabled(false);
+        return shippingPage;
+    }
 }
