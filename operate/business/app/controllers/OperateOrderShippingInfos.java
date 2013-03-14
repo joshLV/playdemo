@@ -25,13 +25,14 @@ import java.util.List;
 @ActiveNavigation("order_shipping_index")
 public class OperateOrderShippingInfos extends Controller {
     public static int PAGE_SIZE = 10;
+    public static final String EXCEL = "xlsx";
 
     @ActiveNavigation("order_shipping_index")
     public static void index(Long supplierId) {
         int pageNumber = getPageNumber();
         List<Supplier> supplierList = Supplier.findSuppliersByCanSaleReal();
         if (supplierId == null && supplierList.size() > 0) {
-            supplierId = 5L;
+            supplierId = Supplier.SHIHUI.id;
         }
         Supplier supplier = Supplier.findById(supplierId);
         if (supplier.canSaleReal == null || !supplier.canSaleReal) {
@@ -49,7 +50,7 @@ public class OperateOrderShippingInfos extends Controller {
      */
     private static List<OrderItems> getPreparedItems(Long orderBatchId, Long supplierId) {
         StringBuilder sql = new StringBuilder("goods.supplierId=? and goods.sku is not null ");
-        List<Object> params = new ArrayList();
+        List<Object> params = new ArrayList<>();
         params.add(supplierId);
         if (orderBatchId == null) {
             sql.append(" and orderBatch is null");
@@ -66,8 +67,9 @@ public class OperateOrderShippingInfos extends Controller {
     public static void exportOrderShipping(Long id, Long supplierId) {
         OperateUser operateUser = OperateRbac.currentUser();
         List<OrderItems> orderItemsList = getPreparedItems(id, supplierId);
-        request.format = "xlsx";
-        renderArgs.put("__FILE_NAME__", "发货单导出_" + System.currentTimeMillis() + ".xlsx");
+        request.format = EXCEL;
+        renderArgs.put("__FILE_NAME__", "发货单导出_" + System.currentTimeMillis() + "." + EXCEL);
+
         if (id == null) {
             Supplier supplier = Supplier.findUnDeletedById(supplierId);
             OrderBatch orderBatch = new OrderBatch(supplier, operateUser.userName).save();

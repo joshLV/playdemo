@@ -5,7 +5,7 @@
     <legend>${title}</legend>
     <span class="error">#{error 'stockoutOrderId'/}</span>
 #{if errors.size()==0}<span class="info">订单出库成功！</span>#{/if}
-#{else}#{list errors, as:'error'}${error.message()}#{/list}#{/else}
+#{else}#{list errors, as:'error'}${error.message()} #{/list}#{/else}
     <br/>
     <br/>
     <a href="/sku-takeouts" class="btn btn-primary">返回</a>
