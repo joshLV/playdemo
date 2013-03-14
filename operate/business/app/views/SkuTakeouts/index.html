@@ -13,21 +13,22 @@
     #{/list}
     <table width="100%">
         <tr>
-            <td width="100%">总计: ${paidOrderCount}个待处理订单 #{if
-            deficientOrderList?.size()>0}其中${deficientOrderList.size()}个订单因库存不足无法出库，<a id="show_order"
-                                                                                       href="#"
-                                                                                       target="_blank">查看无法出库的订单</a>#{/if}
+            <td width="100%">总计: <span class="label">${paidOrderCount}</span>个待处理订单 #{if
+            deficientOrderList?.size()>0}, 其中<span class="label">${deficientOrderList.size()}</span>个订单因库存不足无法出库，<a
+                        id="show_order"
+                        href="#">查看无法出库的订单</a>#{/if}
             </td>
         </tr>
     </table>
     <table class="table table-striped table-bordered table-condensed">
         <thead>
         <tr>
-            <th width="20%">序号</th>
+            <th width="10%">序号</th>
             <th width="30%">货品</th>
-            <th width="15%">平均售价</th>
+            <th width="10%">平均售价</th>
             <th width="15%">剩余库存</th>
-            <th width="20%">出库数量</th>
+            <th width="15%">出库数量</th>
+            <th width="20%">缺货数量</th>
         </tr>
         </thead>
 
@@ -40,6 +41,9 @@
                 <td>${skuAveragePriceMap.get(sku)}</td>
                 <td>${sku?.remainCount}</td>
                 <td>${takeoutSkuMap.get(sku)}</td>
+                <td><span
+                        class="label #{if preparingTakeoutSkuMap.get(sku)-takeoutSkuMap.get(sku) > 0}label-important#{/if}">${preparingTakeoutSkuMap.get(sku)-takeoutSkuMap.get(sku)}</span>
+                </td>
             </tr>
             #{/list}
         </tbody>
@@ -52,33 +56,36 @@
 
     <div id="order_list" style="display: none">
         <ul class="nav nav-tabs" style="margin-bottom:-1px;">
-            <li class="active"><a href="#" data-toggle="tab">缺货订单</a></li>
+            <li class="active"><a href="#" data-toggle="tab">缺货订单 <span
+                    class="label">${deficientOrderList.size()}</span>个</a></li>
         </ul>
         <table class="table table-striped table-bordered table-condensed">
             <thead>
             <tr>
-                <th width="10%">订单号</th>
-                <th width="20%">货品</th>
-                <th width="10%">待出库数量</th>
-                <th width="10%">实际可出库数量</th>
+                <th width="20%">订单号</th>
+                <th width="30%">货品</th>
+                <th width="20%">待出库数量</th>
             </tr>
             </thead>
 
             <tbody>
 
             #{list items:deficientOrderList, as:'deficientOrder'}
+                #{set showFirstRow:true /}
                 #{list items:deficientOrder.orderItems, as:'orderItem'}
-                <tr>
-                    #{if orderItem_isFirst}
-                        <td align="center" colspan="${orderItems.size()}">${deficientOrder.orderNumber}</td>
+                    #{if orderItem.goods.materialType == models.sales.MaterialType.REAL}
+                    <tr>
+
+                        #{if showFirstRow}
+                            <td align="center"
+                                rowspan="${deficientOrder.realGoodsOrderItemCount}">${deficientOrder?.orderNumber}</td>
+                            #{set showFirstRow:false /}
+                        #{/if}
+
+                        <td>${orderItem.goods.sku?.name}</td>
+                        <td>${orderItem.skuCount}</td>
+                    </tr>
                     #{/if}
-                    <td>${orderItem.goods.sku.name}</td>
-                    <td>${orderItem.buyNumber}</td>
-                    <td>#{if orderItem_isFirst}${orderItem.goods.sku.remainCount
-                    .subtract(takeoutSkuMap.get(orderItem.goods.sku))}#{/if}
-                        #{else}0#{/else}
-                    </td>
-                </tr>
                 #{/list}
             #{/list}
             </tbody>

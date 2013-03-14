@@ -105,18 +105,26 @@ public class InventoryStock extends Model {
 
 
     /**
-     * 统计到指定时间之前的所有未出库实物订单的Sku出库数量.
+     * 统计未出库实物订单的Sku出库数量.
      *
      * @param takeoutSkuMap     待出库sku及数量
      * @param deficientOrderMap 因缺货而无法发货的待发货订单
      * @return
      */
-    public static Map<Sku, Long> statisticOutCount(Map<Sku, Long> takeoutSkuMap, List<Order> deficientOrders) {
+    public static Map<Sku, Long> statisticOutCount(Map<Sku, Long> preparingTakeoutSkuMap, List<Order> deficientOrders) {
+        Map<Sku, Long> takeoutSkuMap = new HashMap<>();
+        for (Sku sku : preparingTakeoutSkuMap.keySet()) {
+            takeoutSkuMap.put(sku, preparingTakeoutSkuMap.get(sku));
+        }
         for (Order deficientOrder : deficientOrders) {
             //减少出库数量
             for (OrderItems orderItem : deficientOrder.orderItems) {
                 Long count = takeoutSkuMap.get(orderItem.goods.sku);
-                takeoutSkuMap.put(orderItem.goods.sku, count - orderItem.buyNumber);
+
+                if (count == null) {
+                    continue;
+                }
+                takeoutSkuMap.put(orderItem.goods.sku, count - orderItem.getSkuCount());
             }
 
         }
@@ -155,24 +163,23 @@ public class InventoryStock extends Model {
      * @param toDate 截止时间
      * @return
      */
-    public static List<OrderItems> getDeficientOrderItemList(Date toDate) {
+    public static List<OrderItems> getDeficientOrderItemList(Map<Sku, Long> preparingTakeoutSkuMap, Date toDate) {
         //统计总的待出库货品及数量
-        Map<Sku, Long> takeoutSkuMap = OrderItems.findTakeout(toDate);
-        Map<Sku, Long> stockout = new HashMap<>(); //缺货的货品及数量
+        Map<Sku, Long> deficientCountMap = new HashMap<>(); //缺货的货品及数量
         //检查缺货情况
-        for (Sku sku : takeoutSkuMap.keySet()) {
-            Long outCount = takeoutSkuMap.get(sku);  //待出库数量
+        for (Sku sku : preparingTakeoutSkuMap.keySet()) {
+            Long outCount = preparingTakeoutSkuMap.get(sku);  //待出库数量
             long remainCount = sku.getRemainCount();
 
             if (outCount != null && outCount > 0 && remainCount < outCount) {
-                stockout.put(sku, outCount - remainCount);
+                deficientCountMap.put(sku, outCount - remainCount);
             }
         }
-        if (stockout.size() == 0) {
+        if (deficientCountMap.size() == 0) {
             return new ArrayList<>();
         }
         //提取缺货货品对应的所有需发货的订单项
-        return OrderItems.findPaid(stockout, toDate);
+        return OrderItems.findPaid(deficientCountMap, toDate);
     }
 
     public static List<Order> getOrderListByItem(List<OrderItems> orderItems) {
