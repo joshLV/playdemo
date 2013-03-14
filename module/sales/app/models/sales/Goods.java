@@ -903,7 +903,6 @@ public class Goods extends Model {
             realStock = realSaleCount;
         } else { //实物的库存计算方法
             //(sku实际库存-(待发货销量*skuCount))/skuCount
-<<<<<<< HEAD
             if (sku == null) {
                 realStock = 0L;
                 return realStock;
@@ -912,12 +911,6 @@ public class Goods extends Model {
             long remainCount = sku.getRemainCount();
 
             realStock = (remainCount - (realSaleCount * skuCount)) / skuCount;
-=======
-            if (sku == null || skuCount == null || skuCount < 1 || sku.getRemainCount() == null){
-                return 0l;
-            }
-            return sku.getRemainCount() / skuCount;
->>>>>>> develop
         }
         realStock = realStock == null ? 0L : realStock;
         return realStock;
