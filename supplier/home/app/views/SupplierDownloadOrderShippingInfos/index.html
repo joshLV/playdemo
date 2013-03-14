@@ -1,6 +1,6 @@
 #{extends 'layout_trader/layout2.html' /}
 #{set title:'发货单下载' /}
-#{set menu:"logistic" /}
+#{set menu:"download-order-shipping" /}
 
 <div class="bd">
     <h2>${title}</h2>
@@ -8,7 +8,7 @@
         <tr>
             <th wdith="50%">发货单总数：${orderItemsList?.size()}</th>
             <td wdith="50%" align="left">
-                <a class="btn" href="@{SupplierOrderShippingInfos.exportOrderShipping()}">下载</a></td>
+                <a class="btn" href="@{SupplierDownloadOrderShippingInfos.exportOrderShipping()}">下载</a></td>
             </td>
         </tr>
     </table>
@@ -28,7 +28,7 @@
             <td>${orderBatch.createdBy}</td>
             <td align="left">${orderBatch.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
             <td>
-                <a href="@{SupplierOrderShippingInfos.exportOrderShipping(orderBatch.id)}">下载</a>
+                <a href="@{SupplierDownloadOrderShippingInfos.exportOrderShipping(orderBatch.id)}">下载</a>
             </td>
         </tr>
         #{/paginate.list}

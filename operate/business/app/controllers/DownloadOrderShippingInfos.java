@@ -22,23 +22,24 @@ import java.util.List;
  * Time: 上午11:14
  */
 @With(OperateRbac.class)
-@ActiveNavigation("order_shipping_index")
-public class OperateOrderShippingInfos extends Controller {
+@ActiveNavigation("download_order_shipping_index")
+public class DownloadOrderShippingInfos extends Controller {
     public static int PAGE_SIZE = 10;
     public static final String EXCEL = "xlsx";
 
-    @ActiveNavigation("order_shipping_index")
+    @ActiveNavigation("download_order_shipping_index")
     public static void index(Long supplierId) {
         int pageNumber = getPageNumber();
         List<Supplier> supplierList = Supplier.findSuppliersByCanSaleReal();
         if (supplierId == null && supplierList.size() > 0) {
-            supplierId = Supplier.SHIHUI.id;
+            supplierId = Supplier.getShihui().id;
         }
         Supplier supplier = Supplier.findById(supplierId);
         if (supplier.canSaleReal == null || !supplier.canSaleReal) {
             error("have no real goods!");
         }
         List<OrderItems> orderItemsList = getPreparedItems(null, supplierId);
+        System.out.println(orderItemsList.size() + ">>>>orderItemsList");
         ModelPaginator<OrderBatch> orderBatchList = OrderBatch.findBySupplier(supplierId, pageNumber, PAGE_SIZE);
         render(orderItemsList, orderBatchList, supplierList, supplierId);
     }
@@ -49,6 +50,7 @@ public class OperateOrderShippingInfos extends Controller {
      * @return
      */
     private static List<OrderItems> getPreparedItems(Long orderBatchId, Long supplierId) {
+        System.out.println(supplierId + ">>>>supplierId");
         StringBuilder sql = new StringBuilder("goods.supplierId=? and goods.sku is not null ");
         List<Object> params = new ArrayList<>();
         params.add(supplierId);

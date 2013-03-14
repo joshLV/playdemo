@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import play.Logger;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -232,6 +233,17 @@ public class LogisticImportData {
     }
 
     public void setPhone(String phone) {
+        if (phone.indexOf("E") >=0) {
+            try{
+                Double p = Double.parseDouble(phone);
+                DecimalFormat df = new DecimalFormat("#");
+                this.phone = df.format(p);
+                return;
+            }catch (NumberFormatException e) {
+                // ignore
+                return;
+            }
+        }
         this.phone = phone;
     }
 

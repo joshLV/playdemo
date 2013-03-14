@@ -21,8 +21,9 @@ import java.util.List;
  * Time: 下午3:49
  */
 @With({SupplierRbac.class, SupplierInjector.class})
-public class SupplierOrderShippingInfos extends Controller {
+public class SupplierDownloadOrderShippingInfos extends Controller {
     public static int PAGE_SIZE = 10;
+    public static final String EXCEL = "xlsx";
 
     public static void index() {
         int pageNumber = getPageNumber();
@@ -59,8 +60,8 @@ public class SupplierOrderShippingInfos extends Controller {
     public static void exportOrderShipping(Long id) {
         SupplierUser supplierUser = SupplierRbac.currentUser();
         List<OrderItems> orderItemsList = getPreparedItems(id);
-        request.format = "xlsx";
-        renderArgs.put("__FILE_NAME__", "发货单导出_" + System.currentTimeMillis() + ".xlsx");
+        request.format = EXCEL;
+        renderArgs.put("__FILE_NAME__", "发货单导出_" + System.currentTimeMillis() + "." + EXCEL);
         if (id == null) {
             OrderBatch orderBatch = new OrderBatch(supplierUser.supplier, supplierUser.userName).save();
             //更新orderItems的状态为：代打包

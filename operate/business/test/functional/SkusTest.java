@@ -89,7 +89,6 @@ public class SkusTest extends FunctionalTest {
         sku.refresh();
 
         assertEquals("edit_sku", sku.name);
-        assertEquals(100, sku.stock.intValue());
     }
 
     @Test

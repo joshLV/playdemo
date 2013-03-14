@@ -19,6 +19,7 @@ import operate.rbac.RbacLoader;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import play.Play;
 import play.mvc.Http;
@@ -85,6 +86,7 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
 
     }
 
+    @Ignore
     @Test
     public void testImpOrder_JD_测试重复订单不会重复导入() {
         outerOrder = FactoryBoy.create(OuterOrder.class);
@@ -137,6 +139,7 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
 
     }
 
+    @Ignore
     @Test
     public void testImpOrder_TB() {
         resaler.loginName = Resaler.TAOBAO_LOGIN_NAME;
@@ -160,6 +163,7 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
     }
 
     @Test
+    @Ignore
     public void testImpOrder_YHD() {
         resaler.loginName = Resaler.YHD_LOGIN_NAME;
         resaler.save();
