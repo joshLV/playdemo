@@ -12,12 +12,12 @@ require:
     - play1 -> factory-boy 1.0
     - play1 -> play-solr 0.2.28
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
-    - commons-httpclient -> commons-httpclient 3.1
+#    - commons-httpclient -> commons-httpclient 3.1
     - net.coobird -> thumbnailator 0.4.1
     - org.apache.poi -> ooxml-schemas 1.0
     - view_ext -> view_ext
     - layout_operate -> layout_operate
-    - commons-lang -> commons-lang 2.6
+#    - commons-lang -> commons-lang 2.6
     - sales -> sales
     - supplier -> supplier
     - paginate_ext -> paginate_ext
@@ -47,9 +47,11 @@ repositories:
         root:       "http://dev.uhuila.cn/nexus/content/groups/public"
         contains:
             - com.uhuila.utils -> *
-            - commons-lang -> *
+#            - commons-lang -> *
             - org.jsoup -> *
             - com.taobao -> *
+            - org.apache.poi -> *
+            - net.coobird -> *
         m2compatible: true
 
     - play1ContributedModules:
