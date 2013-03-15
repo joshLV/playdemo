@@ -4,12 +4,7 @@ import models.sales.InventoryStockItem;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -110,8 +105,15 @@ public class OrderShippingInfo extends Model {
     /**
      * 物流公司
      */
-    @Column(name = "express_company")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "express_company_id", nullable = false)
     public ExpressCompany expressCompany;
+
+    /*
+        渠道快递公司对应的编号
+    */
+    @Transient
+    public String channelExpressNo;
 
     /**
      * 物流单号

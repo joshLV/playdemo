@@ -454,9 +454,18 @@ POST    /real/import-order-shipping             ImportOrderShippingInfos.upload
 GET     /real/download-order-shipping             OperateOrderShippingInfos.index
 POST    /real/download-order-shipping/export      OperateOrderShippingInfos.exportOrderShipping
 
+
+
+
+
+
 # 下载渠道运单号上报文件
-GET     /real/partner/download-track-nos          real.DownloadTrackNos.index
-GET     /real/partner/download-track-nos/{partner} real.DownloadTrackNos.download
+GET     /real/partner/download-track-nos                   real.DownloadTrackNos.index
+GET     /real/partner/download-track-nos/download/{outerGoodsNo}          real.DownloadTrackNos.download
+GET     /real/partner/download-track-nos/download          real.DownloadTrackNos.download
+#GET     /real/partner/jd-shipping-excel                    real.DownloadTrackNos.jdShippingExcelOut
+#GET     /real/partner/yhd-shipping-excel                   real.DownloadTrackNos.yhdShippingExcelOut
+
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

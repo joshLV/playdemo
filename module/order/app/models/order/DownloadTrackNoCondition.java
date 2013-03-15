@@ -47,15 +47,15 @@ public class DownloadTrackNoCondition implements Serializable {
         }
 
         if (sentBeginAt != null) {
-            builder.append(" and oi.shippingInfo.id in (select s.id from s.orderItems oi where oi.sendAt >=:sentBeginAt)");
+            builder.append(" and oi.sendAt >=:sentBeginAt)");
             paramMap.put("sentBeginAt", sentBeginAt);
         }
         if (paidEndAt != null) {
-            builder.append(" and oi.shippingInfo.id in (select s.id from s.orderItems oi where oi.sendAt <=:sentEndAt)");
+            builder.append(" and oi.sendAt <=:sentEndAt)");
             paramMap.put("sentEndAt", com.uhuila.common.util.DateUtil.getEndOfDay(sentEndAt));
         }
         if (unDownloaded) {
-            builder.append(" and oi.shippingInfo.uploadedAt is null");
+            builder.append(" and oi.shippingInfo.uploadedAt is not null");
         }
         return builder.toString();
     }

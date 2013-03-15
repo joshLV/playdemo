@@ -1,10 +1,11 @@
 package controllers.real;
 
+import cache.CacheCallBack;
+import cache.CacheHelper;
 import controllers.OperateRbac;
-import models.order.DownloadTrackNoCondition;
-import models.order.DownloadTrackNoReport;
-import models.order.OrderShippingInfo;
-import models.order.OuterOrderPartner;
+import models.accounts.AccountType;
+import models.order.*;
+import models.resale.Resaler;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
@@ -13,8 +14,7 @@ import play.mvc.Controller;
 import play.mvc.With;
 import util.DateHelper;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 下载带运单号的跟踪表文件，供上传到不同.
@@ -44,18 +44,8 @@ public class DownloadTrackNos extends Controller {
 //        分页
         ValuePaginator<DownloadTrackNoReport> shippingList = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
         render(shippingList, pageNumber, condition);
-//        render(condition);
     }
 
-    /**
-     * 通过下载链接下载对应的excel文件.
-     *
-     * @param partner
-     * @param outGoodsId
-     */
-    public static void download(OuterOrderPartner partner, Long outGoodsId) {
-
-    }
 
     private static int getPage() {
         String page = request.params.get("page");
@@ -64,6 +54,100 @@ public class DownloadTrackNos extends Controller {
         }
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         return pageNumber;
+    }
+
+    private static void jdShippingExcelOut(OuterOrderPartner partner, Date paidBeginAt, Date paidEndAt, Date sentBeginAt, Date sentEndAt, Boolean unDownloaded, String outerGoodsNo) {
+        List<OrderItems> orderItemsList = DownloadTrackNoReport.queryOrderItems(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, unDownloaded, outerGoodsNo);
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "京东发货单导出_" + System.currentTimeMillis() + ".xls");
+        CacheHelper.preRead(CacheHelper.getCacheKey(models.order.ExpressCompany.CACHEKEY, "CHANNEL"));
+        //更新orderItems的状态为：已上传
+        for (OrderItems item : orderItemsList) {
+            final Long expressId = item.shippingInfo.expressCompany.id;
+            Map<String, String> channelExpressMap = CacheHelper.getCache(CacheHelper.getCacheKey(models.order.ExpressCompany.CACHEKEY, "CHANNEL"), new CacheCallBack<Map<String, String>>() {
+                @Override
+                public Map<String, String> loadData() {
+                    return models.order.ExpressCompany.findChannelExpress(expressId);
+                }
+            });
+            item.status = OrderStatus.UPLOADED;
+            OuterOrder outerOrder = OuterOrder.getOuterOrder(item.order);
+            item.outerOrderId = outerOrder.orderId;
+            if (channelExpressMap.size() == 0) {
+                errors(partner.partnerName() + "没有对应的" + item.shippingInfo.expressCompany.name + "快递编码");
+            } else if (StringUtils.isNotBlank(channelExpressMap.get(partner.partnerStringName()))) {
+                item.shippingInfo.channelExpressNo = channelExpressMap.get(partner.partnerStringName());
+            } else {
+                render("real/DownloadTrackNos/errors.html", partner.partnerName() + "没有对应的" + item.shippingInfo.expressCompany.name + "快递编码");
+            }
+        }
+
+        for (OrderItems item : orderItemsList) {
+            item.save();
+        }
+
+        render("real/DownloadTrackNos/jdShippingExcelOut.xls", orderItemsList);
+    }
+
+    public static void yhdShippingExcelOut(OuterOrderPartner partner, Date paidBeginAt, Date paidEndAt, Date sentBeginAt, Date sentEndAt, Boolean unDownloaded, String outerGoodsNo) {
+        List<OrderItems> orderItemsList = DownloadTrackNoReport.queryOrderItems(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, unDownloaded, outerGoodsNo);
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "一号店发货单导出_" + System.currentTimeMillis() + ".xls");
+        CacheHelper.preRead(CacheHelper.getCacheKey(models.order.ExpressCompany.CACHEKEY, "CHANNEL"));
+        //更新orderItems的状态为：已上传
+        for (OrderItems item : orderItemsList) {
+            final Long expressId = item.shippingInfo.expressCompany.id;
+            Map<String, String> channelExpressMap = CacheHelper.getCache(CacheHelper.getCacheKey(models.order.ExpressCompany.CACHEKEY, "CHANNEL"), new CacheCallBack<Map<String, String>>() {
+                @Override
+                public Map<String, String> loadData() {
+                    return models.order.ExpressCompany.findChannelExpress(expressId);
+                }
+            });
+            item.status = OrderStatus.UPLOADED;
+            OuterOrder outerOrder = OuterOrder.getOuterOrder(item.order);
+            item.outerOrderId = outerOrder.orderId;
+            if (channelExpressMap.size() == 0) {
+                errors(partner.partnerName() + "没有对应的" + item.shippingInfo.expressCompany.name + "快递编码");
+            } else if (StringUtils.isNotBlank(channelExpressMap.get(partner.partnerStringName()))) {
+                item.shippingInfo.channelExpressNo = channelExpressMap.get(partner.partnerStringName());
+            } else {
+                render("real/DownloadTrackNos/errors.html", partner.partnerName() + "没有对应的" + item.shippingInfo.expressCompany.name + "快递编码");
+            }
+        }
+
+        for (OrderItems item : orderItemsList) {
+            item.save();
+        }
+
+        render("real/DownloadTrackNos/yhdShippingExcelOut.xls", orderItemsList);
+    }
+
+    /**
+     * 通过下载链接下载对应的excel文件.
+     *
+     * @param partner
+     * @param paidBeginAt
+     * @param paidEndAt
+     * @param sentBeginAt
+     * @param sentEndAt
+     * @param unDownloaded
+     * @param outerGoodsNo
+     */
+    public static void download(OuterOrderPartner partner, Date paidBeginAt, Date paidEndAt, Date sentBeginAt, Date sentEndAt, Boolean unDownloaded, String outerGoodsNo) {
+        switch (partner) {
+            case JD:
+                jdShippingExcelOut(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, unDownloaded, outerGoodsNo);
+                break;
+            case YHD:
+                yhdShippingExcelOut(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, unDownloaded, outerGoodsNo);
+                break;
+            default:
+                renderText("不支持类型");
+        }
+    }
+
+    public static void errors(String errorInfo) {
+        renderText(errorInfo);
     }
 
 }

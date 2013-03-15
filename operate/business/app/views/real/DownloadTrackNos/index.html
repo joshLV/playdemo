@@ -9,11 +9,11 @@
 <div class="body">
     <legend>${title}</legend>
 
-    <form class="well form-inline" action="@{real.DownloadTrackNos.index()}" method="GET" id="form">
+    <form class="well form-inline" action="@{real.DownloadTrackNos.index()}" method="GET" id="channel_shipping_form">
         <label class="control-label">渠道:</label>
-    #{select 'condition.outerOrderPartner', value:condition.outerOrderPartner, id:'condition_outer_order_partner_type', class:"input-small"}
+    #{select 'condition.outerOrderPartner', value:condition?.outerOrderPartner, id:'condition_outer_order_partner_type', class:"input-small"}
         #{option "JD"}京东#{/option}
-        #{option "TB"}淘宝#{/option}
+    *{#{option "TB"}淘宝#{/option}}*
         #{option "YHD"}一号店#{/option}
     #{/select}
 
@@ -33,9 +33,14 @@
         <input type="checkbox" name="condition.unDownloaded" id="unDownloaded" class="input-medium"
                value="${condition?.unDownloaded}" ${condition?.unDownloaded?'checked':''}/>
         未下载的运单&nbsp;&nbsp;
-        <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
+        <button class="btn btn-primary" id="searchbtn" onclick="formSearchSubmit()" type="submit">搜索</button>
+
+        <a class="btn btn-primary"
+           href="/real/partner/download-track-nos/download?partner=${condition?.outerOrderPartner}&paidBeginAt=${condition?.paidBeginAt}&paidEndAt=${condition?.paidEndAt}&sentBeginAt=${condition?.sentBeginAt}&sentEndAt=${condition?.sentEndAt}&unDownloaded=${condition?.unDownloaded}">下载</a>
+
 
     </form>
+
     <table class="table table-striped table-bordered table-condensed">
         <thead>
         <tr>
@@ -57,7 +62,9 @@
             <td style="text-align:right;">
             ${(shipping?.totalAmount?:0).formatCurrency('CNY')}
             </td>
-            <td>...</td>
+            <td>
+                <a href="/real/partner/download-track-nos/download?partner=${condition?.outerOrderPartner}&paidBeginAt=${condition?.paidBeginAt}&paidEndAt=${condition?.paidEndAt}&sentBeginAt=${condition?.sentBeginAt}&sentEndAt=${condition?.sentEndAt}&unDownloaded=${condition?.unDownloaded}&outerGoodsNo=${shipping?.orderItems?.outerGoodsNo}">下载</a>
+            </td>
         </tr>
         #{/paginate.list}
         </tbody>

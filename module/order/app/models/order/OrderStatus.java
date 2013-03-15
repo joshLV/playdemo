@@ -10,6 +10,8 @@ public enum OrderStatus{
     CANCELED,//交易关闭
     
     //订单明细的状态
-    SENT//已发送或已发货
+    SENT,//已发送或已发货
+
+    UPLOADED  //渠道运单已上传
     
 }

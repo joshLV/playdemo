@@ -44,7 +44,7 @@
             <td>${orderBatch.createdBy}</td>
             <td align="left">${orderBatch.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
             <td>
-                #{a @OperateOrderShippingInfos.exportOrderShipping(orderBatch.id, supplierId)}下载 #{/a}
+                #{a @OperateOrderShippingInfos.download(orderBatch.id, supplierId)}下载 #{/a}
             </td>
         </tr>
         #{/paginate.list}

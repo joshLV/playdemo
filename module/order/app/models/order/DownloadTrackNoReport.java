@@ -1,9 +1,14 @@
 package models.order;
 
+import models.accounts.AccountType;
+import models.resale.Resaler;
+import org.apache.commons.lang.StringUtils;
 import play.db.jpa.JPA;
 
 import javax.persistence.Query;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,19 +33,9 @@ public class DownloadTrackNoReport {
      */
     public BigDecimal totalAmount;
 
-    //String outerGoodsNo, String goodsName
-    //, Integer sentCount, BigDecimal totalAmount
+
     public DownloadTrackNoReport(OrderItems orderItems, Long sentCount, BigDecimal totalAmount) {
         this.orderItems = orderItems;
-
-
-        System.out.println(totalAmount + "===totalAmount>>");
-        System.out.println(orderItems.goods.shortName + "===orderItems.goods.shortName>>");
-//        this.outerGoodsNo = outerGoodsNo;
-//        this.goodsName = goodsName;
-        System.out.println(orderItems.id + "===orderItems.id>>");
-
-        System.out.println(sentCount + "===sentCount>>");
         this.sentCount = sentCount;
         this.totalAmount = totalAmount;
     }
@@ -54,7 +49,7 @@ public class DownloadTrackNoReport {
     public static List<DownloadTrackNoReport> query(DownloadTrackNoCondition condition) {
         String sql = "select new models.order.DownloadTrackNoReport(oi,count(distinct oi.shippingInfo.id),sum(oi.salePrice*oi.buyNumber))" +
                 " from OrderItems oi";
-        String groupBy = " group by oi.outerGoodsNo ";
+        String groupBy = " group by oi.outerGoodsNo";
         Query query = JPA.em()
                 .createQuery(sql + condition.getFilter() + groupBy);
 
@@ -65,5 +60,39 @@ public class DownloadTrackNoReport {
 
         List<DownloadTrackNoReport> resultList = query.getResultList();
         return resultList;
+    }
+
+    public static List<OrderItems> queryOrderItems(OuterOrderPartner partner, Date paidBeginAt, Date paidEndAt, Date sentBeginAt, Date sentEndAt, Boolean unDownloaded, String outerGoodsNo) {
+        StringBuilder sql = new StringBuilder("shippingInfo.expressNumber is not null and order.userType=? and order.userId=?");
+        List<Object> params = new ArrayList();
+        params.add(AccountType.RESALER);
+        params.add(Resaler.findOneByLoginName(partner.partnerLoginName()).id);
+        if (StringUtils.isNotBlank(outerGoodsNo)) {
+            sql.append(" and outerGoodsNo= ?");
+            params.add(outerGoodsNo);
+        }
+
+        if (paidBeginAt != null) {
+            sql.append(" and shippingInfo.paidAt= ?");
+            params.add(paidBeginAt);
+        }
+        if (paidEndAt != null) {
+            sql.append(" and shippingInfo.paidAt= ?");
+            params.add(com.uhuila.common.util.DateUtil.getEndOfDay(paidEndAt));
+        }
+
+        if (sentBeginAt != null) {
+            sql.append(" and sendAt >= ?)");
+            params.add(sentBeginAt);
+        }
+        if (paidEndAt != null) {
+            sql.append(" and sendAt <= ?)");
+            params.add(com.uhuila.common.util.DateUtil.getEndOfDay(sentEndAt));
+        }
+        if (unDownloaded) {
+            sql.append(" and shippingInfo.uploadedAt is not null");
+        }
+        return OrderItems.find(sql.toString(), params.toArray()).fetch();
+
     }
 }

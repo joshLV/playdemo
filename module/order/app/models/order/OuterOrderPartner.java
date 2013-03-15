@@ -14,24 +14,51 @@ public enum OuterOrderPartner {
 
 
     public String partnerName() {
-        switch (this){
-            case DD: return "当当";
-            case YHD: return "一号店";
-            case JD: return "京东";
-            case WB: return "58";
-            case TB: return "淘宝";
+        switch (this) {
+            case DD:
+                return "当当";
+            case YHD:
+                return "一号店";
+            case JD:
+                return "京东";
+            case WB:
+                return "58";
+            case TB:
+                return "淘宝";
             default:
                 return this.toString();
         }
     }
 
     public String partnerLoginName() {
-        switch (this){
-            case DD: return "dangdang";
-            case YHD: return "yihaodian";
-            case JD: return "jingdong";
-            case WB: return "wuba";
-            case TB: return "taobao";
+        switch (this) {
+            case DD:
+                return "dangdang";
+            case YHD:
+                return "yihaodian";
+            case JD:
+                return "jingdong";
+            case WB:
+                return "wuba";
+            case TB:
+                return "taobao";
+            default:
+                return null;
+        }
+    }
+
+    public String partnerStringName() {
+        switch (this) {
+            case DD:
+                return "DD";
+            case YHD:
+                return "YHD";
+            case JD:
+                return "JD";
+            case WB:
+                return "WB";
+            case TB:
+                return "TB";
             default:
                 return null;
         }
