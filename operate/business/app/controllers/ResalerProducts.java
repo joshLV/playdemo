@@ -45,7 +45,8 @@ public class ResalerProducts extends Controller {
         List<Supplier> supplierList = Supplier.findUnDeleted();
         Map<String, List<ResalerProduct> > partnerProducts = new HashMap<>();
         for(models.sales.Goods goods : goodsPage.getCurrentPage()) {
-            List<ResalerProduct> products = ResalerProduct.find("byGoodsAndDeleted", goods, DeletedStatus.UN_DELETED).fetch();
+            List<ResalerProduct> products = ResalerProduct.find("goods = ? and status != ? and deleted = ?",
+                    goods, ResalerProductStatus.STAGING, DeletedStatus.UN_DELETED).fetch();
             for (ResalerProduct product : products) {
                 List<ResalerProduct> p = partnerProducts.get(goods.id + product.partner.toString());
                 if (p == null) {
@@ -96,8 +97,9 @@ public class ResalerProducts extends Controller {
             Logger.info("goods not found");
             error("商品不存在");
         }
-        List<ResalerProduct> products = ResalerProduct.find("goods = ? and partner = ? and deleted = ? order by createdAt desc",
-                goods, OuterOrderPartner.valueOf(partner.toUpperCase()), DeletedStatus.UN_DELETED).fetch();
+        List<ResalerProduct> products = ResalerProduct.find(
+                "goods = ? and partner = ? and status != ? and deleted = ? order by createdAt desc",
+                goods, OuterOrderPartner.valueOf(partner.toUpperCase()), ResalerProductStatus.STAGING, DeletedStatus.UN_DELETED).fetch();
         for (ResalerProduct product : products) {
             if (product.creatorId != null) product.creator = ((OperateUser)OperateUser.findById(product.creatorId)).userName;
             if (product.lastModifierId != null) product.lastModifier = ((OperateUser)OperateUser.findById(product.lastModifierId)).userName;
@@ -174,8 +176,8 @@ public class ResalerProducts extends Controller {
         Date fourDaysLater = DateUtils.addDays(startOfToday, 4);
 
         List<ResalerProduct> products = ResalerProduct.find(
-                "deleted = ? and endSale is not null and endSale < ? and (partner = ?) order by endSale",
-                DeletedStatus.UN_DELETED, fourDaysLater, OuterOrderPartner.JD).fetch();
+                "deleted = ? and status != ? and endSale is not null and endSale < ? and (partner = ?) order by endSale",
+                DeletedStatus.UN_DELETED, ResalerProductStatus.STAGING, fourDaysLater, OuterOrderPartner.JD).fetch();
         render(products);
     }
 
@@ -185,6 +187,7 @@ public class ResalerProducts extends Controller {
      *
      * @param id 分销商品ID
      */
+    @ActiveNavigation("resale_partner_product")
     public static void autoDelay(Long id) {
         ResalerProduct product = ResalerProduct.findById(id);
         if (product == null) {
@@ -205,19 +208,18 @@ public class ResalerProducts extends Controller {
             endSale = calendar.getTime();
         }
 
-
-
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        if (product.partner == OuterOrderPartner.JD) {
-            Map<String, Object> params = new HashMap<>();
-            params.put("venderTeamId", product.goodsLinkId);
-            params.put("jdTeamId", product.partnerProductId);
-            params.put("saleEndDate", format.format(endSale));
-            JingdongMessage response = JDGroupBuyUtil.sendRequest("teamExtension", params);
-            success = response.isOk();
-
-        }else {
-            renderJSON("{\"error\":\"不支持\"}");
+        switch (product.partner) {
+            case JD:
+                Map<String, Object> params = new HashMap<>();
+                params.put("venderTeamId", product.goodsLinkId);
+                params.put("jdTeamId", product.partnerProductId);
+                params.put("saleEndDate", format.format(endSale));
+                JingdongMessage response = JDGroupBuyUtil.sendRequest("teamExtension", params);
+                success = response.isOk();
+                break;
+            default:
+                renderJSON("{\"error\":\"暂不支持\"}");
         }
 
         if (success) {
