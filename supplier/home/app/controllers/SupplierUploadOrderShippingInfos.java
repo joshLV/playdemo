@@ -76,7 +76,6 @@ public class SupplierUploadOrderShippingInfos extends Controller {
         List<String> unExistedExpressCompanys = new ArrayList<>();
         List<String> emptyExpressInofs = new ArrayList<>();
 
-
         for (LogisticImportData logistic : logistics) {
             if (StringUtils.isBlank(logistic.expressCompany)) {
                 emptyExpressInofs.add(logistic.orderNumber);

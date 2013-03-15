@@ -5,17 +5,17 @@
 <legend>${title}</legend>
 <form class="well form-horizontal" action="@{UploadOrderShippingInfos.upload()}"
       method="POST" enctype='multipart/form-data'>
-    <div class="control-group">
-        <label class="control-label">商户</label>
+    *{<div class="control-group">}*
+        *{<label class="control-label">商户</label>}*
 
-        <div class="controls">
-        #{select 'supplierId',id:'supplierId', class:'input-large', value:supplierId}
-            #{list items:supplierList, as:'supplier' }
-            #{option supplier.id}${supplier.name}#{/option}
-        #{/list}
-        #{/select}
-        </div>
-    </div>
+        *{<div class="controls">}*
+        *{#{select 'supplierId',id:'supplierId', class:'input-large', value:supplierId}}*
+            *{#{list items:supplierList, as:'supplier' }}*
+            *{#{option supplier.id}${supplier.name}#{/option}}*
+        *{#{/list}}*
+        *{#{/select}}*
+        *{</div>}*
+    *{</div>}*
 
     <div class="control-group">
         <label class="control-label">上传文件</label>

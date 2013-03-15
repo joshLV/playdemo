@@ -90,6 +90,7 @@ public class UploadOrderShippingInfos extends Controller {
             }
             //查询该商户下的订单信息，存在则更新物流信息
             OrderItems orderItems = OrderItems.find("goods.sku is not null and goods.id=? and order.orderNumber=?", Long.valueOf(logistic.goodsId), logistic.orderNumber).first();
+            System.out.println(orderItems + ">>>>orderItems");
             if (orderItems == null) {
                 unExistedOrders.add(logistic.orderNumber);
                 continue;
