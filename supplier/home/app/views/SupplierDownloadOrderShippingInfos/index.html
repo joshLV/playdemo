@@ -7,9 +7,11 @@
     <table cellspacing="0" cellpadding="0" border="0" class="title-table">
         <tr>
             <th wdith="50%">发货单总数：${orderItemsList?.size()}</th>
+        #{if orderItemsList}
             <td wdith="50%" align="left">
                 <a class="btn" href="@{SupplierDownloadOrderShippingInfos.exportOrderShipping()}">下载</a></td>
             </td>
+        #{/if}
         </tr>
     </table>
 

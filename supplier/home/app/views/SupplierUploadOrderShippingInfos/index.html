@@ -17,7 +17,9 @@
         </table>
         <span class="help-block" style="color: red;">
         ${msgInfo}
-        #{if unExistedOrders?.size()>0}订单：${unExistedOrders?.join(",")}不存在！<br>#{/if} </span>
+        #{if unExistedOrders?.size()>0}订单：${unExistedOrders?.join(",")}不存在！<br>#{/if}
+        #{if emptyExpressInofs?.size()>0}订单${emptyExpressInofs?.join(",")}的快递信息为空，请填写!<br> #{/if}
+        </span>
     #{if unExistedExpressCompanys?.size()>0}
         <span class="help-block" style="color: red;">导入的数据中，快递公司编号：${unExistedExpressCompanys?.join(",")}
             不存在！<br></span>

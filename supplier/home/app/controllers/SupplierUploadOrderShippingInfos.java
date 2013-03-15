@@ -74,10 +74,11 @@ public class SupplierUploadOrderShippingInfos extends Controller {
         List<String> unExistedOrders = new ArrayList<>();
         List<String> uploadSuccessOrders = new ArrayList<>();
         List<String> unExistedExpressCompanys = new ArrayList<>();
-
+        List<String> emptyExpressInofs = new ArrayList<>();
 
         for (LogisticImportData logistic : logistics) {
             if (StringUtils.isBlank(logistic.expressCompany)) {
+                emptyExpressInofs.add(logistic.orderNumber);
                 continue;
             }
             ExpressCompany expressCompany = ExpressCompany.getCompanyNameByCode(logistic.expressCompany);
@@ -100,6 +101,7 @@ public class SupplierUploadOrderShippingInfos extends Controller {
         }
 
         List<ExpressCompany> expressCompanyList = ExpressCompany.findAll();
+        renderArgs.put("emptyExpressInofs", emptyExpressInofs);
         renderArgs.put("expressCompanyList", expressCompanyList);
         renderArgs.put("unExistedOrders", unExistedOrders);
         renderArgs.put("unExistedExpressCompanys", unExistedExpressCompanys);
