@@ -113,7 +113,7 @@ public class OrderShippingInfo extends Model {
      * 物流公司
      */
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "express_company_id", nullable = false)
+    @JoinColumn(name = "express_company_id", nullable = true)
     public ExpressCompany expressCompany;
 
     /*
