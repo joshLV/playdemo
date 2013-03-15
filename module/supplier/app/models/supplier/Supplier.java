@@ -61,7 +61,8 @@ public class Supplier extends Model {
     public static final String BEGIN_TIME = " 00:00";
     public static final String END_TIME = " 23:59";
     public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
-    public static Supplier SHIHUI = null;
+
+    private static Supplier SHIHUI = null;
     /**
      * 域名
      */
@@ -483,6 +484,10 @@ public class Supplier extends Model {
         return SupplierContract.find("supplierId=?", this.id).fetch();
     }
 
+
+    public static void clearShihuiSupplier(){
+        SHIHUI = null;
+    }
     /**
      * 获取视惠商户对象.
      *
@@ -492,7 +497,6 @@ public class Supplier extends Model {
         if (SHIHUI == null) {
             SHIHUI = find("fullName='上海视惠信息科技有限公司' and deleted=?", DeletedStatus.UN_DELETED).first();
         }
-        System.out.println(SHIHUI + ">>>>SHIHUI");
         return SHIHUI;
     }
 }

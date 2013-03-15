@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -96,13 +97,18 @@ public class InventoryStock extends Model {
 
     @OneToMany(mappedBy = "stock")
     public List<InventoryStockItem> inventoryStockItemList;
-
     /**
      * 逻辑删除,0:未删除，1:已删除
      */
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted = DeletedStatus.UN_DELETED;
 
+    /**
+     * 乐观锁
+     */
+    @Column(name = "lock_version")
+    @Version
+    public int lockVersion;
 
     /**
      * 统计未出库实物订单的Sku出库数量.
@@ -217,8 +223,19 @@ public class InventoryStock extends Model {
         stockItem.create();
     }
 
-    public static void updateInventoryStockRemainCount(Sku sku, Long aLong) {
-
+    public static void updateInventoryStockRemainCount(Sku sku, Long changeCount) {
+        List<InventoryStockItem> stockItemList = InventoryStockItem.find("sku=? and remainCount>0 order by createdAt desc", sku).fetch();
+        long reducedCount = changeCount;
+        for (InventoryStockItem stockItem : stockItemList) {
+            if (stockItem.remainCount >= reducedCount) {
+                stockItem.remainCount -= reducedCount;
+                stockItem.save();
+                return;
+            }
+            stockItem.remainCount = 0L;
+            stockItem.save();
+            reducedCount -= stockItem.remainCount;
+        }
     }
 
     @Override
