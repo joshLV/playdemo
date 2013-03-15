@@ -34,6 +34,7 @@
         <tr>
             <th>生成人</th>
             <th>生成时间</th>
+            <th>批次号</th>
             <th>操 作</th>
         </tr>
         </thead>
@@ -43,6 +44,7 @@
         <tr>
             <td>${orderBatch.createdBy}</td>
             <td align="left">${orderBatch.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td>${orderBatch.id}</td>
             <td>
                 #{a @DownloadOrderShippingInfos.exportOrderShipping(orderBatch.id, supplierId)}下载 #{/a}
             </td>

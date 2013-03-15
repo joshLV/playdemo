@@ -25,7 +25,7 @@ import java.util.List;
 @ActiveNavigation("download_order_shipping_index")
 public class DownloadOrderShippingInfos extends Controller {
     public static int PAGE_SIZE = 10;
-    public static final String EXCEL = "xlsx";
+    public static final String EXCEL = "xls";
 
     @ActiveNavigation("download_order_shipping_index")
     public static void index(Long supplierId) {
@@ -39,7 +39,6 @@ public class DownloadOrderShippingInfos extends Controller {
             error("have no real goods!");
         }
         List<OrderItems> orderItemsList = getPreparedItems(null, supplierId);
-        System.out.println(orderItemsList.size() + ">>>>orderItemsList");
         ModelPaginator<OrderBatch> orderBatchList = OrderBatch.findBySupplier(supplierId, pageNumber, PAGE_SIZE);
         render(orderItemsList, orderBatchList, supplierList, supplierId);
     }
@@ -50,7 +49,6 @@ public class DownloadOrderShippingInfos extends Controller {
      * @return
      */
     private static List<OrderItems> getPreparedItems(Long orderBatchId, Long supplierId) {
-        System.out.println(supplierId + ">>>>supplierId");
         StringBuilder sql = new StringBuilder("goods.supplierId=? and goods.sku is not null ");
         List<Object> params = new ArrayList<>();
         params.add(supplierId);
@@ -69,12 +67,11 @@ public class DownloadOrderShippingInfos extends Controller {
     public static void exportOrderShipping(Long id, Long supplierId) {
         OperateUser operateUser = OperateRbac.currentUser();
         List<OrderItems> orderItemsList = getPreparedItems(id, supplierId);
-        request.format = EXCEL;
-        renderArgs.put("__FILE_NAME__", "发货单导出_" + System.currentTimeMillis() + "." + EXCEL);
+        Supplier supplier = Supplier.findUnDeletedById(supplierId);
 
         if (id == null) {
-            Supplier supplier = Supplier.findUnDeletedById(supplierId);
             OrderBatch orderBatch = new OrderBatch(supplier, operateUser.userName).save();
+            id = orderBatch.id;
 
             //更新orderItems的状态为：代打包
             for (OrderItems orderItems : orderItemsList) {
@@ -83,6 +80,8 @@ public class DownloadOrderShippingInfos extends Controller {
                 orderItems.save();
             }
         }
+        request.format = EXCEL;
+        renderArgs.put("__FILE_NAME__", "发货单_" + supplier.getName() + "_" + id +"." + EXCEL);
         render(orderItemsList);
     }
 

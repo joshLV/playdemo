@@ -44,12 +44,12 @@ public class UploadOrderShippingInfos extends Controller {
      * @return
      */
     @ActiveNavigation("upload_order_shipping_index")
-    public static void upload(File orderShippingFile, Long supplierId) {
+    public static void upload(File orderShippingFile) {
         List<Supplier> supplierList = Supplier.findSuppliersByCanSaleReal();
         String errorInfo = "";
         if (orderShippingFile == null) {
             errorInfo = "请先选择文件！";
-            render("UploadOrderShippingInfos/index.html", errorInfo, supplierId, supplierList);
+            render("UploadOrderShippingInfos/index.html", errorInfo, supplierList);
         }
         List<LogisticImportData> logistics = new ArrayList<>();
         try {
@@ -65,20 +65,22 @@ public class UploadOrderShippingInfos extends Controller {
             if (!readStatus.isStatusOK()) {
                 errorInfo = "转换出错，请检查文件格式！";
                 Logger.info(errorInfo);
-                render("UploadOrderShippingInfos/index.html", errorInfo, supplierId, supplierList);
+                render("UploadOrderShippingInfos/index.html", errorInfo, supplierList);
             }
         } catch (Exception e) {
             errorInfo = "转换出现异常，请检查文件格式！" + e.getMessage();
             e.printStackTrace();
-            render("UploadOrderShippingInfos/index.html", errorInfo, supplierId, supplierList);
+            render("UploadOrderShippingInfos/index.html", errorInfo, supplierList);
         }
 
         List<String> unExistedOrders = new ArrayList<>();
         List<String> uploadSuccessOrders = new ArrayList<>();
         List<String> unExistedExpressCompanys = new ArrayList<>();
+        List<String> emptyExpressInofs = new ArrayList<>();
 
         for (LogisticImportData logistic : logistics) {
             if (StringUtils.isBlank(logistic.expressCompany)) {
+                emptyExpressInofs.add(logistic.orderNumber);
                 continue;
             }
             ExpressCompany expressCompany = ExpressCompany.getCompanyNameByCode(logistic.expressCompany);
@@ -87,7 +89,7 @@ public class UploadOrderShippingInfos extends Controller {
                 continue;
             }
             //查询该商户下的订单信息，存在则更新物流信息
-            OrderItems orderItems = OrderItems.find("goods.sku is not null and goods.id=? and goods.supplierId=? and order.orderNumber=?", Long.valueOf(logistic.goodsId), supplierId, logistic.orderNumber).first();
+            OrderItems orderItems = OrderItems.find("goods.sku is not null and goods.id=? and order.orderNumber=?", Long.valueOf(logistic.goodsId), logistic.orderNumber).first();
             if (orderItems == null) {
                 unExistedOrders.add(logistic.orderNumber);
                 continue;
@@ -98,15 +100,15 @@ public class UploadOrderShippingInfos extends Controller {
             orderItems.status = OrderStatus.SENT;
             orderItems.save();
             uploadSuccessOrders.add(logistic.orderNumber);
-
         }
 
         List<ExpressCompany> expressCompanyList = ExpressCompany.findAll();
+        renderArgs.put("emptyExpressInofs", emptyExpressInofs);
         renderArgs.put("expressCompanyList", expressCompanyList);
         renderArgs.put("unExistedOrders", unExistedOrders);
         renderArgs.put("unExistedExpressCompanys", unExistedExpressCompanys);
         renderArgs.put("uploadSuccessOrders", uploadSuccessOrders);
-        render("UploadOrderShippingInfos/index.html", supplierId, supplierList);
+        render("UploadOrderShippingInfos/index.html", supplierList);
     }
 
 

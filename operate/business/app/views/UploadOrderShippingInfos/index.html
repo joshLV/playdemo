@@ -22,10 +22,11 @@
 
         <div class="controls">
             <input type="file" name="orderShippingFile">
-            <span class="help-block">注意：上传时，保证数据放在Sheet1.</span>
+            <span class="help-block">注意：上传时，保证数据放在Sheet1.${emptyExpressInofs?.size()}</span>
         <span class="help-block" style="color: red;" id="err-info">
         ${errorInfo}
         #{if unExistedOrders?.size()>0}订单：${unExistedOrders?.join(",")}不存在！<br>#{/if}
+        #{if emptyExpressInofs?.size()>0}订单${emptyExpressInofs?.join(",")}的快递信息为空，请填写!<br>#{/if}
         </span>
         #{if unExistedExpressCompanys?.size()>0}
             <span class="help-block" style="color: red;">导入的数据中，快递公司编号：${unExistedExpressCompanys?.join(",")}

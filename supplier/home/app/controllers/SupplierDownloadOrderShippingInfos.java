@@ -23,7 +23,7 @@ import java.util.List;
 @With({SupplierRbac.class, SupplierInjector.class})
 public class SupplierDownloadOrderShippingInfos extends Controller {
     public static int PAGE_SIZE = 10;
-    public static final String EXCEL = "xlsx";
+    public static final String EXCEL = "xls";
 
     public static void index() {
         int pageNumber = getPageNumber();
@@ -60,10 +60,9 @@ public class SupplierDownloadOrderShippingInfos extends Controller {
     public static void exportOrderShipping(Long id) {
         SupplierUser supplierUser = SupplierRbac.currentUser();
         List<OrderItems> orderItemsList = getPreparedItems(id);
-        request.format = EXCEL;
-        renderArgs.put("__FILE_NAME__", "发货单导出_" + System.currentTimeMillis() + "." + EXCEL);
         if (id == null) {
             OrderBatch orderBatch = new OrderBatch(supplierUser.supplier, supplierUser.userName).save();
+            id = orderBatch.id;
             //更新orderItems的状态为：代打包
             for (OrderItems orderItems : orderItemsList) {
                 orderItems.status = OrderStatus.PREPARED;
@@ -71,6 +70,8 @@ public class SupplierDownloadOrderShippingInfos extends Controller {
                 orderItems.save();
             }
         }
+        request.format = EXCEL;
+        renderArgs.put("__FILE_NAME__", "发货单_" + id + "." + EXCEL);
         render(orderItemsList);
     }
 
