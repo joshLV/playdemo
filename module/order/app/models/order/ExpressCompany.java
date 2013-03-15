@@ -1,12 +1,14 @@
 package models.order;
 
+import cache.CacheHelper;
 import play.data.validation.Required;
+import play.db.jpa.JPA;
 import play.db.jpa.Model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 快递公司
@@ -19,6 +21,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "express_company")
 public class ExpressCompany extends Model {
+    public static final String CACHEKEY = "EXPRESS_COMPANY";
 
     @Required
     public String code;
@@ -34,12 +37,31 @@ public class ExpressCompany extends Model {
     @Lob
     public String resalerMapping;
 
+
     public static void update(Long id, ExpressCompany express) {
         ExpressCompany updatedExpress = findById(id);
+        updatedExpress.refresh();
         updatedExpress.code = express.code;
         updatedExpress.name = express.name;
         updatedExpress.resalerMapping = express.resalerMapping;
         updatedExpress.save();
+    }
+
+    public static Map<String, String> findChannelExpress(Long expressId) {
+        ExpressCompany express = ExpressCompany.findById(expressId);
+        Map<String, String> channelMap = new HashMap<>();
+        System.out.println(express.resalerMapping + "===express.resalerMapping>>");
+        String[] line = express.resalerMapping.split("\r\n");
+        for (int i = 0; i < line.length; i++) {
+            System.out.println(line[i] + "===line[i]>>");
+            System.out.println("");
+            if (line[i].contains(":")) {
+                System.out.println(  "===>>");
+                String[] channelMapping = line[i].split(":");
+                channelMap.put(channelMapping[0], channelMapping[1]);
+            }
+        }
+        return channelMap;
     }
 
     /**
@@ -51,4 +73,13 @@ public class ExpressCompany extends Model {
     public static ExpressCompany getCompanyNameByCode(String code) {
         return ExpressCompany.find("code=?", code).first();
     }
+
+    @Override
+    public void _save() {
+        CacheHelper.delete(CACHEKEY);
+//        CacheHelper.delete(CACHEKEY + this.id);
+        super._save();
+    }
+
+
 }
