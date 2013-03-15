@@ -36,7 +36,7 @@ public class SkuTakeouts extends Controller {
         //1 统计总的待出库货品及数量
         Map<Sku, Long> preparingTakeoutSkuMap = OrderItems.findTakeout(toDate);
         //2 获取无法出库订单项
-        List<OrderItems> deficientOrderItemList = InventoryStock.getDeficientOrderItemList(preparingTakeoutSkuMap,toDate);
+        List<OrderItems> deficientOrderItemList = InventoryStock.getDeficientOrderItemList(preparingTakeoutSkuMap, toDate);
         //3 无法出库订单
         List<Order> deficientOrderList = InventoryStock.getOrderListByItem(deficientOrderItemList);
         //4 统计应该出库货品及数量

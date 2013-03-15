@@ -9,6 +9,7 @@ import models.sales.MaterialType;
 import models.sales.OrderBatch;
 import models.sales.SecKillGoods;
 import models.sales.Sku;
+import models.supplier.Supplier;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import play.db.jpa.JPA;
@@ -421,7 +422,7 @@ public class OrderItems extends Model {
     }
 
     /**
-     * 获取在指定
+     * 获取指定货品的付款状态的订单项.
      *
      * @param skuMap
      * @param toDate
@@ -429,7 +430,7 @@ public class OrderItems extends Model {
      */
     private static List<OrderItems> getAllPaidOrderItemListInSkus(Set<Sku> skus, Date toDate) {
         StringBuilder sql = new StringBuilder("select o from OrderItems o where " +
-                "goods.materialType=:materialType and o.createdAt <= :toDate and o.goods.sku in (");
+                "goods.supplierId=:supplierId and goods.materialType=:materialType and o.createdAt <= :toDate and o.goods.sku in (");
         for (int i = 0; i < skus.size(); i++) {
             sql.append(":sku").append(i);
             if (i != skus.size() - 1) {
@@ -438,6 +439,7 @@ public class OrderItems extends Model {
         }
         sql.append(") order by createdAt desc");
         Query query = OrderItems.em().createQuery(sql.toString());
+        query.setParameter("supplierId", Supplier.getShihui().id);
         query.setParameter("materialType", MaterialType.REAL);
         query.setParameter("toDate", toDate);
         for (int i = 0; i < skus.size(); i++) {
@@ -453,13 +455,17 @@ public class OrderItems extends Model {
     }
 
     public static List<Order> findPaidRealGoodsOrders(Date toDate) {
-        Query q = OrderItems.em().createQuery("select o.order from OrderItems o where o.goods.materialType=:materialType " +
+        Query q = OrderItems.em().createQuery("select o.order from OrderItems o where o.goods.supplierId=:supplierId " +
+                "and o.goods.materialType=:materialType " +
                 "and o.order.orderType=:orderType and o.status=:status " +
                 "and o.createdAt<=:createdAt group by o.order");
+        q.setParameter("supplierId", Supplier.getShihui().id);
         q.setParameter("materialType", MaterialType.REAL);
         q.setParameter("orderType", OrderType.CONSUME);
         q.setParameter("status", OrderStatus.PAID);
         q.setParameter("createdAt", toDate);
+
+        System.out.println("Supplier.getShihui().id:" + Supplier.getShihui().id);
         return q.getResultList();
     }
 
@@ -484,10 +490,12 @@ public class OrderItems extends Model {
      */
     public static Map<Sku, Long> findTakeout(Date toDate) {
         List<TakeoutItem> takeoutItems = find("select new models.order.TakeoutItem(o.goods, sum(o.buyNumber)) " +
-                "from OrderItems o where o.status=? and o.createdAt <= ? and o.goods.materialType=? " +
-                "group by o.goods", OrderStatus.PAID, toDate, MaterialType.REAL).fetch();
+                "from OrderItems o where o.goods.supplierId=? and o.status=? and o.goods.materialType=? and o.createdAt <= ? " +
+                "group by o.goods", Supplier.getShihui().id, OrderStatus.PAID, MaterialType.REAL, toDate).fetch();
+
         Map<Sku, Long> takeoutMap = new HashMap<Sku, Long>();
         for (TakeoutItem takeoutItem : takeoutItems) {
+
             if (takeoutItem.sku != null && takeoutItem.count != null && takeoutItem.count.longValue() > 0) {
                 takeoutMap.put(takeoutItem.sku, takeoutItem.count);
             }

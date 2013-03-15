@@ -18,10 +18,10 @@ public class TakeoutItem {
         this.sku = goods.sku;
         this.count = count * goods.skuCount;
     }
-//
-//    public TakeoutItem(Sku sku, Long count) {
-//        this.sku = sku;
-//        this.count = count;
-//    }
-//
+
+    public TakeoutItem(Sku sku, Long count) {
+        this.sku = sku;
+        this.count = count;
+    }
+
 }
