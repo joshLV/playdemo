@@ -5,7 +5,7 @@
         <loop startRow="1" endRow="1" items="logistics" var="logistic"
               varType="models.order.LogisticImportData">
             <section startRow="1" endRow="1">
-                <mapping row="1" col="0">logistic.goodsId</mapping>
+                <mapping row="1" col="0">logistic.goodsCode</mapping>
                 <mapping row="1" col="1">logistic.orderNumber</mapping>
                 <mapping row="1" col="12">logistic.expressCompany</mapping>
                 <mapping row="1" col="13">logistic.expressNumber</mapping>

@@ -17,6 +17,7 @@
         </table>
         <span class="help-block" style="color: red;">
         ${msgInfo}
+        #{if noGoodsCodeList?.size()>0}商品编码：${noGoodsCodeList?.join(",")}不存在,请重新编辑商品分配编码！<br>#{/if}
         #{if unExistedOrders?.size()>0}订单：${unExistedOrders?.join(",")}不存在！<br>#{/if}
         #{if emptyExpressInofs?.size()>0}订单${emptyExpressInofs?.join(",")}的快递信息为空，请填写!<br> #{/if}
         </span>
