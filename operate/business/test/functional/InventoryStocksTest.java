@@ -7,7 +7,6 @@ import models.operator.OperateUser;
 import models.sales.InventoryStock;
 import models.sales.InventoryStockItem;
 import models.sales.Sku;
-import models.supplier.Supplier;
 import org.junit.Before;
 import org.junit.Test;
 import play.modules.paginate.JPAExtPaginator;
@@ -15,7 +14,6 @@ import play.mvc.Http;
 import play.mvc.Router;
 import play.test.FunctionalTest;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +83,7 @@ public class InventoryStocksTest extends FunctionalTest {
     @Test
     public void testCreateStockOut() {
         long stockItemCount = InventoryStockItem.count();
-        assertEquals(Long.valueOf(10), sku.getRemainCount());
+        assertEquals(10l, sku.getRemainCount());
         Map<String, String> params = new HashMap<>();
         params.put("stockItem.sku.name", sku.name);
         params.put("stockItem.sku.id", sku.id.toString());
@@ -95,7 +93,7 @@ public class InventoryStocksTest extends FunctionalTest {
         Http.Response response = POST("/stock-out", params);
         assertStatus(302, response);
         assertEquals(stockItemCount + 1, InventoryStockItem.count());
-        assertEquals(Long.valueOf(9), sku.getRemainCount());
+        assertEquals(9l, sku.getRemainCount());
     }
 
     @Test
@@ -107,7 +105,7 @@ public class InventoryStocksTest extends FunctionalTest {
                     }
                 });
         long stockItemCount = InventoryStockItem.count();
-        assertEquals(Long.valueOf(60), currentSku.getRemainCount());
+        assertEquals(60l, currentSku.getRemainCount());
         Map<String, String> params = new HashMap<>();
         params.put("stockItem.sku.name", currentSku.name);
         params.put("stockItem.sku.id", currentSku.id.toString());
@@ -117,7 +115,7 @@ public class InventoryStocksTest extends FunctionalTest {
         Http.Response response = POST("/stock-out", params);
         assertStatus(302, response);
         assertEquals(stockItemCount + 1, InventoryStockItem.count());
-        assertEquals(Long.valueOf(35), currentSku.getRemainCount());
+        assertEquals(35l, currentSku.getRemainCount());
 
     }
 

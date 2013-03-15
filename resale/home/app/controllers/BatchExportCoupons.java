@@ -116,7 +116,7 @@ public class BatchExportCoupons extends Controller {
         batchCoupons.save();
         for (int i = 0; i < count; i++) {
             Order order = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
-            int number = 1;
+            Long number = 1l;
             String phone = null;
             BigDecimal resalerPrice = goods.getResalePrice();
             order.addOrderItem(goods, number, phone,

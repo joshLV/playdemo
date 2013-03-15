@@ -126,7 +126,7 @@ public class SecKillOrdersTest extends FunctionalTest {
         goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
             @Override
             public void build(Goods g) {
-                g.limitNumber = 1;
+                g.limitNumber = 1L;
             }
         });
         item = FactoryBoy.create(SecKillGoodsItem.class);
@@ -264,7 +264,7 @@ public class SecKillOrdersTest extends FunctionalTest {
         goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
             @Override
             public void build(Goods g) {
-                g.limitNumber = 1;
+                g.limitNumber = 1L;
             }
         });
         item = FactoryBoy.create(SecKillGoodsItem.class);

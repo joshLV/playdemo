@@ -38,7 +38,7 @@ public class YHDGroupBuy extends Controller {
     /**
      * 接收一号店的新订单通知
      */
-    public static void orderInform(String orderCode, Long productId, Integer productNum, BigDecimal orderAmount,
+    public static void orderInform(String orderCode, Long productId, Long productNum, BigDecimal orderAmount,
                                    Date createTime, Date paidTime, String userPhone, BigDecimal productPrice,
                                    String outerGroupId) {
         TreeMap<String, String> params = YHDUtil.filterPlayParams(request.params.allSimple());
@@ -236,7 +236,7 @@ public class YHDGroupBuy extends Controller {
 
     // 创建一百券订单
     private static Order createYbqOrder(String outerGroupId, BigDecimal productPrize,
-                                        Integer productNum, String userPhone, List<YHDErrorInfo> errorInfoList) {
+                                        Long productNum, String userPhone, List<YHDErrorInfo> errorInfoList) {
         Resaler resaler = Resaler.findOneByLoginName(YHD_LOGIN_NAME);
         if (resaler == null) {
             Logger.error("can not find the resaler by login name: %s", YHD_LOGIN_NAME);

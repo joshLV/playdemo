@@ -1,0 +1,47 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set title:'导入发货单' /}
+#{set menu:"upload-order-shipping" /}
+
+<div class="bd">
+    <h2>${title}</h2>
+
+    <form id="form" action="@{SupplierUploadOrderShippingInfos.upload()}" method="POST" enctype='multipart/form-data'>
+        <table cellspacing="0" cellpadding="0" border="0" class="title-table">
+            <tr>
+                <th wdith="50%">上传文件：<input type="file" name="orderShippingFile"><span
+                        style="display:block;color: #808080;">注意：上传时，保证数据放在Sheet1.</span></th>
+                <td wdith="50%" align="left">
+                    <a class="btn" href="#" id="upload">上传</a></td>
+                </td>
+            </tr>
+        </table>
+        <span class="help-block" style="color: red;">
+        ${msgInfo}
+        #{if unExistedOrders?.size()>0}订单：${unExistedOrders?.join(",")}不存在！<br>#{/if}
+        #{if emptyExpressInofs?.size()>0}订单${emptyExpressInofs?.join(",")}的快递信息为空，请填写!<br> #{/if}
+        </span>
+    #{if unExistedExpressCompanys?.size()>0}
+        <span class="help-block" style="color: red;">导入的数据中，快递公司编号：${unExistedExpressCompanys?.join(",")}
+            不存在！<br></span>
+           <span class="help-block" style="color: green;"> 以下为本系统的快递公司信息，请你参照！<br>
+               #{list items:expressCompanyList,as :'company'}
+               ${company.code}:${company.name}
+               #{/list}
+        </span>
+    #{/if}
+
+    #{if uploadSuccessOrders?.size()>0}
+        <span class="help-block" style="color: green;">
+            订单：${uploadSuccessOrders?.join(",")} 导入更新成功！
+        </span>
+    #{/if}
+
+    </form>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("#upload").click(function () {
+            $("#form").submit();
+        })
+    })
+</script>

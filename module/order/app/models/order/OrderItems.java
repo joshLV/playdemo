@@ -28,10 +28,13 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Entity
 @Table(name = "order_items")
@@ -144,6 +147,17 @@ public class OrderItems extends Model {
             return salePrice.multiply(new BigDecimal(buyNumber));
         }
         return BigDecimal.ZERO;
+    }
+
+    /**
+     * 订单项中的sku数量.
+     *
+     * @return
+     */
+    @Transient
+    public long getSkuCount() {
+        return (goods.skuCount == null ? 0L : goods.skuCount) *
+                (buyNumber == null ? 0L : buyNumber);
     }
 
     public OrderItems(Order order, Goods goods, long buyNumber, String phone, BigDecimal salePrice, BigDecimal resalerPrice) {
@@ -345,16 +359,80 @@ public class OrderItems extends Model {
     /**
      * 查询待发货的指定sku缺货的订单项.
      *
+     * @param deficientCountMap
+     * @param toDate
+     * @return
+     */
+    public static List<OrderItems> findPaid(Map<Sku, Long> deficientCountMap, Date toDate) {
+        //获取缺货货品的相关的所有的订单项
+        List<OrderItems> allOrderItems = getAllPaidOrderItemListInSkus(deficientCountMap.keySet(), toDate);
+
+        Map<Sku, Long> skuDeficientCountMap = new HashMap<>();   //存放已经计算过的缺货的sku及数量
+
+        Map<Sku, ArrayList<OrderItems>> deficientOrderItemMap = new HashMap<>();
+
+        for (OrderItems orderItem : allOrderItems) {
+            final Sku sku = orderItem.goods.sku;
+            Long addedCount = skuDeficientCountMap.get(sku);
+            if (addedCount != null && addedCount >= deficientCountMap.get(sku)) {
+                continue;
+            }
+            addedCount = (addedCount == null) ? 0L : addedCount;
+
+            ArrayList<OrderItems> deficientItemSet = deficientOrderItemMap.get(sku);
+            ArrayList<OrderItems> items = null;
+            if (deficientItemSet == null) {
+                items = new ArrayList<>();
+                items.add(orderItem);
+                deficientOrderItemMap.put(sku, items);
+
+            } else {
+                deficientItemSet.add(orderItem);
+                deficientOrderItemMap.put(sku, deficientItemSet);
+            }
+
+            skuDeficientCountMap.put(sku, addedCount + orderItem.getSkuCount());
+        }
+
+        List<OrderItems> deficientOrderItems = new ArrayList<>();
+        for (Sku sku : deficientOrderItemMap.keySet()) {
+            ArrayList<OrderItems> deficientItemSet = deficientOrderItemMap.get(sku);
+            Collections.sort(deficientItemSet, new Comparator<OrderItems>() {
+
+                @Override
+                public int compare(OrderItems o1, OrderItems o2) {
+                    if (o1.getSkuCount() == o2.getSkuCount()) {
+                        return 0;
+                    }
+                    return (o1.getSkuCount() < o2.getSkuCount()) ? 1 : -1;
+                }
+            });
+
+            long deficientCurrentTotalCount = 0L;
+            for (OrderItems deficientOrderItem : deficientItemSet) {
+                deficientCurrentTotalCount += deficientOrderItem.getSkuCount();
+                deficientOrderItems.add(deficientOrderItem);
+                if (deficientCurrentTotalCount >= deficientCountMap.get(sku)) {
+                    break;
+                }
+            }
+        }
+        return deficientOrderItems;
+    }
+
+    /**
+     * 获取在指定
+     *
      * @param skuMap
      * @param toDate
      * @return
      */
-    public static List<OrderItems> findPaid(Map<Sku, Long> skuMap, Date toDate) {
+    private static List<OrderItems> getAllPaidOrderItemListInSkus(Set<Sku> skus, Date toDate) {
         StringBuilder sql = new StringBuilder("select o from OrderItems o where " +
                 "goods.materialType=:materialType and o.createdAt <= :toDate and o.goods.sku in (");
-        for (int i = 0; i < skuMap.size(); i++) {
+        for (int i = 0; i < skus.size(); i++) {
             sql.append(":sku").append(i);
-            if (i != skuMap.size() - 1) {
+            if (i != skus.size() - 1) {
                 sql.append(",");
             }
         }
@@ -362,33 +440,17 @@ public class OrderItems extends Model {
         Query query = OrderItems.em().createQuery(sql.toString());
         query.setParameter("materialType", MaterialType.REAL);
         query.setParameter("toDate", toDate);
-        for (int i = 0; i < skuMap.keySet().size(); i++) {
-            query.setParameter("sku" + i, skuMap.keySet().iterator().next());
+        for (int i = 0; i < skus.size(); i++) {
+            query.setParameter("sku" + i, skus.iterator().next());
         }
-
-        Map<Sku, Long> skuCountMap = new HashMap<>();   //存放已经计算过的缺货的sku及数量
-
-        List<OrderItems> allOrderItems = query.getResultList();
-
-        List<OrderItems> stockoutOrderItems = new ArrayList<>();
-        for (OrderItems orderItem : allOrderItems) {
-            final Long count = skuCountMap.get(orderItem.goods.sku);
-            if (count != null && count >= skuMap.get(orderItem.goods.sku)) {
-                continue;
-            }
-            stockoutOrderItems.add(orderItem);
-            skuCountMap.put(orderItem.goods.sku, count + orderItem.buyNumber);
-        }
-        return stockoutOrderItems;
+        return query.getResultList();
     }
-/*
 
-    public static long countPaidOrders(Date toDate) {
-        Long count = count("goods.materialType=? and order.orderType=? and status=? " +
-                "and createdAt<=? group by order", MaterialType.REAL, OrderType.CONSUME, OrderStatus.PAID, toDate);
+    public static long countPaidOrders(Goods goods) {
+        Long count = find("select sum(buyNumber) from OrderItems where goods.materialType=? and order.orderType=? and status=? " +
+                "and goods=? and goods.skuCount is not null", MaterialType.REAL, OrderType.CONSUME, OrderStatus.PAID, goods).first();
         return count == null ? 0 : count;
     }
-*/
 
     public static List<Order> findPaidRealGoodsOrders(Date toDate) {
         Query q = OrderItems.em().createQuery("select o.order from OrderItems o where o.goods.materialType=:materialType " +
@@ -501,11 +563,12 @@ public class OrderItems extends Model {
         for (Order order : stockoutOrderList) {
             for (OrderItems orderItem : order.orderItems) {
                 BigDecimal amount = amountMap.get(orderItem.goods.sku);
-                final BigDecimal sum = orderItem.salePrice.multiply(BigDecimal.valueOf(orderItem.buyNumber));
+                final BigDecimal buyNumber = BigDecimal.valueOf(orderItem.buyNumber);
+                final BigDecimal sum = orderItem.salePrice.multiply(buyNumber);
                 if (amount == null) {
                     amount = sum;
                 } else {
-                    amount.add(sum);
+                    amount = amount.add(sum);
                 }
                 amountMap.put(orderItem.goods.sku, amount);
             }
@@ -513,8 +576,11 @@ public class OrderItems extends Model {
 
         BigDecimal average = BigDecimal.ZERO;
         for (Sku sku : amountMap.keySet()) {
-            average = amountMap.get(sku).divide(BigDecimal.valueOf(takeoutSkuMap.get(sku)), 2, BigDecimal.ROUND_HALF_UP);
-            averagePriceMap.put(sku, average);
+            final BigDecimal skuAmount = amountMap.get(sku);
+            if (takeoutSkuMap.get(sku) != null) {
+                average = skuAmount.divide(BigDecimal.valueOf(takeoutSkuMap.get(sku)), 2, BigDecimal.ROUND_HALF_UP);
+                averagePriceMap.put(sku, average);
+            }
         }
 
         return averagePriceMap;

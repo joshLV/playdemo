@@ -16,6 +16,7 @@ import models.mail.MailUtil;
 import models.operator.OperateUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
+import models.order.OrderItems;
 import models.order.OrderStatus;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
@@ -513,7 +514,7 @@ public class Goods extends Model {
      */
     @Column(name = "limit_number")
     @SolrField
-    public Integer limitNumber = 0;
+    public Long limitNumber = 0L;
 
     /**
      * 推荐指数.
@@ -892,13 +893,16 @@ public class Goods extends Model {
     @Transient
     @SolrField
     public Long getRealStocks() {
-        if (realStock != null) {
-            return realStock;
-        }
+        //TODO 多次调用待解决
+        //if (realStock != null) {
+        //  System.out.println(materialType + ">>>>materialType");
+        //return realStock;
+        //}
         Long realSaleCount = getRealSaleCount();
         if (materialType == MaterialType.ELECTRONIC) { //电子券的库存计算方法
             if (cumulativeStocks != null) {
-                return cumulativeStocks - realSaleCount;
+                realStock = cumulativeStocks - realSaleCount;
+                return realStock;
             }
             realStock = realSaleCount;
         } else { //实物的库存计算方法
@@ -910,7 +914,8 @@ public class Goods extends Model {
 
             long remainCount = sku.getRemainCount();
 
-            realStock = (remainCount - (realSaleCount * skuCount)) / skuCount;
+            long paidOrderSaleCount = OrderItems.countPaidOrders(this);
+            realStock = (remainCount - (paidOrderSaleCount * skuCount)) / skuCount;
         }
         realStock = realStock == null ? 0L : realStock;
         return realStock;

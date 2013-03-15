@@ -171,9 +171,9 @@
         </navigation>
         <navigation key="import_order_app" text="实体订单">
             <navigation key="import_order_index" action="ImportPartnerOrders.index" text="导入渠道订单" permissions="ORDERS"/>
-            <navigation key="order_shipping_index" action="OperateOrderShippingInfos.index" text="发货单下载"
+            <navigation key="download_order_shipping_index" action="DownloadOrderShippingInfos.index" text="发货单下载"
                         permissions="ORDERS"/>
-            <navigation key="import_order_shipping_index" action="ImportOrderShippingInfos.index" text="导入发货单"
+            <navigation key="upload_order_shipping_index" action="UploadOrderShippingInfos.index" text="导入发货单"
                         permissions="ORDERS"/>
             <navigation key="download_track_no_for_resaler" action="real.DownloadTrackNos.index" text="下载渠道运单上报文件"
                         permissions="ORDERS"/>

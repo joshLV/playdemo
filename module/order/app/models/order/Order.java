@@ -258,6 +258,17 @@ public class Order extends Model {
         super._delete();
     }
 
+    @Transient
+    public long getRealGoodsOrderItemCount() {
+        long count = 0L;
+        for (OrderItems orderItem : orderItems) {
+            if (orderItem.goods.materialType == MaterialType.REAL) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     private Order(long userId, AccountType userType) {
         this.userId = userId;
         this.userType = userType;
@@ -362,7 +373,7 @@ public class Order extends Model {
      * @return
      */
     public static BigDecimal getDiscountGoodsAmount(models.sales.Goods g,
-                                                    Integer number, DiscountCode discountCode) {
+                                                    Long number, DiscountCode discountCode) {
         BigDecimal amount = g.salePrice.multiply(new BigDecimal(number.toString()));
         BigDecimal discountValue = getDiscountValueOfGoodsAmount(g, number, discountCode);
         return amount.subtract(discountValue);
@@ -378,7 +389,7 @@ public class Order extends Model {
      * @return
      */
     public static BigDecimal getDiscountValueOfGoodsAmount(models.sales.Goods g,
-                                                           Integer number, DiscountCode discountCode) {
+                                                           Long number, DiscountCode discountCode) {
         if (discountCode == null || discountCode.goods == null || !discountCode.goods.id.equals(g.id)) {
             return BigDecimal.ZERO;
         }
@@ -435,11 +446,11 @@ public class Order extends Model {
      * @return 添加的订单条目
      * @throws NotEnoughInventoryException
      */
-    public OrderItems addOrderItem(Goods goods, Integer number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice) throws NotEnoughInventoryException {
+    public OrderItems addOrderItem(Goods goods, Long number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice) throws NotEnoughInventoryException {
         return this.addOrderItem(goods, number, mobile, salePrice, resalerPrice, null, false);
     }
 
-    public OrderItems addOrderItem(Goods goods, Integer number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice,
+    public OrderItems addOrderItem(Goods goods, Long number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice,
                                    DiscountCode discountCode, boolean isPromoteFlag)
             throws NotEnoughInventoryException {
         OrderItems orderItem = null;
@@ -483,11 +494,11 @@ public class Order extends Model {
      * @param number  购买数量
      * @return true 表示已经超过限购数量， false 表示未超过
      */
-    public static Boolean checkLimitNumber(Long goodsId, Long boughtNumber, int number) {
+    public static Boolean checkLimitNumber(Long goodsId, Long boughtNumber, long number) {
 
         //取出商品的限购数量
         Goods goods = Goods.findById(goodsId);
-        int limitNumber = 0;
+        long limitNumber = 0L;
         if (goods.limitNumber != null) {
             limitNumber = goods.limitNumber;
         }
@@ -1273,7 +1284,7 @@ public class Order extends Model {
      * @param number
      * @return
      */
-    public static BigDecimal getPromoteRebateOfTotalGoodsAmount(Goods goods, Integer number) {
+    public static BigDecimal getPromoteRebateOfTotalGoodsAmount(Goods goods, Long number) {
         BigDecimal amount = goods.salePrice.multiply(new BigDecimal(number.toString()));
         return amount.subtract(getPromoteRebateOfGoodsAmount(goods, number));
     }
@@ -1285,7 +1296,7 @@ public class Order extends Model {
      * @param number
      * @return
      */
-    public static BigDecimal getPromoteRebateOfGoodsAmount(Goods goods, Integer number) {
+    public static BigDecimal getPromoteRebateOfGoodsAmount(Goods goods, Long number) {
         //默认给被推荐人1%，如果商品没设置返利
         BigDecimal invitedUserPrice = goods.invitedUserPrice == null ? BigDecimal.ONE : goods.invitedUserPrice;
         return goods.salePrice.multiply(invitedUserPrice).multiply(new BigDecimal(number)).multiply(new BigDecimal(0.01));

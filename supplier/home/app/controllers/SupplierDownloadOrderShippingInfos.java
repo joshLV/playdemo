@@ -1,11 +1,11 @@
 package controllers;
 
-import models.operator.OperateUser;
+import controllers.supplier.SupplierInjector;
+import models.admin.SupplierUser;
 import models.order.OrderItems;
 import models.order.OrderStatus;
 import models.sales.OrderBatch;
 import models.supplier.Supplier;
-import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.ModelPaginator;
 import play.mvc.Controller;
@@ -15,31 +15,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 待发货清单下载
  * <p/>
  * User: yanjy
- * Date: 13-3-13
- * Time: 上午11:14
+ * Date: 13-3-11
+ * Time: 下午3:49
  */
-@With(OperateRbac.class)
-@ActiveNavigation("order_shipping_index")
-public class OperateOrderShippingInfos extends Controller {
+@With({SupplierRbac.class, SupplierInjector.class})
+public class SupplierDownloadOrderShippingInfos extends Controller {
     public static int PAGE_SIZE = 10;
+    public static final String EXCEL = "xls";
 
-    @ActiveNavigation("order_shipping_index")
-    public static void index(Long supplierId) {
+    public static void index() {
         int pageNumber = getPageNumber();
-        List<Supplier> supplierList = Supplier.findSuppliersByCanSaleReal();
-        if (supplierId == null && supplierList.size() > 0) {
-            supplierId = 5L;
-        }
-        Supplier supplier = Supplier.findById(supplierId);
+        Supplier supplier = SupplierRbac.currentUser().supplier;
         if (supplier.canSaleReal == null || !supplier.canSaleReal) {
             error("have no real goods!");
         }
-        List<OrderItems> orderItemsList = getPreparedItems(null, supplierId);
-        ModelPaginator<OrderBatch> orderBatchList = OrderBatch.findBySupplier(supplierId, pageNumber, PAGE_SIZE);
-        render(orderItemsList, orderBatchList, supplierList, supplierId);
+        List<OrderItems> orderItemsList = getPreparedItems(null);
+        ModelPaginator<OrderBatch> orderBatchList = OrderBatch.findBySupplier(supplier.id, pageNumber, PAGE_SIZE);
+        render(orderItemsList, orderBatchList);
     }
 
     /**
@@ -47,14 +41,14 @@ public class OperateOrderShippingInfos extends Controller {
      *
      * @return
      */
-    private static List<OrderItems> getPreparedItems(Long orderBatchId, Long supplierId) {
+    private static List<OrderItems> getPreparedItems(Long orderBatchId) {
         StringBuilder sql = new StringBuilder("goods.supplierId=? and goods.sku is not null ");
         List<Object> params = new ArrayList();
-        params.add(supplierId);
+        params.add(SupplierRbac.currentUser().supplier.id);
         if (orderBatchId == null) {
             sql.append(" and orderBatch is null");
         } else {
-            sql.append(" and orderBatch.id= ?");
+            sql.append(" and orderBatch.id = ?");
             params.add(orderBatchId);
         }
         return OrderItems.find(sql.toString(), params.toArray()).fetch();
@@ -63,15 +57,12 @@ public class OperateOrderShippingInfos extends Controller {
     /**
      * 导出发货单
      */
-    public static void exportOrderShipping(Long id, Long supplierId) {
-        OperateUser operateUser = OperateRbac.currentUser();
-        List<OrderItems> orderItemsList = getPreparedItems(id, supplierId);
-        request.format = "xlsx";
-        renderArgs.put("__FILE_NAME__", "发货单导出_" + System.currentTimeMillis() + ".xlsx");
+    public static void exportOrderShipping(Long id) {
+        SupplierUser supplierUser = SupplierRbac.currentUser();
+        List<OrderItems> orderItemsList = getPreparedItems(id);
         if (id == null) {
-            Supplier supplier = Supplier.findUnDeletedById(supplierId);
-            OrderBatch orderBatch = new OrderBatch(supplier, operateUser.userName).save();
-
+            OrderBatch orderBatch = new OrderBatch(supplierUser.supplier, supplierUser.userName).save();
+            id = orderBatch.id;
             //更新orderItems的状态为：代打包
             for (OrderItems orderItems : orderItemsList) {
                 orderItems.status = OrderStatus.PREPARED;
@@ -79,6 +70,8 @@ public class OperateOrderShippingInfos extends Controller {
                 orderItems.save();
             }
         }
+        request.format = EXCEL;
+        renderArgs.put("__FILE_NAME__", "发货单_" + id + "." + EXCEL);
         render(orderItemsList);
     }
 

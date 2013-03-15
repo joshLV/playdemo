@@ -4,7 +4,18 @@ import models.sales.InventoryStockItem;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
+<<<<<<<HEAD
 import javax.persistence.*;
+=======
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+>>>>>>>develop
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -41,7 +52,7 @@ public class OrderShippingInfo extends Model {
      * TODO: 删除这一属性，值放orderItems中了
      */
     @Column(name = "buy_number")
-    public Integer buyNumber;
+    public Long buyNumber;
 
     /**
      * 备注

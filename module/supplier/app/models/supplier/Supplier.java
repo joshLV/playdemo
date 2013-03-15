@@ -61,6 +61,7 @@ public class Supplier extends Model {
     public static final String BEGIN_TIME = " 00:00";
     public static final String END_TIME = " 23:59";
     public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
+    public static Supplier SHIHUI = null;
     /**
      * 域名
      */
@@ -479,8 +480,7 @@ public class Supplier extends Model {
     }
 
     public List<SupplierContract> getContract() {
-        return SupplierContract.find("supplierId=?", this.id
-        ).fetch();
+        return SupplierContract.find("supplierId=?", this.id).fetch();
     }
 
     /**
@@ -489,6 +489,9 @@ public class Supplier extends Model {
      * @return
      */
     public static Supplier getShihui() {
-        return find("fullName='上海视惠信息科技有限公司'").first();
+        if (SHIHUI == null) {
+            SHIHUI = find("fullName='上海视惠信息科技有限公司' and deleted=?", DeletedStatus.UN_DELETED).first();
+        }
+        return SHIHUI;
     }
 }

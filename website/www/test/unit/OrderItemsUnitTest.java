@@ -33,7 +33,7 @@ public class OrderItemsUnitTest extends UnitTest {
         goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
             @Override
             public void build(Goods g) {
-                g.limitNumber = 1;
+                g.limitNumber = 1L;
             }
         });
         items = FactoryBoy.create(OrderItems.class);

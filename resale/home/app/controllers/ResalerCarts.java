@@ -70,7 +70,7 @@ public class ResalerCarts extends Controller {
         boolean containsReal = false;
         for(Object[] fav : favs){
             Goods goods = (Goods)fav[0];
-            int number = (Integer)fav[1];
+            Long number = (Long)fav[1];
             String phone = (String)fav[2];
             BigDecimal resalerPrice = goods.getResalePrice();
             order.addOrderItem(goods, number, phone,
@@ -199,7 +199,7 @@ public class ResalerCarts extends Controller {
         for(String split : itemSplits){
             String[] goodsItem = split.split("-");
             if(goodsItem.length == 3){
-                Integer number = Integer.parseInt(goodsItem[1]);
+                Long number = Long.parseLong(goodsItem[1]);
                 if(number > 0){
                     Long goodsId = Long.parseLong(goodsItem[0]);
                     Goods goods = Goods.findById(goodsId);

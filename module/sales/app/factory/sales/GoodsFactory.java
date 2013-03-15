@@ -114,7 +114,7 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.materialType = MaterialType.REAL;
         goods.effectiveAt = DateHelper.t("2012-02-01");
         goods.expireAt = DateHelper.t("2092-02-02");
-        goods.limitNumber = 1;
+        goods.limitNumber = 1L;
         goods.imagePath = "/0/0/133/origin.jpg";
         return goods;
 

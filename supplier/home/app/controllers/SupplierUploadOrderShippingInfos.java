@@ -1,14 +1,14 @@
 package controllers;
 
+import controllers.supplier.SupplierInjector;
 import models.order.ExpressCompany;
 import models.order.LogisticImportData;
 import models.order.OrderItems;
 import models.order.OrderStatus;
-import models.supplier.Supplier;
+import navigation.annotations.ActiveNavigation;
 import net.sf.jxls.reader.ReaderBuilder;
 import net.sf.jxls.reader.XLSReadStatus;
 import net.sf.jxls.reader.XLSReader;
-import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.mvc.Controller;
@@ -29,13 +29,12 @@ import java.util.Map;
  * Date: 13-3-13
  * Time: 下午6:15
  */
-@With(OperateRbac.class)
-@ActiveNavigation("import_order_shipping_index")
-public class ImportOrderShippingInfos extends Controller {
-    @ActiveNavigation("import_order_shipping_index")
+@With({SupplierRbac.class, SupplierInjector.class})
+@ActiveNavigation("upload_order_shipping_index")
+public class SupplierUploadOrderShippingInfos extends Controller {
+    @ActiveNavigation("upload_order_shipping_index")
     public static void index() {
-        List<Supplier> supplierList = Supplier.findSuppliersByCanSaleReal();
-        render(supplierList);
+        render();
     }
 
     /**
@@ -43,20 +42,18 @@ public class ImportOrderShippingInfos extends Controller {
      *
      * @return
      */
-    @ActiveNavigation("import_order_shipping_index")
-    public static void upload(File orderShippingFile, Long supplierId) {
-        System.out.println(orderShippingFile + ">>>>orderShippingFile");
-        List<Supplier> supplierList = Supplier.findSuppliersByCanSaleReal();
-        String errorInfo = "";
+    @ActiveNavigation("upload_order_shipping_index")
+    public static void upload(File orderShippingFile) {
+        String msgInfo = "";
         if (orderShippingFile == null) {
-            errorInfo = "请先选择文件！";
-            render("ImportOrderShippingInfos/index.html", errorInfo, supplierId,supplierList);
+            msgInfo = "请先选择文件！";
+            render("SupplierUploadOrderShippingInfos/index.html", msgInfo);
         }
         List<LogisticImportData> logistics = new ArrayList<>();
         try {
             //准备转换器
             InputStream inputXML = VirtualFile.fromRelativePath(
-                    "app/views/ImportOrderShippingInfos/orderShippingTransfer.xml").inputstream();
+                    "app/views/SupplierUploadOrderShippingInfos/orderShippingTransfer.xml").inputstream();
             XLSReader mainReader = ReaderBuilder.buildFromXML(inputXML);
             //准备javabean
             Map<String, Object> beans = new HashMap<>();
@@ -64,22 +61,24 @@ public class ImportOrderShippingInfos extends Controller {
 
             XLSReadStatus readStatus = mainReader.read(new FileInputStream(orderShippingFile), beans);
             if (!readStatus.isStatusOK()) {
-                errorInfo = "转换出错，请检查文件格式！";
-                Logger.info(errorInfo);
-                render("OperateOrderShippingInfos/index.html", errorInfo, supplierId,supplierList);
+                msgInfo = "转换出错，请检查文件格式！";
+                Logger.info(msgInfo);
+                render("SupplierUploadOrderShippingInfos/index.html", msgInfo);
             }
         } catch (Exception e) {
-            errorInfo = "转换出现异常，请检查文件格式！" + e.getMessage();
+            msgInfo = "转换出现异常，请检查文件格式！" + e.getMessage();
             e.printStackTrace();
-            render("ImportOrderShippingInfos/index.html", errorInfo, supplierId,supplierList);
+            render("SupplierUploadOrderShippingInfos/index.html", msgInfo);
         }
 
         List<String> unExistedOrders = new ArrayList<>();
         List<String> uploadSuccessOrders = new ArrayList<>();
         List<String> unExistedExpressCompanys = new ArrayList<>();
+        List<String> emptyExpressInofs = new ArrayList<>();
 
         for (LogisticImportData logistic : logistics) {
             if (StringUtils.isBlank(logistic.expressCompany)) {
+                emptyExpressInofs.add(logistic.orderNumber);
                 continue;
             }
             ExpressCompany expressCompany = ExpressCompany.getCompanyNameByCode(logistic.expressCompany);
@@ -88,21 +87,26 @@ public class ImportOrderShippingInfos extends Controller {
                 continue;
             }
             //查询该商户下的订单信息，存在则更新物流信息
-            OrderItems orderItems = OrderItems.find("goods.id=? and goods.supplierId=? and order.orderNumber=?", Long.valueOf(logistic.goodsId), supplierId, logistic.orderNumber).first();
+            OrderItems orderItems = OrderItems.find("goods.sku is not null and goods.id=? and goods.supplierId=? and order.orderNumber=?", Long.valueOf(logistic.goodsId), SupplierRbac.currentUser().supplier.id, logistic.orderNumber).first();
             if (orderItems == null) {
                 unExistedOrders.add(logistic.orderNumber);
-            } else {
-                orderItems.shippingInfo.expressCompany = expressCompany;
-                orderItems.shippingInfo.expressNumber = logistic.expressNumber;
-                orderItems.status = OrderStatus.SENT;
-                orderItems.save();
-                uploadSuccessOrders.add(logistic.orderNumber);
+                continue;
             }
+            orderItems.shippingInfo.expressCompany = expressCompany;
+            orderItems.shippingInfo.expressNumber = logistic.expressNumber;
+            orderItems.shippingInfo.save();
+            orderItems.status = OrderStatus.SENT;
+            orderItems.save();
+            uploadSuccessOrders.add(logistic.orderNumber);
         }
 
-        renderArgs.put("unExistedOrders",unExistedOrders);
-        renderArgs.put("uploadSuccessOrders",uploadSuccessOrders);
-        render("ImportOrderShippingInfos/index.html", supplierId, supplierList);
+        List<ExpressCompany> expressCompanyList = ExpressCompany.findAll();
+        renderArgs.put("emptyExpressInofs", emptyExpressInofs);
+        renderArgs.put("expressCompanyList", expressCompanyList);
+        renderArgs.put("unExistedOrders", unExistedOrders);
+        renderArgs.put("unExistedExpressCompanys", unExistedExpressCompanys);
+        renderArgs.put("uploadSuccessOrders", uploadSuccessOrders);
+        render("SupplierUploadOrderShippingInfos/index.html");
     }
 
 
