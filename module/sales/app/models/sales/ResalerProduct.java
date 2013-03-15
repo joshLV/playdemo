@@ -87,8 +87,8 @@ public class ResalerProduct extends Model {
     }
 
     public static ResalerProduct alloc(OuterOrderPartner partner, Goods goods) {
-        ResalerProduct product = ResalerProduct.find("byPartnerAndGoodsAndStatus",
-                partner, goods, ResalerProductStatus.STAGING).first();
+        ResalerProduct product = ResalerProduct.find("byPartnerAndGoodsAndStatusAndDeleted",
+                partner, goods, ResalerProductStatus.STAGING, DeletedStatus.UN_DELETED).first();
         if (product == null) {
             product = generate(partner, goods);
         }
