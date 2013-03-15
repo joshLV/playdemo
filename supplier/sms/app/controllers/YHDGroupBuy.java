@@ -38,7 +38,7 @@ public class YHDGroupBuy extends Controller {
     /**
      * 接收一号店的新订单通知
      */
-    public static void orderInform(String orderCode, Long productId, Integer productNum, BigDecimal orderAmount,
+    public static void orderInform(String orderCode, Long productId, Long productNum, BigDecimal orderAmount,
                                    Date createTime, Date paidTime, String userPhone, BigDecimal productPrice,
                                    String outerGroupId) {
         TreeMap<String, String> params = YHDUtil.filterPlayParams(request.params.allSimple());

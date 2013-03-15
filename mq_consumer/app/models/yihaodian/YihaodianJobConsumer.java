@@ -183,7 +183,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumerWithTx<String> {
                 BigDecimal orderItemPrice = new BigDecimal(XPath.selectText("./orderItemPrice", orderItem).trim());
                 OrderItems uhuilaOrderItem  = uhuilaOrder.addOrderItem(
                         goods,
-                        Integer.parseInt(XPath.selectText("./orderItemNum", orderItem).trim()),
+                        Long.parseLong(XPath.selectText("./orderItemNum", orderItem).trim()),
                         goodReceiverMobile,
                         orderItemPrice,
                         orderItemPrice

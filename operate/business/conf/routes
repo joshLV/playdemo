@@ -447,12 +447,12 @@ GET     /import-partner-orders                    ImportPartnerOrders.index
 POST    /import-partner-orders                    ImportPartnerOrders.upload
 
 #上传发货单
-GET     /real/import-order-shipping             ImportOrderShippingInfos.index
-POST    /real/import-order-shipping             ImportOrderShippingInfos.upload
+GET     /real/upload-order-shipping             UploadOrderShippingInfos.index
+POST    /real/upload-order-shipping             UploadOrderShippingInfos.upload
 
 #下载发货单
-GET     /real/download-order-shipping             OperateOrderShippingInfos.index
-POST    /real/download-order-shipping/export      OperateOrderShippingInfos.exportOrderShipping
+GET     /real/download-order-shipping             DownloadOrderShippingInfos.index
+POST    /real/download-order-shipping/export      DownloadOrderShippingInfos.exportOrderShipping
 
 # 下载渠道运单号上报文件
 GET     /real/partner/download-track-nos          real.DownloadTrackNos.index

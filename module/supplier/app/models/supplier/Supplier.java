@@ -492,6 +492,7 @@ public class Supplier extends Model {
         if (SHIHUI == null) {
             SHIHUI = find("fullName='上海视惠信息科技有限公司' and deleted=?", DeletedStatus.UN_DELETED).first();
         }
+        System.out.println(SHIHUI + ">>>>SHIHUI");
         return SHIHUI;
     }
 }

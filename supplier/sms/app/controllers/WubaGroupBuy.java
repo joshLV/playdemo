@@ -60,13 +60,13 @@ public class WubaGroupBuy extends Controller {
         String orderId;
         Long outerGroupId;
         BigDecimal productPrize;
-        int productNum;
+        Long productNum;
         String userPhone;
 
         try {
             orderId = orderJson.get("orderId").getAsString();
             productPrize = orderJson.get("prodPrice").getAsBigDecimal();
-            productNum = orderJson.get("prodCount").getAsInt();
+            productNum = orderJson.get("prodCount").getAsLong();
             userPhone = orderJson.get("mobile").getAsString();
             outerGroupId = orderJson.get("groupbuyIdThirdpart").getAsLong();
         } catch (Exception e) {

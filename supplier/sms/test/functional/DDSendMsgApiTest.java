@@ -87,7 +87,7 @@ public class DDSendMsgApiTest extends FunctionalTest {
         Map<String, String> params = new HashMap<>();
         params.put("call_time", "1348217629");
         String data = "<data>" +
-                "<order><order_id><![CDATA[12345678]]></order_id>" +
+                "<order><order_id><![CDATA[" + outerOrder.orderId + "]]></order_id>" +
                 "<ddgid><![CDATA[" + product.goodsLinkId + "]]></ddgid>" +
                 "<spgid><![CDATA[" + product.goodsLinkId + "]]></spgid>" +
                 "<user_code><![CDATA[159300520]]></user_code>" +
@@ -108,7 +108,7 @@ public class DDSendMsgApiTest extends FunctionalTest {
     @Test
     public void 测试发送短信_sign出错() {
         String data = "<data><order>" +
-                "<order_id><![CDATA[12345678]]></order_id>" +
+                "<order_id><![CDATA[" + outerOrder.orderId + "]]></order_id>" +
                 "<ddgid><![CDATA[1]]></ddgid>" +
                 "<spgid><![CDATA[1]]></spgid>" +
                 "<user_code><![CDATA[159300520]]></user_code>" +
@@ -157,7 +157,7 @@ public class DDSendMsgApiTest extends FunctionalTest {
     @Test
     public void 测试发送短信_当当用户不存在() {
         String data = "<data><order>" +
-                "<order_id><![CDATA[12345678]]></order_id>" +
+                "<order_id><![CDATA[" + outerOrder.orderId + "]]></order_id>" +
                 "<ddgid><![CDATA[1]]></ddgid>" +
                 "<spgid><![CDATA[1]]></spgid>" +
                 "<user_code><![CDATA[159300520]]></user_code>" +
@@ -197,7 +197,7 @@ public class DDSendMsgApiTest extends FunctionalTest {
         order.save();
 
         String data = "<data><order>" +
-                "<order_id><![CDATA[12345678]]></order_id>" +
+                "<order_id><![CDATA[" + outerOrder.orderId + "]]></order_id>" +
                 "<ddgid><![CDATA[" + product.goodsLinkId + "]]></ddgid>" +
                 "<spgid><![CDATA[" + product.goodsLinkId + "]]></spgid>" +
                 "<user_code><![CDATA[159300520]]></user_code>" +
@@ -217,7 +217,7 @@ public class DDSendMsgApiTest extends FunctionalTest {
     @Test
     public void 测试发送短信_没找到对应的券号() {
         String data = "<data><order>" +
-                "<order_id><![CDATA[12345678]]></order_id>" +
+                "<order_id><![CDATA[" + outerOrder.orderId + "]]></order_id>" +
                 "<ddgid><![CDATA[1]]></ddgid>" +
                 "<spgid><![CDATA[1]]></spgid>" +
                 "<user_code><![CDATA[159300520]]></user_code>" +
@@ -242,7 +242,7 @@ public class DDSendMsgApiTest extends FunctionalTest {
     public void 测试发送短信_券已过期() {
 
         String data = "<data><order>" +
-                "<order_id><![CDATA[12345678]]></order_id>" +
+                "<order_id><![CDATA[" + outerOrder.orderId + "]]></order_id>" +
                 "<ddgid><![CDATA[1]]></ddgid>" +
                 "<spgid><![CDATA[" + product.goodsLinkId + "]]></spgid>" +
                 "<user_code><![CDATA[159300520]]></user_code>" +
@@ -266,7 +266,7 @@ public class DDSendMsgApiTest extends FunctionalTest {
         coupon.save();
 
         String data = "<data><order>" +
-                "<order_id><![CDATA[12345678]]></order_id>" +
+                "<order_id><![CDATA[" + outerOrder.orderId + "]]></order_id>" +
                 "<ddgid><![CDATA[1]]></ddgid>" +
                 "<spgid><![CDATA[" + product.goodsLinkId + "]]></spgid>" +
                 "<user_code><![CDATA[159300520]]></user_code>" +
@@ -294,7 +294,7 @@ public class DDSendMsgApiTest extends FunctionalTest {
         Map<String, String> params = new HashMap<>();
         params.put("call_time", "1348217629");
         String data = "<data><order>" +
-                "<order_id><![CDATA[12345678]]></order_id>" +
+                "<order_id><![CDATA[" + outerOrder.orderId + "]]></order_id>" +
                 "<ddgid><![CDATA[" + product.goodsLinkId + "]]></ddgid>" +
                 "<spgid><![CDATA[" + product.goodsLinkId + "]]></spgid>" +
                 "<user_code><![CDATA[159300520]]></user_code>" +
