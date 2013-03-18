@@ -109,7 +109,7 @@ public class Sku extends Model {
     }
 
     private String calculateFormattedCode(String originalCode) {
-        int seqCode = Integer.parseInt(originalCode);
+        int seqCode = Integer.parseInt(originalCode) + 1;
         int digits = String.valueOf(seqCode).length();
         if (digits < 2) {
             digits = 2;

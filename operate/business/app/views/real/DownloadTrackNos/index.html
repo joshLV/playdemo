@@ -16,7 +16,11 @@
     *{#{option "TB"}淘宝#{/option}}*
         #{option "YHD"}一号店#{/option}
     #{/select}
-
+        发货时间
+        <input type="text" id="condition_sent_begin_at" class="input-medium Wdate" name="condition.sentBeginAt"
+               onfocus="WdatePicker({readOnly:true})" value="${condition.sentBeginAt?.format()}"> -
+        <input type="text" id="condition_sent_end_at" class="input-medium Wdate" name="condition.sentEndAt"
+               onfocus="WdatePicker({readOnly:true})" value="${condition.sentEndAt?.format()}">
         付款时间
         <input type="text" id="condition_paid_begin_at" class="input-medium Wdate" name="condition.paidBeginAt"
                onfocus="WdatePicker({readOnly:true})" value="${condition.paidBeginAt?.format()}"> -
@@ -25,11 +29,7 @@
 
         <br> <br>
 
-        发货时间
-        <input type="text" id="condition_sent_begin_at" class="input-medium Wdate" name="condition.sentBeginAt"
-               onfocus="WdatePicker({readOnly:true})" value="${condition.sentBeginAt?.format()}"> -
-        <input type="text" id="condition_sent_end_at" class="input-medium Wdate" name="condition.sentEndAt"
-               onfocus="WdatePicker({readOnly:true})" value="${condition.sentEndAt?.format()}">
+
         <input type="checkbox" name="condition.unDownloaded" id="unDownloaded" class="input-medium"
                value="${condition?.unDownloaded}" ${condition?.unDownloaded?'checked':''}/>
         未下载的运单&nbsp;&nbsp;
@@ -63,7 +63,7 @@
             ${(shipping?.totalAmount?:0).formatCurrency('CNY')}
             </td>
             <td>
-                #{if shipping?.outerGoodsNo != null && shipping?.outerGoodsNo!=""}
+                #{if shipping?.partnerLoginName == "jingdong" }
                     <a href="/real/partner/download-track-nos/download?partner=${condition?.outerOrderPartner}&paidBeginAt=${condition?.paidBeginAt}&paidEndAt=${condition?.paidEndAt}&sentBeginAt=${condition?.sentBeginAt}&sentEndAt=${condition?.sentEndAt}&unDownloaded=${condition?.unDownloaded}&outerGoodsNo=${shipping?.orderItems?.outerGoodsNo}">下载</a>
                 #{/if}
             </td>
