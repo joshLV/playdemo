@@ -41,6 +41,10 @@ public class DownloadTrackNoReport {
         this.outerGoodsNo = orderItems.outerGoodsNo;
         Resaler resaler = Resaler.findById(orderItems.order.userId);
         this.partnerLoginName = resaler.loginName;
+//        if (orderItems != null && StringUtils.isNotBlank(orderItems.outerGoodsNo)) {
+//
+//        }
+
         this.sentCount = sentCount;
         this.totalAmount = totalAmount;
     }

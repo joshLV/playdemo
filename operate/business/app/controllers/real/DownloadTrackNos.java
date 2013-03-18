@@ -39,8 +39,9 @@ public class DownloadTrackNos extends Controller {
         int pageNumber = getPage();
         if (condition == null) {
             condition = new DownloadTrackNoCondition();
+            condition.sentBeginAt = DateHelper.beforeDays(3);
+            condition.sentEndAt = new Date();
         }
-
         List<DownloadTrackNoReport> resultList = DownloadTrackNoReport.query(condition);
 
 //        分页
