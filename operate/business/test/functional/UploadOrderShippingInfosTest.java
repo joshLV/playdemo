@@ -50,7 +50,7 @@ public class UploadOrderShippingInfosTest extends FunctionalTest {
         OperateUser user = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
-        FactoryBoy.create(ExpressCompany.class);
+        expressCompany = FactoryBoy.create(ExpressCompany.class);
         sku = FactoryBoy.create(Sku.class);
         goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
             @Override
@@ -60,8 +60,18 @@ public class UploadOrderShippingInfosTest extends FunctionalTest {
             }
         });
         orderItems = FactoryBoy.create(OrderItems.class);
-        orderShippingInfo = FactoryBoy.create(OrderShippingInfo.class);
-        orderShippingInfo1 = FactoryBoy.create(OrderShippingInfo.class);
+        orderShippingInfo = FactoryBoy.create(OrderShippingInfo.class, new BuildCallback<OrderShippingInfo>() {
+            @Override
+            public void build(OrderShippingInfo target) {
+                target.expressCompany = null;
+            }
+        });
+        orderShippingInfo1 = FactoryBoy.create(OrderShippingInfo.class, new BuildCallback<OrderShippingInfo>() {
+            @Override
+            public void build(OrderShippingInfo target) {
+                target.expressCompany = null;
+            }
+        });
     }
 
 
