@@ -42,6 +42,7 @@ public class DownloadTrackNos extends Controller {
         }
 
         List<DownloadTrackNoReport> resultList = DownloadTrackNoReport.query(condition);
+
 //        分页
         ValuePaginator<DownloadTrackNoReport> shippingList = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
         render(shippingList, pageNumber, condition);
