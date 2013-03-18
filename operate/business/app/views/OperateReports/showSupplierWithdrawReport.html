@@ -1,0 +1,96 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'商户提现汇总' /}
+#{include '/share/nav.html' /}
+
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+
+#{set 'moreStyles'}
+<style type="text/css">
+    .form-inline ul {
+        display: inline-block;
+        margin-bottom: -15px;
+    }
+
+    .nav-tabs {
+        margin-bottom: 0px;
+    }
+
+    .tab-content {
+        border-left: 1px solid #DDD;
+        border-right: 1px solid #DDD;
+        border-bottom: 1px solid #DDD;
+        clear: both;
+    }
+
+    .tab-content .binary {
+        width: 40%;
+        float: left;
+        text-align: center;
+        margin: 5px 1%;
+    }
+
+    .seq {
+        margin-top: 20px;
+    }
+
+    .alert {
+        margin-bottom: 0px;
+    }
+
+    .seq thead tr :first {
+        background-color: #f5f5f5;
+    }
+
+    footer {
+        margin-top: 20px;
+    }
+</style>
+#{/set}
+
+<div class="body">
+    <form class="well form-inline" action="@{OperateReports.showSupplierWithdrawReport()}" method="GET" id="form">
+        商户
+    #{vx.selectInputField name:"supplierName", id:"condition.accountUid", list:supplierList, value: condition?.accountUid/}
+        起止日期
+        <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.createdAtBegin"
+               onfocus="WdatePicker({readOnly:true})" value="${condition?.createdAtBegin?.format()}"> -
+        <input type="text" id="condition_end" class="input-medium Wdate" name="condition.createdAtEnd"
+               onfocus="WdatePicker({readOnly:true})" value="${condition?.createdAtEnd?.format()}">
+        <button type="submit" class="btn btn-primary">搜索</button>
+    </form>
+    <div class="tab-content">
+        <table class="table table-striped seq">
+            <tr>
+                <th width="8%">序号</th>
+                <th width="6%">商户名称</th>
+                <th width="5%">期初未提现金额</th>
+                <th width="15%">本周期券消费金额</th>
+                <th width="10%">本周期提现金额</th>
+                <th width="5%">剩余未提现金额</th>
+            </tr>
+        #{paginate.list items:accountSequencePage, as:'accountSequence'}
+            <tr>
+                #{set i:1/}
+                <td>${i}</td>
+                <td>${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>${accountSequence.accountName}</td>
+                <td>${accountSequence.supplierName}</td>
+                <td>${accountSequence.balance?.formatCurrency('CNY')}
+                    *{<br/>}*
+                    *{(不可提现余额:${accountSequence.uncashBalance?.formatCurrency('CNY')})}*
+                </td>
+                <td>&{'trade_type.'+ accountSequence.tradeType}</td>
+            </tr>
+            #{set i++/}
+        #{/paginate.list}
+        </table>
+    </div>
+    <div class="pagination">
+        <ul>
+        #{paginate.controls items:accountSequencePage /}
+        </ul>
+    </div>
+
+</div>

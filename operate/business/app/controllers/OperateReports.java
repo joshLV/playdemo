@@ -8,6 +8,7 @@ import models.accounts.AccountSequenceSummary;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.accounts.TradeBill;
+import models.accounts.*;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
 import models.order.Order;
@@ -125,6 +126,7 @@ public class OperateReports extends Controller {
         return condition;
     }
 
+
     /**
      * 查询商户资金明细.
      *
@@ -166,6 +168,35 @@ public class OperateReports extends Controller {
         List<Supplier> supplierList = Supplier.findUnDeleted();
         render(accountSequencePage, summary, supplierList, condition);
     }
+
+    /**
+     * 查询商户提现汇总.
+     *
+     * @param condition 查询条件对象
+     */
+    @ActiveNavigation("suppliers_withdraw_reports")
+    public static void showSupplierWithdrawReport(SupplierWithdrawCondition condition) {
+        int pageNumber = getPageNumber();
+        if (condition == null) {
+            condition = new SupplierWithdrawCondition(); //默认显示提现申请待审批的商户记录，统计周期为最近7天
+        }
+        if (condition.accountUid != null && !condition.accountUid.equals(0l)) {
+            Supplier supplier = Supplier.findById(condition.accountUid);
+            if (supplier != null) {
+                condition.account = AccountUtil.getSupplierAccount(supplier.id);
+            } else {
+                condition.account = new Account();
+                condition.account.id = -1L;
+            }
+        }
+        condition.accountType = AccountType.SUPPLIER;
+
+        List<SupplierWithdrawReport> supplierWithdrawList = SupplierWithdrawReport.query(condition, orderBy);
+
+        render();
+
+    }
+
 
     /**
      * 查询活动金账户资金明细
