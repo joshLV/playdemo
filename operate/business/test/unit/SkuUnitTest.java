@@ -24,7 +24,7 @@ public class SkuUnitTest extends UnitTest {
 
     @Before
     public void setUp() {
-        FactoryBoy.delete(Sku.class);
+        FactoryBoy.deleteAll();
         sku = FactoryBoy.create(Sku.class);
     }
 
@@ -34,7 +34,7 @@ public class SkuUnitTest extends UnitTest {
         Sku sku1 = new Sku();
         sku1.name = "test";
         Supplier supplier = FactoryBoy.lastOrCreate(Supplier.class);
-        supplier.code = "S10010001";
+        supplier.code = "S11001001";
         supplier.sequenceCode = "0001";
         supplier.supplierCategory = sku.supplierCategory;
         supplier.save();
