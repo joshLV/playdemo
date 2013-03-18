@@ -268,7 +268,7 @@ public class Suppliers extends Controller {
         Supplier supplier = Supplier.findById(id);
         SupplierCategory supplierCategory = SupplierCategory.findById(supplierCategoryId);
         if (supplier != null && supplierCategory != null && supplier.supplierCategory != null && supplier.supplierCategory.id != supplierCategoryId) {
-            supplier.setCode(supplierCategory);
+            supplier.resetCode(supplierCategory);
         }
 
         render(supplier);

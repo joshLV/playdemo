@@ -23,17 +23,19 @@ public class SupplierCalculateCodeTest extends UnitTest {
     public void testCalculateFormattedCode() {
         originalCode = "0001";
         for (int i = 0; i < 30; i++) {
-            originalCode = Supplier.calculateFormattedCode(originalCode, "4");
+            System.out.println(originalCode + "===originalCode>>");
+            originalCode = Supplier.calculateFormattedCode(originalCode);
         }
+        System.out.println(originalCode + "===originalCode>>");
         assertEquals("0031", originalCode);
         originalCode = "01";
         for (int i = 0; i < 30; i++) {
-            originalCode = Supplier.calculateFormattedCode(originalCode, "2");
+            originalCode = Supplier.calculateFormattedCode(originalCode);
         }
         assertEquals("31", originalCode);
         originalCode = "01";
         for (int i = 0; i < 100; i++) {
-            originalCode = Supplier.calculateFormattedCode(originalCode, "2");
+            originalCode = Supplier.calculateFormattedCode(originalCode);
 
         }
         assertEquals("101", originalCode);
