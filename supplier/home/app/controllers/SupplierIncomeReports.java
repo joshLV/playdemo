@@ -38,11 +38,11 @@ public class SupplierIncomeReports extends Controller {
      * @param toDate   结束日期
      */
     @ActiveNavigation("reports")
-    public static void index(Long goodsId, Long shopId, Date fromDate, Date toDate) {
+    public static void index(String goodsShortName, Long shopId, Date fromDate, Date toDate) {
         final Supplier supplier = SupplierRbac.currentUser().supplier;
         Long supplierId = supplier.id;
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
-        List<models.sales.Goods> goodsList = models.sales.Goods.findBySupplierId(supplierId);
+        List<models.sales.Goods> goodsList = models.sales.Goods.findDistinctShortNameBySupplierId(supplierId);
         if (fromDate == null) {
             fromDate = DateUtil.getBeforeDate(DateUtil.getBeginOfDay(), 8);
         }
@@ -59,10 +59,10 @@ public class SupplierIncomeReports extends Controller {
         }
 
         //商品报表
-        List<SupplierGoodsReport> goodsReportList = SupplierGoodsReport.getSupplierGoodsReport(supplier.id,
-                goodsId, shopId, fromDate, toDate);
+        List<SupplierGoodsReport> goodsReportList = SupplierGoodsReport.getConsumedCountList(supplier.id,
+                goodsShortName, shopId, fromDate, toDate);
         //商品销量图
-        if ((goodsId == null || goodsId == 0l) && goodsList.size() > 1) {
+        if ((StringUtils.isBlank(goodsShortName)) && goodsList.size() > 1) {
             List<String> goodsNameList = new ArrayList<>();
             for (SupplierGoodsReport goodsReport : goodsReportList) {
                 goodsNameList.add(goodsReport.goodsName);
@@ -74,12 +74,12 @@ public class SupplierIncomeReports extends Controller {
 
         boolean showSellingState =false;
         if (supplier.showSellingState!= null && supplier.showSellingState) {
-            goodsReportList = SupplierGoodsReport.getGoodsSellingReport(supplier.id, goodsId, shopId, fromDate, toDate);
+            goodsReportList = SupplierGoodsReport.getGoodsSellingReport(supplier.id, goodsShortName, shopId, fromDate, toDate);
             showSellingState=true;
         }
         //门店报表图
         if ((shopId == null || shopId == 0l) && shopList.size() > 1) {
-            List<SupplierShopReport> shopChartList = SupplierShopReport.getChartList(supplier.id, goodsId, fromDate, toDate);
+            List<SupplierShopReport> shopChartList = SupplierShopReport.getChartList(supplier.id, goodsShortName, fromDate, toDate);
             List<String> shopNameList = new ArrayList<>();
             for (SupplierShopReport supplierShopReport : shopChartList) {
                 shopNameList.add(supplierShopReport.shopName);
@@ -89,7 +89,7 @@ public class SupplierIncomeReports extends Controller {
             renderArgs.put("shopChartMap", shopChartMap);
         }
         //每日报表图
-        List<SupplierDailyReport> dailyChartList = SupplierDailyReport.getChartList(supplier.id, goodsId, shopId, fromDate, toDate);
+        List<SupplierDailyReport> dailyChartList = SupplierDailyReport.getChartList(supplier.id, goodsShortName, shopId, fromDate, toDate);
         Map<String, Long> dailyChartMap = SupplierDailyReport.getChartMap(dailyChartList);
         List<String> dailyList = DateUtil.getDateList(fromDate, toDate, 1, "yyyy-MM-dd");
 
@@ -97,7 +97,7 @@ public class SupplierIncomeReports extends Controller {
         renderArgs.put("dailyChartMap", dailyChartMap);
 
         renderArgs.put("shopEndHour", StringUtils.isNotEmpty(supplier.shopEndHour) ? supplier.shopEndHour : "23:59");
-        render(goodsId, shopId, fromDate, toDate, shopList, goodsList, goodsReportList,showSellingState);
+        render(goodsShortName, shopId, fromDate, toDate, shopList, goodsList, goodsReportList,showSellingState);
     }
 
     /**
@@ -127,19 +127,19 @@ public class SupplierIncomeReports extends Controller {
     /**
      * 导出每日消费Excel报表.
      *
-     * @param goodsId  商品标识
+     * @param goodsShortName  商品短名称
      * @param shopId   门店标识
      * @param fromDate 开始日期
      * @param toDate   结束日期
      */
-    public static void exportDailyReport(Long goodsId, Long shopId, Date fromDate, Date toDate) {
+    public static void exportDailyReport(String goodsShortName, Long shopId, Date fromDate, Date toDate) {
         final Supplier supplier = SupplierRbac.currentUser().supplier;
         setFromToDate(supplier, fromDate, toDate);
 
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "每日消费报表_" + DateUtil.dateToString(fromDate, 0) + "_" + DateUtil.dateToString(toDate, 0) + ".xls");
 
-        List<SupplierDailyReport> dailyReportList = SupplierDailyReport.getChartList(supplier.id, goodsId, shopId, fromDate, toDate);
+        List<SupplierDailyReport> dailyReportList = SupplierDailyReport.getChartList(supplier.id, goodsShortName, shopId, fromDate, toDate);
 
         render(dailyReportList, fromDate, toDate);
     }
@@ -147,19 +147,19 @@ public class SupplierIncomeReports extends Controller {
     /**
      * 导出门店消费Excel报表.
      *
-     * @param goodsId  商品标识
+     * @param goodsShortName  商品短名称
      * @param shopId   门店标识
      * @param fromDate 开始日期
      * @param toDate   结束日期
      */
-    public static void exportShopReport(Long goodsId, Long shopId, Date fromDate, Date toDate) {
+    public static void exportShopReport(String goodsShortName, Long shopId, Date fromDate, Date toDate) {
         final Supplier supplier = SupplierRbac.currentUser().supplier;
         setFromToDate(supplier, fromDate, toDate);
 
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "门店消费报表_" + DateUtil.dateToString(fromDate, 0) + "_" + DateUtil.dateToString(toDate, 0) + ".xls");
 
-        List<SupplierShopReport> shopReportList = SupplierShopReport.getChartList(supplier.id, goodsId, fromDate, toDate);
+        List<SupplierShopReport> shopReportList = SupplierShopReport.getChartList(supplier.id, goodsShortName, fromDate, toDate);
 
         render(shopReportList, fromDate, toDate);
     }
@@ -168,20 +168,20 @@ public class SupplierIncomeReports extends Controller {
     /**
      * 导出商品消费Excel报表.
      *
-     * @param goodsId  商品标识
+     * @param goodsShortName  商品短名称
      * @param shopId   门店标识
      * @param fromDate 开始日期
      * @param toDate   结束日期
      */
-    public static void exportGoodsReport(Long goodsId, Long shopId, Date fromDate, Date toDate) {
+    public static void exportGoodsReport(String goodsShortName, Long shopId, Date fromDate, Date toDate) {
         final Supplier supplier = SupplierRbac.currentUser().supplier;
         setFromToDate(supplier, fromDate, toDate);
 
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "商品消费报表_" + DateUtil.dateToString(fromDate, 0) + "_" + DateUtil.dateToString(toDate, 0) + ".xls");
 
-        List<SupplierGoodsReport> goodsReportList = SupplierGoodsReport.getSupplierGoodsReport(supplier.id,
-                goodsId, shopId, fromDate, toDate);
+        List<SupplierGoodsReport> goodsReportList = SupplierGoodsReport.getConsumedCountList(supplier.id,
+                goodsShortName, shopId, fromDate, toDate);
 
         render(goodsReportList, fromDate, toDate);
     }

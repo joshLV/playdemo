@@ -1,5 +1,6 @@
 package models.report;
 
+import org.apache.commons.lang.StringUtils;
 import play.db.jpa.JPA;
 
 import javax.persistence.EntityManager;
@@ -27,12 +28,12 @@ public class SupplierDailyReport {
 //        this.amount = amount;
     }
 
-    public static List<SupplierDailyReport> getChartList(Long supplierId, Long goodsId, Long shopId, Date fromDate, Date toDate) {
+    public static List<SupplierDailyReport> getChartList(Long supplierId, String goodsShortName, Long shopId, Date fromDate, Date toDate) {
         EntityManager entityManager = JPA.em();
         StringBuilder sql = new StringBuilder("select new models.report.SupplierDailyReport(date_format(date(consumedAt),'%Y-%m-%d'), count(*)) " +
                 "from ECoupon where status=models.order.ECouponStatus.CONSUMED and goods.supplierId=" + supplierId);
-        if (goodsId != null && goodsId != 0) {
-            sql.append(" and goods.id=" + goodsId);
+        if (StringUtils.isNotBlank(goodsShortName)) {
+            sql.append(" and goods.shortName='" + goodsShortName+"'");
         }
         if (shopId != null && shopId != 0) {
             sql.append(" and shop.id=" + shopId);

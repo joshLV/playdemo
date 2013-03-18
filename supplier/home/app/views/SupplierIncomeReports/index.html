@@ -266,14 +266,14 @@ $(function () {
     <div class="bd batch-verify">
         <h2>${title}</h2>
 
-        <form id="report-form" action="@{SupplierIncomeReports.index()}" method="post">
+        <form id="report-form" action="@{SupplierIncomeReports.index()}" method="get">
             <div class="field-sect">
                 <div class="field-group">
                     <label>选择商品</label>
-                #{select 'goodsId', id:"goodsId", value:goodsId}
+                #{select 'goodsShortName', id:"goodsShortName", value:goodsShortName}
                     #{option 0}全部#{/option}
                     #{list items:goodsList, as:'goods'}
-                        #{option goods?.id}${goods?.shortName}#{/option}
+                        #{option goods?.shortName}${goods?.shortName}#{/option}
                     #{/list}
                 #{/select}
                 </div>

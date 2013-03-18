@@ -1285,6 +1285,9 @@ public class Goods extends Model {
         return find("id=? and deleted=? and status=? and expireAt > ?", id, DeletedStatus.UN_DELETED, GoodsStatus.ONSALE, new Date()).first();
     }
 
+    public static List<Goods> findDistinctShortNameBySupplierId(Long supplierId) {
+        return find("supplierId=? and deleted=? and isLottery=? group by shortName", supplierId, DeletedStatus.UN_DELETED, Boolean.FALSE).fetch();
+    }
 
     public static List<Goods> findBySupplierId(Long supplierId) {
         return find("supplierId=? and deleted=? and isLottery=?", supplierId, DeletedStatus.UN_DELETED, Boolean.FALSE).fetch();
