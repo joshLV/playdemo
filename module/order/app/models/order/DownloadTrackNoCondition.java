@@ -33,9 +33,9 @@ public class DownloadTrackNoCondition implements Serializable {
         }
         builder.append(" where oi.shippingInfo.expressNumber is not null" +
                 " and oi.order.userType =:userType and " +
-                " oi.order.userId =:resalerId ");
-        paramMap.put("resalerId", Resaler.findOneByLoginName(outerOrderPartner.partnerLoginName()).id);
+                " oi.order.userId =:resalerId and oi.outerGoodsNo is not null");
         paramMap.put("userType", AccountType.RESALER);
+        paramMap.put("resalerId", Resaler.findOneByLoginName(outerOrderPartner.partnerLoginName()).id);
 
         if (paidBeginAt != null) {
             builder.append(" and oi.shippingInfo.paidAt >= :paidBeginAt");
@@ -50,7 +50,7 @@ public class DownloadTrackNoCondition implements Serializable {
             builder.append(" and oi.sendAt >=:sentBeginAt)");
             paramMap.put("sentBeginAt", sentBeginAt);
         }
-        if (paidEndAt != null) {
+        if (sentEndAt != null) {
             builder.append(" and oi.sendAt <=:sentEndAt)");
             paramMap.put("sentEndAt", com.uhuila.common.util.DateUtil.getEndOfDay(sentEndAt));
         }

@@ -23,6 +23,8 @@ public class DownloadTrackNoReport {
     public OrderItems orderItems;
     public String outerGoodsNo;
     public String goodsName;
+
+    public String partnerLoginName;
     /*
        已发货数
     */
@@ -36,6 +38,9 @@ public class DownloadTrackNoReport {
 
     public DownloadTrackNoReport(OrderItems orderItems, Long sentCount, BigDecimal totalAmount) {
         this.orderItems = orderItems;
+        this.outerGoodsNo = orderItems.outerGoodsNo;
+        Resaler resaler = Resaler.findById(orderItems.order.userId);
+        this.partnerLoginName = resaler.loginName;
         this.sentCount = sentCount;
         this.totalAmount = totalAmount;
     }

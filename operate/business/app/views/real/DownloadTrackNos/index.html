@@ -63,7 +63,7 @@
             ${(shipping?.totalAmount?:0).formatCurrency('CNY')}
             </td>
             <td>
-                #{if shipping?.outerGoodsNo != null && shipping?.outerGoodsNo!=""}
+                #{if shipping?.partnerLoginName == "jingdong" }
                     <a href="/real/partner/download-track-nos/download?partner=${condition?.outerOrderPartner}&paidBeginAt=${condition?.paidBeginAt}&paidEndAt=${condition?.paidEndAt}&sentBeginAt=${condition?.sentBeginAt}&sentEndAt=${condition?.sentEndAt}&unDownloaded=${condition?.unDownloaded}&outerGoodsNo=${shipping?.orderItems?.outerGoodsNo}">下载</a>
                 #{/if}
             </td>
