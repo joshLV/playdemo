@@ -4,18 +4,7 @@ import models.sales.InventoryStockItem;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
-<<<<<<<HEAD
 import javax.persistence.*;
-=======
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
->>>>>>>develop
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -117,7 +106,7 @@ public class OrderShippingInfo extends Model {
      * 物流公司
      */
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "express_company_id", nullable = false)
+    @JoinColumn(name = "express_company_id", nullable = true)
     public ExpressCompany expressCompany;
 
     /*

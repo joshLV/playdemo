@@ -144,6 +144,11 @@ public class Sku extends Model {
 
     }
 
+    public static List<Sku> findShiHuiUnDeleted() {
+
+        return Sku.find("deleted=? and supplier=?", DeletedStatus.UN_DELETED).fetch();
+    }
+
     public static void delete(Long id) {
         Sku sku = Sku.findById(id);
         if (sku == null) {
