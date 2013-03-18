@@ -10,6 +10,7 @@ import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ValuePaginator;
+import play.mvc.After;
 import play.mvc.Controller;
 import play.mvc.With;
 import util.DateHelper;
@@ -41,6 +42,7 @@ public class DownloadTrackNos extends Controller {
         }
 
         List<DownloadTrackNoReport> resultList = DownloadTrackNoReport.query(condition);
+
 //        分页
         ValuePaginator<DownloadTrackNoReport> shippingList = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
         render(shippingList, pageNumber, condition);
@@ -60,32 +62,24 @@ public class DownloadTrackNos extends Controller {
         List<OrderItems> orderItemsList = DownloadTrackNoReport.queryOrderItems(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, unDownloaded, outerGoodsNo);
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "京东发货单导出_" + System.currentTimeMillis() + ".xls");
-        CacheHelper.preRead(CacheHelper.getCacheKey(models.order.ExpressCompany.CACHEKEY, "CHANNEL"));
+        Map<String, String> channelExpressMap = models.order.ExpressCompany.findChannelExpress();
+
         //更新orderItems的状态为：已上传
         for (OrderItems item : orderItemsList) {
-            final Long expressId = item.shippingInfo.expressCompany.id;
-            Map<String, String> channelExpressMap = CacheHelper.getCache(CacheHelper.getCacheKey(models.order.ExpressCompany.CACHEKEY, "CHANNEL"), new CacheCallBack<Map<String, String>>() {
-                @Override
-                public Map<String, String> loadData() {
-                    return models.order.ExpressCompany.findChannelExpress(expressId);
-                }
-            });
             item.status = OrderStatus.UPLOADED;
             OuterOrder outerOrder = OuterOrder.getOuterOrder(item.order);
             item.outerOrderId = outerOrder.orderId;
             if (channelExpressMap.size() == 0) {
-                errors(partner.partnerName() + "没有对应的" + item.shippingInfo.expressCompany.name + "快递编码");
-            } else if (StringUtils.isNotBlank(channelExpressMap.get(partner.partnerStringName()))) {
-                item.shippingInfo.channelExpressNo = channelExpressMap.get(partner.partnerStringName());
+                errors(partner.partnerName() + "没有对应的" + item.shippingInfo.expressCompany.id + "快递编码");
+            } else if (StringUtils.isNotBlank(channelExpressMap.get(partner.partnerStringName().trim() + "_" + item.shippingInfo.expressCompany.id))) {
+                item.shippingInfo.channelExpressNo = channelExpressMap.get(partner.partnerStringName() + "_" + item.shippingInfo.expressCompany.id);
             } else {
-                render("real/DownloadTrackNos/errors.html", partner.partnerName() + "没有对应的" + item.shippingInfo.expressCompany.name + "快递编码");
+                errors(partner.partnerName() + "没有对应的" + item.shippingInfo.expressCompany.name + "快递编码");
             }
         }
-
         for (OrderItems item : orderItemsList) {
             item.save();
         }
-
         render("real/DownloadTrackNos/jdShippingExcelOut.xls", orderItemsList);
     }
 
@@ -93,32 +87,27 @@ public class DownloadTrackNos extends Controller {
         List<OrderItems> orderItemsList = DownloadTrackNoReport.queryOrderItems(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, unDownloaded, outerGoodsNo);
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "一号店发货单导出_" + System.currentTimeMillis() + ".xls");
-        CacheHelper.preRead(CacheHelper.getCacheKey(models.order.ExpressCompany.CACHEKEY, "CHANNEL"));
+        Map<String, String> channelExpressMap = models.order.ExpressCompany.findChannelExpress();
+
         //更新orderItems的状态为：已上传
         for (OrderItems item : orderItemsList) {
-            final Long expressId = item.shippingInfo.expressCompany.id;
-            Map<String, String> channelExpressMap = CacheHelper.getCache(CacheHelper.getCacheKey(models.order.ExpressCompany.CACHEKEY, "CHANNEL"), new CacheCallBack<Map<String, String>>() {
-                @Override
-                public Map<String, String> loadData() {
-                    return models.order.ExpressCompany.findChannelExpress(expressId);
-                }
-            });
+
+
             item.status = OrderStatus.UPLOADED;
             OuterOrder outerOrder = OuterOrder.getOuterOrder(item.order);
             item.outerOrderId = outerOrder.orderId;
             if (channelExpressMap.size() == 0) {
-                errors(partner.partnerName() + "没有对应的" + item.shippingInfo.expressCompany.name + "快递编码");
-            } else if (StringUtils.isNotBlank(channelExpressMap.get(partner.partnerStringName()))) {
-                item.shippingInfo.channelExpressNo = channelExpressMap.get(partner.partnerStringName());
+                errors(partner.partnerName() + "没有对应的" + item.shippingInfo.expressCompany.id + "快递编码");
+            } else if (StringUtils.isNotBlank(channelExpressMap.get(partner.partnerStringName() + "-" + item.shippingInfo.expressCompany.id))) {
+                item.shippingInfo.channelExpressNo = channelExpressMap.get(partner.partnerStringName() + "-" + item.shippingInfo.expressCompany.id);
             } else {
-                render("real/DownloadTrackNos/errors.html", partner.partnerName() + "没有对应的" + item.shippingInfo.expressCompany.name + "快递编码");
+                errors(partner.partnerName() + "没有对应的" + item.shippingInfo.expressCompany.name + "快递编码");
             }
         }
 
         for (OrderItems item : orderItemsList) {
             item.save();
         }
-
         render("real/DownloadTrackNos/yhdShippingExcelOut.xls", orderItemsList);
     }
 
@@ -148,6 +137,11 @@ public class DownloadTrackNos extends Controller {
 
     public static void errors(String errorInfo) {
         renderText(errorInfo);
+    }
+
+    @After
+    public static void clearCache() {
+        CacheHelper.cleanPreRead();
     }
 
 }

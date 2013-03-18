@@ -1,6 +1,8 @@
 package models.order;
 
+import cache.CacheCallBack;
 import cache.CacheHelper;
+import org.apache.commons.lang.StringUtils;
 import play.data.validation.Required;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
@@ -47,21 +49,26 @@ public class ExpressCompany extends Model {
         updatedExpress.save();
     }
 
-    public static Map<String, String> findChannelExpress(Long expressId) {
-        ExpressCompany express = ExpressCompany.findById(expressId);
-        Map<String, String> channelMap = new HashMap<>();
-        System.out.println(express.resalerMapping + "===express.resalerMapping>>");
-        String[] line = express.resalerMapping.split("\r\n");
-        for (int i = 0; i < line.length; i++) {
-            System.out.println(line[i] + "===line[i]>>");
-            System.out.println("");
-            if (line[i].contains(":")) {
-                System.out.println(  "===>>");
-                String[] channelMapping = line[i].split(":");
-                channelMap.put(channelMapping[0], channelMapping[1]);
+    public static Map<String, String> findChannelExpress() {
+        return CacheHelper.getCache(CacheHelper.getCacheKey(models.order.ExpressCompany.CACHEKEY, "CHANNEL_MAPPING"), new CacheCallBack<Map<String, String>>() {
+            @Override
+            public Map<String, String> loadData() {
+                List<ExpressCompany> expressList = ExpressCompany.findAll();
+                Map<String, String> channelMap = new HashMap<>();
+                for (ExpressCompany express : expressList) {
+                    String[] line = express.resalerMapping.split("\n");
+                    for (int i = 0; i < line.length; i++) {
+                        if (line[i].contains(":")) {
+                            String[] channelMapping = line[i].split(":");
+                            if (StringUtils.isNotBlank(channelMapping[0]) && StringUtils.isNotBlank(channelMapping[1])) {
+                                channelMap.put(channelMapping[0].trim() + "_" + express.id, channelMapping[1].trim());
+                            }
+                        }
+                    }
+                }
+                return channelMap;
             }
-        }
-        return channelMap;
+        });
     }
 
     /**
@@ -70,6 +77,7 @@ public class ExpressCompany extends Model {
      * @param code
      * @return
      */
+
     public static ExpressCompany getCompanyNameByCode(String code) {
         return ExpressCompany.find("code=?", code).first();
     }
