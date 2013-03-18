@@ -271,7 +271,7 @@ $(function () {
                 <div class="field-group">
                     <label>选择商品</label>
                 #{select 'goodsShortName', id:"goodsShortName", value:goodsShortName}
-                    #{option 0}全部#{/option}
+                    #{option ''}全部#{/option}
                     #{list items:goodsList, as:'goods'}
                         #{option goods?.shortName}${goods?.shortName}#{/option}
                     #{/list}

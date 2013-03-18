@@ -42,7 +42,7 @@
                 <td>${sku?.remainCount}</td>
                 <td>${takeoutSkuMap.get(sku)}</td>
                 <td><span
-                        class="label #{if preparingTakeoutSkuMap.get(sku)-takeoutSkuMap.get(sku) > 0}label-important#{/if}">${preparingTakeoutSkuMap.get(sku)-takeoutSkuMap.get(sku)}</span>
+                        class="label #{if preparingTakeoutSkuMap.get(sku)-takeoutSkuMap.get(sku)-sku?.remainCount > 0}label-important#{/if}">${preparingTakeoutSkuMap.get(sku)-takeoutSkuMap.get(sku)-sku?.remainCount}</span>
                 </td>
             </tr>
             #{/list}
