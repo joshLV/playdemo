@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -91,6 +92,13 @@ public class Sku extends Model {
      */
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
+
+    /**
+     * 乐观锁
+     */
+    @Column(name = "lock_version")
+    @Version
+    public int lockVersion;
 
     @Override
     public boolean create() {

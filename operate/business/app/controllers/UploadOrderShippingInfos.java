@@ -11,6 +11,7 @@ import net.sf.jxls.reader.XLSReader;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
+import play.Play;
 import play.mvc.Controller;
 import play.mvc.With;
 import play.vfs.VirtualFile;
@@ -77,6 +78,7 @@ public class UploadOrderShippingInfos extends Controller {
         List<String> uploadSuccessOrders = new ArrayList<>();
         List<String> unExistedExpressCompanys = new ArrayList<>();
         List<String> emptyExpressInofs = new ArrayList<>();
+        List<String> noGoodsCodeList = new ArrayList<>();
 
         for (LogisticImportData logistic : logistics) {
             if (StringUtils.isBlank(logistic.expressCompany)) {
@@ -88,13 +90,17 @@ public class UploadOrderShippingInfos extends Controller {
                 unExistedExpressCompanys.add(logistic.expressCompany);
                 continue;
             }
+            if (StringUtils.isBlank(logistic.goodsCode)) {
+                noGoodsCodeList.add(logistic.goodsCode);
+                continue;
+            }
             //查询该商户下的订单信息，存在则更新物流信息
-            OrderItems orderItems = OrderItems.find("goods.sku is not null and goods.id=? and order.orderNumber=?", Long.valueOf(logistic.goodsId), logistic.orderNumber).first();
-            System.out.println(orderItems + ">>>>orderItems");
+            OrderItems orderItems = OrderItems.find("goods.sku is not null and goods.code=? and order.orderNumber=?", logistic.goodsCode, logistic.orderNumber).first();
             if (orderItems == null) {
                 unExistedOrders.add(logistic.orderNumber);
                 continue;
             }
+
             orderItems.shippingInfo.expressCompany = expressCompany;
             orderItems.shippingInfo.expressNumber = logistic.expressNumber;
             orderItems.shippingInfo.save();
@@ -106,6 +112,7 @@ public class UploadOrderShippingInfos extends Controller {
         List<ExpressCompany> expressCompanyList = ExpressCompany.findAll();
         renderArgs.put("emptyExpressInofs", emptyExpressInofs);
         renderArgs.put("expressCompanyList", expressCompanyList);
+        renderArgs.put("noGoodsCodeList", noGoodsCodeList);
         renderArgs.put("unExistedOrders", unExistedOrders);
         renderArgs.put("unExistedExpressCompanys", unExistedExpressCompanys);
         renderArgs.put("uploadSuccessOrders", uploadSuccessOrders);
