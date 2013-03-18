@@ -18,12 +18,13 @@ public class SkuFactory extends ModelFactory<Sku> {
     @Override
     public Sku define() {
         Sku sku = new Sku();
-        sku.code = "S01000101";
-        sku.name = "test";
+        sku.sequenceCode = "" + FactoryBoy.sequence(Sku.class);
+        sku.name = "test" + sku.sequenceCode;
         Supplier supplier = FactoryBoy.lastOrCreate(Supplier.class);
         supplier.canSaleReal = true;
         supplier.save();
-        sku.sequenceCode = "01";
+
+        sku.code = "S010001" + sku.sequenceCode;
         sku.supplier = supplier;
         sku.brand = FactoryBoy.lastOrCreate(Brand.class);
         sku.supplierCategory = FactoryBoy.lastOrCreate(SupplierCategory.class);
