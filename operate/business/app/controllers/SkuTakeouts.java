@@ -9,6 +9,7 @@ import models.sales.OrderBatch;
 import models.sales.Sku;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
+import play.data.binding.As;
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -56,7 +57,7 @@ public class SkuTakeouts extends Controller {
     /**
      * 出库
      */
-    public static void stockOut(Date toDate, List<Long> stockoutOrderId) {
+    public static void stockOut(@As(lang = {"*"}, value = {"yyyy-MM-dd HH:mm:ss"}) Date toDate) {
         String operatorName = OperateRbac.currentUser().userName;
         //1 统计总的待出库货品及数量
         Map<Sku, Long> preparingTakeoutSkuMap = OrderItems.findTakeout(toDate);

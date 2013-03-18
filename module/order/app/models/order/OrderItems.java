@@ -490,8 +490,8 @@ public class OrderItems extends Model {
      */
     public static Map<Sku, Long> findTakeout(Date toDate) {
         List<TakeoutItem> takeoutItems = find("select new models.order.TakeoutItem(o.goods, sum(o.buyNumber)) " +
-                "from OrderItems o where o.goods.supplierId=? and o.status=? and o.goods.materialType=? and o.createdAt <= ? " +
-                "group by o.goods", Supplier.getShihui().id, OrderStatus.PAID, MaterialType.REAL, toDate).fetch();
+                "from OrderItems o where o.order.orderType=? and o.goods.supplierId=? and o.status=? and o.goods.materialType=? and o.createdAt <= ? " +
+                "group by o.goods", OrderType.CONSUME, Supplier.getShihui().id, OrderStatus.PAID, MaterialType.REAL, toDate).fetch();
 
         Map<Sku, Long> takeoutMap = new HashMap<Sku, Long>();
         for (TakeoutItem takeoutItem : takeoutItems) {
