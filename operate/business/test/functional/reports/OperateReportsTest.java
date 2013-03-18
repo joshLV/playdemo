@@ -161,7 +161,7 @@ public class OperateReportsTest extends FunctionalTest {
         Response response = GET("/reports/supplier");
         assertIsOk(response);
         JPAExtPaginator<AccountSequence> page = (JPAExtPaginator<AccountSequence>) renderArgs("accountSequencePage");
-        assertEquals(1, page.getRowCount());
+        assertEquals(6, page.getRowCount());
     }
 
     @Test
