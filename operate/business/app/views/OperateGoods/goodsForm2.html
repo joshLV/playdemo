@@ -49,12 +49,9 @@
         不可退款&nbsp;&nbsp;
             </span>
         <span id="display_no_refund" style="display: none;">
-<i class="icon-ok"></i>
+        <i class="icon-ok"></i>
            不可退款&nbsp;&nbsp;
         </span>
-
-
-
         <span id="free_shipping">
         <input type="checkbox" name="goods.freeShipping" id="freeShipping" class="input-medium"
                value="${goods?.freeShipping}" ${goods?.freeShipping?'checked':''}/><span id="err-freeShipping"></span>
@@ -73,12 +70,10 @@
     </div>
 </div>
 <div id="brand">#{include '/OperateBrands/goodsBrands.html'/}</div>
-    #{if "edit".equals(action) }
-    <div id="sku">#{include '/Skus/goodsSku.html'/}
-       #{layout_operate.textField name:'goods.skuCount', value:goods?.skuCount?:"1", note:'件', required:true/}
-    </div>
+*{#{if "edit".equals(action) }}*
+<div id="sku">#{include '/Skus/goodsSku.html'/}</div>
 
-    #{/if}
+*{#{/if}}*
     #{layout_operate.textField name:'goods.no', value:goods?.no/}
     #{layout_operate.nameField name:'goods.shortName', value:goods?.shortName, required:true, length:12/}
     #{layout_operate.nameField name:'goods.name', value:goods?.name, required:true, length:300/}
@@ -96,7 +91,7 @@
     note:'元', tip:'请严格按商务合同的采购价输入，不允许使用其它金额',
     required:true/}
     #{layout_operate.textField name:'goods.salePrice', value:goods?.salePrice?:"0",
-    note:'元', tip:'不允许低于采购价（如有需要，请联系开发，不要自作主张去降低采购价！！)',
+    note:'元', tip:'不允许低于采购价（如有需要，请联系开发，不要自行降低采购价！！)',
     required:true/}
 <div class="control-group">
     <label class="control-label"><span style="color: red; ">*</span>&{'goods.promoterPrice'}</label>
@@ -344,7 +339,10 @@
                 $("#err-supplierUser_supplier_id").html("");
                 $("#save").attr('disabled', false);
                 $("#brand").load("/goods_brands/" + id, function (data) {
+                    $("#sku").load("/goods-skus/" + $("#goods_brand_id").val(), function (data) {
+                    });
                 });
+
                 $("#tableShop").load("/shops/" + id + "/showGoodsShops", function (data) {
                     $("#selectAll").click();
                 });

@@ -147,6 +147,10 @@ public class Sku extends Model {
         updSku.save();
     }
 
+    public static Sku findUnDeletedById(Long id) {
+        return Sku.find("id=? and deleted=?",id,DeletedStatus.UN_DELETED).first();
+
+    }
     public static List<Sku> findUnDeleted() {
         return Sku.find("deleted=?", DeletedStatus.UN_DELETED).fetch();
 
