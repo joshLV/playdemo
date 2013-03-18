@@ -101,8 +101,8 @@ public class SupplierGoodsReport {
         EntityManager entityManager = JPA.em();
         StringBuilder sql = new StringBuilder(initSql + " and goods.supplierId=" + supplierId);
         if (StringUtils.isNotBlank(goodsShortName)) {
-            sql.append(" and goods.shortName=:goodsShortName");
-
+            sql.append(" and goods.shortName='" + goodsShortName + "'");
+            System.out.println("goodsShortName:" + goodsShortName);
         }
         if (shopId != null && shopId != 0) {
             sql.append(" and shop.id=" + shopId);
@@ -115,9 +115,7 @@ public class SupplierGoodsReport {
         }
         sql.append(" group by goods.shortName order by count(*) desc");
         Query q = entityManager.createQuery(sql.toString());
-        if (StringUtils.isNotBlank(goodsShortName)) {
-            q.setParameter("goodsShortName", goodsShortName);
-        }
+
         if (fromDate != null) {
             q.setParameter("fromDate", fromDate);
         }
