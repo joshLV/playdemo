@@ -353,12 +353,13 @@ public class CouponsCondition implements Serializable {
             }
         }
 
-        if (isCheatedOrder == null || isCheatedOrder == false) {
+        if (isCheatedOrder == null || !isCheatedOrder) {
             sql.append(" and 1=1");
-        } else if (isCheatedOrder == true) {
+        } else if (isCheatedOrder) {
             sql.append(" and e.isCheatedOrder=true");
         }
 
+        System.out.println("sql.toString:" + sql.toString());
         return sql.toString();
     }
 
