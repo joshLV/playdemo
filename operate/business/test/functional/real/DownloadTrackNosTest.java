@@ -27,6 +27,7 @@ public class DownloadTrackNosTest extends FunctionalTest {
 
     @Before
     public void setUp() throws Exception {
+        FactoryBoy.deleteAll();
         // 视惠产品
         seewi = FactoryBoy.create(Supplier.class, "seewi");
         seewiSku = FactoryBoy.create(Sku.class);

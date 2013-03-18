@@ -36,6 +36,8 @@ import java.util.List;
 public class Sku extends Model {
     public static final String[] CODE_VALUE = {"99", "999", "9999", "99999", "999999"};
 
+    public static final int DEFAULT_CODE_LENGTH = 9;
+
     /**
      * 货品名称
      */
@@ -121,10 +123,12 @@ public class Sku extends Model {
         if (sku == null || StringUtils.isBlank(sku.sequenceCode)) {
             this.sequenceCode = "01";
         } else {
-            if (sku.sequenceCode.equals(CODE_VALUE[sku.code.length() - 9])) {
-                this.sequenceCode = calculateFormattedCode(sku.sequenceCode, String.valueOf(sku.code.length() - 6));
+            if (sku.sequenceCode.equals(CODE_VALUE[sku.code.length() - DEFAULT_CODE_LENGTH])) {
+                this.sequenceCode = calculateFormattedCode(sku.sequenceCode, String.valueOf(sku.code.length() -
+                        DEFAULT_CODE_LENGTH + 3));
             } else {
-                this.sequenceCode = calculateFormattedCode(sku.sequenceCode, String.valueOf(sku.code.length() - 7));
+                this.sequenceCode = calculateFormattedCode(sku.sequenceCode, String.valueOf(sku.code.length() -
+                        DEFAULT_CODE_LENGTH + 2));
             }
         }
 

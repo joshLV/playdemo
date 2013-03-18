@@ -34,7 +34,7 @@ public class SkuUnitTest extends UnitTest {
         Sku sku1 = new Sku();
         sku1.name = "test";
         Supplier supplier = FactoryBoy.lastOrCreate(Supplier.class);
-        supplier.code = "010001";
+        supplier.code = "S10010001";
         supplier.sequenceCode = "0001";
         supplier.supplierCategory = sku.supplierCategory;
         supplier.save();
@@ -89,7 +89,6 @@ public class SkuUnitTest extends UnitTest {
 
     @Test
     public void testUpdate() {
-        assertEquals("S01000101", sku.code);
         sku.code = "002";
         Sku.update(sku.id, sku);
         sku.refresh();
