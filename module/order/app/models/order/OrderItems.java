@@ -76,6 +76,9 @@ public class OrderItems extends Model {
     @JoinColumn(name = "order_batch_id", nullable = true)
     public OrderBatch orderBatch;
 
+    @Transient
+    public String outerOrderId;
+
     /**
      * 当前订单项总费用：
      * lineValue = salePrice*buyNumber - rebateValue

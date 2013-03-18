@@ -21,7 +21,7 @@ function remainCountChange(skuId) {
 $(function () {
     $("#skuName").blur(function () {
         var skuId = $("#id_skuName").val();
-        if (skuId) {
+        if (skuId != 0) {
             remainCountChange(skuId);
         }
     });

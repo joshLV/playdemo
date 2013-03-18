@@ -105,7 +105,7 @@ public class InventoryStockItem extends Model {
      * @return
      */
     public static JPAExtPaginator<InventoryStockItem> findByCondition(InventoryStockItemCondition condition, int pageNumber, int pageSize) {
-        JPAExtPaginator<InventoryStockItem> stockItemPage = new JPAExtPaginator<>("InventoryStockItem i", "i", InventoryStockItem.class, condition.getFilter(), condition.getParamMap());
+        JPAExtPaginator<InventoryStockItem> stockItemPage = new JPAExtPaginator<>("InventoryStockItem i", "i", InventoryStockItem.class, condition.getFilter(), condition.getParamMap()).orderBy("i.createdAt desc");
         stockItemPage.setPageNumber(pageNumber);
         stockItemPage.setPageSize(pageSize);
         stockItemPage.setBoundaryControlsEnabled(false);

@@ -34,7 +34,6 @@ import java.util.List;
 @Entity
 @Table(name = "sku")
 public class Sku extends Model {
-    public static final String[] CODE_VALUE = {"99", "999", "9999", "99999", "999999"};
 
     /**
      * 货品名称
@@ -104,28 +103,29 @@ public class Sku extends Model {
     public boolean create() {
         this.createdAt = new Date();
         this.deleted = DeletedStatus.UN_DELETED;
-        setSkuCode();
+        calcSkuCode();
 
         return super.create();
     }
 
-    private String calculateFormattedCode(String originalCode, String digits) {
-        return String.format("%0" + digits + "d", Integer.valueOf(originalCode) + 1);
+    private String calculateFormattedCode(String originalCode) {
+        int seqCode = Integer.parseInt(originalCode) + 1;
+        int digits = String.valueOf(seqCode).length();
+        if (digits < 2) {
+            digits = 2;
+        }
+        return String.format("%0" + digits + "d", seqCode);
     }
 
     /**
      * 计算SKU编码 【2位类别编码+4位商户编码+2位流水码】
      */
-    public void setSkuCode() {
+    private void calcSkuCode() {
         Sku sku = Sku.find("supplier.id=? and brand=? and supplierCategory=? and sequenceCode is not null order by cast(sequenceCode as int) desc", this.supplier.id, this.brand, this.supplierCategory).first();
         if (sku == null || StringUtils.isBlank(sku.sequenceCode)) {
             this.sequenceCode = "01";
         } else {
-            if (sku.sequenceCode.equals(CODE_VALUE[sku.code.length() - 9])) {
-                this.sequenceCode = calculateFormattedCode(sku.sequenceCode, String.valueOf(sku.code.length() - 6));
-            } else {
-                this.sequenceCode = calculateFormattedCode(sku.sequenceCode, String.valueOf(sku.code.length() - 7));
-            }
+            this.sequenceCode = calculateFormattedCode(sku.sequenceCode);
         }
 
         Supplier supplier = Supplier.findUnDeletedById(this.supplier.id);
@@ -150,6 +150,11 @@ public class Sku extends Model {
     public static List<Sku> findUnDeleted() {
         return Sku.find("deleted=?", DeletedStatus.UN_DELETED).fetch();
 
+    }
+
+    public static List<Sku> findShiHuiUnDeleted() {
+
+        return Sku.find("deleted=? and supplier=?", DeletedStatus.UN_DELETED).fetch();
     }
 
     public static void delete(Long id) {

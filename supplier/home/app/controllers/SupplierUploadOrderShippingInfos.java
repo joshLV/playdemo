@@ -74,10 +74,11 @@ public class SupplierUploadOrderShippingInfos extends Controller {
         List<String> unExistedOrders = new ArrayList<>();
         List<String> uploadSuccessOrders = new ArrayList<>();
         List<String> unExistedExpressCompanys = new ArrayList<>();
-
+        List<String> emptyExpressInofs = new ArrayList<>();
 
         for (LogisticImportData logistic : logistics) {
             if (StringUtils.isBlank(logistic.expressCompany)) {
+                emptyExpressInofs.add(logistic.orderNumber);
                 continue;
             }
             ExpressCompany expressCompany = ExpressCompany.getCompanyNameByCode(logistic.expressCompany);
@@ -86,7 +87,7 @@ public class SupplierUploadOrderShippingInfos extends Controller {
                 continue;
             }
             //查询该商户下的订单信息，存在则更新物流信息
-            OrderItems orderItems = OrderItems.find("goods.sku is not null and goods.id=? and goods.supplierId=? and order.orderNumber=?", Long.valueOf(logistic.goodsId), SupplierRbac.currentUser().supplier.id, logistic.orderNumber).first();
+            OrderItems orderItems = OrderItems.find("goods.sku is not null and goods.code=? and goods.supplierId=? and order.orderNumber=?", logistic.goodsCode, SupplierRbac.currentUser().supplier.id, logistic.orderNumber).first();
             if (orderItems == null) {
                 unExistedOrders.add(logistic.orderNumber);
                 continue;
@@ -100,6 +101,7 @@ public class SupplierUploadOrderShippingInfos extends Controller {
         }
 
         List<ExpressCompany> expressCompanyList = ExpressCompany.findAll();
+        renderArgs.put("emptyExpressInofs", emptyExpressInofs);
         renderArgs.put("expressCompanyList", expressCompanyList);
         renderArgs.put("unExistedOrders", unExistedOrders);
         renderArgs.put("unExistedExpressCompanys", unExistedExpressCompanys);

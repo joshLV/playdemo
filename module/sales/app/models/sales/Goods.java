@@ -1285,6 +1285,9 @@ public class Goods extends Model {
         return find("id=? and deleted=? and status=? and expireAt > ?", id, DeletedStatus.UN_DELETED, GoodsStatus.ONSALE, new Date()).first();
     }
 
+    public static List<Goods> findDistinctShortNameBySupplierId(Long supplierId) {
+        return find("supplierId=? and deleted=? and isLottery=? group by shortName", supplierId, DeletedStatus.UN_DELETED, Boolean.FALSE).fetch();
+    }
 
     public static List<Goods> findBySupplierId(Long supplierId) {
         return find("supplierId=? and deleted=? and isLottery=?", supplierId, DeletedStatus.UN_DELETED, Boolean.FALSE).fetch();
@@ -1923,11 +1926,7 @@ public class Goods extends Model {
         if (goods == null) {
             this.sequenceCode = "01";
         } else {
-            if (goods.sequenceCode.equals(value[goods.code.length() - 8])) {
-                this.sequenceCode = Supplier.calculateFormattedCode(goods.sequenceCode, String.valueOf(goods.code.length() - 5));
-            } else {
-                this.sequenceCode = Supplier.calculateFormattedCode(goods.sequenceCode, String.valueOf(goods.code.length() - 6));
-            }
+            this.sequenceCode = Supplier.calculateFormattedCode(goods.sequenceCode);
         }
         if (supplier != null && StringUtils.isNotBlank(supplier.code)) {
             this.code = supplier.code + this.sequenceCode;

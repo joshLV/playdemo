@@ -36,7 +36,7 @@ DELETE  /users/{id}                             SupplierUsers.delete
 
 # [v2] 报表
 GET     /reports                                SupplierIncomeReports.index
-POST    /reports                                SupplierIncomeReports.index
+#POST    /reports                                SupplierIncomeReports.index
 POST    /reports/daily/export                   SupplierIncomeReports.exportDailyReport
 POST    /reports/shop/export                    SupplierIncomeReports.exportShopReport
 POST    /reports/goods/export                   SupplierIncomeReports.exportGoodsReport

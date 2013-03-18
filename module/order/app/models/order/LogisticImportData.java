@@ -36,11 +36,18 @@ public class LogisticImportData {
      */
     public String outerOrderNo;
 
+    public String getGoodsCode() {
+        return goodsCode;
+    }
+
+    public void setGoodsCode(String goodsCode) {
+        this.goodsCode = goodsCode;
+    }
+
     /**
-     * 商品ID
-     * FIXME: 这个goodsId貌似没有用，如果是外部goodsId是指outerGoodsNo。因为这是一个中间对象，不需要保存我们自己的goodsId
+     * 商品Code:上传发货单的时候用，和orderNumber一起作为主键查询一个orderItems
      */
-    public String goodsId;
+    public String goodsCode;
 
     /**
      * 一百券orderNumber
@@ -94,10 +101,6 @@ public class LogisticImportData {
      */
     public Date paidAt;
 
-    /**
-     * 创建时间
-     */
-    public Date createdAt;
 
     /**
      * 收货地址
@@ -132,13 +135,6 @@ public class LogisticImportData {
         this.expressNumber = expressNumber;
     }
 
-    public String getGoodsId() {
-        return goodsId;
-    }
-
-    public void setGoodsId(String goodsId) {
-        this.goodsId = goodsId;
-    }
 
     public String getOrderNumber() {
         return orderNumber;
@@ -233,13 +229,13 @@ public class LogisticImportData {
     }
 
     public void setPhone(String phone) {
-        if (phone.indexOf("E") >=0) {
-            try{
+        if (phone.indexOf("E") >= 0) {
+            try {
                 Double p = Double.parseDouble(phone);
                 DecimalFormat df = new DecimalFormat("#");
                 this.phone = df.format(p);
                 return;
-            }catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 // ignore
                 return;
             }
@@ -284,13 +280,6 @@ public class LogisticImportData {
         this.paidAt = guessDate(paidAtStr);
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
 
     public String getReceiver() {
         return receiver;
@@ -391,7 +380,7 @@ public class LogisticImportData {
         orderShippingInfo.phone = this.phone;
         orderShippingInfo.tel = this.tel;
         orderShippingInfo.paidAt = this.paidAt;
-        orderShippingInfo.createdAt = this.createdAt;
+        orderShippingInfo.createdAt = new Date();
         orderShippingInfo.address = this.address;
         orderShippingInfo.zipCode = this.zipCode;
         orderShippingInfo.invoiceTitle = this.invoiceTitle;
@@ -409,6 +398,7 @@ public class LogisticImportData {
         ybqOrder.discountPay = BigDecimal.ZERO;
         ybqOrder.payMethod = PaymentSource.getBalanceSource().code;
         ybqOrder.paid();
+        ybqOrder.paidAt = this.paidAt;
         ybqOrder.save();
         return ybqOrder;
     }

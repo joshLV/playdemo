@@ -47,8 +47,6 @@ public class SkuTakeoutsTest extends FunctionalTest {
         shihui.fullName = "上海视惠信息科技有限公司";
         shihui.save();
         shihui.refresh();
-        System.out.println("shihui.id:" + shihui.id);
-        System.out.println("==========Supplier.getShihui().id:" + Supplier.getShihui().id);
 
         //创建货品
         sku = FactoryBoy.create(Sku.class);

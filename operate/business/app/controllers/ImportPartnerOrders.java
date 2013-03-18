@@ -5,6 +5,7 @@ import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
+import models.resale.Resaler;
 import net.sf.jxls.reader.ReaderBuilder;
 import net.sf.jxls.reader.XLSReadStatus;
 import net.sf.jxls.reader.XLSReader;
@@ -72,7 +73,6 @@ public class ImportPartnerOrders extends Controller {
             e.printStackTrace();
             render("ImportPartnerOrders/index.html", errorInfo, partner);
         }
-
         List<String> existedOrderList = new ArrayList<>();
         List<String> notEnoughInventoryGoodsList = new ArrayList<>();
         List<String> importSuccessOrderList = new ArrayList<>();

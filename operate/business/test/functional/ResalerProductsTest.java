@@ -7,6 +7,7 @@ import models.operator.OperateUser;
 import models.order.OuterOrderPartner;
 import models.sales.ResalerProduct;
 import models.sales.Goods;
+import models.sales.ResalerProductStatus;
 import operate.rbac.RbacLoader;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,6 +40,7 @@ public class ResalerProductsTest extends FunctionalTest {
             public void build(ResalerProduct target) {
                 target.creatorId = user.id;
                 target.lastModifierId = user.id;
+                target.status = ResalerProductStatus.UPLOADED;
             }
         });
         FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
@@ -47,6 +49,7 @@ public class ResalerProductsTest extends FunctionalTest {
                 target.creatorId = user.id;
                 target.lastModifierId = user.id;
                 target.partner = OuterOrderPartner.JD;
+                target.status = ResalerProductStatus.UPLOADED;
             }
         });
 

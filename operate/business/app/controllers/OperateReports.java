@@ -2,8 +2,8 @@ package controllers;
 
 import models.accounts.Account;
 import models.accounts.AccountSequence;
-import models.accounts.AccountSequenceStatistic;
 import models.accounts.AccountSequenceCondition;
+import models.accounts.AccountSequenceStatistic;
 import models.accounts.AccountSequenceSummary;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
@@ -138,15 +138,17 @@ public class OperateReports extends Controller {
         }
 
         if (condition.accountUid != null && !condition.accountUid.equals(0l)) {
-            Supplier supplier = Supplier.findById(condition.accountUid);
-            if (supplier != null) {
-                condition.account = AccountUtil.getSupplierAccount(supplier.id);
-            } else {
+            if (condition.accountType == AccountType.SUPPLIER) {
+                condition.account = AccountUtil.getSupplierAccount(condition.accountUid);
+            } else if (condition.accountType == AccountType.SHOP) {
+                condition.account = AccountUtil.getShopAccount(condition.accountUid);
+            }
+            if (condition.account == null) {
                 condition.account = new Account();
                 condition.account.id = -1L;
             }
         }
-        condition.accountType = AccountType.SUPPLIER;
+
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : accountSequencePage.getCurrentPage()) {

@@ -1,15 +1,17 @@
 package models.order;
 
 import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -106,18 +108,19 @@ public class OrderShippingInfo extends Model {
     @Column(name = "invoice_title")
     public String invoiceTitle;
 
-    /**
-     * 发货时间
-     */
-    @Column(name = "sent_at")
-    public Date sentAt;
 
     /**
      * 物流公司
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "express_company_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "express_company_id", nullable = true)
     public ExpressCompany expressCompany;
+
+    /*
+        渠道快递公司对应的编号
+    */
+    @Transient
+    public String channelExpressNo;
 
     /**
      * 物流单号
@@ -130,4 +133,19 @@ public class OrderShippingInfo extends Model {
      */
     public Date uploadedAt;
 
+    /**
+     * 查询下载渠道带运单
+     *
+     * @param condition
+     * @param pageNumber
+     * @param pageSize
+     * @return
+     */
+    public static JPAExtPaginator<OrderShippingInfo> findByCondition(DownloadTrackNoCondition condition, int pageNumber, int pageSize) {
+        JPAExtPaginator<OrderShippingInfo> shippingPage = new JPAExtPaginator<>("OrderShippingInfo s", "s", OrderShippingInfo.class, condition.getFilter(), condition.getParams());
+        shippingPage.setPageNumber(pageNumber);
+        shippingPage.setPageSize(pageSize);
+        shippingPage.setBoundaryControlsEnabled(false);
+        return shippingPage;
+    }
 }

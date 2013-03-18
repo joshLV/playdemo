@@ -1,8 +1,11 @@
 package controllers.real;
 
+import cache.CacheCallBack;
+import cache.CacheHelper;
 import controllers.OperateRbac;
 import models.order.ExpressCompany;
 import models.order.OuterOrderPartner;
+import models.sales.Goods;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
@@ -12,6 +15,7 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 快递公司管理
@@ -52,9 +56,9 @@ public class ExpressCompanies extends Controller {
 
     public static void update(Long id, @Valid ExpressCompany express) {
         if (Validation.hasErrors()) {
-            render("real/ExpressCompanies/edit.html", express);
+            render("real/ExpressCompanies/edit.html", express, id);
         }
-        express.update(id, express);
+        ExpressCompany.update(id, express);
         index();
     }
 

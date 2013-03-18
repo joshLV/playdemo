@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
@@ -29,6 +30,7 @@ import com.uhuila.common.util.PathUtil;
 
 /**
  * 内容管理系统之内容块定义。
+ *
  * @author <a href="mailto:tangliqun@uhuila.com">唐力群</a>
  */
 @Entity
@@ -36,19 +38,19 @@ import com.uhuila.common.util.PathUtil;
 public class Block extends Model {
 
     private static final long serialVersionUID = 701232063912330652L;
-    
+
     public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
 
     private static final String IMAGE_SERVER = Play.configuration.getProperty
             ("image.server", "img0.uhcdn.com");
     public static final String IMAGE_TINY = "60x46_nw";
-    public static final String IMAGE_SMALL   ="172x132";
-    public static final String IMAGE_MIDDLE  ="234x178";
-    public static final String IMAGE_LARGE   ="340x260";
-    public static final String IMAGE_LOGO    ="300x180_nw";
-    public static final String IMAGE_SLIDE   ="nw";
-    public static final String IMAGE_ORIGINAL="nw";
-    public static final String IMAGE_DEFAULT ="";
+    public static final String IMAGE_SMALL = "172x132";
+    public static final String IMAGE_MIDDLE = "234x178";
+    public static final String IMAGE_LARGE = "340x260";
+    public static final String IMAGE_LOGO = "300x180_nw";
+    public static final String IMAGE_SLIDE = "nw";
+    public static final String IMAGE_ORIGINAL = "nw";
+    public static final String IMAGE_DEFAULT = "";
 
     @Required
     @MinSize(1)
@@ -57,7 +59,7 @@ public class Block extends Model {
 
     public String link;
 
-    @Column(name="image_url")
+    @Column(name = "image_url")
     public String imageUrl;
 
     /**
@@ -92,12 +94,12 @@ public class Block extends Model {
     public String getShowImageUrl() {
         return PathUtil.getImageUrl(IMAGE_SERVER, imageUrl, IMAGE_SLIDE);
     }
-    
+
     @Transient
     public String getShowImageUrlMiddle() {
         return PathUtil.getImageUrl(IMAGE_SERVER, imageUrl, IMAGE_MIDDLE);
     }
-    
+
     @Transient
     public String getShowImageUrlTiny() {
         return PathUtil.getImageUrl(IMAGE_SERVER, imageUrl, IMAGE_TINY);
@@ -109,21 +111,21 @@ public class Block extends Model {
     }
 
     public static final String CACHEKEY = "BLOCK";
-    
+
     @Override
     public void _save() {
         CacheHelper.delete(CACHEKEY);
         CacheHelper.delete(CACHEKEY + this.id);
         super._save();
     }
-    
+
     @Override
     public void _delete() {
         CacheHelper.delete(CACHEKEY);
-        CacheHelper.delete(CACHEKEY + this.id);        
+        CacheHelper.delete(CACHEKEY + this.id);
         super._delete();
     }
-    
+
     /**
      * 公告内容
      *
@@ -173,18 +175,19 @@ public class Block extends Model {
         oldBlock.type = block.type;
         oldBlock.save();
     }
-    
+
     /**
      * 按BlockType和时间查询可用的Block，如果找不到任何记录，则按BlockType查询.
+     *
      * @param type
      * @param currentDate
      * @return
      */
     public static List<Block> findByType(BlockType type, Date currentDate) {
         final String orderBy = "displayOrder, effectiveAt desc, expireAt";
-            
+
         List<Block> blocks = Block.find("deleted = ? and type = ? and effectiveAt <= ? and expireAt >= ? order by " + orderBy,
-                    DeletedStatus.UN_DELETED, type, currentDate, DateHelper.beforeDays(currentDate, 1)).fetch();
+                DeletedStatus.UN_DELETED, type, currentDate, DateHelper.beforeDays(currentDate, 1)).fetch();
 
         //如果都过期了，取一个最近的日期进行显示
         if (blocks.size() == 0) {
@@ -198,11 +201,11 @@ public class Block extends Model {
         return null;
     }
 
-	public long totalClickedCount() {
-		return BlockClickTrack.count("block=?", this);
-	}
+    public long totalClickedCount() {
+        return BlockClickTrack.count("block=?", this);
+    }
 
-	public long todayClickedCount() {
-		return BlockClickTrack.count("block=? and createdAt >= ?", this, DateUtil.getBeginOfDay(new Date()));
-	}
+    public long todayClickedCount() {
+        return BlockClickTrack.count("block=? and createdAt >= ?", this, DateUtil.getBeginOfDay(new Date()));
+    }
 }

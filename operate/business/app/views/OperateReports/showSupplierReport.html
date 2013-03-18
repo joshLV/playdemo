@@ -4,47 +4,10 @@
 
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
-<script type="text/javascript" charset="utf-8">
-    $(function () {
-
-        $("[start]").each(function () {
-            $(this).click(function () {
-                if ($(this).parent().attr("class") == 'active') {
-                    return false;
-                }
-                var tomorrow = new Date();
-                var startDay = new Date();
-
-                tomorrow.setDate(tomorrow.getDate() + 1)
-
-                var interval = $(this).attr("start");
-                var sig = interval.charAt(interval.length - 1);
-                var count = parseInt(interval.substring(0, interval.length - 1));
-                if (sig == 'd') {
-                    startDay.setDate(startDay.getDate() - count);
-                } else if (sig == 'm') {
-                    startDay.setMonth(startDay.getMonth() - count);
-                } else if (sig == 'y') {
-                    startDay.setFullYear(startDay.getFullYear() - count);
-                }
-
-                $("#condition_begin").val(startDay.getFullYear() + "-" + (startDay.getMonth() + 1) + "-" + startDay.getDate());
-                $("#condition_end").val(tomorrow.getFullYear() + "-" + (tomorrow.getMonth() + 1) + "-" + tomorrow.getDate());
-                $("#condition_interval").val(interval);
-                $("#form").submit();
-                return false;
-            });
-        });
-
-        $("#statistic").click(function () {
-            $("#action").val("statistic");
-            $("#form").attr("action", "@{OperateReports.statisticSupplierReport()}");
-            $("#form").submit();
-        });
-    });
-
+<script src="@{'/public/javascripts/show-supplier-reports.js'}" type="text/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
     function showStatisticSequences(tradeType, price) {
-        window.location = '@{OperateReports.showSupplierReport()}?supplierName=' + '${params['supplierName']}' +
+        window.location = '/reports/supplier?supplierName=' + '${params['supplierName']}' +
                 '&condition.accountUid=' + '${params['condition.accountUid']}' +
                 '&condition.createdAtBegin=' + '${params['condition.createdAtBegin']}' +
                 '&condition.createdAtEnd=' + '${params['condition.createdAtEnd']}' +
@@ -100,14 +63,19 @@
 
 <div class="body">
     <form class="well form-inline" action="@{OperateReports.showSupplierReport()}" method="GET" id="form">
+        <input type="hidden" name="condition.accountType" value="SUPPLIER"/>
         商户
     #{vx.selectInputField name:"supplierName", id:"condition.accountUid", list:supplierList, value: condition?.accountUid/}
+    *{&nbsp;&nbsp;门店<span id="shop">#{include '/OperateSupplierUsers/shopList.html'/}</span>}*
+
+        <br/>
+        <br/>
         起止日期
         <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.createdAtBegin"
                onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtBegin?.format()}"> -
         <input type="text" id="condition_end" class="input-medium Wdate" name="condition.createdAtEnd"
                onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtEnd?.format()}">
-        <label class="control-label">交易类型:</label>
+        <label class="control-label">交易类型</label>
     #{select 'condition.tradeType', value:condition.tradeType, id:'condition_trade_type', class:"input-small"}
         #{option ""}不限#{/option}
         #{option "WITHDRAW"}&{'trade_type.WITHDRAW'}#{/option}

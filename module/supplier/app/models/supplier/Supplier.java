@@ -270,15 +270,26 @@ public class Supplier extends Model {
         deleted = DeletedStatus.UN_DELETED;
         status = SupplierStatus.NORMAL;
         createdAt = new Date();
-        this.setCode(this.supplierCategory);
+        this.resetCode(this.supplierCategory);
         return super.create();
     }
 
-    public static String calculateFormattedCode(String originalCode, String digits) {
-        return String.format("%0" + digits + "d", Integer.valueOf(originalCode) + 1);
+    public static String calculateFormattedCode(String originalCode) {
+        int seqCode = Integer.parseInt(originalCode) + 1;
+        int digits = String.valueOf(seqCode).length();
+        if (digits < 2) {
+            digits = 2;
+        }
+        /*
+            用于 Supplier 设置sequenceCode
+         */
+        if (originalCode.length() == 4 && digits != 5) {
+            return String.format("%04d", seqCode);
+        }
+        return String.format("%0" + digits + "d", seqCode);
     }
 
-    public void setCode(SupplierCategory supplierCategory) {
+    public void resetCode(SupplierCategory supplierCategory) {
         Supplier supplier = null;
         if (supplierCategory != null) {
             supplier = Supplier.find("supplierCategory.id=? and sequenceCode is not null order by sequenceCode desc", supplierCategory.id).first();
@@ -286,7 +297,7 @@ public class Supplier extends Model {
         if (supplier == null || supplier.sequenceCode == null) {
             this.sequenceCode = "0001";
         } else {
-            this.sequenceCode = calculateFormattedCode(supplier.sequenceCode, "4");
+            this.sequenceCode = calculateFormattedCode(supplier.sequenceCode);
         }
         if (supplierCategory == null || supplierCategory.code == null) {
             return;
@@ -320,7 +331,7 @@ public class Supplier extends Model {
         sp.updatedAt = new Date();
         sp.showSellingState = supplier.showSellingState == null ? false : supplier.showSellingState;
         if (sp.supplierCategory == null || (sp.supplierCategory != null && supplier.supplierCategory != null && supplier.supplierCategory.id != sp.supplierCategory.id)) {
-            sp.setCode(supplier.supplierCategory);
+            sp.resetCode(supplier.supplierCategory);
         }
         sp.save();
         List<Goods> goodsList = Goods.find("supplierId=? and code is not null order by code desc", sp.id).fetch();
@@ -485,9 +496,10 @@ public class Supplier extends Model {
     }
 
 
-    public static void clearShihuiSupplier(){
+    public static void clearShihuiSupplier() {
         SHIHUI = null;
     }
+
     /**
      * 获取视惠商户对象.
      *
