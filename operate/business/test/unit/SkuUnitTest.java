@@ -2,6 +2,7 @@ package unit;
 
 import com.uhuila.common.constants.DeletedStatus;
 import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.sales.Brand;
 import models.sales.Sku;
 import models.sales.SkuCondition;
@@ -21,11 +22,21 @@ import java.util.List;
  */
 public class SkuUnitTest extends UnitTest {
     Sku sku;
+    Supplier supplier;
 
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
+        supplier = FactoryBoy.create(Supplier.class, new BuildCallback<Supplier>() {
+            @Override
+            public void build(Supplier supplier) {
+                supplier.sequenceCode = "0001";
+                supplier.supplierCategory = FactoryBoy.lastOrCreate(SupplierCategory.class);
+                supplier.code = "010001";
+            }
+        });
         sku = FactoryBoy.create(Sku.class);
+
     }
 
     @Test
@@ -33,14 +44,9 @@ public class SkuUnitTest extends UnitTest {
         assertEquals(1, Sku.count());
         Sku sku1 = new Sku();
         sku1.name = "test";
-        Supplier supplier = FactoryBoy.lastOrCreate(Supplier.class);
-        supplier.code = "S11001001";
-        supplier.sequenceCode = "0001";
-        supplier.supplierCategory = sku.supplierCategory;
-        supplier.save();
-        sku1.supplier = supplier;
-        sku1.brand = FactoryBoy.lastOrCreate(Brand.class);
-        sku1.supplierCategory = FactoryBoy.lastOrCreate(SupplierCategory.class);
+        sku1.supplier = sku.supplier;
+        sku1.brand = sku.brand;
+        sku1.supplierCategory = sku.supplierCategory;
         sku1.create();
         assertEquals(2, Sku.count());
         assertEquals("S" + sku1.supplierCategory.code + supplier.sequenceCode + sku1.sequenceCode, sku1.code);
@@ -53,17 +59,13 @@ public class SkuUnitTest extends UnitTest {
         assertEquals(1, Sku.count());
         Sku sku1 = new Sku();
         sku1.name = "test";
-        Supplier supplier = FactoryBoy.lastOrCreate(Supplier.class);
-        supplier.code = "010001";
-        supplier.sequenceCode = "0001";
-        supplier.supplierCategory = sku.supplierCategory;
-        supplier.save();
         sku1.supplier = supplier;
         sku1.brand = FactoryBoy.lastOrCreate(Brand.class);
         sku1.supplierCategory = FactoryBoy.lastOrCreate(SupplierCategory.class);
         sku1.create();
         assertEquals(2, Sku.count());
         assertEquals("S" + sku1.supplierCategory.code + supplier.sequenceCode + sku1.sequenceCode, sku1.code);
+        assertEquals("S0100011000", sku1.code);
     }
 
     @Test
@@ -73,17 +75,13 @@ public class SkuUnitTest extends UnitTest {
         assertEquals(1, Sku.count());
         Sku sku1 = new Sku();
         sku1.name = "test";
-        Supplier supplier = FactoryBoy.lastOrCreate(Supplier.class);
-        supplier.code = "010001";
-        supplier.sequenceCode = "0001";
-        supplier.supplierCategory = sku.supplierCategory;
-        supplier.save();
         sku1.supplier = supplier;
-        sku1.brand = FactoryBoy.lastOrCreate(Brand.class);
-        sku1.supplierCategory = FactoryBoy.lastOrCreate(SupplierCategory.class);
+        sku1.brand = sku.brand;
+        sku1.supplierCategory = sku.supplierCategory;
         sku1.create();
         assertEquals(2, Sku.count());
         assertEquals("S" + sku1.supplierCategory.code + supplier.sequenceCode + sku1.sequenceCode, sku1.code);
+        assertEquals("S010001100", sku1.code);
 
     }
 
@@ -108,7 +106,7 @@ public class SkuUnitTest extends UnitTest {
     }
 
     @Test
-    public  void testIndex() {
+    public void testIndex() {
         SkuCondition condition = new SkuCondition();
         List<Sku> skuList = Sku.findByCondition(condition, 1, 15);
         assertEquals(1, skuList.size());

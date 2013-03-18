@@ -1923,11 +1923,7 @@ public class Goods extends Model {
         if (goods == null) {
             this.sequenceCode = "01";
         } else {
-            if (goods.sequenceCode.equals(value[goods.code.length() - 8])) {
-                this.sequenceCode = Supplier.calculateFormattedCode(goods.sequenceCode, String.valueOf(goods.code.length() - 5));
-            } else {
-                this.sequenceCode = Supplier.calculateFormattedCode(goods.sequenceCode, String.valueOf(goods.code.length() - 6));
-            }
+            this.sequenceCode = Supplier.calculateFormattedCode(goods.sequenceCode);
         }
         if (supplier != null && StringUtils.isNotBlank(supplier.code)) {
             this.code = supplier.code + this.sequenceCode;

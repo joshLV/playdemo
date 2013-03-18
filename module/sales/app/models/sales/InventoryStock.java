@@ -35,7 +35,6 @@ import java.util.Map;
 @Table(name = "inventory_stock")
 public class InventoryStock extends Model {
     public static final String SERIAL_NO_DATE_FORMAT = "yyyyMMdd";
-    public static final String[] CODE_VALUE = {"99", "999", "9999", "99999", "999999"};
 
 
     /**
@@ -243,27 +242,29 @@ public class InventoryStock extends Model {
         this.createdAt = new Date();
         this.deleted = DeletedStatus.UN_DELETED;
         if (this.serialNo == null) {
-            setStockSerialNo();
+            resetStockSerialNo();
         }
         return super.create();
     }
 
-    private String calculateFormattedCode(String originalCode, String digits) {
-        return String.format("%0" + digits + "d", Integer.valueOf(originalCode) + 1);
+    private String calculateFormattedCode(String originalCode) {
+        int seqCode = Integer.parseInt(originalCode) + 1;
+        int digits = String.valueOf(seqCode).length();
+        if (digits < 2) {
+            digits = 2;
+        }
+        return String.format("%0" + digits + "d", seqCode);
     }
 
-    public void setStockSerialNo() {
+    public void resetStockSerialNo() {
         String dateOfSerialNo = com.uhuila.common.util.DateUtil.dateToString(new Date(), SERIAL_NO_DATE_FORMAT);
         String sequenceCode;
         InventoryStock stock = InventoryStock.find("serialNo like ? and actionType =? order by id desc", "_" + dateOfSerialNo + "__", this.actionType).first();
         if (stock == null) {
             sequenceCode = "01";
         } else {
-            if (stock.serialNo.substring(9, stock.serialNo.length()).equals(CODE_VALUE[stock.serialNo.length() - 9])) {
-                sequenceCode = calculateFormattedCode(stock.serialNo.substring(9, stock.serialNo.length()), String.valueOf(stock.serialNo.length() - 8));
-            } else {
-                sequenceCode = calculateFormattedCode(stock.serialNo.substring(9, stock.serialNo.length()), String.valueOf(stock.serialNo.length() - 9));
-            }
+            sequenceCode = calculateFormattedCode(stock.serialNo.substring(9, stock.serialNo.length()));
+
         }
         this.serialNo = this.actionType.getCode() + dateOfSerialNo + sequenceCode;
     }
