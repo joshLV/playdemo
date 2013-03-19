@@ -907,7 +907,8 @@ public class Goods extends Model {
             realStock = realSaleCount;
         } else { //实物的库存计算方法
             //(sku实际库存-(待发货销量*skuCount))/skuCount
-            if (sku == null) {
+            //添加商品时，直接返回0
+            if (this.id==null || sku == null) {
                 realStock = 0L;
                 return realStock;
             }
