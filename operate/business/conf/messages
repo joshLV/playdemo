@@ -63,6 +63,8 @@ validation.selectExisted=请选择存在的%s!
 
 validation.valid=%s不符合规范!
 validation.noSku=%s [%s] 没有指定货品，无法正常出库，请先到商品管理中指定该商品的货品!
+validation.noStockoutOrder=没有可出库的订单！
+
 stockoutOrderId=商品
 goods.materialType=券类型
 
@@ -301,6 +303,7 @@ order.PAID=已付款
 order.CANCELED=交易关闭
 order.SENT=已发货
 order.PREPARED=待打包
+order.UPLOADED=已上传
 
 #咨询
 consult.ORDERCONSULT=订购咨询

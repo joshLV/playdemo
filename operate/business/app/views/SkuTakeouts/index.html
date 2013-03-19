@@ -41,15 +41,17 @@
                 <td>${skuAveragePriceMap.get(sku)}</td>
                 <td>${sku?.remainCount}</td>
                 <td>${takeoutSkuMap.get(sku)}</td>
-                <td><span
-                        class="label #{if preparingTakeoutSkuMap.get(sku)-takeoutSkuMap.get(sku)-sku?.remainCount > 0}label-important#{/if}">${preparingTakeoutSkuMap.get(sku)-takeoutSkuMap.get(sku)-sku?.remainCount}</span>
+                <td><span class="label
+                        #{if preparingTakeoutSkuMap.get(sku)-takeoutSkuMap.get(sku) > 0}label-important#{/if}"
+                        >#{if preparingTakeoutSkuMap.get(sku)-takeoutSkuMap.get(sku)-sku?.remainCount > 0}0#{/if}#{else}${preparingTakeoutSkuMap.get(sku)-takeoutSkuMap.get(sku)-sku?.remainCount}#{/else}</span>
                 </td>
             </tr>
             #{/list}
         </tbody>
     </table>
     <div class="form-actions">
-        <button class="btn btn-primary" id="stock-out-btn" type="submit">确认出库</button>
+        <button class="btn btn-primary" id="stock-out-btn" type="submit"
+                #{if paidOrderCount == deficientOrderList.size()}disabled#{/if}>确认出库</button>
         <a href="/sku-takeouts" class="btn btn-info">重新计算</a>
     </div>
 #{/form}

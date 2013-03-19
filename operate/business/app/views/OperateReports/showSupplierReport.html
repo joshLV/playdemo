@@ -66,7 +66,8 @@
         <input type="hidden" name="condition.accountType" value="SUPPLIER"/>
         商户
     #{vx.selectInputField name:"supplierName", id:"condition.accountUid", list:supplierList, value: condition?.accountUid/}
-    *{&nbsp;&nbsp;门店<span id="shop">#{include '/OperateSupplierUsers/shopList.html'/}</span>}*
+        &nbsp;&nbsp;
+        <div id="shop_div">门店<span id="shop">#{include '/OperateSupplierUsers/shopList.html'/}</span></div>
 
         <br/>
         <br/>
