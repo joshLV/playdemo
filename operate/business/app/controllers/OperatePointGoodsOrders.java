@@ -60,8 +60,6 @@ public class OperatePointGoodsOrders extends Controller {
             error(500, "can not deal with the order:" + id);
         }
 
-//        System.out.println("originalOrder.note"+originalOrder.note);
-
         if (pointGoodsOrder.note == null || pointGoodsOrder.note.trim().isEmpty()) {
             PointGoodsOrder.acceptOrder(id);
         } else {

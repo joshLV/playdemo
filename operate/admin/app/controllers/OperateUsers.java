@@ -47,9 +47,6 @@ public class OperateUsers extends Controller {
         if (!keyList.contains("admin")) {
             redirect("/profile");
         }
-        for (String s : keyList) {
-            System.out.println("s:" + s);
-        }
 
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         JPAExtPaginator<OperateUser> operateUserPage = OperateUser.getSupplierUserList(
