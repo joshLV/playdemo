@@ -107,8 +107,17 @@ public class Skus extends Controller {
         index(null);
     }
 
+    public static void getSkuRemainCount(Long id) {
+        Sku sku = Sku.findUnDeletedById(id);
+        renderText(sku.getRemainCount());
+    }
+
     public static void goodsSku(Long brandId) {
         List<Sku> skuList = Sku.findByBrand(brandId);
-        render(skuList);
+        long remainInventory = 0;
+        if (skuList.size() > 0) {
+            remainInventory = skuList.get(0).getRemainCount();
+        }
+        render(skuList, remainInventory);
     }
 }

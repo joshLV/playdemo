@@ -194,7 +194,6 @@ public class OperateBrands extends Controller {
         }
         String stockBrand = request.params.get("stockBrand");
         if (StringUtils.isNotBlank(stockBrand)) {
-//            renderJSON(brandList);
             render("OperateBrands/stockBrands.html", brandList);
         }
         render(brandList);

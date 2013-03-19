@@ -162,7 +162,12 @@ public class OperateGoods extends Controller {
 
         if (goods.brand != null) {
             List<Sku> skuList = Sku.findByBrand(goods.brand.id);
+            long remainInventory = 0;
+            if (skuList.size() > 0) {
+                remainInventory = skuList.get(0).getRemainCount();
+            }
             renderArgs.put("skuList", skuList);
+            renderArgs.put("remainInventory", remainInventory);
         }
         List<Category> categoryList = Category.findByParent(0);//获取顶层分类
         List<Category> subCategoryList = new ArrayList<>();
@@ -232,7 +237,6 @@ public class OperateGoods extends Controller {
         checkUseWeekDay(goods);
 
         if (Validation.hasErrors()) {
-            renderInit(goods);
             boolean selectAll = false;
             render("OperateGoods/add.html", selectAll, hasApproveGoodsPermission);
         }
