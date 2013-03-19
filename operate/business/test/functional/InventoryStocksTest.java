@@ -2,11 +2,15 @@ package functional;
 
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
 import models.operator.OperateUser;
 import models.sales.InventoryStock;
 import models.sales.InventoryStockItem;
 import models.sales.Sku;
+import models.supplier.Supplier;
+import models.supplier.SupplierCategory;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import play.modules.paginate.JPAExtPaginator;
@@ -26,6 +30,7 @@ import java.util.Map;
  * Time: 上午10:54
  */
 public class InventoryStocksTest extends FunctionalTest {
+    Supplier supplier;
     Sku sku;
     InventoryStock stock;
     InventoryStockItem stockItem;
@@ -33,12 +38,18 @@ public class InventoryStocksTest extends FunctionalTest {
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
+        supplier = FactoryBoy.create(Supplier.class, "seewi");
         sku = FactoryBoy.create(Sku.class);
         stock = FactoryBoy.create(InventoryStock.class);
         stockItem = FactoryBoy.create(InventoryStockItem.class);
         OperateUser user = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
+    }
+
+    @After
+    public void tearDown() {
+        Supplier.clearShihuiSupplier();
     }
 
     @Test
@@ -52,6 +63,7 @@ public class InventoryStocksTest extends FunctionalTest {
 
     @Test
     public void testStockIn() {
+        List<Sku> skuss = Sku.findAll();
         Http.Response response = GET(Router.reverse("InventoryStocks.stockIn").url);
         assertIsOk(response);
         List<Sku> skuList = (List) renderArgs("skuList");

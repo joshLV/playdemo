@@ -153,8 +153,7 @@ public class Sku extends Model {
     }
 
     public static List<Sku> findShiHuiUnDeleted() {
-
-        return Sku.find("deleted=? and supplier=?", DeletedStatus.UN_DELETED).fetch();
+        return Sku.find("deleted=? and supplier=?", DeletedStatus.UN_DELETED, Supplier.getShihui()).fetch();
     }
 
     public static void delete(Long id) {
