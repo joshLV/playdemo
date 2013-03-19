@@ -1,8 +1,18 @@
-#{layout_operate.selectField name:'goods.sku.id', value:goods?.sku?.id, error:'goods.sku', required:true}
-    #{list items:skuList, as:'sku'}
-        #{option sku?.id}${sku?.name}#{/option}
-    #{/list}
-#{/layout_operate.selectField}
+<div class="control-group">
+#{layout_operate.labelText name:'goods.sku.id', required:_required/}
+    <div class="controls">
+    #{select name:'goods.sku.id',id:'goods_sku_id',value:goods?.sku?.id}
+        #{list items:skuList, as:'sku'}
+            #{option sku?.id}${sku?.name}#{/option}
+        #{/list}
+    #{/select}
+    #{if remainInventory}
+        <span style="color: #808080" >&{'remainInventory'}:</span><span style="color: red" id="remainInventory">${remainInventory} 个</span>
+    #{/if}
+    </div>
+
+</div>
+#{layout_operate.textField name:'goods.skuCount', value:goods?.skuCount?:"1", note:'件', required:true/}
 <SCRIPT type=text/javascript>
     #{if skuList== null || skuList.size()==0}
     $("#err-goods_skuId").html("该品牌没有对应的货品，请添加货品！");
@@ -12,4 +22,26 @@
     $("#err-goods_skuId").html("");
     $("#save").attr('disabled', false);
     #{/else}
+
+    $("#goods_sku_id").change(function () {
+        var skuId = $("#goods_sku_id").val();
+        if (skuId) {
+            remainCountChange(skuId);
+        }
+    });
+
+    function remainCountChange(skuId) {
+        $("#remainInventory").html("");
+        $.ajax({
+            url: '/skus-remain-count/' + skuId,
+            type: 'GET',
+            datatype: 'text',
+            error: function () {
+                alert('请重新操作!');
+            },
+            success: function (data) {
+                $("#remainInventory").html(data+" 个");
+            }
+        });
+    }
 </SCRIPT>

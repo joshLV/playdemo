@@ -422,6 +422,7 @@ DELETE  /skus/{id}                       Skus.delete
 GET     /skus/{id}/edit                  Skus.edit
 PUT     /skus/{id}                       Skus.update
 GET     /goods-skus/{brandId}            Skus.goodsSku
+GET     /skus-remain-count/{id}          Skus.getSkuRemainCount
 
 #库存管理
 GET     /inventory                      InventoryStocks.index
