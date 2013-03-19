@@ -42,13 +42,12 @@ public class InventoryStocks extends Controller {
         stockItemList.setBoundaryControlsEnabled(true);
         Long id = OperateRbac.currentUser().id;
         List<Brand> brandList = Brand.findByOrder(null, id);
-        List<Sku> skuList = Sku.findUnDeleted();
+        List<Sku> skuList = Sku.findShiHuiUnDeleted();
         render(stockItemList, skuList, brandList, pageNumber, condition);
     }
 
     @ActiveNavigation("inventory_stockIn")
     public static void stockIn() {
-
         setInitParams();
         render();
     }
@@ -63,7 +62,6 @@ public class InventoryStocks extends Controller {
     public static void createStockOut(@Valid InventoryStockItem stockItem) {
         checkStockOutCount(stockItem);
         if (Validation.hasErrors()) {
-            System.out.println(validation.errorsMap() + "===validation.errorsMap()>>");
             setInitParams();
             render("InventoryStocks/stockOut.html");
         }
@@ -115,7 +113,7 @@ public class InventoryStocks extends Controller {
     }
 
     private static void setInitParams() {
-        List<Sku> skuList = Sku.findUnDeleted();
+        List<Sku> skuList = Sku.findShiHuiUnDeleted();
         renderArgs.put("skuList", skuList);
         renderArgs.put("createdBy", OperateRbac.currentUser().userName);
     }
