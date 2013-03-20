@@ -254,9 +254,9 @@ public class DDGroupBuy extends Controller {
     }
 
 
-    private static void renserSuccessInfo(ECoupon coupon, String orderId, String errorDesc) {
-        Logger.info("process dangdang's request error: coupon.id: %d, desc: %s, 但返回成功消息", coupon.id, errorDesc);
-        render("dangdang/groupbuy/response/sendMessage.xml", errorDesc, coupon, orderId);
+    private static void renserSuccessInfo(ECoupon coupon, String orderId, String desc) {
+        Logger.info("process dangdang's request error: coupon.id: %d, desc: %s, 但返回成功消息", coupon.id, desc);
+        render("dangdang/groupbuy/response/sendMessage.xml", desc, coupon, orderId);
     }
 }
 
