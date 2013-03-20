@@ -161,7 +161,7 @@ public class SkuTakeoutsTest extends FunctionalTest {
     @Test
     public void testStockOut() {
         Map<String, String> params = new HashMap<>();
-        params.put("toDate", DateUtil.dateToString(DateUtil.getTomorrow(), "yyyy-MM-dd HH:mm:ss"));
+        params.put("toDate", DateUtil.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"));
         params.put("stockoutOrderId", String.valueOf(orderItems.order.id));
         Http.Response response = POST("/sku-takeouts", params);
         assertStatus(200, response);
