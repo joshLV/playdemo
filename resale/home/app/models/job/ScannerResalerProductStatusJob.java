@@ -6,14 +6,12 @@ import models.resale.Resaler;
 import models.sales.ResalerProduct;
 import models.sales.ResalerProductStatus;
 import org.apache.commons.lang.StringUtils;
-import play.jobs.Every;
 import play.jobs.Job;
 import util.ws.WebServiceRequest;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -23,7 +21,7 @@ import java.util.regex.Pattern;
  * Date: 12-12-17
  * Time: 下午3:51
  */
-@Every("1h")
+// @Every("1h")  因可能的连接数影响，先关掉这个job
 public class ScannerResalerProductStatusJob extends Job {
 
     @Override
