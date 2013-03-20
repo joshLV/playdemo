@@ -36,6 +36,11 @@ public class OrderBatch extends Model {
     public Date createdAt = new Date();
 
     /**
+     * 订单数
+     */
+    @Column(name="order_count")
+    public Long orderCount;
+    /**
      * 创建人姓名
      */
     @Column(name = "created_by")
@@ -52,7 +57,8 @@ public class OrderBatch extends Model {
     public OrderBatch() {
     }
 
-    public OrderBatch(Supplier supplier, String createdBy) {
+    public OrderBatch(Supplier supplier, String createdBy,Long orderCount) {
+        this.orderCount=orderCount;
         this.supplier = supplier;
         this.createdBy = createdBy;
     }
