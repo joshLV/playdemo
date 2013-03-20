@@ -6,8 +6,15 @@ import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.dangdang.groupbuy.DDErrorCode;
 import models.dangdang.groupbuy.DDGroupBuyUtil;
-import models.dangdang.groupbuy.DDResponse;
-import models.order.*;
+import models.order.DeliveryType;
+import models.order.ECoupon;
+import models.order.ECouponPartner;
+import models.order.ECouponStatus;
+import models.order.NotEnoughInventoryException;
+import models.order.Order;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
+import models.order.OuterOrderStatus;
 import models.resale.Resaler;
 import models.resale.ResalerStatus;
 import models.sales.Goods;
@@ -218,20 +225,21 @@ public class DDGroupBuy extends Controller {
             renderError(DDErrorCode.COUPON_SN_NOT_EXISTED, "没找到对应的券号!");
         }
         //券已消费
+        Logger.info("处理当当券(id: %s)重发, tel: %s", coupon.id, receiverMobileTel);
         if (coupon.status == ECouponStatus.CONSUMED) {
-            renderError(DDErrorCode.COUPON_CONSUMED, "对不起该券已消费，不能重发短信！");
+            renserSuccessInfo(coupon, orderId, "对不起该券已消费!");
         }
         //券已退款
         if (coupon.status == ECouponStatus.REFUND) {
-            renderError(DDErrorCode.COUPON_REFUND, "对不起该券已退款，不能重发短信！");
+            renserSuccessInfo(coupon, orderId, "对不起该券已退款!");
         }
         //券已过期
         if (coupon.expireAt.before(new Date())) {
-            renderError(DDErrorCode.COUPON_EXPIRED, "对不起该券已过期，不能重发短信！");
+            renserSuccessInfo(coupon, orderId, "对不起该券已过期!");
         }
         //最多发送三次短信
         if (coupon.smsSentCount >= 3) {
-            renderError(DDErrorCode.MESSAGE_SEND_FAILED, "重发短信超过三次！");
+            renserSuccessInfo(coupon, orderId, "重发短信超过三次!");
         }
 
         //发送短信并返回成功
@@ -243,6 +251,12 @@ public class DDGroupBuy extends Controller {
     private static void renderError(DDErrorCode errorCode, String errorDesc) {
         Logger.info("process dangdang's request error: code: %s, desc: %s", errorCode, errorDesc);
         render("dangdang/groupbuy/response/error.xml", errorCode, errorDesc);
+    }
+
+
+    private static void renserSuccessInfo(ECoupon coupon, String orderId, String errorDesc) {
+        Logger.info("process dangdang's request error: coupon.id: %d, desc: %s, 但返回成功消息", coupon.id, errorDesc);
+        render("dangdang/groupbuy/response/sendMessage.xml", errorDesc, coupon, orderId);
     }
 }
 
