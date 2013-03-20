@@ -33,6 +33,10 @@ GET     /                                       SmsApplication.index
 # 淘宝
 *       /api/v1/taobao/coupon                   TaobaoCouponAPI.index
 
+# 微信
+GET     /api/v1/weixin/message                  WeixinAPI.heartbeat
+POST    /api/v1/weixin/message                  WeixinAPI.message(format:'xml')
+
 # 北京ensms接收接口
 GET     /getsms                                 EnSmsReceivers.getSms
 
