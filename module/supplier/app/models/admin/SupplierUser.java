@@ -129,6 +129,22 @@ public class SupplierUser extends Model {
     @Column(name = "default_ui_version")
     public String defaultUiVersion;
 
+    /**
+     * 识别码。
+     * 用于标识一个用户，在关联微信，微博时使用。
+     * 注意这个值会是一次性的使用，在绑定成功后会消失.
+     */
+    @Column(name="idCode")
+    public String idCode;
+
+    /**
+     * 微信OpenId.
+     * 通过OpenId，我们可以识别微信发起者对应的SupplierUser.
+     */
+    @Column(name = "weixin_open_id")
+    public String weixinOpenId;
+
+
     public SupplierUser() {
         supplierUserType = SupplierUserType.HUMAN;
         createdAt = new Date();
