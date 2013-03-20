@@ -88,7 +88,7 @@ public class SkuTakeouts extends Controller {
         InventoryStock stock = InventoryStock.createInventoryStock(Supplier.getShihui(), operatorName);
 
         //9 创建出库单对应的批次
-        OrderBatch orderBatch = new OrderBatch(Supplier.getShihui(), operatorName);
+        OrderBatch orderBatch = new OrderBatch(Supplier.getShihui(), operatorName, Long.parseLong(String.valueOf(stockoutOrderList.size())));
         orderBatch.stock = stock;
         orderBatch.save();
 

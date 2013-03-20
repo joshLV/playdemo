@@ -8,13 +8,15 @@
     <form id="form" action="@{SupplierUploadOrderShippingInfos.upload()}" method="POST" enctype='multipart/form-data'>
         <table cellspacing="0" cellpadding="0" border="0" class="title-table">
             <tr>
-                <th wdith="50%">上传文件：<input type="file" name="orderShippingFile"><span
-                        style="display:block;color: #808080;">注意：上传时，保证数据放在Sheet1.</span></th>
+                <th wdith="50%">上传文件：<input type="file" name="orderShippingFile">
+                </th>
                 <td wdith="50%" align="left">
                     <a class="btn" href="#" id="upload">上传</a></td>
                 </td>
             </tr>
         </table>
+
+        <span style="display:block;color: #808080;">请在下载的发货单中指定位置填写快递信息，<br>请勿随意修改发货单中其他信息，上传时，保证数据放在Sheet1.</span>
         <span class="help-block" style="color: red;">
         ${msgInfo}
         #{if noGoodsCodeList?.size()>0}商品编码：${noGoodsCodeList?.join(",")}不存在,请重新编辑商品分配编码！<br>#{/if}
@@ -36,7 +38,6 @@
             订单：${uploadSuccessOrders?.join(",")} 导入更新成功！
         </span>
     #{/if}
-
     </form>
 </div>
 <script type="text/javascript">
