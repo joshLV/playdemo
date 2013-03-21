@@ -1,5 +1,7 @@
 package controllers;
 
+import models.weixin.WeixinContext;
+import models.weixin.WeixinInvocation;
 import models.weixin.WeixinRequest;
 import models.weixin.WeixinResponse;
 import models.weixin.WeixinUtil;
@@ -8,6 +10,9 @@ import org.w3c.dom.Document;
 import play.libs.IO;
 import play.libs.XML;
 import play.mvc.Controller;
+import util.extension.DefaultAction;
+import util.extension.ExtensionInvoker;
+import util.extension.ExtensionResult;
 
 /**
  * @author likang
@@ -38,10 +43,23 @@ public class WeixinAPI extends Controller {
         render("weixin/" + response.getMsgType().toString().toLowerCase() + "Response.xml", response);
     }
 
-    private static WeixinResponse doText(WeixinRequest message) {
+    private static WeixinResponse doText(WeixinRequest weixinRequest) {
         WeixinTextResponse response = new WeixinTextResponse();
-        response.toUserName = message.fromUserName;
-        response.content = message.selectTextTrim("Content");
+        response.toUserName = weixinRequest.fromUserName;
+
+        WeixinContext weixinContext = WeixinContext.build(weixinRequest);
+        ExtensionResult result = ExtensionInvoker.run(WeixinInvocation.class, weixinContext, new DefaultAction<WeixinContext>() {
+            @Override
+            public ExtensionResult execute(WeixinContext context) {
+                context.resultText = "欢迎使用『一百券商家助手』，目前不能识别您的输入。请输入身份绑定码，如已经绑定，请输入券号进行券验证操作。";
+                return ExtensionResult.SUCCESS;
+            }
+        });
+        if (result.isOk()) {
+            response.content = weixinContext.resultText;
+        } else {
+            response.content = "处理失败：" + result.message;
+        }
         return response;
     }
 }
