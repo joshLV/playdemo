@@ -40,6 +40,10 @@ public class PlayWebServiceClient extends WebServiceClient {
             request = WS.url(log.url);
         }
 
+        if(webServiceRequest.headers != null) {
+            request = request.headers(webServiceRequest.headers);
+        }
+
         if (!(httpMethod == HttpMethod.GET) && StringUtils.isNotBlank(log.requestBody)) {
             // 如果有requestBody，则不能使用params和uploadFile.
             request = request.body(log.requestBody);

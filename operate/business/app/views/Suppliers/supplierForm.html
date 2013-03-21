@@ -21,6 +21,8 @@ note:'.' + baseDomain + ' (只能是字母、数字、下划线，且长度限�
     #{include '/Suppliers/updateCode.html'/}
 #{/if}
 
+#{layout_operate.textField name:'supplier.weiboId', value:supplier?.weiboId, note:'不是微博帐号，是微博帐号的ID'/}
+
 #{layout_operate.textField name:'supplier.userName', value:supplier?.userName/}
 #{layout_operate.textField name:'supplier.position', value:supplier?.position/}
 #{layout_operate.textField name:'supplier.email', value:supplier?.email/}

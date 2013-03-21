@@ -1,0 +1,21 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'结果' /}
+#{include '/share/nav.html' /}
+#{set 'moreScripts'}
+#{/set}
+#{set 'moreStyles'}
+#{/set}
+<div class="body">
+#{if response.isOk()}
+    <legend> 上传成功</legend>
+#{/if}
+#{else}
+    <legend> 上传失败</legend>
+    <p>${response.error.getAsString("return_code")}</p>
+
+    <p>${response.error.getAsString("return_message")}</p>
+
+    <p>${response.error.getAsString("trace")}</p>
+#{/else}
+</div>
+

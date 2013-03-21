@@ -5,62 +5,33 @@ package models.order;
  *         Date: 12-9-18
  */
 public enum OuterOrderPartner {
-    DD,     // 当当
-    YHD,    // 一号店
-    JD,     // 京东
-    WB,     // 58
-    TB;     // 淘宝电子凭证
-    //添加条目的话要在下面两个方法中也设置一下
+    DD("DD", "当当", "dangdang"),     // 当当
+    YHD("YHD", "一号店", "yihaodian"),    // 一号店
+    JD("JD", "京东", "jingdong"),     // 京东
+    WB("WB", "58", "wuba"),     // 58
+    TB("TB", "淘宝", "taobao"),     // 淘宝电子凭证
+    SINA("SINA", "新浪", "sina");   //新浪卡券
 
+    private String code;// 代号
+    private String name;// 中文名称
+    private String loginName; //登录帐号
+
+    OuterOrderPartner(String code, String name, String loginName) {
+        this.code = code;
+        this.name = name;
+        this.loginName = loginName;
+    }
+
+    @Override
+    public String toString() {
+        return this.code;
+    }
 
     public String partnerName() {
-        switch (this) {
-            case DD:
-                return "当当";
-            case YHD:
-                return "一号店";
-            case JD:
-                return "京东";
-            case WB:
-                return "58";
-            case TB:
-                return "淘宝";
-            default:
-                return this.toString();
-        }
+        return name;
     }
 
     public String partnerLoginName() {
-        switch (this) {
-            case DD:
-                return "dangdang";
-            case YHD:
-                return "yihaodian";
-            case JD:
-                return "jingdong";
-            case WB:
-                return "wuba";
-            case TB:
-                return "taobao";
-            default:
-                return null;
-        }
-    }
-
-    public String partnerStringName() {
-        switch (this) {
-            case DD:
-                return "DD";
-            case YHD:
-                return "YHD";
-            case JD:
-                return "JD";
-            case WB:
-                return "WB";
-            case TB:
-                return "TB";
-            default:
-                return null;
-        }
+        return loginName;
     }
 }

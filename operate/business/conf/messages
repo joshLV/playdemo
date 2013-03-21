@@ -258,6 +258,7 @@ supplier.email=邮箱
 supplier.salesEmail=销售专员邮箱
 supplier.salesId=销售专员
 supplier.operator.id=销售专员
+supplier.weiboId=微博ID
 supplier.canSaleReal=是否销售实物
 supplier.canSaleReal_1=是
 supplier.canSaleReal_2=否

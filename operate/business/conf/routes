@@ -68,7 +68,6 @@ POST    /resaler-products/yhd/upload                    resale.YHDProducts.uploa
 # 京东
 GET     /resaler-products/jd/upload/{goodsId}           resale.JDGroupBuyProducts.showUpload
 POST    /resaler-products/jd/upload                     resale.JDGroupBuyProducts.upload
-GET     /resaler-products/jd/products/{goodsId}         resale.JDGroupBuyProducts.showProducts
 GET     /resaler-products/jd/edit/{productId}           resale.JDGroupBuyProducts.showEdit
 POST    /resaler-products/jd/edit                       resale.JDGroupBuyProducts.edit
 *       /jd-ztree/city                                  resale.JDGroupBuyProducts.city
@@ -92,6 +91,12 @@ POST    /resaler-products/dd/upload                     resale.DDGroupBuyProduct
 # 淘宝
 GET     /resaler-products/tb/upload/{goodsId}           resale.TaobaoProducts.showUpload
 POST    /resaler-products/tb/upload                     resale.TaobaoProducts.upload
+
+# 新浪卡券
+GET     /resaler-products/sina/upload/{goodsId}         resale.SinaVouchers.showUpload
+POST    /resaler-products/sina/upload                   resale.SinaVouchers.upload
+GET     /resaler-products/sina/edit/{productId}           resale.JDGroupBuyProducts.showEdit
+POST    /resaler-products/sina/edit                       resale.JDGroupBuyProducts.edit
 
 # --------------------  end of 分销商品  ---------------------------------------------------------
 
