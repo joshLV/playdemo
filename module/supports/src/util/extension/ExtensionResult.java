@@ -1,11 +1,16 @@
 package util.extension;
 
+import java.io.Serializable;
+
 /**
  * 业务扩展返回值。
  *
  * 如果code为0,表示成功；其它值通过message描述.
  */
-public class ExtensionResult {
+public class ExtensionResult implements Serializable {
+
+    // 会放到memcache中，所以必须Serializable
+    private static final long serialVersionUID = 13981343203113062L;
 
     public static ExtensionResult SUCCESS = ExtensionResult.code(0).message("Success");
     public static ExtensionResult INVALID_CALL = ExtensionResult.code(1).message("Invalid Call");

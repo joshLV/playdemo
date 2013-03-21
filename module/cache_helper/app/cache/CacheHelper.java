@@ -88,7 +88,7 @@ public class CacheHelper {
     }
 
     public static boolean exists(String key) {
-        return Cache.get(key) != null;
+        return getCache(key) != null;
     }
 
     public static void setCache(String key, Object value, String expireSeconds) {
