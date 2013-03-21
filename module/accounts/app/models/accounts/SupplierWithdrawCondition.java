@@ -18,7 +18,6 @@ public class SupplierWithdrawCondition implements Serializable {
     public Date createdAtEnd;
     public Boolean createdAt;   //是否查询日期为空
     public Account account;
-    public AccountType accountType;
     public TradeType tradeType;    //资金变动类型
     public WithdrawBillStatus withdrawBillStatus;
 
@@ -27,7 +26,7 @@ public class SupplierWithdrawCondition implements Serializable {
     /*
         期初未提现金额 (采购成本)
      */
-    public String getFilterUnwithdrawedPurchaseCostAmountAmount() {
+    public String getFilterPurchaseCost() {
         StringBuilder filter = new StringBuilder(" where a.account.accountType = :accountType and a.tradeType = :tradeType ");
         params.put("accountType", AccountType.SUPPLIER);
         params.put("tradeType", TradeType.PURCHASE_COSTING);
@@ -41,7 +40,7 @@ public class SupplierWithdrawCondition implements Serializable {
         }
         System.out.println(withdrawBillStatus + "===withdrawBillStatus>>");
         if (withdrawBillStatus != null) {
-            filter.append(" and a.account.id in (select w.account.id from WithdrawBill w where w.account=a.account and w.withdrawBillStatus= :withdrawBillStatus) ");
+            filter.append(" and a.account.id in (select w.account.id from WithdrawBill w where w.account=a.account and w.status= :withdrawBillStatus) ");
             params.put("withdrawBillStatus", withdrawBillStatus);
         }
         System.out.println(accountUid + "===accountUid>>");
@@ -51,13 +50,38 @@ public class SupplierWithdrawCondition implements Serializable {
         }
         System.out.println(createdAtBegin + "===createdAtBegin>>");
         if (createdAtBegin != null) {
-            filter.append(" and a.createdAt >= :createdAtBegin");
-            params.put("createdAtBegin", createdAtBegin);
+            filter.append(" and a.createdAt <= :createdAtBegin");
+            params.put("createdAtBegin", com.uhuila.common.util.DateUtil.getEndOfDay(com.uhuila.common.util.DateUtil.getBeforeDate(createdAtBegin, 1)));
         }
-        System.out.println(createdAtEnd + "===createdAtEnd>>");
-        if (createdAtEnd != null) {
-            filter.append(" and a.createdAt <= :createdAtEnd");
-            params.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(createdAtEnd));
+
+        return filter.toString();
+    }
+
+    /*
+       期初未提现金额 (提现)
+    */
+    public String getFilterPreviousWithdrawnAmount() {
+        StringBuilder filter = new StringBuilder(" where a.account.accountType = :accountType and a.tradeType = :tradeType ");
+        params.put("accountType", AccountType.SUPPLIER);
+        params.put("tradeType", TradeType.WITHDRAW);
+        /*
+            当没有选日期查询条件时，默认按最近7天之前统计
+         */
+        if (!createdAt) {
+            filter.append(" and a.createdAt <= :createdAtBegin");
+            params.put("createdAtBegin", com.uhuila.common.util.DateUtil.getEndOfDay(com.uhuila.common.util.DateUtil.getBeforeDate(new Date(), 8)));
+        }
+        if (withdrawBillStatus != null) {
+            filter.append(" and a.account.id in (select w.account.id from WithdrawBill w where w.account=a.account and w.status= :withdrawBillStatus) ");
+            params.put("withdrawBillStatus", withdrawBillStatus);
+        }
+        if (accountUid != null && accountUid != 0) {
+            filter.append(" and a.account.uid = :accountUid");
+            params.put("accountUid", accountUid);
+        }
+        if (createdAtBegin != null) {
+            filter.append(" and a.createdAt <= :createdAtBegin");
+            params.put("createdAtBegin", com.uhuila.common.util.DateUtil.getEndOfDay(com.uhuila.common.util.DateUtil.getBeforeDate(createdAtBegin, 1)));
         }
 
         return filter.toString();

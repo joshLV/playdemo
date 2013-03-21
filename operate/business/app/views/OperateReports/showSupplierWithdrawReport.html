@@ -76,10 +76,10 @@
                 <td>${i}</td>
             *{${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}}*
                 <td>${supplierWithdraw?.supplier?.otherName} </td>
-                <td>${supplierWithdraw?.unwithdrawedWithdrawAmount}</td>
+                <td>${supplierWithdraw?.previousUnwithdrawnAmount}</td>
                 <td></td>
                 <td>
-                    *{<br/>}*
+                *{<br/>}*
                     *{(不可提现余额:${accountSequence.uncashBalance?.formatCurrency('CNY')})}*
                 </td>
                 <td></td>

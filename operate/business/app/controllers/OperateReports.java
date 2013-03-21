@@ -187,6 +187,9 @@ public class OperateReports extends Controller {
             condition.createdAt = false;
             condition.createdAtBegin = com.uhuila.common.util.DateUtil.getBeforeDate(new Date(), 7);
             condition.createdAtEnd = new Date();
+            if (condition.accountUid.equals(0l) || condition.accountUid == null) {
+                condition.withdrawBillStatus = WithdrawBillStatus.APPLIED;  //待审批 (时间和商户查询条件均为空)
+            }
         } else {
             condition.createdAt = true;
         }
@@ -199,7 +202,6 @@ public class OperateReports extends Controller {
                 condition.account.id = -1L;
             }
         }
-        condition.accountType = AccountType.SUPPLIER;
 
         List<SupplierWithdrawReport> supplierWithdrawList = SupplierWithdrawReport.query(condition);
 

@@ -24,14 +24,17 @@ public class SupplierWithdrawReport implements Serializable {
 
     public Supplier supplier;
 
+    public BigDecimal purchaseCost;   //采购成本
 
-    public BigDecimal unwithdrawedWithdrawAmount;        //提现
+    public BigDecimal previousWithdrawnAmount;        //提现
+
+    public BigDecimal previousUnwithdrawnAmount;  //期初未提现金额(采购成本-提现)
 
     public BigDecimal consumedAmount;            //本周期券消费金额
 
-    public BigDecimal withdrawedAmount;          //本周期提现金额
+    public BigDecimal specificWithdrawnAmount;          //本周期提现金额
 
-    public BigDecimal remainedUnwithdrawedAmount;   //剩余未提现金额
+    public BigDecimal remainedUnwithdrawnAmount;   //剩余未提现金额
 
 
     /**
@@ -41,11 +44,15 @@ public class SupplierWithdrawReport implements Serializable {
      * @return
      */
     public static List<SupplierWithdrawReport> query(SupplierWithdrawCondition condition) {
-        //期初未提现金额
-        String sql = "select a.account.uid,a.changeAmount,a.id" +
+        /*
+           期初未提现金额
+        */
+
+        //采购成本
+        String sql = "select a.account.uid,sum(a.changeAmount)" +
                 " from AccountSequence a ";
         Query query = JPA.em()
-                .createQuery(sql + condition.getFilterUnwithdrawedPurchaseCostAmountAmount() + " order by createdAt desc");
+                .createQuery(sql + condition.getFilterPurchaseCost() + " order by createdAt desc");
 
 
         for (String param : condition.getParams().keySet()) {
@@ -53,24 +60,61 @@ public class SupplierWithdrawReport implements Serializable {
         }
 
 
-        List<Object[]> unwithdrawedPurchaseCostAmountList = query.getResultList();
-        System.out.println(unwithdrawedPurchaseCostAmountList.size() + "===unwithdrawedPurchaseCostAmountList.size()>>");
+        List<Object[]> purchaseCostList = query.getResultList();
+
+        //merge purchaseCostList
         Map<Long, SupplierWithdrawReport> supplierWithdrawResultMap = new HashMap<>();
-        for (Object[] item : unwithdrawedPurchaseCostAmountList) {
-            SupplierWithdrawReport tempSupplierWithdrawItem = new SupplierWithdrawReport();
+        SupplierWithdrawReport tempSupplierWithdrawItem;
+        for (Object[] item : purchaseCostList) {
+            tempSupplierWithdrawItem = new SupplierWithdrawReport();
             tempSupplierWithdrawItem.supplier = Supplier.findById((Long) item[0]);
-            tempSupplierWithdrawItem.unwithdrawedWithdrawAmount = (BigDecimal) item[1];
-            supplierWithdrawResultMap.put((Long) item[2], tempSupplierWithdrawItem);
+            tempSupplierWithdrawItem.purchaseCost = (BigDecimal) item[1];
+            tempSupplierWithdrawItem.previousUnwithdrawnAmount = tempSupplierWithdrawItem.purchaseCost;
+            supplierWithdrawResultMap.put((Long) item[0], tempSupplierWithdrawItem);
         }
 
+        //提现
+        sql = "select a.account.uid,sum(a.changeAmount)" +
+                " from AccountSequence a ";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterPreviousWithdrawnAmount() + " order by createdAt desc");
+
+
+        for (String param : condition.getParams().keySet()) {
+            query.setParameter(param, condition.getParams().get(param));
+        }
+
+
+        List<Object[]> previousWithdrawnAmountList = query.getResultList();
+
+        //merge previousWithdrawnAmountList  期初未提现金额=采购成本-提现
+        for (Object[] item : previousWithdrawnAmountList) {
+            tempSupplierWithdrawItem = supplierWithdrawResultMap.get((Long) item[0]);
+            System.out.println(tempSupplierWithdrawItem + "===tempSupplierWithdrawItem>>");
+            if (tempSupplierWithdrawItem == null) {
+                tempSupplierWithdrawItem = new SupplierWithdrawReport();
+                tempSupplierWithdrawItem.supplier = Supplier.findById((Long) item[0]);
+                tempSupplierWithdrawItem.previousWithdrawnAmount = (BigDecimal) item[1];
+                tempSupplierWithdrawItem.previousUnwithdrawnAmount = BigDecimal.ZERO.subtract(tempSupplierWithdrawItem.previousWithdrawnAmount);
+                supplierWithdrawResultMap.put((Long) item[0], tempSupplierWithdrawItem);
+            } else {
+                tempSupplierWithdrawItem.previousWithdrawnAmount = (BigDecimal) item[1];
+                tempSupplierWithdrawItem.previousUnwithdrawnAmount = tempSupplierWithdrawItem.purchaseCost.subtract(tempSupplierWithdrawItem.previousWithdrawnAmount);
+            }
+        }
+
+
+        //本周期券消费金额
+
+
+
+
+        //map-->list
         List supplierWithdrawResultList = new ArrayList();
         for (Long key : supplierWithdrawResultMap.keySet()) {
             supplierWithdrawResultList.add(supplierWithdrawResultMap.get(key));
         }
 
-
-        //本周期券消费金额
-        System.out.println(supplierWithdrawResultList.size() + "===supplierWithdrawResultList>>");
         return supplierWithdrawResultList;
 
     }
