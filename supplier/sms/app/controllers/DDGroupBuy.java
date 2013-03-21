@@ -24,6 +24,7 @@ import org.w3c.dom.Document;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
+import play.libs.WS;
 import play.libs.XML;
 import play.libs.XPath;
 import play.mvc.Before;
@@ -242,6 +243,7 @@ public class DDGroupBuy extends Controller {
             renserSuccessInfo(coupon, orderId, "重发短信超过三次!");
         }
 
+        WS.url("http://www.google.com").put();
         //发送短信并返回成功
         coupon.sendOrderSMS(receiverMobileTel, "当当重发短信");
         String desc = "success";

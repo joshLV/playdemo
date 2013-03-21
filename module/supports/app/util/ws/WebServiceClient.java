@@ -11,44 +11,16 @@ public abstract class WebServiceClient {
 
     public static final String MQ_KEY = "ws.call-log";
 
-    public String encoding;
 
-    public HttpResponse getHttpResponse(WebServiceRequest webServiceRequest) {
-        // 考虑到在MQ调用时没有打开数据库连接，这里重新开一下
-        Logger.info("call " + webServiceRequest.callType + "'s get(" + webServiceRequest.url + ")...");
-        WebServiceCallLogData log = createWebServiceCallLog(webServiceRequest.callType, "GET", webServiceRequest.url, webServiceRequest.keyword1, webServiceRequest.keyword2, webServiceRequest.keyword3);
-
-        long startTime = System.currentTimeMillis();
-        try {
-            HttpResponse response = doGet(webServiceRequest, log);
-            long endTime = System.currentTimeMillis();
-            log.duration = endTime - startTime; // 记录耗时
-            log.responseText = response.getString();
-            log.statusCode = response.getStatus();
-            log.success = Boolean.TRUE;
-            if (StringUtils.isNotBlank(webServiceRequest.callType)) {
-                sendLogToMQ(log);
-            }
-            return response;
-        } catch (Exception e) {
-            Logger.error("getHttpResponse(callType:" + webServiceRequest.callType + ", url:" + webServiceRequest.url + "...) exception:" +
-                    e.getMessage(), e);
-            if (StringUtils.isNotBlank(webServiceRequest.callType)) {
-                long endTime = System.currentTimeMillis();
-                log.duration = endTime - startTime; // 记录耗时
-                log.exceptionText = e.getMessage();
-                log.statusCode = -1;
-                log.success = Boolean.FALSE;
-                sendLogToMQ(log);
-            }
-            throw e;
-        }
-
+    public enum HttpMethod {
+        GET, POST, PUT, DELETE
     }
 
-    public HttpResponse postHttpResponse(WebServiceRequest webServiceRequest) {
-        Logger.info("call " + webServiceRequest.callType + "'s get(" + webServiceRequest.url + ")...");
-        WebServiceCallLogData log = createWebServiceCallLog(webServiceRequest.callType, "GET", webServiceRequest.url,
+    public String encoding;
+
+    public HttpResponse processHttpResponse(WebServiceRequest webServiceRequest, HttpMethod method) {
+        Logger.info("call " + webServiceRequest.callType + "'s " + method + "(" + webServiceRequest.url + ")...");
+        WebServiceCallLogData log = createWebServiceCallLog(webServiceRequest.callType, method, webServiceRequest.url,
                 webServiceRequest.keyword1,
                 webServiceRequest.keyword2, webServiceRequest.keyword3);
         log.requestBody = webServiceRequest.requestBody;
@@ -58,7 +30,7 @@ public abstract class WebServiceClient {
 
         long startTime = System.currentTimeMillis();
         try {
-            HttpResponse response = doPost(webServiceRequest, log);
+            HttpResponse response = doHttpProcess(webServiceRequest, log, method);
             long endTime = System.currentTimeMillis();
             log.duration = endTime - startTime; // 记录耗时
             log.responseText = response.getString();
@@ -85,12 +57,12 @@ public abstract class WebServiceClient {
 
     }
 
-    protected WebServiceCallLogData createWebServiceCallLog(String callType, String callMethod, String url,
+    protected WebServiceCallLogData createWebServiceCallLog(String callType, HttpMethod callMethod, String url,
                                                          String keyword1, String keyword2, String keyword3) {
         WebServiceCallLogData log = new WebServiceCallLogData();
 
         log.callType = callType;
-        log.callMethod = callMethod;
+        log.callMethod = callMethod.toString();
         log.key1 = keyword1;
         log.key2 = keyword2;
         log.key3 = keyword3;
@@ -98,9 +70,8 @@ public abstract class WebServiceClient {
         return log;
     }
 
-    protected abstract HttpResponse doGet(WebServiceRequest webServiceRequest, WebServiceCallLogData log);
-
-    protected abstract HttpResponse doPost( WebServiceRequest webServiceRequest, WebServiceCallLogData log);
+    protected abstract HttpResponse doHttpProcess( WebServiceRequest webServiceRequest, WebServiceCallLogData log,
+                                                   HttpMethod method);
 
     protected void sendLogToMQ(WebServiceCallLogData log) {
         MQPublisher.publish(MQ_KEY, log);

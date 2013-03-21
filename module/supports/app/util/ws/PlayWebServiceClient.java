@@ -29,27 +29,8 @@ public class PlayWebServiceClient extends WebServiceClient {
     }
 
     @Override
-    public HttpResponse doGet(WebServiceRequest webServiceRequest, WebServiceCallLogData log) {
-        WSRequest wsRequest = null;
-        System.out.println("encoding:" + encoding);
-        if (encoding != null) {
-            System.out.println("do encoding.");
-            wsRequest = WS.withEncoding(encoding).url(log.url);
-        } else {
-            wsRequest = WS.url(log.url);
-        }
-
-        play.libs.WS.HttpResponse response = wsRequest.get();
-        log.statusCode = response.getStatus();
-        log.responseText = response.getString();
-        if (webServiceRequest.callback != null) {
-            webServiceRequest.callback.process(response.getStatus(), response.getString());
-        }
-        return response;
-    }
-
-    @Override
-    protected HttpResponse doPost(WebServiceRequest webServiceRequest, WebServiceCallLogData log) {
+    protected HttpResponse doHttpProcess(WebServiceRequest webServiceRequest, WebServiceCallLogData log,
+                                         HttpMethod httpMethod) {
         WSRequest request = null;
         System.out.println("post encoding:" + encoding);
         if (encoding != null) {
@@ -59,7 +40,7 @@ public class PlayWebServiceClient extends WebServiceClient {
             request = WS.url(log.url);
         }
 
-        if (StringUtils.isNotBlank(log.requestBody)) {
+        if (!(httpMethod == HttpMethod.GET) && StringUtils.isNotBlank(log.requestBody)) {
             // 如果有requestBody，则不能使用params和uploadFile.
             request = request.body(log.requestBody);
         } else {
@@ -72,7 +53,19 @@ public class PlayWebServiceClient extends WebServiceClient {
             }
         }
 
-        play.libs.WS.HttpResponse response = request.post();
+        play.libs.WS.HttpResponse response;
+        switch (httpMethod) {
+            case GET:
+                response = request.get(); break;
+            case POST:
+                response = request.post(); break;
+            case PUT:
+                response = request.put(); break;
+            case DELETE:
+                response = request.delete(); break;
+            default:
+                response = request.get();
+        }
         log.statusCode = response.getStatus();
         log.responseText = response.getString();
         if (webServiceRequest.callback != null) {
