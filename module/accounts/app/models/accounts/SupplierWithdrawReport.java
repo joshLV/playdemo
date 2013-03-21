@@ -63,19 +63,18 @@ public class SupplierWithdrawReport implements Serializable {
 
 
         List<Object[]> purchaseCostList = query.getResultList();
-        System.out.println(purchaseCostList.size() + "===purchaseCostList.size()>>");
         //merge purchaseCostList
         Map<Long, SupplierWithdrawReport> supplierWithdrawResultMap = new HashMap<>();
         SupplierWithdrawReport tempSupplierWithdrawItem;
         for (Object[] item : purchaseCostList) {
             tempSupplierWithdrawItem = new SupplierWithdrawReport();
-//            System.out.println((Long)item[0] + "===(Long)item[0]>>");
             tempSupplierWithdrawItem.supplier = Supplier.findById((Long) item[0]);
             tempSupplierWithdrawItem.purchaseCost = (BigDecimal) item[1];
             tempSupplierWithdrawItem.previousUnwithdrawnAmount = tempSupplierWithdrawItem.purchaseCost;
             tempSupplierWithdrawItem.consumedAmount = BigDecimal.ZERO;
             tempSupplierWithdrawItem.withdrawnAmount = BigDecimal.ZERO;
             tempSupplierWithdrawItem.remainedUnwithdrawnAmount = BigDecimal.ZERO;
+            tempSupplierWithdrawItem.remainedUnwithdrawnAmount = tempSupplierWithdrawItem.previousUnwithdrawnAmount;
             supplierWithdrawResultMap.put((Long) item[0], tempSupplierWithdrawItem);
         }
 
@@ -103,11 +102,12 @@ public class SupplierWithdrawReport implements Serializable {
                 tempSupplierWithdrawItem.previousUnwithdrawnAmount = BigDecimal.ZERO.subtract(tempSupplierWithdrawItem.previousWithdrawnAmount);
                 tempSupplierWithdrawItem.consumedAmount = BigDecimal.ZERO;
                 tempSupplierWithdrawItem.withdrawnAmount = BigDecimal.ZERO;
-                tempSupplierWithdrawItem.remainedUnwithdrawnAmount = BigDecimal.ZERO;
+                tempSupplierWithdrawItem.remainedUnwithdrawnAmount = tempSupplierWithdrawItem.previousUnwithdrawnAmount;
                 supplierWithdrawResultMap.put((Long) item[0], tempSupplierWithdrawItem);
             } else {
                 tempSupplierWithdrawItem.previousWithdrawnAmount = (BigDecimal) item[1];
                 tempSupplierWithdrawItem.previousUnwithdrawnAmount = tempSupplierWithdrawItem.purchaseCost.subtract(tempSupplierWithdrawItem.previousWithdrawnAmount);
+                tempSupplierWithdrawItem.remainedUnwithdrawnAmount = tempSupplierWithdrawItem.previousUnwithdrawnAmount;
             }
         }
 
@@ -135,10 +135,11 @@ public class SupplierWithdrawReport implements Serializable {
                 tempSupplierWithdrawItem.previousUnwithdrawnAmount = BigDecimal.ZERO;
                 tempSupplierWithdrawItem.consumedAmount = (BigDecimal) item[1];
                 tempSupplierWithdrawItem.withdrawnAmount = BigDecimal.ZERO;
-                tempSupplierWithdrawItem.remainedUnwithdrawnAmount = BigDecimal.ZERO;
+                tempSupplierWithdrawItem.remainedUnwithdrawnAmount = tempSupplierWithdrawItem.previousUnwithdrawnAmount.subtract(tempSupplierWithdrawItem.consumedAmount);
                 supplierWithdrawResultMap.put((Long) item[0], tempSupplierWithdrawItem);
             } else {
                 tempSupplierWithdrawItem.consumedAmount = (BigDecimal) item[1];
+                tempSupplierWithdrawItem.remainedUnwithdrawnAmount = tempSupplierWithdrawItem.previousUnwithdrawnAmount.subtract(tempSupplierWithdrawItem.consumedAmount);
             }
         }
 
@@ -156,7 +157,7 @@ public class SupplierWithdrawReport implements Serializable {
 
         List<Object[]> withdrawnAmountList = query.getResultList();
 
-        //merge withdrawnAmountList
+        //merge withdrawnAmountList  赋值本周期提现金额并计算剩余未提现金额
         for (Object[] item : withdrawnAmountList) {
             tempSupplierWithdrawItem = supplierWithdrawResultMap.get((Long) item[0]);
             if (tempSupplierWithdrawItem == null) {
@@ -166,9 +167,11 @@ public class SupplierWithdrawReport implements Serializable {
                 tempSupplierWithdrawItem.consumedAmount = BigDecimal.ZERO;
                 tempSupplierWithdrawItem.withdrawnAmount = BigDecimal.ZERO.subtract((BigDecimal) item[1]);
                 tempSupplierWithdrawItem.remainedUnwithdrawnAmount = BigDecimal.ZERO;
+                tempSupplierWithdrawItem.remainedUnwithdrawnAmount = tempSupplierWithdrawItem.previousUnwithdrawnAmount.add(tempSupplierWithdrawItem.consumedAmount).subtract(tempSupplierWithdrawItem.withdrawnAmount);
                 supplierWithdrawResultMap.put((Long) item[0], tempSupplierWithdrawItem);
             } else {
                 tempSupplierWithdrawItem.withdrawnAmount = BigDecimal.ZERO.subtract((BigDecimal) item[1]);
+                tempSupplierWithdrawItem.remainedUnwithdrawnAmount = tempSupplierWithdrawItem.previousUnwithdrawnAmount.add(tempSupplierWithdrawItem.consumedAmount).subtract(tempSupplierWithdrawItem.withdrawnAmount);
             }
         }
 
