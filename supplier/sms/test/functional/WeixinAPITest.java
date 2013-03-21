@@ -10,7 +10,6 @@ import play.mvc.Http;
 import play.templates.Template;
 import play.templates.TemplateLoader;
 import play.test.FunctionalTest;
-import play.vfs.VirtualFile;
 
 import java.util.Date;
 import java.util.HashMap;

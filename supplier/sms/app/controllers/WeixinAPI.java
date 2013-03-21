@@ -1,13 +1,12 @@
 package controllers;
 
-import com.google.gson.Gson;
-import models.weixin.response.WeixinNewsResponse;
 import models.weixin.WeixinRequest;
 import models.weixin.WeixinResponse;
 import models.weixin.WeixinUtil;
 import models.weixin.response.WeixinTextResponse;
 import org.w3c.dom.Document;
 import play.libs.IO;
+import play.libs.WS;
 import play.libs.XML;
 import play.mvc.Controller;
 
@@ -26,6 +25,7 @@ public class WeixinAPI extends Controller {
         String restXml = IO.readContentAsString(request.body);
         Document document = XML.getDocument(restXml);
         WeixinRequest message = WeixinUtil.parseMessage(document);
+        WS.url("").put();
 
         WeixinResponse response;
         switch (message.msgType) {
