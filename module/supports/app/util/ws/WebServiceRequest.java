@@ -7,6 +7,7 @@ import play.libs.WS;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +58,14 @@ public class WebServiceRequest {
 
     public WebServiceRequest params(Map<String, Object> map) {
         this.params = map;
+        return this;
+    }
+
+    public WebServiceRequest addHeader(String key, String value) {
+        if (headers == null) {
+            headers = new HashMap<>();
+        }
+        headers.put(key, value);
         return this;
     }
 

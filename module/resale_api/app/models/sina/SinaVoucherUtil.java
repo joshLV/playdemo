@@ -53,11 +53,12 @@ public class SinaVoucherUtil {
         Logger.info("sina voucher request %s:\n%s", api, restRequest);
 
         WebServiceRequest request = WebServiceRequest.url(GATEWAY + api).type("sina." + api).requestBody(restRequest);
+        request.addHeader("Content-Type", "application/json;charset=utf-8");
         String result = "";
         if (REQUEST_POST.equals(requestType)) {
             result = request.postString();
         } else if (REQUEST_PUT.equals(requestType)) {
-
+            result = request.putString();
         } else {
             throw new IllegalArgumentException("unknown request type: " + requestType);
         }

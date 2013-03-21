@@ -11,11 +11,11 @@
 #{/if}
 #{else}
     <legend> 上传失败</legend>
-    <p>${result.error.getAsString("return_code")}</p>
+    <p>${response.error.getAsString("return_code")}</p>
 
-    <p>${result.error.getAsString("return_message")}</p>
+    <p>${response.error.getAsString("return_message")}</p>
 
-    <p>${result.error.getAsString("trace")}</p>
+    <p>${response.error.getAsString("trace")}</p>
 #{/else}
 </div>
 

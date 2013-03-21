@@ -50,7 +50,7 @@ public class SinaVouchers extends Controller {
 
         requestParams.put("descriptions", descriptions);
 
-        SinaVoucherResponse result = SinaVoucherUtil.uploadTemplate(new Gson().toJson(requestParams));
-        render("resale/SinaVouchers/result.html",result);
+        SinaVoucherResponse response = SinaVoucherUtil.uploadTemplate(new Gson().toJson(requestParams));
+        render("resale/SinaVouchers/result.html", response);
     }
 }
