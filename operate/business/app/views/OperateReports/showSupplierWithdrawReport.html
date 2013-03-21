@@ -59,6 +59,7 @@
         <input type="text" id="condition_end" class="input-medium Wdate" name="condition.createdAtEnd"
                onfocus="WdatePicker({readOnly:true})" value="${condition?.createdAtEnd?.format()}">
         <button type="submit" class="btn btn-primary">搜索</button>
+
     </form>
     <div class="tab-content">
         <table class="table table-striped seq">
@@ -77,7 +78,7 @@
             *{${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}}*
                 <td>${supplierWithdraw?.supplier?.otherName} </td>
                 <td>${supplierWithdraw?.previousUnwithdrawnAmount}</td>
-                <td></td>
+                <td>${supplierWithdraw?.consumedAmount}</td>
                 <td>
                 *{<br/>}*
                     *{(不可提现余额:${accountSequence.uncashBalance?.formatCurrency('CNY')})}*

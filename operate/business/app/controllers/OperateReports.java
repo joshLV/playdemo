@@ -44,6 +44,7 @@ public class OperateReports extends Controller {
     @ActiveNavigation("consumers_account_reports")
     public static void showConsumerReport(AccountSequenceCondition condition) {
         int pageNumber = getPageNumber();
+
         if (condition == null) {
             condition = getDefaultAccountSequenceCondition();
         }
@@ -58,6 +59,7 @@ public class OperateReports extends Controller {
             }
         }
         condition.accountType = AccountType.CONSUMER;
+
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : accountSequencePage.getCurrentPage()) {
@@ -179,30 +181,37 @@ public class OperateReports extends Controller {
     @ActiveNavigation("suppliers_withdraw_reports")
     public static void showSupplierWithdrawReport(SupplierWithdrawCondition condition) {
         int pageNumber = getPageNumber();
-
         if (condition == null) {
+            System.out.println("inini");
             condition = new SupplierWithdrawCondition(); //默认显示提现申请待审批的商户记录，统计周期为最近7天
+            condition.createdAtBegin = DateHelper.beforeDays(6);
+            condition.createdAtEnd = new Date();
+            condition.withdrawBillStatus = WithdrawBillStatus.APPLIED;  //待审批 (时间和商户查询条件均为空)
+        }
+        if (condition.createdAtBegin == null && condition.createdAtEnd == null && condition.accountUid == 0 || condition.accountUid == null) {
+            condition.withdrawBillStatus = WithdrawBillStatus.APPLIED;  //待审批 (时间和商户查询条件均为空)
         }
         if (condition.createdAtBegin == null && condition.createdAtEnd == null) {
-            condition.createdAt = false;
-            condition.createdAtBegin = com.uhuila.common.util.DateUtil.getBeforeDate(new Date(), 7);
+            condition.createdAtBegin = DateHelper.beforeDays(6);
             condition.createdAtEnd = new Date();
-            if (condition.accountUid.equals(0l) || condition.accountUid == null) {
-                condition.withdrawBillStatus = WithdrawBillStatus.APPLIED;  //待审批 (时间和商户查询条件均为空)
-            }
-        } else {
-            condition.createdAt = true;
         }
-        if (condition.accountUid != null && !condition.accountUid.equals(0l)) {
-            Supplier supplier = Supplier.findById(condition.accountUid);
-            if (supplier != null) {
-                condition.account = AccountUtil.getSupplierAccount(supplier.id);
-            } else {
-                condition.account = new Account();
-                condition.account.id = -1L;
-            }
+        if (condition.createdAtBegin == null && condition.createdAtEnd != null) {
+            condition.createdAtBegin = com.uhuila.common.util.DateUtil.getBeforeDate(condition.createdAtEnd, 7);
         }
 
+//        if (condition.accountUid != null && !condition.accountUid.equals(0l)) {
+//            Supplier supplier = Supplier.findById(condition.accountUid);
+//            if (supplier != null) {
+//                condition.account = AccountUtil.getSupplierAccount(supplier.id);
+//            } else {
+//                condition.account = new Account();
+//                condition.account.id = -1L;
+//            }
+//        }
+        System.out.println(condition.createdAtBegin + "===condition.createdAtBegin>>");
+        System.out.println(condition.createdAtEnd + "===condition.createdAtEnd>>");
+        System.out.println(condition.withdrawBillStatus + "===condition.withdrawBillStatus>>");
+        System.out.println(condition.accountUid + "===condition.accountuid>>");
         List<SupplierWithdrawReport> supplierWithdrawList = SupplierWithdrawReport.query(condition);
 
         // 分页

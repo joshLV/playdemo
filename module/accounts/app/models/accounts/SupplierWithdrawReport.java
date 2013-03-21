@@ -32,7 +32,7 @@ public class SupplierWithdrawReport implements Serializable {
 
     public BigDecimal consumedAmount;            //本周期券消费金额
 
-    public BigDecimal specificWithdrawnAmount;          //本周期提现金额
+    public BigDecimal withdrawnAmount;          //本周期提现金额
 
     public BigDecimal remainedUnwithdrawnAmount;   //剩余未提现金额
 
@@ -51,8 +51,10 @@ public class SupplierWithdrawReport implements Serializable {
         //采购成本
         String sql = "select a.account.uid,sum(a.changeAmount)" +
                 " from AccountSequence a ";
+        String groupBy = " group by a.account.uid";
+
         Query query = JPA.em()
-                .createQuery(sql + condition.getFilterPurchaseCost() + " order by createdAt desc");
+                .createQuery(sql + condition.getFilterPurchaseCost() + groupBy);
 
 
         for (String param : condition.getParams().keySet()) {
@@ -61,12 +63,13 @@ public class SupplierWithdrawReport implements Serializable {
 
 
         List<Object[]> purchaseCostList = query.getResultList();
-
+        System.out.println(purchaseCostList.size() + "===purchaseCostList.size()>>");
         //merge purchaseCostList
         Map<Long, SupplierWithdrawReport> supplierWithdrawResultMap = new HashMap<>();
         SupplierWithdrawReport tempSupplierWithdrawItem;
         for (Object[] item : purchaseCostList) {
             tempSupplierWithdrawItem = new SupplierWithdrawReport();
+//            System.out.println((Long)item[0] + "===(Long)item[0]>>");
             tempSupplierWithdrawItem.supplier = Supplier.findById((Long) item[0]);
             tempSupplierWithdrawItem.purchaseCost = (BigDecimal) item[1];
             tempSupplierWithdrawItem.previousUnwithdrawnAmount = tempSupplierWithdrawItem.purchaseCost;
@@ -77,7 +80,7 @@ public class SupplierWithdrawReport implements Serializable {
         sql = "select a.account.uid,sum(a.changeAmount)" +
                 " from AccountSequence a ";
         query = JPA.em()
-                .createQuery(sql + condition.getFilterPreviousWithdrawnAmount() + " order by createdAt desc");
+                .createQuery(sql + condition.getFilterPreviousWithdrawnAmount() + groupBy);
 
 
         for (String param : condition.getParams().keySet()) {
@@ -90,7 +93,6 @@ public class SupplierWithdrawReport implements Serializable {
         //merge previousWithdrawnAmountList  期初未提现金额=采购成本-提现
         for (Object[] item : previousWithdrawnAmountList) {
             tempSupplierWithdrawItem = supplierWithdrawResultMap.get((Long) item[0]);
-            System.out.println(tempSupplierWithdrawItem + "===tempSupplierWithdrawItem>>");
             if (tempSupplierWithdrawItem == null) {
                 tempSupplierWithdrawItem = new SupplierWithdrawReport();
                 tempSupplierWithdrawItem.supplier = Supplier.findById((Long) item[0]);
@@ -105,8 +107,31 @@ public class SupplierWithdrawReport implements Serializable {
 
 
         //本周期券消费金额
+        sql = "select a.account.uid,sum(a.changeAmount)" +
+                " from AccountSequence a ";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterConsumedAmount() + groupBy);
 
 
+        for (String param : condition.getParams().keySet()) {
+            query.setParameter(param, condition.getParams().get(param));
+        }
+
+
+        List<Object[]> consumedAmountList = query.getResultList();
+        System.out.println(consumedAmountList.size() + "===consumedAmountList.size()>>");
+        //merge consumedAmountList
+        for (Object[] item : consumedAmountList) {
+            tempSupplierWithdrawItem = supplierWithdrawResultMap.get((Long) item[0]);
+            if (tempSupplierWithdrawItem == null) {
+                tempSupplierWithdrawItem = new SupplierWithdrawReport();
+                tempSupplierWithdrawItem.supplier = Supplier.findById((Long) item[0]);
+                tempSupplierWithdrawItem.consumedAmount = (BigDecimal) item[1];
+                supplierWithdrawResultMap.put((Long) item[0], tempSupplierWithdrawItem);
+            } else {
+                tempSupplierWithdrawItem.consumedAmount = (BigDecimal) item[1];
+            }
+        }
 
 
         //map-->list
