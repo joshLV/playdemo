@@ -203,6 +203,7 @@ DELETE  /shops/{id}                             OperateShops.delete
 GET     /shops/area                             OperateShops.showAreas
 GET     /shops/{supplierId}/showGoodsShops      OperateShops.showGoodsShops
 GET     /shops/{supplierId}/showSupplierShops   OperateShops.showSupplierShops
+GET     /shops/{supplierId}/showIndependentShops   OperateShops.showIndependentShops
 
 GET     /suppliers                              Suppliers.index
 GET     /suppliers/new                          Suppliers.add

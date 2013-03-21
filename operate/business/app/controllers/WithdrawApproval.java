@@ -1,13 +1,20 @@
 package controllers;
 
 import com.uhuila.common.util.DateUtil;
-import models.accounts.*;
+import models.accounts.Account;
+import models.accounts.AccountSequence;
+import models.accounts.AccountType;
+import models.accounts.WithdrawAccount;
+import models.accounts.WithdrawBill;
+import models.accounts.WithdrawBillCondition;
+import models.accounts.WithdrawBillStatus;
 import models.accounts.util.AccountUtil;
 import models.admin.SupplierUser;
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.order.Prepayment;
 import models.resale.Resaler;
+import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierContract;
@@ -20,10 +27,8 @@ import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-import util.DateHelper;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -80,6 +85,14 @@ public class WithdrawApproval extends Controller {
                 break;
             case CONSUMER:
                 account = AccountUtil.getConsumerAccount(uid);
+                break;
+            case SHOP:
+                account = AccountUtil.getShopAccount(uid);
+                Shop shop = Shop.findById(uid);
+                Supplier supplier = Supplier.findById(shop.supplierId);
+
+                renderArgs.put("supplierId", shop.supplierId);
+                renderArgs.put("supplierName", supplier.getName());
                 break;
         }
 

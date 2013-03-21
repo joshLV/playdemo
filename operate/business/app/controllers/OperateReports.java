@@ -12,6 +12,7 @@ import models.accounts.util.AccountUtil;
 import models.consumer.User;
 import models.order.Order;
 import models.resale.Resaler;
+import models.sales.Shop;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -20,6 +21,7 @@ import play.mvc.Controller;
 import play.mvc.With;
 import util.DateHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -131,23 +133,23 @@ public class OperateReports extends Controller {
      * @param condition 查询条件对象
      */
     @ActiveNavigation("suppliers_account_reports")
-    public static void showSupplierReport(AccountSequenceCondition condition) {
+    public static void showSupplierReport(AccountSequenceCondition condition, Long supplierId, Long shopId) {
         int pageNumber = getPageNumber();
         if (condition == null) {
             condition = getDefaultAccountSequenceCondition();
         }
 
-        if (condition.accountUid != null && !condition.accountUid.equals(0l)) {
-            if (condition.accountType == AccountType.SUPPLIER) {
-                condition.account = AccountUtil.getSupplierAccount(condition.accountUid);
-            } else if (condition.accountType == AccountType.SHOP) {
-                condition.account = AccountUtil.getShopAccount(condition.accountUid);
-            }
-            if (condition.account == null) {
-                condition.account = new Account();
-                condition.account.id = -1L;
-            }
+        if (shopId != null && !shopId.equals(0L)) {
+            condition.accountType = AccountType.SHOP;
+            condition.account = AccountUtil.getShopAccount(shopId);
+        } else if (supplierId != null && !supplierId.equals(0L)) {
+            condition.accountType = AccountType.SUPPLIER;
+            condition.account = AccountUtil.getSupplierAccount(supplierId);
+//        } else {
+//            condition.account = new Account();
+//            condition.account.id = -1L;
         }
+        System.out.println("condition.account:" + condition.getFilter());
 
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
@@ -164,7 +166,15 @@ public class OperateReports extends Controller {
 
         AccountSequenceSummary summary = AccountSequence.findSummaryByCondition(condition);
         List<Supplier> supplierList = Supplier.findUnDeleted();
-        render(accountSequencePage, summary, supplierList, condition);
+        if (supplierId != null) {
+            List<Shop> independentShops = Shop.getIndependentShops(supplierId);
+            if (independentShops == null) {
+                independentShops = new ArrayList<>();
+            }
+            renderArgs.put("independentShops", independentShops);
+        }
+
+        render(accountSequencePage, summary, supplierList, condition, supplierId, shopId);
     }
 
     /**

@@ -49,6 +49,9 @@
                 <a href="/reports/supplier?supplierName=${supplierName}&condition.accountUid=${uid}&condition.tradeType=PURCHASE_COSTING"
                    target="_blank">账户资金明细</a>
             #{/if}
+            #{if bill.account.accountType==models.accounts.AccountType.SHOP}
+                <a href="/reports/supplier?supplierName=${supplierName}&supplierId=${supplierId}&shopId=${uid}" target="_blank">账户资金明细</a>
+            #{/if}
             </label>
         </div>
         <div class="control-group">
