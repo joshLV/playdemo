@@ -73,6 +73,9 @@ public class SupplierWithdrawReport implements Serializable {
             tempSupplierWithdrawItem.supplier = Supplier.findById((Long) item[0]);
             tempSupplierWithdrawItem.purchaseCost = (BigDecimal) item[1];
             tempSupplierWithdrawItem.previousUnwithdrawnAmount = tempSupplierWithdrawItem.purchaseCost;
+            tempSupplierWithdrawItem.consumedAmount = BigDecimal.ZERO;
+            tempSupplierWithdrawItem.withdrawnAmount = BigDecimal.ZERO;
+            tempSupplierWithdrawItem.remainedUnwithdrawnAmount = BigDecimal.ZERO;
             supplierWithdrawResultMap.put((Long) item[0], tempSupplierWithdrawItem);
         }
 
@@ -98,6 +101,9 @@ public class SupplierWithdrawReport implements Serializable {
                 tempSupplierWithdrawItem.supplier = Supplier.findById((Long) item[0]);
                 tempSupplierWithdrawItem.previousWithdrawnAmount = (BigDecimal) item[1];
                 tempSupplierWithdrawItem.previousUnwithdrawnAmount = BigDecimal.ZERO.subtract(tempSupplierWithdrawItem.previousWithdrawnAmount);
+                tempSupplierWithdrawItem.consumedAmount = BigDecimal.ZERO;
+                tempSupplierWithdrawItem.withdrawnAmount = BigDecimal.ZERO;
+                tempSupplierWithdrawItem.remainedUnwithdrawnAmount = BigDecimal.ZERO;
                 supplierWithdrawResultMap.put((Long) item[0], tempSupplierWithdrawItem);
             } else {
                 tempSupplierWithdrawItem.previousWithdrawnAmount = (BigDecimal) item[1];
@@ -119,17 +125,50 @@ public class SupplierWithdrawReport implements Serializable {
 
 
         List<Object[]> consumedAmountList = query.getResultList();
-        System.out.println(consumedAmountList.size() + "===consumedAmountList.size()>>");
+
         //merge consumedAmountList
         for (Object[] item : consumedAmountList) {
             tempSupplierWithdrawItem = supplierWithdrawResultMap.get((Long) item[0]);
             if (tempSupplierWithdrawItem == null) {
                 tempSupplierWithdrawItem = new SupplierWithdrawReport();
                 tempSupplierWithdrawItem.supplier = Supplier.findById((Long) item[0]);
+                tempSupplierWithdrawItem.previousUnwithdrawnAmount = BigDecimal.ZERO;
                 tempSupplierWithdrawItem.consumedAmount = (BigDecimal) item[1];
+                tempSupplierWithdrawItem.withdrawnAmount = BigDecimal.ZERO;
+                tempSupplierWithdrawItem.remainedUnwithdrawnAmount = BigDecimal.ZERO;
                 supplierWithdrawResultMap.put((Long) item[0], tempSupplierWithdrawItem);
             } else {
                 tempSupplierWithdrawItem.consumedAmount = (BigDecimal) item[1];
+            }
+        }
+
+        //本周期提现金额
+        sql = "select a.account.uid,sum(a.changeAmount)" +
+                " from AccountSequence a ";
+        query = JPA.em()
+                .createQuery(sql + condition.getFilterWithdrawnAmount() + groupBy);
+
+
+        for (String param : condition.getParams().keySet()) {
+            query.setParameter(param, condition.getParams().get(param));
+        }
+
+
+        List<Object[]> withdrawnAmountList = query.getResultList();
+
+        //merge withdrawnAmountList
+        for (Object[] item : withdrawnAmountList) {
+            tempSupplierWithdrawItem = supplierWithdrawResultMap.get((Long) item[0]);
+            if (tempSupplierWithdrawItem == null) {
+                tempSupplierWithdrawItem = new SupplierWithdrawReport();
+                tempSupplierWithdrawItem.supplier = Supplier.findById((Long) item[0]);
+                tempSupplierWithdrawItem.previousUnwithdrawnAmount = BigDecimal.ZERO;
+                tempSupplierWithdrawItem.consumedAmount = BigDecimal.ZERO;
+                tempSupplierWithdrawItem.withdrawnAmount = BigDecimal.ZERO.subtract((BigDecimal) item[1]);
+                tempSupplierWithdrawItem.remainedUnwithdrawnAmount = BigDecimal.ZERO;
+                supplierWithdrawResultMap.put((Long) item[0], tempSupplierWithdrawItem);
+            } else {
+                tempSupplierWithdrawItem.withdrawnAmount = BigDecimal.ZERO.subtract((BigDecimal) item[1]);
             }
         }
 

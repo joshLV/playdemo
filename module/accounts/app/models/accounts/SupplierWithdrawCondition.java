@@ -16,7 +16,7 @@ public class SupplierWithdrawCondition implements Serializable {
     public Long accountUid;
     public Date createdAtBegin;
     public Date createdAtEnd;
-//    public Account account;
+    //    public Account account;
 //    public TradeType tradeType;    //资金变动类型
     public WithdrawBillStatus withdrawBillStatus;
     public Map<String, Object> params = new HashMap<>();
@@ -94,6 +94,35 @@ public class SupplierWithdrawCondition implements Serializable {
 
         return filter.toString();
     }
+
+
+    /*
+       本周期提现金额
+    */
+    public String getFilterWithdrawnAmount() {
+        StringBuilder filter = new StringBuilder(" where a.account.accountType = :accountType and a.tradeType = :tradeType ");
+        params.put("accountType", AccountType.SUPPLIER);
+        params.put("tradeType", TradeType.WITHDRAW);
+        if (withdrawBillStatus != null) {
+            filter.append(" and a.account.id in (select w.account.id from WithdrawBill w where w.account=a.account and w.status= :withdrawBillStatus) ");
+            params.put("withdrawBillStatus", withdrawBillStatus);
+        }
+        if (accountUid != null && accountUid != 0) {
+            filter.append(" and a.account.uid = :accountUid");
+            params.put("accountUid", accountUid);
+        }
+        if (createdAtBegin != null) {
+            filter.append(" and a.createdAt >= :createdAtBegin");
+            params.put("createdAtBegin", createdAtBegin);
+        }
+        if (createdAtEnd != null) {
+            filter.append(" and a.createdAt <= :createdAtEnd");
+            params.put("createdAtEnd", com.uhuila.common.util.DateUtil.getEndOfDay(createdAtEnd));
+        }
+
+        return filter.toString();
+    }
+
 
     public Map<String, Object> getParams() {
         return params;

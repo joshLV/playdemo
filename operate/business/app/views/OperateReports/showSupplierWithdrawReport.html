@@ -62,14 +62,14 @@
 
     </form>
     <div class="tab-content">
-        <table class="table table-striped seq">
+        <table class="table table-striped table-bordered table-condensed">
             <tr>
                 <th width="8%">序号</th>
                 <th width="6%">商户名称</th>
-                <th width="5%">期初未提现金额</th>
-                <th width="15%">本周期券消费金额</th>
-                <th width="10%">本周期提现金额</th>
-                <th width="5%">剩余未提现金额</th>
+                <th width="5%" style="text-align: right;">期初未提现金额</th>
+                <th width="15%" style="text-align: right;">本周期券消费金额</th>
+                <th width="10%" style="text-align: right;">本周期提现金额</th>
+                <th width="5%" style="text-align: right;">剩余未提现金额</th>
             </tr>
         #{paginate.list items:supplierWithdrawReportPage, as:'supplierWithdraw'}
             <tr>
@@ -77,13 +77,12 @@
                 <td>${i}</td>
             *{${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}}*
                 <td>${supplierWithdraw?.supplier?.otherName} </td>
-                <td>${supplierWithdraw?.previousUnwithdrawnAmount}</td>
-                <td>${supplierWithdraw?.consumedAmount}</td>
-                <td>
-                *{<br/>}*
-                    *{(不可提现余额:${accountSequence.uncashBalance?.formatCurrency('CNY')})}*
+                <td style="text-align: right;">${supplierWithdraw?.previousUnwithdrawnAmount}</td>
+                <td style="text-align: right;">${supplierWithdraw?.consumedAmount}</td>
+                <td style="text-align: right;">
+                ${supplierWithdraw?.withdrawnAmount}
                 </td>
-                <td></td>
+                <td style="text-align: right;"></td>
             </tr>
             #{set i++/}
         #{/paginate.list}
