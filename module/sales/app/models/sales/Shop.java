@@ -2,6 +2,9 @@ package models.sales;
 
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
+import models.accounts.Account;
+import models.accounts.AccountType;
+import models.accounts.util.AccountUtil;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Required;
 import play.db.jpa.Model;
@@ -9,9 +12,6 @@ import play.modules.paginate.ModelPaginator;
 import play.modules.solr.SolrField;
 import play.modules.solr.SolrSearchable;
 
-import models.accounts.Account;
-import models.accounts.AccountType;
-import models.accounts.util.AccountUtil;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -225,7 +225,15 @@ public class Shop extends Model {
     public void createAccountsIfNeeded() {
         if (!AccountUtil.accountExist(id, AccountType.SHOP)) {
             Account account = new Account(id, AccountType.SHOP);
+            account.supplierId = supplierId;
             account.save();
+        } else {
+            Account account = AccountUtil.getShopAccount(id);
+            //sujie: 之前由于程序问题存在门店创建出的帐号中的supplier为空的情况，所以才加了下面这段代码，以便修复历史数据
+            if (account.supplierId == null) {
+                account.supplierId = supplierId;
+                account.save();
+            }
         }
     }
 
@@ -298,5 +306,15 @@ public class Shop extends Model {
         result = 31 * result + (address != null ? address.hashCode() : 0);
         result = 31 * result + (id != null ? id.hashCode() : 0);
         return result;
+    }
+
+    /**
+     * 获取指定商户独立核算的所有门店.
+     *
+     * @param supplierId
+     * @return
+     */
+    public static List<Shop> getIndependentShops(Long supplierId) {
+        return find("supplierId=? and independentClearing=?", supplierId, true).fetch();
     }
 }

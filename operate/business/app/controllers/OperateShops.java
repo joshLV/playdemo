@@ -14,6 +14,7 @@ import play.modules.paginate.ModelPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -217,6 +218,14 @@ public class OperateShops extends Controller {
     public static void showSupplierShops(Long supplierId) {
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
         render(shopList);
+    }
+
+    public static void showIndependentShops(Long supplierId) {
+        List<Shop> independentShops = Shop.getIndependentShops(supplierId);
+        if (independentShops == null){
+            independentShops = new ArrayList<>();
+        }
+        render(independentShops);
     }
 
     private static int getPage() {

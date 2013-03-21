@@ -221,6 +221,9 @@ express.code=编号
 express.name=名称
 express.resalerMapping=渠道对应关系
 imagePath=图片
+
+shopId=独立结算门店
+
 shop.name=门店名称
 shop.address=门店地址
 shop.phone=门店电话

@@ -1,0 +1,6 @@
+#{select name:'shopId', id:'shopId', value:shopId, class:'input-xlarge'}
+    #{option ""}不限#{/option}
+    #{list items:independentShops, as:'shop'}
+        #{option shop?.id}${shop?.name}-${shop?.address}#{/option}
+    #{/list}
+#{/select}

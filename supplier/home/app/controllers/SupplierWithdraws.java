@@ -58,12 +58,13 @@ public class SupplierWithdraws extends Controller {
     @ActiveNavigation("account_withdraw")
     public static void apply() {
         SupplierUser supplierUser = SupplierRbac.currentUser();
+
         Long supplierId = supplierUser.supplier.id;
         Supplier supplier = Supplier.findById(supplierId);
         Account account = supplierUser.getSupplierAccount();
         BigDecimal prepaymentBalance = Prepayment.findAmountBySupplier(supplier);
 
-
+        System.out.println("account.accountType:" + account.accountType);
         List<WithdrawAccount> withdrawAccounts = account.accountType == AccountType.SHOP ? WithdrawAccount.findByShop(supplierUser.shop.id) :
                 WithdrawAccount.findByUser(supplier.getId(), AccountType.SUPPLIER);
         List<Prepayment> prepayments = Prepayment.findBySupplier(supplier);
