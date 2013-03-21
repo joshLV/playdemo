@@ -70,18 +70,19 @@
                 <th width="10%">本周期提现金额</th>
                 <th width="5%">剩余未提现金额</th>
             </tr>
-        #{paginate.list items:accountSequencePage, as:'accountSequence'}
+        #{paginate.list items:supplierWithdrawReportPage, as:'supplierWithdraw'}
             <tr>
                 #{set i:1/}
                 <td>${i}</td>
-                <td>${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
-                <td>${accountSequence.accountName}</td>
-                <td>${accountSequence.supplierName}</td>
-                <td>${accountSequence.balance?.formatCurrency('CNY')}
+            *{${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}}*
+                <td>${supplierWithdraw?.supplier?.otherName} </td>
+                <td>${supplierWithdraw?.unwithdrawedWithdrawAmount}</td>
+                <td></td>
+                <td>
                     *{<br/>}*
                     *{(不可提现余额:${accountSequence.uncashBalance?.formatCurrency('CNY')})}*
                 </td>
-                <td>&{'trade_type.'+ accountSequence.tradeType}</td>
+                <td></td>
             </tr>
             #{set i++/}
         #{/paginate.list}
@@ -89,7 +90,7 @@
     </div>
     <div class="pagination">
         <ul>
-        #{paginate.controls items:accountSequencePage /}
+        #{paginate.controls items:supplierWithdrawReportPage /}
         </ul>
     </div>
 

@@ -17,10 +17,12 @@ import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
+import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 import util.DateHelper;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -177,8 +179,16 @@ public class OperateReports extends Controller {
     @ActiveNavigation("suppliers_withdraw_reports")
     public static void showSupplierWithdrawReport(SupplierWithdrawCondition condition) {
         int pageNumber = getPageNumber();
+
         if (condition == null) {
             condition = new SupplierWithdrawCondition(); //默认显示提现申请待审批的商户记录，统计周期为最近7天
+        }
+        if (condition.createdAtBegin == null && condition.createdAtEnd == null) {
+            condition.createdAt = false;
+            condition.createdAtBegin = com.uhuila.common.util.DateUtil.getBeforeDate(new Date(), 7);
+            condition.createdAtEnd = new Date();
+        } else {
+            condition.createdAt = true;
         }
         if (condition.accountUid != null && !condition.accountUid.equals(0l)) {
             Supplier supplier = Supplier.findById(condition.accountUid);
@@ -191,9 +201,14 @@ public class OperateReports extends Controller {
         }
         condition.accountType = AccountType.SUPPLIER;
 
-        List<SupplierWithdrawReport> supplierWithdrawList = SupplierWithdrawReport.query(condition, orderBy);
+        List<SupplierWithdrawReport> supplierWithdrawList = SupplierWithdrawReport.query(condition);
 
-        render();
+        // 分页
+        ValuePaginator<SupplierWithdrawReport> supplierWithdrawReportPage = utils.PaginateUtil.wrapValuePaginator(supplierWithdrawList, pageNumber, PAGE_SIZE);
+
+        List<Supplier> supplierList = Supplier.findUnDeleted();
+
+        render(supplierList, supplierWithdrawReportPage, condition);
 
     }
 
