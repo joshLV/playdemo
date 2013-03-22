@@ -61,7 +61,7 @@ public class SupplierDownloadOrderShippingInfos extends Controller {
         SupplierUser supplierUser = SupplierRbac.currentUser();
         List<OrderItems> orderItemsList = getPreparedItems(id);
         if (id == null) {
-            OrderBatch orderBatch = new OrderBatch(supplierUser.supplier, supplierUser.userName).save();
+            OrderBatch orderBatch = new OrderBatch(supplierUser.supplier, supplierUser.userName, Long.parseLong(String.valueOf(orderItemsList.size()))).save();
             id = orderBatch.id;
             //更新orderItems的状态为：代打包
             for (OrderItems orderItems : orderItemsList) {

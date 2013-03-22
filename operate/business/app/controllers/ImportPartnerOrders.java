@@ -41,6 +41,13 @@ public class ImportPartnerOrders extends Controller {
     }
 
     /**
+     * 下载各渠道的订单模板
+     * @param partner
+     */
+    public static void download(OuterOrderPartner partner){
+        renderBinary(VirtualFile.fromRelativePath("app/views/ImportPartnerOrders/" + partner.partnerName() + "_订单模板.xls").getRealFile());
+    }
+    /**
      * 导入渠道订单
      *
      * @param orderFile

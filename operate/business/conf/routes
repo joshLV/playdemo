@@ -68,7 +68,6 @@ POST    /resaler-products/yhd/upload                    resale.YHDProducts.uploa
 # 京东
 GET     /resaler-products/jd/upload/{goodsId}           resale.JDGroupBuyProducts.showUpload
 POST    /resaler-products/jd/upload                     resale.JDGroupBuyProducts.upload
-GET     /resaler-products/jd/products/{goodsId}         resale.JDGroupBuyProducts.showProducts
 GET     /resaler-products/jd/edit/{productId}           resale.JDGroupBuyProducts.showEdit
 POST    /resaler-products/jd/edit                       resale.JDGroupBuyProducts.edit
 *       /jd-ztree/city                                  resale.JDGroupBuyProducts.city
@@ -92,6 +91,12 @@ POST    /resaler-products/dd/upload                     resale.DDGroupBuyProduct
 # 淘宝
 GET     /resaler-products/tb/upload/{goodsId}           resale.TaobaoProducts.showUpload
 POST    /resaler-products/tb/upload                     resale.TaobaoProducts.upload
+
+# 新浪卡券
+GET     /resaler-products/sina/upload/{goodsId}         resale.SinaVouchers.showUpload
+POST    /resaler-products/sina/upload                   resale.SinaVouchers.upload
+GET     /resaler-products/sina/edit/{productId}           resale.JDGroupBuyProducts.showEdit
+POST    /resaler-products/sina/edit                       resale.JDGroupBuyProducts.edit
 
 # --------------------  end of 分销商品  ---------------------------------------------------------
 
@@ -203,6 +208,7 @@ DELETE  /shops/{id}                             OperateShops.delete
 GET     /shops/area                             OperateShops.showAreas
 GET     /shops/{supplierId}/showGoodsShops      OperateShops.showGoodsShops
 GET     /shops/{supplierId}/showSupplierShops   OperateShops.showSupplierShops
+GET     /shops/{supplierId}/showIndependentShops   OperateShops.showIndependentShops
 
 GET     /suppliers                              Suppliers.index
 GET     /suppliers/new                          Suppliers.add
@@ -236,6 +242,7 @@ POST    /users/checkLoginName                   OperateSupplierUsers.checkLoginN
 GET     /users/{id}/edit                        OperateSupplierUsers.edit
 POST    /users/{id}                             OperateSupplierUsers.update
 DELETE  /users/{id}                             OperateSupplierUsers.delete
+GET     /users/{id}/weixi                       OperateSupplierUsers.showWeixi
 GET     /users/shops/{supplierId}               OperateSupplierUsers.shopList
 
 #商户验证电话管理
@@ -446,6 +453,7 @@ GET     /express-companies/{id}/edit       real.ExpressCompanies.edit
 
 #导入渠道订单
 GET     /import-partner-orders                    ImportPartnerOrders.index
+GET     /download-partner-orders                  ImportPartnerOrders.download
 POST    /import-partner-orders                    ImportPartnerOrders.upload
 
 #上传发货单

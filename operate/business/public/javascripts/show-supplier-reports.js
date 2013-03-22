@@ -54,9 +54,10 @@ $(function () {
         if (!found) {
             $("#id_supplierName").val(-1);
             $("#save").attr('disabled', true);
-            $("#supplierUser_shop_id").add(new Option("", "全部"));
+            $("#shopId").add(new Option("", "不限"));
         } else {
-            $("#shop").load("/users/shops/" + id, function (data) {
+            console.log("test!!!!!!!!!!!!");
+            $("#shop").load("/shops/" + id + "/showIndependentShops", function (data) {
             });
         }
 //        $("#supplierUser_shop_id").options[0].selected = true;

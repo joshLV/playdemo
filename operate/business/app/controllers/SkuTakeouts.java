@@ -57,7 +57,7 @@ public class SkuTakeouts extends Controller {
     /**
      * 出库
      */
-    public static void stockOut(@As(lang = {"*"}, value = {"yyyy-MM-dd HH:mm:ss"}) Date toDate) {
+    public static void stockOut(@As(lang = {"*"}, value = {"yyyy-MM-dd HH:mm:ss.SSS"}) Date toDate) {
         String operatorName = OperateRbac.currentUser().userName;
         //1 统计总的待出库货品及数量
         Map<Sku, Long> preparingTakeoutSkuMap = OrderItems.findTakeout(toDate);
@@ -73,6 +73,10 @@ public class SkuTakeouts extends Controller {
         List<Order> stockoutOrderList = OrderItems.getStockOutOrders(allPaidOrders, deficientOrderList);
 
         //7 标记出库订单的状态为待打包状态
+        if (stockoutOrderList.size() == 0) {
+            Validation.addError("stockoutOrderId", "validation.noStockoutOrder");
+            render("SkuTakeouts/result.html");
+        }
         for (Order dbOrder : stockoutOrderList) {
             final Goods noSkuGoods = OrderItems.findNoSkuGoods(dbOrder.id);
             if (dbOrder.containsRealGoods() && noSkuGoods != null) {
@@ -84,7 +88,7 @@ public class SkuTakeouts extends Controller {
         InventoryStock stock = InventoryStock.createInventoryStock(Supplier.getShihui(), operatorName);
 
         //9 创建出库单对应的批次
-        OrderBatch orderBatch = new OrderBatch(Supplier.getShihui(), operatorName);
+        OrderBatch orderBatch = new OrderBatch(Supplier.getShihui(), operatorName, Long.parseLong(String.valueOf(stockoutOrderList.size())));
         orderBatch.stock = stock;
         orderBatch.save();
 

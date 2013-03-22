@@ -152,7 +152,8 @@ public class TaobaoCouponUtil {
             VmarketEticketResendResponse response = taobaoClient.execute(request, oAuthToken.accessToken);
             if (response != null) {
                 Logger.info("tell taobao coupon resend response. ret code: %s", response.getRetCode());
-                return response.getRetCode() != null && response.getRetCode() == 1;
+//                return response.getRetCode() != null && response.getRetCode() == 1;
+                return true;//暂时不管怎么样都表示这次重发结束了，如果淘宝那边报错了 那也没有办法 重试暂时没有意义.
             } else {
                 Logger.info("tell taobao coupon resend response. no response");
             }
@@ -199,12 +200,15 @@ public class TaobaoCouponUtil {
                 Logger.info("tell taobao coupon verify response. ret code: %s", response.getRetCode());
 
                 if (response.getRetCode() != null && response.getRetCode() == 1L) {
+                    Logger.info("verify success: coupon_sn: %s", coupon.eCouponSn);
                     coupon.partnerCouponId = response.getConsumeSecialNum();
                     coupon.save();
                     return ExtensionResult.SUCCESS;
                 } else {
+                    Logger.info("verify failed: coupon_sn: %s, try to reverseOnTaobao", coupon.eCouponSn);
                     //如果验证失败，首先尝试撤销验证，撤销成功的话继续验证。
                     if (reverseOnTaobao(coupon)) {
+                        Logger.info("reverse coupon success! coupon_sn: %s", coupon.eCouponSn);
                         return verifyOnTaobao(coupon);
                     }
                 }

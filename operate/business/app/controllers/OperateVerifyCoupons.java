@@ -74,8 +74,6 @@ public class OperateVerifyCoupons extends Controller {
         checkCoupon(ecoupon, shopId, supplierId, shopList);
 
         String ecouponStatusDescription = ECoupon.getECouponStatusDescription(ecoupon, shopId);
-        System.out.println("ecouponStatusDescription:" + ecouponStatusDescription);
-
 
         if (ecoupon != null && ecoupon.operateUserId != null) {
             OperateUser operateUser = OperateUser.findById(ecoupon.operateUserId);

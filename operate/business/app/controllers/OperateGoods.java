@@ -237,7 +237,6 @@ public class OperateGoods extends Controller {
         checkUseWeekDay(goods);
 
         if (Validation.hasErrors()) {
-            renderInit(goods);
             boolean selectAll = false;
             render("OperateGoods/add.html", selectAll, hasApproveGoodsPermission);
         }

@@ -183,6 +183,9 @@ public class Supplier extends Model {
     @Column(name = "can_sale_real")
     public Boolean canSaleReal = false;
 
+    @Column(name = "weibo_id")
+    String weiboId;
+
     /**
      * 商户类别
      */
@@ -314,6 +317,7 @@ public class Supplier extends Model {
         if (StringUtils.isNotBlank(supplier.logo)) {
             sp.logo = supplier.logo;
         }
+        sp.weiboId = supplier.weiboId;
         sp.domainName = supplier.domainName;
         sp.fullName = supplier.fullName;
         sp.otherName = supplier.otherName;

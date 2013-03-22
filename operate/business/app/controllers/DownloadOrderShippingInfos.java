@@ -68,9 +68,8 @@ public class DownloadOrderShippingInfos extends Controller {
         OperateUser operateUser = OperateRbac.currentUser();
         List<OrderItems> orderItemsList = getPreparedItems(id, supplierId);
         Supplier supplier = Supplier.findUnDeletedById(supplierId);
-
         if (id == null) {
-            OrderBatch orderBatch = new OrderBatch(supplier, operateUser.userName).save();
+            OrderBatch orderBatch = new OrderBatch(supplier, operateUser.userName, Long.parseLong(String.valueOf(orderItemsList.size()))).save();
             id = orderBatch.id;
 
             //更新orderItems的状态为：代打包
@@ -81,7 +80,7 @@ public class DownloadOrderShippingInfos extends Controller {
             }
         }
         request.format = EXCEL;
-        renderArgs.put("__FILE_NAME__", "发货单_" + supplier.getName() + "_" + id +"." + EXCEL);
+        renderArgs.put("__FILE_NAME__", "发货单_" + supplier.getName() + "_" + id + "." + EXCEL);
         render(orderItemsList);
     }
 

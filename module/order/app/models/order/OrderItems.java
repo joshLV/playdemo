@@ -465,7 +465,6 @@ public class OrderItems extends Model {
         q.setParameter("status", OrderStatus.PAID);
         q.setParameter("createdAt", toDate);
 
-        System.out.println("Supplier.getShihui().id:" + Supplier.getShihui().id);
         return q.getResultList();
     }
 

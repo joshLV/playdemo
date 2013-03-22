@@ -44,8 +44,10 @@
         <td>${row.shop?.name?:'全部'}</td>
         <td>${row.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
         <td>${row.lastLoginAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
-        <td><a href="/users/${row.id}/edit?page=${supplierUsersPage.pageNumber?:1}">修改</a>
-            /#{vx.deleteLink action:"users", id:row.id, name:row.loginName/}        </td>
+        <td>
+            <a href="/users/${row.id}/edit?page=${supplierUsersPage.pageNumber?:1}">修改</a>
+            /#{vx.deleteLink action:"users", id:row.id, name:row.loginName/}
+        </td>
     </tr>
     #{/paginate.list}
     </tbody>

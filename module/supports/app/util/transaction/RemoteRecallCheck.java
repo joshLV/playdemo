@@ -41,6 +41,8 @@ public class RemoteRecallCheck {
 
         T t;
 
+        Logger.info("%s: needRecall:" + needRecall + ", CacheHelper.exists(cacheResultKey)=" + CacheHelper.exists
+                (cacheResultKey), getId());
         if (needRecall && !CacheHelper.exists(cacheResultKey)) {
             t = callback.doCall();
             CacheHelper.setCache(cacheResultKey, t, "3h");

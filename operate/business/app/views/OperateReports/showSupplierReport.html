@@ -63,18 +63,16 @@
 
 <div class="body">
     <form class="well form-inline" action="@{OperateReports.showSupplierReport()}" method="GET" id="form">
-        <input type="hidden" name="condition.accountType" value="SUPPLIER"/>
         商户
-    #{vx.selectInputField name:"supplierName", id:"condition.accountUid", list:supplierList, value: condition?.accountUid/}
-    *{&nbsp;&nbsp;门店<span id="shop">#{include '/OperateSupplierUsers/shopList.html'/}</span>}*
-
+    #{vx.selectInputField name:"supplierName", id:"supplierId", list:supplierList, value: supplierId/}
+        &nbsp;&nbsp;独立结算门店<span id="shop">#{include '/OperateShops/showIndependentShops.html'/}</span>
         <br/>
         <br/>
         起止日期
         <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.createdAtBegin"
-               onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtBegin?.format()}"> -
+               onfocus="WdatePicker({readOnly:true})" value="${condition?.createdAtBegin?.format()}"> -
         <input type="text" id="condition_end" class="input-medium Wdate" name="condition.createdAtEnd"
-               onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtEnd?.format()}">
+               onfocus="WdatePicker({readOnly:true})" value="${condition?.createdAtEnd?.format()}">
         <label class="control-label">交易类型</label>
     #{select 'condition.tradeType', value:condition.tradeType, id:'condition_trade_type', class:"input-small"}
         #{option ""}不限#{/option}

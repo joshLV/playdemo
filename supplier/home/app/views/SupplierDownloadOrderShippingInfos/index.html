@@ -6,7 +6,7 @@
     <h2>${title}</h2>
     <table cellspacing="0" cellpadding="0" border="0" class="title-table">
         <tr>
-            <th wdith="50%">发货单总数：${orderItemsList?.size()}</th>
+            <th wdith="50%">待发货订单数：${orderItemsList?.size()}</th>
         #{if orderItemsList}
             <td wdith="50%" align="left">
                 <a class="btn" href="@{SupplierDownloadOrderShippingInfos.exportOrderShipping()}">下载</a></td>
@@ -21,6 +21,7 @@
             <th>生成人</th>
             <th>生成时间</th>
             <th>下载批次号</th>
+            <th>订单数</th>
             <th>操 作</th>
         </tr>
         </thead>
@@ -31,6 +32,7 @@
             <td>${orderBatch.createdBy}</td>
             <td align="left">${orderBatch.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
             <td>${orderBatch.id}</td>
+            <td>${orderBatch.orderCount}</td>
             <td>
                 <a href="@{SupplierDownloadOrderShippingInfos.exportOrderShipping(orderBatch.id)}">下载</a>
             </td>

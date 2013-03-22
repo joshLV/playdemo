@@ -1,0 +1,23 @@
+#{extends 'layout_operate/layout.html' /}
+#{include '/share/nav.html' /}
+
+#{set title:'操作员微信绑定' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/supplierUser.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+<legend>操作员微信绑定</legend>
+
+<div class="body">
+    <div class="span6">
+        <ol>
+            <li>请使用微信扫描右侧二维码，加『一百券商家助手』为好友</li>
+            <li>向『一百券商家助手』发出您的身份识别码：<b>${supplierUser.idCode}</b></li>
+            <li>『一百券商家助手』会将您的微信与此用户绑定</li>
+            <li>您将可以使用您的微信进行消费券验证</li>
+        </ol>
+    </div>
+    <div class="span6">
+        <label>请使用微信扫描二维码加『一百券商家助手』为好友</label>
+        <img src="#{asset.url href:'/images/m/qrcode-8cm.jpg'/}" />
+    </div>
+</div>

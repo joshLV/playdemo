@@ -1,6 +1,7 @@
 package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.RandomNumberUtil;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.sales.Shop;
@@ -173,5 +174,14 @@ public class OperateSupplierUsers extends Controller {
     public static void shopList(Long supplierId) {
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
         render(shopList);
+    }
+
+    public static void showWeixi(Long id) {
+        SupplierUser supplierUser = SupplierUser.findById(id);
+        if (StringUtils.isBlank(supplierUser.idCode)) {
+            supplierUser.idCode = RandomNumberUtil.generateSerialNumber(6);
+            supplierUser.save();
+        }
+        render(supplierUser);
     }
 }

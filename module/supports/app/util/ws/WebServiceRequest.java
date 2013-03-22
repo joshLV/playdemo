@@ -7,6 +7,7 @@ import play.libs.WS;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,7 @@ public class WebServiceRequest {
     public String url;
     public String requestBody;
     public Map<String, Object> params;
+    public Map<String, String> headers;
     public String keyword1;
     public String keyword2;
     public String keyword3;
@@ -56,6 +58,14 @@ public class WebServiceRequest {
 
     public WebServiceRequest params(Map<String, Object> map) {
         this.params = map;
+        return this;
+    }
+
+    public WebServiceRequest addHeader(String key, String value) {
+        if (headers == null) {
+            headers = new HashMap<>();
+        }
+        headers.put(key, value);
         return this;
     }
 
@@ -95,7 +105,7 @@ public class WebServiceRequest {
     }
 
     public String getString() {
-        WS.HttpResponse response = getHttpResponse();
+        WS.HttpResponse response = processHttpResponse(WebServiceClient.HttpMethod.GET);
         if (hasEncoding()) {
             return response.getString(this.encoding);
         }
@@ -103,7 +113,21 @@ public class WebServiceRequest {
     }
 
     public String postString() {
-        WS.HttpResponse response = postHttpResponse();
+        WS.HttpResponse response = processHttpResponse(WebServiceClient.HttpMethod.POST);
+        if (hasEncoding()) {
+            return response.getString(this.encoding);
+        }
+        return response.getString();
+    }
+    public String putString() {
+        WS.HttpResponse response = processHttpResponse(WebServiceClient.HttpMethod.PUT);
+        if (hasEncoding()) {
+            return response.getString(this.encoding);
+        }
+        return response.getString();
+    }
+    public String deleteString() {
+        WS.HttpResponse response = processHttpResponse(WebServiceClient.HttpMethod.DELETE);
         if (hasEncoding()) {
             return response.getString(this.encoding);
         }
@@ -111,7 +135,7 @@ public class WebServiceRequest {
     }
 
     public Document getXml() {
-        WS.HttpResponse response = getHttpResponse();
+        WS.HttpResponse response = processHttpResponse(WebServiceClient.HttpMethod.GET);
         if (hasEncoding()) {
             return response.getXml(this.encoding);
         }
@@ -119,7 +143,7 @@ public class WebServiceRequest {
     }
 
     public Document postXml() {
-        WS.HttpResponse response = postHttpResponse();
+        WS.HttpResponse response = processHttpResponse(WebServiceClient.HttpMethod.POST);
         if (hasEncoding()) {
             return response.getXml(this.encoding);
         }
@@ -131,27 +155,25 @@ public class WebServiceRequest {
     }
 
     public JsonElement getJson() {
-        return getHttpResponse().getJson();
+        return processHttpResponse(WebServiceClient.HttpMethod.GET).getJson();
     }
 
     public JsonElement postJson() {
-        return getHttpResponse().getJson();
+        return processHttpResponse(WebServiceClient.HttpMethod.POST).getJson();
+    }
+    public JsonElement putJson() {
+        return processHttpResponse(WebServiceClient.HttpMethod.PUT).getJson();
+    }
+    public JsonElement deleteJson() {
+        return processHttpResponse(WebServiceClient.HttpMethod.DELETE).getJson();
     }
 
-    private WS.HttpResponse getHttpResponse() {
+    private WS.HttpResponse processHttpResponse(WebServiceClient.HttpMethod httpMethod) {
         WebServiceClient client = WebServiceClientFactory.getClientHelper();
         if (hasEncoding()) {
             client = WebServiceClientFactory.getClientHelper(this.encoding);
         }
-        return client.getHttpResponse(this);
-    }
-
-    private WS.HttpResponse postHttpResponse() {
-        WebServiceClient client = WebServiceClientFactory.getClientHelper();
-        if (hasEncoding()) {
-            client = WebServiceClientFactory.getClientHelper(this.encoding);
-        }
-        return client.postHttpResponse(this);
+        return client.processHttpResponse(this, httpMethod);
     }
 
 }

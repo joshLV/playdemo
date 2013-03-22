@@ -1,0 +1,13 @@
+<xml>
+    <ToUserName><![CDATA[${response.toUserName.raw()}]]></ToUserName>
+    <FromUserName><![CDATA[${response.fromUserName.raw()}]]></FromUserName>
+    <CreateTime>${createTime}</CreateTime>
+    <MsgType><![CDATA[music]]></MsgType>
+    <Music>
+        <Title><![CDATA[${response.title.raw()}]]></Title>
+        <Description><![CDATA[${response.description.raw()}]]></Description>
+        <MusicUrl><![CDATA[${response.musicUrl.raw()}]]></MusicUrl>
+        <HQMusicUrl><![CDATA[${response.hqMusicUrl.raw()}]]></HQMusicUrl>
+    </Music>
+    <FuncFlag>${response.funcFlag}</FuncFlag>
+</xml>

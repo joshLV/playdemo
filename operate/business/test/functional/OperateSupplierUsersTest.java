@@ -3,15 +3,16 @@ package functional;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
-import models.operator.OperateUser;
 import models.admin.SupplierUser;
 import models.admin.SupplierUserType;
+import models.operator.OperateUser;
 import models.supplier.Supplier;
 import operate.rbac.RbacLoader;
 import org.junit.Before;
 import org.junit.Test;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http;
+import play.mvc.Router;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
@@ -122,5 +123,17 @@ public class OperateSupplierUsersTest extends FunctionalTest {
         assertEquals(com.uhuila.common.constants.DeletedStatus.DELETED, supplierUser.deleted);
     }
 
-
+    /**
+     * 访问微信内容页面，会看到一个识别码.
+     * @throws Exception
+     */
+    @Test
+    public void testShowWeixi() throws Exception {
+        Map<String, Object> urlParams = new HashMap<>();
+        urlParams.put("id", supplierUser.id);
+        Http.Response response = GET(Router.reverse("OperateSupplierUsers.showWeixi", urlParams).url);
+        assertIsOk(response);
+        supplierUser.refresh();
+        assertNotNull(supplierUser.idCode);
+    }
 }

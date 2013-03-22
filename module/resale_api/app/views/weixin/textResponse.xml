@@ -1,0 +1,8 @@
+<xml>
+    <ToUserName><![CDATA[${response.toUserName.raw()}]]></ToUserName>
+    <FromUserName><![CDATA[${response.fromUserName.raw()}]]></FromUserName>
+    <CreateTime>${response.createTime}</CreateTime>
+    <MsgType><![CDATA[text]]></MsgType>
+    <Content><![CDATA[${response.content.raw()}]]></Content>
+    <FuncFlag>${response.funcFlag}</FuncFlag>
+</xml>

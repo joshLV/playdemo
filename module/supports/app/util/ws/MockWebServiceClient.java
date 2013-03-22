@@ -61,20 +61,6 @@ public class MockWebServiceClient extends WebServiceClient {
         _queueResponse.add(new MockHttpResponse(status, content));
     }
 
-    @Override
-    public HttpResponse doGet( WebServiceRequest webServiceRequest, WebServiceCallLogData log) {
-        MockHttpResponse response = pollMockHttpResponse();
-
-        log.statusCode = response.status;
-        log.responseText = response.content;
-        if (webServiceRequest.callback != null) {
-            webServiceRequest.callback.process(response.status, response.content);
-        }
-
-        _stackCallLogs.push(log);
-        return response;
-    }
-
     private final static Stack<WebServiceCallLogData> _stackCallLogs = new Stack<>();
     private final static Queue<MockHttpResponse> _queueResponse = new LinkedList<>();
 
@@ -139,7 +125,7 @@ public class MockWebServiceClient extends WebServiceClient {
     }
 
     @Override
-    protected HttpResponse doPost( WebServiceRequest webServiceRequest, WebServiceCallLogData log) {
+    protected HttpResponse doHttpProcess(WebServiceRequest webServiceRequest, WebServiceCallLogData log, HttpMethod method) {
         MockHttpResponse response = pollMockHttpResponse();
 
         Logger.info("返回mock request(status:" + response.status + "):" + response.content);

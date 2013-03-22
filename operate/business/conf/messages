@@ -63,6 +63,8 @@ validation.selectExisted=请选择存在的%s!
 
 validation.valid=%s不符合规范!
 validation.noSku=%s [%s] 没有指定货品，无法正常出库，请先到商品管理中指定该商品的货品!
+validation.noStockoutOrder=没有可出库的订单！
+
 stockoutOrderId=商品
 goods.materialType=券类型
 
@@ -219,6 +221,9 @@ express.code=编号
 express.name=名称
 express.resalerMapping=渠道对应关系
 imagePath=图片
+
+shopId=独立结算门店
+
 shop.name=门店名称
 shop.address=门店地址
 shop.phone=门店电话
@@ -253,6 +258,7 @@ supplier.email=邮箱
 supplier.salesEmail=销售专员邮箱
 supplier.salesId=销售专员
 supplier.operator.id=销售专员
+supplier.weiboId=微博ID
 supplier.canSaleReal=是否销售实物
 supplier.canSaleReal_1=是
 supplier.canSaleReal_2=否
@@ -301,6 +307,7 @@ order.PAID=已付款
 order.CANCELED=交易关闭
 order.SENT=已发货
 order.PREPARED=待打包
+order.UPLOADED=已上传
 
 #咨询
 consult.ORDERCONSULT=订购咨询

@@ -284,8 +284,6 @@ public class OperatePointGoods extends Controller {
     public static void update(Long id, @Valid models.sales.PointGoods pointGoods, File imagePath,
                               String imageLargePath) {
 
-//        System.out.println(imagePath+"aaaaaaaaaaa>>>aaaa>>>"+pointGoods.name);
-
         //TODO 仅仅在测试环境中会产生一个validation.invalid的错误，以下这段是为了让测试用例通过增加的代码
         if (Play.runingInTestMode() && validation.errorsMap().containsKey("imagePath")) {
             for (String key : validation.errorsMap().keySet()) {
@@ -308,8 +306,6 @@ public class OperatePointGoods extends Controller {
 
             render("OperatePointGoods/edit.html", pointGoods, id);
         }
-        // System.out.println("ccccccccc>"+pointGoods.status);
-
         //预览的情况
         if (GoodsStatus.UNCREATED.equals(pointGoods.status)) {
 
@@ -321,7 +317,6 @@ public class OperatePointGoods extends Controller {
             PointGoods oldGoods = PointGoods.findById(id);
             String oldImagePath = oldGoods == null ? null : oldGoods.imagePath;
             String image = uploadImagePath(imagePath, id, oldImagePath);
-//            System.out.println(">>>>>>>>>>"+image);
             if (StringUtils.isNotEmpty(image)) {
                 pointGoods.imagePath = image;
             }
@@ -343,9 +338,7 @@ public class OperatePointGoods extends Controller {
      * @param ids    积分商品ID
      */
     private static void updateStatus(GoodsStatus status, Long... ids) {
-        //  System.out.println(status + "");
         models.sales.PointGoods.updateStatus(status, ids);
-
 
         index(null);
     }
@@ -368,7 +361,6 @@ public class OperatePointGoods extends Controller {
 
         index(null);
     }
-
 
     /**
      * 上架商品.
