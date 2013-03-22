@@ -16,18 +16,10 @@
  */
 package play.modules.website.cas;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import play.Logger;
 import play.Play;
 import play.Play.Mode;
@@ -35,6 +27,12 @@ import play.cache.Cache;
 import play.libs.WS;
 import play.modules.website.cas.models.CASUser;
 import play.mvc.Router;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Utils class for CAS.
@@ -46,8 +44,6 @@ public class CASUtils {
 
     /**
      * Method that generate the CAS login page URL.
-     *
-     * @param request
      *
      * @param possibleGateway
      * @throws Throwable
@@ -73,6 +69,18 @@ public class CASUtils {
         Logger.debug("[SecureCAS]: login CAS URL is " + casLoginUrl);
 
         return casLoginUrl;
+    }
+
+    /**
+     * 新浪微博直接登录url.
+     * @return
+     */
+    public static String getSinaOAuthLoginUrl() {
+        String casBaseUrl = Play.configuration.getProperty("cas.baseUrl") + "/oauth2.0/login?oauth_provider=SinaWeiboProvider";
+        String appBaseUrl = Play.configuration.getProperty("application.baseUrl");
+        return "https://api.weibo.com/oauth2/authorize?client_id=472392017&response_type=code&redirect_uri=" +
+                WS.encode(casBaseUrl) +
+                "&state=" + appBaseUrl + "/authenticate";
     }
 
     /**
