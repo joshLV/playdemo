@@ -75,7 +75,7 @@
         <div class="btn-group">
         %{partner = product.partner.toString().toLowerCase()}%
         #{if product.deleted != com.uhuila.common.constants.DeletedStatus.DELETED}
-            #{if partner == 'jd' || partner == 'wb'}
+            #{if partner == 'jd' || partner == 'wb' || partner == 'sina'}
                 <a href="/resaler-products/${partner}/edit/${product.id}" class="btn btn-mini" rel="tooltip" title="编辑"><i class="icon-pencil"></i></a>
             #{/if}
 

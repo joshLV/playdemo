@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>新浪卡券样式</title>
+    <style type="text/css">
+        ul {
+            list-style: none;
+        }
+
+        ul li {
+            float: left;
+            text-align: center;
+            margin-left: 5px;
+
+        }
+
+        ul li p {
+            margin-top: -50px;
+            font-size: 40px;
+            color: #ffffff;
+        }
+        img {
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <ul>
+    #{list ['白','橙', '赤', '黑', '黄', '蓝', '绿', '青', '紫'], as:'v'}
+        <li>
+            <img src="/public/images/sina/voucher-style/${v_index+v}.jpg" />
+            <p>${v}</p>
+        </li>
+    #{/list}
+    </ul>
+
+</body>
+
+</html>

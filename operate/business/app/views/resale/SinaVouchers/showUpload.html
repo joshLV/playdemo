@@ -70,8 +70,35 @@ ${goods.shortName}</a>
             <li><a href="#panel-member" data-toggle="tab">会员卡</a></li>
         </ul>
         <div class="tab-content">
-            <div class="tab-pane active" id="panel-coupon" >
+            <div class="tab-pane active" id="panel-coupon">
                 <input type="hidden" name="type" value="1">
+                <div class="control-group">
+                    <label class="control-label" for="value">面值</label>
+
+                    <div class="controls">
+                        <input type="text" id="value" name="value" class="input-xxlarge" value="${goods.faceValue}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="price">卡券名称</label>
+
+                    <div class="controls">
+                        <input type="text" id="price" name="price" class="input-xxlarge" value="${goods.getResalePrice()}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="imageCoupon">卡券图片</label>
+
+                    <div class="controls">
+                        <input type="text" id="imageCoupon" name="image" class="input-xxlarge" value="${goods.getImageLargePath()}">
+                        <span class="btn" imginput="imageCoupon" data-type="buttonSelectImg">选择图片</span>
+                        <span class="help-block">http开头，图片尺寸为616*172，图片大小在 200kb 以内</span>
+                        <img src="${goods.getImageLargePath()}" alt="" id="imageCoupon-show">
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="panel-voucher" >
+                <input type="hidden" name="type" value="0">
                 <div class="control-group">
                     <label class="control-label" for="title">卡券名称</label>
 
@@ -103,43 +130,38 @@ ${goods.shortName}</a>
                         </label>
                     </div>
                 </div>
-
-            </div>
-            <div class="tab-pane" id="panel-voucher">
-                <input type="hidden" name="type" value="0">
                 <div class="control-group">
-                    <label class="control-label" for="value">面值</label>
+                    <label class="control-label" for="image">卡券图片</label>
 
                     <div class="controls">
-                        <input type="text" id="value" name="value" class="input-xxlarge" value="${goods.faceValue}" >
+                        <input type="text" id="image" name="image" class="input-xxlarge" value="${goods.getImageLargePath()}">
+                        <span class="btn" imginput="image" data-type="buttonSelectImg">选择图片</span>
+                        <span class="help-block">http开头，图片尺寸为616*172，图片大小在 200kb 以内</span>
+                        <img src="${goods.getImageLargePath()}" alt="" id="image-show">
                     </div>
                 </div>
-                <div class="control-group">
-                    <label class="control-label" for="price">卡券名称</label>
 
-                    <div class="controls">
-                        <input type="text" id="price" name="price" class="input-xxlarge" value="${goods.getResalePrice()}" >
-                    </div>
-                </div>
             </div>
             <div class="tab-pane" id="panel-member">
                 <input type="hidden" name="type" value="2">
-                <p>已选择会员卡</p>
+                <p style="margin-left: 10px">已选择会员卡</p>
             </div>
         </div>
     </div>
 </div>
 
-
 <div class="control-group">
     <label class="control-label">卡券样式<span style="color: red">*</span></label>
 
     <div class="controls">
-    #{list 1..9, as:'v'}
+        #{list ['白','橙', '赤', '黑', '黄', '蓝', '绿', '青', '紫'], as:'v'}
+            <label class="radio inline">
+                <input type="radio" name="type_appearance" value="${v_index}" #{if v == '白'} checked #{/if} > ${v}
+            </label>
+        #{/list}
         <label class="radio inline">
-            <input type="radio" name="type_appearance" value="${v}" #{if v == 1} checked #{/if} >${v}
+            <a href="@{resale.SinaVouchers.voucherStyles()}" target="_blank">查看卡券样式</a>
         </label>
-    #{/list}
     </div>
 </div>
 <div class="control-group">
@@ -147,13 +169,13 @@ ${goods.shortName}</a>
 
     <div class="controls">
         <label class="radio ">
-            <input type="radio" name="suit_county" value="0" checked="">全国
+            <input type="radio" name="suit_country" value="0" checked="">全国
         </label>
         <label class="radio ">
-            <input type="radio" name="suit_county" value="1"> 部分城市
+            <input type="radio" name="suit_country" value="1"> 部分城市
         </label>
         <label class="radio ">
-            <input type="radio" name="suit_county" value="2"> 部分省份
+            <input type="radio" name="suit_country" value="2"> 部分省份
         </label>
     </div>
 </div>
@@ -192,18 +214,6 @@ ${goods.shortName}</a>
 <input type="hidden" id="poiid" name="poiid">
 <input type="hidden" id="poi_name" name="poi_name">
 <input type="hidden" id="poi_location" name="poi_location">
-
-
-<div class="control-group">
-    <label class="control-label" for="image">卡券图片</label>
-
-    <div class="controls">
-        <input type="text" id="image" name="image" class="input-xxlarge" value="${goods.getImageLargePath()}">
-        <span class="btn" imginput="image" data-type="buttonSelectImg">选择图片</span>
-        <span class="help-block">http开头，图片尺寸为616*172，图片大小在 200kb 以内</span>
-        <img src="${goods.getImageLargePath()}" alt="" id="image-show">
-    </div>
-</div>
 
 
 <div class="control-group">
@@ -248,9 +258,10 @@ ${goods.shortName}</a>
 #{/if}
 #{else }
     <div class="form-actions">
+        <input type="hidden" id="goodsId" name="goodsId" value="${goods.id}">
         <input type="hidden" name="source" value="${models.sina.SinaVoucherUtil.SOURCE_ID}">
         <input type="hidden" name="source_name" value="${models.sina.SinaVoucherUtil.SOURCE_NAME}">
-        <input type="hidden" name="enterprise" value="${supplier.weiboId}">
+        <input type="hidden" name="enterprise_id" value="${supplier.weiboId}">
         <button type="submit" id="submit" class="btn btn-primary">发布</button>
     </div>
 #{/else}
