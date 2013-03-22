@@ -65,7 +65,7 @@
             #{/if}
             #{if pd?.size() == 1}
                 <a href="/resaler-products/${partner}/upload/${goods.id}" class="btn btn-mini" rel="tooltip" title="再次上传"><i class="icon-share-alt"></i></a>
-                #{if partner == 'jd' || partner == 'wb'}
+                #{if partner == 'jd' || partner == 'wb' || partner == 'sina'}
                     <a href="/resaler-products/${partner}/edit/${pd.get(0).id}" class="btn btn-mini" rel="tooltip" title="编辑"><i class="icon-pencil"></i></a>
                 #{/if}
                 <a href="/resaler-products/products/${partner}/${goods.id}" class="btn btn-mini" rel="tooltip" title="详情"><i class="icon-th-list"></i></a>

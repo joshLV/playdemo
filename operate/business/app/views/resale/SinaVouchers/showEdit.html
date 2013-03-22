@@ -1,0 +1,210 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'新浪修改商品:' + goods.shortName /}
+#{include '/share/nav.html' /}
+#{set 'moreStyles'}
+<link rel="stylesheet" media="screen" href="@{'/public/javascripts2/themes/default/default.css'}">
+#{/set}
+<div class="body">
+<legend>新浪修改商品：<a href="/goods/${goods.id}" target="_blank">
+${goods.shortName}</a>
+</legend>
+<form class="form-horizontal" method="POST" action="/resaler-products/sina/edit">
+
+
+<div class="control-group" id="group-image">
+    <label class="control-label" for="image">卡券图片</label>
+
+    <div class="controls">
+        <input type="text" id="image" name="image" class="input-xxlarge" value="${goods.getImageLargePath()}">
+        <span class="btn" imginput="image" data-type="buttonSelectImg">选择图片</span>
+        <span class="help-block">http开头，图片尺寸为616*172，图片大小在 200kb 以内</span>
+        <img src="${goods.getImageLargePath()}" alt="" id="image-show">
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">是否全国范围</label>
+
+    <div class="controls">
+        <label class="radio ">
+            <input type="radio" name="suit_country" value="0" checked="">全国
+        </label>
+        <label class="radio ">
+            <input type="radio" name="suit_country" value="1"> 部分城市
+        </label>
+        <label class="radio ">
+            <input type="radio" name="suit_country" value="2"> 部分省份
+        </label>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="suitProvince">卡券所属省份</label>
+
+    <div class="controls">
+        <input type="text" id="suitProvince" name="suit_province" class="input-block-level" value=""
+               data-max-length="256">
+        <span class="help-block">不超过256个字符<span id="suitProvince-monitor"></span></span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="suitCity">卡券所属城市 </label>
+
+    <div class="controls">
+        <input type="text" id="suitCity" name="suit_city" class="input-block-level" value=""
+               data-max-length="256">
+        <span class="help-block">不超过256个字符<span id="suitCity-monitor"></span></span>
+    </div>
+</div>
+
+<div class="control-group">
+    <label class="control-label">门店信息</label>
+
+    <div class="controls">
+    #{list shops, as:'shop'}
+        <label class="checkbox">
+            <input type="checkbox" checked data-poiid="${shop.id}" data-poi_name="${shop.name}"
+                   data-poi_location="${shop.address}">
+        ${shop.name} - ${shop.address}
+        </label>
+    #{/list}
+    </div>
+</div>
+<input type="hidden" id="poiid" name="poiid">
+<input type="hidden" id="poi_name" name="poi_name">
+<input type="hidden" id="poi_location" name="poi_location">
+
+
+<div class="control-group">
+    <label class="control-label">有效期起始时间</label>
+
+    <div class="controls">
+        <input type="text" id="startTime" name="start_time"
+               onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd'})"
+               class="Wdate" value="${goods.effectiveAt?.format('yyyy-MM-dd')}">
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">有效期结束时间</label>
+
+    <div class="controls">
+        <input type="text" id="expireTime" name="expire_time" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd'})"
+               class="Wdate" value="${goods.expireAt.format('yyyy-MM-dd')}">
+    </div>
+</div>
+
+<div class="control-group">
+    <label class="control-label" for="description">卡券描述</label>
+
+    <div class="controls">
+        <input type="text" id="description" name="description" class="input-xxlarge" value=""
+               data-max-length="32">
+        <span class="help-block">不超过32个字符<span id="description-monitor"></span></span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="readme">卡券详情</label>
+
+    <div class="controls">
+
+        <textarea rows="8" cols="100" name="readme" id="readme" style="width:850px;height:550px;"
+                  data-max-length="1024"></textarea>
+        <span class="help-block">不超过1024个字符<span id="readme-monitor"></span></span>
+    </div>
+</div>
+
+<div class="control-group">
+    <label class="control-label" for="update_notify_msg">更新通知消息</label>
+
+    <div class="controls">
+        <input type="text" id="update_notify_msg" name="update_notify_msg" class="input-block-level" value=""
+               data-max-length="128">
+        <span class="help-block">不超过128个字符<span id="update_notify_msg-monitor"></span></span>
+    </div>
+</div>
+
+<div class="form-actions">
+    <input type="hidden" name="id" value="${resalerProduct.partnerProductId}">
+    <input type="hidden" name="productId" value="${resalerProduct.id}">
+    <input type="hidden" name="type" id="voucher-type">
+    <button type="submit" id="submit" class="btn btn-primary">修改</button>
+</div>
+</form>
+</div>
+
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts2/kindeditor-min.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/lang/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<script>
+    var params = ${journal.jsonData.raw()};
+
+    $(function () {
+        $("#voucher-type").val(params.type);
+
+        $("[name='suit_country'][value='" + params.suit_country + "']").attr('checked',true);
+        $("#suitProvince").val(params.suit_province);
+        $("#suitCity").val(params.suit_city);
+        $("#startTime").val(params.start_time);
+        $("#expireTime").val(params.expire_time);
+        $("#description").val(params.descriptions[0].description);
+        $("#readme").val(params.descriptions[0].readme);
+        if (params.type == "2") {
+            $("#group-image").remove();
+        }else {
+            $("#image").val(params.image);
+            $("#image-show").attr('src',params.image);
+        }
+
+
+        //上传图片
+        KindEditor.ready(function (K) {
+            var editor = K.editor({
+                allowFileManager: true,
+                uploadJson: '/goods/images'
+            });
+
+            K("[data-type='buttonSelectImg']").click(function () {
+                var imginput = $(this).attr("imginput");
+                editor.loadPlugin('image', function () {
+                    editor.plugin.imageDialog({
+                        showRemote: false,
+                        imageUrl: K('#' + imginput).val(),
+                        clickFn: function (url, title, width, height, border, align) {
+                            K('#' + imginput).val(url);
+                            K('#' + imginput + "-show").attr("src", url);
+                            editor.hideDialog();
+                        }
+                    });
+                });
+            });
+        });
+
+        //自动检查字符长度
+        $("[data-max-length]").each(function () {
+            var ele = $(this);
+            var maxLength = parseInt(ele.attr('data-max-length'));
+            var monitor = $('#' + ele.attr('id') + '-monitor');
+            ele.keyup(function () {
+                var length = ele.val().length;
+                monitor.text('(' + length + '/' + maxLength + ')');
+                monitor.css('color', length > maxLength ? 'red' : 'green');
+            });
+            ele.keyup();
+        });
+
+
+        $("#submit").click(function () {
+            $("#poiid, #poi_name, #poi_location").each(function () {
+                var temp = [];
+                var ele = $(this);
+                $("[data-poiid]:checked").each(function () {
+                    var e = $(this);
+                    temp.push(e.attr('data-' + ele.attr('id')));
+                });
+                ele.val(temp.join(';'));
+            });
+        });
+
+    });
+
+</script>
+#{/set}

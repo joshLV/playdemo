@@ -95,8 +95,9 @@ POST    /resaler-products/tb/upload                     resale.TaobaoProducts.up
 # 新浪卡券
 GET     /resaler-products/sina/upload/{goodsId}         resale.SinaVouchers.showUpload
 POST    /resaler-products/sina/upload                   resale.SinaVouchers.upload
-GET     /resaler-products/sina/edit/{productId}           resale.JDGroupBuyProducts.showEdit
-POST    /resaler-products/sina/edit                       resale.JDGroupBuyProducts.edit
+GET     /resaler-products/sina/edit/{productId}         resale.SinaVouchers.showEdit
+POST    /resaler-products/sina/edit                     resale.SinaVouchers.edit
+GET     /resaler-products/sina/voucher-styles           resale.SinaVouchers.voucherStyles
 
 # --------------------  end of 分销商品  ---------------------------------------------------------
 
