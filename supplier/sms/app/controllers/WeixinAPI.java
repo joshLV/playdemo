@@ -7,6 +7,7 @@ import models.weixin.WeixinResponse;
 import models.weixin.WeixinUtil;
 import models.weixin.response.WeixinTextResponse;
 import org.w3c.dom.Document;
+import play.Logger;
 import play.libs.IO;
 import play.libs.XML;
 import play.mvc.Controller;
@@ -27,6 +28,7 @@ public class WeixinAPI extends Controller {
 
     public static void message() {
         String restXml = IO.readContentAsString(request.body);
+        Logger.info("restXML=%s", restXml);
         Document document = XML.getDocument(restXml);
         WeixinRequest message = WeixinUtil.parseMessage(document);
 
@@ -36,6 +38,7 @@ public class WeixinAPI extends Controller {
                 response = doText(message);
                 break;
             default:
+                Logger.info("Invalid mst Type.");
                 renderText("invalid msg type");
                 return;
         }
@@ -60,6 +63,7 @@ public class WeixinAPI extends Controller {
         } else {
             response.content = "处理失败：" + result.message;
         }
+        Logger.info("  response.content=%s", response.content);
         return response;
     }
 }
