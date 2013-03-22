@@ -182,7 +182,6 @@ public class OperateReports extends Controller {
     public static void showSupplierWithdrawReport(SupplierWithdrawCondition condition) {
         int pageNumber = getPageNumber();
         if (condition == null) {
-            System.out.println("inini");
             condition = new SupplierWithdrawCondition(); //默认显示提现申请待审批的商户记录，统计周期为最近7天
             condition.createdAtBegin = DateHelper.beforeDays(6);
             condition.createdAtEnd = new Date();
@@ -199,19 +198,7 @@ public class OperateReports extends Controller {
             condition.createdAtBegin = com.uhuila.common.util.DateUtil.getBeforeDate(condition.createdAtEnd, 7);
         }
 
-//        if (condition.accountUid != null && !condition.accountUid.equals(0l)) {
-//            Supplier supplier = Supplier.findById(condition.accountUid);
-//            if (supplier != null) {
-//                condition.account = AccountUtil.getSupplierAccount(supplier.id);
-//            } else {
-//                condition.account = new Account();
-//                condition.account.id = -1L;
-//            }
-//        }
-        System.out.println(condition.createdAtBegin + "===condition.createdAtBegin>>");
-        System.out.println(condition.createdAtEnd + "===condition.createdAtEnd>>");
-        System.out.println(condition.withdrawBillStatus + "===condition.withdrawBillStatus>>");
-        System.out.println(condition.accountUid + "===condition.accountuid>>");
+
         List<SupplierWithdrawReport> supplierWithdrawList = SupplierWithdrawReport.query(condition);
 
         // 分页
