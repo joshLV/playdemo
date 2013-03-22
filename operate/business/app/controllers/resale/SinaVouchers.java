@@ -39,6 +39,7 @@ public class SinaVouchers extends Controller {
         Map<String, String> description = new HashMap<>();
         description.put("description", allParams.remove("description"));
         description.put("readme", allParams.remove("readme"));
+        allParams.remove("body");
 
         //准备请求参数
         Map<String, Object> requestParams = new HashMap<>();
