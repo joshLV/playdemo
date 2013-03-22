@@ -73,13 +73,13 @@
 
             <div class="controls">
                 <label class="radio ">
-                    <input type="radio" name="suit_county" value="0" checked="">全国
+                    <input type="radio" name="suit_country" value="0" checked="">全国
                 </label>
                 <label class="radio ">
-                    <input type="radio" name="suit_county" value="1"> 部分城市
+                    <input type="radio" name="suit_country" value="1"> 部分城市
                 </label>
                 <label class="radio ">
-                    <input type="radio" name="suit_county" value="2"> 部分省份
+                    <input type="radio" name="suit_country" value="2"> 部分省份
                 </label>
             </div>
         </div>
@@ -176,7 +176,7 @@
             <div class="form-actions">
                 <input type="hidden" name="source" value="${models.sina.SinaVoucherUtil.SOURCE_ID}">
                 <input type="hidden" name="source_name" value="${models.sina.SinaVoucherUtil.SOURCE_NAME}">
-                <input type="hidden" name="enterprise" value="${supplier.weiboId}">
+                <input type="hidden" name="enterprise_id" value="${supplier.weiboId}">
                 <button type="submit" id="submit" class="btn btn-primary">发布</button>
             </div>
         #{/else}
