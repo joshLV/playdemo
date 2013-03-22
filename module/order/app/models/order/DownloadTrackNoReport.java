@@ -25,6 +25,7 @@ public class DownloadTrackNoReport {
     public String goodsName;
 
     public String partnerLoginName;
+
     /*
        已发货数
     */

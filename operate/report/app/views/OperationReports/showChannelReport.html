@@ -40,7 +40,6 @@
                         startDay.setFullYear(startDay.getFullYear() - count);
                         endDay.setDate(today.getDate());
                     }
-                    alert($("#condition_beginAt").val())
                     $("#condition_beginAt").val(startDay.getFullYear() + "-" + (startDay.getMonth() + 1) + "-" + startDay.getDate());
                     $("#condition_endAt").val(today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + endDay.getDate());
                 }

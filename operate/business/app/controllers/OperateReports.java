@@ -8,6 +8,7 @@ import models.accounts.AccountSequenceSummary;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.accounts.TradeBill;
+import models.accounts.*;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
 import models.order.Order;
@@ -17,11 +18,13 @@ import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
+import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 import util.DateHelper;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -43,6 +46,7 @@ public class OperateReports extends Controller {
     @ActiveNavigation("consumers_account_reports")
     public static void showConsumerReport(AccountSequenceCondition condition) {
         int pageNumber = getPageNumber();
+
         if (condition == null) {
             condition = getDefaultAccountSequenceCondition();
         }
@@ -57,6 +61,7 @@ public class OperateReports extends Controller {
             }
         }
         condition.accountType = AccountType.CONSUMER;
+
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : accountSequencePage.getCurrentPage()) {
@@ -127,6 +132,7 @@ public class OperateReports extends Controller {
         return condition;
     }
 
+
     /**
      * 查询商户资金明细.
      *
@@ -148,6 +154,8 @@ public class OperateReports extends Controller {
 //        } else {
 //            condition.account = new Account();
 //            condition.account.id = -1L;
+        } else {
+            condition.accountType = AccountType.SUPPLIER;
         }
         System.out.println("condition.account:" + condition.getFilter());
 
@@ -176,6 +184,44 @@ public class OperateReports extends Controller {
 
         render(accountSequencePage, summary, supplierList, condition, supplierId, shopId);
     }
+
+    /**
+     * 查询商户提现汇总.
+     *
+     * @param condition 查询条件对象
+     */
+    @ActiveNavigation("suppliers_withdraw_reports")
+    public static void showSupplierWithdrawReport(SupplierWithdrawCondition condition) {
+        int pageNumber = getPageNumber();
+        if (condition == null) {
+            condition = new SupplierWithdrawCondition(); //默认显示提现申请待审批的商户记录，统计周期为最近7天
+            condition.createdAtBegin = DateHelper.beforeDays(6);
+            condition.createdAtEnd = new Date();
+            condition.withdrawBillStatus = WithdrawBillStatus.APPLIED;  //待审批 (时间和商户查询条件均为空)
+        }
+        if (condition.createdAtBegin == null && condition.createdAtEnd == null && condition.accountUid == 0 || condition.accountUid == null) {
+            condition.withdrawBillStatus = WithdrawBillStatus.APPLIED;  //待审批 (时间和商户查询条件均为空)
+        }
+        if (condition.createdAtBegin == null && condition.createdAtEnd == null) {
+            condition.createdAtBegin = DateHelper.beforeDays(6);
+            condition.createdAtEnd = new Date();
+        }
+        if (condition.createdAtBegin == null && condition.createdAtEnd != null) {
+            condition.createdAtBegin = com.uhuila.common.util.DateUtil.getBeforeDate(condition.createdAtEnd, 7);
+        }
+
+
+        List<SupplierWithdrawReport> supplierWithdrawList = SupplierWithdrawReport.query(condition);
+
+        // 分页
+        ValuePaginator<SupplierWithdrawReport> supplierWithdrawReportPage = utils.PaginateUtil.wrapValuePaginator(supplierWithdrawList, pageNumber, PAGE_SIZE);
+
+        List<Supplier> supplierList = Supplier.findUnDeleted();
+
+        render(supplierList, supplierWithdrawReportPage, condition);
+
+    }
+
 
     /**
      * 查询活动金账户资金明细

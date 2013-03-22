@@ -268,6 +268,4 @@ public class InventoryStock extends Model {
         }
         this.serialNo = this.actionType.getCode() + dateOfSerialNo + sequenceCode;
     }
-
-
 }
