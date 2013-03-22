@@ -1,6 +1,7 @@
 package models.order;
 
 import cache.CacheHelper;
+import com.google.gson.JsonObject;
 import com.uhuila.common.constants.DeletedStatus;
 import models.accounts.Account;
 import models.accounts.AccountType;
@@ -52,6 +53,7 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -729,6 +731,32 @@ public class Order extends Model {
         if (this.orderItems == null || this.orderItems.size() == 0) {
             throw new UnexpectedException("the paid order has no order items! order id: " + this.id);
         }
+        String operator = null;
+        Date expireAt = null;
+        if (AccountType.RESALER.equals(this.userType)) {
+            String loginName = this.getResaler().loginName;
+            operator = "分销商：" + loginName;
+            //使用淘宝传过来的截止日期
+            if (loginName.equals(Resaler.TAOBAO_LOGIN_NAME)) {
+                OuterOrder outerOrder = OuterOrder.find("byYbqOrder", this).first();
+                if (outerOrder != null) {
+                    try{
+                        JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
+                        if (jsonObject.has("valid_ends")){
+                            String expireStr = jsonObject.get("valid_ends").getAsString(); //买家手机号
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            expireAt = format.parse(expireStr);
+                        }
+                    }catch (Exception e) {
+                        //ignore
+                    }
+                }
+            }
+        } else {
+            operator = "消费者:" + this.getUser().getShowName();
+        }
+
+
         for (OrderItems orderItem : this.orderItems) {
             Goods goods = orderItem.goods;
             if (goods == null) {
@@ -739,13 +767,12 @@ public class Order extends Model {
                 for (int i = 0; i < orderItem.buyNumber; i++) {
                     //创建电子券
                     ECoupon eCoupon = createCoupon(goods, orderItem);
-                    //记录券历史信息
-                    String operator = null;
-                    if (AccountType.RESALER.equals(orderItem.order.userType)) {
-                        operator = "分销商：" + orderItem.order.getResaler().loginName;
-                    } else {
-                        operator = "消费者:" + orderItem.order.getUser().getShowName();
+                    if (expireAt != null) {
+                        eCoupon.expireAt = expireAt;
+                        eCoupon.save();
                     }
+
+                    //记录券历史信息
                     ECouponHistoryMessage.with(eCoupon).operator(operator)
                             .remark("产生券号").fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED)
                             .sendToMQ();
