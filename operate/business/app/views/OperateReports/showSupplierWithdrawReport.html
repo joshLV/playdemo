@@ -3,8 +3,10 @@
 #{include '/share/nav.html' /}
 
 #{set 'moreScripts'}
-<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
-
+*{<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>}*
+<script src="@{'/public/javascripts/DateRangePicker/date.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/DateRangePicker/daterangepicker.js'}" type="text/javascript"
+        charset="UTF-8"></script>
 #{/set}
 
 <link rel="stylesheet" href="/public/stylesheets/daterangepicker.css"
@@ -58,16 +60,72 @@
         商户
     #{vx.selectInputField name:"supplierName", id:"condition.accountUid", list:supplierList, value: condition?.accountUid/}
 
-    起止日期
-    <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.createdAtBegin"
-    onfocus="WdatePicker({readOnly:true})" value="${condition?.createdAtBegin?.format()}"> -
-    <input type="text" id="condition_end" class="input-medium Wdate" name="condition.createdAtEnd"
-    onfocus="WdatePicker({readOnly:true})" value="${condition?.createdAtEnd?.format()}">
+    *{起止日期}*
+    *{<input type="text" id="condition_begin" class="input-medium Wdate" name="condition.createdAtBegin"}*
+    *{onfocus="WdatePicker({readOnly:true})" value="${condition?.createdAtBegin?.format()}"> -}*
+    *{<input type="text" id="condition_end" class="input-medium Wdate" name="condition.createdAtEnd"}*
+    *{onfocus="WdatePicker({readOnly:true})" value="${condition?.createdAtEnd?.format()}">}*
+        日期
+        <div id="daterange" class="pull-right inline daterange "
+             style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+
+            <i class="icon-calendar icon-large"></i>
+                <span>
+                </span> <b class="caret" style="margin-top: 8px"></b>
+        </div>
+        <input type="hidden" id="condition_begin" name="condition.createdAtBegin"
+               value="${condition?.createdAtBegin?.format()}">
+        <input type="hidden" id="condition_end" name="condition.createdAtEnd"
+               value="${condition?.createdAtEnd?.format()}">
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('.daterange').daterangepicker(
+                        {
+                            ranges:{
+                                '今天':['today', 'today'],
+                                '昨天':['yesterday', 'yesterday'],
+                                '最近7天':[Date.today().add({ days:-6 }), 'today'],
+                                '过去30天':[Date.today().add({ days:-29 }), 'today'],
+                                '本月':[Date.today().moveToFirstDayOfMonth(), Date.today().moveToLastDayOfMonth()],
+                                '上个月':[Date.today().moveToFirstDayOfMonth().add({ months:-1 }), Date.today().moveToFirstDayOfMonth().add({ days:-1 })]
+                            },
+                            opens:'left',
+                            format:'MM/dd/yyyy',
+                            separator:' to ',
+                            startDate:Date.today().add({ days:-29 }),
+                            endDate:Date.today(),
+                            minDate:'01/01/2012',
+                            maxDate:'12/31/2013',
+                            locale:{
+                                applyLabel:'提交',
+                                fromLabel:'从',
+                                toLabel:'到',
+                                customRangeLabel:'自定义',
+                                daysOfWeek:['日', '一', '二', '三', '四', '五', '六'],
+                                monthNames:['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一', '十二'],
+                                firstDay:1
+                            },
+                            showWeekNumbers:true,
+                            buttonClasses:['btn-danger'],
+                            dateLimit:false
+                        },
+                        function (start, end) {
+                            $('.daterange span').html(start.toString('MMMM d, yyyy') + ' - ' + end.toString('MMMM d, yyyy'));
+                            $("#condition_begin").val(start.toString('MMMM d, yyyy') );
+                            $("#condition_end").val(end.toString('MMMM d, yyyy'));
+
+                        }
+                );
+
+                //Set the initial state of the picker label
+                $('.daterange span').html(Date.today().add({ days:-29 }).toString('MMMM d, yyyy') + ' - ' + Date.today().toString('MMMM d, yyyy'));
+
+            });
+        </script>
 
 
-
-
-    <button type="submit" class="btn btn-primary">搜索</button>
+        <button type="submit" class="btn btn-primary">搜索</button>
 
     </form>
 

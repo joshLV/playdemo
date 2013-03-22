@@ -192,6 +192,8 @@ public class OperateReports extends Controller {
      */
     @ActiveNavigation("suppliers_withdraw_reports")
     public static void showSupplierWithdrawReport(SupplierWithdrawCondition condition) {
+        System.out.println(condition.createdAtBegin + "===condition.createdAtBegin>>");
+        System.out.println(condition.createdAtEnd + "===condition.createdAtEnd>>");
         int pageNumber = getPageNumber();
         if (condition == null) {
             condition = new SupplierWithdrawCondition(); //默认显示提现申请待审批的商户记录，统计周期为最近7天

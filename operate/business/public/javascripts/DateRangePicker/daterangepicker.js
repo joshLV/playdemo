@@ -32,7 +32,7 @@
         this.clearClass = 'btn btn-small';
         this.locale = {
             applyLabel: 'Apply',
-            clearLabel:"清楚",
+            clearLabel:"清除",
             fromLabel: 'From',
             toLabel: 'To',
             weekLabel: 'W',
