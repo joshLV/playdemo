@@ -156,32 +156,32 @@
             <td style="text-align:right">
                 <a target="_blank"
                    href="${baseUrl}/coupons?condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}">
-                ${(report?.totalAmount?:0).formatCurrency('CNY')}</a>
+                ${(report?.totalAmount?:0).format('#0.00')}</a>
             </td>
             <td style="text-align:right">
                 <a target="_blank"
                    href="${baseUrl}/coupons?condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}">
-                ${(report?.consumedAmount?:0).formatCurrency('CNY')}</a>
+                ${(report?.consumedAmount?:0).format('#0.00')}</a>
             </td>
             <td style="text-align:right">
                 <a target="_blank"
                    href="${baseUrl}/coupons?condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}">
-                ${(report?.refundAmount?:0).formatCurrency('CNY')}</a>
+                ${(report?.refundAmount?:0).format('#0.00')}</a>
             </td>
             <td style="text-align:right">
                 <a target="_blank"
                    href="${baseUrl}/coupons?condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}&condition.isCheatedOrder=true">
-                ${(report?.cheatedOrderAmount?:0).formatCurrency('CNY')}
+                ${(report?.cheatedOrderAmount?:0).format('#0.00')}
                 </a>
             </td>
             <td style="text-align:right">
                 <a target="_blank"
                    href="${baseUrl}/coupons?condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}">
-                ${(report?.netSalesAmount?:0).formatCurrency('CNY')}</a>
+                ${(report?.netSalesAmount?:0).format('#0.00')}</a>
             </td>
             #{if hasSeeReportProfitRight == true}
                 <td style="text-align:right">${(report?.grossMargin?:0).format('#0.00')}%</td>
-                <td style="text-align:right">${(report?.profit?:0).formatCurrency('CNY')}</td>
+                <td style="text-align:right">${(report?.profit?:0).format('#0.00')}</td>
             #{/if}
         </tr>
     #{/paginate.list}

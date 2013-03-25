@@ -13,6 +13,7 @@ import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierCategory;
+import models.supplier.SupplierStatus;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -46,13 +47,13 @@ public class Suppliers extends Controller {
     public static final String SUPPLIER_BASE_DOMAIN = Play.configuration.getProperty("application.supplierDomain");
     public static final String BASE_URL = Play.configuration.getProperty("application.baseUrl", "");
 
-    public static void index(Long supplierId, String code, String domainName) {
+    public static void index(Long supplierId, String code, String domainName, String keyword) {
         int page = getPage();
 
 //        String otherName = request.params.get("otherName");
 //        String code = request.params.get("code");
-        List<Supplier> suppliers = Supplier.findByCondition(supplierId, code, domainName);
-        render(suppliers, page, supplierId, code, domainName);
+        List<Supplier> suppliers = Supplier.findByCondition(supplierId, code, domainName, keyword);
+        render(suppliers, page, supplierId, code, domainName, keyword);
     }
 
     @ActiveNavigation("suppliers_add")
@@ -63,8 +64,8 @@ public class Suppliers extends Controller {
         render(operateUserList, supplierCategoryList);
     }
 
-   private static int getPage() {
-         String page = request.params.get("page");
+    private static int getPage() {
+        String page = request.params.get("page");
         if (StringUtils.isNotEmpty(page) && (page.contains("?x-http-method-override=PUT") || page.contains("x-http-method-override=PUT"))) {
             page = page.replace("x-http-method-override=PUT", "").replace("?", "");
         }
@@ -116,7 +117,7 @@ public class Suppliers extends Controller {
         comment = comment.replace("username", admin.loginName);
         comment = comment.replace("password", password);
         SMSUtil.send(comment, admin.mobile, "0000");
-        index(null, null, null);
+        index(null, null, null, null);
     }
 
     private static void redirectUrl(int page) {
@@ -286,7 +287,7 @@ public class Suppliers extends Controller {
 
     public static void delete(long id) {
         Supplier.delete(id);
-        index(null, null, null);
+        index(null, null, null, null);
     }
 
     public static void exportMaterial(long supplierId, String supplierDomainName) {
@@ -301,5 +302,27 @@ public class Suppliers extends Controller {
         render(supplierUsersPage, supplierDomainName, supplierUsers);
     }
 
+    @ActiveNavigation("suppliers_index")
+    public static void suppliersExcelOut(Long supplierId, String code, String domainName, String keyword) {
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "商户列表_" + System.currentTimeMillis() + ".xls");
+        List<Supplier> supplierList = Supplier.findByCondition(supplierId, code, domainName, keyword);
+        for (Supplier supplier : supplierList) {
+            if (supplier.showSellingState==null || supplier.showSellingState==false) {
+                supplier.whetherToShowSellingState = "不允许";
+            } else {
+                supplier.whetherToShowSellingState = "允许";
+            }
+            if (supplier.status == SupplierStatus.NORMAL) {
+                supplier.statusName = "正常";
+            } else if (supplier.status == SupplierStatus.FREEZE) {
+                supplier.statusName = "冻结";
+            }
+            supplier.shopsCount = supplier.getShops().size();
+            supplier.brandsCount = supplier.getBrands().size();
+            supplier.goodsCount=supplier.getGoods().size();
+        }
+        render(supplierList);
+    }
 
 }

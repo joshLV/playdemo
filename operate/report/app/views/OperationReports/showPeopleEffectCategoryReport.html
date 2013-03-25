@@ -217,9 +217,9 @@
 <div class="alert alert-success" style="margin-bottom: 10px;">
 <span>
 在此期间 共售出券：<b>${summary?.totalAmount?.formatCurrency("CNY")}</b> (${summary?.totalNumber}件),
-售出实物：<b>${summary?.realSalePrice== null ?'￥0.00':summary?.realSalePrice?.formatCurrency('CNY')}</b> (${summary?.realBuyNumber}
+售出实物：<b>${summary?.realSalePrice== null ?'￥0.00':summary?.realSalePrice?.format('#0.00')}</b> (${summary?.realBuyNumber}
     件),
-退款券：<b>${summary?.refundPrice?.formatCurrency('CNY')}</b> (${summary?.refundNumber}
+退款券：<b>${summary?.refundPrice?.format('#0.00')}</b> (${summary?.refundNumber}
     件),
 消费券：<b>${summary?.consumedPrice?.formatCurrency("CNY")}</b> (${summary?.consumedNumber}
     件)
@@ -278,22 +278,22 @@
                    target="_blank">${report?.totalNumber?:0}</a>
                 /
                 <a href="${baseUrl}/coupons?condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}"
-                   target="_blank">${report?.totalAmount==null ?'￥0.00':report?.totalAmount?.formatCurrency('CNY')}</a>
+                   target="_blank">${report?.totalAmount==null ?'￥0.00':report?.totalAmount?.format('#0.00')}</a>
             #{/if}
             #{else}
                 <a href="${baseUrl}/coupons?condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}&condition.categoryCode=${report?.code}"
-                   target="_blank">${report?.buyNumber} / ${report?.salePrice?.formatCurrency('CNY')}</a>
+                   target="_blank">${report?.buyNumber} / ${report?.salePrice?.format('#0.00')}</a>
             #{/else}
         </td>
         <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}
                                          style="text-align:right">
             #{if report?.code == "999"}
             ${report?.totalRealBuyNumber}
-                / ${report?.totalRealSalePrice == null ?'￥0.00':report?.totalRealSalePrice?.formatCurrency('CNY')}
+                / ${report?.totalRealSalePrice == null ?'￥0.00':report?.totalRealSalePrice?.format('#0.00')}
             #{/if}
             #{else}
             ${report?.realBuyNumber}
-                / ${report?.realSalePrice == null ?'￥0.00':report?.realSalePrice?.formatCurrency('CNY')}
+                / ${report?.realSalePrice == null ?'￥0.00':report?.realSalePrice?.format('#0.00')}
             #{/else}
         </td>
         <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}
@@ -303,12 +303,12 @@
                    target="_blank">${report?.totalRefundNumber}</a>
                 /
                 <a href="${baseUrl}/coupons?condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}"
-                   target="_blank">${report?.totalRefundPrice == null ?'￥0.00':report?.totalRefundPrice?.formatCurrency('CNY')}</a>
+                   target="_blank">${report?.totalRefundPrice == null ?'￥0.00':report?.totalRefundPrice?.format('#0.00')}</a>
             #{/if}
             #{else}
                 <a href="${baseUrl}/coupons?condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}&condition.categoryCode=${report?.code}"
                    target="_blank"> ${report?.refundNumber}
-                    / ${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}</a>
+                    / ${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.format('#0.00')}</a>
             #{/else}
         </td>
     *{<td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}}*
@@ -321,12 +321,12 @@
                    target="_blank">${report?.totalConsumedNumber}</a>
                 /
                 <a href="${baseUrl}/coupons?condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}"
-                   target="_blank">${report?.totalConsumedPrice == null ?'￥0.00':report?.totalConsumedPrice?.formatCurrency('CNY')}   </a>
+                   target="_blank">${report?.totalConsumedPrice == null ?'￥0.00':report?.totalConsumedPrice?.format('#0.00')}   </a>
             #{/if}
             #{else}
                 <a href="${baseUrl}/coupons?condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}&condition.categoryCode=${report?.code}"
                    target="_blank"> ${report?.consumedNumber}
-                    / ${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')} </a>
+                    / ${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.format('#0.00')} </a>
             #{/else}
         </td>
         #{if hasSeeReportProfitRight == true}
@@ -342,10 +342,10 @@
             <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}
                                              style="text-align:right">
                 #{if report?.code == "999"}
-                    ￥${(report?.netProfit?:0).format('#0.00')}
+                    ${(report?.netProfit?:0).format('#0.00')}
                 #{/if}
                 #{else}
-                    ￥${(report?.profit?:0).format('#0.00')}
+                    ${(report?.profit?:0).format('#0.00')}
                 #{/else}
             </td>
         #{/if}

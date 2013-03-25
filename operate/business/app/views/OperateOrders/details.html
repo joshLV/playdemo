@@ -95,7 +95,7 @@
         <table class="table table-bordered table-striped">
             <thead>
             <tr>
-                <th>商品编号</th>
+                <th>商品编码</th>
                 <th>商品名称</th>
                 <th>类型</th>
                 <th>单价</th>
@@ -110,7 +110,7 @@
             <tbody>
             #{list items:orderItems, as:'orderItem' }
             <tr>
-                <td>${orderItem.goods.no}</td>
+                <td>${orderItem.goods?.code}</td>
                 <td>
                     <a href="http://www.yibaiquan.com/p/${orderItem.goods.id}">${orderItem.goodsName}</a>
                     &nbsp;<i class="icon-user"></i>${orderItem?.goods?.getSupplierSalesUserName()}

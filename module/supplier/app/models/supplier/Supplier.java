@@ -7,9 +7,11 @@ import com.uhuila.common.util.PathUtil;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.admin.SupplierUser;
+import models.operator.OperateUser;
 import models.order.Prepayment;
 import models.sales.Brand;
 import models.sales.Goods;
+import models.sales.Shop;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.data.validation.Email;
@@ -139,6 +141,8 @@ public class Supplier extends Model {
      */
     @Enumerated(EnumType.STRING)
     public SupplierStatus status;
+
+
     /**
      * logo图片路径
      */
@@ -217,12 +221,41 @@ public class Supplier extends Model {
      */
     @Column(name = "show_selling_state")
     public Boolean showSellingState = false;
+
+
     //=================================================以上是全部数据库相关属性================================================
+
+    @javax.persistence.Transient
+    public String statusName;
+
+    @javax.persistence.Transient
+    public String whetherToShowSellingState;
+
+    @javax.persistence.Transient
+    public Integer shopsCount;
+
+    @javax.persistence.Transient
+    public Integer brandsCount;
+
+    @javax.persistence.Transient
+    public Integer goodsCount;
 
     @Transient
     public String getName() {
         return StringUtils.isBlank(otherName) ? fullName : otherName;
     }
+
+    //销售专员姓名
+    @Transient
+    public String getSalesName() {
+        OperateUser operateUser = OperateUser.findById(this.salesId);
+        if (operateUser != null) {
+            return operateUser.userName;
+        } else {
+            return "";
+        }
+    }
+
 
     public Supplier() {
     }
@@ -373,7 +406,7 @@ public class Supplier extends Model {
         }
     }
 
-    public static List<Supplier> findByCondition(Long supplierId, String code, String domainName) {
+    public static List<Supplier> findByCondition(Long supplierId, String code, String domainName, String keyword) {
         StringBuilder sql = new StringBuilder("deleted=?");
         List params = new ArrayList();
         params.add(DeletedStatus.UN_DELETED);
@@ -390,6 +423,42 @@ public class Supplier extends Model {
         if (StringUtils.isNotBlank(domainName)) {
             sql.append("and domainName like ?");
             params.add("%" + domainName + "%");
+        }
+        if (StringUtils.isNotBlank(keyword)) {
+            //销售专员姓名
+            OperateUser operator = OperateUser.find("userName like ?", "%" + keyword + "%").first();
+            if (operator != null) {
+                sql.append("and salesId = ?");
+                params.add(operator.id);
+            } else {
+                //门店电话
+                Shop shop = Shop.find("phone=?", keyword).first();
+                if (shop != null) {
+                    sql.append("and id=?");
+                    params.add(shop.supplierId);
+                } else {
+                    //门店地址
+                    shop = Shop.find("address like ?", "%" + keyword + "%").first();
+                    if (shop != null) {
+                        sql.append("and id=?");
+                        params.add(shop.supplierId);
+                    } else {
+                        //品牌
+                        Brand brand = Brand.find("name like ?", "%" + keyword + "%").first();
+                        if (brand != null) {
+                            sql.append("and id=?");
+                            params.add(brand.supplier.id);
+                        }
+                        //门店名称
+                        shop = Shop.find(" name like ?", "%" + keyword + "%").first();
+                        if (shop != null) {
+                            sql.append("and id=?");
+                            params.add(shop.supplierId);
+                        }
+
+                    }
+                }
+            }
         }
 
         sql.append(" order by createdAt DESC");
@@ -455,6 +524,17 @@ public class Supplier extends Model {
         String dateStr = DateUtil.dateToString(conditionDate, days) + (StringUtils.isBlank(shopHour) ? time : " " + shopHour);
         return DateUtil.stringToDate(dateStr, DATE_FORMAT);
     }
+
+    public List<Shop> getShops() {
+        return Shop.find("supplierId=?", this.id
+        ).fetch();
+    }
+
+    public List<Brand> getBrands() {
+        return Brand.find("supplier.id=?", this.id
+        ).fetch();
+    }
+
 
     public List<Goods> getGoods() {
         return Goods.find("supplierId=?", this.id).fetch();
