@@ -1,6 +1,6 @@
 <div>
 
-<input type="hidden" name="consult.id" id="consult_id" value="${consult?.id}"/>
+    <input type="hidden" name="consult.id" id="consult_id" value="${consult?.id}"/>
     咨询类型
 #{select 'consult.consultType', value:consult?.consultType, id:'consult_type',class:'span2'}
 
@@ -10,15 +10,18 @@
     #{option models.sales.ConsultType.WEBSITEBROKEN}&{'consult.WEBSITEBROKEN'}#{/option}
     #{option models.sales.ConsultType.QUESTIION}&{'consult.QUESTIION'}#{/option}
     #{option models.sales.ConsultType.FEEDBACK}&{'consult.FEEDBACK'}#{/option}
+    #{option models.sales.ConsultType.OUTDIAL}&{'consult.OUTDIAL'}#{/option}
+    #{option models.sales.ConsultType.RESERVATION}&{'consult.RESERVATION'}#{/option}
+
 #{/select}
 
 
-<textarea rows="3" cols="20" name="consult.text" id="consult_text" value="${consult?.text}">
-${consult?.text}
-</textarea>
+    <textarea rows="3" cols="20" name="consult.text" id="consult_text" value="${consult?.text}">
+    ${consult?.text}
+    </textarea>
     <span class="error">#{error 'consult.text' /}</span>
 *{#{layout_operate.textareaField name:'consult.text', value:consult?.text/}}*
 
-<input class="btn btn-primary" id="save" type="submit" value="保存"/>
+    <input class="btn btn-primary" id="save" type="submit" value="保存"/>
 
 </div>

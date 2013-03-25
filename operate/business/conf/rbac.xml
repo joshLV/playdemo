@@ -217,7 +217,8 @@
                         permissions="RESALES_REPORT"/>
             <navigation key="suppliers_account_reports" action="OperateReports.showSupplierReport" text="商户的资金明细"
                         permissions="SUPPLIERS_REPORT"/>
-            <navigation key="suppliers_withdraw_reports" action="OperateReports.showSupplierWithdrawReport" text="商户提现汇总"
+            <navigation key="suppliers_withdraw_reports" action="OperateReports.showSupplierWithdrawReport"
+                        text="商户提现汇总"
                         permissions="SUPPLIERS_REPORT"/>
             <navigation key="withdraw_account_reports" action="OperateReports.showWithdrawReport" text="提现账户资金明细"
                         permissions="WITHDRAW_REPORT"/>
