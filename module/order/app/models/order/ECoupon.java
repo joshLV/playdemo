@@ -119,11 +119,6 @@ public class ECoupon extends Model {
      */
     public String password;
 
-    /**
-     * 已同步标记。
-     * 如果为true，则已经同步到第三方网站
-     */
-    public Boolean synced;
 
     // ==== 价格列表 ====
     @Column(name = "face_value")
@@ -211,6 +206,12 @@ public class ECoupon extends Model {
 
     @Enumerated(EnumType.STRING)
     public ECouponPartner partner;
+
+    /**
+     * 已同步标记。
+     * 如果为true，则已经同步到第三方网站
+     */
+    public Boolean synced=false;
 
     /**
      * 合作方券ID。
