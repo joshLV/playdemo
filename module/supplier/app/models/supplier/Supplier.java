@@ -141,6 +141,8 @@ public class Supplier extends Model {
      */
     @Enumerated(EnumType.STRING)
     public SupplierStatus status;
+
+
     /**
      * logo图片路径
      */
@@ -219,12 +221,41 @@ public class Supplier extends Model {
      */
     @Column(name = "show_selling_state")
     public Boolean showSellingState = false;
+
+
     //=================================================以上是全部数据库相关属性================================================
+
+    @javax.persistence.Transient
+    public String statusName;
+
+    @javax.persistence.Transient
+    public String whetherToShowSellingState;
+
+    @javax.persistence.Transient
+    public Integer shopsCount;
+
+    @javax.persistence.Transient
+    public Integer brandsCount;
+
+    @javax.persistence.Transient
+    public Integer goodsCount;
 
     @Transient
     public String getName() {
         return StringUtils.isBlank(otherName) ? fullName : otherName;
     }
+
+    //销售专员姓名
+    @Transient
+    public String getSalesName() {
+        OperateUser operateUser = OperateUser.findById(this.salesId);
+        if (operateUser != null) {
+            return operateUser.userName;
+        } else {
+            return "";
+        }
+    }
+
 
     public Supplier() {
     }

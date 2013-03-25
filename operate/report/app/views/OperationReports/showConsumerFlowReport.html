@@ -141,20 +141,20 @@
 <div class="alert alert-success" style="margin-bottom: 10px;">
     <span>
         在此期间 共售出券：<b>${summary?.amount?.formatCurrency("CNY")}</b> (${summary?.totalNumber}件),
-         售出实物：<b>${summary?.realAmount == null ?'￥0.00':summary?.realAmount?.formatCurrency('CNY')}</b> (${summary?.realTotalNumber}
+         售出实物：<b>${summary?.realAmount == null ?'￥0.00':summary?.realAmount?.format('#0.00')}</b> (${summary?.realTotalNumber}
         件),
-                退款券：<b>${summary?.totalRefundPrice?.formatCurrency('CNY')}</b> (${summary?.refundNumber}
+                退款券：<b>${summary?.totalRefundPrice?.format('#0.00')}</b> (${summary?.refundNumber}
         件),
                    消费券：<b>${summary?.consumedPrice?.formatCurrency("CNY")}</b> (${summary?.consumedNumber}
         件)
 
-        客单价:<b>${(summary?.perOrderPrice?:0).formatCurrency('CNY')}</b>
+        客单价:<b>${(summary?.perOrderPrice?:0).format('#0.00')}</b>
 
     #{if hasSeeReportProfitRight == true}
         <br/>
            &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;
         毛利率：<b>${(summary?.grossMargin?:0).format('#0.00')}%</b>
-        渠道成本：<b>${(summary?.channelCost?:0).formatCurrency('CNY')}</b>
+        渠道成本：<b>${(summary?.channelCost?:0).format('#0.00')}</b>
          净利润：<b>
             ￥${(summary?.profit?:0).format('#0.00')}
 
@@ -323,11 +323,11 @@ userName="condition.userName="+report?.loginName;
            target="_blank">${report?.buyNumber}</a>
         /
         <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${report?.date}&condition.paidAtEnd=${report?.date}"
-           target="_blank">${report?.salePrice?.formatCurrency('CNY')}</a>
+           target="_blank">${report?.salePrice?.format('#0.00')}</a>
     </td>
     <td style="text-align:right;">
     ${report?.realBuyNumber}
-        / ${report?.realSalePrice == null ?'￥0.00':report?.realSalePrice?.formatCurrency('CNY')}
+        / ${report?.realSalePrice == null ?'￥0.00':report?.realSalePrice?.format('#0.00')}
     </td>
 
 
@@ -336,7 +336,7 @@ userName="condition.userName="+report?.loginName;
            target="_blank">${report?.refundNumber}</a>
         /
         <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${report?.date}&condition.refundAtEnd=${report?.date}"
-           target="_blank">${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}</a>
+           target="_blank">${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.format('#0.00')}</a>
     </td>
     <td style="text-align:right;">
     </td>
@@ -345,17 +345,17 @@ userName="condition.userName="+report?.loginName;
            target="_blank">${report?.consumedNumber}</a>
         /
         <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${report?.date}&condition.consumedAtEnd=${report?.date}"
-           target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
+           target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.format('#0.00')}   </a>
     </td>
     <td style="text-align:right;">
-    ${(report?.perOrderPrice?:0).formatCurrency('CNY')}
+    ${(report?.perOrderPrice?:0).format('#0.00')}
     </td>
     #{if hasSeeReportProfitRight == true}
 
         <td style="text-align:right;">${(report?.grossMargin?:0).format('#0.00')}%</td>
-        <td style="text-align:right;">${(report?.channelCost?:0).formatCurrency('CNY')}</td>
+        <td style="text-align:right;">${(report?.channelCost?:0).format('#0.00')}</td>
         <td style="text-align:right;">
-                ￥${(report?.profit?:0).format('#0.00')}
+                ${(report?.profit?:0).format('#0.00')}
 
         </td>
     #{/if}

@@ -37,6 +37,7 @@ DELETE  /supplier_contract/{id}                            SuppliersContracts.de
 DELETE  /supplier_contract_images/{id}                     SuppliersContracts.deleteImage
 GET     /supplier_contract/{imageId}                       SuppliersContracts.updateDescription
 
+
 POST    /supplier_contract_images/{supplierId}/{contractId}         SuppliersUploadFiles.uploadImages
 GET    /supplier_contract_images/{supplierId}/{contractId}         SuppliersUploadFiles.uploadImages
 
@@ -221,6 +222,8 @@ PUT     /suppliers/{id}/freeze                  Suppliers.freeze
 PUT     /suppliers/{id}/unfreeze                Suppliers.unfreeze
 DELETE  /suppliers/{id}                         Suppliers.delete
 GET     /suppliers/{id}/supplier_category/{supplierCategoryId}  Suppliers.updateCode
+GET     /suppliers-excel                           Suppliers.suppliersExcelOut
+
 
 POST    /suppliers/dadong/sync                  supplier.DadongProducts.sync
 

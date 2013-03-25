@@ -26,6 +26,9 @@
 
             <td width="55%">
                 <button class="btn btn-primary" id="search" type="submit">搜索</button>
+                <div class="pull-right">
+                    <button class="btn btn-info" id="searchbtn" onclick="suppliersExcel()">导出报表</button>
+                </div>
             </td>
         </tr>
     </table>
@@ -122,4 +125,10 @@
         window.open(v, '', 'width=2000,height=2000,left=200,top=200,status=no,scrollbars=no,menubar=no,toolbar=no,resizable=1,location=no');
     }
 
+    function suppliersExcel() {
+        $("#operForm").attr("action", "@{Suppliers.suppliersExcelOut()}");
+        $("#operForm").attr("method", "get");
+        $("#operForm").submit();
+        return false;
+    }
 </script>

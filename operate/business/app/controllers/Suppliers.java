@@ -13,6 +13,7 @@ import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierCategory;
+import models.supplier.SupplierStatus;
 import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -52,7 +53,7 @@ public class Suppliers extends Controller {
 //        String otherName = request.params.get("otherName");
 //        String code = request.params.get("code");
         List<Supplier> suppliers = Supplier.findByCondition(supplierId, code, domainName, keyword);
-        render(suppliers, page, supplierId, code, domainName,keyword);
+        render(suppliers, page, supplierId, code, domainName, keyword);
     }
 
     @ActiveNavigation("suppliers_add")
@@ -301,5 +302,27 @@ public class Suppliers extends Controller {
         render(supplierUsersPage, supplierDomainName, supplierUsers);
     }
 
+    @ActiveNavigation("suppliers_index")
+    public static void suppliersExcelOut(Long supplierId, String code, String domainName, String keyword) {
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "商户列表_" + System.currentTimeMillis() + ".xls");
+        List<Supplier> supplierList = Supplier.findByCondition(supplierId, code, domainName, keyword);
+        for (Supplier supplier : supplierList) {
+            if (supplier.showSellingState==null || supplier.showSellingState==false) {
+                supplier.whetherToShowSellingState = "不允许";
+            } else {
+                supplier.whetherToShowSellingState = "允许";
+            }
+            if (supplier.status == SupplierStatus.NORMAL) {
+                supplier.statusName = "正常";
+            } else if (supplier.status == SupplierStatus.FREEZE) {
+                supplier.statusName = "冻结";
+            }
+            supplier.shopsCount = supplier.getShops().size();
+            supplier.brandsCount = supplier.getBrands().size();
+            supplier.goodsCount=supplier.getGoods().size();
+        }
+        render(supplierList);
+    }
 
 }
