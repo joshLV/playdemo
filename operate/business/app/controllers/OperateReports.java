@@ -157,7 +157,6 @@ public class OperateReports extends Controller {
         } else {
             condition.accountType = AccountType.SUPPLIER;
         }
-        System.out.println("condition.account:" + condition.getFilter());
 
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);

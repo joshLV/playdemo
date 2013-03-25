@@ -1,0 +1,67 @@
+*{时间范围输入框}*
+*{name:      字段名称，仅用于显示标签}*
+*{begin:     开始日期的字段名称}*
+*{beginValue:开始日期的值}*
+*{end:       结束日期的字段名称}*
+*{endValue:  结束日期的值}*
+*{_required: 文字标签前面是否要加必填项标志（选填，默认不标识必填项）}*
+${_name}
+<span id="daterange" class=" daterange"
+      style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc;width: 400px;">
+
+        <i class="icon-calendar icon-large"></i>
+                <span>
+                </span> <b class="caret" style="margin-top: 8px"></b>
+    </span>
+
+<input type="hidden" id="condition_begin" name="${_begin}"
+       value="${_beginValue}"/>
+<input type="hidden" id="condition_end" name="${_end}"
+       value="${_endValue}"/>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.daterange').daterangepicker(
+                {
+                    ranges:{
+                        '今天':['today', 'today'],
+                        '昨天':['yesterday', 'yesterday'],
+                        '最近7天':[Date.today().add({ days:-6 }), 'today'],
+                        '过去30天':[Date.today().add({ days:-29 }), 'today'],
+                        '本月':[Date.today().moveToFirstDayOfMonth(), Date.today().moveToLastDayOfMonth()],
+                        '上个月':[Date.today().moveToFirstDayOfMonth().add({ months:-1 }), Date.today().moveToFirstDayOfMonth().add({ days:-1 })]
+                    },
+                    opens:'left',
+                    format:'MM/dd/yyyy',
+                    separator:' to ',
+                    startDate:Date.today().add({ days:-29 }),
+                    endDate:Date.today(),
+                    minDate:'01/01/2012',
+                    maxDate:'12/31/2013',
+                    locale:{
+                        applyLabel:'提交',
+                        fromLabel:'从',
+                        toLabel:'到',
+                        customRangeLabel:'自定义',
+                        daysOfWeek:['日', '一', '二', '三', '四', '五', '六'],
+                        monthNames:['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一', '十二'],
+                        firstDay:1
+                    },
+                    showWeekNumbers:true,
+                    buttonClasses:['btn-danger'],
+                    dateLimit:false
+                },
+                function (start, end) {
+                    $('.daterange span').html(start.toString('yyyy-MM-dd') + ' - ' + end.toString('yyyy-MM-dd'));
+                    $("#condition_begin").val(start.toString('yyyy-MM-dd'));
+                    $("#condition_end").val(end.toString('yyyy-MM-dd'));
+                }
+        );
+
+        //Set the initial state of the picker label
+        $('.daterange span').html($("#condition_begin").val().toString('yyyy-MM-dd') + ' - ' + $("#condition_end").val().toString('yyyy-MM-dd'));
+
+    });
+</script>
+
