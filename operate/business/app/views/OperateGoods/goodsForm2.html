@@ -130,12 +130,12 @@
     <div class="controls">
         <label class="radio inline">
             <input id="coupon_type_generate" type="radio" name="goods.couponType"
-                   value="GENERATE" #{if goods.couponType == null || goods.couponType ==  models.sales.GoodsCouponType.GENERATE}
+                   value="GENERATE" #{if goods?.couponType == null || goods?.couponType ==  models.sales.GoodsCouponType.GENERATE}
                    checked #{/if}> 自动生成
         </label>
         <label class="radio inline">
             <input id="coupon_type_import" type="radio" name="goods.couponType"
-                   value="IMPORT" #{if goods.couponType ==  models.sales.GoodsCouponType.IMPORT} checked #{/if} /> 导入
+                   value="IMPORT" #{if goods?.couponType ==  models.sales.GoodsCouponType.IMPORT} checked #{/if} /> 导入
         </label>
     </div>
 </div>
