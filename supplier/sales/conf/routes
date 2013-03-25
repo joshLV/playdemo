@@ -37,6 +37,9 @@ GET     /reports/goods                          SupplierReports.showGoodsReport
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
+# change ui version
+GET    /ui-version/to/{version}                 supplier.ChangeUIVersions.execute
+
 # Map static resources from the /app/public folder to the /public path
 GET     /public/                                staticDir:public
 

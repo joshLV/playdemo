@@ -52,7 +52,9 @@
           <a class="brand" href="#">商户后台</a>
           <div class="nav-collapse">
             #{navigation.topMenus topMenus /}
-            <p class="navbar-text pull-right">当前用户：
+            <p class="navbar-text pull-right">
+                <a title="切换到新版" style="color:red" href="/ui-version/to/v2">切换到新版</a>
+                当前用户：
                 <a id="profile" href="${operatorProfileUrl}">${currentUser?.loginName}</a>
                 <a id="info" title="${supplierCompany.fullName}" href="${supplierInfoUrl}">${supplierCompany.fullName}</a>
                 <a href="/logout">注销</a>

@@ -3,14 +3,14 @@
 # ~~~~
 
 # Home page
-GET     /                                       SupplierUsers.index
-GET     /users                                  SupplierUsers.index
-GET     /users/new                              SupplierUsers.add
-POST    /users                                  SupplierUsers.create
-POST    /users/checkLoginName                   SupplierUsers.checkLoginName
-GET     /users/{id}/edit                        SupplierUsers.edit
-POST    /users/{id}                             SupplierUsers.update
-DELETE  /users/{id}                             SupplierUsers.delete
+GET     /                                       SupplierAdminUsers.index
+GET     /users                                  SupplierAdminUsers.index
+GET     /users/new                              SupplierAdminUsers.add
+POST    /users                                  SupplierAdminUsers.create
+POST    /users/checkLoginName                   SupplierAdminUsers.checkLoginName
+GET     /users/{id}/edit                        SupplierAdminUsers.edit
+POST    /users/{id}                             SupplierAdminUsers.update
+DELETE  /users/{id}                             SupplierAdminUsers.delete
 
 GET     /profile                                SupplierProfiles.index
 POST    /profile/{id}                           SupplierProfiles.update
@@ -24,6 +24,8 @@ POST    /reset                                  SuppliersFindPassword.reset
 GET     /reset-password                         SuppliersFindPassword.resetPassword
 POST    /reset-password                         SuppliersFindPassword.updatePassword
 
+# change ui version
+GET    /ui-version/to/{version}                 supplier.ChangeUIVersions.execute
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

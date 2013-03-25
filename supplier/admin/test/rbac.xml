@@ -24,8 +24,8 @@
     <navigation key="main" text="系统管理" action="Application.index" display-order="99">
         <navigation key="home" text="主页" permissions="USER"/>
         <navigation key="user" text="用户管理" permissions="USER">
-            <navigation key="user_add" text="新增用户" action="SupplierUsers.add" permissions="USER, USER_ADD"/>
-            <navigation key="user_search" text="查询用户" action="SupplierUsers.index" permissions="USER"/>
+            <navigation key="user_add" text="新增用户" action="SupplierAdminUsers.add" permissions="USER, USER_ADD"/>
+            <navigation key="user_search" text="查询用户" action="SupplierAdminUsers.index" permissions="USER"/>
         </navigation>
         <navigation key="role" text="角色管理" permissions="ROLE"/>
         <navigation key="bar" text="BarTest" permissions="PERM_TEST"/>

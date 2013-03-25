@@ -89,6 +89,7 @@ GET     /public/                                staticDir:public
 
 # change ui version
 GET    /ui-version/to/{version}                 supplier.ChangeUIVersions.execute
+
 *       /                                       module:supplier_rbac
 
 # Catch all

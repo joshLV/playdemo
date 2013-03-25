@@ -10,10 +10,10 @@
         </permission>
 
         <!-- 系统管理是最后一个菜单 -->
-        <navigation key="main" text="系统管理" action="SupplierUsers.index" permissions="SYSTEM_HOME" display-order="999">
+        <navigation key="main" text="系统管理" action="SupplierAdminUsers.index" permissions="SYSTEM_HOME" display-order="999">
                 <navigation key="user" text="用户管理" permissions="USER">
-                        <navigation key="user_add" text="新增用户" action="SupplierUsers.add" permissions="USER" />
-                        <navigation key="user_search" text="查询用户" action="SupplierUsers.index" permissions="USER" />
+                        <navigation key="user_add" text="新增用户" action="SupplierAdminUsers.add" permissions="USER" />
+                        <navigation key="user_search" text="查询用户" action="SupplierAdminUsers.index" permissions="USER" />
                 </navigation>
         </navigation>
 </application>
