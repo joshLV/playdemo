@@ -125,6 +125,7 @@ public class OperateSupplierUsersTest extends FunctionalTest {
 
     /**
      * 访问微信内容页面，会看到一个识别码.
+     *
      * @throws Exception
      */
     @Test
@@ -135,5 +136,17 @@ public class OperateSupplierUsersTest extends FunctionalTest {
         assertIsOk(response);
         supplierUser.refresh();
         assertNotNull(supplierUser.idCode);
+    }
+
+    @Test
+    public void testUnbindWeixi() throws Exception {
+        supplierUser.weixinOpenId = "3232412341234124";
+        supplierUser.save();
+        Map<String, Object> urlParams = new HashMap<>();
+        urlParams.put("id", supplierUser.id);
+        Http.Response response = GET(Router.reverse("OperateSupplierUsers.unbindWeixi", urlParams).url);
+        assertStatus(302, response);
+        supplierUser.refresh();
+        assertNull(supplierUser.weixinOpenId);
     }
 }

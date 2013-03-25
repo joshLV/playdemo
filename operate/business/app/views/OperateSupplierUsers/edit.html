@@ -53,7 +53,12 @@
     <div class="controls">
         <input type="text" name="supplierUser.userName" class="input-large" id="userName"
                value="${supplierUser?.userName}"/>
-        #{a @OperateSupplierUsers.showWeixi(supplierUser?.id)}绑定微信#{/a}
+        #{if supplierUser?.weixinOpenId}
+            #{a @OperateSupplierUsers.unbindWeixi(supplierUser?.id)}解除微信绑定#{/a}
+        #{/if}
+        #{else}
+            #{a @OperateSupplierUsers.showWeixi(supplierUser?.id)}绑定微信#{/a}
+        #{/else}
     </div>
 </div>
 <div class="control-group">

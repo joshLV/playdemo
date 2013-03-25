@@ -8,6 +8,7 @@ import models.sales.Shop;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.Play;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
@@ -176,12 +177,28 @@ public class OperateSupplierUsers extends Controller {
         render(shopList);
     }
 
+    /**
+     * 查看微信绑定指导界面.
+     * @param id
+     */
     public static void showWeixi(Long id) {
         SupplierUser supplierUser = SupplierUser.findById(id);
+        String qrCodePath = Play.configuration.getProperty("weixin.qrcode.path");
         if (StringUtils.isBlank(supplierUser.idCode)) {
             supplierUser.idCode = RandomNumberUtil.generateSerialNumber(6);
             supplierUser.save();
         }
-        render(supplierUser);
+        render(supplierUser, qrCodePath);
+    }
+
+    /**
+     * 解除微信帐号绑定.
+     * @param id
+     */
+    public static void unbindWeixi(Long id) {
+        SupplierUser supplierUser = SupplierUser.findById(id);
+        supplierUser.weixinOpenId = null;
+        supplierUser.save();
+        edit(id);
     }
 }

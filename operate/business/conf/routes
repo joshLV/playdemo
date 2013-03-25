@@ -247,6 +247,7 @@ GET     /users/{id}/edit                        OperateSupplierUsers.edit
 POST    /users/{id}                             OperateSupplierUsers.update
 DELETE  /users/{id}                             OperateSupplierUsers.delete
 GET     /users/{id}/weixi                       OperateSupplierUsers.showWeixi
+GET     /users/{id}/unbindWeixi                 OperateSupplierUsers.unbindWeixi
 GET     /users/shops/{supplierId}               OperateSupplierUsers.shopList
 
 #商户验证电话管理
