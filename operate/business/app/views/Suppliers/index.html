@@ -40,6 +40,8 @@
             <th width="50px">编码</th>
             <th width="60px">商品数</th>
             <th width="120px">可查看销售量</th>
+            <th width="120px">门店数量</th>
+            <th width="120px">品牌数量</th>
             <th width="200px">销售专员</th>
             <th width="100px">创建时间</th>
             <th width="100px">修改时间</th>
@@ -64,6 +66,14 @@
                 #{/if}
             </td>
             <td>&{'supplier.showSellingState.'+supplier.showSellingState}</td>
+            <td>
+                <a target="_blank"
+                   href="shops?shopCondition.supplierId=${supplier.id}">${supplier?.getShops().size()}</a>
+            </td>
+            <td>
+                <a target="_blank"
+                   href="/brands?supplierId=${supplier.id}">${supplier?.getBrands().size()}</a>
+            </td>
             <td>
             %{ operatorUser=null;
                 if(supplier.salesId!=null){

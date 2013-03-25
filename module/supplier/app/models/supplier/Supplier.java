@@ -494,6 +494,17 @@ public class Supplier extends Model {
         return DateUtil.stringToDate(dateStr, DATE_FORMAT);
     }
 
+    public List<Shop> getShops() {
+        return Shop.find("supplierId=?", this.id
+        ).fetch();
+    }
+
+    public List<Brand> getBrands() {
+        return Brand.find("supplier.id=?", this.id
+        ).fetch();
+    }
+
+
     public List<Goods> getGoods() {
         return Goods.find("supplierId=?", this.id).fetch();
     }
