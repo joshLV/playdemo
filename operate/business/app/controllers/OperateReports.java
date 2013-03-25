@@ -157,7 +157,6 @@ public class OperateReports extends Controller {
         } else {
             condition.accountType = AccountType.SUPPLIER;
         }
-        System.out.println("condition.account:" + condition.getFilter());
 
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
@@ -192,8 +191,6 @@ public class OperateReports extends Controller {
      */
     @ActiveNavigation("suppliers_withdraw_reports")
     public static void showSupplierWithdrawReport(SupplierWithdrawCondition condition) {
-        System.out.println(condition.createdAtBegin + "===condition.createdAtBegin>>");
-        System.out.println(condition.createdAtEnd + "===condition.createdAtEnd>>");
         int pageNumber = getPageNumber();
         if (condition == null) {
             condition = new SupplierWithdrawCondition(); //默认显示提现申请待审批的商户记录，统计周期为最近7天
