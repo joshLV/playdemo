@@ -548,8 +548,8 @@
         #{option models.sales.ConsultType.QUESTIION}&{'consult.QUESTIION'}#{/option}
         #{option models.sales.ConsultType.FEEDBACK}&{'consult.FEEDBACK'}#{/option}
         #{option models.sales.ConsultType.COMPLAINT}&{'consult.COMPLAINT'}#{/option}
-
-
+        #{option models.sales.ConsultType.OUTDIAL}&{'consult.OUTDIAL'}#{/option}
+        #{option models.sales.ConsultType.RESERVATION}&{'consult.RESERVATION'}#{/option}
     #{/select}
 
     <textarea rows="3" cols="20" name="consult.text" id="consult_text"
@@ -629,17 +629,17 @@
 
 <script type="text/javascript">
 
-    $(document).ready(function () {
-        $("#show").click(function () {//选中button,并监听click事件
-            //点击button，选中div并作为dialog显示，只需要调用dialog()
-            $("#dialog").dialog();
-        });
-    });
-
-
-    $(function () {
-        $("#dialog").dialog();
-    });
+    //    $(document).ready(function () {
+    //        $("#show").click(function () {//选中button,并监听click事件
+    //            //点击button，选中div并作为dialog显示，只需要调用dialog()
+    //            $("#dialog").dialog();
+    //        });
+    //    });
+    //
+    //
+    //    $(function () {
+    //        $("#dialog").dialog();
+    //    });
 
     function prepareSend(id) {
         $("#form").attr("action", "/crm/" + id);
@@ -681,9 +681,9 @@
 
     function abandon(consultId) {
         var url = "/callcenter/phone/abandon/" + consultId;
-        $("#form").attr("method", "GET");
-        $("#form").attr("action", url);
-        $("#form").submit();
+        $("#form1").attr("method", "GET");
+        $("#form1").attr("action", url);
+        $("#form1").submit();
     }
 
 
