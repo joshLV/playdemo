@@ -7,9 +7,11 @@ import com.uhuila.common.util.PathUtil;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.admin.SupplierUser;
+import models.operator.OperateUser;
 import models.order.Prepayment;
 import models.sales.Brand;
 import models.sales.Goods;
+import models.sales.Shop;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.data.validation.Email;
@@ -373,7 +375,7 @@ public class Supplier extends Model {
         }
     }
 
-    public static List<Supplier> findByCondition(Long supplierId, String code, String domainName) {
+    public static List<Supplier> findByCondition(Long supplierId, String code, String domainName, String keyword) {
         StringBuilder sql = new StringBuilder("deleted=?");
         List params = new ArrayList();
         params.add(DeletedStatus.UN_DELETED);
@@ -390,6 +392,42 @@ public class Supplier extends Model {
         if (StringUtils.isNotBlank(domainName)) {
             sql.append("and domainName like ?");
             params.add("%" + domainName + "%");
+        }
+        if (StringUtils.isNotBlank(keyword)) {
+            //销售专员姓名
+            OperateUser operator = OperateUser.find("userName like ?", "%" + keyword + "%").first();
+            if (operator != null) {
+                sql.append("and salesId = ?");
+                params.add(operator.id);
+            } else {
+                //门店电话
+                Shop shop = Shop.find("phone=?", keyword).first();
+                if (shop != null) {
+                    sql.append("and id=?");
+                    params.add(shop.supplierId);
+                } else {
+                    //门店地址
+                    shop = Shop.find("address like ?", "%" + keyword + "%").first();
+                    if (shop != null) {
+                        sql.append("and id=?");
+                        params.add(shop.supplierId);
+                    } else {
+                        //品牌
+                        Brand brand = Brand.find("name like ?", "%" + keyword + "%").first();
+                        if (brand != null) {
+                            sql.append("and id=?");
+                            params.add(brand.supplier.id);
+                        }
+                        //门店名称
+                        shop = Shop.find(" name like ?", "%" + keyword + "%").first();
+                        if (shop != null) {
+                            sql.append("and id=?");
+                            params.add(shop.supplierId);
+                        }
+
+                    }
+                }
+            }
         }
 
         sql.append(" order by createdAt DESC");

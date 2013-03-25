@@ -46,13 +46,13 @@ public class Suppliers extends Controller {
     public static final String SUPPLIER_BASE_DOMAIN = Play.configuration.getProperty("application.supplierDomain");
     public static final String BASE_URL = Play.configuration.getProperty("application.baseUrl", "");
 
-    public static void index(Long supplierId, String code, String domainName) {
+    public static void index(Long supplierId, String code, String domainName, String keyword) {
         int page = getPage();
 
 //        String otherName = request.params.get("otherName");
 //        String code = request.params.get("code");
-        List<Supplier> suppliers = Supplier.findByCondition(supplierId, code, domainName);
-        render(suppliers, page, supplierId, code, domainName);
+        List<Supplier> suppliers = Supplier.findByCondition(supplierId, code, domainName, keyword);
+        render(suppliers, page, supplierId, code, domainName,keyword);
     }
 
     @ActiveNavigation("suppliers_add")
@@ -63,8 +63,8 @@ public class Suppliers extends Controller {
         render(operateUserList, supplierCategoryList);
     }
 
-   private static int getPage() {
-         String page = request.params.get("page");
+    private static int getPage() {
+        String page = request.params.get("page");
         if (StringUtils.isNotEmpty(page) && (page.contains("?x-http-method-override=PUT") || page.contains("x-http-method-override=PUT"))) {
             page = page.replace("x-http-method-override=PUT", "").replace("?", "");
         }
@@ -116,7 +116,7 @@ public class Suppliers extends Controller {
         comment = comment.replace("username", admin.loginName);
         comment = comment.replace("password", password);
         SMSUtil.send(comment, admin.mobile, "0000");
-        index(null, null, null);
+        index(null, null, null, null);
     }
 
     private static void redirectUrl(int page) {
@@ -286,7 +286,7 @@ public class Suppliers extends Controller {
 
     public static void delete(long id) {
         Supplier.delete(id);
-        index(null, null, null);
+        index(null, null, null, null);
     }
 
     public static void exportMaterial(long supplierId, String supplierDomainName) {

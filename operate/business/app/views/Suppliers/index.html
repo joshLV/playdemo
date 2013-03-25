@@ -15,7 +15,15 @@
 
             <td width="15%">编码 <input type="text" name="code" id="code" value="${code}" class="input-medium"/></td>
             <td width="15%">域名 <input type="text" name="domainName" id="domainName" value="${domainName}"
-                                     class="input-medium"/></td>
+                                      class="input-medium"/></td>
+
+            <td width="15%">关键词
+                <input rel="tooltip"
+                       data-placement="top"
+                       data-original-title='输入门店名称、地址、电话、销售员姓名、品牌进行搜索'
+                       type="text" class="input-larger" placeholder="输入门店名称、地址、电话、销售员姓名、品牌进行搜索" name="keyword"
+                       id="keyword" value="${keyword}">
+
             <td width="55%">
                 <button class="btn btn-primary" id="search" type="submit">搜索</button>
             </td>
@@ -35,7 +43,7 @@
             <th width="200px">销售专员</th>
             <th width="100px">创建时间</th>
             <th width="100px">修改时间</th>
-            <th width="250px">备注</th>
+        *{<th width="250px">备注</th>}*
             <th width="180px">操 作</th>
         </tr>
         </thead>
@@ -70,7 +78,7 @@
             </td>
             <td>${supplier?.createdAt?.format()}</td>
             <td>${supplier?.updatedAt?.format()}</td>
-            <td>${supplier?.remark}</td>
+        *{<td>${supplier?.remark}</td>}*
             <td><a href="/suppliers/${supplier.id}/edit?page=${page?:1}">修改</a>
                 / #{vx.deleteLink id:supplier?.id, name:supplier?.fullName, action:"/suppliers"/}
                 #{if models.supplier.SupplierStatus.NORMAL.equals(supplier.status)}
