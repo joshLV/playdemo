@@ -1,0 +1,26 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set title:'您已经绑定了微信' /}
+#{set menu:"weixin"/}
+#{set 'moreStyles'}
+    #{asset.css src:['/m/verify.css'] /}
+#{/set}
+
+<div class="bd batch-verify">
+    <h2>${title}</h2>
+    <div class="tip">
+        <h5>一百券商家助手 - 二维码</h5>
+        <img src="#{asset.url href: qrCodePath /}" />
+    </div>
+    <div class="tip" style="padding-left: 20px;">
+        <ol style="list-style: decimal">
+            <li>您可以打开您手机上的微信，找到『一百券商家助手』</li>
+            <li>打开『一百券商家助手』，发送消息</li>
+            <li>消息内容输入消费者提供的10位券号，如：<b>1234567890</b>，点击发送</li>
+            <li>『一百券商家助手』将返回验证是否成功的信息</li>
+        </ol>
+    </div>
+    <div class="tip">
+        如果您不再需要使用微信验证，您也可以
+        #{a @SupplierWeixinBinds.unbind(), method:'POST', class:'btn'}解绑微信#{/a}
+    </div>
+</div>

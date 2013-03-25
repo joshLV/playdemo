@@ -80,6 +80,10 @@ GET     /version/{number}                       SupplierVersions.change
 # 补偿未同步的状态
 GET    /ecoupon-compensation/consumed           ECouponCompensations.consumed
 
+# 绑定微信
+GET    /weixin                                  SupplierWeixinBinds.index
+POST   /weixin/unbind                           SupplierWeixinBinds.unbind
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
