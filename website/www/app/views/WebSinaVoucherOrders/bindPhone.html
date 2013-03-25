@@ -1,0 +1,33 @@
+#{form @WebSinaVoucherOrders.bindPhone(),id:'form'}
+手机号:<input type="text" name="phone" id="phone" value="${phone}">
+<a href="#" id="get-code">获取验证码</a>
+验证码:<input type="text" name="validCode" value="${validCode}">
+<span id="info" style="color: red"></span>
+<input type="hidden" name="buyCount" value="${buyCount}">
+<input type="hidden" name="productId" value="${productId}">
+<input type="hidden" name="goodsId" value="${goodsId}">
+<a href="#" id="next" class="nowBuy">下一步</a></br></br>
+#{/form}
+#{asset.js src:['/u/jquery-1.7.2.min.js','/base/121031/base.js'] /}
+<script>
+    $(function () {
+        $("#get-code").click(function () {
+            $.ajax({
+                type: "GET",
+                dataType: 'text',
+                url: '/weobo/wap/send-code?phone=' + $("#phone").val(),
+                success: function (msg) {
+                    if (msg == "") {
+                        $("#info").html("验证码已发送！")
+                    }else{
+                        $("#info").html(msg);
+                    }
+                }
+            })
+        })
+
+        $("#next").click(function () {
+            $("#form").submit();
+        })
+    })
+</script>

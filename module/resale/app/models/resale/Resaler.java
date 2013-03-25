@@ -38,6 +38,7 @@ public class Resaler extends Model {
     public static final String YHD_LOGIN_NAME = "yihaodian";
     public static final String WUBA_LOGIN_NAME = "wuba";
     public static final String TAOBAO_LOGIN_NAME = "taobao";
+    public static final String SINA_LOGIN_NAME = "sina";
 
     /**
      * 分销商账户类型
