@@ -169,15 +169,7 @@
         <navigation key="order_app" text="订单">
             <navigation key="order_index" action="OperateOrders.index" text="运营订单管理" permissions="ORDERS"/>
         </navigation>
-        <navigation key="import_order_app" text="实体订单">
-            <navigation key="import_order_index" action="ImportPartnerOrders.index" text="导入渠道订单" permissions="ORDERS"/>
-            <navigation key="download_order_shipping_index" action="DownloadOrderShippingInfos.index" text="发货单下载"
-                        permissions="ORDERS"/>
-            <navigation key="upload_order_shipping_index" action="UploadOrderShippingInfos.index" text="导入发货单"
-                        permissions="ORDERS"/>
-            <navigation key="download_track_no_for_resaler" action="real.DownloadTrackNos.index" text="下载渠道运单上报文件"
-                        permissions="ORDERS"/>
-        </navigation>
+
         <navigation key="coupon_app" text="消费券">
             <navigation key="coupons_index" action="OperateCoupons.index" text="消费券管理" permissions="COUPONS"/>
             <navigation key="verify_index" action="OperateVerifyCoupons.index" text="验证消费券"
@@ -190,6 +182,15 @@
             <navigation key="verified_ecoupon_refund" action="VerifiedECouponRefunds.index" text="已消费券退款"
                         permissions="VERIFIED_ECOUPON_REFUND"/>
 
+        </navigation>
+        <navigation key="import_order_app" text="实物订单">
+            <navigation key="import_order_index" action="ImportPartnerOrders.index" text="导入渠道订单" permissions="ORDERS"/>
+            <navigation key="download_order_shipping_index" action="DownloadOrderShippingInfos.index" text="发货单下载"
+                        permissions="ORDERS"/>
+            <navigation key="upload_order_shipping_index" action="UploadOrderShippingInfos.index" text="导入发货单"
+                        permissions="ORDERS"/>
+            <navigation key="download_track_no_for_resaler" action="real.DownloadTrackNos.index" text="下载渠道运单上报文件"
+                        permissions="ORDERS"/>
         </navigation>
     </navigation>
 
