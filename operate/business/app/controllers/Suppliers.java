@@ -16,6 +16,7 @@ import models.supplier.Supplier;
 import models.supplier.SupplierCategory;
 import models.supplier.SupplierStatus;
 import operate.rbac.annotations.ActiveNavigation;
+import operate.rbac.annotations.Right;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.data.validation.Valid;
@@ -200,6 +201,7 @@ public class Suppliers extends Controller {
      *
      * @param id 门店标识
      */
+    @Right("SUPPLIERS_MANAGE")
     @ActiveNavigation("suppliers_index")
     public static void edit(long id) {
         int page = getPage();
@@ -244,6 +246,7 @@ public class Suppliers extends Controller {
         edit(supplierId);
     }
 
+    @Right("SUPPLIERS_MANAGE")
     public static void update(Long id, @Valid Supplier supplier, File image) {
         int page = getPage();
         Supplier oldSupplier = Supplier.findById(id);
@@ -276,6 +279,7 @@ public class Suppliers extends Controller {
         render(supplier);
     }
 
+    @Right("SUPPLIERS_MANAGE")
     public static void freeze(long id) {
         Supplier.freeze(id);
         redirectUrl(getPage());
@@ -286,6 +290,7 @@ public class Suppliers extends Controller {
         redirectUrl(getPage());
     }
 
+    @Right("SUPPLIERS_MANAGE")
     public static void delete(long id) {
         Supplier.delete(id);
         index(null, null, null, null);
