@@ -58,6 +58,7 @@ coupon.EXPIRED=已过期
 coupon.CLERK_MESSAGE=店员短信验证
 coupon.CONSUMER_MESSAGE=消费者短信验证
 coupon.SHOP=电脑验证
+conpon.WEIXIN=微信验证
 coupon.TELEPHONE=电话验证
 coupon.OP_VERIFY=运营代理验证
 coupon.null=未知
