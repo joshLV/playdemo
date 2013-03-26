@@ -93,18 +93,20 @@
             <td>${supplier?.updatedAt?.format()}</td>
         *{<td>${supplier?.remark}</td>}*
             <td>
-                #{if  operate.rbac.ContextedPermission.hasPermission("SUPPLIERS_MANAGE")}
+                #{layout_operate.checkPermissionField value:["SUPPLIERS_MANAGE"]}
                     <a href="/suppliers/${supplier.id}/edit?page=${page?:1}">修改</a>
                     / #{vx.deleteLink id:supplier?.id, name:supplier?.fullName, action:"/suppliers"/}
                     #{if models.supplier.SupplierStatus.NORMAL.equals(supplier.status)}
                         / #{vx.operateLink text:"冻结", url:"/suppliers/"+supplier.id+"/freeze?page="+(page?:1), method:"PUT",confirm:true/}#{/if}
                     #{if models.supplier.SupplierStatus.FREEZE.equals(supplier.status)}
                         / #{vx.operateLink text:"解冻", url:"/suppliers/"+supplier.id+"/unfreeze?page="+(page?:1), method:"PUT",confirm:true/}#{/if}
-                    /  #{/if}
-                #{if  operate.rbac.ContextedPermission.hasPermission("SUPPLIERS")}
+                    /
+                #{/layout_operate.checkPermissionField}
+                #{layout_operate.checkPermissionField value:["SUPPLIERS"]}
                     <a href="javascript:openW('@{Suppliers.exportMaterial(supplier.id,supplier.domainName)}')"
                        onClick="return confirmExportMaterial();">导出培训教材</a>
-                #{/if}
+                #{/layout_operate.checkPermissionField}
+
             </td>
         </tr>
         #{/paginate.list}
