@@ -73,10 +73,10 @@ public class Order extends Model {
      * TODO 待更名为resalerId  下单用户ID，分销商
      */
     @Column(name = "resaler_id")
-    public long userId;
+    public Long userId;
 
     @Column(name = "consumer_id", nullable = true)
-    public long consumerId;                //下单用户ID，消费者
+    public Long consumerId;                //下单用户ID，消费者
 
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type")
@@ -926,8 +926,8 @@ public class Order extends Model {
 
     @Transient
     public Resaler getResaler() {
-        if (resaler == null) {
-            resaler = Resaler.findById(userId);
+        if (resaler == null && userId!=null) {
+                resaler = Resaler.findById(userId);
         }
         return resaler;
     }

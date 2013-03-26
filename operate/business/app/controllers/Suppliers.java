@@ -1,5 +1,6 @@
 package controllers;
 
+import operate.rbac.ContextedPermission;
 import com.uhuila.common.util.FileUploadUtil;
 import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.AccountType;
@@ -14,8 +15,8 @@ import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierCategory;
 import models.supplier.SupplierStatus;
-import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
+import operate.rbac.annotations.Right;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.data.validation.Valid;
@@ -52,6 +53,7 @@ public class Suppliers extends Controller {
 
 //        String otherName = request.params.get("otherName");
 //        String code = request.params.get("code");
+
         List<Supplier> suppliers = Supplier.findByCondition(supplierId, code, domainName, keyword);
         render(suppliers, page, supplierId, code, domainName, keyword);
     }
@@ -199,6 +201,7 @@ public class Suppliers extends Controller {
      *
      * @param id 门店标识
      */
+    @Right("SUPPLIERS_MANAGE")
     @ActiveNavigation("suppliers_index")
     public static void edit(long id) {
         int page = getPage();
@@ -243,6 +246,7 @@ public class Suppliers extends Controller {
         edit(supplierId);
     }
 
+    @Right("SUPPLIERS_MANAGE")
     public static void update(Long id, @Valid Supplier supplier, File image) {
         int page = getPage();
         Supplier oldSupplier = Supplier.findById(id);
@@ -275,6 +279,7 @@ public class Suppliers extends Controller {
         render(supplier);
     }
 
+    @Right("SUPPLIERS_MANAGE")
     public static void freeze(long id) {
         Supplier.freeze(id);
         redirectUrl(getPage());
@@ -285,6 +290,7 @@ public class Suppliers extends Controller {
         redirectUrl(getPage());
     }
 
+    @Right("SUPPLIERS_MANAGE")
     public static void delete(long id) {
         Supplier.delete(id);
         index(null, null, null, null);
@@ -308,7 +314,7 @@ public class Suppliers extends Controller {
         renderArgs.put("__FILE_NAME__", "商户列表_" + System.currentTimeMillis() + ".xls");
         List<Supplier> supplierList = Supplier.findByCondition(supplierId, code, domainName, keyword);
         for (Supplier supplier : supplierList) {
-            if (supplier.showSellingState==null || supplier.showSellingState==false) {
+            if (supplier.showSellingState == null || supplier.showSellingState == false) {
                 supplier.whetherToShowSellingState = "不允许";
             } else {
                 supplier.whetherToShowSellingState = "允许";
@@ -320,7 +326,7 @@ public class Suppliers extends Controller {
             }
             supplier.shopsCount = supplier.getShops().size();
             supplier.brandsCount = supplier.getBrands().size();
-            supplier.goodsCount=supplier.getGoods().size();
+            supplier.goodsCount = supplier.getGoods().size();
         }
         render(supplierList);
     }

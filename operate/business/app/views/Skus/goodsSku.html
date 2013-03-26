@@ -10,7 +10,7 @@
     </div>
 
 </div>
-#{layout_operate.textField name:'goods.skuCount', value:goods?.skuCount?:"1", note:'件', required:true/}
+#{layout_operate.textField name:'goods.skuCount', value:goods?.skuCount?:"1", note:'件', required:true,note:'请输入单件商品发货所需的货品数量'/}
 <SCRIPT type=text/javascript>
     #{if skuList== null || skuList.size()==0}
     $("#err-goods_skuId").html("该品牌没有对应的货品，请添加货品！");
