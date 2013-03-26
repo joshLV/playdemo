@@ -1,5 +1,5 @@
 package controllers;
-
+import operate.rbac.ContextedPermission;
 import com.uhuila.common.util.FileUploadUtil;
 import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.AccountType;
@@ -14,7 +14,6 @@ import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierCategory;
 import models.supplier.SupplierStatus;
-import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
@@ -52,6 +51,7 @@ public class Suppliers extends Controller {
 
 //        String otherName = request.params.get("otherName");
 //        String code = request.params.get("code");
+
         List<Supplier> suppliers = Supplier.findByCondition(supplierId, code, domainName, keyword);
         render(suppliers, page, supplierId, code, domainName, keyword);
     }
@@ -308,7 +308,7 @@ public class Suppliers extends Controller {
         renderArgs.put("__FILE_NAME__", "商户列表_" + System.currentTimeMillis() + ".xls");
         List<Supplier> supplierList = Supplier.findByCondition(supplierId, code, domainName, keyword);
         for (Supplier supplier : supplierList) {
-            if (supplier.showSellingState==null || supplier.showSellingState==false) {
+            if (supplier.showSellingState == null || supplier.showSellingState == false) {
                 supplier.whetherToShowSellingState = "不允许";
             } else {
                 supplier.whetherToShowSellingState = "允许";
@@ -320,7 +320,7 @@ public class Suppliers extends Controller {
             }
             supplier.shopsCount = supplier.getShops().size();
             supplier.brandsCount = supplier.getBrands().size();
-            supplier.goodsCount=supplier.getGoods().size();
+            supplier.goodsCount = supplier.getGoods().size();
         }
         render(supplierList);
     }
