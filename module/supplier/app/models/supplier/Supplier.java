@@ -432,7 +432,7 @@ public class Supplier extends Model {
                 params.add(operator.id);
             } else {
                 //门店电话
-                Shop shop = Shop.find("phone=?", keyword).first();
+                Shop shop = Shop.find("phone like ?", "%" + keyword + "%").first();
                 if (shop != null) {
                     sql.append("and id=?");
                     params.add(shop.supplierId);
@@ -448,14 +448,19 @@ public class Supplier extends Model {
                         if (brand != null) {
                             sql.append("and id=?");
                             params.add(brand.supplier.id);
+                        } else {
+                            //门店名称
+                            shop = Shop.find(" name like ?", "%" + keyword + "%").first();
+                            if (shop != null) {
+                                sql.append("and id=?");
+                                params.add(shop.supplierId);
+                            } else {
+                                //商户名称 or 商户短名称
+                                sql.append("and fullName like ? or otherName like ?");
+                                params.add("%" + keyword + "%");
+                                params.add("%" + keyword + "%");
+                            }
                         }
-                        //门店名称
-                        shop = Shop.find(" name like ?", "%" + keyword + "%").first();
-                        if (shop != null) {
-                            sql.append("and id=?");
-                            params.add(shop.supplierId);
-                        }
-
                     }
                 }
             }
@@ -548,7 +553,8 @@ public class Supplier extends Model {
      * @param date
      * @return
      */
-    public static BigDecimal getWithdrawAmount(Account supplierAccount, Prepayment lastPrepayment, BigDecimal withdrawAmount, Date date) {
+    public static BigDecimal getWithdrawAmount(Account supplierAccount, Prepayment lastPrepayment, BigDecimal
+            withdrawAmount, Date date) {
         if (lastPrepayment == null) {
             return withdrawAmount;
         }

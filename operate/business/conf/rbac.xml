@@ -26,7 +26,8 @@
     <permission key="COUPON_UNFREEZE" text="解冻券号" roles="customservice"/>
     <permission key="Point_GOODS" text="积分商品管理" roles="editor,customservice"/>
     <permission key="CHANNEL_GOODS" text="跟进渠道商品" roles="sales,editor"/>
-    <permission key="VIEW_SUPPLIER_CONTRACT" text="查看合同" roles="sales,account,editor,contractadminister"/>
+    <permission key="VIEW_SUPPLIER_CONTRACT" text="查看合同" roles="contractadminister,sales,account,editor"/>
+    <permission key="VIEW_ALL_SUPPLIER_CONTRACT" text="查看所有合同" roles="contractadminister,account,editor"/>
     <permission key="MANAGER_VIEW_SUPPLIER_CONTRACT" text="经理查看合同" roles="manager,account"/>
     <permission key="SUPPLIER_CONTRACT_MANAGEMENT" text="合同管理" roles="contractadminister"/>
 
@@ -43,7 +44,8 @@
     <permission key="VIEW_ECOUPONSN" text="查看完整券号" roles="customservice,webop"/>
 
     <permission key="SUPPLIERS_NEW" text="商户添加" roles="editor"/>
-    <permission key="SUPPLIERS" text="商户管理" roles="editor,customservice,sales"/>
+    <permission key="SUPPLIERS_MANAGE" text="商户删除和冻结" roles="editor"/>
+    <permission key="SUPPLIERS" text="查看商户" roles="editor,customservice,sales"/>
     <permission key="SUPPLIERS_USERS_NEW" text="商户操作员添加" roles="editor"/>
     <permission key="SUPPLIER_USERS" text="商户操作员管理" roles="editor,customservice"/>
     <permission key="SUPPLIERS_VERIFY_PHONES_NEW" text="添加电话验证机" roles="editor"/>
@@ -87,7 +89,7 @@
     <permission key="RESALE_SALES_REPORT" text="渠道销售汇总" roles="account"/>
 
     <navigation key="supplier_app" text="合作伙伴" action="Suppliers.index" display-order="20">
-        <navigation key="suppliers" text="商户" permissions="SUPPLIERS_NEW,SUPPLIERS">
+        <navigation key="suppliers" text="商户" permissions="SUPPLIERS_NEW,SUPPLIERS_MANAGE,SUPPLIERS">
             <navigation key="suppliers_add" action="Suppliers.add" text="商户添加" permissions="SUPPLIERS_NEW"/>
             <navigation key="suppliers_index" action="Suppliers.index" text="商户管理" permissions="SUPPLIERS"/>
             <navigation key="suppliers_category_index" action="SuppliersCategory.index" text="商户类别"
@@ -169,15 +171,7 @@
         <navigation key="order_app" text="订单">
             <navigation key="order_index" action="OperateOrders.index" text="运营订单管理" permissions="ORDERS"/>
         </navigation>
-        <navigation key="import_order_app" text="实体订单">
-            <navigation key="import_order_index" action="ImportPartnerOrders.index" text="导入渠道订单" permissions="ORDERS"/>
-            <navigation key="download_order_shipping_index" action="DownloadOrderShippingInfos.index" text="发货单下载"
-                        permissions="ORDERS"/>
-            <navigation key="upload_order_shipping_index" action="UploadOrderShippingInfos.index" text="导入发货单"
-                        permissions="ORDERS"/>
-            <navigation key="download_track_no_for_resaler" action="real.DownloadTrackNos.index" text="下载渠道运单上报文件"
-                        permissions="ORDERS"/>
-        </navigation>
+
         <navigation key="coupon_app" text="消费券">
             <navigation key="coupons_index" action="OperateCoupons.index" text="消费券管理" permissions="COUPONS"/>
             <navigation key="verify_index" action="OperateVerifyCoupons.index" text="验证消费券"
@@ -190,6 +184,15 @@
             <navigation key="verified_ecoupon_refund" action="VerifiedECouponRefunds.index" text="已消费券退款"
                         permissions="VERIFIED_ECOUPON_REFUND"/>
 
+        </navigation>
+        <navigation key="import_order_app" text="实物订单">
+            <navigation key="import_order_index" action="ImportPartnerOrders.index" text="导入渠道订单" permissions="ORDERS"/>
+            <navigation key="download_order_shipping_index" action="DownloadOrderShippingInfos.index" text="发货单下载"
+                        permissions="ORDERS"/>
+            <navigation key="upload_order_shipping_index" action="UploadOrderShippingInfos.index" text="导入发货单"
+                        permissions="ORDERS"/>
+            <navigation key="download_track_no_for_resaler" action="real.DownloadTrackNos.index" text="下载渠道运单上报文件"
+                        permissions="ORDERS"/>
         </navigation>
     </navigation>
 
