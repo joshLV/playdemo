@@ -70,7 +70,7 @@ public class Order extends Model {
     public static final String COUPON_EXPIRE_FORMAT = "yyyy-MM-dd";
 
     @Column(name = "user_id")
-    public long userId;                     //下单用户ID，可能是一百券用户，也可能是分销商
+    public Long userId;                     //下单用户ID，可能是一百券用户，也可能是分销商
 
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type")
@@ -740,14 +740,14 @@ public class Order extends Model {
             if (loginName.equals(Resaler.TAOBAO_LOGIN_NAME)) {
                 OuterOrder outerOrder = OuterOrder.find("byYbqOrder", this).first();
                 if (outerOrder != null) {
-                    try{
+                    try {
                         JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
-                        if (jsonObject.has("valid_ends")){
+                        if (jsonObject.has("valid_ends")) {
                             String expireStr = jsonObject.get("valid_ends").getAsString(); //买家手机号
                             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             expireAt = format.parse(expireStr);
                         }
-                    }catch (Exception e) {
+                    } catch (Exception e) {
                         //ignore
                     }
                 }
@@ -901,8 +901,8 @@ public class Order extends Model {
 
     @Transient
     public Resaler getResaler() {
-        if (resaler == null) {
-            resaler = Resaler.findById(userId);
+        if (resaler == null && userId!=null) {
+                resaler = Resaler.findById(userId);
         }
         return resaler;
     }
