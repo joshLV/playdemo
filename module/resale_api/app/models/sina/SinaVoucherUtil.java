@@ -49,6 +49,15 @@ public class SinaVoucherUtil {
     }
 
     /**
+     * 创建卡券
+     *
+     * @param body
+     * @return
+     */
+    public static SinaVoucherResponse uploadVoucher(String body) {
+        return sendRequest("vouch", body, REQUEST_POST);
+    }
+    /**
      * 提交请求
      *
      * @param api

@@ -119,7 +119,7 @@ public class OrderItems extends Model {
     public String options;
 
     /**
-     * 导入订单的渠道商品编码，如：京东订单表中的商品ID
+     * 导入订单的渠道商品编码，如：京东订单表中的商品ID,新浪的模板、商品ID
      */
     @Column(name = "outer_goods_no")
     public String outerGoodsNo;

@@ -1,4 +1,4 @@
-#{form @WebSinaVoucherOrders.phone(),id:'order_form'}
+#{form @WebSinaVoucherOrders.create(),id:'order_form'}
 <div class="wrapper" xmlns="http://www.w3.org/1999/html">
     <div class="coupon_main clear_wrap">
         <div class="coupon_left">
@@ -12,13 +12,9 @@
                         数量：<input type="text" id="buyCount" name="buyCount" value="${buyCount}">
                     </div>
                     #{if user.mobile}
-                        你的手机号：${user.mobile}
-                        <input type="hidden" name="phone" value="${user.mobile}">
+                        你的手机号：
+                        <input type="text" name="phone" value="${user.mobile}">
                     #{/if}
-                    #{else}
-                    <a id="bind-phone" href="#">绑定手机</a>
-                        *{#{a @WebSinaVoucherOrders.phone(productId,goods.id)}绑定手机#{/a}<br><br>}*
-                    #{/else}
                     <input type="hidden" name="productId" value="${productId}">
                     <input type="hidden" name="goodsId" value="${goods.id}">
                 </div>
@@ -32,14 +28,9 @@
 #{asset.js src:['/u/jquery-1.7.2.min.js','/base/121031/base.js'] /}
 <script>
     $(function () {
-        $("#bind-phone").click(function () {
+        $("#next").click(function () {
             $("#order_form").submit();
         })
 
-        $("#next").click(function () {
-            $("#order_form").attr("action","/weibo/wap/orders-confirm");
-            $("#order_form").attr("method","GET");
-            $("#order_form").submit();
-        })
     })
 </script>

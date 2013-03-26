@@ -69,8 +69,14 @@ public class Order extends Model {
     private static final String DECIMAL_FORMAT = "0000000";
     public static final String COUPON_EXPIRE_FORMAT = "yyyy-MM-dd";
 
-    @Column(name = "user_id")
-    public Long userId;                     //下单用户ID，可能是一百券用户，也可能是分销商
+    /**
+     * TODO 待更名为resalerId  下单用户ID，分销商
+     */
+    @Column(name = "resaler_id")
+    public Long userId;
+
+    @Column(name = "consumer_id", nullable = true)
+    public Long consumerId;                //下单用户ID，消费者
 
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type")
@@ -271,6 +277,12 @@ public class Order extends Model {
         return count;
     }
 
+    /**
+     * 新建订单
+     *
+     * @param userId
+     * @param userType
+     */
     private Order(long userId, AccountType userType) {
         this.userId = userId;
         this.userType = userType;
@@ -318,10 +330,23 @@ public class Order extends Model {
     }
 
     /**
+     * sina 创建消费订单.
+     *
+     * @param user    付款用户
+     * @param resaler 分销商
+     * @return 消费订单
+     */
+    public static Order createConsumeOrder(User user, Resaler resaler) {
+        Order order = new Order(resaler.id, AccountType.RESALER);
+        order.orderType = OrderType.CONSUME;
+        order.consumerId = user.id;
+        return order;
+    }
+
+    /**
      * 创建充值订单.
      *
-     * @param payerUserId      付款用户ID.
-     * @param payerAccountType 付款用户类型.
+     * @param payerUserId 付款用户ID.
      * @return 充值订单
      */
     public static Order createChargeOrder(long payerUserId, AccountType payerAccountType) {
