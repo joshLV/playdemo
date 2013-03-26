@@ -46,7 +46,7 @@
                     target="_blank">账户资金明细</a>
             #{/if}
             #{if  bill.account.accountType==models.accounts.AccountType.SUPPLIER }
-                <a href="/reports/supplier?supplierName=${supplierName}&condition.accountUid=${uid}&condition.tradeType=PURCHASE_COSTING"
+                <a href="/reports/supplier?supplierName=${supplierName}&supplierId=${supplierId}&condition.accountUid=${uid}&condition.tradeType=PURCHASE_COSTING"
                    target="_blank">账户资金明细</a>
             #{/if}
             #{if bill.account.accountType==models.accounts.AccountType.SHOP}
