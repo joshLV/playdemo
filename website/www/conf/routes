@@ -132,11 +132,7 @@ GET /weibo/wap/p/{productId}                    WebSinaVouchers.index
 GET /weibo/web/{productId}                      WebSinaVouchers.index
 
 GET /weibo/wap/orders/{productId}               WebSinaVoucherOrders.index
-GET /weibo/wap/orders-confirm                   WebSinaVoucherOrders.confirm
 POST /weibo/wap/orders/{productId}              WebSinaVoucherOrders.create
-GET  /weibo/wap/send-code                       WebSinaVoucherOrders.sendValidCode
-GET  /weibo/wap/bind-phone                      WebSinaVoucherOrders.phone
-POST /weibo/wap/bind-phone                      WebSinaVoucherOrders.bindPhone
 GET  /weibo/wap/payment_info/{orderNumber}      WebSinaPaymentInfo.index
 
 
