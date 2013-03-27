@@ -31,7 +31,6 @@ validation.maxSize=%s的长度不能超过%d!
 validation.maxFileSize=%s的长度不能超过%d个字符!
 validation.min=%s必须大于或等于%.2f!
 validation.minSize=%s的长度不能少于%d个字符!
-validation.invalid=无效的%s!
 validation.invalidType=%s的类型必须是%s!
 validation.write=%s没有权限保存!
 validation.save=%s保存失败!
@@ -608,6 +607,7 @@ coupon.JD=京东
 coupon.TB=淘宝
 coupon.WB=58团
 coupon.DD=当当
+coupon.SINA=新浪
 
 
 

@@ -1148,7 +1148,7 @@ public class Order extends Model {
     }
 
     public static Order findOneByUser(String orderNumber, Long userId, AccountType accountType) {
-        return Order.find("byOrderNumberAndUserIdAndUserType", orderNumber, userId, accountType).first();
+        return Order.find("byOrderNumberAndConsumerIdAndUserType", orderNumber, userId, accountType).first();
     }
 
     public static boolean verifyAndPay(String orderNumber, String fee, String paymentCode) {

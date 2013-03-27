@@ -34,7 +34,7 @@ import java.util.Map;
  * Time: 下午5:18
  */
 @With({SecureCAS.class, WebsiteInjector.class})
-//@TargetOAuth(OAuthType.SINA)
+@TargetOAuth(OAuthType.SINA)
 public class WebSinaVoucherOrders extends Controller {
     /**
      * 下单页面
@@ -82,6 +82,11 @@ public class WebSinaVoucherOrders extends Controller {
         order.payAndSendECoupon();
         order.save();
 
+        List<ECoupon> eCouponList = ECoupon.findByOrder(order);
+        for (ECoupon coupon : eCouponList) {
+            coupon.partner = ECouponPartner.SINA;
+            coupon.save();
+        }
         //更新用户手机
         user.updateMobile(phone);
         redirect("/weibo/wap/payment_info/" + order.orderNumber);
