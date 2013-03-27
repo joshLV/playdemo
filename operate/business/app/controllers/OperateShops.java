@@ -40,6 +40,7 @@ public class OperateShops extends Controller {
             shopCondition = new Shop();
         }
         ModelPaginator<Shop> shopPage = Shop.query(shopCondition, pageNumber, PAGE_SIZE);
+
         for (Shop shop : shopPage) {
             Supplier supplier = Supplier.findById(shop.supplierId);
             if (supplier != null) {
@@ -48,7 +49,6 @@ public class OperateShops extends Controller {
         }
 
         List<Supplier> supplierList = Supplier.findUnDeleted();
-
         render(shopPage, supplierList, shopCondition);
     }
 
@@ -222,7 +222,7 @@ public class OperateShops extends Controller {
 
     public static void showIndependentShops(Long supplierId) {
         List<Shop> independentShops = Shop.getIndependentShops(supplierId);
-        if (independentShops == null){
+        if (independentShops == null) {
             independentShops = new ArrayList<>();
         }
         render(independentShops);

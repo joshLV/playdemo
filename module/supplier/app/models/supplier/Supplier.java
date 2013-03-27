@@ -434,17 +434,20 @@ public class Supplier extends Model {
                 //门店电话
                 Shop shop = Shop.find("phone like ?", "%" + keyword + "%").first();
                 if (shop != null) {
+                    System.out.println(shop + "222===shop>>");
                     sql.append("and id=?");
                     params.add(shop.supplierId);
                 } else {
                     //门店地址
                     shop = Shop.find("address like ?", "%" + keyword + "%").first();
                     if (shop != null) {
+                        System.out.println(shop.supplierId + "2222===shop>>");
                         sql.append("and id=?");
                         params.add(shop.supplierId);
                     } else {
                         //品牌
                         Brand brand = Brand.find("name like ?", "%" + keyword + "%").first();
+                        System.out.println(brand + "222===>>");
                         if (brand != null) {
                             sql.append("and id=?");
                             params.add(brand.supplier.id);
@@ -452,10 +455,12 @@ public class Supplier extends Model {
                             //门店名称
                             shop = Shop.find(" name like ?", "%" + keyword + "%").first();
                             if (shop != null) {
+                                System.out.println(shop + "4444===shop>>");
                                 sql.append("and id=?");
                                 params.add(shop.supplierId);
                             } else {
                                 //商户名称 or 商户短名称
+                                System.out.println("=33332233==>>");
                                 sql.append("and fullName like ? or otherName like ?");
                                 params.add("%" + keyword + "%");
                                 params.add("%" + keyword + "%");
@@ -531,12 +536,12 @@ public class Supplier extends Model {
     }
 
     public List<Shop> getShops() {
-        return Shop.find("supplierId=?", this.id
+        return Shop.find("supplierId=? and deleted=?", this.id, DeletedStatus.UN_DELETED
         ).fetch();
     }
 
     public List<Brand> getBrands() {
-        return Brand.find("supplier.id=?", this.id
+        return Brand.find("supplier.id=? and deleted=?", this.id, DeletedStatus.UN_DELETED
         ).fetch();
     }
 
