@@ -37,9 +37,7 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import java.beans.Transient;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 供应商（商户）
@@ -407,63 +405,79 @@ public class Supplier extends Model {
     }
 
     public static List<Supplier> findByCondition(Long supplierId, String code, String domainName, String keyword) {
-        StringBuilder sql = new StringBuilder("deleted=?");
-        List params = new ArrayList();
-        params.add(DeletedStatus.UN_DELETED);
+        StringBuilder sql = new StringBuilder("deleted= :deleted");
+        Map<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put("deleted", DeletedStatus.UN_DELETED);
         if (supplierId != null && supplierId > 0) {
-            sql.append(" and id = ?");
-            params.add(supplierId);
+            sql.append(" and id = :supplierId");
+            paramsMap.put("supplierId", supplierId);
         }
 
         if (StringUtils.isNotBlank(code)) {
-            sql.append("and code like ?");
-            params.add(code + "%");
+            sql.append("and code like :code ");
+            paramsMap.put("code", code + "%");
         }
 
         if (StringUtils.isNotBlank(domainName)) {
-            sql.append("and domainName like ?");
-            params.add("%" + domainName + "%");
+            sql.append("and domainName like :domainName");
+            paramsMap.put("domainName", "%" + domainName + "%");
         }
         if (StringUtils.isNotBlank(keyword)) {
             //销售专员姓名
-            OperateUser operator = OperateUser.find("userName like ?", "%" + keyword + "%").first();
-            if (operator != null) {
-                sql.append("and salesId = ?");
-                params.add(operator.id);
+            List<OperateUser> operator = OperateUser.find("userName like ?", "%" + keyword + "%").fetch();
+            List<Long> ids = new ArrayList<>();
+            for (OperateUser o : operator) {
+                ids.add(o.id);
+            }
+            if (ids != null && ids.size() > 0) {
+                sql.append(" and salesId in :ids");
+                paramsMap.put("ids", ids);
             } else {
                 //门店电话
-                Shop shop = Shop.find("phone like ?", "%" + keyword + "%").first();
-                if (shop != null) {
-                    System.out.println(shop + "222===shop>>");
-                    sql.append("and id=?");
-                    params.add(shop.supplierId);
+                List<Shop> shop = Shop.find("phone like ?", "%" + keyword + "%").fetch();
+                ids = new ArrayList<>();
+                for (Shop s : shop) {
+                    ids.add(s.supplierId);
+                }
+                if (ids != null && ids.size() > 0) {
+                    sql.append("and id in :ids");
+                    paramsMap.put("ids", ids);
+
                 } else {
                     //门店地址
-                    shop = Shop.find("address like ?", "%" + keyword + "%").first();
-                    if (shop != null) {
-                        System.out.println(shop.supplierId + "2222===shop>>");
-                        sql.append("and id=?");
-                        params.add(shop.supplierId);
+                    shop = Shop.find("address like ?", "%" + keyword + "%").fetch();
+                    ids = new ArrayList<>();
+                    for (Shop s : shop) {
+                        ids.add(s.supplierId);
+                    }
+                    if (ids != null && ids.size() > 0) {
+                        sql.append(" and id in :ids");
+                        paramsMap.put("ids", ids);
                     } else {
                         //品牌
-                        Brand brand = Brand.find("name like ?", "%" + keyword + "%").first();
-                        System.out.println(brand + "222===>>");
-                        if (brand != null) {
-                            sql.append("and id=?");
-                            params.add(brand.supplier.id);
+                        List<Brand> brand = Brand.find("name like ?", "%" + keyword + "%").fetch();
+                        ids = new ArrayList<>();
+                        for (Brand b : brand) {
+                            ids.add(b.supplier.id);
+                        }
+                        if (ids != null && ids.size() > 0) {
+                            sql.append("and id in :ids");
+                            paramsMap.put("ids", ids);
                         } else {
                             //门店名称
-                            shop = Shop.find(" name like ?", "%" + keyword + "%").first();
-                            if (shop != null) {
-                                System.out.println(shop + "4444===shop>>");
-                                sql.append("and id=?");
-                                params.add(shop.supplierId);
+                            shop = Shop.find(" name like ?", "%" + keyword + "%").fetch();
+                            ids = new ArrayList<>();
+                            for (Shop s : shop) {
+                                ids.add(s.supplierId);
+                            }
+                            if (ids != null && ids.size() > 0) {
+                                sql.append("and id in :ids");
+                                paramsMap.put("ids", ids);
                             } else {
                                 //商户名称 or 商户短名称
-                                System.out.println("=33332233==>>");
-                                sql.append("and fullName like ? or otherName like ?");
-                                params.add("%" + keyword + "%");
-                                params.add("%" + keyword + "%");
+                                sql.append("and fullName like :fullName or otherName like :otherName");
+                                paramsMap.put("fullName", "%" + keyword + "%");
+                                paramsMap.put("otherName", "%" + keyword + "%");
                             }
                         }
                     }
@@ -472,7 +486,7 @@ public class Supplier extends Model {
         }
 
         sql.append(" order by createdAt DESC");
-        return find(sql.toString(), params.toArray()).fetch();
+        return find(sql.toString(), paramsMap).fetch();
     }
 
     public static List<Supplier> findSuppliersByCanSaleReal() {

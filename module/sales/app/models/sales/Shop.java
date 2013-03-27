@@ -30,7 +30,7 @@ public class Shop extends Model {
     private static final long serialVersionUID = 36632320609113062L;
 
     @Column(name = "supplier_id")
-    public long supplierId;
+    public Long supplierId;
 
     @Column(name = "area_id")
     @SolrField
