@@ -52,6 +52,9 @@ POST    /verify/{shopId}/{eCouponSn}            SupplierVerifyECoupons.singleQue
 POST    /verify/verify                          SupplierVerifyECoupons.verify
 GET     /verify/verified-coupons                SupplierVerifyECoupons.showVerifiedCoupons
 
+# [v2] 商户帮助页面
+GET     /how-to-verify                          SupplierHelps.verify
+
 # [v2] 资金帐户明细
 GET     /sequences                              SupplierAccountSequences.index
 
