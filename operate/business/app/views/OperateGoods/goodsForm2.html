@@ -24,7 +24,7 @@
     </div>
     #{/if}
     #{else}
-    <input type="hidden" goods_supplierId" name="goods.supplierId" value="${goods?.supplierId}">
+    <input type="hidden" id="goods_supplierId" name="goods.supplierId" value="${goods?.supplierId}">
         #{layout_operate.textField name:'goods.supplier', value:goods?.supplier?.fullName, disabled:true/}
     #{/else}
 <div class="control-group">
@@ -71,9 +71,11 @@
 </div>
 <div id="brand">#{include '/OperateBrands/goodsBrands.html'/}</div>
 *{#{if "edit".equals(action) }}*
-    #{if goods.supplierId==5}
-    <div id="sku">#{include '/Skus/goodsSku.html'/}</div>
-    #{/if}
+*{#{if goods.supplierId==5}}*
+<div id="sku">
+    #{include '/Skus/goodsSku.html'/}
+</div>
+*{#{/if}}*
 *{#{/if}}*
     #{layout_operate.textField name:'goods.no', value:goods?.no/}
     #{layout_operate.nameField name:'goods.shortName', value:goods?.shortName, required:true, length:12/}
@@ -172,10 +174,10 @@
     beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
 
     #{if "add".equals(action)}
-        #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)'/}
+        #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)',required:true/}
     #{/if}
     #{else}
-        #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)'/}
+        #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)',required:truelo/}
     <div class="control-group">
         <div class="controls">
             (修改前)<br/><img src="${imageLargePath}"/>
@@ -230,6 +232,8 @@
 </div>
 
 <script type="text/javascript">
+
+
         #{if "edit".equals(action)}
         $("#goods_coupon_type").hide();
         if ($("#noRefund").val() == 'false') {
@@ -278,10 +282,13 @@
     }
 
     if ($("#goods_materialType_2").attr("checked")) {
-        $("#sku").show();
+        $("#hi").show();
         $("#goods_coupon_type").hide();
 //        $("#goods_cumulative_stock").hide();
         $("#free_shipping").show();
+        if ($("#id_supplierName").val() != 5 && $("#goods_supplierId").val() != 5) {
+            $("#sku").hide();
+        }
 
     }
 
@@ -332,6 +339,12 @@
                     id = list[i].id;
                 }
             }
+            if ($("#id_supplierName").val() != 5 && $("#goods_supplierId").val() != 5) {
+                $("#sku").hide();
+            }
+            else if ($("#goods_materialType_2").attr("checked")) {
+                $("#sku").show();
+            }
             if (!found) {
                 $("#id_supplierName").val(-1);
                 $("#save").attr('disabled', true);
@@ -380,7 +393,9 @@
         $("#free_shipping").show();
 //        $("#goods_cumulative_stock").hide();
         $("#goods_coupon_type").hide();
-        $("#sku").show();
+        if ($("#id_supplierName").val() == 5 || $("#goods_supplierId").val() == 5) {
+            $("#sku").show();
+        }
     });
 
     $("#goods_materialType_1").click(function () {

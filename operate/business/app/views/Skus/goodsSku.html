@@ -1,5 +1,5 @@
 <div class="control-group">
-#{layout_operate.labelText name:'goods.sku.id', required:_required/}
+#{layout_operate.labelText name:'goods.sku.id', required:true/}
     <div class="controls">
     #{select name:'goods.sku.id',id:'goods_sku_id',value:goods?.sku?.id}
         #{list items:skuList, as:'sku'}
