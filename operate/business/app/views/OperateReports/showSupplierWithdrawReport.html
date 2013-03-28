@@ -81,7 +81,13 @@
     #{paginate.list items:supplierWithdrawReportPage, as:'supplierWithdraw'}
         <tr>
             <td>${i}</td>
-            <td>${supplierWithdraw?.supplier?.otherName} </td>
+            <td>
+                <a href="/reports/supplier?supplierName=${supplierWithdraw?.supplier?.otherName}&supplierId=${supplierWithdraw?.supplier?.id}&condition.createdAtBegin=${condition?.createdAtBegin?.format()}&condition.createdAtEnd=${condition?.createdAtEnd?.format()}"
+                   target="_blank">
+                ${supplierWithdraw?.supplier?.otherName}
+                </a>
+            </td>
+
             <td style="text-align: right;">${supplierWithdraw?.previousUnwithdrawnAmount}</td>
             <td style="text-align: right;">${supplierWithdraw?.consumedAmount}</td>
             <td style="text-align: right;">
