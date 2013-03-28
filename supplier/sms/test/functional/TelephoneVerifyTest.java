@@ -7,6 +7,7 @@ import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.admin.SupplierUser;
+import models.admin.SupplierUserType;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.sales.Shop;
@@ -28,16 +29,19 @@ import java.util.Date;
 public class TelephoneVerifyTest extends FunctionalTest{
     
     Shop shop;
+    SupplierUser supplierUser;
+    ECoupon eCoupon;
     
     @Before
     public void setup(){
         FactoryBoy.deleteAll();
         shop = FactoryBoy.create(Shop.class);
-        FactoryBoy.create(ECoupon.class);
-        FactoryBoy.create(SupplierUser.class, new BuildCallback<SupplierUser>() {
+        eCoupon = FactoryBoy.create(ECoupon.class);
+        supplierUser = FactoryBoy.create(SupplierUser.class, new BuildCallback<SupplierUser>() {
             @Override
             public void build(SupplierUser target) {
                 target.loginName = "02183135817";
+                target.supplierUserType = SupplierUserType.ANDROID;
             }
         });
 
@@ -48,8 +52,8 @@ public class TelephoneVerifyTest extends FunctionalTest{
 
     @Test
     public void testParams(){
-        String caller = FactoryBoy.last(SupplierUser.class).loginName;
-        String coupon = FactoryBoy.last(ECoupon.class).eCouponSn;
+        String caller = supplierUser.loginName;
+        String coupon = eCoupon.eCouponSn;
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
@@ -67,7 +71,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
 
 
         response = GET("/tel-verify?caller=" + caller + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + DigestUtils.md5Hex("wrongpasswd" + timestamp));
-        assertContentEquals("6", response);//;签名错误
+        assertContentEquals("0", response);//;签名错误 暂不检查
 
         timestamp = timestamp - 500000;
         sign = getSign(timestamp);
@@ -77,11 +81,10 @@ public class TelephoneVerifyTest extends FunctionalTest{
 
     @Test
     public void testNoSuchCoupon(){
-        ECoupon eCoupon = FactoryBoy.last(ECoupon.class);
         assertNotNull(eCoupon);
         eCoupon.delete();
 
-        String caller = FactoryBoy.last(SupplierUser.class).loginName;
+        String caller = supplierUser.loginName;
         String coupon = eCoupon.eCouponSn;
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
@@ -96,8 +99,8 @@ public class TelephoneVerifyTest extends FunctionalTest{
         supplier.deleted = DeletedStatus.DELETED;
         supplier.save();
 
-        String caller = FactoryBoy.last(SupplierUser.class).loginName;
-        String coupon = FactoryBoy.last(ECoupon.class).eCouponSn;
+        String caller = supplierUser.loginName;
+        String coupon = eCoupon.eCouponSn;
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
@@ -125,18 +128,32 @@ public class TelephoneVerifyTest extends FunctionalTest{
         eCoupon.goods.supplierId = originSupplierId;
         eCoupon.goods.save();
 
-        SupplierUser supplierUser = FactoryBoy.last(SupplierUser.class);
         supplierUser.delete();
         supplier.delete();
         response = GET("/tel-verify?caller=" + caller + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
         assertContentEquals("7", response);//;对不起，商户不存在
     }
 
+
+    @Test
+    public void testInvalidSupplierUserWithOutShop(){
+        supplierUser.shop = null;
+        supplierUser.save();
+
+        String caller = supplierUser.loginName;
+        String coupon = eCoupon.eCouponSn;
+        Long timestamp = System.currentTimeMillis()/1000;
+        String sign = getSign(timestamp);
+
+        Http.Response response = GET("/tel-verify?caller=" + caller + "&coupon=" + coupon + "&timestamp=" + timestamp +
+                "&sign=" + sign);
+        assertContentEquals("7", response);//;对不起，商户不存在, 当前用户没有门店也认为是商户不存在
+
+    }
+
     @Test
     public void testCouponStatus(){
-        ECoupon eCoupon = FactoryBoy.last(ECoupon.class);
-
-        String caller = FactoryBoy.last(SupplierUser.class).loginName;
+        String caller = supplierUser.loginName;
         String coupon = eCoupon.eCouponSn;
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
@@ -162,9 +179,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
 
     @Test
     public void test少一位也能验证(){
-        ECoupon eCoupon = FactoryBoy.last(ECoupon.class);
-
-        String caller = FactoryBoy.last(SupplierUser.class).loginName;
+        String caller = supplierUser.loginName;
         String coupon = eCoupon.eCouponSn.substring(1);
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
@@ -175,9 +190,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
 
     @Test
     public void test少两位就不能验证了(){
-        ECoupon eCoupon = FactoryBoy.last(ECoupon.class);
-
-        String caller = FactoryBoy.last(SupplierUser.class).loginName;
+        String caller = supplierUser.loginName;
         String coupon = eCoupon.eCouponSn.substring(2);
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
@@ -187,8 +200,22 @@ public class TelephoneVerifyTest extends FunctionalTest{
     }
 
     @Test
+    public void test电话前部分匹配也可以验证(){
+        supplierUser.loginName = "0218381";
+        supplierUser.save();
+        String caller = "02183817682";
+        Long timestamp = System.currentTimeMillis()/1000;
+        String sign = getSign(timestamp);
+
+        Http.Response response = GET("/tel-verify?caller=" + caller + "&coupon=" + eCoupon.eCouponSn + "&timestamp=" + timestamp + "&sign=" + sign);
+        assertContentEquals("0", response);//;消费成功，价值" + eCoupon.faceValue + "元"
+    }
+
+
+
+    @Test
     public void testFaceValueParams(){
-        String coupon = FactoryBoy.last(ECoupon.class).eCouponSn;
+        String coupon = eCoupon.eCouponSn;
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
@@ -213,7 +240,6 @@ public class TelephoneVerifyTest extends FunctionalTest{
 
     @Test
     public void testFacevalue(){
-        ECoupon eCoupon = FactoryBoy.last(ECoupon.class);
         eCoupon.triggerCouponSn = eCoupon.eCouponSn;
         eCoupon.save();
 
@@ -227,7 +253,6 @@ public class TelephoneVerifyTest extends FunctionalTest{
 
     @Test
     public void test查询面值时少一位(){
-        ECoupon eCoupon = FactoryBoy.last(ECoupon.class);
         eCoupon.triggerCouponSn = eCoupon.eCouponSn;
         eCoupon.save();
 
@@ -241,7 +266,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
 
     @Test
     public void testConsumedAtParams(){
-        String coupon = FactoryBoy.last(ECoupon.class).eCouponSn;
+        String coupon = eCoupon.eCouponSn;
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
@@ -266,8 +291,6 @@ public class TelephoneVerifyTest extends FunctionalTest{
 
     @Test
     public void testConsumedAt(){
-        ECoupon eCoupon = FactoryBoy.last(ECoupon.class);
-
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
@@ -284,8 +307,6 @@ public class TelephoneVerifyTest extends FunctionalTest{
 
     @Test
     public void test查询消费时间时少一位(){
-        ECoupon eCoupon = FactoryBoy.last(ECoupon.class);
-
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
