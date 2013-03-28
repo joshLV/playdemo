@@ -276,7 +276,7 @@ public class Orders extends Controller {
         }
 
         //创建订单
-        Order order = Order.createConsumeOrder(user.getId(), AccountType.CONSUMER);
+        Order order = Order.createYbqConsumeOrder(user.getId(), AccountType.CONSUMER);
         if (containsElectronic) {
             order.deliveryType = DeliveryType.SMS;
         } else if (containsReal) {

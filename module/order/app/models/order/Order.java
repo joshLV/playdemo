@@ -283,7 +283,7 @@ public class Order extends Model {
      * @param userId
      * @param userType
      */
-    private Order(long userId, AccountType userType) {
+    private Order(Long userId, AccountType userType) {
         this.userId = userId;
         this.userType = userType;
 
@@ -317,18 +317,31 @@ public class Order extends Model {
     }
 
     /**
-     * 创建普通消费订单.
+     * 渠道 创建普通消费订单.
+     *
+     * @param resalerId      付款用户ID
+     * @param accountType 付款用户账户类型
+     * @return 消费订单
+     */
+    public static Order createConsumeOrder(Long resalerId, AccountType accountType) {
+        Order order = new Order(resalerId, accountType);
+        order.orderType = OrderType.CONSUME;
+        return order;
+    }
+
+    /**
+     * 一百券 创建普通消费订单.
      *
      * @param userId      付款用户ID
      * @param accountType 付款用户账户类型
      * @return 消费订单
      */
-    public static Order createConsumeOrder(long userId, AccountType accountType) {
+    public static Order createYbqConsumeOrder(Long userId, AccountType accountType) {
         Order order = new Order(userId, accountType);
         order.orderType = OrderType.CONSUME;
+        order.consumerId=userId;
         return order;
     }
-
     /**
      * sina 创建消费订单.
      *
@@ -919,7 +932,7 @@ public class Order extends Model {
     @Transient
     public User getUser() {
         if (user == null) {
-            user = User.findById(userId);
+            user = User.findById(consumerId);
         }
         return user;
     }
@@ -1147,6 +1160,9 @@ public class Order extends Model {
         }
     }
 
+    public static Order findOneByResaler(String orderNumber, Long resalerId, AccountType accountType) {
+        return Order.find("byOrderNumberAndUserIdAndUserType", orderNumber, resalerId, accountType).first();
+    }
     public static Order findOneByUser(String orderNumber, Long userId, AccountType accountType) {
         return Order.find("byOrderNumberAndConsumerIdAndUserType", orderNumber, userId, accountType).first();
     }

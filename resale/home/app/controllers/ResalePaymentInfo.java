@@ -32,7 +32,7 @@ public class ResalePaymentInfo extends Controller {
         Account account = AccountUtil.getResalerAccount(user.getId());
 
         //加载订单信息
-        Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.RESALER);
+        Order order = Order.findOneByResaler(orderNumber, user.getId(), AccountType.RESALER);
         long goodsNumber = OrderItems.itemsNumber(order);
 
         List<PaymentSource> paymentSources = PaymentSource.findAll();
@@ -49,10 +49,8 @@ public class ResalePaymentInfo extends Controller {
      * @param paymentSourceCode 网银代码
      */
     public static void confirm(String orderNumber, boolean useBalance, String paymentSourceCode) {
-        System.out.println("paymentSourceCode>>>" + paymentSourceCode);
         Resaler resaler = SecureCAS.getResaler();
-        Order order = Order.findOneByUser(orderNumber, resaler.getId(), AccountType.RESALER);
-        System.out.println("order>>>" + order);
+        Order order = Order.findOneByResaler(orderNumber, resaler.getId(), AccountType.RESALER);
         if (order == null) {
             error(500, "no such order");
         }
@@ -77,7 +75,7 @@ public class ResalePaymentInfo extends Controller {
      */
     public static void payIt(String orderNumber, String paymentCode) {
         Resaler resaler = SecureCAS.getResaler();
-        Order order = Order.findOneByUser(orderNumber, resaler.getId(), AccountType.RESALER);
+        Order order = Order.findOneByResaler(orderNumber, resaler.getId(), AccountType.RESALER);
 
         PaymentSource paymentSource = PaymentSource.findByCode(paymentCode);
 

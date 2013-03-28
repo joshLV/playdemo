@@ -159,7 +159,7 @@ public class SecKillOrders extends Controller {
                                               boolean isElectronic, boolean isReal, Address defaultAddress,
                                               String receiverMobile) throws NotEnoughInventoryException {
         //创建订单
-        Order order = Order.createConsumeOrder(user.getId(), AccountType.CONSUMER);
+        Order order = Order.createYbqConsumeOrder(user.getId(), AccountType.CONSUMER);
         if (isElectronic) {
             order.deliveryType = DeliveryType.SMS;
         } else if (isReal) {

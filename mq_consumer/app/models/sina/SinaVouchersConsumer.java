@@ -20,7 +20,7 @@ import java.util.Map;
 @OnApplicationStart(async = true)
 public class SinaVouchersConsumer extends RabbitMQConsumer<Long> {
     @Override
-    protected void consume(Long couponId) {
+    public void consume(Long couponId) {
         ECoupon coupon = ECoupon.findById(couponId);
         if (coupon == null) {
             return;
@@ -47,17 +47,20 @@ public class SinaVouchersConsumer extends RabbitMQConsumer<Long> {
      */
     private SinaVoucherResponse createVouchers(ECoupon coupon) {
         Map<String, String> requestParams = new HashMap<>();
-        ResalerProduct resalerProduct = ResalerProduct.findById(coupon.orderItems.outerGoodsNo);
+        ResalerProduct resalerProduct = ResalerProduct.findById(Long.parseLong(coupon.orderItems.outerGoodsNo));
         ResalerProductJournal journal = ResalerProductJournal.find("product = ? order by createdAt desc", resalerProduct).first();
-        Map<String, String> journalMap = new Gson().fromJson(journal.jsonData,new TypeToken<Map<String, String>>(){}.getType());
-        String type = journalMap.get("type");
-        requestParams.put("type_template_id", coupon.orderItems.outerGoodsNo);
-        requestParams.put("belong_coop_id", type);
-        if ("2".equals(type)) {//会员卡
-            requestParams.put("user_name", "");
-            requestParams.put("user_level", "");
-            requestParams.put("point_balance", "");
+        if (journal != null) {
+            Map<String, String> journalMap = new Gson().fromJson(journal.jsonData, new TypeToken<Map<String, String>>() {
+            }.getType());
+            String type = journalMap.get("type");
+            if ("2".equals(type)) {//会员卡
+                requestParams.put("user_name", "");
+                requestParams.put("user_level", "");
+                requestParams.put("point_balance", "");
+            }
+            requestParams.put("belong_coop_id", type);
         }
+        requestParams.put("type_template_id", coupon.orderItems.outerGoodsNo);
         requestParams.put("coop_id", coupon.eCouponSn);
         requestParams.put("code", coupon.eCouponSn);
         requestParams.put("uid", coupon.order.getUser().openId);
