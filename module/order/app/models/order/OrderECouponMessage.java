@@ -1,5 +1,6 @@
 package models.order;
 
+import com.google.common.collect.Lists;
 import extension.order.OrderECouponSMSContext;
 import extension.order.OrderECouponSMSInvocation;
 import models.accounts.AccountType;
@@ -116,40 +117,14 @@ public class OrderECouponMessage implements Serializable {
      * @return
      */
     public static String getOrderSMSMessage(ECoupon coupon) {
-
         if (!coupon.canSendSMSByOperate()) {  //检查是否可发短信
-            Logger.info("ECoupon(id:" + coupon.id + ") stats is not UNCONSUMED, but was " + coupon.status + ", cann't send SMS.");
+            Logger.info("ECoupon(id:" + coupon.id + ") stats is not UNCONSUMED, but was " + coupon.status + ", " +
+                    "cann't send SMS.");
             return null;
         }
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat(Order.COUPON_EXPIRE_FORMAT);
-
-        String note = ",";
-        if (coupon.goods.isOrder) {
-            // 需要预约的产品
-            if (coupon.appointmentDate != null) {
-                note = ",预约于" + dateFormat.format(coupon.appointmentDate) + "到店消费,";
-                if (StringUtils.isNotBlank(coupon.appointmentRemark)) {
-                    note += coupon.appointmentRemark + ",";
-                }
-            } else {
-                // 还没有预约
-                note = ",此产品需预约,";
-            }
-        }
-
-        String couponInfo = "券号" + coupon.eCouponSn;
-        if (StringUtils.isNotBlank(coupon.eCouponPassword)) {
-            couponInfo += "," + "密码" + coupon.eCouponPassword;
-        }
-
-        String expiredDate = dateFormat.format(coupon.expireAt);
-        OrderECouponSMSContext context = new OrderECouponSMSContext(coupon.order, coupon.goods, couponInfo, note, expiredDate);
-
-        ExtensionResult result = ExtensionInvoker.run(OrderECouponSMSInvocation.class, context, defaultSmsAction);
-        Logger.info("Generate sms content:" + result);
-
-        return context.getSmsContent();
+        List<ECoupon> eCoupons = new ArrayList<>();
+        eCoupons.add(coupon);
+        return getSMSContent(coupon.orderItems, eCoupons);
     }
 
     /**
@@ -157,9 +132,8 @@ public class OrderECouponMessage implements Serializable {
      *
      * @return
      */
-    public static String getOrderSMSMessage(OrderItems orderItems) {
+    public static String[] getOrderSMSMessage(OrderItems orderItems) {
         if (orderItems.order.status != OrderStatus.PAID) {
-
             Logger.info("OrderItem(" + orderItems.id + ").order Status is NOT PAID, but was:" + orderItems.order.status);
             return null;  //未支付时不能发短信.
         }
@@ -176,10 +150,34 @@ public class OrderECouponMessage implements Serializable {
             return null;
         }
 
+        // 每8张券一个长短信
+        List<ECoupon> eCoupons = orderItems.getECoupons();
+
+        List<ECoupon> needSendECoupons = new ArrayList<>();
+        for (ECoupon e : eCoupons) {
+            //过滤一下得到需要发送短信的券
+            if (e.canSendSMSByOperate()) {
+                needSendECoupons.add(e);
+            }
+        }
+        if (needSendECoupons.size() == 0) {
+            Logger.info("OrderItem(" + orderItems.id + ") does NOT contains any need Send ECoupons!");
+            return null;
+        }
+
+        List<List<ECoupon>> splitECoupons = Lists.partition(needSendECoupons, 8);
+        String[] smsContents = new String[splitECoupons.size()];
+        for (int i = 0; i < splitECoupons.size(); i++) {
+            smsContents[i] = getSMSContent(orderItems, splitECoupons.get(i));
+        }
+
+        return smsContents;
+    }
+
+    private static String getSMSContent(OrderItems orderItems, List<ECoupon> eCoupons) {
         List<String> ecouponSNs = new ArrayList<>();
         ECoupon lastECoupon = null;
-
-        for (ECoupon e : orderItems.getECoupons()) {
+        for (ECoupon e : eCoupons) {
             if (StringUtils.isNotBlank(e.eCouponPassword)) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("券号").append(e.eCouponSn).append("密码").append(e.eCouponPassword);
@@ -189,7 +187,6 @@ public class OrderECouponMessage implements Serializable {
             }
             lastECoupon = e;
         }
-
         if (lastECoupon == null) {
             Logger.info("OrderItem(" + orderItems.id + ") does NOT contains any ECoupons!");
             return null;
@@ -197,7 +194,7 @@ public class OrderECouponMessage implements Serializable {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(Order.COUPON_EXPIRE_FORMAT);
 
-        String couponInfo = StringUtils.join(ecouponSNs, "，");
+        String couponInfo = StringUtils.join(ecouponSNs, ",");
 
         if (ecouponSNs.size() > 1) {
             couponInfo += "[共" + ecouponSNs.size() + "张]";

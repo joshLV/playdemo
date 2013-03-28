@@ -1548,20 +1548,18 @@ public class ECoupon extends Model {
     /**
      * 判断运营人员是否可重新发送券号.
      *
+     * 以下条件的券是可以发送短信的：
+     * <ol>
+     *     <li>券状态是未消费UNCONSUMED</li>
+     *     <li>导入券在已消费时也可以发短信</li>
+     * </ol>
+     *
      * @return
      */
     public boolean canSendSMSByOperate() {
-        if (this.goods.isLottery) {
-            return false;
-        }
-        if (this.status == ECouponStatus.UNCONSUMED) {
-            return true;
-        }
-        if (this.goods.couponType == GoodsCouponType.IMPORT && this.status == ECouponStatus.CONSUMED) {
-            // 导入券可继续发送
-            return true;
-        }
-        return false;
+        return !this.goods.isLottery && (this.status == ECouponStatus.UNCONSUMED
+                || (this.goods.couponType == GoodsCouponType.IMPORT && this.status == ECouponStatus.CONSUMED)
+        );
     }
 
     /**
@@ -1570,10 +1568,7 @@ public class ECoupon extends Model {
      * @return
      */
     public boolean canSendSMSByConsumer() {
-        if (canSendSMSByOperate() && this.smsSentCount <= 3) {
-            return true;
-        }
-        return false;
+        return canSendSMSByOperate() && this.smsSentCount <= 3;
     }
 
     /**

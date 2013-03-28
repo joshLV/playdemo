@@ -5,7 +5,6 @@ import factory.callback.BuildCallback;
 import factory.callback.SequenceCallback;
 import models.accounts.AccountType;
 import models.consumer.User;
-import models.operator.OperateUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;
@@ -17,6 +16,7 @@ import models.sales.Goods;
 import models.sales.Shop;
 import org.junit.Before;
 import org.junit.Test;
+import play.Logger;
 import play.test.UnitTest;
 import util.DateHelper;
 
@@ -32,30 +32,172 @@ import java.util.List;
  * Time: 下午3:51
  */
 public class OrderECouponMessageTest extends UnitTest {
+    SimpleDateFormat dateFormat = new SimpleDateFormat(Order.COUPON_EXPIRE_FORMAT);
 
-    OperateUser user;
     Order order;
     List<ECoupon> couponList;
     OrderItems orderItems;
-    List<ECoupon> orderItemsCouponsList;
 
     Resaler wuba;
+    Goods goods;
+    Shop shop;
+    User user;
 
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
 
-
         // 初始化 电子券数据
-        final Goods goods = FactoryBoy.create(Goods.class);
-        final Shop shop = FactoryBoy.create(Shop.class);
-        order = FactoryBoy.create(Order.class, new BuildCallback<Order>() {
+        goods = FactoryBoy.create(Goods.class);
+        shop = FactoryBoy.create(Shop.class);
+        user = FactoryBoy.create(User.class);
+
+        wuba = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
             @Override
-            public void build(Order order) {
-                order.paidAt = DateHelper.beforeHours(1);
+            public void build(Resaler target) {
+                target.loginName = Resaler.WUBA_LOGIN_NAME;
             }
         });
-        couponList = FactoryBoy.batchCreate(10, ECoupon.class, "Id",
+        order = FactoryBoy.create(Order.class, new BuildCallback<Order>() {
+            @Override
+            public void build(Order target) {
+                target.paidAt = DateHelper.beforeHours(1);
+                target.userId = user.id;
+                target.status = OrderStatus.PAID;
+            }
+        });
+        orderItems = FactoryBoy.create(OrderItems.class, new BuildCallback<OrderItems>() {
+            @Override
+            public void build(OrderItems target) {
+                target.phone = user.mobile;
+                target.status = OrderStatus.PAID;
+            }
+        });
+    }
+
+
+    @Test
+    public void 无密码单张券发送短信() {
+        createNoPasswordCoupons(2);
+        assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + ",截止" + dateFormat.format(couponList.get(0).expireAt) + "一百券客服4006262166",
+                OrderECouponMessage.getOrderSMSMessage(couponList.get(0)));
+    }
+
+    @Test
+    public void 无密码2张券发送短信() {
+        createNoPasswordCoupons(2);
+        String[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
+        Logger.info(smsMessages[0]);
+        assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + ",券号" + couponList.get(1).eCouponSn + "[共2张],截止" + dateFormat.format(couponList.get(0).expireAt) + "一百券客服4006262166",
+                smsMessages[0]);
+    }
+
+    @Test
+    public void 无密码30张券发送短信() {
+        createNoPasswordCoupons(30);
+
+        // 发短信时只会收到4条长短信，一条短信包括8张券
+        String[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
+        assertEquals(4, smsMessages.length);
+    }
+
+    @Test
+    public void 无密码30张券其中15张券已验证() {
+        createNoPasswordCoupons(30);
+
+        boolean odd = true;
+        for (ECoupon e : couponList) {
+            if (odd) {
+                e.status = ECouponStatus.CONSUMED;
+                e.save();
+            }
+            odd = !odd;
+        }
+
+        // 重发短信时只会收到2条长短信
+        String[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
+        assertEquals(2, smsMessages.length);
+    }
+
+    @Test
+    public void 有密码单张券发送短信() {
+        createWithPasswordCoupons(2);
+        assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + "密码"
+                + couponList.get(0).eCouponPassword + ",截止" +
+                dateFormat.format(couponList.get(1).expireAt) + "一百券客服4006262166",
+                OrderECouponMessage.getOrderSMSMessage(couponList.get(0)));
+    }
+
+    @Test
+    public void 有密码多张券发送短信() {
+        createWithPasswordCoupons(2);
+        String[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
+        Logger.info(smsMessages[0]);
+        assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + "密码"
+                + couponList.get(0).eCouponPassword + ",券号" + couponList.get(1).eCouponSn + "密码" +
+                couponList.get(1).eCouponPassword + "[共2张],截止" +
+                dateFormat.format(couponList.get(1).expireAt) + "一百券客服4006262166",
+                smsMessages[0]);
+    }
+
+    @Test
+    public void 无密码58团单张券() {
+        createNoPasswordCoupons(2);
+        order.userType = AccountType.RESALER;
+        order.userId = wuba.id;
+        order.save();
+        StringBuilder sb = new StringBuilder();
+        sb.append("【58团】")
+                .append(couponList.get(0).goods.title)
+                .append("由58合作商家【一百券】提供,一百券号").append(couponList.get(0).eCouponSn)
+                .append(",有效期至").append(dateFormat.format(couponList.get(0).expireAt))
+                .append("58客服4007895858");
+        assertEquals(sb.toString(), OrderECouponMessage.getOrderSMSMessage(couponList.get(0)));
+    }
+
+    @Test
+    public void 有密码58团多张券() {
+        createWithPasswordCoupons(2);
+        orderItems.order.userType = AccountType.RESALER;
+        orderItems.order.userId = wuba.id;
+        orderItems.order.save();
+
+        String[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
+        Logger.info(smsMessages[0]);
+        System.out.println(smsMessages[0]);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("【58团】")
+                .append(couponList.get(0).goods.title)
+                .append("由58合作商家【一百券】提供,一百")
+                .append("券号").append(couponList.get(0).eCouponSn)
+                .append("密码").append(couponList.get(0).eCouponPassword)
+                .append(",券号").append(couponList.get(1).eCouponSn)
+                .append("密码").append(couponList.get(1).eCouponPassword)
+                .append("[共2张]")
+                .append(",有效期至").append(dateFormat.format(couponList.get(1).expireAt))
+                .append("58客服4007895858");
+        assertEquals(sb.toString(), smsMessages[0]);
+    }
+
+
+    /**
+     * 创建没有密码的券列表
+     */
+    private void createWithPasswordCoupons(int size) {
+        couponList = FactoryBoy.batchCreate(size, ECoupon.class, "password",
+                new SequenceCallback<ECoupon>() {
+                    @Override
+                    public void sequence(ECoupon target, int seq) {
+                        target.status = ECouponStatus.UNCONSUMED;
+                        target.isFreeze = 0;
+                        target.createdAt = new Date();
+                    }
+                });
+    }
+
+    private void createNoPasswordCoupons(int size) {
+        couponList = FactoryBoy.batchCreate(size, ECoupon.class, "Id",
                 new SequenceCallback<ECoupon>() {
                     @Override
                     public void sequence(ECoupon target, int seq) {
@@ -67,87 +209,6 @@ public class OrderECouponMessageTest extends UnitTest {
                         target.createdAt = new Date();
                     }
                 });
-        wuba = FactoryBoy.create(Resaler.class, new BuildCallback<Resaler>() {
-            @Override
-            public void build(Resaler target) {
-                target.loginName = Resaler.WUBA_LOGIN_NAME;
-            }
-        });
-        User user = FactoryBoy.last(User.class);
-        Goods goodsA = FactoryBoy.last(Goods.class);
-        Goods goodsB = FactoryBoy.create(Goods.class);
-        Order order = FactoryBoy.create(Order.class);
-        orderItems = FactoryBoy.create(OrderItems.class);
-        order.userId = user.id;
-        order.status = OrderStatus.PAID;
-        order.save();
-        orderItems.phone = user.mobile;
-        orderItems.status = OrderStatus.PAID;
-        orderItems.save();
-        orderItemsCouponsList = FactoryBoy.batchCreate(2, ECoupon.class, "password",
-                new SequenceCallback<ECoupon>() {
-                    @Override
-                    public void sequence(ECoupon target, int seq) {
-                        target.status = ECouponStatus.UNCONSUMED;
-                        target.isFreeze = 0;
-                        target.createdAt = new Date();
-                    }
-                });
-
-
-    }
-
-    SimpleDateFormat dateFormat = new SimpleDateFormat(Order.COUPON_EXPIRE_FORMAT);
-
-    @Test
-    public void testEcouponGetOrderSMSMessage() {
-        assertEquals(couponList.get(0).goods.title + "券号" + couponList.get(0).eCouponSn + ",截止" + dateFormat.format(couponList.get(0).expireAt) + "一百券客服4006262166", OrderECouponMessage.getOrderSMSMessage(couponList.get(0)));
-    }
-
-    @Test
-    public void testOrderItemsGetOrderSMSMessage() {
-        System.out.println(OrderECouponMessage.getOrderSMSMessage(orderItems));
-        assertEquals(orderItemsCouponsList.get(0).goods.title + "券号" + orderItemsCouponsList.get(0).eCouponSn + "密码"
-                + orderItemsCouponsList.get(0).eCouponPassword + "，券号" + orderItemsCouponsList.get(1).eCouponSn + "密码" +
-                orderItemsCouponsList.get(1).eCouponPassword + "[共2张],截止" +
-                dateFormat.format(orderItemsCouponsList.get(1).expireAt) + "一百券客服4006262166",
-                OrderECouponMessage.getOrderSMSMessage(orderItems));
-    }
-
-    @Test
-    public void testEcouponGetOrderSMSMessageFor58() {
-        order.userType = AccountType.RESALER;
-        order.userId = wuba.id;
-        order.save();
-        StringBuilder sb = new StringBuilder();
-        sb.append("【58团】")
-                .append(couponList.get(0).goods.title)
-                .append("由58合作商家【一百券】提供,一百券号").append(couponList.get(0).eCouponSn)
-                .append(",有效期至").append(dateFormat.format(couponList.get(0).expireAt))
-                .append("58客服4007895858");
-
-        assertEquals(sb.toString(), OrderECouponMessage.getOrderSMSMessage(couponList.get(0)));
-    }
-
-    @Test
-    public void testOrderItemsGetOrderSMSMessageFor58() {
-        orderItems.order.userType = AccountType.RESALER;
-        orderItems.order.userId = wuba.id;
-        orderItems.order.save();
-        System.out.println(OrderECouponMessage.getOrderSMSMessage(orderItems));
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("【58团】")
-                .append(orderItemsCouponsList.get(0).goods.title)
-                .append("由58合作商家【一百券】提供,一百")
-                .append("券号").append(orderItemsCouponsList.get(0).eCouponSn)
-                .append("密码").append(orderItemsCouponsList.get(0).eCouponPassword)
-                .append("，券号").append(orderItemsCouponsList.get(1).eCouponSn)
-                .append("密码").append(orderItemsCouponsList.get(1).eCouponPassword)
-                .append("[共2张]")
-                .append(",有效期至").append(dateFormat.format(orderItemsCouponsList.get(1).expireAt))
-                .append("58客服4007895858");
-        assertEquals(sb.toString(), OrderECouponMessage.getOrderSMSMessage(orderItems));
     }
 
 }

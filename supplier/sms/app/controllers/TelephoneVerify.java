@@ -47,7 +47,7 @@ public class TelephoneVerify extends Controller {
      */
     public static void verify(final String caller, final String coupon, Long timestamp, String sign,
                               BigDecimal value) {
-        Logger.info("telephone verify start");
+        Logger.info("telephone verify start: caller phone=%s, coupon=%s", caller, coupon);
         Logger.info(new Gson().toJson(request.params.allSimple()));
         if (caller == null || caller.trim().equals("")) {
             Logger.info("telephone verify failed: invalid caller");

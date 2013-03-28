@@ -1,9 +1,9 @@
 package functional;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
+import com.uhuila.common.constants.DeletedStatus;
+import controllers.TelephoneVerify;
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.admin.SupplierUser;
@@ -12,18 +12,15 @@ import models.order.ECouponStatus;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.mvc.Http;
 import play.test.FunctionalTest;
 
-import com.uhuila.common.constants.DeletedStatus;
-
-import controllers.TelephoneVerify;
-import factory.FactoryBoy;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author likang
@@ -37,7 +34,12 @@ public class TelephoneVerifyTest extends FunctionalTest{
         FactoryBoy.deleteAll();
         shop = FactoryBoy.create(Shop.class);
         FactoryBoy.create(ECoupon.class);
-        FactoryBoy.create(SupplierUser.class);
+        FactoryBoy.create(SupplierUser.class, new BuildCallback<SupplierUser>() {
+            @Override
+            public void build(SupplierUser target) {
+                target.loginName = "02183135817";
+            }
+        });
 
         Account account = AccountUtil.getPlatformIncomingAccount();
         account.amount = new BigDecimal("99999");

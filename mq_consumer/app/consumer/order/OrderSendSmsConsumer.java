@@ -99,13 +99,6 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
     }
 
     private void sendOrderItemsSMS(OrderItems orderItems, OrderECouponMessage message) {
-        String msg = OrderECouponMessage.getOrderSMSMessage(orderItems);
-
-        if (msg == null) {
-            Logger.info("OrderItems(id:" + orderItems.id + ").getOrderSMSMessage() == null, " +
-                    "Will NOT Send SMS.");
-            return;
-        }
 
         try {
             List<ECoupon> ecoupons = orderItems.getECoupons();
@@ -133,14 +126,27 @@ public class OrderSendSmsConsumer extends RabbitMQConsumerWithTx<OrderECouponMes
                 return;
             }
 
-            try {
-                getSMSProvider().send(new SMSMessage(msg, phone, ecoupons.get(0).replyCode));
-            } catch (Exception e1) {
-                Logger.info("Send SMS failed use " + SMS_TYPE + ", try " + SMS_TYPE2);
-                getSMSProvider2().send(new SMSMessage(msg, phone, ecoupons.get(0).replyCode));
+            String[] smsMessages = OrderECouponMessage.getOrderSMSMessage(orderItems);
+
+            if (smsMessages == null) {
+                Logger.info("OrderItems(id:" + orderItems.id + ").getOrderSMSMessage() == null, " +
+                        "Will NOT Send SMS.");
+                return;
+            }
+
+            for (String msg : smsMessages) {
+                try {
+                    getSMSProvider().send(new SMSMessage(msg, phone, ecoupons.get(0).replyCode));
+                } catch (Exception e1) {
+                    Logger.info("Send SMS failed use " + SMS_TYPE + ", try " + SMS_TYPE2);
+                    getSMSProvider2().send(new SMSMessage(msg, phone, ecoupons.get(0).replyCode));
+                }
             }
 
             for (ECoupon ecoupon : ecoupons) {
+                if (!ecoupon.canSendSMSByOperate()) {
+                    continue;  //不能发短信的不用记录历史
+                }
                 // 如果没有出现异常，则记录一下发送历史
                 if (ecoupon.smsSentCount == null) {
                     ecoupon.smsSentCount = 0;
