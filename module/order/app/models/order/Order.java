@@ -72,7 +72,7 @@ public class Order extends Model {
     /**
      * TODO 待更名为resalerId  下单用户ID，分销商
      */
-    @Column(name = "resaler_id")
+    @Column(name = "user_id")
     public Long userId;
 
     @Column(name = "consumer_id", nullable = true)
