@@ -1,0 +1,100 @@
+#{extends 'layout_trader/supplier_help_page_layout.html' /}
+#{set title:'如何验证券？' /}
+#{set menu:"how-to-verify" /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/flash.js'}" type="text/javascript"
+        charset="UTF-8"></script>
+
+
+#{/set}
+<link href="@{'/public/stylesheets/supplier_help.css'}" rel="stylesheet">
+<link href="http://fonts.googleapis.com/css?family=Kaushan+Script" rel="stylesheet" type="text/css">
+<div class="bd">
+    <h2>${title}</h2>
+    <iframe height=480 width=690 src="http://player.youku.com/embed/XNTMzODQwNzUy" frameborder=0
+            allowfullscreen marginwidht=600></iframe>
+
+    <h5 id="id-1如何验证券？-1登录商户后台，选择“券验证”">1.登录商户后台，选择“券验证”</h5>
+
+    <p><img src="http://img.uhcdn.com/images/help/6193970/6389788.png"
+            data-image-src="http://img.uhcdn.com/images/help/6193970/6389788.png"
+            ></p>
+
+    <h5
+            id="id-1如何验证券？-2选择门店：">2.选择门店：</h5>
+
+    <p>总店账号需要选择券号消费的门店，分店账号不需要选择，系统将默认选择对应门店</p>
+
+    <p><img src="http://img.uhcdn.com/images/help/6193970/6389789.png"
+            data-image-src="http://img.uhcdn.com/images/help/6193970/6389789.png?effects=border-simple,blur-border"
+            style="width: 680px;"
+            ></p><h5
+        id="id-1如何验证券？-3输入券号：">3.输入券号：</h5>
+
+    <p>输入消费者提供的<u><strong>10位</strong></u>券号，确认无误后 <u><strong>回车</strong>或<strong>点击“添加”</strong></u>，将券号添加到列表中</p>
+    <h5 id="id-1如何验证券？-"><img class="confluence-embedded-image"
+                              confluence-query-params="effects=border-simple,blur-border"
+                              src="http://img.uhcdn.com/images/help/6193970/6389790.png?effects=border-simple,blur-border"
+                              data-image-src="http://img.uhcdn.com/images/help/6193970/6389790.png?effects=border-simple,blur-border"
+            ></h5><h5 id="id-1如何验证券？-4批量验证：">4.批量验证：</h5>
+
+    <p>添加好一个券号之后，可以继续添加第二个券号进行批量验证，每次最多可以添加<strong><u>10张</u></strong>券号进行批量验证</p><h5 id="id-1如何验证券？-5无法添加券号的原因：">
+    <strong>5.无法添加券号的原因：</strong></h5>
+
+    <p>如果券号无法验证，在添加时将弹出错误提示，并说明错误原因</p>
+
+    <p><strong><img class="confluence-embedded-image" confluence-query-params="effects=border-simple,blur-border"
+                    src="http://img.uhcdn.com/images/help/6193970/6389796.png?effects=border-simple,blur-border"
+                    data-image-src="http://img.uhcdn.com/images/help/6193970/6389796.png?effects=border-simple,blur-border"
+            ></strong></p>
+
+    <p>无法添加券号的原因有以下8种</p>
+    <ol style="margin-left:40px;margin-bottom:10px;list-style: decimal;">
+        <li>券号应为10位数字，请修正</li>
+        <li>对不起，未找到此券</li>
+        <li>对不起，该券有使用门店限制</li>
+        <li>对不起，该券已被冻结</li>
+        <li>
+            <span><span><span>对不起，该券已使用过。</span><span>消费门店为{门店名}，</span><span>消费时间为*年*月*日*点*分</span></span></span></span>
+        </li>
+        <li>对不起，该券已退款</li>
+        <li>对不起，该券已过期</li>
+        <li>对不起，该券有效期还没开始</li>
+    </ol>
+    <h5 id="id-1如何验证券？-6验证券号："><strong>6.验证券号：</strong></h5>
+
+    <p>确认列表中券号无误，点击“验证并消费”即可完成对券号的验证，列表中的所有券号状态将变为&quot;已消费&quot;</p>
+
+    <p><img class="confluence-embedded-image" confluence-query-params="effects=border-simple,blur-border"
+            style="width: 680px;"
+            src="http://img.uhcdn.com/images/help/6193970/6389792.png?effects=border-simple,blur-border"
+            data-image-src="http://img.uhcdn.com/images/help/6193970/6389792.png?effects=border-simple,blur-border"
+            ></p><h5
+        id="id-1如何验证券？-7删除不想要的券号：">7.删除不想要的券号：</h5>
+
+    <p>如果列表中有不想验证的券号，可以点击“删除”，删除不想要的券号</p>
+
+    <p><img src="http://img.uhcdn.com/images/help/6193970/6389797.png?effects=border-simple,blur-border"
+            data-image-src="http://img.uhcdn.com/images/help/6193970/6389797.png?effects=border-simple,blur-border"
+            style="width: 680px;"></p><h5
+        id="id-1如何验证券？-8验证结果提示：">8.验证结果提示：</h5>
+
+    <p>点击”验证并消费“后，可以在列表中最后一列”验证消费提示“中看到对应券号的验证结果，绿色字表示验证成功，红色字表示验证失败，同时会说明失败原因</p>
+
+    <p><img src="http://img.uhcdn.com/images/help/6193970/6389795.png?effects=border-simple,blur-border"
+            data-image-src="http://img.uhcdn.com/images/help/6193970/6389795.png?effects=border-simple,blur-border"
+            style="width: 680px;"></p><h5
+        id="id-1如何验证券？-9继续验证券号：">9.继续验证券号：</h5>
+
+    <p>列表中所有券号验证完成后，无需逐个删除，可以直接添加新的待验证券号，原先的列表将自动清空</p><h5 id="id-1如何验证券？-10查看最近验证的券：">10.查看最近验证的券：</h5>
+
+    <p>在页面下方可以看到最近验证的5个券号，方便收银员查看</p>
+
+    <p><img src="http://img.uhcdn.com/images/help/6193970/6389798.png?effects=border-simple,blur-border"
+            data-image-src="http://img.uhcdn.com/images/help/6193970/6389798.png?effects=border-simple,blur-border"
+            style="width: 680px;"></p>
+
+    <p><strong><br/></strong></p>
+</div>
+
+

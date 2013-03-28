@@ -919,7 +919,7 @@ public class Order extends Model {
     @Transient
     public User getUser() {
         if (user == null) {
-            user = User.findById(userId);
+            user = User.findById(consumerId);
         }
         return user;
     }
