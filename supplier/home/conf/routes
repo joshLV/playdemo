@@ -36,7 +36,7 @@ DELETE  /users/{id}                             SupplierUsers.delete
 
 # [v2] 报表
 GET     /reports                                SupplierIncomeReports.index
-#POST    /reports                                SupplierIncomeReports.index
+#POST    /reports                               SupplierIncomeReports.index
 POST    /reports/daily/export                   SupplierIncomeReports.exportDailyReport
 POST    /reports/shop/export                    SupplierIncomeReports.exportShopReport
 POST    /reports/goods/export                   SupplierIncomeReports.exportGoodsReport
@@ -54,6 +54,16 @@ GET     /verify/verified-coupons                SupplierVerifyECoupons.showVerif
 
 # [v2] 商户帮助页面
 GET     /how-to-verify                          SupplierHelps.verify
+GET     /how-to-view-verified-coupons           SupplierHelps.viewVerifiedCoupons
+GET     /how-to-view-accountsequences           SupplierHelps.viewAccountSequences
+GET     /how-to-withdraw                        SupplierHelps.withdraw
+GET     /how-to-view-reports                    SupplierHelps.viewReports
+GET     /how-to-manage-shops                    SupplierHelps.manageShops
+GET     /how-to-manage-users                    SupplierHelps.manageUsers
+GET     /how-to-change-password                 SupplierHelps.changePassword
+
+
+
 
 # [v2] 资金帐户明细
 GET     /sequences                              SupplierAccountSequences.index

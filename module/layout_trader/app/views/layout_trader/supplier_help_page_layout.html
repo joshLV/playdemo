@@ -13,16 +13,14 @@
 <body>
 <div id="header" class="clearfix">
     <div class="wrap">
-        <h1>一百券商户后台</h1>
+        <a href="/verify"><h1>一百券商户后台</h1></a>
 
         <div class="user">
             欢迎，${supplierCompany.name}${currentUser?.shop?" - "+supplierShop+" ":" "}(${currentUser?.loginName})!
             <a href="/logout">退出</a>
             <a href="/ui-version/to/v1">使用旧版</a>
             <a href="/passwords">修改密码</a>
-            <a href="/help-page">帮助</a>
-            <a href="">帮助</a>
-            <a href="">反馈</a>
+            <a href="/how-to-verify">帮助</a>
         </div>
     </div>
 </div>
@@ -56,16 +54,28 @@
         <ul class="menu" style="width: 190px;">
             <li><a #{if "how-to-verify".equals(menu)}class="curr"#{/if} href="/how-to-verify">如&nbsp;&nbsp;何&nbsp;&nbsp;验&nbsp;&nbsp;证&nbsp;&nbsp;?</a>
             </li>
-            <li><a #{if "how-to-view-verified-coupons".equals(menu)}class="curr"#{/if} href="/how-to-view-verified-coupons">如何查看已经验证的券号?</a></li>
-            <li><a #{if "how-to-view-accountsequences".equals(menu)}class="curr"#{/if} href="/how-to-view-accountsequences">如何查看账户资金变动?</a></li>
+            <li><a
+            #{if "how-to-view-verified-coupons".equals(menu)}class="curr"#{/if} href="/how-to-view-verified-coupons">如何查看已经验证的券号?</a>
+            </li>
+            <li><a
+            #{if "how-to-view-accountsequences".equals(menu)}class="curr"#{/if} href="/how-to-view-accountsequences">如何查看账户资金变动?</a>
+            </li>
             <li><a #{if "how-to-withdraw".equals(menu)}class="curr"#{/if} href="/how-to-withdraw">如何提现?</a></li>
-            <li><a #{if "how-to-view-reports".equals(menu)}class="curr"#{/if} href="/how-to-view-reports">如何查看销售业绩?</a></li>
-            <li><a #{if "how-to-manage-shops".equals(menu)}class="curr"#{/if} href="/how-to-manage-shops">如何管理商户门店信息?</a></li>
-            <li><a #{if "how-to-manage-users".equals(menu)}class="curr"#{/if} href="/how-to-manage-users">如何管理门店账号?</a></li>
-            <li><a #{if "how-to-change-password".equals(menu)}class="curr"#{/if} href="/how-to-change-password">如何修改密码?</a>
+            <li><a #{if "how-to-view-reports".equals(menu)}class="curr"#{/if} href="/how-to-view-reports">如何查看销售业绩?</a>
+            </li>
+            <li><a
+            #{if "how-to-manage-shops".equals(menu)}class="curr"#{/if} href="/how-to-manage-shops">如何管理商户门店信息?</a></li>
+            <li><a #{if "how-to-manage-users".equals(menu)}class="curr"#{/if} href="/how-to-manage-users">如何管理门店账号?</a>
+            </li>
+            <li><a
+            #{if "how-to-change-password".equals(menu)}class="curr"#{/if} href="/how-to-change-password">如何修改密码?</a>
             </li>
 
         </ul>
+        <div class="menu" style="width: 190px; ">
+            <a href="/verify"> 返回商户首页</a>
+        </div>
+
         <div class="sbox">
             商家电话验证请致电<br>
             <strong>021-61913536</strong>

@@ -1,0 +1,54 @@
+#{extends 'layout_trader/supplier_help_page_layout.html' /}
+#{set title:'如何验证券？' /}
+#{set menu:"how-to-withdraw" /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/flash.js'}" type="text/javascript"
+        charset="UTF-8"></script>
+
+
+#{/set}
+<link href="@{'/public/stylesheets/supplier_help.css'}" rel="stylesheet">
+<div class="bd">
+    <h2>${title}</h2>
+    <h5>1.在左侧菜单选择“提现管理”</h5>
+
+    <h5><img class="confluence-embedded-image" confluence-query-params="effects=border-simple,blur-border"
+             src="http://img.uhcdn.com/images/help/6193998/6389804.png?effects=border-simple,blur-border"
+             data-image-src="http://img.uhcdn.com/images/help/6193998/6389804.png?effects=border-simple,blur-border"
+            ></h5>
+
+    <h5>2.选择“申请提现”</h5>
+
+    <p>“申请提现”按钮左侧显示您的账户余额详细组成，其中<span>不可用余额一般为待审批的提现申请金额</span></p>
+
+    <h5><img class="confluence-embedded-image" confluence-query-params="effects=border-simple,blur-border"
+             src="http://img.uhcdn.com/images/help/6193998/6389805.png?effects=border-simple,blur-border"
+             data-image-src="http://img.uhcdn.com/images/help/6193998/6389805.png?effects=border-simple,blur-border"
+             style="width: 680px;"
+            ></h5>
+
+    <h5>3.提交申请：</h5>
+
+    <p>确认收款账户信息及“可提现金额”无误，即可点击“提交申请”</p>
+
+    <p>可提现金额计算方式：账户余额 - 未结算的预付款余额 - 提现统计截止日期之后发生的交易金额</p>
+
+    <p>注：提现统计截止至提交申请前一天，例如2013年3月11日申请提现，则统计截止到2013年3月10日23:59:59</p>
+
+    <p><img class="confluence-embedded-image" confluence-query-params="effects=border-simple,blur-border"
+            src="http://img.uhcdn.com/images/help/6193998/6389806.png?effects=border-simple,blur-border"
+            style="width: 680px;"
+            data-image-src="http://img.uhcdn.com/images/help/6193998/6389806.png?effects=border-simple,blur-border"></p>
+
+    <h5>4.查看提现申请：</h5>
+
+    <p>提现申请成功提交后，可以在“提现管理”中看到自己提交的申请，点击“查看详情“可以看到提现账户等信息</p>
+
+    <p>如果您的提现被拒绝，可以在”查看详情“中看到被拒绝的原因</p>
+
+    <h5><img class="confluence-embedded-image" confluence-query-params="effects=border-simple,blur-border"
+             src="http://img.uhcdn.com/images/help/6193998/6389807.png?effects=border-simple,blur-border"
+             data-image-src="http://img.uhcdn.com/images/help/6193998/6389807.png?effects=border-simple,blur-border"
+             style="width: 680px;"
+            ></h5>
+</div>

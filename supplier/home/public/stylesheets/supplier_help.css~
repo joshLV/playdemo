@@ -2,10 +2,15 @@ h5{
 font-size: 13.0pt; 
 }    
 img{
-border: 10px solid transparent;
+border: 10px outset transparent;
+box-shadow:   3px 3px 3px #777;
 }
 p{
 border: 15px solid transparent;
 font-size: 11.0pt;
 }
+
+
+
+
 
