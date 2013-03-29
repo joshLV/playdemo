@@ -495,6 +495,9 @@ GET     /real/partner/download-track-nos/download          real.DownloadTrackNos
 #GET     /real/partner/yhd-shipping-excel                   real.DownloadTrackNos.yhdShippingExcelOut
 
 
+# 修复Account的Web调用接口，临时使用，将尽快删除
+GET     /account/fix/{accountId}           supplier.AccountFix.fix
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

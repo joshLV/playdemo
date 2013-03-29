@@ -4,6 +4,7 @@ import com.uhuila.common.util.DateUtil;
 import models.accounts.Account;
 import models.accounts.util.AccountSequenceUtil;
 import play.jobs.Job;
+import play.jobs.On;
 
 import java.util.Date;
 import java.util.List;
@@ -18,7 +19,7 @@ import static play.Logger.warn;
  * Date: 1/14/13
  * Time: 11:02 AM
  */
-//@On("0 0 4 * * ?")  //每天凌晨执行
+@On("0 0 4 * * ?")  //每天凌晨四点执行
 // @Every("1h")
 public class FinanceCheckJob extends Job {
 
