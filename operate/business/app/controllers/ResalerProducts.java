@@ -215,6 +215,8 @@ public class ResalerProducts extends Controller {
                 params.put("venderTeamId", product.goodsLinkId);
                 params.put("jdTeamId", product.partnerProductId);
                 params.put("saleEndDate", format.format(endSale));
+                product.endSale = endSale;
+                product.save();
                 JingdongMessage response = JDGroupBuyUtil.sendRequest("teamExtension", params);
                 success = response.isOk();
                 break;
