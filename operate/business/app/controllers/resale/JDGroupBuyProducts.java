@@ -16,6 +16,8 @@ import play.libs.XPath;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -113,13 +115,28 @@ public class JDGroupBuyProducts extends Controller{
      * 修改商品
      */
     @ActiveNavigation("resale_partner_product")
-    public static void edit(String action) {
+    public static void edit(String action, Long productId) {
         Map<String, Object> params = new HashMap<>();
         for(Map.Entry<String, String> entry : request.params.allSimple().entrySet()) {
             params.put(entry.getKey(), entry.getValue());
         }
 
         JingdongMessage response = JDGroupBuyUtil.sendRequest(action, params);
+        if (response.isOk()) {
+            ResalerProduct product = ResalerProduct.findById(productId);
+            //记录历史
+            if (action.equals("teamExtension")) {
+                try {
+                    product.endSale = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse((String)params.get("saleEndDate"));
+                    product.save();
+                }catch (ParseException e) {
+                    //ignore
+                }
+            }
+            OperateUser operateUser = OperateRbac.currentUser();
+            ResalerProductJournal.createJournal(product, operateUser.id, new Gson().toJson(params),
+                    ResalerProductJournalType.UPDATE, "修改商品");
+        }
 
         render("resale/JDGroupBuyProducts/result.html", response);
     }
