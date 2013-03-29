@@ -456,6 +456,19 @@ GET     /express-companies/new             real.ExpressCompanies.add
 POST    /express-companies                 real.ExpressCompanies.create
 GET     /express-companies/{id}/edit       real.ExpressCompanies.edit
 
+
+#供货商管理
+GET     /vendors                           real.Vendors.index
+GET     /vendors/new                       real.Vendors.add
+POST    /vendors                           real.Vendors.create
+GET     /vendors/{id}/edit                 real.Vendors.edit
+PUT     /vendors/{id}                      real.Vendors.update
+DELETE  /vendors/{id}                      real.Vendors.delete
+
+
+
+
+
 #导入渠道订单
 GET     /import-partner-orders                    ImportPartnerOrders.index
 GET     /download-partner-orders                  ImportPartnerOrders.download

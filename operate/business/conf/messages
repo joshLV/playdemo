@@ -628,3 +628,11 @@ sku.brandName=品牌
 sku.supplierName=商户
 
 stock.brand.id=品牌
+
+vendor.name=公司名称
+vendor.address=公司地址
+vendor.authorizedRepresentative=授权代表
+vendor.phone=电话
+vendor.fax=传真
+vendor.bankName=开户行
+vendor.cardNumber=银行帐号
