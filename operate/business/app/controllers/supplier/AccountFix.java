@@ -33,6 +33,7 @@ public class AccountFix extends Controller {
         List<Account> accounts = new ArrayList<>();
         accounts.add(account);
         AccountSequenceUtil.checkAndFixBalance(accounts, null);  //修改
+        AccountSequenceUtil.checkAndFixAccountAmount(account);
         account.refresh();
         renderText("修复成功！ old Amount=" + oldAmount + ", new Amount=" + account.amount);
     }

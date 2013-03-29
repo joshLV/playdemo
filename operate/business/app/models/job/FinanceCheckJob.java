@@ -42,7 +42,7 @@ public class FinanceCheckJob extends Job {
         Date from = DateUtil.getBeforeHour(new Date(), 2);
         //检查并修复财务流水
         info("=====Begin to check and fix sequence balance");
-        AccountSequenceUtil.checkAndFixBalance(accounts, from);
+        AccountSequenceUtil.checkAndFixBalance(accounts, null); //修复全部
         info("=====End to check and fix sequence balance");
 
         //修复后再次检查并修复帐号的余额
