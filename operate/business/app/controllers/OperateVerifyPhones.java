@@ -88,6 +88,7 @@ public class OperateVerifyPhones extends Controller {
             renderShopList();
             render("OperateVerifyPhones/add.html", supplierUser, null, null);
         }
+
         supplierUser.supplierUserType = SupplierUserType.ANDROID;
         supplierUser.create(supplierUser.supplier.id);
         index(null);
@@ -139,7 +140,7 @@ public class OperateVerifyPhones extends Controller {
         if (shop == null) {
             Validation.addError("supplierUser.shop", "无效的门店");
         } else {
-            if (supplierUser != null && shop.supplierId != supplierUser.supplier.id) {
+            if (supplierUser != null && !shop.supplierId.equals(supplierUser.supplier.id)) {
                 Validation.addError("supplierUser.shop", "无效的门店");
             }
         }
