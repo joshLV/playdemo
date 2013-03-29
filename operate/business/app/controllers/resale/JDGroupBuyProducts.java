@@ -1,7 +1,6 @@
 package controllers.resale;
 
 import com.google.gson.Gson;
-import com.thoughtworks.xstream.mapper.ArrayMapper;
 import controllers.OperateRbac;
 import models.operator.OperateUser;
 import models.jingdong.groupbuy.JDGroupBuyHelper;
