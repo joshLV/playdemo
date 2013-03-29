@@ -119,7 +119,6 @@ public class TelephoneVerify extends Controller {
             renderText("9");//对不起，您无权验证此券
         }
 
-
         if (ecoupon.isFreeze == 1) {
             Logger.info("telephone verify failed: coupon is freeze");
             renderText("11");//对不起，该券无法消费
@@ -450,14 +449,25 @@ public class TelephoneVerify extends Controller {
         return results;
     }
 
+    /**
+     * 模糊查找券号.
+     *
+     * 前置第1位券可能在电话验证时没有传入，所以需要加入模糊查找。
+     * 前置模糊查找不能使用like方式，会导致全表扫描。
+     * @param couponSn
+     * @return
+     */
     private static ECoupon missTitleFind(String couponSn) {
-        ECoupon coupon = ECoupon.find("eCouponSn like ? ", "%" + couponSn).first();
+        ECoupon coupon = ECoupon.find("eCouponSn = ?", couponSn).first();
         if (coupon != null) {
-            if (coupon.eCouponSn.length() - couponSn.length() > 1) {
-                coupon = null;
-            }
+            return coupon;
         }
-        return coupon;
+        // 加一个前置数字再找一次
+        String[] eCouponSNs = new String[10];
+        for (int i = 0; i < 10; i++) {
+            eCouponSNs[i] = i + couponSn;
+        }
+        return ECoupon.find("eCouponSn in (?,?,?,?,?,?,?,?,?,?)", eCouponSNs).first();
     }
 
     private static BigDecimal summaryECouponsAmount(List<ECoupon> ecoupons) {
