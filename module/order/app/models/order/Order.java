@@ -31,6 +31,7 @@ import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.hibernate.usertype.UserType;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
@@ -921,6 +922,8 @@ public class Order extends Model {
         if (user == null) {
             if (consumerId != null) {
                 user = User.findById(consumerId);
+            } else if (userType == AccountType.CONSUMER) {
+                user = User.findById(userId);
             }
         }
         return user;
@@ -928,7 +931,7 @@ public class Order extends Model {
 
     @Transient
     public Resaler getResaler() {
-        if (resaler == null && userId != null) {
+        if (resaler == null && userId != null && userType == AccountType.RESALER) {
             resaler = Resaler.findById(userId);
         }
         return resaler;
