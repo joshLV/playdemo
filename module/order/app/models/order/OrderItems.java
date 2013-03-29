@@ -41,6 +41,7 @@ import java.util.Set;
 @Table(name = "order_items")
 public class OrderItems extends Model {
 
+
     private static final long serialVersionUID = 16323208753562L;
 
     /**

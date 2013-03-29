@@ -919,15 +919,17 @@ public class Order extends Model {
     @Transient
     public User getUser() {
         if (user == null) {
-            user = User.findById(consumerId);
+            if (consumerId != null) {
+                user = User.findById(consumerId);
+            }
         }
         return user;
     }
 
     @Transient
     public Resaler getResaler() {
-        if (resaler == null && userId!=null) {
-                resaler = Resaler.findById(userId);
+        if (resaler == null && userId != null) {
+            resaler = Resaler.findById(userId);
         }
         return resaler;
     }
