@@ -115,7 +115,7 @@ public class AccountSequenceUtil {
             if (currLastAccountSeq != null && currLastAccountSeq.id.equals(lastAccountSeq.id)) {
                 account.save();
                 warn("Fix account amount success.==> accountId:" + account.id + ",uid:" + account.uid
-                        + ",accountType:" + account.accountType);
+                        + ",accountType:" + account.accountType + ", amount:" + account.amount);
                 return true;
             } else {
                 warn("Fix account amount failed because new sequence was inserted.==> accountId:" + account.id + ",uid:" + account.uid
