@@ -280,6 +280,7 @@ PUT     /coupons_in_history/{id}/freeze         OperateCoupons.freezeInCouponHis
 PUT     /coupons/{id}/unfreeze                  OperateCoupons.unfreeze
 PUT     /coupons_in_history/{id}/unfreeze       OperateCoupons.unfreezeInCouponHistory
 GET     /coupons-message/{id}/send              OperateCoupons.sendMessage
+GET     /order-items-message/{id}/send              OperateCoupons.sendOrderItemMessage
 GET     /coupon_excel                           OperateCoupons.couponExcelOut
 GET     /coupon_history                         OperateCoupons.couponHistory
 GET     /coupon_refund                          OperateCoupons.refund
