@@ -8,5 +8,5 @@ package com.uhuila.common.constants;
  * Time: 10:44 AM
  */
 public enum PlatformType {
-    RESALE, UHUILA, SUPPLIER
+    RESALE, UHUILA, SUPPLIER, OPERATE, DEV_ONCALL
 }

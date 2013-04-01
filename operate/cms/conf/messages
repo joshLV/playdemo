@@ -46,6 +46,8 @@ topic.expireAt=到期时间
 topic.RESALE=分销平台
 topic.UHUILA=一百券平台
 topic.SUPPLIER=商户平台
+topic.OPERATE=运营后台
+topic.DEV_ONCALL=技术值班表
 
 #问卷
 vote.type=调查类型
