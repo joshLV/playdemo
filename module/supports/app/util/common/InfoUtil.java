@@ -40,6 +40,9 @@ public class InfoUtil {
     }
 
     public static String getMaskedPhone(String phone) {
+        if (StringUtils.isBlank(phone)) {
+            return "";
+        }
         StringBuilder sbPhone = new StringBuilder();
         sbPhone.append(phone.substring(0, 3));
         sbPhone.append("****");
