@@ -32,6 +32,7 @@
     <permission key="MANAGER_VIEW_SUPPLIER_CONTRACT" text="经理查看合同" roles="manager,account"/>
     <permission key="SUPPLIER_CONTRACT_MANAGEMENT" text="合同管理" roles="contractadminister"/>
     <permission key="VENDORS_MANAGEMENT" text="供货商管理" roles="purchaser"/>
+    <permission key="PURCHASE_ORDERS_MANAGEMENT" text="采购合同管理" roles="purchaser"/>
 
 
     <permission key="Point_GOODS_ORDER" text="积分商品订单管理" roles="customservice,account"/>
@@ -164,6 +165,11 @@
             <navigation key="inventory_stockIn" action="InventoryStocks.stockIn" text="添加入库记录" permissions="INVENTORY"/>
             <navigation key="inventory_stockOut" action="InventoryStocks.stockOut" text="添加出库记录"
                         permissions="INVENTORY"/>
+            <navigation key="purchase_orders_add" action="PurchaseOrders.add" text="采购合同添加"
+                        permissions="PURCHASE_ORDERS_MANAGEMENT"/>
+            <navigation key="purchase_orders_index" action="PurchaseOrders.index" text="采购合同管理"
+                        permissions="PURCHASE_ORDERS_MANAGEMENT"/>
+
         </navigation>
         <navigation key="solr" text="solr加载数据">
             <navigation key="solr_load" action="SolrLoadData.index" text="solr加载数据" permissions="SOLR"/>

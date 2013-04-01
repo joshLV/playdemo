@@ -1,0 +1,34 @@
+<div class="control-group">
+    <label class="control-label"><span style="color: red; ">*</span>出售方</label>
+
+    <div class="controls">
+    #{vx.selectInputField name:"vendorName", id:"purchaseOrder.vendor.id", list:vendorList, value:purchaseOrder?.vendor?.id/}
+        <span class="error">#{error 'purchaseOrder.vendor.id'/}</span>
+    </div>
+</div>
+
+#{layout_operate.selectField name:'purchaseOrder.invoiceType', class:'span2', value:purchaseOrder?.invoiceType,
+error:'purchaseOrder.invoiceType', required:true}
+    #{option "PLAIN"}&{'purchaseOrderInvoiceType.PLAIN'}#{/option}
+    #{option "VAT"}&{'purchaseOrderInvoiceType.VAT'}#{/option}
+    #{option "VAT_PLAIN"}&{'purchaseOrderInvoiceType.VAT_PLAIN'}#{/option}
+    #{option "NO"}&{'purchaseOrderInvoiceType.NO'}#{/option}
+#{/layout_operate.selectField}
+
+#{layout_operate.selectField name:'purchaseOrder.paymentType', class:'span2', value:purchaseOrder?.paymentType,
+error:'purchaseOrder.paymentType', required:true}
+    #{option "TRANSFER"}&{'purchaseOrderPaymentType.TRANSFER'}#{/option}
+    #{option "CASH"}&{'purchaseOrderPaymentType.CASH'}#{/option}
+    #{option "HECK"}&{'purchaseOrderPaymentType.CHECK'}#{/option}
+#{/layout_operate.selectField}
+
+
+#{layout_operate.dateTimeField name:'purchaseOrder.signedAt',value:purchaseOrder?.signedAt?.format('yyyy-MM-dd HH:mm:ss')?:new java.util.Date().format('yyyy-MM-dd HH:mm:ss')/}
+
+
+
+<div class="form-actions">
+    <input class="btn btn-primary" id="save" type="submit" value="保存">
+#{vx.cancelButton url:'', class:'btn btn-primary'/}
+</div>
+

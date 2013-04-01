@@ -1,0 +1,13 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'修改采购合同' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/purchase-order-form.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+#{include '/share/nav.html' /}
+<div class="body">
+#{form @real.purchaseOrders.update(purchaseOrder?.id) , id:'purchase_order_form',enctype:'multipart/form-data',class:"form-horizontal" , method:'PUT'}
+    <legend>${title}</legend>
+    #{set action:"edit"/}
+    #{include 'real/PurchaseOrders/purchaseOrderForm.html'/}
+#{/form}
+</div>

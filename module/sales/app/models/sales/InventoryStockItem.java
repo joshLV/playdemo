@@ -69,14 +69,14 @@ public class InventoryStockItem extends Model {
 
 
     /**
-     * 券有效开始日
+     * 有效开始日
      */
     @Column(name = "effective_at")
     @Temporal(TemporalType.TIMESTAMP)
     public Date effectiveAt;
 
     /**
-     * 券有效结束日
+     * 有效结束日
      */
     @InFuture
     @Column(name = "expire_at")
