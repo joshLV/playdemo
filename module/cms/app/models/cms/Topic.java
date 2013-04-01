@@ -5,6 +5,7 @@ import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.constants.PlatformType;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.safety.Whitelist;
+import play.Logger;
 import play.data.validation.InFuture;
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
@@ -196,7 +197,7 @@ public class Topic extends Model {
     @Transient
     public static Topic getDevOnCall() {
         Date currentDate = new Date();
-        return find("deleted=? and platformType=? and effectiveAt<=? and expireAt>=? order by id desc",
-                DeletedStatus.UN_DELETED, PlatformType.DEV_ONCALL, currentDate, currentDate).first();
+        return find("deleted=? and platformType='DEV_ONCALL' and effectiveAt<=? and expireAt>=? order by id desc",
+                DeletedStatus.UN_DELETED, currentDate, currentDate).first();
     }
 }
