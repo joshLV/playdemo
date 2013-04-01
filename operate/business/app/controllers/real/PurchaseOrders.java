@@ -27,7 +27,6 @@ public class PurchaseOrders extends Controller {
     public static void index(String keyword) {
         int page = getPage();
         List<PurchaseOrder> purchaseOrderList = PurchaseOrder.findByCondition(keyword);
-        System.out.println(purchaseOrderList.size() + "===purchaseOrderList.size()>>");
         render(purchaseOrderList, page, keyword);
     }
 
@@ -48,8 +47,6 @@ public class PurchaseOrders extends Controller {
 
     @ActiveNavigation("vendors_add")
     public static void create(@Valid PurchaseOrder purchaseOrder) {
-        System.out.println(purchaseOrder.vendor.id + "===purchaseOrder.vendor.id>>");
-        System.out.println(purchaseOrder.invoiceType + "===purchaseOrder.invoiceType>>");
         if (Validation.hasErrors()) {
             render("real/PurchaseOrders/add.html");
         }
@@ -61,9 +58,6 @@ public class PurchaseOrders extends Controller {
     public static void edit(Long id) {
         PurchaseOrder purchaseOrder = PurchaseOrder.findById(id);
         List<Vendor> vendorList = Vendor.findUnDeleted();
-        System.out.println(purchaseOrder.vendor.id + "===purchaseOrder.vendor.id>>");
-
-
         render(purchaseOrder, vendorList);
     }
 
