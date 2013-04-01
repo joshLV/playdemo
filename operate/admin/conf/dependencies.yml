@@ -12,6 +12,7 @@ require:
     - layout_operate -> layout_operate
     - paginate_ext -> paginate_ext
     - operator -> operator
+    - cms -> cms
     - operate_rbac -> operate_rbac
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - asset_package -> asset_package
@@ -45,3 +46,4 @@ repositories:
             - cache_helper -> *
             - emaillogs -> *
             - supports -> *
+            - cms -> *
