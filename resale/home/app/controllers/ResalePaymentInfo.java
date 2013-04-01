@@ -93,7 +93,7 @@ public class ResalePaymentInfo extends Controller {
             return;
         }
         String form = paymentFlow.getRequestForm(order.orderNumber, order.description,
-                order.discountPay, paymentSource.subPaymentCode, request.remoteAddress);
+                order.discountPay, paymentSource.subPaymentCode, request.remoteAddress, null);
         Logger.info("resaler payment form:" + form);
         PaymentJournal.savePayRequestJournal(
                 order.orderNumber,

@@ -3,6 +3,7 @@ package models.sina;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import models.order.ECoupon;
+import models.order.OuterOrderPartner;
 import models.sales.ResalerProduct;
 import models.sales.ResalerProductJournal;
 import play.Logger;
@@ -47,7 +48,7 @@ public class SinaVouchersConsumer extends RabbitMQConsumer<Long> {
      */
     private SinaVoucherResponse createVouchers(ECoupon coupon) {
         Map<String, String> requestParams = new HashMap<>();
-        ResalerProduct resalerProduct = ResalerProduct.findById(Long.parseLong(coupon.orderItems.outerGoodsNo));
+        ResalerProduct resalerProduct = ResalerProduct.find("byPartnerProductIdAndPartner", coupon.orderItems.outerGoodsNo, OuterOrderPartner.SINA).first();
         ResalerProductJournal journal = ResalerProductJournal.find("product = ? order by createdAt desc", resalerProduct).first();
         if (journal != null) {
             Map<String, String> journalMap = new Gson().fromJson(journal.jsonData, new TypeToken<Map<String, String>>() {

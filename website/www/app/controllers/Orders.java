@@ -244,7 +244,7 @@ public class Orders extends Controller {
         //电子券必须校验手机号
         if (containsElectronic) {
             Validation.required("mobile", mobile);
-            Validation.match("mobile", mobile, "^1[3|4|5|8][0-9]\\d{4,8}$");
+            Validation.match("mobile", mobile, "^1\\d{10}$");
         }
 
         if (checkLimitNumber(items, mobile)) {
@@ -276,7 +276,7 @@ public class Orders extends Controller {
         }
 
         //创建订单
-        Order order = Order.createYbqConsumeOrder(user.getId(), AccountType.CONSUMER);
+        Order order = Order.createConsumeOrder(user.getId(), AccountType.CONSUMER);
         if (containsElectronic) {
             order.deliveryType = DeliveryType.SMS;
         } else if (containsReal) {

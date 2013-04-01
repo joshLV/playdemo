@@ -1,6 +1,7 @@
 package controllers;
 
 
+import com.google.gson.Gson;
 import controllers.modules.website.cas.SecureCAS;
 import models.accounts.AccountType;
 import models.consumer.User;
@@ -9,6 +10,7 @@ import models.order.OrderStatus;
 import models.payment.PaymentFlow;
 import models.payment.PaymentJournal;
 import models.payment.PaymentUtil;
+import play.Logger;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -25,11 +27,13 @@ public class OrderResult extends Controller {
      * @param shihui_partner 第三方支付
      */
     public static void urlReturn(String shihui_partner) {
+        Logger.info(new Gson().toJson(params.allSimple()));
         PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow(shihui_partner);
         if(paymentFlow == null) {
             error("payment partner not found: " + shihui_partner);
         }
-        Map<String, String> result = paymentFlow.urlReturn(PaymentUtil.filterPlayParameter(params.all()));
+        Map<String, String[]> allParams = params.all();
+        Map<String, String> result = paymentFlow.urlReturn(PaymentUtil.filterPlayParameter(allParams));
         String errorMessage = "对不起，暂时无法读取信息，请您稍后再试";
 
         String orderNumber = result.get(PaymentFlow.ORDER_NUMBER);
@@ -57,9 +61,16 @@ public class OrderResult extends Controller {
         PaymentJournal.saveUrlReturnJournal(orderNumber, params.all(), result, success);
         
         Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.CONSUMER);
+
+        if (shihui_partner.equals(PaymentUtil.PARTNER_CODE_SINA)) {
+            String[] ext = allParams.get("source");
+            if (ext != null && ext.length > 0 && ext[0].equals("wap")) {
+                renderTemplate("WebSinaVouchers/payResult.html", errorMessage, order, orderNumber);
+            }
+        }
         //近日成交商品
         List<models.sales.Goods> recentGoodsList = models.sales.Goods.findTradeRecently(5);
-        
+
         renderTemplate("OrderResult/index.html", errorMessage,order, orderNumber, recentGoodsList);
     }
 }

@@ -35,9 +35,6 @@ public class SinaVoucherUtil {
 
     /**
      * 创建模板
-     *
-     * @param body
-     * @return
      */
     public static SinaVoucherResponse uploadTemplate(String body) {
         return sendRequest("template", body, REQUEST_POST);
@@ -45,9 +42,6 @@ public class SinaVoucherUtil {
 
     /**
      * 更新模板
-     *
-     * @param body
-     * @return
      */
     public static SinaVoucherResponse updateTemplate(String body) {
         return sendRequest("template", body, REQUEST_PUT);
@@ -55,19 +49,13 @@ public class SinaVoucherUtil {
 
     /**
      * 创建卡券
-     *
-     * @param body
-     * @return
      */
     public static SinaVoucherResponse uploadVoucher(String body) {
         return sendRequest("vouch", body, REQUEST_POST);
     }
 
     /**
-     * 核销卡券
-     *
-     * @param body
-     * @return
+     * 请求新浪核销卡券
      */
     public static SinaVoucherResponse disposeVoucher(String body) {
         return sendRequest("vouch/dispose", body, REQUEST_PUT);
@@ -94,10 +82,10 @@ public class SinaVoucherUtil {
     /**
      * 提交请求
      *
-     * @param api
-     * @param body
-     * @param requestType
-     * @return
+     * @param api api名称，与url中的标识相对应
+     * @param body rest请求的body
+     * @param requestType 请求类型 REQUEST_POST 或者是 REQUEST_PUT
+     * @return 新浪的返回结果
      */
     public static SinaVoucherResponse sendRequest(String api, String body, String requestType) {
 
@@ -123,8 +111,8 @@ public class SinaVoucherUtil {
     /**
      * 解析处理响应
      *
-     * @param jsonResponse
-     * @return
+     * @param jsonResponse 新浪返回的json字符串
+     * @return 解析后的新浪返回结果
      */
     public static SinaVoucherResponse parseResponse(String jsonResponse) {
         JsonParser jsonParser = new JsonParser();
@@ -147,8 +135,8 @@ public class SinaVoucherUtil {
     /**
      * 组织请求信息
      *
-     * @param content
-     * @return
+     * @param content 请求的主体内容
+     * @return 包装后的请求内容
      */
     public static String makeRequestBody(String content) {
         Map<String, Object> params = new HashMap<>();

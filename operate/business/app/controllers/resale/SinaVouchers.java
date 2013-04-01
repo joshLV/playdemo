@@ -26,7 +26,7 @@ import java.util.*;
 @ActiveNavigation("resale_partner_product")
 public class SinaVouchers extends Controller {
     @ActiveNavigation("resale_partner_product")
-    public static void showUpload(long goodsId) {
+    public static void showUpload(Long goodsId) {
         Goods goods = Goods.findById(goodsId);
 
         Collection<Shop> shops = goods.getShopList();

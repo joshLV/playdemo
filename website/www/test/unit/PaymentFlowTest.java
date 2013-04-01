@@ -19,19 +19,19 @@ public class PaymentFlowTest extends UnitTest{
     public void testAlipayForm(){
         PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow("alipay");
         assertNotNull(paymentFlow);
-        assertNotNull(paymentFlow.getRequestForm("002100", "alipay order test", new BigDecimal("10"), "alipay", "127.0.0.1"));
+        assertNotNull(paymentFlow.getRequestForm("002100", "alipay order test", new BigDecimal("10"), "alipay", "127.0.0.1", null));
     }
 
     @Test
     public void testTenpayForm(){
         PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow("tenpay");
         assertNotNull(paymentFlow);
-        assertNotNull(paymentFlow.getRequestForm("002100", "tenpay order test", new BigDecimal("10"), "tenpay", "127.0.0.1"));
+        assertNotNull(paymentFlow.getRequestForm("002100", "tenpay order test", new BigDecimal("10"), "tenpay", "127.0.0.1", null));
     }
     @Test
     public void test99BillForm(){
         PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow("99bill");
         assertNotNull(paymentFlow);
-        assertNotNull(paymentFlow.getRequestForm("002100", "99bill order test", new BigDecimal("10"), "CMB", "127.0.0.1"));
+        assertNotNull(paymentFlow.getRequestForm("002100", "99bill order test", new BigDecimal("10"), "CMB", "127.0.0.1", null));
     }
 }

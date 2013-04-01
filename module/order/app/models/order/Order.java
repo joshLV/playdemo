@@ -72,7 +72,7 @@ public class Order extends Model {
     /**
      * TODO 待更名为resalerId  下单用户ID，分销商
      */
-    @Column(name = "resaler_id")
+    @Column(name = "user_id")
     public Long userId;
 
     @Column(name = "consumer_id", nullable = true)
@@ -317,26 +317,13 @@ public class Order extends Model {
     }
 
     /**
-     * 渠道 创建普通消费订单.
-     *
-     * @param resalerId      付款用户ID
-     * @param accountType 付款用户账户类型
-     * @return 消费订单
-     */
-    public static Order createConsumeOrder(Long resalerId, AccountType accountType) {
-        Order order = new Order(resalerId, accountType);
-        order.orderType = OrderType.CONSUME;
-        return order;
-    }
-
-    /**
-     * 一百券 创建普通消费订单.
+     * 创建普通消费订单.
      *
      * @param userId      付款用户ID
      * @param accountType 付款用户账户类型
      * @return 消费订单
      */
-    public static Order createYbqConsumeOrder(Long userId, AccountType accountType) {
+    public static Order createConsumeOrder(Long userId, AccountType accountType) {
         Order order = new Order(userId, accountType);
         order.orderType = OrderType.CONSUME;
         order.consumerId=userId;
@@ -722,7 +709,13 @@ public class Order extends Model {
             }
         }
 
-        Account account = AccountUtil.getAccount(this.userId, this.userType);
+        Resaler sinaResaler = Resaler.findOneByLoginName(Resaler.SINA_LOGIN_NAME);
+        Account account;
+        if (this.userId.equals(sinaResaler.id)){
+            account = AccountUtil.getAccount(this.consumerId, AccountType.CONSUMER);
+        }else {
+            account = AccountUtil.getAccount(this.userId, this.userType);
+        }
         PaymentSource paymentSource = PaymentSource.find("byCode", this.payMethod).first();
 
         //先将用户银行支付的钱充值到自己账户上

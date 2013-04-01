@@ -11,7 +11,6 @@
         <div class="content"> 订单</div>
     </div>
 
-#{form @WebSinaVoucherOrders.index(productId),id:'order-form'}
     <div class="content-title product-header">
         <h2>${goods.name}</h2>
 
@@ -44,7 +43,7 @@
                 <span class="origin-price">${goods.faceValue}元</span>
             </div>
             <div class="right">
-                <div class="button button-go"><a href="#" data-id="buy-now">立即抢购</a></div>
+                <div class="button button-go"><a href="/weibo/wap/order?productId=${productId}">立即抢购</a></div>
             </div>
             <div class="clear"></div>
         </div>
@@ -75,20 +74,9 @@
             <span class="origin-price">${goods.faceValue}元</span>
         </div>
         <div class="right">
-            <div class="button button-go"><a href="#" data-id="buy-now">立即抢购</a></div>
+            <div class="button button-go"><a href="/weibo/wap/order?productId=${productId}">立即抢购</a></div>
         </div>
         <div class="clear"></div>
     </div>
-#{/form}
 </div>
 
-#{set 'moreScripts'}
-<script>
-    $(function () {
-        $("[data-id='buy-now']").click(function () {
-            $("#order-form").submit();
-            return false;
-        })
-    })
-</script>
-#{/set}

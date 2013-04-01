@@ -29,8 +29,8 @@ public abstract class PaymentFlow {
      * @param remoteIp  客户IP
      * @return 跳转信息
      */
-    public abstract String getRequestForm(String orderNumber, String description,
-                                          BigDecimal fee, String subPaymentCode, String remoteIp);  //生成form表单
+    public abstract String getRequestForm(String orderNumber, String description, BigDecimal fee,
+                                          String subPaymentCode, String remoteIp, String ext);  //生成form表单
 
     /**
      * 验证支付后台调用返回参数是否合法.
