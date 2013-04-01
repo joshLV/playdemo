@@ -8,6 +8,24 @@
         $("#sendForm").attr("action", "/orders/" + id + "/send?x-http-method-override=PUT");
         $('#sendModal').modal('show');
     }
+
+    function sendOrderItemMessage(id) {
+        $.ajax({
+            url:"/order-items-message/" + id + "/send",
+            type:'GET',
+            error:function () {
+                alert('发送失败!');
+            },
+            success:function (data) {
+                if (data == '0') {
+                    alert("发送成功！");
+                } else {
+                    alert("发送失败!");
+                }
+            }
+        });
+    }
+
     $(function () {
         #{if !play.Play.runingInTestMode()}
             $("#send").click(function () {
@@ -117,7 +135,11 @@
                 </td>
                 <td>&{'goods.'+orderItem.goods.materialType}</td>
                 <td>${orderItem.salePrice?.formatCurrency('CNY')}</td>
-                <td>${orderItem.buyNumber}</td>
+                <td>
+                    ${orderItem.buyNumber}<br/>
+                    <a href="javascript:sendOrderItemMessage(${orderItem?.id});">
+                        重发未使用券(${orderItem?.unusedECouponNumber}张)短信</a>
+                </td>
                 <td>
                     #{if hasViewEcouponSnPermission}
                     ${orderItem?.phone}

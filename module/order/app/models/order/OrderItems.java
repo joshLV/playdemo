@@ -1,5 +1,7 @@
 package models.order;
 
+import cache.CacheCallBack;
+import cache.CacheHelper;
 import com.uhuila.common.util.DateUtil;
 import models.accounts.AccountType;
 import models.consumer.User;
@@ -142,6 +144,15 @@ public class OrderItems extends Model {
 
     @Enumerated(EnumType.STRING)
     public OrderStatus status;
+
+    public static final String CACHEKEY = "ORDERITEM";
+
+    @Override
+    public void _save() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);
+        super._save();
+    }
 
     @Transient
     public BigDecimal getAmount() {
@@ -592,5 +603,16 @@ public class OrderItems extends Model {
         }
 
         return averagePriceMap;
+    }
+
+    @Transient
+    public Long getUnusedECouponNumber() {
+        final OrderItems thisOrderItems = this;
+        return CacheHelper.getCache(CacheHelper.getCacheKey(CACHEKEY + this.id, "UNUSEDECouponNumber"), new CacheCallBack<Long>() {
+            @Override
+            public Long loadData() {
+                return ECoupon.count("orderItems=? and status<>?", thisOrderItems, ECouponStatus.CONSUMED);
+            }
+        });
     }
 }

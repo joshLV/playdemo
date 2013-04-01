@@ -1,5 +1,6 @@
 package models.order;
 
+import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.RandomNumberUtil;
@@ -365,6 +366,8 @@ public class ECoupon extends Model {
     @Override
     public void _save() {
         this.goods.refreshSaleCount();
+        CacheHelper.delete(Order.CACHEKEY + this.order.id);
+        CacheHelper.delete(OrderItems.CACHEKEY + this.orderItems.id);
         super._save();
     }
 

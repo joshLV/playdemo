@@ -13,6 +13,7 @@ import models.sales.Brand;
 import models.sales.Goods;
 import models.sales.Shop;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.Play;
 import play.data.validation.Email;
 import play.data.validation.Match;
@@ -405,11 +406,11 @@ public class Supplier extends Model {
     }
 
     public static List<Supplier> findByCondition(Long supplierId, String code, String domainName, String keyword) {
-        StringBuilder sql = new StringBuilder("deleted= :deleted");
+        StringBuilder sql = new StringBuilder("deleted= :deleted ");
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("deleted", DeletedStatus.UN_DELETED);
         if (supplierId != null && supplierId > 0) {
-            sql.append(" and id = :supplierId");
+            sql.append("and id = :supplierId ");
             paramsMap.put("supplierId", supplierId);
         }
 
@@ -419,73 +420,57 @@ public class Supplier extends Model {
         }
 
         if (StringUtils.isNotBlank(domainName)) {
-            sql.append("and domainName like :domainName");
+            sql.append("and domainName like :domainName ");
             paramsMap.put("domainName", "%" + domainName + "%");
         }
         if (StringUtils.isNotBlank(keyword)) {
-            //销售专员姓名
-            List<OperateUser> operator = OperateUser.find("userName like ?", "%" + keyword + "%").fetch();
-            List<Long> ids = new ArrayList<>();
-            for (OperateUser o : operator) {
-                ids.add(o.id);
-            }
-            if (ids != null && ids.size() > 0) {
-                sql.append(" and salesId in :ids");
-                paramsMap.put("ids", ids);
-            } else {
-                //门店电话
-                List<Shop> shop = Shop.find("phone like ?", "%" + keyword + "%").fetch();
-                ids = new ArrayList<>();
-                for (Shop s : shop) {
-                    ids.add(s.supplierId);
-                }
-                if (ids != null && ids.size() > 0) {
-                    sql.append("and id in :ids");
-                    paramsMap.put("ids", ids);
+            sql.append(" and (");
+            //商户名称 or 商户短名称
+            sql.append("fullName like :fullName or otherName like :otherName ");
+            paramsMap.put("fullName", "%" + keyword + "%");
+            paramsMap.put("otherName", "%" + keyword + "%");
 
-                } else {
-                    //门店地址
-                    shop = Shop.find("address like ?", "%" + keyword + "%").fetch();
-                    ids = new ArrayList<>();
-                    for (Shop s : shop) {
-                        ids.add(s.supplierId);
-                    }
-                    if (ids != null && ids.size() > 0) {
-                        sql.append(" and id in :ids");
-                        paramsMap.put("ids", ids);
-                    } else {
-                        //品牌
-                        List<Brand> brand = Brand.find("name like ?", "%" + keyword + "%").fetch();
-                        ids = new ArrayList<>();
-                        for (Brand b : brand) {
-                            ids.add(b.supplier.id);
-                        }
-                        if (ids != null && ids.size() > 0) {
-                            sql.append("and id in :ids");
-                            paramsMap.put("ids", ids);
-                        } else {
-                            //门店名称
-                            shop = Shop.find(" name like ?", "%" + keyword + "%").fetch();
-                            ids = new ArrayList<>();
-                            for (Shop s : shop) {
-                                ids.add(s.supplierId);
-                            }
-                            if (ids != null && ids.size() > 0) {
-                                sql.append("and id in :ids");
-                                paramsMap.put("ids", ids);
-                            } else {
-                                //商户名称 or 商户短名称
-                                sql.append("and fullName like :fullName or otherName like :otherName");
-                                paramsMap.put("fullName", "%" + keyword + "%");
-                                paramsMap.put("otherName", "%" + keyword + "%");
-                            }
-                        }
-                    }
+            //销售专员姓名
+            List<OperateUser> operateUserList = OperateUser.find("userName like ?", "%" + keyword + "%").fetch();
+            if (operateUserList.size() > 0) {
+                List<Long> salesIds = new ArrayList<>();
+                for (OperateUser o : operateUserList) {
+                    salesIds.add(o.id);
                 }
+                sql.append("or salesId in (:salesIds) ");
+                paramsMap.put("salesIds", salesIds);
             }
+
+            //门店
+            List<Shop> shopList = Shop.find("phone like ? or address like ? or name like ?",
+                    "%" + keyword + "%", "%" + keyword + "%", "%" + keyword + "%"
+            ).fetch();
+            if (shopList.size() > 0) {
+                List<Long> shopSupplierIds = new ArrayList<>();
+                for (Shop s : shopList) {
+                    shopSupplierIds.add(s.supplierId);
+                }
+                sql.append("or id in (:shopSupplierIds) ");
+                paramsMap.put("shopSupplierIds", shopSupplierIds);
+
+            }
+
+            //品牌
+            List<Brand> brandList = Brand.find("name like ?", "%" + keyword + "%").fetch();
+            if (brandList.size() > 0) {
+                List<Long> brandSupplierIds = new ArrayList<>();
+                for (Brand b : brandList) {
+                    brandSupplierIds.add(b.supplier.id);
+                }
+                sql.append("or id in (:brandSupplierIds) ");
+                paramsMap.put("brandSupplierIds", brandSupplierIds);
+            }
+
+            sql.append(")");
         }
 
         sql.append(" order by createdAt DESC");
+        Logger.info("sql=" + sql);
         return find(sql.toString(), paramsMap).fetch();
     }
 

@@ -3,6 +3,7 @@ package models.accounts;
 import com.uhuila.common.util.DateUtil;
 import models.accounts.util.SerialNumberUtil;
 import models.order.Prepayment;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
@@ -309,5 +310,35 @@ public class AccountSequence extends Model {
             query.setParameter(key, condition.getParams().get(key));
         }
         return query.getResultList();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).
+                append("serialNumber", serialNumber).
+                append("account", account).
+                append("sequenceFlag", sequenceFlag).
+                append("tradeType", tradeType).
+                append("balance", balance).
+                append("cashBalance", cashBalance).
+                append("uncashBalance", uncashBalance).
+                append("promotionBalance", promotionBalance).
+                append("changeAmount", changeAmount).
+                append("promotionChangeAmount", promotionChangeAmount).
+                append("tradeId", tradeId).
+                append("orderId", orderId).
+                append("createdAt", createdAt).
+                append("remark", remark).
+                append("comment", comment).
+                append("operatedBy", operatedBy).
+                append("settlementStatus", settlementStatus).
+                append("withdrawBill", withdrawBill).
+                append("prepayment", prepayment).
+                append("orderNumber", orderNumber).
+                append("accountName", accountName).
+                append("payMethod", payMethod).
+                append("supplierName", supplierName).
+                append("platform", platform).
+                toString();
     }
 }
