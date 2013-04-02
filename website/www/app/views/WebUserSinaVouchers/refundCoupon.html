@@ -1,0 +1,30 @@
+#{extends 'wap.html' /}
+#{set title:'一百券 - 确认退款' /}
+<div id="wrap">
+    <div id="main-header">
+        <h1>确认退款</h1>
+    </div>
+    <div id="main-back-button">
+        <div class="left-triangle"></div>
+        <div class="button nav-button left"><a href="javascript:history.go(-1);">返回</a></div>
+    </div>
+    <div class="message message-normal">
+        <p>${coupon.goods.shortName}</p>
+
+        <div class="liketable">
+            <span class="label">退款金额</span>
+            <span class="important">￥${coupon.salePrice}</span>
+        </div>
+        <div class="liketable">
+            <span class="label">退款方式</span>
+            <span class="">原路返回</span>
+        </div>
+        <p>退款将在3个工作日内原路返回您支付的账号或银行卡</p>
+    </div>
+
+#{form @WebUserSinaVouchers.refund(coupon.id),method:'POST'}
+    <div class="main-content">
+        <button class="button main-button" type="submit">确认退款</button>
+    </div>
+#{/form}
+</div>

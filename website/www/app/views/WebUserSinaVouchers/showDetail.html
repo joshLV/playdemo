@@ -1,0 +1,65 @@
+#{extends 'wap.html' /}
+#{set title:'一百券 - 券详情' /}
+<div id="wrap">
+    <div id="main-header">
+        <h1>券详情</h1>
+    </div>
+    <div id="main-back-button">
+        <div class="left-triangle"></div>
+        <div class="nav-button left"> 返回</div>
+    </div>
+
+    <div class="content-title product-header">
+        <h2>${coupon.goods.name}</h2>
+
+        <div class="product-img">
+            <img src="${coupon.goods.getImageOriginalPath()}"/>
+
+            <div class="product-cover">
+                <div class="ptitle left">
+                ${coupon.goods.shortName}
+                </div>
+                <div class="pprice right">
+                    <div class="current-price">
+                        ￥${coupon.salePrice}
+                    </div>
+                    <div class="origin-price">
+                        原价：${coupon.goods.faceValue}
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <div class="product-share">
+            <div class="liketable">
+                <span class="label">券号</span>
+                <span class="bold">${coupon.eCouponSn}</span>
+            </div>
+            <div class="liketable">
+                <span class="label">有效期至：</span>
+                <span class="important">${coupon.expireAt.format()}</span>
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="main-box">
+            <legend>购买须知</legend>
+            <p>${coupon.goods.prompt.raw()}</p>
+        </div>
+
+        <div class="main-box">
+            <legend>使用门店</legend>
+        #{list items:shops,as:'shop'}
+            <p class="shop-title">${shop.name}</p>
+
+            <p>${shop.address.raw()}</p>
+
+            <p>${shop.phone}</p>
+
+        #{/list}
+
+        </div>
+    </div>
+    *{<div class="button main-button"><a href="@{WebUserSinaVouchers.refundCoupon(coupon.id)}">申请退款</a></div>}*
+</div>
+</div>

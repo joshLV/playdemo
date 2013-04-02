@@ -89,6 +89,9 @@ a:hover {
     color:#000;
     background-color: #c8e6a5;
 }
+.message-normal {
+  background-color: #fff;
+}
 .message-alert {
     color: #ff8625;
     background-color: #fff1cd;
@@ -209,14 +212,6 @@ a:hover {
     -webkit-border-radius:3px;
     -moz-border-radius:3px;
 }
-
-.button a {
-    color: #fff;
-}
-.button a:hover {
-    color: #fff;
-}
-
 .main-button {
     margin: 5px 0;
     border: 1px solid #a92a03;
@@ -320,4 +315,45 @@ input {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+}
+.button a {
+    color: #fff;
+}
+.button a:hover {
+    color: #fff;
+}
+.my-coupon {
+  text-align: left;
+  border-bottom: 1px solid #cccccc;
+  padding-bottom: 20px;
+  margin-bottom: 10px;
+}
+.my-coupon a {
+    color: #535353;
+}
+.my-coupon a:hover {
+    color: #535353;
+}
+.my-coupon table {
+  border: none;
+}
+.my-coupon td {
+  padding: 0 5px;
+}
+.coupon-invalid {
+  color:#bbb;
+}
+.coupon-invalid a {
+    color:#bbb;
+}
+.coupon-invalid a:hover {
+    color:#bbb;
+}
+.bold {
+  font-weight: bold;
+}
+
+.liketable .label {
+  display: inline-block;
+  width: 80px;
 }

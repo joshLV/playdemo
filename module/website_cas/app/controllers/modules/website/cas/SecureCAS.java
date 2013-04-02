@@ -282,7 +282,7 @@ public class SecureCAS extends Controller {
      */
     @Before(unless = {"login", "logout", "fail", "authenticate", "pgtCallBack"})
     public static void filter() throws Throwable {
-        Logger.debug("[SecureCAS]: CAS Filter for URL -> " + request.url + ", test=" + Security.isTestLogined());
+        Logger.info("[SecureCAS]: CAS Filter for URL -> " + request.url + ", test=" + Security.isTestLogined());
 
         // 测试用，见 @Security.setLoginUserForTest说明
         if (Security.isTestLogined()) {
@@ -290,16 +290,16 @@ public class SecureCAS extends Controller {
             session.put(SESSION_USER_KEY, Security.getLoginUserForTest());
         }
 
-        Logger.debug("session contains=" + session.contains(SESSION_USER_KEY) + ", value=" + session.get(SESSION_USER_KEY));
+        Logger.info("session contains=" + session.contains(SESSION_USER_KEY) + ", value=" + session.get(SESSION_USER_KEY));
         if (skipCAS()) {
-            Logger.debug("[SecureCAS]: Skip the CAS.");
+            Logger.info("[SecureCAS]: Skip the CAS.");
             return;
         }
 
         // if user is authenticated, the username is in session !
         // Single Sign Out: 如果Cache.get(SESSION_USER_KEY + session.get(SESSION_USER_KEY))为空，则已经被其它应用注销.
         if (getUser() == null) {
-            Logger.debug("[SecureCAS]: user is not authenticated");
+            Logger.info("[SecureCAS]: user is not authenticated");
             // we put into cache the url we come from
             Cache.add("url_" + session.getId(), request.method.equals("GET") ? request.url : "/", "10min");
 

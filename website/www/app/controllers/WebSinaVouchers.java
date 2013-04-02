@@ -1,5 +1,6 @@
 package controllers;
 
+import com.google.gson.Gson;
 import controllers.modules.website.cas.OAuthType;
 import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.Security;
@@ -18,6 +19,7 @@ import models.sales.ResalerProduct;
 import models.sales.Shop;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
+import play.classloading.enhancers.LocalvariablesNamesEnhancer;
 import play.data.validation.Validation;
 import play.mvc.Before;
 import play.mvc.Controller;
@@ -48,8 +50,7 @@ public class WebSinaVouchers extends Controller {
         Collection<Shop> shops = goods.getShopList();
 
         String templatePath = "WebSinaVouchers/showProduct" + StringUtils.capitalize(StringUtils.trimToEmpty(source)) + ".html";
-
-        render(templatePath, goods, shops, productId);
+        renderTemplate(templatePath, goods, shops, productId);
     }
 
 
@@ -70,7 +71,7 @@ public class WebSinaVouchers extends Controller {
     /**
      * 创建订单
      */
-    public static void order(String productId, Long buyCount, String phone) {
+    public static void order(String productId, Long buyCount, String phone, String source) {
         User user = SecureCAS.getUser();
         Goods goods = ResalerProduct.getGoodsByPartnerProductId(productId, OuterOrderPartner.SINA);
         Validation.required("phone", phone);
@@ -106,7 +107,7 @@ public class WebSinaVouchers extends Controller {
         PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow(paymentSource.paymentCode);
 
         String form = paymentFlow.getRequestForm(order.orderNumber, order.description,
-                order.discountPay, paymentSource.subPaymentCode, request.remoteAddress, "wap");
+                order.discountPay, paymentSource.subPaymentCode, request.remoteAddress, source);
 
         PaymentJournal.savePayRequestJournal(
                 order.orderNumber,
@@ -119,16 +120,6 @@ public class WebSinaVouchers extends Controller {
         render(form);
 
     }
-
-    /**
-     * 支付结果页面
-     *
-     * @param orderNumber 订单编号
-     */
-
-    public static void payResult(String orderNumber) {
-    }
-
 
     /**
      * 检查是否从手机或除PC以外的设备访问页面

@@ -35,18 +35,7 @@ import util.extension.ExtensionResult;
 import util.transaction.RemoteCallback;
 import util.transaction.RemoteRecallCheck;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.Version;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -211,7 +200,7 @@ public class ECoupon extends Model {
      * 已同步标记。
      * 如果为true，则已经同步到第三方网站
      */
-    public Boolean synced=false;
+    public Boolean synced = false;
 
     /**
      * 合作方券ID。
@@ -250,7 +239,7 @@ public class ECoupon extends Model {
     public String refundPriceInfo;
 
     @Transient
-    public String  outerOrderId;
+    public String outerOrderId;
 
 
     /**
@@ -578,7 +567,7 @@ public class ECoupon extends Model {
     private boolean consumed(Long shopId, OperateUser operateUser, SupplierUser supplierUser, VerifyCouponType type,
                              Date realConsumedAt, String remark) {
         Logger.info("ECoupon.consumed(shopId:" + shopId + ", operateUser:" + operateUser + ", supplierUser:" + supplierUser
-                 + ", type:" + type + ", realConsumedAt:" + realConsumedAt + ", remark:" + remark);
+                + ", type:" + type + ", realConsumedAt:" + realConsumedAt + ", remark:" + remark);
         if (this.status != ECouponStatus.UNCONSUMED) {
             return false;
         }
@@ -1613,4 +1602,14 @@ public class ECoupon extends Model {
         return true;
     }
 
+    public static List<ECoupon> findWapCoupons(User user, int limit) {
+        if (limit > 0) {
+            return ECoupon.find("order.consumerId=? order by id desc", user.id).fetch(limit);
+        }
+        return ECoupon.find("order.consumerId=? order by id desc", user.id).fetch();
+    }
+
+    public static ECoupon getCouponByIdAndUser(Long id, User user) {
+        return ECoupon.find("id=? and order.consumerId=?", id, user.id).first();
+    }
 }

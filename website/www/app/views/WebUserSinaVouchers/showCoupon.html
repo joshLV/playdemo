@@ -1,0 +1,42 @@
+#{extends 'wap.html' /}
+#{set title:'一百券 - 券信息' /}
+<div id="wrap">
+    <div id="main-header">
+        <h1>我的券</h1>
+    </div>
+    <div id="main-back-button">
+        <div class="left-triangle"></div>
+        <div class="button nav-button left"><a href="javascript:history.go(-1);">返回</a></div>
+    </div>
+    <div class="message message-normal">
+    </div>
+    <div class="content-title">
+    #{list items:couponList,as:'coupon'}
+        #{set isUsedOrExpired:false /}
+        #{if coupon.isExpired() || coupon.status==models.order.ECouponStatus.CONSUMED}
+            #{set isUsedOrExpired:true/}
+        #{/if}
+        <div #{if isUsedOrExpired }class="my-coupon coupon-invalid"#{/if}#{else}class="my-coupon"#{/else}>
+            <p class="coupon-title"><a href="@{WebUserSinaVouchers.showDetail(coupon.id)}">${coupon.goods.shortName}</a></p>
+
+            <div class="liketable">
+                <span class="label">券号</span>
+                <span class="bold">${coupon.eCouponSn}
+                    #{if coupon?.status != models.order.ECouponStatus.CONSUMED && isExpired }已过期#{/if}
+                    #{if coupon?.status == models.order.ECouponStatus.CONSUMED }已消费#{/if}
+                </span>
+            </div>
+            #{if !isUsedOrExpired}
+                <div class="liketable">
+                    <span class="label">有效期至：</span>
+                    <span #{if coupon.getExpiredAt()<7}class="important"#{/if}>${coupon.expireAt.format()}</span>
+                </div>
+            #{/if}
+        </div>
+    #{/list}
+        <div class="coupon-title">
+            <div class="button main-button"><a href="@{WebUserSinaVouchers.showMoreCoupon()}">查看更多券</a></div>
+        </div>
+    </div>
+</div>
+
