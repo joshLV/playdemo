@@ -2,10 +2,15 @@
 <application text="商品管理">
     <role key="editor" text="编辑人员"/>
     <role key="customservice" text="客服人员"/>
+    <role key="account" text="财务人员"/>
+    <role key="webop" text="网站运营"/>
+    <role key="sales" text="商务销售"/>
+    <role key="manager" text="经理"/>
 
     <permission key="CMS" text="网站管理" roles="editor">
         <permission key="WEB_CONSUMER" text="网站用户" roles="editor,customservice"/>
         <permission key="TOPICS_NEW" text="新增公告" roles="editor"/>
+        <permission key="TOPICS_VIEW" text="查看公告" roles="editor,customservice,account,webop,sales,manager"/>
         <permission key="TOPICS" text="公告管理" roles="editor"/>
         <permission key="BLOCKS_NEW" text="新增内容块管理" roles="editor"/>
         <permission key="BLOCKS" text="内容块管理" roles="editor"/>
