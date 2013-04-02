@@ -99,13 +99,13 @@ public class OperateOrdersForSalesManagerTest extends FunctionalTest {
                 o.paidAt = new Date();
             }
         });
+
         FactoryBoy.create(OrderItems.class, new BuildCallback<OrderItems>() {
             @Override
             public void build(OrderItems oi) {
                 oi.phone = user.mobile;
             }
         });
-
         Response response = GET("/orders");
         assertStatus(200, response);
         List<Order> orders = (List<Order>) renderArgs("orderList");

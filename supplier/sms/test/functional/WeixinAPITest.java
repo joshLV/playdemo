@@ -90,7 +90,43 @@ public class WeixinAPITest extends FunctionalTest {
         assertEquals("身份绑定成功！" + supplierUser.userName + ", 欢迎您使用一百券商家助手！", resultText);
         supplierUser.refresh();
         assertEquals("456", supplierUser.weixinOpenId);
+        assertNull(supplierUser.idCode); //绑定成功后会清除idCode
     }
+
+    /**
+     * 同一个OpenId只能绑定一次.
+     * @throws Exception
+     */
+    @Test
+    public void testBindSameOpenId() throws Exception {
+        SupplierUser bindedUser = FactoryBoy.create(SupplierUser.class, new BuildCallback<SupplierUser>() {
+            @Override
+            public void build(SupplierUser target) {
+                target.weixinOpenId = "456";
+            }
+        });
+        assertNull(supplierUser.weixinOpenId);  //没有绑定
+
+        // 发送身份识别码
+        String resultText = getWeiXinResponseContent(supplierUser.idCode);
+        assertEquals("您的微信已经绑定了用户『" + bindedUser.loginName +"』，不能重复绑定，请先登录到『" + bindedUser.loginName + "』解绑微信，或使用其它微信号。",
+                resultText);
+        supplierUser.refresh();
+        assertNull(supplierUser.weixinOpenId); //还是没有绑定
+        assertNotNull(supplierUser.idCode);
+
+    }
+
+    /**
+     * 加好友后出现的消息.
+     * @throws Exception
+     */
+    @Test
+    public void testBindSuccessMessage() throws Exception {
+        String resultText = getWeiXinResponseContent("Hello2BizUser");
+        assertEquals("欢迎使用【一百券商家助手】，使用【一百券商家助手】可通过微信进行消费券验证。请输入商家后台所提供的『身份识别码』，绑定您的微信。", resultText);
+    }
+
     @Test
     public void testBindInvalidSupplierUser() throws Exception {
         assertNull(supplierUser.weixinOpenId);  //没有绑定

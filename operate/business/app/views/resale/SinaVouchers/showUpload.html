@@ -2,185 +2,270 @@
 #{set title:'新浪上传商品:' + goods.shortName /}
 #{include '/share/nav.html' /}
 #{set 'moreStyles'}
-    <link rel="stylesheet" media="screen" href="@{'/public/javascripts2/themes/default/default.css'}">
+<link rel="stylesheet" media="screen" href="@{'/public/javascripts2/themes/default/default.css'}">
+<style type="text/css">
+    .tab-content .control-label {
+        width: auto;
+        margin-left: 10px;
+    }
+    .tab-content .controls {
+        margin-left: 90px;
+    }
+    .nav-tabs{
+        margin-bottom: 0;
+    }
+    .tab-content {
+        padding-top: 20px;
+        border-bottom: 1px solid #ddd;
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+    }
+
+</style>
 #{/set}
 <div class="body">
-    <legend>新浪上传商品：<a href="/goods/${goods.id}" target="_blank">
-    ${goods.shortName}</a>
-    </legend>
-    <form class="form-horizontal" method="POST" action="/resaler-products/sina/upload">
-        <div class="control-group">
-            <label class="control-label">卡券发行方类型</label>
+<legend>新浪上传商品：<a href="/goods/${goods.id}" target="_blank">
+${goods.shortName}</a>
+</legend>
+<form class="form-horizontal" method="POST" action="/resaler-products/sina/upload">
+<div class="control-group">
+    <label class="control-label">卡券发行方类型</label>
 
-            <div class="controls">
-                <label class="radio ">
-                    <input type="radio" name="source_type" value="0" checked=""> 平台
-                </label>
-                <label class="radio ">
-                    <input type="radio" name="source_type" value="1"> 商户
-                </label>
+    <div class="controls">
+        <label class="radio ">
+            <input type="radio" name="source_type" value="0" checked=""> 平台
+        </label>
+        <label class="radio ">
+            <input type="radio" name="source_type" value="1"> 商户
+        </label>
+    </div>
+</div>
+
+<div class="control-group">
+    <label class="control-label" for="brandName">品牌名称<span style="color: red">*</span></label>
+
+    <div class="controls">
+        <input type="text" id="brandName" name="brand_name" class="input-xxlarge" value="${goods.brand.name}"
+               data-max-length="32">
+        <span class="help-inline">不超过32个字符<span id="brandName-monitor"></span></span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="brandLogoImage">商家图片<span style="color: red">*</span></label>
+
+    <div class="controls">
+        <input type="text" id="brandLogoImage" name="brandlogo_image" class="input-xxlarge"
+               value="${goods.brand.getShowLogo()}">
+        <span class="btn" imginput="brandLogoImage" data-type="buttonSelectImg">选择图片</span>
+        <span class="help-block">http开头，图片尺寸为80*80，图片大小在 50kb 以内</span>
+        <img src="${goods.brand.getShowLogo()}" alt="" id="brandLogoImage-show">
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">卡券类型</label>
+    <div class="controls">
+        <ul class="nav nav-tabs" id="typeTab">
+            <li class="active"><a href="#panel-coupon" data-toggle="tab">代金券</a></li>
+            <li><a href="#panel-voucher" data-toggle="tab">优惠券</a></li>
+            <li><a href="#panel-member" data-toggle="tab">会员卡</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="panel-coupon">
+                <input type="hidden" name="type" value="1">
+                <div class="control-group">
+                    <label class="control-label" for="value">面值</label>
+
+                    <div class="controls">
+                        <input type="text" id="value" name="value" class="input-xxlarge" value="${goods.faceValue}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="price">卡券名称</label>
+
+                    <div class="controls">
+                        <input type="text" id="price" name="price" class="input-xxlarge" value="${goods.getResalePrice()}" >
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="imageCoupon">卡券图片</label>
+
+                    <div class="controls">
+                        <input type="text" id="imageCoupon" name="image" class="input-xxlarge" value="${goods.getImageLargePath()}">
+                        <span class="btn" imginput="imageCoupon" data-type="buttonSelectImg">选择图片</span>
+                        <span class="help-block">http开头，图片尺寸为616*172，图片大小在 200kb 以内</span>
+                        <img src="${goods.getImageLargePath()}" alt="" id="imageCoupon-show">
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="panel-voucher" >
+                <input type="hidden" name="type" value="0">
+                <div class="control-group">
+                    <label class="control-label" for="title">卡券名称</label>
+
+                    <div class="controls">
+                        <input type="text" id="title" name="title" class="input-xxlarge" value="${goods.title}"
+                               data-max-length="64">
+                        <span class="help-inline">不超过64个字符<span id="title-monitor"></span></span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="title">卡券描述</label>
+
+                    <div class="controls">
+                        <input type="text" id="shortDescription" name="short_description" class="input-xxlarge"
+                               value="${goods.shortName}"
+                               data-max-length="128">
+                        <span class="help-inline">不超过28个字符<span id="shortDescription-monitor"></span></span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">销核类型 *</label>
+
+                    <div class="controls">
+                        <label class="radio ">
+                            <input type="radio" name="check_type" value="0" checked=""> 商户销卡
+                        </label>
+                        <label class="radio ">
+                            <input type="radio" name="check_type" value="1"> 用户销卡
+                        </label>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="image">卡券图片</label>
+
+                    <div class="controls">
+                        <input type="text" id="image" name="image" class="input-xxlarge" value="${goods.getImageLargePath()}">
+                        <span class="btn" imginput="image" data-type="buttonSelectImg">选择图片</span>
+                        <span class="help-block">http开头，图片尺寸为616*172，图片大小在 200kb 以内</span>
+                        <img src="${goods.getImageLargePath()}" alt="" id="image-show">
+                    </div>
+                </div>
+
+            </div>
+            <div class="tab-pane" id="panel-member">
+                <input type="hidden" name="type" value="2">
+                <p style="margin-left: 10px">已选择会员卡</p>
             </div>
         </div>
+    </div>
+</div>
 
-        <div class="control-group">
-            <label class="control-label" for="brandName">品牌名称<span style="color: red">*</span></label>
+<div class="control-group">
+    <label class="control-label">卡券样式<span style="color: red">*</span></label>
 
-            <div class="controls">
-                <input type="text" id="brandName" name="brand_name" class="input-xxlarge" value="${goods.brand.name}"
-                       data-max-length="32">
-                <span class="help-inline">不超过32个字符<span id="brandName-monitor"></span></span>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="brandLogoImage">商家图片<span style="color: red">*</span></label>
+    <div class="controls">
+        #{list ['白','橙', '赤', '黑', '黄', '蓝', '绿', '青', '紫'], as:'v'}
+            <label class="radio inline">
+                <input type="radio" name="type_appearance" value="${v_index}" #{if v == '白'} checked #{/if} > ${v}
+            </label>
+        #{/list}
+        <label class="radio inline">
+            <a href="@{resale.SinaVouchers.voucherStyles()}" target="_blank">查看卡券样式</a>
+        </label>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">是否全国范围</label>
 
-            <div class="controls">
-                <input type="text" id="brandLogoImage" name="brandlogo_image" class="input-xxlarge"
-                       value="${goods.brand.getShowLogo()}">
-                <span class="btn" imginput="brandLogoImage" data-type="buttonSelectImg">选择图片</span>
-                <span class="help-block">http开头，图片尺寸为80*80，图片大小在 50kb 以内</span>
-                <img src="${goods.brand.getShowLogo()}" alt="" id="brandLogoImage-show">
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label">卡券类型</label>
+    <div class="controls">
+        <label class="radio ">
+            <input type="radio" name="suit_country" value="0" checked="">全国
+        </label>
+        <label class="radio ">
+            <input type="radio" name="suit_country" value="1"> 部分城市
+        </label>
+        <label class="radio ">
+            <input type="radio" name="suit_country" value="2"> 部分省份
+        </label>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="suitProvince">卡券所属省份</label>
 
-            <div class="controls">
-                <label class="radio ">
-                    <input type="radio" name="type" value="0" checked=""> 优惠券
-                </label>
-                <label class="radio ">
-                    <input type="radio" name="type" value="1"> 代金券
-                </label>
-                <label class="radio ">
-                    <input type="radio" name="type" value="2"> 会员卡
-                </label>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label">卡券样式<span style="color: red">*</span></label>
+    <div class="controls">
+        <input type="text" id="suitProvince" name="suit_province" class="input-block-level" value=""
+               data-max-length="256">
+        <span class="help-block">不超过256个字符<span id="suitProvince-monitor"></span></span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="suitCity">卡券所属城市 </label>
 
-            <div class="controls">
-            #{list 1..9, as:'v'}
-                <label class="radio inline">
-                    <input type="radio" name="type_appearance" value="${v}" #{if v == 1} checked #{/if} >${v}
-                </label>
-            #{/list}
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label">是否全国范围</label>
+    <div class="controls">
+        <input type="text" id="suitCity" name="suit_city" class="input-block-level" value=""
+               data-max-length="256">
+        <span class="help-block">不超过256个字符<span id="suitCity-monitor"></span></span>
+    </div>
+</div>
 
-            <div class="controls">
-                <label class="radio ">
-                    <input type="radio" name="suit_country" value="0" checked="">全国
-                </label>
-                <label class="radio ">
-                    <input type="radio" name="suit_country" value="1"> 部分城市
-                </label>
-                <label class="radio ">
-                    <input type="radio" name="suit_country" value="2"> 部分省份
-                </label>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="suitProvince">卡券所属省份</label>
+<div class="control-group">
+    <label class="control-label">门店信息</label>
 
-            <div class="controls">
-                <input type="text" id="suitProvince" name="suit_province" class="input-block-level" value=""
-                       data-max-length="256">
-                <span class="help-block">不超过256个字符<span id="suitProvince-monitor"></span></span>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="suitCity">卡券所属城市 </label>
-
-            <div class="controls">
-                <input type="text" id="suitCity" name="suit_city" class="input-block-level" value=""
-                       data-max-length="256">
-                <span class="help-block">不超过256个字符<span id="suitCity-monitor"></span></span>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <label class="control-label">门店信息</label>
-
-            <div class="controls">
-                #{list shops, as:'shop'}
-                <label class="checkbox">
-                    <input type="checkbox" checked data-poiid="${shop.id}" data-poi_name="${shop.name}" data-poi_location="${shop.address}" >
-                    ${shop.name} - ${shop.address}
-                </label>
-                #{/list}
-            </div>
-        </div>
-        <input type="hidden" id="poiid" name="poiid">
-        <input type="hidden" id="poi_name" name="poi_name">
-        <input type="hidden" id="poi_location" name="poi_location">
+    <div class="controls">
+    #{list shops, as:'shop'}
+        <label class="checkbox">
+            <input type="checkbox" checked data-poiid="${shop.id}" data-poi_name="${shop.name}"
+                   data-poi_location="${shop.address}">
+        ${shop.name} - ${shop.address}
+        </label>
+    #{/list}
+    </div>
+</div>
+<input type="hidden" id="poiid" name="poiid">
+<input type="hidden" id="poi_name" name="poi_name">
+<input type="hidden" id="poi_location" name="poi_location">
 
 
-        <div class="control-group">
-            <label class="control-label" for="image">卡券图片</label>
+<div class="control-group">
+    <label class="control-label">有效期起始时间</label>
 
-            <div class="controls">
-                <input type="text" id="image" name="image" class="input-xxlarge" value="${goods.getImageLargePath()}">
-                <span class="btn" imginput="image" data-type="buttonSelectImg">选择图片</span>
-                <span class="help-block">http开头，图片尺寸为616*172，图片大小在 200kb 以内</span>
-                <img src="${goods.getImageLargePath()}" alt="" id="image-show">
-            </div>
-        </div>
+    <div class="controls">
+        <input type="text" name="start_time"
+               onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd'})"
+               class="Wdate" value="${goods.effectiveAt?.format('yyyy-MM-dd')}">
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">有效期结束时间</label>
 
+    <div class="controls">
+        <input type="text" name="expire_time" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd'})"
+               class="Wdate" value="${goods.expireAt.format('yyyy-MM-dd')}">
+    </div>
+</div>
 
-        <div class="control-group">
-            <label class="control-label">有效期起始时间</label>
+<div class="control-group">
+    <label class="control-label" for="description">卡券描述</label>
 
-            <div class="controls">
-                <input type="text" name="start_time"
-                       onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd'})"
-                       class="Wdate" value="${goods.effectiveAt?.format('yyyy-MM-dd')}">
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label">有效期结束时间</label>
+    <div class="controls">
+        <input type="text" id="description" name="description" class="input-xxlarge" value=""
+               data-max-length="32">
+        <span class="help-block">不超过32个字符<span id="description-monitor"></span></span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="readme">卡券详情</label>
 
-            <div class="controls">
-                <input type="text" name="expire_time" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd'})"
-                       class="Wdate" value="${goods.expireAt.format('yyyy-MM-dd')}">
-            </div>
-        </div>
+    <div class="controls">
 
-        <div class="control-group">
-            <label class="control-label" for="description">卡券描述</label>
-
-            <div class="controls">
-                <input type="text" id="description" name="description" class="input-xxlarge" value=""
-                       data-max-length="32">
-                <span class="help-block">不超过32个字符<span id="description-monitor"></span></span>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="readme">卡券详情</label>
-
-            <div class="controls">
-
-                <textarea rows="8" cols="100" name="readme" id="readme" style="width:850px;height:550px;"
-                          data-max-length="1024"></textarea>
-
-                <span class="help-block">不超过1024个字符<span id="readme-monitor"></span></span>
-            </div>
-        </div>
-        #{if !supplier.weiboId}
-            <div class="alert alert-error">微博ID为空,请到商户编辑页面填写 </div>
-        #{/if}
-        #{else }
-            <div class="form-actions">
-                <input type="hidden" name="source" value="${models.sina.SinaVoucherUtil.SOURCE_ID}">
-                <input type="hidden" name="source_name" value="${models.sina.SinaVoucherUtil.SOURCE_NAME}">
-                <input type="hidden" name="enterprise_id" value="${supplier.weiboId}">
-                <button type="submit" id="submit" class="btn btn-primary">发布</button>
-            </div>
-        #{/else}
-    </form>
+        <textarea rows="8" cols="100" name="readme" id="readme" style="width:850px;height:550px;"
+                  data-max-length="1024"></textarea>
+        <span class="help-block">不超过1024个字符<span id="readme-monitor"></span></span>
+    </div>
+</div>
+#{if !supplier.weiboId}
+    <div class="alert alert-error">微博ID为空,请到商户编辑页面填写</div>
+#{/if}
+#{else }
+    <div class="form-actions">
+        <input type="hidden" id="goodsId" name="goodsId" value="${goods.id}">
+        <input type="hidden" name="source" value="${models.sina.SinaVoucherUtil.SOURCE_ID}">
+        <input type="hidden" name="source_name" value="${models.sina.SinaVoucherUtil.SOURCE_NAME}">
+        <input type="hidden" name="enterprise_id" value="${supplier.weiboId}">
+        <button type="submit" id="submit" class="btn btn-primary">发布</button>
+    </div>
+#{/else}
+</form>
 </div>
 
 #{set 'moreScripts'}
@@ -203,10 +288,10 @@
                 editor.loadPlugin('image', function () {
                     editor.plugin.imageDialog({
                         showRemote: false,
-                        imageUrl: K('#'+imginput).val(),
+                        imageUrl: K('#' + imginput).val(),
                         clickFn: function (url, title, width, height, border, align) {
-                            K('#'+imginput).val(url);
-                            K('#'+imginput+"-show").attr("src", url);
+                            K('#' + imginput).val(url);
+                            K('#' + imginput + "-show").attr("src", url);
                             editor.hideDialog();
                         }
                     });
@@ -228,15 +313,22 @@
         });
 
 
-        $("#submit").click(function(){
-            $("#poiid, #poi_name, #poi_location").each(function(){
+        $("#submit").click(function () {
+            $("#poiid, #poi_name, #poi_location").each(function () {
                 var temp = [];
                 var ele = $(this);
-                $("[data-poiid]:checked").each(function(){
+                $("[data-poiid]:checked").each(function () {
                     var e = $(this);
                     temp.push(e.attr('data-' + ele.attr('id')));
                 });
                 ele.val(temp.join(';'));
+            });
+
+            $(".tab-pane").each(function(){
+                var ele = $(this);
+                if (!ele.hasClass('active')) {
+                    ele.remove();
+                }
             });
         });
 

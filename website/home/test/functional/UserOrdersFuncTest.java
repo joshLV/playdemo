@@ -158,7 +158,7 @@ public class UserOrdersFuncTest extends FunctionalTest {
         assertNotNull(resultECoupon.refundAt);
         assertEquals(0, resultECoupon.refundPrice.compareTo(resultECoupon.salePrice));
         account.refresh();
-        assertEquals(originAmount.subtract(goods.salePrice).setScale(02), account.amount.setScale(2));
+        assertEquals(originAmount.subtract(goods.salePrice).setScale(2), account.amount.setScale(2));
     }
 
     @Test

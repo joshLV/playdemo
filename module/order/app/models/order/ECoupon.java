@@ -1,5 +1,6 @@
 package models.order;
 
+import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.RandomNumberUtil;
@@ -119,11 +120,6 @@ public class ECoupon extends Model {
      */
     public String password;
 
-    /**
-     * 已同步标记。
-     * 如果为true，则已经同步到第三方网站
-     */
-    public Boolean synced;
 
     // ==== 价格列表 ====
     @Column(name = "face_value")
@@ -211,6 +207,12 @@ public class ECoupon extends Model {
 
     @Enumerated(EnumType.STRING)
     public ECouponPartner partner;
+
+    /**
+     * 已同步标记。
+     * 如果为true，则已经同步到第三方网站
+     */
+    public Boolean synced=false;
 
     /**
      * 合作方券ID。
@@ -364,6 +366,8 @@ public class ECoupon extends Model {
     @Override
     public void _save() {
         this.goods.refreshSaleCount();
+        CacheHelper.delete(Order.CACHEKEY + this.order.id);
+        CacheHelper.delete(OrderItems.CACHEKEY + this.orderItems.id);
         super._save();
     }
 
@@ -1457,7 +1461,7 @@ public class ECoupon extends Model {
             if (shop == null) {
                 return "对不起，该券已使用过。 消费时间为" + format.format(ecoupon.consumedAt);
             }
-            return "对不起，该券已使用过。 消费门店为" + shop.name + "，消费时间为" + format.format(ecoupon.consumedAt);
+            return "对不起，该券已使用过。 消费门店为" + ecoupon.shop.name + "，消费时间为" + format.format(ecoupon.consumedAt);
         }
         if (ecoupon.status == models.order.ECouponStatus.REFUND) {
             return "对不起，该券已退款!";
@@ -1547,20 +1551,18 @@ public class ECoupon extends Model {
     /**
      * 判断运营人员是否可重新发送券号.
      *
+     * 以下条件的券是可以发送短信的：
+     * <ol>
+     *     <li>券状态是未消费UNCONSUMED</li>
+     *     <li>导入券在已消费时也可以发短信</li>
+     * </ol>
+     *
      * @return
      */
     public boolean canSendSMSByOperate() {
-        if (this.goods.isLottery) {
-            return false;
-        }
-        if (this.status == ECouponStatus.UNCONSUMED) {
-            return true;
-        }
-        if (this.goods.couponType == GoodsCouponType.IMPORT && this.status == ECouponStatus.CONSUMED) {
-            // 导入券可继续发送
-            return true;
-        }
-        return false;
+        return !this.goods.isLottery && (this.status == ECouponStatus.UNCONSUMED
+                || (this.goods.couponType == GoodsCouponType.IMPORT && this.status == ECouponStatus.CONSUMED)
+        );
     }
 
     /**
@@ -1569,10 +1571,7 @@ public class ECoupon extends Model {
      * @return
      */
     public boolean canSendSMSByConsumer() {
-        if (canSendSMSByOperate() && this.smsSentCount <= 3) {
-            return true;
-        }
-        return false;
+        return canSendSMSByOperate() && this.smsSentCount <= 3;
     }
 
     /**

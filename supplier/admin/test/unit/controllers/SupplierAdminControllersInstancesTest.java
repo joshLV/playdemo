@@ -15,6 +15,6 @@ public class SupplierAdminControllersInstancesTest extends UnitTest{
         assertTrue(new SupplierProfiles() instanceof Controller);
         assertTrue(new SuppliersFindPassword() instanceof Controller);
         assertTrue(new SuppliersPassword() instanceof Controller);
-        assertTrue(new SupplierUsers() instanceof Controller);
+        assertTrue(new SupplierAdminUsers() instanceof Controller);
     }
 }

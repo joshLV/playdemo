@@ -7,10 +7,13 @@ import com.uhuila.common.util.PathUtil;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.admin.SupplierUser;
+import models.operator.OperateUser;
 import models.order.Prepayment;
 import models.sales.Brand;
 import models.sales.Goods;
+import models.sales.Shop;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.Play;
 import play.data.validation.Email;
 import play.data.validation.Match;
@@ -35,9 +38,7 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import java.beans.Transient;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 供应商（商户）
@@ -139,6 +140,8 @@ public class Supplier extends Model {
      */
     @Enumerated(EnumType.STRING)
     public SupplierStatus status;
+
+
     /**
      * logo图片路径
      */
@@ -217,12 +220,41 @@ public class Supplier extends Model {
      */
     @Column(name = "show_selling_state")
     public Boolean showSellingState = false;
+
+
     //=================================================以上是全部数据库相关属性================================================
+
+    @javax.persistence.Transient
+    public String statusName;
+
+    @javax.persistence.Transient
+    public String whetherToShowSellingState;
+
+    @javax.persistence.Transient
+    public Integer shopsCount;
+
+    @javax.persistence.Transient
+    public Integer brandsCount;
+
+    @javax.persistence.Transient
+    public Integer goodsCount;
 
     @Transient
     public String getName() {
         return StringUtils.isBlank(otherName) ? fullName : otherName;
     }
+
+    //销售专员姓名
+    @Transient
+    public String getSalesName() {
+        OperateUser operateUser = OperateUser.findById(this.salesId);
+        if (operateUser != null) {
+            return operateUser.userName;
+        } else {
+            return "";
+        }
+    }
+
 
     public Supplier() {
     }
@@ -373,27 +405,73 @@ public class Supplier extends Model {
         }
     }
 
-    public static List<Supplier> findByCondition(Long supplierId, String code, String domainName) {
-        StringBuilder sql = new StringBuilder("deleted=?");
-        List params = new ArrayList();
-        params.add(DeletedStatus.UN_DELETED);
+    public static List<Supplier> findByCondition(Long supplierId, String code, String domainName, String keyword) {
+        StringBuilder sql = new StringBuilder("deleted= :deleted ");
+        Map<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put("deleted", DeletedStatus.UN_DELETED);
         if (supplierId != null && supplierId > 0) {
-            sql.append(" and id = ?");
-            params.add(supplierId);
+            sql.append("and id = :supplierId ");
+            paramsMap.put("supplierId", supplierId);
         }
 
         if (StringUtils.isNotBlank(code)) {
-            sql.append("and code like ?");
-            params.add(code + "%");
+            sql.append("and code like :code ");
+            paramsMap.put("code", code + "%");
         }
 
         if (StringUtils.isNotBlank(domainName)) {
-            sql.append("and domainName like ?");
-            params.add("%" + domainName + "%");
+            sql.append("and domainName like :domainName ");
+            paramsMap.put("domainName", "%" + domainName + "%");
+        }
+        if (StringUtils.isNotBlank(keyword)) {
+            sql.append(" and (");
+            //商户名称 or 商户短名称
+            sql.append("fullName like :fullName or otherName like :otherName ");
+            paramsMap.put("fullName", "%" + keyword + "%");
+            paramsMap.put("otherName", "%" + keyword + "%");
+
+            //销售专员姓名
+            List<OperateUser> operateUserList = OperateUser.find("userName like ?", "%" + keyword + "%").fetch();
+            if (operateUserList.size() > 0) {
+                List<Long> salesIds = new ArrayList<>();
+                for (OperateUser o : operateUserList) {
+                    salesIds.add(o.id);
+                }
+                sql.append("or salesId in (:salesIds) ");
+                paramsMap.put("salesIds", salesIds);
+            }
+
+            //门店
+            List<Shop> shopList = Shop.find("phone like ? or address like ? or name like ?",
+                    "%" + keyword + "%", "%" + keyword + "%", "%" + keyword + "%"
+            ).fetch();
+            if (shopList.size() > 0) {
+                List<Long> shopSupplierIds = new ArrayList<>();
+                for (Shop s : shopList) {
+                    shopSupplierIds.add(s.supplierId);
+                }
+                sql.append("or id in (:shopSupplierIds) ");
+                paramsMap.put("shopSupplierIds", shopSupplierIds);
+
+            }
+
+            //品牌
+            List<Brand> brandList = Brand.find("name like ?", "%" + keyword + "%").fetch();
+            if (brandList.size() > 0) {
+                List<Long> brandSupplierIds = new ArrayList<>();
+                for (Brand b : brandList) {
+                    brandSupplierIds.add(b.supplier.id);
+                }
+                sql.append("or id in (:brandSupplierIds) ");
+                paramsMap.put("brandSupplierIds", brandSupplierIds);
+            }
+
+            sql.append(")");
         }
 
         sql.append(" order by createdAt DESC");
-        return find(sql.toString(), params.toArray()).fetch();
+        Logger.info("sql=" + sql);
+        return find(sql.toString(), paramsMap).fetch();
     }
 
     public static List<Supplier> findSuppliersByCanSaleReal() {
@@ -456,6 +534,17 @@ public class Supplier extends Model {
         return DateUtil.stringToDate(dateStr, DATE_FORMAT);
     }
 
+    public List<Shop> getShops() {
+        return Shop.find("supplierId=? and deleted=?", this.id, DeletedStatus.UN_DELETED
+        ).fetch();
+    }
+
+    public List<Brand> getBrands() {
+        return Brand.find("supplier.id=? and deleted=?", this.id, DeletedStatus.UN_DELETED
+        ).fetch();
+    }
+
+
     public List<Goods> getGoods() {
         return Goods.find("supplierId=?", this.id).fetch();
     }
@@ -468,7 +557,8 @@ public class Supplier extends Model {
      * @param date
      * @return
      */
-    public static BigDecimal getWithdrawAmount(Account supplierAccount, Prepayment lastPrepayment, BigDecimal withdrawAmount, Date date) {
+    public static BigDecimal getWithdrawAmount(Account supplierAccount, Prepayment lastPrepayment, BigDecimal
+            withdrawAmount, Date date) {
         if (lastPrepayment == null) {
             return withdrawAmount;
         }

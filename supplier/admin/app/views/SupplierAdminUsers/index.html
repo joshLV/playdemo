@@ -11,14 +11,14 @@
 <script src="@{'/public/javascripts/supplierUser.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 <legend>操作员一览</legend>
-#{form @SupplierUsers.index() , id:'operForm',class:"form-horizontal" }
+#{form @SupplierAdminUsers.index() , id:'operForm',class:"form-horizontal" }
 <table class="table table-striped table-bordered table-condensed">
     <tr>
         <td>用户名<input type="text" name="loginName" value="${loginName}" class="input-large"/>
             &nbsp;&nbsp;姓名<input type="text" name="userName" id="userName" value="${userName}" class="input-medium"/>
             &nbsp;&nbsp;工号<input type="text" name="jobNumber" id="jobNumber" value="${jobNumber}" class="input-medium"/>
             <button class="btn btn-primary" type="submit">搜索</button>
-            <a href="@{SupplierUsers.add()}" class="btn btn-primary">添加操作员</a>
+            <a href="@{SupplierAdminUsers.add()}" class="btn btn-primary">添加操作员</a>
         </td>
     </tr>
 </table>
@@ -50,7 +50,7 @@
         <td>${row.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
         <td>${row.lastLoginAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
         <td>
-            <a href="@{SupplierUsers.edit(row.id)}">修改</a> /
+            <a href="@{SupplierAdminUsers.edit(row.id)}">修改</a> /
             <a href="/users/${row.id}" id="del_${row.id}"
                onclick="if (confirm('确定删除吗？')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href + '?x-http-method-override=DELETE'; f.submit(); };return false;">删除</a>
         </td>

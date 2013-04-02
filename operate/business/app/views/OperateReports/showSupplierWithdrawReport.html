@@ -1,0 +1,111 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'商户提现汇总' /}
+#{include '/share/nav.html' /}
+
+#{set 'moreScripts'}
+*{<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>}*
+<script src="@{'/public/javascripts/DateRangePicker/date.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/DateRangePicker/daterangepicker.js'}" type="text/javascript"
+        charset="UTF-8"></script>
+#{/set}
+
+<link rel="stylesheet" href="/public/stylesheets/daterangepicker.css"
+      type="text/css" media="screen"/>
+
+#{set 'moreStyles'}
+<style type="text/css">
+    .form-inline ul {
+        display: inline-block;
+        margin-bottom: -15px;
+    }
+
+    .nav-tabs {
+        margin-bottom: 0px;
+    }
+
+    .tab-content {
+        border-left: 1px solid #DDD;
+        border-right: 1px solid #DDD;
+        border-bottom: 1px solid #DDD;
+        clear: both;
+    }
+
+    .tab-content .binary {
+        width: 40%;
+        float: left;
+        text-align: center;
+        margin: 5px 1%;
+    }
+
+    .seq {
+        margin-top: 20px;
+    }
+
+    .alert {
+        margin-bottom: 0px;
+    }
+
+    .seq thead tr :first {
+        background-color: #f5f5f5;
+    }
+
+    footer {
+        margin-top: 20px;
+    }
+</style>
+#{/set}
+
+<div class="body">
+    <form class="well form-inline" action="@{OperateReports.showSupplierWithdrawReport()}" method="GET" id="form">
+        商户
+    #{vx.selectInputField name:"supplierName", id:"condition.accountUid", list:supplierList, value: condition?.accountUid/}
+
+
+    #{layout_operate.dateRangePickerField  name:'日期',begin:'condition.createdAtBegin',end:'condition.createdAtEnd',
+    beginValue:condition?.createdAtBegin?.format(), endValue:condition?.createdAtEnd?.format()/}
+
+        <button type="submit" class="btn btn-primary">搜索</button>
+
+    </form>
+
+    <table class="table table-striped table-bordered table-condensed">
+        <tr>
+            <th>序号</th>
+            <th>商户名称</th>
+            <th style="text-align: right;">期初未提现金额</th>
+            <th style="text-align: right;">本周期券消费金额</th>
+            <th style="text-align: right;">本周期提现金额</th>
+            <th style="text-align: right;">剩余未提现金额</th>
+        </tr>
+    #{set i:1/}
+    #{paginate.list items:supplierWithdrawReportPage, as:'supplierWithdraw'}
+        <tr>
+            <td>${i}</td>
+            <td>
+                <a href="/reports/supplier?supplierName=${supplierWithdraw?.supplier?.otherName}&supplierId=${supplierWithdraw?.supplier?.id}&condition.createdAtBegin=${condition?.createdAtBegin?.format()}&condition.createdAtEnd=${condition?.createdAtEnd?.format()}"
+                   target="_blank">
+                ${supplierWithdraw?.supplier?.otherName}
+                </a>
+            </td>
+
+            <td style="text-align: right;">${supplierWithdraw?.previousUnwithdrawnAmount}</td>
+            <td style="text-align: right;">${supplierWithdraw?.consumedAmount}</td>
+            <td style="text-align: right;">
+            ${supplierWithdraw?.withdrawnAmount}
+            </td>
+            <td style="text-align: right;">
+            ${supplierWithdraw?.remainedUnwithdrawnAmount}
+            </td>
+        </tr>
+        #{set i++/}
+    #{/paginate.list}
+    </table>
+
+    <div class="pagination">
+        <ul>
+        #{paginate.controls items:supplierWithdrawReportPage /}
+        </ul>
+    </div>
+
+</div>
+

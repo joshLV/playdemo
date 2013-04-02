@@ -61,9 +61,10 @@ public class SupplierContractImages extends Controller {
      */
     public static void showImage(String firstDir, String secondDir, String imageName) {
         Boolean hasManagerViewContractPermission = ContextedPermission.hasPermission("MANAGER_VIEW_SUPPLIER_CONTRACT");
-        Boolean hasViewContractPermission = ContextedPermission.hasPermission("VIEW_SUPPLIER_CONTRACT");
+        Boolean hasViewAllContractPermission = ContextedPermission.hasPermission("VIEW_ALL_SUPPLIER_CONTRACT");
         Long operatorId = OperateRbac.currentUser().id;
-        if (hasManagerViewContractPermission != null && !hasManagerViewContractPermission) {
+
+        if (hasManagerViewContractPermission != null && !hasManagerViewContractPermission && !hasViewAllContractPermission && hasViewAllContractPermission != null) {
             List<Supplier> suppliers = Supplier.find("salesId=?", operatorId).fetch();
             List<Long> supplierIds = new ArrayList<>();
             for (Supplier s : suppliers) {

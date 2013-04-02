@@ -15,9 +15,20 @@
 
             <td width="15%">编码 <input type="text" name="code" id="code" value="${code}" class="input-medium"/></td>
             <td width="15%">域名 <input type="text" name="domainName" id="domainName" value="${domainName}"
-                                     class="input-medium"/></td>
+                                      class="input-medium"/></td>
+
+            <td width="15%">关键词
+                <input rel="tooltip"
+                       data-placement="top"
+                       data-original-title='输入商户名称、门店名称、地址、电话、销售员姓名、品牌进行搜索'
+                       type="text" class="input-larger" placeholder="输入商户名称、门店名称、地址、电话、销售员姓名、品牌进行搜索" name="keyword"
+                       id="keyword" value="${keyword}">
+
             <td width="55%">
                 <button class="btn btn-primary" id="search" type="submit">搜索</button>
+                <div class="pull-right">
+                    <button class="btn btn-info" id="searchbtn" onclick="suppliersExcel()">导出报表</button>
+                </div>
             </td>
         </tr>
     </table>
@@ -32,10 +43,12 @@
             <th width="50px">编码</th>
             <th width="60px">商品数</th>
             <th width="120px">可查看销售量</th>
+            <th width="120px">门店数量</th>
+            <th width="120px">品牌数量</th>
             <th width="200px">销售专员</th>
             <th width="100px">创建时间</th>
             <th width="100px">修改时间</th>
-            <th width="250px">备注</th>
+        *{<th width="250px">备注</th>}*
             <th width="180px">操 作</th>
         </tr>
         </thead>
@@ -57,6 +70,14 @@
             </td>
             <td>&{'supplier.showSellingState.'+supplier.showSellingState}</td>
             <td>
+                <a target="_blank"
+                   href="shops?shopCondition.supplierId=${supplier.id}">${supplier?.getShops().size()}</a>
+            </td>
+            <td>
+                <a target="_blank"
+                   href="/brands?supplierId=${supplier.id}">${supplier?.getBrands().size()}</a>
+            </td>
+            <td>
             %{ operatorUser=null;
                 if(supplier.salesId!=null){
                 operatorUser=models.operator.OperateUser.findById(supplier?.salesId); }
@@ -70,15 +91,21 @@
             </td>
             <td>${supplier?.createdAt?.format()}</td>
             <td>${supplier?.updatedAt?.format()}</td>
-            <td>${supplier?.remark}</td>
-            <td><a href="/suppliers/${supplier.id}/edit?page=${page?:1}">修改</a>
-                / #{vx.deleteLink id:supplier?.id, name:supplier?.fullName, action:"/suppliers"/}
-                #{if models.supplier.SupplierStatus.NORMAL.equals(supplier.status)}
-                    / #{vx.operateLink text:"冻结", url:"/suppliers/"+supplier.id+"/freeze?page="+(page?:1), method:"PUT"/}#{/if}
-                #{if models.supplier.SupplierStatus.FREEZE.equals(supplier.status)}
-                    / #{vx.operateLink text:"解冻", url:"/suppliers/"+supplier.id+"/unfreeze?page="+(page?:1), method:"PUT"/}#{/if}
-                / <a href="javascript:openW('@{Suppliers.exportMaterial(supplier.id,supplier.domainName)}')"
-                     onClick="return confirmExportMaterial();">导出培训教材</a>
+        *{<td>${supplier?.remark}</td>}*
+            <td>
+                #{layout_operate.checkPermissionField value:["SUPPLIERS_MANAGE"]}
+                    <a href="/suppliers/${supplier.id}/edit?page=${page?:1}">修改</a>
+                    / #{vx.deleteLink id:supplier?.id, name:supplier?.fullName, action:"/suppliers"/}
+                    #{if models.supplier.SupplierStatus.NORMAL.equals(supplier.status)}
+                        / #{vx.operateLink text:"冻结", url:"/suppliers/"+supplier.id+"/freeze?page="+(page?:1), method:"PUT",confirm:true/}#{/if}
+                    #{if models.supplier.SupplierStatus.FREEZE.equals(supplier.status)}
+                        / #{vx.operateLink text:"解冻", url:"/suppliers/"+supplier.id+"/unfreeze?page="+(page?:1), method:"PUT",confirm:true/}#{/if}
+                    /
+                #{/layout_operate.checkPermissionField}
+                #{layout_operate.checkPermissionField value:["SUPPLIERS"]}
+                    <a href="javascript:openW('@{Suppliers.exportMaterial(supplier.id,supplier.domainName)}')"
+                       onClick="return confirmExportMaterial();">导出培训教材</a>
+                #{/layout_operate.checkPermissionField}
 
             </td>
         </tr>
@@ -104,4 +131,10 @@
         window.open(v, '', 'width=2000,height=2000,left=200,top=200,status=no,scrollbars=no,menubar=no,toolbar=no,resizable=1,location=no');
     }
 
+    function suppliersExcel() {
+        $("#operForm").attr("action", "@{Suppliers.suppliersExcelOut()}");
+        $("#operForm").attr("method", "get");
+        $("#operForm").submit();
+        return false;
+    }
 </script>

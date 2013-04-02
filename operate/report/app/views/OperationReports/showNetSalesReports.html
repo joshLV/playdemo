@@ -188,13 +188,13 @@
         <td>${ou?.jobNumber}</td>
         <td>${report?.supplier?.fullName}(${report?.supplier?.otherName})</td>
         <td>${report?.supplier?.code}</td>
-        <td>
+        <td style="text-align: right;">
             <a href="/reports/sales?condition.createdAtBegin=${condition?.createdAtBegin?.format()}&condition.createdAtEnd=${condition?.createdAtEnd?.format()}&condition.supplier.id=${report?.supplier?.id}"
-               target="_blank">${(report?.salesAmount?:0).formatCurrency('CNY')}</a></td>
-        <td>
+               target="_blank">${(report?.salesAmount?:0).format('#0.00')}</a></td>
+        <td style="text-align: right;">
             <a href="/reports/refund?condition.refundAtBegin=${condition?.createdAtBegin?.format()}&condition.refundAtEnd=${condition?.createdAtEnd?.format()}&condition.supplierId=${report?.supplier?.id}"
-               target="_blank">${(report?.refundAmount?:0).formatCurrency('CNY')}</a></td>
-        <td>${(report?.netSalesAmount?:0).formatCurrency('CNY')}</td>
+               target="_blank">${(report?.refundAmount?:0).format('#0.00')}</a></td>
+        <td style="text-align: right;">${(report?.netSalesAmount?:0).format('#0.00')}</td>
     </tr>
 #{/paginate.list}
 </table>

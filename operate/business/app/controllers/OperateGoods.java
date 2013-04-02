@@ -446,7 +446,7 @@ public class OperateGoods extends Controller {
         String supplierName = "";
         String goodsNo = "";
         String goodsName = "";
-        List<GoodsHistory> goodsHistoryList = GoodsHistory.find("goodsId=?", id).fetch();
+        List<GoodsHistory> goodsHistoryList = GoodsHistory.find("goodsId=? order by createdAt desc", id).fetch();
         if (goodsHistoryList.size() > 0 && goodsHistoryList != null) {
             models.sales.Goods goods = models.sales.Goods.findById(id);
             goodsNo = goods.no;

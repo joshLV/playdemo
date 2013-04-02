@@ -24,6 +24,7 @@ import play.jobs.OnApplicationStart;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,8 +52,10 @@ public class TaobaoCouponConsumer extends RabbitMQConsumerWithTx<TaobaoCouponMes
                 Logger.info("our order already created");
             } else if (send(outerOrder)) {
                 List<ECoupon> couponList = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
+                Date now = new Date();
                 for (ECoupon coupon : couponList) {
                     coupon.partner = ECouponPartner.TB;
+                    coupon.effectiveAt = now;//淘宝卖出去就直接可消费
                     coupon.save();
                 }
                 outerOrder.status = OuterOrderStatus.ORDER_DONE;

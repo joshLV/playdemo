@@ -120,7 +120,7 @@ public class WeixinVerifyECouponInvocation extends WeixinInvocation {
                                     + "至" + dateFormat.format(ecoupon.goods.useEndTime) + "时间段内消费，现在不能消费");
                         }
 
-                        if (!ecoupon.consumeAndPayCommission(shopId, supplierUser, VerifyCouponType.CLERK_MESSAGE)){
+                        if (!ecoupon.consumeAndPayCommission(shopId, supplierUser, VerifyCouponType.WEIXIN)){
                             return ("尾号" + getMaskedMobile(consumerPhone) + "的" + coupon + "券已经退款，现在不能消费");
                         }
 

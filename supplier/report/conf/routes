@@ -23,6 +23,9 @@ GET     /favicon.ico                            404
 # Map static resources from the /app/public folder to the /public path
 GET     /public/                                staticDir:public
 
+# change ui version
+GET    /ui-version/to/{version}                 supplier.ChangeUIVersions.execute
+
 *       /                                       module:supplier_rbac
 
 # Catch all

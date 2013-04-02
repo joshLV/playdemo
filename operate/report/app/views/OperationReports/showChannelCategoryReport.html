@@ -188,9 +188,9 @@
 <div class="alert alert-success" style="margin-bottom: 10px;">
     <span>
         在此期间 共售出券：<b>${channelSummary?.amount?.formatCurrency("CNY")}</b> (${channelSummary?.totalNumber}件),
-         售出实物：<b>${channelSummary?.realAmount == null ?'￥0.00':channelSummary?.realAmount?.formatCurrency('CNY')}</b> (${channelSummary?.realTotalNumber}
+         售出实物：<b>${channelSummary?.realAmount == null ?'￥0.00':channelSummary?.realAmount?.format('#0.00')}</b> (${channelSummary?.realTotalNumber}
         件),
-                退款券：<b>${channelSummary?.totalRefundPrice?.formatCurrency('CNY')}</b> (${channelSummary?.refundNumber}
+                退款券：<b>${channelSummary?.totalRefundPrice?.format('#0.00')}</b> (${channelSummary?.refundNumber}
         件),
                    消费券：<b>${channelSummary?.consumedPrice?.formatCurrency("CNY")}</b> (${channelSummary?.consumedNumber}
         件)
@@ -198,7 +198,7 @@
         <br/>
            &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;
         毛利率：<b>${(channelSummary?.grossMargin?:0).format('#0.00')}%</b>
-        渠道成本：<b>${(channelSummary?.channelCost?:0).formatCurrency('CNY')}</b>
+        渠道成本：<b>${(channelSummary?.channelCost?:0).format('#0.00')}</b>
          净利润：<b>
 
             ￥${(channelSummary?.profit?:0).format('#0.00')}
@@ -254,7 +254,7 @@
                    target="_blank">${report?.buyNumber}</a>
                 /
                 <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}"
-                   target="_blank">${report?.salePrice?.formatCurrency('CNY')}</a>
+                   target="_blank">${report?.salePrice?.format('#0.00')}</a>
             #{/if}
             #{else}
                 <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
@@ -262,21 +262,21 @@
                 </a>/
                 <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${beginAt}&condition.paidAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
                    target="_blank">
-                ${report?.salePrice?.formatCurrency('CNY')}
+                ${report?.salePrice?.format('#0.00')}
                 </a>
             #{/else}
         </td>
         <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if}  style="text-align:right;">
         ${report?.realBuyNumber}
-            / ${report?.realSalePrice == null ?'￥0.00':report?.realSalePrice?.formatCurrency('CNY')}
+            / ${report?.realSalePrice == null ?'￥0.00':report?.realSalePrice?.format('#0.00')}
         </td>
         <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
             #{if report?.code == "999"}
                 <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=RETURN&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
                    target="_blank">${report?.refundNumber}</a>
                 /
-                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=RETURN&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
-                   target="_blank">${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}</a>
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
+                   target="_blank">${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.format('#0.00')}</a>
             #{/if}
             #{else}
                 <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=RETURN&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
@@ -286,7 +286,7 @@
                 /
                 <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=RETURN&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
                    target="_blank">
-                ${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}
+                ${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.format('#0.00')}
                 </a>
             #{/else}
         </td>
@@ -298,7 +298,7 @@
                    target="_blank">${report?.consumedNumber}</a>
                 /
                 <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}"
-                   target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}   </a>
+                   target="_blank">${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.format('#0.00')}   </a>
             #{/if}
             #{else}
                 <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
@@ -307,7 +307,7 @@
                 </a> /
                 <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.consumedAtBegin=${beginAt}&condition.consumedAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
                    target="_blank">
-                ${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.formatCurrency('CNY')}
+                ${report?.consumedPrice == null ?'￥0.00':report?.consumedPrice?.format('#0.00')}
                 </a>
             #{/else}
         </td>
@@ -318,7 +318,7 @@
             <td #{if report?.code == "999"} bgcolor="#add8e6" #{/if}
                                             style="text-align:right;">${(report?.grossMargin?:0).format('#0.00')}%</td>
             <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if}
-                                             style="text-align:right;">${(report?.channelCost?:0).formatCurrency('CNY')}</td>
+                                             style="text-align:right;">${(report?.channelCost?:0).format('#0.00')}</td>
             <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
                     ￥${(report?.profit?:0).format('#0.00')}
 

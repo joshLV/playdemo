@@ -6,10 +6,8 @@ import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.sales.Shop;
 import navigation.annotations.ActiveNavigation;
-import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
-import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 

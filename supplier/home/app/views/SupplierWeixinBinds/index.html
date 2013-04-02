@@ -1,0 +1,22 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set menu:"weixin"/}
+#{set title:'绑定微信' /}
+#{set 'moreStyles'}
+    #{asset.css src:['/m/verify.css'] /}
+#{/set}
+
+<div class="bd batch-verify">
+    <h2>${title}</h2>
+    <div class="tip">
+        <h5>请使用微信扫描二维码加『一百券商家助手』为好友</h5>
+        <img src="#{asset.url href: qrCodePath /}" />
+    </div>
+    <div class="tip" style="padding-left: 20px;">
+        <ol style="list-style:decimal">
+            <li>请使用微信扫描右侧二维码，加『一百券商家助手』为好友</li>
+            <li>向『一百券商家助手』发出您的身份识别码：<b>${supplierUser.idCode}</b></li>
+            <li>『一百券商家助手』会将您的微信与此用户绑定</li>
+            <li>您将可以使用您的微信进行消费券验证</li>
+        </ol>
+    </div>
+</div>

@@ -4,6 +4,7 @@ import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.TradeType;
 import models.accounts.WithdrawBill;
+import play.Logger;
 import play.db.jpa.JPA;
 
 import javax.persistence.EntityManager;
@@ -114,7 +115,7 @@ public class AccountSequenceUtil {
             if (currLastAccountSeq != null && currLastAccountSeq.id.equals(lastAccountSeq.id)) {
                 account.save();
                 warn("Fix account amount success.==> accountId:" + account.id + ",uid:" + account.uid
-                        + ",accountType:" + account.accountType);
+                        + ",accountType:" + account.accountType + ", amount:" + account.amount);
                 return true;
             } else {
                 warn("Fix account amount failed because new sequence was inserted.==> accountId:" + account.id + ",uid:" + account.uid
@@ -137,12 +138,14 @@ public class AccountSequenceUtil {
 
     public static boolean checkTradeBalance(Account account, AccountSequence lastAccountSequence) {
         EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("SELECT SUM(ebankPaymentAmount+uncashPaymentAmount+balancePaymentAmount) FROM TradeBill " +
+        Query q1 = entityManager.createQuery("SELECT SUM(ebankPaymentAmount+uncashPaymentAmount+balancePaymentAmount)" +
+                " FROM TradeBill " +
                 "WHERE  toAccount =:account and createdAt<=:createdAt");
-        q.setParameter("account", account);
-        q.setParameter("createdAt", lastAccountSequence.createdAt);
-        BigDecimal incomeAmount = q.getSingleResult() == null ? BigDecimal.ZERO : (BigDecimal) q.getSingleResult();
-        q = entityManager.createQuery("SELECT SUM(ebankPaymentAmount+uncashPaymentAmount+balancePaymentAmount) FROM TradeBill " +
+        q1.setParameter("account", account);
+        q1.setParameter("createdAt", lastAccountSequence.createdAt);
+        BigDecimal incomeAmount = q1.getSingleResult() == null ? BigDecimal.ZERO : (BigDecimal) q1.getSingleResult();
+        Query q = entityManager.createQuery("SELECT SUM(ebankPaymentAmount+uncashPaymentAmount+balancePaymentAmount) " +
+                "FROM TradeBill " +
                 "WHERE  fromAccount =:account and createdAt<=:createdAt");
         q.setParameter("account", account);
         q.setParameter("createdAt", lastAccountSequence.createdAt);
@@ -257,12 +260,14 @@ public class AccountSequenceUtil {
      */
     public static void checkAndFixBalance(List<Account> accounts, Date from) {
         for (Account account : accounts) {
-            AccountSequence seq = AccountSequenceUtil.checkBalance(account, from);
+            Logger.info("process account:" + account.id);
+            AccountSequence seq = AccountSequenceUtil.checkBalance(account, from); // 找到最后一个不平衡的accountSequence
             if (seq == null) {
+                Logger.info("没有找到不平衡的AccountSequence: " + account.id);
                 continue;
             }
 
-            int fixCount = fixAccountSequenceBalance(account, seq);
+            int fixCount = fixAccountSequenceBalance(account, seq);  //修复数据
             warn("Fixed sequence count:" + fixCount);
             //校验修复结果：通过TradeBill校验AccountSequence的修复结果
             AccountSequence lastAccountSequence = AccountSequence.getLastAccountSequence(account.id, null);

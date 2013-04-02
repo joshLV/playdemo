@@ -22,8 +22,8 @@ import java.util.UUID;
 public class SinaVoucherUtil {
     public static String MEMBER_KEY = Play.configuration.getProperty("sina.vouch.member_key");
     public static String GATEWAY = Play.configuration.getProperty("sina.vouch.gateway.url");
-    public static String SOURCE_ID=Play.configuration.getProperty("sina.vouch.source_id");
-    public static String SOURCE_NAME=Play.configuration.getProperty("sina.vouch.source_name");
+    public static String SOURCE_ID = Play.configuration.getProperty("sina.vouch.source_id");
+    public static String SOURCE_NAME = Play.configuration.getProperty("sina.vouch.source_name");
 
     public final static String REQUEST_POST = "POST";
     public final static String REQUEST_PUT = "PUT";
@@ -38,6 +38,25 @@ public class SinaVoucherUtil {
         return sendRequest("template", body, REQUEST_POST);
     }
 
+    /**
+     * 更新模板
+     *
+     * @param body
+     * @return
+     */
+    public static SinaVoucherResponse updateTemplate(String body) {
+        return sendRequest("template", body, REQUEST_PUT);
+    }
+
+    /**
+     * 创建卡券
+     *
+     * @param body
+     * @return
+     */
+    public static SinaVoucherResponse uploadVoucher(String body) {
+        return sendRequest("vouch", body, REQUEST_POST);
+    }
     /**
      * 提交请求
      *
@@ -80,10 +99,12 @@ public class SinaVoucherUtil {
         SinaVoucherResponse response = new SinaVoucherResponse();
         if (result.has("error")) {
             response.error = result.getAsJsonObject("error");
-        }else {
+        } else {
             response.header = result.getAsJsonObject("header");
-            String content = result.get("content").getAsString();
-            response.content = jsonParser.parse(content);
+            if (result.has("content")){
+                String content = result.get("content").getAsString();
+                response.content = jsonParser.parse(content);
+            }
         }
 
         return response;

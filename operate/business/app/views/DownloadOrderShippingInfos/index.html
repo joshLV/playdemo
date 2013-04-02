@@ -62,7 +62,17 @@
 </div>
 <script type="text/javascript">
     $(function () {
-        $("#supplierId").change(function () {
+
+        console.log($("#id_supplierName").val())
+        console.log($("#goods_materialType_1").attr("checked"))
+        console.log($("goods_supplierId").val());
+        if ($("#id_supplierName").val() != 5 || $("#goods_materialType_1").attr("checked")) {
+            $("#sku").hide();
+        }
+        else if ($("goods_supplierId").val() == 5) {
+            $("#sku").show();
+
+        }        $("#supplierId").change(function () {
             if ($("#supplierId").val() != 5) {
                 $("#download").attr("disabled", false);
             } else {

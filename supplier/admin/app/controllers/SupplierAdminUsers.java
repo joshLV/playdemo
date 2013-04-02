@@ -23,7 +23,7 @@ import java.util.List;
 
 @With(SupplierRbac.class)
 @ActiveNavigation("user_search")
-public class SupplierUsers extends Controller {
+public class SupplierAdminUsers extends Controller {
     public static int PAGE_SIZE = 15;
 
     /**
@@ -145,9 +145,9 @@ public class SupplierUsers extends Controller {
             }
             supplierUser.id = id;
             if (id != null) {
-                render("SupplierUsers/edit.html", supplierUser, roleIds, rolesList);
+                render("SupplierAdminUsers/edit.html", supplierUser, roleIds, rolesList);
             } else {
-                render("SupplierUsers/add.html", supplierUser, roleIds, rolesList);
+                render("SupplierAdminUsers/add.html", supplierUser, roleIds, rolesList);
             }
         }
 

@@ -19,6 +19,24 @@
         $("#note_entry_reason").html("");
         $('#returnGoodsModal').modal('show');
     }
+
+    function sendOrderItemMessage(id) {
+        $.ajax({
+            url:"/order-items-message/" + id + "/send",
+            type:'GET',
+            error:function () {
+                alert('发送失败!');
+            },
+            success:function (data) {
+                if (data == '0') {
+                    alert("发送成功！");
+                } else {
+                    alert("发送失败!");
+                }
+            }
+        });
+    }
+
     $(function () {
         var handleReturnEntry = function () {
 
@@ -121,6 +139,7 @@
 </style>
 #{/set}
 <div class="body">
+
 <legend>${title}</legend>
 *{错误显示层}*
 <div class="alert" id="div_alert" style="display: none">
@@ -295,23 +314,30 @@
     <a class="btn btn-primary" onclick="prepareSend(${orders.id})">发货</a><br/><br/>
     #{/if}
 #{/if}
-<ul class="nav">
-    <li class="active"><a href="#"> 订购人信息</a></li>
-    <table class="table table-bordered table-striped">
-        <tr>
-            <td>帐号： ${orders?.user?.loginName?:orders?.user?.openIdExpress} ${order?.resaler?.loginName}</td>
-        </tr>
-        <tr>
-            <td>手机： ${orders?.buyerMobile}</td>
-        </tr>
-        <tr>
-            <td>电话： ${orders?.buyerPhone}</td>
-        </tr>
-        <tr>
-            <td>订单留言： ${orders?.remark}</td>
-        </tr>
-    </table>
-</ul>
+    <ul class="nav">
+        <li class="active"><a href="#"> 订购人信息</a></li>
+        <table class="table table-bordered table-striped">
+            <tr>
+                <td>帐号：
+                #{if orders?.consumerId}
+                ${orders?.user?.loginName?:orders?.user?.openIdExpress}
+                #{/if}
+                #{else}
+                ${orders?.resaler?.loginName}
+                #{/else}
+                </td>
+            </tr>
+            <tr>
+                <td>手机： ${orders?.buyerMobile}</td>
+            </tr>
+            <tr>
+                <td>电话： ${orders?.buyerPhone}</td>
+            </tr>
+            <tr>
+                <td>订单留言： ${orders?.remark}</td>
+            </tr>
+        </table>
+    </ul>
 #{if orders.refundAt != null }
 <ul class="nav">
     <li class="active"><a href="#"> 退款信息</a></li>

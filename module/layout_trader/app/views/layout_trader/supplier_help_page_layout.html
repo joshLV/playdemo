@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+#{set menu:menu?:"verify" /}
+    <title>#{get 'title' /}</title>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="author" content="">
+#{asset.js src:['/jquery-1.7.2.min.js'] /}
+#{asset.css src:['/m/reset.css', '/m/index.css'] /}
+#{get 'moreStyles' /}
+</head>
+<body>
+<div id="header" class="clearfix">
+    <div class="wrap">
+        <a href="/verify"><h1>一百券商户后台</h1></a>
+
+        <div class="user">
+            欢迎，${supplierCompany.name}${currentUser?.shop?" - "+supplierShop+" ":" "}(${currentUser?.loginName})!
+            <a href="/logout">退出</a>
+            <a href="/ui-version/to/v1">使用旧版</a>
+            <a href="/passwords">修改密码</a>
+            <a href="/how-to-verify">帮助</a>
+        </div>
+    </div>
+</div>
+#{if errorInfo != null}
+<div id="error" class="message">
+    <div class="normal">
+        <p><em>温馨提示：</em>${errorInfo?.raw()}</p>
+    </div>
+    <a id="error-close" class="close" href="javascript:closeMsg('error')">关闭</a>
+</div>
+#{/if}
+#{if successInfo != null}
+<div id="success">
+    <div class="success">
+        <p><em>${successInfo?.raw()}</em></p>
+    </div>
+    <a id="success-close" class="close" href="javascript:closeMsg('success')">关闭</a>
+</div>
+#{/if}
+#{if topic != null}
+<div id="message">
+    <div class="success">
+        <p><em>${topic?.content?.raw()}</em></p>
+    </div>
+    <a id="msg-close" class="close" href="javascript:closeMsg('message')">关闭</a>
+</div>
+#{/if}
+<!-- .content -->
+<div id="content" class="clearfix">
+    <div class="sidebar">
+        <ul class="menu" style="width: 190px;">
+            <li><a #{if "how-to-verify".equals(menu)}class="curr"#{/if} href="/how-to-verify">如&nbsp;&nbsp;何&nbsp;&nbsp;验&nbsp;&nbsp;证&nbsp;&nbsp;?</a>
+            </li>
+            <li><a
+            #{if "how-to-view-verified-coupons".equals(menu)}class="curr"#{/if} href="/how-to-view-verified-coupons">如何查看已经验证的券号?</a>
+            </li>
+            <li><a
+            #{if "how-to-view-accountsequences".equals(menu)}class="curr"#{/if} href="/how-to-view-accountsequences">如何查看账户资金变动?</a>
+            </li>
+            <li><a #{if "how-to-withdraw".equals(menu)}class="curr"#{/if} href="/how-to-withdraw">如何提现?</a></li>
+            <li><a #{if "how-to-view-reports".equals(menu)}class="curr"#{/if} href="/how-to-view-reports">如何查看销售业绩?</a>
+            </li>
+            <li><a
+            #{if "how-to-manage-shops".equals(menu)}class="curr"#{/if} href="/how-to-manage-shops">如何管理商户门店信息?</a></li>
+            <li><a #{if "how-to-manage-users".equals(menu)}class="curr"#{/if} href="/how-to-manage-users">如何管理门店账号?</a>
+            </li>
+            <li><a
+            #{if "how-to-change-password".equals(menu)}class="curr"#{/if} href="/how-to-change-password">如何修改密码?</a>
+            </li>
+
+        </ul>
+        <div class="menu" style="width: 190px; ">
+            <a href="/verify"> 返回商户首页</a>
+        </div>
+
+        <div class="sbox">
+            商家电话验证请致电<br>
+            <strong>021-61913536</strong>
+        </div>
+    </div>
+    <div class="section" style="width: 770px;">
+        <!-- .content -->#{doLayout /}
+    </div>
+</div>
+<div id="footer">
+    ©2012 上海视惠信息科技有限公司
+</div>
+<!-- javascript -->
+#{asset.js src:['/bootstrap/bootstrap.min.js', '/bootstrap/bootstrap-datepicker.js'] /}
+<script type="text/javascript">
+    $(function () {
+        closeMsg = function (msgType) {
+            $.ajax({
+                type:'POST',
+                url:'/close-msg',
+                success:function (data) {
+                }
+            });
+
+            $('#' + msgType).hide();
+        };
+    });
+</script>
+#{get 'moreScripts' /}
+</body>
+</html>

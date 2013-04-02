@@ -37,6 +37,7 @@ DELETE  /supplier_contract/{id}                            SuppliersContracts.de
 DELETE  /supplier_contract_images/{id}                     SuppliersContracts.deleteImage
 GET     /supplier_contract/{imageId}                       SuppliersContracts.updateDescription
 
+
 POST    /supplier_contract_images/{supplierId}/{contractId}         SuppliersUploadFiles.uploadImages
 GET    /supplier_contract_images/{supplierId}/{contractId}         SuppliersUploadFiles.uploadImages
 
@@ -95,8 +96,9 @@ POST    /resaler-products/tb/upload                     resale.TaobaoProducts.up
 # 新浪卡券
 GET     /resaler-products/sina/upload/{goodsId}         resale.SinaVouchers.showUpload
 POST    /resaler-products/sina/upload                   resale.SinaVouchers.upload
-GET     /resaler-products/sina/edit/{productId}           resale.JDGroupBuyProducts.showEdit
-POST    /resaler-products/sina/edit                       resale.JDGroupBuyProducts.edit
+GET     /resaler-products/sina/edit/{productId}         resale.SinaVouchers.showEdit
+POST    /resaler-products/sina/edit                     resale.SinaVouchers.edit
+GET     /resaler-products/sina/voucher-styles           resale.SinaVouchers.voucherStyles
 
 # --------------------  end of 分销商品  ---------------------------------------------------------
 
@@ -220,6 +222,8 @@ PUT     /suppliers/{id}/freeze                  Suppliers.freeze
 PUT     /suppliers/{id}/unfreeze                Suppliers.unfreeze
 DELETE  /suppliers/{id}                         Suppliers.delete
 GET     /suppliers/{id}/supplier_category/{supplierCategoryId}  Suppliers.updateCode
+GET     /suppliers-excel                           Suppliers.suppliersExcelOut
+
 
 POST    /suppliers/dadong/sync                  supplier.DadongProducts.sync
 
@@ -243,6 +247,7 @@ GET     /users/{id}/edit                        OperateSupplierUsers.edit
 POST    /users/{id}                             OperateSupplierUsers.update
 DELETE  /users/{id}                             OperateSupplierUsers.delete
 GET     /users/{id}/weixi                       OperateSupplierUsers.showWeixi
+GET     /users/{id}/unbindWeixi                 OperateSupplierUsers.unbindWeixi
 GET     /users/shops/{supplierId}               OperateSupplierUsers.shopList
 
 #商户验证电话管理
@@ -277,6 +282,7 @@ PUT     /coupons_in_history/{id}/freeze         OperateCoupons.freezeInCouponHis
 PUT     /coupons/{id}/unfreeze                  OperateCoupons.unfreeze
 PUT     /coupons_in_history/{id}/unfreeze       OperateCoupons.unfreezeInCouponHistory
 GET     /coupons-message/{id}/send              OperateCoupons.sendMessage
+GET     /order-items-message/{id}/send              OperateCoupons.sendOrderItemMessage
 GET     /coupon_excel                           OperateCoupons.couponExcelOut
 GET     /coupon_history                         OperateCoupons.couponHistory
 GET     /coupon_refund                          OperateCoupons.refund
@@ -338,6 +344,7 @@ GET     /reports                                OperateReports.showSystemReport
 GET     /reports/consumer                       OperateReports.showConsumerReport
 GET     /reports/resale                         OperateReports.showResaleReport
 GET     /reports/supplier                       OperateReports.showSupplierReport
+GET     /reports/supplier-withdraw              OperateReports.showSupplierWithdrawReport
 GET     /reports/supplier/statistic             OperateReports.statisticSupplierReport
 GET     /reports/website                        OperateReports.showWebsiteReport
 GET     /reports/platform                       OperateReports.showPlatformReport
@@ -452,6 +459,19 @@ GET     /express-companies/new             real.ExpressCompanies.add
 POST    /express-companies                 real.ExpressCompanies.create
 GET     /express-companies/{id}/edit       real.ExpressCompanies.edit
 
+
+#供货商管理
+GET     /vendors                           real.Vendors.index
+GET     /vendors/new                       real.Vendors.add
+POST    /vendors                           real.Vendors.create
+GET     /vendors/{id}/edit                 real.Vendors.edit
+PUT     /vendors/{id}                      real.Vendors.update
+DELETE  /vendors/{id}                      real.Vendors.delete
+
+
+
+
+
 #导入渠道订单
 GET     /import-partner-orders                    ImportPartnerOrders.index
 GET     /download-partner-orders                  ImportPartnerOrders.download
@@ -478,6 +498,9 @@ GET     /real/partner/download-track-nos/download          real.DownloadTrackNos
 #GET     /real/partner/jd-shipping-excel                    real.DownloadTrackNos.jdShippingExcelOut
 #GET     /real/partner/yhd-shipping-excel                   real.DownloadTrackNos.yhdShippingExcelOut
 
+
+# 修复Account的Web调用接口，临时使用，将尽快删除
+GET     /account/fix/{accountId}           supplier.AccountFix.fix
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

@@ -1,6 +1,7 @@
 package models.order;
 
 import cache.CacheHelper;
+import com.google.gson.JsonObject;
 import com.uhuila.common.constants.DeletedStatus;
 import models.accounts.Account;
 import models.accounts.AccountType;
@@ -30,6 +31,7 @@ import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.hibernate.usertype.UserType;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
@@ -52,6 +54,7 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -67,8 +70,14 @@ public class Order extends Model {
     private static final String DECIMAL_FORMAT = "0000000";
     public static final String COUPON_EXPIRE_FORMAT = "yyyy-MM-dd";
 
+    /**
+     * TODO 待更名为resalerId  下单用户ID，分销商
+     */
     @Column(name = "user_id")
-    public long userId;                     //下单用户ID，可能是一百券用户，也可能是分销商
+    public Long userId;
+
+    @Column(name = "consumer_id", nullable = true)
+    public Long consumerId;                //下单用户ID，消费者
 
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type")
@@ -269,6 +278,12 @@ public class Order extends Model {
         return count;
     }
 
+    /**
+     * 新建订单
+     *
+     * @param userId
+     * @param userType
+     */
     private Order(long userId, AccountType userType) {
         this.userId = userId;
         this.userType = userType;
@@ -316,10 +331,23 @@ public class Order extends Model {
     }
 
     /**
+     * sina 创建消费订单.
+     *
+     * @param user    付款用户
+     * @param resaler 分销商
+     * @return 消费订单
+     */
+    public static Order createConsumeOrder(User user, Resaler resaler) {
+        Order order = new Order(resaler.id, AccountType.RESALER);
+        order.orderType = OrderType.CONSUME;
+        order.consumerId = user.id;
+        return order;
+    }
+
+    /**
      * 创建充值订单.
      *
-     * @param payerUserId      付款用户ID.
-     * @param payerAccountType 付款用户类型.
+     * @param payerUserId 付款用户ID.
      * @return 充值订单
      */
     public static Order createChargeOrder(long payerUserId, AccountType payerAccountType) {
@@ -729,6 +757,32 @@ public class Order extends Model {
         if (this.orderItems == null || this.orderItems.size() == 0) {
             throw new UnexpectedException("the paid order has no order items! order id: " + this.id);
         }
+        String operator = null;
+        Date expireAt = null;
+        if (AccountType.RESALER.equals(this.userType)) {
+            String loginName = this.getResaler().loginName;
+            operator = "分销商：" + loginName;
+            //使用淘宝传过来的截止日期
+            if (loginName.equals(Resaler.TAOBAO_LOGIN_NAME)) {
+                OuterOrder outerOrder = OuterOrder.find("byYbqOrder", this).first();
+                if (outerOrder != null) {
+                    try {
+                        JsonObject jsonObject = outerOrder.getMessageAsJsonObject();
+                        if (jsonObject.has("valid_ends")) {
+                            String expireStr = jsonObject.get("valid_ends").getAsString(); //买家手机号
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            expireAt = format.parse(expireStr);
+                        }
+                    } catch (Exception e) {
+                        //ignore
+                    }
+                }
+            }
+        } else {
+            operator = "消费者:" + this.getUser().getShowName();
+        }
+
+
         for (OrderItems orderItem : this.orderItems) {
             Goods goods = orderItem.goods;
             if (goods == null) {
@@ -739,13 +793,12 @@ public class Order extends Model {
                 for (int i = 0; i < orderItem.buyNumber; i++) {
                     //创建电子券
                     ECoupon eCoupon = createCoupon(goods, orderItem);
-                    //记录券历史信息
-                    String operator = null;
-                    if (AccountType.RESALER.equals(orderItem.order.userType)) {
-                        operator = "分销商：" + orderItem.order.getResaler().loginName;
-                    } else {
-                        operator = "消费者:" + orderItem.order.getUser().getShowName();
+                    if (expireAt != null) {
+                        eCoupon.expireAt = expireAt;
+                        eCoupon.save();
                     }
+
+                    //记录券历史信息
                     ECouponHistoryMessage.with(eCoupon).operator(operator)
                             .remark("产生券号").fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED)
                             .sendToMQ();
@@ -867,14 +920,18 @@ public class Order extends Model {
     @Transient
     public User getUser() {
         if (user == null) {
-            user = User.findById(userId);
+            if (consumerId != null) {
+                user = User.findById(consumerId);
+            } else if (userType == AccountType.CONSUMER) {
+                user = User.findById(userId);
+            }
         }
         return user;
     }
 
     @Transient
     public Resaler getResaler() {
-        if (resaler == null) {
+        if (resaler == null && userId != null && userType == AccountType.RESALER) {
             resaler = Resaler.findById(userId);
         }
         return resaler;

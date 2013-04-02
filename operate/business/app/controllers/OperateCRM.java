@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
+import play.db.jpa.JPA;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -118,6 +119,8 @@ public class OperateCRM extends Controller {
         if (consultId != null) {
             hqlConsult += " and id != " + consultId;
         }
+
+
         consultContent = ConsultRecord.find(hqlConsult + "order by createdAt desc", DeletedStatus.UN_DELETED, phone).fetch();
         render(couponCallBindList, addressMap, searchUserList, userId, address, user, userList, orderList, condition, eCoupons, consultContent, phone,
                 currentOperator, moreSearch, orderListSize, eCouponsSize, withdrawBill, withdrawBillSize, consultId, consult);
@@ -158,7 +161,7 @@ public class OperateCRM extends Controller {
             consult.create();
             consult.save();
         }
-        index(phone, null, userId, consultId, consult);
+        index(phone, condition, userId, consultId, consult);
     }
 
     public static void save(CRMCondition condition, Long consultId, ConsultRecord consult, User user, String phone, Long userId) {

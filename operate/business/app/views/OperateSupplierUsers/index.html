@@ -37,7 +37,12 @@
     <tr>
         <td>${row?.supplier?.otherName?:row?.supplier?.name}</td>
         <td>${row.loginName}</td>
-        <td>${row.userName}</td>
+        <td>
+            ${row.userName}
+            #{if row?.weixinOpenId}
+                <img src="#{asset.url href:'/images/m/weixi-logo.gif' /}" alt="已绑定微信" width="16" height="16">
+            #{/if}
+        </td>
         <td>${row.jobNumber}</td>
         <td>${row.mobile}</td>
         <td>${row.roles.text ==[] ?'':row.roles.text}</td>

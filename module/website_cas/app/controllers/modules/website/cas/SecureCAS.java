@@ -18,6 +18,7 @@ package controllers.modules.website.cas;
 
 import cache.CacheHelper;
 import controllers.modules.website.cas.annotations.SkipCAS;
+import controllers.modules.website.cas.annotations.TargetOAuth;
 import models.consumer.OpenIdSource;
 import models.consumer.User;
 import models.consumer.UserLoginHistory;
@@ -301,6 +302,13 @@ public class SecureCAS extends Controller {
             Logger.debug("[SecureCAS]: user is not authenticated");
             // we put into cache the url we come from
             Cache.add("url_" + session.getId(), request.method.equals("GET") ? request.url : "/", "10min");
+
+            TargetOAuth targetOAuth = getControllerAnnotation(TargetOAuth.class);
+            if (targetOAuth != null) {
+                if (OAuthType.SINA == targetOAuth.value()) {
+                    redirect(CASUtils.getSinaOAuthLoginUrl());
+                }
+            }
 
             // we redirect the user to the cas login page
             String casLoginUrl = CASUtils.getCasLoginUrl(true);

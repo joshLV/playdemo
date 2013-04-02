@@ -30,7 +30,7 @@ public class Shop extends Model {
     private static final long serialVersionUID = 36632320609113062L;
 
     @Column(name = "supplier_id")
-    public long supplierId;
+    public Long supplierId;
 
     @Column(name = "area_id")
     @SolrField
@@ -182,8 +182,7 @@ public class Shop extends Model {
         search.append("deleted=?");
         ArrayList queryParams = new ArrayList();
         queryParams.add(DeletedStatus.UN_DELETED);
-
-        if (shopCondition.supplierId > 0) {
+        if (shopCondition.supplierId!=null && shopCondition.supplierId > 0) {
             search.append(" and supplierId=?");
             queryParams.add(shopCondition.supplierId);
         }

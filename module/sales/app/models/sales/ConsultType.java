@@ -12,7 +12,9 @@ public enum ConsultType {
       WEBSITEBROKEN,  //网站报修
       QUESTIION,        //商户疑问
       FEEDBACK,        //意见反馈
-      COMPLAINT        //投诉反馈
+      COMPLAINT,        //投诉反馈
+      OUTDIAL,          //外拨
+      RESERVATION       //预约咨询
 }
 
 

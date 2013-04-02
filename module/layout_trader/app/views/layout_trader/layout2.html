@@ -13,13 +13,14 @@
 <body>
 <div id="header" class="clearfix">
     <div class="wrap">
-        <h1>一百券商户后台</h1>
+        <a href="/verify"> <h1>一百券商户后台</h1></a>
 
         <div class="user">
             欢迎，${supplierCompany.name}${currentUser?.shop?" - "+supplierShop+" ":" "}(${currentUser?.loginName})!
             <a href="/logout">退出</a>
             <a href="/ui-version/to/v1">使用旧版</a>
             <a href="/passwords">修改密码</a>
+            <a href="/how-to-verify">帮助</a>
         *{<a href="">帮助</a>}*
         *{<a href="">反馈</a>}*
         </div>

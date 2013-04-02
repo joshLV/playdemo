@@ -1,5 +1,7 @@
 package models.order;
 
+import cache.CacheCallBack;
+import cache.CacheHelper;
 import com.uhuila.common.util.DateUtil;
 import models.accounts.Account;
 import models.accounts.AccountType;
@@ -45,6 +47,7 @@ import java.util.Set;
 @Entity
 @Table(name = "order_items")
 public class OrderItems extends Model {
+
 
     private static final long serialVersionUID = 16323208753562L;
 
@@ -127,7 +130,7 @@ public class OrderItems extends Model {
     public String options;
 
     /**
-     * 导入订单的渠道商品编码，如：京东订单表中的商品ID
+     * 导入订单的渠道商品编码，如：京东订单表中的商品ID,新浪的模板、商品ID
      */
     @Column(name = "outer_goods_no")
     public String outerGoodsNo;
@@ -149,6 +152,15 @@ public class OrderItems extends Model {
 
     @Enumerated(EnumType.STRING)
     public OrderStatus status;
+
+    public static final String CACHEKEY = "ORDERITEM";
+
+    @Override
+    public void _save() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);
+        super._save();
+    }
 
     @Transient
     public BigDecimal getAmount() {
@@ -629,7 +641,6 @@ public class OrderItems extends Model {
         return averagePriceMap;
     }
 
-
     /**
      * 实物退款处理.
      *
@@ -726,4 +737,14 @@ public class OrderItems extends Model {
 
     }
 
+    @Transient
+    public Long getUnusedECouponNumber() {
+        final OrderItems thisOrderItems = this;
+        return CacheHelper.getCache(CacheHelper.getCacheKey(CACHEKEY + this.id, "UNUSEDECouponNumber"), new CacheCallBack<Long>() {
+            @Override
+            public Long loadData() {
+                return ECoupon.count("orderItems=? and status<>?", thisOrderItems, ECouponStatus.CONSUMED);
+            }
+        });
+    }
 }

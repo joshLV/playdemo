@@ -79,6 +79,7 @@ public class WithdrawApproval extends Controller {
                 account = AccountUtil.getSupplierAccount(uid);
                 SupplierContract contract = SupplierContract.find("supplierId=? order by createdAt desc ", uid).first();
                 renderArgs.put("contract", contract);
+                renderArgs.put("supplierId", account.uid);
                 break;
             case RESALER:
                 account = AccountUtil.getResalerAccount(uid);

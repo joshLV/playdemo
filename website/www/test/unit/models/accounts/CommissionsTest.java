@@ -5,7 +5,6 @@ import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
-import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
 import models.order.ECoupon;
 import models.order.Order;
@@ -29,7 +28,6 @@ public class CommissionsTest extends UnitTest {
     OrderItems orderItemElectric;
     OrderItems orderItemReal;
     Account account;
-    TradeBill tradeBill;
     ECoupon coupon;
     AccountSequence as;
     Supplier supplier;

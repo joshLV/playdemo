@@ -1,0 +1,14 @@
+*{权限检查标签}*
+*{value:  permssion的key值 可以用list}*
+
+%{result=false
+%}
+#{list items:_value, as:'item'}
+%{
+result = result || operate.rbac.ContextedPermission.hasPermission(item.toString())
+%}
+
+#{/list}
+#{if result}
+    #{doBody/}
+#{/if}
