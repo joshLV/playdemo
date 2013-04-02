@@ -15,6 +15,8 @@ require:
     - cms -> cms
     - operate_rbac -> operate_rbac
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
+    - org.jsoup -> jsoup 1.6.1
+    - view_ext -> view_ext
     - asset_package -> asset_package
     - cache_helper -> cache_helper
     - supports -> supports
@@ -26,6 +28,7 @@ repositories:
         root:       "http://dev.uhuila.cn/nexus/content/groups/public"
         contains:
             - com.uhuila.utils -> *
+            - org.jsoup -> *
         m2compatible: true
 
     - play1ContributedModules:
@@ -46,4 +49,5 @@ repositories:
             - cache_helper -> *
             - emaillogs -> *
             - supports -> *
+            - view_ext -> *
             - cms -> *
