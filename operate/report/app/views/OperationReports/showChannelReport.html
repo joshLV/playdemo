@@ -222,10 +222,10 @@
 
 
         <td style="text-align:right;">
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=RETURN&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
                target="_blank">${report?.refundNumber}</a>
             /
-            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=RETURN&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
                target="_blank">${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}</a>
         </td>
         <td style="text-align:right;">

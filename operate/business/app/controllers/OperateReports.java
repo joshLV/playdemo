@@ -149,7 +149,6 @@ public class OperateReports extends Controller {
 //            condition.account = new Account();
 //            condition.account.id = -1L;
         }
-        System.out.println("condition.account:" + condition.getFilter());
 
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);

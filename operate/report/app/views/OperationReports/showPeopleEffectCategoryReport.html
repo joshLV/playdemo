@@ -299,14 +299,14 @@
         <td #{if report?.code == "999" } style="text-align:right;background-color:#add8e6" #{/if}
                                          style="text-align:right">
             #{if report?.code == "999"}
-                <a href="${baseUrl}/coupons?condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}"
+                <a href="${baseUrl}/coupons?condition.status=RETURN&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}"
                    target="_blank">${report?.totalRefundNumber}</a>
                 /
-                <a href="${baseUrl}/coupons?condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}"
+                <a href="${baseUrl}/coupons?condition.status=RETURN&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}"
                    target="_blank">${report?.totalRefundPrice == null ?'￥0.00':report?.totalRefundPrice?.formatCurrency('CNY')}</a>
             #{/if}
             #{else}
-                <a href="${baseUrl}/coupons?condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}&condition.categoryCode=${report?.code}"
+                <a href="${baseUrl}/coupons?condition.status=RETURN&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.salesId=${report?.operateUser?.id}&condition.categoryCode=${report?.code}"
                    target="_blank"> ${report?.refundNumber}
                     / ${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.formatCurrency('CNY')}</a>
             #{/else}

@@ -308,6 +308,8 @@ order.CANCELED=交易关闭
 order.SENT=已发货
 order.PREPARED=待打包
 order.UPLOADED=已上传
+order.RETURNING=退货中
+order.RETURNED=已退货
 
 #咨询
 consult.ORDERCONSULT=订购咨询
@@ -622,5 +624,14 @@ sku.marketPrice=市场价
 sku.brand.id=品牌
 sku.brandName=品牌
 sku.supplierName=商户
+
+entry.returnedCount=退货数量
+entry.reason=退货原因
+
+entry.HANDLING=退货中
+entry.RETURNED=已退货
+entry.UNRETURNED=未收到退货
+
+unreceivedReason=未收到原因
 
 stock.brand.id=品牌

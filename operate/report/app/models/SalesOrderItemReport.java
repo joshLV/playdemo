@@ -122,7 +122,7 @@ public class SalesOrderItemReport {
                         "select new models.SalesOrderItemReport(r.goods, r.salePrice-r.rebateValue/r.buyNumber, r.faceValue, count(e), "
                                 + "sum(e.salePrice-e.rebateValue))"
                                 + " from OrderItems r, Supplier s, ECoupon e where e.orderItems=r and "
-                                + condition.getFilter() + " and e.status='REFUND' group by r.goods, r.salePrice-r.rebateValue/r.buyNumber order by r.goods"
+                                + condition.getFilter() + " and e.status='RETURN' group by r.goods, r.salePrice-r.rebateValue/r.buyNumber order by r.goods"
                 );
 
         for (String param : condition.getParamMap().keySet()) {
