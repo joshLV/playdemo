@@ -274,6 +274,8 @@ GET     /orders                                 OperateOrders.index
 GET     /orders/{id}                            OperateOrders.details
 PUT     /orders/{id}/send                       OperateOrders.send
 GET     /order_excel                            OperateOrders.orderExcelOut
+
+# 券管理
 GET     /coupons                                OperateCoupons.index
 PUT     /coupons/{id}/freeze                    OperateCoupons.freeze
 PUT     /coupons_in_history/{id}/freeze         OperateCoupons.freezeInCouponHistory
@@ -490,10 +492,11 @@ POST    /real/upload-order-shipping             UploadOrderShippingInfos.upload
 GET     /real/download-order-shipping             DownloadOrderShippingInfos.index
 POST    /real/download-order-shipping/export      DownloadOrderShippingInfos.exportOrderShipping
 
-
-
-
-
+# 实物订单退货管理
+POST    /real/return                                    real.ReturnEntries.returnGoods
+GET     /real/return-entries                            real.ReturnEntries.index
+PUT     /real/return-entries/{id}/received              real.ReturnEntries.received
+PUT     /real/return-entries/{id}/unreceived            real.ReturnEntries.unreceived
 
 # 下载渠道运单号上报文件
 GET     /real/partner/download-track-nos                   real.DownloadTrackNos.index

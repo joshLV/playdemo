@@ -140,8 +140,8 @@
     <tr>
         #{set i:i+1/}
         <td>${(reportPage.pageNumber-1)*reportPage.pageSize+i}</td>
-        <td><a target="_blank" href="${baseUrl}/coupons?condition.status=REFUND&condition.refundAtBegin=${refundAtBegin}&condition.refundAtEnd=${refundAtEnd}">${report?.reportDate}</a></td>
-        <td><a target="_blank" href="${baseUrl}/coupons?condition.status=REFUND&condition.refundAtBegin=${refundAtBegin}&condition.refundAtEnd=${refundAtEnd}">${report?.buyNumber}</a></td>
+        <td><a target="_blank" href="${baseUrl}/coupons?condition.status=RETURN&condition.refundAtBegin=${refundAtBegin}&condition.refundAtEnd=${refundAtEnd}">${report?.reportDate}</a></td>
+        <td><a target="_blank" href="${baseUrl}/coupons?condition.status=RETURN&condition.refundAtBegin=${refundAtBegin}&condition.refundAtEnd=${refundAtEnd}">${report?.buyNumber}</a></td>
         <td>
             <a href="#" onclick="aForm('${baseUrl}','${refundAtBegin}','${refundAtEnd}')"> ${report?.amount?.formatCurrency('CNY')}</a></td>
     </tr>
