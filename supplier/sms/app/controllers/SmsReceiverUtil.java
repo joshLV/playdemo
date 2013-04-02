@@ -204,7 +204,7 @@ public class SmsReceiverUtil {
             for (ECoupon ec : ecoupons) {
                 amount = amount.add(ec.faceValue);
             }
-            amount = amount.setScale(0, BigDecimal.ROUND_HALF_UP); //四舍五入
+            amount = amount.setScale(2, BigDecimal.ROUND_HALF_UP); //四舍五入
 
             // 发给店员
             resendSmsToClerk( getMaskedMobile(mobile) +
