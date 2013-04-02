@@ -25,11 +25,25 @@ error:'purchaseOrder.paymentType', required:true}
 
 #{layout_operate.dateTimeField name:'purchaseOrder.signedAt',value:purchaseOrder?.signedAt?.format('yyyy-MM-dd HH:mm:ss')?:new java.util.Date().format('yyyy-MM-dd HH:mm:ss')/}
 
+<div class="purchase-order">
 
+</div>
+<div class="purchase-item">
+    采购数量 <input type="text" name="count"/>
+    进价<input type="text" name="price"/>
+</div>
+<a style=" margin-left:105px;" class="btn" id="add_purchase_item">添采购商品</a>
 
 
 <div class="form-actions">
     <input class="btn btn-primary" id="save" type="submit" value="保存">
 #{vx.cancelButton url:'', class:'btn btn-primary'/}
 </div>
+<script type="text/javascript">
+    $("#add_purchase_item").click(function () {
+        console.log("ini")
+        $('.purchase-order').append($(".purchase-item").clone());
+    });
+
+</script>
 
