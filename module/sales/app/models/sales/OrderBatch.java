@@ -54,6 +54,9 @@ public class OrderBatch extends Model {
     @JoinColumn(name = "stock_id", nullable = true)
     public InventoryStock stock;
 
+
+    public OrderBatchStatus status = OrderBatchStatus.VALID;
+
     public OrderBatch() {
     }
 

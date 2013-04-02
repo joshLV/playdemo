@@ -11,7 +11,7 @@ public enum StockActionType {
     IN("J"),  //入库
     OUT("C"), //出库
 
-    REFUND("T");//退货
+    RETURN("T");//退货
 
     String _code;
 

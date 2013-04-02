@@ -82,21 +82,18 @@
         $("#form").attr("method", "get");
         $("#form").submit();
     }
-    ;
 
     function consumerFlowReportWithPrivilegeExcel(desc) {
         $("#form").attr("action", "/consumer_flow_report_with_privilege_excel?desc=" + desc);
         $("#form").attr("method", "get");
         $("#form").submit();
     }
-    ;
 
     function consumerFlowReport() {
         $("#form").attr("action", "@{OperationReports.showConsumerFlowReport()}");
         $("#form").attr("method", "get");
         $("#form").submit();
     }
-    ;
 
 </script>
 
@@ -332,7 +329,7 @@ userName="condition.userName="+report?.loginName;
 
 
     <td style="text-align:right;">
-        <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${report?.date}&condition.refundAtEnd=${report?.date}"
+        <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=RETURN&condition.refundAtBegin=${report?.date}&condition.refundAtEnd=${report?.date}"
            target="_blank">${report?.refundNumber}</a>
         /
         <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${report?.date}&condition.refundAtEnd=${report?.date}"
