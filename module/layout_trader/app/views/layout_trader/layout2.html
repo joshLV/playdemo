@@ -54,7 +54,7 @@
 <div id="content" class="clearfix">
     <div class="sidebar">
         <ul class="menu">
-        #{if currentUser?.supplier?.sellECoupon }
+        #{if currentUser?.supplier?.sellECoupon || currentUser?.supplier?.sellECoupon == null }
             #{if navigation.ContextedPermission.hasPermission("COUPON_MULTI_VERIFY") }
                 <li><a #{if "verify".equals(menu)}class="curr"#{/if} href="/verify">券&nbsp;&nbsp;验&nbsp;&nbsp;证</a>
                 </li>#{/if}
