@@ -8,6 +8,7 @@ GET     /                                       OperateCmsApplication.index
 #公告管理
 GET     /topics                                 OperateTopics.index
 GET     /topics/new                             OperateTopics.add
+GET     /topics/{id}                            OperateTopics.show
 POST    /topics                                 OperateTopics.create
 DELETE  /topics/{id}                            OperateTopics.delete
 GET     /topics/{id}/edit                       OperateTopics.edit

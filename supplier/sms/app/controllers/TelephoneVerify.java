@@ -58,13 +58,13 @@ public class TelephoneVerify extends Controller {
             Logger.info("telephone verify failed: invalid coupon");
             renderText("2");//券号无效
         }
+        if (sign == null || sign.trim().equals("")) {
+            Logger.info("telephone verify failed: invalid sign");
+            renderText("4");//签名无效
+        }
         if (timestamp == null) {
             Logger.error("telephone verify failed: invalid timestamp");
             renderText("3");//时间戳无效
-        }
-        if (sign == null || sign.trim().equals("")) {
-            Logger.error("telephone verify failed: invalid sign");
-            renderText("4");//签名无效
         }
 
         //5分钟的浮动

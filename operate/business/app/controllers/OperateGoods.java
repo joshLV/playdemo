@@ -123,7 +123,6 @@ public class OperateGoods extends Controller {
      */
     private static void renderInit(models.sales.Goods goods) {
         List<Supplier> supplierList = Supplier.findUnDeleted();
-
         if (goods == null) {
             goods = new models.sales.Goods();
             BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
@@ -138,6 +137,7 @@ public class OperateGoods extends Controller {
             goods.beginOnSaleAt = new Date();
             renderArgs.put("goods.materialType", MaterialType.ELECTRONIC);
             renderArgs.put("selectAll", true);
+            goods.supplierId = null;
         }
         renderShopList(goods.supplierId);
 
@@ -238,6 +238,8 @@ public class OperateGoods extends Controller {
 
         if (Validation.hasErrors()) {
             boolean selectAll = false;
+            renderInit(goods);
+
             render("OperateGoods/add.html", selectAll, hasApproveGoodsPermission);
         }
         //预览

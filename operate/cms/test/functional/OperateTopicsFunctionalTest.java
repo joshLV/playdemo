@@ -87,6 +87,17 @@ public class OperateTopicsFunctionalTest extends FunctionalTest {
         assertEquals(1, size);
     }
 
+
+    @Test
+    public void testShow() {
+        Topic topic = FactoryBoy.last(Topic.class);
+        assertNotNull(topic);
+
+        Http.Response response = GET("/topics/" + topic.id);
+        assertIsOk(response);
+        assertContentMatch("公告", response);
+    }
+
     @Test
     public void testEdit() {
         Topic topic = FactoryBoy.last(Topic.class);

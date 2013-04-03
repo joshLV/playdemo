@@ -44,8 +44,14 @@
         <tr>
             <td>${stockItem?.sku?.name}</td>
             <td>${stockItem?.price}</td>
-            <td>${stockItem?.changeCount}</td>
-            <td>${stockItem?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td>
+                #{if stockItem?.changeCount>0}
+                    +
+                #{/if}
+            ${stockItem?.changeCount}</td>
+
+            <td>${stockItem?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}
+            </td>
             <td>&{'stock.'+stockItem?.stock?.actionType}</td>
         </tr>
         #{/paginate.list}
