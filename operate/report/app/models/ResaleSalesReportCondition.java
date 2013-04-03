@@ -138,7 +138,8 @@ public class ResaleSalesReportCondition {
     }
 
     public String getFilterRefundAt(AccountType type) {
-        StringBuilder condBuilder = new StringBuilder(" and r.order.status='PAID' and e.order.userType = :userType and e.goods.isLottery=false and e.status = models.order.ECouponStatus.RETURN" +
+        StringBuilder condBuilder = new StringBuilder(" and r.order.status='PAID' and e.order.userType = :userType " +
+                "and e.goods.isLottery=false and e.status = models.order.ECouponStatus.REFUND" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
 
         paramMap.put("userType", type);
