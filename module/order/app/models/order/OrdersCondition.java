@@ -155,7 +155,11 @@ public class OrdersCondition {
             OuterOrder outerOrder = OuterOrder.find("orderId=?", outerOrderId).first();
             if (outerOrder != null) {
                 sql.append(" and o.id=:orderId");
-                paramsMap.put("orderId", outerOrder.ybqOrder.id);
+                if (outerOrder.ybqOrder != null) {
+                    paramsMap.put("orderId", outerOrder.ybqOrder.id);
+                } else {
+                    sql.append(" and 1=0"); //找不到记录
+                }
             } else {
                 sql.append(" and 1=0"); //找不到记录
             }
