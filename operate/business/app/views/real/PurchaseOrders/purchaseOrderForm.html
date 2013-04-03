@@ -24,15 +24,16 @@ error:'purchaseOrder.paymentType', required:true}
 
 
 #{layout_operate.dateTimeField name:'purchaseOrder.signedAt',value:purchaseOrder?.signedAt?.format('yyyy-MM-dd HH:mm:ss')?:new java.util.Date().format('yyyy-MM-dd HH:mm:ss')/}
-
-<div class="purchase-order">
-
+<div id="purchase_order">
+    <div class="purchase-item" id="purchase_item_${i}">
+        采购数量 <input type="text" name="count"/>
+        <br> <br>
+        进价&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="price"/>
+        <input type="hidden" id="i" name="i" value="${i}">
+    </div>
 </div>
-<div class="purchase-item">
-    采购数量 <input type="text" name="count"/>
-    进价<input type="text" name="price"/>
-</div>
-<a style=" margin-left:105px;" class="btn" id="add_purchase_item">添采购商品</a>
+
+<a style=" margin-left:105px;" class="btn" id="add_purchase_item">添加采购商品</a>
 
 
 <div class="form-actions">
@@ -41,8 +42,14 @@ error:'purchaseOrder.paymentType', required:true}
 </div>
 <script type="text/javascript">
     $("#add_purchase_item").click(function () {
-        console.log("ini")
-        $('.purchase-order').append($(".purchase-item").clone());
+        var itemClassName = $("#item_class_name").val();
+        var i=$("#i").val();
+        $("#i").val(i+1);
+
+//        $('.purchase-item').attr('class', itemClassName + 1);
+//        $('#item_class_name').val(itemClassName + 1);
+//        itemClassName = $("#item_class_name").val();
+        $('#purchase_order').append($(".purchase-item" + itemClassName).clone());
     });
 
 </script>

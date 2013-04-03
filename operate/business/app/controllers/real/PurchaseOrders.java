@@ -10,6 +10,7 @@ import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -46,7 +47,8 @@ public class PurchaseOrders extends Controller {
     }
 
     @ActiveNavigation("vendors_add")
-    public static void create(@Valid PurchaseOrder purchaseOrder) {
+    public static void create(@Valid PurchaseOrder purchaseOrder, List<Long> count) {
+        System.out.println(count + "===count>>");
         if (Validation.hasErrors()) {
             render("real/PurchaseOrders/add.html");
         }
