@@ -186,6 +186,14 @@ public class Supplier extends Model {
     @Column(name = "can_sale_real")
     public Boolean canSaleReal = false;
 
+
+    /**
+     * 是否销售电子券
+     */
+    @Column(name = "sell_ecoupon")
+    public Boolean sellECoupon = true;
+
+
     @Column(name = "weibo_id")
     String weiboId;
 
@@ -362,6 +370,8 @@ public class Supplier extends Model {
         sp.accountLeaderMobile = supplier.accountLeaderMobile;
 //        sp.salesEmail = supplier.salesEmail;
         sp.canSaleReal = supplier.canSaleReal;
+        System.out.println(supplier.sellECoupon + "=222==supplier.sellECoupon>>");
+        sp.sellECoupon = supplier.sellECoupon;
         sp.salesId = supplier.salesId;
         sp.shopEndHour = supplier.shopEndHour;
         sp.updatedAt = new Date();
