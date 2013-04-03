@@ -217,6 +217,8 @@ stockItem.changeCount=数量
 stockItem.stock.remark=备注
 stock.IN=入库
 stock.OUT=出库
+stock.RETURN=退货
+stock.null=
 express.code=编号
 express.name=名称
 express.resalerMapping=渠道对应关系
@@ -262,6 +264,11 @@ supplier.weiboId=微博ID
 supplier.canSaleReal=是否销售实物
 supplier.canSaleReal_1=是
 supplier.canSaleReal_2=否
+
+supplier.sellECoupon=是否销售电子券
+supplier.sellECoupon_1=是
+supplier.sellECoupon_2=否
+
 image=Logo
 supplier.mobile=负责人手机
 supplier.phone=负责人电话

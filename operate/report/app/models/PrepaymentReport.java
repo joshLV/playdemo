@@ -5,11 +5,11 @@ import models.order.ECoupon;
 import models.order.OrderItems;
 import models.order.Prepayment;
 import org.apache.commons.lang.StringUtils;
-import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
 import play.modules.paginate.SimplePaginator;
 import play.modules.paginate.ValuePaginator;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -26,7 +26,8 @@ import java.util.List;
  * Date: 11/27/12
  * Time: 2:22 PM
  */
-public class PrepaymentReport extends Model {
+
+public class PrepaymentReport implements Serializable {
     public Prepayment prepayment;
     public String supplierName;
     public BigDecimal amount;  //预付款金额

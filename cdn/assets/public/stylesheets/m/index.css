@@ -392,3 +392,61 @@ input.disabled {
 .pagination .next a {
     padding-right: 14px;
 }
+
+.popup {
+    position: absolute;
+    width: 360px;
+    background-color: white;
+    border: 3px solid #DEDEDE;
+    border-radius: 3px;
+    z-index: 9999;
+    left:50%;top:45%;
+    margin-left:-200px;margin-top:-100px;
+    display: none;
+}
+.popup .btn {
+    width: 130px;
+    padding: 5px;
+}
+.popup h3 {
+    text-indent: 8px;
+    line-height: 24px;
+    background-color: #FFC;
+}
+.popup .bd {
+    padding: 5px 15px 15px;
+}
+.popup .bd p {
+    padding: 5px 15px 15px;
+    font-size: 18px;
+    font-weight: 700;
+}
+.popup .bd p em {
+    color: #08C;
+}
+.popup .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #b7b7b7;
+    width: 24px;
+    height: 24px;
+    background: url(http://y1.uhcdn.com/images/2012/12/0a9bc329d8478889.png) no-repeat 6px 6px;
+}
+.popup .close:hover {
+    background-position: 6px -34px;
+}
+.popup .cancel {
+    color: #08C;
+    line-height: 36px;
+    margin-left: 20px;
+}
+.popup-mask {
+    background-color: gray;
+    display: none;
+    z-index: 500;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: .4;
+}
