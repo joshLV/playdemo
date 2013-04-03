@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import java.beans.Transient;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -268,4 +269,7 @@ public class InventoryStock extends Model {
         }
         this.serialNo = this.actionType.getCode() + dateOfSerialNo + sequenceCode;
     }
+
+
+
 }
