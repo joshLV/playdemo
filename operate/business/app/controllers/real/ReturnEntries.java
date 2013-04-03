@@ -60,7 +60,6 @@ public class ReturnEntries extends Controller {
      * @param id
      */
     public static void received(Long id) {
-        System.out.println("id:" + id);
         //1、修改退货单状态.
         RealGoodsReturnEntry entry = RealGoodsReturnEntry.findById(id);
         entry.status = RealGoodsReturnStatus.RETURNED;
@@ -79,6 +78,8 @@ public class ReturnEntries extends Controller {
         stockItem.expireAt = entry.orderItems.goods.expireAt;
         stockItem.price = entry.orderItems.goods.originalPrice;
         stockItem.create();
+        //3、退款
+        OrderItems.handleRefund(entry.orderItems,entry.returnedCount);
 
         index(null);
     }
@@ -95,6 +96,8 @@ public class ReturnEntries extends Controller {
         //2、填写退货单未收到货原因.
         entry.unreceivedReason = reason;
         entry.save();
+        //3、退款
+        OrderItems.handleRefund(entry.orderItems,entry.returnedCount);
 
         index(null);
     }

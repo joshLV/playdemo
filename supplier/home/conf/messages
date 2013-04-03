@@ -88,4 +88,7 @@ supplierUser.loginName=用户名
 
 dateScope=选择日期
 
+entry.HANDLING=退货中
+entry.RETURNED=已退货
+entry.UNRETURNED=未收到退货
 

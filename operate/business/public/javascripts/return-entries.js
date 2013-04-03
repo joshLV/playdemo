@@ -19,7 +19,6 @@ function showReasonModal(goodsName, returnCount, entryId) {
 $(function () {
 
     $("#receive").click(function () {
-        console.log();
         $("#confirmForm").submit();
     });
     $("#confirm").click(function () {

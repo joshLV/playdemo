@@ -16,7 +16,6 @@ import models.mail.MailUtil;
 import models.operator.OperateUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
-import models.order.OrderItems;
 import models.order.OrderStatus;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
@@ -884,42 +883,18 @@ public class Goods extends Model {
         return supplierDes.replaceAll("&nbsp;", " ");
     }
 
-
-    private Long realStock;
-
     /**
      * 得到实际的库存数量.
      */
     @Transient
     @SolrField
     public Long getRealStocks() {
-        //TODO 多次调用待解决
-        //if (realStock != null) {
-        //  System.out.println(materialType + ">>>>materialType");
-        //return realStock;
-        //}
         Long realSaleCount = getRealSaleCount();
-        if (materialType == MaterialType.ELECTRONIC) { //电子券的库存计算方法
-            if (cumulativeStocks != null) {
-                realStock = cumulativeStocks - realSaleCount;
-                return realStock;
-            }
-            realStock = realSaleCount;
-        } else { //实物的库存计算方法
-            //(sku实际库存-(待发货销量*skuCount))/skuCount
-            //添加商品时，直接返回0
-            if (this.id==null || sku == null) {
-                realStock = 0L;
-                return realStock;
-            }
-
-            long remainCount = sku.getRemainCount();
-
-            long paidOrderSaleCount = OrderItems.countPaidOrders(this);
-            realStock = (remainCount - (paidOrderSaleCount * skuCount)) / skuCount;
+        if (cumulativeStocks != null) {
+            return cumulativeStocks - realSaleCount;
         }
-        realStock = realStock == null ? 0L : realStock;
-        return realStock;
+
+        return 0L;
     }
 
     /**
