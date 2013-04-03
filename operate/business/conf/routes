@@ -475,6 +475,8 @@ POST    /purchase-orders                           real.purchaseOrders.create
 GET     /purchase-orders/{id}/edit                 real.purchaseOrders.edit
 PUT     /purchase-orders/{id}                      real.purchaseOrders.update
 DELETE  /purchase-orders/{id}                      real.purchaseOrders.delete
+PUT     /purchase-orders-item/{id}/edit            real.purchaseOrders.updateItem
+
 
 
 

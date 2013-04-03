@@ -669,3 +669,4 @@ purchaseOrderPaymentType.CHECK=支票
 
 purchaseOrder.signedAt=签约日期
 
+item.effective=货品有效期

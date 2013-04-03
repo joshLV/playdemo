@@ -50,5 +50,11 @@ public class PurchaseItem extends Model {
     @Temporal(TemporalType.TIMESTAMP)
     public Date expireAt;
 
+    /**
+     * 删除状态
+     */
+    @Enumerated(EnumType.ORDINAL)
+    public com.uhuila.common.constants.DeletedStatus deleted;
+
 
 }

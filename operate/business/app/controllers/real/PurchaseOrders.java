@@ -1,8 +1,11 @@
 package controllers.real;
 
+import com.uhuila.common.constants.DeletedStatus;
 import controllers.OperateRbac;
+import models.order.PurchaseItem;
 import models.order.PurchaseOrder;
 import models.order.Vendor;
+import models.sales.Sku;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
@@ -43,32 +46,79 @@ public class PurchaseOrders extends Controller {
     @ActiveNavigation("purchase_orders_add")
     public static void add() {
         List<Vendor> vendorList = Vendor.findUnDeleted();
-        render(vendorList);
+        System.out.println(vendorList.size() + "===vendorList.size()>>");
+        List<Sku> skuList = Sku.findShiHuiUnDeleted();
+        PurchaseOrder purchaseOrder = new PurchaseOrder();
+        purchaseOrder.deleted = DeletedStatus.DELETED;
+        purchaseOrder.create();
+        Long purchaseOrderId = purchaseOrder.id;
+        System.out.println(purchaseOrderId + "===purchaseOrderId>>");
+        List<PurchaseItem> purchaseItemList =
+                PurchaseItem.find("purchaseOrder=? and deleted = ? ", purchaseOrder, DeletedStatus.UN_DELETED).fetch();
+        render(vendorList, skuList, purchaseOrderId, purchaseItemList);
     }
 
     @ActiveNavigation("vendors_add")
-    public static void create(@Valid PurchaseOrder purchaseOrder, List<Long> count) {
-        System.out.println(count + "===count>>");
+    public static void create(@Valid PurchaseOrder purchaseOrder, Long purchaseOrderId) {
+        System.out.println("===>>");
         if (Validation.hasErrors()) {
-            render("real/PurchaseOrders/add.html");
+            System.out.println(Validation.errors() + "===Validation.errors()>>");
+            List<PurchaseItem> purchaseItemList =
+                    PurchaseItem.find("purchaseOrder.id=? and deleted = ? ", purchaseOrderId, DeletedStatus.UN_DELETED).fetch();
+            List<Sku> skuList = Sku.findShiHuiUnDeleted();
+            List<Vendor> vendorList = Vendor.findUnDeleted();
+
+            render("real/PurchaseOrders/add.html", purchaseItemList, skuList, vendorList, purchaseOrder, purchaseOrderId);
         }
-        purchaseOrder.createdBy = OperateRbac.currentUser().userName;
-        purchaseOrder.create();
+        PurchaseOrder existedPurchaseOrder = PurchaseOrder.findById(purchaseOrderId);
+        existedPurchaseOrder.vendor = purchaseOrder.vendor;
+        existedPurchaseOrder.invoiceType = purchaseOrder.invoiceType;
+        existedPurchaseOrder.paymentType = purchaseOrder.paymentType;
+        existedPurchaseOrder.signedAt = purchaseOrder.signedAt;
+        existedPurchaseOrder.createdBy = OperateRbac.currentUser().userName;
+        existedPurchaseOrder.deleted = DeletedStatus.UN_DELETED;
+        existedPurchaseOrder.save();
         index(null);
     }
 
     public static void edit(Long id) {
         PurchaseOrder purchaseOrder = PurchaseOrder.findById(id);
         List<Vendor> vendorList = Vendor.findUnDeleted();
-        render(purchaseOrder, vendorList);
+        List<PurchaseItem> purchaseItemList =
+                PurchaseItem.find("purchaseOrder.id=? and deleted = ", id, DeletedStatus.UN_DELETED).fetch();
+        render(purchaseOrder, vendorList, purchaseItemList);
     }
 
 
-    public static void update(Long id, @Valid Vendor vendor) {
+    public static void updateItem(Long purchaseOrderId, @Valid PurchaseItem item, PurchaseOrder purchaseOrder) {
+
         if (Validation.hasErrors()) {
-            render("real/Vendors/edit.html", vendor, id);
+            System.out.println(Validation.errors() + "===Validation.errors()>>");
+            List<PurchaseItem> purchaseItemList =
+                    PurchaseItem.find("purchaseOrder.id=? and deleted = ? ", purchaseOrderId, DeletedStatus.UN_DELETED).fetch();
+            List<Sku> skuList = Sku.findShiHuiUnDeleted();
+            List<Vendor> vendorList = Vendor.findUnDeleted();
+            render("real/PurchaseOrders/add.html", item, purchaseOrderId, purchaseItemList, skuList, vendorList);
         }
-        Vendor.update(id, vendor);
-        index(null);
+        PurchaseOrder currentPurchaseOrder = PurchaseOrder.findById(purchaseOrderId);
+        item.purchaseOrder = currentPurchaseOrder;
+        item.deleted = DeletedStatus.UN_DELETED;
+        item.save();
+        List<PurchaseItem> purchaseItemList =
+                PurchaseItem.find("purchaseOrder.id=? and deleted = ? ", purchaseOrderId, DeletedStatus.UN_DELETED).fetch();
+        List<Sku> skuList = Sku.findShiHuiUnDeleted();
+        List<Vendor> vendorList = Vendor.findUnDeleted();
+        render("real/PurchaseOrders/add.html", purchaseItemList, purchaseOrder, skuList, vendorList, purchaseOrderId);
+    }
+
+    public static void purchaseItemDelete(Long itemId, Long purchaseOrderId) {
+        PurchaseItem item = PurchaseItem.findById(itemId);
+        if (item != null) {
+            item.deleted = DeletedStatus.DELETED;
+            item.save();
+        }
+        List<PurchaseItem> purchaseItemList =
+                PurchaseItem.find("purchaseOrder.id=? and deleted = ?", purchaseOrderId, DeletedStatus.UN_DELETED).fetch();
+        render("real/PurchaseOrders/add.html", purchaseItemList);
     }
 }

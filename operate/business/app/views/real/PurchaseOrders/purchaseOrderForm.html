@@ -2,7 +2,7 @@
     <label class="control-label"><span style="color: red; ">*</span>出售方</label>
 
     <div class="controls">
-    #{vx.selectInputField name:"vendorName", id:"purchaseOrder.vendor.id", list:vendorList, value:purchaseOrder?.vendor?.id/}
+    #{vx.selectInputField name:"vendorName", id:"purchaseOrder.vendor.id", list:venderList, value:1/}
         <span class="error">#{error 'purchaseOrder.vendor.id'/}</span>
     </div>
 </div>
@@ -24,33 +24,94 @@ error:'purchaseOrder.paymentType', required:true}
 
 
 #{layout_operate.dateTimeField name:'purchaseOrder.signedAt',value:purchaseOrder?.signedAt?.format('yyyy-MM-dd HH:mm:ss')?:new java.util.Date().format('yyyy-MM-dd HH:mm:ss')/}
-<div id="purchase_order">
-    <div class="purchase-item" id="purchase_item_${i}">
-        采购数量 <input type="text" name="count"/>
-        <br> <br>
-        进价&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="price"/>
-        <input type="hidden" id="i" name="i" value="${i}">
-    </div>
-</div>
-
-<a style=" margin-left:105px;" class="btn" id="add_purchase_item">添加采购商品</a>
-
-
 <div class="form-actions">
     <input class="btn btn-primary" id="save" type="submit" value="保存">
 #{vx.cancelButton url:'', class:'btn btn-primary'/}
 </div>
-<script type="text/javascript">
-    $("#add_purchase_item").click(function () {
-        var itemClassName = $("#item_class_name").val();
-        var i=$("#i").val();
-        $("#i").val(i+1);
 
-//        $('.purchase-item').attr('class', itemClassName + 1);
-//        $('#item_class_name').val(itemClassName + 1);
-//        itemClassName = $("#item_class_name").val();
-        $('#purchase_order').append($(".purchase-item" + itemClassName).clone());
-    });
+*{#{form @real.PurchaseOrders.updateItem(), class:"form-horizontal"}}*
+<div style="  padding: 15px;
+    margin-bottom: 10px;
+    border: 1px dashed #c2c2c2;">
+    <div class="control-group">
+        <label class="control-label"><span style="color: red; ">*</span>采购货品</label>
+
+        <div class="controls">
+        #{vx.selectInputField name:"skuName", id:"item.sku.id", list:skuList, value:item?.sku?.id/}
+            <span class="error">#{error 'item.sku.id'/}</span>
+        </div>
+        <br>
+    #{layout_operate.textField labelName:'采购数量',name:'item.count', value:item?.count, note:'件', required:true/}
+
+    #{layout_operate.textField  labelName:'进价',name:'item.price', value:item?.price,
+    note:'元',
+    required:true/}
+
+    #{layout_operate.dateScopeField name:'item.effective', begin:'item.effectiveAt',end:'item.expireAt',
+    beginValue:item?.effectiveAt?.format(), endValue:item?.expireAt?.format()/}
+
+    </div>
+</div>
+
+<div class="form-actions">
+    <input type="text" name="purchaseOrderId" value="${purchaseOrderId}"/>
+    <button class="btn btn-primary" type="submit" onclick="updateItem()">添加采购商品</button>
+</div>
+*{#{/form}}*
+<legend>修改采购明细</legend>
+
+*{<a style=" margin-left:105px;" class="btn" id="add_purchase_item">添加采购商品</a>}*
+
+
+
+<table class="table" style="width:auto">
+    <tr>
+        <th>采购货品名称</th>
+        <th>采购数量</th>
+        <th>进价</th>
+        <th>货品有效期</th>
+        <th>操作</th>
+    </tr>
+#{list items:purchaseItemList, as:'item'}
+    <tr>
+    *{#{form @real.PurchaseOrders.updateItem()}}*
+        <td><input type="text" class="input-small" name="item.sku.name"
+                   value="${item?.sku?.name}"></td>
+        <td><input type="text" class="input-small" name="item.count"
+                   value="${item?.count}"></td>
+        <td><input type="text" class="input-small" name="item.price"
+                   value="${item?.price}"></td>
+        <td>${item?.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}
+            -${item?.expireAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+        <td>
+            <button class="btn btn-primary" type="submit" onclick="updateItem()">修 改</button>
+        *{#{/form}}*
+        *{#{form @real.PurchaseOrders.purchaseItemDelete(), style:"display:inline"}}*
+
+            <input type="hidden" name="itemId" value="${item?.id}"/>
+            <button class="btn btn-danger" onclick="deleteItem()">删 除</button>
+        *{#{/form}}*
+        </td>
+    </tr>
+#{/list}
+</table>
+
+
+<script type="text/javascript">
+    function updateItem() {
+        $("#purchase_order_form").attr("action", "@{real.PurchaseOrders.updateItem()}");
+//        $("#purchase_order_form").attr("method", "get");
+        $("#purchase_order_form").submit();
+        return false;
+    }
+
+    function deleteItem() {
+        $("#purchase_order_form").attr("action", "@{real.PurchaseOrders.purchaseItemDelete()}");
+//        $("#purchase_order_form").attr("method", "get");
+        $("#purchase_order_form").submit();
+        return false;
+    }
+
 
 </script>
 
