@@ -100,8 +100,6 @@
 
 <form class="well form-inline" action="@{GoldenCoinReports.index()}" method="GET" id="form"
       name="form">
-    商品名称：<input type="text" name="condition.shortName" class="input-medium"
-                value="${condition?.shortName}"/>
     账户：<input type="text" name="condition.loginName" class="input-medium" value="${condition?.loginName}"/>
     明细分类：
 #{select 'condition.tradeType',class:'input-small', value:condition?.tradeType}
