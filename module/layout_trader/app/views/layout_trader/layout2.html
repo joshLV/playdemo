@@ -75,10 +75,10 @@
             <li><a #{if "download-order-shipping".equals(menu)}class="curr"#{/if} href="/real/download-order-shipping">下载发货单</a>
             </li>
 
-            <li><a #{if "upload-order-shipping".equals(menu)}class="curr"#{/if}
+            <li><a #{if "upload-order-shipping".equals(menu)  }class="curr"#{/if}
                    href="/real/upload-order-shipping">上传发货单</a></li>
         #{/if}
-        #{if navigation.ContextedPermission.hasPermission("ACCOUNT")}
+        #{if navigation.ContextedPermission.hasPermission("ACCOUNT")  && currentUser?.supplier?.canSaleReal}
             <li><a #{if "return-goods".equals(menu)}class="curr"#{/if} href="/real/return-entries">退货管理</a></li>
         #{/if}
         </ul>
