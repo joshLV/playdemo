@@ -77,10 +77,10 @@
             <td>${entry.orderItems?.buyNumber}</td>
             <td>${entry.returnedCount}</td>
             <td>${entry.orderItems?.buyNumber-entry.returnedCount}</td>
-            <td>${entry.createdAt}</td>
+            <td>${entry.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
             <td>&{'entry.'+entry.status}</td>
             <td>${entry.reason}</td>
-            <td>#{if entry.status == models.order.RealGoodsReturnStatus.HANDLING}<a id="link_unreturned"
+            <td>#{if entry.status == models.order.RealGoodsReturnStatus.RETURNING}<a id="link_unreturned"
                                                                                     href="javascript:showReasonModal('${entry.orderItems?.goods?.shortName}', ${entry.returnedCount}, ${entry.id});">确认退货</a>
             #{/if}
             </td>
@@ -100,7 +100,6 @@ class:"form-horizontal",method:"PUT"}
     <div class="bd"><p>商品：<em id="goods_name"></em></p>
         <p>退货：<em id="count"></em>件</p>
         <p>确认要完成退货吗？</p>
-        *{<p>备注<input type="text" id="reason" name="reason"></p>}*
         <a class="btn" id="confirm" href="javascript:$('#reasonForm').submit();">确认</a>
         <a class="cancel" href="javascript:$('#popup').hide();">取消</a>
     </div>

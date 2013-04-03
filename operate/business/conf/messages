@@ -635,9 +635,8 @@ sku.supplierName=商户
 entry.returnedCount=退货数量
 entry.reason=退货原因
 
-entry.HANDLING=退货中
+entry.RETURNING=退货中
 entry.RETURNED=已退货
-entry.UNRETURNED=未收到退货
 
 unreceivedReason=未收到原因
 

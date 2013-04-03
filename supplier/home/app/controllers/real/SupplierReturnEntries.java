@@ -7,16 +7,12 @@ import models.order.OrderItems;
 import models.order.RealGoodsReturnEntry;
 import models.order.RealGoodsReturnEntryCondition;
 import models.order.RealGoodsReturnStatus;
-import models.sales.Goods;
-import models.sales.InventoryStock;
-import models.sales.InventoryStockItem;
-import models.sales.StockActionType;
-import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,6 +26,7 @@ import java.util.List;
 public class SupplierReturnEntries extends Controller {
 
     private static final int PAGE_SIZE = 20;
+
     /**
      * 查看待处理的商户的实物退货单.
      */
@@ -37,7 +34,7 @@ public class SupplierReturnEntries extends Controller {
         SupplierUser supplierUser = SupplierRbac.currentUser();
         Long supplierId = supplierUser.supplier.id;
         if (condition == null) {
-            condition = new RealGoodsReturnEntryCondition(supplierId, RealGoodsReturnStatus.HANDLING);
+            condition = new RealGoodsReturnEntryCondition(supplierId, RealGoodsReturnStatus.RETURNING);
         }
         condition.supplierId = supplierId;
 
@@ -58,9 +55,14 @@ public class SupplierReturnEntries extends Controller {
         //1、修改退货单状态.
         RealGoodsReturnEntry entry = RealGoodsReturnEntry.findById(id);
         entry.status = RealGoodsReturnStatus.RETURNED;
+        entry.returnedAt = new Date();
+        entry.returnedBy = SupplierRbac.currentUser().userName;
         entry.save();
-        //3、退款
-        OrderItems.handleRefund(entry.orderItems, entry.returnedCount);
+        //2、退款
+        String result = OrderItems.handleRefund(entry.orderItems, entry.returnedCount);
+        if (StringUtils.isNotBlank(result)) {
+            error(result);
+        }
 
         index(null);
     }
