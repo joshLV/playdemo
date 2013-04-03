@@ -41,20 +41,12 @@
         </thead>
         <tbody>
         #{paginate.list items:stockItemList, as:'stockItem'}
-        <td>${stockItem?.sku?.name}</td>
-        <td>${stockItem?.price}</td>
-        <td>
-            #{if stockItem?.stock?.actionType == models.sales.StockActionType.IN}
-                +
-            #{/if}
-            #{else}
-                -
-            #{/else}
-        ${stockItem?.changeCount}</td>
-
-        <td>${stockItem?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}
-        </td>
-        <td>&{'stock.'+stockItem?.stock?.actionType}</td>
+        <tr>
+            <td>${stockItem?.sku?.name}</td>
+            <td>${stockItem?.price}</td>
+            <td>${stockItem?.changeCount}</td>
+            <td>${stockItem?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td>&{'stock.'+stockItem?.stock?.actionType}</td>
         </tr>
         #{/paginate.list}
         </tbody>

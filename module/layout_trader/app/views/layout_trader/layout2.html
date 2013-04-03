@@ -13,7 +13,7 @@
 <body>
 <div id="header" class="clearfix">
     <div class="wrap">
-        <a href="/verify"> <h1>一百券商户后台</h1></a>
+        <a href="/verify"><h1>一百券商户后台</h1></a>
 
         <div class="user">
             欢迎，${supplierCompany.name}${currentUser?.shop?" - "+supplierShop+" ":" "}(${currentUser?.loginName})!
@@ -70,8 +70,13 @@
         #{if navigation.ContextedPermission.hasPermission("ACCOUNT")}
             <li><a #{if "users".equals(menu)}class="curr"#{/if} href="/users">账号管理</a></li>#{/if}
         #{if navigation.ContextedPermission.hasPermission("DOWNLOAD_ORDER_SHIPPING") && currentUser?.supplier?.canSaleReal}
-            <li><a #{if "download-order-shipping".equals(menu)}class="curr"#{/if} href="/real/download-order-shipping">下载发货单</a></li>
-            <li><a #{if "upload-order-shipping".equals(menu)}class="curr"#{/if} href="/real/upload-order-shipping">上传发货单</a></li>
+            <li><a #{if "download-order-shipping".equals(menu)}class="curr"#{/if} href="/real/download-order-shipping">下载发货单</a>
+            </li>
+            <li><a #{if "upload-order-shipping".equals(menu)}class="curr"#{/if}
+                  href="/real/upload-order-shipping">上传发货单</a></li>
+        #{/if}
+        #{if navigation.ContextedPermission.hasPermission("ACCOUNT")}
+            <li><a #{if "return-goods".equals(menu)}class="curr"#{/if} href="/real/return-entries">退货管理</a></li>
         #{/if}
         </ul>
         <div class="sbox">
@@ -92,9 +97,9 @@
     $(function () {
         closeMsg = function (msgType) {
             $.ajax({
-                type:'POST',
-                url:'/close-msg',
-                success:function (data) {
+                type: 'POST',
+                url: '/close-msg',
+                success: function (data) {
                 }
             });
 
