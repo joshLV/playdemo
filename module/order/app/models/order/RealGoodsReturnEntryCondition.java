@@ -32,6 +32,8 @@ public class RealGoodsReturnEntryCondition implements Serializable {
      */
     public String goodsName;
 
+    public Long goodsId;
+
     /**
      * 商户标识.
      */
@@ -66,6 +68,10 @@ public class RealGoodsReturnEntryCondition implements Serializable {
         if (StringUtils.isNotBlank(orderNumber)) {
             sqlCond.append(" and r.orderItems.order.orderNumber=:orderNumber");
             paramsMap.put("orderNumber", orderNumber);
+        }
+        if (goodsId != null && goodsId > 0L) {
+            sqlCond.append(" and r.orderItems.goods.id=:goodsId");
+            paramsMap.put("goodsId", goodsId);
         }
         if (supplierId != null && supplierId > 0L) {
             sqlCond.append(" and r.orderItems.goods.supplierId=:supplierId");

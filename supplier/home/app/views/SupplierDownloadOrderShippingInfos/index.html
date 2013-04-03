@@ -4,6 +4,16 @@
 
 <div class="bd">
     <h2>${title}</h2>
+#{if returnEntryCount > 0}
+*{提示显示层}*
+    <table cellspacing="0" cellpadding="0" border="0" class="title-table">
+        <tr>
+            <td width="100%"><strong>有 ${returnEntryCount} 个待确认退货单，请及时处理，以免误发货，造成损失。<a href="/real/return-entries">查看</a></strong>
+            </td>
+        </tr>
+    </table>
+#{/if}
+
     <table cellspacing="0" cellpadding="0" border="0" class="title-table">
         <tr>
             <th wdith="50%">待发货订单数：${orderItemsList?.size()}</th>

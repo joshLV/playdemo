@@ -72,6 +72,9 @@ public class PrepaymentDetailReport {
 
     public static Map<String, PrepaymentDetailReport> find(Prepayment prepayment, List<String> sortedDateList) {
         Map<String, PrepaymentDetailReport> reportMap = new HashMap<>();
+        if (sortedDateList.size() == 0){
+            return reportMap;
+        }
 
         BigDecimal consumedAmount = BigDecimal.ZERO;
         BigDecimal soldAmount = BigDecimal.ZERO;
