@@ -539,7 +539,6 @@ public class OrderItems extends Model {
         List<TakeoutItem> takeoutItems = find("select new models.order.TakeoutItem(o.goods.sku, sum(o.buyNumber*o.goods.skuCount)) " +
                 "from OrderItems o where o.order.orderType=? and o.goods.supplierId=? and o.status=? and o.goods.materialType=? and o.order.paidAt <= ? " +
                 "group by o.goods.sku", OrderType.CONSUME, Supplier.getShihui().id, OrderStatus.PAID, MaterialType.REAL, toDate).fetch();
-
         Map<Sku, Long> takeoutMap = new HashMap<Sku, Long>();
         for (TakeoutItem takeoutItem : takeoutItems) {
             if (takeoutItem.sku != null && takeoutItem.count != null && takeoutItem.count.longValue() > 0) {
