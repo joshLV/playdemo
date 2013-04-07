@@ -329,7 +329,7 @@ userName="condition.userName="+report?.loginName;
 
 
     <td style="text-align:right;">
-        <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=RETURN&condition.refundAtBegin=${report?.date}&condition.refundAtEnd=${report?.date}"
+        <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${report?.date}&condition.refundAtEnd=${report?.date}"
            target="_blank">${report?.refundNumber}</a>
         /
         <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${report?.date}&condition.refundAtEnd=${report?.date}"

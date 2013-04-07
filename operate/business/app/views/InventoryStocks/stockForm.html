@@ -22,12 +22,12 @@
 
 </span>
 #{if "stockIn".equals(action)}
-#{layout_operate.textField  labelName:'进价',name:'stockItem.price', value:stockItem?.price?:"0",
+#{layout_operate.textField  labelName:'进价',name:'stockItem.price', value:stockItem?.price,
 note:'元',
 required:true/}
 #{/if}
 #{else}
-#{layout_operate.textField labelName:'售价',name:'stockItem.price', value:stockItem?.price?:"0",
+#{layout_operate.textField labelName:'售价',name:'stockItem.price', value:stockItem?.price,
 note:'元',
 required:true/}
 #{/else}

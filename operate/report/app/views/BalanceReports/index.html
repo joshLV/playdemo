@@ -143,7 +143,7 @@
                 paB = paB.add(payAmount[1]?:zero)
                 paT = paA.add(paB)
 
-                refundAmount = report.get("RETURN")?:[zero,zero]
+                refundAmount = report.get("REFUND")?:[zero,zero]
                 raA = raA.add(refundAmount[0]?:zero)
                 raB = raB.add(refundAmount[1]?:zero)
                 raT = raA.add(raB)

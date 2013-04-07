@@ -55,7 +55,7 @@ public class VerifiedECouponRefunds extends Controller {
             render(message);
         }
 
-        if ("RETURN".equals(choice)) {
+        if ("REFUND".equals(choice)) {
             message = applyRefund(ecoupon, refundComment);
         } else if ("UNCONSUME".equals(choice)) {
             message = applyUnConsumed(ecoupon, refundComment);

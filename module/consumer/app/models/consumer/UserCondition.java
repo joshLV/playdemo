@@ -10,7 +10,7 @@ import java.util.Map;
 public class UserCondition {
     public Date createdAtBegin;
     public Date createdAtEnd;
-
+    public String shortName;
     public String mobile;
     public String loginName;
     public UserStatus status;
@@ -27,6 +27,10 @@ public class UserCondition {
             sql.append(" and u.user = :user");
             paramsMap.put("user", user);
         }
+        if (StringUtils.isNotBlank(shortName)) {
+            sql.append(" and u.goods.shortName like :shortName");
+            paramsMap.put("shortName", "%" + shortName + "%");
+        }
         if (createdAtBegin != null) {
             sql.append(" and u.createdAt >= :createdAtBegin");
             paramsMap.put("createdAtBegin", createdAtBegin);
@@ -35,7 +39,7 @@ public class UserCondition {
             sql.append(" and u.createdAt <= :createdAtEnd");
             paramsMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
         }
-         if (StringUtils.isNotBlank(loginName)) {
+        if (StringUtils.isNotBlank(loginName)) {
             String name = loginName.trim();
             if (User.isOpenIdExpress(name)) {
                 OpenIdSource source = User.getOpenSourceFromName(name);

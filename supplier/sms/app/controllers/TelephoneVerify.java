@@ -74,9 +74,9 @@ public class TelephoneVerify extends Controller {
         }
         //验证密码
         if (!validSign(timestamp, sign)) {
-            Logger.error("telephone verify failed: wrong sign");
+            Logger.info("telephone verify failed: wrong sign(暂不检查sign)");
             // renderText("6");//签名错误
-            Logger.info("暂不检查sign.");
+//            Logger.info("暂不检查sign.");
         }
 
         //开始验证
@@ -451,9 +451,10 @@ public class TelephoneVerify extends Controller {
 
     /**
      * 模糊查找券号.
-     *
+     * <p/>
      * 前置第1位券可能在电话验证时没有传入，所以需要加入模糊查找。
      * 前置模糊查找不能使用like方式，会导致全表扫描。
+     *
      * @param couponSn
      * @return
      */

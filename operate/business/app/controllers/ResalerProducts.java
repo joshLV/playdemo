@@ -176,8 +176,10 @@ public class ResalerProducts extends Controller {
         Date fourDaysLater = DateUtils.addDays(startOfToday, 4);
 
         List<ResalerProduct> products = ResalerProduct.find(
-                "deleted = ? and status != ? and endSale is not null and endSale < ? and (partner = ?) order by endSale",
-                DeletedStatus.UN_DELETED, ResalerProductStatus.STAGING, fourDaysLater, OuterOrderPartner.JD).fetch();
+                "deleted = ? and status != ? and endSale is not null and endSale < ? and (partner = ?) " +
+                "and goods.materialType = ? order by endSale",
+                DeletedStatus.UN_DELETED, ResalerProductStatus.STAGING, fourDaysLater,
+                OuterOrderPartner.JD, MaterialType.ELECTRONIC).fetch();
         render(products);
     }
 
@@ -198,11 +200,12 @@ public class ResalerProducts extends Controller {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, 1);
         calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-        Date endSale = calendar.getTime();
+        Date endSale = DateUtils.ceiling(calendar.getTime(), Calendar.DATE);
 
         //然后算券过期前5天
         calendar.setTime(product.goods.expireAt);
         calendar.add(Calendar.DAY_OF_MONTH, -5);
+        calendar = DateUtils.ceiling(calendar, Calendar.DATE);
 
         if (calendar.before(endSale)) {
             endSale = calendar.getTime();

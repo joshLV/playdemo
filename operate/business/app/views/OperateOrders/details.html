@@ -216,7 +216,13 @@
             </td>
             <td>&{'goods.'+orderItem.goods.materialType}</td>
             <td>${orderItem.salePrice?.formatCurrency('CNY')}</td>
-            <td>${orderItem.buyNumber}</td>
+            <td>
+            ${orderItem.buyNumber}<br/>
+            #{if orderItem?.unusedECouponNumber > 0}
+                <a href="javascript:sendOrderItemMessage(${orderItem?.id});">
+                    重发未使用券(${orderItem?.unusedECouponNumber}张)短信</a>
+            #{/if}
+            </td>
             <td>
                 #{if hasViewEcouponSnPermission}
                 ${orderItem?.phone}

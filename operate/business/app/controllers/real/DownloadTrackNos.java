@@ -72,8 +72,8 @@ public class DownloadTrackNos extends Controller {
             item.outerOrderId = outerOrder.orderId;
             if (channelExpressMap.size() == 0) {
                 errors(partner.partnerName() + "没有对应的" + item.shippingInfo.expressCompany.id + "快递编码");
-            } else if (StringUtils.isNotBlank(channelExpressMap.get(partner.toString() + "_" + item.shippingInfo.expressCompany.id))) {
-                item.shippingInfo.channelExpressNo = channelExpressMap.get(partner.toString() + "_" + item.shippingInfo.expressCompany.id);
+            } else if (StringUtils.isNotBlank(channelExpressMap.get(partner.toString() + "-" + item.shippingInfo.expressCompany.id))) {
+                item.shippingInfo.channelExpressNo = channelExpressMap.get(partner.toString() + "-" + item.shippingInfo.expressCompany.id);
             } else {
                 errors(partner.partnerName() + "没有对应的" + item.shippingInfo.expressCompany.name + "快递编码");
             }
