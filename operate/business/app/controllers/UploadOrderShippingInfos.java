@@ -4,6 +4,7 @@ import models.order.ExpressCompany;
 import models.order.LogisticImportData;
 import models.order.OrderItems;
 import models.order.OrderStatus;
+import models.order.RealGoodsReturnEntry;
 import models.supplier.Supplier;
 import net.sf.jxls.reader.ReaderBuilder;
 import net.sf.jxls.reader.XLSReadStatus;
@@ -11,7 +12,6 @@ import net.sf.jxls.reader.XLSReader;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
-import play.Play;
 import play.mvc.Controller;
 import play.mvc.With;
 import play.vfs.VirtualFile;
@@ -19,7 +19,11 @@ import play.vfs.VirtualFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p/>
@@ -76,7 +80,14 @@ public class UploadOrderShippingInfos extends Controller {
         List<String> unExistedExpressCompanys = new ArrayList<>();
         List<String> emptyExpressInofs = new ArrayList<>();
         List<String> noGoodsCodeList = new ArrayList<>();
-
+        //todo 检查实物订单信息中是否存在退货订单
+//        Map<LogisticImportData, RealGoodsReturnEntry> returnEntryMap = new HashMap<>();
+//        List<RealGoodsReturnEntry> returnEntryList = RealGoodsReturnEntry.findHandling();
+//        for (LogisticImportData logistic : logistics) {
+//            for (RealGoodsReturnEntry returnEntry : returnEntryList) {
+//                if (logistic.orderNumber!= null && logistic.orderNumber)
+//            }
+//        }
         for (LogisticImportData logistic : logistics) {
             if (StringUtils.isBlank(logistic.expressCompany)) {
                 emptyExpressInofs.add(logistic.orderNumber);
