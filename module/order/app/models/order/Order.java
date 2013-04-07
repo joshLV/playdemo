@@ -622,7 +622,6 @@ public class Order extends Model {
         }
     }
 
-
     public void createAndUpdateInventory() {
         generateOrderDescription();
         save();

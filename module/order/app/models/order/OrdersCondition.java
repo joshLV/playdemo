@@ -8,6 +8,7 @@ import models.resale.Resaler;
 import models.sales.Brand;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 
 import java.util.*;
 

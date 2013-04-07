@@ -20,7 +20,7 @@ public class LogisticImportDataTest extends UnitTest {
         wubaData.outerGoodsNo = "TestGoods1x1\nTestGoods2x2";
         wubaData.salePrice = BigDecimal.TEN;
 
-        List<LogisticImportData> logisticImportDataList = LogisticImportData.processWubaLogistic(wubaData);
+        List<LogisticImportData> logisticImportDataList = wubaData.processWubaLogistic();
         assertEquals(2, logisticImportDataList.size());
         assertEquals("TestGoods1", logisticImportDataList.get(0).outerGoodsNo);
         assertEquals(new Long(1), logisticImportDataList.get(0).buyNumber);
