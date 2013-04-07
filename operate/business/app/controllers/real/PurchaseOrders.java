@@ -91,7 +91,7 @@ public class PurchaseOrders extends Controller {
 
 
     public static void updateItem(Long purchaseOrderId, @Valid PurchaseItem item, PurchaseOrder purchaseOrder) {
-
+        System.out.println(purchaseOrder.vendor.id + "===purchaseOrder.vendor.id>>");
         if (Validation.hasErrors()) {
             System.out.println(Validation.errors() + "===Validation.errors()>>");
             List<PurchaseItem> purchaseItemList =
@@ -101,17 +101,28 @@ public class PurchaseOrders extends Controller {
             render("real/PurchaseOrders/add.html", item, purchaseOrderId, purchaseItemList, skuList, vendorList);
         }
         PurchaseOrder currentPurchaseOrder = PurchaseOrder.findById(purchaseOrderId);
+        System.out.println(purchaseOrderId + "===purchaseOrderId>>");
+        System.out.println(item + "===item>>");
+        System.out.println(item.count + "===update....item.count>>");
+        item.sku.save();
         item.purchaseOrder = currentPurchaseOrder;
+        System.out.println(item.sku.id + "===item.sku.id>>");
+
         item.deleted = DeletedStatus.UN_DELETED;
         item.save();
         List<PurchaseItem> purchaseItemList =
                 PurchaseItem.find("purchaseOrder.id=? and deleted = ? ", purchaseOrderId, DeletedStatus.UN_DELETED).fetch();
         List<Sku> skuList = Sku.findShiHuiUnDeleted();
+        for (PurchaseItem item1 : purchaseItemList) {
+            System.out.println(item1.count + "===item1.count>>");
+        }
         List<Vendor> vendorList = Vendor.findUnDeleted();
-        render("real/PurchaseOrders/add.html", purchaseItemList, purchaseOrder, skuList, vendorList, purchaseOrderId);
+        render("real/PurchaseOrders/add.html", purchaseItemList, skuList, vendorList, purchaseOrderId);
     }
 
-    public static void purchaseItemDelete(Long itemId, Long purchaseOrderId) {
+    public static void deletePurchaseItem(Long itemId, Long purchaseOrderId) {
+        System.out.println(itemId + "===itemId>>");
+        System.out.println(purchaseOrderId + "===purchaseOrderId>>");
         PurchaseItem item = PurchaseItem.findById(itemId);
         if (item != null) {
             item.deleted = DeletedStatus.DELETED;
@@ -119,6 +130,10 @@ public class PurchaseOrders extends Controller {
         }
         List<PurchaseItem> purchaseItemList =
                 PurchaseItem.find("purchaseOrder.id=? and deleted = ?", purchaseOrderId, DeletedStatus.UN_DELETED).fetch();
-        render("real/PurchaseOrders/add.html", purchaseItemList);
+        System.out.println(purchaseItemList.size() + "===purchaseItemList.size()>>");
+        List<Sku> skuList = Sku.findShiHuiUnDeleted();
+        List<Vendor> vendorList = Vendor.findUnDeleted();
+        PurchaseOrder purchaseOrder = PurchaseOrder.findById(purchaseOrderId);
+        render("real/PurchaseOrders/add.html", purchaseItemList, purchaseOrderId, skuList, vendorList, purchaseOrder);
     }
 }

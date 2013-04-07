@@ -5,9 +5,7 @@
 #{/set}
 #{include '/share/nav.html' /}
 <div class="body">
-#{form @real.purchaseOrders.update(purchaseOrder?.id) , id:'purchase_order_form',enctype:'multipart/form-data',class:"form-horizontal" , method:'PUT'}
     <legend>${title}</legend>
-    #{set action:"edit"/}
-    #{include 'real/PurchaseOrders/purchaseOrderForm.html'/}
-#{/form}
+#{set action:"edit"/}
+#{include 'real/PurchaseOrders/purchaseOrderForm.html'/}
 </div>

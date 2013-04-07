@@ -7,9 +7,9 @@
 <link href="@{'/public/stylesheets/purchase_order.css'}" rel="stylesheet">
 #{include '/share/nav.html' /}
 <div class="body">
-#{form @real.purchaseOrders.create() , id:'purchase_order_form',enctype:'multipart/form-data',class:"form-horizontal" , method:'POST'}
+*{#{form @real.purchaseOrders.create() , id:'purchase_order_form',enctype:'multipart/form-data',class:"form-horizontal" , method:'POST'}}*
     <legend>${title}</legend>
-    #{set action:"add"/}
-    #{include 'real/PurchaseOrders/purchaseOrderForm.html'/}
-#{/form}
+#{set action:"add"/}
+#{include 'real/PurchaseOrders/purchaseOrderForm.html'/}
+*{#{/form}}*
 </div>
