@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 实物商品退货单.
@@ -43,6 +44,7 @@ public class RealGoodsReturnEntry extends Model {
     /**
      * 未收到货原因.
      */
+    @Column(name = "unreceived_reason")
     public String unreceivedReason;
 
     /**
@@ -106,6 +108,15 @@ public class RealGoodsReturnEntry extends Model {
     public static long countHandling(Long supplierId) {
         Long count = count("status=? and orderItems.goods.supplierId=?", RealGoodsReturnStatus.RETURNING, supplierId);
         return count == null ? 0L : count;
+    }
+
+    /**
+     * 查询指定商户处理中的退货单数量.
+     *
+     * @return  退货单数量
+     */
+    public static List<RealGoodsReturnEntry> findAllHandling() {
+        return find("status=?", RealGoodsReturnStatus.RETURNING).fetch();
     }
 
     /**

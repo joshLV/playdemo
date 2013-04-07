@@ -93,14 +93,14 @@ public class ReturnEntries extends Controller {
      *
      * @param id
      */
-    public static void unreceived(Long id, String reason) {
+    public static void unreceived(Long id, String unreceivedReason) {
         //1、修改退货单状态
         RealGoodsReturnEntry entry = RealGoodsReturnEntry.findById(id);
         entry.status = RealGoodsReturnStatus.RETURNED;
         entry.returnedAt = new Date();
         entry.returnedBy = OperateRbac.currentUser().userName;
         //2、填写退货单未收到货原因.
-        entry.unreceivedReason = reason;
+        entry.unreceivedReason = unreceivedReason;
         entry.save();
         //3、退款
         OrderItems.handleRefund(entry.orderItems, entry.returnedCount);
@@ -117,6 +117,8 @@ public class ReturnEntries extends Controller {
      * @param entry
      */
     public static void returnGoods(RealGoodsReturnEntry entry) {
+        System.out.println("entry.unreceivedReason:" + entry.unreceivedReason);
+
         Long orderId = null;
         if (entry.orderItems != null && entry.orderItems.id != null && entry.orderItems.id != 0L) {
             OrderItems orderItems = OrderItems.findById(entry.orderItems.id);

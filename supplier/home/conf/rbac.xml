@@ -16,8 +16,8 @@
         <permission key="REPORT" text="财务报表" roles="account,sales"/>
     </permission>
 
-    <navigation key="homeapp" text="面板" action="Home.index" display-order="-1">
-        <navigation key="home" text="主面板" action="Home.index"/>
+    <navigation key="homeapp" text="面板" action="SupplierHome.index" display-order="-1">
+        <navigation key="home" text="主面板" action="SupplierHome.index"/>
     </navigation>
     <navigation key="account" text="财务管理" action="AccountSequences.index" display-order="100">
         <navigation key="account_bar" text="账户" permissions="ACCOUNT_REPORT">
