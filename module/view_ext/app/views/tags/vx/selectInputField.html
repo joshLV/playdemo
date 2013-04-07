@@ -5,82 +5,92 @@
 
 #{field _name}
     #{set selectArray:_array?:"list"/}
+    #{set hiddenId:_hiddenId?:"id_"+field.id/}
     #{set inputId:_inputId?:field.id/}
     #{if _importJs!=null?_importJs:true}
         #{set 'moreStyles'}
-         #{get 'moreStyles'/}
+            #{get 'moreStyles'/}
         <link type="text/css" rel="stylesheet" href="@{'/public/stylesheets/jquery.autocomplete.css'}">
         #{/set}
-        <script src="@{'/public/javascripts/jquery.autocomplete.min.js'}" type="text/javascript"
-                charset="UTF-8"></script>
-        <script src="@{'/public/javascripts/ChinesePY.js'}" type="text/javascript" charset="UTF-8"></script>
-        <script type="text/javascript">
-            var ${selectArray} =[
-                #{list items:_list, as:'row'}
-                    { firstPin:Pinyin.getWordsCode("${row.name}"), allPin:Pinyin.GetQP("${row.name}"), name:"${row.name}", id:"${row.id}" }#{if !row_isLast},#{/if}
-                #{/list}
-            ];
-        </script>
+    <script src="@{'/public/javascripts/jquery.autocomplete.min.js'}" type="text/javascript"
+            charset="UTF-8"></script>
+    <script src="@{'/public/javascripts/ChinesePY.js'}" type="text/javascript" charset="UTF-8"></script>
+    <script type="text/javascript">
+        var ${selectArray} =
+        [
+            #{list items:_list, as:'row'}
+                { firstPin: Pinyin.getWordsCode("${row.name}"), allPin: Pinyin.GetQP("${row.name}"), name: "${row.name}", id: "${row.id}" }#{if !row_isLast},#{/if}
+            #{/list}
+        ];
+    </script>
 
     #{/if}
 
 
-    <script type="text/javascript">
-        $(function () {
-            $("#${inputId}").autocomplete(${selectArray}, {
-                resultsClass:"acResults",
-                loadingClass:"acLoading",
-                minChars:0,
-                width:310,
-                matchContains:true,
-                autoFill:false,
-                scroll:true,
-                scrollHeight:300,
-                mustMatch:false,
-                formatItem:function (row, i, max) {
-                    return row.name;
-                },
-                formatMatch:function (row, i, max) {
-                    return row.name + " " + row.firstPin + " " + row.allPin;
-                },
-                formatResult:function (row) {
-                    return row.name;
-                }
-            });
-
-            $("#${inputId}").result(function (event, data, formatted) {
-                data ? $("#${"id_"+inputId}").val(data.id) : $("#${"id_"+inputId}").val(-1);
-            });
-
-            $("#${inputId}").blur(function () {
-                var found = false;
-                var m = ${selectArray}.length;
-                for (i = 0; i < m; i++) {
-                    if (${selectArray}[i].name == $("#${inputId}").val()) {
-                        found = true;
-                    }
-                }
-                if (!found) {
-                    $("#${"id_"+inputId}").val(-1);
-                }
-
-                if ($("#${inputId}").val() == '') {
-                    $("#${"id_"+inputId}").val(0);
-                }
-            });
-        });
-    </script>
-<input type="text" id="${inputId}" name="${field.name}"
-       value='${params[field.id]}' #{if _class!=null}class="${_class}"#{/if}><input type="hidden" id="${"id_"+inputId}" name="${_id}"
-                                          value="${_value?:params[_id]?:0}">
 <script type="text/javascript">
-    $(function(){
-    for (i = 0; i < ${selectArray}.length; i++) {
-        if (${selectArray}[i].id == $("#${"id_"+inputId}").val()) {
+    $(function () {
+        $("#${inputId}").autocomplete(${selectArray}, {
+            resultsClass: "acResults",
+            loadingClass: "acLoading",
+            minChars: 0,
+            width: 310,
+            matchContains: true,
+            autoFill: false,
+            scroll: true,
+            scrollHeight: 300,
+            mustMatch: false,
+            formatItem: function (row, i, max) {
+                return row.name;
+            },
+            formatMatch: function (row, i, max) {
+                return row.name + " " + row.firstPin + " " + row.allPin;
+            },
+            formatResult: function (row) {
+                return row.name;
+            }
+        });
 
-            $("#${inputId}").val(${selectArray}[i].name);
+        $("#${inputId}").result(function (event, data, formatted) {
+            data ? $("#${hiddenId}").val(data.id) : $("#${hiddenId}").val(-1);
+        });
+
+        $("#${inputId}").blur(function () {
+            var found = false;
+            var m = ${selectArray}.
+            length;
+            for (i = 0; i < m; i++) {
+                console.log(${selectArray}[i].name + "==?" + $("#${field.id}").val());
+                if (${selectArray}[i].name == $("#${inputId}").val()) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                $("#${hiddenId}").val(-1);
+            }
+
+            if ($("#${inputId}").val() == '') {
+                $("#${hiddenId}").val(0);
+            }
+        });
+    });
+</script>
+<input type="text" id="${inputId}" name="${field.name}"
+       value='${params[field.id]}' #{if _class!=null}class="${_class}"#{/if}><input type="hidden" id="${hiddenId}"
+                                                                                    name="${_id}"
+                                                                                    value="${_value?:params[_id]?:0}">
+<script type="text/javascript">
+    $(function () {
+        for (i = 0; i < ${selectArray}.
+        length;
+        i++
+        )
+        {
+            if (${selectArray}[i].id == $("#${hiddenId}").val()) {
+
+                $("#${inputId}").val(${selectArray}[i].name);
+                console.log("inputId(" + i + "):" + ${selectArray}[i].name);
+            }
         }
-    }
     });
 </script>
 #{/field}

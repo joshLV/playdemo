@@ -671,3 +671,6 @@ purchaseOrder.signedAt=签约日期
 
 item.effective=货品有效期
 item.expireAt=过期时间
+item.price=进价
+item.count=采购数量
+item.sku.id=采购货品

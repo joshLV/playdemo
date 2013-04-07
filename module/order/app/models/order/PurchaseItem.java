@@ -2,6 +2,7 @@ package models.order;
 
 import models.sales.Sku;
 import play.data.validation.InFuture;
+import play.data.validation.Required;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
@@ -28,11 +29,13 @@ public class PurchaseItem extends Model {
     /*
        采购数量
      */
+    @Required
     public Long count;
 
     /*
         进价
      */
+    @Required
     public BigDecimal price;
 
     /**

@@ -35,15 +35,16 @@
         <label class="control-label"><span style="color: red; ">*</span>采购货品</label>
 
         <div class="controls">
-            #{vx.selectInputField name:"skuName", id:"item.sku.id", list:skuList, value:item?.sku?.id, array:'skuArray'/}
+            #{vx.selectInputField name:"skuName", id:"item.sku.id", list:skuList,
+            value:item?.sku?.id, array:'skuArray'/}
             <span class="error">#{error 'item.sku.id'/}</span>
         </div>
         <br>
+        *{<input type="text" name="item.count" id="item_count" value="${params['item.count']}"/>}*
         #{layout_operate.textField labelName:'采购数量',name:'item.count', value:item?.count, note:'件', required:true/}
 
         #{layout_operate.textField  labelName:'进价',name:'item.price', value:item?.price,
-        note:'元',
-        required:true/}
+        note:'元', required:true/}
 
         #{layout_operate.dateScopeField name:'item.effective', begin:'item.effectiveAt',end:'item.expireAt',
         beginValue:item?.effectiveAt?.format(), endValue:item?.expireAt?.format()/}
@@ -53,7 +54,7 @@
 
 <div class="form-actions">
     <input type="hidden" name="purchaseOrderId" value="${purchaseOrderId}"/>
-    <button class="btn btn-primary" type="submit" onclick="updateItem()">添加采购商品</button>
+    <button class="btn btn-primary" type="submit">添加采购商品</button>
 </div>
 #{/form}
 <legend>修改采购明细</legend>
@@ -72,11 +73,13 @@
     </tr>
 #{list items:purchaseItemList, as:'purchaseItem'}
     <tr>
-        #{form @real.PurchaseOrders.updateItem()}
+        #{form @real.PurchaseOrders.updateItem(),id:"update_item"}
             <td>
             *{${purchaseItemList.get(0).count}}*
                 <div class="control-group">
-                    #{vx.selectInputField name:"item.sku.name", id:"item.sku.id"+purchaseItem.id, list:skuList, value:purchaseItem.sku.id,
+                    #{vx.selectInputField name:"item.sku.name", inputId:"item_sku_name_"+purchaseItem.id,
+                    hiddenId:"id_item_sku_id_"+purchaseItem.id,id:"item.sku.id",
+                    list:skuList, value:purchaseItem.sku.id,
                     importJs: false, array:'skuArray'/}
                     *{<span class="error">#{error 'item.sku.id'/}</span>}*
                 </div>
@@ -95,10 +98,11 @@
         <td>
         <div class="control-group">
             <input type="hidden" name="purchaseOrderId" value="${purchaseItem?.purchaseOrder?.id}"/>
-            <button class="btn btn-primary" type="submit">修 改</button>
+            <input type="hidden" name="item.id" value="${purchaseItem?.id}"/>
+            <button class=" btn btn-primary" type="submit">修 改</button>
         #{/form}
         #{form @real.PurchaseOrders.deletePurchaseItem(), style:"display:inline",method:'DELETE'}
-            <input type="text" name="itemId" value="${purchaseItem?.id}"/>
+            <input type="hidden" name="itemId" value="${purchaseItem?.id}"/>
             <input type="hidden" name="purchaseOrderId" value="${purchaseOrderId}"/>
             <button class="btn btn-danger">删 除</button>
         #{/form}
@@ -115,8 +119,8 @@
 <script type="text/javascript">
     function updateItem() {
         $("#purchase_order_form").attr("action", "@{real.PurchaseOrders.updateItem()}");
-//        $("#purchase_order_form").attr("method", "get");
-        $("#purchase_order_form").submit();
+        $("#purchase_order_form").attr("method", "post");
+        $("#update_item").submit();
         return false;
     }
 
