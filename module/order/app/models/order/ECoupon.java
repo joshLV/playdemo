@@ -212,7 +212,7 @@ public class ECoupon extends Model {
      * 已同步标记。
      * 如果为true，则已经同步到第三方网站
      */
-    public Boolean synced=false;
+    public Boolean synced = false;
 
     /**
      * 合作方券ID。
@@ -251,7 +251,7 @@ public class ECoupon extends Model {
     public String refundPriceInfo;
 
     @Transient
-    public String  outerOrderId;
+    public String outerOrderId;
 
 
     /**
@@ -581,7 +581,7 @@ public class ECoupon extends Model {
     private boolean consumed(Long shopId, OperateUser operateUser, SupplierUser supplierUser, VerifyCouponType type,
                              Date realConsumedAt, String remark) {
         Logger.info("ECoupon.consumed(shopId:" + shopId + ", operateUser:" + operateUser + ", supplierUser:" + supplierUser
-                 + ", type:" + type + ", realConsumedAt:" + realConsumedAt + ", remark:" + remark);
+                + ", type:" + type + ", realConsumedAt:" + realConsumedAt + ", remark:" + remark);
         if (this.status != ECouponStatus.UNCONSUMED) {
             return false;
         }
@@ -779,7 +779,7 @@ public class ECoupon extends Model {
     public static String applyRefund(ECoupon eCoupon, Long userId, AccountType accountType, String userName, String refundComment) {
         String returnFlg = ECOUPON_REFUND_OK;
 
-        if (eCoupon == null || eCoupon.order.userId != userId || eCoupon.order.userType != accountType) {
+        if (eCoupon == null || eCoupon.order == null || eCoupon.order.userId == null || !eCoupon.order.userId.equals(userId) || eCoupon.order.userType != accountType) {
             returnFlg = "{\"error\":\"no such eCoupon\"}";
             return returnFlg;
         }
@@ -1550,11 +1550,11 @@ public class ECoupon extends Model {
 
     /**
      * 判断运营人员是否可重新发送券号.
-     *
+     * <p/>
      * 以下条件的券是可以发送短信的：
      * <ol>
-     *     <li>券状态是未消费UNCONSUMED</li>
-     *     <li>导入券在已消费时也可以发短信</li>
+     * <li>券状态是未消费UNCONSUMED</li>
+     * <li>导入券在已消费时也可以发短信</li>
      * </ol>
      *
      * @return

@@ -55,9 +55,13 @@ public class UserCoupons extends Controller {
      * @param applyNote 退款原因
      */
     public static void applyRefund(Long id, String applyNote) {
+        System.out.println("id:" + id);
+        System.out.println("applyNote:" + applyNote);
         User user = SecureCAS.getUser();
         ECoupon eCoupon = ECoupon.findById(id);
+        System.out.println("eCoupon:" + eCoupon);
         if (eCoupon == null) {
+
             error(404, "no coupon!");
             return;
         }
