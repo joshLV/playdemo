@@ -1,7 +1,6 @@
 package unit.real;
 
 import models.order.LogisticImportData;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.test.UnitTest;
 
@@ -15,7 +14,6 @@ import java.util.List;
  */
 public class LogisticImportDataTest extends UnitTest {
 
-    @Ignore
     @Test
     public void testWubaLogisticImport() throws Exception {
         LogisticImportData wubaData = new LogisticImportData();

@@ -13,9 +13,11 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -410,12 +412,36 @@ public class LogisticImportData {
 
     /**
      * 拆分58团购导入的实体券.
+     *
      * @param wubaData
      * @return
      */
     public static List<LogisticImportData> processWubaLogistic(LogisticImportData wubaData) {
         String outerGoodsNOs = wubaData.outerGoodsNo;
 
-        return null;
+        String[] outerGoodsLines = outerGoodsNOs.split("\n");
+        List<LogisticImportData> logisticImportDataList = new ArrayList<>();
+        for (String outerGoodsLine : outerGoodsLines) {
+            if (StringUtils.isBlank(outerGoodsLine)) {
+                continue;
+            }
+            outerGoodsLine = StringUtils.strip(outerGoodsLine);
+            Matcher matcher = wuboGoodsPartern.matcher(outerGoodsLine);
+            if (matcher.matches()) {
+                LogisticImportData data = wubaData.cloneObject();
+                data.outerGoodsNo = matcher.group(1);
+                data.buyNumber = Long.parseLong(matcher.group(2));
+                logisticImportDataList.add(data);
+            }
+        }
+
+        return logisticImportDataList;
+    }
+
+    protected LogisticImportData cloneObject() {
+        LogisticImportData data = new LogisticImportData();
+        data.buyNumber = this.buyNumber;
+        data.address = this.address;
+        return data;
     }
 }

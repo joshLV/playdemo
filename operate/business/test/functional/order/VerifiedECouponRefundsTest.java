@@ -202,7 +202,7 @@ public class VerifiedECouponRefundsTest extends FunctionalTest {
     private Map<String, String> getECouponSnParams(String eCouponSn) {
         Map<String, String> map = new HashMap<>();
         map.put("eCouponSn", eCouponSn);
-        map.put("choice", "RETURN");
+        map.put("choice", "REFUND");
         map.put("refundComment", "取消XXX验证");
         return map;
     }
