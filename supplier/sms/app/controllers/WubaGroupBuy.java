@@ -85,8 +85,8 @@ public class WubaGroupBuy extends Controller {
             outerOrder.status = OuterOrderStatus.ORDER_COPY;
             outerOrder.orderId = orderId;
             outerOrder.message = orderJson.toString();
-            outerOrder.save();
             try { // 将订单写入数据库
+                outerOrder.save();
                 JPA.em().flush();
             } catch (Exception e) { // 如果写入失败，说明 已经存在一个相同的orderCode 的订单，则放弃
                 putStatusAndMsg(result, "10100", "并发的订单请求");
@@ -142,7 +142,7 @@ public class WubaGroupBuy extends Controller {
         data.put("orderIdThirdpart", outerOrder.ybqOrder.orderNumber);
         List<Map<String, Object>> tickets = new ArrayList<>();
         List<ECoupon> eCoupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
-        for(ECoupon coupon : eCoupons) {
+        for (ECoupon coupon : eCoupons) {
             coupon.partner = ECouponPartner.WB;
             coupon.save();
 

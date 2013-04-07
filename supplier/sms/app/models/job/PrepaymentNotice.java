@@ -53,7 +53,7 @@ public class PrepaymentNotice extends Job {
         MailMessage message = new MailMessage();
         message.addRecipient(NOTIFICATION_EMAILS);
         message.setFrom("yibaiquan <noreplay@uhuila.com>");
-        message.setSubject("可用预付款已少于10%");
+        message.setSubject("可用预付款已少于百分之十");
         message.putParam("prepaymentId", prepayment.id);
         message.putParam("supplier", prepayment.supplier.otherName);
         message.putParam("effectiveAt", prepayment.effectiveAt);

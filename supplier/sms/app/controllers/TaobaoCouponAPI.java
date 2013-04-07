@@ -3,7 +3,11 @@ package controllers;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import models.order.*;
+import models.order.ECoupon;
+import models.order.ECouponStatus;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
+import models.order.OuterOrderStatus;
 import models.taobao.TaobaoCouponUtil;
 import play.Logger;
 import play.db.jpa.JPA;
@@ -121,9 +125,9 @@ public class TaobaoCouponAPI extends Controller {
         }
         List<ECoupon> eCoupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
         for (ECoupon coupon : eCoupons) {
-            if (!ECoupon.applyRefund(coupon, coupon.order.userId, coupon.order.userType)
-                    .equals(ECoupon.ECOUPON_REFUND_OK)) {
-                Logger.error("taobao refund error !!!!!!!! coupon id: %s", coupon.id);
+            final String errInfo = ECoupon.applyRefund(coupon, coupon.order.userId, coupon.order.userType);
+            if (!errInfo.equals(ECoupon.ECOUPON_REFUND_OK)) {
+                Logger.error("taobao refund error !!!!!!!! coupon id: %s. %s", coupon.id, errInfo);
             }
         }
         outerOrder.status = OuterOrderStatus.REFUND_SYNCED;
@@ -147,7 +151,7 @@ public class TaobaoCouponAPI extends Controller {
 
         List<ECoupon> eCouponList = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
         for (ECoupon coupon : eCouponList) {
-            if(coupon.status == ECouponStatus.UNCONSUMED) {
+            if (coupon.status == ECouponStatus.UNCONSUMED) {
                 coupon.orderItems.phone = mobile;
                 coupon.orderItems.save();
             }
@@ -171,9 +175,9 @@ public class TaobaoCouponAPI extends Controller {
         String subMethod = params.get("sub_method");
         String data = params.get("data");
         JsonObject dataJson;
-        try{
+        try {
             dataJson = new JsonParser().parse(data).getAsJsonObject();
-        }catch (Exception e) {
+        } catch (Exception e) {
             Logger.warn("taobao coupon order modify failed: can not parse data as json %s", data);
             renderJSON("{\"code\":505}");
             return;
