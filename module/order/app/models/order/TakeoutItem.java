@@ -15,7 +15,6 @@ public class TakeoutItem {
     public Long count;
 
     public TakeoutItem(Goods goods, Long count) {
-        System.out.println("goods.id:" + goods.id);
         this.sku = goods.sku;
         this.count = count * goods.skuCount;
     }
