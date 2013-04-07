@@ -43,12 +43,13 @@
         #{paginate.list items:stockItemList, as:'stockItem'}
         <tr>
             <td>${stockItem?.sku?.name}</td>
-            <td>${stockItem?.price}</td>
-            <td>
-                #{if stockItem?.changeCount>0}
-                    +
-                #{/if}
-            ${stockItem?.changeCount}</td>
+            <td style="text-align: right;">${stockItem?.price}</td>
+            <td style="text-align: right;">
+            <span  #{if stockItem?.changeCountSign == "+"} style="color: green"  #{/if}
+                #{elseif stockItem?.changeCountSign == "-"} style="color:#ff7f50;" #{/elseif}>
+        ${ stockItem?.changeCountSign}  ${ stockItem?.changeCountAbsoluteValue}
+        </span>
+            </td>
 
             <td>${stockItem?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}
             </td>

@@ -536,13 +536,11 @@ public class OrderItems extends Model {
      * 查询指定时间之前的sku出库表.
      */
     public static Map<Sku, Long> findTakeout(Date toDate) {
-        List<TakeoutItem> takeoutItems = find("select new models.order.TakeoutItem(o.goods, sum(o.buyNumber)) " +
-                "from OrderItems o where o.order.orderType=? and o.goods.supplierId=? and o.status=? and o.goods.materialType=? and o.createdAt <= ? " +
-                "group by o.goods", OrderType.CONSUME, Supplier.getShihui().id, OrderStatus.PAID, MaterialType.REAL, toDate).fetch();
-
+        List<TakeoutItem> takeoutItems = find("select new models.order.TakeoutItem(o.goods.sku, sum(o.buyNumber*o.goods.skuCount)) " +
+                "from OrderItems o where o.order.orderType=? and o.goods.supplierId=? and o.status=? and o.goods.materialType=? and o.order.paidAt <= ? " +
+                "group by o.goods.sku", OrderType.CONSUME, Supplier.getShihui().id, OrderStatus.PAID, MaterialType.REAL, toDate).fetch();
         Map<Sku, Long> takeoutMap = new HashMap<Sku, Long>();
         for (TakeoutItem takeoutItem : takeoutItems) {
-
             if (takeoutItem.sku != null && takeoutItem.count != null && takeoutItem.count.longValue() > 0) {
                 takeoutMap.put(takeoutItem.sku, takeoutItem.count);
             }
@@ -728,6 +726,7 @@ public class OrderItems extends Model {
         order.save();
 
         orderItems.returnCount += returnedCount;
+        orderItems.status = OrderStatus.RETURNED;
         orderItems.save();
 
         // 更改搜索服务中的库存

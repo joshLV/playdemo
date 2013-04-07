@@ -382,17 +382,19 @@
         <h3>退货信息</h3>
     </div>
     <div class="modal-body">
+    #{form @OperateOrders.index(), id:"returnForm", name:"returnForm", enctype:'multipart/form-data',
+    class:"form-horizontal",method:"PUT"}
 
         <input type="hidden" name="entry.orderItems.id" id="entry_orderItems_id"/>
         <input type="hidden" name="maxReturnedCount" id="maxReturnedCount"/>
 
         <div class="control-group">
-            <label class="control-label"><span style="color: red; ">*</span>商品</label>
-
+            <label class="control-label">商品</label>
             <div class="controls"><span id="goodsName" style="line-height: 30px;"></span></div>
         </div>
     #{layout_operate.textField name:'entry.returnedCount', required:true, err:"returnedCount"/}
     #{layout_operate.textField name:'entry.reason', value:entry?.reason, required:true, err:"reason"/}
+        #{/form}
     </div>
     <div class="modal-footer">
         <a href="#" id="return" class="btn btn-primary">退货</a>

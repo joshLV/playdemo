@@ -1,0 +1,107 @@
+#{extends 'layout_trader/layout2.html' /}
+#{set title:'退货管理' /}
+#{set menu:"return-goods" /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/return-entries.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+<div class="bd">
+    <h2>${title}</h2>
+
+    <form class="well form-inline" name="frmlist" id="frmlist" action="@{real.SupplierReturnEntries.index()}"
+          method="GET">
+        <div class="field-sect">
+            <div class="field-group">
+                <label>选择商品</label>
+            #{if goodsList?.size()>1}#{select 'condition.goodsId', id:goodsId, value:condition?.goodsId}
+                #{option ""}全部#{/option}
+                #{list items:goodsList, as:'goods'}
+                    #{option goods?.id}${goods?.shortName}#{/option}
+                #{/list}
+            #{/select}
+            #{/if}
+            #{else}
+                <p>${goodsList?.get(0)?.shortName}</p>
+                <input type="hidden" name="condition.goodsId" id="condition_goodsId" value="${goodsList?.get(0)?.id}"/>
+            #{/else}
+            </div>
+            <div class="field-group">
+                <label>退货状态</label>
+            #{select 'condition.status', id:'condition_status', value:condition?.status}
+                #{option ""}不限#{/option}
+                #{option "HANDLING"}&{'entry.HANDLING'}#{/option}
+                #{option "RETURNED"}&{'entry.RETURNED'}#{/option}
+            #{/select}
+            </div>
+
+            <div class="field-group">
+                <label>申请时间</label><input type="text" id="condition_returned_begin" class="time"
+                                          name="condition.returnedAtBegin"
+                                          onfocus="WdatePicker({readOnly:true})"
+                                          value="${condition?.returnedAtBegin?.format()}">
+                <span>到</span>
+                <input type="text" id="condition_returned_end" class="time"
+                       name="condition.returnedAtEnd"
+                       onfocus="WdatePicker({readOnly:true})" value="${condition?.returnedAtEnd?.format()}">
+                <button class="btn" onclick="entryIndex()">查询</button>
+            </div>
+        </div>
+
+        <table cellspacing="0" cellpadding="0" border="0" class="title-table">
+            <tr>
+                <th wdith="50%" id="search">查询结果合计： ${entryPage?.size()?:0}条记录</th>
+            </tr>
+        </table>
+    </form>
+
+    <table cellspacing="0" cellpadding="0" border="0" class="standard-table">
+        <thead>
+        <tr>
+            <th width="70px">订单号</th>
+            <th width="150px">商品名称</th>
+            <th width="80px">购买量</th>
+            <th width="80px">退货量</th>
+            <th width="80px">需发货量</th>
+            <th width="120px">申请时间</th>
+            <th width="70px">状态</th>
+            <th width="100px">备注</th>
+            <th width="100px">操作</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        #{paginate.list items:entryPage, as:'entry'}
+        <tr>
+            <td>${entry.orderItems?.order?.orderNumber}</td>
+            <td>${entry.orderItems?.goods?.shortName}</td>
+            <td>${entry.orderItems?.buyNumber}</td>
+            <td>${entry.returnedCount}</td>
+            <td>${entry.orderItems?.buyNumber-entry.returnedCount}</td>
+            <td>${entry.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td>&{'entry.'+entry.status}</td>
+            <td>${entry.reason}</td>
+            <td>#{if entry.status == models.order.RealGoodsReturnStatus.RETURNING}<a id="link_unreturned"
+                                                                                    href="javascript:showReasonModal('${entry.orderItems?.goods?.shortName}', ${entry.returnedCount}, ${entry.id});">确认退货</a>
+            #{/if}
+            </td>
+        </tr>
+        #{/paginate.list}
+        </tbody>
+    </table>
+#{paginate.controls items:entryPage /}
+</div>
+
+<div id="popup" class="popup" style="display: none;"><a class="close" href="javascript:$('#popup').hide();"
+                                                                     hidefocus="true"></a>
+
+    <h3 class="hd">退货确认</h3>
+#{form @real.SupplierReturnEntries.received(id), id:"reasonForm", name:"reasonForm", enctype:'multipart/form-data',
+class:"form-horizontal",method:"PUT"}
+    <div class="bd"><p>商品：<em id="goods_name"></em></p>
+        <p>退货：<em id="count"></em>件</p>
+        <p>确认要完成退货吗？</p>
+        <a class="btn" id="confirm" href="javascript:$('#reasonForm').submit();">确认</a>
+        <a class="cancel" href="javascript:$('#popup').hide();">取消</a>
+    </div>
+#{/form}
+</div>

@@ -2,6 +2,7 @@ package controllers.real;
 
 import controllers.OperateRbac;
 import models.order.OrderItems;
+import models.order.OrderStatus;
 import models.order.RealGoodsReturnEntry;
 import models.order.RealGoodsReturnEntryCondition;
 import models.order.RealGoodsReturnStatus;
@@ -15,6 +16,7 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,7 +47,7 @@ public class ReturnEntries extends Controller {
      */
     public static void index(RealGoodsReturnEntryCondition condition) {
         if (condition == null) {
-            condition = new RealGoodsReturnEntryCondition(Supplier.getShihui().id, RealGoodsReturnStatus.HANDLING);
+            condition = new RealGoodsReturnEntryCondition(Supplier.getShihui().id, RealGoodsReturnStatus.RETURNING);
         }
         final int page = getPage();
         JPAExtPaginator<RealGoodsReturnEntry> entryPage = RealGoodsReturnEntry.getPage(condition, page, PAGE_SIZE);
@@ -60,10 +62,11 @@ public class ReturnEntries extends Controller {
      * @param id
      */
     public static void received(Long id) {
-        System.out.println("id:" + id);
         //1、修改退货单状态.
         RealGoodsReturnEntry entry = RealGoodsReturnEntry.findById(id);
         entry.status = RealGoodsReturnStatus.RETURNED;
+        entry.returnedAt = new Date();
+        entry.returnedBy = OperateRbac.currentUser().userName;
         entry.save();
         //2、产生入库单.
         InventoryStock inventoryStock = new InventoryStock();
@@ -79,6 +82,8 @@ public class ReturnEntries extends Controller {
         stockItem.expireAt = entry.orderItems.goods.expireAt;
         stockItem.price = entry.orderItems.goods.originalPrice;
         stockItem.create();
+        //3、退款
+        OrderItems.handleRefund(entry.orderItems, entry.returnedCount);
 
         index(null);
     }
@@ -91,10 +96,14 @@ public class ReturnEntries extends Controller {
     public static void unreceived(Long id, String reason) {
         //1、修改退货单状态
         RealGoodsReturnEntry entry = RealGoodsReturnEntry.findById(id);
-        entry.status = RealGoodsReturnStatus.UNRETURNED;
+        entry.status = RealGoodsReturnStatus.RETURNED;
+        entry.returnedAt = new Date();
+        entry.returnedBy = OperateRbac.currentUser().userName;
         //2、填写退货单未收到货原因.
         entry.unreceivedReason = reason;
         entry.save();
+        //3、退款
+        OrderItems.handleRefund(entry.orderItems, entry.returnedCount);
 
         index(null);
     }
@@ -126,7 +135,9 @@ public class ReturnEntries extends Controller {
                 case PREPARED:
                 case UPLOADED:
                 case SENT:
-                    entry.status = RealGoodsReturnStatus.HANDLING;
+                    entry.status = RealGoodsReturnStatus.RETURNING;
+                    entry.orderItems.status = OrderStatus.RETURNING;
+                    entry.orderItems.save();
                     break;
             }
         }

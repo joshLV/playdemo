@@ -1,10 +1,7 @@
 package controllers;
 
-import models.order.LogisticImportData;
-import models.order.NotEnoughInventoryException;
-import models.order.Order;
-import models.order.OuterOrder;
-import models.order.OuterOrderPartner;
+import com.google.gson.Gson;
+import models.order.*;
 import models.resale.Resaler;
 import net.sf.jxls.reader.ReaderBuilder;
 import net.sf.jxls.reader.XLSReadStatus;
@@ -91,8 +88,15 @@ public class ImportPartnerOrders extends Controller {
 
             //TODO 相同订单,不同item的暂时先不作处理
             if (outerOrder != null) {
-                existedOrderList.add(logistic.outerOrderNo);
-                continue;
+                if (outerOrder.orderType != OuterOrderType.IMPORT && outerOrder.status == OuterOrderStatus.ORDER_IGNORE){
+                    //如果 状态不是IMPORT， 并且status 是IGNORE，说明可能是一号店API拉去过来的订单，我们这里给转成导入的订单
+                    outerOrder.message = new Gson().toJson(logistic);
+                    outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
+                    outerOrder.orderType = OuterOrderType.IMPORT;
+                }else{
+                    existedOrderList.add(logistic.outerOrderNo);
+                    continue;
+                }
             } else {
                 outerOrder = logistic.toOuterOrder(partner);
             }

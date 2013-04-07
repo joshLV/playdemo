@@ -52,6 +52,7 @@ public class SkuTakeouts extends Controller {
         long paidOrderCount = allPaidOrders.size();
         //7 可出库订单
         List<Order> stockoutOrderList = OrderItems.getStockOutOrders(allPaidOrders, deficientOrderList);
+
         //8 获取可出库订单计算出的货品平均售价
         Map<Sku, BigDecimal> skuAveragePriceMap = OrderItems.getSkuAveragePriceMap(stockoutOrderList, takeoutSkuMap);
 
@@ -112,7 +113,7 @@ public class SkuTakeouts extends Controller {
         //11 按商品创建出库单明细
         for (Sku sku : takeoutSkuMap.keySet()) {
             //创建出库详单信息
-            InventoryStock.createInventoryStockItem(sku, takeoutSkuMap.get(sku), stock, skuAveragePriceMap.get(sku));
+            InventoryStock.createInventoryStockItem(sku, 0L - takeoutSkuMap.get(sku), stock, skuAveragePriceMap.get(sku));
             //修改入库的剩余库存
             InventoryStock.updateInventoryStockRemainCount(sku, takeoutSkuMap.get(sku));
         }

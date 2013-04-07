@@ -7,6 +7,7 @@ import models.sales.Brand;
 import models.supplier.Supplier;
 import models.supplier.SupplierCategory;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -348,18 +349,15 @@ public class CouponsCondition implements Serializable {
                 sql.append(" and e.goods.supplierId in (:supplierIds)");
                 paramMap.put("supplierIds", supplierIds);
             } else {
-                sql.append(" and 5 =:supplierIds");
-                paramMap.put("supplierIds", 6);
+                sql.append(" and 1=0");
             }
         }
 
-        if (isCheatedOrder == null || !isCheatedOrder) {
-            sql.append(" and 1=1");
-        } else if (isCheatedOrder) {
+        if (isCheatedOrder !=null && isCheatedOrder) {
             sql.append(" and e.isCheatedOrder=true");
         }
 
-        System.out.println("sql.toString:" + sql.toString());
+        Logger.info("sql.toString:" + sql.toString());
         return sql.toString();
     }
 

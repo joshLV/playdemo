@@ -75,12 +75,17 @@ GET     /withdraws/apply                        SupplierWithdraws.apply
 POST    /withdraws/apply                        SupplierWithdraws.create
 
 # [v2] 下载发货单
-GET     /real/download-order-shipping                    SupplierDownloadOrderShippingInfos.index
-GET     /real/download-order-shipping/{id}/export        SupplierDownloadOrderShippingInfos.exportOrderShipping
+GET     /real/download-order-shipping                SupplierDownloadOrderShippingInfos.index
+GET     /real/download-order-shipping/{id}/export    SupplierDownloadOrderShippingInfos.exportOrderShipping
 
 # [v2] 上传发货单
 GET     /real/upload-order-shipping                  SupplierUploadOrderShippingInfos.index
 POST    /real/upload-order-shipping                  SupplierUploadOrderShippingInfos.upload
+
+# [v2] 实物订单退货管理
+POST    /real/return                                 real.SupplierReturnEntries.returnGoods
+GET     /real/return-entries                         real.SupplierReturnEntries.index
+PUT     /real/return-entries/{id}/received           real.SupplierReturnEntries.received
 
 # [v2] 修改密码
 GET     /passwords                              SupplierUserPasswords.index

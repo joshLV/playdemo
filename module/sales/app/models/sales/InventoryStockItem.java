@@ -10,6 +10,7 @@ import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Money;
 
 import javax.persistence.*;
+import java.beans.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -111,5 +112,20 @@ public class InventoryStockItem extends Model {
         stockItemPage.setBoundaryControlsEnabled(false);
         return stockItemPage;
     }
+
+    @Transient
+    public String getChangeCountSign() {
+        if (this.changeCount > 0) {
+            return "+";
+        } else {
+            return "-";
+        }
+    }
+
+    @Transient
+    public Long getChangeCountAbsoluteValue() {
+        return Math.abs(this.changeCount);
+    }
+
 
 }

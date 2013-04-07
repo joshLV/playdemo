@@ -1,14 +1,13 @@
 package models.order;
 
-import models.sales.Goods;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
-import play.modules.paginate.ModelPaginator;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -25,8 +24,7 @@ import java.util.Date;
 @Entity
 @Table(name = "real_goods_return_entry")
 public class RealGoodsReturnEntry extends Model {
-    @Basic(fetch = FetchType.LAZY)
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "order_item_id")
     public OrderItems orderItems;
     /**
@@ -50,6 +48,7 @@ public class RealGoodsReturnEntry extends Model {
     /**
      * 实物退货状态
      */
+    @Enumerated(EnumType.STRING)
     public RealGoodsReturnStatus status;
 
     /**
@@ -71,7 +70,7 @@ public class RealGoodsReturnEntry extends Model {
     public Date returnedAt;
 
     /**
-     * 退货人.
+     * 退货.
      */
     @Column(name = "returned_by")
     public String returnedBy;
@@ -105,7 +104,7 @@ public class RealGoodsReturnEntry extends Model {
      * @return  退货单数量
      */
     public static long countHandling(Long supplierId) {
-        Long count = count("status=? and orderItems.goods.supplierId=?", RealGoodsReturnStatus.HANDLING, supplierId);
+        Long count = count("status=? and orderItems.goods.supplierId=?", RealGoodsReturnStatus.RETURNING, supplierId);
         return count == null ? 0L : count;
     }
 

@@ -15,7 +15,13 @@
 <form class="well form-inline" name="frmlist" id="frmlist" method="GET" action="@{real.ReturnEntries.index()}">
     <legend>退货单管理</legend>
     <div class="control-group">
-        创建时间
+        商户
+    #{vx.selectInputField name:"supplierName", id:"condition.supplierId", class:'input-medium', list:supplierList, value:condition.supplierId/}
+        订单号
+        <input type="text" name="condition.orderNumber" value="${condition?.orderNumber}" class="input-medium"/>
+        商品名称
+        <input type="text" name="condition.goodsName" value="${condition?.goodsName}" class="input-medium"/>
+        申请时间
         <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
             <input class="input-small" id="returnedAtBegin" name="condition.returnedAtBegin" size="16" type="text"
                    value="${condition.returnedAtBegin?.format()}">
@@ -27,18 +33,11 @@
                    value="${condition.returnedAtEnd?.format()}">
             <span class="add-on"><i class="icon-th"></i></span>
         </div>
-        商户
-    #{vx.selectInputField name:"supplierName", id:"condition.supplierId", class:'input-medium', list:supplierList, value:condition.supplierId/}
-        订单号
-        <input type="text" name="condition.orderNumber" value="${condition?.orderNumber}" class="input-medium"/>
-        商品名称
-        <input type="text" name="condition.goodsName" value="${condition?.goodsName}" class="input-medium"/>
         退货状态
     #{select 'condition.status', class:'input-small', value:condition.status}
         #{option ""}不限#{/option}
-        #{option "HANDLING"}退货中#{/option}
+        #{option "RETURNING"}退货中#{/option}
         #{option "RETURNED"}已退货#{/option}
-        #{option "UNRETURNED"}未收到退货#{/option}
     #{/select}
         <button class="btn btn-large btn-primary" id="search" type="submit">搜索</button>
     </div>
@@ -54,7 +53,8 @@
         <th width="80px">购买数量</th>
         <th width="80px">退货数量</th>
         <th width="80px">需发货数量</th>
-        <th width="150px">退货日期</th>
+        <th width="150px">申请时间</th>
+        <th width="80px">申请人</th>
         <th width="100px">退货状态</th>
         <th width="200px">备注</th>
         <th width="100px">操作</th>
@@ -69,11 +69,23 @@
         <td>${entry.orderItems?.buyNumber}</td>
         <td>${entry.returnedCount}</td>
         <td>${entry.orderItems?.buyNumber-entry.returnedCount}</td>
-        <td>${entry.createdAt}</td>
-        <td>&{'entry.'+entry.status}</td>
-        <td>${entry.reason}</td>
-        <td>#{if entry.status == models.order.RealGoodsReturnStatus.HANDLING}<a id="link_returned"
-               href="javascript:showConfirmModal('${entry.orderItems?.goods?.shortName}', ${entry.returnedCount}, ${entry.id});">已收到货</a>
+        <td>${entry.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+        <td>${entry.createdBy}</td>
+        <td>#{if entry.status==models.order.RealGoodsReturnStatus.RETURNED}<a
+                id="entry_${entry.id}"
+                href="#"
+                rel="popover"
+                data-html="true"
+                data-content="完成时间: ${entry?.returnedAt?.format('yyyy-MM-dd HH:mm:ss')}<br/>
+                              确 认 人: ${entry?.returnedBy}"
+                data-placement="bottom"
+                data-original-title="退货信息"
+                data-trigger="hover"
+                onmouseover="$('#entry_${entry.id}').popover('show');">&{'entry.'+entry.status}</a>#{/if}
+            #{else}&{'entry.'+entry.status}#{/else}</td>
+        <td>${entry.reason}#{if entry.unreceivedReason!=null}<br/>未收到货，原因：${entry.unreceivedReason}#{/if}</td>
+        <td>#{if entry.status == models.order.RealGoodsReturnStatus.RETURNING}<a id="link_returned"
+                                                                                 href="javascript:showConfirmModal('${entry.orderItems?.goods?.shortName}', ${entry.returnedCount}, ${entry.id});">已收到货</a>
             <a id="link_unreturned"
                href="javascript:showReasonModal('${entry.orderItems?.goods?.shortName}', ${entry.returnedCount}, ${entry.id});">未收到货</a>
         #{/if}

@@ -8,7 +8,6 @@ package models.order;
  * Time: 11:15 AM
  */
 public enum RealGoodsReturnStatus {
-    HANDLING,      //退货中
-    UNRETURNED,    //未退回
+    RETURNING,      //退货中
     RETURNED      //已退回
 }
