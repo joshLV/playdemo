@@ -272,10 +272,10 @@
         #{/list}
         </tbody>
         <tr>
-            <td colspan="11">商品金额： #{if orders.containsRealGoods()}
+            <td colspan="11">商品金额： #{if orders.containsRealGoods()&& orders.freight.compareTo(BigDecimal.ZERO)>0}
             ${orders.amount.subtract(models.order.Order.FREIGHT)}#{/if}#{else}${orders.amount}#{/else}&nbsp;元
                 &nbsp;+ 运费：
-            #{if orders.containsRealGoods()}${models.order.Order.FREIGHT}#{/if}#{else}0#{/else} 元
+            #{if orders.containsRealGoods() && orders.freight.compareTo(BigDecimal.ZERO)>0}${models.order.Order.FREIGHT}#{/if}#{else}0#{/else} 元
             #{if orders.rebateValue != null && orders.rebateValue.compareTo(BigDecimal.ZERO) > 0}
                 &nbsp;- <span style="color:red">折扣：${orders.rebateValue}元</span>
             #{/if}

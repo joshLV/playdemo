@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 /**
  * 导入实物订单信息的中间数据类.
  */
-public class LogisticImportData {
+public class LogisticImportData implements Cloneable {
 
     static String[] dateFormats = new String[]{
             "yyyy-MM-dd HH:mm",// 淘宝
@@ -169,6 +169,7 @@ public class LogisticImportData {
     }
 
     public void setOuterGoodsNo(String outerGoodsNo) {
+
         this.outerGoodsNo = outerGoodsNo;
     }
 
@@ -356,6 +357,41 @@ public class LogisticImportData {
         return outerOrder;
     }
 
+
+    /**
+     * 转换为一百券订单
+     *
+     * @param partner 分销伙伴
+     */
+    public Order createYbqOrderByWB(OuterOrderPartner partner) {
+        Resaler resaler = Resaler.findOneByLoginName(partner.partnerLoginName());
+        if (resaler == null) {
+            Logger.error("can not find the resaler by login name: %s", partner.partnerLoginName());
+            return null;
+        }
+
+        return Order.createConsumeOrder(resaler.id, AccountType.RESALER).save();
+
+    }
+
+    public OrderShippingInfo createOrderShipInfo() {
+        // 生成OrderShippingInfo
+        OrderShippingInfo orderShippingInfo = new OrderShippingInfo();
+        orderShippingInfo.remarks = this.remarks;
+        orderShippingInfo.expressInfo = this.expressInfo;
+        orderShippingInfo.receiver = this.receiver;
+        orderShippingInfo.phone = this.phone;
+        orderShippingInfo.tel = this.tel;
+        orderShippingInfo.paidAt = this.paidAt;
+        orderShippingInfo.createdAt = new Date();
+        orderShippingInfo.address = StringUtils.normalizeSpace(this.expressInfo) + this.address;
+        orderShippingInfo.zipCode = this.zipCode;
+        orderShippingInfo.invoiceTitle = this.invoiceTitle;
+        orderShippingInfo.outerOrderId = this.outerOrderNo;
+        orderShippingInfo.save();
+        return orderShippingInfo;
+    }
+
     /**
      * 转换为一百券订单
      *
@@ -375,20 +411,7 @@ public class LogisticImportData {
         Order ybqOrder = Order.createConsumeOrder(resaler.id, AccountType.RESALER).save();
 
         // 生成OrderShippingInfo
-        OrderShippingInfo orderShippingInfo = new OrderShippingInfo();
-        orderShippingInfo.salePrice = this.salePrice;
-        orderShippingInfo.buyNumber = this.buyNumber;
-        orderShippingInfo.remarks = this.remarks;
-        orderShippingInfo.expressInfo = this.expressInfo;
-        orderShippingInfo.receiver = this.receiver;
-        orderShippingInfo.phone = this.phone;
-        orderShippingInfo.tel = this.tel;
-        orderShippingInfo.paidAt = this.paidAt;
-        orderShippingInfo.createdAt = new Date();
-        orderShippingInfo.address = this.address;
-        orderShippingInfo.zipCode = this.zipCode;
-        orderShippingInfo.invoiceTitle = this.invoiceTitle;
-        orderShippingInfo.save();
+        OrderShippingInfo orderShippingInfo = this.createOrderShipInfo();
 
         OrderItems orderItems = ybqOrder.addOrderItem(goods, buyNumber, phone, salePrice, salePrice);
         orderItems.shippingInfo = orderShippingInfo;
@@ -397,7 +420,6 @@ public class LogisticImportData {
         orderItems.save();
 
         ybqOrder.deliveryType = DeliveryType.LOGISTICS;
-        ybqOrder.createAndUpdateInventory();
         ybqOrder.accountPay = ybqOrder.needPay;
         ybqOrder.discountPay = BigDecimal.ZERO;
         ybqOrder.payMethod = PaymentSource.getBalanceSource().code;
@@ -408,16 +430,13 @@ public class LogisticImportData {
     }
 
 
-    private static Pattern wuboGoodsPartern = Pattern.compile("^([^x]*)x(\\d+)$");
+    private static Pattern wubaGoodsPartern = Pattern.compile("^([^x]*)x(\\d+)$");
 
     /**
      * 拆分58团购导入的实体券.
-     *
-     * @param wubaData
-     * @return
      */
-    public static List<LogisticImportData> processWubaLogistic(LogisticImportData wubaData) {
-        String outerGoodsNOs = wubaData.outerGoodsNo;
+    public List<LogisticImportData> processWubaLogistic() {
+        String outerGoodsNOs = this.outerGoodsNo;
 
         String[] outerGoodsLines = outerGoodsNOs.split("\n");
         List<LogisticImportData> logisticImportDataList = new ArrayList<>();
@@ -426,22 +445,28 @@ public class LogisticImportData {
                 continue;
             }
             outerGoodsLine = StringUtils.strip(outerGoodsLine);
-            Matcher matcher = wuboGoodsPartern.matcher(outerGoodsLine);
+            Matcher matcher = wubaGoodsPartern.matcher(outerGoodsLine);
             if (matcher.matches()) {
-                LogisticImportData data = wubaData.cloneObject();
-                data.outerGoodsNo = matcher.group(1);
-                data.buyNumber = Long.parseLong(matcher.group(2));
-                logisticImportDataList.add(data);
+                try {
+                    LogisticImportData data = (LogisticImportData) this.clone();
+                    data.outerGoodsNo = matcher.group(1);
+                    data.buyNumber = Long.parseLong(matcher.group(2));
+                    logisticImportDataList.add(data);
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
         return logisticImportDataList;
     }
 
-    protected LogisticImportData cloneObject() {
-        LogisticImportData data = new LogisticImportData();
-        data.buyNumber = this.buyNumber;
-        data.address = this.address;
-        return data;
+    public OrderItems createOrderItem(Order ybqOrder, Goods goods, OrderShippingInfo orderShippingInfo, Long buyNumber, BigDecimal salePrice) throws NotEnoughInventoryException {
+        OrderItems orderItems = ybqOrder.addOrderItem(goods, buyNumber, phone, salePrice, salePrice);
+        orderItems.shippingInfo = orderShippingInfo;
+        orderItems.options = this.options;
+        orderItems.outerGoodsNo = this.outerGoodsNo;
+        orderItems.save();
+        return orderItems;
     }
 }
