@@ -272,19 +272,19 @@
         </td>
         <td  #{if report?.code == "999"} bgcolor="#add8e6" #{/if} style="text-align:right;">
             #{if report?.code == "999"}
-                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=RETURN&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
                    target="_blank">${report?.refundNumber}</a>
                 /
                 <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}"
                    target="_blank">${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.format('#0.00')}</a>
             #{/if}
             #{else}
-                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=RETURN&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
                    target="_blank">
                 ${report?.refundNumber}
                 </a>
                 /
-                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=RETURN&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
+                <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.refundAtBegin=${beginAt}&condition.refundAtEnd=${endAt}&condition.supplierCategoryCode=${report?.code}"
                    target="_blank">
                 ${report?.refundPrice == null ?'￥0.00':report?.refundPrice?.format('#0.00')}
                 </a>

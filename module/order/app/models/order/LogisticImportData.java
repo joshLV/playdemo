@@ -15,6 +15,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * 导入实物订单信息的中间数据类.
@@ -401,5 +403,19 @@ public class LogisticImportData {
         ybqOrder.paidAt = this.paidAt;
         ybqOrder.save();
         return ybqOrder;
+    }
+
+
+    private static Pattern wuboGoodsPartern = Pattern.compile("^([^x]*)x(\\d+)$");
+
+    /**
+     * 拆分58团购导入的实体券.
+     * @param wubaData
+     * @return
+     */
+    public static List<LogisticImportData> processWubaLogistic(LogisticImportData wubaData) {
+        String outerGoodsNOs = wubaData.outerGoodsNo;
+
+        return null;
     }
 }

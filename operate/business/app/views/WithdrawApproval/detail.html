@@ -39,10 +39,10 @@
             <label class="controls control-value">${bill?.applier}
                 &nbsp;&nbsp; (&nbsp;uid:${uid}&nbsp;) &nbsp;&nbsp;
             #{if  bill.account.accountType==models.accounts.AccountType.CONSUMER }
-                <a href="/coupons?condition.searchKey=UID&condition.searchItems=${uid}&condition.status=RETURN"
+                <a href="/coupons?condition.searchKey=UID&condition.searchItems=${uid}&condition.status=REFUND"
                    target="_blank">查看相关券</a>
                 &nbsp;<a
-                    href="/reports/consumer?condition.accountName=${bill.accountName}&condition.tradeType=RETURN&condition.accountUid=${uid}"
+                    href="/reports/consumer?condition.accountName=${bill.accountName}&condition.tradeType=REFUND&condition.accountUid=${uid}"
                     target="_blank">账户资金明细</a>
             #{/if}
             #{if  bill.account.accountType==models.accounts.AccountType.SUPPLIER }
