@@ -88,7 +88,7 @@ public class ImportPartnerOrders extends Controller {
         List<String> notEnoughInventoryGoodsList = new ArrayList<>();
         List<String> importSuccessOrderList = new ArrayList<>();
         Set<String> unBindGoodsSet = new HashSet<>();
-
+        List<String> diffOrderPriceList = new ArrayList();
 
         for (LogisticImportData logistic : logistics) {
             Logger.info("Process OrderNO: %s", logistic.outerOrderNo);
@@ -123,7 +123,6 @@ public class ImportPartnerOrders extends Controller {
                     importSuccessOrderList.add(logistic.outerOrderNo);
                 }
 
-                List<String> diffOrderPriceList = new ArrayList();
                 OrderShippingInfo orderShipInfo = logistic.createOrderShipInfo();
                 BigDecimal nowOrderAmount = BigDecimal.ZERO;
                 for (LogisticImportData wubaGoodsInfo : wubaLogistics) {

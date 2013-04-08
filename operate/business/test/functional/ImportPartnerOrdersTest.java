@@ -262,6 +262,41 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
         Set<String> unBindGoods = (Set<String>) renderArgs("unBindGoodsList");
         assertEquals(3, unBindGoods.size());
 
+        List<String> importSuccessOrderList = (List<String>) renderArgs("importSuccessOrderList");
+        assertEquals(6, importSuccessOrderList.size());
+
+    }
+
+    @Test
+    public void testImpOrder_WB_DiffPrice() {
+        resaler.loginName = Resaler.WUBA_LOGIN_NAME;
+        resaler.save();
+        goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+            @Override
+            public void build(Goods target) {
+                target.cumulativeStocks = 10000l;
+                target.salePrice = new BigDecimal("168");
+            }
+        });
+        resalerProduct.partnerProductId = "DQ冰淇淋缤纷卡 200元DQ缤纷卡";
+        resalerProduct.partner = OuterOrderPartner.WB;
+        resalerProduct.goods = goods;
+        resalerProduct.save();
+        VirtualFile vfImage = VirtualFile.fromRelativePath("test/data/partnerOrder/WB_Orders.xls");
+        Map<String, File> fileParams = new HashMap<>();
+        fileParams.put("orderFile", vfImage.getRealFile());
+        Map<String, String> params = new HashMap<>();
+        params.put("partner", OuterOrderPartner.WB.toString());
+
+        Http.Response response = POST(Router.reverse("ImportPartnerOrders.upload").url, params, fileParams);
+        assertIsOk(response);
+        assertContentType("text/html", response);
+
+        assertEquals(3, OuterOrder.count());
+        assertEquals(6, Order.count());
+
+        List<String> diffOrderPriceList = (List<String>) renderArgs("diffOrderPriceList");
+        assertEquals(6, diffOrderPriceList.size());
 
     }
 }
