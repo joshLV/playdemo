@@ -81,13 +81,18 @@ public class UploadOrderShippingInfos extends Controller {
         List<String> emptyExpressInofs = new ArrayList<>();
         List<String> noGoodsCodeList = new ArrayList<>();
         //todo 检查实物订单信息中是否存在退货订单
-//        Map<LogisticImportData, RealGoodsReturnEntry> returnEntryMap = new HashMap<>();
-//        List<RealGoodsReturnEntry> returnEntryList = RealGoodsReturnEntry.findHandling();
-//        for (LogisticImportData logistic : logistics) {
-//            for (RealGoodsReturnEntry returnEntry : returnEntryList) {
-//                if (logistic.orderNumber!= null && logistic.orderNumber)
-//            }
-//        }
+        List<RealGoodsReturnEntry> returnEntryList = new ArrayList<>();
+        for (LogisticImportData logistic : logistics) {
+            RealGoodsReturnEntry returnEntry = RealGoodsReturnEntry.findHandling(logistic.orderNumber, logistic.goodsCode);
+            if (returnEntry != null&&logistic.buyNumber != null && !logistic.buyNumber.equals(returnEntry.orderItems.buyNumber - returnEntry.returnedCount)) {
+                returnEntryList.add(returnEntry);
+            }
+        }
+        if (returnEntryList.size() > 0) {
+            errorInfo = "上传失败！发货单中有" + returnEntryList.size() + "个退货单，请修改发货单并重新上传，根据列表中<strong>需发货数量</strong>更改发货单中对应订单商品的<strong>数量</strong>。";
+            render("UploadOrderShippingInfos/index.html", errorInfo, supplierList, returnEntryList);
+        }
+
         for (LogisticImportData logistic : logistics) {
             if (StringUtils.isBlank(logistic.expressCompany)) {
                 emptyExpressInofs.add(logistic.orderNumber);

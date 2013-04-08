@@ -115,8 +115,8 @@ public class RealGoodsReturnEntry extends Model {
      *
      * @return  退货单数量
      */
-    public static List<RealGoodsReturnEntry> findAllHandling() {
-        return find("status=?", RealGoodsReturnStatus.RETURNING).fetch();
+    public static RealGoodsReturnEntry findHandling(String orderNumber, String goodsCode) {
+        return find("status=? and orderItems.order.orderNumber=? and orderItems.goods.code=?", RealGoodsReturnStatus.RETURNING,orderNumber,goodsCode).first();
     }
 
     /**

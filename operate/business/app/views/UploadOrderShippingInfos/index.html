@@ -22,6 +22,34 @@
         <span class="help-block">请在下载的发货单中指定位置填写快递信息，<br>请勿随意修改发货单中其他信息，上传时，保证数据放在Sheet1.</span>
         <span class="help-block" style="color: red;" id="err-info">
         ${errorInfo}
+        #{if errorInfo?.startWith("上传失败！发货单中有")}
+        <table>
+            <thead>
+            <tr>
+                <th width="80px">订单号</th>
+                <th width="200px">商品名称</th>
+                <th width="80px">购买数量</th>
+                <th width="80px">退货数量</th>
+                <th width="80px">需发货数量</th>
+                <th width="150px">申请时间</th>
+                <th width="100px">退货状态</th>
+            </tr>
+            </thead>
+            <tbody>
+                #{list items:returnEntryList, as:'entry'}
+                <tr>
+                    <td>${entry.orderItems?.order?.orderNumber}</td>
+                    <td>${entry.orderItems?.goods?.shortName}</td>
+                    <td>${entry.orderItems?.buyNumber}</td>
+                    <td>${entry.returnedCount}</td>
+                    <td>${entry.orderItems?.buyNumber-entry.returnedCount}</td>
+                    <td>${entry.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                    <td>&{'entry.'+entry.status}</td>
+                </tr>
+                #{/list}
+            </tbody>
+        </table>
+        #{/if}
         #{if noGoodsCodeList}商品编码：${noGoodsCodeList?.join(",")}不存在,请重新编辑商品分配编码！<br>#{/if}
         #{if unExistedOrders}订单：${unExistedOrders?.join(",")}不存在！<br>#{/if}
         #{if emptyExpressInofs}订单${emptyExpressInofs?.join(",")}的快递信息为空，请填写!<br>#{/if}
