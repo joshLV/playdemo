@@ -14,6 +14,7 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,13 +47,13 @@ public class PurchaseOrders extends Controller {
     @ActiveNavigation("purchase_orders_add")
     public static void add() {
         List<Vendor> vendorList = Vendor.findUnDeleted();
-        System.out.println(vendorList.size() + "===vendorList.size()>>");
         List<Sku> skuList = Sku.findShiHuiUnDeleted();
         PurchaseOrder purchaseOrder = new PurchaseOrder();
-        purchaseOrder.deleted = DeletedStatus.DELETED;
         purchaseOrder.create();
+        purchaseOrder.deleted = DeletedStatus.DELETED;
+        purchaseOrder.save();
         Long purchaseOrderId = purchaseOrder.id;
-        System.out.println(purchaseOrderId + "===purchaseOrderId>>");
+        System.out.println(purchaseOrder.deleted + "===purchaseOrder.deleted>>");
         List<PurchaseItem> purchaseItemList =
                 PurchaseItem.find("purchaseOrder=? and deleted = ? ", purchaseOrder, DeletedStatus.UN_DELETED).fetch();
         render(vendorList, skuList, purchaseOrderId, purchaseItemList);
@@ -84,16 +85,33 @@ public class PurchaseOrders extends Controller {
     public static void edit(Long id) {
         PurchaseOrder purchaseOrder = PurchaseOrder.findById(id);
         List<Vendor> vendorList = Vendor.findUnDeleted();
+        System.out.println(id + "===id>>");
         List<PurchaseItem> purchaseItemList =
-                PurchaseItem.find("purchaseOrder.id=? and deleted = ", id, DeletedStatus.UN_DELETED).fetch();
-        render(purchaseOrder, vendorList, purchaseItemList);
+                PurchaseItem.find("purchaseOrder.id=? and deleted = ?", id, DeletedStatus.UN_DELETED).fetch();
+        List<Sku> skuList = Sku.findShiHuiUnDeleted();
+        Long purchaseOrderId=purchaseOrder.id;
+        render(purchaseOrder, vendorList, purchaseItemList, skuList,purchaseOrderId);
+    }
+
+    public static void update(Long id, PurchaseOrder purchaseOrder) {
+        PurchaseOrder updatePurchaseOrder = PurchaseOrder.findById(id);
+        if (updatePurchaseOrder == null) {
+            return;
+        }
+        updatePurchaseOrder.vendor = purchaseOrder.vendor;
+        updatePurchaseOrder.invoiceType = purchaseOrder.invoiceType;
+        updatePurchaseOrder.paymentType = purchaseOrder.paymentType;
+        updatePurchaseOrder.signedAt = purchaseOrder.signedAt;
+        updatePurchaseOrder.updatedBy = OperateRbac.currentUser().userName;
+        updatePurchaseOrder.updatedAt = new Date();
+        updatePurchaseOrder.deleted = DeletedStatus.UN_DELETED;
+        updatePurchaseOrder.save();
+        index(null);
+
     }
 
 
     public static void updateItem(Long purchaseOrderId, @Valid PurchaseItem item, PurchaseOrder purchaseOrder) {
-        System.out.println(purchaseOrderId + "===purchaseOrderId>>");
-        System.out.println(item.sku.id + "===item.sku.id>>");
-        System.out.println(item.sku.name + "===item.sku.name>>");
         if (Validation.hasErrors()) {
             if (item.sku == null || item.sku.id == null) {
                 Validation.addError("item.sku.id", "validation.selected");
@@ -103,6 +121,7 @@ public class PurchaseOrders extends Controller {
                     PurchaseItem.find("purchaseOrder.id=? and deleted = ? ", purchaseOrderId, DeletedStatus.UN_DELETED).fetch();
             List<Sku> skuList = Sku.findShiHuiUnDeleted();
             List<Vendor> vendorList = Vendor.findUnDeleted();
+            System.out.println(purchaseOrderId + "===purchaseOrderId>>");
             render("real/PurchaseOrders/add.html", item, purchaseOrderId, purchaseItemList, skuList, vendorList);
         }
         PurchaseOrder currentPurchaseOrder = PurchaseOrder.findById(purchaseOrderId);

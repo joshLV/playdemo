@@ -473,7 +473,7 @@ GET     /purchase-orders                           real.purchaseOrders.index
 GET     /purchase-orders/new                       real.purchaseOrders.add
 POST    /purchase-orders                           real.purchaseOrders.create
 GET     /purchase-orders/{id}/edit                 real.purchaseOrders.edit
-PUT     /purchase-orders/{id}                      real.purchaseOrders.update
+POST     /purchase-orders/{id}                      real.purchaseOrders.update
 DELETE  /purchase-orders/{id}                      real.purchaseOrders.delete
 POST     /purchase-orders-item                     real.purchaseOrders.updateItem
 DELETE  /purchase-orders-item                      real.purchaseOrders.deletePurchaseItem

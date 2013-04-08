@@ -29,6 +29,7 @@
 
 
 <div style="  padding: 15px;
+margin-right: 100px;
     margin-bottom: 10px;
     border: 1px dashed #c2c2c2;">
     <div class="control-group">
@@ -38,30 +39,33 @@
             #{vx.selectInputField name:"skuName", id:"item.sku.id", list:skuList,
             value:item?.sku?.id, array:'skuArray'/}
             <span class="error">#{error 'item.sku.id'/}</span>
+            采购数量
+            <input type="text" class="input-small" name="item.count" id="item_count_${item?.count}"
+                   value="${item?.count}"/> 件
+            <span class="error">#{error 'item.count'/}</span>
+
         </div>
         <br>
-        *{<input type="text" name="item.count" id="item_count" value="${params['item.count']}"/>}*
-        #{layout_operate.textField labelName:'采购数量',name:'item.count', value:item?.count, note:'件', required:true/}
+        &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;
+        <span style="color: red;">*</span>
+        进价
+        <input type="text" class="input-small" name="item.price" id="item_price" value="${item?.price}"/> 元
+        <span class="error">#{error 'item.price'/}</span>
 
-        #{layout_operate.textField  labelName:'进价',name:'item.price', value:item?.price,
-        note:'元', required:true/}
-
-        #{layout_operate.dateScopeField name:'item.effective', begin:'item.effectiveAt',end:'item.expireAt',
+        货品有效期
+        #{layout_operate.plainDateScopeField name:'item.effective', begin:'item.effectiveAt',end:'item.expireAt',
         beginValue:item?.effectiveAt?.format(), endValue:item?.expireAt?.format()/}
 
     </div>
 </div>
 
 <div class="form-actions">
-    <input type="hidden" name="purchaseOrderId" value="${purchaseOrderId}"/>
+    <input type="text" id="whole_purchase" name="purchaseOrderId" value="${purchaseOrderId}"/>
     <button class="btn btn-primary" type="submit">添加采购商品</button>
 </div>
 #{/form}
 <legend>修改采购明细</legend>
-
-*{<a style=" margin-left:105px;" class="btn" id="add_purchase_item">添加采购商品</a>}*
-
-
 
 <table class="table" style="width:auto">
     <tr>
@@ -75,7 +79,6 @@
     <tr>
         #{form @real.PurchaseOrders.updateItem(),id:"update_item"}
             <td>
-            *{${purchaseItemList.get(0).count}}*
                 <div class="control-group">
                     #{vx.selectInputField name:"item.sku.name", inputId:"item_sku_name_"+purchaseItem.id,
                     hiddenId:"id_item_sku_id_"+purchaseItem.id,id:"item.sku.id",
@@ -85,19 +88,29 @@
                 </div>
             </td>
             <td>
-                #{layout_operate.plainTextField name:'item.count', value:purchaseItem?.count, required:true/}
-            </td>
-            <td>
-                #{layout_operate.plainTextField name:'item.price', value:purchaseItem?.price, required:true/}
+                <div class="control-group">
 
+                    <input type="text" class="input-small" name="item.count" id="item_count_${purchaseItem?.count}"
+                           value="${purchaseItem?.count}"/> 件
+                    *{<span class="error">#{error 'item.count'/}</span>}*
+                </div>
             </td>
             <td>
-                #{layout_operate.plainDateScopeField name:'item.effective', begin:'item.effectiveAt',end:'item.expireAt',
+                <div class="control-group">
+                    <input type="text" class="input-small" name="item.price" id="item_price_${purchaseItem?.count}"
+                           value="${purchaseItem?.price}"/> 元
+                    *{<span class="error">#{error 'item.price'/}</span>}*
+                </div>
+            </td>
+            <td>
+                <div class="control-group">
+                    #{layout_operate.plainDateScopeField name:'item.effective', begin:'item.effectiveAt',end:'item.expireAt',
             beginValue:purchaseItem?.effectiveAt?.format(), endValue:purchaseItem?.expireAt?.format()/}
+                </div>
             </td>
         <td>
-        <div class="control-group">
-            <input type="hidden" name="purchaseOrderId" value="${purchaseItem?.purchaseOrder?.id}"/>
+        <div class="control-group" style="margin-top:-22px;">
+            <input type="hidden" name="purchaseOrderId" value="${purchaseOrderId}"/>
             <input type="hidden" name="item.id" value="${purchaseItem?.id}"/>
             <button class=" btn btn-primary" type="submit">修 改</button>
         #{/form}
@@ -112,6 +125,7 @@
 #{/list}
 </table>
 <div class="form-actions">
+    <input type="hidden" id="action" name="action" value="${action}"/>
     <a class="btn btn-primary" id="save_order" onclick="saveOrder()"> 保存</a>
 #{vx.cancelButton url:'', class:'btn btn-primary'/}
 </div>
@@ -125,8 +139,14 @@
     }
 
     function saveOrder() {
-        $("#purchase_order_form").attr("action", "@{real.PurchaseOrders.create()}");
-        $("#purchase_order_form").attr("method", "post");
+        if ($("#action").val() == "add") {
+            $("#purchase_order_form").attr("action", "@{real.PurchaseOrders.create()}");
+        }
+        else if ($("#action").val() == "edit") {
+            var id = $("#whole_purchase").val();
+            $("#purchase_order_form").attr("action", "@{real.PurchaseOrders.update(id)}");
+        }
+        $("#purchase_order_form").attr("method", "POST");
         $("#purchase_order_form").submit();
         return false;
     }

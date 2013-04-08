@@ -95,7 +95,7 @@ public class PurchaseOrder extends Model {
 
     @Override
     public boolean create() {
-        deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED;
+//        deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED;
         createdAt = new Date();
         if (this.serialNo == null) {
             resetStockSerialNo();
@@ -147,11 +147,11 @@ public class PurchaseOrder extends Model {
     public void resetStockSerialNo() {
         String dateOfSerialNo = com.uhuila.common.util.DateUtil.dateToString(new Date(), SERIAL_NO_DATE_FORMAT);
         String sequenceCode;
-        PurchaseOrder purchaseOrder = PurchaseOrder.find("serialNo like ? order by id desc", "_" + dateOfSerialNo + "__").first();
+        PurchaseOrder purchaseOrder = PurchaseOrder.find("serialNo like ? order by id desc", "__" + dateOfSerialNo + "__").first();
         if (purchaseOrder == null) {
             sequenceCode = "01";
         } else {
-            sequenceCode = calculateFormattedCode(purchaseOrder.serialNo.substring(9, purchaseOrder.serialNo.length()));
+            sequenceCode = calculateFormattedCode(purchaseOrder.serialNo.substring(10, purchaseOrder.serialNo.length()));
 
         }
         this.serialNo = "CG" + dateOfSerialNo + sequenceCode;
