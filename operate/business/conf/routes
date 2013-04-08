@@ -468,6 +468,22 @@ GET     /vendors/{id}/edit                 real.Vendors.edit
 PUT     /vendors/{id}                      real.Vendors.update
 DELETE  /vendors/{id}                      real.Vendors.delete
 
+#采购合同管理
+GET     /purchase-orders                           real.purchaseOrders.index
+GET     /purchase-orders/new                       real.purchaseOrders.add
+POST    /purchase-orders                           real.purchaseOrders.create
+GET     /purchase-orders/{id}/edit                 real.purchaseOrders.edit
+POST     /purchase-orders/{id}                     real.purchaseOrders.update
+DELETE  /purchase-orders/{id}                      real.purchaseOrders.delete
+POST     /purchase-orders-item                     real.purchaseOrders.updateItem
+DELETE  /purchase-orders-item                      real.purchaseOrders.deletePurchaseItem
+GET     /purchase-orders/export                    real.purchaseOrders.export
+GET     /purchase-orders/{id}/stock-in            real.purchaseOrders.createStockIn
+DELETE  /purchase-orders/{id}                      real.purchaseOrders.delete
+
+
+
+
 
 
 

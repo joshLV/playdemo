@@ -1,0 +1,24 @@
+*{文本框标签}*
+*{label:     文本框的标签（选填）}*
+*{name:      文本框的名称}*
+*{value:     文本框中的值}*
+*{note:      文本框后的说明文字（选填）}*
+*{required:  文字标签前面是否要加必填项标志（选填，默认不标识必填项）}*
+*{disabled:  是否不可修改（选填，默认是可以修改状态，即false）}*
+<div class="control-group">
+#{field _name}
+    <input type="text" id="${_id?:field.id}" name="${field.name}" class="input-small" #{if
+    _disabled?:false}disabled#{/if}
+           value="${_value?.escape()?.raw()}"/><span id="note_${_id?:field.id}">${_note}</span>#{if _tip!= null}<span
+        id="tip_${_id?:field.id}" class="warn">${_tip}</span>#{/if}
+    #{ifError field.name}
+        <span class="error" id="err-${field.id}">${field.error.raw()}</span>
+    #{/ifError}
+#{/field}
+#{field _err?:'errors'}
+    #{ifError field.name}
+        <span class="error" id="err-${field.id}">${field.error.raw()?:''}</span>
+    #{/ifError}
+#{/field}
+</div>
+

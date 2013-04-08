@@ -1,0 +1,88 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'采购合同管理' /}
+#{include '/share/nav.html' /}
+<div class="body">
+    <legend>${title}</legend>
+
+#{form @real.purchaseOrders.index() , id:'operForm',class:"form-horizontal" }
+    <table width="100%">
+        <tr>
+            <td width="15%">
+                <input rel="tooltip"
+                       data-placement="left"
+                       data-original-title='输入合同编号、供货商公司名称进行搜索'
+                       type="text" placeholder="输入合同编号、供货商公司名称进行搜索" name="keyword"
+                       class="input-larger search-query"
+                       id="keyword" value="${keyword}">
+            <td width="55%">
+                <button class="btn btn-primary" id="search" type="submit">搜索</button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="/purchase-orders/new" class="btn btn-primary  " id="add_search">添加</a>
+            </td>
+        </tr>
+    </table>
+#{/form}
+    <table class="table table-striped table-bordered table-condensed">
+        <thead>
+        <tr>
+            <th width="298px">合同编号</th>
+            <th width="200px">供货商</th>
+            <th width="100px">签约日期</th>
+            <th width="150px" style="text-align: right;">合计金额</th>
+            <th width="150px">操作</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        #{paginate.list items:purchaseOrderList, as:'purchase'}
+        <tr>
+            <td>${purchase?.serialNo}</td>
+            <td>${purchase?.vendor?.name}</td>
+            <td>
+            ${purchase?.signedAt?.format('yyyy-MM-dd ')}
+            </td>
+            <td style="text-align: right;">${purchase?.totalPrice}</td>
+            <td>
+                <a href="javascript:openW('@{real.PurchaseOrders.export(purchase.id)}')"
+                   onClick="return confirmExport();">导出</a>
+                #{if purchase?.stockIn == false}
+                    / <a href="/purchase-orders/${purchase.id}/stock-in" onClick="return confirmStockIn();">确认入库</a>
+                    /
+                    <a href="/purchase-orders/${purchase.id}/edit?page=${page?:1}">修改</a>
+                    / #{vx.deleteLink id:purchase?.id, name:'采购合同:'+purchase?.serialNo, action:"/purchase-orders"/}
+                #{/if}
+            </td>
+        </tr>
+        #{/paginate.list}
+        </tbody>
+    </table>
+    <div class="pagination" align="center">
+        <ul>
+        #{paginate.controls items: purchaseOrderList/}
+        </ul>
+    </div>
+</div>
+
+<script language="JavaScript" type="text/JavaScript">
+
+    function confirmExport() {
+        if (confirm("确定要导出吗?"))
+            return true;
+        else
+            return false;
+    }
+
+    function confirmStockIn() {
+        if (confirm("确定入库吗?"))
+            return true;
+        else
+            return false;
+    }
+
+
+    function openW(v) {
+        window.open(v, '', 'width=2000,height=2000,left=200,top=200,status=no,scrollbars=no,menubar=no,toolbar=no,resizable=1,location=no');
+    }
+
+</script>

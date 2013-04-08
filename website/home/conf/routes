@@ -46,7 +46,7 @@ GET     /user-point-record                            UserPoints.record
 GET     /user-point-record/{orderNumber}              UserPoints.detail
 #我的金币
 GET     /user-coins                                   UserCoins.index
-POST     /coins-exchange                               UserCoins.exchange
+POST     /coins-exchange                              UserCoins.exchange
 #推荐返利
 GET     /rebate                                       UserPromoteRebate.index
 GET     /rebate-account                               UserPromoteRebate.account

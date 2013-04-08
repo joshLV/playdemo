@@ -1,0 +1,171 @@
+#{form @real.PurchaseOrders.updateItem(), class:"form-horizontal" ,id:"purchase_order_form"}
+
+<div class="control-group">
+    <label class="control-label"><span style="color: red; ">*</span>出售方</label>
+
+    <div class="controls">
+        #{vx.selectInputField name:"vendorName", id:"purchaseOrder.vendor.id", list:vendorList, value:purchaseOrder?.vendor?.id, array:'vendorArray'/}
+        <span class="error">#{error 'purchaseOrder.vendor.id'/}</span>
+    </div>
+</div>
+
+    #{layout_operate.selectField name:'purchaseOrder.invoiceType', class:'span2', value:purchaseOrder?.invoiceType,
+    error:'purchaseOrder.invoiceType', required:true}
+        #{option "PLAIN"}&{'purchaseOrderInvoiceType.PLAIN'}#{/option}
+        #{option "VAT"}&{'purchaseOrderInvoiceType.VAT'}#{/option}
+        #{option "VAT_PLAIN"}&{'purchaseOrderInvoiceType.VAT_PLAIN'}#{/option}
+        #{option "NO"}&{'purchaseOrderInvoiceType.NO'}#{/option}
+    #{/layout_operate.selectField}
+
+    #{layout_operate.selectField name:'purchaseOrder.paymentType', class:'span2', value:purchaseOrder?.paymentType,
+    error:'purchaseOrder.paymentType', required:true}
+        #{option "TRANSFER"}&{'purchaseOrderPaymentType.TRANSFER'}#{/option}
+        #{option "CASH"}&{'purchaseOrderPaymentType.CASH'}#{/option}
+        #{option "HECK"}&{'purchaseOrderPaymentType.CHECK'}#{/option}
+    #{/layout_operate.selectField}
+
+
+    #{layout_operate.dateTimeField name:'purchaseOrder.signedAt',value:purchaseOrder?.signedAt?.format('yyyy-MM-dd HH:mm:ss')?:new java.util.Date().format('yyyy-MM-dd HH:mm:ss')/}
+
+
+<div style="  padding: 15px;
+margin-right: 100px;
+    margin-bottom: 10px;
+    border: 1px dashed #c2c2c2;">
+    <div class="control-group">
+        <label class="control-label"><span style="color: red; ">*</span>采购货品</label>
+
+        <div class="controls">
+            #{vx.selectInputField name:"skuName", id:"item.sku.id", list:skuList,
+            value:item?.sku?.id, array:'skuArray'/}
+            <span class="error">#{error 'item.sku.id'/}</span>
+            采购数量
+            <input type="text" class="input-small" name="item.count" id="item_count_${item?.count}"
+                   value="${item?.count}"/> 件
+            <span class="error">#{error 'item.count'/}</span>
+
+        </div>
+        <br>
+        &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;
+        <span style="color: red;">*</span>
+        进价
+        <input type="text" class="input-small" name="item.price" id="item_price" value="${item?.price}"/> 元
+        <span class="error">#{error 'item.price'/}</span>
+
+        货品有效期
+        #{layout_operate.plainDateScopeField name:'item.effective', begin:'item.effectiveAt',end:'item.expireAt',
+        beginValue:item?.effectiveAt?.format(), endValue:item?.expireAt?.format()/}
+
+    </div>
+</div>
+
+<div class="form-actions">
+    <input type="hidden" id="whole_purchase" name="purchaseOrderId" value="${purchaseOrderId}"/>
+    <button class="btn btn-primary" type="submit">添加采购商品</button>
+
+</div>
+
+#{/form}
+<legend>修改采购明细</legend>
+
+<table class="table" style="width:auto">
+    <tr>
+        <th>采购货品名称</th>
+        <th>采购数量</th>
+        <th>进价</th>
+        <th>货品有效期</th>
+        <th>操作</th>
+    </tr>
+#{list items:purchaseItemList, as:'purchaseItem'}
+    <tr>
+        #{form @real.PurchaseOrders.updateItem(),id:"update_item"}
+            <td>
+                <div class="control-group">
+                    #{vx.selectInputField name:"item.sku.name", inputId:"item_sku_name_"+purchaseItem.id,
+                    hiddenId:"id_item_sku_id_"+purchaseItem.id,id:"item.sku.id",
+                    list:skuList, value:purchaseItem.sku.id,
+                    importJs: false, array:'skuArray'/}
+                    *{<span class="error">#{error 'item.sku.id'/}</span>}*
+                </div>
+            </td>
+            <td>
+                <div class="control-group">
+
+                    <input type="text" class="input-small" name="item.count" id="item_count_${purchaseItem?.count}"
+                           value="${purchaseItem?.count}"/> 件
+                *{<span class="error">#{error 'item.count'/}</span>}*
+                </div>
+            </td>
+            <td>
+                <div class="control-group">
+                    <input type="text" class="input-small" name="item.price" id="item_price_${purchaseItem?.count}"
+                           value="${purchaseItem?.price}"/> 元
+                *{<span class="error">#{error 'item.price'/}</span>}*
+                </div>
+            </td>
+            <td>
+                <div class="control-group">
+                    #{layout_operate.plainDateScopeField name:'item.effective', begin:'item.effectiveAt',end:'item.expireAt',
+            beginValue:purchaseItem?.effectiveAt?.format(), endValue:purchaseItem?.expireAt?.format()/}
+                </div>
+            </td>
+        <td>
+        <div class="control-group" style="margin-top:-22px;">
+            <input type="hidden" name="purchaseOrderId" value="${purchaseOrderId}"/>
+            <input type="hidden" name="item.id" value="${purchaseItem?.id}"/>
+            <button class=" btn btn-primary" type="submit">修 改</button>
+        #{/form}
+        #{form @real.PurchaseOrders.deletePurchaseItem(), style:"display:inline",method:'DELETE'}
+            <input type="hidden" name="itemId" value="${purchaseItem?.id}"/>
+            <input type="hidden" name="purchaseOrderId" value="${purchaseOrderId}"/>
+            <button class="btn btn-danger">删 除</button>
+        #{/form}
+    </div>
+    </td>
+    </tr>
+#{/list}
+</table>
+
+<div class="form-actions">
+    <span style="margin-top: -10px; padding-left: 100px;">
+            制单员
+    ${createdBy}
+         </span>
+    &nbsp; &nbsp; &nbsp; &nbsp;
+    <input type="hidden" id="action" name="action" value="${action}"/>
+    <a class="btn btn-primary" id="save_order" onclick="saveOrder()"> 保存</a>
+#{vx.cancelButton url:'', class:'btn btn-primary'/}
+</div>
+
+<script type="text/javascript">
+    function updateItem() {
+        $("#purchase_order_form").attr("action", "@{real.PurchaseOrders.updateItem()}");
+        $("#purchase_order_form").attr("method", "post");
+        $("#update_item").submit();
+        return false;
+    }
+
+    function saveOrder() {
+        if ($("#action").val() == "add") {
+            $("#purchase_order_form").attr("action", "@{real.PurchaseOrders.create()}");
+        }
+        else if ($("#action").val() == "edit") {
+            var id = $("#whole_purchase").val();
+            $("#purchase_order_form").attr("action", "@{real.PurchaseOrders.update(id)}");
+        }
+        $("#purchase_order_form").attr("method", "POST");
+        $("#purchase_order_form").submit();
+        return false;
+    }
+
+    function deleteItem() {
+        $("#purchase_order_form").attr("action", "@{real.PurchaseOrders.deletePurchaseItem()}");
+//        $("#purchase_order_form").attr("method", "get");
+        $("#purchase_order_form").submit();
+        return false;
+    }
+
+
+</script>
+

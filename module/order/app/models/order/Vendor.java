@@ -129,12 +129,16 @@ public class Vendor extends Model {
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("deleted", com.uhuila.common.constants.DeletedStatus.UN_DELETED);
         if (StringUtils.isNotBlank(keyword)) {
-            sql.append(" and (name like :supplierId or address like :address or phone like :phone)");
-            paramsMap.put("supplierId", "%" + keyword + "%");
+            sql.append(" and (name like :vendorName or address like :address or phone like :phone)");
+            paramsMap.put("vendorName", "%" + keyword + "%");
             paramsMap.put("address", "%" + keyword + "%");
             paramsMap.put("phone", "%" + keyword + "%");
         }
         return find(sql.toString(), paramsMap).fetch();
+    }
+
+    public static List<Vendor> findUnDeleted() {
+        return find("deleted=? order by createdAt DESC", com.uhuila.common.constants.DeletedStatus.UN_DELETED).fetch();
     }
 
 

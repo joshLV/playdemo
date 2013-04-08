@@ -1,6 +1,8 @@
 package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
+import models.order.PurchaseItem;
+import models.order.Vendor;
 import play.data.validation.InFuture;
 import play.data.validation.Match;
 import play.data.validation.Min;
@@ -29,6 +31,10 @@ public class InventoryStockItem extends Model {
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "inventory_stock_id")
     public InventoryStock stock;
+
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @JoinColumn(name = "purchase_order_id")
+    public PurchaseItem purchaseItem;
 
     @ManyToOne
     public Sku sku;
@@ -70,14 +76,14 @@ public class InventoryStockItem extends Model {
 
 
     /**
-     * 券有效开始日
+     * 有效开始日
      */
     @Column(name = "effective_at")
     @Temporal(TemporalType.TIMESTAMP)
     public Date effectiveAt;
 
     /**
-     * 券有效结束日
+     * 有效结束日
      */
     @InFuture
     @Column(name = "expire_at")

@@ -1,0 +1,15 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'采购合同添加' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/purchase-order-form.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+<link href="@{'/public/stylesheets/purchase_order.css'}" rel="stylesheet">
+#{include '/share/nav.html' /}
+<div class="body">
+*{#{form @real.purchaseOrders.create() , id:'purchase_order_form',enctype:'multipart/form-data',class:"form-horizontal" , method:'POST'}}*
+    <legend>${title}</legend>
+#{set action:"add"/}
+#{include 'real/PurchaseOrders/purchaseOrderForm.html'/}
+*{#{/form}}*
+</div>
