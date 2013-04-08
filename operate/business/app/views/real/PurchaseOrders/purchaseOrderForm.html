@@ -61,9 +61,11 @@ margin-right: 100px;
 </div>
 
 <div class="form-actions">
-    <input type="text" id="whole_purchase" name="purchaseOrderId" value="${purchaseOrderId}"/>
+    <input type="hidden" id="whole_purchase" name="purchaseOrderId" value="${purchaseOrderId}"/>
     <button class="btn btn-primary" type="submit">添加采购商品</button>
+
 </div>
+
 #{/form}
 <legend>修改采购明细</legend>
 
@@ -92,14 +94,14 @@ margin-right: 100px;
 
                     <input type="text" class="input-small" name="item.count" id="item_count_${purchaseItem?.count}"
                            value="${purchaseItem?.count}"/> 件
-                    *{<span class="error">#{error 'item.count'/}</span>}*
+                *{<span class="error">#{error 'item.count'/}</span>}*
                 </div>
             </td>
             <td>
                 <div class="control-group">
                     <input type="text" class="input-small" name="item.price" id="item_price_${purchaseItem?.count}"
                            value="${purchaseItem?.price}"/> 元
-                    *{<span class="error">#{error 'item.price'/}</span>}*
+                *{<span class="error">#{error 'item.price'/}</span>}*
                 </div>
             </td>
             <td>
@@ -124,7 +126,13 @@ margin-right: 100px;
     </tr>
 #{/list}
 </table>
+
 <div class="form-actions">
+    <span style="margin-top: -10px; padding-left: 100px;">
+            制单员
+    ${createdBy}
+         </span>
+    &nbsp; &nbsp; &nbsp; &nbsp;
     <input type="hidden" id="action" name="action" value="${action}"/>
     <a class="btn btn-primary" id="save_order" onclick="saveOrder()"> 保存</a>
 #{vx.cancelButton url:'', class:'btn btn-primary'/}

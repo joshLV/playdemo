@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -92,6 +93,17 @@ public class PurchaseOrder extends Model {
     @Enumerated(EnumType.ORDINAL)
     public com.uhuila.common.constants.DeletedStatus deleted;
 
+    /**
+     * 是否入库
+     */
+    @Column(name = "stock_in")
+    public Boolean stockIn = Boolean.FALSE;
+
+    /*
+      总额
+    */
+    @Transient
+    public BigDecimal totalPrice;
 
     @Override
     public boolean create() {

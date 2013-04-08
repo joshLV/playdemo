@@ -59,5 +59,16 @@ public class PurchaseItem extends Model {
     @Enumerated(EnumType.ORDINAL)
     public com.uhuila.common.constants.DeletedStatus deleted;
 
+    /*
+        总额
+     */
+    @Transient
+    public BigDecimal totalPrice;
+
+    /*
+       折扣
+    */
+    @Transient
+    public BigDecimal discount;
 
 }

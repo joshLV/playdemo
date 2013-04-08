@@ -1,0 +1,180 @@
+#{extends 'layout_operate/export_material_layout.html' /}
+#{set title:'采购合同' /}
+#{include '/share/nav.html' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/goods.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+#{set 'moreStyles'}
+<style type="text/css">
+    body {
+        color: #4E4E4E;
+        font: 12px/1.5 tahoma, arial, \5b8b\4f53, sans-serif;
+    }
+
+    #page {
+        width: 768px;
+        margin: 0 auto;
+        margin-top: -40px;
+    }
+
+    h1, h2, h3 {
+        color: #333;
+    }
+
+    h1 {
+        font-size: 28px;
+        text-align: center;
+    }
+
+    h2 {
+        margin: 20px 0 5px;
+    }
+
+    h3 {
+        margin: 8px 0 3px;
+    }
+
+    p {
+        margin: 5px 0;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 5px 15px;
+        text-align: center;
+        font-size: 15px;
+    }
+
+    dt {
+        font-weight: 700;
+    }
+
+    dd {
+        margin: 0;
+    }
+
+    ul {
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        padding-left: 20px;
+        list-style: none;
+    }
+
+    li span {
+        float: left;
+        margin-left: -20px;
+    }
+
+    span {
+        font-weight: 500;
+        font-size: 15px;
+
+    }
+
+    div {
+        font-weight: 500;
+        font-size: 15px;
+        margin-top: 1px;
+    }
+</style>
+#{/set}
+<div id="page">
+    <h1>采购合同</h1>
+
+    <div>
+        <span>合同编号：&nbsp;&nbsp;${purchaseOrder?.serialNo}</span>
+        <span style="float: right;">签约日期:&nbsp;&nbsp;${purchaseOrder?.signedAt?.format('yyyy-MM-dd')}</span>
+
+        <div style="text-align: right;margin-right: 60px;"> 制单人:&nbsp;&nbsp;${purchaseOrder?.createdBy}</div>
+    </div>
+    <div>
+        <div> 出售方（以下简称甲方):&nbsp;&nbsp;${purchaseOrder?.vendor?.name}</div>
+        <div>买方（以下简称乙方):&nbsp;&nbsp;上海视惠信息科技有限公司</div>
+    </div>
+
+    <div>
+        <div style="text-align: right;margin-right: 50px;">开票方式:
+        &{'purchaseOrder.'+purchaseOrder.invoiceType}
+        </div>
+    </div>
+    <div style="border: 1px solid;">
+    <table style="margin-top: 10px;" border="0"  cellpadding="0" cellspacing="0">
+        <thead>
+        <tr>
+            <th width="300px">名称规格</th>
+            <th width="300px">产品数量</th>
+            <th width="300px">单位</th>
+            <th width="300px">折前价</th>
+            <th width="300px">折扣</th>
+            <th width="300px">折后价</th>
+            <th width="300px">金额</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        #{list items:purchaseItemList, as:'item'}
+        <tr>
+            <td>${item?.sku?.name}</td>
+            <td>${item?.count}</td>
+            <td>张</td>
+            <td>${item?.sku?.marketPrice}</td>
+            <td>${item?.discount}</td>
+            <td>${item?.price}</td>
+            <td>${item?.totalPrice}</td>
+        </tr>
+        #{/list}
+        <tr>
+            <td>合计金额：</td>
+            <td colspan="6" style="text-align: right;padding-right: 35px;">${purchaseOrder?.totalPrice}</td>
+        </tr>
+        </tbody>
+    </table>
+        </div>
+
+    <div style="padding-top: 20px;">
+        <div>
+            甲方:${purchaseOrder?.vendor?.name}
+        </div>
+        <div>
+            地址：${purchaseOrder?.vendor?.address}
+        </div>
+        <div>
+            授权代表:${purchaseOrder?.vendor?.authorizedRepresentative}
+        </div>
+        <div>
+            电话:${purchaseOrder?.vendor?.authorizedRepresentative}
+            <span style="padding-left: 300px;">传真:${purchaseOrder?.vendor?.fax}</span>
+        </div>
+        <div>
+            开户行:${purchaseOrder?.vendor?.bankName}
+        </div>
+        <div>
+            帐号:${purchaseOrder?.vendor?.cardNumber}
+        </div>
+    </div>
+    <br>
+
+    <div>
+        支付方式:
+    &{'purchaseOrderPaymentType.'+purchaseOrder.paymentType}
+
+    </div>
+    <br>
+
+    <div>
+        商务部审核：_______________
+    </div>
+    <br>
+
+    <div>
+        总经理审核：_______________
+        <span style="padding-left: 100px;"> 收货人签字：_______________ </span>
+    </div>
+</div>

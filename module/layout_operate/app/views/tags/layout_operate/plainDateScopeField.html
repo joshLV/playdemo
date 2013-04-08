@@ -17,13 +17,13 @@
        value="${_endValue?.escape()?.raw()}"
        onfocus="WdatePicker({readOnly:true})"/>
 #{/field}
-#{field _begin}
+*{#{field _begin}}*
 *{#{ifError field.name}}*
-<span class="error">${field?.error?.raw()}</span>
+*{<span class="error">${field?.error?.raw()}</span>}*
 *{#{/ifError}}*
-#{/field}
-#{field _end}
+*{#{/field}}*
+*{#{field _end}}*
 *{#{ifError field.name}}*
-<span class="error">${field?.error?.raw()}</span>
+*{<span class="error">${field?.error?.raw()}</span>}*
 *{#{/ifError}}*
-#{/field}
+*{#{/field}}*

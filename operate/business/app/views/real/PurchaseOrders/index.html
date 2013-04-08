@@ -28,7 +28,7 @@
             <th width="298px">合同编号</th>
             <th width="200px">供货商</th>
             <th width="100px">签约日期</th>
-            <th width="150px">合计金额</th>
+            <th width="150px" style="text-align: right;">合计金额</th>
             <th width="150px">操作</th>
         </tr>
         </thead>
@@ -42,10 +42,16 @@
             <td>
             ${purchase?.signedAt?.format('yyyy-MM-dd ')}
             </td>
-            <td></td>
+            <td style="text-align: right;">${purchase?.totalPrice}</td>
             <td>
-                <a href="/purchase-orders/${purchase.id}/edit?page=${page?:1}">修改</a>
-                / #{vx.deleteLink id:purchase?.id, name:purchase?.serialNo, action:"/purchase-orders"/}
+                <a href="javascript:openW('@{real.PurchaseOrders.export(purchase.id)}')"
+                   onClick="return confirmExport();">导出</a>
+                #{if purchase?.stockIn == false}
+                    / <a href="/purchase-orders/${purchase.id}/stock-in" onClick="return confirmStockIn();">确认入库</a>
+                    /
+                    <a href="/purchase-orders/${purchase.id}/edit?page=${page?:1}">修改</a>
+                    / #{vx.deleteLink id:purchase?.id, name:'采购合同:'+purchase?.serialNo, action:"/purchase-orders"/}
+                #{/if}
             </td>
         </tr>
         #{/paginate.list}
@@ -57,3 +63,26 @@
         </ul>
     </div>
 </div>
+
+<script language="JavaScript" type="text/JavaScript">
+
+    function confirmExport() {
+        if (confirm("确定要导出吗?"))
+            return true;
+        else
+            return false;
+    }
+
+    function confirmStockIn() {
+        if (confirm("确定入库吗?"))
+            return true;
+        else
+            return false;
+    }
+
+
+    function openW(v) {
+        window.open(v, '', 'width=2000,height=2000,left=200,top=200,status=no,scrollbars=no,menubar=no,toolbar=no,resizable=1,location=no');
+    }
+
+</script>

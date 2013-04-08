@@ -657,6 +657,10 @@ vendor.bankName=开户行
 vendor.cardNumber=银行帐号
 
 purchaseOrder.invoiceType=开票方式
+purchaseOrder.PLAIN=普票
+purchaseOrder.VAT=增票
+purchaseOrder.VAT_PLAIN=增值税普通发票
+purchaseOrder.NO=无发票
 purchaseOrderInvoiceType.PLAIN=普票
 purchaseOrderInvoiceType.VAT=增票
 purchaseOrderInvoiceType.VAT_PLAIN=增值税普通发票
@@ -669,6 +673,7 @@ purchaseOrderPaymentType.CHECK=支票
 
 purchaseOrder.signedAt=签约日期
 
+purchaseOrder.vendor.id=出售方
 item.effective=货品有效期
 item.expireAt=过期时间
 item.price=进价
