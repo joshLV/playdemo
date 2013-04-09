@@ -1,9 +1,12 @@
 package notifiers;
 
+import com.uhuila.common.util.DateUtil;
 import play.Logger;
 import play.Play;
 import play.modules.emaillogs.EmailLogMessage;
 import play.mvc.Mailer;
+
+import java.util.Date;
 
 /**
  * User: tanglq
@@ -23,7 +26,12 @@ public class LogMailSender extends Mailer {
             return;
         }
         StringBuilder subject = new StringBuilder();
-        subject.append("[").append(message.applicationName).append("]").append(LOG_SUBJECT);
+
+        subject.append(DateUtil.dateToString(new Date(), 0))
+                .append("@").append(message.host)
+                .append(".").append(message.applicationName)
+                .append(".")
+                .append(LOG_SUBJECT);
 
         setSubject(subject.toString());
         addRecipient(LOG_RECEIVER);
