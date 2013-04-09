@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                                       SupplierHome.index
+GET     /home/index                             SupplierHome.index
 
 # 资金帐户明细
 GET     /account-sequences                      AccountSequences.index
