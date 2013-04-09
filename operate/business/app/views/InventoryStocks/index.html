@@ -54,10 +54,14 @@
         </span>
             </td>
             <td>
-                <a href="/purchase-orders?keyword=${stockItem?.purchaseItem?.purchaseOrder?.serialNo}">
+                #{if stockItem?.purchaseItem!=null}
+                    <a href="/purchase-orders?keyword=${stockItem?.purchaseItem?.purchaseOrder?.serialNo}">
+                    ${stockItem?.stock?.remark}
+                    </a>
+                #{/if}
+                #{else}
                 ${stockItem?.stock?.remark}
-                </a>
-
+                #{/else}
             </td>
             <td>${stockItem?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}
             </td>
