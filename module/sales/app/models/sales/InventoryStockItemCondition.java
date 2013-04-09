@@ -17,6 +17,7 @@ public class InventoryStockItemCondition {
     public long supplierId;
     public long skuId;
     public long brandId;
+    public String serialNo;
     public Date beginAt;
     public Date endAt;
 
@@ -26,6 +27,10 @@ public class InventoryStockItemCondition {
         StringBuilder builder = new StringBuilder();
         builder.append(" i.deleted = :deleted");
         paramMap.put("deleted", com.uhuila.common.constants.DeletedStatus.UN_DELETED);
+        if (StringUtils.isNotBlank(serialNo)) {
+            builder.append(" and i.stock.serialNo like :serialNo");
+            paramMap.put("serialNo", "%" + serialNo + "%");
+        }
         if (supplierId != 0) {
             builder.append(" and i.stock.supplier.id = :supplierId");
             paramMap.put("supplierId", supplierId);
