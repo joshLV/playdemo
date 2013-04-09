@@ -190,7 +190,7 @@ public class OperateReports extends Controller {
      * @param condition 查询条件对象
      */
     @ActiveNavigation("suppliers_withdraw_reports")
-    public static void showSupplierWithdrawReport(SupplierWithdrawCondition condition) {
+    public static void showSupplierWithdrawReport(SupplierWithdrawCondition condition, Long supplierId, Long shopId) {
         int pageNumber = getPageNumber();
         if (condition == null) {
             condition = new SupplierWithdrawCondition(); //默认显示提现申请待审批的商户记录，统计周期为最近7天
@@ -198,7 +198,16 @@ public class OperateReports extends Controller {
             condition.createdAtEnd = new Date();
             condition.withdrawBillStatus = WithdrawBillStatus.APPLIED;  //待审批 (时间和商户查询条件均为空)
         }
-        if (condition.createdAtBegin == null && condition.createdAtEnd == null && condition.accountUid == 0 || condition.accountUid == null) {
+        if (shopId != null && !shopId.equals(0L)) {
+            condition.accountType = AccountType.SHOP;
+            condition.account = AccountUtil.getShopAccount(shopId);
+        } else if (supplierId != null) {
+            condition.accountType = AccountType.SUPPLIER;
+            condition.account = AccountUtil.getSupplierAccount(supplierId);
+        } else {
+            condition.accountType = AccountType.SUPPLIER;
+        }
+        if (condition.createdAtBegin == null && condition.createdAtEnd == null && supplierId == 0 || supplierId == null) {
             condition.withdrawBillStatus = WithdrawBillStatus.APPLIED;  //待审批 (时间和商户查询条件均为空)
         }
         if (condition.createdAtBegin == null && condition.createdAtEnd == null) {
@@ -209,16 +218,28 @@ public class OperateReports extends Controller {
             condition.createdAtBegin = com.uhuila.common.util.DateUtil.getBeforeDate(condition.createdAtEnd, 7);
         }
 
-
         List<SupplierWithdrawReport> supplierWithdrawList = SupplierWithdrawReport.query(condition);
 
         // 分页
         ValuePaginator<SupplierWithdrawReport> supplierWithdrawReportPage = utils.PaginateUtil.wrapValuePaginator(supplierWithdrawList, pageNumber, PAGE_SIZE);
 
         List<Supplier> supplierList = Supplier.findUnDeleted();
+        if (supplierId != null) {
+            List<Shop> independentShops = Shop.getIndependentShops(supplierId);
+            if (independentShops == null) {
+                independentShops = new ArrayList<>();
+            }
+            renderArgs.put("independentShops", independentShops);
 
-        render(supplierList, supplierWithdrawReportPage, condition);
+            Shop independentShop = Shop.find("supplierId=?", supplierId).first();
+            Supplier supplier = Supplier.findById(supplierId);
+            String independentShopsName = independentShop.name;
+            renderArgs.put("independentShopsName", independentShopsName);
+            renderArgs.put("independentShopsSupplierName", supplier.getName());
 
+        }
+
+        render(supplierList, supplierWithdrawReportPage, condition, supplierId, shopId);
     }
 
 
