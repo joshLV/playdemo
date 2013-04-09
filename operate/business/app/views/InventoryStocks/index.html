@@ -9,10 +9,14 @@
 #{form @InventoryStocks.index() , id:'stock_details_form',class:"form-horizontal" }
     <legend>${title}</legend>
     <div>
+        入库单号 <input type="text" name="condition.serialNo" id="condition_serialNo" value="${condition?.serialNo}"
+                    class="input-medium"/>
+
         品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
         #{vx.selectInputField name:"brandName", id:"condition.brandId", list:brandList, array:"brandArray"/}
         货品名称:
         #{vx.selectInputField name:"skuName", id:"condition.skuId", list:skuList, array:"skuArray"/}
+        <br>  <br>
         时间：
         <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
             <input class="input-small" id="beginAt" name="condition.beginAt" size="16" type="text"
@@ -54,10 +58,14 @@
         </span>
             </td>
             <td>
-                <a href="/purchase-orders?keyword=${stockItem?.purchaseItem?.purchaseOrder?.serialNo}">
+                #{if stockItem?.purchaseItem!=null}
+                    <a href="/purchase-orders?keyword=${stockItem?.purchaseItem?.purchaseOrder?.serialNo}">
+                    ${stockItem?.stock?.remark}
+                    </a>
+                #{/if}
+                #{else}
                 ${stockItem?.stock?.remark}
-                </a>
-
+                #{/else}
             </td>
             <td>${stockItem?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}
             </td>
