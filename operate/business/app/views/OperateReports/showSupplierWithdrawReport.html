@@ -7,6 +7,7 @@
 <script src="@{'/public/javascripts/DateRangePicker/date.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/DateRangePicker/daterangepicker.js'}" type="text/javascript"
         charset="UTF-8"></script>
+<script src="@{'/public/javascripts/show-supplier-withdraw.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 
 <link rel="stylesheet" href="/public/stylesheets/daterangepicker.css"
@@ -58,8 +59,11 @@
 <div class="body">
     <form class="well form-inline" action="@{OperateReports.showSupplierWithdrawReport()}" method="GET" id="form">
         商户
-    #{vx.selectInputField name:"supplierName", id:"condition.accountUid", list:supplierList, value: condition?.accountUid/}
-
+    #{vx.selectInputField name:"supplierName", id:"supplierId", list:supplierList, value: supplierId/}
+        &nbsp;&nbsp;独立结算门店
+        <span id="shop">#{include '/OperateShops/showIndependentShops.html'/}</span>
+        <br/>
+        <br/>
 
     #{layout_operate.dateRangePickerField  name:'日期',begin:'condition.createdAtBegin',end:'condition.createdAtEnd',
     beginValue:condition?.createdAtBegin?.format(), endValue:condition?.createdAtEnd?.format()/}
@@ -82,10 +86,18 @@
         <tr>
             <td>${i}</td>
             <td>
-                <a href="/reports/supplier?supplierName=${supplierWithdraw?.supplier?.otherName}&supplierId=${supplierWithdraw?.supplier?.id}&condition.createdAtBegin=${condition?.createdAtBegin?.format()}&condition.createdAtEnd=${condition?.createdAtEnd?.format()}"
-                   target="_blank">
-                ${supplierWithdraw?.supplier?.otherName}
-                </a>
+                #{if shopId==null }
+                    <a href="/reports/supplier?supplierName=${supplierWithdraw?.supplier?.otherName}&supplierId=${supplierWithdraw?.supplier?.id}&condition.createdAtBegin=${condition?.createdAtBegin?.format()}&condition.createdAtEnd=${condition?.createdAtEnd?.format()}"
+                       target="_blank">
+                    ${supplierWithdraw?.supplier?.otherName}
+                    </a>
+                #{/if}
+                #{else}
+                    <a href="/reports/supplier?supplierName=${supplierWithdraw?.supplier?.otherName}&supplierId=${supplierId}&shopId=${shopId}&condition.createdAtBegin=${condition?.createdAtBegin?.format()}&condition.createdAtEnd=${condition?.createdAtEnd?.format()}"
+                       target="_blank">
+                    ${independentShopsSupplierName}(${independentShopsName})
+                    </a>
+                #{/else}
             </td>
 
             <td style="text-align: right;">${supplierWithdraw?.previousUnwithdrawnAmount}</td>

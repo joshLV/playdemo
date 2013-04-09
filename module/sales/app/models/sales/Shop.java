@@ -182,7 +182,7 @@ public class Shop extends Model {
         search.append("deleted=?");
         ArrayList queryParams = new ArrayList();
         queryParams.add(DeletedStatus.UN_DELETED);
-        if (shopCondition.supplierId!=null && shopCondition.supplierId > 0) {
+        if (shopCondition.supplierId != null && shopCondition.supplierId > 0) {
             search.append(" and supplierId=?");
             queryParams.add(shopCondition.supplierId);
         }
