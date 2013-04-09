@@ -366,6 +366,7 @@ GET     /withdraw                               WithdrawApproval.index
 GET     /withdraw/detail/{id}                   WithdrawApproval.detail
 GET     /withdraw/{id}/detail                   WithdrawApproval.detail
 POST    /withdraw/approve                       WithdrawApproval.approve
+GET     /withdraw/approve                       WithdrawApproval.index
 GET     /withdraw/settle                        WithdrawApproval.initSettle
 GET     /withdraw/confirmSettle                 WithdrawApproval.confirmSettle
 POST    /withdraw/settle                        WithdrawApproval.settle
