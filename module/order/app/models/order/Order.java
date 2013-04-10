@@ -327,9 +327,10 @@ public class Order extends Model {
     public static Order createConsumeOrder(Long userId, AccountType accountType) {
         Order order = new Order(userId, accountType);
         order.orderType = OrderType.CONSUME;
-        order.consumerId=userId;
+        order.consumerId = userId;
         return order;
     }
+
     /**
      * sina 创建消费订单.
      *
@@ -711,9 +712,9 @@ public class Order extends Model {
 
         Resaler sinaResaler = Resaler.findOneByLoginName(Resaler.SINA_LOGIN_NAME);
         Account account;
-        if (this.userId.equals(sinaResaler.id)){
+        if (this.userId.equals(sinaResaler.id)) {
             account = AccountUtil.getAccount(this.consumerId, AccountType.CONSUMER);
-        }else {
+        } else {
             account = AccountUtil.getAccount(this.userId, this.userType);
         }
         PaymentSource paymentSource = PaymentSource.find("byCode", this.payMethod).first();
@@ -787,6 +788,7 @@ public class Order extends Model {
             operator = "消费者:" + this.getUser().getShowName();
         }
 
+        Resaler sinaResaler = Resaler.findOneByLoginName(Resaler.SINA_LOGIN_NAME);
 
         for (OrderItems orderItem : this.orderItems) {
             Goods goods = orderItem.goods;
@@ -803,6 +805,11 @@ public class Order extends Model {
                         eCoupon.save();
                     }
 
+                    //在新浪微博购买产生券，更新partner
+                    if (this.userId.equals(sinaResaler.id)) {
+                        eCoupon.partner = ECouponPartner.SINA;
+                        eCoupon.save();
+                    }
                     //记录券历史信息
                     ECouponHistoryMessage.with(eCoupon).operator(operator)
                             .remark("产生券号").fromStatus(ECouponStatus.UNCONSUMED).toStatus(ECouponStatus.UNCONSUMED)
@@ -1160,6 +1167,7 @@ public class Order extends Model {
     public static Order findOneByResaler(String orderNumber, Long resalerId, AccountType accountType) {
         return Order.find("byOrderNumberAndUserIdAndUserType", orderNumber, resalerId, accountType).first();
     }
+
     public static Order findOneByUser(String orderNumber, Long userId, AccountType accountType) {
         return Order.find("byOrderNumberAndConsumerIdAndUserType", orderNumber, userId, accountType).first();
     }

@@ -3,25 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>#{get 'title' /}</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0">
+    <link rel="shortcut icon" href="#{asset.url href:'/images/y/favicon.ico'/}" type="image/x-icon"/>
 #{get 'metaContent'/}
 #{asset.css src:['/y/wap/wap.css']/}
 #{get 'moreStyles' /}
 </head>
-<body>
+<body style="-webkit-text-size-adjust:none; height: 100%;">
 
 #{doLayout /}
 
 <!--footer  -->
 <div id="footer">
     <ul>
-        <li>#{a @WebUserSinaVouchers.showCoupon()} 我的券#{/a}</li>
+        <li>#{a @WebUserSinaVouchers.myCoupons()} 我的券#{/a}</li>
         <li class="divid">|</li>
         <li><a href="#">切换用户</a></li>
     </ul>
     <div class="clear"></div>
     <div class="copyright">&copy;2012-2013 一百券 沪ICP备08114451号</div>
 </div>
-
 #{asset.js src:'/u/jquery-1.7.2.min.js'/}
 #{get 'moreScripts' /}
 </body>

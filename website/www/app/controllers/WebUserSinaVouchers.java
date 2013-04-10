@@ -29,7 +29,7 @@ public class WebUserSinaVouchers extends Controller {
     /**
      * 我的券
      */
-    public static void showCoupon() {
+    public static void myCoupons() {
         User user = SecureCAS.getUser();
         List<ECoupon> couponList = ECoupon.findWapCoupons(user, TOP_NUMBER);
         render(user, couponList);
@@ -41,7 +41,7 @@ public class WebUserSinaVouchers extends Controller {
     public static void showMoreCoupon() {
         User user = SecureCAS.getUser();
         List<ECoupon> couponList = ECoupon.findWapCoupons(user, -1);
-        render("WebUserSinaVouchers/showCoupon.html", user, couponList);
+        render("WebUserSinaVouchers/myCoupons.html", user, couponList);
     }
 
     /**
@@ -61,7 +61,7 @@ public class WebUserSinaVouchers extends Controller {
     /**
      * 申请退款
      */
-    public static void refundCoupon(Long couponId) {
+    public static void showRefund(Long couponId) {
         User user = SecureCAS.getUser();
         ECoupon coupon = ECoupon.getCouponByIdAndUser(couponId, user);
         if (coupon == null) {

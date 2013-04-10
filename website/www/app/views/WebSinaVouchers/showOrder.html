@@ -10,15 +10,15 @@
     </div>
 #{form @WebSinaVouchers.order(),id:'order'}
     <div class="message message-success pre-help">
-        <p>${goods.name}</p>
+        <p>${goods.shortName}</p>
     </div>
     <div class="content-title">
-        <legend>
+        <div class="legend">
             <fleft>单价：</fleft>
             <fright>￥${goods.getResalePrice()}</fright>
             <div class="clear"></div>
-        </legend>
-        <legend>
+        </div>
+        <div class="legend">
             <fleft>数量：</fleft>
             <fright>
             *{<span class="tip">(每人限购1张)</span>}*
@@ -28,8 +28,8 @@
                 <a href="#" class="add-btn" add_value="1">+</a>
             </fright>
             <div class="clear"></div>
-        </legend>
-        <legend>
+        </div>
+        <div class="legend">
             <fleft>手机号：</fleft>
             <fright>
                 <span class="tip">(用于接收券号)</span>
@@ -38,7 +38,7 @@
                                 >#{error 'phone'/}</span>
             </fright>
             <div class="clear"></div>
-        </legend>
+        </div>
     </div>
     <div class="main-content">
         <button class="button main-button" type="submit">使用微币支付</button>

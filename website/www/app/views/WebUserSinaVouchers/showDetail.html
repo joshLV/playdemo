@@ -30,25 +30,25 @@
                 <div class="clear"></div>
             </div>
         </div>
-        <div class="product-share">
+        <div class="product-share" style="font-size: 18px">
             <div class="liketable">
-                <span class="label">券号</span>
+                <span class="label" style="width: 120px">券号</span>
                 <span class="bold">${coupon.eCouponSn}</span>
             </div>
             <div class="liketable">
-                <span class="label">有效期至：</span>
+                <span class="label" style="width: 120px">有效期至：</span>
                 <span class="important">${coupon.expireAt.format()}</span>
             </div>
         </div>
     </div>
     <div class="main-content">
         <div class="main-box">
-            <legend>购买须知</legend>
+            <div class="legend">购买须知</div>
             <p>${coupon.goods.prompt.raw()}</p>
         </div>
 
         <div class="main-box">
-            <legend>使用门店</legend>
+            <div class="legend">使用门店</div>
         #{list items:shops,as:'shop'}
             <p class="shop-title">${shop.name}</p>
 
@@ -60,6 +60,6 @@
 
         </div>
     </div>
-    *{<div class="button main-button"><a href="@{WebUserSinaVouchers.refundCoupon(coupon.id)}">申请退款</a></div>}*
+    *{<div class="button main-button"><a href="@{WebUserSinaVouchers.showRefund(coupon.id)}">申请退款</a></div>}*
 </div>
 </div>

@@ -195,7 +195,7 @@ public class Supplier extends Model {
 
 
     @Column(name = "weibo_id")
-    String weiboId;
+    public String weiboId;
 
     /**
      * 商户类别

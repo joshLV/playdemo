@@ -82,7 +82,9 @@ public class WebSinaVouchers extends Controller {
             render("WebSinaVouchers/showOrder.html", goods, productId, phone);
         }
         Resaler resaler = Resaler.findOneByLoginName(Resaler.SINA_LOGIN_NAME);
-
+        if (resaler == null) {
+            error("not found this resaler!");
+        }
         //创建订单
         Order order = Order.createConsumeOrder(user, resaler).save();
         OrderItems orderItems = null;
@@ -96,7 +98,7 @@ public class WebSinaVouchers extends Controller {
         }
 
         order.deliveryType = DeliveryType.SMS;
-        order.createAndUpdateInventory();
+        order.generateOrderDescription();
         order.discountPay = order.needPay;
         order.accountPay = BigDecimal.ZERO;
         order.save();
