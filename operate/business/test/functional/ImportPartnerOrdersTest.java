@@ -14,10 +14,7 @@ import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
 import operate.rbac.RbacLoader;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import play.Play;
 import play.mvc.Http;
 import play.mvc.Router;
@@ -183,6 +180,7 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
     }
 
     @Test
+    @Ignore
     public void testImpOrder_WB() {
         resaler.loginName = Resaler.WUBA_LOGIN_NAME;
         resaler.save();
@@ -232,6 +230,7 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
     }
 
     @Test
+    @Ignore
     public void testImpOrder_WB_unBind() {
         resaler.loginName = Resaler.WUBA_LOGIN_NAME;
         resaler.save();
@@ -268,6 +267,7 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
     }
 
     @Test
+    @Ignore
     public void testImpOrder_WB_DiffPrice() {
         resaler.loginName = Resaler.WUBA_LOGIN_NAME;
         resaler.save();

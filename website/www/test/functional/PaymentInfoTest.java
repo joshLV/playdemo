@@ -43,6 +43,7 @@ public class PaymentInfoTest extends FunctionalTest {
         order.needPay = BigDecimal.TEN;
         order.payMethod = "balance";
         order.status = OrderStatus.UNPAID;
+        order.consumerId=user.id;
         order.save();
 
         paymentSource = FactoryBoy.create(PaymentSource.class);
