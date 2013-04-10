@@ -13,8 +13,9 @@
         <label class="control-label">渠道:</label>
     #{select 'condition.outerOrderPartner', value:condition?.outerOrderPartner, id:'condition_outer_order_partner_type', class:"input-small"}
         #{option "JD"}京东#{/option}
-    *{#{option "TB"}淘宝#{/option}}*
         #{option "YHD"}一号店#{/option}
+        #{option "TB"}淘宝#{/option}
+        #{option "WB"}58#{/option}
     #{/select}
         发货时间
         <input type="text" id="condition_sent_begin_at" class="input-medium Wdate" name="condition.sentBeginAt"

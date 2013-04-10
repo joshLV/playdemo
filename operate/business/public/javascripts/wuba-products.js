@@ -76,7 +76,6 @@ function batchAddCityNode(id, name) {
     var cityNode = {};
     cityNode.id = id;
     cityNode.name = name;
-    cityNode.nocheck = true;
     cityNode.children = [];
     //循环创建区域
     $.each(wuba_areas, function(i, item){
@@ -84,7 +83,6 @@ function batchAddCityNode(id, name) {
             var areaNode = {};
             areaNode.id = item.areaId;
             areaNode.name = item.areaName;
-            areaNode.nocheck = true;
             areaNode.children = []
             //循环创建商圈
             $.each(wuba_circles, function(j, circleItem){
@@ -95,9 +93,15 @@ function batchAddCityNode(id, name) {
                     areaNode.children.push(circleNode);
                 }
             });
+            if(areaNode.children.length > 0) {
+                areaNode.nocheck = true;
+            }
             cityNode.children.push(areaNode);
         }
     });
+    if(cityNode.children.length > 0) {
+        cityNode.nocheck = true;
+    }
 
     //依次添加到各个tree中去
     $("ul[id^='circleId'].ztree").each(function(){

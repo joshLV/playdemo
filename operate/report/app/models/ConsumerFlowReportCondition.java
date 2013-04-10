@@ -121,7 +121,8 @@ public class ConsumerFlowReportCondition {
     }
 
     public String getFilterRefundAt() {
-        StringBuilder condBuilder = new StringBuilder(" and r.order.status='PAID' and e.goods.isLottery=false and e.status = models.order.ECouponStatus.REFUND" +
+        StringBuilder condBuilder = new StringBuilder(" and r.order.status='PAID' and e.goods.isLottery=false" +
+                " and e.status = models.order.ECouponStatus.REFUND" +
                 " and r.order.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED");
 
         if (beginAt != null) {

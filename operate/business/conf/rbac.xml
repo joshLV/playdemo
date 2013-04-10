@@ -10,9 +10,10 @@
     <role key="solr_load" text="solr加载数据"/>
     <role key="virtual_verify" text="虚拟验证"/>
     <role key="developer" text="开发人员"/>
-    <role key="reviewer" text="产品审核"/>
+    <role key="reviewer" teedext="产品审核"/>
     <role key="contractadminister" text="合同管理"/>
     <role key="inventory_manager" text="库存管理员"/>
+    <role key="purchaser" text="采购人员"/>
 
     <permission key="GOODS_NEW" text="商品添加" roles="editor"/>
     <permission key="GOODS" text="商品管理" roles="editor,customservice"/>
@@ -30,6 +31,8 @@
     <permission key="VIEW_ALL_SUPPLIER_CONTRACT" text="查看所有合同" roles="contractadminister,account,editor"/>
     <permission key="MANAGER_VIEW_SUPPLIER_CONTRACT" text="经理查看合同" roles="manager,account"/>
     <permission key="SUPPLIER_CONTRACT_MANAGEMENT" text="合同管理" roles="contractadminister"/>
+    <permission key="VENDORS_MANAGEMENT" text="供货商管理" roles="purchaser"/>
+    <permission key="PURCHASE_ORDERS_MANAGEMENT" text="采购合同管理" roles="purchaser"/>
 
 
     <permission key="Point_GOODS_ORDER" text="积分商品订单管理" roles="customservice,account"/>
@@ -122,6 +125,15 @@
         <navigation key="resaler" text="分销商" permissions="RESALERS">
             <navigation key="resalers_index" action="Resalers.index" text="分销商管理" permissions="RESALERS"/>
         </navigation>
+
+
+        <navigation key="vendor" text="实物供货商" permissions="VENDORS_MANAGEMENT">
+            <navigation key="vendors_add" action="real.Vendors.add" text="供货商添加"
+                        permissions="VENDORS_MANAGEMENT"/>
+            <navigation key="vendors_index" action="real.Vendors.index" text="供货商管理"
+                        permissions="VENDORS_MANAGEMENT"/>
+        </navigation>
+
         <navigation key="express" text="快递公司" permissions="EXPRESS">
             <navigation key="express_company_index" action="real.ExpressCompanies.index" text="快递公司管理"
                         permissions="EXPRESS"/>
@@ -153,6 +165,11 @@
             <navigation key="inventory_stockIn" action="InventoryStocks.stockIn" text="添加入库记录" permissions="INVENTORY"/>
             <navigation key="inventory_stockOut" action="InventoryStocks.stockOut" text="添加出库记录"
                         permissions="INVENTORY"/>
+            <navigation key="purchase_orders_add" action="PurchaseOrders.add" text="采购合同添加"
+                        permissions="PURCHASE_ORDERS_MANAGEMENT"/>
+            <navigation key="purchase_orders_index" action="PurchaseOrders.index" text="采购合同管理"
+                        permissions="PURCHASE_ORDERS_MANAGEMENT"/>
+
         </navigation>
         <navigation key="solr" text="solr加载数据">
             <navigation key="solr_load" action="SolrLoadData.index" text="solr加载数据" permissions="SOLR"/>

@@ -82,21 +82,18 @@
         $("#form").attr("method", "get");
         $("#form").submit();
     }
-    ;
 
     function consumerFlowReportWithPrivilegeExcel(desc) {
         $("#form").attr("action", "/consumer_flow_report_with_privilege_excel?desc=" + desc);
         $("#form").attr("method", "get");
         $("#form").submit();
     }
-    ;
 
     function consumerFlowReport() {
         $("#form").attr("action", "@{OperationReports.showConsumerFlowReport()}");
         $("#form").attr("method", "get");
         $("#form").submit();
     }
-    ;
 
 </script>
 

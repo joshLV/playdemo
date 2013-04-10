@@ -1,0 +1,145 @@
+#{extends 'layout_operate/layout.html' /}
+#{include 'share/nav.html' /}
+#{set title:'退货单管理' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/return-entries.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+#{set 'moreStyles'}
+<style type="text/css">
+    .form-horizontal .control-group {
+        width: 400px;
+    }
+</style>
+#{/set}
+<form class="well form-inline" name="frmlist" id="frmlist" method="GET" action="@{real.ReturnEntries.index()}">
+    <legend>退货单管理</legend>
+    <div class="control-group">
+        商户
+    #{vx.selectInputField name:"supplierName", id:"condition.supplierId", class:'input-medium', list:supplierList, value:condition.supplierId/}
+        订单号
+        <input type="text" name="condition.orderNumber" value="${condition?.orderNumber}" class="input-medium"/>
+        商品名称
+        <input type="text" name="condition.goodsName" value="${condition?.goodsName}" class="input-medium"/>
+        申请时间
+        <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
+            <input class="input-small" id="returnedAtBegin" name="condition.returnedAtBegin" size="16" type="text"
+                   value="${condition.returnedAtBegin?.format()}">
+            <span class="add-on"><i class="icon-th"></i></span>
+        </div>
+        至
+        <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
+            <input class="input-small" id="returnedAtEnd" name="condition.returnedAtEnd" size="16" type="text"
+                   value="${condition.returnedAtEnd?.format()}">
+            <span class="add-on"><i class="icon-th"></i></span>
+        </div>
+        退货状态
+    #{select 'condition.status', class:'input-small', value:condition.status}
+        #{option ""}不限#{/option}
+        #{option "RETURNING"}退货中#{/option}
+        #{option "RETURNED"}已退货#{/option}
+    #{/select}
+        <button class="btn btn-large btn-primary" id="search" type="submit">搜索</button>
+    </div>
+
+</form>
+
+总计 ${entryPage?.getRowCount()} 个退货单
+<table class="table table-striped table-bordered table-condensed">
+    <thead>
+    <tr>
+        <th width="80px">订单号</th>
+        <th width="200px">商品名称</th>
+        <th width="80px">购买数量</th>
+        <th width="80px">退货数量</th>
+        <th width="80px">需发货数量</th>
+        <th width="150px">申请时间</th>
+        <th width="80px">申请人</th>
+        <th width="100px">退货状态</th>
+        <th width="200px">备注</th>
+        <th width="100px">操作</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    #{paginate.list items:entryPage, as:'entry'}
+    <tr>
+        <td>${entry.orderItems?.order?.orderNumber}</td>
+        <td>${entry.orderItems?.goods?.shortName}</td>
+        <td>${entry.orderItems?.buyNumber}</td>
+        <td>${entry.returnedCount}</td>
+        <td>${entry.orderItems?.buyNumber-entry.returnedCount}</td>
+        <td>${entry.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+        <td>${entry.createdBy}</td>
+        <td>#{if entry.status==models.order.RealGoodsReturnStatus.RETURNED}<a
+                id="entry_${entry.id}"
+                href="#"
+                rel="popover"
+                data-html="true"
+                data-content="完成时间: ${entry?.returnedAt?.format('yyyy-MM-dd HH:mm:ss')}<br/>
+                              确 认 人: ${entry?.returnedBy}"
+                data-placement="bottom"
+                data-original-title="退货信息"
+                data-trigger="hover"
+                onmouseover="$('#entry_${entry.id}').popover('show');">&{'entry.'+entry.status}</a>#{/if}
+            #{else}&{'entry.'+entry.status}#{/else}</td>
+        <td>${entry.reason}#{if entry.unreceivedReason!=null}<br/>未收到货，原因：${entry.unreceivedReason}#{/if}</td>
+        <td>#{if entry.status == models.order.RealGoodsReturnStatus.RETURNING}<a id="link_returned"
+                                                                                 href="javascript:showConfirmModal('${entry.orderItems?.goods?.shortName}', ${entry.returnedCount}, ${entry.id});">已收到货</a>
+            <a id="link_unreturned"
+               href="javascript:showReasonModal('${entry.orderItems?.goods?.shortName}', ${entry.returnedCount}, ${entry.id});">未收到货</a>
+        #{/if}
+        </td>
+    </tr>
+    #{/paginate.list}
+    </tbody>
+</table>
+<div class="pagination" align="center">
+    <ul>
+    #{paginate.controls items:entryPage /}
+    </ul>
+</div>
+<div class="modal" id="confirmModal" style="display: none;">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+
+        <h3>已收到货确认</h3>
+    </div>
+    <div class="modal-body">
+    #{form @real.ReturnEntries.received(id), id:"confirmForm", name:"confirmForm", enctype:'multipart/form-data',
+    class:"form-horizontal",method:"PUT"}
+        您确认已经收到<span id="return_count"></span>件【<span id="return_goods_name"></span>】的退货吗？
+    #{/form}
+    </div>
+    <div class="modal-footer">
+        <a href="#" id="receive" class="btn btn-primary">确认</a>
+        <a href="#" class="btn" data-dismiss="modal">取消</a>
+    </div>
+</div>
+<div class="modal" id="reasonModal" style="display: none;">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+
+        <h3>未收到货确认</h3>
+    </div>
+    <div class="modal-body">
+    #{form @real.ReturnEntries.unreceived(id), id:"reasonForm", name:"reasonForm", enctype:'multipart/form-data',
+    class:"form-horizontal",method:"PUT"}
+        <div class="control-group">
+            <label class="control-label">商品</label>
+
+            <div class="controls"><span id="goods_name" style="line-height: 30px;"></span></div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">退货数量</label>
+
+            <div class="controls"><span id="count" style="line-height: 30px;"></span></div>
+        </div>
+        #{layout_operate.textField name:'unreceivedReason', required:true, err:"reason"/}
+    #{/form}
+    </div>
+    <div class="modal-footer">
+        <a href="#" id="confirm" class="btn btn-primary">确认</a>
+        <a href="#" class="btn" data-dismiss="modal">取消</a>
+    </div>
+</div>

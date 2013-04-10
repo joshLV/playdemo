@@ -14,7 +14,7 @@ public enum ConsultType {
       FEEDBACK,        //意见反馈
       COMPLAINT,        //投诉反馈
       OUTDIAL,          //外拨
-      RESERVATION       //预定
+      RESERVATION       //预约咨询
 }
 
 

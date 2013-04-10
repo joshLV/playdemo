@@ -1,0 +1,13 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'修改供货商' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/vendor-form.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+#{include '/share/nav.html' /}
+<div class="body">
+#{form @real.Vendors.update(vendor?.id) , id:'vendor_form',enctype:'multipart/form-data',class:"form-horizontal" , method:'PUT'}
+    <legend>${title}</legend>
+    #{set action:"edit"/}
+    #{include 'real/Vendors/vendorForm.html'/}
+#{/form}
+</div>

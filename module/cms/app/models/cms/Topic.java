@@ -5,6 +5,7 @@ import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.constants.PlatformType;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.safety.Whitelist;
+import play.Logger;
 import play.data.validation.InFuture;
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
@@ -19,6 +20,7 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import java.util.Date;
 import java.util.List;
 
@@ -181,9 +183,21 @@ public class Topic extends Model {
         return topics;
     }
 
+    @Transient
     public static Topic getTopValid(PlatformType platformType) {
         Date currentDate = new Date();
         return find("deleted=? and platformType=? and effectiveAt<=? and expireAt>=? order by id desc",
                 DeletedStatus.UN_DELETED, platformType, currentDate, currentDate).first();
+    }
+
+    /**
+     * 得到技术支持信息.
+     * @return
+     */
+    @Transient
+    public static Topic getDevOnCall() {
+        Date currentDate = new Date();
+        return find("deleted=? and platformType='DEV_ONCALL' and effectiveAt<=? and expireAt>=? order by id desc",
+                DeletedStatus.UN_DELETED, currentDate, currentDate).first();
     }
 }

@@ -82,8 +82,12 @@
         <div class="control-group">
             <label class="control-label">团购开始时间 *</label>
             <div class="controls">
+                %{
+                    beginDate = org.apache.commons.lang.time.DateUtils.truncate(new java.util.Date(), java.util.Calendar.DATE);
+                    beginDate = org.apache.commons.lang.time.DateUtils.addDays(beginDate, 1);
+                }%
                 <input type="text" name="beginTime" onfocus="WdatePicker({readOnly:true, dateFmt:'yyyy-MM-dd HH:mm:ss'})"
-                       class="Wdate" value="${goods.beginOnSaleAt?.format('yyyy-MM-dd HH:mm:ss')}">
+                       class="Wdate" value="${beginDate.format('yyyy-MM-dd HH:mm:ss')}">
             </div>
         </div>
         <div class="control-group">

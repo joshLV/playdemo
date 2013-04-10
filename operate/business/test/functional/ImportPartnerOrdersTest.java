@@ -9,9 +9,7 @@ import models.accounts.AccountStatus;
 import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
 import models.operator.OperateUser;
-import models.order.Order;
-import models.order.OuterOrder;
-import models.order.OuterOrderPartner;
+import models.order.*;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.ResalerProduct;
@@ -27,7 +25,9 @@ import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -179,6 +179,124 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
 
         assertEquals(7, OuterOrder.count());
         assertEquals(7, Order.count());
+
+    }
+
+    @Test
+    public void testImpOrder_WB() {
+        resaler.loginName = Resaler.WUBA_LOGIN_NAME;
+        resaler.save();
+        goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+            @Override
+            public void build(Goods target) {
+                target.cumulativeStocks = 10000l;
+                target.salePrice = new BigDecimal("158");
+            }
+        });
+        resalerProduct.partnerProductId = "DQ冰淇淋缤纷卡 200元DQ缤纷卡";
+        resalerProduct.partner = OuterOrderPartner.WB;
+        resalerProduct.goods = goods;
+        resalerProduct.save();
+        final Goods goods1 = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+            @Override
+            public void build(Goods target) {
+                target.cumulativeStocks = 10000l;
+                target.salePrice = new BigDecimal("158");
+            }
+        });
+        ResalerProduct resalerProduct1 = FactoryBoy.create(ResalerProduct.class, new BuildCallback<ResalerProduct>() {
+            @Override
+            public void build(ResalerProduct target) {
+                target.partnerProductId = "DQ冰淇淋缤纷卡 300元DQ缤纷卡";
+                target.partner = OuterOrderPartner.WB;
+                target.goods = goods1;
+
+            }
+        });
+        VirtualFile vfImage = VirtualFile.fromRelativePath("test/data/partnerOrder/WB_Orders.xls");
+        Map<String, File> fileParams = new HashMap<>();
+        fileParams.put("orderFile", vfImage.getRealFile());
+        Map<String, String> params = new HashMap<>();
+        params.put("partner", OuterOrderPartner.WB.toString());
+
+        Http.Response response = POST(Router.reverse("ImportPartnerOrders.upload").url, params, fileParams);
+        assertIsOk(response);
+        assertContentType("text/html", response);
+
+        assertEquals(6, OuterOrder.count());
+        assertEquals(6, Order.count());
+        List<OrderItems> orderItemsList = OrderItems.findAll();
+        assertEquals(7, orderItemsList.size());
+        assertEquals(6, OrderShippingInfo.count());
+
+    }
+
+    @Test
+    public void testImpOrder_WB_unBind() {
+        resaler.loginName = Resaler.WUBA_LOGIN_NAME;
+        resaler.save();
+        goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+            @Override
+            public void build(Goods target) {
+                target.cumulativeStocks = 10000l;
+                target.salePrice = new BigDecimal("158");
+            }
+        });
+        resalerProduct.partnerProductId = "DQ冰淇淋缤纷卡 200元DQ缤纷卡";
+        resalerProduct.partner = OuterOrderPartner.WB;
+        resalerProduct.goods = goods;
+        resalerProduct.save();
+        VirtualFile vfImage = VirtualFile.fromRelativePath("test/data/partnerOrder/WB_Orders.xls");
+        Map<String, File> fileParams = new HashMap<>();
+        fileParams.put("orderFile", vfImage.getRealFile());
+        Map<String, String> params = new HashMap<>();
+        params.put("partner", OuterOrderPartner.WB.toString());
+
+        Http.Response response = POST(Router.reverse("ImportPartnerOrders.upload").url, params, fileParams);
+        assertIsOk(response);
+        assertContentType("text/html", response);
+
+        assertEquals(3, OuterOrder.count());
+        assertEquals(6, Order.count());
+        //未映射商品
+        Set<String> unBindGoods = (Set<String>) renderArgs("unBindGoodsList");
+        assertEquals(3, unBindGoods.size());
+
+        List<String> importSuccessOrderList = (List<String>) renderArgs("importSuccessOrderList");
+        assertEquals(6, importSuccessOrderList.size());
+
+    }
+
+    @Test
+    public void testImpOrder_WB_DiffPrice() {
+        resaler.loginName = Resaler.WUBA_LOGIN_NAME;
+        resaler.save();
+        goods = FactoryBoy.create(Goods.class, new BuildCallback<Goods>() {
+            @Override
+            public void build(Goods target) {
+                target.cumulativeStocks = 10000l;
+                target.salePrice = new BigDecimal("168");
+            }
+        });
+        resalerProduct.partnerProductId = "DQ冰淇淋缤纷卡 200元DQ缤纷卡";
+        resalerProduct.partner = OuterOrderPartner.WB;
+        resalerProduct.goods = goods;
+        resalerProduct.save();
+        VirtualFile vfImage = VirtualFile.fromRelativePath("test/data/partnerOrder/WB_Orders.xls");
+        Map<String, File> fileParams = new HashMap<>();
+        fileParams.put("orderFile", vfImage.getRealFile());
+        Map<String, String> params = new HashMap<>();
+        params.put("partner", OuterOrderPartner.WB.toString());
+
+        Http.Response response = POST(Router.reverse("ImportPartnerOrders.upload").url, params, fileParams);
+        assertIsOk(response);
+        assertContentType("text/html", response);
+
+        assertEquals(3, OuterOrder.count());
+        assertEquals(6, Order.count());
+
+        List<String> diffOrderPriceList = (List<String>) renderArgs("diffOrderPriceList");
+        assertEquals(6, diffOrderPriceList.size());
 
     }
 }

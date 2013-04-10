@@ -18,7 +18,7 @@ import static play.Logger.warn;
  * Date: 1/14/13
  * Time: 11:02 AM
  */
-//@On("0 0 4 * * ?")  //每天凌晨执行
+// @On("0 0 4 * * ?")  //每天凌晨四点执行
 // @Every("1h")
 public class FinanceCheckJob extends Job {
 
@@ -41,7 +41,7 @@ public class FinanceCheckJob extends Job {
         Date from = DateUtil.getBeforeHour(new Date(), 2);
         //检查并修复财务流水
         info("=====Begin to check and fix sequence balance");
-        AccountSequenceUtil.checkAndFixBalance(accounts, from);
+        AccountSequenceUtil.checkAndFixBalance(accounts, null); //修复全部
         info("=====End to check and fix sequence balance");
 
         //修复后再次检查并修复帐号的余额

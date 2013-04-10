@@ -1,19 +1,16 @@
 package play.modules.paginate;
 
-import play.db.jpa.GenericModel;
-
-import java.io.Serializable;
 import java.util.List;
 import java.util.ListIterator;
 
 /**
- * TODO.
+ * 简单的翻页列表对象.
  * <p/>
  * User: sujie
  * Date: 10/26/12
  * Time: 11:23 AM
  */
-public class SimplePaginator<T extends GenericModel> extends Paginator<Long, T> implements Serializable {
+public class SimplePaginator<T> extends Paginator<Long, T> {
     private static final long serialVersionUID = -7892349233994257567L;
 
     private List<T> currentPage;
@@ -30,7 +27,7 @@ public class SimplePaginator<T extends GenericModel> extends Paginator<Long, T> 
         return this.rowCount;
     }
 
-    public void setRowCount(int rowCount){
+    public void setRowCount(int rowCount) {
         this.rowCount = rowCount;
     }
 

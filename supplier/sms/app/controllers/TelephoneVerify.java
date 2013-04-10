@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import models.admin.SupplierUser;
+import models.admin.SupplierUserType;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.VerifyCouponType;
@@ -47,7 +48,7 @@ public class TelephoneVerify extends Controller {
      */
     public static void verify(final String caller, final String coupon, Long timestamp, String sign,
                               BigDecimal value) {
-        Logger.info("telephone verify start");
+        Logger.info("telephone verify start: caller phone=%s, coupon=%s", caller, coupon);
         Logger.info(new Gson().toJson(request.params.allSimple()));
         if (caller == null || caller.trim().equals("")) {
             Logger.info("telephone verify failed: invalid caller");
@@ -57,13 +58,13 @@ public class TelephoneVerify extends Controller {
             Logger.info("telephone verify failed: invalid coupon");
             renderText("2");//券号无效
         }
+        if (sign == null || sign.trim().equals("")) {
+            Logger.info("telephone verify failed: invalid sign");
+            renderText("4");//签名无效
+        }
         if (timestamp == null) {
             Logger.error("telephone verify failed: invalid timestamp");
             renderText("3");//时间戳无效
-        }
-        if (sign == null || sign.trim().equals("")) {
-            Logger.error("telephone verify failed: invalid sign");
-            renderText("4");//签名无效
         }
 
         //5分钟的浮动
@@ -73,18 +74,9 @@ public class TelephoneVerify extends Controller {
         }
         //验证密码
         if (!validSign(timestamp, sign)) {
-            Logger.error("telephone verify failed: wrong sign");
-            renderText("6");//签名错误
-        }
-
-        //查找店员
-        final SupplierUser supplierUser = SupplierUser.find("byLoginName", caller).first();
-        if (supplierUser == null || supplierUser.shop == null
-                || supplierUser.supplier == null
-                || supplierUser.supplier.deleted == DeletedStatus.DELETED
-                || supplierUser.supplier.status == SupplierStatus.FREEZE) {
-            Logger.info("telephone verify failed: invalid caller %s", caller);
-            renderText("7");//对不起，您的电话还没绑定，请使用已绑定的电话座机操作
+            Logger.info("telephone verify failed: wrong sign(暂不检查sign)");
+            // renderText("6");//签名错误
+//            Logger.info("暂不检查sign.");
         }
 
         //开始验证
@@ -94,12 +86,38 @@ public class TelephoneVerify extends Controller {
             Logger.info("telephone verify failed: coupon not found");
             renderText("8");//对不起，未找到此券
         }
+
+        SupplierUser supplierUser = SupplierUser.find("loginName=? and supplierUserType=? " +
+                "and supplier.deleted=? and supplier.status=? and shop is not null",
+                caller, SupplierUserType.ANDROID,
+                DeletedStatus.UN_DELETED, SupplierStatus.NORMAL).first();
+
+        if (supplierUser == null) {
+            //部分商家使用分机，出口线很多，不能一一录入，这里可以使用电话号码的前面一部分进行识别。
+            //偿试模糊查找验证电话机
+            List<SupplierUser> supplierUserList = SupplierUser.find("supplier.id=? and supplierUserType=? " +
+                    "and supplier.deleted=? and supplier.status=? and shop is not null",
+                    ecoupon.goods.supplierId, SupplierUserType.ANDROID,
+                    DeletedStatus.UN_DELETED, SupplierStatus.NORMAL).fetch();
+
+            for (SupplierUser su : supplierUserList) {
+                if (caller.startsWith(su.loginName)) {
+                    supplierUser = su;
+                    break;
+                }
+            }
+        }
+
+        if (supplierUser == null) {
+            Logger.info("telephone verify failed: invalid caller %s", caller);
+            renderText("7");//对不起，您的电话还没绑定，请使用已绑定的电话座机操作
+        }
+
         //验证打电话进来的商户和券所属的商户是一样的
         if (!ecoupon.goods.supplierId.equals(supplierUser.supplier.getId())) {
             Logger.info("telephone verify failed: supplier not match");
             renderText("9");//对不起，您无权验证此券
         }
-
 
         if (ecoupon.isFreeze == 1) {
             Logger.info("telephone verify failed: coupon is freeze");
@@ -112,7 +130,7 @@ public class TelephoneVerify extends Controller {
         }
         // 指定门店才能消费
         // else {
-            //批量验证
+        //批量验证
             /*
             if(value != null && value.compareTo(BigDecimal.ZERO) > 0){
                 List<ECoupon> eCoupons = ECoupon.queryUnconsumedCouponsWithSameGoodsGroups(ecoupon);
@@ -144,14 +162,14 @@ public class TelephoneVerify extends Controller {
                 }
                 if (availableECoupons.size() > 0) {
                     SMSUtil.send2("您尾号" + ecoupon.getLastCode(4)
-                            + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(0) + "元)于"
+                            + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(2, BigDecimal.ROUND_HALF_UP) + "元)于"
                             + DateUtil.getNowTime() + "已成功消费，使用门店：" + supplierUser.shop.name + "。您还有" + availableECouponSNs.size() + "张券（"
                             + StringUtils.join(availableECouponSNs, "/")
-                            + "总面值" + availableAmount.setScale(0) + "元）未消费。如有疑问请致电：4006262166",
+                            + "总面值" + availableAmount.setScale(2, BigDecimal.ROUND_HALF_UP) + "元）未消费。如有疑问请致电：4006262166",
                             ecoupon.orderItems.phone, ecoupon.replyCode);
                 } else {
                     SMSUtil.send2("您尾号" + ecoupon.getLastCode(4)
-                            + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(0) + "元)于"
+                            + "共" + checkedCount + "张券(总面值" + consumedAmount.setScale(2, BigDecimal.ROUND_HALF_UP) + "元)于"
                             + DateUtil.getNowTime() + "已成功消费，使用门店：" + supplierUser.shop.name + "。如有疑问请致电：4006262166",
                             ecoupon.orderItems.phone, ecoupon.replyCode);
                 }
@@ -170,12 +188,13 @@ public class TelephoneVerify extends Controller {
                 }
             }
             */
-            // 设置RemoteRecallCheck所使用的标识ID，下次调用时不会再重试.
+        // 设置RemoteRecallCheck所使用的标识ID，下次调用时不会再重试.
         RemoteRecallCheck.setId("COUPON_" + ecoupon.eCouponSn);
+        final SupplierUser verifySupplierUser = supplierUser;
         String resultCode = TransactionRetry.run(new TransactionCallback<String>() {
             @Override
             public String doInTransaction() {
-                return doVerify(caller, supplierUser, ecoupon);
+                return doVerify(caller, verifySupplierUser, ecoupon);
             }
         });
         RemoteRecallCheck.cleanUp();
@@ -203,7 +222,7 @@ public class TelephoneVerify extends Controller {
             return "11";//对不起，该券无法消费
         }
 
-        if (!ecoupon.consumeAndPayCommission(supplierUser.shop.id, supplierUser, VerifyCouponType.CLERK_MESSAGE)){
+        if (!ecoupon.consumeAndPayCommission(supplierUser.shop.id, supplierUser, VerifyCouponType.CLERK_MESSAGE)) {
             Logger.info("telephone verify failed: coupon has been refunded");
             return "11";  //对不起，该券无法消费
         }
@@ -269,11 +288,12 @@ public class TelephoneVerify extends Controller {
             renderText("签名错误");
         }
         List<ECoupon> batchCoupons = ECoupon.find("byTriggerCouponSn", ecoupon.eCouponSn).fetch();
-        if(batchCoupons.size() == 0){
-            renderText("此券未被消费");return;
+        if (batchCoupons.size() == 0) {
+            renderText("此券未被消费");
+            return;
         }
         BigDecimal faceValue = BigDecimal.ZERO;
-        for(ECoupon c : batchCoupons) {
+        for (ECoupon c : batchCoupons) {
             faceValue = faceValue.add(c.faceValue);
         }
         //只返回整数
@@ -380,20 +400,22 @@ public class TelephoneVerify extends Controller {
         }
 
         List<ECoupon> eCoupons = ECoupon.queryUnconsumedCouponsWithSameGoodsGroups(ecoupon);
-        if(eCoupons.size() == 0){
-            renderText("该券无法重复消费");return;
+        if (eCoupons.size() == 0) {
+            renderText("该券无法重复消费");
+            return;
         }
         ECoupon firstCoupon = eCoupons.get(0);
         Supplier supplier = Supplier.findById(firstCoupon.goods.supplierId);
-        if(supplier == null){
+        if (supplier == null) {
             Logger.warn("telephone verify batchInfo: supplier not found");
-            renderText("券不存在");return;
+            renderText("券不存在");
+            return;
         }
         BigDecimal faceValue = BigDecimal.ZERO;
-        for(ECoupon c : eCoupons) {
+        for (ECoupon c : eCoupons) {
             faceValue = faceValue.add(c.faceValue);
         }
-        renderText(supplier.otherName+"|"+eCoupons.size() + "|" + faceValue.intValue());
+        renderText(supplier.otherName + "|" + eCoupons.size() + "|" + faceValue.intValue());
     }
 
     private static boolean requestTimeout(Long timestamp, int seconds) {
@@ -407,6 +429,7 @@ public class TelephoneVerify extends Controller {
 
     /**
      * 得到sourceECoupons - checkECoupons的数组.
+     *
      * @param sourceECoupons
      * @param checkECoupons
      * @return
@@ -414,7 +437,7 @@ public class TelephoneVerify extends Controller {
     private static List<ECoupon> substractECouponList(List<ECoupon> sourceECoupons,
                                                       List<ECoupon> checkECoupons) {
         Set<Long> checkECouponIdSet = new HashSet<>();
-        for (ECoupon e :checkECoupons) {
+        for (ECoupon e : checkECoupons) {
             checkECouponIdSet.add(e.id);
         }
         List<ECoupon> results = new ArrayList<>();
@@ -426,14 +449,26 @@ public class TelephoneVerify extends Controller {
         return results;
     }
 
+    /**
+     * 模糊查找券号.
+     * <p/>
+     * 前置第1位券可能在电话验证时没有传入，所以需要加入模糊查找。
+     * 前置模糊查找不能使用like方式，会导致全表扫描。
+     *
+     * @param couponSn
+     * @return
+     */
     private static ECoupon missTitleFind(String couponSn) {
-        ECoupon coupon = ECoupon.find("eCouponSn like ? ", "%" + couponSn).first();
+        ECoupon coupon = ECoupon.find("eCouponSn = ?", couponSn).first();
         if (coupon != null) {
-            if (coupon.eCouponSn.length() - couponSn.length() > 1) {
-                coupon = null;
-            }
+            return coupon;
         }
-        return coupon;
+        // 加一个前置数字再找一次
+        String[] eCouponSNs = new String[10];
+        for (int i = 0; i < 10; i++) {
+            eCouponSNs[i] = i + couponSn;
+        }
+        return ECoupon.find("eCouponSn in (?,?,?,?,?,?,?,?,?,?)", eCouponSNs).first();
     }
 
     private static BigDecimal summaryECouponsAmount(List<ECoupon> ecoupons) {

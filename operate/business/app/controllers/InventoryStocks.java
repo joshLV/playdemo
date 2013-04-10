@@ -15,6 +15,8 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.beans.Transient;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -72,11 +74,13 @@ public class InventoryStocks extends Controller {
         stock.actionType = StockActionType.OUT;
         stock.create();
         stockItem.stock = stock;
+        Long changeCount = stockItem.changeCount;
+        stockItem.changeCount = 0 - changeCount;
         stockItem.createdAt = new Date();
         stockItem.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED;
         stockItem.save();
         List<InventoryStockItem> stockInItemList = InventoryStockItem.find("sku=? and remainCount>0 order by createdAt", stockItem.sku).fetch();
-        Long totalStockOutCount = stockItem.changeCount;
+        Long totalStockOutCount = 0 - stockItem.changeCount;
         for (InventoryStockItem item : stockInItemList) {
             item.remainCount -= totalStockOutCount;
             if (item.remainCount < 0) {

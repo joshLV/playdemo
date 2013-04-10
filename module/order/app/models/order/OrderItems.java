@@ -1,7 +1,13 @@
 package models.order;
 
+import cache.CacheCallBack;
+import cache.CacheHelper;
 import com.uhuila.common.util.DateUtil;
+import models.accounts.Account;
 import models.accounts.AccountType;
+import models.accounts.TradeBill;
+import models.accounts.util.AccountUtil;
+import models.accounts.util.TradeUtil;
 import models.consumer.User;
 import models.sales.Goods;
 import models.sales.GoodsHistory;
@@ -14,6 +20,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
+import play.modules.solr.Solr;
 import util.common.InfoUtil;
 
 import javax.persistence.Column;
@@ -40,6 +47,7 @@ import java.util.Set;
 @Entity
 @Table(name = "order_items")
 public class OrderItems extends Model {
+
 
     private static final long serialVersionUID = 16323208753562L;
 
@@ -105,6 +113,9 @@ public class OrderItems extends Model {
     @Column(name = "buy_number")
     public Long buyNumber;
 
+    @Column(name = "return_count")
+    public Long returnCount = 0L;
+
     /**
      * 对应实物发货信息
      */
@@ -142,6 +153,15 @@ public class OrderItems extends Model {
     @Enumerated(EnumType.STRING)
     public OrderStatus status;
 
+    public static final String CACHEKEY = "ORDERITEM";
+
+    @Override
+    public void _save() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);
+        super._save();
+    }
+
     @Transient
     public BigDecimal getAmount() {
         if (salePrice != null && buyNumber != null) {
@@ -159,6 +179,34 @@ public class OrderItems extends Model {
     public long getSkuCount() {
         return (goods.skuCount == null ? 0L : goods.skuCount) *
                 (buyNumber == null ? 0L : buyNumber);
+    }
+
+    /**
+     * 获取退货状态.
+     * 便于页面显示
+     *
+     * @return
+     */
+    @Transient
+    public RealGoodsReturnStatus getReturnStatus() {
+        if (goods.materialType == MaterialType.ELECTRONIC) {
+            return null;
+        }
+        return RealGoodsReturnEntry.getReturnStatus(this);
+    }
+
+    /**
+     * 获取退货单.
+     * 便于页面显示
+     *
+     * @return
+     */
+    @Transient
+    public RealGoodsReturnEntry getReturnEntry() {
+        return RealGoodsReturnEntry.findByOrderItem(this.id);
+    }
+
+    public OrderItems() {
     }
 
     public OrderItems(Order order, Goods goods, long buyNumber, String phone, BigDecimal salePrice, BigDecimal resalerPrice) {
@@ -449,7 +497,7 @@ public class OrderItems extends Model {
     }
 
     public static long countPaidOrders(Goods goods) {
-        Long count = find("select sum(buyNumber) from OrderItems where goods.materialType=? and order.orderType=? and status=? " +
+        Long count = find("select sum(buyNumber-returnCount) from OrderItems where goods.materialType=? and order.orderType=? and status=? " +
                 "and goods=? and goods.skuCount is not null", MaterialType.REAL, OrderType.CONSUME, OrderStatus.PAID, goods).first();
         return count == null ? 0 : count;
     }
@@ -488,13 +536,11 @@ public class OrderItems extends Model {
      * 查询指定时间之前的sku出库表.
      */
     public static Map<Sku, Long> findTakeout(Date toDate) {
-        List<TakeoutItem> takeoutItems = find("select new models.order.TakeoutItem(o.goods, sum(o.buyNumber)) " +
-                "from OrderItems o where o.order.orderType=? and o.goods.supplierId=? and o.status=? and o.goods.materialType=? and o.createdAt <= ? " +
-                "group by o.goods", OrderType.CONSUME, Supplier.getShihui().id, OrderStatus.PAID, MaterialType.REAL, toDate).fetch();
-
+        List<TakeoutItem> takeoutItems = find("select new models.order.TakeoutItem(o.goods.sku, sum(o.buyNumber*o.goods.skuCount)) " +
+                "from OrderItems o where o.order.orderType=? and o.goods.supplierId=? and o.status=? and o.goods.materialType=? and o.order.paidAt <= ? " +
+                "group by o.goods.sku", OrderType.CONSUME, Supplier.getShihui().id, OrderStatus.PAID, MaterialType.REAL, toDate).fetch();
         Map<Sku, Long> takeoutMap = new HashMap<Sku, Long>();
         for (TakeoutItem takeoutItem : takeoutItems) {
-
             if (takeoutItem.sku != null && takeoutItem.count != null && takeoutItem.count.longValue() > 0) {
                 takeoutMap.put(takeoutItem.sku, takeoutItem.count);
             }
@@ -591,5 +637,113 @@ public class OrderItems extends Model {
         }
 
         return averagePriceMap;
+    }
+
+    /**
+     * 实物退款处理.
+     *
+     * @param orderItems
+     */
+    public static String handleRefund(OrderItems orderItems, Long returnedCount) {
+        String returnFlg = "";
+
+        if (orderItems == null || orderItems.id == null || returnedCount == null || returnedCount <= 0L || returnedCount > orderItems.buyNumber) {
+            returnFlg = "{\"error\":\"no such eCoupon\"}";
+            return returnFlg;
+        }
+        //todo 刷单的不可退款
+//        if (orderItems.isCheatedOrder) {
+//            returnFlg = "{\"error\":\"cheated order can't refund\"}";
+//            return returnFlg;
+//        }
+        //未付款和已取消的订单不能退款
+        if (orderItems.status == OrderStatus.CANCELED || orderItems.status == OrderStatus.UNPAID) {
+            returnFlg = "{\"error\":\"can not apply refund with this goods\"}";
+            return returnFlg;
+        }
+
+
+        //先计算已消费的金额
+        BigDecimal consumedAmount = BigDecimal.ZERO;
+        Order order = orderItems.order;
+        if (order.userType == AccountType.RESALER) {
+            consumedAmount = orderItems.resalerPrice.multiply(new BigDecimal(returnedCount));
+        } else if (order.userType == AccountType.CONSUMER) {
+            consumedAmount = orderItems.salePrice.multiply(new BigDecimal(returnedCount));
+        }
+        //        System.out.println("===consumedAmount" + consumedAmount);
+
+        //已消费的金额加上已退款的金额作为垫底
+        BigDecimal onTheBottom = consumedAmount.add(order.refundedAmount);
+        //        System.out.println("===onTheBottom" + onTheBottom);
+
+        //再来看看去掉垫底的资金后，此订单还能退多少活动金和可提现余额
+        BigDecimal refundOrderTotalCashAmount = order.accountPay.add(order.discountPay);
+        BigDecimal refundOrderTotalPromotionAmount = order.promotionBalancePay;
+        if (refundOrderTotalPromotionAmount.compareTo(onTheBottom) > 0) {
+            //如果该订单的活动金大于垫底资金
+            refundOrderTotalPromotionAmount = refundOrderTotalPromotionAmount.subtract(onTheBottom);
+        } else {
+            refundOrderTotalCashAmount = refundOrderTotalCashAmount.add(refundOrderTotalPromotionAmount).subtract(onTheBottom);
+            refundOrderTotalPromotionAmount = BigDecimal.ZERO;
+            if (refundOrderTotalCashAmount.compareTo(BigDecimal.ZERO) < 0) {
+                refundOrderTotalCashAmount = BigDecimal.ZERO;
+            }
+        }
+        //        System.out.println("===refundOrderTotalCashAmount" + refundOrderTotalCashAmount);
+        //        System.out.println("===refundOrderTotalPromotionAmount" + refundOrderTotalPromotionAmount);
+
+        //用户为此券实际支付的金额,也就是从用户为该券付的钱来看，最多能退多少
+        BigDecimal refundAtMostCouponAmount = consumedAmount;
+        //        System.out.println("===refundAtMostCouponAmount" + refundAtMostCouponAmount);
+
+        //最后我们来看看最终能退多少
+        BigDecimal refundPromotionAmount = BigDecimal.ZERO;
+        BigDecimal refundCashAmount = BigDecimal.ZERO;
+
+        if (refundOrderTotalPromotionAmount.compareTo(refundAtMostCouponAmount) > 0) {
+            refundPromotionAmount = refundOrderTotalPromotionAmount.subtract(refundAtMostCouponAmount);
+        } else {
+            refundPromotionAmount = refundOrderTotalPromotionAmount;
+            refundCashAmount = refundAtMostCouponAmount.subtract(refundPromotionAmount);
+            refundCashAmount = refundCashAmount.min(refundOrderTotalCashAmount);
+        }
+        //        System.out.println("===refundCashAmount" + refundCashAmount);
+        //        System.out.println("===refundPromotionAmount" + refundPromotionAmount);
+
+
+        // 创建退款交易
+        Account account = AccountUtil.getAccount(orderItems.order.userId, orderItems.order.userType);
+        TradeBill tradeBill = TradeUtil.createRefundTrade(account, refundCashAmount, refundPromotionAmount, orderItems.order.getId(), null);
+
+        if (!TradeUtil.success(tradeBill, "退款成功. 商品:" + orderItems.goods.shortName)) {
+            returnFlg = "{\"error\":\"refound failed\"}";
+            return returnFlg;
+        }
+
+        // 更新已退款的活动金金额
+        order.refundedAmount = order.refundedAmount.add(refundCashAmount).add(refundPromotionAmount);
+        order.save();
+
+        orderItems.returnCount += returnedCount;
+        orderItems.status = OrderStatus.RETURNED;
+        orderItems.save();
+
+        // 更改搜索服务中的库存
+        Solr.save(orderItems.goods);
+
+        return returnFlg;
+
+    }
+
+    @Transient
+    public Long getUnusedECouponNumber() {
+        final OrderItems thisOrderItems = this;
+        return CacheHelper.getCache(CacheHelper.getCacheKey(CACHEKEY + this.id, "UNUSEDECouponNumber"), new CacheCallBack<Long>() {
+            @Override
+            public Long loadData() {
+                return ECoupon.count("orderItems=? and status<>?", thisOrderItems, ECouponStatus.CONSUMED);
+            }
+        });
     }
 }

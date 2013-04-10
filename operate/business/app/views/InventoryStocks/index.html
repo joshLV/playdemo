@@ -9,10 +9,14 @@
 #{form @InventoryStocks.index() , id:'stock_details_form',class:"form-horizontal" }
     <legend>${title}</legend>
     <div>
+        入库单号 <input type="text" name="condition.serialNo" id="condition_serialNo" value="${condition?.serialNo}"
+                    class="input-medium"/>
+
         品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
         #{vx.selectInputField name:"brandName", id:"condition.brandId", list:brandList, array:"brandArray"/}
         货品名称:
         #{vx.selectInputField name:"skuName", id:"condition.skuId", list:skuList, array:"skuArray"/}
+        <br>  <br>
         时间：
         <div class="input-append date bs-datepicker" data-date-format="yyyy-mm-dd">
             <input class="input-small" id="beginAt" name="condition.beginAt" size="16" type="text"
@@ -32,29 +36,40 @@
     <table class="table table-striped table-bordered table-condensed">
         <thead>
         <tr>
+            <th width="298px">入库单号</th>
             <th width="298px">货品名称</th>
             <th width="100px">进价/售价</th>
             <th width="50px">数量</th>
+            <th width="50px">备注</th>
             <th width="150px">创建时间</th>
             <th width="100px">操作类别(入库/出库)</th>
         </tr>
         </thead>
         <tbody>
         #{paginate.list items:stockItemList, as:'stockItem'}
-        <td>${stockItem?.sku?.name}</td>
-        <td>${stockItem?.price}</td>
-        <td>
-            #{if stockItem?.stock?.actionType == models.sales.StockActionType.IN}
-                +
-            #{/if}
-            #{else}
-                -
-            #{/else}
-        ${stockItem?.changeCount}</td>
-
-        <td>${stockItem?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}
-        </td>
-        <td>&{'stock.'+stockItem?.stock?.actionType}</td>
+        <tr>
+            <td>${stockItem?.stock?.serialNo}</td>
+            <td>${stockItem?.sku?.name}</td>
+            <td style="text-align: right;">${stockItem?.price}</td>
+            <td style="text-align: right;">
+            <span  #{if stockItem?.changeCountSign == "+"} style="color: green"  #{/if}
+                #{elseif stockItem?.changeCountSign == "-"} style="color:#ff7f50;" #{/elseif}>
+        ${ stockItem?.changeCountSign}  ${ stockItem?.changeCountAbsoluteValue}
+        </span>
+            </td>
+            <td>
+                #{if stockItem?.purchaseItem!=null}
+                    <a href="/purchase-orders?keyword=${stockItem?.purchaseItem?.purchaseOrder?.serialNo}">
+                    ${stockItem?.stock?.remark}
+                    </a>
+                #{/if}
+                #{else}
+                ${stockItem?.stock?.remark}
+                #{/else}
+            </td>
+            <td>${stockItem?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}
+            </td>
+            <td>&{'stock.'+stockItem?.stock?.actionType}</td>
         </tr>
         #{/paginate.list}
         </tbody>

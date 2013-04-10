@@ -3,6 +3,7 @@ package controllers;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrderStatus;
+import models.order.RealGoodsReturnEntry;
 import models.sales.Goods;
 import models.sales.InventoryStock;
 import models.sales.OrderBatch;
@@ -33,6 +34,9 @@ public class SkuTakeouts extends Controller {
      * 显示出库汇总信息
      */
     public static void index() {
+        //先检查是否有退货订单，如果有待处理的退货订单必须先处理掉再做出库操作。以确保库存的准确的情况下正确出库。
+        long returnEntryCount = RealGoodsReturnEntry.countHandling(Supplier.getShihui().id);
+
         final Date toDate = new Date();
         //1 统计总的待出库货品及数量
         Map<Sku, Long> preparingTakeoutSkuMap = OrderItems.findTakeout(toDate);
@@ -48,10 +52,11 @@ public class SkuTakeouts extends Controller {
         long paidOrderCount = allPaidOrders.size();
         //7 可出库订单
         List<Order> stockoutOrderList = OrderItems.getStockOutOrders(allPaidOrders, deficientOrderList);
+
         //8 获取可出库订单计算出的货品平均售价
         Map<Sku, BigDecimal> skuAveragePriceMap = OrderItems.getSkuAveragePriceMap(stockoutOrderList, takeoutSkuMap);
 
-        render(paidOrderCount, preparingTakeoutSkuMap, takeoutSkuMap, skuAveragePriceMap, stockoutOrderList, deficientOrderList, toDate);
+        render(paidOrderCount, returnEntryCount, preparingTakeoutSkuMap, takeoutSkuMap, skuAveragePriceMap, stockoutOrderList, deficientOrderList, toDate);
     }
 
     /**
@@ -108,7 +113,7 @@ public class SkuTakeouts extends Controller {
         //11 按商品创建出库单明细
         for (Sku sku : takeoutSkuMap.keySet()) {
             //创建出库详单信息
-            InventoryStock.createInventoryStockItem(sku, takeoutSkuMap.get(sku), stock, skuAveragePriceMap.get(sku));
+            InventoryStock.createInventoryStockItem(sku, 0L - takeoutSkuMap.get(sku), stock, skuAveragePriceMap.get(sku));
             //修改入库的剩余库存
             InventoryStock.updateInventoryStockRemainCount(sku, takeoutSkuMap.get(sku));
         }

@@ -31,6 +31,7 @@ import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.hibernate.usertype.UserType;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
@@ -621,7 +622,6 @@ public class Order extends Model {
         }
     }
 
-
     public void createAndUpdateInventory() {
         generateOrderDescription();
         save();
@@ -739,7 +739,7 @@ public class Order extends Model {
                 TradeUtil.success(tradeBill, this.description);
                 this.payRequestId = tradeBill.getId();
             } catch (RuntimeException e) {
-                Logger.error("can not pay", e);
+                Logger.error("orderId:" + this.id + " can not pay", e);
                 e.printStackTrace();
                 return false;
                 //忽略，此时订单没有支付，但余额已经保存
@@ -925,15 +925,19 @@ public class Order extends Model {
     @Transient
     public User getUser() {
         if (user == null) {
-            user = User.findById(consumerId);
+            if (consumerId != null) {
+                user = User.findById(consumerId);
+            } else if (userType == AccountType.CONSUMER) {
+                user = User.findById(userId);
+            }
         }
         return user;
     }
 
     @Transient
     public Resaler getResaler() {
-        if (resaler == null && userId!=null) {
-                resaler = Resaler.findById(userId);
+        if (resaler == null && userId != null && userType == AccountType.RESALER) {
+            resaler = Resaler.findById(userId);
         }
         return resaler;
     }

@@ -48,7 +48,7 @@ public class PrepaymentNoticeUnitTest extends UnitTest {
         assertTrue(prepayment.warning);
 
         MailMessage msg = (MailMessage) MockMQ.getLastMessage(MailUtil.COMMON_QUEUE);
-        assertEquals("可用预付款已少于10%", msg.getSubject());
+        assertEquals("可用预付款已少于百分之十", msg.getSubject());
 
         assertEquals(prepayment.supplier.otherName, msg.getParam("supplier"));
     }

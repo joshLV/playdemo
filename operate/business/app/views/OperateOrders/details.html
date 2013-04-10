@@ -8,22 +8,65 @@
         $("#sendForm").attr("action", "/orders/" + id + "/send?x-http-method-override=PUT");
         $('#sendModal').modal('show');
     }
+    function prepareReturn(id, goodsName, count) {
+        $("#entry_orderItems_id").val(id);
+        $("#goodsName").html(goodsName);
+        $("#maxReturnedCount").val(count);
+        $("#entry_returnedCount").val(count);
+        $("#note_entry_returnedCount").removeClass("error");
+        $("#note_entry_returnedCount").html("");
+        $("#note_entry_reason").removeClass("error");
+        $("#note_entry_reason").html("");
+        $('#returnGoodsModal').modal('show');
+    }
+
+    function sendOrderItemMessage(id) {
+        $.ajax({
+            url: "/order-items-message/" + id + "/send",
+            type: 'GET',
+            error: function () {
+                alert('发送失败!');
+            },
+            success: function (data) {
+                if (data == '0') {
+                    alert("发送成功！");
+                } else {
+                    alert("发送失败!");
+                }
+            }
+        });
+    }
+
     $(function () {
+        var handleReturnEntry = function () {
+
+            $.post("/real/return",
+                    {"entry.orderItems.id": $("#entry_orderItems_id").val(), "entry.returnedCount": $("#entry_returnedCount").val(), "entry.reason": $("#entry_reason").val()},
+                    function (data) {
+                        if (!isNaN(data)) {
+                            window.location = "/orders/" + data;
+                        } else {
+                            $("#error").html(data);
+                            $("#div_alert").show();
+                            $('#returnGoodsModal').modal('hide');
+                        }
+                    }, "json");
+        };
         #{if !play.Play.runingInTestMode()}
             $("#send").click(function () {
                 var result = true;
                 if ($("#order_deliveryNo").val().trim() == "") {
-                    //                $("#note_order_deliveryNo").addClass("error");
+                    $("#note_order_deliveryNo").addClass("error");
                     $("#note_order_deliveryNo").html("请输入单号!");
                     $("#order_deliveryNo").focus();
                     result = false;
                 }
                 else {
-                    //                $("#note_order_deliveryCompany").removeClass("error");
+                    $("#note_order_deliveryCompany").removeClass("error");
                     $("#note_order_deliveryCompany").html("");
                 }
                 if ($("#order_deliveryCompany").val().trim() == "") {
-                    //                $("#note_order_deliveryCompany").addClass("error");
+                    $("#note_order_deliveryCompany").addClass("error");
                     $("#note_order_deliveryCompany").html("请输入公司!");
                     $("#order_deliveryCompany").val("");
                     $("#order_deliveryCompany").focus();
@@ -36,189 +79,284 @@
                     $("#sendForm").submit();
                 }
             });
+            $("#return").click(function () {
+                var result = true;
+                var returnedCount = $("#entry_returnedCount").val().trim();
+
+                if (returnedCount == "") {
+                    $("#note_entry_returnedCount").addClass("error");
+                    $("#note_entry_returnedCount").html("请输入退货数量!");
+                    $("#entry_returnedCount").focus();
+                    result = false;
+                }
+                else {
+                    $("#note_entry_returnedCount").removeClass("error");
+                    $("#note_entry_returnedCount").html("");
+                }
+                if (returnedCount > $("#maxReturnedCount").val() || returnedCount < 1) {
+                    $("#note_entry_returnedCount").addClass("error");
+                    $("#note_entry_returnedCount").html("退货数量必须在1到" + $("#maxReturnedCount").val() + "之间!");
+                    $("#entry_returnedCount").focus();
+                    result = false;
+                }
+                else {
+                    $("#note_entry_returnedCount").removeClass("error");
+                    $("#note_entry_returnedCount").html("");
+                }
+                if ($("#entry_reason").val().trim() == "") {
+                    $("#note_entry_reason").addClass("error");
+                    $("#note_entry_reason").html("请输入退货原因!");
+                    $("#note_entry_reason").val("");
+                    $("#note_entry_reason").focus();
+                    result = false;
+                } else {
+                    $("#note_entry_reason").removeClass("error");
+                    $("#note_entry_reason").val("");
+                }
+                if (result) {
+                    handleReturnEntry();
+//                    $("#returnForm").submit();
+                }
+            });
         #{/if}
         #{else}
             $("#send").click(function () {
                 $("#sendForm").submit();
             });
+            $("#return").click(function () {
+                handleReturnEntry();
+//                $("#returnForm").submit();
+            });
         #{/else}
     });
 </script>
 #{/set}
-
+#{set 'moreStyles'}
+<style type="text/css">
+    .form-horizontal .control-group {
+        width: 400px;
+    }
+</style>
+#{/set}
 <div class="body">
-    <legend>${title}</legend>
-    <ul class="nav">
-        <li class="active"><a href="#"> 基本信息</a></li>
-        <table class="table table-bordered">
-            <tr>
-                <td>订 单 号：<a
-                        href="/coupons?condition.searchKey=ORDER_NUMBER&condition.searchItems=${orders.orderNumber}">${orders.orderNumber}</a>
-                </td>
-                <td>成交时间：${orders.createdAt == null ?'':orders.createdAt.format("yyyy-MM-dd HH:mm:ss")}</td>
-                <td>付款时间：${orders.paidAt == null ?'':orders.paidAt.format("yyyy-MM-dd HH:mm:ss")}</td>
-            </tr>
-            <tr>
-                <td>支付方式： &{'order.payMethod.'+orders.payMethod}</td>
-                <td>订单状态： &{'order.'+orders.status}</td>
-                <td>物流方式： &{'order.'+orders.deliveryType}</td>
-            </tr>
-            <tr>
-                <td>付款账号详情：
-                #{if orders.userType == models.accounts.AccountType.CONSUMER}
-                    <a href="http://cms.${play.Play.configuration.getProperty("application.baseDomain")}/consumers/${orders.userId}"
-                       target="_blank">&{'account.type.'+
-                        orders.userType}:${loginName}</a>
-                #{/if}
-                #{if orders.userType == models.accounts.AccountType.RESALER}
-                    <a href="/resalers/${orders.userId}/view?flag=1" target="_blank">&{'account.type.'+
-                        orders.userType}:${loginName}</a>
-                #{/if}
-                </td>
-                <td>
-                #{if orders.electronicGoods?.size() > 0}
-                    查看
-                    <a href="/coupons?condition.searchKey=ORDER_NUMBER&condition.searchItems=${orders.orderNumber}">电子券清单</a>
-                #{/if}
-                </td>
-            %{ outerOrder = models.order.OuterOrder.getOuterOrder(orders) }%
-                <td>
-                #{if outerOrder != null}
-                    外部订单号：${outerOrder.orderId}
-                #{/if}</td>
 
-            </tr>
-        </table>
-    </ul>
-    <ul class="nav">
-        <li class="active"><a href="#"> 商品信息</a></li>
-        <table class="table table-bordered table-striped">
-            <thead>
-            <tr>
-                <th>商品编码</th>
-                <th>商品名称</th>
-                <th>类型</th>
-                <th>单价</th>
-                <th>数量</th>
-                <th>手机</th>
-                <th>有效期</th>
-                <th>折扣券</th>
-                <th>需要支付金额</th>
-                <th>状态</th>
-            </tr>
-            </thead>
-            <tbody>
-            #{list items:orderItems, as:'orderItem' }
-            <tr>
-                <td>${orderItem.goods?.code}</td>
-                <td>
-                    <a href="http://www.yibaiquan.com/p/${orderItem.goods.id}">${orderItem.goodsName}</a>
-                    &nbsp;<i class="icon-user"></i>${orderItem?.goods?.getSupplierSalesUserName()}
-                </td>
-                <td>&{'goods.'+orderItem.goods.materialType}</td>
-                <td>${orderItem.salePrice?.formatCurrency('CNY')}</td>
-                <td>${orderItem.buyNumber}</td>
-                <td>
-                    #{if hasViewEcouponSnPermission}
-                    ${orderItem?.phone}
-                    #{/if}
+<legend>${title}</legend>
+*{错误显示层}*
+<div class="alert" id="div_alert" style="display: none">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <strong>操作失败!</strong> 退货操作失败！原因:<span id=error></span>
+</div>
+<ul class="nav">
+    <li class="active"><a href="#"> 基本信息</a></li>
+    <table class="table table-bordered">
+        <tr>
+            <td>订 单 号：<a
+                    href="/coupons?condition.searchKey=ORDER_NUMBER&condition.searchItems=${orders.orderNumber}">${orders.orderNumber}</a>
+            </td>
+            <td>成交时间：${orders.createdAt == null ?'':orders.createdAt.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td>付款时间：${orders.paidAt == null ?'':orders.paidAt.format("yyyy-MM-dd HH:mm:ss")}</td>
+        </tr>
+        <tr>
+            <td>支付方式： &{'order.payMethod.'+orders.payMethod}</td>
+            <td>订单状态： &{'order.'+orders.status}</td>
+            <td>物流方式： &{'order.'+orders.deliveryType}</td>
+        </tr>
+        <tr>
+            <td>付款账号详情：
+            #{if orders.userType == models.accounts.AccountType.CONSUMER}
+                <a href="http://cms.${play.Play.configuration.getProperty("application.baseDomain")}/consumers/${orders.userId}"
+                   target="_blank">&{'account.type.'+
+                    orders.userType}:${loginName}</a>
+            #{/if}
+            #{if orders.userType == models.accounts.AccountType.RESALER}
+                <a href="/resalers/${orders.userId}/view?flag=1" target="_blank">&{'account.type.'+
+                    orders.userType}:${loginName}</a>
+            #{/if}
+            </td>
+            <td>
+            #{if orders.electronicGoods?.size() > 0}
+                查看
+                <a href="/coupons?condition.searchKey=ORDER_NUMBER&condition.searchItems=${orders.orderNumber}">电子券清单</a>
+            #{/if}
+            </td>
+        %{ outerOrder = models.order.OuterOrder.getOuterOrder(orders) }%
+            <td>
+            #{if outerOrder != null}
+                外部订单号：${outerOrder.orderId}
+            #{/if}</td>
+
+        </tr>
+    </table>
+</ul>
+<ul class="nav">
+    <li class="active"><a href="#"> 商品信息</a></li>
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>商品编码</th>
+            <th>商品名称</th>
+            <th>类型</th>
+            <th>单价</th>
+            <th>数量</th>
+            <th>手机</th>
+            <th>有效期</th>
+            <th>折扣券</th>
+            <th>需要支付金额</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        #{list items:orderItems, as:'orderItem' }
+        <tr>
+            <td>${orderItem?.goods?.code}</td>
+            <td>
+                <a href="http://www.yibaiquan.com/p/${orderItem.goods.id}">${orderItem.goodsName}</a>
+                &nbsp;<i class="icon-user"></i>${orderItem?.goods?.getSupplierSalesUserName()}
+            </td>
+            <td>&{'goods.'+orderItem.goods.materialType}</td>
+            <td>${orderItem.salePrice?.formatCurrency('CNY')}</td>
+            <td>
+            ${orderItem.buyNumber}<br/>
+                #{if orderItem?.unusedECouponNumber > 0}
+                    <a href="javascript:sendOrderItemMessage(${orderItem?.id});">
+                        重发未使用券(${orderItem?.unusedECouponNumber}张)短信</a>
+                #{/if}
+            </td>
+            <td>
+                #{if hasViewEcouponSnPermission}
+                ${orderItem?.phone}
+                #{/if}
                     #{else}
-                ${orderItem?.getMaskedPhone()}
-                #{/else}
-                </td>
-                <td>${orderItem.goods.effectiveAt?.format("yyyy-MM-dd")}
-                    - ${orderItem.goods.expireAt?.format("yyyy-MM-dd")}
-                </td>
-                <td style="color:red">
-                    #{if orderItem.rebateValue != null && orderItem.rebateValue?.compareTo(java.math.BigDecimal.ZERO) > 0}
-                        &nbsp;${orderItem.rebateValue?.formatCurrency('CNY')}
-                    #{/if}
-                </td>
-                <td>${orderItem.amount?.formatCurrency('CNY')}</td>
-                <td>&{'order.'+orders.status}</td>
-            </tr>
-            #{/list}
-            </tbody>
-            <tr>
-                <td colspan="11">商品金额： #{if orders.containsRealGoods()}
-                ${orders.amount.subtract(models.order.Order.FREIGHT)}#{/if}#{else}${orders.amount}#{/else}&nbsp;元
-                    &nbsp;+ 运费：
-                #{if orders.containsRealGoods()}${models.order.Order.FREIGHT}#{/if}#{else}0#{/else} 元
-                #{if orders.rebateValue != null && orders.rebateValue.compareTo(BigDecimal.ZERO) > 0}
-                    &nbsp;- <span style="color:red">折扣：${orders.rebateValue}元</span>
+            ${orderItem?.getMaskedPhone()}
+            #{/else}
+            </td>
+            <td>${orderItem.goods.effectiveAt?.format("yyyy-MM-dd")}
+                - ${orderItem.goods.expireAt?.format("yyyy-MM-dd")}
+            </td>
+            <td style="color:red">
+                #{if orderItem.rebateValue != null && orderItem.rebateValue?.compareTo(java.math.BigDecimal.ZERO) > 0}
+                    &nbsp;${orderItem.rebateValue?.formatCurrency('CNY')}
                 #{/if}
-                    = &nbsp;总金额：
-                ${orders.amount} 元 (可提现余额支付:${orders.accountPay}元,
-                    不可提现余额支付:${orders.promotionBalancePay?:java.math.BigDecimal.ZERO}元,
-                    网银支付:${orders.discountPay}元,
-                    抵用券支付:${orders.voucherValue ?: 0} 元)
-                </td>
-            </tr>
-        </table>
-    </ul>
+            </td>
+            <td>${orderItem.amount?.formatCurrency('CNY')}</td>
+        %{returnEntry = orderItem.getReturnEntry()}%
+            <td>&{'order.'+orders.status} #{if orderItem.returnStatus!=null}<a id="returnEntry_${orderItem.id}"
+                                                                               href="#"
+                                                                               rel="popover"
+                                                                               data-html="true"
+                                                                               data-content="退货数量: ${returnEntry?.returnedCount}件<br/>
+                                                 退货原因: ${returnEntry?.reason}<br/>
+                                                 制&nbsp;&nbsp;单&nbsp;&nbsp;人: ${returnEntry?.createdBy}<br/>
+                                                 创建时间: ${returnEntry?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}<br/>
+                                                 #{if returnEntry?.status==models.order.RealGoodsReturnStatus.RETURNED}
+                                                 收&nbsp;&nbsp;货&nbsp;&nbsp;人: ${returnEntry?.returnedBy}<br/>
+                                                 退回时间: ${returnEntry?.returnedAt?.format("yyyy-MM-dd HH:mm:ss")}
+                                                 #{/if}"
+                                                                               data-placement="bottom"
+                                                                               data-original-title="退货单"
+                                                                               data-trigger="hover"
+                                                                               onmouseover="$('#returnEntry_${orderItem.id}').popover('show');">(${returnEntry.returnedCount}
+                件 &{'entry.'+
+                orderItem.returnStatus})</a>#{/if}</td>
+            <td>#{if orderItem.goods.materialType == models.sales.MaterialType.REAL && returnEntry == null}
+                #{if orders.status == models.order.OrderStatus.PAID}<a
+                        href="javascript:void(0);"
+                        onclick="prepareReturn('${orderItem.id}','${orderItem.goodsName}', '${orderItem.buyNumber}')">退货</a>#{/if}#{else}
+                    <a
+                            href="javascript:void(0);"
+                            onclick="prepareReturn('${orderItem.id}','${orderItem.goodsName}', '${orderItem.buyNumber}')">申请退货</a>
+                #{/else}
+            #{/if}</td>
+        </tr>
+        #{/list}
+        </tbody>
+        <tr>
+            <td colspan="11">商品金额： #{if orders.containsRealGoods()&& orders.freight.compareTo(BigDecimal.ZERO)>0}
+            ${orders.amount.subtract(models.order.Order.FREIGHT)}#{/if}#{else}${orders.amount}#{/else}&nbsp;元
+                &nbsp;+ 运费：
+            #{if orders.containsRealGoods() && orders.freight.compareTo(BigDecimal.ZERO)>0}${models.order.Order.FREIGHT}#{/if}#{else}
+                0#{/else} 元
+            #{if orders.rebateValue != null && orders.rebateValue.compareTo(BigDecimal.ZERO) > 0}
+                &nbsp;- <span style="color:red">折扣：${orders.rebateValue}元</span>
+            #{/if}
+                = &nbsp;总金额：
+            ${orders.amount} 元 (可提现余额支付:${orders.accountPay}元,
+                不可提现余额支付:${orders.promotionBalancePay?:java.math.BigDecimal.ZERO}元,
+                网银支付:${orders.discountPay}元,
+                抵用券支付:${orders.voucherValue ?: 0} 元)
+            </td>
+        </tr>
+    </table>
+</ul>
 #{if orders.containsRealGoods()}
-    <ul class="nav">
-        <li class="active"><a href="#"> 收货信息</a></li>
-        <table class="table table-bordered table-striped">
+<ul class="nav">
+    <li class="active"><a href="#"> 收货信息</a></li>
+    <table class="table table-bordered table-striped">
 
-            <tr>
-                <td>收货人： ${orders.receiverName}</td>
-            </tr>
-            <tr>
-                <td>地址： ${orders.receiverAddress} 邮编:${orders.postcode}</td>
-            </tr>
-            <tr>
-                <td>手机： ${orders.receiverMobile}</td>
-            </tr>
-            <tr>
-                <td>电话： ${orders.receiverPhone}</td>
-            </tr>
-            <tr>
-                <td>物流公司： ${orders.deliveryCompany}</td>
-            </tr>
-            <tr>
-                <td>物流单号： ${orders.deliveryNo}</td>
-            </tr>
-            <tr>
-                <td>订单留言： ${orders.remark}</td>
-            </tr>
-        </table>
-    </ul>
+        <tr>
+            <td>收货人： ${orders.receiverName}</td>
+        </tr>
+        <tr>
+            <td>地址： ${orders.receiverAddress} 邮编:${orders.postcode}</td>
+        </tr>
+        <tr>
+            <td>手机： ${orders.receiverMobile}</td>
+        </tr>
+        <tr>
+            <td>电话： ${orders.receiverPhone}</td>
+        </tr>
+        <tr>
+            <td>物流公司： ${orders.deliveryCompany}</td>
+        </tr>
+        <tr>
+            <td>物流单号： ${orders.deliveryNo}</td>
+        </tr>
+        <tr>
+            <td>订单留言： ${orders.remark}</td>
+        </tr>
+    </table>
+</ul>
     #{if models.order.OrderStatus.PAID.equals(orders.realGoodsStatus)}
-        <a class="btn btn-primary" onclick="prepareSend(${orders.id})">发货</a><br/><br/>
+    <a class="btn btn-primary" onclick="prepareSend(${orders.id})">发货</a><br/><br/>
     #{/if}
 #{/if}
-#{if orders.userType == models.accounts.AccountType.CONSUMER}
-    <ul class="nav">
-        <li class="active"><a href="#"> 订购人信息</a></li>
-        <table class="table table-bordered table-striped">
-            <tr>
-                <td>帐号： ${orders?.user?.loginName?:orders?.user?.openIdExpress} </td>
-            </tr>
-            <tr>
-                <td>手机： ${orders?.buyerMobile}</td>
-            </tr>
-            <tr>
-                <td>电话： ${orders?.buyerPhone}</td>
-            </tr>
-            <tr>
-                <td>订单留言： ${orders?.remark}</td>
-            </tr>
-        </table>
-    </ul>
-#{/if}
+<ul class="nav">
+    <li class="active"><a href="#"> 订购人信息</a></li>
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td>帐号：
+            #{if orders?.consumerId}
+            ${orders?.user?.loginName?:orders?.user?.openIdExpress}
+            #{/if}
+            #{else}
+            ${orders?.resaler?.loginName}
+            #{/else}
+            </td>
+        </tr>
+        <tr>
+            <td>手机： ${orders?.buyerMobile}</td>
+        </tr>
+        <tr>
+            <td>电话： ${orders?.buyerPhone}</td>
+        </tr>
+        <tr>
+            <td>订单留言： ${orders?.remark}</td>
+        </tr>
+    </table>
+</ul>
 #{if orders.refundAt != null }
-    <ul class="nav">
-        <li class="active"><a href="#"> 退款信息</a></li>
-        <table class="table">
-            <tr>
-                <td>申请退款时间：${orders?.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-            </tr>
-            <tr>
-                <td>退款时间： ${orders?.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-            </tr>
-        </table>
-    </ul>
+<ul class="nav">
+    <li class="active"><a href="#"> 退款信息</a></li>
+    <table class="table">
+        <tr>
+            <td>申请退款时间：${orders?.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+        </tr>
+        <tr>
+            <td>退款时间： ${orders?.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+        </tr>
+    </table>
+</ul>
 #{/if}
 </div>
 
@@ -242,4 +380,35 @@
         <a href="#" class="btn" data-dismiss="modal">取消</a>
     </div>
 </div>
+
+*{退货信息填写弹出层}*
+<div class="modal" id="returnGoodsModal" style="display: none;">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+
+        <h3>退货信息</h3>
+    </div>
+    <div class="modal-body">
+    #{form @OperateOrders.index(), id:"returnForm", name:"returnForm", enctype:'multipart/form-data',
+    class:"form-horizontal",method:"PUT"}
+
+        <input type="hidden" name="entry.orderItems.id" id="entry_orderItems_id"/>
+        <input type="hidden" name="maxReturnedCount" id="maxReturnedCount"/>
+
+        <div class="control-group">
+            <label class="control-label">商品</label>
+
+            <div class="controls"><span id="goodsName" style="line-height: 30px;"></span></div>
+        </div>
+        #{layout_operate.textField name:'entry.returnedCount', required:true, err:"returnedCount"/}
+        #{layout_operate.textField name:'entry.reason', value:entry?.reason, required:true, err:"reason"/}
+    #{/form}
+    </div>
+    <div class="modal-footer">
+        <a href="#" id="return" class="btn btn-primary">退货</a>
+        <a href="#" class="btn" data-dismiss="modal">取消</a>
+    </div>
+</div>
+
+
 

@@ -18,13 +18,13 @@
         <label class="control-label"><span style="color: red; ">*</span>商户</label>
 
         <div class="controls">
-            #{layout_operate.selectInputField name:"supplierName", id:"goods.supplierId", list:supplierList/}
+            #{vx.selectInputField  name:"supplierName", id:"goods.supplierId", list:supplierList ,value:goods?.supplierId/}
             <span class="error">#{error 'goods.supplierId'/}</span>
         </div>
     </div>
     #{/if}
     #{else}
-    <input type="hidden" goods_supplierId" name="goods.supplierId" value="${goods?.supplierId}">
+    <input type="hidden" id="goods_supplierId" name="goods.supplierId" value="${goods?.supplierId}">
         #{layout_operate.textField name:'goods.supplier', value:goods?.supplier?.fullName, disabled:true/}
     #{/else}
 <div class="control-group">
@@ -71,9 +71,11 @@
 </div>
 <div id="brand">#{include '/OperateBrands/goodsBrands.html'/}</div>
 *{#{if "edit".equals(action) }}*
-    #{if goods.supplierId==5}
-    <div id="sku">#{include '/Skus/goodsSku.html'/}</div>
-    #{/if}
+*{#{if goods.supplierId==5}}*
+<div id="sku">
+    #{include '/Skus/goodsSku.html'/}
+</div>
+*{#{/if}}*
 *{#{/if}}*
     #{layout_operate.textField name:'goods.no', value:goods?.no/}
     #{layout_operate.nameField name:'goods.shortName', value:goods?.shortName, required:true, length:12/}
@@ -145,37 +147,12 @@
 </span>
     #{layout_operate.textField name:'goods.virtualBaseSaleCount', value:goods?.virtualBaseSaleCount?:'0', note:'件'/}
     #{layout_operate.textField name:'goods.limitNumber', value:goods?.limitNumber, note:'个'/}
-*{<div class="control-group">}*
-*{<label class="control-label">指定消费日}*
-*{</label>}*
-
-*{<div class="controls">}*
-*{<input type="hidden" name="goods.useWeekDay" id="goods_useWeekDay" value="${goods?.useWeekDay}"/>}*
-
-*{#{list items:1..7, as:'i'}}*
-*{<input type="checkbox" name="useWeekDay[]" class="input-medium"}*
-*{value="${i}" #{if goods?.useWeekDay?.contains(String.valueOf(i))}checked#{/if}/>}*
-*{星期#{if i==1}一&nbsp;&nbsp;#{/if}}*
-*{#{if i==2}二&nbsp;&nbsp;#{/if}}*
-*{#{if i==3}三&nbsp;&nbsp;#{/if}}*
-*{#{if i==4}四&nbsp;&nbsp;#{/if}}*
-*{#{if i==5}五&nbsp;&nbsp;#{/if}}*
-*{#{if i==6}六&nbsp;&nbsp;#{/if}}*
-*{#{if i==7}日&nbsp;&nbsp;#{/if}}*
-*{#{/list}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}*
-*{<input type="checkbox" name="useWeekDayAll" class="input-medium" id="selectWeekDayAll"}*
-*{#{if goods?.useWeekDay== null || goods?.useWeekDay?.length()==13  }checked#{/if}> 全选}*
-*{<span class="error">#{error 'goods.useWeekDayAll' /}</span>}*
-*{</div>}*
-*{</div>}*
-    #{layout_operate.timeScopeField name:'goods.useTime', begin:'goods.useBeginTime',end:'goods.useEndTime',
-    beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
 
     #{if "add".equals(action)}
-        #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)'/}
+        #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)',required:true/}
     #{/if}
     #{else}
-        #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)'/}
+        #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)',required:truelo/}
     <div class="control-group">
         <div class="controls">
             (修改前)<br/><img src="${imageLargePath}"/>
@@ -230,6 +207,8 @@
 </div>
 
 <script type="text/javascript">
+
+
         #{if "edit".equals(action)}
         $("#goods_coupon_type").hide();
         if ($("#noRefund").val() == 'false') {
@@ -278,10 +257,13 @@
     }
 
     if ($("#goods_materialType_2").attr("checked")) {
-        $("#sku").show();
+        $("#hi").show();
         $("#goods_coupon_type").hide();
 //        $("#goods_cumulative_stock").hide();
         $("#free_shipping").show();
+        if ($("#id_supplierName").val() != 5 && $("#goods_supplierId").val() != 5) {
+            $("#sku").hide();
+        }
 
     }
 
@@ -332,6 +314,12 @@
                     id = list[i].id;
                 }
             }
+            if ($("#id_supplierName").val() != 5 && $("#goods_supplierId").val() != 5) {
+                $("#sku").hide();
+            }
+            else if ($("#goods_materialType_2").attr("checked")) {
+                $("#sku").show();
+            }
             if (!found) {
                 $("#id_supplierName").val(-1);
                 $("#save").attr('disabled', true);
@@ -380,7 +368,9 @@
         $("#free_shipping").show();
 //        $("#goods_cumulative_stock").hide();
         $("#goods_coupon_type").hide();
-        $("#sku").show();
+        if ($("#id_supplierName").val() == 5 || $("#goods_supplierId").val() == 5) {
+            $("#sku").show();
+        }
     });
 
     $("#goods_materialType_1").click(function () {

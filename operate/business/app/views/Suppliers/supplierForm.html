@@ -61,6 +61,12 @@ error:'supplier.operator'}
                onfocus="WdatePicker({dateFmt:'HH:mm',minDate:'00:00',maxDate:'23:59'})"/>
     </div>
 </div>
+#{if supplier?.sellECoupon == null || supplier?.sellECoupon == true}
+    #{layout_operate.radio2Field name:'supplier.sellECoupon', value:supplier?.sellECoupon?:true, value1:true, value2:false/}
+#{/if}
+#{else}
+    #{layout_operate.radio2Field name:'supplier.sellECoupon', value:supplier?.sellECoupon, value1:true, value2:false/}
+#{/else}
 #{layout_operate.radio2Field name:'supplier.canSaleReal', value:supplier?.canSaleReal?:false, value1:true, value2:false/}
 #{layout_operate.radio2Field name:'supplier.showSellingState', value:supplier?.showSellingState?:false, value1:true, value2:false/}
 *{#{layout_operate.timeScope2Field name:'supplier.shopHour', begin:'supplier.shopBeginHour',end:'supplier.shopEndHour',}*

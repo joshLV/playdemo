@@ -89,7 +89,7 @@ public class UserGoldenCoin extends Model {
      */
     public static Long getCheckinTimes(User user) {
         EntityManager entityManager = JPA.em();
-        String sql = "SELECT count( id ) FROM UserGoldenCoin WHERE user = :user and createdAt >=:beginDate and createdAt <=:endDate";
+        String sql = "SELECT count( id ) FROM UserGoldenCoin WHERE isPresent =0 and user = :user and createdAt >=:beginDate and createdAt <=:endDate";
         Query q = entityManager.createQuery(sql);
 
         q.setParameter("user", user);

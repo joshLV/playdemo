@@ -40,7 +40,7 @@ public class ExpiredNoRefundCouponNotice extends Job {
         for (ECoupon coupon : resultList) {
             couponMap = new HashMap<>();
             if (coupon.partner == ECouponPartner.JD || coupon.partner == ECouponPartner.WB) {
-                if (goodsId != null && goodsId == coupon.goods.id) {
+                if (goodsId != null && goodsId.equals(coupon.goods.id)) {
                     p_coupon += "," + coupon.eCouponSn;
                     couponList.get(i - 1).put("p_couponSn", p_coupon);
                 } else {

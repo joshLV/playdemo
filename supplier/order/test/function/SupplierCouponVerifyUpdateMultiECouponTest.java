@@ -136,7 +136,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
     public void 购买350元消费275元时验证多张券返回250元已消费券() {
         generateOrder1WithSameGroupGoods();
 
-        verifyECoupon(coupon1, "275", "250");
+        verifyECoupon(coupon1, "275.00", "250.00");
 
         ECouponHistoryMessage lastMessage = (ECouponHistoryMessage) MockMQ.getLastMessage(ECouponHistoryMessage
                 .MQ_KEY);
@@ -153,16 +153,16 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
 
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
         assertSMSContentEquals("您尾号" + coupon1.getLastCode(4)
-                + "共3张券(总面值250元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。您还有2张券（"
+                + "共3张券(总面值250.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。您还有2张券（"
                 + StringUtils.join(availableECouponSNs, "/")
-                + "总面值100元）未消费。如有疑问请致电：4006262166",
+                + "总面值100.00元）未消费。如有疑问请致电：4006262166",
                 msg.getContent());
     }
 
     @Test
     public void 购买350元消费400元时验证多张券返回350元已消费券() {
         generateOrder1WithSameGroupGoods();
-        verifyECoupon(coupon1, "400", "350");
+        verifyECoupon(coupon1, "400.00", "350.00");
 
         // 得到此次验证前可用的总券数，包括已验证和未验证的
         List<ECoupon> ecoupons = (List<ECoupon>)renderArgs("ecoupons");
@@ -174,7 +174,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
 
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
         assertSMSContentEquals("您尾号" + coupon1.getLastCode(4)
-                + "共5张券(总面值350元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
+                + "共5张券(总面值350.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
                 msg.getContent());
     }
 
@@ -193,7 +193,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
 
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
         assertSMSContentEquals("您尾号" + coupon1.getLastCode(4)
-                + "共5张券(总面值350元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
+                + "共5张券(总面值350.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
                 msg.getContent());
     }
 
@@ -219,7 +219,7 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
     public void 购买225元无组商品券消费185元时验证多张券返回150元已消费券() {
         generateOrder2With2Group3Single();
 
-        verifyECoupon(singleCoupon1, "185", "150");
+        verifyECoupon(singleCoupon1, "185.00", "150.00");
 
         // 得到此次验证前可用的总券数，包括已验证和未验证的
         List<ECoupon> ecoupons = (List<ECoupon>)renderArgs("ecoupons");
@@ -231,16 +231,16 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
 
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
         assertSMSContentEquals("您尾号" + singleCoupon1.getLastCode(4)
-                + "共2张券(总面值150元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。您还有1张券（"
+                + "共2张券(总面值150.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。您还有1张券（"
                 + StringUtils.join(availableECouponSNs, "/")
-                + "总面值75元）未消费。如有疑问请致电：4006262166",
+                + "总面值75.00元）未消费。如有疑问请致电：4006262166",
                 msg.getContent());
     }
 
     @Test
     public void 购买225元无组商品券消费300元时验证多张券返回225元已消费券() {
         generateOrder2With2Group3Single();
-        verifyECoupon(singleCoupon1, "300", "225");
+        verifyECoupon(singleCoupon1, "300.00", "225.00");
 
         // 得到此次验证前可用的总券数，包括已验证和未验证的
         List<ECoupon> ecoupons = (List<ECoupon>)renderArgs("ecoupons");
@@ -252,14 +252,14 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
 
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
         assertSMSContentEquals("您尾号" + singleCoupon1.getLastCode(4)
-                + "共3张券(总面值225元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
+                + "共3张券(总面值225.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
                 msg.getContent());
     }
 
     @Test
     public void 购买225元无组商品券消费225元时验证多张券返回225元已消费券() {
         generateOrder2With2Group3Single();
-        verifyECoupon(singleCoupon1, "225", "225");
+        verifyECoupon(singleCoupon1, "225.00", "225.00");
 
         // 得到此次验证前可用的总券数，包括已验证和未验证的
         List<ECoupon> ecoupons = (List<ECoupon>)renderArgs("ecoupons");
@@ -271,14 +271,14 @@ public class SupplierCouponVerifyUpdateMultiECouponTest extends FunctionalTest {
 
         SMSMessage msg = (SMSMessage)MockMQ.getLastMessage(SMSUtil.SMS2_QUEUE);
         assertSMSContentEquals("您尾号" + singleCoupon1.getLastCode(4)
-                + "共3张券(总面值225元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
+                + "共3张券(总面值225.00元)于" + DateUtil.getNowTime() + "已成功消费，使用门店：" + shop.name + "。如有疑问请致电：4006262166",
                 msg.getContent());
     }
 
     @Test
     public void 购买225元无组商品券消费50元时验证多张券返回不能验证() {
         generateOrder2With2Group3Single();
-        verifyECoupon(singleCoupon1, "50", "0");
+        verifyECoupon(singleCoupon1, "50.00", "0.00");
 
         List<ECoupon> ecoupons = (List<ECoupon>)renderArgs("ecoupons");
         assertNotNull(ecoupons);

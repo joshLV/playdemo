@@ -4,6 +4,7 @@ import controllers.supplier.SupplierInjector;
 import models.admin.SupplierUser;
 import models.order.OrderItems;
 import models.order.OrderStatus;
+import models.order.RealGoodsReturnEntry;
 import models.sales.OrderBatch;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
@@ -26,14 +27,17 @@ public class SupplierDownloadOrderShippingInfos extends Controller {
     public static final String EXCEL = "xls";
 
     public static void index() {
-        int pageNumber = getPageNumber();
         Supplier supplier = SupplierRbac.currentUser().supplier;
+        //先检查是否有退货订单，如果有待处理的退货订单必须先处理掉再做出库操作。以确保库存的准确的情况下正确出库。
+        long returnEntryCount = RealGoodsReturnEntry.countHandling(supplier.id);
+
+        int pageNumber = getPageNumber();
         if (supplier.canSaleReal == null || !supplier.canSaleReal) {
             error("have no real goods!");
         }
         List<OrderItems> orderItemsList = getPreparedItems(null);
         ModelPaginator<OrderBatch> orderBatchList = OrderBatch.findBySupplier(supplier.id, pageNumber, PAGE_SIZE);
-        render(orderItemsList, orderBatchList);
+        render(orderItemsList, orderBatchList, returnEntryCount);
     }
 
     /**

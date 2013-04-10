@@ -25,7 +25,7 @@ public class SkuCondition {
         builder.append(" s.deleted = :deleted");
         paramMap.put("deleted", DeletedStatus.UN_DELETED);
         if (supplierId != 0) {
-            builder.append(" and s.supplierId = :supplierId");
+            builder.append(" and s.supplier.id = :supplierId");
             paramMap.put("supplierId", supplierId);
         }
         if (brandId != 0) {

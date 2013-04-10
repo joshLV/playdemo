@@ -8,6 +8,7 @@ import models.resale.Resaler;
 import models.sales.Brand;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 
 import java.util.*;
 
@@ -154,8 +155,12 @@ public class OrdersCondition {
         if (StringUtils.isNotBlank(outerOrderId)) {
             OuterOrder outerOrder = OuterOrder.find("orderId=?", outerOrderId).first();
             if (outerOrder != null) {
-                sql.append(" and o.id=:orderId");
-                paramsMap.put("orderId", outerOrder.ybqOrder.id);
+                if (outerOrder.ybqOrder != null) {
+                    sql.append(" and o.id=:orderId");
+                    paramsMap.put("orderId", outerOrder.ybqOrder.id);
+                } else {
+                    sql.append(" and 1=0"); //找不到记录
+                }
             } else {
                 sql.append(" and 1=0"); //找不到记录
             }

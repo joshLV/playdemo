@@ -72,8 +72,8 @@ public class DownloadTrackNos extends Controller {
             item.outerOrderId = outerOrder.orderId;
             if (channelExpressMap.size() == 0) {
                 errors(partner.partnerName() + "没有对应的" + item.shippingInfo.expressCompany.id + "快递编码");
-            } else if (StringUtils.isNotBlank(channelExpressMap.get(partner.toString() + "_" + item.shippingInfo.expressCompany.id))) {
-                item.shippingInfo.channelExpressNo = channelExpressMap.get(partner.toString() + "_" + item.shippingInfo.expressCompany.id);
+            } else if (StringUtils.isNotBlank(channelExpressMap.get(partner.toString() + "-" + item.shippingInfo.expressCompany.id))) {
+                item.shippingInfo.channelExpressNo = channelExpressMap.get(partner.toString() + "-" + item.shippingInfo.expressCompany.id);
             } else {
                 errors(partner.partnerName() + "没有对应的" + item.shippingInfo.expressCompany.name + "快递编码");
             }
@@ -112,6 +112,60 @@ public class DownloadTrackNos extends Controller {
         render("real/DownloadTrackNos/yhdShippingExcelOut.xls", orderItemsList);
     }
 
+
+    public static void wbShippingExcelOut(OuterOrderPartner partner, Date paidBeginAt, Date paidEndAt, Date sentBeginAt, Date sentEndAt, Boolean unDownloaded, String outerGoodsNo) {
+        List<OrderItems> orderItemsList = DownloadTrackNoReport.queryOrderItems(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, unDownloaded, outerGoodsNo);
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "58发货单导出_" + System.currentTimeMillis() + ".xls");
+        Map<String, String> channelExpressMap = models.order.ExpressCompany.findChannelExpress();
+
+        //更新orderItems的状态为：已上传
+        for (OrderItems item : orderItemsList) {
+            item.status = OrderStatus.UPLOADED;
+            OuterOrder outerOrder = OuterOrder.getOuterOrder(item.order);
+            item.outerOrderId = outerOrder.orderId;
+            if (channelExpressMap.size() == 0) {
+                errors(partner.partnerName() + "没有对应的" + item.shippingInfo.expressCompany.id + "快递编码");
+            } else if (StringUtils.isNotBlank(channelExpressMap.get(partner.toString() + "-" + item.shippingInfo.expressCompany.id))) {
+                item.shippingInfo.channelExpressNo = channelExpressMap.get(partner.toString() + "-" + item.shippingInfo.expressCompany.id);
+            } else {
+                errors(partner.partnerName() + "没有对应的" + item.shippingInfo.expressCompany.name + "快递编码");
+            }
+        }
+
+        for (OrderItems item : orderItemsList) {
+            item.save();
+        }
+        render("real/DownloadTrackNos/wbShippingExcelOut.xls", orderItemsList);
+    }
+
+    public static void tbShippingExcelOut(OuterOrderPartner partner, Date paidBeginAt, Date paidEndAt, Date sentBeginAt, Date sentEndAt, Boolean unDownloaded, String outerGoodsNo) {
+        List<OrderItems> orderItemsList = DownloadTrackNoReport.queryOrderItems(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, unDownloaded, outerGoodsNo);
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "淘宝发货单导出_" + System.currentTimeMillis() + ".xls");
+        Map<String, String> channelExpressMap = models.order.ExpressCompany.findChannelExpress();
+
+        //更新orderItems的状态为：已上传
+        for (OrderItems item : orderItemsList) {
+            item.status = OrderStatus.UPLOADED;
+            OuterOrder outerOrder = OuterOrder.getOuterOrder(item.order);
+            item.outerOrderId = outerOrder.orderId;
+            if (channelExpressMap.size() == 0) {
+                errors(partner.partnerName() + "没有对应的" + item.shippingInfo.expressCompany.id + "快递编码");
+            } else if (StringUtils.isNotBlank(channelExpressMap.get(partner.toString() + "-" + item.shippingInfo.expressCompany.id))) {
+                item.shippingInfo.channelExpressNo = channelExpressMap.get(partner.toString() + "-" + item.shippingInfo.expressCompany.id);
+            } else {
+                errors(partner.partnerName() + "没有对应的" + item.shippingInfo.expressCompany.name + "快递编码");
+            }
+        }
+
+        for (OrderItems item : orderItemsList) {
+            item.save();
+        }
+        render("real/DownloadTrackNos/tbShippingExcelOut.xls", orderItemsList);
+    }
+
+
     /**
      * 通过下载链接下载对应的excel文件.
      *
@@ -130,6 +184,12 @@ public class DownloadTrackNos extends Controller {
                 break;
             case YHD:
                 yhdShippingExcelOut(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, unDownloaded, outerGoodsNo);
+                break;
+            case WB:
+                wbShippingExcelOut(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, unDownloaded, outerGoodsNo);
+                break;
+            case TB:
+                tbShippingExcelOut(partner, paidBeginAt, paidEndAt, sentBeginAt, sentBeginAt, unDownloaded, outerGoodsNo);
                 break;
             default:
                 renderText("不支持类型");

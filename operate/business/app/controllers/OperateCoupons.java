@@ -167,6 +167,16 @@ public class OperateCoupons extends Controller {
         renderJSON(sendFalg ? "0" : "1");
     }
 
+
+    @ActiveNavigation("coupons_index")
+    public static void sendOrderItemMessage(long id) {
+        OrderItems orderItems = OrderItems.findById(id);
+        OrderECouponMessage.with(orderItems).operator(OperateRbac.currentUser().userName)
+                .remark("重发短信").sendToMQ();
+
+        renderJSON("0");
+    }
+
     public static void viewECouponsn(Long id) {
         if (id != null) {
             ECoupon coupon = ECoupon.findById(id);

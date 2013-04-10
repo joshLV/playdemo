@@ -3,6 +3,7 @@ package models.accounts;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,7 +14,6 @@ import java.util.Map;
  * Time: 上午10:52
  */
 public class SupplierWithdrawCondition implements Serializable {
-    public Long accountUid;
     public Date createdAtBegin;
     public Date createdAtEnd;
     //    public Account account;
@@ -21,26 +21,34 @@ public class SupplierWithdrawCondition implements Serializable {
     public WithdrawBillStatus withdrawBillStatus;
     public Map<String, Object> params = new HashMap<>();
 
+    public Account account;
+    public AccountType accountType;
+
     /*
         期初未提现金额 (采购成本)
      */
     public String getFilterPurchaseCost() {
-        StringBuilder filter = new StringBuilder(" where a.account.accountType = :accountType and a.tradeType = :tradeType ");
-        params.put("accountType", AccountType.SUPPLIER);
+        StringBuilder filter = new StringBuilder(" where a.tradeType = :tradeType ");
         params.put("tradeType", TradeType.PURCHASE_COSTING);
+        System.out.println(account + "===condition-account>>");
+
+        if (account != null) {
+            filter.append(" and account = :account");
+            params.put("account", account);
+        }
+        if (accountType != null) {
+            filter.append(" and account.accountType = :accountType ");
+            params.put("accountType", accountType);
+        }
+
         if (withdrawBillStatus != null) {
             filter.append(" and a.account.id in (select w.account.id from WithdrawBill w where w.account=a.account and w.status= :withdrawBillStatus) ");
             params.put("withdrawBillStatus", withdrawBillStatus);
-        }
-        if (accountUid != null && accountUid != 0) {
-            filter.append(" and a.account.uid = :accountUid");
-            params.put("accountUid", accountUid);
         }
         if (createdAtBegin != null) {
             filter.append(" and a.createdAt <= :createdAtBegin");
             params.put("createdAtBegin", com.uhuila.common.util.DateUtil.getEndOfDay(com.uhuila.common.util.DateUtil.getBeforeDate(createdAtBegin, 1)));
         }
-
         return filter.toString();
     }
 
@@ -48,16 +56,19 @@ public class SupplierWithdrawCondition implements Serializable {
        期初未提现金额 (提现)
     */
     public String getFilterPreviousWithdrawnAmount() {
-        StringBuilder filter = new StringBuilder(" where a.account.accountType = :accountType and a.tradeType = :tradeType ");
-        params.put("accountType", AccountType.SUPPLIER);
+        StringBuilder filter = new StringBuilder(" where a.tradeType = :tradeType ");
         params.put("tradeType", TradeType.WITHDRAW);
+        if (account != null) {
+            filter.append(" and account = :account");
+            params.put("account", account);
+        }
+        if (accountType != null) {
+            filter.append(" and account.accountType = :accountType ");
+            params.put("accountType", accountType);
+        }
         if (withdrawBillStatus != null) {
             filter.append(" and a.account.id in (select w.account.id from WithdrawBill w where w.account=a.account and w.status= :withdrawBillStatus) ");
             params.put("withdrawBillStatus", withdrawBillStatus);
-        }
-        if (accountUid != null && accountUid != 0) {
-            filter.append(" and a.account.uid = :accountUid");
-            params.put("accountUid", accountUid);
         }
         if (createdAtBegin != null) {
             filter.append(" and a.createdAt <= :createdAtBegin");
@@ -71,16 +82,19 @@ public class SupplierWithdrawCondition implements Serializable {
         本周期券消费金额
      */
     public String getFilterConsumedAmount() {
-        StringBuilder filter = new StringBuilder(" where a.account.accountType = :accountType and a.tradeType = :tradeType ");
-        params.put("accountType", AccountType.SUPPLIER);
+        StringBuilder filter = new StringBuilder(" where a.tradeType = :tradeType ");
         params.put("tradeType", TradeType.PURCHASE_COSTING);
+        if (account != null) {
+            filter.append(" and account = :account");
+            params.put("account", account);
+        }
+        if (accountType != null) {
+            filter.append(" and account.accountType = :accountType ");
+            params.put("accountType", accountType);
+        }
         if (withdrawBillStatus != null) {
             filter.append(" and a.account.id in (select w.account.id from WithdrawBill w where w.account=a.account and w.status= :withdrawBillStatus) ");
             params.put("withdrawBillStatus", withdrawBillStatus);
-        }
-        if (accountUid != null && accountUid != 0) {
-            filter.append(" and a.account.uid = :accountUid");
-            params.put("accountUid", accountUid);
         }
 
         if (createdAtBegin != null) {
@@ -100,17 +114,21 @@ public class SupplierWithdrawCondition implements Serializable {
        本周期提现金额
     */
     public String getFilterWithdrawnAmount() {
-        StringBuilder filter = new StringBuilder(" where a.account.accountType = :accountType and a.tradeType = :tradeType ");
-        params.put("accountType", AccountType.SUPPLIER);
+        StringBuilder filter = new StringBuilder(" where a.tradeType = :tradeType ");
         params.put("tradeType", TradeType.WITHDRAW);
+        if (account != null) {
+            filter.append(" and account = :account");
+            params.put("account", account);
+        }
+        if (accountType != null) {
+            filter.append(" and account.accountType = :accountType ");
+            params.put("accountType", accountType);
+        }
         if (withdrawBillStatus != null) {
             filter.append(" and a.account.id in (select w.account.id from WithdrawBill w where w.account=a.account and w.status= :withdrawBillStatus) ");
             params.put("withdrawBillStatus", withdrawBillStatus);
         }
-        if (accountUid != null && accountUid != 0) {
-            filter.append(" and a.account.uid = :accountUid");
-            params.put("accountUid", accountUid);
-        }
+
         if (createdAtBegin != null) {
             filter.append(" and a.createdAt >= :createdAtBegin");
             params.put("createdAtBegin", createdAtBegin);

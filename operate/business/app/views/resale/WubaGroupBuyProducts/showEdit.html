@@ -48,15 +48,15 @@
                 <div class="control-group">
                     <label class="control-label" for="inputTitle">团购短名称 *</label>
                     <div class="controls">
-                        <input type="text" id="inputTitle" name="prodShortName" class="input-xxlarge" value="${goods.shortName}">
-                        <span class="help-inline">不超过20个字符</span>
+                        <input type="text" id="inputTitle" name="prodShortName" class="input-xxlarge" value="${goods.shortName}" data-max-length="20">
+                        <span class="help-inline">不超过20个字符<span id="inputTitle-monitor"></span></span>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="inputListShortTitle">列表页短标题 *</label>
                     <div class="controls">
-                        <input type="text" id="inputListShortTitle" name="listShortTitle" class="input-xxlarge" value="${goods.shortName}">
-                        <span class="help-inline">不超过20个字符</span>
+                        <input type="text" id="inputListShortTitle" name="listShortTitle" class="input-xxlarge" value="${goods.shortName}" data-max-length="30">
+                        <span class="help-inline">不超过30个字符<span id="inputListShortTitle-monitor"></span></span>
                     </div>
                 </div>
                 <div class="control-group">

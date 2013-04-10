@@ -1,17 +1,17 @@
 package unit;
 
+import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.accounts.AccountType;
 import models.consumer.User;
+import models.order.ECoupon;
+import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Goods;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.test.UnitTest;
-import factory.FactoryBoy;
-import factory.callback.BuildCallback;
 
 /**
  * OrderItems单元测试.
@@ -65,4 +65,13 @@ public class OrderItemsUnitTest extends UnitTest {
         assertEquals(2, count);
     }
 
+    @Test
+    public void testGetUnusedECouponNumber() throws Exception {
+        ECoupon ecoupon = FactoryBoy.create(ECoupon.class);
+        assertEquals(new Long(1), items.getUnusedECouponNumber());
+        ecoupon.status = ECouponStatus.CONSUMED;
+        ecoupon.save();
+
+        assertEquals(new Long(0), items.getUnusedECouponNumber());
+    }
 }

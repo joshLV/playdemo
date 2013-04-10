@@ -2,11 +2,13 @@ package controllers;
 
 import com.uhuila.common.util.PathUtil;
 import models.supplier.Supplier;
+import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.geometry.Positions;
 import operate.rbac.ContextedPermission;
 import play.Logger;
 import play.Play;
-import play.mvc.Before;
 import play.mvc.Controller;
+import play.mvc.With;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -15,10 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.coobird.thumbnailator.Thumbnails;
-import net.coobird.thumbnailator.geometry.Positions;
-import play.mvc.With;
 
 
 /**
@@ -111,6 +109,8 @@ public class SupplierContractImages extends Controller {
             if (!targetParent.mkdirs()) {
                 Logger.error("can not mkdir on %s", targetParent.getPath());
                 error("can not mkdir on " + targetParent.getPath());
+            } else {
+                Logger.info("madir %s success!", targetParent.getPath());
             }
         }
         //检查是否指定了目标大小，如果指定了大小，那么生成的默认图片的文件名也要更改

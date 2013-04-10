@@ -6,6 +6,7 @@ import com.uhuila.common.util.DateUtil;
 import models.cms.Topic;
 import models.cms.TopicType;
 import operate.rbac.annotations.ActiveNavigation;
+import operate.rbac.annotations.Right;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
@@ -57,6 +58,13 @@ public class OperateTopics extends Controller {
         if (topic.effectiveAt != null && DateUtil.getEndOfDay(topic.expireAt) != null && DateUtil.getEndOfDay(topic.expireAt).before(topic.effectiveAt)) {
             Validation.addError("topic.expireAt", "validation.beforeThanEffectiveAt");
         }
+    }
+
+    @ActiveNavigation("topics_show")
+    @Right("TOPICS_VIEW")
+    public static void show(Long id) {
+        Topic topic = Topic.findById(id);
+        render(topic);
     }
 
     public static void edit(Long id) {

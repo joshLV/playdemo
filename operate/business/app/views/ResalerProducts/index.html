@@ -5,18 +5,7 @@
 #{/set}
 <div class="body">
 <legend>分销商品管理 |
-    <button class="btn" data-html="true" data-toggle="popover" data-placement="bottom" type="button"
-            data-content="<form action='@{ResalerProducts.add}' method='post' id='add-form'> <fieldset>
-               <select name='product.partner'>
-                 #{list items:models.order.OuterOrderPartner.values(), as:'partner'}
-                 <option value = '${partner}'> ${partner.partnerName()}</option>
-                 #{/list}
-               </select>
-               <input type='text' placeholder='一百券商品ID' name='product.goods.id'>
-               <input type='text' placeholder='第三方产品ID' name='product.partnerProductId'>
-               <input type='text' placeholder='第三方产品URL' name='product.url'>
-               <button type='submit' class='btn' id='add-rp'>添加</button> </fieldset> </form>"
-            >手动添加</button>
+    <button id="add-product-button" class="btn"  type="button" >手动添加</button>
     #{a @ResalerProducts.expiringGoods(), class:"btn", rel:'tooltip', title:'查看即将过期的商品'}即将过期#{/a}
 </legend>
 <form class="form-inline" name="frmlist" id="frmlist" action="@{ResalerProducts.index()}" method="GET">
@@ -89,9 +78,22 @@
 </div>
 
 #{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script>
     $("a[rel='tooltip']").tooltip({container:'body'});
-    $("button[data-toggle='popover']").popover({container:'body'});
+    $("#add-product-button").popover({container:'body', placement:'bottom', html:'true',content:
+    "<form action='@{ResalerProducts.add}' method='post' id='add-form'> <fieldset>"+
+               "<select name='product.partner'>"+
+                 #{list items:models.order.OuterOrderPartner.values(), as:'partner'}
+                 "<option value = '${partner}'> ${partner.partnerName()}</option>"+
+                 #{/list}
+               "</select>"+
+               "<input type='text' placeholder='一百券商品ID' name='product.goods.id'>"+
+               "<input type='text' placeholder='第三方产品ID' name='product.partnerProductId'>"+
+               "<input type='text' placeholder='下架日期' name='product.endSale'"+
+                "onfocus='WdatePicker({readOnly:true,startDate:\"%y-%M-%d 23:59:59\",dateFmt:\"yyyy-MM-dd HH:mm:ss\"})' class='Wdate'>"+
+               "<input type='text' placeholder='第三方产品URL' name='product.url'>"+
+               "<button type='submit' class='btn' id='add-rp'>添加</button> </fieldset> </form> "});
     $("button[data-toggle='popover']").click(function(){
         $("#add-form").submit(function(){
             var ok = true;

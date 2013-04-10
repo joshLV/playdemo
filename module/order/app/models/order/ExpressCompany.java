@@ -61,7 +61,7 @@ public class ExpressCompany extends Model {
                         if (line[i].contains(":")) {
                             String[] channelMapping = line[i].split(":");
                             if (StringUtils.isNotBlank(channelMapping[0]) && StringUtils.isNotBlank(channelMapping[1])) {
-                                channelMap.put(channelMapping[0].trim() + "_" + express.id, channelMapping[1].trim());
+                                channelMap.put(channelMapping[0].trim() + "-" + express.id, channelMapping[1].trim());
                             }
                         }
                     }

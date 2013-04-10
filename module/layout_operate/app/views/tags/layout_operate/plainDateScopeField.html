@@ -1,0 +1,29 @@
+*{时间范围输入框}*
+*{name:      字段名称，仅用于显示标签}*
+*{begin:     开始日期的字段名称}*
+*{beginValue:开始日期的值}*
+*{end:       结束日期的字段名称}*
+*{endValue:  结束日期的值}*
+*{_required: 文字标签前面是否要加必填项标志（选填，默认不标识必填项）}*
+
+#{field _begin}
+<input class="input-medium Wdate" type="text" id="${field.id}" name="${field.name}"
+       value="${_beginValue?.escape()?.raw()}"
+       onfocus="WdatePicker({readOnly:true})"/>
+#{/field}
+至
+#{field _end}
+<input class="input-medium Wdate" type="text" id="${field.id}" name="${field.name}"
+       value="${_endValue?.escape()?.raw()}"
+       onfocus="WdatePicker({readOnly:true})"/>
+#{/field}
+*{#{field _begin}}*
+*{#{ifError field.name}}*
+*{<span class="error">${field?.error?.raw()}</span>}*
+*{#{/ifError}}*
+*{#{/field}}*
+*{#{field _end}}*
+*{#{ifError field.name}}*
+*{<span class="error">${field?.error?.raw()}</span>}*
+*{#{/ifError}}*
+*{#{/field}}*

@@ -82,8 +82,8 @@
         </tbody>
     </table>
     <div class="totalize">
-        <span>商品金额：#{if order.containsRealGoods()}${order.amount.subtract(models.order.Order.FREIGHT)}#{/if}#{else}${order.amount}#{/else}元</span>
-        <span>运费：#{if order.containsRealGoods()}${models.order.Order.FREIGHT}#{/if}#{else}0#{/else}元</span>
+        <span>商品金额：#{if order.containsRealGoods()&& orders.freight.compareTo(BigDecimal.ZERO)>0}${order.amount.subtract(models.order.Order.FREIGHT)}#{/if}#{else}${order.amount}#{/else}元</span>
+        <span>运费：#{if order.containsRealGoods()&& orders.freight.compareTo(BigDecimal.ZERO)>0}${models.order.Order.FREIGHT}#{/if}#{else}0#{/else}元</span>
         <span>合计：${order.amount}元</span>
     </div>
     #{if order.containsRealGoods()}

@@ -3,6 +3,7 @@ package models.sales;
 import com.uhuila.common.constants.DeletedStatus;
 import models.order.Order;
 import models.order.OrderItems;
+import models.order.Vendor;
 import models.supplier.Supplier;
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
@@ -17,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import java.beans.Transient;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,6 +62,13 @@ public class InventoryStock extends Model {
     @ManyToOne
     @JoinColumn(name = "supplier_id")
     public Supplier supplier;
+
+    /**
+     * 供货商
+     */
+    @ManyToOne
+    @JoinColumn(name = "vendor_id")
+    public Vendor vendor;
 
     /**
      * 创建时间
@@ -268,4 +277,6 @@ public class InventoryStock extends Model {
         }
         this.serialNo = this.actionType.getCode() + dateOfSerialNo + sequenceCode;
     }
+
+
 }

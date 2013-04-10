@@ -1,5 +1,6 @@
 package models.order;
 
+import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.RandomNumberUtil;
@@ -354,6 +355,8 @@ public class ECoupon extends Model {
     @Override
     public void _save() {
         this.goods.refreshSaleCount();
+        CacheHelper.delete(Order.CACHEKEY + this.order.id);
+        CacheHelper.delete(OrderItems.CACHEKEY + this.orderItems.id);
         super._save();
     }
 
@@ -765,7 +768,7 @@ public class ECoupon extends Model {
     public static String applyRefund(ECoupon eCoupon, Long userId, AccountType accountType, String userName, String refundComment) {
         String returnFlg = ECOUPON_REFUND_OK;
 
-        if (eCoupon == null || eCoupon.order.userId != userId || eCoupon.order.userType != accountType) {
+        if (eCoupon == null || eCoupon.order == null || eCoupon.order.userId == null || !eCoupon.order.userId.equals(userId) || eCoupon.order.userType != accountType) {
             returnFlg = "{\"error\":\"no such eCoupon\"}";
             return returnFlg;
         }
@@ -1536,21 +1539,19 @@ public class ECoupon extends Model {
 
     /**
      * 判断运营人员是否可重新发送券号.
+     * <p/>
+     * 以下条件的券是可以发送短信的：
+     * <ol>
+     * <li>券状态是未消费UNCONSUMED</li>
+     * <li>导入券在已消费时也可以发短信</li>
+     * </ol>
      *
      * @return
      */
     public boolean canSendSMSByOperate() {
-        if (this.goods.isLottery) {
-            return false;
-        }
-        if (this.status == ECouponStatus.UNCONSUMED) {
-            return true;
-        }
-        if (this.goods.couponType == GoodsCouponType.IMPORT && this.status == ECouponStatus.CONSUMED) {
-            // 导入券可继续发送
-            return true;
-        }
-        return false;
+        return !this.goods.isLottery && (this.status == ECouponStatus.UNCONSUMED
+                || (this.goods.couponType == GoodsCouponType.IMPORT && this.status == ECouponStatus.CONSUMED)
+        );
     }
 
     /**
@@ -1559,10 +1560,7 @@ public class ECoupon extends Model {
      * @return
      */
     public boolean canSendSMSByConsumer() {
-        if (canSendSMSByOperate() && this.smsSentCount <= 3) {
-            return true;
-        }
-        return false;
+        return canSendSMSByOperate() && this.smsSentCount <= 3;
     }
 
     /**

@@ -72,6 +72,7 @@ public class SkuTakeoutsTest extends FunctionalTest {
         orderItems.save();
 
         orderItems.order.orderType = OrderType.CONSUME;
+        orderItems.order.paidAt = new Date();
         orderItems.order.save();
 
     }
@@ -115,12 +116,14 @@ public class SkuTakeoutsTest extends FunctionalTest {
     public void testIndex_缺货() {
         //创建订单
         Order order = FactoryBoy.create(Order.class);
+
         OrderItems orderItems = FactoryBoy.create(OrderItems.class);
         orderItems.buyNumber = 5L;
         orderItems.status = OrderStatus.PAID;
         orderItems.save();
 
         orderItems.order.orderType = OrderType.CONSUME;
+        orderItems.order.paidAt = new Date();
         orderItems.order.save();
 
         Http.Response response = GET(Router.reverse("SkuTakeouts.index").url);

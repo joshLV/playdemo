@@ -216,6 +216,8 @@ stockItem.changeCount=数量
 stockItem.stock.remark=备注
 stock.IN=入库
 stock.OUT=出库
+stock.RETURN=退货
+stock.null=
 express.code=编号
 express.name=名称
 express.resalerMapping=渠道对应关系
@@ -261,6 +263,11 @@ supplier.weiboId=微博ID
 supplier.canSaleReal=是否销售实物
 supplier.canSaleReal_1=是
 supplier.canSaleReal_2=否
+
+supplier.sellECoupon=是否销售电子券
+supplier.sellECoupon_1=是
+supplier.sellECoupon_2=否
+
 image=Logo
 supplier.mobile=负责人手机
 supplier.phone=负责人电话
@@ -307,6 +314,8 @@ order.CANCELED=交易关闭
 order.SENT=已发货
 order.PREPARED=待打包
 order.UPLOADED=已上传
+order.RETURNING=退货中
+order.RETURNED=已退货
 
 #咨询
 consult.ORDERCONSULT=订购咨询
@@ -317,7 +326,7 @@ consult.QUESTIION=商户疑问
 consult.FEEDBACK=意见反馈
 consult.COMPLAINT=投诉反馈
 consult.OUTDIAL=外拨
-consult.RESERVATION=预定
+consult.RESERVATION=预约咨询
 
 consult.consultType=咨询类型
 
@@ -332,6 +341,7 @@ consult.text=咨询内容
 order.payMethod.null=未选择
 order.payMethod.alipay=支付宝
 order.payMethod.tenpay=财付通
+order.payMethod.sina=新浪支付
 order.payMethod.balance=余额支付
 
 
@@ -627,4 +637,44 @@ sku.brand.id=品牌
 sku.brandName=品牌
 sku.supplierName=商户
 
+entry.returnedCount=退货数量
+entry.reason=退货原因
+
+entry.RETURNING=退货中
+entry.RETURNED=已退货
+
+unreceivedReason=未收到原因
+
 stock.brand.id=品牌
+
+vendor.name=公司名称
+vendor.address=公司地址
+vendor.authorizedRepresentative=授权代表
+vendor.phone=电话
+vendor.fax=传真
+vendor.bankName=开户行
+vendor.cardNumber=银行帐号
+
+purchaseOrder.invoiceType=开票方式
+purchaseOrder.PLAIN=普票
+purchaseOrder.VAT=增票
+purchaseOrder.VAT_PLAIN=增值税普通发票
+purchaseOrder.NO=无发票
+purchaseOrderInvoiceType.PLAIN=普票
+purchaseOrderInvoiceType.VAT=增票
+purchaseOrderInvoiceType.VAT_PLAIN=增值税普通发票
+purchaseOrderInvoiceType.NO=无发票
+
+purchaseOrder.paymentType=支付方式
+purchaseOrderPaymentType.TRANSFER=转帐
+purchaseOrderPaymentType.CASH=现金
+purchaseOrderPaymentType.CHECK=支票
+
+purchaseOrder.signedAt=签约日期
+
+purchaseOrder.vendor.id=出售方
+item.effective=货品有效期
+item.expireAt=过期时间
+item.price=进价
+item.count=采购数量
+item.sku.id=采购货品

@@ -95,7 +95,7 @@
 
                 <div class="navbar-text pull-right">
                     <span>&nbsp;&nbsp;&nbsp;&nbsp;当前用户： </span>
-                    <a id="profile" href="http://admin.seewi.com.cn/profile">${currentUser?.loginName}</a>
+                    <a id="profile" href="http://admin.${play.Play.configuration.getProperty("application.baseDomain")}/profile">${currentUser?.loginName}</a>
                     <a href="/logout">注销</a>
                 </div>
 
@@ -131,7 +131,11 @@
     </div>
 </div>
 <footer>
-    <p class="pull-right">&copy; 上海视惠信息科技有限公司 2012-2013</p>
+%{
+models.cms.Topic devOncall = models.cms.Topic.getDevOnCall();
+}%
+    <div class="text-success" style="padding-left: 20px">技术值班人：<a href="http://cms.${play.Play.configuration.getProperty("application.baseDomain")}/topics/161" target="_blank">${devOncall?.title}</a></div>
+    <p class="pull-right" style="padding-right: 20px">&copy; 上海视惠信息科技有限公司 2012-2013</p>
 </footer>
 
 <!-- javascript -->

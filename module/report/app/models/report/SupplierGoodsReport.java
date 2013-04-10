@@ -88,12 +88,14 @@ public class SupplierGoodsReport {
     }
 
     public static List<SupplierGoodsReport> getSoldCountList(Long supplierId, String goodsShortName, Long shopId, Date fromDate, Date toDate) {
-        return getGoodsCountList(supplierId, goodsShortName, shopId, fromDate, toDate, "createdAt", "select new models.report.SupplierGoodsReport(goods.id, goods.shortName, count(*)) " +
+        return getGoodsCountList(supplierId, goodsShortName, shopId, fromDate, toDate, "createdAt", "select " +
+                "new models.report.SupplierGoodsReport(goods.id, goods.shortName, count(*)) " +
                 "from ECoupon where status!=models.order.ECouponStatus.REFUND");
     }
 
     private static List<SupplierGoodsReport> getRefundCountList(Long supplierId, String goodsShortName, Long shopId, Date fromDate, Date toDate) {
-        return getGoodsCountList(supplierId, goodsShortName, shopId, fromDate, toDate, "refundAt", "select new models.report.SupplierGoodsReport(goods.id, goods.shortName, 0, count(*)) " +
+        return getGoodsCountList(supplierId, goodsShortName, shopId, fromDate, toDate, "refundAt", "select " +
+                "new models.report.SupplierGoodsReport(goods.id, goods.shortName, 0, count(*)) " +
                 "from ECoupon where status=models.order.ECouponStatus.REFUND");
     }
 

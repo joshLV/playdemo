@@ -274,12 +274,15 @@ GET     /orders                                 OperateOrders.index
 GET     /orders/{id}                            OperateOrders.details
 PUT     /orders/{id}/send                       OperateOrders.send
 GET     /order_excel                            OperateOrders.orderExcelOut
+
+# 券管理
 GET     /coupons                                OperateCoupons.index
 PUT     /coupons/{id}/freeze                    OperateCoupons.freeze
 PUT     /coupons_in_history/{id}/freeze         OperateCoupons.freezeInCouponHistory
 PUT     /coupons/{id}/unfreeze                  OperateCoupons.unfreeze
 PUT     /coupons_in_history/{id}/unfreeze       OperateCoupons.unfreezeInCouponHistory
 GET     /coupons-message/{id}/send              OperateCoupons.sendMessage
+GET     /order-items-message/{id}/send              OperateCoupons.sendOrderItemMessage
 GET     /coupon_excel                           OperateCoupons.couponExcelOut
 GET     /coupon_history                         OperateCoupons.couponHistory
 GET     /coupon_refund                          OperateCoupons.refund
@@ -363,6 +366,7 @@ GET     /withdraw                               WithdrawApproval.index
 GET     /withdraw/detail/{id}                   WithdrawApproval.detail
 GET     /withdraw/{id}/detail                   WithdrawApproval.detail
 POST    /withdraw/approve                       WithdrawApproval.approve
+GET     /withdraw/approve                       WithdrawApproval.index
 GET     /withdraw/settle                        WithdrawApproval.initSettle
 GET     /withdraw/confirmSettle                 WithdrawApproval.confirmSettle
 POST    /withdraw/settle                        WithdrawApproval.settle
@@ -456,6 +460,35 @@ GET     /express-companies/new             real.ExpressCompanies.add
 POST    /express-companies                 real.ExpressCompanies.create
 GET     /express-companies/{id}/edit       real.ExpressCompanies.edit
 
+
+#供货商管理
+GET     /vendors                           real.Vendors.index
+GET     /vendors/new                       real.Vendors.add
+POST    /vendors                           real.Vendors.create
+GET     /vendors/{id}/edit                 real.Vendors.edit
+PUT     /vendors/{id}                      real.Vendors.update
+DELETE  /vendors/{id}                      real.Vendors.delete
+
+#采购合同管理
+GET     /purchase-orders                           real.purchaseOrders.index
+GET     /purchase-orders/new                       real.purchaseOrders.add
+POST    /purchase-orders                           real.purchaseOrders.create
+GET     /purchase-orders/{id}/edit                 real.purchaseOrders.edit
+POST     /purchase-orders/{id}                     real.purchaseOrders.update
+DELETE  /purchase-orders/{id}                      real.purchaseOrders.delete
+POST     /purchase-orders-item                     real.purchaseOrders.updateItem
+DELETE  /purchase-orders-item                      real.purchaseOrders.deletePurchaseItem
+GET     /purchase-orders/export                    real.purchaseOrders.export
+GET     /purchase-orders/{id}/stock-in            real.purchaseOrders.createStockIn
+DELETE  /purchase-orders/{id}                      real.purchaseOrders.delete
+
+
+
+
+
+
+
+
 #导入渠道订单
 GET     /import-partner-orders                    ImportPartnerOrders.index
 GET     /download-partner-orders                  ImportPartnerOrders.download
@@ -469,10 +502,11 @@ POST    /real/upload-order-shipping             UploadOrderShippingInfos.upload
 GET     /real/download-order-shipping             DownloadOrderShippingInfos.index
 POST    /real/download-order-shipping/export      DownloadOrderShippingInfos.exportOrderShipping
 
-
-
-
-
+# 实物订单退货管理
+POST    /real/return                                    real.ReturnEntries.returnGoods
+GET     /real/return-entries                            real.ReturnEntries.index
+PUT     /real/return-entries/{id}/received              real.ReturnEntries.received
+PUT     /real/return-entries/{id}/unreceived            real.ReturnEntries.unreceived
 
 # 下载渠道运单号上报文件
 GET     /real/partner/download-track-nos                   real.DownloadTrackNos.index
@@ -481,6 +515,10 @@ GET     /real/partner/download-track-nos/download          real.DownloadTrackNos
 #GET     /real/partner/jd-shipping-excel                    real.DownloadTrackNos.jdShippingExcelOut
 #GET     /real/partner/yhd-shipping-excel                   real.DownloadTrackNos.yhdShippingExcelOut
 
+
+
+# 修复Account的Web调用接口，临时使用，将尽快删除
+GET     /account/fix/{accountId}           supplier.AccountFix.fix
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

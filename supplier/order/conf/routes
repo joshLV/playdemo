@@ -20,7 +20,10 @@ GET     /coupons/multi                          SupplierVerifyMultiCoupons.index
 GET     /coupons/single-query                   SupplierVerifySingleCoupons.singleQuery
 GET     /coupons/multi-query                    SupplierVerifyMultiCoupons.multiQuery
 POST    /coupons/single-verify                  SupplierVerifySingleCoupons.singleVerify
+GET     /coupons/single-verify                  SupplierVerifySingleCoupons.singleQuery
 POST    /coupons/multi-verify                   SupplierVerifyMultiCoupons.multiVerify
+GET     /coupons/multi-verify                   SupplierVerifyMultiCoupons.multiQuery
+
 
 GET     /coupon-excel-out                       SupplierCoupons.couponExcelOut
 

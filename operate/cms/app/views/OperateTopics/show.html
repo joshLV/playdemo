@@ -1,0 +1,11 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'公告:' + topic?.title /}
+#{include '/share/nav.html' /}
+
+<div class="body">
+    <legend>${topic.title}</legend>
+
+    <p class="lead">
+        ${topic?.content.raw()}
+    </p>
+</div>

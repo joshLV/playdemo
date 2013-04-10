@@ -4,12 +4,15 @@ import models.sales.Goods;
 import models.supplier.Supplier;
 import play.Logger;
 import play.db.jpa.JPA;
-import play.db.jpa.Model;
 
 import javax.persistence.Query;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 销售税表.

@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                                       SupplierHome.index
+GET     /home/index                             SupplierHome.index
 
 # 资金帐户明细
 GET     /account-sequences                      AccountSequences.index
@@ -36,7 +37,7 @@ DELETE  /users/{id}                             SupplierUsers.delete
 
 # [v2] 报表
 GET     /reports                                SupplierIncomeReports.index
-#POST    /reports                                SupplierIncomeReports.index
+#POST    /reports                               SupplierIncomeReports.index
 POST    /reports/daily/export                   SupplierIncomeReports.exportDailyReport
 POST    /reports/shop/export                    SupplierIncomeReports.exportShopReport
 POST    /reports/goods/export                   SupplierIncomeReports.exportGoodsReport
@@ -52,6 +53,19 @@ POST    /verify/{shopId}/{eCouponSn}            SupplierVerifyECoupons.singleQue
 POST    /verify/verify                          SupplierVerifyECoupons.verify
 GET     /verify/verified-coupons                SupplierVerifyECoupons.showVerifiedCoupons
 
+# [v2] 商户帮助页面
+GET     /how-to-verify                          SupplierHelps.verify
+GET     /how-to-view-verified-coupons           SupplierHelps.viewVerifiedCoupons
+GET     /how-to-view-accountsequences           SupplierHelps.viewAccountSequences
+GET     /how-to-withdraw                        SupplierHelps.withdraw
+GET     /how-to-view-reports                    SupplierHelps.viewReports
+GET     /how-to-manage-shops                    SupplierHelps.manageShops
+GET     /how-to-manage-users                    SupplierHelps.manageUsers
+GET     /how-to-change-password                 SupplierHelps.changePassword
+
+
+
+
 # [v2] 资金帐户明细
 GET     /sequences                              SupplierAccountSequences.index
 
@@ -62,12 +76,17 @@ GET     /withdraws/apply                        SupplierWithdraws.apply
 POST    /withdraws/apply                        SupplierWithdraws.create
 
 # [v2] 下载发货单
-GET     /real/download-order-shipping                    SupplierDownloadOrderShippingInfos.index
-GET     /real/download-order-shipping/{id}/export        SupplierDownloadOrderShippingInfos.exportOrderShipping
+GET     /real/download-order-shipping                SupplierDownloadOrderShippingInfos.index
+GET     /real/download-order-shipping/{id}/export    SupplierDownloadOrderShippingInfos.exportOrderShipping
 
 # [v2] 上传发货单
 GET     /real/upload-order-shipping                  SupplierUploadOrderShippingInfos.index
 POST    /real/upload-order-shipping                  SupplierUploadOrderShippingInfos.upload
+
+# [v2] 实物订单退货管理
+POST    /real/return                                 real.SupplierReturnEntries.returnGoods
+GET     /real/return-entries                         real.SupplierReturnEntries.index
+PUT     /real/return-entries/{id}/received           real.SupplierReturnEntries.received
 
 # [v2] 修改密码
 GET     /passwords                              SupplierUserPasswords.index

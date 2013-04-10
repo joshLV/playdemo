@@ -224,6 +224,9 @@ public class DateUtil {
      * @return
      */
     public static List<String> getDateList(Date beginAt, Date endAt, int intervalDays, String dateFormat) {
+        if (beginAt == null && endAt == null){
+            return new ArrayList<>();
+        }
         Date date = beginAt;
         SimpleDateFormat df = new SimpleDateFormat(dateFormat);
         List<String> dateList = new ArrayList<>();

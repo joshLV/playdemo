@@ -54,10 +54,10 @@
             #{/list}
             </tbody>
             <tr>
-                <td colspan="8">商品金额： #{if orders.containsRealGoods()}
+                <td colspan="8">商品金额： #{if orders.containsRealGoods()&& orders.freight.compareTo(BigDecimal.ZERO)>0}
                 ${orders.amount.remainder(models.order.Order.FREIGHT)}#{/if}#{else}${orders.amount}#{/else}&nbsp;元
                     &nbsp;+ 运费：
-                #{if orders.containsRealGoods()}${models.order.Order.FREIGHT}#{/if}#{else}0#{/else} 元 = &nbsp;总金额：
+                #{if orders.containsRealGoods()&& orders.freight.compareTo(BigDecimal.ZERO)>0}${models.order.Order.FREIGHT}#{/if}#{else}0#{/else} 元 = &nbsp;总金额：
                 ${orders.amount} 元
                 </td>
             </tr>

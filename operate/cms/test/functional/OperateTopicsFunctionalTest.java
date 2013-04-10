@@ -3,8 +3,8 @@ package functional;
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
-import models.operator.OperateUser;
 import models.cms.Topic;
+import models.operator.OperateUser;
 import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
@@ -33,7 +33,6 @@ public class OperateTopicsFunctionalTest extends FunctionalTest {
 
         OperateUser user = FactoryBoy.create(OperateUser.class);
         FactoryBoy.create(Topic.class);
-
 
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
@@ -67,7 +66,7 @@ public class OperateTopicsFunctionalTest extends FunctionalTest {
         params.put("topic.displayOrder", "1");
         params.put("topic.content", "TestContent");
         params.put("topic.effectiveAt", "2012-3-21");
-        params.put("topic.expireAt", "2013-3-21");
+        params.put("topic.expireAt", "2113-3-21");
 
         Http.Response response = POST("/topics", params);
         assertStatus(302, response);
@@ -88,6 +87,17 @@ public class OperateTopicsFunctionalTest extends FunctionalTest {
         assertEquals(1, size);
     }
 
+
+    @Test
+    public void testShow() {
+        Topic topic = FactoryBoy.last(Topic.class);
+        assertNotNull(topic);
+
+        Http.Response response = GET("/topics/" + topic.id);
+        assertIsOk(response);
+        assertContentMatch("公告", response);
+    }
+
     @Test
     public void testEdit() {
         Topic topic = FactoryBoy.last(Topic.class);
@@ -106,7 +116,7 @@ public class OperateTopicsFunctionalTest extends FunctionalTest {
         String params = "topic.title=TestTitle123456789" +
                 "&topic.displayOrder=1" +
                 "&topic.effectiveAt=2012-3-21" +
-                "&topic.expireAt=2013-3-21" +
+                "&topic.expireAt=2113-3-21" +
                 "&topic.content=Test Content";
         Http.Response response = PUT("/topics/" + topic.id, "application/x-www-form-urlencoded", params);
         assertStatus(302, response);
