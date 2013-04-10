@@ -1,15 +1,27 @@
 package unit;
 
+import factory.FactoryBoy;
+import models.admin.SupplierPermission;
+import models.operator.OperateNavigation;
+import navigation.RbacLoader;
+import org.junit.Before;
+import org.junit.Test;
+import play.test.UnitTest;
+import play.vfs.VirtualFile;
+
 import java.util.List;
 
-import models.admin.SupplierPermission;
+public class SupplierRbacPermissionTest extends UnitTest {
 
-import org.junit.Ignore;
-import org.junit.Test;
 
-import play.test.UnitTest;
-
-public class RbacPermissionTest extends UnitTest {
+    @Before
+    public void setupDatabase() {
+        FactoryBoy.deleteAll();
+        FactoryBoy.create(OperateNavigation.class);
+        // 加载test/rbac.xml配置文件
+        VirtualFile file = VirtualFile.open("conf/rbac.xml");
+        RbacLoader.init(file);
+    }
 
     @Test
     public void canLoadPermissionYamlFile() {
@@ -27,6 +39,5 @@ public class RbacPermissionTest extends UnitTest {
         assertEquals(user.text, userAdd.parent.text);
 
     }
-
 
 }

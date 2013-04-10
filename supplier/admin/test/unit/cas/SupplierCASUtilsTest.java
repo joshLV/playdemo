@@ -8,7 +8,7 @@ import play.mvc.Http;
 import play.supplier.cas.CASUtils;
 import play.test.UnitTest;
 
-public class CASUtilsTest extends UnitTest {
+public class SupplierCASUtilsTest extends UnitTest {
 
 
     @Before

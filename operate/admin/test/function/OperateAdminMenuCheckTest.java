@@ -23,9 +23,9 @@ public class OperateAdminMenuCheckTest extends FunctionalTest {
 
     @BeforeClass
     public static void setUpRouter() {
-        Router.addRoute("GET", "/foo/bar", "Foo.bar");
-        Router.addRoute("GET", "/singlefoo/bar", "SingleFoo.bar");
-        Router.addRoute("GET", "/singlefoo/user", "SingleFoo.user");
+        Router.addRoute("GET", "/foo/bar", "data.Foo.bar");
+        Router.addRoute("GET", "/singlefoo/bar", "data.SingleFoo.bar");
+        Router.addRoute("GET", "/singlefoo/user", "data.SingleFoo.user");
     }
 
     @Before

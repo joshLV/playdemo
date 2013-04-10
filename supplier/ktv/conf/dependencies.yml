@@ -1,0 +1,84 @@
+# Application dependencies
+
+require:
+    - play 1.2.4
+    - play1 -> excel 1.2.3
+    - play1 -> betterlogs 1.0
+    - play1 -> appconfiguration 0.1
+    - play1 -> cobertura 2.4p3
+    - play1 -> paginate head
+    - play1 -> rabbitmq 0.4
+    - play1 -> app-version 0.1
+    - play1 -> factory-boy 1.0
+    - play1 -> play-solr 0.2.28
+    - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
+    - paginate_ext -> paginate_ext
+    - layout_trader -> layout_trader
+    - org.apache.poi -> ooxml-schemas 1.0
+    - sales -> sales
+    - accounts -> accounts
+    - consumer -> consumer
+    - sms -> sms
+    - cms -> cms
+    - operator -> operator
+    - order -> order
+    - supplier -> supplier
+    - resale -> resale
+    - operator -> operator
+    - supplier_rbac -> supplier_rbac
+    - asset_package -> asset_package
+    - org.jsoup -> jsoup 1.6.1
+    - view_ext -> view_ext
+    - cache_helper -> cache_helper
+    - emaillogs -> emaillogs
+    - report -> report
+    - supports -> supports
+    - commons-httpclient -> commons-httpclient 3.1
+    - oauth -> oauth
+    - resale_api -> resale_api
+    - supplier_api -> supplier_api
+    - com.taobao -> taobao-top 20121130
+
+repositories:
+    - mavenRepository:
+        type:       iBiblio
+        root:       "http://dev.uhuila.cn/nexus/content/groups/public"
+        contains:
+            - com.uhuila.utils -> *
+            - commons-httpclient -> *
+            - org.jsoup -> *
+            - com.taobao -> *
+        m2compatible: true
+
+    - play1ContributedModules:
+        type: http
+        artifact: "http://dev.uhuila.cn/play/modules/[module]-[revision].zip"
+        contains:
+            - play1 -> *
+
+    - layoutTraderCustomModules:
+        type:       local
+        artifact:   "${application.path}/../../module/[module]"
+        contains:
+            - layout_trader -> *
+            - paginate_ext -> *
+            - operator -> *
+            - sales -> *
+            - accounts -> *
+            - supplier -> *
+            - resale -> *
+            - supplier_rbac -> *
+            - view_ext -> *
+            - cache_helper -> *
+            - operator -> *
+            - order -> *
+            - consumer -> *
+            - sms -> *
+            - asset_package -> *
+            - cms -> *
+            - emaillogs -> *
+            - supports -> *
+            - oauth -> *
+            - resale_api -> *
+            - supplier_api -> *
+            - report -> *

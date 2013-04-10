@@ -1,5 +1,6 @@
-package controllers;
+package controllers.data;
 
+import controllers.OperateRbac;
 import operate.rbac.annotations.ActiveNavigation;
 import operate.rbac.annotations.Right;
 import play.mvc.Controller;

@@ -21,10 +21,10 @@ public class OperateAdminPermissionCheckTest extends FunctionalTest {
 
     @BeforeClass
     public static void setUpRouter() {
-        Router.addRoute("GET", "/foo/bar", "Foo.bar");
-        Router.addRoute("GET", "/singlefoo/bar", "SingleFoo.bar");
-        Router.addRoute("GET", "/singlefoo/user", "SingleFoo.user");
-        Router.addRoute("GET", "/singlefoo/google", "SingleFoo.google");
+        Router.addRoute("GET", "/foo/bar", "data.Foo.bar");
+        Router.addRoute("GET", "/singlefoo/bar", "data.SingleFoo.bar");
+        Router.addRoute("GET", "/singlefoo/user", "data.SingleFoo.user");
+        Router.addRoute("GET", "/singlefoo/google", "data.SingleFoo.google");
     }
 
     @Before

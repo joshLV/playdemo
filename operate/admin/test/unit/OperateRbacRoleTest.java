@@ -1,19 +1,17 @@
 package unit;
 
-import java.util.List;
-
+import factory.FactoryBoy;
 import models.operator.OperateNavigation;
 import models.operator.OperateRole;
 import operate.rbac.RbacLoader;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.test.UnitTest;
 import play.vfs.VirtualFile;
-import factory.FactoryBoy;
 
-public class RbacRoleTest extends UnitTest {
+import java.util.List;
+
+public class OperateRbacRoleTest extends UnitTest {
 
     @Before
     public void setupDatabase() {
