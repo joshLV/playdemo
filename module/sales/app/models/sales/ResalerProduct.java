@@ -140,6 +140,7 @@ public class ResalerProduct extends Model {
                 this.url = "http://www.1mall.com/item/" + partnerProductId;
                 break;
             case WB:
+
                 this.url = "http://t.58.com/sh/" + partnerProductId + "/";
                 break;
             case SINA:

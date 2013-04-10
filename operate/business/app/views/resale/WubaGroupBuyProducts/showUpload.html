@@ -205,18 +205,19 @@
         <div class="control-group">
             <label class="control-label">发布城市 *</label>
             <div class="controls">
-                <input type="checkbox" city="北京" value="2">北京
-                <input type="checkbox" city="上海" value="4" checked>上海
-                <input type="checkbox" city="天津" value="5">天津
-                <input type="checkbox" city="哈尔滨" value="10">哈尔滨
-                <input type="checkbox" city="苏州" value="21">苏州
-                <input type="checkbox" city="南京" value="29">南京
-                <input type="checkbox" city="杭州" value="35">杭州
-                <input type="checkbox" city="成都" value="36">成都
-                <input type="checkbox" city="宁波" value="205">宁波
-                <input type="checkbox" city="无锡" value="361">无锡
-                <input type="checkbox" city="常州" value="64">常州
+                <input type="checkbox" city="北京" value="2" city-shortname="bj">北京
+                <input type="checkbox" city="上海" value="4" city-shortname="sh" checked>上海
+                <input type="checkbox" city="天津" value="5" city-shortname="tj">天津
+                <input type="checkbox" city="哈尔滨" value="10" city-shortname="hrb">哈尔滨
+                <input type="checkbox" city="苏州" value="21" city-shortname="su">苏州
+                <input type="checkbox" city="南京" value="29" city-shortname="nj">南京
+                <input type="checkbox" city="杭州" value="35" city-shortname="hz">杭州
+                <input type="checkbox" city="成都" value="36" city-shortname="cd">成都
+                <input type="checkbox" city="宁波" value="205" city-shortname="nb">宁波
+                <input type="checkbox" city="无锡" value="361" city-shortname="wx">无锡
+                <input type="checkbox" city="常州" value="64" city-shortname="cz">常州
                 <input type="hidden" name="cityIds" id="cityIds">
+                <input type="hidden" name="firstCity" id="firstCity">
             </div>
         </div>
 
@@ -303,7 +304,7 @@
 #{asset.js src:['/ztree/jquery.ztree.all-3.5.min.js'] /}
 <script src="@{'/public/javascripts/ztree-helper.js'}" type="text/javascript" charset="UTF-8"></script>
 <script>
-    var subCategoryData = ${allCategoriesJson.raw()};
+    var subCategoryData = [];//${allCategoriesJson.raw()};
 </script>
 <script src="@@{'/public/javascripts/wuba-products.js'}"></script>
 #{/set}
