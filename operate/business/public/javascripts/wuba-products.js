@@ -196,11 +196,13 @@ $(function(){
         var checkedCities = [];
         $("input[city]:checked").each(function(){checkedCities.push($(this).val())});
         $("#cityIds").val("["+checkedCities.join(",")+"]");
+        $("#firstCity").val($("input[city]:checked:first").first().attr("city-shortName"));
     });
 
     // 所有门店的商圈tree添加上海这个城市
     batchAddCityNode('4', '上海');
     $("#cityIds").val('[4]');
+    $("#firstCity").val('sh');
 
     // 自动选择门店中的商圈
     $("ul[id^='circleId'].ztree").each(function(){

@@ -42,7 +42,7 @@ public class WubaGroupBuyProducts extends Controller {
     }
 
     @ActiveNavigation("resale_partner_product")
-    public static void upload(long groupbuyId,@As(",") List<String> shopIds) {
+    public static void upload(long groupbuyId,@As(",") List<String> shopIds, String firstCity) {
         OperateUser operateUser = OperateRbac.currentUser();
         Goods goods = Goods.findById(groupbuyId);
         if (goods == null) {
@@ -52,6 +52,7 @@ public class WubaGroupBuyProducts extends Controller {
         //先将所有的参数认为是是团购信息参数
         Map<String, String> groupbuyInfoParams = params.allSimple();
         groupbuyInfoParams.remove("body");
+        groupbuyInfoParams.remove("firstCity");
         ResalerProduct product = ResalerProduct.alloc(OuterOrderPartner.WB, goods);
         groupbuyInfoParams.put("groupbuyId", String.valueOf(product.goodsLinkId));
 
@@ -87,6 +88,8 @@ public class WubaGroupBuyProducts extends Controller {
             product.status(ResalerProductStatus.UPLOADED).creator(operateUser.id).save();
             String partnerProductId = response.data.getAsJsonObject().get("groupbuyId58").getAsString();
             product.partnerProduct(partnerProductId).save();
+            product.url("http://t.58.com/"+ firstCity + "/"+ partnerProductId);
+            product.save();
 
             ResalerProductJournal.createJournal(product, operateUser.id, new Gson().toJson(wubaParams),
                     ResalerProductJournalType.CREATE, "上传商品");
