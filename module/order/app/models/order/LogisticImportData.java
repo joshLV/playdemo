@@ -107,6 +107,10 @@ public class LogisticImportData implements Cloneable {
 
 
     /**
+     * 省市
+     */
+    public String province;
+    /**
      * 收货地址
      */
     public String address;
@@ -369,7 +373,6 @@ public class LogisticImportData implements Cloneable {
             Logger.error("can not find the resaler by login name: %s", partner.partnerLoginName());
             return null;
         }
-
         return Order.createConsumeOrder(resaler.id, AccountType.RESALER).save();
 
     }
@@ -384,7 +387,7 @@ public class LogisticImportData implements Cloneable {
         orderShippingInfo.tel = this.tel;
         orderShippingInfo.paidAt = this.paidAt;
         orderShippingInfo.createdAt = new Date();
-        orderShippingInfo.address = StringUtils.normalizeSpace(this.expressInfo) + this.address;
+        orderShippingInfo.address = StringUtils.normalizeSpace(this.province) + this.address;
         orderShippingInfo.zipCode = this.zipCode;
         orderShippingInfo.invoiceTitle = this.invoiceTitle;
         orderShippingInfo.outerOrderId = this.outerOrderNo;

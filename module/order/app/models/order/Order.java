@@ -712,7 +712,8 @@ public class Order extends Model {
 
         Resaler sinaResaler = Resaler.findOneByLoginName(Resaler.SINA_LOGIN_NAME);
         Account account;
-        if (this.userId.equals(sinaResaler.id)) {
+        System.out.println(this.userId+"))))))))))))))))))))))))");
+        if (sinaResaler !=null && this.userId.equals(sinaResaler.id)) {
             account = AccountUtil.getAccount(this.consumerId, AccountType.CONSUMER);
         } else {
             account = AccountUtil.getAccount(this.userId, this.userType);
@@ -806,7 +807,7 @@ public class Order extends Model {
                     }
 
                     //在新浪微博购买产生券，更新partner
-                    if (this.userId.equals(sinaResaler.id)) {
+                    if (sinaResaler !=null && this.userId.equals(sinaResaler.id)) {
                         eCoupon.partner = ECouponPartner.SINA;
                         eCoupon.save();
                     }
