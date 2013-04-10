@@ -37,7 +37,7 @@ public class OperateOrders extends Controller {
             condition.hidPaidAtBegin = DateHelper.beforeDays(1);
             condition.hidPaidAtEnd = new Date();
         }
-        else if  (StringUtils.isBlank(condition.searchKey)&&StringUtils.isBlank(condition.searchItems) && StringUtils.isBlank(condition.outerOrderId)&& condition.paidAtBegin ==null && condition.paidAtEnd==null) {
+        else if  ((StringUtils.isBlank(condition.searchKey)||StringUtils.isBlank(condition.searchItems)) && StringUtils.isBlank(condition.outerOrderId) && condition.paidAtBegin ==null && condition.paidAtEnd==null&&condition.refundAtBegin==null && condition.refundAtEnd==null) {
             condition.paidAtBegin = DateHelper.beforeDays(7);
             condition.paidAtEnd = new Date();
         }
@@ -47,6 +47,7 @@ public class OperateOrders extends Controller {
         if (desc == null) {
             desc = "-1";
         }
+
         // 获取最新的desc值
         String[] descs = desc.split(",");
         desc = descs[descs.length - 1].trim();
