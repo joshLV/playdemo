@@ -304,7 +304,7 @@
 #{asset.js src:['/ztree/jquery.ztree.all-3.5.min.js'] /}
 <script src="@{'/public/javascripts/ztree-helper.js'}" type="text/javascript" charset="UTF-8"></script>
 <script>
-    var subCategoryData = [];//${allCategoriesJson.raw()};
+    var subCategoryData = ${allCategoriesJson.raw()};
 </script>
 <script src="@@{'/public/javascripts/wuba-products.js'}"></script>
 #{/set}
