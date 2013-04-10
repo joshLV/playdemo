@@ -8,18 +8,23 @@
         <div class="left-triangle"></div>
         <div class="button nav-button left"><a href="javascript:history.go(-1);">返回</a></div>
     </div>
-    <div class="message message-normal">
+    <div class="message message-success pre-help">
         <p>${coupon.goods.shortName}</p>
-
-        <div class="liketable">
-            <span class="label">退款金额</span>
-            <span class="important">￥${coupon.salePrice}</span>
+    </div>
+    <div class="content-title">
+        <div class="legend">
+            <fleft>退款金额：</fleft>
+            <fright>￥${coupon.goods.getResalePrice()}</fright>
+            <div class="clear"></div>
         </div>
-        <div class="liketable">
-            <span class="label">退款方式</span>
-            <span class="">原路返回</span>
+        <div class="legend">
+            <fleft>退款方式</fleft>
+            <fright>
+                <span class="tip">(3个工作日内) </span>
+                原路返回
+            </fright>
+            <div class="clear"></div>
         </div>
-        <p>退款将在3个工作日内原路返回您支付的账号或银行卡</p>
     </div>
 
 #{form @WebUserSinaVouchers.refund(coupon.id),method:'POST'}

@@ -31,7 +31,6 @@ public class PaymentNotify extends Controller {
 
         PaymentJournal.saveNotifyJournal(orderNumber, params.all(), result, success);
         if(success){
-            Logger.info("------------%s", result.get(PaymentFlow.SUCCESS_INFO));
             renderText(result.get(PaymentFlow.SUCCESS_INFO));
         }else {
             renderText("failed");

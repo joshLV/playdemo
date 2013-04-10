@@ -132,10 +132,10 @@ GET /weibo/wap/product/{productId}               WebSinaVouchers.showProduct(sou
 
 GET /weibo/wap/order                             WebSinaVouchers.showOrder(source:'wap')
 POST /weibo/wap/order                            WebSinaVouchers.order
-GET /weibo/wap/coupon                            WebUserSinaVouchers.showCoupon
-GET /weibo/wap/coupon/{couponId}/detail          WebUserSinaVouchers.showDetail
+GET /weibo/wap/coupons                           WebUserSinaVouchers.myCoupons
+GET /weibo/wap/coupon/{couponId}                 WebUserSinaVouchers.showDetail
 GET /weibo/wap/more-coupon                       WebUserSinaVouchers.showMoreCoupon
-GET /weibo/wap/coupon/{couponId}                 WebUserSinaVouchers.refundCoupon
+GET /weibo/wap/coupon/{couponId}/refund          WebUserSinaVouchers.showRefund
 POST /weibo/wap/coupon/{couponId}                WebUserSinaVouchers.refund
 
 

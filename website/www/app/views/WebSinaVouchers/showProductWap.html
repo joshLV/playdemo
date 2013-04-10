@@ -1,14 +1,14 @@
 #{extends 'wap.html' /}
 #{set title:'一百券 - 现金详情' /}
-<div id="wrap" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<div id="wrap">
     <div id="main-header">
-        <h1>现金券详情wap</h1>
+        <h1>现金券详情</h1>
     </div>
     <div id="main-left-button" class="nav-button">
         <div class="content"> 商家</div>
     </div>
     <div id="main-right-button" class="button nav-button">
-        <div class="content">#{a @WebUserSinaVouchers.showCoupon()} 我的券#{/a}</div>
+        <div class="content">#{a @WebUserSinaVouchers.myCoupons()} 我的券#{/a}</div>
     </div>
 
     <div class="content-title product-header">
@@ -39,8 +39,8 @@
         </div>
         <div class="product-go">
             <div class="left">
-                <span class="current-price">￥${goods.getResalePrice()}</span>
-                <span class="origin-price">${goods.faceValue}元</span>
+                <span class="current-price"><i>￥</i>${goods.getResalePrice()}</span>
+                *{<span class="origin-price">￥${goods.faceValue}</span>}*
             </div>
             <div class="right">
             #{if goods.status==models.sales.GoodsStatus.OFFSALE}该商品已下架！#{/if}
@@ -53,12 +53,12 @@
     </div>
     <div class="main-content">
         <div class="main-box">
-            <legend>购买须知</legend>
+            <div class="legend">购买须知</div>
             <p>${goods.prompt.raw()}</p>
         </div>
 
         <div class="main-box">
-            <legend>使用门店</legend>
+            <div class="legend">使用门店</div>
         #{list items:shops,as:'shop'}
             <p class="shop-title">${shop.name}</p>
 
@@ -73,8 +73,8 @@
 
     <div class="product-go">
         <div class="left">
-            <span class="current-price">￥${goods.getResalePrice()}</span>
-            <span class="origin-price">${goods.faceValue}元</span>
+            <span class="current-price"><i>￥</i>${goods.getResalePrice()}</span>
+            *{<span class="origin-price">${goods.faceValue}元</span>}*
         </div>
         <div class="right">
         #{if goods.status==models.sales.GoodsStatus.OFFSALE}该商品已下架！#{/if}
@@ -85,4 +85,3 @@
         <div class="clear"></div>
     </div>
 </div>
-
