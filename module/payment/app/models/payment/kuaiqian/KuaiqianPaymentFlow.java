@@ -24,8 +24,8 @@ public class KuaiqianPaymentFlow extends PaymentFlow {
 	 * @return 表单
 	 */
     @Override
-    public String getRequestForm(String orderNumber, String description, BigDecimal fee,
-                                 String subPaymentCode, String remoteIp) {
+    public String getRequestForm(String orderNumber, String description, BigDecimal fee, String subPaymentCode,
+                                 String remoteIp, String ext) {
         String orderAmount= fee.multiply(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP).toString();
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
@@ -156,7 +156,8 @@ public class KuaiqianPaymentFlow extends PaymentFlow {
     private String join(Map<String, String> params){
         StringBuilder result = new StringBuilder();
         for(Map.Entry<String, String> entry : params.entrySet()){
-            if (!"".equals(entry.getKey()) && !"".equals(entry.getValue())){
+            String value = entry.getValue();
+            if (value != null){
                 result.append(entry.getKey())
                       .append("=")
                       .append(entry.getValue())

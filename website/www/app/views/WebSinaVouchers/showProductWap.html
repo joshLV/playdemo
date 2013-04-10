@@ -1,0 +1,88 @@
+#{extends 'wap.html' /}
+#{set title:'一百券 - 现金详情' /}
+<div id="wrap" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+    <div id="main-header">
+        <h1>现金券详情wap</h1>
+    </div>
+    <div id="main-left-button" class="nav-button">
+        <div class="content"> 商家</div>
+    </div>
+    <div id="main-right-button" class="button nav-button">
+        <div class="content">#{a @WebUserSinaVouchers.showCoupon()} 我的券#{/a}</div>
+    </div>
+
+    <div class="content-title product-header">
+        <h2>${goods.name}</h2>
+
+        <div class="product-img">
+            <img src="${goods.getImageOriginalPath()}"/>
+
+            <div class="product-cover">
+                <div class="ptitle left">
+                ${goods.shortName}
+                </div>
+                <div class="pprice right">
+                    <div class="current-price">
+                        ￥${goods.getResalePrice()}
+                    </div>
+                    <div class="origin-price">
+                        原价：${goods.faceValue}
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <div class="product-share">
+            <div class="left"><img src="#"> 已售${goods.virtualSaleCount?:0}张，还剩${goods.cumulativeStocks}张</div>
+            <div class="right"><img src="#">支持“过期退款”</div>
+            <div class="clear"></div>
+        </div>
+        <div class="product-go">
+            <div class="left">
+                <span class="current-price">￥${goods.getResalePrice()}</span>
+                <span class="origin-price">${goods.faceValue}元</span>
+            </div>
+            <div class="right">
+            #{if goods.status==models.sales.GoodsStatus.OFFSALE}该商品已下架！#{/if}
+            #{else}
+                <div class="button button-go"><a href="/weibo/wap/order?productId=${productId}">立即抢购</a></div>
+            #{/else}
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="main-box">
+            <legend>购买须知</legend>
+            <p>${goods.prompt.raw()}</p>
+        </div>
+
+        <div class="main-box">
+            <legend>使用门店</legend>
+        #{list items:shops,as:'shop'}
+            <p class="shop-title">${shop.name}</p>
+
+            <p>${shop.address.raw()}</p>
+
+            <p>${shop.phone}</p>
+
+        #{/list}
+
+        </div>
+    </div>
+
+    <div class="product-go">
+        <div class="left">
+            <span class="current-price">￥${goods.getResalePrice()}</span>
+            <span class="origin-price">${goods.faceValue}元</span>
+        </div>
+        <div class="right">
+        #{if goods.status==models.sales.GoodsStatus.OFFSALE}该商品已下架！#{/if}
+        #{else}
+            <div class="button button-go"><a href="/weibo/wap/order?productId=${productId}">立即抢购</a></div>
+        #{/else}
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+

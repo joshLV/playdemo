@@ -50,7 +50,7 @@ public class AliPaymentFlowTest extends FunctionalTest {
         PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow("alipay");
         PaymentSource paymentSource = PaymentSource.findByCode(order.payMethod);
         assertNotNull(paymentSource);
-        assertNotNull(paymentFlow.getRequestForm(order.orderNumber, order.description, order.discountPay, paymentSource.subPaymentCode, "127.0.0.1"));
+        assertNotNull(paymentFlow.getRequestForm(order.orderNumber, order.description, order.discountPay, paymentSource.subPaymentCode, "127.0.0.1", null));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class AliPaymentFlowTest extends FunctionalTest {
         PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow("tenpay");
         PaymentSource paymentSource = PaymentSource.findByCode(order.payMethod);
         assertNotNull(paymentSource);
-        assertNotNull(paymentFlow.getRequestForm(order.orderNumber, order.description, order.discountPay, paymentSource.subPaymentCode, "127.0.0.1"));
+        assertNotNull(paymentFlow.getRequestForm(order.orderNumber, order.description, order.discountPay, paymentSource.subPaymentCode, "127.0.0.1", null));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class AliPaymentFlowTest extends FunctionalTest {
         PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow("99bill");
         PaymentSource paymentSource = PaymentSource.findByCode(order.payMethod);
         assertNotNull(paymentSource);
-        assertNotNull(paymentFlow.getRequestForm(order.orderNumber, order.description, order.discountPay, paymentSource.subPaymentCode, "127.0.0.1"));
+        assertNotNull(paymentFlow.getRequestForm(order.orderNumber, order.description, order.discountPay, paymentSource.subPaymentCode, "127.0.0.1", null));
     }
 
 }

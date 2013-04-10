@@ -284,7 +284,7 @@ public class Order extends Model {
      * @param userId
      * @param userType
      */
-    private Order(long userId, AccountType userType) {
+    private Order(Long userId, AccountType userType) {
         this.userId = userId;
         this.userType = userType;
 
@@ -324,12 +324,12 @@ public class Order extends Model {
      * @param accountType 付款用户账户类型
      * @return 消费订单
      */
-    public static Order createConsumeOrder(long userId, AccountType accountType) {
+    public static Order createConsumeOrder(Long userId, AccountType accountType) {
         Order order = new Order(userId, accountType);
         order.orderType = OrderType.CONSUME;
+        order.consumerId=userId;
         return order;
     }
-
     /**
      * sina 创建消费订单.
      *
@@ -709,7 +709,13 @@ public class Order extends Model {
             }
         }
 
-        Account account = AccountUtil.getAccount(this.userId, this.userType);
+        Resaler sinaResaler = Resaler.findOneByLoginName(Resaler.SINA_LOGIN_NAME);
+        Account account;
+        if (this.userId.equals(sinaResaler.id)){
+            account = AccountUtil.getAccount(this.consumerId, AccountType.CONSUMER);
+        }else {
+            account = AccountUtil.getAccount(this.userId, this.userType);
+        }
         PaymentSource paymentSource = PaymentSource.find("byCode", this.payMethod).first();
 
         //先将用户银行支付的钱充值到自己账户上
@@ -1151,8 +1157,11 @@ public class Order extends Model {
         }
     }
 
+    public static Order findOneByResaler(String orderNumber, Long resalerId, AccountType accountType) {
+        return Order.find("byOrderNumberAndUserIdAndUserType", orderNumber, resalerId, accountType).first();
+    }
     public static Order findOneByUser(String orderNumber, Long userId, AccountType accountType) {
-        return Order.find("byOrderNumberAndUserIdAndUserType", orderNumber, userId, accountType).first();
+        return Order.find("byOrderNumberAndConsumerIdAndUserType", orderNumber, userId, accountType).first();
     }
 
     public static boolean verifyAndPay(String orderNumber, String fee, String paymentCode) {

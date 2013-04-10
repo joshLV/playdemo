@@ -19,7 +19,8 @@ public class TestPaymentFlow extends PaymentFlow{
     public static final String NOTIFY_URL = Play.configuration.getProperty("local.payment.notify_url", "");
 
     @Override
-    public String getRequestForm(String orderNumber, String description, BigDecimal fee, String subPaymentCode, String remoteIp) {
+    public String getRequestForm(String orderNumber, String description, BigDecimal fee, String subPaymentCode,
+                                 String remoteIp, String ext) {
         Map<String, String> params = new HashMap<>();
         params.put("order_no", orderNumber);
         params.put("desc", description);

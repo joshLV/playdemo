@@ -49,7 +49,7 @@ public class ResalerOrders extends Controller {
     public static void show(String orderNumber) {
         Resaler resaler = SecureCAS.getResaler();
         //订单信息
-        models.order.Order order = models.order.Order.findOneByUser(orderNumber, resaler.getId(), AccountType.RESALER);
+        models.order.Order order = models.order.Order.findOneByResaler(orderNumber, resaler.getId(), AccountType.RESALER);
         List<ECoupon> eCoupons = ECoupon.findByOrder(order);
         //收货信息
         BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders", "订单详情", "/orders/" + orderNumber);
@@ -75,7 +75,7 @@ public class ResalerOrders extends Controller {
         //加载用户账户信息
         Resaler resaler = SecureCAS.getResaler();
         //订单信息
-        models.order.Order order = models.order.Order.findOneByUser(orderNumber, resaler.getId(), AccountType.RESALER);
+        models.order.Order order = models.order.Order.findOneByResaler(orderNumber, resaler.getId(), AccountType.RESALER);
         //更新订单信息
         order.cancelAndUpdateOrder();
         renderJSON("");

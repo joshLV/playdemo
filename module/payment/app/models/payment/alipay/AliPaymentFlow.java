@@ -18,8 +18,8 @@ public class AliPaymentFlow extends PaymentFlow {
 
 
     @Override
-    public String getRequestForm(String orderNumber, String description,
-                                 BigDecimal fee, String subPaymentCode, String remoteIp){
+    public String getRequestForm(String orderNumber, String description, BigDecimal fee,
+                                 String subPaymentCode, String remoteIp, String ext){
         //必填参数//
 
         //请与贵网站订单系统中的唯一订单号匹配

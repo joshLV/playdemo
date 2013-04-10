@@ -62,7 +62,7 @@ public class Charge extends Controller {
             return;
         }
         String form = paymentFlow.getRequestForm(order.orderNumber, order.description,
-                order.discountPay, paymentSource.subPaymentCode, request.remoteAddress);
+                order.discountPay, paymentSource.subPaymentCode, request.remoteAddress, null);
         PaymentJournal.savePayRequestJournal(
                 order.orderNumber,
                 order.description,

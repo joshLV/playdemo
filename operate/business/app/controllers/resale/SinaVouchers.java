@@ -26,7 +26,7 @@ import java.util.*;
 @ActiveNavigation("resale_partner_product")
 public class SinaVouchers extends Controller {
     @ActiveNavigation("resale_partner_product")
-    public static void showUpload(long goodsId) {
+    public static void showUpload(Long goodsId) {
         Goods goods = Goods.findById(goodsId);
 
         Collection<Shop> shops = goods.getShopList();
@@ -105,31 +105,6 @@ public class SinaVouchers extends Controller {
 
         render(goods, shops, resalerProduct, journal);
     }
-
-    /**
-     * 销卡
-     */
-    @ActiveNavigation("resale_partner_product")
-    public static void dispose(String voucherId) {
-        ECoupon coupon = ECoupon.find("partnerCouponId=? and partner=? and status =?", voucherId, OuterOrderPartner.SINA, ECouponStatus.UNCONSUMED).first();
-        if (coupon == null) {
-            error("not found sina voucher:%s" + voucherId);
-            return;
-        }
-        Map<String, String> requestParams = new HashMap<>();
-        requestParams.put("id", voucherId);
-
-        SinaVoucherResponse response = SinaVoucherUtil.updateTemplate(new Gson().toJson(requestParams));
-
-        if (response.isOk()) {
-            OperateUser operateUser = OperateRbac.currentUser();
-            ResalerProduct product = ResalerProduct.findById(coupon.orderItems.outerGoodsNo);
-            ResalerProductJournal.createJournal(product, operateUser.id, new Gson().toJson(requestParams),
-                    ResalerProductJournalType.UPDATE, "sina销卡");
-        }
-        render("resale/SinaVouchers/result.html", response);
-    }
-
 
     @ActiveNavigation("resale_partner_product")
     public static void voucherStyles() {

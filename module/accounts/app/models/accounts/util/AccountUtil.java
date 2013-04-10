@@ -27,6 +27,7 @@ public class AccountUtil {
     public static final String PARTNER_TENPAY = "tenpay";
     public static final String PARTNER_99BILL = "99bill";
     public static final String PARTNER_TESTPAY = "testpay";
+    public static final String PARTNER_SINAPAY = "sina";
 
     public static Account getUhuilaAccount() {
         return getCreditableAccount(Account.UHUILA_COMMISSION, AccountType.PLATFORM);
@@ -60,6 +61,8 @@ public class AccountUtil {
                 return getCreditableAccount(Account.PARTNER_TENPAY, AccountType.PLATFORM);
             case PARTNER_99BILL:
                 return getCreditableAccount(Account.PARTNER_KUAIQIAN, AccountType.PLATFORM);
+            case PARTNER_SINAPAY:
+                return getCreditableAccount(Account.PARTNER_SINA, AccountType.PLATFORM);
             case PARTNER_TESTPAY:
                 return getCreditableAccount(Account.PARTNER_TENPAY, AccountType.PLATFORM);
             default:

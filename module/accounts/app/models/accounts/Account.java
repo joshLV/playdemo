@@ -68,6 +68,7 @@ public class Account extends Model {
     public static final long PARTNER_ALIPAY = 100L; //支付宝虚拟账户
     public static final long PARTNER_TENPAY = 101L; //财付通虚拟账户
     public static final long PARTNER_KUAIQIAN = 102L; //快钱虚拟账户
+    public static final long PARTNER_SINA = 103L; //快钱虚拟账户
 
 
     public Account() {

@@ -36,18 +36,7 @@ import util.extension.ExtensionResult;
 import util.transaction.RemoteCallback;
 import util.transaction.RemoteRecallCheck;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.Version;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1611,4 +1600,14 @@ public class ECoupon extends Model {
         return true;
     }
 
+    public static List<ECoupon> findWapCoupons(User user, int limit) {
+        if (limit > 0) {
+            return ECoupon.find("order.consumerId=? order by id desc", user.id).fetch(limit);
+        }
+        return ECoupon.find("order.consumerId=? order by id desc", user.id).fetch();
+    }
+
+    public static ECoupon getCouponByIdAndUser(Long id, User user) {
+        return ECoupon.find("id=? and order.consumerId=?", id, user.id).first();
+    }
 }

@@ -4,6 +4,7 @@ import models.order.ECoupon;
 import models.order.ECouponPartner;
 import models.order.ECouponStatus;
 import models.sina.SinaVouchersMessageUtil;
+import play.jobs.Every;
 import play.jobs.Job;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  * Date: 13-3-26
  * Time: 上午11:56
  */
-//@Every("1mn")
+@Every("1mn")
 public class SinaECouponScanner extends Job {
     @Override
     public void doJob() {

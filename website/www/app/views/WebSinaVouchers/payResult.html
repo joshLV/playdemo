@@ -1,0 +1,22 @@
+#{extends 'wap.html' /}
+#{set title:'一百券 - 购买成功' /}
+<div id="wrap">
+    <div id="main-header">
+        <h1>购买成功</h1>
+    </div>
+    <div id="main-back-button">
+        <div class="left-triangle"></div>
+        <div class="nav-button left"> 返回</div>
+    </div>
+    <div class="message message-normal ">
+        <p>感谢您对一百券的支持,券号会通过短信发送到您的手机上，可能会稍有延迟，请耐心等待。</p>
+    </div>
+    <div class="main-content">
+        <div class="main-box">
+            #{list items:coupons,as:'coupon'}
+            <h1 style="text-align:center">${coupon.eCouponSn}</h1>
+            #{/list}
+        </div>
+        <div class="button main-button">查看订单</div>
+    </div>
+</div>

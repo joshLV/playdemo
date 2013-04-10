@@ -11,7 +11,7 @@ validation.maxSize=%s的长度不能超过%d!
 validation.match=无效的%s!
 
 address=收货地址信息
-
+phone=手机号
 mobile=手机号
 user.loginName=邮箱
 user.mobile=手机

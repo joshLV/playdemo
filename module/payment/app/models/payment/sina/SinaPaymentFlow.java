@@ -24,8 +24,8 @@ public class SinaPaymentFlow extends PaymentFlow {
      * @return 表单
      */
     @Override
-    public String getRequestForm(String orderNumber, String description, BigDecimal fee,
-                                 String subPaymentCode, String remoteIp) {
+    public String getRequestForm(String orderNumber, String description, BigDecimal fee, String subPaymentCode,
+                                 String remoteIp, String ext) {
         String orderAmount= fee.multiply(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP).toString();
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
@@ -37,7 +37,7 @@ public class SinaPaymentFlow extends PaymentFlow {
         params.put("version", "v2.3"); //网关版本，固定值：v2.0,该参数必填。
         params.put("language", "1"); //语言种类，1代表中文显示，2代表英文显示。默认为1,该参数必填。
         params.put("signType", "4"); //签名类型,该值为4，代表PKI加密方式,该参数必填。
-        params.put("merchantAcctId", SinaConfig.APP_ID); //人民币网关账号，该账号为11位人民币网关商户编号+01,该参数必填。
+        params.put("merchantAcctId", SinaConfig.MERCHANT_ACCOUNT_ID); //人民币网关账号，该账号为11位人民币网关商户编号+01,该参数必填。
         params.put("payerName", ""); //支付人姓名,可以为空。
         params.put("payerContactType","1"); //支付人联系类型，1 代表电子邮件方式；2 代表手机联系方式。可以为空。
         params.put("payerContact", ""); //支付人联系方式，与payerContactType设置对应，payerContactType为1，则填写邮箱地址；payerContactType为2，则填写手机号码。可以为空。
@@ -50,12 +50,12 @@ public class SinaPaymentFlow extends PaymentFlow {
         params.put("productNum", ""); //商品数量，可以为空。
         params.put("productId", ""); //商品代码，可以为空。
         params.put("productDesc", ""); //商品描述，可以为空。
-        params.put("ext1", ""); //扩展字段1，商户可以传递自己需要的参数，支付完快钱会原值返回，可以为空。
+        params.put("ext1", ext); //扩展字段1，商户可以传递自己需要的参数，支付完快钱会原值返回，可以为空。
         params.put("ext2", ""); //扩展自段2，商户可以传递自己需要的参数，支付完快钱会原值返回，可以为空。
         params.put("payType", "10"); //支付方式，一般为00，代表所有的支付方式。如果是银行直连商户，该值为10，必填。
         params.put("bankId", subPaymentCode); //银行代码
         params.put("redoFlag", "0"); //同一订单禁止重复提交标志，实物购物车填1，虚拟产品用0。1代表只能提交一次，0代表在支付不成功情况下可以再提交。可为空。
-        params.put("pid", ""); //商户的memberId
+        params.put("pid", SinaConfig.MEMBER_ID); //商户的memberId
         params.put("ip", remoteIp);//用户在平台下单时的ip地址
 
 
@@ -115,10 +115,11 @@ public class SinaPaymentFlow extends PaymentFlow {
         verifyParams.put("ext1", params.get("ext1")); //获取扩展字段1
         verifyParams.put("ext2", params.get("ext2")); //获取扩展字段2
         verifyParams.put("payResult",params.get("payResult")); //获取处理结果 10代表 成功11代表 失败 00代表 下订单成功（仅对电话银行支付订单返回）;01代表 下订单失败（仅对电话银行支付订单返回）
+        verifyParams.put("payIp",params.get("payIp")); //获取处理结果 10代表 成功11代表 失败 00代表 下订单成功（仅对电话银行支付订单返回）;01代表 下订单失败（仅对电话银行支付订单返回）
         verifyParams.put("errCode",params.get("errCode")); //获取错误代码 详细见文档错误代码列表
 
 
-        boolean flag = SinaPkiPair.enCodeByCer(join(verifyParams), params.get("signMsg")); //获取加密签名串,并与本地计算结果进行比较
+        boolean flag = SinaPkiPair.notifyResult(join(verifyParams), params.get("signMsg")); //获取加密签名串,并与本地计算结果进行比较
         int rtnOK =0;
         String rtnUrl = SinaConfig.RETURN_URL;
 
@@ -131,12 +132,12 @@ public class SinaPaymentFlow extends PaymentFlow {
             switch (Integer.parseInt(params.get("payResult"))){
                 case 10:
                     rtnOK = 1;
-                    result.put(PAYMENT_CODE, PaymentUtil.PARTNER_CODE_99BILL + "_" + params.get("bankId").toUpperCase());
-                    rtnUrl += String.format("?%s=%s&%s=%s&%s=%s&%s=%s",
+                    result.put(PAYMENT_CODE, PaymentUtil.PARTNER_CODE_SINA);
+                    rtnUrl += String.format("?%s=%s&%s=%s&%s=%s&%s=%s&source=%s",
                             VERIFY_RESULT, VERIFY_RESULT_OK,
                             ORDER_NUMBER, params.get("orderId"),
                             TOTAL_FEE, payAmount.toString(),
-                            PAYMENT_CODE, result.get(PAYMENT_CODE));
+                            PAYMENT_CODE, result.get(PAYMENT_CODE), params.get("ext1"));
                     result.put(VERIFY_RESULT, VERIFY_RESULT_OK);
                     break;
                 default:
@@ -146,7 +147,7 @@ public class SinaPaymentFlow extends PaymentFlow {
         String successInfo = "<result>"+rtnOK+"</result><redirecturl><!CDATA["+rtnUrl+"]]></redirecturl>";
         result.put(SUCCESS_INFO, successInfo);
 
-        Logger.info("kuaiqian callback result: flag:" + flag + ";payResult:" + params.get("payResult"));
+        Logger.info("sina callback result: flag:" + flag + ";payResult:" + params.get("payResult"));
         return result;
     }
 
@@ -158,7 +159,8 @@ public class SinaPaymentFlow extends PaymentFlow {
     private String join(Map<String, String> params){
         StringBuilder result = new StringBuilder();
         for(Map.Entry<String, String> entry : params.entrySet()){
-            if (!"".equals(entry.getKey()) && !"".equals(entry.getValue())){
+            String value = entry.getValue();
+            if (value != null) {
                 result.append(entry.getKey())
                         .append("=")
                         .append(entry.getValue())

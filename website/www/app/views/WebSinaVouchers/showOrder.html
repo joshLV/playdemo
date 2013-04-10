@@ -1,0 +1,66 @@
+#{extends 'wap.html' /}
+#{set title:'一百券 - 下单' /}
+<div id="wrap">
+    <div id="main-header">
+        <h1>下单</h1>
+    </div>
+    <div id="main-back-button">
+        <div class="left-triangle"></div>
+        <div class="button nav-button left"><a href="javascript:history.go(-1);">返回</a></div>
+    </div>
+#{form @WebSinaVouchers.order(),id:'order'}
+    <div class="message message-success pre-help">
+        <p>${goods.name}</p>
+    </div>
+    <div class="content-title">
+        <legend>
+            <fleft>单价：</fleft>
+            <fright>￥${goods.getResalePrice()}</fright>
+            <div class="clear"></div>
+        </legend>
+        <legend>
+            <fleft>数量：</fleft>
+            <fright>
+            *{<span class="tip">(每人限购1张)</span>}*
+                <a href="#" class="reduce-btn" add_value="-1">-</a>
+                <input type="text" onKeypress="if (event.keyCode < 48 || event.keyCode > 57) event.returnValue = false;"
+                       value="${buyCount?:'1'}" name="buyCount" id="num" size="2">
+                <a href="#" class="add-btn" add_value="1">+</a>
+            </fright>
+            <div class="clear"></div>
+        </legend>
+        <legend>
+            <fleft>手机号：</fleft>
+            <fright>
+                <span class="tip">(用于接收券号)</span>
+                <input type="text" value="${user?.mobile}" name="phone" size="11">
+                        <span style="display: inline;color: #ff0000;"
+                                >#{error 'phone'/}</span>
+            </fright>
+            <div class="clear"></div>
+        </legend>
+    </div>
+    <div class="main-content">
+        <button class="button main-button" type="submit">使用微币支付</button>
+    </div>
+    <input type="hidden" name="productId" value="${productId}">
+    <input type="hidden" name="source" value="wap">
+#{/form}
+</div>
+#{set 'moreScripts' }
+<script type="text/javascript">
+    $(function () {
+        //点击+-按钮
+        $(".add-btn,.reduce-btn").click(function () {
+            var ele = $(this);
+            var num_ele = $("#num");
+            var new_num = Number(num_ele.val()) + Number(ele.attr("add_value"));
+            if (new_num <= 0) {
+                return false;
+            }
+            num_ele.val(new_num);
+            return false;
+        });
+    });
+</script>
+#{/set}

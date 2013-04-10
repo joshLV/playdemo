@@ -127,13 +127,16 @@ GET     /coins                                  ObtainGoldenCoins.index
 
 #新浪微博
 #手机端
-GET /weibo/wap/p/{productId}                    WebSinaVouchers.index
-#PC端
-GET /weibo/web/{productId}                      WebSinaVouchers.index
+GET /weibo/product/{productId}                   WebSinaVouchers.showProduct
+GET /weibo/wap/product/{productId}               WebSinaVouchers.showProduct(source:'wap')
 
-GET /weibo/wap/orders/{productId}               WebSinaVoucherOrders.index
-POST /weibo/wap/orders/{productId}              WebSinaVoucherOrders.create
-GET  /weibo/wap/payment_info/{orderNumber}      WebSinaPaymentInfo.index
+GET /weibo/wap/order                             WebSinaVouchers.showOrder(source:'wap')
+POST /weibo/wap/order                            WebSinaVouchers.order
+GET /weibo/wap/coupon                            WebUserSinaVouchers.showCoupon
+GET /weibo/wap/coupon/{couponId}/detail          WebUserSinaVouchers.showDetail
+GET /weibo/wap/more-coupon                       WebUserSinaVouchers.showMoreCoupon
+GET /weibo/wap/coupon/{couponId}                 WebUserSinaVouchers.refundCoupon
+POST /weibo/wap/coupon/{couponId}                WebUserSinaVouchers.refund
 
 
 # Ignore favicon requests

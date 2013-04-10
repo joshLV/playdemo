@@ -29,8 +29,8 @@ public class TenpayPaymentFlow extends PaymentFlow {
      * @return 跳转信息
      */
     @Override
-    public String getRequestForm(String orderNumber, String description,
-                                 BigDecimal fee, String subPaymentCode, String remoteIp) {
+    public String getRequestForm(String orderNumber, String description, BigDecimal fee, String subPaymentCode,
+                                 String remoteIp, String ext) {
         SortedMap<String, String> params = new TreeMap<>();
         String orderAmount= fee.multiply(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP).toString();
 

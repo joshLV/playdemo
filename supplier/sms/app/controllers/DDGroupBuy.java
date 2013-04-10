@@ -121,7 +121,7 @@ public class DDGroupBuy extends Controller {
 
         //如果已经存在订单，则不处理，直接返回xml
         if (isExisted) {
-            order = Order.findOneByUser(outerOrder.ybqOrder.orderNumber, resalerId, AccountType.RESALER);
+            order = Order.findOneByResaler(outerOrder.ybqOrder.orderNumber, resalerId, AccountType.RESALER);
             if (order != null) {
                 List<ECoupon> eCouponList = ECoupon.findByOrder(order);
                 render("dangdang/groupbuy/response/order.xml", order, id, kx_order_id, eCouponList);

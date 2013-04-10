@@ -55,13 +55,8 @@ public class PaymentUtil {
      * @return 过滤后的参数集合
      */
     public static Map<String, String[]> filterPlayParameter(Map<String, String[]> params){
-        Map<String, String[]> result = new HashMap<>();
-        for (Map.Entry<String, String[]> entry : params.entrySet()){
-            if ("body".equals(entry.getKey()) || "shihui_partner".equals(entry.getKey())){
-                continue;
-            }
-            result.put(entry.getKey(), entry.getValue());
-        }
-        return result;
+        params.remove("body");
+        params.remove("shihui_partner");
+        return params;
     }
 }

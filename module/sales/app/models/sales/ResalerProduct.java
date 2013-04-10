@@ -143,7 +143,7 @@ public class ResalerProduct extends Model {
                 this.url = "http://t.58.com/sh/" + partnerProductId + "/";
                 break;
             case SINA:
-                this.url="http://yibaiquan.com/p/weibo/templateId="+partnerProductId;
+                this.url="http://yibaiquan.com/weibo/product/"+partnerProductId;
                 break;
             default:
                 break;
