@@ -62,6 +62,7 @@ public class UserOrdersFuncTest extends FunctionalTest {
             @Override
             public void build(Order o) {
                 o.userId = user.id;
+                o.consumerId = user.id;
                 o.accountPay = goods.salePrice;
             }
         });

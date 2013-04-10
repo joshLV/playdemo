@@ -9,6 +9,7 @@ import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.sales.Shop;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;

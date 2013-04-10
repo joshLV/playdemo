@@ -114,7 +114,7 @@ public class WebSinaVouchersTest extends FunctionalTest {
         final Order order = FactoryBoy.create(Order.class);
         order.consumerId = user.id;
         order.userType = AccountType.RESALER;
-        order.userId = 1l;
+        order.userId = user.id;
         order.save();
         FactoryBoy.batchCreate(10, ECoupon.class, new BuildCallback<ECoupon>() {
             @Override
@@ -124,7 +124,7 @@ public class WebSinaVouchersTest extends FunctionalTest {
                 target.order = order;
             }
         });
-        Http.Response response = GET(Router.reverse("WebUserSinaVouchers.showCoupon"));
+        Http.Response response = GET(Router.reverse("WebUserSinaVouchers.myCoupons"));
         assertIsOk(response);
         List<ECoupon> couponList = (List) renderArgs("couponList");
         assertEquals(5, couponList.size());
@@ -158,7 +158,7 @@ public class WebSinaVouchersTest extends FunctionalTest {
         order.userType = AccountType.RESALER;
         order.userId = 1l;
         order.save();
-        FactoryBoy.create(ECoupon.class, new BuildCallback<ECoupon>() {
+        ECoupon coupon1=FactoryBoy.create(ECoupon.class, new BuildCallback<ECoupon>() {
             @Override
             public void build(ECoupon target) {
                 target.goods = product.goods;
@@ -166,7 +166,7 @@ public class WebSinaVouchersTest extends FunctionalTest {
                 target.order = order;
             }
         });
-        Http.Response response = GET(Router.reverse("WebUserSinaVouchers.showDetail"));
+        Http.Response response = GET(Router.reverse("WebUserSinaVouchers.showDetail").url+"?couponId="+coupon1.id);
         assertIsOk(response);
         ECoupon coupon=(ECoupon) renderArgs("coupon");
         assertEquals(coupon,renderArgs("coupon"));
