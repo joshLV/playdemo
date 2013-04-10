@@ -43,7 +43,7 @@ public class ImportPartnerOrdersTest extends FunctionalTest {
     Resaler resaler;
     Goods goods;
     OuterOrder outerOrder;
-
+             Order order;
     @BeforeClass
     public static void setUpClass() {
         Play.tmpDir = new File("/tmp"); //解决测试时上传失败的问题

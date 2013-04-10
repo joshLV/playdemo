@@ -64,7 +64,7 @@ public class SinaVouchersConsumerTest extends FunctionalTest {
                 "\":\"1234\"},\"content\":\"{\\\"id\\\":\\\"456\\\"}\"}";
         MockWebServiceClient.addMockHttpRequest(200, data);
         SinaVouchersConsumer consumer = new SinaVouchersConsumer();
-        consumer.consume(coupon.id);
+        consumer.consumeWithTx(coupon.id);
 
         coupon.refresh();
         assertEquals("456", coupon.partnerCouponId);

@@ -15,7 +15,8 @@
                 <mapping row="1" col="6">logistic.receiver</mapping>
                 <mapping row="1" col="7">logistic.phone</mapping>
                 <mapping row="1" col="10">logistic.zipCode</mapping>
-                <mapping row="1" col="8">logistic.expressInfo</mapping>
+                <mapping row="1" col="11">logistic.expressInfo</mapping>
+                <mapping row="1" col="8">logistic.province</mapping>
                 <mapping row="1" col="9">logistic.address</mapping>
             </section>
             <loopbreakcondition>
