@@ -128,6 +128,7 @@ public class OperateOrders extends Controller {
                 loginName = user.loginName;
             }
         }
+
         // 用于查看手机号的权限
         Boolean hasViewEcouponSnPermission = ContextedPermission.hasPermission("VIEW_ECOUPONSN");
         render(orders, orderItems, loginName, hasViewEcouponSnPermission);

@@ -292,30 +292,90 @@
 #{if orders.containsRealGoods()}
 <ul class="nav">
     <li class="active"><a href="#"> 收货信息</a></li>
+%{ outerOrder = models.order.OuterOrder.getOuterOrder(order) }%
+
     <table class="table table-bordered table-striped">
 
         <tr>
-            <td>收货人： ${orders.receiverName}</td>
+            <td>收货人：
+                #{if outerOrder!=null}
+                ${orders?.shippingInfo?.receiver}
+                #{/if}
+                #{else }
+                ${orders.receiverName}
+                #{/else}
+            </td>
         </tr>
         <tr>
-            <td>地址： ${orders.receiverAddress} 邮编:${orders.postcode}</td>
+            <td>
+                地址：
+                #{if outerOrder!=null}
+                ${orders?.shippingInfo?.address} 邮编: ${orders?.shippingInfo?.zipCode}
+                #{/if}
+                #{else }
+                ${orders.receiverAddress} 邮编:${orders.postcode}
+                #{/else}
+            </td>
         </tr>
         <tr>
-            <td>手机： ${orders.receiverMobile}</td>
+            <td>
+                手机：
+                #{if outerOrder!=null}
+                ${orders?.shippingInfo?.phone}
+                #{/if}
+                #{else }
+                ${orders.receiverMobile}
+                #{/else}
+            </td>
         </tr>
         <tr>
-            <td>电话： ${orders.receiverPhone}</td>
+            <td>
+                电话：
+                #{if outerOrder!=null}
+                ${orders?.shippingInfo?.tel}
+                #{/if}
+                #{else }
+                ${orders.receiverPhone}
+                #{/else}
+            </td>
         </tr>
         <tr>
-            <td>物流公司： ${orders.deliveryCompany}</td>
+            <td>
+                物流公司：
+                #{if outerOrder!=null}
+                ${orders?.shippingInfo?.expressCompany?.name}
+                #{/if}
+                #{else }
+                ${orders.deliveryCompany}
+                #{/else}
+           </td>
         </tr>
         <tr>
-            <td>物流单号： ${orders.deliveryNo}</td>
+            <td>
+                物流单号：
+                #{if outerOrder!=null}
+                ${orders?.shippingInfo?.expressNumber}
+                #{/if}
+                #{else }
+                ${orders.deliveryNo}
+                #{/else}
+            </td>
         </tr>
         <tr>
-            <td>订单留言： ${orders.remark}</td>
+            <td>
+                订单留言：
+                #{if outerOrder!=null}
+                ${orders?.shippingInfo?.remarks}
+                #{/if}
+                #{else }
+                ${orders.remark}
+                #{/else}
+            </td>
         </tr>
     </table>
+#{if outerOrder!=null}
+发货时间：${orders?.sendAt?.format('yyyy-MM-dd HH:mm:ss')}
+#{/if}
 </ul>
     #{if models.order.OrderStatus.PAID.equals(orders.realGoodsStatus)}
     <a class="btn btn-primary" onclick="prepareSend(${orders.id})">发货</a><br/><br/>
