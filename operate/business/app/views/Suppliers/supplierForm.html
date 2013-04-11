@@ -53,7 +53,7 @@ error:'supplier.operator'}
     #{layout_operate.textField name:'admin.jobNumber', value:admin?.jobNumber, required:true/}
 #{/if}
 <div class="control-group">
-    <label class="control-label"></span>&{'supplier.shopHour'}</label>
+    <label class="control-label">&{'supplier.shopHour'}</label>
 
     <div class="controls">
         <input type="text" class="input-medium Wdate" id="supplier_shopHour" name="supplier.shopEndHour"
@@ -61,13 +61,23 @@ error:'supplier.operator'}
                onfocus="WdatePicker({dateFmt:'HH:mm',minDate:'00:00',maxDate:'23:59'})"/>
     </div>
 </div>
-#{if supplier?.sellECoupon == null || supplier?.sellECoupon == true}
-    #{layout_operate.radio2Field name:'supplier.sellECoupon', value:supplier?.sellECoupon?:true, value1:true, value2:false/}
-#{/if}
-#{else}
-    #{layout_operate.radio2Field name:'supplier.sellECoupon', value:supplier?.sellECoupon, value1:true, value2:false/}
-#{/else}
-#{layout_operate.radio2Field name:'supplier.canSaleReal', value:supplier?.canSaleReal?:false, value1:true, value2:false/}
+
+<div class="control-group">
+    <label class="control-label">商户菜单控制</label>
+  %{
+    sellECoupon=supplier?.getProperty(models.supplier.Supplier.SELL_ECOUPON)?:'false';
+    canSaleReal=supplier?.getProperty(models.supplier.Supplier.CAN_SALE_REAL)?:'false';
+    ktvSupplier=supplier?.getProperty(models.supplier.Supplier.KTV_SUPPLIER)?:'false';
+    }%
+    <div class="controls">
+        <input type="checkbox" name="sellECoupon" id="supplier_sellECoupon"
+               value="${sellECoupon}"${sellECoupon==true?'checked':''}/>&{'supplier.sellECoupon'}&nbsp;&nbsp;
+        <input type="checkbox" name="canSaleReal" id="supplier_canSaleReal"
+               value="${canSaleReal}" ${canSaleReal==true?'checked':''}/> &{'supplier.canSaleReal'}&nbsp;&nbsp;
+        <input type="checkbox" name="ktvSupplier" id="supplier_ktvSupplier"
+               value="${ktvSupplier}" ${ktvSupplier==true?'checked':''}/>&{'supplier.ktvSupplier'}
+    </div>
+</div>
 #{layout_operate.radio2Field name:'supplier.showSellingState', value:supplier?.showSellingState?:false, value1:true, value2:false/}
 *{#{layout_operate.timeScope2Field name:'supplier.shopHour', begin:'supplier.shopBeginHour',end:'supplier.shopEndHour',}*
 *{beginValue:supplier?.shopBeginHour, endValue:supplier?.shopEndHour/}}*
@@ -84,3 +94,28 @@ error:'supplier.operator'}
 
 </div>
 
+<script type="text/javascript">
+    $(function () {
+        $("#supplier_sellECoupon").click(function () {
+            if (this.checked) {
+                $("#supplier_sellECoupon").val(true)
+            } else {
+                $("#supplier_sellECoupon").val(false)
+            }
+        });
+        $("#supplier_canSaleReal").click(function () {
+            if (this.checked) {
+                $("#supplier_canSaleReal").val(true)
+            } else {
+                $("#supplier_canSaleReal").val(false)
+            }
+        });
+        $("#supplier_ktvSupplier").click(function () {
+            if (this.checked) {
+                $("#supplier_ktvSupplier").val(true)
+            } else {
+                $("#supplier_ktvSupplier").val(false)
+            }
+        });
+    });
+</script>

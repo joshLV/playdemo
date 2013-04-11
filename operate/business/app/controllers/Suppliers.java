@@ -1,5 +1,6 @@
 package controllers;
 
+import models.supplier.SupplierProperty;
 import operate.rbac.ContextedPermission;
 import com.uhuila.common.util.FileUploadUtil;
 import com.uhuila.common.util.RandomNumberUtil;
@@ -111,6 +112,9 @@ public class Suppliers extends Controller {
         }
         admin.create(supplier.id);
 
+        //添加商户属性
+        setSupplierProperty(supplier.id);
+
         // 确保创建商户Account，以避免并发时产生2个accounts
         AccountUtil.getSupplierAccount(supplier.id);
 
@@ -120,6 +124,27 @@ public class Suppliers extends Controller {
         comment = comment.replace("password", password);
         SMSUtil.send(comment, admin.mobile, "0000");
         index(null, null, null, null);
+    }
+
+    /**
+     * 设置商户属性
+     */
+    private static void setSupplierProperty(Long id) {
+        Supplier supplier = Supplier.findById(id);
+        List<String> keys = new ArrayList<>();
+        keys.add(Supplier.CAN_SALE_REAL);
+        keys.add(Supplier.SELL_ECOUPON);
+        keys.add(Supplier.KTV_SUPPLIER);
+        for (String key : keys) {
+            String value = request.params.get(key);
+            SupplierProperty menuSetting = SupplierProperty.findByKey(id, key);
+            if (menuSetting == null) {
+                new SupplierProperty(supplier, key, Boolean.valueOf(value)).save();
+            } else {
+                menuSetting.value = Boolean.valueOf(value);
+                menuSetting.save();
+            }
+        }
     }
 
     private static void redirectUrl(int page) {
@@ -253,18 +278,18 @@ public class Suppliers extends Controller {
         if (StringUtils.isNotBlank(supplier.domainName) && !oldSupplier.domainName.equals(supplier.domainName)) {
             checkItems(supplier);
         }
-
         //Validation.match("validation.jobNumber", admin.jobNumber, "^[0-9]*");
 
         if (Validation.hasErrors()) {
-            for (String key : validation.errorsMap().keySet()) {
-                warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
-            }
             List<OperateUser> operateUserList = OperateUser.getSales(SALES_ROLE);
             renderArgs.put("baseDomain", SUPPLIER_BASE_DOMAIN);
             render("/Suppliers/edit.html", supplier, id, operateUserList, page);
         }
+
         Supplier.update(id, supplier);
+        Supplier sp = Supplier.findById(id);
+        //添加或更新商户属性
+        setSupplierProperty(id);
 
         redirectUrl(page);
     }

@@ -63,6 +63,10 @@ public class Supplier extends Model {
     public static final String END_TIME = " 23:59";
     public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 
+    public static final String CAN_SALE_REAL = "canSaleReal";
+    public static final String SELL_ECOUPON = "sellECoupon";
+    public static final String KTV_SUPPLIER = "ktvSupplier";
+
     private static Supplier SHIHUI = null;
     /**
      * 域名
@@ -180,7 +184,8 @@ public class Supplier extends Model {
      */
     public String code;
 
-    /**
+    /*
+     * TODO 待废弃
      * 是否销售实体商品
      */
     @Column(name = "can_sale_real")
@@ -188,11 +193,11 @@ public class Supplier extends Model {
 
 
     /**
+     * TODO 待废弃
      * 是否销售电子券
      */
     @Column(name = "sell_ecoupon")
     public Boolean sellECoupon = true;
-
 
     @Column(name = "weibo_id")
     public String weiboId;
@@ -293,6 +298,15 @@ public class Supplier extends Model {
     @Transient
     public String getOriginalLogo() {
         return PathUtil.getImageUrl(IMAGE_SERVER, logo, IMAGE_ORIGINAL);
+    }
+
+    @Transient
+    public boolean getProperty(String key) {
+        SupplierProperty supplierProperty = SupplierProperty.find("supplier.id=? and key=?", this.id, key).first();
+        if (supplierProperty == null) {
+            return false;
+        }
+        return supplierProperty.value;
     }
 
     /**
@@ -479,7 +493,6 @@ public class Supplier extends Model {
         }
 
         sql.append(" order by createdAt DESC");
-        Logger.info("sql=" + sql);
         return find(sql.toString(), paramsMap).fetch();
     }
 

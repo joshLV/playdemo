@@ -54,7 +54,11 @@
 <div id="content" class="clearfix">
     <div class="sidebar">
         <ul class="menu">
-        #{if currentUser?.supplier?.sellECoupon || currentUser?.supplier?.sellECoupon == null }
+        %{
+            sellECoupon=currentUser?.supplier?.getProperty(models.supplier.Supplier.SELL_ECOUPON);
+            canSaleReal=currentUser?.supplier?.getProperty(models.supplier.Supplier.CAN_SALE_REAL);
+            }%
+        #{if sellECoupon}
             #{if navigation.ContextedPermission.hasPermission("COUPON_MULTI_VERIFY") }
                 <li><a #{if "verify".equals(menu)}class="curr"#{/if} href="/verify">券&nbsp;&nbsp;验&nbsp;&nbsp;证</a>
                 </li>#{/if}
@@ -71,14 +75,14 @@
             #{if navigation.ContextedPermission.hasPermission("ACCOUNT")}
                 <li><a #{if "users".equals(menu)}class="curr"#{/if} href="/users">账号管理</a></li>#{/if}
         #{/if}
-        #{if navigation.ContextedPermission.hasPermission("DOWNLOAD_ORDER_SHIPPING") && currentUser?.supplier?.canSaleReal}
+        #{if navigation.ContextedPermission.hasPermission("DOWNLOAD_ORDER_SHIPPING") && canSaleReal}
             <li><a #{if "download-order-shipping".equals(menu)}class="curr"#{/if} href="/real/download-order-shipping">下载发货单</a>
             </li>
 
             <li><a #{if "upload-order-shipping".equals(menu)  }class="curr"#{/if}
                    href="/real/upload-order-shipping">上传发货单</a></li>
         #{/if}
-        #{if navigation.ContextedPermission.hasPermission("ACCOUNT")  && currentUser?.supplier?.canSaleReal}
+        #{if navigation.ContextedPermission.hasPermission("ACCOUNT")  && canSaleReal}
             <li><a #{if "return-goods".equals(menu)}class="curr"#{/if} href="/real/return-entries">退货管理</a></li>
         #{/if}
         </ul>
