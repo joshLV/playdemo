@@ -3,7 +3,15 @@
 # ~~~~
 
 # Home page
-GET     /                                       Application.index
+GET     /                                      KtvRoomTypes.index
+
+# [v2]ktvRoom
+GET     /ktv/room-type                              KtvRoomTypes.index
+GET     /ktv/room-type/new                          KtvRoomTypes.add
+POST    /ktv/room-type                              KtvRoomTypes.create
+GET     /ktv/room-type/{id}/edit                    KtvRoomTypes.edit
+DELETE  /ktv/room-type/{id}                         KtvRoomTypes.delete
+PUT     /ktv/room-type/{id}                         KtvRoomTypes.update
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

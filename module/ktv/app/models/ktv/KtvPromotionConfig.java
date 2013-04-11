@@ -19,7 +19,7 @@ public class KtvPromotionConfig extends Model {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "promotion_id", nullable = false)
-    public KtvPromotion promotion;
+    public KtvPromotion ktvPromotion;
 
 
 }

@@ -38,6 +38,7 @@ require:
     - resale_api -> resale_api
     - supplier_api -> supplier_api
     - com.taobao -> taobao-top 20121130
+    - ktv -> ktv
 
 repositories:
     - mavenRepository:
@@ -82,3 +83,4 @@ repositories:
             - resale_api -> *
             - supplier_api -> *
             - report -> *
+            - ktv -> *

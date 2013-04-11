@@ -12,10 +12,14 @@ import javax.persistence.Table;
  * KTV房间.
  */
 @Entity
-@Table(name="ktv_rooms")
+@Table(name = "ktv_rooms")
 public class KtvRoom extends Model {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_type_id", nullable = false)
     public KtvRoomType roomType;
+
+    public KtvRoom(KtvRoomType type) {
+        this.roomType = type;
+    }
 }
