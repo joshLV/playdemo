@@ -22,4 +22,10 @@ public class KtvRoom extends Model {
     public KtvRoom(KtvRoomType type) {
         this.roomType = type;
     }
+
+    /**
+     * 包厢房间名称.
+     */
+    public String name;
+
 }

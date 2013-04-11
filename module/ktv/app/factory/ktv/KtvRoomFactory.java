@@ -14,8 +14,8 @@ public class KtvRoomFactory extends ModelFactory<KtvRoom> {
 
     @Override
     public KtvRoom define() {
-        KtvRoom room = new KtvRoom();
-        room.roomType = FactoryBoy.lastOrCreate(KtvRoomType.class);
+        KtvRoom room = new KtvRoom(FactoryBoy.lastOrCreate(KtvRoomType.class));
+        room.name = "房间" + FactoryBoy.sequence(KtvRoom.class);
         return room;
     }
 }

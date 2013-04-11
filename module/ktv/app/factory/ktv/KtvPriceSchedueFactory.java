@@ -5,7 +5,9 @@ import factory.ModelFactory;
 import models.ktv.KtvPriceSchedue;
 import models.ktv.KtvRoomType;
 import models.sales.Shop;
+import util.DateHelper;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 
 /**
@@ -20,6 +22,12 @@ public class KtvPriceSchedueFactory extends ModelFactory<KtvPriceSchedue> {
         schedue.roomType = FactoryBoy.lastOrCreate(KtvRoomType.class);
         schedue.shops = new HashSet<>();
         schedue.shops.add(FactoryBoy.lastOrCreate(Shop.class));
+        schedue.startDay = DateHelper.beforeDays(3);
+        schedue.endDay = DateHelper.afterDays(3);
+        schedue.startTime  = "01:00";
+        schedue.endTime = "24:00";
+        schedue.useWeekDay = "1,2,3,4,5";
+        schedue.price = BigDecimal.TEN;
         return schedue;
     }
 }
