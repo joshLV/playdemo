@@ -1,23 +1,14 @@
 package unit;
 
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.regex.Pattern;
-
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.junit.Before;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.xml.sax.SAXException;
-
 import play.Play;
-import play.supplier.cas.CASUtils;
-import play.supplier.cas.models.CASUser;
 import play.mvc.Http;
+import play.supplier.cas.CASUtils;
 import play.test.UnitTest;
 
-public class CASUtilsTest extends UnitTest {
+public class SupplierCASUtilsTest extends UnitTest {
 
 
     @Before
@@ -48,6 +39,19 @@ public class CASUtilsTest extends UnitTest {
                      CASUtils.replaceCasUrl(casUrlTemp)
                      );
 
+    }
+
+    @Test
+    public void testGetSubDomain() throws Exception {
+        System.out.println("hello");
+        Http.Request.current.set(Http.Request.createRequest("127.0.0.1", "GET", "/login", null, null, null, null,
+                "localhost", false, 80, "localhost", false, null, null));
+        assertEquals("localhost", CASUtils.getSubDomain());
+        Http.Request.current.set(Http.Request.createRequest("127.0.0.1", "GET", "/login", null, null, null, null,
+                "bbl.order.uhuila.net", false, 80, "bbl.order.uhuila.net", false, null, null));
+        assertEquals("bbl", CASUtils.getSubDomain());
+        Http.Request.current.set(Http.Request.createRequest("127.0.0.1", "GET", "/login", null, null, null, null, "lyf.uhuila.net", false, 80, "lyf.uhuila.net", false, null, null));
+        assertEquals("lyf", CASUtils.getSubDomain());
     }
 
     @Test

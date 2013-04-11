@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
  */
 public class CASUtils {
 
-    private static final Pattern hostPattern = Pattern.compile("([^\\.:]+)(\\.([^\\.]+)\\.([^\\.]+)\\.\\w+)?(:[\\d]+)?");
+    private static final Pattern hostPattern = Pattern.compile("([^\\.:]+)(\\.([^\\.]+\\.)?([^\\.]+)\\.\\w+)?(:[\\d]+)?");
 
     /**
      * Method that generate the CAS login page URL.
