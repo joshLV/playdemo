@@ -201,7 +201,7 @@ public class OperateReports extends Controller {
         if (shopId != null && !shopId.equals(0L)) {
             condition.accountType = AccountType.SHOP;
             condition.account = AccountUtil.getShopAccount(shopId);
-        } else if (supplierId != null) {
+        } else if (supplierId != null && !supplierId.equals(0L)) {
             condition.accountType = AccountType.SUPPLIER;
             condition.account = AccountUtil.getSupplierAccount(supplierId);
         } else {
@@ -226,16 +226,19 @@ public class OperateReports extends Controller {
         List<Supplier> supplierList = Supplier.findUnDeleted();
         if (supplierId != null) {
             List<Shop> independentShops = Shop.getIndependentShops(supplierId);
+            Supplier supplier = Supplier.findById(supplierId);
             if (independentShops == null) {
                 independentShops = new ArrayList<>();
+            }
+            else if(supplier!=null){
+                renderArgs.put("independentShopsSupplierName", supplier.getName());
             }
             renderArgs.put("independentShops", independentShops);
 
             Shop independentShop = Shop.find("supplierId=?", supplierId).first();
-            Supplier supplier = Supplier.findById(supplierId);
             String independentShopsName = independentShop.name;
             renderArgs.put("independentShopsName", independentShopsName);
-            renderArgs.put("independentShopsSupplierName", supplier.getName());
+
 
         }
 

@@ -139,7 +139,7 @@ public class SupplierWithdrawReport implements Serializable {
                 supplierWithdrawResultMap.put((Long) item[0], tempSupplierWithdrawItem);
             } else {
                 tempSupplierWithdrawItem.consumedAmount = (BigDecimal) item[1];
-                tempSupplierWithdrawItem.remainedUnwithdrawnAmount = tempSupplierWithdrawItem.previousUnwithdrawnAmount.subtract(tempSupplierWithdrawItem.consumedAmount);
+                tempSupplierWithdrawItem.remainedUnwithdrawnAmount = tempSupplierWithdrawItem.previousUnwithdrawnAmount.add(tempSupplierWithdrawItem.consumedAmount);
             }
         }
 

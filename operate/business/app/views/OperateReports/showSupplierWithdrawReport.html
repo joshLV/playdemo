@@ -83,30 +83,47 @@
         </tr>
     #{set i:1/}
     #{paginate.list items:supplierWithdrawReportPage, as:'supplierWithdraw'}
+    %{ previousDate = com.uhuila.common.util.DateUtil.getBeforeDate(condition.createdAtBegin,2) }%
         <tr>
             <td>${i}</td>
             <td>
                 #{if shopId==null }
-                    <a href="/reports/supplier?supplierName=${supplierWithdraw?.supplier?.otherName}&supplierId=${supplierWithdraw?.supplier?.id}&condition.createdAtBegin=${condition?.createdAtBegin?.format()}&condition.createdAtEnd=${condition?.createdAtEnd?.format()}"
-                       target="_blank">
-                    ${supplierWithdraw?.supplier?.otherName}
-                    </a>
+                *{<a href="/reports/supplier?supplierName=${supplierWithdraw?.supplier?.otherName}&supplierId=${supplierWithdraw?.supplier?.id}&condition.createdAtBegin=${condition?.createdAtBegin?.format()}&condition.createdAtEnd=${condition?.createdAtEnd?.format()}"}*
+                *{target="_blank">}*
+                ${supplierWithdraw?.supplier?.otherName}
+                *{</a>}*
                 #{/if}
                 #{else}
-                    <a href="/reports/supplier?supplierName=${supplierWithdraw?.supplier?.otherName}&supplierId=${supplierId}&shopId=${shopId}&condition.createdAtBegin=${condition?.createdAtBegin?.format()}&condition.createdAtEnd=${condition?.createdAtEnd?.format()}"
-                       target="_blank">
-                    ${independentShopsSupplierName}(${independentShopsName})
-                    </a>
+                *{<a href="/reports/supplier?supplierName=${supplierWithdraw?.supplier?.otherName}&supplierId=${supplierId}&shopId=${shopId}&condition.createdAtBegin=${condition?.createdAtBegin?.format()}&condition.createdAtEnd=${condition?.createdAtEnd?.format()}"}*
+                *{target="_blank">}*
+                ${independentShopsSupplierName}(${independentShopsName})
+                *{</a>}*
                 #{/else}
             </td>
 
-            <td style="text-align: right;">${supplierWithdraw?.previousUnwithdrawnAmount}</td>
-            <td style="text-align: right;">${supplierWithdraw?.consumedAmount}</td>
             <td style="text-align: right;">
-            ${supplierWithdraw?.withdrawnAmount}
+                <a href="/reports/supplier?supplierName=${supplierWithdraw?.supplier?.otherName}&supplierId=${supplierWithdraw?.supplier?.id}&shopId=${shopId}&condition.createdAtBegin=&condition.createdAtEnd=${previousDate?.format()}"
+                   target="_blank">
+                ${supplierWithdraw?.previousUnwithdrawnAmount}
+                </a>
             </td>
             <td style="text-align: right;">
-            ${supplierWithdraw?.remainedUnwithdrawnAmount}
+                <a href="/reports/supplier?supplierName=${supplierWithdraw?.supplier?.otherName}&supplierId=${supplierWithdraw?.supplier?.id}&shopId=${shopId}&condition.createdAtBegin=${condition?.createdAtBegin?.format()}&condition.createdAtEnd=${condition?.createdAtEnd?.format()} &condition.tradeType=PURCHASE_COSTING"
+                   target="_blank">
+                ${supplierWithdraw?.consumedAmount}
+                </a>
+            </td>
+            <td style="text-align: right;">
+                <a href="/reports/supplier?supplierName=${supplierWithdraw?.supplier?.otherName}&supplierId=${supplierWithdraw?.supplier?.id}&shopId=${shopId}&condition.createdAtBegin=${condition?.createdAtBegin?.format()}&condition.createdAtEnd=${condition?.createdAtEnd?.format()}&condition.tradeType=WITHDRAW"
+                   target="_blank">
+                ${supplierWithdraw?.withdrawnAmount}
+                </a>
+            </td>
+            <td style="text-align: right;">
+                <a href="/reports/supplier?supplierName=${supplierWithdraw?.supplier?.otherName}&supplierId=${supplierWithdraw?.supplier?.id}&shopId=${shopId}&condition.createdAtBegin=&condition.createdAtEnd=${condition?.createdAtEnd?.format()}"
+                   target="_blank">
+                ${supplierWithdraw?.remainedUnwithdrawnAmount}
+                </a>
             </td>
         </tr>
         #{set i++/}
