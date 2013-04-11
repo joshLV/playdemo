@@ -32,6 +32,12 @@ public class OperationReports extends Controller {
         render();
     }
 
+    @ActiveNavigation("channel_sales_daily_reports")
+    public static void showChannelSalesDailyReport() {
+        int pageNumber = getPageNumber();
+        render();
+    }
+
     @ActiveNavigation("sales_reports")
     public static void showSalesReport(SalesReportCondition condition, String desc) {
         int pageNumber = getPageNumber();
@@ -207,7 +213,7 @@ public class OperationReports extends Controller {
         List<SalesReport> resultList = SalesReport.queryPeopleEffectData(condition);
 //        if (flagWithCondition) {
 
-        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition,hasSeeReportProfitRight);
+        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition, hasSeeReportProfitRight);
 
         Map<OperateUser, SalesReport> map = new HashMap<>();
 
@@ -943,14 +949,13 @@ public class OperationReports extends Controller {
         condition.setDescFields();
 
 
-
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "人效报表_" + System.currentTimeMillis() + ".xls");
 
         List<SalesReport> resultList = SalesReport.queryPeopleEffectData(condition);
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
 
-        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition,hasSeeReportProfitRight);
+        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition, hasSeeReportProfitRight);
 
         Map<OperateUser, SalesReport> map = new HashMap<>();
 
@@ -984,8 +989,6 @@ public class OperationReports extends Controller {
 
         render(peopleEffectReportList);
     }
-
-
 
 
     /**
