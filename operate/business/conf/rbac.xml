@@ -165,9 +165,9 @@
             <navigation key="inventory_stockIn" action="InventoryStocks.stockIn" text="添加入库记录" permissions="INVENTORY"/>
             <navigation key="inventory_stockOut" action="InventoryStocks.stockOut" text="添加出库记录"
                         permissions="INVENTORY"/>
-            <navigation key="purchase_orders_add" action="PurchaseOrders.add" text="采购合同添加"
+            <navigation key="purchase_orders_add" action="real.PurchaseOrders.add" text="采购合同添加"
                         permissions="PURCHASE_ORDERS_MANAGEMENT"/>
-            <navigation key="purchase_orders_index" action="PurchaseOrders.index" text="采购合同管理"
+            <navigation key="purchase_orders_index" action="real.PurchaseOrders.index" text="采购合同管理"
                         permissions="PURCHASE_ORDERS_MANAGEMENT"/>
 
         </navigation>
