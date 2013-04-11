@@ -190,6 +190,7 @@ public class OperationReports extends Controller {
 
     @ActiveNavigation("people_effect_reports")
     public static void showPeopleEffectReport(SalesReportCondition condition) {
+
         Boolean flagWithCondition = true;
         int pageNumber = getPageNumber();
         if (condition == null) {
@@ -199,12 +200,14 @@ public class OperationReports extends Controller {
             flagWithCondition = false;
         }
         condition.salesId = OperateRbac.currentUser().id;
+
         condition.setDescFields();
 
         Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
         List<SalesReport> resultList = SalesReport.queryPeopleEffectData(condition);
 //        if (flagWithCondition) {
-        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition);
+
+        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition,hasSeeReportProfitRight);
 
         Map<OperateUser, SalesReport> map = new HashMap<>();
 
@@ -935,10 +938,38 @@ public class OperationReports extends Controller {
         if (condition == null) {
             condition = new SalesReportCondition();
         }
+        condition.salesId = OperateRbac.currentUser().id;
+
         condition.setDescFields();
+
+
+
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "人效报表_" + System.currentTimeMillis() + ".xls");
-        List<SalesReport> peopleEffectReportList = SalesReport.queryPeopleEffectData(condition);
+
+        List<SalesReport> resultList = SalesReport.queryPeopleEffectData(condition);
+        Boolean hasSeeReportProfitRight = ContextedPermission.hasPermission("SEE_OPERATION_REPORT_PROFIT");
+
+        List<SalesReport> noContributionResultList = SalesReport.queryNoContributionPeopleEffectData(condition,hasSeeReportProfitRight);
+
+        Map<OperateUser, SalesReport> map = new HashMap<>();
+
+        for (SalesReport resultItem : resultList) {
+            map.put(getReportKeyOfPeopleEffect(resultItem), resultItem);
+        }
+        for (SalesReport noContributionItem : noContributionResultList) {
+            SalesReport item = map.get(getReportKeyOfPeopleEffect(noContributionItem));
+            if (item == null) {
+                map.put(getReportKeyOfPeopleEffect(noContributionItem), noContributionItem);
+            }
+        }
+
+        List<SalesReport> peopleEffectReportList = new ArrayList();
+        for (OperateUser key : map.keySet()) {
+            peopleEffectReportList.add(map.get(key));
+        }
+
+
         for (SalesReport report : peopleEffectReportList) {
             if (hasRight) {
                 BigDecimal tempGrossMargin = report.grossMargin == null ? BigDecimal.ZERO : report.grossMargin.divide(BigDecimal.valueOf(100));
@@ -953,6 +984,9 @@ public class OperationReports extends Controller {
 
         render(peopleEffectReportList);
     }
+
+
+
 
     /**
      * 人效报表导出
