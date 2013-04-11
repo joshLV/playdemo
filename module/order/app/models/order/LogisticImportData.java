@@ -387,7 +387,7 @@ public class LogisticImportData implements Cloneable {
         orderShippingInfo.tel = this.tel;
         orderShippingInfo.paidAt = this.paidAt;
         orderShippingInfo.createdAt = new Date();
-        orderShippingInfo.address = StringUtils.normalizeSpace(this.province) + this.address;
+        orderShippingInfo.address = StringUtils.trimToEmpty(this.province) + this.address;
         orderShippingInfo.zipCode = this.zipCode;
         orderShippingInfo.invoiceTitle = this.invoiceTitle;
         orderShippingInfo.outerOrderId = this.outerOrderNo;
