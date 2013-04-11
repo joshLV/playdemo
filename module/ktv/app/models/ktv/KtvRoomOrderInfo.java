@@ -31,4 +31,7 @@ public class KtvRoomOrderInfo extends Model {
     @JoinColumn(name = "ktv_room_id", nullable = false)
     public KtvRoom ktvRoom;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ktv_room_type_id", nullable = false)
+    public KtvRoomType ktvRoomType;
 }
