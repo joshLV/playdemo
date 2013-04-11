@@ -4,6 +4,8 @@ import com.uhuila.common.constants.DeletedStatus;
 import models.supplier.Supplier;
 import models.supplier.SupplierCategory;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
 import play.db.jpa.JPA;
@@ -201,5 +203,25 @@ public class Sku extends Model {
         query.setParameter("deleted", DeletedStatus.DELETED);
         Long count = (Long) query.getSingleResult();
         return count == null ? 0L : count;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().appendSuper(super.hashCode()).append(this.name).append(this.marketPrice).append
+                (this.id).append(this.code).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Sku other = (Sku) obj;
+        return new EqualsBuilder().appendSuper(super.equals(obj)).append(this.name,
+                other.name).append(this.marketPrice, other.marketPrice)
+                .append(this.id, other.id).append(this.code, other.code).isEquals();
     }
 }
