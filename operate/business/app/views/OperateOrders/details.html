@@ -154,7 +154,7 @@
                     href="/coupons?condition.searchKey=ORDER_NUMBER&condition.searchItems=${orders.orderNumber}">${orders.orderNumber}</a>
             </td>
             <td>成交时间：${orders.createdAt == null ?'':orders.createdAt.format("yyyy-MM-dd HH:mm:ss")}</td>
-            <td>付款时间：${orders.paidAt == null ?'':orders.paidAt.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td>付款时间：${orders?.paidAt == null ?'':orders?.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
         </tr>
         <tr>
             <td>支付方式： &{'order.payMethod.'+orders.payMethod}</td>
@@ -292,14 +292,14 @@
 #{if orders.containsRealGoods()}
 <ul class="nav">
     <li class="active"><a href="#"> 收货信息</a></li>
-%{ outerOrder = models.order.OuterOrder.getOuterOrder(order) }%
+%{ outerOrder = models.order.OuterOrder.getOuterOrder(orders) }%
 
     <table class="table table-bordered table-striped">
 
         <tr>
             <td>收货人：
                 #{if outerOrder!=null}
-                ${orders?.shippingInfo?.receiver}
+                ${orderItems?.get(0)?.shippingInfo?.receiver}
                 #{/if}
                 #{else }
                 ${orders.receiverName}
@@ -310,10 +310,12 @@
             <td>
                 地址：
                 #{if outerOrder!=null}
-                ${orders?.shippingInfo?.address} 邮编: ${orders?.shippingInfo?.zipCode}
+                ${orderItems?.get(0)?.shippingInfo?.address}
+                    &nbsp; &nbsp; &nbsp; &nbsp;
+                    邮编: ${orderItems?.get(0)?.shippingInfo.zipCode}
                 #{/if}
                 #{else }
-                ${orders.receiverAddress} 邮编:${orders.postcode}
+                ${orders?.receiverAddress} &nbsp; &nbsp; &nbsp; &nbsp;邮编:${orders?.postcode}
                 #{/else}
             </td>
         </tr>
@@ -321,10 +323,10 @@
             <td>
                 手机：
                 #{if outerOrder!=null}
-                ${orders?.shippingInfo?.phone}
+                ${orderItems?.get(0)?.shippingInfo?.phone}
                 #{/if}
                 #{else }
-                ${orders.receiverMobile}
+                ${orders?.receiverMobile}
                 #{/else}
             </td>
         </tr>
@@ -332,10 +334,10 @@
             <td>
                 电话：
                 #{if outerOrder!=null}
-                ${orders?.shippingInfo?.tel}
+                ${orderItems?.get(0)?.shippingInfo?.tel}
                 #{/if}
                 #{else }
-                ${orders.receiverPhone}
+                ${orders?.receiverPhone}
                 #{/else}
             </td>
         </tr>
@@ -343,21 +345,21 @@
             <td>
                 物流公司：
                 #{if outerOrder!=null}
-                ${orders?.shippingInfo?.expressCompany?.name}
+                ${orderItems?.get(0)?.shippingInfo?.expressCompany?.name}
                 #{/if}
                 #{else }
-                ${orders.deliveryCompany}
+                ${orders?.deliveryCompany}
                 #{/else}
-           </td>
+            </td>
         </tr>
         <tr>
             <td>
                 物流单号：
                 #{if outerOrder!=null}
-                ${orders?.shippingInfo?.expressNumber}
+                ${orderItems?.get(0)?.shippingInfo?.expressNumber}
                 #{/if}
                 #{else }
-                ${orders.deliveryNo}
+                ${orders?.deliveryNo}
                 #{/else}
             </td>
         </tr>
@@ -365,22 +367,26 @@
             <td>
                 订单留言：
                 #{if outerOrder!=null}
-                ${orders?.shippingInfo?.remarks}
+                ${orderItems?.get(0)?.shippingInfo?.remarks}
                 #{/if}
                 #{else }
-                ${orders.remark}
+                ${orders?.remark}
                 #{/else}
             </td>
         </tr>
     </table>
-#{if outerOrder!=null}
-发货时间：${orders?.sendAt?.format('yyyy-MM-dd HH:mm:ss')}
-#{/if}
-</ul>
-    #{if models.order.OrderStatus.PAID.equals(orders.realGoodsStatus)}
-    <a class="btn btn-primary" onclick="prepareSend(${orders.id})">发货</a><br/><br/>
+    #{if outerOrder!=null}
+        发货时间：${orderItems?.get(0)?.sendAt?.format('yyyy-MM-dd HH:mm:ss')}
+        <br> <br>
     #{/if}
+    #{else}
+    </ul>
+        #{if models.order.OrderStatus.PAID.equals(orders.realGoodsStatus)}
+        <a class="btn btn-primary" onclick="prepareSend(${orders.id})">发货</a><br/><br/>
+        #{/if}
+    #{/else}
 #{/if}
+
 <ul class="nav">
     <li class="active"><a href="#"> 订购人信息</a></li>
     <table class="table table-bordered table-striped">
@@ -405,7 +411,7 @@
         </tr>
     </table>
 </ul>
-#{if orders.refundAt != null }
+#{if orders?.refundAt != null }
 <ul class="nav">
     <li class="active"><a href="#"> 退款信息</a></li>
     <table class="table">
